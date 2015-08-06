@@ -7,8 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C26253991B73E7AA00E81068 /* ball.atlas in Resources */ = {isa = PBXBuildFile; fileRef = C26253981B73E7AA00E81068 /* ball.atlas */; };
+		C262539B1B73EAD300E81068 /* Ball.swift in Sources */ = {isa = PBXBuildFile; fileRef = C262539A1B73EAD300E81068 /* Ball.swift */; };
+		C286CE1A1B73BD580003FCBF /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C286CE191B73BD580003FCBF /* MoonKit.framework */; };
+		C286CE1D1B73D4E30003FCBF /* Chameleon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C286CE1C1B73D4E30003FCBF /* Chameleon.framework */; };
 		C2E043351B72F4DC005F0675 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E043341B72F4DC005F0675 /* AppDelegate.swift */; };
-		C2E043371B72F4DC005F0675 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = C2E043361B72F4DC005F0675 /* GameScene.sks */; };
 		C2E043391B72F4DC005F0675 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E043381B72F4DC005F0675 /* GameScene.swift */; };
 		C2E0433B1B72F4DC005F0675 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E0433A1B72F4DC005F0675 /* GameViewController.swift */; };
 		C2E0433E1B72F4DC005F0675 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C2E0433C1B72F4DC005F0675 /* Main.storyboard */; };
@@ -17,9 +20,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C26253981B73E7AA00E81068 /* ball.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = ball.atlas; sourceTree = "<group>"; };
+		C262539A1B73EAD300E81068 /* Ball.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Ball.swift; sourceTree = "<group>"; };
+		C286CE191B73BD580003FCBF /* MoonKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MoonKit.framework; path = "../MSRemote/Remote/MoonKit/build/Debug-iphoneos/MoonKit.framework"; sourceTree = "<group>"; };
+		C286CE1B1B73D2C10003FCBF /* MidiSprite.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MidiSprite.playground; sourceTree = "<group>"; };
+		C286CE1C1B73D4E30003FCBF /* Chameleon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Chameleon.framework; path = "../../GitHub/Chameleon/Chameleon/build/Debug-iphoneos/Chameleon.framework"; sourceTree = "<group>"; };
 		C2E043311B72F4DC005F0675 /* MidiSprite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MidiSprite.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2E043341B72F4DC005F0675 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		C2E043361B72F4DC005F0675 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
 		C2E043381B72F4DC005F0675 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		C2E0433A1B72F4DC005F0675 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		C2E0433D1B72F4DC005F0675 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -33,6 +40,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C286CE1D1B73D4E30003FCBF /* Chameleon.framework in Frameworks */,
+				C286CE1A1B73BD580003FCBF /* MoonKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -42,6 +51,10 @@
 		C2E043281B72F4DC005F0675 = {
 			isa = PBXGroup;
 			children = (
+				C26253981B73E7AA00E81068 /* ball.atlas */,
+				C286CE1C1B73D4E30003FCBF /* Chameleon.framework */,
+				C286CE1B1B73D2C10003FCBF /* MidiSprite.playground */,
+				C286CE191B73BD580003FCBF /* MoonKit.framework */,
 				C2E043331B72F4DC005F0675 /* MidiSprite */,
 				C2E043321B72F4DC005F0675 /* Products */,
 			);
@@ -59,13 +72,13 @@
 			isa = PBXGroup;
 			children = (
 				C2E043341B72F4DC005F0675 /* AppDelegate.swift */,
-				C2E043361B72F4DC005F0675 /* GameScene.sks */,
 				C2E043381B72F4DC005F0675 /* GameScene.swift */,
 				C2E0433A1B72F4DC005F0675 /* GameViewController.swift */,
 				C2E0433C1B72F4DC005F0675 /* Main.storyboard */,
 				C2E0433F1B72F4DC005F0675 /* Assets.xcassets */,
 				C2E043411B72F4DC005F0675 /* LaunchScreen.storyboard */,
 				C2E043441B72F4DC005F0675 /* Info.plist */,
+				C262539A1B73EAD300E81068 /* Ball.swift */,
 			);
 			path = MidiSprite;
 			sourceTree = "<group>";
@@ -101,6 +114,7 @@
 				TargetAttributes = {
 					C2E043301B72F4DC005F0675 = {
 						CreatedOnToolsVersion = 7.0;
+						DevelopmentTeam = JT6STF4SHA;
 					};
 				};
 			};
@@ -127,7 +141,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C2E043371B72F4DC005F0675 /* GameScene.sks in Resources */,
+				C26253991B73E7AA00E81068 /* ball.atlas in Resources */,
 				C2E043431B72F4DC005F0675 /* LaunchScreen.storyboard in Resources */,
 				C2E043401B72F4DC005F0675 /* Assets.xcassets in Resources */,
 				C2E0433E1B72F4DC005F0675 /* Main.storyboard in Resources */,
@@ -141,6 +155,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C262539B1B73EAD300E81068 /* Ball.swift in Sources */,
 				C2E043391B72F4DC005F0675 /* GameScene.swift in Sources */,
 				C2E0433B1B72F4DC005F0675 /* GameViewController.swift in Sources */,
 				C2E043351B72F4DC005F0675 /* AppDelegate.swift in Sources */,
@@ -256,6 +271,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = MidiSprite/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.MidiSprite;
@@ -267,6 +283,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = MidiSprite/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.MidiSprite;
@@ -293,6 +310,7 @@
 				C2E043491B72F4DC005F0675 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
