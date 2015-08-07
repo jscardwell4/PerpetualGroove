@@ -3,6 +3,11 @@
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8135.1"/>
     </dependencies>
+    <customFonts key="customFonts">
+        <mutableArray key="Yellow Design Studio - Eveleth Shadow.otf">
+            <string>EvelethShadow</string>
+        </mutableArray>
+    </customFonts>
     <scenes>
         <!--Game View Controller-->
         <scene sceneID="tXr-a1-R10">
@@ -15,11 +20,39 @@
                     <view key="view" contentMode="scaleToFill" id="3se-qz-xqx" customClass="SKView">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.0" maxValue="2" translatesAutoresizingMaskIntoConstraints="NO" id="FEg-Cl-cl7">
+                                <rect key="frame" x="241" y="562" width="118" height="31"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="114" id="koM-ec-EmK"/>
+                                </constraints>
+                                <connections>
+                                    <action selector="tempoSliderValueDidChange" destination="BV1-FR-VrT" eventType="valueChanged" id="6ib-xt-tgN"/>
+                                </connections>
+                            </slider>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tempo" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7AG-Qa-x7v">
+                                <rect key="frame" x="171" y="568" width="64" height="19"/>
+                                <fontDescription key="fontDescription" name="EvelethShadow" family="Eveleth" pointSize="16"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="FEg-Cl-cl7" firstAttribute="leading" secondItem="7AG-Qa-x7v" secondAttribute="trailing" constant="8" id="EFM-Oq-LC4"/>
+                            <constraint firstItem="7AG-Qa-x7v" firstAttribute="centerY" secondItem="FEg-Cl-cl7" secondAttribute="centerY" id="HsG-MQ-1Pr"/>
+                            <constraint firstItem="FEg-Cl-cl7" firstAttribute="centerX" secondItem="3se-qz-xqx" secondAttribute="centerX" id="Wsz-jv-UC7"/>
+                            <constraint firstItem="qHh-Mt-9TT" firstAttribute="top" secondItem="FEg-Cl-cl7" secondAttribute="bottom" constant="8" id="crJ-yf-VAO"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="tempoLabel" destination="7AG-Qa-x7v" id="mI7-UU-suY"/>
+                        <outlet property="tempoSlider" destination="FEg-Cl-cl7" id="bTC-Cj-e9H"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="289" y="387"/>
         </scene>
     </scenes>
 </document>

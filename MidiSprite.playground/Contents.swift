@@ -2,6 +2,15 @@
 
 import UIKit
 
+import CoreImage
+
+print("\n".join(CIFilter.filterNamesInCategories(nil)))
+
+let filter = CIFilter(name: "CIMotionBlur")
+filter?.inputKeys
+filter?.outputKeys
+filter?.attributes
+
 import Chameleon
 
 //dsf34t

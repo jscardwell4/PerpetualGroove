@@ -9,14 +9,27 @@
 import UIKit
 import SpriteKit
 import MoonKit
+import Eveleth
 
 class GameViewController: UIViewController {
+
+  @IBOutlet weak var tempoSlider: UISlider!
+  @IBOutlet weak var tempoLabel: UILabel!
+
+  /** tempoSliderValueDidChange */
+  @IBAction func tempoSliderValueDidChange() {
+    guard isViewLoaded(), let scene = (view as! SKView).scene else { return }
+    scene.speed = CGFloat(tempoSlider.value)
+    // TODO: This doesn't work because the balls are already in motion, not driven by actions
+  }
 
   /** viewDidLoad */
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    let scene = GameScene(size: view.bounds.size)
+    tempoLabel.font = Eveleth.shadowFontWithSize(16)
+
+    let scene = BallScene(size: view.bounds.size)
 
     // Configure the view.
     let skView = self.view as! SKView

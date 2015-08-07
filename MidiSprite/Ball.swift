@@ -23,6 +23,16 @@ class Ball: SKSpriteNode {
     static let SandTexture     = Ball.ballTextures.textureNamed("ball_sand")
     static let WaterTexture    = Ball.ballTextures.textureNamed("ball_water")
 
+    var assetName: String {
+      switch self {
+        case .Concrete: return "ball_concrete"
+        case .Crusty:   return "ball_crusty"
+        case .Ocean:    return "ball_ocean"
+        case .Sand:     return "ball_sand"
+        case .Water:    return "ball_water"
+      }
+    }
+
     var texture: SKTexture {
       switch self {
         case .Concrete: return BallType.ConcreteTexture
