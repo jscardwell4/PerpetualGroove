@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		C261D4FA1B74DECC00475BBF /* BallContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C261D4F91B74DECC00475BBF /* BallContainer.swift */; };
-		C26253991B73E7AA00E81068 /* ball.atlas in Resources */ = {isa = PBXBuildFile; fileRef = C26253981B73E7AA00E81068 /* ball.atlas */; };
 		C262539B1B73EAD300E81068 /* Ball.swift in Sources */ = {isa = PBXBuildFile; fileRef = C262539A1B73EAD300E81068 /* Ball.swift */; };
 		C286CE1A1B73BD580003FCBF /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C286CE191B73BD580003FCBF /* MoonKit.framework */; };
 		C286CE1D1B73D4E30003FCBF /* Chameleon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C286CE1C1B73D4E30003FCBF /* Chameleon.framework */; };
@@ -22,7 +21,6 @@
 
 /* Begin PBXFileReference section */
 		C261D4F91B74DECC00475BBF /* BallContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BallContainer.swift; sourceTree = "<group>"; };
-		C26253981B73E7AA00E81068 /* ball.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = ball.atlas; sourceTree = "<group>"; };
 		C262539A1B73EAD300E81068 /* Ball.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Ball.swift; sourceTree = "<group>"; };
 		C286CE191B73BD580003FCBF /* MoonKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MoonKit.framework; path = "../MSRemote/Remote/MoonKit/build/Debug-iphoneos/MoonKit.framework"; sourceTree = "<group>"; };
 		C286CE1B1B73D2C10003FCBF /* MidiSprite.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MidiSprite.playground; sourceTree = "<group>"; };
@@ -53,7 +51,6 @@
 		C2E043281B72F4DC005F0675 = {
 			isa = PBXGroup;
 			children = (
-				C26253981B73E7AA00E81068 /* ball.atlas */,
 				C286CE1B1B73D2C10003FCBF /* MidiSprite.playground */,
 				C286CE191B73BD580003FCBF /* MoonKit.framework */,
 				C286CE1C1B73D4E30003FCBF /* Chameleon.framework */,
@@ -144,7 +141,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C26253991B73E7AA00E81068 /* ball.atlas in Resources */,
 				C2E043431B72F4DC005F0675 /* LaunchScreen.storyboard in Resources */,
 				C2E043401B72F4DC005F0675 /* Assets.xcassets in Resources */,
 				C2E0433E1B72F4DC005F0675 /* Main.storyboard in Resources */,

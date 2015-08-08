@@ -43,7 +43,8 @@ class BallScene: SKScene {
     backgroundColor = colors2[3]
     scaleMode = .ResizeFill
 
-    let containerRect = frame.rectByInsetting(dx: 20, dy: 88).integerRect
+    var containerRect = frame.rectByInsetting(dx: 20, dy: 104).integerRect
+    containerRect.origin.y += 16
 
     let ballContainer = BallContainer(rect: containerRect)
     ballContainer.name = "ballContainer"
@@ -52,17 +53,95 @@ class BallScene: SKScene {
     addChild(ballContainer)
     self.ballContainer = ballContainer
 
-    if let revertImage = Glyphish.imageNamed("1026-revert")?.recoloredImageWithColor(colors2[0]),
-           revertImageSelected = Glyphish.imageNamed("1026-revert-selected")?.recoloredImageWithColor(colors2[0])
-    {
-      let texturePair = ButtonNode.TexturePair(defaultTexture: SKTexture(image: revertImage),
-                                               pressedTexture: SKTexture(image: revertImageSelected))
-      let revertButton = ButtonNode(textures: [.Default(texturePair)], action: { [unowned self] _ in self.revert() })
-      revertButton.name = "revertButton"
-      revertButton.position = CGPoint(x: 44, y: frame.height - 44)
-      addChild(revertButton)
+
+    let topBar = SKNode()
+    topBar.name = "topBar"
+    topBar.position = CGPoint(x: 32, y: frame.height - 32)
+    addChild(topBar)
+
+    let barWidth = frame.width - 64
+
+    let buttons = SKTextureAtlas(named: "buttons")
+    let texturePair: (String) -> ButtonNode.TexturePair = {
+      ButtonNode.TexturePair(defaultTexture: buttons.textureNamed($0), pressedTexture: buttons.textureNamed("\($0)-selected"))
     }
+
+    let revertButton = ButtonNode(textures: [.Default(texturePair("revert"))], action: { [unowned self] _ in self.revert() })
+    revertButton.name = "revertButton"
+    revertButton.setScale(0.75)
+    topBar.addChild(revertButton)
+
+    let slidersButton = ButtonNode(textures: [.Default(texturePair("sliders"))], action: { [unowned self] _ in self.sliders() })
+    slidersButton.name = "slidersButton"
+    slidersButton.position = CGPoint(x: barWidth * 0.25, y: 0)
+    slidersButton.setScale(0.75)
+    topBar.addChild(slidersButton)
+
+    let audioButton = ButtonNode(textures: [.Default(texturePair("speaker"))], action: { [unowned self] _ in self.audio() })
+    audioButton.name = "audioButton"
+    audioButton.position = CGPoint(x: barWidth * 0.5, y: 0)
+    audioButton.setScale(0.75)
+    topBar.addChild(audioButton)
+
+    let pianoButton = ButtonNode(textures: [.Default(texturePair("piano"))], action: { [unowned self] _ in self.piano() })
+    pianoButton.name = "pianoButton"
+    pianoButton.position = CGPoint(x: barWidth * 0.75, y: 0)
+    pianoButton.setScale(0.75)
+    topBar.addChild(pianoButton)
+
+    let guitarButton = ButtonNode(textures: [.Default(texturePair("guitar"))], action: { [unowned self] _ in self.guitar() })
+    guitarButton.name = "guitarButton"
+    guitarButton.position = CGPoint(x: barWidth, y: 0)
+    guitarButton.setScale(0.75)
+    topBar.addChild(guitarButton)
+
+    let bottomBar = SKNode()
+    bottomBar.name = "bottomBar"
+    bottomBar.position = CGPoint(x: 32, y: 74)
+    addChild(bottomBar)
+    
+    let skipBackButton = ButtonNode(textures: [.Default(texturePair("skipBack"))], action: { [unowned self] _ in self.skipBack() })
+    skipBackButton.name = "skipBackButton"
+    skipBackButton.setScale(0.75)
+    bottomBar.addChild(skipBackButton)
+
+    let playButton = ButtonNode(textures: [.Default(texturePair("play"))], action: { [unowned self] _ in self.play() })
+    playButton.name = "playButton"
+    playButton.position = CGPoint(x: barWidth * 0.25, y: 0)
+    playButton.setScale(0.75)
+    bottomBar.addChild(playButton)
+
+    let pauseButton = ButtonNode(textures: [.Default(texturePair("pause"))], action: { [unowned self] _ in self.pause() })
+    pauseButton.name = "pauseButton"
+    pauseButton.position = CGPoint(x: barWidth * 0.5, y: 0)
+    pauseButton.setScale(0.75)
+    bottomBar.addChild(pauseButton)
+
+    let stopButton = ButtonNode(textures: [.Default(texturePair("stop"))], action: { [unowned self] _ in self.stop() })
+    stopButton.name = "stopButton"
+    stopButton.position = CGPoint(x: barWidth * 0.75, y: 0)
+    stopButton.setScale(0.75)
+    bottomBar.addChild(stopButton)
+
+
+
   }
+
+  private func sliders() {}
+
+  private func audio() {}
+
+  private func piano() {}
+
+  private func guitar() {}
+
+  private func play() {}
+
+  private func stop() {}
+
+  private func pause() {}
+
+  private func skipBack() {}
 
   /**
   didMoveToView:

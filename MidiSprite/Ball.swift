@@ -12,36 +12,27 @@ import MoonKit
 
 class Ball: SKSpriteNode {
 
-  static let ballTextures = SKTextureAtlas(named: "ball")
+  static let ballsAtlas = SKTextureAtlas(named: "balls")
   
-  enum BallType {
-    case Concrete, Crusty, Ocean, Sand, Water
+  enum BallType: String {
+    case Brick, Cobblestone, Concrete, Crusty, DiamondPlate, Dirt, Fur, Glass, Mountains, OceanBasin, Parchment,
+         PlasticWrap, Sand, Stucco, Water
 
-    static let ConcreteTexture = Ball.ballTextures.textureNamed("ball_concrete")
-    static let CrustyTexture   = Ball.ballTextures.textureNamed("ball_crusty")
-    static let OceanTexture    = Ball.ballTextures.textureNamed("ball_ocean")
-    static let SandTexture     = Ball.ballTextures.textureNamed("ball_sand")
-    static let WaterTexture    = Ball.ballTextures.textureNamed("ball_water")
+    /**
+    ballTextureWithName:
 
-    var assetName: String {
-      switch self {
-        case .Concrete: return "ball_concrete"
-        case .Crusty:   return "ball_crusty"
-        case .Ocean:    return "ball_ocean"
-        case .Sand:     return "ball_sand"
-        case .Water:    return "ball_water"
-      }
+    - parameter name: String
+
+    - returns: SKTexture?
+    */
+    static func ballTextureWithName(name: String) -> SKTexture? {
+      guard ballsAtlas.textureNames ∋ name else { return nil }
+      return ballsAtlas.textureNamed(name)
     }
 
-    var texture: SKTexture {
-      switch self {
-        case .Concrete: return BallType.ConcreteTexture
-        case .Crusty:   return BallType.CrustyTexture
-        case .Ocean:    return BallType.OceanTexture
-        case .Sand:     return BallType.SandTexture
-        case .Water:    return BallType.WaterTexture
-      }
-    }
+    var assetName: String { return rawValue.lowercaseString }
+
+    var texture: SKTexture { return BallType.ballTextureWithName(assetName)! }
   }
 
   let type: BallType
@@ -54,7 +45,7 @@ class Ball: SKSpriteNode {
   init(_ ballType: BallType, _ vector: CGVector) {
     type = ballType
     let texture = ballType.texture
-    super.init(texture: texture, color: UIColor.clearColor(), size: texture.size())
+    super.init(texture: texture, color: UIColor.clearColor(), size: CGSize(square: 32))
     physicsBody = SKPhysicsBody(circleOfRadius: size.width * 0.5)
     physicsBody?.affectedByGravity = false
     physicsBody?.usesPreciseCollisionDetection = true
@@ -64,7 +55,7 @@ class Ball: SKSpriteNode {
     physicsBody?.friction = 0.0
     physicsBody?.restitution = 1.0
     physicsBody?.categoryBitMask = 0
-//    physicsBody?.applyForce(vector)
+
   }
 
   /**

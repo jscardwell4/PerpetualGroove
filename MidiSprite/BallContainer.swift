@@ -90,7 +90,8 @@ class BallContainer: SKShapeNode {
   */
   override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
     guard let touch = touch where touches.contains(touch) else { return }
-    if containsPoint(touch.locationInNode(self)) { updateData(); addBall() }
+    updateData()
+    addBall()
     self.touch = nil
   }
 
