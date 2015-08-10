@@ -9,12 +9,23 @@
 import UIKit
 import SpriteKit
 import MoonKit
+import AVFoundation
 
 class BallContainer: SKShapeNode {
 
+  struct BallTemplate {
+    var soundSet = Instrument.SoundSet.PureOscillators
+    var program: UInt8 = 0
+    var channel: UInt8 = 0
+    var note = Instrument.Note()
+    var type = Ball.BallType.Concrete
+  }
+
   typealias BallType = Ball.BallType
 
-  private var nextBallType = BallType.Concrete
+  var template = BallTemplate()
+
+  private var balls: [(CGPoint, CGVector)] = []
 
   private var touch: UITouch? {
     didSet {
@@ -41,25 +52,46 @@ class BallContainer: SKShapeNode {
     guard velocities.count > 0 && !location.isNull else { return }
     let velocity = sum(velocities) / CGFloat(velocities.count)
     MSLogVerbose("adding new ball with velocity \(velocity) calculated from velocities \(velocities)")
-    let ball = Ball(nextBallType, velocity)
+    let instrument = Instrument(soundSet: template.soundSet, program: template.program, channel: template.channel)
+    let ball = Ball(ballType: template.type, vector: velocity, instrument: instrument, note: template.note)
     ball.name = "ball" + String(self["ball[0-9]*"].count)
     ball.position = location - (ball.size * 0.5)
     addChild(ball)
+    balls.append((ball.position, velocity))
   }
 
-  func dropBall() {
-    if let ball = self["ball*"].last { ball.removeFromParent() }
+  /** dropBall */
+  func dropBall() { guard balls.count > 0 else { return }; self["ball*"].last?.removeFromParent(); balls.removeLast() }
+
+  private func setup() {
+    userInteractionEnabled = true
+    strokeColor = UIColor(red: 0.502, green: 0.502, blue: 0.502, alpha: 1.0)
+    guard let path = path else { return }
+    physicsBody = SKPhysicsBody(edgeLoopFromPath: path)
+    physicsBody?.categoryBitMask = 1
+    physicsBody?.contactTestBitMask = 0xFFFFFFFF
   }
 
   /** init */
-  override init() { super.init(); userInteractionEnabled = true }
+  override init() { super.init(); setup() }
+
+  /**
+  initWithRect:
+
+  - parameter rect: CGRect
+  */
+  init(rect: CGRect) {
+    super.init()
+    path = UIBezierPath(rect: rect).CGPath
+    setup()
+  }
 
   /**
   init:
 
   - parameter aDecoder: NSCoder
   */
-  required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder); userInteractionEnabled = true }
+  required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder); setup() }
 
   /**
   touchesBegan:withEvent:
@@ -107,4 +139,16 @@ class BallContainer: SKShapeNode {
     else { self.touch = nil }
   }
 
+}
+
+extension BallContainer: SKPhysicsContactDelegate {
+  /**
+  didBeginContact:
+
+  - parameter contact: SKPhysicsContact
+  */
+  func didBeginContact(contact: SKPhysicsContact) {
+    guard let ball = contact.bodyB.node as? Ball else { return }
+    ball.instrument.playNote(ball.note)
+  }
 }

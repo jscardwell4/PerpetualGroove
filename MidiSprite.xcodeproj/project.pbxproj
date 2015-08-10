@@ -7,28 +7,63 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C21E44C11B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C21E44C01B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 */; };
+		C21E44C51B76546C00574BD2 /* MidiManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21E44C41B76546C00574BD2 /* MidiManager.swift */; };
+		C2404BC31B78026500A68A64 /* Sampler Files in Resources */ = {isa = PBXBuildFile; fileRef = C2404BC11B78026500A68A64 /* Sampler Files */; };
+		C2404BC41B78026500A68A64 /* Grand Piano.exs in Resources */ = {isa = PBXBuildFile; fileRef = C2404BC21B78026500A68A64 /* Grand Piano.exs */; };
+		C2404BC61B7805B400A68A64 /* Hip Hop Kit.exs in Resources */ = {isa = PBXBuildFile; fileRef = C2404BC51B7805B400A68A64 /* Hip Hop Kit.exs */; };
+		C2404BCE1B78EDEB00A68A64 /* Eveleth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BCD1B78EDEB00A68A64 /* Eveleth.framework */; };
+		C2404BCF1B78EDEB00A68A64 /* Eveleth.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BCD1B78EDEB00A68A64 /* Eveleth.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C2404BD21B78EE3800A68A64 /* Chameleon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BD11B78EE3800A68A64 /* Chameleon.framework */; };
+		C2404BD31B78EE3800A68A64 /* Chameleon.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BD11B78EE3800A68A64 /* Chameleon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C2404BD51B78EEC500A68A64 /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BD41B78EEC500A68A64 /* MoonKit.framework */; };
+		C2404BD61B78EEC500A68A64 /* MoonKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BD41B78EEC500A68A64 /* MoonKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C261D4FA1B74DECC00475BBF /* BallContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C261D4F91B74DECC00475BBF /* BallContainer.swift */; };
 		C262539B1B73EAD300E81068 /* Ball.swift in Sources */ = {isa = PBXBuildFile; fileRef = C262539A1B73EAD300E81068 /* Ball.swift */; };
-		C286CE1A1B73BD580003FCBF /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C286CE191B73BD580003FCBF /* MoonKit.framework */; };
-		C286CE1D1B73D4E30003FCBF /* Chameleon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C286CE1C1B73D4E30003FCBF /* Chameleon.framework */; };
+		C2BC7AD51B76C85E001729BA /* Instrument.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BC7AD41B76C85E001729BA /* Instrument.swift */; };
 		C2E043351B72F4DC005F0675 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E043341B72F4DC005F0675 /* AppDelegate.swift */; };
 		C2E043391B72F4DC005F0675 /* BallScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E043381B72F4DC005F0675 /* BallScene.swift */; };
-		C2E0433B1B72F4DC005F0675 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E0433A1B72F4DC005F0675 /* GameViewController.swift */; };
+		C2E0433B1B72F4DC005F0675 /* BallSceneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E0433A1B72F4DC005F0675 /* BallSceneViewController.swift */; };
 		C2E0433E1B72F4DC005F0675 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C2E0433C1B72F4DC005F0675 /* Main.storyboard */; };
 		C2E043401B72F4DC005F0675 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C2E0433F1B72F4DC005F0675 /* Assets.xcassets */; };
 		C2E043431B72F4DC005F0675 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C2E043411B72F4DC005F0675 /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		C2404BD01B78EDEB00A68A64 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				C2404BCF1B78EDEB00A68A64 /* Eveleth.framework in Embed Frameworks */,
+				C2404BD61B78EEC500A68A64 /* MoonKit.framework in Embed Frameworks */,
+				C2404BD31B78EE3800A68A64 /* Chameleon.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		C21E44C01B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SPYRO's Pure Oscillators.sf2"; path = "MidiSprite/SPYRO's Pure Oscillators.sf2"; sourceTree = "<group>"; };
+		C21E44C21B7653D500574BD2 /* FluidR3.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; name = FluidR3.sf2; path = MidiSprite/FluidR3.sf2; sourceTree = "<group>"; };
+		C21E44C41B76546C00574BD2 /* MidiManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MidiManager.swift; sourceTree = "<group>"; };
+		C21E44C81B76739C00574BD2 /* sf2.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = sf2.playground; path = MidiSprite/sf2.playground; sourceTree = "<group>"; };
+		C2404BC11B78026500A68A64 /* Sampler Files */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "Sampler Files"; path = "MidiSprite/Sampler Files"; sourceTree = "<group>"; };
+		C2404BC21B78026500A68A64 /* Grand Piano.exs */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Grand Piano.exs"; path = "MidiSprite/Grand Piano.exs"; sourceTree = "<group>"; };
+		C2404BC51B7805B400A68A64 /* Hip Hop Kit.exs */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Hip Hop Kit.exs"; path = "MidiSprite/Hip Hop Kit.exs"; sourceTree = "<group>"; };
+		C2404BCD1B78EDEB00A68A64 /* Eveleth.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = Eveleth.framework; path = "/Users/Moondeer/Library/Developer/Xcode/DerivedData/Build/Products/Debug-iphoneos/Eveleth.framework"; sourceTree = "<absolute>"; };
+		C2404BD11B78EE3800A68A64 /* Chameleon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = Chameleon.framework; path = "/Users/Moondeer/Library/Developer/Xcode/DerivedData/Build/Products/Debug-iphoneos/Chameleon.framework"; sourceTree = "<absolute>"; };
+		C2404BD41B78EEC500A68A64 /* MoonKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = MoonKit.framework; path = "/Users/Moondeer/Library/Developer/Xcode/DerivedData/Build/Products/Debug-iphoneos/MoonKit.framework"; sourceTree = "<absolute>"; };
 		C261D4F91B74DECC00475BBF /* BallContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BallContainer.swift; sourceTree = "<group>"; };
 		C262539A1B73EAD300E81068 /* Ball.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Ball.swift; sourceTree = "<group>"; };
-		C286CE191B73BD580003FCBF /* MoonKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MoonKit.framework; path = "../MSRemote/Remote/MoonKit/build/Debug-iphoneos/MoonKit.framework"; sourceTree = "<group>"; };
-		C286CE1B1B73D2C10003FCBF /* MidiSprite.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MidiSprite.playground; sourceTree = "<group>"; };
-		C286CE1C1B73D4E30003FCBF /* Chameleon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Chameleon.framework; path = "../../GitHub/Chameleon/Chameleon/build/Debug-iphoneos/Chameleon.framework"; sourceTree = "<group>"; };
+		C286CE1B1B73D2C10003FCBF /* MidiSprite.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = MidiSprite.playground; path = /Users/Moondeer/Projects/MidiSprite/MidiSprite.playground; sourceTree = "<absolute>"; };
+		C2BC7AD41B76C85E001729BA /* Instrument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Instrument.swift; sourceTree = "<group>"; };
 		C2E043311B72F4DC005F0675 /* MidiSprite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MidiSprite.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2E043341B72F4DC005F0675 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C2E043381B72F4DC005F0675 /* BallScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BallScene.swift; sourceTree = "<group>"; };
-		C2E0433A1B72F4DC005F0675 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
+		C2E0433A1B72F4DC005F0675 /* BallSceneViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BallSceneViewController.swift; sourceTree = "<group>"; };
 		C2E0433D1B72F4DC005F0675 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		C2E0433F1B72F4DC005F0675 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C2E043421B72F4DC005F0675 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -40,20 +75,84 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C286CE1D1B73D4E30003FCBF /* Chameleon.framework in Frameworks */,
-				C286CE1A1B73BD580003FCBF /* MoonKit.framework in Frameworks */,
+				C2404BCE1B78EDEB00A68A64 /* Eveleth.framework in Frameworks */,
+				C2404BD51B78EEC500A68A64 /* MoonKit.framework in Frameworks */,
+				C2404BD21B78EE3800A68A64 /* Chameleon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C2404BD71B78EF8200A68A64 /* Embedded Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C2404BD41B78EEC500A68A64 /* MoonKit.framework */,
+				C2404BD11B78EE3800A68A64 /* Chameleon.framework */,
+				C2404BCD1B78EDEB00A68A64 /* Eveleth.framework */,
+			);
+			name = "Embedded Frameworks";
+			sourceTree = "<group>";
+		};
+		C2404BD81B78EFA800A68A64 /* Sound Sets */ = {
+			isa = PBXGroup;
+			children = (
+				C2404BC11B78026500A68A64 /* Sampler Files */,
+				C21E44C21B7653D500574BD2 /* FluidR3.sf2 */,
+				C21E44C01B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 */,
+				C2404BC51B7805B400A68A64 /* Hip Hop Kit.exs */,
+				C2404BC21B78026500A68A64 /* Grand Piano.exs */,
+			);
+			name = "Sound Sets";
+			sourceTree = "<group>";
+		};
+		C2404BD91B78EFD700A68A64 /* Playgrounds */ = {
+			isa = PBXGroup;
+			children = (
+				C21E44C81B76739C00574BD2 /* sf2.playground */,
+				C286CE1B1B73D2C10003FCBF /* MidiSprite.playground */,
+			);
+			name = Playgrounds;
+			sourceTree = "<group>";
+		};
+		C2404BDA1B78F02C00A68A64 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				C2E043341B72F4DC005F0675 /* AppDelegate.swift */,
+				C2E043381B72F4DC005F0675 /* BallScene.swift */,
+				C21E44C41B76546C00574BD2 /* MidiManager.swift */,
+				C2BC7AD41B76C85E001729BA /* Instrument.swift */,
+				C261D4F91B74DECC00475BBF /* BallContainer.swift */,
+				C2E0433A1B72F4DC005F0675 /* BallSceneViewController.swift */,
+				C262539A1B73EAD300E81068 /* Ball.swift */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		C2404BDB1B78F03E00A68A64 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				C2E0433C1B72F4DC005F0675 /* Main.storyboard */,
+				C2E0433F1B72F4DC005F0675 /* Assets.xcassets */,
+				C2E043411B72F4DC005F0675 /* LaunchScreen.storyboard */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		C2404BDC1B78F04700A68A64 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				C2E043441B72F4DC005F0675 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		C2E043281B72F4DC005F0675 = {
 			isa = PBXGroup;
 			children = (
-				C286CE1B1B73D2C10003FCBF /* MidiSprite.playground */,
-				C286CE191B73BD580003FCBF /* MoonKit.framework */,
-				C286CE1C1B73D4E30003FCBF /* Chameleon.framework */,
+				C2404BD91B78EFD700A68A64 /* Playgrounds */,
+				C2404BD71B78EF8200A68A64 /* Embedded Frameworks */,
+				C2404BD81B78EFA800A68A64 /* Sound Sets */,
 				C2E043331B72F4DC005F0675 /* MidiSprite */,
 				C2E043321B72F4DC005F0675 /* Products */,
 			);
@@ -70,15 +169,9 @@
 		C2E043331B72F4DC005F0675 /* MidiSprite */ = {
 			isa = PBXGroup;
 			children = (
-				C2E043341B72F4DC005F0675 /* AppDelegate.swift */,
-				C2E043381B72F4DC005F0675 /* BallScene.swift */,
-				C261D4F91B74DECC00475BBF /* BallContainer.swift */,
-				C2E0433A1B72F4DC005F0675 /* GameViewController.swift */,
-				C2E0433C1B72F4DC005F0675 /* Main.storyboard */,
-				C2E0433F1B72F4DC005F0675 /* Assets.xcassets */,
-				C2E043411B72F4DC005F0675 /* LaunchScreen.storyboard */,
-				C2E043441B72F4DC005F0675 /* Info.plist */,
-				C262539A1B73EAD300E81068 /* Ball.swift */,
+				C2404BDA1B78F02C00A68A64 /* Source */,
+				C2404BDB1B78F03E00A68A64 /* Resources */,
+				C2404BDC1B78F04700A68A64 /* Supporting Files */,
 			);
 			path = MidiSprite;
 			sourceTree = "<group>";
@@ -93,6 +186,7 @@
 				C2E0432D1B72F4DC005F0675 /* Sources */,
 				C2E0432E1B72F4DC005F0675 /* Frameworks */,
 				C2E0432F1B72F4DC005F0675 /* Resources */,
+				C2404BD01B78EDEB00A68A64 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -143,7 +237,11 @@
 			files = (
 				C2E043431B72F4DC005F0675 /* LaunchScreen.storyboard in Resources */,
 				C2E043401B72F4DC005F0675 /* Assets.xcassets in Resources */,
+				C2404BC31B78026500A68A64 /* Sampler Files in Resources */,
 				C2E0433E1B72F4DC005F0675 /* Main.storyboard in Resources */,
+				C2404BC61B7805B400A68A64 /* Hip Hop Kit.exs in Resources */,
+				C21E44C11B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 in Resources */,
+				C2404BC41B78026500A68A64 /* Grand Piano.exs in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -157,7 +255,9 @@
 				C261D4FA1B74DECC00475BBF /* BallContainer.swift in Sources */,
 				C262539B1B73EAD300E81068 /* Ball.swift in Sources */,
 				C2E043391B72F4DC005F0675 /* BallScene.swift in Sources */,
-				C2E0433B1B72F4DC005F0675 /* GameViewController.swift in Sources */,
+				C2E0433B1B72F4DC005F0675 /* BallSceneViewController.swift in Sources */,
+				C2BC7AD51B76C85E001729BA /* Instrument.swift in Sources */,
+				C21E44C51B76546C00574BD2 /* MidiManager.swift in Sources */,
 				C2E043351B72F4DC005F0675 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -272,10 +372,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = MidiSprite/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.MidiSprite;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRIP_STYLE = debugging;
 			};
 			name = Debug;
 		};
@@ -284,10 +388,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = MidiSprite/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.MidiSprite;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRIP_STYLE = debugging;
 			};
 			name = Release;
 		};

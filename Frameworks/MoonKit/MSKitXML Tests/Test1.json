@@ -1,0 +1,51 @@
+{
+  "root": {
+    "xmlns": "urn:schemas-upnp-org:device-1-0",
+    "specVersion": {
+      "major": "1",
+      "minor": "0"
+    },
+    "URLBase": "http://192.168.1.9",
+    "device": {
+      "deviceType": "urn:udi-com:device:X_Insteon_Lighting_Device:1",
+      "friendlyName": "ISY",
+      "manufacturer": "Universal Devices Inc.",
+      "manufacturerURL": "http://www.universal-devices.com",
+      "modelDescription": "X_Insteon_Lighting_Device:1",
+      "modelName": "ISY 994i 256",
+      "modelNumber": "1120",
+      "UDN": "uuid:00:21:b9:01:f2:b6",
+      "UPC": "uuid:00:21:b9:01:f2:b6",
+      "serviceList": {
+        "service": [
+          {
+            "serviceType": "urn:udi-com:service:X_Insteon_Lighting_Service:1",
+            "serviceId": "urn:udi-com:serviceId:uuid:00:21:b9:01:f2:b6",
+            "SCPDURL": "/services.wsdl",
+            "controlURL": "/services",
+            "eventSubURL": "/eventing"
+          },
+          {
+            "serviceType": "UDIELKWebServices",
+            "serviceId": "uuid:00:21:b9:01:f2:b6-UDIELKWebServices",
+            "SCPDURL": "/elkServices.wsdl",
+            "controlURL": "/security/elk"
+          },
+          {
+            "serviceType": "UDISEPWebServices",
+            "serviceId": "uuid:00:21:b9:01:f2:b6-UDISEPWebServices",
+            "SCPDURL": "/sepServices.wsdl",
+            "controlURL": "/sepServices"
+          },
+          {
+            "serviceType": "UDIZWaveWebServices",
+            "serviceId": "uuid:00:21:b9:01:f2:b6-UDIZWaveWebServices",
+            "SCPDURL": "/zwaveServices.wsdl",
+            "controlURL": "/zwaveServices"
+          }
+        ]
+      },
+      "presentationURL": "/"
+    }
+  }
+}

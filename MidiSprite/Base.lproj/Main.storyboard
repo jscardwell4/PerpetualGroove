@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8164.2" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BV1-FR-VrT">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8173.3" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BV1-FR-VrT">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8135.1"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8142"/>
     </dependencies>
     <customFonts key="customFonts">
         <mutableArray key="Yellow Design Studio - Eveleth Shadow.otf">
@@ -9,43 +9,167 @@
         </mutableArray>
     </customFonts>
     <scenes>
-        <!--Game View Controller-->
+        <!--Ball Scene View Controller-->
         <scene sceneID="tXr-a1-R10">
             <objects>
-                <viewController id="BV1-FR-VrT" customClass="GameViewController" customModule="MidiSprite" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BV1-FR-VrT" customClass="BallSceneViewController" customModule="MidiSprite" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="8aa-yV-Osq"/>
                         <viewControllerLayoutGuide type="bottom" id="qHh-Mt-9TT"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="3se-qz-xqx" customClass="SKView">
+                    <view key="view" contentMode="scaleToFill" id="3se-qz-xqx">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.0" maxValue="2" translatesAutoresizingMaskIntoConstraints="NO" id="FEg-Cl-cl7">
-                                <rect key="frame" x="241" y="562" width="118" height="31"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="U9p-PY-X1m" userLabel="Ball Scene View" customClass="SKView">
+                                <rect key="frame" x="0.0" y="64" width="600" height="472"/>
+                            </view>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ne2-9T-lFK" userLabel="Top Toolbar">
+                                <rect key="frame" x="0.0" y="20" width="600" height="44"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="114" id="koM-ec-EmK"/>
+                                    <constraint firstAttribute="height" constant="44" id="mXq-aZ-hcI"/>
                                 </constraints>
-                                <connections>
-                                    <action selector="tempoSliderValueDidChange" destination="BV1-FR-VrT" eventType="valueChanged" id="6ib-xt-tgN"/>
-                                </connections>
-                            </slider>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tempo" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7AG-Qa-x7v">
-                                <rect key="frame" x="171" y="568" width="64" height="19"/>
-                                <fontDescription key="fontDescription" name="EvelethShadow" family="Eveleth" pointSize="16"/>
-                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                                <items>
+                                    <barButtonItem image="revert" style="plain" id="WNt-yK-gMn" userLabel="Revert" customClass="ImageBarButtonItem" customModule="MoonKit" colorLabel="IBBuiltInLabel-Red">
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="revert-selected"/>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="revert" destination="BV1-FR-VrT" id="FhY-8t-i4N"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="StZ-TK-F4f" colorLabel="IBBuiltInLabel-Red"/>
+                                    <barButtonItem image="sliders" style="plain" id="0cd-Py-C2q" userLabel="Sliders" customClass="ImageBarButtonItem" customModule="MoonKit" colorLabel="IBBuiltInLabel-Red">
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="sliders-selected"/>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="sliders" destination="BV1-FR-VrT" id="Jbj-59-Ojs"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="Ilh-nH-w15" colorLabel="IBBuiltInLabel-Red"/>
+                                    <barButtonItem image="piano" style="plain" id="uuO-FY-Y2S" userLabel="Instrument" customClass="ImageBarButtonItem" customModule="MoonKit" colorLabel="IBBuiltInLabel-Red">
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="piano-selected"/>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="instrument" destination="BV1-FR-VrT" id="rzG-Lj-UEO"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="Hbp-RF-bHk" colorLabel="IBBuiltInLabel-Red"/>
+                                    <barButtonItem image="floppydisk" style="plain" id="0A3-0S-GbH" userLabel="Save" customClass="ImageBarButtonItem" customModule="MoonKit" colorLabel="IBBuiltInLabel-Red">
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="floppydisk-selected"/>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="save" destination="BV1-FR-VrT" id="gMR-5m-wYq"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="Nn5-Ip-28S" colorLabel="IBBuiltInLabel-Red"/>
+                                    <barButtonItem image="concrete" style="plain" id="crO-6C-Y4j" userLabel="Template" customClass="ImageBarButtonItem" customModule="MoonKit" colorLabel="IBBuiltInLabel-Red">
+                                        <connections>
+                                            <action selector="template" destination="BV1-FR-VrT" id="3aI-KQ-kZV"/>
+                                        </connections>
+                                    </barButtonItem>
+                                </items>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </toolbar>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="05v-qN-Ysq" userLabel="Bottom Toolbar">
+                                <rect key="frame" x="0.0" y="536" width="600" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="hhD-Hp-QU6"/>
+                                </constraints>
+                                <items>
+                                    <barButtonItem image="skipback" style="plain" id="2yj-w7-ZHS" userLabel="SkipBack" customClass="ImageBarButtonItem" customModule="MoonKit" colorLabel="IBBuiltInLabel-Orange">
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="skipback-selected"/>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="skipBack" destination="BV1-FR-VrT" id="VMn-0Q-w2J"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="3ji-Iz-Ilu" colorLabel="IBBuiltInLabel-Orange"/>
+                                    <barButtonItem image="play" style="plain" id="S5n-Me-CQ9" userLabel="Play" customClass="ImageBarButtonItem" customModule="MoonKit" colorLabel="IBBuiltInLabel-Orange">
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="play-selected"/>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="play" destination="BV1-FR-VrT" id="Qil-vs-5vr"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="bYE-XZ-usR" colorLabel="IBBuiltInLabel-Orange"/>
+                                    <barButtonItem image="stop" style="plain" id="FiV-KF-efV" userLabel="Stop" customClass="ImageBarButtonItem" customModule="MoonKit" colorLabel="IBBuiltInLabel-Orange">
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="stop-selected"/>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="stop" destination="BV1-FR-VrT" id="Hla-xo-0Kr"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="ttL-eO-HMI" colorLabel="IBBuiltInLabel-Orange"/>
+                                    <barButtonItem style="plain" id="ykn-Cw-eMw" userLabel="Tempo" colorLabel="IBBuiltInLabel-Orange">
+                                        <view key="customView" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" id="WZr-17-0lT">
+                                            <rect key="frame" x="400" y="5.5" width="180" height="33"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <subviews>
+                                                <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.0" maxValue="2" translatesAutoresizingMaskIntoConstraints="NO" id="FEg-Cl-cl7" customClass="Slider" customModule="MoonKit">
+                                                    <rect key="frame" x="70" y="1" width="112" height="31"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="114" id="koM-ec-EmK"/>
+                                                    </constraints>
+                                                    <variation key="default">
+                                                        <mask key="constraints">
+                                                            <exclude reference="koM-ec-EmK"/>
+                                                        </mask>
+                                                    </variation>
+                                                    <connections>
+                                                        <action selector="tempoSliderValueDidChange" destination="BV1-FR-VrT" eventType="valueChanged" id="6ib-xt-tgN"/>
+                                                    </connections>
+                                                </slider>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Tempo" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7AG-Qa-x7v">
+                                                    <rect key="frame" x="0.0" y="7" width="64" height="19"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="64" id="KQw-C3-aRa"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" name="EvelethShadow" family="Eveleth" pointSize="16"/>
+                                                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="FEg-Cl-cl7" firstAttribute="leading" secondItem="7AG-Qa-x7v" secondAttribute="trailing" constant="8" id="5F6-a2-uC7"/>
+                                                <constraint firstAttribute="trailing" secondItem="FEg-Cl-cl7" secondAttribute="trailing" id="7Yc-Ot-ZSC"/>
+                                                <constraint firstItem="7AG-Qa-x7v" firstAttribute="leading" secondItem="WZr-17-0lT" secondAttribute="leading" id="S9K-k1-iTP"/>
+                                                <constraint firstItem="7AG-Qa-x7v" firstAttribute="centerY" secondItem="WZr-17-0lT" secondAttribute="centerY" id="o32-5x-Vt9"/>
+                                                <constraint firstItem="FEg-Cl-cl7" firstAttribute="centerY" secondItem="WZr-17-0lT" secondAttribute="centerY" id="u67-E8-fyA"/>
+                                            </constraints>
+                                        </view>
+                                    </barButtonItem>
+                                </items>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </toolbar>
                         </subviews>
-                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.20223253965377808" green="0.1919732391834259" blue="0.19185087084770203" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="FEg-Cl-cl7" firstAttribute="leading" secondItem="7AG-Qa-x7v" secondAttribute="trailing" constant="8" id="EFM-Oq-LC4"/>
-                            <constraint firstItem="7AG-Qa-x7v" firstAttribute="centerY" secondItem="FEg-Cl-cl7" secondAttribute="centerY" id="HsG-MQ-1Pr"/>
-                            <constraint firstItem="FEg-Cl-cl7" firstAttribute="centerX" secondItem="3se-qz-xqx" secondAttribute="centerX" id="Wsz-jv-UC7"/>
-                            <constraint firstItem="qHh-Mt-9TT" firstAttribute="top" secondItem="FEg-Cl-cl7" secondAttribute="bottom" constant="8" id="crJ-yf-VAO"/>
+                            <constraint firstItem="Ne2-9T-lFK" firstAttribute="top" secondItem="8aa-yV-Osq" secondAttribute="bottom" constant="20" id="1xV-6C-LWD"/>
+                            <constraint firstAttribute="trailing" secondItem="Ne2-9T-lFK" secondAttribute="trailing" id="DSY-sg-zHo"/>
+                            <constraint firstItem="qHh-Mt-9TT" firstAttribute="top" secondItem="05v-qN-Ysq" secondAttribute="bottom" constant="20" id="UON-xw-vsg"/>
+                            <constraint firstItem="U9p-PY-X1m" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leading" id="Vpx-i7-ab6"/>
+                            <constraint firstItem="05v-qN-Ysq" firstAttribute="top" secondItem="U9p-PY-X1m" secondAttribute="bottom" id="Y4p-DK-xxL"/>
+                            <constraint firstItem="Ne2-9T-lFK" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leading" id="Y6S-YO-OJe"/>
+                            <constraint firstItem="U9p-PY-X1m" firstAttribute="top" secondItem="Ne2-9T-lFK" secondAttribute="bottom" id="eDZ-FF-dxW"/>
+                            <constraint firstAttribute="trailing" secondItem="U9p-PY-X1m" secondAttribute="trailing" id="r3J-Gt-uwa"/>
+                            <constraint firstAttribute="trailing" secondItem="05v-qN-Ysq" secondAttribute="trailing" id="syM-dJ-ddc"/>
+                            <constraint firstItem="05v-qN-Ysq" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leading" id="whW-wh-2Fu"/>
                         </constraints>
                     </view>
+                    <keyCommands/>
+                    <nil key="simulatedStatusBarMetrics"/>
+                    <nil key="simulatedTopBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
                     <connections>
+                        <outlet property="skView" destination="U9p-PY-X1m" id="Khl-SR-qcK"/>
+                        <outlet property="templateBarButtonItem" destination="crO-6C-Y4j" id="drZ-UU-TDM"/>
                         <outlet property="tempoLabel" destination="7AG-Qa-x7v" id="mI7-UU-suY"/>
                         <outlet property="tempoSlider" destination="FEg-Cl-cl7" id="bTC-Cj-e9H"/>
                     </connections>
@@ -55,4 +179,21 @@
             <point key="canvasLocation" x="289" y="387"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="concrete" width="500" height="500"/>
+        <image name="floppydisk" width="42" height="42"/>
+        <image name="floppydisk-selected" width="42" height="42"/>
+        <image name="piano" width="56" height="56"/>
+        <image name="piano-selected" width="56" height="56"/>
+        <image name="play" width="61" height="61"/>
+        <image name="play-selected" width="61" height="61"/>
+        <image name="revert" width="56" height="56"/>
+        <image name="revert-selected" width="56" height="56"/>
+        <image name="skipback" width="61" height="61"/>
+        <image name="skipback-selected" width="61" height="61"/>
+        <image name="sliders" width="56" height="56"/>
+        <image name="sliders-selected" width="56" height="56"/>
+        <image name="stop" width="61" height="61"/>
+        <image name="stop-selected" width="61" height="61"/>
+    </resources>
 </document>

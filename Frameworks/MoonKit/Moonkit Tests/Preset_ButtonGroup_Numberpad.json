@@ -1,0 +1,173 @@
+{
+  "name": "Numberpad",
+  "baseType": "button-group",
+  "role": "numberpad",
+  "backgroundColor": "white@75%",
+  "autohide": true,
+  "constraints": [
+    "$1.bottom = $2.bottom :: $1.left = $0.left :: $1.top = $0.top",
+    "$2.left = $1.right :: $2.top = $0.top :: $2.width = $1.width",
+    "$3.bottom = $2.bottom :: $3.left = $2.right :: $3.right = $0.right :: $3.top = $0.top :: $3.width = $1.width",
+    "$4.bottom = $5.bottom :: $4.left = $0.left :: $4.right = $1.right :: $4.top = $1.bottom",
+    "$5.height = $2.height :: $5.left = $2.left :: $5.right = $2.right :: $5.top = $2.bottom",
+    "$6.bottom = $5.bottom :: $6.left = $3.left :: $6.right = $0.right :: $6.top = $3.bottom",
+    "$7.bottom = $8.bottom :: $7.left = $0.left :: $7.right = $4.right :: $7.top = $4.bottom",
+    "$8.height = $2.height :: $8.left = $5.left :: $8.right = $5.right :: $8.top = $5.bottom",
+    "$9.bottom = $8.bottom :: $9.left = $6.left :: $9.right = $6.right :: $9.top = $6.bottom",
+    "$10.bottom = $13.top :: $10.height = $2.height :: $10.left = $8.left :: $10.right = $8.right :: $10.top = $8.bottom",
+    "$11.bottom = $10.bottom :: $11.left = $0.left :: $11.right = $7.right :: $11.top = $7.bottom",
+    "$12.bottom = $10.bottom :: $12.left = $9.left :: $12.right = $0.right :: $12.top = $9.bottom",
+    "$13.bottom = $0.bottom :: $13.height = $2.height :: $13.left = $0.left :: $13.right = $0.right"
+  ],
+  "subelements": [
+    {
+      "baseType": "button",
+      "role": "one",
+      "shape": "rounded-rectangle",
+      "style": "gloss2",
+      "titles": {
+        "normal": <@include TitleAttributes_Default_Text.json,TEXT=1,SIZE=32>,
+        "highlighted.foregroundColor": <@include ForegroundColor_Highlighted.json>
+      },
+      "backgroundColors.normal": <@include BackgroundColor_Default.json>,
+      "titleEdgeInsets": <@include TitleEdgeInsets_Default.json>
+    },
+    {
+      "baseType": "button",
+      "role": "two",
+      "shape": "rounded-rectangle",
+      "style": "gloss2",
+      "titles": {
+        "normal": <@include TitleAttributes_Default_Text.json,TEXT=2,SIZE=32>,
+        "highlighted.foregroundColor": <@include ForegroundColor_Highlighted.json>
+      },
+      "backgroundColors.normal": <@include BackgroundColor_Default.json>,
+      "titleEdgeInsets": <@include TitleEdgeInsets_Default.json>
+    },
+    {
+      "baseType": "button",
+      "role": "three",
+      "shape": "rounded-rectangle",
+      "style": "gloss2",
+      "titles": {
+        "normal": <@include TitleAttributes_Default_Text.json,TEXT=3,SIZE=32>,
+        "highlighted.foregroundColor": <@include ForegroundColor_Highlighted.json>
+      },
+      "backgroundColors.normal": <@include BackgroundColor_Default.json>,
+      "titleEdgeInsets": <@include TitleEdgeInsets_Default.json>
+    },
+    {
+      "baseType": "button",
+      "role": "four",
+      "shape": "rounded-rectangle",
+      "style": "gloss2",
+      "titles": {
+        "normal": <@include TitleAttributes_Default_Text.json,TEXT=4,SIZE=32>,
+        "highlighted.foregroundColor": <@include ForegroundColor_Highlighted.json>
+      },
+      "backgroundColors.normal": <@include BackgroundColor_Default.json>,
+      "titleEdgeInsets": <@include TitleEdgeInsets_Default.json>
+    },
+    {
+      "baseType": "button",
+      "role": "five",
+      "shape": "rounded-rectangle",
+      "style": "gloss2",
+      "titles": {
+        "normal": <@include TitleAttributes_Default_Text.json,TEXT=5,SIZE=32>,
+        "highlighted.foregroundColor": <@include ForegroundColor_Highlighted.json>
+      },
+      "backgroundColors.normal": <@include BackgroundColor_Default.json>,
+      "titleEdgeInsets": <@include TitleEdgeInsets_Default.json>
+    },
+    {
+      "baseType": "button",
+      "role": "six",
+      "shape": "rounded-rectangle",
+      "style": "gloss2",
+      "titles": {
+        "normal": <@include TitleAttributes_Default_Text.json,TEXT=6,SIZE=32>,
+        "highlighted.foregroundColor": <@include ForegroundColor_Highlighted.json>
+      },
+      "backgroundColors.normal": <@include BackgroundColor_Default.json>,
+      "titleEdgeInsets": <@include TitleEdgeInsets_Default.json>
+    },
+    {
+      "baseType": "button",
+      "role": "seven",
+      "shape": "rounded-rectangle",
+      "style": "gloss2",
+      "titles": {
+        "normal": <@include TitleAttributes_Default_Text.json,TEXT=7,SIZE=32>,
+        "highlighted.foregroundColor": <@include ForegroundColor_Highlighted.json>
+      },
+      "backgroundColors.normal": <@include BackgroundColor_Default.json>,
+      "titleEdgeInsets": <@include TitleEdgeInsets_Default.json>
+    },
+    {
+      "baseType": "button",
+      "role": "eight",
+      "shape": "rounded-rectangle",
+      "style": "gloss2",
+      "titles": {
+        "normal": <@include TitleAttributes_Default_Text.json,TEXT=8,SIZE=32>,
+        "highlighted.foregroundColor": <@include ForegroundColor_Highlighted.json>
+      },
+      "backgroundColors.normal": <@include BackgroundColor_Default.json>,
+      "titleEdgeInsets": <@include TitleEdgeInsets_Default.json>
+    },
+    {
+      "baseType": "button",
+      "role": "nine",
+      "shape": "rounded-rectangle",
+      "style": "gloss2",
+      "titles": {
+        "normal": <@include TitleAttributes_Default_Text.json,TEXT=9,SIZE=32>,
+        "highlighted.foregroundColor": <@include ForegroundColor_Highlighted.json>
+      },
+      "backgroundColors.normal": <@include BackgroundColor_Default.json>,
+      "titleEdgeInsets": <@include TitleEdgeInsets_Default.json>
+    },
+    {
+      "baseType": "button",
+      "role": "zero",
+      "shape": "rounded-rectangle",
+      "style": "gloss2",
+      "titles": {
+        "normal": <@include TitleAttributes_Default_Text.json,TEXT=0,SIZE=32>,
+        "highlighted.foregroundColor": <@include ForegroundColor_Highlighted.json>
+      },
+      "backgroundColors.normal": <@include BackgroundColor_Default.json>,
+      "titleEdgeInsets": <@include TitleEdgeInsets_Default.json>
+    },
+    {
+      "baseType": "button",
+      "role": "aux1",
+      "shape": "rounded-rectangle",
+      "style": "gloss2",
+      "titles": <@include TitleAttributes_Default_Text.json,TEXT=Exit,SIZE=20>,
+      "backgroundColors.normal": <@include BackgroundColor_Default.json>,
+      "titleEdgeInsets": <@include TitleEdgeInsets_Default.json>
+    },
+    {
+      "baseType": "button",
+      "role": "aux2",
+      "shape": "rounded-rectangle",
+      "style": "gloss2",
+      "titles": <@include TitleAttributes_Default_Text.json,TEXT=Enter,SIZE=20>,
+      "backgroundColors.normal": <@include BackgroundColor_Default.json>,
+      "titleEdgeInsets": <@include TitleEdgeInsets_Default.json>
+    },
+    {
+      "baseType": "button",
+      "role": "tuck",
+      "titles.normal": {
+        "font": "FontAwesome@24",
+        "foregroundColor": "gray@75%",
+        "textEffect": "letter-press",
+        "iconName": "chevron-up"
+      },
+      "titleEdgeInsets": <@include TitleEdgeInsets_Default.json>
+    }
+  ]
+}

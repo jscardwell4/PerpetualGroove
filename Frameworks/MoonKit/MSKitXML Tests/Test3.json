@@ -1,0 +1,116 @@
+{
+  "nodes": {
+    "root": {},
+    "node": [
+      {
+        "flag": "128",
+        "address": "18 F0 8 1",
+        "name": "18.F0.08.1",
+        "type": "1.7.56.0",
+        "enabled": "false",
+        "deviceClass": "0",
+        "wattage": "0",
+        "dcPeriod": "0",
+        "pnode": "18 F0 8 1",
+        "ELK_ID": "A02",
+        "property": {
+          "id": "ST",
+          "value": " ",
+          "uom": "%/on/off",
+          "formatted": " "
+        }
+      },
+      {
+        "flag": "128",
+        "address": "1B 6E B2 1",
+        "name": "1B.6E.B2.1",
+        "type": "2.23.57.0",
+        "enabled": "true",
+        "deviceClass": "0",
+        "wattage": "0",
+        "dcPeriod": "0",
+        "pnode": "1B 6E B2 1",
+        "ELK_ID": "A03",
+        "property": {
+          "id": "ST",
+          "value": "255",
+          "uom": "on/off",
+          "formatted": "On"
+        }
+      },
+      {
+        "flag": "128",
+        "address": "20 12 40 1",
+        "name": "20.12.40.1",
+        "type": "1.58.193.0",
+        "enabled": "true",
+        "deviceClass": "0",
+        "wattage": "0",
+        "dcPeriod": "0",
+        "pnode": "20 12 40 1",
+        "ELK_ID": "A04",
+        "property": {
+          "id": "ST",
+          "value": "255",
+          "uom": "%/on/off",
+          "formatted": "On"
+        }
+      },
+      {
+        "flag": "128",
+        "address": "23 78 77 1",
+        "name": "23.78.77.1",
+        "type": "1.14.65.0",
+        "enabled": "true",
+        "deviceClass": "0",
+        "wattage": "0",
+        "dcPeriod": "0",
+        "pnode": "23 78 77 1",
+        "ELK_ID": "A05",
+        "property": {
+          "id": "ST",
+          "value": "255",
+          "uom": "%/on/off",
+          "formatted": "On"
+        }
+      }
+    ],
+    "group": [
+      {
+        "flag": "12",
+        "address": "00:21:b9:01:f2:b6",
+        "name": "ISY",
+        "family": "6",
+        "members": {
+          "link": [
+            {
+              "type": "0",
+              "link": "18 F0 8 1"
+            },
+            {
+              "type": "0",
+              "link": "1B 6E B2 1"
+            },
+            {
+              "type": "0",
+              "link": "20 12 40 1"
+            },
+            {
+              "type": "0",
+              "link": "23 78 77 1"
+            }
+          ]
+        }
+      },
+      {
+        "flag": "132",
+        "address": "ADR0001",
+        "name": "Auto DR",
+        "family": "5",
+        "deviceGroup": "16",
+        "ELK_ID": "A01",
+        "members": {}
+      }
+    ]
+  }
+}

@@ -15,8 +15,8 @@ class Ball: SKSpriteNode {
   static let ballsAtlas = SKTextureAtlas(named: "balls")
   
   enum BallType: String {
-    case Brick, Cobblestone, Concrete, Crusty, DiamondPlate, Dirt, Fur, Glass, Mountains, OceanBasin, Parchment,
-         PlasticWrap, Sand, Stucco, Water
+    case Brick, Cobblestone, Concrete, Crusty, DiamondPlate, Dirt, Fur, Glass,
+         Mountains, OceanBasin, Parchment, PlasticWrap, Sand, Stucco, Water
 
     /**
     ballTextureWithName:
@@ -31,19 +31,26 @@ class Ball: SKSpriteNode {
     }
 
     var assetName: String { return rawValue.lowercaseString }
+    var image: UIImage { return UIImage(named: assetName)! }
 
     var texture: SKTexture { return BallType.ballTextureWithName(assetName)! }
+    static let all: [BallType] = [.Brick, .Cobblestone, .Concrete, .Crusty, .DiamondPlate, .Dirt, .Fur, .Glass,
+                                  .Mountains, .OceanBasin, .Parchment, .PlasticWrap, .Sand, .Stucco, .Water]
   }
 
-  let type: BallType
+  var type: BallType
+  var note: Instrument.Note
+  var instrument: Instrument
 
   /**
   initWithBallType:
 
   - parameter ballType: BallType
   */
-  init(_ ballType: BallType, _ vector: CGVector) {
+  init(ballType: BallType, vector: CGVector, instrument i: Instrument, note n: Instrument.Note) {
     type = ballType
+    instrument = i
+    note = n
     let texture = ballType.texture
     super.init(texture: texture, color: UIColor.clearColor(), size: CGSize(square: 32))
     physicsBody = SKPhysicsBody(circleOfRadius: size.width * 0.5)
@@ -54,8 +61,9 @@ class Ball: SKSpriteNode {
     physicsBody?.angularDamping = 0.0
     physicsBody?.friction = 0.0
     physicsBody?.restitution = 1.0
+    physicsBody?.contactTestBitMask = 0xFFFFFFFF
     physicsBody?.categoryBitMask = 0
-
+    physicsBody?.collisionBitMask = 1
   }
 
   /**
@@ -63,8 +71,6 @@ class Ball: SKSpriteNode {
 
   - parameter aDecoder: NSCoder
   */
-  required init?(coder aDecoder: NSCoder) {
-      fatalError("init(coder:) has not been implemented")
-  }
+  required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
 }

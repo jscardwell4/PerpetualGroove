@@ -1,0 +1,37 @@
+{
+  "name": "1 x 3",
+  "baseType": "button-group",
+  "constraints": [
+    "$0.height ≥ 150",
+    "$0.width ≥ 132",
+    "$1.left = $0.left :: $1.right = $0.right :: $1.top = $0.top",
+    "$2.height = $1.height :: $2.left = $0.left :: $2.right = $0.right :: $2.top = $1.bottom + 4",
+    "$3.bottom = $0.bottom :: $3.height = $1.height :: $3.left = $0.left :: $3.right = $0.right :: $3.top = $2.bottom + 4"
+  ],
+  "subelements": [
+    {
+      "baseType": "button",
+      "shape": "rounded-rectangle",
+      "style": "gloss2",
+      "titles": <@include TitleAttributes_Default_Text.json,TEXT=Button 1,SIZE=20>,
+      "backgroundColors.normal": <@include BackgroundColor_Default.json>,
+      "titleEdgeInsets": <@include TitleEdgeInsets_Default.json>
+    },
+    {
+      "baseType": "button",
+      "shape": "rounded-rectangle",
+      "style": "gloss2",
+      "titles": <@include TitleAttributes_Default_Text.json,TEXT=Button 2,SIZE=20>,
+      "backgroundColors.normal": <@include BackgroundColor_Default.json>,
+      "titleEdgeInsets": <@include TitleEdgeInsets_Default.json>
+    },
+    {
+      "baseType": "button",
+      "shape": "rounded-rectangle",
+      "style": "gloss2",
+      "titles": <@include TitleAttributes_Default_Text.json,TEXT=Button 3,SIZE=20>,
+      "backgroundColors.normal": <@include BackgroundColor_Default.json>,
+      "titleEdgeInsets": <@include TitleEdgeInsets_Default.json>
+    }
+  ]
+}

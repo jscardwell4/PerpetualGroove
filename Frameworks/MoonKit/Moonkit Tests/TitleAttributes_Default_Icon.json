@@ -1,0 +1,8 @@
+{
+  "font": "FontAwesome@<#SIZE#>",
+  "foregroundColor": <@include ForegroundColor_Normal.json>,
+  "strokeColor": "white@50%",
+  "strokeWidth": -2,
+  "alignment": "center",
+  "iconName": "<#ICON#>"
+}

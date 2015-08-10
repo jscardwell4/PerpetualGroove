@@ -1,0 +1,8 @@
+{
+  "key1":1,
+  "key2.has.aPath": true,
+  "key3": {
+    "has.aPath.embedded": true
+  },
+  "included": <@include example1.json>
+}
