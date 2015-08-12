@@ -30,6 +30,8 @@ public class PopoverView: UIView {
 
   public var blur = true
 
+//  public var automaticallyRemove = true
+
   /**
   Overridden to account for the top/bottom arrow
 
@@ -143,15 +145,26 @@ public class PopoverView: UIView {
   - parameter labelData: [LabelData]
   - parameter callback: ((PopoverView) -> Void
   */
-  public init(dismissal callback: ((PopoverView) -> Void)?) {
+  public init(backdrop image: UIImage? = nil, dismissal callback: ((PopoverView) -> Void)?) {
     dismissal = callback
     super.init(frame: CGRect.zeroRect)
+    backdrop = image
     initializeIVARs()
   }
 
   public override func layoutSubviews() {
     super.layoutSubviews()
     refreshShape()
+  }
+
+  public var backdrop: UIImage?
+
+  public override var hidden: Bool { didSet { touchBarrier?.hidden = hidden } }
+
+  /** removeFromSuperview */
+  override public func removeFromSuperview() {
+    touchBarrier?.removeFromSuperview()
+    super.removeFromSuperview()
   }
 
   /**
@@ -168,18 +181,18 @@ public class PopoverView: UIView {
     super.didMoveToWindow()
     guard let window = window where self.touchBarrier == nil else { return }
 
-
-    let touchBarrier = ImageButtonView(image: blur ? window.blurredSnapshot() : nil, highlightedImage: nil) {
+    let image: UIImage? = backdrop ?? (blur ? window.blurredSnapshot() : nil)
+    let touchBarrier = ImageButtonView(image: image, highlightedImage: nil) {
       [weak self] (imageView: ImageButtonView) -> Void in
 
-      self?.removeFromSuperview()
-      imageView.removeFromSuperview()
+//      if self?.automaticallyRemove == true { self?.removeFromSuperview() }
+//      imageView.removeFromSuperview()
       self?.dismissal?(self!)
     }
 
     touchBarrier.frame = window.bounds
     touchBarrier.alpha = 0.25
-
+    touchBarrier.hidden = hidden
     window.insertSubview(touchBarrier, belowSubview: self)
     self.touchBarrier = touchBarrier
   }

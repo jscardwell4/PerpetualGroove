@@ -77,7 +77,7 @@ extension MIDIPlayerScene: SKPhysicsContactDelegate {
   - parameter contact: SKPhysicsContact
   */
   func didBeginContact(contact: SKPhysicsContact) {
-//    guard let ball = contact.bodyB.node as? Ball else { return }
-//    ball.instrument.playNote(ball.note)
+    guard let midiNode = contact.bodyB.node as? MIDINode else { return }
+    midiNode.play()
   }
 }

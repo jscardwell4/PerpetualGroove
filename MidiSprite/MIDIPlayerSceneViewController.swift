@@ -49,65 +49,74 @@ class MIDIPlayerSceneViewController: UIViewController {
   /** template */
   @IBAction func template() {
 
-    guard let window = view.window, presentingView = templateBarButtonItem.customView else { return }
+    templatePopover?.hidden = false
 
-    let popoverView = midiNodeTemplatePopover()
-    window.addSubview(popoverView)
-
-    let necessaryWidth = (popoverView.intrinsicContentSize().width / 2) + 2
-    let windowWidth = window.bounds.width
-    let presentingViewFrame = presentingView.frame
-    let halfPresentingViewWidth = presentingViewFrame.width / 2
-    let spaceToLeft = presentingViewFrame.minX + halfPresentingViewWidth
-    let spaceToRight = windowWidth - presentingViewFrame.maxX + halfPresentingViewWidth
-
-    let offset: CGFloat
-    switch (spaceToLeft > necessaryWidth, spaceToRight > necessaryWidth) {
-      case (true, false):                offset = necessaryWidth - spaceToRight
-      case (false, true):                offset = necessaryWidth - spaceToLeft
-      case (true, true), (false, false): offset = 0
-    }
-
-    popoverView.xOffset = offset
-
-    let id = MoonKit.Identifier(self, "Popover")
-    window.constrain(
-      popoverView.centerX => presentingView.centerX - offset --> id,
-      popoverView.top => presentingView.bottom --> id
-    )
+//    guard let window = view.window,
+//              presentingView = templateBarButtonItem.customView,
+//              popoverView = templatePopover else { return }
+//
+//    window.addSubview(popoverView)
+//
+//    let necessaryWidth = (popoverView.intrinsicContentSize().width / 2) + 2
+//    let windowWidth = window.bounds.width
+//    let presentingViewFrame = presentingView.frame
+//    let halfPresentingViewWidth = presentingViewFrame.width / 2
+//    let spaceToLeft = presentingViewFrame.minX + halfPresentingViewWidth
+//    let spaceToRight = windowWidth - presentingViewFrame.maxX + halfPresentingViewWidth
+//
+//    let offset: CGFloat
+//    switch (spaceToLeft > necessaryWidth, spaceToRight > necessaryWidth) {
+//      case (true, false):                offset = necessaryWidth - spaceToRight
+//      case (false, true):                offset = necessaryWidth - spaceToLeft
+//      case (true, true), (false, false): offset = 0
+//    }
+//
+//    popoverView.xOffset = offset
+//
+//    let id = MoonKit.Identifier(self, "Popover")
+//    window.constrain(
+//      popoverView.centerX => presentingView.centerX - offset --> id,
+//      popoverView.top => presentingView.bottom --> id
+//    )
 
 
   }
 
-  private var _midiNodeTemplatePopover: PopoverFormView?
-
-  private func midiNodeTemplatePopover() -> PopoverFormView {
-    guard _midiNodeTemplatePopover == nil else { return _midiNodeTemplatePopover! }
-
-    let popoverView = PopoverFormView(form: midiNodeTemplateForm(), dismissal: nil)
-    popoverView.location = .Top
-    popoverView.nametag = "popover"
-    popoverView.formView.labelFont = Eveleth.lightFontWithSize(14)
-    popoverView.formView.labelTextColor = Chameleon.kelleyPearlBush
-    popoverView.formView.controlFont = Eveleth.thinFontWithSize(14)
-    popoverView.formView.controlTextColor = Chameleon.quietLightLobLollyDark
-    popoverView.formView.controlSelectedFont = Eveleth.regularFontWithSize(14)
-    popoverView.formView.controlSelectedTextColor = Chameleon.quietLightLobLolly
-    popoverView.formView.tintColor = Chameleon.flatWhiteDark
-    _midiNodeTemplatePopover = popoverView
-
-    return popoverView
-  }
-
-  private var _midiNodeTemplateForm: Form?
+  private var templatePopover: PopoverFormView?
 
   /**
-  midiNodeTemplateForm
+  generateTemplatePopover
+
+  - returns: PopoverFormView
+  */
+  private func generateTemplatePopover() -> PopoverFormView {
+    guard templatePopover == nil else { return templatePopover! }
+    guard let window = view.window else { fatalError("cannot generate the template popover without a window") }
+
+    templatePopover = PopoverFormView(form: generateTemplateForm(), backdrop: window.blurredSnapshot()) { $0.hidden = true }
+    templatePopover!.blur = false
+    templatePopover!.location = .Top
+    templatePopover!.nametag = "popover"
+    templatePopover!.formView.labelFont = Eveleth.lightFontWithSize(14)
+    templatePopover!.formView.labelTextColor = Chameleon.kelleyPearlBush
+    templatePopover!.formView.controlFont = Eveleth.thinFontWithSize(14)
+    templatePopover!.formView.controlTextColor = Chameleon.quietLightLobLollyDark
+    templatePopover!.formView.controlSelectedFont = Eveleth.regularFontWithSize(14)
+    templatePopover!.formView.controlSelectedTextColor = Chameleon.quietLightLobLolly
+    templatePopover!.formView.tintColor = Chameleon.flatWhiteDark
+
+    return templatePopover!
+  }
+
+  private var templateForm: Form?
+
+  /**
+  generateTemplateForm
 
   - returns: Form
   */
-  private func midiNodeTemplateForm() -> Form {
-    guard _midiNodeTemplateForm == nil else { return _midiNodeTemplateForm! }
+  private func generateTemplateForm() -> Form {
+    guard templateForm == nil else { return templateForm! }
     guard let player = playerScene?.midiPlayer else { return Form(fields: []) }
 
     enum FieldName: String { case TextureType = "Type", Note, Velocity, Duration, SoundSet = "Sound Set", Program, Channel }
@@ -158,7 +167,7 @@ class MIDIPlayerSceneViewController: UIViewController {
 
     let fields = [typeField, noteField, velocityField, durationField, soundSetField, programField, channelField]
 
-    _midiNodeTemplateForm =  Form(fields: fields) {
+    templateForm =  Form(fields: fields) {
       [unowned self] (form: Form, field: FormField) in
 
       guard let fieldName = FieldName(rawValue: field.name),
@@ -200,7 +209,7 @@ class MIDIPlayerSceneViewController: UIViewController {
 
     }
 
-    return _midiNodeTemplateForm!
+    return templateForm!
   }
 
   static let sliderThumbImage = UIImage(named: "marker1")?.recoloredImageWithColor(Chameleon.kelleyPearlBush)
@@ -229,6 +238,42 @@ class MIDIPlayerSceneViewController: UIViewController {
     skView.ignoresSiblingOrder = true
 
     skView.presentScene(scene)
+}
+
+  /**
+  viewDidAppear:
+
+  - parameter animated: Bool
+  */
+  override func viewDidAppear(animated: Bool) {
+    super.viewDidAppear(animated)
+    guard let window = view.window, presentingView = templateBarButtonItem.customView else { return }
+
+    let popoverView = generateTemplatePopover()
+    popoverView.hidden = true
+    window.addSubview(popoverView)
+
+    let necessaryWidth = (popoverView.intrinsicContentSize().width / 2) + 2
+    let windowWidth = window.bounds.width
+    let presentingViewFrame = presentingView.frame
+    let halfPresentingViewWidth = presentingViewFrame.width / 2
+    let spaceToLeft = presentingViewFrame.minX + halfPresentingViewWidth
+    let spaceToRight = windowWidth - presentingViewFrame.maxX + halfPresentingViewWidth
+
+    let offset: CGFloat
+    switch (spaceToLeft > necessaryWidth, spaceToRight > necessaryWidth) {
+    case (true, false):                offset = necessaryWidth - spaceToRight
+    case (false, true):                offset = necessaryWidth - spaceToLeft
+    case (true, true), (false, false): offset = 0
+    }
+
+    popoverView.xOffset = offset
+
+    let id = MoonKit.Identifier(self, "Popover")
+    window.constrain(
+      popoverView.centerX => presentingView.centerX - offset --> id,
+      popoverView.top => presentingView.bottom --> id
+    )
   }
 
   /**
@@ -238,8 +283,8 @@ class MIDIPlayerSceneViewController: UIViewController {
   */
   override func viewDidDisappear(animated: Bool) {
     super.viewDidDisappear(animated)
-    _midiNodeTemplateForm = nil
-    _midiNodeTemplatePopover = nil
+    templateForm = nil
+    templatePopover = nil
   }
 
   /**
@@ -263,7 +308,12 @@ class MIDIPlayerSceneViewController: UIViewController {
   }
 
   /** didReceiveMemoryWarning */
-  override func didReceiveMemoryWarning() { super.didReceiveMemoryWarning(); MSLogDebug("") }
+  override func didReceiveMemoryWarning() {
+    super.didReceiveMemoryWarning()
+    templateForm = nil
+    templatePopover = nil
+    MSLogDebug("")
+  }
 
   /**
   prefersStatusBarHidden

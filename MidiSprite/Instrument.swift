@@ -138,15 +138,22 @@ class Instrument: Equatable {
   func playNote(note: Note) {
     
     sampler.startNote(note.value.midi, withVelocity: note.velocity, onChannel: channel)
-    dispatch_after(
-      dispatch_time(DISPATCH_TIME_NOW, Int64(note.duration * Double(NSEC_PER_SEC))),
-      dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0)
-    ) {
-      [weak self] in
-      guard let instrument = self else { return }
-      instrument.sampler.stopNote(note.value.midi, onChannel: instrument.channel)
-    }
+//    dispatch_after(
+//      dispatch_time(DISPATCH_TIME_NOW, Int64(note.duration * Double(NSEC_PER_SEC))),
+//      dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0)
+//    ) {
+//      [weak self] in
+//      guard let instrument = self else { return }
+//      instrument.sampler.stopNote(note.value.midi, onChannel: instrument.channel)
+//    }
   }
+
+  /**
+  stopNote:
+
+  - parameter note: Note
+  */
+  func stopNote(note: Note) { sampler.stopNote(note.value.midi, onChannel: channel) }
 
 }
 

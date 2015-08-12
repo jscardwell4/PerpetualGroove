@@ -104,9 +104,9 @@ public class PopoverListView: PopoverView {
   - parameter labelData: [LabelData]
   - parameter callback: ((PopoverView) -> Void
   */
-  public init(labelData: [LabelData], dismissal callback: ((PopoverView) -> Void)?) {
+  public init(labelData: [LabelData], backdrop: UIImage? = nil, dismissal callback: ((PopoverView) -> Void)?) {
     data = labelData
-    super.init(dismissal: callback)
+    super.init(backdrop: backdrop, dismissal: callback)
   }
 
   /**
