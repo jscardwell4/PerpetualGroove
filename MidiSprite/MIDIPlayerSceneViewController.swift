@@ -1,5 +1,5 @@
 //
-//  BallSceneViewController.swift
+//  MIDIPlayerSceneViewController.swift
 //  MidiSprite
 //
 //  Created by Jason Cardwell on 8/5/15.
@@ -12,21 +12,21 @@ import MoonKit
 import Eveleth
 import Chameleon
 
-class BallSceneViewController: UIViewController {
+class MIDIPlayerSceneViewController: UIViewController {
 
   @IBOutlet weak var tempoSlider: Slider!
   @IBOutlet weak var tempoLabel: UILabel!
   @IBOutlet weak var skView: SKView!
   @IBOutlet weak var templateBarButtonItem: ImageBarButtonItem!
 
-  private var ballScene: BallScene? { return skView?.scene as? BallScene }
-  private var ballContainer: BallContainer? { return ballScene?.ballContainer }
+  private var playerScene: MIDIPlayerScene? { return skView?.scene as? MIDIPlayerScene }
+  private var midiPlayer: MIDIPlayerNode? { return playerScene?.midiPlayer }
 
   /** tempoSliderValueDidChange */
   @IBAction func tempoSliderValueDidChange() { MSLogDebug("value = \(tempoSlider.value)") }
 
   /** revert */
-  @IBAction func revert() { (skView?.scene as? BallScene)?.revert() }
+  @IBAction func revert() { (skView?.scene as? MIDIPlayerScene)?.revert() }
 
   /** sliders */
   @IBAction func sliders() { MSLogDebug("") }
@@ -48,12 +48,10 @@ class BallSceneViewController: UIViewController {
 
   /** template */
   @IBAction func template() {
-    MSLogDebug("")
-    ballScene?.paused = true
 
     guard let window = view.window, presentingView = templateBarButtonItem.customView else { return }
 
-    let popoverView = ballTemplatePopover()
+    let popoverView = midiNodeTemplatePopover()
     window.addSubview(popoverView)
 
     let necessaryWidth = (popoverView.intrinsicContentSize().width / 2) + 2
@@ -81,13 +79,12 @@ class BallSceneViewController: UIViewController {
 
   }
 
-  private var _ballTemplatePopover: PopoverFormView?
+  private var _midiNodeTemplatePopover: PopoverFormView?
 
-  private func ballTemplatePopover() -> PopoverFormView {
-    guard _ballTemplatePopover == nil else { return _ballTemplatePopover! }
+  private func midiNodeTemplatePopover() -> PopoverFormView {
+    guard _midiNodeTemplatePopover == nil else { return _midiNodeTemplatePopover! }
 
-    let popoverView = PopoverFormView(form: ballTemplateForm(), dismissal: {[weak self] _ in self?.ballScene?.paused = false})
-//    popoverView.blur = false
+    let popoverView = PopoverFormView(form: midiNodeTemplateForm(), dismissal: nil)
     popoverView.location = .Top
     popoverView.nametag = "popover"
     popoverView.formView.labelFont = Eveleth.lightFontWithSize(14)
@@ -97,60 +94,60 @@ class BallSceneViewController: UIViewController {
     popoverView.formView.controlSelectedFont = Eveleth.regularFontWithSize(14)
     popoverView.formView.controlSelectedTextColor = Chameleon.quietLightLobLolly
     popoverView.formView.tintColor = Chameleon.flatWhiteDark
-    _ballTemplatePopover = popoverView
+    _midiNodeTemplatePopover = popoverView
 
     return popoverView
   }
 
-  private var _ballTemplateForm: Form?
+  private var _midiNodeTemplateForm: Form?
 
   /**
-  ballTemplateForm
+  midiNodeTemplateForm
 
   - returns: Form
   */
-  private func ballTemplateForm() -> Form {
-    guard _ballTemplateForm == nil else { return _ballTemplateForm! }
-    guard let template = ballScene?.ballContainer.template else { return Form(fields: []) }
+  private func midiNodeTemplateForm() -> Form {
+    guard _midiNodeTemplateForm == nil else { return _midiNodeTemplateForm! }
+    guard let player = playerScene?.midiPlayer else { return Form(fields: []) }
 
-    enum FieldName: String { case BallType = "Type", Note, Velocity, Duration, SoundSet = "Sound Set", Program, Channel }
+    enum FieldName: String { case TextureType = "Type", Note, Velocity, Duration, SoundSet = "Sound Set", Program, Channel }
 
-    let typeField = FormPickerField(name: FieldName.BallType.rawValue,
-                                   value: Ball.BallType.all.indexOf(template.type) ?? 0,
-                                   choices: Ball.BallType.all.map { $0.image})
+    let typeField = FormPickerField(name: FieldName.TextureType.rawValue,
+                                   value: MIDINode.TextureType.allCases.indexOf(player.textureType) ?? 0,
+                                   choices: MIDINode.TextureType.allCases.map { $0.image})
 
     let noteField = FormPickerField(name: FieldName.Note.rawValue,
-                                    value: Int(template.note.value.midi),
+                                    value: Int(player.note.value.midi),
                                     choices: Instrument.MIDINote.all.map({$0.rawValue}))
 
     let velocityField = FormSliderField(name: FieldName.Velocity.rawValue,
-                                        value: Float(template.note.velocity),
+                                        value: Float(player.note.velocity),
                                         max: 127,
-                                        minTrack: BallSceneViewController.sliderMinTrackImage,
-                                        maxTrack: BallSceneViewController.sliderMaxTrackImage,
-                                        thumb: BallSceneViewController.sliderThumbImage,
-                                        offset: BallSceneViewController.sliderThumbOffset)
+                                        minTrack: MIDIPlayerSceneViewController.sliderMinTrackImage,
+                                        maxTrack: MIDIPlayerSceneViewController.sliderMaxTrackImage,
+                                        thumb: MIDIPlayerSceneViewController.sliderThumbImage,
+                                        offset: MIDIPlayerSceneViewController.sliderThumbOffset)
 
     let durationField = FormSliderField(name: FieldName.Duration.rawValue,
                                         precision: 3,
-                                        value: Float(template.note.duration),
+                                        value: Float(player.note.duration),
                                         max: 5,
-                                        minTrack: BallSceneViewController.sliderMinTrackImage,
-                                        maxTrack: BallSceneViewController.sliderMaxTrackImage,
-                                        thumb: BallSceneViewController.sliderThumbImage,
-                                        offset: BallSceneViewController.sliderThumbOffset)
+                                        minTrack: MIDIPlayerSceneViewController.sliderMinTrackImage,
+                                        maxTrack: MIDIPlayerSceneViewController.sliderMaxTrackImage,
+                                        thumb: MIDIPlayerSceneViewController.sliderThumbImage,
+                                        offset: MIDIPlayerSceneViewController.sliderThumbOffset)
 
 
     let soundSetField = FormPickerField(name: FieldName.SoundSet.rawValue,
-                                        value: Instrument.SoundSet.all.indexOf(template.soundSet) ?? 0,
+                                        value: Instrument.SoundSet.all.indexOf(player.soundSet) ?? 0,
                                         choices: Instrument.SoundSet.all.map({$0.baseName}))
 
     let programField = FormPickerField(name: FieldName.Program.rawValue,
-                                       value: Int(template.program),
-                                       choices: template.soundSet.programs)
+                                       value: Int(player.program),
+                                       choices: player.soundSet.programs)
 
     let channelField = FormStepperField(name: FieldName.Channel.rawValue,
-                                        value: Double(ballContainer?.template.channel ?? 0),
+                                        value: Double(player.channel ?? 0),
                                         minimumValue: 0,
                                         maximumValue: 15,
                                         stepValue: 1)
@@ -161,51 +158,49 @@ class BallSceneViewController: UIViewController {
 
     let fields = [typeField, noteField, velocityField, durationField, soundSetField, programField, channelField]
 
-    _ballTemplateForm =  Form(fields: fields) {
+    _midiNodeTemplateForm =  Form(fields: fields) {
       [unowned self] (form: Form, field: FormField) in
 
       guard let fieldName = FieldName(rawValue: field.name),
-            var template = self.ballScene?.ballContainer.template else { return }
+            player = self.playerScene?.midiPlayer else { return }
 
       switch fieldName {
-        case .BallType:
-          if let idx = field.value as? Int where Ball.BallType.all.indices.contains(idx) {
-            let type = Ball.BallType.all[idx]
-            template.type = type
+        case .TextureType:
+          if let idx = field.value as? Int where MIDINode.TextureType.allCases.indices.contains(idx) {
+            let type = MIDINode.TextureType.allCases[idx]
+            player.textureType = type
             self.templateBarButtonItem.image = type.image
         }
 
         case .Note:
-          if let midi = field.value as? Int { template.note.value = Instrument.MIDINote(midi: UInt8(midi)) }
+          if let midi = field.value as? Int { player.note.value = Instrument.MIDINote(midi: UInt8(midi)) }
 
         case .Velocity:
-          if let velocity = field.value as? Float { template.note.velocity = UInt8(velocity) }
+          if let velocity = field.value as? Float { player.note.velocity = UInt8(velocity) }
 
         case .Duration:
-          if let duration = field.value as? Float { template.note.duration = Double(duration) }
+          if let duration = field.value as? Float { player.note.duration = Double(duration) }
 
         case .SoundSet:
           if let idx = field.value as? Int where Instrument.SoundSet.all.indices.contains(idx) {
             let soundSet = Instrument.SoundSet.all[idx]
-            guard template.soundSet != soundSet else { break }
-            template.soundSet = soundSet
-            template.program = 0
+            guard player.soundSet != soundSet else { break }
+            player.soundSet = soundSet
+            player.program = 0
             programField.value = programField.choices.count > 0 ? 0 : -1
-            programField.choices = template.soundSet.programs
+            programField.choices = player.soundSet.programs
           }
 
         case .Program:
-          if let idx = field.value as? Int where template.soundSet.programs.indices.contains(idx) { template.program = UInt8(idx) }
+          if let idx = field.value as? Int where player.soundSet.programs.indices.contains(idx) { player.program = UInt8(idx) }
 
         case .Channel:
-          if let channel = field.value as? Double { template.channel = UInt8(channel) }
+          if let channel = field.value as? Double { player.channel = UInt8(channel) }
       }
 
-      MSLogDebug("updated template = \(template)")
-      self.ballScene?.ballContainer.template = template
     }
 
-    return _ballTemplateForm!
+    return _midiNodeTemplateForm!
   }
 
   static let sliderThumbImage = UIImage(named: "marker1")?.recoloredImageWithColor(Chameleon.kelleyPearlBush)
@@ -219,12 +214,12 @@ class BallSceneViewController: UIViewController {
 
     tempoLabel.font = Eveleth.shadowFontWithSize(16)
     // For some reason `imageWithColor` doesn't work with kelleyPearlBush but the objc method does
-    tempoSlider.setThumbImage(BallSceneViewController.sliderThumbImage, forState: .Normal)
-    tempoSlider.setMinimumTrackImage(BallSceneViewController.sliderMinTrackImage, forState: .Normal)
-    tempoSlider.setMaximumTrackImage(BallSceneViewController.sliderMaxTrackImage, forState: .Normal)
-    tempoSlider.thumbOffset = BallSceneViewController.sliderThumbOffset
+    tempoSlider.setThumbImage(MIDIPlayerSceneViewController.sliderThumbImage, forState: .Normal)
+    tempoSlider.setMinimumTrackImage(MIDIPlayerSceneViewController.sliderMinTrackImage, forState: .Normal)
+    tempoSlider.setMaximumTrackImage(MIDIPlayerSceneViewController.sliderMaxTrackImage, forState: .Normal)
+    tempoSlider.thumbOffset = MIDIPlayerSceneViewController.sliderThumbOffset
 
-    let scene = BallScene(size: skView.bounds.size)
+    let scene = MIDIPlayerScene(size: skView.bounds.size)
 
     // Configure the view.
     //    skView.showsFPS = true
@@ -243,8 +238,8 @@ class BallSceneViewController: UIViewController {
   */
   override func viewDidDisappear(animated: Bool) {
     super.viewDidDisappear(animated)
-    _ballTemplateForm = nil
-    _ballTemplatePopover = nil
+    _midiNodeTemplateForm = nil
+    _midiNodeTemplatePopover = nil
   }
 
   /**

@@ -1,5 +1,5 @@
 //
-//  BallScene.swift
+//  MIDIPlayerScene.swift
 //  MidiSprite
 //
 //  Created by Jason Cardwell on 8/5/15.
@@ -12,32 +12,28 @@ import MoonKit
 import Chameleon
 import AVFoundation
 
-class BallScene: SKScene {
+class MIDIPlayerScene: SKScene {
 
-  weak var ballContainer: BallContainer!
+  weak var midiPlayer: MIDIPlayerNode!
 
   static let defaultBackgroundColor = UIColor(red: 0.202, green: 0.192, blue: 0.192, alpha: 1.0)
 
   private var contentCreated = false
 
   /** revert */
-  func revert() { ballContainer.dropBall() }
+  func revert() { midiPlayer.dropLast() }
 
   /** createContent */
   private func createContent() {
     scaleMode = .AspectFit
-
     let w = frame.width - 20
     let containerRect = CGRect(x: 10, y: frame.midY - w * 0.5, width: w, height: w)
-//    var containerRect = frame.rectByInsetting(dx: 20, dy: 104).integerRect
-//    containerRect.origin.y += 16
 
-    let ballContainer = BallContainer(rect: containerRect)
-    ballContainer.name = "ballContainer"
-    physicsWorld.contactDelegate = ballContainer
-    addChild(ballContainer)
-    self.ballContainer = ballContainer
+    let player = MIDIPlayerNode(bezierPath: UIBezierPath(rect: containerRect))
+    addChild(player)
+    midiPlayer = player
 
+    physicsWorld.contactDelegate = self
   }
 
   private func sliders() {}
@@ -61,21 +57,8 @@ class BallScene: SKScene {
 
   - parameter view: SKView
   */
-  override func didMoveToView(view: SKView) {
-    guard !contentCreated else { return }
-    createContent()
-    contentCreated = true
-  }
+  override func didMoveToView(view: SKView) { guard !contentCreated else { return }; createContent(); contentCreated = true }
 
-
-  /** dumpNodeTree */
-  func dumpNodeTree() {
-    func nodeDescription(node: SKNode) -> String {
-      return "{name: \(node.name!); frame: \(node.frame); position: \(node.position); physicsBody: \(node.physicsBody)}"
-    }
-    let nodeDescriptions = children.map { nodeDescription($0) }
-    MSLogDebug("scene frame: \(frame)\nballs: {\n\t" + "\n\t".join(nodeDescriptions) + "\n}")
-  }
 
   /**
   update:
@@ -85,4 +68,16 @@ class BallScene: SKScene {
 //  override func update(currentTime: CFTimeInterval) {
 //    /* Called before each frame is rendered */
 //  }
+}
+
+extension MIDIPlayerScene: SKPhysicsContactDelegate {
+  /**
+  didBeginContact:
+
+  - parameter contact: SKPhysicsContact
+  */
+  func didBeginContact(contact: SKPhysicsContact) {
+//    guard let ball = contact.bodyB.node as? Ball else { return }
+//    ball.instrument.playNote(ball.note)
+  }
 }

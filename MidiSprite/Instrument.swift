@@ -49,6 +49,7 @@ class Instrument: Equatable {
 
   // MARK: - Properties
 
+  let soundSet: SoundSet
   let sampler: AVAudioUnitSampler
   var program: UInt8
   var channel: UInt8
@@ -64,11 +65,12 @@ class Instrument: Equatable {
   - parameter program: UInt8 = 0
   - parameter channel: UInt8 = 0
   */
-  init(soundSet: SoundSet, program p: UInt8 = 0, channel c: UInt8 = 0) {
+  init(soundSet s: SoundSet, program p: UInt8 = 0, channel c: UInt8 = 0) {
+    soundSet = s
     sampler = AVAudioUnitSampler()
     program = p
     channel = c
-    MidiManager.connectInstrument(self)
+    MIDIManager.connectInstrument(self)
     do {
       try sampler.loadInstrumentAtURL(soundSet.url)
       sampler.sendProgramChange(p, onChannel: c)

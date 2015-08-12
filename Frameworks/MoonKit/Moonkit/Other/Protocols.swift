@@ -126,7 +126,7 @@ public protocol EnumerableType {
 //}
 
 public extension EnumerableType {
-  static func enumerate(block: (Self) -> Void) { allCases.apply(block) }
+  static func enumerate(block: (Self) -> Void) { allCases.forEach(block) }
 }
 
 // causes ambiguity

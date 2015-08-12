@@ -9,14 +9,36 @@
 import Foundation
 import AVFoundation
 import MoonKit
+import CoreAudio
 import AudioToolbox
 
-final class MidiManager {
+final class MIDIManager {
 
+  static func initialize() {
+    let session = MIDINetworkSession.defaultSession()
+    session.enabled = true
+    session.connectionPolicy = .Anyone
+    print("net session enabled \(MIDINetworkSession.defaultSession().enabled)")
+
+  }
+  
   static let engine = AVAudioEngine()
   static let mixer = engine.mainMixerNode
 
   static private(set) var instruments: [Instrument] = []
+
+  /**
+  connectedInstrumentWithSoundSet:program:channel:
+
+  - parameter soundSet: Instrument.SoundSet
+  - parameter program: UInt8
+  - parameter channel: UInt8
+
+  - returns: Instrument?
+  */
+  static func connectedInstrumentWithSoundSet(soundSet: Instrument.SoundSet, program: UInt8, channel: UInt8) -> Instrument? {
+    return instruments.filter({ $0.soundSet == soundSet && $0.program == program && $0.channel == channel }).first
+  }
 
   /**
   connectInstrument:
