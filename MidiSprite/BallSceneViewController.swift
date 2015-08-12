@@ -87,6 +87,7 @@ class BallSceneViewController: UIViewController {
     guard _ballTemplatePopover == nil else { return _ballTemplatePopover! }
 
     let popoverView = PopoverFormView(form: ballTemplateForm(), dismissal: {[weak self] _ in self?.ballScene?.paused = false})
+//    popoverView.blur = false
     popoverView.location = .Top
     popoverView.nametag = "popover"
     popoverView.formView.labelFont = Eveleth.lightFontWithSize(14)
@@ -153,6 +154,10 @@ class BallSceneViewController: UIViewController {
                                         minimumValue: 0,
                                         maximumValue: 15,
                                         stepValue: 1)
+    channelField.backgroundImage = UIImage()
+    channelField.dividerImage = UIImage()
+    channelField.incrementImage = UIImage(named: "increment")
+    channelField.decrementImage = UIImage(named: "decrement")
 
     let fields = [typeField, noteField, velocityField, durationField, soundSetField, programField, channelField]
 
@@ -164,10 +169,14 @@ class BallSceneViewController: UIViewController {
 
       switch fieldName {
         case .BallType:
-          if let idx = field.value as? Int where Ball.BallType.all.indices.contains(idx) { template.type = Ball.BallType.all[idx] }
+          if let idx = field.value as? Int where Ball.BallType.all.indices.contains(idx) {
+            let type = Ball.BallType.all[idx]
+            template.type = type
+            self.templateBarButtonItem.image = type.image
+        }
 
         case .Note:
-          if let rawNote = field.value as? String, note = Instrument.MIDINote(rawValue: rawNote) { template.note.value = note }
+          if let midi = field.value as? Int { template.note.value = Instrument.MIDINote(midi: UInt8(midi)) }
 
         case .Velocity:
           if let velocity = field.value as? Float { template.note.velocity = UInt8(velocity) }
@@ -181,8 +190,8 @@ class BallSceneViewController: UIViewController {
             guard template.soundSet != soundSet else { break }
             template.soundSet = soundSet
             template.program = 0
-            programField.choices = template.soundSet.programs
             programField.value = programField.choices.count > 0 ? 0 : -1
+            programField.choices = template.soundSet.programs
           }
 
         case .Program:

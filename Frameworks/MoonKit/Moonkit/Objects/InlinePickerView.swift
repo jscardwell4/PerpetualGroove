@@ -135,7 +135,7 @@ public class InlinePickerView: UIView {
       collectionView.selectItemAtIndexPath(NSIndexPath(forItem: selection, inSection: 0),
                                   animated: false,
                             scrollPosition: .None)
-      MSLogVerbose("selecting cell for item \(selection) with label '\(labels[item]) where offset = \(offset)")
+      MSLogVerbose("selecting cell for item \(selection) where offset = \(offset)")
       collectionView.setContentOffset(offset, animated: animated)
     } else {
       MSLogVerbose("could not get an offset for item \(item), invalidating layout …")

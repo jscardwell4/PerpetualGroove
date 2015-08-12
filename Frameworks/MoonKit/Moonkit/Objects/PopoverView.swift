@@ -28,6 +28,8 @@ public class PopoverView: UIView {
   /** Optional callback for when popover is dismissed by touching outside it's bounds */
   private let dismissal: ((PopoverView) -> Void)?
 
+  public var blur = true
+
   /**
   Overridden to account for the top/bottom arrow
 
@@ -166,7 +168,8 @@ public class PopoverView: UIView {
     super.didMoveToWindow()
     guard let window = window where self.touchBarrier == nil else { return }
 
-    let touchBarrier = ImageButtonView(image: window.blurredSnapshot(), highlightedImage: nil) {
+
+    let touchBarrier = ImageButtonView(image: blur ? window.blurredSnapshot() : nil, highlightedImage: nil) {
       [weak self] (imageView: ImageButtonView) -> Void in
 
       self?.removeFromSuperview()
@@ -175,7 +178,7 @@ public class PopoverView: UIView {
     }
 
     touchBarrier.frame = window.bounds
-//    touchBarrier.alpha = 0.25
+    touchBarrier.alpha = 0.25
 
     window.insertSubview(touchBarrier, belowSubview: self)
     self.touchBarrier = touchBarrier

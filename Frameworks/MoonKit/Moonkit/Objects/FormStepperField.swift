@@ -24,6 +24,11 @@ public final class FormStepperField: FormField {
   public var autorepeat = false { didSet { stepper?.autorepeat = autorepeat } }
   public var wraps = true { didSet { stepper?.wraps = wraps } }
 
+  public var backgroundImage: UIImage? { didSet { stepper?.setBackgroundImage(backgroundImage, forState: .Normal) } }
+  public var dividerImage: UIImage? { didSet { stepper?.setDividerImage(dividerImage, forLeftSegmentState: .Normal, rightSegmentState: .Normal) } }
+  public var incrementImage: UIImage? { didSet { stepper?.setIncrementImage(incrementImage, forState: .Normal) } }
+  public var decrementImage: UIImage? { didSet { stepper?.setDecrementImage(decrementImage, forState: .Normal) } }
+
   public init(name: String,
               value: Double = 0,
               minimumValue: Double = 0,
@@ -55,6 +60,10 @@ public final class FormStepperField: FormField {
     control.stepValue = stepValue
     control.wraps = wraps
     control.autorepeat = autorepeat
+    control.setBackgroundImage(backgroundImage, forState: .Normal)
+    control.setDividerImage(dividerImage, forLeftSegmentState: .Normal, rightSegmentState: .Normal)
+    control.setIncrementImage(incrementImage, forState: .Normal)
+    control.setDecrementImage(decrementImage, forState: .Normal)
 
     if let font = font { control.font = font }
     if let color = color { control.textColor = color }

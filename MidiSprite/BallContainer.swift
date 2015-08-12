@@ -51,7 +51,6 @@ class BallContainer: SKShapeNode {
   private func addBall() {
     guard velocities.count > 0 && !location.isNull else { return }
     let velocity = sum(velocities) / CGFloat(velocities.count)
-    MSLogVerbose("adding new ball with velocity \(velocity) calculated from velocities \(velocities)")
     let instrument = Instrument(soundSet: template.soundSet, program: template.program, channel: template.channel)
     let ball = Ball(ballType: template.type, vector: velocity, instrument: instrument, note: template.note)
     ball.name = "ball" + String(self["ball[0-9]*"].count)

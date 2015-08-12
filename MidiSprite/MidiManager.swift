@@ -9,6 +9,7 @@
 import Foundation
 import AVFoundation
 import MoonKit
+import AudioToolbox
 
 final class MidiManager {
 
