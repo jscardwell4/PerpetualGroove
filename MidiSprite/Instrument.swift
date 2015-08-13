@@ -56,6 +56,13 @@ class Instrument: Equatable {
 
   var connected: Bool { return sampler.engine != nil }
 
+  private var graph = AUGraph()
+  private var outputNode = AUNode()
+  private var instrumentNode = AUNode()
+  private var instrumentUnit = AudioUnit()
+  private var client = MIDIClientRef()
+  private var outPort = MIDIPortRef()
+
   // MARK: - Initialization
 
   /**
@@ -77,6 +84,47 @@ class Instrument: Equatable {
     } catch {
       logError(error)
     }
+
+    var status = NewAUGraph(&graph)
+    guard status == noErr else { MIDIManager.logStatus(status, "NewAUGraph"); return }
+
+    var outputComponentDescription = AudioComponentDescription()
+    outputComponentDescription.componentType = kAudioUnitType_Output
+    outputComponentDescription.componentSubType = kAudioUnitSubType_GenericOutput
+    outputComponentDescription.componentManufacturer = kAudioUnitManufacturer_Apple
+
+    status = AUGraphAddNode(graph, &outputComponentDescription, &outputNode)
+    guard status == noErr else { MIDIManager.logStatus(status, "AUGraphAddNode(output)"); return }
+
+    var instrumentComponentDescription = AudioComponentDescription()
+    instrumentComponentDescription.componentManufacturer = kAudioUnitManufacturer_Apple
+    instrumentComponentDescription.componentType = kAudioUnitType_MusicDevice
+    instrumentComponentDescription.componentSubType = kAudioUnitSubType_MIDISynth
+
+    status = AUGraphAddNode(graph, &instrumentComponentDescription, &instrumentNode)
+    guard status == noErr else { MIDIManager.logStatus(status, "AUGraphAddNode(instrument)"); return }
+
+    status = AUGraphOpen(graph)
+    guard status == noErr else { MIDIManager.logStatus(status, "AUGraphOpen"); return }
+
+    status = AUGraphNodeInfo(graph, instrumentNode, nil, &instrumentUnit)
+    guard status == noErr else { MIDIManager.logStatus(status, "AUGraphNodeInfo"); return }
+
+    status = AUGraphConnectNodeInput(graph, instrumentNode, 0, outputNode, 0)
+    guard status == noErr else { MIDIManager.logStatus(status, "AUGraphConnectNodeInput"); return }
+
+    status = AUGraphInitialize(graph)
+    guard status == noErr else { MIDIManager.logStatus(status, "AUGraphInitialize"); return }
+
+    status = MIDIClientCreateWithBlock("\(soundSet.baseName) - \(program) - \(channel)", &client, receiveNotification)
+    guard status == noErr else { MIDIManager.logStatus(status, "MIDIClientCreateWithBlock"); return }
+
+    status = MIDIOutputPortCreate(client, "Output", &outPort)
+    guard status == noErr else { MIDIManager.logStatus(status, "MIDIOutputPortCreate"); return }
+  }
+
+  private func receiveNotification(notification: UnsafePointer<MIDINotification>) {
+    MSLogDebug("notification = \(notification)")
   }
 
   // MARK: - The Note struct
@@ -135,18 +183,7 @@ class Instrument: Equatable {
 
   - parameter note: Note
   */
-  func playNote(note: Note) {
-    
-    sampler.startNote(note.value.midi, withVelocity: note.velocity, onChannel: channel)
-//    dispatch_after(
-//      dispatch_time(DISPATCH_TIME_NOW, Int64(note.duration * Double(NSEC_PER_SEC))),
-//      dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0)
-//    ) {
-//      [weak self] in
-//      guard let instrument = self else { return }
-//      instrument.sampler.stopNote(note.value.midi, onChannel: instrument.channel)
-//    }
-  }
+  func playNote(note: Note) { sampler.startNote(note.value.midi, withVelocity: note.velocity, onChannel: channel) }
 
   /**
   stopNote:

@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		C21E44C11B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C21E44C01B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 */; };
-		C21E44C51B76546C00574BD2 /* MidiManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21E44C41B76546C00574BD2 /* MidiManager.swift */; };
+		C21E44C51B76546C00574BD2 /* MIDIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21E44C41B76546C00574BD2 /* MIDIManager.swift */; };
 		C2404BC31B78026500A68A64 /* Sampler Files in Resources */ = {isa = PBXBuildFile; fileRef = C2404BC11B78026500A68A64 /* Sampler Files */; };
 		C2404BC41B78026500A68A64 /* Grand Piano.exs in Resources */ = {isa = PBXBuildFile; fileRef = C2404BC21B78026500A68A64 /* Grand Piano.exs */; };
 		C2404BC61B7805B400A68A64 /* Hip Hop Kit.exs in Resources */ = {isa = PBXBuildFile; fileRef = C2404BC51B7805B400A68A64 /* Hip Hop Kit.exs */; };
@@ -51,7 +51,7 @@
 /* Begin PBXFileReference section */
 		C21E44C01B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SPYRO's Pure Oscillators.sf2"; path = "MidiSprite/SPYRO's Pure Oscillators.sf2"; sourceTree = "<group>"; };
 		C21E44C21B7653D500574BD2 /* FluidR3.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; name = FluidR3.sf2; path = MidiSprite/FluidR3.sf2; sourceTree = "<group>"; };
-		C21E44C41B76546C00574BD2 /* MidiManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MidiManager.swift; sourceTree = "<group>"; };
+		C21E44C41B76546C00574BD2 /* MIDIManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIManager.swift; sourceTree = "<group>"; };
 		C21E44C81B76739C00574BD2 /* sf2.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = sf2.playground; path = MidiSprite/sf2.playground; sourceTree = "<group>"; };
 		C2404BC11B78026500A68A64 /* Sampler Files */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "Sampler Files"; path = "MidiSprite/Sampler Files"; sourceTree = "<group>"; };
 		C2404BC21B78026500A68A64 /* Grand Piano.exs */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Grand Piano.exs"; path = "MidiSprite/Grand Piano.exs"; sourceTree = "<group>"; };
@@ -130,7 +130,7 @@
 				C2E043341B72F4DC005F0675 /* AppDelegate.swift */,
 				C26FC16E1B7BA63300E271A3 /* MIDINode.swift */,
 				C2E043381B72F4DC005F0675 /* MIDIPlayerScene.swift */,
-				C21E44C41B76546C00574BD2 /* MidiManager.swift */,
+				C21E44C41B76546C00574BD2 /* MIDIManager.swift */,
 				C2BC7AD41B76C85E001729BA /* Instrument.swift */,
 				C2E0433A1B72F4DC005F0675 /* MIDIPlayerSceneViewController.swift */,
 			);
@@ -270,7 +270,7 @@
 				C26FC1711B7BAC7F00E271A3 /* MIDIPlayerNode.swift in Sources */,
 				C2E0433B1B72F4DC005F0675 /* MIDIPlayerSceneViewController.swift in Sources */,
 				C2BC7AD51B76C85E001729BA /* Instrument.swift in Sources */,
-				C21E44C51B76546C00574BD2 /* MidiManager.swift in Sources */,
+				C21E44C51B76546C00574BD2 /* MIDIManager.swift in Sources */,
 				C2E043351B72F4DC005F0675 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
