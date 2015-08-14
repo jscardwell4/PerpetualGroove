@@ -1,0 +1,196 @@
+//
+//  Error.swift
+//  MidiSprite
+//
+//  Created by Jason Cardwell on 8/14/15.
+//  Copyright © 2015 Moondeer Studios. All rights reserved.
+//
+
+import Foundation
+
+enum MIDIError: OSStatus, ErrorType, CustomStringConvertible {
+  case InvalidClient      = -10830
+  case InvalidPort        = -10831
+  case WrongEndpointType  = -10832
+  case NoConnection       = -10833
+  case UnknownEndpoint    = -10834
+  case UnknownProperty    = -10835
+  case WrongPropertyType  = -10836
+  case NoCurrentSetup     = -10837
+  case MessageSendErr     = -10838
+  case ServerStartErr     = -10839
+  case SetupFormatErr     = -10840
+  case WrongThread        = -10841
+  case ObjectNotFound     = -10842
+  case IDNotUnique        = -10843
+  case NotPermitted       = -10844
+
+  var description: String {
+    switch self {
+      case .InvalidClient:     return "Invalid Client"
+      case .InvalidPort:       return "Invalid Port"
+      case .WrongEndpointType: return "Wrong Endpoint Type"
+      case .NoConnection:      return "No Connection"
+      case .UnknownEndpoint:   return "Unknown Endpoint"
+      case .UnknownProperty:   return "Unknown Property"
+      case .WrongPropertyType: return "Wrong Property Type"
+      case .NoCurrentSetup:    return "No Current Setup"
+      case .MessageSendErr:    return "Message Send Err"
+      case .ServerStartErr:    return "Server Start Err"
+      case .SetupFormatErr:    return "Setup Format Err"
+      case .WrongThread:       return "Wrong Thread"
+      case .ObjectNotFound:    return "Object Not Found"
+      case .IDNotUnique:       return "ID Not Unique"
+      case .NotPermitted:      return "Not Permitted"
+    }
+  }
+}
+
+enum AudioUnitError: OSStatus, ErrorType, CustomStringConvertible {
+  case InvalidProperty          = -10879
+  case InvalidParameter         = -10878
+  case InvalidElement           = -10877
+  case NoConnection             = -10876
+  case FailedInitialization     = -10875
+  case TooManyFramesToProcess   = -10874
+  case InvalidFile              = -10871
+  case UnknownFileType          = -10870
+  case FileNotSpecified         = -10869
+  case FormatNotSupported       = -10868
+  case Uninitialized            = -10867
+  case InvalidScope             = -10866
+  case PropertyNotWritable      = -10865
+  case CannotDoInCurrentContext = -10863
+  case InvalidPropertyValue     = -10851
+  case PropertyNotInUse         = -10850
+  case Initialized              = -10849
+  case InvalidOfflineRender     = -10848
+  case Unauthorized             = -10847
+  case IllegalInstrument        = -10873
+  case InstrumentTypeNotFound   = -10872
+  
+  var description: String {
+    switch self {
+      case .InvalidProperty:          return "Invalid Property"
+      case .InvalidParameter:         return "Invalid Parameter"
+      case .InvalidElement:           return "Invalid Element"
+      case .NoConnection:             return "No Connection"
+      case .FailedInitialization:     return "Failed Initialization"
+      case .TooManyFramesToProcess:   return "Too Many Frames To Process"
+      case .InvalidFile:              return "Invalid File"
+      case .UnknownFileType:          return "Unknown File Type"
+      case .FileNotSpecified:         return "File Not Specified"
+      case .FormatNotSupported:       return "Format Not Supported"
+      case .Uninitialized:            return "Uninitialized"
+      case .InvalidScope:             return "Invalid Scope"
+      case .PropertyNotWritable:      return "Property Not Writable"
+      case .CannotDoInCurrentContext: return "Cannot Do In Current Context"
+      case .InvalidPropertyValue:     return "Invalid Property Value"
+      case .PropertyNotInUse:         return "Property Not In Use"
+      case .Initialized:              return "Initialized"
+      case .InvalidOfflineRender:     return "Invalid Offline Render"
+      case .Unauthorized:             return "Unauthorized"
+      case .IllegalInstrument:        return "Illegal Instrument"
+      case .InstrumentTypeNotFound:   return "Instrument Type Not Found"        
+    }
+  }
+}
+
+enum AudioComponentError: OSStatus, ErrorType, CustomStringConvertible {
+  case InstanceInvalidated    = -66749
+  case DuplicateDescription   = -66752
+  case UnsupportedType        = -66751
+  case TooManyInstances       = -66750
+  case NotPermitted           = -66748
+  case InitializationTimedOut = -66747
+  case InvalidFormat          = -66746
+  
+  var description: String {
+    switch self {
+      case .InstanceInvalidated:    return "Instance Invalidated"
+      case .DuplicateDescription:   return "Duplicate Description"
+      case .UnsupportedType:        return "Unsupported Type"
+      case .TooManyInstances:       return "Too Many Instances"
+      case .NotPermitted:           return "Not Permitted"
+      case .InitializationTimedOut: return "Initialization Timed Out"
+      case .InvalidFormat:          return "Invalid Format"
+    }
+  }
+}
+
+enum GraphError: OSStatus, ErrorType, CustomStringConvertible {
+  case NodeNotFound             = -10860
+  case InvalidConnection        = -10861
+  case OutputNodeErr            = -10862
+  case CannotDoInCurrentContext = -10863
+  case InvalidAudioUnit         = -10864
+
+  var description: String {
+    switch self {
+      case .NodeNotFound:             return "Node Not Found"
+      case .InvalidConnection:        return "Invalid Connection"
+      case .OutputNodeErr:            return "Output Node Err"
+      case .CannotDoInCurrentContext: return "Cannot Do In Current Context"
+      case .InvalidAudioUnit:         return "Invalid Audio Unit"
+    }
+  }
+}
+
+enum OSStatusError: ErrorType, CustomStringConvertible {
+  case OSStatusCode (OSStatus)
+  var description: String { switch self { case .OSStatusCode(let code): return "error code: \(code)" } }
+}
+
+enum Error: ErrorType, CustomStringConvertible {
+  case MIDI (MIDIError, String)
+  case AudioUnit (AudioUnitError, String)
+  case AudioComponent (AudioComponentError, String)
+  case Graph (GraphError, String)
+  case OSStatusCode (OSStatusError, String)
+
+  var description: String {
+    switch self {
+      case let .MIDI(error, message):           return "<MIDI>\(message) - \(error)"
+      case let .AudioUnit(error, message):      return "<AudioUnit>\(message) - \(error)"
+      case let .AudioComponent(error, message): return "<AudioComponent>\(message) - \(error)"
+      case let .Graph(error, message):          return "<Graph>\(message) - \(error)"
+      case let .OSStatusCode(error, message):   return "\(message) - \(error)"
+    }
+  }
+}
+
+/**
+checkStatus:message:
+
+- parameter status: OSStatus
+- parameter message: () -> String
+*/
+func checkStatus(status: OSStatus, @autoclosure _ message: () -> String) throws {
+  guard status == noErr else { throw error(status, message()) }
+}
+
+
+
+/**
+error:
+
+- parameter code: OSStatus
+
+- returns: ErrorType
+*/
+func error(code: OSStatus, @autoclosure _ message: () -> String) -> ErrorType {
+  let error: ErrorType = MIDIError(rawValue: code)
+           ?? AudioUnitError(rawValue: code)
+           ?? AudioComponentError(rawValue: code)
+           ?? GraphError(rawValue: code)
+           ?? OSStatusError.OSStatusCode(code)
+
+  switch error {
+    case let e as MIDIError:           return Error.MIDI(e, message())
+    case let e as AudioUnitError:      return Error.AudioUnit(e, message())
+    case let e as AudioComponentError: return Error.AudioComponent(e, message())
+    case let e as GraphError:          return Error.Graph(e, message())
+    case let e as OSStatusError:       return Error.OSStatusCode(e, message())
+    default:                           fatalError("this should be unreachable")
+  }
+}

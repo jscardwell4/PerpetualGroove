@@ -89,7 +89,7 @@
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="3ji-Iz-Ilu" colorLabel="IBBuiltInLabel-Orange"/>
-                                    <barButtonItem image="play" style="plain" id="S5n-Me-CQ9" userLabel="Play" customClass="ImageBarButtonItem" customModule="MoonKit" colorLabel="IBBuiltInLabel-Orange">
+                                    <barButtonItem image="play" style="plain" id="S5n-Me-CQ9" userLabel="Play/Pause" customClass="ImageBarButtonItem" customModule="MoonKit" colorLabel="IBBuiltInLabel-Orange">
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="play-selected"/>
                                         </userDefinedRuntimeAttributes>
@@ -98,7 +98,8 @@
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="bYE-XZ-usR" colorLabel="IBBuiltInLabel-Orange"/>
-                                    <barButtonItem image="stop" style="plain" id="FiV-KF-efV" userLabel="Stop" customClass="ImageBarButtonItem" customModule="MoonKit" colorLabel="IBBuiltInLabel-Orange">
+                                    <barButtonItem enabled="NO" image="stop" style="plain" id="FiV-KF-efV" userLabel="Stop" customClass="ImageBarButtonItem" customModule="MoonKit" colorLabel="IBBuiltInLabel-Orange">
+                                        <color key="tintColor" red="0.42655369639396667" green="0.47584608197212219" blue="0.48026475310325623" alpha="1" colorSpace="calibratedRGB"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="stop-selected"/>
                                         </userDefinedRuntimeAttributes>
@@ -168,7 +169,9 @@
                     <nil key="simulatedTopBarMetrics"/>
                     <nil key="simulatedBottomBarMetrics"/>
                     <connections>
+                        <outlet property="playPauseBarButtonItem" destination="S5n-Me-CQ9" id="1D6-HT-X10"/>
                         <outlet property="skView" destination="U9p-PY-X1m" id="Khl-SR-qcK"/>
+                        <outlet property="stopBarButtonItem" destination="FiV-KF-efV" id="r6P-Y5-DNx"/>
                         <outlet property="templateBarButtonItem" destination="crO-6C-Y4j" id="drZ-UU-TDM"/>
                         <outlet property="tempoLabel" destination="7AG-Qa-x7v" id="mI7-UU-suY"/>
                         <outlet property="tempoSlider" destination="FEg-Cl-cl7" id="bTC-Cj-e9H"/>

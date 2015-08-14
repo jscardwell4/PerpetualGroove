@@ -51,7 +51,28 @@ class MIDIPlayerNode: SKShapeNode {
   var textureType = MIDINode.TextureType.PlasticWrap
 
   /** dropLast */
-  func dropLast() { guard midiNodes.count > 0 else { return }; midiNodes.removeLast().removeFromParent() }
+  func dropLast() {
+    guard midiNodes.count > 0 else { return }
+
+    let node = midiNodes.removeLast()
+    if let _ = node.actionForKey(MIDINode.Actions.Play.rawValue) {
+      node.removeActionForKey(MIDINode.Actions.Play.rawValue)
+      do { try node.instrument.stopNoteForNode(node) } catch { logError(error) }
+    }
+    node.removeFromParent()
+  }
+
+  /** reset */
+  func reset() {
+    midiNodes.forEach {
+      if let _ = $0.actionForKey(MIDINode.Actions.Play.rawValue) {
+        $0.removeActionForKey(MIDINode.Actions.Play.rawValue)
+        do { try $0.instrument.stopNoteForNode($0) } catch { logError(error) }
+      }
+      $0.removeFromParent()
+    }
+    midiNodes.removeAll()
+  }
 
   /**
   placeNew:
@@ -59,6 +80,9 @@ class MIDIPlayerNode: SKShapeNode {
   - parameter placement: MIDINode.Placement
   */
   func placeNew(placement: MIDINode.Placement) {
+    guard let controller = UIApplication.sharedApplication().keyWindow?.rootViewController
+                             as? MIDIPlayerSceneViewController else { return }
+    if !controller.playing { controller.play() }
     var instrument = MIDIManager.connectedInstrumentWithSoundSet(soundSet, program: program, channel: channel)
     if instrument == nil {
       do { instrument = try Instrument(soundSet: soundSet, program: program, channel: channel) } catch { logError(error) }

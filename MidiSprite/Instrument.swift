@@ -54,7 +54,7 @@ class Instrument: Equatable {
       &instrumentData,
       UInt32(sizeof(AUSamplerInstrumentData)))
 
-    guard status == noErr else { throw MIDIManager.error(status, "AudioUnitSetProperty") }
+    try checkStatus(status, "AudioUnitSetProperty")
 
   }
 
@@ -81,14 +81,10 @@ class Instrument: Equatable {
   - parameter node: MIDINode
   */
   func playNoteForNode(node: MIDINode) throws {
-    var status = noErr
-
-//    stopNoteForNode(node)
-
     var noteID = NoteInstanceID()
     var noteParams = node.note.noteParams
-    status = MusicDeviceStartNote(instrumentUnit, kMusicNoteEvent_Unused, MusicDeviceGroupID(channel), &noteID, 0, &noteParams)
-    guard status == noErr else { throw MIDIManager.error(status, "MusicDeviceStartNote") }
+    let status = MusicDeviceStartNote(instrumentUnit, kMusicNoteEvent_Unused, channel, &noteID, 0, &noteParams)
+    try checkStatus(status, "MusicDeviceStartNote")
     nodesPlaying[node.id] = noteID
   }
 
@@ -102,7 +98,7 @@ class Instrument: Equatable {
     let channel = MusicDeviceGroupID(self.channel)
     let offset = UInt32(0)
     let status = MusicDeviceStopNote(instrumentUnit, channel, playingNote, offset)
-    guard status == noErr else { throw MIDIManager.error(status, "MusicDeviceStopNote") }
+    try checkStatus(status, "MusicDeviceStopNote")
   }
 
 }

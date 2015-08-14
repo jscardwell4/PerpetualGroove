@@ -18,7 +18,7 @@ import UIKit
     }
   }
 
-  private weak var imageButtonView: ImageButtonView?
+  private weak var imageButtonView: ImageButtonView? { didSet { imageButtonView?.tintColor = tintColor } }
 
   private func imageButtonViewWithImage(image: UIImage?, highlightedImage: UIImage?) -> ImageButtonView {
     let result = ImageButtonView(image: image, highlightedImage: highlightedImage) {
@@ -35,6 +35,8 @@ import UIKit
     result.translatesAutoresizingMaskIntoConstraints = false
     return result
   }
+
+  public override var tintColor: UIColor? { didSet { imageButtonView?.tintColor = tintColor } }
 
   /**
   initWithImage:highlightedImage:target:action:

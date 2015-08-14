@@ -38,8 +38,14 @@ class MIDINode: SKSpriteNode {
 
   let id = nonce()
 
+  enum Actions: String { case Play }
+
   /** play */
   func play() {
+    if let _ = actionForKey(Actions.Play.rawValue) {
+      do { try instrument.stopNoteForNode(self) } catch { logError(error) }
+      removeActionForKey(Actions.Play.rawValue)
+    }
     let halfDuration = note.duration * 0.5
     let scaleUp = SKAction.scaleTo(2, duration: halfDuration)
     let noteOn = SKAction.runBlock({ [weak self] in do { try self?.instrument.playNoteForNode(self!) } catch { logError(error) } })
@@ -47,7 +53,7 @@ class MIDINode: SKSpriteNode {
     let noteOff = SKAction.runBlock({ [weak self] in do { try self?.instrument.stopNoteForNode(self!) } catch { logError(error) } },
                               queue: MIDIManager.queue)
     let sequence = SKAction.sequence([SKAction.group([scaleUp, noteOn]), scaleDown, noteOff])
-    runAction(sequence)
+    runAction(sequence, withKey: Actions.Play.rawValue)
   }
 
 

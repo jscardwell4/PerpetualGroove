@@ -19,9 +19,30 @@ class MIDIPlayerSceneViewController: UIViewController {
   @IBOutlet weak var tempoLabel: UILabel!
   @IBOutlet weak var skView: SKView!
   @IBOutlet weak var templateBarButtonItem: ImageBarButtonItem!
+  @IBOutlet weak var playPauseBarButtonItem: ImageBarButtonItem!
+  @IBOutlet weak var stopBarButtonItem: ImageBarButtonItem!
 
   private var playerScene: MIDIPlayerScene? { return skView?.scene as? MIDIPlayerScene }
   private var midiPlayer: MIDIPlayerNode? { return playerScene?.midiPlayer }
+
+  private(set) var playing = false {
+    didSet {
+      guard let playerScene = playerScene else { return }
+      if playing {
+        do { try MIDIManager.start() } catch { logError(error) }
+        playerScene.paused = false
+        playPauseBarButtonItem.image = UIImage(named: "pause")
+        playPauseBarButtonItem.highlightedImage = UIImage(named: "pause-selected")
+        playing = true
+      } else {
+        do { try MIDIManager.stop() } catch { logError(error) }
+        playerScene.paused = true
+        playPauseBarButtonItem.image = UIImage(named: "play")
+        playPauseBarButtonItem.highlightedImage = UIImage(named: "play-selected")
+        playing = false
+      }
+    }
+  }
 
   /** tempoSliderValueDidChange */
   @IBAction func tempoSliderValueDidChange() { MSLogDebug("value = \(tempoSlider.value)") }
@@ -30,58 +51,35 @@ class MIDIPlayerSceneViewController: UIViewController {
   @IBAction func revert() { (skView?.scene as? MIDIPlayerScene)?.revert() }
 
   /** sliders */
-  @IBAction func sliders() { MSLogDebug("") }
+  @IBAction func sliders() { MSLogDebug("sliders() not yet implemented") }
 
   /** instrument */
-  @IBAction func instrument() { MSLogDebug("") }
+  @IBAction func instrument() { MSLogDebug("instrument() not yet implemented") }
 
   /** save */
-  @IBAction func save() { MSLogDebug("") }
+  @IBAction func save() { MSLogDebug("save() not yet implemented") }
 
   /** skipBack */
-  @IBAction func skipBack() { MSLogDebug("") }
+  @IBAction func skipBack() { MSLogDebug("skipBack() not yet implemented") }
 
   /** play */
-  @IBAction func play() { MSLogDebug("") }
+  @IBAction func play() {
+    playing = !playing
+    stopBarButtonItem.enabled = true
+    stopBarButtonItem.tintColor = nil
+  }
 
   /** stop */
-  @IBAction func stop() { MSLogDebug("") }
+  @IBAction func stop() {
+    guard let playerScene = playerScene else { return }
+    playerScene.midiPlayer.reset()
+    playing = false
+    stopBarButtonItem.enabled = false
+    stopBarButtonItem.tintColor = Chameleon.flatGrayDark
+  }
 
   /** template */
-  @IBAction func template() {
-
-    templatePopover?.hidden = false
-
-//    guard let window = view.window,
-//              presentingView = templateBarButtonItem.customView,
-//              popoverView = templatePopover else { return }
-//
-//    window.addSubview(popoverView)
-//
-//    let necessaryWidth = (popoverView.intrinsicContentSize().width / 2) + 2
-//    let windowWidth = window.bounds.width
-//    let presentingViewFrame = presentingView.frame
-//    let halfPresentingViewWidth = presentingViewFrame.width / 2
-//    let spaceToLeft = presentingViewFrame.minX + halfPresentingViewWidth
-//    let spaceToRight = windowWidth - presentingViewFrame.maxX + halfPresentingViewWidth
-//
-//    let offset: CGFloat
-//    switch (spaceToLeft > necessaryWidth, spaceToRight > necessaryWidth) {
-//      case (true, false):                offset = necessaryWidth - spaceToRight
-//      case (false, true):                offset = necessaryWidth - spaceToLeft
-//      case (true, true), (false, false): offset = 0
-//    }
-//
-//    popoverView.xOffset = offset
-//
-//    let id = MoonKit.Identifier(self, "Popover")
-//    window.constrain(
-//      popoverView.centerX => presentingView.centerX - offset --> id,
-//      popoverView.top => presentingView.bottom --> id
-//    )
-
-
-  }
+  @IBAction func template() { templatePopover?.hidden = false }
 
   private var templatePopover: PopoverFormView?
 
@@ -222,6 +220,8 @@ class MIDIPlayerSceneViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
+    stopBarButtonItem.tintColor = Chameleon.flatGrayDark
+    
     tempoLabel.font = Eveleth.shadowFontWithSize(16)
     // For some reason `imageWithColor` doesn't work with kelleyPearlBush but the objc method does
     tempoSlider.setThumbImage(MIDIPlayerSceneViewController.sliderThumbImage, forState: .Normal)
@@ -239,6 +239,7 @@ class MIDIPlayerSceneViewController: UIViewController {
     skView.ignoresSiblingOrder = true
 
     skView.presentScene(scene)
+    scene.paused = true
 }
 
   /**
@@ -263,9 +264,9 @@ class MIDIPlayerSceneViewController: UIViewController {
 
     let offset: CGFloat
     switch (spaceToLeft > necessaryWidth, spaceToRight > necessaryWidth) {
-    case (true, false):                offset = necessaryWidth - spaceToRight
-    case (false, true):                offset = necessaryWidth - spaceToLeft
-    case (true, true), (false, false): offset = 0
+      case (true, false):                offset = necessaryWidth - spaceToRight
+      case (false, true):                offset = necessaryWidth - spaceToLeft
+      case (true, true), (false, false): offset = 0
     }
 
     popoverView.xOffset = offset
