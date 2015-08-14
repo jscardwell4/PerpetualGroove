@@ -21,7 +21,7 @@ dispatchToMain:block:
 - parameter synchronous: Bool = false
 - parameter block: dispatch_block_t
 */
-public func dispatchToMain(synchronous: Bool = false, _ block: dispatch_block_t) {
+public func dispatchToMain(synchronous synchronous: Bool = false, _ block: dispatch_block_t) {
   if NSThread.isMainThread() { block() }
   else if synchronous { dispatch_sync(dispatch_get_main_queue(), block) }
   else { dispatch_async(dispatch_get_main_queue(), block) }

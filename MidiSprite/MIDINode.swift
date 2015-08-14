@@ -42,9 +42,10 @@ class MIDINode: SKSpriteNode {
   func play() {
     let halfDuration = note.duration * 0.5
     let scaleUp = SKAction.scaleTo(2, duration: halfDuration)
-    let noteOn = SKAction.runBlock { [weak instrument = self.instrument, note = self.note] in instrument?.playNote(note) }
+    let noteOn = SKAction.runBlock({ [weak self] in do { try self?.instrument.playNoteForNode(self!) } catch { logError(error) } })
     let scaleDown = SKAction.scaleTo(1, duration: halfDuration)
-    let noteOff = SKAction.runBlock { [weak instrument = self.instrument, note = self.note] in instrument?.stopNote(note) }
+    let noteOff = SKAction.runBlock({ [weak self] in do { try self?.instrument.stopNoteForNode(self!) } catch { logError(error) } },
+                              queue: MIDIManager.queue)
     let sequence = SKAction.sequence([SKAction.group([scaleUp, noteOn]), scaleDown, noteOff])
     runAction(sequence)
   }

@@ -9,6 +9,7 @@
 import UIKit
 import SpriteKit
 import MoonKit
+import typealias AudioToolbox.MusicDeviceGroupID
 
 class MIDIPlayerNode: SKShapeNode {
 
@@ -43,9 +44,9 @@ class MIDIPlayerNode: SKShapeNode {
 
   // MARK: - Manipulating MIDINodes
 
-  var soundSet = Instrument.SoundSet.PureOscillators
+  var soundSet = SoundSet.PureOscillators
   var program: UInt8 = 0
-  var channel: UInt8 = 0
+  var channel: MusicDeviceGroupID = 0
   var note = Instrument.Note()
   var textureType = MIDINode.TextureType.PlasticWrap
 
@@ -58,9 +59,13 @@ class MIDIPlayerNode: SKShapeNode {
   - parameter placement: MIDINode.Placement
   */
   func placeNew(placement: MIDINode.Placement) {
-    let instrument = MIDIManager.connectedInstrumentWithSoundSet(soundSet, program: program, channel: channel)
-                       ?? Instrument(soundSet: soundSet, program: program, channel: channel)
-    let midiNode = MIDINode(texture: textureType, placement: placement, instrument: instrument, note: note)
+    var instrument = MIDIManager.connectedInstrumentWithSoundSet(soundSet, program: program, channel: channel)
+    if instrument == nil {
+      do { instrument = try Instrument(soundSet: soundSet, program: program, channel: channel) } catch { logError(error) }
+    }
+
+    guard instrument != nil else { return }
+    let midiNode = MIDINode(texture: textureType, placement: placement, instrument: instrument!, note: note)
     midiNode.name = "midiNode\(midiNodes.count)"
     addChild(midiNode)
     midiNodes.append(midiNode)

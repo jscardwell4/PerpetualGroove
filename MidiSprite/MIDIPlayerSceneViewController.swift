@@ -11,6 +11,7 @@ import SpriteKit
 import MoonKit
 import Eveleth
 import Chameleon
+import typealias AudioToolbox.MusicDeviceGroupID
 
 class MIDIPlayerSceneViewController: UIViewController {
 
@@ -127,7 +128,7 @@ class MIDIPlayerSceneViewController: UIViewController {
 
     let noteField = FormPickerField(name: FieldName.Note.rawValue,
                                     value: Int(player.note.value.midi),
-                                    choices: Instrument.MIDINote.all.map({$0.rawValue}))
+                                    choices: MIDINote.allCases.map({$0.rawValue}))
 
     let velocityField = FormSliderField(name: FieldName.Velocity.rawValue,
                                         value: Float(player.note.velocity),
@@ -148,8 +149,8 @@ class MIDIPlayerSceneViewController: UIViewController {
 
 
     let soundSetField = FormPickerField(name: FieldName.SoundSet.rawValue,
-                                        value: Instrument.SoundSet.all.indexOf(player.soundSet) ?? 0,
-                                        choices: Instrument.SoundSet.all.map({$0.baseName}))
+                                        value: SoundSet.allCases.indexOf(player.soundSet) ?? 0,
+                                        choices: SoundSet.allCases.map({$0.baseName}))
 
     let programField = FormPickerField(name: FieldName.Program.rawValue,
                                        value: Int(player.program),
@@ -182,7 +183,7 @@ class MIDIPlayerSceneViewController: UIViewController {
         }
 
         case .Note:
-          if let midi = field.value as? Int { player.note.value = Instrument.MIDINote(midi: UInt8(midi)) }
+          if let midi = field.value as? Int { player.note.value = MIDINote(midi: UInt8(midi)) }
 
         case .Velocity:
           if let velocity = field.value as? Float { player.note.velocity = UInt8(velocity) }
@@ -191,8 +192,8 @@ class MIDIPlayerSceneViewController: UIViewController {
           if let duration = field.value as? Float { player.note.duration = Double(duration) }
 
         case .SoundSet:
-          if let idx = field.value as? Int where Instrument.SoundSet.all.indices.contains(idx) {
-            let soundSet = Instrument.SoundSet.all[idx]
+          if let idx = field.value as? Int where SoundSet.allCases.indices.contains(idx) {
+            let soundSet = SoundSet.allCases[idx]
             guard player.soundSet != soundSet else { break }
             player.soundSet = soundSet
             player.program = 0
@@ -204,7 +205,7 @@ class MIDIPlayerSceneViewController: UIViewController {
           if let idx = field.value as? Int where player.soundSet.programs.indices.contains(idx) { player.program = UInt8(idx) }
 
         case .Channel:
-          if let channel = field.value as? Double { player.channel = UInt8(channel) }
+          if let channel = field.value as? Double { player.channel = MusicDeviceGroupID(channel) }
       }
 
     }
