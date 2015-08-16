@@ -54,13 +54,7 @@ public class PopoverListView: PopoverView {
 
     guard let effect = contentView?.superview as? UIVisualEffectView else { return }
 
-    constrain(
-      𝗛|effect|𝗛 --> id, // Shouldn't this throw an exception for hierarchy?
-      [
-        effect.top => top - topOffset,
-        effect.bottom => bottom + bottomOffset
-      ] --> id
-    )
+    constrain(𝗛|effect|𝗛 --> id, [effect.top => top - topOffset, effect.bottom => bottom + bottomOffset] --> id)
 
     if location == .Top { bottomOffset += arrowHeight } else { topOffset += bottomOffset }
 
@@ -104,10 +98,7 @@ public class PopoverListView: PopoverView {
   - parameter labelData: [LabelData]
   - parameter callback: ((PopoverView) -> Void
   */
-  public init(labelData: [LabelData], backdrop: UIImage? = nil, dismissal callback: ((PopoverView) -> Void)?) {
-    data = labelData
-    super.init(backdrop: backdrop, dismissal: callback)
-  }
+  public init(labelData: [LabelData]) { data = labelData; super.init(frame: .zeroRect) }
 
   /**
   Initialization with coder is unsupported

@@ -17,11 +17,9 @@ final class AudioManager {
 
   static let queue = dispatch_queue_create("midi", DISPATCH_QUEUE_SERIAL)
 
-  static private var graph = AUGraph()
+  static private(set) var graph = AUGraph()
   static private var ioNode = AUNode()
   static private var ioUnit = AudioUnit()
-  static private var mixerNode = AUNode()
-  static private(set) var mixer: Mixer?
 
   private static var initialized = false
 
@@ -34,8 +32,6 @@ final class AudioManager {
       try configureAudioSession()
       try configureAudioGraph()
     } catch { logError(error); return }
-
-    MSLogDebug("tracks = \(tracks)")
 
   }
 
@@ -62,14 +58,7 @@ final class AudioManager {
     status = AUGraphAddNode(graph, &ioComponentDescription, &ioNode)
     try checkStatus(status, "Failed to add io node to audio graph")
 
-    var mixerComponentDescription = AudioComponentDescription()
-    mixerComponentDescription.componentType = kAudioUnitType_Mixer
-    mixerComponentDescription.componentSubType = kAudioUnitSubType_MultiChannelMixer
-    mixerComponentDescription.componentManufacturer = kAudioUnitManufacturer_Apple
-
-    status = AUGraphAddNode(graph, &mixerComponentDescription, &mixerNode)
-    try checkStatus(status, "Failed to add mixer node to audio graph")
-
+    try Mixer.addNodeToGraph(graph)
 
     // Open graph
 
@@ -80,10 +69,6 @@ final class AudioManager {
 
     status = AUGraphNodeInfo(graph, ioNode, nil, &ioUnit)
     try checkStatus(status, "Failed to retrieve io audio unit from audio graph node")
-
-    var mixerUnit = AudioUnit()
-    status = AUGraphNodeInfo(graph, mixerNode, nil, &mixerUnit)
-    try checkStatus(status, "Failed to retrieve mixer audio unit from audio graph node")
 
     // Configure units
 
@@ -96,25 +81,12 @@ final class AudioManager {
                                   UInt32(sizeof(UInt32.self)))
     try checkStatus(status, "Failed to set maximum frames per slice on io unit")
 
-    status = AudioUnitSetProperty(mixerUnit,
-                                  kAudioUnitProperty_MaximumFramesPerSlice,
-                                  AudioUnitScope(kAudioUnitScope_Global),
-                                  0,
-                                  &maxFrames,
-                                  UInt32(sizeof(UInt32.self)))
-    try checkStatus(status, "Failed to set maximum frames per slice on mixer unit")
-
-    // Connect units
-
-    status = AUGraphConnectNodeInput(graph, mixerNode, 0, ioNode, 0)
-    try checkStatus(status, "Failed to connect mixer to io")
+    try Mixer.configureMixerUnitInGraph(graph, outputNode: ioNode)
 
     // Initialize graph
 
     status = AUGraphInitialize(graph)
     try checkStatus(status, "Failed to initialize audio graph")
-
-    mixer = Mixer(mixerUnit: mixerUnit)
 
     print("graph after \(__FUNCTION__)…")
     CAShow(UnsafeMutablePointer<COpaquePointer>(graph))
@@ -139,67 +111,6 @@ final class AudioManager {
     guard running else { return }
     status = AUGraphStop(graph)
     try checkStatus(status, "Failed to stop audio graph")
-  }
-
-  static private(set) var tracks: [TrackType] = [MasterTrack.sharedInstance]
-
-  /**
-  instrumentWithKey:
-
-  - parameter key: InstrumentKey
-
-  - returns: InstrumentTrack?
-  */
-  static func trackWithInstrumentWithKey(key: Instrument.Key) -> InstrumentTrack? {
-    guard tracks.count > 1, let instrumentTracks = Array(tracks[1..<]) as? [InstrumentTrack] else { return nil }
-    return instrumentTracks.filter({ (track: InstrumentTrack) -> Bool in return track.instrument.key == key }).first
-  }
-
-  /**
-  addTrackWithSoundSet:program:channel:
-
-  - parameter soundSet: SoundSet
-  - parameter program: UInt8
-  - parameter channel: MusicDeviceGroupID
-  
-  - returns: The new `InstrumentTrack`
-
-  - throws: Any error encountered while updating the graph with the new component
-  */
-  static func addTrackWithSoundSet(soundSet: SoundSet,
-                           program: UInt8,
-                           channel: MusicDeviceGroupID) throws -> InstrumentTrack
-  {
-    var instrumentComponentDescription = AudioComponentDescription()
-    instrumentComponentDescription.componentManufacturer = kAudioUnitManufacturer_Apple
-    instrumentComponentDescription.componentType = kAudioUnitType_MusicDevice
-    instrumentComponentDescription.componentSubType = kAudioUnitSubType_Sampler
-
-    var instrumentNode = AUNode()
-    var instrumentUnit = MusicDeviceComponent()
-    var status = AUGraphAddNode(graph, &instrumentComponentDescription, &instrumentNode)
-    try checkStatus(status, "Failed to add instrument node to audio graph")
-
-    status = AUGraphNodeInfo(graph, instrumentNode, nil, &instrumentUnit)
-    try checkStatus(status, "Failed to retrieve instrument audio unit from audio graph node")
-
-    let bus = AudioUnitElement(tracks.count)
-    status = AUGraphConnectNodeInput(graph, instrumentNode, 0, mixerNode, bus)
-    try checkStatus(status, "Failed to connect instrument node to output node")
-
-    status = AUGraphUpdate(graph, nil)
-    try checkStatus(status, "Failed to update audio graph")
-
-    print("graph before \(__FUNCTION__)…")
-    CAShow(UnsafeMutablePointer<COpaquePointer>(graph))
-    print("")
-
-    let instrument = try Instrument(soundSet: soundSet, program: program, channel: channel, unit: instrumentUnit)
-    let track = InstrumentTrack(instrument: instrument, bus: bus)
-    tracks.append(track)
-
-    MSLogDebug("tracks = \(tracks)")
-    return track
   }
 
 }

@@ -88,6 +88,8 @@
 		C22734521AE15CEE00641CC3 /* TitleAttributes_Default_Icon.json in Resources */ = {isa = PBXBuildFile; fileRef = C227343D1AE15CEE00641CC3 /* TitleAttributes_Default_Icon.json */; };
 		C22734531AE15CEE00641CC3 /* TitleAttributes_Default_Text.json in Resources */ = {isa = PBXBuildFile; fileRef = C227343E1AE15CEE00641CC3 /* TitleAttributes_Default_Text.json */; };
 		C22734541AE15CEE00641CC3 /* TitleEdgeInsets_Default.json in Resources */ = {isa = PBXBuildFile; fileRef = C227343F1AE15CEE00641CC3 /* TitleEdgeInsets_Default.json */; };
+		C22E6B8D1B80E1CE008D46A6 /* ClosedInterval+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22E6B8C1B80E1CE008D46A6 /* ClosedInterval+MoonKitAdditions.swift */; };
+		C22E6B8F1B810860008D46A6 /* List.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22E6B8E1B810860008D46A6 /* List.swift */; };
 		C22F5FE41B6FC753006D225A /* Dispatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22F5FE31B6FC753006D225A /* Dispatch.swift */; };
 		C22F5FE61B6FCF73006D225A /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22F5FE51B6FCF73006D225A /* Timer.swift */; };
 		C2304E0A1AEECE1C0090D889 /* LayerProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2304E091AEECE1C0090D889 /* LayerProxy.swift */; };
@@ -450,6 +452,8 @@
 		C227343E1AE15CEE00641CC3 /* TitleAttributes_Default_Text.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TitleAttributes_Default_Text.json; sourceTree = "<group>"; };
 		C227343F1AE15CEE00641CC3 /* TitleEdgeInsets_Default.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TitleEdgeInsets_Default.json; sourceTree = "<group>"; };
 		C22734571AE1622E00641CC3 /* JSON.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = JSON.playground; path = Moonkit/JSON.playground; sourceTree = "<group>"; };
+		C22E6B8C1B80E1CE008D46A6 /* ClosedInterval+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ClosedInterval+MoonKitAdditions.swift"; sourceTree = "<group>"; };
+		C22E6B8E1B810860008D46A6 /* List.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = List.swift; path = "Moonkit/Data Structures/List.swift"; sourceTree = "<group>"; };
 		C22F5FE31B6FC753006D225A /* Dispatch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dispatch.swift; sourceTree = "<group>"; };
 		C22F5FE51B6FCF73006D225A /* Timer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
 		C2304E091AEECE1C0090D889 /* LayerProxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LayerProxy.swift; sourceTree = "<group>"; };
@@ -892,6 +896,7 @@
 				C266A6EF1B6523BB00EEA1C4 /* String+RegularExpression.swift */,
 				C2C9EB6F1B65C5C70051BACF /* Range+MoonKitAdditions.swift */,
 				C25D6A861B703E0C00EB7125 /* UILabel+MoonKitAdditions.swift */,
+				C22E6B8C1B80E1CE008D46A6 /* ClosedInterval+MoonKitAdditions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1111,6 +1116,7 @@
 		C2CE884518138C4900555D63 = {
 			isa = PBXGroup;
 			children = (
+				C22E6B8E1B810860008D46A6 /* List.swift */,
 				C2E076A31B4EF7420063D057 /* WTF.playground */,
 				C211C2C01B45FD81004A24E4 /* InlinePickerView.playground */,
 				C2EEBA2B1B0961CE0041B1B1 /* Fields.playground */,
@@ -1819,6 +1825,7 @@
 				C2358F4519C78E0C00920F8D /* NSURL+MSKitAdditions.m in Sources */,
 				C2A6261F1A33598300152E97 /* Slider.swift in Sources */,
 				C28E35BA1A451E3800438CCF /* CoreDataStack.swift in Sources */,
+				C22E6B8D1B80E1CE008D46A6 /* ClosedInterval+MoonKitAdditions.swift in Sources */,
 				C2A70E3B1ACC53D0009C2CF7 /* JSONValue.swift in Sources */,
 				C2064FFD1A13C70F00342FDE /* Geometry.swift in Sources */,
 				C2358F4619C78E0C00920F8D /* NSUserDefaults+MSKitAdditions.m in Sources */,
@@ -1852,6 +1859,7 @@
 				C2358F5419C78E0C00920F8D /* NSPointerArray+MSKitAdditions.m in Sources */,
 				C2358F5519C78E0C00920F8D /* NSAssertionHandler+MSKitAdditions.m in Sources */,
 				C28447111A3E051F005338AB /* LabeledCheckbox.swift in Sources */,
+				C22E6B8F1B810860008D46A6 /* List.swift in Sources */,
 				C2358F5619C78E0C00920F8D /* NSIndexPath+MSKitAdditions.m in Sources */,
 				C2358F5719C78E0C00920F8D /* MSColorInputViewController.m in Sources */,
 				C2358F5819C78E0C00920F8D /* MSPickerInputViewController.m in Sources */,

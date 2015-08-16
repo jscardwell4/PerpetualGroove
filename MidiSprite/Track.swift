@@ -39,10 +39,9 @@ final class MasterTrack: TrackType {
   static let sharedInstance = MasterTrack()
 
   private init() {
-    guard let mixer = AudioManager.mixer else { return }
     do {
-      volume = try mixer.masterVolume()
-      pan = try mixer.masterPan()
+      volume = try Mixer.masterVolume()
+      pan = try Mixer.masterPan()
     } catch { logError(error) }
   }
   
@@ -51,15 +50,15 @@ final class MasterTrack: TrackType {
   let label = "MASTER"
   var volume: AudioUnitParameterValue = 1 {
     didSet {
-      volume %= 1
-      do { try AudioManager.mixer?.setMasterVolume(volume) }
+      volume = ClosedInterval<AudioUnitParameterValue>(0, 1).clampValue(volume)
+      do { try Mixer.setMasterVolume(volume) }
       catch { logError(error) }
     }
   }
   var pan: AudioUnitParameterValue = 0 {
     didSet {
-      pan %= 1
-      do { try AudioManager.mixer?.setMasterPan(pan) }
+      pan = ClosedInterval<AudioUnitParameterValue>(-1, 1).clampValue(pan)
+      do { try Mixer.setMasterPan(pan) }
       catch { logError(error) }
     }
   }
@@ -75,15 +74,15 @@ final class InstrumentTrack: InstrumentTrackType, Equatable {
 
   var volume: AudioUnitParameterValue = 1  {
     didSet {
-      volume %= 1
-      do { try AudioManager.mixer?.setVolume(volume, onBus: bus) }
+      volume = ClosedInterval<AudioUnitParameterValue>(0, 1).clampValue(volume)
+      do { try Mixer.setVolume(volume, onBus: bus) }
       catch { logError(error) }
     }
   }
   var pan: AudioUnitParameterValue = 0 {
     didSet {
-      pan %= 1
-      do { try AudioManager.mixer?.setPan(pan, onBus: bus) }
+      pan = ClosedInterval<AudioUnitParameterValue>(-1, 1).clampValue(pan)
+      do { try Mixer.setPan(pan, onBus: bus) }
       catch { logError(error) }
     }
   }
@@ -98,10 +97,9 @@ final class InstrumentTrack: InstrumentTrackType, Equatable {
     instrument = i
     bus = b
     color = TrackColor.allCases[Int(bus) % 10]
-    guard let mixer = AudioManager.mixer else { return }
     do {
-      let currentVolume = try mixer.volumeOnBus(bus)
-      let currentPan = try mixer.panOnBus(bus)
+      let currentVolume = try Mixer.volumeOnBus(bus)
+      let currentPan = try Mixer.panOnBus(bus)
       volume = currentVolume
       pan = currentPan
     } catch { logError(error) }

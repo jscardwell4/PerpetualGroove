@@ -30,7 +30,7 @@ class MIDINode: SKSpriteNode {
 
   var note: Note
 
-  var instrument: Instrument
+  var track: InstrumentTrack
 
   struct Placement { let position: CGPoint; let vector: CGVector }
 
@@ -43,15 +43,30 @@ class MIDINode: SKSpriteNode {
   /** play */
   func play() {
     if let _ = actionForKey(Actions.Play.rawValue) {
-      do { try instrument.stopNoteForNode(self) } catch { logError(error) }
+      do { try track.instrument.stopNoteForNode(self) } catch { logError(error) }
       removeActionForKey(Actions.Play.rawValue)
     }
     let halfDuration = note.duration * 0.5
     let scaleUp = SKAction.scaleTo(2, duration: halfDuration)
-    let noteOn = SKAction.runBlock({ [weak self] in do { try self?.instrument.playNoteForNode(self!) } catch { logError(error) } })
+    let noteOn = SKAction.runBlock({
+      [weak self] in
+
+        do {
+          try self?.track.instrument.playNoteForNode(self!)
+        } catch {
+          logError(error)
+        }
+    })
     let scaleDown = SKAction.scaleTo(1, duration: halfDuration)
-    let noteOff = SKAction.runBlock({ [weak self] in do { try self?.instrument.stopNoteForNode(self!) } catch { logError(error) } },
-                              queue: AudioManager.queue)
+    let noteOff = SKAction.runBlock({
+      [weak self] in
+
+        do {
+          try self?.track.instrument.stopNoteForNode(self!)
+        } catch {
+          logError(error)
+        }
+    })
     let sequence = SKAction.sequence([SKAction.group([scaleUp, noteOn]), scaleDown, noteOff])
     runAction(sequence, withKey: Actions.Play.rawValue)
   }
@@ -63,13 +78,13 @@ class MIDINode: SKSpriteNode {
 
   - parameter t: TextureType
   - parameter p: Placement
-  - parameter i: Instrument
+  - parameter tr: InstrumentTrack
   - parameter n: Note
   */
-  init(texture t: TextureType, placement p: Placement, instrument i: Instrument, note n: Note) {
+  init(texture t: TextureType, placement p: Placement, track tr: InstrumentTrack, note n: Note) {
     textureType = t
     placement = p
-    instrument = i
+    track = tr
     note = n
     super.init(texture: t.texture, color: .clearColor(), size: MIDINode.defaultSize)
     position = placement.position

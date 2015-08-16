@@ -20,10 +20,7 @@ public class PopoverFormView: PopoverView {
   - parameter labelData: [LabelData]
   - parameter callback: ((PopoverView) -> Void
   */
-  public init(form f: Form, backdrop: UIImage? = nil, dismissal callback: ((PopoverView) -> Void)?) {
-    form = f
-    super.init(backdrop: backdrop, dismissal: callback)
-  }
+  public init(form f: Form) { form = f; super.init(frame: .zeroRect) }
 
   /**
   Initialization with coder is unsupported

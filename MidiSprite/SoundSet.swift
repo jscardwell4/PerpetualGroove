@@ -10,11 +10,13 @@ import Foundation
 import MoonKit
 import AudioUnit.AudioUnitProperties
 
-struct SoundSet: Equatable, EnumerableType {
+struct SoundSet: Hashable, EnumerableType {
   let baseName: String
   let ext: String
   let url: NSURL
   let instrumentType: InstrumentType
+
+  var hashValue: Int { return url.hashValue }
 
   enum InstrumentType: UInt8 {
     case SF2 = 1          /// `kInstrumentType_DLSPreset` and `kInstrumentType_SF2Preset`

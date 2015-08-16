@@ -25,12 +25,6 @@ public class PopoverView: UIView {
   /** Value used to place arrow */
   public var xOffset: CGFloat = 0 { didSet { refreshShape() } }
 
-  /** Optional callback for when popover is dismissed by touching outside it's bounds */
-  private let dismissal: ((PopoverView) -> Void)?
-
-  /** Whether to automatically generate a blurred snapshot of the window if `backdrop` is nil */
-  public var blur = true
-
   /**
   Overridden to account for the top/bottom arrow
 
@@ -102,10 +96,9 @@ public class PopoverView: UIView {
 
     addSubview(blur)
     contentView = blur.contentView
-
-
   }
 
+  /** updateConstraints */
   public override func updateConstraints() {
     super.updateConstraints()
 
@@ -118,13 +111,7 @@ public class PopoverView: UIView {
 
     guard let effect = contentView?.superview as? UIVisualEffectView else { return }
 
-    constrain(
-      𝗛|effect|𝗛 --> id,
-      [
-        effect.top => top - topOffset,
-        effect.bottom => bottom + bottomOffset
-        ] --> id
-    )
+    constrain(𝗛|effect|𝗛 --> id, [effect.top => top - topOffset, effect.bottom => bottom + bottomOffset] --> id)
   }
 
   /**
@@ -140,53 +127,16 @@ public class PopoverView: UIView {
   - parameter labelData: [LabelData]
   - parameter callback: ((PopoverView) -> Void
   */
-  public init(backdrop image: UIImage? = nil, dismissal callback: ((PopoverView) -> Void)?) {
-    dismissal = callback
-    super.init(frame: CGRect.zeroRect)
-    backdrop = image
-    initializeIVARs()
-  }
+  public override init(frame: CGRect) { super.init(frame: frame); initializeIVARs() }
 
-  public override func layoutSubviews() {
-    super.layoutSubviews()
-    refreshShape()
-  }
-
-  public var backdrop: UIImage?
-
-  public override var hidden: Bool { didSet { touchBarrier?.hidden = hidden } }
-
-  /** removeFromSuperview */
-  override public func removeFromSuperview() {
-    touchBarrier?.removeFromSuperview()
-    super.removeFromSuperview()
-  }
+  /** layoutSubviews */
+  public override func layoutSubviews() { super.layoutSubviews(); refreshShape() }
 
   /**
   Initialization with coder is unsupported
 
   - parameter aDecoder: NSCoder
   */
-  required public init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+  required public init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }
 
-  private weak var touchBarrier: ImageButtonView?
-
-  /** didMoveToWindow */
-  public override func didMoveToWindow() {
-    super.didMoveToWindow()
-    guard let window = window where self.touchBarrier == nil else { return }
-
-    let image: UIImage? = backdrop ?? (blur ? window.blurredSnapshot() : nil)
-    let touchBarrier = ImageButtonView(image: image, highlightedImage: nil) {
-      [weak self] (imageView: ImageButtonView) -> Void in
-
-      self?.dismissal?(self!)
-    }
-
-    touchBarrier.frame = window.bounds
-    touchBarrier.alpha = 0.25
-    touchBarrier.hidden = hidden
-    window.insertSubview(touchBarrier, belowSubview: self)
-    self.touchBarrier = touchBarrier
-  }
 }

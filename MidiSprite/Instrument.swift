@@ -12,9 +12,27 @@ import MoonKit
 import AudioToolbox
 import CoreAudio
 
-final class Instrument: Equatable {
+struct InstrumentDescription: Hashable {
+  let soundSet: SoundSet
+  let program: UInt8
+  let channel: MusicDeviceGroupID
 
-  typealias Key = (SoundSet, UInt8, MusicDeviceGroupID)
+  var hashValue: Int { return soundSet.hashValue ^ program.hashValue ^ channel.hashValue }
+}
+
+/**
+Equatable compliance for `InstrumentDescription`
+
+- parameter lhs: InstrumentDescription
+- parameter rhs: InstrumentDescription
+
+- returns: Bool
+*/
+func ==(lhs: InstrumentDescription, rhs: InstrumentDescription) -> Bool {
+  return lhs.soundSet == rhs.soundSet && lhs.program == rhs.program && lhs.channel == rhs.channel
+}
+
+final class Instrument: Equatable {
 
   // MARK: - Properties
 
@@ -22,7 +40,9 @@ final class Instrument: Equatable {
   var program: UInt8
   var channel: MusicDeviceGroupID
 
-  var key: Key { return (soundSet, program, channel) }
+  var instrumentDescription: InstrumentDescription {
+    return InstrumentDescription(soundSet: soundSet, program: program, channel: channel)
+  }
 
   private let instrumentUnit: MusicDeviceComponent
 
@@ -31,14 +51,13 @@ final class Instrument: Equatable {
   /**
   initWithSoundSet:program:channel:
 
-  - parameter soundSet: SoundSet
-  - parameter program: UInt8 = 0
-  - parameter channel: MusicDeviceGroupID = 0
+  - parameter description: InstrumentDescription
+  - parameter unit: MusicDeviceConponent
   */
-  init(soundSet s: SoundSet, program p: UInt8 = 0, channel c: MusicDeviceGroupID = 0, unit: MusicDeviceComponent) throws {
-    soundSet = s
-    program = p
-    channel = c
+  init(description: InstrumentDescription, unit: MusicDeviceComponent) throws {
+    soundSet = description.soundSet
+    program = description.program
+    channel = description.channel
     instrumentUnit = unit
 
     var instrumentData = AUSamplerInstrumentData(fileURL: Unmanaged.passUnretained(soundSet.url),
@@ -48,15 +67,14 @@ final class Instrument: Equatable {
                                                  presetID: program)
 
 
-    let status = AudioUnitSetProperty(
-      instrumentUnit,
-      AudioUnitPropertyID(kAUSamplerProperty_LoadInstrument),
-      AudioUnitScope(kAudioUnitScope_Global),
-      AudioUnitElement(0),
-      &instrumentData,
-      UInt32(sizeof(AUSamplerInstrumentData)))
-
-    try checkStatus(status, "AudioUnitSetProperty")
+    try checkStatus(
+      AudioUnitSetProperty(instrumentUnit,
+                           AudioUnitPropertyID(kAUSamplerProperty_LoadInstrument),
+                           AudioUnitScope(kAudioUnitScope_Global),
+                           AudioUnitElement(0),
+                           &instrumentData,
+                           UInt32(sizeof(AUSamplerInstrumentData))),
+      "Failed to load instrument into audio unit")
 
   }
 
@@ -114,5 +132,3 @@ subscript:rhs:
 - returns: Bool
 */
 func ==(lhs: Instrument, rhs: Instrument) -> Bool { return lhs.instrumentUnit == rhs.instrumentUnit }
-
-func ==(lhs: Instrument.Key, rhs: Instrument.Key) -> Bool { return lhs.0 == rhs.0 && lhs.1 == rhs.1 && lhs.2 == rhs.2 }

@@ -24,10 +24,21 @@ class MixerViewController: UICollectionViewController {
   override func updateViewConstraints() {
     super.updateViewConstraints()
     view.removeAllConstraints()
-    let trackCount = AudioManager.tracks.count
+    let trackCount = Mixer.tracks.count
     view.constrain(view.width => Float(64 * trackCount + 10 * (trackCount - 1)), view.height => 300)
     view.constrain(𝗩|collectionView!|𝗩, 𝗛|collectionView!|𝗛)
+  }
 
+  func updateTracks() {
+    guard let collectionView = collectionView else { return }
+    let itemCount = collectionView.numberOfItemsInSection(0)
+    let trackCount = Mixer.tracks.count
+    if itemCount != trackCount {
+      view.setNeedsUpdateConstraints()
+      view.setNeedsLayout()
+      view.layoutIfNeeded()
+      collectionView.reloadData()
+}
   }
 
   // MARK: UICollectionViewDataSource
@@ -51,8 +62,7 @@ class MixerViewController: UICollectionViewController {
   - returns: Int
   */
   override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    MSLogDebug("number of tracks = \(AudioManager.tracks.count)")
-    return AudioManager.tracks.count
+    return Mixer.tracks.count
   }
 
   /**
@@ -68,7 +78,7 @@ class MixerViewController: UICollectionViewController {
   {
     let cell = collectionView.dequeueReusableCellWithReuseIdentifier(TrackCell.Identifier,
                                                         forIndexPath: indexPath) as! TrackCell
-    cell.track = AudioManager.tracks[indexPath.item]
+    cell.track = Mixer.tracks[indexPath.item]
     return cell
   }
 

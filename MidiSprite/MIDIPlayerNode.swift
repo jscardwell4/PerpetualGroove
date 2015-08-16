@@ -57,7 +57,7 @@ class MIDIPlayerNode: SKShapeNode {
     let node = midiNodes.removeLast()
     if let _ = node.actionForKey(MIDINode.Actions.Play.rawValue) {
       node.removeActionForKey(MIDINode.Actions.Play.rawValue)
-      do { try node.instrument.stopNoteForNode(node) } catch { logError(error) }
+      do { try node.track.instrument.stopNoteForNode(node) } catch { logError(error) }
     }
     node.removeFromParent()
   }
@@ -67,7 +67,7 @@ class MIDIPlayerNode: SKShapeNode {
     midiNodes.forEach {
       if let _ = $0.actionForKey(MIDINode.Actions.Play.rawValue) {
         $0.removeActionForKey(MIDINode.Actions.Play.rawValue)
-        do { try $0.instrument.stopNoteForNode($0) } catch { logError(error) }
+        do { try $0.track.instrument.stopNoteForNode($0) } catch { logError(error) }
       }
       $0.removeFromParent()
     }
@@ -83,19 +83,23 @@ class MIDIPlayerNode: SKShapeNode {
     guard let controller = UIApplication.sharedApplication().keyWindow?.rootViewController
                              as? MIDIPlayerSceneViewController else { return }
     if !controller.playing { controller.play() }
-    var track = AudioManager.trackWithInstrumentWithKey((soundSet, program, channel))
-    if track == nil {
-      do { track = try AudioManager.addTrackWithSoundSet(soundSet, program: program, channel: channel) }
-      catch { logError(error) }
+
+    let instrumentDescription = InstrumentDescription(soundSet: soundSet, program: program, channel: channel)
+    do {
+      var track = Mixer.existingTrackForInstrumentWithDescription(instrumentDescription)
+      if track == nil { track = try Mixer.newTrackForInstrumentWithDescription(instrumentDescription) }
+      guard track != nil else { return }
+
+      let midiNode = MIDINode(texture: textureType, placement: placement, track: track!, note: note)
+      midiNode.name = "midiNode\(midiNodes.count)"
+      midiNode.color = track!.color.value
+      midiNode.colorBlendFactor = 1.0
+      addChild(midiNode)
+      midiNodes.append(midiNode)
+    } catch {
+      logError(error)
     }
 
-    guard track != nil else { return }
-    let midiNode = MIDINode(texture: textureType, placement: placement, instrument: track!.instrument, note: note)
-    midiNode.name = "midiNode\(midiNodes.count)"
-    midiNode.color = track!.color.value
-    midiNode.colorBlendFactor = 1.0
-    addChild(midiNode)
-    midiNodes.append(midiNode)
   }
 
 }
