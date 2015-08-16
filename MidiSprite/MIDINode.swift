@@ -15,7 +15,7 @@ class MIDINode: SKSpriteNode {
   enum TextureType: String, EnumerableType {
     case Brick, Cobblestone, Concrete, Crusty, DiamondPlate, Dirt, Fur, Glass,
          Mountains, OceanBasin, Parchment, PlasticWrap, Sand, Stucco, Water
-    var image: UIImage { return UIImage(named: rawValue.lowercaseString)! }
+    var image: UIImage { return UIImage(named: "\(rawValue.lowercaseString)-button")! }
     var texture: SKTexture { return TextureType.atlas.textureNamed(rawValue.lowercaseString) }
     static let atlas = SKTextureAtlas(named: "balls")
     static let allCases: [TextureType] = [.Brick, .Cobblestone, .Concrete, .Crusty, .DiamondPlate, .Dirt, .Fur, .Glass,
@@ -51,7 +51,7 @@ class MIDINode: SKSpriteNode {
     let noteOn = SKAction.runBlock({ [weak self] in do { try self?.instrument.playNoteForNode(self!) } catch { logError(error) } })
     let scaleDown = SKAction.scaleTo(1, duration: halfDuration)
     let noteOff = SKAction.runBlock({ [weak self] in do { try self?.instrument.stopNoteForNode(self!) } catch { logError(error) } },
-                              queue: MIDIManager.queue)
+                              queue: AudioManager.queue)
     let sequence = SKAction.sequence([SKAction.group([scaleUp, noteOn]), scaleDown, noteOff])
     runAction(sequence, withKey: Actions.Play.rawValue)
   }

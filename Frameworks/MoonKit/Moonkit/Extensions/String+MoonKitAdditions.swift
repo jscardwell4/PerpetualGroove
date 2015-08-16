@@ -8,21 +8,6 @@
 
 import Foundation
 
-// even though infix ..< already exists, we need to declare it
-// two more times for the prefix and postfix form
-postfix operator ..< { }
-prefix operator ..< { }
-
-// then, declare a couple of simple custom types that indicate one-sided ranges:
-public struct RangeStart<I: ForwardIndexType> { let start: I }
-public struct RangeEnd<I: ForwardIndexType> { let end: I }
-
-// and define ..< to return them
-public postfix func ..<<I: ForwardIndexType>(lhs: I) -> RangeStart<I>
-{ return RangeStart(start: lhs) }
-
-public prefix func ..<<I: ForwardIndexType>(rhs: I) -> RangeEnd<I>
-{ return RangeEnd(end: rhs) }
 
 // finally, extend String to have a slicing subscript for these types:
 extension String {

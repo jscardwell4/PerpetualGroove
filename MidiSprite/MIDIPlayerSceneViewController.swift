@@ -13,7 +13,7 @@ import Eveleth
 import Chameleon
 import typealias AudioToolbox.MusicDeviceGroupID
 
-class MIDIPlayerSceneViewController: UIViewController {
+final class MIDIPlayerSceneViewController: UIViewController {
 
   @IBOutlet weak var tempoSlider: Slider!
   @IBOutlet weak var tempoLabel: UILabel!
@@ -21,6 +21,7 @@ class MIDIPlayerSceneViewController: UIViewController {
   @IBOutlet weak var templateBarButtonItem: ImageBarButtonItem!
   @IBOutlet weak var playPauseBarButtonItem: ImageBarButtonItem!
   @IBOutlet weak var stopBarButtonItem: ImageBarButtonItem!
+  @IBOutlet weak var mixerBarButtonItem: ImageBarButtonItem!
 
   private var playerScene: MIDIPlayerScene? { return skView?.scene as? MIDIPlayerScene }
   private var midiPlayer: MIDIPlayerNode? { return playerScene?.midiPlayer }
@@ -29,13 +30,13 @@ class MIDIPlayerSceneViewController: UIViewController {
     didSet {
       guard let playerScene = playerScene else { return }
       if playing {
-        do { try MIDIManager.start() } catch { logError(error) }
+        do { try AudioManager.start() } catch { logError(error) }
         playerScene.paused = false
         playPauseBarButtonItem.image = UIImage(named: "pause")
         playPauseBarButtonItem.highlightedImage = UIImage(named: "pause-selected")
         playing = true
       } else {
-        do { try MIDIManager.stop() } catch { logError(error) }
+        do { try AudioManager.stop() } catch { logError(error) }
         playerScene.paused = true
         playPauseBarButtonItem.image = UIImage(named: "play")
         playPauseBarButtonItem.highlightedImage = UIImage(named: "play-selected")
@@ -51,7 +52,44 @@ class MIDIPlayerSceneViewController: UIViewController {
   @IBAction func revert() { (skView?.scene as? MIDIPlayerScene)?.revert() }
 
   /** sliders */
-  @IBAction func sliders() { MSLogDebug("sliders() not yet implemented") }
+  @IBAction func mixer() {
+//    mixerViewController?.collectionView?.reloadData()
+//    mixerViewController?.collectionView?.collectionViewLayout.invalidateLayout()
+//    mixerViewController?.collectionView?.setNeedsLayout()
+//    mixerViewController?.collectionView?.layoutIfNeeded()
+    mixerPopover?.hidden = false
+  }
+
+  private var mixerViewController: MixerViewController?
+  private var mixerPopover: PopoverView?
+
+  /**
+  generateMixerPopover
+
+  - returns: PopoverView
+  */
+  private func generateMixerPopover() -> PopoverView {
+    guard mixerPopover == nil else { return mixerPopover! }
+    guard let window = view.window,
+              viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("Mixer")
+                as? MixerViewController else { fatalError("cannot generate the template popover without a window") }
+
+    mixerPopover = PopoverView(backdrop: window.blurredSnapshot()) { $0.hidden = true }
+    mixerPopover!.blur = false
+    mixerPopover!.location = .Top
+    mixerPopover!.nametag = "mixerPopover"
+
+    mixerViewController = viewController
+//    addChildViewController(mixerViewController)
+
+    // ???: What kind of management do we need to do when we get rid of the popover?
+
+    let mixerView = mixerViewController!.view
+    mixerPopover!.contentView.addSubview(mixerView)
+    mixerPopover!.constrain(𝗩|-mixerView-|𝗩, 𝗛|-mixerView-|𝗛)
+
+    return mixerPopover!
+  }
 
   /** instrument */
   @IBAction func instrument() { MSLogDebug("instrument() not yet implemented") }
@@ -95,7 +133,7 @@ class MIDIPlayerSceneViewController: UIViewController {
     templatePopover = PopoverFormView(form: generateTemplateForm(), backdrop: window.blurredSnapshot()) { $0.hidden = true }
     templatePopover!.blur = false
     templatePopover!.location = .Top
-    templatePopover!.nametag = "popover"
+    templatePopover!.nametag = "templatePopover"
     templatePopover!.formView.labelFont = Eveleth.lightFontWithSize(14)
     templatePopover!.formView.labelTextColor = Chameleon.kelleyPearlBush
     templatePopover!.formView.controlFont = Eveleth.thinFontWithSize(14)
@@ -249,33 +287,64 @@ class MIDIPlayerSceneViewController: UIViewController {
   */
   override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
-    guard let window = view.window, presentingView = templateBarButtonItem.customView else { return }
+    guard let window = view.window,
+              templatePresentingView = templateBarButtonItem.customView,
+              mixerPresentingView = mixerBarButtonItem.customView else { return }
 
-    let popoverView = generateTemplatePopover()
-    popoverView.hidden = true
-    window.addSubview(popoverView)
+    // Add template popover, initially hidden
 
-    let necessaryWidth = (popoverView.intrinsicContentSize().width / 2) + 2
+    let templatePopoverView = generateTemplatePopover()
+    templatePopoverView.hidden = true
+    window.addSubview(templatePopoverView)
+
+    var necessaryWidth = (templatePopoverView.intrinsicContentSize().width / 2) + 2
     let windowWidth = window.bounds.width
-    let presentingViewFrame = presentingView.frame
-    let halfPresentingViewWidth = presentingViewFrame.width / 2
-    let spaceToLeft = presentingViewFrame.minX + halfPresentingViewWidth
-    let spaceToRight = windowWidth - presentingViewFrame.maxX + halfPresentingViewWidth
+    var presentingViewFrame = templatePresentingView.frame
+    var halfPresentingViewWidth = presentingViewFrame.width / 2
+    var spaceToLeft = presentingViewFrame.minX + halfPresentingViewWidth
+    var spaceToRight = windowWidth - presentingViewFrame.maxX + halfPresentingViewWidth
 
-    let offset: CGFloat
+    var offset: CGFloat
     switch (spaceToLeft > necessaryWidth, spaceToRight > necessaryWidth) {
       case (true, false):                offset = necessaryWidth - spaceToRight
       case (false, true):                offset = necessaryWidth - spaceToLeft
       case (true, true), (false, false): offset = 0
     }
 
-    popoverView.xOffset = offset
+    templatePopoverView.xOffset = offset
 
-    let id = MoonKit.Identifier(self, "Popover")
+    var id = MoonKit.Identifier(self, "TemplatePopover")
     window.constrain(
-      popoverView.centerX => presentingView.centerX - offset --> id,
-      popoverView.top => presentingView.bottom --> id
+      templatePopoverView.centerX => templatePresentingView.centerX - offset --> id,
+      templatePopoverView.top => templatePresentingView.bottom --> id
     )
+
+    // Add mixer popover, initially hidden
+
+    let mixerPopoverView = generateMixerPopover()
+    mixerPopoverView.hidden = true
+    window.addSubview(mixerPopoverView)
+
+    necessaryWidth = (mixerPopoverView.intrinsicContentSize().width / 2) + 2
+    presentingViewFrame = mixerPresentingView.frame
+    halfPresentingViewWidth = presentingViewFrame.width / 2
+    spaceToLeft = presentingViewFrame.minX + halfPresentingViewWidth
+    spaceToRight = windowWidth - presentingViewFrame.maxX + halfPresentingViewWidth
+
+    switch (spaceToLeft > necessaryWidth, spaceToRight > necessaryWidth) {
+      case (true, false):                offset = necessaryWidth - spaceToRight
+      case (false, true):                offset = necessaryWidth - spaceToLeft
+      case (true, true), (false, false): offset = 0
+    }
+
+    mixerPopoverView.xOffset = offset
+
+    id = MoonKit.Identifier(self, "MixerPopover")
+    window.constrain(
+      mixerPopoverView.centerX => mixerPresentingView.centerX - offset --> id,
+      mixerPopoverView.top => mixerPresentingView.bottom --> id
+    )
+
   }
 
   /**
@@ -287,6 +356,8 @@ class MIDIPlayerSceneViewController: UIViewController {
     super.viewDidDisappear(animated)
     templateForm = nil
     templatePopover = nil
+    mixerPopover = nil
+    mixerViewController = nil
   }
 
   /**
@@ -314,6 +385,8 @@ class MIDIPlayerSceneViewController: UIViewController {
     super.didReceiveMemoryWarning()
     templateForm = nil
     templatePopover = nil
+    mixerPopover = nil
+    mixerViewController = nil
     MSLogDebug("")
   }
 

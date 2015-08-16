@@ -28,9 +28,8 @@ public class PopoverView: UIView {
   /** Optional callback for when popover is dismissed by touching outside it's bounds */
   private let dismissal: ((PopoverView) -> Void)?
 
+  /** Whether to automatically generate a blurred snapshot of the window if `backdrop` is nil */
   public var blur = true
-
-//  public var automaticallyRemove = true
 
   /**
   Overridden to account for the top/bottom arrow
@@ -83,7 +82,7 @@ public class PopoverView: UIView {
   public override var bounds: CGRect { didSet { refreshShape() } }
 
   /** Holds a reference to the effect view's content view */
-  weak var contentView: UIView!
+  public weak var contentView: UIView!
 
   /** Convenience accessor for the shape layer used to mask root layer */
   private var maskingLayer: CAShapeLayer { return layer.mask as! CAShapeLayer }
@@ -94,10 +93,6 @@ public class PopoverView: UIView {
 
     layer.mask = CAShapeLayer()
     refreshShape()
-
-//    let contentView = UIView(autolayout: true)
-//    addSubview(contentView)
-//    self.contentView = contentView
 
     let blurEffect = UIBlurEffect(style: .Dark)
     let blur = UIVisualEffectView(effect: blurEffect)
@@ -185,8 +180,6 @@ public class PopoverView: UIView {
     let touchBarrier = ImageButtonView(image: image, highlightedImage: nil) {
       [weak self] (imageView: ImageButtonView) -> Void in
 
-//      if self?.automaticallyRemove == true { self?.removeFromSuperview() }
-//      imageView.removeFromSuperview()
       self?.dismissal?(self!)
     }
 

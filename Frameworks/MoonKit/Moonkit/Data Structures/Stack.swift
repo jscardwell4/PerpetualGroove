@@ -8,17 +8,22 @@
 
 import Foundation
 
-public struct Stack<T> {
+public struct Stack<T>: CollectionType, CustomStringConvertible, ArrayLiteralConvertible {
 
   private var storage: [T]
 
   public var count: Int { return storage.count }
   public var peek: T? { return storage.last }
-  public var isEmpty: Bool { return count == 0 }
+  public var isEmpty: Bool { return storage.count == 0 }
   public var array: [T] { return storage }
+  public func generate() -> Array<T>.Generator { return storage.generate() }
 
   public init() { storage = [T]() }
   public init<S:SequenceType where S.Generator.Element == T>(_ sequence: S) { storage = Array(sequence) }
+
+  public var startIndex: Array<T>.Index { return storage.startIndex }
+  public var endIndex: Array<T>.Index { return storage.endIndex }
+  public subscript (i: Array<T>.Index) -> T { get { return storage[i] } set { storage[i] = newValue } }
 
   /**
   map<U>:
@@ -57,24 +62,7 @@ public struct Stack<T> {
   */
   public func reversed() -> Stack<T> { return Stack<T>(Array(storage.reverse())) }
 
-}
-
-extension Stack: CustomStringConvertible {
   public var description: String { return storage.description }
-}
 
-extension Stack: SequenceType {
-  public func generate() -> Array<T>.Generator { return storage.generate() }
-}
-
-extension Stack: CollectionType {
-  public var startIndex: Array<T>.Index { return storage.startIndex }
-  public var endIndex: Array<T>.Index { return storage.endIndex }
-  public subscript (i: Array<T>.Index) -> T { get { return storage[i] } set { storage[i] = newValue } }
-}
-
-extension Stack: ArrayLiteralConvertible {
-  public init(arrayLiteral elements: T...) {
-    self = Stack<T>(elements)
-  }
+  public init(arrayLiteral elements: T...) { self = Stack<T>(elements) }
 }

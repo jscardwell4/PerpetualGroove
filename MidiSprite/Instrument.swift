@@ -12,8 +12,9 @@ import MoonKit
 import AudioToolbox
 import CoreAudio
 
-class Instrument: Equatable {
+final class Instrument: Equatable {
 
+  typealias Key = (SoundSet, UInt8, MusicDeviceGroupID)
 
   // MARK: - Properties
 
@@ -21,7 +22,9 @@ class Instrument: Equatable {
   var program: UInt8
   var channel: MusicDeviceGroupID
 
-  private var instrumentUnit: MusicDeviceComponent!
+  var key: Key { return (soundSet, program, channel) }
+
+  private let instrumentUnit: MusicDeviceComponent
 
   // MARK: - Initialization
 
@@ -32,12 +35,11 @@ class Instrument: Equatable {
   - parameter program: UInt8 = 0
   - parameter channel: MusicDeviceGroupID = 0
   */
-  init(soundSet s: SoundSet, program p: UInt8 = 0, channel c: MusicDeviceGroupID = 0, unit: MusicDeviceComponent? = nil) throws {
+  init(soundSet s: SoundSet, program p: UInt8 = 0, channel c: MusicDeviceGroupID = 0, unit: MusicDeviceComponent) throws {
     soundSet = s
     program = p
     channel = c
-    if let unit = unit { instrumentUnit = unit }
-    else { instrumentUnit = try MIDIManager.connectInstrument(self) }
+    instrumentUnit = unit
 
     var instrumentData = AUSamplerInstrumentData(fileURL: Unmanaged.passUnretained(soundSet.url),
                                                  instrumentType: soundSet.instrumentType.rawValue,
@@ -112,3 +114,5 @@ subscript:rhs:
 - returns: Bool
 */
 func ==(lhs: Instrument, rhs: Instrument) -> Bool { return lhs.instrumentUnit == rhs.instrumentUnit }
+
+func ==(lhs: Instrument.Key, rhs: Instrument.Key) -> Bool { return lhs.0 == rhs.0 && lhs.1 == rhs.1 && lhs.2 == rhs.2 }

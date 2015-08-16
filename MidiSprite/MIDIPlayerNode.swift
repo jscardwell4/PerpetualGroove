@@ -83,14 +83,17 @@ class MIDIPlayerNode: SKShapeNode {
     guard let controller = UIApplication.sharedApplication().keyWindow?.rootViewController
                              as? MIDIPlayerSceneViewController else { return }
     if !controller.playing { controller.play() }
-    var instrument = MIDIManager.connectedInstrumentWithSoundSet(soundSet, program: program, channel: channel)
-    if instrument == nil {
-      do { instrument = try Instrument(soundSet: soundSet, program: program, channel: channel) } catch { logError(error) }
+    var track = AudioManager.trackWithInstrumentWithKey((soundSet, program, channel))
+    if track == nil {
+      do { track = try AudioManager.addTrackWithSoundSet(soundSet, program: program, channel: channel) }
+      catch { logError(error) }
     }
 
-    guard instrument != nil else { return }
-    let midiNode = MIDINode(texture: textureType, placement: placement, instrument: instrument!, note: note)
+    guard track != nil else { return }
+    let midiNode = MIDINode(texture: textureType, placement: placement, instrument: track!.instrument, note: note)
     midiNode.name = "midiNode\(midiNodes.count)"
+    midiNode.color = track!.color.value
+    midiNode.colorBlendFactor = 1.0
     addChild(midiNode)
     midiNodes.append(midiNode)
   }

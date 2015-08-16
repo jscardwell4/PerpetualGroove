@@ -2,10 +2,18 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8173.3" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BV1-FR-VrT">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8142"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <customFonts key="customFonts">
+        <mutableArray key="Yellow Design Studio - Eveleth Dot Light.otf">
+            <string>EvelethDotLight</string>
+            <string>EvelethDotLight</string>
+        </mutableArray>
         <mutableArray key="Yellow Design Studio - Eveleth Shadow.otf">
             <string>EvelethShadow</string>
+        </mutableArray>
+        <mutableArray key="Yellow Design Studio - Eveleth Thin.otf">
+            <string>EvelethThin</string>
         </mutableArray>
     </customFonts>
     <scenes>
@@ -44,7 +52,7 @@
                                             <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="sliders-selected"/>
                                         </userDefinedRuntimeAttributes>
                                         <connections>
-                                            <action selector="sliders" destination="BV1-FR-VrT" id="Jbj-59-Ojs"/>
+                                            <action selector="mixer" destination="BV1-FR-VrT" id="EAX-7J-6S4"/>
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="Ilh-nH-w15" colorLabel="IBBuiltInLabel-Red"/>
@@ -169,6 +177,7 @@
                     <nil key="simulatedTopBarMetrics"/>
                     <nil key="simulatedBottomBarMetrics"/>
                     <connections>
+                        <outlet property="mixerBarButtonItem" destination="0cd-Py-C2q" id="GZK-Pe-FVB"/>
                         <outlet property="playPauseBarButtonItem" destination="S5n-Me-CQ9" id="1D6-HT-X10"/>
                         <outlet property="skView" destination="U9p-PY-X1m" id="Khl-SR-qcK"/>
                         <outlet property="stopBarButtonItem" destination="FiV-KF-efV" id="r6P-Y5-DNx"/>
@@ -180,6 +189,113 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="289" y="387"/>
+        </scene>
+        <!--Mixer-->
+        <scene sceneID="6FS-5d-R84">
+            <objects>
+                <collectionViewController storyboardIdentifier="Mixer" title="Mixer" id="iF7-fT-LPT" userLabel="Mixer" customClass="MixerViewController" customModule="MidiSprite" customModuleProvider="target" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" directionalLockEnabled="YES" bounces="NO" alwaysBounceHorizontal="YES" dataMode="prototypes" id="QhA-gV-EZG">
+                        <rect key="frame" x="0.0" y="0.0" width="300" height="300"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="abk-om-n49">
+                            <size key="itemSize" width="64" height="300"/>
+                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                        <cells>
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="TrackCell" id="2AY-7g-m2Q" userLabel="Track Cell" customClass="TrackCell" customModule="MidiSprite" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="64" height="300"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="64" height="300"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="VOL" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1nN-5d-7mi">
+                                            <rect key="frame" x="15" y="16" width="34.5" height="18"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="18" id="Pfg-gi-4qV"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" name="EvelethDotLight" family="Eveleth Dot" pointSize="15"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fQV-Nj-rrF" userLabel="Volume Slider" customClass="VerticalSlider" customModule="MoonKit">
+                                            <rect key="frame" x="10" y="42" width="44" height="130"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="44" id="Jyz-qp-TR8"/>
+                                                <constraint firstAttribute="height" constant="130" id="j86-nm-xs1"/>
+                                            </constraints>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="value">
+                                                    <real key="value" value="8"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
+                                                    <real key="value" value="0.0"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
+                                                    <real key="value" value="11"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                            <connections>
+                                                <action selector="volumeDidChange" destination="2AY-7g-m2Q" eventType="valueChanged" id="0PE-6k-RsM"/>
+                                            </connections>
+                                        </view>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="PAN" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UVo-0O-vty">
+                                            <rect key="frame" x="14" y="192" width="35" height="18"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="18" id="Hdd-kY-TgN"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" name="EvelethDotLight" family="Eveleth Dot" pointSize="15"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" text="MASTER" textAlignment="center" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="Ewy-eF-z7g">
+                                            <rect key="frame" x="-0.5" y="252" width="65" height="30"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <fontDescription key="fontDescription" name="EvelethThin" family="Eveleth" pointSize="13"/>
+                                            <textInputTraits key="textInputTraits"/>
+                                            <connections>
+                                                <outlet property="delegate" destination="2AY-7g-m2Q" id="JBx-aT-uqu"/>
+                                            </connections>
+                                        </textField>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                                <constraints>
+                                    <constraint firstItem="fQV-Nj-rrF" firstAttribute="top" secondItem="1nN-5d-7mi" secondAttribute="bottom" constant="8" id="0VX-Kh-Ceg"/>
+                                    <constraint firstItem="UVo-0O-vty" firstAttribute="top" secondItem="fQV-Nj-rrF" secondAttribute="bottom" constant="20" id="1Xv-0G-CyW"/>
+                                    <constraint firstItem="Ewy-eF-z7g" firstAttribute="centerX" secondItem="2AY-7g-m2Q" secondAttribute="centerX" id="ESL-nS-8yv"/>
+                                    <constraint firstItem="1nN-5d-7mi" firstAttribute="centerX" secondItem="2AY-7g-m2Q" secondAttribute="centerX" id="EaG-8Y-AH1"/>
+                                    <constraint firstItem="Ewy-eF-z7g" firstAttribute="top" secondItem="UVo-0O-vty" secondAttribute="bottom" constant="42" id="MF7-48-Xeo"/>
+                                    <constraint firstItem="fQV-Nj-rrF" firstAttribute="centerX" secondItem="2AY-7g-m2Q" secondAttribute="centerX" id="Oxq-Zt-hrz"/>
+                                    <constraint firstItem="1nN-5d-7mi" firstAttribute="top" secondItem="2AY-7g-m2Q" secondAttribute="topMargin" constant="8" id="XuV-wo-oce"/>
+                                    <constraint firstAttribute="bottomMargin" secondItem="Ewy-eF-z7g" secondAttribute="bottom" constant="10" id="bVj-gz-XYM"/>
+                                    <constraint firstItem="UVo-0O-vty" firstAttribute="centerX" secondItem="2AY-7g-m2Q" secondAttribute="centerX" id="da8-Ip-w5g"/>
+                                </constraints>
+                                <connections>
+                                    <outlet property="labelTextField" destination="Ewy-eF-z7g" id="ohI-OQ-pYd"/>
+                                    <outlet property="panLabel" destination="UVo-0O-vty" id="CDL-Z6-BFV"/>
+                                    <outlet property="volumeLabel" destination="1nN-5d-7mi" id="du2-7U-6Hg"/>
+                                    <outlet property="volumeSlider" destination="fQV-Nj-rrF" id="c6d-O8-cXX"/>
+                                </connections>
+                            </collectionViewCell>
+                        </cells>
+                        <connections>
+                            <outlet property="dataSource" destination="iF7-fT-LPT" id="ekL-VR-w3h"/>
+                            <outlet property="delegate" destination="iF7-fT-LPT" id="9kB-9B-DUj"/>
+                        </connections>
+                    </collectionView>
+                    <value key="contentSizeForViewInPopover" type="size" width="300" height="300"/>
+                    <nil key="simulatedStatusBarMetrics"/>
+                    <nil key="simulatedTopBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="300" height="300"/>
+                </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="H3X-NX-nN4" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="128" y="1080"/>
         </scene>
     </scenes>
     <resources>
