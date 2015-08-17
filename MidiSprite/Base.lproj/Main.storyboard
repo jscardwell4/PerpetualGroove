@@ -50,6 +50,7 @@
                                     <barButtonItem image="sliders" style="plain" id="0cd-Py-C2q" userLabel="Sliders" customClass="ImageBarButtonItem" customModule="MoonKit" colorLabel="IBBuiltInLabel-Red">
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="sliders-selected"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
                                         </userDefinedRuntimeAttributes>
                                         <connections>
                                             <action selector="mixer" destination="BV1-FR-VrT" id="EAX-7J-6S4"/>
@@ -74,7 +75,7 @@
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="Nn5-Ip-28S" colorLabel="IBBuiltInLabel-Red"/>
-                                    <barButtonItem image="concrete" style="plain" id="crO-6C-Y4j" userLabel="Template" customClass="ImageBarButtonItem" customModule="MoonKit" colorLabel="IBBuiltInLabel-Red">
+                                    <barButtonItem image="concrete-button" style="plain" id="crO-6C-Y4j" userLabel="Template" customClass="ImageBarButtonItem" customModule="MoonKit" colorLabel="IBBuiltInLabel-Red">
                                         <connections>
                                             <action selector="template" destination="BV1-FR-VrT" id="3aI-KQ-kZV"/>
                                         </connections>
@@ -107,7 +108,7 @@
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="bYE-XZ-usR" colorLabel="IBBuiltInLabel-Orange"/>
                                     <barButtonItem enabled="NO" image="stop" style="plain" id="FiV-KF-efV" userLabel="Stop" customClass="ImageBarButtonItem" customModule="MoonKit" colorLabel="IBBuiltInLabel-Orange">
-                                        <color key="tintColor" red="0.42655369639396667" green="0.47584608197212219" blue="0.48026475310325623" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="tintColor" red="0.20000000000000001" green="0.19607843137254902" blue="0.19215686274509802" alpha="1" colorSpace="calibratedRGB"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="stop-selected"/>
                                         </userDefinedRuntimeAttributes>
@@ -212,12 +213,12 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="VOL" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1nN-5d-7mi">
-                                            <rect key="frame" x="15" y="16" width="34.5" height="18"/>
+                                            <rect key="frame" x="16" y="16" width="32.5" height="18"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="18" id="Pfg-gi-4qV"/>
                                             </constraints>
-                                            <fontDescription key="fontDescription" name="EvelethDotLight" family="Eveleth Dot" pointSize="15"/>
-                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <fontDescription key="fontDescription" name="EvelethDotLight" family="Eveleth Dot" pointSize="14"/>
+                                            <color key="textColor" red="0.87450999019999998" green="0.82744997740000004" blue="0.76077997679999998" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fQV-Nj-rrF" userLabel="Volume Slider" customClass="VerticalSlider" customModule="MoonKit">
@@ -247,12 +248,12 @@
                                                 <constraint firstAttribute="height" constant="18" id="Hdd-kY-TgN"/>
                                             </constraints>
                                             <fontDescription key="fontDescription" name="EvelethDotLight" family="Eveleth Dot" pointSize="15"/>
-                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <color key="textColor" red="0.87450999019999998" green="0.82744997740000004" blue="0.76077997679999998" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" text="MASTER" textAlignment="center" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="Ewy-eF-z7g">
-                                            <rect key="frame" x="-0.5" y="252" width="65" height="30"/>
-                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <rect key="frame" x="-1" y="252" width="65" height="30"/>
+                                            <color key="textColor" red="0.76471000909999998" green="0.71764999630000004" blue="0.65490001440000001" alpha="1" colorSpace="calibratedRGB"/>
                                             <fontDescription key="fontDescription" name="EvelethThin" family="Eveleth" pointSize="13"/>
                                             <textInputTraits key="textInputTraits"/>
                                             <connections>
@@ -299,7 +300,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="concrete" width="500" height="500"/>
+        <image name="concrete-button" width="56" height="56"/>
         <image name="floppydisk" width="42" height="42"/>
         <image name="floppydisk-selected" width="42" height="42"/>
         <image name="piano" width="56" height="56"/>

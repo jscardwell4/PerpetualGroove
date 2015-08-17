@@ -10,7 +10,11 @@ import UIKit
 
 public class ImageButtonView: UIImageView {
 
-  private var trackingTouch: UITouch? { didSet { _highlighted = trackingTouch != nil } }
+  public var toggle = false
+
+  private var isToggled = false
+
+  private var trackingTouch: UITouch? { didSet { _highlighted = trackingTouch != nil || isToggled } }
 
   private var _highlighted = false { didSet { super.highlighted = _highlighted } }
 
@@ -53,7 +57,10 @@ public class ImageButtonView: UIImageView {
 
   public override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
     if let trackingTouch = trackingTouch where touches.contains(trackingTouch) {
-      if pointInside(trackingTouch.locationInView(self), withEvent: event) { apply(actions) {[unowned self] in $0(self)} }
+      if pointInside(trackingTouch.locationInView(self), withEvent: event) {
+        if toggle { isToggled = !isToggled }
+        actions.forEach {[unowned self] in $0(self)}
+      }
       self.trackingTouch = nil
     }
   }

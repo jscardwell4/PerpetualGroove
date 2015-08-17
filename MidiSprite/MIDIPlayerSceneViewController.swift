@@ -107,7 +107,7 @@ final class MIDIPlayerSceneViewController: UIViewController {
     playerScene.midiPlayer.reset()
     playing = false
     stopBarButtonItem.enabled = false
-    stopBarButtonItem.tintColor = Chameleon.flatGrayDark
+    stopBarButtonItem.tintColor = rgb(51, 50, 49)
   }
 
   /** template */
@@ -182,8 +182,8 @@ final class MIDIPlayerSceneViewController: UIViewController {
                                         stepValue: 1)
     channelField.backgroundImage = UIImage()
     channelField.dividerImage = UIImage()
-    channelField.incrementImage = UIImage(named: "increment")
-    channelField.decrementImage = UIImage(named: "decrement")
+    channelField.incrementImage = UIImage(named: "up")
+    channelField.decrementImage = UIImage(named: "down")
 
     let fields = [typeField, noteField, velocityField, durationField, soundSetField, programField, channelField]
 
@@ -232,16 +232,16 @@ final class MIDIPlayerSceneViewController: UIViewController {
     return templateForm
   }
 
-  static let sliderThumbImage = UIImage(named: "marker1")?.recoloredImageWithColor(Chameleon.kelleyPearlBush)
-  static let sliderMinTrackImage = UIImage(named: "line1")?.imageWithColor(rgb(146, 135, 120))
-  static let sliderMaxTrackImage = UIImage(named: "line1")?.imageWithColor(rgb(246, 243, 240))
+  static let sliderThumbImage = UIImage(named: "marker1")?.imageWithColor(Chameleon.kelleyPearlBush)
+  static let sliderMinTrackImage = UIImage(named: "line6")?.imageWithColor(rgb(146, 135, 120))
+  static let sliderMaxTrackImage = UIImage(named: "line6")?.imageWithColor(rgb(246, 243, 240))
   static let sliderThumbOffset = UIOffset(horizontal: 0, vertical: -16)
 
   /** viewDidLoad */
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    stopBarButtonItem.tintColor = Chameleon.flatGrayDark
+    stopBarButtonItem.tintColor = rgb(51, 50, 49)
     
     tempoLabel.font = Eveleth.shadowFontWithSize(16)
     // For some reason `imageWithColor` doesn't work with kelleyPearlBush but the objc method does

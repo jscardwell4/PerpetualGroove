@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import CoreImage
+import class CoreImage.CIImage
 
 extension UIImageOrientation: CustomStringConvertible {
   public var description: String {
@@ -25,19 +26,23 @@ extension UIImageOrientation: CustomStringConvertible {
   }
 }
 
-typealias BuggyCIImage = CIImage
-extension UIImage {
+private func imageFromImage(image: UIImage, color: UIColor) -> UIImage {
+  guard let img = CIImage(image: image) else { return image }
+  let context = CIContext(options: nil)
+  let parameters = ["inputImage": CIImage(color: CIColor(color: color)), "inputBackgroundImage": img]
+  guard let filter = CIFilter(name: "CISourceInCompositing", withInputParameters: parameters),
+            outputImage = filter.outputImage else { return image }
+  return UIImage(CGImage: context.createCGImage(outputImage, fromRect: img.extent),
+                 scale: image.scale,
+                 orientation: image.imageOrientation)
+}
+
+public extension UIImage {
   public func heightScaledToWidth(width: CGFloat) -> CGFloat {
     let (w, h) = size.unpack
     let ratio = Ratio(w, h)
     return ratio.denominatorForNumerator(width)
   }
 
-  public func imageWithColor(color: UIColor) -> UIImage {
-    guard let image = BuggyCIImage(image: self) else { return self }
-    return UIImage(CIImage: BuggyCIImage(color: CIColor(color: color)).imageByApplyingFilter("CISourceInCompositing",
-                                                         withInputParameters: ["inputBackgroundImage": image]),
-                   scale: scale,
-                   orientation: imageOrientation)
-  }
+  public func imageWithColor(color: UIColor) -> UIImage { return imageFromImage(self, color: color) }
 }

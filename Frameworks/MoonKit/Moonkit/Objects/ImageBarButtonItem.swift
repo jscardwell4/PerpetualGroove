@@ -18,7 +18,14 @@ import UIKit
     }
   }
 
-  private weak var imageButtonView: ImageButtonView? { didSet { imageButtonView?.tintColor = tintColor } }
+  @IBInspectable public var toggle: Bool = false { didSet { imageButtonView?.toggle = toggle } }
+
+  private weak var imageButtonView: ImageButtonView? {
+    didSet {
+      imageButtonView?.tintColor = tintColor
+      imageButtonView?.toggle = toggle
+    }
+  }
 
   private func imageButtonViewWithImage(image: UIImage?, highlightedImage: UIImage?) -> ImageButtonView {
     let result = ImageButtonView(image: image, highlightedImage: highlightedImage) {
@@ -54,6 +61,7 @@ import UIKit
     self.highlightedImage = highlightedImage
     let customView = UIView(frame: CGRect(x: 6, y: 6, width: 32, height: 32))
     let imageButtonView = imageButtonViewWithImage(image, highlightedImage: highlightedImage)
+    imageButtonView.toggle = toggle
     customView.addSubview(imageButtonView)
     customView.constrain(𝗩|imageButtonView|𝗩, 𝗛|imageButtonView|𝗛)
     self.imageButtonView = imageButtonView
@@ -126,8 +134,10 @@ import UIKit
   public required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
     highlightedImage = aDecoder.decodeObjectForKey("highlightedImage") as? UIImage
+    toggle = aDecoder.decodeBoolForKey("toggle")
     let customView = UIView(frame: CGRect(x: 6, y: 6, width: 32, height: 32))
     let imageButtonView = imageButtonViewWithImage(image, highlightedImage: highlightedImage)
+    imageButtonView.toggle = toggle
     customView.addSubview(imageButtonView)
     customView.constrain(𝗩|imageButtonView|𝗩, 𝗛|imageButtonView|𝗛)
     self.imageButtonView = imageButtonView
@@ -141,7 +151,8 @@ import UIKit
   */
   public override func encodeWithCoder(aCoder: NSCoder) {
     super.encodeWithCoder(aCoder)
-    (aCoder as? NSKeyedArchiver)?.encodeObject(highlightedImage, forKey: "highlightedImage")
+    aCoder.encodeObject(highlightedImage, forKey: "highlightedImage")
+    aCoder.encodeBool(toggle, forKey: "toggle")
   }
 
 }

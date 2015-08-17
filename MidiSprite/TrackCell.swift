@@ -8,13 +8,21 @@
 
 import UIKit
 import MoonKit
+import Chameleon
 
 class TrackCell: UICollectionViewCell, UITextFieldDelegate {
 
   static let Identifier = "TrackCell"
 
   @IBOutlet weak var volumeLabel: UILabel!
-  @IBOutlet weak var volumeSlider: VerticalSlider!
+  @IBOutlet weak var volumeSlider: VerticalSlider! {
+    didSet {
+      guard let volumeSlider = volumeSlider else { return }
+      volumeSlider.setThumbImage(UIImage(named: "verticalthumb2"), forState: .Normal, color: Chameleon.kelleyPearlBush)
+      volumeSlider.setMinimumTrackImage(UIImage(named: "line6"), forState: .Normal, color: rgb(146, 135, 120))
+      volumeSlider.setMaximumTrackImage(UIImage(named: "line6"), forState: .Normal, color: rgb(51, 50, 49))
+    }
+  }
   @IBOutlet weak var panLabel: UILabel!
   @IBOutlet weak var labelTextField: UITextField!
 
@@ -67,22 +75,4 @@ class TrackCell: UICollectionViewCell, UITextFieldDelegate {
     return CGSize(width: 64, height: 300)
   }
 
-  /** setup */
-//  private func setup() {
-//    labelTextField.delegate = self
-//  }
-
-  /**
-  initWithFrame:
-
-  - parameter frame: CGRect
-  */
-//  override init(frame: CGRect) { super.init(frame: frame); setup() }
-
-  /**
-  init:
-
-  - parameter aDecoder: NSCoder
-  */
-//  required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder); setup() }
 }
