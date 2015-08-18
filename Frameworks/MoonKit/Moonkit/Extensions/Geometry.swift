@@ -246,6 +246,10 @@ public func min(s1: CGSize, s2: CGSize) -> CGSize { return s1 < s2 ? s1 : s2 }
 public func +(lhs: CGSize, rhs: CGSize) -> CGSize {
 	return CGSize(width: lhs.width + rhs.width, height: lhs.height + rhs.height)
 }
+public func +<U:Unpackable2 where U.Element == CGFloat>(lhs: CGSize, rhs: U) -> CGSize {
+  let (w, h) = rhs.unpack
+  return CGSize(width: lhs.width + w, height: lhs.height + h)
+}
 
 public func +(lhs: CGSize, rhs: CGFloat) -> CGSize { return CGSize(width: lhs.width + rhs, height: lhs.height + rhs) }
 
@@ -272,6 +276,7 @@ extension UIEdgeInsets {
   public init?(_ string: String?) { if let s = string { self = UIEdgeInsetsFromString(s) } else { return nil } }
   public static var zeroInsets: UIEdgeInsets { return UIEdgeInsets(inset: 0) }
   public init(inset: CGFloat) { self = UIEdgeInsets(top: inset, left: inset, bottom: inset, right: inset) }
+  public var displacement: UIOffset { return UIOffset(horizontal: left + right, vertical: top + bottom) }
 }
 
 extension UIEdgeInsets: CustomStringConvertible {
@@ -285,6 +290,8 @@ extension UIEdgeInsets: Unpackable4 {
 extension UIOffset {
   public init?(_ string: String?) { if let s = string { self = UIOffsetFromString(s) } else { return nil } }
 }
+
+extension UIOffset: Unpackable2 { public var unpack: (CGFloat, CGFloat) { return (horizontal, vertical) } }
 
 extension UIOffset: CustomStringConvertible { public var description: String { return NSStringFromUIOffset(self) } }
 

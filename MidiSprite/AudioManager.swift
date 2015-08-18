@@ -20,6 +20,12 @@ final class AudioManager {
   static private(set) var graph = AUGraph()
   static private var ioNode = AUNode()
   static private var ioUnit = AudioUnit()
+  static private var dynamicsNode = AUNode()
+  static private var dynamicsUnit = AudioUnit()
+  static private(set) var musicPlayer = MusicPlayer()
+  static private(set) var musicSequence = MusicSequence()
+  static private var mixerNode = AUNode()
+  static private var mixerUnit = AudioUnit()
 
   private static var initialized = false
 
@@ -31,8 +37,17 @@ final class AudioManager {
     do {
       try configureAudioSession()
       try configureAudioGraph()
+      try configureMusicPlayer()
     } catch { logError(error); return }
 
+  }
+
+  /** configureMusicPlayer */
+  static func configureMusicPlayer() throws {
+    try checkStatus(NewMusicPlayer(&musicPlayer), "Failed to create music player")
+    try checkStatus(NewMusicSequence(&musicSequence), "Failed to create music sequence")
+    try checkStatus(MusicSequenceSetAUGraph(musicSequence, graph), "Failed to set graph from sequence")
+    try checkStatus(MusicPlayerSetSequence(musicPlayer, musicSequence), "Failed to set sequence on player")
   }
 
 
@@ -46,71 +61,90 @@ final class AudioManager {
   /** configureAudioGraph */
   private static func configureAudioGraph() throws {
     // Create graph
-    var status = NewAUGraph(&graph)
-    try checkStatus(status, "Failed to create new audio graph")
+    try checkStatus(NewAUGraph(&graph), "Failed to create new audio graph")
 
-    // Add node
-    var ioComponentDescription = AudioComponentDescription()
-    ioComponentDescription.componentType = kAudioUnitType_Output
-    ioComponentDescription.componentSubType = kAudioUnitSubType_RemoteIO
-    ioComponentDescription.componentManufacturer = kAudioUnitManufacturer_Apple
+    // Add nodes
+    var ioComponentDescription = AudioComponentDescription(componentType: kAudioUnitType_Output,
+                                                           componentSubType: kAudioUnitSubType_RemoteIO,
+                                                           componentManufacturer: kAudioUnitManufacturer_Apple,
+                                                           componentFlags: 0,
+                                                           componentFlagsMask: 0)
 
-    status = AUGraphAddNode(graph, &ioComponentDescription, &ioNode)
-    try checkStatus(status, "Failed to add io node to audio graph")
+    try checkStatus(AUGraphAddNode(graph, &ioComponentDescription, &ioNode), "Failed to add io node")
 
-    try Mixer.addNodeToGraph(graph)
+    var dynamicsComponentDescription = AudioComponentDescription(componentType: kAudioUnitType_Effect,
+                                                                 componentSubType: kAudioUnitSubType_DynamicsProcessor,
+                                                                 componentManufacturer: kAudioUnitManufacturer_Apple,
+                                                                 componentFlags: 0,
+                                                                 componentFlagsMask: 0)
+    try checkStatus(AUGraphAddNode(graph, &dynamicsComponentDescription, &dynamicsNode), "Failed to add dynamics node")
+
+    var mixerComponentDescription = AudioComponentDescription(componentType: kAudioUnitType_Mixer,
+                                                              componentSubType: kAudioUnitSubType_MultiChannelMixer,
+                                                              componentManufacturer: kAudioUnitManufacturer_Apple,
+                                                              componentFlags: 0,
+                                                              componentFlagsMask: 0)
+    try checkStatus(AUGraphAddNode(graph, &mixerComponentDescription, &mixerNode), "Failed to add mixer node to audio graph")
 
     // Open graph
 
-    status = AUGraphOpen(graph)
-    try checkStatus(status, "Failed to open audio graph")
+    try checkStatus(AUGraphOpen(graph), "Failed to open audio graph")
 
     // Retrieve audio units
 
-    status = AUGraphNodeInfo(graph, ioNode, nil, &ioUnit)
-    try checkStatus(status, "Failed to retrieve io audio unit from audio graph node")
+    try checkStatus(AUGraphNodeInfo(graph, ioNode, nil, &ioUnit), "Failed to retrieve io unit")
+    try checkStatus(AUGraphNodeInfo(graph, dynamicsNode, nil, &dynamicsUnit), "Failed to retrieve dynamics unit")
+    try checkStatus(AUGraphNodeInfo(graph, mixerNode, nil, &mixerUnit), "Failed to retrieve mixer unit")
 
     // Configure units
 
     var maxFrames = UInt32(4096)
-    status = AudioUnitSetProperty(ioUnit,
-                                  kAudioUnitProperty_MaximumFramesPerSlice,
-                                  AudioUnitScope(kAudioUnitScope_Global),
-                                  0,
-                                  &maxFrames,
-                                  UInt32(sizeof(UInt32.self)))
-    try checkStatus(status, "Failed to set maximum frames per slice on io unit")
+    try checkStatus(AudioUnitSetProperty(ioUnit,
+                                         kAudioUnitProperty_MaximumFramesPerSlice,
+                                         AudioUnitScope(kAudioUnitScope_Global),
+                                         0,
+                                         &maxFrames,
+                                         UInt32(sizeof(UInt32.self))), "Failed to set max frames per slice on io unit")
+    try checkStatus(AudioUnitSetProperty(dynamicsUnit,
+                                         kAudioUnitProperty_MaximumFramesPerSlice,
+                                         AudioUnitScope(kAudioUnitScope_Global),
+                                         0,
+                                         &maxFrames,
+                                         UInt32(sizeof(UInt32.self))), "Failed to set max frames per slice on dynamics unit")
+    try checkStatus(AudioUnitSetProperty(mixerUnit,
+                                         kAudioUnitProperty_MaximumFramesPerSlice,
+                                         AudioUnitScope(kAudioUnitScope_Global),
+                                         0,
+                                         &maxFrames,
+                                         UInt32(sizeof(UInt32.self))), "Failed to set max frames per slice on mixer unit")
+    try checkStatus(AUGraphConnectNodeInput(graph, dynamicsNode, 0, ioNode, 0), "Failed to connect dynamics to io")
+    try checkStatus(AUGraphConnectNodeInput(graph, mixerNode, 0, dynamicsNode, 0), "Failed to connect mixer to dynamis")
 
-    try Mixer.configureMixerUnitInGraph(graph, outputNode: ioNode)
 
     // Initialize graph
 
-    status = AUGraphInitialize(graph)
-    try checkStatus(status, "Failed to initialize audio graph")
+    try checkStatus(AUGraphInitialize(graph), "Failed to initialize audio graph")
 
-    print("graph after \(__FUNCTION__)…")
-    CAShow(UnsafeMutablePointer<COpaquePointer>(graph))
-    print("")
+    Mixer.mixerNode = mixerNode
   }
 
   /** start */
   static func start() throws {
     var running = DarwinBoolean(false)
-    var status = AUGraphIsRunning(graph, &running)
-    try checkStatus(status, "Failed to check running status of audio graph")
+    try checkStatus(AUGraphIsRunning(graph, &running), "Failed to check running status of audio graph")
     guard !running else { return }
-    status = AUGraphStart(graph)
-    try checkStatus(status, "Failed to start audio graph")
+    try checkStatus(AUGraphStart(graph), "Failed to start audio graph")
   }
 
   /** stop */
   static func stop() throws {
     var running = DarwinBoolean(false)
-    var status = AUGraphIsRunning(graph, &running)
-    try checkStatus(status, "Failed to check running status of audio graph")
+    try checkStatus(AUGraphIsRunning(graph, &running), "Failed to check running status of audio graph")
     guard running else { return }
-    status = AUGraphStop(graph)
-    try checkStatus(status, "Failed to stop audio graph")
+    try checkStatus(AUGraphStop(graph), "Failed to stop audio graph")
+    try checkStatus(MusicPlayerIsPlaying(musicPlayer, &running), "Failed to check playing status of music player")
+    guard running else { return }
+    try checkStatus(MusicPlayerStop(musicPlayer), "Failed to stop music player")
   }
 
 }

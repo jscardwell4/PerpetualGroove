@@ -136,6 +136,36 @@ enum GraphError: OSStatus, ErrorType, CustomStringConvertible {
   }
 }
 
+enum MusicPlayerError: OSStatus, ErrorType, CustomStringConvertible {
+  case InvalidSequenceType      = -10846
+  case TrackIndexError          = -10859
+  case TrackNotFound            = -10858
+  case EndOfTrack               = -10857
+  case StartOfTrack             = -10856
+  case IllegalTrackDestination  = -10855
+  case NoSequence               = -10854
+  case InvalidEventType         = -10853
+  case InvalidPlayerState       = -10852
+  case CannotDoInCurrentContext = -10863
+  case NoTrackDestination       = -66720
+
+  var description: String {
+    switch self {
+      case .InvalidSequenceType:      return "Invalid Sequence Type"
+      case .TrackIndexError:          return "Track Index Error"
+      case .TrackNotFound:            return "Track Not Found"
+      case .EndOfTrack:               return "End Of Track"
+      case .StartOfTrack:             return "Start Of Track"
+      case .IllegalTrackDestination:  return "Illegal Track Destination"
+      case .NoSequence:               return "No Sequence"
+      case .InvalidEventType:         return "Invalid Event Type"
+      case .InvalidPlayerState:       return "Invalid Player State"
+      case .CannotDoInCurrentContext: return "Cannot Do In Current Context"
+      case .NoTrackDestination:       return "No Track Destination"
+    }
+  }
+}
+
 enum OSStatusError: ErrorType, CustomStringConvertible {
   case OSStatusCode (OSStatus)
   var description: String { switch self { case .OSStatusCode(let code): return "error code: \(code)" } }
@@ -146,6 +176,7 @@ enum Error: ErrorType, CustomStringConvertible {
   case AudioUnit (AudioUnitError, String)
   case AudioComponent (AudioComponentError, String)
   case Graph (GraphError, String)
+  case Player (MusicPlayerError, String)
   case OSStatusCode (OSStatusError, String)
 
   var description: String {
@@ -154,6 +185,7 @@ enum Error: ErrorType, CustomStringConvertible {
       case let .AudioUnit(error, message):      return "<AudioUnit>\(message) - \(error)"
       case let .AudioComponent(error, message): return "<AudioComponent>\(message) - \(error)"
       case let .Graph(error, message):          return "<Graph>\(message) - \(error)"
+      case let .Player(error, message):         return "<Player>\(message) - \(error)"
       case let .OSStatusCode(error, message):   return "\(message) - \(error)"
     }
   }
@@ -183,6 +215,7 @@ func error(code: OSStatus, @autoclosure _ message: () -> String) -> ErrorType {
            ?? AudioUnitError(rawValue: code)
            ?? AudioComponentError(rawValue: code)
            ?? GraphError(rawValue: code)
+           ?? MusicPlayerError(rawValue: code)
            ?? OSStatusError.OSStatusCode(code)
 
   switch error {
@@ -190,6 +223,7 @@ func error(code: OSStatus, @autoclosure _ message: () -> String) -> ErrorType {
     case let e as AudioUnitError:      return Error.AudioUnit(e, message())
     case let e as AudioComponentError: return Error.AudioComponent(e, message())
     case let e as GraphError:          return Error.Graph(e, message())
+    case let e as MusicPlayerError:    return Error.Player(e, message())
     case let e as OSStatusError:       return Error.OSStatusCode(e, message())
     default:                           fatalError("this should be unreachable")
   }

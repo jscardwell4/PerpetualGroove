@@ -141,7 +141,7 @@ public final class FormView: UIView {
     guard fieldSizes.count > 0 else { return CGSize(square: UIViewNoIntrinsicMetric) }
     let w = min(fieldSizes.map {$0.width}.maxElement()!, UIScreen.mainScreen().bounds.width - 8)
     let h = sum(fieldSizes.map {$0.height}) + CGFloat(fieldSizes.count + 1) * CGFloat(10)
-    return CGSize(width: w, height: h)
+    return CGSize(width: w + 20, height: h + 20)
   }
 
 }

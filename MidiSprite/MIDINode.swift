@@ -13,14 +13,17 @@ import MoonKit
 class MIDINode: SKSpriteNode {
 
   enum TextureType: String, EnumerableType {
-    case Brick, Cobblestone, Concrete, Crusty, DiamondPlate, Dirt, Fur, Glass,
-         Mountains, OceanBasin, Parchment, PlasticWrap, Sand, Stucco, Water
+    case Brick, Cobblestone, Concrete, Crusty, DiamondPlate, Dirt, Fur,
+         Mountains, OceanBasin, Parchment, Sand, Stucco
     var image: UIImage { return UIImage(named: "\(rawValue.lowercaseString)-button")! }
     var texture: SKTexture { return TextureType.atlas.textureNamed(rawValue.lowercaseString) }
     static let atlas = SKTextureAtlas(named: "balls")
-    static let allCases: [TextureType] = [.Brick, .Cobblestone, .Concrete, .Crusty, .DiamondPlate, .Dirt, .Fur, .Glass,
-                                          .Mountains, .OceanBasin, .Parchment, .PlasticWrap, .Sand, .Stucco, .Water]
+    static let allCases: [TextureType] = [.Brick, .Cobblestone, .Concrete, .Crusty, .DiamondPlate, .Dirt, .Fur,
+                                          .Mountains, .OceanBasin, .Parchment, .Sand, .Stucco]
   }
+
+  static var templateNote = Note()
+  static var templateTextureType = TextureType.Cobblestone
 
   var textureType: TextureType
 

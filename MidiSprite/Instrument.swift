@@ -34,11 +34,18 @@ func ==(lhs: InstrumentDescription, rhs: InstrumentDescription) -> Bool {
 
 final class Instrument: Equatable {
 
+  enum Error: String, ErrorType, CustomStringConvertible {
+    case NoInstrumentTrack = "No Instrument Track"
+    var description: String { return rawValue }
+  }
+
   // MARK: - Properties
 
   let soundSet: SoundSet
   var program: UInt8
   var channel: MusicDeviceGroupID
+
+  weak var track: InstrumentTrack?
 
   var instrumentDescription: InstrumentDescription {
     return InstrumentDescription(soundSet: soundSet, program: program, channel: channel)
@@ -52,14 +59,14 @@ final class Instrument: Equatable {
   initWithSoundSet:program:channel:
 
   - parameter description: InstrumentDescription
-  - parameter unit: MusicDeviceConponent
+  - parameter unit: MusicDeviceComponent
+  - parameter track: MusicTrack
   */
   init(description: InstrumentDescription, unit: MusicDeviceComponent) throws {
     soundSet = description.soundSet
     program = description.program
     channel = description.channel
     instrumentUnit = unit
-
     var instrumentData = AUSamplerInstrumentData(fileURL: Unmanaged.passUnretained(soundSet.url),
                                                  instrumentType: soundSet.instrumentType.rawValue,
                                                  bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB),
@@ -80,9 +87,9 @@ final class Instrument: Equatable {
 
   // MARK: - The Note struct
   struct Note {
-    var duration = 0.25
+    var duration = 8.25
     var value: MIDINote = .Pitch(letter: .C, octave: 4)
-    var velocity: UInt8 = 64
+    var velocity: UInt8 = 126
 
     var noteParams: MusicDeviceNoteParams {
       var noteParams = MusicDeviceNoteParams()
@@ -101,11 +108,23 @@ final class Instrument: Equatable {
   - parameter node: MIDINode
   */
   func playNoteForNode(node: MIDINode) throws {
-    var noteID = NoteInstanceID()
-    var noteParams = node.note.noteParams
-    let status = MusicDeviceStartNote(instrumentUnit, kMusicNoteEvent_Unused, channel, &noteID, 0, &noteParams)
-    try checkStatus(status, "MusicDeviceStartNote")
-    nodesPlaying[node.id] = noteID
+    guard let track = track else { throw Error.NoInstrumentTrack }
+    var noteMessage = MIDINoteMessage(channel: UInt8(channel),
+                                      note: node.note.value.midi,
+                                      velocity: node.note.velocity,
+                                      releaseVelocity: 0,
+                                      duration: Float32(node.note.duration))
+    var playing = DarwinBoolean(false)
+    try checkStatus(MusicPlayerIsPlaying(AudioManager.musicPlayer, &playing), "Failed to check playing status of music player")
+    var timestamp = MusicTimeStamp(0)
+    if playing { try checkStatus(MusicPlayerGetTime(AudioManager.musicPlayer, &timestamp), "Failed to get time from player") }
+    try checkStatus(MusicTrackNewMIDINoteEvent(track.musicTrack, timestamp, &noteMessage), "Failed to add new note event")
+    if !playing { try checkStatus(MusicPlayerStart(AudioManager.musicPlayer), "Failed to start playing music player") }
+//    var noteID = NoteInstanceID()
+//    var noteParams = node.note.noteParams
+//    let status = MusicDeviceStartNote(instrumentUnit, kMusicNoteEvent_Unused, channel, &noteID, 0, &noteParams)
+//    try checkStatus(status, "MusicDeviceStartNote")
+//    nodesPlaying[node.id] = noteID
   }
 
   /**
@@ -114,11 +133,11 @@ final class Instrument: Equatable {
   - parameter node: MIDINode
   */
   func stopNoteForNode(node: MIDINode) throws {
-    guard let playingNote = nodesPlaying.removeValueForKey(node.id) else { return }
-    let channel = MusicDeviceGroupID(self.channel)
-    let offset = UInt32(0)
-    let status = MusicDeviceStopNote(instrumentUnit, channel, playingNote, offset)
-    try checkStatus(status, "MusicDeviceStopNote")
+//    guard let playingNote = nodesPlaying.removeValueForKey(node.id) else { return }
+//    let channel = MusicDeviceGroupID(self.channel)
+//    let offset = UInt32(0)
+//    let status = MusicDeviceStopNote(instrumentUnit, channel, playingNote, offset)
+//    try checkStatus(status, "MusicDeviceStopNote")
   }
 
 }

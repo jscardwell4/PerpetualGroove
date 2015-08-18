@@ -52,13 +52,7 @@ final class MIDIPlayerSceneViewController: UIViewController {
   @IBAction func revert() { (skView?.scene as? MIDIPlayerScene)?.revert() }
 
   /** sliders */
-  @IBAction func mixer() {
-    let mixerPopover = mixerPopoverView
-    mixerPopover.hidden = !mixerPopover.hidden
-    if !mixerPopover.hidden {
-      mixerViewController.updateTracks()
-    }
-  }
+  @IBAction func mixer() { let mixerPopover = mixerPopoverView; mixerPopover.hidden = !mixerPopover.hidden }
 
   private var _mixerViewController: MixerViewController?
   private var mixerViewController: MixerViewController {
@@ -80,7 +74,7 @@ final class MIDIPlayerSceneViewController: UIViewController {
 
     let mixerView = mixerViewController.view
     _mixerPopoverView!.contentView.addSubview(mixerView)
-    _mixerPopoverView!.constrain(𝗩|-mixerView-|𝗩, 𝗛|-mixerView-|𝗛)
+    _mixerPopoverView!.constrain(𝗩|mixerView|𝗩, 𝗛|mixerView|𝗛)
 
     return _mixerPopoverView!
   }
@@ -111,131 +105,151 @@ final class MIDIPlayerSceneViewController: UIViewController {
   }
 
   /** template */
-  @IBAction func template() { templatePopoverView.hidden = !templatePopoverView.hidden }
+  @IBAction func template() { let templatePopover = templatePopoverView; templatePopover.hidden = !templatePopover.hidden }
+  private var _templateViewController: TemplateViewController?
+  private var templateViewController: TemplateViewController {
+    guard _templateViewController == nil else { return _templateViewController! }
+    _templateViewController = TemplateViewController(barButtonItem: templateBarButtonItem)
+    addChildViewController(_templateViewController!)
+    return _templateViewController!
+  }
 
-  private var _templatePopoverView: PopoverFormView?
-  private var templatePopoverView: PopoverFormView {
+
+  private var _templatePopoverView: PopoverView?
+  private var templatePopoverView: PopoverView {
     guard _templatePopoverView == nil else { return _templatePopoverView! }
+    _templatePopoverView = PopoverView(autolayout: true)
+    _templatePopoverView!.location = .Top
+    _templatePopoverView!.nametag = "templatePopover"
 
-    _templatePopoverView = PopoverFormView(form: generateTemplateForm())
-    _templatePopoverView!.location                          = .Top
-    _templatePopoverView!.nametag                           = "templatePopover"
-    _templatePopoverView!.formView.labelFont                = Eveleth.lightFontWithSize(14)
-    _templatePopoverView!.formView.labelTextColor           = Chameleon.kelleyPearlBush
-    _templatePopoverView!.formView.controlFont              = Eveleth.thinFontWithSize(14)
-    _templatePopoverView!.formView.controlTextColor         = Chameleon.quietLightLobLollyDark
-    _templatePopoverView!.formView.controlSelectedFont      = Eveleth.regularFontWithSize(14)
-    _templatePopoverView!.formView.controlSelectedTextColor = Chameleon.quietLightLobLolly
-    _templatePopoverView!.formView.tintColor                = Chameleon.flatWhiteDark
+    let templateView = templateViewController.view
+    _templatePopoverView!.contentView.addSubview(templateView)
+    _templatePopoverView!.constrain(𝗩|templateView|𝗩, 𝗛|templateView|𝗛)
 
     return _templatePopoverView!
   }
 
-  /**
-  generateTemplateForm
+//  private var _templatePopoverView: PopoverFormView?
+//  private var templatePopoverView: PopoverFormView {
+//    guard _templatePopoverView == nil else { return _templatePopoverView! }
+//
+//    _templatePopoverView = PopoverFormView(form: generateTemplateForm())
+//    _templatePopoverView!.location                          = .Top
+//    _templatePopoverView!.nametag                           = "templatePopover"
+//    _templatePopoverView!.formView.labelFont                = Eveleth.lightFontWithSize(14)
+//    _templatePopoverView!.formView.labelTextColor           = Chameleon.kelleyPearlBush
+//    _templatePopoverView!.formView.controlFont              = Eveleth.thinFontWithSize(14)
+//    _templatePopoverView!.formView.controlTextColor         = Chameleon.quietLightLobLollyDark
+//    _templatePopoverView!.formView.controlSelectedFont      = Eveleth.regularFontWithSize(14)
+//    _templatePopoverView!.formView.controlSelectedTextColor = Chameleon.quietLightLobLolly
+//    _templatePopoverView!.formView.tintColor                = Chameleon.flatWhiteDark
+//
+//    return _templatePopoverView!
+//  }
 
-  - returns: Form
-  */
-  private func generateTemplateForm() -> Form {
-    guard let player = playerScene?.midiPlayer else { return Form(fields: []) }
+//  /**
+//  generateTemplateForm
+//
+//  - returns: Form
+//  */
+//  private func generateTemplateForm() -> Form {
+//    guard let player = playerScene?.midiPlayer else { return Form(fields: []) }
+//
+//    enum FieldName: String { case TextureType = "Type", Note, Velocity, Duration, SoundSet = "Sound Set", Program, Channel }
+//
+//    let typeField = FormPickerField(name: FieldName.TextureType.rawValue,
+//                                    value: MIDINode.TextureType.allCases.indexOf(player.textureType) ?? 0,
+//                                    choices: MIDINode.TextureType.allCases.map { $0.image})
+//
+//    let noteField = FormPickerField(name: FieldName.Note.rawValue,
+//                                    value: Int(player.note.value.midi),
+//                                    choices: MIDINote.allCases.map({$0.rawValue}))
+//
+//    let velocityField = FormSliderField(name: FieldName.Velocity.rawValue,
+//                                        value: Float(player.note.velocity),
+//                                        max: 127,
+//                                        minTrack: MIDIPlayerSceneViewController.sliderMinTrackImage,
+//                                        maxTrack: MIDIPlayerSceneViewController.sliderMaxTrackImage,
+//                                        thumb: MIDIPlayerSceneViewController.sliderThumbImage,
+//                                        offset: MIDIPlayerSceneViewController.sliderThumbOffset)
+//
+//    let durationField = FormSliderField(name: FieldName.Duration.rawValue,
+//                                        precision: 3,
+//                                        value: Float(player.note.duration),
+//                                        max: 5,
+//                                        minTrack: MIDIPlayerSceneViewController.sliderMinTrackImage,
+//                                        maxTrack: MIDIPlayerSceneViewController.sliderMaxTrackImage,
+//                                        thumb: MIDIPlayerSceneViewController.sliderThumbImage,
+//                                        offset: MIDIPlayerSceneViewController.sliderThumbOffset)
+//
+//
+//    let soundSetField = FormPickerField(name: FieldName.SoundSet.rawValue,
+//                                        value: SoundSet.allCases.indexOf(player.soundSet) ?? 0,
+//                                        choices: SoundSet.allCases.map({$0.baseName}))
+//
+//    let programField = FormPickerField(name: FieldName.Program.rawValue,
+//                                       value: Int(player.program),
+//                                       choices: player.soundSet.programs)
+//
+//    let channelField = FormStepperField(name: FieldName.Channel.rawValue,
+//                                        value: Double(player.channel ?? 0),
+//                                        minimumValue: 0,
+//                                        maximumValue: 15,
+//                                        stepValue: 1)
+//    channelField.backgroundImage = UIImage()
+//    channelField.dividerImage = UIImage()
+//    channelField.incrementImage = UIImage(named: "up")
+//    channelField.decrementImage = UIImage(named: "down")
+//
+//    let fields = [typeField, noteField, velocityField, durationField, soundSetField, programField, channelField]
+//
+//    let templateForm =  Form(fields: fields) {
+//      [unowned self] (form: Form, field: FormField) in
+//
+//      guard let fieldName = FieldName(rawValue: field.name),
+//            player = self.playerScene?.midiPlayer else { return }
+//
+//      switch fieldName {
+//        case .TextureType:
+//          if let idx = field.value as? Int where MIDINode.TextureType.allCases.indices.contains(idx) {
+//            let type = MIDINode.TextureType.allCases[idx]
+//            player.textureType = type
+//            let image = type.image
+//            self.templateBarButtonItem.image = image
+//            self.templateBarButtonItem.highlightedImage = image.imageWithBackgroundColor(.whiteColor()).inverted.maskToAlpha
+//        }
+//
+//        case .Note:
+//          if let midi = field.value as? Int { player.note.value = MIDINote(midi: UInt8(midi)) }
+//
+//        case .Velocity:
+//          if let velocity = field.value as? Float { player.note.velocity = UInt8(velocity) }
+//
+//        case .Duration:
+//          if let duration = field.value as? Float { player.note.duration = Double(duration) }
+//
+//        case .SoundSet:
+//          if let idx = field.value as? Int where SoundSet.allCases.indices.contains(idx) {
+//            let soundSet = SoundSet.allCases[idx]
+//            guard player.soundSet != soundSet else { break }
+//            player.soundSet = soundSet
+//            player.program = 0
+//            programField.value = programField.choices.count > 0 ? 0 : -1
+//            programField.choices = player.soundSet.programs
+//          }
+//
+//        case .Program:
+//          if let idx = field.value as? Int where player.soundSet.programs.indices.contains(idx) { player.program = UInt8(idx) }
+//
+//        case .Channel:
+//          if let channel = field.value as? Double { player.channel = MusicDeviceGroupID(channel) }
+//      }
+//
+//    }
+//
+//    return templateForm
+//  }
 
-    enum FieldName: String { case TextureType = "Type", Note, Velocity, Duration, SoundSet = "Sound Set", Program, Channel }
-
-    let typeField = FormPickerField(name: FieldName.TextureType.rawValue,
-                                   value: MIDINode.TextureType.allCases.indexOf(player.textureType) ?? 0,
-                                   choices: MIDINode.TextureType.allCases.map { $0.image})
-
-    let noteField = FormPickerField(name: FieldName.Note.rawValue,
-                                    value: Int(player.note.value.midi),
-                                    choices: MIDINote.allCases.map({$0.rawValue}))
-
-    let velocityField = FormSliderField(name: FieldName.Velocity.rawValue,
-                                        value: Float(player.note.velocity),
-                                        max: 127,
-                                        minTrack: MIDIPlayerSceneViewController.sliderMinTrackImage,
-                                        maxTrack: MIDIPlayerSceneViewController.sliderMaxTrackImage,
-                                        thumb: MIDIPlayerSceneViewController.sliderThumbImage,
-                                        offset: MIDIPlayerSceneViewController.sliderThumbOffset)
-
-    let durationField = FormSliderField(name: FieldName.Duration.rawValue,
-                                        precision: 3,
-                                        value: Float(player.note.duration),
-                                        max: 5,
-                                        minTrack: MIDIPlayerSceneViewController.sliderMinTrackImage,
-                                        maxTrack: MIDIPlayerSceneViewController.sliderMaxTrackImage,
-                                        thumb: MIDIPlayerSceneViewController.sliderThumbImage,
-                                        offset: MIDIPlayerSceneViewController.sliderThumbOffset)
-
-
-    let soundSetField = FormPickerField(name: FieldName.SoundSet.rawValue,
-                                        value: SoundSet.allCases.indexOf(player.soundSet) ?? 0,
-                                        choices: SoundSet.allCases.map({$0.baseName}))
-
-    let programField = FormPickerField(name: FieldName.Program.rawValue,
-                                       value: Int(player.program),
-                                       choices: player.soundSet.programs)
-
-    let channelField = FormStepperField(name: FieldName.Channel.rawValue,
-                                        value: Double(player.channel ?? 0),
-                                        minimumValue: 0,
-                                        maximumValue: 15,
-                                        stepValue: 1)
-    channelField.backgroundImage = UIImage()
-    channelField.dividerImage = UIImage()
-    channelField.incrementImage = UIImage(named: "up")
-    channelField.decrementImage = UIImage(named: "down")
-
-    let fields = [typeField, noteField, velocityField, durationField, soundSetField, programField, channelField]
-
-    let templateForm =  Form(fields: fields) {
-      [unowned self] (form: Form, field: FormField) in
-
-      guard let fieldName = FieldName(rawValue: field.name),
-            player = self.playerScene?.midiPlayer else { return }
-
-      switch fieldName {
-        case .TextureType:
-          if let idx = field.value as? Int where MIDINode.TextureType.allCases.indices.contains(idx) {
-            let type = MIDINode.TextureType.allCases[idx]
-            player.textureType = type
-            self.templateBarButtonItem.image = type.image
-        }
-
-        case .Note:
-          if let midi = field.value as? Int { player.note.value = MIDINote(midi: UInt8(midi)) }
-
-        case .Velocity:
-          if let velocity = field.value as? Float { player.note.velocity = UInt8(velocity) }
-
-        case .Duration:
-          if let duration = field.value as? Float { player.note.duration = Double(duration) }
-
-        case .SoundSet:
-          if let idx = field.value as? Int where SoundSet.allCases.indices.contains(idx) {
-            let soundSet = SoundSet.allCases[idx]
-            guard player.soundSet != soundSet else { break }
-            player.soundSet = soundSet
-            player.program = 0
-            programField.value = programField.choices.count > 0 ? 0 : -1
-            programField.choices = player.soundSet.programs
-          }
-
-        case .Program:
-          if let idx = field.value as? Int where player.soundSet.programs.indices.contains(idx) { player.program = UInt8(idx) }
-
-        case .Channel:
-          if let channel = field.value as? Double { player.channel = MusicDeviceGroupID(channel) }
-      }
-
-    }
-
-    return templateForm
-  }
-
-  static let sliderThumbImage = UIImage(named: "marker1")?.imageWithColor(Chameleon.kelleyPearlBush)
-  static let sliderMinTrackImage = UIImage(named: "line6")?.imageWithColor(rgb(146, 135, 120))
-  static let sliderMaxTrackImage = UIImage(named: "line6")?.imageWithColor(rgb(246, 243, 240))
-  static let sliderThumbOffset = UIOffset(horizontal: 0, vertical: -16)
 
   /** viewDidLoad */
   override func viewDidLoad() {
@@ -244,11 +258,11 @@ final class MIDIPlayerSceneViewController: UIViewController {
     stopBarButtonItem.tintColor = rgb(51, 50, 49)
     
     tempoLabel.font = Eveleth.shadowFontWithSize(16)
-    // For some reason `imageWithColor` doesn't work with kelleyPearlBush but the objc method does
-    tempoSlider.setThumbImage(MIDIPlayerSceneViewController.sliderThumbImage, forState: .Normal)
-    tempoSlider.setMinimumTrackImage(MIDIPlayerSceneViewController.sliderMinTrackImage, forState: .Normal)
-    tempoSlider.setMaximumTrackImage(MIDIPlayerSceneViewController.sliderMaxTrackImage, forState: .Normal)
-    tempoSlider.thumbOffset = MIDIPlayerSceneViewController.sliderThumbOffset
+
+    tempoSlider.setThumbImage(AssetManager.sliderThumbImage, forState: .Normal)
+    tempoSlider.setMinimumTrackImage(AssetManager.sliderMinTrackImage, forState: .Normal)
+    tempoSlider.setMaximumTrackImage(AssetManager.sliderMaxTrackImage, forState: .Normal)
+    tempoSlider.thumbOffset = AssetManager.sliderThumbOffset
 
     let scene = MIDIPlayerScene(size: skView.bounds.size)
 
@@ -261,6 +275,11 @@ final class MIDIPlayerSceneViewController: UIViewController {
 
     skView.presentScene(scene)
     scene.paused = true
+
+    let image = MIDINode.templateTextureType.image
+    templateBarButtonItem?.image = image
+    let highlightedImage = image.imageWithBackgroundColor(.whiteColor()).inverted.maskToAlpha
+    templateBarButtonItem?.highlightedImage = highlightedImage
 }
 
   /**
@@ -377,12 +396,9 @@ final class MIDIPlayerSceneViewController: UIViewController {
       _templatePopoverView = nil
     }
 
-    if let mixerVC = _mixerViewController, mixerPopover = _mixerPopoverView where mixerPopover.hidden == true {
-      mixerVC.willMoveToParentViewController(nil)
+    if let mixerPopover = _mixerPopoverView where mixerPopover.hidden == true {
       mixerPopover.removeFromSuperview()
-      mixerVC.removeFromParentViewController()
       _mixerPopoverView = nil
-      _mixerViewController = nil
     }
   }
 

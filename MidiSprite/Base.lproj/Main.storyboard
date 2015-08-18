@@ -76,6 +76,9 @@
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="Nn5-Ip-28S" colorLabel="IBBuiltInLabel-Red"/>
                                     <barButtonItem image="concrete-button" style="plain" id="crO-6C-Y4j" userLabel="Template" customClass="ImageBarButtonItem" customModule="MoonKit" colorLabel="IBBuiltInLabel-Red">
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
+                                        </userDefinedRuntimeAttributes>
                                         <connections>
                                             <action selector="template" destination="BV1-FR-VrT" id="3aI-KQ-kZV"/>
                                         </connections>
@@ -252,9 +255,9 @@
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" text="MASTER" textAlignment="center" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="Ewy-eF-z7g">
-                                            <rect key="frame" x="-1" y="252" width="65" height="30"/>
+                                            <rect key="frame" x="1" y="252" width="61" height="30"/>
                                             <color key="textColor" red="0.76471000909999998" green="0.71764999630000004" blue="0.65490001440000001" alpha="1" colorSpace="calibratedRGB"/>
-                                            <fontDescription key="fontDescription" name="EvelethThin" family="Eveleth" pointSize="13"/>
+                                            <fontDescription key="fontDescription" name="EvelethThin" family="Eveleth" pointSize="12"/>
                                             <textInputTraits key="textInputTraits"/>
                                             <connections>
                                                 <outlet property="delegate" destination="2AY-7g-m2Q" id="JBx-aT-uqu"/>
@@ -301,8 +304,8 @@
     </scenes>
     <resources>
         <image name="concrete-button" width="56" height="56"/>
-        <image name="floppydisk" width="42" height="42"/>
-        <image name="floppydisk-selected" width="42" height="42"/>
+        <image name="floppydisk" width="56" height="56"/>
+        <image name="floppydisk-selected" width="56" height="56"/>
         <image name="piano" width="56" height="56"/>
         <image name="piano-selected" width="56" height="56"/>
         <image name="play" width="61" height="61"/>

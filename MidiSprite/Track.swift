@@ -9,8 +9,7 @@
 import Foundation
 import UIKit
 import MoonKit
-import typealias AudioToolbox.AudioUnitElement
-import typealias AudioToolbox.AudioUnitParameterValue
+import AudioToolbox
 
 // MARK: - Enumeration for specifying the color attached to a `TrackType`
 enum TrackColor: UInt32, EnumerableType {
@@ -68,6 +67,7 @@ final class MasterTrack: TrackType {
 // MARK: - TrackType for user-created instrument tracks
 final class InstrumentTrack: InstrumentTrackType, Equatable {
   let instrument: Instrument
+  let musicTrack: MusicTrack
   lazy var label: String = {"bus \(self.bus)"}()
   let bus: AudioUnitElement
   let color: TrackColor
@@ -93,10 +93,12 @@ final class InstrumentTrack: InstrumentTrackType, Equatable {
   - parameter i: Instrument
   - parameter b: AudioUnitElement
   */
-  init(instrument i: Instrument, bus b: AudioUnitElement) {
+  init(instrument i: Instrument, bus b: AudioUnitElement, track: MusicTrack) {
     instrument = i
     bus = b
+    musicTrack = track
     color = TrackColor.allCases[Int(bus) % 10]
+    instrument.track = self
     do {
       let currentVolume = try Mixer.volumeOnBus(bus)
       let currentPan = try Mixer.panOnBus(bus)

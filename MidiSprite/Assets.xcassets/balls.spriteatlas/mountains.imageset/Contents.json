@@ -2,7 +2,18 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "MidiSprite copy_ball_mountains.pdf"
+      "filename" : "mountains.png",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "universal",
+      "filename" : "mountains@2x.png",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "universal",
+      "filename" : "mountains@3x.png",
+      "scale" : "3x"
     }
   ],
   "info" : {

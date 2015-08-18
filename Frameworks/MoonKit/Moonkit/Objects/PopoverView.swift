@@ -25,6 +25,31 @@ public class PopoverView: UIView {
   /** Value used to place arrow */
   public var xOffset: CGFloat = 0 { didSet { refreshShape() } }
 
+  /** Padding for the content view */
+  public var contentInsets = UIEdgeInsets(inset: 10) {
+    didSet {
+      guard contentInsets != oldValue else { return }
+      invalidateIntrinsicContentSize()
+      removeConstraints(constraintsWithIdentifier(Identifier(self, "Content")))
+      setNeedsUpdateConstraints()
+    }
+  }
+
+  /**
+  intrinsicConltentSize
+
+  - returns: CGSize
+  */
+  public override func intrinsicContentSize() -> CGSize {
+    var size = contentView.intrinsicContentSize()
+    for subview in contentView.subviews {
+      let subviewIntrinsicContentSize = subview.intrinsicContentSize()
+      size.width = max(size.width, subviewIntrinsicContentSize.width)
+      size.height = max(size.height, subviewIntrinsicContentSize.height)
+    }
+    return size + contentInsets.displacement
+  }
+
   /**
   Overridden to account for the top/bottom arrow
 
@@ -77,6 +102,7 @@ public class PopoverView: UIView {
 
   /** Holds a reference to the effect view's content view */
   public weak var contentView: UIView!
+  private weak var blurView: UIVisualEffectView! { didSet { contentView = blurView?.contentView } }
 
   /** Convenience accessor for the shape layer used to mask root layer */
   private var maskingLayer: CAShapeLayer { return layer.mask as! CAShapeLayer }
@@ -88,22 +114,27 @@ public class PopoverView: UIView {
     layer.mask = CAShapeLayer()
     refreshShape()
 
-    let blurEffect = UIBlurEffect(style: .Dark)
-    let blur = UIVisualEffectView(effect: blurEffect)
-    blur.translatesAutoresizingMaskIntoConstraints = false
-    blur.contentView.translatesAutoresizingMaskIntoConstraints = false
-    blur.constrain(𝗩|blur.contentView|𝗩, 𝗛|blur.contentView|𝗛)
 
-    addSubview(blur)
-    contentView = blur.contentView
+    let blurEffect = UIBlurEffect(style: .Dark)
+    let blurView = UIVisualEffectView(effect: blurEffect)
+    blurView.translatesAutoresizingMaskIntoConstraints = false
+    blurView.contentView.translatesAutoresizingMaskIntoConstraints = false
+
+    addSubview(blurView)
+    self.blurView = blurView
   }
 
   /** updateConstraints */
   public override func updateConstraints() {
     super.updateConstraints()
 
-    let id = Identifier(self, "Internal")
+    var id = Identifier(self, "Content")
+    if constraintsWithIdentifier(id).count == 0 {
+      constrain([𝗩|--contentInsets.top--blurView.contentView--contentInsets.bottom--|𝗩,
+                 𝗛|--contentInsets.left--blurView.contentView--contentInsets.right--|𝗛] --> id)
+    }
 
+    id = Identifier(self, "Internal")
     guard constraintsWithIdentifier(id).count == 0 else { return }
 
     let topOffset:    CGFloat = location == .Top    ? arrowHeight : 0

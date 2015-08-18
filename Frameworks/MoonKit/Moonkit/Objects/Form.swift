@@ -16,6 +16,17 @@ public final class Form: NSObject {
   public var changeHandler: ChangeHandler?
 
   /**
+  subscript:
+
+  - parameter fieldName: String
+
+  - returns: FormField?
+  */
+  public subscript(fieldName: String) -> FormField? {
+    return fields.filter({$0.name == fieldName}).first
+  }
+
+  /**
   initWithTemplates:
 
   - parameter templates: OrderedDictionary<String, FieldTemplate>

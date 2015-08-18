@@ -47,8 +47,6 @@ class MIDIPlayerNode: SKShapeNode {
   var soundSet = SoundSet.PureOscillators
   var program: UInt8 = 0
   var channel: MusicDeviceGroupID = 0
-  var note = Instrument.Note()
-  var textureType = MIDINode.TextureType.PlasticWrap
 
   /** dropLast */
   func dropLast() {
@@ -90,7 +88,7 @@ class MIDIPlayerNode: SKShapeNode {
       if track == nil { track = try Mixer.newTrackForInstrumentWithDescription(instrumentDescription) }
       guard track != nil else { return }
 
-      let midiNode = MIDINode(texture: textureType, placement: placement, track: track!, note: note)
+      let midiNode = MIDINode(texture: MIDINode.templateTextureType, placement: placement, track: track!, note: MIDINode.templateNote)
       midiNode.name = "midiNode\(midiNodes.count)"
       midiNode.color = track!.color.value
       midiNode.colorBlendFactor = 1.0

@@ -2,7 +2,18 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "MidiSprite copy_ball_fur.pdf"
+      "filename" : "fur.png",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "universal",
+      "filename" : "fur@2x.png",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "universal",
+      "filename" : "fur@3x.png",
+      "scale" : "3x"
     }
   ],
   "info" : {

@@ -8,6 +8,7 @@
 
 import UIKit
 import MoonKit
+import typealias AudioUnit.AudioUnitElement
 
 class MixerViewController: UICollectionViewController {
 
@@ -38,7 +39,7 @@ class MixerViewController: UICollectionViewController {
       view.setNeedsLayout()
       view.layoutIfNeeded()
       collectionView.reloadData()
-}
+    }
   }
 
   // MARK: UICollectionViewDataSource
@@ -78,7 +79,7 @@ class MixerViewController: UICollectionViewController {
   {
     let cell = collectionView.dequeueReusableCellWithReuseIdentifier(TrackCell.Identifier,
                                                         forIndexPath: indexPath) as! TrackCell
-    cell.track = Mixer.tracks[indexPath.item]
+    cell.track = Mixer.tracks[AudioUnitElement(indexPath.item)]
     return cell
   }
 
