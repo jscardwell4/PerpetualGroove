@@ -49,28 +49,10 @@ class MIDIPlayerNode: SKShapeNode {
   var channel: MusicDeviceGroupID = 0
 
   /** dropLast */
-  func dropLast() {
-    guard midiNodes.count > 0 else { return }
-
-    let node = midiNodes.removeLast()
-    if let _ = node.actionForKey(MIDINode.Actions.Play.rawValue) {
-      node.removeActionForKey(MIDINode.Actions.Play.rawValue)
-      do { try node.track.instrument.stopNoteForNode(node) } catch { logError(error) }
-    }
-    node.removeFromParent()
-  }
+  func dropLast() { guard midiNodes.count > 0 else { return }; midiNodes.removeLast().removeFromParent() }
 
   /** reset */
-  func reset() {
-    midiNodes.forEach {
-      if let _ = $0.actionForKey(MIDINode.Actions.Play.rawValue) {
-        $0.removeActionForKey(MIDINode.Actions.Play.rawValue)
-        do { try $0.track.instrument.stopNoteForNode($0) } catch { logError(error) }
-      }
-      $0.removeFromParent()
-    }
-    midiNodes.removeAll()
-  }
+  func reset() { midiNodes.forEach { $0.removeFromParent() }; midiNodes.removeAll() }
 
   /**
   placeNew:
@@ -82,21 +64,29 @@ class MIDIPlayerNode: SKShapeNode {
                              as? MIDIPlayerSceneViewController else { return }
     if !controller.playing { controller.play() }
 
-    let instrumentDescription = InstrumentDescription(soundSet: soundSet, program: program, channel: channel)
-    do {
-      var track = Mixer.existingTrackForInstrumentWithDescription(instrumentDescription)
-      if track == nil { track = try Mixer.newTrackForInstrumentWithDescription(instrumentDescription) }
-      guard track != nil else { return }
-
-      let midiNode = MIDINode(texture: MIDINode.templateTextureType, placement: placement, track: track!, note: MIDINode.templateNote)
-      midiNode.name = "midiNode\(midiNodes.count)"
-      midiNode.color = track!.color.value
-      midiNode.colorBlendFactor = 1.0
-      addChild(midiNode)
-      midiNodes.append(midiNode)
-    } catch {
-      logError(error)
-    }
+    // WARN: Redo
+//    let instrumentDescription = InstrumentDescription(soundSet: soundSet, program: program, channel: channel)
+//    do {
+//      var track = Mixer.existingTrackForInstrumentWithDescription(instrumentDescription)
+//      if track == nil { track = try Mixer.newTrackForInstrumentWithDescription(instrumentDescription) }
+//      guard track != nil else { return }
+//
+//      let midiNode = MIDINode(
+//        texture: MIDINode.templateTextureType,
+//        placement: placement,
+//        track: track!,
+//        note: MIDINode.templateNote
+//      )
+//
+//      midiNode.name = "midiNode\(midiNodes.count)"
+//      midiNode.color = track!.color.value
+//      midiNode.colorBlendFactor = 1.0
+//
+//      addChild(midiNode)
+//
+//      midiNodes.append(midiNode)
+//    }
+//    catch { logError(error) }
 
   }
 

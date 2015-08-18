@@ -14,9 +14,12 @@ import CoreAudio
 
 final class Mixer {
 
+  typealias Bus = AudioUnitElement
+  typealias ParameterValue = AudioUnitParameterValue
+
   enum Notification {
-    case TrackAdded (AudioUnitElement)
-    case TrackRemoved (AudioUnitElement)
+    case TrackAdded (Bus)
+    case TrackRemoved (Bus)
 
     enum NotificationName: String { case DidAddTrack, DidRemoveTrack }
 
@@ -40,19 +43,9 @@ final class Mixer {
     }
   }
 
-  static private(set) var tracks: OrderedDictionary<AudioUnitElement, TrackType> = [0: MasterTrack.sharedInstance] {
-    didSet {
+  static private(set) var tracks: OrderedDictionary<Bus, InstrumentTrack> = [:]
 
-      MSLogDebug("tracks = \(tracks)")
-    }
-  }
-
-  static var instrumentTracks: [InstrumentTrack] {
-    guard tracks.count > 1, let instrumentTracks = Array(tracks.values[1..<]) as? [InstrumentTrack] else { return [] }
-    return instrumentTracks
-  }
-
-  static var instruments: [Instrument] { return instrumentTracks.map { $0.instrument } }
+  static var instruments: [Instrument] { return tracks.values.map { $0.instrument } }
 
   // MARK: - Type for Mixer-specific errors
 
@@ -90,18 +83,18 @@ final class Mixer {
 
   - returns: InstrumentTrack?
   */
-  static func existingTrackForInstrumentWithDescription(description: InstrumentDescription) -> InstrumentTrack? {
-    return instrumentTracks.filter({$0.instrument.instrumentDescription == description}).first
+  static func existingTrackWithSoundSet(soundSet: SoundSet) -> InstrumentTrack? {
+    return tracks.filter({$2.instrument.soundSet == soundSet}).first?.2
   }
 
   /**
   nextAvailableBus
 
-  - returns: AudioUnitElement
+  - returns: Bus
   */
-  private static func nextAvailableBus() -> AudioUnitElement {
-    // TODO: Fix this
-    return AudioUnitElement(tracks.count)
+  private static func nextAvailableBus() -> Bus {
+    guard tracks.count > 0 else { return 0 }
+    return tracks.keys.maxElement()! + 1
   }
 
   /**
@@ -109,7 +102,7 @@ final class Mixer {
 
   - parameter description: InstrumentDescription
   */
-  static func newTrackForInstrumentWithDescription(description: InstrumentDescription) throws -> InstrumentTrack {
+  static func newTrackWithSoundSet(soundSet: SoundSet) throws -> InstrumentTrack {
     guard let mixerNode = mixerNode else { throw Error.NilMixerNode }
     var instrumentComponentDescription = AudioComponentDescription(componentType: kAudioUnitType_MusicDevice,
                                                                    componentSubType: kAudioUnitSubType_Sampler,
@@ -127,14 +120,13 @@ final class Mixer {
     let bus = nextAvailableBus()
     try checkStatus(AUGraphConnectNodeInput(AudioManager.graph, instrumentNode, 0, mixerNode, bus),
                     "Failed to connect instrument output to mixer input")
-    let instrument = try Instrument(description: description, unit: instrumentUnit)
     try checkStatus(AUGraphUpdate(AudioManager.graph, nil), "Failed to update audio graph")
 
     var musicTrack = MusicTrack()
     try checkStatus(MusicSequenceNewTrack(AudioManager.musicSequence, &musicTrack), "Failed to create new music track")
     try checkStatus(MusicTrackSetDestNode(musicTrack, instrumentNode), "Failed to set dest node for track")
 
-    let track = InstrumentTrack(instrument: instrument, bus: bus, track: musicTrack)
+    let track = InstrumentTrack(instrument: Instrument(audioUnit: instrumentUnit, soundSet: soundSet), bus: bus, track: musicTrack)
     tracks[bus] = track
 
     Notification.TrackAdded(bus).post()
@@ -146,7 +138,7 @@ final class Mixer {
     return track
   }
 
-  static func removeTrackOnBus(bus: AudioUnitElement) {
+  static func removeTrackOnBus(bus: Bus) {
 
   }
 
@@ -177,12 +169,12 @@ final class Mixer {
   setParameter:forBus:toValue:
 
   - parameter parameter: Parameter
-  - parameter bus: AudioUnitElement
-  - parameter value: AudioUnitParameterValue
+  - parameter bus: Bus
+  - parameter value: ParameterValue
   */
   private static func setParameter(parameter: Parameter,
-                             onBus bus: AudioUnitElement,
-                           toValue value: AudioUnitParameterValue,
+                             onBus bus: Bus,
+                           toValue value: ParameterValue,
                              scope: Scope) throws
   {
     guard let mixerUnit = mixerUnit else { throw Error.NilMixerUnit }
@@ -194,14 +186,14 @@ final class Mixer {
   valueForParameter:onBus:
 
   - parameter parameter: Parameter
-  - parameter bus: AudioUnitElement
+  - parameter bus: Bus
   */
   private static func valueForParameter(parameter: Parameter,
-                                  onBus bus: AudioUnitElement,
-                                  scope: Scope) throws -> AudioUnitParameterValue
+                                  onBus bus: Bus,
+                                  scope: Scope) throws -> ParameterValue
   {
     guard let mixerUnit = mixerUnit else { throw Error.NilMixerUnit }
-    var value = AudioUnitParameterValue()
+    var value = ParameterValue()
     let status = AudioUnitGetParameter(mixerUnit, parameter.id, scope.value, bus, &value)
     try checkStatus(status, "retrieving \(parameter.rawValue.lowercaseString) on bus \(bus)")
     return value
@@ -212,39 +204,39 @@ final class Mixer {
   /**
   setMasterVolume:
 
-  - parameter volume: AudioUnitParameterValue
+  - parameter volume: ParameterValue
   */
-  static func setMasterVolume(volume: AudioUnitParameterValue) throws {
+  static func setMasterVolume(volume: ParameterValue) throws {
     try setParameter(.Volume, onBus: 0, toValue: volume, scope: .Output)
   }
 
   /** masterVolume */
-  static func masterVolume() throws -> AudioUnitParameterValue {
+  static func masterVolume() throws -> ParameterValue {
     return try valueForParameter(.Volume, onBus: 0, scope: .Output)
   }
 
   /**
   setMasterPan:
 
-  - parameter pan: AudioUnitParameterValue
+  - parameter pan: ParameterValue
   */
-  static func setMasterPan(pan: AudioUnitParameterValue) throws {
+  static func setMasterPan(pan: ParameterValue) throws {
     try setParameter(.Pan, onBus: 0, toValue: pan, scope: .Output)
   }
 
   /** masterPan */
-  static func masterPan() throws -> AudioUnitParameterValue {
+  static func masterPan() throws -> ParameterValue {
     return try valueForParameter(.Pan, onBus: 0, scope: .Output)
   }
 
   /** masterEnable */
   static func masterEnable() throws {
-    try setParameter(.Enable, onBus: 0, toValue: AudioUnitParameterValue(1), scope: .Output)
+    try setParameter(.Enable, onBus: 0, toValue: ParameterValue(1), scope: .Output)
   }
 
   /** masterDisable */
   static func masterDisable() throws {
-    try setParameter(.Enable, onBus: 0, toValue: AudioUnitParameterValue(0), scope: .Output)
+    try setParameter(.Enable, onBus: 0, toValue: ParameterValue(0), scope: .Output)
   }
 
   /** isMasterEnabled */
@@ -257,65 +249,65 @@ final class Mixer {
   /**
   setVolume:onBus:
 
-  - parameter volume: AudioUnitParameterValue
-  - parameter bus: AudioUnitElement
+  - parameter volume: ParameterValue
+  - parameter bus: Bus
   */
-  static func setVolume(volume: AudioUnitParameterValue, onBus bus: AudioUnitElement) throws {
+  static func setVolume(volume: ParameterValue, onBus bus: Bus) throws {
     try setParameter(.Volume, onBus: bus, toValue: volume, scope: .Input)
   }
 
   /**
   setPan:onBus:
 
-  - parameter pan: AudioUnitParameterValue
-  - parameter bus: AudioUnitElement
+  - parameter pan: ParameterValue
+  - parameter bus: Bus
   */
-  static func setPan(pan: AudioUnitParameterValue, onBus bus: AudioUnitElement) throws {
+  static func setPan(pan: ParameterValue, onBus bus: Bus) throws {
     try setParameter(.Pan, onBus: bus, toValue: pan, scope: .Input)
   }
 
   /**
   volumeOnBus:
 
-  - parameter bus: AudioUnitElement
+  - parameter bus: Bus
   */
-  static func volumeOnBus(bus: AudioUnitElement) throws -> AudioUnitParameterValue {
+  static func volumeOnBus(bus: Bus) throws -> ParameterValue {
     return try valueForParameter(.Volume, onBus: bus, scope: .Input)
   }
 
   /**
   panOnBus:
 
-  - parameter bus: AudioUnitElement
+  - parameter bus: Bus
   */
-  static func panOnBus(bus: AudioUnitElement) throws -> AudioUnitParameterValue {
+  static func panOnBus(bus: Bus) throws -> ParameterValue {
     return try valueForParameter(.Pan, onBus: bus, scope: .Input)
   }
 
   /**
   enableBus:
 
-  - parameter bus: AudioUnitElement
+  - parameter bus: Bus
   */
-  static func enableBus(bus: AudioUnitElement) throws {
-    try setParameter(.Enable, onBus: bus, toValue: AudioUnitParameterValue(1), scope: .Input)
+  static func enableBus(bus: Bus) throws {
+    try setParameter(.Enable, onBus: bus, toValue: ParameterValue(1), scope: .Input)
   }
 
   /**
   disableBus:
 
-  - parameter bus: AudioUnitElement
+  - parameter bus: Bus
   */
-  static func disableBus(bus: AudioUnitElement) throws {
-    try setParameter(.Enable, onBus: bus, toValue: AudioUnitParameterValue(0), scope: .Input)
+  static func disableBus(bus: Bus) throws {
+    try setParameter(.Enable, onBus: bus, toValue: ParameterValue(0), scope: .Input)
   }
 
   /**
   isBusEnabled:
 
-  - parameter bus: AudioUnitElement
+  - parameter bus: Bus
   */
-  static func isBusEnabled(bus: AudioUnitElement) throws -> Bool {
+  static func isBusEnabled(bus: Bus) throws -> Bool {
     return try valueForParameter(.Enable, onBus: bus, scope: .Input) == 1
   }
 

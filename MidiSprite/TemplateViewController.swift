@@ -25,14 +25,6 @@ final class TemplateViewController: UIViewController {
     barButtonItem = item
   }
 
-  /** updateViewConstraints */
-//  override func updateViewConstraints() {
-//    super.updateViewConstraints()
-//    let id = Identifier(self, "View")
-//    guard view.constraintsWithIdentifier(id).count == 0 else { return }
-//    view.constrain(view.width ≥ 300 --> id)
-//  }
-
   /**
   init:
 
@@ -68,7 +60,7 @@ final class TemplateViewController: UIViewController {
       velocityField = form[FieldName.Velocity.rawValue] as? FormSliderField,
       durationField = form[FieldName.Duration.rawValue] as? FormSliderField else { return }
 
-      noteField.value = Int(note.value.midi)
+      noteField.value = Int(note.note)
       velocityField.value = Float(note.velocity)
       durationField.value = Float(note.duration)
 
@@ -87,7 +79,7 @@ final class TemplateViewController: UIViewController {
                                     choices: MIDINode.TextureType.allCases.map { $0.image})
 
     let noteField = FormPickerField(name: FieldName.Note.rawValue,
-                                    value: Int(note.value.midi),
+                                    value: Int(note.note),
                                     choices: MIDINote.allCases.map({$0.rawValue}))
 
     let velocityField = FormSliderField(name: FieldName.Velocity.rawValue,
@@ -125,13 +117,13 @@ final class TemplateViewController: UIViewController {
         }
 
         case .Note:
-          if let midi = field.value as? Int { self.note.value = MIDINote(midi: UInt8(midi)) }
+          if let midi = field.value as? Int { self.note.note = UInt8(midi) }
 
         case .Velocity:
           if let velocity = field.value as? Float { self.note.velocity = UInt8(velocity) }
 
         case .Duration:
-          if let duration = field.value as? Float { self.note.duration = Double(duration) }
+          if let duration = field.value as? Float { self.note.duration = duration }
 
       }
 

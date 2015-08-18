@@ -9,12 +9,10 @@
 import UIKit
 import MoonKit
 import Chameleon
+import typealias AudioToolbox.AudioUnitParameterValue
 
-class TrackCell: UICollectionViewCell, UITextFieldDelegate {
+class TrackCell: UICollectionViewCell {
 
-  static let Identifier = "TrackCell"
-
-  @IBOutlet weak var volumeLabel: UILabel!
   @IBOutlet weak var volumeSlider: VerticalSlider! {
     didSet {
       guard let volumeSlider = volumeSlider else { return }
@@ -23,23 +21,52 @@ class TrackCell: UICollectionViewCell, UITextFieldDelegate {
       volumeSlider.setMaximumTrackImage(UIImage(named: "line6"), forState: .Normal, color: rgb(51, 50, 49))
     }
   }
-  @IBOutlet weak var panLabel: UILabel!
-  @IBOutlet weak var labelTextField: UITextField!
 
-  var track: TrackType? {
-    didSet {
-      guard let track = track else { return }
-      MSLogDebug("track = \(track)")
-      volumeSlider.value = track.volume * volumeSlider.maximumValue
-      // TODO: Update UI with pan value
-      labelTextField.text = track.label
-      labelTextField.enabled = track is InstrumentTrackType
-      tintColor = track.color.value
-    }
+  var volume: AudioUnitParameterValue {
+    get { return volumeSlider.value / volumeSlider.maximumValue }
+    set { volumeSlider.value = newValue * volumeSlider.maximumValue }
   }
+
+  /**
+  intrinsicContentSize
+
+  - returns: CGSize
+  */
+  override func intrinsicContentSize() -> CGSize { return CGSize(width: 64, height: 300) }
+
+}
+
+final class MasterTrackCell: TrackCell {
+
+  static let Identifier = "MasterTrackCell"
+
+  /** refresh */
+  func refresh() { do { volume = try Mixer.masterVolume() } catch { logError(error) } }
+
+  /** volumeDidChange */
+  @IBAction func volumeDidChange() { do { try Mixer.setMasterVolume(volume) } catch { logError(error) } }
+
+}
+
+final class InstrumentTrackCell: TrackCell, UITextFieldDelegate {
+
+  static let Identifier = "InstrumentTrackCell"
+
+  @IBOutlet weak var labelTextField: UITextField!
 
   /** volumeDidChange */
   @IBAction func volumeDidChange() { track?.volume = volumeSlider.value / volumeSlider.maximumValue }
+
+  var track: InstrumentTrack? {
+    didSet {
+      guard let track = track else { return }
+      MSLogDebug("track = \(track)")
+      volume = track.volume
+      // TODO: Update UI with pan value
+      labelTextField.text = track.label
+      tintColor = track.color.value
+    }
+  }
 
 
   /**
@@ -50,7 +77,8 @@ class TrackCell: UICollectionViewCell, UITextFieldDelegate {
   - returns: Bool
   */
   @objc func textFieldShouldEndEditing(textField: UITextField) -> Bool {
-    return textField.text != nil && !textField.text!.isEmpty
+    guard let text = textField.text else { return false }
+    return !text.isEmpty
   }
 
   /**
@@ -61,18 +89,8 @@ class TrackCell: UICollectionViewCell, UITextFieldDelegate {
   - returns: Bool
   */
   @objc func textFieldShouldReturn(textField: UITextField) -> Bool {
-    if let instrumentTrack = track as? InstrumentTrackType, label = textField.text { instrumentTrack.label = label }
+    if let track = track, label = textField.text { track.label = label }
     textField.resignFirstResponder()
     return false
   }
-
-  /**
-  intrinsicContentSize
-
-  - returns: CGSize
-  */
-  override func intrinsicContentSize() -> CGSize {
-    return CGSize(width: 64, height: 300)
-  }
-
 }

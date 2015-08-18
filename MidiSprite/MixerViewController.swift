@@ -51,7 +51,7 @@ class MixerViewController: UICollectionViewController {
 
   - returns: Int
   */
-  override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int { return 1 }
+  override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int { return 2 }
 
 
   /**
@@ -63,7 +63,7 @@ class MixerViewController: UICollectionViewController {
   - returns: Int
   */
   override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return Mixer.tracks.count
+    return section == 0 ? 1 : Mixer.tracks.count
   }
 
   /**
@@ -77,9 +77,16 @@ class MixerViewController: UICollectionViewController {
   override func collectionView(collectionView: UICollectionView,
         cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell
   {
-    let cell = collectionView.dequeueReusableCellWithReuseIdentifier(TrackCell.Identifier,
-                                                        forIndexPath: indexPath) as! TrackCell
-    cell.track = Mixer.tracks[AudioUnitElement(indexPath.item)]
+    let cell: UICollectionViewCell
+    switch indexPath.section {
+      case 0:
+        cell = collectionView.dequeueReusableCellWithReuseIdentifier(MasterTrackCell.Identifier, forIndexPath: indexPath)
+        (cell as? MasterTrackCell)?.refresh()
+      default:
+        cell = collectionView.dequeueReusableCellWithReuseIdentifier(InstrumentTrackCell.Identifier, forIndexPath: indexPath)
+        (cell as? InstrumentTrackCell)?.track = Mixer.tracks[AudioUnitElement(indexPath.item)]
+    }
+    
     return cell
   }
 

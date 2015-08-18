@@ -9,9 +9,11 @@
 import UIKit
 import SpriteKit
 import MoonKit
+import struct AudioToolbox.MIDINoteMessage
 
-class MIDINode: SKSpriteNode {
+final class MIDINode: SKSpriteNode {
 
+  // MARK: - Type to specify the node's texture
   enum TextureType: String, EnumerableType {
     case Brick, Cobblestone, Concrete, Crusty, DiamondPlate, Dirt, Fur,
          Mountains, OceanBasin, Parchment, Sand, Stucco
@@ -22,14 +24,19 @@ class MIDINode: SKSpriteNode {
                                           .Mountains, .OceanBasin, .Parchment, .Sand, .Stucco]
   }
 
+  // MARK: - Properties used to initialize a new `MIDINode`
   static var templateNote = Note()
   static var templateTextureType = TextureType.Cobblestone
+
+  // MARK: - Properties relating to the node's appearance
 
   var textureType: TextureType
 
   static var defaultSize = CGSize(square: 32)
 
-  typealias Note = Instrument.Note
+  // MARK: -  Properties affecting what is played by the node
+
+  typealias Note = MIDINoteMessage
 
   var note: Note
 
@@ -41,40 +48,29 @@ class MIDINode: SKSpriteNode {
 
   let id = nonce()
 
+  // MARK: - Methods for playing/erasing the node
+
   enum Actions: String { case Play }
 
   /** play */
   func play() {
-    if let _ = actionForKey(Actions.Play.rawValue) {
-      do { try track.instrument.stopNoteForNode(self) } catch { logError(error) }
-      removeActionForKey(Actions.Play.rawValue)
-    }
-    let halfDuration = note.duration * 0.5
+    let halfDuration = Double(note.duration * 0.5)
     let scaleUp = SKAction.scaleTo(2, duration: halfDuration)
-    let noteOn = SKAction.runBlock({
-      [weak self] in
-
-        do {
-          try self?.track.instrument.playNoteForNode(self!)
-        } catch {
-          logError(error)
-        }
-    })
+    let noteOn = SKAction.runBlock({ [weak self] in do { try self?.track.addNoteForNode(self!) } catch { logError(error) } })
     let scaleDown = SKAction.scaleTo(1, duration: halfDuration)
-    let noteOff = SKAction.runBlock({
-      [weak self] in
-
-        do {
-          try self?.track.instrument.stopNoteForNode(self!)
-        } catch {
-          logError(error)
-        }
-    })
-    let sequence = SKAction.sequence([SKAction.group([scaleUp, noteOn]), scaleDown, noteOff])
+    let sequence = SKAction.sequence([SKAction.group([scaleUp, noteOn]), scaleDown])
     runAction(sequence, withKey: Actions.Play.rawValue)
   }
 
+  /** erase */
+  private func erase() {
 
+  }
+
+  /** removeFromParent */
+  override func removeFromParent() { erase(); super.removeFromParent() }
+
+  // MARK: - Initialization
 
   /**
   init:placement:instrument:note:
@@ -84,7 +80,11 @@ class MIDINode: SKSpriteNode {
   - parameter tr: InstrumentTrack
   - parameter n: Note
   */
-  init(texture t: TextureType, placement p: Placement, track tr: InstrumentTrack, note n: Note) {
+  init(placement p: Placement,
+       track tr: InstrumentTrack,
+       texture t: TextureType = templateTextureType,
+       note n: Note = templateNote)
+  {
     textureType = t
     placement = p
     track = tr

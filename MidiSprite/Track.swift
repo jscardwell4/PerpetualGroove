@@ -11,79 +11,53 @@ import UIKit
 import MoonKit
 import AudioToolbox
 
-// MARK: - Enumeration for specifying the color attached to a `TrackType`
-enum TrackColor: UInt32, EnumerableType {
-  case White      = 0xffffff
-  case Portica    = 0xf7ea64
-  case MonteCarlo = 0x7ac2a5
-  case FlamePea   = 0xda5d3a
-  case Crimson    = 0xd6223e
-  case HanPurple  = 0x361aee
-  case MangoTango = 0xf88242
-  case Viking     = 0x6bcbe1
-  case Yellow     = 0xfde97e
-  case Conifer    = 0x9edc58
-  case Apache     = 0xce9f58
+typealias Track = MusicTrack
 
-  var value: UIColor { return UIColor(RGBHex: rawValue) }
+final class InstrumentTrack: Equatable {
 
-  /// `White` case is left out so that it is harder to assign the color used by `MasterTrack`
-  static let allCases: [TrackColor] = [.Portica, .MonteCarlo, .FlamePea, .Crimson, .HanPurple,
-                                       .MangoTango, .Viking, .Yellow, .Conifer, .Apache]
-}
+  // MARK: - Constant properties
 
-// MARK: - TrackType to represent the "Master" track
-
-final class MasterTrack: TrackType {
-  static let sharedInstance = MasterTrack()
-
-  private init() {
-    do {
-      volume = try Mixer.masterVolume()
-      pan = try Mixer.masterPan()
-    } catch { logError(error) }
-  }
-  
-  let bus: AudioUnitElement = 0
-  let color = TrackColor.White
-  let label = "MASTER"
-  var volume: AudioUnitParameterValue = 1 {
-    didSet {
-      volume = ClosedInterval<AudioUnitParameterValue>(0, 1).clampValue(volume)
-      do { try Mixer.setMasterVolume(volume) }
-      catch { logError(error) }
-    }
-  }
-  var pan: AudioUnitParameterValue = 0 {
-    didSet {
-      pan = ClosedInterval<AudioUnitParameterValue>(-1, 1).clampValue(pan)
-      do { try Mixer.setMasterPan(pan) }
-      catch { logError(error) }
-    }
-  }
-
-}
-
-// MARK: - TrackType for user-created instrument tracks
-final class InstrumentTrack: InstrumentTrackType, Equatable {
   let instrument: Instrument
-  let musicTrack: MusicTrack
-  lazy var label: String = {"bus \(self.bus)"}()
-  let bus: AudioUnitElement
-  let color: TrackColor
+  let musicTrack: Track
 
-  var volume: AudioUnitParameterValue = 1  {
+  let bus: Mixer.Bus
+  let color: Color
+
+  // MARK: - Enumeration for specifying the color attached to a `TrackType`
+  enum Color: UInt32, EnumerableType {
+    case White      = 0xffffff
+    case Portica    = 0xf7ea64
+    case MonteCarlo = 0x7ac2a5
+    case FlamePea   = 0xda5d3a
+    case Crimson    = 0xd6223e
+    case HanPurple  = 0x361aee
+    case MangoTango = 0xf88242
+    case Viking     = 0x6bcbe1
+    case Yellow     = 0xfde97e
+    case Conifer    = 0x9edc58
+    case Apache     = 0xce9f58
+
+    var value: UIColor { return UIColor(RGBHex: rawValue) }
+
+    /// `White` case is left out so that it is harder to assign the color used by `MasterTrack`
+    static let allCases: [Color] = [.Portica, .MonteCarlo, .FlamePea, .Crimson, .HanPurple,
+                                    .MangoTango, .Viking, .Yellow, .Conifer, .Apache]
+  }
+
+  // MARK: - Editable properties
+
+  lazy var label: String = {"bus \(self.bus)"}()
+
+  var volume: Mixer.ParameterValue = 1  {
     didSet {
-      volume = ClosedInterval<AudioUnitParameterValue>(0, 1).clampValue(volume)
-      do { try Mixer.setVolume(volume, onBus: bus) }
-      catch { logError(error) }
+      volume = ClosedInterval<Mixer.ParameterValue>(0, 1).clampValue(volume)
+      do { try Mixer.setVolume(volume, onBus: bus) } catch { logError(error) }
     }
   }
-  var pan: AudioUnitParameterValue = 0 {
+  var pan: Mixer.ParameterValue = 0 {
     didSet {
-      pan = ClosedInterval<AudioUnitParameterValue>(-1, 1).clampValue(pan)
-      do { try Mixer.setPan(pan, onBus: bus) }
-      catch { logError(error) }
+      pan = ClosedInterval<Mixer.ParameterValue>(-1, 1).clampValue(pan)
+      do { try Mixer.setPan(pan, onBus: bus) } catch { logError(error) }
     }
   }
 
@@ -93,12 +67,11 @@ final class InstrumentTrack: InstrumentTrackType, Equatable {
   - parameter i: Instrument
   - parameter b: AudioUnitElement
   */
-  init(instrument i: Instrument, bus b: AudioUnitElement, track: MusicTrack) {
+  init(instrument i: Instrument, bus b: Mixer.Bus, track: Track) {
     instrument = i
     bus = b
     musicTrack = track
-    color = TrackColor.allCases[Int(bus) % 10]
-    instrument.track = self
+    color = Color.allCases[Int(bus) % 10]
     do {
       let currentVolume = try Mixer.volumeOnBus(bus)
       let currentPan = try Mixer.panOnBus(bus)
@@ -107,7 +80,21 @@ final class InstrumentTrack: InstrumentTrackType, Equatable {
     } catch { logError(error) }
   }
 
+  /**
+  addNoteForNode:
+
+  - parameter node: MIDINode
+  */
+  func addNoteForNode(node: MIDINode) throws {
+    var playing = DarwinBoolean(false)
+    try checkStatus(MusicPlayerIsPlaying(AudioManager.musicPlayer, &playing), "Failed to check playing status of music player")
+    var timestamp = MusicTimeStamp(0)
+    if playing { try checkStatus(MusicPlayerGetTime(AudioManager.musicPlayer, &timestamp), "Failed to get time from player") }
+    try checkStatus(MusicTrackNewMIDINoteEvent(musicTrack, timestamp, &node.note), "Failed to add new note event")
+    if !playing { try checkStatus(MusicPlayerStart(AudioManager.musicPlayer), "Failed to start playing music player") }
+  }
+
 }
 
 
-func ==(lhs: InstrumentTrack, rhs: InstrumentTrack) -> Bool { return lhs.instrument == rhs.instrument && lhs.bus == rhs.bus }
+func ==(lhs: InstrumentTrack, rhs: InstrumentTrack) -> Bool { return lhs.bus == rhs.bus }
