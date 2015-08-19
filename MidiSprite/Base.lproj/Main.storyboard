@@ -63,6 +63,7 @@
                                     <barButtonItem image="piano" style="plain" id="uuO-FY-Y2S" userLabel="Instrument" customClass="ImageBarButtonItem" customModule="MoonKit" colorLabel="IBBuiltInLabel-Red">
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="piano-selected"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
                                         </userDefinedRuntimeAttributes>
                                         <connections>
                                             <action selector="instrument" destination="BV1-FR-VrT" id="rzG-Lj-UEO"/>
@@ -78,9 +79,10 @@
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="Nn5-Ip-28S" colorLabel="IBBuiltInLabel-Red"/>
-                                    <barButtonItem image="concrete-button" style="plain" id="crO-6C-Y4j" userLabel="Template" customClass="ImageBarButtonItem" customModule="MoonKit" colorLabel="IBBuiltInLabel-Red">
+                                    <barButtonItem image="template" style="plain" id="crO-6C-Y4j" userLabel="Template" customClass="ImageBarButtonItem" customModule="MoonKit" colorLabel="IBBuiltInLabel-Red">
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="template-selected"/>
                                         </userDefinedRuntimeAttributes>
                                         <connections>
                                             <action selector="template" destination="BV1-FR-VrT" id="3aI-KQ-kZV"/>
@@ -184,6 +186,7 @@
                     <nil key="simulatedTopBarMetrics"/>
                     <nil key="simulatedBottomBarMetrics"/>
                     <connections>
+                        <outlet property="instrumentBarButtonItem" destination="uuO-FY-Y2S" id="pFZ-3j-grD"/>
                         <outlet property="mixerBarButtonItem" destination="0cd-Py-C2q" id="GZK-Pe-FVB"/>
                         <outlet property="playPauseBarButtonItem" destination="S5n-Me-CQ9" id="1D6-HT-X10"/>
                         <outlet property="skView" destination="U9p-PY-X1m" id="Khl-SR-qcK"/>
@@ -211,7 +214,7 @@
                             <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                         </collectionViewFlowLayout>
                         <cells>
-                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="MasterTrackCell" id="Ywg-X3-Y1Q" userLabel="Master Cell" customClass="MasterTrackCell" customModule="MidiSprite" customModuleProvider="target">
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="MasterCell" id="Ywg-X3-Y1Q" userLabel="Master Cell" customClass="MasterCell" customModule="MidiSprite" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="74" height="300"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -285,7 +288,7 @@
                                     <outlet property="volumeSlider" destination="Evx-CT-UhF" id="vDN-Mv-AOX"/>
                                 </connections>
                             </collectionViewCell>
-                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="InstrumentTrackCell" id="2AY-7g-m2Q" userLabel="Track Cell" customClass="InstrumentTrackCell" customModule="MidiSprite" customModuleProvider="target">
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="TrackCell" id="2AY-7g-m2Q" userLabel="Track Cell" customClass="TrackCell" customModule="MidiSprite" customModuleProvider="target">
                                 <rect key="frame" x="84" y="0.0" width="74" height="300"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -378,7 +381,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="concrete-button" width="56" height="56"/>
         <image name="floppydisk" width="56" height="56"/>
         <image name="floppydisk-selected" width="56" height="56"/>
         <image name="piano" width="56" height="56"/>
@@ -393,5 +395,7 @@
         <image name="sliders-selected" width="56" height="56"/>
         <image name="stop" width="61" height="61"/>
         <image name="stop-selected" width="61" height="61"/>
+        <image name="template" width="56" height="56"/>
+        <image name="template-selected" width="56" height="56"/>
     </resources>
 </document>

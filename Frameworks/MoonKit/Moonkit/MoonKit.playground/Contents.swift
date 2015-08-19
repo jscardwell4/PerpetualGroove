@@ -3,8 +3,7 @@ import Foundation
 import UIKit
 import MoonKit
 
-let interval = ClosedInterval<Float>(0, 1)
-interval.contains(Float(0.5))
-interval.contains(Float(1.0))
-interval.contains(Float(1.1))
 
+var list = List<Int>()
+var list2 = list.cons(4)
+var list3 = list2.cons(5)

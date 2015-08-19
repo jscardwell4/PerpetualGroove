@@ -40,7 +40,7 @@ final class MIDINode: SKSpriteNode {
 
   var note: Note
 
-  var track: InstrumentTrack
+  var track: Track
 
   struct Placement { let position: CGPoint; let vector: CGVector }
 
@@ -77,11 +77,11 @@ final class MIDINode: SKSpriteNode {
 
   - parameter t: TextureType
   - parameter p: Placement
-  - parameter tr: InstrumentTrack
+  - parameter tr: Track
   - parameter n: Note
   */
   init(placement p: Placement,
-       track tr: InstrumentTrack,
+       track tr: Track,
        texture t: TextureType = currentTexture,
        note n: Note = currentNote)
   {

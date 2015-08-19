@@ -191,6 +191,8 @@ enum Error: ErrorType, CustomStringConvertible {
   }
 }
 
+func location(function: String = __FUNCTION__, line: Int32 = __LINE__) -> String { return "[\(function):\(line)]" }
+
 /**
 checkStatus:message:
 

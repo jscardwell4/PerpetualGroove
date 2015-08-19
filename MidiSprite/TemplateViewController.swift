@@ -13,16 +13,13 @@ import Chameleon
 
 final class TemplateViewController: UIViewController {
 
-  var barButtonItem: ImageBarButtonItem?
-
   /**
   initWithBarButtonItem:
 
   - parameter barButtonItem: ImageBarButtonItem
   */
-  init(barButtonItem item: ImageBarButtonItem?) {
+  init() {
     super.init(nibName: nil, bundle: nil)
-    barButtonItem = item
   }
 
   /**
@@ -44,6 +41,14 @@ final class TemplateViewController: UIViewController {
     formView.tintColor                = Chameleon.quietLightLilyWhiteDark
     view = formView
     view.setNeedsUpdateConstraints()
+  }
+
+  /** updateViewConstraints */
+  override func updateViewConstraints() {
+    super.updateViewConstraints()
+    let id = Identifier(self, "ViewWidth")
+    guard view.constraintsWithIdentifier(id).count == 0 else { return }
+    view.constrain(view.width ≤ (UIScreen.mainScreen().bounds.width - 10) --> id)
   }
 
   var textureType = MIDINode.currentTexture {
@@ -111,9 +116,6 @@ final class TemplateViewController: UIViewController {
           if let idx = field.value as? Int where MIDINode.TextureType.allCases.indices.contains(idx) {
             let type = MIDINode.TextureType.allCases[idx]
             self.textureType = type
-            let image = type.image
-            self.barButtonItem?.image = image
-            self.barButtonItem?.highlightedImage = image.imageWithBackgroundColor(.whiteColor()).inverted.maskToAlpha
         }
 
         case .Note:

@@ -64,29 +64,28 @@ class MIDIPlayerNode: SKShapeNode {
                              as? MIDIPlayerSceneViewController else { return }
     if !controller.playing { controller.play() }
 
-    let track: InstrumentTrack
-
-    if let t = Mixer.currentTrack { track = t }
-    else {
+    let track: Track
+    if let currentTrack = TrackManager.currentTrack where currentTrack.instrument.soundSet == InstrumentViewController.soundSet && currentTrack.instrument.programOnChannel(0) == InstrumentViewController.program {
+      track = currentTrack
+    } else {
       do {
-        track = try Mixer.newTrackWithSoundSet(Instrument.currentSoundSet)
-        try track.instrument.setProgram(Instrument.currentProgram, onChannel: Instrument.currentChannel)
-        Mixer.currentTrack = track
+        track = try TrackManager.newTrackUsingSoundSet(InstrumentViewController.soundSet,
+                                          setToProgram: InstrumentViewController.program)
+        TrackManager.currentTrack = track
       } catch {
         logError(error)
         return
       }
-    }
+  }
+    let midiNode = MIDINode(placement: placement, track: track)
 
-      let midiNode = MIDINode(placement: placement, track: track)
+    midiNode.name = "midiNode\(midiNodes.count)"
+    midiNode.color = track.color.value
+    midiNode.colorBlendFactor = 1.0
 
-      midiNode.name = "midiNode\(midiNodes.count)"
-      midiNode.color = track.color.value
-      midiNode.colorBlendFactor = 1.0
+    addChild(midiNode)
 
-      addChild(midiNode)
-
-      midiNodes.append(midiNode)
+    midiNodes.append(midiNode)
   }
 
 }

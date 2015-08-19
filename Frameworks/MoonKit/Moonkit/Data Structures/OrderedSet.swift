@@ -40,7 +40,7 @@ public struct OrderedSet<Element:Equatable> : MutableCollectionType {
   */
   public func generate() -> IndexingGenerator<[Element]> { return storage.generate() }
 
-  public typealias SubSlice = ArraySlice<Element>
+  public typealias SubSlice = OrderedSet<Element>
 
   /**
   subscript:
@@ -49,7 +49,7 @@ public struct OrderedSet<Element:Equatable> : MutableCollectionType {
 
   - returns: ArraySlice<Element>
   */
-  public subscript (subRange: Range<Int>) -> ArraySlice<Element> { return storage[subRange] }
+  public subscript (subRange: Range<Int>) -> OrderedSet<Element> { return OrderedSet(storage[subRange]) }
 
   /**
   init:

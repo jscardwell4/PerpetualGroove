@@ -11,14 +11,17 @@ import UIKit
 import MoonKit
 import AudioToolbox
 
-final class InstrumentTrack: Equatable {
+final class Track: Equatable {
+
+  typealias Program = Instrument.Program
+  typealias Channel = Instrument.Channel
 
   // MARK: - Constant properties
 
-  let instrument: Instrument
   let musicTrack: MusicTrack
 
-  let bus: Mixer.Bus
+  var instrument: Instrument { return bus.instrument }
+  let bus: Bus
   let color: Color
 
   // MARK: - Enumeration for specifying the color attached to a `TrackType`
@@ -44,20 +47,10 @@ final class InstrumentTrack: Equatable {
 
   // MARK: - Editable properties
 
-  lazy var label: String = {"bus \(self.bus)"}()
+  lazy var label: String = {"bus \(self.bus.element)"}()
 
-  var volume: Mixer.ParameterValue = 1  {
-    didSet {
-      volume = ClosedInterval<Mixer.ParameterValue>(0, 1).clampValue(volume)
-      do { try Mixer.setVolume(volume, onBus: bus) } catch { logError(error) }
-    }
-  }
-  var pan: Mixer.ParameterValue = 0 {
-    didSet {
-      pan = ClosedInterval<Mixer.ParameterValue>(-1, 1).clampValue(pan)
-      do { try Mixer.setPan(pan, onBus: bus) } catch { logError(error) }
-    }
-  }
+  var volume: Float { get { return bus.volume } set { bus.volume = newValue } }
+  var pan: Float { get { return bus.pan } set { bus.pan = newValue } }
 
   /**
   init:bus:
@@ -65,17 +58,10 @@ final class InstrumentTrack: Equatable {
   - parameter i: Instrument
   - parameter b: AudioUnitElement
   */
-  init(instrument i: Instrument, bus b: Mixer.Bus, track: MusicTrack) {
-    instrument = i
+  init(bus b: Bus, track: MusicTrack) {
     bus = b
     musicTrack = track
-    color = Color.allCases[Int(bus) % 10]
-    do {
-      let currentVolume = try Mixer.volumeOnBus(bus)
-      let currentPan = try Mixer.panOnBus(bus)
-      volume = currentVolume
-      pan = currentPan
-    } catch { logError(error) }
+    color = Color.allCases[Int(bus.element) % 10]
   }
 
   /**
@@ -84,18 +70,12 @@ final class InstrumentTrack: Equatable {
   - parameter node: MIDINode
   */
   func addNoteForNode(node: MIDINode) throws {
-    var playing = DarwinBoolean(false)
-    try MusicPlayerIsPlaying(AudioManager.musicPlayer, &playing) ➤ "Failed to check playing status of music player"
-    var timestamp = MusicTimeStamp(0)
-    if playing {
-      try MusicPlayerGetTime(AudioManager.musicPlayer, &timestamp) ➤ "Failed to get time from player"
-      timestamp += 0.1
-    }
-    try MusicTrackNewMIDINoteEvent(musicTrack, timestamp, &node.note) ➤ "Failed to add new note event"
-    if !playing { try MusicPlayerStart(AudioManager.musicPlayer) ➤ "Failed to start playing music player" }
+    let timestamp = TrackManager.playing ? TrackManager.currentTime + 0.1 : TrackManager.currentTime
+    try MusicTrackNewMIDINoteEvent(musicTrack, timestamp, &node.note) ➤ "\(location()) Failed to add new note event"
+    if !TrackManager.playing { try TrackManager.start() }
   }
 
 }
 
 
-func ==(lhs: InstrumentTrack, rhs: InstrumentTrack) -> Bool { return lhs.bus == rhs.bus }
+func ==(lhs: Track, rhs: Track) -> Bool { return lhs.bus == rhs.bus }

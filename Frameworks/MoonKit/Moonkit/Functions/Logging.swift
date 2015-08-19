@@ -39,6 +39,33 @@ public struct ColorLog {
   public static func cyan<T>(object:T) {
     print("\(ESCAPE)fg0,255,255;\(object)\(RESET)")
   }
+  public static func wrapRed<T>(object:T) -> String {
+    return "\(ESCAPE)fg255,0,0;\(object)\(RESET)"
+  }
+
+  public static func wrapGreen<T>(object:T) -> String {
+    return "\(ESCAPE)fg0,255,0;\(object)\(RESET)"
+  }
+
+  public static func wrapBlue<T>(object:T) -> String {
+    return "\(ESCAPE)fg0,0,255;\(object)\(RESET)"
+  }
+
+  public static func wrapYellow<T>(object:T) -> String {
+    return "\(ESCAPE)fg255,255,0;\(object)\(RESET)"
+  }
+
+  public static func wrapPurple<T>(object:T) -> String {
+    return "\(ESCAPE)fg255,0,255;\(object)\(RESET)"
+  }
+
+  public static func wrapCyan<T>(object:T) -> String {
+    return "\(ESCAPE)fg0,255,255;\(object)\(RESET)"
+  }
+
+  public static func wrapColor<T>(object:T, _ r: UInt8, _ g: UInt8, _ b: UInt8) -> String {
+    return "\(ESCAPE)fg\(r),\(g),\(b);\(object)\(RESET)"
+  }
 }
 
 public class LogManager {
@@ -338,7 +365,7 @@ public func logError(e: ErrorType,
   var errorDescription = "\(e)"
   if let e = e as? WrappedErrorType, u = e.underlyingError { errorDescription += "underlying error: \(u)" }
 
-  var logMessage = "-Error- "
+  var logMessage = ColorLog.wrapRed("-Error- ")
   if let message = message { logMessage += message + "\n" }
   logMessage += errorDescription
 

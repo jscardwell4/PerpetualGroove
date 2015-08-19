@@ -16,14 +16,13 @@ final class Mixer {
 
   // MARK: - Some typealiases of convenience
 
-  typealias Bus = AudioUnitElement
-  typealias ParameterValue = AudioUnitParameterValue
+//  typealias Bus = AudioUnitElement
 
   // MARK: - An enumeration to wrap up notifications
 
   enum Notification {
-    case TrackAdded (Bus)
-    case TrackRemoved (Bus)
+    case BusAdded (Bus)
+    case BusRemoved (Bus)
 
     enum NotificationName: String { case DidAddTrack, DidRemoveTrack }
 
@@ -31,16 +30,16 @@ final class Mixer {
 
     var name: NotificationName {
       switch self {
-      case .TrackAdded: return .DidAddTrack
-      case .TrackRemoved: return .DidRemoveTrack
+      case .BusAdded: return .DidAddTrack
+      case .BusRemoved: return .DidRemoveTrack
       }
     }
 
     private func post() {
       let userInfo: [NSObject:AnyObject]?
       switch self {
-        case .TrackAdded(let bus):   userInfo = [Notification.BusKey: NSNumber(unsignedInt: bus)]
-        case .TrackRemoved(let bus): userInfo = [Notification.BusKey: NSNumber(unsignedInt: bus)]
+        case .BusAdded(let bus):   userInfo = [Notification.BusKey: NSNumber(unsignedInt: bus.element)]
+        case .BusRemoved(let bus): userInfo = [Notification.BusKey: NSNumber(unsignedInt: bus.element)]
       }
       MSLogDebug("posting notification \(self))")
       NSNotificationCenter.defaultCenter().postNotificationName(name.rawValue, object: Mixer.self, userInfo: userInfo)
@@ -53,10 +52,8 @@ final class Mixer {
     case GraphAlreadyExists = "The mixer already has a graph"
     case AudioUnitIsNotAMixer = "The audio unit for the specified node is not a mixer unit"
     case GraphNotInitialized = "The audio graph should already be initialized"
-    case GraphOpen = "The graph provided has already been opened"
-    case GraphNotOpen = "The graph provided has not already been opened"
-    case IOUnitNotFound = "Failed to find an appropriate IO audio unit"
     case NilGraph = "Graph is nil"
+    case InstrumentAlreadyConnected = "Instrument is already connected"
     case NilMixerNode = "Mixer node is nil"
     case NilMixerUnit = "Mixer unit is nil"
 
@@ -66,15 +63,14 @@ final class Mixer {
 
   // MARK: - Static properties
 
-  static private(set) var tracks: OrderedDictionary<Bus, InstrumentTrack> = [:]
+  static private(set) var instruments: OrderedDictionary<AudioUnitElement, Instrument> = [:]
 
-  static var instruments: [Instrument] { return tracks.values.map { $0.instrument } }
+  static private var reassignableBuses: OrderedSet<AudioUnitElement> = [] { didSet { reassignableBuses.sortInPlace() } }
 
   static private var mixerNode: AUNode?
   static private var mixerUnit: AudioUnit?
-  static private var graph: AUGraph?
+  static private var graph: AUGraph!
 
-  static var currentTrack: InstrumentTrack?
 
   // MARK: - Initializing the mixer
 
@@ -83,15 +79,14 @@ final class Mixer {
 
   - parameter g: AUGraph
   */
-  static func initializeWithGraph(graph g: AUGraph, node: AUNode) throws {
-    guard graph == nil else { throw Error.GraphAlreadyExists }
+  static func initializeWithGraph(g: AUGraph, node: AUNode) throws {
     var isInitialized = DarwinBoolean(false)
-    try AUGraphIsInitialized(g, &isInitialized) ➤ "Failed to check whether graph is initialized"
+    try AUGraphIsInitialized(g, &isInitialized) ➤ "\(location()) Failed to check whether graph is initialized"
     guard isInitialized else { throw Error.GraphNotInitialized }
     var audioUnit = AudioUnit()
-    try AUGraphNodeInfo(g, node, nil, &audioUnit) ➤ "Failed to get audio unit from graph"
+    try AUGraphNodeInfo(g, node, nil, &audioUnit) ➤ "\(location()) Failed to get audio unit from graph"
     var description = AudioComponentDescription()
-    try AudioComponentGetDescription(audioUnit, &description) ➤ "Failed to get audio unit description"
+    try AudioComponentGetDescription(audioUnit, &description) ➤ "\(location()) Failed to get audio unit description"
     guard description.componentType == kAudioUnitType_Mixer
        && description.componentSubType == kAudioUnitSubType_MultiChannelMixer
        && description.componentManufacturer == kAudioUnitManufacturer_Apple else { throw Error.AudioUnitIsNotAMixer }
@@ -100,66 +95,51 @@ final class Mixer {
     graph = g
   }
 
-  // MARK: - Adding/Removing/Retrieving tracks
-
-  /**
-  existingTrackForInstrumentWithDescription:
-
-  - parameter description: InstrumentDescription
-
-  - returns: InstrumentTrack?
-  */
-  static func existingTrackWithSoundSet(soundSet: SoundSet) -> InstrumentTrack? {
-    return tracks.filter({$2.instrument.soundSet == soundSet}).first?.2
-  }
+  // MARK: - Connecting/Disconnecting instruments
 
   /**
   nextAvailableBus
 
   - returns: Bus
   */
-  private static func nextAvailableBus() -> Bus {
-    guard tracks.count > 0 else { return 0 }
-    return tracks.keys.maxElement()! + 1
+  private static func nextAvailableBus() -> AudioUnitElement {
+    guard instruments.count > 0 else { return 0 }
+    return reassignableBuses.popFirst() ?? instruments.keys.maxElement()! + 1
   }
 
   /**
-  newTrackForInstrumentWithDescription:
+  connectInstrument:
 
-  - parameter description: InstrumentDescription
+  - parameter instrument: Instrument
   */
-  static func newTrackWithSoundSet(soundSet: SoundSet) throws -> InstrumentTrack {
+  static func connectInstrument(instrument: Instrument) throws -> Bus {
     guard let graph = graph else { throw Error.NilGraph }
+
+    guard !instruments.values.contains(instrument) else { throw Error.InstrumentAlreadyConnected }
+
     guard let mixerNode = mixerNode else { throw Error.NilMixerNode }
 
-    let instrument = try Instrument(graph: graph, soundSet: soundSet)
+    let element = nextAvailableBus()
 
-    let bus = nextAvailableBus()
-    try AUGraphConnectNodeInput(graph, instrument.node, 0, mixerNode, bus) ➤ "Failed to connect instrument to mixer"
-    try AUGraphUpdate(graph, nil) ➤ "Failed to update audio graph"
+    try AUGraphConnectNodeInput(graph, instrument.node, 0, mixerNode, element)
+      ➤ "\(location()) Failed to connect instrument to mixer"
 
-    let musicTrack = try AudioManager.newTrackForInstrument(instrument)
+    try AUGraphUpdate(graph, nil) ➤ "\(location()) Failed to update audio graph"
 
-    let track = InstrumentTrack(instrument: instrument, bus: bus, track: musicTrack)
-    tracks[bus] = track
+    instruments[element] = instrument
 
-    Notification.TrackAdded(bus).post()
+    let bus = Bus(element, instrument)
+    Notification.BusAdded(bus).post()
 
-    print("graph after \(__FUNCTION__)")
-    CAShow(UnsafeMutablePointer<COpaquePointer>(graph))
-    print("")
-
-    return track
+    return bus
   }
 
   /**
-  removeTrackOnBus:
+  removeInstrumentOnBus:
 
   - parameter bus: Bus
   */
-  static func removeTrackOnBus(bus: Bus) {
-
-  }
+  static func removeInstrumentOnBus(bus: Bus) { fatalError("removeInstrumentOnBus() not yet implemented") }
 
   // MARK: - Internally used helpers
 
@@ -192,13 +172,13 @@ final class Mixer {
   - parameter value: ParameterValue
   */
   private static func setParameter(parameter: Parameter,
-                             onBus bus: Bus,
-                           toValue value: ParameterValue,
+                             onBus bus: AudioUnitElement,
+                           toValue value: Float,
                              scope: Scope) throws
   {
     guard let mixerUnit = mixerUnit else { throw Error.NilMixerUnit }
     try AudioUnitSetParameter(mixerUnit, parameter.id, scope.value, bus, value, 0)
-      ➤ "adjusting \(parameter.rawValue.lowercaseString) on bus \(bus)"
+      ➤ "\(location()) adjusting \(parameter.rawValue.lowercaseString) on bus \(bus)"
   }
 
   /**
@@ -208,13 +188,13 @@ final class Mixer {
   - parameter bus: Bus
   */
   private static func valueForParameter(parameter: Parameter,
-                                  onBus bus: Bus,
-                                  scope: Scope) throws -> ParameterValue
+                                  onBus bus: AudioUnitElement,
+                                  scope: Scope) throws -> Float
   {
     guard let mixerUnit = mixerUnit else { throw Error.NilMixerUnit }
-    var value = ParameterValue()
+    var value = Float()
     try AudioUnitGetParameter(mixerUnit, parameter.id, scope.value, bus, &value)
-      ➤ "retrieving \(parameter.rawValue.lowercaseString) on bus \(bus)"
+      ➤ "\(location()) retrieving \(parameter.rawValue.lowercaseString) on bus \(bus)"
     return value
   }
 
@@ -225,43 +205,29 @@ final class Mixer {
 
   - parameter volume: ParameterValue
   */
-  static func setMasterVolume(volume: ParameterValue) throws {
-    try setParameter(.Volume, onBus: 0, toValue: volume, scope: .Output)
-  }
+  static func setMasterVolume(volume: Float) throws { try setParameter(.Volume, onBus: 0, toValue: volume, scope: .Output) }
 
   /** masterVolume */
-  static func masterVolume() throws -> ParameterValue {
-    return try valueForParameter(.Volume, onBus: 0, scope: .Output)
-  }
+  static func masterVolume() throws -> Float { return try valueForParameter(.Volume, onBus: 0, scope: .Output) }
 
   /**
   setMasterPan:
 
   - parameter pan: ParameterValue
   */
-  static func setMasterPan(pan: ParameterValue) throws {
-    try setParameter(.Pan, onBus: 0, toValue: pan, scope: .Output)
-  }
+  static func setMasterPan(pan: Float) throws { try setParameter(.Pan, onBus: 0, toValue: pan, scope: .Output) }
 
   /** masterPan */
-  static func masterPan() throws -> ParameterValue {
-    return try valueForParameter(.Pan, onBus: 0, scope: .Output)
-  }
+  static func masterPan() throws -> Float { return try valueForParameter(.Pan, onBus: 0, scope: .Output) }
 
   /** masterEnable */
-  static func masterEnable() throws {
-    try setParameter(.Enable, onBus: 0, toValue: ParameterValue(1), scope: .Output)
-  }
+  static func masterEnable() throws { try setParameter(.Enable, onBus: 0, toValue: Float(1), scope: .Output) }
 
   /** masterDisable */
-  static func masterDisable() throws {
-    try setParameter(.Enable, onBus: 0, toValue: ParameterValue(0), scope: .Output)
-  }
+  static func masterDisable() throws { try setParameter(.Enable, onBus: 0, toValue: Float(0), scope: .Output) }
 
   /** isMasterEnabled */
-  static func isMasterEnabled() throws -> Bool {
-    return try valueForParameter(.Enable, onBus: 0, scope: .Output) == 1
-  }
+  static func isMasterEnabled() throws -> Bool { return try valueForParameter(.Enable, onBus: 0, scope: .Output) == 1 }
 
   // MARK: - Input volume/pan/enable
 
@@ -271,8 +237,8 @@ final class Mixer {
   - parameter volume: ParameterValue
   - parameter bus: Bus
   */
-  static func setVolume(volume: ParameterValue, onBus bus: Bus) throws {
-    try setParameter(.Volume, onBus: bus, toValue: volume, scope: .Input)
+  static func setVolume(volume: Float, onBus bus: Bus) throws {
+    try setParameter(.Volume, onBus: bus.element, toValue: volume, scope: .Input)
   }
 
   /**
@@ -281,8 +247,8 @@ final class Mixer {
   - parameter pan: ParameterValue
   - parameter bus: Bus
   */
-  static func setPan(pan: ParameterValue, onBus bus: Bus) throws {
-    try setParameter(.Pan, onBus: bus, toValue: pan, scope: .Input)
+  static func setPan(pan: Float, onBus bus: Bus) throws {
+    try setParameter(.Pan, onBus: bus.element, toValue: pan, scope: .Input)
   }
 
   /**
@@ -290,8 +256,8 @@ final class Mixer {
 
   - parameter bus: Bus
   */
-  static func volumeOnBus(bus: Bus) throws -> ParameterValue {
-    return try valueForParameter(.Volume, onBus: bus, scope: .Input)
+  static func volumeOnBus(bus: Bus) throws -> Float {
+    return try valueForParameter(.Volume, onBus: bus.element, scope: .Input)
   }
 
   /**
@@ -299,27 +265,21 @@ final class Mixer {
 
   - parameter bus: Bus
   */
-  static func panOnBus(bus: Bus) throws -> ParameterValue {
-    return try valueForParameter(.Pan, onBus: bus, scope: .Input)
-  }
+  static func panOnBus(bus: Bus) throws -> Float { return try valueForParameter(.Pan, onBus: bus.element, scope: .Input) }
 
   /**
   enableBus:
 
   - parameter bus: Bus
   */
-  static func enableBus(bus: Bus) throws {
-    try setParameter(.Enable, onBus: bus, toValue: ParameterValue(1), scope: .Input)
-  }
+  static func enableBus(bus: Bus) throws { try setParameter(.Enable, onBus: bus.element, toValue: Float(1), scope: .Input) }
 
   /**
   disableBus:
 
   - parameter bus: Bus
   */
-  static func disableBus(bus: Bus) throws {
-    try setParameter(.Enable, onBus: bus, toValue: ParameterValue(0), scope: .Input)
-  }
+  static func disableBus(bus: Bus) throws { try setParameter(.Enable, onBus: bus.element, toValue: Float(0), scope: .Input) }
 
   /**
   isBusEnabled:
@@ -327,7 +287,7 @@ final class Mixer {
   - parameter bus: Bus
   */
   static func isBusEnabled(bus: Bus) throws -> Bool {
-    return try valueForParameter(.Enable, onBus: bus, scope: .Input) == 1
+    return try valueForParameter(.Enable, onBus: bus.element, scope: .Input) == 1
   }
 
 }

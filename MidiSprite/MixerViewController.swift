@@ -38,19 +38,17 @@ class MixerViewController: UICollectionViewController {
   override func updateViewConstraints() {
     super.updateViewConstraints()
     view.removeAllConstraints()
-    let trackCount = Mixer.tracks.count + 1
-    view.constrain(view.width => Float(74 * trackCount + 10 * (trackCount - 1)), view.height => 300)
+    let itemCount = Mixer.instruments.count + 1
+    view.constrain(view.width => Float(74 * itemCount + 10 * (itemCount - 1)), view.height => 300)
     view.constrain(𝗩|collectionView!|𝗩, 𝗛|collectionView!|𝗛)
   }
 
   func updateTracks() {
     guard let collectionView = collectionView else { return }
     let itemCount = collectionView.numberOfItemsInSection(1)
-    let trackCount = Mixer.tracks.count
-    if itemCount != trackCount {
+    let busCount = Mixer.instruments.count
+    if itemCount != busCount {
       view.setNeedsUpdateConstraints()
-//      view.setNeedsLayout()
-//      view.layoutIfNeeded()
       collectionView.reloadData()
     }
   }
@@ -77,7 +75,7 @@ class MixerViewController: UICollectionViewController {
   - returns: Int
   */
   override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return section == 0 ? 1 : Mixer.tracks.count
+    return section == 0 ? 1 : Mixer.instruments.count
   }
 
   /**
@@ -94,11 +92,11 @@ class MixerViewController: UICollectionViewController {
     let cell: UICollectionViewCell
     switch indexPath.section {
       case 0:
-        cell = collectionView.dequeueReusableCellWithReuseIdentifier(MasterTrackCell.Identifier, forIndexPath: indexPath)
-        (cell as? MasterTrackCell)?.refresh()
+        cell = collectionView.dequeueReusableCellWithReuseIdentifier(MasterCell.Identifier, forIndexPath: indexPath)
+        (cell as? MasterCell)?.refresh()
       default:
-        cell = collectionView.dequeueReusableCellWithReuseIdentifier(InstrumentTrackCell.Identifier, forIndexPath: indexPath)
-        (cell as? InstrumentTrackCell)?.track = Mixer.tracks[AudioUnitElement(indexPath.item)]
+        cell = collectionView.dequeueReusableCellWithReuseIdentifier(TrackCell.Identifier, forIndexPath: indexPath)
+        (cell as? TrackCell)?.track = TrackManager.tracks[indexPath.item]
     }
     
     return cell

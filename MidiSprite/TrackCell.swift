@@ -1,5 +1,5 @@
 //
-//  TrackCell.swift
+//  MixerCell.swift
 //  MidiSprite
 //
 //  Created by Jason Cardwell on 8/15/15.
@@ -11,7 +11,7 @@ import MoonKit
 import Chameleon
 import typealias AudioToolbox.AudioUnitParameterValue
 
-class TrackCell: UICollectionViewCell {
+class MixerCell: UICollectionViewCell {
 
   @IBOutlet weak var volumeSlider: VerticalSlider! {
     didSet {
@@ -36,9 +36,9 @@ class TrackCell: UICollectionViewCell {
 
 }
 
-final class MasterTrackCell: TrackCell {
+final class MasterCell: MixerCell {
 
-  static let Identifier = "MasterTrackCell"
+  static let Identifier = "MasterCell"
 
   /** refresh */
   func refresh() { do { volume = try Mixer.masterVolume() } catch { logError(error) } }
@@ -48,16 +48,16 @@ final class MasterTrackCell: TrackCell {
 
 }
 
-final class InstrumentTrackCell: TrackCell, UITextFieldDelegate {
+final class TrackCell: MixerCell, UITextFieldDelegate {
 
-  static let Identifier = "InstrumentTrackCell"
+  static let Identifier = "TrackCell"
 
   @IBOutlet weak var labelTextField: UITextField!
 
   /** volumeDidChange */
   @IBAction func volumeDidChange() { track?.volume = volumeSlider.value / volumeSlider.maximumValue }
 
-  var track: InstrumentTrack? {
+  var track: Track? {
     didSet {
       guard let track = track else { return }
       MSLogDebug("track = \(track)")

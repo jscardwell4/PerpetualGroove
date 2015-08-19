@@ -13,13 +13,7 @@ private enum ListNode<Element> {
 
   /// Computed property to fetch the tag. .End has an
   /// implicit tag of zero.
-  var tag: Int {
-    switch self {
-    case .End: return 0
-    case let .Node(_, tag: n, _):
-      return n
-    }
-  }
+  var tag: Int { switch self { case .End: return 0; case let .Node(_, n, _): return n } }
 
   func cons(x: Element) -> ListNode<Element> {
     // each cons increments the tag by one
@@ -34,17 +28,13 @@ public struct ListIndex<Element> {
 extension ListIndex: ForwardIndexType {
   public func successor() -> ListIndex<Element> {
     switch node {
-    case .End:
-      fatalError("cannot increment endIndex")
-    case let .Node(_, _, next: next):
-      return ListIndex(node: next)
+      case .End: fatalError("cannot increment endIndex")
+      case let .Node(_, _, n): return ListIndex(node: n)
     }
   }
 }
 
-public func == <T>(lhs: ListIndex<T>, rhs: ListIndex<T>) -> Bool {
-  return lhs.node.tag == rhs.node.tag
-}
+public func == <T>(lhs: ListIndex<T>, rhs: ListIndex<T>) -> Bool { return lhs.node.tag == rhs.node.tag }
 
 public struct List<Element>: CollectionType {
   // Index's type could be inferred, but it helps make the
@@ -56,12 +46,12 @@ public struct List<Element>: CollectionType {
 
   public subscript(idx: Index) -> Element {
     switch idx.node {
-    case .End: fatalError("Subscript out of range")
-    case let .Node(x, _, _): return x
+      case .End: fatalError("Subscript out of range")
+      case let .Node(x, _, _): return x
     }
   }
 
-  func cons(x: Element) -> List<Element> {
+  public func cons(x: Element) -> List<Element> {
     return List(startIndex: ListIndex(node: startIndex.node.cons(x)), endIndex: endIndex)
   }
 }
@@ -69,37 +59,24 @@ public struct List<Element>: CollectionType {
 extension List: ArrayLiteralConvertible {
 
   public init<S: SequenceType where S.Generator.Element == Element>(_ seq: S) {
-    startIndex = ListIndex(node: seq.reverse().reduce(.End) {
-      $0.cons($1)
-      })
+    startIndex = ListIndex(node: seq.reverse().reduce(.End) { $0.cons($1) })
     endIndex = ListIndex(node: .End)
   }
 
   public init<C: CollectionType where C.Generator.Element == Element>(_ col: C) {
-    startIndex = ListIndex(node: col.reverse().reduce(.End) {
-      $0.cons($1)
-      })
+    startIndex = ListIndex(node: col.reverse().reduce(.End) { $0.cons($1) })
     endIndex = ListIndex(node: .End)
   }
 
-  public init(arrayLiteral elements: Element...) {
-    self = List(elements)
-  }
+  public init(arrayLiteral elements: Element...) { self = List(elements) }
 }
 
 extension List: CustomStringConvertible {
-  public var description: String {
-    var desc = "["
-    desc += ", ".join(self.map { String($0) })
-    desc += "]"
-    return desc
-  }
+  public var description: String { return "[" + ", ".join(self.map { String($0) }) + "]" }
 }
 
 extension List {
-  public var count: Int {
-    return startIndex.node.tag - endIndex.node.tag
-  }
+  public var count: Int { return startIndex.node.tag - endIndex.node.tag }
 }
 
 public func == <T: Equatable>(lhs: List<T>, rhs: List<T>) -> Bool {
@@ -107,21 +84,12 @@ public func == <T: Equatable>(lhs: List<T>, rhs: List<T>) -> Bool {
 }
 
 extension List {
-  private init (subRange: Range<Index>) {
-    startIndex = subRange.startIndex
-    endIndex = subRange.endIndex
-  }
-  public subscript (subRange: Range<Index>) -> List<Element> {
-    return List(subRange: subRange)
-  }
+  private init(subRange: Range<Index>) { startIndex = subRange.startIndex; endIndex = subRange.endIndex }
+  public subscript(subRange: Range<Index>) -> List<Element> { return List(subRange: subRange) }
 }
 
 extension List {
   public func reverse() -> List<Element> {
-    let reversednodes: ListNode<Element>
-    = self.reduce(.End) { $0.cons($1) }
-
-    return List(startIndex: ListIndex(node: reversednodes),
-      endIndex: ListIndex(node: .End))
+    return List(startIndex: ListIndex(node: reduce(.End) { $0.cons($1) }), endIndex: ListIndex(node: .End))
   }
 }
