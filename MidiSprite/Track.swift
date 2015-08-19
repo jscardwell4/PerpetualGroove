@@ -11,14 +11,12 @@ import UIKit
 import MoonKit
 import AudioToolbox
 
-typealias Track = MusicTrack
-
 final class InstrumentTrack: Equatable {
 
   // MARK: - Constant properties
 
   let instrument: Instrument
-  let musicTrack: Track
+  let musicTrack: MusicTrack
 
   let bus: Mixer.Bus
   let color: Color
@@ -67,7 +65,7 @@ final class InstrumentTrack: Equatable {
   - parameter i: Instrument
   - parameter b: AudioUnitElement
   */
-  init(instrument i: Instrument, bus b: Mixer.Bus, track: Track) {
+  init(instrument i: Instrument, bus b: Mixer.Bus, track: MusicTrack) {
     instrument = i
     bus = b
     musicTrack = track

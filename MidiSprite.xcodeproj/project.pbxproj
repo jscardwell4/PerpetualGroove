@@ -85,6 +85,7 @@
 		C272B29F1B7D700600134E5F /* SoundSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundSet.swift; sourceTree = "<group>"; };
 		C272B2A11B7D714B00134E5F /* PureOscillators.programlist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PureOscillators.programlist; sourceTree = "<group>"; };
 		C286CE1B1B73D2C10003FCBF /* MidiSprite.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = MidiSprite.playground; path = /Users/Moondeer/Projects/MidiSprite/MidiSprite.playground; sourceTree = "<absolute>"; };
+		C2A658E91B83E7E8000792A3 /* Audio.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Audio.playground; sourceTree = "<group>"; };
 		C2AA9EF11B7BB92F0025BE4D /* MIDIPlayerField.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = MIDIPlayerField.fsh; sourceTree = "<group>"; };
 		C2AD8E861B7D99C60003579E /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		C2AD8E881B7D99C60003579E /* MidiSprite.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = MidiSprite.entitlements; sourceTree = "<group>"; };
@@ -199,6 +200,7 @@
 		C2E043281B72F4DC005F0675 = {
 			isa = PBXGroup;
 			children = (
+				C2A658E91B83E7E8000792A3 /* Audio.playground */,
 				C2CD18DC1B7E2A7F00705922 /* AmazingAudioEngine.framework */,
 				C2AD8E861B7D99C60003579E /* AudioToolbox.framework */,
 				C2404BD91B78EFD700A68A64 /* Playgrounds */,

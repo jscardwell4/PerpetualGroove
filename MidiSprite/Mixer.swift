@@ -50,29 +50,44 @@ final class Mixer {
   // MARK: - Type for Mixer-specific errors
 
   enum Error: String, ErrorType, CustomStringConvertible {
+    case GraphAlreadyExists = "The mixer already has a graph"
+    case AudioUnitIsNotAMixer = "The audio unit for the specified node is not a mixer unit"
+    case GraphNotInitialized = "The audio graph should already be initialized"
     case GraphOpen = "The graph provided has already been opened"
     case GraphNotOpen = "The graph provided has not already been opened"
     case IOUnitNotFound = "Failed to find an appropriate IO audio unit"
+    case NilGraph = "Graph is nil"
     case NilMixerNode = "Mixer node is nil"
     case NilMixerUnit = "Mixer unit is nil"
 
     var description: String { return rawValue }
   }
 
-  static var mixerNode: AUNode? {
-    didSet {
-      guard let mixerNode = mixerNode else { mixerUnit = nil; return }
-      var unit = AudioUnit()
-      do {
-        try checkStatus(AUGraphNodeInfo(AudioManager.graph, mixerNode, nil, &unit), "Failed to get mixer unit")
-        mixerUnit = unit
-      } catch {
-        logError(error)
-      }
-    }
-  }
+  static private var mixerNode: AUNode?
   static private var mixerUnit: AudioUnit?
+  static private var graph: AUGraph?
 
+  /**
+  initializeWithGraph:
+
+  - parameter g: AUGraph
+  */
+  static func initializeWithGraph(graph g: AUGraph, node: AUNode) throws {
+    guard graph == nil else { throw Error.GraphAlreadyExists }
+    var isInitialized = DarwinBoolean(false)
+    try checkStatus(AUGraphIsInitialized(g, &isInitialized), "Failed to check whether graph is initialized")
+    guard isInitialized else { throw Error.GraphNotInitialized }
+    var audioUnit = AudioUnit()
+    try checkStatus(AUGraphNodeInfo(g, node, nil, &audioUnit), "Failed to get audio unit from graph")
+    var description = AudioComponentDescription()
+    try checkStatus(AudioComponentGetDescription(audioUnit, &description), "Failed to get audio unit description")
+    guard description.componentType == kAudioUnitType_Mixer
+       && description.componentSubType == kAudioUnitSubType_MultiChannelMixer
+       && description.componentManufacturer == kAudioUnitManufacturer_Apple else { throw Error.AudioUnitIsNotAMixer }
+    mixerUnit = audioUnit
+    mixerNode = node
+    graph = g
+  }
 
   // MARK: - Adding/Removing tracks
 
@@ -103,36 +118,25 @@ final class Mixer {
   - parameter description: InstrumentDescription
   */
   static func newTrackWithSoundSet(soundSet: SoundSet) throws -> InstrumentTrack {
+    guard let graph = graph else { throw Error.NilGraph }
     guard let mixerNode = mixerNode else { throw Error.NilMixerNode }
-    var instrumentComponentDescription = AudioComponentDescription(componentType: kAudioUnitType_MusicDevice,
-                                                                   componentSubType: kAudioUnitSubType_Sampler,
-                                                                   componentManufacturer: kAudioUnitManufacturer_Apple,
-                                                                   componentFlags: 0,
-                                                                   componentFlagsMask: 0)
-    var instrumentNode = AUNode()
-    try checkStatus(AUGraphAddNode(AudioManager.graph, &instrumentComponentDescription, &instrumentNode),
-                    "Failed to add instrument node to audio graph")
 
-    var instrumentUnit = MusicDeviceComponent()
-    try checkStatus(AUGraphNodeInfo(AudioManager.graph, instrumentNode, nil, &instrumentUnit),
-                    "Failed to retrieve instrument audio unit from audio graph node")
+    let instrument = try Instrument(graph: graph, soundSet: soundSet)
 
     let bus = nextAvailableBus()
-    try checkStatus(AUGraphConnectNodeInput(AudioManager.graph, instrumentNode, 0, mixerNode, bus),
+    try checkStatus(AUGraphConnectNodeInput(graph, instrument.node, 0, mixerNode, bus),
                     "Failed to connect instrument output to mixer input")
-    try checkStatus(AUGraphUpdate(AudioManager.graph, nil), "Failed to update audio graph")
+    try checkStatus(AUGraphUpdate(graph, nil), "Failed to update audio graph")
 
-    var musicTrack = MusicTrack()
-    try checkStatus(MusicSequenceNewTrack(AudioManager.musicSequence, &musicTrack), "Failed to create new music track")
-    try checkStatus(MusicTrackSetDestNode(musicTrack, instrumentNode), "Failed to set dest node for track")
+    let musicTrack = try AudioManager.newTrackForInstrument(instrument)
 
-    let track = InstrumentTrack(instrument: Instrument(audioUnit: instrumentUnit, soundSet: soundSet), bus: bus, track: musicTrack)
+    let track = InstrumentTrack(instrument: instrument, bus: bus, track: musicTrack)
     tracks[bus] = track
 
     Notification.TrackAdded(bus).post()
 
     print("graph after \(__FUNCTION__)")
-    CAShow(UnsafeMutablePointer<COpaquePointer>(AudioManager.graph))
+    CAShow(UnsafeMutablePointer<COpaquePointer>(graph))
     print("")
 
     return track

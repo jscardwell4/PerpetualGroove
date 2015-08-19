@@ -17,7 +17,7 @@ final class AudioManager {
 
   static let queue = dispatch_queue_create("midi", DISPATCH_QUEUE_SERIAL)
 
-  static private(set) var graph = AUGraph()
+  static private var graph = AUGraph()
   static private var ioNode = AUNode()
   static private var ioUnit = AudioUnit()
   static private var dynamicsNode = AUNode()
@@ -125,7 +125,19 @@ final class AudioManager {
 
     try checkStatus(AUGraphInitialize(graph), "Failed to initialize audio graph")
 
-    Mixer.mixerNode = mixerNode
+    try Mixer.initializeWithGraph(graph: graph, node: mixerNode)
+  }
+
+  /**
+  newTrackForInstrument:
+
+  - parameter instrument: Instrument
+  */
+  static func newTrackForInstrument(instrument: Instrument) throws -> MusicTrack {
+    var musicTrack = MusicTrack()
+    try checkStatus(MusicSequenceNewTrack(musicSequence, &musicTrack), "Failed to create new music track")
+    try checkStatus(MusicTrackSetDestNode(musicTrack, instrument.node), "Failed to set dest node for track")
+    return musicTrack
   }
 
   /** start */
