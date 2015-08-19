@@ -4,15 +4,15 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>Lumberjack.xcscheme</key>
+		<key>Eveleth.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>17</integer>
+			<integer>18</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>C2358FEB19C795AA00920F8D</key>
+		<key>C2B1238C1B8548F6008FED5E</key>
 		<dict>
 			<key>primary</key>
 			<true/>
