@@ -19,25 +19,38 @@ class MixerViewController: UICollectionViewController {
     collectionView?.translatesAutoresizingMaskIntoConstraints = false
     view.backgroundColor = nil
     collectionView?.backgroundColor = nil
+
+    NSNotificationCenter.defaultCenter().addObserverForName(Mixer.Notification.NotificationName.DidAddTrack.rawValue,
+                                                     object: nil,
+                                                      queue: NSOperationQueue.mainQueue()) {
+                                                        [weak self] _ in
+                                                        self?.updateTracks()
+    }
+    NSNotificationCenter.defaultCenter().addObserverForName(Mixer.Notification.NotificationName.DidRemoveTrack.rawValue,
+                                                     object: nil,
+                                                      queue: NSOperationQueue.mainQueue()) {
+                                                        [weak self] _ in
+                                                        self?.updateTracks()
+    }
   }
 
   /** updateViewConstraints */
   override func updateViewConstraints() {
     super.updateViewConstraints()
     view.removeAllConstraints()
-    let trackCount = Mixer.tracks.count
-    view.constrain(view.width => Float(64 * trackCount + 10 * (trackCount - 1)), view.height => 300)
+    let trackCount = Mixer.tracks.count + 1
+    view.constrain(view.width => Float(74 * trackCount + 10 * (trackCount - 1)), view.height => 300)
     view.constrain(𝗩|collectionView!|𝗩, 𝗛|collectionView!|𝗛)
   }
 
   func updateTracks() {
     guard let collectionView = collectionView else { return }
-    let itemCount = collectionView.numberOfItemsInSection(0)
+    let itemCount = collectionView.numberOfItemsInSection(1)
     let trackCount = Mixer.tracks.count
     if itemCount != trackCount {
       view.setNeedsUpdateConstraints()
-      view.setNeedsLayout()
-      view.layoutIfNeeded()
+//      view.setNeedsLayout()
+//      view.layoutIfNeeded()
       collectionView.reloadData()
     }
   }
@@ -53,6 +66,7 @@ class MixerViewController: UICollectionViewController {
   */
   override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int { return 2 }
 
+  deinit { NSNotificationCenter.defaultCenter().removeObserver(self) }
 
   /**
   collectionView:numberOfItemsInSection:

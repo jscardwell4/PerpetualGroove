@@ -64,30 +64,29 @@ class MIDIPlayerNode: SKShapeNode {
                              as? MIDIPlayerSceneViewController else { return }
     if !controller.playing { controller.play() }
 
-    // WARN: Redo
-//    let instrumentDescription = InstrumentDescription(soundSet: soundSet, program: program, channel: channel)
-//    do {
-//      var track = Mixer.existingTrackForInstrumentWithDescription(instrumentDescription)
-//      if track == nil { track = try Mixer.newTrackForInstrumentWithDescription(instrumentDescription) }
-//      guard track != nil else { return }
-//
-//      let midiNode = MIDINode(
-//        texture: MIDINode.templateTextureType,
-//        placement: placement,
-//        track: track!,
-//        note: MIDINode.templateNote
-//      )
-//
-//      midiNode.name = "midiNode\(midiNodes.count)"
-//      midiNode.color = track!.color.value
-//      midiNode.colorBlendFactor = 1.0
-//
-//      addChild(midiNode)
-//
-//      midiNodes.append(midiNode)
-//    }
-//    catch { logError(error) }
+    let track: InstrumentTrack
 
+    if let t = Mixer.currentTrack { track = t }
+    else {
+      do {
+        track = try Mixer.newTrackWithSoundSet(Instrument.currentSoundSet)
+        try track.instrument.setProgram(Instrument.currentProgram, onChannel: Instrument.currentChannel)
+        Mixer.currentTrack = track
+      } catch {
+        logError(error)
+        return
+      }
+    }
+
+      let midiNode = MIDINode(placement: placement, track: track)
+
+      midiNode.name = "midiNode\(midiNodes.count)"
+      midiNode.color = track.color.value
+      midiNode.colorBlendFactor = 1.0
+
+      addChild(midiNode)
+
+      midiNodes.append(midiNode)
   }
 
 }

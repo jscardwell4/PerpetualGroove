@@ -25,8 +25,8 @@ final class MIDINode: SKSpriteNode {
   }
 
   // MARK: - Properties used to initialize a new `MIDINode`
-  static var templateNote = Note()
-  static var templateTextureType = TextureType.Cobblestone
+  static var currentNote = Note(channel: 0, note: 60, velocity: 64, releaseVelocity: 54, duration: 0.25)
+  static var currentTexture = TextureType.Cobblestone
 
   // MARK: - Properties relating to the node's appearance
 
@@ -82,8 +82,8 @@ final class MIDINode: SKSpriteNode {
   */
   init(placement p: Placement,
        track tr: InstrumentTrack,
-       texture t: TextureType = templateTextureType,
-       note n: Note = templateNote)
+       texture t: TextureType = currentTexture,
+       note n: Note = currentNote)
   {
     textureType = t
     placement = p

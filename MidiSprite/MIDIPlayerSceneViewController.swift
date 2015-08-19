@@ -276,7 +276,7 @@ final class MIDIPlayerSceneViewController: UIViewController {
     skView.presentScene(scene)
     scene.paused = true
 
-    let image = MIDINode.templateTextureType.image
+    let image = MIDINode.currentTexture.image
     templateBarButtonItem?.image = image
     let highlightedImage = image.imageWithBackgroundColor(.whiteColor()).inverted.maskToAlpha
     templateBarButtonItem?.highlightedImage = highlightedImage

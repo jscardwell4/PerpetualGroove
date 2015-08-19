@@ -14,8 +14,12 @@ import CoreAudio
 
 final class Mixer {
 
+  // MARK: - Some typealiases of convenience
+
   typealias Bus = AudioUnitElement
   typealias ParameterValue = AudioUnitParameterValue
+
+  // MARK: - An enumeration to wrap up notifications
 
   enum Notification {
     case TrackAdded (Bus)
@@ -43,10 +47,6 @@ final class Mixer {
     }
   }
 
-  static private(set) var tracks: OrderedDictionary<Bus, InstrumentTrack> = [:]
-
-  static var instruments: [Instrument] { return tracks.values.map { $0.instrument } }
-
   // MARK: - Type for Mixer-specific errors
 
   enum Error: String, ErrorType, CustomStringConvertible {
@@ -63,9 +63,20 @@ final class Mixer {
     var description: String { return rawValue }
   }
 
+
+  // MARK: - Static properties
+
+  static private(set) var tracks: OrderedDictionary<Bus, InstrumentTrack> = [:]
+
+  static var instruments: [Instrument] { return tracks.values.map { $0.instrument } }
+
   static private var mixerNode: AUNode?
   static private var mixerUnit: AudioUnit?
   static private var graph: AUGraph?
+
+  static var currentTrack: InstrumentTrack?
+
+  // MARK: - Initializing the mixer
 
   /**
   initializeWithGraph:
@@ -75,12 +86,12 @@ final class Mixer {
   static func initializeWithGraph(graph g: AUGraph, node: AUNode) throws {
     guard graph == nil else { throw Error.GraphAlreadyExists }
     var isInitialized = DarwinBoolean(false)
-    try checkStatus(AUGraphIsInitialized(g, &isInitialized), "Failed to check whether graph is initialized")
+    try AUGraphIsInitialized(g, &isInitialized) ➤ "Failed to check whether graph is initialized"
     guard isInitialized else { throw Error.GraphNotInitialized }
     var audioUnit = AudioUnit()
-    try checkStatus(AUGraphNodeInfo(g, node, nil, &audioUnit), "Failed to get audio unit from graph")
+    try AUGraphNodeInfo(g, node, nil, &audioUnit) ➤ "Failed to get audio unit from graph"
     var description = AudioComponentDescription()
-    try checkStatus(AudioComponentGetDescription(audioUnit, &description), "Failed to get audio unit description")
+    try AudioComponentGetDescription(audioUnit, &description) ➤ "Failed to get audio unit description"
     guard description.componentType == kAudioUnitType_Mixer
        && description.componentSubType == kAudioUnitSubType_MultiChannelMixer
        && description.componentManufacturer == kAudioUnitManufacturer_Apple else { throw Error.AudioUnitIsNotAMixer }
@@ -89,7 +100,7 @@ final class Mixer {
     graph = g
   }
 
-  // MARK: - Adding/Removing tracks
+  // MARK: - Adding/Removing/Retrieving tracks
 
   /**
   existingTrackForInstrumentWithDescription:
@@ -124,9 +135,8 @@ final class Mixer {
     let instrument = try Instrument(graph: graph, soundSet: soundSet)
 
     let bus = nextAvailableBus()
-    try checkStatus(AUGraphConnectNodeInput(graph, instrument.node, 0, mixerNode, bus),
-                    "Failed to connect instrument output to mixer input")
-    try checkStatus(AUGraphUpdate(graph, nil), "Failed to update audio graph")
+    try AUGraphConnectNodeInput(graph, instrument.node, 0, mixerNode, bus) ➤ "Failed to connect instrument to mixer"
+    try AUGraphUpdate(graph, nil) ➤ "Failed to update audio graph"
 
     let musicTrack = try AudioManager.newTrackForInstrument(instrument)
 
@@ -142,6 +152,11 @@ final class Mixer {
     return track
   }
 
+  /**
+  removeTrackOnBus:
+
+  - parameter bus: Bus
+  */
   static func removeTrackOnBus(bus: Bus) {
 
   }
@@ -182,8 +197,8 @@ final class Mixer {
                              scope: Scope) throws
   {
     guard let mixerUnit = mixerUnit else { throw Error.NilMixerUnit }
-    let status = AudioUnitSetParameter(mixerUnit, parameter.id, scope.value, bus, value, 0)
-    try checkStatus(status, "adjusting \(parameter.rawValue.lowercaseString) on bus \(bus)")
+    try AudioUnitSetParameter(mixerUnit, parameter.id, scope.value, bus, value, 0)
+      ➤ "adjusting \(parameter.rawValue.lowercaseString) on bus \(bus)"
   }
 
   /**
@@ -198,8 +213,8 @@ final class Mixer {
   {
     guard let mixerUnit = mixerUnit else { throw Error.NilMixerUnit }
     var value = ParameterValue()
-    let status = AudioUnitGetParameter(mixerUnit, parameter.id, scope.value, bus, &value)
-    try checkStatus(status, "retrieving \(parameter.rawValue.lowercaseString) on bus \(bus)")
+    try AudioUnitGetParameter(mixerUnit, parameter.id, scope.value, bus, &value)
+      ➤ "retrieving \(parameter.rawValue.lowercaseString) on bus \(bus)"
     return value
   }
 

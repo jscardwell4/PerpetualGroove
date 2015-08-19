@@ -201,7 +201,9 @@ func checkStatus(status: OSStatus, @autoclosure _ message: () -> String) throws 
   guard status == noErr else { throw error(status, message()) }
 }
 
+infix operator ➤ {}
 
+func ➤(@autoclosure lhs: () -> OSStatus, @autoclosure rhs: () -> String) throws { try checkStatus(lhs(), rhs()) }
 
 /**
 error:

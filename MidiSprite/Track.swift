@@ -85,11 +85,14 @@ final class InstrumentTrack: Equatable {
   */
   func addNoteForNode(node: MIDINode) throws {
     var playing = DarwinBoolean(false)
-    try checkStatus(MusicPlayerIsPlaying(AudioManager.musicPlayer, &playing), "Failed to check playing status of music player")
+    try MusicPlayerIsPlaying(AudioManager.musicPlayer, &playing) ➤ "Failed to check playing status of music player"
     var timestamp = MusicTimeStamp(0)
-    if playing { try checkStatus(MusicPlayerGetTime(AudioManager.musicPlayer, &timestamp), "Failed to get time from player") }
-    try checkStatus(MusicTrackNewMIDINoteEvent(musicTrack, timestamp, &node.note), "Failed to add new note event")
-    if !playing { try checkStatus(MusicPlayerStart(AudioManager.musicPlayer), "Failed to start playing music player") }
+    if playing {
+      try MusicPlayerGetTime(AudioManager.musicPlayer, &timestamp) ➤ "Failed to get time from player"
+      timestamp += 0.1
+    }
+    try MusicTrackNewMIDINoteEvent(musicTrack, timestamp, &node.note) ➤ "Failed to add new note event"
+    if !playing { try MusicPlayerStart(AudioManager.musicPlayer) ➤ "Failed to start playing music player" }
   }
 
 }

@@ -46,14 +46,14 @@ final class TemplateViewController: UIViewController {
     view.setNeedsUpdateConstraints()
   }
 
-  var textureType = MIDINode.templateTextureType {
+  var textureType = MIDINode.currentTexture {
     didSet {
       guard let form = _form, textureField = form[FieldName.TextureType.rawValue] as? FormPickerField else { return }
       textureField.value = MIDINode.TextureType.allCases.indexOf(textureType) ?? 0
-      MIDINode.templateTextureType = textureType
+      MIDINode.currentTexture = textureType
     }
   }
-  var note = MIDINode.templateNote {
+  var note = MIDINode.currentNote {
     didSet {
       guard let form = _form,
       noteField = form[FieldName.Note.rawValue] as? FormPickerField,
@@ -64,7 +64,7 @@ final class TemplateViewController: UIViewController {
       velocityField.value = Float(note.velocity)
       durationField.value = Float(note.duration)
 
-      MIDINode.templateNote = note
+      MIDINode.currentNote = note
     }
   }
 

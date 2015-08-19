@@ -19,6 +19,10 @@ final class Instrument: Equatable {
   let soundSet: SoundSet
   let node: AUNode
 
+  static var currentSoundSet = SoundSet.PureOscillators
+  static var currentProgram = Program(0)
+  static var currentChannel = Channel(0)
+
   /**
   setProgram:onChannel:
 
@@ -27,8 +31,8 @@ final class Instrument: Equatable {
   */
   func setProgram(var program: Program, onChannel channel: Channel) throws {
     program = ClosedInterval<Program>(0, 127).clampValue(program)
-    try checkStatus(MusicDeviceMIDIEvent(audioUnit, 0b11000000 | channel, UInt32(program), 0, 0),
-                    "Failed to set program \(program) on channel \(channel)")
+    try MusicDeviceMIDIEvent(audioUnit, 0b11000000 | channel, UInt32(program), 0, 0)
+      ➤ "Failed to set program \(program) on channel \(channel)"
   }
 
   private let audioUnit: MusicDeviceComponent
@@ -48,11 +52,10 @@ final class Instrument: Equatable {
                                                                    componentFlagsMask: 0)
     node = AUNode()
     audioUnit = MusicDeviceComponent()
-    try checkStatus(AUGraphAddNode(graph, &instrumentComponentDescription, &node),
-      "Failed to add instrument node to audio graph")
 
-    try checkStatus(AUGraphNodeInfo(graph, node, nil, &audioUnit),
-      "Failed to retrieve instrument audio unit from audio graph node")
+    try AUGraphAddNode(graph, &instrumentComponentDescription, &node) ➤ "Failed to add instrument node to audio graph"
+
+    try AUGraphNodeInfo(graph, node, nil, &audioUnit) ➤ "Failed to retrieve instrument audio unit from audio graph node"
 
     var instrumentData = AUSamplerInstrumentData(fileURL: Unmanaged.passUnretained(soundSet.url),
                                                  instrumentType: soundSet.instrumentType.rawValue,
@@ -60,13 +63,12 @@ final class Instrument: Equatable {
                                                  bankLSB: UInt8(kAUSampler_DefaultBankLSB),
                                                  presetID: 0)
 
-    try checkStatus(AudioUnitSetProperty(audioUnit,
-                                         AudioUnitPropertyID(kAUSamplerProperty_LoadInstrument),
-                                         AudioUnitScope(kAudioUnitScope_Global),
-                                         AudioUnitElement(0),
-                                         &instrumentData,
-                                         UInt32(sizeof(AUSamplerInstrumentData))),
-                    "Failed to load instrument into audio unit")
+    try AudioUnitSetProperty(audioUnit,
+                             AudioUnitPropertyID(kAUSamplerProperty_LoadInstrument),
+                             AudioUnitScope(kAudioUnitScope_Global),
+                             AudioUnitElement(0),
+                             &instrumentData,
+                             UInt32(sizeof(AUSamplerInstrumentData))) ➤ "Failed to load instrument into audio unit"
 
   }
 
