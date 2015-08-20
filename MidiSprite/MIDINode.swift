@@ -9,6 +9,7 @@
 import UIKit
 import SpriteKit
 import MoonKit
+import CoreMIDI
 import struct AudioToolbox.MIDINoteMessage
 
 final class MIDINode: SKSpriteNode {
@@ -40,8 +41,6 @@ final class MIDINode: SKSpriteNode {
 
   var note: Note
 
-  var track: Track
-
   struct Placement { let position: CGPoint; let vector: CGVector }
 
   var placement: Placement
@@ -56,9 +55,10 @@ final class MIDINode: SKSpriteNode {
   func play() {
     let halfDuration = Double(note.duration * 0.5)
     let scaleUp = SKAction.scaleTo(2, duration: halfDuration)
-    let noteOn = SKAction.runBlock({ [weak self] in do { try self?.track.addNoteForNode(self!) } catch { logError(error) } })
+    let noteOn = SKAction.runBlock({ [weak self] in self?.sendNoteOn() })
     let scaleDown = SKAction.scaleTo(1, duration: halfDuration)
-    let sequence = SKAction.sequence([SKAction.group([scaleUp, noteOn]), scaleDown])
+    let noteOff = SKAction.runBlock({ [weak self] in self?.sendNoteOff() })
+    let sequence = SKAction.sequence([SKAction.group([scaleUp, noteOn]), scaleDown, noteOff])
     runAction(sequence, withKey: Actions.Play.rawValue)
   }
 
@@ -67,8 +67,38 @@ final class MIDINode: SKSpriteNode {
 
   }
 
+  private func sendNoteOn() {
+    var packetList = MIDIPacketList()
+    let packet = MIDIPacketListInit(&packetList)
+    packet.memory.timeStamp = TrackManager.currentTime
+    packet.memory.data.0 = 0b10010000 | note.channel
+    packet.memory.data.1 = note.note
+    packet.memory.data.2 = note.velocity
+    packet.memory.length = 3
+    do { try withUnsafePointer(&packetList) {MIDISend(outPort, destination, $0) } ➤ "Unable to send note on event" }
+    catch { logError(error) }
+  }
+
+  /** sendNoteOn */
+  private func sendNoteOff() {
+    var packetList = MIDIPacketList()
+    let packet = MIDIPacketListInit(&packetList)
+    packet.memory.timeStamp = TrackManager.currentTime
+    packet.memory.data.0 = 0b10000000 | note.channel
+    packet.memory.data.1 = note.note
+    packet.memory.data.2 = note.velocity
+    packet.memory.length = 3
+    do { try withUnsafePointer(&packetList) {MIDISend(outPort, destination, $0) } ➤ "Unable to send note on event" }
+    catch { logError(error) }
+  }
+
   /** removeFromParent */
   override func removeFromParent() { erase(); super.removeFromParent() }
+
+  private var client = MIDIClientRef()
+  private var outPort = MIDIPortRef()
+  private let destination: MIDIEndpointRef
+
 
   // MARK: - Initialization
 
@@ -80,16 +110,21 @@ final class MIDINode: SKSpriteNode {
   - parameter tr: Track
   - parameter n: Note
   */
-  init(placement p: Placement,
-       track tr: Track,
-       texture t: TextureType = currentTexture,
-       note n: Note = currentNote)
-  {
-    textureType = t
+  init(_ p: Placement, _ name: String) throws {
     placement = p
-    track = tr
-    note = n
-    super.init(texture: t.texture, color: .clearColor(), size: MIDINode.defaultSize)
+    textureType = MIDINode.currentTexture
+    destination = TrackManager.currentTrack.inPort
+    note = MIDINode.currentNote
+    super.init(texture: MIDINode.currentTexture.texture,
+               color: TrackManager.currentTrack.color.value,
+               size: MIDINode.defaultSize)
+
+    try MIDIClientCreateWithBlock(name, &client, nil) ➤ "Failed to create midi client"
+    try MIDIOutputPortCreate(client, "Output", &outPort) ➤ "Failed to create out port"
+
+    self.name = name
+    colorBlendFactor = 1
+
     position = placement.position
     physicsBody = SKPhysicsBody(circleOfRadius: size.width * 0.5)
     physicsBody?.affectedByGravity = false

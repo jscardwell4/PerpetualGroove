@@ -9,6 +9,7 @@
 import Foundation
 
 public func secondsToNanoseconds(seconds: Double) -> UInt64 { return UInt64(seconds * Double(NSEC_PER_SEC)) }
+public func nanosecondsToSeconds(nanoseconds: UInt64) -> Double { return Double(nanoseconds) / Double(NSEC_PER_SEC) }
 
 /**
 createTimer:

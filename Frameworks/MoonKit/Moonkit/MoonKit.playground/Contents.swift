@@ -2,8 +2,16 @@
 import Foundation
 import UIKit
 import MoonKit
+import CoreAudio
+import CoreMIDI
 
+var maxUInt: UInt64 = UInt64.max
+print(maxUInt)
+maxUInt &= ~0xF
+//maxUInt /= 100
+//maxUInt *= 100
+print(maxUInt)
 
-var list = List<Int>()
-var list2 = list.cons(4)
-var list3 = list2.cons(5)
+let s = 0.5
+secondsToNanoseconds(s)
+nanosecondsToSeconds(secondsToNanoseconds(s))

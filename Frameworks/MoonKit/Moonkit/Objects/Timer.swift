@@ -17,7 +17,7 @@ public final class Timer {
   public var handler: ((Timer) -> Void)?
 
   private let source: dispatch_source_t
-  private var running = false
+  public private(set) var running = false
   private var ignoreEvents = false
 
   /** Starts the timer */
@@ -43,8 +43,8 @@ public final class Timer {
   - parameter h: ((Timer) -> Void Handler to execute every time the timer fires
   */
   public init(queue q: dispatch_queue_t = dispatch_get_main_queue(),
-              interval i: Double,
-              leeway l: Double,
+              interval i: Double = 1,
+              leeway l: Double = 0,
               handler h: ((Timer) -> Void)? = nil)
   {
     queue = q

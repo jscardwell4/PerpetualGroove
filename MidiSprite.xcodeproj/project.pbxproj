@@ -34,6 +34,8 @@
 		C2AA9EF21B7BB92F0025BE4D /* MIDIPlayerField.fsh in Resources */ = {isa = PBXBuildFile; fileRef = C2AA9EF11B7BB92F0025BE4D /* MIDIPlayerField.fsh */; };
 		C2AD8E871B7D99C60003579E /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2AD8E861B7D99C60003579E /* AudioToolbox.framework */; };
 		C2B123821B8523FF008FED5E /* Bus.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B123811B8523FF008FED5E /* Bus.swift */; };
+		C2B123BD1B8632D3008FED5E /* CAHostTimeBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B123BC1B8632D3008FED5E /* CAHostTimeBase.swift */; };
+		C2B123BF1B864DCC008FED5E /* MIDIClock.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B123BE1B864DCC008FED5E /* MIDIClock.swift */; };
 		C2BC7AD51B76C85E001729BA /* Instrument.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BC7AD41B76C85E001729BA /* Instrument.swift */; };
 		C2CD18DD1B7E2A7F00705922 /* AmazingAudioEngine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2CD18DC1B7E2A7F00705922 /* AmazingAudioEngine.framework */; };
 		C2CD18DE1B7E2A7F00705922 /* AmazingAudioEngine.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2CD18DC1B7E2A7F00705922 /* AmazingAudioEngine.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -94,6 +96,8 @@
 		C2AD8E861B7D99C60003579E /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		C2AD8E881B7D99C60003579E /* MidiSprite.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = MidiSprite.entitlements; sourceTree = "<group>"; };
 		C2B123811B8523FF008FED5E /* Bus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bus.swift; sourceTree = "<group>"; };
+		C2B123BC1B8632D3008FED5E /* CAHostTimeBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAHostTimeBase.swift; sourceTree = "<group>"; };
+		C2B123BE1B864DCC008FED5E /* MIDIClock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIClock.swift; sourceTree = "<group>"; };
 		C2BC7AD41B76C85E001729BA /* Instrument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Instrument.swift; sourceTree = "<group>"; };
 		C2CD18DC1B7E2A7F00705922 /* AmazingAudioEngine.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = AmazingAudioEngine.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2CD18E01B7E681A00705922 /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
@@ -161,6 +165,8 @@
 		C2404BDA1B78F02C00A68A64 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				C2B123BC1B8632D3008FED5E /* CAHostTimeBase.swift */,
+				C2B123BE1B864DCC008FED5E /* MIDIClock.swift */,
 				C2B123811B8523FF008FED5E /* Bus.swift */,
 				C2AA2BCA1B84FB2100A0B08D /* TrackManager.swift */,
 				C2AA2BC71B84B04200A0B08D /* InstrumentViewController.swift */,
@@ -272,6 +278,9 @@
 						CreatedOnToolsVersion = 7.0;
 						DevelopmentTeam = JT6STF4SHA;
 						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
 							com.apple.InterAppAudio = {
 								enabled = 1;
 							};
@@ -323,6 +332,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C2B123BF1B864DCC008FED5E /* MIDIClock.swift in Sources */,
 				C26FC1731B7BAEBD00E271A3 /* MIDIPlayerFieldNode.swift in Sources */,
 				C26FC16F1B7BA63300E271A3 /* MIDINode.swift in Sources */,
 				C26EEB2E1B7FDA8F00EC6979 /* MixerViewController.swift in Sources */,
@@ -343,6 +353,7 @@
 				C2E043351B72F4DC005F0675 /* AppDelegate.swift in Sources */,
 				C2CF38CD1B7EBED30085B3D5 /* Track.swift in Sources */,
 				C2EFA0EE1B824A2F002EBA3D /* AssetManager.swift in Sources */,
+				C2B123BD1B8632D3008FED5E /* CAHostTimeBase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
