@@ -125,7 +125,7 @@ final class AudioManager {
     try AUGraphIsRunning(graph, &running) ➤ "\(location()) Failed to check running status of audio graph"
     guard !running else { return }
     try AUGraphStart(graph) ➤ "\(location()) Failed to start audio graph"
-//    try TrackManager.start()
+    TrackManager.start()
   }
 
   /** stop */
@@ -134,7 +134,7 @@ final class AudioManager {
     try AUGraphIsRunning(graph, &running) ➤ "\(location()) Failed to check running status of audio graph"
     guard running else { return }
     try AUGraphStop(graph) ➤ "\(location()) Failed to stop audio graph"
-    try TrackManager.stop()
+    TrackManager.stop()
   }
 
 }

@@ -28,6 +28,13 @@ public func dispatchToMain(synchronous synchronous: Bool = false, _ block: dispa
 }
 
 /**
+backgroundDispatch:
+
+- parameter block: () -> Void
+*/
+public func backgroundDispatch(block: () -> Void) { dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), block) }
+
+/**
 delayedDispatchToMain:block:
 
 - parameter delay: Int

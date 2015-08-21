@@ -44,12 +44,13 @@ class MIDIPlayerNode: SKShapeNode {
 
   // MARK: - Manipulating MIDINodes
 
-  var soundSet = SoundSet.PureOscillators
-  var program: UInt8 = 0
-  var channel: MusicDeviceGroupID = 0
-
   /** dropLast */
-  func dropLast() { guard midiNodes.count > 0 else { return }; midiNodes.removeLast().removeFromParent() }
+  func dropLast() {
+    guard midiNodes.count > 0 else { return }
+    let node = midiNodes.removeLast()
+    do { try TrackManager.currentTrack.removeNode(node) } catch { logError(error) }
+    node.removeFromParent()
+  }
 
   /** reset */
   func reset() { midiNodes.forEach { $0.removeFromParent() }; midiNodes.removeAll() }
@@ -68,6 +69,7 @@ class MIDIPlayerNode: SKShapeNode {
       let midiNode = try MIDINode(placement, "midiNode\(midiNodes.count)")
       addChild(midiNode)
       midiNodes.append(midiNode)
+      try TrackManager.currentTrack.addNode(midiNode)
     } catch {
       logError(error)
     }

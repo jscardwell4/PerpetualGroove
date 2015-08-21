@@ -26,6 +26,10 @@ public protocol WrappedErrorType: ErrorType {
   var underlyingError: ErrorType? { get }
 }
 
+public extension ErrorType where Self:RawRepresentable, Self.RawValue == String {
+  public var description: String { return rawValue }
+}
+
 public protocol KeyValueCollectionType: CollectionType {
   typealias Key: Hashable
   typealias Value

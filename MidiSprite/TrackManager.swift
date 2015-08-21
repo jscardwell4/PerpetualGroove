@@ -12,7 +12,10 @@ import MoonKit
 
 final class TrackManager {
 
+  /** The current track in use */
   private static var _currentTrack: Track?
+
+  /** Wraps the private `_currentTrack` so that a new track may be created if the property is `nil` */
   static var currentTrack: Track {
     get {
       guard _currentTrack == nil else { return _currentTrack! }
@@ -28,20 +31,20 @@ final class TrackManager {
     set { _currentTrack = newValue }
   }
 
+  /** This should only be set within `initializeWithGraph:`, which should only be called by `AudioManager` */
   static private var graph: AUGraph!
 
+  /** An enumeraton for errors originating with `TrackManager` */
   enum Error: String, ErrorType, CustomStringConvertible {
-    case GraphAlreadyExists = "The mixer already has a graph"
     case GraphNotInitialized = "The audio graph should already be initialized"
     case NilGraph = "Graph is nil"
-
-    var description: String { return rawValue }
   }
 
+  /** Collection of all the tracks in the composition */
   static private(set) var tracks: [Track] = []
 
   /**
-  initializeWithGraph:
+  Sets the `graph` static property for use in methods that require it.
 
   - parameter graph: AUGraph
   */
@@ -53,7 +56,7 @@ final class TrackManager {
   }
 
   /**
-  newTrackUsingSoundSet:setToProgram:
+  Creates a new `Track` attached to a new `Instrument` that uses the specified sound set and program
 
   - parameter soundSet: SoundSet
   - parameter program: Instrument.Program
@@ -70,18 +73,23 @@ final class TrackManager {
     return track
   }
 
-  static var currentTime: MIDITimeStamp {
-    return 0
-  }
-  
-  /** start */
-  static func start() throws {
+  /** The current time as reported by the MIDI clock */
+  static var currentTime: MIDITimeStamp { return clock.clockTimeStamp }
 
-  }
+  /** The MIDI clock */
+  static private let clock = MIDIClockSource()
 
-  /** stop */
-  static func stop() throws {
+  /** The MIDI clock's end point */
+  static var clockSource: MIDIEndpointRef { return clock.endPoint }
 
-  }
+  /** The tempo used by the MIDI clock in beats per minute */
+  static var currentTempo: Double = 120
 
+  /** Starts the MIDI clock */
+  static func start() { guard !clock.running else { return }; clock.start(); MSLogDebug("start time = \(currentTime)") }
+
+  /** Stops the MIDI clock */
+  static func stop() { guard clock.running else { return }; clock.stop(); MSLogDebug("stop time = \(currentTime)") }
+
+  // TODO: Incorporate 'Beats'
 }

@@ -12,17 +12,17 @@ import MoonKit
 
 class MIDIPlayerFieldNode: SKShapeNode {
 
-  weak var delegate: MIDIPlayerNode?
+  unowned let delegate: MIDIPlayerNode
 
   /**
   initWithBezierPath:
 
   - parameter bezierPath: UIBezierPath
   */
-  init(bezierPath: UIBezierPath, delegate: MIDIPlayerNode? = nil) {
+  init(bezierPath: UIBezierPath, delegate: MIDIPlayerNode) {
+    self.delegate = delegate
     super.init()
     name = "midiPlayerField"
-    self.delegate = delegate
     path = bezierPath.CGPath
     userInteractionEnabled = true
   }
@@ -104,6 +104,6 @@ class MIDIPlayerFieldNode: SKShapeNode {
     guard velocities.count > 0 && !location.isNull else { return }
     let velocity = sum(velocities) / CGFloat(velocities.count)
     let placement = MIDINode.Placement(position: location, vector: velocity)
-    delegate?.placeNew(placement)
+    delegate.placeNew(placement)
   }
 }

@@ -14,7 +14,7 @@ import AVFoundation
 
 class MIDIPlayerScene: SKScene {
 
-  weak var midiPlayer: MIDIPlayerNode!
+  var midiPlayer: MIDIPlayerNode!
 
   static let defaultBackgroundColor = UIColor(red: 0.202, green: 0.192, blue: 0.192, alpha: 1.0)
 
@@ -29,28 +29,11 @@ class MIDIPlayerScene: SKScene {
     let w = frame.width - 20
     let containerRect = CGRect(x: 10, y: frame.midY - w * 0.5, width: w, height: w)
 
-    let player = MIDIPlayerNode(bezierPath: UIBezierPath(rect: containerRect))
-    addChild(player)
-    midiPlayer = player
+    midiPlayer = MIDIPlayerNode(bezierPath: UIBezierPath(rect: containerRect))
+    addChild(midiPlayer)
 
     physicsWorld.contactDelegate = self
   }
-
-  private func sliders() {}
-
-  private func audio() {}
-
-  private func piano() {}
-
-  private func guitar() {}
-
-  private func play() {}
-
-  private func stop() {}
-
-  private func pause() {}
-
-  private func skipBack() {}
 
   /**
   didMoveToView:
@@ -65,9 +48,10 @@ class MIDIPlayerScene: SKScene {
 
   - parameter currentTime: CFTimeInterval
   */
-//  override func update(currentTime: CFTimeInterval) {
-//    /* Called before each frame is rendered */
-//  }
+  override func update(currentTime: CFTimeInterval) {
+    /* Called before each frame is rendered */
+//    backgroundDispatch {print("scene time = \(currentTime)")}
+  }
 }
 
 extension MIDIPlayerScene: SKPhysicsContactDelegate {

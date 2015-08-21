@@ -7,7 +7,9 @@
 //
 
 import Foundation
+import MoonKit
 
+// MARK: - An enumeration for `OSStatus` codes returned by `CoreMIDI`
 enum MIDIError: OSStatus, ErrorType, CustomStringConvertible {
   case InvalidClient      = -10830
   case InvalidPort        = -10831
@@ -46,6 +48,7 @@ enum MIDIError: OSStatus, ErrorType, CustomStringConvertible {
   }
 }
 
+// MARK: - An enumeration for `OSStatus` codes returned by `AudioUnit`
 enum AudioUnitError: OSStatus, ErrorType, CustomStringConvertible {
   case InvalidProperty          = -10879
   case InvalidParameter         = -10878
@@ -96,6 +99,7 @@ enum AudioUnitError: OSStatus, ErrorType, CustomStringConvertible {
   }
 }
 
+// MARK: - An enumeration for `OSStatus` codes returned by `AudioComponent`
 enum AudioComponentError: OSStatus, ErrorType, CustomStringConvertible {
   case InstanceInvalidated    = -66749
   case DuplicateDescription   = -66752
@@ -118,6 +122,7 @@ enum AudioComponentError: OSStatus, ErrorType, CustomStringConvertible {
   }
 }
 
+// MARK: - An enumeration for `OSStatus` codes returned by `AUGraph`
 enum GraphError: OSStatus, ErrorType, CustomStringConvertible {
   case NodeNotFound             = -10860
   case InvalidConnection        = -10861
@@ -136,6 +141,7 @@ enum GraphError: OSStatus, ErrorType, CustomStringConvertible {
   }
 }
 
+// MARK: - An enumeration for `OSStatus` codes returned by `MusicPlayer`
 enum MusicPlayerError: OSStatus, ErrorType, CustomStringConvertible {
   case InvalidSequenceType      = -10846
   case TrackIndexError          = -10859
@@ -166,11 +172,13 @@ enum MusicPlayerError: OSStatus, ErrorType, CustomStringConvertible {
   }
 }
 
+// MARK: - An catchall enumeration for `OSStatus` codes not handled by the other enumerations
 enum OSStatusError: ErrorType, CustomStringConvertible {
   case OSStatusCode (OSStatus)
   var description: String { switch self { case .OSStatusCode(let code): return "error code: \(code)" } }
 }
 
+// MARK: - An enumeration to package one of the other enumeration cases along with a string to provide some context
 enum Error: ErrorType, CustomStringConvertible {
   case MIDI (MIDIError, String)
   case AudioUnit (AudioUnitError, String)
@@ -191,30 +199,43 @@ enum Error: ErrorType, CustomStringConvertible {
   }
 }
 
-func location(function: String = __FUNCTION__, line: Int32 = __LINE__) -> String { return "[\(function):\(line)]" }
+// MARK: - Utility functions
 
 /**
-checkStatus:message:
+Function of convenience for capturing function and line information to include in an error message
+
+- parameter function: String = __FUNCTION__
+- parameter line: Int32 = __LINE__
+
+- returns: String
+*/
+func location(function: String = __FUNCTION__, line: Int32 = __LINE__) -> String { return "[(function):(line)]" }
+
+/**
+Compares the specified `OSStatus` code against `noErr` and throws an error when they are not equal
 
 - parameter status: OSStatus
 - parameter message: () -> String
+- throws: An error describing the provided `status`
 */
 func checkStatus(status: OSStatus, @autoclosure _ message: () -> String) throws {
   guard status == noErr else { throw error(status, message()) }
 }
 
-infix operator ➤ {}
 
+/** An infix operator for `checkStatus:_:` to make code more legible */
+infix operator ➤ {}
 func ➤(@autoclosure lhs: () -> OSStatus, @autoclosure rhs: () -> String) throws { try checkStatus(lhs(), rhs()) }
 
 /**
-error:
+Generates an `ErrorType` for the specified `OSStatus`
 
 - parameter code: OSStatus
 
 - returns: ErrorType
 */
 func error(code: OSStatus, @autoclosure _ message: () -> String) -> ErrorType {
+  guard code != noErr else { fatalError("The irony, fatal error caused by a 'noErr' status code") }
   let error: ErrorType = MIDIError(rawValue: code)
            ?? AudioUnitError(rawValue: code)
            ?? AudioComponentError(rawValue: code)
@@ -232,3 +253,10 @@ func error(code: OSStatus, @autoclosure _ message: () -> String) -> ErrorType {
     default:                           fatalError("this should be unreachable")
   }
 }
+
+/**
+Convenience function for `try`ing something that `throws` and just logging the error when caught
+
+- parameter throwingBlock: () throws -> Void
+*/
+func handle(@autoclosure throwingBlock: () throws -> Void) { do { try throwingBlock() } catch { logError(error) } }

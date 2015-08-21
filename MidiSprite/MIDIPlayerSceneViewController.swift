@@ -24,7 +24,7 @@ final class MIDIPlayerSceneViewController: UIViewController {
   @IBOutlet weak var stopBarButtonItem: ImageBarButtonItem!
   @IBOutlet weak var mixerBarButtonItem: ImageBarButtonItem!
 
-  private var playerScene: MIDIPlayerScene? { return skView?.scene as? MIDIPlayerScene }
+  private var playerScene: MIDIPlayerScene?
   private var midiPlayer: MIDIPlayerNode? { return playerScene?.midiPlayer }
 
   private(set) var playing = false {
@@ -165,17 +165,17 @@ final class MIDIPlayerSceneViewController: UIViewController {
     tempoSlider.setMaximumTrackImage(AssetManager.sliderMaxTrackImage, forState: .Normal)
     tempoSlider.thumbOffset = AssetManager.sliderThumbOffset
 
-    let scene = MIDIPlayerScene(size: skView.bounds.size)
+    playerScene = MIDIPlayerScene(size: skView.bounds.size)
 
     // Configure the view.
-    //    skView.showsFPS = true
+    skView.showsFPS = true
     //    skView.showsNodeCount = true
 
     /* Sprite Kit applies additional optimizations to improve rendering performance */
     skView.ignoresSiblingOrder = true
 
-    skView.presentScene(scene)
-    scene.paused = true
+    skView.presentScene(playerScene!)
+    playerScene!.paused = true
 }
 
   /**
