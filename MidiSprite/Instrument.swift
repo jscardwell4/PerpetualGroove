@@ -45,7 +45,29 @@ final class Instrument: Equatable {
     return channelPrograms[Int(ClosedInterval<Channel>(0, 15).clampValue(channel))]
   }
 
+
+
   private let audioUnit: MusicDeviceComponent
+  private var client = MIDIClientRef()
+  private(set) var endPoint = MIDIEndpointRef()
+
+  /**
+  read:context:
+
+  - parameter packetList: UnsafePointer<MIDIPacketList>
+  - parameter context: UnsafeMutablePointer<Void>
+  */
+  private func read(packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutablePointer<Void>) {
+    let packets = packetList.memory
+    var packetPointer = UnsafeMutablePointer<MIDIPacket>.alloc(1)
+    packetPointer.initialize(packets.packet)
+
+    for _ in 0 ..< packets.numPackets {
+      let packet = packetPointer.memory
+      MusicDeviceMIDIEvent(audioUnit, UInt32(packet.data.0), UInt32(packet.data.1), UInt32(packet.data.2), 0)
+      packetPointer = MIDIPacketNext(packetPointer)
+    }
+  }
 
   /**
   initWithAudioUnit:
@@ -83,6 +105,9 @@ final class Instrument: Equatable {
                              UInt32(sizeof(AUSamplerInstrumentData)))
       ➤ "\(location()) Failed to load instrument into audio unit"
 
+    let name = "Instrument \(ObjectIdentifier(self).uintValue)"
+    try MIDIClientCreateWithBlock(name, &client, nil) ➤ "Failed to create midi client"
+    try MIDIDestinationCreateWithBlock(client, name, &endPoint, read) ➤ "Failed to create end point for instrument"
   }
 
 }

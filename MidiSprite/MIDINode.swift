@@ -68,12 +68,14 @@ final class MIDINode: SKSpriteNode {
 
   private var currentTime: MIDITimeStamp = 0
 
+  private var sourceID: [UInt8] = []
+
   private func sendNoteOn() {
     var packetList = MIDIPacketList()
     let packet = MIDIPacketListInit(&packetList)
     let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
-    let data: [UInt8] = [0b1001_0000 | note.channel, note.note, note.velocity]
-    MIDIPacketListAdd(&packetList, size, packet, currentTime, 3, data)
+    let data: [UInt8] = [0b1001_0000 | note.channel, note.note, note.velocity] + sourceID
+    MIDIPacketListAdd(&packetList, size, packet, currentTime, 11, data)
     do {
       try withUnsafePointer(&packetList) {MIDIReceived(endPoint, $0) } ➤ "Unable to send note on event"
     } catch { logError(error) }
@@ -84,8 +86,8 @@ final class MIDINode: SKSpriteNode {
     var packetList = MIDIPacketList()
     let packet = MIDIPacketListInit(&packetList)
     let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
-    let data: [UInt8] = [0b1000_0000 | note.channel, note.note, note.releaseVelocity]
-    MIDIPacketListAdd(&packetList, size, packet, currentTime, 3, data)
+    let data: [UInt8] = [0b1000_0000 | note.channel, note.note, note.releaseVelocity] + sourceID
+    MIDIPacketListAdd(&packetList, size, packet, currentTime, 11, data)
     do {
       try withUnsafePointer(&packetList) {MIDIReceived(endPoint, $0) } ➤ "Unable to send note off event"
     } catch { logError(error) }
@@ -125,9 +127,19 @@ final class MIDINode: SKSpriteNode {
     placement = p
     textureType = MIDINode.currentTexture
     note = MIDINode.currentNote
+
     super.init(texture: MIDINode.currentTexture.texture,
                color: TrackManager.currentTrack.color.value,
                size: MIDINode.defaultSize)
+
+    var id = ObjectIdentifier(self).uintValue
+    sourceID = withUnsafePointer(&id) {
+      (pointer: UnsafePointer<UInt>) -> [UInt8] in
+      var idPointer = UnsafeMutablePointer<UInt8>(pointer)
+      var result: [UInt8] = []
+      for _ in 0 ... 7 { result.append(idPointer.memory); idPointer = idPointer.successor() }
+      return result
+    }
 
     try MIDIClientCreateWithBlock(name, &client, nil) ➤ "Failed to create midi client"
     try MIDIInputPortCreateWithBlock(client, "Input", &inPort, read) ➤ "Failed to create in port"

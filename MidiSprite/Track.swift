@@ -40,7 +40,7 @@ final class Track: Equatable {
   let bus: Bus
   let color: Color
 
-  private var nodes: Set<UnsafePointer<Void>> = []
+  private var nodes: Set<MIDINode> = []
   private var client = MIDIClientRef()
   private var inPort = MIDIPortRef()
   private var outPort = MIDIPortRef()
@@ -52,16 +52,19 @@ final class Track: Equatable {
   var volume: Float { get { return bus.volume } set { bus.volume = newValue } }
   var pan: Float { get { return bus.pan } set { bus.pan = newValue } }
 
+  enum Error: String, ErrorType, CustomStringConvertible {
+    case NodeNotFound = "The specified node was not found among the track's nodes"
+  }
+
   /**
   addNode:
 
   - parameter node: MIDINode
   */
-  func addNode(var node: MIDINode) throws {
-    var context = withUnsafePointer(&node) {UnsafePointer<Void>($0)}
-    nodes.insert(context)
-    print("context = \(context); context.memory = \(context.memory); nodes: \(nodes)")
-    try MIDIPortConnectSource(inPort, node.endPoint, &context) ➤ "Failed to connect to node \(node.name!)"
+  func addNode(node: MIDINode) throws {
+    nodes.insert(node)
+    MSLogDebug("track (\(label)) added node with source id \(ObjectIdentifier(node).uintValue)")
+    try MIDIPortConnectSource(inPort, node.endPoint, nil) ➤ "Failed to connect to node \(node.name!)"
   }
 
   /**
@@ -69,9 +72,9 @@ final class Track: Equatable {
 
   - parameter node: MIDINode
   */
-  func removeNode(var node: MIDINode) throws {
-    let context = withUnsafePointer(&node) {UnsafePointer<Void>($0)}
-    print("context = \(context); context.memory = \(context.memory); nodes: \(nodes)")
+  func removeNode(node: MIDINode) throws {
+    guard let node = nodes.remove(node) else { throw Error.NodeNotFound }
+    MSLogDebug("track (\(label)) removed node with source id \(ObjectIdentifier(node).uintValue)")
     try MIDIPortDisconnectSource(inPort, node.endPoint) ➤ "Failed to disconnect to node \(node.name!)"
   }
 
@@ -128,6 +131,22 @@ final class Track: Equatable {
   }
 
   /**
+  Reconstructs the `uintValue` of an `ObjectIdentifier` using packet data bytes 4 through 11
+
+  - parameter packet: MIDIPacket
+
+  - returns: UInt
+  */
+  private func nodeIdentifierFromPacket(packet: MIDIPacket) -> UInt {
+    guard packet.length == 11 else { return 0 }
+
+    return zip([packet.data.3, packet.data.4, packet.data.5, packet.data.6,
+                packet.data.7, packet.data.8, packet.data.9, packet.data.10],
+               [0, 8, 16, 24, 32, 40, 48, 56]).reduce(UInt(0)) { $0 | (UInt($1.0) << UInt($1.1)) }
+
+  }
+
+  /**
   read:context:
 
   - parameter packetList: UnsafePointer<MIDIPacketList>
@@ -142,33 +161,34 @@ final class Track: Equatable {
     for _ in 0 ..< packets.numPackets {
 
       let packet = packetPointer.memory
-      let (status, d1, d2) = (packet.data.0, packet.data.1, packet.data.2)
-      let ch = status & 0x0F
+
+      let nodeIdentifier = nodeIdentifierFromPacket(packet)
 
       let message: String
-      switch status {
-        case 0b1000_0000 ... 0b1000_1111: message = "Note off (ch: \(ch); note: \(d1); velocity: \(d2))"
-        case 0b1001_0000 ... 0b1001_1111: message = "Note on (ch: \(ch); note: \(d1); velocity: \(d2))"
-        case 0b1010_0000 ... 0b1010_1111: message = "Polyphonic Aftertouch (ch: \(ch); note: \(d1); pressure: \(d2))"
-        case 0b1011_0000 ... 0b1011_1111: message = "Control Change (ch: \(ch); controller: \(d1); value: \(d2))"
-        case 0b1100_0000 ... 0b1100_1111: message = "Program Change (ch: \(ch); program: \(d1)"
-        case 0b1101_0000 ... 0b1101_1111: message = "Channel Aftertouch (ch: \(ch); pressure: \(d1)"
-        case 0b1110_0000 ... 0b1110_1111: message = "Pitch Bend Change (ch: \(ch); lsb: \(d1); msb: \(d2))"
-        case 0b1111_1000:                 message = "Timing Clock"
-        default:                          message = "Unhandled message (status: \(String(status, radix: 2)))"
+      switch packet.length {
+        case 1 where packet.data.0 == 0b1111_1000:
+          message = "Timing Clock"
+        case 11 where (0b1000_0000 ... 0b1000_1111).contains(packet.data.0):
+          message = "Note off (ch: \(packet.data.0 & 0x0F); note: \(packet.data.1); velocity: \(packet.data.2))"
+        case 11 where (0b1001_0000 ... 0b1001_1111).contains(packet.data.0):
+          message = "Note on (ch: \(packet.data.0 & 0x0F); note: \(packet.data.1); velocity: \(packet.data.2))"
+        default:
+          message = "Unhandled message (status: \(String(packet.data.0, radix: 2)))"
       }
 
-      backgroundDispatch{print("packet received (\(context)) {" + "; ".join(
+      backgroundDispatch{print("packet received (\(nodeIdentifier)) {" + "; ".join(
         "timeStamp: \(packet.timeStamp)",
         "length: \(packet.length)",
-        " ".join(String(status, radix: 16, uppercase: true),
-                 String(d1, radix: 16, uppercase: true),
-                 String(d2, radix: 16, uppercase: true)),
+        " ".join(String(packet.data.0, radix: 16, uppercase: true),
+                 String(packet.data.1, radix: 16, uppercase: true),
+                 String(packet.data.2, radix: 16, uppercase: true)),
         message) + "}")}
 
       packetPointer = MIDIPacketNext(packetPointer)
     }
-
+    
+    do { try MIDISend(outPort, bus.instrument.endPoint, packetList) ➤ "Failed to forward packet list to instrument" }
+    catch { logError(error) }
   }
 
   /**
