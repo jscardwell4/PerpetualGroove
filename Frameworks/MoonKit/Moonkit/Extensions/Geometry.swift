@@ -317,6 +317,11 @@ extension CGRect {
   	if anchored { rect.offset(dx: midX - rect.midX, dy: midY - rect.midY) }
   	return rect
   }
+  public func rectByOffsetting(offset: UIOffset) -> CGRect {
+    return rectByOffsetting(dx: offset.horizontal, dy: offset.vertical)
+  }
+  public mutating func offset(off: UIOffset) { offset(dx: off.horizontal, dy: off.vertical) }
+
   public mutating func proportionallyInsetX(dx: CGFloat) {
     let (w, h) = size.unpack
     let ww = w - 2 * dx
