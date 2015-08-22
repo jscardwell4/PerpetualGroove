@@ -20,7 +20,7 @@
 		C2404BD51B78EEC500A68A64 /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BD41B78EEC500A68A64 /* MoonKit.framework */; };
 		C2404BD61B78EEC500A68A64 /* MoonKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BD41B78EEC500A68A64 /* MoonKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C26EEB2E1B7FDA8F00EC6979 /* MixerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26EEB2D1B7FDA8F00EC6979 /* MixerViewController.swift */; };
-		C26EEB301B7FDAF300EC6979 /* TrackCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26EEB2F1B7FDAF300EC6979 /* TrackCell.swift */; };
+		C26EEB301B7FDAF300EC6979 /* MixerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26EEB2F1B7FDAF300EC6979 /* MixerCell.swift */; };
 		C26FC16D1B7B8A3200E271A3 /* GeneralUser GS MuseScore v1.442.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C26FC16C1B7B8A3200E271A3 /* GeneralUser GS MuseScore v1.442.sf2 */; };
 		C26FC16F1B7BA63300E271A3 /* MIDINode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26FC16E1B7BA63300E271A3 /* MIDINode.swift */; };
 		C26FC1711B7BAC7F00E271A3 /* MIDIPlayerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26FC1701B7BAC7F00E271A3 /* MIDIPlayerNode.swift */; };
@@ -81,7 +81,7 @@
 		C2404BD11B78EE3800A68A64 /* Chameleon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Chameleon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2404BD41B78EEC500A68A64 /* MoonKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MoonKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C26EEB2D1B7FDA8F00EC6979 /* MixerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MixerViewController.swift; sourceTree = "<group>"; };
-		C26EEB2F1B7FDAF300EC6979 /* TrackCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackCell.swift; sourceTree = "<group>"; };
+		C26EEB2F1B7FDAF300EC6979 /* MixerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MixerCell.swift; sourceTree = "<group>"; };
 		C26FC16C1B7B8A3200E271A3 /* GeneralUser GS MuseScore v1.442.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; name = "GeneralUser GS MuseScore v1.442.sf2"; path = "MidiSprite/GeneralUser GS MuseScore v1.442.sf2"; sourceTree = "<group>"; };
 		C26FC16E1B7BA63300E271A3 /* MIDINode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINode.swift; sourceTree = "<group>"; };
 		C26FC1701B7BAC7F00E271A3 /* MIDIPlayerNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIPlayerNode.swift; sourceTree = "<group>"; };
@@ -173,7 +173,7 @@
 				C2EFA0ED1B824A2F002EBA3D /* AssetManager.swift */,
 				C26EEB2D1B7FDA8F00EC6979 /* MixerViewController.swift */,
 				C21451AA1B7FFF0F00E1A0B2 /* Mixer.swift */,
-				C26EEB2F1B7FDAF300EC6979 /* TrackCell.swift */,
+				C26EEB2F1B7FDAF300EC6979 /* MixerCell.swift */,
 				C2CD18E01B7E681A00705922 /* Error.swift */,
 				C26FC1701B7BAC7F00E271A3 /* MIDIPlayerNode.swift */,
 				C272B29D1B7D6CA600134E5F /* MIDINote.swift */,
@@ -341,7 +341,7 @@
 				C2E043391B72F4DC005F0675 /* MIDIPlayerScene.swift in Sources */,
 				C21451AB1B7FFF0F00E1A0B2 /* Mixer.swift in Sources */,
 				C272B2A01B7D700600134E5F /* SoundSet.swift in Sources */,
-				C26EEB301B7FDAF300EC6979 /* TrackCell.swift in Sources */,
+				C26EEB301B7FDAF300EC6979 /* MixerCell.swift in Sources */,
 				C2EFA0EC1B823642002EBA3D /* TemplateViewController.swift in Sources */,
 				C26FC1711B7BAC7F00E271A3 /* MIDIPlayerNode.swift in Sources */,
 				C2AA2BC81B84B04200A0B08D /* InstrumentViewController.swift in Sources */,

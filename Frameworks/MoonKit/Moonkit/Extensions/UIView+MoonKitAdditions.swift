@@ -346,6 +346,94 @@ public extension UIView {
     }
   }
 
+  /**
+  constraintWithIdentifierTag:
+
+  - parameter tag: String
+
+  - returns: NSLayoutConstraint?
+  */
+  public func constraintWithIdentifierTag(tag: String) -> NSLayoutConstraint? {
+    return constraintsWithIdentifierTag(tag).first
+  }
+
+  /**
+  constraintWithIdentifier:
+
+  - parameter identifier: Identifier
+
+  - returns: NSLayoutConstraint?
+  */
+  public func constraintWithIdentifier(identifier: Identifier) -> NSLayoutConstraint? {
+    return constraintsWithIdentifier(identifier).first
+  }
+
+  /**
+  constraintWithTag:
+
+  - parameter tag: Identifier.Tag
+
+  - returns: NSLayoutConstraint?
+  */
+  @nonobjc public func constraintWithTag(tag: Identifier.Tag) -> NSLayoutConstraint? {
+    return constraintsWithTag(tag).first
+  }
+
+  /**
+  constraintWithTags:
+
+  - parameter tags: [Identifier.Tag]
+
+  - returns: NSLayoutConstraint?
+  */
+  public func constraintWithTags(tags: [Identifier.Tag]) -> NSLayoutConstraint? {
+    return constraintsWithTags(tags).first
+  }
+  
+  /**
+  constraintWithPrefixTag:
+
+  - parameter tag: Identifier.Tag
+
+  - returns: NSLayoutConstraint?
+  */
+  public func constraintWithPrefixTag(tag: Identifier.Tag) -> NSLayoutConstraint? {
+    return constraintsWithPrefixTag(tag).first
+  }
+
+  /**
+  constraintWithPrefixTags:
+
+  - parameter tags: [Identifier.Tag]
+
+  - returns: NSLayoutConstraint?
+  */
+  public func constraintWithPrefixTags(tags: [Identifier.Tag]) -> NSLayoutConstraint? {
+    return constraintsWithPrefixTags(tags).first
+  }
+
+  /**
+  constraintWithSuffixTag:
+
+  - parameter tag: Identifier.Tag
+
+  - returns: NSLayoutConstraint?
+  */
+  public func constraintWithSuffixTag(tag: Identifier.Tag) -> NSLayoutConstraint? {
+    return constraintsWithSuffixTag(tag).first
+  }
+
+  /**
+  constraintWithSuffixTags:
+
+  - parameter tags: [Identifier.Tag]
+
+  - returns: NSLayoutConstraint?
+  */
+  public func constraintWithSuffixTags(tags: [Identifier.Tag]) -> NSLayoutConstraint? {
+    return constraintsWithSuffixTags(tags).first
+  }
+
   // MARK: - PseudoConstraint helpers
 
   public var right:    (UIView, PseudoConstraint.Attribute) { return (self, .Right   ) }

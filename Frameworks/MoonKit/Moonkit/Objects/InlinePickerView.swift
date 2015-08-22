@@ -183,7 +183,13 @@ public class InlinePickerView: UIView {
   var itemWidths: [CGFloat] {
     switch cellType {
       case .Label: return labels.map {[a = [NSFontAttributeName:font]] in ceil($0.sizeWithAttributes(a).width)}
-      case .Image: let h = itemHeight ?? defaultItemHeight; return images.map{ ceil(Ratio($0.size).widthForHeight(h)) }
+      case .Image:
+        let h = itemHeight ?? defaultItemHeight
+        return images.map {
+        let size = $0.size
+        let ratio = Ratio<CGFloat>(size.width / size.height)
+        return ceil(ratio.numeratorForDenominator(h))
+      }
     }
   }
 

@@ -164,6 +164,12 @@ final class MIDIPlayerSceneViewController: UIViewController {
     tempoSlider.setMinimumTrackImage(AssetManager.sliderMinTrackImage, forState: .Normal)
     tempoSlider.setMaximumTrackImage(AssetManager.sliderMaxTrackImage, forState: .Normal)
     tempoSlider.thumbOffset = AssetManager.sliderThumbOffset
+    tempoSlider.trackShowsThroughThumb = true
+    tempoSlider.valueLabelOffset = AssetManager.sliderLabelValueOffset
+    tempoSlider.valueLabel.font = AssetManager.sliderLabelValueFont
+    tempoSlider.valueLabel.textColor = AssetManager.sliderLabelValueColor
+    tempoSlider.valueLabelHidden = false
+    tempoSlider.labelTextForValue = {String(Int($0))}
 
     playerScene = MIDIPlayerScene(size: skView.bounds.size)
 

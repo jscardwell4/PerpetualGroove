@@ -8,8 +8,6 @@
 
 import UIKit
 import MoonKit
-import Eveleth
-import Chameleon
 
 final class TemplateViewController: UIViewController {
 
@@ -32,13 +30,13 @@ final class TemplateViewController: UIViewController {
   /** loadView */
   override func loadView() {
     let formView = FormView(form: form)
-    formView.labelFont                = Eveleth.lightFontWithSize(14)
-    formView.labelTextColor           = Chameleon.kelleyPearlBush
-    formView.controlFont              = Eveleth.thinFontWithSize(14)
-    formView.controlTextColor         = Chameleon.quietLightLobLollyDark
-    formView.controlSelectedFont      = Eveleth.regularFontWithSize(14)
-    formView.controlSelectedTextColor = Chameleon.quietLightLobLolly
-    formView.tintColor                = Chameleon.quietLightLilyWhiteDark
+    formView.labelFont                = AssetManager.labelFont
+    formView.labelTextColor           = AssetManager.labelTextColor
+    formView.controlFont              = AssetManager.controlFont
+    formView.controlTextColor         = AssetManager.controlTextColor
+    formView.controlSelectedFont      = AssetManager.controlSelectedFont
+    formView.controlSelectedTextColor = AssetManager.controlSelectedTextColor
+    formView.tintColor                = AssetManager.tintColor
     view = formView
     view.setNeedsUpdateConstraints()
   }

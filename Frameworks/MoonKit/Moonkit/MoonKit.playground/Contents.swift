@@ -6,9 +6,10 @@ import CoreAudio
 import CoreMIDI
 import SpriteKit
 
-let f1 = Fraction(numerator: 1, denominator: 2)
-let f2 = Fraction(numerator: 3, denominator: 4)
-f1 + f2
-f1 - f2
-f2 - f1
-f1 + f1
+let size = CGSize(square: 32)
+let bounds = CGRect(size: CGSize(width: 200, height: 44))
+let maximumValue = Float(380)
+let value = Float(120)
+var origin = CGPoint(x: -half(size.width), y: half(bounds.height) - half(size.height))
+let ratio = Ratio(numerator: CGFloat(Ratio(CGFloat(maximumValue), bounds.width).numeratorForDenominator(bounds.width + size.width)), denominator: CGFloat(maximumValue))
+let displayValue = ratio.value * CGFloat(value)

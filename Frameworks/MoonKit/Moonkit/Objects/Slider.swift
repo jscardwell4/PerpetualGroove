@@ -25,7 +25,63 @@ public class Slider: UISlider {
 
   }
 
+  public var labelTextForValue: (Float) -> String = { String($0, precision: 2) } {
+    didSet {
+      valueLabel.text = labelTextForValue(value)
+    }
+  }
+
+  public override func updateConstraints() {
+    super.updateConstraints()
+    guard constraintsWithPrefixTags(labelValueIdentifier.tags).count == 0 else { return }
+    constrain(valueLabel.centerY => centerY + valueLabelOffset.vertical --> (labelValueIdentifier + "Vertical"))
+    if trackShowsThroughThumb {
+      constrain(valueLabel.centerX => left + valueLabelOffset.horizontal --> (labelValueIdentifier + "Horizontal"))
+    } else {
+      constrain(valueLabel.left => left + valueLabelOffset.horizontal --> (labelValueIdentifier + "Horizontal"))
+    }
+    labelValueWidthConstraint = constraintWithIdentifier(labelValueIdentifier + "Horizontal")
+  }
+
+  private let labelValueIdentifier = Identifier(self, "ValueLabel")
+  private weak var labelValueWidthConstraint: NSLayoutConstraint?
+
+  private func setup() {
+    valueLabel.setContentCompressionResistancePriority(1000, forAxis: .Vertical)
+    valueLabel.setContentCompressionResistancePriority(1000, forAxis: .Horizontal)
+    valueLabel.setContentHuggingPriority(1000, forAxis: .Vertical)
+    valueLabel.setContentHuggingPriority(1000, forAxis: .Horizontal)
+    valueLabel.layer.zPosition = 100
+    valueLabel.hidden = valueLabelHidden
+    valueLabel.text = labelTextForValue(value)
+    addSubview(valueLabel)
+    setNeedsUpdateConstraints()
+  }
+
+  public override init(frame: CGRect) { super.init(frame: frame); setup() }
+
+  required public init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder); setup() }
+
+  public let valueLabel = UILabel(autolayout: true)
+  public var valueLabelHidden = true { didSet { valueLabel.hidden = valueLabelHidden } }
   public var thumbOffset = UIOffset.zeroOffset
+  public var valueLabelOffset = UIOffset.zeroOffset
+  private var displayProportionalValue: Float = 0
+  private var displayProportionalMaximumValue: Float = 0
+
+  private var valueRatio: Ratio<Float> = 1 {
+    didSet {
+      labelValueWidthConstraint?.constant = valueLabelOffset.horizontal + CGFloat(value * valueRatio.value)
+    }
+  }
+
+  public var trackShowsThroughThumb = false {
+    didSet {
+      guard oldValue != trackShowsThroughThumb else { return }
+      removeConstraints(constraintsWithPrefixTags(labelValueIdentifier.tags))
+      setNeedsUpdateConstraints()
+    }
+  }
 
   /**
   thumbRectForBounds:trackRect:value:
@@ -37,8 +93,13 @@ public class Slider: UISlider {
   - returns: CGRect
   */
   public override func thumbRectForBounds(bounds: CGRect, trackRect rect: CGRect, value: Float) -> CGRect {
-    return super.thumbRectForBounds(bounds, trackRect: rect, value: value)
-                .rectByOffsetting(dx: thumbOffset.horizontal, dy: thumbOffset.vertical)
+    guard trackShowsThroughThumb, let thumbImage = currentThumbImage else {
+      return super.thumbRectForBounds(bounds, trackRect: rect, value: value)
+                  .rectByOffsetting(dx: thumbOffset.horizontal, dy: thumbOffset.vertical)
+    }
+    let size = thumbImage.size
+    let origin = CGPoint(x: CGFloat(displayProportionalValue) - half(size.width), y: half(bounds.height) - half(size.height))
+    return CGRect(origin: origin, size: size).rectByOffsetting(dx: thumbOffset.horizontal, dy: thumbOffset.vertical)
   }
 
   public var style: ThumbStyle = .Default {
@@ -52,7 +113,23 @@ public class Slider: UISlider {
     }
   }
 
-  override public var value: Float { didSet { if style != ThumbStyle.Default { updateThumbImage() } } }
+  override public var value: Float {
+    didSet {
+      if !valueLabelHidden { valueLabel.text = labelTextForValue(value) }
+      if style != ThumbStyle.Default { updateThumbImage() }
+      if trackShowsThroughThumb, let thumbImage = currentThumbImage {
+        let size = thumbImage.size
+        let maxToWidth = Ratio(maximumValue / Float(bounds.width))
+        displayProportionalMaximumValue = Float(maxToWidth.numeratorForDenominator(Float(bounds.width + size.width)))
+        valueRatio = Ratio(displayProportionalMaximumValue / maximumValue)
+        displayProportionalValue = Float(valueRatio.value) * value
+      } else {
+        displayProportionalValue = value
+        displayProportionalMaximumValue = maximumValue
+        valueRatio = 1
+      }
+    }
+  }
 
   /** updateThumbImage */
   func updateThumbImage() {

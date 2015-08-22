@@ -75,7 +75,18 @@ final class TrackManager {
 
   /** The current time as reported by the MIDI clock */
   static var currentTime: MIDITimeStamp { return clock.clockTimeStamp }
-  static private(set) var beat = 0.0
+  static var measure: String  { return "\(bar).\(beat.value)" }
+  static private(set) var bar = 0
+  static var beat: Fraction<Double> { return clockCount / Fraction(24, 96) }
+  static private var clockCount = Fraction(0, 96) {
+    didSet {
+      backgroundDispatch { print(measure) }
+      if clockCount == 1 {
+        clockCount.numerator = 0
+        bar++
+      }
+    }
+  }
 
   static private var beatInitialized = false
   static private var client = MIDIClientRef()
@@ -90,7 +101,7 @@ final class TrackManager {
   */
   static private func read(packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutablePointer<Void>) {
     guard packetList.memory.packet.data.0 == 0b1111_1000 else { return }
-
+    clockCount.numerator += 1
   }
 
   /** Creates `client` and `inPort`; then, connections `inPort` to `clockSource` */

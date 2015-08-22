@@ -9,24 +9,6 @@
 import Foundation
 import UIKit
 
-public struct Ratio: CustomStringConvertible {
-  public var numerator: CGFloat = 1
-  public var denominator: CGFloat = 1
-  public var width: CGFloat { get { return numerator } set { numerator = newValue } }
-  public var height: CGFloat { get { return denominator } set { denominator = newValue } }
-  public var value: CGFloat { return numerator / denominator }
-  public var inverseValue: CGFloat { return denominator / numerator }
-  public var description: String { return "\(numerator):\(denominator)" }
-  public init<T: CGFloatable>(numerator: T, denominator: T) { self.init(numerator, denominator) }
-  public init<T: CGFloatable>(width: T, height: T) { self.init(numerator: width, denominator: height) }
-  public init(_ size: CGSize) { numerator = size.width; denominator = size.height }
-  public init<T: CGFloatable>(_ n: T, _ d: T) { numerator = n.CGFloatValue; denominator = d.CGFloatValue }
-  public func denominatorForNumerator(n: CGFloatable) -> CGFloat { return denominator * n.CGFloatValue / numerator }
-  public func numeratorForDenominator(d: CGFloatable) -> CGFloat { return numerator * d.CGFloatValue / denominator }
-  public func heightForWidth(w: CGFloat) -> CGFloat { return w / value }
-  public func widthForHeight(h: CGFloat) -> CGFloat { return h * value }
-}
-
 extension CGPoint {
   public init(_ values: (CGFloat, CGFloat)) { self.init(x: values.0, y: values.1) }
   public init?(_ string: String?) { if let s = string { self = CGPointFromString(s) } else { return nil } }
@@ -209,17 +191,17 @@ extension CGSize {
   	return size
   }
 
-  public mutating func scaleBy(ratio: Ratio) {
-    width = width * ratio.numerator
-    height = height * ratio.denominator
+  public mutating func scaleBy<T>(ratio: Ratio<T>) {
+    width = width * CGFloat(ratio.numerator)
+    height = height * CGFloat(ratio.denominator)
   }
 
-  public func ratioForFittingSize(size: CGSize) -> Ratio {
+  public func ratioForFittingSize(size: CGSize) -> Ratio<CGFloat> {
     let (w, h) = min(aspectMappedToWidth(size.width), s2: aspectMappedToHeight(size.height)).unpack
-    return Ratio(width/w, height/h)
+    return Ratio((width/w) / (height/h))
   }
 
-  public func scaledBy(ratio: Ratio) -> CGSize { var s = self; s.scaleBy(ratio); return s }
+  public func scaledBy<T>(ratio: Ratio<T>) -> CGSize { var s = self; s.scaleBy(ratio); return s }
 
   public func aspectMappedToWidth(w: CGFloat) -> CGSize { return CGSize(width: w, height: (w * height) / width) }
   public func aspectMappedToHeight(h: CGFloat) -> CGSize { return CGSize(width: (h * width) / height, height: h) }

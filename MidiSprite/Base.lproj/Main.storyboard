@@ -130,7 +130,7 @@
                                             <rect key="frame" x="400" y="5.5" width="180" height="33"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <subviews>
-                                                <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.0" maxValue="2" translatesAutoresizingMaskIntoConstraints="NO" id="FEg-Cl-cl7" customClass="Slider" customModule="MoonKit">
+                                                <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="120" minValue="24" maxValue="380" translatesAutoresizingMaskIntoConstraints="NO" id="FEg-Cl-cl7" customClass="Slider" customModule="MoonKit">
                                                     <rect key="frame" x="70" y="1" width="112" height="31"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="114" id="koM-ec-EmK"/>

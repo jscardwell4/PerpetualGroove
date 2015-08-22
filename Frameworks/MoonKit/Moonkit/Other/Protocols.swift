@@ -18,6 +18,169 @@ public protocol JSONValueInitializable {
   init?(_ jsonValue: JSONValue?)
 }
 
+public protocol Divisible {
+  func /(lhs: Self, rhs: Self) -> Self
+}
+
+extension Float: Divisible {}
+extension CGFloat: Divisible {}
+extension Double: Divisible {}
+extension Float80: Divisible {}
+extension Int: Divisible {}
+extension UInt: Divisible {}
+extension Int8: Divisible {}
+extension UInt8: Divisible {}
+extension Int16: Divisible {}
+extension UInt16: Divisible {}
+extension Int32: Divisible {}
+extension UInt32: Divisible {}
+extension Int64: Divisible {}
+extension UInt64: Divisible {}
+
+public protocol Multiplicable {
+  func *(lhs: Self, rhs: Self) -> Self
+}
+
+extension Float: Multiplicable {}
+extension CGFloat: Multiplicable {}
+extension Double: Multiplicable {}
+extension Float80: Multiplicable {}
+extension Int: Multiplicable {}
+extension UInt: Multiplicable {}
+extension Int8: Multiplicable {}
+extension UInt8: Multiplicable {}
+extension Int16: Multiplicable {}
+extension UInt16: Multiplicable {}
+extension Int32: Multiplicable {}
+extension UInt32: Multiplicable {}
+extension Int64: Multiplicable {}
+extension UInt64: Multiplicable {}
+
+public protocol IntConvertible {
+  var IntValue: Int { get }
+  init(integerLiteral: Int)
+}
+
+extension Float: IntConvertible {
+  public var IntValue: Int { return Int(self) }
+  public init(integerLiteral: Int) { self.init(integerLiteral) }
+}
+extension CGFloat: IntConvertible {
+  public var IntValue: Int { return Int(self) }
+  public init(integerLiteral: Int) { self.init(integerLiteral) }
+}
+extension Double: IntConvertible {
+  public var IntValue: Int { return Int(self) }
+  public init(integerLiteral: Int) { self.init(integerLiteral) }
+}
+extension Float80: IntConvertible {
+  public var IntValue: Int { return Int(self) }
+  public init(integerLiteral: Int) { self.init(integerLiteral) }
+}
+extension Int: IntConvertible {
+  public var IntValue: Int { return Int(self) }
+  public init(integerLiteral: Int) { self.init(integerLiteral) }
+}
+extension UInt: IntConvertible {
+  public var IntValue: Int { return Int(self) }
+  public init(integerLiteral: Int) { self.init(integerLiteral) }
+}
+extension Int8: IntConvertible {
+  public var IntValue: Int { return Int(self) }
+  public init(integerLiteral: Int) { self.init(integerLiteral) }
+}
+extension UInt8: IntConvertible {
+  public var IntValue: Int { return Int(self) }
+  public init(integerLiteral: Int) { self.init(integerLiteral) }
+}
+extension Int16: IntConvertible {
+  public var IntValue: Int { return Int(self) }
+  public init(integerLiteral: Int) { self.init(integerLiteral) }
+}
+extension UInt16: IntConvertible {
+  public var IntValue: Int { return Int(self) }
+  public init(integerLiteral: Int) { self.init(integerLiteral) }
+}
+extension Int32: IntConvertible {
+  public var IntValue: Int { return Int(self) }
+  public init(integerLiteral: Int) { self.init(integerLiteral) }
+}
+extension UInt32: IntConvertible {
+  public var IntValue: Int { return Int(self) }
+  public init(integerLiteral: Int) { self.init(integerLiteral) }
+}
+extension Int64: IntConvertible {
+  public var IntValue: Int { return Int(self) }
+  public init(integerLiteral: Int) { self.init(integerLiteral) }
+}
+extension UInt64: IntConvertible {
+  public var IntValue: Int { return Int(self) }
+  public init(integerLiteral: Int) { self.init(integerLiteral) }
+}
+
+public protocol DoubleConvertible {
+  var DoubleValue: Double { get }
+  init(doubleLiteral: Double)
+}
+
+extension Float: DoubleConvertible {
+  public var DoubleValue: Double { return Double(self) }
+  public init(doubleLiteral: Double) { self.init(doubleLiteral) }
+}
+extension CGFloat: DoubleConvertible {
+  public var DoubleValue: Double { return Double(self) }
+  public init(doubleLiteral: Double) { self.init(doubleLiteral) }
+}
+extension Double: DoubleConvertible {
+  public var DoubleValue: Double { return Double(self) }
+  public init(doubleLiteral: Double) { self.init(doubleLiteral) }
+}
+extension Float80: DoubleConvertible {
+  public var DoubleValue: Double { return Double(self) }
+  public init(doubleLiteral: Double) { self.init(doubleLiteral) }
+}
+extension Int: DoubleConvertible {
+  public var DoubleValue: Double { return Double(self) }
+  public init(doubleLiteral: Double) { self.init(doubleLiteral) }
+}
+extension UInt: DoubleConvertible {
+  public var DoubleValue: Double { return Double(self) }
+  public init(doubleLiteral: Double) { self.init(doubleLiteral) }
+}
+extension Int8: DoubleConvertible {
+  public var DoubleValue: Double { return Double(self) }
+  public init(doubleLiteral: Double) { self.init(doubleLiteral) }
+}
+extension UInt8: DoubleConvertible {
+  public var DoubleValue: Double { return Double(self) }
+  public init(doubleLiteral: Double) { self.init(doubleLiteral) }
+}
+extension Int16: DoubleConvertible {
+  public var DoubleValue: Double { return Double(self) }
+  public init(doubleLiteral: Double) { self.init(doubleLiteral) }
+}
+extension UInt16: DoubleConvertible {
+  public var DoubleValue: Double { return Double(self) }
+  public init(doubleLiteral: Double) { self.init(doubleLiteral) }
+}
+extension Int32: DoubleConvertible {
+  public var DoubleValue: Double { return Double(self) }
+  public init(doubleLiteral: Double) { self.init(doubleLiteral) }
+}
+extension UInt32: DoubleConvertible {
+  public var DoubleValue: Double { return Double(self) }
+  public init(doubleLiteral: Double) { self.init(doubleLiteral) }
+}
+extension Int64: DoubleConvertible {
+  public var DoubleValue: Double { return Double(self) }
+  public init(doubleLiteral: Double) { self.init(doubleLiteral) }
+}
+extension UInt64: DoubleConvertible {
+  public var DoubleValue: Double { return Double(self) }
+  public init(doubleLiteral: Double) { self.init(doubleLiteral) }
+}
+
+
 public protocol JSONExport {
   var jsonString: String { get }
 }
@@ -105,10 +268,6 @@ extension Dictionary: KeyValueCollectionType {}
 
 public protocol Presentable {
   var title: String { get }
-}
-
-public protocol Divisible {
-  func /(lhs: Self, rhs: Self) -> Self
 }
 
 public protocol EnumerableType {
