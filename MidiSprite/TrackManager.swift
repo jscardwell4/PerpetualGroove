@@ -75,6 +75,33 @@ final class TrackManager {
 
   /** The current time as reported by the MIDI clock */
   static var currentTime: MIDITimeStamp { return clock.clockTimeStamp }
+  static private(set) var beat = 0.0
+
+  static private var beatInitialized = false
+  static private var client = MIDIClientRef()
+  static private var inPort = MIDIPortRef()
+  
+
+  /**
+  read:context:
+
+  - parameter packetList: UnsafePointer<MIDIPacketList>
+  - parameter context: UnsafePointer<Void>
+  */
+  static private func read(packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutablePointer<Void>) {
+    guard packetList.memory.packet.data.0 == 0b1111_1000 else { return }
+
+  }
+
+  /** Creates `client` and `inPort`; then, connections `inPort` to `clockSource` */
+  static private func initializeBeat() {
+    guard !beatInitialized else { return }
+    do {
+      try MIDIClientCreateWithBlock("TrackManager", &client, nil) ➤ "Failed to create midi client for track manager"
+      try MIDIInputPortCreateWithBlock(client, "Input", &inPort, read) ➤ "Failed to create in port for track manager"
+      try MIDIPortConnectSource(inPort, clockSource, nil) ➤ "Failed to connect track manager to clock"
+    } catch { logError(error) }
+  }
 
   /** The MIDI clock */
   static private let clock = MIDIClockSource()
@@ -83,13 +110,16 @@ final class TrackManager {
   static var clockSource: MIDIEndpointRef { return clock.endPoint }
 
   /** The tempo used by the MIDI clock in beats per minute */
-  static var currentTempo: Double = 120
+  static var tempo: Double { get { return clock.beatsPerMinute } set { clock.beatsPerMinute = newValue } }
 
   /** Starts the MIDI clock */
-  static func start() { guard !clock.running else { return }; clock.start(); MSLogDebug("start time = \(currentTime)") }
+  static func start() {
+    if !beatInitialized { initializeBeat() }
+    guard !clock.running else { return }
+    clock.start()
+  }
 
   /** Stops the MIDI clock */
-  static func stop() { guard clock.running else { return }; clock.stop(); MSLogDebug("stop time = \(currentTime)") }
+  static func stop() { guard clock.running else { return }; clock.stop() }
 
-  // TODO: Incorporate 'Beats'
 }

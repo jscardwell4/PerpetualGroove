@@ -15,6 +15,9 @@ nonce
 */
 public func nonce() -> String { return NSUUID().UUIDString }
 
+public func gcd(var a: Int, var _ b: Int) -> Int { while b != 0 { let t = b; b = a % b; a = t }; return a }
+public func lcm(a: Int, _ b: Int) -> Int { return a / gcd(a, b) * b }
+
 /**
 dispatchToMain:block:
 

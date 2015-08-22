@@ -44,6 +44,7 @@ final class Track: Equatable {
   private var client = MIDIClientRef()
   private var inPort = MIDIPortRef()
   private var outPort = MIDIPortRef()
+  private var sequence = MusicSequence()
 
   // MARK: - Editable properties
 
@@ -204,6 +205,8 @@ final class Track: Equatable {
     try MIDIClientCreateWithBlock("track \(bus.element)", &client, notify) ➤ "Failed to create midi client"
     try MIDIOutputPortCreate(client, "Output", &outPort) ➤ "Failed to create out port"
     try MIDIInputPortCreateWithBlock(client, label, &inPort, read) ➤ "Failed to create in port"
+    try NewMusicSequence(&sequence) ➤ "Failed to create music sequence"
+    
   }
 
   // MARK: - Enumeration for specifying the color attached to a `TrackType`
