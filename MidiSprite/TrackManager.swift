@@ -12,7 +12,7 @@ import MoonKit
 
 extension CABarBeatTime: CustomStringConvertible { public var description: String { return "\(bar).\(beat).\(subbeat)" } }
 extension CABarBeatTime {
-  var timestamp: MusicTimeStamp { return Double(bar) * Double(beat) + Double(subbeat) }
+  var timestamp: MusicTimeStamp { return Double(bar) * Double(beat) + Double(subbeat) / Double(subbeatDivisor) }
   mutating func reset() { bar = 1; beat = 1; subbeat = 1 }
 }
 
@@ -56,7 +56,7 @@ final class TrackManager {
   - parameter graph: AUGraph
   */
   static func initializeWithGraph(g: AUGraph) throws {
-    guard graph == nil else { throw Error.GraphAlreadySet }
+    guard case .None = graph else { throw Error.GraphAlreadySet }
     var isInitialized = DarwinBoolean(false)
     try AUGraphIsInitialized(g, &isInitialized) ➤ "\(location()) Failed to check whether graph is initialized"
     guard isInitialized else { throw Error.GraphNotInitialized }
@@ -106,12 +106,40 @@ final class TrackManager {
       } else {
         barBeatTime.subbeat++
       }
+//      backgroundDispatch {print(barBeatTime)}
     }
   }
 
-  static var beatStamp: MusicTimeStamp { return barBeatTime.timestamp }
+  static var beatStamp: MusicTimeStamp {
+    return barBeatTime.timestamp
+  }
 
   static private(set) var barBeatTime = CABarBeatTime(bar: 1, beat: 1, subbeat: 1, subbeatDivisor: 24, reserved: 0)
+
+  /**
+  beatsToBarBeatTime:
+
+  - parameter beats: MusicTimeStamp
+  */
+  static func beatsToBarBeatTime(beats: MusicTimeStamp) throws -> CABarBeatTime {
+    var result = CABarBeatTime()
+    try MusicSequenceBeatsToBarBeatTime(sequence, beats, UInt32(barBeatTime.subbeatDivisor), &result)
+      ➤ "Failed to get bar beat time for beats \(beats)"
+    return result
+  }
+
+  /**
+  barBeatTimeToBeats:
+
+  - parameter barBeatTime: CABarBeatTime
+  */
+  static func barBeatTimeToBeats(var barBeatTime: CABarBeatTime) throws -> MusicTimeStamp {
+    var result = MusicTimeStamp()
+    let barBeatTimePointer = withUnsafePointer(&barBeatTime) { return $0 }
+    try MusicSequenceBarBeatTimeToBeats(sequence, barBeatTimePointer, &result)
+      ➤ "Failed to get beats for bar beat time \(barBeatTime)"
+    return result
+  }
 
   /*
   Time Signature

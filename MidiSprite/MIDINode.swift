@@ -70,7 +70,8 @@ final class MIDINode: SKSpriteNode {
 
   private var sourceID: [UInt8] = []
 
-  private func sendNoteOn() {
+  /** sendNoteOn */
+  func sendNoteOn() {
     var packetList = MIDIPacketList()
     let packet = MIDIPacketListInit(&packetList)
     let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
@@ -81,8 +82,8 @@ final class MIDINode: SKSpriteNode {
     } catch { logError(error) }
   }
 
-  /** sendNoteOn */
-  private func sendNoteOff() {
+  /** sendNoteOff */
+  func sendNoteOff() {
     var packetList = MIDIPacketList()
     let packet = MIDIPacketListInit(&packetList)
     let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
