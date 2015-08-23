@@ -47,7 +47,7 @@ final class MIDIPlayerSceneViewController: UIViewController {
   }
 
   /** tempoSliderValueDidChange */
-  @IBAction func tempoSliderValueDidChange() { MSLogDebug("value = \(tempoSlider.value)") }
+  @IBAction func tempoSliderValueDidChange() { TrackManager.tempo = Double(tempoSlider.value) }
 
   /** revert */
   @IBAction func revert() { (skView?.scene as? MIDIPlayerScene)?.revert() }

@@ -11,13 +11,11 @@ import Foundation
 public struct Ratio<T:FractionType> {
 
   private var fraction = Fraction<T>()
-  public var numerator: Int { get { return fraction.numerator } set { fraction.numerator = newValue } }
-  public var denominator: Int { get { return fraction.denominator } set { fraction.denominator = newValue } }
+  public var numerator: IntMax { get { return fraction.numerator } set { fraction.numerator = newValue } }
+  public var denominator: IntMax { get { return fraction.denominator } set { fraction.denominator = newValue } }
 
   public init(_ f: Fraction<T>) { fraction = f }
   public init (_ v: T) { fraction = Fraction(v) }
-  public init<S: SignedIntegerType>(_ n: S, _ d: S) { fraction = Fraction<T>(Int(n.toIntMax()), Int(d.toIntMax())) }
-  public init<U: UnsignedIntegerType>(_ n: U, _ d: U) { fraction = Fraction<T>(Int(n.toUIntMax()), Int(d.toUIntMax())) }
 
   public var value: T { return fraction.value }
   public var inverseValue: T { return fraction.inverse.value }
@@ -42,7 +40,7 @@ public func /<T:FractionType>(lhs: Ratio<T>, rhs: Ratio<T>) -> Ratio<T> { return
 
 // MARK: - IntegerLiteralConvertible
 extension Ratio: IntegerLiteralConvertible {
-  public init(integerLiteral: Int) { self.init(integerLiteral) }
+  public init(integerLiteral: IntMax) { self.init(integerLiteral) }
 }
 
 // MARK: - FloatLiteralConvertible
@@ -72,16 +70,16 @@ extension Ratio: AbsoluteValuable {
 // MARK: - FloatingPointType
 extension Ratio: FloatingPointType {
   public typealias _BitsType = T._BitsType
-  public init(_ value: UInt8)  { self.init(Int(value)) }
-  public init(_ value: Int8)   { self.init(Int(value)) }
-  public init(_ value: UInt16) { self.init(Int(value)) }
-  public init(_ value: Int16)  { self.init(Int(value)) }
-  public init(_ value: UInt32) { self.init(Int(value)) }
-  public init(_ value: Int32)  { self.init(Int(value)) }
-  public init(_ value: UInt64) { self.init(Int(value)) }
-  public init(_ value: Int64)  { self.init(Int(value)) }
-  public init(_ value: UInt)   { self.init(Int(value)) }
-  public init(_ value: Int)    { self.init(T(integerLiteral: value)) }
+  public init(_ value: UInt8)  { self.init(Fraction(integerLiteral: IntMax(value))) }
+  public init(_ value: Int8)   { self.init(Fraction(integerLiteral: IntMax(value))) }
+  public init(_ value: UInt16) { self.init(Fraction(integerLiteral: IntMax(value))) }
+  public init(_ value: Int16)  { self.init(Fraction(integerLiteral: IntMax(value))) }
+  public init(_ value: UInt32) { self.init(Fraction(integerLiteral: IntMax(value))) }
+  public init(_ value: Int32)  { self.init(Fraction(integerLiteral: IntMax(value))) }
+  public init(_ value: UInt64) { self.init(Fraction(integerLiteral: IntMax(value))) }
+  public init(_ value: Int64)  { self.init(Fraction(integerLiteral: IntMax(value))) }
+  public init(_ value: UInt)   { self.init(Fraction(integerLiteral: IntMax(value))) }
+  public init(_ value: Int)    { self.init(Fraction(integerLiteral: IntMax(value))) }
 
   public static var infinity: Ratio { return Ratio(Fraction<T>.infinity) }
   public static var NaN: Ratio { return Ratio(Fraction<T>.NaN) }

@@ -49,7 +49,7 @@ extension CGPoint: Unpackable2 {
 
 extension CGPoint: CustomStringConvertible { public var description: String { return NSStringFromCGPoint(self) } }
 
-extension CGPoint: ArithmeticType {}
+//extension CGPoint: ArithmeticType {}
 
 public func -(lhs: CGPoint, rhs: CGPoint) -> CGPoint {
   return lhs.isNull ? rhs : (rhs.isNull ? lhs : CGPoint(x: lhs.x - rhs.x, y: lhs.y - rhs.y))
@@ -167,7 +167,9 @@ public func *(lhs: CGVector, rhs: CGFloat) -> CGVector { return CGVector(dx: lhs
 public func *(lhs: CGVector, rhs: CGVector) -> CGVector { return CGVector(dx: lhs.dx * rhs.dx, dy: lhs.dy * rhs.dy) }
 public func *=(inout lhs: CGVector, rhs: CGFloat) { lhs = lhs * rhs }
 
-extension CGVector: ArithmeticType {}
+public func sum<S:SequenceType where S.Generator.Element == CGVector>(s: S) -> CGVector {
+  return s.reduce(CGVector(), combine: +)
+}
 
 extension CGSize {
   public init(_ values: (CGFloat, CGFloat)) { self.init(width: values.0, height: values.1) }

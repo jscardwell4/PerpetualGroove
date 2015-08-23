@@ -51,7 +51,7 @@ public func sum<S:SequenceType where S.Generator.Element:IntegerArithmeticType>(
 }
 
 public func sum<S:SequenceType where S.Generator.Element:ArithmeticType>(s: S) -> S.Generator.Element {
-  return s.reduce(S.Generator.Element(), combine: +)
+  return s.reduce(S.Generator.Element(intMax: 0), combine: +)
 }
 
 /**

@@ -29,12 +29,12 @@ private func commonize<T:FractionType>(x: Fraction<T>, _ y: Fraction<T>) -> (Fra
   }
 }
 
-public typealias FractionType = protocol<FloatingPointType, Divisible, Multiplicable, IntConvertible, DoubleConvertible, FloatLiteralConvertible, Hashable, SignedNumberType, AbsoluteValuable>
+public typealias FractionType = protocol<FloatingPointType, ArithmeticType, FloatLiteralConvertible, Hashable>
 
 public struct Fraction<T:FractionType>   {
 
-  public var numerator = 0
-  public var denominator = 1
+  public var numerator: IntMax = 0
+  public var denominator: IntMax = 1
   public var value: T { return T(numerator) / T(denominator) }
   public var inverse: Fraction { return Fraction(denominator, numerator) }
 
@@ -43,12 +43,12 @@ public struct Fraction<T:FractionType>   {
 
   public init(_ value: T) {
     let pieces = ".".split(String(value))
-    guard pieces.count == 2 else { numerator = value.IntValue; return }
-    denominator = Int(pow(10.0, Double(pieces[1].characters.count)))
-    numerator = Int("".join(pieces))!
+    guard pieces.count == 2 else { numerator = value.toIntMax(); return }
+    denominator = IntMax(pow(10.0, Double(pieces[1].characters.count)))
+    numerator = IntMax("".join(pieces))!
     reduce()
   }
-  public init(_ n: Int = 0, _ d: Int = 1) { numerator = n; denominator = d}
+  public init(_ n: IntMax = 0, _ d: IntMax = 1) { numerator = n; denominator = d}
 }
 
 // MARK: - SignedNumberType
@@ -68,6 +68,16 @@ public func *<T:FractionType>(lhs: Fraction<T>, rhs: Fraction<T>) -> Fraction<T>
 }
 public func /<T:FractionType>(lhs: Fraction<T>, rhs: Fraction<T>) -> Fraction<T> { return (lhs * rhs.inverse).reduced }
 
+public func %<T:FractionType>(lhs: Fraction<T>, rhs: Fraction<T>) -> Fraction<T> {
+  let (l, r) = commonize(lhs, rhs)
+  return Fraction(l.numerator % r.numerator, l.denominator).reduced
+}
+
+extension Fraction: ArithmeticType {
+  public func toIntMax() -> IntMax { return value.toIntMax() }
+  public init(intMax: IntMax) { self.init(integerLiteral: intMax) }
+}
+
 // MARK: - CustomStringConvertible
 extension Fraction: CustomStringConvertible {
 
@@ -77,7 +87,7 @@ extension Fraction: CustomStringConvertible {
 
 // MARK: - IntegerLiteralConvertible
 extension Fraction: IntegerLiteralConvertible {
-  public init(integerLiteral: Int) { numerator = integerLiteral }
+  public init(integerLiteral: IntMax) { numerator = integerLiteral }
 }
 
 // MARK: - FloatLiteralConvertible
@@ -113,16 +123,16 @@ extension Fraction: AbsoluteValuable {
 // MARK: - FloatingPointType
 extension Fraction: FloatingPointType {
   public typealias _BitsType = T._BitsType
-  public init(_ value: UInt8) { numerator = Int(value) }
-  public init(_ value: Int8) { numerator = Int(value) }
-  public init(_ value: UInt16) { numerator = Int(value) }
-  public init(_ value: Int16) { numerator = Int(value) }
-  public init(_ value: UInt32) { numerator = Int(value) }
-  public init(_ value: Int32) { numerator = Int(value) }
-  public init(_ value: UInt64) { numerator = Int(value) }
-  public init(_ value: Int64) { numerator = Int(value) }
-  public init(_ value: UInt) { numerator = Int(value) }
-  public init(_ value: Int) { numerator = value }
+  public init(_ value: UInt8) { numerator = IntMax(value) }
+  public init(_ value: Int8) { numerator = IntMax(value) }
+  public init(_ value: UInt16) { numerator = IntMax(value) }
+  public init(_ value: Int16) { numerator = IntMax(value) }
+  public init(_ value: UInt32) { numerator = IntMax(value) }
+  public init(_ value: Int32) { numerator = IntMax(value) }
+  public init(_ value: UInt64) { numerator = IntMax(value) }
+  public init(_ value: Int64) { numerator = IntMax(value) }
+  public init(_ value: UInt) { numerator = IntMax(value) }
+  public init(_ value: Int) { numerator = IntMax(value) }
 
   public static var infinity: Fraction { return Fraction(1, 0) }
   public static var NaN: Fraction { return Fraction(0, 0) }

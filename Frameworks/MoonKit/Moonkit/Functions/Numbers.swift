@@ -10,17 +10,6 @@ import Foundation
 
 public let π = CGFloat(M_PI)
 
-public protocol ArithmeticType {
-  func +(lhs: Self, rhs: Self) -> Self
-  func -(lhs: Self, rhs: Self) -> Self
-  func *(lhs: Self, rhs: Self) -> Self
-  func /(lhs: Self, rhs: Self) -> Self
-  init()
-}
-
-extension Float: ArithmeticType {}
-extension Double: ArithmeticType {}
-extension CGFloat: ArithmeticType {}
 
 //public func +(lhs: CGFloat, rhs: CGFloatable) -> CGFloat { return lhs + rhs.CGFloatValue }
 //public func -(lhs: CGFloat, rhs: CGFloatable) -> CGFloat { return lhs - rhs.CGFloatValue }

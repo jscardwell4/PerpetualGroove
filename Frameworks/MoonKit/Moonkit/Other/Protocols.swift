@@ -22,39 +22,62 @@ public protocol Divisible {
   func /(lhs: Self, rhs: Self) -> Self
 }
 
-extension Float: Divisible {}
-extension CGFloat: Divisible {}
-extension Double: Divisible {}
-extension Float80: Divisible {}
-extension Int: Divisible {}
-extension UInt: Divisible {}
-extension Int8: Divisible {}
-extension UInt8: Divisible {}
-extension Int16: Divisible {}
-extension UInt16: Divisible {}
-extension Int32: Divisible {}
-extension UInt32: Divisible {}
-extension Int64: Divisible {}
-extension UInt64: Divisible {}
-
-public protocol Multiplicable {
+public protocol ArithmeticType {
+  func +(lhs: Self, rhs: Self) -> Self
+  func -(lhs: Self, rhs: Self) -> Self
   func *(lhs: Self, rhs: Self) -> Self
+  func /(lhs: Self, rhs: Self) -> Self
+  func %(lhs: Self, rhs: Self) -> Self
+  func toIntMax() -> IntMax
+  init(intMax: IntMax)
 }
 
-extension Float: Multiplicable {}
-extension CGFloat: Multiplicable {}
-extension Double: Multiplicable {}
-extension Float80: Multiplicable {}
-extension Int: Multiplicable {}
-extension UInt: Multiplicable {}
-extension Int8: Multiplicable {}
-extension UInt8: Multiplicable {}
-extension Int16: Multiplicable {}
-extension UInt16: Multiplicable {}
-extension Int32: Multiplicable {}
-extension UInt32: Multiplicable {}
-extension Int64: Multiplicable {}
-extension UInt64: Multiplicable {}
+extension Float: ArithmeticType {
+  public func toIntMax() -> IntMax { return IntMax(self) }
+  public init(intMax: IntMax) { self = Float(intMax) }
+}
+extension Double: ArithmeticType {
+  public func toIntMax() -> IntMax { return IntMax(self) }
+  public init(intMax: IntMax) { self = Double(intMax) }
+}
+extension CGFloat: ArithmeticType {
+  public func toIntMax() -> IntMax { return IntMax(self) }
+  public init(intMax: IntMax) { self = CGFloat(intMax) }
+}
+extension Float80: ArithmeticType {
+  public func toIntMax() -> IntMax { return IntMax(self) }
+  public init(intMax: IntMax) { self = Float80(intMax) }
+}
+extension Int: ArithmeticType {
+  public init(intMax: IntMax) { self = Int(intMax) }
+}
+extension UInt: ArithmeticType {
+  public init(intMax: IntMax) { self = UInt(intMax) }
+}
+extension Int8: ArithmeticType {
+  public init(intMax: IntMax) { self = Int8(intMax) }
+}
+extension UInt8: ArithmeticType {
+  public init(intMax: IntMax) { self = UInt8(intMax) }
+}
+extension Int16: ArithmeticType {
+  public init(intMax: IntMax) { self = Int16(intMax) }
+}
+extension UInt16: ArithmeticType {
+  public init(intMax: IntMax) { self = UInt16(intMax) }
+}
+extension Int32: ArithmeticType {
+  public init(intMax: IntMax) { self = Int32(intMax) }
+}
+extension UInt32: ArithmeticType {
+  public init(intMax: IntMax) { self = UInt32(intMax) }
+}
+extension Int64: ArithmeticType {
+  public init(intMax: IntMax) { self = Int64(intMax) }
+}
+extension UInt64: ArithmeticType {
+  public init(intMax: IntMax) { self = UInt64(intMax) }
+}
 
 public protocol IntConvertible {
   var IntValue: Int { get }

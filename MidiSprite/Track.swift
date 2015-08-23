@@ -41,10 +41,11 @@ final class Track: Equatable {
   let color: Color
 
   private var nodes: Set<MIDINode> = []
+  private var notes: [UInt: MIDINode.Note] = [:]
   private var client = MIDIClientRef()
   private var inPort = MIDIPortRef()
   private var outPort = MIDIPortRef()
-  private var sequence = MusicSequence()
+  private var musicTrack: MusicTrack
 
   // MARK: - Editable properties
 
@@ -64,7 +65,9 @@ final class Track: Equatable {
   */
   func addNode(node: MIDINode) throws {
     nodes.insert(node)
-    MSLogDebug("track (\(label)) added node with source id \(ObjectIdentifier(node).uintValue)")
+    let identifier = ObjectIdentifier(node).uintValue
+    notes[identifier] = node.note
+    MSLogDebug("track (\(label)) added node with source id \(identifier)")
     try MIDIPortConnectSource(inPort, node.endPoint, nil) ➤ "Failed to connect to node \(node.name!)"
   }
 
@@ -75,7 +78,9 @@ final class Track: Equatable {
   */
   func removeNode(node: MIDINode) throws {
     guard let node = nodes.remove(node) else { throw Error.NodeNotFound }
-    MSLogDebug("track (\(label)) removed node with source id \(ObjectIdentifier(node).uintValue)")
+    let identifier = ObjectIdentifier(node).uintValue
+    notes[identifier] = nil
+    MSLogDebug("track (\(label)) removed node with source id \(identifier)")
     try MIDIPortDisconnectSource(inPort, node.endPoint) ➤ "Failed to disconnect to node \(node.name!)"
   }
 
@@ -165,16 +170,10 @@ final class Track: Equatable {
 
       let nodeIdentifier = nodeIdentifierFromPacket(packet)
 
-      let message: String
-      switch packet.length {
-        case 1 where packet.data.0 == 0b1111_1000:
-          message = "Timing Clock"
-        case 11 where (0b1000_0000 ... 0b1000_1111).contains(packet.data.0):
-          message = "Note off (ch: \(packet.data.0 & 0x0F); note: \(packet.data.1); velocity: \(packet.data.2))"
-        case 11 where (0b1001_0000 ... 0b1001_1111).contains(packet.data.0):
-          message = "Note on (ch: \(packet.data.0 & 0x0F); note: \(packet.data.1); velocity: \(packet.data.2))"
-        default:
-          message = "Unhandled message (status: \(String(packet.data.0, radix: 2)))"
+      if case let n = packet.length where (0b1001_0000 ... 0b1001_1111).contains(packet.data.0) && n == 11,
+        let message = notes[nodeIdentifier]
+      {
+        do { try newNoteEvent(TrackManager.beatStamp, message) } catch { logError(error) }
       }
 
       backgroundDispatch{print("packet received (\(nodeIdentifier)) {" + "; ".join(
@@ -182,8 +181,7 @@ final class Track: Equatable {
         "length: \(packet.length)",
         " ".join(String(packet.data.0, radix: 16, uppercase: true),
                  String(packet.data.1, radix: 16, uppercase: true),
-                 String(packet.data.2, radix: 16, uppercase: true)),
-        message) + "}")}
+                 String(packet.data.2, radix: 16, uppercase: true))) + "}")}
 
       packetPointer = MIDIPacketNext(packetPointer)
     }
@@ -193,20 +191,18 @@ final class Track: Equatable {
   }
 
   /**
-  init:bus:
+  initWithBus:track:
 
-  - parameter i: Instrument
-  - parameter b: AudioUnitElement
+  - parameter b: Bus
+  - parameter track: MusicTrack
   */
-  init(bus b: Bus) throws {
+  init(bus b: Bus, track: MusicTrack) throws {
     bus = b
     color = Color.allCases[Int(bus.element) % 10]
-
+    musicTrack = track
     try MIDIClientCreateWithBlock("track \(bus.element)", &client, notify) ➤ "Failed to create midi client"
     try MIDIOutputPortCreate(client, "Output", &outPort) ➤ "Failed to create out port"
     try MIDIInputPortCreateWithBlock(client, label, &inPort, read) ➤ "Failed to create in port"
-    try NewMusicSequence(&sequence) ➤ "Failed to create music sequence"
-    
   }
 
   // MARK: - Enumeration for specifying the color attached to a `TrackType`
@@ -230,6 +226,284 @@ final class Track: Equatable {
                                     .MangoTango, .Viking, .Yellow, .Conifer, .Apache]
   }
 
+
+  // MARK: - Wrapping MusicTrack
+
+  /**
+  moveEvents:by:
+
+  - parameter interval: HalfOpenInterval<MusicTimeStamp>
+  - parameter amount: MusicTimeStamp
+  */
+  func moveEvents(interval: HalfOpenInterval<MusicTimeStamp>, by amount: MusicTimeStamp) throws {
+    try MusicTrackMoveEvents(musicTrack, interval.start, interval.end, amount) ➤ "Failed to move events \(interval) in music track"
+  }
+
+  /**
+  clearEvents:
+
+  - parameter interval: HalfOpenInterval<MusicTimeStamp>
+  */
+  func clearEvents(interval: HalfOpenInterval<MusicTimeStamp>) throws {
+    try MusicTrackClear(musicTrack, interval.start, interval.end) ➤ "Failed to clear events \(interval) in music track"
+  }
+
+  /**
+  cutEvents:
+
+  - parameter interval: HalfOpenInterval<MusicTimeStamp>
+  */
+  func cutEvents(interval: HalfOpenInterval<MusicTimeStamp>) throws {
+    try MusicTrackCut(musicTrack, interval.start, interval.end) ➤ "Failed to cut events \(interval) in music track"
+  }
+
+  /**
+  copyEvents:intoTrack:at:
+
+  - parameter interval: HalfOpenInterval<MusicTimeStamp>
+  - parameter track: Track
+  - parameter insertTime: MusicTimeStamp
+  */
+  func copyEvents(interval: HalfOpenInterval<MusicTimeStamp>, intoTrack track: Track, at insertTime: MusicTimeStamp) throws {
+    try MusicTrackCopyInsert(musicTrack, interval.start, interval.end, track.musicTrack, insertTime)
+      ➤ "Failed to copy events \(interval) into track \(track.label) at \(insertTime)"
+  }
+
+  /**
+  mergeEvents:intoTrack:at:
+
+  - parameter interval: HalfOpenInterval<MusicTimeStamp>
+  - parameter track: Track
+  - parameter insertTime: MusicTimeStamp
+  */
+  func mergeEvents(interval: HalfOpenInterval<MusicTimeStamp>, intoTrack track: Track, at insertTime: MusicTimeStamp) throws {
+    try MusicTrackMerge(musicTrack, interval.start, interval.end, track.musicTrack, insertTime)
+      ➤ "Failed to merge events \(interval) into track \(track.label) at \(insertTime)"
+  }
+
+
+  /**
+  newNoteEvent:var:
+
+  - parameter stamp: MusicTimeStamp
+  - parameter message: MIDINoteMessage
+  */
+  func newNoteEvent(stamp: MusicTimeStamp, var _ message: MIDINoteMessage) throws {
+    try MusicTrackNewMIDINoteEvent(musicTrack, stamp, &message) ➤ "Failed to add note event"
+  }
+
+  /**
+  newChannelEvent:status:data1:data2:
+
+  - parameter stamp: MusicTimeStamp
+  - parameter status: UInt8
+  - parameter data1: UInt8
+  - parameter data2: UInt8
+  */
+  func newChannelEvent(stamp: MusicTimeStamp, status: UInt8, _ data1: UInt8, _ data2: UInt8) throws {
+    var message = MIDIChannelMessage(status: status, data1: data1, data2: data2, reserved: 0)
+    try MusicTrackNewMIDIChannelEvent(musicTrack, stamp, &message) ➤ "Failed to add channel event to music track"
+  }
+
+  /**
+  newRawDataEvent:length:data:
+
+  - parameter stamp: MusicTimeStamp
+  - parameter length: UInt32
+  - parameter data: (UInt8)
+  */
+  func newRawDataEvent(stamp: MusicTimeStamp, _ length: UInt32, _ data: (UInt8)) throws {
+    var event = MIDIRawData(length: length, data: data)
+    try MusicTrackNewMIDIRawDataEvent(musicTrack, stamp, &event) ➤ "Failed to add raw data event to music track"
+  }
+
+  /**
+  newExtendedNoteEvent:instrumentID:groupID:duration:pitch:velocity:controlValues:
+
+  - parameter stamp: MusicTimeStamp
+  - parameter instrumentID: MusicDeviceInstrumentID
+  - parameter groupID: MusicDeviceGroupID
+  - parameter duration: Float
+  - parameter pitch: Float
+  - parameter velocity: Float
+  - parameter controlValues: [NoteParamsControlValue]
+  */
+  func newExtendedNoteEvent(stamp: MusicTimeStamp,
+                         _ instrumentID: MusicDeviceInstrumentID,
+                         _ groupID: MusicDeviceGroupID,
+                         _ duration: Float,
+                         _ pitch: Float,
+                         _ velocity: Float,
+                         _ controlValues: [NoteParamsControlValue]) throws
+  {
+    let cv = controlValues.withUnsafeBufferPointer {
+      (ptr: UnsafeBufferPointer<NoteParamsControlValue>) -> (NoteParamsControlValue) in
+      return ptr.baseAddress.memory
+    }
+    let noteParams = MusicDeviceNoteParams(
+      argCount: UInt32(2 + controlValues.count),
+      mPitch: pitch,
+      mVelocity: velocity,
+      mControls: cv
+    )
+    var noteOnEvent = ExtendedNoteOnEvent(
+      instrumentID: instrumentID,
+      groupID: groupID,
+      duration: duration,
+      extendedParams: noteParams
+    )
+    try MusicTrackNewExtendedNoteEvent(musicTrack, stamp, &noteOnEvent) ➤ "Failed to add extened note event to music track"
+  }
+
+  /**
+  newParameterEvent:parameterID:scope:element:value:
+
+  - parameter stamp: MusicTimeStamp
+  - parameter parameterID: AudioUnitParameterID
+  - parameter scope: AudioUnitScope
+  - parameter element: AudioUnitElement
+  - parameter value: AudioUnitParameterValue
+  */
+  func newParameterEvent(stamp: MusicTimeStamp,
+                       _ parameterID: AudioUnitParameterID,
+                       _ scope: AudioUnitScope,
+                       _ element: AudioUnitElement,
+                       _ value: AudioUnitParameterValue) throws
+  {
+    var event = ParameterEvent(parameterID: parameterID, scope: scope, element: element, value: value)
+    try MusicTrackNewParameterEvent(musicTrack, stamp, &event) ➤ "Failed to add new parameter event to music track"
+  }
+
+  /**
+  newTempoEvent:beatsPerMinute:
+
+  - parameter stamp: MusicTimeStamp
+  - parameter beatsPerMinute: Double
+  */
+  func newTempoEvent(stamp: MusicTimeStamp, _ beatsPerMinute: Double) throws {
+    try MusicTrackNewExtendedTempoEvent(musicTrack, stamp, beatsPerMinute) ➤ "Failed to add tempo event to music track"
+  }
+
+  /**
+  newMetaEvent:type:length:data:
+
+  - parameter stamp: MusicTimeStamp
+  - parameter type: UInt8
+  - parameter length: Uint32
+  - parameter data: (UInt8)
+  */
+  func newMetaEvent(stamp: MusicTimeStamp, _ type: UInt8, _ length: UInt32, _ data: (UInt8)) throws {
+    var event = MIDIMetaEvent(metaEventType: type, unused1: 0, unused2: 0, unused3: 0, dataLength: length, data: data)
+    try MusicTrackNewMetaEvent(musicTrack, stamp, &event) ➤ "Failed to add new meta event to music track"
+  }
+
+  /**
+  newUserEvent:length:data:
+
+  - parameter stamp: MusicTimeStamp
+  - parameter length: UInt32
+  - parameter data: (UInt8)
+  */
+  func newUserEvent(stamp: MusicTimeStamp, _ length: UInt32, _ data: (UInt8)) throws {
+    var event = MusicEventUserData(length: length, data: data)
+    try MusicTrackNewUserEvent(musicTrack, stamp, &event) ➤ "Failed to add new user event to music track"
+  }
+
+
+  /**
+  newAUPresetEvent:scope:element:preset:
+
+  - parameter stamp: MusicTimeStamp
+  - parameter scope: AudioUnitScope
+  - parameter element: AudioUnitElement
+  - parameter preset: Unmanaged<CFPropertyListRef>
+  */
+  func newAUPresetEvent(stamp: MusicTimeStamp,
+                      _ scope: AudioUnitScope,
+                      _ element: AudioUnitElement,
+                      _ preset: Unmanaged<CFPropertyListRef>) throws
+  {
+    var event = AUPresetEvent(scope: scope, element: element, preset: preset)
+    try MusicTrackNewAUPresetEvent(musicTrack, stamp, &event) ➤ "Failed to add new au preset event to music track"
+  }
+
+  // MARK: - An enumeration to simplify getting and setting MusicTrack properties
+  enum TrackProperty: UInt32, CustomStringConvertible {
+    case LoopInfo, OffsetTime, MuteStatus, SoloStatus, AutomatedParameters, TrackLength, TimeResolution
+    var description: String {
+      switch self {
+        case .LoopInfo:            return "Loop Info"
+        case .OffsetTime:          return "Offset Time"
+        case .MuteStatus:          return "Mute Status"
+        case .SoloStatus:          return "Solo Status"
+        case .AutomatedParameters: return "Automated Parameters"
+        case .TrackLength:         return "Track Length"
+        case .TimeResolution:      return "Time Resolution"
+      }
+    }
+
+    enum DataType {
+      case LoopInfo (MusicTrackLoopInfo)
+      case TimeStamp (MusicTimeStamp)
+      case Boolean (DarwinBoolean)
+      case UnsignedInteger (UInt32)
+      case Integer (Int16)
+
+      var size: UInt32 {
+        switch self {
+          case .LoopInfo: return UInt32(sizeof(MusicTrackLoopInfo.self))
+          case .TimeStamp: return UInt32(sizeof(MusicTimeStamp.self))
+          case .Boolean: return UInt32(sizeof(DarwinBoolean.self))
+          case .UnsignedInteger: return UInt32(sizeof(UInt32.self))
+          case .Integer: return UInt32(sizeof(Int16.self))
+        }
+      }
+
+      var pointer: UnsafeMutablePointer<Void> {
+        switch self {
+          case .LoopInfo(var data):        return withUnsafeMutablePointer(&data) { UnsafeMutablePointer<Void>($0) }
+          case .TimeStamp(var data):       return withUnsafeMutablePointer(&data) { UnsafeMutablePointer<Void>($0) }
+          case .Boolean(var data):         return withUnsafeMutablePointer(&data) { UnsafeMutablePointer<Void>($0) }
+          case .UnsignedInteger(var data): return withUnsafeMutablePointer(&data) { UnsafeMutablePointer<Void>($0) }
+          case .Integer(var data):         return withUnsafeMutablePointer(&data) { UnsafeMutablePointer<Void>($0) }
+        }
+      }
+    }
+
+    var dataType: DataType {
+      switch self {
+        case .LoopInfo:                 return .LoopInfo(MusicTrackLoopInfo())
+        case .OffsetTime, .TrackLength: return .TimeStamp(MusicTimeStamp())
+        case .MuteStatus, .SoloStatus:  return .Boolean(DarwinBoolean(false))
+        case .AutomatedParameters:      return .UnsignedInteger(UInt32())
+        case .TimeResolution:           return .Integer(Int16())
+      }
+    }
+
+    /**
+    valueForTrack:
+
+    - parameter track: MusicTrack
+    - returns: DataType
+    */
+    func valueForTrack(track: MusicTrack) throws -> DataType {
+      var data = dataType
+      let result = data.pointer
+      var size = data.size
+      try MusicTrackGetProperty(track, rawValue, result, &size) ➤ "Failed to retrieve '\(description)' from track"
+      return data
+    }
+
+    /**
+    setValue:forTrack:
+
+    - parameter value: DataType
+    - parameter track: MusicTrack
+    */
+    func setValue(value: DataType, forTrack track: MusicTrack) throws {
+      try MusicTrackSetProperty(track, rawValue, value.pointer, value.size) ➤ "Failed to set '\(description)' for track"
+    }
+  }
 }
 
 

@@ -15,8 +15,20 @@ nonce
 */
 public func nonce() -> String { return NSUUID().UUIDString }
 
-public func gcd(var a: Int, var _ b: Int) -> Int { while b != 0 { let t = b; b = a % b; a = t }; return a }
-public func lcm(a: Int, _ b: Int) -> Int { return a / gcd(a, b) * b }
+public func gcd<T:IntegerArithmeticType>(a: T, _ b: T) -> IntMax {
+  var aMax = a.toIntMax(), bMax = b.toIntMax()
+  while bMax != 0 {
+    let t = bMax
+    bMax = aMax % bMax
+    aMax = t
+  }
+  return aMax
+}
+public func lcm<T:IntegerArithmeticType>(a: T, _ b: T) -> IntMax {
+  let aMax = a.toIntMax()
+  let bMax = b.toIntMax()
+  return aMax / gcd(aMax, bMax) * bMax
+}
 
 /**
 dispatchToMain:block:
