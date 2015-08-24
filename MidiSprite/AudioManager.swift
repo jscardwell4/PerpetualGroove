@@ -36,7 +36,7 @@ final class AudioManager {
       try configureAudioSession()
       try configureAudioGraph()
       try Mixer.initializeWithGraph(graph, node: mixerNode)
-      try TrackManager.initializeWithGraph(graph)
+      try Sequencer.initializeWithGraph(graph)
     } catch {
       logError(error)
     }
@@ -125,7 +125,7 @@ final class AudioManager {
     try AUGraphIsRunning(graph, &running) ➤ "\(location()) Failed to check running status of audio graph"
     guard !running else { return }
     try AUGraphStart(graph) ➤ "\(location()) Failed to start audio graph"
-    TrackManager.start()
+    Sequencer.start()
   }
 
   /** stop */
@@ -134,7 +134,7 @@ final class AudioManager {
     try AUGraphIsRunning(graph, &running) ➤ "\(location()) Failed to check running status of audio graph"
     guard running else { return }
     try AUGraphStop(graph) ➤ "\(location()) Failed to stop audio graph"
-    TrackManager.stop()
+    Sequencer.stop()
   }
 
 }

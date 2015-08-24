@@ -10,12 +10,15 @@ import Foundation
 import MoonKit
 import AudioUnit.AudioUnitProperties
 
-struct SoundSet: Hashable, EnumerableType {
+struct SoundSet: Hashable, EnumerableType, CustomStringConvertible {
   let baseName: String
   let ext: String
   let url: NSURL
   let instrumentType: InstrumentType
 
+  var description: String {
+    return "SoundSet { name: \(baseName), instrumentType: \(instrumentType) }"
+  }
   var hashValue: Int { return url.hashValue }
 
   enum InstrumentType: UInt8 {

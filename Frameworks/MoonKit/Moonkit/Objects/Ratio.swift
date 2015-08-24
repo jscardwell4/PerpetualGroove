@@ -8,6 +8,10 @@
 
 import Foundation
 
+infix operator ∶ { associativity left precedence 200 } // U+2236
+
+public func ∶<F:FractionType, I:IntegerArithmeticType>(lhs: I, rhs: I) -> Ratio<F> { return Ratio<F>(lhs ╱ rhs) }
+
 public struct Ratio<T:FractionType> {
 
   private var fraction = Fraction<T>()

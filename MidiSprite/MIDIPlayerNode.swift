@@ -48,7 +48,7 @@ class MIDIPlayerNode: SKShapeNode {
   func dropLast() {
     guard midiNodes.count > 0 else { return }
     let node = midiNodes.removeLast()
-    do { try TrackManager.currentTrack.removeNode(node) } catch { logError(error) }
+    do { try Sequencer.currentTrack.removeNode(node) } catch { logError(error) }
     node.removeFromParent()
   }
 
@@ -69,7 +69,7 @@ class MIDIPlayerNode: SKShapeNode {
       let midiNode = try MIDINode(placement, "midiNode\(midiNodes.count)")
       addChild(midiNode)
       midiNodes.append(midiNode)
-      try TrackManager.currentTrack.addNode(midiNode)
+      try Sequencer.currentTrack.addNode(midiNode)
     } catch {
       logError(error)
     }

@@ -28,7 +28,12 @@ extension MIDIObjectType: CustomStringConvertible {
   }
 }
 
-final class Track: Equatable {
+final class Track: Equatable, CustomStringConvertible {
+
+  var description: String {
+    return "Track(\(label)) {\n\tbus: \(bus)\n\tcolor: \(color)\n\tevents: {\n\t\t" +
+           "\n\t\t".join(events.map({$0.description})) + "\n\t}\n}"
+  }
 
   typealias Program = Instrument.Program
   typealias Channel = Instrument.Channel
@@ -175,10 +180,10 @@ final class Track: Equatable {
     if case let n = packet.length where (0b1001_0000 ... 0b1001_1111).contains(packet.data.0) && n == 11,
       let message = notes[nodeIdentifier]
     {
-      let stamp = TrackManager.beatStamp
+      let stamp = Sequencer.barBeatTime.timestamp
       guard lastEvent[nodeIdentifier] != stamp else { return }
       do { try newNoteEvent(stamp, message); lastEvent[nodeIdentifier] = stamp } catch { logError(error) }
-      backgroundDispatch { [unowned self] in print("Events for track '\(self.label)'…\n\(self.events)") }
+      
     }
 
 /*
@@ -210,7 +215,7 @@ final class Track: Equatable {
   }
 
   // MARK: - Enumeration for specifying the color attached to a `TrackType`
-  enum Color: UInt32, EnumerableType {
+  enum Color: UInt32, EnumerableType, CustomStringConvertible {
     case White      = 0xffffff
     case Portica    = 0xf7ea64
     case MonteCarlo = 0x7ac2a5
@@ -224,6 +229,21 @@ final class Track: Equatable {
     case Apache     = 0xce9f58
 
     var value: UIColor { return UIColor(RGBHex: rawValue) }
+    var description: String {
+      switch self {
+        case .White:      return "case White"
+        case .Portica:    return "case Portica"
+        case .MonteCarlo: return "case MonteCarlo"
+        case .FlamePea:   return "case FlamePea"
+        case .Crimson:    return "case Crimson"
+        case .HanPurple:  return "case HanPurple"
+        case .MangoTango: return "case MangoTango"
+        case .Viking:     return "case Viking"
+        case .Yellow:     return "case Yellow"
+        case .Conifer:    return "case Conifer"
+        case .Apache:     return "case Apache"
+      }
+    }
 
     /// `White` case is left out so that it is harder to assign the color used by `MasterTrack`
     static let allCases: [Color] = [.Portica, .MonteCarlo, .FlamePea, .Crimson, .HanPurple,

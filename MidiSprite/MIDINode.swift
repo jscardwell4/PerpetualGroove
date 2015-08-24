@@ -130,7 +130,7 @@ final class MIDINode: SKSpriteNode {
     note = MIDINode.currentNote
 
     super.init(texture: MIDINode.currentTexture.texture,
-               color: TrackManager.currentTrack.color.value,
+               color: Sequencer.currentTrack.color.value,
                size: MIDINode.defaultSize)
 
     var id = ObjectIdentifier(self).uintValue
@@ -144,7 +144,7 @@ final class MIDINode: SKSpriteNode {
 
     try MIDIClientCreateWithBlock(name, &client, nil) ➤ "Failed to create midi client"
     try MIDIInputPortCreateWithBlock(client, "Input", &inPort, read) ➤ "Failed to create in port"
-    try MIDIPortConnectSource(inPort, TrackManager.clockSource, nil) ➤ "Failed to connect to clock source"
+    try MIDIPortConnectSource(inPort, Sequencer.clockSource, nil) ➤ "Failed to connect to clock source"
     try MIDISourceCreate(client, "\(name)", &endPoint) ➤ "Failed to create end point for node \(name)"
 
     self.name = name

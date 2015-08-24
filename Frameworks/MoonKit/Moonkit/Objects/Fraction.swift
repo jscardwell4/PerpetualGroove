@@ -8,6 +8,12 @@
 
 import Foundation
 
+infix operator ╱ { associativity left precedence 200 } // U+2571
+
+public func ╱<F:FractionType, I:IntegerArithmeticType>(lhs: I, rhs: I) -> Fraction<F> {
+  return Fraction<F>(lhs.toIntMax(), rhs.toIntMax())
+}
+
 /**
 Converts two fractions into equivalent fractions with a common denominator
 

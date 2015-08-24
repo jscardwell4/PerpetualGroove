@@ -10,7 +10,7 @@ import Foundation
 import MoonKit
 import AudioToolbox
 
-final class Bus: Hashable {
+final class Bus: Hashable, CustomStringConvertible {
 
   let element: AudioUnitElement
   let instrument: Instrument
@@ -42,6 +42,7 @@ final class Bus: Hashable {
 
   var hashValue: Int { return Int(element) }
 
+  var description: String { return "Bus { element: \(element); instrument: \(instrument); volume: \(volume); pan: \(pan) }" }
 }
 
 func ==(lhs: Bus, rhs: Bus) -> Bool { return lhs.element == rhs.element }

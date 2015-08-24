@@ -11,7 +11,7 @@ import MoonKit
 import AudioToolbox
 import CoreAudio
 
-final class Instrument: Equatable {
+final class Instrument: Equatable, CustomStringConvertible {
 
   typealias Program = UInt8
   typealias Channel = MusicDeviceGroupID
@@ -45,7 +45,7 @@ final class Instrument: Equatable {
     return channelPrograms[Int(ClosedInterval<Channel>(0, 15).clampValue(channel))]
   }
 
-
+  var description: String { return "Instrument { soundSet: \(soundSet); channelPrograms: \(channelPrograms) }" }
 
   private let audioUnit: MusicDeviceComponent
   private var client = MIDIClientRef()

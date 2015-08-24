@@ -96,7 +96,7 @@ class MixerViewController: UICollectionViewController {
         (cell as? MasterCell)?.refresh()
       default:
         cell = collectionView.dequeueReusableCellWithReuseIdentifier(TrackCell.Identifier, forIndexPath: indexPath)
-        (cell as? TrackCell)?.track = TrackManager.tracks[indexPath.item]
+        (cell as? TrackCell)?.track = Sequencer.sequence.tracks[indexPath.item]
     }
     
     return cell
