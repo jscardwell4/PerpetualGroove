@@ -14,26 +14,28 @@ import CoreMIDI
 final class MIDIClockSource {
 
   private static let queue = dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)
-  var resolution = 480.0 { didSet { initTempo() } }
-  var beatsPerMinute = 120.0 { didSet { initTempo() } }
+  var resolution = 480.0 { didSet { initializeTempo() } }
+  var beatsPerMinute = 120.0 { didSet { initializeTempo() } }
 
-  /** initTempo */
-  private func initTempo() {
-    ticksPerBeat = CAHostTimeBase.frequency / beatsPerMinute * 60
-    ticksPerMIDIClock = UInt64(ticksPerBeat / resolution)
+  /** initiliazeTempo */
+  private func initializeTempo() {
+    var timeInfo = mach_timebase_info()
+    mach_timebase_info(&timeInfo)
+    let hostFrequency = Float80(timeInfo.numer) / Float80(timeInfo.denom) * Float80(1_000_000_000)
+    hostTicksPerMIDIClock = UInt64(hostFrequency / Float80(beatsPerMinute) * 60 / Float80(resolution))
   }
 
   /** start */
   func start() {
     guard !timer.running else { return }
-    clockTimeStamp = 0
+    ticks = 0
     timer.start()
   }
 
   /** reset */
   func reset() {
     guard !timer.running else { return }
-    clockTimeStamp = 0
+    ticks = 0
   }
 
   /** stop */
@@ -45,14 +47,15 @@ final class MIDIClockSource {
   private let timer = Timer(queue:MIDIClockSource.queue)
   var running: Bool { return timer.running }
 
-  private(set) var ticksPerBeat: Double = 0
-  private(set) var ticksPerMIDIClock: UInt64 = 0 { didSet { timer.interval = nanosecondsToSeconds(ticksPerMIDIClock) } }
-  private(set) var clockTimeStamp: MIDITimeStamp = 0
+  private(set) var hostTicksPerMIDIClock: UInt64 = 0 {
+    didSet { timer.interval = nanosecondsToSeconds(hostTicksPerMIDIClock) }
+  }
+  private(set) var ticks: MIDITimeStamp = 0
 
   /** init */
   init() {
-    initTempo()
-    timer.interval = nanosecondsToSeconds(ticksPerMIDIClock)
+    initializeTempo()
+    timer.interval = nanosecondsToSeconds(hostTicksPerMIDIClock)
     timer.handler = handler
     do {
       try MIDIClientCreateWithBlock("Clock", &client, nil) ➤ "Failed to create midi client for clock"
@@ -68,13 +71,13 @@ final class MIDIClockSource {
 
   /** sendClock */
   private func sendClock() {
-
+    print("tick")
     // setup packetlist
-    var clock: UInt8 = 0xF8
+    var clock: Byte = 0xF8
     let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
     var packetList = MIDIPacketList()
-    MIDIPacketListAdd(&packetList, size, MIDIPacketListInit(&packetList), clockTimeStamp, 1, &clock)
-    clockTimeStamp += ticksPerMIDIClock
+    MIDIPacketListAdd(&packetList, size, MIDIPacketListInit(&packetList), ticks, 1, &clock)
+    ticks += hostTicksPerMIDIClock
 
     do { try withUnsafePointer(&packetList) { MIDIReceived(endPoint, $0) } ➤ "Failed to send packets" }
     catch { logError(error) }

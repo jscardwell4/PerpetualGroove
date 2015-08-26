@@ -46,9 +46,8 @@ import struct AudioToolbox.MIDINoteMessage
 
 /** Protocol for types that can produce a valid chunk for a MIDI file where chunk = \<chunk type\> \<length of data\> \<data\> */
 protocol Chunk: CustomStringConvertible {
-  typealias DataType: ChunkData
   var type: Byte4 { get }
-  var data: DataType { get }
+  var data: ChunkData { get }
 }
 
 extension Chunk {
@@ -72,7 +71,9 @@ protocol ChunkData {
 /** Struct to hold the header chunk of a MIDI file */
 struct HeaderChunk: Chunk {
   let type = Byte4("MThd".utf8)
-  let data: HeaderChunkData
+  let data: ChunkData
+
+  init(data: HeaderChunkData) { self.data = data }
 }
 
 /** Struct to hold the data portion of a header chunk in a MIDI file */
@@ -81,6 +82,10 @@ struct HeaderChunkData: ChunkData {
   let format: MIDIFile.Format
   let numberOfTracks: Byte2
   let division: Byte2
+
+  init(format: MIDIFile.Format, numberOfTracks: Int, division: Byte2) {
+    self.format = format; self.numberOfTracks = Byte2(numberOfTracks); self.division = division
+  }
 
   var bytes: [Byte] { return format.rawValue.bytes + numberOfTracks.bytes + division.bytes }
 }
@@ -91,7 +96,8 @@ struct HeaderChunkData: ChunkData {
 /** Struct to hold a track chunk for a MIDI file where chunk = \<chunk type\> \<length\> \<track event\>+ */
 struct TrackChunk: Chunk {
   let type = Byte4("MTrk".utf8)
-  let data: TrackChunkData
+  let data: ChunkData
+  init(data: TrackChunkData) { self.data = data }
 }
 
 /** Struct to hold the data for a track chunk in a MIDI file */

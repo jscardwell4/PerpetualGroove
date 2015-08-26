@@ -61,13 +61,6 @@ import MoonKit
 
   */
 
-// MARK: - Extend CABarBeatTime with a little more utility
-extension CABarBeatTime: CustomStringConvertible { public var description: String { return "\(bar).\(beat).\(subbeat)" } }
-extension CABarBeatTime {
-  var timestamp: MusicTimeStamp { return Double(bar) * Double(beat) + Double(subbeat) / Double(subbeatDivisor) }
-  mutating func reset() { bar = 1; beat = 1; subbeat = 1 }
-}
-
 
 // MARK: - Manager for MIDI-related aspects of the application
 final class Sequencer {
@@ -76,34 +69,12 @@ final class Sequencer {
 
   /** This should only be set within `initializeWithGraph:`, which should only be called by `AudioManager` */
   static private var graph: AUGraph!
-  static private var client = MIDIClientRef()
-  static private var inPort = MIDIPortRef()
-  static private(set) var sequence: Sequence = {
-    do { return try Sequence() } catch { logError(error); fatalError("Faild to create sequence") }
-  }()
-//  static private var tempoTrack = MusicTrack()
-
-  /** Tracks the current subdivision of a bar */
-  static private var clockCount = 0╱480 {
-    didSet {
-      if clockCount == 1 {
-        clockCount.numerator = 0;
-        barBeatTime.bar++
-        barBeatTime.beat = 1
-        barBeatTime.subbeat = 1
-      } else if clockCount % 60╱480 == 0 {
-        barBeatTime.beat++
-        barBeatTime.subbeat = 1
-      } else {
-        barBeatTime.subbeat++
-      }
-    }
-  }
-
+  static private(set) var sequence = Sequence()
 
   /** The MIDI clock */
   static private let clock = MIDIClockSource()
-
+  static private let barBeatTime = BarBeatTime(clockSource: clock.endPoint)
+  static private var synchronizedTimes: Set<BarBeatTime> = []
 
   // MARK: - Public facing properties
 
@@ -116,6 +87,18 @@ final class Sequencer {
       clock.beatsPerMinute = newValue
       do { try sequence.insertTempoChange(tempo) } catch { logError(error) }
     }
+  }
+
+  /**
+  synchronizeTime:
+
+  - parameter time: BarBeatTime
+  */
+  static func synchronizeTime(time: BarBeatTime) {
+    guard time != barBeatTime else { return }
+    guard !synchronizedTimes.contains(time) else { synchronizedTimes.remove(time); return }
+    time.synchronizeWithTime(barBeatTime)
+    synchronizedTimes.insert(time)
   }
 
   /** The current track in use */
@@ -141,11 +124,11 @@ final class Sequencer {
   }
 
   /** The current time as reported by the MIDI clock */
-  static var currentTime: MIDITimeStamp { return clock.clockTimeStamp }
+  static var currentTime: MIDITimeStamp { return barBeatTime.timestamp }
 
-  
-
-  static private(set) var barBeatTime = CABarBeatTime(bar: 1, beat: 1, subbeat: 1, subbeatDivisor: 24, reserved: 0)
+  static private(set) var resolution: Double {
+    get { return clock.resolution} set { clock.resolution = newValue }
+  }
 
   static var measure: String  { return barBeatTime.description }
 
@@ -171,9 +154,6 @@ final class Sequencer {
     try AUGraphIsInitialized(g, &isInitialized) ➤ "\(location()) Failed to check whether graph is initialized"
     guard isInitialized else { throw Error.GraphNotInitialized }
     graph = g
-    try MIDIClientCreateWithBlock("Sequencer", &client, nil) ➤ "Failed to create midi client for track manager"
-    try MIDIInputPortCreateWithBlock(client, "Input", &inPort, read) ➤ "Failed to create in port for track manager"
-    try MIDIPortConnectSource(inPort, clockSource, nil) ➤ "Failed to connect track manager to clock"
   }
 
   // MARK: - Creating a new track
@@ -194,19 +174,6 @@ final class Sequencer {
     return try sequence.newTrackOnBus(bus)
   }
 
-  // MARK: - MIDI handlers
-
-  /**
-  read:context:
-
-  - parameter packetList: UnsafePointer<MIDIPacketList>
-  - parameter context: UnsafePointer<Void>
-  */
-  static private func read(packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutablePointer<Void>) {
-    guard packetList.memory.packet.data.0 == 0b1111_1000 else { return }
-    clockCount.numerator += 1
-  }
-
   // MARK: - Starting/stopping and resetting the sequencer
 
   /** Starts the MIDI clock */
@@ -218,8 +185,7 @@ final class Sequencer {
   /** Moves the time back to 0 */
   static func reset() {
     if clock.running { stop() }
-    clockCount = 0╱480
-    barBeatTime.reset()
+    ([barBeatTime] + synchronizedTimes).forEach({time in time.reset()})
   }
 
   /** Stops the MIDI clock */
