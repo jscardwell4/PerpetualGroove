@@ -50,4 +50,16 @@ final class Sequence: CustomStringConvertible {
       ➤ "Failed to add tempo event to tempo track"
   }
 
+  /**
+  writeToFile:
+
+  - parameter file: NSURL
+  */
+  func writeToFile(file: NSURL, overwrite: Bool = false) throws {
+    let tracks = self.tracks
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)) { print(tracks) }
+//    try MusicSequenceFileCreate(musicSequence, file, .MIDIType, overwrite ? .EraseFile : .Default, 0)
+//      ➤ "Failed to write sequence to '\(file)'"
+  }
+
 }

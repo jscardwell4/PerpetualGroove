@@ -106,10 +106,28 @@ final class MIDIPlayerSceneViewController: UIViewController {
   }
 
   /** save */
-  @IBAction func save() { MSLogDebug("save() not yet implemented") }
+  @IBAction func save() {
+    let textField = FormTextField(name: "File Name", value: nil, placeholder: "Awesome Sauce") {
+      (text: String?) -> Bool in
+      guard let text = text else { return false }
+      let url = documentsURLToFile(text)
+      return !url.checkResourceIsReachableAndReturnError(nil)
+    }
+    let form = Form(fields: [textField])
+    let submit = { [unowned self] (f: Form) -> Void in
+      guard let text = f["File Name"]?.value as? String else { self.dismissViewControllerAnimated(true, completion: nil); return }
+      let url = documentsURLToFile("\(text).mid")
+      MSLogDebug("saving to file '\(url)'")
+      do { try Sequencer.sequence.writeToFile(url) } catch { logError(error) }
+      self.dismissViewControllerAnimated(true, completion: nil)
+    }
+    let cancel = { [unowned self] () -> Void in self.dismissViewControllerAnimated(true, completion: nil) }
+    let formViewController = FormViewController(form: form, didSubmit: submit, didCancel: cancel)
+    presentViewController(formViewController, animated: true, completion: nil)
+  }
 
   /** skipBack */
-  @IBAction func skipBack() { MSLogDebug("skipBack() not yet implemented") }
+  @IBAction func skipBack() { logDebug("skipBack() not yet implemented") }
 
   /** play */
   @IBAction func play() {
@@ -174,7 +192,7 @@ final class MIDIPlayerSceneViewController: UIViewController {
     playerScene = MIDIPlayerScene(size: skView.bounds.size)
 
     // Configure the view.
-    skView.showsFPS = true
+    //    skView.showsFPS = true
     //    skView.showsNodeCount = true
 
     /* Sprite Kit applies additional optimizations to improve rendering performance */
@@ -323,7 +341,7 @@ final class MIDIPlayerSceneViewController: UIViewController {
 
   /** didReceiveMemoryWarning */
   override func didReceiveMemoryWarning() {
-    MSLogDebug("")
+    logDebug("")
     super.didReceiveMemoryWarning()
     if let templatePopover = _templatePopoverView where templatePopover.hidden == false {
       templatePopover.removeFromSuperview()

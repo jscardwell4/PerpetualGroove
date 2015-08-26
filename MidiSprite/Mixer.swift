@@ -41,7 +41,7 @@ final class Mixer {
         case .BusAdded(let bus):   userInfo = [Notification.BusKey: NSNumber(unsignedInt: bus.element)]
         case .BusRemoved(let bus): userInfo = [Notification.BusKey: NSNumber(unsignedInt: bus.element)]
       }
-      MSLogDebug("posting notification \(self))")
+      logDebug("posting notification \(self))")
       NSNotificationCenter.defaultCenter().postNotificationName(name.rawValue, object: Mixer.self, userInfo: userInfo)
     }
   }

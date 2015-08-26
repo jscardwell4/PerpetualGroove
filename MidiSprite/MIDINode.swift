@@ -41,7 +41,27 @@ final class MIDINode: SKSpriteNode {
 
   var note: Note
 
-  struct Placement { let position: CGPoint; let vector: CGVector }
+  struct Placement: ByteArrayConvertible {
+    let position: CGPoint
+    let vector: CGVector
+    var bytes: [Byte] {
+      let positionX = Byte8(position.x._toBitPattern())
+      let positionY = Byte8(position.y._toBitPattern())
+      let vectorDX  = Byte8(vector.dx._toBitPattern())
+      let vectorDY  = Byte8(vector.dy._toBitPattern())
+      return positionX.bytes + positionY.bytes + vectorDX.bytes + vectorDY.bytes
+    }
+    init(position p: CGPoint, vector v: CGVector) { position = p; vector = v }
+    init(_ bytes: [Byte]) {
+      guard bytes.count == 32 else { self = Placement(position: .zeroPoint, vector: .zeroVector); return }
+      let positionX = CGFloat._fromBitPattern(UInt(Byte8(bytes[0 ..< 8])))
+      let positionY = CGFloat._fromBitPattern(UInt(Byte8(bytes[8 ..< 16])))
+      let vectorDX  = CGFloat._fromBitPattern(UInt(Byte8(bytes[16 ..< 24])))
+      let vectorDY  = CGFloat._fromBitPattern(UInt(Byte8(bytes[24 ..< 32])))
+      position = CGPoint(x: positionX, y: positionY)
+      vector = CGVector(dx: vectorDX, dy: vectorDY)
+    }
+  }
 
   var placement: Placement
 
@@ -75,7 +95,7 @@ final class MIDINode: SKSpriteNode {
     var packetList = MIDIPacketList()
     let packet = MIDIPacketListInit(&packetList)
     let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
-    let data: [UInt8] = [0b1001_0000 | note.channel, note.note, note.velocity] + sourceID
+    let data: [UInt8] = [0x90 | note.channel, note.note, note.velocity] + sourceID
     MIDIPacketListAdd(&packetList, size, packet, currentTime, 11, data)
     do {
       try withUnsafePointer(&packetList) {MIDIReceived(endPoint, $0) } ➤ "Unable to send note on event"
@@ -87,7 +107,7 @@ final class MIDINode: SKSpriteNode {
     var packetList = MIDIPacketList()
     let packet = MIDIPacketListInit(&packetList)
     let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
-    let data: [UInt8] = [0b1000_0000 | note.channel, note.note, note.releaseVelocity] + sourceID
+    let data: [UInt8] = [0x90 | note.channel, note.note, 0] + sourceID
     MIDIPacketListAdd(&packetList, size, packet, currentTime, 11, data)
     do {
       try withUnsafePointer(&packetList) {MIDIReceived(endPoint, $0) } ➤ "Unable to send note off event"

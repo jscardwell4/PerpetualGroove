@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import class MoonKit.LogManager
+import MoonKit
 
 @UIApplicationMain
 final class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -15,7 +15,13 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
   var window: UIWindow?
 
   /** initialize */
-  override class func initialize() { LogManager.addConsoleLoggers() }
+  override class func initialize() {
+    LogManager.addConsoleLoggers()
+    let context = UInt(LOG_CONTEXT_FILE)
+    let directory = MSLog.defaultLogDirectory()
+    MSLog.addDefaultFileLoggerForContext(context, directory: directory)
+    logDebug("main bundle: '\(NSBundle.mainBundle().bundlePath)'")
+  }
 
   /**
   application:didFinishLaunchingWithOptions:

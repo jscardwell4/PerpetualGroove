@@ -30,6 +30,22 @@ public extension String {
   public var length: Int { return characters.count }
   public var count: Int { return characters.count }
 
+  public init<T : _SignedIntegerType>(_ v: T, radix: Int, uppercase: Bool = false, var pad: Int) {
+    self = String(v, radix: radix, uppercase: uppercase)
+    guard pad > 0 else { return }
+    let s = v < 0 ? self[advance(startIndex, 1)..<] : self
+    pad -= s.utf16.count
+    let ps = String(count: pad, repeatedValue: Character("0")) + s
+    self = v < 0 ? "-\(ps)" : ps
+  }
+
+  public init<T : UnsignedIntegerType>(_ v: T, radix: Int, uppercase: Bool = false, var pad: Int) {
+    self = String(v, radix: radix, uppercase: uppercase)
+    guard pad > 0 else { return }
+    pad -= utf16.count
+    self = String(count: pad, repeatedValue: Character("0")) + self
+  }
+
   /** Returns the string converted to 'dash-case' */
   public var dashCaseString: String {
     guard !isDashCase else { return self }

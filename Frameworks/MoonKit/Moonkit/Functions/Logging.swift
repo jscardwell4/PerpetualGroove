@@ -190,8 +190,21 @@ public func MSLogDebug(message: String,
                   file: String = __FILE__,
                context: Int32 = LOG_CONTEXT_CONSOLE)
 {
-  MSLogMessage(message, asynchronous: false, flag: .Debug, function: function, file: file, line: line, context: context)
+  MSLogMessage(message, asynchronous: true, flag: .Debug, function: function, file: file, line: line, context: context)
 }
+
+/**
+logDebug:function:line:file:
+
+- parameter message: String
+- parameter function: String = __FUNCTION__
+- parameter line: Int32 = __LINE__
+- parameter file: String = __FILE__
+*/
+public func logDebug(message: String, function: String = __FUNCTION__, line: Int32 = __LINE__, file: String = __FILE__) {
+  MSLogDebug(message, function: function, line: line, file: file)
+}
+
 
 /**
 MSLogError:function:line:level:context:
@@ -208,6 +221,18 @@ public func MSLogError(message: String,
                context: Int32 = LOG_CONTEXT_CONSOLE)
 {
   MSLogMessage(message, asynchronous: false, flag: .Error, function: function, file: file, line: line, context: context)
+}
+
+/**
+logError:function:line:file:
+
+- parameter message: String
+- parameter function: String = __FUNCTION__
+- parameter line: Int32 = __LINE__
+- parameter file: String = __FILE__
+*/
+public func logError(message: String, function: String = __FUNCTION__, line: Int32 = __LINE__, file: String = __FILE__) {
+  MSLogError(message, function: function, line: line, file: file)
 }
 
 /**
@@ -228,6 +253,19 @@ public func MSLogInfo(message: String,
 }
 
 /**
+logInfo:function:line:file:
+
+- parameter message: String
+- parameter function: String = __FUNCTION__
+- parameter line: Int32 = __LINE__
+- parameter file: String = __FILE__
+*/
+public func logInfo(message: String, function: String = __FUNCTION__, line: Int32 = __LINE__, file: String = __FILE__) {
+  MSLogInfo(message, function: function, line: line, file: file)
+}
+
+
+/**
 MSLogWarn:function:line:level:context:
 
 - parameter message: String
@@ -245,6 +283,19 @@ public func MSLogWarn(message: String,
 }
 
 /**
+logWarning:function:line:file:
+
+- parameter message: String
+- parameter function: String = __FUNCTION__
+- parameter line: Int32 = __LINE__
+- parameter file: String = __FILE__
+*/
+public func logWarning(message: String, function: String = __FUNCTION__, line: Int32 = __LINE__, file: String = __FILE__) {
+  MSLogWarn(message, function: function, line: line, file: file)
+}
+
+
+/**
 MSLogVerbose:function:line:level:context:
 
 - parameter message: String
@@ -259,6 +310,18 @@ public func MSLogVerbose(message: String,
                  context: Int32 = LOG_CONTEXT_CONSOLE)
 {
   MSLogMessage(message, asynchronous: true, flag: .Verbose, function: function, file: file, line: line, context: context)
+}
+
+/**
+logVerbose:function:line:file:
+
+- parameter message: String
+- parameter function: String = __FUNCTION__
+- parameter line: Int32 = __LINE__
+- parameter file: String = __FILE__
+*/
+public func logVerbose(message: String, function: String = __FUNCTION__, line: Int32 = __LINE__, file: String = __FILE__) {
+  MSLogVerbose(message, function: function, line: line, file: file)
 }
 
 /**

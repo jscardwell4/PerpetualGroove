@@ -8,96 +8,50 @@
 
 import Foundation
 
-private let fileManager = NSFileManager.defaultManager()
+// MARK: - File paths
 
-public class MoonFunctions {
-
-  // MARK: - File paths
-
-
-
-  /**
-  libraryPath
-
-  - returns: String?
-  */
-  @objc public class func libraryPath() -> String! {
-    let urls = fileManager.URLsForDirectory(NSSearchPathDirectory.LibraryDirectory,
-                                  inDomains: NSSearchPathDomainMask.UserDomainMask)
-    return urls.first?.path
-  }
-
-  /**
-  libraryPathToFile:
-
-  - parameter file: String
-
-  - returns: String?
-  */
-  @objc public class func libraryPathToFile(file: String) -> String {
-    return (libraryPath() as NSString).stringByAppendingPathComponent(file)
-  }
-
-  /**
-  cachePath
-
-  - returns: String?
-  */
-  @objc public class func cachePath() -> String {
-    return libraryPathToFile("Caches/\(NSBundle.mainBundle().bundleIdentifier)")
-  }
-
-  /**
-  cachePathToFile:
-
-  - parameter file: String
-
-  - returns: String?
-  */
-  @objc public class func cachePathToFile(file: String) -> String {
-    return (cachePath() as NSString).stringByAppendingPathComponent(file)
-  }
-
-  /**
-  documentsPath
-
-  - returns: String?
-  */
-  @objc public class func documentsPath() -> String! {
-    let urls = fileManager.URLsForDirectory(NSSearchPathDirectory.DocumentDirectory,
-                                                     inDomains: NSSearchPathDomainMask.UserDomainMask)
-    return urls.first?.path
-  }
-
-  /**
-  documentsDirectoryContents
-
-  - returns: [String]
-  */
-  @objc public class func documentsDirectoryContents() -> [String] {
-    do {
-      let directoryContents = try fileManager.contentsOfDirectoryAtPath(documentsPath())
-      return directoryContents
-    } catch {
-      logError(error)
-    }
-    return []
-  }
-
-  /**
-  documentsPathToFile:
-
-  - parameter file: String
-
-  - returns: String?
-  */
-  @objc public class func documentsPathToFile(file: String) -> String? {
-    return (documentsPath() as NSString).stringByAppendingPathComponent(file)
-  }
-
+public var libraryURL: NSURL {
+  return NSFileManager.defaultManager().URLsForDirectory(.LibraryDirectory, inDomains: .UserDomainMask)[0]
 }
-// MARK: - Exceptions
 
+/**
+libraryURLToFile:
+
+- parameter file: String
+
+- returns: NSURL
+*/
+public func libraryURLToFile(file: String) -> NSURL {
+  return libraryURL.URLByAppendingPathComponent(file, isDirectory: false)
+}
+
+public var cacheURL: NSURL { return libraryURLToFile("Caches/\(NSBundle.mainBundle().bundleIdentifier)") }
+
+/**
+cacheURLToFile:
+
+- parameter file: String
+
+- returns: NSURL
+*/
+public func cacheURLToFile(file: String) -> NSURL { return cacheURL.URLByAppendingPathComponent(file, isDirectory: false) }
+
+public var documentsURL: NSURL {
+  return NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)[0]
+}
+
+/**
+documentsURLToFile:
+
+- parameter file: String
+
+- returns: NSURL
+*/
+public func documentsURLToFile(file: String) -> NSURL {
+  return documentsURL.URLByAppendingPathComponent(file, isDirectory: false)
+}
+
+// MARK: - Exceptions
 
 
 public func MSRaiseException(name:String, reason:String, userinfo:[NSObject:AnyObject]? = nil) {

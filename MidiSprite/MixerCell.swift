@@ -60,10 +60,10 @@ final class TrackCell: MixerCell, UITextFieldDelegate {
   var track: Track? {
     didSet {
       guard let track = track else { return }
-      MSLogDebug("track = \(track)")
+      logDebug("track = \(track)")
       volume = track.volume
       // TODO: Update UI with pan value
-      labelTextField.text = track.label
+      labelTextField.text = track.label ?? "BUS \(track.bus.element)"
       tintColor = track.color.value
     }
   }

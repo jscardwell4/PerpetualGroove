@@ -84,14 +84,14 @@ final class Sequencer {
 //  static private var tempoTrack = MusicTrack()
 
   /** Tracks the current subdivision of a bar */
-  static private var clockCount = 0╱96 {
+  static private var clockCount = 0╱480 {
     didSet {
       if clockCount == 1 {
         clockCount.numerator = 0;
         barBeatTime.bar++
         barBeatTime.beat = 1
         barBeatTime.subbeat = 1
-      } else if clockCount % 24╱96 == 0 {
+      } else if clockCount % 60╱480 == 0 {
         barBeatTime.beat++
         barBeatTime.subbeat = 1
       } else {
@@ -142,6 +142,8 @@ final class Sequencer {
 
   /** The current time as reported by the MIDI clock */
   static var currentTime: MIDITimeStamp { return clock.clockTimeStamp }
+
+  
 
   static private(set) var barBeatTime = CABarBeatTime(bar: 1, beat: 1, subbeat: 1, subbeatDivisor: 24, reserved: 0)
 
@@ -208,12 +210,22 @@ final class Sequencer {
   // MARK: - Starting/stopping and resetting the sequencer
 
   /** Starts the MIDI clock */
-  static func start() { guard !clock.running else { return }; clock.start() }
+  static func start() {
+    guard !clock.running else { return }
+    clock.start()
+  }
 
   /** Moves the time back to 0 */
-  static func reset() { if clock.running { stop() }; clockCount = 0╱96; barBeatTime.reset() }
+  static func reset() {
+    if clock.running { stop() }
+    clockCount = 0╱480
+    barBeatTime.reset()
+  }
 
   /** Stops the MIDI clock */
-  static func stop() { guard clock.running else { return }; clock.stop(); backgroundDispatch { print(sequence) } }
+  static func stop() {
+    guard clock.running else { return }
+    clock.stop()
+  }
 
 }

@@ -14,15 +14,13 @@ import CoreMIDI
 final class MIDIClockSource {
 
   private static let queue = dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)
-  private static let MIDIClocksPerBeat = Double(96)
-  var beatsPerMinute: Double = 120 { didSet { initTempo() } }
+  var resolution = 480.0 { didSet { initTempo() } }
+  var beatsPerMinute = 120.0 { didSet { initTempo() } }
 
   /** initTempo */
   private func initTempo() {
-    let ticksPerSecond = CAHostTimeBase.frequency
-    let ticksPerMinute = 60 * ticksPerSecond
-    let ticksPerBeat = ticksPerMinute / beatsPerMinute
-    ticksPerMIDIClock = UInt64(ticksPerBeat / MIDIClockSource.MIDIClocksPerBeat)
+    ticksPerBeat = CAHostTimeBase.frequency / beatsPerMinute * 60
+    ticksPerMIDIClock = UInt64(ticksPerBeat / resolution)
   }
 
   /** start */
@@ -47,7 +45,8 @@ final class MIDIClockSource {
   private let timer = Timer(queue:MIDIClockSource.queue)
   var running: Bool { return timer.running }
 
-  private var ticksPerMIDIClock: UInt64 = 0 { didSet { timer.interval = nanosecondsToSeconds(ticksPerMIDIClock) } }
+  private(set) var ticksPerBeat: Double = 0
+  private(set) var ticksPerMIDIClock: UInt64 = 0 { didSet { timer.interval = nanosecondsToSeconds(ticksPerMIDIClock) } }
   private(set) var clockTimeStamp: MIDITimeStamp = 0
 
   /** init */
