@@ -42,7 +42,14 @@ final class Bus: Hashable, CustomStringConvertible {
 
   var hashValue: Int { return Int(element) }
 
-  var description: String { return "Bus { element: \(element); instrument: \(instrument); volume: \(volume); pan: \(pan) }" }
+  var description: String {
+    return "\(self.dynamicType.self) {\n\t" + "\n\t".join(
+      "element: \(element)",
+      "volume: \(volume)",
+      "pan: \(pan)",
+      "instrument: \(instrument)".indentedBy(8, preserveFirstLineIndent: true)
+    ) +  "\n}"
+  }
 }
 
 func ==(lhs: Bus, rhs: Bus) -> Bool { return lhs.element == rhs.element }

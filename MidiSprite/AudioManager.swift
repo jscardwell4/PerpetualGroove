@@ -125,7 +125,8 @@ final class AudioManager {
     try AUGraphIsRunning(graph, &running) ➤ "\(location()) Failed to check running status of audio graph"
     guard !running else { return }
     try AUGraphStart(graph) ➤ "\(location()) Failed to start audio graph"
-    Sequencer.start()
+    // Sequencer started by the first MIDINode to play
+    //    Sequencer.start()
   }
 
   /** stop */

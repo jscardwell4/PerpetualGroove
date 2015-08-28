@@ -489,6 +489,7 @@
 		C2E043481B72F4DC005F0675 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = MidiSprite/MidiSprite.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -502,12 +503,14 @@
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
 				STRIP_STYLE = debugging;
+				VALID_ARCHS = "arm64 armv7s armv7";
 			};
 			name = Debug;
 		};
 		C2E043491B72F4DC005F0675 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = MidiSprite/MidiSprite.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -520,6 +523,7 @@
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
 				STRIP_STYLE = debugging;
+				VALID_ARCHS = "arm64 armv7s armv7";
 			};
 			name = Release;
 		};

@@ -750,7 +750,7 @@ public func --(lhs: ([Pseudo], Float, Relation), rhs: UIView) -> [Pseudo] {
 
     }
     return pseudoConstraints
-  } else { assert(false, "at least one existing constraint with valid first object") }
+  } else { fatalError("operator requires at least one existing constraint with valid first object") }
 }
 
 public func --(lhs: (Axis, Float, Relation), rhs: UIView) -> Pseudo {

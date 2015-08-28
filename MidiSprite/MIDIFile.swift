@@ -8,39 +8,8 @@
 
 import Foundation
 import MoonKit
-import typealias CoreMIDI.MIDITimeStamp
-import struct AudioToolbox.MIDINoteMessage
-
-/*
-<MIDI Stream>             ::= <MIDI msg> < MIDI Stream>
-<MIDI msg>                ::= <sys msg> | <chan msg>
-<chan msg>                ::= <chan 1byte msg> | <chan 2byte msg>
-<chan 1byte msg>          ::= <chan stat1 byte> <data singlet> <running singlets> 
-<chan 2byte msg>          ::= <chan stat2 byte> <data pair> <running pairs>
-<chan stat1 byte>         ::= <chan voice stat1 nibble> <hex nibble>
-<chan stat2 byte>         ::= <chan voice stat2 nibble> <hex nibble>
-<chan voice stat1 nyble>  ::= C | D
-<chan voice stat2 nyble>  ::= 8 | 9 | A | B | E
-<hex nyble>               ::=  0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | A | B | C | D | E | F
-<data pair>               ::= <data singlet> <data singlet>
-<data singlet>            ::= <realtime byte> <data singlet> | <data byte>
-<running pairs>           ::= <empty> | <data pair> <running pairs>
-<running singlets>        ::= <empty> | <data singlet> <running singlets>
-<data byte>               ::= <data MSD> <hex nyble>
-<data MSD>                ::=  0 | 1 | 2 | 3 | 4 | 5 | 6 | 7
-<realtime byte>           ::=  F8 | FA | FB | FC | FE | FF
-<sys msg>                 ::= <sys common msg> | <sysex msg> | <sys realtime msg>
-<sys realtime msg>        ::= <realtime byte>
-<sysex msg>               ::= <sysex data byte> <data singlet> <running singlets> <eox byte>
-<sysex stat byte>         ::=  F0
-<eox byte>                ::=  F7
-<sys common msg>          ::= <song position msg> | <song select msg> | <tune request> 
-<tune request>            ::=  F6
-<song position msg>       ::= <song position stat byte> <data pair>
-<song select msg>         ::= <song select stat byte> <data singlet>
-<song position stat byte> ::= F2
-<song select stat byte>   ::= F3
-*/
+import CoreMIDI
+import AudioToolbox
 
 // MARK: - The chunk protocol
 
@@ -138,9 +107,13 @@ struct VariableLengthQuantity: CustomStringConvertible {
   static let zero = VariableLengthQuantity(0)
 
   var description: String {
+    let representedValue = self.representedValue
     let byteString = " ".join(bytes.map { String($0, radix: 16, uppercase: true, pad: 2) })
     let representedValueString = " ".join(representedValue.map { String($0, radix: 16, uppercase: true, pad: 2) })
-    return "\(self.dynamicType.self) {bytes: \(byteString); representedValue: \(representedValueString)}"
+    return "\(self.dynamicType.self) {" + "; ".join(
+      "bytes: \(byteString) (\(UInt64(bytes)))",
+      "representedValue: \(representedValueString)(\(UInt64(representedValue)))"
+    ) + "}"
   }
   var representedValue: [Byte] {
     let groups = bytes.segment(8)
@@ -199,7 +172,8 @@ struct VariableLengthQuantity: CustomStringConvertible {
 
 /** Protocol for types that produce data for a track event in a track chunk where event = \<delta time\> \<event specific data\> */
 protocol TrackEvent: CustomStringConvertible {
-  var deltaTime: VariableLengthQuantity { get }
+  var deltaTime: VariableLengthQuantity { get set }
+  var barBeatTime: CABarBeatTime { get  set }
   var bytes: [Byte] { get }
 }
 
@@ -211,29 +185,48 @@ extension TrackEvent {
 // MARK: - The track type protocol
 
 protocol TrackType: CustomStringConvertible {
-  var events: [TrackEvent] { get }
+  var chunk: TrackChunk { get }
   var label: String { get }
+  var time: BarBeatTime { get }
+  var events: [TrackEvent] { get }
 }
 
+extension TrackType {
+  /** Generates a MIDI file chunk from current track data */
+  var chunk: TrackChunk {
+    let nameEvent: TrackEvent = MetaEvent(data: .SequenceTrackName(name: label))
+    var endEvent: TrackEvent  = MetaEvent(data: .EndOfTrack)
+    endEvent.deltaTime = VariableLengthQuantity(time.timeStampForBarBeatTime(time.timeSinceMarker))
+    endEvent.barBeatTime = time.time
+    return TrackChunk(data: TrackChunkData(events: [nameEvent] + events + [endEvent]))
+  }
+
+
+}
 
 // MARK: - The channel track event
 
 /** Struct to hold data for a channel event where event = \<delta time\> \<status\> \<data1\> \<data2\> */
 struct ChannelEvent: TrackEvent {
-  let deltaTime: VariableLengthQuantity
+  var deltaTime: VariableLengthQuantity = .zero
+  var barBeatTime: CABarBeatTime = .start
   let status: Byte
   let data1: Byte
   let data2: Byte?
   var bytes: [Byte] { return [status, data1] + (data2 != nil ? [data2!] : []) }
-  static func noteOnEvent(timestamp: MIDITimeStamp, channel: Byte, note: Byte, velocity: Byte) -> ChannelEvent {
-    return ChannelEvent(deltaTime: VariableLengthQuantity(timestamp), status: 0x90 | channel, data1: note, data2: velocity)
+  static func noteOnEvent(channel channel: Byte, note: Byte, velocity: Byte) -> ChannelEvent {
+    return ChannelEvent(status: 0x90 | channel, data1: note, data2: velocity)
   }
-  static func noteOffEvent(timestamp: MIDITimeStamp, channel: Byte, note: Byte, velocity: Byte) -> ChannelEvent {
-    return ChannelEvent(deltaTime: VariableLengthQuantity(timestamp), status: 0x80 | channel, data1: note, data2: velocity)
+  static func noteOffEvent(channel channel: Byte, note: Byte, velocity: Byte) -> ChannelEvent {
+    return ChannelEvent(status: 0x80 | channel, data1: note, data2: velocity)
+  }
+  init(status: Byte, data1: Byte, data2: Byte? = nil) {
+    self.status = status; self.data1 = data1; self.data2 = data2
   }
   var description: String {
     let result = "\(self.dynamicType.self) {\n\t" + "\n\t".join(
       "deltaTime: \(deltaTime)",
+      "barBeatTime: \(barBeatTime)",
       "status: \(String(status, radix: 16, uppercase: true, pad: 2, group: 2))",
       "data1: \(String(data1, radix: 16, uppercase: true, pad: 2, group: 2))",
       "data2: " + (data2 == nil ? "nil" : String(data2!, radix: 16, uppercase: true, pad: 2, group: 2))
@@ -246,7 +239,8 @@ struct ChannelEvent: TrackEvent {
 
 /** Struct to hold data for a meta event where event = \<delta time\> **FF** \<meta type\> \<length of meta\> \<meta\> */
 struct MetaEvent: TrackEvent {
-  let deltaTime: VariableLengthQuantity
+  var deltaTime: VariableLengthQuantity = .zero
+  var barBeatTime: CABarBeatTime = .start
   let data: MetaEventData
   var bytes: [Byte] { return Byte(0xFF).bytes + [data.type] + data.length.bytes + data.bytes }
 
@@ -256,7 +250,7 @@ struct MetaEvent: TrackEvent {
   - parameter deltaTime: MIDITimeStamp
   - parameter data: MetaEventData
   */
-  init(deltaTime: MIDITimeStamp, data: MetaEventData) { self.deltaTime = VariableLengthQuantity(deltaTime); self.data = data }
+  init(data: MetaEventData) { self.data = data }
 
 
   /**
@@ -265,9 +259,11 @@ struct MetaEvent: TrackEvent {
   - parameter deltaTime: VariableLengthQuantity
   - parameter data: MetaEventData
   */
-  init(deltaTime: VariableLengthQuantity, data: MetaEventData) { self.deltaTime = deltaTime; self.data = data }
+  init(deltaTime: VariableLengthQuantity, barBeatTime: CABarBeatTime, data: MetaEventData) { self.deltaTime = deltaTime; self.barBeatTime = barBeatTime; self.data = data }
 
-  var description: String { return "\(self.dynamicType.self) {\n\tdeltaTime: \(deltaTime)\n\tdata: \(data)\n}" }
+  var description: String {
+    return "\(self.dynamicType.self) {\n\tdeltaTime: \(deltaTime)\n\tdata: \(data)\n\tbarBeatTime: \(barBeatTime)\n}"
+  }
 }
 
 /** Enumeration for encapsulating a type of meta event */
@@ -319,35 +315,40 @@ struct MIDIFile: CustomStringConvertible {
 
   let division: Byte2
 
-  let tracks: [TrackType]
+  let tracks: [TrackChunk]
 
   private let header: HeaderChunk
   private let time = BarBeatTime(clockSource: Sequencer.clockSource)
 
   init(format: Format, division: Byte2, tracks: [TrackType]) {
-    self.format = format; self.division = division; self.tracks = tracks
+    self.format = format; self.division = division; self.tracks = tracks.flatMap({$0.chunk})
     header = HeaderChunk(data: HeaderChunkData(format: .One, numberOfTracks: tracks.count, division: division))
 
   }
 
-  var bytes: [Byte] {
-    let chunks = tracks.map {
-      (track: TrackType) -> TrackChunk in
+  var bytes: [Byte] { return header.bytes + tracks.flatMap({$0.bytes}) }
 
-      var events = track.events
-      let nameEvent = MetaEvent(deltaTime: .zero, data: .SequenceTrackName(name: track.label))
-      events.insert(nameEvent, atIndex: 0)
+  /**
+  writeMusicSequenceToFile:
 
-      let deltaTime: VariableLengthQuantity
-      if case let tempoTrack as TempoTrack = track where tempoTrack.includesTempoChange == false { deltaTime = .zero }
-      else { deltaTime = VariableLengthQuantity(time.timeStamp) }
-
-      let endOfTrackEvent = MetaEvent(deltaTime: deltaTime, data: .EndOfTrack)
-      events.append(endOfTrackEvent)
-
-      return TrackChunk(data: TrackChunkData(events: events))
+  - parameter file: NSURL
+  */
+  func writeMusicSequenceToFile(file: NSURL) throws {
+    var musicSequence = MusicSequence()
+    try NewMusicSequence(&musicSequence) ➤ "Failed to create music sequence"
+    if tracks.count > 1 {
+      for trackChunk in tracks[1 ..< tracks.count] {
+        guard let channelEvents = (trackChunk.data as? TrackChunkData)?.events.filter({$0 is ChannelEvent}).map({$0 as! ChannelEvent})
+          where channelEvents.count > 0 else { continue }
+        var musicTrack = MusicTrack()
+        try MusicSequenceNewTrack(musicSequence, &musicTrack) ➤ "Failed to create new music track"
+        for channelEvent in channelEvents {
+          var message = MIDIChannelMessage(status: channelEvent.status, data1: channelEvent.data1, data2: channelEvent.data2 ?? 0, reserved: 0)
+          try MusicTrackNewMIDIChannelEvent(musicTrack, channelEvent.barBeatTime.doubleValueWithBeatsPerBar(4), &message) ➤ "Failed to add event"
+        }
+      }
     }
-    return header.bytes + chunks.flatMap({$0.bytes})
+    try MusicSequenceFileCreate(musicSequence, file, .MIDIType, .Default, Int16(division)) ➤ "Failed to create file"
   }
 
 

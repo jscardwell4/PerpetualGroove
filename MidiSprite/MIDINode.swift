@@ -111,7 +111,7 @@ final class MIDINode: SKSpriteNode {
     let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
     let data: [UInt8] = [0x90 | note.channel, note.note, note.velocity] + sourceID
     let timeStamp = time.timeStamp
-    logDebug("timeStamp = \(timeStamp); barBeatTime = \(time)")
+    if !Sequencer.playing { Sequencer.start() }
     MIDIPacketListAdd(&packetList, size, packet, timeStamp, 11, data)
     do {
       try withUnsafePointer(&packetList) {MIDIReceived(endPoint, $0) } ➤ "Unable to send note on event"
@@ -125,7 +125,6 @@ final class MIDINode: SKSpriteNode {
     let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
     let data: [UInt8] = [0x80 | note.channel, note.note, note.releaseVelocity] + sourceID
     let timeStamp = time.timeStamp
-    logDebug("timeStamp = \(timeStamp); barBeatTime = \(time)")
     MIDIPacketListAdd(&packetList, size, packet, timeStamp, 11, data)
     do {
       try withUnsafePointer(&packetList) {MIDIReceived(endPoint, $0) } ➤ "Unable to send note off event"

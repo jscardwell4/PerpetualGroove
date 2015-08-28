@@ -11,7 +11,36 @@ import AudioToolbox
 import CoreMIDI
 import MoonKit
 
+extension CABarBeatTime: CustomStringConvertible, CustomDebugStringConvertible {
+  public var description: String { return "\(bar).\(beat).\(subbeat)" }
+  public var debugDescription: String {
+    return "{bar: \(bar); beat: \(beat); subbeat: \(subbeat); subbeatDivisor: \(subbeatDivisor)}"
+  }
+  public static let start = CABarBeatTime(bar: 1, beat: 1, subbeat: 1, subbeatDivisor: 1, reserved: 0)
+  
+  func doubleValueWithBeatsPerBar(beatsPerBar: UInt8) -> Double {
+    return Double(bar) * Double(beatsPerBar) + Double(beat) + 1 / Double(subbeatDivisor)
+  }
+}
+
 final class BarBeatTime: Hashable, CustomStringConvertible {
+
+  enum SimpleTimeSignature {
+    case FourFour
+    case ThreeFour
+    case TwoFour
+    case Other (UInt8, UInt8)
+
+    var beatUnit: UInt8 { if case .Other(_, let u) = self { return u } else { return 4 } }
+    var beatsPerBar: UInt8 {
+      switch self {
+        case .FourFour:        return 4
+        case .ThreeFour:       return 3
+        case .TwoFour:         return 2
+        case .Other(let b, _): return b
+      }
+    }
+  }
 
   private var client = MIDIClientRef()  /// Client for receiving MIDI clock
   private var inPort = MIDIPortRef()    /// Port for receiving MIDI clock
@@ -27,8 +56,15 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
     }
   }
 
+  private var validBeats: Range<UInt16>
+  private var validSubbeats: Range<UInt16>
+
   /** Stores the musical representation of the current time */
-  private var time: CABarBeatTime
+  private(set) var time: CABarBeatTime {
+    didSet {
+      guard validBeats.contains(time.beat) && validSubbeats.contains(time.subbeat) else { fatalError("corrupted time '\(time)'") }
+    }
+  }
 
   /** The portion of `clockCount` that constitutes a beat */
   private var beatInterval: Fraction<Float>
@@ -44,6 +80,36 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
   }
 
   var hashValue: Int { return ObjectIdentifier(self).hashValue }
+
+  private var marker: CABarBeatTime
+  func mark() { marker = time }
+
+  var timeSinceMarker: CABarBeatTime {
+    var time = self.time
+    var result = CABarBeatTime(bar: 0, beat: 0, subbeat: 0, subbeatDivisor: 0, reserved: 0)
+    if time.subbeatDivisor != marker.subbeatDivisor {
+      let divisor = max(time.subbeatDivisor, marker.subbeatDivisor)
+      time.subbeat *= divisor / time.subbeatDivisor
+      time.subbeatDivisor = divisor
+      marker.subbeat *= divisor / marker.subbeatDivisor
+      marker.subbeatDivisor = divisor
+      result.subbeatDivisor = divisor
+    }
+
+    if time.subbeat < marker.subbeat {
+      time.subbeat += time.subbeatDivisor
+      time.beat -= 1
+    }
+    result.subbeat = time.subbeat - marker.subbeat
+
+    if time.beat < marker.beat {
+      time.beat += 4
+      time.bar -= 1
+    }
+    result.beat = time.beat - marker.beat
+    result.bar = time.bar - marker.bar
+    return result
+  }
 
   /**
   Sets the state of `barBeatTime` and `clockCount` from the specified `BarBeatTime`
@@ -77,15 +143,20 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
   - returns: MIDITimeStamp
   */
   func timeStampForBars(bars: UInt64, beats: UInt64, subbeats: UInt64) -> MIDITimeStamp {
-    return max(0, bars - 1) * ticksPerBar + max(0, beats - 1) * UInt64(partsPerQuarter) + max(0, subbeats - 1)
+    let realBars = bars == 0 ? 0 : bars - 1
+    let realBeats = beats == 0 ? 0 : beats - 1
+    let realSubbeats = subbeats == 0 ? 0 : subbeats - 1
+    return (realBars * UInt64(timeSignature.beatsPerBar) + realBeats) * UInt64(partsPerQuarter) + realSubbeats
   }
-
-  var ticksPerBar: UInt64 { return UInt64(partsPerQuarter) * 4 }
 
   /// Generates the current `MIDI` representation of the current time
   var timeStamp: MIDITimeStamp { return timeStampForBarBeatTime(time) }
 
-  var description: String { return "\(time.bar).\(time.beat).\(time.subbeat)" }
+  var timeSignature: SimpleTimeSignature = .FourFour
+
+  var doubleValue: Double { return time.doubleValueWithBeatsPerBar(timeSignature.beatsPerBar) }
+
+  var description: String { return time.description }
 
   /** reset */
   func reset() { clockCount = 0╱Int64(partsPerQuarter); time.bar = 1; time.beat = 1; time.subbeat = 1 }
@@ -98,8 +169,11 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
   */
   init(clockSource: MIDIEndpointRef, partsPerQuarter ppq: UInt16 = 480) {
     time = CABarBeatTime(bar: 1, beat: 1, subbeat: 1, subbeatDivisor: ppq, reserved: 0)
+    marker = time
     clockCount = 0╱Int64(ppq)
     beatInterval = Int64(Float(ppq) * 0.25)╱Int64(ppq)
+    validBeats = 1 ... UInt16(timeSignature.beatsPerBar)
+    validSubbeats = 1 ... ppq
 
     do {
       try MIDIClientCreateWithBlock("BarBeatTime[\(ObjectIdentifier(self).uintValue)]", &client, nil)

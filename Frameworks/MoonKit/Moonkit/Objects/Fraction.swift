@@ -47,6 +47,11 @@ public struct Fraction<T:FractionType>   {
   public var reduced: Fraction { var result = self; result.reduce(); return result }
   mutating public func reduce() { let divisor = gcd(numerator, denominator); numerator /= divisor; denominator /= divisor }
 
+  public func fractionWithBase(base: Int64) -> Fraction<T> {
+    guard base != denominator else { return self }
+    return base < denominator ? (numerator / (denominator / base))╱base : (numerator * (base / denominator))╱base
+  }
+
   public init(_ value: T) {
     let pieces = ".".split(String(value))
     guard pieces.count == 2 else { numerator = value.toIntMax(); return }

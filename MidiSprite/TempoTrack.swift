@@ -7,18 +7,20 @@
 //
 
 import Foundation
+import CoreMIDI
 import MoonKit
 
 
 final class TempoTrack: TrackType {
 
-  private let time = BarBeatTime(clockSource: Sequencer.clockSource)
+  let time = BarBeatTime(clockSource: Sequencer.clockSource)
+
   private(set) var events: [TrackEvent] = [
-    MetaEvent(deltaTime: .zero, data: .TimeSignature(upper: 4, lower: 4, clocks: 36, notes: 8)),
-    MetaEvent(deltaTime: .zero, data: .Tempo(microseconds: Byte4(60_000_000 / Sequencer.tempo)))
+    MetaEvent(data: .TimeSignature(upper: 4, lower: 4, clocks: 36, notes: 8)),
+    MetaEvent(data: .Tempo(microseconds: Byte4(60_000_000 / Sequencer.tempo)))
   ]
 
-  private(set) var includesTempoChange = false
+  var includesTempoChange: Bool { return events.count > 2 }
 
   /**
   insertTempoChange:
@@ -26,8 +28,11 @@ final class TempoTrack: TrackType {
   - parameter tempo: Double
   */
   func insertTempoChange(tempo: Double) {
-    events.append(MetaEvent(deltaTime: time.timeStamp, data: .Tempo(microseconds: Byte4(60_000_000 / tempo))))
-    includesTempoChange = true
+    var event = MetaEvent(data: .Tempo(microseconds: Byte4(60_000_000 / tempo)))
+    event.deltaTime = VariableLengthQuantity(time.timeStampForBarBeatTime(time.timeSinceMarker))
+    event.barBeatTime = time.time
+    events.append(event)
+    time.mark()
   }
 
   let label = "Tempo"

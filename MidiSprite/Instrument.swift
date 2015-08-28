@@ -45,7 +45,9 @@ final class Instrument: Equatable, CustomStringConvertible {
     return channelPrograms[Int(ClosedInterval<Channel>(0, 15).clampValue(channel))]
   }
 
-  var description: String { return "Instrument { soundSet: \(soundSet); channelPrograms: \(channelPrograms) }" }
+  var description: String {
+    return "\(self.dynamicType.self) { \n\tsoundSet: \(soundSet)\n\tchannelPrograms: \(channelPrograms)\n}"
+  }
 
   private let audioUnit: MusicDeviceComponent
   private var client = MIDIClientRef()

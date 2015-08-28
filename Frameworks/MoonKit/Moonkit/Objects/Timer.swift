@@ -11,29 +11,15 @@ import Foundation
 
 public final class Timer {
 
-  public let queue: dispatch_queue_t
-
-  /**
-  Setter for the timer's `interval` value that takes a value specified in seconds
-
-  - parameter interval: Double
-  */
-  public func setInterval(interval: Double) { self.interval = interval }
-
-  /**
-  Setter for the timer's `interval` value that converts a parameter specified in nanoseconds
-
-  - parameter interval: UInt64
-  */
-  public func setInterval(interval: UInt64) { self.interval = nanosecondsToSeconds(interval) }
-
-  private var interval: Double { didSet { updateTimer() } }
-  public var leeway: Double  { didSet { updateTimer() } }
-  public var handler: ((Timer) -> Void)?
-
+  private let queue: dispatch_queue_t
   private let source: dispatch_source_t
+
+  public var interval: UInt64 { didSet { updateTimer() } }
+  public var leeway: UInt64  { didSet { updateTimer() } }
+  public var handler: (() -> Void)?
+
   public private(set) var running = false
-  private var ignoreEvents = false
+  private var handleEvents = true
 
   /** Starts the timer */
   public func start() { guard !running else { return }; updateTimer(); dispatch_resume(source); running = true }
@@ -43,10 +29,7 @@ public final class Timer {
 
   /** Sets the timer for `source` using the current property values */
   private func updateTimer() {
-    let interval = secondsToNanoseconds(self.interval)
-    let start = dispatch_walltime(nil, Int64(interval))
-    let leeway = secondsToNanoseconds(self.leeway)
-    dispatch_source_set_timer(source, start, interval, leeway)
+    dispatch_source_set_timer(source, dispatch_walltime(nil, Int64(interval)), interval, leeway)
   }
 
   /**
@@ -58,30 +41,20 @@ public final class Timer {
   - parameter h: ((Timer) -> Void Handler to execute every time the timer fires
   */
   public init(queue q: dispatch_queue_t = dispatch_get_main_queue(),
-              interval i: Double = 1,
-              leeway l: Double = 0,
-              handler h: ((Timer) -> Void)? = nil)
+              interval i: UInt64 = secondsToNanoseconds(1),
+              leeway l: UInt64 = 0,
+              handler h: (() -> Void)? = nil)
   {
-    queue = q
-    interval = i
-    leeway = l
-    handler = h
-
+    queue = q; interval = i; leeway = l; handler = h
     source = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue)
-    dispatch_source_set_event_handler(source) {
-      [weak self] in
-
-      guard let timer = self where !timer.ignoreEvents else { return }
-      timer.handler?(timer)
-    }
+    dispatch_source_set_event_handler(source) { [weak self] in if self?.handleEvents == true { self?.handler?() } }
   }
 
   /** Cancels the dispatch source if it has not already been cancelled */
   deinit {
-    ignoreEvents = true
-    if dispatch_source_testcancel(source) == 0 {
-      if !running { dispatch_resume(source) }
-      dispatch_source_cancel(source)
-    }
+    guard dispatch_source_testcancel(source) == 0 else { return }
+    handleEvents = false
+    if !running { dispatch_resume(source) }
+    dispatch_source_cancel(source)
   }
 }

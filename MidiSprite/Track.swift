@@ -15,7 +15,7 @@ import CoreMIDI
 final class Track: TrackType, Equatable {
 
   var description: String {
-    return "Track(\(label)) {\n\tbus: \(bus)\n\tcolor: \(color)\nevents: {\n" +
+    return "Track(\(label)) {\n\tbus: \(bus.description.indentedBy(4, preserveFirstLineIndent: true))\n\tcolor: \(color)\n\tevents: {\n" +
            ",\n".join(events.map({$0.description.indentedBy(8)})) + "\n\t}\n}"
   }
 
@@ -36,8 +36,14 @@ final class Track: TrackType, Equatable {
   private var inPort = MIDIPortRef()
   private var outPort = MIDIPortRef()
   private let fileQueue: dispatch_queue_t
-  private let time = BarBeatTime(clockSource: Sequencer.clockSource)
+  let time = BarBeatTime(clockSource: Sequencer.clockSource)
 
+  private func appendEvent(var event: TrackEvent) {
+    event.deltaTime = VariableLengthQuantity(time.timeStampForBarBeatTime(time.timeSinceMarker))
+    event.barBeatTime = time.time
+    events.append(event)
+    time.mark()
+  }
   private(set) var events: [TrackEvent] = []
 
   // MARK: - Editable properties
@@ -71,8 +77,7 @@ final class Track: TrackType, Equatable {
     notes.insert(identifier)
     lastEvent[identifier] = 0
     dispatch_async(fileQueue) {
-      [unowned self, placement = node.placement, timeStamp = time.timeStamp] in
-        self.events.append(MetaEvent(deltaTime: timeStamp, data: .NodePlacement(placement: placement)))
+      [unowned self, placement = node.placement] in self.appendEvent(MetaEvent(data: .NodePlacement(placement: placement)))
     }
     try MIDIPortConnectSource(inPort, node.endPoint, nil) ➤ "Failed to connect to node \(node.name!)"
   }
@@ -130,23 +135,16 @@ final class Track: TrackType, Equatable {
       let ((status, channel), note, velocity) = ((packet.data.0 >> 4, packet.data.0 & 0xF), packet.data.1, packet.data.2)
       let event: TrackEvent?
       switch status {
-        case 9:  event = ChannelEvent.noteOnEvent(packet.timeStamp, channel: channel, note: note, velocity: velocity)
-        case 8:  event = ChannelEvent.noteOffEvent(packet.timeStamp, channel: channel, note: note, velocity: velocity)
+      case 9:  event = ChannelEvent.noteOnEvent(channel: channel, note: note, velocity: velocity)
+      case 8:  event = ChannelEvent.noteOffEvent(channel: channel, note: note, velocity: velocity)
         default: event = nil
       }
-      if event != nil { self.events.append(event!) }
+      if event != nil { self.appendEvent(event!) }
     }
 
     // Forward the packets to the instrument
     do { try MIDISend(outPort, bus.instrument.endPoint, packetList) ➤ "Failed to forward packet list to instrument" }
     catch { logError(error) }
-  }
-
-  /** Generates a MIDI file chunk from current track data */
-  var chunk: TrackChunk {
-    let nameEvent: TrackEvent = MetaEvent(deltaTime: .zero, data: .SequenceTrackName(name: label))
-    let endEvent: TrackEvent  = MetaEvent(deltaTime: VariableLengthQuantity(time.timeStamp), data: .EndOfTrack)
-    return TrackChunk(data: TrackChunkData(events: [nameEvent] + events + [endEvent]))
   }
 
   /**

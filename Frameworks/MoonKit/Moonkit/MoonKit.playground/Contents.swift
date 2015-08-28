@@ -2,4 +2,7 @@
 import Foundation
 import MoonKit
 
-log2(8.0)
+Float80(60.0e9) / Float80(120)
+
+UInt32(Float80(60.0e9) / Float80(120))
+

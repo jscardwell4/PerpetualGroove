@@ -72,7 +72,7 @@ final class Sequencer {
   static private(set) var sequence = Sequence()
 
   /** The MIDI clock */
-  static private let clock = MIDIClockSource()
+  static private let clock = MIDIClockSource(resolution: resolution)
   static private let barBeatTime = BarBeatTime(clockSource: clock.endPoint)
   static private var synchronizedTimes: Set<BarBeatTime> = []
 
@@ -82,9 +82,9 @@ final class Sequencer {
   // TODO: Need to make sure the current tempo is set at the beginning of a new sequence and probably turn off continuous
   // updates for slider
   static var tempo: Double {
-    get { return clock.beatsPerMinute }
+    get { return Double(clock.beatsPerMinute) }
     set {
-      clock.beatsPerMinute = newValue
+      clock.beatsPerMinute = UInt16(newValue)
       sequence.insertTempoChange(tempo)
     }
   }
@@ -126,9 +126,7 @@ final class Sequencer {
   /** The current time as reported by the MIDI clock */
 //  static var currentTime: MIDITimeStamp { return barBeatTime.timestamp }
 
-  static private(set) var resolution: Double {
-    get { return clock.resolution} set { clock.resolution = newValue }
-  }
+  static var resolution: UInt16 = 480 { didSet { clock.resolution = resolution } }
 
   static var measure: String  { return barBeatTime.description }
 
@@ -176,22 +174,15 @@ final class Sequencer {
 
   // MARK: - Starting/stopping and resetting the sequencer
 
+  static var playing: Bool { return clock.running }
+
   /** Starts the MIDI clock */
-  static func start() {
-    guard !clock.running else { return }
-    clock.start()
-  }
+  static func start() { guard !playing else { return }; clock.start() }
 
   /** Moves the time back to 0 */
-  static func reset() {
-    if clock.running { stop() }
-    ([barBeatTime] + synchronizedTimes).forEach({time in time.reset()})
-  }
+  static func reset() { if playing { stop() }; ([barBeatTime] + synchronizedTimes).forEach({time in time.reset()}) }
 
   /** Stops the MIDI clock */
-  static func stop() {
-    guard clock.running else { return }
-    clock.stop()
-  }
+  static func stop() { guard playing else { return }; clock.stop() }
 
 }
