@@ -75,7 +75,7 @@ class MixerViewController: UICollectionViewController {
   - returns: Int
   */
   override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return section == 0 ? 1 : Mixer.instruments.count
+    return section == 0 ? 1 : Sequencer.sequence.tracks.count
   }
 
   /**

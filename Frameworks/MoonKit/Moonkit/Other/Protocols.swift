@@ -308,10 +308,10 @@ public protocol KeyValueCollectionType: CollectionType {
   typealias Key: Hashable
   typealias Value
   subscript (key: Key) -> Value? { get }
-  typealias KeysLazyCollectionType: CollectionType
-  typealias ValuesLazyCollectionType: CollectionType
-  var keys: LazyForwardCollection<KeysLazyCollectionType> { get }
-  var values: LazyForwardCollection<ValuesLazyCollectionType> { get }
+  typealias KeysType: LazyCollectionType
+  typealias ValuesType: LazyCollectionType
+  var keys: KeysType { get }
+  var values: ValuesType { get }
 }
 
 public protocol KeyedContainer {
@@ -335,7 +335,7 @@ public protocol KeySearchable {
 //
 //    for case let nested as KeySearchable in allValues  {
 //      MSLogDebug("nested = \(nested)")
-////      result.extend(nested.valuesForKey(key))
+////      result.appendContentsOf(nested.valuesForKey(key))
 //    }
 //    return result
 //  }
@@ -360,7 +360,7 @@ public protocol NestingContainer {
 //  {
 //    result.append(v)
 //  }
-//  result.extend(_findValuesForKey(key, inContainer: container))
+//  result.appendContentsOf(_findValuesForKey(key, inContainer: container))
 //  return result
 //}
 //
@@ -369,7 +369,7 @@ public protocol NestingContainer {
 //  for value in container.allValues {
 //    if let searchableValue = value as? KeySearchable {
 //// wtf?
-//      result.extend(findValuesForKey(key, inContainer: searchableValue))
+//      result.appendContentsOf(findValuesForKey(key, inContainer: searchableValue))
 //    }
 //  }
 //  return result

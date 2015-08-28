@@ -72,12 +72,12 @@ The function is a simple wrapper around `reduce` that ignores the actual reducti
 - parameter sequence: S
 - parameter block: (S.Generator.Element) -> Void
 */
-public func apply<S:SequenceType>(sequence: S, _ f: (S.Generator.Element) -> Void) { sequence.reduce(Void(), combine: { f($0.1) }) }
+public func apply<S:SequenceType>(sequence: S, _ f: (S.Generator.Element) -> Void) { sequence.forEach({ f($0) }) }
 public func apply<T>(x: T, _ f: (T) -> Void) { f(x) }
 //public func apply<T, U>(x: T, f: (T) -> U) -> U { return f(x) }
 
 public extension SequenceType {
-  public func apply(f: Generator.Element -> Void) { reduce(Void(), combine: { f($0.1) }) }
+  public func apply(f: Generator.Element -> Void) { forEach { f($0) } }
   public func pairwiseApply(f: (Generator.Element, Generator.Element) -> Void) {
     AnySequence({() -> AnyGenerator<(Generator.Element, Generator.Element)> in
       let sequenceArray = Array(self)

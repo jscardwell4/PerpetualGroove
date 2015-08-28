@@ -131,7 +131,7 @@ public final class SchemeEditor: UIViewController, UIPickerViewDataSource, UIPic
     baseColorButton.setTitle(baseColorName, forState: .Normal)
     shadeSegmentedControl.selectedSegmentIndex = baseColorShade.rawValue
     let colors = Chameleon.colorsForScheme(colorScheme, with: baseColor, flat: flat)
-    zip(colors, colorViews).reduce(Void()) {$1.1.backgroundColor = $1.0}
+    zip(colors, colorViews).forEach {$1.backgroundColor = $0}
     gradientView.backgroundColor = Chameleon.gradientWithStyle(gradientStyle,
                                                      withFrame: gradientView.bounds,
                                                      andColors: gradientColors.map { colors[$0] })
@@ -169,17 +169,17 @@ public final class SchemeEditor: UIViewController, UIPickerViewDataSource, UIPic
   public private(set) var baseColor = Chameleon.flatWatermelon
 
   /** Holds the color scheme value to use when generating colors */
-  public var colorScheme = ColorScheme.Analogous {
+  public var colorScheme = Chameleon.ColorScheme.Analogous {
     didSet { colorSchemeButton.setTitle(colorScheme.description, forState: .Normal); refresh() }
   }
 
   /** Holds the gradient style value to use when generating the gradient from the color scheme */
-  public var gradientStyle = GradientStyle.Radial {
+  public var gradientStyle = Chameleon.GradientStyle.Radial {
     didSet { gradientStyleButton.setTitle(gradientStyle.description, forState: .Normal); refresh() }
   }
 
   /** Holds the color palette value to use when choosing prospective base colors */
-  public var colorPalette = ColorPalette.Flat {
+  public var colorPalette = Chameleon.ColorPalette.Flat {
     didSet {
       colorPaletteButton.setTitle(colorPalette.description, forState: .Normal)
       refresh()

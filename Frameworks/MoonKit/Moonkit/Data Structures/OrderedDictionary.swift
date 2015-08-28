@@ -17,13 +17,13 @@ public struct OrderedDictionary<Key : Hashable, Value> : KeyValueCollectionType 
 
   private(set) public var dictionary: [Key:Value]
   private(set) var _keys: [Key]
-  public var keys: LazyForwardCollection<Array<Key>> { return LazyForwardCollection(_keys) }
+  public var keys: LazyCollection<Array<Key>> { return LazyCollection(_keys) }
   public var printableKeys: Bool { return typeCast(_keys, Array<CustomStringConvertible>.self) != nil }
 
   public var userInfo: [String:AnyObject]?
   public var count: Int { return _keys.count }
   public var isEmpty: Bool { return _keys.isEmpty }
-  public var values: LazyForwardCollection<MapCollection<[Key], Value>> {
+  public var values: LazyMapCollection<[Key], Value> {
     return keys.map({self.dictionary[$0]!})
   }
 
@@ -231,7 +231,7 @@ public struct OrderedDictionary<Key : Hashable, Value> : KeyValueCollectionType 
     return dictionary.updateValue(value, forKey: _keys[index])
   }
 
-  public mutating func extend<S: SequenceType where S.Generator.Element == (Int, Key, Value)>(s: S) {
+  public mutating func appendContentsOf<S: SequenceType where S.Generator.Element == (Int, Key, Value)>(s: S) {
     for (_, k, v) in s { self[k] = v }
   }
 
@@ -414,7 +414,7 @@ extension OrderedDictionary: NestingContainer {
     var result: [Any] = []
     for value in values {
       if let container = value as? NestingContainer {
-        result.extend(container.allObjects)
+        result.appendContentsOf(container.allObjects)
       } else {
         result.append(value as Any)
       }
@@ -425,7 +425,7 @@ extension OrderedDictionary: NestingContainer {
     var result: [T] = []
     for value in values {
       if let container = value as? NestingContainer {
-        result.extend(container.allObjects(type))
+        result.appendContentsOf(container.allObjects(type))
       } else if let v = value as? T {
         result.append(v)
       }

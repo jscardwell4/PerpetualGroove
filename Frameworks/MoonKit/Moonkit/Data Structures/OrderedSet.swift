@@ -49,7 +49,10 @@ public struct OrderedSet<Element:Equatable> : MutableCollectionType {
 
   - returns: ArraySlice<Element>
   */
-  public subscript (subRange: Range<Int>) -> OrderedSet<Element> { return OrderedSet(storage[subRange]) }
+  public subscript (subRange: Range<Int>) -> OrderedSet<Element> {
+    get { return OrderedSet(storage[subRange]) }
+    set { storage.replaceRange(subRange, with: newValue) }
+  }
 
   /**
   init:
@@ -109,12 +112,12 @@ public struct OrderedSet<Element:Equatable> : MutableCollectionType {
   public mutating func append(newElement: Element) { if !storage.contains(newElement) { storage.append(newElement) } }
 
   /**
-  extend:
+  appendContentsOf:
 
   - parameter elements: S
   */
-  public mutating func extend<S:SequenceType where S.Generator.Element == Element>(elements: S) {
-    storage.extend(elements.filter { !self.storage.contains($0) })
+  public mutating func appendContentsOf<S:SequenceType where S.Generator.Element == Element>(elements: S) {
+    storage.appendContentsOf(elements.filter { !self.storage.contains($0) })
   }
 
   /**
@@ -234,7 +237,7 @@ public struct OrderedSet<Element:Equatable> : MutableCollectionType {
   */
   public mutating func splice<S : CollectionType where S.Generator.Element == Element>(elements: S, atIndex i: Int) {
     var s = storage
-    s.splice(elements, atIndex: i)
+    s.insertContentsOf(elements, at: i)
     storage = s
   }
 
@@ -317,7 +320,7 @@ public struct OrderedSet<Element:Equatable> : MutableCollectionType {
 
   - parameter sequence: S
   */
-  public mutating func unionInPlace<S:SequenceType where S.Generator.Element == Element>(sequence: S) { extend(sequence) }
+  public mutating func unionInPlace<S:SequenceType where S.Generator.Element == Element>(sequence: S) { appendContentsOf(sequence) }
 
   /**
   Return a new set with elements in this set that do not occur in a finite sequence.
@@ -700,7 +703,7 @@ extension OrderedSet: NestingContainer {
     var result: [Any] = []
     for value in self {
       if let container = value as? NestingContainer {
-        result.extend(container.allObjects)
+        result.appendContentsOf(container.allObjects)
       } else {
         result.append(value as Any)
       }
@@ -711,7 +714,7 @@ extension OrderedSet: NestingContainer {
     var result: [Element] = []
     for value in self {
       if let container = value as? NestingContainer {
-        result.extend(container.allObjects(type))
+        result.appendContentsOf(container.allObjects(type))
       } else if let v = value as? Element {
         result.append(v)
       }

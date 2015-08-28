@@ -55,8 +55,8 @@ public enum JSONValue {
 
   - parameter c: C
   */
-  public init<C:KeyValueCollectionType where C.KeysLazyCollectionType.Generator.Element == Swift.String,
-                                             C.ValuesLazyCollectionType.Generator.Element == JSONValue>(_ c: C)
+  public init<C:KeyValueCollectionType where C.KeysType.Generator.Element == Swift.String,
+                                             C.ValuesType.Generator.Element == JSONValue>(_ c: C)
   {
     self = Object(OrderedDictionary<Swift.String, JSONValue>(keys: c.keys, values: c.values))
   }
@@ -66,8 +66,8 @@ public enum JSONValue {
 
   - parameter c: C
   */
-  public init<C:KeyValueCollectionType where C.KeysLazyCollectionType.Generator.Element == Swift.String,
-    C.ValuesLazyCollectionType.Generator.Element:JSONValueConvertible>(_ c: C)
+  public init<C:KeyValueCollectionType where C.KeysType.Generator.Element == Swift.String,
+    C.ValuesType.Generator.Element:JSONValueConvertible>(_ c: C)
   {
     self = Object(OrderedDictionary<Swift.String, JSONValue>(keys: c.keys, values: c.values.map({$0.jsonValue})))
   }
@@ -144,7 +144,7 @@ public enum JSONValue {
         let outerIndent = " " * (depth * 4)
         let innerIndent = outerIndent + " " * 4
         var string = "{"
-        let keyValuePairs = o.map({"\"\($1)\": \($2.stringValueWithDepth(depth + 1))"}).values.array
+        let keyValuePairs = Swift.Array(o.map({"\"\($1)\": \($2.stringValueWithDepth(depth + 1))"}).values)
         switch keyValuePairs.count {
           case 0: string += "]"
           case 1: string += "\n\(innerIndent)" + keyValuePairs[0] + "\n\(outerIndent)}"
@@ -293,8 +293,8 @@ public func ==(lhs: JSONValue, rhs: JSONValue) -> Bool {
       return true
     case (.Array(let la), .Array(let ra)) where la == ra:
       return true
-    case (.Object(let lo), .Object(let ro)) where lo.count == ro.count && lo.keys.array == ro.keys.array:
-      let keys = lo.keys.array
+    case (.Object(let lo), .Object(let ro)) where lo.count == ro.count && lo.keys.elementsEqual(ro.keys):
+      let keys = Array(lo.keys)
       return keys.compressedMap({lo[$0]}) == keys.compressedMap({ro[$0]})
     default:
       return false

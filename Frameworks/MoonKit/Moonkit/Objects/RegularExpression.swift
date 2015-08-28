@@ -76,8 +76,8 @@ public struct RegularExpression {
       guard r.location != NSNotFound && r.location + r.length <= s.utf16.count else { return nil }
       group = g
 
-      let start = String.UTF16Index(r.location)
-      let end = advance(start, r.length)
+      let start = String.UTF16Index(_offset: r.location)
+      let end = start.advancedBy(r.length)
       range = start ..< end
       _string = s.utf16[range]
       guard let string = String(_string) else { return nil }

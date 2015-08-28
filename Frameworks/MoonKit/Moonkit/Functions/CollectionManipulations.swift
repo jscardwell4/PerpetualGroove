@@ -27,7 +27,7 @@ public func spliced<C : RangeReplaceableCollectionType, S : CollectionType
   where C.Generator.Element == S.Generator.Element>(x: C, newElements: S, atIndex i: C.Index) -> C
 {
   var xPrime = x
-  xPrime.splice(newElements, atIndex: i)
+  xPrime.insertContentsOf(newElements, at: i)
   return xPrime
 }
 

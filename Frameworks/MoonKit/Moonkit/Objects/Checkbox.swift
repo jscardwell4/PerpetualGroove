@@ -22,7 +22,7 @@ public class Checkbox: UIControl {
   public func toggleChecked() { checked = !checked }
 
   /** init */
-  public convenience init() { self.init(frame: CGRect.zeroRect) }
+  public convenience init() { self.init(frame: CGRect.zero) }
 
   /**
   initWithFrame:
@@ -111,8 +111,8 @@ public class Checkbox: UIControl {
 
       ////// box Inner Shadow
       UIGraphicsPushContext(context!)
-      UIRectClip(boxRect.rectWithOrigin(CGPoint.zeroPoint))
-      CGContextSetShadow(context, CGSize.zeroSize, 0)
+      UIRectClip(boxRect.rectWithOrigin(CGPoint.zero))
+      CGContextSetShadow(context, CGSize.zero, 0)
       CGContextSetAlpha(context, CGColorGetAlpha((DrawingKit.semiDarkShadow.shadowColor as! UIColor).CGColor))
       CGContextBeginTransparencyLayer(context, nil)
 
@@ -192,7 +192,7 @@ public class Checkbox: UIControl {
           ////// checkmark Inner Shadow
           UIGraphicsPushContext(context!)
           UIRectClip(checkmarkPath.bounds)
-          CGContextSetShadow(context, CGSize.zeroSize, 0)
+          CGContextSetShadow(context, CGSize.zero, 0)
           CGContextSetAlpha(context, CGColorGetAlpha((DrawingKit.lightShadow.shadowColor as! UIColor).CGColor))
           CGContextBeginTransparencyLayer(context, nil)
           let checkmarkOpaqueShadow = (DrawingKit.lightShadow.shadowColor as! UIColor).colorWithAlphaComponent(1)

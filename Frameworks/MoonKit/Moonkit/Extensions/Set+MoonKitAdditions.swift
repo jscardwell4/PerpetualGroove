@@ -70,7 +70,7 @@ extension Set: NestingContainer {
     var result: [Any] = []
     for value in self {
       if let container = value as? NestingContainer {
-        result.extend(container.allObjects)
+        result.appendContentsOf(container.allObjects)
       } else {
         result.append(value as Any)
       }
@@ -81,7 +81,7 @@ extension Set: NestingContainer {
     var result: [T] = []
     for value in self {
       if let container = value as? NestingContainer {
-        result.extend(container.allObjects(type))
+        result.appendContentsOf(container.allObjects(type))
       } else if let v = value as? T {
         result.append(v)
       }

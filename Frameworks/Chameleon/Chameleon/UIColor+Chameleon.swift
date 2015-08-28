@@ -356,7 +356,7 @@ extension UIColor {
     CGContextSetInterpolationQuality(ctx, .Medium)
 
     //Draw image scaled down to this 1x1 pixel
-    gradientImage.drawInRect(CGRect(origin: CGPoint.zeroPoint, size: size), blendMode: .Copy, alpha:1)
+    gradientImage.drawInRect(CGRect(origin: CGPoint.zero, size: size), blendMode: .Copy, alpha:1)
 
     //Read the RGB values from the context's buffer
     let data = UnsafePointer<UInt8>(CGBitmapContextGetData(ctx))
@@ -369,7 +369,7 @@ extension UIColor {
   /// The nearest flat color for the color
   public var flatColor: UIColor {
     let (l1, a1, b1) = rgbColor.LAB
-    let flatColors = lazy(Chameleon.flatColors)
+    let flatColors = Chameleon.flatColors.lazy
     let totalDifferences = flatColors.map { color -> CGFloat in
       let (l2, a2, b2) = color.LAB
       return UIColor.totalSumOfDifferencesFromL1(l1, L2: l2, A1: a1, A2: a2, B1: b1, B2: b2)

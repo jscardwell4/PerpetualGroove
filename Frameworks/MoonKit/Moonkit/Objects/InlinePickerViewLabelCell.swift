@@ -71,7 +71,7 @@ final class InlinePickerViewLabelCell: InlinePickerViewCell {
 
   override var description: String {
     var result = String(super.description.characters.dropLast())
-    result.extend("; text = " + (text != nil ? "'\(text!.string)'" : "nil") + ">")
+    result.appendContentsOf("; text = " + (text != nil ? "'\(text!.string)'" : "nil") + ">")
     return result
   }
 

@@ -53,18 +53,21 @@ protocol Chunk: CustomStringConvertible {
 extension Chunk {
   var bytes: [Byte] { return type.bytes + data.length.bytes + data.bytes }
   var description: String {
-    return " ".join((type.bytes + data.length.bytes + data.bytes).map{ String($0, radix: 16, uppercase: true, pad: 2) })
+    let result = "\(self.dynamicType.self) {\n\t" + "\n\t".join(
+      "type: \(String(type, radix: 16, uppercase: true, pad: 2, group: 2))",
+      "data: \(data.description.indentedBy(4, preserveFirstLineIndent: true))"
+      ) + "\n}"
+    return result
   }
 }
 
 // MARK: - The chunk data protocol
 
 /** Protocol for types that can produce the data portion of a chunk in a MIDI file */
-protocol ChunkData {
+protocol ChunkData: CustomStringConvertible {
   var length: Byte4 { get }
   var bytes: [Byte] { get }
 }
-
 
 // MARK: - Header chunk and chunk data
 
@@ -79,14 +82,23 @@ struct HeaderChunk: Chunk {
 /** Struct to hold the data portion of a header chunk in a MIDI file */
 struct HeaderChunkData: ChunkData {
   let length: Byte4 = 6
-  let format: MIDIFile.Format
   let numberOfTracks: Byte2
+  let format: MIDIFile.Format
   let division: Byte2
 
   init(format: MIDIFile.Format, numberOfTracks: Int, division: Byte2) {
     self.format = format; self.numberOfTracks = Byte2(numberOfTracks); self.division = division
   }
 
+  var description: String {
+    let result = "\(self.dynamicType.self) {\n\t" + "\n\t".join(
+      "length: \(length)",
+      "format: \(format)",
+      "numberOfTracks: \(numberOfTracks)",
+      "division: \(division)"
+    ) + "\n}"
+    return result
+  }
   var bytes: [Byte] { return format.rawValue.bytes + numberOfTracks.bytes + division.bytes }
 }
 
@@ -105,6 +117,12 @@ struct TrackChunkData: ChunkData {
   var length: Byte4 { return Byte4(events.map({$0.length}).sum) }
   var bytes: [Byte] { return events.flatMap({$0.data}) }
   let events: [TrackEvent]
+  var description: String {
+    let result = "\(self.dynamicType.self) {\n\tlength: \(length)\n\tevents: {\n"
+        + ",\n".join(events.map({$0.description.indentedBy(8)})) + "\n\t}\n}"
+    return result
+  }
+
 }
 
 // MARK: - Encoding 'variable length' values
@@ -117,12 +135,44 @@ last byte has bit 7 clear. If the number is between 0 and 127, it is thus repres
 */
 struct VariableLengthQuantity: CustomStringConvertible {
   let bytes: [Byte]
-  static let Zero = VariableLengthQuantity(0)
+  static let zero = VariableLengthQuantity(0)
 
-  var description: String { return " ".join(bytes.map { String($0, radix: 16, uppercase: true, pad: 2) }) }
+  var description: String {
+    let byteString = " ".join(bytes.map { String($0, radix: 16, uppercase: true, pad: 2) })
+    let representedValueString = " ".join(representedValue.map { String($0, radix: 16, uppercase: true, pad: 2) })
+    return "\(self.dynamicType.self) {bytes: \(byteString); representedValue: \(representedValueString)}"
+  }
+  var representedValue: [Byte] {
+    let groups = bytes.segment(8)
+    var resolvedGroups: [UInt64] = []
+    for group in groups {
+      guard group.count > 0 else { continue }
+      var groupValue = UInt64(group[0])
+      if groupValue & 0x80 != 0 {
+        groupValue &= UInt64(0x7F)
+        var i = 1
+        var next = Byte(0)
+        repeat {
+          next = (i < group.count ? group[i++] : 0)
+          groupValue = (groupValue << UInt64(7)) + UInt64(next & 0x7F)
+        } while next & 0x80 != 0
+      }
+      resolvedGroups.append(groupValue)
+    }
+    var resolvedBytes = resolvedGroups.flatMap { $0.bytes }
+    while let firstByte = resolvedBytes.first where resolvedBytes.count > 1 && firstByte == 0 { resolvedBytes.removeAtIndex(0) }
+    return resolvedBytes
+  }
 
   /**
-  Initialize from any `ByteArrayConvertible` type
+  Initialize with bytes array already in converted format
+
+  - parameter bytes: [Byte]
+  */
+  init(bytes: [Byte]) { self.bytes = bytes }
+
+  /**
+  Initialize from any `ByteArrayConvertible` type holding the represented value
 
   - parameter value: B
   */
@@ -156,7 +206,13 @@ protocol TrackEvent: CustomStringConvertible {
 extension TrackEvent {
   var length: Byte4 { return Byte4(deltaTime.bytes.count + bytes.count) }
   var data: [Byte] { return deltaTime.bytes + bytes }
-  var description: String { return " ".join(data.map { String($0, radix: 16, uppercase: true, pad: 2) }) }
+}
+
+// MARK: - The track type protocol
+
+protocol TrackType: CustomStringConvertible {
+  var events: [TrackEvent] { get }
+  var label: String { get }
 }
 
 
@@ -175,37 +231,14 @@ struct ChannelEvent: TrackEvent {
   static func noteOffEvent(timestamp: MIDITimeStamp, channel: Byte, note: Byte, velocity: Byte) -> ChannelEvent {
     return ChannelEvent(deltaTime: VariableLengthQuantity(timestamp), status: 0x80 | channel, data1: note, data2: velocity)
   }
-}
-
-// MARK: - The sysex track event
-
-/* 
-Master Volume:  F0 7F <device id> 04 01 vv vv F7 where vv vv has LSB first
-Master Balance: F0 7F <device id> 04 01 bb bb F7 where bb bb has LSB first
-*/
-
-/** Struct to hold data for a sysex event where event = \<delta time\> **F0** \<length of sysex\> \<sysex\> **F7** */
-struct SystemExclusiveEvent: TrackEvent {
-  let deltaTime: VariableLengthQuantity
-  let sysExData: SystemExclusiveEventData
-  var bytes: [Byte] { return Byte(0xF0).bytes + sysExData.length.bytes + sysExData.bytes + Byte(0xF7).bytes }
-  static func nodePlacementEvent(timestamp: MIDITimeStamp, placement: MIDINode.Placement) -> SystemExclusiveEvent {
-    return SystemExclusiveEvent(deltaTime: VariableLengthQuantity(timestamp), sysExData: .NodePlacement(placement))
-  }
-}
-
-/** An enumeration for encapsulating a type of sysex event */
-enum SystemExclusiveEventData {
-  case Other ([Byte])
-  case NodePlacement(MIDINode.Placement)
-
-  var length: VariableLengthQuantity { return VariableLengthQuantity(bytes.count) }
-
-  var bytes: [Byte] {
-    switch self {
-      case .Other(let bytes):             return bytes
-      case .NodePlacement(let placement): return placement.bytes
-    }
+  var description: String {
+    let result = "\(self.dynamicType.self) {\n\t" + "\n\t".join(
+      "deltaTime: \(deltaTime)",
+      "status: \(String(status, radix: 16, uppercase: true, pad: 2, group: 2))",
+      "data1: \(String(data1, radix: 16, uppercase: true, pad: 2, group: 2))",
+      "data2: " + (data2 == nil ? "nil" : String(data2!, radix: 16, uppercase: true, pad: 2, group: 2))
+    ) + "\n}"
+    return result
   }
 }
 
@@ -214,25 +247,42 @@ enum SystemExclusiveEventData {
 /** Struct to hold data for a meta event where event = \<delta time\> **FF** \<meta type\> \<length of meta\> \<meta\> */
 struct MetaEvent: TrackEvent {
   let deltaTime: VariableLengthQuantity
-  let metaEventData: MetaEventData
-  var bytes: [Byte] { return Byte(0xFF).bytes + [metaEventData.type] + metaEventData.length.bytes + metaEventData.bytes }
+  let data: MetaEventData
+  var bytes: [Byte] { return Byte(0xFF).bytes + [data.type] + data.length.bytes + data.bytes }
+
+  /**
+  Initializer takes a timestamp to convert to a `VariableLengthQuantity` as well as the event's data
+
+  - parameter deltaTime: MIDITimeStamp
+  - parameter data: MetaEventData
+  */
+  init(deltaTime: MIDITimeStamp, data: MetaEventData) { self.deltaTime = VariableLengthQuantity(deltaTime); self.data = data }
+
+
+  /**
+  Initializer that takes a `VariableLengthQuantity` as well as the event's data
+
+  - parameter deltaTime: VariableLengthQuantity
+  - parameter data: MetaEventData
+  */
+  init(deltaTime: VariableLengthQuantity, data: MetaEventData) { self.deltaTime = deltaTime; self.data = data }
+
+  var description: String { return "\(self.dynamicType.self) {\n\tdeltaTime: \(deltaTime)\n\tdata: \(data)\n}" }
 }
 
 /** Enumeration for encapsulating a type of meta event */
-enum MetaEventData: CustomStringConvertible {
-  case Other (Byte, [Byte])
-  case Text (String)
-  case CopyrightNotice (String)
-  case SequenceTrackName (String)
-  case InstrumentName (String)
+enum MetaEventData {
+  case Text (text: String)
+  case CopyrightNotice (notice: String)
+  case SequenceTrackName (name: String)
+  case InstrumentName (name: String)
   case EndOfTrack
-  case Tempo (Byte4)
-  case TimeSignature (Byte, Byte, Byte, Byte)
-  case SequencerSpecific ([Byte])
+  case Tempo (microseconds: Byte4)
+  case TimeSignature (upper: Byte, lower: Byte, clocks: Byte, notes: Byte)
+  case NodePlacement(placement: MIDINode.Placement)
 
   var type: Byte {
     switch self {
-      case .Other(let type, _):       return type
       case .Text:                     return 0x01
       case .CopyrightNotice:          return 0x02
       case .SequenceTrackName:        return 0x03
@@ -240,36 +290,73 @@ enum MetaEventData: CustomStringConvertible {
       case .EndOfTrack:               return 0x2F
       case .Tempo:                    return 0x51
       case .TimeSignature:            return 0x58
-      case .SequencerSpecific:        return 0x7F
+      case .NodePlacement:            return 0x07
     }
   }
 
   var bytes: [Byte] {
     switch self {
-      case .Other(_, let bytes):           return bytes
-      case .Text(let text):                return Array(text.utf8)
-      case .CopyrightNotice(let text):     return Array(text.utf8)
-      case .SequenceTrackName(let text):   return Array(text.utf8)
-      case .InstrumentName(let text):      return Array(text.utf8)
+      case let .Text(text):                return Array(text.utf8)
+      case let .CopyrightNotice(text):     return Array(text.utf8)
+      case let .SequenceTrackName(text):   return Array(text.utf8)
+      case let .InstrumentName(text):      return Array(text.utf8)
       case .EndOfTrack:                    return []
-      case .Tempo(let tempo):              return Array(tempo.bytes.dropFirst())
-      case let .TimeSignature(u, l, n, m): return [u, l, n, m]
-      case .SequencerSpecific(let bytes):  return bytes
+      case let .Tempo(tempo):              return Array(tempo.bytes.dropFirst())
+      case let .TimeSignature(u, l, n, m): return [u, Byte(log2(Double(l))), n, m]
+      case let .NodePlacement(placement):  return placement.bytes
     }
   }
 
   var length: VariableLengthQuantity { return VariableLengthQuantity(bytes.count) }
-  var description: String {
-    return " ".join(([type] + length.bytes + bytes).map{ String($0, radix: 16, uppercase: true, pad: 2) })
-  }
 }
 
 /** Struct that holds the data for a complete MIDI file */
 struct MIDIFile: CustomStringConvertible {
+
   enum Format: Byte2 { case Zero, One, Two }
-  let header: HeaderChunk
-  let tracks: [TrackChunk]
-  var bytes: [Byte] { return header.bytes + tracks.flatMap({$0.bytes}) }
-  var description: String { return " ".join(bytes.map({ String($0, radix: 16, uppercase: true, pad: 2) })) }
+
+  let format: MIDIFile.Format
+
+  let division: Byte2
+
+  let tracks: [TrackType]
+
+  private let header: HeaderChunk
+  private let time = BarBeatTime(clockSource: Sequencer.clockSource)
+
+  init(format: Format, division: Byte2, tracks: [TrackType]) {
+    self.format = format; self.division = division; self.tracks = tracks
+    header = HeaderChunk(data: HeaderChunkData(format: .One, numberOfTracks: tracks.count, division: division))
+
+  }
+
+  var bytes: [Byte] {
+    let chunks = tracks.map {
+      (track: TrackType) -> TrackChunk in
+
+      var events = track.events
+      let nameEvent = MetaEvent(deltaTime: .zero, data: .SequenceTrackName(name: track.label))
+      events.insert(nameEvent, atIndex: 0)
+
+      let deltaTime: VariableLengthQuantity
+      if case let tempoTrack as TempoTrack = track where tempoTrack.includesTempoChange == false { deltaTime = .zero }
+      else { deltaTime = VariableLengthQuantity(time.timeStamp) }
+
+      let endOfTrackEvent = MetaEvent(deltaTime: deltaTime, data: .EndOfTrack)
+      events.append(endOfTrackEvent)
+
+      return TrackChunk(data: TrackChunkData(events: events))
+    }
+    return header.bytes + chunks.flatMap({$0.bytes})
+  }
+
+
+  var description: String {
+    let result = "\(self.dynamicType.self) {\n\t" + "\n\t".join(
+      "header: \(header.description.indentedBy(4, preserveFirstLineIndent: true))",
+      "tracks: {\n" + ",\n".join(tracks.map({$0.description.indentedBy(8)})) + "\n\t}\n}"
+    )
+    return result
+  }
 }
 

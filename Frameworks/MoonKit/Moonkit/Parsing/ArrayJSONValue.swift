@@ -24,8 +24,8 @@ public struct ArrayJSONValue: JSONValueConvertible, JSONValueInitializable {
   public mutating func append<J:JSONValueConvertible>(j: J) { append(j.jsonValue) }
   public mutating func append(j: JSONValue) { value.append(j) }
 
-  public mutating func extend(other: ArrayJSONValue) { extend(other.value) }
-  public mutating func extend(other: [JSONValue]) { value.extend(other) }
+  public mutating func appendContentsOf(other: ArrayJSONValue) { appendContentsOf(other.value) }
+  public mutating func appendContentsOf(other: [JSONValue]) { value.appendContentsOf(other) }
 
   public func map<U>(transform: (JSONValue) -> U) -> [U] { return value.map(transform) }
   public func map(transform: (JSONValue) -> JSONValue) -> ArrayJSONValue { return ArrayJSONValue(value.map(transform)) }
@@ -66,14 +66,14 @@ extension ArrayJSONValue: CustomStringConvertible, CustomDebugStringConvertible 
   public var debugDescription: String { return "MoonKit.ArrayJSONValue - value: \(description)" }
 }
 
-public func +(var lhs: ArrayJSONValue, rhs: ArrayJSONValue) -> ArrayJSONValue { lhs.extend(rhs); return lhs }
-public func +=(inout lhs: ArrayJSONValue, rhs: ArrayJSONValue) { lhs.extend(rhs) }
+public func +(var lhs: ArrayJSONValue, rhs: ArrayJSONValue) -> ArrayJSONValue { lhs.appendContentsOf(rhs); return lhs }
+public func +=(inout lhs: ArrayJSONValue, rhs: ArrayJSONValue) { lhs.appendContentsOf(rhs) }
 
 public func +(var lhs: ArrayJSONValue, rhs: JSONValue) -> ArrayJSONValue { lhs.append(rhs); return lhs }
 public func +=(inout lhs: ArrayJSONValue, rhs: JSONValue) { lhs.append(rhs) }
 
-public func +(var lhs: ArrayJSONValue, rhs: JSONValue.ArrayValue) -> ArrayJSONValue { lhs.extend(rhs); return lhs }
-public func +=(inout lhs: ArrayJSONValue, rhs: JSONValue.ArrayValue) { lhs.extend(rhs) }
+public func +(var lhs: ArrayJSONValue, rhs: JSONValue.ArrayValue) -> ArrayJSONValue { lhs.appendContentsOf(rhs); return lhs }
+public func +=(inout lhs: ArrayJSONValue, rhs: JSONValue.ArrayValue) { lhs.appendContentsOf(rhs) }
 
 public func +<J:JSONValueConvertible>(var lhs: ArrayJSONValue, rhs: J) -> ArrayJSONValue { lhs.append(rhs); return lhs }
 public func +=<J:JSONValueConvertible>(inout lhs: ArrayJSONValue, rhs: J) { lhs.append(rhs) }

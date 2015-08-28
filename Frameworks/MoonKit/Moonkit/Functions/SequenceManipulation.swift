@@ -32,6 +32,20 @@ public extension SequenceType where Generator.Element: Named {
   }
 }
 
+public extension SequenceType {
+  public func segment(var segmentSize: Int = 2) -> [[Generator.Element]] {
+    var result: [[Generator.Element]] = []
+    var array: [Generator.Element] = []
+    segmentSize = max(segmentSize, 1)
+    for element in self {
+      if array.count == segmentSize { result.append(array); array = [] }
+      array.append(element)
+    }
+    if array.count > 0 { result.append(array) }
+    return result
+  }
+}
+
 public struct InfiniteSequenceOf<T>: SequenceType {
   private let value: T
   public init(_ v: T) { value = v }

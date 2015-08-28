@@ -98,7 +98,7 @@ public class PopoverListView: PopoverView {
   - parameter labelData: [LabelData]
   - parameter callback: ((PopoverView) -> Void
   */
-  public init(labelData: [LabelData]) { data = labelData; super.init(frame: .zeroRect) }
+  public init(labelData: [LabelData]) { data = labelData; super.init(frame: .zero) }
 
   /**
   Initialization with coder is unsupported

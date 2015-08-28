@@ -253,7 +253,7 @@ public class ZoomingCollectionViewLayout: UICollectionViewLayout {
   - returns: [AnyObject]?
   */
   override public func layoutAttributesForElementsInRect(rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
-    var result = storedAttributes.values.filter { $0.frame.intersects(rect) }.array
+    var result = Array(storedAttributes.values.filter { $0.frame.intersects(rect) })
     if zoomedItem != nil {
       result.append(layoutAttributesForDecorationViewOfKind(BlurDecoration.kind, atIndexPath: zoomedItem!)!)
       result.append(layoutAttributesForSupplementaryViewOfKind(self.dynamicType.SupplementaryZoomKind, atIndexPath: zoomedItem!)!)
@@ -276,7 +276,7 @@ public class ZoomingCollectionViewLayout: UICollectionViewLayout {
   {
     let attributesClass = self.dynamicType.layoutAttributesClass() as! UICollectionViewLayoutAttributes.Type
     let attributes = attributesClass.init(forDecorationViewOfKind: BlurDecoration.kind, withIndexPath: indexPath)
-    attributes.frame = collectionView?.bounds ?? CGRect.zeroRect
+    attributes.frame = collectionView?.bounds ?? CGRect.zero
     attributes.zIndex = 50
     return attributes
   }
@@ -294,7 +294,7 @@ public class ZoomingCollectionViewLayout: UICollectionViewLayout {
   {
     let attributesClass = self.dynamicType.layoutAttributesClass() as! UICollectionViewLayoutAttributes.Type
     let attributes = attributesClass.init(forSupplementaryViewOfKind: elementKind, withIndexPath: indexPath)
-    attributes.frame = collectionView?.bounds ?? CGRect.zeroRect
+    attributes.frame = collectionView?.bounds ?? CGRect.zero
     attributes.zIndex = 100
     return attributes
   }

@@ -67,7 +67,7 @@ import UIKit
     (touches: C) -> CGPoint
   {
     guard touches.count > 0, let view = view else { return CGPoint.nullPoint }
-    return touches.map {$0.locationInView(view)}.reduce(CGPoint.zeroPoint, combine: +) / CGFloat(touches.count)
+    return touches.map {$0.locationInView(view)}.reduce(CGPoint.zero, combine: +) / CGFloat(touches.count)
   }
 
   /**

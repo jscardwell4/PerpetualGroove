@@ -61,9 +61,9 @@ advance:amount:
 - parameter amount: T.Distance
 */
 public func advance<T: ForwardIndexType>(inout range: Range<T>, amount: T.Distance) {
-  let d = distance(range.startIndex, range.endIndex)
-  let start: T = advance(range.startIndex, amount)
-  let end: T = advance(range.startIndex, amount + d)
+  let d = range.startIndex.distanceTo(range.endIndex)
+  let start: T = range.startIndex.advancedBy(amount)
+  let end: T = range.startIndex.advancedBy(amount + d)
   range = Range<T>(start: start, end: end)
 }
 
@@ -98,7 +98,7 @@ advance:amount:
 - returns: Range<T>
 */
 public func advance<T: ForwardIndexType>(range: Range<T>, amount: T.Distance) -> Range<T> {
-  return Range<T>(start: advance(range.startIndex, amount), end: advance(range.endIndex, amount))
+  return Range<T>(start: range.startIndex.advancedBy(amount), end: range.endIndex.advancedBy(amount))
 }
 
 /**

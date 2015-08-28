@@ -20,8 +20,8 @@ public struct ObjectJSONValue: JSONValueConvertible, JSONValueInitializable {
 
   public init?(_ v: JSONValue?) { switch v ?? .Null { case .Object(let o): value = o; default: return nil } }
   public subscript(key: String) -> JSONValue? { get { return value[key] } mutating set { value[key] = newValue } }
-  public var keys: LazyForwardCollection<[String]> { return value.keys }
-  public var values: LazyForwardCollection<MapCollection<[String], JSONValue>> { return value.values }
+  public var keys: LazyCollection<[String]> { return value.keys }
+  public var values: LazyMapCollection<[String], JSONValue> { return value.values }
   public func filter(includeElement: (Int, String, JSONValue) -> Bool) -> ObjectJSONValue {
     return ObjectJSONValue(value.filter(includeElement))
   }
@@ -55,7 +55,7 @@ public struct ObjectJSONValue: JSONValueConvertible, JSONValueInitializable {
     return true
   }
 
-  public mutating func extend(other: ObjectJSONValue) { value.extend(other.value) }
+  public mutating func appendContentsOf(other: ObjectJSONValue) { value.appendContentsOf(other.value) }
 }
 
 extension ObjectJSONValue: CollectionType {
@@ -72,12 +72,12 @@ extension ObjectJSONValue: CustomStringConvertible, CustomDebugStringConvertible
   public var debugDescription: String { return "MoonKit.ObjectJSONValue - value: \(description)" }
 }
 
-public func +(var lhs: ObjectJSONValue, rhs: ObjectJSONValue) -> ObjectJSONValue { lhs.extend(rhs); return lhs }
-public func +=(inout lhs: ObjectJSONValue, rhs: ObjectJSONValue) { lhs.extend(rhs) }
-public func +(var lhs: ObjectJSONValue, rhs: JSONValue) -> ObjectJSONValue { if let o = ObjectJSONValue(rhs) { lhs.extend(o) }; return lhs }
-public func +=(inout lhs: ObjectJSONValue, rhs: JSONValue) { if let o = ObjectJSONValue(rhs) { lhs.extend(o) } }
-public func +(var lhs: ObjectJSONValue, rhs: JSONValue.ObjectValue) -> ObjectJSONValue { lhs.value.extend(rhs); return lhs }
-public func +=(inout lhs: ObjectJSONValue, rhs: JSONValue.ObjectValue) { lhs.value.extend(rhs) }
+public func +(var lhs: ObjectJSONValue, rhs: ObjectJSONValue) -> ObjectJSONValue { lhs.appendContentsOf(rhs); return lhs }
+public func +=(inout lhs: ObjectJSONValue, rhs: ObjectJSONValue) { lhs.appendContentsOf(rhs) }
+public func +(var lhs: ObjectJSONValue, rhs: JSONValue) -> ObjectJSONValue { if let o = ObjectJSONValue(rhs) { lhs.appendContentsOf(o) }; return lhs }
+public func +=(inout lhs: ObjectJSONValue, rhs: JSONValue) { if let o = ObjectJSONValue(rhs) { lhs.appendContentsOf(o) } }
+public func +(var lhs: ObjectJSONValue, rhs: JSONValue.ObjectValue) -> ObjectJSONValue { lhs.value.appendContentsOf(rhs); return lhs }
+public func +=(inout lhs: ObjectJSONValue, rhs: JSONValue.ObjectValue) { lhs.value.appendContentsOf(rhs) }
 public func +<J:JSONValueConvertible>(var lhs: ObjectJSONValue, rhs: (String, J)) -> ObjectJSONValue { lhs[rhs.0] = rhs.1.jsonValue; return lhs }
 public func +=<J:JSONValueConvertible>(inout lhs: ObjectJSONValue, rhs: (String, J)) { lhs[rhs.0] = rhs.1.jsonValue }
 public func +(var lhs: ObjectJSONValue, rhs: (String, JSONValue)) -> ObjectJSONValue { lhs[rhs.0] = rhs.1; return lhs }

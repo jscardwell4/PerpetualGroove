@@ -316,13 +316,13 @@ extension CGRect {
   public func rectWithOrigin(origin: CGPoint) -> CGRect { return CGRect(origin: origin, size: size) }
   public func rectWithSize(size: CGSize, anchored: Bool = false) -> CGRect {
   	var rect =  CGRect(origin: origin, size: size)
-  	if anchored { rect.offset(dx: midX - rect.midX, dy: midY - rect.midY) }
+  	if anchored { rect.offsetInPlace(dx: midX - rect.midX, dy: midY - rect.midY) }
   	return rect
   }
   public func rectByOffsetting(offset: UIOffset) -> CGRect {
-    return rectByOffsetting(dx: offset.horizontal, dy: offset.vertical)
+    return offsetBy(dx: offset.horizontal, dy: offset.vertical)
   }
-  public mutating func offset(off: UIOffset) { offset(dx: off.horizontal, dy: off.vertical) }
+  public mutating func offset(off: UIOffset) { offsetInPlace(dx: off.horizontal, dy: off.vertical) }
 
   public mutating func proportionallyInsetX(dx: CGFloat) {
     let (w, h) = size.unpack
@@ -407,13 +407,13 @@ extension CGRect: Unpackable4 {
   public var unpack: (CGFloat, CGFloat, CGFloat, CGFloat) { return (origin.x, origin.y, size.width, size.height) }
 }
 
-public func ∪(lhs: CGRect, rhs: CGRect) -> CGRect { return lhs.rectByUnion(rhs) }
+public func ∪(lhs: CGRect, rhs: CGRect) -> CGRect { return lhs.union(rhs) }
 
-public func ∩(lhs: CGRect, rhs: CGRect) -> CGRect { return lhs.rectByIntersecting(rhs) }
+public func ∩(lhs: CGRect, rhs: CGRect) -> CGRect { return lhs.intersect(rhs) }
 
-public func ∪=(inout lhs: CGRect, rhs: CGRect) { lhs.union(rhs) }
+public func ∪=(inout lhs: CGRect, rhs: CGRect) { lhs.unionInPlace(rhs) }
 
-public func ∩=(inout lhs: CGRect, rhs: CGRect) { lhs.intersect(rhs) }
+public func ∩=(inout lhs: CGRect, rhs: CGRect) { lhs.intersectInPlace(rhs) }
 
 public func -(lhs: UIOffset, rhs: UIOffset) -> UIOffset {
 	return UIOffset(horizontal: lhs.horizontal - rhs.horizontal, vertical: lhs.vertical - rhs.vertical)

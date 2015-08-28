@@ -20,7 +20,7 @@ public class PopoverFormView: PopoverView {
   - parameter labelData: [LabelData]
   - parameter callback: ((PopoverView) -> Void
   */
-  public init(form f: Form) { form = f; super.init(frame: .zeroRect) }
+  public init(form f: Form) { form = f; super.init(frame: .zero) }
 
   /**
   Initialization with coder is unsupported

@@ -63,7 +63,7 @@ public final class FormView: UIView {
   */
   public init(form f: Form, style: Style = .Plain) {
     form = f
-    super.init(frame: CGRect.zeroRect)
+    super.init(frame: CGRect.zero)
     translatesAutoresizingMaskIntoConstraints = false
     if case .Shadow = style {
       backgroundColor = UIColor(white: 0.9, alpha: 0.75)

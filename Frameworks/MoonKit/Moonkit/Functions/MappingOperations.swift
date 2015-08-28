@@ -110,7 +110,7 @@ public func flattened<S:SequenceType, T>(sequence: S) -> [T] {
     var result: [T] = []
     for e in x {
       if let eO = e as? [NSObject] {
-        result.extend(flattenObjCTypes(eO))
+        result.appendContentsOf(flattenObjCTypes(eO))
       }
       else if let eT = e as? T { result.append(eT) }
     }
@@ -128,10 +128,10 @@ public func flattened<S:SequenceType, T>(sequence: S) -> [T] {
         let elementValue = elementMirror.value
         if let v = elementValue as? T where elementMirror.count == 0 { result.append(v) }
         else if elementMirror.count > 0 {
-          result.extend(flattenSwiftTypes(elementMirror))
+          result.appendContentsOf(flattenSwiftTypes(elementMirror))
         } else if elementMirror is Swift._ObjCMirror {
           if let objectArray = elementValue as? [NSObject] {
-            result.extend(flattenObjCTypes(objectArray))
+            result.appendContentsOf(flattenObjCTypes(objectArray))
           }
         }// else if let v = elementValue as? T { result.append(v) }
       }
@@ -142,7 +142,7 @@ public func flattened<S:SequenceType, T>(sequence: S) -> [T] {
   for element in sequence {
     let mirror = _reflect(element)
     if let e = element as? T where mirror.count == 0 { result.append(e) }
-    else { result.extend(flattenSwiftTypes(_reflect(element))) }
+    else { result.appendContentsOf(flattenSwiftTypes(_reflect(element))) }
   }
   return result
 }

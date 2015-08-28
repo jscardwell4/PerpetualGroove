@@ -57,7 +57,7 @@ public class LabeledStepper: UIControl {
   }
   public var textColor: UIColor = .blackColor() { didSet { label.textColor = textColor } }
   public var shadowColor: UIColor? { didSet { label.shadowColor = shadowColor } }
-  public var shadowOffset: CGSize = .zeroSize { didSet { label.shadowOffset = shadowOffset } }
+  public var shadowOffset: CGSize = .zero { didSet { label.shadowOffset = shadowOffset } }
   public var adjustsFontSizeToFitWidth: Bool {
     get { return label.adjustsFontSizeToFitWidth }
     set { label.adjustsFontSizeToFitWidth = newValue }

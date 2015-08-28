@@ -129,7 +129,7 @@ public class LabeledCheckbox: Checkbox {
     var titleFontAttributes = self.titleFontAttributes
     title.drawWithRect(titleRect, options: .UsesLineFragmentOrigin, attributes: titleFontAttributes, context: nil)
 
-    CGContextSetShadow(context, CGSize.zeroSize, 0)
+    CGContextSetShadow(context, CGSize.zero, 0)
     CGContextSetAlpha(context, CGColorGetAlpha((textInnerShadow.shadowColor as! UIColor).CGColor))
 
     CGContextBeginTransparencyLayer(context, nil)

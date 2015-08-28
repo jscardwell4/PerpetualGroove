@@ -66,5 +66,5 @@ extension Heap: SequenceType {
 }
 
 extension Heap: CustomStringConvertible {
-  public var description: String { return "[" + ", ".join(lazy(self).map({String($0)})) + "]" }
+  public var description: String { return "[" + ", ".join(lazy.map({String($0)})) + "]" }
 }

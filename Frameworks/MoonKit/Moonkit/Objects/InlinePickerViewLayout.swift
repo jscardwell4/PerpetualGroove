@@ -65,7 +65,7 @@ class InlinePickerViewLayout: UICollectionViewLayout {
     var height: CGFloat = 0                 /// Caches `itemHeight` provided by `delegate`
     var padding: CGFloat = 8                /// Padding value provided by `delegate`
     var selection = -1                      /// Caches the `selection` property of `delegate`
-    var rect = CGRect.zeroRect              /// Frame used during calculations
+    var rect = CGRect.zero              /// Frame used during calculations
     var count = 0                           /// The total item count
 
     var description: String {
@@ -81,7 +81,7 @@ class InlinePickerViewLayout: UICollectionViewLayout {
 
   // MARK: - Internally used properties
   private var storedAttributes: AttributesIndex = [:] /// Holds all the calculated layout attributes
-  private var contentSize = CGSize.zeroSize           /// Size calculated for the content
+  private var contentSize = CGSize.zero           /// Size calculated for the content
   private var rawFrames: [CGRect] = []                /// Cache of cell frames without any transforms applied
   private var contentPadding: CGFloat = 0             /// Space before and after the first and last cells
   private var values: LayoutValues = .zeroValues      /// Current set of values cached from `delegate`
@@ -105,7 +105,7 @@ class InlinePickerViewLayout: UICollectionViewLayout {
   /** clearCache */
   private func clearCache() {
     values = .zeroValues
-    contentSize = CGSize.zeroSize
+    contentSize = CGSize.zero
     rawFrames.removeAll(keepCapacity: true)
     contentPadding = 0
   }
@@ -244,7 +244,7 @@ class InlinePickerViewLayout: UICollectionViewLayout {
   - returns: [AnyObject]?
   */
   override func layoutAttributesForElementsInRect(rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
-    let attributes = storedAttributes.values.filter { $0.frame.intersects(rect) }.array
+    let attributes = Array(storedAttributes.values.filter { $0.frame.intersects(rect) })
     return attributes.count > 0 ? attributes : nil
   }
 

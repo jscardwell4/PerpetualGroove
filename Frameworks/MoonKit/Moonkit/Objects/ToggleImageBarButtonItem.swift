@@ -38,7 +38,7 @@ import UIKit
   public init(image: UIImage, toggledImage: UIImage, action: (ToggleBarButtonItem) -> Void) {
 
     // create a view to hold the image view for padding purposes
-    let container = UIView(frame: CGRect(origin: CGPoint.zeroPoint, size: CGSize(width: 44.0, height: 44.0)))
+    let container = UIView(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: 44.0, height: 44.0)))
 
     // create the image view
     let imageView = UIImageView(image: image, highlightedImage: toggledImage)
@@ -76,7 +76,7 @@ import UIKit
     highlightedImage = aDecoder.decodeObjectForKey("highlightedImage") as? UIImage
 
     // create a view to hold the image view for padding purposes
-    let container = UIView(frame: CGRect(origin: CGPoint.zeroPoint, size: CGSize(width: 44.0, height: 44.0)))
+    let container = UIView(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: 44.0, height: 44.0)))
 
     // create the image view
     let imageView = UIImageView(image: image, highlightedImage: highlightedImage)

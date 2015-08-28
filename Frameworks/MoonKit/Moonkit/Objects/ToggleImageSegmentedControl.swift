@@ -108,8 +108,8 @@ public class ToggleImageSegmentedControl: UISegmentedControl {
 
     if let images = items as? [UIImage] {
       if images.count % 2 == 0  {
-        defaultImages = stride(from: 0, to: images.count, by: 2).map({images[$0]})
-        selectedImages = stride(from: 1, to: images.count, by: 2).map({images[$0]})
+        defaultImages = images.startIndex.stride(to:images.count, by: 2).map({images[$0]})
+        selectedImages = images.startIndex.advancedBy(1).stride(to:images.count, by: 2).map({images[$0]})
       } else {
         defaultImages = images
         selectedImages = nil

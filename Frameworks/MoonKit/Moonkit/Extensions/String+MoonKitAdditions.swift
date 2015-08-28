@@ -30,20 +30,49 @@ public extension String {
   public var length: Int { return characters.count }
   public var count: Int { return characters.count }
 
+  /**
+  init:radix:uppercase:var:
+
+  - parameter v: T
+  - parameter radix: Int
+  - parameter uppercase: Bool = false
+  - parameter pad: Int
+  */
   public init<T : _SignedIntegerType>(_ v: T, radix: Int, uppercase: Bool = false, var pad: Int) {
     self = String(v, radix: radix, uppercase: uppercase)
     guard pad > 0 else { return }
-    let s = v < 0 ? self[advance(startIndex, 1)..<] : self
+    let s = v < 0 ? self[startIndex.advancedBy(1)..<] : self
     pad -= s.utf16.count
     let ps = String(count: pad, repeatedValue: Character("0")) + s
     self = v < 0 ? "-\(ps)" : ps
   }
 
-  public init<T : UnsignedIntegerType>(_ v: T, radix: Int, uppercase: Bool = false, var pad: Int) {
+  public init(hexBytes: [Byte]) { self = " ".join(hexBytes.map({String($0, radix: 16, uppercase: true, pad: 2)})) }
+
+  /**
+  init:radix:uppercase:var:group:separator:
+
+  - parameter v: T
+  - parameter radix: Int
+  - parameter uppercase: Bool = false
+  - parameter pad: Int
+  - parameter group: Int = 0
+  - parameter separator: String = " "
+  */
+  public init<T : UnsignedIntegerType>(_ v: T,
+                                       radix: Int,
+                                       uppercase: Bool = false,
+                                   var pad: Int,
+                                       group: Int = 0,
+                                       separator: String = " ")
+  {
     self = String(v, radix: radix, uppercase: uppercase)
     guard pad > 0 else { return }
     pad -= utf16.count
-    self = String(count: pad, repeatedValue: Character("0")) + self
+    if pad > 0 { self = String(count: pad, repeatedValue: Character("0")) + self }
+    guard group > 0 && characters.count > group else { return }
+    let characterGroups = characters.segment(group).flatMap({String($0)})
+    self = separator.join(characterGroups)
   }
 
   /** Returns the string converted to 'dash-case' */
@@ -56,13 +85,13 @@ public extension String {
   /** Returns the string with the first character converted to lowercase */
   public var lowercaseFirst: String {
     guard count > 1 else { return lowercaseString }
-    return self[startIndex ..< advance(startIndex, 1)].lowercaseString + self[advance(startIndex, 1) ..< endIndex]
+    return self[startIndex ..< startIndex.advancedBy(1)].lowercaseString + self[startIndex.advancedBy(1) ..< endIndex]
   }
 
   /** Returns the string with the first character converted to uppercase */
   public var uppercaseFirst: String {
     guard count > 1 else { return uppercaseString }
-    return self[startIndex ..< advance(startIndex, 1)].uppercaseString + self[advance(startIndex, 1) ..< endIndex]
+    return self[startIndex ..< startIndex.advancedBy(1)].uppercaseString + self[startIndex.advancedBy(1) ..< endIndex]
   }
 
   /** Returns the string converted to 'camelCase' */
@@ -152,7 +181,7 @@ public extension String {
 
   - returns: String
   */
-  public func join<T>(elements: [T]) -> String { return join(elements.map { String($0) }) }
+//  public func join<T>(elements: [T]) -> String { return join(elements.map { String($0) }) }
 
   /**
   Returns a string wrapped by `self`
@@ -202,7 +231,7 @@ public extension String {
     default:
       let string = String(prettyNil: d)
       if let decimal = string.characters.indexOf(".") {
-        self = ".".join(string[..<decimal], String(string[advance(decimal, 1)..<].characters.prefix(precision)))
+        self = ".".join(string[..<decimal], String(string[decimal.advancedBy(1)..<].characters.prefix(precision)))
       } else { self = string }
     }
   }
@@ -255,7 +284,7 @@ public extension String {
   - returns: Character
   */
   public subscript (i: Int) -> Character {
-    get { return self[advance(i < 0 ? self.endIndex : self.startIndex, i)] }
+    get { return self[i < 0 ? endIndex.advancedBy(i) : startIndex.advancedBy(i)] }
     mutating set { replaceRange(i...i, with: [newValue]) }
   }
 
@@ -300,8 +329,8 @@ public extension String {
   - returns: String
   */
   public subscript (r: Range<UInt>) -> String {
-    let rangeStart: String.Index = advance(startIndex, Int(r.startIndex))
-    let rangeEnd:   String.Index = advance(startIndex, Int(distance(r.startIndex, r.endIndex)))
+    let rangeStart: String.Index = startIndex.advancedBy(Int(r.startIndex))
+    let rangeEnd:   String.Index = startIndex.advancedBy(Int(r.startIndex.distanceTo(r.endIndex)))
     let range: Range<String.Index> = Range<String.Index>(start: rangeStart, end: rangeEnd)
     return self[range]
   }
@@ -314,8 +343,8 @@ public extension String {
   - returns: String
   */
   public subscript (r: NSRange) -> String {
-    let rangeStart: String.Index = advance(startIndex, r.location)
-    let rangeEnd:   String.Index = advance(startIndex, r.location + r.length)
+    let rangeStart: String.Index = startIndex.advancedBy(r.location)
+    let rangeEnd:   String.Index = startIndex.advancedBy(r.location + r.length)
     let range: Range<String.Index> = Range<String.Index>(start: rangeStart, end: rangeEnd)
     return self[range]
   }
@@ -344,10 +373,10 @@ public extension String {
   - returns: Range<String.Index>?
   */
   public func convertRange(r: NSRange) -> Range<String.Index>? {
-    let range = Range(start: UTF16Index(r.location), end: advance(UTF16Index(r.location), r.length))
+    let range = Range(start: UTF16Index(_offset: r.location), end: UTF16Index(_offset: r.location).advancedBy(r.length))
     guard let lhs = String(utf16[utf16.startIndex ..< range.startIndex]), rhs = String(utf16[range]) else { return nil }
-    let start = advance(startIndex, distance(lhs.startIndex, lhs.endIndex))
-    let end = advance(start, distance(rhs.startIndex, rhs.endIndex))
+    let start = startIndex.advancedBy(lhs.startIndex.distanceTo(lhs.endIndex))
+    let end = start.advancedBy(rhs.startIndex.distanceTo(rhs.endIndex))
     return start ..< end
   }
 
@@ -360,8 +389,8 @@ public extension String {
   */
   public func indexRangeFromIntRange(range: Range<Int>) -> Range<String.Index> {
     assert(false, "we shouldn't be using this")
-    let s = advance(startIndex, range.startIndex)
-    let e = advance(startIndex, range.endIndex)
+    let s = startIndex.advancedBy(range.startIndex)
+    let e = startIndex.advancedBy(range.endIndex)
     return Range<String.Index>(start: s, end: e)
   }
 

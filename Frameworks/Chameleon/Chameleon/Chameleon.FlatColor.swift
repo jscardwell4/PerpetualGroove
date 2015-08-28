@@ -63,11 +63,11 @@ extension Chameleon {
   public static var flatWhiteDark:       UIColor { return FlatColor.Dark(.White).color       }
   public static var flatYellowDark:      UIColor { return FlatColor.Dark(.Yellow).color      }
 
-  public static var lightColors: LazyForwardCollection<MapCollection<[String : UIColor], UIColor>> {
+  public static var lightColors: LazyMapCollection<[String : UIColor], UIColor> {
     return FlatColor.lightColors.values
   }
 
-  public static var darkColors: LazyForwardCollection<MapCollection<[String : UIColor], UIColor>> {
+  public static var darkColors: LazyMapCollection<[String : UIColor], UIColor> {
     return FlatColor.darkColors.values
   }
 
@@ -92,6 +92,7 @@ extension Chameleon {
       case Any  /** Returns either a light or dark version of a flat color */
 
       public var colors: AnySequence<UIColor> {
+        FlatColor.lightColors.values
         switch self {
         case .Light: return AnySequence(Chameleon.lightColors)
         case .Dark:  return AnySequence(Chameleon.darkColors)

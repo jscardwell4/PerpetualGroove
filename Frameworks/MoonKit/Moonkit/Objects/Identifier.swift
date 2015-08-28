@@ -17,7 +17,7 @@ public struct Identifier: MutableSliceable, RangeReplaceableCollectionType {
   public mutating func append(newElement: Generator.Element) { tags.append(newElement) }
 
   public mutating func extend<S : SequenceType where S.Generator.Element == Generator.Element>(newElements: S) {
-    tags.extend(newElements)
+    tags.appendContentsOf(newElements)
   }
 
   public mutating func insert(newElement: Generator.Element, atIndex i: Index) {
@@ -25,7 +25,7 @@ public struct Identifier: MutableSliceable, RangeReplaceableCollectionType {
   }
 
   public mutating func splice<S : CollectionType where S.Generator.Element == Generator.Element>(newElements: S, atIndex i: Index) {
-    tags.splice(newElements, atIndex: i)
+    tags.insertContentsOf(newElements, at: i)
   }
 
   public mutating func removeAtIndex(i: Index) -> Generator.Element { return tags.removeAtIndex(i) }

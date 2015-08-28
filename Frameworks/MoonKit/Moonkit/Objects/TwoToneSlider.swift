@@ -55,7 +55,7 @@ public class TwoToneSlider: UISlider {
   - parameter autolayout: Bool
   */
   public convenience init(autolayout: Bool = false) {
-    self.init(frame: CGRect.zeroRect)
+    self.init(frame: CGRect.zero)
     translatesAutoresizingMaskIntoConstraints = !autolayout
   }
 

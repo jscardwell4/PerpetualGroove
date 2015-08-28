@@ -19,7 +19,7 @@ public func ∪<T, S0:SequenceType, S1:SequenceType
 //public func ∪=<T, C:RangeReplaceableCollectionType, S:SequenceType
 //  where C.Generator.Element == S.Generator.Element> (inout lhs:C, rhs:S)
 //{
-//  extend(&lhs, rhs)
+//  appendContentsOf(&lhs, rhs)
 //}
 
 public func ∖<T:Equatable, S0:SequenceType, S1:SequenceType

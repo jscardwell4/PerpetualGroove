@@ -85,7 +85,7 @@ final class Sequencer {
     get { return clock.beatsPerMinute }
     set {
       clock.beatsPerMinute = newValue
-      do { try sequence.insertTempoChange(tempo) } catch { logError(error) }
+      sequence.insertTempoChange(tempo)
     }
   }
 
@@ -95,7 +95,7 @@ final class Sequencer {
   - parameter time: BarBeatTime
   */
   static func synchronizeTime(time: BarBeatTime) {
-    guard time != barBeatTime else { return }
+    guard time !== barBeatTime else { return }
     guard !synchronizedTimes.contains(time) else { synchronizedTimes.remove(time); return }
     time.synchronizeWithTime(barBeatTime)
     synchronizedTimes.insert(time)
@@ -124,7 +124,7 @@ final class Sequencer {
   }
 
   /** The current time as reported by the MIDI clock */
-  static var currentTime: MIDITimeStamp { return barBeatTime.timestamp }
+//  static var currentTime: MIDITimeStamp { return barBeatTime.timestamp }
 
   static private(set) var resolution: Double {
     get { return clock.resolution} set { clock.resolution = newValue }

@@ -40,7 +40,7 @@ public extension UIView {
   - parameter autolayout: Bool
   */
   public convenience init(autolayout: Bool) {
-    self.init(frame: CGRect.zeroRect)
+    self.init(frame: CGRect.zero)
     translatesAutoresizingMaskIntoConstraints = !autolayout
   }
 

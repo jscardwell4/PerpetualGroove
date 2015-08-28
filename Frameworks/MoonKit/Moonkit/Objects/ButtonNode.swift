@@ -115,7 +115,7 @@ public class ButtonNode: ControlNode {
     sprite.name = "buttonSprite"
     sprite.texture = defaultTextures?.defaultTexture
     sprite.color = UIColor.whiteColor()
-    sprite.size = defaultTextures?.defaultTexture.size() ?? CGSize.zeroSize
+    sprite.size = defaultTextures?.defaultTexture.size() ?? CGSize.zero
     sprite.colorBlendFactor = 1.0
     addChild(sprite)
 

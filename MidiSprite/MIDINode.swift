@@ -44,22 +44,38 @@ final class MIDINode: SKSpriteNode {
   struct Placement: ByteArrayConvertible {
     let position: CGPoint
     let vector: CGVector
+    static let zero = Placement(position: .zero, vector: .zero)
     var bytes: [Byte] {
-      let positionX = Byte8(position.x._toBitPattern())
-      let positionY = Byte8(position.y._toBitPattern())
-      let vectorDX  = Byte8(vector.dx._toBitPattern())
-      let vectorDY  = Byte8(vector.dy._toBitPattern())
-      return positionX.bytes + positionY.bytes + vectorDX.bytes + vectorDY.bytes
+      let positionString = NSStringFromCGPoint(position)
+      let vectorString = NSStringFromCGVector(vector)
+      let string = "{\(positionString), \(vectorString)}"
+      return Array(string.utf8)
+//      let positionX = Byte8(position.x._toBitPattern())
+//      let positionY = Byte8(position.y._toBitPattern())
+//      let vectorDX  = Byte8(vector.dx._toBitPattern())
+//      let vectorDY  = Byte8(vector.dy._toBitPattern())
+//      return positionX.bytes + positionY.bytes + vectorDX.bytes + vectorDY.bytes
     }
     init(position p: CGPoint, vector v: CGVector) { position = p; vector = v }
     init(_ bytes: [Byte]) {
-      guard bytes.count == 32 else { self = Placement(position: .zeroPoint, vector: .zeroVector); return }
-      let positionX = CGFloat._fromBitPattern(UInt(Byte8(bytes[0 ..< 8])))
-      let positionY = CGFloat._fromBitPattern(UInt(Byte8(bytes[8 ..< 16])))
-      let vectorDX  = CGFloat._fromBitPattern(UInt(Byte8(bytes[16 ..< 24])))
-      let vectorDY  = CGFloat._fromBitPattern(UInt(Byte8(bytes[24 ..< 32])))
-      position = CGPoint(x: positionX, y: positionY)
-      vector = CGVector(dx: vectorDX, dy: vectorDY)
+      let castBytes = bytes.map({CChar($0)})
+      guard let string = String.fromCString(castBytes) else { self = .zero; return }
+
+      let float = "-?[0-9]+(?:\\.[0-9]+)?"
+      let value = "\\{\(float), \(float)\\}"
+      guard let match = (~/"\\{(\(value)), (\(value))\\}").firstMatch(string, anchored: true),
+                positionCapture = match.captures[1],
+                vectorCapture = match.captures[2] else { self = .zero; return }
+
+      position = CGPointFromString(positionCapture.string)
+      vector = CGVectorFromString(vectorCapture.string)
+//      guard bytes.count == 32 else { self = Placement(position: .zero, vector: .zero); return }
+//      let positionX = CGFloat._fromBitPattern(UInt(Byte8(bytes[0 ..< 8])))
+//      let positionY = CGFloat._fromBitPattern(UInt(Byte8(bytes[8 ..< 16])))
+//      let vectorDX  = CGFloat._fromBitPattern(UInt(Byte8(bytes[16 ..< 24])))
+//      let vectorDY  = CGFloat._fromBitPattern(UInt(Byte8(bytes[24 ..< 32])))
+//      position = CGPoint(x: positionX, y: positionY)
+//      vector = CGVector(dx: vectorDX, dy: vectorDY)
     }
   }
 
@@ -94,7 +110,9 @@ final class MIDINode: SKSpriteNode {
     let packet = MIDIPacketListInit(&packetList)
     let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
     let data: [UInt8] = [0x90 | note.channel, note.note, note.velocity] + sourceID
-    MIDIPacketListAdd(&packetList, size, packet, time.timestamp, 11, data)
+    let timeStamp = time.timeStamp
+    logDebug("timeStamp = \(timeStamp); barBeatTime = \(time)")
+    MIDIPacketListAdd(&packetList, size, packet, timeStamp, 11, data)
     do {
       try withUnsafePointer(&packetList) {MIDIReceived(endPoint, $0) } ➤ "Unable to send note on event"
     } catch { logError(error) }
@@ -106,7 +124,9 @@ final class MIDINode: SKSpriteNode {
     let packet = MIDIPacketListInit(&packetList)
     let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
     let data: [UInt8] = [0x80 | note.channel, note.note, note.releaseVelocity] + sourceID
-    MIDIPacketListAdd(&packetList, size, packet, time.timestamp, 11, data)
+    let timeStamp = time.timeStamp
+    logDebug("timeStamp = \(timeStamp); barBeatTime = \(time)")
+    MIDIPacketListAdd(&packetList, size, packet, timeStamp, 11, data)
     do {
       try withUnsafePointer(&packetList) {MIDIReceived(endPoint, $0) } ➤ "Unable to send note off event"
     } catch { logError(error) }

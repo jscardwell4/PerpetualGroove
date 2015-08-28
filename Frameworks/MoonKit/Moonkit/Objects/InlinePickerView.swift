@@ -35,14 +35,14 @@ public class InlinePickerView: UIView {
 
   - parameter labels: [String]
   */
-  public init(labels: [String]) { super.init(frame: .zeroRect); self.labels = labels; cellType = .Label; initializeIVARs() }
+  public init(labels: [String]) { super.init(frame: .zero); self.labels = labels; cellType = .Label; initializeIVARs() }
 
   /**
   initWithImages:
 
   - parameter images: [UIImage]
   */
-  public init(images: [UIImage]) { super.init(frame: .zeroRect); self.images = images; cellType = .Image; initializeIVARs() }
+  public init(images: [UIImage]) { super.init(frame: .zero); self.images = images; cellType = .Image; initializeIVARs() }
 
   /** initializeIVARs */
   private func initializeIVARs() {
@@ -90,7 +90,7 @@ public class InlinePickerView: UIView {
     constrain(height ≥ (itemHeight ?? defaultItemHeight))
   }
 
-  private let collectionView = UICollectionView(frame: .zeroRect, collectionViewLayout: InlinePickerViewLayout())
+  private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: InlinePickerViewLayout())
   private var layout: InlinePickerViewLayout { return collectionView.collectionViewLayout as! InlinePickerViewLayout }
 
   /**

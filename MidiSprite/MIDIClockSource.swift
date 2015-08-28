@@ -13,7 +13,7 @@ import CoreMIDI
 /** A class capable of keeping time for MIDI events */
 final class MIDIClockSource {
 
-  private static let queue = dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)
+  private static let queue = concurrentQueueWithLabel("MIDI Clock", qualityOfService: QOS_CLASS_USER_INTERACTIVE)
   var resolution = 480.0 { didSet { initializeTempo() } }
   var beatsPerMinute = 120.0 { didSet { initializeTempo() } }
 
@@ -26,37 +26,28 @@ final class MIDIClockSource {
   }
 
   /** start */
-  func start() {
-    guard !timer.running else { return }
-    ticks = 0
-    timer.start()
-  }
+  func start() { guard !timer.running else { return }; ticks = 0; timer.start() }
 
   /** reset */
-  func reset() {
-    guard !timer.running else { return }
-    ticks = 0
-  }
+  func reset() { guard !timer.running else { return }; ticks = 0 }
 
   /** stop */
-  func stop() {
-    guard timer.running else { return }
-    timer.stop()
-  }
+  func stop() { guard timer.running else { return }; timer.stop() }
 
   private let timer = Timer(queue:MIDIClockSource.queue)
   var running: Bool { return timer.running }
 
-  private(set) var hostTicksPerMIDIClock: UInt64 = 0 {
-    didSet { timer.interval = nanosecondsToSeconds(hostTicksPerMIDIClock) }
-  }
+  ///The interval to use with the dispatch source to receive appropriately timed callbacks
+  private var hostTicksPerMIDIClock: UInt64 = 0 { didSet { timer.setInterval(hostTicksPerMIDIClock) } }
+
+  /// The running number of MIDI clocks that have elapsed
   private(set) var ticks: MIDITimeStamp = 0
 
   /** init */
   init() {
     initializeTempo()
-    timer.interval = nanosecondsToSeconds(hostTicksPerMIDIClock)
-    timer.handler = handler
+    timer.setInterval(hostTicksPerMIDIClock)
+    timer.handler = { [unowned self] _ in self.sendClock() }
     do {
       try MIDIClientCreateWithBlock("Clock", &client, nil) ➤ "Failed to create midi client for clock"
       try MIDISourceCreate(client, "Clock", &endPoint) ➤ "Failed to create end point for clock"
@@ -71,8 +62,6 @@ final class MIDIClockSource {
 
   /** sendClock */
   private func sendClock() {
-    print("tick")
-    // setup packetlist
     var clock: Byte = 0xF8
     let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
     var packetList = MIDIPacketList()
@@ -83,12 +72,5 @@ final class MIDIClockSource {
     catch { logError(error) }
 
   }
-
-  /**
-  Invoked by timer's dispatch source
-
-  - parameter timer: Timer
-  */
-  private func handler(timer: Timer) { sendClock() }
 
 }

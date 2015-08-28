@@ -76,7 +76,7 @@ final class FieldView: UIView {
   */
   init(tag t: Int, field f: FormField) {
     field = f
-    super.init(frame: CGRect.zeroRect)
+    super.init(frame: CGRect.zero)
     tag = t
     initializeIVARs()
   }

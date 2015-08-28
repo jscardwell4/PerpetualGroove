@@ -12,7 +12,22 @@ import Foundation
 public final class Timer {
 
   public let queue: dispatch_queue_t
-  public var interval: Double { didSet { updateTimer() } }
+
+  /**
+  Setter for the timer's `interval` value that takes a value specified in seconds
+
+  - parameter interval: Double
+  */
+  public func setInterval(interval: Double) { self.interval = interval }
+
+  /**
+  Setter for the timer's `interval` value that converts a parameter specified in nanoseconds
+
+  - parameter interval: UInt64
+  */
+  public func setInterval(interval: UInt64) { self.interval = nanosecondsToSeconds(interval) }
+
+  private var interval: Double { didSet { updateTimer() } }
   public var leeway: Double  { didSet { updateTimer() } }
   public var handler: ((Timer) -> Void)?
 

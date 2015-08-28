@@ -31,7 +31,7 @@ public class LabelButton: UILabel {
   public var actions: [Action] = []
 
   public convenience init(action: Action) {
-    self.init(frame: CGRect.zeroRect)
+    self.init(frame: CGRect.zero)
     actions.append(action)
     translatesAutoresizingMaskIntoConstraints = false
     initializeIVARs()

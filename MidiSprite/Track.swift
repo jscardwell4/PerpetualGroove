@@ -12,27 +12,11 @@ import MoonKit
 import AudioToolbox
 import CoreMIDI
 
-extension MIDIObjectType: CustomStringConvertible {
-  public var description: String {
-    switch self {
-      case .Other:               return "Other"
-      case .Device:              return "Device"
-      case .Entity:              return "Entity"
-      case .Source:              return "Source"
-      case .Destination:         return "Destination"
-      case .ExternalDevice:      return "ExternalDevice"
-      case .ExternalEntity:      return "ExternalEntity"
-      case .ExternalSource:      return "ExternalSource"
-      case .ExternalDestination: return "ExternalDestination"
-    }
-  }
-}
-
-final class Track: Equatable, CustomStringConvertible {
+final class Track: TrackType, Equatable {
 
   var description: String {
-    return "Track(\(label)) {\n\tbus: \(bus)\n\tcolor: \(color)\n\tevents: {\n\t\t" +
-           "\n\t\t".join(events.map({$0.description})) + "\n\t}\n}"
+    return "Track(\(label)) {\n\tbus: \(bus)\n\tcolor: \(color)\nevents: {\n" +
+           ",\n".join(events.map({$0.description.indentedBy(8)})) + "\n\t}\n}"
   }
 
   typealias Program = Instrument.Program
@@ -52,6 +36,7 @@ final class Track: Equatable, CustomStringConvertible {
   private var inPort = MIDIPortRef()
   private var outPort = MIDIPortRef()
   private let fileQueue: dispatch_queue_t
+  private let time = BarBeatTime(clockSource: Sequencer.clockSource)
 
   private(set) var events: [TrackEvent] = []
 
@@ -85,12 +70,10 @@ final class Track: Equatable, CustomStringConvertible {
     let identifier = ObjectIdentifier(node).uintValue
     notes.insert(identifier)
     lastEvent[identifier] = 0
-    let timestamp = Sequencer.currentTime
-    let placement = node.placement
     dispatch_async(fileQueue) {
-      [unowned self] in self.events.append(SystemExclusiveEvent.nodePlacementEvent(timestamp, placement: placement))
+      [unowned self, placement = node.placement, timeStamp = time.timeStamp] in
+        self.events.append(MetaEvent(deltaTime: timeStamp, data: .NodePlacement(placement: placement)))
     }
-    logInfo("track (\(label)) added node with source id \(identifier)")
     try MIDIPortConnectSource(inPort, node.endPoint, nil) ➤ "Failed to connect to node \(node.name!)"
   }
 
@@ -105,60 +88,7 @@ final class Track: Equatable, CustomStringConvertible {
     notes.remove(identifier)
     lastEvent[identifier] = nil
     node.sendNoteOff()
-    logDebug("track (\(label)) removed node with source id \(identifier)")
     try MIDIPortDisconnectSource(inPort, node.endPoint) ➤ "Failed to disconnect to node \(node.name!)"
-  }
-
-  /**
-  notify:
-
-  - parameter notification: UnsafePointer<MIDINotification>
-  */
-  private func notify(notification: UnsafePointer<MIDINotification>) {
-    var memory = notification.memory
-    switch memory.messageID {
-      case .MsgSetupChanged:
-        backgroundDispatch{print("received notification that the midi setup has changed")}
-      case .MsgObjectAdded:
-        // MIDIObjectAddRemoveNotification
-        withUnsafePointer(&memory) {
-          let message = unsafeBitCast($0, UnsafePointer<MIDIObjectAddRemoveNotification>.self).memory
-          backgroundDispatch {print("received notifcation that an object has been added…\n\t" + "\n\t".join(
-            "parent = \(message.parent)",
-            "parentType = \(message.parentType)",
-            "child = \(message.child)",
-            "childType = \(message.childType)"
-            ))}
-        }
-      case .MsgObjectRemoved:
-        // MIDIObjectAddRemoveNotification
-        withUnsafePointer(&memory) {
-          let message = unsafeBitCast($0, UnsafePointer<MIDIObjectAddRemoveNotification>.self).memory
-          backgroundDispatch{print("received notifcation that an object has been removed…\n\t" + "\n\t".join(
-            "parent = \(message.parent)",
-            "parentType = \(message.parentType)",
-            "child = \(message.childType)",
-            "childType = \(message.childType)"
-            ))}
-        }
-        break
-      case .MsgPropertyChanged:
-        // MIDIObjectPropertyChangeNotification
-        withUnsafePointer(&memory) {
-          let message = unsafeBitCast($0, UnsafePointer<MIDIObjectPropertyChangeNotification>.self).memory
-          backgroundDispatch{print("object: \(message.object); objectType: \(message.objectType); propertyName: \(message.propertyName)")}
-        }
-      case .MsgThruConnectionsChanged:
-        backgroundDispatch{print("received notification that midi thru connections have changed")}
-      case .MsgSerialPortOwnerChanged:
-        backgroundDispatch{print("received notification that serial port owner has changed")}
-      case .MsgIOError:
-        // MIDIIOErrorNotification
-        withUnsafePointer(&memory) {
-          let message = unsafeBitCast($0, UnsafePointer<MIDIIOErrorNotification>.self).memory
-          logError(error(message.errorCode, "received notifcation of io error"))
-        }
-    }
   }
 
   /**
@@ -168,13 +98,14 @@ final class Track: Equatable, CustomStringConvertible {
 
   - returns: UInt?
   */
-  private func nodeIdentifierFromPacket(packet: MIDIPacket) -> UInt? {
+  private func nodeIdentifierFromPacket(var packet: MIDIPacket) -> UInt? {
     guard packet.length == 11 else { return nil }
-
-    return zip([packet.data.3, packet.data.4, packet.data.5, packet.data.6,
-                packet.data.7, packet.data.8, packet.data.9, packet.data.10],
-               [0, 8, 16, 24, 32, 40, 48, 56]).reduce(UInt(0)) { $0 | (UInt($1.0) << UInt($1.1)) }
-
+    return UInt(withUnsafePointer(&packet.data) {
+      Array(UnsafeMutableBufferPointer<Byte>(start: UnsafeMutablePointer<Byte>($0), count: 11)[3 ..< 11])
+    })
+//    return zip([packet.data.3, packet.data.4, packet.data.5, packet.data.6,
+//                packet.data.7, packet.data.8, packet.data.9, packet.data.10],
+//               [0, 8, 16, 24, 32, 40, 48, 56]).reduce(UInt(0)) { $0 | (UInt($1.0) << UInt($1.1)) }
   }
 
   /**
@@ -184,38 +115,37 @@ final class Track: Equatable, CustomStringConvertible {
   - parameter context: UnsafeMutablePointer<Void>
   */
   private func read(packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutablePointer<Void>) {
+    dispatch_async(fileQueue) {
+      [unowned self] in
+      let packets = packetList.memory
+      let packetPointer = UnsafeMutablePointer<MIDIPacket>.alloc(1)
+      packetPointer.initialize(packets.packet)
+      guard packets.numPackets == 1 else { fatalError("Packets must be sent to track one at a time") }
 
-    let packets = packetList.memory
-    let packetPointer = UnsafeMutablePointer<MIDIPacket>.alloc(1)
-    packetPointer.initialize(packets.packet)
-    guard packets.numPackets == 1 else { fatalError("Packets must be sent to track one at a time") }
-
-    let packet = packetPointer.memory
-    guard let identifier = nodeIdentifierFromPacket(packet) where lastEvent[identifier] != packet.timeStamp else { return }
-    let ((status, channel), note, velocity) = ((packet.data.0 >> 4, packet.data.0 & 0xF), packet.data.1, packet.data.2)
-    switch status {
-      case 9: events.append(ChannelEvent.noteOnEvent(packet.timeStamp, channel: channel, note: note, velocity: velocity))
-      case 8: events.append(ChannelEvent.noteOffEvent(packet.timeStamp, channel: channel, note: note, velocity: velocity))
-      default: break
+      let packet = packetPointer.memory
+      guard let identifier = self.nodeIdentifierFromPacket(packet) where self.lastEvent[identifier] != packet.timeStamp else {
+        return
+      }
+      self.lastEvent[identifier] = packet.timeStamp
+      let ((status, channel), note, velocity) = ((packet.data.0 >> 4, packet.data.0 & 0xF), packet.data.1, packet.data.2)
+      let event: TrackEvent?
+      switch status {
+        case 9:  event = ChannelEvent.noteOnEvent(packet.timeStamp, channel: channel, note: note, velocity: velocity)
+        case 8:  event = ChannelEvent.noteOffEvent(packet.timeStamp, channel: channel, note: note, velocity: velocity)
+        default: event = nil
+      }
+      if event != nil { self.events.append(event!) }
     }
-    lastEvent[identifier] = packet.timeStamp
-    forwardPackets(packetList)
-  }
 
-  /**
-  forwardPackets:
-
-  - parameter packets: UnsafePointer<MIDIPacketList>
-  */
-  private func forwardPackets(packets: UnsafePointer<MIDIPacketList>) {
-    do { try MIDISend(outPort, bus.instrument.endPoint, packets) ➤ "Failed to forward packet list to instrument" }
+    // Forward the packets to the instrument
+    do { try MIDISend(outPort, bus.instrument.endPoint, packetList) ➤ "Failed to forward packet list to instrument" }
     catch { logError(error) }
   }
 
   /** Generates a MIDI file chunk from current track data */
   var chunk: TrackChunk {
-    let nameEvent: TrackEvent = MetaEvent(deltaTime: .Zero, metaEventData: .SequenceTrackName(label))
-    let endEvent: TrackEvent  = MetaEvent(deltaTime: VariableLengthQuantity(Sequencer.currentTime), metaEventData: .EndOfTrack)
+    let nameEvent: TrackEvent = MetaEvent(deltaTime: .zero, data: .SequenceTrackName(name: label))
+    let endEvent: TrackEvent  = MetaEvent(deltaTime: VariableLengthQuantity(time.timeStamp), data: .EndOfTrack)
     return TrackChunk(data: TrackChunkData(events: [nameEvent] + events + [endEvent]))
   }
 
@@ -227,8 +157,8 @@ final class Track: Equatable, CustomStringConvertible {
   init(bus b: Bus) throws {
     bus = b
     color = Color.allCases[Int(bus.element) % 10]
-    fileQueue = dispatch_queue_create(("BUS \(bus.element)" as NSString).UTF8String, DISPATCH_QUEUE_SERIAL)
-    try MIDIClientCreateWithBlock("track \(bus.element)", &client, notify) ➤ "Failed to create midi client"
+    fileQueue = serialQueueWithLabel("BUS \(bus.element)", qualityOfService: QOS_CLASS_BACKGROUND)
+    try MIDIClientCreateWithBlock("track \(bus.element)", &client, nil) ➤ "Failed to create midi client"
     try MIDIOutputPortCreate(client, "Output", &outPort) ➤ "Failed to create out port"
     try MIDIInputPortCreateWithBlock(client, label ?? "BUS \(bus.element)", &inPort, read) ➤ "Failed to create in port"
   }
@@ -250,17 +180,17 @@ final class Track: Equatable, CustomStringConvertible {
     var value: UIColor { return UIColor(RGBHex: rawValue) }
     var description: String {
       switch self {
-        case .White:      return "case White"
-        case .Portica:    return "case Portica"
-        case .MonteCarlo: return "case MonteCarlo"
-        case .FlamePea:   return "case FlamePea"
-        case .Crimson:    return "case Crimson"
-        case .HanPurple:  return "case HanPurple"
-        case .MangoTango: return "case MangoTango"
-        case .Viking:     return "case Viking"
-        case .Yellow:     return "case Yellow"
-        case .Conifer:    return "case Conifer"
-        case .Apache:     return "case Apache"
+        case .White:      return "White"
+        case .Portica:    return "Portica"
+        case .MonteCarlo: return "MonteCarlo"
+        case .FlamePea:   return "FlamePea"
+        case .Crimson:    return "Crimson"
+        case .HanPurple:  return "HanPurple"
+        case .MangoTango: return "MangoTango"
+        case .Viking:     return "Viking"
+        case .Yellow:     return "Yellow"
+        case .Conifer:    return "Conifer"
+        case .Apache:     return "Apache"
       }
     }
 
