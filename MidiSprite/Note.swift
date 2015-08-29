@@ -90,15 +90,8 @@ struct NoteAttributes {
     case DottedTwoHundredFiftySixth = "Dotted Two Hundred Fifty-Sixth Note"
     case TwoHundredFiftySixth       = "Two Hundred Fifty-Sixth Note"
 
-    /**
-    secondsWithBPM:
-
-    - parameter bpm: Double
-
-    - returns: Double
-    */
-    func secondsWithBPM(bpm: Double) -> Double {
-      let secondsPerBeat = 60 / bpm
+    var seconds: Double {
+      let secondsPerBeat = 60 / Sequencer.tempo
       switch self {
         case .DoubleWhole:                return secondsPerBeat * 8
         case .DottedWhole:                return secondsPerBeat * 6
@@ -122,6 +115,8 @@ struct NoteAttributes {
       }
     }
 
+    
+
     var image: UIImage { return UIImage(named: rawValue)! }
 
     static let allCases: [Duration] = [.DoubleWhole, .DottedWhole, .Whole, .DottedHalf, .Half, .DottedQuarter, .Quarter,
@@ -131,6 +126,8 @@ struct NoteAttributes {
   }
 
   var duration: Duration = .Eighth
+
+
 
   enum Velocity: String, EnumerableType {
     case Pianississimo

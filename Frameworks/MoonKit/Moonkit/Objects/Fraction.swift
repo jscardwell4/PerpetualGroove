@@ -35,13 +35,13 @@ private func commonize<T:FractionType>(x: Fraction<T>, _ y: Fraction<T>) -> (Fra
   }
 }
 
-public typealias FractionType = protocol<FloatingPointType, ArithmeticType, FloatLiteralConvertible, Hashable>
+public typealias FractionType = protocol<Comparable, ArithmeticType, FloatLiteralConvertible, Hashable>
 
 public struct Fraction<T:FractionType>   {
 
   public var numerator: IntMax = 0
   public var denominator: IntMax = 1
-  public var value: T { return T(numerator) / T(denominator) }
+  public var value: T { return T(intMax: numerator) / T(intMax: denominator) }
   public var inverse: Fraction { return Fraction(denominator, numerator) }
 
   public var reduced: Fraction { var result = self; result.reduce(); return result }
@@ -135,8 +135,8 @@ extension Fraction: AbsoluteValuable {
 }
 
 // MARK: - FloatingPointType
-extension Fraction: FloatingPointType {
-  public typealias _BitsType = T._BitsType
+extension Fraction {//: FloatingPointType {
+//  public typealias _BitsType = T._BitsType
   public init(_ value: UInt8) { numerator = IntMax(value) }
   public init(_ value: Int8) { numerator = IntMax(value) }
   public init(_ value: UInt16) { numerator = IntMax(value) }
@@ -152,19 +152,19 @@ extension Fraction: FloatingPointType {
   public static var NaN: Fraction { return Fraction(0, 0) }
   public static var quietNaN: Fraction { return Fraction(0, 0) }
 
-  public static func _fromBitPattern(bits: _BitsType) -> Fraction<T> {
-    return Fraction(T._fromBitPattern(bits))
-  }
+//  public static func _fromBitPattern(bits: _BitsType) -> Fraction<T> {
+//    return Fraction(T._fromBitPattern(bits))
+//  }
 
-  public func _toBitPattern() -> _BitsType { return value._toBitPattern() }
+//  public func _toBitPattern() -> _BitsType { return value._toBitPattern() }
 
-  public var floatingPointClass: FloatingPointClassification { return value.floatingPointClass }
-  public var isSignMinus: Bool { return value.isSignMinus }
-  public var isNormal: Bool { return value.isNormal }
-  public var isFinite: Bool { return value.isFinite }
-  public var isZero: Bool { return numerator == 0 }
-  public var isSubnormal: Bool { return value.isSubnormal }
-  public var isInfinite: Bool { return value.isInfinite }
-  public var isNaN: Bool { return value.isNaN }
-  public var isSignaling: Bool { return value.isSignaling }
+//  public var floatingPointClass: FloatingPointClassification { return value.floatingPointClass }
+//  public var isSignMinus: Bool { return value.isSignMinus }
+//  public var isNormal: Bool { return value.isNormal }
+//  public var isFinite: Bool { return value.isFinite }
+//  public var isZero: Bool { return numerator == 0 }
+//  public var isSubnormal: Bool { return value.isSubnormal }
+//  public var isInfinite: Bool { return value.isInfinite }
+//  public var isNaN: Bool { return value.isNaN }
+//  public var isSignaling: Bool { return value.isSignaling }
 }

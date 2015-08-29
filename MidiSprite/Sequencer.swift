@@ -35,6 +35,8 @@ final class Sequencer {
     }
   }
 
+  static var timeSignature: SimpleTimeSignature = .FourFour
+
   /**
   synchronizeTime:
 

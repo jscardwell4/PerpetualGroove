@@ -37,31 +37,44 @@ extension CABarBeatTime: Hashable {
 }
 public func ==(lhs: CABarBeatTime, rhs: CABarBeatTime) -> Bool { return lhs.hashValue == rhs.hashValue }
 extension CABarBeatTime {
-  public static let start = CABarBeatTime(bar: 1, beat: 1, subbeat: 1, subbeatDivisor: 1, reserved: 0)
+  public static var start: CABarBeatTime {
+    return CABarBeatTime(bar: 1, beat: 1, subbeat: 1, subbeatDivisor: UInt16(Sequencer.resolution), reserved: 0)
+  }
   public static let defaultSubbeatDivisor: UInt16 = 480
   func doubleValueWithBeatsPerBar(beatsPerBar: UInt8) -> Double {
-    return Double(bar) * Double(beatsPerBar) + Double(beat) + 1 / Double(subbeatDivisor)
+    let bar = Double(max(Int(self.bar) - 1, 0))
+    let beat = Double(max(Int(self.beat) - 1, 0))
+    let subbeat = Double(max(Int(self.subbeat) - 1, 0))
+    return bar * Double(beatsPerBar) + beat + subbeat / Double(subbeatDivisor)
+  }
+  var tickValue: UInt64 {
+    let bar = UInt64(max(Int(self.bar) - 1, 0))
+    let beat = UInt64(max(Int(self.beat) - 1, 0))
+    let subbeat = UInt64(max(Int(self.subbeat) - 1, 0))
+    return (bar * UInt64(Sequencer.timeSignature.beatsPerBar) + beat) * UInt64(subbeatDivisor) + subbeat
+  }
+  var doubleValue: Double { return doubleValueWithBeatsPerBar(Sequencer.timeSignature.beatsPerBar) }
+}
+
+enum SimpleTimeSignature {
+  case FourFour
+  case ThreeFour
+  case TwoFour
+  case Other (UInt8, UInt8)
+
+  var beatUnit: UInt8 { if case .Other(_, let u) = self { return u } else { return 4 } }
+  var beatsPerBar: UInt8 {
+    switch self {
+      case .FourFour:        return 4
+      case .ThreeFour:       return 3
+      case .TwoFour:         return 2
+      case .Other(let b, _): return b
+    }
   }
 }
 
+
 final class BarBeatTime: Hashable, CustomStringConvertible {
-
-  enum SimpleTimeSignature {
-    case FourFour
-    case ThreeFour
-    case TwoFour
-    case Other (UInt8, UInt8)
-
-    var beatUnit: UInt8 { if case .Other(_, let u) = self { return u } else { return 4 } }
-    var beatsPerBar: UInt8 {
-      switch self {
-        case .FourFour:        return 4
-        case .ThreeFour:       return 3
-        case .TwoFour:         return 2
-        case .Other(let b, _): return b
-      }
-    }
-  }
 
   private var client = MIDIClientRef()  /// Client for receiving MIDI clock
   private var inPort = MIDIPortRef()    /// Port for receiving MIDI clock
@@ -105,7 +118,7 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
   private var marker: CABarBeatTime
 
   /** Updates `marker` with current `time` */
-  func setMarker() { marker = time }
+  func setMarker() { marker = time; logDebug("marked time: \(marker)", function: "setMarker", file: "BarBeatTime.swift") }
 
   /**
   registerCallback:forTime:
@@ -158,29 +171,30 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
   private var predicatedCallbacks: [String:PredicateCallback] = [:] { didSet { updateCallbackCheck() } }
 
   var timeSinceMarker: CABarBeatTime {
-    var time = self.time
+    var t = time
     var result = CABarBeatTime(bar: 0, beat: 0, subbeat: 0, subbeatDivisor: 0, reserved: 0)
-    if time.subbeatDivisor != marker.subbeatDivisor {
-      let divisor = max(time.subbeatDivisor, marker.subbeatDivisor)
-      time.subbeat *= divisor / time.subbeatDivisor
-      time.subbeatDivisor = divisor
+    if t.subbeatDivisor != marker.subbeatDivisor {
+      let divisor = max(t.subbeatDivisor, marker.subbeatDivisor)
+      t.subbeat *= divisor / t.subbeatDivisor
+      t.subbeatDivisor = divisor
       marker.subbeat *= divisor / marker.subbeatDivisor
       marker.subbeatDivisor = divisor
       result.subbeatDivisor = divisor
     }
 
-    if time.subbeat < marker.subbeat {
-      time.subbeat += time.subbeatDivisor
-      time.beat -= 1
+    if t.subbeat < marker.subbeat {
+      t.subbeat += t.subbeatDivisor
+      t.beat -= 1
     }
-    result.subbeat = time.subbeat - marker.subbeat
+    result.subbeat = t.subbeat - marker.subbeat
 
-    if time.beat < marker.beat {
-      time.beat += 4
-      time.bar -= 1
+    if t.beat < marker.beat {
+      t.beat += 4
+      t.bar -= 1
     }
-    result.beat = time.beat - marker.beat
-    result.bar = time.bar - marker.bar
+    result.beat = t.beat - marker.beat
+    result.bar = t.bar - marker.bar
+    logDebug("time: \(time); marker: \(marker); result: \(result)", function: "timeSinceMarker", file: "BarBeatTime.swift")
     return result
   }
 
@@ -195,39 +209,10 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
   var beat: Int { return Int(time.beat) }        /// Accessor for `time.beat`
   var subbeat: Int { return Int(time.subbeat) }  /// Accessor for `time.subbeat`
 
-  /**
-  timeStampForBarBeatTime:
-
-  - parameter barBeatTime: CABarBeatTime
-
-  - returns: MIDITimeStamp
-  */
-  func timeStampForBarBeatTime(barBeatTime: CABarBeatTime) -> MIDITimeStamp {
-    return timeStampForBars(UInt64(barBeatTime.bar), beats: UInt64(barBeatTime.beat), subbeats: UInt64(barBeatTime.subbeat))
-  }
-
-  /**
-  timeStampForBars:beats:subbeats:
-
-  - parameter bars: Int
-  - parameter beats: Int
-  - parameter subbeats: Int
-
-  - returns: MIDITimeStamp
-  */
-  func timeStampForBars(bars: UInt64, beats: UInt64, subbeats: UInt64) -> MIDITimeStamp {
-    let realBars = bars == 0 ? 0 : bars - 1
-    let realBeats = beats == 0 ? 0 : beats - 1
-    let realSubbeats = subbeats == 0 ? 0 : subbeats - 1
-    return (realBars * UInt64(timeSignature.beatsPerBar) + realBeats) * UInt64(partsPerQuarter) + realSubbeats
-  }
-
   /// Generates the current `MIDI` representation of the current time
-  var timeStamp: MIDITimeStamp { return timeStampForBarBeatTime(time) }
+  var timeStamp: MIDITimeStamp { let t = time; logDebug("time: \(t); stamp: \(t.tickValue)"); return time.tickValue }
 
-  var timeSignature: SimpleTimeSignature = .FourFour
-
-  var doubleValue: Double { return time.doubleValueWithBeatsPerBar(timeSignature.beatsPerBar) }
+  var doubleValue: Double { let t = time; logDebug("time: \(t); double: \(t.doubleValue)"); return time.doubleValue }
 
   var description: String { return time.description }
 
@@ -245,7 +230,7 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
     marker = time
     clockCount = 0╱Int64(ppq)
     beatInterval = Int64(Float(ppq) * 0.25)╱Int64(ppq)
-    validBeats = 1 ... UInt16(timeSignature.beatsPerBar)
+    validBeats = 1 ... UInt16(Sequencer.timeSignature.beatsPerBar)
     validSubbeats = 1 ... ppq
 
     do {
@@ -256,7 +241,7 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
     } catch {
       logError(error)
     }
-    delayedDispatchToMain(0.2) { [unowned self] in  Sequencer.synchronizeTime(self) }  // Avoids deadlock
+    delayedDispatchToMain(0.01) { [unowned self] in  Sequencer.synchronizeTime(self) }  // Avoids deadlock
   }
 
   /**

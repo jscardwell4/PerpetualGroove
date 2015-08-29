@@ -48,6 +48,10 @@ public extension String {
   }
 
   public init(hexBytes: [Byte]) { self = " ".join(hexBytes.map({String($0, radix: 16, uppercase: true, pad: 2)})) }
+  public init<B:ByteArrayConvertible>(hexBytes: B) { self.init(hexBytes: hexBytes.bytes) }
+
+  public init(binaryBytes: [Byte]) { self = " ".join(binaryBytes.map({String($0, radix: 2, uppercase: true, pad: 4)})) }
+  public init<B:ByteArrayConvertible>(binaryBytes: B) { self.init(binaryBytes: binaryBytes.bytes) }
 
   /**
   init:radix:uppercase:var:group:separator:
@@ -159,7 +163,7 @@ public extension String {
 
   - returns: String
   */
-  public func indentedBy(indent: Int, preserveFirstLineIndent preserveFirst: Bool = false) -> String {
+  public func indentedBy(indent: Int, _ preserveFirst: Bool = false) -> String {
     let spacer = " " * indent
     let result = "\n\(spacer)".join("\n".split(self))
     return preserveFirst ? result : spacer + result

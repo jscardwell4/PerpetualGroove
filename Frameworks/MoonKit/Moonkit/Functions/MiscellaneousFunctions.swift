@@ -39,3 +39,16 @@ typeName:
 */
 public func typeName(object: Any) -> String { return _stdlib_getDemangledTypeName(object) }
 
+/** Ticks since last device reboot */
+public var hostTicks: UInt64 { return mach_absolute_time() }
+
+/** Nanoseconds since last reboot */
+public var hostTime: UInt64 { return UInt64(Float80(hostTicks) * nanosecondsPerHostTick) }
+
+/** Ratio that represents the number of nanoseconds per host tick */
+public var nanosecondsPerHostTick: Ratio<Float80> {
+  var info = mach_timebase_info()
+  mach_timebase_info(&info)
+  return info.numer∶info.denom
+}
+

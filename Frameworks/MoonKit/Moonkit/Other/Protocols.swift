@@ -13,12 +13,18 @@ public typealias Byte2 = UInt16
 public typealias Byte4 = UInt32
 public typealias Byte8 = UInt64
 
-public protocol ByteArrayConvertible {
+public protocol ByteArrayConvertible: Equatable {
   var bytes: [Byte] { get }
   init(_ bytes: [Byte])
   init<S:SequenceType where S.Generator.Element == Byte>(_ bytes: S)
 }
 
+public func ==<B:ByteArrayConvertible>(lhs: B, rhs: B) -> Bool {
+  let leftBytes = lhs.bytes, rightBytes = rhs.bytes
+  guard leftBytes.count == rightBytes.count else { return false }
+  for (leftByte, rightByte) in zip(leftBytes, rightBytes) { guard leftByte  == rightByte else { return false } }
+  return true
+}
 extension ByteArrayConvertible {
   public init<S:SequenceType where S.Generator.Element == Byte>(_ bytes: S) { self.init(Array(bytes)) }
 }

@@ -29,8 +29,8 @@ final class TempoTrack: TrackType {
   */
   func insertTempoChange(tempo: Double) {
     var event = MetaEvent(data: .Tempo(microseconds: Byte4(60_000_000 / tempo)))
-    event.deltaTime = VariableLengthQuantity(time.timeStampForBarBeatTime(time.timeSinceMarker))
-    event.barBeatTime = time.time
+//    event.deltaTime = VariableLengthQuantity(time.timeSinceMarker.tickValue)
+    event.time = time.time
     events.append(event)
     time.setMarker()
   }

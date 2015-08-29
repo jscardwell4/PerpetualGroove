@@ -98,7 +98,7 @@ class InlinePickerViewLayout: UICollectionViewLayout {
     result += "contentSize = \(contentSize)\n"
     result += "rawFrames = \(rawFrames)\n"
     result += "contentPadding = \(contentPadding)\n"
-    result += "storedAttributes = \(attributesDescription.indentedBy(4, preserveFirstLineIndent: true))"
+    result += "storedAttributes = \(attributesDescription.indentedBy(4, true))"
     return result
   }
 

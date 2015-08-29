@@ -15,7 +15,7 @@ import CoreMIDI
 final class Track: TrackType, Equatable {
 
   var description: String {
-    return "Track(\(label)) {\n\tbus: \(bus.description.indentedBy(4, preserveFirstLineIndent: true))\n\tcolor: \(color)\n\tevents: {\n" +
+    return "Track(\(label)) {\n\tbus: \(bus.description.indentedBy(4, true))\n\tcolor: \(color)\n\tevents: {\n" +
            ",\n".join(events.map({$0.description.indentedBy(8)})) + "\n\t}\n}"
   }
 
@@ -39,10 +39,11 @@ final class Track: TrackType, Equatable {
   let time = BarBeatTime(clockSource: Sequencer.clockSource)
 
   private func appendEvent(var event: TrackEvent) {
-    event.deltaTime = VariableLengthQuantity(time.timeStampForBarBeatTime(time.timeSinceMarker))
-    event.barBeatTime = time.time
+//    event.deltaTime = VariableLengthQuantity(time.timeSinceMarker.tickValue)
+    event.time = time.time
     events.append(event)
     time.setMarker()
+    logDebug("[Track \(label)] event = \(event)", function: "appendEvent", file: "Track.swift")
   }
   private(set) var events: [TrackEvent] = []
 
@@ -108,9 +109,6 @@ final class Track: TrackType, Equatable {
     return UInt(withUnsafePointer(&packet.data) {
       Array(UnsafeMutableBufferPointer<Byte>(start: UnsafeMutablePointer<Byte>($0), count: 11)[3 ..< 11])
     })
-//    return zip([packet.data.3, packet.data.4, packet.data.5, packet.data.6,
-//                packet.data.7, packet.data.8, packet.data.9, packet.data.10],
-//               [0, 8, 16, 24, 32, 40, 48, 56]).reduce(UInt(0)) { $0 | (UInt($1.0) << UInt($1.1)) }
   }
 
   /**
@@ -128,9 +126,7 @@ final class Track: TrackType, Equatable {
       guard packets.numPackets == 1 else { fatalError("Packets must be sent to track one at a time") }
 
       let packet = packetPointer.memory
-      guard let identifier = self.nodeIdentifierFromPacket(packet) where self.lastEvent[identifier] != packet.timeStamp else {
-        return
-      }
+      guard let identifier = self.nodeIdentifierFromPacket(packet) else { return }
       self.lastEvent[identifier] = packet.timeStamp
       let ((status, channel), note, velocity) = ((packet.data.0 >> 4, packet.data.0 & 0xF), packet.data.1, packet.data.2)
       let event: TrackEvent?

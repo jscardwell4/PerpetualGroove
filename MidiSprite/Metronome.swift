@@ -25,8 +25,7 @@ final class Metronome {
       else { time.removeCallbackForKey(callbackKey) }
     }
   }
-  static var timeSignature: BarBeatTime.SimpleTimeSignature = .FourFour
-
+  
   static private var initialized = false
 
   /** initialize */

@@ -49,12 +49,7 @@ final class Sequence: CustomStringConvertible {
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)) {
       let bytes = midiFile.bytes
       let data = NSData(bytes: bytes, length: bytes.count)
-      do {
-        try data.writeToURL(file, options: overwrite ? [.DataWritingAtomic] : [.DataWritingWithoutOverwriting])
-        guard let fileName = file.lastPathComponent else { return }
-        guard let url = file.URLByDeletingLastPathComponent?.URLByAppendingPathComponent("api_\(fileName)") else { return }
-        try midiFile.writeMusicSequenceToFile(url)
-      }
+      do { try data.writeToURL(file, options: overwrite ? [.DataWritingAtomic] : [.DataWritingWithoutOverwriting]) }
       catch { logError(error) }
     }
   }

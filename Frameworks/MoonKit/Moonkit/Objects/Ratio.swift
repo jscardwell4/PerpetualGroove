@@ -42,6 +42,9 @@ public func +<T:FractionType>(lhs: Ratio<T>, rhs: Ratio<T>) -> Ratio<T> { return
 public func *<T:FractionType>(lhs: Ratio<T>, rhs: Ratio<T>) -> Ratio<T> { return Ratio(lhs.fraction * rhs.fraction) }
 public func /<T:FractionType>(lhs: Ratio<T>, rhs: Ratio<T>) -> Ratio<T> { return Ratio(lhs.fraction / rhs.fraction) }
 
+public func *<T:FractionType>(lhs: Ratio<T>, rhs: T) -> T { return lhs.fraction * rhs }
+public func *<T:FractionType>(lhs: T, rhs: Ratio<T>) -> T { return lhs * rhs.fraction }
+
 // MARK: - IntegerLiteralConvertible
 extension Ratio: IntegerLiteralConvertible {
   public init(integerLiteral: IntMax) { self.init(integerLiteral) }
@@ -72,8 +75,8 @@ extension Ratio: AbsoluteValuable {
 }
 
 // MARK: - FloatingPointType
-extension Ratio: FloatingPointType {
-  public typealias _BitsType = T._BitsType
+extension Ratio {//: FloatingPointType {
+//  public typealias _BitsType = T._BitsType
   public init(_ value: UInt8)  { self.init(Fraction(integerLiteral: IntMax(value))) }
   public init(_ value: Int8)   { self.init(Fraction(integerLiteral: IntMax(value))) }
   public init(_ value: UInt16) { self.init(Fraction(integerLiteral: IntMax(value))) }
@@ -89,17 +92,17 @@ extension Ratio: FloatingPointType {
   public static var NaN: Ratio { return Ratio(Fraction<T>.NaN) }
   public static var quietNaN: Ratio { return Ratio(Fraction<T>.quietNaN) }
 
-  public static func _fromBitPattern(bits: _BitsType) -> Ratio { return Ratio(Fraction<T>._fromBitPattern(bits)) }
+//  public static func _fromBitPattern(bits: _BitsType) -> Ratio { return Ratio(Fraction<T>._fromBitPattern(bits)) }
 
-  public func _toBitPattern() -> _BitsType { return fraction._toBitPattern() }
+//  public func _toBitPattern() -> _BitsType { return fraction._toBitPattern() }
 
-  public var floatingPointClass: FloatingPointClassification { return fraction.floatingPointClass }
-  public var isSignMinus: Bool { return fraction.isSignMinus }
-  public var isNormal: Bool { return fraction.isNormal }
-  public var isFinite: Bool { return fraction.isFinite }
-  public var isZero: Bool { return numerator == 0 }
-  public var isSubnormal: Bool { return fraction.isSubnormal }
-  public var isInfinite: Bool { return fraction.isInfinite }
-  public var isNaN: Bool { return fraction.isNaN }
-  public var isSignaling: Bool { return fraction.isSignaling }
+//  public var floatingPointClass: FloatingPointClassification { return fraction.floatingPointClass }
+//  public var isSignMinus: Bool { return fraction.isSignMinus }
+//  public var isNormal: Bool { return fraction.isNormal }
+//  public var isFinite: Bool { return fraction.isFinite }
+//  public var isZero: Bool { return numerator == 0 }
+//  public var isSubnormal: Bool { return fraction.isSubnormal }
+//  public var isInfinite: Bool { return fraction.isInfinite }
+//  public var isNaN: Bool { return fraction.isNaN }
+//  public var isSignaling: Bool { return fraction.isSignaling }
 }

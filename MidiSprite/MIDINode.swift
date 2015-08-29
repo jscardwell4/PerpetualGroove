@@ -75,7 +75,7 @@ final class MIDINode: SKSpriteNode {
 
   /** play */
   func play() {
-    let halfDuration = note.duration.secondsWithBPM(Sequencer.tempo)
+    let halfDuration = note.duration.seconds
     let scaleUp = SKAction.scaleTo(2, duration: halfDuration)
     let noteOn = SKAction.runBlock({ [weak self] in self?.sendNoteOn() })
     let scaleDown = SKAction.scaleTo(1, duration: halfDuration)
@@ -90,6 +90,10 @@ final class MIDINode: SKSpriteNode {
 
   private var sourceID: [Byte] = []
 
+  private enum PlayState { case Off, On }
+
+  private var playState = PlayState.Off
+
   /** sendNoteOn */
   func sendNoteOn() {
     var packetList = MIDIPacketList()
@@ -101,11 +105,13 @@ final class MIDINode: SKSpriteNode {
     MIDIPacketListAdd(&packetList, size, packet, timeStamp, 11, data)
     do {
       try withUnsafePointer(&packetList) {MIDIReceived(endPoint, $0) } ➤ "Unable to send note on event"
+      playState = .On
     } catch { logError(error) }
   }
 
   /** sendNoteOff */
   func sendNoteOff() {
+    guard playState == .On else { return }
     var packetList = MIDIPacketList()
     let packet = MIDIPacketListInit(&packetList)
     let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
@@ -114,12 +120,16 @@ final class MIDINode: SKSpriteNode {
     MIDIPacketListAdd(&packetList, size, packet, timeStamp, 11, data)
     do {
       try withUnsafePointer(&packetList) {MIDIReceived(endPoint, $0) } ➤ "Unable to send note off event"
+      playState = .Off
     } catch { logError(error) }
   }
 
   /** removeFromParent */
   override func removeFromParent() { erase(); super.removeFromParent() }
-
+  override func removeActionForKey(key: String) {
+    if actionForKey(key) != nil && Actions.Play.rawValue == key { sendNoteOff() }
+    super.removeActionForKey(key)
+  }
   private var client = MIDIClientRef()
   private let time = BarBeatTime(clockSource: Sequencer.clockSource)
   private(set) var endPoint = MIDIEndpointRef()

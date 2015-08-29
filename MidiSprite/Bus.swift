@@ -43,12 +43,15 @@ final class Bus: Hashable, CustomStringConvertible {
   var hashValue: Int { return Int(element) }
 
   var description: String {
-    return "\(self.dynamicType.self) {\n\t" + "\n\t".join(
+    var result = "\(self.dynamicType.self) {\n\t"
+    result += "\n\t".join(
       "element: \(element)",
       "volume: \(volume)",
       "pan: \(pan)",
-      "instrument: \(instrument)".indentedBy(8, preserveFirstLineIndent: true)
-    ) +  "\n}"
+      "instrument: \(instrument)".indentedBy(8, true)
+    )
+    result +=  "\n}"
+    return result
   }
 }
 

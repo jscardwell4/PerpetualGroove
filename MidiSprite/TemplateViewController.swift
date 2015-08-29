@@ -65,7 +65,7 @@ final class TemplateViewController: UIViewController {
 
       noteField.value = Int(note.note.midi)
       velocityField.value = Float(note.velocity.midi)
-      durationField.value = Float(note.duration.secondsWithBPM(Sequencer.tempo))
+      durationField.value = Float(note.duration.seconds)
 
       MIDINode.currentNote = note
     }
@@ -96,7 +96,7 @@ final class TemplateViewController: UIViewController {
 //    let durationField = FormPickerField(name: FieldName.Duration.rawValue, value: <#T##Int#>, choices: <#T##[AnyObject]#>)
     let durationField = FormSliderField(name: FieldName.Duration.rawValue,
                                         precision: 3,
-                                        value: Float(note.duration.secondsWithBPM(Sequencer.tempo)),
+                                        value: Float(note.duration.seconds),
                                         max: 5,
                                         minTrack: AssetManager.sliderMinTrackImage,
                                         maxTrack: AssetManager.sliderMaxTrackImage,
