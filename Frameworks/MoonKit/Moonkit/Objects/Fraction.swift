@@ -84,6 +84,9 @@ public func %<T:FractionType>(lhs: Fraction<T>, rhs: Fraction<T>) -> Fraction<T>
   return Fraction(l.numerator % r.numerator, l.denominator).reduced
 }
 
+public func *<T:FractionType>(lhs: Fraction<T>, rhs: T) -> T { return lhs.value * rhs }
+public func *<T:FractionType>(lhs: T, rhs: Fraction<T>) -> T { return lhs * rhs.value }
+
 extension Fraction: ArithmeticType {
   public func toIntMax() -> IntMax { return value.toIntMax() }
   public init(intMax: IntMax) { self.init(integerLiteral: intMax) }

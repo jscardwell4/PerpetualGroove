@@ -26,7 +26,7 @@ final class MIDINode: SKSpriteNode {
   }
 
   // MARK: - Properties used to initialize a new `MIDINode`
-  static var currentNote = Note(channel: 0, note: 60, velocity: 64, releaseVelocity: 54, duration: 0.25)
+  static var currentNote = NoteAttributes()
   static var currentTexture = TextureType.Cobblestone
 
   // MARK: - Properties relating to the node's appearance
@@ -37,9 +37,7 @@ final class MIDINode: SKSpriteNode {
 
   // MARK: -  Properties affecting what is played by the node
 
-  typealias Note = MIDINoteMessage
-
-  var note: Note
+  var note: NoteAttributes
 
   struct Placement: ByteArrayConvertible {
     let position: CGPoint
@@ -50,11 +48,6 @@ final class MIDINode: SKSpriteNode {
       let vectorString = NSStringFromCGVector(vector)
       let string = "{\(positionString), \(vectorString)}"
       return Array(string.utf8)
-//      let positionX = Byte8(position.x._toBitPattern())
-//      let positionY = Byte8(position.y._toBitPattern())
-//      let vectorDX  = Byte8(vector.dx._toBitPattern())
-//      let vectorDY  = Byte8(vector.dy._toBitPattern())
-//      return positionX.bytes + positionY.bytes + vectorDX.bytes + vectorDY.bytes
     }
     init(position p: CGPoint, vector v: CGVector) { position = p; vector = v }
     init(_ bytes: [Byte]) {
@@ -69,13 +62,6 @@ final class MIDINode: SKSpriteNode {
 
       position = CGPointFromString(positionCapture.string)
       vector = CGVectorFromString(vectorCapture.string)
-//      guard bytes.count == 32 else { self = Placement(position: .zero, vector: .zero); return }
-//      let positionX = CGFloat._fromBitPattern(UInt(Byte8(bytes[0 ..< 8])))
-//      let positionY = CGFloat._fromBitPattern(UInt(Byte8(bytes[8 ..< 16])))
-//      let vectorDX  = CGFloat._fromBitPattern(UInt(Byte8(bytes[16 ..< 24])))
-//      let vectorDY  = CGFloat._fromBitPattern(UInt(Byte8(bytes[24 ..< 32])))
-//      position = CGPoint(x: positionX, y: positionY)
-//      vector = CGVector(dx: vectorDX, dy: vectorDY)
     }
   }
 
@@ -89,7 +75,7 @@ final class MIDINode: SKSpriteNode {
 
   /** play */
   func play() {
-    let halfDuration = Double(note.duration * 0.5)
+    let halfDuration = note.duration.secondsWithBPM(Sequencer.tempo)
     let scaleUp = SKAction.scaleTo(2, duration: halfDuration)
     let noteOn = SKAction.runBlock({ [weak self] in self?.sendNoteOn() })
     let scaleDown = SKAction.scaleTo(1, duration: halfDuration)
@@ -109,7 +95,7 @@ final class MIDINode: SKSpriteNode {
     var packetList = MIDIPacketList()
     let packet = MIDIPacketListInit(&packetList)
     let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
-    let data: [UInt8] = [0x90 | note.channel, note.note, note.velocity] + sourceID
+    let data: [UInt8] = [0x90 | note.channel, note.note.midi, note.velocity.midi] + sourceID
     let timeStamp = time.timeStamp
     if !Sequencer.playing { Sequencer.start() }
     MIDIPacketListAdd(&packetList, size, packet, timeStamp, 11, data)
@@ -123,7 +109,7 @@ final class MIDINode: SKSpriteNode {
     var packetList = MIDIPacketList()
     let packet = MIDIPacketListInit(&packetList)
     let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
-    let data: [UInt8] = [0x80 | note.channel, note.note, note.releaseVelocity] + sourceID
+    let data: [UInt8] = [0x80 | note.channel, note.note.midi, 0] + sourceID
     let timeStamp = time.timeStamp
     MIDIPacketListAdd(&packetList, size, packet, timeStamp, 11, data)
     do {

@@ -11,13 +11,34 @@ import AudioToolbox
 import CoreMIDI
 import MoonKit
 
-extension CABarBeatTime: CustomStringConvertible, CustomDebugStringConvertible {
+extension CABarBeatTime: CustomStringConvertible {
   public var description: String { return "\(bar).\(beat).\(subbeat)" }
+}
+extension CABarBeatTime: CustomDebugStringConvertible {
   public var debugDescription: String {
     return "{bar: \(bar); beat: \(beat); subbeat: \(subbeat); subbeatDivisor: \(subbeatDivisor)}"
   }
+}
+extension CABarBeatTime: StringLiteralConvertible {
+  public init(_ string: String) {
+    let values = string.split(".")
+    guard values.count == 3,
+    let bar: Int32 = Int32(values[0]), beat = UInt16(values[1]), subbeat = UInt16(values[2]) else {
+      fatalError("Invalid `CABarBeatTime` string literal '\(string)'")
+    }
+    self = CABarBeatTime(bar: bar, beat: beat, subbeat: subbeat, subbeatDivisor: CABarBeatTime.defaultSubbeatDivisor, reserved: 0)
+  }
+  public init(extendedGraphemeClusterLiteral value: String) { self.init(value) }
+  public init(unicodeScalarLiteral value: String) { self.init(value) }
+  public init(stringLiteral value: String) { self.init(value) }
+}
+extension CABarBeatTime: Hashable {
+  public var hashValue: Int { return "\(bar).\(beat).\(subbeat)╱\(subbeatDivisor)".hashValue }
+}
+public func ==(lhs: CABarBeatTime, rhs: CABarBeatTime) -> Bool { return lhs.hashValue == rhs.hashValue }
+extension CABarBeatTime {
   public static let start = CABarBeatTime(bar: 1, beat: 1, subbeat: 1, subbeatDivisor: 1, reserved: 0)
-  
+  public static let defaultSubbeatDivisor: UInt16 = 480
   func doubleValueWithBeatsPerBar(beatsPerBar: UInt8) -> Double {
     return Double(bar) * Double(beatsPerBar) + Double(beat) + 1 / Double(subbeatDivisor)
   }
@@ -82,7 +103,59 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
   var hashValue: Int { return ObjectIdentifier(self).hashValue }
 
   private var marker: CABarBeatTime
-  func mark() { marker = time }
+
+  /** Updates `marker` with current `time` */
+  func setMarker() { marker = time }
+
+  /**
+  registerCallback:forTime:
+
+  - parameter callback: (CABarBeatTime) -> Void
+  - parameter time: CABarBeatTime
+  */
+  func registerCallback(callback: (CABarBeatTime) -> Void, forTime time: CABarBeatTime) { callbacks[time] = callback }
+
+  /**
+  removeCallbackForTime:
+
+  - parameter time: CABarBeatTime
+  */
+  func removeCallbackForTime(time: CABarBeatTime) { callbacks[time] = nil }
+
+  /**
+  removeCallbackForKey:
+
+  - parameter key: String
+  */
+  func removeCallbackForKey(key: String) { predicatedCallbacks[key] = nil }
+
+  /**
+  Set the `inout Bool` to true to unregister the callback
+
+  - parameter callback: (CABarBeatTime) -> Void
+  - parameter predicate: (CABarBeatTime) -> Bool
+  */
+  func registerCallback(callback: (CABarBeatTime) -> Void, predicate: (CABarBeatTime) -> Bool, forKey key: String) {
+    predicatedCallbacks[key] = (predicate: predicate, callback: callback)
+  }
+
+  private var callbackCheck = false
+  private func updateCallbackCheck() { callbackCheck = callbacks.count > 0 || predicatedCallbacks.count > 0 }
+
+  /**
+  checkCallbacksForTime:
+
+  - parameter t: CABarBeatTime
+  */
+  private func checkCallbacksForTime(t: CABarBeatTime) {
+    callbacks[t]?(t)
+    predicatedCallbacks.values.filter({$0.predicate(t)}).forEach({$0.callback(t)})
+  }
+
+  private var callbacks: [CABarBeatTime:(CABarBeatTime) -> Void] = [:] { didSet { updateCallbackCheck() } }
+
+  private typealias PredicateCallback = (predicate: (CABarBeatTime) -> Bool, callback: (CABarBeatTime) -> Void)
+  private var predicatedCallbacks: [String:PredicateCallback] = [:] { didSet { updateCallbackCheck() } }
 
   var timeSinceMarker: CABarBeatTime {
     var time = self.time
@@ -177,9 +250,9 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
 
     do {
       try MIDIClientCreateWithBlock("BarBeatTime[\(ObjectIdentifier(self).uintValue)]", &client, nil)
-        ➤ "Failed to create midi client for track manager"
-      try MIDIInputPortCreateWithBlock(client, "Input", &inPort, read) ➤ "Failed to create in port for track manager"
-      try MIDIPortConnectSource(inPort, clockSource, nil) ➤ "Failed to connect track manager to clock"
+        ➤ "Failed to create midi client for bar beat time"
+      try MIDIInputPortCreateWithBlock(client, "Input", &inPort, read) ➤ "Failed to create in port for bar beat time"
+      try MIDIPortConnectSource(inPort, clockSource, nil) ➤ "Failed to connect bar beat time to clock"
     } catch {
       logError(error)
     }
@@ -196,6 +269,7 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
     // Runs on MIDI Services thread
     guard packetList.memory.packet.data.0 == 0b1111_1000 else { return }
     clockCount.numerator += 1
+    checkCallbacksForTime(time)
   }
 
   // ???: Will this ever get called to remove the reference in Sequencer's `Set`?

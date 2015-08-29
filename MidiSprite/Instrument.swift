@@ -76,8 +76,9 @@ final class Instrument: Equatable, CustomStringConvertible {
 
   - parameter audioUnit: MusicDeviceComponent
   */
-  init(graph: AUGraph, soundSet set: SoundSet) throws {
+  init(soundSet set: SoundSet) throws {
     soundSet = set
+    let graph = AudioManager.graph
 
     var instrumentComponentDescription = AudioComponentDescription(componentType: kAudioUnitType_MusicDevice,
                                                                    componentSubType: kAudioUnitSubType_Sampler,

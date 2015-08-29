@@ -32,7 +32,7 @@ final class TempoTrack: TrackType {
     event.deltaTime = VariableLengthQuantity(time.timeStampForBarBeatTime(time.timeSinceMarker))
     event.barBeatTime = time.time
     events.append(event)
-    time.mark()
+    time.setMarker()
   }
 
   let label = "Tempo"

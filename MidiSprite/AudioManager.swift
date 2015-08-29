@@ -17,7 +17,7 @@ final class AudioManager {
 
   static let queue = dispatch_queue_create("midi", DISPATCH_QUEUE_SERIAL)
 
-  static private var graph = AUGraph()
+  static private(set) var graph = AUGraph()
   static private var ioNode = AUNode()
   static private var ioUnit = AudioUnit()
   static private var dynamicsNode = AUNode()
@@ -35,8 +35,7 @@ final class AudioManager {
     do {
       try configureAudioSession()
       try configureAudioGraph()
-      try Mixer.initializeWithGraph(graph, node: mixerNode)
-      try Sequencer.initializeWithGraph(graph)
+      try Mixer.initialize(node: mixerNode)
     } catch {
       logError(error)
     }

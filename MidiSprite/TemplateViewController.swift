@@ -63,9 +63,9 @@ final class TemplateViewController: UIViewController {
       velocityField = form[FieldName.Velocity.rawValue] as? FormSliderField,
       durationField = form[FieldName.Duration.rawValue] as? FormSliderField else { return }
 
-      noteField.value = Int(note.note)
-      velocityField.value = Float(note.velocity)
-      durationField.value = Float(note.duration)
+      noteField.value = Int(note.note.midi)
+      velocityField.value = Float(note.velocity.midi)
+      durationField.value = Float(note.duration.secondsWithBPM(Sequencer.tempo))
 
       MIDINode.currentNote = note
     }
@@ -76,26 +76,27 @@ final class TemplateViewController: UIViewController {
   private var _form: Form?
   private var form: Form {
     guard _form == nil else { return _form! }
-
+    // FIXME: update fields
     let typeField = FormPickerField(name: FieldName.TextureType.rawValue,
                                     value: MIDINode.TextureType.allCases.indexOf(textureType) ?? 0,
                                     choices: MIDINode.TextureType.allCases.map { $0.image})
 
     let noteField = FormPickerField(name: FieldName.Note.rawValue,
-                                    value: Int(note.note),
-                                    choices: MIDINote.allCases.map({$0.rawValue}))
+                                    value: Int(note.note.midi),
+                                    choices: NoteAttributes.Note.allCases.map({$0.rawValue}))
 
     let velocityField = FormSliderField(name: FieldName.Velocity.rawValue,
-                                        value: Float(note.velocity),
+                                        value: Float(note.velocity.midi),
                                         max: 127,
                                         minTrack: AssetManager.sliderMinTrackImage,
                                         maxTrack: AssetManager.sliderMaxTrackImage,
                                         thumb: AssetManager.sliderThumbImage,
                                         offset: AssetManager.sliderThumbOffset)
 
+//    let durationField = FormPickerField(name: FieldName.Duration.rawValue, value: <#T##Int#>, choices: <#T##[AnyObject]#>)
     let durationField = FormSliderField(name: FieldName.Duration.rawValue,
                                         precision: 3,
-                                        value: Float(note.duration),
+                                        value: Float(note.duration.secondsWithBPM(Sequencer.tempo)),
                                         max: 5,
                                         minTrack: AssetManager.sliderMinTrackImage,
                                         maxTrack: AssetManager.sliderMaxTrackImage,
@@ -117,13 +118,15 @@ final class TemplateViewController: UIViewController {
         }
 
         case .Note:
-          if let midi = field.value as? Int { self.note.note = UInt8(midi) }
+          if let midi = field.value as? Int { self.note.note = NoteAttributes.Note(midi: UInt8(midi)) }
 
         case .Velocity:
-          if let velocity = field.value as? Float { self.note.velocity = UInt8(velocity) }
+        assert(false)
+//          if let velocity = field.value as? Float { self.note.velocity = UInt8(velocity) }
 
         case .Duration:
-          if let duration = field.value as? Float { self.note.duration = duration }
+        assert(false)
+//          if let duration = field.value as? Float { self.note.duration = duration }
 
       }
 

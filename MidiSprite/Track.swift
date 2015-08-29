@@ -42,7 +42,7 @@ final class Track: TrackType, Equatable {
     event.deltaTime = VariableLengthQuantity(time.timeStampForBarBeatTime(time.timeSinceMarker))
     event.barBeatTime = time.time
     events.append(event)
-    time.mark()
+    time.setMarker()
   }
   private(set) var events: [TrackEvent] = []
 

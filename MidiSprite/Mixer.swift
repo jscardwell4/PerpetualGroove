@@ -14,10 +14,6 @@ import CoreAudio
 
 final class Mixer {
 
-  // MARK: - Some typealiases of convenience
-
-//  typealias Bus = AudioUnitElement
-
   // MARK: - An enumeration to wrap up notifications
 
   enum Notification {
@@ -56,6 +52,7 @@ final class Mixer {
     case InstrumentAlreadyConnected = "Instrument is already connected"
     case NilMixerNode = "Mixer node is nil"
     case NilMixerUnit = "Mixer unit is nil"
+    case MixerNotInitialized = "Mixer has not been initialized"
 
     var description: String { return rawValue }
   }
@@ -69,22 +66,23 @@ final class Mixer {
 
   static private var mixerNode: AUNode?
   static private var mixerUnit: AudioUnit?
-  static private var graph: AUGraph!
-
+  static private var initialized = false
 
   // MARK: - Initializing the mixer
 
   /**
-  initializeWithGraph:
+  initializeWithNode:
 
-  - parameter g: AUGraph
+  - parameter node: AUNode
   */
-  static func initializeWithGraph(g: AUGraph, node: AUNode) throws {
+  static func initialize(node node: AUNode) throws {
+    guard !initialized else { return }
     var isInitialized = DarwinBoolean(false)
-    try AUGraphIsInitialized(g, &isInitialized) ➤ "\(location()) Failed to check whether graph is initialized"
+    let graph = AudioManager.graph
+    try AUGraphIsInitialized(graph, &isInitialized) ➤ "\(location()) Failed to check whether graph is initialized"
     guard isInitialized else { throw Error.GraphNotInitialized }
     var audioUnit = AudioUnit()
-    try AUGraphNodeInfo(g, node, nil, &audioUnit) ➤ "\(location()) Failed to get audio unit from graph"
+    try AUGraphNodeInfo(graph, node, nil, &audioUnit) ➤ "\(location()) Failed to get audio unit from graph"
     var description = AudioComponentDescription()
     try AudioComponentGetDescription(audioUnit, &description) ➤ "\(location()) Failed to get audio unit description"
     guard description.componentType == kAudioUnitType_Mixer
@@ -92,7 +90,9 @@ final class Mixer {
        && description.componentManufacturer == kAudioUnitManufacturer_Apple else { throw Error.AudioUnitIsNotAMixer }
     mixerUnit = audioUnit
     mixerNode = node
-    graph = g
+    initialized = true
+
+    try Metronome.initialize()
   }
 
   // MARK: - Connecting/Disconnecting instruments
@@ -103,7 +103,7 @@ final class Mixer {
   - returns: Bus
   */
   private static func nextAvailableBus() -> AudioUnitElement {
-    guard instruments.count > 0 else { return 0 }
+    guard instruments.count > 0 else { return 1 }
     return reassignableBuses.popFirst() ?? instruments.keys.maxElement()! + 1
   }
 
@@ -113,7 +113,8 @@ final class Mixer {
   - parameter instrument: Instrument
   */
   static func connectInstrument(instrument: Instrument) throws -> Bus {
-    guard let graph = graph else { throw Error.NilGraph }
+    guard initialized else { throw Error.MixerNotInitialized }
+    let graph = AudioManager.graph
 
     guard !instruments.values.contains(instrument) else { throw Error.InstrumentAlreadyConnected }
 
@@ -132,6 +133,22 @@ final class Mixer {
     Notification.BusAdded(bus).post()
 
     return bus
+  }
+
+  /**
+  connectMetronomeNode:
+
+  - parameter node: AUNode
+  */
+  static func connectMetronomeNode(node: AUNode) throws {
+    guard initialized, let mixerNode = mixerNode else { return }
+
+    let graph = AudioManager.graph
+    try AUGraphConnectNodeInput(graph, node, 0, mixerNode, 0)
+      ➤ "\(location()) Failed to connect metronome node to mixer"
+
+    try AUGraphUpdate(graph, nil) ➤ "\(location()) Failed to update audio graph"
+
   }
 
   /**
