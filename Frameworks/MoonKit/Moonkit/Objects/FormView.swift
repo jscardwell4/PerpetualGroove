@@ -40,15 +40,15 @@ public final class FormView: UIView {
     }
   }
 
-  public var controlTextColor: UIColor = UIColor.blackColor() {
+  public var controlColor: UIColor = UIColor.blackColor() {
     didSet {
-      fieldViews.forEach { $0.controlTextColor = self.controlTextColor }
+      fieldViews.forEach { $0.controlColor = self.controlColor }
     }
   }
 
-  public var controlSelectedTextColor: UIColor = UIColor.blackColor() {
+  public var controlSelectedColor: UIColor = UIColor.blackColor() {
     didSet {
-      fieldViews.forEach { $0.controlSelectedTextColor = self.controlSelectedTextColor }
+      fieldViews.forEach { $0.controlSelectedColor = self.controlSelectedColor }
     }
   }
 
@@ -92,9 +92,9 @@ public final class FormView: UIView {
 
     fieldView.labelTextColor = labelTextColor
     fieldView.labelFont = labelFont
-    fieldView.controlTextColor = controlTextColor
+    fieldView.controlColor = controlColor
     fieldView.controlFont = controlFont
-    fieldView.controlSelectedTextColor = controlSelectedTextColor
+    fieldView.controlSelectedColor = controlSelectedColor
     fieldView.controlSelectedFont = controlSelectedFont
     super.addSubview(fieldView)
   }

@@ -29,13 +29,13 @@ final class InstrumentViewController: UIViewController {
   /** loadView */
   override func loadView() {
     let formView = FormView(form: form)
-    formView.labelFont                = Eveleth.lightFontWithSize(14)
-    formView.labelTextColor           = Chameleon.kelleyPearlBush
-    formView.controlFont              = Eveleth.thinFontWithSize(14)
-    formView.controlTextColor         = Chameleon.quietLightLobLollyDark
-    formView.controlSelectedFont      = Eveleth.regularFontWithSize(14)
-    formView.controlSelectedTextColor = Chameleon.quietLightLobLolly
-    formView.tintColor                = Chameleon.quietLightLilyWhiteDark
+    formView.labelFont            = Eveleth.lightFontWithSize(14)
+    formView.labelTextColor       = Chameleon.kelleyPearlBush
+    formView.controlFont          = Eveleth.thinFontWithSize(14)
+    formView.controlColor         = Chameleon.quietLightLobLollyDark
+    formView.controlSelectedFont  = Eveleth.regularFontWithSize(14)
+    formView.controlSelectedColor = Chameleon.quietLightLobLolly
+    formView.tintColor            = Chameleon.quietLightLilyWhiteDark
     view = formView
     view.setNeedsUpdateConstraints()
   }

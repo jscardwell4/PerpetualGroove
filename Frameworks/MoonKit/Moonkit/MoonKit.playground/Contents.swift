@@ -2,29 +2,21 @@
 import Foundation
 import MoonKit
 import AudioToolbox
+import Swift
 
-
-class MyMetaEvent {
-  private let size: Int
-  private let mem : UnsafeMutablePointer<UInt8>
-
-  let metaEventPtr : UnsafeMutablePointer<MIDIMetaEvent>
-
-  init(type: UInt8, data: [UInt8]) {
-    // Allocate memory of the required size:
-    size = sizeof(MIDIMetaEvent) + data.count
-    mem = UnsafeMutablePointer<UInt8>.alloc(size)
-    // Convert pointer:
-    metaEventPtr = UnsafeMutablePointer(mem)
-
-    // Fill data:
-    metaEventPtr.memory.metaEventType = type
-    metaEventPtr.memory.dataLength = UInt32(data.count)
-    memcpy(mem + 8, data, data.count)
+enum Yo: String, CustomReflectable {
+  case Mama, Papa
+  static func customMirror() -> Mirror {
+    let mirror = Mirror(self, unlabeledChildren: [Yo.Mama, Yo.Papa])
+    return mirror
   }
-
-  deinit {
-    // Release the allocated memory:
-    mem.dealloc(size)
+  func customMirror() -> Mirror {
+    let mirror = Mirror(self, unlabeledChildren: [Yo.Mama, Yo.Papa])
+    return mirror
   }
 }
+
+let m = Mirror(reflecting: Yo.self).children.count
+//(m.descendant(0) as? Yo)?.rawValue
+
+

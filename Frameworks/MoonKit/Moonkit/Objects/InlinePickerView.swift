@@ -158,6 +158,8 @@ public class InlinePickerView: UIView {
   public var textColor = UIColor.darkTextColor()
   public var selectedFont = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
   public var selectedTextColor = UIColor.darkTextColor()
+  public var imageColor = UIColor.darkTextColor()
+  public var imageSelectedColor = UIColor.darkTextColor()
 
   /** reloadData */
   public func reloadData() {
@@ -246,7 +248,9 @@ extension InlinePickerView: UICollectionViewDataSource {
 
       case let imageCell as InlinePickerViewImageCell:
         imageCell.image = images[indexPath.item]
-      
+        imageCell.imageColor = imageColor
+        imageCell.imageSelectedColor = imageSelectedColor
+
       default: break // Should be unreachable
     }
     return cell

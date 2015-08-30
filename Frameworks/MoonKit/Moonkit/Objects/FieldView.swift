@@ -33,7 +33,7 @@ final class FieldView: UIView {
     set { guard let font = newValue else { return }; field.font = font }
   }
 
-  var controlTextColor: UIColor? {
+  var controlColor: UIColor? {
     get { return field.color }
     set { guard let color = newValue else { return }; field.color = color }
   }
@@ -43,7 +43,7 @@ final class FieldView: UIView {
     set { guard let font = newValue else { return }; field.selectedFont = font }
   }
 
-  var controlSelectedTextColor: UIColor? {
+  var controlSelectedColor: UIColor? {
     get { return field.selectedColor }
     set { guard let color = newValue else { return }; field.selectedColor = color }
   }

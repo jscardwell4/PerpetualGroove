@@ -37,9 +37,11 @@ public final class FormPickerField: FormField {
 
   override public var font: UIFont? { didSet { if let font = font { picker?.font = font } } }
   override public var selectedFont: UIFont? { didSet { if let font = selectedFont { picker?.selectedFont = font } } }
-  override public var color: UIColor? { didSet { if let color = color { picker?.textColor = color } } }
+  override public var color: UIColor? {
+    didSet { if let color = color { picker?.textColor = color; picker?.imageColor = color } }
+  }
   override public var selectedColor: UIColor? {
-    didSet { if let color = selectedColor { picker?.selectedTextColor = color } }
+    didSet { if let color = selectedColor { picker?.selectedTextColor = color; picker?.imageSelectedColor = color } }
   }
 
   private weak var picker: InlinePickerView? { didSet { _control = picker } }

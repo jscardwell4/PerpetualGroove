@@ -60,7 +60,7 @@
 		C2EFA0EC1B823642002EBA3D /* TemplateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EFA0EB1B823642002EBA3D /* TemplateViewController.swift */; };
 		C2EFA0EE1B824A2F002EBA3D /* AssetManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EFA0ED1B824A2F002EBA3D /* AssetManager.swift */; };
 		C2F2ADC21B90EBD300FF4836 /* Woodblock.wav in Resources */ = {isa = PBXBuildFile; fileRef = C2F2ADC11B90EBD300FF4836 /* Woodblock.wav */; settings = {ASSET_TAGS = (); }; };
-		C2F2ADC41B91098A00FF4836 /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F2ADC31B91098A00FF4836 /* Note.swift */; settings = {ASSET_TAGS = (); }; };
+		C2F2ADC41B91098A00FF4836 /* NoteAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F2ADC31B91098A00FF4836 /* NoteAttributes.swift */; settings = {ASSET_TAGS = (); }; };
 		C2F2ADC61B91203700FF4836 /* Metronome.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F2ADC51B91203700FF4836 /* Metronome.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
@@ -138,7 +138,7 @@
 		C2EFA0EB1B823642002EBA3D /* TemplateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemplateViewController.swift; sourceTree = "<group>"; };
 		C2EFA0ED1B824A2F002EBA3D /* AssetManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssetManager.swift; sourceTree = "<group>"; };
 		C2F2ADC11B90EBD300FF4836 /* Woodblock.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Woodblock.wav; sourceTree = "<group>"; };
-		C2F2ADC31B91098A00FF4836 /* Note.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
+		C2F2ADC31B91098A00FF4836 /* NoteAttributes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteAttributes.swift; sourceTree = "<group>"; };
 		C2F2ADC51B91203700FF4836 /* Metronome.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Metronome.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -219,7 +219,7 @@
 				C2EFA0EB1B823642002EBA3D /* TemplateViewController.swift */,
 				C25EBC821B8BFAFA00E57665 /* MIDIFile.swift */,
 				C2569E3F1B90005400EEB441 /* TempoTrack.swift */,
-				C2F2ADC31B91098A00FF4836 /* Note.swift */,
+				C2F2ADC31B91098A00FF4836 /* NoteAttributes.swift */,
 				C291C3EA1B91EDA700702AEA /* TrackChunk.swift */,
 				C291C3EC1B91EDB700702AEA /* HeaderChunk.swift */,
 				C291C3EE1B91EDCC00702AEA /* MetaEvent.swift */,
@@ -385,7 +385,7 @@
 				C291C3F31B91EDE100702AEA /* VariableLengthQuantity.swift in Sources */,
 				C2F2ADC61B91203700FF4836 /* Metronome.swift in Sources */,
 				C207458F1B8DF6D5000A06D4 /* BarBeatTime.swift in Sources */,
-				C2F2ADC41B91098A00FF4836 /* Note.swift in Sources */,
+				C2F2ADC41B91098A00FF4836 /* NoteAttributes.swift in Sources */,
 				C26EEB2E1B7FDA8F00EC6979 /* MixerViewController.swift in Sources */,
 				C2569E401B90005400EEB441 /* TempoTrack.swift in Sources */,
 				C2CD18E11B7E681A00705922 /* Error.swift in Sources */,

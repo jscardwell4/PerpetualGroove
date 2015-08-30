@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8173.3" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BV1-FR-VrT">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8187.4" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BV1-FR-VrT">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8142"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8151.3"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -41,9 +41,12 @@
                                     <constraint firstAttribute="height" constant="44" id="mXq-aZ-hcI"/>
                                 </constraints>
                                 <items>
-                                    <barButtonItem image="revert" style="plain" id="WNt-yK-gMn" userLabel="Revert" customClass="ImageBarButtonItem" customModule="MoonKit" colorLabel="IBBuiltInLabel-Red">
+                                    <barButtonItem enabled="NO" image="revert" style="plain" id="WNt-yK-gMn" userLabel="Revert" customClass="ImageBarButtonItem" customModule="MoonKit" colorLabel="IBBuiltInLabel-Red">
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="revert-selected"/>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="disabledTintColor">
+                                                <color key="value" red="0.20000000000000001" green="0.19607843137254902" blue="0.19215686274509802" alpha="1" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                         <connections>
                                             <action selector="revert" destination="BV1-FR-VrT" id="FhY-8t-i4N"/>
@@ -69,15 +72,6 @@
                                             <action selector="instrument" destination="BV1-FR-VrT" id="rzG-Lj-UEO"/>
                                         </connections>
                                     </barButtonItem>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="Hbp-RF-bHk" colorLabel="IBBuiltInLabel-Red"/>
-                                    <barButtonItem image="floppydisk" style="plain" id="0A3-0S-GbH" userLabel="Save" customClass="ImageBarButtonItem" customModule="MoonKit" colorLabel="IBBuiltInLabel-Red">
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="floppydisk-selected"/>
-                                        </userDefinedRuntimeAttributes>
-                                        <connections>
-                                            <action selector="save" destination="BV1-FR-VrT" id="gMR-5m-wYq"/>
-                                        </connections>
-                                    </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="Nn5-Ip-28S" colorLabel="IBBuiltInLabel-Red"/>
                                     <barButtonItem image="template" style="plain" id="crO-6C-Y4j" userLabel="Template" customClass="ImageBarButtonItem" customModule="MoonKit" colorLabel="IBBuiltInLabel-Red">
                                         <userDefinedRuntimeAttributes>
@@ -86,6 +80,18 @@
                                         </userDefinedRuntimeAttributes>
                                         <connections>
                                             <action selector="template" destination="BV1-FR-VrT" id="3aI-KQ-kZV"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="Hbp-RF-bHk" colorLabel="IBBuiltInLabel-Red"/>
+                                    <barButtonItem enabled="NO" image="floppydisk" style="plain" id="0A3-0S-GbH" userLabel="Save" customClass="ImageBarButtonItem" customModule="MoonKit" colorLabel="IBBuiltInLabel-Red">
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="floppydisk-selected"/>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="disabledTintColor">
+                                                <color key="value" red="0.20000000000000001" green="0.1960784314" blue="0.19215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="save" destination="BV1-FR-VrT" id="gMR-5m-wYq"/>
                                         </connections>
                                     </barButtonItem>
                                 </items>
@@ -97,12 +103,12 @@
                                     <constraint firstAttribute="height" constant="44" id="hhD-Hp-QU6"/>
                                 </constraints>
                                 <items>
-                                    <barButtonItem image="skipback" style="plain" id="2yj-w7-ZHS" userLabel="SkipBack" customClass="ImageBarButtonItem" customModule="MoonKit" colorLabel="IBBuiltInLabel-Orange">
+                                    <barButtonItem image="record" style="plain" id="2yj-w7-ZHS" userLabel="Record" customClass="ImageBarButtonItem" customModule="MoonKit" colorLabel="IBBuiltInLabel-Orange">
                                         <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="skipback-selected"/>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="record-selected"/>
                                         </userDefinedRuntimeAttributes>
                                         <connections>
-                                            <action selector="skipBack" destination="BV1-FR-VrT" id="VMn-0Q-w2J"/>
+                                            <action selector="record" destination="BV1-FR-VrT" id="YUY-E5-2Dd"/>
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="3ji-Iz-Ilu" colorLabel="IBBuiltInLabel-Orange"/>
@@ -116,9 +122,11 @@
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="bYE-XZ-usR" colorLabel="IBBuiltInLabel-Orange"/>
                                     <barButtonItem enabled="NO" image="stop" style="plain" id="FiV-KF-efV" userLabel="Stop" customClass="ImageBarButtonItem" customModule="MoonKit" colorLabel="IBBuiltInLabel-Orange">
-                                        <color key="tintColor" red="0.20000000000000001" green="0.19607843137254902" blue="0.19215686274509802" alpha="1" colorSpace="calibratedRGB"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="stop-selected"/>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="disabledTintColor">
+                                                <color key="value" red="0.20000000000000001" green="0.1960784314" blue="0.19215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                         <connections>
                                             <action selector="stop" destination="BV1-FR-VrT" id="Hla-xo-0Kr"/>
@@ -166,20 +174,42 @@
                                 </items>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </toolbar>
+                            <visualEffectView hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qmT-5g-1Xb">
+                                <rect key="frame" x="0.0" y="64" width="600" height="536"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="py0-NV-Nli">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="536"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                </view>
+                                <gestureRecognizers/>
+                                <blurEffect style="light"/>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="leA-Ua-D5I" appends="YES" id="Ta4-mM-0F9"/>
+                                </connections>
+                            </visualEffectView>
                         </subviews>
                         <color key="backgroundColor" red="0.20223253965377808" green="0.1919732391834259" blue="0.19185087084770203" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="Ne2-9T-lFK" firstAttribute="top" secondItem="8aa-yV-Osq" secondAttribute="bottom" constant="20" id="1xV-6C-LWD"/>
+                            <constraint firstItem="qmT-5g-1Xb" firstAttribute="top" secondItem="Ne2-9T-lFK" secondAttribute="bottom" id="Bf7-tE-8ST"/>
+                            <constraint firstItem="qmT-5g-1Xb" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leading" id="DSH-sI-o4L"/>
                             <constraint firstAttribute="trailing" secondItem="Ne2-9T-lFK" secondAttribute="trailing" id="DSY-sg-zHo"/>
+                            <constraint firstItem="qHh-Mt-9TT" firstAttribute="top" secondItem="qmT-5g-1Xb" secondAttribute="bottom" id="Lyb-aK-cE1"/>
                             <constraint firstItem="qHh-Mt-9TT" firstAttribute="top" secondItem="05v-qN-Ysq" secondAttribute="bottom" constant="20" id="UON-xw-vsg"/>
                             <constraint firstItem="U9p-PY-X1m" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leading" id="Vpx-i7-ab6"/>
                             <constraint firstItem="05v-qN-Ysq" firstAttribute="top" secondItem="U9p-PY-X1m" secondAttribute="bottom" id="Y4p-DK-xxL"/>
                             <constraint firstItem="Ne2-9T-lFK" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leading" id="Y6S-YO-OJe"/>
                             <constraint firstItem="U9p-PY-X1m" firstAttribute="top" secondItem="Ne2-9T-lFK" secondAttribute="bottom" id="eDZ-FF-dxW"/>
+                            <constraint firstAttribute="trailing" secondItem="qmT-5g-1Xb" secondAttribute="trailing" id="nRb-c4-Na1"/>
+                            <constraint firstItem="qmT-5g-1Xb" firstAttribute="top" secondItem="8aa-yV-Osq" secondAttribute="bottom" id="qeY-C0-gMx"/>
                             <constraint firstAttribute="trailing" secondItem="U9p-PY-X1m" secondAttribute="trailing" id="r3J-Gt-uwa"/>
                             <constraint firstAttribute="trailing" secondItem="05v-qN-Ysq" secondAttribute="trailing" id="syM-dJ-ddc"/>
                             <constraint firstItem="05v-qN-Ysq" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leading" id="whW-wh-2Fu"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="qeY-C0-gMx"/>
+                            </mask>
+                        </variation>
                     </view>
                     <keyCommands/>
                     <nil key="simulatedStatusBarMetrics"/>
@@ -189,6 +219,9 @@
                         <outlet property="instrumentBarButtonItem" destination="uuO-FY-Y2S" id="pFZ-3j-grD"/>
                         <outlet property="mixerBarButtonItem" destination="0cd-Py-C2q" id="GZK-Pe-FVB"/>
                         <outlet property="playPauseBarButtonItem" destination="S5n-Me-CQ9" id="1D6-HT-X10"/>
+                        <outlet property="popoverBlur" destination="qmT-5g-1Xb" id="45n-6e-RdI"/>
+                        <outlet property="revertBarButtonItem" destination="WNt-yK-gMn" id="eV3-l3-fBw"/>
+                        <outlet property="saveBarButtonItem" destination="0A3-0S-GbH" id="DZY-kB-sAQ"/>
                         <outlet property="skView" destination="U9p-PY-X1m" id="Khl-SR-qcK"/>
                         <outlet property="stopBarButtonItem" destination="FiV-KF-efV" id="r6P-Y5-DNx"/>
                         <outlet property="templateBarButtonItem" destination="crO-6C-Y4j" id="drZ-UU-TDM"/>
@@ -197,6 +230,11 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="leA-Ua-D5I">
+                    <connections>
+                        <action selector="dismissPopover" destination="BV1-FR-VrT" id="eOB-WR-Bwx"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="289" y="387"/>
         </scene>
@@ -387,10 +425,10 @@
         <image name="piano-selected" width="56" height="56"/>
         <image name="play" width="61" height="61"/>
         <image name="play-selected" width="61" height="61"/>
+        <image name="record" width="56" height="56"/>
+        <image name="record-selected" width="56" height="56"/>
         <image name="revert" width="56" height="56"/>
         <image name="revert-selected" width="56" height="56"/>
-        <image name="skipback" width="61" height="61"/>
-        <image name="skipback-selected" width="61" height="61"/>
         <image name="sliders" width="56" height="56"/>
         <image name="sliders-selected" width="56" height="56"/>
         <image name="stop" width="61" height="61"/>

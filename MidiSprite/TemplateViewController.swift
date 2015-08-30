@@ -11,32 +11,21 @@ import MoonKit
 
 final class TemplateViewController: UIViewController {
 
-  /**
-  initWithBarButtonItem:
-
-  - parameter barButtonItem: ImageBarButtonItem
-  */
-  init() {
-    super.init(nibName: nil, bundle: nil)
-  }
-
-  /**
-  init:
-
-  - parameter aDecoder: NSCoder
-  */
-  required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+  private typealias TextureType = MIDINode.TextureType
+  private typealias Duration = NoteAttributes.Duration
+  private typealias Velocity = NoteAttributes.Velocity
+  private typealias Note = NoteAttributes.Note
 
   /** loadView */
   override func loadView() {
     let formView = FormView(form: form)
-    formView.labelFont                = AssetManager.labelFont
-    formView.labelTextColor           = AssetManager.labelTextColor
-    formView.controlFont              = AssetManager.controlFont
-    formView.controlTextColor         = AssetManager.controlTextColor
-    formView.controlSelectedFont      = AssetManager.controlSelectedFont
-    formView.controlSelectedTextColor = AssetManager.controlSelectedTextColor
-    formView.tintColor                = AssetManager.tintColor
+    formView.labelFont            = AssetManager.labelFont
+    formView.labelTextColor       = AssetManager.labelTextColor
+    formView.controlFont          = AssetManager.controlFont
+    formView.controlColor         = AssetManager.controlColor
+    formView.controlSelectedFont  = AssetManager.controlSelectedFont
+    formView.controlSelectedColor = AssetManager.controlSelectedColor
+    formView.tintColor            = AssetManager.tintColor
     view = formView
     view.setNeedsUpdateConstraints()
   }
@@ -52,7 +41,7 @@ final class TemplateViewController: UIViewController {
   var textureType = MIDINode.currentTexture {
     didSet {
       guard let form = _form, textureField = form[FieldName.TextureType.rawValue] as? FormPickerField else { return }
-      textureField.value = MIDINode.TextureType.allCases.indexOf(textureType) ?? 0
+      textureField.value = textureType.index
       MIDINode.currentTexture = textureType
     }
   }
@@ -60,12 +49,12 @@ final class TemplateViewController: UIViewController {
     didSet {
       guard let form = _form,
       noteField = form[FieldName.Note.rawValue] as? FormPickerField,
-      velocityField = form[FieldName.Velocity.rawValue] as? FormSliderField,
-      durationField = form[FieldName.Duration.rawValue] as? FormSliderField else { return }
+      velocityField = form[FieldName.Velocity.rawValue] as? FormPickerField,
+      durationField = form[FieldName.Duration.rawValue] as? FormPickerField else { return }
 
-      noteField.value = Int(note.note.midi)
-      velocityField.value = Float(note.velocity.midi)
-      durationField.value = Float(note.duration.seconds)
+      noteField.value = Int(note.note.MIDIValue)
+      velocityField.value = Float(note.velocity.index)
+      durationField.value = Float(note.duration.index)
 
       MIDINode.currentNote = note
     }
@@ -76,32 +65,31 @@ final class TemplateViewController: UIViewController {
   private var _form: Form?
   private var form: Form {
     guard _form == nil else { return _form! }
+
     // FIXME: update fields
-    let typeField = FormPickerField(name: FieldName.TextureType.rawValue,
-                                    value: MIDINode.TextureType.allCases.indexOf(textureType) ?? 0,
-                                    choices: MIDINode.TextureType.allCases.map { $0.image})
+    let typeField = FormPickerField(
+      name: FieldName.TextureType.rawValue,
+      value: textureType.index,
+      choices: TextureType.allImages
+    )
 
-    let noteField = FormPickerField(name: FieldName.Note.rawValue,
-                                    value: Int(note.note.midi),
-                                    choices: NoteAttributes.Note.allCases.map({$0.rawValue}))
+    let noteField = FormPickerField(
+      name: FieldName.Note.rawValue,
+      value: Int(note.note.MIDIValue),
+      choices: Note.allCases.map({$0.rawValue})
+    )
 
-    let velocityField = FormSliderField(name: FieldName.Velocity.rawValue,
-                                        value: Float(note.velocity.midi),
-                                        max: 127,
-                                        minTrack: AssetManager.sliderMinTrackImage,
-                                        maxTrack: AssetManager.sliderMaxTrackImage,
-                                        thumb: AssetManager.sliderThumbImage,
-                                        offset: AssetManager.sliderThumbOffset)
+    let velocityField = FormPickerField(
+      name: FieldName.Velocity.rawValue,
+      value: note.velocity.index,
+      choices: Velocity.allImages
+    )
 
-//    let durationField = FormPickerField(name: FieldName.Duration.rawValue, value: <#T##Int#>, choices: <#T##[AnyObject]#>)
-    let durationField = FormSliderField(name: FieldName.Duration.rawValue,
-                                        precision: 3,
-                                        value: Float(note.duration.seconds),
-                                        max: 5,
-                                        minTrack: AssetManager.sliderMinTrackImage,
-                                        maxTrack: AssetManager.sliderMaxTrackImage,
-                                        thumb: AssetManager.sliderThumbImage,
-                                        offset: AssetManager.sliderThumbOffset)
+    let durationField = FormPickerField(
+      name: FieldName.Duration.rawValue,
+      value: note.duration.index,
+      choices: Duration.allImages
+    )
 
     let fields = [typeField, noteField, velocityField, durationField]
 
@@ -111,23 +99,10 @@ final class TemplateViewController: UIViewController {
       guard let fieldName = FieldName(rawValue: field.name) else { return }
 
       switch fieldName {
-        case .TextureType:
-          if let idx = field.value as? Int where MIDINode.TextureType.allCases.indices.contains(idx) {
-            let type = MIDINode.TextureType.allCases[idx]
-            self.textureType = type
-        }
-
-        case .Note:
-          if let midi = field.value as? Int { self.note.note = NoteAttributes.Note(midi: UInt8(midi)) }
-
-        case .Velocity:
-        assert(false)
-//          if let velocity = field.value as? Float { self.note.velocity = UInt8(velocity) }
-
-        case .Duration:
-        assert(false)
-//          if let duration = field.value as? Float { self.note.duration = duration }
-
+        case .TextureType: if let idx = field.value as? Int { self.textureType = TextureType(index: idx) }
+        case .Note: if let midi = field.value as? Int { self.note.note = Note(MIDIValue: UInt8(midi)) }
+        case .Velocity: if let idx = field.value as? Int { self.note.velocity = Velocity(index: idx) }
+        case .Duration: if let idx = field.value as? Int { self.note.duration = Duration(index: idx) }
       }
 
     }

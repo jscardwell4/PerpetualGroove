@@ -15,7 +15,7 @@ import struct AudioToolbox.MIDINoteMessage
 final class MIDINode: SKSpriteNode {
 
   // MARK: - Type to specify the node's texture
-  enum TextureType: String, EnumerableType {
+  enum TextureType: String, EnumerableType, ImageAssetLiteralType {
     case Brick, Cobblestone, Concrete, Crusty, DiamondPlate, Dirt, Fur,
          Mountains, OceanBasin, Parchment, Sand, Stucco
     var image: UIImage { return UIImage(named: "\(rawValue.lowercaseString)-button")! }
@@ -99,7 +99,7 @@ final class MIDINode: SKSpriteNode {
     var packetList = MIDIPacketList()
     let packet = MIDIPacketListInit(&packetList)
     let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
-    let data: [UInt8] = [0x90 | note.channel, note.note.midi, note.velocity.midi] + sourceID
+    let data: [UInt8] = [0x90 | note.channel, note.note.MIDIValue, note.velocity.MIDIValue] + sourceID
     let timeStamp = time.timeStamp
     if !Sequencer.playing { Sequencer.start() }
     MIDIPacketListAdd(&packetList, size, packet, timeStamp, 11, data)
@@ -115,7 +115,7 @@ final class MIDINode: SKSpriteNode {
     var packetList = MIDIPacketList()
     let packet = MIDIPacketListInit(&packetList)
     let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
-    let data: [UInt8] = [0x80 | note.channel, note.note.midi, 0] + sourceID
+    let data: [UInt8] = [0x80 | note.channel, note.note.MIDIValue, 0] + sourceID
     let timeStamp = time.timeStamp
     MIDIPacketListAdd(&packetList, size, packet, timeStamp, 11, data)
     do {

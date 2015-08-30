@@ -23,9 +23,42 @@ final class MIDIPlayerSceneViewController: UIViewController {
   @IBOutlet weak var playPauseBarButtonItem: ImageBarButtonItem!
   @IBOutlet weak var stopBarButtonItem: ImageBarButtonItem!
   @IBOutlet weak var mixerBarButtonItem: ImageBarButtonItem!
+  @IBOutlet weak var saveBarButtonItem: ImageBarButtonItem!
+  @IBOutlet weak var revertBarButtonItem: ImageBarButtonItem!
+
+  private enum Popover {
+    case None, Template, Instrument, Mixer
+    var view: PopoverView? {
+      guard let delegate = UIApplication.sharedApplication().delegate,
+                window = delegate.window,
+                controller = window?.rootViewController as? MIDIPlayerSceneViewController else { return nil }
+      switch self {
+        case .Template:   return controller.templatePopoverView
+        case .Instrument: return controller.instrumentPopoverView
+        case .Mixer:      return controller.mixerPopoverView
+        case .None:       return nil
+      }
+    }
+  }
+  private var popover = Popover.None {
+    didSet {
+      oldValue.view?.hidden = true; popover.view?.hidden = false
+      popoverBlur.hidden = popover == .None
+    }
+  }
+
+  /** dismissPopover */
+  @IBAction private func dismissPopover() { popover = .None }
+
+  /** updateState */
+  private func updateState() {
+
+  }
 
   private var playerScene: MIDIPlayerScene?
   private var midiPlayer: MIDIPlayerNode? { return playerScene?.midiPlayer }
+
+  @IBOutlet weak var popoverBlur: UIVisualEffectView!
 
   private(set) var playing = false {
     didSet {
@@ -47,13 +80,13 @@ final class MIDIPlayerSceneViewController: UIViewController {
   }
 
   /** tempoSliderValueDidChange */
-  @IBAction func tempoSliderValueDidChange() { Sequencer.tempo = Double(tempoSlider.value) }
+  @IBAction private func tempoSliderValueDidChange() { Sequencer.tempo = Double(tempoSlider.value) }
 
   /** revert */
-  @IBAction func revert() { (skView?.scene as? MIDIPlayerScene)?.revert() }
+  @IBAction private func revert() { (skView?.scene as? MIDIPlayerScene)?.revert() }
 
   /** sliders */
-  @IBAction func mixer() { let mixerPopover = mixerPopoverView; mixerPopover.hidden = !mixerPopover.hidden }
+  @IBAction private func mixer() { if case .Mixer = popover { popover = .None } else { popover = .Mixer } }
 
   private var _mixerViewController: MixerViewController?
   private var mixerViewController: MixerViewController {
@@ -81,7 +114,7 @@ final class MIDIPlayerSceneViewController: UIViewController {
   }
 
   /** instrument */
-  @IBAction func instrument() { let instrumentPopover = instrumentPopoverView; instrumentPopover.hidden = !instrumentPopover.hidden }
+  @IBAction private func instrument() { if case .Instrument = popover { popover = .None } else { popover = .Instrument } }
 
   private var _instrumentViewController: InstrumentViewController?
   private var instrumentViewController: InstrumentViewController {
@@ -106,7 +139,7 @@ final class MIDIPlayerSceneViewController: UIViewController {
   }
 
   /** save */
-  @IBAction func save() {
+  @IBAction private func save() {
     let textField = FormTextField(name: "File Name", value: nil, placeholder: "Awesome Sauce") {
       (text: String?) -> Bool in
       guard let text = text else { return false }
@@ -129,11 +162,14 @@ final class MIDIPlayerSceneViewController: UIViewController {
   /** skipBack */
   @IBAction func skipBack() { logDebug("skipBack() not yet implemented") }
 
+  /** record */
+  @IBAction func record() { logDebug("record() not yet implemented") }
+
   /** play */
   @IBAction func play() {
     playing = !playing
     stopBarButtonItem.enabled = true
-    stopBarButtonItem.tintColor = nil
+//    stopBarButtonItem.tintColor = nil
   }
 
   /** stop */
@@ -142,11 +178,12 @@ final class MIDIPlayerSceneViewController: UIViewController {
     playerScene.midiPlayer.reset()
     playing = false
     stopBarButtonItem.enabled = false
-    stopBarButtonItem.tintColor = rgb(51, 50, 49)
+//    stopBarButtonItem.tintColor = rgb(51, 50, 49)
   }
 
   /** template */
-  @IBAction func template() { let templatePopover = templatePopoverView; templatePopover.hidden = !templatePopover.hidden }
+  @IBAction private func template() { if case .Template = popover { popover = .None } else { popover = .Template } }
+
   private var _templateViewController: TemplateViewController?
   private var templateViewController: TemplateViewController {
     guard _templateViewController == nil else { return _templateViewController! }
@@ -174,8 +211,8 @@ final class MIDIPlayerSceneViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    stopBarButtonItem.tintColor = rgb(51, 50, 49)
-    
+//    stopBarButtonItem.tintColor = rgb(51, 50, 49)
+
     tempoLabel.font = Eveleth.shadowFontWithSize(16)
 
     tempoSlider.setThumbImage(AssetManager.sliderThumbImage, forState: .Normal)

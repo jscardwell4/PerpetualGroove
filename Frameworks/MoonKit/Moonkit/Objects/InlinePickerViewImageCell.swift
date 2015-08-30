@@ -14,6 +14,8 @@ final class InlinePickerViewImageCell: InlinePickerViewCell {
   private let imageView = UIImageView(autolayout: true)
 
   var image: UIImage? { didSet { imageView.image = image } }
+  var imageColor: UIColor? { didSet { imageView.tintColor = imageColor } }
+  var imageSelectedColor: UIColor? { didSet { guard selected else { return }; imageView.tintColor = imageSelectedColor } }
 
   /** initializeIVARs */
   override func initializeIVARs() {
@@ -22,6 +24,8 @@ final class InlinePickerViewImageCell: InlinePickerViewCell {
     imageView.contentMode = .ScaleAspectFit
     contentView.addSubview(imageView)
   }
+
+  override var selected: Bool { didSet { imageView.tintColor = selected ? imageSelectedColor : imageColor } }
 
   /**
   initWithFrame:

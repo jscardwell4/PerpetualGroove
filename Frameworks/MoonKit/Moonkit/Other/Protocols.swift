@@ -391,6 +391,14 @@ public protocol EnumerableType {
   static var allCases: [Self] { get }
 }
 
+public extension EnumerableType where Self: Equatable {
+  public var index: Int { return Self.allCases.indexOf(self)! }
+  public init(index: Int) {
+    guard Self.allCases.indices.contains(index) else { fatalError("index out of bounds") }
+    self = Self.allCases[index]
+  }
+}
+
 //public extension EnumerableType where Self:RawRepresentable, Self.RawValue: ForwardIndexType {
 //  static var allCases: [Self] {
 //    return Array(rawRange.generate()).flatMap({Self.init(rawValue: $0)})
@@ -407,6 +415,19 @@ public protocol EnumerableType {
 
 public extension EnumerableType {
   static func enumerate(block: (Self) -> Void) { allCases.forEach(block) }
+}
+
+
+public protocol ImageAssetLiteralType {
+  var image: UIImage { get }
+}
+
+public extension ImageAssetLiteralType where Self:RawRepresentable, Self.RawValue == String {
+  public var image: UIImage { return UIImage(named: rawValue)! }
+}
+
+public extension ImageAssetLiteralType where Self:EnumerableType {
+  public static var allImages: [UIImage] { return allCases.map({$0.image}) }
 }
 
 // causes ambiguity

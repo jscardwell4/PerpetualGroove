@@ -43,7 +43,18 @@ import UIKit
     return result
   }
 
-  public override var tintColor: UIColor? { didSet { imageButtonView?.tintColor = tintColor } }
+  public override var enabled: Bool {
+    didSet {
+      guard let disabledTintColor = disabledTintColor else { return }
+      imageButtonView?.tintColor = enabled ? tintColor : disabledTintColor
+    }
+  }
+  public override var tintColor: UIColor? {
+    didSet { guard enabled || disabledTintColor == nil else { return }; imageButtonView?.tintColor = tintColor }
+  }
+  @IBInspectable public var disabledTintColor: UIColor? {
+    didSet { if !enabled, let color = disabledTintColor { imageButtonView?.tintColor = color } }
+  }
 
   /**
   initWithImage:highlightedImage:target:action:
