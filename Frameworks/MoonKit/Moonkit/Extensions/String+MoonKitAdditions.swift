@@ -50,7 +50,11 @@ public extension String {
   public init(hexBytes: [Byte]) { self = " ".join(hexBytes.map({String($0, radix: 16, uppercase: true, pad: 2)})) }
   public init<B:ByteArrayConvertible>(hexBytes: B) { self.init(hexBytes: hexBytes.bytes) }
 
-  public init(binaryBytes: [Byte]) { self = " ".join(binaryBytes.map({String($0, radix: 2, uppercase: true, pad: 4)})) }
+  public init(binaryBytes: [Byte]) {
+    var groups = binaryBytes.map({String($0, radix: 2, uppercase: true, pad: 4, group: 4)})
+    while groups.count > 1 && groups.first == "0000" { groups.removeAtIndex(0) }
+    self = " ".join(groups)
+  }
   public init<B:ByteArrayConvertible>(binaryBytes: B) { self.init(binaryBytes: binaryBytes.bytes) }
 
   /**
@@ -75,7 +79,11 @@ public extension String {
     pad -= utf16.count
     if pad > 0 { self = String(count: pad, repeatedValue: Character("0")) + self }
     guard group > 0 && characters.count > group else { return }
-    let characterGroups = characters.segment(group).flatMap({String($0)})
+    let characterGroups = characters.segment(group, pad: Character("0")).flatMap({String($0)})
+//    if dropLeadingEmptyGroups {
+//      let emptyGroup = String(count: group, repeatedValue: Character("0"))
+//      while characterGroups.count > 1 && characterGroups.first == emptyGroup { characterGroups.removeAtIndex(0) }
+//    }
     self = separator.join(characterGroups)
   }
 

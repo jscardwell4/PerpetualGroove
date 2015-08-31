@@ -118,7 +118,7 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
   private var marker: CABarBeatTime
 
   /** Updates `marker` with current `time` */
-  func setMarker() { marker = time; logDebug("marked time: \(marker)", function: "setMarker", file: "BarBeatTime.swift") }
+  func setMarker() { marker = time }
 
   /**
   registerCallback:forTime:
@@ -194,7 +194,6 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
     }
     result.beat = t.beat - marker.beat
     result.bar = t.bar - marker.bar
-    logDebug("time: \(time); marker: \(marker); result: \(result)", function: "timeSinceMarker", file: "BarBeatTime.swift")
     return result
   }
 
@@ -210,9 +209,9 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
   var subbeat: Int { return Int(time.subbeat) }  /// Accessor for `time.subbeat`
 
   /// Generates the current `MIDI` representation of the current time
-  var timeStamp: MIDITimeStamp { let t = time; logDebug("time: \(t); stamp: \(t.tickValue)"); return time.tickValue }
+  var timeStamp: MIDITimeStamp {  return time.tickValue }
 
-  var doubleValue: Double { let t = time; logDebug("time: \(t); double: \(t.doubleValue)"); return time.doubleValue }
+  var doubleValue: Double {  return time.doubleValue }
 
   var description: String { return time.description }
 

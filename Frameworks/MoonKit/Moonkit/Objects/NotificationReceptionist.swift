@@ -12,29 +12,22 @@ import UIKit
 public final class NotificationReceptionist: NSObject {
 
   public typealias Notification = String
-  public enum Callback {
-    case Selector (UIKit.Selector)
-    case Block (NSOperationQueue?, (NSNotification!) -> Void)
-  }
+
+  public typealias Callback = (AnyObject?, NSOperationQueue?, (NSNotification) -> Void)
 
   private var observers: [NSObjectProtocol] = []
   
-  public init(callbacks: [Notification:Callback], object: AnyObject?) {
+  public init(callbacks: [Notification:Callback]) {
     super.init()
     let notificationCenter = NSNotificationCenter.defaultCenter()
     for (name, callback) in callbacks {
-      switch callback {
-        case .Selector(let selector):
-          notificationCenter.addObserver(self, selector: selector, name: name, object: object)
-        case .Block(let queue, let block):
-          observers.append(notificationCenter.addObserverForName(name, object: object, queue: queue, usingBlock: block))
-      }
+      observers.append(notificationCenter.addObserverForName(name, object: callback.0, queue: callback.1, usingBlock: callback.2))
     }
   }
 
   deinit {
     let notificationCenter = NSNotificationCenter.defaultCenter()
-    apply(observers) {notificationCenter.removeObserver($0)}
+    observers.forEach {notificationCenter.removeObserver($0)}
     observers.removeAll(keepCapacity: false)
     notificationCenter.removeObserver(self)
   }

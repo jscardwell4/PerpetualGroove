@@ -16,30 +16,30 @@ final class Mixer {
 
   // MARK: - An enumeration to wrap up notifications
 
-  enum Notification {
+  enum Notification: NotificationType {
     case BusAdded (Bus)
     case BusRemoved (Bus)
 
-    enum NotificationName: String { case DidAddTrack, DidRemoveTrack }
+    enum Name: String, NotificationNameType { case DidAddBus, DidRemoveBus }
 
     static let BusKey = "bus"
 
-    var name: NotificationName {
+    var name: Name {
       switch self {
-      case .BusAdded: return .DidAddTrack
-      case .BusRemoved: return .DidRemoveTrack
+        case .BusAdded: return .DidAddBus
+        case .BusRemoved: return .DidRemoveBus
       }
     }
 
-    private func post() {
-      let userInfo: [NSObject:AnyObject]?
+    var userInfo: [NSObject:AnyObject]? {
       switch self {
-        case .BusAdded(let bus):   userInfo = [Notification.BusKey: NSNumber(unsignedInt: bus.element)]
-        case .BusRemoved(let bus): userInfo = [Notification.BusKey: NSNumber(unsignedInt: bus.element)]
+        case .BusAdded(let bus):   return[Notification.BusKey: NSNumber(unsignedInt: bus.element)]
+        case .BusRemoved(let bus): return [Notification.BusKey: NSNumber(unsignedInt: bus.element)]
       }
-      logDebug("posting notification \(self))")
-      NSNotificationCenter.defaultCenter().postNotificationName(name.rawValue, object: Mixer.self, userInfo: userInfo)
     }
+
+    var object: AnyObject? { return Mixer.self }
+
   }
 
   // MARK: - Type for Mixer-specific errors

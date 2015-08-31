@@ -65,14 +65,11 @@ final class Sequencer {
         return _currentTrack!
       } catch {
         logError(error)
-        fatalError("unable to create a new track when current track has been requested")
+        fatalError("unable to create a new track when current track has been requested … error: \(error)")
       }
     }
     set { _currentTrack = newValue }
   }
-
-  /** The current time as reported by the MIDI clock */
-//  static var currentTime: MIDITimeStamp { return barBeatTime.timestamp }
 
   static var resolution: UInt64 = 480 { didSet { clock.resolution = resolution } }
 

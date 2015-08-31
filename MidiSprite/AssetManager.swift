@@ -28,6 +28,7 @@ final class AssetManager {
   static let controlColor           = Chameleon.quietLightLobLollyDark
   static let controlSelectedFont    = Eveleth.regularFontWithSize(14)
   static let controlSelectedColor   = Chameleon.quietLightLobLolly
+  static let disabledTintColor      = rgb(140, 136, 130)
   static let tintColor              = Chameleon.quietLightLilyWhiteDark
   static let sliderLabelValueFont   = Eveleth.lightFontWithSize(6)
   static let sliderLabelValueColor  = Chameleon.flatWhiteDark

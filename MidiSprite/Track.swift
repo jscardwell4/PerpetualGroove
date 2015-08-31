@@ -39,11 +39,9 @@ final class Track: TrackType, Equatable {
   let time = BarBeatTime(clockSource: Sequencer.clockSource)
 
   private func appendEvent(var event: TrackEvent) {
-//    event.deltaTime = VariableLengthQuantity(time.timeSinceMarker.tickValue)
     event.time = time.time
     events.append(event)
     time.setMarker()
-    logDebug("[Track \(label)] event = \(event)", function: "appendEvent", file: "Track.swift")
   }
   private(set) var events: [TrackEvent] = []
 

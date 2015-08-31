@@ -16,6 +16,21 @@ public func ∪<T, S0:SequenceType, S1:SequenceType
   return Array(lhs) + Array(rhs)
 }
 
+public func ∪<O:OptionSetType>(lhs: O, rhs: O) -> O { return lhs.union(rhs) }
+
+public func ∩<O:OptionSetType>(lhs: O, rhs: O) -> O { return lhs.intersect(rhs) }
+
+public func ∖<O:OptionSetType>(lhs: O, rhs: O) -> O { return lhs.subtract(rhs) }
+
+public func ⊻<O:OptionSetType>(lhs: O, rhs: O) -> O { return lhs.exclusiveOr(rhs) }
+
+public func ∪=<O:OptionSetType>(inout lhs: O, rhs: O) { lhs.unionInPlace(rhs) }
+
+public func ∩=<O:OptionSetType>(inout lhs: O, rhs: O) { lhs.intersectInPlace(rhs) }
+
+public func ∖=<O:OptionSetType>(inout lhs: O, rhs: O) { lhs.subtractInPlace(rhs) }
+
+public func ⊻=<O:OptionSetType>(inout lhs: O, rhs: O) { lhs.exclusiveOrInPlace(rhs) }
 //public func ∪=<T, C:RangeReplaceableCollectionType, S:SequenceType
 //  where C.Generator.Element == S.Generator.Element> (inout lhs:C, rhs:S)
 //{
@@ -74,6 +89,7 @@ Returns true if rhs contains lhs
 - returns: Bool
 */
 public func ∈ <T, U where U:IntervalType, T == U.Bound>(lhs:T, rhs:U) -> Bool { return rhs.contains(lhs) }
+public func ∈<O:OptionSetType where O.Element == O>(lhs: O, rhs: O) -> Bool { return rhs.contains(lhs) }
 
 /**
 Returns true if lhs contains rhs
@@ -83,7 +99,8 @@ Returns true if lhs contains rhs
 - returns: Bool
 */
 public func ∋<T:Equatable, S:SequenceType where S.Generator.Element == T>(lhs:S, rhs:T) -> Bool { return rhs ∈ lhs }
-public func ∋ <T, U where U:IntervalType, T == U.Bound>(lhs:U, rhs:T) -> Bool { return lhs.contains(rhs) }
+public func ∋<T, U where U:IntervalType, T == U.Bound>(lhs:U, rhs:T) -> Bool { return lhs.contains(rhs) }
+public func ∋<O:OptionSetType where O.Element == O>(lhs: O, rhs: O) -> Bool { return lhs.contains(rhs) }
 
 /**
 Returns true if rhs does not contain lhs
@@ -94,7 +111,7 @@ Returns true if rhs does not contain lhs
 */
 public func ∉<T:Equatable, S:SequenceType where S.Generator.Element == T>(lhs:T, rhs:S) -> Bool { return !(lhs ∈ rhs) }
 public func ∉ <T, U where U:IntervalType, T == U.Bound>(lhs:T, rhs:U) -> Bool { return !(lhs ∈ rhs) }
-
+public func ∉<O:OptionSetType where O.Element == O>(lhs: O, rhs: O) -> Bool { return !(lhs ∈ rhs) }
 /**
 Returns true if lhs does not contain rhs
 
@@ -104,6 +121,7 @@ Returns true if lhs does not contain rhs
 */
 public func ∌ <T, U:IntervalType where T == U.Bound>(lhs:U, rhs:T) -> Bool { return !(lhs ∋ rhs) }
 public func ∌<T:Equatable, S:SequenceType where S.Generator.Element == T>(lhs:S, rhs:T) -> Bool { return !(lhs ∋ rhs) }
+public func ∌<O:OptionSetType where O.Element == O>(lhs: O, rhs: O) -> Bool { return !(lhs ∋ rhs) }
 
 /**
 Returns true if lhs is a subset of rhs
@@ -117,6 +135,24 @@ public func ⊂<T:Equatable, S0:SequenceType, S1:SequenceType
 {
   return lhs.filter({$0 ∉ rhs}).isEmpty
 }
+
+public func ⊆<O:OptionSetType>(lhs: O, rhs: O) -> Bool { return lhs.isSubsetOf(rhs) }
+
+public func ⊈<O:OptionSetType>(lhs: O, rhs: O) -> Bool { return !(lhs ⊆ rhs) }
+
+public func ⊇<O:OptionSetType>(lhs: O, rhs: O) -> Bool { return rhs ⊆ lhs }
+
+public func ⊉<O:OptionSetType>(lhs: O, rhs: O) -> Bool { return rhs ⊈ lhs }
+
+public func ⊂<O:OptionSetType>(lhs: O, rhs: O) -> Bool { return lhs.isStrictSubsetOf(rhs) }
+
+public func ⊄<O:OptionSetType>(lhs: O, rhs: O) -> Bool { return !(lhs ⊂ rhs) }
+
+public func ⊃<O:OptionSetType>(lhs: O, rhs: O) -> Bool { return rhs ⊂ lhs }
+
+public func ⊅<O:OptionSetType>(lhs: O, rhs: O) -> Bool { return rhs ⊄ lhs }
+
+public func ⥣<O:OptionSetType>(lhs: O, rhs: O) -> Bool { return lhs.isDisjointWith(rhs) }
 
 /**
 Returns true if lhs is not a subset of rhs

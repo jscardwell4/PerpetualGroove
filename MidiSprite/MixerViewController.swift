@@ -10,7 +10,9 @@ import UIKit
 import MoonKit
 import typealias AudioUnit.AudioUnitElement
 
-class MixerViewController: UICollectionViewController {
+final class MixerViewController: UICollectionViewController {
+
+  private var notificationReceptionist: NotificationReceptionist?
 
   /** viewDidLoad */
   override func viewDidLoad() {
@@ -20,18 +22,18 @@ class MixerViewController: UICollectionViewController {
     view.backgroundColor = nil
     collectionView?.backgroundColor = nil
 
-    NSNotificationCenter.defaultCenter().addObserverForName(Mixer.Notification.NotificationName.DidAddTrack.rawValue,
-                                                     object: nil,
-                                                      queue: NSOperationQueue.mainQueue()) {
-                                                        [weak self] _ in
-                                                        self?.updateTracks()
-    }
-    NSNotificationCenter.defaultCenter().addObserverForName(Mixer.Notification.NotificationName.DidRemoveTrack.rawValue,
-                                                     object: nil,
-                                                      queue: NSOperationQueue.mainQueue()) {
-                                                        [weak self] _ in
-                                                        self?.updateTracks()
-    }
+    guard notificationReceptionist == nil else { return }
+
+    let busesDidChange: (NSNotification) -> Void = { [unowned self] _ in self.updateTracks() }
+    let queue = NSOperationQueue.mainQueue()
+    let callback: (AnyObject?, NSOperationQueue?, (NSNotification) -> Void) = (Mixer.self, queue, busesDidChange)
+    let callbacks: [NotificationReceptionist.Notification:NotificationReceptionist.Callback] = [
+      Mixer.Notification.Name.DidAddBus.rawValue: callback,
+      Mixer.Notification.Name.DidRemoveBus.rawValue: callback
+    ]
+
+    notificationReceptionist = NotificationReceptionist(callbacks: callbacks)
+
   }
 
   /** updateViewConstraints */
@@ -63,8 +65,6 @@ class MixerViewController: UICollectionViewController {
   - returns: Int
   */
   override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int { return 2 }
-
-  deinit { NSNotificationCenter.defaultCenter().removeObserver(self) }
 
   /**
   collectionView:numberOfItemsInSection:

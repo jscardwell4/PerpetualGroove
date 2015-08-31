@@ -399,6 +399,34 @@ public extension EnumerableType where Self: Equatable {
   }
 }
 
+public protocol NotificationNameType: RawRepresentable {
+  var value: String { get }
+}
+
+public extension NotificationNameType where Self.RawValue == String {
+  var value: String { return rawValue }
+}
+
+public protocol NotificationType {
+  typealias NotificationName: NotificationNameType
+  var name: NotificationName { get }
+  var userInfo: [NSObject:AnyObject]? { get }
+  var object: AnyObject? { get }
+  func post()
+}
+
+public extension NotificationType {
+  func post() {
+    NSNotificationCenter.defaultCenter().postNotificationName(name.value, object: object, userInfo: userInfo)
+  }
+  var userInfo: [NSObject:AnyObject]? { return nil }
+  var object: AnyObject? { return nil }
+}
+
+public extension NotificationType where Self:NotificationNameType {
+  var name: Self { return self }
+}
+
 //public extension EnumerableType where Self:RawRepresentable, Self.RawValue: ForwardIndexType {
 //  static var allCases: [Self] {
 //    return Array(rawRange.generate()).flatMap({Self.init(rawValue: $0)})

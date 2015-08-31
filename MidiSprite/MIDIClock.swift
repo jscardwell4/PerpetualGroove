@@ -42,7 +42,6 @@ final class MIDIClock: CustomStringConvertible {
     guard !timer.running else { return }
     ticks = 0
     timer.start()
-//    print(description)
   }
 
   /** reset */
@@ -51,7 +50,6 @@ final class MIDIClock: CustomStringConvertible {
   /** stop */
   func stop() {
     guard timer.running else { return }
-//    print(description)
     timer.stop()
   }
 
@@ -95,7 +93,6 @@ final class MIDIClock: CustomStringConvertible {
     MIDIPacketListAdd(&packetList, size, MIDIPacketListInit(&packetList), ++ticks, 1, &clock)
     do {
       try withUnsafePointer(&packetList) { MIDIReceived(endPoint, $0) } ➤ "Failed to send packets"
-//      print("hostTime: \(hostTime); ticks: \(ticks)")
     }
     catch { logError(error) }
   }

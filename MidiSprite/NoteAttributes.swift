@@ -9,30 +9,28 @@
 import Foundation
 import MoonKit
 
-protocol MIDIValueConvertible {
+/** Protocol for types that can be converted to and from a value within the range of 0 ... 127  */
+protocol MIDIValueConvertible: Hashable, Equatable {
   var MIDIValue: Byte { get }
   init(MIDIValue: Byte)
 }
 
+extension MIDIValueConvertible {
+  var hashValue: Int { return MIDIValue.hashValue }
+}
+
+func ==<M:MIDIValueConvertible>(lhs: M, rhs: M) -> Bool { return lhs.MIDIValue == rhs.MIDIValue }
+
+/** Structure that encapsulates MIDI information necessary for playing a note */
 struct NoteAttributes {
 
   var channel: UInt8 = 0
 
+  /** An enumeration for specifying a note's pitch and octave */
   enum Note: RawRepresentable, Equatable, EnumerableType, MIDIValueConvertible {
 
     enum Letter: String, EnumerableType {
-      case C      = "C"
-      case CSharp = "C♯"
-      case D      = "D"
-      case DSharp = "D♯"
-      case E      = "E"
-      case F      = "F"
-      case FSharp = "F♯"
-      case G      = "G"
-      case GSharp = "G♯"
-      case A      = "A"
-      case ASharp = "A♯"
-      case B      = "B"
+      case C="C", CSharp="C♯", D="D", DSharp="D♯", E="E", F="F", FSharp="F♯", G="G", GSharp="G♯", A="A", ASharp="A♯", B="B"
 
       init(_ i: UInt8) { self = Letter.allCases[Int(i % 12)] }
       init(var index: Int) { index %= Letter.allCases.count; self = Letter.allCases[index] }
@@ -71,8 +69,10 @@ struct NoteAttributes {
 
   }
 
+  /// The pitch and octave
   var note: Note = Note(MIDIValue: 60)
 
+  /** Enumeration for a musical note duration */
   enum Duration: String, EnumerableType, ImageAssetLiteralType {
     case DoubleWhole, DottedWhole, Whole, DottedHalf, Half, DottedQuarter, Quarter, DottedEighth, Eighth, DottedSixteenth, 
          Sixteenth, DottedThirtySecond, ThirtySecond, DottedSixtyFourth, SixtyFourth, DottedHundredTwentyEighth, 
@@ -109,8 +109,10 @@ struct NoteAttributes {
                                        .HundredTwentyEighth, .DottedTwoHundredFiftySixth, .TwoHundredFiftySixth ]
   }
 
+  /// The duration of the played note
   var duration: Duration = .Eighth
 
+  /** Enumeration for musical dynamics */
   enum Velocity: String, EnumerableType, ImageAssetLiteralType, MIDIValueConvertible {
     case Pianississimo
     case Pianissimo
@@ -134,29 +136,25 @@ struct NoteAttributes {
     }
     init(MIDIValue value: Byte) {
       switch value {
-        case 0 ... 22: self = .Pianississimo
-        case 23 ... 40: self = .Pianissimo
-        case 41 ... 51: self = .Piano
-        case 52 ... 70: self = .MezzoPiano
-        case 71 ... 88: self = .MezzoForte
-        case 81 ... 102: self = .Forte
+        case 0 ... 22:    self = .Pianississimo
+        case 23 ... 40:   self = .Pianissimo
+        case 41 ... 51:   self = .Piano
+        case 52 ... 70:   self = .MezzoPiano
+        case 71 ... 88:   self = .MezzoForte
+        case 81 ... 102:  self = .Forte
         case 103 ... 119: self = .Fortissimo
-        case 120 ... 255: self = .Fortississimo
+        default:          self = .Fortississimo
       }
     }
     static let allCases: [Velocity] = [.Pianississimo, .Pianissimo, .Piano, .MezzoPiano, .MezzoForte, 
                                        .Forte, .Fortissimo, .Fortississimo]
   }
 
+  /// The dynmamics for the note
   var velocity: Velocity = .MezzoForte
 }
 
 
-func ==(lhs: NoteAttributes.Note, rhs: NoteAttributes.Note) -> Bool {
-  switch (lhs, rhs) {
-  case let (.Pitch(l1, o1), .Pitch(l2, o2)) where l1 == l2 && o1 == o2: return true
-  default: return false
-  }
-}
+func ==(lhs: NoteAttributes.Note, rhs: NoteAttributes.Note) -> Bool { return lhs.MIDIValue == rhs.MIDIValue }
 
 

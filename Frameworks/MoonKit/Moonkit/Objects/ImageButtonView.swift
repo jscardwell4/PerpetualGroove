@@ -16,9 +16,22 @@ public class ImageButtonView: UIImageView {
 
   private var trackingTouch: UITouch? { didSet { _highlighted = trackingTouch != nil || isToggled } }
 
-  private var _highlighted = false { didSet { super.highlighted = _highlighted } }
-
+  private var _highlighted = false {
+    didSet {
+      guard oldValue != _highlighted else { return }
+      super.highlighted = _highlighted
+      if _highlighted, let color = highlightedTintColor {
+        _tintColor = tintColor
+        tintColor = color
+      } else {
+        tintColor = _tintColor
+      }
+    }
+  }
+  private var _tintColor: UIColor?
   public override var highlighted: Bool { get { return super.highlighted } set {} }
+
+  public var highlightedTintColor: UIColor?
 
   public typealias Action = (ImageButtonView) -> Void
 

@@ -11,7 +11,13 @@ import SpriteKit
 import MoonKit
 import typealias AudioToolbox.MusicDeviceGroupID
 
-class MIDIPlayerNode: SKShapeNode {
+final class MIDIPlayerNode: SKShapeNode {
+
+  /** An enumeration to wrap up notifications */
+  enum Notification: String, NotificationType, NotificationNameType {
+    case NodeAdded, NodeRemoved
+    var object: AnyObject? { return MIDIPlayerNode.self }
+  }
 
   // MARK: - Initialization
 
@@ -32,7 +38,9 @@ class MIDIPlayerNode: SKShapeNode {
     addChild(MIDIPlayerFieldNode(bezierPath: bezierPath, delegate: self))
   }
 
-  private var midiNodes: [MIDINode] = []
+  private(set) var midiNodes: [MIDINode] = []
+  
+  var emptyField: Bool { return midiNodes.count == 0 }
 
   /**
   init:
@@ -50,6 +58,7 @@ class MIDIPlayerNode: SKShapeNode {
     let node = midiNodes.removeLast()
     do { try Sequencer.currentTrack.removeNode(node) } catch { logError(error) }
     node.removeFromParent()
+    Notification.NodeRemoved.post()
   }
 
   /** reset */
@@ -62,7 +71,7 @@ class MIDIPlayerNode: SKShapeNode {
   */
   func placeNew(placement: MIDINode.Placement) {
     guard let controller = UIApplication.sharedApplication().keyWindow?.rootViewController
-                             as? MIDIPlayerSceneViewController else { return }
+                             as? MIDIPlayerViewController else { return }
     if !controller.playing { controller.play() }
 
     do {
@@ -70,6 +79,7 @@ class MIDIPlayerNode: SKShapeNode {
       addChild(midiNode)
       midiNodes.append(midiNode)
       try Sequencer.currentTrack.addNode(midiNode)
+      Notification.NodeAdded.post()
     } catch {
       logError(error)
     }

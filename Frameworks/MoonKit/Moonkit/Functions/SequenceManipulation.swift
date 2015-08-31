@@ -33,15 +33,17 @@ public extension SequenceType where Generator.Element: Named {
 }
 
 public extension SequenceType {
-  public func segment(var segmentSize: Int = 2) -> [[Generator.Element]] {
+  public func segment(var segmentSize: Int = 2, pad: Generator.Element? = nil) -> [[Generator.Element]] {
     var result: [[Generator.Element]] = []
     var array: [Generator.Element] = []
     segmentSize = max(segmentSize, 1)
-    for element in self {
-      if array.count == segmentSize { result.append(array); array = [] }
-      array.append(element)
+    for element in reverse() {
+      if array.count == segmentSize { result.insert(array, atIndex: 0); array = [] }
+      array.insert(element, atIndex: 0)
     }
-    if array.count > 0 { result.append(array) }
+    if let pad = pad { while array.count < segmentSize { array.insert(pad, atIndex: 0) } }
+    result.insert(array, atIndex: 0)
+
     return result
   }
 }

@@ -56,6 +56,10 @@ import UIKit
     didSet { if !enabled, let color = disabledTintColor { imageButtonView?.tintColor = color } }
   }
 
+  @IBInspectable public var highlightedTintColor: UIColor? {
+    didSet { imageButtonView?.highlightedTintColor = highlightedTintColor }
+  }
+
   /**
   initWithImage:highlightedImage:target:action:
 

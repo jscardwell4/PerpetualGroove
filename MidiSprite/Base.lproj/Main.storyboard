@@ -20,10 +20,10 @@
         </mutableArray>
     </customFonts>
     <scenes>
-        <!--Player Scene View Controller-->
+        <!--Player View Controller-->
         <scene sceneID="tXr-a1-R10">
             <objects>
-                <viewController id="BV1-FR-VrT" customClass="MIDIPlayerSceneViewController" customModule="MidiSprite" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BV1-FR-VrT" customClass="MIDIPlayerViewController" customModule="MidiSprite" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="8aa-yV-Osq"/>
                         <viewControllerLayoutGuide type="bottom" id="qHh-Mt-9TT"/>
@@ -45,7 +45,7 @@
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="revert-selected"/>
                                             <userDefinedRuntimeAttribute type="color" keyPath="disabledTintColor">
-                                                <color key="value" red="0.20000000000000001" green="0.19607843137254902" blue="0.19215686274509802" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="value" red="0.54901960780000003" green="0.53333333329999999" blue="0.50980392159999999" alpha="1" colorSpace="calibratedRGB"/>
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                         <connections>
@@ -87,7 +87,7 @@
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="floppydisk-selected"/>
                                             <userDefinedRuntimeAttribute type="color" keyPath="disabledTintColor">
-                                                <color key="value" red="0.20000000000000001" green="0.1960784314" blue="0.19215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="value" red="0.54901960780000003" green="0.53333333329999999" blue="0.50980392159999999" alpha="1" colorSpace="calibratedRGB"/>
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                         <connections>
@@ -125,7 +125,7 @@
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="stop-selected"/>
                                             <userDefinedRuntimeAttribute type="color" keyPath="disabledTintColor">
-                                                <color key="value" red="0.20000000000000001" green="0.1960784314" blue="0.19215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="value" red="0.5490196078431373" green="0.53333333333333333" blue="0.50980392156862742" alpha="1" colorSpace="calibratedRGB"/>
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                         <connections>
@@ -135,7 +135,7 @@
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="ttL-eO-HMI" colorLabel="IBBuiltInLabel-Orange"/>
                                     <barButtonItem style="plain" id="ykn-Cw-eMw" userLabel="Tempo" colorLabel="IBBuiltInLabel-Orange">
                                         <view key="customView" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" id="WZr-17-0lT">
-                                            <rect key="frame" x="400" y="5.5" width="180" height="33"/>
+                                            <rect key="frame" x="308" y="5.5" width="180" height="33"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <subviews>
                                                 <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="120" minValue="24" maxValue="380" translatesAutoresizingMaskIntoConstraints="NO" id="FEg-Cl-cl7" customClass="Slider" customModule="MoonKit">
@@ -170,6 +170,16 @@
                                                 <constraint firstItem="FEg-Cl-cl7" firstAttribute="centerY" secondItem="WZr-17-0lT" secondAttribute="centerY" id="u67-E8-fyA"/>
                                             </constraints>
                                         </view>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="QrK-FV-IvH" colorLabel="IBBuiltInLabel-Orange"/>
+                                    <barButtonItem image="metronome" style="plain" id="Oh9-oO-WCa" userLabel="Metronome" customClass="ImageBarButtonItem" customModule="MoonKit" colorLabel="IBBuiltInLabel-Orange">
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="metronome-selected"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="metronome" destination="BV1-FR-VrT" id="SRm-I6-oO9"/>
+                                        </connections>
                                     </barButtonItem>
                                 </items>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -421,6 +431,8 @@
     <resources>
         <image name="floppydisk" width="56" height="56"/>
         <image name="floppydisk-selected" width="56" height="56"/>
+        <image name="metronome" width="56" height="56"/>
+        <image name="metronome-selected" width="56" height="56"/>
         <image name="piano" width="56" height="56"/>
         <image name="piano-selected" width="56" height="56"/>
         <image name="play" width="61" height="61"/>
