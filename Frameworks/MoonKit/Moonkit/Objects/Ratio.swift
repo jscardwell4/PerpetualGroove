@@ -10,13 +10,13 @@ import Foundation
 
 infix operator ∶ { associativity left precedence 200 } // U+2236
 
-public func ∶<F:FractionType, I:IntegerArithmeticType>(lhs: I, rhs: I) -> Ratio<F> { return Ratio<F>(lhs ╱ rhs) }
+public func ∶<F:FractionType>(lhs: F, rhs: F) -> Ratio<F> { return Ratio<F>(lhs ╱ rhs) }
 
 public struct Ratio<T:FractionType> {
 
-  private var fraction = Fraction<T>()
-  public var numerator: IntMax { get { return fraction.numerator } set { fraction.numerator = newValue } }
-  public var denominator: IntMax { get { return fraction.denominator } set { fraction.denominator = newValue } }
+  private var fraction = T(intMax: 1)╱T(intMax: 1)
+  public var numerator: T { get { return fraction.numerator } set { fraction.numerator = newValue } }
+  public var denominator: T { get { return fraction.denominator } set { fraction.denominator = newValue } }
 
   public init(_ f: Fraction<T>) { fraction = f }
   public init (_ v: T) { fraction = Fraction(v) }
@@ -34,31 +34,43 @@ extension Ratio: CustomStringConvertible {
 }
 
 // MARK: - SignedNumberType
-extension Ratio: SignedNumberType {}
+//extension Ratio: SignedNumberType {}
 
 public prefix func -<T:FractionType>(x: Ratio<T>) -> Ratio<T> { return Ratio(-x.fraction) }
 public func -<T:FractionType>(lhs: Ratio<T>, rhs: Ratio<T>) -> Ratio<T> { return Ratio(lhs.fraction - rhs.fraction) }
 public func +<T:FractionType>(lhs: Ratio<T>, rhs: Ratio<T>) -> Ratio<T> { return Ratio(lhs.fraction + rhs.fraction) }
 public func *<T:FractionType>(lhs: Ratio<T>, rhs: Ratio<T>) -> Ratio<T> { return Ratio(lhs.fraction * rhs.fraction) }
 public func /<T:FractionType>(lhs: Ratio<T>, rhs: Ratio<T>) -> Ratio<T> { return Ratio(lhs.fraction / rhs.fraction) }
+public func %<T:FractionType>(lhs: Ratio<T>, rhs: Ratio<T>) -> Ratio<T> { return Ratio(lhs.fraction % rhs.fraction) }
 
 public func *<T:FractionType>(lhs: Ratio<T>, rhs: T) -> T { return lhs.fraction * rhs }
 public func *<T:FractionType>(lhs: T, rhs: Ratio<T>) -> T { return lhs * rhs.fraction }
 
+public func -=<T:FractionType>(inout lhs: Ratio<T>, rhs: Ratio<T>) { lhs = lhs - rhs }
+public func +=<T:FractionType>(inout lhs: Ratio<T>, rhs: Ratio<T>) { lhs = lhs + rhs }
+public func *=<T:FractionType>(inout lhs: Ratio<T>, rhs: Ratio<T>) { lhs = lhs * rhs }
+public func /=<T:FractionType>(inout lhs: Ratio<T>, rhs: Ratio<T>) { lhs = lhs / rhs }
+public func %=<T:FractionType>(inout lhs: Ratio<T>, rhs: Ratio<T>) { lhs = lhs % rhs }
+
+//extension Ratio: ArithmeticType {
+//  public func toIntMax() -> IntMax { return value.toIntMax() }
+//  public init(intMax: IntMax) { self.init(intMax) }
+//}
+
 // MARK: - IntegerLiteralConvertible
-extension Ratio: IntegerLiteralConvertible {
-  public init(integerLiteral: IntMax) { self.init(integerLiteral) }
-}
+//extension Ratio: IntegerLiteralConvertible {
+//  public init(integerLiteral: IntMax) { self.init(integerLiteral) }
+//}
 
 // MARK: - FloatLiteralConvertible
-extension Ratio: FloatLiteralConvertible {
-  public init(floatLiteral value: T.FloatLiteralType) { self.init(Fraction<T>(floatLiteral: value)) }
-}
+//extension Ratio: FloatLiteralConvertible {
+//  public init(floatLiteral value: T.FloatLiteralType) { self.init(Fraction<T>(floatLiteral: value)) }
+//}
 
-extension Ratio: Strideable, _Strideable {
-  public func distanceTo(other: Ratio<T>) -> Ratio<T> { return self - other }
-  public func advancedBy(n: Ratio<T>) -> Ratio<T> { return self + n }
-}
+//extension Ratio: Strideable, _Strideable {
+//  public func distanceTo(other: Ratio<T>) -> Ratio<T> { return self - other }
+//  public func advancedBy(n: Ratio<T>) -> Ratio<T> { return self + n }
+//}
 
 // MARK: - Comparable, Equatable
 extension Ratio: Comparable, Equatable {}
@@ -70,23 +82,23 @@ extension Ratio: Hashable {
   public var hashValue: Int { return fraction.hashValue }
 }
 
-extension Ratio: AbsoluteValuable {
-  public static func abs(x: Ratio) -> Ratio { return Ratio(Fraction.abs(x.fraction)) }
-}
+//extension Ratio: AbsoluteValuable {
+//  public static func abs(x: Ratio) -> Ratio { return Ratio(Fraction.abs(x.fraction)) }
+//}
 
 // MARK: - FloatingPointType
 extension Ratio {//: FloatingPointType {
 //  public typealias _BitsType = T._BitsType
-  public init(_ value: UInt8)  { self.init(Fraction(integerLiteral: IntMax(value))) }
-  public init(_ value: Int8)   { self.init(Fraction(integerLiteral: IntMax(value))) }
-  public init(_ value: UInt16) { self.init(Fraction(integerLiteral: IntMax(value))) }
-  public init(_ value: Int16)  { self.init(Fraction(integerLiteral: IntMax(value))) }
-  public init(_ value: UInt32) { self.init(Fraction(integerLiteral: IntMax(value))) }
-  public init(_ value: Int32)  { self.init(Fraction(integerLiteral: IntMax(value))) }
-  public init(_ value: UInt64) { self.init(Fraction(integerLiteral: IntMax(value))) }
-  public init(_ value: Int64)  { self.init(Fraction(integerLiteral: IntMax(value))) }
-  public init(_ value: UInt)   { self.init(Fraction(integerLiteral: IntMax(value))) }
-  public init(_ value: Int)    { self.init(Fraction(integerLiteral: IntMax(value))) }
+//  public init(_ value: UInt8)  { self.init(Fraction(IntMax(value))) }
+//  public init(_ value: Int8)   { self.init(Fraction(IntMax(value))) }
+//  public init(_ value: UInt16) { self.init(Fraction(IntMax(value))) }
+//  public init(_ value: Int16)  { self.init(Fraction(IntMax(value))) }
+//  public init(_ value: UInt32) { self.init(Fraction(IntMax(value))) }
+//  public init(_ value: Int32)  { self.init(Fraction(IntMax(value))) }
+//  public init(_ value: UInt64) { self.init(Fraction(IntMax(value))) }
+//  public init(_ value: Int64)  { self.init(Fraction(IntMax(value))) }
+//  public init(_ value: UInt)   { self.init(Fraction(IntMax(value))) }
+//  public init(_ value: Int)    { self.init(Fraction(IntMax(value))) }
 
   public static var infinity: Ratio { return Ratio(Fraction<T>.infinity) }
   public static var NaN: Ratio { return Ratio(Fraction<T>.NaN) }

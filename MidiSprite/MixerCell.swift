@@ -22,9 +22,22 @@ class MixerCell: UICollectionViewCell {
     }
   }
 
+  @IBOutlet weak var panKnob: Knob! {
+    didSet {
+      guard let panKnob = panKnob else { return }
+      panKnob.indicatorColor = AssetManager.sliderThumbColor
+      panKnob.knobColor = AssetManager.sliderMinTrackColor
+    }
+  }
+
   var volume: AudioUnitParameterValue {
     get { return volumeSlider.value / volumeSlider.maximumValue }
     set { volumeSlider.value = newValue * volumeSlider.maximumValue }
+  }
+
+  var pan: AudioUnitParameterValue {
+    get { return panKnob.value }
+    set { panKnob.value = newValue }
   }
 
   /**
@@ -41,10 +54,11 @@ final class MasterCell: MixerCell {
   static let Identifier = "MasterCell"
 
   /** refresh */
-  func refresh() { do { volume = try Mixer.masterVolume() } catch { logError(error) } }
+  func refresh() { do { volume = try Mixer.masterVolume(); pan = try Mixer.masterPan() } catch { logError(error) } }
 
   /** volumeDidChange */
   @IBAction func volumeDidChange() { do { try Mixer.setMasterVolume(volume) } catch { logError(error) } }
+  @IBAction func panDidChange() { do { try Mixer.setMasterPan(pan) } catch { logError(error) } }
 
 }
 
@@ -55,13 +69,16 @@ final class TrackCell: MixerCell, UITextFieldDelegate {
   @IBOutlet weak var labelTextField: UITextField!
 
   /** volumeDidChange */
-  @IBAction func volumeDidChange() { track?.volume = volumeSlider.value / volumeSlider.maximumValue }
+  @IBAction func volumeDidChange() { track?.volume = volume }
+
+  /** panDidChange */
+  @IBAction func panDidChange() { track?.pan = pan }
 
   var track: Track? {
     didSet {
       guard let track = track else { return }
       volume = track.volume
-      // TODO: Update UI with pan value
+      pan = track.pan
       labelTextField.text = track.label ?? "BUS \(track.bus.element)"
       tintColor = track.color.value
     }

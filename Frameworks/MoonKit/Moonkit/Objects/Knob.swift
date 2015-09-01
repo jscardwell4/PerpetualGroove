@@ -11,29 +11,68 @@ import UIKit
 
 @IBDesignable public class Knob: UIControl {
 
-  @IBInspectable public var value: Double = 0.0 { didSet { setNeedsDisplay() } }
-
-  @IBInspectable public var minimumValue: Double = 0.0 {
+  @IBInspectable public var value: Float = 0.0 {
     didSet {
-      guard value < minimumValue else { return }
-      value = minimumValue
+      guard oldValue != value else { return }
+      value = valueInterval.clampValue(value)
       setNeedsDisplay()
+    }
+  }
+
+  @IBInspectable public var minimumValue: Float {
+    get { return valueInterval.start }
+    set {
+      guard valueInterval.start != newValue || newValue > valueInterval.end else { return }
+      valueInterval = newValue ... valueInterval.end
+    }
+  }
+
+  @IBInspectable public var maximumValue: Float {
+    get { return valueInterval.end }
+    set {
+      guard valueInterval.end != newValue || newValue < valueInterval.start else { return }
+      valueInterval = valueInterval.start ... newValue
     }
   }
 
   @IBInspectable public var knobBase: UIImage? {
     didSet {
+      guard oldValue != value else { return }
       if let knobBase = knobBase { self.knobBase = knobBase.imageWithColor(knobColor) }
       setNeedsDisplay()
     }
   }
 
-  @IBInspectable public var maximumValue: Double = 1.0 {
-    didSet {
-      guard value > maximumValue else { return }
-      value = maximumValue
-      setNeedsDisplay()
-    }
+  private var previousRotation: CGFloat = 0
+  private weak var rotationGesture: UIRotationGestureRecognizer?
+  private let rotationInterval: ClosedInterval<CGFloat> = -π / 2 ... π / 2
+
+  /**
+  addTarget:action:forControlEvents:
+
+  - parameter target: AnyObject?
+  - parameter action: Selector
+  - parameter controlEvents: UIControlEvents
+  */
+  override public func addTarget(target: AnyObject?, action: Selector, forControlEvents controlEvents: UIControlEvents) {
+    super.addTarget(target, action: action, forControlEvents: controlEvents)
+    guard self.rotationGesture == nil else { return }
+    let rotationGesture = UIRotationGestureRecognizer(target: self, action: "didRotate")
+    addGestureRecognizer(rotationGesture)
+    self.rotationGesture = rotationGesture
+  }
+
+  /**
+  didRotate:
+
+  - parameter gesture: UIRotationGestureRecognizer
+  */
+  @objc private func didRotate() {
+    guard let rotationGesture = rotationGesture else { return }
+    let currentRotation = -rotationInterval.clampValue(rotationGesture.rotation)
+    guard currentRotation != previousRotation else { return }
+    value = valueInterval.valueForNormalizedValue(Float(rotationInterval.normalizeValue(currentRotation)))
+    previousRotation = currentRotation
   }
 
   @IBInspectable public var knobColor: UIColor = .darkGrayColor() {
@@ -43,6 +82,12 @@ import UIKit
     }
   }
   @IBInspectable public var indicatorColor: UIColor = .whiteColor() { didSet { setNeedsDisplay() } }
+
+  private var valueAngle: CGFloat { return -π * CGFloat(valueInterval.normalizeValue(value)) }
+  private var startAngle: CGFloat { return valueAngle + π / 20 }
+  private var endAngle: CGFloat  { return valueAngle - π / 20 }
+
+  private var valueInterval: ClosedInterval<Float> = 0 ... 1 { didSet { value = valueInterval.clampValue(value) } }
 
   /**
   drawRect:
@@ -57,22 +102,15 @@ import UIKit
       frame.origin += (rect.size - frame.size) * 0.5
     }
     
-    let delta: CGFloat = minimumValue < 0 ? CGFloat(abs(minimumValue)) : CGFloat(minimumValue)
-    let magnitude: CGFloat = CGFloat(maximumValue) - CGFloat(minimumValue)
-    let normalizedMagnitude: CGFloat = magnitude + delta
-    let normalizedValue: CGFloat = CGFloat(value) + delta
-    let valueAngle: CGFloat = (normalizedMagnitude * π) - (normalizedValue * π / magnitude)
-    let startAngle: CGFloat = valueAngle + π / 20
-    let endAngle: CGFloat = valueAngle - π / 20
 
     if let knobBase = knobBase { knobBase.drawInRect(frame) }
     else { knobColor.setFill(); UIBezierPath(ovalInRect: frame).fill() }
 
       //// Indicator Drawing
-    let indicatorRect = CGRectMake(frame.minX + 0.5, frame.minY + floor(frame.height * -0.00195) + 0.5, frame.width, floor(frame.height * 0.99805) - floor(frame.height * -0.00195))
     let indicatorPath = UIBezierPath()
-    indicatorPath.addArcWithCenter(CGPointMake(indicatorRect.midX, indicatorRect.midY), radius: indicatorRect.width / 2, startAngle: -startAngle, endAngle: -endAngle, clockwise: true)
-    indicatorPath.addLineToPoint(CGPointMake(indicatorRect.midX, indicatorRect.midY))
+    let center = frame.center
+    indicatorPath.addArcWithCenter(center, radius: half(frame.width), startAngle: startAngle, endAngle: endAngle, clockwise: false)
+    indicatorPath.addLineToPoint(center)
     indicatorPath.closePath()
 
     indicatorColor.setFill()

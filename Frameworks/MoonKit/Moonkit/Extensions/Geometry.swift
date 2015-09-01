@@ -197,9 +197,9 @@ extension CGSize {
   	return size
   }
 
-  public mutating func scaleBy<T>(ratio: Ratio<T>) {
-    width = width * CGFloat(ratio.numerator)
-    height = height * CGFloat(ratio.denominator)
+  public mutating func scaleBy(ratio: Ratio<CGFloat>) {
+    width = width * ratio.numerator
+    height = height * ratio.denominator
   }
 
   public func ratioForFittingSize(size: CGSize) -> Ratio<CGFloat> {
@@ -207,7 +207,7 @@ extension CGSize {
     return Ratio((width/w) / (height/h))
   }
 
-  public func scaledBy<T>(ratio: Ratio<T>) -> CGSize { var s = self; s.scaleBy(ratio); return s }
+  public func scaledBy(ratio: Ratio<CGFloat>) -> CGSize { var s = self; s.scaleBy(ratio); return s }
 
   public func aspectMappedToWidth(w: CGFloat) -> CGSize { return CGSize(width: w, height: (w * height) / width) }
   public func aspectMappedToHeight(h: CGFloat) -> CGSize { return CGSize(width: (h * width) / height, height: h) }

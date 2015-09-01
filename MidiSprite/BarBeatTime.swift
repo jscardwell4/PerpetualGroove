@@ -84,9 +84,9 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
     get { return time.subbeatDivisor }
     set {
       time.subbeatDivisor = newValue
-      let n = clockCount.numerator % Int64(newValue)
-      clockCount = n╱Int64(newValue)
-      beatInterval = Int64(Float(newValue) * 0.25)╱Int64(newValue)
+      let n = clockCount.numerator % Float(newValue)
+      clockCount = n╱Float(newValue)
+      beatInterval = Fraction((Float(newValue) * Float(0.25)), Float(newValue))
     }
   }
 
@@ -107,8 +107,8 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
   private var clockCount: Fraction<Float> {
     didSet { // Runs on MIDI Services thread
       guard oldValue != clockCount else { return }
-      if clockCount == 1 { clockCount.numerator = 0; time.bar++; time.beat = 1; time.subbeat = 1 }
-      else if clockCount % beatInterval == 0 { time.beat++; time.subbeat = 1 }
+      if clockCount == 1╱1 { clockCount.numerator = 0; time.bar++; time.beat = 1; time.subbeat = 1 }
+      else if clockCount % beatInterval == 0╱1 { time.beat++; time.subbeat = 1 }
       else { time.subbeat++ }
     }
   }
@@ -216,7 +216,7 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
   var description: String { return time.description }
 
   /** reset */
-  func reset() { clockCount = 0╱Int64(partsPerQuarter); time.bar = 1; time.beat = 1; time.subbeat = 1 }
+  func reset() { clockCount = 0╱Float(partsPerQuarter); time.bar = 1; time.beat = 1; time.subbeat = 1 }
 
   /**
   initWithClockSource:partsPerQuarter:
@@ -227,8 +227,8 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
   init(clockSource: MIDIEndpointRef, partsPerQuarter ppq: UInt16 = 480) {
     time = CABarBeatTime(bar: 1, beat: 1, subbeat: 1, subbeatDivisor: ppq, reserved: 0)
     marker = time
-    clockCount = 0╱Int64(ppq)
-    beatInterval = Int64(Float(ppq) * 0.25)╱Int64(ppq)
+    clockCount = 0╱Float(ppq)
+    beatInterval = (Float(ppq) * Float(0.25))╱Float(ppq)
     validBeats = 1 ... UInt16(Sequencer.timeSignature.beatsPerBar)
     validSubbeats = 1 ... ppq
 

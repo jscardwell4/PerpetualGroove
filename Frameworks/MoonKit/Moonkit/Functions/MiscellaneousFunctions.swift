@@ -15,19 +15,17 @@ nonce
 */
 public func nonce() -> String { return NSUUID().UUIDString }
 
-public func gcd<T:IntegerArithmeticType>(a: T, _ b: T) -> IntMax {
+public func gcd<T:ArithmeticType>(a: T, _ b: T) -> T {
   var aMax = a.toIntMax(), bMax = b.toIntMax()
   while bMax != 0 {
     let t = bMax
     bMax = aMax % bMax
     aMax = t
   }
-  return aMax
+  return T(intMax: aMax)
 }
-public func lcm<T:IntegerArithmeticType>(a: T, _ b: T) -> IntMax {
-  let aMax = a.toIntMax()
-  let bMax = b.toIntMax()
-  return aMax / gcd(aMax, bMax) * bMax
+public func lcm<T:ArithmeticType>(a: T, _ b: T) -> T {
+  return a / gcd(a, b) * b
 }
 
 /**
@@ -49,6 +47,6 @@ public var hostTime: UInt64 { return UInt64(Float80(hostTicks) * nanosecondsPerH
 public var nanosecondsPerHostTick: Ratio<Float80> {
   var info = mach_timebase_info()
   mach_timebase_info(&info)
-  return info.numer∶info.denom
+  return Float80(info.numer)∶Float80(info.denom)
 }
 

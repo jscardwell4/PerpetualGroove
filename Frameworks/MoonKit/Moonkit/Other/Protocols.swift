@@ -122,8 +122,175 @@ public protocol ArithmeticType {
   func *(lhs: Self, rhs: Self) -> Self
   func /(lhs: Self, rhs: Self) -> Self
   func %(lhs: Self, rhs: Self) -> Self
+  func +=(inout lhs: Self, rhs: Self)
+  func -=(inout lhs: Self, rhs: Self)
+  func /=(inout lhs: Self, rhs: Self)
+  func *=(inout lhs: Self, rhs: Self)
+  func %=(inout lhs: Self, rhs: Self)
   func toIntMax() -> IntMax
   init(intMax: IntMax)
+}
+
+public protocol IntegerConvertible {
+  init(_ value: UInt8)
+  init(_ value: Int8)
+  init(_ value: UInt16)
+  init(_ value: Int16)
+  init(_ value: UInt32)
+  init(_ value: Int32)
+  init(_ value: UInt64)
+  init(_ value: Int64)
+  init(_ value: UInt)
+  init(_ value: Int)
+  init(_ value: _IntegerProducibleType)
+}
+
+public extension IntegerConvertible {
+  init(_ value: _IntegerProducibleType) {
+    switch value {
+      case let v as UInt8: self.init(v)
+      case let v as UInt16: self.init(v)
+      case let v as UInt32: self.init(v)
+      case let v as UInt64: self.init(v)
+      case let v as Int8: self.init(v)
+      case let v as Int16: self.init(v)
+      case let v as Int32: self.init(v)
+      case let v as Int64: self.init(v)
+      default: logWarning("unknown '_IntegerProdocibleType"); self.init(0)
+    }
+  }
+}
+
+public protocol IntegerProducible {
+  func toUInt8() -> UInt8
+  func toInt8() -> Int8
+  func toUInt16() -> UInt16
+  func toInt16() -> Int16
+  func toUInt32() -> UInt32
+  func toInt32() -> Int32
+  func toUInt64() -> UInt64
+  func toInt64() -> Int64
+  func toUInt() -> UInt
+  func toInt() -> Int
+}
+
+public protocol _IntegerProducibleType: FloatConvertible {}
+extension UInt8: _IntegerProducibleType {}
+extension Int8: _IntegerProducibleType {}
+extension UInt16: _IntegerProducibleType {}
+extension Int16: _IntegerProducibleType {}
+extension UInt32: _IntegerProducibleType {}
+extension Int32: _IntegerProducibleType {}
+extension UInt64: _IntegerProducibleType {}
+extension Int64: _IntegerProducibleType {}
+extension UInt: _IntegerProducibleType {}
+extension Int: _IntegerProducibleType {}
+
+extension UInt8: IntegerConvertible {}
+extension Int8: IntegerConvertible {}
+extension UInt16: IntegerConvertible {}
+extension Int16: IntegerConvertible {}
+extension UInt32: IntegerConvertible {}
+extension Int32: IntegerConvertible {}
+extension UInt64: IntegerConvertible {}
+extension Int64: IntegerConvertible {}
+extension UInt: IntegerConvertible {}
+extension Int: IntegerConvertible {}
+extension Float: IntegerConvertible {}
+extension Double: IntegerConvertible {}
+extension Float80: IntegerConvertible {}
+extension CGFloat: IntegerConvertible {}
+
+extension IntegerProducible where Self:_IntegerProducibleType {
+  public func toUInt8() -> UInt8 { return UInt8(self) }
+  public func toInt8() -> Int8 { return Int8(self) }
+  public func toUInt16() -> UInt16 { return UInt16(self) }
+  public func toInt16() -> Int16 { return Int16(self) }
+  public func toUInt32() -> UInt32 { return UInt32(self) }
+  public func toInt32() -> Int32 { return Int32(self) }
+  public func toUInt64() -> UInt64 { return UInt64(self) }
+  public func toInt64() -> Int64 { return Int64(self) }
+  public func toUInt() -> UInt { return UInt(self) }
+  public func toInt() -> Int { return Int(self) }
+
+}
+
+extension UInt8: IntegerProducible {}
+extension Int8: IntegerProducible {}
+extension UInt16: IntegerProducible {}
+extension Int16: IntegerProducible {}
+extension UInt32: IntegerProducible {}
+extension Int32: IntegerProducible {}
+extension UInt64: IntegerProducible {}
+extension Int64: IntegerProducible {}
+extension UInt: IntegerProducible {}
+extension Int: IntegerProducible {}
+extension Float: IntegerProducible {}
+extension Double: IntegerProducible {}
+extension Float80: IntegerProducible {}
+extension CGFloat: IntegerProducible {}
+
+public protocol FloatConvertible {
+  init(_ value: Float)
+  init(_ value: Double)
+  init(_ value: Float80)
+  init(_ value: CGFloat)
+  init(_ value: _FloatProducibleType)
+}
+public protocol _FloatProducibleType {}
+public protocol FloatProducible {
+  func toFloat() -> Float
+  func toDouble() -> Double
+  func toFloat80() -> Float80
+  func toCGFloat() -> CGFloat
+}
+extension Float: _FloatProducibleType {}
+extension Double: _FloatProducibleType {}
+extension Float80: _FloatProducibleType {}
+extension CGFloat: _FloatProducibleType {}
+
+public extension FloatConvertible { //where Self:_FloatProducibleType {
+  public init(_ value: _FloatProducibleType) {
+    switch value {
+      case let v as Float: self.init(v)
+      case let v as Double: self.init(v)
+      case let v as Float80: self.init(v)
+      case let v as CGFloat: self.init(v)
+      default: logWarning("unknown '_FloatProdocibleType"); self.init(0.0)
+    }
+  }
+}
+
+extension Float: FloatConvertible {}
+extension Double: FloatConvertible {}
+extension Float80: FloatConvertible {
+  public init(_ value: CGFloat) { self.init(Double(value)) }
+}
+extension CGFloat: FloatConvertible {
+  public init(_ value: Float80) { self.init(Double(value)) }
+  public init(_ value: CGFloat) { self = value }
+}
+
+extension UInt8: FloatConvertible {}
+extension Int8: FloatConvertible {}
+extension UInt16: FloatConvertible {}
+extension Int16: FloatConvertible {}
+extension UInt32: FloatConvertible {}
+extension Int32: FloatConvertible {}
+extension UInt64: FloatConvertible {}
+extension Int64: FloatConvertible {}
+
+public extension IntegerProducible where Self:_FloatProducibleType {
+  public func toUInt8() -> UInt8 { return UInt8(self) }
+  public func toInt8() -> Int8 { return Int8(self) }
+  public func toUInt16() -> UInt16 { return UInt16(self) }
+  public func toInt16() -> Int16 { return Int16(self) }
+  public func toUInt32() -> UInt32 { return UInt32(self) }
+  public func toInt32() -> Int32 { return Int32(self) }
+  public func toUInt64() -> UInt64 { return UInt64(self) }
+  public func toInt64() -> Int64 { return Int64(self) }
+  public func toUInt() -> UInt { return UInt(self) }
+  public func toInt() -> Int { return Int(self) }
 }
 
 extension Float: ArithmeticType {
