@@ -94,6 +94,15 @@ backgroundDispatch:
 */
 public func backgroundDispatch(block: () -> Void) { dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), block) }
 
+
+public func delayedDispatch(delay: Double, _ queue: dispatch_queue_t, _ block: dispatch_block_t) {
+  dispatch_after(
+    dispatch_time(DISPATCH_TIME_NOW, Int64(secondsToNanoseconds(delay))),
+    dispatch_get_main_queue(),
+    block
+  )
+}
+
 /**
 delayedDispatchToMain:block:
 
@@ -101,10 +110,6 @@ delayedDispatchToMain:block:
 - parameter block: dispatch_block_t
 */
 public func delayedDispatchToMain(delay: Double, _ block: dispatch_block_t) {
-  dispatch_after(
-    dispatch_time(DISPATCH_TIME_NOW, Int64(secondsToNanoseconds(delay))),
-    dispatch_get_main_queue(),
-    block
-  )
+  delayedDispatch(delay, dispatch_get_main_queue(), block)
 }
 

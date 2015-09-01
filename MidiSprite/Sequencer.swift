@@ -37,6 +37,12 @@ final class Sequencer {
 
   static var timeSignature: SimpleTimeSignature = .FourFour
 
+  static var currentFile: NSURL? {
+    didSet {
+      logDebug("currentFile = '\(currentFile)")
+    }
+  }
+
   /**
   synchronizeTime:
 

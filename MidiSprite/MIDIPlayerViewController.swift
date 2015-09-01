@@ -19,6 +19,7 @@ final class MIDIPlayerViewController: UIViewController {
 
   @IBOutlet weak var tempoSlider: Slider!
   @IBOutlet weak var tempoLabel: UILabel!
+  @IBOutlet weak var filesBarButtonItem: ImageBarButtonItem!
   @IBOutlet weak var templateBarButtonItem: ImageBarButtonItem!
   @IBOutlet weak var instrumentBarButtonItem: ImageBarButtonItem!
   @IBOutlet weak var playPauseBarButtonItem: ImageBarButtonItem!
@@ -36,6 +37,9 @@ final class MIDIPlayerViewController: UIViewController {
 
   /** tempoSliderValueDidChange */
   @IBAction private func tempoSliderValueDidChange() { Sequencer.tempo = Double(tempoSlider.value) }
+
+  /** files */
+  @IBAction private func files() { if case .Files = popover { popover = .None } else { popover = .Files } }
 
   /** revert */
   @IBAction private func revert() { (skView?.scene as? MIDIPlayerScene)?.revert() }
@@ -163,12 +167,13 @@ final class MIDIPlayerViewController: UIViewController {
   // MARK: - Popover management
 
   private enum Popover {
-    case None, Template, Instrument, Mixer
+    case None, Files, Template, Instrument, Mixer
     var view: PopoverView? {
       guard let delegate = UIApplication.sharedApplication().delegate,
                 window = delegate.window,
                 controller = window?.rootViewController as? MIDIPlayerViewController else { return nil }
       switch self {
+        case .Files:      return controller.filesPopoverView
         case .Template:   return controller.templatePopoverView
         case .Instrument: return controller.instrumentPopoverView
         case .Mixer:      return controller.mixerPopoverView
@@ -187,6 +192,17 @@ final class MIDIPlayerViewController: UIViewController {
   }
 
   // MARK: - Popover content view controllers
+
+  private var _filesViewController: FilesViewController?
+  private var filesViewController: FilesViewController {
+    guard _filesViewController == nil else { return _filesViewController! }
+    _filesViewController = FilesViewController()
+    _filesViewController!.didSelectFile = { Sequencer.currentFile = $0 }
+    _filesViewController!.didDeleteFile = { guard Sequencer.currentFile == $0 else { return }; Sequencer.currentFile = nil }
+    guard _filesViewController != nil else { fatalError("failed to instantiate file view controller from storyboard") }
+    addChildViewController(_filesViewController!)
+    return _filesViewController!
+  }
 
   private var _mixerViewController: MixerViewController?
   private var mixerViewController: MixerViewController {
@@ -215,6 +231,20 @@ final class MIDIPlayerViewController: UIViewController {
   }
 
   // MARK: - Popover views
+
+  private var _filesPopoverView: PopoverView?
+  private var filesPopoverView: PopoverView {
+    guard _filesPopoverView == nil else { return _filesPopoverView! }
+    _filesPopoverView = PopoverView(autolayout: true)
+    _filesPopoverView!.location = .Top
+    _filesPopoverView!.nametag = "filePopover"
+
+    let fileView = filesViewController.view
+    _filesPopoverView!.contentView.addSubview(fileView)
+    _filesPopoverView!.constrain(𝗩|fileView|𝗩, 𝗛|fileView|𝗛)
+
+    return _filesPopoverView!
+  }
 
   private var _mixerPopoverView: PopoverView?
   private var mixerPopoverView: PopoverView {
@@ -324,73 +354,33 @@ final class MIDIPlayerViewController: UIViewController {
   */
   override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
-    guard let templatePresentingView = templateBarButtonItem.customView,
+    guard let filesPresentingView = filesBarButtonItem.customView,
+              templatePresentingView = templateBarButtonItem.customView,
               mixerPresentingView = mixerBarButtonItem.customView,
               instrumentPresentingView = instrumentBarButtonItem.customView else { return }
 
-    // Add template popover, initially hidden
+    func addPopover(popoverView: PopoverView, _ presentingView: UIView) {
+      popoverView.hidden = true
+      view.addSubview(popoverView)
 
-    let templatePopover = templatePopoverView
-    templatePopover.hidden = true
-    view.addSubview(templatePopover)
+      let maxWidth = UIScreen.mainScreen().bounds.width - 10
+      let intrinsicWidth = min(maxWidth, popoverView.intrinsicContentSize().width) / 2
+      let midX = presentingView.center.x
+      let offset: CGFloat
 
-    var necessaryWidth = (templatePopover.intrinsicContentSize().width / 2) + 2
-    let viewWidth = view.bounds.width
-    var presentingViewFrame = templatePresentingView.frame
-    var halfPresentingViewWidth = presentingViewFrame.width / 2
-    var spaceToLeft = presentingViewFrame.minX + halfPresentingViewWidth
-    var spaceToRight = viewWidth - presentingViewFrame.maxX + halfPresentingViewWidth
+      switch (intrinsicWidth, midX, maxWidth - midX) {
+        case let (i, l, r) where i < l && i > r: offset = r - i
+        case let (i, l, r) where i > l && i < r: offset = i - l
+        default:                                 offset = 0
+      }
 
-    var offset: CGFloat
-    switch (spaceToLeft > necessaryWidth, spaceToRight > necessaryWidth) {
-      case (true, false):                offset = necessaryWidth - spaceToRight
-      case (false, true):                offset = necessaryWidth - spaceToLeft
-      case (true, true), (false, false): offset = 0
+      popoverView.xOffset = -offset
     }
 
-    templatePopover.xOffset = offset
-
-    // Add mixer popover, initially hidden
-
-    let mixerPopover = mixerPopoverView
-    mixerPopover.hidden = true
-
-    view.addSubview(mixerPopover)
-
-    necessaryWidth = (mixerPopover.intrinsicContentSize().width / 2) + 2
-    presentingViewFrame = mixerPresentingView.frame
-    halfPresentingViewWidth = presentingViewFrame.width / 2
-    spaceToLeft = presentingViewFrame.minX + halfPresentingViewWidth
-    spaceToRight = viewWidth - presentingViewFrame.maxX + halfPresentingViewWidth
-
-    switch (spaceToLeft > necessaryWidth, spaceToRight > necessaryWidth) {
-      case (true, false):                offset = necessaryWidth - spaceToRight
-      case (false, true):                offset = necessaryWidth - spaceToLeft
-      case (true, true), (false, false): offset = 0
-    }
-
-    mixerPopover.xOffset = offset
-
-    // Add instrument popover, initially hidden
-
-    let instrumentPopover = instrumentPopoverView
-    instrumentPopover.hidden = true
-
-    view.addSubview(instrumentPopover)
-
-    necessaryWidth = (instrumentPopover.intrinsicContentSize().width / 2) + 2
-    presentingViewFrame = instrumentPresentingView.frame
-    halfPresentingViewWidth = presentingViewFrame.width / 2
-    spaceToLeft = presentingViewFrame.minX + halfPresentingViewWidth
-    spaceToRight = viewWidth - presentingViewFrame.maxX + halfPresentingViewWidth
-
-    switch (spaceToLeft > necessaryWidth, spaceToRight > necessaryWidth) {
-      case (true, false):                offset = necessaryWidth - spaceToRight
-      case (false, true):                offset = necessaryWidth - spaceToLeft
-      case (true, true), (false, false): offset = 0
-    }
-
-    instrumentPopover.xOffset = offset
+    addPopover(filesPopoverView,      filesPresentingView)
+    addPopover(templatePopoverView,   templatePresentingView)
+    addPopover(mixerPopoverView,      mixerPresentingView)
+    addPopover(instrumentPopoverView, instrumentPresentingView)
 
     view.setNeedsUpdateConstraints()
 
@@ -400,7 +390,9 @@ final class MIDIPlayerViewController: UIViewController {
   override func updateViewConstraints() {
     super.updateViewConstraints()
 
-    guard let mixerPopover = _mixerPopoverView,
+    guard let filesPopover = _filesPopoverView,
+              filesButton = filesBarButtonItem?.customView,
+              mixerPopover = _mixerPopoverView,
               mixerButton = mixerBarButtonItem?.customView,
               templatePopover = _templatePopoverView,
               templateButton = templateBarButtonItem?.customView,
@@ -408,30 +400,19 @@ final class MIDIPlayerViewController: UIViewController {
               instrumentButton = instrumentBarButtonItem?.customView
       else { return }
 
-    var id = MoonKit.Identifier(self, "MixerPopover")
-    if view.constraintsWithIdentifier(id).count == 0 {
+    func addConstraints(id: Identifier, _ popoverView: PopoverView, _ presentingView: UIView) {
+      guard view.constraintsWithIdentifier(id).count == 0 else { return }
       view.constrain([
-        mixerPopover.centerX => mixerButton.centerX - mixerPopover.xOffset,
-        mixerPopover.top => mixerButton.bottom
+        popoverView.centerX => presentingView.centerX - popoverView.xOffset,
+        popoverView.top => presentingView.bottom,
+        popoverView.width ≤ (UIScreen.mainScreen().bounds.width - 10)
       ] --> id)
     }
 
-    id = MoonKit.Identifier(self, "TemplatePopover")
-    if view.constraintsWithIdentifier(id).count == 0 {
-      view.constrain([
-        templatePopover.centerX => templateButton.centerX - templatePopover.xOffset,
-        templatePopover.top => templateButton.bottom
-      ] --> id)
-    }
-
-    id = MoonKit.Identifier(self, "InstrumenetPopover")
-    if view.constraintsWithIdentifier(id).count == 0 {
-      view.constrain([
-        instrumentPopover.centerX => instrumentButton.centerX - instrumentPopover.xOffset,
-        instrumentPopover.top => instrumentButton.bottom
-      ] --> id)
-    }
-
+    addConstraints(Identifier(self, "FilesPopover"), filesPopover, filesButton)
+    addConstraints(Identifier(self, "MixerPopover"), mixerPopover, mixerButton)
+    addConstraints(Identifier(self, "TemplatePopover"), templatePopover, templateButton)
+    addConstraints(Identifier(self, "InstrumentPopover"),  instrumentPopover, instrumentButton)
   }
 
   /**

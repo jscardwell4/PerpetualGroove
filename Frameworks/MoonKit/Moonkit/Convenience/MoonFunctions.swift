@@ -40,6 +40,11 @@ public var documentsURL: NSURL {
   return NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)[0]
 }
 
+/** documentsDirectoryContents */
+public func documentsDirectoryContents() throws -> [NSURL] {
+  return try NSFileManager.defaultManager().contentsOfDirectoryAtURL(documentsURL, includingPropertiesForKeys: nil, options: [])
+}
+
 /**
 documentsURLToFile:
 

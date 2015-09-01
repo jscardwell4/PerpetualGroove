@@ -58,7 +58,6 @@ final class Sequence: CustomStringConvertible {
   */
   func writeToFile(file: NSURL, overwrite: Bool = false) throws {
     let midiFile = self.file
-    logDebug("midiFile = \(midiFile)")
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)) {
       let bytes = midiFile.bytes
       let data = NSData(bytes: bytes, length: bytes.count)
