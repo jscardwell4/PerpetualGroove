@@ -324,6 +324,7 @@
 		C26863721AF96E6E00D664E8 /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26863711AF96E6E00D664E8 /* Queue.swift */; };
 		C26A27F11B94BD7A00BD1698 /* IntrinsicSizeDelegatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A27F01B94BD7A00BD1698 /* IntrinsicSizeDelegatingView.swift */; settings = {ASSET_TAGS = (); }; };
 		C26A27F31B94C30500BD1698 /* DirectoryMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A27F21B94C30500BD1698 /* DirectoryMonitor.swift */; settings = {ASSET_TAGS = (); }; };
+		C26A27F71B9532A900BD1698 /* Knob.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A27F61B9532A900BD1698 /* Knob.swift */; settings = {ASSET_TAGS = (); }; };
 		C27372851A1FC0750079624D /* UIColor+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27372841A1FC0750079624D /* UIColor+MoonKitAdditions.swift */; };
 		C274CB8A1B70FBBF00EC8E4A /* Form.swift in Sources */ = {isa = PBXBuildFile; fileRef = C274CB891B70FBBF00EC8E4A /* Form.swift */; };
 		C274CB8C1B70FBCF00EC8E4A /* FormField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C274CB8B1B70FBCF00EC8E4A /* FormField.swift */; };
@@ -537,6 +538,7 @@
 		C26863711AF96E6E00D664E8 /* Queue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Queue.swift; sourceTree = "<group>"; };
 		C26A27F01B94BD7A00BD1698 /* IntrinsicSizeDelegatingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntrinsicSizeDelegatingView.swift; sourceTree = "<group>"; };
 		C26A27F21B94C30500BD1698 /* DirectoryMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DirectoryMonitor.swift; sourceTree = "<group>"; };
+		C26A27F61B9532A900BD1698 /* Knob.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Knob.swift; sourceTree = "<group>"; };
 		C27372841A1FC0750079624D /* UIColor+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C274832519D07942000CB422 /* UIBarButtonItem+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIBarButtonItem+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C274CB891B70FBBF00EC8E4A /* Form.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Form.swift; sourceTree = "<group>"; };
@@ -1063,6 +1065,7 @@
 				C2D664F01B88CC6F00D70FFA /* Ratio.swift */,
 				C26A27F01B94BD7A00BD1698 /* IntrinsicSizeDelegatingView.swift */,
 				C26A27F21B94C30500BD1698 /* DirectoryMonitor.swift */,
+				C26A27F61B9532A900BD1698 /* Knob.swift */,
 			);
 			path = Objects;
 			sourceTree = "<group>";
@@ -1820,6 +1823,7 @@
 				C24A22971ADB47590065E7EA /* CollectionManipulations.swift in Sources */,
 				C23592FE19C8E04200920F8D /* String+MoonKitAdditions.swift in Sources */,
 				C2CEFF2A1A32807E00F3BE24 /* TextInputView.swift in Sources */,
+				C26A27F71B9532A900BD1698 /* Knob.swift in Sources */,
 				C2358F3F19C78E0C00920F8D /* NSObject+MSKitAdditions.m in Sources */,
 				C24A22851ADAEC290065E7EA /* JSONValueRelatedExtensions.swift in Sources */,
 				C24A22831ADAEC0F0065E7EA /* ObjectJSONValue.swift in Sources */,

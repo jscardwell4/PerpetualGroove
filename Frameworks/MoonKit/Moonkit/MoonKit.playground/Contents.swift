@@ -3,4 +3,4 @@ import Foundation
 import MoonKit
 import Chameleon
 
-String(Chameleon.quietLightLobLollyDark.rgbaHex!, radix: 16, uppercase: true)
+String(Chameleon.quietLightLilyWhiteDark.rgbaHex!, radix: 16, uppercase: true)

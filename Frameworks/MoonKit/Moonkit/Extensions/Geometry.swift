@@ -92,6 +92,10 @@ public func +<T:Unpackable2 where T.Element:CGFloatable>(lhs: CGPoint, rhs: T) -
   let floatables = rhs.unpack
   return lhs + (floatables.0.CGFloatValue, floatables.1.CGFloatValue)
 }
+public func +=<T:Unpackable2 where T.Element:CGFloatable>(inout lhs: CGPoint, rhs: T) {
+  let floatables = rhs.unpack
+  lhs = lhs + (floatables.0.CGFloatValue, floatables.1.CGFloatValue)
+}
 
 public func +<T:Unpackable2 where T.Element == CGFloat>(lhs: CGPoint, rhs: T) -> CGPoint {
   return lhs + rhs.unpack

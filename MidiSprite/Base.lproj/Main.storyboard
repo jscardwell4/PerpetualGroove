@@ -331,21 +331,55 @@
                                             <color key="textColor" red="0.87450999019999998" green="0.82744997740000004" blue="0.76077997679999998" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RJ4-aR-o07" customClass="Knob" customModule="MoonKit">
+                                            <rect key="frame" x="15" y="213" width="44" height="44"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="44" id="51K-kG-4vg"/>
+                                                <constraint firstAttribute="height" constant="44" id="MZI-Rp-Aqp"/>
+                                            </constraints>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="color" keyPath="indicatorColor">
+                                                    <color key="value" red="0.80784313725490198" green="0.80784313725490198" blue="0.80784313725490198" alpha="1" colorSpace="deviceRGB"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="value">
+                                                    <real key="value" value="0.0"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
+                                                    <real key="value" value="-1"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
+                                                    <real key="value" value="1"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="image" keyPath="knobBase" value="knob"/>
+                                                <userDefinedRuntimeAttribute type="color" keyPath="knobColor">
+                                                    <color key="value" red="0.87450980389999999" green="0.82745098039999998" blue="0.76470588240000004" alpha="1" colorSpace="deviceRGB"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </view>
                                     </subviews>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
+                                    <constraint firstItem="RJ4-aR-o07" firstAttribute="centerX" secondItem="Ywg-X3-Y1Q" secondAttribute="centerX" id="0MZ-wN-pf8"/>
+                                    <constraint firstItem="RJ4-aR-o07" firstAttribute="top" secondItem="Q27-Qm-1HH" secondAttribute="bottom" constant="3" id="0xe-y8-HdL"/>
                                     <constraint firstItem="Evx-CT-UhF" firstAttribute="top" secondItem="4EJ-Z0-Ecx" secondAttribute="bottom" constant="8" id="7zI-a8-31c"/>
                                     <constraint firstItem="Evx-CT-UhF" firstAttribute="centerX" secondItem="Ywg-X3-Y1Q" secondAttribute="centerX" id="AiP-hD-7rs"/>
                                     <constraint firstItem="4EJ-Z0-Ecx" firstAttribute="top" secondItem="Ywg-X3-Y1Q" secondAttribute="topMargin" constant="8" id="LMJ-HX-GUf"/>
                                     <constraint firstItem="Q27-Qm-1HH" firstAttribute="top" secondItem="Evx-CT-UhF" secondAttribute="bottom" constant="20" id="Oeg-rP-mJr"/>
+                                    <constraint firstItem="zFx-2Q-V0k" firstAttribute="top" secondItem="RJ4-aR-o07" secondAttribute="bottom" constant="4" id="TGx-oG-3cT"/>
                                     <constraint firstAttribute="bottomMargin" secondItem="zFx-2Q-V0k" secondAttribute="bottom" constant="10" id="Xkl-0u-yZ5"/>
                                     <constraint firstItem="zFx-2Q-V0k" firstAttribute="centerX" secondItem="Ywg-X3-Y1Q" secondAttribute="centerX" id="Z84-6j-RNA"/>
                                     <constraint firstItem="Q27-Qm-1HH" firstAttribute="centerX" secondItem="Ywg-X3-Y1Q" secondAttribute="centerX" id="dCj-D3-Zk2"/>
                                     <constraint firstItem="zFx-2Q-V0k" firstAttribute="top" secondItem="Q27-Qm-1HH" secondAttribute="bottom" constant="51" id="dHC-63-T9O"/>
                                     <constraint firstItem="4EJ-Z0-Ecx" firstAttribute="centerX" secondItem="Ywg-X3-Y1Q" secondAttribute="centerX" id="nEj-Lu-pRz"/>
                                 </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="dHC-63-T9O"/>
+                                    </mask>
+                                </variation>
                                 <connections>
                                     <outlet property="volumeSlider" destination="Evx-CT-UhF" id="vDN-Mv-AOX"/>
                                 </connections>
@@ -405,12 +439,40 @@
                                                 <outlet property="delegate" destination="2AY-7g-m2Q" id="JBx-aT-uqu"/>
                                             </connections>
                                         </textField>
+                                        <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="y4E-jp-B4L" customClass="Knob" customModule="MoonKit">
+                                            <rect key="frame" x="15" y="213" width="44" height="44"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="44" id="PAw-dD-WMq"/>
+                                                <constraint firstAttribute="width" constant="44" id="xLz-kb-Rbm"/>
+                                            </constraints>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="color" keyPath="indicatorColor">
+                                                    <color key="value" red="0.80784313725490198" green="0.80784313725490198" blue="0.80784313725490198" alpha="1" colorSpace="deviceRGB"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="value">
+                                                    <real key="value" value="0.0"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
+                                                    <real key="value" value="-1"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
+                                                    <real key="value" value="1"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="image" keyPath="knobBase" value="knob"/>
+                                                <userDefinedRuntimeAttribute type="color" keyPath="knobColor">
+                                                    <color key="value" red="0.87450980389999999" green="0.82745098039999998" blue="0.76470588240000004" alpha="1" colorSpace="deviceRGB"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </view>
                                     </subviews>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
                                 <constraints>
                                     <constraint firstItem="fQV-Nj-rrF" firstAttribute="top" secondItem="1nN-5d-7mi" secondAttribute="bottom" constant="8" id="0VX-Kh-Ceg"/>
                                     <constraint firstItem="UVo-0O-vty" firstAttribute="top" secondItem="fQV-Nj-rrF" secondAttribute="bottom" constant="20" id="1Xv-0G-CyW"/>
+                                    <constraint firstItem="Ewy-eF-z7g" firstAttribute="top" secondItem="y4E-jp-B4L" secondAttribute="bottom" constant="4" id="2FQ-mP-X84"/>
+                                    <constraint firstItem="y4E-jp-B4L" firstAttribute="top" secondItem="UVo-0O-vty" secondAttribute="bottom" constant="3" id="B0p-oY-2QR"/>
                                     <constraint firstItem="Ewy-eF-z7g" firstAttribute="centerX" secondItem="2AY-7g-m2Q" secondAttribute="centerX" id="ESL-nS-8yv"/>
                                     <constraint firstItem="1nN-5d-7mi" firstAttribute="centerX" secondItem="2AY-7g-m2Q" secondAttribute="centerX" id="EaG-8Y-AH1"/>
                                     <constraint firstItem="Ewy-eF-z7g" firstAttribute="top" secondItem="UVo-0O-vty" secondAttribute="bottom" constant="51" id="MF7-48-Xeo"/>
@@ -418,7 +480,13 @@
                                     <constraint firstItem="1nN-5d-7mi" firstAttribute="top" secondItem="2AY-7g-m2Q" secondAttribute="topMargin" constant="8" id="XuV-wo-oce"/>
                                     <constraint firstAttribute="bottomMargin" secondItem="Ewy-eF-z7g" secondAttribute="bottom" constant="10" id="bVj-gz-XYM"/>
                                     <constraint firstItem="UVo-0O-vty" firstAttribute="centerX" secondItem="2AY-7g-m2Q" secondAttribute="centerX" id="da8-Ip-w5g"/>
+                                    <constraint firstItem="y4E-jp-B4L" firstAttribute="centerX" secondItem="2AY-7g-m2Q" secondAttribute="centerX" id="e4E-Fp-Sj6"/>
                                 </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="MF7-48-Xeo"/>
+                                    </mask>
+                                </variation>
                                 <connections>
                                     <outlet property="labelTextField" destination="Ewy-eF-z7g" id="ohI-OQ-pYd"/>
                                     <outlet property="volumeSlider" destination="fQV-Nj-rrF" id="c6d-O8-cXX"/>
@@ -447,6 +515,7 @@
         <image name="files-selected" width="56" height="56"/>
         <image name="floppydisk" width="56" height="56"/>
         <image name="floppydisk-selected" width="56" height="56"/>
+        <image name="knob" width="56" height="56"/>
         <image name="metronome" width="56" height="56"/>
         <image name="metronome-selected" width="56" height="56"/>
         <image name="piano" width="56" height="56"/>
