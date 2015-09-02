@@ -22,6 +22,8 @@ final class AssetManager {
   static let sliderMinTrackColor = rgb(146, 135, 120)
   static let sliderMaxTrackColor = rgb(51, 50, 49)
 
+  static let popoverBackgroundColor = rgb(58, 58, 58)
+
   static let labelFont              = Eveleth.lightFontWithSize(14)
   static let labelTextColor         = Chameleon.kelleyPearlBush
   static let controlFont            = Eveleth.thinFontWithSize(14)

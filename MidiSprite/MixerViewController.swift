@@ -41,7 +41,7 @@ final class MixerViewController: UICollectionViewController {
     super.updateViewConstraints()
     view.removeAllConstraints()
     let itemCount = Mixer.instruments.count + 1
-    view.constrain(view.width => Float(74 * itemCount + 10 * (itemCount - 1)), view.height => 300)
+    view.constrain(view.width => Float(100 * itemCount + 10 * (itemCount - 1)), view.height => 400)
     view.constrain(𝗩|collectionView!|𝗩, 𝗛|collectionView!|𝗛)
   }
 

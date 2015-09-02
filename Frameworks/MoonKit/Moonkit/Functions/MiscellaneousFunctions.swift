@@ -41,12 +41,12 @@ public func typeName(object: Any) -> String { return _stdlib_getDemangledTypeNam
 public var hostTicks: UInt64 { return mach_absolute_time() }
 
 /** Nanoseconds since last reboot */
-public var hostTime: UInt64 { return UInt64(Float80(hostTicks) * nanosecondsPerHostTick) }
+public var hostTime: UInt64 { return hostTicks * UInt64(nanosecondsPerHostTick.value) }
 
 /** Ratio that represents the number of nanoseconds per host tick */
-public var nanosecondsPerHostTick: Ratio<Float80> {
+public var nanosecondsPerHostTick: Ratio<Int64> {
   var info = mach_timebase_info()
   mach_timebase_info(&info)
-  return Float80(info.numer)∶Float80(info.denom)
+  return Int64(info.numer)∶Int64(info.denom)
 }
 

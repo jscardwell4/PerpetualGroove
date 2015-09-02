@@ -8,22 +8,34 @@
 
 import UIKit
 
-public class PopoverView: UIView {
+@IBDesignable public class PopoverView: UIView {
 
   /** Enumeration to define which edge of the view will have an arrow */
-  public enum Location { case Top, Bottom }
+  public enum Location: String { case Top, Bottom }
 
   /** Whether the arrow is drawn at the top or the bottom of the view, also affects label offsets and alignment rect */
-  public var location: Location = .Bottom
+  public var location: Location = .Bottom {
+    didSet {
+      guard oldValue != location else { return }
+      refreshShape()
+      removeConstraints(constraintsWithIdentifier(constraintID))
+      setNeedsUpdateConstraints()
+    }
+  }
+  @IBInspectable public var locationString: String {
+    get { return location.rawValue }
+    set { if let location = Location(rawValue: newValue) { self.location = location }  }
+  }
 
   /** Value used to size the arrow's width */
-  public var arrowWidth: CGFloat = 10  { didSet { refreshShape() } }
+  @IBInspectable public var arrowWidth: CGFloat = 10  { didSet { refreshShape() } }
 
   /** Value used to size the arrow's height */
-  public var arrowHeight: CGFloat = 10  { didSet { refreshShape() } }
+  @IBInspectable public var arrowHeight: CGFloat = 10  { didSet { refreshShape() } }
 
   /** Value used to place arrow */
-  public var xOffset: CGFloat = 0 { didSet { refreshShape() } }
+  @IBInspectable public var xOffset: CGFloat = 0 { didSet { refreshShape() } }
+
 
   /** Padding for the content view */
   public var contentInsets = UIEdgeInsets(inset: 10) {
@@ -100,9 +112,8 @@ public class PopoverView: UIView {
   /** Overridden so we can update our shape's path on bounds changes */
   public override var bounds: CGRect { didSet { refreshShape() } }
 
-  /** Holds a reference to the effect view's content view */
-  public weak var contentView: UIView!
-  private weak var blurView: UIVisualEffectView! { didSet { contentView = blurView?.contentView } }
+  /** Subview for holding the popover's content */
+  @IBOutlet public private(set) weak var contentView: UIView!
 
   /** Convenience accessor for the shape layer used to mask root layer */
   private var maskingLayer: CAShapeLayer { return layer.mask as! CAShapeLayer }
@@ -114,35 +125,24 @@ public class PopoverView: UIView {
     layer.mask = CAShapeLayer()
     refreshShape()
 
-
-    let blurEffect = UIBlurEffect(style: .Dark)
-    let blurView = UIVisualEffectView(effect: blurEffect)
-    blurView.translatesAutoresizingMaskIntoConstraints = false
-    blurView.contentView.translatesAutoresizingMaskIntoConstraints = false
-
-    addSubview(blurView)
-    self.blurView = blurView
+    let contentView = UIView(autolayout: true)
+    contentView.backgroundColor = .clearColor()
+    addSubview(contentView)
+    self.contentView = contentView
   }
+
+  private let constraintID = Identifier("PopoverView", "Content")
 
   /** updateConstraints */
   public override func updateConstraints() {
     super.updateConstraints()
 
-    var id = Identifier(self, "Content")
-    if constraintsWithIdentifier(id).count == 0 {
-      constrain([𝗩|--contentInsets.top--blurView.contentView--contentInsets.bottom--|𝗩,
-                 𝗛|--contentInsets.left--blurView.contentView--contentInsets.right--|𝗛] --> id)
-    }
-
-    id = Identifier(self, "Internal")
-    guard constraintsWithIdentifier(id).count == 0 else { return }
+    guard constraintsWithIdentifier(constraintID).count == 0 else { return }
 
     let topOffset:    CGFloat = location == .Top    ? arrowHeight : 0
     let bottomOffset: CGFloat = location == .Bottom ? arrowHeight : 0
-
-    guard let effect = contentView?.superview as? UIVisualEffectView else { return }
-
-    constrain(𝗛|effect|𝗛 --> id, [effect.top => top - topOffset, effect.bottom => bottom + bottomOffset] --> id)
+    constrain([𝗩|--(contentInsets.top - topOffset)--contentView--(contentInsets.bottom + bottomOffset)--|𝗩,
+               𝗛|--contentInsets.left--contentView--contentInsets.right--|𝗛] --> constraintID)
   }
 
   /**
@@ -163,11 +163,39 @@ public class PopoverView: UIView {
   /** layoutSubviews */
   public override func layoutSubviews() { super.layoutSubviews(); refreshShape() }
 
+
+  public override func prepareForInterfaceBuilder() {
+    super.prepareForInterfaceBuilder()
+    initializeIVARs()
+  }
+
+  /**
+  encodeWithCoder:
+
+  - parameter aCoder: NSCoder
+  */
+  public override func encodeWithCoder(aCoder: NSCoder) {
+    super.encodeWithCoder(aCoder)
+    aCoder.encodeDouble(Double(arrowWidth), forKey: "arrowWidth")
+    aCoder.encodeDouble(Double(arrowHeight), forKey: "arrowHeight")
+    aCoder.encodeDouble(Double(xOffset), forKey: "xOffset")
+    aCoder.encodeUIEdgeInsets(contentInsets, forKey: "contentInsets")
+    aCoder.encodeObject(location.rawValue, forKey: "location")
+  }
+
   /**
   Initialization with coder is unsupported
 
   - parameter aDecoder: NSCoder
   */
-  required public init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }
+  required public init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+    arrowWidth = CGFloat(aDecoder.decodeDoubleForKey("arrowWidth"))
+    arrowHeight = CGFloat(aDecoder.decodeDoubleForKey("arrowHeight"))
+    xOffset = CGFloat(aDecoder.decodeDoubleForKey("xOffset"))
+    contentInsets = aDecoder.decodeUIEdgeInsetsForKey("contentInsets")
+    location = Location(rawValue: aDecoder.decodeObjectForKey("location") as! String) ?? .Bottom
+    initializeIVARs()
+  }
 
 }

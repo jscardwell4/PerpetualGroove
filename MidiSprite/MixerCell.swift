@@ -13,22 +13,8 @@ import typealias AudioToolbox.AudioUnitParameterValue
 
 class MixerCell: UICollectionViewCell {
 
-  @IBOutlet weak var volumeSlider: VerticalSlider! {
-    didSet {
-      guard let volumeSlider = volumeSlider else { return }
-      volumeSlider.setThumbImage(UIImage(named: "verticalthumb2"), forState: .Normal, color: AssetManager.sliderThumbColor)
-      volumeSlider.setMinimumTrackImage(UIImage(named: "line6"), forState: .Normal, color: AssetManager.sliderMinTrackColor)
-      volumeSlider.setMaximumTrackImage(UIImage(named: "line6"), forState: .Normal, color: AssetManager.sliderMaxTrackColor)
-    }
-  }
-
-  @IBOutlet weak var panKnob: Knob! {
-    didSet {
-      guard let panKnob = panKnob else { return }
-      panKnob.indicatorColor = AssetManager.sliderThumbColor
-      panKnob.knobColor = AssetManager.sliderMinTrackColor
-    }
-  }
+  @IBOutlet weak var volumeSlider: VerticalSlider!
+  @IBOutlet weak var panKnob: Knob!
 
   var volume: AudioUnitParameterValue {
     get { return volumeSlider.value / volumeSlider.maximumValue }
@@ -45,7 +31,7 @@ class MixerCell: UICollectionViewCell {
 
   - returns: CGSize
   */
-  override func intrinsicContentSize() -> CGSize { return CGSize(width: 64, height: 300) }
+  override func intrinsicContentSize() -> CGSize { return CGSize(width: 100, height: 400) }
 
 }
 

@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import QuartzCore
 
-public class Slider: UISlider {
+@IBDesignable public class Slider: UISlider {
 
   // MARK: - Enumeration to specify the style of the slider's thumb button
   public enum ThumbStyle: Equatable {
@@ -61,14 +61,91 @@ public class Slider: UISlider {
 
   public override init(frame: CGRect) { super.init(frame: frame); setup() }
 
-  required public init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder); setup() }
+  public override func encodeWithCoder(aCoder: NSCoder) {
+    super.encodeWithCoder(aCoder)
+    aCoder.encodeBool(valueLabelHidden, forKey: "valueLabelHidden")
+    aCoder.encodeBool(trackShowsThroughThumb, forKey: "trackShowsThroughThumb")
+    aCoder.encodeUIOffset(thumbOffset, forKey: "thumbOffset")
+    aCoder.encodeUIOffset(valueLabelOffset, forKey: "valueLabelOffset")
+  }
+
+  required public init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+    valueLabelHidden = aDecoder.decodeBoolForKey("valueLabelHidden")
+    trackShowsThroughThumb = aDecoder.decodeBoolForKey("trackShowsThroughThumb")
+    thumbOffset = aDecoder.decodeUIOffsetForKey("thumbOffset")
+    valueLabelOffset = aDecoder.decodeUIOffsetForKey("valueLabelOffset")
+    setup()
+  }
 
   public let valueLabel = UILabel(autolayout: true)
-  public var valueLabelHidden = true { didSet { valueLabel.hidden = valueLabelHidden } }
-  public var thumbOffset = UIOffset.zeroOffset
-  public var valueLabelOffset = UIOffset.zeroOffset
+  @IBInspectable public var valueLabelHidden: Bool = true { didSet { valueLabel.hidden = valueLabelHidden } }
+  @IBInspectable public var thumbOffsetString: String {
+    get { return NSStringFromUIOffset(thumbOffset) }
+    set { thumbOffset = UIOffsetFromString(newValue) }
+  }
+  @IBInspectable public var valueLabelOffsetString: String {
+    get { return NSStringFromUIOffset(valueLabelOffset) }
+    set { valueLabelOffset = UIOffsetFromString(newValue) }
+  }
+  public var thumbOffset: UIOffset = .zeroOffset { didSet { setNeedsDisplay() } }
+  public var valueLabelOffset: UIOffset = .zeroOffset { didSet { setNeedsDisplay() } }
 
-  public var trackShowsThroughThumb = false
+  @IBInspectable public var trackShowsThroughThumb: Bool = false
+  @IBInspectable public var defaultMinimumTrackImage: UIImage? {
+    didSet {
+      if let image = defaultMinimumTrackImage, color = minimumTrackTintColor {
+        setMinimumTrackImage(image, forState: .Normal, color: color)
+      }
+    }
+  }
+  @IBInspectable public var defaultMaximumTrackImage: UIImage? {
+    didSet {
+      if let image = defaultMaximumTrackImage, color = maximumTrackTintColor {
+        setMaximumTrackImage(image, forState: .Normal, color: color)
+      }
+    }
+  }
+  @IBInspectable public var defaultThumbImage: UIImage? {
+    didSet {
+      if let image = defaultThumbImage, color = thumbTintColor {
+        setThumbImage(image, forState: .Normal, color: color)
+      }
+    }
+  }
+
+  /**
+  setThumbImage:forState:
+
+  - parameter image: UIImage?
+  - parameter state: UIControlState
+  */
+  public func setThumbImage(image: UIImage?, forState state: UIControlState, color: UIColor?) {
+    if let color = color { setThumbImage(image?.imageWithColor(color), forState: state) }
+    else { setThumbImage(image, forState: state) }
+  }
+
+  /**
+  setMinimumTrackImage:forState:
+
+  - parameter image: UIImage?
+  - parameter state: UIControlState
+  */
+  public func setMinimumTrackImage(image: UIImage?, forState state: UIControlState, color: UIColor?) {
+    if let color = color { setMinimumTrackImage(image?.imageWithColor(color), forState: state) }
+    else { setMinimumTrackImage(image, forState: state) }
+  }
+
+  /**
+  setMaximumTrackImage:forState:
+
+  - parameter image: UIImage?
+  - parameter state: UIControlState
+  */
+  public func setMaximumTrackImage(image: UIImage?, forState state: UIControlState, color: UIColor?) {
+    if let color = color {  setMaximumTrackImage(image?.imageWithColor(color), forState: state) }
+    else {  setMaximumTrackImage(image, forState: state) }
+  }
 
   /**
   thumbRectForBounds:trackRect:value:

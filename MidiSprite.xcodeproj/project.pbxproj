@@ -15,12 +15,6 @@
 		C2404BC31B78026500A68A64 /* Sampler Files in Resources */ = {isa = PBXBuildFile; fileRef = C2404BC11B78026500A68A64 /* Sampler Files */; };
 		C2404BC41B78026500A68A64 /* Grand Piano.exs in Resources */ = {isa = PBXBuildFile; fileRef = C2404BC21B78026500A68A64 /* Grand Piano.exs */; };
 		C2404BC61B7805B400A68A64 /* Hip Hop Kit.exs in Resources */ = {isa = PBXBuildFile; fileRef = C2404BC51B7805B400A68A64 /* Hip Hop Kit.exs */; };
-		C2404BCE1B78EDEB00A68A64 /* Eveleth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BCD1B78EDEB00A68A64 /* Eveleth.framework */; };
-		C2404BCF1B78EDEB00A68A64 /* Eveleth.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BCD1B78EDEB00A68A64 /* Eveleth.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		C2404BD21B78EE3800A68A64 /* Chameleon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BD11B78EE3800A68A64 /* Chameleon.framework */; };
-		C2404BD31B78EE3800A68A64 /* Chameleon.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BD11B78EE3800A68A64 /* Chameleon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		C2404BD51B78EEC500A68A64 /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BD41B78EEC500A68A64 /* MoonKit.framework */; };
-		C2404BD61B78EEC500A68A64 /* MoonKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BD41B78EEC500A68A64 /* MoonKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C2569E401B90005400EEB441 /* TempoTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2569E3F1B90005400EEB441 /* TempoTrack.swift */; settings = {ASSET_TAGS = (); }; };
 		C25EBC831B8BFAFA00E57665 /* MIDIFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25EBC821B8BFAFA00E57665 /* MIDIFile.swift */; };
 		C26A27EF1B948E4F00BD1698 /* FilesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A27EE1B948E4E00BD1698 /* FilesViewController.swift */; settings = {ASSET_TAGS = (); }; };
@@ -33,6 +27,14 @@
 		C272B2A01B7D700600134E5F /* SoundSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C272B29F1B7D700600134E5F /* SoundSet.swift */; };
 		C272B2A21B7D714B00134E5F /* PureOscillators.programlist in Resources */ = {isa = PBXBuildFile; fileRef = C272B2A11B7D714B00134E5F /* PureOscillators.programlist */; };
 		C272B2A31B7D802700134E5F /* FluidR3.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C21E44C21B7653D500574BD2 /* FluidR3.sf2 */; };
+		C27E18AD1B965F8500626314 /* Eveleth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BCD1B78EDEB00A68A64 /* Eveleth.framework */; };
+		C27E18AE1B965F8500626314 /* Eveleth.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BCD1B78EDEB00A68A64 /* Eveleth.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C27E18B01B965F8500626314 /* Lumberjack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C27E18AF1B965F8500626314 /* Lumberjack.framework */; };
+		C27E18B11B965F8500626314 /* Lumberjack.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C27E18AF1B965F8500626314 /* Lumberjack.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C27E18B21B965F8500626314 /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BD41B78EEC500A68A64 /* MoonKit.framework */; };
+		C27E18B31B965F8500626314 /* MoonKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BD41B78EEC500A68A64 /* MoonKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C27E18B41B965F8500626314 /* Chameleon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BD11B78EE3800A68A64 /* Chameleon.framework */; };
+		C27E18B51B965F8500626314 /* Chameleon.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BD11B78EE3800A68A64 /* Chameleon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C28AA0EC1B8BC74800DA2502 /* test.mid in Resources */ = {isa = PBXBuildFile; fileRef = C28AA0EB1B8BC74800DA2502 /* test.mid */; };
 		C291C3EB1B91EDA700702AEA /* TrackChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3EA1B91EDA700702AEA /* TrackChunk.swift */; settings = {ASSET_TAGS = (); }; };
 		C291C3ED1B91EDB700702AEA /* HeaderChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3EC1B91EDB700702AEA /* HeaderChunk.swift */; settings = {ASSET_TAGS = (); }; };
@@ -43,7 +45,6 @@
 		C2AA2BC81B84B04200A0B08D /* InstrumentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AA2BC71B84B04200A0B08D /* InstrumentViewController.swift */; };
 		C2AA2BCB1B84FB2100A0B08D /* Sequencer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AA2BCA1B84FB2100A0B08D /* Sequencer.swift */; };
 		C2AA9EF21B7BB92F0025BE4D /* MIDIPlayerField.fsh in Resources */ = {isa = PBXBuildFile; fileRef = C2AA9EF11B7BB92F0025BE4D /* MIDIPlayerField.fsh */; };
-		C2AD8E871B7D99C60003579E /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2AD8E861B7D99C60003579E /* AudioToolbox.framework */; };
 		C2B123821B8523FF008FED5E /* Bus.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B123811B8523FF008FED5E /* Bus.swift */; };
 		C2B123BF1B864DCC008FED5E /* MIDIClock.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B123BE1B864DCC008FED5E /* MIDIClock.swift */; };
 		C2BC7AD51B76C85E001729BA /* Instrument.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BC7AD41B76C85E001729BA /* Instrument.swift */; };
@@ -64,15 +65,16 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		C2404BD01B78EDEB00A68A64 /* Embed Frameworks */ = {
+		C27E18B61B965F8600626314 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				C2404BCF1B78EDEB00A68A64 /* Eveleth.framework in Embed Frameworks */,
-				C2404BD61B78EEC500A68A64 /* MoonKit.framework in Embed Frameworks */,
-				C2404BD31B78EE3800A68A64 /* Chameleon.framework in Embed Frameworks */,
+				C27E18B11B965F8500626314 /* Lumberjack.framework in Embed Frameworks */,
+				C27E18B31B965F8500626314 /* MoonKit.framework in Embed Frameworks */,
+				C27E18AE1B965F8500626314 /* Eveleth.framework in Embed Frameworks */,
+				C27E18B51B965F8500626314 /* Chameleon.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -105,6 +107,7 @@
 		C26FC1721B7BAEBD00E271A3 /* MIDIPlayerFieldNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIPlayerFieldNode.swift; sourceTree = "<group>"; };
 		C272B29F1B7D700600134E5F /* SoundSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundSet.swift; sourceTree = "<group>"; };
 		C272B2A11B7D714B00134E5F /* PureOscillators.programlist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PureOscillators.programlist; sourceTree = "<group>"; };
+		C27E18AF1B965F8500626314 /* Lumberjack.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = Lumberjack.framework; path = "/Users/Moondeer/Library/Developer/Xcode/DerivedData/Build/Products/Debug-iphoneos/Lumberjack.framework"; sourceTree = "<absolute>"; };
 		C286CE1B1B73D2C10003FCBF /* MidiSprite.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = MidiSprite.playground; path = /Users/Moondeer/Projects/MidiSprite/MidiSprite.playground; sourceTree = "<absolute>"; };
 		C28AA0EB1B8BC74800DA2502 /* test.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = test.mid; sourceTree = "<group>"; };
 		C28AA0ED1B8BE1F800DA2502 /* Ping Puh Ping.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = "Ping Puh Ping.mid"; sourceTree = "<group>"; };
@@ -145,10 +148,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C2404BCE1B78EDEB00A68A64 /* Eveleth.framework in Frameworks */,
-				C2404BD51B78EEC500A68A64 /* MoonKit.framework in Frameworks */,
-				C2404BD21B78EE3800A68A64 /* Chameleon.framework in Frameworks */,
-				C2AD8E871B7D99C60003579E /* AudioToolbox.framework in Frameworks */,
+				C27E18B01B965F8500626314 /* Lumberjack.framework in Frameworks */,
+				C27E18B21B965F8500626314 /* MoonKit.framework in Frameworks */,
+				C27E18AD1B965F8500626314 /* Eveleth.framework in Frameworks */,
+				C27E18B41B965F8500626314 /* Chameleon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -295,6 +298,7 @@
 		C2E043281B72F4DC005F0675 = {
 			isa = PBXGroup;
 			children = (
+				C27E18AF1B965F8500626314 /* Lumberjack.framework */,
 				C2AD8E861B7D99C60003579E /* AudioToolbox.framework */,
 				C2404BD91B78EFD700A68A64 /* Playgrounds */,
 				C2404BD71B78EF8200A68A64 /* Embedded Frameworks */,
@@ -333,7 +337,7 @@
 				C2E0432D1B72F4DC005F0675 /* Sources */,
 				C2E0432E1B72F4DC005F0675 /* Frameworks */,
 				C2E0432F1B72F4DC005F0675 /* Resources */,
-				C2404BD01B78EDEB00A68A64 /* Embed Frameworks */,
+				C27E18B61B965F8600626314 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);

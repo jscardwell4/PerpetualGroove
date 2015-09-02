@@ -27,21 +27,21 @@ import UIKit
     }
   }
 
-  private func imageButtonViewWithImage(image: UIImage?, highlightedImage: UIImage?) -> ImageButtonView {
-    let result = ImageButtonView(image: image, highlightedImage: highlightedImage) {
-      [weak self] _ in
-
-      if let target = self?.target as? NSObjectProtocol, selector = self?.action {
-        switch String(selector) {
-        case ~/".+:": target.performSelector(selector, withObject: self!)
-        default: target.performSelector(selector)
-        }
-      }
-    }
-    result.contentMode = .ScaleAspectFit
-    result.translatesAutoresizingMaskIntoConstraints = false
-    return result
-  }
+//  private func imageButtonViewWithImage(image: UIImage?, highlightedImage: UIImage?) -> ImageButtonView {
+//    let result = ImageButtonView(image: image, highlightedImage: highlightedImage) {
+//      [weak self] _ in
+//
+//      if let target = self?.target as? NSObjectProtocol, selector = self?.action {
+//        switch String(selector) {
+//        case ~/".+:": target.performSelector(selector, withObject: self!)
+//        default: target.performSelector(selector)
+//        }
+//      }
+//    }
+//    result.contentMode = .ScaleAspectFit
+//    result.translatesAutoresizingMaskIntoConstraints = false
+//    return result
+//  }
 
   public override var enabled: Bool {
     didSet {
@@ -74,13 +74,13 @@ import UIKit
     self.action = action
     self.image = image
     self.highlightedImage = highlightedImage
-    let customView = UIView(frame: CGRect(x: 6, y: 6, width: 32, height: 32))
-    let imageButtonView = imageButtonViewWithImage(image, highlightedImage: highlightedImage)
-    imageButtonView.toggle = toggle
-    customView.addSubview(imageButtonView)
-    customView.constrain(𝗩|imageButtonView|𝗩, 𝗛|imageButtonView|𝗛)
-    self.imageButtonView = imageButtonView
-    self.customView = customView
+//    let customView = UIView(frame: CGRect(x: 6, y: 6, width: 32, height: 32))
+//    let imageButtonView = imageButtonViewWithImage(image, highlightedImage: highlightedImage)
+//    imageButtonView.toggle = toggle
+//    customView.addSubview(imageButtonView)
+//    customView.constrain(𝗩|imageButtonView|𝗩, 𝗛|imageButtonView|𝗛)
+//    self.imageButtonView = imageButtonView
+//    self.customView = customView
   }
 
   /**
@@ -150,13 +150,13 @@ import UIKit
     super.init(coder: aDecoder)
     highlightedImage = aDecoder.decodeObjectForKey("highlightedImage") as? UIImage
     toggle = aDecoder.decodeBoolForKey("toggle")
-    let customView = UIView(frame: CGRect(x: 6, y: 6, width: 32, height: 32))
-    let imageButtonView = imageButtonViewWithImage(image, highlightedImage: highlightedImage)
-    imageButtonView.toggle = toggle
-    customView.addSubview(imageButtonView)
-    customView.constrain(𝗩|imageButtonView|𝗩, 𝗛|imageButtonView|𝗛)
-    self.imageButtonView = imageButtonView
-    self.customView = customView
+//    let customView = UIView(frame: CGRect(x: 6, y: 6, width: 32, height: 32))
+//    let imageButtonView = imageButtonViewWithImage(image, highlightedImage: highlightedImage)
+//    imageButtonView.toggle = toggle
+//    customView.addSubview(imageButtonView)
+//    customView.constrain(𝗩|imageButtonView|𝗩, 𝗛|imageButtonView|𝗛)
+//    self.imageButtonView = imageButtonView
+//    self.customView = customView
   }
 
   /**

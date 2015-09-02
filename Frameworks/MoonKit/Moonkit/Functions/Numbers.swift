@@ -37,7 +37,6 @@ public let π = CGFloat(M_PI)
 
 public func half(x: CGFloat) -> CGFloat { return x * 0.5                 }
 public func half(x: Float)   -> Float   { return x * 0.5                 }
-//public func half(x: Float80) -> Float80 { return x * Float80(0.5)        }
 public func half(x: Double)  -> Double  { return x * 0.5                 }
 public func half(x: Int)     -> Int     { return    Int(Double(x) * 0.5) }
 public func half(x: Int8)    -> Int8    { return   Int8(Double(x) * 0.5) }

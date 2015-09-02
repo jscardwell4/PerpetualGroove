@@ -156,7 +156,6 @@ extension Fraction {//: FloatingPointType {
 //  public init(_ value: Float)   { numerator = value; denominator = Float(1)   }
 //  public init(_ value: Double)  { numerator = value; denominator = Double(1)  }
 //  public init(_ value: CGFloat) { numerator = value; denominator = CGFloat(1) }
-//  public init(_ value: Float80) { numerator = value; denominator = Float80(1) }
 //
   public static var infinity: Fraction { return Fraction(1, 0) }
   public static var NaN: Fraction { return Fraction(0, 0) }

@@ -56,7 +56,7 @@ final class MIDIClock: CustomStringConvertible {
   private var hostInfo: String {
     let currentHostTicks = hostTicks
     let nsPerTick = nanosecondsPerHostTick
-    let currentHostTime = UInt64(Float80(currentHostTicks) * nsPerTick)
+    let currentHostTime = currentHostTicks * UInt64(nsPerTick.value)
     return "{ hostTicks: \(currentHostTicks); nanosecondsPerTick: \(nsPerTick); hostTime: \(currentHostTime)}"
   }
 

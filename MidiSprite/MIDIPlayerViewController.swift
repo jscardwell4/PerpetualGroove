@@ -22,8 +22,10 @@ final class MIDIPlayerViewController: UIViewController {
   @IBOutlet weak var filesBarButtonItem: ImageBarButtonItem!
   @IBOutlet weak var templateBarButtonItem: ImageBarButtonItem!
   @IBOutlet weak var instrumentBarButtonItem: ImageBarButtonItem!
-  @IBOutlet weak var playPauseBarButtonItem: ImageBarButtonItem!
-  @IBOutlet weak var stopBarButtonItem: ImageBarButtonItem!
+  @IBOutlet weak var recordButton: ImageButtonView!
+  @IBOutlet weak var playPauseButton: ImageButtonView!
+  @IBOutlet weak var stopButton: ImageButtonView!
+  @IBOutlet weak var metronomeButton: ImageButtonView!
   @IBOutlet weak var mixerBarButtonItem: ImageBarButtonItem!
   @IBOutlet weak var saveBarButtonItem: ImageBarButtonItem!
   @IBOutlet weak var revertBarButtonItem: ImageBarButtonItem!
@@ -121,15 +123,15 @@ final class MIDIPlayerViewController: UIViewController {
   private func updateUIState() {
     revertBarButtonItem.enabled = state ∋ .MIDINodeAdded && state ∌ .PopoverActive // We have a node and aren't showing popover
     saveBarButtonItem.enabled = state ∋ .TrackAdded && state ∌ .PopoverActive // We have a track and aren't showing popover
-    stopBarButtonItem.enabled = state ∋ .PlayerPlaying
-    (state ∋ .PlayerPlaying ? ControlImage.Pause : ControlImage.Play).decorateBarButtonItem(playPauseBarButtonItem)
+    stopButton.enabled = state ∋ .PlayerPlaying
+    (state ∋ .PlayerPlaying ? ControlImage.Pause : ControlImage.Play).decorateButton(playPauseButton)
     popoverBlur.hidden = state ∌ .PopoverActive
 
   }
 
   private enum ControlImage {
     case Pause, Play
-    func decorateBarButtonItem(item: ImageBarButtonItem) {
+    func decorateButton(item: ImageButtonView) {
       item.image = image
       item.highlightedImage = selectedImage
     }
@@ -268,6 +270,7 @@ final class MIDIPlayerViewController: UIViewController {
     _instrumentPopoverView!.nametag = "instrumentPopover"
 
     let instrumentView = instrumentViewController.view
+    instrumentView.constrain(instrumentView.width ≥ 400)
     _instrumentPopoverView!.contentView.addSubview(instrumentView)
     _instrumentPopoverView!.constrain(𝗩|instrumentView|𝗩, 𝗛|instrumentView|𝗛)
 
@@ -282,6 +285,7 @@ final class MIDIPlayerViewController: UIViewController {
     _templatePopoverView!.nametag = "templatePopover"
 
     let templateView = templateViewController.view
+    templateView.constrain(templateView.width ≥ 400)
     _templatePopoverView!.contentView.addSubview(templateView)
     _templatePopoverView!.constrain(𝗩|templateView|𝗩, 𝗛|templateView|𝗛)
 

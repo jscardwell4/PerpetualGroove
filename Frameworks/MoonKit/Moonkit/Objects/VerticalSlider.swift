@@ -187,18 +187,60 @@ import UIKit
     get { return slider.maximumValueImage } set { slider.maximumValueImage = newValue }
   }
 
+  @IBInspectable public var defaultMinimumTrackImage: UIImage? {
+    didSet {
+      if let image = defaultMinimumTrackImage, color = minimumTrackTintColor {
+        setMinimumTrackImage(image, forState: .Normal, color: color)
+      }
+    }
+  }
+  @IBInspectable public var defaultMaximumTrackImage: UIImage? {
+    didSet {
+      if let image = defaultMaximumTrackImage, color = maximumTrackTintColor {
+        setMaximumTrackImage(image, forState: .Normal, color: color)
+      }
+    }
+  }
+  @IBInspectable public var defaultThumbImage: UIImage? {
+    didSet {
+      if let image = defaultThumbImage, color = thumbTintColor {
+        setThumbImage(image, forState: .Normal, color: color)
+      }
+    }
+  }
+
+
   @IBInspectable public var continuous: Bool { get { return slider.continuous } set { slider.continuous = newValue } }
 
   @IBInspectable public var minimumTrackTintColor: UIColor? {
-    get { return slider.minimumTrackTintColor } set { slider.minimumTrackTintColor = newValue }
+    didSet {
+      if let image = defaultMinimumTrackImage, color = minimumTrackTintColor {
+        setMinimumTrackImage(image, forState: .Normal, color: color)
+      } else {
+        slider.minimumTrackTintColor = minimumTrackTintColor
+      }
+    }
   }
 
   @IBInspectable public var maximumTrackTintColor: UIColor? {
-    get { return slider.maximumTrackTintColor } set { slider.maximumTrackTintColor = newValue }
+    didSet {
+      if let image = defaultMaximumTrackImage, color = maximumTrackTintColor {
+        setMaximumTrackImage(image, forState: .Normal, color: color)
+      } else {
+        slider.maximumTrackTintColor = maximumTrackTintColor
+      }
+    }
   }
 
   @IBInspectable public var thumbTintColor: UIColor? {
-    get { return slider.thumbTintColor } set { slider.thumbTintColor = newValue }
+    didSet {
+      if let image = defaultThumbImage, color = thumbTintColor {
+        setThumbImage(image, forState: .Normal, color: color)
+      } else {
+        slider.thumbTintColor = thumbTintColor
+      }
+
+    }
   }
 
   /**

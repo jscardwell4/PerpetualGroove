@@ -8,58 +8,108 @@
 
 import UIKit
 
-public class ImageButtonView: UIImageView {
+// TODO: Just make this a control
+@IBDesignable public class ImageButtonView: UIControl {
 
-  public var toggle = false
+  private let imageView = UIImageView(autolayout: true)
 
-  private var isToggled = false
+  @IBInspectable public var toggle: Bool = false
+  @IBInspectable public var image: UIImage? {
+    get { return imageView.image }
+    set { imageView.image = newValue?.imageWithRenderingMode(.AlwaysTemplate) }
+  }
+  @IBInspectable public var highlightedImage: UIImage? {
+    get { return imageView.highlightedImage }
+    set { imageView.highlightedImage = newValue?.imageWithRenderingMode(.AlwaysTemplate) }
+  }
 
-  private var trackingTouch: UITouch? { didSet { _highlighted = trackingTouch != nil || isToggled } }
+  @IBInspectable var isToggled: Bool = false { didSet { highlighted = isToggled } }
 
-  private var _highlighted = false {
+  private var trackingTouch: UITouch? { didSet { highlighted = trackingTouch != nil || isToggled } }
+
+  @IBInspectable public var disabledTintColor: UIColor?
+
+  @IBInspectable public var highlightedTintColor: UIColor?
+
+  @IBInspectable public override var highlighted: Bool {
     didSet {
-      guard oldValue != _highlighted else { return }
-      super.highlighted = _highlighted
-      if _highlighted, let color = highlightedTintColor {
-        _tintColor = tintColor
-        tintColor = color
-      } else {
-        tintColor = _tintColor
-      }
+      if highlighted || selected, let color = highlightedTintColor { imageView.tintColor = color }
+      else { imageView.tintColor = nil }
+      imageView.highlighted = highlighted || selected
     }
   }
-  private var _tintColor: UIColor?
-  public override var highlighted: Bool { get { return super.highlighted } set {} }
 
-  public var highlightedTintColor: UIColor?
-
-  public typealias Action = (ImageButtonView) -> Void
-
-  private func initializeIVARs() { userInteractionEnabled = true }
-
-  public override init(image: UIImage?) { super.init(image: image); initializeIVARs() }
-
-  public override init(image: UIImage?, highlightedImage: UIImage?) {
-    super.init(image: image, highlightedImage: highlightedImage)
-    initializeIVARs()
+  @IBInspectable public override var selected: Bool {
+    didSet {
+      if highlighted || selected, let color = highlightedTintColor { imageView.tintColor = color }
+      else { imageView.tintColor = nil }
+      imageView.highlighted = highlighted || selected
+    }
   }
 
+  @IBInspectable public override var enabled: Bool {
+    didSet {
+      if !enabled, let color = disabledTintColor { imageView.tintColor = color }
+      else if highlighted || selected, let color = highlightedTintColor { imageView.tintColor = color }
+      else { imageView.tintColor = nil }
+    }
+  }
+
+
+  /** initializeIVARs */
+  private func initializeIVARs() { addSubview(imageView); constrain(𝗩|imageView|𝗩, 𝗛|imageView|𝗛) }
+
+  /**
+  initWithFrame:
+
+  - parameter frame: CGRect
+  */
   public override init(frame: CGRect) { super.init(frame: frame); initializeIVARs() }
 
-  public required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder); initializeIVARs() }
+  /**
+  encodeWithCoder:
 
-  public init(image: UIImage?, highlightedImage: UIImage?, action: Action? = nil) {
-    super.init(image: image, highlightedImage: highlightedImage)
-    initializeIVARs()
-    if let action = action { actions.append(action) }
+  - parameter aCoder: NSCoder
+  */
+  public override func encodeWithCoder(aCoder: NSCoder) {
+    super.encodeWithCoder(aCoder)
+    aCoder.encodeBool(toggle, forKey: "toggle")
+    aCoder.encodeObject(image, forKey: "image")
+    aCoder.encodeObject(highlightedImage, forKey: "highlightedImage")
+    aCoder.encodeObject(highlightedTintColor, forKey:"highlightedTintColor")
+    aCoder.encodeObject(disabledTintColor, forKey:"disabledTintColor")
   }
 
-  public var actions: [Action] = []
+  /**
+  init:
 
+  - parameter aDecoder: NSCoder
+  */
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+    toggle = aDecoder.decodeBoolForKey("toggle")
+    image = aDecoder.decodeObjectForKey("image") as? UIImage
+    highlightedImage = aDecoder.decodeObjectForKey("highlightedImage") as? UIImage
+    highlightedTintColor = aDecoder.decodeObjectForKey("highlightedTintColor") as? UIColor
+    disabledTintColor = aDecoder.decodeObjectForKey("disabledTintColor") as? UIColor
+    initializeIVARs()
+  }
+  /**
+  touchesBegan:withEvent:
+
+  - parameter touches: Set<UITouch>
+  - parameter event: UIEvent?
+  */
   public override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
     if trackingTouch == nil { trackingTouch = touches.first }
   }
 
+  /**
+  touchesMoved:withEvent:
+
+  - parameter touches: Set<UITouch>
+  - parameter event: UIEvent?
+  */
   public override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
     if let trackingTouch = trackingTouch
       where touches.contains(trackingTouch) && !pointInside(trackingTouch.locationInView(self), withEvent: event)
@@ -68,16 +118,28 @@ public class ImageButtonView: UIImageView {
     }
   }
 
+  /**
+  touchesEnded:withEvent:
+
+  - parameter touches: Set<UITouch>
+  - parameter event: UIEvent?
+  */
   public override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
     if let trackingTouch = trackingTouch where touches.contains(trackingTouch) {
       if pointInside(trackingTouch.locationInView(self), withEvent: event) {
         if toggle { isToggled = !isToggled }
-        actions.forEach {[unowned self] in $0(self)}
+        sendActionsForControlEvents(.TouchUpInside)
       }
       self.trackingTouch = nil
     }
   }
 
+  /**
+  touchesCancelled:withEvent:
+
+  - parameter touches: Set<UITouch>?
+  - parameter event: UIEvent?
+  */
   public override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) {
     if let touches = touches, trackingTouch = trackingTouch where touches.contains(trackingTouch) {
       self.trackingTouch = nil

@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import UIKit
+import Swift
 
 public typealias Byte = UInt8
 public typealias Byte2 = UInt16
@@ -198,7 +200,6 @@ extension UInt: IntegerConvertible {}
 extension Int: IntegerConvertible {}
 extension Float: IntegerConvertible {}
 extension Double: IntegerConvertible {}
-extension Float80: IntegerConvertible {}
 extension CGFloat: IntegerConvertible {}
 
 extension IntegerProducible where Self:_IntegerProducibleType {
@@ -227,13 +228,11 @@ extension UInt: IntegerProducible {}
 extension Int: IntegerProducible {}
 extension Float: IntegerProducible {}
 extension Double: IntegerProducible {}
-extension Float80: IntegerProducible {}
 extension CGFloat: IntegerProducible {}
 
 public protocol FloatConvertible {
   init(_ value: Float)
   init(_ value: Double)
-  init(_ value: Float80)
   init(_ value: CGFloat)
   init(_ value: _FloatProducibleType)
 }
@@ -241,12 +240,10 @@ public protocol _FloatProducibleType {}
 public protocol FloatProducible {
   func toFloat() -> Float
   func toDouble() -> Double
-  func toFloat80() -> Float80
   func toCGFloat() -> CGFloat
 }
 extension Float: _FloatProducibleType {}
 extension Double: _FloatProducibleType {}
-extension Float80: _FloatProducibleType {}
 extension CGFloat: _FloatProducibleType {}
 
 public extension FloatConvertible { //where Self:_FloatProducibleType {
@@ -254,7 +251,6 @@ public extension FloatConvertible { //where Self:_FloatProducibleType {
     switch value {
       case let v as Float: self.init(v)
       case let v as Double: self.init(v)
-      case let v as Float80: self.init(v)
       case let v as CGFloat: self.init(v)
       default: logWarning("unknown '_FloatProdocibleType"); self.init(0.0)
     }
@@ -263,11 +259,7 @@ public extension FloatConvertible { //where Self:_FloatProducibleType {
 
 extension Float: FloatConvertible {}
 extension Double: FloatConvertible {}
-extension Float80: FloatConvertible {
-  public init(_ value: CGFloat) { self.init(Double(value)) }
-}
 extension CGFloat: FloatConvertible {
-  public init(_ value: Float80) { self.init(Double(value)) }
   public init(_ value: CGFloat) { self = value }
 }
 
@@ -304,10 +296,6 @@ extension Double: ArithmeticType {
 extension CGFloat: ArithmeticType {
   public func toIntMax() -> IntMax { return IntMax(self) }
   public init(intMax: IntMax) { self = CGFloat(intMax) }
-}
-extension Float80: ArithmeticType {
-  public func toIntMax() -> IntMax { return IntMax(self) }
-  public init(intMax: IntMax) { self = Float80(intMax) }
 }
 extension Int: ArithmeticType {
   public init(intMax: IntMax) { self = Int(intMax) }
@@ -354,10 +342,6 @@ extension CGFloat: IntConvertible {
   public init(integerLiteral: Int) { self.init(integerLiteral) }
 }
 extension Double: IntConvertible {
-  public var IntValue: Int { return Int(self) }
-  public init(integerLiteral: Int) { self.init(integerLiteral) }
-}
-extension Float80: IntConvertible {
   public var IntValue: Int { return Int(self) }
   public init(integerLiteral: Int) { self.init(integerLiteral) }
 }
@@ -416,10 +400,6 @@ extension CGFloat: DoubleConvertible {
   public init(doubleLiteral: Double) { self.init(doubleLiteral) }
 }
 extension Double: DoubleConvertible {
-  public var DoubleValue: Double { return Double(self) }
-  public init(doubleLiteral: Double) { self.init(doubleLiteral) }
-}
-extension Float80: DoubleConvertible {
   public var DoubleValue: Double { return Double(self) }
   public init(doubleLiteral: Double) { self.init(doubleLiteral) }
 }
