@@ -16,8 +16,6 @@ class MIDIPlayerScene: SKScene {
 
   var midiPlayer: MIDIPlayerNode!
 
-  static let defaultBackgroundColor = UIColor(red: 0.202, green: 0.192, blue: 0.192, alpha: 1.0)
-
   private var contentCreated = false
 
   /** revert */

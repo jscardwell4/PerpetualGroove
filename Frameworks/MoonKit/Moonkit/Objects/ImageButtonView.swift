@@ -11,60 +11,55 @@ import UIKit
 // TODO: Just make this a control
 @IBDesignable public class ImageButtonView: UIControl {
 
+  // MARK: - Private properties
   private let imageView = UIImageView(autolayout: true)
+  private var trackingTouch: UITouch? { didSet { highlighted = trackingTouch != nil } }
+
+  // MARK: - Toggling
 
   @IBInspectable public var toggle: Bool = false
+
+  // MARK: - Images
+
   @IBInspectable public var image: UIImage? {
     get { return imageView.image }
     set { imageView.image = newValue?.imageWithRenderingMode(.AlwaysTemplate) }
   }
+
   @IBInspectable public var highlightedImage: UIImage? {
     get { return imageView.highlightedImage }
     set { imageView.highlightedImage = newValue?.imageWithRenderingMode(.AlwaysTemplate) }
   }
 
-  @IBInspectable var isToggled: Bool = false { didSet { highlighted = isToggled } }
-
-  private var trackingTouch: UITouch? { didSet { highlighted = trackingTouch != nil || isToggled } }
+  // MARK: - Colors
 
   @IBInspectable public var disabledTintColor: UIColor?
 
   @IBInspectable public var highlightedTintColor: UIColor?
 
-  @IBInspectable public override var highlighted: Bool {
-    didSet {
-      if highlighted || selected, let color = highlightedTintColor { imageView.tintColor = color }
-      else { imageView.tintColor = nil }
-      imageView.highlighted = highlighted || selected
-    }
+  // MARK: - Managing state
+
+  private func updateForState() {
+    if state ∋ .Disabled, let color = disabledTintColor { imageView.tintColor = color }
+    else if !state.isDisjointWith([.Highlighted, .Selected]), let color = highlightedTintColor { imageView.tintColor = color }
+    else { imageView.tintColor = nil }
   }
 
-  @IBInspectable public override var selected: Bool {
-    didSet {
-      if highlighted || selected, let color = highlightedTintColor { imageView.tintColor = color }
-      else { imageView.tintColor = nil }
-      imageView.highlighted = highlighted || selected
-    }
-  }
+  @IBInspectable public override var highlighted: Bool { didSet { updateForState() } }
+  @IBInspectable public override var selected: Bool    { didSet { updateForState() } }
+  @IBInspectable public override var enabled: Bool     { didSet { updateForState() } }
 
-  @IBInspectable public override var enabled: Bool {
-    didSet {
-      if !enabled, let color = disabledTintColor { imageView.tintColor = color }
-      else if highlighted || selected, let color = highlightedTintColor { imageView.tintColor = color }
-      else { imageView.tintColor = nil }
-    }
-  }
-
+  // MARK: - Initializing
 
   /** initializeIVARs */
-  private func initializeIVARs() { addSubview(imageView); constrain(𝗩|imageView|𝗩, 𝗛|imageView|𝗛) }
+  private func setup() { addSubview(imageView); constrain(𝗩|imageView|𝗩, 𝗛|imageView|𝗛) }
 
   /**
   initWithFrame:
 
   - parameter frame: CGRect
   */
-  public override init(frame: CGRect) { super.init(frame: frame); initializeIVARs() }
+  public override init(frame: CGRect) { super.init(frame: frame); setup() }
 
   /**
   encodeWithCoder:
@@ -92,8 +87,11 @@ import UIKit
     highlightedImage = aDecoder.decodeObjectForKey("highlightedImage") as? UIImage
     highlightedTintColor = aDecoder.decodeObjectForKey("highlightedTintColor") as? UIColor
     disabledTintColor = aDecoder.decodeObjectForKey("disabledTintColor") as? UIColor
-    initializeIVARs()
+    setup()
   }
+
+  // MARK: - Touch handling
+
   /**
   touchesBegan:withEvent:
 
@@ -127,7 +125,7 @@ import UIKit
   public override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
     if let trackingTouch = trackingTouch where touches.contains(trackingTouch) {
       if pointInside(trackingTouch.locationInView(self), withEvent: event) {
-        if toggle { isToggled = !isToggled }
+        if toggle { selected = !selected }
         sendActionsForControlEvents(.TouchUpInside)
       }
       self.trackingTouch = nil

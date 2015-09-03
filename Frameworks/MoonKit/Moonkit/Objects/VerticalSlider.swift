@@ -191,6 +191,8 @@ import UIKit
     didSet {
       if let image = defaultMinimumTrackImage, color = minimumTrackTintColor {
         setMinimumTrackImage(image, forState: .Normal, color: color)
+        setMinimumTrackImage(image, forState: .Highlighted, color: color)
+        setMinimumTrackImage(image, forState: .Selected, color: color)
       }
     }
   }

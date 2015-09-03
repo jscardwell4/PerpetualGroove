@@ -75,12 +75,12 @@ public class LabeledSlider: UIControl {
 
   // MARK: - Slider
 
-  private let slider = Slider(autolayout: true)
+  private let slider = ColorSlider(autolayout: true)
 
   // MARK: Properties bounced to/from the `Slider` subview
 
   public var thumbOffset: UIOffset { get { return slider.thumbOffset } set { slider.thumbOffset = newValue } }
-  public var style: Slider.ThumbStyle { get { return slider.style } set { slider.style = newValue } }
+  public var style: ColorSlider.ThumbStyle { get { return slider.style } set { slider.style = newValue } }
 
   public var continuous: Bool { get { return slider.continuous } set { slider.continuous = newValue } }
 

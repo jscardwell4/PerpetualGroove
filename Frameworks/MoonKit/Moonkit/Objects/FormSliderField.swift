@@ -74,7 +74,7 @@ public final class FormSliderField: FormField {
     return control
   }
 
-  func valueDidChange(slider: Slider) {
+  func valueDidChange(slider: ColorSlider) {
     _value = slider.value
     changeHandler?(self)
   }

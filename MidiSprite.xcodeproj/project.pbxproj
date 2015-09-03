@@ -107,7 +107,7 @@
 		C26FC1721B7BAEBD00E271A3 /* MIDIPlayerFieldNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIPlayerFieldNode.swift; sourceTree = "<group>"; };
 		C272B29F1B7D700600134E5F /* SoundSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundSet.swift; sourceTree = "<group>"; };
 		C272B2A11B7D714B00134E5F /* PureOscillators.programlist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PureOscillators.programlist; sourceTree = "<group>"; };
-		C27E18AF1B965F8500626314 /* Lumberjack.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = Lumberjack.framework; path = "/Users/Moondeer/Library/Developer/Xcode/DerivedData/Build/Products/Debug-iphoneos/Lumberjack.framework"; sourceTree = "<absolute>"; };
+		C27E18AF1B965F8500626314 /* Lumberjack.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Lumberjack.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C286CE1B1B73D2C10003FCBF /* MidiSprite.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = MidiSprite.playground; path = /Users/Moondeer/Projects/MidiSprite/MidiSprite.playground; sourceTree = "<absolute>"; };
 		C28AA0EB1B8BC74800DA2502 /* test.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = test.mid; sourceTree = "<group>"; };
 		C28AA0ED1B8BE1F800DA2502 /* Ping Puh Ping.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = "Ping Puh Ping.mid"; sourceTree = "<group>"; };
@@ -148,10 +148,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C27E18B01B965F8500626314 /* Lumberjack.framework in Frameworks */,
-				C27E18B21B965F8500626314 /* MoonKit.framework in Frameworks */,
 				C27E18AD1B965F8500626314 /* Eveleth.framework in Frameworks */,
 				C27E18B41B965F8500626314 /* Chameleon.framework in Frameworks */,
+				C27E18B01B965F8500626314 /* Lumberjack.framework in Frameworks */,
+				C27E18B21B965F8500626314 /* MoonKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

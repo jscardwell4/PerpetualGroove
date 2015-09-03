@@ -27,28 +27,28 @@ public final class ColorInputView: UIInputView {
   public init(frame: CGRect, colorInput: ColorInput) {
     super.init(frame: frame, inputViewStyle: .Keyboard)
 
-    let r = Slider(autolayout: true)
+    let r = ColorSlider(autolayout: true)
     r.style = .Gradient(.Red)
     r.value = colorInput.redValue
     r.minimumTrackTintColor = UIColor.redColor()
     r.addActionBlock({ colorInput.redValue = r.value }, forControlEvents: .ValueChanged)
     addSubview(r)
 
-    let g = Slider(autolayout: true)
+    let g = ColorSlider(autolayout: true)
     g.style = .Gradient(.Green)
     g.value = colorInput.greenValue
     g.minimumTrackTintColor = UIColor.greenColor()
     g.addActionBlock({ colorInput.greenValue = g.value }, forControlEvents: .ValueChanged)
     addSubview(g)
 
-    let b = Slider(autolayout: true)
+    let b = ColorSlider(autolayout: true)
     b.style = .Gradient(.Blue)
     b.value = colorInput.blueValue
     b.minimumTrackTintColor = UIColor.blueColor()
     b.addActionBlock({ colorInput.blueValue = b.value }, forControlEvents: .ValueChanged)
     addSubview(b)
 
-    let a = Slider(autolayout: true)
+    let a = ColorSlider(autolayout: true)
     a.style = .Gradient(.Alpha)
     a.value = colorInput.alphaValue
     a.minimumTrackTintColor = UIColor.whiteColor()

@@ -4,6 +4,38 @@
 		"selected_items":
 		[
 			[
+				"Float",
+				"Float80"
+			],
+			[
+				"dleta",
+				"deltaSize"
+			],
+			[
+				"ret",
+				"retryCount"
+			],
+			[
+				"dire",
+				"directoryMetadata"
+			],
+			[
+				"dispatch_get",
+				"dispatch_get_main_queue"
+			],
+			[
+				"po",
+				"pollInterval"
+			],
+			[
+				"diret",
+				"directoryURL"
+			],
+			[
+				"start",
+				"start"
+			],
+			[
 				"micr",
 				"microseconds2"
 			],
@@ -482,63 +514,11 @@
 			[
 				"mn",
 				"managedObjectContext"
-			],
-			[
-				"creat",
-				"creatableItemCollection"
-			],
-			[
-				"FOrm",
-				"FormViewController"
-			],
-			[
-				"didS",
-				"didSubmit"
-			],
-			[
-				"Form",
-				"FormViewController"
-			],
-			[
-				"manuf",
-				"manufacturerCollection"
-			],
-			[
-				"mana",
-				"managedObjectContext"
-			],
-			[
-				"collec",
-				"collectionDelegates"
-			],
-			[
-				"compo",
-				"componentDeviceCollection"
 			]
 		]
 	},
 	"buffers":
 	[
-		{
-			"contents": "//\n//  DirectoryMonitor.swift\n//  MoonKit\n//\n//  Created by Jason Cardwell on 8/31/15.\n//  Copyright © 2015 Jason Cardwell. All rights reserved.\n//  source: This a port of code created by Martin Hwasser found here https://github.com/hwaxxer/MHWDirectoryWatcher\n//\n\nimport Foundation\n\npublic final class DirectoryMonitor {\n  public typealias Callback = (DirectoryMonitor) -> Void\n  \n  public let path: String\n\nprivate let queue = dispatch_queue_create\n\n  public init(path p: String) {\n      path = p\n  }\n\n  deinit {\n      stopWatching()\n  }\n\n\n}\n\n",
-			"file": "Frameworks/MoonKit/Moonkit/Objects/DirectoryMonitor.swift",
-			"file_size": 392,
-			"file_write_time": 130855154080000000,
-			"settings":
-			{
-				"buffer_size": 545,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"contents": "/*\n *  MHWDirectoryWatcher.h\n *  Created by Martin Hwasser on 12/19/11.\n */\n\n#import \"MHWDirectoryWatcher.h\"\n\n#define kMHWDirectoryWatcherPollInterval 0.2\n#define kMHWDirectoryWatcherPollRetryCount 5\n\ntypedef void (^MHWDirectoryWatcherCallback)(void);\n\n@interface MHWDirectoryWatcher ()\n\n@property (nonatomic) dispatch_source_t source;\n@property (nonatomic) dispatch_queue_t queue;\n@property (nonatomic) NSInteger retriesLeft;\n@property (nonatomic, getter = isDirectoryChanging) BOOL directoryChanging;\n@property (nonatomic, readwrite, copy) NSString *watchedPath;\n@property (nonatomic, copy) MHWDirectoryWatcherCallback callback;\n\n@end\n\n@implementation MHWDirectoryWatcher\n\n- (void)dealloc\n{\n    [self stopWatching];\n    _callback = nil;\n}\n\n- (id)initWithPath:(NSString *)path\n{\n    self = [super init];\n    if (self) {\n        _watchedPath = [path copy];\n        _queue = dispatch_queue_create(\"MHWDirectoryWatcherQueue\", 0);\n    }\n    return self;\n}\n\n+ (MHWDirectoryWatcher *)directoryWatcherAtPath:(NSString *)watchedPath\n                               startImmediately:(BOOL)startImmediately\n                                       callback:(void(^)())cb\n{\n    NSAssert(watchedPath != nil, @\"The directory to watch must not be nil\");\n    MHWDirectoryWatcher *directoryWatcher = [[MHWDirectoryWatcher alloc] initWithPath:watchedPath];\n    directoryWatcher.callback = cb;\n    \n    if (startImmediately) {\n        if (![directoryWatcher startWatching]) {\n            // Something went wrong, return nil\n            return nil;\n        }\n    }\n    return directoryWatcher;\n}\n\n+ (MHWDirectoryWatcher *)directoryWatcherAtPath:(NSString *)watchPath\n                                       callback:(void(^)())cb\n{\n    return [MHWDirectoryWatcher directoryWatcherAtPath:watchPath\n                                      startImmediately:YES\n                                              callback:cb];\n}\n#pragma mark -\n#pragma mark - Public methods\n\n- (BOOL)stopWatching\n{\n    if (_source != NULL) {\n        dispatch_source_cancel(_source);\n        _source = NULL;\n        return YES;\n    }\n    return NO;\n}\n\n- (BOOL)startWatching\n{\n    // Already monitoring\n    if (self.source != NULL) {\n        return NO;\n    }\n    \n    // Open an event-only file descriptor associated with the directory\n    int fd = open([self.watchedPath fileSystemRepresentation], O_EVTONLY);\n    if (fd < 0) {\n        return NO;\n    }\n    \n    void (^cleanup)() = ^{\n        close(fd);\n    };\n    \n    // Get a low priority queue\n    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);\n    \n    // Monitor the directory for writes\n    self.source = dispatch_source_create(DISPATCH_SOURCE_TYPE_VNODE, // Monitors a file descriptor\n                                         fd, // our file descriptor\n                                         DISPATCH_VNODE_WRITE, // The file-system object data changed.\n                                         queue); // the queue to dispatch on\n    \n    if (!_source) {\n        cleanup();\n        return NO;\n    }\n    \n    __weak __typeof__(self) _weakSelf = self;\n    // Call directoryDidChange on event callback\n    dispatch_source_set_event_handler(self.source, ^{\n        [_weakSelf directoryDidChange];\n    });\n    \n    // Dispatch source destructor\n    dispatch_source_set_cancel_handler(self.source, cleanup);\n    \n    // Sources are create in suspended state, so resume it\n    dispatch_resume(self.source);\n    \n    // Everything was OK\n    return YES;\n}\n\n\n#pragma mark -\n#pragma mark - Private methods\n\n- (NSArray *)directoryMetadata\n{\n    NSFileManager *fileManager = [[NSFileManager alloc] init];\n    NSArray *contents = [fileManager contentsOfDirectoryAtPath:self.watchedPath\n                                                         error:NULL];\n    \n    NSMutableArray *directoryMetadata = [NSMutableArray array];\n    \n    for (NSString *fileName in contents) {\n        @autoreleasepool {\n            NSString *filePath = [self.watchedPath stringByAppendingPathComponent:fileName];\n            NSDictionary *fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath\n                                                                                            error:nil];\n            NSInteger fileSize = [[fileAttributes objectForKey:NSFileSize] intValue];\n            // The fileName and fileSize will be our hash key\n            NSString *fileHash = [NSString stringWithFormat:@\"%@%ld\", fileName, (long)fileSize];\n            // Add it to our metadata list\n            [directoryMetadata addObject:fileHash];\n        }\n    }\n    return directoryMetadata;\n}\n\n- (void)checkChangesAfterDelay:(NSTimeInterval)timeInterval\n{\n    NSArray *directoryMetadata = [self directoryMetadata];\n\n    __weak __typeof__(self) _weakSelf = self;\n    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, timeInterval * NSEC_PER_SEC);\n    dispatch_after(popTime, self.queue, ^(void){\n        [_weakSelf pollDirectoryForChangesWithMetadata:directoryMetadata];\n    });\n}\n\n- (void)pollDirectoryForChangesWithMetadata:(NSArray *)oldDirectoryMetadata\n{\n    NSArray *newDirectoryMetadata = [self directoryMetadata];\n    \n    // Check if metadata has changed\n    self.directoryChanging = ![newDirectoryMetadata isEqualToArray:oldDirectoryMetadata];\n    \n    // Reset retries if it's still changing\n    self.retriesLeft = self.isDirectoryChanging ? kMHWDirectoryWatcherPollRetryCount : self.retriesLeft;\n    \n    if (self.isDirectoryChanging || 0 < self.retriesLeft--) {\n        // Either the directory is changing or\n        // we should try again as more changes may occur\n        [self checkChangesAfterDelay:kMHWDirectoryWatcherPollInterval];\n    } else {\n        // Changes appear to be completed\n        // Post a notification informing that the directory did change\n        dispatch_async(dispatch_get_main_queue(), ^{\n            self.callback();\n        });\n    }\n}\n\n- (void)directoryDidChange\n{\n    if (!self.isDirectoryChanging) {\n        // Changes just occurred\n        self.directoryChanging = YES;\n        self.retriesLeft = kMHWDirectoryWatcherPollRetryCount;\n        \n        [self checkChangesAfterDelay:kMHWDirectoryWatcherPollInterval];\n    }\n}\n\n@end",
-			"settings":
-			{
-				"buffer_size": 6215,
-				"line_ending": "Unix",
-				"name": "/*"
-			}
-		}
 	],
 	"build_system": "",
 	"build_system_choices":
@@ -1035,15 +1015,24 @@
 	},
 	"expanded_folders":
 	[
-		"/Users/Moondeer/Projects/MidiSprite/MidiSprite.xcodeproj"
+		"/Users/Moondeer/Projects/MidiSprite",
+		"/Users/Moondeer/Projects/MidiSprite/Frameworks",
+		"/Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit"
 	],
 	"file_history":
 	[
+		"/Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Functions/Dispatch.swift",
+		"/Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Extensions/Geometry.swift",
+		"/Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Other/Protocols.swift",
+		"/Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/DirectoryMonitor.swift",
+		"/Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/Knob.swift",
+		"/Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/Fraction.swift",
+		"/Users/Moondeer/Projects/MidiSprite/MidiSprite/Base.lproj/Main.storyboard",
+		"/Users/Moondeer/Projects/MidiSprite/MidiSprite.sublime-project",
 		"/Users/Moondeer/Library/Application Support/Sublime Text 3/Packages/User/Preferences.sublime-settings",
 		"/Users/Moondeer/Projects/MidiSprite/MidiSprite/MetaEvent.swift",
 		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/DocumentSelectionController.swift",
 		"/Users/Moondeer/Projects/MidiSprite/MidiSprite/Note.swift",
-		"/Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Other/Protocols.swift",
 		"/Users/Moondeer/Projects/MidiSprite/MidiSprite/Track.swift",
 		"/Users/Moondeer/Projects/MidiSprite/MidiSprite/MIDIFile.swift",
 		"/Users/Moondeer/Projects/CoreAudioUtilityClasses/CoreAudio/PublicUtility/CAHostTimeBase.h",
@@ -1052,7 +1041,6 @@
 		"/Users/Moondeer/Projects/MidiSprite/MidiSprite/MIDIClockSource.swift",
 		"/Users/Moondeer/Projects/MidiSprite/MidiSprite/MIDIClock.swift",
 		"/Users/Moondeer/Projects/MidiSprite/MidiSprite/CAHostTimeBase.swift",
-		"/Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/Fraction.swift",
 		"/Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Functions/MiscellaneousFunctions.swift",
 		"/System/Library/Frameworks/Kernel.framework/Versions/A/Headers/mach/mach_time.h",
 		"/Users/Moondeer/Projects/MidiSprite/MidiSprite.xcodeproj/project.pbxproj",
@@ -1160,13 +1148,7 @@
 		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/DetailCell/BankCollectionDetailCell.swift",
 		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/BankCollectionFilteringDetailSectionHeader.swift",
 		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/FilteringDetailSectionHeader.swift",
-		"/Users/Moondeer/Projects/MSRemote/Remote/MoonKit/Moonkit/Functions/FunctionManipulation.swift",
-		"/Users/Moondeer/Projects/MSRemote/Remote/MoonKit/Moonkit/Functions/SequenceManipulation.swift",
-		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/DetailSectionHeader.swift",
-		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/DetailCell/BankCollectionDetailColorCell.swift",
-		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/DetailCell/BankCollectionDetailCustomCell.swift",
-		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/DetailCell/BankCollectionDetailImageCell.swift",
-		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/DetailCell/BankCollectionDetailLabelCell.swift"
+		"/Users/Moondeer/Projects/MSRemote/Remote/MoonKit/Moonkit/Functions/FunctionManipulation.swift"
 	],
 	"find":
 	{
@@ -1208,6 +1190,18 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"Int16",
+			"UInt16",
+			"UInt8",
+			"T",
+			"IntMax",
+			"rect",
+			"metadata",
+			"retriesLeft",
+			"retryCount",
+			"queue",
+			"p",
+			"path",
 			"lin",
 			"\n    case",
 			": Byte4",
@@ -1323,19 +1317,7 @@
 			"44.93",
 			"26.34",
 			"80",
-			"1.34",
-			"101.34",
-			"1.34",
-			"140.83",
-			"104.88",
-			"140.45",
-			"104.12",
-			"141.08",
-			"105.63",
-			"140.04",
-			"103.43",
-			"173.97",
-			"69.76"
+			"1.34"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -1481,81 +1463,14 @@
 	"groups":
 	[
 		{
-			"selected": 0,
 			"sheets":
 			[
-				{
-					"buffer": 0,
-					"file": "Frameworks/MoonKit/Moonkit/Objects/DirectoryMonitor.swift",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 545,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								450,
-								450
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Swift for F*ing Sublime/Swift.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				}
-			]
-		},
-		{
-			"selected": 0,
-			"sheets":
-			[
-				{
-					"buffer": 1,
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 6215,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								674,
-								674
-							]
-						],
-						"settings":
-						{
-							"auto_name": "/*",
-							"syntax": "Packages/User/Objective-C.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				}
 			]
 		}
 	],
 	"incremental_find":
 	{
-		"height": 20.0
+		"height": 19.0
 	},
 	"input":
 	{
@@ -1570,18 +1485,11 @@
 				0,
 				1,
 				1
-			],
-			[
-				1,
-				0,
-				2,
-				1
 			]
 		],
 		"cols":
 		[
 			0.0,
-			0.5,
 			1.0
 		],
 		"rows":
@@ -1608,6 +1516,14 @@
 		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"geom",
+				"Frameworks/MoonKit/Moonkit/Extensions/Geometry.swift"
+			],
+			[
+				"dispat",
+				"Frameworks/MoonKit/Moonkit/Functions/Dispatch.swift"
+			],
 			[
 				"item",
 				"Remote/Bank/Source/BankItemCreationDelegate.swift"
@@ -2111,14 +2027,6 @@
 			[
 				"manufac",
 				"Remote/Bank/Resources/JSON/Manufacturer.json"
-			],
-			[
-				"activityc",
-				"Remote/Bank/Resources/JSON/ActivityController.json"
-			],
-			[
-				"path",
-				"custom/paths.zsh"
 			]
 		],
 		"width": 0.0
@@ -2141,14 +2049,14 @@
 		],
 		"width": 568.0
 	},
-	"selected_group": 1,
+	"selected_group": 0,
 	"settings":
 	{
 	},
 	"show_minimap": false,
 	"show_open_files": true,
 	"show_tabs": false,
-	"side_bar_visible": true,
+	"side_bar_visible": false,
 	"side_bar_width": 439.0,
 	"status_bar_visible": true,
 	"template_settings":

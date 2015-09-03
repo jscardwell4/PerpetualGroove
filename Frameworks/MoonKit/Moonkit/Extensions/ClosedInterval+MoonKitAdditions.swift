@@ -32,16 +32,17 @@ public extension ClosedInterval where Bound:SignedNumberType, Bound:ArithmeticTy
       return normalizedValue
     }
     var value = diameter * normalizedValue
-    print(value)
     if start < 0 { value -= abs(start) }
-    else if start > 0 { value -= start }
+    else if start > 0 { value += start }
 
-    return value
+    return clampValue(value)
   }
 
-  public func mapValue(value: Bound, fromInterval interval: ClosedInterval<Bound>) -> Bound {
+  public func mapValue(value: Bound, from interval: ClosedInterval<Bound>) -> Bound {
     guard self == interval || (!isEmpty && !interval.isEmpty) else { return value }
     return valueForNormalizedValue(interval.normalizeValue(value))
   }
+
+  public var median: Bound { return (diameter / 2) + start }
 }
 

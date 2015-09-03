@@ -589,9 +589,8 @@ public extension NotificationType where Self:NotificationNameType {
 //}
 
 public extension EnumerableType {
-  static func enumerate(block: (Self) -> Void) { allCases.forEach(block) }
+  static func enumerate(@noescape block: (Self) -> Void) { allCases.forEach(block) }
 }
-
 
 public protocol ImageAssetLiteralType {
   var image: UIImage { get }

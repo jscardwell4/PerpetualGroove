@@ -24,7 +24,7 @@ final class InstrumentViewController: UIViewController {
 
   - parameter aDecoder: NSCoder
   */
-  required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+  required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }
 
   /** loadView */
   override func loadView() {

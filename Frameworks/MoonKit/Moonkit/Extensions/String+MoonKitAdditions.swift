@@ -231,7 +231,7 @@ public extension String {
 
   // MARK: - Initializers
 
-  public init(_ f: Float, precision: Int = -1) { self = String(Double(f)) }
+  public init(_ f: Float, precision: Int = -1) { self = String(Double(f), precision: precision) }
 
   public init(_ d: Double, precision: Int = -1) {
 

@@ -194,7 +194,7 @@ import UIKit
     arrowHeight = CGFloat(aDecoder.decodeDoubleForKey("arrowHeight"))
     xOffset = CGFloat(aDecoder.decodeDoubleForKey("xOffset"))
     contentInsets = aDecoder.decodeUIEdgeInsetsForKey("contentInsets")
-    location = Location(rawValue: aDecoder.decodeObjectForKey("location") as! String) ?? .Bottom
+    location = Location(rawValue: aDecoder.decodeObjectForKey("location") as? String ?? Location.Bottom.rawValue)!
     initializeIVARs()
   }
 

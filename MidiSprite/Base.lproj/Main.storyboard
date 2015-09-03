@@ -12,19 +12,16 @@
             <string>EvelethDotLight</string>
             <string>EvelethDotLight</string>
         </mutableArray>
-        <mutableArray key="Yellow Design Studio - Eveleth Shadow.otf">
-            <string>EvelethShadow</string>
-        </mutableArray>
         <mutableArray key="Yellow Design Studio - Eveleth Thin.otf">
             <string>EvelethThin</string>
             <string>EvelethThin</string>
         </mutableArray>
     </customFonts>
     <scenes>
-        <!--Player View Controller-->
+        <!--MIDIPlayer-->
         <scene sceneID="tXr-a1-R10">
             <objects>
-                <viewController id="BV1-FR-VrT" customClass="MIDIPlayerViewController" customModule="MidiSprite" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MIDIPlayer" id="BV1-FR-VrT" userLabel="MIDIPlayer" customClass="MIDIPlayerViewController" customModule="MidiSprite" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="8aa-yV-Osq"/>
                         <viewControllerLayoutGuide type="bottom" id="qHh-Mt-9TT"/>
@@ -33,212 +30,318 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ne2-9T-lFK" userLabel="Top Toolbar">
-                                <rect key="frame" x="0.0" y="20" width="600" height="44"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="mXq-aZ-hcI"/>
-                                </constraints>
-                                <items>
-                                    <barButtonItem image="files" style="plain" id="w0R-zs-J12" userLabel="Files" customClass="ImageBarButtonItem" customModule="MoonKit" colorLabel="IBBuiltInLabel-Red">
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="files-selected"/>
-                                            <userDefinedRuntimeAttribute type="color" keyPath="disabledTintColor">
-                                                <color key="value" red="0.54901960780000003" green="0.53333333329999999" blue="0.50980392159999999" alpha="1" colorSpace="calibratedRGB"/>
-                                            </userDefinedRuntimeAttribute>
-                                            <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
-                                        </userDefinedRuntimeAttributes>
-                                        <connections>
-                                            <action selector="files" destination="BV1-FR-VrT" id="7yz-97-lxU"/>
-                                        </connections>
-                                    </barButtonItem>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="fn3-1p-P1b" colorLabel="IBBuiltInLabel-Red"/>
-                                    <barButtonItem enabled="NO" image="revert" style="plain" id="WNt-yK-gMn" userLabel="Revert" customClass="ImageBarButtonItem" customModule="MoonKit" colorLabel="IBBuiltInLabel-Red">
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="revert-selected"/>
-                                            <userDefinedRuntimeAttribute type="color" keyPath="disabledTintColor">
-                                                <color key="value" red="0.54901960780000003" green="0.53333333329999999" blue="0.50980392159999999" alpha="1" colorSpace="calibratedRGB"/>
-                                            </userDefinedRuntimeAttribute>
-                                        </userDefinedRuntimeAttributes>
-                                        <connections>
-                                            <action selector="revert" destination="BV1-FR-VrT" id="FhY-8t-i4N"/>
-                                        </connections>
-                                    </barButtonItem>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="StZ-TK-F4f" colorLabel="IBBuiltInLabel-Red"/>
-                                    <barButtonItem image="sliders" style="plain" id="0cd-Py-C2q" userLabel="Sliders" customClass="ImageBarButtonItem" customModule="MoonKit" colorLabel="IBBuiltInLabel-Red">
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="sliders-selected"/>
-                                            <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
-                                        </userDefinedRuntimeAttributes>
-                                        <connections>
-                                            <action selector="mixer" destination="BV1-FR-VrT" id="EAX-7J-6S4"/>
-                                        </connections>
-                                    </barButtonItem>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="Ilh-nH-w15" colorLabel="IBBuiltInLabel-Red"/>
-                                    <barButtonItem image="piano" style="plain" id="uuO-FY-Y2S" userLabel="Instrument" customClass="ImageBarButtonItem" customModule="MoonKit" colorLabel="IBBuiltInLabel-Red">
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="piano-selected"/>
-                                            <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
-                                        </userDefinedRuntimeAttributes>
-                                        <connections>
-                                            <action selector="instrument" destination="BV1-FR-VrT" id="rzG-Lj-UEO"/>
-                                        </connections>
-                                    </barButtonItem>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="Nn5-Ip-28S" colorLabel="IBBuiltInLabel-Red"/>
-                                    <barButtonItem image="template" style="plain" id="crO-6C-Y4j" userLabel="Template" customClass="ImageBarButtonItem" customModule="MoonKit" colorLabel="IBBuiltInLabel-Red">
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
-                                            <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="template-selected"/>
-                                        </userDefinedRuntimeAttributes>
-                                        <connections>
-                                            <action selector="template" destination="BV1-FR-VrT" id="3aI-KQ-kZV"/>
-                                        </connections>
-                                    </barButtonItem>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="Hbp-RF-bHk" colorLabel="IBBuiltInLabel-Red"/>
-                                    <barButtonItem enabled="NO" image="floppydisk" style="plain" id="0A3-0S-GbH" userLabel="Save" customClass="ImageBarButtonItem" customModule="MoonKit" colorLabel="IBBuiltInLabel-Red">
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="floppydisk-selected"/>
-                                            <userDefinedRuntimeAttribute type="color" keyPath="disabledTintColor">
-                                                <color key="value" red="0.54901960780000003" green="0.53333333329999999" blue="0.50980392159999999" alpha="1" colorSpace="calibratedRGB"/>
-                                            </userDefinedRuntimeAttribute>
-                                        </userDefinedRuntimeAttributes>
-                                        <connections>
-                                            <action selector="save" destination="BV1-FR-VrT" id="gMR-5m-wYq"/>
-                                        </connections>
-                                    </barButtonItem>
-                                </items>
-                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <color key="barTintColor" red="0.2291520983" green="0.229187265" blue="0.22913339730000001" alpha="1" colorSpace="calibratedRGB"/>
-                            </toolbar>
-                            <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="vQ1-wE-mR9">
-                                <rect key="frame" x="20" y="528" width="560" height="64"/>
+                            <stackView contentMode="scaleToFill" distribution="equalSpacing" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="vQ1-wE-mR9" userLabel="Bottom Buttons">
+                                <rect key="frame" x="20" y="536" width="560" height="56"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="u5D-xu-7GP" customClass="ImageButtonView" customModule="MoonKit">
-                                        <rect key="frame" x="0.0" y="4" width="56" height="56"/>
+                                    <stackView contentMode="scaleToFill" distribution="equalCentering" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="ca1-ur-VJf">
+                                        <rect key="frame" x="0.0" y="5" width="178" height="46"/>
+                                        <subviews>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="u5D-xu-7GP" userLabel="Record" customClass="ImageButtonView" customModule="MoonKit">
+                                                <rect key="frame" x="0.0" y="0.0" width="46" height="46"/>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="u5D-xu-7GP" secondAttribute="height" multiplier="1:1" id="Oq6-MD-ADA"/>
+                                                    <constraint firstAttribute="height" constant="46" id="Yh9-ms-HjG"/>
+                                                </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="record"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="record-selected"/>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
+                                                        <color key="value" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
+                                                </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="record" destination="BV1-FR-VrT" eventType="touchUpInside" id="n5c-Wk-WUa"/>
+                                                </connections>
+                                            </view>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="AbD-fM-IZj" userLabel="Play/Pause" customClass="ImageButtonView" customModule="MoonKit">
+                                                <rect key="frame" x="66" y="0.0" width="46" height="46"/>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="46" id="ptd-UT-Uaa"/>
+                                                    <constraint firstAttribute="width" secondItem="AbD-fM-IZj" secondAttribute="height" multiplier="1:1" id="uSc-oq-6Vf"/>
+                                                </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="play"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="play-selected"/>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
+                                                </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="play" destination="BV1-FR-VrT" eventType="touchUpInside" id="2ap-jc-8sM"/>
+                                                </connections>
+                                            </view>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5UP-3s-pkz" userLabel="Stop" customClass="ImageButtonView" customModule="MoonKit">
+                                                <rect key="frame" x="132" y="0.0" width="46" height="46"/>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="46" id="CIT-cj-kEw"/>
+                                                    <constraint firstAttribute="width" secondItem="5UP-3s-pkz" secondAttribute="height" multiplier="1:1" id="cJc-Vc-i5Q"/>
+                                                </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="stop"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="stop-selected"/>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="disabledTintColor">
+                                                        <color key="value" red="0.27258896830000001" green="0.26667606830000001" blue="0.26053553820000003" alpha="1" colorSpace="calibratedRGB"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="enabled" value="NO"/>
+                                                </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="stop" destination="BV1-FR-VrT" eventType="touchUpInside" id="jD9-0j-4ba"/>
+                                                </connections>
+                                            </view>
+                                        </subviews>
+                                        <color key="backgroundColor" red="0.20000000000000001" green="0.1960784314" blue="0.19215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                    </stackView>
+                                    <stackView contentMode="scaleToFill" distribution="equalCentering" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="ZxP-sw-Rs0">
+                                        <rect key="frame" x="364" y="0.0" width="196" height="56"/>
+                                        <subviews>
+                                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eaf-y5-9B7" userLabel="Tempo" customClass="Slider" customModule="MoonKit">
+                                                <rect key="frame" x="0.0" y="5" width="150" height="46"/>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="46" id="Hc1-b5-iNu"/>
+                                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" priority="999" constant="150" id="Vfd-jV-2lF"/>
+                                                </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="thumbImage" value="marker2large"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="trackMinImage" value="line6thick"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="trackMaxImage" value="line6thick"/>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="thumbColor">
+                                                        <color key="value" red="0.87450980389999999" green="0.82745098039999998" blue="0.76470588240000004" alpha="1" colorSpace="deviceRGB"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="trackMinColor">
+                                                        <color key="value" red="0.57254901960000004" green="0.52941176469999995" blue="0.47058823529999999" alpha="1" colorSpace="calibratedRGB"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="trackMaxColor">
+                                                        <color key="value" red="0.30125221610069275" green="0.29395070672035217" blue="0.28606623411178589" alpha="1" colorSpace="calibratedRGB"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="preservesTrackMaxImageHeight" value="YES"/>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="preservesTrackMinImageHeight" value="YES"/>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="preservesThumbImageSize" value="YES"/>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
+                                                        <real key="value" value="24"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
+                                                        <real key="value" value="400"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="value">
+                                                        <real key="value" value="120"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="valueLabelTextColor">
+                                                        <color key="value" red="0.96889215709999998" green="0.99298822880000004" blue="0.99992734189999999" alpha="1" colorSpace="calibratedRGB"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="showsValueLabel" value="YES"/>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="valueLabelPrecision">
+                                                        <integer key="value" value="0"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="valueLabelFontName" value="EvelethRegular"/>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="valueLabelFontSize">
+                                                        <real key="value" value="12"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="valueLabelYOffset">
+                                                        <real key="value" value="-10"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="tempoSliderValueDidChange" destination="BV1-FR-VrT" eventType="valueChanged" id="kgn-5a-R6m"/>
+                                                </connections>
+                                            </view>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MW7-7L-sqD" userLabel="Metronome" customClass="ImageButtonView" customModule="MoonKit">
+                                                <rect key="frame" x="150" y="5" width="46" height="46"/>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="46" id="Rrt-IP-Tjp"/>
+                                                    <constraint firstAttribute="width" secondItem="MW7-7L-sqD" secondAttribute="height" multiplier="1:1" id="f9x-y3-x1r"/>
+                                                </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="metronome"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="metronome-selected"/>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
+                                                </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="metronome" destination="BV1-FR-VrT" eventType="touchUpInside" id="aaJ-fO-Lb7"/>
+                                                </connections>
+                                            </view>
+                                        </subviews>
+                                        <color key="backgroundColor" red="0.20000000000000001" green="0.1960784314" blue="0.19215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="56" id="0oc-zP-imY"/>
+                                        </constraints>
+                                    </stackView>
+                                </subviews>
+                                <color key="backgroundColor" red="0.20000000000000001" green="0.1960784314" blue="0.19215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="56" id="PpP-wu-W4Y"/>
+                                </constraints>
+                            </stackView>
+                            <stackView contentMode="scaleToFill" distribution="equalSpacing" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="Hsi-ta-i4H" userLabel="Top Buttons">
+                                <rect key="frame" x="20" y="8" width="560" height="46"/>
+                                <subviews>
+                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dRz-Aj-snf" userLabel="Files" customClass="ImageButtonView" customModule="MoonKit">
+                                        <rect key="frame" x="0.0" y="0.0" width="46" height="46"/>
                                         <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" secondItem="u5D-xu-7GP" secondAttribute="height" multiplier="1:1" id="Oq6-MD-ADA"/>
-                                            <constraint firstAttribute="height" constant="56" id="Yh9-ms-HjG"/>
+                                            <constraint firstAttribute="width" secondItem="dRz-Aj-snf" secondAttribute="height" multiplier="1:1" id="KaT-vY-Ywn"/>
+                                            <constraint firstAttribute="height" constant="56" id="QWl-Wx-U1x"/>
                                         </constraints>
                                         <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="image" keyPath="image" value="record"/>
-                                            <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="record-selected"/>
-                                            <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
-                                                <color key="value" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="image" value="files"/>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="files-selected"/>
                                             <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
-                                        </userDefinedRuntimeAttributes>
-                                        <connections>
-                                            <action selector="record" destination="BV1-FR-VrT" eventType="touchUpInside" id="n5c-Wk-WUa"/>
-                                        </connections>
-                                    </view>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="AbD-fM-IZj" customClass="ImageButtonView" customModule="MoonKit">
-                                        <rect key="frame" x="81" y="4" width="56" height="56"/>
-                                        <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="56" id="ptd-UT-Uaa"/>
-                                            <constraint firstAttribute="width" secondItem="AbD-fM-IZj" secondAttribute="height" multiplier="1:1" id="uSc-oq-6Vf"/>
-                                        </constraints>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="image" keyPath="image" value="play"/>
-                                            <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="play-selected"/>
-                                            <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
-                                        </userDefinedRuntimeAttributes>
-                                        <connections>
-                                            <action selector="play" destination="BV1-FR-VrT" eventType="touchUpInside" id="2ap-jc-8sM"/>
-                                        </connections>
-                                    </view>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5UP-3s-pkz" customClass="ImageButtonView" customModule="MoonKit">
-                                        <rect key="frame" x="162.5" y="4" width="56" height="56"/>
-                                        <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="56" id="CIT-cj-kEw"/>
-                                            <constraint firstAttribute="width" secondItem="5UP-3s-pkz" secondAttribute="height" multiplier="1:1" id="cJc-Vc-i5Q"/>
-                                        </constraints>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="image" keyPath="image" value="stop"/>
-                                            <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="stop-selected"/>
-                                            <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
-                                            <userDefinedRuntimeAttribute type="color" keyPath="disabledTintColor">
-                                                <color key="value" red="0.27258896827697754" green="0.26667606830596924" blue="0.26053553819656372" alpha="1" colorSpace="calibratedRGB"/>
-                                            </userDefinedRuntimeAttribute>
-                                            <userDefinedRuntimeAttribute type="boolean" keyPath="enabled" value="NO"/>
-                                        </userDefinedRuntimeAttributes>
-                                        <connections>
-                                            <action selector="stop" destination="BV1-FR-VrT" eventType="touchUpInside" id="jD9-0j-4ba"/>
-                                        </connections>
-                                    </view>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Tempo" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kPy-dd-ZGq">
-                                        <rect key="frame" x="243.5" y="22.5" width="64" height="19"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="64" id="pOi-zo-qch"/>
-                                        </constraints>
-                                        <fontDescription key="fontDescription" name="EvelethShadow" family="Eveleth" pointSize="16"/>
-                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <slider autoresizesSubviews="NO" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="120" minValue="24" maxValue="380" translatesAutoresizingMaskIntoConstraints="NO" id="lnG-ol-kkL" customClass="Slider" customModule="MoonKit">
-                                        <rect key="frame" x="331" y="0.0" width="150" height="65"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="114" id="O35-V5-Psz"/>
-                                            <constraint firstAttribute="height" constant="64" id="WBp-ek-BJn"/>
-                                        </constraints>
-                                        <color key="minimumTrackTintColor" red="0.57254901960000004" green="0.52941176469999995" blue="0.47058823529999999" alpha="1" colorSpace="calibratedRGB"/>
-                                        <color key="maximumTrackTintColor" red="0.20000000000000001" green="0.1960784314" blue="0.19215686269999999" alpha="1" colorSpace="calibratedRGB"/>
-                                        <color key="thumbTintColor" red="0.87450999019999998" green="0.82744997740000004" blue="0.76077997679999998" alpha="1" colorSpace="calibratedRGB"/>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="image" keyPath="defaultThumbImage" value="marker2"/>
-                                            <userDefinedRuntimeAttribute type="image" keyPath="defaultMinimumTrackImage" value="line6"/>
-                                            <userDefinedRuntimeAttribute type="image" keyPath="defaultMaximumTrackImage" value="line6"/>
-                                            <userDefinedRuntimeAttribute type="string" keyPath="valueLabelOffsetString" value="{0, -16}"/>
-                                            <userDefinedRuntimeAttribute type="string" keyPath="thumbOffsetString" value="{0, -16}"/>
-                                            <userDefinedRuntimeAttribute type="boolean" keyPath="trackShowsThroughThumb" value="YES"/>
                                         </userDefinedRuntimeAttributes>
                                         <variation key="default">
                                             <mask key="constraints">
-                                                <exclude reference="O35-V5-Psz"/>
+                                                <exclude reference="QWl-Wx-U1x"/>
                                             </mask>
                                         </variation>
                                         <connections>
-                                            <action selector="tempoSliderValueDidChange" destination="BV1-FR-VrT" eventType="valueChanged" id="boJ-8t-adt"/>
+                                            <action selector="files" destination="BV1-FR-VrT" eventType="touchUpInside" id="j7z-oo-VsZ"/>
                                         </connections>
-                                    </slider>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MW7-7L-sqD" customClass="ImageButtonView" customModule="MoonKit">
-                                        <rect key="frame" x="504" y="4" width="56" height="56"/>
+                                    </view>
+                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QfC-Mo-5pM" userLabel="Revert" customClass="ImageButtonView" customModule="MoonKit">
+                                        <rect key="frame" x="128" y="0.0" width="46" height="46"/>
                                         <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="56" id="Rrt-IP-Tjp"/>
-                                            <constraint firstAttribute="width" secondItem="MW7-7L-sqD" secondAttribute="height" multiplier="1:1" id="f9x-y3-x1r"/>
+                                            <constraint firstAttribute="width" secondItem="QfC-Mo-5pM" secondAttribute="height" multiplier="1:1" id="RH3-As-HuW"/>
+                                            <constraint firstAttribute="height" constant="56" id="dwz-KF-PoZ"/>
                                         </constraints>
                                         <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="image" keyPath="image" value="metronome"/>
-                                            <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="metronome-selected"/>
-                                            <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="image" value="revert"/>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="revert-selected"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="NO"/>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="disabledTintColor">
+                                                <color key="value" red="0.27258896830000001" green="0.26667606830000001" blue="0.26053553820000003" alpha="1" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="enabled" value="NO"/>
                                         </userDefinedRuntimeAttributes>
+                                        <variation key="default">
+                                            <mask key="constraints">
+                                                <exclude reference="dwz-KF-PoZ"/>
+                                            </mask>
+                                        </variation>
                                         <connections>
-                                            <action selector="metronome" destination="BV1-FR-VrT" eventType="touchUpInside" id="aaJ-fO-Lb7"/>
+                                            <action selector="revert" destination="BV1-FR-VrT" eventType="touchUpInside" id="GJZ-4n-YOz"/>
+                                        </connections>
+                                    </view>
+                                    <stackView contentMode="scaleToFill" distribution="equalCentering" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="FzH-Y9-IYi">
+                                        <rect key="frame" x="255" y="0.0" width="178" height="46"/>
+                                        <subviews>
+                                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4HC-dP-hAS" userLabel="Mixer" customClass="ImageButtonView" customModule="MoonKit">
+                                                <rect key="frame" x="0.0" y="0.0" width="46" height="46"/>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="56" id="Tag-GE-XfW"/>
+                                                    <constraint firstAttribute="width" secondItem="4HC-dP-hAS" secondAttribute="height" multiplier="1:1" id="oLj-DW-u2w"/>
+                                                </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="sliders"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="sliders-selected"/>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
+                                                </userDefinedRuntimeAttributes>
+                                                <variation key="default">
+                                                    <mask key="constraints">
+                                                        <exclude reference="Tag-GE-XfW"/>
+                                                    </mask>
+                                                </variation>
+                                                <connections>
+                                                    <action selector="mixer" destination="BV1-FR-VrT" eventType="touchUpInside" id="w1V-Vi-tOx"/>
+                                                </connections>
+                                            </view>
+                                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CYm-Ka-dDw" userLabel="Instrument" customClass="ImageButtonView" customModule="MoonKit">
+                                                <rect key="frame" x="66" y="0.0" width="46" height="46"/>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="CYm-Ka-dDw" secondAttribute="height" multiplier="1:1" id="C1h-xL-EQ2"/>
+                                                    <constraint firstAttribute="height" constant="56" id="VBW-Hf-r0j"/>
+                                                </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="piano"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="piano-selected"/>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
+                                                </userDefinedRuntimeAttributes>
+                                                <variation key="default">
+                                                    <mask key="constraints">
+                                                        <exclude reference="VBW-Hf-r0j"/>
+                                                    </mask>
+                                                </variation>
+                                                <connections>
+                                                    <action selector="instrument" destination="BV1-FR-VrT" eventType="touchUpInside" id="ZwL-3j-wr0"/>
+                                                </connections>
+                                            </view>
+                                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dMY-9u-X4g" userLabel="Template" customClass="ImageButtonView" customModule="MoonKit">
+                                                <rect key="frame" x="132" y="0.0" width="46" height="46"/>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="dMY-9u-X4g" secondAttribute="height" multiplier="1:1" id="kbt-ZN-z7r"/>
+                                                    <constraint firstAttribute="height" constant="56" id="q4p-TU-Q8Q"/>
+                                                </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="template"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="template-selected"/>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
+                                                </userDefinedRuntimeAttributes>
+                                                <variation key="default">
+                                                    <mask key="constraints">
+                                                        <exclude reference="q4p-TU-Q8Q"/>
+                                                    </mask>
+                                                </variation>
+                                                <connections>
+                                                    <action selector="template" destination="BV1-FR-VrT" eventType="touchUpInside" id="sy9-MP-zDk"/>
+                                                </connections>
+                                            </view>
+                                        </subviews>
+                                        <color key="backgroundColor" red="0.20000000000000001" green="0.1960784314" blue="0.19215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                    </stackView>
+                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="i6p-Ws-ech" userLabel="Save" customClass="ImageButtonView" customModule="MoonKit">
+                                        <rect key="frame" x="514" y="0.0" width="46" height="46"/>
+                                        <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="i6p-Ws-ech" secondAttribute="height" multiplier="1:1" id="50M-Yh-CX8"/>
+                                            <constraint firstAttribute="height" constant="56" id="y2a-tw-0PN"/>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="floppydisk-selected"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="NO"/>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="image" value="floppydisk"/>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="disabledTintColor">
+                                                <color key="value" red="0.27258896830000001" green="0.26667606830000001" blue="0.26053553820000003" alpha="1" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="enabled" value="NO"/>
+                                        </userDefinedRuntimeAttributes>
+                                        <variation key="default">
+                                            <mask key="constraints">
+                                                <exclude reference="y2a-tw-0PN"/>
+                                            </mask>
+                                        </variation>
+                                        <connections>
+                                            <action selector="save" destination="BV1-FR-VrT" eventType="touchUpInside" id="97x-Pz-2cb"/>
                                         </connections>
                                     </view>
                                 </subviews>
+                                <color key="backgroundColor" red="0.20000000000000001" green="0.1960784314" blue="0.19215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
-                                    <constraint firstItem="u5D-xu-7GP" firstAttribute="width" secondItem="u5D-xu-7GP" secondAttribute="height" multiplier="1:1" id="VOH-OD-g0C"/>
+                                    <constraint firstAttribute="height" constant="46" id="DHJ-d4-IJP"/>
                                 </constraints>
                             </stackView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="U9p-PY-X1m" userLabel="Ball Scene View" customClass="SKView">
-                                <rect key="frame" x="0.0" y="64" width="600" height="456"/>
+                                <rect key="frame" x="0.0" y="62" width="600" height="466"/>
+                                <color key="backgroundColor" red="0.20000000000000001" green="0.1960784314" blue="0.19215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
                         </subviews>
                         <color key="backgroundColor" red="0.20000000000000001" green="0.1960784314" blue="0.19215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="Ne2-9T-lFK" firstAttribute="top" secondItem="8aa-yV-Osq" secondAttribute="bottom" constant="20" id="1xV-6C-LWD"/>
                             <constraint firstItem="qHh-Mt-9TT" firstAttribute="top" secondItem="vQ1-wE-mR9" secondAttribute="bottom" constant="8" symbolic="YES" id="5fh-E0-dLG"/>
                             <constraint firstItem="vQ1-wE-mR9" firstAttribute="top" secondItem="U9p-PY-X1m" secondAttribute="bottom" constant="8" symbolic="YES" id="7UA-Ki-qDD"/>
-                            <constraint firstAttribute="trailing" secondItem="Ne2-9T-lFK" secondAttribute="trailing" id="DSY-sg-zHo"/>
+                            <constraint firstItem="U9p-PY-X1m" firstAttribute="top" secondItem="Hsi-ta-i4H" secondAttribute="bottom" constant="8" symbolic="YES" id="9xn-ad-4gw"/>
+                            <constraint firstItem="Hsi-ta-i4H" firstAttribute="top" secondItem="8aa-yV-Osq" secondAttribute="bottom" constant="8" symbolic="YES" id="HR5-A6-3im"/>
                             <constraint firstItem="U9p-PY-X1m" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leading" id="Vpx-i7-ab6"/>
-                            <constraint firstItem="Ne2-9T-lFK" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leading" id="Y6S-YO-OJe"/>
                             <constraint firstAttribute="trailingMargin" secondItem="vQ1-wE-mR9" secondAttribute="trailing" id="bQb-0L-F0Q"/>
-                            <constraint firstItem="U9p-PY-X1m" firstAttribute="top" secondItem="Ne2-9T-lFK" secondAttribute="bottom" id="eDZ-FF-dxW"/>
                             <constraint firstItem="vQ1-wE-mR9" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leadingMargin" id="ozW-M8-Uja"/>
                             <constraint firstAttribute="trailing" secondItem="U9p-PY-X1m" secondAttribute="trailing" id="r3J-Gt-uwa"/>
+                            <constraint firstItem="Hsi-ta-i4H" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leadingMargin" id="rgj-tf-btp"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Hsi-ta-i4H" secondAttribute="trailing" id="v6c-AY-DZE"/>
                         </constraints>
                     </view>
                     <toolbarItems/>
@@ -247,16 +350,18 @@
                     <nil key="simulatedTopBarMetrics"/>
                     <nil key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <outlet property="filesBarButtonItem" destination="w0R-zs-J12" id="hJ1-7N-ThF"/>
-                        <outlet property="instrumentBarButtonItem" destination="uuO-FY-Y2S" id="pFZ-3j-grD"/>
-                        <outlet property="mixerBarButtonItem" destination="0cd-Py-C2q" id="GZK-Pe-FVB"/>
+                        <outlet property="filesButton" destination="dRz-Aj-snf" id="lsm-fp-74h"/>
+                        <outlet property="instrumentButton" destination="CYm-Ka-dDw" id="IHI-YQ-0my"/>
+                        <outlet property="metronomeButton" destination="MW7-7L-sqD" id="gCP-tT-WOp"/>
+                        <outlet property="mixerButton" destination="4HC-dP-hAS" id="GqN-Jz-0Be"/>
+                        <outlet property="playPauseButton" destination="AbD-fM-IZj" id="HIw-lB-jVc"/>
                         <outlet property="popoverBlur" destination="qmT-5g-1Xb" id="45n-6e-RdI"/>
-                        <outlet property="revertBarButtonItem" destination="WNt-yK-gMn" id="eV3-l3-fBw"/>
-                        <outlet property="saveBarButtonItem" destination="0A3-0S-GbH" id="DZY-kB-sAQ"/>
+                        <outlet property="recordButton" destination="u5D-xu-7GP" id="3UW-Ad-LsE"/>
+                        <outlet property="revertButton" destination="QfC-Mo-5pM" id="x1v-hE-s8O"/>
+                        <outlet property="saveButton" destination="i6p-Ws-ech" id="Z2d-Vc-M0t"/>
                         <outlet property="skView" destination="U9p-PY-X1m" id="Khl-SR-qcK"/>
-                        <outlet property="templateBarButtonItem" destination="crO-6C-Y4j" id="drZ-UU-TDM"/>
-                        <outlet property="tempoLabel" destination="kPy-dd-ZGq" id="AQ2-Io-Paj"/>
-                        <outlet property="tempoSlider" destination="lnG-ol-kkL" id="LuV-2m-sfB"/>
+                        <outlet property="stopButton" destination="5UP-3s-pkz" id="ydf-jc-Hc9"/>
+                        <outlet property="templateButton" destination="dMY-9u-X4g" id="atM-uR-eWy"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>
@@ -273,12 +378,12 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     </view>
                     <gestureRecognizers/>
-                    <blurEffect style="light"/>
+                    <blurEffect style="dark"/>
                     <connections>
                         <outletCollection property="gestureRecognizers" destination="leA-Ua-D5I" appends="YES" id="Ta4-mM-0F9"/>
                     </connections>
                 </visualEffectView>
-                <view contentMode="scaleToFill" placeholderIntrinsicWidth="400" placeholderIntrinsicHeight="400" id="ItN-cz-Gcb" customClass="PopoverView" customModule="MoonKit">
+                <view hidden="YES" opaque="NO" contentMode="scaleToFill" placeholderIntrinsicWidth="400" placeholderIntrinsicHeight="400" id="ItN-cz-Gcb" customClass="PopoverView" customModule="MoonKit">
                     <rect key="frame" x="0.0" y="0.0" width="400" height="400"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <subviews>
@@ -487,9 +592,6 @@
                                                 <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
                                                     <real key="value" value="11"/>
                                                 </userDefinedRuntimeAttribute>
-                                                <userDefinedRuntimeAttribute type="image" keyPath="defaultMinimumTrackImage" value="line6"/>
-                                                <userDefinedRuntimeAttribute type="image" keyPath="defaultMaximumTrackImage" value="line6"/>
-                                                <userDefinedRuntimeAttribute type="image" keyPath="defaultThumbImage" value="verticalthumb2"/>
                                                 <userDefinedRuntimeAttribute type="color" keyPath="minimumTrackTintColor">
                                                     <color key="value" red="0.5725490196078431" green="0.52941176470588236" blue="0.47058823529411764" alpha="1" colorSpace="calibratedRGB"/>
                                                 </userDefinedRuntimeAttribute>
@@ -499,6 +601,9 @@
                                                 <userDefinedRuntimeAttribute type="color" keyPath="maximumTrackTintColor">
                                                     <color key="value" red="0.20000000000000001" green="0.1960784314" blue="0.19215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                                                 </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="image" keyPath="defaultMinimumTrackImage" value="line6"/>
+                                                <userDefinedRuntimeAttribute type="image" keyPath="defaultMaximumTrackImage" value="line6"/>
+                                                <userDefinedRuntimeAttribute type="image" keyPath="defaultThumbImage" value="verticalthumb2"/>
                                             </userDefinedRuntimeAttributes>
                                             <connections>
                                                 <action selector="volumeDidChange" destination="2AY-7g-m2Q" eventType="valueChanged" id="0PE-6k-RsM"/>
@@ -626,6 +731,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ejo-iP-0bG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="625" y="983"/>
         </scene>
     </scenes>
     <resources>
@@ -635,7 +741,8 @@
         <image name="floppydisk-selected" width="56" height="56"/>
         <image name="knob" width="56" height="56"/>
         <image name="line6" width="150" height="31"/>
-        <image name="marker2" width="32" height="32"/>
+        <image name="line6thick" width="150" height="46"/>
+        <image name="marker2large" width="46" height="46"/>
         <image name="metronome" width="56" height="56"/>
         <image name="metronome-selected" width="56" height="56"/>
         <image name="piano" width="56" height="56"/>

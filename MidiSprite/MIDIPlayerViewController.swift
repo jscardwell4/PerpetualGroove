@@ -8,8 +8,8 @@
 
 import UIKit
 import SpriteKit
-import MoonKit
 import Eveleth
+import MoonKit
 import Chameleon
 import typealias AudioToolbox.MusicDeviceGroupID
 
@@ -18,17 +18,16 @@ final class MIDIPlayerViewController: UIViewController {
   // MARK: - IBOutlet views and controls
 
   @IBOutlet weak var tempoSlider: Slider!
-  @IBOutlet weak var tempoLabel: UILabel!
-  @IBOutlet weak var filesBarButtonItem: ImageBarButtonItem!
-  @IBOutlet weak var templateBarButtonItem: ImageBarButtonItem!
-  @IBOutlet weak var instrumentBarButtonItem: ImageBarButtonItem!
+  @IBOutlet weak var filesButton: ImageButtonView!
+  @IBOutlet weak var templateButton: ImageButtonView!
+  @IBOutlet weak var instrumentButton: ImageButtonView!
   @IBOutlet weak var recordButton: ImageButtonView!
   @IBOutlet weak var playPauseButton: ImageButtonView!
   @IBOutlet weak var stopButton: ImageButtonView!
   @IBOutlet weak var metronomeButton: ImageButtonView!
-  @IBOutlet weak var mixerBarButtonItem: ImageBarButtonItem!
-  @IBOutlet weak var saveBarButtonItem: ImageBarButtonItem!
-  @IBOutlet weak var revertBarButtonItem: ImageBarButtonItem!
+  @IBOutlet weak var mixerButton: ImageButtonView!
+  @IBOutlet weak var saveButton: ImageButtonView!
+  @IBOutlet weak var revertButton: ImageButtonView!
   @IBOutlet weak var popoverBlur: UIVisualEffectView!
   @IBOutlet weak var skView: SKView!
 
@@ -51,6 +50,7 @@ final class MIDIPlayerViewController: UIViewController {
 
   /** instrument */
   @IBAction private func instrument() { if case .Instrument = popover { popover = .None } else { popover = .Instrument } }
+
 
   /** save */
   @IBAction private func save() {
@@ -121,8 +121,8 @@ final class MIDIPlayerViewController: UIViewController {
 
   /** updateState */
   private func updateUIState() {
-    revertBarButtonItem.enabled = state ∋ .MIDINodeAdded && state ∌ .PopoverActive // We have a node and aren't showing popover
-    saveBarButtonItem.enabled = state ∋ .TrackAdded && state ∌ .PopoverActive // We have a track and aren't showing popover
+    revertButton.enabled = state ∋ .MIDINodeAdded && state ∌ .PopoverActive // We have a node and aren't showing popover
+    saveButton.enabled = state ∋ .TrackAdded && state ∌ .PopoverActive // We have a track and aren't showing popover
     stopButton.enabled = state ∋ .PlayerPlaying
     (state ∋ .PlayerPlaying ? ControlImage.Pause : ControlImage.Play).decorateButton(playPauseButton)
     popoverBlur.hidden = state ∌ .PopoverActive
@@ -298,18 +298,16 @@ final class MIDIPlayerViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    tempoLabel.font = Eveleth.shadowFontWithSize(16)
-
-    tempoSlider.setThumbImage(AssetManager.sliderThumbImage, forState: .Normal)
-    tempoSlider.setMinimumTrackImage(AssetManager.sliderMinTrackImage, forState: .Normal)
-    tempoSlider.setMaximumTrackImage(AssetManager.sliderMaxTrackImage, forState: .Normal)
-    tempoSlider.thumbOffset = AssetManager.sliderThumbOffset
-    tempoSlider.trackShowsThroughThumb = true
-    tempoSlider.valueLabelOffset = AssetManager.sliderLabelValueOffset
-    tempoSlider.valueLabel.font = AssetManager.sliderLabelValueFont
-    tempoSlider.valueLabel.textColor = AssetManager.sliderLabelValueColor
-    tempoSlider.valueLabelHidden = false
-    tempoSlider.labelTextForValue = {String(Int($0))}
+//    tempoSlider.setThumbImage(AssetManager.sliderThumbImage, forState: .Normal)
+//    tempoSlider.setMinimumTrackImage(AssetManager.sliderMinTrackImage, forState: .Normal)
+//    tempoSlider.setMaximumTrackImage(AssetManager.sliderMaxTrackImage, forState: .Normal)
+//    tempoSlider.thumbOffset = AssetManager.sliderThumbOffset
+//    tempoSlider.trackShowsThroughThumb = true
+//    tempoSlider.valueLabelOffset = AssetManager.sliderLabelValueOffset
+//    tempoSlider.valueLabelFont = AssetManager.sliderLabelValueFont
+//    tempoSlider.valueLabelTextColor = AssetManager.sliderLabelValueColor
+//    tempoSlider.valueLabelHidden = false
+//    tempoSlider.labelTextForValue = {String(Int($0))}
 
     // Configure the view.
     //    skView.showsFPS = true
@@ -358,10 +356,6 @@ final class MIDIPlayerViewController: UIViewController {
   */
   override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
-    guard let filesPresentingView = filesBarButtonItem.customView,
-              templatePresentingView = templateBarButtonItem.customView,
-              mixerPresentingView = mixerBarButtonItem.customView,
-              instrumentPresentingView = instrumentBarButtonItem.customView else { return }
 
     func addPopover(popoverView: PopoverView, _ presentingView: UIView) {
       popoverView.hidden = true
@@ -381,10 +375,10 @@ final class MIDIPlayerViewController: UIViewController {
       popoverView.xOffset = -offset
     }
 
-    addPopover(filesPopoverView,      filesPresentingView)
-    addPopover(templatePopoverView,   templatePresentingView)
-    addPopover(mixerPopoverView,      mixerPresentingView)
-    addPopover(instrumentPopoverView, instrumentPresentingView)
+    addPopover(filesPopoverView,      filesButton)
+    addPopover(templatePopoverView,   templateButton)
+    addPopover(mixerPopoverView,      mixerButton)
+    addPopover(instrumentPopoverView, instrumentButton)
 
     view.setNeedsUpdateConstraints()
 
@@ -395,13 +389,9 @@ final class MIDIPlayerViewController: UIViewController {
     super.updateViewConstraints()
 
     guard let filesPopover = _filesPopoverView,
-              filesButton = filesBarButtonItem?.customView,
               mixerPopover = _mixerPopoverView,
-              mixerButton = mixerBarButtonItem?.customView,
               templatePopover = _templatePopoverView,
-              templateButton = templateBarButtonItem?.customView,
-              instrumentPopover = _instrumentPopoverView,
-              instrumentButton = instrumentBarButtonItem?.customView
+              instrumentPopover = _instrumentPopoverView
       else { return }
 
     func addConstraints(id: Identifier, _ popoverView: PopoverView, _ presentingView: UIView) {

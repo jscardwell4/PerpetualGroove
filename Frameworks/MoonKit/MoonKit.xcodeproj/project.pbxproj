@@ -353,7 +353,6 @@
 		C29EECF81AFD010B00660EE6 /* MiscellaneousFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29EECF71AFD010B00660EE6 /* MiscellaneousFunctions.swift */; };
 		C2A169D01B15386300E3A5A0 /* UIImage+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A169CF1B15386300E3A5A0 /* UIImage+MoonKitAdditions.swift */; };
 		C2A5B6F21B482F4700F34491 /* NSParagraphStyle+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A5B6F11B482F4700F34491 /* NSParagraphStyle+MoonKitAdditions.swift */; };
-		C2A6261F1A33598300152E97 /* Slider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A6261E1A33598300152E97 /* Slider.swift */; };
 		C2A70E3B1ACC53D0009C2CF7 /* JSONValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A70E3A1ACC53D0009C2CF7 /* JSONValue.swift */; };
 		C2A70E451ACD8EBA009C2CF7 /* MoonKit_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A70E441ACD8EBA009C2CF7 /* MoonKit_Tests.swift */; };
 		C2A70E461ACD8EBA009C2CF7 /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2358F1619C78D6D00920F8D /* MoonKit.framework */; };
@@ -377,6 +376,8 @@
 		C2CEFF2C1A328B2000F3BE24 /* FloatInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CEFF2B1A328B2000F3BE24 /* FloatInputView.swift */; };
 		C2CF38CF1B7FAFE00085B3D5 /* VerticalSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CF38CE1B7FAFE00085B3D5 /* VerticalSlider.swift */; };
 		C2CF986A1B0FD12900E32E41 /* PopoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CF98691B0FD12900E32E41 /* PopoverView.swift */; };
+		C2D5F2421B97BC93005040EF /* Slider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D5F2411B97BC93005040EF /* Slider.swift */; settings = {ASSET_TAGS = (); }; };
+		C2D5F2431B97BDC3005040EF /* _Slider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A6261E1A33598300152E97 /* _Slider.swift */; settings = {ASSET_TAGS = (); }; };
 		C2D664F11B88CC6F00D70FFA /* Ratio.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D664F01B88CC6F00D70FFA /* Ratio.swift */; };
 		C2E043251B727547005F0675 /* XMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E043241B727547005F0675 /* XMLParser.swift */; };
 		C2E7C8321A1AA3F0006BC80E /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E7C8311A1AA3F0006BC80E /* Protocols.swift */; };
@@ -392,6 +393,7 @@
 		C2F094471A32AA8600681AB3 /* KeyInputButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F094461A32AA8600681AB3 /* KeyInputButton.swift */; };
 		C2F39D2B1A3A51960024EE94 /* FontAwesome.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2F39D2A1A3A51960024EE94 /* FontAwesome.otf */; };
 		C2F39D2F1A3A6D5A0024EE94 /* NSAttributedString+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F39D2E1A3A6D5A0024EE94 /* NSAttributedString+MoonKitAdditions.swift */; };
+		C2F75A0D1B977075001EA2BA /* PropertyCoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F75A0C1B977075001EA2BA /* PropertyCoder.swift */; settings = {ASSET_TAGS = (); }; };
 		C2F84F431B14C4B700AF891D /* NSIndexSet+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F84F421B14C4B700AF891D /* NSIndexSet+MoonKitAdditions.swift */; };
 		C2F8C30F1A36133E004229FE /* TwoToneSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F8C30E1A36133E004229FE /* TwoToneSlider.swift */; };
 		C2F8C3171A362606004229FE /* UIResponder+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F8C3161A362606004229FE /* UIResponder+MoonKitAdditions.swift */; };
@@ -568,7 +570,7 @@
 		C2A169CF1B15386300E3A5A0 /* UIImage+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C2A46E651AD703E70030E3CC /* MoonKit.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = MoonKit.playground; path = Moonkit/MoonKit.playground; sourceTree = "<group>"; };
 		C2A5B6F11B482F4700F34491 /* NSParagraphStyle+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSParagraphStyle+MoonKitAdditions.swift"; sourceTree = "<group>"; };
-		C2A6261E1A33598300152E97 /* Slider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Slider.swift; sourceTree = "<group>"; };
+		C2A6261E1A33598300152E97 /* _Slider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _Slider.swift; sourceTree = "<group>"; };
 		C2A70E3A1ACC53D0009C2CF7 /* JSONValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = JSONValue.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		C2A70E401ACD8EBA009C2CF7 /* MoonKit Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "MoonKit Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2A70E431ACD8EBA009C2CF7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -753,6 +755,7 @@
 		C2CEFF2B1A328B2000F3BE24 /* FloatInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FloatInputView.swift; sourceTree = "<group>"; };
 		C2CF38CE1B7FAFE00085B3D5 /* VerticalSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VerticalSlider.swift; sourceTree = "<group>"; };
 		C2CF98691B0FD12900E32E41 /* PopoverView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopoverView.swift; sourceTree = "<group>"; };
+		C2D5F2411B97BC93005040EF /* Slider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Slider.swift; sourceTree = "<group>"; };
 		C2D664F01B88CC6F00D70FFA /* Ratio.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Ratio.swift; sourceTree = "<group>"; };
 		C2E043241B727547005F0675 /* XMLParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XMLParser.swift; sourceTree = "<group>"; };
 		C2E076A31B4EF7420063D057 /* WTF.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = WTF.playground; path = Moonkit/WTF.playground; sourceTree = "<group>"; };
@@ -776,6 +779,7 @@
 		C2F39D2E1A3A6D5A0024EE94 /* NSAttributedString+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSAttributedString+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C2F4370219BB813F00B60FC3 /* MSKeyPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSKeyPath.h; sourceTree = "<group>"; };
 		C2F4370319BB813F00B60FC3 /* MSKeyPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSKeyPath.m; sourceTree = "<group>"; };
+		C2F75A0C1B977075001EA2BA /* PropertyCoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyCoder.swift; sourceTree = "<group>"; };
 		C2F84F421B14C4B700AF891D /* NSIndexSet+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSIndexSet+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C2F8C30E1A36133E004229FE /* TwoToneSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TwoToneSlider.swift; sourceTree = "<group>"; };
 		C2F8C3161A362606004229FE /* UIResponder+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIResponder+MoonKitAdditions.swift"; sourceTree = "<group>"; };
@@ -1037,7 +1041,7 @@
 				C2CEFF251A3121F100F3BE24 /* TextField.swift */,
 				C2CEFF291A32807E00F3BE24 /* TextInputView.swift */,
 				C2F094461A32AA8600681AB3 /* KeyInputButton.swift */,
-				C2A6261E1A33598300152E97 /* Slider.swift */,
+				C2A6261E1A33598300152E97 /* _Slider.swift */,
 				C2B9B4091AC1C499005BA67C /* RegularExpression.swift */,
 				C2304E091AEECE1C0090D889 /* LayerProxy.swift */,
 				C210E9911AF27E3C0026A51D /* ViewProxy.swift */,
@@ -1066,6 +1070,8 @@
 				C26A27F01B94BD7A00BD1698 /* IntrinsicSizeDelegatingView.swift */,
 				C26A27F21B94C30500BD1698 /* DirectoryMonitor.swift */,
 				C26A27F61B9532A900BD1698 /* Knob.swift */,
+				C2F75A0C1B977075001EA2BA /* PropertyCoder.swift */,
+				C2D5F2411B97BC93005040EF /* Slider.swift */,
 			);
 			path = Objects;
 			sourceTree = "<group>";
@@ -1844,7 +1850,6 @@
 				C2E9A42F1B693CEB0006AFA8 /* InsettingViewController.swift in Sources */,
 				C2618A701B7A439D00122EBA /* FormCheckboxField.swift in Sources */,
 				C2358F4519C78E0C00920F8D /* NSURL+MSKitAdditions.m in Sources */,
-				C2A6261F1A33598300152E97 /* Slider.swift in Sources */,
 				C28E35BA1A451E3800438CCF /* CoreDataStack.swift in Sources */,
 				C22E6B8D1B80E1CE008D46A6 /* ClosedInterval+MoonKitAdditions.swift in Sources */,
 				C2A70E3B1ACC53D0009C2CF7 /* JSONValue.swift in Sources */,
@@ -1861,6 +1866,7 @@
 				C24A22931ADB43620065E7EA /* SetOperations.swift in Sources */,
 				C2EB15771A1D45C100B64D84 /* ConfiningBlockActionGesture.swift in Sources */,
 				C2683F7B1AF142E60081C74B /* UIBezierPath+MoonKitAdditions.swift in Sources */,
+				C2D5F2421B97BC93005040EF /* Slider.swift in Sources */,
 				C2358F4A19C78E0C00920F8D /* UIColor+MSKitAdditions.m in Sources */,
 				C2358F4B19C78E0C00920F8D /* UIControl+MSKitAdditions.m in Sources */,
 				C2358F4C19C78E0C00920F8D /* UIFont+MSKitAdditions.m in Sources */,
@@ -1953,6 +1959,7 @@
 				C2358F6B19C78E0C00920F8D /* MSDictionary.m in Sources */,
 				C24A22991ADB4C1E0065E7EA /* FunctionManipulation.swift in Sources */,
 				C24A228F1ADB3AA60065E7EA /* SequenceManipulation.swift in Sources */,
+				C2F75A0D1B977075001EA2BA /* PropertyCoder.swift in Sources */,
 				C2358F6C19C78E0C00920F8D /* MSDictionaryIndex.m in Sources */,
 				C2358F6D19C78E0C00920F8D /* MSError.m in Sources */,
 				C2358F6E19C78E0C00920F8D /* MSKVOReceptionist.m in Sources */,
@@ -2009,6 +2016,7 @@
 				C2358F8419C78E0C00920F8D /* MSReplicatorView.m in Sources */,
 				C2C482E519CA0225002E84A9 /* Stack.swift in Sources */,
 				C28E509B1A143FDC00DF3206 /* MultiselectGestureRecognizer.swift in Sources */,
+				C2D5F2431B97BDC3005040EF /* _Slider.swift in Sources */,
 				C2358F8519C78E0C00920F8D /* MSTouchReporterView.m in Sources */,
 				C2358F8619C78E0C00920F8D /* MSView.m in Sources */,
 				C2358F8719C78E0C00920F8D /* GCDAsyncSocket.m in Sources */,
