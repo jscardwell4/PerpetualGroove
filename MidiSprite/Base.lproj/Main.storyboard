@@ -83,7 +83,7 @@
                                                     <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="stop-selected"/>
                                                     <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
                                                     <userDefinedRuntimeAttribute type="color" keyPath="disabledTintColor">
-                                                        <color key="value" red="0.27258896830000001" green="0.26667606830000001" blue="0.26053553820000003" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <color key="value" red="0.51420629024505615" green="0.50113999843597412" blue="0.48703506588935852" alpha="1" colorSpace="calibratedRGB"/>
                                                     </userDefinedRuntimeAttribute>
                                                     <userDefinedRuntimeAttribute type="boolean" keyPath="enabled" value="NO"/>
                                                 </userDefinedRuntimeAttributes>
@@ -95,10 +95,10 @@
                                         <color key="backgroundColor" red="0.20000000000000001" green="0.1960784314" blue="0.19215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                                     </stackView>
                                     <stackView contentMode="scaleToFill" distribution="equalCentering" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="ZxP-sw-Rs0">
-                                        <rect key="frame" x="364" y="0.0" width="196" height="56"/>
+                                        <rect key="frame" x="178" y="0.0" width="382" height="56"/>
                                         <subviews>
                                             <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eaf-y5-9B7" userLabel="Tempo" customClass="Slider" customModule="MoonKit">
-                                                <rect key="frame" x="0.0" y="5" width="150" height="46"/>
+                                                <rect key="frame" x="0.0" y="5" width="336" height="46"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="46" id="Hc1-b5-iNu"/>
@@ -109,7 +109,7 @@
                                                     <userDefinedRuntimeAttribute type="image" keyPath="trackMinImage" value="line6thick"/>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="trackMaxImage" value="line6thick"/>
                                                     <userDefinedRuntimeAttribute type="color" keyPath="thumbColor">
-                                                        <color key="value" red="0.87450980389999999" green="0.82745098039999998" blue="0.76470588240000004" alpha="1" colorSpace="deviceRGB"/>
+                                                        <color key="value" red="0.87450999019999998" green="0.82744997740000004" blue="0.76077997679999998" alpha="1" colorSpace="calibratedRGB"/>
                                                     </userDefinedRuntimeAttribute>
                                                     <userDefinedRuntimeAttribute type="color" keyPath="trackMinColor">
                                                         <color key="value" red="0.57254901960000004" green="0.52941176469999995" blue="0.47058823529999999" alpha="1" colorSpace="calibratedRGB"/>
@@ -117,8 +117,8 @@
                                                     <userDefinedRuntimeAttribute type="color" keyPath="trackMaxColor">
                                                         <color key="value" red="0.30125221610069275" green="0.29395070672035217" blue="0.28606623411178589" alpha="1" colorSpace="calibratedRGB"/>
                                                     </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="preservesTrackMaxImageHeight" value="YES"/>
-                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="preservesTrackMinImageHeight" value="YES"/>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="preservesTrackMaxImageSize" value="YES"/>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="preservesTrackMinImageSize" value="YES"/>
                                                     <userDefinedRuntimeAttribute type="boolean" keyPath="preservesThumbImageSize" value="YES"/>
                                                     <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
                                                         <real key="value" value="24"/>
@@ -149,7 +149,7 @@
                                                 </connections>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MW7-7L-sqD" userLabel="Metronome" customClass="ImageButtonView" customModule="MoonKit">
-                                                <rect key="frame" x="150" y="5" width="46" height="46"/>
+                                                <rect key="frame" x="336" y="5" width="46" height="46"/>
                                                 <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="46" id="Rrt-IP-Tjp"/>
@@ -212,7 +212,7 @@
                                             <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="revert-selected"/>
                                             <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="NO"/>
                                             <userDefinedRuntimeAttribute type="color" keyPath="disabledTintColor">
-                                                <color key="value" red="0.27258896830000001" green="0.26667606830000001" blue="0.26053553820000003" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="value" red="0.51420629019999997" green="0.50113999840000001" blue="0.48703506590000001" alpha="1" colorSpace="calibratedRGB"/>
                                             </userDefinedRuntimeAttribute>
                                             <userDefinedRuntimeAttribute type="boolean" keyPath="enabled" value="NO"/>
                                         </userDefinedRuntimeAttributes>
@@ -306,7 +306,7 @@
                                             <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="NO"/>
                                             <userDefinedRuntimeAttribute type="image" keyPath="image" value="floppydisk"/>
                                             <userDefinedRuntimeAttribute type="color" keyPath="disabledTintColor">
-                                                <color key="value" red="0.27258896830000001" green="0.26667606830000001" blue="0.26053553820000003" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="value" red="0.51420629019999997" green="0.50113999840000001" blue="0.48703506590000001" alpha="1" colorSpace="calibratedRGB"/>
                                             </userDefinedRuntimeAttribute>
                                             <userDefinedRuntimeAttribute type="boolean" keyPath="enabled" value="NO"/>
                                         </userDefinedRuntimeAttributes>
@@ -448,7 +448,7 @@
                                             <color key="textColor" red="0.87450999019999998" green="0.82744997740000004" blue="0.76077997679999998" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Evx-CT-UhF" userLabel="Volume Slider" customClass="VerticalSlider" customModule="MoonKit">
+                                        <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Evx-CT-UhF" userLabel="Volume Slider" customClass="Slider" customModule="MoonKit">
                                             <rect key="frame" x="28" y="42" width="44" height="200"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="44" id="0C0-kd-Xac"/>
@@ -463,18 +463,22 @@
                                                 <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
                                                     <real key="value" value="11"/>
                                                 </userDefinedRuntimeAttribute>
-                                                <userDefinedRuntimeAttribute type="color" keyPath="thumbTintColor">
+                                                <userDefinedRuntimeAttribute type="color" keyPath="thumbColor">
                                                     <color key="value" red="0.87450999019999998" green="0.82744997740000004" blue="0.76077997679999998" alpha="1" colorSpace="calibratedRGB"/>
                                                 </userDefinedRuntimeAttribute>
-                                                <userDefinedRuntimeAttribute type="color" keyPath="maximumTrackTintColor">
+                                                <userDefinedRuntimeAttribute type="color" keyPath="trackMaxColor">
                                                     <color key="value" red="0.20000000000000001" green="0.1960784314" blue="0.19215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                                                 </userDefinedRuntimeAttribute>
-                                                <userDefinedRuntimeAttribute type="color" keyPath="minimumTrackTintColor">
+                                                <userDefinedRuntimeAttribute type="color" keyPath="trackMinColor">
                                                     <color key="value" red="0.57254901960000004" green="0.52941176469999995" blue="0.47058823529999999" alpha="1" colorSpace="calibratedRGB"/>
                                                 </userDefinedRuntimeAttribute>
-                                                <userDefinedRuntimeAttribute type="image" keyPath="defaultThumbImage" value="verticalthumb2"/>
-                                                <userDefinedRuntimeAttribute type="image" keyPath="defaultMaximumTrackImage" value="line6"/>
-                                                <userDefinedRuntimeAttribute type="image" keyPath="defaultMinimumTrackImage" value="line6"/>
+                                                <userDefinedRuntimeAttribute type="image" keyPath="thumbImage" value="verticalthumb2"/>
+                                                <userDefinedRuntimeAttribute type="image" keyPath="trackMinImage" value="line6thickvertical"/>
+                                                <userDefinedRuntimeAttribute type="image" keyPath="trackMaxImage" value="line6thickvertical"/>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="axisString" value="Vertical"/>
+                                                <userDefinedRuntimeAttribute type="boolean" keyPath="preservesTrackMinImageSize" value="YES"/>
+                                                <userDefinedRuntimeAttribute type="boolean" keyPath="preservesTrackMaxImageSize" value="YES"/>
+                                                <userDefinedRuntimeAttribute type="boolean" keyPath="preservesThumbImageSize" value="YES"/>
                                             </userDefinedRuntimeAttributes>
                                             <connections>
                                                 <action selector="volumeDidChange" destination="Ywg-X3-Y1Q" eventType="valueChanged" id="Wgq-MX-8Yq"/>
@@ -577,7 +581,7 @@
                                             <color key="textColor" red="0.87450999019999998" green="0.82744997740000004" blue="0.76077997679999998" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fQV-Nj-rrF" userLabel="Volume Slider" customClass="VerticalSlider" customModule="MoonKit">
+                                        <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fQV-Nj-rrF" userLabel="Volume Slider" customClass="Slider" customModule="MoonKit">
                                             <rect key="frame" x="28" y="42" width="44" height="200"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="44" id="Jyz-qp-TR8"/>
@@ -592,25 +596,29 @@
                                                 <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
                                                     <real key="value" value="11"/>
                                                 </userDefinedRuntimeAttribute>
-                                                <userDefinedRuntimeAttribute type="color" keyPath="minimumTrackTintColor">
+                                                <userDefinedRuntimeAttribute type="color" keyPath="trackMinColor">
                                                     <color key="value" red="0.5725490196078431" green="0.52941176470588236" blue="0.47058823529411764" alpha="1" colorSpace="calibratedRGB"/>
                                                 </userDefinedRuntimeAttribute>
-                                                <userDefinedRuntimeAttribute type="color" keyPath="thumbTintColor">
+                                                <userDefinedRuntimeAttribute type="color" keyPath="thumbColor">
                                                     <color key="value" red="0.87450999019999998" green="0.82744997740000004" blue="0.76077997679999998" alpha="1" colorSpace="calibratedRGB"/>
                                                 </userDefinedRuntimeAttribute>
-                                                <userDefinedRuntimeAttribute type="color" keyPath="maximumTrackTintColor">
+                                                <userDefinedRuntimeAttribute type="color" keyPath="trackMaxColor">
                                                     <color key="value" red="0.20000000000000001" green="0.1960784314" blue="0.19215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                                                 </userDefinedRuntimeAttribute>
-                                                <userDefinedRuntimeAttribute type="image" keyPath="defaultMinimumTrackImage" value="line6"/>
-                                                <userDefinedRuntimeAttribute type="image" keyPath="defaultMaximumTrackImage" value="line6"/>
-                                                <userDefinedRuntimeAttribute type="image" keyPath="defaultThumbImage" value="verticalthumb2"/>
+                                                <userDefinedRuntimeAttribute type="image" keyPath="trackMinImage" value="line6thickvertical"/>
+                                                <userDefinedRuntimeAttribute type="image" keyPath="trackMaxImage" value="line6thickvertical"/>
+                                                <userDefinedRuntimeAttribute type="image" keyPath="thumbImage" value="verticalthumb2"/>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="axisString" value="Vertical"/>
+                                                <userDefinedRuntimeAttribute type="boolean" keyPath="preservesTrackMinImageSize" value="YES"/>
+                                                <userDefinedRuntimeAttribute type="boolean" keyPath="preservesThumbImageSize" value="YES"/>
+                                                <userDefinedRuntimeAttribute type="boolean" keyPath="preservesTrackMaxImageSize" value="YES"/>
                                             </userDefinedRuntimeAttributes>
                                             <connections>
                                                 <action selector="volumeDidChange" destination="2AY-7g-m2Q" eventType="valueChanged" id="0PE-6k-RsM"/>
                                             </connections>
                                         </view>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="PAN" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UVo-0O-vty">
-                                            <rect key="frame" x="32" y="250" width="35" height="18"/>
+                                            <rect key="frame" x="32.5" y="250" width="35" height="18"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="18" id="Hdd-kY-TgN"/>
                                             </constraints>
@@ -740,8 +748,8 @@
         <image name="floppydisk" width="56" height="56"/>
         <image name="floppydisk-selected" width="56" height="56"/>
         <image name="knob" width="56" height="56"/>
-        <image name="line6" width="150" height="31"/>
         <image name="line6thick" width="150" height="46"/>
+        <image name="line6thickvertical" width="46" height="150"/>
         <image name="marker2large" width="46" height="46"/>
         <image name="metronome" width="56" height="56"/>
         <image name="metronome-selected" width="56" height="56"/>
@@ -759,6 +767,6 @@
         <image name="stop-selected" width="61" height="61"/>
         <image name="template" width="56" height="56"/>
         <image name="template-selected" width="56" height="56"/>
-        <image name="verticalthumb2" width="14" height="31"/>
+        <image name="verticalthumb2" width="44" height="20"/>
     </resources>
 </document>

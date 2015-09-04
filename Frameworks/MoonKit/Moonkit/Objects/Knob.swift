@@ -101,14 +101,23 @@ import UIKit
       frame.size = CGSize(square: frame.size.minAxis)
       frame.origin += (rect.size - frame.size) * 0.5
     }
-    
 
-    if let knobBase = knobBase { knobBase.drawInRect(frame) }
-    else { knobColor.setFill(); UIBezierPath(ovalInRect: frame).fill() }
 
-      //// Indicator Drawing
-    let indicatorPath = UIBezierPath()
+    if let knobBase = knobBase {
+      let context = UIGraphicsGetCurrentContext()
+      CGContextSaveGState(context)
+      CGContextTranslateCTM(context, half(frame.width), half(frame.height))
+      CGContextRotateCTM(context, valueAngle)
+      let baseFrame = CGRect(origin: frame.origin - (frame.size * 0.5),  size: frame.size)
+      knobBase.drawInRect(baseFrame)
+      CGContextRestoreGState(context)
+    } else {
+      knobColor.setFill()
+      UIBezierPath(ovalInRect: frame).fill()
+    }
+
     let center = frame.center
+    let indicatorPath = UIBezierPath()
     indicatorPath.addArcWithCenter(center, radius: half(frame.width), startAngle: startAngle, endAngle: endAngle, clockwise: false)
     indicatorPath.addLineToPoint(center)
     indicatorPath.closePath()

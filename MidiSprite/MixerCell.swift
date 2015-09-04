@@ -13,7 +13,7 @@ import typealias AudioToolbox.AudioUnitParameterValue
 
 class MixerCell: UICollectionViewCell {
 
-  @IBOutlet weak var volumeSlider: VerticalSlider!
+  @IBOutlet weak var volumeSlider: Slider!
   @IBOutlet weak var panKnob: Knob!
 
   var volume: AudioUnitParameterValue {

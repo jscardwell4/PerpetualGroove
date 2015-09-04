@@ -9,7 +9,18 @@ import Foundation
 import UIKit
 import Chameleon
 
-/** @IBDesignable */ public class Slider: UIControl {
+@IBDesignable public class Slider: UIControl {
+
+  // MARK: - Axis
+  public enum Axis: String {
+    case Horizontal, Vertical
+  }
+
+  public var axis: Axis = .Horizontal { didSet { guard oldValue != axis else { return }; setNeedsDisplay() } }
+  @IBInspectable public var axisString: String {
+    get { return axis.rawValue }
+    set { axis = Axis(rawValue: newValue) ?? .Horizontal }
+  }
 
   // MARK: - Images
 
@@ -26,13 +37,13 @@ import Chameleon
   // MARK: - Colors
 
   @IBInspectable public var thumbColor: UIColor = .whiteColor() { 
-    didSet { guard oldValue != thumbColor else { return }; setNeedsDisplay() } 
+    didSet { guard oldValue != thumbColor else { return }; setNeedsDisplay() }
   }
   @IBInspectable public var trackMinColor: UIColor = rgb(29, 143, 236) {
-    didSet { guard oldValue != trackMinColor else { return }; setNeedsDisplay() } 
+    didSet { guard oldValue != trackMinColor else { return }; setNeedsDisplay() }
   }
   @IBInspectable public var trackMaxColor: UIColor = rgb(184, 184, 184) {
-    didSet { guard oldValue != trackMaxColor else { return }; setNeedsDisplay() } 
+    didSet { guard oldValue != trackMaxColor else { return }; setNeedsDisplay() }
   }
   @IBInspectable public var valueLabelTextColor: UIColor = .blackColor() {
     didSet { guard showsValueLabel && oldValue != valueLabelTextColor else { return }; setNeedsDisplay() }
@@ -112,28 +123,28 @@ import Chameleon
 
   // MARK: - Sizes
 
-  @IBInspectable public var trackMinHeight: CGFloat = 4 { 
-    didSet { guard oldValue != trackMinHeight else { return }; setNeedsDisplay() } 
+  @IBInspectable public var trackMinBreadth: CGFloat = 4 { 
+    didSet { guard oldValue != trackMinBreadth else { return }; setNeedsDisplay() } 
   }
-  @IBInspectable public var preservesTrackMinImageHeight: Bool = false { 
-    didSet { guard oldValue != preservesTrackMinImageHeight else { return }; setNeedsDisplay() } 
-  }
-
-  private var _trackMinHeight: CGFloat {
-    guard preservesTrackMinImageHeight, let trackMinImage = trackMinImage else { return trackMinHeight }
-    return trackMinImage.size.height
+  @IBInspectable public var preservesTrackMinImageSize: Bool = false { 
+    didSet { guard oldValue != preservesTrackMinImageSize else { return }; setNeedsDisplay() } 
   }
 
-  @IBInspectable public var trackMaxHeight: CGFloat = 4 { 
-    didSet { guard oldValue != trackMaxHeight else { return }; setNeedsDisplay() } 
-  }
-  @IBInspectable public var preservesTrackMaxImageHeight: Bool = false { 
-    didSet { guard oldValue != preservesTrackMaxImageHeight else { return }; setNeedsDisplay() } 
+  private var _trackMinBreadth: CGFloat {
+    guard preservesTrackMinImageSize, let trackMinImage = trackMinImage else { return trackMinBreadth }
+    return axis == .Horizontal ? trackMinImage.size.height : trackMinImage.size.width
   }
 
-  private var _trackMaxHeight: CGFloat {
-    guard preservesTrackMaxImageHeight, let trackMaxImage = trackMaxImage else { return trackMaxHeight }
-    return trackMaxImage.size.height
+  @IBInspectable public var trackMaxBreadth: CGFloat = 4 { 
+    didSet { guard oldValue != trackMaxBreadth else { return }; setNeedsDisplay() } 
+  }
+  @IBInspectable public var preservesTrackMaxImageSize: Bool = false { 
+    didSet { guard oldValue != preservesTrackMaxImageSize else { return }; setNeedsDisplay() } 
+  }
+
+  private var _trackMaxBreadth: CGFloat {
+    guard preservesTrackMaxImageSize, let trackMaxImage = trackMaxImage else { return trackMaxBreadth }
+    return axis == .Horizontal ? trackMaxImage.size.height : trackMaxImage.size.width
   }
 
   @IBInspectable public var thumbSize: CGSize = CGSize(square: 43) { 
@@ -152,11 +163,10 @@ import Chameleon
 
   @IBInspectable public var value: Float = 0 { didSet { guard oldValue != value else { return }; setNeedsDisplay() } }
   @IBInspectable public var minimumValue: Float = 0
-
   @IBInspectable public var maximumValue: Float = 1
 
   override public func intrinsicContentSize() -> CGSize {
-    return CGSize(square: max(max(_trackMinHeight, _trackMaxHeight), _thumbSize.height))
+    return CGSize(square: max(max(_trackMinBreadth, _trackMaxBreadth), _thumbSize.height))
   }
 
   private var valueInterval: ClosedInterval<Float> {
@@ -205,14 +215,15 @@ import Chameleon
     aCoder.encodeObject(thumbColor,                   forKey: "thumbColor")
     aCoder.encodeObject(trackMinColor,                forKey: "trackMinColor")
     aCoder.encodeObject(trackMaxColor,                forKey: "trackMaxColor")
-    aCoder.encodeObject(preservesTrackMinImageHeight, forKey: "preservesTrackMinImageHeight")
-    aCoder.encodeObject(preservesTrackMaxImageHeight, forKey: "preservesTrackMaxImageHeight")
+    aCoder.encodeObject(preservesTrackMinImageSize,   forKey: "preservesTrackMinImageSize")
+    aCoder.encodeObject(preservesTrackMaxImageSize,   forKey: "preservesTrackMaxImageSize")
     aCoder.encodeObject(preservesThumbImageSize,      forKey: "preservesThumbImageSize")
     aCoder.encodeObject(valueLabelPrecision,          forKey: "valueLabelPrecision")
-    aCoder.encodeObject(trackMinHeight,               forKey: "trackMinHeight")
-    aCoder.encodeObject(trackMaxHeight,               forKey: "trackMaxHeight")
+    aCoder.encodeObject(trackMinBreadth,              forKey: "trackMinBreadth")
+    aCoder.encodeObject(trackMaxBreadth,              forKey: "trackMaxBreadth")
     aCoder.encodeObject(NSValue(CGSize: thumbSize),   forKey: "thumbSize")
     aCoder.encodeObject(trackLabelText,               forKey: "trackLabelText")
+    aCoder.encodeObject(axisString,                   forKey: "axisString")
   }
 
   /**
@@ -250,14 +261,17 @@ import Chameleon
     thumbColor                   = aDecoder.decodeObjectForKey("thumbColor") as? UIColor ?? .whiteColor()
     trackMinColor                = aDecoder.decodeObjectForKey("trackMinColor") as? UIColor ?? rgb(29, 143, 236)
     trackMaxColor                = aDecoder.decodeObjectForKey("trackMaxColor") as? UIColor ?? rgb(184, 184, 184)
-    preservesTrackMinImageHeight = (aDecoder.decodeObjectForKey("preservesTrackMinImageHeight") as? NSNumber)?.boolValue ?? false
-    preservesTrackMaxImageHeight = (aDecoder.decodeObjectForKey("preservesTrackMaxImageHeight") as? NSNumber)?.boolValue ?? false
+    preservesTrackMinImageSize   = (aDecoder.decodeObjectForKey("preservesTrackMinImageSize") as? NSNumber)?.boolValue
+                                     ?? false
+    preservesTrackMaxImageSize   = (aDecoder.decodeObjectForKey("preservesTrackMaxImageSize") as? NSNumber)?.boolValue
+                                     ?? false
     preservesThumbImageSize      = (aDecoder.decodeObjectForKey("preservesThumbImageSize") as? NSNumber)?.boolValue ?? false
     valueLabelPrecision          = (aDecoder.decodeObjectForKey("valueLabelPrecision") as? NSNumber)?.integerValue ?? 2
-    trackMinHeight               = CGFloat((aDecoder.decodeObjectForKey("trackMinHeight") as? NSNumber)?.floatValue ?? 4)
-    trackMaxHeight               = CGFloat((aDecoder.decodeObjectForKey("trackMaxHeight") as? NSNumber)?.floatValue ?? 4)
+    trackMinBreadth              = CGFloat((aDecoder.decodeObjectForKey("trackMinBreadth") as? NSNumber)?.floatValue ?? 4)
+    trackMaxBreadth              = CGFloat((aDecoder.decodeObjectForKey("trackMaxBreadth") as? NSNumber)?.floatValue ?? 4)
     thumbSize                    = (aDecoder.decodeObjectForKey("thumbSize") as? NSValue)?.CGSizeValue() ?? CGSize(square: 43)
     trackLabelText               = aDecoder.decodeObjectForKey("trackLabelText") as? String
+    axisString                   = aDecoder.decodeObjectForKey("axisString") as? String ?? Axis.Horizontal.rawValue
   }
 
   // MARK: - Drawing
@@ -281,45 +295,80 @@ import Chameleon
     CGContextClearRect(context, rect)
 
     // Get the track heights and thumb size to use for drawing
-    let trackMinHeight = _trackMinHeight, trackMaxHeight = _trackMaxHeight, thumbSize = _thumbSize + 1
+    let trackMinBreadth = _trackMinBreadth, trackMaxBreadth = _trackMaxBreadth, thumbSize = _thumbSize + 1
 
-    // Inset the drawing rect to allow room for thumb at both ends of track
-    let insetFrame = rect.insetBy(dx: half(thumbSize.width), dy: 0)
+    let trackMinFrame: CGRect, trackMaxFrame: CGRect, thumbFrame: CGRect
 
-    // Create an interval to work with representing the track's width
-    let trackInterval: ClosedInterval<CGFloat> = insetFrame.minX ... insetFrame.maxX
+    switch axis {
+    case .Horizontal:
+      // Inset the drawing rect to allow room for thumb at both ends of track
+      let insetFrame = rect.insetBy(dx: half(thumbSize.width), dy: 0)
 
-    // Get the value as a number between 0 and 1
-    let normalizedValue = CGFloat(valueInterval.normalizeValue(value))
+      // Create an interval to work with representing the track's width
+      let trackInterval: ClosedInterval<CGFloat> = insetFrame.minX ... insetFrame.maxX
 
-    // Calculate the widths of the track segments
-    let trackMinWidth = round(trackInterval.diameter * normalizedValue)
-    let trackMaxWidth = round(trackInterval.diameter - trackMinWidth)
+      // Get the value as a number between 0 and 1
+      let normalizedValue = CGFloat(valueInterval.normalizeValue(value))
 
-    // Create some sizes
-    let trackMinSize = CGSize(width: trackMinWidth, height: trackMinHeight)
-    let trackMaxSize = CGSize(width: trackMaxWidth, height: trackMaxHeight)
+      // Calculate the widths of the track segments
+      let trackMinLength = round(trackInterval.diameter * normalizedValue)
+      let trackMaxLength = round(trackInterval.diameter - trackMinLength)
 
-    // Calculate the x value where min becomes max
-    let minToMax = trackMinWidth + trackInterval.start
+      // Create some sizes
+      let trackMinSize = CGSize(width: trackMinLength, height: trackMinBreadth)
+      let trackMaxSize = CGSize(width: trackMaxLength, height: trackMaxBreadth)
 
-    // Create some origins
-    let trackMinOrigin = CGPoint(x: trackInterval.start, y: rect.midY - half(trackMinHeight))
-    let trackMaxOrigin = CGPoint(x: minToMax, y: rect.midY - half(trackMaxHeight))
-    let thumbOrigin = CGPoint(x: minToMax - half(thumbSize.width), y: rect.midY - half(thumbSize.height))
+      // Calculate the x value where min becomes max
+      let minToMax = trackMinLength + trackInterval.start
 
-    // Create the frames for the track segments and the thumb
-    let trackMinFrame = CGRect(origin: trackMinOrigin, size: trackMinSize).offsetBy(dx: trackXOffset, dy: trackYOffset)
-    let trackMaxFrame = CGRect(origin: trackMaxOrigin, size: trackMaxSize).offsetBy(dx: trackXOffset, dy: trackYOffset)
-    let thumbFrame = CGRect(origin: thumbOrigin, size: thumbSize).offsetBy(dx: thumbXOffset, dy: thumbYOffset)
+      // Create some origins
+      let trackMinOrigin = CGPoint(x: trackInterval.start, y: rect.midY - half(trackMinBreadth))
+      let trackMaxOrigin = CGPoint(x: minToMax, y: rect.midY - half(trackMaxBreadth))
+      let thumbOrigin = CGPoint(x: minToMax - half(thumbSize.width), y: rect.midY - half(thumbSize.height))
+
+      // Create the frames for the track segments and the thumb
+      trackMinFrame = CGRect(origin: trackMinOrigin, size: trackMinSize).offsetBy(dx: trackXOffset, dy: trackYOffset)
+      trackMaxFrame = CGRect(origin: trackMaxOrigin, size: trackMaxSize).offsetBy(dx: trackXOffset, dy: trackYOffset)
+      thumbFrame = CGRect(origin: thumbOrigin, size: thumbSize).offsetBy(dx: thumbXOffset, dy: thumbYOffset)
+    case .Vertical:
+      // Inset the drawing rect to allow room for thumb at both ends of track
+      let insetFrame = rect.insetBy(dx: 0, dy: half(thumbSize.height))
+
+      // Create an interval to work with representing the track's width
+      let trackInterval = ReverseClosedInterval<CGFloat>(insetFrame.maxY, insetFrame.minY)
+
+      // Get the value as a number between 0 and 1
+      let normalizedValue = CGFloat(valueInterval.normalizeValue(value))
+
+      // Calculate the widths of the track segments
+      let trackMinLength = round(trackInterval.diameter * normalizedValue)
+      let trackMaxLength = round(trackInterval.diameter - trackMinLength)
+
+      // Create some sizes
+      let trackMinSize = CGSize(width: trackMinBreadth, height: trackMinLength)
+      let trackMaxSize = CGSize(width: trackMaxBreadth, height: trackMaxLength)
+
+      // Calculate the x value where min becomes max
+      let minToMax = trackInterval.start - trackMinLength
+
+      // Create some origins
+      let trackMinOrigin = CGPoint(x: rect.midX - half(trackMinBreadth), y: minToMax)
+      let trackMaxOrigin = CGPoint(x: rect.midX - half(trackMaxBreadth), y: trackInterval.end)
+      let thumbOrigin = CGPoint(x: rect.midX - half(thumbSize.width), y: minToMax - half(thumbSize.height))
+
+      // Create the frames for the track segments and the thumb
+      trackMinFrame = CGRect(origin: trackMinOrigin, size: trackMinSize).offsetBy(dx: trackXOffset, dy: trackYOffset)
+      trackMaxFrame = CGRect(origin: trackMaxOrigin, size: trackMaxSize).offsetBy(dx: trackXOffset, dy: trackYOffset)
+      thumbFrame = CGRect(origin: thumbOrigin, size: thumbSize).offsetBy(dx: thumbXOffset, dy: thumbYOffset)
+    }
 
 
     // Draw the track segments
     if let trackMinImage = trackMinImage, trackMaxImage = trackMaxImage {
       trackMinColor.setFill()
-      trackMinImage.drawInRect(trackMinFrame)
+      trackMinImage.imageWithColor(trackMinColor).drawInRect(trackMinFrame)
       trackMaxColor.setFill()
-      trackMaxImage.drawInRect(trackMaxFrame)
+      trackMaxImage.imageWithColor(trackMaxColor).drawInRect(trackMaxFrame)
     } else {
       trackMinColor.setFill()
       UIRectFill(trackMinFrame)
@@ -331,7 +380,9 @@ import Chameleon
     if showsTrackLabel, let text = trackLabelText {
       let attributes = [NSFontAttributeName: trackLabelFont, NSForegroundColorAttributeName: trackLabelTextColor]
       let textSize = text.sizeWithAttributes(attributes)
-      let center = CGPoint(x: rect.midX, y: trackMinFrame.center.y)
+      let center = axis == .Horizontal
+                     ? CGPoint(x: rect.midX, y: trackMinFrame.center.y)
+                     : CGPoint(x: trackMinFrame.center.x, y: frame.midY)
       let textFrame = CGRect(size: textSize, center: center).insetBy(dx: valueLabelXOffset, dy: valueLabelYOffset)
       text.drawInRect(textFrame, withAttributes: attributes)
     }
@@ -339,7 +390,7 @@ import Chameleon
     // Draw the thumb
     if let thumbImage = thumbImage {
       thumbColor.setFill()
-      thumbImage.drawInRect(thumbFrame)
+      thumbImage.imageWithColor(thumbColor).drawInRect(thumbFrame)
     } else {
       thumbColor.setFill()
       trackMaxColor.setStroke()
@@ -367,26 +418,8 @@ import Chameleon
   @IBInspectable var continuous: Bool = true
 
   private var touch: UITouch?
-  private var touchInterval: ClosedInterval<Float>  { return Float(frame.minX) ... Float(frame.maxX) }
-
-  /**
-  updateValueFromTouch:
-
-  - parameter touch: UITouch
-  */
-  private func updateValueFromTouch(touch: UITouch) {
-    let location = touch.locationInView(self)
-    let deltaX = location.x - touch.previousLocationInView(self).x
-    let y = location.y
-    guard deltaX != 0 else { return }
-    let v = valueInterval, t = touchInterval
-    let newValue = v.mapValue(t.mapValue(value, from: v) + Float(deltaX), from: t)
-    var valueDelta = value - newValue
-    if y < 0 {
-      valueDelta *= 1 / max(Float(abs(y)), 1)
-    }
-    value -= valueDelta
-    sendActionsForControlEvents(.ValueChanged)
+  private var touchInterval: ClosedInterval<Float>  {
+    return axis == .Horizontal ? Float(frame.minX) ... Float(frame.maxX) : Float(frame.minY) ... Float(frame.maxY)
   }
 
   /**
@@ -409,7 +442,33 @@ import Chameleon
   */
   public override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
     guard let touch = self.touch where touches.contains(touch) else { return }
-    updateValueFromTouch(touch)
+
+    let location = touch.locationInView(self)
+    let delta = location - touch.previousLocationInView(self)
+
+    let d: Float, l: Float
+    switch axis {
+    case .Horizontal:
+      d = Float(delta.x)
+      l = Float(location.y > frame.maxY ? location.y - frame.maxY : abs(location.y))
+    case .Vertical:
+      d = Float(delta.y)
+      l = Float(location.x > frame.maxX ? location.x - frame.maxX : abs(location.x))
+    }
+
+    guard d != 0 else { return }
+
+    let v = valueInterval, t = touchInterval
+
+    let newValue = v.mapValue(t.mapValue(value, from: v) + d, from: t)
+
+    var valueDelta = value - newValue
+
+    if !frame.contains(location) { valueDelta *= 1 / max(l, 1) }
+
+    value -= valueDelta
+
+    if continuous { sendActionsForControlEvents(.ValueChanged) }
   }
 
   /**
@@ -431,7 +490,7 @@ import Chameleon
   */
   public override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
     guard let touch = self.touch where touches.contains(touch) else { return }
-//    updateValueFromTouch(touch)
+    if !continuous { sendActionsForControlEvents(.ValueChanged) }
     self.touch = nil
   }
 
