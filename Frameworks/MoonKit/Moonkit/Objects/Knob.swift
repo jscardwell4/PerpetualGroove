@@ -123,7 +123,7 @@ import UIKit
     indicatorPath.closePath()
 
     indicatorColor.setFill()
-    indicatorPath.fill()
+    indicatorPath.fillWithBlendMode(.Clear, alpha: 1.0)
   }
 
 }

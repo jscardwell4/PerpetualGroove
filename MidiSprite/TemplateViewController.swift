@@ -19,13 +19,13 @@ final class TemplateViewController: UIViewController {
   /** loadView */
   override func loadView() {
     let formView = FormView(form: form)
-    formView.labelFont            = AssetManager.labelFont
-    formView.labelTextColor       = AssetManager.labelTextColor
-    formView.controlFont          = AssetManager.controlFont
-    formView.controlColor         = AssetManager.controlColor
-    formView.controlSelectedFont  = AssetManager.controlSelectedFont
-    formView.controlSelectedColor = AssetManager.controlSelectedColor
-    formView.tintColor            = AssetManager.tintColor
+    formView.labelFont            = .labelFont
+    formView.labelTextColor       = .labelTextColor
+    formView.controlFont          = .controlFont
+    formView.controlColor         = .controlColor
+    formView.controlSelectedFont  = .controlSelectedFont
+    formView.controlSelectedColor = .controlSelectedColor
+    formView.tintColor            = .tintColor
     view = formView
     view.setNeedsUpdateConstraints()
   }

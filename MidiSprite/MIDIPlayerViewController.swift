@@ -117,16 +117,27 @@ final class MIDIPlayerViewController: UIViewController {
     static let PlayerRecording   = State(rawValue: 0b0010_0000)
   }
 
-  private var state: State = []
+  private var state: State = [] {
+    didSet {
+      let modifiedState = state ⊻ oldValue
 
-  /** updateState */
-  private func updateUIState() {
-    revertButton.enabled = state ∋ .MIDINodeAdded && state ∌ .PopoverActive // We have a node and aren't showing popover
-    saveButton.enabled = state ∋ .TrackAdded && state ∌ .PopoverActive // We have a track and aren't showing popover
-    stopButton.enabled = state ∋ .PlayerPlaying
-    (state ∋ .PlayerPlaying ? ControlImage.Pause : ControlImage.Play).decorateButton(playPauseButton)
-    popoverBlur.hidden = state ∌ .PopoverActive
+      if modifiedState ∋ .MIDINodeAdded {
+        revertButton.enabled = state ∋ .MIDINodeAdded && state ∌ .PopoverActive // We have a node and aren't showing popover
+      }
 
+      if modifiedState ∋ .TrackAdded {
+        saveButton.enabled = state ∋ .TrackAdded && state ∌ .PopoverActive // We have a track and aren't showing popover
+      }
+
+      if modifiedState ∋ .PlayerPlaying {
+        stopButton.enabled = state ∋ .PlayerPlaying
+        (state ∋ .PlayerPlaying ? ControlImage.Pause : ControlImage.Play).decorateButton(playPauseButton)
+      }
+
+      if modifiedState ∋ .PopoverActive {
+        popoverBlur.hidden = state ∌ .PopoverActive
+      }
+    }
   }
 
   private enum ControlImage {
@@ -162,7 +173,6 @@ final class MIDIPlayerViewController: UIViewController {
         playerScene.paused = true
       }
       state ⊻= .PlayerPlaying
-      updateUIState()
     }
   }
 
@@ -188,8 +198,7 @@ final class MIDIPlayerViewController: UIViewController {
     didSet {
       guard oldValue != popover else { return }
       oldValue.view?.hidden = true; popover.view?.hidden = false
-      state ⊻= .PopoverActive
-      updateUIState()
+      if popover == .None { state.remove(.PopoverActive) } else if oldValue == .None { state ∪= .PopoverActive }
     }
   }
 
@@ -238,6 +247,7 @@ final class MIDIPlayerViewController: UIViewController {
   private var filesPopoverView: PopoverView {
     guard _filesPopoverView == nil else { return _filesPopoverView! }
     _filesPopoverView = PopoverView(autolayout: true)
+    _filesPopoverView!.backgroundColor = .popoverBackgroundColor
     _filesPopoverView!.location = .Top
     _filesPopoverView!.nametag = "filePopover"
 
@@ -252,6 +262,7 @@ final class MIDIPlayerViewController: UIViewController {
   private var mixerPopoverView: PopoverView {
     guard _mixerPopoverView == nil else { return _mixerPopoverView! }
     _mixerPopoverView = PopoverView(autolayout: true)
+    _mixerPopoverView!.backgroundColor = .popoverBackgroundColor
     _mixerPopoverView!.location = .Top
     _mixerPopoverView!.nametag = "mixerPopover"
 
@@ -266,6 +277,7 @@ final class MIDIPlayerViewController: UIViewController {
   private var instrumentPopoverView: PopoverView {
     guard _instrumentPopoverView == nil else { return _instrumentPopoverView! }
     _instrumentPopoverView = PopoverView(autolayout: true)
+    _instrumentPopoverView!.backgroundColor = .popoverBackgroundColor
     _instrumentPopoverView!.location = .Top
     _instrumentPopoverView!.nametag = "instrumentPopover"
 
@@ -281,6 +293,7 @@ final class MIDIPlayerViewController: UIViewController {
   private var templatePopoverView: PopoverView {
     guard _templatePopoverView == nil else { return _templatePopoverView! }
     _templatePopoverView = PopoverView(autolayout: true)
+    _templatePopoverView!.backgroundColor = .popoverBackgroundColor
     _templatePopoverView!.location = .Top
     _templatePopoverView!.nametag = "templatePopover"
 
@@ -297,17 +310,6 @@ final class MIDIPlayerViewController: UIViewController {
   /** viewDidLoad */
   override func viewDidLoad() {
     super.viewDidLoad()
-
-//    tempoSlider.setThumbImage(AssetManager.sliderThumbImage, forState: .Normal)
-//    tempoSlider.setMinimumTrackImage(AssetManager.sliderMinTrackImage, forState: .Normal)
-//    tempoSlider.setMaximumTrackImage(AssetManager.sliderMaxTrackImage, forState: .Normal)
-//    tempoSlider.thumbOffset = AssetManager.sliderThumbOffset
-//    tempoSlider.trackShowsThroughThumb = true
-//    tempoSlider.valueLabelOffset = AssetManager.sliderLabelValueOffset
-//    tempoSlider.valueLabelFont = AssetManager.sliderLabelValueFont
-//    tempoSlider.valueLabelTextColor = AssetManager.sliderLabelValueColor
-//    tempoSlider.valueLabelHidden = false
-//    tempoSlider.labelTextForValue = {String(Int($0))}
 
     // Configure the view.
     //    skView.showsFPS = true
@@ -326,7 +328,6 @@ final class MIDIPlayerViewController: UIViewController {
       guard (self.state ∋ .MIDINodeAdded && isEmptyField)
          || (self.state ∌ .MIDINodeAdded && !isEmptyField) else { return }
       self.state ⊻= .MIDINodeAdded
-      self.updateUIState()
     }
     let trackCountDidChange: (NSNotification) -> Void = {
       [unowned self] _ in
@@ -334,7 +335,6 @@ final class MIDIPlayerViewController: UIViewController {
       guard (self.state ∋ .TrackAdded && isEmptySequence)
          || (self.state ∌ .TrackAdded && !isEmptySequence) else { return }
       self.state ⊻= .TrackAdded
-      self.updateUIState()
     }
     let queue = NSOperationQueue.mainQueue()
     let nodeCallback: NotificationReceptionist.Callback = (MIDIPlayerNode.self, queue, nodeCountDidChange)
@@ -347,7 +347,65 @@ final class MIDIPlayerViewController: UIViewController {
     ]
     notificationReceptionist = NotificationReceptionist(callbacks: callbacks)
 
+    filesPopoverView.hidden = true
+    view.addSubview(filesPopoverView)
+
+    mixerPopoverView.hidden = true
+    view.addSubview(mixerPopoverView)
+
+    instrumentPopoverView.hidden = true
+    view.addSubview(instrumentPopoverView)
+
+    templatePopoverView.hidden = true
+    view.addSubview(templatePopoverView)
+
+    view.setNeedsUpdateConstraints()
+
   }
+
+  /** viewDidLayoutSubviews */
+  override func viewDidLayoutSubviews() {
+    super.viewDidLayoutSubviews()
+
+    func adjustPopover(popoverView: PopoverView, _ centerXConstraint: NSLayoutConstraint?) {
+
+      let minX = CGFloat(5)
+      let maxX = view.bounds.width - 5
+
+      let frame = popoverView.frame
+      let offset: CGFloat
+
+      if frame.minX < minX {
+        offset = minX - frame.minX
+      } else if frame.maxX > maxX {
+        offset = maxX - frame.maxX
+      } else {
+        offset = 0
+      }
+
+      popoverView.xOffset = offset
+      centerXConstraint?.constant = offset
+
+      backgroundDispatch { [xOffset = popoverView.xOffset, constant = centerXConstraint?.constant] in
+        print(
+          "popover: \(popoverView.nametag!)",
+          "minX: \(minX)",
+          "maxX: \(maxX)",
+          "frame: \(frame)",
+          "offset: \(offset)",
+          "xOffset : \(xOffset)",
+          "constant: \(constant)",
+          separator: "; "
+        )
+      }
+    }
+
+
+    adjustPopover(filesPopoverView,      filesPopoverConstraint)
+    adjustPopover(templatePopoverView,   templatePopoverConstraint)
+    adjustPopover(mixerPopoverView,      mixerPopoverConstraint)
+    adjustPopover(instrumentPopoverView, instrumentPopoverConstraint)
+}
 
   /**
   viewDidAppear:
@@ -356,33 +414,12 @@ final class MIDIPlayerViewController: UIViewController {
   */
   override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
-
-    func addPopover(popoverView: PopoverView, _ presentingView: UIView) {
-      popoverView.hidden = true
-      view.addSubview(popoverView)
-
-      let maxWidth = UIScreen.mainScreen().bounds.width - 10
-      let intrinsicWidth = min(maxWidth, popoverView.intrinsicContentSize().width) / 2
-      let midX = presentingView.center.x
-      let offset: CGFloat
-
-      switch (intrinsicWidth, midX, maxWidth - midX) {
-        case let (i, l, r) where i < l && i > r: offset = r - i
-        case let (i, l, r) where i > l && i < r: offset = i - l
-        default:                                 offset = 0
-      }
-
-      popoverView.xOffset = -offset
-    }
-
-    addPopover(filesPopoverView,      filesButton)
-    addPopover(templatePopoverView,   templateButton)
-    addPopover(mixerPopoverView,      mixerButton)
-    addPopover(instrumentPopoverView, instrumentButton)
-
-    view.setNeedsUpdateConstraints()
-
   }
+
+  private weak var filesPopoverConstraint: NSLayoutConstraint?
+  private weak var mixerPopoverConstraint: NSLayoutConstraint?
+  private weak var templatePopoverConstraint: NSLayoutConstraint?
+  private weak var instrumentPopoverConstraint: NSLayoutConstraint?
 
   /** updateViewConstraints */
   override func updateViewConstraints() {
@@ -396,17 +433,20 @@ final class MIDIPlayerViewController: UIViewController {
 
     func addConstraints(id: Identifier, _ popoverView: PopoverView, _ presentingView: UIView) {
       guard view.constraintsWithIdentifier(id).count == 0 else { return }
-      view.constrain([
-        popoverView.centerX => presentingView.centerX - popoverView.xOffset,
-        popoverView.top => presentingView.bottom,
-        popoverView.width ≤ (UIScreen.mainScreen().bounds.width - 10)
-      ] --> id)
+      view.constrain(
+        [popoverView.centerX => presentingView.centerX - popoverView.xOffset] --> (id + "CenterX"),
+        [popoverView.top => presentingView.bottom, popoverView.width ≤ (UIScreen.mainScreen().bounds.width - 10)] --> id
+      )
     }
 
     addConstraints(Identifier(self, "FilesPopover"), filesPopover, filesButton)
+    filesPopoverConstraint = view.constraintWithIdentifier(Identifier(self, "FilesPopover", "CenterX"))
     addConstraints(Identifier(self, "MixerPopover"), mixerPopover, mixerButton)
+    mixerPopoverConstraint = view.constraintWithIdentifier(Identifier(self, "MixerPopover", "CenterX"))
     addConstraints(Identifier(self, "TemplatePopover"), templatePopover, templateButton)
+    templatePopoverConstraint = view.constraintWithIdentifier(Identifier(self, "TemplatePopover", "CenterX"))
     addConstraints(Identifier(self, "InstrumentPopover"),  instrumentPopover, instrumentButton)
+    instrumentPopoverConstraint = view.constraintWithIdentifier(Identifier(self, "InstrumentPopover", "CenterX"))
   }
 
   /**

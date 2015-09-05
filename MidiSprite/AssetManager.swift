@@ -12,28 +12,16 @@ import MoonKit
 import Chameleon
 import Eveleth
 
-final class AssetManager {
+extension UIColor {
+  static var labelTextColor: UIColor          { return Chameleon.kelleyPearlBush }
+  static var controlColor: UIColor            { return Chameleon.quietLightLobLollyDark }
+  static var controlSelectedColor: UIColor    { return Chameleon.quietLightLobLolly }
+  static var tintColor: UIColor               { return Chameleon.quietLightLilyWhiteDark }
+  static var popoverBackgroundColor: UIColor  { return rgb(51, 50, 49) }
+}
 
-  static let sliderThumbImage    = UIImage(named: "marker2")?.imageWithColor(sliderThumbColor)
-  static let sliderMinTrackImage = UIImage(named: "line6")?.imageWithColor(sliderMinTrackColor)
-  static let sliderMaxTrackImage = UIImage(named: "line6")?.imageWithColor(sliderMaxTrackColor)
-  static let sliderThumbOffset   = UIOffset(horizontal: 0, vertical: -16)
-  static let sliderThumbColor    = Chameleon.kelleyPearlBush
-  static let sliderMinTrackColor = rgb(146, 135, 120)
-  static let sliderMaxTrackColor = rgb(51, 50, 49)
-
-  static let popoverBackgroundColor = rgb(58, 58, 58)
-
-  static let labelFont              = Eveleth.lightFontWithSize(14)
-  static let labelTextColor         = Chameleon.kelleyPearlBush
-  static let controlFont            = Eveleth.thinFontWithSize(14)
-  static let controlColor           = Chameleon.quietLightLobLollyDark
-  static let controlSelectedFont    = Eveleth.regularFontWithSize(14)
-  static let controlSelectedColor   = Chameleon.quietLightLobLolly
-  static let disabledTintColor      = rgb(140, 136, 130)
-  static let tintColor              = Chameleon.quietLightLilyWhiteDark
-  static let sliderLabelValueFont   = Eveleth.lightFontWithSize(6)
-  static let sliderLabelValueColor  = Chameleon.flatWhiteDark
-  static let sliderLabelValueOffset = UIOffset(horizontal: -2, vertical: -20)
-
+extension UIFont {
+  static var labelFont: UIFont              { return Eveleth.lightFontWithSize(14) }
+  static var controlFont: UIFont            { return Eveleth.thinFontWithSize(14) }
+  static var controlSelectedFont: UIFont    { return Eveleth.regularFontWithSize(14) }
 }

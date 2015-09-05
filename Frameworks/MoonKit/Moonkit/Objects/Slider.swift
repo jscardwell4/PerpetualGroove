@@ -24,26 +24,41 @@ import Chameleon
 
   // MARK: - Images
 
-  @IBInspectable public var thumbImage: UIImage? { 
-    didSet { guard oldValue != thumbImage else { return }; setNeedsDisplay() } 
+  private var _thumbImage: UIImage? { didSet { setNeedsDisplay() } }
+  @IBInspectable public var thumbImage: UIImage? {
+    get { return _thumbImage }
+    set { _thumbImage = newValue?.imageWithColor(thumbColor) }
   }
-  @IBInspectable public var trackMinImage: UIImage? { 
-    didSet { guard oldValue != trackMinImage else { return }; setNeedsDisplay() } 
+  private var _trackMinImage: UIImage? { didSet { setNeedsDisplay() } }
+  @IBInspectable public var trackMinImage: UIImage? {
+    get { return _trackMinImage }
+    set { _trackMinImage = newValue?.imageWithColor(trackMinColor) }
   }
-  @IBInspectable public var trackMaxImage: UIImage? { 
-    didSet { guard oldValue != trackMaxImage else { return }; setNeedsDisplay() } 
+  private var _trackMaxImage: UIImage? { didSet { setNeedsDisplay() } }
+  @IBInspectable public var trackMaxImage: UIImage? {
+    get { return _trackMaxImage }
+    set { _trackMaxImage = newValue?.imageWithColor(trackMaxColor) }
   }
 
   // MARK: - Colors
 
   @IBInspectable public var thumbColor: UIColor = .whiteColor() { 
-    didSet { guard oldValue != thumbColor else { return }; setNeedsDisplay() }
+    didSet {
+      guard oldValue != thumbColor else { return }
+      _thumbImage = _thumbImage?.imageWithColor(thumbColor)
+    }
   }
   @IBInspectable public var trackMinColor: UIColor = rgb(29, 143, 236) {
-    didSet { guard oldValue != trackMinColor else { return }; setNeedsDisplay() }
+    didSet {
+      guard oldValue != trackMinColor else { return }
+      _trackMinImage = _trackMinImage?.imageWithColor(trackMinColor)
+    }
   }
   @IBInspectable public var trackMaxColor: UIColor = rgb(184, 184, 184) {
-    didSet { guard oldValue != trackMaxColor else { return }; setNeedsDisplay() }
+    didSet {
+      guard oldValue != trackMaxColor else { return }
+      _trackMaxImage = _trackMaxImage?.imageWithColor(trackMaxColor)
+    }
   }
   @IBInspectable public var valueLabelTextColor: UIColor = .blackColor() {
     didSet { guard showsValueLabel && oldValue != valueLabelTextColor else { return }; setNeedsDisplay() }
@@ -366,9 +381,9 @@ import Chameleon
     // Draw the track segments
     if let trackMinImage = trackMinImage, trackMaxImage = trackMaxImage {
       trackMinColor.setFill()
-      trackMinImage.imageWithColor(trackMinColor).drawInRect(trackMinFrame)
+      trackMinImage.drawInRect(trackMinFrame)
       trackMaxColor.setFill()
-      trackMaxImage.imageWithColor(trackMaxColor).drawInRect(trackMaxFrame)
+      trackMaxImage.drawInRect(trackMaxFrame)
     } else {
       trackMinColor.setFill()
       UIRectFill(trackMinFrame)
@@ -390,7 +405,7 @@ import Chameleon
     // Draw the thumb
     if let thumbImage = thumbImage {
       thumbColor.setFill()
-      thumbImage.imageWithColor(thumbColor).drawInRect(thumbFrame)
+      thumbImage.drawInRect(thumbFrame)
     } else {
       thumbColor.setFill()
       trackMaxColor.setStroke()
@@ -418,6 +433,7 @@ import Chameleon
   @IBInspectable var continuous: Bool = true
 
   private var touch: UITouch?
+  private var touchTime: NSTimeInterval = 0
   private var touchInterval: ClosedInterval<Float>  {
     return axis == .Horizontal ? Float(frame.minX) ... Float(frame.maxX) : Float(frame.minY) ... Float(frame.maxY)
   }
@@ -435,6 +451,50 @@ import Chameleon
   }
 
   /**
+  updateValueForTouch:
+
+  - parameter touch: UITouch
+  */
+  private func updateValueForTouch(touch: UITouch, sendActions: Bool) {
+    guard touchTime != touch.timestamp else { return }
+
+    let location = touch.locationInView(self)
+    let previousLocation = touch.previousLocationInView(self)
+
+    let delta: CGFloat, distance: CGFloat
+    let distanceInterval: ClosedInterval<CGFloat>
+    switch axis {
+    case .Horizontal:
+      delta = (location - previousLocation).x
+      distanceInterval = bounds.minY ... bounds.maxY
+      distance = location.y
+    case .Vertical:
+      delta = (previousLocation - location).y
+      distanceInterval = bounds.minX ... bounds.maxX
+      distance = location.x
+    }
+
+    guard delta != 0 else { return }
+
+    let valueInterval = self.valueInterval, touchInterval = self.touchInterval
+
+    let newValue = valueInterval.mapValue(touchInterval.mapValue(value, from: valueInterval) + Float(delta), from: touchInterval)
+
+    var valueDelta = value - newValue
+
+    if !distanceInterval.contains(distance) {
+      let clampedDistance = distanceInterval.clampValue(distance)
+      let deltaDistance = max(Float(abs(distance - clampedDistance)), 1)
+      valueDelta *= 1 / deltaDistance
+    }
+
+    value -= valueDelta
+    touchTime = touch.timestamp
+    sendActionsForControlEvents(.ValueChanged)
+
+  }
+
+  /**
   touchesMoved:withEvent:
 
   - parameter touches: Set<UITouch>
@@ -442,33 +502,7 @@ import Chameleon
   */
   public override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
     guard let touch = self.touch where touches.contains(touch) else { return }
-
-    let location = touch.locationInView(self)
-    let delta = location - touch.previousLocationInView(self)
-
-    let d: Float, l: Float
-    switch axis {
-    case .Horizontal:
-      d = Float(delta.x)
-      l = Float(location.y > frame.maxY ? location.y - frame.maxY : abs(location.y))
-    case .Vertical:
-      d = Float(delta.y)
-      l = Float(location.x > frame.maxX ? location.x - frame.maxX : abs(location.x))
-    }
-
-    guard d != 0 else { return }
-
-    let v = valueInterval, t = touchInterval
-
-    let newValue = v.mapValue(t.mapValue(value, from: v) + d, from: t)
-
-    var valueDelta = value - newValue
-
-    if !frame.contains(location) { valueDelta *= 1 / max(l, 1) }
-
-    value -= valueDelta
-
-    if continuous { sendActionsForControlEvents(.ValueChanged) }
+    updateValueForTouch(touch, sendActions: continuous)
   }
 
   /**
@@ -490,7 +524,7 @@ import Chameleon
   */
   public override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
     guard let touch = self.touch where touches.contains(touch) else { return }
-    if !continuous { sendActionsForControlEvents(.ValueChanged) }
+    updateValueForTouch(touch, sendActions: true)
     self.touch = nil
   }
 

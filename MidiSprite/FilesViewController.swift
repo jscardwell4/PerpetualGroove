@@ -28,7 +28,7 @@ final class FilesViewController: UIViewController, UITableViewDataSource, UITabl
   private var files: [NSURL] = [] {
     didSet {
       maxLabelSize = files.reduce(.zero) {
-        [attributes = [NSFontAttributeName:AssetManager.controlFont]] size, url in
+        [attributes = [NSFontAttributeName:UIFont.controlFont]] size, url in
 
         let urlSize = url.lastPathComponent!.sizeWithAttributes(attributes)
         return CGSize(width: max(size.width, urlSize.width), height: max(size.height, urlSize.height))
@@ -191,9 +191,9 @@ final class FilesViewController: UIViewController, UITableViewDataSource, UITabl
       label.translatesAutoresizingMaskIntoConstraints = false
       label.backgroundColor = .clearColor()
       label.opaque = false
-      label.font = AssetManager.controlFont
-      label.textColor = AssetManager.controlColor
-      label.highlightedTextColor = AssetManager.controlSelectedColor
+      label.font = .controlFont
+      label.textColor = .controlColor
+      label.highlightedTextColor = .controlSelectedColor
       return label
     }
 

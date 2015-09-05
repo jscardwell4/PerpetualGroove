@@ -9,9 +9,29 @@ import Foundation
 import UIKit
 import MoonKit
 
+struct State: OptionSetType {
+  let rawValue: Int
+  static let Default           = State(rawValue: 0b0000_0000)
+  static let PopoverActive     = State(rawValue: 0b0000_0001)
+  static let PlayerPlaying     = State(rawValue: 0b0000_0010)
+  static let PlayerFieldActive = State(rawValue: 0b0000_0100)
+  static let MIDINodeAdded     = State(rawValue: 0b0000_1000)
+  static let TrackAdded        = State(rawValue: 0b0001_0000)
+  static let PlayerRecording   = State(rawValue: 0b0010_0000)
+}
 
-let bezierPath = UIBezierPath(arcCenter: CGPoint(x: 100, y: 100), radius: 50, startAngle: π / 4, endAngle: -π - π / 4, clockwise: false)
-bezierPath.addLineToPoint(CGPoint(x: 100, y: 100))
-bezierPath.closePath()
+var currentState: State = []
+var previousState = currentState
 
-let knob = Knob(frame: CGRect(x: 0, y: 0, width: 200, height: 200))
+
+currentState ∪= .PopoverActive
+currentState ∪= .PlayerPlaying
+
+(previousState ⊻ currentState).rawValue
+
+previousState = currentState
+
+currentState ∪= .MIDINodeAdded
+
+(previousState ⊻ currentState).rawValue
+(currentState ⊻ previousState).rawValue

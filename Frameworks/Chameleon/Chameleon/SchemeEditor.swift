@@ -17,6 +17,31 @@ class SourcePalette<Color:ColorType> {
   init(color: Color) { base = color.base; shade = color.shade }
 }
 
+
+class ColorView: UIView {
+  @IBOutlet weak var rLabel: UILabel!
+  @IBOutlet weak var gLabel: UILabel!
+  @IBOutlet weak var bLabel: UILabel!
+  override var backgroundColor: UIColor? {
+    didSet {
+      if let color = backgroundColor {
+        let (r, g, b) = color.RGB
+        rLabel?.text = "R: \(Int(r * 255))"
+        gLabel?.text = "G: \(Int(g * 255))"
+        bLabel?.text = "B: \(Int(b * 255))"
+        let contrastingColor = color.contrastingColor
+        rLabel?.textColor = contrastingColor
+        gLabel?.textColor = contrastingColor
+        bLabel?.textColor = contrastingColor
+      } else {
+        rLabel?.text = "R: -"
+        gLabel?.text = "G: -"
+        bLabel?.text = "B: -"
+      }
+    }
+  }
+}
+
 public final class SchemeEditor: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
 
   override public func prefersStatusBarHidden() -> Bool { return true }

@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 
-public class InlinePickerView: UIView {
+@IBDesignable public class InlinePickerView: UIView {
 
   private enum CellType: String { case Label, Image }
 
@@ -154,12 +154,36 @@ public class InlinePickerView: UIView {
 
   public var didSelectItem: ((InlinePickerView, Int) -> Void)?
 
-  public var font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
-  public var textColor = UIColor.darkTextColor()
-  public var selectedFont = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
-  public var selectedTextColor = UIColor.darkTextColor()
-  public var imageColor = UIColor.darkTextColor()
-  public var imageSelectedColor = UIColor.darkTextColor()
+  public static let DefaultFont = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+  public var font = InlinePickerView.DefaultFont
+  @IBInspectable public var fontName: String =  InlinePickerView.DefaultFont.fontName {
+    didSet {
+      if let font = UIFont(name: fontName, size: font.pointSize) { self.font = font }
+      else { fontName = oldValue }
+    }
+  }
+  @IBInspectable public var fontSize: CGFloat =  InlinePickerView.DefaultFont.pointSize {
+    didSet { font = font.fontWithSize(fontSize) }
+  }
+
+  @IBInspectable public var textColor: UIColor = .darkTextColor()
+
+  public var selectedFont =  InlinePickerView.DefaultFont
+  @IBInspectable public var selectedFontName: String =  InlinePickerView.DefaultFont.fontName {
+    didSet {
+      if let font = UIFont(name: selectedFontName, size: selectedFont.pointSize) { selectedFont = font }
+      else { selectedFontName = oldValue }
+    }
+  }
+  @IBInspectable public var selectedFontSize: CGFloat =  InlinePickerView.DefaultFont.pointSize {
+    didSet { selectedFont = selectedFont.fontWithSize(selectedFontSize) }
+  }
+
+  @IBInspectable public var labelsString: String = "" { didSet { labels = ", ".split(labelsString) } }
+  @IBInspectable public var imagesString: String = "" { didSet { images = ", ".split(imagesString).flatMap({UIImage(named: $0)}) } }
+  @IBInspectable public var selectedTextColor: UIColor = .darkTextColor()
+  @IBInspectable public var imageColor: UIColor = .darkTextColor()
+  @IBInspectable public var imageSelectedColor: UIColor = .darkTextColor()
 
   /** reloadData */
   public func reloadData() {
@@ -178,9 +202,9 @@ public class InlinePickerView: UIView {
     }
   }
 
-  public var itemHeight: CGFloat?
-  public var itemPadding: CGFloat = 8.0 { didSet { reloadData() } }
-  public var usePerspective = false { didSet { updatePerspective() } }
+  @IBInspectable public var itemHeight: CGFloat?
+  @IBInspectable public var itemPadding: CGFloat = 8.0 { didSet { reloadData() } }
+  @IBInspectable public var usePerspective = false { didSet { updatePerspective() } }
 
   var itemWidths: [CGFloat] {
     switch cellType {
