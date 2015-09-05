@@ -15,6 +15,7 @@
 		C2404BC31B78026500A68A64 /* Sampler Files in Resources */ = {isa = PBXBuildFile; fileRef = C2404BC11B78026500A68A64 /* Sampler Files */; };
 		C2404BC41B78026500A68A64 /* Grand Piano.exs in Resources */ = {isa = PBXBuildFile; fileRef = C2404BC21B78026500A68A64 /* Grand Piano.exs */; };
 		C2404BC61B7805B400A68A64 /* Hip Hop Kit.exs in Resources */ = {isa = PBXBuildFile; fileRef = C2404BC51B7805B400A68A64 /* Hip Hop Kit.exs */; };
+		C245456C1B9B414C00FF00E7 /* FormPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C245456B1B9B414C00FF00E7 /* FormPopoverViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		C2569E401B90005400EEB441 /* TempoTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2569E3F1B90005400EEB441 /* TempoTrack.swift */; settings = {ASSET_TAGS = (); }; };
 		C25EBC831B8BFAFA00E57665 /* MIDIFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25EBC821B8BFAFA00E57665 /* MIDIFile.swift */; };
 		C26A27EF1B948E4F00BD1698 /* FilesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A27EE1B948E4E00BD1698 /* FilesViewController.swift */; settings = {ASSET_TAGS = (); }; };
@@ -96,6 +97,9 @@
 		C2404BCD1B78EDEB00A68A64 /* Eveleth.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Eveleth.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2404BD11B78EE3800A68A64 /* Chameleon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Chameleon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2404BD41B78EEC500A68A64 /* MoonKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MoonKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C245456B1B9B414C00FF00E7 /* FormPopoverViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormPopoverViewController.swift; sourceTree = "<group>"; };
+		C245456D1B9B560700FF00E7 /* LabeledStepper.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LabeledStepper.xib; sourceTree = "<group>"; };
+		C245456F1B9B589E00FF00E7 /* InlinePickerView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InlinePickerView.xib; sourceTree = "<group>"; };
 		C2569E3F1B90005400EEB441 /* TempoTrack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TempoTrack.swift; sourceTree = "<group>"; };
 		C25EBC821B8BFAFA00E57665 /* MIDIFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIFile.swift; sourceTree = "<group>"; };
 		C26A27EE1B948E4E00BD1698 /* FilesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilesViewController.swift; sourceTree = "<group>"; };
@@ -194,7 +198,6 @@
 		C2404BDA1B78F02C00A68A64 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				C26A27EE1B948E4E00BD1698 /* FilesViewController.swift */,
 				C2E043341B72F4DC005F0675 /* AppDelegate.swift */,
 				C2EFA0ED1B824A2F002EBA3D /* AssetManager.swift */,
 				C26A27EA1B93C04400BD1698 /* View Controllers */,
@@ -220,6 +223,8 @@
 				C2E043411B72F4DC005F0675 /* LaunchScreen.storyboard */,
 				C2AA9EF11B7BB92F0025BE4D /* MIDIPlayerField.fsh */,
 				C272B2A11B7D714B00134E5F /* PureOscillators.programlist */,
+				C245456D1B9B560700FF00E7 /* LabeledStepper.xib */,
+				C245456F1B9B589E00FF00E7 /* InlinePickerView.xib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -246,11 +251,13 @@
 		C26A27EA1B93C04400BD1698 /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				C26A27EE1B948E4E00BD1698 /* FilesViewController.swift */,
 				C2E0433A1B72F4DC005F0675 /* MIDIPlayerViewController.swift */,
 				C26EEB2D1B7FDA8F00EC6979 /* MixerViewController.swift */,
 				C26EEB2F1B7FDAF300EC6979 /* MixerCell.swift */,
 				C2AA2BC71B84B04200A0B08D /* InstrumentViewController.swift */,
 				C2EFA0EB1B823642002EBA3D /* TemplateViewController.swift */,
+				C245456B1B9B414C00FF00E7 /* FormPopoverViewController.swift */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -451,6 +458,7 @@
 				C291C3EB1B91EDA700702AEA /* TrackChunk.swift in Sources */,
 				C2E043351B72F4DC005F0675 /* AppDelegate.swift in Sources */,
 				C2CF38CD1B7EBED30085B3D5 /* Track.swift in Sources */,
+				C245456C1B9B414C00FF00E7 /* FormPopoverViewController.swift in Sources */,
 				C2EFA0EE1B824A2F002EBA3D /* AssetManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

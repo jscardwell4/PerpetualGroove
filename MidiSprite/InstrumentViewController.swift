@@ -8,44 +8,26 @@
 
 import UIKit
 import MoonKit
-import Eveleth
-import Chameleon
 
-final class InstrumentViewController: UIViewController {
+final class InstrumentViewController: FormPopoverViewController {
 
   typealias Program = Instrument.Program
   typealias Channel = Instrument.Channel
 
   /** init */
-  init() { super.init(nibName: nil, bundle: nil); InstrumentViewController.currentInstance = self }
+  init() {
+    super.init(nibName: nil, bundle: nil)
+    InstrumentViewController.currentInstance = self
+  }
 
   /**
   init:
 
   - parameter aDecoder: NSCoder
   */
-  required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }
-
-  /** loadView */
-  override func loadView() {
-    let formView = FormView(form: form)
-    formView.labelFont            = Eveleth.lightFontWithSize(14)
-    formView.labelTextColor       = Chameleon.kelleyPearlBush
-    formView.controlFont          = Eveleth.thinFontWithSize(14)
-    formView.controlColor         = Chameleon.quietLightLobLollyDark
-    formView.controlSelectedFont  = Eveleth.regularFontWithSize(14)
-    formView.controlSelectedColor = Chameleon.quietLightLobLolly
-    formView.tintColor            = Chameleon.quietLightLilyWhiteDark
-    view = formView
-    view.setNeedsUpdateConstraints()
-  }
-
-  /** updateViewConstraints */
-  override func updateViewConstraints() {
-    super.updateViewConstraints()
-    let id = Identifier(self, "ViewWidth")
-    guard view.constraintsWithIdentifier(id).count == 0 else { return }
-    view.constrain(view.width ≤ (UIScreen.mainScreen().bounds.width - 10) --> id)
+  required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+    InstrumentViewController.currentInstance = self
   }
 
   private static weak var currentInstance: InstrumentViewController?
@@ -92,7 +74,7 @@ final class InstrumentViewController: UIViewController {
   private enum FieldName: String { case SoundSet = "Sound Set", Program, Channel }
 
   private var _form: Form?
-  private var form: Form {
+  override var form: Form {
     guard _form == nil else { return _form! }
 
     let soundSetField = FormPickerField(name: FieldName.SoundSet.rawValue,

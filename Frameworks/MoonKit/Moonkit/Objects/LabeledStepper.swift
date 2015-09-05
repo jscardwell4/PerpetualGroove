@@ -8,29 +8,56 @@
 
 import UIKit
 
-public class LabeledStepper: UIControl {
+@IBDesignable public class LabeledStepper: UIControl {
 
+  /**
+  initWithFrame:
+
+  - parameter frame: CGRect
+  */
   public override init(frame: CGRect) { super.init(frame: frame); initializeIVARs() }
+
+  /**
+  init:
+
+  - parameter aDecoder: NSCoder
+  */
   public required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder); initializeIVARs() }
 
-  func initializeIVARs() {
+  /** initializeIVARs */
+  private func initializeIVARs() {
     addSubview(label); addSubview(stepper)
 
     label.textColor = textColor
     label.font = font
+    label.textAlignment = .Right
     label.highlightedTextColor = highlightedTextColor
-    
+    updateLabel()
+
+    stepper.setContentHuggingPriority(UILayoutPriorityRequired, forAxis: .Horizontal)
     stepper.addTarget(self, action: "updateLabel", forControlEvents: .ValueChanged)
   }
 
+  /**
+  requiresConstraintBasedLayout
+
+  - returns: Bool
+  */
   public override class func requiresConstraintBasedLayout() -> Bool { return true }
 
+  /** updateConstraints */
   public override func updateConstraints() {
-    removeAllConstraints()
     super.updateConstraints()
-    constrain(identifier: nil, 𝗛|label -- 8 -- stepper|𝗛, 𝗩|label|𝗩, 𝗩|stepper|𝗩)
+    let id = Identifier(self, "Internal")
+    guard constraintsWithIdentifier(id).count == 0 else { return }
+    constrain([𝗛|label--8--stepper|𝗛, 𝗩|label|𝗩, [stepper.centerY => label.centerY]] --> id)
   }
 
+  /**
+  intrinsicContentSize
+
+  - returns: CGSize
+  */
   public override func intrinsicContentSize() -> CGSize {
     let lsize = label.intrinsicContentSize()
     let ssize = stepper.intrinsicContentSize()
@@ -42,32 +69,48 @@ public class LabeledStepper: UIControl {
 
   private let label = UILabel(autolayout: true)
 
-  func updateLabel() { label.text = String(stepper.value, precision: precision) }
+  /** updateLabel */
+  @objc private func updateLabel() { label.text = String(stepper.value, precision: precision) }
 
   /** The number of characters from the fractional part of `stepper.value` to display, defaults to `0` */
   public var precision = 0 { didSet { updateLabel() } }
 
   // MARK: Properties bounced to/from `UILabel` subview
 
-  public var font: UIFont = .preferredFontForTextStyle(UIFontTextStyleHeadline)  {
-    didSet { label.font = font }
+  public static let DefaultFont: UIFont = .preferredFontForTextStyle(UIFontTextStyleHeadline)
+  public var font: UIFont = LabeledStepper.DefaultFont  { didSet { label.font = font } }
+
+  @IBInspectable public var fontName: String  {
+    get { return font.fontName }
+    set { if let font = UIFont(name: newValue, size: self.font.pointSize) { self.font = font } }
   }
-  public var highlightedTextColor: UIColor? {
-   didSet { label.highlightedTextColor = highlightedTextColor }
+
+  @IBInspectable public var fontSize: CGFloat  {
+    get { return font.pointSize }
+    set { font = font.fontWithSize(newValue) }
   }
-  public var textColor: UIColor = .blackColor() { didSet { label.textColor = textColor } }
-  public var shadowColor: UIColor? { didSet { label.shadowColor = shadowColor } }
-  public var shadowOffset: CGSize = .zero { didSet { label.shadowOffset = shadowOffset } }
-  public var adjustsFontSizeToFitWidth: Bool {
+
+  @IBInspectable public var highlightedTextColor: UIColor? { didSet { label.highlightedTextColor = highlightedTextColor } }
+
+  @IBInspectable public var textColor: UIColor = .blackColor() { didSet { label.textColor = textColor } }
+
+  @IBInspectable public var shadowColor: UIColor? { didSet { label.shadowColor = shadowColor } }
+
+  @IBInspectable public var shadowOffset: CGSize = .zero { didSet { label.shadowOffset = shadowOffset } }
+
+  @IBInspectable public var adjustsFontSizeToFitWidth: Bool {
     get { return label.adjustsFontSizeToFitWidth }
     set { label.adjustsFontSizeToFitWidth = newValue }
   }
-  public var baselineAdjustment: UIBaselineAdjustment {
+
+  @IBInspectable public var baselineAdjustment: UIBaselineAdjustment {
     get { return label.baselineAdjustment }
     set { label.baselineAdjustment = newValue }
   }
-  public var minimumScaleFactor: CGFloat { get { return label.minimumScaleFactor } set { label.minimumScaleFactor = newValue } }
-  public var preferredMaxLayoutWidth: CGFloat {
+
+  @IBInspectable public var minimumScaleFactor: CGFloat { get { return label.minimumScaleFactor } set { label.minimumScaleFactor = newValue } }
+
+  @IBInspectable public var preferredMaxLayoutWidth: CGFloat {
     get { return label.preferredMaxLayoutWidth }
     set { label.preferredMaxLayoutWidth = newValue }
   }
@@ -78,27 +121,27 @@ public class LabeledStepper: UIControl {
 
   // MARK: Properties bounced to/from the `UIStepper` subview
 
-  public var continuous: Bool { get { return stepper.continuous } set { stepper.continuous = newValue } }
-  public var autorepeat: Bool { get { return stepper.autorepeat } set { stepper.autorepeat = newValue } }
-  public var wraps: Bool { get { return stepper.wraps } set { stepper.wraps = newValue } }
+  @IBInspectable public var continuous: Bool { get { return stepper.continuous } set { stepper.continuous = newValue } }
+  @IBInspectable public var autorepeat: Bool { get { return stepper.autorepeat } set { stepper.autorepeat = newValue } }
+  @IBInspectable public var wraps: Bool { get { return stepper.wraps } set { stepper.wraps = newValue } }
 
-  public var value: Double { get { return stepper.value } set { stepper.value = newValue; updateLabel() } }
-  public var minimumValue: Double { get { return stepper.minimumValue } set { stepper.minimumValue = newValue } }
-  public var maximumValue: Double { get { return stepper.maximumValue } set { stepper.maximumValue = newValue } }
-  public var stepValue: Double { get { return stepper.stepValue } set { stepper.stepValue = newValue } }
+  @IBInspectable public var value: Double { get { return stepper.value } set { stepper.value = newValue; updateLabel() } }
+  @IBInspectable public var minimumValue: Double { get { return stepper.minimumValue } set { stepper.minimumValue = newValue } }
+  @IBInspectable public var maximumValue: Double { get { return stepper.maximumValue } set { stepper.maximumValue = newValue } }
+  @IBInspectable public var stepValue: Double { get { return stepper.stepValue } set { stepper.stepValue = newValue } }
 
-  public override var enabled: Bool { get { return stepper.enabled } set { stepper.enabled = newValue } }
-  public override var selected: Bool { get { return stepper.selected } set { stepper.selected = newValue } }
-  public override var highlighted: Bool { get { return stepper.highlighted } set { stepper.highlighted = newValue } }
+  @IBInspectable public override var enabled: Bool { get { return stepper.enabled } set { stepper.enabled = newValue } }
+  @IBInspectable public override var selected: Bool { get { return stepper.selected } set { stepper.selected = newValue } }
+  @IBInspectable public override var highlighted: Bool { get { return stepper.highlighted } set { stepper.highlighted = newValue } }
 
   public override var state: UIControlState { return stepper.state }
 
-  public override var contentVerticalAlignment: UIControlContentVerticalAlignment {
+  @IBInspectable public override var contentVerticalAlignment: UIControlContentVerticalAlignment {
     get { return stepper.contentVerticalAlignment }
     set { stepper.contentVerticalAlignment = newValue }
   }
 
-  public override var contentHorizontalAlignment: UIControlContentHorizontalAlignment {
+  @IBInspectable public override var contentHorizontalAlignment: UIControlContentHorizontalAlignment {
     get { return stepper.contentHorizontalAlignment }
     set { stepper.contentHorizontalAlignment = newValue }
   }

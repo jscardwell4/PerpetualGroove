@@ -25,6 +25,7 @@ extension CGPoint {
   public func pointByApplyingTransform(transform: CGAffineTransform) -> CGPoint {
     return CGPointApplyAffineTransform(self, transform)
   }
+  public func offsetBy(dx dx: CGFloat, dy: CGFloat) -> CGPoint { return CGPoint(x: x + dx, y: y + dy) }
   public func distanceTo(point: CGPoint) -> CGFloat {
     guard !point.isNull else { return CGFloat.NaN }
     return sqrt(pow(x - point.x, 2) + pow(y - point.y, 2))

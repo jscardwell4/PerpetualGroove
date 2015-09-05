@@ -367,44 +367,16 @@ final class MIDIPlayerViewController: UIViewController {
   override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
 
-    func adjustPopover(popoverView: PopoverView, _ centerXConstraint: NSLayoutConstraint?) {
-
-      let minX = CGFloat(5)
-      let maxX = view.bounds.width - 5
-
-      let frame = popoverView.frame
-      let offset: CGFloat
-
-      if frame.minX < minX {
-        offset = minX - frame.minX
-      } else if frame.maxX > maxX {
-        offset = maxX - frame.maxX
-      } else {
-        offset = 0
-      }
-
-      popoverView.xOffset = offset
-      centerXConstraint?.constant = offset
-
-      backgroundDispatch { [xOffset = popoverView.xOffset, constant = centerXConstraint?.constant] in
-        print(
-          "popover: \(popoverView.nametag!)",
-          "minX: \(minX)",
-          "maxX: \(maxX)",
-          "frame: \(frame)",
-          "offset: \(offset)",
-          "xOffset : \(xOffset)",
-          "constant: \(constant)",
-          separator: "; "
-        )
-      }
+    func adjustPopover(popoverView: PopoverView, _ presentingView: UIView) {
+      let popoverCenter = view.convertPoint(popoverView.center, fromView: popoverView.superview)
+      let presentingCenter = view.convertPoint(presentingView.center, fromView: presentingView.superview)
+      popoverView.xOffset = presentingCenter.x - popoverCenter.x
     }
 
-
-    adjustPopover(filesPopoverView,      filesPopoverConstraint)
-    adjustPopover(templatePopoverView,   templatePopoverConstraint)
-    adjustPopover(mixerPopoverView,      mixerPopoverConstraint)
-    adjustPopover(instrumentPopoverView, instrumentPopoverConstraint)
+    adjustPopover(filesPopoverView, filesButton)
+    adjustPopover(templatePopoverView, templateButton)
+    adjustPopover(mixerPopoverView, mixerButton)
+    adjustPopover(instrumentPopoverView, instrumentButton)
 }
 
   /**
@@ -416,10 +388,6 @@ final class MIDIPlayerViewController: UIViewController {
     super.viewDidAppear(animated)
   }
 
-  private weak var filesPopoverConstraint: NSLayoutConstraint?
-  private weak var mixerPopoverConstraint: NSLayoutConstraint?
-  private weak var templatePopoverConstraint: NSLayoutConstraint?
-  private weak var instrumentPopoverConstraint: NSLayoutConstraint?
 
   /** updateViewConstraints */
   override func updateViewConstraints() {
@@ -434,19 +402,18 @@ final class MIDIPlayerViewController: UIViewController {
     func addConstraints(id: Identifier, _ popoverView: PopoverView, _ presentingView: UIView) {
       guard view.constraintsWithIdentifier(id).count == 0 else { return }
       view.constrain(
-        [popoverView.centerX => presentingView.centerX - popoverView.xOffset] --> (id + "CenterX"),
-        [popoverView.top => presentingView.bottom, popoverView.width ≤ (UIScreen.mainScreen().bounds.width - 10)] --> id
+        [popoverView.centerX => presentingView.centerX -!> 999] --> (id + "CenterX"),
+        [ popoverView.top => popoverBlur.top,
+          popoverView.width ≤ (UIScreen.mainScreen().bounds.width - 10),
+          popoverView.left ≥ view.left + 5,
+          popoverView.right ≤ view.right - 5 ] --> id
       )
     }
 
     addConstraints(Identifier(self, "FilesPopover"), filesPopover, filesButton)
-    filesPopoverConstraint = view.constraintWithIdentifier(Identifier(self, "FilesPopover", "CenterX"))
     addConstraints(Identifier(self, "MixerPopover"), mixerPopover, mixerButton)
-    mixerPopoverConstraint = view.constraintWithIdentifier(Identifier(self, "MixerPopover", "CenterX"))
     addConstraints(Identifier(self, "TemplatePopover"), templatePopover, templateButton)
-    templatePopoverConstraint = view.constraintWithIdentifier(Identifier(self, "TemplatePopover", "CenterX"))
     addConstraints(Identifier(self, "InstrumentPopover"),  instrumentPopover, instrumentButton)
-    instrumentPopoverConstraint = view.constraintWithIdentifier(Identifier(self, "InstrumentPopover", "CenterX"))
   }
 
   /**

@@ -58,7 +58,8 @@ final class FieldView: UIView {
     translatesAutoresizingMaskIntoConstraints = false
     let label = UILabel(autolayout: true)
     label.text = field.name
-    label.setContentCompressionResistancePriority(1000, forAxis: .Horizontal)
+    label.setContentCompressionResistancePriority(UILayoutPriorityRequired, forAxis: .Horizontal)
+    label.setContentHuggingPriority(UILayoutPriorityRequired, forAxis: .Horizontal)
     label.nametag = "name"
     addSubview(label)
     self.label = label

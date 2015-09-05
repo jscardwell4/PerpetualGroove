@@ -9,19 +9,34 @@
 import Foundation
 import UIKit
 
-
 @IBDesignable public class InlinePickerView: UIView {
 
   private enum CellType: String { case Label, Image }
 
   private var cellType = CellType.Label { didSet { reloadData() } }
+  @IBInspectable var cellTypeString: String {
+    get { return cellType.rawValue }
+    set { cellType = CellType(rawValue: newValue) ?? cellType }
+  }
 
   /**
   initWithFrame:
 
   - parameter frame: CGRect
   */
-  override public init(frame: CGRect) { super.init(frame: frame); initializeIVARs() }
+  override public init(frame: CGRect) {
+    super.init(frame: frame)
+    #if TARGET_INTERFACE_BUILDER
+      labels = ["What", "The", "Fuck"]
+      selection = 1
+      autoresizesSubviews = false
+      contentMode = .Redraw
+      collectionView.autoresizesSubviews = false
+      collectionView.contentMode = .Redraw
+      collectionView.opaque = false
+    #endif
+    initializeIVARs()
+  }
 
   /**
   init:
@@ -46,13 +61,16 @@ import UIKit
 
   /** initializeIVARs */
   private func initializeIVARs() {
+    addSubview(collectionView)
+    collectionView.registerClass(InlinePickerViewLabelCell.self, forCellWithReuseIdentifier: CellType.Label.rawValue)
+    collectionView.registerClass(InlinePickerViewImageCell.self, forCellWithReuseIdentifier: CellType.Image.rawValue)
 
     setContentCompressionResistancePriority(750, forAxis: .Horizontal)
-    setContentCompressionResistancePriority(1000, forAxis: .Vertical)
+    setContentCompressionResistancePriority(UILayoutPriorityRequired, forAxis: .Vertical)
     translatesAutoresizingMaskIntoConstraints = false
     nametag = "picker"
 
-    addSubview(collectionView)
+//    collectionView.frame = bounds
     collectionView.nametag = "collectionView"
     layout.delegate = self
     collectionView.scrollEnabled = false
@@ -61,12 +79,25 @@ import UIKit
     collectionView.delegate = self
     collectionView.showsHorizontalScrollIndicator = false
     collectionView.bounces = false
-    collectionView.backgroundColor = UIColor.clearColor()
+    collectionView.backgroundColor = .clearColor()
     collectionView.decelerationRate = UIScrollViewDecelerationRateFast
     updatePerspective()
-    collectionView.registerClass(InlinePickerViewLabelCell.self, forCellWithReuseIdentifier: CellType.Label.rawValue)
-    collectionView.registerClass(InlinePickerViewImageCell.self, forCellWithReuseIdentifier: CellType.Image.rawValue)
     collectionView.reloadData()
+
+    setNeedsUpdateConstraints()
+  }
+
+  public override func prepareForInterfaceBuilder() {
+//    collectionView.contentSize = bounds.size
+//    initializeIVARs()
+    reloadData()
+    logIB(description)
+  }
+
+  public override var bounds: CGRect {
+    didSet {
+      logIB("old bounds = \(oldValue); new bounds = \(bounds)")
+    }
   }
 
   /** updatePerspective */
@@ -84,10 +115,13 @@ import UIKit
 
   /** updateConstraints */
   override public func updateConstraints() {
-    removeAllConstraints()
     super.updateConstraints()
-    constrain(𝗛|collectionView|𝗛, 𝗩|collectionView|𝗩)
-    constrain(height ≥ (itemHeight ?? defaultItemHeight))
+
+    let id = Identifier(self, "Internal")
+    guard constraintsWithIdentifier(id).count == 0 else { return }
+
+    constrain([𝗛|collectionView|𝗛, 𝗩|collectionView|𝗩] --> id)
+    constrain([height ≥ (itemHeight ?? defaultItemHeight)] --> id)
   }
 
   private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: InlinePickerViewLayout())
@@ -116,8 +150,10 @@ import UIKit
     return super.description + "\n\t" + "\n\t".join(
       "count = \(count)",
       "cellType = \(cellType)",
-      "collectionView = \(collectionView.description)",
-      "collectionViewLayout = \(collectionView.collectionViewLayout.description)"
+      "labels = \(labels)",
+      "images = \(images)",
+      "collectionView = " + "collection view layout".split(collectionView.description)[0].sub("(?<!frame = \\(0 0); ", "\n").indentedBy(2, true, true),
+      "collectionViewLayout = \(collectionView.collectionViewLayout.description.indentedBy(2, true, true))"
     )
   }
 
@@ -156,27 +192,32 @@ import UIKit
 
   public static let DefaultFont = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
   public var font = InlinePickerView.DefaultFont
-  @IBInspectable public var fontName: String =  InlinePickerView.DefaultFont.fontName {
-    didSet {
-      if let font = UIFont(name: fontName, size: font.pointSize) { self.font = font }
-      else { fontName = oldValue }
-    }
+  @IBInspectable public var fontName: String  {
+    get { return font.fontName }
+    set { if let font = UIFont(name: newValue, size: self.font.pointSize) { self.font = font } }
   }
-  @IBInspectable public var fontSize: CGFloat =  InlinePickerView.DefaultFont.pointSize {
-    didSet { font = font.fontWithSize(fontSize) }
+
+  @IBInspectable public var flat: Bool {
+    get { return layout.flat }
+    set { layout.flat = newValue; setNeedsDisplay() }
+  }
+
+  @IBInspectable public var fontSize: CGFloat  {
+    get { return font.pointSize }
+    set { font = font.fontWithSize(newValue) }
   }
 
   @IBInspectable public var textColor: UIColor = .darkTextColor()
 
   public var selectedFont =  InlinePickerView.DefaultFont
-  @IBInspectable public var selectedFontName: String =  InlinePickerView.DefaultFont.fontName {
-    didSet {
-      if let font = UIFont(name: selectedFontName, size: selectedFont.pointSize) { selectedFont = font }
-      else { selectedFontName = oldValue }
-    }
+  @IBInspectable public var selectedFontName: String  {
+    get { return selectedFont.fontName }
+    set { if let font = UIFont(name: newValue, size: selectedFont.pointSize) { selectedFont = font } }
   }
-  @IBInspectable public var selectedFontSize: CGFloat =  InlinePickerView.DefaultFont.pointSize {
-    didSet { selectedFont = selectedFont.fontWithSize(selectedFontSize) }
+
+  @IBInspectable public var selectedFontSize: CGFloat  {
+    get { return selectedFont.pointSize }
+    set { selectedFont = selectedFont.fontWithSize(newValue) }
   }
 
   @IBInspectable public var labelsString: String = "" { didSet { labels = ", ".split(labelsString) } }
@@ -202,9 +243,9 @@ import UIKit
     }
   }
 
-  @IBInspectable public var itemHeight: CGFloat?
+  public var itemHeight: CGFloat?
   @IBInspectable public var itemPadding: CGFloat = 8.0 { didSet { reloadData() } }
-  @IBInspectable public var usePerspective = false { didSet { updatePerspective() } }
+  @IBInspectable public var usePerspective: Bool = false { didSet { updatePerspective() } }
 
   var itemWidths: [CGFloat] {
     switch cellType {
@@ -219,7 +260,7 @@ import UIKit
     }
   }
 
-  var selection: Int = -1
+  @IBInspectable public var selection: Int = -1
 
   public var selectedItemFrame: CGRect? {
     guard selection > -1,
@@ -231,7 +272,7 @@ import UIKit
     return frame
   }
 
-  public var editing = false { didSet { collectionView.scrollEnabled = editing; reloadData() } }
+  @IBInspectable public var editing: Bool = true { didSet { collectionView.scrollEnabled = editing; reloadData() } }
 
   private var count: Int { switch cellType { case .Label: return labels.count; case .Image: return images.count } }
 }

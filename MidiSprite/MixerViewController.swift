@@ -19,8 +19,6 @@ final class MixerViewController: UICollectionViewController {
     super.viewDidLoad()
     view.translatesAutoresizingMaskIntoConstraints = false
     collectionView?.translatesAutoresizingMaskIntoConstraints = false
-    view.backgroundColor = nil
-    collectionView?.backgroundColor = nil
 
     guard notificationReceptionist == nil else { return }
 

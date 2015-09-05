@@ -17,7 +17,8 @@ extension UIColor {
   static var controlColor: UIColor            { return Chameleon.quietLightLobLollyDark }
   static var controlSelectedColor: UIColor    { return Chameleon.quietLightLobLolly }
   static var tintColor: UIColor               { return Chameleon.quietLightLilyWhiteDark }
-  static var popoverBackgroundColor: UIColor  { return rgb(51, 50, 49) }
+  static var backgroundColor: UIColor         { return rgb(51, 50, 49) }
+  static var popoverBackgroundColor: UIColor  { return rgb(25, 25, 24) }
 }
 
 extension UIFont {

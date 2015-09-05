@@ -171,10 +171,16 @@ public extension String {
 
   - returns: String
   */
-  public func indentedBy(indent: Int, _ preserveFirst: Bool = false) -> String {
-    let spacer = " " * indent
+  public func indentedBy(indent: Int, _ preserveFirst: Bool = false, _ useTabs: Bool = false) -> String {
+    let spacer = (useTabs ? "\t" : " ") * indent
     let result = "\n\(spacer)".join("\n".split(self))
     return preserveFirst ? result : spacer + result
+  }
+
+  public func appendToFile(file: String, separator: String = "\n") throws {
+    let currentContent = try? String(contentsOfFile: file, encoding: NSUTF8StringEncoding)
+    let unwrappedCurrentContent = currentContent ?? ""
+    try "\(unwrappedCurrentContent)\(separator)\(self)".writeToFile(file, atomically: true, encoding: NSUTF8StringEncoding)
   }
 
   /**
@@ -258,10 +264,10 @@ public extension String {
   - parameter contentsOfFile: String
   - parameter error: NSErrorPointer = nil
   */
-  public init(contentsOfFile: String) throws {
-    let string = try NSString(contentsOfFile: contentsOfFile, encoding: NSUTF8StringEncoding)
-    self = string as String
-  }
+//  public init(contentsOfFile: String) throws {
+//    let string = try NSString(contentsOfFile: contentsOfFile, encoding: NSUTF8StringEncoding)
+//    self = string as String
+//  }
 
   /**
   init:ofType:error:

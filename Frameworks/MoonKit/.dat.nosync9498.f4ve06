@@ -1,0 +1,1130 @@
+
+2015-09-05 18:52:24 +0000 [41845942015062] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+    <MoonKit.InlinePickerView: 0x7f9ee2001e10; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7f9ee20d85a0>>
+    	count = 3
+    	cellType = Label
+    	labels = ["What", "The", "Fuck"]
+    	images = []
+    	collectionView = <UICollectionView: 0x7f9ee2811800
+        frame = (0 0; 144 44)
+        clipsToBounds = YES
+        gestureRecognizers = <NSArray: 0x7f9ee20342f0>
+        layer = <CALayer: 0x7f9ee20d2390>
+        contentOffset: {0, 0}
+        contentSize: {0, 0}> 
+    	collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7f9ee2003150>
+        values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+        contentSize = {0, 0}
+        rawFrames = []
+        contentPadding = 0.0
+        storedAttributes = {
+            	
+            }
+2015-09-05 18:52:24 +0000 [41845958566823] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+    <MoonKit.InlinePickerView: 0x7f9ee046c550; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7f9ee0464e10>>
+    	count = 3
+    	cellType = Label
+    	labels = ["What", "The", "Fuck"]
+    	images = []
+    	collectionView = <UICollectionView: 0x7f9ee0816600
+        frame = (0 0; 144 44)
+        clipsToBounds = YES
+        gestureRecognizers = <NSArray: 0x7f9ee0464680>
+        layer = <CALayer: 0x7f9ee046e020>
+        contentOffset: {0, 0}
+        contentSize: {0, 0}> 
+    	collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7f9ee046c770>
+        values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+        contentSize = {0, 0}
+        rawFrames = []
+        contentPadding = 0.0
+        storedAttributes = {
+            	
+            }
+2015-09-05 18:52:27 +0000 [41849074046235] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+    <MoonKit.InlinePickerView: 0x7fafa3e19f70; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7fafa6209980>>
+    	count = 3
+    	cellType = Label
+    	labels = ["What", "The", "Fuck"]
+    	images = []
+    	collectionView = <UICollectionView: 0x7fafa784de00
+        frame = (0 0; 144 44)
+        clipsToBounds = YES
+        gestureRecognizers = <NSArray: 0x7fafa62428a0>
+        layer = <CALayer: 0x7fafa6205cb0>
+        contentOffset: {0, 0}
+        contentSize: {0, 0}> 
+    	collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7fafa624a1c0>
+        values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+        contentSize = {0, 0}
+        rawFrames = []
+        contentPadding = 0.0
+        storedAttributes = {
+            	
+            }
+2015-09-05 18:52:27 +0000 [41849091236427] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+    <MoonKit.InlinePickerView: 0x7fafa3ce6290; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7fafa3ce6cb0>>
+    	count = 3
+    	cellType = Label
+    	labels = ["What", "The", "Fuck"]
+    	images = []
+    	collectionView = <UICollectionView: 0x7fafa4013000
+        frame = (0 0; 144 44)
+        clipsToBounds = YES
+        gestureRecognizers = <NSArray: 0x7fafa3c96950>
+        layer = <CALayer: 0x7fafa3c711c0>
+        contentOffset: {0, 0}
+        contentSize: {0, 0}> 
+    	collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7fafa3ce64b0>
+        values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+        contentSize = {0, 0}
+        rawFrames = []
+        contentPadding = 0.0
+        storedAttributes = {
+            	
+            }
+2015-09-05 18:55:01 +0000 [42002801640478] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+    <MoonKit.InlinePickerView: 0x7f9839c67130; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7f983b804e20>>
+    	count = 3
+    	cellType = Label
+    	labels = ["What", "The", "Fuck"]
+    	images = []
+    	collectionView = <UICollectionView: 0x7f983c03a000
+        frame = (0 0; 144 44)
+        clipsToBounds = YES
+        gestureRecognizers = <NSArray: 0x7f983b82d910>
+        layer = <CALayer: 0x7f983b862630>
+        contentOffset: {0, 0}
+        contentSize: {0, 0}> 
+    	collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7f983b861b50>
+        values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+        contentSize = {0, 0}
+        rawFrames = []
+        contentPadding = 0.0
+        storedAttributes = {
+            	
+            }
+2015-09-05 18:55:01 +0000 [42002818684911] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+    <MoonKit.InlinePickerView: 0x7f983bc29940; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7f9839dee520>>
+    	count = 3
+    	cellType = Label
+    	labels = ["What", "The", "Fuck"]
+    	images = []
+    	collectionView = <UICollectionView: 0x7f983b025600
+        frame = (0 0; 144 44)
+        clipsToBounds = YES
+        gestureRecognizers = <NSArray: 0x7f9839d142a0>
+        layer = <CALayer: 0x7f983bc12e60>
+        contentOffset: {0, 0}
+        contentSize: {0, 0}> 
+    	collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7f983bc29b60>
+        values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+        contentSize = {0, 0}
+        rawFrames = []
+        contentPadding = 0.0
+        storedAttributes = {
+            	
+            }
+2015-09-05 18:55:33 +0000 [42035237714456] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+    <MoonKit.InlinePickerView: 0x7f9305253be0; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7f9305253820>>
+    	count = 3
+    	cellType = Label
+    	labels = ["What", "The", "Fuck"]
+    	images = []
+    	collectionView = <UICollectionView: 0x7f9306050000
+        frame = (0 0; 144 44)
+        clipsToBounds = YES
+        gestureRecognizers = <NSArray: 0x7f9305204b90>
+        layer = <CALayer: 0x7f9305205560>
+        contentOffset: {0, 0}
+        contentSize: {0, 0}> 
+    	collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7f93053794f0>
+        values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+        contentSize = {0, 0}
+        rawFrames = []
+        contentPadding = 0.0
+        storedAttributes = {
+            	
+            }
+2015-09-05 18:55:33 +0000 [42035254353574] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+    <MoonKit.InlinePickerView: 0x7f9305253be0; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7f93052090d0>>
+    	count = 3
+    	cellType = Label
+    	labels = ["What", "The", "Fuck"]
+    	images = []
+    	collectionView = <UICollectionView: 0x7f9306050000
+        frame = (0 0; 144 44)
+        clipsToBounds = YES
+        gestureRecognizers = <NSArray: 0x7f9305233600>
+        layer = <CALayer: 0x7f9305216090>
+        contentOffset: {0, 0}
+        contentSize: {0, 0}> 
+    	collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7f930527a970>
+        values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+        contentSize = {0, 0}
+        rawFrames = []
+        contentPadding = 0.0
+        storedAttributes = {
+            	
+            }
+2015-09-05 18:56:11 +0000 [42072999064245] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+    <MoonKit.InlinePickerView: 0x7f9302c90830; frame = (0 0; 105 44); autoresize = W+H; layer = <CALayer: 0x7f9305373410>>
+    	count = 3
+    	cellType = Label
+    	labels = ["What", "The", "Fuck"]
+    	images = []
+    	collectionView = <UICollectionView: 0x7f93031a1600
+        frame = (0 0; 105 44)
+        clipsToBounds = YES
+        gestureRecognizers = <NSArray: 0x7f9305317780>
+        layer = <CALayer: 0x7f9302c86dd0>
+        contentOffset: {0, 0}
+        contentSize: {0, 0}> 
+    	collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7f9302c821d0>
+        values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+        contentSize = {0, 0}
+        rawFrames = []
+        contentPadding = 0.0
+        storedAttributes = {
+            	
+            }
+2015-09-05 18:56:11 +0000 [42073459145508] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+    <MoonKit.InlinePickerView: 0x7f9302d26610; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7f9302d274b0>>
+    	count = 3
+    	cellType = Label
+    	labels = ["What", "The", "Fuck"]
+    	images = []
+    	collectionView = <UICollectionView: 0x7f9304013c00
+        frame = (0 0; 144 44)
+        clipsToBounds = YES
+        gestureRecognizers = <NSArray: 0x7f9302d26cf0>
+        layer = <CALayer: 0x7f9302d26030>
+        contentOffset: {0, 0}
+        contentSize: {0, 0}> 
+    	collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7f9302d26830>
+        values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+        contentSize = {0, 0}
+        rawFrames = []
+        contentPadding = 0.0
+        storedAttributes = {
+            	
+            }
+2015-09-05 18:56:11 +0000 [42073463528013] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+    <MoonKit.InlinePickerView: 0x7f9302d38770; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7f9302d39650>>
+    	count = 3
+    	cellType = Label
+    	labels = ["What", "The", "Fuck"]
+    	images = []
+    	collectionView = <UICollectionView: 0x7f9304017000
+        frame = (0 0; 144 44)
+        clipsToBounds = YES
+        gestureRecognizers = <NSArray: 0x7f9302d38e80>
+        layer = <CALayer: 0x7f9302d38d20>
+        contentOffset: {0, 0}
+        contentSize: {0, 0}> 
+    	collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7f9302d38990>
+        values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+        contentSize = {0, 0}
+        rawFrames = []
+        contentPadding = 0.0
+        storedAttributes = {
+            	
+            }
+2015-09-05 18:56:15 +0000 [42077323697804] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+    <MoonKit.InlinePickerView: 0x7ffda1031800; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7ffda103f8e0>>
+    	count = 3
+    	cellType = Label
+    	labels = ["What", "The", "Fuck"]
+    	images = []
+    	collectionView = <UICollectionView: 0x7ffda1810400
+    				frame = (0 0; 144 44)
+    				clipsToBounds = YES
+    				gestureRecognizers = <NSArray: 0x7ffda1013060>
+    				layer = <CALayer: 0x7ffda1046210>
+    				contentOffset: {0, 0}
+    				contentSize: {0, 0}> 
+    	collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7ffda1043c70>
+    				values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+    				contentSize = {0, 0}
+    				rawFrames = []
+    				contentPadding = 0.0
+    				storedAttributes = {
+    				    	
+    				    }
+2015-09-05 18:56:15 +0000 [42077342991173] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+    <MoonKit.InlinePickerView: 0x7ffda14690e0; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7ffda147a090>>
+    	count = 3
+    	cellType = Label
+    	labels = ["What", "The", "Fuck"]
+    	images = []
+    	collectionView = <UICollectionView: 0x7ffda2844800
+    				frame = (0 0; 144 44)
+    				clipsToBounds = YES
+    				gestureRecognizers = <NSArray: 0x7ffda1479550>
+    				layer = <CALayer: 0x7ffda04fa3b0>
+    				contentOffset: {0, 0}
+    				contentSize: {0, 0}> 
+    	collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7ffda1469300>
+    				values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+    				contentSize = {0, 0}
+    				rawFrames = []
+    				contentPadding = 0.0
+    				storedAttributes = {
+    				    	
+    				    }
+2015-09-05 18:57:16 +0000 [42138359118348] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+    <MoonKit.InlinePickerView: 0x7ffda1031800; frame = (0 0; 105 44); autoresize = W+H; layer = <CALayer: 0x7ffda104ae50>>
+    	count = 3
+    	cellType = Label
+    	labels = ["What", "The", "Fuck"]
+    	images = []
+    	collectionView = <UICollectionView: 0x7ffda184ce00
+    				frame = (0 0; 105 44)
+    				clipsToBounds = YES
+    				gestureRecognizers = <NSArray: 0x7ffda1004980>
+    				layer = <CALayer: 0x7ffda10079c0>
+    				contentOffset: {0, 0}
+    				contentSize: {0, 0}> 
+    	collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7ffda1043c70>
+    				values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+    				contentSize = {0, 0}
+    				rawFrames = []
+    				contentPadding = 0.0
+    				storedAttributes = {
+    				    	
+    				    }
+2015-09-05 18:57:17 +0000 [42139473198978] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+    <MoonKit.InlinePickerView: 0x7ffda06190b0; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7ffda0603720>>
+    	count = 3
+    	cellType = Label
+    	labels = ["What", "The", "Fuck"]
+    	images = []
+    	collectionView = <UICollectionView: 0x7ffda083de00
+    				frame = (0 0; 144 44)
+    				clipsToBounds = YES
+    				gestureRecognizers = <NSArray: 0x7ffda061c150>
+    				layer = <CALayer: 0x7ffda060c120>
+    				contentOffset: {0, 0}
+    				contentSize: {0, 0}> 
+    	collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7ffda0620070>
+    				values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+    				contentSize = {0, 0}
+    				rawFrames = []
+    				contentPadding = 0.0
+    				storedAttributes = {
+    				    	
+    				    }
+2015-09-05 18:57:17 +0000 [42139477423520] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+    <MoonKit.InlinePickerView: 0x7ffda06364c0; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7ffda06373a0>>
+    	count = 3
+    	cellType = Label
+    	labels = ["What", "The", "Fuck"]
+    	images = []
+    	collectionView = <UICollectionView: 0x7ffda0834200
+    				frame = (0 0; 144 44)
+    				clipsToBounds = YES
+    				gestureRecognizers = <NSArray: 0x7ffda0636bd0>
+    				layer = <CALayer: 0x7ffda0636a70>
+    				contentOffset: {0, 0}
+    				contentSize: {0, 0}> 
+    	collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7ffda06366e0>
+    				values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+    				contentSize = {0, 0}
+    				rawFrames = []
+    				contentPadding = 0.0
+    				storedAttributes = {
+    				    	
+    				    }
+2015-09-05 18:57:21 +0000 [42142921806538] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+	<MoonKit.InlinePickerView: 0x7f8b1ac4da40; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7f8b1aecffc0>>
+		count = 3
+		cellType = Label
+		labels = ["What", "The", "Fuck"]
+		images = []
+		collectionView = <UICollectionView: 0x7f8b1c024800
+		frame = (0 0; 144 44)
+		clipsToBounds = YES
+		gestureRecognizers = <NSArray: 0x7f8b1aec9070>
+		layer = <CALayer: 0x7f8b1aec4290>
+		contentOffset: {0, 0}
+		contentSize: {0, 0}> 
+		collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7f8b1aec77a0>
+		values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+		contentSize = {0, 0}
+		rawFrames = []
+		contentPadding = 0.0
+		storedAttributes = {
+		    	
+		    }
+2015-09-05 18:57:21 +0000 [42142937855925] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+	<MoonKit.InlinePickerView: 0x7f8b1cb2d6d0; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7f8b1cb38540>>
+		count = 3
+		cellType = Label
+		labels = ["What", "The", "Fuck"]
+		images = []
+		collectionView = <UICollectionView: 0x7f8b1f0b6000
+		frame = (0 0; 144 44)
+		clipsToBounds = YES
+		gestureRecognizers = <NSArray: 0x7f8b1cb2b220>
+		layer = <CALayer: 0x7f8b1cb02560>
+		contentOffset: {0, 0}
+		contentSize: {0, 0}> 
+		collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7f8b1cb25420>
+		values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+		contentSize = {0, 0}
+		rawFrames = []
+		contentPadding = 0.0
+		storedAttributes = {
+		    	
+		    }
+2015-09-05 18:57:53 +0000 [42174924461231] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+	<MoonKit.InlinePickerView: 0x7fe949e1c360; frame = (0 0; 105 44); autoresize = W+H; layer = <CALayer: 0x7fe949e1d580>>
+		count = 3
+		cellType = Label
+		labels = ["What", "The", "Fuck"]
+		images = []
+		collectionView = <UICollectionView: 0x7fe94a819a00
+		frame = (0 0; 105 44)
+		clipsToBounds = YES
+		gestureRecognizers = <NSArray: 0x7fe949e1ce90>
+		layer = <CALayer: 0x7fe949e1cb20>
+		contentOffset: {0, 0}
+		contentSize: {0, 0}> 
+		collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7fe949e1c580>
+		values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+		contentSize = {0, 0}
+		rawFrames = []
+		contentPadding = 0.0
+		storedAttributes = {
+		    	
+		    }
+2015-09-05 18:58:03 +0000 [42184631672539] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+	<MoonKit.InlinePickerView: 0x7fe949c5ebf0; frame = (0 0; 105 44); autoresize = W+H; layer = <CALayer: 0x7fe949c4f030>>
+		count = 3
+		cellType = Label
+		labels = ["What", "The", "Fuck"]
+		images = []
+		collectionView = <UICollectionView: 0x7fe94a0fcc00
+		frame = (0 0; 105 44)
+		clipsToBounds = YES
+		gestureRecognizers = <NSArray: 0x7fe949c4ed30>
+		layer = <CALayer: 0x7fe949c33c90>
+		contentOffset: {0, 0}
+		contentSize: {0, 0}> 
+		collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7fe949c4eb90>
+		values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+		contentSize = {0, 0}
+		rawFrames = []
+		contentPadding = 0.0
+		storedAttributes = {
+		    	
+		    }
+2015-09-05 18:58:03 +0000 [42184797871751] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+	<MoonKit.InlinePickerView: 0x7fe94b8e2be0; frame = (0 0; 105 44); autoresize = W+H; layer = <CALayer: 0x7fe94b8df010>>
+		count = 3
+		cellType = Label
+		labels = ["What", "The", "Fuck"]
+		images = []
+		collectionView = <UICollectionView: 0x7fe94c892000
+		frame = (0 0; 105 44)
+		clipsToBounds = YES
+		gestureRecognizers = <NSArray: 0x7fe94b820690>
+		layer = <CALayer: 0x7fe94b8de6d0>
+		contentOffset: {0, 0}
+		contentSize: {0, 0}> 
+		collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7fe94b8df340>
+		values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+		contentSize = {0, 0}
+		rawFrames = []
+		contentPadding = 0.0
+		storedAttributes = {
+		    	
+		    }
+2015-09-05 18:58:03 +0000 [42185057699428] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+	<MoonKit.InlinePickerView: 0x7fe949e08510; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7fe949e14960>>
+		count = 3
+		cellType = Label
+		labels = ["What", "The", "Fuck"]
+		images = []
+		collectionView = <UICollectionView: 0x7fe94a807600
+		frame = (0 0; 144 44)
+		clipsToBounds = YES
+		gestureRecognizers = <NSArray: 0x7fe949e02560>
+		layer = <CALayer: 0x7fe949e00eb0>
+		contentOffset: {0, 0}
+		contentSize: {0, 0}> 
+		collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7fe949e05be0>
+		values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+		contentSize = {0, 0}
+		rawFrames = []
+		contentPadding = 0.0
+		storedAttributes = {
+		    	
+		    }
+2015-09-05 18:58:03 +0000 [42185061952325] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+	<MoonKit.InlinePickerView: 0x7fe949c8e3a0; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7fe949c8f2a0>>
+		count = 3
+		cellType = Label
+		labels = ["What", "The", "Fuck"]
+		images = []
+		collectionView = <UICollectionView: 0x7fe94a142200
+		frame = (0 0; 144 44)
+		clipsToBounds = YES
+		gestureRecognizers = <NSArray: 0x7fe949c8eab0>
+		layer = <CALayer: 0x7fe949c8e950>
+		contentOffset: {0, 0}
+		contentSize: {0, 0}> 
+		collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7fe949c8e5c0>
+		values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+		contentSize = {0, 0}
+		rawFrames = []
+		contentPadding = 0.0
+		storedAttributes = {
+		    	
+		    }
+2015-09-05 18:58:07 +0000 [42189347179086] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+    <MoonKit.InlinePickerView: 0x7ff26ca3cdc0; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7ff26a51fc70>>
+    	count = 3
+    	cellType = Label
+    	labels = ["What", "The", "Fuck"]
+    	images = []
+    	collectionView = <UICollectionView: 0x7ff26b050800
+    	frame = (0 0; 144 44)
+    	clipsToBounds = YES
+    	gestureRecognizers = <NSArray: 0x7ff26a5146f0>
+    	layer = <CALayer: 0x7ff26a5108e0>
+    	contentOffset: {0, 0}
+    	contentSize: {0, 0}> 
+    	collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7ff26a519690>
+    	values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+    	contentSize = {0, 0}
+    	rawFrames = []
+    	contentPadding = 0.0
+    	storedAttributes = {
+    	    	
+    	    }
+2015-09-05 18:58:07 +0000 [42189364523806] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+    <MoonKit.InlinePickerView: 0x7ff26cc034c0; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7ff26a7f66b0>>
+    	count = 3
+    	cellType = Label
+    	labels = ["What", "The", "Fuck"]
+    	images = []
+    	collectionView = <UICollectionView: 0x7ff26c022e00
+    	frame = (0 0; 144 44)
+    	clipsToBounds = YES
+    	gestureRecognizers = <NSArray: 0x7ff26a704f30>
+    	layer = <CALayer: 0x7ff26cc03730>
+    	contentOffset: {0, 0}
+    	contentSize: {0, 0}> 
+    	collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7ff26a707070>
+    	values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+    	contentSize = {0, 0}
+    	rawFrames = []
+    	contentPadding = 0.0
+    	storedAttributes = {
+    	    	
+    	    }
+2015-09-05 18:58:49 +0000 [42230641815199] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+    <MoonKit.InlinePickerView: 0x7ff26a51b6f0; frame = (0 0; 105 44); autoresize = W+H; layer = <CALayer: 0x7ff26a51b470>>
+    	count = 3
+    	cellType = Label
+    	labels = ["What", "The", "Fuck"]
+    	images = []
+    	collectionView = <UICollectionView: 0x7ff26b07ea00
+    	frame = (0 0; 105 44)
+    	clipsToBounds = YES
+    	gestureRecognizers = <NSArray: 0x7ff26a53b950>
+    	layer = <CALayer: 0x7ff26a520f10>
+    	contentOffset: {0, 0}
+    	contentSize: {0, 0}> 
+    	collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7ff26a51bf70>
+    	values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+    	contentSize = {0, 0}
+    	rawFrames = []
+    	contentPadding = 0.0
+    	storedAttributes = {
+    	    	
+    	    }
+2015-09-05 18:58:49 +0000 [42230886859992] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+    <MoonKit.InlinePickerView: 0x7ff26ca92d10; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7ff26ca93b90>>
+    	count = 3
+    	cellType = Label
+    	labels = ["What", "The", "Fuck"]
+    	images = []
+    	collectionView = <UICollectionView: 0x7ff26d01c000
+    	frame = (0 0; 144 44)
+    	clipsToBounds = YES
+    	gestureRecognizers = <NSArray: 0x7ff26ca933e0>
+    	layer = <CALayer: 0x7ff26ca928b0>
+    	contentOffset: {0, 0}
+    	contentSize: {0, 0}> 
+    	collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7ff26ca92f30>
+    	values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+    	contentSize = {0, 0}
+    	rawFrames = []
+    	contentPadding = 0.0
+    	storedAttributes = {
+    	    	
+    	    }
+2015-09-05 18:58:49 +0000 [42230891778853] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+    <MoonKit.InlinePickerView: 0x7ff26a52c530; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7ff26a42c610>>
+    	count = 3
+    	cellType = Label
+    	labels = ["What", "The", "Fuck"]
+    	images = []
+    	collectionView = <UICollectionView: 0x7ff26b08ba00
+    	frame = (0 0; 144 44)
+    	clipsToBounds = YES
+    	gestureRecognizers = <NSArray: 0x7ff26a435640>
+    	layer = <CALayer: 0x7ff26a534590>
+    	contentOffset: {0, 0}
+    	contentSize: {0, 0}> 
+    	collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7ff26a534330>
+    	values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+    	contentSize = {0, 0}
+    	rawFrames = []
+    	contentPadding = 0.0
+    	storedAttributes = {
+    	    	
+    	    }
+2015-09-05 18:58:53 +0000 [42235028755995] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+    <MoonKit.InlinePickerView: 0x7ffe5360f560; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7ffe536cc7e0>>
+    	count = 3
+    	cellType = Label
+    	labels = ["What", "The", "Fuck"]
+    	images = []
+    	collectionView = <UICollectionView: 0x7ffe55005400
+    		frame = (0 0; 144 44)
+    		clipsToBounds = YES
+    		gestureRecognizers = <NSArray: 0x7ffe536c6490>
+    		layer = <CALayer: 0x7ffe536c5b30>
+    		contentOffset: {0, 0}
+    		contentSize: {0, 0}> 
+    	collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7ffe5360f870>
+    		values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+    		contentSize = {0, 0}
+    		rawFrames = []
+    		contentPadding = 0.0
+    		storedAttributes = {
+    		    	
+    		    }
+2015-09-05 18:58:53 +0000 [42235045298081] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+    <MoonKit.InlinePickerView: 0x7ffe536d2fc0; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7ffe55900f20>>
+    	count = 3
+    	cellType = Label
+    	labels = ["What", "The", "Fuck"]
+    	images = []
+    	collectionView = <UICollectionView: 0x7ffe56800000
+    		frame = (0 0; 144 44)
+    		clipsToBounds = YES
+    		gestureRecognizers = <NSArray: 0x7ffe55900760>
+    		layer = <CALayer: 0x7ffe559005f0>
+    		contentOffset: {0, 0}
+    		contentSize: {0, 0}> 
+    	collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7ffe536cd1c0>
+    		values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+    		contentSize = {0, 0}
+    		rawFrames = []
+    		contentPadding = 0.0
+    		storedAttributes = {
+    		    	
+    		    }
+2015-09-05 18:59:28 +0000 [42269958049389] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+    <MoonKit.InlinePickerView: 0x7ffe534f7200; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7ffe534f8060>>
+    	count = 3
+    	cellType = Label
+    	labels = ["What", "The", "Fuck"]
+    	images = []
+    	collectionView = <UICollectionView: 0x7ffe538c1400
+    		frame = (0 0; 144 44)
+    		clipsToBounds = YES
+    		gestureRecognizers = <NSArray: 0x7ffe534f78d0>
+    		layer = <CALayer: 0x7ffe534f6da0>
+    		contentOffset: {0, 0}
+    		contentSize: {0, 0}> 
+    	collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7ffe534f7420>
+    		values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+    		contentSize = {0, 0}
+    		rawFrames = []
+    		contentPadding = 0.0
+    		storedAttributes = {
+    		    	
+    		    }
+2015-09-05 18:59:28 +0000 [42270154160941] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+    <MoonKit.InlinePickerView: 0x7ffe5368d540; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7ffe53610b10>>
+    	count = 3
+    	cellType = Label
+    	labels = ["What", "The", "Fuck"]
+    	images = []
+    	collectionView = <UICollectionView: 0x7ffe551fb000
+    		frame = (0 0; 144 44)
+    		clipsToBounds = YES
+    		gestureRecognizers = <NSArray: 0x7ffe53609310>
+    		layer = <CALayer: 0x7ffe5360f340>
+    		contentOffset: {0, 0}
+    		contentSize: {0, 0}> 
+    	collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7ffe5368f370>
+    		values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+    		contentSize = {0, 0}
+    		rawFrames = []
+    		contentPadding = 0.0
+    		storedAttributes = {
+    		    	
+    		    }
+2015-09-05 18:59:28 +0000 [42270158752114] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+    <MoonKit.InlinePickerView: 0x7ffe53723c90; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7ffe537383c0>>
+    	count = 3
+    	cellType = Label
+    	labels = ["What", "The", "Fuck"]
+    	images = []
+    	collectionView = <UICollectionView: 0x7ffe54039e00
+    		frame = (0 0; 144 44)
+    		clipsToBounds = YES
+    		gestureRecognizers = <NSArray: 0x7ffe5372fea0>
+    		layer = <CALayer: 0x7ffe53710ef0>
+    		contentOffset: {0, 0}
+    		contentSize: {0, 0}> 
+    	collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7ffe53733440>
+    		values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+    		contentSize = {0, 0}
+    		rawFrames = []
+    		contentPadding = 0.0
+    		storedAttributes = {
+    		    	
+    		    }
+2015-09-05 18:59:33 +0000 [42274582737855] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+	<MoonKit.InlinePickerView: 0x7fb5dc8eb630; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7fb5dae33740>>
+		count = 3
+		cellType = Label
+		labels = ["What", "The", "Fuck"]
+		images = []
+		collectionView = <UICollectionView: 0x7fb5dc04f800
+			frame = (0 0; 144 44)
+			clipsToBounds = YES
+			gestureRecognizers = <NSArray: 0x7fb5dae05110>
+			layer = <CALayer: 0x7fb5dae3a3b0>
+			contentOffset: {0, 0}
+			contentSize: {0, 0}> 
+		collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7fb5dae22b90>
+			values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+			contentSize = {0, 0}
+			rawFrames = []
+			contentPadding = 0.0
+			storedAttributes = {
+			    	
+			    }
+2015-09-05 18:59:33 +0000 [42274599133212] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+	<MoonKit.InlinePickerView: 0x7fb5dac6fc50; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7fb5dac70af0>>
+		count = 3
+		cellType = Label
+		labels = ["What", "The", "Fuck"]
+		images = []
+		collectionView = <UICollectionView: 0x7fb5db010e00
+			frame = (0 0; 144 44)
+			clipsToBounds = YES
+			gestureRecognizers = <NSArray: 0x7fb5dac70360>
+			layer = <CALayer: 0x7fb5dac6f7f0>
+			contentOffset: {0, 0}
+			contentSize: {0, 0}> 
+		collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7fb5dac6fe70>
+			values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+			contentSize = {0, 0}
+			rawFrames = []
+			contentPadding = 0.0
+			storedAttributes = {
+			    	
+			    }
+2015-09-05 19:01:23 +0000 [42384921905787] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+	<MoonKit.InlinePickerView: 0x7fb5dc8eb630; frame = (0 0; 105 44); autoresize = W+H; layer = <CALayer: 0x7fb5dc812720>>
+		count = 3
+		cellType = Label
+		labels = ["What", "The", "Fuck"]
+		images = []
+		collectionView = <UICollectionView: 0x7fb5dd0bb600
+			frame = (0 0; 105 44)
+			clipsToBounds = YES
+			gestureRecognizers = <NSArray: 0x7fb5dc8ec420>
+			layer = <CALayer: 0x7fb5dcb03160>
+			contentOffset: {0, 0}
+			contentSize: {0, 0}> 
+		collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7fb5dc802bc0>
+			values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+			contentSize = {0, 0}
+			rawFrames = []
+			contentPadding = 0.0
+			storedAttributes = {
+			    	
+			    }
+2015-09-05 19:01:23 +0000 [42385188199247] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+	<MoonKit.InlinePickerView: 0x7fb5dac6df20; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7fb5dac73b70>>
+		count = 3
+		cellType = Label
+		labels = ["What", "The", "Fuck"]
+		images = []
+		collectionView = <UICollectionView: 0x7fb5db023600
+			frame = (0 0; 144 44)
+			clipsToBounds = YES
+			gestureRecognizers = <NSArray: 0x7fb5dac7ad20>
+			layer = <CALayer: 0x7fb5dac7fc70>
+			contentOffset: {0, 0}
+			contentSize: {0, 0}> 
+		collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7fb5dac796f0>
+			values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+			contentSize = {0, 0}
+			rawFrames = []
+			contentPadding = 0.0
+			storedAttributes = {
+			    	
+			    }
+2015-09-05 19:01:23 +0000 [42385192220048] </Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/InlinePickerView.swift:90> prepareForInterfaceBuilder()
+	<MoonKit.InlinePickerView: 0x7fb5dac9af40; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7fb5dac9be20>>
+		count = 3
+		cellType = Label
+		labels = ["What", "The", "Fuck"]
+		images = []
+		collectionView = <UICollectionView: 0x7fb5db105c00
+			frame = (0 0; 144 44)
+			clipsToBounds = YES
+			gestureRecognizers = <NSArray: 0x7fb5dac9b650>
+			layer = <CALayer: 0x7fb5dac9b4f0>
+			contentOffset: {0, 0}
+			contentSize: {0, 0}> 
+		collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7fb5dac9b160>
+			values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+			contentSize = {0, 0}
+			rawFrames = []
+			contentPadding = 0.0
+			storedAttributes = {
+			    	
+			    }
+2015-09-05 19:01:27 +0000 [42389538207386] <InlinePickerView.swift:90> prepareForInterfaceBuilder()
+	<MoonKit.InlinePickerView: 0x7f83b25d37c0; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7f83b25f25e0>>
+		count = 3
+		cellType = Label
+		labels = ["What", "The", "Fuck"]
+		images = []
+		collectionView = <UICollectionView: 0x7f83b3194200
+			frame = (0 0; 144 44)
+			clipsToBounds = YES
+			gestureRecognizers = <NSArray: 0x7f83b25d4460>
+			layer = <CALayer: 0x7f83b25ea930>
+			contentOffset: {0, 0}
+			contentSize: {0, 0}> 
+		collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7f83b2410c10>
+			values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+			contentSize = {0, 0}
+			rawFrames = []
+			contentPadding = 0.0
+			storedAttributes = {
+			    	
+			    }
+2015-09-05 19:01:28 +0000 [42389555071861] <InlinePickerView.swift:90> prepareForInterfaceBuilder()
+	<MoonKit.InlinePickerView: 0x7f83b272c820; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7f83b272d220>>
+		count = 3
+		cellType = Label
+		labels = ["What", "The", "Fuck"]
+		images = []
+		collectionView = <UICollectionView: 0x7f83b6018600
+			frame = (0 0; 144 44)
+			clipsToBounds = YES
+			gestureRecognizers = <NSArray: 0x7f83b27265d0>
+			layer = <CALayer: 0x7f83b271d510>
+			contentOffset: {0, 0}
+			contentSize: {0, 0}> 
+		collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7f83b2718850>
+			values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+			contentSize = {0, 0}
+			rawFrames = []
+			contentPadding = 0.0
+			storedAttributes = {
+			    	
+			    }
+2015-09-05 19:07:11 +0000 [42733441847206] <InlinePickerView.swift:90> prepareForInterfaceBuilder()
+	<MoonKit.InlinePickerView: 0x7f83b270d860; frame = (0 0; 105 44); autoresize = W+H; layer = <CALayer: 0x7f83b2717d30>>
+		count = 3
+		cellType = Label
+		labels = ["What", "The", "Fuck"]
+		images = []
+		collectionView = <UICollectionView: 0x7f83b601e600
+			frame = (0 0; 105 44)
+			clipsToBounds = YES
+			gestureRecognizers = <NSArray: 0x7f83b270dcd0>
+			layer = <CALayer: 0x7f83b27201e0>
+			contentOffset: {0, 0}
+			contentSize: {0, 0}> 
+		collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7f83b2718850>
+			values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+			contentSize = {0, 0}
+			rawFrames = []
+			contentPadding = 0.0
+			storedAttributes = {
+			    	
+			    }
+2015-09-05 19:07:11 +0000 [42733446369975] <InlinePickerView.swift:90> prepareForInterfaceBuilder()
+	<MoonKit.InlinePickerView: 0x7f83b25f7c00; frame = (0 0; 105 44); autoresize = W+H; layer = <CALayer: 0x7f83b4409560>>
+		count = 3
+		cellType = Label
+		labels = ["What", "The", "Fuck"]
+		images = []
+		collectionView = <UICollectionView: 0x7f83b3000800
+			frame = (0 0; 105 44)
+			clipsToBounds = YES
+			gestureRecognizers = <NSArray: 0x7f83b25080d0>
+			layer = <CALayer: 0x7f83b25f63c0>
+			contentOffset: {0, 0}
+			contentSize: {0, 0}> 
+		collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7f83b25f6190>
+			values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+			contentSize = {0, 0}
+			rawFrames = []
+			contentPadding = 0.0
+			storedAttributes = {
+			    	
+			    }
+2015-09-05 19:07:12 +0000 [42733721634308] <InlinePickerView.swift:90> prepareForInterfaceBuilder()
+	<MoonKit.InlinePickerView: 0x7f83b41792e0; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7f83b417a140>>
+		count = 3
+		cellType = Label
+		labels = ["What", "The", "Fuck"]
+		images = []
+		collectionView = <UICollectionView: 0x7f83b500b600
+			frame = (0 0; 144 44)
+			clipsToBounds = YES
+			gestureRecognizers = <NSArray: 0x7f83b41799b0>
+			layer = <CALayer: 0x7f83b4178e80>
+			contentOffset: {0, 0}
+			contentSize: {0, 0}> 
+		collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7f83b4179500>
+			values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+			contentSize = {0, 0}
+			rawFrames = []
+			contentPadding = 0.0
+			storedAttributes = {
+			    	
+			    }
+2015-09-05 19:07:18 +0000 [42739812208894] <InlinePickerViewLayout.swift:160> prepareLayout()
+	no valid selection, really no point in performing calculations now … clearing cache and skipping prep
+2015-09-05 19:08:00 +0000 [42782076366836] <InlinePickerViewLayout.swift:160> prepareLayout()
+	no valid selection, really no point in performing calculations now … clearing cache and skipping prep
+2015-09-05 19:08:00 +0000 [42782077938489] <InlinePickerViewLayout.swift:160> prepareLayout()
+	no valid selection, really no point in performing calculations now … clearing cache and skipping prep
+2015-09-05 19:08:00 +0000 [42782080275691] <InlinePickerView.swift:90> prepareForInterfaceBuilder()
+	<MoonKit.InlinePickerView: 0x7fd515935550; frame = (0 0; 105 44); autoresize = W+H; layer = <CALayer: 0x7fd515923d50>>
+		count = 3
+		cellType = Label
+		labels = ["What", "The", "Fuck"]
+		images = []
+		collectionView = <UICollectionView: 0x7fd516834e00
+			frame = (0 0; 105 44)
+			clipsToBounds = YES
+			gestureRecognizers = <NSArray: 0x7fd515911950>
+			layer = <CALayer: 0x7fd515905cb0>
+			contentOffset: {0, 0}
+			contentSize: {0, 0}> 
+		collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7fd5159232d0>
+			values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+			contentSize = {0, 0}
+			rawFrames = []
+			contentPadding = 0.0
+			storedAttributes = {
+			    	
+			    }
+2015-09-05 19:08:00 +0000 [42782524380198] <InlinePickerViewLayout.swift:160> prepareLayout()
+	no valid selection, really no point in performing calculations now … clearing cache and skipping prep
+2015-09-05 19:08:00 +0000 [42782526164700] <InlinePickerViewLayout.swift:160> prepareLayout()
+	no valid selection, really no point in performing calculations now … clearing cache and skipping prep
+2015-09-05 19:08:00 +0000 [42782527598178] <InlinePickerViewLayout.swift:160> prepareLayout()
+	no valid selection, really no point in performing calculations now … clearing cache and skipping prep
+2015-09-05 19:08:00 +0000 [42782529242442] <InlinePickerViewLayout.swift:160> prepareLayout()
+	no valid selection, really no point in performing calculations now … clearing cache and skipping prep
+2015-09-05 19:08:00 +0000 [42782531858898] <InlinePickerViewLayout.swift:160> prepareLayout()
+	no valid selection, really no point in performing calculations now … clearing cache and skipping prep
+2015-09-05 19:08:00 +0000 [42782533433245] <InlinePickerView.swift:90> prepareForInterfaceBuilder()
+	<MoonKit.InlinePickerView: 0x7fd515c26b30; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7fd515c27a10>>
+		count = 3
+		cellType = Label
+		labels = ["What", "The", "Fuck"]
+		images = []
+		collectionView = <UICollectionView: 0x7fd517088800
+			frame = (0 0; 144 44)
+			clipsToBounds = YES
+			gestureRecognizers = <NSArray: 0x7fd515c27240>
+			layer = <CALayer: 0x7fd515c270e0>
+			contentOffset: {0, 0}
+			contentSize: {0, 0}> 
+		collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7fd515c26d50>
+			values = {rect: {{0, 0}, {0, 0}}; height: 0.0; padding: 8.0; selection: -1; widths: []}
+			contentSize = {0, 0}
+			rawFrames = []
+			contentPadding = 0.0
+			storedAttributes = {
+			    	
+			    }
+2015-09-05 19:08:04 +0000 [42786416733133] <InlinePickerViewLayout.swift:333> offsetForItemAtIndex
+	cannot generate an offset for an item which has no attributes stored
+2015-09-05 19:08:04 +0000 [42786460554947] <InlinePickerView.swift:91> prepareForInterfaceBuilder()
+	<MoonKit.InlinePickerView: 0x7fa4e3b56ee0; frame = (0 0; 144 44); autoresize = W+H; layer = <CALayer: 0x7fa4e3b582f0>>
+		count = 3
+		cellType = Label
+		labels = ["What", "The", "Fuck"]
+		images = []
+		collectionView = <UICollectionView: 0x7fa4e20ce600
+			frame = (0 0; 144 44)
+			clipsToBounds = YES
+			gestureRecognizers = <NSArray: 0x7fa4e3b57b20>
+			layer = <CALayer: 0x7fa4e3b577b0>
+			contentOffset: {25, 0}
+			contentSize: {288, 44}> 
+		collectionViewLayout = <MoonKit.InlinePickerViewLayout: 0x7fa4e3b57100>
+			values = {rect: {{24.5, 0}, {144, 44}}; height: 44.0; padding: 10.0; selection: 0; widths: [48.0, 32.0, 43.0]}
+			contentSize = {288, 44}
+			rawFrames = [{{72.5, 0}, {48, 44}}, {{130.5, 0}, {32, 44}}, {{172.5, 0}, {43, 44}}]
+			contentPadding = 72.5
+			storedAttributes = {
+			    	        {
+			            	item: 0
+			            	frame: {{120.5, 0}, {48, 44}}
+			            	transform: [1, 0, 0, 1, 48, 0]
+			            	transform3D: {
+			                         1           0          -0           0    
+			                         0           1           0           0    
+			                         0           0           1           0    
+			                        48           0           0           1    
+			            		}
+			            	alpha: 1.0
+			            	hidden: false
+			            	zPosition: 0.0
+			            },
+			            {
+			            	item: 1
+			            	frame: {{132.82141006923285, 0}, {27.357179861534291, 44}}
+			            	transform: [1, 0, 0, 1, 0, 0]
+			            	transform3D: {
+			                     0.854912        0      -0.518773        0    
+			                         0           1           0           0    
+			                     0.518773        0       0.854912        0    
+			                         0           0           0           1    
+			            		}
+			            	alpha: 1.0
+			            	hidden: true
+			            	zPosition: 0.0
+			            },
+			            {
+			            	item: 2
+			            	frame: {{183.5560870350987, 0}, {20.887825929802602, 44}}
+			            	transform: [1, 0, 0, 1, 0, 0]
+			            	transform3D: {
+			                     0.485763        0       -0.87409        0    
+			                         0           1           0           0    
+			                      0.87409        0       0.485763        0    
+			                         0           0           0           1    
+			            		}
+			            	alpha: 1.0
+			            	hidden: true
+			            	zPosition: 0.0
+			            }
+			    }
+2015-09-05 19:09:16 +0000 [42858507747010] <InlinePickerViewLayout.swift:168> prepareLayout()
+	visible rect is empty … clearing cache and skipping prep
+2015-09-05 19:09:17 +0000 [42858550450015] <InlinePickerViewLayout.swift:189> prepareLayout()
+	collection view is stationary and the collection view's x offset (70.0) does not match selected item's x offset (93.5) … adjusting by -35.0
+2015-09-05 19:09:47 +0000 [42889411912304] <InlinePickerViewLayout.swift:168> prepareLayout()
+	visible rect is empty … clearing cache and skipping prep
+2015-09-05 19:09:47 +0000 [42889443063676] <InlinePickerView.swift:165> selectItem(_:animated:)
+	selecting cell for item 0 where offset = {71.5, 0}
+2015-09-05 19:09:47 +0000 [42889456381484] <InlinePickerViewLayout.swift:333> offsetForItemAtIndex
+	cannot generate an offset for an item which has no attributes stored
+2015-09-05 19:09:53 +0000 [42894691764585] <InlinePickerViewLayout.swift:168> prepareLayout()
+	visible rect is empty … clearing cache and skipping prep
+2015-09-05 19:09:53 +0000 [42894714892715] <InlinePickerView.swift:164> selectItem(_:animated:)
+	selecting cell for item 0 where offset = {69.5, 0}
+2015-09-05 19:10:14 +0000 [42916119567894] <InlinePickerViewLayout.swift:168> prepareLayout()
+	visible rect is empty … clearing cache and skipping prep
+2015-09-05 19:10:14 +0000 [42916155885791] <InlinePickerViewLayout.swift:168> prepareLayout()
+	visible rect is empty … clearing cache and skipping prep
+2015-09-05 19:10:15 +0000 [42916720784921] <InlinePickerViewLayout.swift:189> prepareLayout()
+	collection view is stationary and the collection view's x offset (0.0) does not match selected item's x offset (160.5) … adjusting by 60.5
+2015-09-05 19:10:15 +0000 [42916726644321] <InlinePickerViewLayout.swift:189> prepareLayout()
+	collection view is stationary and the collection view's x offset (141.0) does not match selected item's x offset (160.5) … adjusting by -80.5
+2015-09-05 19:10:15 +0000 [42916729449162] <InlinePickerViewLayout.swift:189> prepareLayout()
+	collection view is stationary and the collection view's x offset (61.0) does not match selected item's x offset (93.5) … adjusting by -26.0
+2015-09-05 19:10:15 +0000 [42916732337334] <InlinePickerViewLayout.swift:189> prepareLayout()
+	collection view is stationary and the collection view's x offset (70.0) does not match selected item's x offset (93.5) … adjusting by -35.0
+2015-09-05 19:10:15 +0000 [42916734810372] <InlinePickerView.swift:164> selectItem(_:animated:)
+	selecting cell for item 0 where offset = {71.5, 0}
+2015-09-05 19:10:15 +0000 [42916737078003] <InlinePickerViewLayout.swift:168> prepareLayout()
+	visible rect is empty … clearing cache and skipping prep
+2015-09-05 19:10:15 +0000 [42916738698055] <InlinePickerViewLayout.swift:189> prepareLayout()
+	collection view is stationary and the collection view's x offset (0.0) does not match selected item's x offset (160.5) … adjusting by 60.5
+2015-09-05 19:10:15 +0000 [42916742787134] <InlinePickerView.swift:164> selectItem(_:animated:)
+	selecting cell for item 0 where offset = {141, 0}
+2015-09-05 19:10:15 +0000 [42916744860181] <InlinePickerViewLayout.swift:189> prepareLayout()
+	collection view is stationary and the collection view's x offset (61.0) does not match selected item's x offset (93.5) … adjusting by -26.0
+2015-09-05 19:10:15 +0000 [42916746724181] <InlinePickerViewLayout.swift:189> prepareLayout()
+	collection view is stationary and the collection view's x offset (70.0) does not match selected item's x offset (93.5) … adjusting by -35.0
+2015-09-05 19:10:15 +0000 [42916750014587] <InlinePickerViewLayout.swift:189> prepareLayout()
+	collection view is stationary and the collection view's x offset (72.0) does not match selected item's x offset (95.5) … adjusting by -35.0
+2015-09-05 19:10:15 +0000 [42916754488501] <InlinePickerViewLayout.swift:189> prepareLayout()
+	collection view is stationary and the collection view's x offset (71.5) does not match selected item's x offset (95.5) … adjusting by -34.5
+2015-09-05 19:10:15 +0000 [42916762310863] <InlinePickerViewLayout.swift:168> prepareLayout()
+	visible rect is empty … clearing cache and skipping prep
+2015-09-05 19:10:15 +0000 [42916764097609] <InlinePickerViewLayout.swift:189> prepareLayout()
+	collection view is stationary and the collection view's x offset (0.0) does not match selected item's x offset (160.5) … adjusting by 60.5
+2015-09-05 19:10:15 +0000 [42916768110801] <InlinePickerView.swift:164> selectItem(_:animated:)
+	selecting cell for item 0 where offset = {141, 0}
+2015-09-05 19:10:15 +0000 [42916769522113] <InlinePickerViewLayout.swift:189> prepareLayout()
+	collection view is stationary and the collection view's x offset (61.0) does not match selected item's x offset (93.5) … adjusting by -26.0
+2015-09-05 19:10:15 +0000 [42916771145915] <InlinePickerView.swift:164> selectItem(_:animated:)
+	selecting cell for item 0 where offset = {69.5, 0}
+2015-09-05 19:10:15 +0000 [42916772445141] <InlinePickerViewLayout.swift:189> prepareLayout()
+	collection view is stationary and the collection view's x offset (35.0) does not match selected item's x offset (95.5) … adjusting by 2.0
+2015-09-05 19:10:15 +0000 [42916773996869] <InlinePickerViewLayout.swift:189> prepareLayout()
+	collection view is stationary and the collection view's x offset (72.0) does not match selected item's x offset (95.5) … adjusting by -35.0
+2015-09-05 19:10:15 +0000 [42916776385797] <InlinePickerViewLayout.swift:189> prepareLayout()
+	collection view is stationary and the collection view's x offset (71.5) does not match selected item's x offset (95.5) … adjusting by -34.5
+2015-09-05 19:10:24 +0000 [42926119446299] <InlinePickerViewLayout.swift:168> prepareLayout()
+	visible rect is empty … clearing cache and skipping prep
+2015-09-05 19:10:24 +0000 [42926148125492] <InlinePickerViewLayout.swift:189> prepareLayout()
+	collection view is stationary and the collection view's x offset (71.5) does not match selected item's x offset (95.5) … adjusting by -34.5
+2015-09-05 19:10:25 +0000 [42926835129110] <InlinePickerViewLayout.swift:189> prepareLayout()
+	collection view is stationary and the collection view's x offset (0.0) does not match selected item's x offset (160.5) … adjusting by 60.5
+2015-09-05 19:10:25 +0000 [42926840454619] <InlinePickerViewLayout.swift:189> prepareLayout()
+	collection view is stationary and the collection view's x offset (141.0) does not match selected item's x offset (160.5) … adjusting by -80.5
+2015-09-05 19:10:25 +0000 [42926843605749] <InlinePickerViewLayout.swift:189> prepareLayout()
+	collection view is stationary and the collection view's x offset (61.0) does not match selected item's x offset (93.5) … adjusting by -26.0
+2015-09-05 19:10:25 +0000 [42926845564769] <InlinePickerView.swift:164> selectItem(_:animated:)
+	selecting cell for item 0 where offset = {69.5, 0}
+2015-09-05 19:10:25 +0000 [42926847104919] <InlinePickerViewLayout.swift:189> prepareLayout()
+	collection view is stationary and the collection view's x offset (35.0) does not match selected item's x offset (95.5) … adjusting by 2.0
+2015-09-05 19:10:25 +0000 [42926848495388] <InlinePickerViewLayout.swift:189> prepareLayout()
+	collection view is stationary and the collection view's x offset (72.0) does not match selected item's x offset (95.5) … adjusting by -35.0
+2015-09-05 19:10:25 +0000 [42926851388071] <InlinePickerViewLayout.swift:333> offsetForItemAtIndex
+	cannot generate an offset for an item which has no attributes stored
+2015-09-05 19:10:25 +0000 [42926855012365] <InlinePickerView.swift:164> selectItem(_:animated:)
+	selecting cell for item 0 where offset = {141, 0}
+2015-09-05 19:10:25 +0000 [42926856246993] <InlinePickerViewLayout.swift:189> prepareLayout()
+	collection view is stationary and the collection view's x offset (61.0) does not match selected item's x offset (93.5) … adjusting by -26.0
+2015-09-05 19:10:25 +0000 [42926859165069] <InlinePickerViewLayout.swift:189> prepareLayout()
+	collection view is stationary and the collection view's x offset (35.0) does not match selected item's x offset (95.5) … adjusting by 2.0
+2015-09-05 19:10:25 +0000 [42926860466340] <InlinePickerViewLayout.swift:189> prepareLayout()
+	collection view is stationary and the collection view's x offset (72.0) does not match selected item's x offset (95.5) … adjusting by -35.0
+2015-09-05 19:10:25 +0000 [42926863713874] <InlinePickerViewLayout.swift:189> prepareLayout()
+	collection view is stationary and the collection view's x offset (71.5) does not match selected item's x offset (95.5) … adjusting by -34.5
+2015-09-05 19:10:25 +0000 [42926871099211] <InlinePickerViewLayout.swift:168> prepareLayout()
+	visible rect is empty … clearing cache and skipping prep
+2015-09-05 19:10:25 +0000 [42926872889051] <InlinePickerViewLayout.swift:189> prepareLayout()
+	collection view is stationary and the collection view's x offset (0.0) does not match selected item's x offset (160.5) … adjusting by 60.5
+2015-09-05 19:10:25 +0000 [42926876158543] <InlinePickerView.swift:164> selectItem(_:animated:)
+	selecting cell for item 0 where offset = {141, 0}
+2015-09-05 19:10:25 +0000 [42926877518957] <InlinePickerViewLayout.swift:189> prepareLayout()
+	collection view is stationary and the collection view's x offset (61.0) does not match selected item's x offset (93.5) … adjusting by -26.0
+2015-09-05 19:10:25 +0000 [42926879125510] <InlinePickerViewLayout.swift:189> prepareLayout()
+	collection view is stationary and the collection view's x offset (70.0) does not match selected item's x offset (93.5) … adjusting by -35.0
+2015-09-05 19:10:25 +0000 [42926881482150] <InlinePickerViewLayout.swift:189> prepareLayout()
+	collection view is stationary and the collection view's x offset (72.0) does not match selected item's x offset (95.5) … adjusting by -35.0
+2015-09-05 19:10:25 +0000 [42926883984105] <InlinePickerViewLayout.swift:189> prepareLayout()
+	collection view is stationary and the collection view's x offset (71.5) does not match selected item's x offset (95.5) … adjusting by -34.5
+2015-09-05 19:10:35 +0000 [42936622276071] <InlinePickerView.swift:167> selectItem(_:animated:)
+	could not get an offset for item 0, invalidating layout …
+2015-09-05 19:10:35 +0000 [42936666827757] <InlinePickerViewLayout.swift:189> prepareLayout()
+	collection view is stationary and the collection view's x offset (35.0) does not match selected item's x offset (95.5) … adjusting by 2.0

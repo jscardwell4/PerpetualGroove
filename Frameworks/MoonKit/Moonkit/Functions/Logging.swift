@@ -173,6 +173,10 @@ public func MSLogMessage(message: String,
        line: line,
         tag: nil,
     message: message)
+//  #if TARGET_INTERFACE_BUILDER
+    logIB(message, function: function, line: line, file: file, flag: flag)
+//  #endif
+
 }
 
 
@@ -322,6 +326,25 @@ logVerbose:function:line:file:
 */
 public func logVerbose(message: String, function: String = __FUNCTION__, line: Int32 = __LINE__, file: String = __FILE__) {
   MSLogVerbose(message, function: function, line: line, file: file)
+}
+
+/**
+logIB:function:line:file:
+
+- parameter message: String
+- parameter function: String = __FUNCTION__
+- parameter line: Int32 = __LINE__
+- parameter file: String = __FILE__
+*/
+public func logIB(message: String, function: String = __FUNCTION__, line: Int32 = __LINE__, file: String = __FILE__, flag: LogManager.LogFlag = .Debug) {
+//  #if TARGET_INTERFACE_BUILDER
+    guard LogManager.logLevelForFile(file) ∋ LogManager.LogLevel(flags: flag) else { return }
+    backgroundDispatch {
+      guard let sourceDirectory = NSProcessInfo.processInfo().environment["IB_PROJECT_SOURCE_DIRECTORIES"] else { return }
+      let text = "\(NSDate()) [\(mach_absolute_time())] <\((file as NSString).lastPathComponent):\(line)> \(function)  \(message)"
+      let _ = try? text.appendToFile("\(sourceDirectory)/IB.log")
+    }
+//  #endif
 }
 
 /**

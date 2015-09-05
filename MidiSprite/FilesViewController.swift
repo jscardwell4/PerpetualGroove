@@ -58,12 +58,13 @@ final class FilesViewController: UIViewController, UITableViewDataSource, UITabl
     view.setContentHuggingPriority(1000, forAxis: .Vertical)
     view.setContentCompressionResistancePriority(1000, forAxis: .Horizontal)
     view.setContentCompressionResistancePriority(1000, forAxis: .Vertical)
-    view.backgroundColor = .clearColor()
+    view.backgroundColor = .popoverBackgroundColor
+    view.opaque = true
 
     let tableView = UITableView(frame: .zero, style: .Plain)
     tableView.translatesAutoresizingMaskIntoConstraints = false
-    tableView.opaque = false
-    tableView.backgroundColor = .clearColor()
+    tableView.opaque = true
+    tableView.backgroundColor = .popoverBackgroundColor
     tableView.rowHeight = 32
     tableView.separatorStyle = .None
     tableView.registerClass(Cell.self, forCellReuseIdentifier: "\(Cell.self)")
@@ -76,7 +77,10 @@ final class FilesViewController: UIViewController, UITableViewDataSource, UITabl
   override func updateViewConstraints() {
     super.updateViewConstraints()
     guard view.constraintsWithIdentifier(constraintID).count == 0, let tableView = tableView else { return }
-    view.constrain([𝗩|--10--tableView--10--|𝗩, 𝗛|--10--tableView--10--|𝗛, [tableView.height => tableHeight, tableView.width => tableWidth]] --> constraintID)
+    view.constrain(
+      [ 𝗩|--10--tableView--10--|𝗩, 𝗛|--10--tableView--10--|𝗛,
+        [tableView.height => tableHeight, tableView.width => tableWidth] ] --> constraintID
+    )
   }
 
   /**
@@ -189,8 +193,8 @@ final class FilesViewController: UIViewController, UITableViewDataSource, UITabl
     override var textLabel: UILabel? {
       guard let label = super.textLabel else { return nil }
       label.translatesAutoresizingMaskIntoConstraints = false
-      label.backgroundColor = .clearColor()
-      label.opaque = false
+      label.backgroundColor = .popoverBackgroundColor
+      label.opaque = true
       label.font = .controlFont
       label.textColor = .controlColor
       label.highlightedTextColor = .controlSelectedColor
@@ -212,8 +216,8 @@ final class FilesViewController: UIViewController, UITableViewDataSource, UITabl
 
     /** setup */
     private func setup() {
-      backgroundColor = UIColor.clearColor()
-      opaque = false
+      backgroundColor = .popoverBackgroundColor
+      opaque = true
       separatorInset = .zeroInsets
       selectionStyle = .None
     }

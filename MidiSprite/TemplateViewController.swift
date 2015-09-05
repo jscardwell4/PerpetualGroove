@@ -9,34 +9,12 @@
 import UIKit
 import MoonKit
 
-final class TemplateViewController: UIViewController {
+final class TemplateViewController: FormPopoverViewController {
 
   private typealias TextureType = MIDINode.TextureType
   private typealias Duration = NoteAttributes.Duration
   private typealias Velocity = NoteAttributes.Velocity
   private typealias Note = NoteAttributes.Note
-
-  /** loadView */
-  override func loadView() {
-    let formView = FormView(form: form)
-    formView.labelFont            = .labelFont
-    formView.labelTextColor       = .labelTextColor
-    formView.controlFont          = .controlFont
-    formView.controlColor         = .controlColor
-    formView.controlSelectedFont  = .controlSelectedFont
-    formView.controlSelectedColor = .controlSelectedColor
-    formView.tintColor            = .tintColor
-    view = formView
-    view.setNeedsUpdateConstraints()
-  }
-
-  /** updateViewConstraints */
-  override func updateViewConstraints() {
-    super.updateViewConstraints()
-    let id = Identifier(self, "ViewWidth")
-    guard view.constraintsWithIdentifier(id).count == 0 else { return }
-    view.constrain(view.width ≤ (UIScreen.mainScreen().bounds.width - 10) --> id)
-  }
 
   var textureType = MIDINode.currentTexture {
     didSet {
@@ -63,7 +41,7 @@ final class TemplateViewController: UIViewController {
   private enum FieldName: String { case TextureType = "Type", Note, Velocity, Duration }
 
   private var _form: Form?
-  private var form: Form {
+  override var form: Form {
     guard _form == nil else { return _form! }
 
     // FIXME: update fields

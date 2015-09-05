@@ -59,6 +59,8 @@ class InlinePickerViewLayout: UICollectionViewLayout {
 
   weak var delegate: InlinePickerView?
 
+  var flat = false { didSet { invalidateLayout() } }
+
   /// A private struct for use as a cache of the values necessary to perform layout-related calculations
   private struct LayoutValues: CustomStringConvertible {
     var widths: [CGFloat] = []              /// Cache of widths provided by `delegate`
@@ -146,7 +148,7 @@ class InlinePickerViewLayout: UICollectionViewLayout {
     values.count = itemCount
     let itemWidths = delegate.itemWidths
 
-    guard itemWidths.count == itemCount else {
+    guard delegate.itemWidths.count == collectionView.numberOfItemsInSection(0) else {
       MSLogVerbose("delegate.itemWidths.count != itemCount … clearing cache and skipping prep")
       clearCache()
       return
@@ -264,7 +266,7 @@ class InlinePickerViewLayout: UICollectionViewLayout {
     let attributes = Attributes(forCellWithIndexPath: indexPath)
     attributes.frame = rawFrames[indexPath.item]
 
-    applyTransformToAttributes(attributes)
+    if !flat { applyTransformToAttributes(attributes) }
 
     return attributes
   }

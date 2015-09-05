@@ -34,8 +34,20 @@ final class InlinePickerViewLabelCell: InlinePickerViewCell {
     label.numberOfLines = 1
     label.lineBreakMode = .ByTruncatingTail
     label.attributedText = selected ? selectedText : text
-
     contentView.addSubview(label)
+
+    #if TARGET_INTERFACE_BUILDER
+      autoresizesSubviews = false
+      contentMode = .Redraw
+      label.contentMode = .Redraw
+//      clearsContextBeforeDrawing = false
+//      label.clearsContextBeforeDrawing = false
+//      contentView.clearsContextBeforeDrawing = false
+      contentView.contentMode = .Redraw
+      opaque = false
+      label.opaque = false
+      contentView.opaque = false
+    #endif
   }
 
   /**
