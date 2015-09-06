@@ -18,11 +18,17 @@ extension UIColor {
   static var controlSelectedColor: UIColor    { return Chameleon.quietLightLobLolly }
   static var tintColor: UIColor               { return Chameleon.quietLightLilyWhiteDark }
   static var backgroundColor: UIColor         { return rgb(51, 50, 49) }
-  static var popoverBackgroundColor: UIColor  { return rgb(25, 25, 24) }
+  static var popoverBackgroundColor: UIColor  { return backgroundColor } // rgb(25, 25, 24) }
 }
 
 extension UIFont {
   static var labelFont: UIFont              { return Eveleth.lightFontWithSize(14) }
   static var controlFont: UIFont            { return Eveleth.thinFontWithSize(14) }
   static var controlSelectedFont: UIFont    { return Eveleth.regularFontWithSize(14) }
+}
+
+
+extension CGFloat {
+  static var popoverArrowWidth: CGFloat { return 20 }
+  static var popoverArrowHeight: CGFloat { return 20 }
 }

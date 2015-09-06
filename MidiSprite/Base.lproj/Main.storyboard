@@ -66,6 +66,9 @@
                                                     <userDefinedRuntimeAttribute type="image" keyPath="image" value="play"/>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="play-selected"/>
                                                     <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
+                                                        <color key="value" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
                                                 <connections>
                                                     <action selector="play" destination="BV1-FR-VrT" eventType="touchUpInside" id="2ap-jc-8sM"/>
@@ -86,6 +89,9 @@
                                                         <color key="value" red="0.51420629024505615" green="0.50113999843597412" blue="0.48703506588935852" alpha="1" colorSpace="calibratedRGB"/>
                                                     </userDefinedRuntimeAttribute>
                                                     <userDefinedRuntimeAttribute type="boolean" keyPath="enabled" value="NO"/>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
+                                                        <color key="value" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
                                                 <connections>
                                                     <action selector="stop" destination="BV1-FR-VrT" eventType="touchUpInside" id="jD9-0j-4ba"/>
@@ -159,6 +165,9 @@
                                                     <userDefinedRuntimeAttribute type="image" keyPath="image" value="metronome"/>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="metronome-selected"/>
                                                     <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
+                                                        <color key="value" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
                                                 <connections>
                                                     <action selector="metronome" destination="BV1-FR-VrT" eventType="touchUpInside" id="aaJ-fO-Lb7"/>
@@ -190,6 +199,9 @@
                                             <userDefinedRuntimeAttribute type="image" keyPath="image" value="files"/>
                                             <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="files-selected"/>
                                             <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
+                                                <color key="value" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                         <variation key="default">
                                             <mask key="constraints">
@@ -215,6 +227,9 @@
                                                 <color key="value" red="0.51420629019999997" green="0.50113999840000001" blue="0.48703506590000001" alpha="1" colorSpace="calibratedRGB"/>
                                             </userDefinedRuntimeAttribute>
                                             <userDefinedRuntimeAttribute type="boolean" keyPath="enabled" value="NO"/>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
+                                                <color key="value" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                         <variation key="default">
                                             <mask key="constraints">
@@ -239,6 +254,9 @@
                                                     <userDefinedRuntimeAttribute type="image" keyPath="image" value="sliders"/>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="sliders-selected"/>
                                                     <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
+                                                        <color key="value" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
                                                 <variation key="default">
                                                     <mask key="constraints">
@@ -260,6 +278,9 @@
                                                     <userDefinedRuntimeAttribute type="image" keyPath="image" value="piano"/>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="piano-selected"/>
                                                     <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
+                                                        <color key="value" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
                                                 <variation key="default">
                                                     <mask key="constraints">
@@ -281,6 +302,9 @@
                                                     <userDefinedRuntimeAttribute type="image" keyPath="image" value="template"/>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="template-selected"/>
                                                     <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
+                                                        <color key="value" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
                                                 <variation key="default">
                                                     <mask key="constraints">
@@ -309,6 +333,9 @@
                                                 <color key="value" red="0.51420629019999997" green="0.50113999840000001" blue="0.48703506590000001" alpha="1" colorSpace="calibratedRGB"/>
                                             </userDefinedRuntimeAttribute>
                                             <userDefinedRuntimeAttribute type="boolean" keyPath="enabled" value="NO"/>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
+                                                <color key="value" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                         <variation key="default">
                                             <mask key="constraints">
@@ -330,9 +357,29 @@
                                     <constraint firstItem="CYm-Ka-dDw" firstAttribute="height" secondItem="dRz-Aj-snf" secondAttribute="height" id="rGI-9g-tV3"/>
                                 </constraints>
                             </stackView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="U9p-PY-X1m" userLabel="Ball Scene View" customClass="SKView">
-                                <rect key="frame" x="0.0" y="62" width="600" height="466"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="U9p-PY-X1m" userLabel="MIDI Player" customClass="SKView">
+                                <rect key="frame" x="0.0" y="106" width="600" height="422"/>
                                 <color key="backgroundColor" red="0.20000000000000001" green="0.1960784314" blue="0.19215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                            </view>
+                            <view hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fwt-5T-njj" userLabel="MIDI File Name" customClass="LabelButton" customModule="MoonKit">
+                                <rect key="frame" x="20" y="74" width="560" height="24"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="24" id="2gI-xS-r4R"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="text" value="Some MIDI File"/>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="textAlignmentString" value="Center"/>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="EvelethLight"/>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="textColor">
+                                        <color key="value" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="highlightedTextColor">
+                                        <color key="value" red="0.87450999021530151" green="0.8274499773979187" blue="0.7607799768447876" alpha="1" colorSpace="calibratedRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="fileName" destination="BV1-FR-VrT" eventType="touchUpInside" id="8hp-dA-sqx"/>
+                                </connections>
                             </view>
                             <visualEffectView hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qmT-5g-1Xb">
                                 <rect key="frame" x="0.0" y="62" width="600" height="538"/>
@@ -350,6 +397,7 @@
                         <color key="backgroundColor" red="0.20000000000000001" green="0.1960784314" blue="0.19215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="qmT-5g-1Xb" firstAttribute="top" secondItem="Hsi-ta-i4H" secondAttribute="bottom" constant="8" symbolic="YES" id="33k-ri-hLy"/>
+                            <constraint firstItem="fwt-5T-njj" firstAttribute="top" secondItem="Hsi-ta-i4H" secondAttribute="bottom" constant="20" id="44v-Pf-bZw"/>
                             <constraint firstItem="qHh-Mt-9TT" firstAttribute="top" secondItem="vQ1-wE-mR9" secondAttribute="bottom" constant="8" symbolic="YES" id="5fh-E0-dLG"/>
                             <constraint firstItem="vQ1-wE-mR9" firstAttribute="top" secondItem="U9p-PY-X1m" secondAttribute="bottom" constant="8" symbolic="YES" id="7UA-Ki-qDD"/>
                             <constraint firstItem="U9p-PY-X1m" firstAttribute="top" secondItem="Hsi-ta-i4H" secondAttribute="bottom" constant="8" symbolic="YES" id="9xn-ad-4gw"/>
@@ -357,13 +405,21 @@
                             <constraint firstItem="Hsi-ta-i4H" firstAttribute="top" secondItem="8aa-yV-Osq" secondAttribute="bottom" constant="8" symbolic="YES" id="HR5-A6-3im"/>
                             <constraint firstItem="U9p-PY-X1m" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leading" id="Vpx-i7-ab6"/>
                             <constraint firstAttribute="trailingMargin" secondItem="vQ1-wE-mR9" secondAttribute="trailing" id="bQb-0L-F0Q"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="fwt-5T-njj" secondAttribute="trailing" id="gvv-Zw-Ixi"/>
                             <constraint firstAttribute="trailing" secondItem="qmT-5g-1Xb" secondAttribute="trailing" id="ha6-KS-kA6"/>
+                            <constraint firstItem="U9p-PY-X1m" firstAttribute="top" secondItem="fwt-5T-njj" secondAttribute="bottom" constant="8" symbolic="YES" id="jI1-59-BIN"/>
                             <constraint firstItem="vQ1-wE-mR9" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leadingMargin" id="ozW-M8-Uja"/>
                             <constraint firstAttribute="trailing" secondItem="U9p-PY-X1m" secondAttribute="trailing" id="r3J-Gt-uwa"/>
                             <constraint firstItem="Hsi-ta-i4H" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leadingMargin" id="rgj-tf-btp"/>
                             <constraint firstItem="qHh-Mt-9TT" firstAttribute="top" secondItem="qmT-5g-1Xb" secondAttribute="bottom" id="scO-5z-aRY"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Hsi-ta-i4H" secondAttribute="trailing" id="v6c-AY-DZE"/>
+                            <constraint firstItem="fwt-5T-njj" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leadingMargin" id="wOg-e7-b56"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="9xn-ad-4gw"/>
+                            </mask>
+                        </variation>
                     </view>
                     <toolbarItems/>
                     <keyCommands/>
@@ -371,16 +427,17 @@
                     <nil key="simulatedTopBarMetrics"/>
                     <nil key="simulatedBottomBarMetrics"/>
                     <connections>
+                        <outlet property="fileNameLabel" destination="fwt-5T-njj" id="CIa-Y1-2pl"/>
                         <outlet property="filesButton" destination="dRz-Aj-snf" id="lsm-fp-74h"/>
                         <outlet property="instrumentButton" destination="CYm-Ka-dDw" id="IHI-YQ-0my"/>
                         <outlet property="metronomeButton" destination="MW7-7L-sqD" id="gCP-tT-WOp"/>
+                        <outlet property="midiPlayerSceneView" destination="U9p-PY-X1m" id="C3k-7T-b66"/>
                         <outlet property="mixerButton" destination="4HC-dP-hAS" id="GqN-Jz-0Be"/>
                         <outlet property="playPauseButton" destination="AbD-fM-IZj" id="HIw-lB-jVc"/>
                         <outlet property="popoverBlur" destination="qmT-5g-1Xb" id="45n-6e-RdI"/>
                         <outlet property="recordButton" destination="u5D-xu-7GP" id="3UW-Ad-LsE"/>
                         <outlet property="revertButton" destination="QfC-Mo-5pM" id="x1v-hE-s8O"/>
                         <outlet property="saveButton" destination="i6p-Ws-ech" id="Z2d-Vc-M0t"/>
-                        <outlet property="skView" destination="U9p-PY-X1m" id="Khl-SR-qcK"/>
                         <outlet property="stopButton" destination="5UP-3s-pkz" id="ydf-jc-Hc9"/>
                         <outlet property="templateButton" destination="dMY-9u-X4g" id="atM-uR-eWy"/>
                         <outlet property="tempoSlider" destination="eaf-y5-9B7" id="jp4-al-Asq"/>
@@ -402,7 +459,7 @@
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" directionalLockEnabled="YES" bounces="NO" alwaysBounceHorizontal="YES" dataMode="prototypes" id="QhA-gV-EZG">
                         <rect key="frame" x="0.0" y="0.0" width="400" height="400"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" red="0.098039215690000001" green="0.098039215690000001" blue="0.094117647060000004" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" red="0.20000000298023224" green="0.19607843458652496" blue="0.19215686619281769" alpha="1" colorSpace="calibratedRGB"/>
                         <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="abk-om-n49">
                             <size key="itemSize" width="100" height="400"/>
                             <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -519,7 +576,7 @@
                                     </subviews>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
-                                <color key="backgroundColor" red="0.098039215690000001" green="0.098039215690000001" blue="0.094117647060000004" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" red="0.20000000298023224" green="0.19607843458652496" blue="0.19215686619281769" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstItem="RJ4-aR-o07" firstAttribute="centerX" secondItem="Ywg-X3-Y1Q" secondAttribute="centerX" id="0MZ-wN-pf8"/>
@@ -657,7 +714,7 @@
                                     </subviews>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
-                                <color key="backgroundColor" red="0.098039215690000001" green="0.098039215690000001" blue="0.094117647060000004" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" red="0.20000000298023224" green="0.19607843458652496" blue="0.19215686619281769" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstItem="fQV-Nj-rrF" firstAttribute="top" secondItem="1nN-5d-7mi" secondAttribute="bottom" constant="8" symbolic="YES" id="0VX-Kh-Ceg"/>
                                     <constraint firstItem="UVo-0O-vty" firstAttribute="top" secondItem="fQV-Nj-rrF" secondAttribute="bottom" constant="8" symbolic="YES" id="1Xv-0G-CyW"/>

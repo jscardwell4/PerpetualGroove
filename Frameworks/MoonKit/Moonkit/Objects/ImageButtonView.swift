@@ -40,9 +40,18 @@ import UIKit
   // MARK: - Managing state
 
   private func updateForState() {
-    if state ∋ .Disabled, let color = disabledTintColor { imageView.tintColor = color }
-    else if !state.isDisjointWith([.Highlighted, .Selected]), let color = highlightedTintColor { imageView.tintColor = color }
-    else { imageView.tintColor = nil }
+    if state ∋ .Disabled, let color = disabledTintColor {
+      imageView.tintColor = color
+      imageView.highlighted = false
+    } else if !state.isDisjointWith([.Highlighted, .Selected]) {
+      imageView.highlighted = true
+      if let color = highlightedTintColor {
+        imageView.tintColor = color
+      }
+    } else {
+      imageView.tintColor = nil
+      imageView.highlighted = false
+    }
   }
 
   @IBInspectable public override var highlighted: Bool { didSet { updateForState() } }

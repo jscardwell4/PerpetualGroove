@@ -18,6 +18,7 @@ final class Sequence: CustomStringConvertible {
     var object: AnyObject? { return Sequence.self }
   }
 
+  var recording = false { didSet { tracks.forEach { $0.recording = recording } } }
   var description: String { return "Sequence {\n" + "\n".join(tracks.map({$0.description.indentedBy(4)})) + "\n}" }
 
   private let time = BarBeatTime(clockSource: Sequencer.clockSource)

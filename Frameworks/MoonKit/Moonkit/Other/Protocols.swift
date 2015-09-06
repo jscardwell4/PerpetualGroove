@@ -546,15 +546,19 @@ public extension EnumerableType where Self: Equatable {
   }
 }
 
-public protocol NotificationNameType: RawRepresentable {
+public protocol NotificationNameType: RawRepresentable, Hashable {
   var value: String { get }
+}
+
+public extension NotificationNameType where Self.RawValue: Hashable {
+  var hashValue: Int { return rawValue.hashValue }
 }
 
 public extension NotificationNameType where Self.RawValue == String {
   var value: String { return rawValue }
 }
 
-public protocol NotificationType {
+public protocol NotificationType: Hashable {
   typealias NotificationName: NotificationNameType
   var name: NotificationName { get }
   var userInfo: [NSObject:AnyObject]? { get }
@@ -563,6 +567,7 @@ public protocol NotificationType {
 }
 
 public extension NotificationType {
+  var hashValue: Int { return name.hashValue }
   func post() {
     NSNotificationCenter.defaultCenter().postNotificationName(name.value, object: object, userInfo: userInfo)
   }
@@ -573,6 +578,8 @@ public extension NotificationType {
 public extension NotificationType where Self:NotificationNameType {
   var name: Self { return self }
 }
+
+public func ==<T:NotificationType>(lhs: T, rhs: T) -> Bool { return lhs.name == rhs.name }
 
 //public extension EnumerableType where Self:RawRepresentable, Self.RawValue: ForwardIndexType {
 //  static var allCases: [Self] {

@@ -38,7 +38,10 @@ final class Track: TrackType, Equatable {
   private let fileQueue: dispatch_queue_t
   let time = BarBeatTime(clockSource: Sequencer.clockSource)
 
+  var recording = false
+
   private func appendEvent(var event: TrackEvent) {
+    guard recording else { return }
     event.time = time.time
     events.append(event)
     time.setMarker()
@@ -75,10 +78,11 @@ final class Track: TrackType, Equatable {
     let identifier = ObjectIdentifier(node).uintValue
     notes.insert(identifier)
     lastEvent[identifier] = 0
+    try MIDIPortConnectSource(inPort, node.endPoint, nil) ➤ "Failed to connect to node \(node.name!)"
+    guard recording else { return }
     dispatch_async(fileQueue) {
       [unowned self, placement = node.placement] in self.appendEvent(MetaEvent(data: .NodePlacement(placement: placement)))
     }
-    try MIDIPortConnectSource(inPort, node.endPoint, nil) ➤ "Failed to connect to node \(node.name!)"
   }
 
   /**
@@ -93,6 +97,7 @@ final class Track: TrackType, Equatable {
     lastEvent[identifier] = nil
     node.sendNoteOff()
     try MIDIPortDisconnectSource(inPort, node.endPoint) ➤ "Failed to disconnect to node \(node.name!)"
+    // TODO: Record node removal event
   }
 
   /**
@@ -116,6 +121,12 @@ final class Track: TrackType, Equatable {
   - parameter context: UnsafeMutablePointer<Void>
   */
   private func read(packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutablePointer<Void>) {
+    // Forward the packets to the instrument
+    do { try MIDISend(outPort, bus.instrument.endPoint, packetList) ➤ "Failed to forward packet list to instrument" }
+    catch { logError(error) }
+
+    guard recording else { return }
+    
     dispatch_async(fileQueue) {
       [unowned self] in
       let packets = packetList.memory
@@ -135,10 +146,6 @@ final class Track: TrackType, Equatable {
       }
       if event != nil { self.appendEvent(event!) }
     }
-
-    // Forward the packets to the instrument
-    do { try MIDISend(outPort, bus.instrument.endPoint, packetList) ➤ "Failed to forward packet list to instrument" }
-    catch { logError(error) }
   }
 
   /**

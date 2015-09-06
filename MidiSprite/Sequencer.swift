@@ -13,6 +13,11 @@ import MoonKit
 /** Manager for MIDI-related aspects of the application */
 final class Sequencer {
 
+  enum Notification: String, NotificationNameType, NotificationType {
+    case FileLoaded, FileUnloaded
+    var object: AnyObject? { return Sequencer.self }
+  }
+
   // MARK: - Private static propertiess
 
   static private(set) var sequence = Sequence()
@@ -39,7 +44,8 @@ final class Sequencer {
 
   static var currentFile: NSURL? {
     didSet {
-      logDebug("currentFile = '\(currentFile)")
+      guard oldValue != currentFile else { return }
+      (currentFile != nil ? Notification.FileLoaded : Notification.FileUnloaded).post()
     }
   }
 
@@ -110,6 +116,8 @@ final class Sequencer {
   // MARK: - Starting/stopping and resetting the sequencer
 
   static var playing: Bool { return clock.running }
+
+  static var recording: Bool { get { return sequence.recording } set { sequence.recording = newValue } }
 
   /** Starts the MIDI clock */
   static func start() { guard !playing else { return }; clock.start() }
