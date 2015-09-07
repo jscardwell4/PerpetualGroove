@@ -15,13 +15,13 @@ struct SoundSet: Hashable, EnumerableType, CustomStringConvertible {
   let ext: String
   let url: NSURL
   let instrumentType: InstrumentType
-
+  var fileName: String { return "\(baseName).\(ext)" }
   var description: String {
     return "SoundSet { name: \(baseName), instrumentType: \(instrumentType) }"
   }
   var hashValue: Int { return url.hashValue }
 
-  enum InstrumentType: UInt8 {
+  enum InstrumentType: Byte {
     case SF2 = 1          /// `kInstrumentType_DLSPreset` and `kInstrumentType_SF2Preset`
     case AU = 2           /// `kInstrumentType_AUPreset`
     case AudioFile = 3    /// `kInstrumentType_Audiofile`
@@ -42,6 +42,10 @@ struct SoundSet: Hashable, EnumerableType, CustomStringConvertible {
   static let PureOscillators = SoundSet(baseName: "SPYRO's Pure Oscillators", ext: "sf2")!
   static let FluidR3 = SoundSet(baseName: "FluidR3", ext: "sf2")!
 
+  init?(fileName: String) {
+    self.init(baseName: (fileName as NSString).stringByDeletingPathExtension, ext: (fileName as NSString).pathExtension)
+  }
+  
   init?(baseName b: String, ext e: String) {
     baseName = b
     ext = e

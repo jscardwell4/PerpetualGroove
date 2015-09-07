@@ -8,7 +8,8 @@
 
 import Foundation
 import MoonKit
-import AudioToolbox
+import struct AudioToolbox.CABarBeatTime
+import struct AudioToolbox.MIDIMetaEvent
 
 /** Struct to hold data for a meta event where event = \<delta time\> **FF** \<meta type\> \<length of meta\> \<meta\> */
 struct MetaEvent: TrackEvent {
@@ -19,22 +20,18 @@ struct MetaEvent: TrackEvent {
   /**
   Initializer that taks the event's data
 
-  - parameter deltaTime: MIDITimeStamp
-  - parameter data: MetaEventData
+  - parameter d: Data
   */
-  init(data: Data) { self.data = data }
+  init(_ d: Data) { data = d }
 
 
   /**
   Initializer that takes a `VariableLengthQuantity` as well as the event's data
 
-  - parameter deltaTime: VariableLengthQuantity
-  - parameter data: MetaEventData
+  - parameter barBeatTime: CABarBeatTiime
+  - parameter data: Data
   */
-  init(barBeatTime: CABarBeatTime, data: Data) {
-    self.time = barBeatTime
-    self.data = data
-  }
+  init(barBeatTime t: CABarBeatTime, data d: Data) { time = t; data = d }
 
   var description: String {
     var result = "\(self.dynamicType.self) {\n\t"
@@ -52,34 +49,37 @@ struct MetaEvent: TrackEvent {
     case CopyrightNotice (notice: String)
     case SequenceTrackName (name: String)
     case InstrumentName (name: String)
+    case DeviceName (name: String)
+    case ProgramName (name: String)
     case EndOfTrack
     case Tempo (microseconds: Byte4)
     case TimeSignature (upper: Byte, lower: Byte, clocks: Byte, notes: Byte)
-    case NodePlacement(placement: MIDINode.Placement)
 
     var type: Byte {
       switch self {
-        case .Text:                     return 0x01
-        case .CopyrightNotice:          return 0x02
-        case .SequenceTrackName:        return 0x03
-        case .InstrumentName:           return 0x04
-        case .EndOfTrack:               return 0x2F
-        case .Tempo:                    return 0x51
-        case .TimeSignature:            return 0x58
-        case .NodePlacement:            return 0x07
+        case .Text:              return 0x01
+        case .CopyrightNotice:   return 0x02
+        case .SequenceTrackName: return 0x03
+        case .InstrumentName:    return 0x04
+        case .DeviceName:        return 0x09
+        case .ProgramName:       return 0x08
+        case .EndOfTrack:        return 0x2F
+        case .Tempo:             return 0x51
+        case .TimeSignature:     return 0x58
       }
     }
 
     var bytes: [Byte] {
       switch self {
-        case let .Text(text):                return Array(text.utf8)
-        case let .CopyrightNotice(text):     return Array(text.utf8)
-        case let .SequenceTrackName(text):   return Array(text.utf8)
-        case let .InstrumentName(text):      return Array(text.utf8)
+        case let .Text(text):                return text.bytes
+        case let .CopyrightNotice(text):     return text.bytes
+        case let .SequenceTrackName(text):   return text.bytes
+        case let .InstrumentName(text):      return text.bytes
+        case let .DeviceName(text):          return text.bytes
+        case let .ProgramName(text):         return text.bytes
         case .EndOfTrack:                    return []
         case let .Tempo(tempo):              return Array(tempo.bytes.dropFirst())
         case let .TimeSignature(u, l, n, m): return [u, Byte(log2(Double(l))), n, m]
-        case let .NodePlacement(placement):  return placement.bytes
       }
     }
 
@@ -137,7 +137,6 @@ func ==(lhs: MetaEvent.Data, rhs: MetaEvent.Data) -> Bool {
     case let (.Tempo(microseconds1), .Tempo(microseconds2)) where microseconds1 == microseconds2: return true
     case let (.TimeSignature(upper1, lower1, clocks1, notes1), .TimeSignature(upper2, lower2, clocks2, notes2))
       where upper1 == upper2 && lower1 == lower2 && clocks1 == clocks2 && notes1 == notes2: return true
-    case let (.NodePlacement(placement1), .NodePlacement(placement2)) where placement1 == placement2: return true
     default: return false
   }
 }

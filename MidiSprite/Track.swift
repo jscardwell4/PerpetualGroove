@@ -44,9 +44,17 @@ final class Track: TrackType, Equatable {
     guard recording else { return }
     event.time = time.time
     events.append(event)
-    time.setMarker()
   }
   private(set) var events: [TrackEvent] = []
+
+  var chunk: TrackChunk {
+    var trackEvents = events
+    trackEvents.insert(MetaEvent(.SequenceTrackName(name: label)), atIndex: 0)
+    trackEvents.insert(bus.instrument.event, atIndex: 1)
+    trackEvents.insert(ChannelEvent(.ProgramChange, ChannelEvent.Channel(0), bus.instrument.programOnChannel(0)), atIndex: 2)
+    trackEvents.append(MetaEvent(.EndOfTrack))
+    return TrackChunk(events: trackEvents)
+  }
 
   // MARK: - Editable properties
 
@@ -81,7 +89,9 @@ final class Track: TrackType, Equatable {
     try MIDIPortConnectSource(inPort, node.endPoint, nil) ➤ "Failed to connect to node \(node.name!)"
     guard recording else { return }
     dispatch_async(fileQueue) {
-      [unowned self, placement = node.placement] in self.appendEvent(MetaEvent(data: .NodePlacement(placement: placement)))
+      [unowned self, placement = node.placement] in
+        self.appendEvent(MIDINodeEvent(.Add(identifier: identifier, placement: placement))
+      )
     }
   }
 
@@ -97,7 +107,10 @@ final class Track: TrackType, Equatable {
     lastEvent[identifier] = nil
     node.sendNoteOff()
     try MIDIPortDisconnectSource(inPort, node.endPoint) ➤ "Failed to disconnect to node \(node.name!)"
-    // TODO: Record node removal event
+    guard recording else { return }
+    dispatch_async(fileQueue) {
+      [unowned self] in self.appendEvent(MIDINodeEvent(.Remove(identifier: identifier)))
+    }
   }
 
   /**
@@ -121,10 +134,12 @@ final class Track: TrackType, Equatable {
   - parameter context: UnsafeMutablePointer<Void>
   */
   private func read(packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutablePointer<Void>) {
+
     // Forward the packets to the instrument
     do { try MIDISend(outPort, bus.instrument.endPoint, packetList) ➤ "Failed to forward packet list to instrument" }
     catch { logError(error) }
 
+    // Check if we are recording, otherwise skip event processing
     guard recording else { return }
     
     dispatch_async(fileQueue) {
@@ -140,8 +155,8 @@ final class Track: TrackType, Equatable {
       let ((status, channel), note, velocity) = ((packet.data.0 >> 4, packet.data.0 & 0xF), packet.data.1, packet.data.2)
       let event: TrackEvent?
       switch status {
-      case 9:  event = ChannelEvent.noteOnEvent(channel: channel, note: note, velocity: velocity)
-      case 8:  event = ChannelEvent.noteOffEvent(channel: channel, note: note, velocity: velocity)
+        case 9:  event = ChannelEvent(.NoteOn, ChannelEvent.Channel(channel), note, velocity)
+        case 8:  event = ChannelEvent(.NoteOff, ChannelEvent.Channel(channel), note, velocity)
         default: event = nil
       }
       if event != nil { self.appendEvent(event!) }

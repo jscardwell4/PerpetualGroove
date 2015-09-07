@@ -25,10 +25,6 @@ final class MIDINode: SKSpriteNode {
                                           .Mountains, .OceanBasin, .Parchment, .Sand, .Stucco]
   }
 
-  // MARK: - Properties used to initialize a new `MIDINode`
-  static var currentNote = NoteAttributes()
-  static var currentTexture = TextureType.Cobblestone
-
   // MARK: - Properties relating to the node's appearance
 
   var textureType: TextureType
@@ -67,7 +63,9 @@ final class MIDINode: SKSpriteNode {
 
   var placement: Placement
 
-  let id = nonce()
+//  let id = nonce()
+
+  static let useVelocityForOff = true
 
   // MARK: - Methods for playing/erasing the node
 
@@ -104,7 +102,7 @@ final class MIDINode: SKSpriteNode {
     if !Sequencer.playing { Sequencer.start() }
     MIDIPacketListAdd(&packetList, size, packet, timeStamp, 11, data)
     do {
-      try withUnsafePointer(&packetList) {MIDIReceived(endPoint, $0) } ➤ "Unable to send note on event"
+      try withUnsafePointer(&packetList) { MIDIReceived(endPoint, $0) } ➤ "Unable to send note on event"
       playState = .On
     } catch { logError(error) }
   }
@@ -115,11 +113,13 @@ final class MIDINode: SKSpriteNode {
     var packetList = MIDIPacketList()
     let packet = MIDIPacketListInit(&packetList)
     let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
-    let data: [UInt8] = [0x80 | note.channel, note.note.MIDIValue, 0] + sourceID
+    let data: [UInt8] = MIDINode.useVelocityForOff
+                ? [0x90 | note.channel, note.note.MIDIValue, 0] + sourceID
+                : [0x80 | note.channel, note.note.MIDIValue, 0] + sourceID
     let timeStamp = time.timeStamp
     MIDIPacketListAdd(&packetList, size, packet, timeStamp, 11, data)
     do {
-      try withUnsafePointer(&packetList) {MIDIReceived(endPoint, $0) } ➤ "Unable to send note off event"
+      try withUnsafePointer(&packetList) { MIDIReceived(endPoint, $0) } ➤ "Unable to send note off event"
       playState = .Off
     } catch { logError(error) }
   }
@@ -147,10 +147,10 @@ final class MIDINode: SKSpriteNode {
   */
   init(_ p: Placement, _ name: String) throws {
     placement = p
-    textureType = MIDINode.currentTexture
-    note = MIDINode.currentNote
+    textureType = Sequencer.currentTexture
+    note = Sequencer.currentNote
 
-    super.init(texture: MIDINode.currentTexture.texture,
+    super.init(texture: Sequencer.currentTexture.texture,
                color: Sequencer.currentTrack.color.value,
                size: MIDINode.defaultSize)
 

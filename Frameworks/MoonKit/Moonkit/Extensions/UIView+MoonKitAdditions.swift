@@ -542,7 +542,7 @@ public extension UIView {
           deepestAncestor = a
         case let (a, d) where a != nil && d != nil && !a!.isDescendantOfView(d!):
           if let v = discernNearestAncestor(a, d) { deepestAncestor = v }
-          else { MSLogWarn("unsupported constraint configuration, all objects must share a common ancestor"); return [] }
+          else { logWarning("unsupported constraint configuration, all objects must share a common ancestor"); return [] }
         default:
           break
         }

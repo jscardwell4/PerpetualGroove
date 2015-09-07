@@ -39,9 +39,10 @@ extension TrackType {
 
   /** Generates a MIDI file chunk from current track data */
   var chunk: TrackChunk {
-    let nameEvent: TrackEvent = MetaEvent(data: .SequenceTrackName(name: label))
-    let endEvent: TrackEvent  = MetaEvent(data: .EndOfTrack)
-    return TrackChunk(events: [nameEvent] + events + [endEvent])
+    var trackEvents = events
+    trackEvents.insert(MetaEvent(.SequenceTrackName(name: label)), atIndex: 0)
+    trackEvents.append(MetaEvent(.EndOfTrack))
+    return TrackChunk(events: trackEvents)
   }
 
 }

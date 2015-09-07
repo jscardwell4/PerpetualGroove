@@ -487,7 +487,7 @@ public protocol KeySearchable {
 ////    func nestedContainer<T>(x: Any) -> T { return x }
 //
 //    for case let nested as KeySearchable in allValues  {
-//      MSLogDebug("nested = \(nested)")
+//      logDebug("nested = \(nested)")
 ////      result.appendContentsOf(nested.valuesForKey(key))
 //    }
 //    return result

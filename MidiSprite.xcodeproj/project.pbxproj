@@ -58,6 +58,8 @@
 		C2E0433E1B72F4DC005F0675 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C2E0433C1B72F4DC005F0675 /* Main.storyboard */; };
 		C2E043401B72F4DC005F0675 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C2E0433F1B72F4DC005F0675 /* Assets.xcassets */; };
 		C2E043431B72F4DC005F0675 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C2E043411B72F4DC005F0675 /* LaunchScreen.storyboard */; };
+		C2ECC5E31B9C7FFA0010E76E /* MIDINodeEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2ECC5E21B9C7FFA0010E76E /* MIDINodeEvent.swift */; settings = {ASSET_TAGS = (); }; };
+		C2ECC5E51B9C9C580010E76E /* InstrumentEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2ECC5E41B9C9C580010E76E /* InstrumentEvent.swift */; settings = {ASSET_TAGS = (); }; };
 		C2EFA0EC1B823642002EBA3D /* TemplateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EFA0EB1B823642002EBA3D /* TemplateViewController.swift */; };
 		C2EFA0EE1B824A2F002EBA3D /* AssetManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EFA0ED1B824A2F002EBA3D /* AssetManager.swift */; };
 		C2F2ADC21B90EBD300FF4836 /* Woodblock.wav in Resources */ = {isa = PBXBuildFile; fileRef = C2F2ADC11B90EBD300FF4836 /* Woodblock.wav */; settings = {ASSET_TAGS = (); }; };
@@ -124,7 +126,6 @@
 		C2AA2BC71B84B04200A0B08D /* InstrumentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstrumentViewController.swift; sourceTree = "<group>"; };
 		C2AA2BCA1B84FB2100A0B08D /* Sequencer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sequencer.swift; sourceTree = "<group>"; };
 		C2AA9EF11B7BB92F0025BE4D /* MIDIPlayerField.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = MIDIPlayerField.fsh; sourceTree = "<group>"; };
-		C2AD8E861B7D99C60003579E /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		C2AD8E881B7D99C60003579E /* MidiSprite.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = MidiSprite.entitlements; sourceTree = "<group>"; };
 		C2B123811B8523FF008FED5E /* Bus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bus.swift; sourceTree = "<group>"; };
 		C2B123BE1B864DCC008FED5E /* MIDIClock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIClock.swift; sourceTree = "<group>"; };
@@ -140,6 +141,8 @@
 		C2E0433F1B72F4DC005F0675 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C2E043421B72F4DC005F0675 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C2E043441B72F4DC005F0675 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C2ECC5E21B9C7FFA0010E76E /* MIDINodeEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINodeEvent.swift; sourceTree = "<group>"; };
+		C2ECC5E41B9C9C580010E76E /* InstrumentEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstrumentEvent.swift; sourceTree = "<group>"; };
 		C2EFA0EB1B823642002EBA3D /* TemplateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemplateViewController.swift; sourceTree = "<group>"; };
 		C2EFA0ED1B824A2F002EBA3D /* AssetManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssetManager.swift; sourceTree = "<group>"; };
 		C2F2ADC11B90EBD300FF4836 /* Woodblock.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Woodblock.wav; sourceTree = "<group>"; };
@@ -165,6 +168,7 @@
 		C2404BD71B78EF8200A68A64 /* Embedded Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C27E18AF1B965F8500626314 /* Lumberjack.framework */,
 				C2404BD41B78EEC500A68A64 /* MoonKit.framework */,
 				C2404BD11B78EE3800A68A64 /* Chameleon.framework */,
 				C2404BCD1B78EDEB00A68A64 /* Eveleth.framework */,
@@ -272,6 +276,8 @@
 				C291C3EE1B91EDCC00702AEA /* MetaEvent.swift */,
 				C291C3F01B91EDD600702AEA /* ChannelEvent.swift */,
 				C291C3F21B91EDE100702AEA /* VariableLengthQuantity.swift */,
+				C2ECC5E21B9C7FFA0010E76E /* MIDINodeEvent.swift */,
+				C2ECC5E41B9C9C580010E76E /* InstrumentEvent.swift */,
 			);
 			name = "MIDI Files";
 			sourceTree = "<group>";
@@ -305,8 +311,6 @@
 		C2E043281B72F4DC005F0675 = {
 			isa = PBXGroup;
 			children = (
-				C27E18AF1B965F8500626314 /* Lumberjack.framework */,
-				C2AD8E861B7D99C60003579E /* AudioToolbox.framework */,
 				C2404BD91B78EFD700A68A64 /* Playgrounds */,
 				C2404BD71B78EF8200A68A64 /* Embedded Frameworks */,
 				C2404BD81B78EFA800A68A64 /* Sound Sets */,
@@ -455,7 +459,9 @@
 				C21E44C51B76546C00574BD2 /* AudioManager.swift in Sources */,
 				C291C3F51B91F05900702AEA /* MIDIFileProtocols.swift in Sources */,
 				C2AA2BCB1B84FB2100A0B08D /* Sequencer.swift in Sources */,
+				C2ECC5E31B9C7FFA0010E76E /* MIDINodeEvent.swift in Sources */,
 				C291C3EB1B91EDA700702AEA /* TrackChunk.swift in Sources */,
+				C2ECC5E51B9C9C580010E76E /* InstrumentEvent.swift in Sources */,
 				C2E043351B72F4DC005F0675 /* AppDelegate.swift in Sources */,
 				C2CF38CD1B7EBED30085B3D5 /* Track.swift in Sources */,
 				C245456C1B9B414C00FF00E7 /* FormPopoverViewController.swift in Sources */,
@@ -577,6 +583,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = MidiSprite/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.MidiSprite;
@@ -596,6 +603,7 @@
 				CODE_SIGN_ENTITLEMENTS = MidiSprite/MidiSprite.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = MidiSprite/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.MidiSprite;

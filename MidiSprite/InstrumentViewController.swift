@@ -31,42 +31,39 @@ final class InstrumentViewController: FormPopoverViewController {
   }
 
   private static weak var currentInstance: InstrumentViewController?
-  private static var _soundSet = SoundSet.PureOscillators
-  private static var _program = Program(0)
-  private static var _channel = Channel(0)
 
-  static var soundSet: SoundSet {
-    get { return _soundSet }
+  var soundSet: SoundSet {
+    get { return Sequencer.currentSoundSet }
     set {
-      guard _soundSet != newValue else { return }
-      _soundSet = newValue
-      guard let form = currentInstance?._form,
-                field = form[FieldName.SoundSet.rawValue] as? FormPickerField else { return }
-      field.value = SoundSet.allCases.indexOf(_soundSet) ?? 0
-      _program = 0
+      guard Sequencer.currentSoundSet != newValue else { return }
+      Sequencer.currentSoundSet = newValue
+      Sequencer.currentProgram = 0
+//      guard let form = _form,
+//                field = form[FieldName.SoundSet.rawValue] as? FormPickerField else { return }
+//      field.value = Sequencer.currentSoundSet.index
     }
   }
 
-  static var program: Program {
-    get { return _program }
+  var program: Program {
+    get { return Sequencer.currentProgram }
     set {
-      guard _program != newValue else { return }
-      _program = newValue
-      guard let form = currentInstance?._form,
-                field = form[FieldName.Program.rawValue] as? FormPickerField else { return }
-      field.choices = _soundSet.programs
-      field.value = Int(_program)
+      guard Sequencer.currentProgram != newValue else { return }
+      Sequencer.currentProgram = newValue
+//      guard let form = _form,
+//                field = form[FieldName.Program.rawValue] as? FormPickerField else { return }
+//      field.choices = Sequencer.currentSoundSet.programs
+//      field.value = Int(Sequencer.currentProgram)
     }
   }
 
-  static var channel: Channel {
-    get { return _channel }
+  var channel: Channel {
+    get { return Sequencer.currentChannel }
     set {
-      guard _channel != newValue else { return }
-      _channel = newValue
-      guard let form = currentInstance?._form,
-                field = form[FieldName.Channel.rawValue] as? FormStepperField else { return }
-      field.value = Double(_channel)
+      guard Sequencer.currentChannel != newValue else { return }
+      Sequencer.currentChannel = newValue
+//      guard let form = _form,
+//                field = form[FieldName.Channel.rawValue] as? FormStepperField else { return }
+//      field.value = Double(Sequencer.currentChannel)
     }
   }
 
@@ -78,15 +75,15 @@ final class InstrumentViewController: FormPopoverViewController {
     guard _form == nil else { return _form! }
 
     let soundSetField = FormPickerField(name: FieldName.SoundSet.rawValue,
-                                        value: SoundSet.allCases.indexOf(InstrumentViewController._soundSet) ?? 0,
+                                        value: soundSet.index,
                                         choices: SoundSet.allCases.map({$0.baseName}))
 
     let programField = FormPickerField(name: FieldName.Program.rawValue,
-                                       value: Int(InstrumentViewController._program),
-                                       choices: InstrumentViewController._soundSet.programs)
+                                       value: Int(program),
+                                       choices: soundSet.programs)
 
     let channelField = FormStepperField(name: FieldName.Channel.rawValue,
-                                        value: Double(InstrumentViewController._channel),
+                                        value: Double(channel),
                                         minimumValue: 0,
                                         maximumValue: 15,
                                         stepValue: 1)
@@ -107,20 +104,20 @@ final class InstrumentViewController: FormPopoverViewController {
         case .SoundSet:
           if let idx = field.value as? Int where SoundSet.allCases.indices.contains(idx) {
             let soundSet = SoundSet.allCases[idx]
-            guard InstrumentViewController._soundSet != soundSet else { break }
-            InstrumentViewController._soundSet = soundSet
-            InstrumentViewController._program = 0
-            programField.choices = InstrumentViewController._soundSet.programs
+            guard self.soundSet != soundSet else { break }
+            self.soundSet = soundSet
+            self.program = 0
+            programField.choices = self.soundSet.programs
             programField.value = programField.choices.count > 0 ? 0 : -1
           }
 
         case .Program:
-          if let idx = field.value as? Int where InstrumentViewController._soundSet.programs.indices.contains(idx) {
-            InstrumentViewController._program = UInt8(idx)
+          if let idx = field.value as? Int where self.soundSet.programs.indices.contains(idx) {
+            self.program = UInt8(idx)
           }
 
         case .Channel:
-          if let channel = field.value as? Double { InstrumentViewController._channel = Channel(channel) }
+          if let channel = field.value as? Double { self.channel = Channel(channel) }
 
       }
 

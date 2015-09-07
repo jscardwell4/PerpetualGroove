@@ -30,6 +30,7 @@ class MIDIPlayerScene: SKScene {
     midiPlayer = MIDIPlayerNode(bezierPath: UIBezierPath(rect: containerRect))
     addChild(midiPlayer)
 
+    physicsWorld.gravity = .zero
     physicsWorld.contactDelegate = self
   }
 
@@ -46,10 +47,10 @@ class MIDIPlayerScene: SKScene {
 
   - parameter currentTime: CFTimeInterval
   */
-  override func update(currentTime: CFTimeInterval) {
+//  override func update(currentTime: CFTimeInterval) {
     /* Called before each frame is rendered */
 //    backgroundDispatch {print("scene time = \(currentTime)")}
-  }
+//  }
 }
 
 extension MIDIPlayerScene: SKPhysicsContactDelegate {
@@ -60,6 +61,7 @@ extension MIDIPlayerScene: SKPhysicsContactDelegate {
   */
   func didBeginContact(contact: SKPhysicsContact) {
     guard let midiNode = contact.bodyB.node as? MIDINode else { return }
+    // ???: Should we do anything with the impulse and normal values provided by SKPhysicsContact?
     midiNode.play()
   }
 }

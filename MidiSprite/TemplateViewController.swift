@@ -16,14 +16,14 @@ final class TemplateViewController: FormPopoverViewController {
   private typealias Velocity = NoteAttributes.Velocity
   private typealias Note = NoteAttributes.Note
 
-  var textureType = MIDINode.currentTexture {
+  var textureType = Sequencer.currentTexture {
     didSet {
       guard let form = _form, textureField = form[FieldName.TextureType.rawValue] as? FormPickerField else { return }
       textureField.value = textureType.index
-      MIDINode.currentTexture = textureType
+      Sequencer.currentTexture = textureType
     }
   }
-  var note = MIDINode.currentNote {
+  var note = Sequencer.currentNote {
     didSet {
       guard let form = _form,
       noteField = form[FieldName.Note.rawValue] as? FormPickerField,
@@ -34,7 +34,7 @@ final class TemplateViewController: FormPopoverViewController {
       velocityField.value = Float(note.velocity.index)
       durationField.value = Float(note.duration.index)
 
-      MIDINode.currentNote = note
+      Sequencer.currentNote = note
     }
   }
 

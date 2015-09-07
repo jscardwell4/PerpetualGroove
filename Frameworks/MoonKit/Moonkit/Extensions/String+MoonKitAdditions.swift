@@ -18,6 +18,11 @@ extension String {
     return self[self.startIndex..<r.end]
   }
 }
+
+extension String: ByteArrayConvertible {
+  public var bytes: [Byte] { return Array(utf8) }
+}
+
 public extension String {
 
   public static let Space:       String = " "

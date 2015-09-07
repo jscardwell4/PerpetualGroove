@@ -19,7 +19,7 @@ extension UIFont {
       font = CGFontCreateWithDataProvider(provider)
     {
       if !CTFontManagerRegisterGraphicsFont(font, nil) {
-        MSLogError("failed to register 'FontAwesome' font with font manager")
+        logError("failed to register 'FontAwesome' font with font manager")
       }
     }
   }

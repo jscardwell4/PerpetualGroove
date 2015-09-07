@@ -54,9 +54,9 @@ public class CoreDataStack {
       stackInstances[ObjectIdentifier(self)] = ++stackInstanceCount
       rootContext.persistentStoreCoordinator = persistentStoreCoordinator
       rootContext.nametag = "\(nametag)<root>"
-      MSLogDebug("\(nametag) initialized")
+      logDebug("\(nametag) initialized")
     } catch {
-      MSHandleError(error as NSError)
+      logError(error)
       persistentStore = NSPersistentStore(persistentStoreCoordinator: nil, configurationName: nil, URL: NSURL(), options: nil)
       rootContext = NSManagedObjectContext()
       throw error
@@ -72,7 +72,7 @@ public class CoreDataStack {
     let context = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
     context.parentContext = rootContext
     context.nametag = "\(nametag)<main\(++mainContextCount)>"
-    MSLogDebug("context created: \(String(prettyNil: context.nametag))")
+    logDebug("context created: \(String(prettyNil: context.nametag))")
     return context
   }
 
@@ -85,7 +85,7 @@ public class CoreDataStack {
     let context = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
     context.persistentStoreCoordinator = persistentStoreCoordinator
     context.nametag = "\(nametag)<isolated\(++isolatedContextCount)>"
-    MSLogDebug("context created: \(String(prettyNil: context.nametag))")
+    logDebug("context created: \(String(prettyNil: context.nametag))")
     return context
   }
   /**
@@ -97,7 +97,7 @@ public class CoreDataStack {
     let context = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
     context.parentContext = rootContext
     context.nametag = "\(nametag)<private\(++privateContextCount)>"
-    MSLogDebug("context created: \(String(prettyNil: context.nametag))")
+    logDebug("context created: \(String(prettyNil: context.nametag))")
     return context
   }
 
@@ -145,7 +145,7 @@ public class CoreDataStack {
       $0.processPendingChanges()
       guard $0.hasChanges else { return }
 
-      MSLogDebug("saving context '\($0.nametag)'")
+      logDebug("saving context '\($0.nametag)'")
 
       try $0.save()
     }
@@ -235,7 +235,7 @@ public class CoreDataStack {
       if let moc = context {
         moc.processPendingChanges()
         if moc.hasChanges == true {
-          MSLogDebug("saving context '\(String(prettyNil: moc.nametag))'")
+          logDebug("saving context '\(String(prettyNil: moc.nametag))'")
           do {
             try moc.save()
             success = true

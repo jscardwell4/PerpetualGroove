@@ -22,7 +22,7 @@ extension MIDIValueConvertible {
 func ==<M:MIDIValueConvertible>(lhs: M, rhs: M) -> Bool { return lhs.MIDIValue == rhs.MIDIValue }
 
 /** Structure that encapsulates MIDI information necessary for playing a note */
-struct NoteAttributes {
+struct NoteAttributes: Equatable {
 
   var channel: UInt8 = 0
 
@@ -157,4 +157,10 @@ struct NoteAttributes {
 
 func ==(lhs: NoteAttributes.Note, rhs: NoteAttributes.Note) -> Bool { return lhs.MIDIValue == rhs.MIDIValue }
 
-
+func ==(lhs: NoteAttributes, rhs: NoteAttributes) -> Bool {
+  guard lhs.channel == rhs.channel   else { return false }
+  guard lhs.duration == rhs.duration else { return false }
+  guard lhs.velocity == rhs.velocity else { return false }
+  guard lhs.note == rhs.note         else { return false }
+  return true
+}

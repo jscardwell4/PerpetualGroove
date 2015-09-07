@@ -13,36 +13,55 @@ import AudioToolbox
 /** Struct to hold data for a channel event where event = \<delta time\> \<status\> \<data1\> \<data2\> */
 struct ChannelEvent: TrackEvent {
 
+  enum Type: Byte, IntegerLiteralConvertible {
+    case NoteOff               = 0x8
+    case NoteOn                = 0x9
+    case PolyphonicKeyPressure = 0xA
+    case ControlChange         = 0xB
+    case ProgramChange         = 0xC
+    case ChannelPressure       = 0xD
+    case PitchBendChange       = 0xE
+    init(integerLiteral value: Byte) { self.init(value) }
+    init(_ v: Byte) { self = Type(rawValue: ClosedInterval<Byte>(0x8, 0xE).clampValue(v))! }
+  }
+
+  struct Status: IntegerLiteralConvertible {
+    var value: Byte { return (type.rawValue << 4) | channel.value }
+    let type: Type
+    let channel: Channel
+    init(integerLiteral value: Byte) { self.init(value) }
+    init(_ v: Byte) { self.init(Type(v >> 4), Channel(v & 0xF)) }
+    init(_ t: Type, _ c: Channel) { type = t; channel = c }
+  }
+
+  struct Channel: IntegerLiteralConvertible {
+    let value: Byte
+    init(integerLiteral value: Byte) { self.init(value) }
+    init(_ v: Byte) { value = ClosedInterval<Byte>(0, 15).clampValue(v) }
+  }
+
   var time: CABarBeatTime = .start
 
-  let status: Byte
+  let status: Status
   let data1: Byte
   let data2: Byte?
 
-  var bytes: [Byte] { return [status, data1] + (data2 != nil ? [data2!] : []) }
+  var bytes: [Byte] { return [status.value, data1] + (data2 != nil ? [data2!] : []) }
 
-  static func noteOnEvent(channel channel: Byte, note: Byte, velocity: Byte) -> ChannelEvent {
-    return ChannelEvent(status: 0x90 | channel, data1: note, data2: velocity)
-  }
-
-  static func noteOffEvent(channel channel: Byte, note: Byte, velocity: Byte) -> ChannelEvent {
-    return ChannelEvent(status: 0x80 | channel, data1: note, data2: velocity)
-  }
-
-  init(status: Byte, data1: Byte, data2: Byte? = nil) {
-    self.status = status; self.data1 = data1; self.data2 = data2
+  init(_ type: Type, _ channel: Channel, _ d1: Byte, _ d2: Byte? = nil) {
+    status = Status(type, channel); data1 = d1; data2 = d2
   }
 
   /** Computed property for the equivalent `MIDIChannelMessage` struct consumed by the MusicPlayer API */
   var message: MIDIChannelMessage {
-    return MIDIChannelMessage(status: status, data1: data1, data2: data2 ?? 0, reserved: 0)
+    return MIDIChannelMessage(status: status.value, data1: data1, data2: data2 ?? 0, reserved: 0)
   }
 
   var description: String {
     var result = "\(self.dynamicType.self) {\n\t"
     result += "\n\t".join(
       "time: \(time)(\(time.doubleValue); \(time.tickValue))",
-      "status: \(String(hexBytes: status))",
+      "status: \(String(hexBytes: status.value))",
       "data1: \(String(data1, radix: 16, uppercase: true, pad: 2, group: 2))",
       "data2: " + (data2 == nil ? "nil" : String(hexBytes: data2!))
     )

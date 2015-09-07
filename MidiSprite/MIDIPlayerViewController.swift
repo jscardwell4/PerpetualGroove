@@ -15,6 +15,13 @@ import typealias AudioToolbox.MusicDeviceGroupID
 
 final class MIDIPlayerViewController: UIViewController {
 
+  static var currentInstance: MIDIPlayerViewController? {
+    guard let delegate = UIApplication.sharedApplication().delegate,
+                    window = delegate.window,
+                    controller = window?.rootViewController as? MIDIPlayerViewController else { return nil }
+    return controller
+  }
+
   // MARK: - UIViewController overridden methods -
 
   // MARK: View loading and layout
@@ -168,26 +175,20 @@ final class MIDIPlayerViewController: UIViewController {
   private enum Popover {
     case None, Files, Template, Instrument, Mixer
     var view: PopoverView? {
-      guard let delegate = UIApplication.sharedApplication().delegate,
-                window = delegate.window,
-                controller = window?.rootViewController as? MIDIPlayerViewController else { return nil }
       switch self {
-        case .Files:      return controller.filesPopoverView
-        case .Template:   return controller.templatePopoverView
-        case .Instrument: return controller.instrumentPopoverView
-        case .Mixer:      return controller.mixerPopoverView
+        case .Files:      return MIDIPlayerViewController.currentInstance?.filesPopoverView
+        case .Template:   return MIDIPlayerViewController.currentInstance?.templatePopoverView
+        case .Instrument: return MIDIPlayerViewController.currentInstance?.instrumentPopoverView
+        case .Mixer:      return MIDIPlayerViewController.currentInstance?.mixerPopoverView
         case .None:       return nil
       }
     }
     var button: ImageButtonView? {
-      guard let delegate = UIApplication.sharedApplication().delegate,
-                window = delegate.window,
-                controller = window?.rootViewController as? MIDIPlayerViewController else { return nil }
       switch self {
-        case .Files:      return controller.filesButton
-        case .Template:   return controller.templateButton
-        case .Instrument: return controller.instrumentButton
-        case .Mixer:      return controller.mixerButton
+        case .Files:      return MIDIPlayerViewController.currentInstance?.filesButton
+        case .Template:   return MIDIPlayerViewController.currentInstance?.templateButton
+        case .Instrument: return MIDIPlayerViewController.currentInstance?.instrumentButton
+        case .Mixer:      return MIDIPlayerViewController.currentInstance?.mixerButton
         case .None:       return nil
       }
     }
@@ -197,7 +198,7 @@ final class MIDIPlayerViewController: UIViewController {
     didSet {
       guard oldValue != popover else { return }
       oldValue.view?.hidden = true; oldValue.button?.selected = false; popover.view?.hidden = false
-      if popover == .None { state.remove(.PopoverActive) } else if oldValue == .None { state ∪= .PopoverActive }
+      if popover == .None { state.remove(.PopoverActive) } else if oldValue == .None { state.insert(.PopoverActive) }
     }
   }
 
@@ -437,31 +438,55 @@ final class MIDIPlayerViewController: UIViewController {
 
   private var notificationReceptionist: NotificationReceptionist?
 
+  /**
+  nodeCountDidChange:
+
+  - parameter notification: NSNotification
+  */
+  private func nodeCountDidChange(notification: NSNotification) {
+    let isEmptyField = (playerScene?.midiPlayer.midiNodes.count ?? 0) == 0
+    guard (state ∋ .MIDINodeAdded && isEmptyField)
+       || (state ∌ .MIDINodeAdded && !isEmptyField) else { return }
+    state ⊻= .MIDINodeAdded
+    if state ∋ .MIDINodeAdded && !playing { play() }
+  }
+
+  /**
+  trackCountDidChange:
+
+  - parameter notification: NSNotification
+  */
+  private func trackCountDidChange(notification: NSNotification) {
+    let isEmptySequence = Sequencer.sequence.tracks.count == 0
+    guard (state ∋ .TrackAdded && isEmptySequence)
+      || (state ∌ .TrackAdded && !isEmptySequence) else { return }
+    state ⊻= .TrackAdded
+  }
+
+  /**
+  fileDidLoad:
+
+  - parameter notification: NSNotification
+  */
+  private func fileDidLoad(notification: NSNotification) {
+    state.insert(.FileLoaded)
+  }
+
+  /**
+  fileDidUnload:
+
+  - parameter notification: NSNotification
+  */
+  private func fileDidUnload(notification: NSNotification) {
+    state.remove(.FileLoaded)
+  }
+
   /** initializeReceptionist */
   private func initializeReceptionist() {
 
     guard notificationReceptionist == nil else { return }
 
     typealias Callback = NotificationReceptionist.Callback
-
-    let nodeCountDidChange: (NSNotification) -> Void = {
-      [unowned self] _ in
-      let isEmptyField = (self.playerScene?.midiPlayer.midiNodes.count ?? 0) == 0
-      guard (self.state ∋ .MIDINodeAdded && isEmptyField)
-         || (self.state ∌ .MIDINodeAdded && !isEmptyField) else { return }
-      self.state ⊻= .MIDINodeAdded
-    }
-
-    let trackCountDidChange: (NSNotification) -> Void = {
-      [unowned self] _ in
-      let isEmptySequence = Sequencer.sequence.tracks.count == 0
-      guard (self.state ∋ .TrackAdded && isEmptySequence)
-         || (self.state ∌ .TrackAdded && !isEmptySequence) else { return }
-      self.state ⊻= .TrackAdded
-    }
-
-    let fileDidLoad: (NSNotification) -> Void = { [unowned self] _ in self.state.insert(.FileLoaded) }
-    let fileDidUnload: (NSNotification) -> Void = { [unowned self] _ in self.state.remove(.FileLoaded) }
 
     let queue = NSOperationQueue.mainQueue()
 

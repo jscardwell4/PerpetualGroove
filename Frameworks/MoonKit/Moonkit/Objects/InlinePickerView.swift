@@ -164,17 +164,17 @@ import UIKit
   - parameter animated: Bool
   */
   public func selectItem(item: Int, animated: Bool) {
-    guard (0 ..< count).contains(item) else { MSLogWarn("\(item) is not a valid item index"); return }
+    guard (0 ..< count).contains(item) else { logWarning("\(item) is not a valid item index"); return }
 
     selection = item
     if let offset = layout.offsetForItemAtIndex(selection) {
       collectionView.selectItemAtIndexPath(NSIndexPath(forItem: selection, inSection: 0),
                                   animated: false,
                             scrollPosition: .None)
-      MSLogVerbose("selecting cell for item \(selection) where offset = \(offset)")
+      logVerbose("selecting cell for item \(selection) where offset = \(offset)")
       collectionView.setContentOffset(offset, animated: animated)
     } else {
-      MSLogVerbose("could not get an offset for item \(item), invalidating layout …")
+      logVerbose("could not get an offset for item \(item), invalidating layout …")
       layout.invalidateLayout()
     }
   }
@@ -386,7 +386,7 @@ extension InlinePickerView: UIScrollViewDelegate {
   */
   public func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
     guard let item = collectionView.indexPathsForSelectedItems()?.first?.item else {
-      MSLogVerbose("failed to get index path for selected cell")
+      logVerbose("failed to get index path for selected cell")
       return
     }
     // invoke selection handler
@@ -405,14 +405,14 @@ extension InlinePickerView: UIScrollViewDelegate {
   {
     let offset = targetContentOffset.memory
     guard let item = (collectionView.collectionViewLayout as! InlinePickerViewLayout).indexOfItemAtOffset(offset) else {
-      MSLogVerbose("failed to get index path for cell at point \(offset)")
+      logVerbose("failed to get index path for cell at point \(offset)")
       return
     }
 
-    guard item != selection else { MSLogVerbose("item already selected"); return }
+    guard item != selection else { logVerbose("item already selected"); return }
 
     // update selection
-    MSLogVerbose("selecting cell for item \(item) where offset = \(offset)")
+    logVerbose("selecting cell for item \(item) where offset = \(offset)")
 
     if selection > -1 { collectionView.deselectItemAtIndexPath(NSIndexPath(forItem: selection, inSection: 0), animated: true) }
     selection = item

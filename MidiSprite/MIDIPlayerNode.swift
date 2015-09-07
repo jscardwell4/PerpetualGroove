@@ -30,7 +30,7 @@ final class MIDIPlayerNode: SKShapeNode {
     super.init()
     name = "player"
     path = bezierPath.CGPath
-    strokeColor = UIColor(red: 0.502, green: 0.502, blue: 0.502, alpha: 1.0)
+    strokeColor = .strokeColor
     guard let path = path else { return }
     physicsBody = SKPhysicsBody(edgeLoopFromPath: path)
     physicsBody?.categoryBitMask = 1
@@ -70,10 +70,6 @@ final class MIDIPlayerNode: SKShapeNode {
   - parameter placement: MIDINode.Placement
   */
   func placeNew(placement: MIDINode.Placement) {
-    guard let controller = UIApplication.sharedApplication().keyWindow?.rootViewController
-                             as? MIDIPlayerViewController else { return }
-    if !controller.playing { controller.play() }
-
     do {
       let midiNode = try MIDINode(placement, "midiNode\(midiNodes.count)")
       addChild(midiNode)

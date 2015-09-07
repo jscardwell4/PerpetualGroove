@@ -194,10 +194,10 @@ public class InsettingViewController: UIViewController {
   }
 
   /** cancelAction */
-  func cancelAction() { MSLogDebug("") }
+  func cancelAction() { logDebug("") }
 
   /** submitAction */
-  func submitAction() { MSLogDebug("") }
+  func submitAction() { logDebug("") }
 
 
 }
