@@ -21,6 +21,19 @@ extension String {
 
 extension String: ByteArrayConvertible {
   public var bytes: [Byte] { return Array(utf8) }
+  public init<S:SequenceType where S.Generator.Element == Byte>(_ bytes: S) {
+    self.init(Array(bytes))
+  }
+
+  public init(var _ bytes: [Byte]) {
+    var i = bytes.count - 1
+    guard i > 0 else { self = ""; return }
+    while i > -1 && bytes[i] == Byte(0) { i-- }
+    guard i > 0 else { self = ""; return }
+    if i++ == bytes.count - 1 { bytes.append(Byte(0)) }
+    bytes = Array(bytes[0 ..< i])
+    if let s = String(bytes: bytes, encoding: NSUTF8StringEncoding) { self = s } else { self = "" }
+  }
 }
 
 public extension String {
@@ -84,7 +97,7 @@ public extension String {
     pad -= utf16.count
     if pad > 0 { self = String(count: pad, repeatedValue: Character("0")) + self }
     guard group > 0 && characters.count > group else { return }
-    let characterGroups = characters.segment(group, pad: Character("0")).flatMap({String($0)})
+    let characterGroups = characters.segment(group, options: .PadFirstGroup(Character("0"))).flatMap({String($0)})
 //    if dropLeadingEmptyGroups {
 //      let emptyGroup = String(count: group, repeatedValue: Character("0"))
 //      while characterGroups.count > 1 && characterGroups.first == emptyGroup { characterGroups.removeAtIndex(0) }

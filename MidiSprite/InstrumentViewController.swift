@@ -76,11 +76,11 @@ final class InstrumentViewController: FormPopoverViewController {
 
     let soundSetField = FormPickerField(name: FieldName.SoundSet.rawValue,
                                         value: soundSet.index,
-                                        choices: SoundSet.allCases.map({$0.baseName}))
+                                        choices: Sequencer.soundSets.map({$0.displayName}))
 
     let programField = FormPickerField(name: FieldName.Program.rawValue,
                                        value: Int(program),
-                                       choices: soundSet.programs)
+                                       choices: soundSet.presets.map ({$0.name}))
 
     let channelField = FormStepperField(name: FieldName.Channel.rawValue,
                                         value: Double(channel),
@@ -102,18 +102,18 @@ final class InstrumentViewController: FormPopoverViewController {
 
       switch fieldName {
         case .SoundSet:
-          if let idx = field.value as? Int where SoundSet.allCases.indices.contains(idx) {
-            let soundSet = SoundSet.allCases[idx]
+          if let idx = field.value as? Int where Sequencer.soundSets.indices.contains(idx) {
+            var soundSet = Sequencer.soundSets[idx]
             guard self.soundSet != soundSet else { break }
             self.soundSet = soundSet
-            self.program = 0
-            programField.choices = self.soundSet.programs
+            self.program = UInt8(soundSet.presets[0].program)
+            programField.choices = self.soundSet.presets.map({$0.name})
             programField.value = programField.choices.count > 0 ? 0 : -1
           }
 
         case .Program:
-          if let idx = field.value as? Int where self.soundSet.programs.indices.contains(idx) {
-            self.program = UInt8(idx)
+          if let idx = field.value as? Int where self.soundSet.presets.indices.contains(idx) {
+            self.program = UInt8(self.soundSet.presets[idx].program)
           }
 
         case .Channel:

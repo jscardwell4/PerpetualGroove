@@ -32,17 +32,58 @@ public extension SequenceType where Generator.Element: Named {
   }
 }
 
+public enum SegmentOptions<PadType> {
+  case PadFirstGroup(PadType)
+  case PadLastGroup(PadType)
+  case UnpaddedFirstGroup
+  case UnpaddedLastGroup
+}
 public extension SequenceType {
-  public func segment(var segmentSize: Int = 2, pad: Generator.Element? = nil) -> [[Generator.Element]] {
+  /**
+  segment:options:
+
+  - parameter segmentSize: Int = 2
+  - parameter options: SegmentOptions<Generator.Element> = .Default
+
+  - returns: [[Generator.Element]]
+  */
+  public func segment(var segmentSize: Int = 2, options: SegmentOptions<Generator.Element> = .UnpaddedLastGroup) -> [[Generator.Element]] {
     var result: [[Generator.Element]] = []
     var array: [Generator.Element] = []
     segmentSize = max(segmentSize, 1)
-    for element in reverse() {
-      if array.count == segmentSize { result.insert(array, atIndex: 0); array = [] }
-      array.insert(element, atIndex: 0)
+
+    switch options {
+      case .UnpaddedLastGroup:
+        for element in self {
+          if array.count == segmentSize { result.append(array); array = [] }
+          array.append(element)
+        }
+        result.append(array)
+
+      case .PadLastGroup(let p):
+        for element in self {
+          if array.count == segmentSize { result.append(array); array = [] }
+          array.append(element)
+        }
+        while array.count < segmentSize { array.append(p) }
+        result.append(array)
+
+      case .UnpaddedFirstGroup:
+        for element in reverse() {
+          if array.count == segmentSize { result.insert(array, atIndex: 0); array = [] }
+          array.insert(element, atIndex: 0)
+        }
+        result.insert(array, atIndex: 0)
+
+      case .PadFirstGroup(let p):
+        for element in self {
+          if array.count == segmentSize { result.insert(array, atIndex: 0); array = [] }
+          array.insert(element, atIndex: 0)
+        }
+        while array.count < segmentSize { array.insert(p, atIndex: 0) }
+        result.insert(array, atIndex: 0)
+
     }
-    if let pad = pad { while array.count < segmentSize { array.insert(pad, atIndex: 0) } }
-    result.insert(array, atIndex: 0)
 
     return result
   }

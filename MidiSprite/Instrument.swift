@@ -18,7 +18,7 @@ final class Instrument: Equatable, CustomStringConvertible {
   }
 
   var event: InstrumentEvent {
-    let fileType: InstrumentEvent.FileType = soundSet.instrumentType == .EXS24 ? .EXS : .SF2
+    let fileType: InstrumentEvent.FileType = .SF2
     return InstrumentEvent(fileType, soundSet.url)
   }
 
@@ -43,25 +43,21 @@ final class Instrument: Equatable, CustomStringConvertible {
   }
 
   struct Preset: ByteArrayConvertible {
-    let fileName: String
-    let type: SoundSet.InstrumentType
+    let fileURL: NSURL
     let lowerRegister: ProgramRegister
     let upperRegister: ProgramRegister
-    var bytes: [Byte] { return lowerRegister.bytes + upperRegister.bytes + [type.rawValue] + fileName.bytes }
+    var bytes: [Byte] { return lowerRegister.bytes + upperRegister.bytes + fileURL.absoluteString.bytes }
     init(_ bytes: [Byte]) {
-      guard bytes.count > 17 else { type = .SF2; fileName = ""; lowerRegister = 0; upperRegister = 0; return }
+      guard bytes.count > 17 else { fileURL = NSURL(string: "")!; lowerRegister = 0; upperRegister = 0; return }
       lowerRegister = ProgramRegister(bytes[0 ..< 8])
       upperRegister = ProgramRegister(bytes[8 ..< 16])
-      type = SoundSet.InstrumentType(rawValue: bytes[16]) ?? .SF2
-      fileName = String(bytes[17..<])
+      fileURL = NSURL(string: String(bytes[17..<]))!
     }
-    init(fileName: String,
-         type: SoundSet.InstrumentType,
+    init(fileURL: NSURL,
          lowerRegister: ProgramRegister,
          upperRegister: ProgramRegister)
     {
-      self.fileName = fileName
-      self.type = type
+      self.fileURL = fileURL
       self.lowerRegister = lowerRegister
       self.upperRegister = upperRegister
     }
@@ -75,8 +71,7 @@ final class Instrument: Equatable, CustomStringConvertible {
   private var channelPrograms: [Program] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
   var preset: Preset {
-    return Preset(fileName: soundSet.fileName,
-                  type: soundSet.instrumentType,
+    return Preset(fileURL: soundSet.url,
                   lowerRegister: ProgramRegister(channelPrograms[0 ..< 8]),
                   upperRegister: ProgramRegister(channelPrograms[8 ..< 16]))
   }
@@ -158,7 +153,7 @@ final class Instrument: Equatable, CustomStringConvertible {
       ➤ "\(location()) Failed to retrieve instrument audio unit from audio graph node"
 
     var instrumentData = AUSamplerInstrumentData(fileURL: Unmanaged.passUnretained(soundSet.url),
-                                                 instrumentType: soundSet.instrumentType.rawValue,
+                                                 instrumentType: UInt8(kInstrumentType_DLSPreset),
                                                  bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB),
                                                  bankLSB: UInt8(kAUSampler_DefaultBankLSB),
                                                  presetID: 0)
@@ -181,10 +176,7 @@ final class Instrument: Equatable, CustomStringConvertible {
 
   - parameter preset: Preset
   */
-  convenience init(preset: Preset) throws {
-    guard let set = SoundSet(fileName: preset.fileName) else { throw Error.InvalidFileName }
-    try self.init(soundSet: set)
-  }
+  convenience init(preset: Preset) throws { try self.init(soundSet: try SoundSet(url: preset.fileURL)) }
 
 }
 

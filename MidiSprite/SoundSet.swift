@@ -10,71 +10,37 @@ import Foundation
 import MoonKit
 import AudioUnit.AudioUnitProperties
 
-struct SoundSet: Hashable, EnumerableType, CustomStringConvertible {
-  let baseName: String
-  let ext: String
+/** Wrapper for a sound font file */
+struct SoundSet: Hashable, CustomStringConvertible {
   let url: NSURL
-  let instrumentType: InstrumentType
-  var fileName: String { return "\(baseName).\(ext)" }
   var description: String {
-    return "SoundSet { name: \(baseName), instrumentType: \(instrumentType) }"
+    var result =  "SoundSet {\n"
+    result += "  name: \((url.lastPathComponent! as NSString).stringByDeletingPathExtension)\n"
+    result += "  sf2File: \(sf2File.description.indentedBy(4, true))\n"
+    result += "}"
+    return result
   }
+  let sf2File: SF2File
   var hashValue: Int { return url.hashValue }
-
-  enum InstrumentType: Byte {
-    case SF2 = 1          /// `kInstrumentType_DLSPreset` and `kInstrumentType_SF2Preset`
-    case AU = 2           /// `kInstrumentType_AUPreset`
-    case AudioFile = 3    /// `kInstrumentType_Audiofile`
-    case EXS24 = 4        /// `kInstrumentType_EXS24`
-
-    init(ext: String) {
-      switch ext.lowercaseString {
-        case "dls", "sf2": self = .SF2
-        case "aupreset": self = .AU
-        case "exs": self = .EXS24
-        default: self = .AudioFile
-      }
-    }
+  var displayName: String { return (url.lastPathComponent! as NSString).stringByDeletingPathExtension }
+  var index: Int {
+    guard let idx = Sequencer.soundSets.indexOf(self) else { fatalError("failed to get index for \(self)") }
+    return idx
   }
 
-  static let HipHopKit = SoundSet(baseName: "Hip Hop Kit", ext: "exs")!
-  static let GrandPiano = SoundSet(baseName: "Grand Piano", ext: "exs")!
-  static let PureOscillators = SoundSet(baseName: "SPYRO's Pure Oscillators", ext: "sf2")!
-  static let FluidR3 = SoundSet(baseName: "FluidR3", ext: "sf2")!
+  typealias Preset = SF2File.Preset
+  lazy var presets: [Preset] = self.sf2File.presets.sort()
 
-  init?(fileName: String) {
-    self.init(baseName: (fileName as NSString).stringByDeletingPathExtension, ext: (fileName as NSString).pathExtension)
-  }
-  
-  init?(baseName b: String, ext e: String) {
-    baseName = b
-    ext = e
-    instrumentType = InstrumentType(ext: ext)
-    guard let u = NSBundle.mainBundle().URLForResource(baseName, withExtension: ext) else { return nil }
-    url = u
+  /**
+  Initialize a sound set using the file located by the specified url.
+
+  - parameter u: NSURL
+  */
+  init(url u: NSURL) throws {
     var error: NSError?
-    guard url.checkResourceIsReachableAndReturnError(&error) else { MSHandleError(error); return nil }
-  }
-
-  init?(baseName: String) {
-    switch baseName {
-      case SoundSet.HipHopKit.baseName:       self = SoundSet.HipHopKit
-      case SoundSet.GrandPiano.baseName:      self = SoundSet.GrandPiano
-      case SoundSet.PureOscillators.baseName: self = SoundSet.PureOscillators
-      case SoundSet.FluidR3.baseName:         self = SoundSet.FluidR3
-      default:                                return nil
-    }
-  }
-
-  static var allCases: [SoundSet] { return [PureOscillators, GrandPiano, FluidR3, HipHopKit] }
-
-  var programs: [String] {
-    switch self {
-    case SoundSet.PureOscillators:
-      return (try! NSString(contentsOfURL: NSBundle.mainBundle().URLForResource("PureOscillators", withExtension: "programlist")!, encoding: NSUTF8StringEncoding)).componentsSeparatedByString("\n")
-    default:
-      return []
-    }
+    guard u.checkResourceIsReachableAndReturnError(&error) else { throw error! }
+    sf2File = try SF2File(file: u)
+    url = u
   }
 
 }

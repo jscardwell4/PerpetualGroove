@@ -13,9 +13,33 @@ import MoonKit
 /** Manager for MIDI-related aspects of the application */
 final class Sequencer {
 
+  // MARK: - Initialization
+
+  private static var isInitialized = false
+
+  /** initialize */
+  static func initialize() {
+    guard !isInitialized else { return }
+
+    backgroundDispatch {
+      guard let urls = NSBundle.mainBundle().URLsForResourcesWithExtension("sf2", subdirectory: nil) else { return }
+      do {
+        try urls.forEach { soundSets.append(try SoundSet(url: $0)) }
+        guard soundSets.count > 0 else { fatalError("failed to create any sound sets from bundled sf2 files") }
+        _currentSoundSet = 0
+        Notification.SoundSetsInitialized.post()
+      } catch {
+        logError(error)
+      }
+      logDebug("Sequencer.soundSets…\n" + "\n".join(soundSets.map({$0.description})))
+    }
+
+    isInitialized = true
+  }
+
   // MARK: - Notification enumeration
   enum Notification: String, NotificationNameType, NotificationType {
-    case FileLoaded, FileUnloaded
+    case FileLoaded, FileUnloaded, SoundSetsInitialized
     var object: AnyObject? { return Sequencer.self }
   }
 
@@ -90,9 +114,21 @@ final class Sequencer {
 
   static private var state = State.Default
 
-  static var currentSoundSet = SoundSet.PureOscillators {
-    didSet {
-      guard oldValue != currentSoundSet else { return }
+  static private(set) var soundSets: [SoundSet] = []
+
+  static private var _currentSoundSet = -1
+  static var currentSoundSet: SoundSet {
+    get {
+      guard soundSets.indices.contains(_currentSoundSet) else { fatalError("currentSoundSet requested before initialization") }
+      return soundSets[_currentSoundSet]
+    }
+    set {
+      guard let idx = soundSets.indexOf(newValue) else {
+        logWarning("attempt to set currentSoundSet with unregistered sound set")
+        return
+      }
+      guard _currentSoundSet != idx else { return }
+      _currentSoundSet = idx
       state ∪= .ModifiedSoundSet
     }
   }

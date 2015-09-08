@@ -7,11 +7,21 @@
 		<key>MidiSprite.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>12</integer>
+			<integer>7</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>C2207B721B9DC5A300E4D65D</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C2207B7D1B9DC5EE00E4D65D</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>C2E043301B72F4DC005F0675</key>
 		<dict>
 			<key>primary</key>

@@ -328,6 +328,7 @@
 		C27372851A1FC0750079624D /* UIColor+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27372841A1FC0750079624D /* UIColor+MoonKitAdditions.swift */; };
 		C274CB8A1B70FBBF00EC8E4A /* Form.swift in Sources */ = {isa = PBXBuildFile; fileRef = C274CB891B70FBBF00EC8E4A /* Form.swift */; };
 		C274CB8C1B70FBCF00EC8E4A /* FormField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C274CB8B1B70FBCF00EC8E4A /* FormField.swift */; };
+		C2776C2D1B9E6053002FE5A8 /* Index.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2776C2C1B9E6053002FE5A8 /* Index.swift */; settings = {ASSET_TAGS = (); }; };
 		C27953101AFEBA0300F72C80 /* AKPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C279530F1AFEBA0300F72C80 /* AKPickerView.swift */; };
 		C27953121AFED61200F72C80 /* FormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27953111AFED61200F72C80 /* FormViewController.swift */; };
 		C27978E41B17FF9E00B36BAD /* ZoomingCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27978E31B17FF9E00B36BAD /* ZoomingCollectionViewLayout.swift */; };
@@ -545,6 +546,7 @@
 		C274832519D07942000CB422 /* UIBarButtonItem+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIBarButtonItem+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C274CB891B70FBBF00EC8E4A /* Form.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Form.swift; sourceTree = "<group>"; };
 		C274CB8B1B70FBCF00EC8E4A /* FormField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormField.swift; sourceTree = "<group>"; };
+		C2776C2C1B9E6053002FE5A8 /* Index.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Index.swift; sourceTree = "<group>"; };
 		C277AB8619D787EA008DEE39 /* ToggleBarButtonItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToggleBarButtonItem.swift; sourceTree = "<group>"; };
 		C27828411814629700FC8D54 /* MSJSONSerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSJSONSerialization.h; sourceTree = "<group>"; };
 		C27828421814629700FC8D54 /* MSJSONSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSJSONSerialization.m; sourceTree = "<group>"; };
@@ -914,6 +916,7 @@
 				C2C9EB6F1B65C5C70051BACF /* Range+MoonKitAdditions.swift */,
 				C25D6A861B703E0C00EB7125 /* UILabel+MoonKitAdditions.swift */,
 				C22E6B8C1B80E1CE008D46A6 /* ClosedInterval+MoonKitAdditions.swift */,
+				C2776C2C1B9E6053002FE5A8 /* Index.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1817,6 +1820,7 @@
 				C2CEFF281A32236B00F3BE24 /* HexIntegerInputView.swift in Sources */,
 				C28A61EB1B0CEA2100612469 /* LabeledStepper.swift in Sources */,
 				C2064FFA1A13C05900342FDE /* Operators.swift in Sources */,
+				C2776C2D1B9E6053002FE5A8 /* Index.swift in Sources */,
 				C2EF05B11B87FFA500AE68F1 /* Fraction.swift in Sources */,
 				C2358F3A19C78E0C00920F8D /* NSManagedObject+MSKitAdditions.m in Sources */,
 				C2064FFE1A13C71700342FDE /* UIView+MoonKitAdditions.swift in Sources */,
