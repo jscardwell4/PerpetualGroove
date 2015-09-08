@@ -23,10 +23,7 @@ class InlinePickerViewCell: UICollectionViewCell {
 
   - parameter aDecoder: NSCoder
   */
-  required init?(coder aDecoder: NSCoder) {
-    super.init(coder: aDecoder)
-    initializeIVARs()
-  }
+  required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder); initializeIVARs() }
 
   /**
   applyLayoutAttributes:
@@ -60,9 +57,10 @@ class InlinePickerViewCell: UICollectionViewCell {
 
   /** updateConstraints */
   override func updateConstraints() {
-    removeAllConstraints()
     super.updateConstraints()
-    constrain(𝗛|contentView|𝗛, 𝗩|contentView|𝗩)
+    let id = Identifier(self, "Internal")
+    guard constraintsWithIdentifier(id).count == 0 else { return }
+    constrain([𝗛|contentView|𝗛, 𝗩|contentView|𝗩] --> id)
   }
 }
 

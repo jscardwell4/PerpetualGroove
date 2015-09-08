@@ -14,29 +14,13 @@ import UIKit
   private enum CellType: String { case Label, Image }
 
   private var cellType = CellType.Label { didSet { reloadData() } }
-  @IBInspectable var cellTypeString: String {
-    get { return cellType.rawValue }
-    set { cellType = CellType(rawValue: newValue) ?? cellType }
-  }
 
   /**
   initWithFrame:
 
   - parameter frame: CGRect
   */
-  override public init(frame: CGRect) {
-    super.init(frame: frame)
-    #if TARGET_INTERFACE_BUILDER
-      labels = ["What", "The", "Fuck"]
-      selection = 1
-      autoresizesSubviews = false
-      contentMode = .Redraw
-      collectionView.autoresizesSubviews = false
-      collectionView.contentMode = .Redraw
-      collectionView.opaque = false
-    #endif
-    initializeIVARs()
-  }
+  override public init(frame: CGRect) { super.init(frame: frame); initializeIVARs() }
 
   /**
   init:
@@ -61,6 +45,7 @@ import UIKit
 
   /** initializeIVARs */
   private func initializeIVARs() {
+    userInteractionEnabled = true
     addSubview(collectionView)
     collectionView.registerClass(InlinePickerViewLabelCell.self, forCellWithReuseIdentifier: CellType.Label.rawValue)
     collectionView.registerClass(InlinePickerViewImageCell.self, forCellWithReuseIdentifier: CellType.Image.rawValue)
@@ -70,10 +55,9 @@ import UIKit
     translatesAutoresizingMaskIntoConstraints = false
     nametag = "picker"
 
-//    collectionView.frame = bounds
     collectionView.nametag = "collectionView"
     layout.delegate = self
-    collectionView.scrollEnabled = false
+    collectionView.scrollEnabled = editing
     collectionView.translatesAutoresizingMaskIntoConstraints = false
     collectionView.dataSource = self
     collectionView.delegate = self
@@ -88,16 +72,14 @@ import UIKit
   }
 
   public override func prepareForInterfaceBuilder() {
-//    collectionView.contentSize = bounds.size
-//    initializeIVARs()
-    reloadData()
-    logIB(description)
-  }
-
-  public override var bounds: CGRect {
-    didSet {
-      logIB("old bounds = \(oldValue); new bounds = \(bounds)")
+    func setContentMode(view: UIView) {
+      view.contentMode = .Redraw
+      view.setNeedsDisplay()
+      view.subviews.forEach { setContentMode($0) }
     }
+    setContentMode(self)
+    reloadData()
+    logIB("\(description)\n" + descriptionTree("frame", "contentMode", "transform", "translatesAutoresizingMaskIntoConstraints", "autoresizesSubviews", "layer.transform"))
   }
 
   /** updatePerspective */

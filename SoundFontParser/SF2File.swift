@@ -263,7 +263,7 @@ struct SF2File: CustomStringConvertible {
   /** Parses the sdta chunk of the file */
   private struct SDTAChunk: CustomStringConvertible {
 
-    let smpl: [Byte]?
+    let smpl: Range<Int>?
 
     /**
     initWithBytes:
@@ -288,7 +288,7 @@ struct SF2File: CustomStringConvertible {
         guard byteCount >= smplSize + 12 else {
           throw Error.SDTAStructurallyUnsound
         }
-        smpl = Array(bytes[bytes.startIndex.advancedBy(12) ..< bytes.startIndex.advancedBy(smplSize + 12)])
+        smpl = bytes.startIndex.advancedBy(12) ..< bytes.startIndex.advancedBy(smplSize + 12)
       } else {
         smpl = nil
       }
@@ -352,14 +352,14 @@ struct SF2File: CustomStringConvertible {
     }
 
     let phdr: [PresetHeader]
-    let pbag: [Byte]
-    let pmod: [Byte]
-    let pgen: [Byte]
-    let inst: [Byte]
-    let ibag: [Byte]
-    let imod: [Byte]
-    let igen: [Byte]
-    let shdr: [Byte]
+    let pbag: Range<Int>
+    let pmod: Range<Int>
+    let pgen: Range<Int>
+    let inst: Range<Int>
+    let ibag: Range<Int>
+    let imod: Range<Int>
+    let igen: Range<Int>
+    let shdr: Range<Int>
 
     /**
     initWithBytes:
@@ -378,22 +378,22 @@ struct SF2File: CustomStringConvertible {
       }
       var i = bytes.startIndex.advancedBy(4)
       var phdr: [PresetHeader]?
-      var pbag: [Byte]?
-      var pmod: [Byte]?
-      var pgen: [Byte]?
-      var inst: [Byte]?
-      var ibag: [Byte]?
-      var imod: [Byte]?
-      var igen: [Byte]?
-      var shdr: [Byte]?
+      var pbag: Range<Int>?
+      var pmod: Range<Int>?
+      var pgen: Range<Int>?
+      var inst: Range<Int>?
+      var ibag: Range<Int>?
+      var imod: Range<Int>?
+      var igen: Range<Int>?
+      var shdr: Range<Int>?
       while i.advancedBy(8) < bytes.endIndex {
         let chunkType = String(bytes[i ..< i.advancedBy(4)])
         let chunkSize = Int(Byte4(bytes[i.advancedBy(4) ..< i.advancedBy(8)]).bigEndian)
         guard byteCount >= i.advancedBy(8 + chunkSize) - bytes.startIndex else { throw Error.PDTAStructurallyUnsound }
         let chunkData = bytes[i.advancedBy(8) ..< i.advancedBy(8 + chunkSize)]
-        func uniqueAssign(inout value: [Byte]?) {
+        func uniqueAssign(inout value: Range<Int>?) {
           guard case .None = value else { return }
-          value = Array(chunkData)
+          value = chunkData.indices
         }
         switch chunkType.lowercaseString {
           case "phdr":

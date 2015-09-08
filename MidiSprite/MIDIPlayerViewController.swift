@@ -35,12 +35,6 @@ final class MIDIPlayerViewController: UIViewController {
     midiPlayerSceneView.presentScene(MIDIPlayerScene(size: midiPlayerSceneView.bounds.size))
     playerScene!.paused = true
 
-    initializeReceptionist()
-
-  }
-
-  /** addPopovers */
-  private func addPopovers() {
     filesPopoverView.hidden = true
     view.addSubview(filesPopoverView)
 
@@ -54,17 +48,37 @@ final class MIDIPlayerViewController: UIViewController {
     view.addSubview(templatePopoverView)
 
     view.setNeedsUpdateConstraints()
+
+    initializeReceptionist()
+
   }
+
+  /** addPopovers */
+//  private func addPopovers() {
+//    filesPopoverView.hidden = true
+//    view.addSubview(filesPopoverView)
+//
+//    mixerPopoverView.hidden = true
+//    view.addSubview(mixerPopoverView)
+//
+//    instrumentPopoverView.hidden = true
+//    view.addSubview(instrumentPopoverView)
+//
+//    templatePopoverView.hidden = true
+//    view.addSubview(templatePopoverView)
+//
+//    view.setNeedsUpdateConstraints()
+//  }
 
   /** viewDidLayoutSubviews */
   override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
 
-    guard _filesPopoverView != nil
-       && _templatePopoverView != nil
-       && _mixerPopoverView != nil
-       && _instrumentPopoverView != nil else { return }
-    
+//    guard _filesPopoverView != nil
+//       && _templatePopoverView != nil
+//       && _mixerPopoverView != nil
+//       && _instrumentPopoverView != nil else { return }
+
     func adjustPopover(popoverView: PopoverView, _ presentingView: UIView) {
       let popoverCenter = view.convertPoint(popoverView.center, fromView: popoverView.superview)
       let presentingCenter = view.convertPoint(presentingView.center, fromView: presentingView.superview)
@@ -502,7 +516,7 @@ final class MIDIPlayerViewController: UIViewController {
     let trackCallback: Callback = (Sequence.self, queue, trackCountDidChange)
     let fileLoadedCallback: Callback = (Sequencer.self, queue, fileDidLoad)
     let fileUnloadedCallback: Callback = (Sequencer.self, queue, fileDidUnload)
-    let soundSetsInitializedCallback: Callback = (Sequencer.self, queue, {[unowned self] _ in self.addPopovers()})
+//    let soundSetsInitializedCallback: Callback = (Sequencer.self, queue, {[unowned self] _ in self.addPopovers()})
 
     let callbacks: [NotificationReceptionist.Notification:NotificationReceptionist.Callback] = [
       MIDIPlayerNode.Notification.NodeAdded.name.value: nodeCallback,
@@ -510,8 +524,8 @@ final class MIDIPlayerViewController: UIViewController {
       Sequence.Notification.TrackAdded.name.value: trackCallback,
       Sequence.Notification.TrackRemoved.name.value: trackCallback,
       Sequencer.Notification.FileLoaded.name.value: fileLoadedCallback,
-      Sequencer.Notification.FileUnloaded.name.value: fileUnloadedCallback,
-      Sequencer.Notification.SoundSetsInitialized.name.value: soundSetsInitializedCallback
+      Sequencer.Notification.FileUnloaded.name.value: fileUnloadedCallback//,
+//      Sequencer.Notification.SoundSetsInitialized.name.value: soundSetsInitializedCallback
     ]
 
     notificationReceptionist = NotificationReceptionist(callbacks: callbacks)

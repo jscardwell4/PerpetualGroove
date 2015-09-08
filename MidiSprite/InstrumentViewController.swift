@@ -38,9 +38,6 @@ final class InstrumentViewController: FormPopoverViewController {
       guard Sequencer.currentSoundSet != newValue else { return }
       Sequencer.currentSoundSet = newValue
       Sequencer.currentProgram = 0
-//      guard let form = _form,
-//                field = form[FieldName.SoundSet.rawValue] as? FormPickerField else { return }
-//      field.value = Sequencer.currentSoundSet.index
     }
   }
 
@@ -49,10 +46,6 @@ final class InstrumentViewController: FormPopoverViewController {
     set {
       guard Sequencer.currentProgram != newValue else { return }
       Sequencer.currentProgram = newValue
-//      guard let form = _form,
-//                field = form[FieldName.Program.rawValue] as? FormPickerField else { return }
-//      field.choices = Sequencer.currentSoundSet.programs
-//      field.value = Int(Sequencer.currentProgram)
     }
   }
 
@@ -61,9 +54,6 @@ final class InstrumentViewController: FormPopoverViewController {
     set {
       guard Sequencer.currentChannel != newValue else { return }
       Sequencer.currentChannel = newValue
-//      guard let form = _form,
-//                field = form[FieldName.Channel.rawValue] as? FormStepperField else { return }
-//      field.value = Double(Sequencer.currentChannel)
     }
   }
 
@@ -80,7 +70,7 @@ final class InstrumentViewController: FormPopoverViewController {
 
     let programField = FormPickerField(name: FieldName.Program.rawValue,
                                        value: Int(program),
-                                       choices: soundSet.presets.map ({$0.name}))
+                                       choices: soundSet.presets.map({$0.name}))
 
     let channelField = FormStepperField(name: FieldName.Channel.rawValue,
                                         value: Double(channel),

@@ -60,6 +60,7 @@ final class Metronome {
       ➤ "\(location()) Failed to load instrument into audio unit"
     try Mixer.connectMetronomeNode(node)
     initialized = true
+    logDebug("Metronome initialized")
   }
 
   static private let callbackKey = "click"

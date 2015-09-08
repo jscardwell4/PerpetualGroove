@@ -29,7 +29,7 @@ struct SoundSet: Hashable, CustomStringConvertible {
   }
 
   typealias Preset = SF2File.Preset
-  lazy var presets: [Preset] = self.sf2File.presets.sort()
+  var presets: [Preset] { return sf2File.presets.sort() }
 
   /**
   Initialize a sound set using the file located by the specified url.

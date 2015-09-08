@@ -4,6 +4,11 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>Instruments.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>14</integer>
+		</dict>
 		<key>MidiSprite.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -18,6 +23,11 @@
 			<true/>
 		</dict>
 		<key>C2207B7D1B9DC5EE00E4D65D</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C283E7BE1B9F272C00B1690D</key>
 		<dict>
 			<key>primary</key>
 			<true/>

@@ -665,6 +665,10 @@ static const void *UIViewNametagKey = &UIViewNametagKey;
 
         propertyValues[properties[i]] = (val ? (isBool ? BOOLString([val boolValue]) : val) : NullObject);
 
+      } else if ([property componentsSeparatedByString:@"."].count > 1) {
+        id val = [view valueForKeyPath:property];
+        if (ValueIsNil(val) || ([val respondsToSelector:@selector(count)] && [val count] == 0)) continue;
+        propertyValues[properties[i]] = (val ? (isBool ? BOOLString([val boolValue]) : val) : NullObject);
       }
 
     }

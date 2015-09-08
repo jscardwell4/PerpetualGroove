@@ -91,6 +91,7 @@ final class Mixer {
     mixerUnit = audioUnit
     mixerNode = node
     initialized = true
+    logDebug("Mixer initialized")
 
     try Metronome.initialize()
   }

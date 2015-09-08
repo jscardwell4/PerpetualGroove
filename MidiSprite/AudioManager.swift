@@ -36,6 +36,8 @@ final class AudioManager {
       try configureAudioSession()
       try configureAudioGraph()
       try Mixer.initialize(node: mixerNode)
+      initialized = true
+      logDebug("AudioManager initialized")
     } catch {
       logError(error)
     }

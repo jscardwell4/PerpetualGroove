@@ -15,26 +15,22 @@ final class Sequencer {
 
   // MARK: - Initialization
 
-  private static var isInitialized = false
+  private static var initialized = false
 
   /** initialize */
   static func initialize() {
-    guard !isInitialized else { return }
-
-    backgroundDispatch {
-      guard let urls = NSBundle.mainBundle().URLsForResourcesWithExtension("sf2", subdirectory: nil) else { return }
-      do {
-        try urls.forEach { soundSets.append(try SoundSet(url: $0)) }
-        guard soundSets.count > 0 else { fatalError("failed to create any sound sets from bundled sf2 files") }
-        _currentSoundSet = 0
-        Notification.SoundSetsInitialized.post()
-      } catch {
-        logError(error)
-      }
-      logDebug("Sequencer.soundSets…\n" + "\n".join(soundSets.map({$0.description})))
+    guard !initialized else { return }
+    guard let urls = NSBundle.mainBundle().URLsForResourcesWithExtension("sf2", subdirectory: nil) else { return }
+    do {
+      try urls.forEach { soundSets.append(try SoundSet(url: $0)) }
+      guard soundSets.count > 0 else { fatalError("failed to create any sound sets from bundled sf2 files") }
+      _currentSoundSet = 0
+      Notification.SoundSetsInitialized.post()
+    } catch {
+      logError(error)
     }
-
-    isInitialized = true
+    initialized = true
+    logDebug("Sequncer initialized")
   }
 
   // MARK: - Notification enumeration
