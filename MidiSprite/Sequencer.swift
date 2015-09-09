@@ -207,10 +207,8 @@ final class Sequencer {
   - returns: The new `Track`
   */
   static func newTrackUsingSoundSet(soundSet: SoundSet, setToProgram program: Instrument.Program) throws -> Track {
-    let instrument = try Instrument(soundSet: soundSet)
-    let bus = try Mixer.connectInstrument(instrument)
-    if program != 0 { try instrument.setProgram(program, onChannel: 0) }
-    let track = try sequence.newTrackOnBus(bus)
+    let instrument = try Instrument(soundSet: soundSet, program: program)
+    let track = try sequence.newTrackWithInstrument(instrument)
     state.remove([.ModifiedSoundSet, .ModifiedProgram, .ModifiedChannel])
     return track
   }

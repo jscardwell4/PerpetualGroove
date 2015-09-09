@@ -9,43 +9,31 @@
 import Foundation
 import MoonKit
 import AudioToolbox
+import AVFoundation
 
 final class Bus: Hashable, CustomStringConvertible {
 
-  let element: AudioUnitElement
   let instrument: Instrument
 
-  var volume: Float = 1  {
-    didSet {
-      volume = (0 ... 1).clampValue(volume)
-      do { try Mixer.setVolume(volume, onBus: self) } catch { logError(error) }
-    }
+  var volume: Float {
+    get { return instrument.node.volume }
+    set { instrument.node.volume = (0 ... 1).clampValue(volume) }
   }
 
-  var pan: Float = 0 {
-    didSet {
-      pan = (-1 ... 1).clampValue(pan)
-      do { try Mixer.setPan(pan, onBus: self) } catch { logError(error) }
-    }
+  var pan: Float {
+    get { return instrument.node.pan }
+    set { instrument.node.pan = (-1 ... 1).clampValue(pan) }
   }
 
-  init(_ element: AudioUnitElement, _ instrument: Instrument) {
-    self.element = element;
-    self.instrument = instrument
-    do {
-      let currentVolume = try Mixer.volumeOnBus(self)
-      let currentPan = try Mixer.panOnBus(self)
-      volume = currentVolume
-      pan = currentPan
-    } catch { logError(error) }
+  init(instrument i: Instrument) {
+    instrument = i
   }
 
-  var hashValue: Int { return Int(element) }
+  var hashValue: Int { return instrument.node.hashValue }
 
   var description: String {
     var result = "\(self.dynamicType.self) {\n\t"
     result += "\n\t".join(
-      "element: \(element)",
       "volume: \(volume)",
       "pan: \(pan)",
       "instrument: \(instrument)".indentedBy(8, true)
@@ -55,4 +43,4 @@ final class Bus: Hashable, CustomStringConvertible {
   }
 }
 
-func ==(lhs: Bus, rhs: Bus) -> Bool { return lhs.element == rhs.element }
+func ==(lhs: Bus, rhs: Bus) -> Bool { return lhs.instrument.node == rhs.instrument.node }

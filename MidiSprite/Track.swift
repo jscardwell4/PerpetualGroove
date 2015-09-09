@@ -15,8 +15,12 @@ import CoreMIDI
 final class Track: TrackType, Equatable {
 
   var description: String {
-    return "Track(\(label)) {\n\tbus: \(bus.description.indentedBy(4, true))\n\tcolor: \(color)\n\tevents: {\n" +
-           ",\n".join(events.map({$0.description.indentedBy(8)})) + "\n\t}\n}"
+    var result = "Track(\(label)) {\n"
+    result += "\tinstrument: \(instrument.description.indentedBy(4, true))\n"
+    result += "\tcolor: \(color)\n\tevents: {\n"
+    result += ",\n".join(events.map({$0.description.indentedBy(8)}))
+    result += "\n\t}\n}"
+    return result
   }
 
   typealias Program = Instrument.Program
@@ -24,9 +28,7 @@ final class Track: TrackType, Equatable {
 
   // MARK: - Constant properties
 
-  var instrument: Instrument { return bus.instrument }
-
-  let bus: Bus
+  let instrument: Instrument
   let color: Color
 
   private var nodes: Set<MIDINode> = []
@@ -50,8 +52,8 @@ final class Track: TrackType, Equatable {
   var chunk: TrackChunk {
     var trackEvents = events
     trackEvents.insert(MetaEvent(.SequenceTrackName(name: label)), atIndex: 0)
-    trackEvents.insert(bus.instrument.event, atIndex: 1)
-    trackEvents.insert(ChannelEvent(.ProgramChange, ChannelEvent.Channel(0), bus.instrument.programOnChannel(0)), atIndex: 2)
+    trackEvents.insert(instrument.event, atIndex: 1)
+    trackEvents.insert(ChannelEvent(.ProgramChange, ChannelEvent.Channel(0), instrument.programOnChannel(0)), atIndex: 2)
     trackEvents.append(MetaEvent(.EndOfTrack))
     return TrackChunk(events: trackEvents)
   }
@@ -62,15 +64,15 @@ final class Track: TrackType, Equatable {
   var label: String {
     get {
       guard _label == nil else { return _label! }
-      _label = "BUS \(bus.element)"
+      _label = "BUS \(instrument.bus)"
       return _label!
     } set {
       _label = newValue
     }
   }
 
-  var volume: Float { get { return bus.volume } set { bus.volume = newValue } }
-  var pan: Float { get { return bus.pan } set { bus.pan = newValue } }
+  var volume: Float { get { return instrument.node.volume } set { instrument.node.volume = (0 ... 1).clampValue(newValue) } }
+  var pan: Float { get { return instrument.node.pan } set { instrument.node.pan = (-1 ... 1).clampValue(newValue) } }
 
   enum Error: String, ErrorType, CustomStringConvertible {
     case NodeNotFound = "The specified node was not found among the track's nodes"
@@ -136,7 +138,7 @@ final class Track: TrackType, Equatable {
   private func read(packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutablePointer<Void>) {
 
     // Forward the packets to the instrument
-    do { try MIDISend(outPort, bus.instrument.endPoint, packetList) ➤ "Failed to forward packet list to instrument" }
+    do { try MIDISend(outPort, instrument.endPoint, packetList) ➤ "Failed to forward packet list to instrument" }
     catch { logError(error) }
 
     // Check if we are recording, otherwise skip event processing
@@ -168,13 +170,14 @@ final class Track: TrackType, Equatable {
 
   - parameter b: Bus
   */
-  init(bus b: Bus) throws {
-    bus = b
-    color = Color.allCases[Int(bus.element) % 10]
-    fileQueue = serialQueueWithLabel("BUS \(bus.element)", qualityOfService: QOS_CLASS_BACKGROUND)
-    try MIDIClientCreateWithBlock("track \(bus.element)", &client, nil) ➤ "Failed to create midi client"
+  init(instrument i: Instrument) throws {
+    instrument = i
+    color = Color.allCases[instrument.bus % 10]
+    fileQueue = serialQueueWithLabel("BUS \(instrument.bus)", qualityOfService: QOS_CLASS_BACKGROUND)
+    try MIDIClientCreateWithBlock("track \(instrument.bus)", &client, nil) ➤ "Failed to create midi client"
     try MIDIOutputPortCreate(client, "Output", &outPort) ➤ "Failed to create out port"
-    try MIDIInputPortCreateWithBlock(client, label ?? "BUS \(bus.element)", &inPort, read) ➤ "Failed to create in port"
+    let label = self.label ?? "BUS \(instrument.bus)"
+    try MIDIInputPortCreateWithBlock(client, label, &inPort, read) ➤ "Failed to create in port"
   }
 
   // MARK: - Enumeration for specifying the color attached to a `TrackType`
@@ -216,5 +219,5 @@ final class Track: TrackType, Equatable {
 }
 
 
-func ==(lhs: Track, rhs: Track) -> Bool { return lhs.bus == rhs.bus }
+func ==(lhs: Track, rhs: Track) -> Bool { return lhs.instrument == rhs.instrument }
 

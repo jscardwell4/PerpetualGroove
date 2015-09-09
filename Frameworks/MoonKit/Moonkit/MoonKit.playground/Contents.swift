@@ -7,6 +7,8 @@
 //
 import Foundation
 import UIKit
+import AVFoundation
 import MoonKit
 
-print(String(UInt(0) &- UInt(1), radix: 2))
+
+print(AVAudioUnitComponentManager.sharedAudioUnitComponentManager().componentsMatchingPredicate(NSPredicate(value: true)).map({$0.name}))

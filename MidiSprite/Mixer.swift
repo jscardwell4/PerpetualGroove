@@ -9,10 +9,12 @@
 import Foundation
 import MoonKit
 import AudioToolbox
+import AVFoundation
 import AudioUnit
 import CoreAudio
 
 final class Mixer {
+  /*
 
   // MARK: - An enumeration to wrap up notifications
 
@@ -64,8 +66,7 @@ final class Mixer {
 
   static private var reassignableBuses: OrderedSet<AudioUnitElement> = [] { didSet { reassignableBuses.sortInPlace() } }
 
-  static private var mixerNode: AUNode?
-  static private var mixerUnit: AudioUnit?
+  static private var mixerNode: AVAudioMixerNode?
   static private var initialized = false
 
   // MARK: - Initializing the mixer
@@ -75,38 +76,13 @@ final class Mixer {
 
   - parameter node: AUNode
   */
-  static func initialize(node node: AUNode) throws {
-    guard !initialized else { return }
-    var isInitialized = DarwinBoolean(false)
-    let graph = AudioManager.graph
-    try AUGraphIsInitialized(graph, &isInitialized) ➤ "\(location()) Failed to check whether graph is initialized"
-    guard isInitialized else { throw Error.GraphNotInitialized }
-    var audioUnit = AudioUnit()
-    try AUGraphNodeInfo(graph, node, nil, &audioUnit) ➤ "\(location()) Failed to get audio unit from graph"
-    var description = AudioComponentDescription()
-    try AudioComponentGetDescription(audioUnit, &description) ➤ "\(location()) Failed to get audio unit description"
-    guard description.componentType == kAudioUnitType_Mixer
-       && description.componentSubType == kAudioUnitSubType_MultiChannelMixer
-       && description.componentManufacturer == kAudioUnitManufacturer_Apple else { throw Error.AudioUnitIsNotAMixer }
-    mixerUnit = audioUnit
-    mixerNode = node
-    initialized = true
-    logDebug("Mixer initialized")
-
+  static func initialize(node node: AVAudioMixerNode) throws {
     try Metronome.initialize()
+
   }
 
   // MARK: - Connecting/Disconnecting instruments
 
-  /**
-  nextAvailableBus
-
-  - returns: Bus
-  */
-  private static func nextAvailableBus() -> AudioUnitElement {
-    guard instruments.count > 0 else { return 1 }
-    return reassignableBuses.popFirst() ?? instruments.keys.maxElement()! + 1
-  }
 
   /**
   connectInstrument:
@@ -114,21 +90,21 @@ final class Mixer {
   - parameter instrument: Instrument
   */
   static func connectInstrument(instrument: Instrument) throws -> Bus {
-    guard initialized else { throw Error.MixerNotInitialized }
-    let graph = AudioManager.graph
-
-    guard !instruments.values.contains(instrument) else { throw Error.InstrumentAlreadyConnected }
-
-    guard let mixerNode = mixerNode else { throw Error.NilMixerNode }
-
+//    guard initialized else { throw Error.MixerNotInitialized }
+//    let graph = AudioManager.graph
+//
+//    guard !instruments.values.contains(instrument) else { throw Error.InstrumentAlreadyConnected }
+//
+//    guard let mixerNode = mixerNode else { throw Error.NilMixerNode }
+//
     let element = nextAvailableBus()
-
-    try AUGraphConnectNodeInput(graph, instrument.node, 0, mixerNode, element)
-      ➤ "\(location()) Failed to connect instrument to mixer"
-
-    try AUGraphUpdate(graph, nil) ➤ "\(location()) Failed to update audio graph"
-
-    instruments[element] = instrument
+//
+//    try AUGraphConnectNodeInput(graph, instrument.node, 0, mixerNode, element)
+//      ➤ "\(location()) Failed to connect instrument to mixer"
+//
+//    try AUGraphUpdate(graph, nil) ➤ "\(location()) Failed to update audio graph"
+//
+//    instruments[element] = instrument
 
     let bus = Bus(element, instrument)
     Notification.BusAdded(bus).post()
@@ -141,15 +117,15 @@ final class Mixer {
 
   - parameter node: AUNode
   */
-  static func connectMetronomeNode(node: AUNode) throws {
+  static func connectMetronomeNode(node: AVAudioUnitSampler) throws {
     guard initialized, let mixerNode = mixerNode else { return }
-
-    let graph = AudioManager.graph
-    try AUGraphConnectNodeInput(graph, node, 0, mixerNode, 0)
-      ➤ "\(location()) Failed to connect metronome node to mixer"
-
-    try AUGraphUpdate(graph, nil) ➤ "\(location()) Failed to update audio graph"
-
+//
+//    let graph = AudioManager.graph
+//    try AUGraphConnectNodeInput(graph, node, 0, mixerNode, 0)
+//      ➤ "\(location()) Failed to connect metronome node to mixer"
+//
+//    try AUGraphUpdate(graph, nil) ➤ "\(location()) Failed to update audio graph"
+//
   }
 
   /**
@@ -307,5 +283,5 @@ final class Mixer {
   static func isBusEnabled(bus: Bus) throws -> Bool {
     return try valueForParameter(.Enable, onBus: bus.element, scope: .Input) == 1
   }
-
+*/
 }

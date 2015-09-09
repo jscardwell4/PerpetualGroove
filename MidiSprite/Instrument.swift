@@ -10,6 +10,7 @@ import Foundation
 import MoonKit
 import AudioToolbox
 import CoreAudio
+import AVFoundation
 
 final class Instrument: Equatable, CustomStringConvertible {
 
@@ -64,11 +65,18 @@ final class Instrument: Equatable, CustomStringConvertible {
   }
 
   typealias Program = Byte
-  typealias Channel = MusicDeviceGroupID
+  typealias Channel = Byte
 
   let soundSet: SoundSet
-  let node: AUNode
+  let node = AVAudioUnitSampler()
   private var channelPrograms: [Program] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+  var bus: AVAudioNodeBus {
+    guard let bus = node.destinationForMixer(AudioManager.engine.mainMixerNode, bus: 0)?.connectionPoint.bus else {
+      fatalError("instrument not connected to main mixer node")
+    }
+    return bus
+  }
 
   var preset: Preset {
     return Preset(fileURL: soundSet.url,
@@ -85,8 +93,7 @@ final class Instrument: Equatable, CustomStringConvertible {
   func setProgram(var program: Program, var onChannel channel: Channel) throws {
     program = ClosedInterval<Program>(0, 127).clampValue(program)
     channel = ClosedInterval<Channel>(0, 15).clampValue(channel)
-    try MusicDeviceMIDIEvent(audioUnit, 0b11000000 | channel, UInt32(program), 0, 0)
-      ➤ "\(location()) Failed to set program \(program) on channel \(channel)"
+    node.sendProgramChange(program, onChannel: channel)
     channelPrograms[Int(channel)] = program
   }
 
@@ -105,9 +112,15 @@ final class Instrument: Equatable, CustomStringConvertible {
     return "\(self.dynamicType.self) { \n\tsoundSet: \(soundSet)\n\tchannelPrograms: \(channelPrograms)\n}"
   }
 
-  private let audioUnit: MusicDeviceComponent
   private var client = MIDIClientRef()
   private(set) var endPoint = MIDIEndpointRef()
+
+  func playNoteWithAttributes(attributes: NoteAttributes) {
+    node.startNote(attributes.note.MIDIValue, withVelocity: attributes.velocity.MIDIValue, onChannel: 0)
+    delayedDispatch(attributes.duration.seconds, dispatch_get_main_queue()) {
+      self.node.stopNote(attributes.note.MIDIValue, onChannel: 0)
+    }
+  }
 
   /**
   read:context:
@@ -122,7 +135,7 @@ final class Instrument: Equatable, CustomStringConvertible {
 
     for _ in 0 ..< packets.numPackets {
       let packet = packetPointer.memory
-      MusicDeviceMIDIEvent(audioUnit, UInt32(packet.data.0), UInt32(packet.data.1), UInt32(packet.data.2), 0)
+      node.sendMIDIEvent(packet.data.0, data1: packet.data.1, data2: packet.data.2)
       packetPointer = MIDIPacketNext(packetPointer)
     }
   }
@@ -132,43 +145,20 @@ final class Instrument: Equatable, CustomStringConvertible {
 
   - parameter set: SoundSet
   */
-  init(soundSet set: SoundSet) throws {
+  init(soundSet set: SoundSet, program: Program = 0) throws {
     soundSet = set
-    node = AUNode()
-    audioUnit = MusicDeviceComponent()
+    try node.loadSoundBankInstrumentAtURL(set.url,
+                                  program: program,
+                                  bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB),
+                                  bankLSB: UInt8(kAUSampler_DefaultBankLSB))
 
-    let graph = AudioManager.graph
-
-    var instrumentComponentDescription = AudioComponentDescription(componentType: kAudioUnitType_MusicDevice,
-                                                                   componentSubType: kAudioUnitSubType_Sampler,
-                                                                   componentManufacturer: kAudioUnitManufacturer_Apple,
-                                                                   componentFlags: 0,
-                                                                   componentFlagsMask: 0)
-
-    try AUGraphAddNode(graph, &instrumentComponentDescription, &node)
-      ➤ "\(location()) Failed to add instrument node to audio graph"
-
-
-    try AUGraphNodeInfo(graph, node, nil, &audioUnit)
-      ➤ "\(location()) Failed to retrieve instrument audio unit from audio graph node"
-
-    var instrumentData = AUSamplerInstrumentData(fileURL: Unmanaged.passUnretained(soundSet.url),
-                                                 instrumentType: UInt8(kInstrumentType_DLSPreset),
-                                                 bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB),
-                                                 bankLSB: UInt8(kAUSampler_DefaultBankLSB),
-                                                 presetID: 0)
-
-    try AudioUnitSetProperty(audioUnit,
-                             AudioUnitPropertyID(kAUSamplerProperty_LoadInstrument),
-                             AudioUnitScope(kAudioUnitScope_Global),
-                             AudioUnitElement(0),
-                             &instrumentData,
-                             UInt32(sizeof(AUSamplerInstrumentData)))
-      ➤ "\(location()) Failed to load instrument into audio unit"
+    AudioManager.engine.attachNode(node)
+    AudioManager.engine.connect(node, to: AudioManager.engine.mainMixerNode, format: nil)
 
     let name = "Instrument \(ObjectIdentifier(self).uintValue)"
     try MIDIClientCreateWithBlock(name, &client, nil) ➤ "Failed to create midi client"
-    try MIDIDestinationCreateWithBlock(client, name, &endPoint, read) ➤ "Failed to create end point for instrument"
+    try MIDIDestinationCreateWithBlock(client, name, &endPoint, read)
+      ➤ "Failed to create end point for instrument"
   }
 
   /**
@@ -188,4 +178,4 @@ Equatable compliance
 
 - returns: Bool
 */
-func ==(lhs: Instrument, rhs: Instrument) -> Bool { return lhs.audioUnit == rhs.audioUnit }
+func ==(lhs: Instrument, rhs: Instrument) -> Bool { return lhs.node == rhs.node }

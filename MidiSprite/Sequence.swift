@@ -34,12 +34,12 @@ final class Sequence: CustomStringConvertible {
   }
 
   /**
-  newTrackOnBus:
+  newTrackWithInstrument:
 
-  - parameter bus: Bus
+  - parameter instrument: Instrument
   */
-  func newTrackOnBus(bus: Bus) throws -> Track {
-    let track = try Track(bus: bus)
+  func newTrackWithInstrument(instrument: Instrument) throws -> Track {
+    let track = try Track(instrument: instrument)
     tracks.append(track)
     Notification.TrackAdded.post()
     return track

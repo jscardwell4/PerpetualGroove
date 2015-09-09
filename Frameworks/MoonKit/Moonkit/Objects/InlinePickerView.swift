@@ -72,14 +72,14 @@ import UIKit
   }
 
   public override func prepareForInterfaceBuilder() {
-    func setContentMode(view: UIView) {
-      view.contentMode = .Redraw
-      view.setNeedsDisplay()
-      view.subviews.forEach { setContentMode($0) }
-    }
-    setContentMode(self)
-    reloadData()
-    logIB("\(description)\n" + descriptionTree("frame", "contentMode", "transform", "translatesAutoresizingMaskIntoConstraints", "autoresizesSubviews", "layer.transform"))
+//    func setContentMode(view: UIView) {
+//      view.contentMode = .Redraw
+//      view.setNeedsDisplay()
+//      view.subviews.forEach { setContentMode($0) }
+//    }
+//    setContentMode(self)
+//    reloadData()
+    logIB(description)
   }
 
   /** updatePerspective */
@@ -189,7 +189,7 @@ import UIKit
     set { font = font.fontWithSize(newValue) }
   }
 
-  @IBInspectable public var textColor: UIColor = .darkTextColor()
+  @IBInspectable public var textColor: UIColor = .darkTextColor() { didSet { reloadData() } }
 
   public var selectedFont =  InlinePickerView.DefaultFont
   @IBInspectable public var selectedFontName: String  {
@@ -204,9 +204,9 @@ import UIKit
 
   @IBInspectable public var labelsString: String = "" { didSet { labels = ", ".split(labelsString) } }
   @IBInspectable public var imagesString: String = "" { didSet { images = ", ".split(imagesString).flatMap({UIImage(named: $0)}) } }
-  @IBInspectable public var selectedTextColor: UIColor = .darkTextColor()
-  @IBInspectable public var imageColor: UIColor = .darkTextColor()
-  @IBInspectable public var imageSelectedColor: UIColor = .darkTextColor()
+  @IBInspectable public var selectedTextColor: UIColor = .darkTextColor() { didSet { reloadData() } }
+  @IBInspectable public var imageColor: UIColor = .darkTextColor() { didSet { reloadData() } }
+  @IBInspectable public var imageSelectedColor: UIColor = .darkTextColor()  { didSet { reloadData() } }
 
   /** reloadData */
   public func reloadData() {
