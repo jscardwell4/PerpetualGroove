@@ -114,14 +114,8 @@ struct NoteAttributes: Equatable {
 
   /** Enumeration for musical dynamics */
   enum Velocity: String, EnumerableType, ImageAssetLiteralType, MIDIValueConvertible {
-    case Pianississimo
-    case Pianissimo
-    case Piano
-    case MezzoPiano
-    case MezzoForte
-    case Forte
-    case Fortissimo
-    case Fortississimo
+    case Pianississimo, Pianissimo, Piano, MezzoPiano, MezzoForte, Forte, Fortissimo, Fortississimo
+
     var MIDIValue: Byte {
       switch self {
         case .Pianississimo: return 16

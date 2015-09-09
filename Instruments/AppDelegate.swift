@@ -8,6 +8,7 @@
 
 import UIKit
 import MoonKit
+import Eveleth
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,6 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
   /** initialize */
   override class func initialize() {
+    Eveleth.registerFonts()
     LogManager.addConsoleLoggers()
     let context = UInt(LOG_CONTEXT_FILE)
     let directory = MSLog.defaultLogDirectory()

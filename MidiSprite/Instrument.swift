@@ -91,6 +91,23 @@ final class Instrument: Equatable, CustomStringConvertible {
   }
 
   /**
+  playNoteWithAttributes:
+
+  - parameter attributes: NoteAttributes
+  */
+  func playNoteWithAttributes(attributes: NoteAttributes) throws {
+    let note = UInt32(attributes.note.MIDIValue)
+    let velocity = UInt32(attributes.velocity.MIDIValue)
+    let duration = attributes.duration.seconds
+    try MusicDeviceMIDIEvent(audioUnit, 0x90, note, velocity, 0) ➤ "\(location()) Failed to send note on midi event"
+    delayedDispatch(duration, dispatch_get_main_queue()) {
+      [audioUnit = audioUnit] in
+      let status = MusicDeviceMIDIEvent(audioUnit, 0x80, note, 0, 0)
+      if status != noErr { logError(error(status, "\(location()) Failed to send note off midi event")) }
+    }
+  }
+
+  /**
   programOnChannel:
 
   - parameter channel: Channel
@@ -131,8 +148,9 @@ final class Instrument: Equatable, CustomStringConvertible {
   init:
 
   - parameter set: SoundSet
+  - parameter program: Program
   */
-  init(soundSet set: SoundSet) throws {
+  init(soundSet set: SoundSet, program: Program = 0) throws {
     soundSet = set
     node = AUNode()
     audioUnit = MusicDeviceComponent()
@@ -156,7 +174,7 @@ final class Instrument: Equatable, CustomStringConvertible {
                                                  instrumentType: UInt8(kInstrumentType_DLSPreset),
                                                  bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB),
                                                  bankLSB: UInt8(kAUSampler_DefaultBankLSB),
-                                                 presetID: 0)
+                                                 presetID: program)
 
     try AudioUnitSetProperty(audioUnit,
                              AudioUnitPropertyID(kAUSamplerProperty_LoadInstrument),
@@ -165,7 +183,7 @@ final class Instrument: Equatable, CustomStringConvertible {
                              &instrumentData,
                              UInt32(sizeof(AUSamplerInstrumentData)))
       ➤ "\(location()) Failed to load instrument into audio unit"
-
+    
     let name = "Instrument \(ObjectIdentifier(self).uintValue)"
     try MIDIClientCreateWithBlock(name, &client, nil) ➤ "Failed to create midi client"
     try MIDIDestinationCreateWithBlock(client, name, &endPoint, read) ➤ "Failed to create end point for instrument"
