@@ -87,7 +87,7 @@ final class MIDIPlayerViewController: UIViewController {
 
     adjustPopover(filesPopoverView, filesButton)
     adjustPopover(noteAttributesPopoverView, noteAttributesButton)
-    adjustPopover(mixerPopoverView, mixerButton)
+//    adjustPopover(mixerPopoverView, mixerButton)
     adjustPopover(instrumentPopoverView, instrumentButton)
   }
 
@@ -98,7 +98,7 @@ final class MIDIPlayerViewController: UIViewController {
     super.updateViewConstraints()
 
     guard let filesPopover = _filesPopoverView,
-              mixerPopover = _mixerPopoverView,
+//              mixerPopover = _mixerPopoverView,
               noteAttributesPopover = _noteAttributesPopoverView,
               instrumentPopover = _instrumentPopoverView
       else { return }
@@ -115,7 +115,7 @@ final class MIDIPlayerViewController: UIViewController {
     }
 
     addConstraints(Identifier(self, "FilesPopover"), filesPopover, filesButton)
-    addConstraints(Identifier(self, "MixerPopover"), mixerPopover, mixerButton)
+//    addConstraints(Identifier(self, "MixerPopover"), mixerPopover, mixerButton)
     addConstraints(Identifier(self, "NoteAttributesPopover"), noteAttributesPopover, noteAttributesButton)
     addConstraints(Identifier(self, "InstrumentPopover"),  instrumentPopover, instrumentButton)
   }
@@ -148,20 +148,20 @@ final class MIDIPlayerViewController: UIViewController {
   override func didReceiveMemoryWarning() {
     logDebug("")
     super.didReceiveMemoryWarning()
-    if let noteAttributesPopover = _noteAttributesPopoverView where noteAttributesPopover.hidden == false {
-      noteAttributesPopover.removeFromSuperview()
-      _noteAttributesPopoverView = nil
-    }
-
-    if let mixerPopover = _mixerPopoverView where mixerPopover.hidden == true {
-      mixerPopover.removeFromSuperview()
-      _mixerPopoverView = nil
-    }
-
-    if let instrumentPopover = _instrumentPopoverView where instrumentPopover.hidden == true {
-      instrumentPopover.removeFromSuperview()
-      _instrumentPopoverView = nil
-    }
+//    if let noteAttributesPopover = _noteAttributesPopoverView where noteAttributesPopover.hidden == false {
+//      noteAttributesPopover.removeFromSuperview()
+//      _noteAttributesPopoverView = nil
+//    }
+//
+//    if let mixerPopover = _mixerPopoverView where mixerPopover.hidden == true {
+//      mixerPopover.removeFromSuperview()
+//      _mixerPopoverView = nil
+//    }
+//
+//    if let instrumentPopover = _instrumentPopoverView where instrumentPopover.hidden == true {
+//      instrumentPopover.removeFromSuperview()
+//      _instrumentPopoverView = nil
+//    }
 
   }
 
@@ -187,6 +187,23 @@ final class MIDIPlayerViewController: UIViewController {
   @IBAction func metronome() { Metronome.on = !Metronome.on }
 
   // MARK: - Popovers
+
+  /**
+  prepareForSegue:sender:
+
+  - parameter segue: UIStoryboardSegue
+  - parameter sender: AnyObject?
+  */
+  override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    super.prepareForSegue(segue, sender: sender)
+    switch (segue.identifier, segue.destinationViewController) {
+      case ("Mixer", let controller as MixerViewController):                   mixerViewController = controller
+      case ("Instrument", let controller as InstrumentViewController):         _instrumentViewController = controller
+      case ("NoteAttributes", let controller as NoteAttributesViewController): _noteAttributesViewController = controller
+      case ("Files", let controller as FilesViewController):                   _filesViewController = controller
+      default:                                                                 break
+    }
+  }
 
   @IBOutlet weak var popoverBlur: UIVisualEffectView!
 
@@ -294,32 +311,33 @@ final class MIDIPlayerViewController: UIViewController {
   /** sliders */
   @IBAction private func mixer() { if case .Mixer = popover { popover = .None } else { popover = .Mixer } }
 
-  private var _mixerViewController: MixerViewController?
-  private var mixerViewController: MixerViewController {
-    guard _mixerViewController == nil else { return _mixerViewController! }
-    let storyboard = UIStoryboard(name: "Main", bundle: nil)
-    _mixerViewController = storyboard.instantiateViewControllerWithIdentifier("Mixer") as? MixerViewController
-    guard _mixerViewController != nil else { fatalError("failed to instantiate mixer view controller from storyboard") }
-    addChildViewController(_mixerViewController!)
-    return _mixerViewController!
-  }
+//  private var _mixerViewController: MixerViewController?
+  private var mixerViewController: MixerViewController!
+//    {
+//    guard _mixerViewController == nil else { return _mixerViewController! }
+//    let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//    _mixerViewController = storyboard.instantiateViewControllerWithIdentifier("Mixer") as? MixerViewController
+//    guard _mixerViewController != nil else { fatalError("failed to instantiate mixer view controller from storyboard") }
+//    addChildViewController(_mixerViewController!)
+//    return _mixerViewController!
+//  }
 
-  private var _mixerPopoverView: PopoverView?
-  private var mixerPopoverView: PopoverView {
-    guard _mixerPopoverView == nil else { return _mixerPopoverView! }
-    _mixerPopoverView = PopoverView(autolayout: true)
-    _mixerPopoverView!.backgroundColor = .popoverBackgroundColor
-    _mixerPopoverView!.location = .Top
-    _mixerPopoverView!.nametag = "mixerPopover"
-    _mixerPopoverView!.arrowHeight = .popoverArrowHeight
-    _mixerPopoverView!.arrowWidth = .popoverArrowWidth
-
-    let mixerView = mixerViewController.view
-    _mixerPopoverView!.contentView.addSubview(mixerView)
-    _mixerPopoverView!.constrain(𝗩|mixerView|𝗩, 𝗛|mixerView|𝗛)
-
-    return _mixerPopoverView!
-  }
+  @IBOutlet private var mixerPopoverView: PopoverView!
+//  private var mixerPopoverView: PopoverView {
+//    guard _mixerPopoverView == nil else { return _mixerPopoverView! }
+//    _mixerPopoverView = PopoverView(autolayout: true)
+//    _mixerPopoverView!.backgroundColor = .popoverBackgroundColor
+//    _mixerPopoverView!.location = .Top
+//    _mixerPopoverView!.nametag = "mixerPopover"
+//    _mixerPopoverView!.arrowHeight = .popoverArrowHeight
+//    _mixerPopoverView!.arrowWidth = .popoverArrowWidth
+//
+//    let mixerView = mixerViewController.view
+//    _mixerPopoverView!.contentView.addSubview(mixerView)
+//    _mixerPopoverView!.constrain(𝗩|mixerView|𝗩, 𝗛|mixerView|𝗛)
+//
+//    return _mixerPopoverView!
+//  }
 
   // MARK: - Instrument
 

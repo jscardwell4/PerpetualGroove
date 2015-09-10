@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8187.4" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BV1-FR-VrT">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BV1-FR-VrT">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8151.3"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
@@ -404,6 +404,58 @@
                                     <outletCollection property="gestureRecognizers" destination="leA-Ua-D5I" appends="YES" id="Ta4-mM-0F9"/>
                                 </connections>
                             </visualEffectView>
+                            <view hidden="YES" contentMode="scaleToFill" misplaced="YES" placeholderIntrinsicWidth="100" placeholderIntrinsicHeight="410" translatesAutoresizingMaskIntoConstraints="NO" id="SIl-d8-sfe" userLabel="Mixer Popover" customClass="PopoverView" customModule="MoonKit">
+                                <rect key="frame" x="247.5" y="42" width="100" height="430"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bAH-jD-Lnc">
+                                        <rect key="frame" x="0.0" y="10" width="100" height="410"/>
+                                        <subviews>
+                                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Sas-0Y-zNR">
+                                                <rect key="frame" x="0.0" y="0.0" width="100" height="410"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="100" id="0B2-ux-nXL"/>
+                                                    <constraint firstAttribute="height" constant="400" id="7Wh-z6-0Yz"/>
+                                                </constraints>
+                                                <variation key="default">
+                                                    <mask key="constraints">
+                                                        <exclude reference="0B2-ux-nXL"/>
+                                                        <exclude reference="7Wh-z6-0Yz"/>
+                                                    </mask>
+                                                </variation>
+                                                <connections>
+                                                    <segue destination="iF7-fT-LPT" kind="embed" identifier="Mixer" id="4Vs-bO-e6q"/>
+                                                </connections>
+                                            </containerView>
+                                        </subviews>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="bottom" secondItem="Sas-0Y-zNR" secondAttribute="bottom" id="Jgh-is-CTM"/>
+                                            <constraint firstItem="Sas-0Y-zNR" firstAttribute="leading" secondItem="bAH-jD-Lnc" secondAttribute="leading" id="bd3-7W-rge"/>
+                                            <constraint firstItem="Sas-0Y-zNR" firstAttribute="top" secondItem="bAH-jD-Lnc" secondAttribute="top" id="ich-2k-IuH"/>
+                                            <constraint firstAttribute="trailing" secondItem="Sas-0Y-zNR" secondAttribute="trailing" id="oKF-Hb-sfB"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <color key="backgroundColor" red="0.20000000298023224" green="0.19607843458652496" blue="0.19215686619281769" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstItem="bAH-jD-Lnc" firstAttribute="leading" secondItem="SIl-d8-sfe" secondAttribute="leading" id="8xV-Z5-Rj3"/>
+                                    <constraint firstAttribute="bottom" secondItem="bAH-jD-Lnc" secondAttribute="bottom" id="F1L-tI-RDg"/>
+                                    <constraint firstItem="bAH-jD-Lnc" firstAttribute="top" secondItem="SIl-d8-sfe" secondAttribute="top" id="PUG-Wx-Ysz"/>
+                                    <constraint firstAttribute="trailing" secondItem="bAH-jD-Lnc" secondAttribute="trailing" id="gZz-Pb-VAk"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="locationString" value="Top"/>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="arrowWidth">
+                                        <real key="value" value="20"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="arrowHeight">
+                                        <real key="value" value="20"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <outlet property="contentView" destination="bAH-jD-Lnc" id="vmz-Vy-mmE"/>
+                                </connections>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="0.20000000000000001" green="0.1960784314" blue="0.19215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
@@ -416,12 +468,15 @@
                             <constraint firstItem="Hsi-ta-i4H" firstAttribute="top" secondItem="8aa-yV-Osq" secondAttribute="bottom" constant="8" symbolic="YES" id="HR5-A6-3im"/>
                             <constraint firstItem="U9p-PY-X1m" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leading" id="Vpx-i7-ab6"/>
                             <constraint firstAttribute="trailingMargin" secondItem="vQ1-wE-mR9" secondAttribute="trailing" id="bQb-0L-F0Q"/>
+                            <constraint firstItem="SIl-d8-sfe" firstAttribute="centerX" secondItem="4HC-dP-hAS" secondAttribute="centerX" id="dM5-IW-XKm"/>
                             <constraint firstAttribute="trailingMargin" secondItem="fwt-5T-njj" secondAttribute="trailing" id="gvv-Zw-Ixi"/>
                             <constraint firstAttribute="trailing" secondItem="qmT-5g-1Xb" secondAttribute="trailing" id="ha6-KS-kA6"/>
                             <constraint firstItem="U9p-PY-X1m" firstAttribute="top" secondItem="fwt-5T-njj" secondAttribute="bottom" constant="8" symbolic="YES" id="jI1-59-BIN"/>
                             <constraint firstItem="vQ1-wE-mR9" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leadingMargin" id="ozW-M8-Uja"/>
+                            <constraint firstItem="SIl-d8-sfe" firstAttribute="top" secondItem="qmT-5g-1Xb" secondAttribute="top" id="qoF-0z-3us"/>
                             <constraint firstAttribute="trailing" secondItem="U9p-PY-X1m" secondAttribute="trailing" id="r3J-Gt-uwa"/>
                             <constraint firstItem="Hsi-ta-i4H" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leadingMargin" id="rgj-tf-btp"/>
+                            <constraint firstItem="SIl-d8-sfe" firstAttribute="top" secondItem="4HC-dP-hAS" secondAttribute="bottom" id="sFl-QA-ddd"/>
                             <constraint firstItem="qHh-Mt-9TT" firstAttribute="top" secondItem="qmT-5g-1Xb" secondAttribute="bottom" id="scO-5z-aRY"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Hsi-ta-i4H" secondAttribute="trailing" id="v6c-AY-DZE"/>
                             <constraint firstItem="fwt-5T-njj" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leadingMargin" id="wOg-e7-b56"/>
@@ -429,6 +484,7 @@
                         <variation key="default">
                             <mask key="constraints">
                                 <exclude reference="9xn-ad-4gw"/>
+                                <exclude reference="sFl-QA-ddd"/>
                             </mask>
                         </variation>
                     </view>
@@ -444,6 +500,7 @@
                         <outlet property="metronomeButton" destination="MW7-7L-sqD" id="gCP-tT-WOp"/>
                         <outlet property="midiPlayerSceneView" destination="U9p-PY-X1m" id="C3k-7T-b66"/>
                         <outlet property="mixerButton" destination="4HC-dP-hAS" id="GqN-Jz-0Be"/>
+                        <outlet property="mixerPopoverView" destination="SIl-d8-sfe" id="FjY-Ws-Ihb"/>
                         <outlet property="noteAttributesButton" destination="dMY-9u-X4g" id="OLF-ze-Cnz"/>
                         <outlet property="playPauseButton" destination="AbD-fM-IZj" id="HIw-lB-jVc"/>
                         <outlet property="popoverBlur" destination="qmT-5g-1Xb" id="45n-6e-RdI"/>
@@ -713,7 +770,7 @@
         <scene sceneID="6FS-5d-R84">
             <objects>
                 <collectionViewController storyboardIdentifier="Mixer" title="Mixer" id="iF7-fT-LPT" userLabel="Mixer" customClass="MixerViewController" customModule="MidiSprite" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" directionalLockEnabled="YES" bounces="NO" alwaysBounceHorizontal="YES" dataMode="prototypes" id="QhA-gV-EZG">
+                    <collectionView key="view" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" directionalLockEnabled="YES" bounces="NO" alwaysBounceHorizontal="YES" dataMode="prototypes" id="QhA-gV-EZG">
                         <rect key="frame" x="0.0" y="0.0" width="400" height="400"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.20000000298023224" green="0.19607843458652496" blue="0.19215686619281769" alpha="1" colorSpace="calibratedRGB"/>
@@ -833,7 +890,7 @@
                                     </subviews>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
-                                <color key="backgroundColor" red="0.20000000298023224" green="0.19607843458652496" blue="0.19215686619281769" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstItem="RJ4-aR-o07" firstAttribute="centerX" secondItem="Ywg-X3-Y1Q" secondAttribute="centerX" id="0MZ-wN-pf8"/>
@@ -971,7 +1028,7 @@
                                     </subviews>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
-                                <color key="backgroundColor" red="0.20000000298023224" green="0.19607843458652496" blue="0.19215686619281769" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstItem="fQV-Nj-rrF" firstAttribute="top" secondItem="1nN-5d-7mi" secondAttribute="bottom" constant="8" symbolic="YES" id="0VX-Kh-Ceg"/>
                                     <constraint firstItem="UVo-0O-vty" firstAttribute="top" secondItem="fQV-Nj-rrF" secondAttribute="bottom" constant="8" symbolic="YES" id="1Xv-0G-CyW"/>

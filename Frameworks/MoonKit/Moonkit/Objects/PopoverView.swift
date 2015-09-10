@@ -18,14 +18,20 @@ import UIKit
     didSet {
       guard oldValue != location else { return }
       refreshShape()
-      removeConstraints(constraintsWithIdentifier(constraintID))
-      setNeedsUpdateConstraints()
+      let constraints = constraintsWithIdentifier(constraintID)
+      if constraints.count > 0 {
+        removeConstraints(constraints)
+        needsContentConstraints = true
+        setNeedsUpdateConstraints()
+      }
     }
   }
   @IBInspectable public var locationString: String {
     get { return location.rawValue }
     set { if let location = Location(rawValue: newValue) { self.location = location }  }
   }
+
+  private var needsContentConstraints = false
 
   /** Value used to size the arrow's width */
   @IBInspectable public var arrowWidth: CGFloat = 10  { didSet { refreshShape() } }
@@ -38,7 +44,7 @@ import UIKit
 
 
   /** Padding for the content view */
-  public var contentInsets = UIEdgeInsets(inset: 10) {
+  public var contentInsets = UIEdgeInsets(inset: 0) {
     didSet {
       guard contentInsets != oldValue else { return }
       invalidateIntrinsicContentSize()
@@ -53,6 +59,7 @@ import UIKit
   - returns: CGSize
   */
   public override func intrinsicContentSize() -> CGSize {
+    guard let contentView = contentView else { return super.intrinsicContentSize() }
     var size = contentView.intrinsicContentSize()
     for subview in contentView.subviews {
       let subviewIntrinsicContentSize = subview.intrinsicContentSize()
@@ -109,11 +116,10 @@ import UIKit
   }
 
 
+  @IBOutlet public private(set) weak var contentView: UIView!
+
   /** Overridden so we can update our shape's path on bounds changes */
   public override var bounds: CGRect { didSet { refreshShape() } }
-
-  /** Subview for holding the popover's content */
-  @IBOutlet public private(set) weak var contentView: UIView!
 
   /** Convenience accessor for the shape layer used to mask root layer */
   private var maskingLayer: CAShapeLayer { return layer.mask as! CAShapeLayer }
@@ -121,14 +127,8 @@ import UIKit
   /** initializeIVARs */
   func initializeIVARs() {
     translatesAutoresizingMaskIntoConstraints = false
-
     layer.mask = CAShapeLayer()
     refreshShape()
-
-    let contentView = UIView(autolayout: true)
-    contentView.backgroundColor = .clearColor()
-    addSubview(contentView)
-    self.contentView = contentView
   }
 
   private let constraintID = Identifier("PopoverView", "Content")
@@ -137,12 +137,13 @@ import UIKit
   public override func updateConstraints() {
     super.updateConstraints()
 
-    guard constraintsWithIdentifier(constraintID).count == 0 else { return }
+    guard needsContentConstraints && constraintsWithIdentifier(constraintID).count == 0 else { return }
 
     let topOffset:    CGFloat = location == .Top    ? arrowHeight : 0
     let bottomOffset: CGFloat = location == .Bottom ? arrowHeight : 0
     constrain([𝗩|--(contentInsets.top - topOffset)--contentView--(contentInsets.bottom + bottomOffset)--|𝗩,
                𝗛|--contentInsets.left--contentView--contentInsets.right--|𝗛] --> constraintID)
+    needsContentConstraints = false
   }
 
   /**
@@ -158,16 +159,20 @@ import UIKit
   - parameter labelData: [LabelData]
   - parameter callback: ((PopoverView) -> Void
   */
-  public override init(frame: CGRect) { super.init(frame: frame); initializeIVARs() }
+  public override init(frame: CGRect) {
+    super.init(frame: frame)
+    #if !TARGET_INTERFACE_BUILDER
+      let contentView = UIView(autolayout: true)
+      addSubview(contentView)
+      self.contentView = contentView
+      needsContentConstraints = true
+    #endif
+
+    initializeIVARs()
+  }
 
   /** layoutSubviews */
   public override func layoutSubviews() { super.layoutSubviews(); refreshShape() }
-
-
-  public override func prepareForInterfaceBuilder() {
-    super.prepareForInterfaceBuilder()
-    initializeIVARs()
-  }
 
   /**
   encodeWithCoder:
@@ -190,11 +195,14 @@ import UIKit
   */
   required public init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
-    arrowWidth = CGFloat(aDecoder.decodeDoubleForKey("arrowWidth"))
-    arrowHeight = CGFloat(aDecoder.decodeDoubleForKey("arrowHeight"))
-    xOffset = CGFloat(aDecoder.decodeDoubleForKey("xOffset"))
-    contentInsets = aDecoder.decodeUIEdgeInsetsForKey("contentInsets")
-    location = Location(rawValue: aDecoder.decodeObjectForKey("location") as? String ?? Location.Bottom.rawValue)!
+
+    if aDecoder.containsValueForKey("arrowWidth") { arrowWidth = CGFloat(aDecoder.decodeDoubleForKey("arrowWidth")) }
+    if aDecoder.containsValueForKey("arrowHeight") { arrowHeight = CGFloat(aDecoder.decodeDoubleForKey("arrowHeight")) }
+    if aDecoder.containsValueForKey("xOffset") { xOffset = CGFloat(aDecoder.decodeDoubleForKey("xOffset")) }
+    if aDecoder.containsValueForKey("contentInsets") { contentInsets = aDecoder.decodeUIEdgeInsetsForKey("contentInsets") }
+    if aDecoder.containsValueForKey("location") {
+      location = Location(rawValue: aDecoder.decodeObjectForKey("location") as? String ?? Location.Bottom.rawValue)!
+    }
     initializeIVARs()
   }
 
