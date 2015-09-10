@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVFoundation
 import MoonKit
 
 class ViewController: UIViewController {
@@ -25,12 +26,22 @@ class ViewController: UIViewController {
   @IBOutlet weak var velocityPicker: InlinePickerView!
 
   @IBAction func playNote() {
-    guard let instrument = instrument else {
-      logError("cannot play note when instrument is nil")
+//    guard let instrument = instrument else {
+//      logError("cannot play note when instrument is nil")
+//      return
+//    }
+//    do { try instrument.playNoteWithAttributes(noteAttributes) }
+//    catch { logError(error) }
+    guard let sampler = (samplerToggle ? sampler2 : sampler) else {
+      logError("cannot play note when sampler is nil")
       return
     }
-    do { try instrument.playNoteWithAttributes(noteAttributes) }
-    catch { logError(error) }
+    samplerToggle = !samplerToggle
+    sampler.startNote(noteAttributes.note.MIDIValue, withVelocity: noteAttributes.velocity.MIDIValue, onChannel: 0)
+    delayedDispatch(noteAttributes.duration.seconds, dispatch_get_main_queue()) {
+      [unowned self] in
+      sampler.stopNote(self.noteAttributes.note.MIDIValue, onChannel: 0)
+    }
   }
 
   @IBAction func didPickSoundSet(picker: InlinePickerView) {
@@ -41,12 +52,24 @@ class ViewController: UIViewController {
     soundSet = idx
     program = 0
     programPicker.selectItem(0, animated: true)
+    do {
+      try sampler.loadSoundBankInstrumentAtURL(Sequencer.soundSets[soundSet].url, program: UInt8(programs[program].program), bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB), bankLSB: UInt8(kAUSampler_DefaultBankLSB))
+try sampler2.loadSoundBankInstrumentAtURL(Sequencer.soundSets[soundSet].url, program: UInt8(programs[program].program), bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB), bankLSB: UInt8(kAUSampler_DefaultBankLSB))//      try instrument?.loadSoundSet(Sequencer.soundSets[soundSet], program: UInt8(programs[program].program))
+    } catch {
+      logError(error)
+    }
   }
 
   @IBAction func didPickProgram(picker: InlinePickerView) {
     let idx = picker.selection
     logDebug("picked program '\(programs[idx])'")
     program = idx
+    do {
+      try sampler.loadSoundBankInstrumentAtURL(Sequencer.soundSets[soundSet].url, program: UInt8(programs[program].program), bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB), bankLSB: UInt8(kAUSampler_DefaultBankLSB))
+try sampler2.loadSoundBankInstrumentAtURL(Sequencer.soundSets[soundSet].url, program: UInt8(programs[program].program), bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB), bankLSB: UInt8(kAUSampler_DefaultBankLSB))//      try instrument?.setProgram(UInt8(programs[program].program))
+    } catch {
+      logError(error)
+    }
   }
 
   @IBAction func didPickNote(picker: InlinePickerView) {
@@ -70,6 +93,12 @@ class ViewController: UIViewController {
     noteAttributes.velocity = velocity
   }
 
+  var audioEngine: AVAudioEngine!
+  var sampler: AVAudioUnitSampler!
+  var sampler2: AVAudioUnitSampler!
+
+  var samplerToggle = false
+
   override func viewDidLoad() {
     super.viewDidLoad()
     programs = Sequencer.soundSets[0].presets
@@ -78,6 +107,25 @@ class ViewController: UIViewController {
     noteAttributes.note = NoteAttributes.Note.allCases[notePicker.selection]
     noteAttributes.duration = NoteAttributes.Duration.allCases[durationPicker.selection]
     noteAttributes.velocity = NoteAttributes.Velocity.allCases[velocityPicker.selection]
+
+    audioEngine = AVAudioEngine()
+    sampler = AVAudioUnitSampler()
+
+    audioEngine.attachNode(sampler)
+    audioEngine.connect(sampler, to: audioEngine.mainMixerNode, format: sampler.outputFormatForBus(0))
+
+    do { try audioEngine.start() } catch { logError(error) }
+
+    sampler2 = AVAudioUnitSampler()
+    audioEngine.attachNode(sampler2)
+    audioEngine.connect(sampler2, to: audioEngine.mainMixerNode, format: sampler2.outputFormatForBus(0))
+//    do {
+//      try sampler2.loadSoundBankInstrumentAtURL(Sequencer.soundSets[soundSet].url, program: UInt8(programs[program].program), bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB), bankLSB: UInt8(kAUSampler_DefaultBankLSB))
+//    } catch {
+//      logError(error)
+//    }
+
+/*
     do {
       try AudioManager.start()
       instrument = try Instrument(soundSet: Sequencer.soundSets[soundSet], program: UInt8(programs[program].program))
@@ -86,6 +134,10 @@ class ViewController: UIViewController {
     } catch {
       logError(error)
     }
+
+*/
+
+
   }
 
   override func prefersStatusBarHidden() -> Bool {

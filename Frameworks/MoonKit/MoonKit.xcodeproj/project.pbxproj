@@ -36,6 +36,7 @@
 		C21493C11A35302200D274A2 /* ColorInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21493C01A35302200D274A2 /* ColorInputView.swift */; };
 		C21D7AE41AA60E3F000DE8A3 /* NSError+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21D7AE31AA60E3F000DE8A3 /* NSError+MoonKitAdditions.swift */; };
 		C2204D9C1AE1A0670079B731 /* JSONIncludeDirective.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2204D9B1AE1A0670079B731 /* JSONIncludeDirective.swift */; };
+		C226BB5F1BA0DA7300E4FC98 /* Stepper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C226BB5E1BA0DA7300E4FC98 /* Stepper.swift */; settings = {ASSET_TAGS = (); }; };
 		C22733F11AE1539E00641CC3 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28E35B91A451E3800438CCF /* CoreDataStack.swift */; };
 		C22733F21AE1539E00641CC3 /* RegularExpression.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B9B4091AC1C499005BA67C /* RegularExpression.swift */; };
 		C22733F41AE153AE00641CC3 /* MoonFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23592DC19C8E04200920F8D /* MoonFunctions.swift */; };
@@ -438,6 +439,7 @@
 		C222480619B781FD0093B07C /* MSXMLParserDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSXMLParserDelegate.h; sourceTree = "<group>"; };
 		C222480719B781FD0093B07C /* MSXMLParserDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSXMLParserDelegate.m; sourceTree = "<group>"; };
 		C225879919F9EF4C006D8B1D /* PanGesture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PanGesture.swift; sourceTree = "<group>"; };
+		C226BB5E1BA0DA7300E4FC98 /* Stepper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Stepper.swift; sourceTree = "<group>"; };
 		C22734111AE1549F00641CC3 /* CocoaLumberjack.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CocoaLumberjack.framework; path = "../GitHub/CocoaLumberjack/Framework/Desktop/build/Debug-iphoneos/CocoaLumberjack.framework"; sourceTree = "<group>"; };
 		C227342B1AE15CEE00641CC3 /* BackgroundColor_Dark_Normal.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = BackgroundColor_Dark_Normal.json; sourceTree = "<group>"; };
 		C227342C1AE15CEE00641CC3 /* BackgroundColor_Default.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = BackgroundColor_Default.json; sourceTree = "<group>"; };
@@ -1075,6 +1077,7 @@
 				C26A27F61B9532A900BD1698 /* Knob.swift */,
 				C2F75A0C1B977075001EA2BA /* PropertyCoder.swift */,
 				C2D5F2411B97BC93005040EF /* Slider.swift */,
+				C226BB5E1BA0DA7300E4FC98 /* Stepper.swift */,
 			);
 			path = Objects;
 			sourceTree = "<group>";
@@ -1848,6 +1851,7 @@
 				C2A169D01B15386300E3A5A0 /* UIImage+MoonKitAdditions.swift in Sources */,
 				C2037B7119D0D339001F6AD9 /* MSKitGeometryFunctions.m in Sources */,
 				C26254281B744C3F00E81068 /* ButtonNode.swift in Sources */,
+				C226BB5F1BA0DA7300E4FC98 /* Stepper.swift in Sources */,
 				C2F094471A32AA8600681AB3 /* KeyInputButton.swift in Sources */,
 				C28E98EE1AD196B800E78711 /* NSNumber+MoonKitAdditions.swift in Sources */,
 				C2358F4419C78E0C00920F8D /* NSString+MSKitAdditions.m in Sources */,

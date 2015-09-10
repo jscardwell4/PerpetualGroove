@@ -109,7 +109,7 @@
 		C2E043431B72F4DC005F0675 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C2E043411B72F4DC005F0675 /* LaunchScreen.storyboard */; };
 		C2ECC5E31B9C7FFA0010E76E /* MIDINodeEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2ECC5E21B9C7FFA0010E76E /* MIDINodeEvent.swift */; settings = {ASSET_TAGS = (); }; };
 		C2ECC5E51B9C9C580010E76E /* InstrumentEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2ECC5E41B9C9C580010E76E /* InstrumentEvent.swift */; settings = {ASSET_TAGS = (); }; };
-		C2EFA0EC1B823642002EBA3D /* TemplateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EFA0EB1B823642002EBA3D /* TemplateViewController.swift */; };
+		C2EFA0EC1B823642002EBA3D /* NoteAttributesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EFA0EB1B823642002EBA3D /* NoteAttributesViewController.swift */; };
 		C2EFA0EE1B824A2F002EBA3D /* AssetManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EFA0ED1B824A2F002EBA3D /* AssetManager.swift */; };
 		C2F2ADC21B90EBD300FF4836 /* Woodblock.wav in Resources */ = {isa = PBXBuildFile; fileRef = C2F2ADC11B90EBD300FF4836 /* Woodblock.wav */; settings = {ASSET_TAGS = (); }; };
 		C2F2ADC41B91098A00FF4836 /* NoteAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F2ADC31B91098A00FF4836 /* NoteAttributes.swift */; settings = {ASSET_TAGS = (); }; };
@@ -213,7 +213,7 @@
 		C2E043441B72F4DC005F0675 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C2ECC5E21B9C7FFA0010E76E /* MIDINodeEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINodeEvent.swift; sourceTree = "<group>"; };
 		C2ECC5E41B9C9C580010E76E /* InstrumentEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstrumentEvent.swift; sourceTree = "<group>"; };
-		C2EFA0EB1B823642002EBA3D /* TemplateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemplateViewController.swift; sourceTree = "<group>"; };
+		C2EFA0EB1B823642002EBA3D /* NoteAttributesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteAttributesViewController.swift; sourceTree = "<group>"; };
 		C2EFA0ED1B824A2F002EBA3D /* AssetManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssetManager.swift; sourceTree = "<group>"; };
 		C2F2ADC11B90EBD300FF4836 /* Woodblock.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Woodblock.wav; sourceTree = "<group>"; };
 		C2F2ADC31B91098A00FF4836 /* NoteAttributes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteAttributes.swift; sourceTree = "<group>"; };
@@ -336,7 +336,7 @@
 				C26EEB2D1B7FDA8F00EC6979 /* MixerViewController.swift */,
 				C26EEB2F1B7FDAF300EC6979 /* MixerCell.swift */,
 				C2AA2BC71B84B04200A0B08D /* InstrumentViewController.swift */,
-				C2EFA0EB1B823642002EBA3D /* TemplateViewController.swift */,
+				C2EFA0EB1B823642002EBA3D /* NoteAttributesViewController.swift */,
 				C245456B1B9B414C00FF00E7 /* FormPopoverViewController.swift */,
 			);
 			name = "View Controllers";
@@ -630,7 +630,7 @@
 				C21451AB1B7FFF0F00E1A0B2 /* Mixer.swift in Sources */,
 				C272B2A01B7D700600134E5F /* SoundSet.swift in Sources */,
 				C26EEB301B7FDAF300EC6979 /* MixerCell.swift in Sources */,
-				C2EFA0EC1B823642002EBA3D /* TemplateViewController.swift in Sources */,
+				C2EFA0EC1B823642002EBA3D /* NoteAttributesViewController.swift in Sources */,
 				C291C3EF1B91EDCC00702AEA /* MetaEvent.swift in Sources */,
 				C25EBC831B8BFAFA00E57665 /* MIDIFile.swift in Sources */,
 				C26FC1711B7BAC7F00E271A3 /* MIDIPlayerNode.swift in Sources */,

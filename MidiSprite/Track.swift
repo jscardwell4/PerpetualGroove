@@ -51,7 +51,7 @@ final class Track: TrackType, Equatable {
     var trackEvents = events
     trackEvents.insert(MetaEvent(.SequenceTrackName(name: label)), atIndex: 0)
     trackEvents.insert(bus.instrument.event, atIndex: 1)
-    trackEvents.insert(ChannelEvent(.ProgramChange, ChannelEvent.Channel(0), bus.instrument.programOnChannel(0)), atIndex: 2)
+    trackEvents.insert(ChannelEvent(.ProgramChange, bus.instrument.channel, bus.instrument.program), atIndex: 2)
     trackEvents.append(MetaEvent(.EndOfTrack))
     return TrackChunk(events: trackEvents)
   }
@@ -155,8 +155,8 @@ final class Track: TrackType, Equatable {
       let ((status, channel), note, velocity) = ((packet.data.0 >> 4, packet.data.0 & 0xF), packet.data.1, packet.data.2)
       let event: TrackEvent?
       switch status {
-        case 9:  event = ChannelEvent(.NoteOn, ChannelEvent.Channel(channel), note, velocity)
-        case 8:  event = ChannelEvent(.NoteOff, ChannelEvent.Channel(channel), note, velocity)
+        case 9:  event = ChannelEvent(.NoteOn, channel, note, velocity)
+        case 8:  event = ChannelEvent(.NoteOff, channel, note, velocity)
         default: event = nil
       }
       if event != nil { self.appendEvent(event!) }

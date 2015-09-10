@@ -13,68 +13,35 @@ import CoreAudio
 
 final class Instrument: Equatable, CustomStringConvertible {
 
-  enum Error: String, ErrorType {
-    case InvalidFileName = "Failed to locate the specified instrument file"
-  }
-
   var event: InstrumentEvent {
     let fileType: InstrumentEvent.FileType = .SF2
     return InstrumentEvent(fileType, soundSet.url)
   }
 
-  struct ProgramRegister: CollectionType, ByteArrayConvertible, IntegerLiteralConvertible {
-    var data: Byte8 = 0
-    let count = 8
-    let startIndex = 0
-    let endIndex = 8
-    subscript(idx: Int) -> Program {
-      get {
-        guard indices.contains(idx) else { fatalError("index out of bounds") }
-        return Program((data >> Byte8(idx)) & 0xFF)
-      }
-      set {
-        guard indices.contains(idx) else { fatalError("index out of bounds") }
-        data |= (Byte8(newValue) << Byte8(idx))
-      }
-    }
-    var bytes: [Byte] { return data.bytes }
-    init(_ bytes: [Byte]) { data = Byte8(bytes) }
-    init(integerLiteral value: Byte8) { data = value }
-  }
 
   struct Preset: ByteArrayConvertible {
     let fileURL: NSURL
-    let lowerRegister: ProgramRegister
-    let upperRegister: ProgramRegister
-    var bytes: [Byte] { return lowerRegister.bytes + upperRegister.bytes + fileURL.absoluteString.bytes }
+    let program: Program
+    let channel: Channel
+    var bytes: [Byte] { return program.bytes + channel.bytes + fileURL.absoluteString.bytes }
     init(_ bytes: [Byte]) {
-      guard bytes.count > 17 else { fileURL = NSURL(string: "")!; lowerRegister = 0; upperRegister = 0; return }
-      lowerRegister = ProgramRegister(bytes[0 ..< 8])
-      upperRegister = ProgramRegister(bytes[8 ..< 16])
-      fileURL = NSURL(string: String(bytes[17..<]))!
+      guard bytes.count > 2 else { fileURL = NSURL(string: "")!; program = 0; channel = 0; return }
+      program = bytes[0]
+      channel = bytes[1]
+      fileURL = NSURL(string: String(bytes[2..<])) ?? NSURL(string: "")!
     }
-    init(fileURL: NSURL,
-         lowerRegister: ProgramRegister,
-         upperRegister: ProgramRegister)
-    {
-      self.fileURL = fileURL
-      self.lowerRegister = lowerRegister
-      self.upperRegister = upperRegister
-    }
+    init(fileURL f: NSURL, program p: Program, channel c: Channel) { fileURL = f; program = p; channel = c }
   }
 
   typealias Program = Byte
-  typealias Channel = MusicDeviceGroupID
+  typealias Channel = Byte
 
-  let soundSet: SoundSet
+  var soundSet: SoundSet
+  var channel: Channel
+  var program: Program
   let node: AUNode
-  private var channelPrograms: [Program] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
-  var preset: Preset {
-    return Preset(fileURL: soundSet.url,
-                  lowerRegister: ProgramRegister(channelPrograms[0 ..< 8]),
-                  upperRegister: ProgramRegister(channelPrograms[8 ..< 16]))
-  }
+  var preset: Preset { return Preset(fileURL: soundSet.url, program: 0, channel: 0) }
 
   /**
   setProgram:onChannel:
@@ -82,13 +49,7 @@ final class Instrument: Equatable, CustomStringConvertible {
   - parameter program: Program
   - parameter onChannel: Channel
   */
-  func setProgram(var program: Program, var onChannel channel: Channel) throws {
-    program = ClosedInterval<Program>(0, 127).clampValue(program)
-    channel = ClosedInterval<Channel>(0, 15).clampValue(channel)
-    try MusicDeviceMIDIEvent(audioUnit, 0b11000000 | channel, UInt32(program), 0, 0)
-      ➤ "\(location()) Failed to set program \(program) on channel \(channel)"
-    channelPrograms[Int(channel)] = program
-  }
+  func setProgram(program: Program) throws { try loadSoundSet(soundSet, program: program) }
 
   /**
   playNoteWithAttributes:
@@ -99,28 +60,18 @@ final class Instrument: Equatable, CustomStringConvertible {
     let note = UInt32(attributes.note.MIDIValue)
     let velocity = UInt32(attributes.velocity.MIDIValue)
     let duration = attributes.duration.seconds
-    try MusicDeviceMIDIEvent(audioUnit, 0x90, note, velocity, 0) ➤ "\(location()) Failed to send note on midi event"
+    let channel = UInt32(self.channel)
+    try MusicDeviceMIDIEvent(audioUnit, 0x90 | channel, note, velocity, 0) ➤ "\(location()) Failed to send note on midi event"
+    // TODO: try sending note off with an offset instead of using gcd
     delayedDispatch(duration, dispatch_get_main_queue()) {
       [audioUnit = audioUnit] in
-      let status = MusicDeviceMIDIEvent(audioUnit, 0x80, note, 0, 0)
+      let status = MusicDeviceMIDIEvent(audioUnit, 0x80 | channel, note, 0, 0)
       if status != noErr { logError(error(status, "\(location()) Failed to send note off midi event")) }
     }
   }
 
-  /**
-  programOnChannel:
 
-  - parameter channel: Channel
-
-  - returns: Program
-  */
-  func programOnChannel(channel: Channel) -> Program {
-    return channelPrograms[Int(ClosedInterval<Channel>(0, 15).clampValue(channel))]
-  }
-
-  var description: String {
-    return "\(self.dynamicType.self) { \n\tsoundSet: \(soundSet)\n\tchannelPrograms: \(channelPrograms)\n}"
-  }
+  var description: String { return "Instrument { \n\tsoundSet: \(soundSet)\n\tprogram: \(program)\n\tchannel: \(channel)\n}" }
 
   private let audioUnit: MusicDeviceComponent
   private var client = MIDIClientRef()
@@ -145,16 +96,41 @@ final class Instrument: Equatable, CustomStringConvertible {
   }
 
   /**
+  loadSoundSet:
+
+  - parameter soundSet: SoundSet
+  */
+  func loadSoundSet(soundSet: SoundSet, var program: Program = 0) throws {
+    program = (0 ... 127).clampValue(program)
+    var instrumentData = AUSamplerInstrumentData(fileURL: Unmanaged.passUnretained(soundSet.url),
+                                                 instrumentType: UInt8(kInstrumentType_DLSPreset),
+                                                 bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB),
+                                                 bankLSB: UInt8(kAUSampler_DefaultBankLSB),
+                                                 presetID: program)
+
+    try AudioUnitSetProperty(audioUnit,
+                             AudioUnitPropertyID(kAUSamplerProperty_LoadInstrument),
+                             AudioUnitScope(kAudioUnitScope_Global),
+                             AudioUnitElement(0),
+                             &instrumentData,
+                             UInt32(sizeof(AUSamplerInstrumentData)))
+      ➤ "\(location()) Failed to load instrument into audio unit"
+    self.soundSet = soundSet
+    self.program = program
+  }
+
+  /**
   init:
 
   - parameter set: SoundSet
   - parameter program: Program
   */
-  init(soundSet set: SoundSet, program: Program = 0) throws {
+  init(soundSet set: SoundSet, program p: Program = 0, channel c: Channel = 0) throws {
     soundSet = set
+    channel = c
+    program = p
     node = AUNode()
     audioUnit = MusicDeviceComponent()
-
     let graph = AudioManager.graph
 
     var instrumentComponentDescription = AudioComponentDescription(componentType: kAudioUnitType_MusicDevice,
@@ -170,20 +146,8 @@ final class Instrument: Equatable, CustomStringConvertible {
     try AUGraphNodeInfo(graph, node, nil, &audioUnit)
       ➤ "\(location()) Failed to retrieve instrument audio unit from audio graph node"
 
-    var instrumentData = AUSamplerInstrumentData(fileURL: Unmanaged.passUnretained(soundSet.url),
-                                                 instrumentType: UInt8(kInstrumentType_DLSPreset),
-                                                 bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB),
-                                                 bankLSB: UInt8(kAUSampler_DefaultBankLSB),
-                                                 presetID: program)
+    try loadSoundSet(soundSet, program: program)
 
-    try AudioUnitSetProperty(audioUnit,
-                             AudioUnitPropertyID(kAUSamplerProperty_LoadInstrument),
-                             AudioUnitScope(kAudioUnitScope_Global),
-                             AudioUnitElement(0),
-                             &instrumentData,
-                             UInt32(sizeof(AUSamplerInstrumentData)))
-      ➤ "\(location()) Failed to load instrument into audio unit"
-    
     let name = "Instrument \(ObjectIdentifier(self).uintValue)"
     try MIDIClientCreateWithBlock(name, &client, nil) ➤ "Failed to create midi client"
     try MIDIDestinationCreateWithBlock(client, name, &endPoint, read) ➤ "Failed to create end point for instrument"
@@ -194,7 +158,10 @@ final class Instrument: Equatable, CustomStringConvertible {
 
   - parameter preset: Preset
   */
-  convenience init(preset: Preset) throws { try self.init(soundSet: try SoundSet(url: preset.fileURL)) }
+  convenience init(preset: Preset) throws {
+    let soundSet = try SoundSet(url: preset.fileURL)
+    try self.init(soundSet: soundSet, program: preset.program, channel: preset.channel)
+  }
 
 }
 

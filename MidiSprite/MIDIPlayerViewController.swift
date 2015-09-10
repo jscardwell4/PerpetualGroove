@@ -44,8 +44,8 @@ final class MIDIPlayerViewController: UIViewController {
     instrumentPopoverView.hidden = true
     view.addSubview(instrumentPopoverView)
 
-    templatePopoverView.hidden = true
-    view.addSubview(templatePopoverView)
+    noteAttributesPopoverView.hidden = true
+    view.addSubview(noteAttributesPopoverView)
 
     view.setNeedsUpdateConstraints()
 
@@ -64,8 +64,8 @@ final class MIDIPlayerViewController: UIViewController {
 //    instrumentPopoverView.hidden = true
 //    view.addSubview(instrumentPopoverView)
 //
-//    templatePopoverView.hidden = true
-//    view.addSubview(templatePopoverView)
+//    noteAttributesPopoverView.hidden = true
+//    view.addSubview(noteAttributesPopoverView)
 //
 //    view.setNeedsUpdateConstraints()
 //  }
@@ -75,7 +75,7 @@ final class MIDIPlayerViewController: UIViewController {
     super.viewDidLayoutSubviews()
 
 //    guard _filesPopoverView != nil
-//       && _templatePopoverView != nil
+//       && _noteAttributesPopoverView != nil
 //       && _mixerPopoverView != nil
 //       && _instrumentPopoverView != nil else { return }
 
@@ -86,7 +86,7 @@ final class MIDIPlayerViewController: UIViewController {
     }
 
     adjustPopover(filesPopoverView, filesButton)
-    adjustPopover(templatePopoverView, templateButton)
+    adjustPopover(noteAttributesPopoverView, noteAttributesButton)
     adjustPopover(mixerPopoverView, mixerButton)
     adjustPopover(instrumentPopoverView, instrumentButton)
   }
@@ -99,7 +99,7 @@ final class MIDIPlayerViewController: UIViewController {
 
     guard let filesPopover = _filesPopoverView,
               mixerPopover = _mixerPopoverView,
-              templatePopover = _templatePopoverView,
+              noteAttributesPopover = _noteAttributesPopoverView,
               instrumentPopover = _instrumentPopoverView
       else { return }
 
@@ -116,7 +116,7 @@ final class MIDIPlayerViewController: UIViewController {
 
     addConstraints(Identifier(self, "FilesPopover"), filesPopover, filesButton)
     addConstraints(Identifier(self, "MixerPopover"), mixerPopover, mixerButton)
-    addConstraints(Identifier(self, "TemplatePopover"), templatePopover, templateButton)
+    addConstraints(Identifier(self, "NoteAttributesPopover"), noteAttributesPopover, noteAttributesButton)
     addConstraints(Identifier(self, "InstrumentPopover"),  instrumentPopover, instrumentButton)
   }
 
@@ -148,9 +148,9 @@ final class MIDIPlayerViewController: UIViewController {
   override func didReceiveMemoryWarning() {
     logDebug("")
     super.didReceiveMemoryWarning()
-    if let templatePopover = _templatePopoverView where templatePopover.hidden == false {
-      templatePopover.removeFromSuperview()
-      _templatePopoverView = nil
+    if let noteAttributesPopover = _noteAttributesPopoverView where noteAttributesPopover.hidden == false {
+      noteAttributesPopover.removeFromSuperview()
+      _noteAttributesPopoverView = nil
     }
 
     if let mixerPopover = _mixerPopoverView where mixerPopover.hidden == true {
@@ -195,11 +195,11 @@ final class MIDIPlayerViewController: UIViewController {
 
   // MARK: Popover enumeration
   private enum Popover {
-    case None, Files, Template, Instrument, Mixer
+    case None, Files, NoteAttributes, Instrument, Mixer
     var view: PopoverView? {
       switch self {
         case .Files:      return MIDIPlayerViewController.currentInstance?.filesPopoverView
-        case .Template:   return MIDIPlayerViewController.currentInstance?.templatePopoverView
+        case .NoteAttributes:   return MIDIPlayerViewController.currentInstance?.noteAttributesPopoverView
         case .Instrument: return MIDIPlayerViewController.currentInstance?.instrumentPopoverView
         case .Mixer:      return MIDIPlayerViewController.currentInstance?.mixerPopoverView
         case .None:       return nil
@@ -208,7 +208,7 @@ final class MIDIPlayerViewController: UIViewController {
     var button: ImageButtonView? {
       switch self {
         case .Files:      return MIDIPlayerViewController.currentInstance?.filesButton
-        case .Template:   return MIDIPlayerViewController.currentInstance?.templateButton
+        case .NoteAttributes:   return MIDIPlayerViewController.currentInstance?.noteAttributesButton
         case .Instrument: return MIDIPlayerViewController.currentInstance?.instrumentButton
         case .Mixer:      return MIDIPlayerViewController.currentInstance?.mixerButton
         case .None:       return nil
@@ -331,7 +331,8 @@ final class MIDIPlayerViewController: UIViewController {
   private var _instrumentViewController: InstrumentViewController?
   private var instrumentViewController: InstrumentViewController {
     guard _instrumentViewController == nil else { return _instrumentViewController! }
-    _instrumentViewController = InstrumentViewController()
+    let storyboard = UIStoryboard(name: "Main", bundle: nil)
+    _instrumentViewController = storyboard.instantiateViewControllerWithIdentifier("Instrument") as? InstrumentViewController
     addChildViewController(_instrumentViewController!)
     return _instrumentViewController!
   }
@@ -347,44 +348,44 @@ final class MIDIPlayerViewController: UIViewController {
     _instrumentPopoverView!.arrowWidth = .popoverArrowWidth
 
     let instrumentView = instrumentViewController.view
-    instrumentView.constrain(instrumentView.width ≥ 400)
+    instrumentView.translatesAutoresizingMaskIntoConstraints = false
     _instrumentPopoverView!.contentView.addSubview(instrumentView)
-    _instrumentPopoverView!.constrain(𝗩|instrumentView|𝗩, 𝗛|instrumentView|𝗛)
+    _instrumentPopoverView!.constrain(𝗩|instrumentView|𝗩, 𝗛|instrumentView|𝗛, [_instrumentPopoverView!.height => 217])
 
     return _instrumentPopoverView!
   }
 
-  // MARK: - Template
+  // MARK: - NoteAttributes
 
-  @IBOutlet weak var templateButton: ImageButtonView!
+  @IBOutlet weak var noteAttributesButton: ImageButtonView!
 
-  private var _templateViewController: TemplateViewController?
-  private var templateViewController: TemplateViewController {
-    guard _templateViewController == nil else { return _templateViewController! }
-    _templateViewController = TemplateViewController()
-    addChildViewController(_templateViewController!)
-    return _templateViewController!
+  private var _noteAttributesViewController: NoteAttributesViewController?
+  private var noteAttributesViewController: NoteAttributesViewController {
+    guard _noteAttributesViewController == nil else { return _noteAttributesViewController! }
+    _noteAttributesViewController = NoteAttributesViewController()
+    addChildViewController(_noteAttributesViewController!)
+    return _noteAttributesViewController!
   }
 
-  /** template */
-  @IBAction private func template() { if case .Template = popover { popover = .None } else { popover = .Template } }
+  /** noteAttributes */
+  @IBAction private func noteAttributes() { if case .NoteAttributes = popover { popover = .None } else { popover = .NoteAttributes } }
 
-  private var _templatePopoverView: PopoverView?
-  private var templatePopoverView: PopoverView {
-    guard _templatePopoverView == nil else { return _templatePopoverView! }
-    _templatePopoverView = PopoverView(autolayout: true)
-    _templatePopoverView!.backgroundColor = .popoverBackgroundColor
-    _templatePopoverView!.location = .Top
-    _templatePopoverView!.nametag = "templatePopover"
-    _templatePopoverView!.arrowHeight = .popoverArrowHeight
-    _templatePopoverView!.arrowWidth = .popoverArrowWidth
+  private var _noteAttributesPopoverView: PopoverView?
+  private var noteAttributesPopoverView: PopoverView {
+    guard _noteAttributesPopoverView == nil else { return _noteAttributesPopoverView! }
+    _noteAttributesPopoverView = PopoverView(autolayout: true)
+    _noteAttributesPopoverView!.backgroundColor = .popoverBackgroundColor
+    _noteAttributesPopoverView!.location = .Top
+    _noteAttributesPopoverView!.nametag = "noteAttributesPopover"
+    _noteAttributesPopoverView!.arrowHeight = .popoverArrowHeight
+    _noteAttributesPopoverView!.arrowWidth = .popoverArrowWidth
 
-    let templateView = templateViewController.view
-    templateView.constrain(templateView.width ≥ 400)
-    _templatePopoverView!.contentView.addSubview(templateView)
-    _templatePopoverView!.constrain(𝗩|templateView|𝗩, 𝗛|templateView|𝗛)
+    let noteAttributesView = noteAttributesViewController.view
+    noteAttributesView.constrain(noteAttributesView.width ≥ 400)
+    _noteAttributesPopoverView!.contentView.addSubview(noteAttributesView)
+    _noteAttributesPopoverView!.constrain(𝗩|noteAttributesView|𝗩, 𝗛|noteAttributesView|𝗛)
 
-    return _templatePopoverView!
+    return _noteAttributesPopoverView!
   }
 
   // MARK: - Undo

@@ -71,6 +71,10 @@ import UIKit
     setNeedsUpdateConstraints()
   }
 
+  public override func prepareForInterfaceBuilder() {
+//    reloadData()
+  }
+
   /** updatePerspective */
   private func updatePerspective() {
     collectionView.layer.sublayerTransform =
@@ -178,7 +182,7 @@ import UIKit
     set { font = font.fontWithSize(newValue) }
   }
 
-  @IBInspectable public var textColor: UIColor = .darkTextColor() { didSet { reloadData() } }
+  @IBInspectable public var textColor: UIColor = .darkTextColor() //{ didSet { reloadData() } }
 
   public var selectedFont =  InlinePickerView.DefaultFont { didSet { reloadData() } }
   @IBInspectable public var selectedFontName: String  {
@@ -193,9 +197,9 @@ import UIKit
 
   @IBInspectable public var labelsString: String = "" { didSet { labels = ", ".split(labelsString) } }
   @IBInspectable public var imagesString: String = "" { didSet { images = ", ".split(imagesString).flatMap({UIImage(named: $0)}) } }
-  @IBInspectable public var selectedTextColor: UIColor = .darkTextColor() { didSet { reloadData() } }
-  @IBInspectable public var imageColor: UIColor = .darkTextColor() { didSet { reloadData() } }
-  @IBInspectable public var imageSelectedColor: UIColor = .darkTextColor() { didSet { reloadData() } }
+  @IBInspectable public var selectedTextColor: UIColor = .darkTextColor() //{ didSet { reloadData() } }
+  @IBInspectable public var imageColor: UIColor = .darkTextColor() //{ didSet { reloadData() } }
+  @IBInspectable public var imageSelectedColor: UIColor = .darkTextColor() //{ didSet { reloadData() } }
 
   /** reloadData */
   public func reloadData() {
