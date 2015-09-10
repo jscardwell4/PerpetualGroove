@@ -24,14 +24,14 @@ final class Sequencer {
     do {
       try urls.forEach { soundSets.append(try SoundSet(url: $0)) }
       guard soundSets.count > 0 else { fatalError("failed to create any sound sets from bundled sf2 files") }
-      _currentSoundSet = 0
+//      _currentSoundSet = 0
       auditionInstrument = try Instrument(soundSet: soundSets[0], program: UInt8(soundSets[0].presets[0].program), channel: 0)
       Notification.SoundSetsInitialized.post()
     } catch {
       logError(error)
     }
     initialized = true
-    logDebug("Sequncer initialized")
+    logDebug("Sequencer initialized")
   }
 
   // MARK: - Notification enumeration
@@ -113,42 +113,42 @@ final class Sequencer {
 
   static private(set) var soundSets: [SoundSet] = []
 
-  static private var _currentSoundSet = -1
-  static var currentSoundSet: SoundSet {
-    get {
-      guard soundSets.indices.contains(_currentSoundSet) else { fatalError("currentSoundSet requested before initialization") }
-      return soundSets[_currentSoundSet]
-    }
-    set {
-      guard let idx = soundSets.indexOf(newValue) else {
-        logWarning("attempt to set currentSoundSet with unregistered sound set")
-        return
-      }
-      guard _currentSoundSet != idx else { return }
-      _currentSoundSet = idx
-      state ∪= .ModifiedSoundSet
-    }
-  }
-
-  static var currentProgram = Instrument.Program(0) {
-    didSet {
-      guard oldValue != currentProgram else { return }
-      state ∪= .ModifiedProgram
-    }
-  }
-
-  static var currentChannel = Instrument.Channel(0) {
-    didSet {
-      guard oldValue != currentChannel else { return }
-      state ∪= .ModifiedChannel
-    }
-  }
+//  static private var _currentSoundSet = -1
+//  static var currentSoundSet: SoundSet {
+//    get {
+//      guard soundSets.indices.contains(_currentSoundSet) else { fatalError("currentSoundSet requested before initialization") }
+//      return soundSets[_currentSoundSet]
+//    }
+//    set {
+//      guard let idx = soundSets.indexOf(newValue) else {
+//        logWarning("attempt to set currentSoundSet with unregistered sound set")
+//        return
+//      }
+//      guard _currentSoundSet != idx else { return }
+//      _currentSoundSet = idx
+//      state ∪= .ModifiedSoundSet
+//    }
+//  }
+//
+//  static var currentProgram = Instrument.Program(0) {
+//    didSet {
+//      guard oldValue != currentProgram else { return }
+//      state ∪= .ModifiedProgram
+//    }
+//  }
+//
+//  static var currentChannel = Instrument.Channel(0) {
+//    didSet {
+//      guard oldValue != currentChannel else { return }
+//      state ∪= .ModifiedChannel
+//    }
+//  }
 
   static private(set) var auditionInstrument: Instrument!
 
   /** instrumentWithCurrentSettings */
-  static func instrumentWithCurrentSettings() throws -> Instrument {
-    return try Instrument(soundSet: currentSoundSet, program: currentProgram, channel: currentChannel)
+  static func instrumentWithCurrentSettings() -> Instrument {
+    return Instrument(instrument: auditionInstrument)
   }
 
   private static var previousTrack: Track?
@@ -158,7 +158,7 @@ final class Sequencer {
 
   private static func currentTrackForState() -> Track? {
     if state.isDisjointWith([.ModifiedSoundSet, .ModifiedProgram, .ModifiedChannel]) { return _currentTrack }
-    do { return try sequence.newTrackWithInstrument(try instrumentWithCurrentSettings()) }
+    do { return try sequence.newTrackWithInstrument(instrumentWithCurrentSettings()) }
     catch {
       logError(error)
       fatalError("unable to create a new track when current track has been requested … error: \(error)")
@@ -171,7 +171,7 @@ final class Sequencer {
       let track = currentTrackForState()
       guard track == nil else { return track! }
       do {
-        _currentTrack = try sequence.newTrackWithInstrument(try instrumentWithCurrentSettings())
+        _currentTrack = try sequence.newTrackWithInstrument(instrumentWithCurrentSettings())
         return _currentTrack!
       } catch {
         logError(error)
@@ -195,7 +195,8 @@ final class Sequencer {
 
   /** Plays a note using the current note attributes and instrument settings */
   static func auditionCurrentNote() {
-
+    guard let auditionInstrument = auditionInstrument else { return }
+    auditionInstrument.playNoteWithAttributes(currentNoteAttributes)
   }
 
   static var currentTexture = MIDINode.TextureType.Cobblestone {

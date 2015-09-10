@@ -34,8 +34,9 @@ final class Metronome {
     guard let url = NSBundle.mainBundle().URLForResource("Woodblock", withExtension: "wav") else {
       fatalError("Failed to get url for 'Woodblock.wav'")
     }
-    try samplerNode.loadInstrumentAtURL(url)
+    AudioManager.engine.attachNode(samplerNode)
     AudioManager.engine.connect(samplerNode, to: AudioManager.engine.mainMixerNode, format: samplerNode.outputFormatForBus(0))
+    try samplerNode.loadAudioFilesAtURLs([url])
     initialized = true
     logDebug("Metronome initialized")
   }

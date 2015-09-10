@@ -134,6 +134,15 @@ final class Instrument: Equatable, CustomStringConvertible {
     try self.init(soundSet: try SoundSet(url: preset.fileURL), program: preset.program, channel: preset.channel)
   }
 
+  /**
+  initWithInstrument:
+
+  - parameter instrument: Instrument
+  */
+  convenience init(instrument: Instrument) {
+    try! self.init(soundSet: instrument.soundSet, program: instrument.program, channel: instrument.channel)
+  }
+
 }
 
 /**
@@ -144,4 +153,6 @@ Equatable compliance
 
 - returns: Bool
 */
-func ==(lhs: Instrument, rhs: Instrument) -> Bool { return lhs.node == rhs.node }
+func ==(lhs: Instrument, rhs: Instrument) -> Bool {
+  return lhs.soundSet == rhs.soundSet && lhs.program == rhs.program && lhs.channel == rhs.channel
+}

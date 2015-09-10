@@ -656,7 +656,7 @@
                                                     <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="speaker2-selected"/>
                                                 </userDefinedRuntimeAttributes>
                                                 <connections>
-                                                    <action selector="auditionValues" destination="aQn-av-Bpr" eventType="valueChanged" id="guz-lN-Ggj"/>
+                                                    <action selector="auditionValues" destination="aQn-av-Bpr" eventType="touchUpInside" id="OmO-oB-obn"/>
                                                 </connections>
                                             </view>
                                         </subviews>
@@ -668,6 +668,7 @@
                                 <constraints>
                                     <constraint firstItem="QQD-5l-KOY" firstAttribute="leading" secondItem="vc5-x2-Dna" secondAttribute="leading" id="6dq-rh-GOg"/>
                                     <constraint firstAttribute="trailing" secondItem="bXC-wE-HBp" secondAttribute="trailing" id="HIJ-UI-fwL"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="272" id="I6A-2h-4yM"/>
                                     <constraint firstAttribute="trailing" secondItem="QQD-5l-KOY" secondAttribute="trailing" id="JVZ-gW-7qh"/>
                                     <constraint firstAttribute="trailing" secondItem="wVM-Za-orF" secondAttribute="trailing" id="LyP-Kp-O8H"/>
                                     <constraint firstItem="uwW-02-uiz" firstAttribute="width" secondItem="KML-VN-wa1" secondAttribute="width" id="RE4-vl-YoU"/>
@@ -1115,7 +1116,7 @@
                                                 <color key="textColor" red="0.57254904510000004" green="0.52941179279999995" blue="0.47058823700000002" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NJk-vD-Q1I" customClass="LabeledStepper" customModule="MoonKit">
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NJk-vD-Q1I" customClass="LabeledStepper" customModule="MoonKit">
                                                 <rect key="frame" x="94" y="0.0" width="178" height="56"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <color key="tintColor" red="0.87450980389999999" green="0.82745098039999998" blue="0.76470588240000004" alpha="1" colorSpace="deviceRGB"/>
@@ -1142,6 +1143,10 @@
                                                     <userDefinedRuntimeAttribute type="number" keyPath="stepValue">
                                                         <real key="value" value="1"/>
                                                     </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
+                                                        <color key="value" red="0.76089900732040405" green="0.25649610161781311" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="backgroundHidden" value="YES"/>
                                                 </userDefinedRuntimeAttributes>
                                                 <connections>
                                                     <action selector="didChangeChannel" destination="alc-VG-vzJ" eventType="valueChanged" id="lrf-0U-nbT"/>
@@ -1163,12 +1168,12 @@
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="image" value="speaker2"/>
                                                     <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
-                                                        <color key="value" red="0.76089900730000004" green="0.25649610160000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <color key="value" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
                                                     </userDefinedRuntimeAttribute>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="speaker2-selected"/>
                                                 </userDefinedRuntimeAttributes>
                                                 <connections>
-                                                    <action selector="auditionValues" destination="alc-VG-vzJ" eventType="valueChanged" id="awN-TI-r7U"/>
+                                                    <action selector="auditionValues" destination="alc-VG-vzJ" eventType="touchUpInside" id="RK1-Cg-8jk"/>
                                                 </connections>
                                             </view>
                                         </subviews>
@@ -1185,6 +1190,7 @@
                                 <constraints>
                                     <constraint firstItem="yew-6y-DAi" firstAttribute="width" secondItem="3qS-GK-dh1" secondAttribute="width" id="8QZ-sO-B9o"/>
                                     <constraint firstItem="NJk-vD-Q1I" firstAttribute="width" secondItem="3qS-GK-dh1" secondAttribute="width" id="NMm-Wx-ZMB"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="272" id="tYt-h1-P4K"/>
                                 </constraints>
                             </stackView>
                         </subviews>

@@ -133,6 +133,17 @@ import UIKit
   @IBInspectable public override var enabled: Bool { get { return stepper.enabled } set { stepper.enabled = newValue } }
   @IBInspectable public override var selected: Bool { get { return stepper.selected } set { stepper.selected = newValue } }
   @IBInspectable public override var highlighted: Bool { get { return stepper.highlighted } set { stepper.highlighted = newValue } }
+  @IBInspectable public var highlightedTintColor: UIColor? {
+    didSet {
+      guard highlightedTintColor != oldValue, let color = highlightedTintColor else { return }
+      if let image = incrementImageForState(.Highlighted) ?? incrementImageForState(.Normal) {
+        setIncrementImage(image.imageWithColor(color).imageWithRenderingMode(.AlwaysOriginal), forState: .Highlighted)
+      }
+      if let image = decrementImageForState(.Highlighted) ?? decrementImageForState(.Normal) {
+        setDecrementImage(image.imageWithColor(color).imageWithRenderingMode(.AlwaysOriginal), forState: .Highlighted)
+      }
+    }
+  }
 
   public override var state: UIControlState { return stepper.state }
 
@@ -166,13 +177,27 @@ import UIKit
   }
 
   public func setIncrementImage(image: UIImage?, forState state: UIControlState) {
-    stepper.setIncrementImage(image, forState: state)
+    if let image = image, color = highlightedTintColor where state == .Highlighted {
+      stepper.setIncrementImage(image.imageWithColor(color).imageWithRenderingMode(.AlwaysOriginal), forState: .Highlighted)
+    }  else if let image = image, color = highlightedTintColor where state == .Normal && incrementImageForState(.Highlighted) == nil {
+      stepper.setIncrementImage(image.imageWithColor(color).imageWithRenderingMode(.AlwaysOriginal), forState: .Highlighted)
+      stepper.setIncrementImage(image, forState: .Normal)
+    } else {
+      stepper.setIncrementImage(image, forState: state)
+    }
   }
 
   public func incrementImageForState(state: UIControlState) -> UIImage? { return stepper.incrementImageForState(state) }
 
   public func setDecrementImage(image: UIImage?, forState state: UIControlState) {
-    stepper.setDecrementImage(image, forState: state)
+    if let image = image, color = highlightedTintColor where state == .Highlighted {
+      stepper.setDecrementImage(image.imageWithColor(color).imageWithRenderingMode(.AlwaysOriginal), forState: .Highlighted)
+    } else if let image = image, color = highlightedTintColor where state == .Normal && decrementImageForState(.Highlighted) == nil {
+      stepper.setDecrementImage(image.imageWithColor(color).imageWithRenderingMode(.AlwaysOriginal), forState: .Highlighted)
+      stepper.setDecrementImage(image, forState: .Normal)
+    } else {
+      stepper.setDecrementImage(image, forState: state)
+    }
   }
 
   public func decrementImageForState(state: UIControlState) -> UIImage? { return stepper.decrementImageForState(state) }
@@ -211,13 +236,17 @@ import UIKit
 
   @IBInspectable public var dividerHidden: Bool = false {
     didSet {
-      setDividerImage(dividerHidden ? UIImage() : nil, forLeftSegmentState: state, rightSegmentState: state)
+      setDividerImage(dividerHidden ? UIImage() : nil, forLeftSegmentState: .Normal, rightSegmentState: .Normal)
     }
   }
 
   @IBInspectable public var backgroundHidden: Bool = false {
     didSet {
-      setBackgroundImage(backgroundHidden ? UIImage() : nil, forState: state)
+      let image: UIImage? = backgroundHidden ? UIImage() : nil
+
+      setBackgroundImage(image, forState: .Normal)
+      setBackgroundImage(image, forState: .Highlighted)
+      setBackgroundImage(image, forState: .Disabled)
     }
   }
 

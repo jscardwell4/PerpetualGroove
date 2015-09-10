@@ -15,18 +15,27 @@ final class InstrumentViewController: UIViewController {
   @IBOutlet weak var programPicker:  InlinePickerView!
   @IBOutlet weak var channelStepper: LabeledStepper!
 
+  /** didPickSoundSet */
   @IBAction func didPickSoundSet() {
+    let soundSet = Sequencer.soundSets[soundSetPicker.selection]
+    let program = UInt8(soundSet.presets[0].program)
+    do { try instrument?.loadSoundSet(soundSet, program: program) } catch { logError(error) }
+    programPicker.labels = soundSet.presets.map({$0.name})
   }
 
+  /** didPickProgram */
   @IBAction func didPickProgram() {
+    let soundSet = Sequencer.auditionInstrument.soundSet
+    let program = UInt8(soundSet.presets[programPicker.selection].program)
+    do { try instrument?.loadSoundSet(soundSet, program: program) } catch { logError(error) }
   }
 
-  @IBAction func didChangeChannel() {
-  }
+  /** didChangeChannel */
+  @IBAction func didChangeChannel() { Sequencer.auditionInstrument.channel = UInt8(channelStepper.value) }
 
-  @IBAction func auditionValues() {
-  }
-  
+  /** auditionValues */
+  @IBAction func auditionValues() { Sequencer.auditionCurrentNote() }
+
   typealias Program = Instrument.Program
   typealias Channel = Instrument.Channel
 
@@ -47,9 +56,8 @@ final class InstrumentViewController: UIViewController {
   /** viewDidLoad */
   override func viewDidLoad() {
     super.viewDidLoad()
-    guard let soundSetPicker = soundSetPicker else { fatalError("wtf") }
     soundSetPicker.labels = Sequencer.soundSets.map { $0.displayName }
-    instrument = Sequencer.currentTrack.instrument
+    instrument = Sequencer.auditionInstrument
   }
 
 }

@@ -1,4 +1,4 @@
-//
+
 //  AudioManager.swift
 //  MidiSprite
 //
@@ -32,6 +32,7 @@ final class AudioManager {
       try Metronome.initialize()
       initialized = true
       logDebug("AudioManager initialized")
+      try start()
     } catch {
       logError(error)
     }

@@ -350,7 +350,11 @@ final class MIDIPlayerViewController: UIViewController {
     let instrumentView = instrumentViewController.view
     instrumentView.translatesAutoresizingMaskIntoConstraints = false
     _instrumentPopoverView!.contentView.addSubview(instrumentView)
-    _instrumentPopoverView!.constrain(𝗩|instrumentView|𝗩, 𝗛|instrumentView|𝗛, [_instrumentPopoverView!.height => 217])
+    _instrumentPopoverView!.constrain(
+      𝗩|instrumentView|𝗩,
+      𝗛|instrumentView|𝗛,
+      [_instrumentPopoverView!.height => 250, _instrumentPopoverView!.width => (view.bounds.width - 10)]
+    )
 
     return _instrumentPopoverView!
   }
@@ -382,9 +386,13 @@ final class MIDIPlayerViewController: UIViewController {
     _noteAttributesPopoverView!.arrowWidth = .popoverArrowWidth
 
     let noteAttributesView = noteAttributesViewController.view
-    noteAttributesView.constrain(noteAttributesView.width ≥ 400)
+    noteAttributesView.translatesAutoresizingMaskIntoConstraints = false
     _noteAttributesPopoverView!.contentView.addSubview(noteAttributesView)
-    _noteAttributesPopoverView!.constrain(𝗩|noteAttributesView|𝗩, 𝗛|noteAttributesView|𝗛)
+    _noteAttributesPopoverView!.constrain(
+      𝗩|noteAttributesView|𝗩,
+      𝗛|noteAttributesView|𝗛,
+      [_noteAttributesPopoverView!.height => 300, _noteAttributesPopoverView!.width => (view.bounds.width - 10)]
+    )
 
     return _noteAttributesPopoverView!
   }
