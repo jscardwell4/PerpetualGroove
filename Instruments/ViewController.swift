@@ -7,93 +7,137 @@
 //
 
 import UIKit
+import AVFoundation
 import MoonKit
-import AudioToolbox
-
 
 class ViewController: UIViewController {
 
   var programs: [SF2File.Preset] = []
 
+  var noteAttributes = NoteAttributes()
   var soundSet = 0
   var program = 0
-  var noteAttributes = NoteAttributes()
   var instrument: Instrument?
 
   @IBOutlet weak var soundSetPicker: InlinePickerView!
   @IBOutlet weak var programPicker: InlinePickerView!
-  @IBOutlet weak var pitchPicker: InlinePickerView!
-  @IBOutlet weak var octaveStepper: LabeledStepper!
+  @IBOutlet weak var notePicker: InlinePickerView!
   @IBOutlet weak var durationPicker: InlinePickerView!
+  @IBOutlet weak var velocityPicker: InlinePickerView!
 
   @IBAction func playNote() {
-    guard let instrument = instrument else { return }
-//    instrument.node.sendMIDIEvent(0x90, data1: 0x36, data2: 0x40)
-    instrument.playNoteWithAttributes(noteAttributes)
-//    instrument.node.startNote(note, withVelocity: velocity, onChannel: 0)
-//    delayedDispatch(attributes.duration.seconds, dispatch_get_main_queue()) {
-//      instrument.node.stopNote(note, onChannel: 0)
+//    guard let instrument = instrument else {
+//      logError("cannot play note when instrument is nil")
+//      return
 //    }
-
-  }
-
-  @IBAction func octaveDidChange(stepper: LabeledStepper) {
-    let rawPitch = pitchPicker.labels[pitchPicker.selection]
-    let octave = stepper.value
-    guard let note = NoteAttributes.Note(rawValue: "\(rawPitch)\(Int(octave))") else { return }
-    noteAttributes.note = note
-  }
-  func didPickPitch(picker: InlinePickerView, idx: Int) {
-    let rawPitch = picker.labels[idx]
-    let octave = Int(octaveStepper.value)
-    guard let note = NoteAttributes.Note(rawValue: "\(rawPitch)\(octave)") else { return }
-    noteAttributes.note = note
-  }
-
-  func didPickDuration(picker: InlinePickerView, idx: Int) {
-    noteAttributes.duration = NoteAttributes.Duration.allCases[idx]
-  }
-
-  override func viewDidLoad() {
-    super.viewDidLoad()
-    // Do any additional setup after loading the view, typically from a nib.
-    soundSetPicker.labels = Sequencer.soundSets.map({$0.displayName})
-    soundSetPicker.didSelectItem = didPickSoundSet
-    soundSetPicker.selection = 0
-    programs = Sequencer.soundSets[0].presets
-    programPicker.labels = programs.map {$0.name}
-    programPicker.didSelectItem = didPickProgram
-    programPicker.selection = 0
-    pitchPicker.didSelectItem = didPickPitch
-    durationPicker.didSelectItem = didPickDuration
-
-    do {
-      instrument = try Instrument(soundSet: Sequencer.soundSets[0], program: 0)
-      try AudioManager.start()
-    } catch {
-      logError(error)
+//    do { try instrument.playNoteWithAttributes(noteAttributes) }
+//    catch { logError(error) }
+    guard let sampler = (samplerToggle ? sampler2 : sampler) else {
+      logError("cannot play note when sampler is nil")
+      return
+    }
+    samplerToggle = !samplerToggle
+    sampler.startNote(noteAttributes.note.MIDIValue, withVelocity: noteAttributes.velocity.MIDIValue, onChannel: 0)
+    delayedDispatch(noteAttributes.duration.seconds, dispatch_get_main_queue()) {
+      [unowned self] in
+      sampler.stopNote(self.noteAttributes.note.MIDIValue, onChannel: 0)
     }
   }
 
-  func didPickSoundSet(picker: InlinePickerView, idx: Int) {
+  @IBAction func didPickSoundSet(picker: InlinePickerView) {
+    let idx = picker.selection
     logDebug("picked sound set '\(Sequencer.soundSets[idx])'")
     programs = Sequencer.soundSets[idx].presets
     programPicker.labels = programs.map {$0.name}
     soundSet = idx
     program = 0
     programPicker.selectItem(0, animated: true)
-
+    do {
+      try sampler.loadSoundBankInstrumentAtURL(Sequencer.soundSets[soundSet].url, program: UInt8(programs[program].program), bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB), bankLSB: UInt8(kAUSampler_DefaultBankLSB))
+try sampler2.loadSoundBankInstrumentAtURL(Sequencer.soundSets[soundSet].url, program: UInt8(programs[program].program), bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB), bankLSB: UInt8(kAUSampler_DefaultBankLSB))//      try instrument?.loadSoundSet(Sequencer.soundSets[soundSet], program: UInt8(programs[program].program))
+    } catch {
+      logError(error)
+    }
   }
 
-  func didPickProgram(picker: InlinePickerView, idx: Int) {
+  @IBAction func didPickProgram(picker: InlinePickerView) {
+    let idx = picker.selection
     logDebug("picked program '\(programs[idx])'")
     program = idx
-    instrument?.node.sendProgramChange(UInt8(programs[idx].program), bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB), bankLSB: UInt8(kAUSampler_DefaultBankLSB), onChannel: 0)
+    do {
+      try sampler.loadSoundBankInstrumentAtURL(Sequencer.soundSets[soundSet].url, program: UInt8(programs[program].program), bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB), bankLSB: UInt8(kAUSampler_DefaultBankLSB))
+try sampler2.loadSoundBankInstrumentAtURL(Sequencer.soundSets[soundSet].url, program: UInt8(programs[program].program), bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB), bankLSB: UInt8(kAUSampler_DefaultBankLSB))//      try instrument?.setProgram(UInt8(programs[program].program))
+    } catch {
+      logError(error)
+    }
   }
 
-  override func didReceiveMemoryWarning() {
-    super.didReceiveMemoryWarning()
-    // Dispose of any resources that can be recreated.
+  @IBAction func didPickNote(picker: InlinePickerView) {
+    let idx = picker.selection
+    let note = NoteAttributes.Note.allCases[idx]
+    logDebug("picked note '\(note.rawValue)'")
+    noteAttributes.note = note
+  }
+
+  @IBAction func didPickDuration(picker: InlinePickerView) {
+    let idx = picker.selection
+    let duration = NoteAttributes.Duration.allCases[idx]
+    logDebug("picked duration '\(duration)'")
+    noteAttributes.duration = duration
+  }
+
+  @IBAction func didPickVelocity(picker: InlinePickerView) {
+    let idx = picker.selection
+    let velocity = NoteAttributes.Velocity.allCases[idx]
+    logDebug("picked velocity '\(velocity)'")
+    noteAttributes.velocity = velocity
+  }
+
+  var audioEngine: AVAudioEngine!
+  var sampler: AVAudioUnitSampler!
+  var sampler2: AVAudioUnitSampler!
+
+  var samplerToggle = false
+
+  override func viewDidLoad() {
+    super.viewDidLoad()
+    programs = Sequencer.soundSets[0].presets
+    program = programPicker.selection
+    soundSet = soundSetPicker.selection
+    noteAttributes.note = NoteAttributes.Note.allCases[notePicker.selection]
+    noteAttributes.duration = NoteAttributes.Duration.allCases[durationPicker.selection]
+    noteAttributes.velocity = NoteAttributes.Velocity.allCases[velocityPicker.selection]
+
+    audioEngine = AVAudioEngine()
+    sampler = AVAudioUnitSampler()
+
+    audioEngine.attachNode(sampler)
+    audioEngine.connect(sampler, to: audioEngine.mainMixerNode, format: sampler.outputFormatForBus(0))
+
+    do { try audioEngine.start() } catch { logError(error) }
+
+    sampler2 = AVAudioUnitSampler()
+    audioEngine.attachNode(sampler2)
+    audioEngine.connect(sampler2, to: audioEngine.mainMixerNode, format: sampler2.outputFormatForBus(0))
+//    do {
+//      try sampler2.loadSoundBankInstrumentAtURL(Sequencer.soundSets[soundSet].url, program: UInt8(programs[program].program), bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB), bankLSB: UInt8(kAUSampler_DefaultBankLSB))
+//    } catch {
+//      logError(error)
+//    }
+
+/*
+    do {
+      try AudioManager.start()
+      instrument = try Instrument(soundSet: Sequencer.soundSets[soundSet], program: UInt8(programs[program].program))
+      let bus = try Mixer.connectInstrument(instrument!)
+      logDebug("bus = \(bus)")
+    } catch {
+      logError(error)
+    }
+
+*/
+
+
   }
 
   override func prefersStatusBarHidden() -> Bool {

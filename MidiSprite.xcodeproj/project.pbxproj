@@ -96,6 +96,8 @@
 		C2BC7AD51B76C85E001729BA /* Instrument.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BC7AD41B76C85E001729BA /* Instrument.swift */; };
 		C2CD18E11B7E681A00705922 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CD18E01B7E681A00705922 /* Error.swift */; };
 		C2CF38CD1B7EBED30085B3D5 /* Track.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CF38CC1B7EBED30085B3D5 /* Track.swift */; };
+		C2DD41551BA0619400FF613F /* Eveleth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BCD1B78EDEB00A68A64 /* Eveleth.framework */; };
+		C2DD41561BA0619400FF613F /* Eveleth.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BCD1B78EDEB00A68A64 /* Eveleth.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C2DFBE7A1B8AA5AB00898C2A /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DFBE791B8AA5AB00898C2A /* Sequence.swift */; };
 		C2E043351B72F4DC005F0675 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E043341B72F4DC005F0675 /* AppDelegate.swift */; };
 		C2E043391B72F4DC005F0675 /* MIDIPlayerScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E043381B72F4DC005F0675 /* MIDIPlayerScene.swift */; };
@@ -105,7 +107,7 @@
 		C2E043431B72F4DC005F0675 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C2E043411B72F4DC005F0675 /* LaunchScreen.storyboard */; };
 		C2ECC5E31B9C7FFA0010E76E /* MIDINodeEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2ECC5E21B9C7FFA0010E76E /* MIDINodeEvent.swift */; settings = {ASSET_TAGS = (); }; };
 		C2ECC5E51B9C9C580010E76E /* InstrumentEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2ECC5E41B9C9C580010E76E /* InstrumentEvent.swift */; settings = {ASSET_TAGS = (); }; };
-		C2EFA0EC1B823642002EBA3D /* TemplateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EFA0EB1B823642002EBA3D /* TemplateViewController.swift */; };
+		C2EFA0EC1B823642002EBA3D /* NoteAttributesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EFA0EB1B823642002EBA3D /* NoteAttributesViewController.swift */; };
 		C2EFA0EE1B824A2F002EBA3D /* AssetManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EFA0ED1B824A2F002EBA3D /* AssetManager.swift */; };
 		C2F2ADC21B90EBD300FF4836 /* Woodblock.wav in Resources */ = {isa = PBXBuildFile; fileRef = C2F2ADC11B90EBD300FF4836 /* Woodblock.wav */; settings = {ASSET_TAGS = (); }; };
 		C2F2ADC41B91098A00FF4836 /* NoteAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F2ADC31B91098A00FF4836 /* NoteAttributes.swift */; settings = {ASSET_TAGS = (); }; };
@@ -134,6 +136,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				C283E7D51B9F274200B1690D /* Lumberjack.framework in Embed Frameworks */,
+				C2DD41561BA0619400FF613F /* Eveleth.framework in Embed Frameworks */,
 				C283E7D21B9F273A00B1690D /* MoonKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -177,7 +180,6 @@
 		C283E7C11B9F272C00B1690D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C283E7C31B9F272C00B1690D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		C283E7C61B9F272C00B1690D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		C283E7C81B9F272C00B1690D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C283E7CB1B9F272C00B1690D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C283E7CD1B9F272C00B1690D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C286CE1B1B73D2C10003FCBF /* MidiSprite.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = MidiSprite.playground; path = /Users/Moondeer/Projects/MidiSprite/MidiSprite.playground; sourceTree = "<absolute>"; };
@@ -209,7 +211,7 @@
 		C2E043441B72F4DC005F0675 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C2ECC5E21B9C7FFA0010E76E /* MIDINodeEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINodeEvent.swift; sourceTree = "<group>"; };
 		C2ECC5E41B9C9C580010E76E /* InstrumentEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstrumentEvent.swift; sourceTree = "<group>"; };
-		C2EFA0EB1B823642002EBA3D /* TemplateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemplateViewController.swift; sourceTree = "<group>"; };
+		C2EFA0EB1B823642002EBA3D /* NoteAttributesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteAttributesViewController.swift; sourceTree = "<group>"; };
 		C2EFA0ED1B824A2F002EBA3D /* AssetManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssetManager.swift; sourceTree = "<group>"; };
 		C2F2ADC11B90EBD300FF4836 /* Woodblock.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Woodblock.wav; sourceTree = "<group>"; };
 		C2F2ADC31B91098A00FF4836 /* NoteAttributes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteAttributes.swift; sourceTree = "<group>"; };
@@ -222,6 +224,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C283E7D41B9F274200B1690D /* Lumberjack.framework in Frameworks */,
+				C2DD41551BA0619400FF613F /* Eveleth.framework in Frameworks */,
 				C283E7D11B9F273A00B1690D /* MoonKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -331,7 +334,7 @@
 				C26EEB2D1B7FDA8F00EC6979 /* MixerViewController.swift */,
 				C26EEB2F1B7FDAF300EC6979 /* MixerCell.swift */,
 				C2AA2BC71B84B04200A0B08D /* InstrumentViewController.swift */,
-				C2EFA0EB1B823642002EBA3D /* TemplateViewController.swift */,
+				C2EFA0EB1B823642002EBA3D /* NoteAttributesViewController.swift */,
 				C245456B1B9B414C00FF00E7 /* FormPopoverViewController.swift */,
 			);
 			name = "View Controllers";
@@ -400,7 +403,6 @@
 				C283E7C11B9F272C00B1690D /* AppDelegate.swift */,
 				C283E7C31B9F272C00B1690D /* ViewController.swift */,
 				C283E7C51B9F272C00B1690D /* Main.storyboard */,
-				C283E7C81B9F272C00B1690D /* Assets.xcassets */,
 				C283E7CA1B9F272C00B1690D /* LaunchScreen.storyboard */,
 				C283E7CD1B9F272C00B1690D /* Info.plist */,
 			);
@@ -625,7 +627,7 @@
 				C21451AB1B7FFF0F00E1A0B2 /* Mixer.swift in Sources */,
 				C272B2A01B7D700600134E5F /* SoundSet.swift in Sources */,
 				C26EEB301B7FDAF300EC6979 /* MixerCell.swift in Sources */,
-				C2EFA0EC1B823642002EBA3D /* TemplateViewController.swift in Sources */,
+				C2EFA0EC1B823642002EBA3D /* NoteAttributesViewController.swift in Sources */,
 				C291C3EF1B91EDCC00702AEA /* MetaEvent.swift in Sources */,
 				C25EBC831B8BFAFA00E57665 /* MIDIFile.swift in Sources */,
 				C26FC1711B7BAC7F00E271A3 /* MIDIPlayerNode.swift in Sources */,

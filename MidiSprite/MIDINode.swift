@@ -148,7 +148,7 @@ final class MIDINode: SKSpriteNode {
   init(_ p: Placement, _ name: String) throws {
     placement = p
     textureType = Sequencer.currentTexture
-    note = Sequencer.currentNote
+    note = Sequencer.currentNoteAttributes
 
     super.init(texture: Sequencer.currentTexture.texture,
                color: Sequencer.currentTrack.color.value,

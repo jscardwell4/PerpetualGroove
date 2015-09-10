@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-@IBDesignable public class InlinePickerView: UIView {
+@IBDesignable public class InlinePickerView: UIControl {
 
   private enum CellType: String { case Label, Image }
 
@@ -72,14 +72,7 @@ import UIKit
   }
 
   public override func prepareForInterfaceBuilder() {
-//    func setContentMode(view: UIView) {
-//      view.contentMode = .Redraw
-//      view.setNeedsDisplay()
-//      view.subviews.forEach { setContentMode($0) }
-//    }
-//    setContentMode(self)
 //    reloadData()
-    logIB(description)
   }
 
   /** updatePerspective */
@@ -173,7 +166,7 @@ import UIKit
   public var didSelectItem: ((InlinePickerView, Int) -> Void)?
 
   public static let DefaultFont = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
-  public var font = InlinePickerView.DefaultFont
+  public var font = InlinePickerView.DefaultFont { didSet { reloadData() } }
   @IBInspectable public var fontName: String  {
     get { return font.fontName }
     set { if let font = UIFont(name: newValue, size: self.font.pointSize) { self.font = font } }
@@ -189,9 +182,9 @@ import UIKit
     set { font = font.fontWithSize(newValue) }
   }
 
-  @IBInspectable public var textColor: UIColor = .darkTextColor() { didSet { reloadData() } }
+  @IBInspectable public var textColor: UIColor = .darkTextColor() //{ didSet { reloadData() } }
 
-  public var selectedFont =  InlinePickerView.DefaultFont
+  public var selectedFont =  InlinePickerView.DefaultFont { didSet { reloadData() } }
   @IBInspectable public var selectedFontName: String  {
     get { return selectedFont.fontName }
     set { if let font = UIFont(name: newValue, size: selectedFont.pointSize) { selectedFont = font } }
@@ -204,9 +197,9 @@ import UIKit
 
   @IBInspectable public var labelsString: String = "" { didSet { labels = ", ".split(labelsString) } }
   @IBInspectable public var imagesString: String = "" { didSet { images = ", ".split(imagesString).flatMap({UIImage(named: $0)}) } }
-  @IBInspectable public var selectedTextColor: UIColor = .darkTextColor() { didSet { reloadData() } }
-  @IBInspectable public var imageColor: UIColor = .darkTextColor() { didSet { reloadData() } }
-  @IBInspectable public var imageSelectedColor: UIColor = .darkTextColor()  { didSet { reloadData() } }
+  @IBInspectable public var selectedTextColor: UIColor = .darkTextColor() //{ didSet { reloadData() } }
+  @IBInspectable public var imageColor: UIColor = .darkTextColor() //{ didSet { reloadData() } }
+  @IBInspectable public var imageSelectedColor: UIColor = .darkTextColor() //{ didSet { reloadData() } }
 
   /** reloadData */
   public func reloadData() {
@@ -338,6 +331,7 @@ extension InlinePickerView: UICollectionViewDelegate {
   - parameter indexPath: NSIndexPath
   */
   public func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+    assert(false)
     didSelectItem?(self, indexPath.item)
   }
 
@@ -372,6 +366,7 @@ extension InlinePickerView: UIScrollViewDelegate {
       return
     }
     // invoke selection handler
+    sendActionsForControlEvents(.ValueChanged)
     didSelectItem?(self, item)
   }
   /**

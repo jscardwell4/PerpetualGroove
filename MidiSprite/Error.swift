@@ -209,7 +209,7 @@ Function of convenience for capturing function and line information to include i
 
 - returns: String
 */
-func location(function: String = __FUNCTION__, line: Int32 = __LINE__) -> String { return "[(function):(line)]" }
+func location(function: String = __FUNCTION__, line: Int32 = __LINE__) -> String { return "[\(function):\(line)]" }
 
 /**
 Compares the specified `OSStatus` code against `noErr` and throws an error when they are not equal

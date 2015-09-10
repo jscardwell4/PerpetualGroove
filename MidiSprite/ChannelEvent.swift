@@ -26,18 +26,12 @@ struct ChannelEvent: TrackEvent {
   }
 
   struct Status: IntegerLiteralConvertible {
-    var value: Byte { return (type.rawValue << 4) | channel.value }
+    var value: Byte { return (type.rawValue << 4) | channel }
     let type: Type
-    let channel: Channel
+    let channel: Byte
     init(integerLiteral value: Byte) { self.init(value) }
-    init(_ v: Byte) { self.init(Type(v >> 4), Channel(v & 0xF)) }
-    init(_ t: Type, _ c: Channel) { type = t; channel = c }
-  }
-
-  struct Channel: IntegerLiteralConvertible {
-    let value: Byte
-    init(integerLiteral value: Byte) { self.init(value) }
-    init(_ v: Byte) { value = ClosedInterval<Byte>(0, 15).clampValue(v) }
+    init(_ v: Byte) { self.init(Type(v >> 4), v & 0xF) }
+    init(_ t: Type, _ c: Byte) { type = t; channel = (0 ... 15).clampValue(c) }
   }
 
   var time: CABarBeatTime = .start
@@ -48,7 +42,7 @@ struct ChannelEvent: TrackEvent {
 
   var bytes: [Byte] { return [status.value, data1] + (data2 != nil ? [data2!] : []) }
 
-  init(_ type: Type, _ channel: Channel, _ d1: Byte, _ d2: Byte? = nil) {
+  init(_ type: Type, _ channel: Byte, _ d1: Byte, _ d2: Byte? = nil) {
     status = Status(type, channel); data1 = d1; data2 = d2
   }
 

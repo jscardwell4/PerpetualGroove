@@ -25,6 +25,7 @@ final class Sequencer {
       try urls.forEach { soundSets.append(try SoundSet(url: $0)) }
       guard soundSets.count > 0 else { fatalError("failed to create any sound sets from bundled sf2 files") }
       _currentSoundSet = 0
+      auditionInstrument = try Instrument(soundSet: soundSets[0], program: UInt8(soundSets[0].presets[0].program), channel: 0)
       Notification.SoundSetsInitialized.post()
     } catch {
       logError(error)
@@ -143,6 +144,8 @@ final class Sequencer {
     }
   }
 
+  static private(set) var auditionInstrument: Instrument!
+
   private static var previousTrack: Track?
 
   /** The current track in use */
@@ -178,12 +181,19 @@ final class Sequencer {
   }
 
   // MARK: - Properties used to initialize a new `MIDINode`
-  static var currentNote = NoteAttributes() {
+
+  static var currentNoteAttributes = NoteAttributes() {
     didSet {
-      guard oldValue != currentNote else { return }
+      guard oldValue != currentNoteAttributes else { return }
       state ∪= .ModifiedNote
     }
   }
+
+  /** Plays a note using the current note attributes and instrument settings */
+  static func auditionCurrentNote() {
+
+  }
+
   static var currentTexture = MIDINode.TextureType.Cobblestone {
     didSet {
       guard oldValue != currentTexture else { return }
@@ -207,8 +217,10 @@ final class Sequencer {
   - returns: The new `Track`
   */
   static func newTrackUsingSoundSet(soundSet: SoundSet, setToProgram program: Instrument.Program) throws -> Track {
-    let instrument = try Instrument(soundSet: soundSet, program: program)
-    let track = try sequence.newTrackWithInstrument(instrument)
+    let instrument = try Instrument(soundSet: soundSet)
+    let bus = try Mixer.connectInstrument(instrument)
+    if program != 0 { try instrument.setProgram(program) }
+    let track = try sequence.newTrackOnBus(bus)
     state.remove([.ModifiedSoundSet, .ModifiedProgram, .ModifiedChannel])
     return track
   }

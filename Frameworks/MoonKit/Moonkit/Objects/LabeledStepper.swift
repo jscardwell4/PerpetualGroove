@@ -193,6 +193,34 @@ import UIKit
     stepper.cancelTrackingWithEvent(event)
   }
 
+
+  @IBInspectable public var backgroundImage: UIImage? {
+    get { return backgroundImageForState(state) }
+    set { setBackgroundImage(newValue, forState: state) }
+  }
+
+  @IBInspectable public var incrementImage: UIImage? {
+    get { return incrementImageForState(state) }
+    set { setIncrementImage(newValue, forState: state) }
+  }
+
+  @IBInspectable public var decrementImage: UIImage? {
+    get { return decrementImageForState(state) }
+    set { setDecrementImage(newValue, forState: state) }
+  }
+
+  @IBInspectable public var dividerHidden: Bool = false {
+    didSet {
+      setDividerImage(dividerHidden ? UIImage() : nil, forLeftSegmentState: state, rightSegmentState: state)
+    }
+  }
+
+  @IBInspectable public var backgroundHidden: Bool = false {
+    didSet {
+      setBackgroundImage(backgroundHidden ? UIImage() : nil, forState: state)
+    }
+  }
+
   public override func addTarget(target: AnyObject?,
                           action: Selector,
                 forControlEvents controlEvents: UIControlEvents)
