@@ -40,11 +40,11 @@ final class MasterCell: MixerCell {
   static let Identifier = "MasterCell"
 
   /** refresh */
-  func refresh() { do { volume = try Mixer.masterVolume(); pan = try Mixer.masterPan() } catch { logError(error) } }
+  func refresh() { volume = AudioManager.engine.mainMixerNode.volume; pan = AudioManager.engine.mainMixerNode.pan }
 
   /** volumeDidChange */
-  @IBAction func volumeDidChange() { do { try Mixer.setMasterVolume(volume) } catch { logError(error) } }
-  @IBAction func panDidChange() { do { try Mixer.setMasterPan(pan) } catch { logError(error) } }
+  @IBAction func volumeDidChange() { AudioManager.engine.mainMixerNode.volume = volume }
+  @IBAction func panDidChange() { AudioManager.engine.mainMixerNode.pan = pan }
 
 }
 
@@ -65,7 +65,7 @@ final class TrackCell: MixerCell, UITextFieldDelegate {
       guard let track = track else { return }
       volume = track.volume
       pan = track.pan
-      labelTextField.text = track.label ?? "BUS \(track.bus.element)"
+      labelTextField.text = track.label
       tintColor = track.color.value
     }
   }

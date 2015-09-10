@@ -14,11 +14,7 @@ import AVFoundation
 
 final class Instrument: Equatable, CustomStringConvertible {
 
-  var event: InstrumentEvent {
-    let fileType: InstrumentEvent.FileType = .SF2
-    return InstrumentEvent(fileType, soundSet.url)
-  }
-
+  var event: InstrumentEvent { return InstrumentEvent(.SF2, soundSet.url) }
 
   struct Preset: ByteArrayConvertible {
     let fileURL: NSURL
@@ -38,10 +34,13 @@ final class Instrument: Equatable, CustomStringConvertible {
   typealias Channel = Byte
 
   var soundSet: SoundSet
-  var channel: Channel
-  var program: Program
+  var channel: Channel = 0
+  var program: Program = 0
   let node = AVAudioUnitSampler()
 
+  var bus: AVAudioNodeBus {
+    return node.destinationForMixer(AudioManager.engine.mainMixerNode, bus: 0)?.connectionPoint.bus ?? -1
+  }
 
   var preset: Preset { return Preset(fileURL: soundSet.url, program: 0, channel: 0) }
 
@@ -57,10 +56,14 @@ final class Instrument: Equatable, CustomStringConvertible {
 
   var description: String { return "Instrument { \n\tsoundSet: \(soundSet)\n\tprogram: \(program)\n\tchannel: \(channel)\n}" }
 
-  private let audioUnit: MusicDeviceComponent
   private var client = MIDIClientRef()
   private(set) var endPoint = MIDIEndpointRef()
 
+  /**
+  playNoteWithAttributes:
+
+  - parameter attributes: NoteAttributes
+  */
   func playNoteWithAttributes(attributes: NoteAttributes) {
     node.startNote(attributes.note.MIDIValue, withVelocity: attributes.velocity.MIDIValue, onChannel: 0)
     delayedDispatch(attributes.duration.seconds, dispatch_get_main_queue()) {
@@ -93,19 +96,10 @@ final class Instrument: Equatable, CustomStringConvertible {
   */
   func loadSoundSet(soundSet: SoundSet, var program: Program = 0) throws {
     program = (0 ... 127).clampValue(program)
-    var instrumentData = AUSamplerInstrumentData(fileURL: Unmanaged.passUnretained(soundSet.url),
-                                                 instrumentType: UInt8(kInstrumentType_DLSPreset),
-                                                 bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB),
-                                                 bankLSB: UInt8(kAUSampler_DefaultBankLSB),
-                                                 presetID: program)
-
-    try AudioUnitSetProperty(audioUnit,
-                             AudioUnitPropertyID(kAUSamplerProperty_LoadInstrument),
-                             AudioUnitScope(kAudioUnitScope_Global),
-                             AudioUnitElement(0),
-                             &instrumentData,
-                             UInt32(sizeof(AUSamplerInstrumentData)))
-      ➤ "\(location()) Failed to load instrument into audio unit"
+    try node.loadSoundBankInstrumentAtURL(soundSet.url,
+                                  program: program,
+                                  bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB),
+                                  bankLSB: UInt8(kAUSampler_DefaultBankLSB))
     self.soundSet = soundSet
     self.program = program
   }
@@ -116,27 +110,13 @@ final class Instrument: Equatable, CustomStringConvertible {
   - parameter set: SoundSet
   - parameter program: Program
   */
-  init(soundSet set: SoundSet, program p: Program = 0, channel c: Channel = 0) throws {
-    soundSet = set
-    channel = c
-    program = p
-    node = AUNode()
-    audioUnit = MusicDeviceComponent()
-    let graph = AudioManager.graph
+  init(soundSet: SoundSet, program: Program = 0, channel: Channel = 0) throws {
+    self.soundSet = soundSet
+    self.program = program
+    self.channel = channel
 
-    var instrumentComponentDescription = AudioComponentDescription(componentType: kAudioUnitType_MusicDevice,
-                                                                   componentSubType: kAudioUnitSubType_Sampler,
-                                                                   componentManufacturer: kAudioUnitManufacturer_Apple,
-                                                                   componentFlags: 0,
-                                                                   componentFlagsMask: 0)
-
-    try AUGraphAddNode(graph, &instrumentComponentDescription, &node)
-      ➤ "\(location()) Failed to add instrument node to audio graph"
-
-
-    try AUGraphNodeInfo(graph, node, nil, &audioUnit)
-      ➤ "\(location()) Failed to retrieve instrument audio unit from audio graph node"
-
+    AudioManager.engine.attachNode(node)
+    AudioManager.engine.connect(node, to: AudioManager.engine.mainMixerNode, format: node.outputFormatForBus(0))
     try loadSoundSet(soundSet, program: program)
 
     let name = "Instrument \(ObjectIdentifier(self).uintValue)"
@@ -151,8 +131,7 @@ final class Instrument: Equatable, CustomStringConvertible {
   - parameter preset: Preset
   */
   convenience init(preset: Preset) throws {
-    let soundSet = try SoundSet(url: preset.fileURL)
-    try self.init(soundSet: soundSet, program: preset.program, channel: preset.channel)
+    try self.init(soundSet: try SoundSet(url: preset.fileURL), program: preset.program, channel: preset.channel)
   }
 
 }

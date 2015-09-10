@@ -362,7 +362,8 @@ final class MIDIPlayerViewController: UIViewController {
   private var _noteAttributesViewController: NoteAttributesViewController?
   private var noteAttributesViewController: NoteAttributesViewController {
     guard _noteAttributesViewController == nil else { return _noteAttributesViewController! }
-    _noteAttributesViewController = NoteAttributesViewController()
+    let storyboard = UIStoryboard(name: "Main", bundle: nil)
+    _noteAttributesViewController = storyboard.instantiateViewControllerWithIdentifier("NoteAttributes") as? NoteAttributesViewController
     addChildViewController(_noteAttributesViewController!)
     return _noteAttributesViewController!
   }

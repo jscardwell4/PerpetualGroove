@@ -146,6 +146,11 @@ final class Sequencer {
 
   static private(set) var auditionInstrument: Instrument!
 
+  /** instrumentWithCurrentSettings */
+  static func instrumentWithCurrentSettings() throws -> Instrument {
+    return try Instrument(soundSet: currentSoundSet, program: currentProgram, channel: currentChannel)
+  }
+
   private static var previousTrack: Track?
 
   /** The current track in use */
@@ -153,9 +158,8 @@ final class Sequencer {
 
   private static func currentTrackForState() -> Track? {
     if state.isDisjointWith([.ModifiedSoundSet, .ModifiedProgram, .ModifiedChannel]) { return _currentTrack }
-    do {
-      return try newTrackUsingSoundSet(currentSoundSet, setToProgram: currentProgram)
-    } catch {
+    do { return try sequence.newTrackWithInstrument(try instrumentWithCurrentSettings()) }
+    catch {
       logError(error)
       fatalError("unable to create a new track when current track has been requested … error: \(error)")
     }
@@ -167,7 +171,7 @@ final class Sequencer {
       let track = currentTrackForState()
       guard track == nil else { return track! }
       do {
-        _currentTrack = try newTrackUsingSoundSet(currentSoundSet, setToProgram: currentProgram)
+        _currentTrack = try sequence.newTrackWithInstrument(try instrumentWithCurrentSettings())
         return _currentTrack!
       } catch {
         logError(error)
@@ -206,24 +210,6 @@ final class Sequencer {
     [MIDIPlayerNode.Notification.NodeAdded.name.value : (MIDIPlayerNode.self,
                                                          NSOperationQueue.mainQueue(),
                                                          {_ in Sequencer.state.remove([.ModifiedNote, .ModifiedTexture])})])
-
-
-  /**
-  Creates a new `Track` attached to a new `Instrument` that uses the specified sound set and program
-
-  - parameter soundSet: SoundSet
-  - parameter program: Instrument.Program
-  
-  - returns: The new `Track`
-  */
-  static func newTrackUsingSoundSet(soundSet: SoundSet, setToProgram program: Instrument.Program) throws -> Track {
-    let instrument = try Instrument(soundSet: soundSet)
-    let bus = try Mixer.connectInstrument(instrument)
-    if program != 0 { try instrument.setProgram(program) }
-    let track = try sequence.newTrackOnBus(bus)
-    state.remove([.ModifiedSoundSet, .ModifiedProgram, .ModifiedChannel])
-    return track
-  }
 
   // MARK: - Transport
 

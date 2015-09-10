@@ -26,8 +26,8 @@ final class MixerViewController: UICollectionViewController {
     let queue = NSOperationQueue.mainQueue()
     let callback: (AnyObject?, NSOperationQueue?, (NSNotification) -> Void) = (Mixer.self, queue, busesDidChange)
     let callbacks: [NotificationReceptionist.Notification:NotificationReceptionist.Callback] = [
-      Mixer.Notification.Name.DidAddBus.rawValue: callback,
-      Mixer.Notification.Name.DidRemoveBus.rawValue: callback
+      Sequence.Notification.TrackAdded.name.rawValue: callback,
+      Sequence.Notification.TrackRemoved.name.rawValue: callback
     ]
 
     notificationReceptionist = NotificationReceptionist(callbacks: callbacks)
@@ -38,7 +38,7 @@ final class MixerViewController: UICollectionViewController {
   override func updateViewConstraints() {
     super.updateViewConstraints()
     view.removeAllConstraints()
-    let itemCount = Mixer.instruments.count + 1
+    let itemCount = Sequencer.sequence.tracks.count + 1
     view.constrain(view.width => Float(100 * itemCount + 10 * (itemCount - 1)), view.height => 400)
     view.constrain(𝗩|collectionView!|𝗩, 𝗛|collectionView!|𝗛)
   }
@@ -46,7 +46,7 @@ final class MixerViewController: UICollectionViewController {
   func updateTracks() {
     guard let collectionView = collectionView else { return }
     let itemCount = collectionView.numberOfItemsInSection(1)
-    let busCount = Mixer.instruments.count
+    let busCount = Sequencer.sequence.tracks.count
     if itemCount != busCount {
       view.setNeedsUpdateConstraints()
       collectionView.reloadData()

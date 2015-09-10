@@ -49,7 +49,7 @@ final class InstrumentViewController: UIViewController {
     super.viewDidLoad()
     guard let soundSetPicker = soundSetPicker else { fatalError("wtf") }
     soundSetPicker.labels = Sequencer.soundSets.map { $0.displayName }
-    instrument = Sequencer.currentTrack.bus.instrument
+    instrument = Sequencer.currentTrack.instrument
   }
 
 }

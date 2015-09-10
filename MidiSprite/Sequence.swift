@@ -38,6 +38,7 @@ final class Sequence: CustomStringConvertible {
 
   - parameter instrument: Instrument
   */
+
   func newTrackWithInstrument(instrument: Instrument) throws -> Track {
     let track = try Track(instrument: instrument)
     tracks.append(track)
