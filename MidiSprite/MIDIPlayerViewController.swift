@@ -8,17 +8,14 @@
 
 import UIKit
 import SpriteKit
-import Eveleth
 import MoonKit
-import Chameleon
-import typealias AudioToolbox.MusicDeviceGroupID
 
 final class MIDIPlayerViewController: UIViewController {
 
   static var currentInstance: MIDIPlayerViewController? {
     guard let delegate = UIApplication.sharedApplication().delegate,
-                    window = delegate.window,
-                    controller = window?.rootViewController as? MIDIPlayerViewController else { return nil }
+                window = delegate.window,
+            controller = window?.rootViewController as? MIDIPlayerViewController else { return nil }
     return controller
   }
 
@@ -53,31 +50,9 @@ final class MIDIPlayerViewController: UIViewController {
 
   }
 
-  /** addPopovers */
-//  private func addPopovers() {
-//    filesPopoverView.hidden = true
-//    view.addSubview(filesPopoverView)
-//
-//    mixerPopoverView.hidden = true
-//    view.addSubview(mixerPopoverView)
-//
-//    instrumentPopoverView.hidden = true
-//    view.addSubview(instrumentPopoverView)
-//
-//    noteAttributesPopoverView.hidden = true
-//    view.addSubview(noteAttributesPopoverView)
-//
-//    view.setNeedsUpdateConstraints()
-//  }
-
   /** viewDidLayoutSubviews */
   override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
-
-//    guard _filesPopoverView != nil
-//       && _noteAttributesPopoverView != nil
-//       && _mixerPopoverView != nil
-//       && _instrumentPopoverView != nil else { return }
 
     func adjustPopover(popoverView: PopoverView, _ presentingView: UIView) {
       let popoverCenter = view.convertPoint(popoverView.center, fromView: popoverView.superview)
@@ -87,37 +62,8 @@ final class MIDIPlayerViewController: UIViewController {
 
     adjustPopover(filesPopoverView, filesButton)
     adjustPopover(noteAttributesPopoverView, noteAttributesButton)
-//    adjustPopover(mixerPopoverView, mixerButton)
+    adjustPopover(mixerPopoverView, mixerButton)
     adjustPopover(instrumentPopoverView, instrumentButton)
-  }
-
-  // MARK: Constraints
-
-  /** updateViewConstraints */
-  override func updateViewConstraints() {
-    super.updateViewConstraints()
-
-    guard let filesPopover = _filesPopoverView,
-//              mixerPopover = _mixerPopoverView,
-              noteAttributesPopover = _noteAttributesPopoverView,
-              instrumentPopover = _instrumentPopoverView
-      else { return }
-
-    func addConstraints(id: Identifier, _ popoverView: PopoverView, _ presentingView: UIView) {
-      guard view.constraintsWithIdentifier(id).count == 0 else { return }
-      view.constrain(
-        [popoverView.centerX => presentingView.centerX -!> 999] --> (id + "CenterX"),
-        [ popoverView.top => popoverBlur.top,
-          popoverView.width ≤ (UIScreen.mainScreen().bounds.width - 10),
-          popoverView.left ≥ view.left + 5,
-          popoverView.right ≤ view.right - 5 ] --> id
-      )
-    }
-
-    addConstraints(Identifier(self, "FilesPopover"), filesPopover, filesButton)
-//    addConstraints(Identifier(self, "MixerPopover"), mixerPopover, mixerButton)
-    addConstraints(Identifier(self, "NoteAttributesPopover"), noteAttributesPopover, noteAttributesButton)
-    addConstraints(Identifier(self, "InstrumentPopover"),  instrumentPopover, instrumentButton)
   }
 
   // MARK: Rotation
@@ -140,29 +86,6 @@ final class MIDIPlayerViewController: UIViewController {
     } else {
       return .All
     }
-  }
-
-  // MARK: Memory
-
-  /** didReceiveMemoryWarning */
-  override func didReceiveMemoryWarning() {
-    logDebug("")
-    super.didReceiveMemoryWarning()
-//    if let noteAttributesPopover = _noteAttributesPopoverView where noteAttributesPopover.hidden == false {
-//      noteAttributesPopover.removeFromSuperview()
-//      _noteAttributesPopoverView = nil
-//    }
-//
-//    if let mixerPopover = _mixerPopoverView where mixerPopover.hidden == true {
-//      mixerPopover.removeFromSuperview()
-//      _mixerPopoverView = nil
-//    }
-//
-//    if let instrumentPopover = _instrumentPopoverView where instrumentPopover.hidden == true {
-//      instrumentPopover.removeFromSuperview()
-//      _instrumentPopoverView = nil
-//    }
-
   }
 
   // MARK: Status bar
@@ -197,10 +120,10 @@ final class MIDIPlayerViewController: UIViewController {
   override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
     super.prepareForSegue(segue, sender: sender)
     switch (segue.identifier, segue.destinationViewController) {
-      case ("Mixer", let controller as MixerViewController):                   mixerViewController = controller
-      case ("Instrument", let controller as InstrumentViewController):         _instrumentViewController = controller
-      case ("NoteAttributes", let controller as NoteAttributesViewController): _noteAttributesViewController = controller
-      case ("Files", let controller as FilesViewController):                   _filesViewController = controller
+      case ("Mixer", let controller as MixerViewController):                   mixerViewController          = controller
+      case ("Instrument", let controller as InstrumentViewController):         instrumentViewController     = controller
+      case ("NoteAttributes", let controller as NoteAttributesViewController): noteAttributesViewController = controller
+      case ("Files", let controller as FilesViewController):                   filesViewController          = controller
       default:                                                                 break
     }
   }
@@ -275,34 +198,14 @@ final class MIDIPlayerViewController: UIViewController {
   /** files */
   @IBAction private func files() { if case .Files = popover { popover = .None } else { popover = .Files } }
 
-  private var _filesViewController: FilesViewController?
-  private var filesViewController: FilesViewController {
-    guard _filesViewController == nil else { return _filesViewController! }
-    _filesViewController = FilesViewController()
-    _filesViewController!.didSelectFile = { [unowned self] in Sequencer.currentFile = $0; self.popover = .None }
-    _filesViewController!.didDeleteFile = { guard Sequencer.currentFile == $0 else { return }; Sequencer.currentFile = nil }
-    guard _filesViewController != nil else { fatalError("failed to instantiate file view controller from storyboard") }
-    addChildViewController(_filesViewController!)
-    return _filesViewController!
+  private weak var filesViewController: FilesViewController! {
+    didSet {
+      filesViewController?.didSelectFile = { [unowned self] in Sequencer.currentFile = $0; self.popover = .None }
+      filesViewController?.didDeleteFile = { guard Sequencer.currentFile == $0 else { return }; Sequencer.currentFile = nil }
+    }
   }
 
-  private var _filesPopoverView: PopoverView?
-  private var filesPopoverView: PopoverView {
-    guard _filesPopoverView == nil else { return _filesPopoverView! }
-    _filesPopoverView = PopoverView(autolayout: true)
-    _filesPopoverView!.backgroundColor = .popoverBackgroundColor
-    _filesPopoverView!.location = .Top
-    _filesPopoverView!.nametag = "filePopover"
-    _filesPopoverView!.arrowHeight = .popoverArrowHeight
-    _filesPopoverView!.arrowWidth = .popoverArrowWidth
-
-    let fileView = filesViewController.view
-    _filesPopoverView!.contentView.addSubview(fileView)
-    _filesPopoverView!.constrain(𝗩|fileView|𝗩, 𝗛|fileView|𝗛)
-
-    return _filesPopoverView!
-  }
-
+  @IBOutlet private weak var filesPopoverView: PopoverView!
 
  // MARK: - Mixer
 
@@ -311,33 +214,8 @@ final class MIDIPlayerViewController: UIViewController {
   /** sliders */
   @IBAction private func mixer() { if case .Mixer = popover { popover = .None } else { popover = .Mixer } }
 
-//  private var _mixerViewController: MixerViewController?
-  private var mixerViewController: MixerViewController!
-//    {
-//    guard _mixerViewController == nil else { return _mixerViewController! }
-//    let storyboard = UIStoryboard(name: "Main", bundle: nil)
-//    _mixerViewController = storyboard.instantiateViewControllerWithIdentifier("Mixer") as? MixerViewController
-//    guard _mixerViewController != nil else { fatalError("failed to instantiate mixer view controller from storyboard") }
-//    addChildViewController(_mixerViewController!)
-//    return _mixerViewController!
-//  }
-
-  @IBOutlet private var mixerPopoverView: PopoverView!
-//  private var mixerPopoverView: PopoverView {
-//    guard _mixerPopoverView == nil else { return _mixerPopoverView! }
-//    _mixerPopoverView = PopoverView(autolayout: true)
-//    _mixerPopoverView!.backgroundColor = .popoverBackgroundColor
-//    _mixerPopoverView!.location = .Top
-//    _mixerPopoverView!.nametag = "mixerPopover"
-//    _mixerPopoverView!.arrowHeight = .popoverArrowHeight
-//    _mixerPopoverView!.arrowWidth = .popoverArrowWidth
-//
-//    let mixerView = mixerViewController.view
-//    _mixerPopoverView!.contentView.addSubview(mixerView)
-//    _mixerPopoverView!.constrain(𝗩|mixerView|𝗩, 𝗛|mixerView|𝗛)
-//
-//    return _mixerPopoverView!
-//  }
+  private weak var mixerViewController: MixerViewController!
+  @IBOutlet private weak var mixerPopoverView: PopoverView!
 
   // MARK: - Instrument
 
@@ -346,74 +224,18 @@ final class MIDIPlayerViewController: UIViewController {
   /** instrument */
   @IBAction private func instrument() { if case .Instrument = popover { popover = .None } else { popover = .Instrument } }
 
-  private var _instrumentViewController: InstrumentViewController?
-  private var instrumentViewController: InstrumentViewController {
-    guard _instrumentViewController == nil else { return _instrumentViewController! }
-    let storyboard = UIStoryboard(name: "Main", bundle: nil)
-    _instrumentViewController = storyboard.instantiateViewControllerWithIdentifier("Instrument") as? InstrumentViewController
-    addChildViewController(_instrumentViewController!)
-    return _instrumentViewController!
-  }
-
-  private var _instrumentPopoverView: PopoverView?
-  private var instrumentPopoverView: PopoverView {
-    guard _instrumentPopoverView == nil else { return _instrumentPopoverView! }
-    _instrumentPopoverView = PopoverView(autolayout: true)
-    _instrumentPopoverView!.backgroundColor = .popoverBackgroundColor
-    _instrumentPopoverView!.location = .Top
-    _instrumentPopoverView!.nametag = "instrumentPopover"
-    _instrumentPopoverView!.arrowHeight = .popoverArrowHeight
-    _instrumentPopoverView!.arrowWidth = .popoverArrowWidth
-
-    let instrumentView = instrumentViewController.view
-    instrumentView.translatesAutoresizingMaskIntoConstraints = false
-    _instrumentPopoverView!.contentView.addSubview(instrumentView)
-    _instrumentPopoverView!.constrain(
-      𝗩|instrumentView|𝗩,
-      𝗛|instrumentView|𝗛,
-      [_instrumentPopoverView!.height => 250, _instrumentPopoverView!.width => (view.bounds.width - 10)]
-    )
-
-    return _instrumentPopoverView!
-  }
+  private weak var instrumentViewController: InstrumentViewController!
+  @IBOutlet private weak var instrumentPopoverView: PopoverView!
 
   // MARK: - NoteAttributes
 
   @IBOutlet weak var noteAttributesButton: ImageButtonView!
-
-  private var _noteAttributesViewController: NoteAttributesViewController?
-  private var noteAttributesViewController: NoteAttributesViewController {
-    guard _noteAttributesViewController == nil else { return _noteAttributesViewController! }
-    let storyboard = UIStoryboard(name: "Main", bundle: nil)
-    _noteAttributesViewController = storyboard.instantiateViewControllerWithIdentifier("NoteAttributes") as? NoteAttributesViewController
-    addChildViewController(_noteAttributesViewController!)
-    return _noteAttributesViewController!
-  }
+  private weak var noteAttributesViewController: NoteAttributesViewController!
 
   /** noteAttributes */
   @IBAction private func noteAttributes() { if case .NoteAttributes = popover { popover = .None } else { popover = .NoteAttributes } }
 
-  private var _noteAttributesPopoverView: PopoverView?
-  private var noteAttributesPopoverView: PopoverView {
-    guard _noteAttributesPopoverView == nil else { return _noteAttributesPopoverView! }
-    _noteAttributesPopoverView = PopoverView(autolayout: true)
-    _noteAttributesPopoverView!.backgroundColor = .popoverBackgroundColor
-    _noteAttributesPopoverView!.location = .Top
-    _noteAttributesPopoverView!.nametag = "noteAttributesPopover"
-    _noteAttributesPopoverView!.arrowHeight = .popoverArrowHeight
-    _noteAttributesPopoverView!.arrowWidth = .popoverArrowWidth
-
-    let noteAttributesView = noteAttributesViewController.view
-    noteAttributesView.translatesAutoresizingMaskIntoConstraints = false
-    _noteAttributesPopoverView!.contentView.addSubview(noteAttributesView)
-    _noteAttributesPopoverView!.constrain(
-      𝗩|noteAttributesView|𝗩,
-      𝗛|noteAttributesView|𝗛,
-      [_noteAttributesPopoverView!.height => 300, _noteAttributesPopoverView!.width => (view.bounds.width - 10)]
-    )
-
-    return _noteAttributesPopoverView!
-  }
+  @IBOutlet private weak var noteAttributesPopoverView: PopoverView!
 
   // MARK: - Undo
 
@@ -544,7 +366,6 @@ final class MIDIPlayerViewController: UIViewController {
     let trackCallback: Callback = (Sequence.self, queue, trackCountDidChange)
     let fileLoadedCallback: Callback = (Sequencer.self, queue, fileDidLoad)
     let fileUnloadedCallback: Callback = (Sequencer.self, queue, fileDidUnload)
-//    let soundSetsInitializedCallback: Callback = (Sequencer.self, queue, {[unowned self] _ in self.addPopovers()})
 
     let callbacks: [NotificationReceptionist.Notification:NotificationReceptionist.Callback] = [
       MIDIPlayerNode.Notification.NodeAdded.name.value: nodeCallback,
@@ -552,8 +373,7 @@ final class MIDIPlayerViewController: UIViewController {
       Sequence.Notification.TrackAdded.name.value: trackCallback,
       Sequence.Notification.TrackRemoved.name.value: trackCallback,
       Sequencer.Notification.FileLoaded.name.value: fileLoadedCallback,
-      Sequencer.Notification.FileUnloaded.name.value: fileUnloadedCallback//,
-//      Sequencer.Notification.SoundSetsInitialized.name.value: soundSetsInitializedCallback
+      Sequencer.Notification.FileUnloaded.name.value: fileUnloadedCallback
     ]
 
     notificationReceptionist = NotificationReceptionist(callbacks: callbacks)
