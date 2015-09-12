@@ -2,6 +2,8 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BV1-FR-VrT">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+        <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
+        <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
@@ -25,6 +27,8 @@
             <string>EvelethRegular</string>
         </mutableArray>
         <mutableArray key="Yellow Design Studio - Eveleth Thin.otf">
+            <string>EvelethThin</string>
+            <string>EvelethThin</string>
             <string>EvelethThin</string>
             <string>EvelethThin</string>
         </mutableArray>
@@ -373,8 +377,14 @@
                                 <rect key="frame" x="0.0" y="106" width="600" height="422"/>
                                 <color key="backgroundColor" red="0.20000000000000001" green="0.1960784314" blue="0.19215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
-                            <view hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fwt-5T-njj" userLabel="MIDI File Name" customClass="LabelButton" customModule="MoonKit">
-                                <rect key="frame" x="20" y="74" width="560" height="24"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="File" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5F4-fd-MDF">
+                                <rect key="frame" x="20" y="81" width="33" height="17"/>
+                                <fontDescription key="fontDescription" name="EvelethThin" family="Eveleth" pointSize="14"/>
+                                <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fwt-5T-njj" userLabel="File Name" customClass="LabelButton" customModule="MoonKit">
+                                <rect key="frame" x="61" y="74" width="239" height="24"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="24" id="2gI-xS-r4R"/>
                                 </constraints>
@@ -388,9 +398,41 @@
                                     <userDefinedRuntimeAttribute type="color" keyPath="highlightedTextColor">
                                         <color key="value" red="0.87450999021530151" green="0.8274499773979187" blue="0.7607799768447876" alpha="1" colorSpace="calibratedRGB"/>
                                     </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
+                                        <real key="value" value="14"/>
+                                    </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                                 <connections>
                                     <action selector="fileName" destination="BV1-FR-VrT" eventType="touchUpInside" id="8hp-dA-sqx"/>
+                                </connections>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Track" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fzB-IZ-Oj9">
+                                <rect key="frame" x="308" y="81" width="54.5" height="17"/>
+                                <fontDescription key="fontDescription" name="EvelethThin" family="Eveleth" pointSize="14"/>
+                                <color key="textColor" red="0.57254904510000004" green="0.52941179279999995" blue="0.47058823700000002" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fr3-Py-Mat" userLabel="Track Name" customClass="LabelButton" customModule="MoonKit">
+                                <rect key="frame" x="370" y="74" width="209.5" height="24"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="24" id="eD0-de-5B4"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="text" value="Some Track"/>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="textAlignmentString" value="Center"/>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="EvelethLight"/>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="textColor">
+                                        <color key="value" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="calibratedRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="highlightedTextColor">
+                                        <color key="value" red="0.87450999019999998" green="0.82744997740000004" blue="0.76077997679999998" alpha="1" colorSpace="calibratedRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
+                                        <real key="value" value="14"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="trackName" destination="BV1-FR-VrT" eventType="touchUpInside" id="jaK-FE-RMS"/>
                                 </connections>
                             </view>
                             <visualEffectView hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qmT-5g-1Xb">
@@ -501,7 +543,7 @@
                                     <outlet property="contentView" destination="HbF-Jz-SSL" id="HDd-vo-vZV"/>
                                 </connections>
                             </view>
-                            <view contentMode="scaleToFill" misplaced="YES" placeholderIntrinsicWidth="240" placeholderIntrinsicHeight="108" translatesAutoresizingMaskIntoConstraints="NO" id="L5k-qi-Yb6" userLabel="Files Popover" customClass="PopoverView" customModule="MoonKit">
+                            <view hidden="YES" contentMode="scaleToFill" misplaced="YES" placeholderIntrinsicWidth="240" placeholderIntrinsicHeight="108" translatesAutoresizingMaskIntoConstraints="NO" id="L5k-qi-Yb6" userLabel="Files Popover" customClass="PopoverView" customModule="MoonKit">
                                 <rect key="frame" x="25" y="42" width="240" height="128"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="41G-aM-2HB">
@@ -542,7 +584,7 @@
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                             </view>
-                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iqB-B1-8b1" userLabel="NoteAttributes Popover" customClass="PopoverView" customModule="MoonKit">
+                            <view hidden="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iqB-B1-8b1" userLabel="NoteAttributes Popover" customClass="PopoverView" customModule="MoonKit">
                                 <rect key="frame" x="25" y="42" width="550" height="320"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GbO-pL-J73">
@@ -600,16 +642,21 @@
                             <constraint firstItem="qmT-5g-1Xb" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leading" id="C5v-lg-8Ev"/>
                             <constraint firstItem="SIl-d8-sfe" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="3se-qz-xqx" secondAttribute="leadingMargin" constant="10" id="Egr-O2-Q8p"/>
                             <constraint firstItem="Hsi-ta-i4H" firstAttribute="top" secondItem="8aa-yV-Osq" secondAttribute="bottom" constant="8" symbolic="YES" id="HR5-A6-3im"/>
+                            <constraint firstItem="fzB-IZ-Oj9" firstAttribute="baseline" secondItem="fr3-Py-Mat" secondAttribute="baseline" id="Ldk-sa-MH9"/>
                             <constraint firstAttribute="trailingMargin" secondItem="iqB-B1-8b1" secondAttribute="trailing" constant="5" id="OmS-5C-LrH"/>
+                            <constraint firstItem="fzB-IZ-Oj9" firstAttribute="firstBaseline" secondItem="5F4-fd-MDF" secondAttribute="firstBaseline" id="Sgp-gU-1lW"/>
+                            <constraint firstItem="5F4-fd-MDF" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leadingMargin" id="T3k-sC-Vtm"/>
                             <constraint firstItem="L5k-qi-Yb6" firstAttribute="top" secondItem="qmT-5g-1Xb" secondAttribute="top" id="Tpu-NN-alG"/>
                             <constraint firstItem="U9p-PY-X1m" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leading" id="Vpx-i7-ab6"/>
                             <constraint firstAttribute="trailingMargin" secondItem="vQ1-wE-mR9" secondAttribute="trailing" id="bQb-0L-F0Q"/>
                             <constraint firstItem="SIl-d8-sfe" firstAttribute="centerX" secondItem="4HC-dP-hAS" secondAttribute="centerX" id="dM5-IW-XKm"/>
                             <constraint firstItem="iqB-B1-8b1" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leadingMargin" constant="5" id="ex6-R6-S95"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="fwt-5T-njj" secondAttribute="trailing" id="gvv-Zw-Ixi"/>
+                            <constraint firstAttribute="centerXWithinMargins" secondItem="fwt-5T-njj" secondAttribute="trailing" id="gvv-Zw-Ixi"/>
+                            <constraint firstItem="5F4-fd-MDF" firstAttribute="baseline" secondItem="fwt-5T-njj" secondAttribute="baseline" id="h0E-Np-L5c"/>
                             <constraint firstAttribute="trailing" secondItem="qmT-5g-1Xb" secondAttribute="trailing" id="ha6-KS-kA6"/>
                             <constraint firstItem="U9p-PY-X1m" firstAttribute="top" secondItem="fwt-5T-njj" secondAttribute="bottom" constant="8" symbolic="YES" id="jI1-59-BIN"/>
                             <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="SIl-d8-sfe" secondAttribute="trailing" constant="10" id="jVh-vm-Mzh"/>
+                            <constraint firstItem="fzB-IZ-Oj9" firstAttribute="leading" secondItem="fwt-5T-njj" secondAttribute="trailing" constant="8" symbolic="YES" id="mBE-FB-Y1i"/>
                             <constraint firstItem="iqB-B1-8b1" firstAttribute="top" secondItem="qmT-5g-1Xb" secondAttribute="top" id="nul-W3-gia"/>
                             <constraint firstItem="iqB-B1-8b1" firstAttribute="centerX" secondItem="dMY-9u-X4g" secondAttribute="centerX" priority="750" id="oD5-m3-hOy"/>
                             <constraint firstItem="vQ1-wE-mR9" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leadingMargin" id="ozW-M8-Uja"/>
@@ -621,11 +668,15 @@
                             <constraint firstItem="SIl-d8-sfe" firstAttribute="top" secondItem="4HC-dP-hAS" secondAttribute="bottom" id="sFl-QA-ddd"/>
                             <constraint firstItem="qHh-Mt-9TT" firstAttribute="top" secondItem="qmT-5g-1Xb" secondAttribute="bottom" id="scO-5z-aRY"/>
                             <constraint firstItem="L5k-qi-Yb6" firstAttribute="centerX" secondItem="dRz-Aj-snf" secondAttribute="centerX" priority="750" id="t4j-XX-Twr"/>
+                            <constraint firstItem="fwt-5T-njj" firstAttribute="leading" secondItem="5F4-fd-MDF" secondAttribute="trailing" constant="8" symbolic="YES" id="ufP-yK-LvV"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Hsi-ta-i4H" secondAttribute="trailing" id="v6c-AY-DZE"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="fr3-Py-Mat" secondAttribute="trailing" id="vee-be-DQh"/>
                             <constraint firstItem="fwt-5T-njj" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leadingMargin" id="wOg-e7-b56"/>
+                            <constraint firstItem="fr3-Py-Mat" firstAttribute="leading" secondItem="fzB-IZ-Oj9" secondAttribute="trailing" constant="8" symbolic="YES" id="wY9-S7-Yx9"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
+                                <exclude reference="wOg-e7-b56"/>
                                 <exclude reference="9xn-ad-4gw"/>
                                 <exclude reference="sFl-QA-ddd"/>
                             </mask>
@@ -655,6 +706,7 @@
                         <outlet property="saveButton" destination="i6p-Ws-ech" id="Z2d-Vc-M0t"/>
                         <outlet property="stopButton" destination="5UP-3s-pkz" id="ydf-jc-Hc9"/>
                         <outlet property="tempoSlider" destination="eaf-y5-9B7" id="jp4-al-Asq"/>
+                        <outlet property="trackNameLabel" destination="fr3-Py-Mat" id="CYD-kp-kpa"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>
@@ -669,12 +721,6 @@
         <!--Files-->
         <scene sceneID="Vce-jO-HMe">
             <objects>
-                <view contentMode="scaleToFill" id="o9C-bU-MSt">
-                    <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                </view>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="s1C-BA-RnP" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tableViewController storyboardIdentifier="Files" title="Files" id="FBL-RP-WBs" userLabel="Files" customClass="FilesViewController" customModule="MidiSprite" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="nUj-gc-4xh">
                         <rect key="frame" x="0.0" y="0.0" width="300" height="200"/>
@@ -717,6 +763,12 @@
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="300" height="200"/>
                 </tableViewController>
+                <view contentMode="scaleToFill" id="o9C-bU-MSt">
+                    <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                </view>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="s1C-BA-RnP" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-212" y="-234"/>
         </scene>

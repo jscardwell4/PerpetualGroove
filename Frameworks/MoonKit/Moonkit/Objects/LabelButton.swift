@@ -38,6 +38,18 @@ import UIKit
   }
 
   /**
+  viewForBaselineLayout
+
+  - returns: UIView
+  */
+  public override func viewForBaselineLayout() -> UIView {
+    return label
+  }
+
+  override public var viewForFirstBaselineLayout: UIView { return label }
+  override public var viewForLastBaselineLayout: UIView { return label }
+
+  /**
   initWithFrame:
 
   - parameter frame: CGRect

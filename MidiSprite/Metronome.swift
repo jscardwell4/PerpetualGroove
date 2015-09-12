@@ -14,12 +14,11 @@ import MoonKit
 
 final class Metronome {
 
-  static private let samplerNode = AVAudioUnitSampler()
-  static private var node = AUNode()
-  static private let time = BarBeatTime(clockSource: Sequencer.clockSource)
+  private let sampler: AVAudioUnitSampler
+  private let time = BarBeatTime(clockSource: Sequencer.clockSource)
 
-  static var channel: Byte = 0
-  static var on = false {
+  var channel: Byte = 0
+  var on = false {
     didSet {
       guard oldValue != on else { return }
       if on { time.registerCallback(click, predicate: isAudibleTick, forKey: callbackKey) }
@@ -27,30 +26,25 @@ final class Metronome {
     }
   }
   
-  static private var initialized = false
 
   /** initialize */
-  static func initialize() throws {
+  init(node: AVAudioUnitSampler) throws {
+    sampler = node
     guard let url = NSBundle.mainBundle().URLForResource("Woodblock", withExtension: "wav") else {
       fatalError("Failed to get url for 'Woodblock.wav'")
     }
-    AudioManager.engine.attachNode(samplerNode)
-    AudioManager.engine.connect(samplerNode, to: AudioManager.engine.mainMixerNode, format: samplerNode.outputFormatForBus(0))
-    try samplerNode.loadAudioFilesAtURLs([url])
-    initialized = true
-    logDebug("Metronome initialized")
+
+    try sampler.loadAudioFilesAtURLs([url])
   }
 
-  static private let callbackKey = "click"
+  private let callbackKey = "click"
 
   /**
   click:
 
   - parameter time: CABarBeatTime
   */
-  static private func click(time: CABarBeatTime) {
-    samplerNode.startNote(time.beat == 1 ? 0x3C : 0x37, withVelocity: 64, onChannel: 0)
-  }
+  private func click(time: CABarBeatTime) { sampler.startNote(time.beat == 1 ? 0x3C : 0x37, withVelocity: 64, onChannel: 0) }
 
 
   /**
@@ -60,6 +54,6 @@ final class Metronome {
 
   - returns: Bool
   */
-  static private func isAudibleTick(time: CABarBeatTime) -> Bool { return time.subbeat  == 1 }
+  private func isAudibleTick(time: CABarBeatTime) -> Bool { return time.subbeat  == 1 }
 
 }

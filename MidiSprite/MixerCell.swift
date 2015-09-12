@@ -40,11 +40,11 @@ final class MasterCell: MixerCell {
   static let Identifier = "MasterCell"
 
   /** refresh */
-  func refresh() { volume = AudioManager.engine.mainMixerNode.volume; pan = AudioManager.engine.mainMixerNode.pan }
+  func refresh() { volume = AudioManager.mixer.volume; pan = AudioManager.mixer.pan }
 
   /** volumeDidChange */
-  @IBAction func volumeDidChange() { AudioManager.engine.mainMixerNode.volume = volume }
-  @IBAction func panDidChange() { AudioManager.engine.mainMixerNode.pan = pan }
+  @IBAction func volumeDidChange() { AudioManager.mixer.volume = volume }
+  @IBAction func panDidChange() { AudioManager.mixer.pan = pan }
 
 }
 
@@ -60,7 +60,7 @@ final class TrackCell: MixerCell, UITextFieldDelegate {
   /** panDidChange */
   @IBAction func panDidChange() { track?.pan = pan }
 
-  var track: Track? {
+  var track: InstrumentTrack? {
     didSet {
       guard let track = track else { return }
       volume = track.volume
@@ -91,7 +91,7 @@ final class TrackCell: MixerCell, UITextFieldDelegate {
   - returns: Bool
   */
   @objc func textFieldShouldReturn(textField: UITextField) -> Bool {
-    if let track = track, label = textField.text { track.label = label }
+    if let label = textField.text { track?.label = label }
     textField.resignFirstResponder()
     return false
   }

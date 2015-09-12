@@ -19,7 +19,25 @@ final class AudioManager {
 
   private static var initialized = false
 
-  static let engine = AVAudioEngine()
+  static private let engine = AVAudioEngine()
+  static var mixer: AVAudioMixerNode { return engine.mainMixerNode }
+
+  static private(set) var instruments: [Instrument] = []
+
+  static private(set) var metronome: Metronome!
+
+  /**
+  attachNode:forInstrument:
+
+  - parameter node: AVAudioNode
+  - parameter instrument: Instrument
+  */
+  static func attachNode(node: AVAudioNode, forInstrument instrument: Instrument) {
+    guard instruments ∌ instrument && node.engine == nil else { return }
+    engine.attachNode(node)
+    engine.connect(node, to: engine.mainMixerNode, format: node.outputFormatForBus(0))
+    instruments.append(instrument)
+  }
 
   /** initialize */
   static func initialize() {
@@ -29,7 +47,10 @@ final class AudioManager {
 
     do {
       try configureAudioSession()
-      try Metronome.initialize()
+      let node = AVAudioUnitSampler()
+      engine.attachNode(node)
+      engine.connect(node, to: engine.mainMixerNode, format: node.outputFormatForBus(0))
+      metronome = try Metronome.init(node: node)
       initialized = true
       logDebug("AudioManager initialized")
       try start()
@@ -49,13 +70,16 @@ final class AudioManager {
 
 
   /** start */
-  static func start() throws {
-    try engine.start()
-  }
+  static func start() throws { try engine.start() }
 
   /** stop */
-  static func stop() throws {
-    engine.stop()
-  }
+  static func stop() throws { engine.stop() }
 
+  static var running: Bool { return engine.running }
+
+  /** reset */
+  static func reset() { engine.reset() }
+
+  /** pause */
+  static func pause() { engine.pause() }
 }

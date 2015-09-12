@@ -21,11 +21,9 @@ struct VariableLengthQuantity: CustomStringConvertible {
 
   var description: String {
     let representedValue = self.representedValue
-    let byteString = " ".join(bytes.map { String($0, radix: 16, uppercase: true, pad: 2) })
-    let representedValueString = " ".join(representedValue.map { String($0, radix: 16, uppercase: true, pad: 2) })
     return "\(self.dynamicType.self) {" + "; ".join(
-      "bytes: \(byteString) (\(UInt64(bytes)))",
-      "representedValue: \(representedValueString)(\(UInt64(representedValue)))"
+      "bytes (hex, decimal): (\(String(hexBytes: bytes)), \(UInt64(bytes)))",
+      "representedValue (hex, decimal): (\(String(hexBytes: representedValue)), \(UInt64(representedValue)))"
     ) + "}"
   }
   var representedValue: [Byte] {
@@ -50,12 +48,14 @@ struct VariableLengthQuantity: CustomStringConvertible {
     return resolvedBytes
   }
 
-  /**
-  Initialize with bytes array already in converted format
+  var intValue: Int { return Int(representedValue) }
 
-  - parameter bytes: [Byte]
+  /**
+  Initialize with sequence of bytes already in converted format
+
+  - parameter b: S
   */
-  init(bytes: [Byte]) { self.bytes = bytes }
+  init<S:SequenceType where S.Generator.Element == Byte>(bytes b: S) { bytes = Array(b) }
 
   /**
   Initialize from any `ByteArrayConvertible` type holding the represented value

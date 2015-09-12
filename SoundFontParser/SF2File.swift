@@ -13,7 +13,6 @@ import MoonKit
 struct SF2File: CustomStringConvertible {
 
   enum Error: String, ErrorType {
-    case NotAFileURL = "URL provided is not a valid file url"
     case ReadFailure = "Failed to obtain data from the file specified"
     case FileStructurallyUnsound = "The specified file is not structurally sound"
     case FileHeaderInvalid = "The specified file does not contain a valid RIFF header"
@@ -34,11 +33,11 @@ struct SF2File: CustomStringConvertible {
 
   struct Preset: Comparable {
     let name: String
-    let program: Int
-    let bank: Int
+    let program: Byte
+    let bank: Byte
   }
 
-  var presets: [Preset] { return pdta.phdr.map { Preset(name: $0.name, program: Int($0.preset), bank: Int($0.bank))} }
+  var presets: [Preset] { return pdta.phdr.map { Preset(name: $0.name, program: Byte($0.preset), bank: Byte($0.bank))} }
 
   var description: String {
     var result = "SF2File {\n"

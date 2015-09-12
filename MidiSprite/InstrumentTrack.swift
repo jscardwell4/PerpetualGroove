@@ -1,5 +1,5 @@
 //
-//  Track.swift
+//  InstrumentTrack.swift
 //  MidiSprite
 //
 //  Created by Jason Cardwell on 8/14/15.
@@ -12,10 +12,10 @@ import MoonKit
 import AudioToolbox
 import CoreMIDI
 
-final class Track: TrackType, Equatable {
+final class InstrumentTrack: MIDITrackType, Equatable {
 
   var description: String {
-    var result = "Track(\(label)) {\n"
+    var result = "Track(\(name)) {\n"
     result += "\tinstrument: \(instrument.description.indentedBy(4, true))\n"
     result += "\tcolor: \(color)\n\tevents: {\n"
     result += ",\n".join(events.map({$0.description.indentedBy(8)}))
@@ -31,9 +31,11 @@ final class Track: TrackType, Equatable {
   let instrument: Instrument
   let color: Color
 
+  typealias NodeIdentifier = MIDINodeEvent.Identifier
+
   private var nodes: Set<MIDINode> = []
-  private var notes: Set<UInt> = []
-  private var lastEvent: [UInt:MIDITimeStamp] = [:]
+  private var notes: Set<NodeIdentifier> = []
+//  private var lastEvent: [UInt:MIDITimeStamp] = [:]
   private var client = MIDIClientRef()
   private var inPort = MIDIPortRef()
   private var outPort = MIDIPortRef()
@@ -42,37 +44,31 @@ final class Track: TrackType, Equatable {
 
   var recording = false
 
-  private func appendEvent(var event: TrackEvent) {
+  private func appendEvent(var event: MIDITrackEvent) {
     guard recording else { return }
     event.time = time.time
     events.append(event)
   }
-  private(set) var events: [TrackEvent] = []
+  private(set) var events: [MIDITrackEvent] = []
 
   var chunk: TrackChunk {
     var trackEvents = events
-    trackEvents.insert(MetaEvent(.SequenceTrackName(name: label)), atIndex: 0)
-    trackEvents.insert(instrument.event, atIndex: 1)
-    trackEvents.insert(ChannelEvent(.ProgramChange, 0, instrument.program), atIndex: 2)
+    trackEvents.insert(MetaEvent(.SequenceTrackName(name: name)), atIndex: 0)
+    let filePath = instrument.soundSet.url.absoluteString
+    let instrumentPath = "instrument" + filePath[filePath.startIndex.advancedBy(4)..<]
+    trackEvents.insert(MetaEvent(.Text(text: instrumentPath)), atIndex: 1)
+    trackEvents.insert(ChannelEvent(.ProgramChange, instrument.channel, instrument.program), atIndex: 2)
     trackEvents.append(MetaEvent(.EndOfTrack))
     return TrackChunk(events: trackEvents)
   }
 
   // MARK: - Editable properties
 
-  private var _label: String?
-  var label: String {
-    get {
-      guard _label == nil else { return _label! }
-      _label = "BUS \(instrument.bus)"
-      return _label!
-    } set {
-      _label = newValue
-    }
-  }
+  var name: String { return label ?? instrument.programPreset.name }
+  var label: String?
 
-  var volume: Float { get { return instrument.node.volume } set { instrument.node.volume = (0 ... 1).clampValue(newValue) } }
-  var pan: Float { get { return instrument.node.pan } set { instrument.node.pan = (-1 ... 1).clampValue(newValue) } }
+  var volume: Float { get { return instrument.volume } set { instrument.volume = newValue } }
+  var pan: Float { get { return instrument.pan } set { instrument.pan = newValue } }
 
   enum Error: String, ErrorType, CustomStringConvertible {
     case NodeNotFound = "The specified node was not found among the track's nodes"
@@ -85,13 +81,13 @@ final class Track: TrackType, Equatable {
   */
   func addNode(node: MIDINode) throws {
     nodes.insert(node)
-    let identifier = ObjectIdentifier(node).uintValue
+    let identifier = NodeIdentifier(ObjectIdentifier(node).uintValue)
     notes.insert(identifier)
-    lastEvent[identifier] = 0
+//    lastEvent[identifier] = 0
     try MIDIPortConnectSource(inPort, node.endPoint, nil) ➤ "Failed to connect to node \(node.name!)"
     guard recording else { return }
     dispatch_async(fileQueue) {
-      [unowned self, placement = node.placement] in
+      [placement = node.placement] in
         self.appendEvent(MIDINodeEvent(.Add(identifier: identifier, placement: placement))
       )
     }
@@ -104,14 +100,14 @@ final class Track: TrackType, Equatable {
   */
   func removeNode(node: MIDINode) throws {
     guard let node = nodes.remove(node) else { throw Error.NodeNotFound }
-    let identifier = ObjectIdentifier(node).uintValue
+    let identifier = NodeIdentifier(ObjectIdentifier(node).uintValue)
     notes.remove(identifier)
-    lastEvent[identifier] = nil
+//    lastEvent[identifier] = nil
     node.sendNoteOff()
     try MIDIPortDisconnectSource(inPort, node.endPoint) ➤ "Failed to disconnect to node \(node.name!)"
     guard recording else { return }
     dispatch_async(fileQueue) {
-      [unowned self] in self.appendEvent(MIDINodeEvent(.Remove(identifier: identifier)))
+      self.appendEvent(MIDINodeEvent(.Remove(identifier: identifier)))
     }
   }
 
@@ -122,10 +118,10 @@ final class Track: TrackType, Equatable {
 
   - returns: UInt?
   */
-  private func nodeIdentifierFromPacket(var packet: MIDIPacket) -> UInt? {
-    guard packet.length == 11 else { return nil }
-    return UInt(withUnsafePointer(&packet.data) {
-      Array(UnsafeMutableBufferPointer<Byte>(start: UnsafeMutablePointer<Byte>($0), count: 11)[3 ..< 11])
+  private func nodeIdentifierFromPacket(var packet: MIDIPacket) -> NodeIdentifier? {
+    guard packet.length == UInt16(sizeof(NodeIdentifier.self) + 3) else { return nil }
+    return NodeIdentifier(withUnsafePointer(&packet.data) {
+      UnsafeBufferPointer<Byte>(start: UnsafePointer<Byte>($0).advancedBy(3), count: sizeof(NodeIdentifier.self))
     })
   }
 
@@ -145,17 +141,16 @@ final class Track: TrackType, Equatable {
     guard recording else { return }
     
     dispatch_async(fileQueue) {
-      [unowned self] in
       let packets = packetList.memory
       let packetPointer = UnsafeMutablePointer<MIDIPacket>.alloc(1)
       packetPointer.initialize(packets.packet)
       guard packets.numPackets == 1 else { fatalError("Packets must be sent to track one at a time") }
 
       let packet = packetPointer.memory
-      guard let identifier = self.nodeIdentifierFromPacket(packet) else { return }
-      self.lastEvent[identifier] = packet.timeStamp
+//      guard let identifier = self.nodeIdentifierFromPacket(packet) else { return }
+//      self.lastEvent[identifier] = packet.timeStamp
       let ((status, channel), note, velocity) = ((packet.data.0 >> 4, packet.data.0 & 0xF), packet.data.1, packet.data.2)
-      let event: TrackEvent?
+      let event: MIDITrackEvent?
       switch status {
         case 9:  event = ChannelEvent(.NoteOn, channel, note, velocity)
         case 8:  event = ChannelEvent(.NoteOff, channel, note, velocity)
@@ -170,17 +165,18 @@ final class Track: TrackType, Equatable {
 
   - parameter b: Bus
   */
-  init(instrument i: Instrument) throws {
+  init(instrument i: Instrument, recording r: Bool = false) throws {
     instrument = i
     color = Color.allCases[Sequencer.sequence.tracks.count % 10]
     fileQueue = serialQueueWithLabel("BUS \(instrument.bus)", qualityOfService: QOS_CLASS_BACKGROUND)
+    recording = r
     try MIDIClientCreateWithBlock("track \(instrument.bus)", &client, nil) ➤ "Failed to create midi client"
     try MIDIOutputPortCreate(client, "Output", &outPort) ➤ "Failed to create out port"
     let label = self.label ?? "BUS \(instrument.bus)"
     try MIDIInputPortCreateWithBlock(client, label, &inPort, read) ➤ "Failed to create in port"
   }
 
-  // MARK: - Enumeration for specifying the color attached to a `TrackType`
+  // MARK: - Enumeration for specifying the color attached to a `MIDITrackType`
   enum Color: UInt32, EnumerableType, CustomStringConvertible {
     case White      = 0xffffff
     case Portica    = 0xf7ea64
@@ -219,5 +215,5 @@ final class Track: TrackType, Equatable {
 }
 
 
-func ==(lhs: Track, rhs: Track) -> Bool { return lhs.instrument == rhs.instrument }
+func ==(lhs: InstrumentTrack, rhs: InstrumentTrack) -> Bool { return lhs.instrument == rhs.instrument }
 

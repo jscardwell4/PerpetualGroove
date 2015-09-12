@@ -13,36 +13,42 @@ import struct AudioToolbox.CABarBeatTime
 // MARK: - The chunk protocol
 
 /** Protocol for types that can produce a valid chunk for a MIDI file */
-protocol Chunk : CustomStringConvertible {
+protocol MIDIChunk : CustomStringConvertible {
   var type: Byte4 { get }
 }
 
 // MARK: - The track event protocol
 
 /**  Protocol for types that produce data for a track event in a track chunk */
-protocol TrackEvent: CustomStringConvertible {
+protocol MIDITrackEvent: CustomStringConvertible {
   var time: CABarBeatTime { get set }
+  var delta: VariableLengthQuantity? { get set }
   var bytes: [Byte] { get }
 }
 
 // MARK: - The track type protocol
 
-/** Protocol for types that provide a collection of `TrackEvent` values for a chunk and can produce that chunk */
-protocol TrackType: CustomStringConvertible {
+/** Protocol for types that provide a collection of `MIDITrackEvent` values for a chunk and can produce that chunk */
+protocol MIDITrackType: CustomStringConvertible {
   var chunk: TrackChunk { get }
-  var label: String { get }
-  var time: BarBeatTime { get }
-  var events: [TrackEvent] { get }
+  var name: String { get }
+  var events: [MIDITrackEvent] { get }
 }
 
-extension TrackType {
+extension MIDITrackType {
 
   /** Generates a MIDI file chunk from current track data */
   var chunk: TrackChunk {
     var trackEvents = events
-    trackEvents.insert(MetaEvent(.SequenceTrackName(name: label)), atIndex: 0)
+    trackEvents.insert(MetaEvent(.SequenceTrackName(name: name)), atIndex: 0)
     trackEvents.append(MetaEvent(.EndOfTrack))
     return TrackChunk(events: trackEvents)
   }
 
+}
+
+// MARK: - The sequence type protocol
+
+protocol MIDISequenceType {
+  var tracks: [MIDITrackType] { get }
 }

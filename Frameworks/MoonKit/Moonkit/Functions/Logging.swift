@@ -427,11 +427,12 @@ MSHandleError:message:function:line:
 public func MSHandleError(error: NSError?,
                   message: String? = nil,
                  function: String = __FUNCTION__,
-                     line: Int32 = __LINE__) -> Bool
+                     line: Int32 = __LINE__,
+                     file: String = __FILE__) -> Bool
 {
   if error == nil { return false }
   let logMessage = String("-Error- \(message ?? String())\n\(detailedDescriptionForError(error!, depth: 0))")
-  MSLogError(logMessage, function: function, line: line)
+  MSLogError(logMessage, function: function, line: line, file: file)
   return true
 }
 
@@ -446,7 +447,8 @@ logError:message:function:line:
 public func logError(e: ErrorType,
                      message: String? = nil,
                      function: String = __FUNCTION__,
-                     line: Int32 = __LINE__)
+                     line: Int32 = __LINE__,
+                     file: String = __FILE__)
 {
   var errorDescription = "\(e)"
   if let e = e as? WrappedErrorType, u = e.underlyingError { errorDescription += "underlying error: \(u)" }
@@ -455,7 +457,16 @@ public func logError(e: ErrorType,
   if let message = message { logMessage += message + "\n" }
   logMessage += errorDescription
 
-  MSLogError(logMessage, function: function, line: line)
+  MSLogError(logMessage, function: function, line: line, file: file)
+}
+
+/**
+logError:
+
+- parameter e: ExtendedErrorType
+*/
+public func logError(e: ExtendedErrorType) {
+  logError(e, message: e.reason, function: e.function, line: e.line, file: e.file)
 }
 
 /**
@@ -471,10 +482,11 @@ MSHandleError:message:function:line:
 public func MSHandleError<E:ErrorType>(error: E?,
                  message: String? = nil,
                 function: String = __FUNCTION__,
-                    line: Int32 = __LINE__) -> Bool
+                    line: Int32 = __LINE__,
+                    file: String = __FILE__) -> Bool
 {
   guard let e = error as? NSError else { return error != nil }
-  return MSHandleError(e, message: message, function: function, line: line)
+  return MSHandleError(e, message: message, function: function, line: line, file: file)
 }
 
 /**

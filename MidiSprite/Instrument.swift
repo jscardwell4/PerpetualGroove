@@ -14,7 +14,9 @@ import AVFoundation
 
 final class Instrument: Equatable, CustomStringConvertible {
 
-  var event: InstrumentEvent { return InstrumentEvent(.SF2, soundSet.url) }
+  enum Error: String, ErrorType { case AttachNodeFailed = "Failed to attach sampler node to audio engine" }
+
+//  var event: InstrumentEvent { return InstrumentEvent(.SF2, soundSet.url) }
 
   struct Preset: ByteArrayConvertible {
     let fileURL: NSURL
@@ -36,11 +38,10 @@ final class Instrument: Equatable, CustomStringConvertible {
   var soundSet: SoundSet
   var channel: Channel = 0
   var program: Program = 0
-  let node = AVAudioUnitSampler()
+  var programPreset: SF2File.Preset { return soundSet[program] }
+  private let node = AVAudioUnitSampler()
 
-  var bus: AVAudioNodeBus {
-    return node.destinationForMixer(AudioManager.engine.mainMixerNode, bus: 0)?.connectionPoint.bus ?? -1
-  }
+  var bus: AVAudioNodeBus { return node.destinationForMixer(AudioManager.mixer, bus: 0)?.connectionPoint.bus ?? -1 }
 
   var preset: Preset { return Preset(fileURL: soundSet.url, program: 0, channel: 0) }
 
@@ -52,7 +53,8 @@ final class Instrument: Equatable, CustomStringConvertible {
   */
   func setProgram(program: Program) throws { try loadSoundSet(soundSet, program: program) }
 
-
+  var volume: Float { get { return node.volume } set { node.volume = (0 ... 1).clampValue(newValue) } }
+  var pan: Float { get { return node.pan } set { node.pan = (-1 ... 1).clampValue(newValue) } }
 
   var description: String { return "Instrument { \n\tsoundSet: \(soundSet)\n\tprogram: \(program)\n\tchannel: \(channel)\n}" }
 
@@ -115,14 +117,14 @@ final class Instrument: Equatable, CustomStringConvertible {
     self.program = program
     self.channel = channel
 
-    AudioManager.engine.attachNode(node)
-    AudioManager.engine.connect(node, to: AudioManager.engine.mainMixerNode, format: node.outputFormatForBus(0))
+    AudioManager.attachNode(node, forInstrument: self)
+    guard node.engine != nil else { throw Error.AttachNodeFailed }
+
     try loadSoundSet(soundSet, program: program)
 
     let name = "Instrument \(ObjectIdentifier(self).uintValue)"
     try MIDIClientCreateWithBlock(name, &client, nil) ➤ "Failed to create midi client"
-    try MIDIDestinationCreateWithBlock(client, name, &endPoint, read)
-      ➤ "Failed to create end point for instrument"
+    try MIDIDestinationCreateWithBlock(client, name, &endPoint, read) ➤ "Failed to create end point for instrument"
   }
 
   /**
@@ -154,5 +156,5 @@ Equatable compliance
 - returns: Bool
 */
 func ==(lhs: Instrument, rhs: Instrument) -> Bool {
-  return lhs.soundSet == rhs.soundSet && lhs.program == rhs.program && lhs.channel == rhs.channel
+  return lhs.node === rhs.node
 }

@@ -29,7 +29,34 @@ struct SoundSet: Hashable, CustomStringConvertible {
   }
 
   typealias Preset = SF2File.Preset
-  var presets: [Preset] { return sf2File.presets.sort() }
+  let presets: [Preset]
+
+  subscript(idx: Int) -> Preset { return presets[idx] }
+
+  subscript(program: Byte) -> Preset {
+    if presets.count > Int(program) {
+      var idx = Int(program)
+      switch (presets[idx].program, program) {
+      case let (p1, p2) where p1 == p2: return presets[idx]
+      case let (p1, p2) where p1 < p2:
+        while idx + 1 < presets.count {
+          if presets[++idx].program == program { return presets[idx] }
+        }
+        fatalError("invalid program: '\(program)'")
+      case let (p1, p2) where p1 > p2:
+        while idx > 0 {
+          if presets[--idx].program == program { return presets[idx] }
+        }
+        fatalError("invalid program: '\(program)'")
+      default:
+        fatalError("invalid program: '\(program)'")
+      }
+    } else if let idx = presets.indexOf({$0.program == program}) {
+      return presets[idx]
+    } else {
+      fatalError("invalid program: '\(program)'")
+    }
+  }
 
   /**
   Initialize a sound set using the file located by the specified url.
@@ -41,6 +68,7 @@ struct SoundSet: Hashable, CustomStringConvertible {
     guard u.checkResourceIsReachableAndReturnError(&error) else { throw error! }
     sf2File = try SF2File(file: u)
     url = u
+    presets = sf2File.presets.sort()
   }
 
 }

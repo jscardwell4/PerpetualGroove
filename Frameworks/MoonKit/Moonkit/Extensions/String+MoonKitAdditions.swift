@@ -65,7 +65,9 @@ public extension String {
     self = v < 0 ? "-\(ps)" : ps
   }
 
-  public init(hexBytes: [Byte]) { self = " ".join(hexBytes.map({String($0, radix: 16, uppercase: true, pad: 2)})) }
+  public init<S:SequenceType where S.Generator.Element == Byte>(hexBytes: S) {
+    self = " ".join(hexBytes.map({String($0, radix: 16, uppercase: true, pad: 2)}))
+  }
   public init<B:ByteArrayConvertible>(hexBytes: B) { self.init(hexBytes: hexBytes.bytes) }
 
   public init(binaryBytes: [Byte]) {

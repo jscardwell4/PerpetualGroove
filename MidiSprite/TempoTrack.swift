@@ -11,11 +11,11 @@ import CoreMIDI
 import MoonKit
 
 
-final class TempoTrack: TrackType {
+final class TempoTrack: MIDITrackType {
 
   let time = BarBeatTime(clockSource: Sequencer.clockSource)
 
-  private(set) var events: [TrackEvent] = [
+  private(set) var events: [MIDITrackEvent] = [
     MetaEvent(.TimeSignature(upper: 4, lower: 4, clocks: 36, notes: 8)),
     MetaEvent(.Tempo(microseconds: Byte4(60_000_000 / Sequencer.tempo)))
   ]
@@ -28,16 +28,13 @@ final class TempoTrack: TrackType {
   - parameter tempo: Double
   */
   func insertTempoChange(tempo: Double) {
-    var event = MetaEvent(.Tempo(microseconds: Byte4(60_000_000 / tempo)))
-    event.time = time.time
-    events.append(event)
-    time.setMarker()
+    events.append(MetaEvent(time.time, .Tempo(microseconds: Byte4(60_000_000 / tempo))))
   }
 
-  let label = "Tempo"
+  let name = "Tempo"
 
   var description: String {
-    return "TempoTrack(\(label)) {\n\tincludesTempoChange: \(includesTempoChange)\n\tevents: {\n" +
+    return "TempoTrack {\n\tincludesTempoChange: \(includesTempoChange)\n\tevents: {\n" +
       ",\n".join(events.map({$0.description.indentedBy(8)})) + "\n\t}\n}"
   }
 

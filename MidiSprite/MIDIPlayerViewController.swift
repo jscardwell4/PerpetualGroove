@@ -107,7 +107,7 @@ final class MIDIPlayerViewController: UIViewController {
   @IBOutlet weak var metronomeButton: ImageButtonView!
 
   /** metronome */
-  @IBAction func metronome() { Metronome.on = !Metronome.on }
+  @IBAction func metronome() { AudioManager.metronome.on = !AudioManager.metronome.on }
 
   // MARK: - Popovers
 
@@ -171,6 +171,14 @@ final class MIDIPlayerViewController: UIViewController {
   @IBOutlet weak var fileNameLabel: LabelButton!
 
   @IBAction private func fileName() {
+
+  }
+
+  // MARK: - Tracks
+
+  @IBOutlet weak var trackNameLabel: LabelButton!
+
+  @IBAction private func trackName() {
 
   }
 
@@ -363,15 +371,15 @@ final class MIDIPlayerViewController: UIViewController {
     let queue = NSOperationQueue.mainQueue()
 
     let nodeCallback: Callback = (MIDIPlayerNode.self, queue, nodeCountDidChange)
-    let trackCallback: Callback = (Sequence.self, queue, trackCountDidChange)
+    let trackCallback: Callback = (NodeCapturingMIDISequence.self, queue, trackCountDidChange)
     let fileLoadedCallback: Callback = (Sequencer.self, queue, fileDidLoad)
     let fileUnloadedCallback: Callback = (Sequencer.self, queue, fileDidUnload)
 
     let callbacks: [NotificationReceptionist.Notification:NotificationReceptionist.Callback] = [
       MIDIPlayerNode.Notification.NodeAdded.name.value: nodeCallback,
       MIDIPlayerNode.Notification.NodeRemoved.name.value: nodeCallback,
-      Sequence.Notification.TrackAdded.name.value: trackCallback,
-      Sequence.Notification.TrackRemoved.name.value: trackCallback,
+      NodeCapturingMIDISequence.Notification.TrackAdded.name.value: trackCallback,
+      NodeCapturingMIDISequence.Notification.TrackRemoved.name.value: trackCallback,
       Sequencer.Notification.FileLoaded.name.value: fileLoadedCallback,
       Sequencer.Notification.FileUnloaded.name.value: fileUnloadedCallback
     ]

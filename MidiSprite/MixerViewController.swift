@@ -26,8 +26,8 @@ final class MixerViewController: UICollectionViewController {
     let queue = NSOperationQueue.mainQueue()
     let callback: (AnyObject?, NSOperationQueue?, (NSNotification) -> Void) = (Mixer.self, queue, busesDidChange)
     let callbacks: [NotificationReceptionist.Notification:NotificationReceptionist.Callback] = [
-      Sequence.Notification.TrackAdded.name.rawValue: callback,
-      Sequence.Notification.TrackRemoved.name.rawValue: callback
+      NodeCapturingMIDISequence.Notification.TrackAdded.name.rawValue: callback,
+      NodeCapturingMIDISequence.Notification.TrackRemoved.name.rawValue: callback
     ]
 
     notificationReceptionist = NotificationReceptionist(callbacks: callbacks)
@@ -46,7 +46,7 @@ final class MixerViewController: UICollectionViewController {
   func updateTracks() {
     guard let collectionView = collectionView else { return }
     let itemCount = collectionView.numberOfItemsInSection(1)
-    let busCount = Sequencer.sequence.tracks.count
+    let busCount = Sequencer.sequence.instrumentTracks.count
     if itemCount != busCount {
       view.setNeedsUpdateConstraints()
       collectionView.reloadData()
@@ -73,7 +73,7 @@ final class MixerViewController: UICollectionViewController {
   - returns: Int
   */
   override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return section == 0 ? 1 : Sequencer.sequence.tracks.count
+    return section == 0 ? 1 : Sequencer.sequence.instrumentTracks.count
   }
 
   /**
@@ -94,7 +94,7 @@ final class MixerViewController: UICollectionViewController {
         (cell as? MasterCell)?.refresh()
       default:
         cell = collectionView.dequeueReusableCellWithReuseIdentifier(TrackCell.Identifier, forIndexPath: indexPath)
-        (cell as? TrackCell)?.track = Sequencer.sequence.tracks[indexPath.item]
+        (cell as? TrackCell)?.track = Sequencer.sequence.instrumentTracks[indexPath.item]
     }
     
     return cell

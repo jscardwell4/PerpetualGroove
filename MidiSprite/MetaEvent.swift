@@ -12,10 +12,11 @@ import struct AudioToolbox.CABarBeatTime
 import struct AudioToolbox.MIDIMetaEvent
 
 /** Struct to hold data for a meta event where event = \<delta time\> **FF** \<meta type\> \<length of meta\> \<meta\> */
-struct MetaEvent: TrackEvent {
+struct MetaEvent: MIDITrackEvent {
   var time: CABarBeatTime = .start
   let data: Data
-  var bytes: [Byte] { return Byte(0xFF).bytes + [data.type] + data.length.bytes + data.bytes }
+  var delta: VariableLengthQuantity?
+  var bytes: [Byte] { return [0xFF, data.type] + data.length.bytes + data.bytes }
 
   /**
   Initializer that taks the event's data
@@ -24,20 +25,49 @@ struct MetaEvent: TrackEvent {
   */
   init(_ d: Data) { data = d }
 
+  init<C:CollectionType where C.Generator.Element == Byte,
+    C.Index.Distance == Int, C.SubSequence.Generator.Element == Byte,
+    C.SubSequence:CollectionType, C.SubSequence.Index.Distance == Int,
+    C.SubSequence.SubSequence == C.SubSequence>(delta: VariableLengthQuantity, bytes: C) throws
+  {
+    self.delta = delta
+    guard bytes.count >= 3 else {
+      throw MIDIFileError(type: .InvalidLength, reason: "Not enough bytes in event")
+    }
+    guard bytes[bytes.startIndex] == 0xFF else {
+      throw MIDIFileError(type: .InvalidHeader, reason: "Meta events must have a first byte equal to 0xFF")
+    }
+    var currentIndex = bytes.startIndex.advancedBy(1)
+    let typeByte = bytes[currentIndex]
+    currentIndex.increment()
+    var i = currentIndex
+    while bytes[i] & 0x80 != 0 { i.increment() }
+    let dataLength = VariableLengthQuantity(bytes: bytes[currentIndex ... i])
+    i.increment()
+    currentIndex = i
+    i.advanceBy(dataLength.intValue)
+    guard bytes.endIndex == i else {
+      throw MIDIFileError(type: .InvalidLength, reason: "Length specified by event for the event's data does not match actual")
+    }
 
+    let dataBytes = bytes[currentIndex ..< i]
+    data = try Data(type: typeByte, data: dataBytes)
+  }
+  
   /**
   Initializer that takes a `VariableLengthQuantity` as well as the event's data
 
   - parameter barBeatTime: CABarBeatTiime
   - parameter data: Data
   */
-  init(barBeatTime t: CABarBeatTime, data d: Data) { time = t; data = d }
+  init(_ t: CABarBeatTime, _ d: Data) { time = t; data = d }
 
   var description: String {
     var result = "\(self.dynamicType.self) {\n\t"
     result += "\n\t".join(
       "data: \(data)",
-      "time: \(time)(\(time.doubleValue); \(time.tickValue))"
+      "time: \(time)(\(time.doubleValue); \(time.tickValue))",
+      "delta: " + (delta?.description ?? "nil")
     )
     result += "\n}"
     return result
@@ -80,6 +110,37 @@ struct MetaEvent: TrackEvent {
         case .EndOfTrack:                    return []
         case let .Tempo(tempo):              return Array(tempo.bytes.dropFirst())
         case let .TimeSignature(u, l, n, m): return [u, Byte(log2(Double(l))), n, m]
+      }
+    }
+
+    init<C:CollectionType where C.Generator.Element == Byte>(type: Byte, data: C) throws {
+      switch type {
+        case 0x01: self = .Text(text: String(data))
+        case 0x02: self = .CopyrightNotice(notice: String(data))
+        case 0x03: self = .SequenceTrackName(name: String(data))
+        case 0x04: self = .InstrumentName(name: String(data))
+        case 0x09: self = .DeviceName(name: String(data))
+        case 0x0B: self = .ProgramName(name: String(data))
+        case 0x2F:
+          guard data.count == 0 else {
+            throw MIDIFileError(type: .InvalidLength, reason: "EndOfTrack event has no data")
+          }
+          self = .EndOfTrack
+        case 0x51:
+          guard data.count == 3 else {
+            throw MIDIFileError(type: .InvalidLength, reason: "Tempo event data should have a 4 byte length")
+          }
+          self = .Tempo(microseconds: Byte4(data))
+        case 0x58:
+          guard data.count == 4 else {
+            throw MIDIFileError(type: .InvalidLength, reason: "TimeSignature event data should have a 4 byte length")
+          }
+          var index  = data.startIndex
+          let upper = data[index++], lower = data[index++], clocks = data[index++], notes = data[index]
+          self = .TimeSignature(upper: upper, lower: lower, clocks: clocks, notes: notes)
+        default:
+          throw MIDIFileError(type: .UnsupportedEvent,
+                              reason: "\(String(hexBytes: [type])) is not a supported meta event type")
       }
     }
 

@@ -457,6 +457,23 @@ public extension ErrorType where Self:RawRepresentable, Self.RawValue == String 
   public var description: String { return rawValue }
 }
 
+public protocol ExtendedErrorType: ErrorType, CustomStringConvertible {
+  var line: Int32 { get set }
+  var function: String { get set }
+  var file: String { get set }
+  var reason: String { get set }
+  init()
+  init(line: Int32, function: String, file: String, reason: String)
+}
+
+public extension ExtendedErrorType {
+  public init(line l: Int32 = __LINE__, function fu: String = __FUNCTION__, file fi: String = __FILE__, reason r: String) {
+    self.init()
+    line = l; function = fu; file = fi; reason = r
+  }
+  public var description: String { return "<\((file as NSString).lastPathComponent):\(line)> \(function)  \(reason)" }
+}
+
 public protocol KeyValueCollectionType: CollectionType {
   typealias Key: Hashable
   typealias Value

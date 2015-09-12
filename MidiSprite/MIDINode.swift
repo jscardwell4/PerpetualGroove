@@ -86,7 +86,8 @@ final class MIDINode: SKSpriteNode {
   private func erase() {
   }
 
-  private var sourceID: [Byte] = []
+  typealias Identifier = UInt64
+  private var sourceID: Identifier = 0
 
   private enum PlayState { case Off, On }
 
@@ -97,7 +98,7 @@ final class MIDINode: SKSpriteNode {
     var packetList = MIDIPacketList()
     let packet = MIDIPacketListInit(&packetList)
     let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
-    let data: [UInt8] = [0x90 | note.channel, note.note.MIDIValue, note.velocity.MIDIValue] + sourceID
+    let data: [UInt8] = [0x90 | note.channel, note.note.MIDIValue, note.velocity.MIDIValue] + sourceID.bytes
     let timeStamp = time.timeStamp
     if !Sequencer.playing { Sequencer.start() }
     MIDIPacketListAdd(&packetList, size, packet, timeStamp, 11, data)
@@ -114,8 +115,8 @@ final class MIDINode: SKSpriteNode {
     let packet = MIDIPacketListInit(&packetList)
     let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
     let data: [UInt8] = MIDINode.useVelocityForOff
-                ? [0x90 | note.channel, note.note.MIDIValue, 0] + sourceID
-                : [0x80 | note.channel, note.note.MIDIValue, 0] + sourceID
+                ? [0x90 | note.channel, note.note.MIDIValue, 0] + sourceID.bytes
+                : [0x80 | note.channel, note.note.MIDIValue, 0] + sourceID.bytes
     let timeStamp = time.timeStamp
     MIDIPacketListAdd(&packetList, size, packet, timeStamp, 11, data)
     do {
@@ -154,7 +155,7 @@ final class MIDINode: SKSpriteNode {
                color: Sequencer.currentTrack.color.value,
                size: MIDINode.defaultSize)
 
-    sourceID = ObjectIdentifier(self).uintValue.bytes
+    sourceID = Identifier(ObjectIdentifier(self).uintValue)
 
     try MIDIClientCreateWithBlock(name, &client, nil) ➤ "Failed to create midi client"
     try MIDISourceCreate(client, "\(name)", &endPoint) ➤ "Failed to create end point for node \(name)"

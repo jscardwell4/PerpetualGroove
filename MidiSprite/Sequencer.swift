@@ -17,14 +17,15 @@ final class Sequencer {
 
   private static var initialized = false
 
-  /** initialize */
+  /** 
+  Initializes `soundSets` using the bundled sound font files and creates `auditionInstrument` with the first found
+  */
   static func initialize() {
     guard !initialized else { return }
     guard let urls = NSBundle.mainBundle().URLsForResourcesWithExtension("sf2", subdirectory: nil) else { return }
     do {
       try urls.forEach { soundSets.append(try SoundSet(url: $0)) }
       guard soundSets.count > 0 else { fatalError("failed to create any sound sets from bundled sf2 files") }
-//      _currentSoundSet = 0
       auditionInstrument = try Instrument(soundSet: soundSets[0], program: UInt8(soundSets[0].presets[0].program), channel: 0)
       Notification.SoundSetsInitialized.post()
     } catch {
@@ -36,13 +37,13 @@ final class Sequencer {
 
   // MARK: - Notification enumeration
   enum Notification: String, NotificationNameType, NotificationType {
-    case FileLoaded, FileUnloaded, SoundSetsInitialized
+    case FileLoaded, FileUnloaded, SoundSetsInitialized, CurrentTrackDidChange
     var object: AnyObject? { return Sequencer.self }
   }
 
   // MARK: - Sequence
 
-  static private(set) var sequence = Sequence()
+  static private(set) var sequence = NodeCapturingMIDISequence()
 
 
   // MARK: - Time
@@ -88,7 +89,18 @@ final class Sequencer {
   static var currentFile: NSURL? {
     didSet {
       guard oldValue != currentFile else { return }
-      (currentFile != nil ? Notification.FileLoaded : Notification.FileUnloaded).post()
+      if let currentFile = currentFile {
+        do {
+          let midiFile = try MIDIFile(file: currentFile)
+          logDebug("midiFile = \(midiFile)")
+          Notification.FileLoaded.post()
+        } catch {
+          logError(error)
+          self.currentFile = nil
+        }
+      } else {
+        Notification.FileUnloaded.post()
+      }
     }
   }
 
@@ -99,11 +111,11 @@ final class Sequencer {
     init(rawValue: Int) { self.rawValue = rawValue }
 
     static let Default          = State(rawValue: 0b0000_0000)
-    static let ModifiedSoundSet = State(rawValue: 0b0000_0001)
-    static let ModifiedProgram  = State(rawValue: 0b0000_0010)
-    static let ModifiedChannel  = State(rawValue: 0b0000_0100)
-    static let ModifiedTexture  = State(rawValue: 0b0000_1000)
-    static let ModifiedNote     = State(rawValue: 0b0001_0000)
+//    static let ModifiedSoundSet = State(rawValue: 0b0000_0001)
+//    static let ModifiedProgram  = State(rawValue: 0b0000_0010)
+//    static let ModifiedChannel  = State(rawValue: 0b0000_0100)
+//    static let ModifiedTexture  = State(rawValue: 0b0000_1000)
+//    static let ModifiedNote     = State(rawValue: 0b0001_0000)
     static let Playing          = State(rawValue: 0b0010_0000)
     static let Recording        = State(rawValue: 0b0100_0000)
     static let HasPlayed        = State(rawValue: 0b1000_0000)
@@ -113,37 +125,6 @@ final class Sequencer {
 
   static private(set) var soundSets: [SoundSet] = []
 
-//  static private var _currentSoundSet = -1
-//  static var currentSoundSet: SoundSet {
-//    get {
-//      guard soundSets.indices.contains(_currentSoundSet) else { fatalError("currentSoundSet requested before initialization") }
-//      return soundSets[_currentSoundSet]
-//    }
-//    set {
-//      guard let idx = soundSets.indexOf(newValue) else {
-//        logWarning("attempt to set currentSoundSet with unregistered sound set")
-//        return
-//      }
-//      guard _currentSoundSet != idx else { return }
-//      _currentSoundSet = idx
-//      state ∪= .ModifiedSoundSet
-//    }
-//  }
-//
-//  static var currentProgram = Instrument.Program(0) {
-//    didSet {
-//      guard oldValue != currentProgram else { return }
-//      state ∪= .ModifiedProgram
-//    }
-//  }
-//
-//  static var currentChannel = Instrument.Channel(0) {
-//    didSet {
-//      guard oldValue != currentChannel else { return }
-//      state ∪= .ModifiedChannel
-//    }
-//  }
-
   static private(set) var auditionInstrument: Instrument!
 
   /** instrumentWithCurrentSettings */
@@ -151,25 +132,32 @@ final class Sequencer {
     return Instrument(instrument: auditionInstrument)
   }
 
-  private static var previousTrack: Track?
+  private static var previousTrack: InstrumentTrack?
 
   /** The current track in use */
-  private static var _currentTrack: Track?
+  private static var _currentTrack: InstrumentTrack?
 
-  private static func currentTrackForState() -> Track? {
-    if state.isDisjointWith([.ModifiedSoundSet, .ModifiedProgram, .ModifiedChannel]) { return _currentTrack }
-    do { return try sequence.newTrackWithInstrument(instrumentWithCurrentSettings()) }
-    catch {
+  /**
+  currentTrackForState
+
+  - returns: Track?
+  */
+  private static func currentTrackForState() -> InstrumentTrack {
+    if let track = _currentTrack where track.instrument == auditionInstrument { return track }
+    do {
+      let track = try sequence.newTrackWithInstrument(instrumentWithCurrentSettings())
+      _currentTrack = track
+      return track
+    } catch {
       logError(error)
       fatalError("unable to create a new track when current track has been requested … error: \(error)")
     }
   }
 
   /** Wraps the private `_currentTrack` so that a new track may be created if the property is `nil` */
-  static var currentTrack: Track {
+  static var currentTrack: InstrumentTrack {
     get {
-      let track = currentTrackForState()
-      guard track == nil else { return track! }
+    guard _currentTrack == nil else { return _currentTrack! }
       do {
         _currentTrack = try sequence.newTrackWithInstrument(instrumentWithCurrentSettings())
         return _currentTrack!
@@ -179,19 +167,23 @@ final class Sequencer {
       }
     }
     set {
-      guard sequence.tracks ∋ newValue else { fatalError("setting currentTrack to a track not owned by sequence") }
+      guard sequence.instrumentTracks ∋ newValue else { fatalError("setting currentTrack to a track not owned by sequence") }
+      guard _currentTrack != newValue else { return }
+      previousTrack = _currentTrack
       _currentTrack = newValue
+      Notification.CurrentTrackDidChange.post()
     }
   }
 
   // MARK: - Properties used to initialize a new `MIDINode`
 
-  static var currentNoteAttributes = NoteAttributes() {
-    didSet {
-      guard oldValue != currentNoteAttributes else { return }
-      state ∪= .ModifiedNote
-    }
-  }
+  static var currentNoteAttributes = NoteAttributes()
+//    {
+//    didSet {
+//      guard oldValue != currentNoteAttributes else { return }
+//      state ∪= .ModifiedNote
+//    }
+//  }
 
   /** Plays a note using the current note attributes and instrument settings */
   static func auditionCurrentNote() {
@@ -199,18 +191,19 @@ final class Sequencer {
     auditionInstrument.playNoteWithAttributes(currentNoteAttributes)
   }
 
-  static var currentTexture = MIDINode.TextureType.Cobblestone {
-    didSet {
-      guard oldValue != currentTexture else { return }
-      state ∪= .ModifiedTexture
-    }
-  }
+  static var currentTexture = MIDINode.TextureType.Cobblestone
+//    {
+//    didSet {
+//      guard oldValue != currentTexture else { return }
+//      state ∪= .ModifiedTexture
+//    }
+//  }
 
   // TODO: This doesn't work when we can remove nodes, need to push and pop states
-  private static var notificationReceptionist = NotificationReceptionist(callbacks:
-    [MIDIPlayerNode.Notification.NodeAdded.name.value : (MIDIPlayerNode.self,
-                                                         NSOperationQueue.mainQueue(),
-                                                         {_ in Sequencer.state.remove([.ModifiedNote, .ModifiedTexture])})])
+//  private static var notificationReceptionist = NotificationReceptionist(callbacks:
+//    [MIDIPlayerNode.Notification.NodeAdded.name.value : (MIDIPlayerNode.self,
+//                                                         NSOperationQueue.mainQueue(),
+//                                                         {_ in Sequencer.state.remove([.ModifiedNote, .ModifiedTexture])})])
 
   // MARK: - Transport
 
