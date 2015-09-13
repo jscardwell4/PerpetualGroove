@@ -1,5 +1,5 @@
 //
-//  TrackChunk.swift
+//  MIDIFileTrackChunk.swift
 //  MidiSprite
 //
 //  Created by Jason Cardwell on 8/29/15.
@@ -10,7 +10,7 @@ import Foundation
 import MoonKit
 
 /** Struct to hold a track chunk for a MIDI file where chunk = \<chunk type\> \<length\> \<track event\>+ */
-struct TrackChunk: MIDIChunk {
+struct MIDIFileTrackChunk: MIDIChunk {
   let type = Byte4("MTrk".utf8)
   let events: [MIDITrackEvent]
 

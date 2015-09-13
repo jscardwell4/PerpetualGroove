@@ -9,82 +9,90 @@ import Foundation
 import UIKit
 import MoonKit
 
-/**
-Struct for converting values to MIDI variable length quanity representation
+import AudioToolbox
 
-These numbers are represented 7 bits per byte, most significant bits first. All bytes except the last have bit 7 set, and the
-last byte has bit 7 clear. If the number is between 0 and 127, it is thus represented exactly as one byte.
-*/
-struct VariableLengthQuantity: CustomStringConvertible {
-  let bytes: [Byte]
-  static let zero = VariableLengthQuantity(0)
+extension CABarBeatTime: CustomStringConvertible {
+  public var description: String { return "\(bar).\(beat).\(subbeat)" }
+}
 
-  var description: String {
-    let representedValue = self.representedValue
-    let byteString = " ".join(bytes.map { String($0, radix: 16, uppercase: true, pad: 2) })
-    let representedValueString = " ".join(representedValue.map { String($0, radix: 16, uppercase: true, pad: 2) })
-    return "\(self.dynamicType.self) {" + "; ".join(
-      "bytes: \(byteString) (\(UInt64(bytes)))",
-      "representedValue: \(representedValueString) (\(UInt64(representedValue)))"
-      ) + "}"
-  }
-  var representedValue: [Byte] {
-    let groups = bytes.segment(8)
-    var resolvedGroups: [UInt64] = []
-    for group in groups {
-      guard group.count > 0 else { continue }
-      var groupValue = UInt64(group[0])
-      if groupValue & 0x80 != 0 {
-        groupValue &= UInt64(0x7F)
-        var i = 1
-        var next = Byte(0)
-        repeat {
-          next = (i < group.count ? group[i++] : 0)
-          groupValue = (groupValue << UInt64(7)) + UInt64(next & 0x7F)
-        } while next & 0x80 != 0
-      }
-      resolvedGroups.append(groupValue)
-    }
-    var resolvedBytes = resolvedGroups.flatMap { $0.bytes }
-    while let firstByte = resolvedBytes.first where resolvedBytes.count > 1 && firstByte == 0 { resolvedBytes.removeAtIndex(0) }
-    return resolvedBytes
-  }
-
-  /**
-  Initialize with bytes array already in converted format
-
-  - parameter bytes: [Byte]
-  */
-  init(bytes: [Byte]) { self.bytes = bytes }
-
-  /**
-  Initialize from any `ByteArrayConvertible` type holding the represented value
-
-  - parameter value: B
-  */
-  init<B:ByteArrayConvertible>(_ value: B) {
-    var v = UInt64(value.bytes)
-    var buffer = v & 0x7F
-    while v >> 7 > 0 {
-      v = v >> 7
-      buffer <<= 8
-      buffer |= 0x80
-      buffer += v & 0x7F
-    }
-    var result: [Byte] = []
-    repeat {
-      result.append(UInt8(buffer & 0xFF))
-      guard buffer & 0x80 != 0 else { break }
-      buffer = buffer >> 8
-    } while true
-    while let firstByte = result.first where result.count > 1 && firstByte == 0 { result.removeAtIndex(0) }
-    bytes = result
+extension CABarBeatTime: CustomDebugStringConvertible {
+  public var debugDescription: String {
+    return "{bar: \(bar); beat: \(beat); subbeat: \(subbeat); subbeatDivisor: \(subbeatDivisor)}"
   }
 }
 
-// 372, 28
-let q1 = VariableLengthQuantity(28)
-Int(q1.representedValue)
-let q2 = VariableLengthQuantity(372)
-Int(q2.representedValue)
+extension CABarBeatTime: StringLiteralConvertible {
+  public init(_ string: String) {
+    let values = string.split(".")
+    guard values.count == 3,
+      let bar: Int32 = Int32(values[0]), beat = UInt16(values[1]), subbeat = UInt16(values[2]) else {
+        fatalError("Invalid `CABarBeatTime` string literal '\(string)'")
+    }
+    self = CABarBeatTime(bar: bar,
+      beat: beat,
+      subbeat: subbeat,
+      subbeatDivisor: CABarBeatTime.defaultSubbeatDivisor,
+      reserved: 0)
+  }
+  public init(extendedGraphemeClusterLiteral value: String) { self.init(value) }
+  public init(unicodeScalarLiteral value: String) { self.init(value) }
+  public init(stringLiteral value: String) { self.init(value) }
+}
+
+extension CABarBeatTime: Hashable {
+  public var hashValue: Int { return "\(bar).\(beat).\(subbeat)╱\(subbeatDivisor)".hashValue }
+}
+
+public func ==(lhs: CABarBeatTime, rhs: CABarBeatTime) -> Bool { return lhs.hashValue == rhs.hashValue }
+
+extension CABarBeatTime {
+
+  public static var start: CABarBeatTime {
+    return CABarBeatTime(bar: 1, beat: 1, subbeat: 1, subbeatDivisor: defaultSubbeatDivisor, reserved: 0)
+  }
+
+  public static let defaultSubbeatDivisor: UInt16 = 480
+
+  init(var tickValue: UInt64, beatsPerBar: UInt8, subbeatDivisor: UInt16) {
+    let subbeat = tickValue % UInt64(subbeatDivisor)
+    tickValue -= subbeat
+    let totalBeats = tickValue / UInt64(subbeatDivisor)
+    let beat = totalBeats % UInt64(beatsPerBar) + 1
+    let bar = totalBeats / UInt64(beatsPerBar) + 1
+    self = CABarBeatTime(bar: Int32(bar),
+      beat: UInt16(beat),
+      subbeat: UInt16(subbeat),
+      subbeatDivisor: subbeatDivisor,
+      reserved: 0)
+  }
+
+  /**
+  doubleValueWithBeatsPerBar:
+
+  - parameter beatsPerBar: UInt8
+
+  - returns: Double
+  */
+  func doubleValueWithBeatsPerBar(beatsPerBar: UInt8) -> Double {
+    let bar = Double(max(Int(self.bar) - 1, 0))
+    let beat = Double(max(Int(self.beat) - 1, 0))
+    let subbeat = Double(max(Int(self.subbeat) - 1, 0))
+    return bar * Double(beatsPerBar) + beat + subbeat / Double(subbeatDivisor)
+  }
+
+  var tickValue: UInt64 {
+    let bar = UInt64(max(Int(self.bar) - 1, 0))
+    let beat = UInt64(max(Int(self.beat) - 1, 0))
+    let subbeat = UInt64(max(Int(self.subbeat) - 1, 0))
+    return (bar * UInt64(4) + beat) * UInt64(subbeatDivisor) + subbeat
+  }
+
+  var doubleValue: Double { return doubleValueWithBeatsPerBar(4) }
+
+}
+
+let time = CABarBeatTime(bar: 24, beat: 3, subbeat: 115, subbeatDivisor: 480, reserved: 0)
+let ticks = time.tickValue
+
+let time2 = CABarBeatTime(tickValue: ticks, beatsPerBar: 4, subbeatDivisor: 480)
 

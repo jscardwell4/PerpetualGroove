@@ -24,7 +24,7 @@ struct MIDINodeEvent: MIDITrackEvent {
     result += "\n\t".join(
       "delta: " + (delta?.description ?? "nil"),
       "data: \(data)",
-      "time: \(time)(\(time.doubleValue); \(time.tickValue))"
+      "time: \(time)"
     )
     result += "\n}"
     return result

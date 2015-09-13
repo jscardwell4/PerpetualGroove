@@ -25,6 +25,12 @@ struct MetaEvent: MIDITrackEvent {
   */
   init(_ d: Data) { data = d }
 
+  /**
+  initWithDelta:bytes:
+
+  - parameter delta: VariableLengthQuantity
+  - parameter bytes: C
+  */
   init<C:CollectionType where C.Generator.Element == Byte,
     C.Index.Distance == Int, C.SubSequence.Generator.Element == Byte,
     C.SubSequence:CollectionType, C.SubSequence.Index.Distance == Int,
@@ -66,7 +72,7 @@ struct MetaEvent: MIDITrackEvent {
     var result = "\(self.dynamicType.self) {\n\t"
     result += "\n\t".join(
       "data: \(data)",
-      "time: \(time)(\(time.doubleValue); \(time.tickValue))",
+      "time: \(time)",
       "delta: " + (delta?.description ?? "nil")
     )
     result += "\n}"
@@ -113,6 +119,12 @@ struct MetaEvent: MIDITrackEvent {
       }
     }
 
+    /**
+    initWithType:data:
+
+    - parameter type: Byte
+    - parameter data: C
+    */
     init<C:CollectionType where C.Generator.Element == Byte>(type: Byte, data: C) throws {
       switch type {
         case 0x01: self = .Text(text: String(data))
@@ -137,7 +149,7 @@ struct MetaEvent: MIDITrackEvent {
           }
           var index  = data.startIndex
           let upper = data[index++], lower = data[index++], clocks = data[index++], notes = data[index]
-          self = .TimeSignature(upper: upper, lower: lower, clocks: clocks, notes: notes)
+          self = .TimeSignature(upper: upper, lower: Byte(pow(Double(lower), 2)), clocks: clocks, notes: notes)
         default:
           throw MIDIFileError(type: .UnsupportedEvent,
                               reason: "\(String(hexBytes: [type])) is not a supported meta event type")

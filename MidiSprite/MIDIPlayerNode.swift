@@ -74,7 +74,7 @@ final class MIDIPlayerNode: SKShapeNode {
       let midiNode = try MIDINode(placement, "midiNode\(midiNodes.count)")
       addChild(midiNode)
       midiNodes.append(midiNode)
-      try Sequencer.currentTrack.addNode(midiNode)
+      try Sequencer.currentTrackForAddingNode.addNode(midiNode)
       Notification.NodeAdded.post()
     } catch {
       logError(error)

@@ -30,25 +30,22 @@ protocol MIDITrackEvent: CustomStringConvertible {
 
 /** Protocol for types that provide a collection of `MIDITrackEvent` values for a chunk and can produce that chunk */
 protocol MIDITrackType: CustomStringConvertible {
-  var chunk: TrackChunk { get }
+  var chunk: MIDIFileTrackChunk { get }
   var name: String { get }
   var events: [MIDITrackEvent] { get }
+  var playbackMode: Bool { get }
 }
 
 extension MIDITrackType {
 
   /** Generates a MIDI file chunk from current track data */
-  var chunk: TrackChunk {
+  var chunk: MIDIFileTrackChunk {
     var trackEvents = events
     trackEvents.insert(MetaEvent(.SequenceTrackName(name: name)), atIndex: 0)
-    trackEvents.append(MetaEvent(.EndOfTrack))
-    return TrackChunk(events: trackEvents)
+    var eotEvent = MetaEvent(.EndOfTrack)
+    if let lastEvent = trackEvents.last { eotEvent.time = lastEvent.time }
+    trackEvents.append(eotEvent)
+    return MIDIFileTrackChunk(events: trackEvents)
   }
 
-}
-
-// MARK: - The sequence type protocol
-
-protocol MIDISequenceType {
-  var tracks: [MIDITrackType] { get }
 }

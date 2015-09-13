@@ -371,15 +371,15 @@ final class MIDIPlayerViewController: UIViewController {
     let queue = NSOperationQueue.mainQueue()
 
     let nodeCallback: Callback = (MIDIPlayerNode.self, queue, nodeCountDidChange)
-    let trackCallback: Callback = (NodeCapturingMIDISequence.self, queue, trackCountDidChange)
+    let trackCallback: Callback = (MIDISequence.self, queue, trackCountDidChange)
     let fileLoadedCallback: Callback = (Sequencer.self, queue, fileDidLoad)
     let fileUnloadedCallback: Callback = (Sequencer.self, queue, fileDidUnload)
 
     let callbacks: [NotificationReceptionist.Notification:NotificationReceptionist.Callback] = [
       MIDIPlayerNode.Notification.NodeAdded.name.value: nodeCallback,
       MIDIPlayerNode.Notification.NodeRemoved.name.value: nodeCallback,
-      NodeCapturingMIDISequence.Notification.TrackAdded.name.value: trackCallback,
-      NodeCapturingMIDISequence.Notification.TrackRemoved.name.value: trackCallback,
+      MIDISequence.Notification.TrackAdded.name.value: trackCallback,
+      MIDISequence.Notification.TrackRemoved.name.value: trackCallback,
       Sequencer.Notification.FileLoaded.name.value: fileLoadedCallback,
       Sequencer.Notification.FileUnloaded.name.value: fileUnloadedCallback
     ]

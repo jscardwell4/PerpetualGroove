@@ -30,16 +30,16 @@ final class InstrumentTrack: MIDITrackType, Equatable {
 
   let instrument: Instrument
   let color: Color
+  let playbackMode: Bool
 
   typealias NodeIdentifier = MIDINodeEvent.Identifier
 
   private var nodes: Set<MIDINode> = []
   private var notes: Set<NodeIdentifier> = []
-//  private var lastEvent: [UInt:MIDITimeStamp] = [:]
   private var client = MIDIClientRef()
   private var inPort = MIDIPortRef()
   private var outPort = MIDIPortRef()
-  private let fileQueue: dispatch_queue_t
+  private let fileQueue: dispatch_queue_t?
   let time = BarBeatTime(clockSource: Sequencer.clockSource)
 
   var recording = false
@@ -51,7 +51,7 @@ final class InstrumentTrack: MIDITrackType, Equatable {
   }
   private(set) var events: [MIDITrackEvent] = []
 
-  var chunk: TrackChunk {
+  var chunk: MIDIFileTrackChunk {
     var trackEvents = events
     trackEvents.insert(MetaEvent(.SequenceTrackName(name: name)), atIndex: 0)
     let filePath = instrument.soundSet.url.absoluteString
@@ -59,7 +59,7 @@ final class InstrumentTrack: MIDITrackType, Equatable {
     trackEvents.insert(MetaEvent(.Text(text: instrumentPath)), atIndex: 1)
     trackEvents.insert(ChannelEvent(.ProgramChange, instrument.channel, instrument.program), atIndex: 2)
     trackEvents.append(MetaEvent(.EndOfTrack))
-    return TrackChunk(events: trackEvents)
+    return MIDIFileTrackChunk(events: trackEvents)
   }
 
   // MARK: - Editable properties
@@ -83,10 +83,9 @@ final class InstrumentTrack: MIDITrackType, Equatable {
     nodes.insert(node)
     let identifier = NodeIdentifier(ObjectIdentifier(node).uintValue)
     notes.insert(identifier)
-//    lastEvent[identifier] = 0
     try MIDIPortConnectSource(inPort, node.endPoint, nil) ➤ "Failed to connect to node \(node.name!)"
     guard recording else { return }
-    dispatch_async(fileQueue) {
+    dispatch_async(fileQueue!) {
       [placement = node.placement] in
         self.appendEvent(MIDINodeEvent(.Add(identifier: identifier, placement: placement))
       )
@@ -102,11 +101,10 @@ final class InstrumentTrack: MIDITrackType, Equatable {
     guard let node = nodes.remove(node) else { throw Error.NodeNotFound }
     let identifier = NodeIdentifier(ObjectIdentifier(node).uintValue)
     notes.remove(identifier)
-//    lastEvent[identifier] = nil
     node.sendNoteOff()
     try MIDIPortDisconnectSource(inPort, node.endPoint) ➤ "Failed to disconnect to node \(node.name!)"
     guard recording else { return }
-    dispatch_async(fileQueue) {
+    dispatch_async(fileQueue!) {
       self.appendEvent(MIDINodeEvent(.Remove(identifier: identifier)))
     }
   }
@@ -133,6 +131,8 @@ final class InstrumentTrack: MIDITrackType, Equatable {
   */
   private func read(packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutablePointer<Void>) {
 
+    guard !playbackMode else { return }
+
     // Forward the packets to the instrument
     do { try MIDISend(outPort, instrument.endPoint, packetList) ➤ "Failed to forward packet list to instrument" }
     catch { logError(error) }
@@ -140,15 +140,13 @@ final class InstrumentTrack: MIDITrackType, Equatable {
     // Check if we are recording, otherwise skip event processing
     guard recording else { return }
     
-    dispatch_async(fileQueue) {
+    dispatch_async(fileQueue!) {
       let packets = packetList.memory
       let packetPointer = UnsafeMutablePointer<MIDIPacket>.alloc(1)
       packetPointer.initialize(packets.packet)
       guard packets.numPackets == 1 else { fatalError("Packets must be sent to track one at a time") }
 
       let packet = packetPointer.memory
-//      guard let identifier = self.nodeIdentifierFromPacket(packet) else { return }
-//      self.lastEvent[identifier] = packet.timeStamp
       let ((status, channel), note, velocity) = ((packet.data.0 >> 4, packet.data.0 & 0xF), packet.data.1, packet.data.2)
       let event: MIDITrackEvent?
       switch status {
@@ -170,6 +168,54 @@ final class InstrumentTrack: MIDITrackType, Equatable {
     color = Color.allCases[Sequencer.sequence.tracks.count % 10]
     fileQueue = serialQueueWithLabel("BUS \(instrument.bus)", qualityOfService: QOS_CLASS_BACKGROUND)
     recording = r
+    playbackMode = false
+    try MIDIClientCreateWithBlock("track \(instrument.bus)", &client, nil) ➤ "Failed to create midi client"
+    try MIDIOutputPortCreate(client, "Output", &outPort) ➤ "Failed to create out port"
+    let label = self.label ?? "BUS \(instrument.bus)"
+    try MIDIInputPortCreateWithBlock(client, label, &inPort, read) ➤ "Failed to create in port"
+  }
+
+  /**
+  initWithTrackChunk:
+
+  - parameter trackChunk: MIDIFileTrackChunk
+  */
+  init(trackChunk: MIDIFileTrackChunk) throws {
+    playbackMode = true
+    color = Color.allCases[Sequencer.sequence.tracks.count % 10]
+    fileQueue = nil
+    recording = false
+
+    let isInstrumentEvent: (MIDITrackEvent) -> Bool = {
+      guard let metaEvent = $0 as? MetaEvent else { return false }
+      switch metaEvent.data {
+        case .Text(let text) where text.hasPrefix("instrument"): return true
+        default: return false
+      }
+    }
+
+    let isProgramChangeEvent: (MIDITrackEvent) -> Bool = {
+      guard let channelEvent = $0 as? ChannelEvent else { return false }
+      switch channelEvent.status.type {
+        case .ProgramChange: return true
+        default: return false
+      }
+    }
+
+    if let instrumentMetaEvent = trackChunk.events.first(isInstrumentEvent) as? MetaEvent,
+      case let .Text(url) = instrumentMetaEvent.data,
+      let fileURL = NSURL(string: "file" + url[url.startIndex.advancedBy(10)..<]),
+      soundSet = try? SoundSet(url: fileURL),
+      programEvent = trackChunk.events.first(isProgramChangeEvent) as? ChannelEvent,
+      instrumentMaybe = try? Instrument(soundSet: soundSet, program: programEvent.data1, channel: programEvent.status.channel)
+    {
+      instrument = instrumentMaybe
+    } else {
+      instrument = Instrument(instrument: Sequencer.auditionInstrument)
+    }
+
+    events = trackChunk.events
+
     try MIDIClientCreateWithBlock("track \(instrument.bus)", &client, nil) ➤ "Failed to create midi client"
     try MIDIOutputPortCreate(client, "Output", &outPort) ➤ "Failed to create out port"
     let label = self.label ?? "BUS \(instrument.bus)"

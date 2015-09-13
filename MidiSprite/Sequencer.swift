@@ -43,7 +43,9 @@ final class Sequencer {
 
   // MARK: - Sequence
 
-  static private(set) var sequence = NodeCapturingMIDISequence()
+  static private var recordableSequence = MIDISequence()
+  static private var playbackSequence: MIDISequence?
+  static var sequence: MIDISequence { return playbackSequence ?? recordableSequence }
 
 
   // MARK: - Time
@@ -93,6 +95,8 @@ final class Sequencer {
         do {
           let midiFile = try MIDIFile(file: currentFile)
           logDebug("midiFile = \(midiFile)")
+          playbackSequence = MIDISequence(file: midiFile)
+          logDebug("playbackSequence = " + (playbackSequence?.description ?? "nil"))
           Notification.FileLoaded.post()
         } catch {
           logError(error)
@@ -157,7 +161,7 @@ final class Sequencer {
   /** Wraps the private `_currentTrack` so that a new track may be created if the property is `nil` */
   static var currentTrack: InstrumentTrack {
     get {
-    guard _currentTrack == nil else { return _currentTrack! }
+      guard _currentTrack == nil else { return _currentTrack! }
       do {
         _currentTrack = try sequence.newTrackWithInstrument(instrumentWithCurrentSettings())
         return _currentTrack!
@@ -174,6 +178,20 @@ final class Sequencer {
       Notification.CurrentTrackDidChange.post()
     }
   }
+
+  static var currentTrackForAddingNode: InstrumentTrack {
+    if _currentTrack?.instrument.settingsEqualTo(auditionInstrument) == true { return _currentTrack! }
+    else {
+      do {
+        _currentTrack = try sequence.newTrackWithInstrument(instrumentWithCurrentSettings())
+        return _currentTrack!
+      } catch {
+        logError(error)
+        fatalError("unable to create a new track when current track for adding a node has been requested … error: \(error)")
+      }
+    }
+  }
+
 
   // MARK: - Properties used to initialize a new `MIDINode`
 

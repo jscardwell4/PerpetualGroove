@@ -101,7 +101,7 @@ struct ChannelEvent: MIDITrackEvent {
   var description: String {
     var result = "\(self.dynamicType.self) {\n\t"
     result += "\n\t".join(
-      "time: \(time)(\(time.doubleValue); \(time.tickValue))",
+      "time: \(time)",
       "delta: " + (delta?.description ?? "nil"),
       "status: \(String(hexBytes: status.value))",
       "data1: \(String(data1, radix: 16, uppercase: true, pad: 2, group: 2))",

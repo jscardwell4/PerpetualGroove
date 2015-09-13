@@ -107,6 +107,17 @@ final class Instrument: Equatable, CustomStringConvertible {
   }
 
   /**
+  Whether the specified `Intrument` has the same settings as this `Instrument`
+
+  - parameter instrument: Instrument
+
+  - returns: Bool
+  */
+  func settingsEqualTo(instrument: Instrument) -> Bool {
+    return soundSet == instrument.soundSet && program == instrument.program && channel == instrument.channel
+  }
+
+  /**
   init:
 
   - parameter set: SoundSet

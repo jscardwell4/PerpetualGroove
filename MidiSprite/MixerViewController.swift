@@ -26,8 +26,8 @@ final class MixerViewController: UICollectionViewController {
     let queue = NSOperationQueue.mainQueue()
     let callback: (AnyObject?, NSOperationQueue?, (NSNotification) -> Void) = (Mixer.self, queue, busesDidChange)
     let callbacks: [NotificationReceptionist.Notification:NotificationReceptionist.Callback] = [
-      NodeCapturingMIDISequence.Notification.TrackAdded.name.rawValue: callback,
-      NodeCapturingMIDISequence.Notification.TrackRemoved.name.rawValue: callback
+      MIDISequence.Notification.TrackAdded.name.rawValue: callback,
+      MIDISequence.Notification.TrackRemoved.name.rawValue: callback
     ]
 
     notificationReceptionist = NotificationReceptionist(callbacks: callbacks)

@@ -14,6 +14,20 @@ public extension MutableCollectionType where Index:RandomAccessIndexType, Genera
   }
 }
 
+public extension CollectionType {
+
+  /**
+  first:
+
+  - parameter predicate: (Self.Generator.Element) throws -> Bool
+  */
+  public func first(@noescape predicate: (Self.Generator.Element) throws -> Bool) rethrows -> Self.Generator.Element? {
+    guard let idx = try indexOf(predicate) else { return nil }
+    return self[idx]
+  }
+
+}
+
 /**
 spliced:newElements:atIndex:
 

@@ -378,7 +378,7 @@
                                 <color key="backgroundColor" red="0.20000000000000001" green="0.1960784314" blue="0.19215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="File" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5F4-fd-MDF">
-                                <rect key="frame" x="20" y="81" width="33" height="17"/>
+                                <rect key="frame" x="20" y="74" width="33" height="17"/>
                                 <fontDescription key="fontDescription" name="EvelethThin" family="Eveleth" pointSize="14"/>
                                 <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -407,13 +407,13 @@
                                 </connections>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Track" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fzB-IZ-Oj9">
-                                <rect key="frame" x="308" y="81" width="54.5" height="17"/>
+                                <rect key="frame" x="308" y="74" width="54.5" height="17"/>
                                 <fontDescription key="fontDescription" name="EvelethThin" family="Eveleth" pointSize="14"/>
                                 <color key="textColor" red="0.57254904510000004" green="0.52941179279999995" blue="0.47058823700000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <view hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fr3-Py-Mat" userLabel="Track Name" customClass="LabelButton" customModule="MoonKit">
-                                <rect key="frame" x="370" y="74" width="209.5" height="24"/>
+                                <rect key="frame" x="370" y="67" width="210" height="24"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="24" id="eD0-de-5B4"/>
                                 </constraints>
@@ -448,13 +448,13 @@
                                 </connections>
                             </visualEffectView>
                             <view hidden="YES" contentMode="scaleToFill" misplaced="YES" placeholderIntrinsicWidth="100" placeholderIntrinsicHeight="400" translatesAutoresizingMaskIntoConstraints="NO" id="SIl-d8-sfe" userLabel="Mixer Popover" customClass="PopoverView" customModule="MoonKit">
-                                <rect key="frame" x="125" y="42" width="100" height="420"/>
+                                <rect key="frame" x="247.5" y="42" width="100" height="420"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bAH-jD-Lnc">
-                                        <rect key="frame" x="0.0" y="20" width="100" height="410"/>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bAH-jD-Lnc">
+                                        <rect key="frame" x="0.0" y="20" width="100" height="400"/>
                                         <subviews>
-                                            <containerView opaque="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Sas-0Y-zNR">
-                                                <rect key="frame" x="0.0" y="0.0" width="100" height="410"/>
+                                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Sas-0Y-zNR">
+                                                <rect key="frame" x="0.0" y="0.0" width="100" height="400"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="100" id="0B2-ux-nXL"/>
                                                     <constraint firstAttribute="height" constant="400" id="7Wh-z6-0Yz"/>
@@ -652,8 +652,9 @@
                             <constraint firstItem="SIl-d8-sfe" firstAttribute="centerX" secondItem="4HC-dP-hAS" secondAttribute="centerX" id="dM5-IW-XKm"/>
                             <constraint firstItem="iqB-B1-8b1" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leadingMargin" constant="5" id="ex6-R6-S95"/>
                             <constraint firstAttribute="centerXWithinMargins" secondItem="fwt-5T-njj" secondAttribute="trailing" id="gvv-Zw-Ixi"/>
-                            <constraint firstItem="5F4-fd-MDF" firstAttribute="baseline" secondItem="fwt-5T-njj" secondAttribute="baseline" id="h0E-Np-L5c"/>
+                            <constraint firstItem="5F4-fd-MDF" firstAttribute="baseline" secondItem="fwt-5T-njj" secondAttribute="firstBaseline" id="h0E-Np-L5c"/>
                             <constraint firstAttribute="trailing" secondItem="qmT-5g-1Xb" secondAttribute="trailing" id="ha6-KS-kA6"/>
+                            <constraint firstItem="fwt-5T-njj" firstAttribute="height" secondItem="5F4-fd-MDF" secondAttribute="height" id="i6g-hn-Dgb"/>
                             <constraint firstItem="U9p-PY-X1m" firstAttribute="top" secondItem="fwt-5T-njj" secondAttribute="bottom" constant="8" symbolic="YES" id="jI1-59-BIN"/>
                             <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="SIl-d8-sfe" secondAttribute="trailing" constant="10" id="jVh-vm-Mzh"/>
                             <constraint firstItem="fzB-IZ-Oj9" firstAttribute="leading" secondItem="fwt-5T-njj" secondAttribute="trailing" constant="8" symbolic="YES" id="mBE-FB-Y1i"/>
@@ -676,6 +677,7 @@
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
+                                <exclude reference="i6g-hn-Dgb"/>
                                 <exclude reference="wOg-e7-b56"/>
                                 <exclude reference="9xn-ad-4gw"/>
                                 <exclude reference="sFl-QA-ddd"/>

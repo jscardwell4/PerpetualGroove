@@ -16,9 +16,9 @@ struct MIDIFile: CustomStringConvertible {
 
   enum Format: Byte2 { case Zero, One, Two }
 
-  let tracks: [TrackChunk]
+  let tracks: [MIDIFileTrackChunk]
 
-  private let header: HeaderChunk
+  private let header: MIDIFileHeaderChunk
 
   /**
   initWithFile:
@@ -28,7 +28,7 @@ struct MIDIFile: CustomStringConvertible {
   init(file: NSURL) throws {
 //    var value: UInt8 = 0
 //    withUnsafeMutablePointer(&value) { valuePtr in file.absoluteString.withCString{ filePtr in
-//        NodeCapturingMIDISequence.ExtendedFileAttributeName.withCString {
+//        MIDISequence.ExtendedFileAttributeName.withCString {
 //          namePtr in getxattr(filePtr, namePtr, valuePtr, 1, 0, 0)
 //        } } }
 //    guard value == 1 else { throw Error.NotNodeCaptureFile }
@@ -45,10 +45,10 @@ struct MIDIFile: CustomStringConvertible {
     let bytes = UnsafeBufferPointer<Byte>(start: UnsafePointer<Byte>(fileData.bytes), count: totalBytes)
 
     let headerBytes = bytes[bytes.startIndex ..< bytes.startIndex.advancedBy(14)]
-    let h = try HeaderChunk(bytes: headerBytes)
+    let h = try MIDIFileHeaderChunk(bytes: headerBytes)
 
     var tracksRemaining = h.numberOfTracks
-    var t: [TrackChunk] = []
+    var t: [MIDIFileTrackChunk] = []
 
     var currentIndex = bytes.startIndex.advancedBy(14)
 
@@ -67,13 +67,32 @@ struct MIDIFile: CustomStringConvertible {
 
       let trackBytes = bytes[currentIndex ..< currentIndex.advancedBy(Int(chunkLength) + 8)]
 
-      t.append(try TrackChunk(bytes: trackBytes))
+      t.append(try MIDIFileTrackChunk(bytes: trackBytes))
       currentIndex.advanceBy(Int(chunkLength) + 8)
       tracksRemaining--
     }
 
+    // TODO: We need to track signature changes to do this properly
+    let beatsPerBar: UInt8 = 4
+    let subbeatDivisor = h.division
+    var processedTracks: [MIDIFileTrackChunk] = []
+    for trackChunk in t {
+      var ticks: UInt64 = 0
+      var processedEvents: [MIDITrackEvent] = []
+      for var trackEvent in trackChunk.events {
+        guard let delta = trackEvent.delta else {
+          throw MIDIFileError(type: .FileStructurallyUnsound, reason: "Track event missing delta value")
+        }
+        let deltaTicks = UInt64(delta.intValue)
+        ticks += deltaTicks
+        trackEvent.time = CABarBeatTime(tickValue: ticks, beatsPerBar: beatsPerBar, subbeatDivisor: subbeatDivisor)
+        processedEvents.append(trackEvent)
+      }
+      processedTracks.append(MIDIFileTrackChunk(events: processedEvents))
+    }
+
     header = h
-    tracks = t
+    tracks = processedTracks
   }
 
   /**
@@ -85,19 +104,20 @@ struct MIDIFile: CustomStringConvertible {
   */
   init(format: Format, division: Byte2, tracks: [MIDITrackType]) {
     self.tracks = tracks.flatMap({$0.chunk})
-    header = HeaderChunk(format: .One, numberOfTracks: Byte2(tracks.count), division: division)
+    header = MIDIFileHeaderChunk(format: .One, numberOfTracks: Byte2(tracks.count), division: division)
   }
 
   var bytes: [Byte] {
     var bytes = header.bytes
     var trackData: [[Byte]] = []
+    let beatsPerBar = Sequencer.timeSignature.beatsPerBar
     for track in tracks {
       var previousTime: CABarBeatTime = .start
       var trackBytes: [Byte] = []
       for event in track.events {
         let eventTime = event.time
-        let eventTimeTicks = eventTime.tickValue
-        let previousTimeTicks = previousTime.tickValue
+        let eventTimeTicks = eventTime.tickValueWithBeatsPerBar(beatsPerBar)
+        let previousTimeTicks = previousTime.tickValueWithBeatsPerBar(beatsPerBar)
         let delta = eventTimeTicks > previousTimeTicks ? eventTimeTicks - previousTimeTicks : 0
         previousTime = eventTime
         let deltaTime = VariableLengthQuantity(delta)

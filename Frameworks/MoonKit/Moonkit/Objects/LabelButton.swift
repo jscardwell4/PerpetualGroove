@@ -33,9 +33,7 @@ import UIKit
 
   - returns: CGSize
   */
-  public override func intrinsicContentSize() -> CGSize {
-    return label.intrinsicContentSize()
-  }
+  public override func intrinsicContentSize() -> CGSize { return label.intrinsicContentSize() }
 
   /**
   viewForBaselineLayout
@@ -43,11 +41,14 @@ import UIKit
   - returns: UIView
   */
   public override func viewForBaselineLayout() -> UIView {
-    return label
+    return label.viewForBaselineLayout()
   }
 
-  override public var viewForFirstBaselineLayout: UIView { return label }
-  override public var viewForLastBaselineLayout: UIView { return label }
+  @available(iOS 9.0, *)
+  override public var viewForFirstBaselineLayout: UIView { return label.viewForFirstBaselineLayout }
+
+  @available(iOS 9.0, *)
+  override public var viewForLastBaselineLayout: UIView { return label.viewForLastBaselineLayout }
 
   /**
   initWithFrame:

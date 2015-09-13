@@ -1,5 +1,5 @@
 //
-//  HeaderChunk.swift
+//  MIDIFileHeaderChunk.swift
 //  MidiSprite
 //
 //  Created by Jason Cardwell on 8/29/15.
@@ -10,7 +10,7 @@ import Foundation
 import MoonKit
 
 /** Struct to hold the header chunk of a MIDI file */
-struct HeaderChunk: MIDIChunk {
+struct MIDIFileHeaderChunk: MIDIChunk {
   typealias Format = MIDIFile.Format
   let type = Byte4("MThd".utf8)
   let length: Byte4 = 6

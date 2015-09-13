@@ -1,5 +1,5 @@
 //
-//  NodeCapturingMIDISequence.swift
+//  MIDISequence.swift
 //  MidiSprite
 //
 //  Created by Jason Cardwell on 8/23/15.
@@ -9,17 +9,28 @@
 import Foundation
 import MoonKit
 
-final class NodeCapturingMIDISequence {
+final class MIDISequence {
 
-  static let ExtendedFileAttributeName = "com.MoondeerStudios.MIDISprite.NodeCapturingMIDISequence"
+  static let ExtendedFileAttributeName = "com.MoondeerStudios.MIDISprite.MIDISequence"
 
   /** An enumeration to wrap up notifications */
   enum Notification: String, NotificationType, NotificationNameType {
     case TrackAdded, TrackRemoved
-    var object: AnyObject? { return NodeCapturingMIDISequence.self }
+    var object: AnyObject? { return MIDISequence.self }
   }
 
-  var recording = false { didSet { instrumentTracks.forEach { $0.recording = recording } } }
+
+  enum Error: String, ErrorType {
+    case NotPermitted = "Action not permitted given the playbackMode value of the sequence"
+  }
+
+  let playbackMode: Bool
+  private var _recording = false { didSet { instrumentTracks.forEach { $0.recording = recording } } }
+
+  var recording: Bool {
+    get { return _recording }
+    set { guard !playbackMode && _recording != newValue else { return }; _recording = newValue }
+  }
 
   /** The instrument tracks are stored in the `tracks` array beginning at index `1` */
   var instrumentTracks: [InstrumentTrack] { return tracks.count > 1 ? tracks[1..<].map({$0 as! InstrumentTrack}) : [] }
@@ -35,6 +46,29 @@ final class NodeCapturingMIDISequence {
   /** Generates a `MIDIFile` from the current sequence state */
   var file: MIDIFile { return MIDIFile(format: .One, division: 480, tracks: tracks) }
 
+  /** init */
+  init() { playbackMode = false }
+
+  /**
+  initWithFile:
+
+  - parameter file: MIDIFile
+  */
+  init(file: MIDIFile) {
+    playbackMode = true
+    var trackChunks = ArraySlice(file.tracks)
+    if let trackChunk = trackChunks.first
+      where trackChunk.events.count == trackChunk.events.filter({ TempoTrack.isTempoTrackEvent($0) }).count
+    {
+      tracks[0] = TempoTrack(trackChunk: trackChunk) as MIDITrackType
+      trackChunks = trackChunks.dropFirst()
+    } else {
+      tracks[0] = TempoTrack(playbackMode: true) as MIDITrackType
+    }
+
+    tracks.appendContentsOf(trackChunks.flatMap({ try? InstrumentTrack(trackChunk: $0) }) as [MIDITrackType])
+  }
+
   /**
   newTrackWithInstrument:
 
@@ -43,6 +77,7 @@ final class NodeCapturingMIDISequence {
   */
 
   func newTrackWithInstrument(instrument: Instrument) throws -> InstrumentTrack {
+    guard !playbackMode else { throw Error.NotPermitted }
     tracks.append(try InstrumentTrack(instrument: instrument, recording: recording))
     Notification.TrackAdded.post()
     return tracks.last as! InstrumentTrack
@@ -53,7 +88,7 @@ final class NodeCapturingMIDISequence {
 
   - parameter tempo: Double
   */
-  func insertTempoChange(tempo: Double) { tempoTrack.insertTempoChange(tempo) }
+  func insertTempoChange(tempo: Double) { guard !playbackMode else { return }; tempoTrack.insertTempoChange(tempo) }
 
   /**
   writeToFile:
@@ -61,6 +96,7 @@ final class NodeCapturingMIDISequence {
   - parameter file: NSURL
   */
   func writeToFile(file: NSURL, overwrite: Bool = false) throws {
+    guard !playbackMode else { throw Error.NotPermitted }
     let midiFile = self.file
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)) {
       logDebug(midiFile.description)
@@ -70,7 +106,7 @@ final class NodeCapturingMIDISequence {
         try data.writeToURL(file, options: overwrite ? [.DataWritingAtomic] : [.DataWritingWithoutOverwriting])
 //        file.absoluteString.withCString({
 //          filePtr in
-//          NodeCapturingMIDISequence.ExtendedFileAttributeName.withCString({
+//          MIDISequence.ExtendedFileAttributeName.withCString({
 //            namePtr in
 //            var value: UInt8 = 1
 //            setxattr(filePtr, namePtr, &value, 1, 0, 0)
@@ -84,8 +120,12 @@ final class NodeCapturingMIDISequence {
 
 }
 
-extension NodeCapturingMIDISequence: CustomStringConvertible {
+extension MIDISequence: CustomStringConvertible {
   var description: String {
-    return "\(self.dynamicType.self) {\n" + "\n".join(tracks.map({$0.description.indentedBy(4)})) + "\n}"
+    var result = "\(self.dynamicType.self) {\n"
+    result += "  playbackMode: \(playbackMode)\n"
+    result += "\n".join(tracks.map({$0.description.indentedBy(4)}))
+    result += "\n}"
+    return result
   }
 }
