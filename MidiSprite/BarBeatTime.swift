@@ -94,15 +94,6 @@ extension CABarBeatTime {
     return (bar * UInt64(beatsPerBar) + beat) * UInt64(subbeatDivisor) + subbeat
   }
 
-//  var tickValue: UInt64 {
-//    let bar = UInt64(max(Int(self.bar) - 1, 0))
-//    let beat = UInt64(max(Int(self.beat) - 1, 0))
-//    let subbeat = UInt64(max(Int(self.subbeat) - 1, 0))
-//    return (bar * UInt64(Sequencer.timeSignature.beatsPerBar) + beat) * UInt64(subbeatDivisor) + subbeat
-//  }
-
-//  var doubleValue: Double { return doubleValueWithBeatsPerBar(Sequencer.timeSignature.beatsPerBar) }
-
 }
 
 enum SimpleTimeSignature {
@@ -127,6 +118,7 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
 
   private var client = MIDIClientRef()  /// Client for receiving MIDI clock
   private var inPort = MIDIPortRef()    /// Port for receiving MIDI clock
+  private var queue: dispatch_queue_t!
 
   /** The resolution used to divide a beat into subbeats */
   var partsPerQuarter: UInt16 {
@@ -146,6 +138,7 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
   private(set) var time: CABarBeatTime {
     didSet {
       guard validBeats.contains(time.beat) && validSubbeats.contains(time.subbeat) else { fatalError("corrupted time '\(time)'") }
+      checkCallbacksForTime(time)
     }
   }
 
@@ -153,12 +146,21 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
   private var beatInterval: Fraction<Float>
 
   /** Tracks the current subdivision of a beat, incrementing `time` as it updates */
-  private var clockCount: Fraction<Float> {
-    didSet { // Runs on MIDI Services thread
-      guard oldValue != clockCount else { return }
-      if clockCount == 1╱1 { clockCount.numerator = 0; time.bar++; time.beat = 1; time.subbeat = 1 }
-      else if clockCount % beatInterval == 0╱1 { time.beat++; time.subbeat = 1 }
-      else { time.subbeat++ }
+  private var clockCount: Fraction<Float>
+
+  /** incrementClock */
+  private func incrementClock() {
+    clockCount.numerator += 1
+    if clockCount == 1 {
+      clockCount.numerator = 0
+      time.bar++
+      time.beat = 1
+      time.subbeat = 1
+    } else if clockCount % beatInterval == 0 {
+      time.beat++
+      time.subbeat = 1
+    } else {
+      time.subbeat++
     }
   }
 
@@ -265,7 +267,18 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
   var description: String { return time.description }
 
   /** reset */
-  func reset() { clockCount = 0╱Float(partsPerQuarter); time.bar = 1; time.beat = 1; time.subbeat = 1 }
+  func reset() {
+    // This causes problems
+//    dispatch_async(queue) {
+//      [unowned self] in
+//      self.time.bar = 1
+//      self.time.beat = 1
+//      self.time.subbeat = 1
+//      self.clockCount = 0╱Float(self.partsPerQuarter)
+//      self.resetCount++
+//      self.clockReset = true
+//    }
+  }
 
   /**
   initWithClockSource:partsPerQuarter:
@@ -281,15 +294,18 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
     validBeats = 1 ... UInt16(Sequencer.timeSignature.beatsPerBar)
     validSubbeats = 1 ... ppq
 
+    let name = "BarBeatTime[\(ObjectIdentifier(self).uintValue)]"
+    queue = serialQueueWithLabel(name)
+
     do {
-      try MIDIClientCreateWithBlock("BarBeatTime[\(ObjectIdentifier(self).uintValue)]", &client, nil)
+      try MIDIClientCreateWithBlock(name, &client, nil)
         ➤ "Failed to create midi client for bar beat time"
       try MIDIInputPortCreateWithBlock(client, "Input", &inPort, read) ➤ "Failed to create in port for bar beat time"
       try MIDIPortConnectSource(inPort, clockSource, nil) ➤ "Failed to connect bar beat time to clock"
     } catch {
       logError(error)
     }
-    delayedDispatchToMain(0.01) { [unowned self] in  Sequencer.synchronizeTime(self) }  // Avoids deadlock
+    dispatch_async(queue) { [unowned self] in  Sequencer.synchronizeTime(self) }
   }
 
   /**
@@ -301,8 +317,7 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
   private func read(packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutablePointer<Void>) {
     // Runs on MIDI Services thread
     guard packetList.memory.packet.data.0 == 0b1111_1000 else { return }
-    clockCount.numerator += 1
-    checkCallbacksForTime(time)
+    dispatch_async(queue) { [weak self] in self?.incrementClock() }
   }
 
   // ???: Will this ever get called to remove the reference in Sequencer's `Set`?

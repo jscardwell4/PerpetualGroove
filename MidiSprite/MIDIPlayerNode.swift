@@ -30,7 +30,8 @@ final class MIDIPlayerNode: SKShapeNode {
     super.init()
     name = "player"
     path = bezierPath.CGPath
-    strokeColor = .strokeColor
+//    strokeColor = .strokeColor
+    strokeTexture = SKTexture(image: UIImage(named: "stroketexture")!.imageWithColor(.strokeColor))
     guard let path = path else { return }
     physicsBody = SKPhysicsBody(edgeLoopFromPath: path)
     physicsBody?.categoryBitMask = 1
@@ -71,10 +72,12 @@ final class MIDIPlayerNode: SKShapeNode {
   */
   func placeNew(placement: MIDINode.Placement) {
     do {
+      // We have to get the track first to force a new track to be created when necessary before the `MIDINode` receives its color
+      let track = Sequencer.currentTrackForAddingNode
       let midiNode = try MIDINode(placement, "midiNode\(midiNodes.count)")
       addChild(midiNode)
       midiNodes.append(midiNode)
-      try Sequencer.currentTrackForAddingNode.addNode(midiNode)
+      try track.addNode(midiNode)
       Notification.NodeAdded.post()
     } catch {
       logError(error)

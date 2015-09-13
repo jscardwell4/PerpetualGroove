@@ -14,10 +14,22 @@ final class MIDISequence {
   static let ExtendedFileAttributeName = "com.MoondeerStudios.MIDISprite.MIDISequence"
 
   /** An enumeration to wrap up notifications */
-  enum Notification: String, NotificationType, NotificationNameType {
-    case TrackAdded, TrackRemoved
+  struct Notification: NotificationType {
+    enum Name: String, NotificationNameType {
+      case TrackAdded, TrackRemoved
+    }
+    var name: Name
     var object: AnyObject? { return MIDISequence.self }
-  }
+    var userInfo: [NSObject:AnyObject]?
+
+    static func TrackAdded(track: InstrumentTrack) -> Notification {
+      return Notification(name: .TrackAdded, userInfo: ["track":track])
+    }
+
+    static func TrackRemoved(track: InstrumentTrack) -> Notification {
+      return Notification(name: .TrackRemoved, userInfo: ["track":track])
+    }
+}
 
 
   enum Error: String, ErrorType {
@@ -25,7 +37,12 @@ final class MIDISequence {
   }
 
   let playbackMode: Bool
-  private var _recording = false { didSet { instrumentTracks.forEach { $0.recording = recording } } }
+  private var _recording = false {
+    didSet {
+      if _recording { time.reset() }
+      instrumentTracks.forEach { $0.recording = recording }
+    }
+  }
 
   var recording: Bool {
     get { return _recording }
@@ -78,9 +95,24 @@ final class MIDISequence {
 
   func newTrackWithInstrument(instrument: Instrument) throws -> InstrumentTrack {
     guard !playbackMode else { throw Error.NotPermitted }
-    tracks.append(try InstrumentTrack(instrument: instrument, recording: recording))
-    Notification.TrackAdded.post()
+    let track = try InstrumentTrack(instrument: instrument, recording: recording)
+    tracks.append(track)
+    Notification.TrackAdded(track).post()
     return tracks.last as! InstrumentTrack
+  }
+
+  /**
+  removeTrack:
+
+  - parameter track: InstrumentTrack
+  */
+  func removeTrack(track: InstrumentTrack) {
+    let instrumentTracks = self.instrumentTracks
+    guard let idx = instrumentTracks.indexOf(track) where instrumentTracks.count == tracks.count - 1 else {
+      return
+    }
+    tracks.removeAtIndex(idx + 1)
+    Notification.TrackRemoved(track).post()
   }
 
   /**
@@ -104,14 +136,6 @@ final class MIDISequence {
       let data = NSData(bytes: bytes, length: bytes.count)
       do {
         try data.writeToURL(file, options: overwrite ? [.DataWritingAtomic] : [.DataWritingWithoutOverwriting])
-//        file.absoluteString.withCString({
-//          filePtr in
-//          MIDISequence.ExtendedFileAttributeName.withCString({
-//            namePtr in
-//            var value: UInt8 = 1
-//            setxattr(filePtr, namePtr, &value, 1, 0, 0)
-//          })
-//        })
       } catch {
         logError(error)
       }

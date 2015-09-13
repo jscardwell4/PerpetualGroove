@@ -35,11 +35,30 @@ final class Sequencer {
     logDebug("Sequencer initialized")
   }
 
-  // MARK: - Notification enumeration
+  // MARK: - Notifications
   enum Notification: String, NotificationNameType, NotificationType {
-    case FileLoaded, FileUnloaded, SoundSetsInitialized, CurrentTrackDidChange
+    case FileLoaded, FileUnloaded
+    case SoundSetsInitialized
+    case CurrentTrackDidChange
+    case DidStart, DidStop, DidReset
+    case DidTurnOnRecording, DidTurnOffRecording
     var object: AnyObject? { return Sequencer.self }
   }
+
+  private static var notificationReceptionist = NotificationReceptionist(callbacks:
+    [
+      MIDISequence.Notification.Name.TrackRemoved.rawValue :
+        (MIDISequence.self, NSOperationQueue.mainQueue(), {
+          notification in
+
+          if let track = notification.userInfo?["track"] as? InstrumentTrack where track == Sequencer._currentTrack {
+            Sequencer._currentTrack = nil
+            if let prev = Sequencer.previousTrack { Sequencer.currentTrack = prev }
+          }
+
+        })
+    ])
+  
 
   // MARK: - Sequence
 
@@ -115,11 +134,6 @@ final class Sequencer {
     init(rawValue: Int) { self.rawValue = rawValue }
 
     static let Default          = State(rawValue: 0b0000_0000)
-//    static let ModifiedSoundSet = State(rawValue: 0b0000_0001)
-//    static let ModifiedProgram  = State(rawValue: 0b0000_0010)
-//    static let ModifiedChannel  = State(rawValue: 0b0000_0100)
-//    static let ModifiedTexture  = State(rawValue: 0b0000_1000)
-//    static let ModifiedNote     = State(rawValue: 0b0001_0000)
     static let Playing          = State(rawValue: 0b0010_0000)
     static let Recording        = State(rawValue: 0b0100_0000)
     static let HasPlayed        = State(rawValue: 0b1000_0000)
@@ -196,12 +210,6 @@ final class Sequencer {
   // MARK: - Properties used to initialize a new `MIDINode`
 
   static var currentNoteAttributes = NoteAttributes()
-//    {
-//    didSet {
-//      guard oldValue != currentNoteAttributes else { return }
-//      state ∪= .ModifiedNote
-//    }
-//  }
 
   /** Plays a note using the current note attributes and instrument settings */
   static func auditionCurrentNote() {
@@ -209,19 +217,7 @@ final class Sequencer {
     auditionInstrument.playNoteWithAttributes(currentNoteAttributes)
   }
 
-  static var currentTexture = MIDINode.TextureType.Cobblestone
-//    {
-//    didSet {
-//      guard oldValue != currentTexture else { return }
-//      state ∪= .ModifiedTexture
-//    }
-//  }
-
-  // TODO: This doesn't work when we can remove nodes, need to push and pop states
-//  private static var notificationReceptionist = NotificationReceptionist(callbacks:
-//    [MIDIPlayerNode.Notification.NodeAdded.name.value : (MIDIPlayerNode.self,
-//                                                         NSOperationQueue.mainQueue(),
-//                                                         {_ in Sequencer.state.remove([.ModifiedNote, .ModifiedTexture])})])
+  static var currentTexture = MIDINode.TextureType.allCases[0]
 
   // MARK: - Transport
 
@@ -229,20 +225,35 @@ final class Sequencer {
 
   static var recording: Bool {
     get { return state ∋ .Recording }
-    set { guard newValue != recording else { return }; sequence.recording = newValue; state ∪= .Recording }
+    set {
+      guard newValue != recording else { return }
+      state ⊻= .Recording
+      (newValue ? Notification.DidTurnOnRecording : Notification.DidTurnOffRecording).post()
+    }
   }
 
   /** Starts the MIDI clock */
-  static func start() { guard !playing else { return }; clock.start(); state ∪= [.Playing, .HasPlayed] }
+  static func start() {
+    guard !playing else { return }
+    clock.start()
+    state ∪= [.Playing, .HasPlayed]
+    Notification.DidStart.post()
+  }
 
   /** Moves the time back to 0 */
   static func reset() {
     if playing { stop() }
     ([barBeatTime] + synchronizedTimes).forEach({time in time.reset()})
     state.remove(.HasPlayed)
+    Notification.DidReset.post()
   }
 
   /** Stops the MIDI clock */
-  static func stop() { guard playing else { return }; clock.stop(); state.remove(.Playing) }
+  static func stop() {
+    guard playing else { return }
+    clock.stop()
+    state.remove(.Playing)
+    Notification.DidStop.post()
+  }
 
 }

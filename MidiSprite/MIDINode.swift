@@ -15,14 +15,12 @@ import struct AudioToolbox.MIDINoteMessage
 final class MIDINode: SKSpriteNode {
 
   // MARK: - Type to specify the node's texture
-  enum TextureType: String, EnumerableType, ImageAssetLiteralType {
-    case Brick, Cobblestone, Concrete, Crusty, DiamondPlate, Dirt, Fur,
-         Mountains, OceanBasin, Parchment, Sand, Stucco
-    var image: UIImage { return UIImage(named: "\(rawValue.lowercaseString)-button")! }
-    var texture: SKTexture { return TextureType.atlas.textureNamed(rawValue.lowercaseString) }
+  enum TextureType: String, EnumerableType, ImageAssetLiteralType, TextureAssetLiteralType {
+    case Eveleth1, Eveleth2, Eveleth3, Eveleth4, Eveleth5, Eveleth6, Eveleth7,
+         Eveleth8, Eveleth9
     static let atlas = SKTextureAtlas(named: "balls")
-    static let allCases: [TextureType] = [.Brick, .Cobblestone, .Concrete, .Crusty, .DiamondPlate, .Dirt, .Fur,
-                                          .Mountains, .OceanBasin, .Parchment, .Sand, .Stucco]
+    static let allCases: [TextureType] = [.Eveleth1, .Eveleth2, .Eveleth3, .Eveleth4, .Eveleth5, .Eveleth6, .Eveleth7,
+                                          .Eveleth8, .Eveleth9]
   }
 
   // MARK: - Properties relating to the node's appearance
@@ -63,8 +61,6 @@ final class MIDINode: SKSpriteNode {
 
   var placement: Placement
 
-//  let id = nonce()
-
   static let useVelocityForOff = true
 
   // MARK: - Methods for playing/erasing the node
@@ -83,10 +79,10 @@ final class MIDINode: SKSpriteNode {
   }
 
   /** erase */
-  private func erase() {
-  }
+  private func erase() { logWarning("erase() not yet implemented") }
 
   typealias Identifier = UInt64
+
   private var sourceID: Identifier = 0
 
   private enum PlayState { case Off, On }

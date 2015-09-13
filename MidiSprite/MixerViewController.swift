@@ -24,10 +24,10 @@ final class MixerViewController: UICollectionViewController {
 
     let busesDidChange: (NSNotification) -> Void = { [unowned self] _ in self.updateTracks() }
     let queue = NSOperationQueue.mainQueue()
-    let callback: (AnyObject?, NSOperationQueue?, (NSNotification) -> Void) = (Mixer.self, queue, busesDidChange)
+    let callback: (AnyObject?, NSOperationQueue?, (NSNotification) -> Void) = (MIDISequence.self, queue, busesDidChange)
     let callbacks: [NotificationReceptionist.Notification:NotificationReceptionist.Callback] = [
-      MIDISequence.Notification.TrackAdded.name.rawValue: callback,
-      MIDISequence.Notification.TrackRemoved.name.rawValue: callback
+      MIDISequence.Notification.Name.TrackAdded.rawValue: callback,
+      MIDISequence.Notification.Name.TrackRemoved.rawValue: callback
     ]
 
     notificationReceptionist = NotificationReceptionist(callbacks: callbacks)
@@ -38,11 +38,17 @@ final class MixerViewController: UICollectionViewController {
   override func updateViewConstraints() {
     super.updateViewConstraints()
     view.removeAllConstraints()
-    let itemCount = Sequencer.sequence.tracks.count + 1
-    view.constrain(view.width => Float(100 * itemCount + 10 * (itemCount - 1)), view.height => 400)
+    let itemCount = Sequencer.sequence.instrumentTracks.count + 1
+    let cellSize = (collectionView!.collectionViewLayout as! UICollectionViewFlowLayout).itemSize
+    let cellWidth = Int(cellSize.width)
+    let cellSpacing = Int((collectionView!.collectionViewLayout as! UICollectionViewFlowLayout).minimumInteritemSpacing)
+    let viewWidth = Float(cellWidth * itemCount + cellSpacing * (itemCount - 1))
+    let viewHeight = Float(cellSize.height)
+    view.constrain(view.width => viewWidth, view.height => viewHeight)
     view.constrain(𝗩|collectionView!|𝗩, 𝗛|collectionView!|𝗛)
   }
 
+  /** updateTracks */
   func updateTracks() {
     guard let collectionView = collectionView else { return }
     let itemCount = collectionView.numberOfItemsInSection(1)

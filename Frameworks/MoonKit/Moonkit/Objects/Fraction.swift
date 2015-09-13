@@ -133,6 +133,18 @@ public func ==<F:FractionType>(var lhs: Fraction<F>, var rhs: Fraction<F>) -> Bo
   return lhs.numerator == rhs.numerator && lhs.denominator == rhs.denominator
 }
 
+public func ==<F:FractionType>(lhs: Fraction<F>, rhs: F) -> Bool { return lhs.value == rhs }
+public func ==<F:FractionType>(lhs: F, rhs: Fraction<F>) -> Bool { return rhs.value == lhs }
+public func ==<F:FractionType, I:SignedIntegerType>(lhs: Fraction<F>, rhs: I) -> Bool {
+  guard lhs.value % 1 == 0 else { return false }
+  return lhs.value.toIntMax() == rhs.toIntMax()
+}
+
+public func ==<F:FractionType, I:SignedIntegerType>(lhs: I, rhs: Fraction<F>) -> Bool {
+  guard rhs.value % 1 == 0 else { return false }
+  return rhs.value.toIntMax() == lhs.toIntMax()
+}
+
 // MARK: - AbsoluteValuable
 extension Fraction { //: AbsoluteValuable {
   public static func abs(x: Fraction) -> Fraction {

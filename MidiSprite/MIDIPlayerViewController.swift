@@ -32,19 +32,8 @@ final class MIDIPlayerViewController: UIViewController {
     midiPlayerSceneView.presentScene(MIDIPlayerScene(size: midiPlayerSceneView.bounds.size))
     playerScene!.paused = true
 
-    filesPopoverView.hidden = true
-    view.addSubview(filesPopoverView)
-
-    mixerPopoverView.hidden = true
-    view.addSubview(mixerPopoverView)
-
-    instrumentPopoverView.hidden = true
-    view.addSubview(instrumentPopoverView)
-
-    noteAttributesPopoverView.hidden = true
-    view.addSubview(noteAttributesPopoverView)
-
-    view.setNeedsUpdateConstraints()
+    fileNameLabel.text = nil
+    trackNameLabel.text = nil
 
     initializeReceptionist()
 
@@ -54,6 +43,12 @@ final class MIDIPlayerViewController: UIViewController {
   override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
 
+    /**
+    Helper function for adjusting the `xOffset` property of the popover views
+
+    - parameter popoverView: PopoverView
+    - parameter presentingView: UIView
+    */
     func adjustPopover(popoverView: PopoverView, _ presentingView: UIView) {
       let popoverCenter = view.convertPoint(popoverView.center, fromView: popoverView.superview)
       let presentingCenter = view.convertPoint(presentingView.center, fromView: presentingView.superview)
@@ -81,11 +76,8 @@ final class MIDIPlayerViewController: UIViewController {
   - returns: UIInterfaceOrientationMask
   */
   override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-    if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
-      return .AllButUpsideDown
-    } else {
-      return .All
-    }
+    // TODO: This needs to be changed or rotation supported before shipping
+    return UIDevice.currentDevice().userInterfaceIdiom == .Phone ? .AllButUpsideDown : .All
   }
 
   // MARK: Status bar
@@ -378,8 +370,8 @@ final class MIDIPlayerViewController: UIViewController {
     let callbacks: [NotificationReceptionist.Notification:NotificationReceptionist.Callback] = [
       MIDIPlayerNode.Notification.NodeAdded.name.value: nodeCallback,
       MIDIPlayerNode.Notification.NodeRemoved.name.value: nodeCallback,
-      MIDISequence.Notification.TrackAdded.name.value: trackCallback,
-      MIDISequence.Notification.TrackRemoved.name.value: trackCallback,
+      MIDISequence.Notification.Name.TrackAdded.value: trackCallback,
+      MIDISequence.Notification.Name.TrackRemoved.value: trackCallback,
       Sequencer.Notification.FileLoaded.name.value: fileLoadedCallback,
       Sequencer.Notification.FileUnloaded.name.value: fileUnloadedCallback
     ]
@@ -388,7 +380,7 @@ final class MIDIPlayerViewController: UIViewController {
 
   }
 
-  private struct State: OptionSetType {
+  private struct State: OptionSetType, CustomStringConvertible {
     let rawValue: Int
     static let Default           = State(rawValue: 0b0000_0000)
     static let PopoverActive     = State(rawValue: 0b0000_0001)
@@ -398,10 +390,27 @@ final class MIDIPlayerViewController: UIViewController {
     static let TrackAdded        = State(rawValue: 0b0001_0000)
     static let PlayerRecording   = State(rawValue: 0b0010_0000)
     static let FileLoaded        = State(rawValue: 0b0100_0000)
+
+    var description: String {
+      var result = "\(self.dynamicType.self) { "
+      var flagStrings: [String] = []
+      if self ∋ .PopoverActive     { flagStrings.append("PopoverActive") }
+      if self ∋ .PlayerPlaying     { flagStrings.append("PlayerPlaying") }
+      if self ∋ .PlayerFieldActive { flagStrings.append("PlayerFieldActive") }
+      if self ∋ .MIDINodeAdded     { flagStrings.append("MIDINodeAdded") }
+      if self ∋ .TrackAdded        { flagStrings.append("TrackAdded") }
+      if self ∋ .PlayerRecording   { flagStrings.append("PlayerRecording") }
+      if self ∋ .FileLoaded        { flagStrings.append("FileLoaded") }
+
+      result += ", ".join(flagStrings)
+      result += " }"
+      return result
+    }
   }
 
   private var state: State = [] {
     didSet {
+      logDebug("state modified…\n\told state: \(oldValue)\n\tnew state: \(state)")
       let modifiedState = state ⊻ oldValue
 
       if modifiedState ∋ .MIDINodeAdded {
@@ -427,8 +436,10 @@ final class MIDIPlayerViewController: UIViewController {
         } else {
           fileNameLabel.text = nil
         }
-        fileNameLabel.hidden = fileNameLabel.text == nil
+        fileNameLabel.enabled = fileNameLabel.text != nil
       }
+
+      trackNameLabel.enabled = trackNameLabel.text != nil
     }
   }
 

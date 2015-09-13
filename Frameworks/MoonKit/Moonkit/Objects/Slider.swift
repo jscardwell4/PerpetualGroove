@@ -248,45 +248,78 @@ import Chameleon
   */
   required public init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
-    showsValueLabel              = (aDecoder.decodeObjectForKey("showsValueLabel") as? NSNumber)?.boolValue ?? false
-    showsTrackLabel              = (aDecoder.decodeObjectForKey("showsTrackLabel") as? NSNumber)?.boolValue ?? false
-    thumbXOffset                 = CGFloat((aDecoder.decodeObjectForKey("thumbXOffset") as? NSNumber)?.floatValue ?? 0)
-    thumbYOffset                 = CGFloat((aDecoder.decodeObjectForKey("thumbYOffset") as? NSNumber)?.floatValue ?? 0)
-    valueLabelXOffset            = CGFloat((aDecoder.decodeObjectForKey("valueLabelXOffset") as? NSNumber)?.floatValue ?? 0)
-    valueLabelYOffset            = CGFloat((aDecoder.decodeObjectForKey("valueLabelYOffset") as? NSNumber)?.floatValue ?? 0)
-    valueLabelFontName           = aDecoder.decodeObjectForKey("valueLabelFontName") as? String
-                                     ?? Slider.DefaultValueLabelFont.fontName
-    valueLabelFontSize           = CGFloat((aDecoder.decodeObjectForKey("valueLabelFontSize") as? NSNumber)?.floatValue
-                                     ?? Slider.DefaultValueLabelFont.pointSize)
-    valueLabelTextColor          = aDecoder.decodeObjectForKey("valueLabelTextColor") as? UIColor ?? .blackColor()
-    trackLabelXOffset            = CGFloat((aDecoder.decodeObjectForKey("trackLabelXOffset") as? NSNumber)?.floatValue ?? 0)
-    trackLabelYOffset            = CGFloat((aDecoder.decodeObjectForKey("trackLabelYOffset") as? NSNumber)?.floatValue ?? 0)
-    trackXOffset                 = CGFloat((aDecoder.decodeObjectForKey("trackXOffset") as? NSNumber)?.floatValue ?? 0)
-    trackYOffset                 = CGFloat((aDecoder.decodeObjectForKey("trackYOffset") as? NSNumber)?.floatValue ?? 0)
-    trackLabelFontName           = aDecoder.decodeObjectForKey("trackLabelFontName") as? String
-                                     ?? Slider.DefaultTrackLabelFont.fontName
-    trackLabelFontSize           = CGFloat((aDecoder.decodeObjectForKey("trackLabelFontSize") as? NSNumber)?.floatValue
-                                     ?? Slider.DefaultTrackLabelFont.pointSize)
-    trackLabelTextColor          = aDecoder.decodeObjectForKey("trackLabelTextColor") as? UIColor ?? .blackColor()
-    minimumValue                 = (aDecoder.decodeObjectForKey("minimumValue") as? NSNumber)?.floatValue ?? 0
-    maximumValue                 = (aDecoder.decodeObjectForKey("maximumValue") as? NSNumber)?.floatValue ?? 1
-    thumbImage                   = aDecoder.decodeObjectForKey("thumbImage") as? UIImage
-    trackMinImage                = aDecoder.decodeObjectForKey("trackMinImage") as? UIImage
-    trackMaxImage                = aDecoder.decodeObjectForKey("trackMaxImage") as? UIImage
-    thumbColor                   = aDecoder.decodeObjectForKey("thumbColor") as? UIColor ?? .whiteColor()
-    trackMinColor                = aDecoder.decodeObjectForKey("trackMinColor") as? UIColor ?? rgb(29, 143, 236)
-    trackMaxColor                = aDecoder.decodeObjectForKey("trackMaxColor") as? UIColor ?? rgb(184, 184, 184)
-    preservesTrackMinImageSize   = (aDecoder.decodeObjectForKey("preservesTrackMinImageSize") as? NSNumber)?.boolValue
-                                     ?? false
-    preservesTrackMaxImageSize   = (aDecoder.decodeObjectForKey("preservesTrackMaxImageSize") as? NSNumber)?.boolValue
-                                     ?? false
-    preservesThumbImageSize      = (aDecoder.decodeObjectForKey("preservesThumbImageSize") as? NSNumber)?.boolValue ?? false
-    valueLabelPrecision          = (aDecoder.decodeObjectForKey("valueLabelPrecision") as? NSNumber)?.integerValue ?? 2
-    trackMinBreadth              = CGFloat((aDecoder.decodeObjectForKey("trackMinBreadth") as? NSNumber)?.floatValue ?? 4)
-    trackMaxBreadth              = CGFloat((aDecoder.decodeObjectForKey("trackMaxBreadth") as? NSNumber)?.floatValue ?? 4)
-    thumbSize                    = (aDecoder.decodeObjectForKey("thumbSize") as? NSValue)?.CGSizeValue() ?? CGSize(square: 43)
-    trackLabelText               = aDecoder.decodeObjectForKey("trackLabelText") as? String
-    axisString                   = aDecoder.decodeObjectForKey("axisString") as? String ?? Axis.Horizontal.rawValue
+    if aDecoder.containsValueForKey("continuous") { continuous = aDecoder.decodeBoolForKey("continuous") }
+    if aDecoder.containsValueForKey("showsValueLabel") { showsValueLabel = aDecoder.decodeBoolForKey("showsValueLabel") }
+    if aDecoder.containsValueForKey("showsTrackLabel") { showsTrackLabel = aDecoder.decodeBoolForKey("showsTrackLabel") }
+    if aDecoder.containsValueForKey("thumbXOffset") { thumbXOffset = CGFloat(aDecoder.decodeFloatForKey("thumbXOffset")) }
+    if aDecoder.containsValueForKey("thumbYOffset") { thumbYOffset = CGFloat(aDecoder.decodeFloatForKey("thumbYOffset")) }
+    if aDecoder.containsValueForKey("valueLabelXOffset") { 
+      valueLabelXOffset = CGFloat(aDecoder.decodeFloatForKey("valueLabelXOffset")) 
+    }
+    if aDecoder.containsValueForKey("valueLabelYOffset") { 
+      valueLabelYOffset = CGFloat(aDecoder.decodeFloatForKey("valueLabelYOffset")) 
+    }
+    if aDecoder.containsValueForKey("valueLabelFontName") {
+      valueLabelFontName = aDecoder.decodeObjectForKey("valueLabelFontName") as? String ?? Slider.DefaultValueLabelFont.fontName
+    }
+    if aDecoder.containsValueForKey("valueLabelFontSize") {
+      valueLabelFontSize = CGFloat(aDecoder.decodeFloatForKey("valueLabelFontSize"))
+    }
+    if aDecoder.containsValueForKey("valueLabelTextColor") {
+      valueLabelTextColor = aDecoder.decodeObjectForKey("valueLabelTextColor") as? UIColor ?? .blackColor() 
+    }
+    if aDecoder.containsValueForKey("trackLabelXOffset") { 
+      trackLabelXOffset = CGFloat(aDecoder.decodeFloatForKey("trackLabelXOffset")) 
+    }
+    if aDecoder.containsValueForKey("trackLabelYOffset") { 
+      trackLabelYOffset = CGFloat(aDecoder.decodeFloatForKey("trackLabelYOffset")) 
+    }
+    if aDecoder.containsValueForKey("trackXOffset") { trackXOffset = CGFloat(aDecoder.decodeFloatForKey("trackXOffset")) }
+    if aDecoder.containsValueForKey("trackYOffset") { trackYOffset = CGFloat(aDecoder.decodeFloatForKey("trackYOffset")) }
+    if aDecoder.containsValueForKey("trackLabelFontName") {
+      trackLabelFontName = aDecoder.decodeObjectForKey("trackLabelFontName") as? String ?? Slider.DefaultTrackLabelFont.fontName
+    }
+    if aDecoder.containsValueForKey("trackLabelFontSize") {
+      trackLabelFontSize = CGFloat(aDecoder.decodeFloatForKey("trackLabelFontSize"))
+    }
+    if aDecoder.containsValueForKey("trackLabelTextColor") {
+      trackLabelTextColor = aDecoder.decodeObjectForKey("trackLabelTextColor") as? UIColor ?? .blackColor() 
+    }
+    if aDecoder.containsValueForKey("minimumValue") { minimumValue = aDecoder.decodeFloatForKey("minimumValue") }
+    if aDecoder.containsValueForKey("maximumValue") { maximumValue = aDecoder.decodeFloatForKey("maximumValue") }
+    if aDecoder.containsValueForKey("thumbImage") {
+      thumbImage = aDecoder.decodeObjectForKey("thumbImage") as? UIImage 
+    }
+    if aDecoder.containsValueForKey("trackMinImage") { trackMinImage = aDecoder.decodeObjectForKey("trackMinImage") as? UIImage }
+    if aDecoder.containsValueForKey("trackMaxImage") { trackMaxImage = aDecoder.decodeObjectForKey("trackMaxImage") as? UIImage }
+    if aDecoder.containsValueForKey("thumbColor") {
+      thumbColor = aDecoder.decodeObjectForKey("thumbColor") as? UIColor ?? .whiteColor() 
+    }
+    if aDecoder.containsValueForKey("trackMinColor") {
+      trackMinColor = aDecoder.decodeObjectForKey("trackMinColor") as? UIColor ?? rgb(29, 143, 236) 
+    }
+    if aDecoder.containsValueForKey("trackMaxColor") {
+      trackMaxColor = aDecoder.decodeObjectForKey("trackMaxColor") as? UIColor ?? rgb(184, 184, 184) 
+    }
+    if aDecoder.containsValueForKey("preservesTrackMinImageSize") {
+      preservesTrackMinImageSize = aDecoder.decodeBoolForKey("preservesTrackMinImageSize")
+    }
+    if aDecoder.containsValueForKey("preservesTrackMaxImageSize") {
+      preservesTrackMaxImageSize = aDecoder.decodeBoolForKey("preservesTrackMaxImageSize")
+    }
+    if aDecoder.containsValueForKey("preservesThumbImageSize") {
+      preservesThumbImageSize = aDecoder.decodeBoolForKey("preservesThumbImageSize")
+    }
+    if aDecoder.containsValueForKey("valueLabelPrecision") {
+      valueLabelPrecision = (aDecoder.decodeObjectForKey("valueLabelPrecision") as? NSNumber)?.integerValue ?? 2 
+    }
+    if aDecoder.containsValueForKey("trackMinBreadth") { trackMinBreadth = CGFloat(aDecoder.decodeFloatForKey("trackMinBreadth")) }
+    if aDecoder.containsValueForKey("trackMaxBreadth") { trackMaxBreadth = CGFloat(aDecoder.decodeFloatForKey("trackMaxBreadth")) }
+    if aDecoder.containsValueForKey("thumbSize") { thumbSize = aDecoder.decodeCGSizeForKey("thumbSize") }
+    if aDecoder.containsValueForKey("trackLabelText") { trackLabelText = aDecoder.decodeObjectForKey("trackLabelText") as? String }
+    if aDecoder.containsValueForKey("axisString") {
+      axisString = aDecoder.decodeObjectForKey("axisString") as? String ?? Axis.Horizontal.rawValue 
+    }
   }
 
   // MARK: - Drawing
@@ -381,9 +414,9 @@ import Chameleon
     // Draw the track segments
     if let trackMinImage = trackMinImage, trackMaxImage = trackMaxImage {
       trackMinColor.setFill()
-      trackMinImage.drawInRect(trackMinFrame)
+      trackMinImage.drawAsPatternInRect(trackMinFrame)
       trackMaxColor.setFill()
-      trackMaxImage.drawInRect(trackMaxFrame)
+      trackMaxImage.drawAsPatternInRect(trackMaxFrame)
     } else {
       trackMinColor.setFill()
       UIRectFill(trackMinFrame)
@@ -398,8 +431,11 @@ import Chameleon
       let center = axis == .Horizontal
                      ? CGPoint(x: rect.midX, y: trackMinFrame.center.y)
                      : CGPoint(x: trackMinFrame.center.x, y: frame.midY)
-      let textFrame = CGRect(size: textSize, center: center).insetBy(dx: valueLabelXOffset, dy: valueLabelYOffset)
+      let textFrame = CGRect(size: textSize, center: center).offsetBy(dx: trackLabelXOffset, dy: trackLabelYOffset)
+      CGContextSaveGState(context)
+      CGContextSetBlendMode(context, .Clear)
       text.drawInRect(textFrame, withAttributes: attributes)
+      CGContextRestoreGState(context)
     }
 
     // Draw the thumb
@@ -419,7 +455,7 @@ import Chameleon
       let text = String(value, precision: valueLabelPrecision)
       let attributes = [NSFontAttributeName: valueLabelFont, NSForegroundColorAttributeName: valueLabelTextColor]
       let textSize = text.sizeWithAttributes(attributes)
-      let textFrame = CGRect(size: textSize, center: thumbFrame.center).insetBy(dx: valueLabelXOffset, dy: valueLabelYOffset)
+      let textFrame = CGRect(size: textSize, center: thumbFrame.center).offsetBy(dx: valueLabelXOffset, dy: valueLabelYOffset)
 
       text.drawInRect(textFrame, withAttributes: attributes)
     }

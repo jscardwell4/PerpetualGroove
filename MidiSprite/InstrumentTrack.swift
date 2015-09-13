@@ -40,9 +40,10 @@ final class InstrumentTrack: MIDITrackType, Equatable {
   private var inPort = MIDIPortRef()
   private var outPort = MIDIPortRef()
   private let fileQueue: dispatch_queue_t?
+
   let time = BarBeatTime(clockSource: Sequencer.clockSource)
 
-  var recording = false
+  var recording = false { didSet { time.reset() } }
 
   private func appendEvent(var event: MIDITrackEvent) {
     guard recording else { return }

@@ -44,7 +44,10 @@ final class Metronome {
 
   - parameter time: CABarBeatTime
   */
-  private func click(time: CABarBeatTime) { sampler.startNote(time.beat == 1 ? 0x3C : 0x37, withVelocity: 64, onChannel: 0) }
+  private func click(time: CABarBeatTime) {
+    guard Sequencer.playing else { return }
+    sampler.startNote(time.beat == 1 ? 0x3C : 0x37, withVelocity: 64, onChannel: 0)
+  }
 
 
   /**

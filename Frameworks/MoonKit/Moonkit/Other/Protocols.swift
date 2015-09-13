@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import SpriteKit
 import Swift
 
 public typealias Byte = UInt8
@@ -626,6 +627,19 @@ public extension ImageAssetLiteralType where Self:RawRepresentable, Self.RawValu
 
 public extension ImageAssetLiteralType where Self:EnumerableType {
   public static var allImages: [UIImage] { return allCases.map({$0.image}) }
+}
+
+public protocol TextureAssetLiteralType {
+  static var atlas: SKTextureAtlas { get }
+  var texture: SKTexture { get }
+}
+
+public extension TextureAssetLiteralType where Self:RawRepresentable, Self.RawValue == String {
+  public var texture: SKTexture { return Self.atlas.textureNamed(rawValue) }
+}
+
+public extension TextureAssetLiteralType where Self:EnumerableType {
+  public static var allTextures: [SKTexture] { return allCases.map({$0.texture}) }
 }
 
 // causes ambiguity
