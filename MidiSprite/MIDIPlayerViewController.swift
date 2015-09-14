@@ -165,18 +165,42 @@ final class MIDIPlayerViewController: UIViewController {
   @IBOutlet weak var filesButton: ImageButtonView!
   @IBOutlet weak var saveButton: ImageButtonView!
   @IBOutlet weak var fileTrackLabel: UILabel!
-  @IBOutlet weak var fileTrackNameLabel: LabelButton!
+  @IBOutlet weak var fileTrackNameLabel: UILabel!
+  @IBOutlet weak var fileTrackNameSwipeGesture: UISwipeGestureRecognizer!
+  @IBOutlet weak var fileTrackNameDismissiveSwipeGesture: UISwipeGestureRecognizer!
+  @IBOutlet weak var fileTrackActionButton: LabelButton!
+  @IBOutlet var fileTrackNameActionButtonWidthConstraint: NSLayoutConstraint!
 
-  /** fileTrackName */
-  @IBAction private func fileTrackName() { if state ∋ .FileLoaded { fileName() } else { trackName() } }
+  /**
+  fileTrackNameShowAction:
+  */
+  @IBAction func fileTrackNameShowAction() {
+    logDebug()
+    UIView.animateWithDuration(0.25,
+                    animations: { self.fileTrackNameActionButtonWidthConstraint.active = false },
+                    completion: {_ in self.fileTrackNameSwipeGesture.enabled = false
+                                      self.fileTrackNameDismissiveSwipeGesture.enabled = true})
+  }
 
-  /** fileName */
-  private func fileName() { logDebug("") }
+  /**
+  fileTrackNameAction:
+  */
+  @IBAction func fileTrackNameAction() {
+    logDebug()
+    if state ∋ .FileLoaded { Sequencer.currentFile = nil }
+    dismissFileTrackNameAction()
+  }
 
-  // MARK: - Tracks
-
-  /** trackName */
-  private func trackName() { logDebug("") }
+  /**
+  dismissFileTrackNameAction:
+  */
+  @IBAction func dismissFileTrackNameAction() {
+    logDebug()
+    UIView.animateWithDuration(0.25,
+                    animations: { self.fileTrackNameActionButtonWidthConstraint.active = true },
+                    completion: {_ in self.fileTrackNameDismissiveSwipeGesture.enabled = false
+                                      self.fileTrackNameSwipeGesture.enabled = true})
+  }
 
   /** save */
   @IBAction private func save() {
@@ -298,7 +322,7 @@ final class MIDIPlayerViewController: UIViewController {
 
   @IBOutlet weak var midiPlayerSceneView: SKView!
 
-  private var playerScene: MIDIPlayerScene? { return midiPlayerSceneView.scene as? MIDIPlayerScene }
+  var playerScene: MIDIPlayerScene? { return midiPlayerSceneView.scene as? MIDIPlayerScene }
 
   // MARK: - Managing state
 
@@ -444,6 +468,8 @@ final class MIDIPlayerViewController: UIViewController {
           fileTrackLabel.text = "Track"
           fileTrackNameLabel.text = Sequencer.currentTrack?.name
         }
+
+        fileTrackNameSwipeGesture.enabled = state ∋ .FileLoaded
         recordButton.enabled = state ∌ .FileLoaded
       }
 

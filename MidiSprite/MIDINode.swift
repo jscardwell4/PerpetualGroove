@@ -83,7 +83,8 @@ final class MIDINode: SKSpriteNode {
 
   typealias Identifier = UInt64
 
-  private var sourceID: Identifier = 0
+  private var _sourceID: Identifier = 0
+  var sourceID: Identifier { return _sourceID }
 
   private enum PlayState { case Off, On }
 
@@ -94,7 +95,7 @@ final class MIDINode: SKSpriteNode {
     var packetList = MIDIPacketList()
     let packet = MIDIPacketListInit(&packetList)
     let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
-    let data: [UInt8] = [0x90 | note.channel, note.note.MIDIValue, note.velocity.MIDIValue] + sourceID.bytes
+    let data: [Byte] = [0x90 | note.channel, note.note.MIDIValue, note.velocity.MIDIValue] + _sourceID.bytes
     let timeStamp = time.timeStamp
     MIDIPacketListAdd(&packetList, size, packet, timeStamp, 11, data)
     do {
@@ -110,8 +111,8 @@ final class MIDINode: SKSpriteNode {
     let packet = MIDIPacketListInit(&packetList)
     let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
     let data: [UInt8] = MIDINode.useVelocityForOff
-                ? [0x90 | note.channel, note.note.MIDIValue, 0] + sourceID.bytes
-                : [0x80 | note.channel, note.note.MIDIValue, 0] + sourceID.bytes
+                ? [0x90 | note.channel, note.note.MIDIValue, 0] + _sourceID.bytes
+                : [0x80 | note.channel, note.note.MIDIValue, 0] + _sourceID.bytes
     let timeStamp = time.timeStamp
     MIDIPacketListAdd(&packetList, size, packet, timeStamp, 11, data)
     do {
@@ -130,8 +131,17 @@ final class MIDINode: SKSpriteNode {
   private let time = BarBeatTime(clockSource: Sequencer.clockSource)
   private(set) var endPoint = MIDIEndpointRef()
 
+  private var notificationReceptionist: NotificationReceptionist?
 
   // MARK: - Initialization
+
+  /** initializeNotificationReceptionist */
+  private func initializeNotificationReceptionist() {
+    guard notificationReceptionist == nil else { return }
+    typealias Callback = NotificationReceptionist.Callback
+    let resetCallback: Callback = (Sequencer.self, NSOperationQueue.mainQueue(), {[unowned self] _ in self.time.reset()})
+    notificationReceptionist = NotificationReceptionist(callbacks: [Sequencer.Notification.DidReset.name.value:resetCallback])
+  }
 
   /**
   init:placement:instrument:note:
@@ -141,16 +151,18 @@ final class MIDINode: SKSpriteNode {
   - parameter tr: Track
   - parameter n: Note
   */
-  init(_ p: Placement, _ name: String) throws {
+  init(placement p: Placement, name: String, track: InstrumentTrack, attributes: NoteAttributes, texture: TextureType) throws {
     placement = p
-    textureType = Sequencer.currentTexture
-    note = Sequencer.currentNoteAttributes
+    textureType = texture
+    note = attributes
 
-    super.init(texture: Sequencer.currentTexture.texture,
-               color: (Sequencer.currentTrack?.color ?? .Conifer).value,
+    super.init(texture: texture.texture,
+               color: track.color.value,
                size: MIDINode.defaultSize)
 
-    sourceID = Identifier(ObjectIdentifier(self).uintValue)
+    _sourceID = Identifier(ObjectIdentifier(self).uintValue)
+
+    initializeNotificationReceptionist()
 
     try MIDIClientCreateWithBlock(name, &client, nil) ➤ "Failed to create midi client"
     try MIDISourceCreate(client, "\(name)", &endPoint) ➤ "Failed to create end point for node \(name)"

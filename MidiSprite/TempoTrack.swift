@@ -9,6 +9,7 @@
 import Foundation
 import CoreMIDI
 import MoonKit
+import struct AudioToolbox.CABarBeatTime
 
 
 final class TempoTrack: MIDITrackType {
@@ -22,7 +23,28 @@ final class TempoTrack: MIDITrackType {
     MetaEvent(.Tempo(microseconds: Byte4(60_000_000 / Sequencer.tempo)))
   ]
 
-  var includesTempoChange: Bool { return events.count > 2 }
+  private var notificationReceptionist: NotificationReceptionist?
+  private func recordingStatusDidChange(notification: NSNotification) { recording = Sequencer.recording }
+
+  /**
+  reset:
+
+  - parameter notification: NSNotification
+  */
+  private func reset(notification: NSNotification) { time.reset() }
+
+  /** initializeNotificationReceptionist */
+  private func initializeNotificationReceptionist() {
+    guard notificationReceptionist == nil else { return }
+    typealias Callback = NotificationReceptionist.Callback
+    let recordingCallback: Callback = (Sequencer.self, NSOperationQueue.mainQueue(), recordingStatusDidChange)
+    let resetCallback: Callback = (Sequencer.self, NSOperationQueue.mainQueue(), reset)
+    notificationReceptionist = NotificationReceptionist(callbacks: [
+      Sequencer.Notification.DidTurnOnRecording.name.value : recordingCallback,
+      Sequencer.Notification.DidTurnOffRecording.name.value : recordingCallback,
+      Sequencer.Notification.DidReset.name.value : resetCallback
+      ])
+  }
 
   /**
   insertTempoChange:
@@ -30,16 +52,20 @@ final class TempoTrack: MIDITrackType {
   - parameter tempo: Double
   */
   func insertTempoChange(tempo: Double) {
-    guard !playbackMode else { return }
+    guard !playbackMode && recording else { return }
     events.append(MetaEvent(time.time, .Tempo(microseconds: Byte4(60_000_000 / tempo))))
   }
 
   let name = "Tempo"
+  var recording = false
 
   /**
   Initializer for non-playback mode tempo track
   */
-  init(playbackMode: Bool = false) { self.playbackMode = playbackMode }
+  init(playbackMode: Bool = false) {
+    recording = Sequencer.recording
+    self.playbackMode = playbackMode
+  }
 
 
   /**
@@ -58,6 +84,23 @@ final class TempoTrack: MIDITrackType {
     }
   }
 
+  private var eventMap: [CABarBeatTime:[MIDITrackEvent]] = [:]
+
+  /**
+  dispatchEventsForTime:
+
+  - parameter time: CABarBeatTime
+  */
+  private func dispatchEventsForTime(time: CABarBeatTime) {
+    guard let events = eventMap[time] else { return }
+    for event in events where event is MetaEvent {
+      switch (event as! MetaEvent).data {
+        case let .Tempo(microseconds): Sequencer.tempo = Double(60_000_000 / microseconds)
+        case let .TimeSignature(upper, lower, _, _): Sequencer.timeSignature = SimpleTimeSignature(upper: upper, lower: lower)
+        default: break
+      }
+    }
+  }
 
   /**
   initWithTrackChunk:
@@ -67,12 +110,19 @@ final class TempoTrack: MIDITrackType {
   init(trackChunk: MIDIFileTrackChunk) {
     playbackMode = true
     events = trackChunk.events.filter { TempoTrack.isTempoTrackEvent($0) }
+    for event in events {
+      let eventTime = event.time
+      var eventBag: [MIDITrackEvent] = eventMap[eventTime] ?? []
+      eventBag.append(event)
+      eventMap[eventTime] = eventBag
+    }
+    for eventTime in eventMap.keys { time.registerCallback(dispatchEventsForTime, forTime: eventTime) }
+    logDebug("eventMap = \(eventMap)")
   }
 
   var description: String {
     var result = "\(self.dynamicType.self) {\n"
     result += "  playbackMode: \(playbackMode)\n"
-    result += "  includesTempoChange: \(includesTempoChange)\n"
     result += "  events: {\n" + ",\n".join(events.map({$0.description.indentedBy(8)})) + "\n\t}\n"
     result += "}"
     return result

@@ -38,25 +38,11 @@ final class MIDISequence {
 
   let playbackMode: Bool
 
-//  private var _recording = false {
-//    didSet {
-//      if _recording { time.reset() }
-//      instrumentTracks.forEach { $0.recording = recording }
-//    }
-//  }
-
-//  var recording: Bool {
-//    get { return _recording }
-//    set { guard !playbackMode && _recording != newValue else { return }; _recording = newValue }
-//  }
-
   /** The instrument tracks are stored in the `tracks` array beginning at index `1` */
   var instrumentTracks: [InstrumentTrack] { return tracks.count > 1 ? tracks[1..<].map({$0 as! InstrumentTrack}) : [] }
 
   /** The tempo track for the sequence is the first element in the `tracks` array */
   var tempoTrack: TempoTrack { return tracks[0] as! TempoTrack }
-
-  private let time = BarBeatTime(clockSource: Sequencer.clockSource)
 
   /** Collection of all the tracks in the composition */
   private(set) var tracks: [MIDITrackType] = [TempoTrack()]
@@ -121,7 +107,10 @@ final class MIDISequence {
 
   - parameter tempo: Double
   */
-  func insertTempoChange(tempo: Double) { guard !playbackMode else { return }; tempoTrack.insertTempoChange(tempo) }
+  func insertTempoChange(tempo: Double) {
+    guard !playbackMode && Sequencer.recording else { return }
+    tempoTrack.insertTempoChange(tempo)
+  }
 
   /**
   writeToFile:

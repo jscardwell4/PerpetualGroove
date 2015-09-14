@@ -22,7 +22,7 @@ extension MIDIValueConvertible {
 func ==<M:MIDIValueConvertible>(lhs: M, rhs: M) -> Bool { return lhs.MIDIValue == rhs.MIDIValue }
 
 /** Structure that encapsulates MIDI information necessary for playing a note */
-struct NoteAttributes: Equatable {
+struct NoteAttributes {
 
   var channel: UInt8 = 0
 
@@ -148,6 +148,20 @@ struct NoteAttributes: Equatable {
   var velocity: Velocity = .MezzoForte
 }
 
+extension NoteAttributes: ByteArrayConvertible {
+  var bytes: [Byte] { return [channel, note.MIDIValue, velocity.MIDIValue] + duration.rawValue.bytes }
+  init(_ bytes: [Byte]) {
+    guard bytes.count >= 7 else { return }
+    print("bytes: \(String(hexBytes: bytes))")
+    channel = bytes[0]
+    note = Note(MIDIValue: bytes[1])
+    velocity = Velocity(MIDIValue: bytes[2])
+    duration = Duration(rawValue: String(bytes[3..<])) ?? .Eighth
+    print("channel = \(channel); note = \(note); velocity = \(velocity); duration = \(duration)")
+  }
+}
+
+extension NoteAttributes: Equatable {}
 
 func ==(lhs: NoteAttributes.Note, rhs: NoteAttributes.Note) -> Bool { return lhs.MIDIValue == rhs.MIDIValue }
 

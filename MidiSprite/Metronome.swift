@@ -25,7 +25,19 @@ final class Metronome {
       else { time.removeCallbackForKey(callbackKey) }
     }
   }
-  
+
+  private var notificationReceptionist: NotificationReceptionist?
+
+  /** initializeNotificationReceptionist */
+  private func initializeNotificationReceptionist() {
+    guard notificationReceptionist == nil else { return }
+    typealias Callback = NotificationReceptionist.Callback
+    let resetCallback: Callback = (Sequencer.self, NSOperationQueue.mainQueue(), {[unowned self] _ in self.time.reset() })
+    notificationReceptionist = NotificationReceptionist(callbacks: [
+      Sequencer.Notification.DidReset.name.value : resetCallback
+      ])
+  }
+
 
   /** initialize */
   init(node: AVAudioUnitSampler) throws {
@@ -34,6 +46,7 @@ final class Metronome {
       fatalError("Failed to get url for 'Woodblock.wav'")
     }
 
+    initializeNotificationReceptionist()
     try sampler.loadAudioFilesAtURLs([url])
   }
 

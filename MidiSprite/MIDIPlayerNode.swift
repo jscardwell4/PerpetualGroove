@@ -70,16 +70,21 @@ final class MIDIPlayerNode: SKShapeNode {
 
   - parameter placement: MIDINode.Placement
   */
-  func placeNew(placement: MIDINode.Placement) {
+  func placeNew(placement: MIDINode.Placement,
+                targetTrack: InstrumentTrack? = nil,
+                attributes: NoteAttributes = Sequencer.currentNoteAttributes,
+                texture: MIDINode.TextureType = Sequencer.currentTexture)
+  {
     do {
       // We have to get the track first to force a new track to be created when necessary before the `MIDINode` receives its color
       let track: InstrumentTrack
-      if let t = Sequencer.currentTrack where t.instrument.settingsEqualTo(Sequencer.auditionInstrument) { track = t }
+      if targetTrack != nil { track = targetTrack! }
+      else if let t = Sequencer.currentTrack where t.instrument.settingsEqualTo(Sequencer.auditionInstrument) { track = t }
       else {
         track = try Sequencer.sequence.newTrackWithInstrument(Sequencer.instrumentWithCurrentSettings())
         Sequencer.currentTrack = track
       }
-      let midiNode = try MIDINode(placement, "midiNode\(midiNodes.count)")
+      let midiNode = try MIDINode(placement: placement, name: "midiNode\(midiNodes.count)", track: track, attributes: attributes, texture: texture)
       addChild(midiNode)
       midiNodes.append(midiNode)
       try track.addNode(midiNode)

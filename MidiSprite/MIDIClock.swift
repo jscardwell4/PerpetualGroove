@@ -41,6 +41,7 @@ final class MIDIClock: CustomStringConvertible {
   func start() {
     guard !timer.running else { return }
     ticks = 0
+    sendStart()
     timer.start()
   }
 
@@ -51,6 +52,7 @@ final class MIDIClock: CustomStringConvertible {
   func stop() {
     guard timer.running else { return }
     timer.stop()
+    sendStop()
   }
 
   private var hostInfo: String {
@@ -85,16 +87,21 @@ final class MIDIClock: CustomStringConvertible {
   private var client = MIDIClientRef()
   private(set) var endPoint = MIDIEndpointRef()
 
-  /** sendClock */
-  private func sendClock() {
-    var clock: Byte = 0xF8
+  private func sendEvent(event: Byte) throws {
+    let data = [event]
     let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
     var packetList = MIDIPacketList()
-    MIDIPacketListAdd(&packetList, size, MIDIPacketListInit(&packetList), ++ticks, 1, &clock)
-    do {
-      try withUnsafePointer(&packetList) { MIDIReceived(endPoint, $0) } ➤ "Failed to send packets"
-    }
-    catch { logError(error) }
+    MIDIPacketListAdd(&packetList, size, MIDIPacketListInit(&packetList), ticks, 1, data)
+    try withUnsafePointer(&packetList) { MIDIReceived(endPoint, $0) } ➤ "Failed to send packets"
   }
+
+  /** sendClock */
+  private func sendClock() { ticks++; do { try sendEvent(0b1111_1000) } catch { logError(error) } }
+
+  /** sendStart */
+  private func sendStart() { do { try sendEvent(0b1111_1010) } catch { logError(error) } }
+
+  /** sendStop */
+  private func sendStop() { do { try sendEvent(0b1111_1100) } catch { logError(error) } }
 
 }

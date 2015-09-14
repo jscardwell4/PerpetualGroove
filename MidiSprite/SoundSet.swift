@@ -11,9 +11,16 @@ import MoonKit
 import AudioUnit.AudioUnitProperties
 
 /** Wrapper for a sound font file */
-struct SoundSet: Hashable, CustomStringConvertible {
+struct SoundSet: Hashable, CustomStringConvertible, CustomDebugStringConvertible {
   let url: NSURL
   var description: String {
+    var result =  "SoundSet {\n"
+    result += "  name: \((url.lastPathComponent! as NSString).stringByDeletingPathExtension)\n"
+    result += "  number of presets: \(presets.count)\n"
+    result += "}"
+    return result
+  }
+  var debugDescription: String {
     var result =  "SoundSet {\n"
     result += "  name: \((url.lastPathComponent! as NSString).stringByDeletingPathExtension)\n"
     result += "  sf2File: \(sf2File.description.indentedBy(4, true))\n"

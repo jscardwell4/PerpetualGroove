@@ -111,6 +111,21 @@ enum SimpleTimeSignature {
       case .Other(let b, _): return b
     }
   }
+
+  /**
+  initWithUpper:lower:
+
+  - parameter upper: UInt8
+  - parameter lower: UInt8
+  */
+  init(upper: UInt8, lower: UInt8) {
+    switch (upper, lower) {
+      case (4, 4): self = .FourFour
+      case (3, 4): self = .ThreeFour
+      case (2, 4): self = .TwoFour
+      default: self = .Other(upper, lower)
+    }
+  }
 }
 
 
@@ -134,10 +149,20 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
   private var validBeats: Range<UInt16>
   private var validSubbeats: Range<UInt16>
 
+  private var _time: CABarBeatTime
+
   /** Stores the musical representation of the current time */
   private(set) var time: CABarBeatTime {
-    didSet {
-      guard validBeats.contains(time.beat) && validSubbeats.contains(time.subbeat) else { fatalError("corrupted time '\(time)'") }
+    get {
+      objc_sync_enter(self)
+      defer { objc_sync_exit(self) }
+      return _time
+    }
+    set {
+      objc_sync_enter(self)
+      defer { objc_sync_exit(self) }
+      guard validBeats.contains(newValue.beat) && validSubbeats.contains(_time.subbeat) else { return }
+      _time = newValue
       checkCallbacksForTime(time)
     }
   }
@@ -150,6 +175,9 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
 
   /** incrementClock */
   private func incrementClock() {
+    objc_sync_enter(self)
+    defer { objc_sync_exit(self) }
+
     clockCount.numerator += 1
     if clockCount == 1 {
       clockCount.numerator = 0
@@ -177,7 +205,7 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
   - parameter callback: (CABarBeatTime) -> Void
   - parameter time: CABarBeatTime
   */
-  func registerCallback(callback: (CABarBeatTime) -> Void, forTime time: CABarBeatTime) { callbacks[time] = callback }
+  func registerCallback(callback: Callback, forTime time: CABarBeatTime) { callbacks[time] = callback }
 
   /**
   removeCallbackForTime:
@@ -193,13 +221,16 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
   */
   func removeCallbackForKey(key: String) { predicatedCallbacks[key] = nil }
 
+  typealias Callback = (CABarBeatTime) -> Void
+  typealias Predicate = (CABarBeatTime) -> Bool
+
   /**
   Set the `inout Bool` to true to unregister the callback
 
   - parameter callback: (CABarBeatTime) -> Void
   - parameter predicate: (CABarBeatTime) -> Bool
   */
-  func registerCallback(callback: (CABarBeatTime) -> Void, predicate: (CABarBeatTime) -> Bool, forKey key: String) {
+  func registerCallback(callback: Callback, predicate: Predicate, forKey key: String) {
     predicatedCallbacks[key] = (predicate: predicate, callback: callback)
   }
 
@@ -216,9 +247,9 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
     predicatedCallbacks.values.filter({$0.predicate(t)}).forEach({$0.callback(t)})
   }
 
-  private var callbacks: [CABarBeatTime:(CABarBeatTime) -> Void] = [:] { didSet { updateCallbackCheck() } }
+  private var callbacks: [CABarBeatTime:Callback] = [:] { didSet { updateCallbackCheck() } }
 
-  private typealias PredicateCallback = (predicate: (CABarBeatTime) -> Bool, callback: (CABarBeatTime) -> Void)
+  private typealias PredicateCallback = (predicate: Predicate, callback: Callback)
   private var predicatedCallbacks: [String:PredicateCallback] = [:] { didSet { updateCallbackCheck() } }
 
   var timeSinceMarker: CABarBeatTime {
@@ -268,16 +299,14 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
 
   /** reset */
   func reset() {
-    // This causes problems
-//    dispatch_async(queue) {
-//      [unowned self] in
-//      self.time.bar = 1
-//      self.time.beat = 1
-//      self.time.subbeat = 1
-//      self.clockCount = 0╱Float(self.partsPerQuarter)
-//      self.resetCount++
-//      self.clockReset = true
-//    }
+    dispatch_async(queue) {
+      [unowned self] in
+      let ppq = self._time.subbeatDivisor
+      self._time = CABarBeatTime(bar: 1, beat: 1, subbeat: 1, subbeatDivisor: ppq, reserved: 0)
+      objc_sync_enter(self)
+      defer { objc_sync_exit(self) }
+      self.clockCount = 0╱Float(ppq)
+    }
   }
 
   /**
@@ -287,8 +316,9 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
   - parameter ppq: UInt16 = 480
   */
   init(clockSource: MIDIEndpointRef, partsPerQuarter ppq: UInt16 = 480) {
-    time = CABarBeatTime(bar: 1, beat: 1, subbeat: 1, subbeatDivisor: ppq, reserved: 0)
-    marker = time
+    let t = CABarBeatTime(bar: 1, beat: 1, subbeat: 1, subbeatDivisor: ppq, reserved: 0)
+    _time = t
+    marker = t
     clockCount = 0╱Float(ppq)
     beatInterval = (Float(ppq) * Float(0.25))╱Float(ppq)
     validBeats = 1 ... UInt16(Sequencer.timeSignature.beatsPerBar)
@@ -316,8 +346,11 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
   */
   private func read(packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutablePointer<Void>) {
     // Runs on MIDI Services thread
-    guard packetList.memory.packet.data.0 == 0b1111_1000 else { return }
-    dispatch_async(queue) { [weak self] in self?.incrementClock() }
+    switch packetList.memory.packet.data.0 {
+      case 0b1111_1000: dispatch_async(queue) { [weak self] in self?.incrementClock() }
+      case 0b1111_1010: dispatch_async(queue) { [weak self] in self?.reset(); self?.checkCallbacksForTime(self!.time) }
+      default: break
+    }
   }
 
   // ???: Will this ever get called to remove the reference in Sequencer's `Set`?

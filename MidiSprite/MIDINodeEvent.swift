@@ -71,7 +71,7 @@ struct MIDINodeEvent: MIDITrackEvent {
   init(barBeatTime t: CABarBeatTime, data d: Data) { time = t; data = d }
 
   enum Data: Equatable {
-    case Add(identifier: Identifier, placement: MIDINode.Placement)
+    case Add(identifier: Identifier, placement: MIDINode.Placement, attributes: NoteAttributes, texture: MIDINode.TextureType)
     case Remove(identifier: Identifier)
 
     init<C:CollectionType where C.Generator.Element == Byte,
@@ -84,18 +84,52 @@ struct MIDINodeEvent: MIDITrackEvent {
                             reason: "Data length must be at least as large as the bytes required for identifier")
       }
       let identifier = Identifier(data[data.startIndex ..< data.startIndex.advancedBy(sizeof(Identifier.self))])
-      let placementStart = data.startIndex.advancedBy(sizeof(Identifier.self))
-      if placementStart == data.endIndex {
-        self = .Remove(identifier: identifier)
-      } else {
-        let placement = MIDINode.Placement(data[placementStart..<])
-        self = .Add(identifier: identifier, placement: placement)
+      var currentIndex = data.startIndex.advancedBy(sizeof(Identifier.self))
+      guard currentIndex != data.endIndex else { self = .Remove(identifier: identifier); return }
+
+      let placementSize = Int(data[currentIndex])
+      currentIndex.increment()
+      var i = currentIndex.advancedBy(placementSize)
+      guard i.distanceTo(data.endIndex) > 0 else {
+        throw MIDIFileError(type: .InvalidLength, reason: "Not enough bytes for event")
       }
+      let placement = MIDINode.Placement(data[currentIndex ..< i])
+
+      currentIndex = i
+      let attributesSize = Int(data[currentIndex])
+      currentIndex.increment()
+      i = currentIndex.advancedBy(attributesSize)
+      guard i.distanceTo(data.endIndex) > 0 else {
+        throw MIDIFileError(type: .InvalidLength, reason: "Not enough bytes for event")
+      }
+      let attributes = NoteAttributes(data[currentIndex ..< i])
+
+      currentIndex = i
+      guard currentIndex.distanceTo(data.endIndex) == 1 else {
+        throw MIDIFileError(type: .InvalidLength, reason: "There should be exactly one byte left for texture index")
+      }
+      let textureIndex = Int(data[currentIndex])
+      guard MIDINode.TextureType.allCases.indices ∋ textureIndex else {
+        throw MIDIFileError(type: .FileStructurallyUnsound, reason: "\(textureIndex) is not a valid texture index")
+      }
+      let texture = MIDINode.TextureType.allCases[textureIndex]
+
+      self = .Add(identifier: identifier, placement: placement, attributes: attributes, texture: texture)
     }
 
     var bytes: [Byte] {
       switch self {
-        case let .Add(identifier, placement): return identifier.bytes + placement.bytes
+        case let .Add(identifier, placement, attributes, texture):
+          var bytes = identifier.bytes
+          let placementBytes = placement.bytes
+          bytes.append(Byte(placementBytes.count))
+          bytes += placementBytes
+          let attributesBytes = attributes.bytes
+          bytes.append(Byte(attributesBytes.count))
+          bytes += attributesBytes
+          bytes.append(Byte(texture.index))
+          return bytes
+
         case let .Remove(identifier): return identifier.bytes
       }
     }
@@ -104,11 +138,4 @@ struct MIDINodeEvent: MIDITrackEvent {
   }
 }
 
-func ==(lhs: MIDINodeEvent.Data, rhs: MIDINodeEvent.Data) -> Bool {
-  switch (lhs, rhs) {
-    case (.Add, .Remove), (.Remove, .Add):                            return false
-    case let (.Add(i1, p1), .Add(i2, p2)) where i1 != i2 || p1 != p2: return false
-    case let (.Remove(i1), .Remove(i2)) where i1 != i2:               return false
-    default:                                                          return true
-  }
-}
+func ==(lhs: MIDINodeEvent.Data, rhs: MIDINodeEvent.Data) -> Bool { return lhs.bytes.elementsEqual(rhs.bytes) }

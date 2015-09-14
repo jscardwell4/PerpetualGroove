@@ -36,21 +36,23 @@ final class InstrumentTrack: MIDITrackType, Equatable {
 
   private var nodes: Set<MIDINode> = []
   private var notes: Set<NodeIdentifier> = []
+  private var fileIDToNodeID: [NodeIdentifier:NodeIdentifier] = [:]
   private var client = MIDIClientRef()
   private var inPort = MIDIPortRef()
   private var outPort = MIDIPortRef()
   private let fileQueue: dispatch_queue_t?
+  private var pendingIdentifier: NodeIdentifier?
 
   let time = BarBeatTime(clockSource: Sequencer.clockSource)
 
-  var recording = false //{ didSet { time.reset() } }
+  var recording = false
 
   private func recordingStatusDidChange(notification: NSNotification) { recording = Sequencer.recording }
 
   private var notificationReceptionist: NotificationReceptionist?
 
   private func appendEvent(var event: MIDITrackEvent) {
-    guard recording else { return }
+    guard !playbackMode && recording else { return }
     event.time = time.time
     events.append(event)
   }
@@ -59,9 +61,8 @@ final class InstrumentTrack: MIDITrackType, Equatable {
   var chunk: MIDIFileTrackChunk {
     var trackEvents = events
     trackEvents.insert(MetaEvent(.SequenceTrackName(name: name)), atIndex: 0)
-    let filePath = instrument.soundSet.url.absoluteString
-    let instrumentPath = "instrument" + filePath[filePath.startIndex.advancedBy(4)..<]
-    trackEvents.insert(MetaEvent(.Text(text: instrumentPath)), atIndex: 1)
+    let instrumentName = "instrument:\(instrument.soundSet.url.lastPathComponent!)"
+    trackEvents.insert(MetaEvent(.Text(text: instrumentName)), atIndex: 1)
     trackEvents.insert(ChannelEvent(.ProgramChange, instrument.channel, instrument.program), atIndex: 2)
     trackEvents.append(MetaEvent(.EndOfTrack))
     return MIDIFileTrackChunk(events: trackEvents)
@@ -89,11 +90,63 @@ final class InstrumentTrack: MIDITrackType, Equatable {
     let identifier = NodeIdentifier(ObjectIdentifier(node).uintValue)
     notes.insert(identifier)
     try MIDIPortConnectSource(inPort, node.endPoint, nil) ➤ "Failed to connect to node \(node.name!)"
-    guard recording else { return }
+    guard recording else {
+      if let pendingIdentifier = pendingIdentifier {
+        fileIDToNodeID[pendingIdentifier] = identifier
+        self.pendingIdentifier = nil
+      }
+      return
+    }
     dispatch_async(fileQueue!) {
-      [placement = node.placement] in
-        self.appendEvent(MIDINodeEvent(.Add(identifier: identifier, placement: placement))
+      [placement = node.placement, attributes = node.note, texture = node.textureType] in
+
+      self.appendEvent(
+        MIDINodeEvent(.Add(identifier: identifier, placement: placement, attributes: attributes, texture: texture)
+        )
       )
+    }
+  }
+
+  /**
+  addNodeWithIdentifier:placement:attributes:texture:
+
+  - parameter identifier: NodeIdentifier
+  - parameter placement: MIDINode.Placement
+  - parameter attributes: NoteAttributes
+  - parameter texture: MIDINode.TextureType
+  */
+  private func addNodeWithIdentifier(identifier: NodeIdentifier,
+                           placement: MIDINode.Placement,
+                          attributes: NoteAttributes,
+                             texture: MIDINode.TextureType)
+  {
+    guard pendingIdentifier == nil else { fatalError("already have an identifier pending: \(pendingIdentifier!)") }
+    guard let midiPlayer = MIDIPlayerViewController.currentInstance?.playerScene?.midiPlayer else {
+      fatalError("trying to add node without a midi player")
+    }
+    pendingIdentifier = identifier
+    midiPlayer.placeNew(placement, targetTrack: self, attributes: attributes, texture: texture)
+  }
+
+  /**
+  removeNodeWithIdentifier:
+
+  - parameter identifier: NodeIdentifier
+  */
+  private func removeNodeWithIdentifier(identifier: NodeIdentifier) {
+    guard let mappedIdentifier = fileIDToNodeID[identifier] else {
+      fatalError("trying to remove node for unmapped identifier \(identifier)")
+    }
+    guard let idx = nodes.indexOf({$0.sourceID == mappedIdentifier}) else {
+      fatalError("failed to find node with mapped identifier \(mappedIdentifier)")
+    }
+    let node = nodes[idx]
+    do {
+      try removeNode(node)
+      node.removeFromParent()
+      fileIDToNodeID[identifier] = nil
+    } catch {
+      logError(error)
     }
   }
 
@@ -136,7 +189,7 @@ final class InstrumentTrack: MIDITrackType, Equatable {
   */
   private func read(packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutablePointer<Void>) {
 
-    guard !playbackMode else { return }
+//    guard !playbackMode else { return }
 
     // Forward the packets to the instrument
     do { try MIDISend(outPort, instrument.endPoint, packetList) ➤ "Failed to forward packet list to instrument" }
@@ -164,6 +217,61 @@ final class InstrumentTrack: MIDITrackType, Equatable {
   }
 
   /**
+  dispatchChannelEvent:
+
+  - parameter channelEvent: ChannelEvent
+  */
+  private func dispatchChannelEvent(channelEvent: ChannelEvent) {
+    var packetList = MIDIPacketList()
+    let packet = MIDIPacketListInit(&packetList)
+    let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
+    var data: [Byte] = [channelEvent.status.value, channelEvent.data1]
+    if let data2 = channelEvent.data2 { data.append(data2) }
+    let timeStamp = time.timeStamp
+    MIDIPacketListAdd(&packetList, size, packet, timeStamp, 3, data)
+    withUnsafePointer(&packetList) {
+      do { try MIDISend(outPort, instrument.endPoint, $0) ➤ "Failed to dispatch packet list to instrument" }
+      catch { logError(error) }
+    }
+  }
+
+  /**
+  reset:
+
+  - parameter notification: NSNotification
+  */
+  private func reset(notification: NSNotification) { time.reset() }
+
+  /**
+  didStart:
+
+  - parameter notification: NSNotification
+  */
+  private func didStart(notification: NSNotification) { logDebug("time = \(time)") }
+
+  /** initializeNotificationReceptionist */
+  private func initializeNotificationReceptionist() {
+    guard notificationReceptionist == nil else { return }
+    typealias Callback = NotificationReceptionist.Callback
+    let recordingCallback: Callback = (Sequencer.self, NSOperationQueue.mainQueue(), recordingStatusDidChange)
+    let resetCallback: Callback = (Sequencer.self, NSOperationQueue.mainQueue(), reset)
+    let didStartCallback: Callback = (Sequencer.self, NSOperationQueue.mainQueue(), didStart)
+    notificationReceptionist = NotificationReceptionist(callbacks: [
+      Sequencer.Notification.DidTurnOnRecording.name.value : recordingCallback,
+      Sequencer.Notification.DidTurnOffRecording.name.value : recordingCallback,
+      Sequencer.Notification.DidReset.name.value : resetCallback,
+      Sequencer.Notification.DidStart.name.value: didStartCallback
+      ])
+  }
+
+  /** initializeMIDIClient */
+  private func initializeMIDIClient() throws {
+    try MIDIClientCreateWithBlock("track \(instrument.bus)", &client, nil) ➤ "Failed to create midi client"
+    try MIDIOutputPortCreate(client, "Output", &outPort) ➤ "Failed to create out port"
+    try MIDIInputPortCreateWithBlock(client, name, &inPort, read) ➤ "Failed to create in port"
+  }
+
+  /**
   initWithBus:track:
 
   - parameter b: Bus
@@ -174,17 +282,34 @@ final class InstrumentTrack: MIDITrackType, Equatable {
     fileQueue = serialQueueWithLabel("BUS \(instrument.bus)", qualityOfService: QOS_CLASS_BACKGROUND)
     recording = Sequencer.recording
     playbackMode = false
-    let callback: NotificationReceptionist.Callback = (Sequencer.self, NSOperationQueue.mainQueue(), recordingStatusDidChange)
-    notificationReceptionist = NotificationReceptionist(callbacks: [
-      Sequencer.Notification.DidTurnOnRecording.name.value : callback,
-      Sequencer.Notification.DidTurnOffRecording.name.value : callback
-      ])
 
-    
-    try MIDIClientCreateWithBlock("track \(instrument.bus)", &client, nil) ➤ "Failed to create midi client"
-    try MIDIOutputPortCreate(client, "Output", &outPort) ➤ "Failed to create out port"
-    let label = self.label ?? "BUS \(instrument.bus)"
-    try MIDIInputPortCreateWithBlock(client, label, &inPort, read) ➤ "Failed to create in port"
+    initializeNotificationReceptionist()
+
+    try initializeMIDIClient()
+  }
+
+  private var eventMap: [CABarBeatTime:[MIDITrackEvent]] = [:]
+
+  /**
+  dispatchEventsForTime:
+
+  - parameter time: CABarBeatTime
+  */
+  private func dispatchEventsForTime(time: CABarBeatTime) {
+    logDebug("time: \(time)")
+    guard let events = eventMap[time] else { return }
+    for event in events {
+      switch event {
+//        case let channelEvent as ChannelEvent: dispatchChannelEvent(channelEvent)
+        case let nodeEvent as MIDINodeEvent:
+          switch nodeEvent.data {
+            case let .Add(i, p, a, t):    addNodeWithIdentifier(i, placement: p, attributes: a, texture: t)
+            case let .Remove(identifier): removeNodeWithIdentifier(identifier)
+          }
+        default: break
+      }
+
+    }
   }
 
   /**
@@ -201,7 +326,7 @@ final class InstrumentTrack: MIDITrackType, Equatable {
     let isInstrumentEvent: (MIDITrackEvent) -> Bool = {
       guard let metaEvent = $0 as? MetaEvent else { return false }
       switch metaEvent.data {
-        case .Text(let text) where text.hasPrefix("instrument"): return true
+        case .Text(let text) where text.hasPrefix("instrument:"): return true
         default: return false
       }
     }
@@ -214,24 +339,40 @@ final class InstrumentTrack: MIDITrackType, Equatable {
       }
     }
 
-    if let instrumentMetaEvent = trackChunk.events.first(isInstrumentEvent) as? MetaEvent,
-      case let .Text(url) = instrumentMetaEvent.data,
-      let fileURL = NSURL(string: "file" + url[url.startIndex.advancedBy(10)..<]),
-      soundSet = try? SoundSet(url: fileURL),
-      programEvent = trackChunk.events.first(isProgramChangeEvent) as? ChannelEvent,
-      instrumentMaybe = try? Instrument(soundSet: soundSet, program: programEvent.data1, channel: programEvent.status.channel)
-    {
+    guard let instrumentMetaEvent = trackChunk.events.first(isInstrumentEvent) as? MetaEvent else { fatalError("wtf") }
+
+
+    guard case var .Text(instrumentName) = instrumentMetaEvent.data else { fatalError("wtf") }
+
+    instrumentName = instrumentName[instrumentName.startIndex.advancedBy(11)..<]
+
+     guard let fileURL = NSBundle.mainBundle().URLForResource(instrumentName, withExtension: nil) else { fatalError("wtf") }
+
+    guard let soundSet = try? SoundSet(url: fileURL) else { fatalError("wtf") }
+    guard let programEvent = trackChunk.events.first(isProgramChangeEvent) as? ChannelEvent else { fatalError("wtf") }
+    guard let instrumentMaybe = try? Instrument(soundSet: soundSet, program: programEvent.data1, channel: programEvent.status.channel) else { fatalError("wtf") }
+//    {
       instrument = instrumentMaybe
-    } else {
-      instrument = Instrument(instrument: Sequencer.auditionInstrument)
-    }
+//    } else {
+//      fatalError("wtf")
+//      instrument = Instrument(instrument: Sequencer.auditionInstrument)
+//    }
 
     events = trackChunk.events
 
-    try MIDIClientCreateWithBlock("track \(instrument.bus)", &client, nil) ➤ "Failed to create midi client"
-    try MIDIOutputPortCreate(client, "Output", &outPort) ➤ "Failed to create out port"
-    let label = self.label ?? "BUS \(instrument.bus)"
-    try MIDIInputPortCreateWithBlock(client, label, &inPort, read) ➤ "Failed to create in port"
+    for event in events {
+      let eventTime = event.time
+      var eventBag: [MIDITrackEvent] = eventMap[eventTime] ?? []
+      eventBag.append(event)
+      eventMap[eventTime] = eventBag
+    }
+    for eventTime in eventMap.keys { time.registerCallback(dispatchEventsForTime, forTime: eventTime) }
+
+    logDebug("eventMap = \(eventMap)")
+
+    initializeNotificationReceptionist()
+
+    try initializeMIDIClient()
   }
 
   // MARK: - Enumeration for specifying the color attached to a `MIDITrackType`

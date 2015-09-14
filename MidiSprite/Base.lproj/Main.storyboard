@@ -11,6 +11,7 @@
             <string>EvelethLight</string>
             <string>EvelethLight</string>
             <string>EvelethLight</string>
+            <string>EvelethLight</string>
         </mutableArray>
         <mutableArray key="Yellow Design Studio - Eveleth Regular.otf">
             <string>EvelethRegular</string>
@@ -163,7 +164,6 @@
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="image" keyPath="image" value="play"/>
                                             <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="play-selected"/>
-                                            <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
                                             <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
                                                 <color key="value" red="0.87450999021530151" green="0.8274499773979187" blue="0.7607799768447876" alpha="1" colorSpace="calibratedRGB"/>
                                             </userDefinedRuntimeAttribute>
@@ -182,7 +182,6 @@
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="image" keyPath="image" value="stop"/>
                                             <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="stop-selected"/>
-                                            <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
                                             <userDefinedRuntimeAttribute type="color" keyPath="disabledTintColor">
                                                 <color key="value" red="0.51420629024505615" green="0.50113999843597412" blue="0.48703506588935852" alpha="1" colorSpace="calibratedRGB"/>
                                             </userDefinedRuntimeAttribute>
@@ -401,43 +400,56 @@
                                 <color key="backgroundColor" red="0.20000000298023224" green="0.19607843458652496" blue="0.19215686619281769" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
                             <stackView opaque="NO" contentMode="scaleToFill" alignment="firstBaseline" translatesAutoresizingMaskIntoConstraints="NO" id="1L9-xl-LZM" userLabel="File/Track">
-                                <rect key="frame" x="20" y="62" width="560" height="17"/>
+                                <rect key="frame" x="20" y="62" width="560" height="24"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Track" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5F4-fd-MDF">
-                                        <rect key="frame" x="0.0" y="0.0" width="55" height="17"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" misplaced="YES" text="Track" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5F4-fd-MDF">
+                                        <rect key="frame" x="0.0" y="0.0" width="55" height="24"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="24" id="m2m-xd-vO2"/>
+                                        </constraints>
                                         <fontDescription key="fontDescription" name="EvelethThin" family="Eveleth" pointSize="14"/>
                                         <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fwt-5T-njj" userLabel="File Name" customClass="LabelButton" customModule="MoonKit">
-                                        <rect key="frame" x="55" y="0.0" width="506" height="17"/>
+                                    <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Some MIDI Track" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zLX-jM-BjG">
+                                        <rect key="frame" x="55" y="0.0" width="506" height="24"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <gestureRecognizers/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="24" id="2gI-xS-r4R"/>
+                                            <constraint firstAttribute="height" constant="24" id="xRl-QU-RKR"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="EvelethLight" family="Eveleth" pointSize="14"/>
+                                        <color key="textColor" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                        <connections>
+                                            <outletCollection property="gestureRecognizers" destination="lGx-SZ-udo" appends="YES" id="K8v-ml-QpR"/>
+                                            <outletCollection property="gestureRecognizers" destination="zsp-wd-izb" appends="YES" id="RjS-v1-a4I"/>
+                                        </connections>
+                                    </label>
+                                    <view opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="QH3-ti-BXW" customClass="LabelButton" customModule="MoonKit">
+                                        <rect key="frame" x="560" y="0.0" width="0.0" height="24"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="24" id="8Ps-Kd-C6a"/>
+                                            <constraint firstAttribute="width" id="8t5-7v-Zgl"/>
                                         </constraints>
                                         <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="string" keyPath="text" value="Some MIDI Track"/>
-                                            <userDefinedRuntimeAttribute type="string" keyPath="textAlignmentString" value="Center"/>
                                             <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="EvelethLight"/>
-                                            <userDefinedRuntimeAttribute type="color" keyPath="textColor">
-                                                <color key="value" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
-                                            </userDefinedRuntimeAttribute>
-                                            <userDefinedRuntimeAttribute type="color" keyPath="highlightedTextColor">
-                                                <color key="value" red="0.87450999021530151" green="0.8274499773979187" blue="0.7607799768447876" alpha="1" colorSpace="calibratedRGB"/>
-                                            </userDefinedRuntimeAttribute>
                                             <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
                                                 <real key="value" value="14"/>
                                             </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="text" value="Unload"/>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="textColor">
+                                                <color key="value" red="0.76089900732040405" green="0.25649610161781311" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="textAlignmentString" value="Right"/>
                                         </userDefinedRuntimeAttributes>
-                                        <variation key="default">
-                                            <mask key="constraints">
-                                                <exclude reference="2gI-xS-r4R"/>
-                                            </mask>
-                                        </variation>
                                         <connections>
-                                            <action selector="fileTrackName" destination="BV1-FR-VrT" eventType="touchUpInside" id="Z9G-xy-FQb"/>
+                                            <action selector="fileTrackNameAction" destination="BV1-FR-VrT" eventType="touchUpInside" id="Y2G-Hd-DVz"/>
                                         </connections>
                                     </view>
                                 </subviews>
+                                <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="24" id="wFt-4U-EEC"/>
                                 </constraints>
@@ -697,8 +709,12 @@
                     <nil key="simulatedTopBarMetrics"/>
                     <nil key="simulatedBottomBarMetrics"/>
                     <connections>
+                        <outlet property="fileTrackActionButton" destination="QH3-ti-BXW" id="3w5-tm-Wqy"/>
                         <outlet property="fileTrackLabel" destination="5F4-fd-MDF" id="JnQ-by-umb"/>
-                        <outlet property="fileTrackNameLabel" destination="fwt-5T-njj" id="fzq-Al-FEA"/>
+                        <outlet property="fileTrackNameActionButtonWidthConstraint" destination="8t5-7v-Zgl" id="eMM-gf-EzW"/>
+                        <outlet property="fileTrackNameDismissiveSwipeGesture" destination="zsp-wd-izb" id="agx-eF-8wn"/>
+                        <outlet property="fileTrackNameLabel" destination="zLX-jM-BjG" id="6Q7-Yw-i7C"/>
+                        <outlet property="fileTrackNameSwipeGesture" destination="lGx-SZ-udo" id="Xv7-EU-2Fb"/>
                         <outlet property="filesButton" destination="dRz-Aj-snf" id="lsm-fp-74h"/>
                         <outlet property="filesPopoverView" destination="L5k-qi-Yb6" id="Gmb-Lm-jBp"/>
                         <outlet property="instrumentButton" destination="CYm-Ka-dDw" id="IHI-YQ-0my"/>
@@ -724,6 +740,16 @@
                         <action selector="dismissPopover" destination="BV1-FR-VrT" id="eOB-WR-Bwx"/>
                     </connections>
                 </tapGestureRecognizer>
+                <swipeGestureRecognizer enabled="NO" direction="left" id="lGx-SZ-udo">
+                    <connections>
+                        <action selector="fileTrackNameShowAction" destination="BV1-FR-VrT" id="l0p-2q-c0Q"/>
+                    </connections>
+                </swipeGestureRecognizer>
+                <swipeGestureRecognizer enabled="NO" direction="right" id="zsp-wd-izb">
+                    <connections>
+                        <action selector="dismissFileTrackNameAction" destination="BV1-FR-VrT" id="3wf-Y8-rbA"/>
+                    </connections>
+                </swipeGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="370" y="346"/>
         </scene>

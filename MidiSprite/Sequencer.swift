@@ -61,9 +61,13 @@ final class Sequencer {
 
   // MARK: - Sequence
 
-  static private var recordableSequence = MIDISequence()
-  static private var playbackSequence: MIDISequence?
-  static var sequence: MIDISequence { return playbackSequence ?? recordableSequence }
+  static private var _sequence: MIDISequence? { didSet { reset() } }
+
+  static var sequence: MIDISequence {
+    guard _sequence == nil else { return _sequence! }
+    _sequence = MIDISequence()
+    return _sequence!
+  }
 
 
   // MARK: - Time
@@ -99,10 +103,11 @@ final class Sequencer {
     get { return Double(clock.beatsPerMinute) }
     set {
       clock.beatsPerMinute = UInt16(newValue)
-      sequence.insertTempoChange(tempo)
+      if recording { sequence.insertTempoChange(tempo) }
     }
   }
 
+  // ???: Don't we need to do anything about changes to timeSignature?
   static var timeSignature: SimpleTimeSignature = .FourFour
 
   // MARK: - Files
@@ -115,8 +120,8 @@ final class Sequencer {
         do {
           let midiFile = try MIDIFile(file: currentFile)
           logDebug("midiFile = \(midiFile)")
-          playbackSequence = MIDISequence(file: midiFile)
-          logDebug("playbackSequence = " + (playbackSequence?.description ?? "nil"))
+          _sequence = MIDISequence(file: midiFile)
+          logDebug("playbackSequence = " + (_sequence?.description ?? "nil"))
           Notification.FileLoaded.post()
         } catch {
           logError(error)
@@ -137,17 +142,15 @@ final class Sequencer {
     static let Default   = State(rawValue: 0b0000_0000)
     static let Playing   = State(rawValue: 0b0000_0010)
     static let Recording = State(rawValue: 0b0000_0100)
-    static let HasPlayed = State(rawValue: 0b0000_1000)
     static let Paused    = State(rawValue: 0b0001_0000)
 
     var description: String {
       var result = "Sequencer.State { "
       var flagStrings: [String] = []
-      if contains(.Default)   { flagStrings.append("Default")   }
       if contains(.Playing)   { flagStrings.append("Playing")   }
       if contains(.Recording) { flagStrings.append("Recording") }
-      if contains(.HasPlayed) { flagStrings.append("HasPlayed") }
       if contains(.Paused)    { flagStrings.append("Paused")    }
+      if flagStrings.isEmpty { flagStrings.append("Default") }
       result += ", ".join(flagStrings)
       result += " }"
       return result
@@ -165,50 +168,8 @@ final class Sequencer {
 
   private static var previousTrack: InstrumentTrack?
 
-  /** The current track in use */
-//  private static var _currentTrack: InstrumentTrack? { didSet { Notification.CurrentTrackDidChange.post() } }
-
-  /**
-  currentTrackForState
-
-  - returns: Track?
-  */
-//  private static func currentTrackForState() -> InstrumentTrack {
-//    if let track = _currentTrack where track.instrument.settingsEqualTo(auditionInstrument) { return track }
-//    do {
-//      let track = try sequence.newTrackWithInstrument(instrumentWithCurrentSettings())
-//      _currentTrack = track
-//      return track
-//    } catch {
-//      logError(error)
-//      fatalError("unable to create a new track when current track has been requested … error: \(error)")
-//    }
-//  }
-
   /** Wraps the private `_currentTrack` so that a new track may be created if the property is `nil` */
   static var currentTrack: InstrumentTrack? { didSet { Notification.CurrentTrackDidChange.post() } }
-//    {
-//    get {
-//    guard _currentTrack == nil else { return _currentTrack! }
-//    do {
-//    _currentTrack = try sequence.newTrackWithInstrument(instrumentWithCurrentSettings())
-//    return _currentTrack!
-//  } catch {
-//    logError(error)
-//    fatalError("unable to create a new track when current track has been requested … error: \(error)")
-//    }
-//    }
-//    set {
-//      logDebug("set… currentValue: \(_currentTrack); newValue: \(newValue)")
-//      guard sequence.instrumentTracks ∋ newValue else { fatalError("setting currentTrack to a track not owned by sequence") }
-//      guard _currentTrack != newValue else { return }
-//      previousTrack = _currentTrack
-//      _currentTrack = newValue
-//      Notification.CurrentTrackDidChange.post()
-//    }
-//  }
-
-
 
   // MARK: - Properties used to initialize a new `MIDINode`
 
@@ -243,7 +204,7 @@ final class Sequencer {
     logDebug()
     guard !playing else { return }
     clock.start()
-    state ∪= [.Playing, .HasPlayed]
+    state.insert(.Playing)
     state.remove(.Paused)
     Notification.DidStart.post()
   }
@@ -262,7 +223,7 @@ final class Sequencer {
   static func reset() {
     logDebug()
     if playing { stop() }
-    state.remove(.HasPlayed)
+    barBeatTime.reset()
     Notification.DidReset.post()
   }
 
