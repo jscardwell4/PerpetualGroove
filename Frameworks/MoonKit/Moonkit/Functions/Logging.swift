@@ -208,7 +208,9 @@ logDebug:function:line:file:
 public func logDebug(message: String, function: String = __FUNCTION__, line: Int32 = __LINE__, file: String = __FILE__) {
   MSLogDebug(message, function: function, line: line, file: file)
 }
-
+public func logDebug(function: String = __FUNCTION__, line: Int32 = __LINE__, file: String = __FILE__) {
+  MSLogDebug("", function: function, line: line, file: file)
+}
 
 /**
 MSLogError:function:line:level:context:

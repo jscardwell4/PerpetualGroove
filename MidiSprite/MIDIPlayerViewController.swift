@@ -32,8 +32,7 @@ final class MIDIPlayerViewController: UIViewController {
     midiPlayerSceneView.presentScene(MIDIPlayerScene(size: midiPlayerSceneView.bounds.size))
     playerScene!.paused = true
 
-    fileNameLabel.text = nil
-    trackNameLabel.text = nil
+    fileTrackNameLabel.text = nil
 
     initializeReceptionist()
 
@@ -94,12 +93,12 @@ final class MIDIPlayerViewController: UIViewController {
   @IBOutlet weak var tempoSlider: Slider!
 
   /** tempoSliderValueDidChange */
-  @IBAction private func tempoSliderValueDidChange() { Sequencer.tempo = Double(tempoSlider.value) }
+  @IBAction private func tempoSliderValueDidChange() { logDebug(""); Sequencer.tempo = Double(tempoSlider.value) }
 
   @IBOutlet weak var metronomeButton: ImageButtonView!
 
   /** metronome */
-  @IBAction func metronome() { AudioManager.metronome.on = !AudioManager.metronome.on }
+  @IBAction func metronome() { logDebug(""); AudioManager.metronome.on = !AudioManager.metronome.on }
 
   // MARK: - Popovers
 
@@ -148,11 +147,16 @@ final class MIDIPlayerViewController: UIViewController {
     }
   }
 
+  private func updatePopover(newValue: Popover) { popover = popover == newValue ? .None : newValue }
+
   private var popover = Popover.None {
     didSet {
       guard oldValue != popover else { return }
-      oldValue.view?.hidden = true; oldValue.button?.selected = false; popover.view?.hidden = false
-      if popover == .None { state.remove(.PopoverActive) } else if oldValue == .None { state.insert(.PopoverActive) }
+      oldValue.view?.hidden = true
+      oldValue.button?.selected = false
+      popover.view?.hidden = false
+      if popover == .None { state.remove(.PopoverActive) }
+      else if oldValue == .None { state.insert(.PopoverActive) }
     }
   }
 
@@ -160,22 +164,23 @@ final class MIDIPlayerViewController: UIViewController {
 
   @IBOutlet weak var filesButton: ImageButtonView!
   @IBOutlet weak var saveButton: ImageButtonView!
-  @IBOutlet weak var fileNameLabel: LabelButton!
+  @IBOutlet weak var fileTrackLabel: UILabel!
+  @IBOutlet weak var fileTrackNameLabel: LabelButton!
 
-  @IBAction private func fileName() {
+  /** fileTrackName */
+  @IBAction private func fileTrackName() { if state ∋ .FileLoaded { fileName() } else { trackName() } }
 
-  }
+  /** fileName */
+  private func fileName() { logDebug("") }
 
   // MARK: - Tracks
 
-  @IBOutlet weak var trackNameLabel: LabelButton!
-
-  @IBAction private func trackName() {
-
-  }
+  /** trackName */
+  private func trackName() { logDebug("") }
 
   /** save */
   @IBAction private func save() {
+    logDebug("")
     let textField = FormTextField(name: "File Name", value: nil, placeholder: "Awesome Sauce") {
       (text: String?) -> Bool in
       guard let text = text else { return false }
@@ -210,20 +215,14 @@ final class MIDIPlayerViewController: UIViewController {
  // MARK: - Mixer
 
   @IBOutlet weak var mixerButton: ImageButtonView!
-
-  /** sliders */
-  @IBAction private func mixer() { if case .Mixer = popover { popover = .None } else { popover = .Mixer } }
-
+  @IBAction private func mixer() { logDebug(""); updatePopover(.Mixer) }
   private weak var mixerViewController: MixerViewController!
   @IBOutlet private weak var mixerPopoverView: PopoverView!
 
   // MARK: - Instrument
 
   @IBOutlet weak var instrumentButton: ImageButtonView!
-
-  /** instrument */
-  @IBAction private func instrument() { if case .Instrument = popover { popover = .None } else { popover = .Instrument } }
-
+  @IBAction private func instrument() { logDebug(""); updatePopover(.Instrument) }
   private weak var instrumentViewController: InstrumentViewController!
   @IBOutlet private weak var instrumentPopoverView: PopoverView!
 
@@ -231,18 +230,13 @@ final class MIDIPlayerViewController: UIViewController {
 
   @IBOutlet weak var noteAttributesButton: ImageButtonView!
   private weak var noteAttributesViewController: NoteAttributesViewController!
-
-  /** noteAttributes */
-  @IBAction private func noteAttributes() { if case .NoteAttributes = popover { popover = .None } else { popover = .NoteAttributes } }
-
+  @IBAction private func noteAttributes() { logDebug(""); updatePopover(.NoteAttributes) }
   @IBOutlet private weak var noteAttributesPopoverView: PopoverView!
 
   // MARK: - Undo
 
   @IBOutlet weak var revertButton: ImageButtonView!
-
-  /** revert */
-  @IBAction private func revert() { (midiPlayerSceneView?.scene as? MIDIPlayerScene)?.revert() }
+  @IBAction private func revert() { logDebug(""); (midiPlayerSceneView?.scene as? MIDIPlayerScene)?.revert() }
 
 
   // MARK: - Transport
@@ -251,20 +245,13 @@ final class MIDIPlayerViewController: UIViewController {
   @IBOutlet weak var playPauseButton: ImageButtonView!
   @IBOutlet weak var stopButton: ImageButtonView!
 
-  /** record */
-  @IBAction func record() { Sequencer.recording = !Sequencer.recording }
+  @IBAction func record() { logDebug(""); Sequencer.recording = !Sequencer.recording }
+  @IBAction func playPause() { logDebug(""); if playing { pause() } else { play() } }
+  @IBAction func stop() { logDebug(""); guard playing, let scene = playerScene else { return }; scene.midiPlayer.reset(); playing = false }
 
-  /** play */
-  @IBAction func play() { guard !playing else { return }; playing = true }
+  func play() { logDebug(""); guard !playing else { return }; playing = true }
+  func pause() { logDebug(""); guard !paused && playing else { return }; paused = true }
 
-  /** stop */
-  @IBAction func stop() {
-    guard playing, let playerScene = playerScene else { return }
-    playerScene.midiPlayer.reset()
-    playing = false
-  }
-
-  // MARK: ControlImage enumeration
   private enum ControlImage {
     case Pause, Play
     func decorateButton(item: ImageButtonView) {
@@ -285,18 +272,25 @@ final class MIDIPlayerViewController: UIViewController {
     }
   }
 
+  private(set) var paused: Bool {
+    get { return state ∋ .PlayerPaused }
+    set {
+      logDebug("didSet… currentValue: \(paused); newValue: \(newValue)")
+      guard newValue != paused, let playerScene = playerScene else { return }
+      if newValue { Sequencer.pause(); playerScene.paused = true } else { Sequencer.play(); playerScene.paused = false }
+      state ⊻= .PlayerPaused
+      if !paused { state.insert(.PlayerPlaying) }
+    }
+  }
+
   private(set) var playing: Bool {
     get { return state ∋ .PlayerPlaying }
     set {
+      logDebug("didSet… currentValue: \(playing); newValue: \(newValue)")
       guard newValue != playing, let playerScene = playerScene else { return }
-      if newValue {
-        do { try AudioManager.start() } catch { logError(error) }
-        playerScene.paused = false
-      } else {
-        do { try AudioManager.stop() } catch { logError(error) }
-        playerScene.paused = true
-      }
+      if newValue { Sequencer.play(); playerScene.paused = false } else { playerScene.paused = true }
       state ⊻= .PlayerPlaying
+      if playing { state.remove(.PlayerPaused) }
     }
   }
 
@@ -316,11 +310,23 @@ final class MIDIPlayerViewController: UIViewController {
   - parameter notification: NSNotification
   */
   private func nodeCountDidChange(notification: NSNotification) {
+    logDebug("")
     let isEmptyField = (playerScene?.midiPlayer.midiNodes.count ?? 0) == 0
     guard (state ∋ .MIDINodeAdded && isEmptyField)
        || (state ∌ .MIDINodeAdded && !isEmptyField) else { return }
     state ⊻= .MIDINodeAdded
-    if state ∋ .MIDINodeAdded && !playing { play() }
+    if state ∋ .MIDINodeAdded && !playing { playPause() }
+  }
+
+
+  /**
+  currentTrackDidChange:
+
+  - parameter notification: NSNotification
+  */
+  private func currentTrackDidChange(notification: NSNotification) {
+    logDebug("")
+    if state ∌ .FileLoaded { fileTrackLabel.text = "Track"; fileTrackNameLabel.text = Sequencer.currentTrack?.name }
   }
 
   /**
@@ -329,7 +335,8 @@ final class MIDIPlayerViewController: UIViewController {
   - parameter notification: NSNotification
   */
   private func trackCountDidChange(notification: NSNotification) {
-    let isEmptySequence = Sequencer.sequence.tracks.count == 0
+    logDebug("")
+    let isEmptySequence = Sequencer.sequence.instrumentTracks.count == 0
     guard (state ∋ .TrackAdded && isEmptySequence)
       || (state ∌ .TrackAdded && !isEmptySequence) else { return }
     state ⊻= .TrackAdded
@@ -340,18 +347,14 @@ final class MIDIPlayerViewController: UIViewController {
 
   - parameter notification: NSNotification
   */
-  private func fileDidLoad(notification: NSNotification) {
-    state.insert(.FileLoaded)
-  }
+  private func fileDidLoad(notification: NSNotification) { logDebug(""); state.insert(.FileLoaded) }
 
   /**
   fileDidUnload:
 
   - parameter notification: NSNotification
   */
-  private func fileDidUnload(notification: NSNotification) {
-    state.remove(.FileLoaded)
-  }
+  private func fileDidUnload(notification: NSNotification) { logDebug(""); state.remove(.FileLoaded) }
 
   /** initializeReceptionist */
   private func initializeReceptionist() {
@@ -364,6 +367,7 @@ final class MIDIPlayerViewController: UIViewController {
 
     let nodeCallback: Callback = (MIDIPlayerNode.self, queue, nodeCountDidChange)
     let trackCallback: Callback = (MIDISequence.self, queue, trackCountDidChange)
+    let currentTrackCallback: Callback = (Sequencer.self, queue, currentTrackDidChange)
     let fileLoadedCallback: Callback = (Sequencer.self, queue, fileDidLoad)
     let fileUnloadedCallback: Callback = (Sequencer.self, queue, fileDidUnload)
 
@@ -373,7 +377,8 @@ final class MIDIPlayerViewController: UIViewController {
       MIDISequence.Notification.Name.TrackAdded.value: trackCallback,
       MIDISequence.Notification.Name.TrackRemoved.value: trackCallback,
       Sequencer.Notification.FileLoaded.name.value: fileLoadedCallback,
-      Sequencer.Notification.FileUnloaded.name.value: fileUnloadedCallback
+      Sequencer.Notification.FileUnloaded.name.value: fileUnloadedCallback,
+      Sequencer.Notification.CurrentTrackDidChange.name.value: currentTrackCallback
     ]
 
     notificationReceptionist = NotificationReceptionist(callbacks: callbacks)
@@ -390,9 +395,10 @@ final class MIDIPlayerViewController: UIViewController {
     static let TrackAdded        = State(rawValue: 0b0001_0000)
     static let PlayerRecording   = State(rawValue: 0b0010_0000)
     static let FileLoaded        = State(rawValue: 0b0100_0000)
+    static let PlayerPaused      = State(rawValue: 0b1000_0000)
 
     var description: String {
-      var result = "\(self.dynamicType.self) { "
+      var result = "MIDIPlayerViewController.State { "
       var flagStrings: [String] = []
       if self ∋ .PopoverActive     { flagStrings.append("PopoverActive") }
       if self ∋ .PlayerPlaying     { flagStrings.append("PlayerPlaying") }
@@ -410,7 +416,7 @@ final class MIDIPlayerViewController: UIViewController {
 
   private var state: State = [] {
     didSet {
-      logDebug("state modified…\n\told state: \(oldValue)\n\tnew state: \(state)")
+      logDebug("didSet…\n\told state: \(oldValue)\n\tnew state: \(state)")
       let modifiedState = state ⊻ oldValue
 
       if modifiedState ∋ .MIDINodeAdded {
@@ -432,14 +438,15 @@ final class MIDIPlayerViewController: UIViewController {
 
       if modifiedState ∋ .FileLoaded {
         if let currentFile = Sequencer.currentFile?.lastPathComponent {
-          fileNameLabel.text = currentFile[..<currentFile.endIndex.advancedBy(-4)]
+          fileTrackLabel.text = "File"
+          fileTrackNameLabel.text = currentFile[..<currentFile.endIndex.advancedBy(-4)]
         } else {
-          fileNameLabel.text = nil
+          fileTrackLabel.text = "Track"
+          fileTrackNameLabel.text = Sequencer.currentTrack?.name
         }
-        fileNameLabel.enabled = fileNameLabel.text != nil
+        recordButton.enabled = state ∌ .FileLoaded
       }
 
-      trackNameLabel.enabled = trackNameLabel.text != nil
     }
   }
 

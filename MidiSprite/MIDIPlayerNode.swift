@@ -30,8 +30,8 @@ final class MIDIPlayerNode: SKShapeNode {
     super.init()
     name = "player"
     path = bezierPath.CGPath
-//    strokeColor = .strokeColor
-    strokeTexture = SKTexture(image: UIImage(named: "stroketexture")!.imageWithColor(.strokeColor))
+    strokeColor = .clearColor()
+    
     guard let path = path else { return }
     physicsBody = SKPhysicsBody(edgeLoopFromPath: path)
     physicsBody?.categoryBitMask = 1
@@ -55,9 +55,9 @@ final class MIDIPlayerNode: SKShapeNode {
 
   /** dropLast */
   func dropLast() {
-    guard midiNodes.count > 0 else { return }
+    guard midiNodes.count > 0, let track = Sequencer.currentTrack else { return }
     let node = midiNodes.removeLast()
-    do { try Sequencer.currentTrack.removeNode(node) } catch { logError(error) }
+    do { try track.removeNode(node) } catch { logError(error) }
     node.removeFromParent()
     Notification.NodeRemoved.post()
   }
@@ -73,7 +73,12 @@ final class MIDIPlayerNode: SKShapeNode {
   func placeNew(placement: MIDINode.Placement) {
     do {
       // We have to get the track first to force a new track to be created when necessary before the `MIDINode` receives its color
-      let track = Sequencer.currentTrackForAddingNode
+      let track: InstrumentTrack
+      if let t = Sequencer.currentTrack where t.instrument.settingsEqualTo(Sequencer.auditionInstrument) { track = t }
+      else {
+        track = try Sequencer.sequence.newTrackWithInstrument(Sequencer.instrumentWithCurrentSettings())
+        Sequencer.currentTrack = track
+      }
       let midiNode = try MIDINode(placement, "midiNode\(midiNodes.count)")
       addChild(midiNode)
       midiNodes.append(midiNode)

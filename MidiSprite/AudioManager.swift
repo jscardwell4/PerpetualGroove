@@ -33,6 +33,7 @@ final class AudioManager {
   - parameter instrument: Instrument
   */
   static func attachNode(node: AVAudioNode, forInstrument instrument: Instrument) {
+    logDebug()
     guard instruments ∌ instrument && node.engine == nil else { return }
     engine.attachNode(node)
     engine.connect(node, to: engine.mainMixerNode, format: node.outputFormatForBus(0))
@@ -70,16 +71,16 @@ final class AudioManager {
 
 
   /** start */
-  static func start() throws { try engine.start() }
+  static func start() throws { logDebug(); try engine.start() }
 
   /** stop */
-  static func stop() throws { engine.stop() }
+  static func stop() throws { logDebug(); engine.stop() }
 
   static var running: Bool { return engine.running }
 
   /** reset */
-  static func reset() { engine.reset() }
+  static func reset() { logDebug(); engine.reset() }
 
   /** pause */
-  static func pause() { engine.pause() }
+  static func pause() { logDebug(); engine.pause() }
 }

@@ -65,7 +65,7 @@ final class TrackCell: MixerCell, UITextFieldDelegate {
       guard let track = track else { return }
       volume = track.volume
       pan = track.pan
-      labelTextField.text = track.label
+      labelTextField.text = track.name
       tintColor = track.color.value
     }
   }

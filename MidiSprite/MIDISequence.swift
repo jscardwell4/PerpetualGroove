@@ -37,17 +37,18 @@ final class MIDISequence {
   }
 
   let playbackMode: Bool
-  private var _recording = false {
-    didSet {
-      if _recording { time.reset() }
-      instrumentTracks.forEach { $0.recording = recording }
-    }
-  }
 
-  var recording: Bool {
-    get { return _recording }
-    set { guard !playbackMode && _recording != newValue else { return }; _recording = newValue }
-  }
+//  private var _recording = false {
+//    didSet {
+//      if _recording { time.reset() }
+//      instrumentTracks.forEach { $0.recording = recording }
+//    }
+//  }
+
+//  var recording: Bool {
+//    get { return _recording }
+//    set { guard !playbackMode && _recording != newValue else { return }; _recording = newValue }
+//  }
 
   /** The instrument tracks are stored in the `tracks` array beginning at index `1` */
   var instrumentTracks: [InstrumentTrack] { return tracks.count > 1 ? tracks[1..<].map({$0 as! InstrumentTrack}) : [] }
@@ -95,7 +96,7 @@ final class MIDISequence {
 
   func newTrackWithInstrument(instrument: Instrument) throws -> InstrumentTrack {
     guard !playbackMode else { throw Error.NotPermitted }
-    let track = try InstrumentTrack(instrument: instrument, recording: recording)
+    let track = try InstrumentTrack(instrument: instrument)
     tracks.append(track)
     Notification.TrackAdded(track).post()
     return tracks.last as! InstrumentTrack

@@ -37,15 +37,16 @@ final class MixerViewController: UICollectionViewController {
   /** updateViewConstraints */
   override func updateViewConstraints() {
     super.updateViewConstraints()
-    view.removeAllConstraints()
+    let id = Identifier(self, "Internal")
+    guard view.constraintsWithIdentifier(id).count == 0 else { return }
     let itemCount = Sequencer.sequence.instrumentTracks.count + 1
     let cellSize = (collectionView!.collectionViewLayout as! UICollectionViewFlowLayout).itemSize
     let cellWidth = Int(cellSize.width)
     let cellSpacing = Int((collectionView!.collectionViewLayout as! UICollectionViewFlowLayout).minimumInteritemSpacing)
     let viewWidth = Float(cellWidth * itemCount + cellSpacing * (itemCount - 1))
     let viewHeight = Float(cellSize.height)
-    view.constrain(view.width => viewWidth, view.height => viewHeight)
-    view.constrain(𝗩|collectionView!|𝗩, 𝗛|collectionView!|𝗛)
+    view.constrain([view.width => viewWidth -!> 750, view.height => viewHeight -!> 750] --> id)
+    view.constrain([𝗩|collectionView!|𝗩, 𝗛|collectionView!|𝗛] --> id)
   }
 
   /** updateTracks */
@@ -54,6 +55,7 @@ final class MixerViewController: UICollectionViewController {
     let itemCount = collectionView.numberOfItemsInSection(1)
     let busCount = Sequencer.sequence.instrumentTracks.count
     if itemCount != busCount {
+      view.removeConstraints(view.constraintsWithIdentifier(Identifier(self, "Internal")))
       view.setNeedsUpdateConstraints()
       collectionView.reloadData()
     }

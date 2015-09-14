@@ -43,7 +43,11 @@ final class InstrumentTrack: MIDITrackType, Equatable {
 
   let time = BarBeatTime(clockSource: Sequencer.clockSource)
 
-  var recording = false { didSet { time.reset() } }
+  var recording = false //{ didSet { time.reset() } }
+
+  private func recordingStatusDidChange(notification: NSNotification) { recording = Sequencer.recording }
+
+  private var notificationReceptionist: NotificationReceptionist?
 
   private func appendEvent(var event: MIDITrackEvent) {
     guard recording else { return }
@@ -164,12 +168,19 @@ final class InstrumentTrack: MIDITrackType, Equatable {
 
   - parameter b: Bus
   */
-  init(instrument i: Instrument, recording r: Bool = false) throws {
+  init(instrument i: Instrument) throws {
     instrument = i
     color = Color.allCases[Sequencer.sequence.tracks.count % 10]
     fileQueue = serialQueueWithLabel("BUS \(instrument.bus)", qualityOfService: QOS_CLASS_BACKGROUND)
-    recording = r
+    recording = Sequencer.recording
     playbackMode = false
+    let callback: NotificationReceptionist.Callback = (Sequencer.self, NSOperationQueue.mainQueue(), recordingStatusDidChange)
+    notificationReceptionist = NotificationReceptionist(callbacks: [
+      Sequencer.Notification.DidTurnOnRecording.name.value : callback,
+      Sequencer.Notification.DidTurnOffRecording.name.value : callback
+      ])
+
+    
     try MIDIClientCreateWithBlock("track \(instrument.bus)", &client, nil) ➤ "Failed to create midi client"
     try MIDIOutputPortCreate(client, "Output", &outPort) ➤ "Failed to create out port"
     let label = self.label ?? "BUS \(instrument.bus)"

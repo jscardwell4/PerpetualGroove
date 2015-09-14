@@ -330,7 +330,7 @@ import Chameleon
   - parameter rect: CGRect
   */
   override public func drawRect(var rect: CGRect) {
-
+    guard rect == bounds else { fatalError("wtf") }
     rect = bounds
 
     // Get a reference to the current context
@@ -375,8 +375,8 @@ import Chameleon
       let thumbOrigin = CGPoint(x: minToMax - half(thumbSize.width), y: rect.midY - half(thumbSize.height))
 
       // Create the frames for the track segments and the thumb
-      trackMinFrame = CGRect(origin: trackMinOrigin, size: trackMinSize).offsetBy(dx: trackXOffset, dy: trackYOffset)
-      trackMaxFrame = CGRect(origin: trackMaxOrigin, size: trackMaxSize).offsetBy(dx: trackXOffset, dy: trackYOffset)
+      trackMinFrame = CGRect(origin: trackMinOrigin.offsetBy(dx: trackXOffset, dy: trackYOffset), size: trackMinSize)
+      trackMaxFrame = CGRect(origin: trackMaxOrigin.offsetBy(dx: trackXOffset, dy: trackYOffset), size: trackMaxSize)
       thumbFrame = CGRect(origin: thumbOrigin, size: thumbSize).offsetBy(dx: thumbXOffset, dy: thumbYOffset)
     case .Vertical:
       // Inset the drawing rect to allow room for thumb at both ends of track
@@ -405,8 +405,8 @@ import Chameleon
       let thumbOrigin = CGPoint(x: rect.midX - half(thumbSize.width), y: minToMax - half(thumbSize.height))
 
       // Create the frames for the track segments and the thumb
-      trackMinFrame = CGRect(origin: trackMinOrigin, size: trackMinSize).offsetBy(dx: trackXOffset, dy: trackYOffset)
-      trackMaxFrame = CGRect(origin: trackMaxOrigin, size: trackMaxSize).offsetBy(dx: trackXOffset, dy: trackYOffset)
+      trackMinFrame = CGRect(origin: trackMinOrigin.offsetBy(dx: trackXOffset, dy: trackYOffset), size: trackMinSize)
+      trackMaxFrame = CGRect(origin: trackMaxOrigin.offsetBy(dx: trackXOffset, dy: trackYOffset), size: trackMaxSize)
       thumbFrame = CGRect(origin: thumbOrigin, size: thumbSize).offsetBy(dx: thumbXOffset, dy: thumbYOffset)
     }
 

@@ -40,7 +40,7 @@ final class Sequencer {
     case FileLoaded, FileUnloaded
     case SoundSetsInitialized
     case CurrentTrackDidChange
-    case DidStart, DidStop, DidReset
+    case DidStart, DidPause, DidStop, DidReset
     case DidTurnOnRecording, DidTurnOffRecording
     var object: AnyObject? { return Sequencer.self }
   }
@@ -51,9 +51,8 @@ final class Sequencer {
         (MIDISequence.self, NSOperationQueue.mainQueue(), {
           notification in
 
-          if let track = notification.userInfo?["track"] as? InstrumentTrack where track == Sequencer._currentTrack {
-            Sequencer._currentTrack = nil
-            if let prev = Sequencer.previousTrack { Sequencer.currentTrack = prev }
+          if let track = notification.userInfo?["track"] as? InstrumentTrack where track == Sequencer.currentTrack {
+            Sequencer.currentTrack = Sequencer.previousTrack
           }
 
         })
@@ -86,6 +85,7 @@ final class Sequencer {
   - parameter time: BarBeatTime
   */
   static func synchronizeTime(time: BarBeatTime) {
+    logDebug("synchronizeTime(time: \(time))")
     guard time !== barBeatTime else { return }
     guard !synchronizedTimes.contains(time) else { synchronizedTimes.remove(time); return }
     time.synchronizeWithTime(barBeatTime)
@@ -109,6 +109,7 @@ final class Sequencer {
 
   static var currentFile: NSURL? {
     didSet {
+      logDebug("didSet… oldValue: \(oldValue); newValue: \(currentFile)")
       guard oldValue != currentFile else { return }
       if let currentFile = currentFile {
         do {
@@ -129,82 +130,84 @@ final class Sequencer {
 
   // MARK: - Tracks
 
-  private struct State: OptionSetType {
+  private struct State: OptionSetType, CustomStringConvertible {
     let rawValue: Int
     init(rawValue: Int) { self.rawValue = rawValue }
 
-    static let Default          = State(rawValue: 0b0000_0000)
-    static let Playing          = State(rawValue: 0b0010_0000)
-    static let Recording        = State(rawValue: 0b0100_0000)
-    static let HasPlayed        = State(rawValue: 0b1000_0000)
+    static let Default   = State(rawValue: 0b0000_0000)
+    static let Playing   = State(rawValue: 0b0000_0010)
+    static let Recording = State(rawValue: 0b0000_0100)
+    static let HasPlayed = State(rawValue: 0b0000_1000)
+    static let Paused    = State(rawValue: 0b0001_0000)
+
+    var description: String {
+      var result = "Sequencer.State { "
+      var flagStrings: [String] = []
+      if contains(.Default)   { flagStrings.append("Default")   }
+      if contains(.Playing)   { flagStrings.append("Playing")   }
+      if contains(.Recording) { flagStrings.append("Recording") }
+      if contains(.HasPlayed) { flagStrings.append("HasPlayed") }
+      if contains(.Paused)    { flagStrings.append("Paused")    }
+      result += ", ".join(flagStrings)
+      result += " }"
+      return result
+    }
   }
 
-  static private var state = State.Default
+  static private var state = State.Default { didSet { logDebug("didSet…\n\told state: \(oldValue)\n\tnew state: \(state)") } }
 
   static private(set) var soundSets: [SoundSet] = []
 
   static private(set) var auditionInstrument: Instrument!
 
   /** instrumentWithCurrentSettings */
-  static func instrumentWithCurrentSettings() -> Instrument {
-    return Instrument(instrument: auditionInstrument)
-  }
+  static func instrumentWithCurrentSettings() -> Instrument { return Instrument(instrument: auditionInstrument) }
 
   private static var previousTrack: InstrumentTrack?
 
   /** The current track in use */
-  private static var _currentTrack: InstrumentTrack?
+//  private static var _currentTrack: InstrumentTrack? { didSet { Notification.CurrentTrackDidChange.post() } }
 
   /**
   currentTrackForState
 
   - returns: Track?
   */
-  private static func currentTrackForState() -> InstrumentTrack {
-    if let track = _currentTrack where track.instrument == auditionInstrument { return track }
-    do {
-      let track = try sequence.newTrackWithInstrument(instrumentWithCurrentSettings())
-      _currentTrack = track
-      return track
-    } catch {
-      logError(error)
-      fatalError("unable to create a new track when current track has been requested … error: \(error)")
-    }
-  }
+//  private static func currentTrackForState() -> InstrumentTrack {
+//    if let track = _currentTrack where track.instrument.settingsEqualTo(auditionInstrument) { return track }
+//    do {
+//      let track = try sequence.newTrackWithInstrument(instrumentWithCurrentSettings())
+//      _currentTrack = track
+//      return track
+//    } catch {
+//      logError(error)
+//      fatalError("unable to create a new track when current track has been requested … error: \(error)")
+//    }
+//  }
 
   /** Wraps the private `_currentTrack` so that a new track may be created if the property is `nil` */
-  static var currentTrack: InstrumentTrack {
-    get {
-      guard _currentTrack == nil else { return _currentTrack! }
-      do {
-        _currentTrack = try sequence.newTrackWithInstrument(instrumentWithCurrentSettings())
-        return _currentTrack!
-      } catch {
-        logError(error)
-        fatalError("unable to create a new track when current track has been requested … error: \(error)")
-      }
-    }
-    set {
-      guard sequence.instrumentTracks ∋ newValue else { fatalError("setting currentTrack to a track not owned by sequence") }
-      guard _currentTrack != newValue else { return }
-      previousTrack = _currentTrack
-      _currentTrack = newValue
-      Notification.CurrentTrackDidChange.post()
-    }
-  }
+  static var currentTrack: InstrumentTrack? { didSet { Notification.CurrentTrackDidChange.post() } }
+//    {
+//    get {
+//    guard _currentTrack == nil else { return _currentTrack! }
+//    do {
+//    _currentTrack = try sequence.newTrackWithInstrument(instrumentWithCurrentSettings())
+//    return _currentTrack!
+//  } catch {
+//    logError(error)
+//    fatalError("unable to create a new track when current track has been requested … error: \(error)")
+//    }
+//    }
+//    set {
+//      logDebug("set… currentValue: \(_currentTrack); newValue: \(newValue)")
+//      guard sequence.instrumentTracks ∋ newValue else { fatalError("setting currentTrack to a track not owned by sequence") }
+//      guard _currentTrack != newValue else { return }
+//      previousTrack = _currentTrack
+//      _currentTrack = newValue
+//      Notification.CurrentTrackDidChange.post()
+//    }
+//  }
 
-  static var currentTrackForAddingNode: InstrumentTrack {
-    if _currentTrack?.instrument.settingsEqualTo(auditionInstrument) == true { return _currentTrack! }
-    else {
-      do {
-        _currentTrack = try sequence.newTrackWithInstrument(instrumentWithCurrentSettings())
-        return _currentTrack!
-      } catch {
-        logError(error)
-        fatalError("unable to create a new track when current track for adding a node has been requested … error: \(error)")
-      }
-    }
-  }
 
 
   // MARK: - Properties used to initialize a new `MIDINode`
@@ -223,9 +226,12 @@ final class Sequencer {
 
   static var playing: Bool { return state ∋ .Playing }
 
+  static var paused: Bool { return state ∋ .Paused }
+
   static var recording: Bool {
     get { return state ∋ .Recording }
     set {
+      logDebug("set… currentValue: \(recording); newValue: \(newValue)")
       guard newValue != recording else { return }
       state ⊻= .Recording
       (newValue ? Notification.DidTurnOnRecording : Notification.DidTurnOffRecording).post()
@@ -233,23 +239,36 @@ final class Sequencer {
   }
 
   /** Starts the MIDI clock */
-  static func start() {
+  static func play() {
+    logDebug()
     guard !playing else { return }
     clock.start()
     state ∪= [.Playing, .HasPlayed]
+    state.remove(.Paused)
     Notification.DidStart.post()
+  }
+
+  /** pause */
+  static func pause() {
+    logDebug()
+    guard playing else { return }
+    clock.stop()
+    state.insert(.Paused)
+    state.remove(.Playing)
+    Notification.DidPause.post()
   }
 
   /** Moves the time back to 0 */
   static func reset() {
+    logDebug()
     if playing { stop() }
-    ([barBeatTime] + synchronizedTimes).forEach({time in time.reset()})
     state.remove(.HasPlayed)
     Notification.DidReset.post()
   }
 
   /** Stops the MIDI clock */
   static func stop() {
+    logDebug()
     guard playing else { return }
     clock.stop()
     state.remove(.Playing)

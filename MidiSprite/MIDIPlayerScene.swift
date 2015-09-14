@@ -32,6 +32,8 @@ class MIDIPlayerScene: SKScene {
 
     physicsWorld.gravity = .zero
     physicsWorld.contactDelegate = self
+
+    backgroundColor = .backgroundColor
   }
 
   /**
