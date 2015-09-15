@@ -98,10 +98,10 @@ final class InstrumentTrack: MIDITrackType, Equatable {
       return
     }
     dispatch_async(fileQueue!) {
-      [placement = node.placement, attributes = node.note, texture = node.textureType] in
+      [placement = node.placement, attributes = node.note] in
 
       self.appendEvent(
-        MIDINodeEvent(.Add(identifier: identifier, placement: placement, attributes: attributes, texture: texture)
+        MIDINodeEvent(.Add(identifier: identifier, placement: placement, attributes: attributes)
         )
       )
     }
@@ -117,15 +117,14 @@ final class InstrumentTrack: MIDITrackType, Equatable {
   */
   private func addNodeWithIdentifier(identifier: NodeIdentifier,
                            placement: MIDINode.Placement,
-                          attributes: NoteAttributes,
-                             texture: MIDINode.TextureType)
+                          attributes: NoteAttributes)
   {
     guard pendingIdentifier == nil else { fatalError("already have an identifier pending: \(pendingIdentifier!)") }
     guard let midiPlayer = MIDIPlayerViewController.currentInstance?.playerScene?.midiPlayer else {
       fatalError("trying to add node without a midi player")
     }
     pendingIdentifier = identifier
-    midiPlayer.placeNew(placement, targetTrack: self, attributes: attributes, texture: texture)
+    midiPlayer.placeNew(placement, targetTrack: self, attributes: attributes)
   }
 
   /**
@@ -303,7 +302,7 @@ final class InstrumentTrack: MIDITrackType, Equatable {
 //        case let channelEvent as ChannelEvent: dispatchChannelEvent(channelEvent)
         case let nodeEvent as MIDINodeEvent:
           switch nodeEvent.data {
-            case let .Add(i, p, a, t):    addNodeWithIdentifier(i, placement: p, attributes: a, texture: t)
+            case let .Add(i, p, a):    addNodeWithIdentifier(i, placement: p, attributes: a)
             case let .Remove(identifier): removeNodeWithIdentifier(identifier)
           }
         default: break

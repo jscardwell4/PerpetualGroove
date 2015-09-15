@@ -11,12 +11,18 @@ import UIKit
 import MoonKit
 import Eveleth
 
-final class FilesViewController: UITableViewController {
+final class FilesViewController: UIViewController {
+
+  @IBOutlet weak var scrollView: UIScrollView!
+
+  @IBOutlet weak var stackView: UIStackView!
+  @IBOutlet weak var stackViewHeightConstraint: NSLayoutConstraint!
 
   var didSelectFile: ((NSURL) -> Void)?
   var didDeleteFile: ((NSURL) -> Void)?
 
   private let constraintID = Identifier("FilesViewController", "Internal")
+
   private lazy var directoryMonitor: DirectoryMonitor = {
     do {
       return try DirectoryMonitor(directoryURL: documentsURL) { [unowned self] _ in self.refreshFiles() }
@@ -26,18 +32,116 @@ final class FilesViewController: UITableViewController {
   private var files: [NSURL] = [] {
     didSet {
       maxLabelSize = files.reduce(.zero) {
-        [attributes = [NSFontAttributeName:UIFont.controlFont]] size, url in
+        [attributes = [NSFontAttributeName:UIFont.controlFont], unowned self] size, url in
 
         let urlSize = url.lastPathComponent!.sizeWithAttributes(attributes)
-        return CGSize(width: max(size.width, urlSize.width), height: max(size.height, urlSize.height))
+        return CGSize(width: max(size.width, urlSize.width + 10), height: self.labelHeight)
       }
-      view.removeConstraints(view.constraintsWithIdentifier(constraintID))
-      view.invalidateIntrinsicContentSize()
-      tableView?.reloadData()
+      updateLabelButtons()
     }
   }
 
-  private var maxLabelSize: CGSize = .zero { didSet { maxLabelSize.height += 10; tableView?.rowHeight = maxLabelSize.height } }
+  /** viewDidLoad */
+  override func viewDidLoad() {
+    super.viewDidLoad()
+    view.translatesAutoresizingMaskIntoConstraints = false
+    refreshFiles()
+  }
+
+  /**
+  labelButtonAction:
+
+  - parameter sender: LabelButton
+  */
+  @IBAction private func labelButtonAction(sender: LabelButton) {
+    guard files.indices.contains(sender.tag) else { return }
+    didSelectFile?(files[sender.tag])
+  }
+
+  /**
+  applyText:views:
+
+  - parameter urls: S1
+  - parameter views: S2
+  */
+  private func applyText<S1:SequenceType, S2:SequenceType
+    where S1.Generator.Element == NSURL,
+          S2.Generator.Element == UIView>(urls: S1, _ views: S2)
+  {
+    zip(urls, views).forEach {
+      guard let fileName = $0.lastPathComponent, label = $1 as? LabelButton else { return }
+      label.text = fileName[..<fileName.endIndex.advancedBy(-4)]
+    }
+  }
+
+  /** updateLabelButtons */
+  private func updateLabelButtons() {
+    (stackView.arrangedSubviews.count ..< stackView.arrangedSubviews.count).forEach {
+      let subview = stackView.subviews[$0]
+      subview.hidden = false
+      stackView.addArrangedSubview(subview)
+    }
+    switch (files.count, stackView.arrangedSubviews.count) {
+      case let (f, s) where f == s:
+        applyText(files, stackView.arrangedSubviews)
+
+      case let (f, s) where s > f:
+        (f ..< s).forEach({
+          let subview = stackView.arrangedSubviews[$0]
+          stackView.removeArrangedSubview(subview)
+          subview.hidden = true
+        })
+        applyText(files, stackView.arrangedSubviews)
+
+      case let (f, s) where f > s:
+        (s ..< f).forEach { stackView.addArrangedSubview(newLabelButtonWithTag($0)) }
+        applyText(files, stackView.arrangedSubviews)
+
+      default: break // Unreachable
+    }
+  }
+
+  private let labelHeight: CGFloat = 32
+
+  /**
+  newLabelButtonWithText:
+
+  - parameter text: String
+
+  - returns: LabelButton
+  */
+  private func newLabelButtonWithTag(tag: Int) -> LabelButton {
+    let labelButton = LabelButton(autolayout: true)
+    labelButton.font = .labelFont
+    labelButton.textColor = .primaryColor
+    labelButton.highlightedTextColor = .highlightColor
+    labelButton.tag = tag
+    labelButton.tag = stackView.subviews.count
+    labelButton.addTarget(self, action: "labelButtonAction:", forControlEvents: .TouchUpInside)
+    return labelButton
+  }
+
+  /** updateViewConstraints */
+  override func updateViewConstraints() {
+    if view.constraintsWithIdentifier(constraintID).count == 0 {
+      view.constrain([view.width => contentSize.width, view.height => contentSize.height] --> constraintID)
+    }
+    super.updateViewConstraints()
+  }
+
+  private var contentSize: CGSize = .zero {
+    didSet {
+      scrollView.contentSize = contentSize
+      stackViewHeightConstraint.constant = contentSize.height
+      view.removeConstraints(view.constraintsWithIdentifier(constraintID))
+      view.setNeedsUpdateConstraints()
+    }
+  }
+  private var maxLabelSize: CGSize = .zero {
+    didSet {
+      contentSize = CGSize(width: maxLabelSize.width, height: maxLabelSize.height * CGFloat(files.count))
+    }
+  }
 
   /** refreshFiles */
   private func refreshFiles() {
@@ -47,40 +151,6 @@ final class FilesViewController: UITableViewController {
   private var tableWidth: CGFloat { return maxLabelSize.width }
   private var tableHeight: CGFloat { return maxLabelSize.height * CGFloat(files.count) }
 
-  /** loadView */
-//  override func loadView() {
-//    view = IntrinsicSizeDelegatingView(autolayout: true) {
-//      [unowned self] _ in CGSize(width: self.tableWidth, height: self.tableHeight)
-//    }
-//    view.setContentHuggingPriority(1000, forAxis: .Horizontal)
-//    view.setContentHuggingPriority(1000, forAxis: .Vertical)
-//    view.setContentCompressionResistancePriority(1000, forAxis: .Horizontal)
-//    view.setContentCompressionResistancePriority(1000, forAxis: .Vertical)
-//    view.backgroundColor = .popoverBackgroundColor
-//    view.opaque = true
-//
-//    let tableView = UITableView(frame: .zero, style: .Plain)
-//    tableView.translatesAutoresizingMaskIntoConstraints = false
-//    tableView.opaque = true
-//    tableView.backgroundColor = .popoverBackgroundColor
-//    tableView.rowHeight = 32
-//    tableView.separatorStyle = .None
-//    tableView.registerClass(Cell.self, forCellReuseIdentifier: "\(Cell.self)")
-//    tableView.delegate = self
-//    tableView.dataSource = self
-//    view.addSubview(tableView)
-//    self.tableView = tableView
-//  }
-
-//  override func updateViewConstraints() {
-//    super.updateViewConstraints()
-//    guard view.constraintsWithIdentifier(constraintID).count == 0, let tableView = tableView else { return }
-//    view.constrain(
-//      [ 𝗩|--10--tableView--10--|𝗩, 𝗛|--10--tableView--10--|𝗛,
-//        [tableView.height => tableHeight, tableView.width => tableWidth] ] --> constraintID
-//    )
-//  }
-
   /**
   viewWillAppear:
 
@@ -89,7 +159,6 @@ final class FilesViewController: UITableViewController {
   override func viewWillAppear(animated: Bool) {
     super.viewWillAppear(animated)
     refreshFiles()
-    tableView?.reloadData()
     directoryMonitor.startMonitoring()
   }
 
@@ -104,82 +173,6 @@ final class FilesViewController: UITableViewController {
   }
 
   /**
-  numberOfSectionsInTableView:
-
-  - parameter tableView: UITableView
-
-  - returns: Int
-  */
-  override func numberOfSectionsInTableView(tableView: UITableView) -> Int { return 1 }
-
-  /**
-  tableView:numberOfRowsInSection:
-
-  - parameter tableView: UITableView
-  - parameter section: Int
-
-  - returns: Int
-  */
-  override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int { return files.count }
-
-  /**
-  tableView:cellForRowAtIndexPath:
-
-  - parameter tableView: UITableView
-  - parameter indexPath: NSIndexPath
-
-  - returns: UITableViewCell
-  */
-  override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath)
-    let fileName = files[indexPath.row].lastPathComponent!
-    cell.textLabel?.text = fileName[..<fileName.endIndex.advancedBy(-4)]
-    return cell
-  }
-
-  /**
-  tableView:didSelectRowAtIndexPath:
-
-  - parameter tableView: UITableView
-  - parameter indexPath: NSIndexPath
-  */
-  override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-    didSelectFile?(files[indexPath.row])
-  }
-
-  /**
-  tableView:canEditRowAtIndexPath:
-
-  - parameter tableView: UITableView
-  - parameter canEditRowAtIndexPath: NSIndexPath
-
-  - returns: Bool
-  */
-  override func tableView(tableView: UITableView, canEditRowAtIndexPath: NSIndexPath) -> Bool { return true }
-
-
-  /**
-  tableView:commitEditingStyle:forRowAtIndexPath:
-
-  - parameter tableView: UITableView
-  - parameter commitEditingStyle: UITableViewCellEditingStyle
-  - parameter forRowAtIndexPath: NSIndexPath
-  */
-  override func tableView(tableView: UITableView,
-       commitEditingStyle editingStyle: UITableViewCellEditingStyle,
-        forRowAtIndexPath indexPath: NSIndexPath)
-  {
-    guard editingStyle == .Delete else { return }
-    let url = files.removeAtIndex(indexPath.row)
-    do {
-      try NSFileManager.defaultManager().removeItemAtURL(url)
-      didDeleteFile?(url)
-    } catch {
-      logError(error)
-    }
-  }
-
-  /**
   prefersStatusBarHidden
 
   - returns: Bool
@@ -187,66 +180,3 @@ final class FilesViewController: UITableViewController {
   override func prefersStatusBarHidden() -> Bool { return true }
 
 }
-
-//@IBDesignable final class FilesCell: UITableViewCell {
-//
-//  @IBInspectable var wtf: Bool = false
-//
-//  override var textLabel: UILabel? {
-//    guard let label = super.textLabel else { return nil }
-//    label.translatesAutoresizingMaskIntoConstraints = false
-//    label.backgroundColor = .popoverBackgroundColor
-//    label.opaque = true
-//    label.font = .controlFont
-//    label.textColor = .controlColor
-//    label.highlightedTextColor = .controlSelectedColor
-//    return label
-//  }
-//
-//  override var highlighted: Bool { didSet { textLabel?.highlighted = highlighted } }
-//
-//  /**
-//  setHighlighted:animated:
-//
-//  - parameter highlighted: Bool
-//  - parameter animated: Bool
-//  */
-//  override func setHighlighted(highlighted: Bool, animated: Bool) {
-//    super.setHighlighted(highlighted, animated: animated)
-//    textLabel?.highlighted = highlighted
-//  }
-//
-//  /** setup */
-//  private func setup() {
-//    backgroundColor = .popoverBackgroundColor
-//    contentView.backgroundColor = .redColor()
-//    opaque = true
-//    separatorInset = .zeroInsets
-//    selectionStyle = .None
-//  }
-//  /**
-//  initWithStyle:reuseIdentifier:
-//
-//  - parameter style: UITableViewCellStyle
-//  - parameter reuseIdentifier: String?
-//  */
-//  override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-//    super.init(style: style, reuseIdentifier: reuseIdentifier)
-//    setup()
-//  }
-//
-//  override func updateConstraints() {
-//    super.updateConstraints()
-//    let id = Identifier(self, "Internal")
-//    guard constraintsWithIdentifier(id).count == 0, let textLabel = textLabel  else { return }
-//    constrain([𝗩|textLabel|𝗩, 𝗛|textLabel|𝗛] --> id)
-//  }
-//
-//  /**
-//  init:
-//
-//  - parameter aDecoder: NSCoder
-//  */
-//  required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder); setup() }
-//}
-//

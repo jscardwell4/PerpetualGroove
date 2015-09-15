@@ -72,8 +72,7 @@ final class MIDIPlayerNode: SKShapeNode {
   */
   func placeNew(placement: MIDINode.Placement,
                 targetTrack: InstrumentTrack? = nil,
-                attributes: NoteAttributes = Sequencer.currentNoteAttributes,
-                texture: MIDINode.TextureType = Sequencer.currentTexture)
+                attributes: NoteAttributes = Sequencer.currentNoteAttributes)
   {
     do {
       // We have to get the track first to force a new track to be created when necessary before the `MIDINode` receives its color
@@ -84,7 +83,7 @@ final class MIDIPlayerNode: SKShapeNode {
         track = try Sequencer.sequence.newTrackWithInstrument(Sequencer.instrumentWithCurrentSettings())
         Sequencer.currentTrack = track
       }
-      let midiNode = try MIDINode(placement: placement, name: "midiNode\(midiNodes.count)", track: track, attributes: attributes, texture: texture)
+      let midiNode = try MIDINode(placement: placement, name: "midiNode\(midiNodes.count)", track: track, attributes: attributes)
       addChild(midiNode)
       midiNodes.append(midiNode)
       try track.addNode(midiNode)

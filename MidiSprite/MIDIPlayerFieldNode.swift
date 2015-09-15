@@ -25,7 +25,7 @@ class MIDIPlayerFieldNode: SKShapeNode {
     name = "midiPlayerField"
     path = bezierPath.CGPath
     userInteractionEnabled = true
-    strokeColor = .strokeColor
+    strokeColor = .primaryColor
   }
 
   required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }

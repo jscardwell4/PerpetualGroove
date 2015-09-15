@@ -71,7 +71,7 @@ struct MIDINodeEvent: MIDITrackEvent {
   init(barBeatTime t: CABarBeatTime, data d: Data) { time = t; data = d }
 
   enum Data: Equatable {
-    case Add(identifier: Identifier, placement: MIDINode.Placement, attributes: NoteAttributes, texture: MIDINode.TextureType)
+    case Add(identifier: Identifier, placement: MIDINode.Placement, attributes: NoteAttributes)
     case Remove(identifier: Identifier)
 
     init<C:CollectionType where C.Generator.Element == Byte,
@@ -99,27 +99,17 @@ struct MIDINodeEvent: MIDITrackEvent {
       let attributesSize = Int(data[currentIndex])
       currentIndex.increment()
       i = currentIndex.advancedBy(attributesSize)
-      guard i.distanceTo(data.endIndex) > 0 else {
-        throw MIDIFileError(type: .InvalidLength, reason: "Not enough bytes for event")
+      guard i.distanceTo(data.endIndex) == 0 else {
+        throw MIDIFileError(type: .InvalidLength, reason: "Incorrect number of bytes for event")
       }
       let attributes = NoteAttributes(data[currentIndex ..< i])
 
-      currentIndex = i
-      guard currentIndex.distanceTo(data.endIndex) == 1 else {
-        throw MIDIFileError(type: .InvalidLength, reason: "There should be exactly one byte left for texture index")
-      }
-      let textureIndex = Int(data[currentIndex])
-      guard MIDINode.TextureType.allCases.indices ∋ textureIndex else {
-        throw MIDIFileError(type: .FileStructurallyUnsound, reason: "\(textureIndex) is not a valid texture index")
-      }
-      let texture = MIDINode.TextureType.allCases[textureIndex]
-
-      self = .Add(identifier: identifier, placement: placement, attributes: attributes, texture: texture)
+      self = .Add(identifier: identifier, placement: placement, attributes: attributes)
     }
 
     var bytes: [Byte] {
       switch self {
-        case let .Add(identifier, placement, attributes, texture):
+        case let .Add(identifier, placement, attributes):
           var bytes = identifier.bytes
           let placementBytes = placement.bytes
           bytes.append(Byte(placementBytes.count))
@@ -127,7 +117,6 @@ struct MIDINodeEvent: MIDITrackEvent {
           let attributesBytes = attributes.bytes
           bytes.append(Byte(attributesBytes.count))
           bytes += attributesBytes
-          bytes.append(Byte(texture.index))
           return bytes
 
         case let .Remove(identifier): return identifier.bytes

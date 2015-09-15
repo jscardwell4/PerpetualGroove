@@ -13,13 +13,13 @@ import Chameleon
 import Eveleth
 
 extension UIColor {
-  static var labelTextColor: UIColor          { return Chameleon.kelleyPearlBush }
-  static var controlColor: UIColor            { return Chameleon.quietLightLobLollyDark }
-  static var controlSelectedColor: UIColor    { return Chameleon.quietLightLobLolly }
-  static var tintColor: UIColor               { return Chameleon.quietLightLilyWhiteDark }
-  static var backgroundColor: UIColor         { return rgb(51, 50, 49) }
-  static var popoverBackgroundColor: UIColor  { return rgb(44, 37, 31) }
-  static var strokeColor: UIColor             { return rgb(186, 179, 169) }
+  static var backgroundColor: UIColor        { return rgb(51, 50, 49) }
+  static var popoverBackgroundColor: UIColor { return rgb(25, 25, 24) }
+  static var primaryColor: UIColor           { return rgb(186, 179, 169) }
+  static var secondaryColor: UIColor         { return rgb(146, 135, 120) }
+  static var tertiaryColor: UIColor          { return rgb(77, 75, 73) }
+  static var quaternaryColor: UIColor        { return rgb(223, 211, 194) }
+  static var highlightColor: UIColor         { return rgb(194, 65, 0) }
 }
 
 extension UIFont {

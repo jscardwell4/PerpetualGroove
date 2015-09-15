@@ -181,8 +181,6 @@ final class Sequencer {
     auditionInstrument.playNoteWithAttributes(currentNoteAttributes)
   }
 
-  static var currentTexture = MIDINode.TextureType.allCases[0]
-
   // MARK: - Transport
 
   static var playing: Bool { return state ∋ .Playing }

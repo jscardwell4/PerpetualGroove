@@ -11,18 +11,13 @@ import MoonKit
 
 final class NoteAttributesViewController: UIViewController {
 
-  @IBOutlet weak var texturePicker:  InlinePickerView!
   @IBOutlet weak var notePicker:     InlinePickerView!
   @IBOutlet weak var durationPicker: InlinePickerView!
   @IBOutlet weak var velocityPicker: InlinePickerView!
 
-  typealias Texture  = MIDINode.TextureType
   typealias Note     = NoteAttributes.Note
   typealias Duration = NoteAttributes.Duration
   typealias Velocity = NoteAttributes.Velocity
-
-  /** didPickTexture */
-  @IBAction func didPickTexture() { Sequencer.currentTexture = Texture.allCases[texturePicker.selection] }
 
   /** didPickNote */
   @IBAction func didPickNote() { Sequencer.currentNoteAttributes.note = Note.allCases[notePicker.selection] }
@@ -39,7 +34,6 @@ final class NoteAttributesViewController: UIViewController {
   /** viewDidLoad */
   override func viewDidLoad() {
     super.viewDidLoad()
-    texturePicker.selection = Sequencer.currentTexture.index
     notePicker.selection = Sequencer.currentNoteAttributes.note.index
     durationPicker.selection = Sequencer.currentNoteAttributes.duration.index
     velocityPicker.selection = Sequencer.currentNoteAttributes.velocity.index

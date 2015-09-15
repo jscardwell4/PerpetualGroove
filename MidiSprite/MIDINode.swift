@@ -14,18 +14,7 @@ import struct AudioToolbox.MIDINoteMessage
 
 final class MIDINode: SKSpriteNode {
 
-  // MARK: - Type to specify the node's texture
-  enum TextureType: String, EnumerableType, ImageAssetLiteralType, TextureAssetLiteralType {
-    case Eveleth1, Eveleth2, Eveleth3, Eveleth4, Eveleth5, Eveleth6, Eveleth7,
-         Eveleth8, Eveleth9
-    static let atlas = SKTextureAtlas(named: "balls")
-    static let allCases: [TextureType] = [.Eveleth1, .Eveleth2, .Eveleth3, .Eveleth4, .Eveleth5, .Eveleth6, .Eveleth7,
-                                          .Eveleth8, .Eveleth9]
-  }
-
   // MARK: - Properties relating to the node's appearance
-
-  var textureType: TextureType
 
   static var defaultSize = CGSize(square: 32)
 
@@ -151,12 +140,11 @@ final class MIDINode: SKSpriteNode {
   - parameter tr: Track
   - parameter n: Note
   */
-  init(placement p: Placement, name: String, track: InstrumentTrack, attributes: NoteAttributes, texture: TextureType) throws {
+  init(placement p: Placement, name: String, track: InstrumentTrack, attributes: NoteAttributes) throws {
     placement = p
-    textureType = texture
     note = attributes
 
-    super.init(texture: texture.texture,
+    super.init(texture: SKTexture(image: UIImage(named: "ball")!),
                color: track.color.value,
                size: MIDINode.defaultSize)
 

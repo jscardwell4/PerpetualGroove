@@ -239,7 +239,7 @@ public func +<U:Unpackable2 where U.Element == CGFloat>(lhs: CGSize, rhs: U) -> 
   let (w, h) = rhs.unpack
   return CGSize(width: lhs.width + w, height: lhs.height + h)
 }
-
+public func +=(inout lhs: CGSize, rhs: CGFloatable) { lhs.width += rhs.CGFloatValue; lhs.height += rhs.CGFloatValue }
 public func +(lhs: CGSize, rhs: CGFloat) -> CGSize { return CGSize(width: lhs.width + rhs, height: lhs.height + rhs) }
 
 public func -(lhs: CGSize, rhs: CGSize) -> CGSize {
