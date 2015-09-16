@@ -91,7 +91,7 @@ import UIKit
 
   @IBInspectable public var knobColor: UIColor = .darkGrayColor() {
     didSet {
-      if let knobBase = knobBase { self.knobBase = knobBase.imageWithColor(knobColor) }
+      knobBase = knobBase?.imageWithColor(knobColor)
       setNeedsDisplay()
     }
   }

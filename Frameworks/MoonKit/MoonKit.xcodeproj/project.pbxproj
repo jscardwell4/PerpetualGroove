@@ -305,6 +305,7 @@
 		C256F09C1ABE0052005B7CB3 /* String+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23592E919C8E04200920F8D /* String+MoonKitAdditions.swift */; };
 		C256F09D1ABE005F005B7CB3 /* NSError+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21D7AE31AA60E3F000DE8A3 /* NSError+MoonKitAdditions.swift */; };
 		C256F09E1ABE0089005B7CB3 /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C482E419CA0225002E84A9 /* Stack.swift */; };
+		C25C6F621BA8F23800B3CBAB /* ScrollWheel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25C6F611BA8F23800B3CBAB /* ScrollWheel.swift */; settings = {ASSET_TAGS = (); }; };
 		C25D6A871B703E0C00EB7125 /* UILabel+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25D6A861B703E0C00EB7125 /* UILabel+MoonKitAdditions.swift */; };
 		C25E63E11A00427100F54626 /* OrderedSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25E63E01A00427100F54626 /* OrderedSet.swift */; };
 		C2618A681B7A436400122EBA /* FormTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2618A671B7A436400122EBA /* FormTextField.swift */; };
@@ -519,6 +520,7 @@
 		C256F07E1ABDFFE5005B7CB3 /* MoonKitOSX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MoonKitOSX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C256F0811ABDFFE5005B7CB3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C256F0821ABDFFE5005B7CB3 /* MoonKitOSX.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MoonKitOSX.h; sourceTree = "<group>"; };
+		C25C6F611BA8F23800B3CBAB /* ScrollWheel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollWheel.swift; sourceTree = "<group>"; };
 		C25D6A861B703E0C00EB7125 /* UILabel+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UILabel+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C25E63D819FDBE7100F54626 /* Geometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Geometry.swift; sourceTree = "<group>"; };
 		C25E63DD19FEC06A00F54626 /* GestureManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GestureManager.swift; sourceTree = "<group>"; };
@@ -1078,6 +1080,7 @@
 				C2F75A0C1B977075001EA2BA /* PropertyCoder.swift */,
 				C2D5F2411B97BC93005040EF /* Slider.swift */,
 				C226BB5E1BA0DA7300E4FC98 /* Stepper.swift */,
+				C25C6F611BA8F23800B3CBAB /* ScrollWheel.swift */,
 			);
 			path = Objects;
 			sourceTree = "<group>";
@@ -1829,6 +1832,7 @@
 				C2064FFE1A13C71700342FDE /* UIView+MoonKitAdditions.swift in Sources */,
 				C2618A781B7A88A400122EBA /* InlinePickerViewImageCell.swift in Sources */,
 				C2358F3B19C78E0C00920F8D /* NSManagedObjectContext+MSKitAdditions.m in Sources */,
+				C25C6F621BA8F23800B3CBAB /* ScrollWheel.swift in Sources */,
 				C22F5FE61B6FCF73006D225A /* Timer.swift in Sources */,
 				C2358F3C19C78E0C00920F8D /* NSMapTable+MSKitAdditions.m in Sources */,
 				C2358F3D19C78E0C00920F8D /* NSNull+MSKitAdditions.m in Sources */,

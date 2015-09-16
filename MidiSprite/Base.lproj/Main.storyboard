@@ -395,8 +395,20 @@
                                     </mask>
                                 </variation>
                             </stackView>
-                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="U9p-PY-X1m" userLabel="MIDI Player" customClass="SKView">
-                                <rect key="frame" x="0.0" y="98" width="375" height="435"/>
+                            <view opaque="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ndz-Vc-1wb" customClass="ScrollWheel" customModule="MoonKit">
+                                <rect key="frame" x="130" y="517" width="100" height="100"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="wheelBaseColor">
+                                        <color key="value" red="0.76089900732040405" green="0.25649610161781311" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="dimpleColor">
+                                        <color key="value" red="0.87450999021530151" green="0.8274499773979187" blue="0.7607799768447876" alpha="1" colorSpace="calibratedRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="U9p-PY-X1m" userLabel="MIDI Player" customClass="SKView">
+                                <rect key="frame" x="0.0" y="86" width="375" height="418"/>
                                 <color key="backgroundColor" red="0.20000000298023224" green="0.19607843458652496" blue="0.19215686619281769" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
                             <stackView opaque="NO" contentMode="scaleToFill" alignment="firstBaseline" translatesAutoresizingMaskIntoConstraints="NO" id="1L9-xl-LZM" userLabel="File/Track">
@@ -671,7 +683,7 @@
                             <constraint firstItem="qmT-5g-1Xb" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leading" id="C5v-lg-8Ev"/>
                             <constraint firstAttribute="trailingMargin" secondItem="MW7-7L-sqD" secondAttribute="trailing" id="Co9-Y8-vNS"/>
                             <constraint firstItem="SIl-d8-sfe" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="3se-qz-xqx" secondAttribute="leadingMargin" constant="10" id="Egr-O2-Q8p"/>
-                            <constraint firstItem="eaf-y5-9B7" firstAttribute="top" secondItem="U9p-PY-X1m" secondAttribute="bottom" constant="8" symbolic="YES" id="Eyn-yR-DLl"/>
+                            <constraint firstItem="eaf-y5-9B7" firstAttribute="top" secondItem="U9p-PY-X1m" secondAttribute="bottom" constant="100" id="Eyn-yR-DLl"/>
                             <constraint firstItem="1L9-xl-LZM" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leadingMargin" id="Gzo-bF-Ncm"/>
                             <constraint firstItem="Hsi-ta-i4H" firstAttribute="top" secondItem="8aa-yV-Osq" secondAttribute="bottom" constant="8" symbolic="YES" id="HR5-A6-3im"/>
                             <constraint firstItem="ca1-ur-VJf" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leadingMargin" id="MsV-hy-FO0"/>
@@ -758,7 +770,7 @@
                     </connections>
                 </swipeGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="370" y="346"/>
+            <point key="canvasLocation" x="369.5" y="345.5"/>
         </scene>
         <!--Files-->
         <scene sceneID="cf3-gO-r0K">
@@ -775,7 +787,7 @@
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" directionalLockEnabled="YES" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fU3-7h-iog">
                                 <rect key="frame" x="0.0" y="0.0" width="180" height="88"/>
                                 <subviews>
-                                    <stackView contentMode="scaleToFill" placeholderIntrinsicWidth="100" placeholderIntrinsicHeight="44" axis="vertical" distribution="fillEqually" alignment="top" layoutMarginsRelativeArrangement="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eUb-aE-gKA">
+                                    <stackView contentMode="scaleToFill" placeholderIntrinsicWidth="100" placeholderIntrinsicHeight="44" axis="vertical" distribution="fillEqually" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="eUb-aE-gKA">
                                         <rect key="frame" x="20" y="0.0" width="140" height="88"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xHv-Np-KXq" customClass="LabelButton" customModule="MoonKit">
@@ -1690,8 +1702,8 @@
                                 </userDefinedRuntimeAttributes>
                                 <variation key="default">
                                     <mask key="constraints">
-                                        <exclude reference="Kgd-2E-8hu"/>
                                         <exclude reference="IEP-6d-EhC"/>
+                                        <exclude reference="Kgd-2E-8hu"/>
                                     </mask>
                                 </variation>
                                 <connections>
@@ -1965,7 +1977,7 @@
                                 <rect key="frame" x="0.0" y="98" width="375" height="435"/>
                                 <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
-                            <stackView opaque="NO" contentMode="scaleToFill" alignment="firstBaseline" translatesAutoresizingMaskIntoConstraints="NO" id="ISb-nb-jix" userLabel="File/Track">
+                            <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" alignment="firstBaseline" translatesAutoresizingMaskIntoConstraints="NO" id="ISb-nb-jix" userLabel="File/Track">
                                 <rect key="frame" x="16" y="62" width="343" height="24"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Track" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gWM-AT-otq">
@@ -1988,7 +2000,7 @@
                                         <color key="textColor" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <view opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="cff-QF-RrI" customClass="LabelButton" customModule="MoonKit">
+                                    <view opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cff-QF-RrI" customClass="LabelButton" customModule="MoonKit">
                                         <rect key="frame" x="343" y="0.0" width="0.0" height="24"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <constraints>
@@ -2044,8 +2056,8 @@
                                                 </constraints>
                                                 <variation key="default">
                                                     <mask key="constraints">
-                                                        <exclude reference="tVQ-fb-yXv"/>
                                                         <exclude reference="k1w-AD-pbM"/>
+                                                        <exclude reference="tVQ-fb-yXv"/>
                                                     </mask>
                                                 </variation>
                                             </containerView>
