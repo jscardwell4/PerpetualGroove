@@ -44,19 +44,80 @@ private func pointInsideRadius(point: CGPoint, r: CGFloat, center: CGPoint) -> B
 
 @IBDesignable public class ScrollWheel: UIControl {
 
+  public var dimpleStyle: CGBlendMode = .Normal {
+    didSet { guard oldValue != dimpleStyle else { return }; setNeedsDisplay() }
+  }
+
+  @IBInspectable public var dimpleStyleString: String {
+    get { return dimpleStyle.stringValue }
+    set { dimpleStyle = CGBlendMode(stringValue: newValue) }
+  }
+
+  public var dimpleFillStyle: CGBlendMode = .Normal {
+    didSet { guard oldValue != dimpleFillStyle else { return }; setNeedsDisplay() }
+  }
+
+  @IBInspectable public var dimpleFillStyleString: String {
+    get { return dimpleFillStyle.stringValue }
+    set { dimpleFillStyle = CGBlendMode(stringValue: newValue) }
+  }
+
   @IBInspectable public var theta: CGFloat = 0 { didSet { setNeedsDisplay() } }
   @IBInspectable public var value: Float = 0
-  @IBInspectable public var wheelBaseImage: UIImage? { didSet { setNeedsDisplay() } }
-  @IBInspectable public var dimpleImage: UIImage? { didSet { setNeedsDisplay() } }
-  @IBInspectable public var wheelBaseColor: UIColor = .darkGrayColor() {
+
+  #if TARGET_INTERFACE_BUILDER
+  @IBInspectable public override var highlighted: Bool { didSet { setNeedsDisplay() } }
+  #endif
+
+  @IBInspectable public var wheelImage: UIImage? {
+    didSet { 
+      guard oldValue != wheelImage else { return }
+      wheelImage = wheelImage?.imageWithColor(wheelColor)
+      setNeedsDisplay() 
+    }
+  }
+
+  @IBInspectable public var wheelColor: UIColor = .darkGrayColor() {
+    didSet { 
+      guard oldValue != wheelColor else { return }
+      wheelImage = wheelImage?.imageWithColor(wheelColor)
+      setNeedsDisplay() 
+    }
+  }
+
+  @IBInspectable public var dimpleImage: UIImage? {
+    didSet { 
+      guard oldValue != dimpleImage else { return }
+      dimpleImage = dimpleImage?.imageWithColor(dimpleColor)
+      dimpleHighlightedImage = dimpleImage?.imageWithColor(dimpleHighlightedColor)
+      setNeedsDisplay() 
+    }
+  }
+  private var dimpleHighlightedImage: UIImage?
+
+  @IBInspectable public var dimpleFillImage: UIImage? {
     didSet {
-      wheelBaseImage = wheelBaseImage?.imageWithColor(wheelBaseColor)
+      guard oldValue != dimpleFillImage else { return }
+      dimpleFillImage = dimpleFillImage?.imageWithColor(dimpleColor)
+      dimpleFillHighlightedImage = dimpleFillImage?.imageWithColor(dimpleHighlightedColor)
       setNeedsDisplay()
     }
   }
+  private var dimpleFillHighlightedImage: UIImage?
+
   @IBInspectable public var dimpleColor:  UIColor = .lightGrayColor() {
-    didSet {
+    didSet { 
+      guard oldValue != dimpleColor else { return }
       dimpleImage = dimpleImage?.imageWithColor(dimpleColor)
+      setNeedsDisplay() 
+    }
+  }
+
+  @IBInspectable public var dimpleHighlightedColor:  UIColor = .blueColor() {
+    didSet {
+      guard oldValue != dimpleHighlightedColor else { return }
+      dimpleHighlightedImage = dimpleImage?.imageWithColor(dimpleHighlightedColor)
+      dimpleFillHighlightedImage = dimpleFillImage?.imageWithColor(dimpleHighlightedColor)
       setNeedsDisplay()
     }
   }
@@ -67,7 +128,7 @@ private func pointInsideRadius(point: CGPoint, r: CGFloat, center: CGPoint) -> B
   - parameter rect: CGRect
   */
   public override func drawRect(rect: CGRect) {
-    var frame = rect.insetBy(dx: 2, dy: 2)
+    var frame = rect//.insetBy(dx: 2, dy: 2)
     if frame.size.width != frame.size.height {
       frame.size = CGSize(square: frame.size.minAxis)
       frame.origin += (rect.size - frame.size) * 0.5
@@ -75,27 +136,44 @@ private func pointInsideRadius(point: CGPoint, r: CGFloat, center: CGPoint) -> B
 
     let context = UIGraphicsGetCurrentContext()
     CGContextSaveGState(context)
-    CGContextTranslateCTM(context, half(frame.width), half(frame.height))
+    CGContextTranslateCTM(context, half(rect.width), half(rect.height))
     CGContextRotateCTM(context, theta)
 
     let baseFrame = CGRect(origin: frame.origin - (frame.size * 0.5),  size: frame.size).integral
-    if let wheelBase = wheelBaseImage {
+    if let wheelBase = wheelImage {
       wheelBase.drawInRect(baseFrame)
     } else {
-      wheelBaseColor.setFill()
+      wheelColor.setFill()
       UIBezierPath(ovalInRect: baseFrame).fill()
     }
 
+
     let dimpleSize = baseFrame.size * 0.35
     let dimpleFrame = CGRect(origin: CGPoint(x: -half(dimpleSize.width), y: baseFrame.origin.y + 4), size: dimpleSize)
-    if let dimple = dimpleImage {
-      dimple.drawInRect(dimpleFrame)
+
+    if let dimple = highlighted ? dimpleHighlightedImage : dimpleImage,
+           dimpleFill = highlighted ? dimpleFillHighlightedImage : dimpleFillImage
+    {
+
+      CGContextSaveGState(context)
+      UIBezierPath(ovalInRect: dimpleFrame).addClip()
+      dimple.drawInRect(dimpleFrame, blendMode: dimpleStyle, alpha: 1)
+      CGContextRestoreGState(context)
+
+      let deltaSize = dimpleSize - dimpleFill.size
+      let dimpleFillFrame = CGRect(origin: dimpleFrame.origin + deltaSize * 0.5, size: dimpleFill.size)//.insetBy(dx: 1, dy: 1)
+
+      CGContextSaveGState(context)
+      UIBezierPath(ovalInRect: dimpleFillFrame.insetBy(dx: 1, dy: 1)).addClip()
+      dimpleFill.drawAtPoint(dimpleFillFrame.origin, blendMode: dimpleFillStyle, alpha: 1)
+      CGContextRestoreGState(context)
+
     } else {
-      dimpleColor.setFill()
+      (highlighted ? dimpleHighlightedColor : dimpleColor).setFill()
       UIBezierPath(ovalInRect: dimpleFrame).fill()
     }
 
-    CGContextRestoreGState(context)
+    CGContextRestoreGState(context) // Matrix rotation
   }
 
   /**

@@ -16,13 +16,13 @@ import UIKit
     var blendMode: CGBlendMode { switch self { case .Clear: return .Clear; case .SourceAtop: return .SourceAtop } }
   }
 
-  public var indicatorStyle = IndicatorStyle.Clear {
+  public var indicatorStyle: CGBlendMode = .Clear {
     didSet { guard oldValue != indicatorStyle else { return }; setNeedsDisplay() }
   }
 
   @IBInspectable public var indicatorStyleString: String {
-    get { return indicatorStyle.rawValue }
-    set { indicatorStyle = IndicatorStyle(rawValue: newValue) ?? .Clear }
+    get { return indicatorStyle.stringValue }
+    set { indicatorStyle = CGBlendMode(stringValue: newValue) }
   }
 
   @IBInspectable public var value: Float = 0.0 {
@@ -131,12 +131,16 @@ import UIKit
 
     let center = frame.center.offsetBy(dx: 0, dy: -2)
     let indicatorPath = UIBezierPath()
-    indicatorPath.addArcWithCenter(center, radius: half(frame.width) - 2, startAngle: startAngle, endAngle: endAngle, clockwise: false)
+    indicatorPath.addArcWithCenter(center,
+                            radius: half(frame.width) - 2,
+                        startAngle: startAngle,
+                          endAngle: endAngle,
+                         clockwise: false)
     indicatorPath.addLineToPoint(center)
     indicatorPath.closePath()
 
     indicatorColor.setFill()
-    indicatorPath.fillWithBlendMode(indicatorStyle.blendMode, alpha: 1)
+    indicatorPath.fillWithBlendMode(indicatorStyle, alpha: 1)
     indicatorPath.lineWidth = 2
     indicatorPath.lineJoinStyle = .Bevel
     indicatorPath.strokeWithBlendMode(.Clear, alpha: 1)

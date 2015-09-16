@@ -57,6 +57,7 @@ final class MIDIPlayerViewController: UIViewController {
     adjustPopover(filesPopoverView, filesButton)
     adjustPopover(noteAttributesPopoverView, noteAttributesButton)
     adjustPopover(mixerPopoverView, mixerButton)
+    adjustPopover(tempoPopoverView, tempoButton)
     adjustPopover(instrumentPopoverView, instrumentButton)
   }
 
@@ -88,18 +89,6 @@ final class MIDIPlayerViewController: UIViewController {
   */
   override func prefersStatusBarHidden() -> Bool { return true }
 
-  // MARK: - Tempo
-
-  @IBOutlet weak var tempoSlider: Slider!
-
-  /** tempoSliderValueDidChange */
-  @IBAction private func tempoSliderValueDidChange() { logDebug(""); Sequencer.tempo = Double(tempoSlider.value) }
-
-  @IBOutlet weak var metronomeButton: ImageButtonView!
-
-  /** metronome */
-  @IBAction func metronome() { logDebug(""); AudioManager.metronome.on = !AudioManager.metronome.on }
-
   // MARK: - Popovers
 
   /**
@@ -115,6 +104,7 @@ final class MIDIPlayerViewController: UIViewController {
       case ("Instrument", let controller as InstrumentViewController):         instrumentViewController     = controller
       case ("NoteAttributes", let controller as NoteAttributesViewController): noteAttributesViewController = controller
       case ("Files", let controller as FilesViewController):                   filesViewController          = controller
+      case ("Tempo", let controller as TempoViewController):                   tempoViewController          = controller
       default:                                                                 break
     }
   }
@@ -126,23 +116,25 @@ final class MIDIPlayerViewController: UIViewController {
 
   // MARK: Popover enumeration
   private enum Popover {
-    case None, Files, NoteAttributes, Instrument, Mixer
+    case None, Files, NoteAttributes, Instrument, Mixer, Tempo
     var view: PopoverView? {
       switch self {
-        case .Files:      return MIDIPlayerViewController.currentInstance?.filesPopoverView
-        case .NoteAttributes:   return MIDIPlayerViewController.currentInstance?.noteAttributesPopoverView
-        case .Instrument: return MIDIPlayerViewController.currentInstance?.instrumentPopoverView
-        case .Mixer:      return MIDIPlayerViewController.currentInstance?.mixerPopoverView
-        case .None:       return nil
+        case .Files:          return MIDIPlayerViewController.currentInstance?.filesPopoverView
+        case .NoteAttributes: return MIDIPlayerViewController.currentInstance?.noteAttributesPopoverView
+        case .Instrument:     return MIDIPlayerViewController.currentInstance?.instrumentPopoverView
+        case .Mixer:          return MIDIPlayerViewController.currentInstance?.mixerPopoverView
+        case .Tempo:          return MIDIPlayerViewController.currentInstance?.tempoPopoverView
+        case .None:           return nil
       }
     }
     var button: ImageButtonView? {
       switch self {
-        case .Files:      return MIDIPlayerViewController.currentInstance?.filesButton
-        case .NoteAttributes:   return MIDIPlayerViewController.currentInstance?.noteAttributesButton
-        case .Instrument: return MIDIPlayerViewController.currentInstance?.instrumentButton
-        case .Mixer:      return MIDIPlayerViewController.currentInstance?.mixerButton
-        case .None:       return nil
+        case .Files:          return MIDIPlayerViewController.currentInstance?.filesButton
+        case .NoteAttributes: return MIDIPlayerViewController.currentInstance?.noteAttributesButton
+        case .Instrument:     return MIDIPlayerViewController.currentInstance?.instrumentButton
+        case .Mixer:          return MIDIPlayerViewController.currentInstance?.mixerButton
+        case .Tempo:          return MIDIPlayerViewController.currentInstance?.tempoButton
+        case .None:           return nil
       }
     }
   }
@@ -257,6 +249,13 @@ final class MIDIPlayerViewController: UIViewController {
   @IBAction private func noteAttributes() { logDebug(""); updatePopover(.NoteAttributes) }
   @IBOutlet private weak var noteAttributesPopoverView: PopoverView!
 
+  // MARK: - Tempo
+
+  @IBOutlet weak var tempoButton: ImageButtonView!
+  private weak var tempoViewController: TempoViewController!
+  @IBAction private func tempo() { logDebug(""); updatePopover(.Tempo) }
+  @IBOutlet private weak var tempoPopoverView: PopoverView!
+
   // MARK: - Undo
 
   @IBOutlet weak var revertButton: ImageButtonView!
@@ -268,6 +267,8 @@ final class MIDIPlayerViewController: UIViewController {
   @IBOutlet weak var recordButton: ImageButtonView!
   @IBOutlet weak var playPauseButton: ImageButtonView!
   @IBOutlet weak var stopButton: ImageButtonView!
+  @IBOutlet weak var barBeatTimeLabel: UILabel!
+  @IBOutlet weak var jogWheel: ScrollWheel!
 
   @IBAction func record() { logDebug(""); Sequencer.recording = !Sequencer.recording }
   @IBAction func playPause() { logDebug(""); if playing { pause() } else { play() } }

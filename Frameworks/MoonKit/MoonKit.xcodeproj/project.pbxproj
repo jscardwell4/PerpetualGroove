@@ -16,7 +16,7 @@
 		C2064FFA1A13C05900342FDE /* Operators.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2064FF91A13C05900342FDE /* Operators.swift */; };
 		C2064FFB1A13C6F000342FDE /* MoonFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23592DC19C8E04200920F8D /* MoonFunctions.swift */; };
 		C2064FFC1A13C70200342FDE /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = C216E73F19CBAE0A0052E98A /* Logging.swift */; };
-		C2064FFD1A13C70F00342FDE /* Geometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25E63D819FDBE7100F54626 /* Geometry.swift */; };
+		C2064FFD1A13C70F00342FDE /* CoreGraphics.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25E63D819FDBE7100F54626 /* CoreGraphics.swift */; };
 		C2064FFE1A13C71700342FDE /* UIView+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24D19EC19EDB54400CC3CD9 /* UIView+MoonKitAdditions.swift */; };
 		C2064FFF1A13C71D00342FDE /* NSLayoutConstraint+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21F931A19E4AA4700E9FF2D /* NSLayoutConstraint+MoonKitAdditions.swift */; };
 		C20650001A13C72600342FDE /* UIBarButtonItem+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C274832519D07942000CB422 /* UIBarButtonItem+MoonKitAdditions.swift */; };
@@ -522,7 +522,7 @@
 		C256F0821ABDFFE5005B7CB3 /* MoonKitOSX.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MoonKitOSX.h; sourceTree = "<group>"; };
 		C25C6F611BA8F23800B3CBAB /* ScrollWheel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollWheel.swift; sourceTree = "<group>"; };
 		C25D6A861B703E0C00EB7125 /* UILabel+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UILabel+MoonKitAdditions.swift"; sourceTree = "<group>"; };
-		C25E63D819FDBE7100F54626 /* Geometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Geometry.swift; sourceTree = "<group>"; };
+		C25E63D819FDBE7100F54626 /* CoreGraphics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreGraphics.swift; sourceTree = "<group>"; };
 		C25E63DD19FEC06A00F54626 /* GestureManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GestureManager.swift; sourceTree = "<group>"; };
 		C25E63E01A00427100F54626 /* OrderedSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderedSet.swift; sourceTree = "<group>"; };
 		C2618A671B7A436400122EBA /* FormTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormTextField.swift; sourceTree = "<group>"; };
@@ -903,7 +903,7 @@
 				C274832519D07942000CB422 /* UIBarButtonItem+MoonKitAdditions.swift */,
 				C21F931A19E4AA4700E9FF2D /* NSLayoutConstraint+MoonKitAdditions.swift */,
 				C24D19EC19EDB54400CC3CD9 /* UIView+MoonKitAdditions.swift */,
-				C25E63D819FDBE7100F54626 /* Geometry.swift */,
+				C25E63D819FDBE7100F54626 /* CoreGraphics.swift */,
 				C2F8C3161A362606004229FE /* UIResponder+MoonKitAdditions.swift */,
 				C21D7AE31AA60E3F000DE8A3 /* NSError+MoonKitAdditions.swift */,
 				C2C4B72B1AA951D700912951 /* NSManagedObject+MoonKitAdditions.swift */,
@@ -1865,7 +1865,7 @@
 				C28E35BA1A451E3800438CCF /* CoreDataStack.swift in Sources */,
 				C22E6B8D1B80E1CE008D46A6 /* ClosedInterval+MoonKitAdditions.swift in Sources */,
 				C2A70E3B1ACC53D0009C2CF7 /* JSONValue.swift in Sources */,
-				C2064FFD1A13C70F00342FDE /* Geometry.swift in Sources */,
+				C2064FFD1A13C70F00342FDE /* CoreGraphics.swift in Sources */,
 				C2358F4619C78E0C00920F8D /* NSUserDefaults+MSKitAdditions.m in Sources */,
 				C2CEFF221A30F34400F3BE24 /* Label.swift in Sources */,
 				C2404BC91B78333F00A68A64 /* PopoverFormView.swift in Sources */,
