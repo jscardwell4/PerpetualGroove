@@ -123,7 +123,8 @@ import UIKit
 
   private let wheelLayer = WheelLayer()
 
-  @IBInspectable public var confineTouchToBounds: Bool = false
+  @IBInspectable public var confineTouchToBounds: Bool = true
+  @IBInspectable public var directionLock: Bool = true
 
   /** setup */
   private func setup() {
@@ -201,17 +202,19 @@ import UIKit
     didSet {
       revolutions = theta % (π * 2)
       wheelLayer.setAffineTransform(CGAffineTransform(angle: theta + thetaOffset))
-      print(
-        "didSet(theta)",
-        "  theta: \(theta.degrees.rounded(2))",
-        "  oldValue: \(oldValue.degrees.rounded(2))",
-        "",
-        separator: "\n"
-      )
+//      print(
+//        "didSet(theta)",
+//        "  theta: \(theta.degrees.rounded(2))",
+//        "  oldValue: \(oldValue.degrees.rounded(2))",
+//        "",
+//        separator: "\n"
+//      )
     }
   }
   private var previousAngle: CGFloat = 0
+  private var previousLocation: CGPoint = .zero
   private var touchPath = UIBezierPath()
+  private var direction: Direction?
 
   /** updateTouchPath */
   private func updateTouchPath() {
@@ -240,6 +243,41 @@ import UIKit
     return acos(x / h)
   }
 
+  private enum Direction: String {
+    case Clockwise, CounterClockwise
+    init(from: CGPoint, to: CGPoint, about: CGPoint) {
+      switch (from.unpack, to.unpack, about.unpack) {
+        case let ((x1, y1), (x2, y2), (_, yc)) where x2 > x1 && y2 == y1 && y2 > yc:
+          self = .CounterClockwise
+        case let ((x1, y1), (x2, y2), (_, yc)) where x2 > x1 && y2 == y1 && y2 <= yc:
+          self = .Clockwise
+        case let ((x1, y1), (x2, y2), (_, yc)) where x2 < x1 && y2 == y1 && y2 > yc:
+          self = .Clockwise
+        case let ((x1, y1), (x2, y2), (_, yc)) where x2 < x1 && y2 == y1 && y2 <= yc:
+          self = .CounterClockwise
+        case let ((x1, y1), (x2, y2), (xc, _)) where x2 == x1 && y2 > y1 && x2 > xc:
+          self = .Clockwise
+        case let ((x1, y1), (x2, y2), (xc, _)) where x2 == x1 && y2 > y1 && x2 <= xc:
+          self = .CounterClockwise
+        case let ((x1, y1), (x2, y2), (xc, _)) where x2 == x1 && y2 < y1 && x2 > xc:
+          self = .CounterClockwise
+        case let ((x1, y1), (x2, y2), (xc, _)) where x2 == x1 && y2 < y1 && x2 <= xc:
+          self = .Clockwise
+        case let ((x1, y1), (x2, y2), _) where x2 > x1 && y2 > y1:
+          self = .Clockwise
+        case let ((x1, y1), (x2, y2), _) where x2 > x1 && y2 < y1:
+          self = .CounterClockwise
+        case let ((x1, y1), (x2, y2), _) where x2 < x1 && y2 > y1:
+          self = .CounterClockwise
+        case let ((x1, y1), (x2, y2), _) where x2 < x1 && y2 < y1:
+          self = .Clockwise
+        default:
+          assert(false)
+          self = .Clockwise // Unreachable?
+      }
+    }
+  }
+
   /**
   updateForTouch:
 
@@ -248,21 +286,34 @@ import UIKit
   private func updateForTouch(touch: UITouch) {
 
     let location = touch.locationInView(self)
+    let touchPreviousLocation = touch.previousLocationInView(self)
+    let currentDirection = Direction(from: touchPreviousLocation, to: location, about: bounds.center)
+
+    if let direction = direction where directionLock && currentDirection != direction { return }
+    else if direction == nil { direction = currentDirection }
 
     let locationAngle = angleForTouchLocation(location)
 
-    let deltaAngle = locationAngle - previousAngle
+    let deltaAngle = abs(locationAngle - previousAngle)
 
-    print(
-      "location: (\(location.x.rounded(2)), \(location.y.rounded(2)))",
-      "locationAngle: \(locationAngle.degrees.rounded(2))",
-      "previousAngle: \(previousAngle.degrees.rounded(2))",
-      "deltaAngle: \(deltaAngle.degrees.rounded(2))",
-      "",
-      separator: "\n")
+//    print(
+//      "location: (\(location.x.rounded(2)), \(location.y.rounded(2)))",
+//      "previousLocation: (\(previousLocation.x.rounded(2)), \(previousLocation.y.rounded(2)))",
+//      "touchPreviousLocation: (\(touchPreviousLocation.x.rounded(2)), \(touchPreviousLocation.y.rounded(2)))",
+//      "locationAngle: \(locationAngle.degrees.rounded(2))",
+//      "previousAngle: \(previousAngle.degrees.rounded(2))",
+//      "deltaAngle: \(deltaAngle.degrees.rounded(2))",
+//      "direction: \(currentDirection.rawValue)",
+//      "",
+//      separator: "\n")
 
-    theta += deltaAngle
+    switch currentDirection {
+      case .Clockwise: theta += deltaAngle
+      case .CounterClockwise: theta -= deltaAngle
+    }
+
     previousAngle = locationAngle
+    previousLocation = location
   }
 
   /**
@@ -321,6 +372,7 @@ import UIKit
   */
   public override func beginTrackingWithTouch(touch: UITouch, withEvent event: UIEvent?) -> Bool {
     guard touchPath.containsPoint(touch.locationInView(self)) else { return false }
+    direction = nil
     previousAngle = angleForTouchLocation(touch.locationInView(self))
     sendActionsForControlEvents(.TouchDown)
     return true
