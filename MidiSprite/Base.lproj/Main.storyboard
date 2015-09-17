@@ -473,6 +473,12 @@
                                     <userDefinedRuntimeAttribute type="string" keyPath="dimpleFillStyleString" value="SourceIn"/>
                                     <userDefinedRuntimeAttribute type="string" keyPath="dimpleStyleString" value="SourceAtop"/>
                                 </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="beginJog" destination="BV1-FR-VrT" eventType="touchDown" id="hQl-TJ-fU9"/>
+                                    <action selector="endJog" destination="BV1-FR-VrT" eventType="touchUpOutside" id="Egr-SV-2uD"/>
+                                    <action selector="endJog" destination="BV1-FR-VrT" eventType="touchUpInside" id="Qhl-fb-pL6"/>
+                                    <action selector="jog" destination="BV1-FR-VrT" eventType="valueChanged" id="v9a-fL-DUE"/>
+                                </connections>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="001 : 1 . 001" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kes-zC-n3t">
                                 <rect key="frame" x="218" y="622" width="141" height="28.5"/>

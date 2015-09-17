@@ -270,12 +270,15 @@ final class MIDIPlayerViewController: UIViewController {
   @IBOutlet weak var barBeatTimeLabel: UILabel!
   @IBOutlet weak var jogWheel: ScrollWheel!
 
-  @IBAction func record() { logDebug(""); Sequencer.recording = !Sequencer.recording }
-  @IBAction func playPause() { logDebug(""); if playing { pause() } else { play() } }
-  @IBAction func stop() { logDebug(""); guard playing, let scene = playerScene else { return }; scene.midiPlayer.reset(); playing = false }
+  @IBAction func record() { logDebug(); Sequencer.recording = !Sequencer.recording }
+  @IBAction func playPause() { logDebug(); if playing { pause() } else { play() } }
+  @IBAction func stop() { logDebug(); guard playing, let scene = playerScene else { return }; scene.midiPlayer.reset(); playing = false }
+  @IBAction private func beginJog(){ state.insert(.JogActive) }
+  @IBAction private func jog() { }
+  @IBAction private func endJog() { state.remove(.JogActive) }
 
-  func play() { logDebug(""); guard !playing else { return }; playing = true }
-  func pause() { logDebug(""); guard !paused && playing else { return }; paused = true }
+  func play() { logDebug(); guard !playing else { return }; playing = true }
+  func pause() { logDebug(); guard !paused && playing else { return }; paused = true }
 
   private enum ControlImage {
     case Pause, Play
@@ -412,26 +415,28 @@ final class MIDIPlayerViewController: UIViewController {
 
   private struct State: OptionSetType, CustomStringConvertible {
     let rawValue: Int
-    static let Default           = State(rawValue: 0b0000_0000)
-    static let PopoverActive     = State(rawValue: 0b0000_0001)
-    static let PlayerPlaying     = State(rawValue: 0b0000_0010)
-    static let PlayerFieldActive = State(rawValue: 0b0000_0100)
-    static let MIDINodeAdded     = State(rawValue: 0b0000_1000)
-    static let TrackAdded        = State(rawValue: 0b0001_0000)
-    static let PlayerRecording   = State(rawValue: 0b0010_0000)
-    static let FileLoaded        = State(rawValue: 0b0100_0000)
-    static let PlayerPaused      = State(rawValue: 0b1000_0000)
+    static let Default           = State(rawValue: 0b0000_0000_0000)
+    static let PopoverActive     = State(rawValue: 0b0000_0000_0001)
+    static let PlayerPlaying     = State(rawValue: 0b0000_0000_0010)
+    static let PlayerFieldActive = State(rawValue: 0b0000_0000_0100)
+    static let MIDINodeAdded     = State(rawValue: 0b0000_0000_1000)
+    static let TrackAdded        = State(rawValue: 0b0000_0001_0000)
+    static let PlayerRecording   = State(rawValue: 0b0000_0010_0000)
+    static let FileLoaded        = State(rawValue: 0b0000_0100_0000)
+    static let PlayerPaused      = State(rawValue: 0b0000_1000_0000)
+    static let JogActive         = State(rawValue: 0b0001_0000_0000)
 
     var description: String {
       var result = "MIDIPlayerViewController.State { "
       var flagStrings: [String] = []
-      if self ∋ .PopoverActive     { flagStrings.append("PopoverActive") }
-      if self ∋ .PlayerPlaying     { flagStrings.append("PlayerPlaying") }
+      if self ∋ .PopoverActive     { flagStrings.append("PopoverActive")     }
+      if self ∋ .PlayerPlaying     { flagStrings.append("PlayerPlaying")     }
       if self ∋ .PlayerFieldActive { flagStrings.append("PlayerFieldActive") }
-      if self ∋ .MIDINodeAdded     { flagStrings.append("MIDINodeAdded") }
-      if self ∋ .TrackAdded        { flagStrings.append("TrackAdded") }
-      if self ∋ .PlayerRecording   { flagStrings.append("PlayerRecording") }
-      if self ∋ .FileLoaded        { flagStrings.append("FileLoaded") }
+      if self ∋ .MIDINodeAdded     { flagStrings.append("MIDINodeAdded")     }
+      if self ∋ .TrackAdded        { flagStrings.append("TrackAdded")        }
+      if self ∋ .PlayerRecording   { flagStrings.append("PlayerRecording")   }
+      if self ∋ .FileLoaded        { flagStrings.append("FileLoaded")        }
+      if self ∋ .JogActive         { flagStrings.append("JogActive")         }
 
       result += ", ".join(flagStrings)
       result += " }"
@@ -474,6 +479,9 @@ final class MIDIPlayerViewController: UIViewController {
         recordButton.enabled = state ∌ .FileLoaded
       }
 
+      if modifiedState ∋ .JogActive {
+        logDebug("do something about the change in `JogActive` state")
+      }
     }
   }
 

@@ -123,8 +123,8 @@ import UIKit
 
   private let wheelLayer = WheelLayer()
 
-  @IBInspectable public var confineTouchToBounds: Bool = true
-  @IBInspectable public var directionLock: Bool = true
+  @IBInspectable public var confineTouchToBounds: Bool = false
+  @IBInspectable public var beginResetsRevolutions: Bool = true
 
   /** setup */
   private func setup() {
@@ -194,37 +194,24 @@ import UIKit
     set { wheelLayer.dimpleColor = newValue }
   }
 
-  public private(set) var revolutions: CGFloat = 0
-
-  private let thetaOffset = π / 2
+  private var thetaOffset: CGFloat = 0
+  public var revolutions: CGFloat { return (theta - thetaOffset) / (π * 2) }
 
   @IBInspectable public var theta: CGFloat = 0 {
     didSet {
-      revolutions = theta % (π * 2)
-      wheelLayer.setAffineTransform(CGAffineTransform(angle: theta + thetaOffset))
-//      print(
-//        "didSet(theta)",
-//        "  theta: \(theta.degrees.rounded(2))",
-//        "  oldValue: \(oldValue.degrees.rounded(2))",
-//        "",
-//        separator: "\n"
-//      )
+      wheelLayer.setAffineTransform(CGAffineTransform(angle: theta))
     }
   }
   private var previousAngle: CGFloat = 0
   private var previousLocation: CGPoint = .zero
   private var touchPath = UIBezierPath()
+
   private var direction: Direction?
 
   /** updateTouchPath */
   private func updateTouchPath() {
     wheelLayer.frame = layer.bounds
     touchPath = UIBezierPath(ovalInRect: bounds.centerInscribedSquare)
-//    let center = touchPath.bounds.center
-//    let radius = half(touchPath.bounds.width * 0.6)
-//    touchPath.moveToPoint(center)
-//    touchPath.addArcWithCenter(center, radius: radius, startAngle: 0, endAngle: π * 2, clockwise: true)
-//    touchPath.closePath()
   }
 
   public override var bounds: CGRect { didSet { updateTouchPath() } }
@@ -272,7 +259,6 @@ import UIKit
         case let ((x1, y1), (x2, y2), _) where x2 < x1 && y2 < y1:
           self = .Clockwise
         default:
-          assert(false)
           self = .Clockwise // Unreachable?
       }
     }
@@ -287,27 +273,17 @@ import UIKit
 
     let location = touch.locationInView(self)
     let touchPreviousLocation = touch.previousLocationInView(self)
-    let currentDirection = Direction(from: touchPreviousLocation, to: location, about: bounds.center)
+    let newDirection = Direction(from: touchPreviousLocation, to: location, about: bounds.center)
+    let currentDirection = direction ?? newDirection
+    if direction == nil { direction = currentDirection }
 
-    if let direction = direction where directionLock && currentDirection != direction { return }
-    else if direction == nil { direction = currentDirection }
+    guard newDirection == currentDirection else { return }
 
     let locationAngle = angleForTouchLocation(location)
 
     let deltaAngle = abs(locationAngle - previousAngle)
 
-//    print(
-//      "location: (\(location.x.rounded(2)), \(location.y.rounded(2)))",
-//      "previousLocation: (\(previousLocation.x.rounded(2)), \(previousLocation.y.rounded(2)))",
-//      "touchPreviousLocation: (\(touchPreviousLocation.x.rounded(2)), \(touchPreviousLocation.y.rounded(2)))",
-//      "locationAngle: \(locationAngle.degrees.rounded(2))",
-//      "previousAngle: \(previousAngle.degrees.rounded(2))",
-//      "deltaAngle: \(deltaAngle.degrees.rounded(2))",
-//      "direction: \(currentDirection.rawValue)",
-//      "",
-//      separator: "\n")
-
-    switch currentDirection {
+    switch newDirection {
       case .Clockwise: theta += deltaAngle
       case .CounterClockwise: theta -= deltaAngle
     }
@@ -315,52 +291,6 @@ import UIKit
     previousAngle = locationAngle
     previousLocation = location
   }
-
-  /**
-  drawRect:
-
-  - parameter rect: CGRect
-  */
-//  public override func drawRect(rect: CGRect) {
-//    var frame = rect
-//    if frame.size.width != frame.size.height {
-//      frame.size = CGSize(square: frame.size.minAxis)
-//      frame.origin += (rect.size - frame.size) * 0.5
-//    }
-//
-//    let context = UIGraphicsGetCurrentContext()
-//    CGContextSaveGState(context)
-//
-//    let baseFrame = frame.integral
-//    if let wheelBase = wheelImage {
-//      wheelBase.drawInRect(baseFrame)
-//    } else {
-//      wheelColor.setFill()
-//      UIBezierPath(ovalInRect: baseFrame).fill()
-//    }
-//
-//
-//    let dimpleSize = baseFrame.size * 0.35
-//    let dimpleFrame = CGRect(origin: CGPoint(x: frame.midX - half(dimpleSize.width), y: 4), size: dimpleSize)
-//
-//    if let dimple = dimpleImage, dimpleFill = dimpleFillImage {
-//
-//      UIBezierPath(ovalInRect: dimpleFrame).addClip()
-//      dimple.drawInRect(dimpleFrame, blendMode: dimpleStyle, alpha: 1)
-//
-//      let deltaSize = dimpleSize - dimpleFill.size
-//      let dimpleFillFrame = CGRect(origin: dimpleFrame.origin + deltaSize * 0.5, size: dimpleFill.size)
-//
-//      UIBezierPath(ovalInRect: dimpleFillFrame.insetBy(dx: 1, dy: 1)).addClip()
-//      dimpleFill.drawAtPoint(dimpleFillFrame.origin, blendMode: dimpleFillStyle, alpha: 1)
-//
-//    } else {
-//      dimpleColor.setFill()
-//      UIBezierPath(ovalInRect: dimpleFrame).fill()
-//    }
-//
-//    CGContextRestoreGState(context)
-//  }
 
   /**
   beginTrackingWithTouch:withEvent:
@@ -373,8 +303,8 @@ import UIKit
   public override func beginTrackingWithTouch(touch: UITouch, withEvent event: UIEvent?) -> Bool {
     guard touchPath.containsPoint(touch.locationInView(self)) else { return false }
     direction = nil
+    if beginResetsRevolutions { thetaOffset = theta }
     previousAngle = angleForTouchLocation(touch.locationInView(self))
-    sendActionsForControlEvents(.TouchDown)
     return true
   }
 
@@ -402,12 +332,8 @@ import UIKit
   public override func endTrackingWithTouch(touch: UITouch?, withEvent event: UIEvent?) {
     guard let touch = touch else { return }
 
-    guard !confineTouchToBounds || touchPath.containsPoint(touch.locationInView(self)) else {
-      sendActionsForControlEvents(.TouchUpOutside)
-      return
-    }
+    guard !confineTouchToBounds || touchPath.containsPoint(touch.locationInView(self)) else { return }
     updateForTouch(touch)
-    sendActionsForControlEvents(.TouchUpInside)
   }
 
   /**
