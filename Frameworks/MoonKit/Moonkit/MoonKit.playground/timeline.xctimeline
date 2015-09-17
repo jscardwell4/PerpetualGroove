@@ -480,5 +480,23 @@
          selectedRepresentationIndex = "0"
          shouldTrackSuperviewWidth = "NO">
       </LoggerValueHistoryTimelineItem>
+      <LoggerValueHistoryTimelineItem
+         documentLocation = "#CharacterRangeLen=0&amp;CharacterRangeLoc=270&amp;EndingColumnNumber=9&amp;EndingLineNumber=12&amp;StartingColumnNumber=5&amp;StartingLineNumber=11&amp;Timestamp=464198298.094769"
+         lockedSize = "{342, 261}"
+         selectedRepresentationIndex = "0"
+         shouldTrackSuperviewWidth = "NO">
+      </LoggerValueHistoryTimelineItem>
+      <LoggerValueHistoryTimelineItem
+         documentLocation = "#CharacterRangeLen=0&amp;CharacterRangeLoc=270&amp;EndingColumnNumber=5&amp;EndingLineNumber=12&amp;StartingColumnNumber=1&amp;StartingLineNumber=11&amp;Timestamp=464198298.094874"
+         lockedSize = "{300, 230}"
+         selectedRepresentationIndex = "0"
+         shouldTrackSuperviewWidth = "NO">
+      </LoggerValueHistoryTimelineItem>
+      <LoggerValueHistoryTimelineItem
+         documentLocation = "#CharacterRangeLen=20&amp;CharacterRangeLoc=235&amp;EndingColumnNumber=22&amp;EndingLineNumber=12&amp;StartingColumnNumber=1&amp;StartingLineNumber=12&amp;Timestamp=464197909.957035"
+         lockedSize = "{449, 228}"
+         selectedRepresentationIndex = "0"
+         shouldTrackSuperviewWidth = "NO">
+      </LoggerValueHistoryTimelineItem>
    </TimelineItems>
 </Timeline>

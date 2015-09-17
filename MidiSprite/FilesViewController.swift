@@ -76,25 +76,24 @@ final class FilesViewController: UIViewController {
 
   /** updateLabelButtons */
   private func updateLabelButtons() {
-    (stackView.arrangedSubviews.count ..< stackView.arrangedSubviews.count).forEach {
+    (stackView.arrangedSubviews.count ..< stackView.subviews.count).forEach {
       let subview = stackView.subviews[$0]
       subview.hidden = false
       stackView.addArrangedSubview(subview)
     }
     switch (files.count, stackView.arrangedSubviews.count) {
-      case let (f, s) where f == s:
+      case let (fileCount, arrangedCount) where fileCount == arrangedCount:
         applyText(files, stackView.arrangedSubviews)
 
-      case let (f, s) where s > f:
-        (f ..< s).forEach({
-          let subview = stackView.arrangedSubviews[$0]
-          stackView.removeArrangedSubview(subview)
-          subview.hidden = true
-        })
+      case let (fileCount, arrangedCount) where arrangedCount > fileCount:
+        stackView.arrangedSubviews[fileCount ..< arrangedCount].forEach {
+          stackView.removeArrangedSubview($0)
+          $0.hidden = true
+        }
         applyText(files, stackView.arrangedSubviews)
 
-      case let (f, s) where f > s:
-        (s ..< f).forEach { stackView.addArrangedSubview(newLabelButtonWithTag($0)) }
+      case let (fileCount, arrangedCount) where fileCount > arrangedCount:
+        (arrangedCount ..< fileCount).forEach { stackView.addArrangedSubview(newLabelButtonWithTag($0)) }
         applyText(files, stackView.arrangedSubviews)
 
       default: break // Unreachable
@@ -139,7 +138,7 @@ final class FilesViewController: UIViewController {
   }
   private var maxLabelSize: CGSize = .zero {
     didSet {
-      contentSize = CGSize(width: maxLabelSize.width, height: maxLabelSize.height * CGFloat(files.count))
+      contentSize = CGSize(width: max(maxLabelSize.width, 100), height: max(maxLabelSize.height * CGFloat(files.count), 44))
     }
   }
 

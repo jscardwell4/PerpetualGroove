@@ -9,43 +9,146 @@
 import Foundation
 import UIKit
 
-
-/**
-getAngle:p2:
-
-- parameter p1: CGPoint
-- parameter p2: CGPoint
-
-- returns: CGFloat
-*/
-private func getAngle(point: CGPoint, center: CGPoint) -> CGFloat {
-  let p = point - center
-  let h = abs(sqrt(pow(p.x, 2) + pow(p.y, 2)))
-  let angle = acos(p.x / h) * 180 / π
-  return point.y > center.y ? angle : 360 - angle
-}
-
-/**
-pointInsideRadius:r:center:
-
-- parameter point: CGPoint
-- parameter r: CGFloat
-- parameter center: CGPoint
-
-- returns: Bool
-*/
-private func pointInsideRadius(point: CGPoint, r: CGFloat, center: CGPoint) -> Bool {
-  let p = point - center
-  let xSquared = pow(p.x, 2)
-  let ySquared = pow(p.y, 2)
-  let h = abs(sqrt(xSquared + ySquared))
-  return (xSquared + ySquared) / h < r
-}
-
 @IBDesignable public class ScrollWheel: UIControl {
 
-  public var dimpleStyle: CGBlendMode = .Normal {
-    didSet { guard oldValue != dimpleStyle else { return }; setNeedsDisplay() }
+  /** 
+  Layer subclass for encapsulating custom drawing and providing a level of separation between frames used for touch locations 
+  and the use of transforms to rotate the visible content 
+  */
+  private final class WheelLayer: CALayer {
+
+    private var wheelColorModified = false
+    private var dimpleColorModified = false
+
+    var wheelImage: UIImage? {
+      didSet {
+        guard wheelImage != oldValue && !wheelColorModified else { return }
+        wheelImage = wheelImage?.imageWithColor(wheelColor)
+        setNeedsDisplay()
+      }
+    }
+    var dimpleImage: UIImage? {
+      didSet {
+        guard dimpleImage != oldValue && !dimpleColorModified else { return }
+        dimpleImage = dimpleImage?.imageWithColor(dimpleColor)
+        setNeedsDisplay()
+      }
+    }
+    var dimpleFillImage: UIImage? {
+      didSet {
+        guard dimpleFillImage != oldValue && !dimpleColorModified else { return }
+        dimpleFillImage = dimpleFillImage?.imageWithColor(dimpleColor)
+        setNeedsDisplay()
+      }
+    }
+
+    var wheelColor: UIColor = .darkGrayColor() {
+      didSet {
+        guard wheelColor != oldValue else { return }
+        wheelColorModified = true
+        wheelImage = wheelImage?.imageWithColor(wheelColor)
+        wheelColorModified = false
+        setNeedsDisplay()
+      }
+    }
+
+    var dimpleColor: UIColor = .lightGrayColor() {
+      didSet {
+        guard dimpleColor != oldValue else { return }
+        dimpleColorModified = true
+        dimpleImage = dimpleImage?.imageWithColor(dimpleColor)
+        dimpleFillImage = dimpleFillImage?.imageWithColor(dimpleColor)
+        dimpleColorModified = false
+        setNeedsDisplay()
+      }
+    }
+
+    var dimpleStyle: CGBlendMode = .Normal {
+      didSet {
+        guard dimpleStyle != oldValue else { return }
+        setNeedsDisplay()
+      }
+    }
+
+    var dimpleFillStyle: CGBlendMode = .Normal {
+      didSet {
+        guard dimpleFillStyle != oldValue else { return }
+        setNeedsDisplay()
+      }
+    }
+
+    /**
+    drawInContext:
+
+    - parameter ctx: CGContext
+    */
+    private override func drawInContext(ctx: CGContext) {
+
+      CGContextSaveGState(ctx)
+      UIGraphicsPushContext(ctx)
+
+      let baseFrame = CGContextGetClipBoundingBox(ctx).centerInscribedSquare.integral
+      if let wheelBase = wheelImage {
+        wheelBase.drawInRect(baseFrame)
+      } else {
+        wheelColor.setFill()
+        UIBezierPath(ovalInRect: baseFrame).fill()
+      }
+
+
+      let dimpleSize = baseFrame.size * 0.35
+      let dimpleFrame = CGRect(origin: CGPoint(x: baseFrame.midX - half(dimpleSize.width), y: 4), size: dimpleSize)
+
+      if let dimple = dimpleImage, dimpleFill = dimpleFillImage {
+
+        UIBezierPath(ovalInRect: dimpleFrame).addClip()
+        dimple.drawInRect(dimpleFrame, blendMode: dimpleStyle, alpha: 1)
+
+        let deltaSize = dimpleSize - dimpleFill.size
+        let dimpleFillFrame = CGRect(origin: dimpleFrame.origin + deltaSize * 0.5, size: dimpleFill.size)
+
+        UIBezierPath(ovalInRect: dimpleFillFrame.insetBy(dx: 1, dy: 1)).addClip()
+        dimpleFill.drawAtPoint(dimpleFillFrame.origin, blendMode: dimpleFillStyle, alpha: 1)
+
+      } else {
+        dimpleColor.setFill()
+        UIBezierPath(ovalInRect: dimpleFrame).fill()
+      }
+
+      UIGraphicsPopContext()
+      CGContextRestoreGState(ctx)
+
+    }
+  }
+
+  private let wheelLayer = WheelLayer()
+
+  @IBInspectable public var confineTouchToBounds: Bool = false
+
+  /** setup */
+  private func setup() {
+    wheelLayer.needsDisplayOnBoundsChange = true
+    wheelLayer.contentsScale = UIScreen.mainScreen().scale
+    layer.addSublayer(wheelLayer)
+  }
+
+  /**
+  initWithFrame:
+
+  - parameter frame: CGRect
+  */
+  public override init(frame: CGRect) { super.init(frame: frame); setup() }
+
+  /**
+  init:
+
+  - parameter aDecoder: NSCoder
+  */
+  public required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder); setup() }
+
+  public var dimpleStyle: CGBlendMode  {
+    get { return wheelLayer.dimpleStyle }
+    set { wheelLayer.dimpleStyle = newValue }
   }
 
   @IBInspectable public var dimpleStyleString: String {
@@ -53,8 +156,9 @@ private func pointInsideRadius(point: CGPoint, r: CGFloat, center: CGPoint) -> B
     set { dimpleStyle = CGBlendMode(stringValue: newValue) }
   }
 
-  public var dimpleFillStyle: CGBlendMode = .Normal {
-    didSet { guard oldValue != dimpleFillStyle else { return }; setNeedsDisplay() }
+  public var dimpleFillStyle: CGBlendMode {
+    get { return wheelLayer.dimpleFillStyle }
+    set { wheelLayer.dimpleFillStyle = newValue }
   }
 
   @IBInspectable public var dimpleFillStyleString: String {
@@ -62,64 +166,103 @@ private func pointInsideRadius(point: CGPoint, r: CGFloat, center: CGPoint) -> B
     set { dimpleFillStyle = CGBlendMode(stringValue: newValue) }
   }
 
-  @IBInspectable public var theta: CGFloat = 0 { didSet { setNeedsDisplay() } }
   @IBInspectable public var value: Float = 0
 
-  #if TARGET_INTERFACE_BUILDER
-  @IBInspectable public override var highlighted: Bool { didSet { setNeedsDisplay() } }
-  #endif
-
   @IBInspectable public var wheelImage: UIImage? {
-    didSet { 
-      guard oldValue != wheelImage else { return }
-      wheelImage = wheelImage?.imageWithColor(wheelColor)
-      setNeedsDisplay() 
-    }
+    get { return wheelLayer.wheelImage }
+    set { wheelLayer.wheelImage = newValue }
   }
 
-  @IBInspectable public var wheelColor: UIColor = .darkGrayColor() {
-    didSet { 
-      guard oldValue != wheelColor else { return }
-      wheelImage = wheelImage?.imageWithColor(wheelColor)
-      setNeedsDisplay() 
-    }
+  @IBInspectable public var wheelColor: UIColor {
+    get { return wheelLayer.wheelColor }
+    set { wheelLayer.wheelColor = newValue }
   }
 
   @IBInspectable public var dimpleImage: UIImage? {
-    didSet { 
-      guard oldValue != dimpleImage else { return }
-      dimpleImage = dimpleImage?.imageWithColor(dimpleColor)
-      dimpleHighlightedImage = dimpleImage?.imageWithColor(dimpleHighlightedColor)
-      setNeedsDisplay() 
-    }
+    get { return wheelLayer.dimpleImage }
+    set { wheelLayer.dimpleImage = newValue }
   }
-  private var dimpleHighlightedImage: UIImage?
 
   @IBInspectable public var dimpleFillImage: UIImage? {
-    didSet {
-      guard oldValue != dimpleFillImage else { return }
-      dimpleFillImage = dimpleFillImage?.imageWithColor(dimpleColor)
-      dimpleFillHighlightedImage = dimpleFillImage?.imageWithColor(dimpleHighlightedColor)
-      setNeedsDisplay()
-    }
-  }
-  private var dimpleFillHighlightedImage: UIImage?
-
-  @IBInspectable public var dimpleColor:  UIColor = .lightGrayColor() {
-    didSet { 
-      guard oldValue != dimpleColor else { return }
-      dimpleImage = dimpleImage?.imageWithColor(dimpleColor)
-      setNeedsDisplay() 
-    }
+    get { return wheelLayer.dimpleFillImage }
+    set { wheelLayer.dimpleFillImage = newValue }
   }
 
-  @IBInspectable public var dimpleHighlightedColor:  UIColor = .blueColor() {
+  @IBInspectable public var dimpleColor:  UIColor {
+    get { return wheelLayer.dimpleColor }
+    set { wheelLayer.dimpleColor = newValue }
+  }
+
+  public private(set) var revolutions: CGFloat = 0
+
+  private let thetaOffset = π / 2
+
+  @IBInspectable public var theta: CGFloat = 0 {
     didSet {
-      guard oldValue != dimpleHighlightedColor else { return }
-      dimpleHighlightedImage = dimpleImage?.imageWithColor(dimpleHighlightedColor)
-      dimpleFillHighlightedImage = dimpleFillImage?.imageWithColor(dimpleHighlightedColor)
-      setNeedsDisplay()
+      revolutions = theta % (π * 2)
+      wheelLayer.setAffineTransform(CGAffineTransform(angle: theta + thetaOffset))
+      print(
+        "didSet(theta)",
+        "  theta: \(theta.degrees.rounded(2))",
+        "  oldValue: \(oldValue.degrees.rounded(2))",
+        "",
+        separator: "\n"
+      )
     }
+  }
+  private var previousAngle: CGFloat = 0
+  private var touchPath = UIBezierPath()
+
+  /** updateTouchPath */
+  private func updateTouchPath() {
+    wheelLayer.frame = layer.bounds
+    touchPath = UIBezierPath(ovalInRect: bounds.centerInscribedSquare)
+//    let center = touchPath.bounds.center
+//    let radius = half(touchPath.bounds.width * 0.6)
+//    touchPath.moveToPoint(center)
+//    touchPath.addArcWithCenter(center, radius: radius, startAngle: 0, endAngle: π * 2, clockwise: true)
+//    touchPath.closePath()
+  }
+
+  public override var bounds: CGRect { didSet { updateTouchPath() } }
+  public override var frame: CGRect { didSet { updateTouchPath() } }
+
+  /**
+  angleForTouchLocation:
+
+  - parameter location: CGPoint
+
+  - returns: CGFloat
+  */
+  private func angleForTouchLocation(location: CGPoint) -> CGFloat {
+    let (x, y) = (location - bounds.center).unpack
+    let h = sqrt(pow(x, 2) + pow(y, 2))
+    return acos(x / h)
+  }
+
+  /**
+  updateForTouch:
+
+  - parameter touch: UITouch
+  */
+  private func updateForTouch(touch: UITouch) {
+
+    let location = touch.locationInView(self)
+
+    let locationAngle = angleForTouchLocation(location)
+
+    let deltaAngle = locationAngle - previousAngle
+
+    print(
+      "location: (\(location.x.rounded(2)), \(location.y.rounded(2)))",
+      "locationAngle: \(locationAngle.degrees.rounded(2))",
+      "previousAngle: \(previousAngle.degrees.rounded(2))",
+      "deltaAngle: \(deltaAngle.degrees.rounded(2))",
+      "",
+      separator: "\n")
+
+    theta += deltaAngle
+    previousAngle = locationAngle
   }
 
   /**
@@ -127,54 +270,46 @@ private func pointInsideRadius(point: CGPoint, r: CGFloat, center: CGPoint) -> B
 
   - parameter rect: CGRect
   */
-  public override func drawRect(rect: CGRect) {
-    var frame = rect//.insetBy(dx: 2, dy: 2)
-    if frame.size.width != frame.size.height {
-      frame.size = CGSize(square: frame.size.minAxis)
-      frame.origin += (rect.size - frame.size) * 0.5
-    }
-
-    let context = UIGraphicsGetCurrentContext()
-    CGContextSaveGState(context)
-    CGContextTranslateCTM(context, half(rect.width), half(rect.height))
-    CGContextRotateCTM(context, theta)
-
-    let baseFrame = CGRect(origin: frame.origin - (frame.size * 0.5),  size: frame.size).integral
-    if let wheelBase = wheelImage {
-      wheelBase.drawInRect(baseFrame)
-    } else {
-      wheelColor.setFill()
-      UIBezierPath(ovalInRect: baseFrame).fill()
-    }
-
-
-    let dimpleSize = baseFrame.size * 0.35
-    let dimpleFrame = CGRect(origin: CGPoint(x: -half(dimpleSize.width), y: baseFrame.origin.y + 4), size: dimpleSize)
-
-    if let dimple = highlighted ? dimpleHighlightedImage : dimpleImage,
-           dimpleFill = highlighted ? dimpleFillHighlightedImage : dimpleFillImage
-    {
-
-      CGContextSaveGState(context)
-      UIBezierPath(ovalInRect: dimpleFrame).addClip()
-      dimple.drawInRect(dimpleFrame, blendMode: dimpleStyle, alpha: 1)
-      CGContextRestoreGState(context)
-
-      let deltaSize = dimpleSize - dimpleFill.size
-      let dimpleFillFrame = CGRect(origin: dimpleFrame.origin + deltaSize * 0.5, size: dimpleFill.size)//.insetBy(dx: 1, dy: 1)
-
-      CGContextSaveGState(context)
-      UIBezierPath(ovalInRect: dimpleFillFrame.insetBy(dx: 1, dy: 1)).addClip()
-      dimpleFill.drawAtPoint(dimpleFillFrame.origin, blendMode: dimpleFillStyle, alpha: 1)
-      CGContextRestoreGState(context)
-
-    } else {
-      (highlighted ? dimpleHighlightedColor : dimpleColor).setFill()
-      UIBezierPath(ovalInRect: dimpleFrame).fill()
-    }
-
-    CGContextRestoreGState(context) // Matrix rotation
-  }
+//  public override func drawRect(rect: CGRect) {
+//    var frame = rect
+//    if frame.size.width != frame.size.height {
+//      frame.size = CGSize(square: frame.size.minAxis)
+//      frame.origin += (rect.size - frame.size) * 0.5
+//    }
+//
+//    let context = UIGraphicsGetCurrentContext()
+//    CGContextSaveGState(context)
+//
+//    let baseFrame = frame.integral
+//    if let wheelBase = wheelImage {
+//      wheelBase.drawInRect(baseFrame)
+//    } else {
+//      wheelColor.setFill()
+//      UIBezierPath(ovalInRect: baseFrame).fill()
+//    }
+//
+//
+//    let dimpleSize = baseFrame.size * 0.35
+//    let dimpleFrame = CGRect(origin: CGPoint(x: frame.midX - half(dimpleSize.width), y: 4), size: dimpleSize)
+//
+//    if let dimple = dimpleImage, dimpleFill = dimpleFillImage {
+//
+//      UIBezierPath(ovalInRect: dimpleFrame).addClip()
+//      dimple.drawInRect(dimpleFrame, blendMode: dimpleStyle, alpha: 1)
+//
+//      let deltaSize = dimpleSize - dimpleFill.size
+//      let dimpleFillFrame = CGRect(origin: dimpleFrame.origin + deltaSize * 0.5, size: dimpleFill.size)
+//
+//      UIBezierPath(ovalInRect: dimpleFillFrame.insetBy(dx: 1, dy: 1)).addClip()
+//      dimpleFill.drawAtPoint(dimpleFillFrame.origin, blendMode: dimpleFillStyle, alpha: 1)
+//
+//    } else {
+//      dimpleColor.setFill()
+//      UIBezierPath(ovalInRect: dimpleFrame).fill()
+//    }
+//
+//    CGContextRestoreGState(context)
+//  }
 
   /**
   beginTrackingWithTouch:withEvent:
@@ -185,10 +320,8 @@ private func pointInsideRadius(point: CGPoint, r: CGFloat, center: CGPoint) -> B
   - returns: Bool
   */
   public override func beginTrackingWithTouch(touch: UITouch, withEvent event: UIEvent?) -> Bool {
-    let p = touch.locationInView(self)
-    let cp = CGPoint((bounds.size * 0.5).unpack)
-    guard pointInsideRadius(p, r: cp.x, center: cp) && !pointInsideRadius(p, r: 30, center: cp) else { return false }
-    theta = getAngle(p, center: cp)
+    guard touchPath.containsPoint(touch.locationInView(self)) else { return false }
+    previousAngle = angleForTouchLocation(touch.locationInView(self))
     sendActionsForControlEvents(.TouchDown)
     return true
   }
@@ -202,29 +335,9 @@ private func pointInsideRadius(point: CGPoint, r: CGFloat, center: CGPoint) -> B
   - returns: Bool
   */
   public override func continueTrackingWithTouch(touch: UITouch, withEvent event: UIEvent?) -> Bool {
-    let p = touch.locationInView(self)
-    let cp = CGPoint((bounds.size * 0.5).unpack)
-    let events: UIControlEvents = frame.contains(p) ? .TouchDragInside : .TouchDragOutside
-    sendActionsForControlEvents(events)
-
-    guard pointInsideRadius(p, r: cp.x + 50, center: cp) else {
-      // falls outside too far, with boundary of 50 pixels. Inside strokes treated as touched
-      return false
-    }
-
-    let newTheta = getAngle(p, center: cp)
-    var deltaTheta = newTheta - theta
-
-    // correct for edge conditions
-    var n = 0
-    while abs(deltaTheta) > 360 && n++ < 4 { if deltaTheta > 0 { deltaTheta -= 360 } else { deltaTheta += 360 } }
-
-    // Update current values
-    value -= Float(deltaTheta / 360)
-    theta = newTheta
-
+    guard !confineTouchToBounds || touchPath.containsPoint(touch.locationInView(self)) else { return false }
+    updateForTouch(touch)
     sendActionsForControlEvents(.ValueChanged)
-
     return true
   }
 
@@ -236,8 +349,13 @@ private func pointInsideRadius(point: CGPoint, r: CGFloat, center: CGPoint) -> B
   */
   public override func endTrackingWithTouch(touch: UITouch?, withEvent event: UIEvent?) {
     guard let touch = touch else { return }
-    let events: UIControlEvents = bounds.contains(touch.locationInView(self)) ? .TouchUpInside : .TouchUpOutside
-    sendActionsForControlEvents(events)
+
+    guard !confineTouchToBounds || touchPath.containsPoint(touch.locationInView(self)) else {
+      sendActionsForControlEvents(.TouchUpOutside)
+      return
+    }
+    updateForTouch(touch)
+    sendActionsForControlEvents(.TouchUpInside)
   }
 
   /**
@@ -245,7 +363,5 @@ private func pointInsideRadius(point: CGPoint, r: CGFloat, center: CGPoint) -> B
 
   - parameter event: UIEvent?
   */
-  public override func cancelTrackingWithEvent(event: UIEvent?) {
-    sendActionsForControlEvents(.TouchCancel)
-  }
+  public override func cancelTrackingWithEvent(event: UIEvent?) { sendActionsForControlEvents(.TouchCancel) }
 }

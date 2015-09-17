@@ -9,6 +9,15 @@
 import Foundation
 import UIKit
 
+extension CGFloat {
+  public var degrees: CGFloat { return self * 180 / π }
+  public var radians: CGFloat { return self * π / 180 }
+  public func rounded(mantissaLength: Int) -> CGFloat {
+    let remainder = self % pow(10, -CGFloat(mantissaLength))
+    return self - remainder + round(remainder * pow(10, CGFloat(mantissaLength))) / pow(10, CGFloat(mantissaLength))
+  }
+}
+
 extension CGPoint {
   public init(_ values: (CGFloat, CGFloat)) { self.init(x: values.0, y: values.1) }
   public init?(_ string: String?) { if let s = string { self = CGPointFromString(s) } else { return nil } }
@@ -302,7 +311,44 @@ extension CGAffineTransform {
   public init?(_ string: String?) { if let s = string { self = CGAffineTransformFromString(s) } else { return nil } }
 }
 
-extension CGAffineTransform: CustomStringConvertible { public var description: String { return NSStringFromCGAffineTransform(self) } }
+extension CGAffineTransform: CustomStringConvertible {
+  public var description: String {
+    let prefixes = ["┌─", "│ ", "│ ", "│ ", "└─"]
+    let suffixes = ["─┐", " │", " │", " │", "─┘"]
+    var col1 = ["", "\(a)", "\(c)", "\(tx)", ""]
+    var col2 = ["", "\(b)", "\(d)", "\(ty)", ""]
+    let col3 = [" ", "0", "0", "1", " "]
+    let col1MaxCount = col1.map({$0.utf8.count}).maxElement()!
+
+    for row in 0 ... 4 {
+      let delta = col1MaxCount - col1[row].utf8.count
+      if delta > 0 {
+        let leftPadCount = delta / 2 //(col1[row].hasPrefix("-") ? delta / 2 - 1 : delta / 2)
+        let leftPad = " " * leftPadCount
+        let rightPad = " " * (delta - leftPadCount)
+        col1[row] = leftPad + col1[row] + rightPad
+      }
+    }
+
+    let col2MaxCount = col2.map({$0.utf8.count}).maxElement()!
+
+    for row in 0 ... 4 {
+      let delta = col2MaxCount - col2[row].utf8.count
+      if delta > 0 {
+        let leftPadCount = delta / 2 //(col2[row].hasPrefix("-") ? delta / 2 - 1 : delta / 2)
+        let leftPad = " " * leftPadCount
+        let rightPad = " " * (delta - leftPadCount)
+        col2[row] = leftPad + col2[row] + rightPad
+      }
+    }
+
+    var result = ""
+    for i in 0 ... 4 {
+      result += prefixes[i] + " " + col1[i] + " " + col2[i] + " " + col3[i] + " " + suffixes[i] + "\n"
+    }
+    return result//NSStringFromCGAffineTransform(self)
+  }
+}
 
 public func +(lhs: CGAffineTransform, rhs: CGAffineTransform) -> CGAffineTransform { return CGAffineTransformConcat(lhs, rhs) }
 public func +=(inout lhs: CGAffineTransform, rhs: CGAffineTransform) { lhs = lhs + rhs }
@@ -316,6 +362,13 @@ extension CGRect {
 						  	  y: center.y - size.height / CGFloat(2.0),
 						  	  width: size.width,
 						  	  height: size.height)
+  }
+  public var centerInscribedSquare: CGRect {
+    guard width != height else { return self }
+    var result = self
+    result.size = CGSize(square: size.minAxis)
+    result.origin += (size - result.size) * 0.5
+    return result
   }
   public var center: CGPoint { return CGPoint(x: midX, y: midY) }
   public func rectWithOrigin(origin: CGPoint) -> CGRect { return CGRect(origin: origin, size: size) }

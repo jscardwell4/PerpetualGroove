@@ -31,4 +31,10 @@ extension UIBezierPath {
     addLineToPoint(CGPoint(x: rect.minX + 0.5 * rect.width, y: rect.minY))
     closePath()
   }
+
+  public func pathByApplyingTransform(transform: CGAffineTransform) -> UIBezierPath {
+    let path = copy() as! UIBezierPath
+    path.applyTransform(transform)
+    return path
+  }
 }

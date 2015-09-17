@@ -469,9 +469,6 @@
                                     </userDefinedRuntimeAttribute>
                                     <userDefinedRuntimeAttribute type="image" keyPath="wheelImage" value="wheel"/>
                                     <userDefinedRuntimeAttribute type="image" keyPath="dimpleImage" value="dimple"/>
-                                    <userDefinedRuntimeAttribute type="color" keyPath="dimpleHighlightedColor">
-                                        <color key="value" red="0.76089900732040405" green="0.25649610161781311" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                    </userDefinedRuntimeAttribute>
                                     <userDefinedRuntimeAttribute type="image" keyPath="dimpleFillImage" value="dimple_fill"/>
                                     <userDefinedRuntimeAttribute type="string" keyPath="dimpleFillStyleString" value="SourceIn"/>
                                     <userDefinedRuntimeAttribute type="string" keyPath="dimpleStyleString" value="SourceAtop"/>
