@@ -14,6 +14,27 @@ public func ╱<F:FractionType>(lhs: F, rhs: F) -> Fraction<F> {
   return Fraction<F>(lhs, rhs)
 }
 
+public func ╱(lhs: UInt8, rhs: UInt8) -> Fraction<Int8> {
+  return Fraction<Int8>(Int8(lhs), Int8(rhs))
+}
+
+public func ╱(lhs: UInt16, rhs: UInt16) -> Fraction<Int16> {
+  return Fraction<Int16>(Int16(lhs), Int16(rhs))
+}
+
+public func ╱(lhs: UInt32, rhs: UInt32) -> Fraction<Int32> {
+  return Fraction<Int32>(Int32(lhs), Int32(rhs))
+}
+
+public func ╱(lhs: UInt64, rhs: UInt64) -> Fraction<Int64> {
+  return Fraction<Int64>(Int64(lhs), Int64(rhs))
+}
+
+public func ╱(lhs: UInt, rhs: UInt) -> Fraction<Int> {
+  return Fraction<Int>(Int(lhs), Int(rhs))
+}
+
+
 /**
 Converts two fractions into equivalent fractions with a common denominator
 

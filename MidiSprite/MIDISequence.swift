@@ -8,6 +8,7 @@
 
 import Foundation
 import MoonKit
+import struct AudioToolbox.CABarBeatTime
 
 final class MIDISequence {
 
@@ -29,12 +30,13 @@ final class MIDISequence {
     static func TrackRemoved(track: InstrumentTrack) -> Notification {
       return Notification(name: .TrackRemoved, userInfo: ["track":track])
     }
-}
-
+  }
 
   enum Error: String, ErrorType {
     case NotPermitted = "Action not permitted given the playbackMode value of the sequence"
   }
+
+  var sequenceEnd: CABarBeatTime { return tracks.map({$0.trackEnd}).maxElement() ?? .start }
 
   let playbackMode: Bool
 

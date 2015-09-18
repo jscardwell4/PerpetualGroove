@@ -72,6 +72,7 @@ struct MIDIFileError: ExtendedErrorType {
     case InvalidHeader
     case InvalidLength
     case UnsupportedEvent
+    case MissingEvent
   }
 }
 

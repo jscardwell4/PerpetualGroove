@@ -15,7 +15,7 @@ import MoonKit
 final class Metronome {
 
   private let sampler: AVAudioUnitSampler
-  private let time = BarBeatTime(clockSource: Sequencer.clockSource)
+  private let time = Sequencer.barBeatTime
 
   var channel: Byte = 0
   var on = false {
@@ -26,18 +26,6 @@ final class Metronome {
     }
   }
 
-  private var notificationReceptionist: NotificationReceptionist?
-
-  /** initializeNotificationReceptionist */
-  private func initializeNotificationReceptionist() {
-    guard notificationReceptionist == nil else { return }
-    typealias Callback = NotificationReceptionist.Callback
-    let resetCallback: Callback = (Sequencer.self, NSOperationQueue.mainQueue(), {[unowned self] _ in self.time.reset() })
-    notificationReceptionist = NotificationReceptionist(callbacks: [
-      Sequencer.Notification.DidReset.name.value : resetCallback
-      ])
-  }
-
 
   /** initialize */
   init(node: AVAudioUnitSampler) throws {
@@ -45,8 +33,6 @@ final class Metronome {
     guard let url = NSBundle.mainBundle().URLForResource("Woodblock", withExtension: "wav") else {
       fatalError("Failed to get url for 'Woodblock.wav'")
     }
-
-    initializeNotificationReceptionist()
     try sampler.loadAudioFilesAtURLs([url])
   }
 

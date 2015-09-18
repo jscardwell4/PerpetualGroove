@@ -264,21 +264,38 @@ final class MIDIPlayerViewController: UIViewController {
 
   // MARK: - Transport
 
+  @IBOutlet weak var transportStack: UIStackView!
   @IBOutlet weak var recordButton: ImageButtonView!
   @IBOutlet weak var playPauseButton: ImageButtonView!
   @IBOutlet weak var stopButton: ImageButtonView!
   @IBOutlet weak var barBeatTimeLabel: UILabel!
   @IBOutlet weak var jogWheel: ScrollWheel!
 
-  @IBAction func record() { logDebug(); Sequencer.recording = !Sequencer.recording }
-  @IBAction func playPause() { logDebug(); if playing { pause() } else { play() } }
-  @IBAction func stop() { logDebug(); guard playing, let scene = playerScene else { return }; scene.midiPlayer.reset(); playing = false }
-  @IBAction private func beginJog(){ state.insert(.JogActive) }
-  @IBAction private func jog() { }
-  @IBAction private func endJog() { state.remove(.JogActive) }
+  var jogging: Bool { return state ∋ .JogActive }
 
-  func play() { logDebug(); guard !playing else { return }; playing = true }
-  func pause() { logDebug(); guard !paused && playing else { return }; paused = true }
+  /** record */
+  @IBAction func record() { Sequencer.recording = !Sequencer.recording }
+
+  /** playPause */
+  @IBAction func playPause() { if playing { pause() } else { play() } }
+
+  /** play */
+  func play() { guard !playing else { return }; playing = true }
+
+  /** pause */
+  func pause() { guard !paused && playing else { return }; paused = true }
+
+  /** stop */
+  @IBAction func stop() { guard playing, let scene = playerScene else { return }; scene.midiPlayer.reset(); playing = false }
+
+  /** beginJog */
+  @IBAction private func beginJog(){ state.insert(.JogActive); if Sequencer.playing { Sequencer.pause() } }
+
+  /** jog */
+  @IBAction private func jog() { }
+
+  /** endJog */
+  @IBAction private func endJog() { state.remove(.JogActive); if Sequencer.paused { Sequencer.play() } }
 
   private enum ControlImage {
     case Pause, Play
@@ -316,7 +333,7 @@ final class MIDIPlayerViewController: UIViewController {
     set {
       logDebug("didSet… currentValue: \(playing); newValue: \(newValue)")
       guard newValue != playing, let playerScene = playerScene else { return }
-      if newValue { Sequencer.play(); playerScene.paused = false } else { playerScene.paused = true }
+      if newValue { Sequencer.play(); playerScene.paused = false } else { Sequencer.stop(); playerScene.paused = true }
       state ⊻= .PlayerPlaying
       if playing { state.remove(.PlayerPaused) }
     }
@@ -449,9 +466,9 @@ final class MIDIPlayerViewController: UIViewController {
       logDebug("didSet…\n\told state: \(oldValue)\n\tnew state: \(state)")
       let modifiedState = state ⊻ oldValue
 
-      if modifiedState ∋ .MIDINodeAdded {
-        revertButton.enabled = state ∋ .MIDINodeAdded && state ∌ .PopoverActive // We have a node and aren't showing popover
-      }
+//      if modifiedState ∋ .MIDINodeAdded {
+//        revertButton.enabled = state ∋ .MIDINodeAdded && state ∌ .PopoverActive // We have a node and aren't showing popover
+//      }
 
       if modifiedState ∋ .TrackAdded {
         saveButton.enabled = state ∋ .TrackAdded && state ∌ .PopoverActive // We have a track and aren't showing popover
@@ -480,7 +497,7 @@ final class MIDIPlayerViewController: UIViewController {
       }
 
       if modifiedState ∋ .JogActive {
-        logDebug("do something about the change in `JogActive` state")
+        transportStack.userInteractionEnabled = !jogging
       }
     }
   }

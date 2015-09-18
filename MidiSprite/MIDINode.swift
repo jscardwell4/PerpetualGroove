@@ -117,20 +117,8 @@ final class MIDINode: SKSpriteNode {
     super.removeActionForKey(key)
   }
   private var client = MIDIClientRef()
-  private let time = BarBeatTime(clockSource: Sequencer.clockSource)
+  private let time = Sequencer.barBeatTime
   private(set) var endPoint = MIDIEndpointRef()
-
-  private var notificationReceptionist: NotificationReceptionist?
-
-  // MARK: - Initialization
-
-  /** initializeNotificationReceptionist */
-  private func initializeNotificationReceptionist() {
-    guard notificationReceptionist == nil else { return }
-    typealias Callback = NotificationReceptionist.Callback
-    let resetCallback: Callback = (Sequencer.self, NSOperationQueue.mainQueue(), {[unowned self] _ in self.time.reset()})
-    notificationReceptionist = NotificationReceptionist(callbacks: [Sequencer.Notification.DidReset.name.value:resetCallback])
-  }
 
   /**
   init:placement:instrument:note:
@@ -149,8 +137,6 @@ final class MIDINode: SKSpriteNode {
                size: MIDINode.defaultSize)
 
     _sourceID = Identifier(ObjectIdentifier(self).uintValue)
-
-    initializeNotificationReceptionist()
 
     try MIDIClientCreateWithBlock(name, &client, nil) ➤ "Failed to create midi client"
     try MIDISourceCreate(client, "\(name)", &endPoint) ➤ "Failed to create end point for node \(name)"

@@ -9,5 +9,6 @@ import Foundation
 import UIKit
 import MoonKit
 
-let transform = CGAffineTransform(angle: π)
-print(transform.description.indentedBy(5))
+
+let i = 4
+String(i, radix: 10, pad: 3)

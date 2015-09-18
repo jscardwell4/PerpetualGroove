@@ -14,8 +14,12 @@ import struct AudioToolbox.CABarBeatTime
 
 final class TempoTrack: MIDITrackType {
 
-  let time = BarBeatTime(clockSource: Sequencer.clockSource)
-
+  let time = Sequencer.barBeatTime
+  var trackEnd: CABarBeatTime {
+    if let endOfTrackEvent = events.last as? MetaEvent where endOfTrackEvent.data == .EndOfTrack {
+      return endOfTrackEvent.time
+    } else { return time.time }
+  }
   let playbackMode: Bool
 
   private(set) var events: [MIDITrackEvent] = [
@@ -26,23 +30,14 @@ final class TempoTrack: MIDITrackType {
   private var notificationReceptionist: NotificationReceptionist?
   private func recordingStatusDidChange(notification: NSNotification) { recording = Sequencer.recording }
 
-  /**
-  reset:
-
-  - parameter notification: NSNotification
-  */
-  private func reset(notification: NSNotification) { time.reset() }
-
   /** initializeNotificationReceptionist */
   private func initializeNotificationReceptionist() {
     guard notificationReceptionist == nil else { return }
     typealias Callback = NotificationReceptionist.Callback
     let recordingCallback: Callback = (Sequencer.self, NSOperationQueue.mainQueue(), recordingStatusDidChange)
-    let resetCallback: Callback = (Sequencer.self, NSOperationQueue.mainQueue(), reset)
     notificationReceptionist = NotificationReceptionist(callbacks: [
       Sequencer.Notification.DidTurnOnRecording.name.value : recordingCallback,
-      Sequencer.Notification.DidTurnOffRecording.name.value : recordingCallback,
-      Sequencer.Notification.DidReset.name.value : resetCallback
+      Sequencer.Notification.DidTurnOffRecording.name.value : recordingCallback
       ])
   }
 

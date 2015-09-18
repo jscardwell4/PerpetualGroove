@@ -167,8 +167,6 @@ import UIKit
     set { dimpleFillStyle = CGBlendMode(stringValue: newValue) }
   }
 
-  @IBInspectable public var value: Float = 0
-
   @IBInspectable public var wheelImage: UIImage? {
     get { return wheelLayer.wheelImage }
     set { wheelLayer.wheelImage = newValue }
@@ -308,6 +306,10 @@ import UIKit
     return true
   }
 
+  #if TARGET_INTERFACE_BUILDER
+  @IBInspectable public override var enabled: Bool { didSet {} }
+  #endif
+  
   /**
   continueTrackingWithTouch:withEvent:
 

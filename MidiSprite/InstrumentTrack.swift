@@ -28,7 +28,7 @@ final class InstrumentTrack: MIDITrackType, Equatable {
 
   // MARK: - Constant properties
 
-  let instrument: Instrument
+  let instrument: Instrument!
   let color: Color
   let playbackMode: Bool
 
@@ -42,8 +42,11 @@ final class InstrumentTrack: MIDITrackType, Equatable {
   private var outPort = MIDIPortRef()
   private let fileQueue: dispatch_queue_t?
   private var pendingIdentifier: NodeIdentifier?
+  private var _trackEnd: CABarBeatTime?
 
-  let time = BarBeatTime(clockSource: Sequencer.clockSource)
+  var trackEnd: CABarBeatTime { return _trackEnd ?? time.time }
+  
+  let time = Sequencer.barBeatTime
 
   var recording = false
 
@@ -78,6 +81,9 @@ final class InstrumentTrack: MIDITrackType, Equatable {
 
   enum Error: String, ErrorType, CustomStringConvertible {
     case NodeNotFound = "The specified node was not found among the track's nodes"
+    case SoundSetInitializeFailure = "Failed to create sound set"
+    case InvalidSoundSetURL = "Failed to resolve sound set url"
+    case InstrumentInitializeFailure = "Failed to create instrument"
   }
 
   /**
@@ -235,13 +241,6 @@ final class InstrumentTrack: MIDITrackType, Equatable {
   }
 
   /**
-  reset:
-
-  - parameter notification: NSNotification
-  */
-  private func reset(notification: NSNotification) { time.reset() }
-
-  /**
   didStart:
 
   - parameter notification: NSNotification
@@ -253,12 +252,10 @@ final class InstrumentTrack: MIDITrackType, Equatable {
     guard notificationReceptionist == nil else { return }
     typealias Callback = NotificationReceptionist.Callback
     let recordingCallback: Callback = (Sequencer.self, NSOperationQueue.mainQueue(), recordingStatusDidChange)
-    let resetCallback: Callback = (Sequencer.self, NSOperationQueue.mainQueue(), reset)
     let didStartCallback: Callback = (Sequencer.self, NSOperationQueue.mainQueue(), didStart)
     notificationReceptionist = NotificationReceptionist(callbacks: [
       Sequencer.Notification.DidTurnOnRecording.name.value : recordingCallback,
       Sequencer.Notification.DidTurnOffRecording.name.value : recordingCallback,
-      Sequencer.Notification.DidReset.name.value : resetCallback,
       Sequencer.Notification.DidStart.name.value: didStartCallback
       ])
   }
@@ -295,11 +292,9 @@ final class InstrumentTrack: MIDITrackType, Equatable {
   - parameter time: CABarBeatTime
   */
   private func dispatchEventsForTime(time: CABarBeatTime) {
-    logDebug("time: \(time)")
     guard let events = eventMap[time] else { return }
     for event in events {
       switch event {
-//        case let channelEvent as ChannelEvent: dispatchChannelEvent(channelEvent)
         case let nodeEvent as MIDINodeEvent:
           switch nodeEvent.data {
             case let .Add(i, p, a):    addNodeWithIdentifier(i, placement: p, attributes: a)
@@ -321,43 +316,69 @@ final class InstrumentTrack: MIDITrackType, Equatable {
     color = Color.allCases[Sequencer.sequence.tracks.count % 10]
     fileQueue = nil
     recording = false
+    events = trackChunk.events
 
-    let isInstrumentEvent: (MIDITrackEvent) -> Bool = {
+    // Find the end of track event
+    guard let endOfTrackEvent = trackChunk.events.first({
+      guard let metaEvent = $0 as? MetaEvent else { return false }
+      if case .EndOfTrack = metaEvent.data { return true } else { return false }
+    }) else {
+      instrument = nil
+      throw MIDIFileError(type: .MissingEvent, reason: "Missing end of track event")
+    }
+
+    _trackEnd = endOfTrackEvent.time
+
+    // Find the instrument event
+    guard let instrumentMetaEvent = trackChunk.events.first({
       guard let metaEvent = $0 as? MetaEvent else { return false }
       switch metaEvent.data {
         case .Text(let text) where text.hasPrefix("instrument:"): return true
         default: return false
       }
+    }) as? MetaEvent else {
+      instrument = nil
+      throw MIDIFileError(type: .MissingEvent, reason: "Missing instrument event")
     }
 
-    let isProgramChangeEvent: (MIDITrackEvent) -> Bool = {
+    guard case var .Text(instrumentName) = instrumentMetaEvent.data else {
+      instrument = nil
+      throw MIDIFileError(type: .FileStructurallyUnsound, reason: "Instrument event must be a text event")
+    }
+
+    instrumentName = instrumentName[instrumentName.startIndex.advancedBy(11)..<]
+
+    guard let fileURL = NSBundle.mainBundle().URLForResource(instrumentName, withExtension: nil) else {
+      instrument = nil
+      throw Error.InvalidSoundSetURL
+    }
+
+    guard let soundSet = try? SoundSet(url: fileURL) else {
+      instrument = nil
+      throw Error.SoundSetInitializeFailure
+    }
+
+    // Find the program change event
+    guard let programEvent = trackChunk.events.first({
       guard let channelEvent = $0 as? ChannelEvent else { return false }
       switch channelEvent.status.type {
         case .ProgramChange: return true
         default: return false
       }
+    }) as? ChannelEvent else {
+      instrument = nil
+      throw MIDIFileError(type: .MissingEvent, reason: "Missing program change event")
     }
 
-    guard let instrumentMetaEvent = trackChunk.events.first(isInstrumentEvent) as? MetaEvent else { fatalError("wtf") }
+    let program = programEvent.data1
+    let channel = programEvent.status.channel
 
+    guard let instrumentMaybe = try? Instrument(soundSet: soundSet, program: program, channel: channel) else {
+      instrument = nil
+      throw Error.InstrumentInitializeFailure
+    }
 
-    guard case var .Text(instrumentName) = instrumentMetaEvent.data else { fatalError("wtf") }
-
-    instrumentName = instrumentName[instrumentName.startIndex.advancedBy(11)..<]
-
-     guard let fileURL = NSBundle.mainBundle().URLForResource(instrumentName, withExtension: nil) else { fatalError("wtf") }
-
-    guard let soundSet = try? SoundSet(url: fileURL) else { fatalError("wtf") }
-    guard let programEvent = trackChunk.events.first(isProgramChangeEvent) as? ChannelEvent else { fatalError("wtf") }
-    guard let instrumentMaybe = try? Instrument(soundSet: soundSet, program: programEvent.data1, channel: programEvent.status.channel) else { fatalError("wtf") }
-//    {
-      instrument = instrumentMaybe
-//    } else {
-//      fatalError("wtf")
-//      instrument = Instrument(instrument: Sequencer.auditionInstrument)
-//    }
-
-    events = trackChunk.events
+    instrument = instrumentMaybe
 
     for event in events {
       let eventTime = event.time
@@ -366,8 +387,6 @@ final class InstrumentTrack: MIDITrackType, Equatable {
       eventMap[eventTime] = eventBag
     }
     for eventTime in eventMap.keys { time.registerCallback(dispatchEventsForTime, forTime: eventTime) }
-
-    logDebug("eventMap = \(eventMap)")
 
     initializeNotificationReceptionist()
 

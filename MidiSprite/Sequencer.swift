@@ -42,7 +42,13 @@ final class Sequencer {
     case CurrentTrackDidChange
     case DidStart, DidPause, DidStop, DidReset
     case DidTurnOnRecording, DidTurnOffRecording
+    case DidJogTime
     var object: AnyObject? { return Sequencer.self }
+  }
+
+  enum Error: String, ErrorType {
+    case InvalidBarBeatTime
+    case NotPermitted
   }
 
   private static var notificationReceptionist = NotificationReceptionist(callbacks:
@@ -74,27 +80,13 @@ final class Sequencer {
 
   /** The MIDI clock */
   static private let clock = MIDIClock(resolution: resolution)
-  static private let barBeatTime = BarBeatTime(clockSource: clock.endPoint)
-  static private var synchronizedTimes: Set<BarBeatTime> = []
+  static let barBeatTime = BarBeatTime(clockSource: clock.endPoint)
 
   static var resolution: UInt64 = 480 { didSet { clock.resolution = resolution } }
   static var measure: String  { return barBeatTime.description }
 
   /** The MIDI clock's end point */
   static var clockSource: MIDIEndpointRef { return clock.endPoint }
-  
-  /**
-  synchronizeTime:
-
-  - parameter time: BarBeatTime
-  */
-  static func synchronizeTime(time: BarBeatTime) {
-    logDebug("synchronizeTime(time: \(time))")
-    guard time !== barBeatTime else { return }
-    guard !synchronizedTimes.contains(time) else { synchronizedTimes.remove(time); return }
-    time.synchronizeWithTime(barBeatTime)
-    synchronizedTimes.insert(time)
-  }
 
   /** The tempo used by the MIDI clock in beats per minute */
   // TODO: Need to make sure the current tempo is set at the beginning of a new sequence and probably turn off continuous
@@ -197,9 +189,20 @@ final class Sequencer {
     }
   }
 
+  /**
+  jogToTime:
+
+  - parameter time: CABarBeatTime
+  */
+  static func jogToTime(time: CABarBeatTime) throws {
+    guard paused else { throw Error.NotPermitted }
+    guard barBeatTime.isValidTime(time) else { throw Error.InvalidBarBeatTime }
+    barBeatTime.time = time
+    Notification.DidJogTime.post()
+  }
+
   /** Starts the MIDI clock */
   static func play() {
-    logDebug()
     guard !playing else { return }
     clock.start()
     state.insert(.Playing)
@@ -209,7 +212,6 @@ final class Sequencer {
 
   /** pause */
   static func pause() {
-    logDebug()
     guard playing else { return }
     clock.stop()
     state.insert(.Paused)
@@ -219,7 +221,6 @@ final class Sequencer {
 
   /** Moves the time back to 0 */
   static func reset() {
-    logDebug()
     if playing { stop() }
     barBeatTime.reset()
     Notification.DidReset.post()
@@ -227,7 +228,6 @@ final class Sequencer {
 
   /** Stops the MIDI clock */
   static func stop() {
-    logDebug()
     guard playing else { return }
     clock.stop()
     state.remove(.Playing)
