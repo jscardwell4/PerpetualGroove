@@ -193,7 +193,7 @@ import UIKit
   }
 
   private var thetaOffset: CGFloat = 0
-  public var revolutions: CGFloat { return (theta - thetaOffset) / (π * 2) }
+  public var revolutions: Float { return Float((theta - thetaOffset) / (π * 2)) }
 
   @IBInspectable public var theta: CGFloat = 0 {
     didSet {

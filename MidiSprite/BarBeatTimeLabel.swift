@@ -36,6 +36,8 @@ import struct AudioToolbox.CABarBeatTime
   }
   private var barBeatTimeCallbackKey: String { return String(ObjectIdentifier(self).uintValue) }
 
+  private var notificationReceptionist: NotificationReceptionist!
+
   /**
   didUpdateBarBeatTime:
 
@@ -43,11 +45,22 @@ import struct AudioToolbox.CABarBeatTime
   */
   private func didUpdateBarBeatTime(time: CABarBeatTime) { currentTime = time }
 
+  /**
+  didJog:
+
+  - parameter notification: NSNotification
+  */
+  private func didJog(notification: NSNotification) { currentTime = Sequencer.barBeatTime.time }
+
   /** setup */
   private func setup() {
     Sequencer.barBeatTime.registerCallback(didUpdateBarBeatTime,
                                  predicate: BarBeatTime.TruePredicate,
                                     forKey: barBeatTimeCallbackKey)
+    let didJogCallback: NotificationReceptionist.Callback = (Sequencer.self, NSOperationQueue.mainQueue(), didJog)
+    notificationReceptionist = NotificationReceptionist(callbacks:
+      [Sequencer.Notification.DidJogTime.name.value: didJogCallback]
+    )
   }
 
   /**

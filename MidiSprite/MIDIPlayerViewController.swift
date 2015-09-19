@@ -231,14 +231,14 @@ final class MIDIPlayerViewController: UIViewController {
  // MARK: - Mixer
 
   @IBOutlet weak var mixerButton: ImageButtonView!
-  @IBAction private func mixer() { logDebug(""); updatePopover(.Mixer) }
+  @IBAction private func mixer() { updatePopover(.Mixer) }
   private weak var mixerViewController: MixerViewController!
   @IBOutlet private weak var mixerPopoverView: PopoverView!
 
   // MARK: - Instrument
 
   @IBOutlet weak var instrumentButton: ImageButtonView!
-  @IBAction private func instrument() { logDebug(""); updatePopover(.Instrument) }
+  @IBAction private func instrument() { updatePopover(.Instrument) }
   private weak var instrumentViewController: InstrumentViewController!
   @IBOutlet private weak var instrumentPopoverView: PopoverView!
 
@@ -246,20 +246,20 @@ final class MIDIPlayerViewController: UIViewController {
 
   @IBOutlet weak var noteAttributesButton: ImageButtonView!
   private weak var noteAttributesViewController: NoteAttributesViewController!
-  @IBAction private func noteAttributes() { logDebug(""); updatePopover(.NoteAttributes) }
+  @IBAction private func noteAttributes() { updatePopover(.NoteAttributes) }
   @IBOutlet private weak var noteAttributesPopoverView: PopoverView!
 
   // MARK: - Tempo
 
   @IBOutlet weak var tempoButton: ImageButtonView!
   private weak var tempoViewController: TempoViewController!
-  @IBAction private func tempo() { logDebug(""); updatePopover(.Tempo) }
+  @IBAction private func tempo() { updatePopover(.Tempo) }
   @IBOutlet private weak var tempoPopoverView: PopoverView!
 
   // MARK: - Undo
 
-  @IBOutlet weak var revertButton: ImageButtonView!
-  @IBAction private func revert() { logDebug(""); (midiPlayerSceneView?.scene as? MIDIPlayerScene)?.revert() }
+//  @IBOutlet weak var revertButton: ImageButtonView!
+  @IBAction private func revert() { (midiPlayerSceneView?.scene as? MIDIPlayerScene)?.revert() }
 
 
   // MARK: - Transport
@@ -268,7 +268,7 @@ final class MIDIPlayerViewController: UIViewController {
   @IBOutlet weak var recordButton: ImageButtonView!
   @IBOutlet weak var playPauseButton: ImageButtonView!
   @IBOutlet weak var stopButton: ImageButtonView!
-  @IBOutlet weak var barBeatTimeLabel: UILabel!
+  @IBOutlet weak var barBeatTimeLabel: BarBeatTimeLabel!
   @IBOutlet weak var jogWheel: ScrollWheel!
 
   var jogging: Bool { return state ∋ .JogActive }
@@ -289,13 +289,13 @@ final class MIDIPlayerViewController: UIViewController {
   @IBAction func stop() { guard playing, let scene = playerScene else { return }; scene.midiPlayer.reset(); playing = false }
 
   /** beginJog */
-  @IBAction private func beginJog(){ state.insert(.JogActive); if Sequencer.playing { Sequencer.pause() } }
+  @IBAction private func beginJog(){ state.insert(.JogActive); Sequencer.beginJog() }
 
   /** jog */
-  @IBAction private func jog() { }
+  @IBAction private func jog() { Sequencer.jog(jogWheel.revolutions) }
 
   /** endJog */
-  @IBAction private func endJog() { state.remove(.JogActive); if Sequencer.paused { Sequencer.play() } }
+  @IBAction private func endJog() { state.remove(.JogActive); Sequencer.endJog() }
 
   private enum ControlImage {
     case Pause, Play
@@ -324,7 +324,7 @@ final class MIDIPlayerViewController: UIViewController {
       guard newValue != paused, let playerScene = playerScene else { return }
       if newValue { Sequencer.pause(); playerScene.paused = true } else { Sequencer.play(); playerScene.paused = false }
       state ⊻= .PlayerPaused
-      if !paused { state.insert(.PlayerPlaying) }
+      if !paused { state.insert(.PlayerPlaying) } else { state.remove(.PlayerPlaying) }
     }
   }
 
@@ -392,14 +392,14 @@ final class MIDIPlayerViewController: UIViewController {
 
   - parameter notification: NSNotification
   */
-  private func fileDidLoad(notification: NSNotification) { logDebug(""); state.insert(.FileLoaded) }
+  private func fileDidLoad(notification: NSNotification) { state.insert(.FileLoaded) }
 
   /**
   fileDidUnload:
 
   - parameter notification: NSNotification
   */
-  private func fileDidUnload(notification: NSNotification) { logDebug(""); state.remove(.FileLoaded) }
+  private func fileDidUnload(notification: NSNotification) { state.remove(.FileLoaded) }
 
   /** initializeReceptionist */
   private func initializeReceptionist() {
@@ -415,6 +415,8 @@ final class MIDIPlayerViewController: UIViewController {
     let currentTrackCallback: Callback = (Sequencer.self, queue, currentTrackDidChange)
     let fileLoadedCallback: Callback = (Sequencer.self, queue, fileDidLoad)
     let fileUnloadedCallback: Callback = (Sequencer.self, queue, fileDidUnload)
+    let didPauseCallback: Callback = (Sequencer.self, queue, {[unowned self] _ in self.pause()})
+    let didStartCallback: Callback = (Sequencer.self, queue, {[unowned self] _ in self.play()})
 
     let callbacks: [NotificationReceptionist.Notification:NotificationReceptionist.Callback] = [
       MIDIPlayerNode.Notification.NodeAdded.name.value: nodeCallback,
@@ -423,7 +425,9 @@ final class MIDIPlayerViewController: UIViewController {
       MIDISequence.Notification.Name.TrackRemoved.value: trackCallback,
       Sequencer.Notification.FileLoaded.name.value: fileLoadedCallback,
       Sequencer.Notification.FileUnloaded.name.value: fileUnloadedCallback,
-      Sequencer.Notification.CurrentTrackDidChange.name.value: currentTrackCallback
+      Sequencer.Notification.CurrentTrackDidChange.name.value: currentTrackCallback,
+      Sequencer.Notification.DidPause.name.value: didPauseCallback,
+      Sequencer.Notification.DidStart.name.value: didStartCallback
     ]
 
     notificationReceptionist = NotificationReceptionist(callbacks: callbacks)

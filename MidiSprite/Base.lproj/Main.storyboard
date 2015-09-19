@@ -302,7 +302,7 @@
                                         </connections>
                                     </view>
                                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QfC-Mo-5pM" userLabel="Tempo" customClass="ImageButtonView" customModule="MoonKit">
-                                        <rect key="frame" x="61.5" y="5" width="36" height="36"/>
+                                        <rect key="frame" x="62" y="5" width="36" height="36"/>
                                         <color key="tintColor" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="QfC-Mo-5pM" secondAttribute="height" multiplier="1:1" id="RH3-As-HuW"/>
@@ -377,7 +377,7 @@
                                         </connections>
                                     </view>
                                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dMY-9u-X4g" userLabel="NoteAttributes" customClass="ImageButtonView" customModule="MoonKit">
-                                        <rect key="frame" x="245.5" y="5" width="36" height="36"/>
+                                        <rect key="frame" x="246" y="5" width="36" height="36"/>
                                         <color key="tintColor" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="36" id="1rS-S2-g7E"/>
@@ -475,22 +475,22 @@
                                 <rect key="frame" x="212" y="622" width="147" height="28.5"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="NRe-r9-gaz">
-                                        <rect key="frame" x="0.0" y="0.0" width="147" height="28.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="147" height="29"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="001" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oOV-5w-qc6">
-                                                <rect key="frame" x="0.0" y="0.0" width="44.5" height="28.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="45" height="29"/>
                                                 <fontDescription key="fontDescription" name="EvelethLight" family="Eveleth" pointSize="24"/>
                                                 <color key="textColor" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text=":" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="t0O-Cc-XTf">
-                                                <rect key="frame" x="50.5" y="0.0" width="8.5" height="28.5"/>
+                                                <rect key="frame" x="51" y="0.0" width="9" height="29"/>
                                                 <fontDescription key="fontDescription" name="EvelethLight" family="Eveleth" pointSize="24"/>
                                                 <color key="textColor" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="999" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="1" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="e09-0B-NqE">
-                                                <rect key="frame" x="65" y="0.0" width="16" height="28.5"/>
+                                                <rect key="frame" x="65" y="0.0" width="16" height="29"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="16" id="vcj-2L-sDc"/>
                                                 </constraints>
@@ -499,13 +499,13 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="ayK-ZT-ieP">
-                                                <rect key="frame" x="87" y="0.0" width="8" height="28.5"/>
+                                                <rect key="frame" x="87" y="0.0" width="8" height="29"/>
                                                 <fontDescription key="fontDescription" name="EvelethLight" family="Eveleth" pointSize="24"/>
                                                 <color key="textColor" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="999" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="001" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aOJ-a2-U5V">
-                                                <rect key="frame" x="101" y="0.0" width="46" height="28.5"/>
+                                                <rect key="frame" x="101" y="0.0" width="46" height="29"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="46" id="pWa-Vf-I3p"/>
                                                 </constraints>
@@ -536,10 +536,10 @@
                                 <color key="backgroundColor" red="0.20000000298023224" green="0.19607843458652496" blue="0.19215686619281769" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
                             <stackView opaque="NO" contentMode="scaleToFill" alignment="firstBaseline" translatesAutoresizingMaskIntoConstraints="NO" id="1L9-xl-LZM" userLabel="File/Track">
-                                <rect key="frame" x="16" y="62" width="343" height="36"/>
+                                <rect key="frame" x="16" y="62" width="343" height="24"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Track" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5F4-fd-MDF">
-                                        <rect key="frame" x="0.0" y="0.0" width="54.5" height="24"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="55" height="24"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="24" id="m2m-xd-vO2"/>
                                         </constraints>
@@ -548,7 +548,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Some MIDI Track" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zLX-jM-BjG">
-                                        <rect key="frame" x="54.5" y="0.0" width="288.5" height="24"/>
+                                        <rect key="frame" x="55" y="0.0" width="289" height="24"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <gestureRecognizers/>
                                         <constraints>
@@ -563,7 +563,7 @@
                                         </connections>
                                     </label>
                                     <view opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="QH3-ti-BXW" customClass="LabelButton" customModule="MoonKit">
-                                        <rect key="frame" x="343" y="12" width="0.0" height="24"/>
+                                        <rect key="frame" x="343" y="0.0" width="0.0" height="24"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="24" id="8Ps-Kd-C6a"/>
@@ -905,6 +905,7 @@
                     <nil key="simulatedBottomBarMetrics"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
+                        <outlet property="barBeatTimeLabel" destination="UtM-qz-8YW" id="BeB-QX-iBt"/>
                         <outlet property="fileTrackActionButton" destination="QH3-ti-BXW" id="3w5-tm-Wqy"/>
                         <outlet property="fileTrackLabel" destination="5F4-fd-MDF" id="JnQ-by-umb"/>
                         <outlet property="fileTrackNameActionButtonWidthConstraint" destination="8t5-7v-Zgl" id="eMM-gf-EzW"/>
@@ -1080,7 +1081,7 @@
                                                 <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KML-VN-wa1" userLabel="Note Picker" customClass="InlinePickerView" customModule="MoonKit">
+                                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KML-VN-wa1" userLabel="Note Picker" customClass="InlinePickerView" customModule="MoonKit">
                                                 <rect key="frame" x="80" y="0.0" width="192" height="56"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="44" id="JYW-n3-Oez"/>
@@ -1130,7 +1131,7 @@
                                                 <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KLS-oH-mjI" userLabel="Duration Picker" customClass="InlinePickerView" customModule="MoonKit">
+                                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KLS-oH-mjI" userLabel="Duration Picker" customClass="InlinePickerView" customModule="MoonKit">
                                                 <rect key="frame" x="80" y="0.0" width="192" height="56"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="44" id="PKD-3B-EOi"/>
@@ -1172,7 +1173,7 @@
                                                 <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gSZ-JK-0W9" userLabel="Velocity Picker" customClass="InlinePickerView" customModule="MoonKit">
+                                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gSZ-JK-0W9" userLabel="Velocity Picker" customClass="InlinePickerView" customModule="MoonKit">
                                                 <rect key="frame" x="80" y="0.0" width="192" height="56"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="44" id="g2P-el-8jk"/>
@@ -1597,7 +1598,7 @@
                                                 <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3qS-GK-dh1" customClass="InlinePickerView" customModule="MoonKit">
+                                            <view opaque="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3qS-GK-dh1" customClass="InlinePickerView" customModule="MoonKit">
                                                 <rect key="frame" x="94" y="0.0" width="178" height="56"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <userDefinedRuntimeAttributes>
@@ -1638,7 +1639,7 @@
                                                 <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yew-6y-DAi" customClass="InlinePickerView" customModule="MoonKit">
+                                            <view opaque="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yew-6y-DAi" customClass="InlinePickerView" customModule="MoonKit">
                                                 <rect key="frame" x="94" y="0.0" width="178" height="56"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <userDefinedRuntimeAttributes>

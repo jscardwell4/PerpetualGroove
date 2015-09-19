@@ -45,6 +45,13 @@ final class MIDIClock: CustomStringConvertible {
     timer.start()
   }
 
+  /** resume */
+  func resume() {
+    guard !timer.running else { return }
+    sendContinue()
+    timer.start()
+  }
+
   /** reset */
   func reset() { guard !timer.running else { return }; ticks = 0 }
 
@@ -100,6 +107,9 @@ final class MIDIClock: CustomStringConvertible {
 
   /** sendStart */
   private func sendStart() { do { try sendEvent(0b1111_1010) } catch { logError(error) } }
+
+  /** sendContinue */
+  private func sendContinue() { do { try sendEvent(0b1111_1011) } catch { logError(error) } }
 
   /** sendStop */
   private func sendStop() { do { try sendEvent(0b1111_1100) } catch { logError(error) } }

@@ -135,6 +135,7 @@ final class Sequencer {
     static let Playing   = State(rawValue: 0b0000_0010)
     static let Recording = State(rawValue: 0b0000_0100)
     static let Paused    = State(rawValue: 0b0001_0000)
+    static let Jogging   = State(rawValue: 0b0010_0000)
 
     var description: String {
       var result = "Sequencer.State { "
@@ -142,7 +143,8 @@ final class Sequencer {
       if contains(.Playing)   { flagStrings.append("Playing")   }
       if contains(.Recording) { flagStrings.append("Recording") }
       if contains(.Paused)    { flagStrings.append("Paused")    }
-      if flagStrings.isEmpty { flagStrings.append("Default") }
+      if contains(.Jogging)   { flagStrings.append("Jogging")   }
+      if flagStrings.isEmpty  { flagStrings.append("Default")   }
       result += ", ".join(flagStrings)
       result += " }"
       return result
@@ -179,6 +181,8 @@ final class Sequencer {
 
   static var paused: Bool { return state ∋ .Paused }
 
+  static var jogging: Bool { return state ∋ .Jogging }
+
   static var recording: Bool {
     get { return state ∋ .Recording }
     set {
@@ -189,13 +193,61 @@ final class Sequencer {
     }
   }
 
+  private static var jogStartTimeTicks: UInt64 = 0
+  private static var jogMaxTimeTicks: UInt64 = 0
+
+  /** beginJog */
+  static func beginJog() {
+    if playing { pause() }
+    state.insert(.Jogging)
+    jogStartTimeTicks = barBeatTime.time.tickValueWithBeatsPerBar(timeSignature.beatsPerBar)
+    jogMaxTimeTicks = max(jogMaxTimeTicks, sequence.sequenceEnd.tickValueWithBeatsPerBar(timeSignature.beatsPerBar))
+  }
+
+  /**
+  jog:
+
+  - parameter revolutions: Float
+  */
+  static func jog(revolutions: Float) {
+    guard jogging else { return }
+
+    let beatsPerBar = timeSignature.beatsPerBar
+    let ticksPerRevolution = UInt64(beatsPerBar) * UInt64(barBeatTime.partsPerQuarter)
+    let isNegative = revolutions.isSignMinus
+    let deltaTicks = UInt64(Double(abs(revolutions)) * Double(ticksPerRevolution))
+    let pendingTimeTickValue: UInt64
+
+    switch isNegative {
+      case true where jogStartTimeTicks < deltaTicks: pendingTimeTickValue = 0
+      case true: pendingTimeTickValue = jogStartTimeTicks - deltaTicks
+      case false where jogStartTimeTicks + deltaTicks > jogMaxTimeTicks: pendingTimeTickValue = jogMaxTimeTicks
+      default: pendingTimeTickValue = jogStartTimeTicks + deltaTicks
+    }
+
+
+    let pendingTime = CABarBeatTime(tickValue: pendingTimeTickValue,
+                                    beatsPerBar: beatsPerBar,
+                                    subbeatDivisor: barBeatTime.partsPerQuarter)
+
+    do { try jogToTime(pendingTime) } catch { logError(error) }
+  }
+
+  /** endJog */
+  static func endJog() {
+    guard jogging else { return }
+    state.remove(.Jogging)
+    if paused { play() }
+  }
+
   /**
   jogToTime:
 
   - parameter time: CABarBeatTime
   */
   static func jogToTime(time: CABarBeatTime) throws {
-    guard paused else { throw Error.NotPermitted }
+    guard barBeatTime.time != time else { return }
+    guard jogging else { throw Error.NotPermitted }
     guard barBeatTime.isValidTime(time) else { throw Error.InvalidBarBeatTime }
     barBeatTime.time = time
     Notification.DidJogTime.post()
@@ -204,9 +256,9 @@ final class Sequencer {
   /** Starts the MIDI clock */
   static func play() {
     guard !playing else { return }
-    clock.start()
+    if paused { clock.resume(); state.remove(.Paused) }
+    else { clock.start() }
     state.insert(.Playing)
-    state.remove(.Paused)
     Notification.DidStart.post()
   }
 

@@ -61,6 +61,24 @@ public func <(lhs: CABarBeatTime, rhs: CABarBeatTime) -> Bool {
 
 extension CABarBeatTime {
 
+  /**
+  addedToBarBeatTime:beatsPerBar:
+
+  - parameter time: CABarBeatTime
+  - parameter beatsPerBar: UInt16
+
+  - returns: CABarBeatTime
+  */
+  public func addedToBarBeatTime(time: CABarBeatTime, beatsPerBar: UInt16) -> CABarBeatTime {
+    var bars = bar + time.bar
+    var beats = beat + time.beat
+    let subbeatsSum = (subbeat╱subbeatDivisor + time.subbeat╱time.subbeatDivisor).fractionWithBase(Int16(subbeatDivisor))
+    var subbeats = UInt16(subbeatsSum.numerator)
+    if subbeats > subbeatDivisor { beats += subbeats / subbeatDivisor; subbeats %= subbeatDivisor }
+    if beats > beatsPerBar { bars += Int32(beats / beatsPerBar); beats %= beatsPerBar }
+    return CABarBeatTime(bar: bars, beat: beats, subbeat: subbeats, subbeatDivisor: subbeatDivisor, reserved: 0)
+  }
+
   public static var start: CABarBeatTime {
     return CABarBeatTime(bar: 1, beat: 1, subbeat: 1, subbeatDivisor: UInt16(Sequencer.resolution), reserved: 0)
   }
