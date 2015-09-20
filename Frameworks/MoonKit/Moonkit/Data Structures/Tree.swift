@@ -1,13 +1,13 @@
 //
-//  Slider.swift
+//  Tree.swift
 //  MoonKit
 //
-//  Created by Jason Cardwell on 9/2/15.
+//  Created by Jason Cardwell on 9/19/15.
 //  Copyright © 2015 Jason Cardwell. All rights reserved.
+//  modified source code from http://airspeedvelocity.net/2015/07/22/a-persistent-tree-using-indirect-enums-in-swift
 //
+
 import Foundation
-import UIKit
-import MoonKit
 
 
 public indirect enum Tree<Element: Comparable> {
@@ -166,35 +166,7 @@ extension Tree: ArrayLiteralConvertible {
   public init(arrayLiteral elements: Element...) { self = Tree(elements) }
 
 }
-import Darwin
 
-extension Array {
-  func shuffle() -> [Element] {
-    var list = self
-    for i in 0..<(list.count - 1) {
-      let j = Int(arc4random_uniform(UInt32(list.count - i))) + i
-      guard i != j else { continue }
-      swap(&list[i], &list[j])
-    }
-    return list
-  }
-}
-
-
-let engines = [
-  "Daisy", "Salty", "Harold", "Cranky",
-  "Thomas", "Henry", "James", "Toby",
-  "Belle", "Diesel", "Stepney", "Gordon",
-  "Captain", "Percy", "Arry", "Bert",
-  "Spencer",
-]
-
-// test various inserting engines in various different permutations
-for permutation in [engines, engines.sort(), engines.sort(>), engines.shuffle(),engines.shuffle(),engines.shuffle()] {
-  let t = Tree(permutation)
-  assert(!t.contains("Fred"))
-  assert(t.elementsEqual(t.insert("Thomas")))
-  assert(!engines.contains { !t.contains($0) })
-  assert(t.elementsEqual(engines.sort()))
-  print(t.joinWithSeparator(", "))
+extension Tree: CustomStringConvertible {
+  public var description: String { return "[" + ", ".join(Array(self).map({String($0)})) + "]" }
 }

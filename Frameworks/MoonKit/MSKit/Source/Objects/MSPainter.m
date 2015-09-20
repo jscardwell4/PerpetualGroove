@@ -18,7 +18,7 @@
 #import "MSLog.h"
 #import <MoonKit/Moonkit-swift.h>
 
-static int ddLogLevel = LOG_LEVEL_DEBUG;
+static int ddLogLevel = DDLogLevelDebug;
 static const int msLogContext = (LOG_CONTEXT_MSKIT|LOG_CONTEXT_FILE);
 
 #pragma mark - Typedefs

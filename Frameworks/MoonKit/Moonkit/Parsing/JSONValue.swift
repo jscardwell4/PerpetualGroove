@@ -273,7 +273,7 @@ extension JSONValue: RawRepresentable {
     do {
       self = try parser.parse()
     } catch {
-      MSHandleError(error as NSError)
+      logError(error)
       return nil
     }
   }

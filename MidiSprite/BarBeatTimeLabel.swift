@@ -59,7 +59,7 @@ import struct AudioToolbox.CABarBeatTime
                                     forKey: barBeatTimeCallbackKey)
     let didJogCallback: NotificationReceptionist.Callback = (Sequencer.self, NSOperationQueue.mainQueue(), didJog)
     notificationReceptionist = NotificationReceptionist(callbacks:
-      [Sequencer.Notification.DidJogTime.name.value: didJogCallback]
+      [Sequencer.Notification.DidJog.name.value: didJogCallback]
     )
   }
 

@@ -16,7 +16,7 @@
 @import CoreText;
 #import "NSValue+MSKitAdditions.h"
 
-static int ddLogLevel   = LOG_LEVEL_WARN;
+static int ddLogLevel   = DDLogLevelWarning;
 static int msLogContext = LOG_CONTEXT_CONSOLE;
 #pragma unused(ddLogLevel,msLogContext)
 

@@ -14,7 +14,7 @@
 #import "NSMutableString+MSKitAdditions.h"
 #import "MoonKit/MoonKit-Swift.h"
 
-static int ddLogLevel   = LOG_LEVEL_DEBUG;
+static int ddLogLevel   = DDLogLevelDebug;
 static int msLogContext = LOG_CONTEXT_CONSOLE;
 #pragma unused(ddLogLevel,msLogContext)
 

@@ -17,18 +17,18 @@ final class MIDISequence {
   /** An enumeration to wrap up notifications */
   struct Notification: NotificationType {
     enum Name: String, NotificationNameType {
-      case TrackAdded, TrackRemoved
+      case DidAddTrack, DidRemoveTrack
     }
     var name: Name
     var object: AnyObject? { return MIDISequence.self }
     var userInfo: [NSObject:AnyObject]?
 
-    static func TrackAdded(track: InstrumentTrack) -> Notification {
-      return Notification(name: .TrackAdded, userInfo: ["track":track])
+    static func DidAddTrack(track: InstrumentTrack) -> Notification {
+      return Notification(name: .DidAddTrack, userInfo: ["track":track])
     }
 
-    static func TrackRemoved(track: InstrumentTrack) -> Notification {
-      return Notification(name: .TrackRemoved, userInfo: ["track":track])
+    static func DidRemoveTrack(track: InstrumentTrack) -> Notification {
+      return Notification(name: .DidRemoveTrack, userInfo: ["track":track])
     }
   }
 
@@ -86,7 +86,7 @@ final class MIDISequence {
     guard !playbackMode else { throw Error.NotPermitted }
     let track = try InstrumentTrack(instrument: instrument)
     tracks.append(track)
-    Notification.TrackAdded(track).post()
+    Notification.DidAddTrack(track).post()
     return tracks.last as! InstrumentTrack
   }
 
@@ -101,7 +101,7 @@ final class MIDISequence {
       return
     }
     tracks.removeAtIndex(idx + 1)
-    Notification.TrackRemoved(track).post()
+    Notification.DidRemoveTrack(track).post()
   }
 
   /**

@@ -7,7 +7,7 @@
 //
 #import "NSManagedObject+MSKitAdditions.h"
 #import "MSKitMacros.h"
-@import Lumberjack;
+@import CocoaLumberjackSwift;
 #import "NSSet+MSKitAdditions.h"
 #import "NSArray+MSKitAdditions.h"
 #import "NSDictionary+MSKitAdditions.h"
@@ -16,7 +16,7 @@
 
 MSKEY_DEFINITION(MSDefaultValueForContainingClass);
 MSKEY_DEFINITION(MSDefaultValueForSubentity);
-static int ddLogLevel   = LOG_LEVEL_DEBUG;
+static int ddLogLevel   = DDLogLevelDebug;
 static int msLogContext = LOG_CONTEXT_CONSOLE;
 
 #pragma unused(ddLogLevel,msLogContext)

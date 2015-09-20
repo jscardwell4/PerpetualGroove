@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Moondeer Studios. All rights reserved.
 //
 #import "MSLog.h"
-@import Lumberjack;
+@import CocoaLumberjackSwift;
 #import "MSKitMiscellaneousFunctions.h"
 #import "NSString+MSKitAdditions.h"
 #import "NSOperationQueue+MSKitAdditions.h"
@@ -530,9 +530,9 @@
 - (NSString *)formatLogMessage:(DDLogMessage *)logMessage
 {
   return (   _context >= 0
-          && (   (logMessage->logContext == _context)
-              || (logMessage->logContext & _context)
-              || (_context & logMessage->logContext))
+          && (   (logMessage->_context == _context)
+              || (logMessage->_context & _context)
+              || (_context & logMessage->_context))
           ? [self formattedLogMessageForMessage:logMessage]
           : nil);
 }
@@ -551,9 +551,9 @@ MSKEY_DEFINITION(MSLogContext);
   NSString * className  = nil;
   NSString * contextName = nil;
   id         object     = nil;
-  if (isDictionaryKind(logMessage->tag))
+  if (isDictionaryKind(logMessage->_tag))
   {
-    NSDictionary * tagDict = (NSDictionary *)logMessage->tag;
+    NSDictionary * tagDict = (NSDictionary *)logMessage->_tag;
     object      = tagDict[MSLogObjectKey];
     objectName  = tagDict[MSLogObjectNameKey];
     contextName = tagDict[MSLogContextKey];
@@ -568,12 +568,12 @@ MSKEY_DEFINITION(MSLogContext);
   if (_includeLogLevel) {
     NSString * logLevel = nil;
 
-    switch (logMessage->logFlag) {
-      case LOG_FLAG_ERROR:    logLevel = @"E"; break;
-      case LOG_FLAG_WARN:     logLevel = @"W"; break;
-      case LOG_FLAG_INFO:     logLevel = @"I"; break;
-      case LOG_FLAG_DEBUG:    logLevel = @"D"; break;
-      case LOG_FLAG_VERBOSE:  logLevel = @"V"; break;
+    switch (logMessage->_flag) {
+      case DDLogFlagError:    logLevel = @"E"; break;
+      case DDLogFlagWarning:     logLevel = @"W"; break;
+      case DDLogFlagInfo:     logLevel = @"I"; break;
+      case DDLogFlagDebug:    logLevel = @"D"; break;
+      case DDLogFlagVerbose:  logLevel = @"V"; break;
       default:                logLevel = @"?"; break;
     }
     [formattedLogMessage appendFormat:@"[%@", logLevel];
@@ -582,7 +582,7 @@ MSKEY_DEFINITION(MSLogContext);
   if (_includeTimestamp) {
     NSDateFormatter *df = [NSDateFormatter new];
     [df setDateFormat:@"M/d/yy H:mm:ss.SSS"];
-    NSString * timeStampSegment = [df stringFromDate:logMessage->timestamp];
+    NSString * timeStampSegment = [df stringFromDate:logMessage->_timestamp];
     NSString * format = [MSLog shouldUseColor] ? @"\033[fg125,125,125;(%@)\033[fg;" : @"(%@)";
     [formattedLogMessage appendFormat:format, timeStampSegment];
   }
@@ -604,13 +604,13 @@ MSKEY_DEFINITION(MSLogContext);
 
     NSString * selSegment = nil;
     if (self.useFileInsteadOfSEL) {
-      NSString * fileName = [NSString stringWithUTF8String:logMessage->file].lastPathComponent;
-      NSString * functionName = [NSString stringWithUTF8String:logMessage->function];
+      NSString * fileName = logMessage->_file.lastPathComponent;
+      NSString * functionName = logMessage->_function;
       selSegment = $(@"«%@» %@", fileName, functionName);
     } else {
       selSegment = (StringIsNotEmpty(className)
-                    ? $(@"[%@ %@]", className, [logMessage methodName])
-                    : $(@"[%@]", [logMessage methodName]));
+                    ? $(@"[%@ %@]", className, [logMessage function])
+                    : $(@"[%@]", [logMessage function]));
     }
     NSString * format = [MSLog shouldUseColor] ? @"\033[fg171,101,38;%@\033[fg;" : @"%@";
     [formattedLogMessage appendFormat:format, selSegment];
@@ -626,9 +626,9 @@ MSKEY_DEFINITION(MSLogContext);
     [formattedLogMessage appendString:(_addReturnAfterObj ? @"\n" : @" ")];
   }
 
-  if (StringIsNotEmpty(logMessage->logMsg))
+  if (StringIsNotEmpty(logMessage->_message))
   {
-    NSString * message = [logMessage->logMsg stringByUnescapingControlCharacters];
+    NSString * message = [logMessage->_message stringByUnescapingControlCharacters];
 
     if (_indentMessageBody) message = [message stringByReplacingRegEx:@"\n" withString:@"\n\t"];
 
@@ -685,9 +685,9 @@ MSKEY_DEFINITION(MSLogContext);
  // Note: By default ASL will filter anything above level 5 (Notice).
  // So our mappings shouldn't go above that level.
 
- case LOG_FLAG_ERROR: aslLogLevel = ASL_LEVEL_CRIT;    break;
- case LOG_FLAG_WARN:  aslLogLevel = ASL_LEVEL_ERR;     break;
- case LOG_FLAG_INFO:  aslLogLevel = ASL_LEVEL_WARNING; break;
+ case DDLogFlagError: aslLogLevel = ASL_LEVEL_CRIT;    break;
+ case DDLogFlagWarning:  aslLogLevel = ASL_LEVEL_ERR;     break;
+ case DDLogFlagInfo:  aslLogLevel = ASL_LEVEL_WARNING; break;
  default:             aslLogLevel = ASL_LEVEL_NOTICE;  break;
  }
 

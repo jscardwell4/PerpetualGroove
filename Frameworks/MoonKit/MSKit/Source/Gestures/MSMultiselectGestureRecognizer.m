@@ -16,7 +16,7 @@
 #import "MSLog.h"
 
 static BOOL   msShouldLog = YES;
-static int ddLogLevel = LOG_LEVEL_DEBUG;
+static int ddLogLevel = DDLogLevelDebug;
 
 #pragma unused(msShouldLog, ddLogLevel)
 

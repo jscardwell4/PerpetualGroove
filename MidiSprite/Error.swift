@@ -49,7 +49,7 @@ enum MIDIError: OSStatus, ErrorType, CustomStringConvertible {
 }
 
 struct MIDIFileError: ExtendedErrorType {
-  var line: Int32 = -1
+  var line: UInt = 0
   var function: String = ""
   var file: String = ""
   var _reason: String = ""
@@ -60,7 +60,7 @@ struct MIDIFileError: ExtendedErrorType {
   var type: Type = .Unspecified
   init() {}
 
-  init(type: Type,  line: Int32 = __LINE__, function: String = __FUNCTION__, file: String = __FILE__, reason: String) {
+  init(type: Type,  line: UInt = __LINE__, function: String = __FUNCTION__, file: String = __FILE__, reason: String) {
     self.init(line: line, function: function, file: file, reason: reason)
     self.type = type
   }

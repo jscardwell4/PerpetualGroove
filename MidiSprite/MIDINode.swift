@@ -10,15 +10,9 @@ import UIKit
 import SpriteKit
 import MoonKit
 import CoreMIDI
-import struct AudioToolbox.MIDINoteMessage
+import struct AudioToolbox.CABarBeatTime
 
 final class MIDINode: SKSpriteNode {
-
-  // MARK: - Properties relating to the node's appearance
-
-  static var defaultSize = CGSize(square: 32)
-
-  // MARK: -  Properties affecting what is played by the node
 
   var note: NoteAttributes
 
@@ -48,11 +42,9 @@ final class MIDINode: SKSpriteNode {
     }
   }
 
-  var placement: Placement
+  var initialPlacement: Placement
 
   static let useVelocityForOff = true
-
-  // MARK: - Methods for playing/erasing the node
 
   enum Actions: String { case Play }
 
@@ -120,6 +112,16 @@ final class MIDINode: SKSpriteNode {
   private let time = Sequencer.barBeatTime
   private(set) var endPoint = MIDIEndpointRef()
 
+  var currentPlacement: Placement { return Placement(position: position, vector: physicsBody!.velocity) }
+
+  private var history: MIDINodeHistory
+
+  /** mark */
+  func mark() {
+    history.append(MIDINodeHistory.BreadCrumb(time: time.time, placement: currentPlacement))
+//    logDebug("history = \(history)")
+  }
+
   /**
   init:placement:instrument:note:
 
@@ -128,13 +130,13 @@ final class MIDINode: SKSpriteNode {
   - parameter tr: Track
   - parameter n: Note
   */
-  init(placement p: Placement, name: String, track: InstrumentTrack, attributes: NoteAttributes) throws {
-    placement = p
+  init(placement: Placement, name: String, track: InstrumentTrack, attributes: NoteAttributes) throws {
+    history = [MIDINodeHistory.BreadCrumb(time: Sequencer.barBeatTime.time, placement: placement)]
+    initialPlacement = placement
     note = attributes
 
-    super.init(texture: SKTexture(image: UIImage(named: "ball")!),
-               color: track.color.value,
-               size: MIDINode.defaultSize)
+    let image = UIImage(named: "ball")!
+    super.init(texture: SKTexture(image: image), color: track.color.value, size: image.size * 0.75)
 
     _sourceID = Identifier(ObjectIdentifier(self).uintValue)
 
@@ -144,11 +146,11 @@ final class MIDINode: SKSpriteNode {
     self.name = name
     colorBlendFactor = 1
 
-    position = placement.position
+    position = initialPlacement.position
     physicsBody = SKPhysicsBody(circleOfRadius: size.width * 0.5)
     physicsBody?.affectedByGravity = false
     physicsBody?.usesPreciseCollisionDetection = true
-    physicsBody?.velocity = placement.vector
+    physicsBody?.velocity = initialPlacement.vector
     physicsBody?.linearDamping = 0.0
     physicsBody?.angularDamping = 0.0
     physicsBody?.friction = 0.0

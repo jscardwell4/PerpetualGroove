@@ -212,7 +212,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ENABLE_TESTABILITY = YES;
-				GCC_OPTIMIZATION_LEVEL = fast;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 			};
@@ -221,7 +220,6 @@
 		2A37F99918E37270009FAAA7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				GCC_OPTIMIZATION_LEVEL = fast;
 				SDKROOT = iphoneos;
 			};
 			name = Release;

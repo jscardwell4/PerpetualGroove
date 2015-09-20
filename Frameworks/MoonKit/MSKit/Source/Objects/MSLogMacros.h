@@ -21,11 +21,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-// #define LOG_FLAG_ERROR              0b0000000000000001
-// #define LOG_FLAG_WARN               0b0000000000000010
-// #define LOG_FLAG_INFO               0b0000000000000100
-// #define LOG_FLAG_DEBUG              0b0000000000001000
-// #define LOG_FLAG_VERBOSE            0b0000000000010000
+// #define DDLogFlagError              0b0000000000000001
+// #define DDLogFlagWarning               0b0000000000000010
+// #define DDLogFlagInfo               0b0000000000000100
+// #define DDLogFlagDebug              0b0000000000001000
+// #define DDLogFlagVerbose            0b0000000000010000
 
 #define LOG_FLAG_TTY                   0b0000000000100000
 #define LOG_FLAG_ASL                   0b0000000001000000
@@ -43,27 +43,27 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-// #define LOG_LEVEL_OFF       0b0000000000000000
-// #define LOG_LEVEL_ERROR     0b0000000000000001
-// #define LOG_LEVEL_WARN      0b0000000000000011
-// #define LOG_LEVEL_INFO      0b0000000000000111
-// #define LOG_LEVEL_DEBUG     0b0000000000001111
+// #define DDLogLevelOff       0b0000000000000000
+// #define DDLogLevelError     0b0000000000000001
+// #define DDLogLevelWarning      0b0000000000000011
+// #define DDLogLevelInfo      0b0000000000000111
+// #define DDLogLevelDebug     0b0000000000001111
 // #define LOG_LEVEL_VERBOSE   0b0000000000011111
 #define LOG_LEVEL_UNITTEST     0b1111111111111111
 
-// #define LOG_ERROR    (ddLogLevel & LOG_FLAG_ERROR   )
-// #define LOG_WARN     (ddLogLevel & LOG_FLAG_WARN    )
-// #define LOG_INFO     (ddLogLevel & LOG_FLAG_INFO    )
-// #define LOG_VERBOSE  (ddLogLevel & LOG_FLAG_VERBOSE )
-//#define LOG_DEBUG       (ddLogLevel & LOG_FLAG_DEBUG   )
+// #define LOG_ERROR    (ddLogLevel & DDLogFlagError   )
+// #define LOG_WARN     (ddLogLevel & DDLogFlagWarning    )
+// #define LOG_INFO     (ddLogLevel & DDLogFlagInfo    )
+// #define LOG_VERBOSE  (ddLogLevel & DDLogFlagVerbose )
+//#define LOG_DEBUG       (ddLogLevel & DDLogFlagDebug   )
 #define LOG_UNITTEST    (ddLogLevel & LOG_FLAG_UNITTEST)
 
-// #define LOG_ASYNC_ERROR    (NO  && LOG_ASYNC_ENABLED)
-// #define LOG_ASYNC_WARN     (YES && LOG_ASYNC_ENABLED)
-// #define LOG_ASYNC_INFO     (YES && LOG_ASYNC_ENABLED)
-// #define LOG_ASYNC_VERBOSE  (YES && LOG_ASYNC_ENABLED)
-//#undef LOG_ASYNC_DEBUG
-//#define LOG_ASYNC_DEBUG       (NO  && LOG_ASYNC_ENABLED)
+#define LOG_ASYNC_ERROR    (NO  && LOG_ASYNC_ENABLED)
+#define LOG_ASYNC_WARN     (YES && LOG_ASYNC_ENABLED)
+#define LOG_ASYNC_INFO     (YES && LOG_ASYNC_ENABLED)
+#define LOG_ASYNC_VERBOSE  (YES && LOG_ASYNC_ENABLED)
+#undef LOG_ASYNC_DEBUG
+#define LOG_ASYNC_DEBUG       (NO  && LOG_ASYNC_ENABLED)
 #define LOG_ASYNC_UNITTEST    (NO  && LOG_ASYNC_ENABLED)
 
 
@@ -167,49 +167,49 @@
 #define _LVL ddLogLevel
 #define _CTX msLogContext
 
-// Log Objective-C with LOG_FLAG_ERROR
+// Log Objective-C with DDLogFlagError
 #define MSLogErrorInContext(ctx,frmt,...) \
-    MSLOG_OBJC_MAYBE(LOG_ASYNC_ERROR,_LVL,LOG_FLAG_ERROR,ctx,frmt,##__VA_ARGS__)
+    MSLOG_OBJC_MAYBE(LOG_ASYNC_ERROR,_LVL,DDLogFlagError,ctx,frmt,##__VA_ARGS__)
 
-// Log Objective-C with LOG_FLAG_WARN
+// Log Objective-C with DDLogFlagWarning
 #define MSLogWarnInContext(ctx,frmt,...) \
-    MSLOG_OBJC_MAYBE(LOG_ASYNC_WARN,_LVL,LOG_FLAG_WARN,ctx,frmt,##__VA_ARGS__)
+    MSLOG_OBJC_MAYBE(LOG_ASYNC_WARN,_LVL,DDLogFlagWarning,ctx,frmt,##__VA_ARGS__)
 
-// Log Objective-C with LOG_FLAG_INFO
+// Log Objective-C with DDLogFlagInfo
 #define MSLogInfoInContext(ctx,frmt,...) \
-    MSLOG_OBJC_MAYBE(LOG_ASYNC_INFO,_LVL,LOG_FLAG_INFO,ctx,frmt,##__VA_ARGS__)
+    MSLOG_OBJC_MAYBE(LOG_ASYNC_INFO,_LVL,DDLogFlagInfo,ctx,frmt,##__VA_ARGS__)
 
-// Log Objective-C with LOG_FLAG_VERBOSE
+// Log Objective-C with DDLogFlagVerbose
 #define MSLogVerboseInContext(ctx,frmt,...) \
-    MSLOG_OBJC_MAYBE(LOG_ASYNC_VERBOSE,_LVL,LOG_FLAG_VERBOSE,ctx,frmt,##__VA_ARGS__)
+    MSLOG_OBJC_MAYBE(LOG_ASYNC_VERBOSE,_LVL,DDLogFlagVerbose,ctx,frmt,##__VA_ARGS__)
 
-// Log Objective-C with LOG_FLAG_DEBUG
+// Log Objective-C with DDLogFlagDebug
 #define MSLogDebugInContext(ctx,frmt,...) \
-    MSLOG_OBJC_MAYBE(LOG_ASYNC_DEBUG,_LVL,LOG_FLAG_DEBUG,ctx,frmt,##__VA_ARGS__)
+    MSLOG_OBJC_MAYBE(LOG_ASYNC_DEBUG,_LVL,DDLogFlagDebug,ctx,frmt,##__VA_ARGS__)
 
 // Log Objective-C with LOG_FLAG_UNITTEST
 #define MSLogUnitTestInContext(ctx,frmt,...) \
     MSLOG_OBJC_MAYBE(LOG_ASYNC_UNITTEST,_LVL,LOG_FLAG_UNITTEST,ctx,frmt,##__VA_ARGS__)
 
-// Log C function with LOG_FLAG_ERROR
+// Log C function with DDLogFlagError
 #define MSLogCErrorInContext(ctx,frmt,...) \
-    MSLOG_C_MAYBE(LOG_ASYNC_ERROR,_LVL,LOG_FLAG_ERROR,ctx,frmt,##__VA_ARGS__)
+    MSLOG_C_MAYBE(LOG_ASYNC_ERROR,_LVL,DDLogFlagError,ctx,frmt,##__VA_ARGS__)
 
-// Log C function with LOG_FLAG_WARN
+// Log C function with DDLogFlagWarning
 #define MSLogCWarnInContext(ctx,frmt,...) \
-    MSLOG_C_MAYBE(LOG_ASYNC_WARN,_LVL,LOG_FLAG_WARN,ctx,frmt,##__VA_ARGS__)
+    MSLOG_C_MAYBE(LOG_ASYNC_WARN,_LVL,DDLogFlagWarning,ctx,frmt,##__VA_ARGS__)
 
-// Log C function with LOG_FLAG_INFO
+// Log C function with DDLogFlagInfo
 #define MSLogCInfoInContext(ctx,frmt,...) \
-    MSLOG_C_MAYBE(LOG_ASYNC_INFO,_LVL,LOG_FLAG_INFO,ctx,frmt,##__VA_ARGS__)
+    MSLOG_C_MAYBE(LOG_ASYNC_INFO,_LVL,DDLogFlagInfo,ctx,frmt,##__VA_ARGS__)
 
-// Log C function with LOG_FLAG_VERBOSE
+// Log C function with DDLogFlagVerbose
 #define MSLogCVerboseInContext(ctx,frmt,...) \
-    MSLOG_C_MAYBE(LOG_ASYNC_VERBOSE,_LVL,LOG_FLAG_VERBOSE,ctx,frmt,##__VA_ARGS__)
+    MSLOG_C_MAYBE(LOG_ASYNC_VERBOSE,_LVL,DDLogFlagVerbose,ctx,frmt,##__VA_ARGS__)
 
-// Log C function with LOG_FLAG_DEBUG
+// Log C function with DDLogFlagDebug
 #define MSLogCDebugInContext(ctx,frmt,...) \
-    MSLOG_C_MAYBE(LOG_ASYNC_DEBUG,_LVL,LOG_FLAG_DEBUG,ctx,frmt,##__VA_ARGS__)
+    MSLOG_C_MAYBE(LOG_ASYNC_DEBUG,_LVL,DDLogFlagDebug,ctx,frmt,##__VA_ARGS__)
 
 // Log C function with LOG_FLAG_UNITTEST
 #define MSLogCUnitTestInContext(ctx,frmt,...) \
@@ -222,124 +222,124 @@
                  MSLogClassNameKey  : CollectionSafe(ClassString([weakself class])) })
 
 #define MSLogErrorInContextTag(ctx,frmt,...) \
-    MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_ERROR,_LVL,LOG_FLAG_ERROR,ctx,_TAG,frmt,##__VA_ARGS__)
+    MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_ERROR,_LVL,DDLogFlagError,ctx,_TAG,frmt,##__VA_ARGS__)
 
 #define MSLogWarnInContextTag(ctx,frmt,...) \
-    MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_WARN,_LVL,LOG_FLAG_WARN,ctx,_TAG,frmt,##__VA_ARGS__)
+    MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_WARN,_LVL,DDLogFlagWarning,ctx,_TAG,frmt,##__VA_ARGS__)
 
 #define MSLogInfoInContextTag(ctx,frmt,...) \
-    MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_INFO,_LVL,LOG_FLAG_INFO,ctx,_TAG,frmt,##__VA_ARGS__)
+    MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_INFO,_LVL,DDLogFlagInfo,ctx,_TAG,frmt,##__VA_ARGS__)
 
 #define MSLogVerboseInContextTag(ctx,frmt,...) \
-    MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_VERBOSE,_LVL,LOG_FLAG_VERBOSE,ctx,_TAG,frmt,##__VA_ARGS__)
+    MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_VERBOSE,_LVL,DDLogFlagVerbose,ctx,_TAG,frmt,##__VA_ARGS__)
 
 #define MSLogDebugInContextTag(ctx,frmt,...) \
-    MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_DEBUG,_LVL,LOG_FLAG_DEBUG,ctx,_TAG,frmt,##__VA_ARGS__)
+    MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_DEBUG,_LVL,DDLogFlagDebug,ctx,_TAG,frmt,##__VA_ARGS__)
 
 #define MSLogErrorInContextWeakTag(ctx,frmt,...) \
-    MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_ERROR,_LVL,LOG_FLAG_ERROR,ctx,_WEAKTAG,frmt,##__VA_ARGS__)
+    MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_ERROR,_LVL,DDLogFlagError,ctx,_WEAKTAG,frmt,##__VA_ARGS__)
 
 #define MSLogWarnInContextWeakTag(ctx,frmt,...) \
-    MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_WARN,_LVL,LOG_FLAG_WARN,ctx,_WEAKTAG,frmt,##__VA_ARGS__)
+    MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_WARN,_LVL,DDLogFlagWarning,ctx,_WEAKTAG,frmt,##__VA_ARGS__)
 
 #define MSLogInfoInContextWeakTag(ctx,frmt,...) \
-    MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_INFO,_LVL,LOG_FLAG_INFO,ctx,_WEAKTAG,frmt,##__VA_ARGS__)
+    MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_INFO,_LVL,DDLogFlagInfo,ctx,_WEAKTAG,frmt,##__VA_ARGS__)
 
 #define MSLogVerboseInContextWeakTag(ctx,frmt,...) \
-    MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_VERBOSE,_LVL,LOG_FLAG_VERBOSE,ctx,_WEAKTAG,frmt,##__VA_ARGS__)
+    MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_VERBOSE,_LVL,DDLogFlagVerbose,ctx,_WEAKTAG,frmt,##__VA_ARGS__)
 
 #define MSLogDebugInContextWeakTag(ctx,frmt,...) \
-    MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_DEBUG,_LVL,LOG_FLAG_DEBUG,ctx,_WEAKTAG,frmt,##__VA_ARGS__)
+    MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_DEBUG,_LVL,DDLogFlagDebug,ctx,_WEAKTAG,frmt,##__VA_ARGS__)
 
 #define MSLogCErrorInContextTag(ctx,frmt,...) \
-    MSLOG_C_TAG_MAYBE(LOG_ASYNC_ERROR,_LVL,LOG_FLAG_ERROR,ctx,@{},frmt,##__VA_ARGS__)
+    MSLOG_C_TAG_MAYBE(LOG_ASYNC_ERROR,_LVL,DDLogFlagError,ctx,@{},frmt,##__VA_ARGS__)
 
 #define MSLogCWarnInContextTag(ctx,frmt,...) \
-    MSLOG_C_TAG_MAYBE(LOG_ASYNC_WARN,_LVL,LOG_FLAG_WARN,ctx,@{},frmt,##__VA_ARGS__)
+    MSLOG_C_TAG_MAYBE(LOG_ASYNC_WARN,_LVL,DDLogFlagWarning,ctx,@{},frmt,##__VA_ARGS__)
 
 #define MSLogCInfoInContextTag(ctx,frmt,...) \
-    MSLOG_C_TAG_MAYBE(LOG_ASYNC_INFO,_LVL,LOG_FLAG_INFO,ctx,@{},frmt,##__VA_ARGS__)
+    MSLOG_C_TAG_MAYBE(LOG_ASYNC_INFO,_LVL,DDLogFlagInfo,ctx,@{},frmt,##__VA_ARGS__)
 
 #define MSLogCVerboseInContextTag(ctx,frmt,...) \
-    MSLOG_C_TAG_MAYBE(LOG_ASYNC_VERBOSE,_LVL,LOG_FLAG_VERBOSE,ctx,@{},frmt,##__VA_ARGS__)
+    MSLOG_C_TAG_MAYBE(LOG_ASYNC_VERBOSE,_LVL,DDLogFlagVerbose,ctx,@{},frmt,##__VA_ARGS__)
 
 #define MSLogCDebugInContextTag(ctx,frmt,...) \
-    MSLOG_C_TAG_MAYBE(LOG_ASYNC_DEBUG,_LVL,LOG_FLAG_DEBUG,ctx,@{},frmt,##__VA_ARGS__)
+    MSLOG_C_TAG_MAYBE(LOG_ASYNC_DEBUG,_LVL,DDLogFlagDebug,ctx,@{},frmt,##__VA_ARGS__)
 
  #define MSLogErrorInContextIf(expr,ctx,frmt,...) \
- WRAP(if((expr))MSLOG_OBJC_MAYBE(LOG_ASYNC_ERROR,_LVL,LOG_FLAG_ERROR,ctx,frmt,##__VA_ARGS__);)
+ WRAP(if((expr))MSLOG_OBJC_MAYBE(LOG_ASYNC_ERROR,_LVL,DDLogFlagError,ctx,frmt,##__VA_ARGS__);)
 
 #define MSLogWarnInContextIf(expr,ctx,frmt,...) \
-WRAP(if((expr))MSLOG_OBJC_MAYBE(LOG_ASYNC_WARN,_LVL,LOG_FLAG_WARN,ctx,frmt,##__VA_ARGS__);)
+WRAP(if((expr))MSLOG_OBJC_MAYBE(LOG_ASYNC_WARN,_LVL,DDLogFlagWarning,ctx,frmt,##__VA_ARGS__);)
 
 #define MSLogInfoInContextIf(expr,ctx,frmt,...) \
-WRAP(if((expr))MSLOG_OBJC_MAYBE(LOG_ASYNC_INFO,_LVL,LOG_FLAG_INFO,ctx,frmt,##__VA_ARGS__);)
+WRAP(if((expr))MSLOG_OBJC_MAYBE(LOG_ASYNC_INFO,_LVL,DDLogFlagInfo,ctx,frmt,##__VA_ARGS__);)
 
 #define MSLogVerboseInContextIf(expr,ctx,frmt,...) \
-WRAP(if((expr))MSLOG_OBJC_MAYBE(LOG_ASYNC_VERBOSE,_LVL,LOG_FLAG_VERBOSE,ctx,frmt,##__VA_ARGS__);)
+WRAP(if((expr))MSLOG_OBJC_MAYBE(LOG_ASYNC_VERBOSE,_LVL,DDLogFlagVerbose,ctx,frmt,##__VA_ARGS__);)
 
 #define MSLogDebugInContextIf(expr,ctx,frmt,...) \
-WRAP(if((expr))MSLOG_OBJC_MAYBE(LOG_ASYNC_DEBUG,_LVL,LOG_FLAG_DEBUG,ctx,frmt,##__VA_ARGS__);)
+WRAP(if((expr))MSLOG_OBJC_MAYBE(LOG_ASYNC_DEBUG,_LVL,DDLogFlagDebug,ctx,frmt,##__VA_ARGS__);)
 
 #define MSLogErrorInContextTagIf(expr,ctx,frmt,...) \
-WRAP(if((expr))MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_ERROR,_LVL,LOG_FLAG_ERROR,ctx,_TAG,frmt,##__VA_ARGS__);)
+WRAP(if((expr))MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_ERROR,_LVL,DDLogFlagError,ctx,_TAG,frmt,##__VA_ARGS__);)
 
 #define MSLogWarnInContextTagIf(expr,ctx,frmt,...) \
-WRAP(if((expr))MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_WARN,_LVL,LOG_FLAG_WARN,ctx,_TAG,frmt,##__VA_ARGS__);)
+WRAP(if((expr))MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_WARN,_LVL,DDLogFlagWarning,ctx,_TAG,frmt,##__VA_ARGS__);)
 
 #define MSLogInfoInContextTagIf(expr,ctx,frmt,...) \
-WRAP(if((expr))MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_INFO,_LVL,LOG_FLAG_INFO,ctx,_TAG,frmt,##__VA_ARGS__);)
+WRAP(if((expr))MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_INFO,_LVL,DDLogFlagInfo,ctx,_TAG,frmt,##__VA_ARGS__);)
 
 #define MSLogVerboseInContextTagIf(expr,ctx,frmt,...) \
-WRAP(if((expr))MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_VERBOSE,_LVL,LOG_FLAG_VERBOSE,ctx,_TAG,frmt,##__VA_ARGS__);)
+WRAP(if((expr))MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_VERBOSE,_LVL,DDLogFlagVerbose,ctx,_TAG,frmt,##__VA_ARGS__);)
 
 #define MSLogDebugInContextTagIf(expr,ctx,frmt,...) \
-WRAP(if((expr))MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_DEBUG,_LVL,LOG_FLAG_DEBUG,ctx,_TAG,frmt,##__VA_ARGS__);)
+WRAP(if((expr))MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_DEBUG,_LVL,DDLogFlagDebug,ctx,_TAG,frmt,##__VA_ARGS__);)
 
 #define MSLogErrorInContextWeakTagIf(expr,ctx,frmt,...) \
-WRAP(if((expr))MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_ERROR,_LVL,LOG_FLAG_ERROR,ctx,_WEAKTAG,frmt,##__VA_ARGS__);)
+WRAP(if((expr))MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_ERROR,_LVL,DDLogFlagError,ctx,_WEAKTAG,frmt,##__VA_ARGS__);)
 
 #define MSLogWarnInContextWeakTagIf(expr,ctx,frmt,...) \
-WRAP(if((expr))MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_WARN,_LVL,LOG_FLAG_WARN,ctx,_WEAKTAG,frmt,##__VA_ARGS__);)
+WRAP(if((expr))MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_WARN,_LVL,DDLogFlagWarning,ctx,_WEAKTAG,frmt,##__VA_ARGS__);)
 
 #define MSLogInfoInContextWeakTagIf(expr,ctx,frmt,...) \
-WRAP(if((expr))MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_INFO,_LVL,LOG_FLAG_INFO,ctx,_WEAKTAG,frmt,##__VA_ARGS__);)
+WRAP(if((expr))MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_INFO,_LVL,DDLogFlagInfo,ctx,_WEAKTAG,frmt,##__VA_ARGS__);)
 
 #define MSLogVerboseInContextWeakTagIf(expr,ctx,frmt,...) \
-WRAP(if((expr))MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_VERBOSE,_LVL,LOG_FLAG_VERBOSE,ctx,_WEAKTAG,frmt,##__VA_ARGS__);)
+WRAP(if((expr))MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_VERBOSE,_LVL,DDLogFlagVerbose,ctx,_WEAKTAG,frmt,##__VA_ARGS__);)
 
 #define MSLogDebugInContextWeakTagIf(expr,ctx,frmt,...) \
-WRAP(if((expr))MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_DEBUG,_LVL,LOG_FLAG_DEBUG,ctx,_WEAKTAG,frmt,##__VA_ARGS__);)
+WRAP(if((expr))MSLOG_OBJC_TAG_MAYBE(LOG_ASYNC_DEBUG,_LVL,DDLogFlagDebug,ctx,_WEAKTAG,frmt,##__VA_ARGS__);)
 
 #define MSLogCErrorInContextIf(expr,ctx,frmt,...) \
-WRAP(if((expr))MSLOG_C_MAYBE(LOG_ASYNC_ERROR,_LVL,LOG_FLAG_ERROR,ctx,frmt,##__VA_ARGS__);)
+WRAP(if((expr))MSLOG_C_MAYBE(LOG_ASYNC_ERROR,_LVL,DDLogFlagError,ctx,frmt,##__VA_ARGS__);)
 
 #define MSLogCWarnInContextIf(expr,ctx,frmt,...) \
-WRAP(if((expr))MSLOG_C_MAYBE(LOG_ASYNC_WARN,_LVL,LOG_FLAG_WARN,ctx,frmt,##__VA_ARGS__);)
+WRAP(if((expr))MSLOG_C_MAYBE(LOG_ASYNC_WARN,_LVL,DDLogFlagWarning,ctx,frmt,##__VA_ARGS__);)
 
 #define MSLogCInfoInContextIf(expr,ctx,frmt,...) \
-WRAP(if((expr))MSLOG_C_MAYBE(LOG_ASYNC_INFO,_LVL,LOG_FLAG_INFO,ctx,frmt,##__VA_ARGS__);)
+WRAP(if((expr))MSLOG_C_MAYBE(LOG_ASYNC_INFO,_LVL,DDLogFlagInfo,ctx,frmt,##__VA_ARGS__);)
 
 #define MSLogCVerboseInContextIf(expr,ctx,frmt,...) \
-WRAP(if((expr))MSLOG_C_MAYBE(LOG_ASYNC_VERBOSE,_LVL,LOG_FLAG_VERBOSE,ctx,frmt,##__VA_ARGS__);)
+WRAP(if((expr))MSLOG_C_MAYBE(LOG_ASYNC_VERBOSE,_LVL,DDLogFlagVerbose,ctx,frmt,##__VA_ARGS__);)
 
 #define MSLogCDebugInContextIf(expr,ctx,frmt,...) \
-WRAP(if((expr))MSLOG_C_MAYBE(LOG_ASYNC_DEBUG,_LVL,LOG_FLAG_DEBUG,ctx,frmt,##__VA_ARGS__);)
+WRAP(if((expr))MSLOG_C_MAYBE(LOG_ASYNC_DEBUG,_LVL,DDLogFlagDebug,ctx,frmt,##__VA_ARGS__);)
 
 #define MSLogCErrorInContextTagIf(expr,ctx,frmt,...) \
-WRAP(if((expr))MSLOG_C_TAG_MAYBE(LOG_ASYNC_ERROR,_LVL,LOG_FLAG_ERROR,ctx,nil,frmt,##__VA_ARGS__);)
+WRAP(if((expr))MSLOG_C_TAG_MAYBE(LOG_ASYNC_ERROR,_LVL,DDLogFlagError,ctx,nil,frmt,##__VA_ARGS__);)
 
 #define MSLogCWarnInContextTagIf(expr,ctx,frmt,...) \
-WRAP(if((expr))MSLOG_C_TAG_MAYBE(LOG_ASYNC_WARN,_LVL,LOG_FLAG_WARN,ctx,nil,frmt,##__VA_ARGS__);)
+WRAP(if((expr))MSLOG_C_TAG_MAYBE(LOG_ASYNC_WARN,_LVL,DDLogFlagWarning,ctx,nil,frmt,##__VA_ARGS__);)
 
 #define MSLogCInfoInContextTagIf(expr,ctx,frmt,...) \
-WRAP(if((expr))MSLOG_C_TAG_MAYBE(LOG_ASYNC_INFO,_LVL,LOG_FLAG_INFO,ctx,nil,frmt,##__VA_ARGS__);)
+WRAP(if((expr))MSLOG_C_TAG_MAYBE(LOG_ASYNC_INFO,_LVL,DDLogFlagInfo,ctx,nil,frmt,##__VA_ARGS__);)
 
 #define MSLogCVerboseInContextTagIf(expr,ctx,frmt,...) \
-WRAP(if((expr))MSLOG_C_TAG_MAYBE(LOG_ASYNC_VERBOSE,_LVL,LOG_FLAG_VERBOSE,ctx,nil,frmt,##__VA_ARGS__);)
+WRAP(if((expr))MSLOG_C_TAG_MAYBE(LOG_ASYNC_VERBOSE,_LVL,DDLogFlagVerbose,ctx,nil,frmt,##__VA_ARGS__);)
 
 #define MSLogCDebugInContextTagIf(expr,ctx,frmt,...) \
-WRAP(if((expr))MSLOG_C_TAG_MAYBE(LOG_ASYNC_DEBUG,_LVL,LOG_FLAG_DEBUG,ctx,nil,frmt,##__VA_ARGS__);)
+WRAP(if((expr))MSLOG_C_TAG_MAYBE(LOG_ASYNC_DEBUG,_LVL,DDLogFlagDebug,ctx,nil,frmt,##__VA_ARGS__);)
 
 #define MSLogError(frmt,...)   MSLogErrorInContext(_CTX,frmt,##__VA_ARGS__)
 #define MSLogWarn(frmt,...)    MSLogWarnInContext(_CTX,frmt,##__VA_ARGS__)
@@ -398,12 +398,12 @@ WRAP(if((expr))MSLOG_C_TAG_MAYBE(LOG_ASYNC_DEBUG,_LVL,LOG_FLAG_DEBUG,ctx,nil,frm
 #define LOG_BLOCK_MAYBE(lvl,flg,ctx,block) \
 WRAP(if(lvl&flg){[[MSLog loggingQueue] addOperationWithBlock:block];})
 
-#define MSLogBlockError(block)   LOG_BLOCK_MAYBE(ddLogLevel,LOG_FLAG_ERROR,_CTX,block)
-#define MSLogBlockWarn(block)    LOG_BLOCK_MAYBE(ddLogLevel,LOG_FLAG_WARN,_CTX,block)
-#define MSLogBlockDebug(block)   LOG_BLOCK_MAYBE(ddLogLevel,LOG_FLAG_DEBUG,_CTX,block)
-#define MSLogBlockInfo(block)    LOG_BLOCK_MAYBE(ddLogLevel,LOG_FLAG_INFO,_CTX,block)
-#define MSLogBlockVerbose(block) LOG_BLOCK_MAYBE(ddLogLevel,LOG_FLAG_VERBOSE,_CTX,block)
-#define MSLogBlockError(block)   LOG_BLOCK_MAYBE(ddLogLevel,LOG_FLAG_ERROR,_CTX,block)
+#define MSLogBlockError(block)   LOG_BLOCK_MAYBE(ddLogLevel,DDLogFlagError,_CTX,block)
+#define MSLogBlockWarn(block)    LOG_BLOCK_MAYBE(ddLogLevel,DDLogFlagWarning,_CTX,block)
+#define MSLogBlockDebug(block)   LOG_BLOCK_MAYBE(ddLogLevel,DDLogFlagDebug,_CTX,block)
+#define MSLogBlockInfo(block)    LOG_BLOCK_MAYBE(ddLogLevel,DDLogFlagInfo,_CTX,block)
+#define MSLogBlockVerbose(block) LOG_BLOCK_MAYBE(ddLogLevel,DDLogFlagVerbose,_CTX,block)
+#define MSLogBlockError(block)   LOG_BLOCK_MAYBE(ddLogLevel,DDLogFlagError,_CTX,block)
 
 #define MSAggrogateErrorMessage(ERROR)                                                                   \
   ({                                                                                                     \

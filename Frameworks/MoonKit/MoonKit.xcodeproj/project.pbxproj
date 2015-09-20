@@ -280,7 +280,6 @@
 		C23F44431B55532700D09ECA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C23F44411B55532700D09ECA /* LaunchScreen.storyboard */; };
 		C2404BC01B77ACDC00A68A64 /* ImageBarButtonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2404BBF1B77ACDC00A68A64 /* ImageBarButtonItem.swift */; };
 		C2404BC91B78333F00A68A64 /* PopoverFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2404BC81B78333F00A68A64 /* PopoverFormView.swift */; };
-		C2404BCC1B78EC6E00A68A64 /* Lumberjack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BCB1B78EC6E00A68A64 /* Lumberjack.framework */; };
 		C2404BDE1B797D4600A68A64 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BDD1B797D4600A68A64 /* CoreImage.framework */; };
 		C24133F81B7520D40040580B /* ToggleButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24133F71B7520D40040580B /* ToggleButtonNode.swift */; };
 		C24416331ACB16F8007EDEFE /* Set+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24416321ACB16F8007EDEFE /* Set+MoonKitAdditions.swift */; };
@@ -353,6 +352,7 @@
 		C28E98EE1AD196B800E78711 /* NSNumber+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28E98ED1AD196B800E78711 /* NSNumber+MoonKitAdditions.swift */; };
 		C296498E1B00EBBF000C2D4A /* FormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C296498D1B00EBBF000C2D4A /* FormView.swift */; };
 		C29649901B00EBD0000C2D4A /* FieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C296498F1B00EBD0000C2D4A /* FieldView.swift */; };
+		C29C72771BAE38F20000EA00 /* CocoaLumberjackSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C29C72761BAE38F20000EA00 /* CocoaLumberjackSwift.framework */; };
 		C29EECF81AFD010B00660EE6 /* MiscellaneousFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29EECF71AFD010B00660EE6 /* MiscellaneousFunctions.swift */; };
 		C2A169D01B15386300E3A5A0 /* UIImage+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A169CF1B15386300E3A5A0 /* UIImage+MoonKitAdditions.swift */; };
 		C2A5B6F21B482F4700F34491 /* NSParagraphStyle+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A5B6F11B482F4700F34491 /* NSParagraphStyle+MoonKitAdditions.swift */; };
@@ -572,6 +572,7 @@
 		C295E30319E2FBBB008309B8 /* ToggleImageSegmentedControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToggleImageSegmentedControl.swift; sourceTree = "<group>"; };
 		C296498D1B00EBBF000C2D4A /* FormView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormView.swift; sourceTree = "<group>"; };
 		C296498F1B00EBD0000C2D4A /* FieldView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FieldView.swift; sourceTree = "<group>"; };
+		C29C72761BAE38F20000EA00 /* CocoaLumberjackSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CocoaLumberjackSwift.framework; path = "../../../../GitHub/CocoaLumberjack/build/Debug-iphoneos/CocoaLumberjackSwift.framework"; sourceTree = "<group>"; };
 		C29EECF71AFD010B00660EE6 /* MiscellaneousFunctions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiscellaneousFunctions.swift; sourceTree = "<group>"; };
 		C2A169CF1B15386300E3A5A0 /* UIImage+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C2A46E651AD703E70030E3CC /* MoonKit.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = MoonKit.playground; path = Moonkit/MoonKit.playground; sourceTree = "<group>"; };
@@ -801,9 +802,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C29C72771BAE38F20000EA00 /* CocoaLumberjackSwift.framework in Frameworks */,
 				C2404BDE1B797D4600A68A64 /* CoreImage.framework in Frameworks */,
 				C268340C1B11159E00A359A8 /* Chameleon.framework in Frameworks */,
-				C2404BCC1B78EC6E00A68A64 /* Lumberjack.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1183,6 +1184,7 @@
 		C2CE885018138C4900555D63 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C29C72761BAE38F20000EA00 /* CocoaLumberjackSwift.framework */,
 				C2404BDD1B797D4600A68A64 /* CoreImage.framework */,
 				C2404BCB1B78EC6E00A68A64 /* Lumberjack.framework */,
 				C268340B1B11159E00A359A8 /* Chameleon.framework */,

@@ -34,6 +34,7 @@ class MIDIPlayerScene: SKScene {
     physicsWorld.contactDelegate = self
 
     backgroundColor = .backgroundColor
+    contentCreated = true
   }
 
   /**
@@ -41,7 +42,7 @@ class MIDIPlayerScene: SKScene {
 
   - parameter view: SKView
   */
-  override func didMoveToView(view: SKView) { guard !contentCreated else { return }; createContent(); contentCreated = true }
+  override func didMoveToView(view: SKView) { guard !contentCreated else { return }; createContent() }
 
 
   /**
@@ -64,6 +65,7 @@ extension MIDIPlayerScene: SKPhysicsContactDelegate {
   func didBeginContact(contact: SKPhysicsContact) {
     guard let midiNode = contact.bodyB.node as? MIDINode else { return }
     // ???: Should we do anything with the impulse and normal values provided by SKPhysicsContact?
+    midiNode.mark()
     midiNode.play()
   }
 }

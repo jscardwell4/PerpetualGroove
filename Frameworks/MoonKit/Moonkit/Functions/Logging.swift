@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Lumberjack
+import CocoaLumberjackSwift
 
 public struct ColorLog {
   public static let ESCAPE = "\u{001b}["
@@ -71,8 +71,8 @@ public struct ColorLog {
 public class LogManager {
 
   public struct LogFlag: OptionSetType {
-    public private(set) var rawValue: Int32
-    public init(rawValue: Int32) { self.rawValue = rawValue }
+    public private(set) var rawValue: UInt
+    public init(rawValue: UInt) { self.rawValue = rawValue }
     public init(nilLiteral: ()) { rawValue = 0 }
     public static var allZeros: LogFlag { return LogFlag.None }
     public static var None:     LogFlag = LogFlag(rawValue: 0b00000)
@@ -84,8 +84,8 @@ public class LogManager {
   }
 
   public struct LogLevel: OptionSetType {
-    public private(set) var rawValue: Int32
-    public init(rawValue: Int32) { self.rawValue = rawValue }
+    public private(set) var rawValue: UInt
+    public init(rawValue: UInt) { self.rawValue = rawValue }
     public init(flags: LogFlag) { rawValue = flags.rawValue }
     public init(nilLiteral: ()) { rawValue = 0 }
     public static var allZeros: LogLevel { return LogLevel.Off }
@@ -134,13 +134,13 @@ public class LogManager {
   public static func addTTYLogger() {
     MSLog.enableColor()
     MSLog.addTaggingTTYLogger()
-    (DDTTYLogger.sharedInstance().logFormatter() as! MSLogFormatter).useFileInsteadOfSEL = true
+    (DDTTYLogger.sharedInstance().logFormatter as! MSLogFormatter).useFileInsteadOfSEL = true
   }
 
   public static func addASLLogger() {
     MSLog.enableColor()
     MSLog.addTaggingASLLogger()
-    (DDASLLogger.sharedInstance().logFormatter() as! MSLogFormatter).useFileInsteadOfSEL = true
+    (DDASLLogger.sharedInstance().logFormatter as! MSLogFormatter).useFileInsteadOfSEL = true
   }
 
 }
@@ -151,111 +151,65 @@ MSLogMessage:flag:function:line:file:className:context:
 - parameter message: String
 - parameter flag: LogManager.LogFlag
 - parameter function: String = __FUNCTION__
-- parameter line: Int32 = __LINE__
+- parameter line: UInt = __LINE__
 - parameter file: String = __FILE__
 - parameter className: String? = nil
-- parameter context: Int32 = LOG_CONTEXT_CONSOLE
+- parameter context: Int = Int(LOG_CONTEXT_CONSOLE)
 */
 public func MSLogMessage(message: String,
             asynchronous: Bool,
                     flag: LogManager.LogFlag,
                 function: String = __FUNCTION__,
-                    line: Int32 = __LINE__,
+                    line: UInt = __LINE__,
                     file: String = __FILE__,
-                 context: Int32 = LOG_CONTEXT_CONSOLE)
+                 context: Int = Int(LOG_CONTEXT_CONSOLE))
 {
-  MSLog.log(asynchronous,
-      level: LogManager.logLevelForFile(file).rawValue,
-       flag: flag.rawValue,
-    context: context,
-       file: file,
-   function: function,
-       line: line,
-        tag: nil,
-    message: message)
-//  #if TARGET_INTERFACE_BUILDER
+
+  SwiftLogMacro(
+    asynchronous,
+    level: DDLogLevel(rawValue: LogManager.logLevelForFile(file).rawValue)!,
+    flag: DDLogFlag(rawValue: flag.rawValue),
+    context: Int(context),
+    file: file,
+    function: function,
+    line: line,
+    tag: nil,
+    string: message
+  )
+
+  #if TARGET_INTERFACE_BUILDER
     logIB(message, function: function, line: line, file: file, flag: flag)
-//  #endif
+  #endif
 
 }
 
-
-/**
-MSLogDebug:function:line:level:context:
-
-- parameter message: String
-- parameter function: String = __FUNCTION__
-- parameter line: Int = __LINE__
-- parameter context: Int32 = LOG_CONTEXT_CONSOLE
-*/
-public func MSLogDebug(message: String,
-              function: String = __FUNCTION__,
-                  line: Int32 = __LINE__,
-                  file: String = __FILE__,
-               context: Int32 = LOG_CONTEXT_CONSOLE)
-{
-  MSLogMessage(message, asynchronous: true, flag: .Debug, function: function, file: file, line: line, context: context)
-}
 
 /**
 logDebug:function:line:file:
 
 - parameter message: String
 - parameter function: String = __FUNCTION__
-- parameter line: Int32 = __LINE__
+- parameter line: UInt = __LINE__
 - parameter file: String = __FILE__
 */
-public func logDebug(message: String, function: String = __FUNCTION__, line: Int32 = __LINE__, file: String = __FILE__) {
-  MSLogDebug(message, function: function, line: line, file: file)
+public func logDebug(message: String, function: String = __FUNCTION__, line: UInt = __LINE__, file: String = __FILE__) {
+  MSLogMessage(message, asynchronous: true, flag: .Debug, function: function, file: file, line: line)
 }
-public func logDebug(function: String = __FUNCTION__, line: Int32 = __LINE__, file: String = __FILE__) {
-  MSLogDebug("", function: function, line: line, file: file)
+public func logDebug(function: String = __FUNCTION__, line: UInt = __LINE__, file: String = __FILE__) {
+  logDebug("", function: function, line: line, file: file)
 }
 
-/**
-MSLogError:function:line:level:context:
-
-- parameter message: String
-- parameter function: String = __FUNCTION__
-- parameter line: Int = __LINE__
-- parameter context: Int32 = LOG_CONTEXT_CONSOLE
-*/
-public func MSLogError(message: String,
-              function: String = __FUNCTION__,
-                  line: Int32 = __LINE__,
-                  file: String = __FILE__,
-               context: Int32 = LOG_CONTEXT_CONSOLE)
-{
-  MSLogMessage(message, asynchronous: false, flag: .Error, function: function, file: file, line: line, context: context)
-}
 
 /**
 logError:function:line:file:
 
 - parameter message: String
 - parameter function: String = __FUNCTION__
-- parameter line: Int32 = __LINE__
+- parameter line: UInt = __LINE__
 - parameter file: String = __FILE__
 */
-public func logError(message: String, function: String = __FUNCTION__, line: Int32 = __LINE__, file: String = __FILE__) {
-  MSLogError(message, function: function, line: line, file: file)
-}
-
-/**
-MSLogInfo:function:line:level:context:
-
-- parameter message: String
-- parameter function: String = __FUNCTION__
-- parameter line: Int = __LINE__
-- parameter context: Int32 = LOG_CONTEXT_CONSOLE
-*/
-public func MSLogInfo(message: String,
-             function: String = __FUNCTION__,
-                 line: Int32 = __LINE__,
-                 file: String = __FILE__,
-              context: Int32 = LOG_CONTEXT_CONSOLE)
-{
-  MSLogMessage(message, asynchronous: true, flag: .Info, function: function, file: file, line: line, context: context)
+public func logError(message: String, function: String = __FUNCTION__, line: UInt = __LINE__, file: String = __FILE__) {
+  MSLogMessage(message, asynchronous: false, flag: .Error, function: function, file: file, line: line)
 }
 
 /**
@@ -263,29 +217,11 @@ logInfo:function:line:file:
 
 - parameter message: String
 - parameter function: String = __FUNCTION__
-- parameter line: Int32 = __LINE__
+- parameter line: UInt = __LINE__
 - parameter file: String = __FILE__
 */
-public func logInfo(message: String, function: String = __FUNCTION__, line: Int32 = __LINE__, file: String = __FILE__) {
-  MSLogInfo(message, function: function, line: line, file: file)
-}
-
-
-/**
-MSLogWarn:function:line:level:context:
-
-- parameter message: String
-- parameter function: String = __FUNCTION__
-- parameter line: Int = __LINE__
-- parameter context: Int32 = LOG_CONTEXT_CONSOLE
-*/
-public func MSLogWarn(message: String,
-             function: String = __FUNCTION__,
-                 line: Int32 = __LINE__,
-                 file: String = __FILE__,
-              context: Int32 = LOG_CONTEXT_CONSOLE)
-{
-  MSLogMessage(message, asynchronous: true, flag: .Warn, function: function, file: file, line: line, context: context)
+public func logInfo(message: String, function: String = __FUNCTION__, line: UInt = __LINE__, file: String = __FILE__) {
+  MSLogMessage(message, asynchronous: true, flag: .Info, function: function, file: file, line: line)
 }
 
 /**
@@ -293,41 +229,24 @@ logWarning:function:line:file:
 
 - parameter message: String
 - parameter function: String = __FUNCTION__
-- parameter line: Int32 = __LINE__
+- parameter line: UInt = __LINE__
 - parameter file: String = __FILE__
 */
-public func logWarning(message: String, function: String = __FUNCTION__, line: Int32 = __LINE__, file: String = __FILE__) {
-  MSLogWarn(message, function: function, line: line, file: file)
+public func logWarning(message: String, function: String = __FUNCTION__, line: UInt = __LINE__, file: String = __FILE__) {
+  MSLogMessage(message, asynchronous: true, flag: .Warn, function: function, file: file, line: line)
 }
 
-
-/**
-MSLogVerbose:function:line:level:context:
-
-- parameter message: String
-- parameter function: String = __FUNCTION__
-- parameter line: Int = __LINE__
-- parameter context: Int32 = LOG_CONTEXT_CONSOLE
-*/
-public func MSLogVerbose(message: String,
-                function: String = __FUNCTION__,
-                    line: Int32 = __LINE__,
-                    file: String = __FILE__,
-                 context: Int32 = LOG_CONTEXT_CONSOLE)
-{
-  MSLogMessage(message, asynchronous: true, flag: .Verbose, function: function, file: file, line: line, context: context)
-}
 
 /**
 logVerbose:function:line:file:
 
 - parameter message: String
 - parameter function: String = __FUNCTION__
-- parameter line: Int32 = __LINE__
+- parameter line: UInt = __LINE__
 - parameter file: String = __FILE__
 */
-public func logVerbose(message: String, function: String = __FUNCTION__, line: Int32 = __LINE__, file: String = __FILE__) {
-  MSLogVerbose(message, function: function, line: line, file: file)
+public func logVerbose(message: String, function: String = __FUNCTION__, line: UInt = __LINE__, file: String = __FILE__) {
+  MSLogMessage(message, asynchronous: true, flag: .Verbose, function: function, file: file, line: line)
 }
 
 /**
@@ -335,18 +254,18 @@ logIB:function:line:file:
 
 - parameter message: String
 - parameter function: String = __FUNCTION__
-- parameter line: Int32 = __LINE__
+- parameter line: UInt = __LINE__
 - parameter file: String = __FILE__
 */
-public func logIB(message: String, function: String = __FUNCTION__, line: Int32 = __LINE__, file: String = __FILE__, flag: LogManager.LogFlag = .Debug) {
-//  #if TARGET_INTERFACE_BUILDER
+public func logIB(message: String, function: String = __FUNCTION__, line: UInt = __LINE__, file: String = __FILE__, flag: LogManager.LogFlag = .Debug) {
+  #if TARGET_INTERFACE_BUILDER
     guard LogManager.logLevelForFile(file) ∋ LogManager.LogLevel(flags: flag) else { return }
     backgroundDispatch {
       guard let sourceDirectory = NSProcessInfo.processInfo().environment["IB_PROJECT_SOURCE_DIRECTORIES"] else { return }
       let text = "\(NSDate()) [\(mach_absolute_time())] <\((file as NSString).lastPathComponent):\(line)> \(function)  \(message)"
       let _ = try? text.appendToFile("\(sourceDirectory)/IB.log")
     }
-//  #endif
+  #endif
 }
 
 /**
@@ -417,39 +336,17 @@ public func descriptionForError(error: NSError?) -> String? {
 }
 
 /**
-MSHandleError:message:function:line:
-
-- parameter error: NSError?
-- parameter message: String? = nil
-- parameter function: String = __FUNCTION__
-- parameter line: Int = __LINE__
-
-- returns: Bool
-*/
-public func MSHandleError(error: NSError?,
-                  message: String? = nil,
-                 function: String = __FUNCTION__,
-                     line: Int32 = __LINE__,
-                     file: String = __FILE__) -> Bool
-{
-  if error == nil { return false }
-  let logMessage = String("-Error- \(message ?? String())\n\(detailedDescriptionForError(error!, depth: 0))")
-  MSLogError(logMessage, function: function, line: line, file: file)
-  return true
-}
-
-/**
 logError:message:function:line:
 
 - parameter e: ErrorType
 - parameter message: String? = nil
 - parameter function: String = __FUNCTION__
-- parameter line: Int32 = __LINE__
+- parameter line: UInt = __LINE__
 */
 public func logError(e: ErrorType,
                      message: String? = nil,
                      function: String = __FUNCTION__,
-                     line: Int32 = __LINE__,
+                     line: UInt = __LINE__,
                      file: String = __FILE__)
 {
   var errorDescription = "\(e)"
@@ -459,7 +356,7 @@ public func logError(e: ErrorType,
   if let message = message { logMessage += message + "\n" }
   logMessage += errorDescription
 
-  MSLogError(logMessage, function: function, line: line, file: file)
+  logError(logMessage, function: function, line: line, file: file)
 }
 
 /**
@@ -469,26 +366,6 @@ logError:
 */
 public func logError(e: ExtendedErrorType) {
   logError(e, message: e.reason, function: e.function, line: e.line, file: e.file)
-}
-
-/**
-MSHandleError:message:function:line:
-
-- parameter error: E?
-- parameter message: String? = nil
-- parameter function: String = __FUNCTION__
-- parameter line: Int32 = __LINE__
-
-- returns: Bool
-*/
-public func MSHandleError<E:ErrorType>(error: E?,
-                 message: String? = nil,
-                function: String = __FUNCTION__,
-                    line: Int32 = __LINE__,
-                    file: String = __FILE__) -> Bool
-{
-  guard let e = error as? NSError else { return error != nil }
-  return MSHandleError(e, message: message, function: function, line: line, file: file)
 }
 
 /**

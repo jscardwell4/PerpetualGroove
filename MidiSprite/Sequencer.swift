@@ -27,7 +27,7 @@ final class Sequencer {
       try urls.forEach { soundSets.append(try SoundSet(url: $0)) }
       guard soundSets.count > 0 else { fatalError("failed to create any sound sets from bundled sf2 files") }
       auditionInstrument = try Instrument(soundSet: soundSets[0], program: UInt8(soundSets[0].presets[0].program), channel: 0)
-      Notification.SoundSetsInitialized.post()
+      Notification.DidInitializeSoundSets.post()
     } catch {
       logError(error)
     }
@@ -37,12 +37,13 @@ final class Sequencer {
 
   // MARK: - Notifications
   enum Notification: String, NotificationNameType, NotificationType {
-    case FileLoaded, FileUnloaded
-    case SoundSetsInitialized
-    case CurrentTrackDidChange
+    case DidLoadFile, DidUnloadFile
+    case DidInitializeSoundSets
+    case DidChangeCurrentTrack
     case DidStart, DidPause, DidStop, DidReset
     case DidTurnOnRecording, DidTurnOffRecording
-    case DidJogTime
+    case DidBeginJogging, DidEndJogging
+    case DidJog
     var object: AnyObject? { return Sequencer.self }
   }
 
@@ -53,7 +54,7 @@ final class Sequencer {
 
   private static var notificationReceptionist = NotificationReceptionist(callbacks:
     [
-      MIDISequence.Notification.Name.TrackRemoved.rawValue :
+      MIDISequence.Notification.Name.DidAddTrack.rawValue :
         (MIDISequence.self, NSOperationQueue.mainQueue(), {
           notification in
 
@@ -114,13 +115,13 @@ final class Sequencer {
           logDebug("midiFile = \(midiFile)")
           _sequence = MIDISequence(file: midiFile)
           logDebug("playbackSequence = " + (_sequence?.description ?? "nil"))
-          Notification.FileLoaded.post()
+          Notification.DidLoadFile.post()
         } catch {
           logError(error)
           self.currentFile = nil
         }
       } else {
-        Notification.FileUnloaded.post()
+        Notification.DidUnloadFile.post()
       }
     }
   }
@@ -131,7 +132,6 @@ final class Sequencer {
     let rawValue: Int
     init(rawValue: Int) { self.rawValue = rawValue }
 
-    static let Default   = State(rawValue: 0b0000_0000)
     static let Playing   = State(rawValue: 0b0000_0010)
     static let Recording = State(rawValue: 0b0000_0100)
     static let Paused    = State(rawValue: 0b0001_0000)
@@ -144,14 +144,27 @@ final class Sequencer {
       if contains(.Recording) { flagStrings.append("Recording") }
       if contains(.Paused)    { flagStrings.append("Paused")    }
       if contains(.Jogging)   { flagStrings.append("Jogging")   }
-      if flagStrings.isEmpty  { flagStrings.append("Default")   }
       result += ", ".join(flagStrings)
       result += " }"
       return result
     }
   }
 
-  static private var state = State.Default { didSet { logDebug("didSet…\n\told state: \(oldValue)\n\tnew state: \(state)") } }
+  static private var state: State = [] {
+    didSet {
+      logDebug("didSet…\n\told state: \(oldValue)\n\tnew state: \(state)")
+      let notification: Notification?
+      switch state ⊻ oldValue {
+        case [.Recording]:        logDebug("[.Recording]"); notification = recording ? .DidTurnOnRecording : .DidTurnOffRecording
+        case [.Playing, .Paused]: logDebug("[.Playing, .Paused]"); notification = playing   ? .DidStart           : .DidPause
+        case [.Paused]:           logDebug("[.Paused]"); notification = paused    ? .DidPause           : .DidStop
+        case [.Playing]:          logDebug("[.Playing]"); notification = playing   ? .DidStart           : .DidStop
+        case [.Jogging]:          logDebug("[.Jogging]"); notification = jogging   ? .DidBeginJogging    : .DidEndJogging
+        default:                  notification = nil
+      }
+      notification?.post()
+    }
+  }
 
   static private(set) var soundSets: [SoundSet] = []
 
@@ -163,7 +176,7 @@ final class Sequencer {
   private static var previousTrack: InstrumentTrack?
 
   /** Wraps the private `_currentTrack` so that a new track may be created if the property is `nil` */
-  static var currentTrack: InstrumentTrack? { didSet { Notification.CurrentTrackDidChange.post() } }
+  static var currentTrack: InstrumentTrack? { didSet { Notification.DidChangeCurrentTrack.post() } }
 
   // MARK: - Properties used to initialize a new `MIDINode`
 
@@ -177,31 +190,22 @@ final class Sequencer {
 
   // MARK: - Transport
 
-  static var playing: Bool { return state ∋ .Playing }
-
-  static var paused: Bool { return state ∋ .Paused }
-
-  static var jogging: Bool { return state ∋ .Jogging }
-
-  static var recording: Bool {
-    get { return state ∋ .Recording }
-    set {
-      logDebug("set… currentValue: \(recording); newValue: \(newValue)")
-      guard newValue != recording else { return }
-      state ⊻= .Recording
-      (newValue ? Notification.DidTurnOnRecording : Notification.DidTurnOffRecording).post()
-    }
-  }
+  static var playing:   Bool { return state ∋ .Playing   }
+  static var paused:    Bool { return state ∋ .Paused    }
+  static var jogging:   Bool { return state ∋ .Jogging   }
+  static var recording: Bool { return state ∋ .Recording }
 
   private static var jogStartTimeTicks: UInt64 = 0
-  private static var jogMaxTimeTicks: UInt64 = 0
+  private static var jogMaxTimeTicks:   UInt64 = 0
 
   /** beginJog */
   static func beginJog() {
-    if playing { pause() }
-    state.insert(.Jogging)
+    logDebug(); 
+    guard !jogging else { return }
+    clock.stop()
     jogStartTimeTicks = barBeatTime.time.tickValueWithBeatsPerBar(timeSignature.beatsPerBar)
-    jogMaxTimeTicks = max(jogMaxTimeTicks, sequence.sequenceEnd.tickValueWithBeatsPerBar(timeSignature.beatsPerBar))
+    jogMaxTimeTicks =   max(jogMaxTimeTicks, sequence.sequenceEnd.tickValueWithBeatsPerBar(timeSignature.beatsPerBar))
+    state ⊻= [.Jogging]
   }
 
   /**
@@ -210,6 +214,7 @@ final class Sequencer {
   - parameter revolutions: Float
   */
   static func jog(revolutions: Float) {
+    logDebug(); 
     guard jogging else { return }
 
     let beatsPerBar = timeSignature.beatsPerBar
@@ -234,11 +239,7 @@ final class Sequencer {
   }
 
   /** endJog */
-  static func endJog() {
-    guard jogging else { return }
-    state.remove(.Jogging)
-    if paused { play() }
-  }
+  static func endJog() { logDebug(); guard jogging else { return }; clock.resume(); state ⊻= [.Jogging] }
 
   /**
   jogToTime:
@@ -250,40 +251,29 @@ final class Sequencer {
     guard jogging else { throw Error.NotPermitted }
     guard barBeatTime.isValidTime(time) else { throw Error.InvalidBarBeatTime }
     barBeatTime.time = time
-    Notification.DidJogTime.post()
+    Notification.DidJog.post()
   }
 
   /** Starts the MIDI clock */
   static func play() {
+    logDebug()
     guard !playing else { return }
-    if paused { clock.resume(); state.remove(.Paused) }
-    else { clock.start() }
-    state.insert(.Playing)
-    Notification.DidStart.post()
+    if paused { clock.resume(); state ⊻= [.Paused, .Playing] }
+    else { clock.start(); state ⊻= [.Playing] }
   }
+
+  /** toggleRecord */
+  static func toggleRecord() { logDebug(); state ⊻= .Recording }
 
   /** pause */
-  static func pause() {
-    guard playing else { return }
-    clock.stop()
-    state.insert(.Paused)
-    state.remove(.Playing)
-    Notification.DidPause.post()
-  }
+  static func pause() { logDebug(); guard playing else { return }; clock.stop(); state ⊻= [.Paused, .Playing] }
 
   /** Moves the time back to 0 */
-  static func reset() {
-    if playing { stop() }
-    barBeatTime.reset()
-    Notification.DidReset.post()
-  }
+  static func reset() { logDebug(); stop(); barBeatTime.reset(); Notification.DidReset.post() }
 
   /** Stops the MIDI clock */
   static func stop() {
-    guard playing else { return }
-    clock.stop()
-    state.remove(.Playing)
-    Notification.DidStop.post()
+    logDebug(); guard playing || paused else { return }; clock.stop(); state ∖= [.Playing, .Paused]
   }
 
 }

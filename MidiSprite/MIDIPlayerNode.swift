@@ -15,7 +15,7 @@ final class MIDIPlayerNode: SKShapeNode {
 
   /** An enumeration to wrap up notifications */
   enum Notification: String, NotificationType, NotificationNameType {
-    case NodeAdded, NodeRemoved
+    case DidAddNode, DidRemoveNode
     var object: AnyObject? { return MIDIPlayerNode.self }
   }
 
@@ -59,7 +59,7 @@ final class MIDIPlayerNode: SKShapeNode {
     let node = midiNodes.removeLast()
     do { try track.removeNode(node) } catch { logError(error) }
     node.removeFromParent()
-    Notification.NodeRemoved.post()
+    Notification.DidRemoveNode.post()
   }
 
   /** reset */
@@ -75,7 +75,7 @@ final class MIDIPlayerNode: SKShapeNode {
                 attributes: NoteAttributes = Sequencer.currentNoteAttributes)
   {
     do {
-      // We have to get the track first to force a new track to be created when necessary before the `MIDINode` receives its color
+      // Get the track first to force a new track to be created when necessary before the `MIDINode` receives its color
       let track: InstrumentTrack
       if targetTrack != nil { track = targetTrack! }
       else if let t = Sequencer.currentTrack where t.instrument.settingsEqualTo(Sequencer.auditionInstrument) { track = t }
@@ -87,7 +87,8 @@ final class MIDIPlayerNode: SKShapeNode {
       addChild(midiNode)
       midiNodes.append(midiNode)
       try track.addNode(midiNode)
-      Notification.NodeAdded.post()
+      if !Sequencer.playing { Sequencer.play() }
+      Notification.DidAddNode.post()
     } catch {
       logError(error)
     }

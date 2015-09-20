@@ -33,8 +33,8 @@
     va_list args;
     va_start(args, format);
     [DDLog log:YES
-         level:LOG_LEVEL_ERROR
-          flag:LOG_FLAG_ERROR
+         level:DDLogLevelError
+          flag:DDLogFlagError
        context:LOG_CONTEXT_CONSOLE
           file:[fileName UTF8String]
       function:[NSStringFromSelector(selector) UTF8String]
@@ -53,8 +53,8 @@
     va_list args;
     va_start(args, format);
     [DDLog log:YES
-         level:LOG_LEVEL_ERROR
-          flag:LOG_FLAG_ERROR
+         level:DDLogLevelError
+          flag:DDLogFlagError
        context:LOG_CONTEXT_CONSOLE
           file:[fileName UTF8String]
       function:[functionName UTF8String]
