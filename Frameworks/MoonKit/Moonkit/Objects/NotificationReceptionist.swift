@@ -25,6 +25,18 @@ public final class NotificationReceptionist: NSObject {
     }
   }
 
+  public convenience init(callbacks: DictionaryLiteral<AnyNotification, Callback>) {
+    var callbackDictionary: [Notification:Callback] = [:]
+    for (key, value) in callbacks { callbackDictionary[key.name.value] = value }
+    self.init(callbacks: callbackDictionary)
+  }
+
+  public convenience init(callbacks: DictionaryLiteral<AnyNotificationName, Callback>) {
+    var callbackDictionary: [Notification:Callback] = [:]
+    for (key, value) in callbacks { callbackDictionary[key.value] = value }
+    self.init(callbacks: callbackDictionary)
+  }
+
   deinit {
     let notificationCenter = NSNotificationCenter.defaultCenter()
     observers.forEach {notificationCenter.removeObserver($0)}

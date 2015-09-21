@@ -30,7 +30,7 @@ final class MIDIPlayerViewController: UIViewController {
     midiPlayerSceneView.ignoresSiblingOrder = true
 
     midiPlayerSceneView.presentScene(MIDIPlayerScene(size: midiPlayerSceneView.bounds.size))
-    playerScene!.paused = true
+    playerScene.paused = true
 
     fileTrackNameLabel.text = nil
 
@@ -271,28 +271,28 @@ final class MIDIPlayerViewController: UIViewController {
   @IBOutlet weak var jogWheel: ScrollWheel!
 
   /** record */
-  @IBAction func record() { logDebug(); Sequencer.toggleRecord() }
+  @IBAction func record() { Sequencer.toggleRecord() }
 
   /** playPause */
-  @IBAction func playPause() { logDebug(); if state ∋ .Playing { pause() } else { play() } }
+  @IBAction func playPause() { if state ∋ .Playing { pause() } else { play() } }
 
   /** play */
-  func play() { logDebug(); Sequencer.play() }
+  func play() { Sequencer.play() }
 
   /** pause */
-  func pause() { logDebug(); Sequencer.pause() }
+  func pause() { Sequencer.pause() }
 
   /** stop */
-  @IBAction func stop() { logDebug(); Sequencer.reset() }
+  @IBAction func stop() { Sequencer.reset() }
 
   /** beginJog */
-  @IBAction private func beginJog(){ logDebug(); Sequencer.beginJog() }
+  @IBAction private func beginJog(){ Sequencer.beginJog() }
 
   /** jog */
-  @IBAction private func jog() { logDebug(); Sequencer.jog(jogWheel.revolutions) }
+  @IBAction private func jog() { Sequencer.jog(jogWheel.revolutions) }
 
   /** endJog */
-  @IBAction private func endJog() {logDebug();  Sequencer.endJog() }
+  @IBAction private func endJog() { Sequencer.endJog() }
 
   private enum ControlImage {
     case Pause, Play
@@ -318,7 +318,10 @@ final class MIDIPlayerViewController: UIViewController {
 
   @IBOutlet weak var midiPlayerSceneView: SKView!
 
-  var playerScene: MIDIPlayerScene? { return midiPlayerSceneView.scene as? MIDIPlayerScene }
+  var playerScene: MIDIPlayerScene {
+    guard let playerScene = midiPlayerSceneView.scene as? MIDIPlayerScene else { fatalError("Failed to retrieve player scene") }
+    return playerScene
+  }
 
   // MARK: - Managing state
 
@@ -330,7 +333,6 @@ final class MIDIPlayerViewController: UIViewController {
   - parameter notification: NSNotification
   */
   private func didChangeCurrentTrack(notification: NSNotification) {
-    logDebug(); 
     guard state ∌ .FileLoaded else { return }
     fileTrackLabel.text = "Track"
     fileTrackNameLabel.text = Sequencer.currentTrack?.name
@@ -342,7 +344,6 @@ final class MIDIPlayerViewController: UIViewController {
   - parameter notification: NSNotification
   */
   private func didRemoveTrack(notification: NSNotification) {
-    logDebug(); 
     guard Sequencer.sequence.instrumentTracks.count == 0 else { return }
     state ∖= [.TrackAdded]
   }
@@ -352,49 +353,51 @@ final class MIDIPlayerViewController: UIViewController {
 
   - parameter notification: NSNotification
   */
-  private func didAddTrack(notification: NSNotification) { logDebug(); state ∪= [.TrackAdded] }
+  private func didAddTrack(notification: NSNotification) { state ∪= [.TrackAdded] }
 
   /**
   didLoadFile:
 
   - parameter notification: NSNotification
   */
-  private func didLoadFile(notification: NSNotification) { logDebug(); state ∪= [.FileLoaded] }
+  private func didLoadFile(notification: NSNotification) { state ∪= [.FileLoaded] }
 
   /**
   didUnloadFile:
 
   - parameter notification: NSNotification
   */
-  private func didUnloadFile(notification: NSNotification) { logDebug(); state ∖= [.FileLoaded] }
+  private func didUnloadFile(notification: NSNotification) { state ∖= [.FileLoaded] }
 
   /**
   didPause:
 
   - parameter notification: NSNotification
   */
-  private func didPause(notification: NSNotification) { logDebug(); state ⊻= [.Playing, .Paused] }
+  private func didPause(notification: NSNotification) { state ⊻= [.Playing, .Paused] }
 
   /**
   didStart:
 
   - parameter notification: NSNotification
   */
-  private func didStart(notification: NSNotification) { logDebug(); state ∪= [.Playing] }
+  private func didStart(notification: NSNotification) {
+    if state ∋ .Paused { state ⊻= [.Playing, .Paused] } else { state ∪= .Playing }
+  }
 
   /**
   didStop:
 
   - parameter notification: NSNotification
   */
-  private func didStop(notification: NSNotification) { logDebug(); state ∖= [.Playing, .Paused] }
+  private func didStop(notification: NSNotification) { state ∖= [.Playing, .Paused] }
 
   /**
   didReset:
 
   - parameter notification: NSNotification
   */
-  private func didReset(notification: NSNotification) { logDebug(); playerScene?.midiPlayer.reset() }
+  private func didReset(notification: NSNotification) { playerScene.midiPlayer.reset() }
 
   /** initializeReceptionist */
   private func initializeReceptionist() {
@@ -419,6 +422,7 @@ final class MIDIPlayerViewController: UIViewController {
 
       MIDISequence.Notification.Name.DidAddTrack.value:        didAddTrackCallback,
       MIDISequence.Notification.Name.DidRemoveTrack.value:     didRemoveTrackCallback,
+
       Sequencer.Notification.DidLoadFile.name.value:           didLoadFileCallback,
       Sequencer.Notification.DidUnloadFile.name.value:         didUnloadFileCallback,
       Sequencer.Notification.DidChangeCurrentTrack.name.value: didChangeCurrentTrackCallback,
@@ -462,46 +466,53 @@ final class MIDIPlayerViewController: UIViewController {
 
   private var state: State = [] {
     didSet {
-      logDebug("didSet…\n\told state: \(oldValue)\n\tnew state: \(state)")
+      guard isViewLoaded() && state != oldValue else { return }
+      guard state ∌ [.Playing, .Paused] else { fatalError("State invalid: cannot be both playing and paused") }
 
-      switch state ⊻ oldValue {
-        case [.TrackAdded]:
-          logDebug("[.TrackAdded]")
-          saveButton.enabled = state ∋ .TrackAdded && state ∌ .Popover // We have a track and aren't showing popover
-        case [.Playing, .Paused]:
-          logDebug("[.Playing, .Paused]")
-          playerScene?.paused = state ∌ .Playing
-          stopButton.enabled = state ~= [.Playing, .Paused]
-          (state ∋ .Playing ? ControlImage.Pause : ControlImage.Play).decorateButton(playPauseButton)
-        case [.Playing]:
-          logDebug("[.Playing]")
-          playerScene?.paused = state ∌ .Playing
-          stopButton.enabled = state ~= [.Playing, .Paused]
-        case [.Paused]:
-          logDebug("[.Paused]")
-          playerScene?.paused = state ∋ .Paused
-          stopButton.enabled = state ~= [.Playing, .Paused]
-        case [.Popover]:
-          logDebug("[.Popover]")
-          popoverBlur.hidden = state ∌ .Popover
-        case [.FileLoaded]:
-          logDebug("[.FileLoaded]")
-          if let currentFile = Sequencer.currentFile?.lastPathComponent {
-            fileTrackLabel.text = "File"
-            fileTrackNameLabel.text = currentFile[..<currentFile.endIndex.advancedBy(-4)]
-          } else {
-            fileTrackLabel.text = "Track"
-            fileTrackNameLabel.text = Sequencer.currentTrack?.name
-          }
-          fileTrackNameSwipeGesture.enabled = state ∋ .FileLoaded
-          recordButton.enabled = state ∌ .FileLoaded
-        case [.Jogging]:
-          logDebug("[.Jogging]")
-          transportStack.userInteractionEnabled = state ∌ .Jogging
-        default:
-          break
+      logDebug("didSet…old state: \(oldValue); new state: \(state)")
+
+      let modifiedState = state ⊻ oldValue
+
+      // Check if popover state has changed
+      if modifiedState ∋ .Popover {
+        popoverBlur.hidden = state ∌ .Popover
+        saveButton.enabled = state ∋ .TrackAdded && state ∌ .Popover
       }
 
+      // Check if track changed
+      if modifiedState ∋ .TrackAdded {
+        saveButton.enabled = state ∋ .TrackAdded && state ∌ .Popover
+      }
+
+      // Check if file status changed
+      if modifiedState ∋ .FileLoaded {
+        if let currentFile = Sequencer.currentFile?.lastPathComponent {
+          fileTrackLabel.text = "File"
+          fileTrackNameLabel.text = currentFile[..<currentFile.endIndex.advancedBy(-4)]
+        } else {
+          fileTrackLabel.text = "Track"
+          fileTrackNameLabel.text = Sequencer.currentTrack?.name
+        }
+        fileTrackNameSwipeGesture.enabled = state ∋ .FileLoaded
+        recordButton.enabled = state ∌ .FileLoaded
+      }
+
+      // Check if jog status changed
+      if modifiedState ∋ .Jogging {
+        transportStack.userInteractionEnabled = state ∌ .Jogging
+      }
+
+      // Check for recording status change
+      if modifiedState ∋ .Recording {
+        recordButton.selected = state ∋ .Recording
+      }
+
+      // Check if play/pause status changed
+      if modifiedState ~∩ [.Playing, .Paused] {
+        playerScene.paused = state ∌ .Playing
+        stopButton.enabled = state ~∩ [.Playing, .Paused]
+        (playerScene.paused ? ControlImage.Play : ControlImage.Pause).decorateButton(playPauseButton)
+      }
     }
   }
 

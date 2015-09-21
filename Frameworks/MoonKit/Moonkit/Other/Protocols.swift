@@ -599,6 +599,26 @@ public extension NotificationType where Self:NotificationNameType {
 
 public func ==<T:NotificationType>(lhs: T, rhs: T) -> Bool { return lhs.name == rhs.name }
 
+public struct AnyNotificationName: NotificationNameType {
+  public var rawValue: String
+  public init<N:NotificationNameType>(_ name: N) { rawValue = name.value }
+  public init?(rawValue: String) { self.rawValue = rawValue }
+}
+public func ==(lhs: AnyNotificationName, rhs: AnyNotificationName) -> Bool {
+  return lhs.value == rhs.value
+}
+public struct AnyNotification: NotificationType {
+  public var userInfo: [NSObject:AnyObject]?
+  public var object: AnyObject?
+  public var name: AnyNotificationName
+  public init<N:NotificationType>(_ notification: N) {
+    name = AnyNotificationName(notification.name)
+    userInfo = notification.userInfo
+    object = notification.object
+  }
+}
+
+
 //public extension EnumerableType where Self:RawRepresentable, Self.RawValue: ForwardIndexType {
 //  static var allCases: [Self] {
 //    return Array(rawRange.generate()).flatMap({Self.init(rawValue: $0)})

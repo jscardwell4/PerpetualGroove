@@ -200,11 +200,9 @@ import UIKit
       wheelLayer.setAffineTransform(CGAffineTransform(angle: theta))
     }
   }
-  private var previousAngle: CGFloat = 0
-  private var previousLocation: CGPoint = .zero
+
   private var touchPath = UIBezierPath()
 
-  private var direction: Direction?
 
   /** updateTouchPath */
   private func updateTouchPath() {
@@ -215,51 +213,171 @@ import UIKit
   public override var bounds: CGRect { didSet { updateTouchPath() } }
   public override var frame: CGRect { didSet { updateTouchPath() } }
 
-  /**
-  angleForTouchLocation:
-
-  - parameter location: CGPoint
-
-  - returns: CGFloat
-  */
-  private func angleForTouchLocation(location: CGPoint) -> CGFloat {
-    let (x, y) = (location - bounds.center).unpack
-    let h = sqrt(pow(x, 2) + pow(y, 2))
-    return acos(x / h)
-  }
-
   private enum Direction: String {
-    case Clockwise, CounterClockwise
-    init(from: CGPoint, to: CGPoint, about: CGPoint) {
-      switch (from.unpack, to.unpack, about.unpack) {
-        case let ((x1, y1), (x2, y2), (_, yc)) where x2 > x1 && y2 == y1 && y2 > yc:
+    case Clockwise, CounterClockwise, Unknown
+
+    /**
+    initWithFrom:to:about:trending:
+
+    - parameter from: CGPoint
+    - parameter to: CGPoint
+    - parameter about: CGPoint
+    - parameter trending: Direction?
+    */
+    init(from: CGPoint, to: CGPoint, about: CGPoint, trending: Direction?) {
+      let (x1, y1) = from.unpack
+      let (x2, y2) = to.unpack
+      switch (y2 - y1) / (x2 - x1) {
+
+      case 0 where x2 < x1:
+
+        switch about.unpack {
+        case let (_, yc) where y2 <= yc:
+//          print("case 0 where x2 < x1 && y2 <= yc: x2 = \(x2); y2 = \(y2) CounterClockwise")
           self = .CounterClockwise
-        case let ((x1, y1), (x2, y2), (_, yc)) where x2 > x1 && y2 == y1 && y2 <= yc:
-          self = .Clockwise
-        case let ((x1, y1), (x2, y2), (_, yc)) where x2 < x1 && y2 == y1 && y2 > yc:
-          self = .Clockwise
-        case let ((x1, y1), (x2, y2), (_, yc)) where x2 < x1 && y2 == y1 && y2 <= yc:
-          self = .CounterClockwise
-        case let ((x1, y1), (x2, y2), (xc, _)) where x2 == x1 && y2 > y1 && x2 > xc:
-          self = .Clockwise
-        case let ((x1, y1), (x2, y2), (xc, _)) where x2 == x1 && y2 > y1 && x2 <= xc:
-          self = .CounterClockwise
-        case let ((x1, y1), (x2, y2), (xc, _)) where x2 == x1 && y2 < y1 && x2 > xc:
-          self = .CounterClockwise
-        case let ((x1, y1), (x2, y2), (xc, _)) where x2 == x1 && y2 < y1 && x2 <= xc:
-          self = .Clockwise
-        case let ((x1, y1), (x2, y2), _) where x2 > x1 && y2 > y1:
-          self = .Clockwise
-        case let ((x1, y1), (x2, y2), _) where x2 > x1 && y2 < y1:
-          self = .CounterClockwise
-        case let ((x1, y1), (x2, y2), _) where x2 < x1 && y2 > y1:
-          self = .CounterClockwise
-        case let ((x1, y1), (x2, y2), _) where x2 < x1 && y2 < y1:
+        case let (_, yc) where y2 >= yc:
+//          print("case 0 where x2 < x1 && y2 >= yc: x2 = \(x2); y2 = \(y2) Clockwise")
           self = .Clockwise
         default:
-          self = .Clockwise // Unreachable?
+//          let result = trending ?? .Clockwise
+//          print("case 0 where x2 < x1 && default: x2 = \(x2); y2 = \(y2) \(result.rawValue)")
+          self = trending ?? .Clockwise
+        }
+
+      case 0 where x2 >= x1:
+
+        switch about.unpack {
+        case let (_, yc) where y2 <= yc:
+//          print("case 0 where x2 >= x1 && y2 <= yc: x2 = \(x2); y2 = \(y2) Clockwise")
+          self = .Clockwise
+        case let (_, yc) where y2 >= yc:
+//          print("case 0 where x2 >= x1 && y2 >= yc: x2 = \(x2); y2 = \(y2) CounterClockwise")
+          self = .CounterClockwise
+        default:
+//          let result = trending ?? .CounterClockwise
+//          print("case 0 where x2 >= x1 && default: x2 = \(x2); y2 = \(y2) \(result.rawValue)")
+          self = trending ?? .CounterClockwise
+        }
+
+      case CGFloat.infinity where y2 <= y1:
+
+        switch about.unpack {
+        case let (xc, _) where x2 <= xc:
+//          print("case CGFloat.infinity where y2 <= y1 && x2 <= xc: x2 = \(x2); y2 = \(y2) Clockwise")
+          self = .Clockwise
+        case let (xc, _) where x2 >= xc:
+//          print("case CGFloat.infinity where y2 <= y1 && x2 >= xc: x2 = \(x2); y2 = \(y2) CounterClockwise")
+          self = .CounterClockwise
+        default:
+//          let result = trending ?? .CounterClockwise
+//          print("case CGFloat.infinity where y2 <= y1 && default: x2 = \(x2); y2 = \(y2) \(result.rawValue)")
+          self = trending ?? .CounterClockwise
+        }
+
+      case CGFloat.infinity where y2 >= y1:
+
+        switch about.unpack {
+        case let (xc, _) where x2 <= xc:
+//          print("case CGFloat.infinity where y2 >= y1: x2 = \(x2); y2 = \(y2) CounterClockwise")
+          self = .CounterClockwise
+        case let (xc, _) where x2 >= xc:
+//          print("case CGFloat.infinity where y2 >= y1: x2 = \(x2); y2 = \(y2) CounterClockwise")
+          self = .Clockwise
+        default:
+//          let result = trending ?? .Clockwise
+//          print("case CGFloat.infinity where y2 >= y1: x2 = \(x2); y2 = \(y2) \(result.rawValue)")
+          self = trending ?? .Clockwise
+        }
+
+      case let s where s.isSignMinus:
+
+        switch about.unpack {
+        case let (xc, yc) where x2 <= xc && y2 >= yc:
+//          print("case let s where s.isSignMinus && x2 <= xc && y2 >= yc: x2 = \(x2); y2 = \(y2) CounterClockwise")
+          self = .CounterClockwise
+        case let (xc, yc) where x2 <= xc && y2 <= yc:
+//          let result = trending ?? .Clockwise
+//          print("case let s where s.isSignMinus && x2 <= xc && y2 <= yc: x2 = \(x2); y2 = \(y2) \(result.rawValue)")
+          self = trending ?? .Clockwise
+        case let (xc, yc) where x2 >= xc && y2 >= yc:
+//          let result = trending ?? .CounterClockwise
+//          print("case let s where s.isSignMinus && x2 >= xc && y2 >= yc: x2 = \(x2); y2 = \(y2) \(result.rawValue)")
+          self = trending ?? .CounterClockwise
+        default:
+//          let result = trending ?? .Clockwise
+//          print("case let s where s.isSignMinus && default: x2 = \(x2); y2 = \(y2) \(result.rawValue)")
+          self = trending ?? .Clockwise
+        }
+
+      default:
+        switch about.unpack {
+        case let (xc, yc) where x2 <= xc && y2 >= yc:
+//          print("<default && x2 <= xc && y2 >= yc> x2 = \(x2); y2 = \(y2) CounterClockwise")
+          self = .Clockwise
+        case let (xc, yc) where x2 <= xc && y2 <= yc:
+//          print("<default && x2 <= xc && y2 <= yc> x2 = \(x2); y2 = \(y2) Clockwise")
+          self = .Clockwise
+        case let (xc, yc) where x2 >= xc && y2 >= yc:
+////          let result = trending ?? .CounterClockwise
+//          print("<default && x2 >= xc && y2 >= yc> x2 = \(x2); y2 = \(y2) \(result.rawValue)")
+          self = trending ?? .CounterClockwise
+        default:
+//          let result = trending ?? .CounterClockwise
+//          print("<default && default> x2 = \(x2); y2 = \(y2) \(result.rawValue)")
+          self = trending ?? .Clockwise
+        }
+
+      }
+
+    }
+  }
+
+  private var geometry: Geometry?
+
+  private struct Angle {
+    init(_ a: CGFloat) { counterClockwise = a }
+    var clockwise: CGFloat { return π * 2 - counterClockwise }
+    var counterClockwise: CGFloat
+    func angleForDirection(direction: Direction) -> CGFloat { return direction == .Clockwise ? clockwise : counterClockwise }
+  }
+
+  private struct Geometry { var location: CGPoint; var angle: Angle; var quadrant: Quadrant; var direction: Direction }
+
+  private enum Quadrant: String {
+    case I, II, III, IV
+    init(point: CGPoint, center: CGPoint) {
+      switch (point.unpack, center.unpack) {
+      case let ((px, py), (cx, cy)) where px >= cx && py <= cy: self = .I
+      case let ((px, py), (cx, cy)) where px <= cx && py <= cy: self = .II
+      case let ((px, py), (cx, cy)) where px <= cx && py >= cy: self = .III
+      default:                                                  self = .IV
       }
     }
+  }
+
+  /**
+  angleForTouchLocation:withCenter:direction:
+
+  - parameter location: CGPoint
+  - parameter center: CGPoint
+
+  - returns: (Angle, Quadrant)
+  */
+  private func angleForTouchLocation(location: CGPoint, withCenter center: CGPoint) -> (Angle, Quadrant) {
+
+    let delta = location - center
+    let quadrant = Quadrant(point: location, center: center)
+    let (x, y) = delta.absolute.unpack
+    let h = sqrt(pow(x, 2) + pow(y, 2))
+    var a = acos(x / h)
+    switch quadrant {
+      case .I: break
+      case .II: a = π * 0.5 - a + π * 0.5
+      case .III: a += π
+      case .IV: a = π * 0.5 - a + π * 1.5
+    }
+
+    return (Angle(a), quadrant)
   }
 
   /**
@@ -269,25 +387,40 @@ import UIKit
   */
   private func updateForTouch(touch: UITouch) {
 
-    let location = touch.locationInView(self)
-    let touchPreviousLocation = touch.previousLocationInView(self)
-    let newDirection = Direction(from: touchPreviousLocation, to: location, about: bounds.center)
-    let currentDirection = direction ?? newDirection
-    if direction == nil { direction = currentDirection }
 
-    guard newDirection == currentDirection else { return }
+    let location = touch.locationInView(nil)
+    let center = window!.convertPoint(self.center, fromView: superview)
+    var (angle, quadrant) = angleForTouchLocation(location, withCenter: center)
 
-    let locationAngle = angleForTouchLocation(location)
-
-    let deltaAngle = abs(locationAngle - previousAngle)
-
-    switch newDirection {
-      case .Clockwise: theta += deltaAngle
-      case .CounterClockwise: theta -= deltaAngle
+    guard let previousGeometry = geometry else {
+      geometry = Geometry(location: location, angle: angle, quadrant: quadrant, direction: .Unknown)
+      return
     }
 
-    previousAngle = locationAngle
-    previousLocation = location
+    guard location != previousGeometry.location else { return }
+
+    let direction = Direction(from: previousGeometry.location, to: location, about: center, trending: previousGeometry.direction)
+
+    if case (.IV, .I) = (previousGeometry.quadrant, quadrant) { angle.counterClockwise += π * 2 }
+
+    let deltaAngle = angle - previousGeometry.angle
+    backgroundDispatch {
+      let currentGeometry = Geometry(location: location, angle: angle, quadrant: quadrant, direction: direction)
+      var string = "<updateForTouch>\n\tcurrent geometry: \(currentGeometry)\n\tprevious geometry: \(previousGeometry)\n"
+      string += "\tcenter: (\(center.x.rounded(2)), \(center.y.rounded(2)))\n\tdeltaAngle: \(deltaAngle)"
+      print(string)
+    }
+
+    switch direction {
+      case .Clockwise: theta += abs(deltaAngle.clockwise)
+      case .CounterClockwise: theta -= abs(deltaAngle.counterClockwise)
+      case .Unknown: fatalError("We should know which direction we are moving")
+    }
+
+    geometry?.angle = angle
+    geometry?.direction = direction
+    geometry?.location = location
+    geometry?.quadrant = quadrant
   }
 
   /**
@@ -300,9 +433,9 @@ import UIKit
   */
   public override func beginTrackingWithTouch(touch: UITouch, withEvent event: UIEvent?) -> Bool {
     guard touchPath.containsPoint(touch.locationInView(self)) else { return false }
-    direction = nil
     if beginResetsRevolutions { thetaOffset = theta }
-    previousAngle = angleForTouchLocation(touch.locationInView(self))
+    geometry = nil
+    updateForTouch(touch)
     return true
   }
 
@@ -345,3 +478,20 @@ import UIKit
   */
   public override func cancelTrackingWithEvent(event: UIEvent?) { sendActionsForControlEvents(.TouchCancel) }
 }
+
+private func -(lhs: ScrollWheel.Angle, rhs: ScrollWheel.Angle) -> ScrollWheel.Angle {
+  return ScrollWheel.Angle(lhs.counterClockwise - rhs.counterClockwise)
+}
+
+extension ScrollWheel.Angle: CustomStringConvertible {
+  var description: String {
+    return "{ clockwise: \(clockwise.degrees.rounded(2)); counterClockwise: \(counterClockwise.degrees.rounded(2)) }"
+  }
+}
+
+extension ScrollWheel.Geometry: CustomStringConvertible {
+  var description: String {
+    return "location: (\(location.x.rounded(2)); quadrant: \(quadrant.rawValue); direction: \(direction.rawValue); angle: \(angle)"
+  }
+}
+

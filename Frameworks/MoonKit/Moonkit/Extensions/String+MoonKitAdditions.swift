@@ -107,6 +107,19 @@ public extension String {
     self = separator.join(characterGroups)
   }
 
+  public enum PadType { case Prefix, Suffix }
+  public func pad(p: String, count: Int, type: PadType = .Suffix) -> String {
+    guard utf16.count < count else { return self }
+    let padCount = p.utf16.count
+    let delta = count - utf16.count
+    guard padCount > 0 && delta > 0 else { return self }
+    let padString = p * (delta / padCount)
+    switch type {
+      case .Prefix: return padString + self
+      case .Suffix: return self + padString
+    }
+  }
+
   /** Returns the string converted to 'dash-case' */
   public var dashCaseString: String {
     guard !isDashCase else { return self }

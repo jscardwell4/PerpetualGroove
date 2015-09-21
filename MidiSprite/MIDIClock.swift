@@ -45,6 +45,8 @@ final class MIDIClock: CustomStringConvertible {
     timer.start()
   }
 
+  var paused: Bool { return !running && ticks > 0 }
+
   /** resume */
   func resume() {
     guard !timer.running else { return }

@@ -32,7 +32,12 @@ public func ∖=<O:OptionSetType>(inout lhs: O, rhs: O) { lhs.subtractInPlace(rh
 
 public func ⊻=<O:OptionSetType>(inout lhs: O, rhs: O) { lhs.exclusiveOrInPlace(rhs) }
 
-public func ~=<O:OptionSetType>(lhs: O, rhs: O) -> Bool { return (lhs ∩ rhs) != [] }
+public func ~=<O:OptionSetType>(lhs: O, rhs: O) -> Bool { return (lhs ∩ rhs) == lhs }
+public func !~=<O:OptionSetType>(lhs: O, rhs: O) -> Bool { return !(lhs ~= rhs) }
+
+public func ~∩<O:OptionSetType>(lhs: O, rhs: O) -> Bool { return (lhs ∩ rhs) != [] }
+public func !~∩<O:OptionSetType>(lhs: O, rhs: O) -> Bool { return !(lhs ~∩ rhs) }
+
 //public func ∪=<T, C:RangeReplaceableCollectionType, S:SequenceType
 //  where C.Generator.Element == S.Generator.Element> (inout lhs:C, rhs:S)
 //{

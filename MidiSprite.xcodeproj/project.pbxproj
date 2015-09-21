@@ -7,10 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C207458D1B8CFB91000A06D4 /* test_morse_code_a.mid in Resources */ = {isa = PBXBuildFile; fileRef = C207458C1B8CFB91000A06D4 /* test_morse_code_a.mid */; };
 		C207458F1B8DF6D5000A06D4 /* BarBeatTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = C207458E1B8DF6D5000A06D4 /* BarBeatTime.swift */; };
 		C21E44C11B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C21E44C01B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 */; };
 		C21E44C51B76546C00574BD2 /* AudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21E44C41B76546C00574BD2 /* AudioManager.swift */; };
+		C22088001BB0569C0010DC7B /* CocoaLumberjackSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C27E18AF1B965F8500626314 /* CocoaLumberjackSwift.framework */; };
+		C22088011BB0569C0010DC7B /* CocoaLumberjackSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C27E18AF1B965F8500626314 /* CocoaLumberjackSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C22D93F11BADA24A00B04A2B /* MIDINodeHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22D93F01BADA24A00B04A2B /* MIDINodeHistory.swift */; settings = {ASSET_TAGS = (); }; };
 		C2569E401B90005400EEB441 /* TempoTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2569E3F1B90005400EEB441 /* TempoTrack.swift */; settings = {ASSET_TAGS = (); }; };
 		C25EBC831B8BFAFA00E57665 /* MIDIFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25EBC821B8BFAFA00E57665 /* MIDIFile.swift */; };
@@ -77,7 +78,6 @@
 		C283E7F71B9F29ED00B1690D /* AssetManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EFA0ED1B824A2F002EBA3D /* AssetManager.swift */; settings = {ASSET_TAGS = (); }; };
 		C283E7F81B9F29FB00B1690D /* MIDIPlayerFieldNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26FC1721B7BAEBD00E271A3 /* MIDIPlayerFieldNode.swift */; settings = {ASSET_TAGS = (); }; };
 		C283E7F91B9F2A6A00B1690D /* Woodblock.wav in Resources */ = {isa = PBXBuildFile; fileRef = C2F2ADC11B90EBD300FF4836 /* Woodblock.wav */; settings = {ASSET_TAGS = (); }; };
-		C28AA0EC1B8BC74800DA2502 /* test.mid in Resources */ = {isa = PBXBuildFile; fileRef = C28AA0EB1B8BC74800DA2502 /* test.mid */; };
 		C291C3EB1B91EDA700702AEA /* MIDIFileTrackChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3EA1B91EDA700702AEA /* MIDIFileTrackChunk.swift */; settings = {ASSET_TAGS = (); }; };
 		C291C3ED1B91EDB700702AEA /* MIDIFileHeaderChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3EC1B91EDB700702AEA /* MIDIFileHeaderChunk.swift */; settings = {ASSET_TAGS = (); }; };
 		C291C3EF1B91EDCC00702AEA /* MetaEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3EE1B91EDCC00702AEA /* MetaEvent.swift */; settings = {ASSET_TAGS = (); }; };
@@ -85,11 +85,8 @@
 		C291C3F31B91EDE100702AEA /* VariableLengthQuantity.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3F21B91EDE100702AEA /* VariableLengthQuantity.swift */; settings = {ASSET_TAGS = (); }; };
 		C291C3F51B91F05900702AEA /* MIDIFileProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3F41B91F05900702AEA /* MIDIFileProtocols.swift */; settings = {ASSET_TAGS = (); }; };
 		C294FE5E1BA869ED00D70749 /* FilesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C294FE5D1BA869ED00D70749 /* FilesCell.swift */; settings = {ASSET_TAGS = (); }; };
-		C29C72781BAE3CC90000EA00 /* CocoaLumberjackSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C27E18AF1B965F8500626314 /* CocoaLumberjackSwift.framework */; };
-		C29C72791BAE3CC90000EA00 /* CocoaLumberjackSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C27E18AF1B965F8500626314 /* CocoaLumberjackSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C2AA2BC81B84B04200A0B08D /* InstrumentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AA2BC71B84B04200A0B08D /* InstrumentViewController.swift */; };
 		C2AA2BCB1B84FB2100A0B08D /* Sequencer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AA2BCA1B84FB2100A0B08D /* Sequencer.swift */; };
-		C2AA9EF21B7BB92F0025BE4D /* MIDIPlayerField.fsh in Resources */ = {isa = PBXBuildFile; fileRef = C2AA9EF11B7BB92F0025BE4D /* MIDIPlayerField.fsh */; };
 		C2AC3A971BA9D4CD00692EBB /* TempoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AC3A961BA9D4CD00692EBB /* TempoViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		C2B123BF1B864DCC008FED5E /* MIDIClock.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B123BE1B864DCC008FED5E /* MIDIClock.swift */; };
 		C2BC7AD51B76C85E001729BA /* Instrument.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BC7AD41B76C85E001729BA /* Instrument.swift */; };
@@ -120,7 +117,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				C29C72791BAE3CC90000EA00 /* CocoaLumberjackSwift.framework in Embed Frameworks */,
+				C22088011BB0569C0010DC7B /* CocoaLumberjackSwift.framework in Embed Frameworks */,
 				C27E18B31B965F8500626314 /* MoonKit.framework in Embed Frameworks */,
 				C27E18AE1B965F8500626314 /* Eveleth.framework in Embed Frameworks */,
 				C27E18B51B965F8500626314 /* Chameleon.framework in Embed Frameworks */,
@@ -232,7 +229,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C29C72781BAE3CC90000EA00 /* CocoaLumberjackSwift.framework in Frameworks */,
+				C22088001BB0569C0010DC7B /* CocoaLumberjackSwift.framework in Frameworks */,
 				C27E18AD1B965F8500626314 /* Eveleth.framework in Frameworks */,
 				C27E18B41B965F8500626314 /* Chameleon.framework in Frameworks */,
 				C27E18B21B965F8500626314 /* MoonKit.framework in Frameworks */,
@@ -548,20 +545,17 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C28AA0EC1B8BC74800DA2502 /* test.mid in Resources */,
 				C2F2ADC21B90EBD300FF4836 /* Woodblock.wav in Resources */,
 				C2776C281B9DF50D002FE5A8 /* Emax Volume 5.sf2 in Resources */,
 				C2776C201B9DF50D002FE5A8 /* Emax Volume 1.sf2 in Resources */,
 				C2E043431B72F4DC005F0675 /* LaunchScreen.storyboard in Resources */,
 				C2E043401B72F4DC005F0675 /* Assets.xcassets in Resources */,
 				C2776C2A1B9DF50D002FE5A8 /* Emax Volume 6.sf2 in Resources */,
-				C2AA9EF21B7BB92F0025BE4D /* MIDIPlayerField.fsh in Resources */,
 				C2E0433E1B72F4DC005F0675 /* Main.storyboard in Resources */,
 				C2776C261B9DF50D002FE5A8 /* Emax Volume 4.sf2 in Resources */,
 				C21E44C11B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 in Resources */,
 				C272B2A21B7D714B00134E5F /* PureOscillators.programlist in Resources */,
 				C2776C241B9DF50D002FE5A8 /* Emax Volume 3.sf2 in Resources */,
-				C207458D1B8CFB91000A06D4 /* test_morse_code_a.mid in Resources */,
 				C2776C221B9DF50D002FE5A8 /* Emax Volume 2.sf2 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -800,7 +794,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				INFOPLIST_FILE = MidiSprite/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.MidiSprite;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -819,7 +813,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = MidiSprite/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.MidiSprite;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";

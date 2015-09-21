@@ -152,16 +152,16 @@ final class Sequencer {
 
   static private var state: State = [] {
     didSet {
-      logDebug("didSet…\n\told state: \(oldValue)\n\tnew state: \(state)")
       let notification: Notification?
       switch state ⊻ oldValue {
-        case [.Recording]:        logDebug("[.Recording]"); notification = recording ? .DidTurnOnRecording : .DidTurnOffRecording
-        case [.Playing, .Paused]: logDebug("[.Playing, .Paused]"); notification = playing   ? .DidStart           : .DidPause
-        case [.Paused]:           logDebug("[.Paused]"); notification = paused    ? .DidPause           : .DidStop
-        case [.Playing]:          logDebug("[.Playing]"); notification = playing   ? .DidStart           : .DidStop
-        case [.Jogging]:          logDebug("[.Jogging]"); notification = jogging   ? .DidBeginJogging    : .DidEndJogging
+        case [.Recording]:        notification = recording ? .DidTurnOnRecording : .DidTurnOffRecording
+        case [.Playing, .Paused]: notification = playing   ? .DidStart           : .DidPause
+        case [.Playing]:          notification = playing   ? .DidStart           : .DidStop
+        case [.Paused]:           notification = paused    ? .DidPause           : .DidStop
+        case [.Jogging]:          notification = jogging   ? .DidBeginJogging    : .DidEndJogging
         default:                  notification = nil
       }
+      logDebug("didSet…old state: \(oldValue); new state: \(state); notification: \(notification)")
       notification?.post()
     }
   }
@@ -200,7 +200,6 @@ final class Sequencer {
 
   /** beginJog */
   static func beginJog() {
-    logDebug(); 
     guard !jogging else { return }
     clock.stop()
     jogStartTimeTicks = barBeatTime.time.tickValueWithBeatsPerBar(timeSignature.beatsPerBar)
@@ -214,7 +213,6 @@ final class Sequencer {
   - parameter revolutions: Float
   */
   static func jog(revolutions: Float) {
-    logDebug(); 
     guard jogging else { return }
 
     let beatsPerBar = timeSignature.beatsPerBar
@@ -239,7 +237,10 @@ final class Sequencer {
   }
 
   /** endJog */
-  static func endJog() { logDebug(); guard jogging else { return }; clock.resume(); state ⊻= [.Jogging] }
+  static func endJog() {
+    guard jogging else { return }
+    if clock.paused { clock.resume() }
+    state ⊻= [.Jogging] }
 
   /**
   jogToTime:
@@ -256,24 +257,23 @@ final class Sequencer {
 
   /** Starts the MIDI clock */
   static func play() {
-    logDebug()
     guard !playing else { return }
     if paused { clock.resume(); state ⊻= [.Paused, .Playing] }
     else { clock.start(); state ⊻= [.Playing] }
   }
 
   /** toggleRecord */
-  static func toggleRecord() { logDebug(); state ⊻= .Recording }
+  static func toggleRecord() { state ⊻= .Recording }
 
   /** pause */
-  static func pause() { logDebug(); guard playing else { return }; clock.stop(); state ⊻= [.Paused, .Playing] }
+  static func pause() { guard playing else { return }; clock.stop(); state ⊻= [.Paused, .Playing] }
 
   /** Moves the time back to 0 */
-  static func reset() { logDebug(); stop(); barBeatTime.reset(); Notification.DidReset.post() }
+  static func reset() { stop(); barBeatTime.reset(); clock.reset(); Notification.DidReset.post() }
 
   /** Stops the MIDI clock */
   static func stop() {
-    logDebug(); guard playing || paused else { return }; clock.stop(); state ∖= [.Playing, .Paused]
+    guard playing || paused else { return }; clock.stop(); state ∖= [.Playing, .Paused]
   }
 
 }

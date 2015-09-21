@@ -33,3 +33,6 @@ infix operator ** { associativity left precedence 170 }
 infix operator ⥣ { associativity none precedence 130 }
 prefix operator ¶ {}
 infix operator ¶| {}
+infix operator ~∩ { associativity none precedence 130 }
+infix operator !~∩ { associativity none precedence 130 }
+infix operator !~= { associativity none precedence 130 }
