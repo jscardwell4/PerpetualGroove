@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import CocoaLumberjackSwift
+import Lumberjack
 
 public struct ColorLog {
   public static let ESCAPE = "\u{001b}["

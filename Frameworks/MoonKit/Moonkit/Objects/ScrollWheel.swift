@@ -399,7 +399,8 @@ import UIKit
 
     guard location != previousGeometry.location else { return }
 
-    let direction = Direction(from: previousGeometry.location, to: location, about: center, trending: previousGeometry.direction)
+    let trending: Direction? = previousGeometry.direction == .Unknown ? nil : previousGeometry.direction
+    let direction = Direction(from: previousGeometry.location, to: location, about: center, trending: trending)
 
     if case (.IV, .I) = (previousGeometry.quadrant, quadrant) { angle.counterClockwise += π * 2 }
 
@@ -408,7 +409,7 @@ import UIKit
       let currentGeometry = Geometry(location: location, angle: angle, quadrant: quadrant, direction: direction)
       var string = "<updateForTouch>\n\tcurrent geometry: \(currentGeometry)\n\tprevious geometry: \(previousGeometry)\n"
       string += "\tcenter: (\(center.x.rounded(2)), \(center.y.rounded(2)))\n\tdeltaAngle: \(deltaAngle)"
-      print(string)
+      logDebug(string)
     }
 
     switch direction {

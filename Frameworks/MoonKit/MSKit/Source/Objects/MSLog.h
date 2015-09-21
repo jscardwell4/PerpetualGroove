@@ -9,7 +9,7 @@
 @import Foundation;
 @import UIKit;
 #import "MSLogMacros.h"
-@import CocoaLumberjackSwift;
+@import Lumberjack;
 #import "MSKitDefines.h"
 #import "MSKitMacros.h"
 #import "MSError.h"
