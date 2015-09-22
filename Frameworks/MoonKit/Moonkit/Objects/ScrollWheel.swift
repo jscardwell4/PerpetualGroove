@@ -11,145 +11,70 @@ import UIKit
 
 @IBDesignable public class ScrollWheel: UIControl {
 
-  /** 
-  Layer subclass for encapsulating custom drawing and providing a level of separation between frames used for touch locations 
-  and the use of transforms to rotate the visible content 
-  */
-  private final class WheelLayer: CALayer {
+  // MARK: - Colors
 
-    private var wheelColorModified = false
-    private var dimpleColorModified = false
+  private var wheelColorModified = false
+  private var dimpleColorModified = false
 
-    var wheelImage: UIImage? {
-      didSet {
-        guard wheelImage != oldValue && !wheelColorModified else { return }
-        wheelImage = wheelImage?.imageWithColor(wheelColor)
-        setNeedsDisplay()
-      }
-    }
-    var dimpleImage: UIImage? {
-      didSet {
-        guard dimpleImage != oldValue && !dimpleColorModified else { return }
-        dimpleImage = dimpleImage?.imageWithColor(dimpleColor)
-        setNeedsDisplay()
-      }
-    }
-    var dimpleFillImage: UIImage? {
-      didSet {
-        guard dimpleFillImage != oldValue && !dimpleColorModified else { return }
-        dimpleFillImage = dimpleFillImage?.imageWithColor(dimpleColor)
-        setNeedsDisplay()
-      }
-    }
-
-    var wheelColor: UIColor = .darkGrayColor() {
-      didSet {
-        guard wheelColor != oldValue else { return }
-        wheelColorModified = true
-        wheelImage = wheelImage?.imageWithColor(wheelColor)
-        wheelColorModified = false
-        setNeedsDisplay()
-      }
-    }
-
-    var dimpleColor: UIColor = .lightGrayColor() {
-      didSet {
-        guard dimpleColor != oldValue else { return }
-        dimpleColorModified = true
-        dimpleImage = dimpleImage?.imageWithColor(dimpleColor)
-        dimpleFillImage = dimpleFillImage?.imageWithColor(dimpleColor)
-        dimpleColorModified = false
-        setNeedsDisplay()
-      }
-    }
-
-    var dimpleStyle: CGBlendMode = .Normal {
-      didSet {
-        guard dimpleStyle != oldValue else { return }
-        setNeedsDisplay()
-      }
-    }
-
-    var dimpleFillStyle: CGBlendMode = .Normal {
-      didSet {
-        guard dimpleFillStyle != oldValue else { return }
-        setNeedsDisplay()
-      }
-    }
-
-    /**
-    drawInContext:
-
-    - parameter ctx: CGContext
-    */
-    private override func drawInContext(ctx: CGContext) {
-
-      CGContextSaveGState(ctx)
-      UIGraphicsPushContext(ctx)
-
-      let baseFrame = CGContextGetClipBoundingBox(ctx).centerInscribedSquare.integral
-      if let wheelBase = wheelImage {
-        wheelBase.drawInRect(baseFrame)
-      } else {
-        wheelColor.setFill()
-        UIBezierPath(ovalInRect: baseFrame).fill()
-      }
-
-
-      let dimpleSize = baseFrame.size * 0.35
-      let dimpleFrame = CGRect(origin: CGPoint(x: baseFrame.midX - half(dimpleSize.width), y: 4), size: dimpleSize)
-
-      if let dimple = dimpleImage, dimpleFill = dimpleFillImage {
-
-        UIBezierPath(ovalInRect: dimpleFrame).addClip()
-        dimple.drawInRect(dimpleFrame, blendMode: dimpleStyle, alpha: 1)
-
-        let deltaSize = dimpleSize - dimpleFill.size
-        let dimpleFillFrame = CGRect(origin: dimpleFrame.origin + deltaSize * 0.5, size: dimpleFill.size)
-
-        UIBezierPath(ovalInRect: dimpleFillFrame.insetBy(dx: 1, dy: 1)).addClip()
-        dimpleFill.drawAtPoint(dimpleFillFrame.origin, blendMode: dimpleFillStyle, alpha: 1)
-
-      } else {
-        dimpleColor.setFill()
-        UIBezierPath(ovalInRect: dimpleFrame).fill()
-      }
-
-      UIGraphicsPopContext()
-      CGContextRestoreGState(ctx)
-
+  @IBInspectable public var wheelColor: UIColor = .darkGrayColor() {
+    didSet {
+      guard wheelColor != oldValue else { return }
+      wheelColorModified = true
+      wheelImage = wheelImage?.imageWithColor(wheelColor)
+      wheelColorModified = false
+      setNeedsDisplay()
     }
   }
 
-  private let wheelLayer = WheelLayer()
-
-  @IBInspectable public var confineTouchToBounds: Bool = false
-  @IBInspectable public var beginResetsRevolutions: Bool = true
-
-  /** setup */
-  private func setup() {
-    wheelLayer.needsDisplayOnBoundsChange = true
-    wheelLayer.contentsScale = UIScreen.mainScreen().scale
-    layer.addSublayer(wheelLayer)
+  @IBInspectable public var dimpleColor: UIColor = .lightGrayColor() {
+    didSet {
+      guard dimpleColor != oldValue else { return }
+      dimpleColorModified = true
+      dimpleImage = dimpleImage?.imageWithColor(dimpleColor)
+      dimpleFillImage = dimpleFillImage?.imageWithColor(dimpleColor)
+      dimpleColorModified = false
+      setNeedsDisplay()
+    }
   }
 
-  /**
-  initWithFrame:
+  // MARK: - Images
 
-  - parameter frame: CGRect
-  */
-  public override init(frame: CGRect) { super.init(frame: frame); setup() }
+  @IBInspectable public var wheelImage: UIImage? {
+    didSet {
+      guard wheelImage != oldValue && !wheelColorModified else { return }
+      wheelImage = wheelImage?.imageWithColor(wheelColor)
+      setNeedsDisplay()
+    }
+  }
+  @IBInspectable public var dimpleImage: UIImage? {
+    didSet {
+      guard dimpleImage != oldValue && !dimpleColorModified else { return }
+      dimpleImage = dimpleImage?.imageWithColor(dimpleColor)
+      setNeedsDisplay()
+    }
+  }
+  @IBInspectable public var dimpleFillImage: UIImage? {
+    didSet {
+      guard dimpleFillImage != oldValue && !dimpleColorModified else { return }
+      dimpleFillImage = dimpleFillImage?.imageWithColor(dimpleColor)
+      setNeedsDisplay()
+    }
+  }
 
-  /**
-  init:
+  // MARK: - Styles
 
-  - parameter aDecoder: NSCoder
-  */
-  public required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder); setup() }
+  public var dimpleStyle: CGBlendMode = .Normal {
+    didSet {
+      guard dimpleStyle != oldValue else { return }
+      setNeedsDisplay()
+    }
+  }
 
-  public var dimpleStyle: CGBlendMode  {
-    get { return wheelLayer.dimpleStyle }
-    set { wheelLayer.dimpleStyle = newValue }
+  public var dimpleFillStyle: CGBlendMode = .Normal {
+    didSet {
+      guard dimpleFillStyle != oldValue else { return }
+      setNeedsDisplay()
+    }
   }
 
   @IBInspectable public var dimpleStyleString: String {
@@ -157,61 +82,198 @@ import UIKit
     set { dimpleStyle = CGBlendMode(stringValue: newValue) }
   }
 
-  public var dimpleFillStyle: CGBlendMode {
-    get { return wheelLayer.dimpleFillStyle }
-    set { wheelLayer.dimpleFillStyle = newValue }
-  }
-
   @IBInspectable public var dimpleFillStyleString: String {
     get { return dimpleFillStyle.stringValue }
     set { dimpleFillStyle = CGBlendMode(stringValue: newValue) }
   }
 
-  @IBInspectable public var wheelImage: UIImage? {
-    get { return wheelLayer.wheelImage }
-    set { wheelLayer.wheelImage = newValue }
-  }
+  // MARK: - Drawing
 
-  @IBInspectable public var wheelColor: UIColor {
-    get { return wheelLayer.wheelColor }
-    set { wheelLayer.wheelColor = newValue }
-  }
+  private var angle: CGFloat = 0 { didSet { setNeedsDisplay() } }
+  private var wheelCenter: CGPoint = .zero
 
-  @IBInspectable public var dimpleImage: UIImage? {
-    get { return wheelLayer.dimpleImage }
-    set { wheelLayer.dimpleImage = newValue }
-  }
+  /**
+  drawRect:
 
-  @IBInspectable public var dimpleFillImage: UIImage? {
-    get { return wheelLayer.dimpleFillImage }
-    set { wheelLayer.dimpleFillImage = newValue }
-  }
+  - parameter rect: CGRect
+  */
+  public override func drawRect(rect: CGRect) {
+    let context = UIGraphicsGetCurrentContext()
+    CGContextSaveGState(context)
+    CGContextTranslateCTM(context, half(rect.width), half(rect.height))
+    CGContextRotateCTM(context, angle)
+    CGContextTranslateCTM(context, -half(rect.width), -half(rect.height))
 
-  @IBInspectable public var dimpleColor:  UIColor {
-    get { return wheelLayer.dimpleColor }
-    set { wheelLayer.dimpleColor = newValue }
-  }
-
-  private var thetaOffset: CGFloat = 0
-  public var revolutions: Float { return Float((theta - thetaOffset) / (π * 2)) }
-
-  @IBInspectable public var theta: CGFloat = 0 {
-    didSet {
-      wheelLayer.setAffineTransform(CGAffineTransform(angle: theta))
+    let baseFrame = rect.centerInscribedSquare
+    if let wheelBase = wheelImage {
+      wheelBase.drawInRect(baseFrame)
+    } else {
+      wheelColor.setFill()
+      UIBezierPath(ovalInRect: baseFrame).fill()
     }
+
+
+    let dimpleSize = CGSize(square: baseFrame.height * 0.25)
+    let dimpleFrame = CGRect(origin: CGPoint(x: baseFrame.midX - half(dimpleSize.width), y: baseFrame.minY + 10), size: dimpleSize)
+    if let dimple = dimpleImage, dimpleFill = dimpleFillImage {
+
+      UIBezierPath(ovalInRect: dimpleFrame).addClip()
+      dimple.drawInRect(dimpleFrame, blendMode: dimpleStyle, alpha: 1)
+
+      let dimpleFillFrame = dimpleFrame.insetBy(dx: 1, dy: 1)
+
+      UIBezierPath(ovalInRect: dimpleFillFrame.insetBy(dx: 1, dy: 1)).addClip()
+      dimpleFill.drawInRect(dimpleFillFrame, blendMode: dimpleFillStyle, alpha: 1)
+
+    } else {
+      dimpleColor.setFill()
+      UIBezierPath(ovalInRect: dimpleFrame).fill()
+    }
+
+    CGContextRestoreGState(context)
   }
+
+  // MARK: - Behavior
+
+  @IBInspectable public var confineTouchToBounds: Bool = false
+  @IBInspectable public var beginResetsRevolutions: Bool = true
+
+  // MARK: - Values
+
+  public var revolutions: Float { return Float(theta / (π * 2)) }
+
+  @IBInspectable public var theta: CGFloat = 0
+
+  // MARK: - Touches
 
   private var touchPath = UIBezierPath()
-
+  private var touchOffset: CGFloat = 0
 
   /** updateTouchPath */
   private func updateTouchPath() {
-    wheelLayer.frame = layer.bounds
-    touchPath = UIBezierPath(ovalInRect: bounds.centerInscribedSquare)
+    let square = bounds.centerInscribedSquare
+    touchPath = UIBezierPath(ovalInRect: square)
+    let outterRadius = half(square.width)
+    let innerRadius = square.width * 0.125
+    touchPath.moveToPoint(CGPoint(x: square.minX + outterRadius + innerRadius, y: square.minY + outterRadius))
+    touchPath.usesEvenOddFillRule = true
+    touchPath.addArcWithCenter(CGPoint(x: square.midX, y: square.midY),
+                        radius: innerRadius,
+                    startAngle: 0,
+                      endAngle: π * 2,
+                     clockwise: true)
   }
 
   public override var bounds: CGRect { didSet { updateTouchPath() } }
   public override var frame: CGRect { didSet { updateTouchPath() } }
+
+
+  /**
+  angleForTouchLocation:withCenter:direction:
+
+  - parameter location: CGPoint
+
+  - returns: (Angle, Quadrant)
+  */
+  private func angleForTouchLocation(location: CGPoint) -> CGFloat {
+
+    let delta = location - wheelCenter
+    let quadrant = Quadrant(point: location, center: wheelCenter)
+    let (x, y) = delta.absolute.unpack
+    let h = sqrt(pow(x, 2) + pow(y, 2))
+    var a = acos(x / h)
+
+    // Adjust the angle for the quadrant
+    switch quadrant {
+      case .I: a = π * 2 - a
+      case .II: a += π
+      case .III: a = π - a
+      case .IV: break
+    }
+
+    // Adjust the angle for the rotated dimple
+    a += π * 0.5
+
+    // Adjust for initial touch offset
+    a += touchOffset
+
+    return a
+  }
+
+  private var innerLastTouch = false
+
+  /**
+  updateForTouch:
+
+  - parameter touch: UITouch
+  */
+  private func updateForTouch(touch: UITouch, withEvent event: UIEvent? = nil) {
+
+    guard touchPath.containsPoint(touch.locationInView(self)) else { innerLastTouch = true; return }
+
+    if innerLastTouch {
+      touchOffset = 0
+      let touchAngle = angleForTouchLocation(touch.locationInView(nil))
+      touchOffset = (angle - touchAngle) % (π * 2)
+      self.geometry = nil
+      innerLastTouch = false
+    }
+
+    let location = touch.locationInView(nil)
+    angle = angleForTouchLocation(location)
+
+    guard let previousGeometry = self.geometry else {
+      self.geometry = Geometry(location: location, angle: angle, offset: touchOffset)
+      return
+    }
+
+    guard location != previousGeometry.location else { return }
+
+    let trending: Direction? = previousGeometry.direction == .Unknown ? nil : previousGeometry.direction
+    let direction = Direction(from: previousGeometry.location, to: location, about: wheelCenter, trending: trending)
+
+    let geometry = Geometry(location: location, angle: angle, offset: touchOffset, direction: direction)
+
+
+    var deltaAngle = abs(angle - previousGeometry.angle)
+    switch (previousGeometry.quadrant, geometry.quadrant) {
+      case (.IV, .I), (.I, .IV): deltaAngle -= π * 2
+      default:                   break
+    }
+
+    guard !isnan(deltaAngle) else { return }
+    switch direction {
+      case .Clockwise:        theta += deltaAngle
+      case .CounterClockwise: theta -= deltaAngle
+      case .Unknown:          return
+    }
+
+    self.geometry = geometry
+  }
+
+  private var geometry: Geometry?
+
+  // MARK: - Supporting types
+
+  private struct Angle {
+    init(_ a: CGFloat) { counterClockwise = a }
+    var clockwise: CGFloat { return π * 2 - counterClockwise }
+    var counterClockwise: CGFloat
+  }
+
+  private struct Geometry {
+    let location: CGPoint
+    let angle: CGFloat
+    let offset: CGFloat
+    var quadrant: Quadrant { return Quadrant(angle: angle - offset - π * 0.5) }
+    let direction: Direction
+    init(location: CGPoint, angle: CGFloat, offset: CGFloat = 0, direction: Direction = .Unknown) {
+      self.location = location
+      self.angle = angle
+      self.direction = direction
+      self.offset = offset
+    }
+  }
 
   private enum Direction: String {
     case Clockwise, CounterClockwise, Unknown
@@ -225,203 +287,102 @@ import UIKit
     - parameter trending: Direction?
     */
     init(from: CGPoint, to: CGPoint, about: CGPoint, trending: Direction?) {
-      let (x1, y1) = from.unpack
-      let (x2, y2) = to.unpack
-      switch (y2 - y1) / (x2 - x1) {
+      let direction: Direction
+      let fromQuadrant = Quadrant(point: from, center: about)
+      let toQuadrant = Quadrant(point: to, center: about)
 
-      case 0 where x2 < x1:
-
-        switch about.unpack {
-        case let (_, yc) where y2 <= yc:
-//          print("case 0 where x2 < x1 && y2 <= yc: x2 = \(x2); y2 = \(y2) CounterClockwise")
-          self = .CounterClockwise
-        case let (_, yc) where y2 >= yc:
-//          print("case 0 where x2 < x1 && y2 >= yc: x2 = \(x2); y2 = \(y2) Clockwise")
-          self = .Clockwise
-        default:
-//          let result = trending ?? .Clockwise
-//          print("case 0 where x2 < x1 && default: x2 = \(x2); y2 = \(y2) \(result.rawValue)")
-          self = trending ?? .Clockwise
-        }
-
-      case 0 where x2 >= x1:
-
-        switch about.unpack {
-        case let (_, yc) where y2 <= yc:
-//          print("case 0 where x2 >= x1 && y2 <= yc: x2 = \(x2); y2 = \(y2) Clockwise")
-          self = .Clockwise
-        case let (_, yc) where y2 >= yc:
-//          print("case 0 where x2 >= x1 && y2 >= yc: x2 = \(x2); y2 = \(y2) CounterClockwise")
-          self = .CounterClockwise
-        default:
-//          let result = trending ?? .CounterClockwise
-//          print("case 0 where x2 >= x1 && default: x2 = \(x2); y2 = \(y2) \(result.rawValue)")
-          self = trending ?? .CounterClockwise
-        }
-
-      case CGFloat.infinity where y2 <= y1:
-
-        switch about.unpack {
-        case let (xc, _) where x2 <= xc:
-//          print("case CGFloat.infinity where y2 <= y1 && x2 <= xc: x2 = \(x2); y2 = \(y2) Clockwise")
-          self = .Clockwise
-        case let (xc, _) where x2 >= xc:
-//          print("case CGFloat.infinity where y2 <= y1 && x2 >= xc: x2 = \(x2); y2 = \(y2) CounterClockwise")
-          self = .CounterClockwise
-        default:
-//          let result = trending ?? .CounterClockwise
-//          print("case CGFloat.infinity where y2 <= y1 && default: x2 = \(x2); y2 = \(y2) \(result.rawValue)")
-          self = trending ?? .CounterClockwise
-        }
-
-      case CGFloat.infinity where y2 >= y1:
-
-        switch about.unpack {
-        case let (xc, _) where x2 <= xc:
-//          print("case CGFloat.infinity where y2 >= y1: x2 = \(x2); y2 = \(y2) CounterClockwise")
-          self = .CounterClockwise
-        case let (xc, _) where x2 >= xc:
-//          print("case CGFloat.infinity where y2 >= y1: x2 = \(x2); y2 = \(y2) CounterClockwise")
-          self = .Clockwise
-        default:
-//          let result = trending ?? .Clockwise
-//          print("case CGFloat.infinity where y2 >= y1: x2 = \(x2); y2 = \(y2) \(result.rawValue)")
-          self = trending ?? .Clockwise
-        }
-
-      case let s where s.isSignMinus:
-
-        switch about.unpack {
-        case let (xc, yc) where x2 <= xc && y2 >= yc:
-//          print("case let s where s.isSignMinus && x2 <= xc && y2 >= yc: x2 = \(x2); y2 = \(y2) CounterClockwise")
-          self = .CounterClockwise
-        case let (xc, yc) where x2 <= xc && y2 <= yc:
-//          let result = trending ?? .Clockwise
-//          print("case let s where s.isSignMinus && x2 <= xc && y2 <= yc: x2 = \(x2); y2 = \(y2) \(result.rawValue)")
-          self = trending ?? .Clockwise
-        case let (xc, yc) where x2 >= xc && y2 >= yc:
-//          let result = trending ?? .CounterClockwise
-//          print("case let s where s.isSignMinus && x2 >= xc && y2 >= yc: x2 = \(x2); y2 = \(y2) \(result.rawValue)")
-          self = trending ?? .CounterClockwise
-        default:
-//          let result = trending ?? .Clockwise
-//          print("case let s where s.isSignMinus && default: x2 = \(x2); y2 = \(y2) \(result.rawValue)")
-          self = trending ?? .Clockwise
-        }
-
+      switch (fromQuadrant, toQuadrant) {
+      case (.I, .II), (.II, .III), (.III, .IV), (.IV, .I):
+        direction = .CounterClockwise
+      case (.I, .IV), (.IV, .III), (.III, .II), (.II, .I):
+        direction = .Clockwise
       default:
-        switch about.unpack {
-        case let (xc, yc) where x2 <= xc && y2 >= yc:
-//          print("<default && x2 <= xc && y2 >= yc> x2 = \(x2); y2 = \(y2) CounterClockwise")
-          self = .Clockwise
-        case let (xc, yc) where x2 <= xc && y2 <= yc:
-//          print("<default && x2 <= xc && y2 <= yc> x2 = \(x2); y2 = \(y2) Clockwise")
-          self = .Clockwise
-        case let (xc, yc) where x2 >= xc && y2 >= yc:
-////          let result = trending ?? .CounterClockwise
-//          print("<default && x2 >= xc && y2 >= yc> x2 = \(x2); y2 = \(y2) \(result.rawValue)")
-          self = trending ?? .CounterClockwise
-        default:
-//          let result = trending ?? .CounterClockwise
-//          print("<default && default> x2 = \(x2); y2 = \(y2) \(result.rawValue)")
-          self = trending ?? .Clockwise
-        }
+        switch (from.unpack, to.unpack) {
 
+        case let ((x1, y1), (x2, y2)) where y2 == y1 && x2 < x1:
+          switch toQuadrant { case .I, .II: direction = .CounterClockwise; default: direction = .Clockwise }
+
+        case let ((x1, y1), (x2, y2)) where y2 == y1 && x2 >= x1:
+          switch toQuadrant { case .I, .II: direction = .Clockwise; default: direction = .CounterClockwise }
+
+        case let ((x1, y1), (x2, y2)) where x2 == x1 && y2 <= y1:
+          switch toQuadrant { case .II, .III: direction = .Clockwise; default: direction = .CounterClockwise }
+
+        case let ((x1, y1), (x2, y2)) where x2 == x1 && y2 >= y1:
+          switch toQuadrant { case .II, .III: direction = .CounterClockwise; default: direction = .Clockwise }
+
+        case let ((x1, y1), (x2, y2)) where y2 < y1 && x2 < x1:
+          switch toQuadrant {
+          case .III: direction = .Clockwise
+          case .I:   direction = .CounterClockwise
+          case .II:  direction = trending ?? .Unknown
+          case .IV:  direction = trending ?? .Unknown
+          }
+
+        case let ((x1, y1), (x2, y2)) where y2 < y1 && x2 > x1:
+          switch toQuadrant {
+          case .III: direction = trending ?? .CounterClockwise
+          case .I:   direction = trending ?? .Clockwise
+          case .II:  direction = .Clockwise
+          case .IV:  direction = .CounterClockwise
+          }
+
+        case let ((x1, y1), (x2, y2)) where y2 > y1 && x2 < x1:
+          switch toQuadrant {
+          case .III: direction = trending ?? .Unknown
+          case .I:   direction = trending ?? .Unknown
+          case .II:  direction = .CounterClockwise
+          case .IV:  direction = .Clockwise
+          }
+
+        case let ((x1, y1), (x2, y2)) where y2 > y1 && x2 > x1:
+          switch toQuadrant {
+          case .III: direction = trending ?? .Unknown
+          case .I:   direction = trending ?? .Unknown
+          case .II:  direction = .Clockwise
+          case .IV:  direction = .CounterClockwise
+          }
+
+        default:
+          direction = .Unknown
+        }
       }
 
+      self = direction
     }
   }
-
-  private var geometry: Geometry?
-
-  private struct Angle {
-    init(_ a: CGFloat) { counterClockwise = a }
-    var clockwise: CGFloat { return π * 2 - counterClockwise }
-    var counterClockwise: CGFloat
-    func angleForDirection(direction: Direction) -> CGFloat { return direction == .Clockwise ? clockwise : counterClockwise }
-  }
-
-  private struct Geometry { var location: CGPoint; var angle: Angle; var quadrant: Quadrant; var direction: Direction }
 
   private enum Quadrant: String {
     case I, II, III, IV
+
+    /**
+    initWithPoint:center:
+
+    - parameter point: CGPoint
+    - parameter center: CGPoint
+    */
     init(point: CGPoint, center: CGPoint) {
       switch (point.unpack, center.unpack) {
-      case let ((px, py), (cx, cy)) where px >= cx && py <= cy: self = .I
-      case let ((px, py), (cx, cy)) where px <= cx && py <= cy: self = .II
-      case let ((px, py), (cx, cy)) where px <= cx && py >= cy: self = .III
-      default:                                                  self = .IV
+        case let ((px, py), (cx, cy)) where px >= cx && py <= cy: self = .I
+        case let ((px, py), (cx, cy)) where px <= cx && py <= cy: self = .II
+        case let ((px, py), (cx, cy)) where px <= cx && py >= cy: self = .III
+        default:                                                  self = .IV
       }
     }
-  }
 
-  /**
-  angleForTouchLocation:withCenter:direction:
+    /**
+    initWithAngle:
 
-  - parameter location: CGPoint
-  - parameter center: CGPoint
-
-  - returns: (Angle, Quadrant)
-  */
-  private func angleForTouchLocation(location: CGPoint, withCenter center: CGPoint) -> (Angle, Quadrant) {
-
-    let delta = location - center
-    let quadrant = Quadrant(point: location, center: center)
-    let (x, y) = delta.absolute.unpack
-    let h = sqrt(pow(x, 2) + pow(y, 2))
-    var a = acos(x / h)
-    switch quadrant {
-      case .I: break
-      case .II: a = π * 0.5 - a + π * 0.5
-      case .III: a += π
-      case .IV: a = π * 0.5 - a + π * 1.5
+    - parameter angle: CGFloat
+    */
+    init(angle: CGFloat) {
+      switch angle {
+        case 0 ... (π * 0.5): self = .IV
+        case (π * 0.5) ... π: self = .III
+        case π ... (π * 1.5): self = .II
+        default:              self = .I
+      }
     }
-
-    return (Angle(a), quadrant)
-  }
-
-  /**
-  updateForTouch:
-
-  - parameter touch: UITouch
-  */
-  private func updateForTouch(touch: UITouch) {
-
-
-    let location = touch.locationInView(nil)
-    let center = window!.convertPoint(self.center, fromView: superview)
-    var (angle, quadrant) = angleForTouchLocation(location, withCenter: center)
-
-    guard let previousGeometry = geometry else {
-      geometry = Geometry(location: location, angle: angle, quadrant: quadrant, direction: .Unknown)
-      return
-    }
-
-    guard location != previousGeometry.location else { return }
-
-    let trending: Direction? = previousGeometry.direction == .Unknown ? nil : previousGeometry.direction
-    let direction = Direction(from: previousGeometry.location, to: location, about: center, trending: trending)
-
-    if case (.IV, .I) = (previousGeometry.quadrant, quadrant) { angle.counterClockwise += π * 2 }
-
-    let deltaAngle = angle - previousGeometry.angle
-    backgroundDispatch {
-      let currentGeometry = Geometry(location: location, angle: angle, quadrant: quadrant, direction: direction)
-      var string = "<updateForTouch>\n\tcurrent geometry: \(currentGeometry)\n\tprevious geometry: \(previousGeometry)\n"
-      string += "\tcenter: (\(center.x.rounded(2)), \(center.y.rounded(2)))\n\tdeltaAngle: \(deltaAngle)"
-      logDebug(string)
-    }
-
-    switch direction {
-      case .Clockwise: theta += abs(deltaAngle.clockwise)
-      case .CounterClockwise: theta -= abs(deltaAngle.counterClockwise)
-      case .Unknown: fatalError("We should know which direction we are moving")
-    }
-
-    geometry?.angle = angle
-    geometry?.direction = direction
-    geometry?.location = location
-    geometry?.quadrant = quadrant
   }
 
   /**
@@ -434,8 +395,12 @@ import UIKit
   */
   public override func beginTrackingWithTouch(touch: UITouch, withEvent event: UIEvent?) -> Bool {
     guard touchPath.containsPoint(touch.locationInView(self)) else { return false }
-    if beginResetsRevolutions { thetaOffset = theta }
+    if beginResetsRevolutions { theta = 0 }
     geometry = nil
+    touchOffset = 0
+    wheelCenter = window!.convertPoint(self.center, fromView: superview)
+    let touchAngle = angleForTouchLocation(touch.locationInView(nil))
+    touchOffset = (angle - touchAngle) % (π * 2)
     updateForTouch(touch)
     return true
   }
@@ -443,7 +408,7 @@ import UIKit
   #if TARGET_INTERFACE_BUILDER
   @IBInspectable public override var enabled: Bool { didSet {} }
   #endif
-  
+
   /**
   continueTrackingWithTouch:withEvent:
 
@@ -454,7 +419,7 @@ import UIKit
   */
   public override func continueTrackingWithTouch(touch: UITouch, withEvent event: UIEvent?) -> Bool {
     guard !confineTouchToBounds || touchPath.containsPoint(touch.locationInView(self)) else { return false }
-    updateForTouch(touch)
+    updateForTouch(touch, withEvent: event)
     sendActionsForControlEvents(.ValueChanged)
     return true
   }
@@ -467,7 +432,6 @@ import UIKit
   */
   public override func endTrackingWithTouch(touch: UITouch?, withEvent event: UIEvent?) {
     guard let touch = touch else { return }
-
     guard !confineTouchToBounds || touchPath.containsPoint(touch.locationInView(self)) else { return }
     updateForTouch(touch)
   }
@@ -478,6 +442,7 @@ import UIKit
   - parameter event: UIEvent?
   */
   public override func cancelTrackingWithEvent(event: UIEvent?) { sendActionsForControlEvents(.TouchCancel) }
+
 }
 
 private func -(lhs: ScrollWheel.Angle, rhs: ScrollWheel.Angle) -> ScrollWheel.Angle {
@@ -492,7 +457,12 @@ extension ScrollWheel.Angle: CustomStringConvertible {
 
 extension ScrollWheel.Geometry: CustomStringConvertible {
   var description: String {
-    return "location: (\(location.x.rounded(2)); quadrant: \(quadrant.rawValue); direction: \(direction.rawValue); angle: \(angle)"
+    return "; ".join(
+      "location: (\(location.x.rounded(2)), \(location.y.rounded(2)))",
+      "quadrant: \(quadrant.rawValue)",
+      "direction: \(direction.rawValue)",
+      "angle: \(angle)"
+    )
   }
 }
 

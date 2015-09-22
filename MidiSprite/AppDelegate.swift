@@ -22,6 +22,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     let context = UInt(LOG_CONTEXT_FILE)
     let directory = MSLog.defaultLogDirectory()
     MSLog.addDefaultFileLoggerForContext(context, directory: directory)
+    LogManager.setDefaultLogLevel(.Debug)
     logDebug("main bundle: '\(NSBundle.mainBundle().bundlePath)'\ndefault log directory: '\(directory)'")
   }
 

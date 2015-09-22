@@ -166,7 +166,6 @@ final class MIDIPlayerViewController: UIViewController {
   fileTrackNameShowAction:
   */
   @IBAction func fileTrackNameShowAction() {
-    logDebug()
     UIView.animateWithDuration(0.25,
                     animations: { self.fileTrackNameActionButtonWidthConstraint.active = false },
                     completion: {_ in self.fileTrackNameSwipeGesture.enabled = false
@@ -177,7 +176,7 @@ final class MIDIPlayerViewController: UIViewController {
   fileTrackNameAction:
   */
   @IBAction func fileTrackNameAction() {
-    logDebug()
+    
     if state ∋ .FileLoaded { Sequencer.currentFile = nil }
     dismissFileTrackNameAction()
   }
@@ -186,7 +185,7 @@ final class MIDIPlayerViewController: UIViewController {
   dismissFileTrackNameAction:
   */
   @IBAction func dismissFileTrackNameAction() {
-    logDebug()
+    
     UIView.animateWithDuration(0.25,
                     animations: { self.fileTrackNameActionButtonWidthConstraint.active = true },
                     completion: {_ in self.fileTrackNameDismissiveSwipeGesture.enabled = false
@@ -469,7 +468,7 @@ final class MIDIPlayerViewController: UIViewController {
       guard isViewLoaded() && state != oldValue else { return }
       guard state ∌ [.Playing, .Paused] else { fatalError("State invalid: cannot be both playing and paused") }
 
-      logDebug("didSet…old state: \(oldValue); new state: \(state)")
+      logVerbose("didSet…old state: \(oldValue); new state: \(state)")
 
       let modifiedState = state ⊻ oldValue
 

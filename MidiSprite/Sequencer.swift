@@ -107,7 +107,7 @@ final class Sequencer {
 
   static var currentFile: NSURL? {
     didSet {
-      logDebug("didSet… oldValue: \(oldValue); newValue: \(currentFile)")
+      logVerbose("didSet… oldValue: \(oldValue); newValue: \(currentFile)")
       guard oldValue != currentFile else { return }
       if let currentFile = currentFile {
         do {
@@ -161,7 +161,7 @@ final class Sequencer {
         case [.Jogging]:          notification = jogging   ? .DidBeginJogging    : .DidEndJogging
         default:                  notification = nil
       }
-      logDebug("didSet…old state: \(oldValue); new state: \(state); notification: \(notification)")
+      logVerbose("didSet…old state: \(oldValue); new state: \(state); notification: \(notification)")
       notification?.post()
     }
   }

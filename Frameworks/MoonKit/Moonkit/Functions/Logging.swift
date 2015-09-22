@@ -122,8 +122,11 @@ public class LogManager {
   - parameter file: String = __FILE__
   */
   public class func setLogLevel(level: LogManager.LogLevel, forFile file: String = __FILE__) {
-    print("file = \(file)")
     registeredLogLevels[file] = level
+  }
+
+  public class func setDefaultLogLevel(level: LogManager.LogLevel) {
+    logLevel = level
   }
 
   public static func addConsoleLoggers() {

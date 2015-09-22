@@ -2671,6 +2671,7 @@
 			buildSettings = {
 				ENABLE_TESTABILITY = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_SWIFT_FLAGS = "-DDebug";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -2678,6 +2679,7 @@
 		C2CE887018138C4900555D63 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				OTHER_SWIFT_FLAGS = "-DRelease";
 				SDKROOT = iphoneos;
 			};
 			name = Release;
