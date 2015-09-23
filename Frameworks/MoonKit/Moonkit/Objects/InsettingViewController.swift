@@ -123,7 +123,7 @@ public class InsettingViewController: UIViewController {
   private weak var childView: UIView? {
     didSet {
       guard isViewLoaded(),  let childView = childView, contentView = contentView else { return }
-      childView.nametag = "childView"
+      childView.identifier = "childView"
       contentView.addSubview(childView)
       childView.translatesAutoresizingMaskIntoConstraints = false
       view.setNeedsUpdateConstraints()
@@ -147,21 +147,21 @@ public class InsettingViewController: UIViewController {
   /** loadView */
   public override func loadView() {
     view = UIView(frame: UIScreen.mainScreen().bounds)
-    view.nametag = "view"
+    view.identifier = "view"
 
     let effectView = UIVisualEffectView(effect: UIBlurEffect(style: .Dark))
     effectView.translatesAutoresizingMaskIntoConstraints = false
-    effectView.nametag = "effectView"
+    effectView.identifier = "effectView"
 
     let effectViewContent = effectView.contentView
     effectViewContent.translatesAutoresizingMaskIntoConstraints = false
-    effectViewContent.nametag = "effectViewContent"
+    effectViewContent.identifier = "effectViewContent"
 
     view.addSubview(effectView)
     self.effectView = effectView
 
     let contentView = UIView(autolayout: true)
-    contentView.nametag = "contentView"
+    contentView.identifier = "contentView"
     effectView.contentView.addSubview(contentView)
     self.contentView = contentView
 

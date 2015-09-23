@@ -22,13 +22,13 @@ public struct PseudoConstraint {
 
   private mutating func updateFirstItem() {
     if let f = firstObject as? Named { firstItem = itemNameFromString(f.name) }
-    else if let f = firstObject as? UIView, nametag = f.nametag { firstItem = itemNameFromString(nametag) }
+    else if let f = firstObject as? UIView, nametag = f.identifier { firstItem = itemNameFromString(nametag) }
     else { firstItem = firstObject != nil ? "item1" : nil }
   }
 
   private mutating func updateSecondItem() {
     if let f = secondObject as? Named { secondItem = itemNameFromString(f.name) }
-    else if let f = secondObject as? UIView, nametag = f.nametag { secondItem = itemNameFromString(nametag) }
+    else if let f = secondObject as? UIView, nametag = f.identifier { secondItem = itemNameFromString(nametag) }
     else { secondItem = secondObject != nil ? "item2" : nil }
   }
 

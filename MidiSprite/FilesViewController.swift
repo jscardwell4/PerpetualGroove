@@ -46,7 +46,8 @@ final class FilesViewController: UIViewController {
     super.viewDidLoad()
     view.translatesAutoresizingMaskIntoConstraints = false
     refreshFiles()
-    logDebug(view.constraints.map({$0.description}).joinWithSeparator("\n"), asynchronous: false)
+    logDebug(view.viewTreeDescription, asynchronous: false)
+//    logDebug(view.constraints.map({$0.description}).joinWithSeparator("\n"), asynchronous: false)
   }
 
   /**
@@ -123,7 +124,7 @@ final class FilesViewController: UIViewController {
 
   /** updateViewConstraints */
   override func updateViewConstraints() {
-    logDebug(view.constraints.map({$0.description}).joinWithSeparator("\n"), asynchronous: false)
+//    logDebug(view.constraints.map({$0.description}).joinWithSeparator("\n"), asynchronous: false)
     if view.constraintsWithIdentifier(constraintID).count == 0 {
       view.constrain([view.width => contentSize.width, view.height => contentSize.height] --> constraintID)
     }

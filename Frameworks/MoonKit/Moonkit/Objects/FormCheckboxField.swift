@@ -26,7 +26,7 @@ public final class FormCheckboxField: FormField {
     guard checkbox == nil else { return checkbox! }
 
     let control = Checkbox(autolayout: true)
-    control.nametag = "checkbox"
+    control.identifier = "checkbox"
     control.userInteractionEnabled = editable
     control.checked = _value
     control.addTarget(self, action: "valueDidChange:", forControlEvents: .ValueChanged)

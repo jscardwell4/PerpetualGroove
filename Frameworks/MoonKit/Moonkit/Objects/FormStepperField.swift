@@ -52,7 +52,7 @@ public final class FormStepperField: FormField {
     guard stepper == nil else { return stepper! }
 
     let control = LabeledStepper(autolayout: true)
-    control.nametag = "stepper"
+    control.identifier = "stepper"
     control.userInteractionEnabled = editable
     control.value = _value
     control.minimumValue = minimumValue

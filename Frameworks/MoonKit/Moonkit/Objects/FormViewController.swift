@@ -59,21 +59,21 @@ public class FormViewController: UIViewController {
   /** loadView */
   public override func loadView() {
     view = UIView(frame: UIScreen.mainScreen().bounds)
-    view.nametag = "view"
+    view.identifier = "view"
 
     let effectView = UIVisualEffectView(effect: UIBlurEffect(style: .Dark))
     effectView.translatesAutoresizingMaskIntoConstraints = false
-    effectView.nametag = "effectView"
+    effectView.identifier = "effectView"
     view.addSubview(effectView)
     self.effectView = effectView
 
     let formView = FormView(form: form, style: .Shadow)
     effectView.contentView.addSubview(formView)
-    formView.nametag = "formView"
+    formView.identifier = "formView"
     self.formView = formView
 
-    let toolbar = UIToolbar.newForAutolayout()
-    toolbar.nametag = "toolbar"
+    let toolbar = UIToolbar(autolayout: true)
+    toolbar.identifier = "toolbar"
     toolbar.setBackgroundImage(UIImage(), forToolbarPosition: .Any, barMetrics: .Default)
     toolbar.tintColor = UIColor(white: 0.5, alpha: 1)
     toolbar.items = [UIBarButtonItem(title: "Cancel", style: .Plain, target: self, action: "cancelAction"),

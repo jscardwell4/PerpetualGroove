@@ -14,10 +14,10 @@ final class TempoViewController: UIViewController {
   @IBOutlet weak var tempoSlider: Slider!
   @IBOutlet weak var metronomeButton: ImageButtonView!
 
-  override func updateViewConstraints() {
-    logDebug(view.constraints.map({$0.description}).joinWithSeparator("\n"), asynchronous: false)
-    super.updateViewConstraints()
-  }
+//  override func updateViewConstraints() {
+//    logDebug(view.constraints.map({$0.description}).joinWithSeparator("\n"), asynchronous: false)
+//    super.updateViewConstraints()
+//  }
 
   /** tempoSliderValueDidChange */
   @IBAction private func tempoSliderValueDidChange() { logDebug(""); Sequencer.tempo = Double(tempoSlider.value) }
@@ -30,7 +30,8 @@ final class TempoViewController: UIViewController {
     super.viewDidLoad()
     tempoSlider.value = Float(Sequencer.tempo)
     metronomeButton.selected = AudioManager.metronome.on
-    logDebug(view.constraints.map({$0.description}).joinWithSeparator("\n"), asynchronous: false)
+//    logDebug(view.constraints.map({$0.description}).joinWithSeparator("\n"), asynchronous: false)
+    logDebug(view.viewTreeDescription, asynchronous: false)
   }
 
 }

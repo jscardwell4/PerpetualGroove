@@ -53,9 +53,9 @@ import UIKit
     setContentCompressionResistancePriority(750, forAxis: .Horizontal)
     setContentCompressionResistancePriority(UILayoutPriorityRequired, forAxis: .Vertical)
     translatesAutoresizingMaskIntoConstraints = false
-    nametag = "picker"
+    identifier = "picker"
 
-    collectionView.nametag = "collectionView"
+    collectionView.identifier = "collectionView"
     layout.delegate = self
     collectionView.scrollEnabled = editing
     collectionView.translatesAutoresizingMaskIntoConstraints = false

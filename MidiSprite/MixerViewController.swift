@@ -32,7 +32,8 @@ final class MixerViewController: UICollectionViewController {
 
     notificationReceptionist = NotificationReceptionist(callbacks: callbacks)
 
-    logDebug(view.constraints.map({$0.description}).joinWithSeparator("\n"), asynchronous: false)
+    logDebug(view.viewTreeDescription, asynchronous: false)
+//    logDebug(view.constraints.map({$0.description}).joinWithSeparator("\n"), asynchronous: false)
 
   }
 
@@ -50,7 +51,7 @@ final class MixerViewController: UICollectionViewController {
     view.constrain([view.width => viewWidth -!> 750, view.height => viewHeight -!> 750] --> constraintID)
     view.constrain([𝗩|collectionView!|𝗩, 𝗛|collectionView!|𝗛] --> constraintID)
     super.updateViewConstraints()
-    logDebug(view.constraints.map({$0.description}).joinWithSeparator("\n"), asynchronous: false)
+//    logDebug(view.constraints.map({$0.description}).joinWithSeparator("\n"), asynchronous: false)
   }
 
   /** updateTracks */
@@ -58,7 +59,7 @@ final class MixerViewController: UICollectionViewController {
     guard let collectionView = collectionView else { return }
     let itemCount = collectionView.numberOfItemsInSection(1)
     let busCount = Sequencer.sequence.instrumentTracks.count
-    if itemCount != busCount && view.constraintsWithIdentifier(constraintID).count > 0 {
+    if itemCount != busCount {
       view.removeConstraints(view.constraintsWithIdentifier(constraintID))
       view.setNeedsUpdateConstraints()
       collectionView.reloadData()

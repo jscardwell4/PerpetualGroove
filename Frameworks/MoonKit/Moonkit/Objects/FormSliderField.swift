@@ -60,7 +60,7 @@ public final class FormSliderField: FormField {
 
     let control = LabeledSlider(autolayout: true)
     control.precision = precision
-    control.nametag = "slider"
+    control.identifier = "slider"
     control.userInteractionEnabled = editable
     control.minimumValue = min
     control.maximumValue = max

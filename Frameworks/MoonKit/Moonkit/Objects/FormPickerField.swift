@@ -55,7 +55,7 @@ public final class FormPickerField: FormField {
     else if let images = choices as? [UIImage] { control = InlinePickerView(images: images) }
     else { fatalError("choices must be an array of String or UIImage objects") }
 
-    control.nametag = "picker"
+    control.identifier = "picker"
     control.editing = editable
     control.didSelectItem = { [unowned self] _, idx in self._value = idx; self.changeHandler?(self) }
 

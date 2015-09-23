@@ -36,7 +36,7 @@ final class MIDIPlayerViewController: UIViewController {
 
     initializeReceptionist()
 
-    logDebug(view.viewTreeDescription(), "\n".join(view.constraints.map({$0.description})), separator: "\n\n", asynchronous: false)
+    logDebug(view.viewTreeDescription,/* "\n".join(view.constraints.map({$0.description})), separator: "\n\n",*/ asynchronous: false)
 
   }
 
@@ -44,7 +44,8 @@ final class MIDIPlayerViewController: UIViewController {
   override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
 
-    logDebug(view.constraints.map({$0.description}).joinWithSeparator("\n"), asynchronous: false)
+    logDebug(view.viewTreeDescription, asynchronous: false)
+//    logDebug(view.constraints.map({$0.description}).joinWithSeparator("\n"), asynchronous: false)
 
     /**
     Helper function for adjusting the `xOffset` property of the popover views

@@ -9,7 +9,78 @@
 import Foundation
 import UIKit
 
+private let identifierKey = UnsafePointer<Void>()
+
 public extension UIView {
+
+  @IBInspectable public var identifier: String? {
+    get { return objc_getAssociatedObject(self, identifierKey) as? String }
+    set { objc_setAssociatedObject(self, identifierKey, newValue, .OBJC_ASSOCIATION_COPY_NONATOMIC) }
+  }
+
+  public var viewTreeDescription: String { return viewTreeDescriptionWithProperties() }
+
+  /**
+  viewTreeDescriptionWithProperties:
+
+  - parameter properties: String ...
+
+  - returns: String
+  */
+  public func viewTreeDescriptionWithProperties(properties: String ...) -> String {
+
+    var result = ""
+
+    /**
+    Helper to recursively process view hierarchy
+
+    - parameter view: UIView
+    - parameter indent: Int
+    */
+    func dumpView(view: UIView, indent: Int) {
+
+      result += "-" * (indent * 2)
+
+      var propertyValues: [String:String] = [:]
+
+      for property in properties {
+        let value: AnyObject?
+        switch view.respondsToSelector(NSSelectorFromString(property)) {
+          case true: value = view.valueForKey(property)
+          case false where property.characters.contains("."): value = view.valueForKeyPath(property)
+          case false: continue
+        }
+
+        guard value != nil
+           && (!value!.respondsToSelector("count") || value!.valueForKey("count") as! Int != 0) else { continue }
+
+        propertyValues[property] = String(value)
+      }
+
+      let propertyValuesString = "\n".join(propertyValues.map({"\($0): \($1)"}))
+      let depthString = "[" + String(indent).pad(" ", count: 2, type: .Prefix) + "] "
+      let classString = "\(view.dynamicType.self)"
+      let addressString = "(\(unsafeAddressOf(view)))"
+      var viewString = depthString + classString + addressString
+      if let identifier = view.identifier { viewString += "<'\(identifier)'>" }
+      if !propertyValuesString.isEmpty { viewString += ":\n" + propertyValuesString.indentedBy(2 * (indent + 1)) }
+      viewString += "\n"
+      result += viewString
+      for subview in view.subviews { dumpView(subview, indent: indent + 1) }
+    }
+
+    dumpView(self, indent: 0)
+
+    return result
+  }
+
+  public var snapshot: UIImage {
+    UIGraphicsBeginImageContextWithOptions(bounds.size, false, 0)
+    drawViewHierarchyInRect(bounds, afterScreenUpdates: false)
+    let image = UIGraphicsGetImageFromCurrentImageContext()
+    UIGraphicsEndImageContext()
+    return image
+  }
 
   /**
   blurredSnapshotWithRadius:tintColor:saturationDeltaFactor:maskImage:
@@ -26,10 +97,10 @@ public extension UIView {
         saturationDeltaFactor factor: CGFloat = 1,
                     maskImage: UIImage? = nil) -> UIImage
   {
-    return snapshot().applyBlurWithRadius(radius,
-                                tintColor: tintColor,
-                    saturationDeltaFactor: factor,
-                                maskImage: maskImage)
+    return snapshot.applyBlurWithRadius(radius,
+                              tintColor: tintColor,
+                  saturationDeltaFactor: factor,
+                              maskImage: maskImage)
   }
 
   // MARK: - Initializers
@@ -51,9 +122,10 @@ public extension UIView {
 
   - returns: String
   */
-  public func framesDescription() -> String {
-  	return self.viewTreeDescriptionWithProperties(["frame"])
-      .stringByReplacingRegEx("[{]\\s*\n\\s*frame = \"NSRect:\\s*([^\"]+)\";\\s*\n\\s*[}]", withString: " { frame=$1 }")
+  public var framesDescription: String {
+  	return viewTreeDescriptionWithProperties("frame")
+      .stringByReplacingRegEx("[{]\\s*\n\\s*frame = \"NSRect:\\s*([^\"]+)\";\\s*\n\\s*[}]",
+                   withString: " { frame=$1 }")
   }
 
   /**
@@ -63,9 +135,9 @@ public extension UIView {
 
   - returns: String
   */
-  public func descriptionTree(properties: String ...) -> String {
-  	return self.viewTreeDescriptionWithProperties(properties)
-  }
+//  public func descriptionTree(properties: String ...) -> String {
+//  	return viewTreeDescriptionWithProperties(properties)
+//  }
 
   /**
   recursiveConstraintsDescription
@@ -74,8 +146,8 @@ public extension UIView {
   */
   public func recursiveConstraintsDescription() -> String {
     var result = ""
-    if let nametag = nametag {
-      result += "<\(className)(\(nametag)):\(unsafeAddressOf(self))>"
+    if let identifier = identifier {
+      result += "<\(className)(\(identifier)):\(unsafeAddressOf(self))>"
     } else {
       result += "<\(className):\(unsafeAddressOf(self))>"
     }
@@ -96,7 +168,7 @@ public extension UIView {
 
   - returns: UIView?
   */
-  public subscript(nametag: String) -> UIView? { return subviewWithNametag(nametag) }
+  public subscript(nametag: String) -> UIView? { return subviews.filter({$0.identifier == nametag}).first }
 
   // MARK: - Ancestors
 

@@ -26,7 +26,7 @@ public final class FormSwitchField: FormField {
     guard `switch` == nil else { return `switch`! }
 
     let control = UISwitch(autolayout: true)
-    control.nametag = "switch"
+    control.identifier = "switch"
     control.userInteractionEnabled = editable
     control.addTarget(self, action: "valueDidChange:", forControlEvents: .ValueChanged)
     control.on = _value

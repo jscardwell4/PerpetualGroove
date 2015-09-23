@@ -39,7 +39,7 @@ public final class FormTextField: FormField, UITextFieldDelegate {
     guard textField == nil else { return textField! }
 
     let control = UITextField(autolayout: true)
-    control.nametag = "textField"
+    control.identifier = "textField"
     control.userInteractionEnabled = editable
     control.textAlignment = .Right
     control.adjustsFontSizeToFitWidth = true

@@ -27,9 +27,10 @@ public class LabeledSlider: UIControl {
   public override class func requiresConstraintBasedLayout() -> Bool { return true }
 
   public override func updateConstraints() {
-    removeAllConstraints()
     super.updateConstraints()
-    constrain(𝗛|label -- 8 -- slider|𝗛, 𝗩|label|𝗩, 𝗩|slider|𝗩)
+    let id = Identifier(self, "Internal")
+    guard constraintsWithIdentifier(id).count == 0 else { return }
+    constrain([𝗛|label -- 8 -- slider|𝗛, 𝗩|label|𝗩, 𝗩|slider|𝗩] --> id)
   }
 
   public override func intrinsicContentSize() -> CGSize {

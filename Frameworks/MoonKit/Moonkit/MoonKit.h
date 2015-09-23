@@ -84,7 +84,7 @@ FOUNDATION_EXPORT const unsigned char MoonKitVersionString[];
 #import <MoonKit/MSKitProtocols.h>
 #import <MoonKit/UITableView+MSKitAdditions.h>
 #import <MoonKit/MSCheckboxView.h>
-#import <MoonKit/UIView+MSKitAdditions.h>
+//#import <MoonKit/UIView+MSKitAdditions.h>
 #import <MoonKit/MSColorInputView.h>
 #import <MoonKit/NSIndexPath+MSKitAdditions.h>
 #import <MoonKit/UIViewController+MSKitAdditions.h>

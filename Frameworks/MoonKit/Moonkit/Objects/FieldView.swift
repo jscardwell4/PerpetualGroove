@@ -49,7 +49,7 @@ final class FieldView: UIView {
   }
 
   /** Overridden to return the field view's `name` property */
-  override var nametag: String! { get { return field.name } set {} }
+  override var identifier: String! { get { return field.name } set {} }
 
   // MARK: - Initializing the view
 
@@ -60,7 +60,7 @@ final class FieldView: UIView {
     label.text = field.name
     label.setContentCompressionResistancePriority(UILayoutPriorityRequired, forAxis: .Horizontal)
     label.setContentHuggingPriority(UILayoutPriorityRequired, forAxis: .Horizontal)
-    label.nametag = "name"
+    label.identifier = "name"
     addSubview(label)
     self.label = label
     let control = field.control
