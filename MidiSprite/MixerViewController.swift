@@ -32,13 +32,14 @@ final class MixerViewController: UICollectionViewController {
 
     notificationReceptionist = NotificationReceptionist(callbacks: callbacks)
 
+    logDebug(view.constraints.map({$0.description}).joinWithSeparator("\n"), asynchronous: false)
+
   }
 
   private let constraintID = Identifier("MixerViewController", "Internal")
 
   /** updateViewConstraints */
   override func updateViewConstraints() {
-    super.updateViewConstraints()
     guard view.constraintsWithIdentifier(constraintID).count == 0 else { return }
     let itemCount = Sequencer.sequence.instrumentTracks.count + 1
     let cellSize = (collectionView!.collectionViewLayout as! UICollectionViewFlowLayout).itemSize
@@ -48,6 +49,8 @@ final class MixerViewController: UICollectionViewController {
     let viewHeight = Float(cellSize.height)
     view.constrain([view.width => viewWidth -!> 750, view.height => viewHeight -!> 750] --> constraintID)
     view.constrain([𝗩|collectionView!|𝗩, 𝗛|collectionView!|𝗛] --> constraintID)
+    super.updateViewConstraints()
+    logDebug(view.constraints.map({$0.description}).joinWithSeparator("\n"), asynchronous: false)
   }
 
   /** updateTracks */
@@ -55,7 +58,7 @@ final class MixerViewController: UICollectionViewController {
     guard let collectionView = collectionView else { return }
     let itemCount = collectionView.numberOfItemsInSection(1)
     let busCount = Sequencer.sequence.instrumentTracks.count
-    if itemCount != busCount {
+    if itemCount != busCount && view.constraintsWithIdentifier(constraintID).count > 0 {
       view.removeConstraints(view.constraintsWithIdentifier(constraintID))
       view.setNeedsUpdateConstraints()
       collectionView.reloadData()

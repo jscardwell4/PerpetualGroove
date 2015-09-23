@@ -145,7 +145,7 @@
 		C21E44C41B76546C00574BD2 /* AudioManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioManager.swift; sourceTree = "<group>"; };
 		C21E44C81B76739C00574BD2 /* sf2.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = sf2.playground; path = MidiSprite/sf2.playground; sourceTree = "<group>"; };
 		C2207B901B9DC63300E4D65D /* SF2File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SF2File.swift; path = ../SoundFontParser/SF2File.swift; sourceTree = "<group>"; };
-		C22567811BB05ED100E4842B /* Lumberjack.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = Lumberjack.framework; path = "/Users/Moondeer/Library/Developer/Xcode/DerivedData/Build/Products/Debug-iphoneos/Lumberjack.framework"; sourceTree = "<absolute>"; };
+		C22567811BB05ED100E4842B /* Lumberjack.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = Lumberjack.framework; path = Lumberjack.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C22D93F01BADA24A00B04A2B /* MIDINodeHistory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINodeHistory.swift; sourceTree = "<group>"; };
 		C2404BCD1B78EDEB00A68A64 /* Eveleth.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Eveleth.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2404BD11B78EE3800A68A64 /* Chameleon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Chameleon.framework; sourceTree = BUILT_PRODUCTS_DIR; };

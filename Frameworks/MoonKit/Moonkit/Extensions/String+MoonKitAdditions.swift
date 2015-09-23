@@ -77,6 +77,10 @@ public extension String {
   }
   public init<B:ByteArrayConvertible>(binaryBytes: B) { self.init(binaryBytes: binaryBytes.bytes) }
 
+  public init(items: [Any], separator: String = " ", terminator: String = "\n") {
+    self = items.map({String($0)}).joinWithSeparator(separator) + terminator
+  }
+
   /**
   init:radix:uppercase:var:group:separator:
 

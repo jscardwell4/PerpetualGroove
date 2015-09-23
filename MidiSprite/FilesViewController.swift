@@ -46,6 +46,7 @@ final class FilesViewController: UIViewController {
     super.viewDidLoad()
     view.translatesAutoresizingMaskIntoConstraints = false
     refreshFiles()
+    logDebug(view.constraints.map({$0.description}).joinWithSeparator("\n"), asynchronous: false)
   }
 
   /**
@@ -122,6 +123,7 @@ final class FilesViewController: UIViewController {
 
   /** updateViewConstraints */
   override func updateViewConstraints() {
+    logDebug(view.constraints.map({$0.description}).joinWithSeparator("\n"), asynchronous: false)
     if view.constraintsWithIdentifier(constraintID).count == 0 {
       view.constrain([view.width => contentSize.width, view.height => contentSize.height] --> constraintID)
     }
@@ -132,8 +134,10 @@ final class FilesViewController: UIViewController {
     didSet {
       scrollView.contentSize = contentSize
       stackViewHeightConstraint.constant = contentSize.height
-      view.removeConstraints(view.constraintsWithIdentifier(constraintID))
-      view.setNeedsUpdateConstraints()
+      if view.constraintsWithIdentifier(constraintID).count > 0 {
+        view.removeConstraints(view.constraintsWithIdentifier(constraintID))
+        view.setNeedsUpdateConstraints()
+      }
     }
   }
   private var maxLabelSize: CGSize = .zero {

@@ -36,11 +36,15 @@ final class MIDIPlayerViewController: UIViewController {
 
     initializeReceptionist()
 
+    logDebug(view.viewTreeDescription(), "\n".join(view.constraints.map({$0.description})), separator: "\n\n", asynchronous: false)
+
   }
 
   /** viewDidLayoutSubviews */
   override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
+
+    logDebug(view.constraints.map({$0.description}).joinWithSeparator("\n"), asynchronous: false)
 
     /**
     Helper function for adjusting the `xOffset` property of the popover views
@@ -99,13 +103,13 @@ final class MIDIPlayerViewController: UIViewController {
   */
   override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
     super.prepareForSegue(segue, sender: sender)
-    switch (segue.identifier, segue.destinationViewController) {
-      case ("Mixer", let controller as MixerViewController):                   mixerViewController          = controller
-      case ("Instrument", let controller as InstrumentViewController):         instrumentViewController     = controller
-      case ("NoteAttributes", let controller as NoteAttributesViewController): noteAttributesViewController = controller
-      case ("Files", let controller as FilesViewController):                   filesViewController          = controller
-      case ("Tempo", let controller as TempoViewController):                   tempoViewController          = controller
-      default:                                                                 break
+    switch segue.destinationViewController {
+      case let controller as MixerViewController:          mixerViewController          = controller
+      case let controller as InstrumentViewController:     instrumentViewController     = controller
+      case let controller as NoteAttributesViewController: noteAttributesViewController = controller
+      case let controller as FilesViewController:          filesViewController          = controller
+      case let controller as TempoViewController:          tempoViewController          = controller
+      default:                                             break
     }
   }
 

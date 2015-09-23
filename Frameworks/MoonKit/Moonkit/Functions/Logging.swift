@@ -188,68 +188,194 @@ public func MSLogMessage(message: String,
 
 
 /**
+logDebug:asynchronous:function:line:file:
+
+- parameter message: String
+- parameter asynchronous: Bool = true
+- parameter function: String = __FUNCTION__
+- parameter line: UInt = __LINE__
+- parameter file: String = __FILE__
+*/
+public func logDebug(message: String, asynchronous: Bool = true, function: String = __FUNCTION__, line: UInt = __LINE__, file: String = __FILE__) {
+  MSLogMessage(message, asynchronous: asynchronous, flag: .Debug, function: function, file: file, line: line)
+}
+/**
 logDebug:function:line:file:
 
-- parameter message: String
+- parameter asynchronous: Bool = true
 - parameter function: String = __FUNCTION__
 - parameter line: UInt = __LINE__
 - parameter file: String = __FILE__
 */
-public func logDebug(message: String, function: String = __FUNCTION__, line: UInt = __LINE__, file: String = __FILE__) {
-  MSLogMessage(message, asynchronous: true, flag: .Debug, function: function, file: file, line: line)
-}
-public func logDebug(function: String = __FUNCTION__, line: UInt = __LINE__, file: String = __FILE__) {
-  logDebug("", function: function, line: line, file: file)
-}
-
-
-/**
-logError:function:line:file:
-
-- parameter message: String
-- parameter function: String = __FUNCTION__
-- parameter line: UInt = __LINE__
-- parameter file: String = __FILE__
-*/
-public func logError(message: String, function: String = __FUNCTION__, line: UInt = __LINE__, file: String = __FILE__) {
-  MSLogMessage(message, asynchronous: false, flag: .Error, function: function, file: file, line: line)
+public func logDebug(asynchronous: Bool = true, function: String = __FUNCTION__, line: UInt = __LINE__, file: String = __FILE__) {
+  logDebug("", asynchronous: asynchronous, function: function, line: line, file: file)
 }
 
 /**
-logInfo:function:line:file:
+logDebug:separator:terminator:asynchronous:function:line:file:
 
-- parameter message: String
+- parameter items: Any...
+- parameter separator: String = " "
+- parameter terminator: String = "
+"
+- parameter asynchronous: Bool = true
 - parameter function: String = __FUNCTION__
 - parameter line: UInt = __LINE__
 - parameter file: String = __FILE__
 */
-public func logInfo(message: String, function: String = __FUNCTION__, line: UInt = __LINE__, file: String = __FILE__) {
-  MSLogMessage(message, asynchronous: true, flag: .Info, function: function, file: file, line: line)
+public func logDebug(items: Any...,
+                     separator: String = " ",
+                     terminator: String = "\n",
+                     asynchronous: Bool = true,
+                     function: String = __FUNCTION__,
+                     line: UInt = __LINE__,
+                     file: String = __FILE__)
+{
+  logDebug(String(items: items, separator: separator, terminator: terminator), asynchronous: asynchronous, function: function, line: line, file: file)
 }
 
 /**
-logWarning:function:line:file:
+logError:asynchronous:function:line:file:
 
 - parameter message: String
+- parameter asynchronous: Bool = true
 - parameter function: String = __FUNCTION__
 - parameter line: UInt = __LINE__
 - parameter file: String = __FILE__
 */
-public func logWarning(message: String, function: String = __FUNCTION__, line: UInt = __LINE__, file: String = __FILE__) {
-  MSLogMessage(message, asynchronous: true, flag: .Warn, function: function, file: file, line: line)
+public func logError(message: String, asynchronous: Bool = true, function: String = __FUNCTION__, line: UInt = __LINE__, file: String = __FILE__) {
+  MSLogMessage(message, asynchronous: asynchronous, flag: .Error, function: function, file: file, line: line)
 }
 
-
 /**
-logVerbose:function:line:file:
+logError:separator:terminator:asynchronous:function:line:file:
 
-- parameter message: String
+- parameter items: Any...
+- parameter separator: String = " "
+- parameter terminator: String = "
+"
+- parameter asynchronous: Bool = true
 - parameter function: String = __FUNCTION__
 - parameter line: UInt = __LINE__
 - parameter file: String = __FILE__
 */
-public func logVerbose(message: String, function: String = __FUNCTION__, line: UInt = __LINE__, file: String = __FILE__) {
-  MSLogMessage(message, asynchronous: true, flag: .Verbose, function: function, file: file, line: line)
+public func logError(items items: Any...,
+                     separator: String = " ",
+                     terminator: String = "\n",
+                     asynchronous: Bool = true,
+                     function: String = __FUNCTION__,
+                     line: UInt = __LINE__,
+                     file: String = __FILE__)
+{
+  logError(String(items: items, separator: separator, terminator: terminator), asynchronous: asynchronous, function: function, line: line, file: file)
+}
+
+/**
+logInfo:asynchronous:function:line:file:
+
+- parameter message: String
+- parameter asynchronous: Bool = true
+- parameter function: String = __FUNCTION__
+- parameter line: UInt = __LINE__
+- parameter file: String = __FILE__
+*/
+public func logInfo(message: String, asynchronous: Bool = true, function: String = __FUNCTION__, line: UInt = __LINE__, file: String = __FILE__) {
+  MSLogMessage(message, asynchronous: asynchronous, flag: .Info, function: function, file: file, line: line)
+}
+
+/**
+logInfo:separator:terminator:asynchronous:function:line:file:
+
+- parameter items: Any...
+- parameter separator: String = " "
+- parameter terminator: String = "
+"
+- parameter asynchronous: Bool = true
+- parameter function: String = __FUNCTION__
+- parameter line: UInt = __LINE__
+- parameter file: String = __FILE__
+*/
+public func logInfo(items: Any...,
+                    separator: String = " ",
+                    terminator: String = "\n",
+                    asynchronous: Bool = true,
+                    function: String = __FUNCTION__,
+                    line: UInt = __LINE__,
+                    file: String = __FILE__)
+{
+  logInfo(String(items: items, separator: separator, terminator: terminator), asynchronous: asynchronous, function: function, line: line, file: file)
+}
+
+/**
+logWarning:asynchronous:function:line:file:
+
+- parameter message: String
+- parameter asynchronous: Bool = true
+- parameter function: String = __FUNCTION__
+- parameter line: UInt = __LINE__
+- parameter file: String = __FILE__
+*/
+public func logWarning(message: String, asynchronous: Bool = true, function: String = __FUNCTION__, line: UInt = __LINE__, file: String = __FILE__) {
+  MSLogMessage(message, asynchronous: asynchronous, flag: .Warn, function: function, file: file, line: line)
+}
+
+/**
+logWarning:separator:terminator:asynchronous:function:line:file:
+
+- parameter items: Any...
+- parameter separator: String = " "
+- parameter terminator: String = "
+"
+- parameter asynchronous: Bool = true
+- parameter function: String = __FUNCTION__
+- parameter line: UInt = __LINE__
+- parameter file: String = __FILE__
+*/
+public func logWarning(items: Any...,
+                       separator: String = " ",
+                       terminator: String = "\n",
+                       asynchronous: Bool = true,
+                       function: String = __FUNCTION__,
+                       line: UInt = __LINE__,
+                       file: String = __FILE__)
+{
+  logWarning(String(items: items, separator: separator, terminator: terminator), asynchronous: asynchronous, function: function, line: line, file: file)
+}
+
+/**
+logVerbose:asynchronous:function:line:file:
+
+- parameter message: String
+- parameter asynchronous: Bool = true
+- parameter function: String = __FUNCTION__
+- parameter line: UInt = __LINE__
+- parameter file: String = __FILE__
+*/
+public func logVerbose(message: String, asynchronous: Bool = true, function: String = __FUNCTION__, line: UInt = __LINE__, file: String = __FILE__) {
+  MSLogMessage(message, asynchronous: asynchronous, flag: .Verbose, function: function, file: file, line: line)
+}
+
+/**
+logVerbose:separator:terminator:asynchronous:function:line:file:
+
+- parameter items: Any...
+- parameter separator: String = " "
+- parameter terminator: String = "
+"
+- parameter asynchronous: Bool = true
+- parameter function: String = __FUNCTION__
+- parameter line: UInt = __LINE__
+- parameter file: String = __FILE__
+*/
+public func logVerbose(items: Any...,
+                       separator: String = " ",
+                       terminator: String = "\n",
+                       asynchronous: Bool = true,
+                       function: String = __FUNCTION__,
+                       line: UInt = __LINE__,
+                       file: String = __FILE__)
+{
+  logVerbose(String(items: items, separator: separator, terminator: terminator), asynchronous: asynchronous, function: function, line: line, file: file)
 }
 
 /**
@@ -339,15 +465,18 @@ public func descriptionForError(error: NSError?) -> String? {
 }
 
 /**
-logError:message:function:line:
+logError:message:asynchronous:function:line:file:
 
 - parameter e: ErrorType
 - parameter message: String? = nil
+- parameter asynchronous: Bool = true
 - parameter function: String = __FUNCTION__
 - parameter line: UInt = __LINE__
+- parameter file: String = __FILE__
 */
 public func logError(e: ErrorType,
                      message: String? = nil,
+                     asynchronous: Bool = true,
                      function: String = __FUNCTION__,
                      line: UInt = __LINE__,
                      file: String = __FILE__)
@@ -359,16 +488,17 @@ public func logError(e: ErrorType,
   if let message = message { logMessage += message + "\n" }
   logMessage += errorDescription
 
-  logError(logMessage, function: function, line: line, file: file)
+  logError(logMessage, asynchronous: asynchronous, function: function, line: line, file: file)
 }
 
 /**
-logError:
+logError:asynchronous:
 
 - parameter e: ExtendedErrorType
+- parameter asynchronous: Bool = true
 */
-public func logError(e: ExtendedErrorType) {
-  logError(e, message: e.reason, function: e.function, line: e.line, file: e.file)
+public func logError(e: ExtendedErrorType, asynchronous: Bool = true) {
+  logError(e, message: e.reason, asynchronous: asynchronous, function: e.function, line: e.line, file: e.file)
 }
 
 /**

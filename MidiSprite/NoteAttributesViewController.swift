@@ -19,6 +19,11 @@ final class NoteAttributesViewController: UIViewController {
   typealias Duration = NoteAttributes.Duration
   typealias Velocity = NoteAttributes.Velocity
 
+  override func updateViewConstraints() {
+    logDebug(view.constraints.map({$0.description}).joinWithSeparator("\n"), asynchronous: false)
+    super.updateViewConstraints()
+  }
+
   /** didPickNote */
   @IBAction func didPickNote() { Sequencer.currentNoteAttributes.note = Note.allCases[notePicker.selection] }
 
@@ -37,5 +42,6 @@ final class NoteAttributesViewController: UIViewController {
     notePicker.selection = Sequencer.currentNoteAttributes.note.index
     durationPicker.selection = Sequencer.currentNoteAttributes.duration.index
     velocityPicker.selection = Sequencer.currentNoteAttributes.velocity.index
+    logDebug(view.constraints.map({$0.description}).joinWithSeparator("\n"), asynchronous: false)
   }
  }

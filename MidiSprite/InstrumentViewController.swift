@@ -52,10 +52,16 @@ final class InstrumentViewController: UIViewController {
     }
   }
 
+  override func updateViewConstraints() {
+    logDebug(view.constraints.map({$0.description}).joinWithSeparator("\n"), asynchronous: false)
+    super.updateViewConstraints()
+  }
+
 
   /** viewDidLoad */
   override func viewDidLoad() {
     super.viewDidLoad()
+    logDebug(view.constraints.map({$0.description}).joinWithSeparator("\n"), asynchronous: false)
     soundSetPicker.labels = Sequencer.soundSets.map { $0.displayName }
     instrument = Sequencer.auditionInstrument
   }
