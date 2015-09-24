@@ -14,7 +14,7 @@ private let identifierKey = UnsafePointer<Void>()
 public extension UIView {
 
   @IBInspectable public var identifier: String? {
-    get { return objc_getAssociatedObject(self, identifierKey) as? String }
+    get { return objc_getAssociatedObject(self, identifierKey) as? String ?? accessibilityLabel }
     set { objc_setAssociatedObject(self, identifierKey, newValue, .OBJC_ASSOCIATION_COPY_NONATOMIC) }
   }
 
@@ -539,7 +539,8 @@ public extension UIView {
 
     let constraints = NSLayoutConstraint.constraintsByParsingFormat(format, views: dict)
     apply(constraints){$0.identifier = identifier}
-    addConstraints(constraints)
+    NSLayoutConstraint.activateConstraints(constraints)
+//    addConstraints(constraints)
     return constraints
   }
 
@@ -639,7 +640,8 @@ public extension UIView {
     let result = constraints.flatMap({$0.expanded}).compressedMap({$0.constraint})// ➤| {if id != nil { $0.identifier = id }}
     if let id = id { result.forEach { $0.identifier = id } }
     //    let result = constraints.flatMap({$0.expanded}).compressedMap({$0.constraint}) ➤| {if id != nil { $0.identifier = id }}
-    addConstraints(result)
+    NSLayoutConstraint.activateConstraints(result)
+//    addConstraints(result)
     return result
   }
 

@@ -273,6 +273,9 @@ extension UIEdgeInsets {
   }
   public init?(_ string: String?) { if let s = string { self = UIEdgeInsetsFromString(s) } else { return nil } }
   public static var zeroInsets: UIEdgeInsets { return UIEdgeInsets(inset: 0) }
+  public init(horizontal: CGFloat, vertical: CGFloat) {
+    self.init(top: vertical, left: horizontal, bottom: vertical, right: horizontal)
+  }
   public init(inset: CGFloat) { self = UIEdgeInsets(top: inset, left: inset, bottom: inset, right: inset) }
   public var displacement: UIOffset { return UIOffset(horizontal: left + right, vertical: top + bottom) }
 }

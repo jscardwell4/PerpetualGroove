@@ -62,6 +62,15 @@ import UIKit
   private let rotationInterval: ClosedInterval<CGFloat> = -π / 2 ... π / 2
 
   /**
+  intrinsicContentSize
+
+  - returns: CGSize
+  */
+  public override func intrinsicContentSize() -> CGSize {
+    return knobBase?.size ?? CGSize(square: 44)
+  }
+
+  /**
   addTarget:action:forControlEvents:
 
   - parameter target: AnyObject?

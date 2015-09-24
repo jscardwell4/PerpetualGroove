@@ -180,8 +180,16 @@ import Chameleon
   @IBInspectable public var minimumValue: Float = 0
   @IBInspectable public var maximumValue: Float = 1
 
+  /**
+  intrinsicContentSize
+
+  - returns: CGSize
+  */
   override public func intrinsicContentSize() -> CGSize {
-    return CGSize(square: max(max(_trackMinBreadth, _trackMaxBreadth), _thumbSize.height))
+    switch axis {
+      case .Horizontal: return CGSize(width: 150, height: _thumbSize.height)
+      case .Vertical: return CGSize(width: _thumbSize.width, height: 150)
+    }
   }
 
   private var valueInterval: ClosedInterval<Float> {
@@ -321,6 +329,19 @@ import Chameleon
       axisString = aDecoder.decodeObjectForKey("axisString") as? String ?? Axis.Horizontal.rawValue 
     }
   }
+
+  /**
+  alignmentRectInsets
+
+  - returns: UIEdgeInsets
+  */
+  public override func alignmentRectInsets() -> UIEdgeInsets {
+    return axis == .Horizontal
+      ? UIEdgeInsets(horizontal: half(_thumbSize.width), vertical: 0)
+      : UIEdgeInsets(horizontal: 0, vertical: half(_thumbSize.height))
+  }
+
+
 
   // MARK: - Drawing
 
