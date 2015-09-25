@@ -13,6 +13,10 @@ import typealias AudioToolbox.MusicDeviceGroupID
 
 final class MIDIPlayerNode: SKShapeNode {
 
+  static var currentPlayer: MIDIPlayerNode? {
+    return MIDIPlayerViewController.currentInstance?.midiPlayerView?.midiPlayerScene?.midiPlayer
+  }
+
   /** An enumeration to wrap up notifications */
   enum Notification: String, NotificationType, NotificationNameType {
     case DidAddNode, DidRemoveNode
@@ -30,7 +34,7 @@ final class MIDIPlayerNode: SKShapeNode {
     super.init()
     name = "player"
     path = bezierPath.CGPath
-    strokeColor = .clearColor()
+    strokeColor = .primaryColor
     
     guard let path = path else { return }
     physicsBody = SKPhysicsBody(edgeLoopFromPath: path)

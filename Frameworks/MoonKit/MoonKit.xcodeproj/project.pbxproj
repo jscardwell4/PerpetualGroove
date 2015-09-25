@@ -207,7 +207,7 @@
 		C2358FA719C78E4000920F8D /* UIImage+MSKitAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = C2CE88B518138CF700555D63 /* UIImage+MSKitAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C2358FA819C78E4000920F8D /* UIStoryboard+MSKitAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = C2CE88B718138CF700555D63 /* UIStoryboard+MSKitAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C2358FA919C78E4000920F8D /* UITableView+MSKitAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = C2CE88B918138CF700555D63 /* UITableView+MSKitAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		C2358FAA19C78E4000920F8D /* UIView+MSKitAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = C2CE88BB18138CF700555D63 /* UIView+MSKitAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C2358FAA19C78E4000920F8D /* UIView+MSKitAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = C2CE88BB18138CF700555D63 /* UIView+MSKitAdditions.h */; };
 		C2358FAB19C78E4000920F8D /* UIViewController+MSKitAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = C2CE88BD18138CF700555D63 /* UIViewController+MSKitAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C2358FAC19C78E4000920F8D /* UIWindow+MSKitAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = C2CE88BF18138CF700555D63 /* UIWindow+MSKitAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C2358FAD19C78E4000920F8D /* NSPointerArray+MSKitAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = C264338D18162E8A005E0105 /* NSPointerArray+MSKitAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };

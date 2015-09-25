@@ -7,14 +7,14 @@
 //
 
 import SpriteKit
-import CoreImage
 import MoonKit
-import Chameleon
-import AVFoundation
 
-class MIDIPlayerScene: SKScene {
+final class MIDIPlayerScene: SKScene {
 
-  var midiPlayer: MIDIPlayerNode!
+  /** reset */
+  func reset() { midiPlayer.reset() }
+
+  private(set) var midiPlayer: MIDIPlayerNode!
 
   private var contentCreated = false
 
@@ -24,10 +24,10 @@ class MIDIPlayerScene: SKScene {
   /** createContent */
   private func createContent() {
     scaleMode = .AspectFit
-    let w = frame.width - 20
-    let containerRect = CGRect(x: 10, y: frame.midY - w * 0.5, width: w, height: w)
+//    let w = frame.width - 20
+//    let containerRect = CGRect(x: 10, y: frame.midY - w * 0.5, width: w, height: w)
 
-    midiPlayer = MIDIPlayerNode(bezierPath: UIBezierPath(rect: containerRect))
+    midiPlayer = MIDIPlayerNode(bezierPath: UIBezierPath(rect: frame)) //containerRect))
     addChild(midiPlayer)
 
     physicsWorld.gravity = .zero

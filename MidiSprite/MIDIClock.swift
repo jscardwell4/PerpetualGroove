@@ -89,7 +89,9 @@ final class MIDIClock: CustomStringConvertible {
       try MIDISourceCreate(client, "Clock", &endPoint) ➤ "Failed to create end point for clock"
     } catch {
       logError(error)
-      fatalError("could not create clock as a midi source")
+      #if !TARGET_INTERFACE_BUILDER
+        fatalError("could not create clock as a midi source")
+      #endif
     }
   }
 

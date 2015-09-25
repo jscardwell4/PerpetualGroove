@@ -126,9 +126,7 @@ final class InstrumentTrack: MIDITrackType, Equatable {
                           attributes: NoteAttributes)
   {
     guard pendingIdentifier == nil else { fatalError("already have an identifier pending: \(pendingIdentifier!)") }
-    guard let midiPlayer = MIDIPlayerViewController.currentInstance?.playerScene.midiPlayer else {
-      fatalError("trying to add node without a midi player")
-    }
+    guard let midiPlayer = MIDIPlayerNode.currentPlayer else { fatalError("trying to add node without a midi player") }
     pendingIdentifier = identifier
     midiPlayer.placeNew(placement, targetTrack: self, attributes: attributes)
   }

@@ -13,8 +13,15 @@ private let identifierKey = UnsafePointer<Void>()
 
 public extension UIView {
 
+//  @IBInspectable public var borderWidth: CGFloat { get { return layer.borderWidth } set { layer.borderWidth = newValue } }
+//  @IBInspectable public var borderColor: UIColor? {
+//    get { guard let color = layer.borderColor else { return nil }; return UIColor(CGColor: color) }
+//    set { layer.borderColor = newValue?.CGColor }
+//  }
+//  @IBInspectable public var cornerRadius: CGFloat { get { return layer.cornerRadius } set { layer.cornerRadius = newValue } }
+
   @IBInspectable public var identifier: String? {
-    get { return objc_getAssociatedObject(self, identifierKey) as? String ?? accessibilityLabel }
+    get { return objc_getAssociatedObject(self, identifierKey) as? String ?? accessibilityIdentifier }
     set { objc_setAssociatedObject(self, identifierKey, newValue, .OBJC_ASSOCIATION_COPY_NONATOMIC) }
   }
 

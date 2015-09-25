@@ -27,25 +27,15 @@ final class MIDIPlayerViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    midiPlayerSceneView.ignoresSiblingOrder = true
-
-    midiPlayerSceneView.presentScene(MIDIPlayerScene(size: midiPlayerSceneView.bounds.size))
-    playerScene.paused = true
-
-    fileTrackNameLabel.text = nil
+//    fileNameLabel.text = nil
+//    trackNameLabel.text = nil
 
     initializeReceptionist()
-
-    logDebug(view.viewTreeDescription,/* "\n".join(view.constraints.map({$0.description})), separator: "\n\n",*/ asynchronous: false)
-
   }
 
   /** viewDidLayoutSubviews */
   override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
-
-    logDebug(view.viewTreeDescription, asynchronous: false)
-//    logDebug(view.constraints.map({$0.description}).joinWithSeparator("\n"), asynchronous: false)
 
     /**
     Helper function for adjusting the `xOffset` property of the popover views
@@ -53,7 +43,8 @@ final class MIDIPlayerViewController: UIViewController {
     - parameter popoverView: PopoverView
     - parameter presentingView: UIView
     */
-    func adjustPopover(popoverView: PopoverView, _ presentingView: UIView) {
+    func adjustPopover(popoverView: PopoverView?, _ presentingView: UIView?) {
+      guard let popoverView = popoverView, presentingView = presentingView else { return }
       let popoverCenter = view.convertPoint(popoverView.center, fromView: popoverView.superview)
       let presentingCenter = view.convertPoint(presentingView.center, fromView: presentingView.superview)
       popoverView.xOffset = presentingCenter.x - popoverCenter.x
@@ -158,43 +149,67 @@ final class MIDIPlayerViewController: UIViewController {
 
   // MARK: - Files
 
-  @IBOutlet weak var filesButton: ImageButtonView!
-  @IBOutlet weak var saveButton: ImageButtonView!
-  @IBOutlet weak var fileTrackLabel: UILabel!
-  @IBOutlet weak var fileTrackNameLabel: UILabel!
-  @IBOutlet weak var fileTrackNameSwipeGesture: UISwipeGestureRecognizer!
-  @IBOutlet weak var fileTrackNameDismissiveSwipeGesture: UISwipeGestureRecognizer!
-  @IBOutlet weak var fileTrackActionButton: LabelButton!
-  @IBOutlet var fileTrackNameActionButtonWidthConstraint: NSLayoutConstraint!
+  @IBOutlet weak var filesButton: ImageButtonView?
+  @IBOutlet weak var saveButton: ImageButtonView?
+  @IBOutlet weak var trackLabel: UILabel!
+  @IBOutlet weak var fileLabel: UILabel!
+  @IBOutlet weak var fileNameLabel: UILabel!
+  @IBOutlet weak var trackNameLabel: UILabel!
+  @IBOutlet weak var fileSwipeGesture: UISwipeGestureRecognizer!
+  @IBOutlet weak var trackSwipeGesture: UISwipeGestureRecognizer!
+  @IBOutlet weak var fileDismissiveSwipeGesture: UISwipeGestureRecognizer!
+  @IBOutlet weak var trackDismissiveSwipeGesture: UISwipeGestureRecognizer!
+  @IBOutlet weak var fileActionButton: LabelButton!
+  @IBOutlet weak var trackActionButton: LabelButton!
+  @IBOutlet var fileActionButtonWidthConstraint: NSLayoutConstraint!
+  @IBOutlet var trackActionButtonWidthConstraint: NSLayoutConstraint!
 
-  /**
-  fileTrackNameShowAction:
-  */
-  @IBAction func fileTrackNameShowAction() {
+  /** revealFileAction */
+  @IBAction func revealFileAction() {
     UIView.animateWithDuration(0.25,
-                    animations: { self.fileTrackNameActionButtonWidthConstraint.active = false },
-                    completion: {_ in self.fileTrackNameSwipeGesture.enabled = false
-                                      self.fileTrackNameDismissiveSwipeGesture.enabled = true})
+                    animations: { self.fileActionButtonWidthConstraint.active = false },
+                    completion: {_ in self.fileSwipeGesture.enabled = false
+                                      self.fileDismissiveSwipeGesture.enabled = true})
+  }
+
+  /** revealTrackAction */
+  @IBAction func revealTrackAction() {
+    UIView.animateWithDuration(0.25,
+                    animations: { self.trackActionButtonWidthConstraint.active = false },
+                    completion: {_ in self.trackSwipeGesture.enabled = false
+                                      self.trackDismissiveSwipeGesture.enabled = true})
   }
 
   /**
-  fileTrackNameAction:
+  fileAction:
   */
-  @IBAction func fileTrackNameAction() {
+  @IBAction func fileAction() {
     
     if state ∋ .FileLoaded { Sequencer.currentFile = nil }
-    dismissFileTrackNameAction()
+    dismissFileAction()
   }
 
-  /**
-  dismissFileTrackNameAction:
-  */
-  @IBAction func dismissFileTrackNameAction() {
-    
+  /** trackAction */
+  @IBAction func trackAction() {
+    dismissTrackAction()
+  }
+
+  /** dismissFileAction */
+  @IBAction func dismissFileAction() {
+
     UIView.animateWithDuration(0.25,
-                    animations: { self.fileTrackNameActionButtonWidthConstraint.active = true },
-                    completion: {_ in self.fileTrackNameDismissiveSwipeGesture.enabled = false
-                                      self.fileTrackNameSwipeGesture.enabled = true})
+                    animations: { self.fileActionButtonWidthConstraint.active = true },
+                    completion: {_ in self.fileDismissiveSwipeGesture.enabled = false
+                                      self.fileSwipeGesture.enabled = true})
+  }
+
+  /** dismissTrackAction */
+  @IBAction func dismissTrackAction() {
+
+    UIView.animateWithDuration(0.25,
+                    animations: { self.trackActionButtonWidthConstraint.active = true },
+                    completion: {_ in self.trackDismissiveSwipeGesture.enabled = false
+                                      self.trackSwipeGesture.enabled = true})
   }
 
   /** save */
@@ -233,36 +248,36 @@ final class MIDIPlayerViewController: UIViewController {
 
  // MARK: - Mixer
 
-  @IBOutlet weak var mixerButton: ImageButtonView!
+  @IBOutlet weak var mixerButton: ImageButtonView?
   @IBAction private func mixer() { updatePopover(.Mixer) }
   private weak var mixerViewController: MixerViewController!
-  @IBOutlet private weak var mixerPopoverView: PopoverView!
+  @IBOutlet private weak var mixerPopoverView: PopoverView?
 
   // MARK: - Instrument
 
-  @IBOutlet weak var instrumentButton: ImageButtonView!
+  @IBOutlet weak var instrumentButton: ImageButtonView?
   @IBAction private func instrument() { updatePopover(.Instrument) }
   private weak var instrumentViewController: InstrumentViewController!
-  @IBOutlet private weak var instrumentPopoverView: PopoverView!
+  @IBOutlet private weak var instrumentPopoverView: PopoverView?
 
   // MARK: - NoteAttributes
 
-  @IBOutlet weak var noteAttributesButton: ImageButtonView!
+  @IBOutlet weak var noteAttributesButton: ImageButtonView?
   private weak var noteAttributesViewController: NoteAttributesViewController!
   @IBAction private func noteAttributes() { updatePopover(.NoteAttributes) }
-  @IBOutlet private weak var noteAttributesPopoverView: PopoverView!
+  @IBOutlet private weak var noteAttributesPopoverView: PopoverView?
 
   // MARK: - Tempo
 
-  @IBOutlet weak var tempoButton: ImageButtonView!
+  @IBOutlet weak var tempoButton: ImageButtonView?
   private weak var tempoViewController: TempoViewController!
   @IBAction private func tempo() { updatePopover(.Tempo) }
-  @IBOutlet private weak var tempoPopoverView: PopoverView!
+  @IBOutlet private weak var tempoPopoverView: PopoverView?
 
   // MARK: - Undo
 
 //  @IBOutlet weak var revertButton: ImageButtonView!
-  @IBAction private func revert() { (midiPlayerSceneView?.scene as? MIDIPlayerScene)?.revert() }
+  @IBAction private func revert() { midiPlayerView.revert() }
 
 
   // MARK: - Transport
@@ -320,12 +335,7 @@ final class MIDIPlayerViewController: UIViewController {
 
   // MARK: - Scene-relatd properties
 
-  @IBOutlet weak var midiPlayerSceneView: SKView!
-
-  var playerScene: MIDIPlayerScene {
-    guard let playerScene = midiPlayerSceneView.scene as? MIDIPlayerScene else { fatalError("Failed to retrieve player scene") }
-    return playerScene
-  }
+  @IBOutlet weak var midiPlayerView: MIDIPlayerView!
 
   // MARK: - Managing state
 
@@ -336,11 +346,7 @@ final class MIDIPlayerViewController: UIViewController {
 
   - parameter notification: NSNotification
   */
-  private func didChangeCurrentTrack(notification: NSNotification) {
-    guard state ∌ .FileLoaded else { return }
-    fileTrackLabel.text = "Track"
-    fileTrackNameLabel.text = Sequencer.currentTrack?.name
-  }
+  private func didChangeCurrentTrack(notification: NSNotification) { trackNameLabel.text = Sequencer.currentTrack?.name }
 
   /**
   didRemoveTrack:
@@ -401,7 +407,7 @@ final class MIDIPlayerViewController: UIViewController {
 
   - parameter notification: NSNotification
   */
-  private func didReset(notification: NSNotification) { playerScene.midiPlayer.reset() }
+  private func didReset(notification: NSNotification) { midiPlayerView.reset() }
 
   /** initializeReceptionist */
   private func initializeReceptionist() {
@@ -480,24 +486,22 @@ final class MIDIPlayerViewController: UIViewController {
       // Check if popover state has changed
       if modifiedState ∋ .Popover {
         popoverBlur.hidden = state ∌ .Popover
-        saveButton.enabled = state ∋ .TrackAdded && state ∌ .Popover
+        saveButton?.enabled = state ∋ .TrackAdded && state ∌ .Popover
       }
 
       // Check if track changed
       if modifiedState ∋ .TrackAdded {
-        saveButton.enabled = state ∋ .TrackAdded && state ∌ .Popover
+        saveButton?.enabled = state ∋ .TrackAdded && state ∌ .Popover
       }
 
       // Check if file status changed
       if modifiedState ∋ .FileLoaded {
         if let currentFile = Sequencer.currentFile?.lastPathComponent {
-          fileTrackLabel.text = "File"
-          fileTrackNameLabel.text = currentFile[..<currentFile.endIndex.advancedBy(-4)]
+          fileNameLabel.text = currentFile[..<currentFile.endIndex.advancedBy(-4)]
         } else {
-          fileTrackLabel.text = "Track"
-          fileTrackNameLabel.text = Sequencer.currentTrack?.name
+          fileNameLabel.text = nil
         }
-        fileTrackNameSwipeGesture.enabled = state ∋ .FileLoaded
+        fileSwipeGesture.enabled = state ∋ .FileLoaded
         recordButton.enabled = state ∌ .FileLoaded
       }
 
@@ -513,11 +517,20 @@ final class MIDIPlayerViewController: UIViewController {
 
       // Check if play/pause status changed
       if modifiedState ~∩ [.Playing, .Paused] {
-        playerScene.paused = state ∌ .Playing
+        midiPlayerView.paused = state ∌ .Playing
         stopButton.enabled = state ~∩ [.Playing, .Paused]
-        (playerScene.paused ? ControlImage.Play : ControlImage.Pause).decorateButton(playPauseButton)
+        (midiPlayerView.paused ? ControlImage.Play : ControlImage.Pause).decorateButton(playPauseButton)
       }
     }
   }
 
+  /**
+  traitCollectionDidChange:
+
+  - parameter previousTraitCollection: UITraitCollection?
+  */
+  override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
+    super.traitCollectionDidChange(previousTraitCollection)
+    logDebug("traitColleciton: \(traitCollection)\npreviousTraitCollection: \(previousTraitCollection)")
+  }
 }

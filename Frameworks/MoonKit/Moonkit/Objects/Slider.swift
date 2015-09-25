@@ -337,8 +337,8 @@ import Chameleon
   */
   public override func alignmentRectInsets() -> UIEdgeInsets {
     return axis == .Horizontal
-      ? UIEdgeInsets(horizontal: half(_thumbSize.width), vertical: 0)
-      : UIEdgeInsets(horizontal: 0, vertical: half(_thumbSize.height))
+      ? UIEdgeInsets(horizontal: half(_thumbSize.width - 1), vertical: 0)
+      : UIEdgeInsets(horizontal: 0, vertical: half(_thumbSize.height - 1))
   }
 
 

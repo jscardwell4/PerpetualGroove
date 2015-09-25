@@ -31,10 +31,6 @@ final class MixerViewController: UICollectionViewController {
     ]
 
     notificationReceptionist = NotificationReceptionist(callbacks: callbacks)
-
-    logDebug(view.viewTreeDescription, asynchronous: false)
-//    logDebug(view.constraints.map({$0.description}).joinWithSeparator("\n"), asynchronous: false)
-
   }
 
   private let constraintID = Identifier("MixerViewController", "Internal")
@@ -51,7 +47,6 @@ final class MixerViewController: UICollectionViewController {
     view.constrain([view.width => viewWidth -!> 750, view.height => viewHeight -!> 750] --> constraintID)
     view.constrain([𝗩|collectionView!|𝗩, 𝗛|collectionView!|𝗛] --> constraintID)
     super.updateViewConstraints()
-//    logDebug(view.constraints.map({$0.description}).joinWithSeparator("\n"), asynchronous: false)
   }
 
   /** updateTracks */
