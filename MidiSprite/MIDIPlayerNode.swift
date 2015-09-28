@@ -72,9 +72,9 @@ final class MIDIPlayerNode: SKShapeNode {
   /**
   placeNew:
 
-  - parameter placement: MIDINode.Placement
+  - parameter placement: Placement
   */
-  func placeNew(placement: MIDINode.Placement,
+  func placeNew(placement: Placement,
                 targetTrack: InstrumentTrack? = nil,
                 attributes: NoteAttributes = Sequencer.currentNoteAttributes)
   {
@@ -87,7 +87,7 @@ final class MIDIPlayerNode: SKShapeNode {
         track = try Sequencer.sequence.newTrackWithInstrument(Sequencer.instrumentWithCurrentSettings())
         Sequencer.currentTrack = track
       }
-      let midiNode = try MIDINode(placement: placement, name: "midiNode\(midiNodes.count)", track: track, attributes: attributes)
+      let midiNode = try MIDINode(placement: placement, name: "midiNode\(midiNodes.count)", track: track, note: attributes)
       addChild(midiNode)
       midiNodes.append(midiNode)
       try track.addNode(midiNode)

@@ -35,19 +35,19 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" distribution="equalCentering" alignment="center" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="a6c-px-a6l" userLabel="BottomStack">
-                                <rect key="frame" x="0.0" y="422" width="754" height="151"/>
+                                <rect key="frame" x="0.0" y="422" width="755" height="151"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" axis="vertical" distribution="equalCentering" alignment="bottom" translatesAutoresizingMaskIntoConstraints="NO" id="0XM-Uy-Oeo" userLabel="BarBeatTimeTransportStack">
-                                        <rect key="frame" x="0.0" y="43" width="148" height="65"/>
+                                        <rect key="frame" x="0.0" y="44" width="148" height="64"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="UtM-qz-8YW" userLabel="BarBeatTimeLabel" customClass="BarBeatTimeLabel" customModule="MidiSprite" customModuleProvider="target">
-                                                <rect key="frame" x="1" y="0.0" width="147" height="29"/>
+                                                <rect key="frame" x="1" y="0.0" width="147" height="28"/>
                                                 <subviews>
-                                                    <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="NRe-r9-gaz" userLabel="BarBeatTimeStack">
-                                                        <rect key="frame" x="0.0" y="0.0" width="147" height="29"/>
+                                                    <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="NRe-r9-gaz" userLabel="BarBeatTimeStack">
+                                                        <rect key="frame" x="0.0" y="0.0" width="147" height="28"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" ambiguous="YES" misplaced="YES" text="001" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oOV-5w-qc6">
-                                                                <rect key="frame" x="0.0" y="0.0" width="45" height="29"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="47" height="28"/>
                                                                 <accessibility key="accessibilityConfiguration" identifier="BarLabel"/>
                                                                 <fontDescription key="fontDescription" name="EvelethLight" family="Eveleth" pointSize="24"/>
                                                                 <color key="textColor" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
@@ -57,7 +57,7 @@
                                                                 </userDefinedRuntimeAttributes>
                                                             </label>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" ambiguous="YES" misplaced="YES" text=":" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="t0O-Cc-XTf">
-                                                                <rect key="frame" x="51" y="0.0" width="9" height="29"/>
+                                                                <rect key="frame" x="53" y="0.0" width="7" height="28"/>
                                                                 <accessibility key="accessibilityConfiguration" identifier="BarBeatDivider"/>
                                                                 <fontDescription key="fontDescription" name="EvelethLight" family="Eveleth" pointSize="24"/>
                                                                 <color key="textColor" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
@@ -67,7 +67,7 @@
                                                                 </userDefinedRuntimeAttributes>
                                                             </label>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="999" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" ambiguous="YES" misplaced="YES" text="1" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="e09-0B-NqE">
-                                                                <rect key="frame" x="65" y="0.0" width="16" height="29"/>
+                                                                <rect key="frame" x="66" y="0.0" width="16" height="28"/>
                                                                 <accessibility key="accessibilityConfiguration" identifier="BeatLabel"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="width" constant="16" identifier="BeatLabelWidth" id="vcj-2L-sDc"/>
@@ -80,7 +80,7 @@
                                                                 </userDefinedRuntimeAttributes>
                                                             </label>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" ambiguous="YES" misplaced="YES" text="." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="ayK-ZT-ieP">
-                                                                <rect key="frame" x="87" y="0.0" width="8" height="29"/>
+                                                                <rect key="frame" x="88" y="0.0" width="7" height="28"/>
                                                                 <accessibility key="accessibilityConfiguration" identifier="BeatSubbeatDivider"/>
                                                                 <fontDescription key="fontDescription" name="EvelethLight" family="Eveleth" pointSize="24"/>
                                                                 <color key="textColor" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
@@ -89,8 +89,8 @@
                                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="BeatSubbeatDivider"/>
                                                                 </userDefinedRuntimeAttributes>
                                                             </label>
-                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="999" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" ambiguous="YES" text="001" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aOJ-a2-U5V">
-                                                                <rect key="frame" x="101" y="0.0" width="46" height="29"/>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="999" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" ambiguous="YES" misplaced="YES" text="001" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aOJ-a2-U5V">
+                                                                <rect key="frame" x="101" y="0.0" width="46" height="28"/>
                                                                 <accessibility key="accessibilityConfiguration" identifier="SubbeatLabel"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="width" constant="46" identifier="SubbeatLabelWidth" id="pWa-Vf-I3p"/>
@@ -142,7 +142,7 @@
                                                 </connections>
                                             </view>
                                             <stackView contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" ambiguous="YES" misplaced="YES" distribution="fillEqually" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="ca1-ur-VJf" userLabel="Transport">
-                                                <rect key="frame" x="0.0" y="29" width="148" height="36"/>
+                                                <rect key="frame" x="0.0" y="28" width="148" height="36"/>
                                                 <subviews>
                                                     <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="u5D-xu-7GP" userLabel="Record" customClass="ImageButtonView" customModule="MoonKit">
                                                         <rect key="frame" x="0.0" y="0.0" width="36" height="36"/>
@@ -253,7 +253,7 @@
                                         </variation>
                                     </stackView>
                                     <view opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ndz-Vc-1wb" customClass="ScrollWheel" customModule="MoonKit">
-                                        <rect key="frame" x="264" y="0.0" width="150" height="151"/>
+                                        <rect key="frame" x="264" y="0.0" width="151" height="151"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <accessibility key="accessibilityConfiguration" identifier="JogWheel"/>
                                         <constraints>
@@ -295,7 +295,7 @@
                                         </connections>
                                     </view>
                                     <containerView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iYt-GS-XMU" userLabel="Tempo Container">
-                                        <rect key="frame" x="454" y="48" width="300" height="56"/>
+                                        <rect key="frame" x="455" y="48" width="300" height="56"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="300" identifier="TempoContainerWidth" id="2zW-q5-rAN"/>
                                             <constraint firstAttribute="height" constant="56" identifier="TempoContainerHeight" id="Qtd-27-uiL"/>
@@ -655,13 +655,13 @@
                                 </variation>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" distribution="fillEqually" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="1L9-xl-LZM" userLabel="FileTrackStack">
-                                <rect key="frame" x="20" y="62" width="560" height="17"/>
+                                <rect key="frame" x="20" y="62" width="560" height="50"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Huf-2K-yWO" userLabel="FileStack">
-                                        <rect key="frame" x="0.0" y="0.0" width="280" height="17"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="270" height="50"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" ambiguous="YES" misplaced="YES" text="File" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5F4-fd-MDF">
-                                                <rect key="frame" x="0.0" y="0.0" width="33" height="17"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="22" height="50"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="FileLabel"/>
                                                 <fontDescription key="fontDescription" name="EvelethThin" family="Eveleth" pointSize="14"/>
                                                 <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="calibratedRGB"/>
@@ -671,7 +671,7 @@
                                                 </userDefinedRuntimeAttributes>
                                             </label>
                                             <label opaque="NO" contentMode="left" horizontalHuggingPriority="750" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Some MIDI File" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zLX-jM-BjG">
-                                                <rect key="frame" x="33" y="0.0" width="247" height="17"/>
+                                                <rect key="frame" x="30" y="0.0" width="232" height="50"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="FileNameLabel"/>
                                                 <gestureRecognizers/>
@@ -687,7 +687,7 @@
                                                 </connections>
                                             </label>
                                             <view opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QH3-ti-BXW" customClass="LabelButton" customModule="MoonKit">
-                                                <rect key="frame" x="280" y="0.0" width="0.0" height="17"/>
+                                                <rect key="frame" x="270" y="0.0" width="0.0" height="50"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="FileActionButton"/>
                                                 <constraints>
@@ -715,10 +715,10 @@
                                         </userDefinedRuntimeAttributes>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="1Cq-il-hDf" userLabel="TrackStack">
-                                        <rect key="frame" x="280" y="0.0" width="280" height="17"/>
+                                        <rect key="frame" x="290" y="0.0" width="270" height="50"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" ambiguous="YES" misplaced="YES" text="Track" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="g88-s6-VFg">
-                                                <rect key="frame" x="0.0" y="0.0" width="55" height="17"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="34" height="50"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="TrackLabel"/>
                                                 <fontDescription key="fontDescription" name="EvelethThin" family="Eveleth" pointSize="14"/>
                                                 <color key="textColor" red="0.57254904510000004" green="0.52941179279999995" blue="0.47058823700000002" alpha="1" colorSpace="calibratedRGB"/>
@@ -728,7 +728,7 @@
                                                 </userDefinedRuntimeAttributes>
                                             </label>
                                             <label opaque="NO" contentMode="left" horizontalHuggingPriority="750" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Some MIDI Track" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CbO-jC-KNp">
-                                                <rect key="frame" x="55" y="0.0" width="226" height="17"/>
+                                                <rect key="frame" x="42" y="0.0" width="220" height="50"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="TrackNameLabel"/>
                                                 <gestureRecognizers/>
@@ -738,16 +738,13 @@
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="FileTrackNameLabel"/>
                                                 </userDefinedRuntimeAttributes>
-                                                <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
-                                                    <rect key="frame" x="63" y="0.0" width="300" height="24"/>
-                                                </variation>
                                                 <connections>
                                                     <outletCollection property="gestureRecognizers" destination="gWO-vf-MNW" appends="YES" id="dNA-VA-I8g"/>
                                                     <outletCollection property="gestureRecognizers" destination="FfA-IR-6Oa" appends="YES" id="mhf-H1-mjr"/>
                                                 </connections>
                                             </label>
                                             <view opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gHP-pF-ywl" customClass="LabelButton" customModule="MoonKit">
-                                                <rect key="frame" x="280" y="0.0" width="0.0" height="17"/>
+                                                <rect key="frame" x="270" y="0.0" width="0.0" height="50"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="TrackActionButton"/>
                                                 <constraints>
@@ -796,11 +793,11 @@
                                     </mask>
                                 </variation>
                             </stackView>
-                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NZR-ya-29p">
-                                <rect key="frame" x="0.0" y="221" width="642" height="441"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NZR-ya-29p">
+                                <rect key="frame" x="0.0" y="221" width="500" height="300"/>
                                 <subviews>
-                                    <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Xii-MX-zKn" userLabel="Mixer Container">
-                                        <rect key="frame" x="20" y="21" width="200" height="400"/>
+                                    <containerView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Xii-MX-zKn" userLabel="Mixer Container">
+                                        <rect key="frame" x="0.0" y="0.0" width="200" height="300"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="400" identifier="MixerContainerHeight" id="C6C-8L-ZjX"/>
                                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="200" identifier="MixerContainerWidth" id="R3A-qZ-CJY"/>
@@ -831,7 +828,7 @@
                                         </connections>
                                     </containerView>
                                     <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="U9p-PY-X1m" userLabel="MIDI Player" customClass="MIDIPlayerView" customModule="MidiSprite" customModuleProvider="target">
-                                        <rect key="frame" x="222" y="20" width="400" height="400"/>
+                                        <rect key="frame" x="200" y="0.0" width="300" height="300"/>
                                         <color key="backgroundColor" red="0.20000000298023224" green="0.19607843458652496" blue="0.19215686619281769" alpha="1" colorSpace="calibratedRGB"/>
                                         <accessibility key="accessibilityConfiguration" identifier="MIDIPlayer"/>
                                         <constraints>
@@ -864,10 +861,10 @@
                                 </variation>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" distribution="fillEqually" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="cIl-mB-kk1" userLabel="NoteAttributes/Instrument">
-                                <rect key="frame" x="552" y="26" width="416" height="240"/>
+                                <rect key="frame" x="552" y="26" width="436" height="240"/>
                                 <subviews>
                                     <containerView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HzR-qG-Aqv" userLabel="Instrument Container">
-                                        <rect key="frame" x="208" y="0.0" width="208" height="240"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="208" height="240"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="240" identifier="InstrumentContainerHeight" id="Kk9-oQ-Hx5">
                                                 <variation key="widthClass=regular" constant="240"/>
@@ -892,7 +889,7 @@
                                         </connections>
                                     </containerView>
                                     <containerView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ont-R1-PQ9" userLabel="NoteAttributes Container">
-                                        <rect key="frame" x="0.0" y="0.0" width="208" height="240"/>
+                                        <rect key="frame" x="228" y="0.0" width="208" height="240"/>
                                         <constraints>
                                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="240" identifier="NoteAttributesContainerHeight" id="N8t-3g-O5n">
                                                 <variation key="widthClass=regular" constant="168"/>
@@ -1681,13 +1678,17 @@
                                 <exclude reference="OmS-5C-LrH"/>
                                 <exclude reference="ex6-R6-S95"/>
                                 <exclude reference="nul-W3-gia"/>
+                                <exclude reference="ams-Hi-YYI"/>
+                                <exclude reference="nuW-Ic-X2f"/>
+                                <exclude reference="NWo-bR-14t"/>
+                                <exclude reference="Sya-7v-Q2s"/>
+                                <exclude reference="qLB-St-jws"/>
+                                <exclude reference="TNs-Za-O4h"/>
+                                <exclude reference="bFf-3L-rej"/>
+                                <exclude reference="lgO-7N-9x1"/>
                                 <exclude reference="Egr-O2-Q8p"/>
                                 <exclude reference="dRk-Nh-NrI"/>
                                 <exclude reference="jVh-vm-Mzh"/>
-                                <exclude reference="ams-Hi-YYI"/>
-                                <exclude reference="nuW-Ic-X2f"/>
-                                <exclude reference="TNs-Za-O4h"/>
-                                <exclude reference="lgO-7N-9x1"/>
                                 <exclude reference="qoF-0z-3us"/>
                                 <exclude reference="33k-ri-hLy"/>
                                 <exclude reference="C5v-lg-8Ev"/>
@@ -1695,10 +1696,6 @@
                                 <exclude reference="3MK-zR-u5k"/>
                                 <exclude reference="JfJ-B2-HT9"/>
                                 <exclude reference="Tpf-hj-cQu"/>
-                                <exclude reference="NWo-bR-14t"/>
-                                <exclude reference="Sya-7v-Q2s"/>
-                                <exclude reference="qLB-St-jws"/>
-                                <exclude reference="bFf-3L-rej"/>
                                 <exclude reference="2iT-2H-uln"/>
                                 <exclude reference="scO-5z-aRY"/>
                             </mask>
@@ -1730,10 +1727,10 @@
                                 <include reference="OmS-5C-LrH"/>
                                 <include reference="ex6-R6-S95"/>
                                 <include reference="nul-W3-gia"/>
+                                <include reference="nuW-Ic-X2f"/>
                                 <include reference="Egr-O2-Q8p"/>
                                 <include reference="dRk-Nh-NrI"/>
                                 <include reference="jVh-vm-Mzh"/>
-                                <include reference="nuW-Ic-X2f"/>
                                 <include reference="qoF-0z-3us"/>
                                 <include reference="33k-ri-hLy"/>
                                 <include reference="C5v-lg-8Ev"/>
@@ -1768,13 +1765,13 @@
                                 <exclude reference="OmS-5C-LrH"/>
                                 <exclude reference="ex6-R6-S95"/>
                                 <exclude reference="nul-W3-gia"/>
-                                <exclude reference="Egr-O2-Q8p"/>
-                                <exclude reference="dRk-Nh-NrI"/>
-                                <exclude reference="jVh-vm-Mzh"/>
                                 <include reference="ams-Hi-YYI"/>
                                 <exclude reference="nuW-Ic-X2f"/>
                                 <include reference="TNs-Za-O4h"/>
                                 <include reference="lgO-7N-9x1"/>
+                                <exclude reference="Egr-O2-Q8p"/>
+                                <exclude reference="dRk-Nh-NrI"/>
+                                <exclude reference="jVh-vm-Mzh"/>
                                 <exclude reference="qoF-0z-3us"/>
                                 <exclude reference="33k-ri-hLy"/>
                                 <exclude reference="C5v-lg-8Ev"/>
@@ -1787,11 +1784,11 @@
                         </variation>
                         <variation key="heightClass=regular-widthClass=regular">
                             <mask key="constraints">
-                                <include reference="3MK-zR-u5k"/>
                                 <include reference="NWo-bR-14t"/>
                                 <include reference="Sya-7v-Q2s"/>
                                 <include reference="qLB-St-jws"/>
                                 <include reference="bFf-3L-rej"/>
+                                <include reference="3MK-zR-u5k"/>
                             </mask>
                         </variation>
                     </view>

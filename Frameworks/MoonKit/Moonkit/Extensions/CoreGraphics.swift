@@ -9,6 +9,106 @@
 import Foundation
 import UIKit
 
+public func +<U1:Unpackable2, U2:Unpackable2
+  where U1:Packable2, U1.Element == U2.Element, U1.Element:ArithmeticType>(lhs: U1, rhs: U2) -> U1
+{
+  var values1 = lhs.unpack
+  let values2 = rhs.unpack
+  values1.0 += values2.0
+  values1.1 += values2.1
+  return U1(values1)
+}
+
+public func -<U1:Unpackable2, U2:Unpackable2
+  where U1:Packable2, U1.Element == U2.Element, U1.Element:ArithmeticType>(lhs: U1, rhs: U2) -> U1
+{
+  var values1 = lhs.unpack
+  let values2 = rhs.unpack
+  values1.0 -= values2.0
+  values1.1 -= values2.1
+  return U1(values1)
+}
+
+public func *<U1:Unpackable2, U2:Unpackable2
+  where U1:Packable2, U1.Element == U2.Element, U1.Element:ArithmeticType>(lhs: U1, rhs: U2) -> U1
+{
+  var values1 = lhs.unpack
+  let values2 = rhs.unpack
+  values1.0 *= values2.0
+  values1.1 *= values2.1
+  return U1(values1)
+}
+
+public func /<U1:Unpackable2, U2:Unpackable2
+  where U1:Packable2, U1.Element == U2.Element, U1.Element:ArithmeticType>(lhs: U1, rhs: U2) -> U1
+{
+  var values1 = lhs.unpack
+  let values2 = rhs.unpack
+  values1.0 /= values2.0
+  values1.1 /= values2.1
+  return U1(values1)
+}
+
+public func %<U1:Unpackable2, U2:Unpackable2
+  where U1:Packable2, U1.Element == U2.Element, U1.Element:ArithmeticType>(lhs: U1, rhs: U2) -> U1
+{
+  var values1 = lhs.unpack
+  let values2 = rhs.unpack
+  values1.0 %= values2.0
+  values1.1 %= values2.1
+  return U1(values1)
+}
+
+public func +=<U1:Unpackable2, U2:Unpackable2
+  where U1:Packable2, U1.Element == U2.Element, U1.Element:ArithmeticType>(inout lhs: U1, rhs: U2)
+{
+  var values1 = lhs.unpack
+  let values2 = rhs.unpack
+  values1.0 += values2.0
+  values1.1 += values2.1
+  lhs = U1(values1)
+}
+
+public func -=<U1:Unpackable2, U2:Unpackable2
+  where U1:Packable2, U1.Element == U2.Element, U1.Element:ArithmeticType>(inout lhs: U1, rhs: U2)
+{
+  var values1 = lhs.unpack
+  let values2 = rhs.unpack
+  values1.0 -= values2.0
+  values1.1 -= values2.1
+  lhs = U1(values1)
+}
+
+public func *=<U1:Unpackable2, U2:Unpackable2
+  where U1:Packable2, U1.Element == U2.Element, U1.Element:ArithmeticType>(inout lhs: U1, rhs: U2)
+{
+  var values1 = lhs.unpack
+  let values2 = rhs.unpack
+  values1.0 *= values2.0
+  values1.1 *= values2.1
+  lhs = U1(values1)
+}
+
+public func /=<U1:Unpackable2, U2:Unpackable2
+  where U1:Packable2, U1.Element == U2.Element, U1.Element:ArithmeticType>(inout lhs: U1, rhs: U2)
+{
+  var values1 = lhs.unpack
+  let values2 = rhs.unpack
+  values1.0 /= values2.0
+  values1.1 /= values2.1
+  lhs = U1(values1)
+}
+
+public func %=<U1:Unpackable2, U2:Unpackable2
+  where U1:Packable2, U1.Element == U2.Element, U1.Element:ArithmeticType>(inout lhs: U1, rhs: U2)
+{
+  var values1 = lhs.unpack
+  let values2 = rhs.unpack
+  values1.0 %= values2.0
+  values1.1 %= values2.1
+  lhs = U1(values1)
+}
+
 extension CGFloat {
   public var degrees: CGFloat { return self * 180 / π }
   public var radians: CGFloat { return self * π / 180 }
@@ -19,7 +119,7 @@ extension CGFloat {
 }
 
 extension CGPoint {
-  public init(_ values: (CGFloat, CGFloat)) { self.init(x: values.0, y: values.1) }
+
   public init?(_ string: String?) { if let s = string { self = CGPointFromString(s) } else { return nil } }
   public static var nullPoint: CGPoint = CGPoint(x: CGFloat.NaN, y: CGFloat.NaN)
   public var isNull: Bool { return x.isNaN || y.isNaN }
@@ -40,6 +140,8 @@ extension CGPoint {
     return sqrt(pow(x - point.x, 2) + pow(y - point.y, 2))
   }
 
+  public func description(precision: Int) -> String { return "(\(x.rounded(precision)), \(y.rounded(precision)))" }
+
   public var max: CGFloat { return y > x ? y : x }
   public var min: CGFloat { return y < x ? y : x }
   public init(_ vector: CGVector) { x = vector.dx; y = vector.dy }
@@ -57,32 +159,36 @@ extension CGPoint: Unpackable2 {
   public var unpack: (CGFloat, CGFloat) { return (x, y) }
 }
 
+extension CGPoint: Packable2 {
+  public init(_ elements: (CGFloat, CGFloat)) { self.init(x: elements.0, y: elements.1) }
+}
+
 extension CGPoint: CustomStringConvertible { public var description: String { return NSStringFromCGPoint(self) } }
 
 //extension CGPoint: ArithmeticType {}
 
-public func -(lhs: CGPoint, rhs: CGPoint) -> CGPoint {
-  return lhs.isNull ? rhs : (rhs.isNull ? lhs : CGPoint(x: lhs.x - rhs.x, y: lhs.y - rhs.y))
-}
+//public func -(lhs: CGPoint, rhs: CGPoint) -> CGPoint {
+//  return lhs.isNull ? rhs : (rhs.isNull ? lhs : CGPoint(x: lhs.x - rhs.x, y: lhs.y - rhs.y))
+//}
 
-public func -(lhs: CGPoint, rhs: (CGFloat, CGFloat)) -> CGPoint {
-  return lhs.isNull ? CGPoint(x: rhs.0, y: rhs.1) : CGPoint(x: lhs.x - rhs.0, y: lhs.y - rhs.1)
-}
+//public func -(lhs: CGPoint, rhs: (CGFloat, CGFloat)) -> CGPoint {
+//  return lhs.isNull ? CGPoint(x: rhs.0, y: rhs.1) : CGPoint(x: lhs.x - rhs.0, y: lhs.y - rhs.1)
+//}
 
-public func -(lhs: CGPoint, rhs: (CGFloatable, CGFloatable)) -> CGPoint {
-  return lhs.isNull
-           ? CGPoint(x: rhs.0.CGFloatValue, y: rhs.1.CGFloatValue)
-           : CGPoint(x: lhs.x - rhs.0.CGFloatValue, y: lhs.y - rhs.1.CGFloatValue)
-}
+//public func -(lhs: CGPoint, rhs: (CGFloatable, CGFloatable)) -> CGPoint {
+//  return lhs.isNull
+//           ? CGPoint(x: rhs.0.CGFloatValue, y: rhs.1.CGFloatValue)
+//           : CGPoint(x: lhs.x - rhs.0.CGFloatValue, y: lhs.y - rhs.1.CGFloatValue)
+//}
 
-public func -<T:Unpackable2 where T.Element == CGFloat>(lhs: CGPoint, rhs: T) -> CGPoint {
-  return lhs - rhs.unpack
-}
+//public func -<T:Unpackable2 where T.Element == CGFloat>(lhs: CGPoint, rhs: T) -> CGPoint {
+//  return lhs - rhs.unpack
+//}
 
-public func -<T:Unpackable2 where T.Element:CGFloatable>(lhs: CGPoint, rhs: T) -> CGPoint {
-  let floatables = rhs.unpack
-  return lhs - (floatables.0.CGFloatValue, floatables.1.CGFloatValue)
-}
+//public func -<T:Unpackable2 where T.Element:CGFloatable>(lhs: CGPoint, rhs: T) -> CGPoint {
+//  let floatables = rhs.unpack
+//  return lhs - (floatables.0.CGFloatValue, floatables.1.CGFloatValue)
+//}
 
 public func +(lhs: CGPoint, rhs: (CGFloat, CGFloat)) -> CGPoint {
   return lhs.isNull ? CGPoint(x: rhs.0, y: rhs.1) : CGPoint(x: lhs.x + rhs.0, y: lhs.y + rhs.1)
@@ -94,31 +200,31 @@ public func +(lhs: CGPoint, rhs: (CGFloatable, CGFloatable)) -> CGPoint {
     : CGPoint(x: lhs.x + rhs.0.CGFloatValue, y: lhs.y + rhs.1.CGFloatValue)
 }
 
-public func +(lhs: CGPoint, rhs: CGPoint) -> CGPoint {
-  return lhs.isNull ? rhs : (rhs.isNull ? lhs : CGPoint(x: lhs.x + rhs.x, y: lhs.y + rhs.y))
-}
+//public func +(lhs: CGPoint, rhs: CGPoint) -> CGPoint {
+//  return lhs.isNull ? rhs : (rhs.isNull ? lhs : CGPoint(x: lhs.x + rhs.x, y: lhs.y + rhs.y))
+//}
 
-public func +<T:Unpackable2 where T.Element:CGFloatable>(lhs: CGPoint, rhs: T) -> CGPoint {
-  let floatables = rhs.unpack
-  return lhs + (floatables.0.CGFloatValue, floatables.1.CGFloatValue)
-}
-public func +=<T:Unpackable2 where T.Element:CGFloatable>(inout lhs: CGPoint, rhs: T) {
-  let floatables = rhs.unpack
-  lhs = lhs + (floatables.0.CGFloatValue, floatables.1.CGFloatValue)
-}
+//public func +<T:Unpackable2 where T.Element:CGFloatable>(lhs: CGPoint, rhs: T) -> CGPoint {
+//  let floatables = rhs.unpack
+//  return lhs + (floatables.0.CGFloatValue, floatables.1.CGFloatValue)
+//}
+//public func +=<T:Unpackable2 where T.Element:CGFloatable>(inout lhs: CGPoint, rhs: T) {
+//  let floatables = rhs.unpack
+//  lhs = lhs + (floatables.0.CGFloatValue, floatables.1.CGFloatValue)
+//}
 
-public func +<T:Unpackable2 where T.Element == CGFloat>(lhs: CGPoint, rhs: T) -> CGPoint {
-  return lhs + rhs.unpack
-}
+//public func +<T:Unpackable2 where T.Element == CGFloat>(lhs: CGPoint, rhs: T) -> CGPoint {
+//  return lhs + rhs.unpack
+//}
 
-public func -=(inout lhs: CGPoint, rhs: CGPoint) { lhs = lhs - rhs }
-public func +=(inout lhs: CGPoint, rhs: CGPoint) { lhs = lhs + rhs }
+//public func -=(inout lhs: CGPoint, rhs: CGPoint) { lhs = lhs - rhs }
+//public func +=(inout lhs: CGPoint, rhs: CGPoint) { lhs = lhs + rhs }
 
 public func /(lhs: CGPoint, rhs: CGFloat) -> CGPoint { return CGPoint(x: lhs.x / rhs, y: lhs.y / rhs) }
 public func /(lhs: CGPoint, rhs: CGFloatable) -> CGPoint {
   return CGPoint(x: lhs.x / rhs.CGFloatValue, y: lhs.y / rhs.CGFloatValue)
 }
-public func /(lhs: CGPoint, rhs: CGPoint) -> CGPoint { return CGPoint(x: lhs.x / rhs.x, y: lhs.y / rhs.y) }
+//public func /(lhs: CGPoint, rhs: CGPoint) -> CGPoint { return CGPoint(x: lhs.x / rhs.x, y: lhs.y / rhs.y) }
 
 public func /(lhs: CGFloatable, rhs: CGPoint) -> CGPoint {
   let floatable = lhs.CGFloatValue
@@ -127,17 +233,17 @@ public func /(lhs: CGFloatable, rhs: CGPoint) -> CGPoint {
 
 public func /=(inout lhs: CGPoint, rhs: CGFloat) { lhs = lhs / rhs }
 public func /=(inout lhs: CGPoint, rhs: CGFloatable) { lhs = lhs / rhs }
-public func /=(inout lhs: CGPoint, rhs: CGPoint) { lhs = lhs / rhs }
+//public func /=(inout lhs: CGPoint, rhs: CGPoint) { lhs = lhs / rhs }
 
 public func *(lhs: CGPoint, rhs: CGFloat) -> CGPoint { return CGPoint(x: lhs.x * rhs, y: lhs.y * rhs) }
 public func *(lhs: CGPoint, rhs: CGFloatable) -> CGPoint {
   return CGPoint(x: lhs.x * rhs.CGFloatValue, y: lhs.y * rhs.CGFloatValue)
 }
-public func *(lhs: CGPoint, rhs: CGPoint) -> CGPoint { return CGPoint(x: lhs.x * rhs.x, y: lhs.y * rhs.y) }
+//public func *(lhs: CGPoint, rhs: CGPoint) -> CGPoint { return CGPoint(x: lhs.x * rhs.x, y: lhs.y * rhs.y) }
 
 public func *=(inout lhs: CGPoint, rhs: CGFloat) { lhs = lhs * rhs }
 public func *=(inout lhs: CGPoint, rhs: CGFloatable) { lhs = lhs * rhs }
-public func *=(inout lhs: CGPoint, rhs: CGPoint) { lhs = lhs * rhs }
+//public func *=(inout lhs: CGPoint, rhs: CGPoint) { lhs = lhs * rhs }
 
 extension CGVector {
   public init?(_ string: String?) { if let s = string { self = CGVectorFromString(s) } else { return nil } }
@@ -153,6 +259,7 @@ extension CGVector {
   public init(_ point: CGPoint) { dx = point.x; dy = point.y }
   public var max: CGFloat { return dy > dx ? dy : dx }
   public var min: CGFloat { return dy < dx ? dy : dx }
+  public func description(precision: Int) -> String { return "(\(dx.rounded(precision)), \(dy.rounded(precision)))" }
 }
 extension CGVector: NilLiteralConvertible {
   public init(nilLiteral: ()) { self = CGVector.nullVector }
@@ -166,19 +273,23 @@ extension CGVector: Unpackable2 {
   public var unpack: (CGFloat, CGFloat) { return (dx, dy) }
 }
 
-public func -(lhs: CGVector, rhs: CGVector) -> CGVector {
-  return lhs.isNull ? rhs : (rhs.isNull ? lhs : CGVector(dx: lhs.dx - rhs.dx, dy: lhs.dy - rhs.dy))
+extension CGVector: Packable2 {
+  public init(_ elements: (CGFloat, CGFloat)) { self.init(dx: elements.0, dy: elements.1) }
 }
-public func +(lhs: CGVector, rhs: CGVector) -> CGVector {
-  return lhs.isNull ? rhs : (rhs.isNull ? lhs : CGVector(dx: lhs.dx + rhs.dx, dy: lhs.dy + rhs.dy))
-}
-public func -=(inout lhs: CGVector, rhs: CGVector) { lhs = lhs - rhs }
-public func +=(inout lhs: CGVector, rhs: CGVector) { lhs = lhs + rhs }
-public func /(lhs: CGVector, rhs: CGVector) -> CGVector { return CGVector(dx: lhs.dx / rhs.dx, dy: lhs.dy / rhs.dy) }
+
+//public func -(lhs: CGVector, rhs: CGVector) -> CGVector {
+//  return lhs.isNull ? rhs : (rhs.isNull ? lhs : CGVector(dx: lhs.dx - rhs.dx, dy: lhs.dy - rhs.dy))
+//}
+//public func +(lhs: CGVector, rhs: CGVector) -> CGVector {
+//  return lhs.isNull ? rhs : (rhs.isNull ? lhs : CGVector(dx: lhs.dx + rhs.dx, dy: lhs.dy + rhs.dy))
+//}
+//public func -=(inout lhs: CGVector, rhs: CGVector) { lhs = lhs - rhs }
+//public func +=(inout lhs: CGVector, rhs: CGVector) { lhs = lhs + rhs }
+//public func /(lhs: CGVector, rhs: CGVector) -> CGVector { return CGVector(dx: lhs.dx / rhs.dx, dy: lhs.dy / rhs.dy) }
 public func /(lhs: CGVector, rhs: CGFloat) -> CGVector { return CGVector(dx: lhs.dx / rhs, dy: lhs.dy / rhs) }
 public func /=(inout lhs: CGVector, rhs: CGFloat) { lhs = lhs / rhs }
 public func *(lhs: CGVector, rhs: CGFloat) -> CGVector { return CGVector(dx: lhs.dx * rhs, dy: lhs.dy * rhs) }
-public func *(lhs: CGVector, rhs: CGVector) -> CGVector { return CGVector(dx: lhs.dx * rhs.dx, dy: lhs.dy * rhs.dy) }
+//public func *(lhs: CGVector, rhs: CGVector) -> CGVector { return CGVector(dx: lhs.dx * rhs.dx, dy: lhs.dy * rhs.dy) }
 public func *=(inout lhs: CGVector, rhs: CGFloat) { lhs = lhs * rhs }
 
 public func sum<S:SequenceType where S.Generator.Element == CGVector>(s: S) -> CGVector {
@@ -186,7 +297,7 @@ public func sum<S:SequenceType where S.Generator.Element == CGVector>(s: S) -> C
 }
 
 extension CGSize {
-  public init(_ values: (CGFloat, CGFloat)) { self.init(width: values.0, height: values.1) }
+
   public init?(_ string: String?) { if let s = string { self = CGSizeFromString(s) } else { return nil } }
   public init(square: CGFloat) { self = CGSize(width: square, height: square) }
   public func contains(size: CGSize) -> Bool { return width >= size.width && height >= size.height }
@@ -237,23 +348,25 @@ extension CGSize: CustomStringConvertible { public var description: String { ret
 extension CGSize: Unpackable2 {
   public var unpack: (CGFloat, CGFloat) { return (width, height) }
 }
-
+extension CGSize: Packable2 {
+  public init(_ elements: (CGFloat, CGFloat)) { self.init(width: elements.0, height: elements.1) }
+}
 public func max(s1: CGSize, s2: CGSize) -> CGSize { return s1 > s2 ? s1 : s2 }
 public func min(s1: CGSize, s2: CGSize) -> CGSize { return s1 < s2 ? s1 : s2 }
 
-public func +(lhs: CGSize, rhs: CGSize) -> CGSize {
-	return CGSize(width: lhs.width + rhs.width, height: lhs.height + rhs.height)
-}
-public func +<U:Unpackable2 where U.Element == CGFloat>(lhs: CGSize, rhs: U) -> CGSize {
-  let (w, h) = rhs.unpack
-  return CGSize(width: lhs.width + w, height: lhs.height + h)
-}
+//public func +(lhs: CGSize, rhs: CGSize) -> CGSize {
+//	return CGSize(width: lhs.width + rhs.width, height: lhs.height + rhs.height)
+//}
+//public func +<U:Unpackable2 where U.Element == CGFloat>(lhs: CGSize, rhs: U) -> CGSize {
+//  let (w, h) = rhs.unpack
+//  return CGSize(width: lhs.width + w, height: lhs.height + h)
+//}
 public func +=(inout lhs: CGSize, rhs: CGFloatable) { lhs.width += rhs.CGFloatValue; lhs.height += rhs.CGFloatValue }
 public func +(lhs: CGSize, rhs: CGFloat) -> CGSize { return CGSize(width: lhs.width + rhs, height: lhs.height + rhs) }
 
-public func -(lhs: CGSize, rhs: CGSize) -> CGSize {
-	return CGSize(width: lhs.width - rhs.width, height: lhs.height - rhs.height)
-}
+//public func -(lhs: CGSize, rhs: CGSize) -> CGSize {
+//	return CGSize(width: lhs.width - rhs.width, height: lhs.height - rhs.height)
+//}
 public func -(lhs: CGSize, rhs: CGFloat) -> CGSize { return CGSize(width: lhs.width - rhs, height: lhs.height - rhs) }
 
 public func >(lhs: CGSize, rhs: CGSize) -> Bool { return lhs.area > rhs.area }

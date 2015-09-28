@@ -71,7 +71,7 @@ struct MIDINodeEvent: MIDITrackEvent {
   init(barBeatTime t: CABarBeatTime, data d: Data) { time = t; data = d }
 
   enum Data: Equatable {
-    case Add(identifier: Identifier, placement: MIDINode.Placement, attributes: NoteAttributes)
+    case Add(identifier: Identifier, placement: Placement, attributes: NoteAttributes)
     case Remove(identifier: Identifier)
 
     init<C:CollectionType where C.Generator.Element == Byte,
@@ -93,7 +93,7 @@ struct MIDINodeEvent: MIDITrackEvent {
       guard i.distanceTo(data.endIndex) > 0 else {
         throw MIDIFileError(type: .InvalidLength, reason: "Not enough bytes for event")
       }
-      let placement = MIDINode.Placement(data[currentIndex ..< i])
+      let placement = Placement(data[currentIndex ..< i])
 
       currentIndex = i
       let attributesSize = Int(data[currentIndex])

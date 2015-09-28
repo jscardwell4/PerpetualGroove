@@ -2,11 +2,13 @@ import Foundation
 import UIKit
 import MoonKit
 
-let size = CGSize(square: 200)
-let path = UIBezierPath(ovalInRect: CGRect(size: size))
-let innerSize = CGSize(square: size.width * 0.125)
-path.moveToPoint(CGPoint(x: half(size.width) + innerSize.width, y: half(size.height)))
-path.usesEvenOddFillRule = true
-path.addArcWithCenter(CGPoint(x: half(size.width), y: half(size.height)), radius: innerSize.width, startAngle: 0, endAngle: π * 2, clockwise: true)
-path.containsPoint(CGPoint(x: 100, y: 100))
-path.containsPoint(CGPoint(x: 150, y: 150))
+var tree: Tree<Int> = [30, 9, 72, 7, 27, 3, 23, 29, 12, 49, 78, 73, 92, 58, 42, 40, 44, 65, 87]
+//print(tree)
+tree.replace(72, with: 4)
+tree.remove([78, 58, 12])
+tree.insert([-1, 99, 5])
+tree.replace([3, 4, 5], with: [13, 14, 15])
+
+//print(tree)
+//print(tree.treeDescription)
+

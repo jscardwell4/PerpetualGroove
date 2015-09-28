@@ -14,7 +14,7 @@ import struct AudioToolbox.CABarBeatTime
 
 final class TempoTrack: MIDITrackType {
 
-  let time = Sequencer.barBeatTime
+  let time = Sequencer.time
   var trackEnd: CABarBeatTime {
     if let endOfTrackEvent = events.last as? MetaEvent where endOfTrackEvent.data == .EndOfTrack {
       return endOfTrackEvent.time

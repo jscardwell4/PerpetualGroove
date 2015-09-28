@@ -22,7 +22,7 @@ extension CABarBeatTime: CustomStringConvertible {
 
 extension CABarBeatTime: CustomDebugStringConvertible {
   public var debugDescription: String {
-    return "{bar: \(bar); beat: \(beat); subbeat: \(subbeat); subbeatDivisor: \(subbeatDivisor)}"
+    return "{bar: \(bar); beat: \(beat); subbeat: \(subbeat); subbeatDivisor: \(subbeatDivisor); ticks: \(ticks)}"
   }
 }
 
@@ -117,6 +117,8 @@ extension CABarBeatTime {
     return bar * Double(beatsPerBar) + beat + subbeat / Double(subbeatDivisor)
   }
 
+  var doubleValue: Double { return doubleValueWithBeatsPerBar(Sequencer.timeSignature.beatsPerBar) }
+
   /**
   tickValueWithBeatsPerBar:
 
@@ -130,6 +132,8 @@ extension CABarBeatTime {
     let subbeat = UInt64(max(Int(self.subbeat) - 1, 0))
     return (bar * UInt64(beatsPerBar) + beat) * UInt64(subbeatDivisor) + subbeat
   }
+
+  var ticks: MIDITimeStamp { return tickValueWithBeatsPerBar(Sequencer.timeSignature.beatsPerBar) }
 
 }
 
@@ -334,9 +338,9 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
   var subbeat: Int { return Int(time.subbeat) }  /// Accessor for `time.subbeat`
 
   /// Generates the current `MIDI` representation of the current time
-  var timeStamp: MIDITimeStamp {  return time.tickValueWithBeatsPerBar(Sequencer.timeSignature.beatsPerBar) }
+  var ticks: MIDITimeStamp {  return time.ticks }
 
-  var doubleValue: Double {  return time.doubleValueWithBeatsPerBar(Sequencer.timeSignature.beatsPerBar) }
+  var doubleValue: Double {  return time.doubleValue }
 
   var description: String { return time.description }
 

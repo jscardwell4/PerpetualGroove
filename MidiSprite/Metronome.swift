@@ -15,7 +15,7 @@ import MoonKit
 final class Metronome {
 
   private let sampler: AVAudioUnitSampler
-  private let time = Sequencer.barBeatTime
+  private let time = Sequencer.time
 
   var channel: Byte = 0
   var on = false {

@@ -680,6 +680,11 @@ public protocol Unpackable2 {
   var unpack: (Element, Element) { get }
 }
 
+public protocol Packable2 {
+  typealias Element
+  init(_ elements: (Element, Element))
+}
+
 public extension Unpackable2 {
   var unpackArray: [Element] { let tuple = unpack; return [tuple.0, tuple.1] }
 }
@@ -687,6 +692,11 @@ public extension Unpackable2 {
 public protocol Unpackable3 {
   typealias Element
   var unpack: (Element, Element, Element) { get }
+}
+
+public protocol Packable3 {
+  typealias Element
+  init(_ elements: (Element, Element, Element))
 }
 
 public extension Unpackable3 {
@@ -700,6 +710,11 @@ public protocol Unpackable4 {
 
 public extension Unpackable4 {
   var unpackArray: [Element] { let tuple = unpack; return [tuple.0, tuple.1, tuple.2, tuple.3] }
+}
+
+public protocol Packable4 {
+  typealias Element
+  init(_ elements: (Element, Element, Element, Element))
 }
 
 /** Protocol for an object guaranteed to have a name */

@@ -360,6 +360,7 @@
 		C2A70E451ACD8EBA009C2CF7 /* MoonKit_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A70E441ACD8EBA009C2CF7 /* MoonKit_Tests.swift */; };
 		C2A70E461ACD8EBA009C2CF7 /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2358F1619C78D6D00920F8D /* MoonKit.framework */; };
 		C2A70E4D1ACD8F95009C2CF7 /* example1.json in Resources */ = {isa = PBXBuildFile; fileRef = C2A70E4C1ACD8F95009C2CF7 /* example1.json */; };
+		C2AA14721BB5857600D7C9E1 /* Tree.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AA14711BB5857600D7C9E1 /* Tree.swift */; settings = {ASSET_TAGS = (); }; };
 		C2AA2BCD1B8508AA00A0B08D /* Heap.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AA2BCC1B8508AA00A0B08D /* Heap.swift */; };
 		C2B6914C1AFAC8EF0041CE11 /* XMLParserDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B6914B1AFAC8EF0041CE11 /* XMLParserDelegate.swift */; };
 		C2B6918A1AFBCADB0041CE11 /* NetworkReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B691891AFBCADB0041CE11 /* NetworkReachability.swift */; };
@@ -467,7 +468,7 @@
 		C227343F1AE15CEE00641CC3 /* TitleEdgeInsets_Default.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TitleEdgeInsets_Default.json; sourceTree = "<group>"; };
 		C22734571AE1622E00641CC3 /* JSON.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = JSON.playground; path = Moonkit/JSON.playground; sourceTree = "<group>"; };
 		C22E6B8C1B80E1CE008D46A6 /* ClosedInterval+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ClosedInterval+MoonKitAdditions.swift"; sourceTree = "<group>"; };
-		C22E6B8E1B810860008D46A6 /* List.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = List.swift; path = "Moonkit/Data Structures/List.swift"; sourceTree = "<group>"; };
+		C22E6B8E1B810860008D46A6 /* List.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = List.swift; sourceTree = "<group>"; };
 		C22F5FE31B6FC753006D225A /* Dispatch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dispatch.swift; sourceTree = "<group>"; };
 		C22F5FE51B6FCF73006D225A /* Timer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
 		C2304E091AEECE1C0090D889 /* LayerProxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LayerProxy.swift; sourceTree = "<group>"; };
@@ -586,6 +587,7 @@
 		C2A70E441ACD8EBA009C2CF7 /* MoonKit_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = MoonKit_Tests.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		C2A70E4C1ACD8F95009C2CF7 /* example1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = example1.json; sourceTree = "<group>"; };
 		C2A7CA9619CBB8FE00212F2D /* MSDictionary+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MSDictionary+MoonKitAdditions.swift"; sourceTree = "<group>"; };
+		C2AA14711BB5857600D7C9E1 /* Tree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tree.swift; sourceTree = "<group>"; };
 		C2AA2BCC1B8508AA00A0B08D /* Heap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Heap.swift; sourceTree = "<group>"; };
 		C2B6914B1AFAC8EF0041CE11 /* XMLParserDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XMLParserDelegate.swift; sourceTree = "<group>"; };
 		C2B691891AFBCADB0041CE11 /* NetworkReachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkReachability.swift; sourceTree = "<group>"; };
@@ -878,6 +880,8 @@
 		C23592DD19C8E04200920F8D /* Data Structures */ = {
 			isa = PBXGroup;
 			children = (
+				C2AA14711BB5857600D7C9E1 /* Tree.swift */,
+				C22E6B8E1B810860008D46A6 /* List.swift */,
 				C2AA2BCC1B8508AA00A0B08D /* Heap.swift */,
 				C26863711AF96E6E00D664E8 /* Queue.swift */,
 				C23592DE19C8E04200920F8D /* BitArray.swift */,
@@ -1152,7 +1156,6 @@
 		C2CE884518138C4900555D63 = {
 			isa = PBXGroup;
 			children = (
-				C22E6B8E1B810860008D46A6 /* List.swift */,
 				C2E076A31B4EF7420063D057 /* WTF.playground */,
 				C211C2C01B45FD81004A24E4 /* InlinePickerView.playground */,
 				C2EEBA2B1B0961CE0041B1B1 /* Fields.playground */,
@@ -2010,6 +2013,7 @@
 				C25D6A871B703E0C00EB7125 /* UILabel+MoonKitAdditions.swift in Sources */,
 				C2358F7A19C78E0C00920F8D /* MSNotificationReceptionist.m in Sources */,
 				C2358F7B19C78E0C00920F8D /* MSXMLParserDelegate.m in Sources */,
+				C2AA14721BB5857600D7C9E1 /* Tree.swift in Sources */,
 				C20650001A13C72600342FDE /* UIBarButtonItem+MoonKitAdditions.swift in Sources */,
 				C21493C11A35302200D274A2 /* ColorInputView.swift in Sources */,
 				C2358F7C19C78E0C00920F8D /* MSKeyPath.m in Sources */,

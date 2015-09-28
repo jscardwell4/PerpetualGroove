@@ -27,15 +27,23 @@ final class MIDIClock: CustomStringConvertible {
 
   private static let queue = concurrentQueueWithLabel("MIDI Clock", qualityOfService: QOS_CLASS_USER_INTERACTIVE)
 
-  var resolution: UInt64 { didSet { timer.interval = tickInterval } }
-  var beatsPerMinute: UInt16 = 120 { didSet { timer.interval = tickInterval } }
-  var tickInterval: UInt64 {
-    return nanosecondsPerBeat / UInt64(resolution) * 4 // ???: Still don't know why I need to multiply by
-                                                       // four to get the right intervals
+  var resolution: UInt64 { didSet { recalculate() } }
+
+  var beatsPerMinute: UInt16 = 120 { didSet { recalculate() } }
+
+  private(set) var tickInterval:        UInt64 = 0
+  private(set) var nanosecondsPerBeat:  UInt64 = 0
+  private(set) var microsecondsPerBeat: UInt64 = 0
+  private(set) var secondsPerBeat:      Double = 0
+
+  /** recalculate */
+  private func recalculate() {
+    nanosecondsPerBeat = UInt64(60.0e9) / UInt64(beatsPerMinute)
+    microsecondsPerBeat = UInt64(60.0e6) / UInt64(beatsPerMinute)
+    secondsPerBeat = 60 / Double(beatsPerMinute)
+    tickInterval = nanosecondsPerBeat / UInt64(resolution) * 4 // ???: Still don't know why I need to multiply by 4
+    timer.interval = tickInterval
   }
-  var nanosecondsPerBeat: UInt64 { return UInt64(60.0e9) / UInt64(beatsPerMinute) }
-  var microsecondsPerBeat: UInt64 { return UInt64(60.0e6) / UInt64(beatsPerMinute) }
-  var secondsPerBeat: Double { return 60 / Double(beatsPerMinute) }
 
   /** start */
   func start() {
@@ -77,13 +85,11 @@ final class MIDIClock: CustomStringConvertible {
   /// The running number of MIDI clocks that have elapsed
   private(set) var ticks: MIDITimeStamp = 0
 
-  private var graph: AUGraph?
-
   /** init */
-  init(resolution: UInt64) {
-    self.resolution = resolution
-    timer.interval = tickInterval
-    timer.handler = { [unowned self] _ in self.sendClock() }
+  init(resolution r: UInt64) {
+    resolution = r
+    recalculate()
+    timer.handler = sendClock
     do {
       try MIDIClientCreateWithBlock("Clock", &client, nil) ➤ "Failed to create midi client for clock"
       try MIDISourceCreate(client, "Clock", &endPoint) ➤ "Failed to create end point for clock"
@@ -98,11 +104,19 @@ final class MIDIClock: CustomStringConvertible {
   private var client = MIDIClientRef()
   private(set) var endPoint = MIDIEndpointRef()
 
+  /**
+  sendEvent:
+
+  - parameter event: Byte
+  */
   private func sendEvent(event: Byte) throws {
-    let data = [event]
-    let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
     var packetList = MIDIPacketList()
-    MIDIPacketListAdd(&packetList, size, MIDIPacketListInit(&packetList), ticks, 1, data)
+    MIDIPacketListAdd(&packetList,
+                      sizeof(UInt32.self) + sizeof(MIDIPacket.self),
+                      MIDIPacketListInit(&packetList),
+                      ticks,
+                      1,
+                      [event])
     try withUnsafePointer(&packetList) { MIDIReceived(endPoint, $0) } ➤ "Failed to send packets"
   }
 

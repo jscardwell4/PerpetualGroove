@@ -9,9 +9,16 @@
 //  mimic https://gist.github.com/airspeedswift/list.swift
 
 import Foundation
+
 private enum HeapNode<Element: Comparable> {
   case Empty
   indirect case Node(value: Element, left: HeapNode<Element>, right: HeapNode<Element>)
+
+  /**
+  initWithValue:
+
+  - parameter value: Element
+  */
   init(value: Element) { self = .Node(value: value, left: .Empty, right: .Empty) }
 }
 
@@ -19,12 +26,31 @@ public struct Heap<Element: Comparable> {
 
   private var root = HeapNode<Element>.Empty
 
+  /** init */
   public init() {}
 
+  /**
+  init:
+
+  - parameter seq: S
+  */
   public init<S: SequenceType where S.Generator.Element == Element>(_ seq: S) { seq.forEach { insert($0) } }
 
+  /**
+  insert:
+
+  - parameter value: Element
+  */
   public mutating func insert(value: Element) { root = insert(root, value) }
 
+  /**
+  insert:value:
+
+  - parameter node: HeapNode<Element>
+  - parameter value: Element
+
+  - returns: HeapNode<Element>
+  */
   private mutating func insert(node: HeapNode<Element>, _ value: Element) -> HeapNode<Element> {
     switch node {
       case .Empty:                             return HeapNode(value: value)
@@ -33,8 +59,23 @@ public struct Heap<Element: Comparable> {
     }
   }
 
+  /**
+  contains:
+
+  - parameter value: Element
+
+  - returns: Bool
+  */
   public func contains(value: Element) -> Bool { return contains(root, value) }
 
+  /**
+  contains:value:
+
+  - parameter node: HeapNode<Element>
+  - parameter value: Element
+
+  - returns: Bool
+  */
   private func contains(node: HeapNode<Element>, _ value: Element) -> Bool {
     switch node {
       case .Empty:                              return false
@@ -45,7 +86,14 @@ public struct Heap<Element: Comparable> {
 }
 
 extension Heap: SequenceType {
+
   public typealias Generator = AnyGenerator<Element>
+
+  /**
+  generate
+
+  - returns: Generator
+  */
   public func generate() -> Generator {
     var stack: [HeapNode<Element>] = []
     var current = root

@@ -573,6 +573,10 @@ public func *(var lhs: Pseudo, rhs: Floatable) -> Pseudo { lhs.multiplier =  rhs
 public func +(var lhs: Pseudo, rhs: Floatable) -> Pseudo { lhs.constant   =  rhs.FloatValue; return lhs }
 public func -(var lhs: Pseudo, rhs: Floatable) -> Pseudo { lhs.constant   = -rhs.FloatValue; return lhs }
 
+public func *(var lhs: Pseudo, rhs: Int) -> Pseudo { lhs.multiplier =  Float(rhs); return lhs }
+public func +(var lhs: Pseudo, rhs: Int) -> Pseudo { lhs.constant   =  Float(rhs); return lhs }
+public func -(var lhs: Pseudo, rhs: Int) -> Pseudo { lhs.constant   = -Float(rhs); return lhs }
+
 // MARK: - Flush to superview left/top operator
 
 public func |(lhs: Axis, rhs: UIView) -> Pseudo {

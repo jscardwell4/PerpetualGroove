@@ -46,7 +46,7 @@ final class InstrumentTrack: MIDITrackType, Equatable {
 
   var trackEnd: CABarBeatTime { return _trackEnd ?? time.time }
   
-  let time = Sequencer.barBeatTime
+  let time = Sequencer.time
 
   var recording = false
 
@@ -117,12 +117,12 @@ final class InstrumentTrack: MIDITrackType, Equatable {
   addNodeWithIdentifier:placement:attributes:texture:
 
   - parameter identifier: NodeIdentifier
-  - parameter placement: MIDINode.Placement
+  - parameter placement: Placement
   - parameter attributes: NoteAttributes
   - parameter texture: MIDINode.TextureType
   */
   private func addNodeWithIdentifier(identifier: NodeIdentifier,
-                           placement: MIDINode.Placement,
+                           placement: Placement,
                           attributes: NoteAttributes)
   {
     guard pendingIdentifier == nil else { fatalError("already have an identifier pending: \(pendingIdentifier!)") }
@@ -230,7 +230,7 @@ final class InstrumentTrack: MIDITrackType, Equatable {
     let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
     var data: [Byte] = [channelEvent.status.value, channelEvent.data1]
     if let data2 = channelEvent.data2 { data.append(data2) }
-    let timeStamp = time.timeStamp
+    let timeStamp = time.ticks
     MIDIPacketListAdd(&packetList, size, packet, timeStamp, 3, data)
     withUnsafePointer(&packetList) {
       do { try MIDISend(outPort, instrument.endPoint, $0) ➤ "Failed to dispatch packet list to instrument" }

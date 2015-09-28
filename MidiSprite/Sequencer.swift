@@ -81,17 +81,21 @@ final class Sequencer {
 
   /** The MIDI clock */
   static private let clock = MIDIClock(resolution: resolution)
-  static let barBeatTime = BarBeatTime(clockSource: clock.endPoint)
+  static let time = BarBeatTime(clockSource: clock.endPoint)
 
   static var resolution: UInt64 = 480 { didSet { clock.resolution = resolution } }
-  static var measure: String  { return barBeatTime.description }
+  static var measure: String  { return time.description }
 
   /** The MIDI clock's end point */
   static var clockSource: MIDIEndpointRef { return clock.endPoint }
 
+  static var tickInterval: UInt64 { return clock.tickInterval }
+  static var nanosecondsPerBeat: UInt64 { return clock.nanosecondsPerBeat }
+  static var microsecondsPerBeat: UInt64 { return clock.microsecondsPerBeat }
+  static var secondsPerBeat: Double { return clock.secondsPerBeat }
+
   /** The tempo used by the MIDI clock in beats per minute */
-  // TODO: Need to make sure the current tempo is set at the beginning of a new sequence and probably turn off continuous
-  // updates for slider
+  // TODO: Need to make sure the current tempo is set at the beginning of a new sequence
   static var tempo: Double {
     get { return Double(clock.beatsPerMinute) }
     set {
@@ -195,14 +199,14 @@ final class Sequencer {
   static var jogging:   Bool { return state ∋ .Jogging   }
   static var recording: Bool { return state ∋ .Recording }
 
-  private static var jogStartTimeTicks: UInt64 = 0
+  private(set) static var jogStartTimeTicks: UInt64 = 0
   private static var jogMaxTimeTicks:   UInt64 = 0
 
   /** beginJog */
   static func beginJog() {
     guard !jogging else { return }
     clock.stop()
-    jogStartTimeTicks = barBeatTime.time.tickValueWithBeatsPerBar(timeSignature.beatsPerBar)
+    jogStartTimeTicks = time.time.tickValueWithBeatsPerBar(timeSignature.beatsPerBar)
     jogMaxTimeTicks =   max(jogMaxTimeTicks, sequence.sequenceEnd.tickValueWithBeatsPerBar(timeSignature.beatsPerBar))
     state ⊻= [.Jogging]
   }
@@ -216,7 +220,7 @@ final class Sequencer {
     guard jogging else { return }
 
     let beatsPerBar = timeSignature.beatsPerBar
-    let ticksPerRevolution = UInt64(beatsPerBar) * UInt64(barBeatTime.partsPerQuarter)
+    let ticksPerRevolution = UInt64(beatsPerBar) * UInt64(time.partsPerQuarter)
     let isNegative = revolutions.isSignMinus
     let deltaTicks = UInt64(Double(abs(revolutions)) * Double(ticksPerRevolution))
     let pendingTimeTickValue: UInt64
@@ -231,7 +235,7 @@ final class Sequencer {
 
     let pendingTime = CABarBeatTime(tickValue: pendingTimeTickValue,
                                     beatsPerBar: beatsPerBar,
-                                    subbeatDivisor: barBeatTime.partsPerQuarter)
+                                    subbeatDivisor: time.partsPerQuarter)
 
     do { try jogToTime(pendingTime) } catch { logError(error) }
   }
@@ -247,11 +251,11 @@ final class Sequencer {
 
   - parameter time: CABarBeatTime
   */
-  static func jogToTime(time: CABarBeatTime) throws {
-    guard barBeatTime.time != time else { return }
+  static func jogToTime(t: CABarBeatTime) throws {
+    guard time.time != t else { return }
     guard jogging else { throw Error.NotPermitted }
-    guard barBeatTime.isValidTime(time) else { throw Error.InvalidBarBeatTime }
-    barBeatTime.time = time
+    guard time.isValidTime(t) else { throw Error.InvalidBarBeatTime }
+    time.time = t
     Notification.DidJog.post()
   }
 
@@ -269,7 +273,7 @@ final class Sequencer {
   static func pause() { guard playing else { return }; clock.stop(); state ⊻= [.Paused, .Playing] }
 
   /** Moves the time back to 0 */
-  static func reset() { stop(); barBeatTime.reset(); clock.reset(); Notification.DidReset.post() }
+  static func reset() { stop(); clock.reset(); time.reset(); Notification.DidReset.post() }
 
   /** Stops the MIDI clock */
   static func stop() {

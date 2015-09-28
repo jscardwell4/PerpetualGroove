@@ -104,7 +104,7 @@ class MIDIPlayerFieldNode: SKShapeNode {
   private func generate() {
     guard velocities.count > 0 && !location.isNull else { return }
     let velocity = sum(velocities) / CGFloat(velocities.count)
-    let placement = MIDINode.Placement(position: location, vector: velocity)
+    let placement = Placement(position: location, vector: velocity)
     delegate.placeNew(placement)
   }
 }
