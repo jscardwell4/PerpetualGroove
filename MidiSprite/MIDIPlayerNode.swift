@@ -41,6 +41,12 @@ final class MIDIPlayerNode: SKShapeNode {
     physicsBody?.categoryBitMask = 1
     physicsBody?.contactTestBitMask = 0xFFFFFFFF
     addChild(MIDIPlayerFieldNode(bezierPath: bezierPath, delegate: self))
+
+    notificationReceptionist = NotificationReceptionist(callbacks:
+      [
+        Sequencer.Notification.DidReset.rawValue: (Sequencer.self, NSOperationQueue.mainQueue(), didReset)
+      ]
+    )
   }
 
   private(set) var midiNodes: [MIDINode] = []
@@ -66,8 +72,17 @@ final class MIDIPlayerNode: SKShapeNode {
     Notification.DidRemoveNode.post()
   }
 
-  /** reset */
-  func reset() { midiNodes.forEach { $0.removeFromParent() }; midiNodes.removeAll() }
+  /**
+  didReset:
+
+  - parameter notification: NSNotification
+  */
+  func didReset(notification: NSNotification) {
+    midiNodes.forEach { $0.removeFromParent() }
+    midiNodes.removeAll()
+  }
+
+  private var notificationReceptionist: NotificationReceptionist!
 
   /**
   placeNew:

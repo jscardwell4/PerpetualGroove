@@ -104,7 +104,7 @@ final class InstrumentTrack: MIDITrackType, Equatable {
       return
     }
     dispatch_async(fileQueue!) {
-      [placement = node.initialPlacement, attributes = node.note] in
+      [placement = node.initialSnapshot.placement, attributes = node.note] in
 
       self.appendEvent(
         MIDINodeEvent(.Add(identifier: identifier, placement: placement, attributes: attributes)

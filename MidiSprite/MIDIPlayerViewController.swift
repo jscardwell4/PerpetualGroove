@@ -392,7 +392,7 @@ final class MIDIPlayerViewController: UIViewController {
   - parameter notification: NSNotification
   */
   private func didStart(notification: NSNotification) {
-    if state ∋ .Paused { state ⊻= [.Playing, .Paused] } else { state ∪= .Playing }
+    if paused { state ⊻= [.Playing, .Paused] } else { state ∪= .Playing }
   }
 
   /**
@@ -401,13 +401,6 @@ final class MIDIPlayerViewController: UIViewController {
   - parameter notification: NSNotification
   */
   private func didStop(notification: NSNotification) { state ∖= [.Playing, .Paused] }
-
-  /**
-  didReset:
-
-  - parameter notification: NSNotification
-  */
-  private func didReset(notification: NSNotification) { midiPlayerView.reset() }
 
   /** initializeReceptionist */
   private func initializeReceptionist() {
@@ -426,7 +419,6 @@ final class MIDIPlayerViewController: UIViewController {
     let didPauseCallback:              Callback = (Sequencer.self,      queue, didPause)
     let didStartCallback:              Callback = (Sequencer.self,      queue, didStart)
     let didStopCallback:               Callback = (Sequencer.self,      queue, didStop)
-    let didResetCallback:              Callback = (Sequencer.self,      queue, didReset)
 
     let callbacks: [NotificationReceptionist.Notification:NotificationReceptionist.Callback] = [
 
@@ -438,8 +430,7 @@ final class MIDIPlayerViewController: UIViewController {
       Sequencer.Notification.DidChangeCurrentTrack.name.value: didChangeCurrentTrackCallback,
       Sequencer.Notification.DidPause.name.value:              didPauseCallback,
       Sequencer.Notification.DidStart.name.value:              didStartCallback,
-      Sequencer.Notification.DidStop.name.value:               didStopCallback,
-      Sequencer.Notification.DidReset.name.value:              didResetCallback
+      Sequencer.Notification.DidStop.name.value:               didStopCallback
 
     ]
 
@@ -474,6 +465,11 @@ final class MIDIPlayerViewController: UIViewController {
     }
   }
 
+  var paused: Bool { return state ∋ .Paused }
+  var playing: Bool { return state ∋ .Playing }
+  var recording: Bool { return state ∋ .Recording }
+  var jogging: Bool { return state ∋ .Jogging }
+
   private var state: State = [] {
     didSet {
       guard isViewLoaded() && state != oldValue else { return }
@@ -506,31 +502,18 @@ final class MIDIPlayerViewController: UIViewController {
       }
 
       // Check if jog status changed
-      if modifiedState ∋ .Jogging {
-        transportStack.userInteractionEnabled = state ∌ .Jogging
-      }
+      if modifiedState ∋ .Jogging { transportStack.userInteractionEnabled = !jogging }
 
       // Check for recording status change
-      if modifiedState ∋ .Recording {
-        recordButton.selected = state ∋ .Recording
-      }
+      if modifiedState ∋ .Recording { recordButton.selected = recording }
 
       // Check if play/pause status changed
       if modifiedState ~∩ [.Playing, .Paused] {
-        midiPlayerView.paused = state ∌ .Playing
-        stopButton.enabled = state ~∩ [.Playing, .Paused]
-        (midiPlayerView.paused ? ControlImage.Play : ControlImage.Pause).decorateButton(playPauseButton)
+        midiPlayerView.paused = paused
+        stopButton.enabled = playing || paused
+        (playing ? ControlImage.Pause : ControlImage.Play).decorateButton(playPauseButton)
       }
     }
   }
 
-  /**
-  traitCollectionDidChange:
-
-  - parameter previousTraitCollection: UITraitCollection?
-  */
-  override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
-    super.traitCollectionDidChange(previousTraitCollection)
-    logDebug("traitColleciton: \(traitCollection)\npreviousTraitCollection: \(previousTraitCollection)")
-  }
 }

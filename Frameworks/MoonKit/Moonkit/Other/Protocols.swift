@@ -582,10 +582,16 @@ public protocol NotificationType: Hashable {
   var userInfo: [NSObject:AnyObject]? { get }
   var object: AnyObject? { get }
   func post()
+  func post(info: [NSObject:AnyObject]?)
 }
 
 public extension NotificationType {
   var hashValue: Int { return name.hashValue }
+  func post(info: [NSObject:AnyObject]?) {
+    var userInfo = self.userInfo
+    if let info = info { userInfo?.insertContentsOf(info) }
+    NSNotificationCenter.defaultCenter().postNotificationName(name.value, object: object, userInfo: userInfo)
+  }
   func post() {
     NSNotificationCenter.defaultCenter().postNotificationName(name.value, object: object, userInfo: userInfo)
   }

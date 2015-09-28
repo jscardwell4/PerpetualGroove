@@ -18,7 +18,7 @@ final class MIDINode: SKSpriteNode {
   
   var note: NoteAttributes
 
-  var initialPlacement: Placement
+  var initialSnapshot: Snapshot
 
   static let useVelocityForOff = true
 
@@ -93,14 +93,7 @@ final class MIDINode: SKSpriteNode {
   private let time = Sequencer.time
   private(set) var endPoint = MIDIEndpointRef()
 
-  var placement: Placement { didSet { position = placement.position; physicsBody.velocity = placement.vector } }
-
-
-//  private var velocity: CGVector = .zero
-  private var currentSnapshot: Snapshot {
-    return Snapshot(ticks: time.time.ticks, position: position, velocity: physicsBody.velocity)
-  }
-  private var lastSnapshot: Snapshot
+  private var currentSnapshot: Snapshot
   private var history: MIDINodeHistory
   private var breadcrumb: MIDINodeHistory.Breadcrumb?
 
@@ -119,87 +112,6 @@ final class MIDINode: SKSpriteNode {
     }
   }
 
-  /**
-  jogBackward:_:
-
-  - parameter from: MIDITimeStamp
-  - parameter to: MIDITimeStamp
-  */
-  private func jogFrom(fromTicks: MIDITimeStamp, to toTicks: MIDITimeStamp, using crumb: MIDINodeHistory.Breadcrumb) {
-
-//    guard to < from else { logError("cannot jog backward from \(from) to \(to)"); return }
-//
-//    if breadcrumb == nil { breadcrumb = history.breadcrumbForTicks(from, forward: false) }
-//
-//    if let breadcrumbStart = breadcrumb?.tickInterval.start where breadcrumbStart > to {
-//      jogBackward(from, breadcrumbStart)
-//      breadcrumb = history.breadcrumbForTicks(breadcrumbStart, forward: false)
-//    }
-//
-//    // Get the relevant breadcrumb for jogging
-//    guard let breadcrumb = breadcrumb else { fatalError("failed to retrieve breadcrumb for ticks = \(from)") }
-//
-//    guard let positionʹ = breadcrumb.positionForTicks(to) else { logError("failed to get position for ticks = \(to)"); return }
-//    position = positionʹ
-//
-//    backgroundDispatch { [time = time.time] in
-//      var string = "time: \(time)\n"
-//      string += "from: \(from); to: \(to)\n"
-//      string += "breadcrumb: \(breadcrumb)\n"
-//      string += "positionʹ: \(positionʹ)"
-//      logDebug(string)
-//    }
-
-
-  }
-
-  /**
-  jogForward:_:
-
-  - parameter from: MIDITimeStamp
-  - parameter to: MIDITimeStamp
-  */
-  private func jogForward(from: MIDITimeStamp, _ to: MIDITimeStamp) {
-/*
-    guard to > from else { logError("cannot jog forward from \(from) to \(to)"); return }
-
-    // Get the relevant breadcrumb for jogging
-    guard let breadcrumb = history.breadcrumbForTicks(to, forward: true) else { return }
-
-    let 𝝙ticks  = breadcrumb.ticks - from,
-        𝝙ticksʹ = breadcrumb.ticks - to
-
-    let 𝝙position = position - breadcrumb.to
-
-    let secondsPerTick = CGFloat(Sequencer.secondsPerBeat / Double(Sequencer.resolution))
-
-    let 𝝙seconds  = secondsPerTick * CGFloat(𝝙ticks), // Seconds elapsed from breadcrumb to current position
-        𝝙secondsʹ = secondsPerTick * CGFloat(𝝙ticksʹ) // Seconds elapsed from breadcrumb to target position
-
-    let velocity = breadcrumb.velocity
-    let 𝝙meters  = velocity * 𝝙seconds
-    let 𝝙metersʹ = velocity * 𝝙secondsʹ
-
-    let positionʹ = breadcrumb.to + (𝝙metersʹ * (𝝙position / 𝝙meters))
-
-    position = positionʹ
-
-    backgroundDispatch { [time = time.time] in
-      var string = "time: \(time)\n"
-      string += "from: \(from); to: \(to)\n"
-      string += "breadcrumb: \(breadcrumb)\n"
-      string += "𝝙ticks: \(𝝙ticks); 𝝙ticksʹ: \(𝝙ticksʹ)\n"
-      string += "𝝙position: (\(𝝙position.x.rounded(3)), \(𝝙position.y.rounded(3)))\n"
-      string += "secondsPerTick: \(secondsPerTick)\n"
-      string += "𝝙seconds: \(𝝙seconds.rounded(3)); 𝝙secondsʹ: \(𝝙secondsʹ.rounded(3))\n"
-      string += "velocity: (\(velocity.dx.rounded(3)), \(velocity.dy.rounded(3)))\n"
-      string += "𝝙meters: (\(𝝙meters.dx.rounded(3)), \(𝝙meters.dy.rounded(3)))\n"
-      string += "𝝙metersʹ: (\(𝝙metersʹ.dx.rounded(3)), \(𝝙metersʹ.dy.rounded(3)))\n"
-      string += "positionʹ: (\(positionʹ.x.rounded(3)), \(positionʹ.y.rounded(3)))"
-      logDebug(string)
-    }
-*/
-  }
 
   /**
   didBeginJogging:
@@ -215,7 +127,6 @@ final class MIDINode: SKSpriteNode {
     state ⊻= .Jogging
 
     physicsBody.dynamic = false
-    logDebug("ticks: \(time.time.ticks); postion: \(position.description(3))")
   }
 
   /**
@@ -224,20 +135,11 @@ final class MIDINode: SKSpriteNode {
   - parameter notification: NSNotification
   */
   private func didJog(notification: NSNotification) {
-    placement = history.placementForTicks(time.ticks, fromTicks: Sequencer.jogStartTimeTicks)
-//    if let breadcrumb = breadcrumb {
-//
-//    }
-//
-//    switch (Sequencer.jogStartTimeTicks, time.timeStamp) {
-//      case let (start, end) where start > end:
-//
-//        jogFrom(start, to: end, using: history.breadcrumbForTicks(<#T##ticks: MIDITimeStamp##MIDITimeStamp#>, forward: <#T##Bool#>))
-//      case let (from, to) where from < to:
-//        jogForward(from, to)
-//      default:
-//        break
-//    }
+    guard let jogTime = (notification.userInfo?[Sequencer.Notification.Key.JogTime.rawValue] as? NSValue)?.barBeatTimeValue else {
+      logError("notication does not contain jog tick value")
+      return
+    }
+    animateToSnapshot(history.snapshotForTicks(jogTime.ticks))
   }
 
   /**
@@ -248,16 +150,21 @@ final class MIDINode: SKSpriteNode {
   private func didEndJogging(notification: NSNotification) {
     guard state ∋ .Jogging else { fatalError("internal inconsistency, should have `Jogging` flag set") }
     physicsBody.dynamic = true
-    physicsBody.velocity = placement.vector
+    physicsBody.velocity = currentSnapshot.velocity
     state ⊻= .Jogging
-    lastSnapshot = currentSnapshot
-    history.pruneAfter(lastSnapshot)
+    history.pruneAfter(currentSnapshot)
+  }
 
-    logDebug("\n".join(
-      "time: \(time.time.debugDescription)",
-      "postion: \(position)",
-      "history: \(history)"
-    ))
+  /**
+  animateToSnapshot:
+
+  - parameter snapshot: Snapshot
+  */
+  private func animateToSnapshot(snapshot: Snapshot) {
+    let from = currentSnapshot.ticks, to = snapshot.ticks, 𝝙ticks = Double(max(from, to) - min(from, to))
+    let 𝝙seconds = Sequencer.secondsPerTick * 𝝙ticks
+    runAction(SKAction.moveTo(snapshot.position, duration: 𝝙seconds))
+    currentSnapshot = snapshot
   }
 
   private var notificationReceptionist: NotificationReceptionist!
@@ -265,12 +172,10 @@ final class MIDINode: SKSpriteNode {
   /** mark */
   func mark() {
     guard state ∌ .Jogging else { logWarning("node has `Jogging` flag set, ignoring request to mark"); return }
-    let currentSnapshot = Snapshot(ticks: time.ticks,
-                                   position: position,
-                                   velocity: physicsBody!.velocity)
-//    if history.isEmpty { history.append(from: history.initialSnapshot, to: lastSnapshot) }
-    history.append(from: lastSnapshot, to: currentSnapshot)
-    lastSnapshot = currentSnapshot
+    let snapshot = Snapshot(ticks: time.ticks, position: position, velocity: physicsBody.velocity)
+    guard snapshot.ticks > currentSnapshot.ticks else { return }
+    history.append(from: currentSnapshot, to: snapshot)
+    currentSnapshot = snapshot
   }
 
   /**
@@ -283,14 +188,11 @@ final class MIDINode: SKSpriteNode {
   */
   init(placement p: Placement, name n: String, track t: InstrumentTrack, note attrs: NoteAttributes) throws {
 
-    initialPlacement = p
-    placement = p
-    note = attrs
-    let snapshot = Snapshot(ticks: Sequencer.time.ticks,
-                            position: p.position,
-                            velocity: p.vector)
-    lastSnapshot = snapshot
+    let snapshot = Snapshot(ticks: Sequencer.time.ticks, placement: p)
+    initialSnapshot = snapshot
+    currentSnapshot = snapshot
     history = MIDINodeHistory(initialSnapshot: snapshot)
+    note = attrs
     let image = UIImage(named: "ball")!
     super.init(texture: SKTexture(image: image), color: t.color.value, size: image.size * 0.75)
 
@@ -311,11 +213,10 @@ final class MIDINode: SKSpriteNode {
     name = n
     colorBlendFactor = 1
 
-    position = initialPlacement.position
-//    physicsBody = SKPhysicsBody(circleOfRadius: size.width * 0.5)
+    position = p.position
     physicsBody.affectedByGravity = false
     physicsBody.usesPreciseCollisionDetection = true
-    physicsBody.velocity = initialPlacement.vector
+    physicsBody.velocity = p.vector
     physicsBody.linearDamping = 0.0
     physicsBody.angularDamping = 0.0
     physicsBody.friction = 0.0

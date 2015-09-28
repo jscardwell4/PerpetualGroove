@@ -9,17 +9,20 @@
 import Foundation
 import MoonKit
 
-struct Placement: ByteArrayConvertible, CustomStringConvertible {
+struct Placement {
   let position: CGPoint
   let vector: CGVector
   static let zero = Placement(position: .zero, vector: .zero)
+  init(position p: CGPoint, vector v: CGVector) { position = p; vector = v }
+}
+
+extension Placement: ByteArrayConvertible {
   var bytes: [Byte] {
     let positionString = NSStringFromCGPoint(position)
     let vectorString = NSStringFromCGVector(vector)
     let string = "{\(positionString), \(vectorString)}"
     return Array(string.utf8)
   }
-  init(position p: CGPoint, vector v: CGVector) { position = p; vector = v }
   init(_ bytes: [Byte]) {
     let castBytes = bytes.map({CChar($0)})
     guard let string = String.fromCString(castBytes) else { self = .zero; return }
@@ -33,8 +36,16 @@ struct Placement: ByteArrayConvertible, CustomStringConvertible {
     position = CGPointFromString(positionCapture.string)
     vector = CGVectorFromString(vectorCapture.string)
   }
+}
 
+extension Placement: CustomStringConvertible {
   var description: String {
-    return "Placement { position: \(position.description(3)); vector: \(vector.description(3)) }"
+    return "{ position: \(position.description(3)); vector: \(vector.description(3)) }"
+  }
+}
+
+extension Placement: CustomDebugStringConvertible {
+  var debugDescription: String {
+    return "Placement { position: \(position.debugDescription); vector: \(vector.debugDescription) }"
   }
 }

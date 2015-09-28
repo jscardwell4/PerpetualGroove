@@ -11,6 +11,19 @@ import AudioToolbox
 import CoreMIDI
 import MoonKit
 
+extension NSValue {
+  convenience init(var barBeatTime: CABarBeatTime) {
+    self.init(bytes: &barBeatTime, objCType:"{CABarBeatTime=iSSSS}".withCString {$0})
+  }
+  var barBeatTimeValue: CABarBeatTime? {
+    guard String.fromCString(objCType) == "{CABarBeatTime=iSSSS}" else { return nil }
+    let pointer = UnsafeMutablePointer<CABarBeatTime>.alloc(1)
+    let voidPointer = UnsafeMutablePointer<Void>(pointer)
+    getValue(voidPointer)
+    return pointer.memory
+  }
+}
+
 extension CABarBeatTime: CustomStringConvertible {
   public var description: String {
     let barString = String(bar, radix: 10, pad: 3)
@@ -87,10 +100,13 @@ extension CABarBeatTime {
   init:beatsPerBar:subbeatDivisor:
 
   - parameter tickValue: UInt64
-  - parameter beatsPerBar: UInt8
-  - parameter subbeatDivisor: UInt16
+  - parameter beatsPerBar: UInt8 = Sequencer.timeSignature.beatsPerBar
+  - parameter subbeatDivisor: UInt16 = Sequencer.time.partsPerQuarter
   */
-  init(var tickValue: UInt64, beatsPerBar: UInt8, subbeatDivisor: UInt16) {
+  init(var tickValue: UInt64,
+            beatsPerBar: UInt8 = Sequencer.timeSignature.beatsPerBar,
+            subbeatDivisor: UInt16 = Sequencer.time.partsPerQuarter)
+  {
     let subbeat = tickValue % UInt64(subbeatDivisor)
     tickValue -= subbeat
     let totalBeats = tickValue / UInt64(subbeatDivisor)
@@ -344,14 +360,18 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
 
   var description: String { return time.description }
 
-  /** reset */
-  func reset() {
+  /**
+  reset:
+
+  - parameter completion: (() -> Void)? = nil
+  */
+  func reset(completion: (() -> Void)? = nil) {
     dispatch_async(queue) {
       [unowned self] in
       let ppq = self._time.subbeatDivisor
       self._time = CABarBeatTime(bar: 1, beat: 1, subbeat: 1, subbeatDivisor: ppq, reserved: 0)
       objc_sync_enter(self)
-      defer { objc_sync_exit(self) }
+      defer { objc_sync_exit(self); completion?() }
       self.clockCount = 0╱Float(ppq)
     }
   }

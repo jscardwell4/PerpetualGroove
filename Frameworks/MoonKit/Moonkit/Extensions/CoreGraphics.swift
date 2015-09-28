@@ -140,7 +140,9 @@ extension CGPoint {
     return sqrt(pow(x - point.x, 2) + pow(y - point.y, 2))
   }
 
-  public func description(precision: Int) -> String { return "(\(x.rounded(precision)), \(y.rounded(precision)))" }
+  public func description(precision: Int) -> String {
+    return precision >= 0 ? "(\(x.rounded(precision)), \(y.rounded(precision)))" : description
+  }
 
   public var max: CGFloat { return y > x ? y : x }
   public var min: CGFloat { return y < x ? y : x }
@@ -162,8 +164,12 @@ extension CGPoint: Unpackable2 {
 extension CGPoint: Packable2 {
   public init(_ elements: (CGFloat, CGFloat)) { self.init(x: elements.0, y: elements.1) }
 }
-
-extension CGPoint: CustomStringConvertible { public var description: String { return NSStringFromCGPoint(self) } }
+extension CGPoint: CustomStringConvertible {
+  public var description: String { return "(\(x), \(y))" }
+}
+extension CGPoint: CustomDebugStringConvertible {
+  public var debugDescription: String { return NSStringFromCGPoint(self) }
+}
 
 //extension CGPoint: ArithmeticType {}
 
@@ -259,14 +265,19 @@ extension CGVector {
   public init(_ point: CGPoint) { dx = point.x; dy = point.y }
   public var max: CGFloat { return dy > dx ? dy : dx }
   public var min: CGFloat { return dy < dx ? dy : dx }
-  public func description(precision: Int) -> String { return "(\(dx.rounded(precision)), \(dy.rounded(precision)))" }
+  public func description(precision: Int) -> String {
+    return precision >= 0 ? "(\(dx.rounded(precision)), \(dy.rounded(precision)))" : description
+  }
 }
 extension CGVector: NilLiteralConvertible {
   public init(nilLiteral: ()) { self = CGVector.nullVector }
 }
 
 extension CGVector: CustomStringConvertible {
-  public var description: String { return NSStringFromCGVector(self) }
+  public var description: String { return "(\(dx), \(dy))" }
+}
+extension CGVector: CustomDebugStringConvertible {
+  public var debugDescription: String { return NSStringFromCGVector(self) }
 }
 
 extension CGVector: Unpackable2 {

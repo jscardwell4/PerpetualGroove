@@ -98,61 +98,27 @@ public extension Dictionary {
 
   - parameter elements: [(Key, Value)]
   */
-  init(_ elements: [(Key,Value)]) {
+  public init(_ elements: [(Key,Value)]) {
     self = [Key:Value]()
     for (k, v) in elements { self[k] = v }
   }
 
-  var keyValuePairs: [(Key, Value)] { return Array(AnySequence({self.generate()})) }
+  public var keyValuePairs: [(Key, Value)] { return Array(AnySequence({self.generate()})) }
 
-  func map<U>(transform: (Key, Value) -> U) -> [Key:U] {
+  public func map<U>(transform: (Key, Value) -> U) -> [Key:U] {
     var result: [Key:U] = [:]
     for (key, value) in self { result[key] = transform(key, value) }
     return result
   }
-}
 
-/**
-keyValuePairs:
+  /**
+  insertContentsOf:
 
-- parameter dict: [K V]
-
-- returns: [(K, V)]
-*/
-public func keyValuePairs<K:Hashable,V>(dict: [K:V]) -> [(K, V)] { return dict.keyValuePairs }
-
-/**
-extended:newElements:V)]:
-
-- parameter dict: [K V]
-- parameter newElements: [(K
-- parameter V)]:
-
-- returns: [K:V]
-*/
-public func extended<K:Hashable,V>(dict: [K:V], newElements: [(K,V)]) -> [K:V] {
-  return Dictionary(Array(AnySequence({dict.generate()})) + newElements)
-}
-
-/**
-extend:newEntries:
-
-- parameter x: [K:V]
-- parameter newEntries: [K:V]
-*/
-public func extend<K,V>(inout x: [K:V], newEntries: [K:V]) { for (key, value) in newEntries { x[key] = value } }
-
-/**
-map:transform:
-
-- parameter dict: [K:V]
-- parameter block: (K, V) -> U
-- returns: [K:U]
-*/
-public func map<K,V,U>(dict: [K:V], transform: (K, V) -> U) -> [K:U] {
-  var result: [K:U] = [:]
-  for (key, value) in dict { result[key] = transform(key, value) }
-  return result
+  - parameter other: [Key
+  */
+  public mutating func insertContentsOf(other: [Key:Value]) {
+    for (k, v) in other { self[k] = v }
+  }
 }
 
 /**
@@ -200,7 +166,7 @@ compressedMap:transform:
 - returns: [K:U]
 */
 public func compressedMap<K:Hashable,V,U>(dict: [K:V], transform: (K, V) -> U?) -> [K:U] {
-  return compressed(map(dict, transform: transform))
+  return compressed(dict.map(transform))
 }
 
 public func inflated(var dict: [String:AnyObject]) -> [String:AnyObject] { inflate(&dict); return dict }

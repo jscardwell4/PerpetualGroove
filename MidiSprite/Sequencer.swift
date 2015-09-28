@@ -44,7 +44,23 @@ final class Sequencer {
     case DidTurnOnRecording, DidTurnOffRecording
     case DidBeginJogging, DidEndJogging
     case DidJog
+
     var object: AnyObject? { return Sequencer.self }
+
+    var userInfo: [NSObject:AnyObject]? {
+      switch self {
+        case .DidStart, .DidPause, .DidStop, .DidReset, .DidBeginJogging, .DidEndJogging, .DidJog:
+          var result: [NSObject:AnyObject] = [
+            Key.Ticks.rawValue: NSNumber(unsignedLongLong: Sequencer.time.ticks),
+            Key.Time.rawValue: NSValue(barBeatTime: Sequencer.time.time)
+          ]
+          if case .DidJog = self { result[Key.JogTime.rawValue] = NSValue(barBeatTime: Sequencer.jogTime) }
+          return result
+        default: return nil
+      }
+    }
+
+    enum Key: String { case Time, Ticks, URL, FromTrack, ToTrack, JogTime}
   }
 
   enum Error: String, ErrorType {
@@ -58,7 +74,10 @@ final class Sequencer {
         (MIDISequence.self, NSOperationQueue.mainQueue(), {
           notification in
 
-          if let track = notification.userInfo?["track"] as? InstrumentTrack where track == Sequencer.currentTrack {
+          if let track = notification.userInfo?[MIDISequence.Notification.Key.Track.rawValue] as? InstrumentTrack
+            where track == Sequencer.currentTrack
+          {
+            // Why did we do this exactly?
             Sequencer.currentTrack = Sequencer.previousTrack
           }
 
@@ -68,7 +87,7 @@ final class Sequencer {
 
   // MARK: - Sequence
 
-  static private var _sequence: MIDISequence? { didSet { reset() } }
+  static private var _sequence: MIDISequence? { didSet { if oldValue != nil { reset() } } }
 
   static var sequence: MIDISequence {
     guard _sequence == nil else { return _sequence! }
@@ -93,6 +112,7 @@ final class Sequencer {
   static var nanosecondsPerBeat: UInt64 { return clock.nanosecondsPerBeat }
   static var microsecondsPerBeat: UInt64 { return clock.microsecondsPerBeat }
   static var secondsPerBeat: Double { return clock.secondsPerBeat }
+  static var secondsPerTick: Double { return clock.secondsPerTick }
 
   /** The tempo used by the MIDI clock in beats per minute */
   // TODO: Need to make sure the current tempo is set at the beginning of a new sequence
@@ -116,16 +136,16 @@ final class Sequencer {
       if let currentFile = currentFile {
         do {
           let midiFile = try MIDIFile(file: currentFile)
-          logDebug("midiFile = \(midiFile)")
+          logVerbose("midiFile = \(midiFile)")
           _sequence = MIDISequence(file: midiFile)
-          logDebug("playbackSequence = " + (_sequence?.description ?? "nil"))
-          Notification.DidLoadFile.post()
+          logVerbose("playbackSequence = " + (_sequence?.description ?? "nil"))
+          Notification.DidLoadFile.post([Notification.Key.URL.rawValue:currentFile])
         } catch {
           logError(error)
           self.currentFile = nil
         }
       } else {
-        Notification.DidUnloadFile.post()
+        Notification.DidUnloadFile.post([Notification.Key.URL.rawValue:oldValue ?? NSNull()])
       }
     }
   }
@@ -154,22 +174,8 @@ final class Sequencer {
     }
   }
 
-  static private var state: State = [] {
-    didSet {
-      let notification: Notification?
-      switch state ⊻ oldValue {
-        case [.Recording]:        notification = recording ? .DidTurnOnRecording : .DidTurnOffRecording
-        case [.Playing, .Paused]: notification = playing   ? .DidStart           : .DidPause
-        case [.Playing]:          notification = playing   ? .DidStart           : .DidStop
-        case [.Paused]:           notification = paused    ? .DidPause           : .DidStop
-        case [.Jogging]:          notification = jogging   ? .DidBeginJogging    : .DidEndJogging
-        default:                  notification = nil
-      }
-      logVerbose("didSet…old state: \(oldValue); new state: \(state); notification: \(notification)")
-      notification?.post()
-    }
-  }
-
+  static private var state: State = []
+  
   static private(set) var soundSets: [SoundSet] = []
 
   static private(set) var auditionInstrument: Instrument!
@@ -180,7 +186,14 @@ final class Sequencer {
   private static var previousTrack: InstrumentTrack?
 
   /** Wraps the private `_currentTrack` so that a new track may be created if the property is `nil` */
-  static var currentTrack: InstrumentTrack? { didSet { Notification.DidChangeCurrentTrack.post() } }
+  static var currentTrack: InstrumentTrack? {
+    didSet {
+      Notification.DidChangeCurrentTrack.post([
+        Notification.Key.FromTrack.rawValue: (oldValue as? AnyObject) ?? NSNull(),
+        Notification.Key.ToTrack.rawValue: (currentTrack as? AnyObject) ?? NSNull()
+      ])
+    }
+  }
 
   // MARK: - Properties used to initialize a new `MIDINode`
 
@@ -199,16 +212,20 @@ final class Sequencer {
   static var jogging:   Bool { return state ∋ .Jogging   }
   static var recording: Bool { return state ∋ .Recording }
 
-  private(set) static var jogStartTimeTicks: UInt64 = 0
-  private static var jogMaxTimeTicks:   UInt64 = 0
+  private static var jogStartTimeTicks: UInt64 = 0
+  private static var maxTicks: MIDITimeStamp = 0
+  private static var jogTime: CABarBeatTime = .start
+  private static var ticksPerRevolution: MIDITimeStamp = 0
 
   /** beginJog */
   static func beginJog() {
     guard !jogging else { return }
     clock.stop()
-    jogStartTimeTicks = time.time.tickValueWithBeatsPerBar(timeSignature.beatsPerBar)
-    jogMaxTimeTicks =   max(jogMaxTimeTicks, sequence.sequenceEnd.tickValueWithBeatsPerBar(timeSignature.beatsPerBar))
+    jogTime = time.time
+    maxTicks = max(jogTime.ticks, sequence.sequenceEnd.ticks)
+    ticksPerRevolution = MIDITimeStamp(timeSignature.beatsPerBar) * MIDITimeStamp(time.partsPerQuarter)
     state ⊻= [.Jogging]
+    Notification.DidBeginJogging.post()
   }
 
   /**
@@ -217,34 +234,30 @@ final class Sequencer {
   - parameter revolutions: Float
   */
   static func jog(revolutions: Float) {
-    guard jogging else { return }
+    guard jogging else { logWarning("not jogging"); return }
 
-    let beatsPerBar = timeSignature.beatsPerBar
-    let ticksPerRevolution = UInt64(beatsPerBar) * UInt64(time.partsPerQuarter)
-    let isNegative = revolutions.isSignMinus
-    let deltaTicks = UInt64(Double(abs(revolutions)) * Double(ticksPerRevolution))
-    let pendingTimeTickValue: UInt64
+    let 𝝙ticks = MIDITimeStamp(Double(abs(revolutions)) * Double(ticksPerRevolution))
 
-    switch isNegative {
-      case true where jogStartTimeTicks < deltaTicks: pendingTimeTickValue = 0
-      case true: pendingTimeTickValue = jogStartTimeTicks - deltaTicks
-      case false where jogStartTimeTicks + deltaTicks > jogMaxTimeTicks: pendingTimeTickValue = jogMaxTimeTicks
-      default: pendingTimeTickValue = jogStartTimeTicks + deltaTicks
+    let ticks: MIDITimeStamp
+
+    switch revolutions.isSignMinus {
+      case true where time.ticks < 𝝙ticks:             	ticks = 0
+      case true:                                        ticks = time.ticks - 𝝙ticks
+      case false where time.ticks + 𝝙ticks > maxTicks: 	ticks = maxTicks
+      default:                                          ticks = time.ticks + 𝝙ticks
     }
 
-
-    let pendingTime = CABarBeatTime(tickValue: pendingTimeTickValue,
-                                    beatsPerBar: beatsPerBar,
-                                    subbeatDivisor: time.partsPerQuarter)
-
-    do { try jogToTime(pendingTime) } catch { logError(error) }
+    do { try jogToTime(CABarBeatTime(tickValue: ticks)) } catch { logError(error) }
   }
 
   /** endJog */
   static func endJog() {
-    guard jogging else { return }
-    if clock.paused { clock.resume() }
-    state ⊻= [.Jogging] }
+    guard jogging && clock.paused else { logWarning("not jogging"); return }
+    state ⊻= [.Jogging]
+    time.time = jogTime
+    Notification.DidEndJogging.post()
+    clock.resume()
+  }
 
   /**
   jogToTime:
@@ -252,32 +265,48 @@ final class Sequencer {
   - parameter time: CABarBeatTime
   */
   static func jogToTime(t: CABarBeatTime) throws {
-    guard time.time != t else { return }
+    guard jogTime != t else { return }
     guard jogging else { throw Error.NotPermitted }
     guard time.isValidTime(t) else { throw Error.InvalidBarBeatTime }
-    time.time = t
+    jogTime = t
     Notification.DidJog.post()
   }
 
   /** Starts the MIDI clock */
   static func play() {
-    guard !playing else { return }
+    guard !playing else { logWarning("already playing"); return }
+    Notification.DidStart.post()
     if paused { clock.resume(); state ⊻= [.Paused, .Playing] }
     else { clock.start(); state ⊻= [.Playing] }
   }
 
   /** toggleRecord */
-  static func toggleRecord() { state ⊻= .Recording }
+  static func toggleRecord() {
+    state ⊻= .Recording
+    (recording ? Notification.DidTurnOnRecording : Notification.DidTurnOffRecording).post()
+  }
 
   /** pause */
-  static func pause() { guard playing else { return }; clock.stop(); state ⊻= [.Paused, .Playing] }
+  static func pause() {
+    guard playing else { return }
+    clock.stop()
+    state ⊻= [.Paused, .Playing]
+    Notification.DidPause.post()
+  }
 
   /** Moves the time back to 0 */
-  static func reset() { stop(); clock.reset(); time.reset(); Notification.DidReset.post() }
+  static func reset() {
+    if playing || paused { stop() }
+    clock.reset()
+    time.reset {Sequencer.Notification.DidReset.post()}
+  }
 
   /** Stops the MIDI clock */
   static func stop() {
-    guard playing || paused else { return }; clock.stop(); state ∖= [.Playing, .Paused]
+    guard playing || paused else { logWarning("not playing or paused"); return }
+    clock.stop()
+    state ∖= [.Playing, .Paused]
+    Notification.DidStop.post()
   }
 
 }

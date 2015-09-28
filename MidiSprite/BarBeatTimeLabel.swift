@@ -50,14 +50,26 @@ import struct AudioToolbox.CABarBeatTime
 
   - parameter notification: NSNotification
   */
-  private func didJog(notification: NSNotification) { currentTime = Sequencer.time.time }
+  private func didJog(notification: NSNotification) {
+    guard let time = (notification.userInfo?[Sequencer.Notification.Key.JogTime.rawValue] as? NSValue)?.barBeatTimeValue else {
+      logError("notification does not contain a time for updating")
+      return
+    }
+    didUpdateBarBeatTime(time)
+  }
 
   /**
   didReset:
 
   - parameter notification: NSNotification
   */
-  private func didReset(notification: NSNotification) { currentTime = Sequencer.time.time }
+  private func didReset(notification: NSNotification) {
+    guard let time = (notification.userInfo?[Sequencer.Notification.Key.Time.rawValue] as? NSValue)?.barBeatTimeValue else {
+      logError("notification does not contain a time for updating")
+      return
+    }
+    didUpdateBarBeatTime(time)
+  }
 
   /** setup */
   private func setup() {

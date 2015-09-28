@@ -11,9 +11,6 @@ import MoonKit
 
 final class MIDIPlayerScene: SKScene {
 
-  /** reset */
-  func reset() { midiPlayer.reset() }
-
   private(set) var midiPlayer: MIDIPlayerNode!
 
   private var contentCreated = false

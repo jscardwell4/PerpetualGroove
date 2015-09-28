@@ -35,12 +35,14 @@ final class MIDIClock: CustomStringConvertible {
   private(set) var nanosecondsPerBeat:  UInt64 = 0
   private(set) var microsecondsPerBeat: UInt64 = 0
   private(set) var secondsPerBeat:      Double = 0
+  private(set) var secondsPerTick:      Double = 0
 
   /** recalculate */
   private func recalculate() {
     nanosecondsPerBeat = UInt64(60.0e9) / UInt64(beatsPerMinute)
     microsecondsPerBeat = UInt64(60.0e6) / UInt64(beatsPerMinute)
     secondsPerBeat = 60 / Double(beatsPerMinute)
+    secondsPerTick = secondsPerBeat / Double(resolution * 4)
     tickInterval = nanosecondsPerBeat / UInt64(resolution) * 4 // ???: Still don't know why I need to multiply by 4
     timer.interval = tickInterval
   }
@@ -121,7 +123,11 @@ final class MIDIClock: CustomStringConvertible {
   }
 
   /** sendClock */
-  private func sendClock() { ticks++; do { try sendEvent(0b1111_1000) } catch { logError(error) } }
+  private func sendClock() {
+    guard timer.running else { return }
+    ticks++
+    do { try sendEvent(0b1111_1000) } catch { logError(error) }
+  }
 
   /** sendStart */
   private func sendStart() { do { try sendEvent(0b1111_1010) } catch { logError(error) } }

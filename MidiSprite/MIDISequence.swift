@@ -23,12 +23,13 @@ final class MIDISequence {
     var object: AnyObject? { return MIDISequence.self }
     var userInfo: [NSObject:AnyObject]?
 
+    enum Key: String { case Track }
     static func DidAddTrack(track: InstrumentTrack) -> Notification {
-      return Notification(name: .DidAddTrack, userInfo: ["track":track])
+      return Notification(name: .DidAddTrack, userInfo: [Key.Track.rawValue:track])
     }
 
     static func DidRemoveTrack(track: InstrumentTrack) -> Notification {
-      return Notification(name: .DidRemoveTrack, userInfo: ["track":track])
+      return Notification(name: .DidRemoveTrack, userInfo: [Key.Track.rawValue:track])
     }
   }
 

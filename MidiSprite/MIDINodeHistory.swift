@@ -14,8 +14,28 @@ struct MIDINodeHistory: SequenceType {
 
   struct Snapshot {
     let ticks: MIDITimeStamp
-    let position: CGPoint
-    let velocity: CGVector
+    let placement: Placement
+    var position: CGPoint { return placement.position }
+    var velocity: CGVector { return placement.vector }
+
+    /**
+    init:position:velocity:
+
+    - parameter t: MIDITimeStamp
+    - parameter p: CGPoint
+    - parameter v: CGVector
+    */
+    init(ticks t: MIDITimeStamp, position p: CGPoint, velocity v: CGVector) {
+      ticks = t; placement = Placement(position: p, vector: v)
+    }
+
+    /**
+    init:placement:
+
+    - parameter t: MIDITimeStamp
+    - parameter p: Placement
+    */
+    init(ticks t: MIDITimeStamp, placement p: Placement) { ticks = t; placement = p }
   }
 
   let initialSnapshot: Snapshot
@@ -38,7 +58,7 @@ struct MIDINodeHistory: SequenceType {
       tickInterval = from.ticks ... to.ticks
       velocity = f.velocity
       𝝙ticks = t.ticks - f.ticks
-      𝝙seconds = CGFloat(Sequencer.secondsPerBeat / Double(Sequencer.resolution * 4)) * CGFloat(𝝙ticks)
+      𝝙seconds = CGFloat(Sequencer.secondsPerTick) * CGFloat(𝝙ticks)
       𝝙meters = velocity * 𝝙seconds
       𝝙position = t.position - f.position
     }
@@ -64,13 +84,6 @@ struct MIDINodeHistory: SequenceType {
       var position = from.position + (𝝙metersʹ * (𝝙position / 𝝙meters))
       if isnan(position.x) { position.x = from.position.x }
       if isnan(position.y) { position.y = from.position.y }
-      backgroundDispatch {
-        var string = "ticks: \(ticks)\n"
-        string += "𝝙ticksʹ: \(𝝙ticksʹ)\n"
-        string += "𝝙metersʹ: \(𝝙metersʹ)\n"
-        string += "position: \(position)"
-        logDebug(string)
-      }
       return position
     }
   }
@@ -115,8 +128,11 @@ struct MIDINodeHistory: SequenceType {
       fatalError("failed to location existing breadcrumb for snapshot: \(snapshot)")
     }
 
-    guard let predecessor = breadcrumbs.find(breadcrumb)?.predecessor?.value else {
+    guard let predecessor = breadcrumbs.find({$0.tickInterval.end < breadcrumb.tickInterval.start},
+                                             {$0.tickInterval.end == breadcrumb.tickInterval.start}) else
+    {
       breadcrumbs = [breadcrumb]
+      logDebug("after prune: \(description)")
       return
     }
     breadcrumbs.dropAfter(predecessor)
@@ -126,17 +142,17 @@ struct MIDINodeHistory: SequenceType {
   }
 
   /**
-  placementForTicks:
+  snapshotForTicks:
 
   - parameter ticks: MIDITimeStamp
 
-  - returns: Placement
+  - returns: Snapshot
   */
-  func placementForTicks(ticks: MIDITimeStamp, fromTicks: MIDITimeStamp) -> Placement {
+  func snapshotForTicks(ticks: MIDITimeStamp) -> Snapshot {
     guard let breadcrumb = breadcrumbs.find({$0.tickInterval.end < ticks}, {$0.tickInterval ∋ ticks}) else {
       fatalError("failed to retrieve breadcrumb for ticks = \(ticks)")
     }
-    return Placement(position: breadcrumb.positionForTicks(ticks), vector: breadcrumb.velocity)
+    return Snapshot(ticks: ticks, placement: Placement(position: breadcrumb.positionForTicks(ticks), vector: breadcrumb.velocity))
   }
 
   /**
@@ -148,20 +164,22 @@ struct MIDINodeHistory: SequenceType {
 }
 
 // MARK: - Internal type protocol conformances
-
 extension MIDINodeHistory.Breadcrumb: CustomStringConvertible {
-  var description: String {
-    return "\n\t".join(
-      "Breadcrumb {",
-      "from: \(from)",
-      "to: \(to)",
-      "tickInterval: \(tickInterval)",
-      "velocity: \(velocity)",
-      "𝝙ticks: \(𝝙ticks)",
-      "𝝙seconds: \(𝝙seconds)",
-      "𝝙meters: \(𝝙meters)",
-      "𝝙position: \(𝝙position)"
-      ) + "\n}"
+  var description: String { return String(tickInterval) }
+}
+extension MIDINodeHistory.Breadcrumb: CustomDebugStringConvertible {
+  var debugDescription: String {
+    var result = "Breadcrumb {\n"
+    result += "  from: \(from)\n"
+    result += "  to: \(to)\n"
+    result += "  tickInterval: \(tickInterval)\n"
+    result += "  velocity: \(velocity)\n"
+    result += "  𝝙ticks: \(𝝙ticks)\n"
+    result += "  𝝙seconds: \(𝝙seconds)\n"
+    result += "  𝝙meters: \(𝝙meters)\n"
+    result += "  𝝙position: \(𝝙position)\n"
+    result += "\n}"
+    return result
   }
 }
 
@@ -177,7 +195,25 @@ func <(lhs: MIDINodeHistory.Breadcrumb, rhs: MIDINodeHistory.Breadcrumb) -> Bool
 
 extension MIDINodeHistory: CustomStringConvertible {
   var description: String {
-    return "MIDINodeHistory {\n\tinitialSnapshot: \(initialSnapshot)\n\t" + ",\n\t".join(breadcrumbs.map({String($0)})) + "\n}"
+    var result = "MIDINodeHistory {\n"
+    result += "  initialSnapshot: \(initialSnapshot)\n"
+    result += "  breadcrumbs: {\n"
+    result += ",\n".join(breadcrumbs.map({$0.description.indentedBy(4)}))
+    result += "\n  }"
+    result += "\n}"
+    return result
+  }
+}
+
+extension MIDINodeHistory: CustomDebugStringConvertible {
+  var debugDescription: String {
+    var result = "MIDINodeHistory {\n"
+    result += "  initialSnapshot: \(initialSnapshot)\n"
+    result += "  breadcrumbs: {\n"
+    result += ",\n".join(breadcrumbs.map({$0.debugDescription.indentedBy(4)}))
+    result += "\n  }"
+    result += "\n}"
+    return result
   }
 }
 
