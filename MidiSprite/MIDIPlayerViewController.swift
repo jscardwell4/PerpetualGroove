@@ -27,9 +27,6 @@ final class MIDIPlayerViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-//    fileNameLabel.text = nil
-//    trackNameLabel.text = nil
-
     initializeReceptionist()
   }
 
@@ -150,68 +147,6 @@ final class MIDIPlayerViewController: UIViewController {
   // MARK: - Files
 
   @IBOutlet weak var filesButton: ImageButtonView?
-  @IBOutlet weak var saveButton: ImageButtonView?
-  @IBOutlet weak var trackLabel: UILabel!
-  @IBOutlet weak var fileLabel: UILabel!
-  @IBOutlet weak var fileNameLabel: UILabel!
-  @IBOutlet weak var trackNameLabel: UILabel!
-  @IBOutlet weak var fileSwipeGesture: UISwipeGestureRecognizer!
-  @IBOutlet weak var trackSwipeGesture: UISwipeGestureRecognizer!
-  @IBOutlet weak var fileDismissiveSwipeGesture: UISwipeGestureRecognizer!
-  @IBOutlet weak var trackDismissiveSwipeGesture: UISwipeGestureRecognizer!
-  @IBOutlet weak var fileActionButton: LabelButton!
-  @IBOutlet weak var trackActionButton: LabelButton!
-  @IBOutlet var fileActionButtonWidthConstraint: NSLayoutConstraint!
-  @IBOutlet var trackActionButtonWidthConstraint: NSLayoutConstraint!
-
-  /** revealFileAction */
-  @IBAction func revealFileAction() {
-    UIView.animateWithDuration(0.25,
-                    animations: { self.fileActionButtonWidthConstraint.active = false },
-                    completion: {_ in self.fileSwipeGesture.enabled = false
-                                      self.fileDismissiveSwipeGesture.enabled = true})
-  }
-
-  /** revealTrackAction */
-  @IBAction func revealTrackAction() {
-    UIView.animateWithDuration(0.25,
-                    animations: { self.trackActionButtonWidthConstraint.active = false },
-                    completion: {_ in self.trackSwipeGesture.enabled = false
-                                      self.trackDismissiveSwipeGesture.enabled = true})
-  }
-
-  /**
-  fileAction:
-  */
-  @IBAction func fileAction() {
-    
-//    if state ∋ .FileLoaded { Sequencer.currentDocument = nil }
-    dismissFileAction()
-  }
-
-  /** trackAction */
-  @IBAction func trackAction() {
-    dismissTrackAction()
-  }
-
-  /** dismissFileAction */
-  @IBAction func dismissFileAction() {
-
-    UIView.animateWithDuration(0.25,
-                    animations: { self.fileActionButtonWidthConstraint.active = true },
-                    completion: {_ in self.fileDismissiveSwipeGesture.enabled = false
-                                      self.fileSwipeGesture.enabled = true})
-  }
-
-  /** dismissTrackAction */
-  @IBAction func dismissTrackAction() {
-
-    UIView.animateWithDuration(0.25,
-                    animations: { self.trackActionButtonWidthConstraint.active = true },
-                    completion: {_ in self.trackDismissiveSwipeGesture.enabled = false
-                                      self.trackSwipeGesture.enabled = true})
-  }
-
   /** save */
   @IBAction private func save() {
     
@@ -355,7 +290,9 @@ final class MIDIPlayerViewController: UIViewController {
 
   - parameter notification: NSNotification
   */
-  private func didChangeCurrentTrack(notification: NSNotification) { trackNameLabel.text = Sequencer.currentTrack?.name }
+  private func didChangeCurrentTrack(notification: NSNotification) {
+    logDebug("current track: " + (Sequencer.currentTrack?.name ?? "nil"))
+  }
 
   /**
   didRemoveTrack:
@@ -489,26 +426,7 @@ final class MIDIPlayerViewController: UIViewController {
       let modifiedState = state ⊻ oldValue
 
       // Check if popover state has changed
-      if modifiedState ∋ .Popover {
-        popoverBlur.hidden = state ∌ .Popover
-        saveButton?.enabled = state ∋ .TrackAdded && state ∌ .Popover
-      }
-
-      // Check if track changed
-      if modifiedState ∋ .TrackAdded {
-        saveButton?.enabled = state ∋ .TrackAdded && state ∌ .Popover
-      }
-
-      // Check if file status changed
-      if modifiedState ∋ .FileLoaded {
-        if let currentFile = Sequencer.currentDocument?.localizedName {
-          fileNameLabel.text = currentFile[..<currentFile.endIndex.advancedBy(-4)]
-        } else {
-          fileNameLabel.text = nil
-        }
-        fileSwipeGesture.enabled = state ∋ .FileLoaded
-        recordButton.enabled = state ∌ .FileLoaded
-      }
+      if modifiedState ∋ .Popover { popoverBlur?.hidden = state ∌ .Popover }
 
       // Check if jog status changed
       if modifiedState ∋ .Jogging { transportStack.userInteractionEnabled = !jogging }

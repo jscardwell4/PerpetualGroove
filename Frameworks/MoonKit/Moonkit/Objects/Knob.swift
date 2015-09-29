@@ -11,21 +11,7 @@ import UIKit
 
 @IBDesignable public class Knob: UIControl {
 
-  public enum IndicatorStyle: String {
-    case Clear, SourceAtop
-    var blendMode: CGBlendMode { switch self { case .Clear: return .Clear; case .SourceAtop: return .SourceAtop } }
-  }
-
-  public var indicatorStyle: CGBlendMode = .Clear {
-    didSet { guard oldValue != indicatorStyle else { return }; setNeedsDisplay() }
-  }
-
-  @IBInspectable public var indicatorStyleString: String {
-    get { return indicatorStyle.stringValue }
-    set { indicatorStyle = CGBlendMode(stringValue: newValue) }
-  }
-
-  @IBInspectable public var value: Float = 0.0 {
+  @IBInspectable public var value: Float = 0.5 {
     didSet {
       guard oldValue != value else { return }
       value = valueInterval.clampValue(value)
@@ -53,6 +39,21 @@ import UIKit
     didSet {
       guard oldValue != value else { return }
       if let knobBase = knobBase { self.knobBase = knobBase.imageWithColor(knobColor) }
+      setNeedsDisplay()
+    }
+  }
+
+  @IBInspectable public var indicatorImage: UIImage? {
+    didSet {
+      guard indicatorImage != oldValue && !indicatorColorModified else { return }
+      indicatorImage = indicatorImage?.imageWithColor(indicatorColor)
+      setNeedsDisplay()
+    }
+  }
+  @IBInspectable public var indicatorFillImage: UIImage? {
+    didSet {
+      guard indicatorFillImage != oldValue && !indicatorColorModified else { return }
+      indicatorFillImage = indicatorFillImage?.imageWithColor(indicatorColor)
       setNeedsDisplay()
     }
   }
@@ -92,7 +93,7 @@ import UIKit
   */
   @objc private func didRotate() {
     guard let rotationGesture = rotationGesture else { return }
-    let currentRotation = -rotationInterval.clampValue(rotationGesture.rotation)
+    let currentRotation = rotationInterval.clampValue(rotationGesture.rotation)
     guard currentRotation != previousRotation else { return }
     value = valueInterval.valueForNormalizedValue(Float(rotationInterval.normalizeValue(currentRotation)))
     previousRotation = currentRotation
@@ -104,13 +105,46 @@ import UIKit
       setNeedsDisplay()
     }
   }
-  @IBInspectable public var indicatorColor: UIColor = .whiteColor() { didSet { setNeedsDisplay() } }
 
-  private var valueAngle: CGFloat { return -π * CGFloat(valueInterval.normalizeValue(value)) }
-  private var startAngle: CGFloat { return valueAngle + π / 20 }
-  private var endAngle: CGFloat  { return valueAngle - π / 20 }
+  private var indicatorColorModified = false
+  @IBInspectable public var indicatorColor: UIColor = .lightGrayColor() {
+    didSet {
+      guard indicatorColor != oldValue else { return }
+      indicatorColorModified = true
+      indicatorImage = indicatorImage?.imageWithColor(indicatorColor)
+      indicatorFillImage = indicatorFillImage?.imageWithColor(indicatorColor)
+      indicatorColorModified = false
+      setNeedsDisplay()
+    }
+  }
 
   private var valueInterval: ClosedInterval<Float> = 0 ... 1 { didSet { value = valueInterval.clampValue(value) } }
+
+  // MARK: - Styles
+
+  public var indicatorStyle: CGBlendMode = .Normal {
+    didSet {
+      guard indicatorStyle != oldValue else { return }
+      setNeedsDisplay()
+    }
+  }
+
+  public var indicatorFillStyle: CGBlendMode = .Normal {
+    didSet {
+      guard indicatorFillStyle != oldValue else { return }
+      setNeedsDisplay()
+    }
+  }
+
+  @IBInspectable public var indicatorStyleString: String {
+    get { return indicatorStyle.stringValue }
+    set { indicatorStyle = CGBlendMode(stringValue: newValue) }
+  }
+
+  @IBInspectable public var indicatorFillStyleString: String {
+    get { return indicatorFillStyle.stringValue }
+    set { indicatorFillStyle = CGBlendMode(stringValue: newValue) }
+  }
 
   /**
   drawRect:
@@ -119,40 +153,44 @@ import UIKit
   */
   public override func drawRect(rect: CGRect) {
 
-    var frame = rect
-    if frame.size.width != frame.size.height {
-      frame.size = CGSize(square: frame.size.minAxis)
-      frame.origin += (rect.size - frame.size) * 0.5
-    }
+    let context = UIGraphicsGetCurrentContext()
+    CGContextSaveGState(context)
+    CGContextTranslateCTM(context, half(rect.width), half(rect.height))
+    CGContextRotateCTM(context, π * CGFloat(valueInterval.normalizeValue(value)) + π)
+    CGContextTranslateCTM(context, -half(rect.width), -half(rect.height))
+
+    let baseFrame = rect.centerInscribedSquare
 
     if let knobBase = knobBase {
-      let context = UIGraphicsGetCurrentContext()
-      CGContextSaveGState(context)
-      CGContextTranslateCTM(context, half(frame.width), half(frame.height))
-      CGContextRotateCTM(context, valueAngle)
-      let baseFrame = CGRect(origin: frame.origin - (frame.size * 0.5),  size: frame.size)
       knobBase.drawInRect(baseFrame)
-      CGContextRestoreGState(context)
     } else {
       knobColor.setFill()
-      UIBezierPath(ovalInRect: frame).fill()
+      UIBezierPath(ovalInRect: baseFrame).fill()
     }
 
-    let center = frame.center.offsetBy(dx: 0, dy: -2)
-    let indicatorPath = UIBezierPath()
-    indicatorPath.addArcWithCenter(center,
-                            radius: half(frame.width) - 2,
-                        startAngle: startAngle,
-                          endAngle: endAngle,
-                         clockwise: false)
-    indicatorPath.addLineToPoint(center)
-    indicatorPath.closePath()
+    if let indicator = indicatorImage, indicatorFill = indicatorFillImage {
+      indicator.drawInRect(baseFrame, blendMode: indicatorStyle, alpha: 1)
+      indicatorFill.drawInRect(baseFrame, blendMode: indicatorFillStyle, alpha: 1)
 
-    indicatorColor.setFill()
-    indicatorPath.fillWithBlendMode(indicatorStyle, alpha: 1)
-    indicatorPath.lineWidth = 2
-    indicatorPath.lineJoinStyle = .Bevel
-    indicatorPath.strokeWithBlendMode(.Clear, alpha: 1)
+    } else {
+      let indicatorPath = UIBezierPath()
+      indicatorPath.addArcWithCenter(baseFrame.center,
+                              radius: half(baseFrame.width),
+                          startAngle: π / 20,
+                            endAngle: -π / 20,
+                           clockwise: false)
+      indicatorPath.addLineToPoint(baseFrame.center)
+      indicatorPath.closePath()
+
+      indicatorColor.setFill()
+      indicatorPath.fillWithBlendMode(indicatorFillStyle, alpha: 1)
+      indicatorPath.lineWidth = 2
+      indicatorPath.lineJoinStyle = .Bevel
+      indicatorColor.setStroke()
+      indicatorPath.strokeWithBlendMode(indicatorStyle, alpha: 1)
+    }
+
+    CGContextRestoreGState(context)
   }
 
 }

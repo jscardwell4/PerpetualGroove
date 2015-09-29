@@ -14,6 +14,11 @@ final class MixerViewController: UICollectionViewController {
 
   private var notificationReceptionist: NotificationReceptionist?
 
+  /** addTrack */
+  @IBAction func addTrack() {
+    logDebug()
+  }
+
   /** viewDidLoad */
   override func viewDidLoad() {
     super.viewDidLoad()
