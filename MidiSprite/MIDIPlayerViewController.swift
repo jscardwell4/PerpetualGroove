@@ -30,6 +30,19 @@ final class MIDIPlayerViewController: UIViewController {
     initializeReceptionist()
   }
 
+  /**
+  viewDidAppear:
+
+  - parameter animated: Bool
+  */
+  override func viewDidAppear(animated: Bool) {
+    // TODO: Add back local storage only option
+    guard NSFileManager.defaultManager().ubiquityIdentityToken == nil else { return }
+
+    performSegueWithIdentifier("Purgatory", sender: self)
+  }
+
+
   /** viewDidLayoutSubviews */
   override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()

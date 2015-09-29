@@ -13,6 +13,7 @@
             <string>EvelethLight</string>
             <string>EvelethLight</string>
             <string>EvelethLight</string>
+            <string>EvelethLight</string>
         </mutableArray>
     </customFonts>
     <scenes>
@@ -29,13 +30,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" distribution="equalCentering" alignment="center" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="a6c-px-a6l" userLabel="BottomStack">
-                                <rect key="frame" x="0.0" y="422" width="972" height="151"/>
+                                <rect key="frame" x="0.0" y="422" width="994" height="165"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" distribution="equalCentering" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="EGK-49-dds">
-                                        <rect key="frame" x="0.0" y="51" width="50" height="50"/>
+                                        <rect key="frame" x="0.0" y="55" width="56" height="56"/>
                                         <subviews>
-                                            <view opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gJq-1L-zk3" customClass="ImageButtonView" customModule="MoonKit">
-                                                <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                            <view opaque="NO" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gJq-1L-zk3" customClass="ImageButtonView" customModule="MoonKit">
+                                                <rect key="frame" x="0.0" y="0.0" width="56" height="56"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <color key="tintColor" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
                                                 <constraints>
@@ -72,16 +73,16 @@
                                         <variation key="heightClass=regular-widthClass=regular" axis="vertical"/>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" axis="vertical" distribution="equalCentering" alignment="bottom" translatesAutoresizingMaskIntoConstraints="NO" id="0XM-Uy-Oeo" userLabel="BarBeatTimeTransportStack">
-                                        <rect key="frame" x="217" y="44" width="148" height="64"/>
+                                        <rect key="frame" x="226" y="50" width="148" height="65"/>
                                         <subviews>
-                                            <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="UtM-qz-8YW" userLabel="BarBeatTimeLabel" customClass="BarBeatTimeLabel" customModule="MidiSprite" customModuleProvider="target">
-                                                <rect key="frame" x="1" y="0.0" width="147" height="28"/>
+                                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="UtM-qz-8YW" userLabel="BarBeatTimeLabel" customClass="BarBeatTimeLabel" customModule="MidiSprite" customModuleProvider="target">
+                                                <rect key="frame" x="1" y="0.0" width="147" height="29"/>
                                                 <subviews>
-                                                    <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="NRe-r9-gaz" userLabel="BarBeatTimeStack">
-                                                        <rect key="frame" x="0.0" y="0.0" width="147" height="28"/>
+                                                    <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="NRe-r9-gaz" userLabel="BarBeatTimeStack">
+                                                        <rect key="frame" x="0.0" y="0.0" width="147" height="29"/>
                                                         <subviews>
-                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" ambiguous="YES" misplaced="YES" text="001" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oOV-5w-qc6">
-                                                                <rect key="frame" x="0.0" y="0.0" width="47" height="28"/>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" ambiguous="YES" text="001" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oOV-5w-qc6">
+                                                                <rect key="frame" x="0.0" y="0.0" width="45" height="29"/>
                                                                 <accessibility key="accessibilityConfiguration" identifier="BarLabel"/>
                                                                 <fontDescription key="fontDescription" name="EvelethLight" family="Eveleth" pointSize="24"/>
                                                                 <color key="textColor" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
@@ -90,8 +91,8 @@
                                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="BarLabel"/>
                                                                 </userDefinedRuntimeAttributes>
                                                             </label>
-                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" ambiguous="YES" misplaced="YES" text=":" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="t0O-Cc-XTf">
-                                                                <rect key="frame" x="53" y="0.0" width="7" height="28"/>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" ambiguous="YES" text=":" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="t0O-Cc-XTf">
+                                                                <rect key="frame" x="51" y="0.0" width="9" height="29"/>
                                                                 <accessibility key="accessibilityConfiguration" identifier="BarBeatDivider"/>
                                                                 <fontDescription key="fontDescription" name="EvelethLight" family="Eveleth" pointSize="24"/>
                                                                 <color key="textColor" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
@@ -100,8 +101,8 @@
                                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="BarBeatDivider"/>
                                                                 </userDefinedRuntimeAttributes>
                                                             </label>
-                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="999" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" ambiguous="YES" misplaced="YES" text="1" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="e09-0B-NqE">
-                                                                <rect key="frame" x="66" y="0.0" width="16" height="28"/>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="999" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" ambiguous="YES" text="1" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="e09-0B-NqE">
+                                                                <rect key="frame" x="65" y="0.0" width="16" height="29"/>
                                                                 <accessibility key="accessibilityConfiguration" identifier="BeatLabel"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="width" constant="16" identifier="BeatLabelWidth" id="vcj-2L-sDc"/>
@@ -113,8 +114,8 @@
                                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="BeatLabel"/>
                                                                 </userDefinedRuntimeAttributes>
                                                             </label>
-                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" ambiguous="YES" misplaced="YES" text="." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="ayK-ZT-ieP">
-                                                                <rect key="frame" x="88" y="0.0" width="7" height="28"/>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" ambiguous="YES" text="." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="ayK-ZT-ieP">
+                                                                <rect key="frame" x="87" y="0.0" width="8" height="29"/>
                                                                 <accessibility key="accessibilityConfiguration" identifier="BeatSubbeatDivider"/>
                                                                 <fontDescription key="fontDescription" name="EvelethLight" family="Eveleth" pointSize="24"/>
                                                                 <color key="textColor" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
@@ -123,8 +124,8 @@
                                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="BeatSubbeatDivider"/>
                                                                 </userDefinedRuntimeAttributes>
                                                             </label>
-                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="999" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" ambiguous="YES" misplaced="YES" text="001" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aOJ-a2-U5V">
-                                                                <rect key="frame" x="101" y="0.0" width="46" height="28"/>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="999" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" ambiguous="YES" text="001" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aOJ-a2-U5V">
+                                                                <rect key="frame" x="101" y="0.0" width="46" height="29"/>
                                                                 <accessibility key="accessibilityConfiguration" identifier="SubbeatLabel"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="width" constant="46" identifier="SubbeatLabelWidth" id="pWa-Vf-I3p"/>
@@ -176,7 +177,7 @@
                                                 </connections>
                                             </view>
                                             <stackView contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" ambiguous="YES" distribution="fillEqually" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="ca1-ur-VJf" userLabel="Transport">
-                                                <rect key="frame" x="0.0" y="28" width="148" height="36"/>
+                                                <rect key="frame" x="0.0" y="29" width="148" height="36"/>
                                                 <subviews>
                                                     <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="u5D-xu-7GP" userLabel="Record" customClass="ImageButtonView" customModule="MoonKit">
                                                         <rect key="frame" x="0.0" y="0.0" width="36" height="36"/>
@@ -287,7 +288,7 @@
                                         </variation>
                                     </stackView>
                                     <view opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ndz-Vc-1wb" customClass="ScrollWheel" customModule="MoonKit">
-                                        <rect key="frame" x="481" y="0.0" width="151" height="151"/>
+                                        <rect key="frame" x="490" y="0.0" width="164" height="165"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <accessibility key="accessibilityConfiguration" identifier="JogWheel"/>
                                         <constraints>
@@ -329,7 +330,7 @@
                                         </connections>
                                     </view>
                                     <containerView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iYt-GS-XMU" userLabel="Tempo Container">
-                                        <rect key="frame" x="672" y="48" width="300" height="56"/>
+                                        <rect key="frame" x="694" y="55" width="300" height="56"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="300" identifier="TempoContainerWidth" id="2zW-q5-rAN"/>
                                             <constraint firstAttribute="height" constant="56" identifier="TempoContainerHeight" id="Qtd-27-uiL"/>
@@ -1713,6 +1714,7 @@
                         <outlet property="tempoButton" destination="QfC-Mo-5pM" id="n4W-1H-jfD"/>
                         <outlet property="tempoPopoverView" destination="hbJ-DQ-XET" id="bIM-Dv-0yz"/>
                         <outlet property="transportStack" destination="ca1-ur-VJf" id="VlY-Hu-ueM"/>
+                        <segue destination="kZP-V5-1kq" kind="presentation" identifier="Purgatory" customClass="PurgatorySegue" customModule="MidiSprite" customModuleProvider="target" modalTransitionStyle="crossDissolve" id="Hqa-Ox-hdJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>
@@ -1730,7 +1732,7 @@
                 <viewControllerPlaceholder storyboardIdentifier="Tempo" storyboardName="Auxiliary" referencedIdentifier="Tempo" id="kvo-ab-yOc" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="l1g-sJ-d2t" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="281.625" y="1130"/>
+            <point key="canvasLocation" x="366.375" y="1187.25"/>
         </scene>
         <!--Mixer-->
         <scene sceneID="A7a-AD-6Of">
@@ -1738,7 +1740,7 @@
                 <viewControllerPlaceholder storyboardIdentifier="Mixer" storyboardName="Auxiliary" referencedIdentifier="Mixer" id="kbm-WN-nc0" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8QL-P7-Hyc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-53.25" y="1106"/>
+            <point key="canvasLocation" x="112.5" y="1180.5"/>
         </scene>
         <!--NoteAttributes-->
         <scene sceneID="nQF-Uk-kwg">
@@ -1746,7 +1748,7 @@
                 <viewControllerPlaceholder storyboardIdentifier="NoteAttributes" storyboardName="Auxiliary" referencedIdentifier="NoteAttributes" id="kzO-nC-kW2" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="VWp-16-2Pf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="400.5" y="1134"/>
+            <point key="canvasLocation" x="840" y="405"/>
         </scene>
         <!--Instrument-->
         <scene sceneID="zCl-gD-8Cj">
@@ -1754,7 +1756,94 @@
                 <viewControllerPlaceholder storyboardIdentifier="Instrument" storyboardName="Auxiliary" referencedIdentifier="Instrument" id="4eE-ek-zDs" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AML-F1-GBa" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="162.375" y="1128"/>
+            <point key="canvasLocation" x="862.125" y="765"/>
+        </scene>
+        <!--Purgatory-->
+        <scene sceneID="sKb-zw-p7r">
+            <objects>
+                <viewController storyboardIdentifier="Purgatory" modalTransitionStyle="crossDissolve" id="kZP-V5-1kq" userLabel="Purgatory" customClass="PurgatoryViewController" customModule="MidiSprite" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="vAG-x6-Qtc"/>
+                        <viewControllerLayoutGuide type="bottom" id="9fn-Bb-FvO"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Fyn-HN-Jjf">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="h7J-9k-NnZ" userLabel="Backdrop">
+                                <rect key="frame" x="20" y="0.0" width="560" height="600"/>
+                                <accessibility key="accessibilityConfiguration" identifier="Backdrop"/>
+                            </imageView>
+                            <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WZT-dO-D51">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="Fv2-OO-TrL">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="u1J-1V-Ee7">
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="h13-pC-meS">
+                                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please enable iCloud Drive in Settings" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="G6r-hu-iAC" userLabel="Message">
+                                                        <rect key="frame" x="91" y="290" width="417" height="20.5"/>
+                                                        <accessibility key="accessibilityConfiguration" identifier="Message"/>
+                                                        <fontDescription key="fontDescription" name="EvelethLight" family="Eveleth" pointSize="17"/>
+                                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                        <userDefinedRuntimeAttributes>
+                                                            <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="Message"/>
+                                                        </userDefinedRuntimeAttributes>
+                                                    </label>
+                                                </subviews>
+                                                <constraints>
+                                                    <constraint firstItem="G6r-hu-iAC" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="h13-pC-meS" secondAttribute="leading" id="NEk-mZ-K49"/>
+                                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="G6r-hu-iAC" secondAttribute="trailing" id="OTQ-BZ-cuM"/>
+                                                    <constraint firstItem="G6r-hu-iAC" firstAttribute="centerX" secondItem="h13-pC-meS" secondAttribute="centerX" id="eZx-Pz-4ap"/>
+                                                    <constraint firstItem="G6r-hu-iAC" firstAttribute="centerY" secondItem="h13-pC-meS" secondAttribute="centerY" id="yGW-dP-Sb2"/>
+                                                </constraints>
+                                            </view>
+                                            <vibrancyEffect>
+                                                <blurEffect style="light"/>
+                                            </vibrancyEffect>
+                                        </visualEffectView>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="trailing" secondItem="u1J-1V-Ee7" secondAttribute="trailing" id="CZX-ar-P5W"/>
+                                        <constraint firstItem="u1J-1V-Ee7" firstAttribute="top" secondItem="Fv2-OO-TrL" secondAttribute="top" id="MEt-0c-XRT"/>
+                                        <constraint firstItem="u1J-1V-Ee7" firstAttribute="leading" secondItem="Fv2-OO-TrL" secondAttribute="leading" id="dez-j2-OtG"/>
+                                        <constraint firstAttribute="bottom" secondItem="u1J-1V-Ee7" secondAttribute="bottom" id="scj-y6-4Fr"/>
+                                    </constraints>
+                                </view>
+                                <blurEffect style="light"/>
+                                <variation key="heightClass=regular-widthClass=regular" fixedFrame="YES">
+                                    <rect key="frame" x="362" y="342" width="240" height="128"/>
+                                </variation>
+                            </visualEffectView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="9fn-Bb-FvO" firstAttribute="top" secondItem="h7J-9k-NnZ" secondAttribute="bottom" id="8wq-bw-d8B"/>
+                            <constraint firstItem="9fn-Bb-FvO" firstAttribute="top" secondItem="WZT-dO-D51" secondAttribute="bottom" id="QoW-ma-tYA"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="h7J-9k-NnZ" secondAttribute="trailing" id="R6m-CF-3Q9"/>
+                            <constraint firstAttribute="trailing" secondItem="WZT-dO-D51" secondAttribute="trailing" id="V3N-V6-SRf"/>
+                            <constraint firstItem="WZT-dO-D51" firstAttribute="leading" secondItem="Fyn-HN-Jjf" secondAttribute="leading" id="eVd-6K-qhs"/>
+                            <constraint firstItem="h7J-9k-NnZ" firstAttribute="leading" secondItem="Fyn-HN-Jjf" secondAttribute="leadingMargin" id="qkh-IK-CEr"/>
+                            <constraint firstItem="WZT-dO-D51" firstAttribute="top" secondItem="vAG-x6-Qtc" secondAttribute="bottom" id="r0u-0M-m9W"/>
+                            <constraint firstItem="h7J-9k-NnZ" firstAttribute="top" secondItem="vAG-x6-Qtc" secondAttribute="bottom" id="z1w-L8-9xx"/>
+                        </constraints>
+                    </view>
+                    <nil key="simulatedStatusBarMetrics"/>
+                    <nil key="simulatedTopBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="backdrop" destination="h7J-9k-NnZ" id="SwB-gX-sWg"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="oNM-PK-XfG" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="844.5" y="1380.75"/>
         </scene>
         <!--Files-->
         <scene sceneID="yJ1-PB-18M">
@@ -1762,7 +1851,7 @@
                 <viewControllerPlaceholder storyboardIdentifier="Files" storyboardName="Auxiliary" referencedIdentifier="Files" id="Eww-vV-yXw" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Czz-jX-k9v" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="55.125" y="1116"/>
+            <point key="canvasLocation" x="-97.875" y="1036.5"/>
         </scene>
     </scenes>
     <resources>
@@ -1789,9 +1878,9 @@
         <image name="wheel" width="200" height="200"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="naX-yf-zMX"/>
-        <segue reference="obi-9x-Vtm"/>
-        <segue reference="fvr-ba-1dC"/>
         <segue reference="tWu-Pf-pcN"/>
+        <segue reference="naX-yf-zMX"/>
+        <segue reference="fvr-ba-1dC"/>
+        <segue reference="obi-9x-Vtm"/>
     </inferredMetricsTieBreakers>
 </document>
