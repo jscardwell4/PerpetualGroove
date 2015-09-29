@@ -159,7 +159,7 @@ final class FilesViewController: UIViewController {
   /** updateViewConstraints */
   override func updateViewConstraints() {
     if view.constraintsWithIdentifier(constraintID).count == 0 {
-      view.constrain([view.width => contentSize.width, view.height => contentSize.height] --> constraintID)
+      view.constrain([view.width ≥ max(contentSize.width, 240), view.height ≥ max(contentSize.height, 108)] --> constraintID)
     }
     super.updateViewConstraints()
   }

@@ -235,7 +235,9 @@ final class MIDIPlayerViewController: UIViewController {
   }
 
   /** files */
-  @IBAction private func files() { if case .Files = popover { popover = .None } else { popover = .Files } }
+  @IBAction private func files() {
+    if case .Files = popover { popover = .None } else { popover = .Files }
+  }
 
   private weak var filesViewController: FilesViewController! {
     didSet {

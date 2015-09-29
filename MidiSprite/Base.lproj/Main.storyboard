@@ -37,6 +37,41 @@
                             <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" distribution="equalCentering" alignment="center" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="a6c-px-a6l" userLabel="BottomStack">
                                 <rect key="frame" x="0.0" y="422" width="755" height="151"/>
                                 <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EGK-49-dds">
+                                        <rect key="frame" x="-20" y="34" width="82" height="82"/>
+                                        <subviews>
+                                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gJq-1L-zk3" customClass="ImageButtonView" customModule="MoonKit">
+                                                <rect key="frame" x="20" y="20" width="42" height="42"/>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                <color key="tintColor" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="gJq-1L-zk3" secondAttribute="height" multiplier="1:1" id="XMe-jI-IHT"/>
+                                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="42" id="vTY-Sd-7dt"/>
+                                                </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="files"/>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="FilesButton"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="files-selected"/>
+                                                </userDefinedRuntimeAttributes>
+                                                <variation key="default">
+                                                    <mask key="constraints">
+                                                        <exclude reference="XMe-jI-IHT"/>
+                                                        <exclude reference="vTY-Sd-7dt"/>
+                                                    </mask>
+                                                </variation>
+                                                <variation key="heightClass=regular-widthClass=regular">
+                                                    <mask key="constraints">
+                                                        <include reference="XMe-jI-IHT"/>
+                                                        <include reference="vTY-Sd-7dt"/>
+                                                    </mask>
+                                                </variation>
+                                                <connections>
+                                                    <action selector="files" destination="BV1-FR-VrT" eventType="touchUpInside" id="tYO-pY-FpF"/>
+                                                </connections>
+                                            </view>
+                                        </subviews>
+                                        <variation key="heightClass=regular-widthClass=regular" axis="vertical"/>
+                                    </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" axis="vertical" distribution="equalCentering" alignment="bottom" translatesAutoresizingMaskIntoConstraints="NO" id="0XM-Uy-Oeo" userLabel="BarBeatTimeTransportStack">
                                         <rect key="frame" x="0.0" y="44" width="148" height="64"/>
                                         <subviews>
@@ -141,7 +176,7 @@
                                                     <outlet property="subbeatLabel" destination="aOJ-a2-U5V" id="1bL-KQ-zKV"/>
                                                 </connections>
                                             </view>
-                                            <stackView contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" ambiguous="YES" misplaced="YES" distribution="fillEqually" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="ca1-ur-VJf" userLabel="Transport">
+                                            <stackView contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" ambiguous="YES" distribution="fillEqually" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="ca1-ur-VJf" userLabel="Transport">
                                                 <rect key="frame" x="0.0" y="28" width="148" height="36"/>
                                                 <subviews>
                                                     <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="u5D-xu-7GP" userLabel="Record" customClass="ImageButtonView" customModule="MoonKit">
@@ -392,9 +427,6 @@
                                                 <exclude reference="KaT-vY-Ywn"/>
                                             </mask>
                                         </variation>
-                                        <connections>
-                                            <action selector="files" destination="BV1-FR-VrT" eventType="touchUpInside" id="j7z-oo-VsZ"/>
-                                        </connections>
                                     </view>
                                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QfC-Mo-5pM" userLabel="Tempo" customClass="ImageButtonView" customModule="MoonKit">
                                         <rect key="frame" x="105" y="5" width="36" height="36"/>
@@ -933,10 +965,10 @@
                                 <variation key="default">
                                     <mask key="constraints">
                                         <exclude reference="Uix-bb-eUo"/>
-                                        <exclude reference="bd5-P4-nzZ"/>
-                                        <exclude reference="yeN-dt-G8z"/>
                                         <exclude reference="OmY-0x-BPS"/>
                                         <exclude reference="q8H-Sa-4au"/>
+                                        <exclude reference="bd5-P4-nzZ"/>
+                                        <exclude reference="yeN-dt-G8z"/>
                                     </mask>
                                 </variation>
                                 <variation key="widthClass=regular">
@@ -947,9 +979,9 @@
                                 <variation key="heightClass=regular-widthClass=regular">
                                     <mask key="constraints">
                                         <include reference="Uix-bb-eUo"/>
+                                        <include reference="q8H-Sa-4au"/>
                                         <include reference="bd5-P4-nzZ"/>
                                         <include reference="yeN-dt-G8z"/>
-                                        <include reference="q8H-Sa-4au"/>
                                     </mask>
                                 </variation>
                             </stackView>
@@ -1350,7 +1382,7 @@
                                     <outlet property="contentView" destination="HbF-Jz-SSL" id="HDd-vo-vZV"/>
                                 </connections>
                             </view>
-                            <view hidden="YES" contentMode="scaleToFill" placeholderIntrinsicWidth="240" placeholderIntrinsicHeight="108" translatesAutoresizingMaskIntoConstraints="NO" id="L5k-qi-Yb6" userLabel="Files Popover" customClass="PopoverView" customModule="MoonKit">
+                            <view opaque="NO" contentMode="scaleToFill" placeholderIntrinsicWidth="250" placeholderIntrinsicHeight="108" translatesAutoresizingMaskIntoConstraints="NO" id="L5k-qi-Yb6" userLabel="Files Popover" customClass="PopoverView" customModule="MoonKit">
                                 <rect key="frame" x="25" y="62" width="240" height="108"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="41G-aM-2HB">
@@ -1400,13 +1432,13 @@
                                         </variation>
                                         <variation key="widthClass=regular">
                                             <mask key="subviews">
-                                                <exclude reference="fhQ-Pz-pqn"/>
+                                                <include reference="fhQ-Pz-pqn"/>
                                             </mask>
                                             <mask key="constraints">
-                                                <exclude reference="5we-F0-7fC"/>
-                                                <exclude reference="NgN-av-Uen"/>
-                                                <exclude reference="nHb-tC-dcj"/>
-                                                <exclude reference="u6X-M2-0et"/>
+                                                <include reference="5we-F0-7fC"/>
+                                                <include reference="NgN-av-Uen"/>
+                                                <include reference="nHb-tC-dcj"/>
+                                                <include reference="u6X-M2-0et"/>
                                             </mask>
                                         </variation>
                                     </view>
@@ -1416,12 +1448,14 @@
                                     <constraint firstItem="41G-aM-2HB" firstAttribute="leading" secondItem="L5k-qi-Yb6" secondAttribute="leading" id="E0C-BE-zXD"/>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="240" id="HXU-Js-0ZJ"/>
                                     <constraint firstItem="41G-aM-2HB" firstAttribute="top" secondItem="L5k-qi-Yb6" secondAttribute="top" id="Lwg-8r-X6c"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="250" id="MBw-I0-rQd"/>
                                     <constraint firstAttribute="trailing" secondItem="41G-aM-2HB" secondAttribute="trailing" id="TFX-at-fPb"/>
                                     <constraint firstAttribute="bottom" secondItem="41G-aM-2HB" secondAttribute="bottom" id="fdl-vn-1X6"/>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="108" id="hhE-he-kA7"/>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="108" id="yna-4L-3vz"/>
                                 </constraints>
                                 <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="string" keyPath="locationString" value="Top"/>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="locationString" value="Bottom"/>
                                     <userDefinedRuntimeAttribute type="number" keyPath="arrowWidth">
                                         <real key="value" value="20"/>
                                     </userDefinedRuntimeAttribute>
@@ -1436,7 +1470,9 @@
                                     </mask>
                                     <mask key="constraints">
                                         <exclude reference="HXU-Js-0ZJ"/>
+                                        <exclude reference="MBw-I0-rQd"/>
                                         <exclude reference="hhE-he-kA7"/>
+                                        <exclude reference="yna-4L-3vz"/>
                                         <exclude reference="E0C-BE-zXD"/>
                                         <exclude reference="Lwg-8r-X6c"/>
                                         <exclude reference="TFX-at-fPb"/>
@@ -1458,13 +1494,20 @@
                                 </variation>
                                 <variation key="widthClass=regular">
                                     <mask key="subviews">
-                                        <exclude reference="41G-aM-2HB"/>
+                                        <include reference="41G-aM-2HB"/>
                                     </mask>
                                     <mask key="constraints">
-                                        <exclude reference="E0C-BE-zXD"/>
-                                        <exclude reference="Lwg-8r-X6c"/>
-                                        <exclude reference="TFX-at-fPb"/>
-                                        <exclude reference="fdl-vn-1X6"/>
+                                        <include reference="E0C-BE-zXD"/>
+                                        <include reference="Lwg-8r-X6c"/>
+                                        <include reference="TFX-at-fPb"/>
+                                        <include reference="fdl-vn-1X6"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular-widthClass=regular" ambiguous="YES" misplaced="YES">
+                                    <rect key="frame" x="-84" y="580" width="250" height="128"/>
+                                    <mask key="constraints">
+                                        <include reference="MBw-I0-rQd"/>
+                                        <include reference="yna-4L-3vz"/>
                                     </mask>
                                 </variation>
                                 <connections>
@@ -1610,6 +1653,7 @@
                             <constraint firstAttribute="trailingMargin" secondItem="cIl-mB-kk1" secondAttribute="trailing" identifier="NoteAttributesInstrumentRight" id="JfJ-B2-HT9"/>
                             <constraint firstAttribute="leadingMargin" secondItem="NZR-ya-29p" secondAttribute="leading" id="NWo-bR-14t"/>
                             <constraint firstAttribute="trailingMargin" secondItem="iqB-B1-8b1" secondAttribute="trailing" constant="5" id="OmS-5C-LrH"/>
+                            <constraint firstItem="gJq-1L-zk3" firstAttribute="top" secondItem="L5k-qi-Yb6" secondAttribute="bottom" constant="8" id="QOw-as-iIa"/>
                             <constraint firstAttribute="trailingMargin" secondItem="NZR-ya-29p" secondAttribute="trailing" constant="160" id="Sya-7v-Q2s">
                                 <variation key="heightClass=regular-widthClass=regular" constant="0.0"/>
                             </constraint>
@@ -1668,24 +1712,12 @@
                                 <exclude reference="H4X-0u-mdh"/>
                                 <exclude reference="d7k-jH-Kyh"/>
                                 <exclude reference="wyF-oA-5lM"/>
-                                <exclude reference="BtT-VP-Fff"/>
-                                <exclude reference="Tpu-NN-alG"/>
-                                <exclude reference="qJJ-cs-JQx"/>
-                                <exclude reference="t4j-XX-Twr"/>
                                 <exclude reference="2jW-w7-Z0M"/>
                                 <exclude reference="8lj-Hn-8oW"/>
                                 <exclude reference="sBB-9I-i8U"/>
                                 <exclude reference="OmS-5C-LrH"/>
                                 <exclude reference="ex6-R6-S95"/>
                                 <exclude reference="nul-W3-gia"/>
-                                <exclude reference="ams-Hi-YYI"/>
-                                <exclude reference="nuW-Ic-X2f"/>
-                                <exclude reference="NWo-bR-14t"/>
-                                <exclude reference="Sya-7v-Q2s"/>
-                                <exclude reference="qLB-St-jws"/>
-                                <exclude reference="TNs-Za-O4h"/>
-                                <exclude reference="bFf-3L-rej"/>
-                                <exclude reference="lgO-7N-9x1"/>
                                 <exclude reference="Egr-O2-Q8p"/>
                                 <exclude reference="dRk-Nh-NrI"/>
                                 <exclude reference="jVh-vm-Mzh"/>
@@ -1693,9 +1725,22 @@
                                 <exclude reference="33k-ri-hLy"/>
                                 <exclude reference="C5v-lg-8Ev"/>
                                 <exclude reference="ha6-KS-kA6"/>
+                                <exclude reference="ams-Hi-YYI"/>
+                                <exclude reference="nuW-Ic-X2f"/>
                                 <exclude reference="3MK-zR-u5k"/>
                                 <exclude reference="JfJ-B2-HT9"/>
                                 <exclude reference="Tpf-hj-cQu"/>
+                                <exclude reference="NWo-bR-14t"/>
+                                <exclude reference="Sya-7v-Q2s"/>
+                                <exclude reference="qLB-St-jws"/>
+                                <exclude reference="BtT-VP-Fff"/>
+                                <exclude reference="Tpu-NN-alG"/>
+                                <exclude reference="qJJ-cs-JQx"/>
+                                <exclude reference="t4j-XX-Twr"/>
+                                <exclude reference="TNs-Za-O4h"/>
+                                <exclude reference="bFf-3L-rej"/>
+                                <exclude reference="lgO-7N-9x1"/>
+                                <exclude reference="QOw-as-iIa"/>
                                 <exclude reference="2iT-2H-uln"/>
                                 <exclude reference="scO-5z-aRY"/>
                             </mask>
@@ -1717,17 +1762,12 @@
                                 <include reference="H4X-0u-mdh"/>
                                 <include reference="d7k-jH-Kyh"/>
                                 <include reference="wyF-oA-5lM"/>
-                                <include reference="BtT-VP-Fff"/>
-                                <include reference="Tpu-NN-alG"/>
-                                <include reference="qJJ-cs-JQx"/>
-                                <include reference="t4j-XX-Twr"/>
                                 <include reference="2jW-w7-Z0M"/>
                                 <include reference="8lj-Hn-8oW"/>
                                 <include reference="sBB-9I-i8U"/>
                                 <include reference="OmS-5C-LrH"/>
                                 <include reference="ex6-R6-S95"/>
                                 <include reference="nul-W3-gia"/>
-                                <include reference="nuW-Ic-X2f"/>
                                 <include reference="Egr-O2-Q8p"/>
                                 <include reference="dRk-Nh-NrI"/>
                                 <include reference="jVh-vm-Mzh"/>
@@ -1735,6 +1775,11 @@
                                 <include reference="33k-ri-hLy"/>
                                 <include reference="C5v-lg-8Ev"/>
                                 <include reference="ha6-KS-kA6"/>
+                                <include reference="nuW-Ic-X2f"/>
+                                <include reference="BtT-VP-Fff"/>
+                                <include reference="Tpu-NN-alG"/>
+                                <include reference="qJJ-cs-JQx"/>
+                                <include reference="t4j-XX-Twr"/>
                                 <include reference="scO-5z-aRY"/>
                             </mask>
                         </variation>
@@ -1745,7 +1790,7 @@
                                 <exclude reference="SIl-d8-sfe"/>
                                 <exclude reference="hbJ-DQ-XET"/>
                                 <exclude reference="noy-KI-iwW"/>
-                                <exclude reference="L5k-qi-Yb6"/>
+                                <include reference="L5k-qi-Yb6"/>
                                 <exclude reference="iqB-B1-8b1"/>
                             </mask>
                             <mask key="constraints">
@@ -1755,20 +1800,12 @@
                                 <exclude reference="H4X-0u-mdh"/>
                                 <exclude reference="d7k-jH-Kyh"/>
                                 <exclude reference="wyF-oA-5lM"/>
-                                <exclude reference="BtT-VP-Fff"/>
-                                <exclude reference="Tpu-NN-alG"/>
-                                <exclude reference="qJJ-cs-JQx"/>
-                                <exclude reference="t4j-XX-Twr"/>
                                 <exclude reference="2jW-w7-Z0M"/>
                                 <exclude reference="8lj-Hn-8oW"/>
                                 <exclude reference="sBB-9I-i8U"/>
                                 <exclude reference="OmS-5C-LrH"/>
                                 <exclude reference="ex6-R6-S95"/>
                                 <exclude reference="nul-W3-gia"/>
-                                <include reference="ams-Hi-YYI"/>
-                                <exclude reference="nuW-Ic-X2f"/>
-                                <include reference="TNs-Za-O4h"/>
-                                <include reference="lgO-7N-9x1"/>
                                 <exclude reference="Egr-O2-Q8p"/>
                                 <exclude reference="dRk-Nh-NrI"/>
                                 <exclude reference="jVh-vm-Mzh"/>
@@ -1776,19 +1813,28 @@
                                 <exclude reference="33k-ri-hLy"/>
                                 <exclude reference="C5v-lg-8Ev"/>
                                 <exclude reference="ha6-KS-kA6"/>
+                                <include reference="ams-Hi-YYI"/>
+                                <exclude reference="nuW-Ic-X2f"/>
                                 <include reference="JfJ-B2-HT9"/>
                                 <include reference="Tpf-hj-cQu"/>
+                                <exclude reference="BtT-VP-Fff"/>
+                                <exclude reference="Tpu-NN-alG"/>
+                                <exclude reference="qJJ-cs-JQx"/>
+                                <exclude reference="t4j-XX-Twr"/>
+                                <include reference="TNs-Za-O4h"/>
+                                <include reference="lgO-7N-9x1"/>
                                 <include reference="2iT-2H-uln"/>
                                 <exclude reference="scO-5z-aRY"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=regular">
                             <mask key="constraints">
+                                <include reference="3MK-zR-u5k"/>
                                 <include reference="NWo-bR-14t"/>
                                 <include reference="Sya-7v-Q2s"/>
                                 <include reference="qLB-St-jws"/>
                                 <include reference="bFf-3L-rej"/>
-                                <include reference="3MK-zR-u5k"/>
+                                <include reference="QOw-as-iIa"/>
                             </mask>
                         </variation>
                     </view>
@@ -1805,7 +1851,7 @@
                         <outlet property="fileLabel" destination="5F4-fd-MDF" id="HSY-cE-lfM"/>
                         <outlet property="fileNameLabel" destination="zLX-jM-BjG" id="G6V-2E-EqH"/>
                         <outlet property="fileSwipeGesture" destination="lGx-SZ-udo" id="5lH-zW-aCm"/>
-                        <outlet property="filesButton" destination="dRz-Aj-snf" id="lsm-fp-74h"/>
+                        <outlet property="filesButton" destination="gJq-1L-zk3" id="q8f-uu-p07"/>
                         <outlet property="filesPopoverView" destination="L5k-qi-Yb6" id="Gmb-Lm-jBp"/>
                         <outlet property="instrumentButton" destination="CYm-Ka-dDw" id="IHI-YQ-0my"/>
                         <outlet property="instrumentPopoverView" destination="noy-KI-iwW" id="1JQ-mb-NAe"/>
