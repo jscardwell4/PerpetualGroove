@@ -35,7 +35,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
   - returns: Bool
   */
   func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-    // Override point for customization after application launch.
+    MIDIDocumentManager.initialize()
     AudioManager.initialize()
     Sequencer.initialize()
     return true

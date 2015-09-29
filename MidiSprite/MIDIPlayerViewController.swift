@@ -185,7 +185,7 @@ final class MIDIPlayerViewController: UIViewController {
   */
   @IBAction func fileAction() {
     
-    if state ∋ .FileLoaded { Sequencer.currentFile = nil }
+//    if state ∋ .FileLoaded { Sequencer.currentDocument = nil }
     dismissFileAction()
   }
 
@@ -215,23 +215,23 @@ final class MIDIPlayerViewController: UIViewController {
   /** save */
   @IBAction private func save() {
     
-    let textField = FormTextField(name: "File Name", value: nil, placeholder: "Awesome Sauce") {
-      (text: String?) -> Bool in
-      guard let text = text else { return false }
-      let url = documentsURLToFile(text)
-      return !url.checkResourceIsReachableAndReturnError(nil)
-    }
-    let form = Form(fields: [textField])
-    let submit = { [unowned self] (f: Form) -> Void in
-      guard let text = f["File Name"]?.value as? String else { self.dismissViewControllerAnimated(true, completion: nil); return }
-      let url = documentsURLToFile("\(text).mid")
-      logDebug("saving to file '\(url)'")
-      do { try Sequencer.sequence.writeToFile(url) } catch { logError(error) }
-      self.dismissViewControllerAnimated(true, completion: nil)
-    }
-    let cancel = { [unowned self] () -> Void in self.dismissViewControllerAnimated(true, completion: nil) }
-    let formViewController = FormViewController(form: form, didSubmit: submit, didCancel: cancel)
-    presentViewController(formViewController, animated: true, completion: nil)
+//    let textField = FormTextField(name: "File Name", value: nil, placeholder: "Awesome Sauce") {
+//      (text: String?) -> Bool in
+//      guard let text = text else { return false }
+//      let url = documentsURLToFile(text)
+//      return !url.checkResourceIsReachableAndReturnError(nil)
+//    }
+//    let form = Form(fields: [textField])
+//    let submit = { [unowned self] (f: Form) -> Void in
+//      guard let text = f["File Name"]?.value as? String else { self.dismissViewControllerAnimated(true, completion: nil); return }
+//      let url = documentsURLToFile("\(text).mid")
+//      logDebug("saving to file '\(url)'")
+//      do { try Sequencer.sequence.writeToFile(url) } catch { logError(error) }
+//      self.dismissViewControllerAnimated(true, completion: nil)
+//    }
+//    let cancel = { [unowned self] () -> Void in self.dismissViewControllerAnimated(true, completion: nil) }
+//    let formViewController = FormViewController(form: form, didSubmit: submit, didCancel: cancel)
+//    presentViewController(formViewController, animated: true, completion: nil)
   }
 
   /** files */
@@ -239,8 +239,15 @@ final class MIDIPlayerViewController: UIViewController {
 
   private weak var filesViewController: FilesViewController! {
     didSet {
-      filesViewController?.didSelectFile = { [unowned self] in Sequencer.currentFile = $0; self.popover = .None }
-      filesViewController?.didDeleteFile = { guard Sequencer.currentFile == $0 else { return }; Sequencer.currentFile = nil }
+      filesViewController?.didSelectFile = {
+        [unowned self] in
+        MIDIDocumentManager.openFileAtURL($0)
+        self.popover = .None
+      }
+      filesViewController?.didDeleteFile = {
+        guard Sequencer.currentDocument?.fileURL == $0 else { return }
+        Sequencer.currentDocument = nil
+      }
     }
   }
 
@@ -354,7 +361,7 @@ final class MIDIPlayerViewController: UIViewController {
   - parameter notification: NSNotification
   */
   private func didRemoveTrack(notification: NSNotification) {
-    guard Sequencer.sequence.instrumentTracks.count == 0 else { return }
+    guard Sequencer.sequence?.instrumentTracks.count == 0 else { return }
     state ∖= [.TrackAdded]
   }
 
@@ -492,7 +499,7 @@ final class MIDIPlayerViewController: UIViewController {
 
       // Check if file status changed
       if modifiedState ∋ .FileLoaded {
-        if let currentFile = Sequencer.currentFile?.lastPathComponent {
+        if let currentFile = Sequencer.currentDocument?.localizedName {
           fileNameLabel.text = currentFile[..<currentFile.endIndex.advancedBy(-4)]
         } else {
           fileNameLabel.text = nil

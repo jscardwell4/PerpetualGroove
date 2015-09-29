@@ -93,13 +93,14 @@ final class MIDIPlayerNode: SKShapeNode {
                 targetTrack: InstrumentTrack? = nil,
                 attributes: NoteAttributes = Sequencer.currentNoteAttributes)
   {
+    guard let sequence = Sequencer.sequence else { logWarning("Cannot place a node without a valid sequence"); return }
     do {
       // Get the track first to force a new track to be created when necessary before the `MIDINode` receives its color
       let track: InstrumentTrack
       if targetTrack != nil { track = targetTrack! }
       else if let t = Sequencer.currentTrack where t.instrument.settingsEqualTo(Sequencer.auditionInstrument) { track = t }
       else {
-        track = try Sequencer.sequence.newTrackWithInstrument(Sequencer.instrumentWithCurrentSettings())
+        track = try sequence.newTrackWithInstrument(Sequencer.instrumentWithCurrentSettings())
         Sequencer.currentTrack = track
       }
       let midiNode = try MIDINode(placement: placement, name: "midiNode\(midiNodes.count)", track: track, note: attributes)

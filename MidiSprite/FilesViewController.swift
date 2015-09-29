@@ -23,11 +23,47 @@ final class FilesViewController: UIViewController {
 
   private let constraintID = Identifier("FilesViewController", "Internal")
 
-  private lazy var directoryMonitor: DirectoryMonitor = {
-    do {
-      return try DirectoryMonitor(directoryURL: documentsURL) { [unowned self] _ in self.refreshFiles() }
-    } catch { logError(error); fatalError("failed to create monitor for documents directory: \(error)") }
-  }()
+//  private lazy var directoryMonitor: DirectoryMonitor = {
+//    do {
+//      return try DirectoryMonitor(directoryURL: documentsURL) { [unowned self] _ in self.refreshFiles() }
+//    } catch { logError(error); fatalError("failed to create monitor for documents directory: \(error)") }
+//  }()
+
+  private var notificationReceptionist: NotificationReceptionist!
+
+  /** setup */
+  private func setup() {
+    guard case .None = notificationReceptionist else { return }
+    notificationReceptionist = NotificationReceptionist(callbacks:[
+      MIDIDocumentManager.Notification.DidUpdateFileURLs.rawValue:
+        (MIDIDocumentManager.self, NSOperationQueue.mainQueue(),didUpdateFileURLs)
+      ])
+  }
+
+  /**
+  didUpdateFileURLs:
+
+  - parameter notification: NSNotification
+  */
+  private func didUpdateFileURLs(notification: NSNotification) { files = MIDIDocumentManager.fileURLs }
+
+  /**
+  init:bundle:
+
+  - parameter nibNameOrNil: String?
+  - parameter nibBundleOrNil: NSBundle?
+  */
+  override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+    super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    setup()
+  }
+
+  /**
+  init:
+
+  - parameter aDecoder: NSCoder
+  */
+  required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder); setup() }
 
   private var files: [NSURL] = [] {
     didSet {
@@ -42,11 +78,11 @@ final class FilesViewController: UIViewController {
   }
 
   /** viewDidLoad */
-  override func viewDidLoad() {
-    super.viewDidLoad()
-    view.translatesAutoresizingMaskIntoConstraints = false
-    refreshFiles()
-  }
+//  override func viewDidLoad() {
+//    super.viewDidLoad()
+//    view.translatesAutoresizingMaskIntoConstraints = false
+//    refreshFiles()
+//  }
 
   /**
   labelButtonAction:
@@ -145,9 +181,9 @@ final class FilesViewController: UIViewController {
   }
 
   /** refreshFiles */
-  private func refreshFiles() {
-    do { files = try documentsDirectoryContents().filter {$0.pathExtension == "mid" } } catch { logError(error) }
-  }
+//  private func refreshFiles() {
+//    do { files = try documentsDirectoryContents().filter {$0.pathExtension == "mid" } } catch { logError(error) }
+//  }
 
   private var tableWidth: CGFloat { return maxLabelSize.width }
   private var tableHeight: CGFloat { return maxLabelSize.height * CGFloat(files.count) }
@@ -157,21 +193,21 @@ final class FilesViewController: UIViewController {
 
   - parameter animated: Bool
   */
-  override func viewWillAppear(animated: Bool) {
-    super.viewWillAppear(animated)
-    refreshFiles()
-    directoryMonitor.startMonitoring()
-  }
+//  override func viewWillAppear(animated: Bool) {
+//    super.viewWillAppear(animated)
+//    refreshFiles()
+//    directoryMonitor.startMonitoring()
+//  }
 
   /**
   viewWillDisappear:
 
   - parameter animated: Bool
   */
-  override func viewWillDisappear(animated: Bool) {
-    super.viewWillDisappear(animated)
-    directoryMonitor.stopMonitoring()
-  }
+//  override func viewWillDisappear(animated: Bool) {
+//    super.viewWillDisappear(animated)
+//    directoryMonitor.stopMonitoring()
+//  }
 
   /**
   prefersStatusBarHidden

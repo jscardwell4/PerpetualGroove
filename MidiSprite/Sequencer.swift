@@ -87,13 +87,9 @@ final class Sequencer {
 
   // MARK: - Sequence
 
-  static private var _sequence: MIDISequence? { didSet { if oldValue != nil { reset() } } }
+//  static private var _sequence: MIDISequence? { didSet { if oldValue != nil { reset() } } }
 
-  static var sequence: MIDISequence {
-    guard _sequence == nil else { return _sequence! }
-    _sequence = MIDISequence()
-    return _sequence!
-  }
+  static var sequence: MIDISequence? { return currentDocument?.sequence }
 
 
   // MARK: - Time
@@ -120,7 +116,7 @@ final class Sequencer {
     get { return Double(clock.beatsPerMinute) }
     set {
       clock.beatsPerMinute = UInt16(newValue)
-      if recording { sequence.insertTempoChange(tempo) }
+      if recording { sequence?.insertTempoChange(tempo) }
     }
   }
 
@@ -129,23 +125,14 @@ final class Sequencer {
 
   // MARK: - Files
 
-  static var currentFile: NSURL? {
+  static var currentDocument: MIDIDocument? {
     didSet {
-      logVerbose("didSet… oldValue: \(oldValue); newValue: \(currentFile)")
-      guard oldValue != currentFile else { return }
-      if let currentFile = currentFile {
-        do {
-          let midiFile = try MIDIFile(file: currentFile)
-          logVerbose("midiFile = \(midiFile)")
-          _sequence = MIDISequence(file: midiFile)
-          logVerbose("playbackSequence = " + (_sequence?.description ?? "nil"))
-          Notification.DidLoadFile.post([Notification.Key.URL.rawValue:currentFile])
-        } catch {
-          logError(error)
-          self.currentFile = nil
-        }
+      logVerbose("didSet… oldValue: \(oldValue); newValue: \(currentDocument)")
+      guard oldValue != currentDocument else { return }
+      if let currentDocument = currentDocument {
+        Notification.DidLoadFile.post([Notification.Key.URL.rawValue: currentDocument])
       } else {
-        Notification.DidUnloadFile.post([Notification.Key.URL.rawValue:oldValue ?? NSNull()])
+        Notification.DidUnloadFile.post([Notification.Key.URL.rawValue: oldValue ?? NSNull()])
       }
     }
   }
@@ -219,7 +206,7 @@ final class Sequencer {
 
   /** beginJog */
   static func beginJog() {
-    guard !jogging else { return }
+    guard !jogging, let sequence = sequence else { return }
     clock.stop()
     jogTime = time.time
     maxTicks = max(jogTime.ticks, sequence.sequenceEnd.ticks)

@@ -20,7 +20,6 @@ final class TempoTrack: MIDITrackType {
       return endOfTrackEvent.time
     } else { return time.time }
   }
-  let playbackMode: Bool
 
   private(set) var events: [MIDITrackEvent] = [
     MetaEvent(.TimeSignature(upper: 4, lower: 4, clocks: 36, notes: 8)),
@@ -47,7 +46,7 @@ final class TempoTrack: MIDITrackType {
   - parameter tempo: Double
   */
   func insertTempoChange(tempo: Double) {
-    guard !playbackMode && recording else { return }
+    guard recording else { return }
     events.append(MetaEvent(time.time, .Tempo(microseconds: Byte4(60_000_000 / tempo))))
   }
 
@@ -57,10 +56,7 @@ final class TempoTrack: MIDITrackType {
   /**
   Initializer for non-playback mode tempo track
   */
-  init(playbackMode: Bool = false) {
-    recording = Sequencer.recording
-    self.playbackMode = playbackMode
-  }
+  init() { recording = Sequencer.recording }
 
 
   /**
@@ -103,7 +99,6 @@ final class TempoTrack: MIDITrackType {
   - parameter trackChunk: MIDIFileTrackChunk
   */
   init(trackChunk: MIDIFileTrackChunk) {
-    playbackMode = true
     events = trackChunk.events.filter { TempoTrack.isTempoTrackEvent($0) }
     for event in events {
       let eventTime = event.time
@@ -117,7 +112,6 @@ final class TempoTrack: MIDITrackType {
 
   var description: String {
     var result = "\(self.dynamicType.self) {\n"
-    result += "  playbackMode: \(playbackMode)\n"
     result += "  events: {\n" + ",\n".join(events.map({$0.description.indentedBy(8)})) + "\n\t}\n"
     result += "}"
     return result

@@ -30,8 +30,7 @@ final class InstrumentTrack: MIDITrackType, Equatable {
 
   let instrument: Instrument!
   let color: Color
-  let playbackMode: Bool
-
+  
   typealias NodeIdentifier = MIDINodeEvent.Identifier
 
   private var nodes: Set<MIDINode> = []
@@ -55,7 +54,7 @@ final class InstrumentTrack: MIDITrackType, Equatable {
   private var notificationReceptionist: NotificationReceptionist?
 
   private func appendEvent(var event: MIDITrackEvent) {
-    guard !playbackMode && recording else { return }
+    guard recording else { return }
     event.time = time.time
     events.append(event)
   }
@@ -192,8 +191,6 @@ final class InstrumentTrack: MIDITrackType, Equatable {
   */
   private func read(packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutablePointer<Void>) {
 
-//    guard !playbackMode else { return }
-
     // Forward the packets to the instrument
     do { try MIDISend(outPort, instrument.endPoint, packetList) ➤ "Failed to forward packet list to instrument" }
     catch { logError(error) }
@@ -272,10 +269,9 @@ final class InstrumentTrack: MIDITrackType, Equatable {
   */
   init(instrument i: Instrument) throws {
     instrument = i
-    color = Color.allCases[Sequencer.sequence.tracks.count % 10]
+    color = Color.allCases[Sequencer.sequence?.tracks.count ?? 0 % 10]
     fileQueue = serialQueueWithLabel("BUS \(instrument.bus)", qualityOfService: QOS_CLASS_BACKGROUND)
     recording = Sequencer.recording
-    playbackMode = false
 
     initializeNotificationReceptionist()
 
@@ -310,8 +306,7 @@ final class InstrumentTrack: MIDITrackType, Equatable {
   - parameter trackChunk: MIDIFileTrackChunk
   */
   init(trackChunk: MIDIFileTrackChunk) throws {
-    playbackMode = true
-    color = Color.allCases[Sequencer.sequence.tracks.count % 10]
+    color = Color.allCases[Sequencer.sequence?.tracks.count ?? 0 % 10]
     fileQueue = nil
     recording = false
     events = trackChunk.events

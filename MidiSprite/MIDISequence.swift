@@ -33,13 +33,7 @@ final class MIDISequence {
     }
   }
 
-  enum Error: String, ErrorType {
-    case NotPermitted = "Action not permitted given the playbackMode value of the sequence"
-  }
-
   var sequenceEnd: CABarBeatTime { return tracks.map({$0.trackEnd}).maxElement() ?? .start }
-
-  let playbackMode: Bool
 
   /** The instrument tracks are stored in the `tracks` array beginning at index `1` */
   var instrumentTracks: [InstrumentTrack] { return tracks.count > 1 ? tracks[1..<].map({$0 as! InstrumentTrack}) : [] }
@@ -54,7 +48,7 @@ final class MIDISequence {
   var file: MIDIFile { return MIDIFile(format: .One, division: 480, tracks: tracks) }
 
   /** init */
-  init() { playbackMode = false }
+  init() {}
 
   /**
   initWithFile:
@@ -62,7 +56,6 @@ final class MIDISequence {
   - parameter file: MIDIFile
   */
   init(file: MIDIFile) {
-    playbackMode = true
     var trackChunks = ArraySlice(file.tracks)
     if let trackChunk = trackChunks.first
       where trackChunk.events.count == trackChunk.events.filter({ TempoTrack.isTempoTrackEvent($0) }).count
@@ -70,7 +63,7 @@ final class MIDISequence {
       tracks[0] = TempoTrack(trackChunk: trackChunk) as MIDITrackType
       trackChunks = trackChunks.dropFirst()
     } else {
-      tracks[0] = TempoTrack(playbackMode: true) as MIDITrackType
+      tracks[0] = TempoTrack() as MIDITrackType
     }
 
     tracks.appendContentsOf(trackChunks.flatMap({ try? InstrumentTrack(trackChunk: $0) }) as [MIDITrackType])
@@ -84,7 +77,6 @@ final class MIDISequence {
   */
 
   func newTrackWithInstrument(instrument: Instrument) throws -> InstrumentTrack {
-    guard !playbackMode else { throw Error.NotPermitted }
     let track = try InstrumentTrack(instrument: instrument)
     tracks.append(track)
     Notification.DidAddTrack(track).post()
@@ -111,7 +103,7 @@ final class MIDISequence {
   - parameter tempo: Double
   */
   func insertTempoChange(tempo: Double) {
-    guard !playbackMode && Sequencer.recording else { return }
+    guard Sequencer.recording else { return }
     tempoTrack.insertTempoChange(tempo)
   }
 
@@ -121,7 +113,6 @@ final class MIDISequence {
   - parameter file: NSURL
   */
   func writeToFile(file: NSURL, overwrite: Bool = false) throws {
-    guard !playbackMode else { throw Error.NotPermitted }
     let midiFile = self.file
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)) {
       logDebug(midiFile.description)
@@ -140,7 +131,6 @@ final class MIDISequence {
 extension MIDISequence: CustomStringConvertible {
   var description: String {
     var result = "\(self.dynamicType.self) {\n"
-    result += "  playbackMode: \(playbackMode)\n"
     result += "\n".join(tracks.map({$0.description.indentedBy(4)}))
     result += "\n}"
     return result

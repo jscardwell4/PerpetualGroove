@@ -37,8 +37,9 @@ final class MixerViewController: UICollectionViewController {
 
   /** updateViewConstraints */
   override func updateViewConstraints() {
+    guard let sequence = Sequencer.sequence else { super.updateViewConstraints(); return }
     guard view.constraintsWithIdentifier(constraintID).count == 0 else { return }
-    let itemCount = Sequencer.sequence.instrumentTracks.count + 1
+    let itemCount = sequence.instrumentTracks.count + 1
     let cellSize = (collectionView!.collectionViewLayout as! UICollectionViewFlowLayout).itemSize
     let cellWidth = Int(cellSize.width)
     let cellSpacing = Int((collectionView!.collectionViewLayout as! UICollectionViewFlowLayout).minimumInteritemSpacing)
@@ -51,9 +52,9 @@ final class MixerViewController: UICollectionViewController {
 
   /** updateTracks */
   func updateTracks() {
-    guard let collectionView = collectionView else { return }
+    guard let collectionView = collectionView, sequence = Sequencer.sequence else { return }
     let itemCount = collectionView.numberOfItemsInSection(1)
-    let busCount = Sequencer.sequence.instrumentTracks.count
+    let busCount = sequence.instrumentTracks.count
     if itemCount != busCount {
       view.removeConstraints(view.constraintsWithIdentifier(constraintID))
       view.setNeedsUpdateConstraints()
@@ -81,7 +82,7 @@ final class MixerViewController: UICollectionViewController {
   - returns: Int
   */
   override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return section == 0 ? 1 : Sequencer.sequence.instrumentTracks.count
+    return section == 0 ? 1 : Sequencer.sequence?.instrumentTracks.count ?? 0
   }
 
   /**
@@ -102,7 +103,7 @@ final class MixerViewController: UICollectionViewController {
         (cell as? MasterCell)?.refresh()
       default:
         cell = collectionView.dequeueReusableCellWithReuseIdentifier(TrackCell.Identifier, forIndexPath: indexPath)
-        (cell as? TrackCell)?.track = Sequencer.sequence.instrumentTracks[indexPath.item]
+        (cell as? TrackCell)?.track = Sequencer.sequence?.instrumentTracks[indexPath.item]
     }
     
     return cell

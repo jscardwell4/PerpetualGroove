@@ -26,23 +26,26 @@ struct MIDIFile: CustomStringConvertible {
   - parameter file: NSURL
   */
   init(file: NSURL) throws {
-//    var value: UInt8 = 0
-//    withUnsafeMutablePointer(&value) { valuePtr in file.absoluteString.withCString{ filePtr in
-//        MIDISequence.ExtendedFileAttributeName.withCString {
-//          namePtr in getxattr(filePtr, namePtr, valuePtr, 1, 0, 0)
-//        } } }
-//    guard value == 1 else { throw Error.NotNodeCaptureFile }
     guard let fileData = NSData(contentsOfURL: file) else {
       throw MIDIFileError(type: .ReadFailure, reason: "Failed to get data from '\(file)'")
     }
+    try self.init(data: fileData)
+  }
 
-    let totalBytes = fileData.length
+  /**
+  initWithData:
+
+  - parameter data: NSData
+  */
+  init(data: NSData) throws {
+
+    let totalBytes = data.length
     guard totalBytes > 13 else {
-      throw MIDIFileError(type:.FileStructurallyUnsound, reason: "Not enough bytes in file '\(file)'")
+      throw MIDIFileError(type:.FileStructurallyUnsound, reason: "Not enough bytes in file")
     }
 
     // Get a pointer to the underlying memory buffer
-    let bytes = UnsafeBufferPointer<Byte>(start: UnsafePointer<Byte>(fileData.bytes), count: totalBytes)
+    let bytes = UnsafeBufferPointer<Byte>(start: UnsafePointer<Byte>(data.bytes), count: totalBytes)
 
     let headerBytes = bytes[bytes.startIndex ..< bytes.startIndex.advancedBy(14)]
     let h = try MIDIFileHeaderChunk(bytes: headerBytes)
