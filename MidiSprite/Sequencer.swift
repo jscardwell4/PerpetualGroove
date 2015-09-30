@@ -89,7 +89,7 @@ final class Sequencer {
 
 //  static private var _sequence: MIDISequence? { didSet { if oldValue != nil { reset() } } }
 
-  static var sequence: MIDISequence? { return currentDocument?.sequence }
+  static private(set) var sequence: MIDISequence?
 
 
   // MARK: - Time
@@ -125,17 +125,17 @@ final class Sequencer {
 
   // MARK: - Files
 
-  static var currentDocument: MIDIDocument? {
-    didSet {
-      logVerbose("didSet… oldValue: \(oldValue); newValue: \(currentDocument)")
-      guard oldValue != currentDocument else { return }
-      if let currentDocument = currentDocument {
-        Notification.DidLoadFile.post([Notification.Key.URL.rawValue: currentDocument])
-      } else {
-        Notification.DidUnloadFile.post([Notification.Key.URL.rawValue: oldValue ?? NSNull()])
-      }
-    }
-  }
+//  static var currentDocument: MIDIDocument? {
+//    didSet {
+//      logVerbose("didSet… oldValue: \(oldValue); newValue: \(currentDocument)")
+//      guard oldValue != currentDocument else { return }
+//      if let currentDocument = currentDocument {
+//        Notification.DidLoadFile.post([Notification.Key.URL.rawValue: currentDocument])
+//      } else {
+//        Notification.DidUnloadFile.post([Notification.Key.URL.rawValue: oldValue ?? NSNull()])
+//      }
+//    }
+//  }
 
   // MARK: - Tracks
 

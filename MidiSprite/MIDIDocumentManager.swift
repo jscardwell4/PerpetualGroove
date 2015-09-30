@@ -12,10 +12,27 @@ import MoonKit
 final class MIDIDocumentManager {
 
   private static var initialized = false
+  private static let CurrentDocumentKey = "MIDIDocumentManager.currentDocument"
 
   enum Notification: String, NotificationType, NotificationNameType {
-    case DidUpdateFileURLs
+    case DidUpdateMetadataItems, DidChangeCurrentDocument
     var object: AnyObject? { return MIDIDocumentManager.self }
+  }
+
+  static private(set) var currentDocument: MIDIDocument? {
+    didSet {
+      guard oldValue != currentDocument else { return }
+      do {
+
+        let data = try currentDocument?.fileURL.bookmarkDataWithOptions(.SuitableForBookmarkFile,
+                                         includingResourceValuesForKeys: nil,
+                                                          relativeToURL: nil)
+        NSUserDefaults.standardUserDefaults().setObject(data, forKey: CurrentDocumentKey)
+      } catch {
+        logError(error, message: "Failed to generate bookmark data for storage")
+      }
+      Notification.DidChangeCurrentDocument.post()
+    }
   }
 
   private static let queue: NSOperationQueue = {
@@ -33,30 +50,23 @@ final class MIDIDocumentManager {
     return query
   }()
 
-  private static var queryResults: [NSMetadataItem] {
+  static var metadataItems: [NSMetadataItem] {
     metadataQuery.disableUpdates()
     let results = metadataQuery.results as! [NSMetadataItem]
     metadataQuery.enableUpdates()
     return results
   }
 
-  private(set) static var fileURLs: [NSURL] = [] {
-    didSet {
-      Notification.DidUpdateFileURLs.post()
-    }
-  }
-
-  /** refreshFileURLs */
-  private static func refreshFileURLs() {
-    fileURLs = queryResults.flatMap { $0.valueForAttribute(NSMetadataItemURLKey) as? NSURL }
-  }
 
   /**
   didFinishGatheringNotification:
 
   - parameter notification: NSNotification
   */
-  private static func didFinishGathering(notification: NSNotification) { refreshFileURLs() }
+  private static func didFinishGathering(notification: NSNotification) {
+    logDebug()
+    Notification.DidUpdateMetadataItems.post()
+  }
 
   /**
   didUpdate:
@@ -68,11 +78,11 @@ final class MIDIDocumentManager {
     let removed = notification.userInfo?[NSMetadataQueryUpdateRemovedItemsKey] as? [NSMetadataItem]
     let added   = notification.userInfo?[NSMetadataQueryUpdateAddedItemsKey]   as? [NSMetadataItem]
     logDebug("changed: \(changed)\nremoved: \(removed)\nadded: \(added)")
-    refreshFileURLs()
+    Notification.DidUpdateMetadataItems.post()
   }
 
   /** createNewFile */
-  static func createNewFile() {
+  static func createNewDocument() {
     queue.addOperationWithBlock {
       let fileManager = NSFileManager()
       guard let baseURL = fileManager.URLForUbiquityContainerIdentifier(nil) else {
@@ -89,11 +99,27 @@ final class MIDIDocumentManager {
 
       let document = MIDIDocument(fileURL: fileURL)
       document.saveToURL(fileURL, forSaveOperation: .ForCreating, completionHandler: {
-        guard $0 else { return }
-        Sequencer.currentDocument = document
+        guard $0 else { return }; MIDIDocumentManager.openDocument(document)
       })
-
     }
+
+  }
+
+  /**
+  openDocument:
+
+  - parameter document: MIDIDocument
+  */
+  static func openDocument(document: MIDIDocument) {
+    logDebug("document = \(document)")
+  }
+
+  /**
+  openURL:
+
+  - parameter url: NSURL
+  */
+  static func openURL(url: NSURL) {
 
   }
 
@@ -102,8 +128,8 @@ final class MIDIDocumentManager {
 
   - parameter url: NSURL
   */
-  static func openFileAtURL(url: NSURL) {
-
+  static func openItem(item: NSMetadataItem) {
+    logDebug("item = \(item.attributesDescription)")
   }
 
   private static let notificationReceptionist: NotificationReceptionist = {
@@ -123,8 +149,18 @@ final class MIDIDocumentManager {
   /** initialize */
   static func initialize() {
     guard !initialized else { return }
-
+    let _ = notificationReceptionist
+    if let data = NSUserDefaults.standardUserDefaults().objectForKey(CurrentDocumentKey) as? NSData {
+      do {
+      var isStale: ObjCBool = false
+      let url = try NSURL(byResolvingBookmarkData: data, options: .WithoutUI, relativeToURL: nil, bookmarkDataIsStale: &isStale)
+      openURL(url)
+      } catch {
+        logError(error, message: "Failed to resolve bookmark data into a valid file url")
+      }
+    }
     initialized = true
+    logDebug("MIDIDocumentManager initialized")
   }
   
 }

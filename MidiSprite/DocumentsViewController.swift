@@ -1,5 +1,5 @@
 //
-//  FilesViewController.swift
+//  DocumentsViewController.swift
 //  MidiSprite
 //
 //  Created by Jason Cardwell on 10/24/14.
@@ -11,23 +11,16 @@ import UIKit
 import MoonKit
 import Eveleth
 
-final class FilesViewController: UIViewController {
+final class DocumentsViewController: UIViewController {
 
   @IBOutlet weak var scrollView: UIScrollView!
-
   @IBOutlet weak var stackView: UIStackView!
   @IBOutlet weak var stackViewHeightConstraint: NSLayoutConstraint!
 
-  var didSelectFile: ((NSURL) -> Void)?
-  var didDeleteFile: ((NSURL) -> Void)?
+  var selectFile: ((NSMetadataItem) -> Void)?
+  var deleteFile: ((NSMetadataItem) -> Void)?
 
-  private let constraintID = Identifier("FilesViewController", "Internal")
-
-//  private lazy var directoryMonitor: DirectoryMonitor = {
-//    do {
-//      return try DirectoryMonitor(directoryURL: documentsURL) { [unowned self] _ in self.refreshFiles() }
-//    } catch { logError(error); fatalError("failed to create monitor for documents directory: \(error)") }
-//  }()
+  private let constraintID = Identifier("DocumentsViewController", "Internal")
 
   private var notificationReceptionist: NotificationReceptionist!
 
@@ -35,8 +28,8 @@ final class FilesViewController: UIViewController {
   private func setup() {
     guard case .None = notificationReceptionist else { return }
     notificationReceptionist = NotificationReceptionist(callbacks:[
-      MIDIDocumentManager.Notification.DidUpdateFileURLs.rawValue:
-        (MIDIDocumentManager.self, NSOperationQueue.mainQueue(),didUpdateFileURLs)
+      MIDIDocumentManager.Notification.DidUpdateMetadataItems.rawValue:
+        (MIDIDocumentManager.self, NSOperationQueue.mainQueue(), didUpdateItems)
       ])
   }
 
@@ -45,7 +38,7 @@ final class FilesViewController: UIViewController {
 
   - parameter notification: NSNotification
   */
-  private func didUpdateFileURLs(notification: NSNotification) { files = MIDIDocumentManager.fileURLs }
+  private func didUpdateItems(notification: NSNotification) { items = MIDIDocumentManager.metadataItems }
 
   /**
   init:bundle:
@@ -65,24 +58,24 @@ final class FilesViewController: UIViewController {
   */
   required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder); setup() }
 
-  private var files: [NSURL] = [] {
+  private var items: [NSMetadataItem] = [] {
     didSet {
-      maxLabelSize = files.reduce(.zero) {
-        [attributes = [NSFontAttributeName:UIFont.controlFont], unowned self] size, url in
+      maxLabelSize = items.reduce(.zero) {
+        [attributes = [NSFontAttributeName:UIFont.controlFont], unowned self] size, item in
 
-        let urlSize = url.lastPathComponent!.sizeWithAttributes(attributes)
-        return CGSize(width: max(size.width, urlSize.width + 10), height: self.labelHeight)
+        let displayNameSize = item.displayName?.sizeWithAttributes(attributes) ?? .zero
+        return CGSize(width: max(size.width, displayNameSize.width + 10), height: self.labelHeight)
       }
       updateLabelButtons()
     }
   }
 
-  /** viewDidLoad */
-//  override func viewDidLoad() {
-//    super.viewDidLoad()
-//    view.translatesAutoresizingMaskIntoConstraints = false
-//    refreshFiles()
-//  }
+  /**
+  viewWillAppear:
+
+  - parameter animated: Bool
+  */
+  override func viewWillAppear(animated: Bool) { items = MIDIDocumentManager.metadataItems }
 
   /**
   labelButtonAction:
@@ -90,8 +83,8 @@ final class FilesViewController: UIViewController {
   - parameter sender: LabelButton
   */
   @IBAction private func labelButtonAction(sender: LabelButton) {
-    guard files.indices.contains(sender.tag) else { return }
-    didSelectFile?(files[sender.tag])
+    guard items.indices.contains(sender.tag) else { return }
+    selectFile?(items[sender.tag])
   }
 
   /**
@@ -101,12 +94,12 @@ final class FilesViewController: UIViewController {
   - parameter views: S2
   */
   private func applyText<S1:SequenceType, S2:SequenceType
-    where S1.Generator.Element == NSURL,
+    where S1.Generator.Element == NSMetadataItem,
           S2.Generator.Element == UIView>(urls: S1, _ views: S2)
   {
     zip(urls, views).forEach {
-      guard let fileName = $0.lastPathComponent, label = $1 as? LabelButton else { return }
-      label.text = fileName[..<fileName.endIndex.advancedBy(-4)]
+      guard let displayName = $0.displayName, label = $1 as? LabelButton else { return }
+      label.text = displayName
     }
   }
 
@@ -117,20 +110,20 @@ final class FilesViewController: UIViewController {
       subview.hidden = false
       stackView.addArrangedSubview(subview)
     }
-    switch (files.count, stackView.arrangedSubviews.count) {
-      case let (fileCount, arrangedCount) where fileCount == arrangedCount:
-        applyText(files, stackView.arrangedSubviews)
+    switch (items.count, stackView.arrangedSubviews.count) {
+      case let (itemCount, arrangedCount) where itemCount == arrangedCount:
+        applyText(items, stackView.arrangedSubviews)
 
-      case let (fileCount, arrangedCount) where arrangedCount > fileCount:
-        stackView.arrangedSubviews[fileCount ..< arrangedCount].forEach {
+      case let (itemCount, arrangedCount) where arrangedCount > itemCount:
+        stackView.arrangedSubviews[itemCount ..< arrangedCount].forEach {
           stackView.removeArrangedSubview($0)
           $0.hidden = true
         }
-        applyText(files, stackView.arrangedSubviews)
+        applyText(items, stackView.arrangedSubviews)
 
-      case let (fileCount, arrangedCount) where fileCount > arrangedCount:
-        (arrangedCount ..< fileCount).forEach { stackView.addArrangedSubview(newLabelButtonWithTag($0)) }
-        applyText(files, stackView.arrangedSubviews)
+      case let (itemCount, arrangedCount) where itemCount > arrangedCount:
+        (arrangedCount ..< itemCount).forEach { stackView.addArrangedSubview(newLabelButtonWithTag($0)) }
+        applyText(items, stackView.arrangedSubviews)
 
       default: break // Unreachable
     }
@@ -159,7 +152,7 @@ final class FilesViewController: UIViewController {
   /** updateViewConstraints */
   override func updateViewConstraints() {
     if view.constraintsWithIdentifier(constraintID).count == 0 {
-      view.constrain([view.width ≥ max(contentSize.width, 240), view.height ≥ max(contentSize.height, 108)] --> constraintID)
+      view.constrain([view.width ≥ contentSize.width, view.height ≥ contentSize.height] --> constraintID)
     }
     super.updateViewConstraints()
   }
@@ -176,38 +169,11 @@ final class FilesViewController: UIViewController {
   }
   private var maxLabelSize: CGSize = .zero {
     didSet {
-      contentSize = CGSize(width: max(maxLabelSize.width, 100), height: max(maxLabelSize.height * CGFloat(files.count), 44))
+      let pad = view.layoutMargins.displacement
+      contentSize = CGSize(width: max(maxLabelSize.width + pad.horizontal, 240),
+                           height: max(maxLabelSize.height * CGFloat(items.count) + pad.vertical, 108))
     }
   }
-
-  /** refreshFiles */
-//  private func refreshFiles() {
-//    do { files = try documentsDirectoryContents().filter {$0.pathExtension == "mid" } } catch { logError(error) }
-//  }
-
-  private var tableWidth: CGFloat { return maxLabelSize.width }
-  private var tableHeight: CGFloat { return maxLabelSize.height * CGFloat(files.count) }
-
-  /**
-  viewWillAppear:
-
-  - parameter animated: Bool
-  */
-//  override func viewWillAppear(animated: Bool) {
-//    super.viewWillAppear(animated)
-//    refreshFiles()
-//    directoryMonitor.startMonitoring()
-//  }
-
-  /**
-  viewWillDisappear:
-
-  - parameter animated: Bool
-  */
-//  override func viewWillDisappear(animated: Bool) {
-//    super.viewWillDisappear(animated)
-//    directoryMonitor.stopMonitoring()
-//  }
 
   /**
   prefersStatusBarHidden

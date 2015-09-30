@@ -20,3 +20,4 @@
 2015-09-29 04:28:36 +0000 [173391617485168] <MIDIClock.swift:99> init(resolution:)  [fg255,0,0;-Error- [;Failed to create midi client for clock - error code: 268435459
 2015-09-29 04:31:26 +0000 [173562590584898] <BarBeatTime.swift:403> init(clockSource:partsPerQuarter:)  [fg255,0,0;-Error- [;Failed to create midi client for bar beat time - error code: 268435459
 2015-09-29 15:14:52 +0000 [5456733720692] <MIDIClock.swift:99> init(resolution:)  [fg255,0,0;-Error- [;Failed to create midi client for clock - error code: 268435459
+2015-09-30 00:15:57 +0000 [33728800594416] <MIDIClock.swift:99> init(resolution:)  [fg255,0,0;-Error- [;Failed to create midi client for clock - error code: 268435459

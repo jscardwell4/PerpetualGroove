@@ -37,9 +37,15 @@ final class MIDIPlayerViewController: UIViewController {
   */
   override func viewDidAppear(animated: Bool) {
     // TODO: Add back local storage only option
-    guard NSFileManager.defaultManager().ubiquityIdentityToken == nil else { return }
+    guard NSFileManager.defaultManager().ubiquityIdentityToken != nil else {
+      performSegueWithIdentifier("Purgatory", sender: self)
+      return
+    }
 
-    performSegueWithIdentifier("Purgatory", sender: self)
+    guard MIDIDocumentManager.currentDocument == nil else { return }
+
+    // TODO: Re-open last open document
+//    MIDIDocumentManager.createNewDocument()
   }
 
 
@@ -109,7 +115,7 @@ final class MIDIPlayerViewController: UIViewController {
       case let controller as MixerViewController:          mixerViewController          = controller
       case let controller as InstrumentViewController:     instrumentViewController     = controller
       case let controller as NoteAttributesViewController: noteAttributesViewController = controller
-      case let controller as FilesViewController:          filesViewController          = controller
+      case let controller as DocumentsViewController:          documentsViewController          = controller
       case let controller as TempoViewController:          tempoViewController          = controller
       default:                                             break
     }
@@ -160,9 +166,10 @@ final class MIDIPlayerViewController: UIViewController {
   // MARK: - Files
 
   @IBOutlet weak var filesButton: ImageButtonView?
+
   /** save */
-  @IBAction private func save() {
-    
+//  @IBAction private func save() {
+
 //    let textField = FormTextField(name: "File Name", value: nil, placeholder: "Awesome Sauce") {
 //      (text: String?) -> Bool in
 //      guard let text = text else { return false }
@@ -180,23 +187,23 @@ final class MIDIPlayerViewController: UIViewController {
 //    let cancel = { [unowned self] () -> Void in self.dismissViewControllerAnimated(true, completion: nil) }
 //    let formViewController = FormViewController(form: form, didSubmit: submit, didCancel: cancel)
 //    presentViewController(formViewController, animated: true, completion: nil)
-  }
+//  }
 
   /** files */
   @IBAction private func files() {
     if case .Files = popover { popover = .None } else { popover = .Files }
   }
 
-  private weak var filesViewController: FilesViewController! {
+  private weak var documentsViewController: DocumentsViewController! {
     didSet {
-      filesViewController?.didSelectFile = {
+      documentsViewController?.selectFile = {
         [unowned self] in
-        MIDIDocumentManager.openFileAtURL($0)
+        logDebug("item to select = \($0.attributesDescription)")
+        MIDIDocumentManager.openItem($0)
         self.popover = .None
       }
-      filesViewController?.didDeleteFile = {
-        guard Sequencer.currentDocument?.fileURL == $0 else { return }
-        Sequencer.currentDocument = nil
+      documentsViewController?.deleteFile = {
+        logDebug("item to delete = \($0.attributesDescription)")
       }
     }
   }
@@ -329,14 +336,14 @@ final class MIDIPlayerViewController: UIViewController {
 
   - parameter notification: NSNotification
   */
-  private func didLoadFile(notification: NSNotification) { state ∪= [.FileLoaded] }
+//  private func didLoadFile(notification: NSNotification) { state ∪= [.FileLoaded] }
 
   /**
   didUnloadFile:
 
   - parameter notification: NSNotification
   */
-  private func didUnloadFile(notification: NSNotification) { state ∖= [.FileLoaded] }
+//  private func didUnloadFile(notification: NSNotification) { state ∖= [.FileLoaded] }
 
   /**
   didPause:
@@ -373,8 +380,8 @@ final class MIDIPlayerViewController: UIViewController {
     let didAddTrackCallback:           Callback = (MIDISequence.self,   queue, didAddTrack)
     let didRemoveTrackCallback:        Callback = (MIDISequence.self,   queue, didRemoveTrack)
     let didChangeCurrentTrackCallback: Callback = (Sequencer.self,      queue, didChangeCurrentTrack)
-    let didLoadFileCallback:           Callback = (Sequencer.self,      queue, didLoadFile)
-    let didUnloadFileCallback:         Callback = (Sequencer.self,      queue, didUnloadFile)
+//    let didLoadFileCallback:           Callback = (Sequencer.self,      queue, didLoadFile)
+//    let didUnloadFileCallback:         Callback = (Sequencer.self,      queue, didUnloadFile)
     let didPauseCallback:              Callback = (Sequencer.self,      queue, didPause)
     let didStartCallback:              Callback = (Sequencer.self,      queue, didStart)
     let didStopCallback:               Callback = (Sequencer.self,      queue, didStop)
@@ -384,8 +391,8 @@ final class MIDIPlayerViewController: UIViewController {
       MIDISequence.Notification.Name.DidAddTrack.value:        didAddTrackCallback,
       MIDISequence.Notification.Name.DidRemoveTrack.value:     didRemoveTrackCallback,
 
-      Sequencer.Notification.DidLoadFile.name.value:           didLoadFileCallback,
-      Sequencer.Notification.DidUnloadFile.name.value:         didUnloadFileCallback,
+//      Sequencer.Notification.DidLoadFile.name.value:           didLoadFileCallback,
+//      Sequencer.Notification.DidUnloadFile.name.value:         didUnloadFileCallback,
       Sequencer.Notification.DidChangeCurrentTrack.name.value: didChangeCurrentTrackCallback,
       Sequencer.Notification.DidPause.name.value:              didPauseCallback,
       Sequencer.Notification.DidStart.name.value:              didStartCallback,
@@ -403,7 +410,7 @@ final class MIDIPlayerViewController: UIViewController {
     static let Playing     = State(rawValue: 0b0000_0000_0010)
     static let TrackAdded  = State(rawValue: 0b0000_0001_0000)
     static let Recording   = State(rawValue: 0b0000_0010_0000)
-    static let FileLoaded  = State(rawValue: 0b0000_0100_0000)
+//    static let FileLoaded  = State(rawValue: 0b0000_0100_0000)
     static let Paused      = State(rawValue: 0b0000_1000_0000)
     static let Jogging     = State(rawValue: 0b0001_0000_0000)
 
@@ -414,7 +421,7 @@ final class MIDIPlayerViewController: UIViewController {
       if self ∋ .Playing     { flagStrings.append("Playing")     }
       if self ∋ .TrackAdded  { flagStrings.append("TrackAdded")  }
       if self ∋ .Recording   { flagStrings.append("Recording")   }
-      if self ∋ .FileLoaded  { flagStrings.append("FileLoaded")  }
+//      if self ∋ .FileLoaded  { flagStrings.append("FileLoaded")  }
       if self ∋ .Paused      { flagStrings.append("Paused")      }
       if self ∋ .Jogging     { flagStrings.append("Jogging")     }
 

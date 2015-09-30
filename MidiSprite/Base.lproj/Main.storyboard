@@ -30,10 +30,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" distribution="equalCentering" alignment="center" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="a6c-px-a6l" userLabel="BottomStack">
-                                <rect key="frame" x="0.0" y="422" width="994" height="165"/>
+                                <rect key="frame" x="0.0" y="422" width="1005" height="172"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" distribution="equalCentering" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="EGK-49-dds">
-                                        <rect key="frame" x="0.0" y="55" width="56" height="56"/>
+                                        <rect key="frame" x="0.0" y="58" width="56" height="56"/>
                                         <subviews>
                                             <view opaque="NO" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gJq-1L-zk3" customClass="ImageButtonView" customModule="MoonKit">
                                                 <rect key="frame" x="0.0" y="0.0" width="56" height="56"/>
@@ -73,7 +73,7 @@
                                         <variation key="heightClass=regular-widthClass=regular" axis="vertical"/>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" axis="vertical" distribution="equalCentering" alignment="bottom" translatesAutoresizingMaskIntoConstraints="NO" id="0XM-Uy-Oeo" userLabel="BarBeatTimeTransportStack">
-                                        <rect key="frame" x="226" y="50" width="148" height="65"/>
+                                        <rect key="frame" x="230" y="54" width="148" height="65"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="UtM-qz-8YW" userLabel="BarBeatTimeLabel" customClass="BarBeatTimeLabel" customModule="MidiSprite" customModuleProvider="target">
                                                 <rect key="frame" x="1" y="0.0" width="147" height="29"/>
@@ -288,7 +288,7 @@
                                         </variation>
                                     </stackView>
                                     <view opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ndz-Vc-1wb" customClass="ScrollWheel" customModule="MoonKit">
-                                        <rect key="frame" x="490" y="0.0" width="164" height="165"/>
+                                        <rect key="frame" x="494" y="0.0" width="171" height="172"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <accessibility key="accessibilityConfiguration" identifier="JogWheel"/>
                                         <constraints>
@@ -330,7 +330,7 @@
                                         </connections>
                                     </view>
                                     <containerView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iYt-GS-XMU" userLabel="Tempo Container">
-                                        <rect key="frame" x="694" y="55" width="300" height="56"/>
+                                        <rect key="frame" x="705" y="58" width="300" height="56"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="300" identifier="TempoContainerWidth" id="2zW-q5-rAN"/>
                                             <constraint firstAttribute="height" constant="56" identifier="TempoContainerHeight" id="Qtd-27-uiL"/>

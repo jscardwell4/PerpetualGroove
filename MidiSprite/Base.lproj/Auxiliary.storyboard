@@ -161,7 +161,7 @@
         <!--Files-->
         <scene sceneID="cf3-gO-r0K">
             <objects>
-                <viewController storyboardIdentifier="Files" id="Ks7-eu-mXo" userLabel="Files" customClass="FilesViewController" customModule="MidiSprite" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Files" id="Ks7-eu-mXo" userLabel="Files" customClass="DocumentsViewController" customModule="MidiSprite" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="4fz-0u-0wB"/>
                         <viewControllerLayoutGuide type="bottom" id="610-3W-kbL"/>
@@ -173,11 +173,11 @@
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" directionalLockEnabled="YES" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fU3-7h-iog">
                                 <rect key="frame" x="0.0" y="0.0" width="180" height="88"/>
                                 <subviews>
-                                    <stackView contentMode="scaleToFill" placeholderIntrinsicWidth="100" placeholderIntrinsicHeight="44" axis="vertical" distribution="fillEqually" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="eUb-aE-gKA">
+                                    <stackView contentMode="scaleToFill" placeholderIntrinsicWidth="100" placeholderIntrinsicHeight="44" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="eUb-aE-gKA">
                                         <rect key="frame" x="20" y="0.0" width="140" height="88"/>
                                         <subviews>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xHv-Np-KXq" customClass="LabelButton" customModule="MoonKit">
-                                                <rect key="frame" x="0.0" y="0.0" width="109" height="44"/>
+                                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xHv-Np-KXq" customClass="LabelButton" customModule="MoonKit">
+                                                <rect key="frame" x="0.0" y="0.0" width="140" height="44"/>
                                                 <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="calibratedRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="44" placeholder="YES" id="uBA-nG-r5l"/>
@@ -199,8 +199,8 @@
                                                     <action selector="labelButtonAction:" destination="Ks7-eu-mXo" eventType="touchUpInside" id="KNf-W0-Tzi"/>
                                                 </connections>
                                             </view>
-                                            <view tag="1" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1cA-Eb-g0b" customClass="LabelButton" customModule="MoonKit">
-                                                <rect key="frame" x="0.0" y="44" width="131" height="44"/>
+                                            <view tag="1" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1cA-Eb-g0b" customClass="LabelButton" customModule="MoonKit">
+                                                <rect key="frame" x="0.0" y="44" width="140" height="44"/>
                                                 <color key="backgroundColor" red="0.20000000298023224" green="0.19607843458652496" blue="0.19215686619281769" alpha="1" colorSpace="calibratedRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="44" placeholder="YES" id="o3T-om-twI"/>
@@ -225,7 +225,7 @@
                                         </subviews>
                                         <color key="backgroundColor" red="0.20000000298023224" green="0.19607843458652496" blue="0.19215686619281769" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="88" identifier="FilesViewController-StackView-Height" id="ssm-bF-Nq8"/>
+                                            <constraint firstAttribute="height" constant="88" identifier="DocumentsViewController-StackView-Height" id="ssm-bF-Nq8"/>
                                         </constraints>
                                         <edgeInsets key="layoutMargins" top="8" left="20" bottom="8" right="8"/>
                                         <userDefinedRuntimeAttributes>
