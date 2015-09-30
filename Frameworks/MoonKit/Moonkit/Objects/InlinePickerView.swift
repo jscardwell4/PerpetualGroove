@@ -174,7 +174,7 @@ import UIKit
 
   @IBInspectable public var flat: Bool {
     get { return layout.flat }
-    set { layout.flat = newValue; setNeedsDisplay() }
+    set { layout.flat = newValue }
   }
 
   @IBInspectable public var fontSize: CGFloat  {
@@ -213,8 +213,8 @@ import UIKit
 
   public var defaultItemHeight: CGFloat {
     switch cellType {
-      case .Label: return ceil(max(font.lineHeight, selectedFont.lineHeight)) * 2
-      case .Image: return 44
+      case .Label: return ceil(max(font.lineHeight, selectedFont.lineHeight))// * 2
+      case .Image: return 36 //44
     }
   }
 

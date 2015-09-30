@@ -42,7 +42,7 @@ final class MIDIPlayerViewController: UIViewController {
       return
     }
 
-    guard MIDIDocumentManager.currentDocument == nil else { return }
+    guard MIDIDocumentManager.currentDocument == nil else { logDebug("currentDocument = \(MIDIDocumentManager.currentDocument!)"); return }
 
     // TODO: Re-open last open document
 //    MIDIDocumentManager.createNewDocument()
@@ -73,25 +73,6 @@ final class MIDIPlayerViewController: UIViewController {
     adjustPopover(instrumentPopoverView, instrumentButton)
   }
 
-  // MARK: Rotation
-
-  /**
-  shouldAutorotate
-
-  - returns: Bool
-  */
-  override func shouldAutorotate() -> Bool { return false }
-
-  /**
-  supportedInterfaceOrientations
-
-  - returns: UIInterfaceOrientationMask
-  */
-  override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-    // TODO: This needs to be changed or rotation supported before shipping
-    return UIDevice.currentDevice().userInterfaceIdiom == .Phone ? .AllButUpsideDown : .All
-  }
-
   // MARK: Status bar
 
   /**
@@ -115,7 +96,7 @@ final class MIDIPlayerViewController: UIViewController {
       case let controller as MixerViewController:          mixerViewController          = controller
       case let controller as InstrumentViewController:     instrumentViewController     = controller
       case let controller as NoteAttributesViewController: noteAttributesViewController = controller
-      case let controller as DocumentsViewController:          documentsViewController          = controller
+      case let controller as DocumentsViewController:      documentsViewController      = controller
       case let controller as TempoViewController:          tempoViewController          = controller
       default:                                             break
     }

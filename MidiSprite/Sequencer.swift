@@ -32,6 +32,7 @@ final class Sequencer {
     } catch {
       logError(error)
     }
+    sequence = MIDIDocumentManager.currentDocument?.sequence
     initialized = true
     logDebug("Sequencer initialized")
   }
