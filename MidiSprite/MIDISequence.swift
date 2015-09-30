@@ -16,14 +16,12 @@ final class MIDISequence {
 
   /** An enumeration to wrap up notifications */
   struct Notification: NotificationType {
-    enum Name: String, NotificationNameType {
-      case DidAddTrack, DidRemoveTrack
-    }
+    enum Name: String, NotificationNameType { case DidAddTrack, DidRemoveTrack, DidChangeCurrentTrack }
     var name: Name
     var object: AnyObject? { return MIDISequence.self }
     var userInfo: [NSObject:AnyObject]?
 
-    enum Key: String { case Track }
+    enum Key: String { case Track, OldTrack }
     static func DidAddTrack(track: InstrumentTrack) -> Notification {
       return Notification(name: .DidAddTrack, userInfo: [Key.Track.rawValue:track])
     }
@@ -31,12 +29,19 @@ final class MIDISequence {
     static func DidRemoveTrack(track: InstrumentTrack) -> Notification {
       return Notification(name: .DidRemoveTrack, userInfo: [Key.Track.rawValue:track])
     }
+
+    static func DidChangeToCurrentTrack(track: InstrumentTrack?, from: InstrumentTrack?) -> Notification {
+      return Notification(name: .DidChangeCurrentTrack, userInfo: [Key.Track.rawValue:(track as? AnyObject ?? NSNull()),
+                                                                   Key.OldTrack.rawValue: (from as? AnyObject ?? NSNull())])
+    }
   }
 
   var sequenceEnd: CABarBeatTime { return tracks.map({$0.trackEnd}).maxElement() ?? .start }
 
   /** The instrument tracks are stored in the `tracks` array beginning at index `1` */
   var instrumentTracks: [InstrumentTrack] { return tracks.count > 1 ? tracks[1..<].map({$0 as! InstrumentTrack}) : [] }
+
+  var currentTrack: InstrumentTrack? { didSet { Notification.DidChangeToCurrentTrack(currentTrack, from: oldValue).post() } }
 
   /** The tempo track for the sequence is the first element in the `tracks` array */
   var tempoTrack: TempoTrack { return tracks[0] as! TempoTrack }

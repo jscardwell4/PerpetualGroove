@@ -15,6 +15,7 @@ class MixerCell: UICollectionViewCell {
 
   @IBOutlet weak var volumeSlider: Slider!
   @IBOutlet weak var panKnob: Knob!
+  @IBOutlet weak var stackView: UIStackView!
 
   var volume: AudioUnitParameterValue {
     get { return volumeSlider.value / volumeSlider.maximumValue }
@@ -38,7 +39,7 @@ class MixerCell: UICollectionViewCell {
 final class MasterCell: MixerCell {
 
   static let Identifier = "MasterCell"
-
+  
   /** refresh */
   func refresh() { volume = AudioManager.mixer.volume; pan = AudioManager.mixer.pan }
 
@@ -48,9 +49,9 @@ final class MasterCell: MixerCell {
 
 }
 
-final class TrackCell: MixerCell, UITextFieldDelegate {
+class TrackCell: MixerCell, UITextFieldDelegate {
 
-  static let Identifier = "TrackCell"
+  class var Identifier:String { return "TrackCell" }
 
   @IBOutlet weak var labelTextField: UITextField!
 
@@ -69,7 +70,6 @@ final class TrackCell: MixerCell, UITextFieldDelegate {
       tintColor = track.color.value
     }
   }
-
 
   /**
   textFieldShouldEndEditing:
@@ -96,3 +96,35 @@ final class TrackCell: MixerCell, UITextFieldDelegate {
     return false
   }
 }
+
+final class AddTrackCell: TrackCell {
+
+  override static var Identifier: String { return "AddTrackCell" }
+
+  @IBOutlet weak var addTrackImageButton: ImageButtonView!
+
+  /** didDraw */
+  func generateBackdrop() {
+
+    stackView.hidden = false
+    addTrackImageButton.hidden = true
+
+    UIGraphicsBeginImageContextWithOptions(bounds.size, false, 0)
+
+    for view in stackView.subviews {
+      view.drawViewHierarchyInRect(view.frame.offsetBy(stackView.frame.origin), afterScreenUpdates: false)
+    }
+    let image = UIGraphicsGetImageFromCurrentImageContext()
+    UIGraphicsEndImageContext()
+
+    let blurredImage = image.applyBlurWithRadius(3, tintColor: UIColor.backgroundColor.colorWithAlpha(0.95), saturationDeltaFactor: 0, maskImage: nil)
+
+    stackView.hidden = true
+    addTrackImageButton.hidden = false
+    let imageView = UIImageView(image: blurredImage)
+    imageView.contentMode = .Center
+    backgroundView = imageView
+
+  }
+}
+

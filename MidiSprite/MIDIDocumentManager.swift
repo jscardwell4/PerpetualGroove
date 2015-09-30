@@ -112,6 +112,7 @@ final class MIDIDocumentManager {
   */
   static func openDocument(document: MIDIDocument) {
     logDebug("document = \(document)")
+    currentDocument = document
   }
 
   /**
@@ -120,7 +121,8 @@ final class MIDIDocumentManager {
   - parameter url: NSURL
   */
   static func openURL(url: NSURL) {
-
+    logDebug("url = \(url)")
+    currentDocument = MIDIDocument(fileURL: url)
   }
 
   /**
@@ -130,6 +132,8 @@ final class MIDIDocumentManager {
   */
   static func openItem(item: NSMetadataItem) {
     logDebug("item = \(item.attributesDescription)")
+    guard let url = item.URL else { logError("failed to get url from item: \(item)"); return }
+    currentDocument = MIDIDocument(fileURL: url)
   }
 
   private static let notificationReceptionist: NotificationReceptionist = {

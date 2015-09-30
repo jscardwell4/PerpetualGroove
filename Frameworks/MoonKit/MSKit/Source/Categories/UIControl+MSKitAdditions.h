@@ -14,4 +14,8 @@
 - (void)invokeActionBlocksForControlEvents:(UIControlEvents)controlEvents;
 - (void)removeActionBlocksForControlEvents:(UIControlEvents)controlEvents;
 
+@property(nonatomic,getter=isEnabled) IBInspectable BOOL enabled;
+@property(nonatomic,getter=isSelected) IBInspectable BOOL selected;
+@property(nonatomic,getter=isHighlighted) IBInspectable BOOL highlighted;
+
 @end

@@ -394,7 +394,7 @@ import UIKit
   */
   public override func thumbRectForBounds(bounds: CGRect, trackRect rect: CGRect, value: Float) -> CGRect {
     var thumbRect = super.thumbRectForBounds(bounds, trackRect: rect, value: value)
-    thumbRect.offset(thumbOffset)
+    thumbRect.offsetInPlace(thumbOffset)
     let zeroConstant = rect.midX
     var midThumb = thumbRect.midX
     guard trackShowsThroughThumb, let thumbImage = currentThumbImage else {

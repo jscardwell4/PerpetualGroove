@@ -22,6 +22,7 @@ final class Sequencer {
   */
   static func initialize() {
     guard !initialized else { return }
+    let _ = notificationReceptionist
     guard let urls = NSBundle.mainBundle().URLsForResourcesWithExtension("sf2", subdirectory: nil) else { return }
     do {
       try urls.forEach { soundSets.append(try SoundSet(url: $0)) }
@@ -37,7 +38,7 @@ final class Sequencer {
 
   // MARK: - Notifications
   enum Notification: String, NotificationNameType, NotificationType {
-    case DidLoadFile, DidUnloadFile
+    case DidChangeSequence
     case DidInitializeSoundSets
     case DidChangeCurrentTrack
     case DidStart, DidPause, DidStop, DidReset
@@ -68,28 +69,29 @@ final class Sequencer {
     case NotPermitted
   }
 
-  private static var notificationReceptionist = NotificationReceptionist(callbacks:
-    [
-      MIDISequence.Notification.Name.DidAddTrack.rawValue :
-        (MIDISequence.self, NSOperationQueue.mainQueue(), {
-          notification in
 
-          if let track = notification.userInfo?[MIDISequence.Notification.Key.Track.rawValue] as? InstrumentTrack
-            where track == Sequencer.currentTrack
-          {
-            // Why did we do this exactly?
-            Sequencer.currentTrack = Sequencer.previousTrack
-          }
+  /**
+  didChangeCurrentDocument:
 
-        })
-    ])
-  
+  - parameter notification: NSNotification
+  */
+  private static func didChangeCurrentDocument(notification: NSNotification) {
+    logDebug()
+    sequence = MIDIDocumentManager.currentDocument?.sequence
+  }
+
+  private static var notificationReceptionist: NotificationReceptionist = {
+    let queue = NSOperationQueue.mainQueue()
+    typealias Callback = NotificationReceptionist.Callback
+    let changeCurrentDocument: Callback = (MIDIDocumentManager.self, queue, Sequencer.didChangeCurrentDocument)
+    return NotificationReceptionist(callbacks:[
+      MIDIDocumentManager.Notification.DidChangeCurrentDocument.rawValue : changeCurrentDocument
+      ])
+    }()
 
   // MARK: - Sequence
 
-//  static private var _sequence: MIDISequence? { didSet { if oldValue != nil { reset() } } }
-
-  static private(set) var sequence: MIDISequence?
+  static private(set) var sequence: MIDISequence? { didSet { if oldValue != nil { reset() } } }
 
 
   // MARK: - Time
@@ -123,20 +125,6 @@ final class Sequencer {
   // ???: Don't we need to do anything about changes to timeSignature?
   static var timeSignature: SimpleTimeSignature = .FourFour
 
-  // MARK: - Files
-
-//  static var currentDocument: MIDIDocument? {
-//    didSet {
-//      logVerbose("didSet… oldValue: \(oldValue); newValue: \(currentDocument)")
-//      guard oldValue != currentDocument else { return }
-//      if let currentDocument = currentDocument {
-//        Notification.DidLoadFile.post([Notification.Key.URL.rawValue: currentDocument])
-//      } else {
-//        Notification.DidUnloadFile.post([Notification.Key.URL.rawValue: oldValue ?? NSNull()])
-//      }
-//    }
-//  }
-
   // MARK: - Tracks
 
   private struct State: OptionSetType, CustomStringConvertible {
@@ -169,18 +157,6 @@ final class Sequencer {
 
   /** instrumentWithCurrentSettings */
   static func instrumentWithCurrentSettings() -> Instrument { return Instrument(instrument: auditionInstrument) }
-
-  private static var previousTrack: InstrumentTrack?
-
-  /** Wraps the private `_currentTrack` so that a new track may be created if the property is `nil` */
-  static var currentTrack: InstrumentTrack? {
-    didSet {
-      Notification.DidChangeCurrentTrack.post([
-        Notification.Key.FromTrack.rawValue: (oldValue as? AnyObject) ?? NSNull(),
-        Notification.Key.ToTrack.rawValue: (currentTrack as? AnyObject) ?? NSNull()
-      ])
-    }
-  }
 
   // MARK: - Properties used to initialize a new `MIDINode`
 

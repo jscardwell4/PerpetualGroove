@@ -17,6 +17,15 @@ final class MixerViewController: UICollectionViewController {
   /** addTrack */
   @IBAction func addTrack() {
     logDebug()
+    guard let sequence = Sequencer.sequence else { logWarning("Cannot add a track without a sequence"); return }
+    let instrument = Sequencer.instrumentWithCurrentSettings()
+    do {
+      let track =  try sequence.newTrackWithInstrument(instrument)
+      sequence.currentTrack = track
+    } catch {
+      logError(error, message: "Failed to add new track")
+    }
+
   }
 
   /** viewDidLoad */
@@ -34,6 +43,7 @@ final class MixerViewController: UICollectionViewController {
       MIDISequence.Notification.Name.DidAddTrack.rawValue: callback,
       MIDISequence.Notification.Name.DidRemoveTrack.rawValue: callback
     ]
+
 
     notificationReceptionist = NotificationReceptionist(callbacks: callbacks)
   }
@@ -76,7 +86,7 @@ final class MixerViewController: UICollectionViewController {
 
   - returns: Int
   */
-  override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int { return 2 }
+  override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int { return 3 }
 
   /**
   collectionView:numberOfItemsInSection:
@@ -87,7 +97,24 @@ final class MixerViewController: UICollectionViewController {
   - returns: Int
   */
   override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return section == 0 ? 1 : Sequencer.sequence?.instrumentTracks.count ?? 0
+    return section == 1 ? Sequencer.sequence?.instrumentTracks.count ?? 0 : 1
+  }
+
+  /**
+  collectionView:willDisplayCell:forItemAtIndexPath:
+
+  - parameter collectionView: UICollectionView
+  - parameter cell: UICollectionViewCell
+  - parameter indexPath: NSIndexPath
+  */
+  override func collectionView(collectionView: UICollectionView,
+               willDisplayCell cell: UICollectionViewCell,
+            forItemAtIndexPath indexPath: NSIndexPath)
+  {
+    guard let cell = cell as? AddTrackCell else { return }
+    delayedDispatchToMain(0) {
+      cell.generateBackdrop()
+    }
   }
 
   /**
@@ -106,6 +133,8 @@ final class MixerViewController: UICollectionViewController {
       case 0:
         cell = collectionView.dequeueReusableCellWithReuseIdentifier(MasterCell.Identifier, forIndexPath: indexPath)
         (cell as? MasterCell)?.refresh()
+      case 2:
+        cell = collectionView.dequeueReusableCellWithReuseIdentifier(AddTrackCell.Identifier, forIndexPath: indexPath)
       default:
         cell = collectionView.dequeueReusableCellWithReuseIdentifier(TrackCell.Identifier, forIndexPath: indexPath)
         (cell as? TrackCell)?.track = Sequencer.sequence?.instrumentTracks[indexPath.item]

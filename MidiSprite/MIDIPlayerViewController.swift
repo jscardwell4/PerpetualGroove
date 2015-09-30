@@ -310,26 +310,26 @@ final class MIDIPlayerViewController: UIViewController {
 
   - parameter notification: NSNotification
   */
-  private func didChangeCurrentTrack(notification: NSNotification) {
-    logDebug("current track: " + (Sequencer.currentTrack?.name ?? "nil"))
-  }
+//  private func didChangeCurrentTrack(notification: NSNotification) {
+//    logDebug("current track: " + (Sequencer.currentTrack?.name ?? "nil"))
+//  }
 
   /**
   didRemoveTrack:
 
   - parameter notification: NSNotification
   */
-  private func didRemoveTrack(notification: NSNotification) {
-    guard Sequencer.sequence?.instrumentTracks.count == 0 else { return }
-    state ∖= [.TrackAdded]
-  }
+//  private func didRemoveTrack(notification: NSNotification) {
+//    guard Sequencer.sequence?.instrumentTracks.count == 0 else { return }
+//    state ∖= [.TrackAdded]
+//  }
 
   /**
   didAddTrack:
 
   - parameter notification: NSNotification
   */
-  private func didAddTrack(notification: NSNotification) { state ∪= [.TrackAdded] }
+//  private func didAddTrack(notification: NSNotification) { state ∪= [.TrackAdded] }
 
   /**
   didLoadFile:
@@ -377,9 +377,9 @@ final class MIDIPlayerViewController: UIViewController {
 
     let queue = NSOperationQueue.mainQueue()
 
-    let didAddTrackCallback:           Callback = (MIDISequence.self,   queue, didAddTrack)
-    let didRemoveTrackCallback:        Callback = (MIDISequence.self,   queue, didRemoveTrack)
-    let didChangeCurrentTrackCallback: Callback = (Sequencer.self,      queue, didChangeCurrentTrack)
+//    let didAddTrackCallback:           Callback = (MIDISequence.self,   queue, didAddTrack)
+//    let didRemoveTrackCallback:        Callback = (MIDISequence.self,   queue, didRemoveTrack)
+//    let didChangeCurrentTrackCallback: Callback = (Sequencer.self,      queue, didChangeCurrentTrack)
 //    let didLoadFileCallback:           Callback = (Sequencer.self,      queue, didLoadFile)
 //    let didUnloadFileCallback:         Callback = (Sequencer.self,      queue, didUnloadFile)
     let didPauseCallback:              Callback = (Sequencer.self,      queue, didPause)
@@ -388,12 +388,12 @@ final class MIDIPlayerViewController: UIViewController {
 
     let callbacks: [NotificationReceptionist.Notification:NotificationReceptionist.Callback] = [
 
-      MIDISequence.Notification.Name.DidAddTrack.value:        didAddTrackCallback,
-      MIDISequence.Notification.Name.DidRemoveTrack.value:     didRemoveTrackCallback,
+//      MIDISequence.Notification.Name.DidAddTrack.value:        didAddTrackCallback,
+//      MIDISequence.Notification.Name.DidRemoveTrack.value:     didRemoveTrackCallback,
 
 //      Sequencer.Notification.DidLoadFile.name.value:           didLoadFileCallback,
 //      Sequencer.Notification.DidUnloadFile.name.value:         didUnloadFileCallback,
-      Sequencer.Notification.DidChangeCurrentTrack.name.value: didChangeCurrentTrackCallback,
+//      Sequencer.Notification.DidChangeCurrentTrack.name.value: didChangeCurrentTrackCallback,
       Sequencer.Notification.DidPause.name.value:              didPauseCallback,
       Sequencer.Notification.DidStart.name.value:              didStartCallback,
       Sequencer.Notification.DidStop.name.value:               didStopCallback
@@ -408,7 +408,7 @@ final class MIDIPlayerViewController: UIViewController {
     let rawValue: Int
     static let Popover     = State(rawValue: 0b0000_0000_0001)
     static let Playing     = State(rawValue: 0b0000_0000_0010)
-    static let TrackAdded  = State(rawValue: 0b0000_0001_0000)
+//    static let TrackAdded  = State(rawValue: 0b0000_0001_0000)
     static let Recording   = State(rawValue: 0b0000_0010_0000)
 //    static let FileLoaded  = State(rawValue: 0b0000_0100_0000)
     static let Paused      = State(rawValue: 0b0000_1000_0000)
@@ -419,7 +419,7 @@ final class MIDIPlayerViewController: UIViewController {
       var flagStrings: [String] = []
       if self ∋ .Popover     { flagStrings.append("Popover")     }
       if self ∋ .Playing     { flagStrings.append("Playing")     }
-      if self ∋ .TrackAdded  { flagStrings.append("TrackAdded")  }
+//      if self ∋ .TrackAdded  { flagStrings.append("TrackAdded")  }
       if self ∋ .Recording   { flagStrings.append("Recording")   }
 //      if self ∋ .FileLoaded  { flagStrings.append("FileLoaded")  }
       if self ∋ .Paused      { flagStrings.append("Paused")      }

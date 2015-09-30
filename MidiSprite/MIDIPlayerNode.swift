@@ -65,7 +65,7 @@ final class MIDIPlayerNode: SKShapeNode {
 
   /** dropLast */
   func dropLast() {
-    guard midiNodes.count > 0, let track = Sequencer.currentTrack else { return }
+    guard midiNodes.count > 0, let track = Sequencer.sequence?.currentTrack else { return }
     let node = midiNodes.removeLast()
     do { try track.removeNode(node) } catch { logError(error) }
     node.removeFromParent()
@@ -93,16 +93,20 @@ final class MIDIPlayerNode: SKShapeNode {
                 targetTrack: InstrumentTrack? = nil,
                 attributes: NoteAttributes = Sequencer.currentNoteAttributes)
   {
-    guard let sequence = Sequencer.sequence else { logWarning("Cannot place a node without a valid sequence"); return }
+    guard let track = targetTrack ?? Sequencer.sequence?.currentTrack else {
+      logWarning("Cannot place a node without a track")
+      return
+    }
+    
     do {
-      // Get the track first to force a new track to be created when necessary before the `MIDINode` receives its color
-      let track: InstrumentTrack
-      if targetTrack != nil { track = targetTrack! }
-      else if let t = Sequencer.currentTrack where t.instrument.settingsEqualTo(Sequencer.auditionInstrument) { track = t }
-      else {
-        track = try sequence.newTrackWithInstrument(Sequencer.instrumentWithCurrentSettings())
-        Sequencer.currentTrack = track
-      }
+//      // Get the track first to force a new track to be created when necessary before the `MIDINode` receives its color
+//      let track: InstrumentTrack
+//      if targetTrack != nil { track = targetTrack! }
+//      else if let t = Sequencer.currentTrack where t.instrument.settingsEqualTo(Sequencer.auditionInstrument) { track = t }
+//      else {
+//        track = try sequence.newTrackWithInstrument(Sequencer.instrumentWithCurrentSettings())
+//        Sequencer.currentTrack = track
+//      }
       let midiNode = try MIDINode(placement: placement, name: "midiNode\(midiNodes.count)", track: track, note: attributes)
       addChild(midiNode)
       midiNodes.append(midiNode)

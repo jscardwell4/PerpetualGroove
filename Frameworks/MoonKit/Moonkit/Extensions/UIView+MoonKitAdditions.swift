@@ -99,15 +99,17 @@ public extension UIView {
 
   - returns: UIImage
   */
-  public func blurredSnapshotWithRadius(radius: CGFloat = 3,
+  public func blurredSnapshot(radius radius: CGFloat = 3,
                     tintColor: UIColor = UIColor(white: 1.0, alpha: 0.5),
         saturationDeltaFactor factor: CGFloat = 1,
-                    maskImage: UIImage? = nil) -> UIImage
+                    maskImage: UIImage? = nil,
+           afterScreenUpdates: Bool = false) -> UIImage
   {
-    return snapshot.applyBlurWithRadius(radius,
-                              tintColor: tintColor,
-                  saturationDeltaFactor: factor,
-                              maskImage: maskImage)
+    UIGraphicsBeginImageContextWithOptions(bounds.size, false, 0)
+    drawViewHierarchyInRect(bounds, afterScreenUpdates: afterScreenUpdates)
+    let image = UIGraphicsGetImageFromCurrentImageContext()
+    UIGraphicsEndImageContext()
+    return image.applyBlurWithRadius(radius, tintColor: tintColor, saturationDeltaFactor: factor, maskImage: maskImage)
   }
 
   // MARK: - Initializers

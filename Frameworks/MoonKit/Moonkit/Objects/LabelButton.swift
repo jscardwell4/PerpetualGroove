@@ -12,9 +12,9 @@ import UIKit
 
   private var touch: UITouch? { didSet { highlighted = touch != nil } }
 
-  @IBInspectable public override var highlighted: Bool { didSet { label?.highlighted = highlighted } }
+  public override var highlighted: Bool { didSet { label?.highlighted = highlighted || selected } }
 
-  @IBInspectable public override var selected: Bool { didSet { } }
+  public override var selected: Bool { didSet { label?.highlighted = highlighted || selected } }
 
   private weak var label: UILabel!
 
@@ -231,7 +231,7 @@ import UIKit
     set { label?.highlightedTextColor = newValue } 
   }
 
-  @IBInspectable public override var enabled: Bool { didSet { label?.enabled = enabled } }
+  public override var enabled: Bool { didSet { label?.enabled = enabled; label?.setNeedsDisplay(); setNeedsDisplay() } }
 
   @IBInspectable public var numberOfLines: Int { 
     get { return label?.numberOfLines ?? 1 } 
