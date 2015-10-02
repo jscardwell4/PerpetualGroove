@@ -312,8 +312,10 @@ extension CGSize {
   public init?(_ string: String?) { if let s = string { self = CGSizeFromString(s) } else { return nil } }
   public init(square: CGFloat) { self = CGSize(width: square, height: square) }
   public func contains(size: CGSize) -> Bool { return width >= size.width && height >= size.height }
-  public var minAxis: CGFloat { return min(width, height) }
-  public var maxAxis: CGFloat { return max(width, height) }
+  public var minAxis: UILayoutConstraintAxis { return height < width ? .Vertical : .Horizontal }
+  public var maxAxis: UILayoutConstraintAxis { return width < height ? .Vertical : .Horizontal }
+  public var minAxisValue: CGFloat { return min(width, height) }
+  public var maxAxisValue: CGFloat { return max(width, height) }
   public var area: CGFloat { return width * height }
   public var integralSize: CGSize { return CGSize(width: round(width), height: round(height)) }
   public var integralSizeRoundingUp: CGSize {
@@ -493,7 +495,7 @@ extension CGRect {
   public var centerInscribedSquare: CGRect {
     guard width != height else { return self }
     var result = self
-    result.size = CGSize(square: size.minAxis)
+    result.size = CGSize(square: size.minAxisValue)
     result.origin += (size - result.size) * 0.5
     return result
   }

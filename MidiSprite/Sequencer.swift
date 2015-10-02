@@ -219,7 +219,9 @@ final class Sequencer {
     guard jogging && clock.paused else { logWarning("not jogging"); return }
     state ⊻= [.Jogging]
     time.time = jogTime
+    maxTicks = 0
     Notification.DidEndJogging.post()
+    guard !paused else { return }
     clock.resume()
   }
 

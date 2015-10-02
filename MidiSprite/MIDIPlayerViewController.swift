@@ -19,13 +19,65 @@ final class MIDIPlayerViewController: UIViewController {
     return controller
   }
 
-  // MARK: - UIViewController overridden methods -
+  // MARK: - View loading and layout
 
-  // MARK: View loading and layout
+  @IBOutlet var topStack: UIStackView!
+  @IBOutlet var middleStack: UIStackView!
+  @IBOutlet var bottomStack: UIStackView!
+
+
+  @IBOutlet var topStackHeight: NSLayoutConstraint!
+  @IBOutlet var middleStackHeight: NSLayoutConstraint!
+  @IBOutlet var bottomStackHeight: NSLayoutConstraint!
+
+  @IBOutlet var mixerContainer: UIView!
+  @IBOutlet var noteAttributesContainer: UIView!
+  @IBOutlet var instrumentContainer: UIView!
+  @IBOutlet var noteAttributesInstrumentStack: UIStackView!
+
+  /**
+  animateFromSize:toSize:
+
+  - parameter fromSize: CGSize
+  - parameter toSize: CGSize
+  */
+  private func transitionFromSize(fromSize: CGSize, toSize: CGSize, animated: Bool) {
+    guard fromSize.maxAxis != toSize.maxAxis else { return }
+    layoutForSize(toSize)
+    UIView.animateWithDuration(animated ? 0.25 : 0) { self.layoutForSize(toSize) }
+  }
+
+  /**
+  layoutForSize:
+
+  - parameter size: CGSize
+  */
+  private func layoutForSize(size: CGSize) {
+    switch size.maxAxis {
+      case .Vertical:
+        guard topStackHeight.constant == 120 else { return }
+        topStackHeight.constant = 400
+        topStack.addArrangedSubview(mixerContainer)
+        noteAttributesInstrumentStack.axis = .Vertical
+        middleStack.insertArrangedSubview(noteAttributesInstrumentStack, atIndex: 0)
+      case .Horizontal:
+        guard topStackHeight.constant == 400 else { return }
+        topStackHeight.constant = 120
+        noteAttributesInstrumentStack.axis = .Horizontal
+        topStack.addArrangedSubview(noteAttributesInstrumentStack)
+        middleStack.insertArrangedSubview(mixerContainer, atIndex: 0)
+    }
+    noteAttributesInstrumentStack.updateConstraintsIfNeeded()
+  }
 
   /** viewDidLoad */
   override func viewDidLoad() {
     super.viewDidLoad()
+
+    tempoSlider.value = Float(Sequencer.tempo)
+    metronomeButton.selected = AudioManager.metronome.on
+
+    layoutForSize(view.bounds.size)
 
     initializeReceptionist()
   }
@@ -42,7 +94,10 @@ final class MIDIPlayerViewController: UIViewController {
       return
     }
 
-    guard MIDIDocumentManager.currentDocument == nil else { logDebug("currentDocument = \(MIDIDocumentManager.currentDocument!)"); return }
+    guard MIDIDocumentManager.currentDocument == nil else {
+      logDebug("currentDocument = \(MIDIDocumentManager.currentDocument!)")
+      return
+    }
 
     // TODO: Re-open last open document
 //    MIDIDocumentManager.createNewDocument()
@@ -66,7 +121,7 @@ final class MIDIPlayerViewController: UIViewController {
       popoverView.xOffset = presentingCenter.x - popoverCenter.x
     }
 
-    adjustPopover(filesPopoverView, filesButton)
+    adjustPopover(documentsPopoverView, documentsButton)
     adjustPopover(noteAttributesPopoverView, noteAttributesButton)
     adjustPopover(mixerPopoverView, mixerButton)
     adjustPopover(tempoPopoverView, tempoButton)
@@ -112,7 +167,7 @@ final class MIDIPlayerViewController: UIViewController {
     case None, Files, NoteAttributes, Instrument, Mixer, Tempo
     var view: PopoverView? {
       switch self {
-        case .Files:          return MIDIPlayerViewController.currentInstance?.filesPopoverView
+        case .Files:          return MIDIPlayerViewController.currentInstance?.documentsPopoverView
         case .NoteAttributes: return MIDIPlayerViewController.currentInstance?.noteAttributesPopoverView
         case .Instrument:     return MIDIPlayerViewController.currentInstance?.instrumentPopoverView
         case .Mixer:          return MIDIPlayerViewController.currentInstance?.mixerPopoverView
@@ -122,7 +177,7 @@ final class MIDIPlayerViewController: UIViewController {
     }
     var button: ImageButtonView? {
       switch self {
-        case .Files:          return MIDIPlayerViewController.currentInstance?.filesButton
+        case .Files:          return MIDIPlayerViewController.currentInstance?.documentsButton
         case .NoteAttributes: return MIDIPlayerViewController.currentInstance?.noteAttributesButton
         case .Instrument:     return MIDIPlayerViewController.currentInstance?.instrumentButton
         case .Mixer:          return MIDIPlayerViewController.currentInstance?.mixerButton
@@ -146,32 +201,11 @@ final class MIDIPlayerViewController: UIViewController {
 
   // MARK: - Files
 
-  @IBOutlet weak var filesButton: ImageButtonView?
+  @IBOutlet weak var documentsButton: ImageButtonView?
+  @IBOutlet weak var documentNameLabel: UILabel!
 
-  /** save */
-//  @IBAction private func save() {
-
-//    let textField = FormTextField(name: "File Name", value: nil, placeholder: "Awesome Sauce") {
-//      (text: String?) -> Bool in
-//      guard let text = text else { return false }
-//      let url = documentsURLToFile(text)
-//      return !url.checkResourceIsReachableAndReturnError(nil)
-//    }
-//    let form = Form(fields: [textField])
-//    let submit = { [unowned self] (f: Form) -> Void in
-//      guard let text = f["File Name"]?.value as? String else { self.dismissViewControllerAnimated(true, completion: nil); return }
-//      let url = documentsURLToFile("\(text).mid")
-//      logDebug("saving to file '\(url)'")
-//      do { try Sequencer.sequence.writeToFile(url) } catch { logError(error) }
-//      self.dismissViewControllerAnimated(true, completion: nil)
-//    }
-//    let cancel = { [unowned self] () -> Void in self.dismissViewControllerAnimated(true, completion: nil) }
-//    let formViewController = FormViewController(form: form, didSubmit: submit, didCancel: cancel)
-//    presentViewController(formViewController, animated: true, completion: nil)
-//  }
-
-  /** files */
-  @IBAction private func files() {
+  /** documents */
+  @IBAction private func documents() {
     if case .Files = popover { popover = .None } else { popover = .Files }
   }
 
@@ -189,7 +223,7 @@ final class MIDIPlayerViewController: UIViewController {
     }
   }
 
-  @IBOutlet private weak var filesPopoverView: PopoverView!
+  @IBOutlet private weak var documentsPopoverView: PopoverView!
 
  // MARK: - Mixer
 
@@ -215,7 +249,7 @@ final class MIDIPlayerViewController: UIViewController {
   // MARK: - Tempo
 
   @IBOutlet weak var tempoButton: ImageButtonView?
-  private weak var tempoViewController: TempoViewController!
+  private weak var tempoViewController: TempoViewController?
   @IBAction private func tempo() { updatePopover(.Tempo) }
   @IBOutlet private weak var tempoPopoverView: PopoverView?
 
@@ -224,6 +258,16 @@ final class MIDIPlayerViewController: UIViewController {
 //  @IBOutlet weak var revertButton: ImageButtonView!
   @IBAction private func revert() { midiPlayerView.revert() }
 
+  // MARK: - Tempo
+
+  @IBOutlet weak var tempoSlider: Slider!
+  @IBOutlet weak var metronomeButton: ImageButtonView!
+
+  /** tempoSliderValueDidChange */
+  @IBAction private func tempoSliderValueDidChange() { Sequencer.tempo = Double(tempoSlider.value) }
+
+  /** toggleMetronome */
+  @IBAction private func toggleMetronome() { AudioManager.metronome.on = !AudioManager.metronome.on }
 
   // MARK: - Transport
 
@@ -287,62 +331,6 @@ final class MIDIPlayerViewController: UIViewController {
   private var notificationReceptionist: NotificationReceptionist?
 
   /**
-  didChangeCurrentTrack:
-
-  - parameter notification: NSNotification
-  */
-//  private func didChangeCurrentTrack(notification: NSNotification) {
-//    logDebug("current track: " + (Sequencer.currentTrack?.name ?? "nil"))
-//  }
-
-  /**
-  didRemoveTrack:
-
-  - parameter notification: NSNotification
-  */
-//  private func didRemoveTrack(notification: NSNotification) {
-//    guard Sequencer.sequence?.instrumentTracks.count == 0 else { return }
-//    state ∖= [.TrackAdded]
-//  }
-
-  /**
-  didAddTrack:
-
-  - parameter notification: NSNotification
-  */
-//  private func didAddTrack(notification: NSNotification) { state ∪= [.TrackAdded] }
-
-  /**
-  didLoadFile:
-
-  - parameter notification: NSNotification
-  */
-//  private func didLoadFile(notification: NSNotification) { state ∪= [.FileLoaded] }
-
-  /**
-  didUnloadFile:
-
-  - parameter notification: NSNotification
-  */
-//  private func didUnloadFile(notification: NSNotification) { state ∖= [.FileLoaded] }
-
-  /**
-  didPause:
-
-  - parameter notification: NSNotification
-  */
-  private func didPause(notification: NSNotification) { state ⊻= [.Playing, .Paused] }
-
-  /**
-  didStart:
-
-  - parameter notification: NSNotification
-  */
-  private func didStart(notification: NSNotification) {
-    if paused { state ⊻= [.Playing, .Paused] } else { state ∪= .Playing }
-  }
-
-  /**
   didStop:
 
   - parameter notification: NSNotification
@@ -358,27 +346,34 @@ final class MIDIPlayerViewController: UIViewController {
 
     let queue = NSOperationQueue.mainQueue()
 
-//    let didAddTrackCallback:           Callback = (MIDISequence.self,   queue, didAddTrack)
-//    let didRemoveTrackCallback:        Callback = (MIDISequence.self,   queue, didRemoveTrack)
-//    let didChangeCurrentTrackCallback: Callback = (Sequencer.self,      queue, didChangeCurrentTrack)
-//    let didLoadFileCallback:           Callback = (Sequencer.self,      queue, didLoadFile)
-//    let didUnloadFileCallback:         Callback = (Sequencer.self,      queue, didUnloadFile)
-    let didPauseCallback:              Callback = (Sequencer.self,      queue, didPause)
-    let didStartCallback:              Callback = (Sequencer.self,      queue, didStart)
-    let didStopCallback:               Callback = (Sequencer.self,      queue, didStop)
+    let pauseHandler: (NSNotification) -> Void = {
+      [weak self] _ in self?.state ⊻= [.Playing, .Paused]
+    }
+
+    let startHandler: (NSNotification) -> Void = {
+      [weak self] _ in self?.state ⊻= self!.state ∋ .Paused ? [.Playing, .Paused] : [.Playing]
+    }
+
+    let stopHandler: (NSNotification) -> Void = {
+      [weak self] _ in self?.state ∖= [.Playing, .Paused]
+    }
+
+    let documentHandler: (NSNotification) -> Void = {
+      [weak self] _ in self?.documentNameLabel.text = MIDIDocumentManager.currentDocument?.localizedName
+    }
+
+    let didPauseCallback: Callback = (Sequencer.self, queue, pauseHandler)
+    let didStartCallback: Callback = (Sequencer.self, queue, startHandler)
+    let didStopCallback:  Callback = (Sequencer.self, queue, stopHandler)
+
+    let didChangeDocumentCallback: Callback = (MIDIDocumentManager.self, queue, documentHandler)
 
     let callbacks: [NotificationReceptionist.Notification:NotificationReceptionist.Callback] = [
+      Sequencer.Notification.DidPause.name.value: didPauseCallback,
+      Sequencer.Notification.DidStart.name.value: didStartCallback,
+      Sequencer.Notification.DidStop.name.value:  didStopCallback,
 
-//      MIDISequence.Notification.Name.DidAddTrack.value:        didAddTrackCallback,
-//      MIDISequence.Notification.Name.DidRemoveTrack.value:     didRemoveTrackCallback,
-
-//      Sequencer.Notification.DidLoadFile.name.value:           didLoadFileCallback,
-//      Sequencer.Notification.DidUnloadFile.name.value:         didUnloadFileCallback,
-//      Sequencer.Notification.DidChangeCurrentTrack.name.value: didChangeCurrentTrackCallback,
-      Sequencer.Notification.DidPause.name.value:              didPauseCallback,
-      Sequencer.Notification.DidStart.name.value:              didStartCallback,
-      Sequencer.Notification.DidStop.name.value:               didStopCallback
-
+      MIDIDocumentManager.Notification.DidChangeCurrentDocument.rawValue: didChangeDocumentCallback
     ]
 
     notificationReceptionist = NotificationReceptionist(callbacks: callbacks)
@@ -387,22 +382,18 @@ final class MIDIPlayerViewController: UIViewController {
 
   private struct State: OptionSetType, CustomStringConvertible {
     let rawValue: Int
-    static let Popover     = State(rawValue: 0b0000_0000_0001)
-    static let Playing     = State(rawValue: 0b0000_0000_0010)
-//    static let TrackAdded  = State(rawValue: 0b0000_0001_0000)
-    static let Recording   = State(rawValue: 0b0000_0010_0000)
-//    static let FileLoaded  = State(rawValue: 0b0000_0100_0000)
-    static let Paused      = State(rawValue: 0b0000_1000_0000)
-    static let Jogging     = State(rawValue: 0b0001_0000_0000)
+    static let Popover     = State(rawValue: 0b0000_0001)
+    static let Playing     = State(rawValue: 0b0000_0010)
+    static let Recording   = State(rawValue: 0b0000_0100)
+    static let Paused      = State(rawValue: 0b0000_1000)
+    static let Jogging     = State(rawValue: 0b0001_0000)
 
     var description: String {
       var result = "MIDIPlayerViewController.State { "
       var flagStrings: [String] = []
       if self ∋ .Popover     { flagStrings.append("Popover")     }
       if self ∋ .Playing     { flagStrings.append("Playing")     }
-//      if self ∋ .TrackAdded  { flagStrings.append("TrackAdded")  }
       if self ∋ .Recording   { flagStrings.append("Recording")   }
-//      if self ∋ .FileLoaded  { flagStrings.append("FileLoaded")  }
       if self ∋ .Paused      { flagStrings.append("Paused")      }
       if self ∋ .Jogging     { flagStrings.append("Jogging")     }
 
@@ -437,11 +428,72 @@ final class MIDIPlayerViewController: UIViewController {
 
       // Check if play/pause status changed
       if modifiedState ~∩ [.Playing, .Paused] {
-        midiPlayerView.paused = paused
         stopButton.enabled = playing || paused
         (playing ? ControlImage.Pause : ControlImage.Play).decorateButton(playPauseButton)
       }
     }
+  }
+
+}
+
+// MARK: - UIContentContainter
+extension MIDIPlayerViewController {
+
+  /**
+  willTransitionToTraitCollection:withTransitionCoordinator:
+
+  - parameter newCollection: UITraitCollection
+  - parameter coordinator: UIViewControllerTransitionCoordinator
+  */
+  override func willTransitionToTraitCollection(newCollection: UITraitCollection,
+                      withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator)
+  {
+    logDebug("newCollection: \(newCollection)\ncoordinator: \(coordinator)")
+    super.willTransitionToTraitCollection(newCollection, withTransitionCoordinator: coordinator)
+  }
+
+  /**
+  sizeForChildContentContainer:withParentContainerSize:
+
+  - parameter container: UIContentContainer
+  - parameter parentSize: CGSize
+
+  - returns: CGSize
+  */
+//  override func sizeForChildContentContainer(container: UIContentContainer,
+//                     withParentContainerSize parentSize: CGSize) -> CGSize
+//  {
+//    var containerDescription = "container: \(container)"
+//    switch container {
+//      case let controller as InstrumentViewController where controller === instrumentViewController:
+//        containerDescription += "instrument"
+//      case let controller as MixerViewController where controller === mixerViewController:
+//        containerDescription += "instrument"
+//      case let controller as NoteAttributesViewController where controller === noteAttributesViewController:
+//        containerDescription += "instrument"
+//      case let controller as TempoViewController where controller === tempoViewController:
+//        containerDescription += "instrument"
+//      default:
+//        containerDescription += "unidentified"
+//    }
+//    let size = super.sizeForChildContentContainer(container, withParentContainerSize: parentSize)
+//    logDebug("\(containerDescription)\nparentSize: \(parentSize)\nsize: \(size)")
+//    return size
+//  }
+
+  /**
+  viewWillTransitionToSize:withTransitionCoordinator:
+
+  - parameter size: CGSize
+  - parameter coordinator: UIViewControllerTransitionCoordinator
+  */
+  override func viewWillTransitionToSize(size: CGSize,
+               withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator)
+  {
+
+    super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
+
+    transitionFromSize(view.bounds.size, toSize: size, animated: true)
   }
 
 }

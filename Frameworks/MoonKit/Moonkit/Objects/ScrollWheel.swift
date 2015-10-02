@@ -352,6 +352,13 @@ import UIKit
     }
   }
 
+  /**
+  intrinsicContentSize
+
+  - returns: CGSize
+  */
+  public override func intrinsicContentSize() -> CGSize { return CGSize(square: wheelImage?.size.maxAxisValue ?? 100) }
+
   private enum Quadrant: String {
     case I, II, III, IV
 

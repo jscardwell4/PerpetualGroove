@@ -10,7 +10,6 @@ import UIKit
 import SpriteKit
 import MoonKit
 import CoreMIDI
-import struct AudioToolbox.CABarBeatTime
 
 final class MIDINode: SKSpriteNode {
 
@@ -22,10 +21,22 @@ final class MIDINode: SKSpriteNode {
 
   static let useVelocityForOff = true
 
-  struct State: OptionSetType {
+  struct State: OptionSetType, CustomStringConvertible {
     let rawValue: Int
-    static let Playing = State(rawValue: 0b01)
-    static let Jogging = State(rawValue: 0b10)
+    static let Playing = State(rawValue: 0b001)
+    static let Jogging = State(rawValue: 0b010)
+    static let Paused  = State(rawValue: 0b100)
+
+    var description: String {
+      var result = "MIDINode.State { "
+      var flagStrings: [String] = []
+      if self ∋ .Playing { flagStrings.append("Playing") }
+      if self ∋ .Jogging { flagStrings.append("Jogging") }
+      if self ∋ .Paused  { flagStrings.append("Paused")  }
+      result += ", ".join(flagStrings)
+      result += " }"
+      return result
+    }
   }
 
   private var state: State = []
@@ -93,6 +104,7 @@ final class MIDINode: SKSpriteNode {
   private let time = Sequencer.time
   private(set) var endPoint = MIDIEndpointRef()
 
+  private weak var track: InstrumentTrack?
   private var currentSnapshot: Snapshot
   private var history: MIDINodeHistory
   private var breadcrumb: MIDINodeHistory.Breadcrumb?
@@ -149,10 +161,36 @@ final class MIDINode: SKSpriteNode {
   */
   private func didEndJogging(notification: NSNotification) {
     guard state ∋ .Jogging else { fatalError("internal inconsistency, should have `Jogging` flag set") }
-    physicsBody.dynamic = true
-    physicsBody.velocity = currentSnapshot.velocity
     state ⊻= .Jogging
     history.pruneAfter(currentSnapshot)
+
+    guard state ∌ .Paused else { return }
+    physicsBody.dynamic = true
+    physicsBody.velocity = currentSnapshot.velocity
+  }
+
+  /**
+  didStart:
+
+  - parameter notification: NSNotification
+  */
+  private func didStart(notification: NSNotification) {
+    guard state ∋ .Paused else { return }
+    physicsBody.dynamic = true
+    physicsBody.velocity = currentSnapshot.velocity
+    state ⊻= .Paused
+  }
+
+  /**
+  didPause:
+
+  - parameter notification: NSNotification
+  */
+  private func didPause(notification: NSNotification) {
+    guard state ∌ .Paused else { return }
+    mark()
+    physicsBody.dynamic = false
+    state ⊻= .Paused
   }
 
   /**
@@ -191,6 +229,7 @@ final class MIDINode: SKSpriteNode {
     let snapshot = Snapshot(ticks: Sequencer.time.ticks, placement: p)
     initialSnapshot = snapshot
     currentSnapshot = snapshot
+    track = t
     history = MIDINodeHistory(initialSnapshot: snapshot)
     note = attrs
     let image = UIImage(named: "ball")!
@@ -201,7 +240,9 @@ final class MIDINode: SKSpriteNode {
       [
         Sequencer.Notification.DidBeginJogging.value : (Sequencer.self, queue, didBeginJogging),
         Sequencer.Notification.DidJog.value          : (Sequencer.self, queue, didJog),
-        Sequencer.Notification.DidEndJogging.value   : (Sequencer.self, queue, didEndJogging)
+        Sequencer.Notification.DidEndJogging.value   : (Sequencer.self, queue, didEndJogging),
+        Sequencer.Notification.DidStart.value        : (Sequencer.self, queue, didStart),
+        Sequencer.Notification.DidPause.value        : (Sequencer.self, queue, didPause)
       ]
     )
 

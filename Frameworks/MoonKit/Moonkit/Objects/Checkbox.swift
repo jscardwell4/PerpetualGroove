@@ -82,7 +82,7 @@ public class Checkbox: UIControl {
 
     if useFontAwesome {
       UIFont.fontAwesomeIconForName(checked ? "check-square-o" : "square-o").drawInRect(rect, withAttributes: [
-        NSFontAttributeName: UIFont(name: "FontAwesome", size: rect.size.minAxis - 1.0)!
+        NSFontAttributeName: UIFont(name: "FontAwesome", size: rect.size.minAxisValue - 1.0)!
       ])
     } else {
       //// General Declarations

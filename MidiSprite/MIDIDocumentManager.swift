@@ -69,6 +69,15 @@ final class MIDIDocumentManager {
   }
 
   /**
+  didChangeDocument:
+
+  - parameter notification: NSNotification
+  */
+  private static func didChangeDocument(notification: NSNotification) {
+    currentDocument?.updateChangeCount(.Done)
+  }
+
+  /**
   didUpdate:
 
   - parameter notification: NSNotification
@@ -112,7 +121,10 @@ final class MIDIDocumentManager {
   */
   static func openDocument(document: MIDIDocument) {
     logDebug("document = \(document)")
-    currentDocument = document
+    document.openWithCompletionHandler {
+      guard $0 else { logError("failed to open document: \(document)"); return }
+      MIDIDocumentManager.currentDocument = document
+    }
   }
 
   /**
@@ -122,7 +134,7 @@ final class MIDIDocumentManager {
   */
   static func openURL(url: NSURL) {
     logDebug("url = \(url)")
-    currentDocument = MIDIDocument(fileURL: url)
+    openDocument(MIDIDocument(fileURL: url))
   }
 
   /**
@@ -133,7 +145,7 @@ final class MIDIDocumentManager {
   static func openItem(item: NSMetadataItem) {
     logDebug("item = \(item.attributesDescription)")
     guard let url = item.URL else { logError("failed to get url from item: \(item)"); return }
-    currentDocument = MIDIDocument(fileURL: url)
+    openDocument(MIDIDocument(fileURL: url))
   }
 
   private static let notificationReceptionist: NotificationReceptionist = {
@@ -142,9 +154,14 @@ final class MIDIDocumentManager {
     typealias Callback = NotificationReceptionist.Callback
     let finishGatheringCallback: Callback = (metadataQuery, queue, MIDIDocumentManager.didFinishGathering)
     let updateCallback: Callback          = (metadataQuery, queue, MIDIDocumentManager.didUpdate)
+    let documentChanged: Callback         = (MIDISequence.self, queue, MIDIDocumentManager.didChangeDocument)
     let receptionist = NotificationReceptionist(callbacks: [
       NSMetadataQueryDidFinishGatheringNotification: finishGatheringCallback,
-      NSMetadataQueryDidUpdateNotification: updateCallback
+      NSMetadataQueryDidUpdateNotification: updateCallback,
+      MIDISequence.Notification.Name.DidAddTrack.rawValue: documentChanged,
+      MIDISequence.Notification.Name.DidRemoveTrack.rawValue: documentChanged,
+      MIDIPlayerNode.Notification.DidAddNode.rawValue: documentChanged,
+      MIDIPlayerNode.Notification.DidRemoveNode.rawValue: documentChanged
       ])
     metadataQuery.startQuery()
     return receptionist

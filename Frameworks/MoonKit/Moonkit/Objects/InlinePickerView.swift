@@ -71,10 +71,6 @@ import UIKit
     setNeedsUpdateConstraints()
   }
 
-  public override func prepareForInterfaceBuilder() {
-//    reloadData()
-  }
-
   /** updatePerspective */
   private func updatePerspective() {
     collectionView.layer.sublayerTransform =

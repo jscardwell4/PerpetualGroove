@@ -12,15 +12,87 @@ import struct AudioToolbox.CABarBeatTime
 
 @IBDesignable final class BarBeatTimeLabel: UIView {
 
-  @IBInspectable var bar: Int = 1 { didSet { barLabel.text = String(bar, radix: 10, pad: 3) } }
-  @IBInspectable var beat: Int = 1 { didSet { beatLabel.text = String(beat) } }
-  @IBInspectable var subbeat: Int = 1 { didSet { subbeatLabel.text = String(subbeat, radix: 10, pad: 3) } }
+  @IBInspectable var font: UIFont = .largeDisplayFont { didSet { updateFont() } }
+  private var _font: UIFont = .largeDisplayFont { didSet { setNeedsDisplay() } }
 
-  @IBOutlet weak var barLabel: UILabel!
-  @IBOutlet weak var barBeatDivider: UILabel!
-  @IBOutlet weak var beatLabel: UILabel!
-  @IBOutlet weak var beatSubbeatDivider: UILabel!
-  @IBOutlet weak var subbeatLabel: UILabel!
+  @IBInspectable var fontColor: UIColor = .primaryColor
+
+  @IBInspectable var bar: Int = 1 {
+    didSet {
+      guard bar != oldValue else { return }
+      barString = String(bar, radix: 10, pad: 3)
+    }
+  }
+
+  @IBInspectable var beat: Int = 1 {
+    didSet {
+      guard beat != oldValue else { return }
+      beatString = String(beat)
+    }
+  }
+
+  @IBInspectable var subbeat: Int = 1 {
+    didSet {
+      guard subbeat != oldValue else { return }
+      subbeatString = String(subbeat, radix: 10, pad: 3)
+    }
+  }
+
+  private var barString: NSString = "001" { didSet { setNeedsDisplayInRect(barFrame) } }
+  private var beatString: NSString = "1" { didSet { setNeedsDisplayInRect(beatFrame) } }
+  private var subbeatString: NSString = "001" { didSet { setNeedsDisplayInRect(subbeatFrame) } }
+  private let barBeatDividerString: NSString = ":"
+  private let beatSubbeatDividerString: NSString = "."
+
+  private var barFrame: CGRect = .zero
+  private var barBeatDividerFrame: CGRect = .zero
+  private var beatFrame: CGRect = .zero
+  private var beatSubbeatDividerFrame: CGRect = .zero
+  private var subbeatFrame: CGRect = .zero
+
+  override var bounds: CGRect { didSet { calculateFrames() } }
+
+  /** calculateFrames */
+  private func calculateFrames() {
+    guard !bounds.isEmpty else {
+      barFrame = .zero
+      barBeatDividerFrame = .zero
+      beatFrame = .zero
+      beatSubbeatDividerFrame = .zero
+      subbeatFrame = .zero
+      return
+    }
+    let characterWidth = bounds.width / 9
+    let height = bounds.height
+    barFrame                = CGRect(x: 0,                  y: 0, width: characterWidth * 3, height: height)
+    barBeatDividerFrame     = CGRect(x: characterWidth * 3, y: 0, width: characterWidth,     height: height)
+    beatFrame               = CGRect(x: characterWidth * 4, y: 0, width: characterWidth,     height: height)
+    beatSubbeatDividerFrame = CGRect(x: characterWidth * 5, y: 0, width: characterWidth,     height: height)
+    subbeatFrame            = CGRect(x: characterWidth * 6, y: 0, width: characterWidth * 3, height: height)
+    setNeedsDisplay()
+  }
+
+  /**
+  drawRect:
+
+  - parameter rect: CGRect
+  */
+  override func drawRect(rect: CGRect) {
+    let attributes: [String:AnyObject] = [NSFontAttributeName: _font, NSForegroundColorAttributeName: fontColor]
+    switch rect {
+    case barFrame:                  barString.drawInRect(rect, withAttributes: attributes)
+      case barBeatDividerFrame:     barBeatDividerString.drawInRect(rect, withAttributes: attributes)
+      case beatFrame:               beatString.drawInRect(rect, withAttributes: attributes)
+      case beatSubbeatDividerFrame: beatSubbeatDividerString.drawInRect(rect, withAttributes: attributes)
+      case subbeatFrame:            subbeatString.drawInRect(rect, withAttributes: attributes)
+      default: 
+        barString.drawInRect(barFrame, withAttributes: attributes)
+        barBeatDividerString.drawInRect(barBeatDividerFrame, withAttributes: attributes)
+        beatString.drawInRect(beatFrame, withAttributes: attributes)
+        beatSubbeatDividerString.drawInRect(beatSubbeatDividerFrame, withAttributes: attributes)
+        subbeatString.drawInRect(subbeatFrame, withAttributes: attributes)      
+    }
+  }
 
   private var currentTime: CABarBeatTime = .start {
     didSet {
@@ -37,6 +109,25 @@ import struct AudioToolbox.CABarBeatTime
   private var barBeatTimeCallbackKey: String { return String(ObjectIdentifier(self).uintValue) }
 
   private var notificationReceptionist: NotificationReceptionist!
+
+  private var characterSize: CGSize {
+    return "0123456789:.".characters.reduce(.zero) {[attributes = [NSFontAttributeName: font]] in
+      let s = (String($1) as NSString).sizeWithAttributes(attributes)
+      return CGSize(width: max($0.width, s.width), height: max($0.height, s.height))
+    }
+  }
+
+  /** updateFont */
+  private func updateFont() { _font = font.fontWithSize((characterSize.width / (bounds.width / 9)) * font.pointSize) }
+
+  /**
+  intrinsicContentSize
+
+  - returns: CGSize
+  */
+  override func intrinsicContentSize() -> CGSize {
+    return CGSize(width: characterSize.width * 9, height: characterSize.height).integralSize
+  }
 
   /**
   didUpdateBarBeatTime:
@@ -73,17 +164,24 @@ import struct AudioToolbox.CABarBeatTime
 
   /** setup */
   private func setup() {
-    Sequencer.time.registerCallback(didUpdateBarBeatTime,
-                                 predicate: BarBeatTime.TruePredicate,
-                                    forKey: barBeatTimeCallbackKey)
-    let queue = NSOperationQueue.mainQueue()
-    let object = Sequencer.self
-    let didJogCallback: NotificationReceptionist.Callback = (object, queue, didJog)
-    let didResetCallback: NotificationReceptionist.Callback = (object, queue, didReset)
-    notificationReceptionist = NotificationReceptionist(callbacks:[
-      Sequencer.Notification.DidJog.name.value:   didJogCallback,
-      Sequencer.Notification.DidReset.name.value: didResetCallback
-    ])
+
+    calculateFrames()
+
+    #if !TARGET_INTERFACE_BUILDER
+      Sequencer.time.registerCallback(didUpdateBarBeatTime,
+                                   predicate: BarBeatTime.TruePredicate,
+                                      forKey: barBeatTimeCallbackKey)
+
+      let queue = NSOperationQueue.mainQueue()
+      let object = Sequencer.self
+      let didJogCallback: NotificationReceptionist.Callback = (object, queue, didJog)
+      let didResetCallback: NotificationReceptionist.Callback = (object, queue, didReset)
+      notificationReceptionist = NotificationReceptionist(callbacks:[
+        Sequencer.Notification.DidJog.name.value:   didJogCallback,
+        Sequencer.Notification.DidReset.name.value: didResetCallback
+      ])
+    #endif
+
   }
 
   /**
