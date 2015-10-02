@@ -49,3 +49,8 @@ extension MIDITrackType {
   }
 
 }
+
+enum MIDITrackNotification: String, NotificationType, NotificationNameType {
+  case DidUpdateEvents
+}
+

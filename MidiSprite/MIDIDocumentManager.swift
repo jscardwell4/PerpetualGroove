@@ -42,6 +42,12 @@ final class MIDIDocumentManager {
     return queue
   }()
 
+  /** enabledUpdates */
+  static func enabledUpdates() { metadataQuery.enableUpdates() }
+
+  /** disableUpdates */
+  static func disableUpdates() { metadataQuery.disableUpdates() }
+
   private static let metadataQuery: NSMetadataQuery = {
     let query = NSMetadataQuery()
     query.searchScopes = [NSMetadataQueryUbiquitousDocumentsScope,
@@ -66,15 +72,6 @@ final class MIDIDocumentManager {
   private static func didFinishGathering(notification: NSNotification) {
     logDebug()
     Notification.DidUpdateMetadataItems.post()
-  }
-
-  /**
-  didChangeDocument:
-
-  - parameter notification: NSNotification
-  */
-  private static func didChangeDocument(notification: NSNotification) {
-    currentDocument?.updateChangeCount(.Done)
   }
 
   /**
@@ -154,14 +151,9 @@ final class MIDIDocumentManager {
     typealias Callback = NotificationReceptionist.Callback
     let finishGatheringCallback: Callback = (metadataQuery, queue, MIDIDocumentManager.didFinishGathering)
     let updateCallback: Callback          = (metadataQuery, queue, MIDIDocumentManager.didUpdate)
-    let documentChanged: Callback         = (MIDISequence.self, queue, MIDIDocumentManager.didChangeDocument)
     let receptionist = NotificationReceptionist(callbacks: [
       NSMetadataQueryDidFinishGatheringNotification: finishGatheringCallback,
-      NSMetadataQueryDidUpdateNotification: updateCallback,
-      MIDISequence.Notification.Name.DidAddTrack.rawValue: documentChanged,
-      MIDISequence.Notification.Name.DidRemoveTrack.rawValue: documentChanged,
-      MIDIPlayerNode.Notification.DidAddNode.rawValue: documentChanged,
-      MIDIPlayerNode.Notification.DidRemoveNode.rawValue: documentChanged
+      NSMetadataQueryDidUpdateNotification: updateCallback
       ])
     metadataQuery.startQuery()
     return receptionist

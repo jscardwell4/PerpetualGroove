@@ -58,7 +58,11 @@ final class InstrumentTrack: MIDITrackType, Equatable {
     event.time = time.time
     events.append(event)
   }
-  private(set) var events: [MIDITrackEvent] = []
+  private(set) var events: [MIDITrackEvent] = [] {
+    didSet {
+      MIDITrackNotification.DidUpdateEvents.post(from: self)
+    }
+  }
 
   var chunk: MIDIFileTrackChunk {
     var trackEvents = events
@@ -85,6 +89,10 @@ final class InstrumentTrack: MIDITrackType, Equatable {
     case InstrumentInitializeFailure = "Failed to create instrument"
   }
 
+  enum Notification: String, NotificationType, NotificationNameType {
+    case DidAddNode, DidRemoveNode
+  }
+
   /**
   addNode:
 
@@ -95,6 +103,7 @@ final class InstrumentTrack: MIDITrackType, Equatable {
     let identifier = NodeIdentifier(ObjectIdentifier(node).uintValue)
     notes.insert(identifier)
     try MIDIPortConnectSource(inPort, node.endPoint, nil) ➤ "Failed to connect to node \(node.name!)"
+    Notification.DidAddNode.post(from: self)
     guard recording else {
       if let pendingIdentifier = pendingIdentifier {
         fileIDToNodeID[pendingIdentifier] = identifier
@@ -163,6 +172,7 @@ final class InstrumentTrack: MIDITrackType, Equatable {
     notes.remove(identifier)
     node.sendNoteOff()
     try MIDIPortDisconnectSource(inPort, node.endPoint) ➤ "Failed to disconnect to node \(node.name!)"
+    Notification.DidRemoveNode.post(from: self)
     guard recording else { return }
     dispatch_async(fileQueue!) {
       self.appendEvent(MIDINodeEvent(.Remove(identifier: identifier)))

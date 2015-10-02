@@ -11,11 +11,7 @@ import UIKit
 import MoonKit
 import Eveleth
 
-final class DocumentsViewController: UIViewController {
-
-  @IBOutlet weak var scrollView: UIScrollView!
-  @IBOutlet weak var stackView: UIStackView!
-  @IBOutlet weak var stackViewHeightConstraint: NSLayoutConstraint!
+final class DocumentsViewController: UICollectionViewController {
 
   var selectFile: ((NSMetadataItem) -> Void)?
   var deleteFile: ((NSMetadataItem) -> Void)?
@@ -40,6 +36,17 @@ final class DocumentsViewController: UIViewController {
   */
   private func didUpdateItems(notification: NSNotification) { items = MIDIDocumentManager.metadataItems }
 
+
+  /**
+  init:
+
+  - parameter layout: UICollectionViewLayout
+  */
+  override init(collectionViewLayout layout: UICollectionViewLayout) {
+    super.init(collectionViewLayout: layout)
+    setup()
+  }
+
   /**
   init:bundle:
 
@@ -61,12 +68,11 @@ final class DocumentsViewController: UIViewController {
   private var items: [NSMetadataItem] = [] {
     didSet {
       maxLabelSize = items.reduce(.zero) {
-        [attributes = [NSFontAttributeName:UIFont.controlFont], unowned self] size, item in
+        [attributes = [NSFontAttributeName:UIFont.controlFont]] size, item in
 
         let displayNameSize = item.displayName?.sizeWithAttributes(attributes) ?? .zero
-        return CGSize(width: max(size.width, displayNameSize.width + 10), height: self.labelHeight)
+        return CGSize(width: max(size.width, displayNameSize.width + 10), height: max(size.height, displayNameSize.height))
       }
-      updateLabelButtons()
     }
   }
 
@@ -103,51 +109,7 @@ final class DocumentsViewController: UIViewController {
     }
   }
 
-  /** updateLabelButtons */
-  private func updateLabelButtons() {
-    (stackView.arrangedSubviews.count ..< stackView.subviews.count).forEach {
-      let subview = stackView.subviews[$0]
-      subview.hidden = false
-      stackView.addArrangedSubview(subview)
-    }
-    switch (items.count, stackView.arrangedSubviews.count) {
-      case let (itemCount, arrangedCount) where itemCount == arrangedCount:
-        applyText(items, stackView.arrangedSubviews)
-
-      case let (itemCount, arrangedCount) where arrangedCount > itemCount:
-        stackView.arrangedSubviews[itemCount ..< arrangedCount].forEach {
-          stackView.removeArrangedSubview($0)
-          $0.hidden = true
-        }
-        applyText(items, stackView.arrangedSubviews)
-
-      case let (itemCount, arrangedCount) where itemCount > arrangedCount:
-        (arrangedCount ..< itemCount).forEach { stackView.addArrangedSubview(newLabelButtonWithTag($0)) }
-        applyText(items, stackView.arrangedSubviews)
-
-      default: break // Unreachable
-    }
-  }
-
   private let labelHeight: CGFloat = 32
-
-  /**
-  newLabelButtonWithText:
-
-  - parameter text: String
-
-  - returns: LabelButton
-  */
-  private func newLabelButtonWithTag(tag: Int) -> LabelButton {
-    let labelButton = LabelButton(autolayout: true)
-    labelButton.font = .labelFont
-    labelButton.textColor = .primaryColor
-    labelButton.highlightedTextColor = .highlightColor
-    labelButton.tag = tag
-    labelButton.tag = stackView.subviews.count
-    labelButton.addTarget(self, action: "labelButtonAction:", forControlEvents: .TouchUpInside)
-    return labelButton
-  }
 
   /** updateViewConstraints */
   override func updateViewConstraints() {
@@ -159,8 +121,6 @@ final class DocumentsViewController: UIViewController {
 
   private var contentSize: CGSize = .zero {
     didSet {
-      scrollView.contentSize = contentSize
-      stackViewHeightConstraint.constant = contentSize.height
       if view.constraintsWithIdentifier(constraintID).count > 0 {
         view.removeConstraints(view.constraintsWithIdentifier(constraintID))
         view.setNeedsUpdateConstraints()
@@ -181,5 +141,51 @@ final class DocumentsViewController: UIViewController {
   - returns: Bool
   */
   override func prefersStatusBarHidden() -> Bool { return true }
+
+  // MARK: UICollectionViewDataSource
+
+  /**
+  numberOfSectionsInCollectionView:
+
+  - parameter collectionView: UICollectionView
+
+  - returns: Int
+  */
+  override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int { return 3 }
+
+  /**
+  collectionView:numberOfItemsInSection:
+
+  - parameter collectionView: UICollectionView
+  - parameter section: Int
+
+  - returns: Int
+  */
+  override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    return section == 1 ? items.count : 1
+  }
+
+  /**
+  collectionView:cellForItemAtIndexPath:
+
+  - parameter collectionView: UICollectionView
+  - parameter indexPath: NSIndexPath
+
+  - returns: UICollectionViewCell
+  */
+  override func collectionView(collectionView: UICollectionView,
+        cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell
+  {
+    let cell: UICollectionViewCell
+    switch indexPath.section {
+      case 0:
+        cell = collectionView.dequeueReusableCellWithReuseIdentifier(CreateDocumentCell.Identifier, forIndexPath: indexPath)
+      default:
+        cell = collectionView.dequeueReusableCellWithReuseIdentifier(DocumentCell.Identifier, forIndexPath: indexPath)
+        (cell as? DocumentCell)?.item = items[indexPath.row]
+    }
+    
+    return cell
+  }
 
 }

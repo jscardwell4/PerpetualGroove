@@ -162,7 +162,7 @@ final class MIDINode: SKSpriteNode {
   private func didEndJogging(notification: NSNotification) {
     guard state ∋ .Jogging else { fatalError("internal inconsistency, should have `Jogging` flag set") }
     state ⊻= .Jogging
-    history.pruneAfter(currentSnapshot)
+//    history.pruneAfter(currentSnapshot)
 
     guard state ∌ .Paused else { return }
     physicsBody.dynamic = true

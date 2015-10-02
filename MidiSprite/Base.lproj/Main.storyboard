@@ -385,6 +385,9 @@
                                                                     </userDefinedRuntimeAttribute>
                                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="MetronomeButton"/>
                                                                 </userDefinedRuntimeAttributes>
+                                                                <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                                    <rect key="frame" x="0.0" y="3" width="50" height="50"/>
+                                                                </variation>
                                                                 <connections>
                                                                     <action selector="toggleMetronome" destination="BV1-FR-VrT" eventType="touchUpInside" id="P9O-d8-MRc"/>
                                                                 </connections>
@@ -1292,7 +1295,7 @@
                                     </mask>
                                 </variation>
                                 <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
-                                    <rect key="frame" x="20" y="574" width="250" height="128"/>
+                                    <rect key="frame" x="20" y="574" width="250" height="108"/>
                                     <mask key="constraints">
                                         <include reference="MBw-I0-rQd"/>
                                         <include reference="yna-4L-3vz"/>

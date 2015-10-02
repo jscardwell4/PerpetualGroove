@@ -11,12 +11,57 @@ import MoonKit
 
 final class MIDIDocument: UIDocument {
 
+  typealias SequenceNotification = MIDISequence.Notification
+
   enum Error: String, ErrorType {
-    case InvalidContentType, NoContent
+    case InvalidContentType
   }
 
-  private var file: MIDIFile?
-  private(set) var sequence = MIDISequence()
+  let sequence = MIDISequence()
+
+  /**
+  didAddTrack:
+
+  - parameter notification: NSNotification
+  */
+  private func didAddTrack(notification: NSNotification) {
+    guard let track = notification.userInfo?[SequenceNotification.Key.Track.rawValue] as? InstrumentTrack else { return }
+    notificationReceptionist.observe(MIDITrackNotification.DidUpdateEvents, from: track, callback: didUpdateTrack)
+    updateChangeCount(.Done)
+  }
+
+  /**
+  didRemoveTrack:
+
+  - parameter notification: NSNotification
+  */
+  private func didRemoveTrack(notification: NSNotification) {
+    guard let track = notification.userInfo?[SequenceNotification.Key.OldTrack.rawValue] as? InstrumentTrack else { return }
+    notificationReceptionist.stopObserving(MIDITrackNotification.DidUpdateEvents, from: track)
+    updateChangeCount(.Done)
+  }
+
+  /**
+  didUpdateTrack:
+
+  - parameter notification: NSNotification
+  */
+  private func didUpdateTrack(notification: NSNotification) {
+    updateChangeCount(.Done)
+  }
+
+  /**
+  init:
+
+  - parameter url: NSURL
+  */
+  override init(fileURL url: NSURL) {
+    super.init(fileURL: url)
+    notificationReceptionist.observe(SequenceNotification.DidAddTrack, from: sequence, callback: didAddTrack)
+    notificationReceptionist.observe(SequenceNotification.DidRemoveTrack, from: sequence, callback: didRemoveTrack)
+  }
+
+  private let notificationReceptionist = NotificationReceptionist()
 
   /**
   loadFromContents:ofType:
@@ -26,7 +71,7 @@ final class MIDIDocument: UIDocument {
   */
   override func loadFromContents(contents: AnyObject, ofType typeName: String?) throws {
     guard let data = contents as? NSData else { throw Error.InvalidContentType }
-    sequence = MIDISequence(file: try MIDIFile(data: data))
+    sequence.file = try MIDIFile(data: data)
   }
 
   /**

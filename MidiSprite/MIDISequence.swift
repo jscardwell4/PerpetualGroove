@@ -15,25 +15,9 @@ final class MIDISequence {
   static let ExtendedFileAttributeName = "com.MoondeerStudios.MIDISprite.MIDISequence"
 
   /** An enumeration to wrap up notifications */
-  struct Notification: NotificationType {
-    enum Name: String, NotificationNameType { case DidAddTrack, DidRemoveTrack, DidChangeCurrentTrack }
-    var name: Name
-    var object: AnyObject? { return MIDISequence.self }
-    var userInfo: [NSObject:AnyObject]?
-
+  enum Notification: String, NotificationType, NotificationNameType {
+    case DidAddTrack, DidRemoveTrack, DidChangeCurrentTrack
     enum Key: String { case Track, OldTrack }
-    static func DidAddTrack(track: InstrumentTrack) -> Notification {
-      return Notification(name: .DidAddTrack, userInfo: [Key.Track.rawValue:track])
-    }
-
-    static func DidRemoveTrack(track: InstrumentTrack) -> Notification {
-      return Notification(name: .DidRemoveTrack, userInfo: [Key.Track.rawValue:track])
-    }
-
-    static func DidChangeToCurrentTrack(track: InstrumentTrack?, from: InstrumentTrack?) -> Notification {
-      return Notification(name: .DidChangeCurrentTrack, userInfo: [Key.Track.rawValue:(track as? AnyObject ?? NSNull()),
-                                                                   Key.OldTrack.rawValue: (from as? AnyObject ?? NSNull())])
-    }
   }
 
   var sequenceEnd: CABarBeatTime { return tracks.map({$0.trackEnd}).maxElement() ?? .start }
@@ -41,7 +25,13 @@ final class MIDISequence {
   /** The instrument tracks are stored in the `tracks` array beginning at index `1` */
   var instrumentTracks: [InstrumentTrack] { return tracks.count > 1 ? tracks[1..<].map({$0 as! InstrumentTrack}) : [] }
 
-  var currentTrack: InstrumentTrack? { didSet { Notification.DidChangeToCurrentTrack(currentTrack, from: oldValue).post() } }
+  var currentTrack: InstrumentTrack? {
+    didSet {
+      Notification.DidChangeCurrentTrack.post(from: self,
+                                         info: [Notification.Key.OldTrack.rawValue: (oldValue as? AnyObject ?? NSNull()),
+                                                Notification.Key.Track.rawValue:    (currentTrack as? AnyObject ?? NSNull())])
+    }
+  }
 
   /** The tempo track for the sequence is the first element in the `tracks` array */
   var tempoTrack: TempoTrack { return tracks[0] as! TempoTrack }
@@ -50,7 +40,20 @@ final class MIDISequence {
   private(set) var tracks: [MIDITrackType] = [TempoTrack()]
 
   /** Generates a `MIDIFile` from the current sequence state */
-  var file: MIDIFile { return MIDIFile(format: .One, division: 480, tracks: tracks) }
+  var file: MIDIFile {
+    get { return MIDIFile(format: .One, division: 480, tracks: tracks) }
+    set {
+      var trackChunks = ArraySlice(file.tracks)
+      if let trackChunk = trackChunks.first
+        where trackChunk.events.count == trackChunk.events.filter({ TempoTrack.isTempoTrackEvent($0) }).count
+      {
+        tracks[0] = TempoTrack(trackChunk: trackChunk) as MIDITrackType
+        trackChunks = trackChunks.dropFirst()
+      }
+
+      tracks.appendContentsOf(trackChunks.flatMap({ try? InstrumentTrack(trackChunk: $0) }) as [MIDITrackType])
+    }
+  }
 
   /** init */
   init() {}
@@ -60,19 +63,7 @@ final class MIDISequence {
 
   - parameter file: MIDIFile
   */
-  init(file: MIDIFile) {
-    var trackChunks = ArraySlice(file.tracks)
-    if let trackChunk = trackChunks.first
-      where trackChunk.events.count == trackChunk.events.filter({ TempoTrack.isTempoTrackEvent($0) }).count
-    {
-      tracks[0] = TempoTrack(trackChunk: trackChunk) as MIDITrackType
-      trackChunks = trackChunks.dropFirst()
-    } else {
-      tracks[0] = TempoTrack() as MIDITrackType
-    }
-
-    tracks.appendContentsOf(trackChunks.flatMap({ try? InstrumentTrack(trackChunk: $0) }) as [MIDITrackType])
-  }
+  init(file f: MIDIFile) { file = f }
 
   /**
   newTrackWithInstrument:
@@ -84,7 +75,7 @@ final class MIDISequence {
   func newTrackWithInstrument(instrument: Instrument) throws -> InstrumentTrack {
     let track = try InstrumentTrack(instrument: instrument)
     tracks.append(track)
-    Notification.DidAddTrack(track).post()
+    Notification.DidAddTrack.post(from: self, info: [Notification.Key.Track.rawValue: track])
     return tracks.last as! InstrumentTrack
   }
 
@@ -99,7 +90,7 @@ final class MIDISequence {
       return
     }
     tracks.removeAtIndex(idx + 1)
-    Notification.DidRemoveTrack(track).post()
+    Notification.DidRemoveTrack.post(from: self, info: [Notification.Key.Track.rawValue: track])
   }
 
   /**

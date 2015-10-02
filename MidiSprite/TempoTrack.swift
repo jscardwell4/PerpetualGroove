@@ -24,7 +24,12 @@ final class TempoTrack: MIDITrackType {
   private(set) var events: [MIDITrackEvent] = [
     MetaEvent(.TimeSignature(upper: 4, lower: 4, clocks: 36, notes: 8)),
     MetaEvent(.Tempo(microseconds: Byte4(60_000_000 / Sequencer.tempo)))
-  ]
+    ]
+  {
+    didSet {
+      MIDITrackNotification.DidUpdateEvents.post(from: self)
+    }
+  }
 
   private var notificationReceptionist: NotificationReceptionist?
   private func recordingStatusDidChange(notification: NSNotification) { recording = Sequencer.recording }

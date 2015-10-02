@@ -582,6 +582,8 @@ public protocol NotificationType: Hashable {
   var userInfo: [NSObject:AnyObject]? { get }
   var object: AnyObject? { get }
   func post()
+  func post(from from: AnyObject?)
+  func post(from from: AnyObject?, info: [NSObject:AnyObject]?)
   func post(info: [NSObject:AnyObject]?)
 }
 
@@ -594,6 +596,12 @@ public extension NotificationType {
   }
   func post() {
     NSNotificationCenter.defaultCenter().postNotificationName(name.value, object: object, userInfo: userInfo)
+  }
+  func post(from from: AnyObject?) {
+    NSNotificationCenter.defaultCenter().postNotificationName(name.value, object: from, userInfo: userInfo)
+  }
+  func post(from from: AnyObject?, info: [NSObject:AnyObject]?) {
+    NSNotificationCenter.defaultCenter().postNotificationName(name.value, object: from, userInfo: info)
   }
   var userInfo: [NSObject:AnyObject]? { return nil }
   var object: AnyObject? { return nil }
