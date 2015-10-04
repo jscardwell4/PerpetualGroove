@@ -88,19 +88,16 @@ final class MIDIPlayerViewController: UIViewController {
   - parameter animated: Bool
   */
   override func viewDidAppear(animated: Bool) {
-    // TODO: Add back local storage only option
-    guard NSFileManager.defaultManager().ubiquityIdentityToken != nil else {
+    guard !NSUserDefaults.standardUserDefaults().boolForKey("iCloudStorage")
+        || NSFileManager.defaultManager().ubiquityIdentityToken != nil else
+    {
       performSegueWithIdentifier("Purgatory", sender: self)
       return
     }
 
-    guard MIDIDocumentManager.currentDocument == nil else {
-      logDebug("currentDocument = \(MIDIDocumentManager.currentDocument!)")
-      return
-    }
+    guard MIDIDocumentManager.currentDocument == nil && !MIDIDocumentManager.openingDocument else { return }
 
-    // TODO: Re-open last open document
-//    MIDIDocumentManager.createNewDocument()
+    do { try MIDIDocumentManager.createNewDocument() } catch { logError(error, message: "Failed to create new document") }
   }
 
 
@@ -211,15 +208,7 @@ final class MIDIPlayerViewController: UIViewController {
 
   private weak var documentsViewController: DocumentsViewController! {
     didSet {
-      documentsViewController?.selectFile = {
-        [unowned self] in
-        logDebug("item to select = \($0.attributesDescription)")
-        MIDIDocumentManager.openItem($0)
-        self.popover = .None
-      }
-      documentsViewController?.deleteFile = {
-        logDebug("item to delete = \($0.attributesDescription)")
-      }
+      documentsViewController?.dismiss = {[unowned self] in self.popover = .None}
     }
   }
 

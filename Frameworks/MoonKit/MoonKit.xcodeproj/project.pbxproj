@@ -27,6 +27,7 @@
 		C20650061A13C90A00342FDE /* FontAwesomeIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23592F019C8E04200920F8D /* FontAwesomeIcon.swift */; };
 		C20650071A13C99500342FDE /* GestureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25E63DD19FEC06A00F54626 /* GestureManager.swift */; };
 		C20CBBEC1B5FF7960008F538 /* PopoverListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20CBBEB1B5FF7960008F538 /* PopoverListController.swift */; };
+		C20E102C1BBF2DE600AAC01A /* TemplateImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20E102B1BBF2DE600AAC01A /* TemplateImageView.swift */; settings = {ASSET_TAGS = (); }; };
 		C210E9921AF27E3C0026A51D /* ViewProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = C210E9911AF27E3C0026A51D /* ViewProxy.swift */; };
 		C211C2C21B4607E5004A24E4 /* InlinePickerViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = C211C2C11B4607E5004A24E4 /* InlinePickerViewLayout.swift */; };
 		C211C2C41B4607FD004A24E4 /* InlinePickerViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C211C2C31B4607FD004A24E4 /* InlinePickerViewCell.swift */; };
@@ -423,6 +424,7 @@
 		C205852C1A1BEC2000212759 /* BlockActionGesture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockActionGesture.swift; sourceTree = "<group>"; };
 		C2064FF91A13C05900342FDE /* Operators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Operators.swift; sourceTree = "<group>"; };
 		C20CBBEB1B5FF7960008F538 /* PopoverListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopoverListController.swift; sourceTree = "<group>"; };
+		C20E102B1BBF2DE600AAC01A /* TemplateImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemplateImageView.swift; sourceTree = "<group>"; };
 		C20FF1F119AEB67100D11F33 /* MSNotificationReceptionist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSNotificationReceptionist.h; sourceTree = "<group>"; };
 		C20FF1F219AEB67100D11F33 /* MSNotificationReceptionist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSNotificationReceptionist.m; sourceTree = "<group>"; };
 		C210E9911AF27E3C0026A51D /* ViewProxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewProxy.swift; sourceTree = "<group>"; };
@@ -1091,6 +1093,7 @@
 				C2D5F2411B97BC93005040EF /* Slider.swift */,
 				C226BB5E1BA0DA7300E4FC98 /* Stepper.swift */,
 				C25C6F611BA8F23800B3CBAB /* ScrollWheel.swift */,
+				C20E102B1BBF2DE600AAC01A /* TemplateImageView.swift */,
 			);
 			path = Objects;
 			sourceTree = "<group>";
@@ -2039,6 +2042,7 @@
 				C2358F8219C78E0C00920F8D /* MSPopupBarButtonView.m in Sources */,
 				C2358F8319C78E0C00920F8D /* MSReflectingView.m in Sources */,
 				C20650051A13C8FB00342FDE /* Generic.swift in Sources */,
+				C20E102C1BBF2DE600AAC01A /* TemplateImageView.swift in Sources */,
 				C2358F8419C78E0C00920F8D /* MSReplicatorView.m in Sources */,
 				C2C482E519CA0225002E84A9 /* Stack.swift in Sources */,
 				C28E509B1A143FDC00DF3206 /* MultiselectGestureRecognizer.swift in Sources */,

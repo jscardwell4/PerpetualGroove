@@ -143,4 +143,17 @@ final class MixerViewController: UICollectionViewController {
     return cell
   }
 
+  // MARK: - UICollectionViewDelegate
+
+  /**
+  collectionView:shouldSelectItemAtIndexPath:
+
+  - parameter collectionView: UICollectionView
+  - parameter indexPath: NSIndexPath
+
+  - returns: Bool
+  */
+  override func collectionView(collectionView: UICollectionView, shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
+    return indexPath.section == 1
+  }
 }

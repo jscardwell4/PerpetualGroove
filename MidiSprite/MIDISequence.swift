@@ -39,6 +39,20 @@ final class MIDISequence {
   /** Collection of all the tracks in the composition */
   private(set) var tracks: [MIDITrackType] = [TempoTrack()]
 
+  /**
+  toggleSoloForTrack:
+
+  - parameter track: InstrumentTrack
+  */
+  func toggleSoloForTrack(track: InstrumentTrack) {
+    guard instrumentTracks ∋ track else { return }
+    let otherTracks = instrumentTracks.filter({$0 != track})
+    switch track.solo {
+      case true: track.solo = false; otherTracks.forEach({$0.mute = false})
+      case false: track.solo = true; if track.mute { track.mute = false }; otherTracks.forEach({$0.mute = true})
+    }
+  }
+
   /** Generates a `MIDIFile` from the current sequence state */
   var file: MIDIFile {
     get { return MIDIFile(format: .One, division: 480, tracks: tracks) }

@@ -12,6 +12,8 @@ import UIKit
 
   private var touch: UITouch? { didSet { highlighted = touch != nil } }
 
+  @IBInspectable public var toggle: Bool = false
+
   public override var highlighted: Bool { didSet { label?.highlighted = highlighted || selected } }
 
   public override var selected: Bool { didSet { label?.highlighted = highlighted || selected } }
@@ -113,7 +115,10 @@ import UIKit
   */
   public override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
     guard let touch = touch where touches ∋ touch  else { return }
-    if pointInside(touch.locationInView(self), withEvent: event) { sendActionsForControlEvents(.TouchUpInside) }
+    if pointInside(touch.locationInView(self), withEvent: event) {
+      if toggle { selected = !selected }
+      sendActionsForControlEvents(.TouchUpInside)
+    }
     self.touch = nil
   }
 

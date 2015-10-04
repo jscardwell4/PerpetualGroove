@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BV1-FR-VrT">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="15A284" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BV1-FR-VrT">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
         <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
@@ -36,6 +36,7 @@
                                                 <subviews>
                                                     <containerView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HzR-qG-Aqv" userLabel="Instrument Container">
                                                         <rect key="frame" x="0.0" y="0.0" width="496" height="120"/>
+                                                        <animations/>
                                                         <userDefinedRuntimeAttributes>
                                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="InstrumentContainer"/>
                                                             <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="InstrumentContainer"/>
@@ -46,6 +47,7 @@
                                                     </containerView>
                                                     <containerView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ont-R1-PQ9" userLabel="NoteAttributes Container">
                                                         <rect key="frame" x="506" y="0.0" width="496" height="120"/>
+                                                        <animations/>
                                                         <userDefinedRuntimeAttributes>
                                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="NoteAttributesContainer"/>
                                                             <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="NoteAttributesContainer"/>
@@ -55,12 +57,14 @@
                                                         </connections>
                                                     </containerView>
                                                 </subviews>
+                                                <animations/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="NoteAttributesInstrumentStack"/>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="NoteAttributesInstrumentStack"/>
                                                 </userDefinedRuntimeAttributes>
                                             </stackView>
                                         </subviews>
+                                        <animations/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="120" id="MMd-Lz-wkq"/>
                                         </constraints>
@@ -81,6 +85,7 @@
                                     </stackView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="AwesomeSauce" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lff-PZ-gJr" userLabel="DocumentName">
                                         <rect key="frame" x="-42" y="-21" width="42" height="21"/>
+                                        <animations/>
                                         <accessibility key="accessibilityConfiguration" identifier="DocumentName"/>
                                         <fontDescription key="fontDescription" name="EvelethLight" family="Eveleth" pointSize="17"/>
                                         <color key="textColor" red="0.87450999021530151" green="0.8274499773979187" blue="0.7607799768447876" alpha="1" colorSpace="calibratedRGB"/>
@@ -94,6 +99,7 @@
                                         <subviews>
                                             <containerView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Xii-MX-zKn" userLabel="Mixer Container">
                                                 <rect key="frame" x="0.0" y="0.0" width="692" height="300"/>
+                                                <animations/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="MixerContainer"/>
                                                 </userDefinedRuntimeAttributes>
@@ -103,6 +109,7 @@
                                             </containerView>
                                             <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="U9p-PY-X1m" userLabel="MIDI Player" customClass="MIDIPlayerView" customModule="MidiSprite" customModuleProvider="target">
                                                 <rect key="frame" x="702" y="0.0" width="300" height="300"/>
+                                                <animations/>
                                                 <color key="backgroundColor" red="0.20000000298023224" green="0.19607843458652496" blue="0.19215686619281769" alpha="1" colorSpace="calibratedRGB"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="MIDIPlayer"/>
                                                 <constraints>
@@ -113,6 +120,7 @@
                                                 </userDefinedRuntimeAttributes>
                                             </view>
                                         </subviews>
+                                        <animations/>
                                         <constraints>
                                             <constraint firstAttribute="height" priority="999" constant="400" id="zSM-Hw-lw3"/>
                                         </constraints>
@@ -136,6 +144,7 @@
                                         <subviews>
                                             <view opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gJq-1L-zk3" userLabel="DocumentsButton" customClass="ImageButtonView" customModule="MoonKit">
                                                 <rect key="frame" x="0.0" y="50" width="50" height="50"/>
+                                                <animations/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <color key="tintColor" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="DocumentsButton"/>
@@ -172,6 +181,7 @@
                                                         <subviews>
                                                             <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="u5D-xu-7GP" userLabel="Record" customClass="ImageButtonView" customModule="MoonKit">
                                                                 <rect key="frame" x="0.0" y="0.0" width="150" height="150"/>
+                                                                <animations/>
                                                                 <color key="tintColor" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
                                                                 <accessibility key="accessibilityConfiguration" identifier="RecordButton"/>
                                                                 <constraints>
@@ -192,6 +202,7 @@
                                                             </view>
                                                             <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AbD-fM-IZj" userLabel="Play/Pause" customClass="ImageButtonView" customModule="MoonKit">
                                                                 <rect key="frame" x="160" y="0.0" width="150" height="150"/>
+                                                                <animations/>
                                                                 <color key="tintColor" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
                                                                 <accessibility key="accessibilityConfiguration" identifier="PlayPauseButton"/>
                                                                 <constraints>
@@ -211,6 +222,7 @@
                                                             </view>
                                                             <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5UP-3s-pkz" userLabel="Stop" customClass="ImageButtonView" customModule="MoonKit">
                                                                 <rect key="frame" x="320" y="0.0" width="150" height="150"/>
+                                                                <animations/>
                                                                 <color key="tintColor" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
                                                                 <accessibility key="accessibilityConfiguration" identifier="StopButton"/>
                                                                 <constraints>
@@ -233,6 +245,7 @@
                                                                 </connections>
                                                             </view>
                                                         </subviews>
+                                                        <animations/>
                                                         <userDefinedRuntimeAttributes>
                                                             <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="TransportStack"/>
                                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TransportStack"/>
@@ -240,6 +253,7 @@
                                                     </stackView>
                                                     <view opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ndz-Vc-1wb" customClass="ScrollWheel" customModule="MoonKit">
                                                         <rect key="frame" x="490" y="0.0" width="150" height="150"/>
+                                                        <animations/>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                         <accessibility key="accessibilityConfiguration" identifier="JogWheel"/>
                                                         <constraints>
@@ -283,6 +297,7 @@
                                                         </connections>
                                                     </view>
                                                 </subviews>
+                                                <animations/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TransportJogWheelStack"/>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="TransportJogWheelStack"/>
@@ -294,6 +309,7 @@
                                                 <subviews>
                                                     <view opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TLs-oa-qge" userLabel="Tempo" customClass="Slider" customModule="MoonKit">
                                                         <rect key="frame" x="0.0" y="0.0" width="211" height="56"/>
+                                                        <animations/>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="280" id="a7T-hb-UY1"/>
@@ -372,6 +388,7 @@
                                                         <subviews>
                                                             <view contentMode="scaleToFill" horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="250" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gtA-UE-ICh" userLabel="Metronome" customClass="ImageButtonView" customModule="MoonKit">
                                                                 <rect key="frame" x="0.0" y="3" width="50" height="50"/>
+                                                                <animations/>
                                                                 <color key="tintColor" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="calibratedRGB"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="width" secondItem="gtA-UE-ICh" secondAttribute="height" multiplier="1:1" identifier="MetronomeAspectRatio" id="u80-DE-r6s"/>
@@ -385,15 +402,13 @@
                                                                     </userDefinedRuntimeAttribute>
                                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="MetronomeButton"/>
                                                                 </userDefinedRuntimeAttributes>
-                                                                <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
-                                                                    <rect key="frame" x="0.0" y="3" width="50" height="50"/>
-                                                                </variation>
                                                                 <connections>
                                                                     <action selector="toggleMetronome" destination="BV1-FR-VrT" eventType="touchUpInside" id="P9O-d8-MRc"/>
                                                                 </connections>
                                                             </view>
                                                             <view opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" ambiguous="YES" misplaced="YES" placeholderIntrinsicWidth="150" placeholderIntrinsicHeight="56" translatesAutoresizingMaskIntoConstraints="NO" id="pTr-VL-22H" userLabel="BarBeatTime" customClass="BarBeatTimeLabel" customModule="MidiSprite" customModuleProvider="target">
                                                                 <rect key="frame" x="60" y="0.0" width="150" height="56"/>
+                                                                <animations/>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                                 <accessibility key="accessibilityConfiguration" identifier="BarBeatTime"/>
                                                                 <userDefinedRuntimeAttributes>
@@ -401,12 +416,14 @@
                                                                 </userDefinedRuntimeAttributes>
                                                             </view>
                                                         </subviews>
+                                                        <animations/>
                                                         <userDefinedRuntimeAttributes>
                                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="MetronomeBarBeatTimeStack"/>
                                                             <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="MetronomeBarBeatTimeStack"/>
                                                         </userDefinedRuntimeAttributes>
                                                     </stackView>
                                                 </subviews>
+                                                <animations/>
                                                 <constraints>
                                                     <constraint firstItem="v6c-VS-mrm" firstAttribute="leading" secondItem="gSN-Me-39Z" secondAttribute="leading" constant="37" id="Gw2-jc-gZL">
                                                         <variation key="heightClass=regular-widthClass=regular" constant="0.0"/>
@@ -433,6 +450,7 @@
                                                 </variation>
                                             </stackView>
                                         </subviews>
+                                        <animations/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="150" id="5bW-gF-MM5"/>
                                         </constraints>
@@ -452,6 +470,7 @@
                                         </variation>
                                     </stackView>
                                 </subviews>
+                                <animations/>
                                 <constraints>
                                     <constraint firstItem="U9p-PY-X1m" firstAttribute="top" secondItem="Lff-PZ-gJr" secondAttribute="bottom" constant="-1" id="Z8B-fO-aZY">
                                         <variation key="heightClass=regular-widthClass=regular" constant="0.0"/>
@@ -491,10 +510,12 @@
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="py0-NV-Nli">
                                     <rect key="frame" x="0.0" y="0.0" width="600" height="538"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <animations/>
                                     <userDefinedRuntimeAttributes>
                                         <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="BlurContent"/>
                                     </userDefinedRuntimeAttributes>
                                 </view>
+                                <animations/>
                                 <gestureRecognizers/>
                                 <blurEffect style="dark"/>
                                 <userDefinedRuntimeAttributes>
@@ -512,6 +533,7 @@
                                         <subviews>
                                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Sas-0Y-zNR">
                                                 <rect key="frame" x="0.0" y="0.0" width="100" height="400"/>
+                                                <animations/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="100" id="0B2-ux-nXL"/>
                                                     <constraint firstAttribute="height" constant="400" id="7Wh-z6-0Yz"/>
@@ -536,6 +558,7 @@
                                                 </connections>
                                             </containerView>
                                         </subviews>
+                                        <animations/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstAttribute="bottom" secondItem="Sas-0Y-zNR" secondAttribute="bottom" id="Jgh-is-CTM"/>
@@ -581,6 +604,7 @@
                                         </variation>
                                     </view>
                                 </subviews>
+                                <animations/>
                                 <color key="backgroundColor" red="0.20000000298023224" green="0.19607843458652496" blue="0.19215686619281769" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstItem="bAH-jD-Lnc" firstAttribute="leading" secondItem="SIl-d8-sfe" secondAttribute="leading" id="8xV-Z5-Rj3"/>
@@ -643,6 +667,7 @@
                                         <subviews>
                                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="R3c-lz-DF2">
                                                 <rect key="frame" x="0.0" y="0.0" width="300" height="72"/>
+                                                <animations/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TempoPopoverContainer"/>
                                                 </userDefinedRuntimeAttributes>
@@ -651,6 +676,7 @@
                                                 </connections>
                                             </containerView>
                                         </subviews>
+                                        <animations/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstItem="R3c-lz-DF2" firstAttribute="top" secondItem="1Op-wZ-hxP" secondAttribute="top" id="1m7-UL-ppA"/>
@@ -696,6 +722,7 @@
                                         </variation>
                                     </view>
                                 </subviews>
+                                <animations/>
                                 <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="bottom" secondItem="1Op-wZ-hxP" secondAttribute="bottom" id="AUQ-8n-GLw"/>
@@ -772,6 +799,7 @@
                                         <subviews>
                                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1Lq-kk-SWu">
                                                 <rect key="frame" x="0.0" y="0.0" width="550" height="250"/>
+                                                <animations/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="InstrumentPopoverContainer"/>
                                                 </userDefinedRuntimeAttributes>
@@ -780,6 +808,7 @@
                                                 </connections>
                                             </containerView>
                                         </subviews>
+                                        <animations/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstAttribute="trailing" secondItem="1Lq-kk-SWu" secondAttribute="trailing" id="11f-3x-M7Y"/>
@@ -825,6 +854,7 @@
                                         </variation>
                                     </view>
                                 </subviews>
+                                <animations/>
                                 <color key="backgroundColor" red="0.20000000298023224" green="0.19607843458652496" blue="0.19215686619281769" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="HbF-Jz-SSL" secondAttribute="trailing" id="1Nf-8V-25z"/>
@@ -888,6 +918,7 @@
                                 <subviews>
                                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dRz-Aj-snf" userLabel="Files" customClass="ImageButtonView" customModule="MoonKit">
                                         <rect key="frame" x="0.0" y="5" width="36" height="36"/>
+                                        <animations/>
                                         <color key="tintColor" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="36" id="CK9-JQ-frb"/>
@@ -925,6 +956,7 @@
                                     </view>
                                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QfC-Mo-5pM" userLabel="Tempo" customClass="ImageButtonView" customModule="MoonKit">
                                         <rect key="frame" x="105" y="5" width="36" height="36"/>
+                                        <animations/>
                                         <color key="tintColor" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="QfC-Mo-5pM" secondAttribute="height" multiplier="1:1" id="RH3-As-HuW"/>
@@ -965,6 +997,7 @@
                                     </view>
                                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4HC-dP-hAS" userLabel="Mixer" customClass="ImageButtonView" customModule="MoonKit">
                                         <rect key="frame" x="210" y="5" width="36" height="36"/>
+                                        <animations/>
                                         <color key="tintColor" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="56" id="Tag-GE-XfW"/>
@@ -1005,6 +1038,7 @@
                                     </view>
                                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CYm-Ka-dDw" userLabel="Instrument" customClass="ImageButtonView" customModule="MoonKit">
                                         <rect key="frame" x="315" y="5" width="36" height="36"/>
+                                        <animations/>
                                         <color key="tintColor" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="CYm-Ka-dDw" secondAttribute="height" multiplier="1:1" id="C1h-xL-EQ2"/>
@@ -1045,6 +1079,7 @@
                                     </view>
                                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dMY-9u-X4g" userLabel="NoteAttributes" customClass="ImageButtonView" customModule="MoonKit">
                                         <rect key="frame" x="419" y="5" width="36" height="36"/>
+                                        <animations/>
                                         <color key="tintColor" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="36" id="1rS-S2-g7E"/>
@@ -1085,6 +1120,7 @@
                                     </view>
                                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="i6p-Ws-ech" userLabel="Save" customClass="ImageButtonView" customModule="MoonKit">
                                         <rect key="frame" x="524" y="5" width="36" height="36"/>
+                                        <animations/>
                                         <color key="tintColor" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="i6p-Ws-ech" secondAttribute="height" multiplier="1:1" id="50M-Yh-CX8"/>
@@ -1125,6 +1161,7 @@
                                         </variation>
                                     </view>
                                 </subviews>
+                                <animations/>
                                 <color key="backgroundColor" red="0.20000000000000001" green="0.1960784314" blue="0.19215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="46" id="DHJ-d4-IJP"/>
@@ -1186,6 +1223,7 @@
                                         <subviews>
                                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fhQ-Pz-pqn">
                                                 <rect key="frame" x="0.0" y="0.0" width="240" height="108"/>
+                                                <animations/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="FilesPopoverContainer"/>
                                                 </userDefinedRuntimeAttributes>
@@ -1194,6 +1232,7 @@
                                                 </connections>
                                             </containerView>
                                         </subviews>
+                                        <animations/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstItem="fhQ-Pz-pqn" firstAttribute="leading" secondItem="41G-aM-2HB" secondAttribute="leading" id="5we-F0-7fC"/>
@@ -1239,15 +1278,14 @@
                                         </variation>
                                     </view>
                                 </subviews>
-                                <color key="backgroundColor" red="0.20000000298023224" green="0.19607843458652496" blue="0.19215686619281769" alpha="1" colorSpace="calibratedRGB"/>
+                                <animations/>
+                                <color key="backgroundColor" red="0.1731918603181839" green="0.17318670451641083" blue="0.17318965494632721" alpha="1" colorSpace="calibratedRGB"/>
                                 <accessibility key="accessibilityConfiguration" identifier="DocumentsPopover"/>
                                 <constraints>
                                     <constraint firstItem="41G-aM-2HB" firstAttribute="leading" secondItem="L5k-qi-Yb6" secondAttribute="leading" id="E0C-BE-zXD"/>
                                     <constraint firstItem="41G-aM-2HB" firstAttribute="top" secondItem="L5k-qi-Yb6" secondAttribute="top" id="Lwg-8r-X6c"/>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="250" id="MBw-I0-rQd"/>
                                     <constraint firstAttribute="trailing" secondItem="41G-aM-2HB" secondAttribute="trailing" id="TFX-at-fPb"/>
                                     <constraint firstAttribute="bottom" secondItem="41G-aM-2HB" secondAttribute="bottom" id="fdl-vn-1X6"/>
-                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="108" id="yna-4L-3vz"/>
                                 </constraints>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="string" keyPath="locationString" value="Bottom"/>
@@ -1264,8 +1302,6 @@
                                         <exclude reference="41G-aM-2HB"/>
                                     </mask>
                                     <mask key="constraints">
-                                        <exclude reference="MBw-I0-rQd"/>
-                                        <exclude reference="yna-4L-3vz"/>
                                         <exclude reference="E0C-BE-zXD"/>
                                         <exclude reference="Lwg-8r-X6c"/>
                                         <exclude reference="TFX-at-fPb"/>
@@ -1295,11 +1331,7 @@
                                     </mask>
                                 </variation>
                                 <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
-                                    <rect key="frame" x="20" y="574" width="250" height="108"/>
-                                    <mask key="constraints">
-                                        <include reference="MBw-I0-rQd"/>
-                                        <include reference="yna-4L-3vz"/>
-                                    </mask>
+                                    <rect key="frame" x="20" y="574" width="250" height="128"/>
                                 </variation>
                                 <connections>
                                     <outlet property="contentView" destination="41G-aM-2HB" id="nD9-0T-yny"/>
@@ -1313,6 +1345,7 @@
                                         <subviews>
                                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lcA-5e-kjt">
                                                 <rect key="frame" x="0.0" y="0.0" width="550" height="300"/>
+                                                <animations/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="NoteAttributesPopoverContainer"/>
                                                 </userDefinedRuntimeAttributes>
@@ -1321,6 +1354,7 @@
                                                 </connections>
                                             </containerView>
                                         </subviews>
+                                        <animations/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstItem="lcA-5e-kjt" firstAttribute="top" secondItem="GbO-pL-J73" secondAttribute="top" id="69e-4r-Bki"/>
@@ -1366,6 +1400,7 @@
                                         </variation>
                                     </view>
                                 </subviews>
+                                <animations/>
                                 <color key="backgroundColor" red="0.20000000298023224" green="0.19607843458652496" blue="0.19215686619281769" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstItem="GbO-pL-J73" firstAttribute="leading" secondItem="iqB-B1-8b1" secondAttribute="leading" id="0dV-bK-H61"/>
@@ -1425,6 +1460,7 @@
                                 </connections>
                             </view>
                         </subviews>
+                        <animations/>
                         <color key="backgroundColor" red="0.20000000000000001" green="0.1960784314" blue="0.19215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                         <accessibility key="accessibilityConfiguration" identifier="RootView"/>
                         <constraints>
@@ -1692,6 +1728,7 @@
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="h7J-9k-NnZ" userLabel="Backdrop">
                                 <rect key="frame" x="20" y="0.0" width="560" height="600"/>
+                                <animations/>
                                 <accessibility key="accessibilityConfiguration" identifier="Backdrop"/>
                             </imageView>
                             <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WZT-dO-D51">
@@ -1708,9 +1745,10 @@
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Please enable iCloud Drive in Settings" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="G6r-hu-iAC" userLabel="Message">
                                                         <rect key="frame" x="91" y="290" width="417" height="20.5"/>
+                                                        <animations/>
                                                         <accessibility key="accessibilityConfiguration" identifier="Message"/>
                                                         <fontDescription key="fontDescription" name="EvelethLight" family="Eveleth" pointSize="17"/>
-                                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                         <nil key="highlightedColor"/>
                                                         <userDefinedRuntimeAttributes>
                                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="Message"/>
@@ -1720,6 +1758,7 @@
                                                         </variation>
                                                     </label>
                                                 </subviews>
+                                                <animations/>
                                                 <constraints>
                                                     <constraint firstItem="G6r-hu-iAC" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="h13-pC-meS" secondAttribute="leading" id="NEk-mZ-K49"/>
                                                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="G6r-hu-iAC" secondAttribute="trailing" id="OTQ-BZ-cuM"/>
@@ -1727,11 +1766,13 @@
                                                     <constraint firstItem="G6r-hu-iAC" firstAttribute="centerY" secondItem="h13-pC-meS" secondAttribute="centerY" id="yGW-dP-Sb2"/>
                                                 </constraints>
                                             </view>
+                                            <animations/>
                                             <vibrancyEffect>
                                                 <blurEffect style="light"/>
                                             </vibrancyEffect>
                                         </visualEffectView>
                                     </subviews>
+                                    <animations/>
                                     <constraints>
                                         <constraint firstAttribute="trailing" secondItem="u1J-1V-Ee7" secondAttribute="trailing" id="CZX-ar-P5W"/>
                                         <constraint firstItem="u1J-1V-Ee7" firstAttribute="top" secondItem="Fv2-OO-TrL" secondAttribute="top" id="MEt-0c-XRT"/>
@@ -1739,9 +1780,11 @@
                                         <constraint firstAttribute="bottom" secondItem="u1J-1V-Ee7" secondAttribute="bottom" id="scj-y6-4Fr"/>
                                     </constraints>
                                 </view>
+                                <animations/>
                                 <blurEffect style="light"/>
                             </visualEffectView>
                         </subviews>
+                        <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="9fn-Bb-FvO" firstAttribute="top" secondItem="h7J-9k-NnZ" secondAttribute="bottom" id="8wq-bw-d8B"/>
@@ -1765,10 +1808,10 @@
             </objects>
             <point key="canvasLocation" x="844.5" y="1380.75"/>
         </scene>
-        <!--Files-->
+        <!--Documents-->
         <scene sceneID="yJ1-PB-18M">
             <objects>
-                <viewControllerPlaceholder storyboardIdentifier="Files" storyboardName="Auxiliary" referencedIdentifier="Files" id="Eww-vV-yXw" sceneMemberID="viewController"/>
+                <viewControllerPlaceholder storyboardIdentifier="Files" storyboardName="Auxiliary" referencedIdentifier="Documents" id="Eww-vV-yXw" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Czz-jX-k9v" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-97.875" y="1036.5"/>

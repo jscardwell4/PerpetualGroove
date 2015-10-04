@@ -79,6 +79,15 @@ final class InstrumentTrack: MIDITrackType, Equatable {
   var name: String { return label ?? instrument.programPreset.name }
   var label: String?
 
+  private var _volume: Float = 1
+  var mute: Bool = false {
+    didSet {
+      guard mute != oldValue else { return }
+      if mute { _volume = volume; volume = 0 } else { volume = _volume }
+    }
+  }
+  var solo: Bool = false
+
   var volume: Float { get { return instrument.volume } set { instrument.volume = newValue } }
   var pan: Float { get { return instrument.pan } set { instrument.pan = newValue } }
 

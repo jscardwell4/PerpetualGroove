@@ -53,7 +53,20 @@ class TrackCell: MixerCell, UITextFieldDelegate {
 
   class var Identifier:String { return "TrackCell" }
 
-  @IBOutlet weak var labelTextField: UITextField!
+  @IBOutlet var soloButton: LabelButton!
+  @IBOutlet var muteButton: LabelButton!
+
+  @IBOutlet var labelTextField: UITextField!
+
+
+  /** solo */
+  @IBAction func solo() {
+  }
+
+  /** mute */
+  @IBAction func mute() {
+  }
+
 
   /** volumeDidChange */
   @IBAction func volumeDidChange() { track?.volume = volume }

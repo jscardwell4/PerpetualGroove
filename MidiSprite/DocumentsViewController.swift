@@ -13,39 +13,69 @@ import Eveleth
 
 final class DocumentsViewController: UICollectionViewController {
 
-  var selectFile: ((NSMetadataItem) -> Void)?
-  var deleteFile: ((NSMetadataItem) -> Void)?
+  // MARK: - Properties
 
-  private let constraintID = Identifier("DocumentsViewController", "Internal")
+  var dismiss: (() -> Void)?
+
+  private let constraintID = Identifier("DocumentsViewController", "CollectionView")
+
+  private var widthConstraint: NSLayoutConstraint?
+  private var heightConstraint: NSLayoutConstraint?
 
   private var notificationReceptionist: NotificationReceptionist!
 
-  /** setup */
-  private func setup() {
-    guard case .None = notificationReceptionist else { return }
-    notificationReceptionist = NotificationReceptionist(callbacks:[
-      MIDIDocumentManager.Notification.DidUpdateMetadataItems.rawValue:
-        (MIDIDocumentManager.self, NSOperationQueue.mainQueue(), didUpdateItems)
-      ])
+  @IBOutlet weak var documentsViewLayout: DocumentsViewLayout! { didSet { documentsViewLayout.controller = self } }
+
+  private(set) var itemSize: CGSize = .zero {
+    didSet {
+      guard itemSize != oldValue else { return }
+      guard let layout = collectionView?.collectionViewLayout else { fatalError("wtf") }
+      assert(collectionViewLayout == layout)
+      collectionView?.collectionViewLayout.invalidateLayout()
+      let (w, h) = itemSize.unpack
+      let itemCount = CGFloat(items.count + 1)
+      collectionViewSize = CGSize(width: w, height: h * itemCount)
+    }
+  }
+
+  private var collectionViewSize: CGSize = .zero {
+    didSet {
+      guard collectionViewSize != oldValue else { return }
+      let (w, h) = collectionViewSize.unpack
+      widthConstraint?.constant = w
+      heightConstraint?.constant = h
+      collectionViewLayout.invalidateLayout()
+   }
   }
 
   /**
-  didUpdateFileURLs:
+  prefersStatusBarHidden
 
-  - parameter notification: NSNotification
+  - returns: Bool
   */
-  private func didUpdateItems(notification: NSNotification) { items = MIDIDocumentManager.metadataItems }
+  override func prefersStatusBarHidden() -> Bool { return true }
 
+  // MARK: - Initialization
+
+  /** setup */
+  private func setup() {
+    (collectionViewLayout as? DocumentsViewLayout)?.controller = self
+    guard case .None = notificationReceptionist else { return }
+    let queue = NSOperationQueue.mainQueue()
+    notificationReceptionist = NotificationReceptionist(callbacks:
+      [
+        MIDIDocumentManager.Notification.DidUpdateMetadataItems.rawValue : (MIDIDocumentManager.self, queue, didUpdateItems),
+        NSUserDefaultsDidChangeNotification                              : (nil, queue, userDefaultsDidChange)
+      ]
+    )
+  }
 
   /**
   init:
 
   - parameter layout: UICollectionViewLayout
   */
-  override init(collectionViewLayout layout: UICollectionViewLayout) {
-    super.init(collectionViewLayout: layout)
-    setup()
-  }
+  override init(collectionViewLayout layout: UICollectionViewLayout) { super.init(collectionViewLayout: layout); setup() }
 
   /**
   init:bundle:
@@ -65,15 +95,27 @@ final class DocumentsViewController: UICollectionViewController {
   */
   required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder); setup() }
 
-  private var items: [NSMetadataItem] = [] {
-    didSet {
-      maxLabelSize = items.reduce(.zero) {
-        [attributes = [NSFontAttributeName:UIFont.controlFont]] size, item in
+  // MARK: - Document items
 
-        let displayNameSize = item.displayName?.sizeWithAttributes(attributes) ?? .zero
-        return CGSize(width: max(size.width, displayNameSize.width + 10), height: max(size.height, displayNameSize.height))
-      }
+  private var iCloudStorage = NSUserDefaults.standardUserDefaults().boolForKey("iCloudStorage") {
+    didSet {
+      collectionView?.reloadData()
     }
+  }
+
+  private var iCloudItems: [NSMetadataItem] = []
+  private var localItems: [LocalDocumentItem] = []
+
+  private var items: [DocumentItemType] { return iCloudStorage ? iCloudItems : localItems }
+
+  // MARK: - View lifecycle
+
+  /** viewDidLoad */
+  override func viewDidLoad() {
+    super.viewDidLoad()
+
+    collectionView?.translatesAutoresizingMaskIntoConstraints = false
+    view.translatesAutoresizingMaskIntoConstraints = false
   }
 
   /**
@@ -81,66 +123,60 @@ final class DocumentsViewController: UICollectionViewController {
 
   - parameter animated: Bool
   */
-  override func viewWillAppear(animated: Bool) { items = MIDIDocumentManager.metadataItems }
-
-  /**
-  labelButtonAction:
-
-  - parameter sender: LabelButton
-  */
-  @IBAction private func labelButtonAction(sender: LabelButton) {
-    guard items.indices.contains(sender.tag) else { return }
-    selectFile?(items[sender.tag])
-  }
-
-  /**
-  applyText:views:
-
-  - parameter urls: S1
-  - parameter views: S2
-  */
-  private func applyText<S1:SequenceType, S2:SequenceType
-    where S1.Generator.Element == NSMetadataItem,
-          S2.Generator.Element == UIView>(urls: S1, _ views: S2)
-  {
-    zip(urls, views).forEach {
-      guard let displayName = $0.displayName, label = $1 as? LabelButton else { return }
-      label.text = displayName
-    }
-  }
-
-  private let labelHeight: CGFloat = 32
+  override func viewWillAppear(animated: Bool) { updateItems() }
 
   /** updateViewConstraints */
   override func updateViewConstraints() {
+    guard let collectionView = collectionView else { super.updateViewConstraints(); return }
+
     if view.constraintsWithIdentifier(constraintID).count == 0 {
-      view.constrain([view.width ≥ contentSize.width, view.height ≥ contentSize.height] --> constraintID)
+      view.constrain([𝗩|-collectionView-|𝗩, 𝗛|-collectionView-|𝗛] --> constraintID)
     }
+
+    guard case (.None, .None) = (widthConstraint, heightConstraint) else { super.updateViewConstraints(); return }
+
+    let (w, h) = collectionViewSize.unpack
+    widthConstraint = (collectionView.width => w --> Identifier(self, "Content", "Width")).constraint
+    widthConstraint?.active = true
+    heightConstraint = (collectionView.height => h --> Identifier(self, "Content", "Height")).constraint
+    heightConstraint?.active = true
+
+
     super.updateViewConstraints()
   }
 
-  private var contentSize: CGSize = .zero {
-    didSet {
-      if view.constraintsWithIdentifier(constraintID).count > 0 {
-        view.removeConstraints(view.constraintsWithIdentifier(constraintID))
-        view.setNeedsUpdateConstraints()
-      }
-    }
+  private var cellShowingDelete: DocumentCell? {
+    return collectionView?.visibleCells().first({($0 as? DocumentCell)?.showingDelete == true}) as? DocumentCell
   }
-  private var maxLabelSize: CGSize = .zero {
-    didSet {
-      let pad = view.layoutMargins.displacement
-      contentSize = CGSize(width: max(maxLabelSize.width + pad.horizontal, 240),
-                           height: max(maxLabelSize.height * CGFloat(items.count) + pad.vertical, 108))
-    }
-  }
+
+  // MARK: - Notifications
 
   /**
-  prefersStatusBarHidden
+  didUpdateFileURLs:
 
-  - returns: Bool
+  - parameter notification: NSNotification
   */
-  override func prefersStatusBarHidden() -> Bool { return true }
+  private func didUpdateItems(notification: NSNotification) { updateItems() }
+  private func userDefaultsDidChange(notification: NSNotification) {
+    iCloudStorage = NSUserDefaults.standardUserDefaults().boolForKey("iCloudStorage")
+  }
+
+  /** updateItems */
+  private func updateItems() {
+    iCloudItems = MIDIDocumentManager.metadataItems
+    do {
+      localItems = try documentsDirectoryContents().filter({
+        guard let ext = $0.pathExtension else { return false}
+        return ext ~= ~/"^[mM][iI][dD][iI]?$"}
+      ).map({LocalDocumentItem($0)})
+    } catch {
+      logError(error, message: "Failed to obtain local items")
+    }
+    let font = UIFont.controlFont
+    let characterCount = max(CGFloat(items.map({$0.displayName.characters.count ?? 0}).maxElement() ?? 0), 15)
+    itemSize = CGSize(width: characterCount * font.characterWidth, height: font.pointSize * 2).integralSize
+    collectionView?.reloadData()
+  }
 
   // MARK: UICollectionViewDataSource
 
@@ -151,7 +187,7 @@ final class DocumentsViewController: UICollectionViewController {
 
   - returns: Int
   */
-  override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int { return 3 }
+  override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int { return 2 }
 
   /**
   collectionView:numberOfItemsInSection:
@@ -188,4 +224,50 @@ final class DocumentsViewController: UICollectionViewController {
     return cell
   }
 
+  // MARK: - UICollectionViewDelegate
+
+  /**
+  collectionView:shouldHighlightItemAtIndexPath:
+
+  - parameter collectionView: UICollectionView
+  - parameter indexPath: NSIndexPath
+
+  - returns: Bool
+  */
+  override func     collectionView(collectionView: UICollectionView,
+    shouldHighlightItemAtIndexPath indexPath: NSIndexPath) -> Bool
+  {
+    guard let cell = cellShowingDelete else { return true }
+    cell.hideDelete()
+    return false
+  }
+
+  /**
+  collectionView:shouldSelectItemAtIndexPath:
+
+  - parameter collectionView: UICollectionView
+  - parameter indexPath: NSIndexPath
+
+  - returns: Bool
+  */
+  override func collectionView(collectionView: UICollectionView, shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
+    guard let cell = cellShowingDelete else { return true }
+    cell.hideDelete()
+    return false
+  }
+
+  /**
+  collectionView:didSelectItemAtIndexPath:
+
+  - parameter collectionView: UICollectionView
+  - parameter indexPath: NSIndexPath
+  */
+  override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+    switch indexPath.section {
+      case 0: do { try MIDIDocumentManager.createNewDocument() }
+              catch { logError(error, message: "Unable to create new document") }
+      default: MIDIDocumentManager.openItem(items[indexPath.row])
+    }
+    dismiss?()
+  }
 }

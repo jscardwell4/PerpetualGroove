@@ -21,6 +21,7 @@ final class InstrumentViewController: UIViewController {
     let program = UInt8(soundSet.presets[0].program)
     do { try instrument?.loadSoundSet(soundSet, program: program) } catch { logError(error) }
     programPicker.labels = soundSet.presets.map({$0.name})
+    programPicker.selection = 0
   }
 
   /** didPickProgram */

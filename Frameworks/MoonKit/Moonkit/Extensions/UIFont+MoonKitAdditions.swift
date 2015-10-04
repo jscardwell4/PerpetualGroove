@@ -44,6 +44,8 @@ extension UIFont {
     return UIFont.familyNames().contains(family)
   }
 
+  public var characterWidth: CGFloat { return ("W" as NSString).sizeWithAttributes([NSFontAttributeName:self]).width }
+
 }
 
 extension UIFont: JSONValueConvertible {

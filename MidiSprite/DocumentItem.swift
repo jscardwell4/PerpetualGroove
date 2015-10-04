@@ -1,15 +1,32 @@
 //
-//  MetadataItem.swift
+//  DocumentItem.swift
 //  MidiSprite
 //
-//  Created by Jason Cardwell on 9/29/15.
+//  Created by Jason Cardwell on 10/3/15.
 //  Copyright © 2015 Moondeer Studios. All rights reserved.
 //
 
 import Foundation
 import MoonKit
 
-extension NSMetadataItem {
+@objc protocol DocumentItemType: class {
+  var displayName: String { get }
+  var URL: NSURL { get }
+}
+
+final class LocalDocumentItem: NSObject, DocumentItemType {
+  let URL: NSURL
+  var displayName: String {
+    var name: AnyObject?
+    do { try URL.getResourceValue(&name, forKey: NSURLLocalizedNameKey) }
+    catch { logError(error, message: "Failed to get display name from url '\(URL)'"); fatalError() }
+    guard let displayName = name as? String else { fatalError("object returned by URL is not a string") }
+    return displayName
+  }
+  init(_ URL: NSURL) { self.URL = URL; super.init() }
+}
+
+extension NSMetadataItem: DocumentItemType {
 
   enum ItemKey: String, EnumerableType {
     case FSName                 = "kMDItemFSName"                           // NSString
@@ -38,23 +55,23 @@ extension NSMetadataItem {
 
   subscript(itemKey: ItemKey) -> AnyObject? { return valueForAttribute(itemKey.rawValue) }
 
-  var fileSystemName: String?       { return self[.FSName]                  as? String                  }
-  var displayName: String?          { return self[.DisplayName]             as? String                  }
-  var URL: NSURL?                   { return self[.URL]                     as? NSURL                   }
-  var path: String?                 { return self[.Path]                    as? String                  }
-  var size: Int?                    { return (self[.FSSize]                 as? NSNumber)?.integerValue }
-  var creationDate: NSDate?         { return self[.FSCreationDate]          as? NSDate                  }
-  var modifiedDate: NSDate?         { return self[.FSContentChangeDate]     as? NSDate                  }
-  var isUbiquitous: Bool?           { return (self[.IsUbiquitous]           as? NSNumber)?.boolValue    }
-  var hasUnresolvedConflicts: Bool? { return (self[.HasUnresolvedConflicts] as? NSNumber)?.boolValue    }
-  var downloading: Bool?            { return (self[.IsDownloading]          as? NSNumber)?.boolValue    }
-  var uploaded: Bool?               { return (self[.IsUploaded]             as? NSNumber)?.boolValue    }
-  var uploading: Bool?              { return (self[.IsUploading]            as? NSNumber)?.boolValue    }
-  var percentDownloaded: Double?    { return (self[.PercentDownloaded]      as? NSNumber)?.doubleValue  }
-  var percentUploaded: Double?      { return (self[.PercentUploaded]        as? NSNumber)?.doubleValue  }
-  var downloadingStatus: String?    { return self[.DownloadingStatus]       as? String                  }
-  var downloadingError: NSError?    { return self[.DownloadingError]        as? NSError                 }
-  var uploadingError: NSError?      { return self[.UploadingError]          as? NSError                 }
+  var fileSystemName: String?       { return self[.FSName]                  as? String                   }
+  var displayName: String           { return self[.DisplayName]             as? String ?? "Unnamed Item" }
+  var URL: NSURL                    { return self[.URL]                     as! NSURL                    }
+  var path: String?                 { return self[.Path]                    as? String                   }
+  var size: Int?                    { return (self[.FSSize]                 as? NSNumber)?.integerValue  }
+  var creationDate: NSDate?         { return self[.FSCreationDate]          as? NSDate                   }
+  var modifiedDate: NSDate?         { return self[.FSContentChangeDate]     as? NSDate                   }
+  var isUbiquitous: Bool?           { return (self[.IsUbiquitous]           as? NSNumber)?.boolValue     }
+  var hasUnresolvedConflicts: Bool? { return (self[.HasUnresolvedConflicts] as? NSNumber)?.boolValue     }
+  var downloading: Bool?            { return (self[.IsDownloading]          as? NSNumber)?.boolValue     }
+  var uploaded: Bool?               { return (self[.IsUploaded]             as? NSNumber)?.boolValue     }
+  var uploading: Bool?              { return (self[.IsUploading]            as? NSNumber)?.boolValue     }
+  var percentDownloaded: Double?    { return (self[.PercentDownloaded]      as? NSNumber)?.doubleValue   }
+  var percentUploaded: Double?      { return (self[.PercentUploaded]        as? NSNumber)?.doubleValue   }
+  var downloadingStatus: String?    { return self[.DownloadingStatus]       as? String                   }
+  var downloadingError: NSError?    { return self[.DownloadingError]        as? NSError                  }
+  var uploadingError: NSError?      { return self[.UploadingError]          as? NSError                  }
 
   var attributesDescription: String {
     var result = "NSMetadataItem {\n\t"
