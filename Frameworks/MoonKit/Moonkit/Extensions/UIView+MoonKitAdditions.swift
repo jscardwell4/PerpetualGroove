@@ -13,6 +13,18 @@ private let identifierKey = UnsafePointer<Void>()
 
 public extension UIView {
 
+
+  public var firstResponder: UIView? {
+    var stop = false
+    var responder: UIView?
+    func findFirstResponder(view: UIView) {
+      if !stop && view.isFirstResponder() { stop = true; responder = view }
+      else if !stop { view.subviews.forEach({findFirstResponder($0)}) }
+    }
+    findFirstResponder(self)
+    return responder
+  }
+
 //  @IBInspectable public var borderWidth: CGFloat { get { return layer.borderWidth } set { layer.borderWidth = newValue } }
 //  @IBInspectable public var borderColor: UIColor? {
 //    get { guard let color = layer.borderColor else { return nil }; return UIColor(CGColor: color) }

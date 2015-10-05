@@ -174,12 +174,10 @@ import struct AudioToolbox.CABarBeatTime
 
       let queue = NSOperationQueue.mainQueue()
       let object = Sequencer.self
-      let didJogCallback: NotificationReceptionist.Callback = (object, queue, didJog)
-      let didResetCallback: NotificationReceptionist.Callback = (object, queue, didReset)
-      notificationReceptionist = NotificationReceptionist(callbacks:[
-        Sequencer.Notification.DidJog.name.value:   didJogCallback,
-        Sequencer.Notification.DidReset.name.value: didResetCallback
-      ])
+      typealias Notification = Sequencer.Notification
+      notificationReceptionist = NotificationReceptionist()
+      notificationReceptionist?.observe(Notification.DidJog, from: object, queue: queue, callback: didJog)
+      notificationReceptionist?.observe(Notification.DidReset, from: object, queue: queue, callback: didReset)
     #endif
 
   }

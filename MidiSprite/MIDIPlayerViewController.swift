@@ -199,7 +199,7 @@ final class MIDIPlayerViewController: UIViewController {
   // MARK: - Files
 
   @IBOutlet weak var documentsButton: ImageButtonView?
-  @IBOutlet weak var documentNameLabel: UILabel!
+  @IBOutlet weak var documentName: UITextField!
 
   /** documents */
   @IBAction private func documents() {
@@ -319,54 +319,55 @@ final class MIDIPlayerViewController: UIViewController {
 
   private var notificationReceptionist: NotificationReceptionist?
 
-  /**
-  didStop:
-
-  - parameter notification: NSNotification
-  */
-  private func didStop(notification: NSNotification) { state ∖= [.Playing, .Paused] }
-
   /** initializeReceptionist */
   private func initializeReceptionist() {
 
     guard notificationReceptionist == nil else { return }
 
-    typealias Callback = NotificationReceptionist.Callback
+    notificationReceptionist = NotificationReceptionist()
 
     let queue = NSOperationQueue.mainQueue()
 
-    let pauseHandler: (NSNotification) -> Void = {
+    notificationReceptionist?.observe(Sequencer.Notification.DidPause, from: Sequencer.self, queue: queue) {
       [weak self] _ in self?.state ⊻= [.Playing, .Paused]
     }
 
-    let startHandler: (NSNotification) -> Void = {
+    notificationReceptionist?.observe(Sequencer.Notification.DidStart, from: Sequencer.self, queue: queue) {
       [weak self] _ in self?.state ⊻= self!.state ∋ .Paused ? [.Playing, .Paused] : [.Playing]
     }
 
-    let stopHandler: (NSNotification) -> Void = {
+    notificationReceptionist?.observe(Sequencer.Notification.DidStart, from: Sequencer.self, queue: queue) {
       [weak self] _ in self?.state ∖= [.Playing, .Paused]
     }
 
-    let documentHandler: (NSNotification) -> Void = {
-      [weak self] _ in self?.documentNameLabel.text = MIDIDocumentManager.currentDocument?.localizedName
+    notificationReceptionist?.observe(MIDIDocumentManager.Notification.DidChangeCurrentDocument,
+                                 from: MIDIDocumentManager.self,
+                                queue: queue)
+    {
+        [weak self] _ in self?.documentName.text = MIDIDocumentManager.currentDocument?.localizedName
     }
 
-    let didPauseCallback: Callback = (Sequencer.self, queue, pauseHandler)
-    let didStartCallback: Callback = (Sequencer.self, queue, startHandler)
-    let didStopCallback:  Callback = (Sequencer.self, queue, stopHandler)
+    notificationReceptionist?.observe(UIKeyboardWillShowNotification, from: nil, queue: queue) {
+      [weak self] in
+      guard let size = ($0.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue().size,
+                responder = self?.view.firstResponder,
+                window = self?.view.window,
+                superview = responder.superview else
+      {
+        return
+      }
+      let h = window.bounds.height
+      let location = CGPoint(x: responder.frame.minX, y: responder.frame.maxY)
+      let locationʹ = window.convertPoint(location, fromView: superview)
+      let hʹ = h - locationʹ.y
 
-    let didChangeDocumentCallback: Callback = (MIDIDocumentManager.self, queue, documentHandler)
+      self?.view.transform.ty = min(hʹ - size.height, 0)
+    }
 
-    let callbacks: [NotificationReceptionist.Notification:NotificationReceptionist.Callback] = [
-      Sequencer.Notification.DidPause.name.value: didPauseCallback,
-      Sequencer.Notification.DidStart.name.value: didStartCallback,
-      Sequencer.Notification.DidStop.name.value:  didStopCallback,
-
-      MIDIDocumentManager.Notification.DidChangeCurrentDocument.rawValue: didChangeDocumentCallback
-    ]
-
-    notificationReceptionist = NotificationReceptionist(callbacks: callbacks)
-
+    notificationReceptionist?.observe(UIKeyboardDidHideNotification, from: nil, queue: queue) {
+      [weak self] _ in self?.view.transform.ty = 0
+    }
+    
   }
 
   private struct State: OptionSetType, CustomStringConvertible {
@@ -485,4 +486,54 @@ extension MIDIPlayerViewController {
     transitionFromSize(view.bounds.size, toSize: size, animated: true)
   }
 
+}
+
+extension MIDIPlayerViewController: UITextFieldDelegate {
+
+  /**
+  textFieldShouldBeginEditing:
+
+  - parameter textField: UITextField
+
+  - returns: Bool
+  */
+  func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
+    return MIDIDocumentManager.currentDocument != nil
+  }
+
+  /**
+  textFieldShouldReturn:
+
+  - parameter textField: UITextField
+
+  - returns: Bool
+  */
+  func textFieldShouldReturn(textField: UITextField) -> Bool {
+    textField.resignFirstResponder()
+    return false
+  }
+
+  /**
+  textFieldShouldEndEditing:
+
+  - parameter textField: UITextField
+
+  - returns: Bool
+  */
+  func textFieldShouldEndEditing(textField: UITextField) -> Bool {
+    guard let text = textField.text,
+              fileName = MIDIDocumentManager.noncollidingFileName(text) else { return false }
+    if text != fileName { textField.text = fileName }
+    return true
+  }
+
+  /**
+  textFieldDidEndEditing:
+
+  - parameter textField: UITextField
+  */
+  func textFieldDidEndEditing(textField: UITextField) {
+    guard let text = textField.text else { return }
+    MIDIDocumentManager.currentDocument?.renameTo(text)
+  }
 }

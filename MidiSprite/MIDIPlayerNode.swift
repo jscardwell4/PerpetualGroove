@@ -21,6 +21,7 @@ final class MIDIPlayerNode: SKShapeNode {
   enum Notification: String, NotificationType, NotificationNameType {
     case DidAddNode, DidRemoveNode
     var object: AnyObject? { return MIDIPlayerNode.self }
+    typealias Key = String
   }
 
   // MARK: - Initialization

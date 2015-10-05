@@ -18,12 +18,16 @@ final class DocumentCell: UICollectionViewCell {
 
   /** deleteItem */
   @IBAction func deleteItem() {
-    logDebug()
+    guard let item = item else { return }
+    MIDIDocumentManager.deleteItem(item)
   }
 
   var showingDelete: Bool { return leadingConstraint.constant < 0 }
 
-  var item: DocumentItemType? { didSet { label.text = item?.displayName } }
+  var item: DocumentItemType? { didSet { refresh() } }
+
+  /** refresh */
+  func refresh() { label.text = item?.displayName }
 
   /**
   animationDurationForDistance:

@@ -17,7 +17,7 @@ final class MIDISequence {
   /** An enumeration to wrap up notifications */
   enum Notification: String, NotificationType, NotificationNameType {
     case DidAddTrack, DidRemoveTrack, DidChangeCurrentTrack
-    enum Key: String { case Track, OldTrack }
+    enum Key: String, NotificationKeyType { case Track, OldTrack }
   }
 
   var sequenceEnd: CABarBeatTime { return tracks.map({$0.trackEnd}).maxElement() ?? .start }
@@ -27,9 +27,9 @@ final class MIDISequence {
 
   var currentTrack: InstrumentTrack? {
     didSet {
-      Notification.DidChangeCurrentTrack.post(from: self,
-                                         info: [Notification.Key.OldTrack.rawValue: (oldValue as? AnyObject ?? NSNull()),
-                                                Notification.Key.Track.rawValue:    (currentTrack as? AnyObject ?? NSNull())])
+      Notification.DidChangeCurrentTrack.post(object: self,
+                                              userInfo: [Notification.Key.OldTrack: (oldValue as? AnyObject ?? NSNull()),
+                                                         Notification.Key.Track:    (currentTrack as? AnyObject ?? NSNull())])
     }
   }
 
@@ -89,7 +89,7 @@ final class MIDISequence {
   func newTrackWithInstrument(instrument: Instrument) throws -> InstrumentTrack {
     let track = try InstrumentTrack(instrument: instrument)
     tracks.append(track)
-    Notification.DidAddTrack.post(from: self, info: [Notification.Key.Track.rawValue: track])
+    Notification.DidAddTrack.post(object: self, userInfo: [Notification.Key.Track: track])
     return tracks.last as! InstrumentTrack
   }
 
@@ -104,7 +104,7 @@ final class MIDISequence {
       return
     }
     tracks.removeAtIndex(idx + 1)
-    Notification.DidRemoveTrack.post(from: self, info: [Notification.Key.Track.rawValue: track])
+    Notification.DidRemoveTrack.post(object: self, userInfo: [Notification.Key.Track: track])
   }
 
   /**

@@ -564,74 +564,108 @@ public extension EnumerableType where Self: Equatable {
   }
 }
 
-public protocol NotificationNameType: RawRepresentable, Hashable {
-  var value: String { get }
+public protocol KeyType: RawRepresentable, Hashable {
+  var key: String { get }
 }
 
-public extension NotificationNameType where Self.RawValue: Hashable {
+public extension KeyType where Self.RawValue == String {
+  var key: String { return rawValue }
   var hashValue: Int { return rawValue.hashValue }
 }
 
-public extension NotificationNameType where Self.RawValue == String {
-  var value: String { return rawValue }
+public func ==<K:KeyType>(lhs: K, rhs: K) -> Bool { return lhs.key == rhs.key }
+
+public protocol NotificationNameType: RawRepresentable, Hashable {
+  var notificationName: String { get }
 }
 
-public protocol NotificationType: Hashable {
-  typealias NotificationName: NotificationNameType
-  var name: NotificationName { get }
-  var userInfo: [NSObject:AnyObject]? { get }
+public extension NotificationNameType where Self.RawValue == String {
+  var notificationName: String { return rawValue }
+  var hashValue: Int { return rawValue.hashValue }
+}
+
+public func ==<N:NotificationNameType>(lhs: N, rhs: N) -> Bool { return lhs.notificationName == rhs.notificationName }
+
+public typealias NotificationKeyType = KeyType
+
+
+extension String: RawRepresentable {
+  public var rawValue: String { return self }
+  public init?(rawValue: String) { self = rawValue }
+}
+extension String: KeyType { public var key: String { return self } }
+
+public protocol _NotificationType {
+  var _name: String { get }
   var object: AnyObject? { get }
-  func post()
-  func post(from from: AnyObject?)
-  func post(from from: AnyObject?, info: [NSObject:AnyObject]?)
-  func post(info: [NSObject:AnyObject]?)
+  var _userInfo: [NSObject:AnyObject]? { get }
+}
+
+public func ==<N:_NotificationType>(lhs: N, rhs: N) -> Bool { return lhs._name == rhs._name }
+
+public protocol NotificationType: _NotificationType {
+  typealias NameType: NotificationNameType
+  var name: NameType { get }
+
+  typealias Key: NotificationKeyType
+  var userInfo: [Key:AnyObject]? { get }
+
+  func post(object obj: AnyObject?, userInfo info: [Key:AnyObject]?)
+  func observe(object: AnyObject?, queue: NSOperationQueue?, callback: (NSNotification) -> Void) -> NSObjectProtocol
 }
 
 public extension NotificationType {
-  var hashValue: Int { return name.hashValue }
-  func post(info: [NSObject:AnyObject]?) {
-    var userInfo = self.userInfo
-    if let info = info { userInfo?.insertContentsOf(info) }
-    NSNotificationCenter.defaultCenter().postNotificationName(name.value, object: object, userInfo: userInfo)
-  }
-  func post() {
-    NSNotificationCenter.defaultCenter().postNotificationName(name.value, object: object, userInfo: userInfo)
-  }
-  func post(from from: AnyObject?) {
-    NSNotificationCenter.defaultCenter().postNotificationName(name.value, object: from, userInfo: userInfo)
-  }
-  func post(from from: AnyObject?, info: [NSObject:AnyObject]?) {
-    NSNotificationCenter.defaultCenter().postNotificationName(name.value, object: from, userInfo: info)
-  }
-  var userInfo: [NSObject:AnyObject]? { return nil }
+  var _name: String { return name.notificationName }
   var object: AnyObject? { return nil }
+  var _userInfo: [NSObject:AnyObject]? {
+    guard let userInfo = self.userInfo else { return nil }
+    var result: [NSObject:AnyObject] = [:]
+    for (k, v) in userInfo { result[k.key] = v }
+    return result
+  }
+  var userInfo: [Key:AnyObject]? { return nil }
+
+
+  /**
+  postObject:userInfo:
+
+  - parameter obj: AnyObject? = nil
+  - parameter info: [NSObject:AnyObject]? = nil
+  */
+  func post(object obj: AnyObject? = nil, userInfo info: [Key : AnyObject]? = nil) {
+    let notificationCenter = NSNotificationCenter.defaultCenter()
+    let object = obj ?? self.object
+    let userInfo: [NSObject:AnyObject]?
+    if let info = info {
+      var userInfoʹ: [NSObject:AnyObject] = [:]
+      for (k, v) in info { userInfoʹ[k.key] = v }
+      if let selfInfo = self._userInfo { userInfoʹ.insertContentsOf(selfInfo) }
+      userInfo = userInfoʹ
+    } else {
+      userInfo = _userInfo
+    }
+
+    notificationCenter.postNotificationName(_name, object: object, userInfo: userInfo)
+  }
+
+  /**
+  observe:queue:callback:
+
+  - parameter object: AnyObject? = nil
+  - parameter queue: NSOperationQueue? = nil
+  - parameter callback: (NSNotification) -> Void
+
+  - returns: NSObjectProtocol
+  */
+  func observe(object: AnyObject? = nil, queue: NSOperationQueue? = nil, callback: (NSNotification) -> Void) -> NSObjectProtocol {
+    return NSNotificationCenter.defaultCenter().addObserverForName(_name, object: object, queue: queue, usingBlock: callback)
+  }
+
 }
 
 public extension NotificationType where Self:NotificationNameType {
   var name: Self { return self }
 }
-
-public func ==<T:NotificationType>(lhs: T, rhs: T) -> Bool { return lhs.name == rhs.name }
-
-public struct AnyNotificationName: NotificationNameType {
-  public var rawValue: String
-  public init<N:NotificationNameType>(_ name: N) { rawValue = name.value }
-  public init?(rawValue: String) { self.rawValue = rawValue }
-}
-public func ==(lhs: AnyNotificationName, rhs: AnyNotificationName) -> Bool {
-  return lhs.value == rhs.value
-}
-public struct AnyNotification: NotificationType {
-  public var userInfo: [NSObject:AnyObject]?
-  public var object: AnyObject?
-  public var name: AnyNotificationName
-  public init<N:NotificationType>(_ notification: N) {
-    name = AnyNotificationName(notification.name)
-    userInfo = notification.userInfo
-    object = notification.object
-  }
-}
-
 
 //public extension EnumerableType where Self:RawRepresentable, Self.RawValue: ForwardIndexType {
 //  static var allCases: [Self] {

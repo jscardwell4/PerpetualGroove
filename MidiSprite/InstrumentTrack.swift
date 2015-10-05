@@ -60,7 +60,7 @@ final class InstrumentTrack: MIDITrackType, Equatable {
   }
   private(set) var events: [MIDITrackEvent] = [] {
     didSet {
-      MIDITrackNotification.DidUpdateEvents.post(from: self)
+      MIDITrackNotification.DidUpdateEvents.post(object: self)
     }
   }
 
@@ -100,6 +100,7 @@ final class InstrumentTrack: MIDITrackType, Equatable {
 
   enum Notification: String, NotificationType, NotificationNameType {
     case DidAddNode, DidRemoveNode
+    typealias Key = String
   }
 
   /**
@@ -112,7 +113,7 @@ final class InstrumentTrack: MIDITrackType, Equatable {
     let identifier = NodeIdentifier(ObjectIdentifier(node).uintValue)
     notes.insert(identifier)
     try MIDIPortConnectSource(inPort, node.endPoint, nil) ➤ "Failed to connect to node \(node.name!)"
-    Notification.DidAddNode.post(from: self)
+    Notification.DidAddNode.post(object: self)
     guard recording else {
       if let pendingIdentifier = pendingIdentifier {
         fileIDToNodeID[pendingIdentifier] = identifier
@@ -181,7 +182,7 @@ final class InstrumentTrack: MIDITrackType, Equatable {
     notes.remove(identifier)
     node.sendNoteOff()
     try MIDIPortDisconnectSource(inPort, node.endPoint) ➤ "Failed to disconnect to node \(node.name!)"
-    Notification.DidRemoveNode.post(from: self)
+    Notification.DidRemoveNode.post(object: self)
     guard recording else { return }
     dispatch_async(fileQueue!) {
       self.appendEvent(MIDINodeEvent(.Remove(identifier: identifier)))
@@ -264,14 +265,14 @@ final class InstrumentTrack: MIDITrackType, Equatable {
   /** initializeNotificationReceptionist */
   private func initializeNotificationReceptionist() {
     guard notificationReceptionist == nil else { return }
-    typealias Callback = NotificationReceptionist.Callback
-    let recordingCallback: Callback = (Sequencer.self, NSOperationQueue.mainQueue(), recordingStatusDidChange)
-    let didStartCallback: Callback = (Sequencer.self, NSOperationQueue.mainQueue(), didStart)
-    notificationReceptionist = NotificationReceptionist(callbacks: [
-      Sequencer.Notification.DidTurnOnRecording.name.value : recordingCallback,
-      Sequencer.Notification.DidTurnOffRecording.name.value : recordingCallback,
-      Sequencer.Notification.DidStart.name.value: didStartCallback
-      ])
+    typealias Notification = Sequencer.Notification
+    let queue = NSOperationQueue.mainQueue()
+    let object = Sequencer.self
+    let callback: (NSNotification) -> Void = {[weak self] _ in self?.recording = Sequencer.recording}
+    notificationReceptionist = NotificationReceptionist()
+    notificationReceptionist?.observe(Notification.DidTurnOnRecording, from: object, queue: queue, callback: callback)
+    notificationReceptionist?.observe(Notification.DidTurnOffRecording, from: object, queue: queue, callback: callback)
+    notificationReceptionist?.observe(Notification.DidStart, from: object, queue: queue, callback: didStart)
   }
 
   /** initializeMIDIClient */

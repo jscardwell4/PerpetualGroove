@@ -38,7 +38,7 @@ final class Sequencer {
   }
 
   // MARK: - Notifications
-  enum Notification: String, NotificationNameType, NotificationType {
+  enum Notification: String, NotificationType, NotificationNameType {
     case DidChangeSequence
     case DidInitializeSoundSets
     case DidChangeCurrentTrack
@@ -49,20 +49,20 @@ final class Sequencer {
 
     var object: AnyObject? { return Sequencer.self }
 
-    var userInfo: [NSObject:AnyObject]? {
+    var userInfo: [Key:AnyObject]? {
       switch self {
         case .DidStart, .DidPause, .DidStop, .DidReset, .DidBeginJogging, .DidEndJogging, .DidJog:
-          var result: [NSObject:AnyObject] = [
-            Key.Ticks.rawValue: NSNumber(unsignedLongLong: Sequencer.time.ticks),
-            Key.Time.rawValue: NSValue(barBeatTime: Sequencer.time.time)
+          var result: [Key:AnyObject] = [
+            Key.Ticks: NSNumber(unsignedLongLong: Sequencer.time.ticks),
+            Key.Time: NSValue(barBeatTime: Sequencer.time.time)
           ]
-          if case .DidJog = self { result[Key.JogTime.rawValue] = NSValue(barBeatTime: Sequencer.jogTime) }
+          if case .DidJog = self { result[Key.JogTime] = NSValue(barBeatTime: Sequencer.jogTime) }
           return result
         default: return nil
       }
     }
 
-    enum Key: String { case Time, Ticks, URL, FromTrack, ToTrack, JogTime}
+    enum Key: String, NotificationKeyType { case Time, Ticks, URL, FromTrack, ToTrack, JogTime}
   }
 
   enum Error: String, ErrorType {

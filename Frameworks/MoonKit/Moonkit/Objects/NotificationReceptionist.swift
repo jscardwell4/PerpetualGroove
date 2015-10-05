@@ -51,7 +51,8 @@ public final class NotificationReceptionist: NSObject {
                                     queue: NSOperationQueue? = nil,
                                  callback: (NSNotification) -> Void)
   {
-    observe(notification.name.value, from: object, queue: queue, callback: callback)
+    let key = hashForName(notification._name, object: object)
+    observers[key] = notification.observe(object, queue: queue, callback: callback)
   }
 
   /**
@@ -67,10 +68,8 @@ public final class NotificationReceptionist: NSObject {
                 queue: NSOperationQueue? = nil,
              callback: (NSNotification) -> Void)
   {
-    observers[hashForName(name, object: object)] = notificationCenter.addObserverForName(name,
-                                                                                  object: object,
-                                                                                   queue: queue,
-                                                                              usingBlock: callback)
+    let key = hashForName(name, object: object)
+    observers[key] = notificationCenter.addObserverForName(name, object: object, queue: queue, usingBlock: callback)
   }
 
   /**
@@ -80,7 +79,7 @@ public final class NotificationReceptionist: NSObject {
   - parameter object: AnyObject? = nil
   */
   public func stopObserving<N:NotificationType>(notification: N, from object: AnyObject? = nil) {
-    stopObserving(notification.name.value, from: object)
+    stopObserving(notification._name, from: object)
   }
 
   /**
@@ -112,7 +111,7 @@ public final class NotificationReceptionist: NSObject {
   }
 
   deinit {
-    observers.values.forEach {notificationCenter.removeObserver($0)}
+    observers.values.forEach { notificationCenter.removeObserver($0) }
     observers.removeAll(keepCapacity: false)
     notificationCenter.removeObserver(self)
   }

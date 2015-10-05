@@ -100,5 +100,19 @@ final class MIDIDocument: UIDocument {
     return [NSURLHasHiddenExtensionKey: true, NSURLThumbnailDictionaryKey: [NSThumbnail1024x1024SizeKey: image]]
   }
 
+  /**
+  renameTo:
+
+  - parameter name: String
+  */
+  func renameTo(name: String) {
+    logDebug("name: \(name)")
+    let (baseName, _) = name.baseNameExt
+    guard let url = fileURL.URLByDeletingLastPathComponent else { return }
+    saveToURL(url + "\(baseName).midi", forSaveOperation: .ForCreating) {
+      logDebug("rename successful? \($0)")
+    }
+
+  }
 
 }

@@ -157,6 +157,12 @@ final class DocumentsViewController: UICollectionViewController {
   - parameter notification: NSNotification
   */
   private func didUpdateItems(notification: NSNotification) { updateItems() }
+
+  /**
+  userDefaultsDidChange:
+
+  - parameter notification: NSNotification
+  */
   private func userDefaultsDidChange(notification: NSNotification) {
     iCloudStorage = NSUserDefaults.standardUserDefaults().boolForKey("iCloudStorage")
   }

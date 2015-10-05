@@ -176,6 +176,13 @@ public extension String {
   public var isPascalCase: Bool { return ~/"^\\p{Lu}+((?:\\p{Ll}|\\p{N})+\\p{Lu}*)*$" ~= self }
   public var isDashCase: Bool { return ~/"^\\p{Ll}+(-\\p{Ll}*)*$" ~= self }
 
+  public var baseNameExt: (baseName: String, ext: String) {
+    let urlRepresentation = NSURL(fileURLWithPath: (self as NSString).lastPathComponent)
+    let baseName = urlRepresentation.URLByDeletingPathExtension?.lastPathComponent ?? ""
+    let ext = urlRepresentation.pathExtension ?? ""
+    return (baseName: baseName, ext: ext)
+  }
+
   public var pathEncoded: String { return urlPathEncoded }
   public var urlFragmentEncoded: String {
     return self.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLFragmentAllowedCharacterSet())

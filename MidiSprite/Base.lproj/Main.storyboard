@@ -83,17 +83,20 @@
                                             </mask>
                                         </variation>
                                     </stackView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="AwesomeSauce" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lff-PZ-gJr" userLabel="DocumentName">
-                                        <rect key="frame" x="-42" y="-21" width="42" height="21"/>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="AwesomeSauce" textAlignment="right" clearsOnBeginEditing="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Gx0-9z-8e9">
+                                        <rect key="frame" x="-25" y="-30" width="97" height="30"/>
                                         <animations/>
-                                        <accessibility key="accessibilityConfiguration" identifier="DocumentName"/>
-                                        <fontDescription key="fontDescription" name="EvelethLight" family="Eveleth" pointSize="17"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <color key="textColor" red="0.87450999021530151" green="0.8274499773979187" blue="0.7607799768447876" alpha="1" colorSpace="calibratedRGB"/>
-                                        <nil key="highlightedColor"/>
+                                        <fontDescription key="fontDescription" name="EvelethLight" family="Eveleth" pointSize="17"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="words" autocorrectionType="no" spellCheckingType="no" keyboardType="alphabet" keyboardAppearance="alert" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
                                         <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="DocumentName"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="CurrentDocumentName"/>
                                         </userDefinedRuntimeAttributes>
-                                    </label>
+                                        <connections>
+                                            <outlet property="delegate" destination="BV1-FR-VrT" id="cTm-6d-H5n"/>
+                                        </connections>
+                                    </textField>
                                     <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="NZR-ya-29p" userLabel="MiddleStack">
                                         <rect key="frame" x="0.0" y="135" width="1002" height="300"/>
                                         <subviews>
@@ -402,6 +405,9 @@
                                                                     </userDefinedRuntimeAttribute>
                                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="MetronomeButton"/>
                                                                 </userDefinedRuntimeAttributes>
+                                                                <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                                    <rect key="frame" x="0.0" y="3" width="50" height="50"/>
+                                                                </variation>
                                                                 <connections>
                                                                     <action selector="toggleMetronome" destination="BV1-FR-VrT" eventType="touchUpInside" id="P9O-d8-MRc"/>
                                                                 </connections>
@@ -472,13 +478,11 @@
                                 </subviews>
                                 <animations/>
                                 <constraints>
-                                    <constraint firstItem="U9p-PY-X1m" firstAttribute="top" secondItem="Lff-PZ-gJr" secondAttribute="bottom" constant="-1" id="Z8B-fO-aZY">
+                                    <constraint firstItem="Gx0-9z-8e9" firstAttribute="top" relation="greaterThanOrEqual" secondItem="cIl-mB-kk1" secondAttribute="bottom" constant="84" id="2v0-DP-wty">
                                         <variation key="heightClass=regular-widthClass=regular" constant="0.0"/>
                                     </constraint>
-                                    <constraint firstItem="Lff-PZ-gJr" firstAttribute="top" relation="greaterThanOrEqual" secondItem="cIl-mB-kk1" secondAttribute="bottom" priority="999" constant="94" id="fCm-YF-lXu">
-                                        <variation key="heightClass=regular-widthClass=regular" constant="0.0"/>
-                                    </constraint>
-                                    <constraint firstItem="Lff-PZ-gJr" firstAttribute="trailing" secondItem="U9p-PY-X1m" secondAttribute="trailing" id="ygp-YI-5Jx"/>
+                                    <constraint firstItem="Gx0-9z-8e9" firstAttribute="trailing" secondItem="U9p-PY-X1m" secondAttribute="trailing" id="Fvj-pK-Hax"/>
+                                    <constraint firstItem="Gx0-9z-8e9" firstAttribute="bottom" secondItem="U9p-PY-X1m" secondAttribute="top" id="YfN-y9-VGJ"/>
                                 </constraints>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="ContentStack"/>
@@ -486,22 +490,22 @@
                                 </userDefinedRuntimeAttributes>
                                 <variation key="default">
                                     <mask key="subviews">
-                                        <exclude reference="Lff-PZ-gJr"/>
+                                        <exclude reference="Gx0-9z-8e9"/>
                                     </mask>
                                     <mask key="constraints">
-                                        <exclude reference="fCm-YF-lXu"/>
-                                        <exclude reference="ygp-YI-5Jx"/>
-                                        <exclude reference="Z8B-fO-aZY"/>
+                                        <exclude reference="2v0-DP-wty"/>
+                                        <exclude reference="Fvj-pK-Hax"/>
+                                        <exclude reference="YfN-y9-VGJ"/>
                                     </mask>
                                 </variation>
                                 <variation key="heightClass=regular-widthClass=regular">
                                     <mask key="subviews">
-                                        <include reference="Lff-PZ-gJr"/>
+                                        <include reference="Gx0-9z-8e9"/>
                                     </mask>
                                     <mask key="constraints">
-                                        <include reference="fCm-YF-lXu"/>
-                                        <include reference="ygp-YI-5Jx"/>
-                                        <include reference="Z8B-fO-aZY"/>
+                                        <include reference="2v0-DP-wty"/>
+                                        <include reference="Fvj-pK-Hax"/>
+                                        <include reference="YfN-y9-VGJ"/>
                                     </mask>
                                 </variation>
                             </stackView>
@@ -1642,7 +1646,7 @@
                         <outlet property="barBeatTimeLabel" destination="pTr-VL-22H" id="gZk-3S-Feh"/>
                         <outlet property="bottomStack" destination="a6c-px-a6l" id="sY7-fB-zBq"/>
                         <outlet property="bottomStackHeight" destination="5bW-gF-MM5" id="qWz-fY-gOE"/>
-                        <outlet property="documentNameLabel" destination="Lff-PZ-gJr" id="u4x-h2-7Ey"/>
+                        <outlet property="documentName" destination="Gx0-9z-8e9" id="PHg-2x-c3n"/>
                         <outlet property="documentsButton" destination="gJq-1L-zk3" id="z0d-NV-cbd"/>
                         <outlet property="documentsPopoverView" destination="L5k-qi-Yb6" id="ib7-VB-2Y5"/>
                         <outlet property="instrumentButton" destination="CYm-Ka-dDw" id="IHI-YQ-0my"/>

@@ -21,6 +21,7 @@ final class MIDIDocumentManager {
 
   enum Notification: String, NotificationType, NotificationNameType {
     case DidUpdateMetadataItems, DidChangeCurrentDocument
+    enum Key: String, NotificationKeyType { case Changed, Added, Removed }
     var object: AnyObject? { return MIDIDocumentManager.self }
   }
 
@@ -87,23 +88,24 @@ final class MIDIDocumentManager {
   - parameter notification: NSNotification
   */
   private static func didUpdate(notification: NSNotification) {
-    let changed = notification.userInfo?[NSMetadataQueryUpdateChangedItemsKey] as? [NSMetadataItem]
-    let removed = notification.userInfo?[NSMetadataQueryUpdateRemovedItemsKey] as? [NSMetadataItem]
-    let added   = notification.userInfo?[NSMetadataQueryUpdateAddedItemsKey]   as? [NSMetadataItem]
+    let changed = notification.userInfo?[NSMetadataQueryUpdateChangedItemsKey] as? [NSMetadataItem] ?? []
+    let removed = notification.userInfo?[NSMetadataQueryUpdateRemovedItemsKey] as? [NSMetadataItem] ?? []
+    let added   = notification.userInfo?[NSMetadataQueryUpdateAddedItemsKey]   as? [NSMetadataItem] ?? []
     logDebug("changed: \(changed)\nremoved: \(removed)\nadded: \(added)")
-    Notification.DidUpdateMetadataItems.post()
+    Notification.DidUpdateMetadataItems.post(userInfo: [Notification.Key.Changed: changed,
+                                                        Notification.Key.Removed: removed,
+                                                        Notification.Key.Added: added])
   }
 
   /** createNewFile */
   static func createNewDocument() throws {
 
-    let fileManager = NSFileManager()
     let url: NSURL
 
     switch NSUserDefaults.standardUserDefaults().boolForKey("iCloudStorage") {
 
       case true:
-        guard let baseURL = fileManager.URLForUbiquityContainerIdentifier(nil) else {
+        guard let baseURL = NSFileManager().URLForUbiquityContainerIdentifier(nil) else {
           logDebug("Need to present an alert prompting to enabled iCloud Drive")
           return
         }
@@ -115,19 +117,53 @@ final class MIDIDocumentManager {
     }
 
     queue.addOperationWithBlock {
-      var fileURL = url + "AwesomeSauce.midi"
-      var i = 2
-
-      while fileURL.checkPromisedItemIsReachableAndReturnError(nil) {
-        fileURL = url + "AwesomeSauce\(i++).midi"
-      }
-
+      guard let fileName = noncollidingFileName("AwesomeSauce.midi") else { return }
+      let fileURL = url + fileName
       let document = MIDIDocument(fileURL: fileURL)
       document.saveToURL(fileURL, forSaveOperation: .ForCreating, completionHandler: {
         guard $0 else { return }; MIDIDocumentManager.openDocument(document)
       })
     }
 
+  }
+
+  /**
+  noncollidingFileName:
+
+  - parameter fileName: String?
+
+  - returns: String
+  */
+  static func noncollidingFileName(fileName: String?) -> String? {
+    guard let (baseName, ext) = fileName?.baseNameExt else { return nil }
+
+    var extʹ = ext
+    if extʹ.isEmpty { extʹ = "midi" }
+
+
+    let url: NSURL
+
+    switch NSUserDefaults.standardUserDefaults().boolForKey("iCloudStorage") {
+
+      case true:
+        guard let baseURL = NSFileManager().URLForUbiquityContainerIdentifier(nil) else {
+          logError("Use iCloud setting is true but failed to get ubiquity container")
+          return nil
+        }
+        url = baseURL + "Documents"
+
+      case false:
+        url = documentsURL
+
+    }
+
+    var baseNameʹ = baseName
+    var i = 2
+    while (url + "\(baseNameʹ).\(extʹ)").checkPromisedItemIsReachableAndReturnError(nil) {
+      baseNameʹ = "\(baseName)\(i++)"
+    }
+
+    return "\(baseNameʹ)" + (ext.isEmpty ? "" : ".\(ext)")
   }
 
   /**
@@ -156,16 +192,31 @@ final class MIDIDocumentManager {
   }
 
   /**
-  openFileAtURL:
+  openItem:
 
-  - parameter url: NSURL
+  - parameter item: DocumentItemType
   */
-//  static func openItem(item: NSMetadataItem) {
-//    logDebug("item = \(item.attributesDescription)")
-//    openDocument(MIDIDocument(fileURL: item.URL))
-//  }
-
   static func openItem(item: DocumentItemType) { openURL(item.URL) }
+
+  /**
+  deleteItem:
+
+  - parameter item: DocumentItemType
+  */
+  static func deleteItem(item: DocumentItemType) {
+    backgroundDispatch {
+      [url = item.URL] in
+
+      NSFileCoordinator(filePresenter: nil).coordinateWritingItemAtURL(url,
+        options: .ForDeleting,
+        error: nil,
+        byAccessor: { do { try NSFileManager().removeItemAtURL($0) } catch { logError(error) } }
+      )
+    }
+
+    guard currentDocument?.fileURL == item.URL else { return }
+    currentDocument = nil
+  }
 
   private static let notificationReceptionist: NotificationReceptionist = {
     let metadataQuery = MIDIDocumentManager.metadataQuery
@@ -196,6 +247,7 @@ final class MIDIDocumentManager {
         openURL(url)
       } catch {
         logError(error, message: "Failed to resolve bookmark data into a valid file url")
+        NSUserDefaults.standardUserDefaults().setObject(nil, forKey: CurrentDocumentKey)
       }
     }
     initialized = true

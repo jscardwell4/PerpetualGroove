@@ -236,15 +236,13 @@ final class MIDINode: SKSpriteNode {
     super.init(texture: SKTexture(image: image), color: t.color.value, size: image.size * 0.75)
 
     let queue = NSOperationQueue.mainQueue()
-    notificationReceptionist = NotificationReceptionist(callbacks:
-      [
-        Sequencer.Notification.DidBeginJogging.value : (Sequencer.self, queue, didBeginJogging),
-        Sequencer.Notification.DidJog.value          : (Sequencer.self, queue, didJog),
-        Sequencer.Notification.DidEndJogging.value   : (Sequencer.self, queue, didEndJogging),
-        Sequencer.Notification.DidStart.value        : (Sequencer.self, queue, didStart),
-        Sequencer.Notification.DidPause.value        : (Sequencer.self, queue, didPause)
-      ]
-    )
+    typealias Notification = Sequencer.Notification
+    notificationReceptionist = NotificationReceptionist()
+    notificationReceptionist.observe(Notification.DidBeginJogging, from: Sequencer.self, queue: queue, callback: didBeginJogging)
+    notificationReceptionist.observe(Notification.DidJog, from: Sequencer.self, queue: queue, callback: didJog)
+    notificationReceptionist.observe(Notification.DidEndJogging, from: Sequencer.self, queue: queue, callback: didEndJogging)
+    notificationReceptionist.observe(Notification.DidStart, from: Sequencer.self, queue: queue, callback: didStart)
+    notificationReceptionist.observe(Notification.DidPause, from: Sequencer.self, queue: queue, callback: didPause)
 
     _sourceID = Identifier(ObjectIdentifier(self).uintValue)
 
