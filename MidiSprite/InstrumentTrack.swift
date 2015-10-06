@@ -404,6 +404,8 @@ final class InstrumentTrack: MIDITrackType, Equatable {
     initializeNotificationReceptionist()
 
     try initializeMIDIClient()
+    
+    logDebug("eventMap = \(eventMap)")
   }
 
   // MARK: - Enumeration for specifying the color attached to a `MIDITrackType`

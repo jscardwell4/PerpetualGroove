@@ -39,9 +39,7 @@ final class Sequencer {
 
   // MARK: - Notifications
   enum Notification: String, NotificationType, NotificationNameType {
-    case DidChangeSequence
     case DidInitializeSoundSets
-    case DidChangeCurrentTrack
     case DidStart, DidPause, DidStop, DidReset
     case DidTurnOnRecording, DidTurnOffRecording
     case DidBeginJogging, DidEndJogging
@@ -49,10 +47,10 @@ final class Sequencer {
 
     var object: AnyObject? { return Sequencer.self }
 
-    var userInfo: [Key:AnyObject]? {
+    var userInfo: [Key:AnyObject?]? {
       switch self {
         case .DidStart, .DidPause, .DidStop, .DidReset, .DidBeginJogging, .DidEndJogging, .DidJog:
-          var result: [Key:AnyObject] = [
+          var result: [Key:AnyObject?] = [
             Key.Ticks: NSNumber(unsignedLongLong: Sequencer.time.ticks),
             Key.Time: NSValue(barBeatTime: Sequencer.time.time)
           ]
@@ -86,7 +84,7 @@ final class Sequencer {
     typealias Callback = NotificationReceptionist.Callback
     let changeCurrentDocument: Callback = (MIDIDocumentManager.self, queue, Sequencer.didChangeCurrentDocument)
     return NotificationReceptionist(callbacks:[
-      MIDIDocumentManager.Notification.DidChangeCurrentDocument.rawValue : changeCurrentDocument
+      MIDIDocumentManager.Notification.DidChangeDocument.rawValue : changeCurrentDocument
       ])
     }()
 

@@ -17,7 +17,7 @@
                BlueprintIdentifier = "C283E7BE1B9F272C00B1690D"
                BuildableName = "Instruments.app"
                BlueprintName = "Instruments"
-               ReferencedContainer = "container:MidiSprite.xcodeproj">
+               ReferencedContainer = "container:PerpetualGroove.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -35,7 +35,7 @@
             BlueprintIdentifier = "C283E7BE1B9F272C00B1690D"
             BuildableName = "Instruments.app"
             BlueprintName = "Instruments"
-            ReferencedContainer = "container:MidiSprite.xcodeproj">
+            ReferencedContainer = "container:PerpetualGroove.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -58,7 +58,7 @@
             BlueprintIdentifier = "C283E7BE1B9F272C00B1690D"
             BuildableName = "Instruments.app"
             BlueprintName = "Instruments"
-            ReferencedContainer = "container:MidiSprite.xcodeproj">
+            ReferencedContainer = "container:PerpetualGroove.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -77,7 +77,7 @@
             BlueprintIdentifier = "C283E7BE1B9F272C00B1690D"
             BuildableName = "Instruments.app"
             BlueprintName = "Instruments"
-            ReferencedContainer = "container:MidiSprite.xcodeproj">
+            ReferencedContainer = "container:PerpetualGroove.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

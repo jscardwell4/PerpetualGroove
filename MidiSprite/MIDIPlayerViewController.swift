@@ -319,6 +319,65 @@ final class MIDIPlayerViewController: UIViewController {
 
   private var notificationReceptionist: NotificationReceptionist?
 
+  /**
+  didPause:
+
+  - parameter notification: NSNotification
+  */
+  private func didPause(notification: NSNotification) { state ⊻= [.Playing, .Paused] }
+
+  /**
+  didStart:
+
+  - parameter notification: NSNotification
+  */
+  private func didStart(notification: NSNotification) { state ⊻= state ∋ .Paused ? [.Playing, .Paused] : [.Playing] }
+
+  /**
+  didStop:
+
+  - parameter notification: NSNotification
+  */
+  private func didStop(notification: NSNotification) { state ∖= [.Playing, .Paused] }
+
+  /**
+  didChangeDocument:
+
+  - parameter notification: NSNotification
+  */
+  private func didChangeDocument(notification: NSNotification) {
+    documentName.text = MIDIDocumentManager.currentDocument?.localizedName
+  }
+
+  /**
+  willShowKeyboard:
+
+  - parameter notification: NSNotification
+  */
+  private func willShowKeyboard(notification: NSNotification) {
+    guard let size = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue().size,
+      responder = view.firstResponder,
+      window = view.window,
+      superview = responder.superview else
+    {
+      return
+    }
+
+    let h = window.bounds.height
+    let location = CGPoint(x: responder.frame.minX, y: responder.frame.maxY)
+    let locationʹ = window.convertPoint(location, fromView: superview)
+    let hʹ = h - locationʹ.y
+
+    view.transform.ty = min(hʹ - size.height, 0)
+  }
+
+  /**
+  didHideKeyboard:
+
+  - parameter notification: NSNotification
+  */
+  private func didHideKeyboard(notification: NSNotification) { view.transform.ty = 0 }
+
   /** initializeReceptionist */
   private func initializeReceptionist() {
 
@@ -328,45 +387,17 @@ final class MIDIPlayerViewController: UIViewController {
 
     let queue = NSOperationQueue.mainQueue()
 
-    notificationReceptionist?.observe(Sequencer.Notification.DidPause, from: Sequencer.self, queue: queue) {
-      [weak self] _ in self?.state ⊻= [.Playing, .Paused]
-    }
+    notificationReceptionist?.observe(Sequencer.Notification.DidPause, from: Sequencer.self, queue: queue, callback: didPause)
+    notificationReceptionist?.observe(Sequencer.Notification.DidStart, from: Sequencer.self, queue: queue, callback: didStart)
+    notificationReceptionist?.observe(Sequencer.Notification.DidStop,  from: Sequencer.self, queue: queue, callback: didStop)
 
-    notificationReceptionist?.observe(Sequencer.Notification.DidStart, from: Sequencer.self, queue: queue) {
-      [weak self] _ in self?.state ⊻= self!.state ∋ .Paused ? [.Playing, .Paused] : [.Playing]
-    }
-
-    notificationReceptionist?.observe(Sequencer.Notification.DidStart, from: Sequencer.self, queue: queue) {
-      [weak self] _ in self?.state ∖= [.Playing, .Paused]
-    }
-
-    notificationReceptionist?.observe(MIDIDocumentManager.Notification.DidChangeCurrentDocument,
+    notificationReceptionist?.observe(MIDIDocumentManager.Notification.DidChangeDocument,
                                  from: MIDIDocumentManager.self,
-                                queue: queue)
-    {
-        [weak self] _ in self?.documentName.text = MIDIDocumentManager.currentDocument?.localizedName
-    }
+                                queue: queue,
+                             callback: didChangeDocument)
 
-    notificationReceptionist?.observe(UIKeyboardWillShowNotification, from: nil, queue: queue) {
-      [weak self] in
-      guard let size = ($0.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue().size,
-                responder = self?.view.firstResponder,
-                window = self?.view.window,
-                superview = responder.superview else
-      {
-        return
-      }
-      let h = window.bounds.height
-      let location = CGPoint(x: responder.frame.minX, y: responder.frame.maxY)
-      let locationʹ = window.convertPoint(location, fromView: superview)
-      let hʹ = h - locationʹ.y
-
-      self?.view.transform.ty = min(hʹ - size.height, 0)
-    }
-
-    notificationReceptionist?.observe(UIKeyboardDidHideNotification, from: nil, queue: queue) {
-      [weak self] _ in self?.view.transform.ty = 0
-    }
+    notificationReceptionist?.observe(UIKeyboardWillShowNotification, from: nil, queue: queue, callback: willShowKeyboard)
+    notificationReceptionist?.observe(UIKeyboardDidHideNotification,  from: nil, queue: queue, callback: didHideKeyboard)
     
   }
 

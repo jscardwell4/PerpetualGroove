@@ -18,13 +18,13 @@ import Foundation
 //  public convenience init?(JSONValue: NSDictionary) { self.init(dictionary: JSONValue) }
 //}
 
-public protocol KeyValueCollectionTypeGenerator {
-  typealias Key
-  typealias Value
-  mutating func next() -> (Key, Value)?
-}
+//public protocol KeyValueCollectionTypeGenerator {
+//  typealias Key
+//  typealias Value
+//  mutating func next() -> (Key, Value)?
+//}
 
-extension DictionaryGenerator: KeyValueCollectionTypeGenerator {}
+//extension DictionaryGenerator: KeyValueCollectionTypeGenerator {}
 
 /**
 keys:
@@ -33,11 +33,11 @@ keys:
 
 - returns: [C.Key]
 */
-public func keys<C: KeyValueCollectionType where C.Generator: KeyValueCollectionTypeGenerator>(x: C) -> [C.Key] {
-  var keys: [C.Key] = []
-  for entry in x { if let key = _reflect(entry)[0].1.value as? C.Key { keys.append(key) } }
-  return keys
-}
+//public func keys<C: KeyValueCollectionType where C.Generator: KeyValueCollectionTypeGenerator>(x: C) -> [C.Key] {
+//  var keys: [C.Key] = []
+//  for entry in x { if let key = _reflect(entry)[0].1.value as? C.Key { keys.append(key) } }
+//  return keys
+//}
 
 /**
 values:
@@ -46,55 +46,49 @@ values:
 
 - returns: [C.Value]
 */
-public func values<C: KeyValueCollectionType where C.Generator: KeyValueCollectionTypeGenerator>(x: C) -> [C.Value] {
-  var values: [C.Value] = []
-  for entry in x { if let value = _reflect(entry)[1].1.value as? C.Value { values.append(value) } }
-  return values
-}
+//public func values<C: KeyValueCollectionType where C.Generator: KeyValueCollectionTypeGenerator>(x: C) -> [C.Value] {
+//  var values: [C.Value] = []
+//  for entry in x { if let value = _reflect(entry)[1].1.value as? C.Value { values.append(value) } }
+//  return values
+//}
 
 
-/**
-formattedDescription:indent:
-
-- parameter dictionary: C
-- parameter indent: Int = 0
-
-- returns: String
-*/
-public func formattedDescription<C: KeyValueCollectionType where C.Generator: KeyValueCollectionTypeGenerator>(dictionary: C, indent: Int = 0) -> String {
-
-  var components: [String] = []
-
-  let keyDescriptions = keys(dictionary).map { "\($0)" }
-  let maxKeyLength = keyDescriptions.reduce(0) { max($0, $1.characters.count) }
-  let indentation = " " * (indent * 4)
-  for (key, value) in zip(keyDescriptions, values(dictionary)) {
-//    let keyLength = key.count
-//    var spacer = ""
-//    if keyLength != maxKeyLength {
-//      let offset = maxKeyLength - keyLength + 1
-//      let numberOfTabs = Int(floor(Double(offset) / 4.0)) - 1
-//      spacer = "\t" * numberOfTabs
-//    }
-    let keyString = "\(indentation)\(key): "//\(spacer)"
-    var valueString: String
-    var valueComponents = "\n".split("\(value)")
-    if valueComponents.count > 0 {
-      valueString = valueComponents.removeAtIndex(0)
-      if valueComponents.count > 0 {
-        let spacer = "\t" * (Int(floor(Double((maxKeyLength+1))/4.0)) - 1)
-        let subIndentString = "\n\(indentation)\(spacer)"
-        valueString += subIndentString + subIndentString.join(valueComponents)
-      }
-    } else { valueString = "nil" }
-    components += ["\(keyString)\(valueString)"]
-  }
-  return "\n".join(components)
-}
 
 public extension Dictionary {
+
   /**
-  init:Value)]:
+  formattedDescription:
+
+  - parameter indent: Int = 0
+
+  - returns: String
+  */
+  public func formattedDescription(indent indent: Int = 0) -> String {
+
+    var components: [String] = []
+
+    let keyDescriptions = keys.map { "\($0)" }
+    let maxKeyLength = keyDescriptions.reduce(0) { max($0, $1.characters.count) }
+    let indentation = " " * (indent * 4)
+    for (key, value) in zip(keyDescriptions, values) {
+      let keyString = "\(indentation)\(key): "//\(spacer)"
+      var valueString: String
+      var valueComponents = "\n".split("\(value)")
+      if valueComponents.count > 0 {
+        valueString = valueComponents.removeAtIndex(0)
+        if valueComponents.count > 0 {
+          let spacer = "\t" * (Int(floor(Double((maxKeyLength+1))/4.0)) - 1)
+          let subIndentString = "\n\(indentation)\(spacer)"
+          valueString += subIndentString + subIndentString.join(valueComponents)
+        }
+      } else { valueString = "nil" }
+      components += ["\(keyString)\(valueString)"]
+    }
+    return "\n".join(components)
+  }
+
+  /**
+  init:
 
   - parameter elements: [(Key, Value)]
   */
@@ -105,7 +99,14 @@ public extension Dictionary {
 
   public var keyValuePairs: [(Key, Value)] { return Array(AnySequence({self.generate()})) }
 
-  public func map<U>(transform: (Key, Value) -> U) -> [Key:U] {
+  /** 
+  mapValues:
+  
+  - parameter transform: (Key, Value) -> U
+  
+  - returns: [Key:U]
+  */
+  public func mapValues<U>(transform: (Key, Value) -> U) -> [Key:U] {
     var result: [Key:U] = [:]
     for (key, value) in self { result[key] = transform(key, value) }
     return result
@@ -129,10 +130,10 @@ subscript:rhs:
 
 - returns: [K:V]
 */
-public func -<K,V>(var lhs: [K:V], rhs: K) -> [K:V] {
-  lhs.removeValueForKey(rhs)
-  return lhs
-}
+//public func -<K,V>(var lhs: [K:V], rhs: K) -> [K:V] {
+//  lhs.removeValueForKey(rhs)
+//  return lhs
+//}
 
 /**
 filter:
@@ -141,11 +142,11 @@ filter:
 
 - returns: [K:V]
 */
-public func filter<K:Hashable,V>(dict: [K:V], include: (K, V) -> Bool) -> [K:V] {
-  var filteredDict: [K:V] = [:]
-  for (key, value) in dict { if include(key, value) { filteredDict[key] = value } }
-  return filteredDict
-}
+//public func filter<K:Hashable,V>(dict: [K:V], include: (K, V) -> Bool) -> [K:V] {
+//  var filteredDict: [K:V] = [:]
+//  for (key, value) in dict { if include(key, value) { filteredDict[key] = value } }
+//  return filteredDict
+//}
 
 /**
 compressed:
@@ -154,9 +155,9 @@ compressed:
 
 - returns: [K:V]
 */
-public func compressed<K:Hashable,V>(dict: [K:Optional<V>]) -> [K:V] {
-  return Dictionary(dict.keyValuePairs.filter({$1 != nil}).map({($0,$1!)}))
-}
+//public func compressed<K:Hashable,V>(dict: [K:Optional<V>]) -> [K:V] {
+//  return Dictionary(dict.keyValuePairs.filter({$1 != nil}).map({($0,$1!)}))
+//}
 
 /**
 compressedMap:transform:
@@ -165,45 +166,45 @@ compressedMap:transform:
 - parameter block: (K, V) -> U?
 - returns: [K:U]
 */
-public func compressedMap<K:Hashable,V,U>(dict: [K:V], transform: (K, V) -> U?) -> [K:U] {
-  return compressed(dict.map(transform))
-}
+//public func compressedMap<K:Hashable,V,U>(dict: [K:V], transform: (K, V) -> U?) -> [K:U] {
+//  return compressed(dict.map(transform))
+//}
 
-public func inflated(var dict: [String:AnyObject]) -> [String:AnyObject] { inflate(&dict); return dict }
+//public func inflated(var dict: [String:AnyObject]) -> [String:AnyObject] { inflate(&dict); return dict }
 
-public func inflate(inout dict: [String:AnyObject]) {
-  // First gather a list of keys to inflate
-  let inflatableKeys = Array(dict.keys.filter({$0 ~= "(?:\\w\\.)+\\w"}))
-
-  // Enumerate the list inflating each key
-  for key in inflatableKeys {
-
-    var keys = ".".split(key)
-    let firstKey = keys.first!
-    let lastKey = keys.last!
-    var keypath = Stack(keys.dropFirst().dropLast())
-    let value: AnyObject
-
-    func inflatedValue(obj: AnyObject) -> [String:AnyObject] {
-      var kp = keypath
-      var d: [String:AnyObject] = [lastKey:obj]
-
-      // If there are stops along the way from first to last, recursively embed in dictionaries
-      while let k = kp.pop() { d = [k: d] }
-
-      return d
-    }
-
-    // If our value is an array, we embed each value in the array and keep our value as an array
-    if let valueArray = dict[key] as? [AnyObject] { value = valueArray.map(inflatedValue) }
-
-      // Otherwise we embed the value
-    else { value = inflatedValue(dict[key]!) }
-
-    dict[firstKey] = value
-    dict[key] = nil                              // Remove the compressed key-value entry
-  }
-}
+//public func inflate(inout dict: [String:AnyObject]) {
+//  // First gather a list of keys to inflate
+//  let inflatableKeys = Array(dict.keys.filter({$0 ~= "(?:\\w\\.)+\\w"}))
+//
+//  // Enumerate the list inflating each key
+//  for key in inflatableKeys {
+//
+//    var keys = ".".split(key)
+//    let firstKey = keys.first!
+//    let lastKey = keys.last!
+//    var keypath = Stack(keys.dropFirst().dropLast())
+//    let value: AnyObject
+//
+//    func inflatedValue(obj: AnyObject) -> [String:AnyObject] {
+//      var kp = keypath
+//      var d: [String:AnyObject] = [lastKey:obj]
+//
+//      // If there are stops along the way from first to last, recursively embed in dictionaries
+//      while let k = kp.pop() { d = [k: d] }
+//
+//      return d
+//    }
+//
+//    // If our value is an array, we embed each value in the array and keep our value as an array
+//    if let valueArray = dict[key] as? [AnyObject] { value = valueArray.map(inflatedValue) }
+//
+//      // Otherwise we embed the value
+//    else { value = inflatedValue(dict[key]!) }
+//
+//    dict[firstKey] = value
+//    dict[key] = nil                              // Remove the compressed key-value entry
+//  }
+//}
 
 public func zipDict<S0:SequenceType, S1:SequenceType
   where S0.Generator.Element:Hashable>(s0: S0, _ s1: S1) -> [S0.Generator.Element:S1.Generator.Element]

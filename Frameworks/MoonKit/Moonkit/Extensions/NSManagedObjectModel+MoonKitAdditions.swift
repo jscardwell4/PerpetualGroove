@@ -23,7 +23,7 @@ extension NSManagedObjectModel {
         }
         description += " {\n"
         if let userInfo = entity.userInfo where !userInfo.isEmpty {
-          description += "\tuserInfo: {\n\(formattedDescription(userInfo, indent: 2))\n\t}"
+          description += "\tuserInfo: {\n\(userInfo.formattedDescription(indent: 2))\n\t}"
         }
 
         var properties = entity.properties as [NSPropertyDescription]
@@ -44,7 +44,7 @@ extension NSManagedObjectModel {
           if property.storedInExternalRecord { propertyNametagAttributes.append("external") }
 
           if let userInfo = property.userInfo where !userInfo.isEmpty {
-            propertyDescription["userInfo"] = formattedDescription(userInfo, indent: 2)
+            propertyDescription["userInfo"] = userInfo.formattedDescription(indent: 2)
           }
 
           if let attributeDescription = property as? NSAttributeDescription {
@@ -67,7 +67,7 @@ extension NSManagedObjectModel {
           description += "\t\(property.name)"
           if !propertyNametagAttributes.isEmpty { description += " (" + ",".join(propertyNametagAttributes) + ")" }
           if !propertyDescription.isEmpty {
-            description += " {\n\(formattedDescription(propertyDescription.dictionary, indent: 2))\n\t}"
+            description += " {\n\(propertyDescription.dictionary.formattedDescription(indent: 2))\n\t}"
           }
           description += "\n"
         }

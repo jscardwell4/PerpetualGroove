@@ -14,18 +14,17 @@ final class MixerViewController: UICollectionViewController {
 
   private var notificationReceptionist: NotificationReceptionist?
 
+  private var widthConstraint: NSLayoutConstraint?
+  private var heightConstraint: NSLayoutConstraint?
+
+  private enum Section: Int { case Master, Instruments, Add }
+
   /** addTrack */
   @IBAction func addTrack() {
-    logDebug()
     guard let sequence = Sequencer.sequence else { logWarning("Cannot add a track without a sequence"); return }
     let instrument = Sequencer.instrumentWithCurrentSettings()
-    do {
-      let track =  try sequence.newTrackWithInstrument(instrument)
-      sequence.currentTrack = track
-    } catch {
-      logError(error, message: "Failed to add new track")
-    }
-
+    do { sequence.currentTrack = try sequence.newTrackWithInstrument(instrument) }
+    catch { logError(error, message: "Failed to add new track") }
   }
 
   /** viewDidLoad */
@@ -35,46 +34,135 @@ final class MixerViewController: UICollectionViewController {
     collectionView?.translatesAutoresizingMaskIntoConstraints = false
 
     guard notificationReceptionist == nil else { return }
-
-    let busesDidChange: (NSNotification) -> Void = { [unowned self] _ in self.updateTracks() }
-    let queue = NSOperationQueue.mainQueue()
-    let callback: (AnyObject?, NSOperationQueue?, (NSNotification) -> Void) = (MIDISequence.self, queue, busesDidChange)
-    let callbacks: [NotificationReceptionist.Notification:NotificationReceptionist.Callback] = [
-      MIDISequence.Notification.DidAddTrack.rawValue: callback,
-      MIDISequence.Notification.DidRemoveTrack.rawValue: callback
-    ]
-
-
-    notificationReceptionist = NotificationReceptionist(callbacks: callbacks)
+    notificationReceptionist = generateNotificationReceptionist()
   }
 
-  private let constraintID = Identifier("MixerViewController", "Internal")
+  /**
+  generateNotificationReceptionist
 
-  /** updateViewConstraints */
-  override func updateViewConstraints() {
-    guard let sequence = Sequencer.sequence else { super.updateViewConstraints(); return }
-    guard view.constraintsWithIdentifier(constraintID).count == 0 else { return }
-    let itemCount = sequence.instrumentTracks.count + 1
-    let cellSize = (collectionView!.collectionViewLayout as! UICollectionViewFlowLayout).itemSize
-    let cellWidth = Int(cellSize.width)
-    let cellSpacing = Int((collectionView!.collectionViewLayout as! UICollectionViewFlowLayout).minimumInteritemSpacing)
-    let viewWidth = Float(cellWidth * itemCount + cellSpacing * (itemCount - 1))
-    let viewHeight = Float(cellSize.height)
-    view.constrain([view.width => viewWidth -!> 750, view.height => viewHeight -!> 750] --> constraintID)
-    view.constrain([𝗩|collectionView!|𝗩, 𝗛|collectionView!|𝗛] --> constraintID)
-    super.updateViewConstraints()
+  - returns: NotificationReceptionist
+  */
+  private func generateNotificationReceptionist() -> NotificationReceptionist {
+    let receptionist = NotificationReceptionist()
+    let queue = NSOperationQueue.mainQueue()
+
+    receptionist.observe(MIDIDocumentManager.Notification.DidChangeDocument,
+                    from: MIDIDocumentManager.self,
+                   queue: queue,
+                callback: documentChanged)
+
+    guard let sequence = Sequencer.sequence else { return receptionist }
+
+    receptionist.observe(MIDISequence.Notification.DidChangeTrack,
+                    from: sequence,
+                   queue: queue,
+                callback: trackChanged)
+    receptionist.observe(MIDISequence.Notification.DidAddTrack,
+                    from: sequence,
+                   queue: queue,
+                callback: updateTracks)
+    receptionist.observe(MIDISequence.Notification.DidRemoveTrack,
+                    from: sequence,
+                   queue: queue,
+                callback: updateTracks)
+
+    return receptionist
+  }
+
+  /**
+  currentDocumentDidChange:
+
+  - parameter notification: NSNotification
+  */
+  private func documentChanged(notification: NSNotification) {
+    notificationReceptionist = generateNotificationReceptionist()
+    collectionView?.reloadData()
+  }
+
+  private var currentTrackIndexPath: NSIndexPath? {
+    didSet {
+      guard let sequence = Sequencer.sequence else { return }
+      switch (currentTrackIndexPath, sequence.currentTrack) {
+        case let (indexPath?, currentTrack?) where sequence.instrumentTracks[indexPath.item] != currentTrack:
+          sequence.currentTrack = sequence.instrumentTracks[indexPath.item]
+        case let (indexPath?, nil):
+          sequence.currentTrack = sequence.instrumentTracks[indexPath.item]
+        case (nil, .Some):
+          sequence.currentTrack = nil
+        default:
+          break
+      }
+    }
+  }
+
+  /**
+  trackChanged:
+
+  - parameter notification: NSNotification
+  */
+  private func trackChanged(notification: NSNotification) {
+    if let oldTrack = notification.userInfo?[MIDISequence.Notification.Key.OldTrack.rawValue] as? InstrumentTrack,
+           currentTrackIndexPath = currentTrackIndexPath,
+           cell = collectionView?.cellForItemAtIndexPath(currentTrackIndexPath) as? TrackCell
+             where cell.track == oldTrack
+    {
+      collectionView?.deselectItemAtIndexPath(currentTrackIndexPath, animated: true)
+    }
+
+    if let newTrack = notification.userInfo?[MIDISequence.Notification.Key.Track.rawValue] as? InstrumentTrack,
+      idx = Sequencer.sequence?.instrumentTracks.indexOf(newTrack),
+      cell = collectionView?.cellForItemAtIndexPath(NSIndexPath(forItem: idx,
+                                                                inSection: Section.Instruments.rawValue))
+      where (cell as? TrackCell)?.track == newTrack && !cell.selected
+    {
+      currentTrackIndexPath = NSIndexPath(forItem: idx, inSection: Section.Instruments.rawValue)
+      collectionView?.selectItemAtIndexPath(currentTrackIndexPath,
+                                   animated: true,
+                             scrollPosition: .CenteredHorizontally)
+    }
   }
 
   /** updateTracks */
-  func updateTracks() {
-    guard let collectionView = collectionView, sequence = Sequencer.sequence else { return }
-    let itemCount = collectionView.numberOfItemsInSection(1)
-    let busCount = sequence.instrumentTracks.count
-    if itemCount != busCount {
-      view.removeConstraints(view.constraintsWithIdentifier(constraintID))
-      view.setNeedsUpdateConstraints()
-      collectionView.reloadData()
+  func updateTracks(notification: NSNotification) {
+    guard let cellCount = collectionView?.numberOfItemsInSection(Section.Instruments.rawValue),
+              trackCount = Sequencer.sequence?.instrumentTracks.count where cellCount != trackCount else { return }
+
+    let (w, h) = cellSize.unpack
+    widthConstraint?.constant = w
+    heightConstraint?.constant = h
+
+    collectionView?.reloadData()
+  }
+
+  /** updateViewConstraints */
+  override func updateViewConstraints() {
+    let id = Identifier(self, "Internal")
+
+    guard widthConstraint == nil && heightConstraint == nil && view.constraintsWithIdentifier(id).count == 0 else {
+      super.updateViewConstraints()
+      return
     }
+
+    view.constrain([𝗩|collectionView!|𝗩, 𝗛|collectionView!|𝗛] --> id)
+
+    let (w, h) = cellSize.unpack
+    widthConstraint = (view.width => w -!> 750).constraint
+    widthConstraint?.identifier = Identifier(self, "View", "Width").string
+    widthConstraint?.active = true
+    heightConstraint = (view.height => h -!> 750).constraint
+    heightConstraint?.identifier = Identifier(self, "View", "Height").string
+    heightConstraint?.active = true
+
+    super.updateViewConstraints()
+  }
+
+  private var cellSize: CGSize {
+    guard let sequence = Sequencer.sequence,
+              size = (collectionViewLayout as? UICollectionViewFlowLayout)?.itemSize,
+              spacing = (collectionViewLayout as? UICollectionViewFlowLayout)?.minimumInteritemSpacing else { return .zero }
+    let itemCount = sequence.instrumentTracks.count + 2
+    return CGSize(width: CGFloat(Int(size.width) * itemCount + Int(spacing) * (itemCount - 1)),
+                  height: size.height)
   }
 
   // MARK: UICollectionViewDataSource
@@ -97,7 +185,7 @@ final class MixerViewController: UICollectionViewController {
   - returns: Int
   */
   override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return section == 1 ? Sequencer.sequence?.instrumentTracks.count ?? 0 : 1
+    return section == Section.Instruments.rawValue ? Sequencer.sequence?.instrumentTracks.count ?? 0 : 1
   }
 
   /**
@@ -112,9 +200,7 @@ final class MixerViewController: UICollectionViewController {
             forItemAtIndexPath indexPath: NSIndexPath)
   {
     guard let cell = cell as? AddTrackCell else { return }
-    delayedDispatchToMain(0) {
-      cell.generateBackdrop()
-    }
+    delayedDispatchToMain(0) { cell.generateBackdrop() }
   }
 
   /**
@@ -130,11 +216,12 @@ final class MixerViewController: UICollectionViewController {
   {
     let cell: UICollectionViewCell
     switch indexPath.section {
-      case 0:
+      case Section.Master.rawValue:
         cell = collectionView.dequeueReusableCellWithReuseIdentifier(MasterCell.Identifier, forIndexPath: indexPath)
         (cell as? MasterCell)?.refresh()
-      case 2:
-        cell = collectionView.dequeueReusableCellWithReuseIdentifier(AddTrackCell.Identifier, forIndexPath: indexPath)
+      case Section.Add.rawValue:
+        cell = collectionView.dequeueReusableCellWithReuseIdentifier(AddTrackCell.Identifier,
+                                                        forIndexPath: indexPath)
       default:
         cell = collectionView.dequeueReusableCellWithReuseIdentifier(TrackCell.Identifier, forIndexPath: indexPath)
         (cell as? TrackCell)?.track = Sequencer.sequence?.instrumentTracks[indexPath.item]
@@ -153,7 +240,20 @@ final class MixerViewController: UICollectionViewController {
 
   - returns: Bool
   */
-  override func collectionView(collectionView: UICollectionView, shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
-    return indexPath.section == 1
+  override func collectionView(collectionView: UICollectionView,
+   shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool
+  {
+    return indexPath.section == Section.Instruments.rawValue
+  }
+
+  /**
+  collectionView:didSelectItemAtIndexPath:
+
+  - parameter collectionView: UICollectionView
+  - parameter indexPath: NSIndexPath
+  */
+  override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+    guard indexPath.section == Section.Instruments.rawValue && currentTrackIndexPath != indexPath else { return }
+    currentTrackIndexPath = indexPath
   }
 }

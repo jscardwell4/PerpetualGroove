@@ -16,11 +16,13 @@ final class MIDIDocumentManager {
   }
 
   private static var initialized = false
+  private static let DefaultDocumentName = "AwesomeSauce"
+  private static let UseiCloudStorage = "iCloudStorage"
   private static let CurrentDocumentKey = "MIDIDocumentManager.currentDocument"
   private(set) static var openingDocument = false
 
   enum Notification: String, NotificationType, NotificationNameType {
-    case DidUpdateMetadataItems, DidChangeCurrentDocument
+    case DidUpdateMetadataItems, DidChangeDocument
     enum Key: String, NotificationKeyType { case Changed, Added, Removed }
     var object: AnyObject? { return MIDIDocumentManager.self }
   }
@@ -38,7 +40,7 @@ final class MIDIDocumentManager {
       } catch {
         logError(error, message: "Failed to generate bookmark data for storage")
       }
-      Notification.DidChangeCurrentDocument.post()
+      Notification.DidChangeDocument.post()
     }
   }
 
@@ -102,7 +104,7 @@ final class MIDIDocumentManager {
 
     let url: NSURL
 
-    switch NSUserDefaults.standardUserDefaults().boolForKey("iCloudStorage") {
+    switch NSUserDefaults.standardUserDefaults().boolForKey(UseiCloudStorage) {
 
       case true:
         guard let baseURL = NSFileManager().URLForUbiquityContainerIdentifier(nil) else {
@@ -117,8 +119,8 @@ final class MIDIDocumentManager {
     }
 
     queue.addOperationWithBlock {
-      guard let fileName = noncollidingFileName("AwesomeSauce.midi") else { return }
-      let fileURL = url + fileName
+      guard let fileName = noncollidingFileName(DefaultDocumentName) else { return }
+      let fileURL = url + [fileName, ".midi"]
       let document = MIDIDocument(fileURL: fileURL)
       document.saveToURL(fileURL, forSaveOperation: .ForCreating, completionHandler: {
         guard $0 else { return }; MIDIDocumentManager.openDocument(document)
@@ -143,7 +145,7 @@ final class MIDIDocumentManager {
 
     let url: NSURL
 
-    switch NSUserDefaults.standardUserDefaults().boolForKey("iCloudStorage") {
+    switch NSUserDefaults.standardUserDefaults().boolForKey(UseiCloudStorage) {
 
       case true:
         guard let baseURL = NSFileManager().URLForUbiquityContainerIdentifier(nil) else {
@@ -236,7 +238,7 @@ final class MIDIDocumentManager {
   static func initialize() {
     guard !initialized else { return }
 
-    NSUserDefaults.standardUserDefaults().registerDefaults(["iCloudStorage": true])
+    NSUserDefaults.standardUserDefaults().registerDefaults([UseiCloudStorage: true])
 
     let _ = notificationReceptionist
 

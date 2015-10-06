@@ -16,8 +16,11 @@ extension UIColor {
   static var backgroundColor: UIColor        { return rgb(51, 50, 49) }
   static var popoverBackgroundColor: UIColor { return rgb(25, 25, 24) }
   static var primaryColor: UIColor           { return rgb(186, 179, 169) }
+  static var primaryColor2: UIColor          { return rgb(196, 191, 185) }
   static var secondaryColor: UIColor         { return rgb(146, 135, 120) }
+  static var secondaryColor2: UIColor        { return rgb(169, 160, 148) }
   static var tertiaryColor: UIColor          { return rgb(77, 75, 73) }
+  static var tertiaryColor2: UIColor         { return rgb(102, 100, 97) }
   static var quaternaryColor: UIColor        { return rgb(223, 211, 194) }
   static var highlightColor: UIColor         { return rgb(194, 65, 0) }
 }

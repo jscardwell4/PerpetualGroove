@@ -16,7 +16,7 @@
         <!--MIDIPlayer-->
         <scene sceneID="tXr-a1-R10">
             <objects>
-                <viewController storyboardIdentifier="MIDIPlayer" id="BV1-FR-VrT" userLabel="MIDIPlayer" customClass="MIDIPlayerViewController" customModule="MidiSprite" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MIDIPlayer" id="BV1-FR-VrT" userLabel="MIDIPlayer" customClass="MIDIPlayerViewController" customModule="Groove" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="8aa-yV-Osq"/>
                         <viewControllerLayoutGuide type="bottom" id="qHh-Mt-9TT"/>
@@ -110,7 +110,7 @@
                                                     <segue destination="kbm-WN-nc0" kind="embed" identifier="Mixer" id="NjD-do-3gM"/>
                                                 </connections>
                                             </containerView>
-                                            <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="U9p-PY-X1m" userLabel="MIDI Player" customClass="MIDIPlayerView" customModule="MidiSprite" customModuleProvider="target">
+                                            <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="U9p-PY-X1m" userLabel="MIDI Player" customClass="MIDIPlayerView" customModule="Groove" customModuleProvider="target">
                                                 <rect key="frame" x="702" y="0.0" width="300" height="300"/>
                                                 <animations/>
                                                 <color key="backgroundColor" red="0.20000000298023224" green="0.19607843458652496" blue="0.19215686619281769" alpha="1" colorSpace="calibratedRGB"/>
@@ -142,7 +142,7 @@
                                             </mask>
                                         </variation>
                                     </stackView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" distribution="equalSpacing" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="a6c-px-a6l" userLabel="BottomStack">
+                                    <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" distribution="equalSpacing" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="a6c-px-a6l" userLabel="BottomStack">
                                         <rect key="frame" x="0.0" y="435" width="1002" height="150"/>
                                         <subviews>
                                             <view opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gJq-1L-zk3" userLabel="DocumentsButton" customClass="ImageButtonView" customModule="MoonKit">
@@ -176,7 +176,7 @@
                                                     <action selector="documents" destination="BV1-FR-VrT" eventType="touchUpInside" id="Kd0-gd-weE"/>
                                                 </connections>
                                             </view>
-                                            <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="qx2-KP-zF6" userLabel="TransportJogWheelStack">
+                                            <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="qx2-KP-zF6" userLabel="TransportJogWheelStack">
                                                 <rect key="frame" x="101" y="0.0" width="640" height="150"/>
                                                 <subviews>
                                                     <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="a4H-Xm-MmL" userLabel="TransportStack">
@@ -305,7 +305,6 @@
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TransportJogWheelStack"/>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="TransportJogWheelStack"/>
                                                 </userDefinedRuntimeAttributes>
-                                                <variation key="heightClass=regular-widthClass=regular" alignment="center"/>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" axis="vertical" distribution="equalCentering" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="gSN-Me-39Z" userLabel="TimeStack">
                                                 <rect key="frame" x="791" y="14" width="211" height="122"/>
@@ -405,14 +404,11 @@
                                                                     </userDefinedRuntimeAttribute>
                                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="MetronomeButton"/>
                                                                 </userDefinedRuntimeAttributes>
-                                                                <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
-                                                                    <rect key="frame" x="0.0" y="3" width="50" height="50"/>
-                                                                </variation>
                                                                 <connections>
                                                                     <action selector="toggleMetronome" destination="BV1-FR-VrT" eventType="touchUpInside" id="P9O-d8-MRc"/>
                                                                 </connections>
                                                             </view>
-                                                            <view opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" ambiguous="YES" misplaced="YES" placeholderIntrinsicWidth="150" placeholderIntrinsicHeight="56" translatesAutoresizingMaskIntoConstraints="NO" id="pTr-VL-22H" userLabel="BarBeatTime" customClass="BarBeatTimeLabel" customModule="MidiSprite" customModuleProvider="target">
+                                                            <view opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" ambiguous="YES" misplaced="YES" placeholderIntrinsicWidth="150" placeholderIntrinsicHeight="56" translatesAutoresizingMaskIntoConstraints="NO" id="pTr-VL-22H" userLabel="BarBeatTime" customClass="BarBeatTimeLabel" customModule="Groove" customModuleProvider="target">
                                                                 <rect key="frame" x="60" y="0.0" width="150" height="56"/>
                                                                 <animations/>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -1674,7 +1670,7 @@
                         <outlet property="topStack" destination="cIl-mB-kk1" id="F7e-1X-gEa"/>
                         <outlet property="topStackHeight" destination="MMd-Lz-wkq" id="843-dy-mOn"/>
                         <outlet property="transportStack" destination="a4H-Xm-MmL" id="MM7-1I-bKe"/>
-                        <segue destination="kZP-V5-1kq" kind="presentation" identifier="Purgatory" customClass="PurgatorySegue" customModule="MidiSprite" customModuleProvider="target" modalTransitionStyle="crossDissolve" id="Hqa-Ox-hdJ"/>
+                        <segue destination="kZP-V5-1kq" kind="presentation" identifier="Purgatory" customClass="PurgatorySegue" customModule="Groove" customModuleProvider="target" modalTransitionStyle="crossDissolve" id="Hqa-Ox-hdJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>
@@ -1721,7 +1717,7 @@
         <!--Purgatory-->
         <scene sceneID="sKb-zw-p7r">
             <objects>
-                <viewController storyboardIdentifier="Purgatory" modalTransitionStyle="crossDissolve" id="kZP-V5-1kq" userLabel="Purgatory" customClass="PurgatoryViewController" customModule="MidiSprite" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Purgatory" modalTransitionStyle="crossDissolve" id="kZP-V5-1kq" userLabel="Purgatory" customClass="PurgatoryViewController" customModule="Groove" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="vAG-x6-Qtc"/>
                         <viewControllerLayoutGuide type="bottom" id="9fn-Bb-FvO"/>

@@ -16,7 +16,7 @@ final class MIDISequence {
 
   /** An enumeration to wrap up notifications */
   enum Notification: String, NotificationType, NotificationNameType {
-    case DidAddTrack, DidRemoveTrack, DidChangeCurrentTrack
+    case DidAddTrack, DidRemoveTrack, DidChangeTrack
     enum Key: String, NotificationKeyType { case Track, OldTrack }
   }
 
@@ -27,9 +27,10 @@ final class MIDISequence {
 
   var currentTrack: InstrumentTrack? {
     didSet {
-      Notification.DidChangeCurrentTrack.post(object: self,
-                                              userInfo: [Notification.Key.OldTrack: (oldValue as? AnyObject ?? NSNull()),
-                                                         Notification.Key.Track:    (currentTrack as? AnyObject ?? NSNull())])
+      guard currentTrack == nil || instrumentTracks ∋ currentTrack! else { currentTrack = nil; return }
+      Notification.DidChangeTrack.post(object: self,
+                                              userInfo: [Notification.Key.OldTrack: oldValue as? AnyObject,
+                                                         Notification.Key.Track:    currentTrack as? AnyObject])
     }
   }
 
@@ -57,7 +58,8 @@ final class MIDISequence {
   var file: MIDIFile {
     get { return MIDIFile(format: .One, division: 480, tracks: tracks) }
     set {
-      var trackChunks = ArraySlice(file.tracks)
+      logDebug("file: \(newValue)")
+      var trackChunks = ArraySlice(newValue.tracks)
       if let trackChunk = trackChunks.first
         where trackChunk.events.count == trackChunk.events.filter({ TempoTrack.isTempoTrackEvent($0) }).count
       {

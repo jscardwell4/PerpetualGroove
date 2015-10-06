@@ -51,6 +51,7 @@ public final class NotificationReceptionist: NSObject {
                                     queue: NSOperationQueue? = nil,
                                  callback: (NSNotification) -> Void)
   {
+//    logDebug("notification: \(notification)\nobject: \(object)\nqueue: \(queue)", asynchronous: false)
     let key = hashForName(notification._name, object: object)
     observers[key] = notification.observe(object, queue: queue, callback: callback)
   }

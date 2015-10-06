@@ -340,6 +340,7 @@
 		C285D8281AC44E7400C527F6 /* MoonKitLite.h in Headers */ = {isa = PBXBuildFile; fileRef = C285D8271AC44E5500C527F6 /* MoonKitLite.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C2874FBC1AE68D3800BD7634 /* NSShadow+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2874FBB1AE68D3800BD7634 /* NSShadow+MoonKitAdditions.swift */; };
 		C28A61EB1B0CEA2100612469 /* LabeledStepper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28A61EA1B0CEA2100612469 /* LabeledStepper.swift */; };
+		C28C9B091BC35740002945BC /* NotificationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28C9B081BC35740002945BC /* NotificationType.swift */; settings = {ASSET_TAGS = (); }; };
 		C28E35BA1A451E3800438CCF /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28E35B91A451E3800438CCF /* CoreDataStack.swift */; };
 		C28E35BC1A45DBAB00438CCF /* Dictionary+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28E35BB1A45DBAB00438CCF /* Dictionary+MoonKitAdditions.swift */; };
 		C28E35BE1A45DBF300438CCF /* Array+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28E35BD1A45DBF300438CCF /* Array+MoonKitAdditions.swift */; };
@@ -570,6 +571,7 @@
 		C285D8271AC44E5500C527F6 /* MoonKitLite.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MoonKitLite.h; sourceTree = "<group>"; };
 		C2874FBB1AE68D3800BD7634 /* NSShadow+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSShadow+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C28A61EA1B0CEA2100612469 /* LabeledStepper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabeledStepper.swift; sourceTree = "<group>"; };
+		C28C9B081BC35740002945BC /* NotificationType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationType.swift; sourceTree = "<group>"; };
 		C28E35B91A451E3800438CCF /* CoreDataStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CoreDataStack.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		C28E35BB1A45DBAB00438CCF /* Dictionary+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C28E35BD1A45DBF300438CCF /* Array+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+MoonKitAdditions.swift"; sourceTree = "<group>"; };
@@ -962,6 +964,7 @@
 			children = (
 				C23592F019C8E04200920F8D /* FontAwesomeIcon.swift */,
 				C2E7C8311A1AA3F0006BC80E /* Protocols.swift */,
+				C28C9B081BC35740002945BC /* NotificationType.swift */,
 			);
 			path = Other;
 			sourceTree = "<group>";
@@ -1855,6 +1858,7 @@
 				C24A22971ADB47590065E7EA /* CollectionManipulations.swift in Sources */,
 				C23592FE19C8E04200920F8D /* String+MoonKitAdditions.swift in Sources */,
 				C2CEFF2A1A32807E00F3BE24 /* TextInputView.swift in Sources */,
+				C28C9B091BC35740002945BC /* NotificationType.swift in Sources */,
 				C26A27F71B9532A900BD1698 /* Knob.swift in Sources */,
 				C2358F3F19C78E0C00920F8D /* NSObject+MSKitAdditions.m in Sources */,
 				C2D406761BBA0F6700681DEF /* NSURL+MoonKitAdditions.swift in Sources */,

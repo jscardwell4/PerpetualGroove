@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "C2E043301B72F4DC005F0675"
-               BuildableName = "MidiSprite.app"
-               BlueprintName = "MidiSprite"
-               ReferencedContainer = "container:MidiSprite.xcodeproj">
+               BuildableName = "Groove.app"
+               BlueprintName = "PerpetualGroove"
+               ReferencedContainer = "container:PerpetualGroove.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C2E043301B72F4DC005F0675"
-            BuildableName = "MidiSprite.app"
-            BlueprintName = "MidiSprite"
-            ReferencedContainer = "container:MidiSprite.xcodeproj">
+            BuildableName = "Groove.app"
+            BlueprintName = "PerpetualGroove"
+            ReferencedContainer = "container:PerpetualGroove.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -56,9 +56,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C2E043301B72F4DC005F0675"
-            BuildableName = "MidiSprite.app"
-            BlueprintName = "MidiSprite"
-            ReferencedContainer = "container:MidiSprite.xcodeproj">
+            BuildableName = "Groove.app"
+            BlueprintName = "PerpetualGroove"
+            ReferencedContainer = "container:PerpetualGroove.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <EnvironmentVariables>
@@ -82,9 +82,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C2E043301B72F4DC005F0675"
-            BuildableName = "MidiSprite.app"
-            BlueprintName = "MidiSprite"
-            ReferencedContainer = "container:MidiSprite.xcodeproj">
+            BuildableName = "Groove.app"
+            BlueprintName = "PerpetualGroove"
+            ReferencedContainer = "container:PerpetualGroove.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
