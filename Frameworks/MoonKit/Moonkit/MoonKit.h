@@ -24,7 +24,7 @@ FOUNDATION_EXPORT const unsigned char MoonKitVersionString[];
 #import <MoonKit/MSScrollWheel.h>
 #import <MoonKit/NSAssertionHandler+MSKitAdditions.h>
 #import <MoonKit/MSKitGeometryFunctions.h>
-#import <MoonKit/NSAttributedString+MSKitAdditions.h>
+//#import <MoonKit/NSAttributedString+MSKitAdditions.h>
 #import <MoonKit/MSKitLoggingFunctions.h>
 #import <MoonKit/NSDictionary+MSKitAdditions.h>
 #import <MoonKit/MSKitMiscellaneousFunctions.h>

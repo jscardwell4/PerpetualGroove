@@ -58,7 +58,8 @@ class TrackCell: MixerCell, UITextFieldDelegate {
   @IBOutlet var volumeLabel: Label!
   @IBOutlet var panLabel: Label!
   @IBOutlet var labelTextField: UITextField!
-
+  @IBOutlet var trackLabel: Marquee!
+  
   /** solo */
   @IBAction func solo() {
     logDebug()
@@ -108,6 +109,7 @@ class TrackCell: MixerCell, UITextFieldDelegate {
       volume = track?.volume ?? 0
       pan = track?.pan ?? 0
       labelTextField.text = track?.name
+      trackLabel.text = track?.name ?? ""
     }
   }
 

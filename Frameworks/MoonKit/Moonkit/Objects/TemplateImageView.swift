@@ -34,6 +34,20 @@ import Foundation
     }
   }
 
+  /**
+  initWithFrame:
+
+  - parameter frame: CGRect
+  */
+  public override init(frame: CGRect) {
+    super.init(frame: frame)
+  }
+
+  /**
+  init:
+
+  - parameter aDecoder: NSCoder
+  */
   public required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
     highlightedTintColor = aDecoder.decodeObjectForKey("highlightedTintColor") as? UIColor

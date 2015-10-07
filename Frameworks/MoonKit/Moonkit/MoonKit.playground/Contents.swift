@@ -1,28 +1,158 @@
 import Foundation
 import UIKit
+import CoreText
 import MoonKit
 
-UIColor(red:0.681664, green:0.382043, blue:0.252485, alpha:1) //case MuddyWaters        = 0xad6140
-UIColor(red:0.223451, green:0.376766, blue:0.591482, alpha:1) //case SteelBlue          = 0x386096
-UIColor(red:0.559422, green:0.658949, blue:0.239259, alpha:1) //case Celery             = 0x8ea83d
-UIColor(red:0.664569, green:0.230875, blue:0.266520, alpha:1) //case Chestnut           = 0xa93a43
-UIColor(red:0.422734, green:0.191120, blue:0.591550, alpha:1) //case CrayonPurple       = 0x6b3096
-UIColor(red:0.232969, green:0.580221, blue:0.591735, alpha:1) //case Verdigris          = 0x3b9396
-UIColor(red:0.683579, green:0.488086, blue:0.252727, alpha:1) //case Twine              = 0xae7c40
-UIColor(red:0.600864, green:0.198249, blue:0.478863, alpha:1) //case Tapestry           = 0x99327a
-UIColor(red:0.688018, green:0.682713, blue:0.253290, alpha:1) //case VegasGold          = 0xafae40
-UIColor(red:0.242682, green:0.196801, blue:0.591354, alpha:1) //case RichBlue           = 0x3d3296
-UIColor(red:0.272041, green:0.614156, blue:0.222535, alpha:1) //case FruitSalad         = 0x459c38
-UIColor(red:0.685614, green:0.583654, blue:0.252985, alpha:1) //case Husk               = 0xae9440
-UIColor(red:0.700974, green:0.179911, blue:0.015878, alpha:1) //case Mahogany           = 0xb22d04
-UIColor(red:0.017646, green:0.206819, blue:0.538185, alpha:1) //case MediumElectricBlue = 0x043489
-UIColor(red:0.487471, green:0.651207, blue:0.018299, alpha:1) //case AppleGreen         = 0x7ca604
-UIColor(red:0.672652, green:0.000000, blue:0.045407, alpha:1) //case VenetianRed        = 0xab000b
-UIColor(red:0.281218, green:0.000000, blue:0.538252, alpha:1) //case Indigo             = 0x470089
-UIColor(red:0.065972, green:0.517407, blue:0.538517, alpha:1) //case EasternBlue        = 0x108389
-UIColor(red:0.703056, green:0.354426, blue:0.018453, alpha:1) //case Indochine          = 0xb35a04
-UIColor(red:0.559213, green:0.000000, blue:0.361609, alpha:1) //case Flirt              = 0x8e005c
-UIColor(red:0.038843, green:0.000000, blue:0.538096, alpha:1) //case Ultramarine        = 0x090089
-UIColor(red:0.709978, green:0.694546, blue:0.027065, alpha:1) //case LaRioja            = 0xb5b106
-UIColor(red:0.097055, green:0.568389, blue:0.008709, alpha:1) //case ForestGreen        = 0x189002
-UIColor(red:0.705951, green:0.518508, blue:0.022047, alpha:1) //case Pizza              = 0xb48405
+let string = "I am a string, bitches!!!"
+
+extension _NSRange: CustomStringConvertible {
+  public var description: String { return "_NSRange { location: \(location); length: \(length) }" }
+}
+
+final class Marquee: UIView {
+
+  var text: String = "" {
+    didSet { textStorage.beginEditing(); textStorage.mutableString.setString(text); textStorage.endEditing() }
+  }
+  var textColor: UIColor = .blackColor() {
+    didSet {
+      textStorage.beginEditing()
+      textStorage.addAttribute(NSForegroundColorAttributeName, value: textColor, range: NSRange(location: 0, length: textStorage.length))
+      textStorage.endEditing()
+    }
+  }
+  var font: UIFont = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline) {
+    didSet {
+      textStorage.beginEditing()
+      textStorage.addAttribute(NSFontAttributeName, value: font, range: NSRange(location: 0, length: textStorage.length))
+      textStorage.endEditing()
+    }
+  }
+
+  private let layoutManager: NSLayoutManager = NSLayoutManager()
+  private let textStorage: NSTextStorage = NSTextStorage()
+  private let textContainer: NSTextContainer = { let container = NSTextContainer(); container.lineBreakMode = .ByCharWrapping; return container }()
+
+  /** setup */
+  private func setup() {
+    layoutManager.delegate = self
+    textContainer.size = bounds.size
+    layoutManager.addTextContainer(textContainer)
+    textStorage.addLayoutManager(layoutManager)
+    textStorage.beginEditing()
+    textStorage.addAttribute(NSFontAttributeName, value: font, range: NSRange(location: 0, length: 0))
+    textStorage.addAttribute(NSForegroundColorAttributeName, value: textColor, range: NSRange(location: 0, length: 0))
+    textStorage.endEditing()
+  }
+
+  /**
+  initWithFrame:
+
+  - parameter frame: CGRect
+  */
+  override init(frame: CGRect) { super.init(frame: frame); setup() }
+
+  /**
+  init:
+
+  - parameter aDecoder: NSCoder
+  */
+  required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder); setup() }
+
+
+  override var bounds: CGRect { didSet { textContainer.size = bounds.size } }
+
+  var offset = 0 {
+    didSet {
+      offset = (0 ... textStorage.length - 1).clampValue(offset)
+      guard offset != oldValue else { return }
+      guard text.utf16.count == textStorage.length else { fatalError("wtf") }
+      let head = text[text.startIndex.advancedBy(offset) ..< text.endIndex]
+      let tail = text[text.startIndex ..< text.startIndex.advancedBy(offset)]
+      textStorage.beginEditing()
+      let string = textStorage.mutableString
+      string.setString("\(head)\(tail)")
+      textStorage.endEditing()
+    }
+  }
+
+  override func drawRect(rect: CGRect) {
+    dump(textContainer)
+    guard textStorage.length > 0 else { return }
+    var effectiveRange = NSRange()
+    guard layoutManager.textContainerForGlyphAtIndex(offset, effectiveRange: &effectiveRange) == textContainer else { fatalError() }
+    dump(effectiveRange)
+//    let glyphRange = layoutManager.glyphRangeForTextContainer(textContainer)
+//    dump(glyphRange)
+    layoutManager.drawGlyphsForGlyphRange(effectiveRange, atPoint: rect.origin)
+  }
+
+}
+
+extension Marquee: NSLayoutManagerDelegate {
+
+  /**
+  layoutManager:shouldGenerateGlyphs:properties:characterIndexes:font:forGlyphRange:
+
+  - parameter layoutManager: NSLayoutManager
+  - parameter glyphs: UnsafePointer<CGGlyph>
+  - parameter props: UnsafePointer<NSGlyphProperty>
+  - parameter charIndexes: UnsafePointer<Int>
+  - parameter aFont: UIFont
+  - parameter glyphRange: NSRange
+
+  - returns: Int
+  */
+  func layoutManager(layoutManager: NSLayoutManager,
+shouldGenerateGlyphs glyphs: UnsafePointer<CGGlyph>,
+          properties props: UnsafePointer<NSGlyphProperty>,
+    characterIndexes charIndexes: UnsafePointer<Int>,
+                font aFont: UIFont,
+       forGlyphRange glyphRange: NSRange) -> Int
+  {
+    print("layoutManager:shouldGenerateGlyphs:properties:characterIndexes:font:forGlyphRange:")
+    dump(layoutManager)
+    dump(glyphs)
+    dump(props)
+    dump(charIndexes)
+    dump(aFont)
+    dump(glyphRange)
+    print("\n")
+    return 0
+  }
+
+  /**
+  layoutManagerDidInvalidateLayout:
+
+  - parameter sender: NSLayoutManager
+  */
+  func layoutManagerDidInvalidateLayout(sender: NSLayoutManager) {
+    print("layoutManagerDidInvalidateLayout:")
+    dump(sender)
+    print("\n")
+    setNeedsDisplay()
+  }
+}
+
+let marquee = Marquee(frame: CGRect(size: CGSize(width: 100, height: 20)))
+marquee.backgroundColor = .lightGrayColor()
+marquee.textColor = .purpleColor()
+marquee.text = string
+marquee.offset = 1
+marquee.offset = 2
+
+marquee.offset = 3
+
+marquee.offset = 4
+
+marquee.offset = 5
+
+marquee.offset = 6
+
+marquee.offset = 7
+
+marquee.offset = 8
+
+marquee.offset = 9
+
+marquee.offset = 10

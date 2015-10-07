@@ -38,6 +38,14 @@ private func sortedRanges<T:ForwardIndexType where T:Comparable>(ranges: [Range<
 
 public extension Range where Element: Comparable {
 
+  /**
+  split:noImplicitJoin:
+
+  - parameter ranges: [Range<Element>]
+  - parameter noImplicitJoin: Bool = false
+
+  - returns: [Range<Element>]
+  */
   public func split(ranges: [Range<Element>], noImplicitJoin: Bool = false) -> [Range<Element>] {
     var result: [Range<Element>] = []
 
@@ -61,6 +69,13 @@ public extension Range where Element: Comparable {
     return result
   }
 
+  /**
+  split:
+
+  - parameter range: Range<Element>
+
+  - returns: [Range<Element>]
+  */
   public func split(range: Range<Element>) -> [Range<Element>] {
     if range.startIndex == startIndex {
       return [Range<Element>(start: range.endIndex, end: endIndex)]

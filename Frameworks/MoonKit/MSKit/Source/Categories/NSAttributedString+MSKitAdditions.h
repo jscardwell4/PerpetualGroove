@@ -11,9 +11,9 @@
 @import UIKit;
 
 @class MSDictionary;
-@interface NSAttributedString (_MSKitAdditions)
-- (instancetype)initWithString:(NSString *)str attributes:(MSDictionary *)attrs;
-@end
+//@interface NSAttributedString (_MSKitAdditions)
+//- (instancetype)initWithString:(NSString *)str attributes:(MSDictionary *)attrs;
+//@end
 
 @interface NSAttributedString (MSKitAdditions)
 

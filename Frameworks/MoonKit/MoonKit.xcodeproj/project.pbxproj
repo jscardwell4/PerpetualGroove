@@ -100,7 +100,6 @@
 		C2358F1B19C78D6D00920F8D /* MoonKit.h in Headers */ = {isa = PBXBuildFile; fileRef = C2358F1A19C78D6D00920F8D /* MoonKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C2358F3219C78E0C00920F8D /* CALayer+MSKitAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CE887A18138CF700555D63 /* CALayer+MSKitAdditions.m */; };
 		C2358F3319C78E0C00920F8D /* NSArray+MSKitAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CE887E18138CF700555D63 /* NSArray+MSKitAdditions.m */; };
-		C2358F3419C78E0C00920F8D /* NSAttributedString+MSKitAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CE888018138CF700555D63 /* NSAttributedString+MSKitAdditions.m */; };
 		C2358F3519C78E0C00920F8D /* NSDictionary+MSKitAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CE888218138CF700555D63 /* NSDictionary+MSKitAdditions.m */; };
 		C2358F3619C78E0C00920F8D /* NSFetchedResultsController+MSKitAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CE888418138CF700555D63 /* NSFetchedResultsController+MSKitAdditions.m */; };
 		C2358F3719C78E0C00920F8D /* NSFetchRequest+MSKitAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CE888618138CF700555D63 /* NSFetchRequest+MSKitAdditions.m */; };
@@ -181,7 +180,6 @@
 		C2358F8819C78E0C00920F8D /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = C2F9414419BE7D01007B5CC1 /* GCDAsyncUdpSocket.m */; };
 		C2358F8A19C78E3F00920F8D /* CALayer+MSKitAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = C2CE887918138CF700555D63 /* CALayer+MSKitAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C2358F8B19C78E3F00920F8D /* NSArray+MSKitAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = C2CE887D18138CF700555D63 /* NSArray+MSKitAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		C2358F8C19C78E3F00920F8D /* NSAttributedString+MSKitAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = C2CE887F18138CF700555D63 /* NSAttributedString+MSKitAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C2358F8D19C78E3F00920F8D /* NSDictionary+MSKitAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = C2CE888118138CF700555D63 /* NSDictionary+MSKitAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C2358F8E19C78E3F00920F8D /* NSFetchedResultsController+MSKitAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = C2CE888318138CF700555D63 /* NSFetchedResultsController+MSKitAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C2358F8F19C78E3F00920F8D /* NSFetchRequest+MSKitAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = C2CE888518138CF700555D63 /* NSFetchRequest+MSKitAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -400,6 +398,7 @@
 		C2F094471A32AA8600681AB3 /* KeyInputButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F094461A32AA8600681AB3 /* KeyInputButton.swift */; };
 		C2F39D2B1A3A51960024EE94 /* FontAwesome.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2F39D2A1A3A51960024EE94 /* FontAwesome.otf */; };
 		C2F39D2F1A3A6D5A0024EE94 /* NSAttributedString+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F39D2E1A3A6D5A0024EE94 /* NSAttributedString+MoonKitAdditions.swift */; };
+		C2F619E01BC599D00000891A /* Marquee.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F619DF1BC599D00000891A /* Marquee.swift */; settings = {ASSET_TAGS = (); }; };
 		C2F75A0D1B977075001EA2BA /* PropertyCoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F75A0C1B977075001EA2BA /* PropertyCoder.swift */; settings = {ASSET_TAGS = (); }; };
 		C2F84F431B14C4B700AF891D /* NSIndexSet+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F84F421B14C4B700AF891D /* NSIndexSet+MoonKitAdditions.swift */; };
 		C2F8C30F1A36133E004229FE /* TwoToneSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F8C30E1A36133E004229FE /* TwoToneSlider.swift */; };
@@ -796,6 +795,7 @@
 		C2F39D2E1A3A6D5A0024EE94 /* NSAttributedString+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSAttributedString+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C2F4370219BB813F00B60FC3 /* MSKeyPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSKeyPath.h; sourceTree = "<group>"; };
 		C2F4370319BB813F00B60FC3 /* MSKeyPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSKeyPath.m; sourceTree = "<group>"; };
+		C2F619DF1BC599D00000891A /* Marquee.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Marquee.swift; sourceTree = "<group>"; };
 		C2F75A0C1B977075001EA2BA /* PropertyCoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyCoder.swift; sourceTree = "<group>"; };
 		C2F84F421B14C4B700AF891D /* NSIndexSet+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSIndexSet+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C2F8C30E1A36133E004229FE /* TwoToneSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TwoToneSlider.swift; sourceTree = "<group>"; };
@@ -1097,6 +1097,7 @@
 				C226BB5E1BA0DA7300E4FC98 /* Stepper.swift */,
 				C25C6F611BA8F23800B3CBAB /* ScrollWheel.swift */,
 				C20E102B1BBF2DE600AAC01A /* TemplateImageView.swift */,
+				C2F619DF1BC599D00000891A /* Marquee.swift */,
 			);
 			path = Objects;
 			sourceTree = "<group>";
@@ -1510,7 +1511,6 @@
 				C2358F1B19C78D6D00920F8D /* MoonKit.h in Headers */,
 				C2358F8A19C78E3F00920F8D /* CALayer+MSKitAdditions.h in Headers */,
 				C2358F8B19C78E3F00920F8D /* NSArray+MSKitAdditions.h in Headers */,
-				C2358F8C19C78E3F00920F8D /* NSAttributedString+MSKitAdditions.h in Headers */,
 				C2358F8D19C78E3F00920F8D /* NSDictionary+MSKitAdditions.h in Headers */,
 				C2358F8E19C78E3F00920F8D /* NSFetchedResultsController+MSKitAdditions.h in Headers */,
 				C2358F8F19C78E3F00920F8D /* NSFetchRequest+MSKitAdditions.h in Headers */,
@@ -1832,7 +1832,6 @@
 				C2358F3219C78E0C00920F8D /* CALayer+MSKitAdditions.m in Sources */,
 				C2AA2BCD1B8508AA00A0B08D /* Heap.swift in Sources */,
 				C2358F3319C78E0C00920F8D /* NSArray+MSKitAdditions.m in Sources */,
-				C2358F3419C78E0C00920F8D /* NSAttributedString+MSKitAdditions.m in Sources */,
 				C2618A681B7A436400122EBA /* FormTextField.swift in Sources */,
 				C2358F3519C78E0C00920F8D /* NSDictionary+MSKitAdditions.m in Sources */,
 				C2358F3619C78E0C00920F8D /* NSFetchedResultsController+MSKitAdditions.m in Sources */,
@@ -2050,6 +2049,7 @@
 				C2358F8419C78E0C00920F8D /* MSReplicatorView.m in Sources */,
 				C2C482E519CA0225002E84A9 /* Stack.swift in Sources */,
 				C28E509B1A143FDC00DF3206 /* MultiselectGestureRecognizer.swift in Sources */,
+				C2F619E01BC599D00000891A /* Marquee.swift in Sources */,
 				C2D5F2431B97BDC3005040EF /* _Slider.swift in Sources */,
 				C2358F8519C78E0C00920F8D /* MSTouchReporterView.m in Sources */,
 				C2358F8619C78E0C00920F8D /* MSView.m in Sources */,
