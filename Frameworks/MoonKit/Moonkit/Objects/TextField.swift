@@ -8,8 +8,30 @@
 
 import UIKit
 
-public class TextField: UITextField {
-  public var gutter: CGFloat = 4.0
+@IBDesignable public class TextField: UITextField {
+
+  @IBInspectable public var gutter: UIEdgeInsets = .zeroInsets {
+    didSet {
+      guard gutter != oldValue else { return }
+      invalidateIntrinsicContentSize()
+    }
+  }
+
+  @IBInspectable public var tintColorAlpha: CGFloat = 0 {
+    didSet {
+      guard tintColorAlpha != oldValue else { return }
+      tintColorAlpha = (0 ... 1).clampValue(tintColorAlpha)
+      if !highlighted { setNeedsDisplay() }
+    }
+  }
+
+  @IBInspectable public var highlightedTintColorAlpha: CGFloat = 0 {
+    didSet {
+      guard highlightedTintColorAlpha != oldValue else { return }
+      highlightedTintColorAlpha = (0 ... 1).clampValue(highlightedTintColorAlpha)
+      if highlighted { setNeedsDisplay() }
+    }
+  }
 
   /**
   drawRect:
@@ -17,33 +39,32 @@ public class TextField: UITextField {
   - parameter rect: CGRect
   */
   public override func drawTextInRect(rect: CGRect) {
-    var newRect = rect
-    newRect.origin.x = rect.origin.x + gutter
-    newRect.origin.y = rect.origin.y + gutter
-    newRect.size.width = rect.size.width - CGFloat(2) * gutter
-    newRect.size.height = rect.size.height - CGFloat(2) * gutter
-    attributedText?.drawInRect(newRect)
+    super.drawTextInRect(rect)
+    let alpha = highlighted ? highlightedTintColorAlpha : tintColorAlpha
+    guard alpha > 0 else { return }
+
+    UIGraphicsBeginImageContextWithOptions(rect.size, false, 0)
+    super.drawTextInRect(rect)
+    let image = UIGraphicsGetImageFromCurrentImageContext()
+    UIGraphicsEndImageContext()
+
+    let context = UIGraphicsGetCurrentContext()
+    CGContextSaveGState(context)
+
+    image.addClip()
+    tintColor.colorWithAlpha(alpha).setFill()
+    UIRectFillUsingBlendMode(rect, .Color)
+
+    CGContextRestoreGState(context)
   }
-
-  /**
-  alignmentRectInsets
-
-  - returns: UIEdgeInsets
-  */
-//  public override func alignmentRectInsets() -> UIEdgeInsets {
-//    return UIEdgeInsets(top: gutter, left: gutter, bottom: gutter, right: gutter);
-//  }
 
   /**
   intrinsicContentSize
 
   - returns: CGSize
   */
-//  public override func intrinsicContentSize() -> CGSize {
-//    var size = super.intrinsicContentSize()
-//    size.width += CGFloat(2) * gutter
-//    size.height += CGFloat(2) * gutter
-//    return size;
-//  }
+  public override func intrinsicContentSize() -> CGSize {
+    return gutter.insetRect(CGRect(size: super.intrinsicContentSize())).size
+  }
 
 }

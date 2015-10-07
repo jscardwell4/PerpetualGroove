@@ -22,9 +22,22 @@ import Foundation
     }
   }
 
+  override public var tintColor: UIColor! {
+    didSet {
+      setNeedsDisplay()
+    }
+  }
+
   @IBInspectable public var highlightedTintColor: UIColor? {
     didSet {
       highlightedImage = highlightedImage?.imageWithColor(highlightedTintColor ?? tintColor)
     }
+  }
+
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+    highlightedTintColor = aDecoder.decodeObjectForKey("highlightedTintColor") as? UIColor
+    super.image = image?.imageWithRenderingMode(.AlwaysTemplate)
+    super.highlightedImage = highlightedImage?.imageWithRenderingMode(.AlwaysTemplate).imageWithColor(highlightedTintColor ?? tintColor)
   }
 }

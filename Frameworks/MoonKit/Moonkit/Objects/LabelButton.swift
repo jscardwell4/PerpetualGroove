@@ -18,15 +18,15 @@ import UIKit
 
   public override var selected: Bool { didSet { label?.highlighted = highlighted || selected } }
 
-  private weak var label: UILabel!
+  private weak var label: Label!
 
   public typealias Action = (LabelButton) -> Void
 
   /** setup */
   private func setup() {
-    let label = UILabel(frame: self.bounds)
+    let label = Label(frame: self.bounds)
     label.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
-    self.addSubview(label)
+    addSubview(label)
     self.label = label
   }
 
@@ -133,9 +133,19 @@ import UIKit
     self.touch = nil
   }
 
-  // MARK: - Wrapping UILabel
+  // MARK: - Wrapping Label
 
-  @IBInspectable public var text: String? { 
+  @IBInspectable public var tintColorAlpha: CGFloat {
+    get { return label?.tintColorAlpha ?? 0 }
+    set { label?.tintColorAlpha = newValue }
+  }
+
+  @IBInspectable public var highlightedTintColorAlpha: CGFloat {
+    get { return label?.highlightedTintColorAlpha ?? 0 }
+    set { label?.highlightedTintColorAlpha = newValue }
+  }
+
+  @IBInspectable public var text: String? {
     get { return label?.text } 
     set { label?.text = newValue; invalidateIntrinsicContentSize() }
   }

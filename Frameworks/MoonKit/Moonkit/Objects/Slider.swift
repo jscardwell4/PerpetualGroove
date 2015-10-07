@@ -67,6 +67,14 @@ import Chameleon
     didSet { guard showsTrackLabel && oldValue != trackLabelTextColor else { return }; setNeedsDisplay() }
   }
 
+  @IBInspectable public var tintColorAlpha: CGFloat = 0 {
+    didSet {
+      guard tintColorAlpha != oldValue else { return }
+      tintColorAlpha = (0 ... 1).clampValue(tintColorAlpha)
+      setNeedsDisplay()
+    }
+  }
+  
   // MARK: - Offsets
 
   @IBInspectable public var thumbXOffset: CGFloat = 0 { 
@@ -479,6 +487,26 @@ import Chameleon
       let textFrame = CGRect(size: textSize, center: thumbFrame.center).offsetBy(dx: valueLabelXOffset, dy: valueLabelYOffset)
 
       text.drawInRect(textFrame, withAttributes: attributes)
+    }
+
+    if tintColorAlpha > 0 {
+      tintColor.colorWithAlpha(tintColorAlpha).setFill()
+
+      if let trackMinImage = trackMinImage, trackMaxImage = trackMaxImage, thumbImage = thumbImage {
+        UIGraphicsBeginImageContextWithOptions(rect.size, false, 0)
+        trackMinImage.drawAsPatternInRect(trackMinFrame)
+        trackMaxImage.drawAsPatternInRect(trackMaxFrame)
+        thumbImage.drawInRect(thumbFrame)
+        guard let image = UIGraphicsGetImageFromCurrentImageContext() else { logError("Failed to produce image from context"); return }
+        UIGraphicsEndImageContext()
+        image.addClip()
+        UIRectFillUsingBlendMode(rect, .Color)
+      } else {
+        UIRectFillUsingBlendMode(trackMinFrame, .Color)
+        UIRectFillUsingBlendMode(trackMaxFrame, .Color)
+        UIBezierPath(ovalInRect: thumbFrame).addClip()
+        UIRectFillUsingBlendMode(thumbFrame, .Color)
+      }
     }
 
     // Restore the context to previous state

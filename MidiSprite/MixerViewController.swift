@@ -32,6 +32,7 @@ final class MixerViewController: UICollectionViewController {
     super.viewDidLoad()
     view.translatesAutoresizingMaskIntoConstraints = false
     collectionView?.translatesAutoresizingMaskIntoConstraints = false
+    collectionView?.allowsSelection = true
 
     guard notificationReceptionist == nil else { return }
     notificationReceptionist = generateNotificationReceptionist()
@@ -243,17 +244,17 @@ final class MixerViewController: UICollectionViewController {
   override func collectionView(collectionView: UICollectionView,
    shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool
   {
-    return indexPath.section == Section.Instruments.rawValue
+    return false
   }
 
-  /**
-  collectionView:didSelectItemAtIndexPath:
-
-  - parameter collectionView: UICollectionView
-  - parameter indexPath: NSIndexPath
-  */
-  override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-    guard indexPath.section == Section.Instruments.rawValue && currentTrackIndexPath != indexPath else { return }
-    currentTrackIndexPath = indexPath
-  }
+//  /**
+//  collectionView:didSelectItemAtIndexPath:
+//
+//  - parameter collectionView: UICollectionView
+//  - parameter indexPath: NSIndexPath
+//  */
+//  override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+//    guard indexPath.section == Section.Instruments.rawValue && currentTrackIndexPath != indexPath else { return }
+//    currentTrackIndexPath = indexPath
+//  }
 }

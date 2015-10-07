@@ -23,22 +23,26 @@ final class MIDISequence {
   var sequenceEnd: CABarBeatTime { return tracks.map({$0.trackEnd}).maxElement() ?? .start }
 
   /** The instrument tracks are stored in the `tracks` array beginning at index `1` */
-  var instrumentTracks: [InstrumentTrack] { return tracks.count > 1 ? tracks[1..<].map({$0 as! InstrumentTrack}) : [] }
+  private(set) var instrumentTracks: [InstrumentTrack] = []// { return tracks.count > 1 ? tracks[1..<].map({$0 as! InstrumentTrack}) : [] }
 
   var currentTrack: InstrumentTrack? {
     didSet {
-      guard currentTrack == nil || instrumentTracks ∋ currentTrack! else { currentTrack = nil; return }
+      guard instrumentTracks ∋ currentTrack else { if currentTrack != nil { currentTrack = nil }; return }
       Notification.DidChangeTrack.post(object: self,
-                                              userInfo: [Notification.Key.OldTrack: oldValue as? AnyObject,
-                                                         Notification.Key.Track:    currentTrack as? AnyObject])
+                                       userInfo: [Notification.Key.OldTrack: oldValue as? AnyObject,
+                                                  Notification.Key.Track:    currentTrack as? AnyObject])
     }
   }
 
   /** The tempo track for the sequence is the first element in the `tracks` array */
-  var tempoTrack: TempoTrack { return tracks[0] as! TempoTrack }
+  private(set) var tempoTrack = TempoTrack()
 
   /** Collection of all the tracks in the composition */
-  private(set) var tracks: [MIDITrackType] = [TempoTrack()]
+  var tracks: [MIDITrackType] {
+    let tempo = [tempoTrack as MIDITrackType]
+    let instruments = instrumentTracks.map({$0 as MIDITrackType})
+    return tempo + instruments
+  }
 
   /**
   toggleSoloForTrack:
@@ -54,7 +58,7 @@ final class MIDISequence {
     }
   }
 
-  /** Generates a `MIDIFile` from the current sequence state */
+  /** Conversion to and from the `MIDIFile` type  */
   var file: MIDIFile {
     get { return MIDIFile(format: .One, division: 480, tracks: tracks) }
     set {
@@ -63,11 +67,12 @@ final class MIDISequence {
       if let trackChunk = trackChunks.first
         where trackChunk.events.count == trackChunk.events.filter({ TempoTrack.isTempoTrackEvent($0) }).count
       {
-        tracks[0] = TempoTrack(trackChunk: trackChunk) as MIDITrackType
+        tempoTrack = TempoTrack(trackChunk: trackChunk)
         trackChunks = trackChunks.dropFirst()
       }
 
-      tracks.appendContentsOf(trackChunks.flatMap({ try? InstrumentTrack(trackChunk: $0) }) as [MIDITrackType])
+      instrumentTracks = trackChunks.flatMap({ try? InstrumentTrack(trackChunk: $0) })
+      zip(InstrumentTrack.Color.allCases, instrumentTracks).forEach { $1.color = $0 }
     }
   }
 
@@ -90,9 +95,10 @@ final class MIDISequence {
 
   func newTrackWithInstrument(instrument: Instrument) throws -> InstrumentTrack {
     let track = try InstrumentTrack(instrument: instrument)
-    tracks.append(track)
+    track.color = InstrumentTrack.Color.allCases[(instrumentTracks.count + 1) % InstrumentTrack.Color.allCases.count]
+    instrumentTracks.append(track)
     Notification.DidAddTrack.post(object: self, userInfo: [Notification.Key.Track: track])
-    return tracks.last as! InstrumentTrack
+    return track
   }
 
   /**
@@ -101,11 +107,8 @@ final class MIDISequence {
   - parameter track: InstrumentTrack
   */
   func removeTrack(track: InstrumentTrack) {
-    let instrumentTracks = self.instrumentTracks
-    guard let idx = instrumentTracks.indexOf(track) where instrumentTracks.count == tracks.count - 1 else {
-      return
-    }
-    tracks.removeAtIndex(idx + 1)
+    guard let idx = instrumentTracks.indexOf(track) else { return }
+    instrumentTracks.removeAtIndex(idx)
     Notification.DidRemoveTrack.post(object: self, userInfo: [Notification.Key.Track: track])
   }
 
@@ -124,19 +127,19 @@ final class MIDISequence {
 
   - parameter file: NSURL
   */
-  func writeToFile(file: NSURL, overwrite: Bool = false) throws {
-    let midiFile = self.file
-    dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)) {
-      logDebug(midiFile.description)
-      let bytes = midiFile.bytes
-      let data = NSData(bytes: bytes, length: bytes.count)
-      do {
-        try data.writeToURL(file, options: overwrite ? [.DataWritingAtomic] : [.DataWritingWithoutOverwriting])
-      } catch {
-        logError(error)
-      }
-    }
-  }
+//  func writeToFile(file: NSURL, overwrite: Bool = false) throws {
+//    let midiFile = self.file
+//    dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)) {
+//      logDebug(midiFile.description)
+//      let bytes = midiFile.bytes
+//      let data = NSData(bytes: bytes, length: bytes.count)
+//      do {
+//        try data.writeToURL(file, options: overwrite ? [.DataWritingAtomic] : [.DataWritingWithoutOverwriting])
+//      } catch {
+//        logError(error)
+//      }
+//    }
+//  }
 
 }
 

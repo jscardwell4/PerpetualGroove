@@ -45,15 +45,23 @@ import UIKit
 
   @IBInspectable public var indicatorImage: UIImage? {
     didSet {
-      guard indicatorImage != oldValue && !indicatorColorModified else { return }
+      guard indicatorImage != oldValue else { return }
       indicatorImage = indicatorImage?.imageWithColor(indicatorColor)
       setNeedsDisplay()
     }
   }
   @IBInspectable public var indicatorFillImage: UIImage? {
     didSet {
-      guard indicatorFillImage != oldValue && !indicatorColorModified else { return }
-      indicatorFillImage = indicatorFillImage?.imageWithColor(indicatorColor)
+      guard indicatorFillImage != oldValue else { return }
+      indicatorFillImage = indicatorFillImage?.imageWithColor(indicatorFillColor)
+      setNeedsDisplay()
+    }
+  }
+
+  @IBInspectable public var tintColorAlpha: CGFloat = 0 {
+    didSet {
+      guard tintColorAlpha != oldValue else { return }
+      tintColorAlpha = (0 ... 1).clampValue(tintColorAlpha)
       setNeedsDisplay()
     }
   }
@@ -106,18 +114,21 @@ import UIKit
     }
   }
 
-  private var indicatorColorModified = false
   @IBInspectable public var indicatorColor: UIColor = .lightGrayColor() {
     didSet {
       guard indicatorColor != oldValue else { return }
-      indicatorColorModified = true
       indicatorImage = indicatorImage?.imageWithColor(indicatorColor)
-      indicatorFillImage = indicatorFillImage?.imageWithColor(indicatorColor)
-      indicatorColorModified = false
       setNeedsDisplay()
     }
   }
 
+  @IBInspectable public var indicatorFillColor: UIColor = .lightGrayColor() {
+    didSet {
+      guard indicatorFillColor != oldValue else { return }
+      indicatorFillImage = indicatorFillImage?.imageWithColor(indicatorFillColor)
+      setNeedsDisplay()
+    }
+  }
   private var valueInterval: ClosedInterval<Float> = 0 ... 1 { didSet { value = valueInterval.clampValue(value) } }
 
   // MARK: - Styles
@@ -182,12 +193,18 @@ import UIKit
       indicatorPath.addLineToPoint(baseFrame.center)
       indicatorPath.closePath()
 
-      indicatorColor.setFill()
+      indicatorFillColor.setFill()
       indicatorPath.fillWithBlendMode(indicatorFillStyle, alpha: 1)
       indicatorPath.lineWidth = 2
       indicatorPath.lineJoinStyle = .Bevel
       indicatorColor.setStroke()
       indicatorPath.strokeWithBlendMode(indicatorStyle, alpha: 1)
+    }
+
+    if tintColorAlpha > 0 {
+      UIBezierPath(ovalInRect: baseFrame).addClip()
+      tintColor.colorWithAlpha(tintColorAlpha).setFill()
+      UIRectFillUsingBlendMode(baseFrame, .Color)
     }
 
     CGContextRestoreGState(context)

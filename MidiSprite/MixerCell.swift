@@ -55,10 +55,9 @@ class TrackCell: MixerCell, UITextFieldDelegate {
 
   @IBOutlet var soloButton: LabelButton!
   @IBOutlet var muteButton: LabelButton!
-  @IBOutlet var volumeLabel: UILabel!
-  @IBOutlet var panLabel: UILabel!
+  @IBOutlet var volumeLabel: Label!
+  @IBOutlet var panLabel: Label!
   @IBOutlet var labelTextField: UITextField!
-
 
   /** solo */
   @IBAction func solo() {
@@ -70,36 +69,33 @@ class TrackCell: MixerCell, UITextFieldDelegate {
     logDebug()
   }
 
+  /** setup */
+  private func setup() {
+    let view = UIView()
+    view.backgroundColor = .clearColor()
+    backgroundView = view
+    selectedBackgroundView = view
+  }
 
-//  override var selected: Bool {
-//    didSet {
-//      switch selected {
-//      case true:
-//        volumeLabel?.textColor = .secondaryColor2
-//        panLabel?.textColor = .secondaryColor2
-//        labelTextField?.textColor = .secondaryColor2
-//        panKnob?.knobColor = .secondaryColor2
-//        panKnob?.indicatorColor = .primaryColor2
-//        volumeSlider?.trackMinColor = .secondaryColor2
-//        volumeSlider?.trackMaxColor = .tertiaryColor2
-//        volumeSlider?.thumbColor = .primaryColor2
-//        soloButton?.textColor = .tertiaryColor2
-//        muteButton?.textColor = .tertiaryColor2
-//
-//      case false:
-//        volumeLabel?.textColor = .secondaryColor
-//        panLabel?.textColor = .secondaryColor
-//        labelTextField?.textColor = .secondaryColor
-//        panKnob?.knobColor = .secondaryColor
-//        panKnob?.indicatorColor = .primaryColor
-//        volumeSlider?.trackMinColor = .secondaryColor
-//        volumeSlider?.trackMaxColor = .tertiaryColor
-//        volumeSlider?.thumbColor = .primaryColor
-//        soloButton?.textColor = .tertiaryColor
-//        muteButton?.textColor = .tertiaryColor
-//      }
-//    }
-//  }
+  /**
+  initWithFrame:
+
+  - parameter frame: CGRect
+  */
+  override init(frame: CGRect) {
+    super.init(frame: frame)
+    setup()
+  }
+
+  /**
+  init:
+
+  - parameter aDecoder: NSCoder
+  */
+  required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+    setup()
+  }
 
   /** volumeDidChange */
   @IBAction func volumeDidChange() { track?.volume = volume }
@@ -112,7 +108,6 @@ class TrackCell: MixerCell, UITextFieldDelegate {
       volume = track?.volume ?? 0
       pan = track?.pan ?? 0
       labelTextField.text = track?.name
-      tintColor = track?.color.value ?? .blackColor()
     }
   }
 

@@ -106,6 +106,7 @@ Returns true if lhs contains rhs
 - returns: Bool
 */
 public func ∋<T:Equatable, S:SequenceType where S.Generator.Element == T>(lhs:S, rhs:T) -> Bool { return rhs ∈ lhs }
+public func ∋<T:Equatable, S:SequenceType where S.Generator.Element == T>(lhs:S, rhs:T?) -> Bool { return rhs ∈ lhs }
 public func ∋<T, U where U:IntervalType, T == U.Bound>(lhs:U, rhs:T) -> Bool { return lhs.contains(rhs) }
 public func ∋<O:OptionSetType where O.Element == O>(lhs: O, rhs: O) -> Bool { return lhs.contains(rhs) }
 

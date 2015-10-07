@@ -108,7 +108,7 @@
                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TempoSlider"/>
                                         </userDefinedRuntimeAttributes>
                                         <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
-                                            <rect key="frame" x="0.0" y="8" width="208" height="56"/>
+                                            <rect key="frame" x="-22.5" y="8" width="253" height="56"/>
                                         </variation>
                                         <connections>
                                             <action selector="tempoSliderValueDidChange" destination="mI6-ed-c1h" eventType="valueChanged" id="XwD-Wo-BXw"/>
@@ -230,9 +230,6 @@
                                                     <color key="value" red="0.76089900732040405" green="0.25649610161781311" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                 </userDefinedRuntimeAttribute>
                                             </userDefinedRuntimeAttributes>
-                                            <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
-                                                <rect key="frame" x="250" y="6" width="92" height="20.5"/>
-                                            </variation>
                                             <connections>
                                                 <action selector="deleteItem" destination="AUk-3s-KxI" eventType="touchUpInside" id="d6R-PR-av0"/>
                                             </connections>
@@ -274,9 +271,6 @@
                                             <userDefinedRuntimeAttributes>
                                                 <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="Label"/>
                                             </userDefinedRuntimeAttributes>
-                                            <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
-                                                <rect key="frame" x="28" y="11" width="134" height="20"/>
-                                            </variation>
                                         </label>
                                         <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="add-selected" highlightedImage="add-selected" translatesAutoresizingMaskIntoConstraints="NO" id="l2e-0M-7I2" customClass="TemplateImageView" customModule="MoonKit">
                                             <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
@@ -387,6 +381,9 @@
                                                 <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
                                                 <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
+                                                <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                    <rect key="frame" x="0.0" y="0.0" width="70" height="40"/>
+                                                </variation>
                                             </label>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KML-VN-wa1" userLabel="Note Picker" customClass="InlinePickerView" customModule="MoonKit">
                                                 <rect key="frame" x="56" y="0.0" width="232" height="40"/>
@@ -438,6 +435,9 @@
                                                 <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
                                                 <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
+                                                <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                    <rect key="frame" x="0.0" y="0.0" width="70" height="40"/>
+                                                </variation>
                                             </label>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KLS-oH-mjI" userLabel="Duration Picker" customClass="InlinePickerView" customModule="MoonKit">
                                                 <rect key="frame" x="56" y="0.0" width="232" height="40"/>
@@ -481,6 +481,9 @@
                                                 <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
                                                 <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
+                                                <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                    <rect key="frame" x="0.0" y="0.0" width="70" height="40"/>
+                                                </variation>
                                             </label>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gSZ-JK-0W9" userLabel="Velocity Picker" customClass="InlinePickerView" customModule="MoonKit">
                                                 <rect key="frame" x="56" y="0.0" width="232" height="40"/>
@@ -580,7 +583,7 @@
                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="jXz-zn-JV2">
                                             <rect key="frame" x="8" y="8" width="84" height="382"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="256" text="VOL" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4EJ-Z0-Ecx">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="256" text="VOL" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4EJ-Z0-Ecx" customClass="Label" customModule="MoonKit">
                                                     <rect key="frame" x="31" y="0.0" width="24" height="15"/>
                                                     <animations/>
                                                     <constraints>
@@ -592,6 +595,9 @@
                                                     <userDefinedRuntimeAttributes>
                                                         <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="VolumeLabel"/>
                                                     </userDefinedRuntimeAttributes>
+                                                    <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                        <rect key="frame" x="28" y="0.0" width="28" height="15"/>
+                                                    </variation>
                                                 </label>
                                                 <view opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="247" horizontalCompressionResistancePriority="749" verticalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="Evx-CT-UhF" userLabel="Volume Slider" customClass="Slider" customModule="MoonKit">
                                                     <rect key="frame" x="20" y="25" width="44" height="159"/>
@@ -632,7 +638,7 @@
                                                         <action selector="volumeDidChange" destination="Ywg-X3-Y1Q" eventType="valueChanged" id="Wgq-MX-8Yq"/>
                                                     </connections>
                                                 </view>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="256" text="PAN" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Q27-Qm-1HH">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="256" text="PAN" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Q27-Qm-1HH" customClass="Label" customModule="MoonKit">
                                                     <rect key="frame" x="31" y="194" width="24" height="15"/>
                                                     <animations/>
                                                     <constraints>
@@ -644,6 +650,9 @@
                                                     <userDefinedRuntimeAttributes>
                                                         <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="PanLabel"/>
                                                     </userDefinedRuntimeAttributes>
+                                                    <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                        <rect key="frame" x="28" y="194" width="28" height="15"/>
+                                                    </variation>
                                                 </label>
                                                 <view opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="RJ4-aR-o07" customClass="Knob" customModule="MoonKit">
                                                     <rect key="frame" x="0.0" y="219" width="84" height="84"/>
@@ -681,7 +690,7 @@
                                                         <action selector="panDidChange" destination="Ywg-X3-Y1Q" eventType="valueChanged" id="gQ1-Cd-Fes"/>
                                                     </connections>
                                                 </view>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="MASTER" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zFx-2Q-V0k">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="MASTER" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zFx-2Q-V0k" customClass="Label" customModule="MoonKit">
                                                     <rect key="frame" x="18" y="367" width="49" height="15"/>
                                                     <animations/>
                                                     <fontDescription key="fontDescription" name="EvelethThin" family="Eveleth" pointSize="12"/>
@@ -690,6 +699,9 @@
                                                     <userDefinedRuntimeAttributes>
                                                         <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="BusName"/>
                                                     </userDefinedRuntimeAttributes>
+                                                    <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                        <rect key="frame" x="14" y="367" width="57" height="15"/>
+                                                    </variation>
                                                 </label>
                                             </subviews>
                                             <animations/>
@@ -734,7 +746,7 @@
                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="sCc-QY-TMC">
                                             <rect key="frame" x="8" y="8" width="84" height="384"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="256" text="VOL" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1nN-5d-7mi">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="256" text="VOL" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1nN-5d-7mi" customClass="Label" customModule="MoonKit">
                                                     <rect key="frame" x="31" y="0.0" width="24" height="16"/>
                                                     <animations/>
                                                     <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
@@ -743,6 +755,9 @@
                                                     <userDefinedRuntimeAttributes>
                                                         <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="VolumeLabel"/>
                                                     </userDefinedRuntimeAttributes>
+                                                    <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                        <rect key="frame" x="28" y="0.0" width="28" height="16"/>
+                                                    </variation>
                                                 </label>
                                                 <view opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="247" horizontalCompressionResistancePriority="749" verticalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="fQV-Nj-rrF" userLabel="Volume Slider" customClass="Slider" customModule="MoonKit">
                                                     <rect key="frame" x="20" y="26" width="44" height="159"/>
@@ -783,7 +798,7 @@
                                                         <action selector="volumeDidChange" destination="2AY-7g-m2Q" eventType="valueChanged" id="0PE-6k-RsM"/>
                                                     </connections>
                                                 </view>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="256" text="PAN" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UVo-0O-vty">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="256" text="PAN" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UVo-0O-vty" customClass="Label" customModule="MoonKit">
                                                     <rect key="frame" x="31" y="195" width="24" height="17"/>
                                                     <animations/>
                                                     <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
@@ -792,6 +807,9 @@
                                                     <userDefinedRuntimeAttributes>
                                                         <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="PanLabel"/>
                                                     </userDefinedRuntimeAttributes>
+                                                    <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                        <rect key="frame" x="28" y="195" width="28" height="17"/>
+                                                    </variation>
                                                 </label>
                                                 <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="y4E-jp-B4L" customClass="Knob" customModule="MoonKit">
                                                     <rect key="frame" x="0.0" y="222" width="84" height="84"/>
@@ -847,6 +865,9 @@
                                                         </userDefinedRuntimeAttribute>
                                                         <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
                                                     </userDefinedRuntimeAttributes>
+                                                    <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                        <rect key="frame" x="21" y="316" width="44" height="16"/>
+                                                    </variation>
                                                     <connections>
                                                         <action selector="solo" destination="2AY-7g-m2Q" eventType="touchUpInside" id="g3q-b6-WW4"/>
                                                     </connections>
@@ -870,11 +891,14 @@
                                                         </userDefinedRuntimeAttribute>
                                                         <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
                                                     </userDefinedRuntimeAttributes>
+                                                    <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                        <rect key="frame" x="20" y="342" width="45" height="17"/>
+                                                    </variation>
                                                     <connections>
                                                         <action selector="mute" destination="2AY-7g-m2Q" eventType="touchUpInside" id="DQT-1Z-Rzc"/>
                                                     </connections>
                                                 </view>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="249" horizontalCompressionResistancePriority="250" contentHorizontalAlignment="center" contentVerticalAlignment="center" text="Bus 1" textAlignment="center" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="Ewy-eF-z7g">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="249" horizontalCompressionResistancePriority="250" contentHorizontalAlignment="center" contentVerticalAlignment="center" text="Bus 1" textAlignment="center" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="Ewy-eF-z7g" customClass="TextField" customModule="MoonKit">
                                                     <rect key="frame" x="25" y="368" width="35" height="16"/>
                                                     <animations/>
                                                     <color key="textColor" red="0.76471000909999998" green="0.71764999630000004" blue="0.65490001440000001" alpha="1" colorSpace="calibratedRGB"/>
@@ -883,6 +907,9 @@
                                                     <userDefinedRuntimeAttributes>
                                                         <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="BusName"/>
                                                     </userDefinedRuntimeAttributes>
+                                                    <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                        <rect key="frame" x="22" y="368" width="41" height="16"/>
+                                                    </variation>
                                                     <connections>
                                                         <outlet property="delegate" destination="2AY-7g-m2Q" id="JBx-aT-uqu"/>
                                                     </connections>
@@ -919,7 +946,6 @@
                                     <outlet property="muteButton" destination="BZl-Ps-fwB" id="fPP-2n-qDK"/>
                                     <outlet property="panKnob" destination="y4E-jp-B4L" id="yVA-ME-YEO"/>
                                     <outlet property="panLabel" destination="UVo-0O-vty" id="l3g-yf-knH"/>
-                                    <outlet property="selectedBackgroundView" destination="5q4-nC-ZjL" id="O4s-O5-K8G"/>
                                     <outlet property="soloButton" destination="Ldg-6q-t2e" id="RUa-4A-QDo"/>
                                     <outlet property="stackView" destination="sCc-QY-TMC" id="Um8-Wv-ECM"/>
                                     <outlet property="volumeLabel" destination="1nN-5d-7mi" id="TL0-tR-AXy"/>
@@ -936,7 +962,7 @@
                                         <stackView hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="iHo-zQ-4TD">
                                             <rect key="frame" x="8" y="8" width="84" height="384"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="256" text="VOL" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" enabled="NO" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rad-rW-7q0">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="256" text="VOL" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" enabled="NO" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rad-rW-7q0" customClass="Label" customModule="MoonKit">
                                                     <rect key="frame" x="31" y="0.0" width="24" height="16"/>
                                                     <animations/>
                                                     <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
@@ -945,6 +971,9 @@
                                                     <userDefinedRuntimeAttributes>
                                                         <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="VolumeLabel"/>
                                                     </userDefinedRuntimeAttributes>
+                                                    <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                        <rect key="frame" x="28" y="0.0" width="28" height="16"/>
+                                                    </variation>
                                                 </label>
                                                 <view opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="247" horizontalCompressionResistancePriority="749" verticalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="SAm-Od-Ht2" userLabel="Volume Slider" customClass="Slider" customModule="MoonKit">
                                                     <rect key="frame" x="20" y="26" width="44" height="159"/>
@@ -982,11 +1011,8 @@
                                                         <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="VolumeSlider"/>
                                                         <userDefinedRuntimeAttribute type="boolean" keyPath="enabled" value="NO"/>
                                                     </userDefinedRuntimeAttributes>
-                                                    <connections>
-                                                        <action selector="volumeDidChange" destination="h8g-3b-xY3" eventType="valueChanged" id="Eop-eY-2n8"/>
-                                                    </connections>
                                                 </view>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="256" text="PAN" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" enabled="NO" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AbU-M4-mLN">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="256" text="PAN" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" enabled="NO" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AbU-M4-mLN" customClass="Label" customModule="MoonKit">
                                                     <rect key="frame" x="31" y="195" width="24" height="17"/>
                                                     <animations/>
                                                     <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
@@ -995,6 +1021,9 @@
                                                     <userDefinedRuntimeAttributes>
                                                         <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="PanLabel"/>
                                                     </userDefinedRuntimeAttributes>
+                                                    <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                        <rect key="frame" x="28" y="195" width="28" height="17"/>
+                                                    </variation>
                                                 </label>
                                                 <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VW3-dN-Zkh" customClass="Knob" customModule="MoonKit">
                                                     <rect key="frame" x="0.0" y="222" width="84" height="84"/>
@@ -1028,9 +1057,6 @@
                                                         <userDefinedRuntimeAttribute type="string" keyPath="indicatorFillStyleString" value="XOR"/>
                                                         <userDefinedRuntimeAttribute type="boolean" keyPath="enabled" value="NO"/>
                                                     </userDefinedRuntimeAttributes>
-                                                    <connections>
-                                                        <action selector="panDidChange" destination="h8g-3b-xY3" eventType="valueChanged" id="F3c-yk-81P"/>
-                                                    </connections>
                                                 </view>
                                                 <view opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IgV-71-k6g" userLabel="Solo" customClass="LabelButton" customModule="MoonKit">
                                                     <rect key="frame" x="17" y="316" width="50" height="16"/>
@@ -1053,6 +1079,9 @@
                                                         <userDefinedRuntimeAttribute type="boolean" keyPath="selected" value="NO"/>
                                                         <userDefinedRuntimeAttribute type="boolean" keyPath="highlighted" value="NO"/>
                                                     </userDefinedRuntimeAttributes>
+                                                    <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                        <rect key="frame" x="21" y="316" width="44" height="16"/>
+                                                    </variation>
                                                 </view>
                                                 <view opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="F0F-B1-Uqx" userLabel="Mute" customClass="LabelButton" customModule="MoonKit">
                                                     <rect key="frame" x="17" y="342" width="50" height="17"/>
@@ -1075,6 +1104,9 @@
                                                         <userDefinedRuntimeAttribute type="boolean" keyPath="selected" value="NO"/>
                                                         <userDefinedRuntimeAttribute type="boolean" keyPath="highlighted" value="NO"/>
                                                     </userDefinedRuntimeAttributes>
+                                                    <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                        <rect key="frame" x="20" y="342" width="45" height="17"/>
+                                                    </variation>
                                                 </view>
                                                 <textField opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="249" horizontalCompressionResistancePriority="250" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" text="New Track" textAlignment="center" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="l1o-ns-ncT">
                                                     <rect key="frame" x="12" y="368" width="61" height="16"/>
@@ -1085,9 +1117,9 @@
                                                     <userDefinedRuntimeAttributes>
                                                         <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="BusName"/>
                                                     </userDefinedRuntimeAttributes>
-                                                    <connections>
-                                                        <outlet property="delegate" destination="h8g-3b-xY3" id="y5A-kd-jlU"/>
-                                                    </connections>
+                                                    <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                        <rect key="frame" x="0.0" y="368" width="84" height="16"/>
+                                                    </variation>
                                                 </textField>
                                             </subviews>
                                             <animations/>
@@ -1140,10 +1172,6 @@
                                 </userDefinedRuntimeAttributes>
                                 <connections>
                                     <outlet property="addTrackImageButton" destination="6pi-bq-mPh" id="t6H-nt-ogU"/>
-                                    <outlet property="labelTextField" destination="l1o-ns-ncT" id="ehd-Tz-3ja"/>
-                                    <outlet property="panKnob" destination="VW3-dN-Zkh" id="Jwl-Lu-ASY"/>
-                                    <outlet property="stackView" destination="iHo-zQ-4TD" id="DH6-DN-Uo8"/>
-                                    <outlet property="volumeSlider" destination="SAm-Od-Ht2" id="XUi-U2-ybO"/>
                                 </connections>
                             </collectionViewCell>
                         </cells>
@@ -1162,12 +1190,6 @@
                     <size key="freeformSize" width="320" height="400"/>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="H3X-NX-nN4" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <view contentMode="scaleToFill" id="5q4-nC-ZjL">
-                    <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <animations/>
-                    <color key="backgroundColor" red="0.1731918603181839" green="0.17318670451641083" blue="0.17318965494632721" alpha="1" colorSpace="calibratedRGB"/>
-                </view>
             </objects>
             <point key="canvasLocation" x="256" y="-245"/>
         </scene>
@@ -1198,6 +1220,9 @@
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="SoundSetLabel"/>
                                                 </userDefinedRuntimeAttributes>
+                                                <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                    <rect key="frame" x="0.0" y="0.0" width="84" height="40"/>
+                                                </variation>
                                             </label>
                                             <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3qS-GK-dh1" customClass="InlinePickerView" customModule="MoonKit">
                                                 <rect key="frame" x="72" y="0.0" width="217" height="40"/>
@@ -1252,6 +1277,9 @@
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="ProgramLabel"/>
                                                 </userDefinedRuntimeAttributes>
+                                                <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                    <rect key="frame" x="0.0" y="0.0" width="84" height="40"/>
+                                                </variation>
                                             </label>
                                             <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yew-6y-DAi" customClass="InlinePickerView" customModule="MoonKit">
                                                 <rect key="frame" x="72" y="0.0" width="217" height="40"/>
@@ -1308,6 +1336,9 @@
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="ChannelLabel"/>
                                                 </userDefinedRuntimeAttributes>
+                                                <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                    <rect key="frame" x="0.0" y="0.0" width="84" height="40"/>
+                                                </variation>
                                             </label>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NJk-vD-Q1I" customClass="LabeledStepper" customModule="MoonKit">
                                                 <rect key="frame" x="72" y="0.0" width="217" height="40"/>
@@ -1343,6 +1374,9 @@
                                                     <userDefinedRuntimeAttribute type="boolean" keyPath="backgroundHidden" value="YES"/>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="ChannelStepper"/>
                                                 </userDefinedRuntimeAttributes>
+                                                <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                    <rect key="frame" x="94" y="0.0" width="194" height="40"/>
+                                                </variation>
                                                 <connections>
                                                     <action selector="didChangeChannel" destination="alc-VG-vzJ" eventType="valueChanged" id="lrf-0U-nbT"/>
                                                 </connections>

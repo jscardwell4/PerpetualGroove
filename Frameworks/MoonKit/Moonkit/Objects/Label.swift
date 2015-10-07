@@ -8,27 +8,55 @@
 
 import UIKit
 
-public class Label: UILabel {
+@IBDesignable public class Label: UILabel {
 
-  public var gutter = UIEdgeInsets(top: 0.0, left: 0.0, bottom: -8.0, right: 0.0)
+  @IBInspectable public var gutter: UIEdgeInsets = .zeroInsets {
+    didSet {
+      guard gutter != oldValue else { return }
+      invalidateIntrinsicContentSize()
+    }
+  }
+
+  @IBInspectable public var tintColorAlpha: CGFloat = 0 {
+    didSet {
+      guard tintColorAlpha != oldValue else { return }
+      tintColorAlpha = (0 ... 1).clampValue(tintColorAlpha)
+      if !highlighted { setNeedsDisplay() }
+    }
+  }
+
+  @IBInspectable public var highlightedTintColorAlpha: CGFloat = 0 {
+    didSet {
+      guard highlightedTintColorAlpha != oldValue else { return }
+      highlightedTintColorAlpha = (0 ... 1).clampValue(highlightedTintColorAlpha)
+      if highlighted { setNeedsDisplay() }
+    }
+  }
 
   /**
-  drawRect:
+  drawTextInRect:
 
   - parameter rect: CGRect
   */
-//  public override func drawRect(rect: CGRect) {
-//    attributedText.drawInRect(gutter.insetRect(rect))
-//  }
+  public override func drawTextInRect(rect: CGRect) {
+    super.drawTextInRect(rect)
+    let alpha = highlighted ? highlightedTintColorAlpha : tintColorAlpha
+    guard alpha > 0 else { return }
 
-  /**
-  alignmentRectInsets
+    UIGraphicsBeginImageContextWithOptions(rect.size, false, 0)
+    super.drawTextInRect(rect)
+    let image = UIGraphicsGetImageFromCurrentImageContext()
+    UIGraphicsEndImageContext()
 
-  - returns: UIEdgeInsets
-  */
-//  public override func alignmentRectInsets() -> UIEdgeInsets {
-//    return gutter
-//  }
+    let context = UIGraphicsGetCurrentContext()
+    CGContextSaveGState(context)
+
+    image.addClip()
+    tintColor.colorWithAlpha(alpha).setFill()
+    UIRectFillUsingBlendMode(rect, .Color)
+
+    CGContextRestoreGState(context)
+  }
 
   /**
   intrinsicContentSize

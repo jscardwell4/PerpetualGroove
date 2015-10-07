@@ -81,4 +81,15 @@ public extension UIImage {
   public func imageWithColor(color: UIColor) -> UIImage { return imageFromImage(self, color: color) }
   public var inverted: UIImage { return invertImage(self) }
   public var maskToAlpha: UIImage { return imageMaskToAlpha(self) }
+  public var mask: UIImage { return imageByAddingBackgroundColor(self, color: .blackColor()) }
+  public func addClip() {
+    guard let context = UIGraphicsGetCurrentContext() else { return }
+    let boundingBox = CGContextGetClipBoundingBox(context)
+    let transform = CGContextGetCTM(context)
+    CGContextScaleCTM(context, 1, -1)
+    CGContextTranslateCTM(context, 0, transform.ty / transform.d)
+    CGContextClipToMask(context, boundingBox, CGImage)
+    CGContextScaleCTM(context, 1, -1)
+    CGContextTranslateCTM(context, 0, transform.ty / transform.d)
+  }
 }
