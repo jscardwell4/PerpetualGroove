@@ -662,17 +662,24 @@ public extension Unpackable3 {
 
 public protocol Unpackable4 {
   typealias Element
-  var unpack: (Element, Element, Element, Element) { get }
+  var unpack4: (Element, Element, Element, Element) { get }
 }
 
 public extension Unpackable4 {
-  var unpackArray: [Element] { let tuple = unpack; return [tuple.0, tuple.1, tuple.2, tuple.3] }
+  var unpackArray: [Element] { let tuple = unpack4; return [tuple.0, tuple.1, tuple.2, tuple.3] }
 }
 
 public protocol Packable4 {
   typealias Element
   init(_ elements: (Element, Element, Element, Element))
 }
+
+public protocol NonHomogeneousUnpackable2 {
+  typealias Type1
+  typealias Type2
+  var unpack2: (Type1, Type2) { get }
+}
+
 
 /** Protocol for an object guaranteed to have a name */
 @objc public protocol Named {

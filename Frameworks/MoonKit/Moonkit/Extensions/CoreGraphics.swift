@@ -411,7 +411,7 @@ extension UIEdgeInsets: CustomStringConvertible {
 }
 
 extension UIEdgeInsets: Unpackable4 {
-  public var unpack: (CGFloat, CGFloat, CGFloat, CGFloat) { return (top, left, bottom, right) }
+  public var unpack4: (CGFloat, CGFloat, CGFloat, CGFloat) { return (top, left, bottom, right) }
 }
 
 extension UIOffset {
@@ -593,7 +593,10 @@ extension CGRect {
 extension CGRect: CustomStringConvertible { public var description: String { return NSStringFromCGRect(self) } }
 
 extension CGRect: Unpackable4 {
-  public var unpack: (CGFloat, CGFloat, CGFloat, CGFloat) { return (origin.x, origin.y, size.width, size.height) }
+  public var unpack4: (CGFloat, CGFloat, CGFloat, CGFloat) { return (origin.x, origin.y, size.width, size.height) }
+}
+extension CGRect: NonHomogeneousUnpackable2 {
+  public var unpack2: (CGPoint, CGSize) { return (origin, size) }
 }
 
 public func ∪(lhs: CGRect, rhs: CGRect) -> CGRect { return lhs.union(rhs) }

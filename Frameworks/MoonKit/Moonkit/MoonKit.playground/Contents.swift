@@ -2,47 +2,123 @@ import Foundation
 import UIKit
 import CoreText
 import MoonKit
-
-let string = "I am a string, bitches!!!"
+import Eveleth
+import Chameleon
 
 extension _NSRange: CustomStringConvertible {
   public var description: String { return "_NSRange { location: \(location); length: \(length) }" }
 }
 
-final class Marquee: UIView {
+@IBDesignable public class Marquee: UIView {
 
-  var text: String = "" {
-    didSet { textStorage.beginEditing(); textStorage.mutableString.setString(text); textStorage.endEditing() }
-  }
-  var textColor: UIColor = .blackColor() {
+  private let textLayer: CALayer = {
+    let layer = CALayer()
+    layer.contentsScale = UIScreen.mainScreen().scale
+    return layer
+  }()
+
+  private var staleCache = true { didSet { guard staleCache else { return }; setNeedsLayout() } }
+
+  @IBInspectable public var text: String = "" {
     didSet {
-      textStorage.beginEditing()
-      textStorage.addAttribute(NSForegroundColorAttributeName, value: textColor, range: NSRange(location: 0, length: textStorage.length))
-      textStorage.endEditing()
+      guard text != oldValue else { return }
+      textStorage.mutableString.setString(text)
+      staleCache = true
+      invalidateIntrinsicContentSize()
     }
   }
-  var font: UIFont = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline) {
+
+  /** updateTextLayer */
+  private func updateTextLayer() {
+    guard staleCache else { return }
+    defer { staleCache = false; scrollCheck() }
+
+    textContainer.size = CGSize(width: CGFloat.max, height: bounds.height)
+    let glyphRange = layoutManager.glyphRangeForCharacterRange(NSRange(0 ..< text.utf16.count), actualCharacterRange: nil)
+    layoutManager.ensureLayoutForGlyphRange(glyphRange)
+    let (textOrigin, textSize) = layoutManager.boundingRectForGlyphRange(glyphRange, inTextContainer: textContainer).unpack2
+    textLayer.frame = CGRect(origin: CGPoint(x: textOrigin.x, y: half(bounds.height) - half(font.pointSize)), size: textSize)
+
+    guard !(textLayer.bounds.isEmpty || textStorage.string.isEmpty) else { textLayer.contents = nil; return }
+
+    UIGraphicsBeginImageContextWithOptions(textLayer.bounds.size, false, 0)
+    layoutManager.drawGlyphsForGlyphRange(glyphRange, atPoint: textOrigin)
+    guard let image = UIGraphicsGetImageFromCurrentImageContext() else { fatalError("Failed to generate image for text layer") }
+    UIGraphicsEndImageContext()
+    textLayer.contents = image.CGImage
+
+    scrollCheck()
+  }
+
+  @IBInspectable public var scrollSeparator: String = "•"
+  @IBInspectable public var textColor: UIColor = .blackColor() {
     didSet {
       textStorage.beginEditing()
-      textStorage.addAttribute(NSFontAttributeName, value: font, range: NSRange(location: 0, length: textStorage.length))
+      textStorage.addAttribute(NSForegroundColorAttributeName, value: textColor, range: NSRange(0 ..< textStorage.length))
       textStorage.endEditing()
+      staleCache = true
+    }
+  }
+  public var font: UIFont = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline) {
+    didSet {
+      textStorage.beginEditing()
+      textStorage.addAttribute(NSFontAttributeName, value: font, range: NSRange(0 ..< textStorage.length))
+      textStorage.endEditing()
+      staleCache = true
+      invalidateIntrinsicContentSize()
     }
   }
 
-  private let layoutManager: NSLayoutManager = NSLayoutManager()
-  private let textStorage: NSTextStorage = NSTextStorage()
-  private let textContainer: NSTextContainer = { let container = NSTextContainer(); container.lineBreakMode = .ByCharWrapping; return container }()
+  @IBInspectable public var fontName: String {
+    get { return font.fontName }
+    set { if let font = UIFont(name: newValue, size: font.pointSize) { self.font = font } }
+  }
+
+  @IBInspectable public var fontSize: CGFloat {
+    get { return font.pointSize }
+    set { font = font.fontWithSize(newValue) }
+  }
+
+  @IBInspectable public var scrollSpeed: NSTimeInterval = 0.5
+  @IBInspectable public var scrollEnabled: Bool = false { didSet { scrollCheck() } }
+
+  private var isScrolling = false
+
+  /** scrollCheck */
+  private func scrollCheck() {
+    switch (scrollEnabled, isScrolling) {
+      case (true, false) where shouldScroll: beginScrolling()
+      case (false, true) where isScrolling: endScrolling()
+      default: break
+    }
+  }
+
+  private var shouldScroll: Bool {
+    guard scrollEnabled && window != nil else { return false }
+    return textLayer.bounds.width > bounds.width
+  }
+
+  public let layoutManager: NSLayoutManager = NSLayoutManager()
+  public let textStorage: NSTextStorage = NSTextStorage()
+  public let textContainer: NSTextContainer = {
+    let container = NSTextContainer()
+    container.lineBreakMode = .ByCharWrapping
+    container.lineFragmentPadding = 0
+    container.maximumNumberOfLines = 1
+    return container
+    }()
 
   /** setup */
   private func setup() {
-    layoutManager.delegate = self
-    textContainer.size = bounds.size
+    layoutManager.usesFontLeading = false
     layoutManager.addTextContainer(textContainer)
     textStorage.addLayoutManager(layoutManager)
     textStorage.beginEditing()
     textStorage.addAttribute(NSFontAttributeName, value: font, range: NSRange(location: 0, length: 0))
     textStorage.addAttribute(NSForegroundColorAttributeName, value: textColor, range: NSRange(location: 0, length: 0))
     textStorage.endEditing()
+    layer.addSublayer(textLayer)
+    layer.masksToBounds = true
   }
 
   /**
@@ -50,109 +126,88 @@ final class Marquee: UIView {
 
   - parameter frame: CGRect
   */
-  override init(frame: CGRect) { super.init(frame: frame); setup() }
+  public override init(frame: CGRect) { super.init(frame: frame); setup() }
 
   /**
   init:
 
   - parameter aDecoder: NSCoder
   */
-  required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder); setup() }
+  public required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder); setup() }
 
+  /** layoutSubviews */
+  public override func layoutSubviews() { super.layoutSubviews(); updateTextLayer() }
 
-  override var bounds: CGRect { didSet { textContainer.size = bounds.size } }
-
-  var offset = 0 {
+  public override var frame: CGRect {
     didSet {
-      offset = (0 ... textStorage.length - 1).clampValue(offset)
-      guard offset != oldValue else { return }
-      guard text.utf16.count == textStorage.length else { fatalError("wtf") }
-      let head = text[text.startIndex.advancedBy(offset) ..< text.endIndex]
-      let tail = text[text.startIndex ..< text.startIndex.advancedBy(offset)]
-      textStorage.beginEditing()
-      let string = textStorage.mutableString
-      string.setString("\(head)\(tail)")
-      textStorage.endEditing()
+      guard frame.size != oldValue.size else { return }
+      staleCache = true
     }
   }
 
-  override func drawRect(rect: CGRect) {
-    dump(textContainer)
-    guard textStorage.length > 0 else { return }
-    var effectiveRange = NSRange()
-    guard layoutManager.textContainerForGlyphAtIndex(offset, effectiveRange: &effectiveRange) == textContainer else { fatalError() }
-    dump(effectiveRange)
-//    let glyphRange = layoutManager.glyphRangeForTextContainer(textContainer)
-//    dump(glyphRange)
-    layoutManager.drawGlyphsForGlyphRange(effectiveRange, atPoint: rect.origin)
-  }
-
-}
-
-extension Marquee: NSLayoutManagerDelegate {
-
-  /**
-  layoutManager:shouldGenerateGlyphs:properties:characterIndexes:font:forGlyphRange:
-
-  - parameter layoutManager: NSLayoutManager
-  - parameter glyphs: UnsafePointer<CGGlyph>
-  - parameter props: UnsafePointer<NSGlyphProperty>
-  - parameter charIndexes: UnsafePointer<Int>
-  - parameter aFont: UIFont
-  - parameter glyphRange: NSRange
-
-  - returns: Int
-  */
-  func layoutManager(layoutManager: NSLayoutManager,
-shouldGenerateGlyphs glyphs: UnsafePointer<CGGlyph>,
-          properties props: UnsafePointer<NSGlyphProperty>,
-    characterIndexes charIndexes: UnsafePointer<Int>,
-                font aFont: UIFont,
-       forGlyphRange glyphRange: NSRange) -> Int
-  {
-    print("layoutManager:shouldGenerateGlyphs:properties:characterIndexes:font:forGlyphRange:")
-    dump(layoutManager)
-    dump(glyphs)
-    dump(props)
-    dump(charIndexes)
-    dump(aFont)
-    dump(glyphRange)
-    print("\n")
-    return 0
+  public override var bounds: CGRect {
+    didSet {
+      guard bounds.size != oldValue.size else { return }
+      staleCache = true
+    }
   }
 
   /**
-  layoutManagerDidInvalidateLayout:
+  intrinsicContentSize
 
-  - parameter sender: NSLayoutManager
+  - returns: CGSize
   */
-  func layoutManagerDidInvalidateLayout(sender: NSLayoutManager) {
-    print("layoutManagerDidInvalidateLayout:")
-    dump(sender)
-    print("\n")
+  public override func intrinsicContentSize() -> CGSize { return textLayer.bounds.size }
+
+  var offset = 0 {
+    didSet {
+      offset %= text.utf16.count
+      guard offset != oldValue else { return }
+
+//      let 𝝙 = textStorage.length - text.utf16.count
+//      textStorage.beginEditing()
+//
+//      switch offset {
+//        case 0 where 𝝙 == 0:
+//          textStorage.mutableString.setString(text)
+//        case 0 where 𝝙 > 0:
+//          textStorage.mutableString.setString("\(text)\(scrollSeparator)")
+//        default:
+//          let head = text[text.startIndex.advancedBy(offset) ..< text.endIndex]
+//          let tail = text[text.startIndex ..< text.startIndex.advancedBy(offset)]
+//          textStorage.mutableString.setString("\(head)\(scrollSeparator)\(tail)")
+//      }
+//
+//      textStorage.endEditing()
+//      setNeedsDisplay()
+    }
+  }
+
+  /** beginScrolling */
+  private func beginScrolling() {
+    guard scrollEnabled && !isScrolling else { return }
+    isScrolling = true
     setNeedsDisplay()
   }
+
+  /** endScrolling */
+  private func endScrolling() {
+    guard isScrolling else { return }
+    guard offset > 0 else { isScrolling = false; return }
+    isScrolling = false
+    offset = 0
+  }
+
 }
 
-let marquee = Marquee(frame: CGRect(size: CGSize(width: 100, height: 20)))
-marquee.backgroundColor = .lightGrayColor()
-marquee.textColor = .purpleColor()
-marquee.text = string
-marquee.offset = 1
-marquee.offset = 2
-
-marquee.offset = 3
-
-marquee.offset = 4
-
-marquee.offset = 5
-
-marquee.offset = 6
-
-marquee.offset = 7
-
-marquee.offset = 8
-
-marquee.offset = 9
-
-marquee.offset = 10
+let container = UIView(frame: CGRect(x: 0, y: 0, width: 200, height: 60))
+container.backgroundColor = .darkGrayColor()
+let marquee = Marquee(frame: CGRect(x: 70, y: 10, width: 60, height: 40))
+marquee.backgroundColor = rgb(51, 50, 49)
+marquee.text = "Pop Brass"
+marquee.textColor = Chameleon.kelleyPearlBush
+marquee.font = Eveleth.thinFontWithSize(12)
+//marquee.setNeedsDisplay()
+container.addSubview(marquee)
+marquee.textLayer.setAffineTransform(CGAffineTransform(tx: marquee.bounds.width - marquee.textLayer.bounds.width, ty: 0))
+container
