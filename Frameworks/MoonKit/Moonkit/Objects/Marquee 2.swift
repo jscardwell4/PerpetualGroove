@@ -11,26 +11,11 @@ import UIKit
 
 @IBDesignable public class Marquee: UIView {
 
-  private let textLayer1: CATextLayer = {
-    let layer = CATextLayer()
-    layer.anchorPoint = CGPoint(x: 0, y: 0)
-    layer.contentsScale = UIScreen.mainScreen().scale
-    return layer
-    }()
-
-  private let textLayer2: CATextLayer = {
-    let layer = CATextLayer()
-    layer.anchorPoint = CGPoint(x: 0, y: 0)
-    layer.contentsScale = UIScreen.mainScreen().scale
-    return layer
-    }()
-
   @IBInspectable public var text: String = "" {
     didSet {
       guard text != oldValue else { return }
+      layer.removeAllAnimations()
       textStorage.mutableString.setString(text)
-      textLayer1.string = textStorage
-      textLayer2.string = textStorage
       offset = 0
       if shouldScroll { beginScrolling() }
     }
@@ -62,18 +47,14 @@ import UIKit
   }
 
   @IBInspectable public var scrollSpeed: NSTimeInterval = 0.5
-  @IBInspectable public var scrollEnabled: Bool = true { didSet { scrollCheck() } }
-
-  private var isScrolling = false
-
-  /** scrollCheck */
-  private func scrollCheck() {
-    switch (scrollEnabled, isScrolling) {
-      case (true, false) where shouldScroll: beginScrolling()
-      case (false, true) where isScrolling: endScrolling()
-      default: break
+  @IBInspectable public var scrollEnabled: Bool = true {
+    didSet {
+      contentMode = scrollEnabled ? .Redraw : .ScaleToFill
+      if shouldScroll { beginScrolling() } else if isScrolling { endScrolling() }
     }
   }
+
+  private var isScrolling = false
 
   private var shouldScroll: Bool {
     guard scrollEnabled && window != nil else { return false }
@@ -92,16 +73,13 @@ import UIKit
 
   /** setup */
   private func setup() {
+    textContainer.size = bounds.size
     layoutManager.addTextContainer(textContainer)
     textStorage.addLayoutManager(layoutManager)
     textStorage.beginEditing()
     textStorage.addAttribute(NSFontAttributeName, value: font, range: NSRange(location: 0, length: 0))
     textStorage.addAttribute(NSForegroundColorAttributeName, value: textColor, range: NSRange(location: 0, length: 0))
     textStorage.endEditing()
-    layer.addSublayer(textLayer1)
-    layer.addSublayer(textLayer2)
-    layer.masksToBounds = true
-    didChangeSize()
   }
 
   /**
@@ -122,11 +100,7 @@ import UIKit
   /** didChangeSize */
   private func didChangeSize() {
     textContainer.size = bounds.size
-    textLayer1.bounds.size = bounds.size
-    textLayer1.position = .zero
-    textLayer2.bounds.size = bounds.size
-    textLayer2.position = CGPoint(x: bounds.size.width, y: 0)
-    scrollCheck()
+    if shouldScroll { beginScrolling() } else if isScrolling { endScrolling() }
   }
 
   public override var bounds: CGRect { didSet { guard bounds.size != oldValue.size else { return }; didChangeSize() } }
@@ -145,22 +119,22 @@ import UIKit
       offset %= text.utf16.count
       guard offset != oldValue else { return }
 
-//      let 𝝙 = textStorage.length - text.utf16.count
-//      textStorage.beginEditing()
-//
-//      switch offset {
-//        case 0 where 𝝙 == 0:
-//          textStorage.mutableString.setString(text)
-//        case 0 where 𝝙 > 0:
-//          textStorage.mutableString.setString("\(text)\(scrollSeparator)")
-//        default:
-//          let head = text[text.startIndex.advancedBy(offset) ..< text.endIndex]
-//          let tail = text[text.startIndex ..< text.startIndex.advancedBy(offset)]
-//          textStorage.mutableString.setString("\(head)\(scrollSeparator)\(tail)")
-//      }
-//
-//      textStorage.endEditing()
-//      setNeedsDisplay()
+      let 𝝙 = textStorage.length - text.utf16.count
+      textStorage.beginEditing()
+
+      switch offset {
+        case 0 where 𝝙 == 0:
+          textStorage.mutableString.setString(text)
+        case 0 where 𝝙 > 0:
+          textStorage.mutableString.setString("\(text)\(scrollSeparator)")
+        default:
+          let head = text[text.startIndex.advancedBy(offset) ..< text.endIndex]
+          let tail = text[text.startIndex ..< text.startIndex.advancedBy(offset)]
+          textStorage.mutableString.setString("\(head)\(scrollSeparator)\(tail)")
+      }
+
+      textStorage.endEditing()
+      setNeedsDisplay()
     }
   }
 
@@ -184,15 +158,15 @@ import UIKit
 
   - parameter rect: CGRect
   */
-//  public override func drawRect(rect: CGRect) {
-//    guard textStorage.length > 0 else { return }
-//    let glyphRange = layoutManager.glyphRangeForBoundingRect(rect, inTextContainer: textContainer)
-//    let textRect = layoutManager.boundingRectForGlyphRange(glyphRange, inTextContainer: textContainer)
-//    let point = rect.origin + (rect.center - textRect.center)
-//    layoutManager.drawGlyphsForGlyphRange(glyphRange, atPoint: point)
-//    if isScrolling {
-//      delayedDispatchToMain(scrollSpeed) { [weak self] in self?.offset++ }
-//    }
-//  }
+  public override func drawRect(rect: CGRect) {
+    guard textStorage.length > 0 else { return }
+    let glyphRange = layoutManager.glyphRangeForBoundingRect(rect, inTextContainer: textContainer)
+    let textRect = layoutManager.boundingRectForGlyphRange(glyphRange, inTextContainer: textContainer)
+    let point = rect.origin + (rect.center - textRect.center)
+    layoutManager.drawGlyphsForGlyphRange(glyphRange, atPoint: point)
+    if isScrolling {
+      delayedDispatchToMain(scrollSpeed) { [weak self] in self?.offset++ }
+    }
+  }
 
 }
