@@ -28,26 +28,64 @@ import UIKit
     }
   }
 
+  private var 𝝙w: CGFloat = 0
+
   /** updateTextLayer */
   private func updateTextLayer() {
     guard staleCache else { return }
     defer { staleCache = false; scrollCheck() }
 
+    // Set the text container with the view's height and unlimited width
     textContainer.size = CGSize(width: CGFloat.max, height: bounds.height)
-    let glyphRange = layoutManager.glyphRangeForCharacterRange(NSRange(0 ..< text.utf16.count), actualCharacterRange: nil)
-    layoutManager.ensureLayoutForGlyphRange(glyphRange)
-    let (textOrigin, textSize) = layoutManager.boundingRectForGlyphRange(glyphRange, inTextContainer: textContainer).unpack2
-    textLayer.frame = CGRect(origin: CGPoint(x: textOrigin.x, y: half(bounds.height) - half(font.pointSize)), size: textSize)
 
+    // Get the glyph range and the bounding rect for laying out all the glyphs
+    let characterRange = NSRange(0 ..< text.utf16.count)
+    let glyphRange = layoutManager.glyphRangeForCharacterRange(characterRange, actualCharacterRange: nil)
+    layoutManager.ensureLayoutForGlyphRange(glyphRange)
+
+    let textRect = layoutManager.boundingRectForGlyphRange(glyphRange, inTextContainer: textContainer)
+    𝝙w = max(textRect.width - bounds.width, 0)
+
+    // Adjust the result according to how it fits the view's bounds
+    var textFrame = textRect
+    textFrame.origin.y += half(bounds.height) - half(font.pointSize)
+
+    let extendText: Bool
+
+    switch bounds.contains(textRect) {
+      case true:  textFrame.origin.x += half(bounds.width - textRect.width); extendText = false
+      case false: textFrame.size.width = textRect.width * 2;                 extendText = true
+    }
+
+    // Update the text layer's frame
+    textLayer.frame = textFrame.integral
+
+    // Ensure there is an appropriate size and content or exit
     guard !(textLayer.bounds.isEmpty || textStorage.string.isEmpty) else { textLayer.contents = nil; return }
 
+    // Draw the text into a bitmap context
     UIGraphicsBeginImageContextWithOptions(textLayer.bounds.size, false, 0)
-    layoutManager.drawGlyphsForGlyphRange(glyphRange, atPoint: textOrigin)
-    guard let image = UIGraphicsGetImageFromCurrentImageContext() else { fatalError("Failed to generate image for text layer") }
-    UIGraphicsEndImageContext()
-    textLayer.contents = image.CGImage
 
-    scrollCheck()
+    layoutManager.drawGlyphsForGlyphRange(glyphRange, atPoint: .zero)
+
+    // If we made the layer twice as wide, draw the text again
+    if extendText {
+      let separator = NSAttributedString(string: scrollSeparator,
+                                         attributes: [NSFontAttributeName: font, NSForegroundColorAttributeName: textColor])
+      separator.drawAtPoint(CGPoint(x: textRect.width, y: 0))
+      let wʹ = separator.size().width
+      𝝙w += wʹ
+      layoutManager.drawGlyphsForGlyphRange(glyphRange, atPoint: CGPoint(x: textRect.width + wʹ, y: 0))
+    }
+
+    guard let image = UIGraphicsGetImageFromCurrentImageContext() else {
+      fatalError("Failed to generate image for text layer")
+    }
+
+    UIGraphicsEndImageContext()
+
+    // Update the layer's contents
+    textLayer.contents = image.CGImage
   }
 
   @IBInspectable public var scrollSeparator: String = "•"
@@ -79,7 +117,10 @@ import UIKit
     set { font = font.fontWithSize(newValue) }
   }
 
-  @IBInspectable public var scrollSpeed: NSTimeInterval = 5
+  /** How fast to scroll text in characters per second */
+  @IBInspectable public var scrollSpeed: CFTimeInterval = 1
+
+  /** Whether the text should scroll when it does not all fit */
   @IBInspectable public var scrollEnabled: Bool = true { didSet { scrollCheck() } }
 
   private var isScrolling = false
@@ -167,21 +208,18 @@ import UIKit
   /** beginScrolling */
   private func beginScrolling() {
     guard scrollEnabled && !isScrolling else { return }
-    let characterIndex = layoutManager.characterIndexForPoint(CGPoint(x: bounds.width, y: bounds.midY),
-                                              inTextContainer: textContainer,
-                     fractionOfDistanceBetweenInsertionPoints: nil)
-    let excess = text.utf16.count - (characterIndex + 1)
-    guard excess > 0 else {
-      logWarning("There are not any excess characters to scroll into view")
-      return
-    }
 
-    let animation = CAKeyframeAnimation(keyPath: "transform.translation.x")
-    animation.duration = scrollSpeed * CFTimeInterval(excess)
-    animation.keyTimes = [NSNumber(double: 0), NSNumber(double: 0.5), NSNumber(double: 1)]
-    animation.values = [NSNumber(double: 0), NSNumber(double: Double(bounds.width - textLayer.bounds.width)), NSNumber(double: 0)]
+    let point = CGPoint(x: bounds.width, y: bounds.midY)
+    let characterIndex = layoutManager.characterIndexForPoint(point, inTextContainer: textContainer)
+    let excess = text.utf16.count - (characterIndex + 1)
+
+    guard excess > 0 else { logWarning("There are not any excess characters to scroll into view"); return }
+
+    let animation = CABasicAnimation(keyPath: "transform.translation.x")
+    animation.duration = scrollSpeed * CFTimeInterval(text.utf16.count + scrollSeparator.utf16.count)
+    animation.toValue = -bounds.width - 𝝙w
     animation.delegate = self
-    logDebug("adding animation: \(animation)\n       to layer: \(textLayer)")
+    animation.repeatCount = Float.infinity
     textLayer.addAnimation(animation, forKey: Marquee.AnimationKey)
   }
 
@@ -190,9 +228,7 @@ import UIKit
 
   - parameter anim: CAAnimation
   */
-  public override func animationDidStart(anim: CAAnimation) {
-    isScrolling = true
-  }
+  public override func animationDidStart(anim: CAAnimation) { isScrolling = true }
 
   /**
   animationDidStop:finished:
@@ -200,16 +236,9 @@ import UIKit
   - parameter anim: CAAnimation
   - parameter flag: Bool
   */
-  public override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
-    isScrolling = false
-    guard flag else { return }
-    scrollCheck()
-  }
+  public override func animationDidStop(anim: CAAnimation, finished flag: Bool) { isScrolling = false }
 
   /** endScrolling */
-  private func endScrolling() {
-    guard isScrolling else { return }
-    textLayer.removeAnimationForKey(Marquee.AnimationKey)
-  }
+  private func endScrolling() { guard isScrolling else { return }; textLayer.removeAnimationForKey(Marquee.AnimationKey) }
 
 }

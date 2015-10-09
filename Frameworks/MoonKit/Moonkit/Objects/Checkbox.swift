@@ -111,7 +111,7 @@ public class Checkbox: UIControl {
 
       ////// box Inner Shadow
       UIGraphicsPushContext(context!)
-      UIRectClip(boxRect.rectWithOrigin(CGPoint.zero))
+      UIRectClip(CGRect(size:boxRect.size))
       CGContextSetShadow(context, CGSize.zero, 0)
       CGContextSetAlpha(context, CGColorGetAlpha((DrawingKit.semiDarkShadow.shadowColor as! UIColor).CGColor))
       CGContextBeginTransparencyLayer(context, nil)
