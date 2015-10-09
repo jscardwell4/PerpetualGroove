@@ -49,7 +49,7 @@ final class MasterCell: MixerCell {
 
 }
 
-class TrackCell: MixerCell, UITextFieldDelegate {
+class TrackCell: MixerCell, TrackLabelDelegate {
 
   class var Identifier: String { return "TrackCell" }
 
@@ -57,8 +57,7 @@ class TrackCell: MixerCell, UITextFieldDelegate {
   @IBOutlet var muteButton: LabelButton!
   @IBOutlet var volumeLabel: Label!
   @IBOutlet var panLabel: Label!
-  @IBOutlet var labelTextField: UITextField!
-  @IBOutlet var trackLabel: Marquee!
+  @IBOutlet var trackLabel: TrackLabel!
   
   /** solo */
   @IBAction func solo() {
@@ -108,35 +107,16 @@ class TrackCell: MixerCell, UITextFieldDelegate {
     didSet {
       volume = track?.volume ?? 0
       pan = track?.pan ?? 0
-      labelTextField.text = track?.name
       trackLabel.text = track?.name ?? ""
     }
   }
 
   /**
-  textFieldShouldEndEditing:
+  trackLabelDidChange:
 
-  - parameter textField: UITextField
-
-  - returns: Bool
+  - parameter trackLabel: TrackLabel
   */
-  @objc func textFieldShouldEndEditing(textField: UITextField) -> Bool {
-    guard let text = textField.text else { return false }
-    return !text.isEmpty
-  }
-
-  /**
-  textFieldShouldReturn:
-
-  - parameter textField: UITextField
-
-  - returns: Bool
-  */
-  @objc func textFieldShouldReturn(textField: UITextField) -> Bool {
-    if let label = textField.text { track?.label = label }
-    textField.resignFirstResponder()
-    return false
-  }
+  func trackLabelDidChange(trackLabel: TrackLabel) { track?.label = trackLabel.text }
 }
 
 final class AddTrackCell: TrackCell {

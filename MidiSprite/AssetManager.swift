@@ -29,6 +29,7 @@ extension UIFont {
   static var labelFont: UIFont              { return Eveleth.lightFontWithSize(14) }
   static var largeDisplayFont: UIFont       { return Eveleth.lightFontWithSize(36) }
   static var controlFont: UIFont            { return Eveleth.thinFontWithSize(14) }
+  static var compressedControlFont: UIFont  { return Eveleth.thinFontWithSize(12) }
   static var controlSelectedFont: UIFont    { return Eveleth.regularFontWithSize(14) }
 }
 

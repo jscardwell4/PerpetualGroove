@@ -13,6 +13,7 @@
 		C22567821BB05ED100E4842B /* Lumberjack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C22567811BB05ED100E4842B /* Lumberjack.framework */; };
 		C22567831BB05ED100E4842B /* Lumberjack.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C22567811BB05ED100E4842B /* Lumberjack.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C22D93F11BADA24A00B04A2B /* MIDINodeHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22D93F01BADA24A00B04A2B /* MIDINodeHistory.swift */; settings = {ASSET_TAGS = (); }; };
+		C22FA58B1BC7F3D300162DB4 /* TrackLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22FA58A1BC7F3D300162DB4 /* TrackLabel.swift */; settings = {ASSET_TAGS = (); }; };
 		C2569E401B90005400EEB441 /* TempoTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2569E3F1B90005400EEB441 /* TempoTrack.swift */; settings = {ASSET_TAGS = (); }; };
 		C25EBC831B8BFAFA00E57665 /* MIDIFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25EBC821B8BFAFA00E57665 /* MIDIFile.swift */; };
 		C26A27EF1B948E4F00BD1698 /* DocumentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A27EE1B948E4E00BD1698 /* DocumentsViewController.swift */; settings = {ASSET_TAGS = (); }; };
@@ -157,6 +158,7 @@
 		C2207B901B9DC63300E4D65D /* SF2File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SF2File.swift; path = ../SoundFontParser/SF2File.swift; sourceTree = "<group>"; };
 		C22567811BB05ED100E4842B /* Lumberjack.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Lumberjack.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C22D93F01BADA24A00B04A2B /* MIDINodeHistory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINodeHistory.swift; sourceTree = "<group>"; };
+		C22FA58A1BC7F3D300162DB4 /* TrackLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackLabel.swift; sourceTree = "<group>"; };
 		C2404BCD1B78EDEB00A68A64 /* Eveleth.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Eveleth.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2404BD11B78EE3800A68A64 /* Chameleon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Chameleon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2404BD41B78EEC500A68A64 /* MoonKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MoonKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -345,6 +347,7 @@
 		C26A27EA1B93C04400BD1698 /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				C22FA58A1BC7F3D300162DB4 /* TrackLabel.swift */,
 				C2E705C41BBB17AE00636EF3 /* PurgatoryViewController.swift */,
 				C26A27EE1B948E4E00BD1698 /* DocumentsViewController.swift */,
 				C2E0433A1B72F4DC005F0675 /* MIDIPlayerViewController.swift */,
@@ -674,6 +677,7 @@
 				C291C3EB1B91EDA700702AEA /* MIDIFileTrackChunk.swift in Sources */,
 				C22D93F11BADA24A00B04A2B /* MIDINodeHistory.swift in Sources */,
 				C2E043351B72F4DC005F0675 /* AppDelegate.swift in Sources */,
+				C22FA58B1BC7F3D300162DB4 /* TrackLabel.swift in Sources */,
 				C2CF38CD1B7EBED30085B3D5 /* InstrumentTrack.swift in Sources */,
 				C2EFA0EE1B824A2F002EBA3D /* AssetManager.swift in Sources */,
 				C2D406741BB9FDC700681DEF /* MIDIDocumentManager.swift in Sources */,

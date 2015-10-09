@@ -123,16 +123,17 @@ import UIKit
   /** Whether the text should scroll when it does not all fit */
   @IBInspectable public var scrollEnabled: Bool = true { didSet { scrollCheck() } }
 
-  private var isScrolling = false
+  private var isScrolling: Bool { return textLayer.animationKeys()?.contains(Marquee.AnimationKey) == true }
 
   private static let AnimationKey = "MarqueeScroll"
 
   /** scrollCheck */
   private func scrollCheck() {
     switch (scrollEnabled, isScrolling) {
-      case (true, false) where shouldScroll: beginScrolling()
-      case (false, true) where isScrolling: endScrolling()
-      default: break
+      case (true, false) where  shouldScroll: beginScrolling()
+      case (true,  true) where !shouldScroll: endScrolling()
+      case (false, true):                     endScrolling()
+      default:                                break
     }
   }
 
@@ -218,7 +219,7 @@ import UIKit
     let animation = CABasicAnimation(keyPath: "transform.translation.x")
     animation.duration = scrollSpeed * CFTimeInterval(text.utf16.count + scrollSeparator.utf16.count)
     animation.toValue = -bounds.width - 𝝙w
-    animation.delegate = self
+//    animation.delegate = self
     animation.repeatCount = Float.infinity
     textLayer.addAnimation(animation, forKey: Marquee.AnimationKey)
   }
@@ -228,7 +229,7 @@ import UIKit
 
   - parameter anim: CAAnimation
   */
-  public override func animationDidStart(anim: CAAnimation) { isScrolling = true }
+//  public override func animationDidStart(anim: CAAnimation) { isScrolling = true }
 
   /**
   animationDidStop:finished:
@@ -236,7 +237,7 @@ import UIKit
   - parameter anim: CAAnimation
   - parameter flag: Bool
   */
-  public override func animationDidStop(anim: CAAnimation, finished flag: Bool) { isScrolling = false }
+//  public override func animationDidStop(anim: CAAnimation, finished flag: Bool) { isScrolling = false }
 
   /** endScrolling */
   private func endScrolling() { guard isScrolling else { return }; textLayer.removeAnimationForKey(Marquee.AnimationKey) }
