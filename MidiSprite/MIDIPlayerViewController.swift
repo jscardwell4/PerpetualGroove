@@ -74,6 +74,8 @@ final class MIDIPlayerViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
+    documentName.text = nil
+
     tempoSlider.value = Float(Sequencer.tempo)
     metronomeButton.selected = AudioManager.metronome.on
 
@@ -88,9 +90,7 @@ final class MIDIPlayerViewController: UIViewController {
   - parameter animated: Bool
   */
   override func viewDidAppear(animated: Bool) {
-    guard !NSUserDefaults.standardUserDefaults().boolForKey("iCloudStorage")
-        || NSFileManager.defaultManager().ubiquityIdentityToken != nil else
-    {
+    guard !SettingsManager.iCloudStorage || NSFileManager.defaultManager().ubiquityIdentityToken != nil else {
       performSegueWithIdentifier("Purgatory", sender: self)
       return
     }
@@ -355,20 +355,30 @@ final class MIDIPlayerViewController: UIViewController {
   - parameter notification: NSNotification
   */
   private func willShowKeyboard(notification: NSNotification) {
-    guard let size = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.CGRectValue().size,
-      responder = view.firstResponder,
-      window = view.window,
-      superview = responder.superview else
+    guard let responder = view.firstResponder,
+              responderFrame = view.window?.convertRect(responder.frame, fromView: responder.superview),
+              keyboardFrame = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.CGRectValue() else
     {
       return
     }
 
-    let h = window.bounds.height
-    let location = CGPoint(x: responder.frame.minX, y: responder.frame.maxY)
-    let locationʹ = window.convertPoint(location, fromView: superview)
-    let hʹ = h - locationʹ.y
+    let overlap = responderFrame ∩ keyboardFrame
+    guard !overlap.isEmpty else { return }
 
-    view.transform.ty = min(hʹ - size.height, 0)
+    let ty = -overlap.height
+
+    logDebug(
+      "",
+      "notification = \(notification)",
+      "responder = \(responder)",
+      "responderFrame = \(responderFrame)",
+      "keyboardFrame = \(keyboardFrame)",
+      "overlap = \(overlap)",
+      "ty = \(ty)",
+      separator: "\n\t"
+    )
+
+    view.transform.ty = ty
   }
 
   /**

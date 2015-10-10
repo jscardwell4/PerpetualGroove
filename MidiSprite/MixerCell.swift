@@ -9,6 +9,7 @@
 import UIKit
 import MoonKit
 import Chameleon
+import CoreImage
 import typealias AudioToolbox.AudioUnitParameterValue
 
 class MixerCell: UICollectionViewCell {
@@ -130,22 +131,23 @@ final class AddTrackCell: TrackCell {
 
     stackView.hidden = false
     addTrackImageButton.hidden = true
+//    setNeedsLayout()
+//    layoutIfNeeded()
+//    UIGraphicsBeginImageContextWithOptions(CGSize(width: 100, height: 400), false, 0)
+//    drawViewHierarchyInRect(CGRect(size: CGSize(width: 100, height: 400)), afterScreenUpdates: false)
+//    for view in stackView.subviews {
+//      view.drawViewHierarchyInRect(view.frame.offsetBy(stackView.frame.origin), afterScreenUpdates: false)
+//    }
+//    let image = UIGraphicsGetImageFromCurrentImageContext()
+//    UIGraphicsEndImageContext()
+//
+//    let blurredImage = image.applyBlurWithRadius(3, tintColor: UIColor.backgroundColor.colorWithAlpha(0.95), saturationDeltaFactor: 0, maskImage: nil)
 
-    UIGraphicsBeginImageContextWithOptions(bounds.size, false, 0)
-
-    for view in stackView.subviews {
-      view.drawViewHierarchyInRect(view.frame.offsetBy(stackView.frame.origin), afterScreenUpdates: false)
-    }
-    let image = UIGraphicsGetImageFromCurrentImageContext()
-    UIGraphicsEndImageContext()
-
-    let blurredImage = image.applyBlurWithRadius(3, tintColor: UIColor.backgroundColor.colorWithAlpha(0.95), saturationDeltaFactor: 0, maskImage: nil)
-
-    stackView.hidden = true
+//    stackView.hidden = true
     addTrackImageButton.hidden = false
-    let imageView = UIImageView(image: blurredImage)
-    imageView.contentMode = .Center
-    backgroundView = imageView
+//    let imageView = UIImageView(image: blurredImage)
+//    imageView.contentMode = .Center
+//    backgroundView = imageView
 
   }
 }

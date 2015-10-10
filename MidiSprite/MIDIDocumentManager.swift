@@ -17,8 +17,6 @@ final class MIDIDocumentManager {
 
   private static var initialized = false
   private static let DefaultDocumentName = "AwesomeSauce"
-  private static let UseiCloudStorage = "iCloudStorage"
-  private static let CurrentDocumentKey = "MIDIDocumentManager.currentDocument"
   private(set) static var openingDocument = false
 
   enum Notification: String, NotificationType, NotificationNameType {
@@ -33,10 +31,9 @@ final class MIDIDocumentManager {
       guard oldValue != currentDocument else { return }
       do {
 
-        let data = try currentDocument?.fileURL.bookmarkDataWithOptions(.SuitableForBookmarkFile,
-                                         includingResourceValuesForKeys: nil,
-                                                          relativeToURL: nil)
-        NSUserDefaults.standardUserDefaults().setObject(data, forKey: CurrentDocumentKey)
+        SettingsManager.currentDocument = try currentDocument?.fileURL.bookmarkDataWithOptions(.SuitableForBookmarkFile,
+                                                                includingResourceValuesForKeys: nil,
+                                                                                 relativeToURL: nil)
       } catch {
         logError(error, message: "Failed to generate bookmark data for storage")
       }
@@ -104,7 +101,7 @@ final class MIDIDocumentManager {
 
     let url: NSURL
 
-    switch NSUserDefaults.standardUserDefaults().boolForKey(UseiCloudStorage) {
+    switch SettingsManager.iCloudStorage {
 
       case true:
         guard let baseURL = NSFileManager().URLForUbiquityContainerIdentifier(nil) else {
@@ -145,7 +142,7 @@ final class MIDIDocumentManager {
 
     let url: NSURL
 
-    switch NSUserDefaults.standardUserDefaults().boolForKey(UseiCloudStorage) {
+    switch SettingsManager.iCloudStorage {
 
       case true:
         guard let baseURL = NSFileManager().URLForUbiquityContainerIdentifier(nil) else {
@@ -238,18 +235,16 @@ final class MIDIDocumentManager {
   static func initialize() {
     guard !initialized else { return }
 
-    NSUserDefaults.standardUserDefaults().registerDefaults([UseiCloudStorage: true])
-
     let _ = notificationReceptionist
 
-    if let data = NSUserDefaults.standardUserDefaults().objectForKey(CurrentDocumentKey) as? NSData {
+    if let data = SettingsManager.currentDocument {
       do {
         var isStale: ObjCBool = false
         let url = try NSURL(byResolvingBookmarkData: data, options: .WithoutUI, relativeToURL: nil, bookmarkDataIsStale: &isStale)
         openURL(url)
       } catch {
         logError(error, message: "Failed to resolve bookmark data into a valid file url")
-        NSUserDefaults.standardUserDefaults().setObject(nil, forKey: CurrentDocumentKey)
+        SettingsManager.currentDocument = nil
       }
     }
     initialized = true

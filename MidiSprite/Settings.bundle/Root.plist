@@ -10,7 +10,7 @@
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 			<key>Title</key>
-			<string>Group</string>
+			<string>Files</string>
 		</dict>
 		<dict>
 			<key>Type</key>
@@ -29,6 +29,22 @@
 			<string>Confirm Delete</string>
 			<key>Key</key>
 			<string>confirmDelete</string>
+			<key>DefaultValue</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+			<key>Title</key>
+			<string>Mixer</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Enable Track Label Scrolling</string>
+			<key>Key</key>
+			<string>scrollTrackLabels</string>
 			<key>DefaultValue</key>
 			<true/>
 		</dict>

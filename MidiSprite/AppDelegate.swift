@@ -35,6 +35,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
   - returns: Bool
   */
   func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+    SettingsManager.initialize()
     MIDIDocumentManager.initialize()
     AudioManager.initialize()
     Sequencer.initialize()

@@ -575,7 +575,6 @@ public extension KeyType where Self.RawValue == String {
 
 public func ==<K:KeyType>(lhs: K, rhs: K) -> Bool { return lhs.key == rhs.key }
 
-
 //public extension EnumerableType where Self:RawRepresentable, Self.RawValue: ForwardIndexType {
 //  static var allCases: [Self] {
 //    return Array(rawRange.generate()).flatMap({Self.init(rawValue: $0)})

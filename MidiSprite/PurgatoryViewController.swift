@@ -12,8 +12,8 @@ import MoonKit
 final class PurgatorySegue: UIStoryboardSegue {
   /** perform */
   override func perform() {
-    guard let sourceViewController = sourceViewController as? MIDIPlayerViewController,
-      destinationViewController = destinationViewController as? PurgatoryViewController else
+    guard let sourceViewController      = sourceViewController      as? MIDIPlayerViewController,
+              destinationViewController = destinationViewController as? PurgatoryViewController else
     {
       fatalError("This must not work like I thought it did.")
     }
@@ -35,12 +35,14 @@ final class PurgatoryViewController: UIViewController {
 
     guard case .None = notificationReceptionist else { return }
 
-    notificationReceptionist = NotificationReceptionist(callbacks:
-      [
-        NSUbiquityIdentityDidChangeNotification: (nil, NSOperationQueue.mainQueue(), identityDidChange),
-        NSUserDefaultsDidChangeNotification:     (nil, NSOperationQueue.mainQueue(), userDefaultsDidChange)
-      ]
-    )
+    notificationReceptionist = NotificationReceptionist()
+    notificationReceptionist.observe(NSUbiquityIdentityDidChangeNotification,
+                               queue: NSOperationQueue.mainQueue(),
+                            callback: identityDidChange)
+    notificationReceptionist.observe(SettingsManager.Notification.Name.iCloudStorageChanged.notificationName,
+                                from: SettingsManager.self,
+                               queue: NSOperationQueue.mainQueue(),
+                            callback: iCloudStorageDidChange)
 
     backdrop.image = backdropImage
   }
@@ -52,13 +54,9 @@ final class PurgatoryViewController: UIViewController {
   */
   override func viewWillAppear(animated: Bool) {
 
-    guard isBeingPresented() else {
-      fatalError("This controller is meant only to be presented")
-    }
+    guard isBeingPresented() else { fatalError("This controller is meant only to be presented") }
 
-    guard NSUserDefaults.standardUserDefaults().boolForKey("iCloudStorage") else {
-      fatalError("This controller should only appear when 'Use iCloud' is true")
-    }
+    guard SettingsManager.iCloudStorage else { fatalError("This controller should only appear when 'Use iCloud' is true") }
 
     guard NSFileManager.defaultManager().ubiquityIdentityToken == nil else {
       fatalError("This controller's view should only appear when ubiquityIdentityToken is nil")
@@ -66,12 +64,12 @@ final class PurgatoryViewController: UIViewController {
   }
 
   /**
-  userDefaultsDidChange:
+  iCloudStorageDidChange:
 
   - parameter notification: NSNotification
   */
-  private func userDefaultsDidChange(notification: NSNotification) {
-    if !NSUserDefaults.standardUserDefaults().boolForKey("iCloudStorage") { dismissViewControllerAnimated(true, completion: nil) }
+  private func iCloudStorageDidChange(notification: NSNotification) {
+    if !SettingsManager.iCloudStorage { dismissViewControllerAnimated(true, completion: nil) }
   }
 
   /**
@@ -80,7 +78,6 @@ final class PurgatoryViewController: UIViewController {
   - parameter notification: NSNotification
   */
   private func identityDidChange(notification: NSNotification) {
-    logDebug()
     guard NSFileManager.defaultManager().ubiquityIdentityToken != nil else { return }
     dismissViewControllerAnimated(true, completion: nil)
   }
