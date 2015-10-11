@@ -19,3 +19,11 @@ extension Bool {
   }
 }
 
+extension Bool: BitwiseOperationsType {
+  public static var allZeros: Bool { return false }
+}
+
+public func &(lhs: Bool, rhs: Bool) -> Bool { return lhs && rhs }
+public func |(lhs: Bool, rhs: Bool) -> Bool { return lhs || rhs }
+public func ^(lhs: Bool, rhs: Bool) -> Bool { return (lhs && !rhs) || (rhs && !lhs) }
+public prefix func ~(x: Bool) -> Bool { return !x }

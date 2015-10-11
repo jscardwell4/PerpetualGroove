@@ -323,6 +323,7 @@
 		C268340C1B11159E00A359A8 /* Chameleon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C268340B1B11159E00A359A8 /* Chameleon.framework */; };
 		C2683F7B1AF142E60081C74B /* UIBezierPath+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2683F7A1AF142E60081C74B /* UIBezierPath+MoonKitAdditions.swift */; };
 		C26863721AF96E6E00D664E8 /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26863711AF96E6E00D664E8 /* Queue.swift */; };
+		C26A09781BC9F1B0002EFEE1 /* CATransform3D.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A09771BC9F1B0002EFEE1 /* CATransform3D.swift */; settings = {ASSET_TAGS = (); }; };
 		C26A27F11B94BD7A00BD1698 /* IntrinsicSizeDelegatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A27F01B94BD7A00BD1698 /* IntrinsicSizeDelegatingView.swift */; settings = {ASSET_TAGS = (); }; };
 		C26A27F31B94C30500BD1698 /* DirectoryMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A27F21B94C30500BD1698 /* DirectoryMonitor.swift */; settings = {ASSET_TAGS = (); }; };
 		C26A27F71B9532A900BD1698 /* Knob.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A27F61B9532A900BD1698 /* Knob.swift */; settings = {ASSET_TAGS = (); }; };
@@ -558,6 +559,7 @@
 		C268340B1B11159E00A359A8 /* Chameleon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Chameleon.framework; path = "../../../../Library/Developer/Xcode/DerivedData/Build/Products/Debug-iphoneos/Chameleon.framework"; sourceTree = "<group>"; };
 		C2683F7A1AF142E60081C74B /* UIBezierPath+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIBezierPath+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C26863711AF96E6E00D664E8 /* Queue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Queue.swift; sourceTree = "<group>"; };
+		C26A09771BC9F1B0002EFEE1 /* CATransform3D.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CATransform3D.swift; sourceTree = "<group>"; };
 		C26A27F01B94BD7A00BD1698 /* IntrinsicSizeDelegatingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntrinsicSizeDelegatingView.swift; sourceTree = "<group>"; };
 		C26A27F21B94C30500BD1698 /* DirectoryMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DirectoryMonitor.swift; sourceTree = "<group>"; };
 		C26A27F61B9532A900BD1698 /* Knob.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Knob.swift; sourceTree = "<group>"; };
@@ -919,6 +921,7 @@
 		C23592E019C8E04200920F8D /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				C26A09771BC9F1B0002EFEE1 /* CATransform3D.swift */,
 				C2CA852B1BC72EA00046AFC0 /* NSRange+MoonKitAdditions.swift */,
 				C2CA852D1BC731FF0046AFC0 /* NSLayoutManager+MoonKitAdditions.swift */,
 				C2D406751BBA0F6700681DEF /* NSURL+MoonKitAdditions.swift */,
@@ -2004,6 +2007,7 @@
 				C2358F6419C78E0C00920F8D /* MSPinchGestureRecognizer.m in Sources */,
 				C2358F6519C78E0C00920F8D /* MSSwipeGestureRecognizer.m in Sources */,
 				C2FE79E61B1E62590087F72C /* NSIndexPath+MoonKitAdditions.swift in Sources */,
+				C26A09781BC9F1B0002EFEE1 /* CATransform3D.swift in Sources */,
 				C2CF38CF1B7FAFE00085B3D5 /* VerticalSlider.swift in Sources */,
 				C2358F6619C78E0C00920F8D /* MSResizingLayer.m in Sources */,
 				C2358F6719C78E0C00920F8D /* MSAssertionHandler.m in Sources */,

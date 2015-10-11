@@ -15,8 +15,8 @@ import typealias AudioToolbox.AudioUnitParameterValue
 class MixerCell: UICollectionViewCell {
 
   @IBOutlet weak var volumeSlider: Slider!
-  @IBOutlet weak var panKnob: Knob!
-  @IBOutlet weak var stackView: UIStackView!
+  @IBOutlet weak var panKnob:      Knob!
+  @IBOutlet weak var stackView:    UIStackView!
 
   var volume: AudioUnitParameterValue {
     get { return volumeSlider.value / volumeSlider.maximumValue }
@@ -27,13 +27,6 @@ class MixerCell: UICollectionViewCell {
     get { return panKnob.value }
     set { panKnob.value = newValue }
   }
-
-  /**
-  intrinsicContentSize
-
-  - returns: CGSize
-  */
-  override func intrinsicContentSize() -> CGSize { return CGSize(width: 100, height: 400) }
 
 }
 
@@ -50,16 +43,56 @@ final class MasterCell: MixerCell {
 
 }
 
-class TrackCell: MixerCell, TrackLabelDelegate {
+final class TrackCell: MixerCell {
 
   class var Identifier: String { return "TrackCell" }
 
+  @IBOutlet weak var controller: MixerViewController?
+
   @IBOutlet var soloButton: LabelButton!
   @IBOutlet var muteButton: LabelButton!
+
   @IBOutlet var volumeLabel: Label!
-  @IBOutlet var panLabel: Label!
+  @IBOutlet var panLabel:    Label!
+
   @IBOutlet var trackLabel: TrackLabel!
-  
+  @IBOutlet var trackColor: ImageButtonView! {
+    didSet { trackColor?.addGestureRecognizer(longPress) }
+  }
+
+  private lazy var longPress: UILongPressGestureRecognizer = {
+    let gesture = UILongPressGestureRecognizer(target: self, action: "handleLongPress:")
+    gesture.delaysTouchesBegan = true
+    return gesture
+  }()
+
+  /**
+  handleLongPress:
+
+  - parameter sender: UILongPressGestureRecognizer
+  */
+  @objc private func handleLongPress(sender: UILongPressGestureRecognizer) {
+    switch sender.state {
+      case .Began:
+        logDebug("Began")
+        UIView.animateWithDuration(0.25) { [unowned self] in
+          self.layer.transform = CATransform3D(sx: 1.1, sy: 1.1, sz: 1.1).translate(tx: 0, ty: 10, tz: 0)
+        }
+        controller?.movingCell = self
+
+      case .Changed:
+        let (x, y) = sender.locationInView(self).unpack
+        logDebug("Changed: (\(x), \(y))")
+
+      case .Cancelled, .Ended: fallthrough
+
+      default:
+        logDebug("Ended")
+        controller?.movingCell = nil
+        UIView.animateWithDuration(0.25) { [unowned self] in self.layer.transform = .identity }
+    }
+  }
+
   /** solo */
   @IBAction func solo() {
     logDebug()
@@ -83,20 +116,14 @@ class TrackCell: MixerCell, TrackLabelDelegate {
 
   - parameter frame: CGRect
   */
-  override init(frame: CGRect) {
-    super.init(frame: frame)
-    setup()
-  }
+  override init(frame: CGRect) { super.init(frame: frame); setup() }
 
   /**
   init:
 
   - parameter aDecoder: NSCoder
   */
-  required init?(coder aDecoder: NSCoder) {
-    super.init(coder: aDecoder)
-    setup()
-  }
+  required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder); setup() }
 
   /** volumeDidChange */
   @IBAction func volumeDidChange() { track?.volume = volume }
@@ -109,8 +136,13 @@ class TrackCell: MixerCell, TrackLabelDelegate {
       volume = track?.volume ?? 0
       pan = track?.pan ?? 0
       trackLabel.text = track?.name ?? ""
+      trackColor.tintColor = track?.color.value
     }
   }
+
+}
+
+extension TrackCell: TrackLabelDelegate {
 
   /**
   trackLabelDidChange:
@@ -118,37 +150,5 @@ class TrackCell: MixerCell, TrackLabelDelegate {
   - parameter trackLabel: TrackLabel
   */
   func trackLabelDidChange(trackLabel: TrackLabel) { track?.label = trackLabel.text }
+
 }
-
-final class AddTrackCell: TrackCell {
-
-  override static var Identifier: String { return "AddTrackCell" }
-
-  @IBOutlet weak var addTrackImageButton: ImageButtonView!
-
-  /** didDraw */
-  func generateBackdrop() {
-
-    stackView.hidden = false
-    addTrackImageButton.hidden = true
-//    setNeedsLayout()
-//    layoutIfNeeded()
-//    UIGraphicsBeginImageContextWithOptions(CGSize(width: 100, height: 400), false, 0)
-//    drawViewHierarchyInRect(CGRect(size: CGSize(width: 100, height: 400)), afterScreenUpdates: false)
-//    for view in stackView.subviews {
-//      view.drawViewHierarchyInRect(view.frame.offsetBy(stackView.frame.origin), afterScreenUpdates: false)
-//    }
-//    let image = UIGraphicsGetImageFromCurrentImageContext()
-//    UIGraphicsEndImageContext()
-//
-//    let blurredImage = image.applyBlurWithRadius(3, tintColor: UIColor.backgroundColor.colorWithAlpha(0.95), saturationDeltaFactor: 0, maskImage: nil)
-
-//    stackView.hidden = true
-    addTrackImageButton.hidden = false
-//    let imageView = UIImageView(image: blurredImage)
-//    imageView.contentMode = .Center
-//    backgroundView = imageView
-
-  }
-}
-

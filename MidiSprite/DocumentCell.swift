@@ -19,6 +19,7 @@ final class DocumentCell: UICollectionViewCell {
   /** deleteItem */
   @IBAction func deleteItem() {
     guard let item = item else { return }
+    if SettingsManager.confirmDeleteDocument { logWarning("delete confirmation not yet implemented") }
     MIDIDocumentManager.deleteItem(item)
   }
 

@@ -65,7 +65,7 @@ final class DocumentsViewController: UICollectionViewController {
     notificationReceptionist = NotificationReceptionist(callbacks:
       [
         MIDIDocumentManager.Notification.DidUpdateMetadataItems.rawValue : (MIDIDocumentManager.self, queue, didUpdateItems),
-        NSUserDefaultsDidChangeNotification                              : (nil, queue, userDefaultsDidChange)
+        SettingsManager.Notification.Name.iCloudStorageChanged.rawValue  : (SettingsManager.self, queue, iCloudStorageDidChange)
       ]
     )
   }
@@ -97,7 +97,7 @@ final class DocumentsViewController: UICollectionViewController {
 
   // MARK: - Document items
 
-  private var iCloudStorage = NSUserDefaults.standardUserDefaults().boolForKey("iCloudStorage") {
+  private var iCloudStorage = SettingsManager.iCloudStorage {
     didSet {
       collectionView?.reloadData()
     }
@@ -159,12 +159,15 @@ final class DocumentsViewController: UICollectionViewController {
   private func didUpdateItems(notification: NSNotification) { updateItems() }
 
   /**
-  userDefaultsDidChange:
+  iCloudStorageDidChange:
 
   - parameter notification: NSNotification
   */
-  private func userDefaultsDidChange(notification: NSNotification) {
-    iCloudStorage = NSUserDefaults.standardUserDefaults().boolForKey("iCloudStorage")
+  private func iCloudStorageDidChange(notification: NSNotification) {
+    guard let value = (notification.userInfo?[SettingsManager.Notification.Key.NewValue.rawValue] as? NSNumber)?.boolValue else {
+      return
+    }
+    iCloudStorage = value
   }
 
   /** updateItems */

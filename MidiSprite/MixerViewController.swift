@@ -27,12 +27,58 @@ final class MixerViewController: UICollectionViewController {
     catch { logError(error, message: "Failed to add new track") }
   }
 
+  /**
+  indexPathForSender:
+
+  - parameter sender: ImageButtonView
+
+  - returns: NSIndexPath?
+  */
+  private func indexPathForSender(sender: ImageButtonView) -> NSIndexPath? {
+    guard let collectionView = collectionView else { return nil }
+    return collectionView.indexPathForItemAtPoint(collectionView.convertPoint(sender.center, fromView: sender.superview))
+  }
+
+  /**
+  Invoked when a `TrackCell` has had its `trackColor` button tapped
+
+  - parameter sender: ImageButtonView
+  */
+  @IBAction func selectItem(sender: ImageButtonView) {
+    logDebug()
+    guard let indexPath = indexPathForSender(sender) where indexPath.section == 1 else { return }
+    Sequencer.sequence?.currentTrack = Sequencer.sequence?.instrumentTracks[indexPath.item]
+  }
+
+
+  var movingCell: TrackCell? { didSet { logDebug("movingCell = \(movingCell)") } }
+
+  /**
+  deleteItem:
+
+  - parameter sender: ImageButtonView
+  */
+  @IBAction func deleteItem(sender: ImageButtonView, event: UIEvent) {
+    logDebug()
+    guard let touch = event.touchesForView(sender)?.first else { return }
+    let location = touch.locationInView(sender)
+    logDebug("location: \(location)")
+    guard location.y > sender.bounds.maxY else { return }
+
+    guard let indexPath = indexPathForSender(sender) where indexPath.section == 1 else { return }
+    logDebug("indexPath: \(indexPath)")
+
+    if SettingsManager.confirmDeleteTrack { logWarning("delete confirmation not yet implemented for tracks") }
+    Sequencer.sequence?.removeTrack(Sequencer.sequence!.instrumentTracks[indexPath.item])
+  }
+
   /** viewDidLoad */
   override func viewDidLoad() {
     super.viewDidLoad()
     view.translatesAutoresizingMaskIntoConstraints = false
     collectionView?.translatesAutoresizingMaskIntoConstraints = false
-    collectionView?.allowsSelection = true
+    collectionView?.allowsSelection = false
+    collectionView?.clipsToBounds = false
 
     guard notificationReceptionist == nil else { return }
     notificationReceptionist = generateNotificationReceptionist()
@@ -117,9 +163,9 @@ final class MixerViewController: UICollectionViewController {
       where (cell as? TrackCell)?.track == newTrack && !cell.selected
     {
       currentTrackIndexPath = NSIndexPath(forItem: idx, inSection: Section.Instruments.rawValue)
-      collectionView?.selectItemAtIndexPath(currentTrackIndexPath,
-                                   animated: true,
-                             scrollPosition: .CenteredHorizontally)
+//      collectionView?.selectItemAtIndexPath(currentTrackIndexPath,
+//                                   animated: true,
+//                             scrollPosition: .CenteredHorizontally)
     }
   }
 
@@ -196,13 +242,13 @@ final class MixerViewController: UICollectionViewController {
   - parameter cell: UICollectionViewCell
   - parameter indexPath: NSIndexPath
   */
-  override func collectionView(collectionView: UICollectionView,
-               willDisplayCell cell: UICollectionViewCell,
-            forItemAtIndexPath indexPath: NSIndexPath)
-  {
-    guard let cell = cell as? AddTrackCell else { return }
-    delayedDispatchToMain(0) { cell.generateBackdrop() }
-  }
+//  override func collectionView(collectionView: UICollectionView,
+//               willDisplayCell cell: UICollectionViewCell,
+//            forItemAtIndexPath indexPath: NSIndexPath)
+//  {
+//    guard let cell = cell as? AddTrackCell else { return }
+//    delayedDispatchToMain(0) { cell.generateBackdrop() }
+//  }
 
   /**
   collectionView:cellForItemAtIndexPath:
@@ -221,8 +267,7 @@ final class MixerViewController: UICollectionViewController {
         cell = collectionView.dequeueReusableCellWithReuseIdentifier(MasterCell.Identifier, forIndexPath: indexPath)
         (cell as? MasterCell)?.refresh()
       case Section.Add.rawValue:
-        cell = collectionView.dequeueReusableCellWithReuseIdentifier(AddTrackCell.Identifier,
-                                                        forIndexPath: indexPath)
+        cell = collectionView.dequeueReusableCellWithReuseIdentifier("AddTrackCell", forIndexPath: indexPath)
       default:
         cell = collectionView.dequeueReusableCellWithReuseIdentifier(TrackCell.Identifier, forIndexPath: indexPath)
         (cell as? TrackCell)?.track = Sequencer.sequence?.instrumentTracks[indexPath.item]

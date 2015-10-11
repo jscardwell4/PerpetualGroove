@@ -19,7 +19,8 @@ final class DocumentsViewLayout: UICollectionViewLayout {
 
   private var itemSize: CGSize {
     assert(controller != nil)
-    return controller?.itemSize ?? CGSize(width: 250, height: 40) }
+    return controller?.itemSize ?? CGSize(width: 250, height: 40)
+  }
   
   /** prepareLayout */
   override func prepareLayout() {
@@ -78,8 +79,7 @@ final class DocumentsViewLayout: UICollectionViewLayout {
       case 0:
         attributes.frame = CGRect(origin: .zero, size: size)
       default:
-        attributes.frame = CGRect(origin: CGPoint(x: 0, y: CGFloat(indexPath.row + 1) * size.height),
-                                  size: size)
+        attributes.frame = CGRect(origin: CGPoint(x: 0, y: CGFloat(indexPath.row + 1) * size.height), size: size)
     }
 
     return attributes

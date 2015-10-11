@@ -1,4 +1,5 @@
 //
+
 //  ImageButtonView.swift
 //  MoonKit
 //
@@ -13,7 +14,7 @@ import UIKit
 
   // MARK: - Private properties
   private let imageView = UIImageView(autolayout: true)
-  private var trackingTouch: UITouch? { didSet { highlighted = trackingTouch != nil } }
+//  private var trackingTouch: UITouch? { didSet { highlighted = trackingTouch != nil } }
 
   // MARK: - Toggling
 
@@ -54,9 +55,25 @@ import UIKit
     }
   }
 
-  @IBInspectable public override var highlighted: Bool { didSet { updateForState() } }
-  @IBInspectable public override var selected: Bool    { didSet { updateForState() } }
-  @IBInspectable public override var enabled: Bool     { didSet { updateForState() } }
+  /// Tracks input to `highlighted` setter to prevent multiple calls with the same value from interfering with `toggle`
+  private var previousHighlightedInput = false
+
+  /// Overridden to implement optional toggling
+  public override var highlighted: Bool {
+    get { return super.highlighted }
+    set {
+      guard newValue != previousHighlightedInput else { return }
+      switch toggle {
+        case true:  super.highlighted ^= newValue
+        case false: super.highlighted = newValue
+      }
+      previousHighlightedInput = newValue
+      updateForState()
+    }
+  }
+
+  public override var selected: Bool { didSet { logDebug(); updateForState() } }
+  public override var enabled:  Bool { didSet { logDebug(); updateForState() } }
 
   // MARK: - Initializing
 
@@ -99,57 +116,4 @@ import UIKit
     setup()
   }
 
-  // MARK: - Touch handling
-
-  /**
-  touchesBegan:withEvent:
-
-  - parameter touches: Set<UITouch>
-  - parameter event: UIEvent?
-  */
-  public override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-    if trackingTouch == nil { trackingTouch = touches.first }
-  }
-
-  /**
-  touchesMoved:withEvent:
-
-  - parameter touches: Set<UITouch>
-  - parameter event: UIEvent?
-  */
-  public override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
-    if let trackingTouch = trackingTouch
-      where touches.contains(trackingTouch) && !pointInside(trackingTouch.locationInView(self), withEvent: event)
-    {
-      self.trackingTouch = nil
-    }
-  }
-
-  /**
-  touchesEnded:withEvent:
-
-  - parameter touches: Set<UITouch>
-  - parameter event: UIEvent?
-  */
-  public override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-    if let trackingTouch = trackingTouch where touches.contains(trackingTouch) {
-      if pointInside(trackingTouch.locationInView(self), withEvent: event) {
-        if toggle { selected = !selected }
-        sendActionsForControlEvents(.TouchUpInside)
-      }
-      self.trackingTouch = nil
-    }
-  }
-
-  /**
-  touchesCancelled:withEvent:
-
-  - parameter touches: Set<UITouch>?
-  - parameter event: UIEvent?
-  */
-  public override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) {
-    if let touches = touches, trackingTouch = trackingTouch where touches.contains(trackingTouch) {
-      self.trackingTouch = nil
-    }
-  }
 }

@@ -34,3 +34,12 @@
 2015-10-01 01:01:36 +0000 [68048908740866] <MIDIClock.swift:99> init(resolution:)  [fg255,0,0;-Error- [;Failed to create midi client for clock - error code: 268435459
 2015-10-01 01:01:55 +0000 [68068468786893] <BarBeatTime.swift:403> init(clockSource:partsPerQuarter:)  [fg255,0,0;-Error- [;Failed to create midi client for bar beat time - error code: 268435459
 2015-10-01 14:38:35 +0000 [70234519722622] <MIDIClock.swift:99> init(resolution:)  [fg255,0,0;-Error- [;Failed to create midi client for clock - error code: 268435459
+2015-10-10 15:55:29 +0000 [43663780516505] <Marquee.swift:217> beginScrolling()  There are not any excess characters to scroll into view
+2015-10-10 15:55:29 +0000 [43663833171119] <Marquee.swift:217> beginScrolling()  There are not any excess characters to scroll into view
+2015-10-10 15:55:29 +0000 [43663854974378] <Marquee.swift:217> beginScrolling()  There are not any excess characters to scroll into view
+2015-10-10 15:56:05 +0000 [43699804362782] <Marquee.swift:217> beginScrolling()  There are not any excess characters to scroll into view
+2015-10-10 15:56:05 +0000 [43699857669266] <Marquee.swift:217> beginScrolling()  There are not any excess characters to scroll into view
+2015-10-10 15:56:05 +0000 [43699879361901] <Marquee.swift:217> beginScrolling()  There are not any excess characters to scroll into view
+2015-10-10 16:08:47 +0000 [44461747596897] <Marquee.swift:217> beginScrolling()  There are not any excess characters to scroll into view
+2015-10-10 16:08:47 +0000 [44461810555005] <Marquee.swift:217> beginScrolling()  There are not any excess characters to scroll into view
+2015-10-10 16:08:47 +0000 [44461825793916] <Marquee.swift:217> beginScrolling()  There are not any excess characters to scroll into view

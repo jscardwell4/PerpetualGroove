@@ -26,9 +26,19 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
-			<string>Confirm Delete</string>
+			<string>Confirm Document Deletion</string>
 			<key>Key</key>
-			<string>confirmDelete</string>
+			<string>confirmDeleteDocument</string>
+			<key>DefaultValue</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Confirm Track Deletion</string>
+			<key>Key</key>
+			<string>confirmDeleteTrack</string>
 			<key>DefaultValue</key>
 			<true/>
 		</dict>
