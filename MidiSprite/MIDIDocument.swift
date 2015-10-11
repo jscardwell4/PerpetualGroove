@@ -36,7 +36,7 @@ final class MIDIDocument: UIDocument {
   - parameter notification: NSNotification
   */
   private func didRemoveTrack(notification: NSNotification) {
-    guard let track = notification.userInfo?[SequenceNotification.Key.OldTrack.rawValue] as? InstrumentTrack else { return }
+    guard let track = notification.userInfo?[SequenceNotification.Key.Track.rawValue] as? InstrumentTrack else { return }
     notificationReceptionist.stopObserving(MIDITrackNotification.DidUpdateEvents, from: track)
     updateChangeCount(.Done)
   }

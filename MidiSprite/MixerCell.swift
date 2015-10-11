@@ -66,6 +66,18 @@ final class TrackCell: MixerCell {
     return gesture
   }()
 
+  private var startLocation: CGPoint?
+
+  @IBOutlet var removalDisplay: UIVisualEffectView!
+
+  private var markedForRemoval = false {
+    didSet {
+      guard markedForRemoval != oldValue else { return }
+      logDebug("markedForRemoval: \(markedForRemoval)")
+      UIView.animateWithDuration(0.25) {[unowned self] in self.removalDisplay.alpha = self.markedForRemoval ? 1 : 0 }
+    }
+  }
+
   /**
   handleLongPress:
 
@@ -75,19 +87,37 @@ final class TrackCell: MixerCell {
     switch sender.state {
       case .Began:
         logDebug("Began")
+        startLocation = sender.locationInView(controller?.collectionView)
         UIView.animateWithDuration(0.25) { [unowned self] in
           self.layer.transform = CATransform3D(sx: 1.1, sy: 1.1, sz: 1.1).translate(tx: 0, ty: 10, tz: 0)
         }
         controller?.movingCell = self
 
       case .Changed:
-        let (x, y) = sender.locationInView(self).unpack
-        logDebug("Changed: (\(x), \(y))")
+        guard let startLocation = startLocation else { break }
+        let currentLocation = sender.locationInView(controller?.collectionView)
+
+        switch (startLocation - currentLocation).unpack {
+        case let (x, _) where x < -50 && !markedForRemoval:
+            controller?.shiftCell(self, direction: .Right); self.startLocation = currentLocation
+          case let (x, _) where x > 50 && !markedForRemoval:
+            controller?.shiftCell(self, direction: .Left); self.startLocation = currentLocation
+          case let (_, y) where y < -50 && !markedForRemoval:
+            markedForRemoval = true
+          case let (_, y) where y > -50 && markedForRemoval:
+            markedForRemoval = false
+          default:
+            break
+        }
+
+      case .Ended where markedForRemoval:
+        controller?.deleteItem(self)
 
       case .Cancelled, .Ended: fallthrough
 
       default:
         logDebug("Ended")
+        startLocation = nil
         controller?.movingCell = nil
         UIView.animateWithDuration(0.25) { [unowned self] in self.layer.transform = .identity }
     }

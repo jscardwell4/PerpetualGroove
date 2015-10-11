@@ -568,7 +568,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="100" height="420"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" distribution="equalCentering" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="jXz-zn-JV2">
+                                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="jXz-zn-JV2">
                                             <rect key="frame" x="8" y="8" width="84" height="402"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Mnc-ed-SYw">
@@ -684,7 +684,7 @@
                                                     </subviews>
                                                     <animations/>
                                                 </stackView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" misplaced="YES" text="MASTER" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zFx-2Q-V0k" customClass="Label" customModule="MoonKit">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="MASTER" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zFx-2Q-V0k" customClass="Label" customModule="MoonKit">
                                                     <rect key="frame" x="18" y="388" width="49" height="14"/>
                                                     <animations/>
                                                     <fontDescription key="fontDescription" name="EvelethThin" family="Eveleth" pointSize="12"/>
@@ -734,7 +734,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="100" height="420"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" distribution="equalCentering" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="sCc-QY-TMC">
+                                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="sCc-QY-TMC">
                                             <rect key="frame" x="8" y="8" width="84" height="404"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" distribution="equalSpacing" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="YGu-8C-M5R">
@@ -893,9 +893,6 @@
                                                                 </userDefinedRuntimeAttribute>
                                                                 <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
                                                             </userDefinedRuntimeAttributes>
-                                                            <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
-                                                                <rect key="frame" x="0.0" y="0.0" width="45" height="19"/>
-                                                            </variation>
                                                             <connections>
                                                                 <action selector="solo" destination="2AY-7g-m2Q" eventType="touchUpInside" id="g3q-b6-WW4"/>
                                                             </connections>
@@ -919,9 +916,6 @@
                                                                 </userDefinedRuntimeAttribute>
                                                                 <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
                                                             </userDefinedRuntimeAttributes>
-                                                            <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
-                                                                <rect key="frame" x="0.0" y="19" width="45" height="19"/>
-                                                            </variation>
                                                             <connections>
                                                                 <action selector="mute" destination="2AY-7g-m2Q" eventType="touchUpInside" id="DQT-1Z-Rzc"/>
                                                             </connections>
@@ -936,8 +930,7 @@
                                                             <exclude reference="0SF-2D-Kf4"/>
                                                         </mask>
                                                     </variation>
-                                                    <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
-                                                        <rect key="frame" x="20" y="324" width="45" height="38"/>
+                                                    <variation key="heightClass=regular-widthClass=regular">
                                                         <mask key="constraints">
                                                             <include reference="0SF-2D-Kf4"/>
                                                         </mask>
@@ -969,8 +962,8 @@
                                                                 <outlet property="delegate" destination="2AY-7g-m2Q" id="DMw-YC-Lce"/>
                                                             </connections>
                                                         </view>
-                                                        <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="i87-3C-3ae" userLabel="TrackColor" customClass="ImageButtonView" customModule="MoonKit">
-                                                            <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                                        <view opaque="NO" contentMode="scaleAspectFit" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="i87-3C-3ae" userLabel="TrackColor" customClass="ImageButtonView" customModule="MoonKit">
+                                                            <rect key="frame" x="0.0" y="15" width="84" height="0.0"/>
                                                             <animations/>
                                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                             <color key="tintColor" red="0.68166375160217285" green="0.38204258680343628" blue="0.2524854838848114" alpha="1" colorSpace="calibratedRGB"/>
@@ -1005,6 +998,64 @@
                                                 <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TrackCellStack"/>
                                             </userDefinedRuntimeAttributes>
                                         </stackView>
+                                        <visualEffectView opaque="NO" userInteractionEnabled="NO" alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PLx-z8-sAo">
+                                            <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="center" id="0px-uc-SZ1">
+                                                <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <visualEffectView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eZi-HU-WRM">
+                                                        <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="eQW-ZI-j4I">
+                                                            <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <subviews>
+                                                                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" image="trash-selected" translatesAutoresizingMaskIntoConstraints="NO" id="gNv-ZK-rjJ">
+                                                                    <rect key="frame" x="0.0" y="-56" width="56" height="56"/>
+                                                                    <animations/>
+                                                                </imageView>
+                                                            </subviews>
+                                                            <animations/>
+                                                            <constraints>
+                                                                <constraint firstItem="gNv-ZK-rjJ" firstAttribute="centerX" secondItem="eQW-ZI-j4I" secondAttribute="centerX" id="5TH-f0-A9n"/>
+                                                                <constraint firstItem="gNv-ZK-rjJ" firstAttribute="centerY" secondItem="eQW-ZI-j4I" secondAttribute="centerY" id="i79-qO-PGT"/>
+                                                            </constraints>
+                                                            <variation key="default">
+                                                                <mask key="subviews">
+                                                                    <exclude reference="gNv-ZK-rjJ"/>
+                                                                </mask>
+                                                                <mask key="constraints">
+                                                                    <exclude reference="5TH-f0-A9n"/>
+                                                                    <exclude reference="i79-qO-PGT"/>
+                                                                </mask>
+                                                            </variation>
+                                                            <variation key="heightClass=regular-widthClass=regular">
+                                                                <mask key="subviews">
+                                                                    <include reference="gNv-ZK-rjJ"/>
+                                                                </mask>
+                                                                <mask key="constraints">
+                                                                    <include reference="5TH-f0-A9n"/>
+                                                                    <include reference="i79-qO-PGT"/>
+                                                                </mask>
+                                                            </variation>
+                                                        </view>
+                                                        <animations/>
+                                                        <vibrancyEffect>
+                                                            <blurEffect style="dark"/>
+                                                        </vibrancyEffect>
+                                                    </visualEffectView>
+                                                </subviews>
+                                                <animations/>
+                                                <constraints>
+                                                    <constraint firstItem="eZi-HU-WRM" firstAttribute="top" secondItem="0px-uc-SZ1" secondAttribute="top" id="QKo-0Y-hfh"/>
+                                                    <constraint firstAttribute="trailing" secondItem="eZi-HU-WRM" secondAttribute="trailing" id="agB-h0-kMb"/>
+                                                    <constraint firstAttribute="bottom" secondItem="eZi-HU-WRM" secondAttribute="bottom" id="lUa-Nn-ErE"/>
+                                                    <constraint firstItem="eZi-HU-WRM" firstAttribute="leading" secondItem="0px-uc-SZ1" secondAttribute="leading" id="urF-me-hsb"/>
+                                                </constraints>
+                                            </view>
+                                            <animations/>
+                                            <blurEffect style="dark"/>
+                                        </visualEffectView>
                                     </subviews>
                                     <animations/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -1012,8 +1063,20 @@
                                 <animations/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
+                                    <constraint firstItem="PLx-z8-sAo" firstAttribute="leading" secondItem="2AY-7g-m2Q" secondAttribute="leadingMargin" constant="-78" id="9ac-bz-W6D">
+                                        <variation key="heightClass=regular-widthClass=regular" constant="0.0"/>
+                                    </constraint>
+                                    <constraint firstItem="PLx-z8-sAo" firstAttribute="top" secondItem="2AY-7g-m2Q" secondAttribute="topMargin" constant="138" id="Ddx-zp-JY3">
+                                        <variation key="heightClass=regular-widthClass=regular" constant="0.0"/>
+                                    </constraint>
                                     <constraint firstAttribute="trailingMargin" secondItem="sCc-QY-TMC" secondAttribute="trailing" identifier="ContentStretchRight" id="Gju-vg-pOP"/>
                                     <constraint firstItem="sCc-QY-TMC" firstAttribute="top" secondItem="2AY-7g-m2Q" secondAttribute="topMargin" identifier="ContentStretchUp" id="Ncr-XB-LXB"/>
+                                    <constraint firstAttribute="trailingMargin" secondItem="PLx-z8-sAo" secondAttribute="trailing" constant="-78" id="NiX-3b-LrS">
+                                        <variation key="heightClass=regular-widthClass=regular" constant="0.0"/>
+                                    </constraint>
+                                    <constraint firstAttribute="bottomMargin" secondItem="PLx-z8-sAo" secondAttribute="bottom" constant="138" id="ebH-51-OJU">
+                                        <variation key="heightClass=regular-widthClass=regular" constant="0.0"/>
+                                    </constraint>
                                     <constraint firstItem="sCc-QY-TMC" firstAttribute="leading" secondItem="2AY-7g-m2Q" secondAttribute="leadingMargin" identifier="ContentStretchLeft" id="h7b-Ps-gKq"/>
                                     <constraint firstAttribute="bottomMargin" secondItem="sCc-QY-TMC" secondAttribute="bottom" identifier="ContentStretchDown" id="uVG-W8-cNW"/>
                                 </constraints>
@@ -1021,11 +1084,28 @@
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="MixerSceneTrackCell"/>
                                 </userDefinedRuntimeAttributes>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="9ac-bz-W6D"/>
+                                        <exclude reference="Ddx-zp-JY3"/>
+                                        <exclude reference="NiX-3b-LrS"/>
+                                        <exclude reference="ebH-51-OJU"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular-widthClass=regular">
+                                    <mask key="constraints">
+                                        <include reference="9ac-bz-W6D"/>
+                                        <include reference="Ddx-zp-JY3"/>
+                                        <include reference="NiX-3b-LrS"/>
+                                        <include reference="ebH-51-OJU"/>
+                                    </mask>
+                                </variation>
                                 <connections>
                                     <outlet property="controller" destination="iF7-fT-LPT" id="hf5-mu-tfY"/>
                                     <outlet property="muteButton" destination="BZl-Ps-fwB" id="fPP-2n-qDK"/>
                                     <outlet property="panKnob" destination="y4E-jp-B4L" id="yVA-ME-YEO"/>
                                     <outlet property="panLabel" destination="UVo-0O-vty" id="l3g-yf-knH"/>
+                                    <outlet property="removalDisplay" destination="PLx-z8-sAo" id="xFR-eS-lai"/>
                                     <outlet property="soloButton" destination="Ldg-6q-t2e" id="RUa-4A-QDo"/>
                                     <outlet property="stackView" destination="sCc-QY-TMC" id="Um8-Wv-ECM"/>
                                     <outlet property="trackColor" destination="i87-3C-3ae" id="6y8-3i-4fB"/>
@@ -1362,6 +1442,7 @@
         <image name="knob" width="74" height="74"/>
         <image name="metronome" width="56" height="56"/>
         <image name="metronome-selected" width="56" height="56"/>
+        <image name="trash-selected" width="56" height="56"/>
         <image name="up_arrow" width="31" height="31"/>
         <image name="vertical_thumb" width="44" height="20"/>
         <image name="vertical_track" width="46" height="20"/>

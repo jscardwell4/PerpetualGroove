@@ -30,11 +30,11 @@ final class MixerViewController: UICollectionViewController {
   /**
   indexPathForSender:
 
-  - parameter sender: ImageButtonView
+  - parameter sender: UIView
 
   - returns: NSIndexPath?
   */
-  private func indexPathForSender(sender: ImageButtonView) -> NSIndexPath? {
+  private func indexPathForSender(sender: UIView) -> NSIndexPath? {
     guard let collectionView = collectionView else { return nil }
     return collectionView.indexPathForItemAtPoint(collectionView.convertPoint(sender.center, fromView: sender.superview))
   }
@@ -53,18 +53,34 @@ final class MixerViewController: UICollectionViewController {
 
   var movingCell: TrackCell? { didSet { logDebug("movingCell = \(movingCell)") } }
 
+  enum ShiftDirection: String { case Left, Right }
+
+  /**
+  shiftCell:direction:
+
+  - parameter cell: TrackCell
+  - parameter direction: ShiftDirection
+  */
+  func shiftCell(cell: TrackCell, direction: ShiftDirection) {
+    logDebug("direction: \(direction)")
+    guard let collectionView = collectionView else { return }
+    switch (collectionView.indexPathForCell(cell), direction) {
+      case let (indexPath?, .Left) where indexPath.section == 1 && indexPath.item > 0:
+        collectionView.moveItemAtIndexPath(indexPath, toIndexPath: NSIndexPath(forItem: indexPath.item - 1, inSection: 1))
+      case let (indexPath?, .Right) where indexPath.section == 1 && indexPath.item < collectionView.numberOfItemsInSection(1) - 1:
+        collectionView.moveItemAtIndexPath(indexPath, toIndexPath: NSIndexPath(forItem: indexPath.item + 1, inSection: 1))
+      default:
+        break
+    }
+  }
+
   /**
   deleteItem:
 
-  - parameter sender: ImageButtonView
+  - parameter sender: AnyObject
   */
-  @IBAction func deleteItem(sender: ImageButtonView, event: UIEvent) {
+  @IBAction func deleteItem(sender: UIView) {
     logDebug()
-    guard let touch = event.touchesForView(sender)?.first else { return }
-    let location = touch.locationInView(sender)
-    logDebug("location: \(location)")
-    guard location.y > sender.bounds.maxY else { return }
-
     guard let indexPath = indexPathForSender(sender) where indexPath.section == 1 else { return }
     logDebug("indexPath: \(indexPath)")
 
