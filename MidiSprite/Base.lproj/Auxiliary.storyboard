@@ -222,7 +222,7 @@
                                                 <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
                                                     <real key="value" value="17"/>
                                                 </userDefinedRuntimeAttribute>
-                                                <userDefinedRuntimeAttribute type="color" keyPath="textColor">
+                                                <userDefinedRuntimeAttribute type="color" keyPath="tintColor">
                                                     <color key="value" red="0.76089900732040405" green="0.25649610161781311" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                 </userDefinedRuntimeAttribute>
                                             </userDefinedRuntimeAttributes>
@@ -882,17 +882,20 @@
                                                                 <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="SoloButton"/>
                                                                 <userDefinedRuntimeAttribute type="string" keyPath="text" value="Solo"/>
                                                                 <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="EvelethLight"/>
-                                                                <userDefinedRuntimeAttribute type="color" keyPath="textColor">
+                                                                <userDefinedRuntimeAttribute type="color" keyPath="tintColor">
                                                                     <color key="value" red="0.30125221610069275" green="0.29395070672035217" blue="0.28606623411178589" alpha="1" colorSpace="calibratedRGB"/>
                                                                 </userDefinedRuntimeAttribute>
                                                                 <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
                                                                     <real key="value" value="14"/>
                                                                 </userDefinedRuntimeAttribute>
-                                                                <userDefinedRuntimeAttribute type="color" keyPath="highlightedTextColor">
+                                                                <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
                                                                     <color key="value" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
                                                                 </userDefinedRuntimeAttribute>
                                                                 <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
                                                             </userDefinedRuntimeAttributes>
+                                                            <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                                <rect key="frame" x="0.0" y="0.0" width="45" height="19"/>
+                                                            </variation>
                                                             <connections>
                                                                 <action selector="solo" destination="2AY-7g-m2Q" eventType="touchUpInside" id="g3q-b6-WW4"/>
                                                             </connections>
@@ -905,17 +908,23 @@
                                                                 <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="MuteButton"/>
                                                                 <userDefinedRuntimeAttribute type="string" keyPath="text" value="Mute"/>
                                                                 <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="EvelethLight"/>
-                                                                <userDefinedRuntimeAttribute type="color" keyPath="textColor">
+                                                                <userDefinedRuntimeAttribute type="color" keyPath="tintColor">
                                                                     <color key="value" red="0.30125221610069275" green="0.29395070672035217" blue="0.28606623411178589" alpha="1" colorSpace="calibratedRGB"/>
                                                                 </userDefinedRuntimeAttribute>
                                                                 <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
                                                                     <real key="value" value="14"/>
                                                                 </userDefinedRuntimeAttribute>
-                                                                <userDefinedRuntimeAttribute type="color" keyPath="highlightedTextColor">
+                                                                <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
                                                                     <color key="value" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
                                                                 </userDefinedRuntimeAttribute>
                                                                 <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
+                                                                <userDefinedRuntimeAttribute type="color" keyPath="disabledTintColor">
+                                                                    <color key="value" red="0.23500323295593262" green="0.22884012758731842" blue="0.22191014885902405" alpha="1" colorSpace="calibratedRGB"/>
+                                                                </userDefinedRuntimeAttribute>
                                                             </userDefinedRuntimeAttributes>
+                                                            <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                                <rect key="frame" x="0.0" y="19" width="45" height="19"/>
+                                                            </variation>
                                                             <connections>
                                                                 <action selector="mute" destination="2AY-7g-m2Q" eventType="touchUpInside" id="DQT-1Z-Rzc"/>
                                                             </connections>
@@ -930,7 +939,8 @@
                                                             <exclude reference="0SF-2D-Kf4"/>
                                                         </mask>
                                                     </variation>
-                                                    <variation key="heightClass=regular-widthClass=regular">
+                                                    <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                        <rect key="frame" x="20" y="324" width="45" height="38"/>
                                                         <mask key="constraints">
                                                             <include reference="0SF-2D-Kf4"/>
                                                         </mask>
@@ -974,6 +984,8 @@
                                                             <userDefinedRuntimeAttributes>
                                                                 <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TrackColor"/>
                                                                 <userDefinedRuntimeAttribute type="image" keyPath="image" value="color_swatch"/>
+                                                                <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="color_swatch-selected"/>
+                                                                <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
                                                             </userDefinedRuntimeAttributes>
                                                             <variation key="default">
                                                                 <mask key="constraints">
@@ -998,15 +1010,15 @@
                                                 <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TrackCellStack"/>
                                             </userDefinedRuntimeAttributes>
                                         </stackView>
-                                        <visualEffectView opaque="NO" userInteractionEnabled="NO" alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PLx-z8-sAo">
+                                        <visualEffectView hidden="YES" opaque="NO" userInteractionEnabled="NO" alpha="0.0" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PLx-z8-sAo">
                                             <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
-                                            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="center" id="0px-uc-SZ1">
+                                            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="center" ambiguous="YES" id="0px-uc-SZ1">
                                                 <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <visualEffectView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eZi-HU-WRM">
+                                                    <visualEffectView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eZi-HU-WRM">
                                                         <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
-                                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="eQW-ZI-j4I">
+                                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" id="eQW-ZI-j4I">
                                                             <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
@@ -1434,6 +1446,7 @@
         <image name="add-selected" width="56" height="56"/>
         <image name="add_track_background" width="100" height="400"/>
         <image name="color_swatch" width="84" height="17"/>
+        <image name="color_swatch-selected" width="84" height="17"/>
         <image name="down_arrow" width="31" height="31"/>
         <image name="horizontal_thumb" width="46" height="46"/>
         <image name="horizontal_track" width="20" height="46"/>

@@ -17,6 +17,11 @@ extension Bool {
       }
     } else { self = false }
   }
+
+  /** toggle */
+  public mutating func toggle() {
+    self = !self
+  }
 }
 
 extension Bool: BitwiseOperationsType {

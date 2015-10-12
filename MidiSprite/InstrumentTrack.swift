@@ -12,7 +12,7 @@ import MoonKit
 import AudioToolbox
 import CoreMIDI
 
-final class InstrumentTrack: MIDITrackType, Equatable {
+final class InstrumentTrack: MIDITrackType, Equatable, Hashable {
 
   var description: String {
     var result = "Track(\(name)) {\n"
@@ -21,6 +21,11 @@ final class InstrumentTrack: MIDITrackType, Equatable {
     result += ",\n".join(events.map({$0.description.indentedBy(8)}))
     result += "\n\t}\n}"
     return result
+  }
+
+  enum Notification: String, NotificationType, NotificationNameType {
+    enum Key: String, KeyType { case OldValue, NewValue }
+    case MuteStatusDidChange, SoloStatusDidChange, DidAddNode, DidRemoveNode
   }
 
   typealias Program = Instrument.Program
@@ -42,6 +47,9 @@ final class InstrumentTrack: MIDITrackType, Equatable {
   private var fileQueue: dispatch_queue_t?
   private var pendingIdentifier: NodeIdentifier?
   private var _trackEnd: CABarBeatTime?
+
+
+  var hashValue: Int { return ObjectIdentifier(self).hashValue }
 
   var trackEnd: CABarBeatTime { return _trackEnd ?? time.time }
   
@@ -79,15 +87,22 @@ final class InstrumentTrack: MIDITrackType, Equatable {
   var name: String { return label ?? instrument.programPreset.name }
   var label: String?
 
-  private var _volume: Float = 1
   var mute: Bool = false {
     didSet {
       guard mute != oldValue else { return }
       if mute { _volume = volume; volume = 0 } else { volume = _volume }
+      Notification.MuteStatusDidChange.post(object: self, userInfo: [.OldValue: oldValue, .NewValue: mute])
     }
   }
-  var solo: Bool = false
 
+  var solo: Bool = false {
+    didSet {
+      guard solo != oldValue else { return }
+      Notification.SoloStatusDidChange.post(object: self, userInfo: [.OldValue: oldValue, .NewValue: solo])
+    }
+  }
+
+  private var _volume: Float = 1
   var volume: Float { get { return instrument.volume } set { instrument.volume = newValue } }
   var pan: Float { get { return instrument.pan } set { instrument.pan = newValue } }
 
@@ -96,11 +111,6 @@ final class InstrumentTrack: MIDITrackType, Equatable {
     case SoundSetInitializeFailure = "Failed to create sound set"
     case InvalidSoundSetURL = "Failed to resolve sound set url"
     case InstrumentInitializeFailure = "Failed to create instrument"
-  }
-
-  enum Notification: String, NotificationType, NotificationNameType {
-    case DidAddNode, DidRemoveNode
-    typealias Key = String
   }
 
   /**
@@ -286,8 +296,10 @@ final class InstrumentTrack: MIDITrackType, Equatable {
   initWithBus:track:
 
   - parameter b: Bus
+  - parameter s: MIDISequence
   */
-  init(instrument i: Instrument) throws {
+  init(instrument i: Instrument, sequence s: MIDISequence) throws {
+    sequence = s
     instrument = i
     fileQueue = serialQueueWithLabel("BUS \(instrument.bus)", qualityOfService: QOS_CLASS_BACKGROUND)
     recording = Sequencer.recording
@@ -319,12 +331,16 @@ final class InstrumentTrack: MIDITrackType, Equatable {
     }
   }
 
+  private(set) weak var sequence: MIDISequence?
+
   /**
   initWithTrackChunk:
 
   - parameter trackChunk: MIDIFileTrackChunk
+  - parameter s: MIDISequence
   */
-  init(trackChunk: MIDIFileTrackChunk) throws {
+  init(trackChunk: MIDIFileTrackChunk, sequence s: MIDISequence) throws {
+    sequence = s
     events = trackChunk.events
 
     // Find the end of track event
@@ -498,5 +514,5 @@ final class InstrumentTrack: MIDITrackType, Equatable {
 }
 
 
-func ==(lhs: InstrumentTrack, rhs: InstrumentTrack) -> Bool { return lhs.instrument == rhs.instrument }
+func ==(lhs: InstrumentTrack, rhs: InstrumentTrack) -> Bool { return ObjectIdentifier(lhs) == ObjectIdentifier(rhs) }
 

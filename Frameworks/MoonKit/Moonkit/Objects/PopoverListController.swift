@@ -55,12 +55,12 @@ public class PopoverListController: UIViewController {
 
   /** Storage for the color passed through to labels for property of the same name */
   public var textColor: UIColor = UIColor.whiteColor() {
-    didSet { labels.apply {[color = textColor] in $0.textColor = color} }
+    didSet { labels.apply {[color = textColor] in $0.tintColor = color} }
   }
 
   /** Storage for the color passed through to labels for property of the same name */
   public var highlightedTextColor: UIColor = UIColor(name: "dodger-blue")! {
-    didSet { labels.apply {[color = highlightedTextColor] in $0.highlightedTextColor = color} }
+    didSet { labels.apply {[color = highlightedTextColor] in $0.highlightedTintColor = color} }
   }
 
   /** loadView */
@@ -71,9 +71,9 @@ public class PopoverListController: UIViewController {
       let label = LabelButton(autolayout: true)
       label.tag = idx
       label.font = self.font
-      label.textColor = self.textColor
+      label.tintColor = self.textColor
       label.text = labelData.text
-      label.highlightedTextColor = self.highlightedTextColor
+      label.highlightedTintColor = self.highlightedTextColor
       label.backgroundColor = UIColor.clearColor()
       label.userInteractionEnabled = true
       label.actions.append {[unowned self] _ in labelData.action(self)}

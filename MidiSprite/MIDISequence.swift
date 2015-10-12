@@ -16,18 +16,31 @@ final class MIDISequence {
 
   /** An enumeration to wrap up notifications */
   enum Notification: String, NotificationType, NotificationNameType {
-    case DidAddTrack, DidRemoveTrack, DidChangeTrack
-    enum Key: String, NotificationKeyType { case Track, OldTrack }
+    case DidAddTrack, DidRemoveTrack, DidChangeTrack, SoloCountDidChange
+    enum Key: String, NotificationKeyType { case Track, OldTrack, OldCount, NewCount }
   }
 
   var sequenceEnd: CABarBeatTime { return tracks.map({$0.trackEnd}).maxElement() ?? .start }
 
-  /** The instrument tracks are stored in the `tracks` array beginning at index `1` */
-  private(set) var instrumentTracks: [InstrumentTrack] = []// { return tracks.count > 1 ? tracks[1..<].map({$0 as! InstrumentTrack}) : [] }
+  private(set) var instrumentTracks: [InstrumentTrack] = []
+  private var _soloTracks: [WeakObject<InstrumentTrack>] = []
+  var soloTracks: [InstrumentTrack] {
+    let result = _soloTracks.flatMap {$0.value}
+    if result.count < _soloTracks.count { _soloTracks = _soloTracks.filter { $0.value != nil } }
+    return result
+  }
+
+  var currentTrackIndex: Int? {
+    guard let currentTrack = currentTrack else { return nil }
+    return instrumentTracks.indexOf(currentTrack)
+  }
+
+  private var previousTrack: InstrumentTrack?
 
   var currentTrack: InstrumentTrack? {
     didSet {
-      guard instrumentTracks ∋ currentTrack else { if currentTrack != nil { currentTrack = nil }; return }
+      guard currentTrack == nil || instrumentTracks ∋ currentTrack else { currentTrack = nil; return }
+      previousTrack = oldValue
       Notification.DidChangeTrack.post(object: self,
                                        userInfo: [Notification.Key.OldTrack: oldValue as? AnyObject,
                                                   Notification.Key.Track:    currentTrack as? AnyObject])
@@ -35,7 +48,7 @@ final class MIDISequence {
   }
 
   /** The tempo track for the sequence is the first element in the `tracks` array */
-  private(set) var tempoTrack = TempoTrack()
+  private(set) lazy var tempoTrack: TempoTrack = TempoTrack(sequence: self)
 
   /** Collection of all the tracks in the composition */
   var tracks: [MIDITrackType] {
@@ -50,12 +63,28 @@ final class MIDISequence {
   - parameter track: InstrumentTrack
   */
   func toggleSoloForTrack(track: InstrumentTrack) {
-    guard instrumentTracks ∋ track else { return }
-    let otherTracks = instrumentTracks.filter({$0 != track})
+    var tracks = Set(instrumentTracks)
+    guard tracks.remove(track) != nil else { return }
+    let soloTracks = Set(self.soloTracks)
+    let oldCount = soloTracks.count
+    let newCount: Int
+    tracks ∖= soloTracks
     switch track.solo {
-      case true: track.solo = false; otherTracks.forEach({$0.mute = false})
-      case false: track.solo = true; if track.mute { track.mute = false }; otherTracks.forEach({$0.mute = true})
+      case true:
+        guard let idx = _soloTracks.indexOf({$0.value == track}) else { fatalError("Failed to locate soloing track in array") }
+        _soloTracks.removeAtIndex(idx)
+        track.solo = false
+        newCount = oldCount - 1
+        if _soloTracks.isEmpty { tracks.forEach({$0.mute = false}) }
+
+      case false:
+        track.solo = true
+        newCount = oldCount + 1
+        _soloTracks.append(WeakObject(track))
+        if track.mute { track.mute = false }
+        if _soloTracks.count == 1 { tracks.forEach({$0.mute = true}) }
     }
+    Notification.SoloCountDidChange.post(object: self, userInfo: [.OldCount: oldCount, .NewCount: newCount])
   }
 
   /** Conversion to and from the `MIDIFile` type  */
@@ -67,11 +96,11 @@ final class MIDISequence {
       if let trackChunk = trackChunks.first
         where trackChunk.events.count == trackChunk.events.filter({ TempoTrack.isTempoTrackEvent($0) }).count
       {
-        tempoTrack = TempoTrack(trackChunk: trackChunk)
+        tempoTrack = TempoTrack(trackChunk: trackChunk, sequence: self)
         trackChunks = trackChunks.dropFirst()
       }
 
-      instrumentTracks = trackChunks.flatMap({ try? InstrumentTrack(trackChunk: $0) })
+      instrumentTracks = trackChunks.flatMap({ try? InstrumentTrack(trackChunk: $0, sequence: self) })
       zip(InstrumentTrack.Color.allCases, instrumentTracks).forEach { $1.color = $0 }
     }
   }
@@ -84,21 +113,20 @@ final class MIDISequence {
 
   - parameter file: MIDIFile
   */
-  init(file f: MIDIFile) { file = f }
+  init(file f: MIDIFile) { file = f; currentTrack = instrumentTracks.first }
 
   /**
   newTrackWithInstrument:
 
   - parameter instrument: Instrument
-  - returns: InstrumentTrack
   */
 
-  func newTrackWithInstrument(instrument: Instrument) throws -> InstrumentTrack {
-    let track = try InstrumentTrack(instrument: instrument)
+  func newTrackWithInstrument(instrument: Instrument) throws {
+    let track = try InstrumentTrack(instrument: instrument, sequence: self)
     track.color = InstrumentTrack.Color.allCases[(instrumentTracks.count + 1) % InstrumentTrack.Color.allCases.count]
     instrumentTracks.append(track)
     Notification.DidAddTrack.post(object: self, userInfo: [Notification.Key.Track: track])
-    return track
+    if SettingsManager.makeNewTrackCurrent { currentTrack = track }
   }
 
   /**
@@ -110,6 +138,7 @@ final class MIDISequence {
     guard let idx = instrumentTracks.indexOf(track) else { return }
     instrumentTracks.removeAtIndex(idx)
     Notification.DidRemoveTrack.post(object: self, userInfo: [Notification.Key.Track: track])
+    if currentTrack == track { currentTrack = previousTrack }
   }
 
   /**

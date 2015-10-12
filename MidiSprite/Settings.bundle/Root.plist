@@ -32,6 +32,12 @@
 			<key>DefaultValue</key>
 			<true/>
 		</dict>
+    <dict>
+      <key>Type</key>
+      <string>PSGroupSpecifier</string>
+      <key>Title</key>
+      <string>Mixer</string>
+    </dict>
 		<dict>
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
@@ -44,12 +50,6 @@
 		</dict>
 		<dict>
 			<key>Type</key>
-			<string>PSGroupSpecifier</string>
-			<key>Title</key>
-			<string>Mixer</string>
-		</dict>
-		<dict>
-			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
 			<string>Enable Track Label Scrolling</string>
@@ -58,6 +58,16 @@
 			<key>DefaultValue</key>
 			<true/>
 		</dict>
+    <dict>
+      <key>Type</key>
+      <string>PSToggleSwitchSpecifier</string>
+      <key>Title</key>
+      <string>Make New Track Current</string>
+      <key>Key</key>
+      <string>makeNewTrackCurrent</string>
+      <key>DefaultValue</key>
+      <true/>
+      </dict>
 	</array>
 </dict>
 </plist>

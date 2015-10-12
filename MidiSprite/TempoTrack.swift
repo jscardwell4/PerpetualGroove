@@ -61,8 +61,10 @@ final class TempoTrack: MIDITrackType {
 
   /**
   Initializer for non-playback mode tempo track
+  
+  - parameter s: MIDISequence
   */
-  init() { recording = Sequencer.recording }
+  init(sequence s: MIDISequence) { sequence = s; recording = Sequencer.recording }
 
 
   /**
@@ -99,12 +101,16 @@ final class TempoTrack: MIDITrackType {
     }
   }
 
+  private(set) weak var sequence: MIDISequence?
+
   /**
   initWithTrackChunk:
 
   - parameter trackChunk: MIDIFileTrackChunk
+  - parameter s: MIDISequence
   */
-  init(trackChunk: MIDIFileTrackChunk) {
+  init(trackChunk: MIDIFileTrackChunk, sequence s: MIDISequence) {
+    sequence = s
     events = trackChunk.events.filter { TempoTrack.isTempoTrackEvent($0) }
     for event in events {
       let eventTime = event.time

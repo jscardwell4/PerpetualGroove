@@ -18,6 +18,7 @@ final class SettingsManager {
     case ConfirmDeleteTrack    = "confirmDeleteTrack"
     case ScrollTrackLabels     = "scrollTrackLabels"
     case CurrentDocument       = "currentDocument"
+    case MakeNewTrackCurrent   = "makeNewTrackCurrent"
 
     var currentValue: Any? {
       guard let value = NSUserDefaults.standardUserDefaults().objectForKey(rawValue) else { return nil }
@@ -27,10 +28,10 @@ final class SettingsManager {
       else                                    { return nil    }
     }
 
-    static var boolSettings: [Setting] { return [.iCloudStorage, .ConfirmDeleteDocument, .ConfirmDeleteTrack, .ScrollTrackLabels] }
-    static var allCases: [Setting] {
-      return [.iCloudStorage, .ConfirmDeleteDocument, .ConfirmDeleteTrack, .ScrollTrackLabels, .CurrentDocument]
+    static var boolSettings: [Setting] {
+      return [.iCloudStorage, .ConfirmDeleteDocument, .ConfirmDeleteTrack, .ScrollTrackLabels, .MakeNewTrackCurrent]
     }
+    static var allCases: [Setting] { return boolSettings + [.CurrentDocument] }
   }
 
   private static var settingsCache: [Setting:Any] = [:]
@@ -44,6 +45,7 @@ final class SettingsManager {
       case ConfirmDeleteDocumentChanged, ConfirmDeleteTrackChanged
       case ScrollTrackLabelsChanged
       case CurrentDocumentChanged
+      case MakeNewTrackCurrentChanged
     }
 
     enum Key: String, KeyType { case OldValue, NewValue }
@@ -66,6 +68,7 @@ final class SettingsManager {
         case .ConfirmDeleteTrack:    name = .ConfirmDeleteTrackChanged
         case .ScrollTrackLabels:     name = .ScrollTrackLabelsChanged
         case .CurrentDocument:       name = .CurrentDocumentChanged
+        case .MakeNewTrackCurrent:   name = .MakeNewTrackCurrentChanged
       }
     }
 
@@ -121,6 +124,11 @@ final class SettingsManager {
   static var currentDocument: NSData? {
     get { return settingsCache[Setting.CurrentDocument] as? NSData }
     set { NSUserDefaults.standardUserDefaults().setObject(newValue, forKey: Setting.CurrentDocument.key) }
+  }
+
+  static var makeNewTrackCurrent: Bool {
+    get { return settingsCache[Setting.MakeNewTrackCurrent] as! Bool }
+    set { NSUserDefaults.standardUserDefaults().setBool(newValue, forKey: Setting.MakeNewTrackCurrent.key) }
   }
 
   private static let notificationReceptionist: NotificationReceptionist = {

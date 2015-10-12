@@ -70,11 +70,16 @@ final class TrackCell: MixerCell {
 
   @IBOutlet var removalDisplay: UIVisualEffectView!
 
+  override var selected: Bool {
+    get { return trackColor?.selected ?? false }
+    set { trackColor?.selected = selected }
+  }
+
   private var markedForRemoval = false {
     didSet {
       guard markedForRemoval != oldValue else { return }
       logDebug("markedForRemoval: \(markedForRemoval)")
-      UIView.animateWithDuration(0.25) {[unowned self] in self.removalDisplay.alpha = self.markedForRemoval ? 1 : 0 }
+      UIView.animateWithDuration(0.25) {[unowned self] in self.removalDisplay.hidden = !self.markedForRemoval }
     }
   }
 
@@ -86,12 +91,10 @@ final class TrackCell: MixerCell {
   @objc private func handleLongPress(sender: UILongPressGestureRecognizer) {
     switch sender.state {
       case .Began:
-        logDebug("Began")
         startLocation = sender.locationInView(controller?.collectionView)
         UIView.animateWithDuration(0.25) { [unowned self] in
           self.layer.transform = CATransform3D(sx: 1.1, sy: 1.1, sz: 1.1).translate(tx: 0, ty: 10, tz: 0)
         }
-        controller?.movingCell = self
 
       case .Changed:
         guard let startLocation = startLocation else { break }
@@ -116,29 +119,30 @@ final class TrackCell: MixerCell {
       case .Cancelled, .Ended: fallthrough
 
       default:
-        logDebug("Ended")
         startLocation = nil
-        controller?.movingCell = nil
         UIView.animateWithDuration(0.25) { [unowned self] in self.layer.transform = .identity }
     }
   }
 
   /** solo */
   @IBAction func solo() {
-    logDebug()
+    guard let track = track else { return }
+    Sequencer.sequence?.toggleSoloForTrack(track)
+  }
+
+  private var muteDisengaged = false {
+    didSet { logDebug("muteDisengaged: \(muteDisengaged)"); muteButton.enabled = !muteDisengaged }
   }
 
   /** mute */
-  @IBAction func mute() {
-    logDebug()
-  }
+  @IBAction func mute() { track?.mute.toggle() }
 
   /** setup */
   private func setup() {
-    let view = UIView()
-    view.backgroundColor = .clearColor()
-    backgroundView = view
-    selectedBackgroundView = view
+//    let view = UIView()
+//    view.backgroundColor = .clearColor()
+//    backgroundView = view
+//    selectedBackgroundView = view
   }
 
   /**
@@ -163,11 +167,71 @@ final class TrackCell: MixerCell {
 
   weak var track: InstrumentTrack? {
     didSet {
+      guard track != oldValue else { return }
       volume = track?.volume ?? 0
       pan = track?.pan ?? 0
       trackLabel.text = track?.name ?? ""
       trackColor.tintColor = track?.color.value
+      muteButton.selected = track?.mute ?? false
+      soloButton.selected = track?.solo ?? false
+      notificationReceptionist = receptionistForTrack(track)
     }
+  }
+
+  private var notificationReceptionist: NotificationReceptionist?
+
+  /**
+  muteStatusChanged:
+
+  - parameter notification: NSNotification
+  */
+  private func muteStatusChanged(notification: NSNotification) {
+    muteButton.selected = track?.mute ?? false
+  }
+
+  /**
+  soloStatusChanged:
+
+  - parameter notification: NSNotification
+  */
+  private func soloStatusChanged(notification: NSNotification) {
+    soloButton.selected = track?.solo ?? false
+  }
+
+  /**
+  soloCountChanged:
+
+  - parameter notification: NSNotification
+  */
+  private func soloCountChanged(notification: NSNotification) {
+    guard let count = (notification.userInfo?[MIDISequence.Notification.Key.NewCount.rawValue] as? NSNumber)?.integerValue else {
+      return
+    }
+    muteDisengaged = count > 0
+  }
+
+  /**
+  receptionistForTrack:
+
+  - parameter track: InstrumentTrack
+
+  - returns: NotificationReceptionist
+  */
+  private func receptionistForTrack(track: InstrumentTrack?) -> NotificationReceptionist? {
+    guard let track = track else { return nil }
+    let queue = NSOperationQueue.mainQueue()
+    let receptionist = NotificationReceptionist()
+//    receptionist.observe(InstrumentTrack.Notification.MuteStatusDidChange, from: track, queue: queue, callback: muteStatusChanged)
+//    receptionist.observe(InstrumentTrack.Notification.SoloStatusDidChange, from: track, queue: queue, callback: soloStatusChanged)
+    guard let sequence = track.sequence else { return receptionist }
+    receptionist.observe(MIDISequence.Notification.SoloCountDidChange, from: sequence, queue: queue, callback: soloCountChanged)
+    return receptionist
+  }
+
+  override func prepareForReuse() {
+    super.prepareForReuse()
+    notificationReceptionist = nil
+    track = nil
   }
 
 }

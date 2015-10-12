@@ -34,6 +34,7 @@ protocol MIDITrackType: CustomStringConvertible {
   var name: String { get }
   var events: [MIDITrackEvent] { get }
   var trackEnd: CABarBeatTime { get }
+  weak var sequence: MIDISequence? { get }
 }
 
 extension MIDITrackType {
