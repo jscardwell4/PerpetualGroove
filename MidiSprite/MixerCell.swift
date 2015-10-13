@@ -71,8 +71,14 @@ final class TrackCell: MixerCell {
   @IBOutlet var removalDisplay: UIVisualEffectView!
 
   override var selected: Bool {
-    get { return trackColor?.selected ?? false }
-    set { trackColor?.selected = selected }
+    didSet {
+      logDebug("track.index: \(track?.index); selected = \(selected)")
+      trackColor.selected = selected
+      setNeedsDisplay()
+      trackColor.setNeedsDisplay()
+    }
+//    get { return trackColor?.selected ?? false }
+//    set { trackColor?.selected = selected }
   }
 
   private var markedForRemoval = false {
@@ -137,28 +143,6 @@ final class TrackCell: MixerCell {
   /** mute */
   @IBAction func mute() { track?.mute.toggle() }
 
-  /** setup */
-  private func setup() {
-//    let view = UIView()
-//    view.backgroundColor = .clearColor()
-//    backgroundView = view
-//    selectedBackgroundView = view
-  }
-
-  /**
-  initWithFrame:
-
-  - parameter frame: CGRect
-  */
-  override init(frame: CGRect) { super.init(frame: frame); setup() }
-
-  /**
-  init:
-
-  - parameter aDecoder: NSCoder
-  */
-  required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder); setup() }
-
   /** volumeDidChange */
   @IBAction func volumeDidChange() { track?.volume = volume }
 
@@ -221,8 +205,8 @@ final class TrackCell: MixerCell {
     guard let track = track else { return nil }
     let queue = NSOperationQueue.mainQueue()
     let receptionist = NotificationReceptionist()
-//    receptionist.observe(InstrumentTrack.Notification.MuteStatusDidChange, from: track, queue: queue, callback: muteStatusChanged)
-//    receptionist.observe(InstrumentTrack.Notification.SoloStatusDidChange, from: track, queue: queue, callback: soloStatusChanged)
+    receptionist.observe(InstrumentTrack.Notification.MuteStatusDidChange, from: track, queue: queue, callback: muteStatusChanged)
+    receptionist.observe(InstrumentTrack.Notification.SoloStatusDidChange, from: track, queue: queue, callback: soloStatusChanged)
     guard let sequence = track.sequence else { return receptionist }
     receptionist.observe(MIDISequence.Notification.SoloCountDidChange, from: sequence, queue: queue, callback: soloCountChanged)
     return receptionist

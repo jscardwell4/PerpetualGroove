@@ -87,6 +87,7 @@ final class InstrumentTrack: MIDITrackType, Equatable, Hashable {
   var name: String { return label ?? instrument.programPreset.name }
   var label: String?
 
+  private var _mute: Bool = false
   var mute: Bool = false {
     didSet {
       guard mute != oldValue else { return }
@@ -98,6 +99,7 @@ final class InstrumentTrack: MIDITrackType, Equatable, Hashable {
   var solo: Bool = false {
     didSet {
       guard solo != oldValue else { return }
+      if solo { _mute = mute; mute = false }
       Notification.SoloStatusDidChange.post(object: self, userInfo: [.OldValue: oldValue, .NewValue: solo])
     }
   }
@@ -270,7 +272,7 @@ final class InstrumentTrack: MIDITrackType, Equatable, Hashable {
 
   - parameter notification: NSNotification
   */
-  private func didStart(notification: NSNotification) { logDebug("time = \(time)") }
+  private func didStart(notification: NSNotification) { logVerbose("time = \(time)") }
 
   /** initializeNotificationReceptionist */
   private func initializeNotificationReceptionist() {
@@ -332,6 +334,7 @@ final class InstrumentTrack: MIDITrackType, Equatable, Hashable {
   }
 
   private(set) weak var sequence: MIDISequence?
+  var index: Int? { return sequence?.instrumentTracks.indexOf(self) }
 
   /**
   initWithTrackChunk:
@@ -419,7 +422,7 @@ final class InstrumentTrack: MIDITrackType, Equatable, Hashable {
 
     try initializeMIDIClient()
     
-    logDebug("eventMap = \(eventMap)")
+    logVerbose("eventMap = \(eventMap)")
   }
 
   // MARK: - Enumeration for specifying the color attached to a `MIDITrackType`

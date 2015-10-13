@@ -103,9 +103,6 @@
                                             <userDefinedRuntimeAttribute type="boolean" keyPath="showsTrackLabel" value="YES"/>
                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TempoSlider"/>
                                         </userDefinedRuntimeAttributes>
-                                        <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
-                                            <rect key="frame" x="-22.5" y="8" width="253" height="56"/>
-                                        </variation>
                                         <connections>
                                             <action selector="tempoSliderValueDidChange" destination="mI6-ed-c1h" eventType="valueChanged" id="XwD-Wo-BXw"/>
                                         </connections>
@@ -131,9 +128,6 @@
                                             <mask key="constraints">
                                                 <exclude reference="m7q-Ma-UTW"/>
                                             </mask>
-                                        </variation>
-                                        <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
-                                            <rect key="frame" x="218" y="11" width="50" height="50"/>
                                         </variation>
                                         <connections>
                                             <action selector="toggleMetronome" destination="mI6-ed-c1h" eventType="touchUpInside" id="ZOV-Tp-4H5"/>
@@ -213,7 +207,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                                             <animations/>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                            <color key="tintColor" red="0.9132084846496582" green="0.22267825901508331" blue="0.025411214679479599" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="tintColor" red="0.70097428560256958" green="0.17991100251674652" blue="0.015877731144428253" alpha="1" colorSpace="calibratedRGB"/>
                                             <accessibility key="accessibilityConfiguration" identifier="Delete"/>
                                             <userDefinedRuntimeAttributes>
                                                 <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="Delete"/>
@@ -221,9 +215,6 @@
                                                 <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="EvelethLight"/>
                                                 <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
                                                     <real key="value" value="17"/>
-                                                </userDefinedRuntimeAttribute>
-                                                <userDefinedRuntimeAttribute type="color" keyPath="tintColor">
-                                                    <color key="value" red="0.76089900732040405" green="0.25649610161781311" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                 </userDefinedRuntimeAttribute>
                                             </userDefinedRuntimeAttributes>
                                             <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
@@ -512,6 +503,7 @@
                                 </subviews>
                                 <animations/>
                                 <constraints>
+                                    <constraint firstAttribute="height" constant="120" id="5cl-aA-H9I"/>
                                     <constraint firstItem="0XJ-KP-C5j" firstAttribute="width" secondItem="w5U-Eo-KhK" secondAttribute="width" id="FdV-Qf-DOY"/>
                                     <constraint firstItem="ziA-fb-WAR" firstAttribute="width" secondItem="w5U-Eo-KhK" secondAttribute="width" id="fUn-p4-Iyh"/>
                                 </constraints>
@@ -525,9 +517,8 @@
                         <color key="backgroundColor" red="0.20000000298023224" green="0.19607843458652496" blue="0.19215686619281769" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstAttribute="trailingMargin" secondItem="vc5-x2-Dna" secondAttribute="trailing" identifier="NoteAttributesStackStretchRight" id="7ad-zA-RdQ"/>
-                            <constraint firstItem="vc5-x2-Dna" firstAttribute="top" secondItem="Ve5-Qg-KPC" secondAttribute="bottom" identifier="NoteAttributesStackStretchUp" id="9J8-yR-fLt"/>
+                            <constraint firstItem="vc5-x2-Dna" firstAttribute="centerY" secondItem="0dt-jb-5WE" secondAttribute="centerY" id="AeS-3D-ldz"/>
                             <constraint firstItem="vc5-x2-Dna" firstAttribute="leading" secondItem="0dt-jb-5WE" secondAttribute="leadingMargin" identifier="NoteAttributesStackStretchLeft" id="KqN-wE-p9d"/>
-                            <constraint firstItem="gVV-4u-SGf" firstAttribute="top" secondItem="vc5-x2-Dna" secondAttribute="bottom" identifier="NoteAttributesStackStretchDown" id="PtI-WZ-FOs"/>
                         </constraints>
                         <userDefinedRuntimeAttributes>
                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="NoteAttributesSceneView"/>
@@ -565,7 +556,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="100" height="420"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="100" height="420"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="100" height="400"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="jXz-zn-JV2">
@@ -591,7 +582,9 @@
                                                             <rect key="frame" x="0.0" y="25" width="44" height="159"/>
                                                             <animations/>
                                                             <constraints>
-                                                                <constraint firstAttribute="height" constant="159" id="Dq4-mh-SDn"/>
+                                                                <constraint firstAttribute="height" constant="159" id="Dq4-mh-SDn">
+                                                                    <variation key="heightClass=regular-widthClass=regular" constant="139"/>
+                                                                </constraint>
                                                                 <constraint firstAttribute="width" constant="44" identifier="VolumeSliderWidth" id="eUV-6O-sS4"/>
                                                             </constraints>
                                                             <userDefinedRuntimeAttributes>
@@ -717,7 +710,7 @@
                                     </constraint>
                                     <constraint firstItem="jXz-zn-JV2" firstAttribute="leading" secondItem="Ywg-X3-Y1Q" secondAttribute="leadingMargin" identifier="ContentStretchLeft" id="sYv-jh-Pkp"/>
                                 </constraints>
-                                <size key="customSize" width="100" height="420"/>
+                                <size key="customSize" width="100" height="400"/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="MixerSceneMasterCell"/>
                                 </userDefinedRuntimeAttributes>
@@ -731,7 +724,7 @@
                                 <rect key="frame" x="110" y="0.0" width="100" height="420"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="100" height="420"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="100" height="400"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="sCc-QY-TMC">
@@ -768,7 +761,7 @@
                                                             <animations/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="159" id="6er-k4-NNO">
-                                                                    <variation key="heightClass=regular-widthClass=regular" constant="159"/>
+                                                                    <variation key="heightClass=regular-widthClass=regular" constant="139"/>
                                                                 </constraint>
                                                                 <constraint firstAttribute="width" constant="44" identifier="VolumeSliderWidth" id="Jyz-qp-TR8"/>
                                                             </constraints>
@@ -800,6 +793,9 @@
                                                                 <userDefinedRuntimeAttribute type="boolean" keyPath="preservesTrackMaxImageSize" value="YES"/>
                                                                 <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="VolumeSlider"/>
                                                             </userDefinedRuntimeAttributes>
+                                                            <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                                <rect key="frame" x="0.0" y="15.5" width="44" height="158"/>
+                                                            </variation>
                                                             <connections>
                                                                 <action selector="volumeDidChange" destination="2AY-7g-m2Q" eventType="valueChanged" id="0PE-6k-RsM"/>
                                                             </connections>
@@ -878,13 +874,11 @@
                                                             <rect key="frame" x="0.0" y="0.0" width="50" height="48"/>
                                                             <animations/>
                                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                            <color key="tintColor" red="0.30125221610000003" green="0.29395070670000001" blue="0.28606623409999998" alpha="1" colorSpace="calibratedRGB"/>
                                                             <userDefinedRuntimeAttributes>
                                                                 <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="SoloButton"/>
                                                                 <userDefinedRuntimeAttribute type="string" keyPath="text" value="Solo"/>
                                                                 <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="EvelethLight"/>
-                                                                <userDefinedRuntimeAttribute type="color" keyPath="tintColor">
-                                                                    <color key="value" red="0.30125221610069275" green="0.29395070672035217" blue="0.28606623411178589" alpha="1" colorSpace="calibratedRGB"/>
-                                                                </userDefinedRuntimeAttribute>
                                                                 <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
                                                                     <real key="value" value="14"/>
                                                                 </userDefinedRuntimeAttribute>
@@ -904,13 +898,11 @@
                                                             <rect key="frame" x="0.0" y="48" width="50" height="48"/>
                                                             <animations/>
                                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                            <color key="tintColor" red="0.30125221610000003" green="0.29395070670000001" blue="0.28606623409999998" alpha="1" colorSpace="calibratedRGB"/>
                                                             <userDefinedRuntimeAttributes>
                                                                 <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="MuteButton"/>
                                                                 <userDefinedRuntimeAttribute type="string" keyPath="text" value="Mute"/>
                                                                 <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="EvelethLight"/>
-                                                                <userDefinedRuntimeAttribute type="color" keyPath="tintColor">
-                                                                    <color key="value" red="0.30125221610069275" green="0.29395070672035217" blue="0.28606623411178589" alpha="1" colorSpace="calibratedRGB"/>
-                                                                </userDefinedRuntimeAttribute>
                                                                 <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
                                                                     <real key="value" value="14"/>
                                                                 </userDefinedRuntimeAttribute>
@@ -918,9 +910,6 @@
                                                                     <color key="value" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
                                                                 </userDefinedRuntimeAttribute>
                                                                 <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
-                                                                <userDefinedRuntimeAttribute type="color" keyPath="disabledTintColor">
-                                                                    <color key="value" red="0.23500323295593262" green="0.22884012758731842" blue="0.22191014885902405" alpha="1" colorSpace="calibratedRGB"/>
-                                                                </userDefinedRuntimeAttribute>
                                                             </userDefinedRuntimeAttributes>
                                                             <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
                                                                 <rect key="frame" x="0.0" y="19" width="45" height="19"/>
@@ -940,7 +929,7 @@
                                                         </mask>
                                                     </variation>
                                                     <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
-                                                        <rect key="frame" x="20" y="324" width="45" height="38"/>
+                                                        <rect key="frame" x="20" y="304" width="45" height="38"/>
                                                         <mask key="constraints">
                                                             <include reference="0SF-2D-Kf4"/>
                                                         </mask>
@@ -984,7 +973,7 @@
                                                             <userDefinedRuntimeAttributes>
                                                                 <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TrackColor"/>
                                                                 <userDefinedRuntimeAttribute type="image" keyPath="image" value="color_swatch"/>
-                                                                <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="color_swatch-selected"/>
+                                                                <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="color_swatch_thicker-selected"/>
                                                                 <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
                                                             </userDefinedRuntimeAttributes>
                                                             <variation key="default">
@@ -998,7 +987,7 @@
                                                                 </mask>
                                                             </variation>
                                                             <connections>
-                                                                <action selector="selectItem:" destination="iF7-fT-LPT" eventType="touchUpInside" id="cNp-Hx-22d"/>
+                                                                <action selector="selectItem:" destination="iF7-fT-LPT" eventType="touchUpInside" id="ooi-Kn-TGK"/>
                                                             </connections>
                                                         </view>
                                                     </subviews>
@@ -1092,7 +1081,7 @@
                                     <constraint firstItem="sCc-QY-TMC" firstAttribute="leading" secondItem="2AY-7g-m2Q" secondAttribute="leadingMargin" identifier="ContentStretchLeft" id="h7b-Ps-gKq"/>
                                     <constraint firstAttribute="bottomMargin" secondItem="sCc-QY-TMC" secondAttribute="bottom" identifier="ContentStretchDown" id="uVG-W8-cNW"/>
                                 </constraints>
-                                <size key="customSize" width="100" height="420"/>
+                                <size key="customSize" width="100" height="400"/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="MixerSceneTrackCell"/>
                                 </userDefinedRuntimeAttributes>
@@ -1130,10 +1119,10 @@
                                 <rect key="frame" x="220" y="0.0" width="100" height="420"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="100" height="420"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="100" height="400"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" alpha="0.34999999999999998" contentMode="center" image="add_track_background" translatesAutoresizingMaskIntoConstraints="NO" id="dMA-k2-N2G">
+                                        <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" alpha="0.34999999999999998" contentMode="center" image="MixerCellMock_faint_add_track" translatesAutoresizingMaskIntoConstraints="NO" id="dMA-k2-N2G">
                                             <rect key="frame" x="0.0" y="-400" width="100" height="400"/>
                                             <animations/>
                                         </imageView>
@@ -1173,14 +1162,11 @@
                                     <constraint firstAttribute="bottom" secondItem="dMA-k2-N2G" secondAttribute="bottom" id="a4u-ih-yja"/>
                                     <constraint firstAttribute="trailing" secondItem="dMA-k2-N2G" secondAttribute="trailing" id="fhu-YU-uDN"/>
                                 </constraints>
-                                <size key="customSize" width="100" height="420"/>
+                                <size key="customSize" width="100" height="400"/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="AddTrackCell"/>
                                 </userDefinedRuntimeAttributes>
                                 <variation key="default">
-                                    <mask key="subviews">
-                                        <exclude reference="dMA-k2-N2G"/>
-                                    </mask>
                                     <mask key="constraints">
                                         <exclude reference="0ce-Ee-Vxi"/>
                                         <exclude reference="GGg-Y1-kgb"/>
@@ -1189,9 +1175,6 @@
                                     </mask>
                                 </variation>
                                 <variation key="heightClass=regular-widthClass=regular">
-                                    <mask key="subviews">
-                                        <include reference="dMA-k2-N2G"/>
-                                    </mask>
                                     <mask key="constraints">
                                         <include reference="0ce-Ee-Vxi"/>
                                         <include reference="GGg-Y1-kgb"/>
@@ -1213,7 +1196,7 @@
                     <nil key="simulatedTopBarMetrics"/>
                     <nil key="simulatedBottomBarMetrics"/>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-                    <size key="freeformSize" width="320" height="420"/>
+                    <size key="freeformSize" width="320" height="400"/>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="H3X-NX-nN4" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -1404,6 +1387,7 @@
                                 </subviews>
                                 <animations/>
                                 <constraints>
+                                    <constraint firstAttribute="height" constant="120" id="GYA-9a-s3g"/>
                                     <constraint firstItem="4Cf-bk-X5q" firstAttribute="width" secondItem="e1T-sL-nID" secondAttribute="width" id="fDZ-q6-8ZC"/>
                                     <constraint firstItem="ydy-Ex-abe" firstAttribute="width" secondItem="e1T-sL-nID" secondAttribute="width" id="h2P-Ce-bU5"/>
                                 </constraints>
@@ -1417,8 +1401,7 @@
                         <color key="backgroundColor" red="0.20000000298023224" green="0.19607843458652496" blue="0.19215686619281769" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="K2B-qJ-Kmx" firstAttribute="leading" secondItem="mGr-ok-gXJ" secondAttribute="leadingMargin" identifier="InstrumentSceneStretchLeft" id="129-h9-FsC"/>
-                            <constraint firstItem="K2B-qJ-Kmx" firstAttribute="top" secondItem="vsb-xD-YZv" secondAttribute="bottom" identifier="InstrumentSceneStretchUp" id="1FG-TB-mnB"/>
-                            <constraint firstItem="OC8-AH-rwD" firstAttribute="top" secondItem="K2B-qJ-Kmx" secondAttribute="bottom" identifier="InstrumentSceneStretchDown" id="MXb-ye-crX"/>
+                            <constraint firstItem="K2B-qJ-Kmx" firstAttribute="centerY" secondItem="mGr-ok-gXJ" secondAttribute="centerY" id="Pxa-b5-sh7"/>
                             <constraint firstAttribute="trailingMargin" secondItem="K2B-qJ-Kmx" secondAttribute="trailing" identifier="InstrumentSceneStretchRight" id="maO-oP-5z9"/>
                         </constraints>
                         <userDefinedRuntimeAttributes>
@@ -1443,10 +1426,10 @@
         </scene>
     </scenes>
     <resources>
+        <image name="MixerCellMock_faint_add_track" width="100" height="380"/>
         <image name="add-selected" width="56" height="56"/>
-        <image name="add_track_background" width="100" height="400"/>
         <image name="color_swatch" width="84" height="17"/>
-        <image name="color_swatch-selected" width="84" height="17"/>
+        <image name="color_swatch_thicker-selected" width="84" height="17"/>
         <image name="down_arrow" width="31" height="31"/>
         <image name="horizontal_thumb" width="46" height="46"/>
         <image name="horizontal_track" width="20" height="46"/>

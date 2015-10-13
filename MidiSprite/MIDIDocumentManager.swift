@@ -66,7 +66,7 @@ final class MIDIDocumentManager {
     metadataQuery.disableUpdates()
     let results = metadataQuery.results as! [NSMetadataItem]
     metadataQuery.enableUpdates()
-    logDebug("metadataItems: \(results)")
+    logVerbose("metadataItems: \(results)")
     return results
   }
 
@@ -77,7 +77,7 @@ final class MIDIDocumentManager {
   - parameter notification: NSNotification
   */
   private static func didFinishGathering(notification: NSNotification) {
-    logDebug()
+    logVerbose()
     Notification.DidUpdateMetadataItems.post()
   }
 
@@ -90,7 +90,7 @@ final class MIDIDocumentManager {
     let changed = notification.userInfo?[NSMetadataQueryUpdateChangedItemsKey] as? [NSMetadataItem] ?? []
     let removed = notification.userInfo?[NSMetadataQueryUpdateRemovedItemsKey] as? [NSMetadataItem] ?? []
     let added   = notification.userInfo?[NSMetadataQueryUpdateAddedItemsKey]   as? [NSMetadataItem] ?? []
-    logDebug("changed: \(changed)\nremoved: \(removed)\nadded: \(added)")
+    logVerbose("changed: \(changed)\nremoved: \(removed)\nadded: \(added)")
     Notification.DidUpdateMetadataItems.post(userInfo: [Notification.Key.Changed: changed,
                                                         Notification.Key.Removed: removed,
                                                         Notification.Key.Added: added])
@@ -105,8 +105,7 @@ final class MIDIDocumentManager {
 
       case true:
         guard let baseURL = NSFileManager().URLForUbiquityContainerIdentifier(nil) else {
-          logDebug("Need to present an alert prompting to enabled iCloud Drive")
-          return
+          fatalError("createNewDocument() requires that the iCloud drive is available when the iCloud storage flag is set")
         }
         url = baseURL + "Documents"
 
@@ -171,7 +170,7 @@ final class MIDIDocumentManager {
   - parameter document: MIDIDocument
   */
   static func openDocument(document: MIDIDocument) {
-    logDebug("document = \(document)")
+    logVerbose("document = \(document)")
     openingDocument = true
     document.openWithCompletionHandler {
       guard $0 else { logError("failed to open document: \(document)"); return }
@@ -186,7 +185,7 @@ final class MIDIDocumentManager {
   - parameter url: NSURL
   */
   static func openURL(url: NSURL) {
-    logDebug("url = \(url)")
+    logVerbose("url = \(url)")
     openDocument(MIDIDocument(fileURL: url))
   }
 
@@ -248,7 +247,7 @@ final class MIDIDocumentManager {
       }
     }
     initialized = true
-    logDebug("MIDIDocumentManager initialized")
+    logVerbose("MIDIDocumentManager initialized")
   }
   
 }

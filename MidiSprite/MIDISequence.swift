@@ -76,12 +76,13 @@ final class MIDISequence {
         track.solo = false
         newCount = oldCount - 1
         if _soloTracks.isEmpty { tracks.forEach({$0.mute = false}) }
+        else { track.mute = true }
 
       case false:
         track.solo = true
         newCount = oldCount + 1
         _soloTracks.append(WeakObject(track))
-        if track.mute { track.mute = false }
+//        track.mute = false
         if _soloTracks.count == 1 { tracks.forEach({$0.mute = true}) }
     }
     Notification.SoloCountDidChange.post(object: self, userInfo: [.OldCount: oldCount, .NewCount: newCount])
@@ -91,7 +92,7 @@ final class MIDISequence {
   var file: MIDIFile {
     get { return MIDIFile(format: .One, division: 480, tracks: tracks) }
     set {
-      logDebug("file: \(newValue)")
+      logVerbose("file: \(newValue)")
       var trackChunks = ArraySlice(newValue.tracks)
       if let trackChunk = trackChunks.first
         where trackChunk.events.count == trackChunk.events.filter({ TempoTrack.isTempoTrackEvent($0) }).count
@@ -159,7 +160,7 @@ final class MIDISequence {
 //  func writeToFile(file: NSURL, overwrite: Bool = false) throws {
 //    let midiFile = self.file
 //    dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)) {
-//      logDebug(midiFile.description)
+//      logVerbose(midiFile.description)
 //      let bytes = midiFile.bytes
 //      let data = NSData(bytes: bytes, length: bytes.count)
 //      do {

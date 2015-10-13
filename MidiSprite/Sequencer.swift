@@ -34,7 +34,7 @@ final class Sequencer {
     }
     sequence = MIDIDocumentManager.currentDocument?.sequence
     initialized = true
-    logDebug("Sequencer initialized")
+    logVerbose("Sequencer initialized")
   }
 
   // MARK: - Notifications
@@ -75,7 +75,7 @@ final class Sequencer {
   - parameter notification: NSNotification
   */
   private static func didChangeCurrentDocument(notification: NSNotification) {
-    logDebug()
+    logVerbose()
     sequence = MIDIDocumentManager.currentDocument?.sequence
   }
 

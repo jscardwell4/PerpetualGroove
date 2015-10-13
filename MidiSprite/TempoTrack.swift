@@ -119,7 +119,7 @@ final class TempoTrack: MIDITrackType {
       eventMap[eventTime] = eventBag
     }
     for eventTime in eventMap.keys { time.registerCallback(dispatchEventsForTime, forTime: eventTime) }
-    logDebug("eventMap = \(eventMap)")
+    logVerbose("eventMap = \(eventMap)")
   }
 
   var description: String {

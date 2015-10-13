@@ -9,35 +9,37 @@
 
 import UIKit
 
-// TODO: Just make this a control
 @IBDesignable public class ImageButtonView: ToggleControl {
-
-  // MARK: - Private properties
-  private let imageView = UIImageView(autolayout: true)
-
 
   // MARK: - Images
 
   @IBInspectable public var image: UIImage? {
-    get { return imageView.image }
-    set { imageView.image = newValue?.imageWithRenderingMode(.AlwaysTemplate) }
+    didSet {
+      guard !(highlighted || selected) || highlightedImage == nil else { return}
+      setNeedsDisplay()
+    }
   }
 
   @IBInspectable public var highlightedImage: UIImage? {
-    get { return imageView.highlightedImage }
-    set { imageView.highlightedImage = newValue?.imageWithRenderingMode(.AlwaysTemplate) }
+    didSet {
+      guard highlighted || selected else { return }
+      setNeedsDisplay()
+    }
   }
 
-  public override func refresh() {
-    super.refresh()
-    imageView.tintColor = currentTintColor
-    imageView.highlighted = highlighted
+  /**
+  intrinsicContentSize
+
+  - returns: CGSize
+  */
+  override public func intrinsicContentSize() -> CGSize {
+    return image?.size ?? CGSize(square: UIViewNoIntrinsicMetric)
   }
 
-  // MARK: - Initializing
-
-  /** initializeIVARs */
-  private func setup() { addSubview(imageView); constrain(𝗩|imageView|𝗩, 𝗛|imageView|𝗛) }
+  /** setup */
+  private func setup() {
+    opaque = false
+  }
 
   /**
   initWithFrame:
@@ -47,26 +49,28 @@ import UIKit
   public override init(frame: CGRect) { super.init(frame: frame); setup() }
 
   /**
-  encodeWithCoder:
-
-  - parameter aCoder: NSCoder
-  */
-  public override func encodeWithCoder(aCoder: NSCoder) {
-    super.encodeWithCoder(aCoder)
-    aCoder.encodeObject(image, forKey: "image")
-    aCoder.encodeObject(highlightedImage, forKey: "highlightedImage")
-  }
-
-  /**
   init:
 
   - parameter aDecoder: NSCoder
   */
-  public required init?(coder aDecoder: NSCoder) {
-    super.init(coder: aDecoder)
-    image = aDecoder.decodeObjectForKey("image") as? UIImage
-    highlightedImage = aDecoder.decodeObjectForKey("highlightedImage") as? UIImage
-    setup()
-  }
+  public required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder); setup() }
 
+  /**
+  drawRect:
+
+  - parameter rect: CGRect
+  */
+  public override func drawRect(rect: CGRect) {
+    guard let image = (highlighted || selected) && highlightedImage != nil ? highlightedImage : image else { return }
+
+    let context = UIGraphicsGetCurrentContext()
+    CGContextSaveGState(context)
+    CGContextClearRect(context, rect)
+    image.drawInRect(rect)
+
+    currentTintColor.setFill()
+    UIBezierPath(rect: rect).fillWithBlendMode(.SourceIn, alpha: 1)
+
+    CGContextRestoreGState(context)
+  }
 }

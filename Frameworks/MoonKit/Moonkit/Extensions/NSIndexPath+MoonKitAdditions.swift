@@ -14,3 +14,7 @@ extension NSIndexPath {
   public convenience init(_ row: Int, _ section: Int) { self.init(forRow: row, inSection: section) }
 
 }
+
+extension NSIndexPath {
+  override public var description: String { return "NSIndexPath {item: \(item); section: \(section)}" }
+}

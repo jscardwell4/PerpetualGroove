@@ -19,9 +19,19 @@ public class ToggleControl: UIControl {
 
   // MARK: - Colors
 
-  @IBInspectable public var disabledTintColor: UIColor?
+  @IBInspectable public var disabledTintColor: UIColor? {
+    didSet {
+      guard !enabled else { return }
+      setNeedsDisplay()
+    }
+  }
 
-  @IBInspectable public var highlightedTintColor: UIColor?
+  @IBInspectable public var highlightedTintColor: UIColor? {
+    didSet {
+      guard highlighted || selected else { return }
+      setNeedsDisplay()
+    }
+  }
 
   // MARK: - State
 
@@ -35,7 +45,7 @@ public class ToggleControl: UIControl {
   public override var highlighted: Bool {
     get { return super.highlighted }
     set {
-      guard newValue != previousHighlightedInput else { return }
+//      guard newValue != previousHighlightedInput else { return }
       switch toggle {
         case true:  super.highlighted ^= newValue
         case false: super.highlighted = newValue
@@ -60,7 +70,13 @@ public class ToggleControl: UIControl {
     return color
   }
 
-  private var _currentTintColor: UIColor?
+  private var _currentTintColor: UIColor? {
+    didSet {
+      guard _currentTintColor != oldValue else { return }
+      setNeedsDisplay()
+    }
+  }
+
   public var currentTintColor: UIColor! { return _currentTintColor ?? tintColor }
 
   /** refresh */

@@ -26,16 +26,16 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" axis="vertical" distribution="equalCentering" translatesAutoresizingMaskIntoConstraints="NO" id="KR6-ig-M7J" userLabel="ContentStack">
-                                <rect key="frame" x="0.0" y="-12" width="1002" height="585"/>
+                                <rect key="frame" x="0.0" y="-12" width="1132" height="715"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cIl-mB-kk1" userLabel="TopStack">
-                                        <rect key="frame" x="0.0" y="0.0" width="1002" height="120"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="1132" height="120"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" distribution="fillEqually" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="wxb-Bs-OQW" userLabel="NoteAttributesInstrumentStack">
-                                                <rect key="frame" x="0.0" y="0.0" width="1002" height="120"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="1132" height="120"/>
                                                 <subviews>
                                                     <containerView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HzR-qG-Aqv" userLabel="Instrument Container">
-                                                        <rect key="frame" x="0.0" y="0.0" width="496" height="120"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="561" height="120"/>
                                                         <animations/>
                                                         <userDefinedRuntimeAttributes>
                                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="InstrumentContainer"/>
@@ -46,7 +46,7 @@
                                                         </connections>
                                                     </containerView>
                                                     <containerView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ont-R1-PQ9" userLabel="NoteAttributes Container">
-                                                        <rect key="frame" x="506" y="0.0" width="496" height="120"/>
+                                                        <rect key="frame" x="571" y="0.0" width="561" height="120"/>
                                                         <animations/>
                                                         <userDefinedRuntimeAttributes>
                                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="NoteAttributesContainer"/>
@@ -72,16 +72,6 @@
                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TopStack"/>
                                             <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="TopStack"/>
                                         </userDefinedRuntimeAttributes>
-                                        <variation key="default">
-                                            <mask key="constraints">
-                                                <exclude reference="MMd-Lz-wkq"/>
-                                            </mask>
-                                        </variation>
-                                        <variation key="heightClass=regular-widthClass=regular">
-                                            <mask key="constraints">
-                                                <include reference="MMd-Lz-wkq"/>
-                                            </mask>
-                                        </variation>
                                     </stackView>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="AwesomeSauce" textAlignment="right" clearsOnBeginEditing="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Gx0-9z-8e9">
                                         <rect key="frame" x="-25" y="-30" width="97" height="30"/>
@@ -98,10 +88,10 @@
                                         </connections>
                                     </textField>
                                     <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="NZR-ya-29p" userLabel="MiddleStack">
-                                        <rect key="frame" x="0.0" y="135" width="1002" height="300"/>
+                                        <rect key="frame" x="0.0" y="135" width="1132" height="430"/>
                                         <subviews>
                                             <containerView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Xii-MX-zKn" userLabel="Mixer Container">
-                                                <rect key="frame" x="0.0" y="0.0" width="692" height="300"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="692" height="430"/>
                                                 <animations/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="MixerContainer"/>
@@ -111,7 +101,7 @@
                                                 </connections>
                                             </containerView>
                                             <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="U9p-PY-X1m" userLabel="MIDI Player" customClass="MIDIPlayerView" customModule="Groove" customModuleProvider="target">
-                                                <rect key="frame" x="702" y="0.0" width="300" height="300"/>
+                                                <rect key="frame" x="702" y="0.0" width="430" height="430"/>
                                                 <animations/>
                                                 <color key="backgroundColor" red="0.20000000298023224" green="0.19607843458652496" blue="0.19215686619281769" alpha="1" colorSpace="calibratedRGB"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="MIDIPlayer"/>
@@ -125,27 +115,17 @@
                                         </subviews>
                                         <animations/>
                                         <constraints>
-                                            <constraint firstAttribute="height" priority="999" constant="400" id="zSM-Hw-lw3">
-                                                <variation key="heightClass=regular-widthClass=regular" constant="430"/>
+                                            <constraint firstAttribute="height" priority="999" constant="430" id="zSM-Hw-lw3">
+                                                <variation key="heightClass=regular-widthClass=regular" constant="400"/>
                                             </constraint>
                                         </constraints>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="MiddleStack"/>
                                             <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="MiddleStack"/>
                                         </userDefinedRuntimeAttributes>
-                                        <variation key="default">
-                                            <mask key="constraints">
-                                                <exclude reference="zSM-Hw-lw3"/>
-                                            </mask>
-                                        </variation>
-                                        <variation key="heightClass=regular-widthClass=regular">
-                                            <mask key="constraints">
-                                                <include reference="zSM-Hw-lw3"/>
-                                            </mask>
-                                        </variation>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" distribution="equalSpacing" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="a6c-px-a6l" userLabel="BottomStack">
-                                        <rect key="frame" x="0.0" y="435" width="1002" height="150"/>
+                                        <rect key="frame" x="0.0" y="565" width="1132" height="150"/>
                                         <subviews>
                                             <view opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gJq-1L-zk3" userLabel="DocumentsButton" customClass="ImageButtonView" customModule="MoonKit">
                                                 <rect key="frame" x="0.0" y="50" width="50" height="50"/>
@@ -179,7 +159,7 @@
                                                 </connections>
                                             </view>
                                             <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="qx2-KP-zF6" userLabel="TransportJogWheelStack">
-                                                <rect key="frame" x="101" y="0.0" width="640" height="150"/>
+                                                <rect key="frame" x="166" y="0.0" width="640" height="150"/>
                                                 <subviews>
                                                     <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="a4H-Xm-MmL" userLabel="TransportStack">
                                                         <rect key="frame" x="0.0" y="0.0" width="470" height="150"/>
@@ -309,7 +289,7 @@
                                                 </userDefinedRuntimeAttributes>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" axis="vertical" distribution="equalCentering" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="gSN-Me-39Z" userLabel="TimeStack">
-                                                <rect key="frame" x="791" y="14" width="211" height="122"/>
+                                                <rect key="frame" x="921" y="14" width="211" height="122"/>
                                                 <subviews>
                                                     <view opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TLs-oa-qge" userLabel="Tempo" customClass="Slider" customModule="MoonKit">
                                                         <rect key="frame" x="0.0" y="0.0" width="211" height="56"/>
@@ -462,16 +442,6 @@
                                             <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="BottomStack"/>
                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="BottomStack"/>
                                         </userDefinedRuntimeAttributes>
-                                        <variation key="default">
-                                            <mask key="constraints">
-                                                <exclude reference="5bW-gF-MM5"/>
-                                            </mask>
-                                        </variation>
-                                        <variation key="heightClass=regular-widthClass=regular">
-                                            <mask key="constraints">
-                                                <include reference="5bW-gF-MM5"/>
-                                            </mask>
-                                        </variation>
                                     </stackView>
                                 </subviews>
                                 <animations/>
