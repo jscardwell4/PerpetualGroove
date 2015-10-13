@@ -63,13 +63,22 @@ final class MixerViewController: UICollectionViewController {
   */
   func shiftCell(cell: TrackCell, direction: ShiftDirection) {
     guard let collectionView = collectionView else { return }
+
     switch (collectionView.indexPathForCell(cell), direction) {
+
       case let (indexPath?, .Left) where indexPath.section == 1 && indexPath.item > 0:
-        collectionView.moveItemAtIndexPath(indexPath, toIndexPath: NSIndexPath(forItem: indexPath.item - 1, inSection: 1))
+        let indexPath2 = NSIndexPath(forItem: indexPath.item - 1, inSection: 1)
+        collectionView.moveItemAtIndexPath(indexPath, toIndexPath: indexPath2)
+        Sequencer.sequence?.exchangeInstrumentTrackAtIndex(indexPath.item, withTrackAtIndex: indexPath2.item)
+
       case let (indexPath?, .Right) where indexPath.section == 1 && indexPath.item < collectionView.numberOfItemsInSection(1) - 1:
-        collectionView.moveItemAtIndexPath(indexPath, toIndexPath: NSIndexPath(forItem: indexPath.item + 1, inSection: 1))
+        let indexPath2 = NSIndexPath(forItem: indexPath.item + 1, inSection: 1)
+        collectionView.moveItemAtIndexPath(indexPath, toIndexPath: indexPath2)
+        Sequencer.sequence?.exchangeInstrumentTrackAtIndex(indexPath.item, withTrackAtIndex: indexPath2.item)
+
       default:
         break
+
     }
   }
 
@@ -104,7 +113,11 @@ final class MixerViewController: UICollectionViewController {
   */
   override func viewWillAppear(animated: Bool) {
     super.viewWillAppear(animated)
-    if let idx = Sequencer.sequence?.currentTrackIndex { currentTrackIndexPath = NSIndexPath(forItem: idx, inSection: 1) }
+    if let idx = Sequencer.sequence?.currentTrackIndex {
+      collectionView?.selectItemAtIndexPath(NSIndexPath(forItem: idx, inSection: 1),
+                                   animated: false,
+                             scrollPosition: .CenteredHorizontally)
+    }
   }
 
   /**
@@ -140,31 +153,31 @@ final class MixerViewController: UICollectionViewController {
     collectionView?.reloadData()
   }
 
-  private var currentTrackIndexPath: NSIndexPath? {
-    didSet {
-      guard currentTrackIndexPath != oldValue else { return }
-
-      guard let sequence = Sequencer.sequence, collectionView = collectionView else { return }
-
-      switch (currentTrackIndexPath, sequence.currentTrack) {
-
-        case let (indexPath?, currentTrack?) where sequence.instrumentTracks[indexPath.item] != currentTrack:
-          sequence.currentTrack = sequence.instrumentTracks[indexPath.item]
-          if let selectedPaths = collectionView.indexPathsForSelectedItems() where selectedPaths ∌ indexPath {
-            collectionView.selectItemAtIndexPath(indexPath, animated: true, scrollPosition: .CenteredHorizontally)
-          }
-
-        case (nil, .Some):
-          sequence.currentTrack = nil
-          if let selectedPath = collectionView.indexPathsForSelectedItems()?.first {
-            collectionView.deselectItemAtIndexPath(selectedPath, animated: true)
-          }
-        default:
-          break
-      }
-      //logDebug(dumpSelection())
-    }
-  }
+//  private var currentTrackIndexPath: NSIndexPath? {
+//    didSet {
+//      guard currentTrackIndexPath != oldValue else { return }
+//
+//      guard let sequence = Sequencer.sequence, collectionView = collectionView else { return }
+//
+//      switch (currentTrackIndexPath, sequence.currentTrack) {
+//
+//        case let (indexPath?, currentTrack?) where sequence.instrumentTracks[indexPath.item] != currentTrack:
+//          sequence.currentTrack = sequence.instrumentTracks[indexPath.item]
+//          if let selectedPaths = collectionView.indexPathsForSelectedItems() where selectedPaths ∌ indexPath {
+//            collectionView.selectItemAtIndexPath(indexPath, animated: true, scrollPosition: .CenteredHorizontally)
+//          }
+//
+//        case (nil, .Some):
+//          sequence.currentTrack = nil
+//          if let selectedPath = collectionView.indexPathsForSelectedItems()?.first {
+//            collectionView.deselectItemAtIndexPath(selectedPath, animated: true)
+//          }
+//        default:
+//          break
+//      }
+//      //logDebug(dumpSelection())
+//    }
+//  }
 
   /**
   trackChanged:
@@ -181,13 +194,9 @@ final class MixerViewController: UICollectionViewController {
 //    }
 
     if let newTrack = notification.userInfo?[MIDISequence.Notification.Key.Track.rawValue] as? InstrumentTrack,
-      idx = Sequencer.sequence?.instrumentTracks.indexOf(newTrack),
-      cell = collectionView?.cellForItemAtIndexPath(NSIndexPath(forItem: idx,
-                                                                inSection: Section.Instruments.rawValue))
-      where (cell as? TrackCell)?.track == newTrack && !cell.selected
+      idx = Sequencer.sequence?.instrumentTracks.indexOf(newTrack)
     {
-      currentTrackIndexPath = NSIndexPath(forItem: idx, inSection: Section.Instruments.rawValue)
-      collectionView?.selectItemAtIndexPath(currentTrackIndexPath,
+      collectionView?.selectItemAtIndexPath(NSIndexPath(forItem: idx, inSection: 1),
                                    animated: true,
                              scrollPosition: .CenteredHorizontally)
       //logDebug(dumpSelection())
@@ -324,7 +333,7 @@ final class MixerViewController: UICollectionViewController {
   */
   override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
     //logDebug(dumpSelection())
-    currentTrackIndexPath = indexPath
+    Sequencer.sequence?.currentTrack = Sequencer.sequence?.instrumentTracks[indexPath.item]
   }
 
   /**
@@ -335,7 +344,7 @@ final class MixerViewController: UICollectionViewController {
   */
   override func collectionView(collectionView: UICollectionView, didDeselectItemAtIndexPath indexPath: NSIndexPath) {
     //logDebug(dumpSelection())
-    if currentTrackIndexPath == indexPath { currentTrackIndexPath = nil }
+//    if currentTrackIndexPath == indexPath { currentTrackIndexPath = nil }
   }
   
 }
@@ -346,7 +355,7 @@ extension MixerViewController {
 
   /** dumpSelection */
   func dumpSelection() -> String {
-    var result = "currentTrackIndexPath: " + (currentTrackIndexPath == nil ? "nil" : "\(currentTrackIndexPath!)") + "\n"
+    var result = "" //"currentTrackIndexPath: " + (currentTrackIndexPath == nil ? "nil" : "\(currentTrackIndexPath!)") + "\n"
     guard let selection = collectionView?.indexPathsForSelectedItems() else { result += "selection: nil"; return result }
     result += "selection: [\n\t" + ",\n\t".join(selection.map {"\($0)"}) + "\n]"
     return result

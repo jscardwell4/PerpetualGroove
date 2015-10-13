@@ -30,9 +30,26 @@ final class MIDISequence {
     return result
   }
 
+  /**
+  exchangeInstrumentTrackAtIndex:withTrackAtIndex:
+
+  - parameter idx1: Int
+  - parameter idx2: Int
+  */
+  func exchangeInstrumentTrackAtIndex(idx1: Int, withTrackAtIndex idx2: Int) {
+    guard instrumentTracks.indices ⊇ [idx1, idx2] else { return }
+    swap(&instrumentTracks[idx1], &instrumentTracks[idx2])
+  }
+
   var currentTrackIndex: Int? {
-    guard let currentTrack = currentTrack else { return nil }
-    return instrumentTracks.indexOf(currentTrack)
+    get {
+      guard let currentTrack = currentTrack else { return nil }
+      return instrumentTracks.indexOf(currentTrack)
+    }
+    set {
+      guard let newValue = newValue where instrumentTracks.indices ∋ newValue else { currentTrack = nil; return }
+      currentTrack = instrumentTracks[newValue]
+    }
   }
 
   private var previousTrack: InstrumentTrack?
@@ -82,7 +99,6 @@ final class MIDISequence {
         track.solo = true
         newCount = oldCount + 1
         _soloTracks.append(WeakObject(track))
-//        track.mute = false
         if _soloTracks.count == 1 { tracks.forEach({$0.mute = true}) }
     }
     Notification.SoloCountDidChange.post(object: self, userInfo: [.OldCount: oldCount, .NewCount: newCount])

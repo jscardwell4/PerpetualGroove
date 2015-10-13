@@ -131,19 +131,6 @@ public func ∌ <T, U:IntervalType where T == U.Bound>(lhs:U, rhs:T) -> Bool { r
 public func ∌<T:Equatable, S:SequenceType where S.Generator.Element == T>(lhs:S, rhs:T) -> Bool { return !(lhs ∋ rhs) }
 public func ∌<O:OptionSetType where O.Element == O>(lhs: O, rhs: O) -> Bool { return !(lhs ∋ rhs) }
 
-/**
-Returns true if lhs is a subset of rhs
-
-- parameter lhs: [T]
-- parameter rhs: [T]
-- returns: Bool
-*/
-public func ⊂<T:Equatable, S0:SequenceType, S1:SequenceType
-  where S0.Generator.Element == T, S1.Generator.Element == T>(lhs:S0, rhs:S1) -> Bool
-{
-  return lhs.filter({$0 ∉ rhs}).isEmpty
-}
-
 public func ⊆<O:OptionSetType>(lhs: O, rhs: O) -> Bool { return lhs.isSubsetOf(rhs) }
 
 public func ⊈<O:OptionSetType>(lhs: O, rhs: O) -> Bool { return !(lhs ⊆ rhs) }
@@ -163,6 +150,32 @@ public func ⊅<O:OptionSetType>(lhs: O, rhs: O) -> Bool { return rhs ⊄ lhs }
 public func ⥣<O:OptionSetType>(lhs: O, rhs: O) -> Bool { return lhs.isDisjointWith(rhs) }
 
 /**
+Returns true if lhs is a subset of rhs
+
+- parameter lhs: [T]
+- parameter rhs: [T]
+- returns: Bool
+*/
+public func ⊂<T:Equatable, S0:SequenceType, S1:SequenceType
+  where S0.Generator.Element == T, S1.Generator.Element == T>(lhs:S0, rhs:S1) -> Bool
+{
+  return lhs.filter({$0 ∉ rhs}).isEmpty
+}
+
+/**
+Returns true if lhs is a subset of rhs
+
+- parameter lhs: [T]
+- parameter rhs: [T]
+- returns: Bool
+*/
+public func ⊆<T:Equatable, S0:SequenceType, S1:SequenceType
+  where S0.Generator.Element == T, S1.Generator.Element == T>(lhs:S0, rhs:S1) -> Bool
+{
+  return lhs ⊂ rhs
+}
+
+/**
 Returns true if lhs is not a subset of rhs
 
 - parameter lhs: [T]
@@ -173,6 +186,19 @@ public func ⊄<T:Equatable, S0:SequenceType, S1:SequenceType
   where S0.Generator.Element == T, S1.Generator.Element == T>(lhs: S0, rhs: S1) -> Bool
 {
   return !(lhs ⊂ rhs)
+}
+
+/**
+Returns true if lhs is not a subset of rhs
+
+- parameter lhs: [T]
+- parameter rhs: [T]
+- returns: Bool
+*/
+public func ⊈<T:Equatable, S0:SequenceType, S1:SequenceType
+  where S0.Generator.Element == T, S1.Generator.Element == T>(lhs: S0, rhs: S1) -> Bool
+{
+  return lhs ⊄ rhs
 }
 
 /**
@@ -199,4 +225,30 @@ public func ⊅<T:Equatable, S0:SequenceType, S1:SequenceType
   where S0.Generator.Element == T, S1.Generator.Element == T>(lhs: S0, rhs: S1) -> Bool
 {
   return !(lhs ⊃ rhs)
+}
+
+/**
+Returns true if rhs is a subset of lhs
+
+- parameter lhs: [T]
+- parameter rhs: [T]
+- returns: Bool
+*/
+public func ⊇<T:Equatable, S0:SequenceType, S1:SequenceType
+  where S0.Generator.Element == T, S1.Generator.Element == T>(lhs: S0, rhs: S1) -> Bool
+{
+  return lhs ⊃ rhs
+}
+
+/**
+Returns true if rhs is not a subset of lhs
+
+- parameter lhs: [T]
+- parameter rhs: [T]
+- returns: Bool
+*/
+public func ⊉<T:Equatable, S0:SequenceType, S1:SequenceType
+  where S0.Generator.Element == T, S1.Generator.Element == T>(lhs: S0, rhs: S1) -> Bool
+{
+  return lhs ⊅ rhs
 }

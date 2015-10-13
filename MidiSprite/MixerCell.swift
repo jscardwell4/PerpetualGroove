@@ -71,14 +71,12 @@ final class TrackCell: MixerCell {
   @IBOutlet var removalDisplay: UIVisualEffectView!
 
   override var selected: Bool {
-    didSet {
-      logDebug("track.index: \(track?.index); selected = \(selected)")
-      trackColor.selected = selected
-      setNeedsDisplay()
-      trackColor.setNeedsDisplay()
+    get { return super.selected }
+    set {
+      logDebug("track.index: \(track!.index); newValue = \(newValue)")
+      trackColor.selected = newValue
+      super.selected = newValue
     }
-//    get { return trackColor?.selected ?? false }
-//    set { trackColor?.selected = selected }
   }
 
   private var markedForRemoval = false {

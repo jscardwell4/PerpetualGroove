@@ -13,33 +13,46 @@ import UIKit
 
   // MARK: - Images
 
-  @IBInspectable public var image: UIImage? {
-    didSet {
-      guard !(highlighted || selected) || highlightedImage == nil else { return}
-      setNeedsDisplay()
+  @IBInspectable public var image:            UIImage? { didSet { refresh() } }
+  @IBInspectable public var highlightedImage: UIImage? { didSet { refresh() } }
+  @IBInspectable public var disabledImage:    UIImage? { didSet { refresh() } }
+  @IBInspectable public var selectedImage:    UIImage? { didSet { refresh() } }
+
+  private weak var _currentImage: UIImage? { didSet { if _currentImage != oldValue { setNeedsDisplay() } } }
+  public var currentImage: UIImage? { return _currentImage ?? image }
+
+  /**
+  imageForState:
+
+  - parameter state: UIControlState
+
+  - returns: UIImage?
+  */
+  private func imageForState(state: UIControlState) -> UIImage? {
+    let img: UIImage?
+    switch state {
+      case [.Disabled] where disabledImage != nil:                  img = disabledImage!
+      case [.Selected] where selectedImage != nil:                  img = selectedImage!
+      case [.Highlighted] where highlightedImage != nil:            img = highlightedImage!
+      case [.Disabled], [.Selected], [.Highlighted]:                img = currentImage
+      default:                                                      img = image
     }
+    return img
   }
 
-  @IBInspectable public var highlightedImage: UIImage? {
-    didSet {
-      guard highlighted || selected else { return }
-      setNeedsDisplay()
-    }
-  }
 
   /**
   intrinsicContentSize
 
   - returns: CGSize
   */
-  override public func intrinsicContentSize() -> CGSize {
-    return image?.size ?? CGSize(square: UIViewNoIntrinsicMetric)
-  }
+  override public func intrinsicContentSize() -> CGSize { return image?.size ?? CGSize(square: UIViewNoIntrinsicMetric) }
+
+  /** refresh */
+  public override func refresh() { super.refresh(); _currentImage = imageForState(state) }
 
   /** setup */
-  private func setup() {
-    opaque = false
-  }
+  private func setup() { opaque = false }
 
   /**
   initWithFrame:
@@ -49,11 +62,31 @@ import UIKit
   public override init(frame: CGRect) { super.init(frame: frame); setup() }
 
   /**
+  encodeWithCoder:
+
+  - parameter aCoder: NSCoder
+  */
+  public override func encodeWithCoder(aCoder: NSCoder) {
+    super.encodeWithCoder(aCoder)
+    aCoder.encodeBool(toggle, forKey: "toggle")
+    aCoder.encodeObject(image,            forKey: "image")
+    aCoder.encodeObject(selectedImage,    forKey: "selectedImage")
+    aCoder.encodeObject(highlightedImage, forKey: "highlightedImage")
+    aCoder.encodeObject(disabledImage,    forKey: "disabledImage")
+  }
+
+  /**
   init:
 
   - parameter aDecoder: NSCoder
   */
-  public required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder); setup() }
+  public required init?(coder aDecoder: NSCoder) { 
+    super.init(coder: aDecoder); setup() 
+    image            = aDecoder.decodeObjectForKey("image")            as? UIImage
+    selectedImage    = aDecoder.decodeObjectForKey("selectedImage")    as? UIImage
+    highlightedImage = aDecoder.decodeObjectForKey("highlightedImage") as? UIImage
+    disabledImage    = aDecoder.decodeObjectForKey("disabledImage")    as? UIImage
+  }
 
   /**
   drawRect:
@@ -61,7 +94,7 @@ import UIKit
   - parameter rect: CGRect
   */
   public override func drawRect(rect: CGRect) {
-    guard let image = (highlighted || selected) && highlightedImage != nil ? highlightedImage : image else { return }
+    guard let image = _currentImage else { return }
 
     let context = UIGraphicsGetCurrentContext()
     CGContextSaveGState(context)

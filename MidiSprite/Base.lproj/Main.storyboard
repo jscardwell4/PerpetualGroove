@@ -164,7 +164,7 @@
                                                     <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="a4H-Xm-MmL" userLabel="TransportStack">
                                                         <rect key="frame" x="0.0" y="0.0" width="470" height="150"/>
                                                         <subviews>
-                                                            <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="u5D-xu-7GP" userLabel="Record" customClass="ImageButtonView" customModule="MoonKit">
+                                                            <view opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="u5D-xu-7GP" userLabel="Record" customClass="ImageButtonView" customModule="MoonKit">
                                                                 <rect key="frame" x="0.0" y="0.0" width="150" height="150"/>
                                                                 <animations/>
                                                                 <color key="tintColor" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
@@ -174,18 +174,21 @@
                                                                 </constraints>
                                                                 <userDefinedRuntimeAttributes>
                                                                     <userDefinedRuntimeAttribute type="image" keyPath="image" value="record"/>
-                                                                    <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="record-selected"/>
                                                                     <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
-                                                                        <color key="value" red="0.76089900730000004" green="0.25649610160000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                                        <color key="value" red="0.8608990312" green="0.29020571709999998" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="deviceRGB"/>
                                                                     </userDefinedRuntimeAttribute>
                                                                     <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
                                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="Record"/>
+                                                                    <userDefinedRuntimeAttribute type="color" keyPath="selectedTintColor">
+                                                                        <color key="value" red="0.70097428560256958" green="0.17991100251674652" blue="0.015877731144428253" alpha="1" colorSpace="calibratedRGB"/>
+                                                                    </userDefinedRuntimeAttribute>
+                                                                    <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="record-selected"/>
                                                                 </userDefinedRuntimeAttributes>
                                                                 <connections>
                                                                     <action selector="record" destination="BV1-FR-VrT" eventType="touchUpInside" id="n5c-Wk-WUa"/>
                                                                 </connections>
                                                             </view>
-                                                            <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AbD-fM-IZj" userLabel="Play/Pause" customClass="ImageButtonView" customModule="MoonKit">
+                                                            <view opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AbD-fM-IZj" userLabel="Play/Pause" customClass="ImageButtonView" customModule="MoonKit">
                                                                 <rect key="frame" x="160" y="0.0" width="150" height="150"/>
                                                                 <animations/>
                                                                 <color key="tintColor" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
@@ -195,17 +198,17 @@
                                                                 </constraints>
                                                                 <userDefinedRuntimeAttributes>
                                                                     <userDefinedRuntimeAttribute type="image" keyPath="image" value="play"/>
-                                                                    <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="play-selected"/>
                                                                     <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
-                                                                        <color key="value" red="0.87450999021530151" green="0.8274499773979187" blue="0.7607799768447876" alpha="1" colorSpace="calibratedRGB"/>
+                                                                        <color key="value" red="0.90891814230000001" green="0.8747615218" blue="0.82637178899999997" alpha="1" colorSpace="custom" customColorSpace="deviceRGB"/>
                                                                     </userDefinedRuntimeAttribute>
                                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="PlayPause"/>
+                                                                    <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="play-selected"/>
                                                                 </userDefinedRuntimeAttributes>
                                                                 <connections>
                                                                     <action selector="playPause" destination="BV1-FR-VrT" eventType="touchUpInside" id="67R-Wm-Kiq"/>
                                                                 </connections>
                                                             </view>
-                                                            <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5UP-3s-pkz" userLabel="Stop" customClass="ImageButtonView" customModule="MoonKit">
+                                                            <view opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5UP-3s-pkz" userLabel="Stop" customClass="ImageButtonView" customModule="MoonKit">
                                                                 <rect key="frame" x="320" y="0.0" width="150" height="150"/>
                                                                 <animations/>
                                                                 <color key="tintColor" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
@@ -215,15 +218,15 @@
                                                                 </constraints>
                                                                 <userDefinedRuntimeAttributes>
                                                                     <userDefinedRuntimeAttribute type="image" keyPath="image" value="stop"/>
-                                                                    <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="stop-selected"/>
                                                                     <userDefinedRuntimeAttribute type="color" keyPath="disabledTintColor">
                                                                         <color key="value" red="0.51420629024505615" green="0.50113999843597412" blue="0.48703506588935852" alpha="1" colorSpace="calibratedRGB"/>
                                                                     </userDefinedRuntimeAttribute>
                                                                     <userDefinedRuntimeAttribute type="boolean" keyPath="enabled" value="NO"/>
                                                                     <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
-                                                                        <color key="value" red="0.87450999021530151" green="0.8274499773979187" blue="0.7607799768447876" alpha="1" colorSpace="calibratedRGB"/>
+                                                                        <color key="value" red="0.90891814230000001" green="0.8747615218" blue="0.82637178899999997" alpha="1" colorSpace="custom" customColorSpace="deviceRGB"/>
                                                                     </userDefinedRuntimeAttribute>
                                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="Stop"/>
+                                                                    <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="stop-selected"/>
                                                                 </userDefinedRuntimeAttributes>
                                                                 <connections>
                                                                     <action selector="stop" destination="BV1-FR-VrT" eventType="touchUpInside" id="jD9-0j-4ba"/>
@@ -1303,7 +1306,7 @@
                                     </mask>
                                 </variation>
                                 <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
-                                    <rect key="frame" x="20" y="574" width="250" height="128"/>
+                                    <rect key="frame" x="20" y="574" width="250" height="108"/>
                                 </variation>
                                 <connections>
                                     <outlet property="contentView" destination="41G-aM-2HB" id="nD9-0T-yny"/>
@@ -1501,9 +1504,9 @@
                                 <exclude reference="JF0-3d-TlM"/>
                                 <exclude reference="byd-8v-duj"/>
                                 <exclude reference="x9p-rm-dbe"/>
-                                <exclude reference="xu4-CY-JBV"/>
                                 <exclude reference="CAu-z8-d5k"/>
                                 <exclude reference="scO-5z-aRY"/>
+                                <exclude reference="xu4-CY-JBV"/>
                                 <exclude reference="H4X-0u-mdh"/>
                                 <exclude reference="d7k-jH-Kyh"/>
                                 <exclude reference="wyF-oA-5lM"/>
@@ -1600,8 +1603,8 @@
                                 <include reference="JF0-3d-TlM"/>
                                 <include reference="byd-8v-duj"/>
                                 <include reference="x9p-rm-dbe"/>
-                                <include reference="xu4-CY-JBV"/>
                                 <include reference="CAu-z8-d5k"/>
+                                <include reference="xu4-CY-JBV"/>
                             </mask>
                         </variation>
                     </view>

@@ -117,12 +117,15 @@
                                         </constraints>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="image" keyPath="image" value="metronome"/>
-                                            <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="metronome-selected"/>
                                             <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
                                             <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
-                                                <color key="value" red="0.87450999019999998" green="0.82744997740000004" blue="0.76077997679999998" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="value" red="0.90891814230000001" green="0.8747615218" blue="0.82637178899999997" alpha="1" colorSpace="custom" customColorSpace="deviceRGB"/>
                                             </userDefinedRuntimeAttribute>
                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="MetronomeButton"/>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="metronome-selected"/>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="selectedTintColor">
+                                                <color key="value" red="0.8434065580368042" green="0.78949379920959473" blue="0.71009701490402222" alpha="1" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                         <variation key="default">
                                             <mask key="constraints">
@@ -546,21 +549,21 @@
             <objects>
                 <collectionViewController storyboardIdentifier="Mixer" title="Mixer" id="iF7-fT-LPT" userLabel="Mixer" customClass="MixerViewController" customModule="Groove" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" contentMode="scaleToFill" directionalLockEnabled="YES" bounces="NO" alwaysBounceHorizontal="YES" showsVerticalScrollIndicator="NO" dataMode="prototypes" id="QhA-gV-EZG">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="420"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="400"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <animations/>
                         <color key="backgroundColor" red="0.20000000298023224" green="0.19607843458652496" blue="0.19215686619281769" alpha="1" colorSpace="calibratedRGB"/>
                         <collectionViewLayout key="collectionViewLayout" id="I5F-pR-bWx" customClass="MixerLayout" customModule="Groove" customModuleProvider="target"/>
                         <cells>
                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" placeholderIntrinsicWidth="100" placeholderIntrinsicHeight="420" reuseIdentifier="MasterCell" id="Ywg-X3-Y1Q" userLabel="Master Cell" customClass="MasterCell" customModule="Groove" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="0.0" width="100" height="420"/>
+                                <rect key="frame" x="0.0" y="0.0" width="100" height="400"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                     <rect key="frame" x="0.0" y="0.0" width="100" height="400"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="jXz-zn-JV2">
-                                            <rect key="frame" x="8" y="8" width="84" height="402"/>
+                                        <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" distribution="equalCentering" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="jXz-zn-JV2">
+                                            <rect key="frame" x="8" y="8" width="84" height="382"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Mnc-ed-SYw">
                                                     <rect key="frame" x="20" y="0.0" width="44" height="184"/>
@@ -677,8 +680,8 @@
                                                     </subviews>
                                                     <animations/>
                                                 </stackView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="MASTER" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zFx-2Q-V0k" customClass="Label" customModule="MoonKit">
-                                                    <rect key="frame" x="18" y="388" width="49" height="14"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" misplaced="YES" text="MASTER" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zFx-2Q-V0k" customClass="Label" customModule="MoonKit">
+                                                    <rect key="frame" x="18" y="368" width="49" height="14"/>
                                                     <animations/>
                                                     <fontDescription key="fontDescription" name="EvelethThin" family="Eveleth" pointSize="12"/>
                                                     <color key="textColor" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="calibratedRGB"/>
@@ -721,14 +724,14 @@
                                 </connections>
                             </collectionViewCell>
                             <collectionViewCell opaque="NO" clipsSubviews="YES" contentMode="center" reuseIdentifier="TrackCell" id="2AY-7g-m2Q" userLabel="Track Cell" customClass="TrackCell" customModule="Groove" customModuleProvider="target">
-                                <rect key="frame" x="110" y="0.0" width="100" height="420"/>
+                                <rect key="frame" x="110" y="0.0" width="100" height="400"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                     <rect key="frame" x="0.0" y="0.0" width="100" height="400"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="sCc-QY-TMC">
-                                            <rect key="frame" x="8" y="8" width="84" height="404"/>
+                                        <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" distribution="equalCentering" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="sCc-QY-TMC">
+                                            <rect key="frame" x="8" y="8" width="84" height="384"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" distribution="equalSpacing" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="YGu-8C-M5R">
                                                     <rect key="frame" x="20" y="0.0" width="44" height="169"/>
@@ -793,9 +796,6 @@
                                                                 <userDefinedRuntimeAttribute type="boolean" keyPath="preservesTrackMaxImageSize" value="YES"/>
                                                                 <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="VolumeSlider"/>
                                                             </userDefinedRuntimeAttributes>
-                                                            <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
-                                                                <rect key="frame" x="0.0" y="15.5" width="44" height="158"/>
-                                                            </variation>
                                                             <connections>
                                                                 <action selector="volumeDidChange" destination="2AY-7g-m2Q" eventType="valueChanged" id="0PE-6k-RsM"/>
                                                             </connections>
@@ -868,10 +868,10 @@
                                                     <animations/>
                                                 </stackView>
                                                 <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="13X-Pc-Np3">
-                                                    <rect key="frame" x="17" y="283" width="50" height="96"/>
+                                                    <rect key="frame" x="17" y="283" width="50" height="76"/>
                                                     <subviews>
                                                         <view opaque="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ldg-6q-t2e" userLabel="Solo" customClass="LabelButton" customModule="MoonKit">
-                                                            <rect key="frame" x="0.0" y="0.0" width="50" height="48"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="50" height="38"/>
                                                             <animations/>
                                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                             <color key="tintColor" red="0.30125221610000003" green="0.29395070670000001" blue="0.28606623409999998" alpha="1" colorSpace="calibratedRGB"/>
@@ -882,20 +882,20 @@
                                                                 <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
                                                                     <real key="value" value="14"/>
                                                                 </userDefinedRuntimeAttribute>
-                                                                <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
-                                                                    <color key="value" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
-                                                                </userDefinedRuntimeAttribute>
                                                                 <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
+                                                                <userDefinedRuntimeAttribute type="color" keyPath="selectedTintColor">
+                                                                    <color key="value" red="0.67391729354858398" green="0.64499717950820923" blue="0.59965932369232178" alpha="1" colorSpace="calibratedRGB"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
+                                                                    <color key="value" red="0.77479177710000002" green="0.75248193740000002" blue="0.71923178430000001" alpha="1" colorSpace="custom" customColorSpace="deviceRGB"/>
+                                                                </userDefinedRuntimeAttribute>
                                                             </userDefinedRuntimeAttributes>
-                                                            <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
-                                                                <rect key="frame" x="0.0" y="0.0" width="45" height="19"/>
-                                                            </variation>
                                                             <connections>
                                                                 <action selector="solo" destination="2AY-7g-m2Q" eventType="touchUpInside" id="g3q-b6-WW4"/>
                                                             </connections>
                                                         </view>
                                                         <view opaque="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BZl-Ps-fwB" userLabel="Mute" customClass="LabelButton" customModule="MoonKit">
-                                                            <rect key="frame" x="0.0" y="48" width="50" height="48"/>
+                                                            <rect key="frame" x="0.0" y="38" width="50" height="38"/>
                                                             <animations/>
                                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                             <color key="tintColor" red="0.30125221610000003" green="0.29395070670000001" blue="0.28606623409999998" alpha="1" colorSpace="calibratedRGB"/>
@@ -906,14 +906,14 @@
                                                                 <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
                                                                     <real key="value" value="14"/>
                                                                 </userDefinedRuntimeAttribute>
-                                                                <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
-                                                                    <color key="value" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
-                                                                </userDefinedRuntimeAttribute>
                                                                 <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
+                                                                <userDefinedRuntimeAttribute type="color" keyPath="selectedTintColor">
+                                                                    <color key="value" red="0.77479177710000002" green="0.75248193740000002" blue="0.71923178430000001" alpha="1" colorSpace="custom" customColorSpace="deviceRGB"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
+                                                                    <color key="value" red="0.77479177710000002" green="0.75248193740000002" blue="0.71923178430000001" alpha="1" colorSpace="custom" customColorSpace="deviceRGB"/>
+                                                                </userDefinedRuntimeAttribute>
                                                             </userDefinedRuntimeAttributes>
-                                                            <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
-                                                                <rect key="frame" x="0.0" y="19" width="45" height="19"/>
-                                                            </variation>
                                                             <connections>
                                                                 <action selector="mute" destination="2AY-7g-m2Q" eventType="touchUpInside" id="DQT-1Z-Rzc"/>
                                                             </connections>
@@ -928,15 +928,14 @@
                                                             <exclude reference="0SF-2D-Kf4"/>
                                                         </mask>
                                                     </variation>
-                                                    <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
-                                                        <rect key="frame" x="20" y="304" width="45" height="38"/>
+                                                    <variation key="heightClass=regular-widthClass=regular">
                                                         <mask key="constraints">
                                                             <include reference="0SF-2D-Kf4"/>
                                                         </mask>
                                                     </variation>
                                                 </stackView>
                                                 <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="G8k-76-kf1">
-                                                    <rect key="frame" x="0.0" y="389" width="84" height="15"/>
+                                                    <rect key="frame" x="0.0" y="369" width="84" height="15"/>
                                                     <subviews>
                                                         <view opaque="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3Fc-u3-GOg" userLabel="TrackLabel" customClass="TrackLabel" customModule="Groove" customModuleProvider="target">
                                                             <rect key="frame" x="0.0" y="0.0" width="84" height="15"/>
@@ -973,8 +972,8 @@
                                                             <userDefinedRuntimeAttributes>
                                                                 <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TrackColor"/>
                                                                 <userDefinedRuntimeAttribute type="image" keyPath="image" value="color_swatch"/>
-                                                                <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="color_swatch_thicker-selected"/>
-                                                                <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
+                                                                <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="NO"/>
+                                                                <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="color_swatch_thicker-selected"/>
                                                             </userDefinedRuntimeAttributes>
                                                             <variation key="default">
                                                                 <mask key="constraints">
@@ -1116,17 +1115,17 @@
                                 </connections>
                             </collectionViewCell>
                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="AddTrackCell" id="h8g-3b-xY3" userLabel="Add Track Cell">
-                                <rect key="frame" x="220" y="0.0" width="100" height="420"/>
+                                <rect key="frame" x="220" y="0.0" width="100" height="400"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                     <rect key="frame" x="0.0" y="0.0" width="100" height="400"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" alpha="0.34999999999999998" contentMode="center" image="MixerCellMock_faint_add_track" translatesAutoresizingMaskIntoConstraints="NO" id="dMA-k2-N2G">
+                                        <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" alpha="0.34999999999999998" contentMode="center" ambiguous="YES" misplaced="YES" image="add_track_background-outlines" translatesAutoresizingMaskIntoConstraints="NO" id="dMA-k2-N2G">
                                             <rect key="frame" x="0.0" y="-400" width="100" height="400"/>
                                             <animations/>
                                         </imageView>
-                                        <view opaque="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6pi-bq-mPh" customClass="ImageButtonView" customModule="MoonKit">
+                                        <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6pi-bq-mPh" customClass="ImageButtonView" customModule="MoonKit">
                                             <rect key="frame" x="32" y="182" width="36" height="36"/>
                                             <animations/>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -1139,7 +1138,10 @@
                                                 <userDefinedRuntimeAttribute type="image" keyPath="image" value="add-selected"/>
                                                 <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="AddTrackButton"/>
                                                 <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
-                                                    <color key="value" red="0.76089900732040405" green="0.25649610161781311" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <color key="value" red="0.8608990312" green="0.29020571709999998" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="deviceRGB"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="color" keyPath="selectedTintColor">
+                                                    <color key="value" red="0.70097428560256958" green="0.17991100251674652" blue="0.015877731144428253" alpha="1" colorSpace="calibratedRGB"/>
                                                 </userDefinedRuntimeAttribute>
                                             </userDefinedRuntimeAttributes>
                                             <connections>
@@ -1426,8 +1428,8 @@
         </scene>
     </scenes>
     <resources>
-        <image name="MixerCellMock_faint_add_track" width="100" height="380"/>
         <image name="add-selected" width="56" height="56"/>
+        <image name="add_track_background-outlines" width="100" height="380"/>
         <image name="color_swatch" width="84" height="17"/>
         <image name="color_swatch_thicker-selected" width="84" height="17"/>
         <image name="down_arrow" width="31" height="31"/>
