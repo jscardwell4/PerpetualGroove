@@ -31,80 +31,71 @@ struct MIDINodeEvent: MIDITrackEvent {
   }
 
   /**
-  Initializer that takes the event's data
+  Initializer that takes the event's data and, optionally, the event's bar beat time
 
   - parameter d: MetaEventData
+  - parameter t: CABarBeatTime? = nil
   */
-  init(_ d: Data) { data = d }
+  init(_ d: Data, _ t: CABarBeatTime? = nil) { data = d; if let t = t { time = t } }
 
-  init<C:CollectionType where C.Generator.Element == Byte,
-    C.Index.Distance == Int, C.SubSequence.Generator.Element == Byte,
-    C.SubSequence:CollectionType, C.SubSequence.Index.Distance == Int,
-    C.SubSequence.SubSequence == C.SubSequence>(delta: VariableLengthQuantity, bytes: C) throws
+  init<C:CollectionType
+    where C.Generator.Element == Byte,
+          C.Index.Distance == Int,
+          C.SubSequence.Generator.Element == Byte,
+          C.SubSequence:CollectionType,
+          C.SubSequence.Index.Distance == Int,
+          C.SubSequence.SubSequence == C.SubSequence>(delta: VariableLengthQuantity, bytes: C) throws
   {
     self.delta = delta
-    guard bytes[bytes.startIndex ... bytes.startIndex.advancedBy(1)].elementsEqual([0xFF, 0x07]) else {
+    guard bytes[bytes.startIndex ... bytes.startIndex + 1].elementsEqual([0xFF, 0x07]) else {
       throw MIDIFileError(type: .InvalidHeader, reason: "Event must begin with `FF 07`")
     }
-    var currentIndex = bytes.startIndex.advancedBy(2)
+    var currentIndex = bytes.startIndex + 2
     var i = currentIndex
-    while bytes[i] & 0x80 != 0 { i.increment() }
-    let dataLength = VariableLengthQuantity(bytes: bytes[currentIndex ... i])
-    i.increment()
+    while bytes[i] & 0x80 != 0 { i++ }
+    let dataLength = VariableLengthQuantity(bytes: bytes[currentIndex ... i++])
     currentIndex = i
-    i.advanceBy(dataLength.intValue)
-    guard bytes.endIndex == i else {
-      throw MIDIFileError(type: .InvalidLength, reason: "Length specified by data does not match actual")
-    }
+    i += dataLength.intValue
+    guard bytes.endIndex == i else { throw MIDIFileError(type: .InvalidLength, reason: "Specified length does not match actual") }
 
-    let dataBytes = bytes[currentIndex ..< i]
-    data = try Data(data: dataBytes)
+    data = try Data(data: bytes[currentIndex ..< i])
   }
-
-
-  /**
-  Initializer that takes a bar beat time as well as the event's data
-
-  - parameter t: CABarBeatTime
-  - parameter d: Data
-  */
-  init(barBeatTime t: CABarBeatTime, data d: Data) { time = t; data = d }
 
   enum Data: Equatable {
     case Add(identifier: Identifier, placement: Placement, attributes: NoteAttributes)
     case Remove(identifier: Identifier)
 
-    init<C:CollectionType where C.Generator.Element == Byte,
-      C.Index.Distance == Int, C.SubSequence.Generator.Element == Byte,
-      C.SubSequence.Index.Distance == Int>(data: C) throws
+    /**
+    initWithData:
+
+    - parameter data: C
+    */
+    init<C:CollectionType
+      where C.Generator.Element == Byte,
+            C.Index.Distance == Int,
+            C.SubSequence.Generator.Element == Byte,
+            C.SubSequence.Index.Distance == Int>(data: C) throws
     {
       let identifierByteCount = sizeof(Identifier.self)
       guard data.count >= identifierByteCount else {
         throw MIDIFileError(type: .InvalidLength,
                             reason: "Data length must be at least as large as the bytes required for identifier")
       }
-      let identifier = Identifier(data[data.startIndex ..< data.startIndex.advancedBy(sizeof(Identifier.self))])
-      var currentIndex = data.startIndex.advancedBy(sizeof(Identifier.self))
+      var currentIndex = data.startIndex + sizeof(Identifier.self)
+      let identifier = Identifier(data[data.startIndex ..< currentIndex])
+
       guard currentIndex != data.endIndex else { self = .Remove(identifier: identifier); return }
 
-      let placementSize = Int(data[currentIndex])
-      currentIndex.increment()
-      var i = currentIndex.advancedBy(placementSize)
-      guard i.distanceTo(data.endIndex) > 0 else {
-        throw MIDIFileError(type: .InvalidLength, reason: "Not enough bytes for event")
-      }
+      var i = Int(data[currentIndex]) + ++currentIndex
+      guard i ⟷ data.endIndex > 0 else { throw MIDIFileError(type: .InvalidLength, reason: "Not enough bytes for event") }
       let placement = Placement(data[currentIndex ..< i])
 
       currentIndex = i
-      let attributesSize = Int(data[currentIndex])
-      currentIndex.increment()
-      i = currentIndex.advancedBy(attributesSize)
-      guard i.distanceTo(data.endIndex) == 0 else {
-        throw MIDIFileError(type: .InvalidLength, reason: "Incorrect number of bytes for event")
-      }
-      let attributes = NoteAttributes(data[currentIndex ..< i])
+      i += Int(data[currentIndex]) + 1
 
-      self = .Add(identifier: identifier, placement: placement, attributes: attributes)
+      guard i ⟷ data.endIndex == 0 else { throw MIDIFileError(type: .InvalidLength, reason: "Incorrect number of bytes") }
+
+      self = .Add(identifier: identifier, placement: placement, attributes: NoteAttributes(data[currentIndex ..< i]))
     }
 
     var bytes: [Byte] {

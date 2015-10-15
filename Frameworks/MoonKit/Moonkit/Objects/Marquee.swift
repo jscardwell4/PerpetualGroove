@@ -210,11 +210,11 @@ import UIKit
   private func beginScrolling() {
     guard scrollEnabled && !isScrolling else { return }
 
-    let point = CGPoint(x: bounds.width, y: bounds.midY)
-    let characterIndex = layoutManager.characterIndexForPoint(point, inTextContainer: textContainer)
-    let excess = text.utf16.count - (characterIndex + 1)
+//    let point = CGPoint(x: bounds.width, y: bounds.midY)
+//    let characterIndex = layoutManager.characterIndexForPoint(point, inTextContainer: textContainer)
+//    let excess = text.utf16.count - (characterIndex + 1)
 
-    guard excess > 0 else { logWarning("There are not any excess characters to scroll into view"); return }
+//    guard excess > 0 else { logWarning("There are not any excess characters to scroll into view"); return }
 
     let animation = CABasicAnimation(keyPath: "transform.translation.x")
     animation.duration = scrollSpeed * CFTimeInterval(text.utf16.count + scrollSeparator.utf16.count)

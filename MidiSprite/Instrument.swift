@@ -16,34 +16,27 @@ final class Instrument: Equatable, CustomStringConvertible {
 
   enum Error: String, ErrorType { case AttachNodeFailed = "Failed to attach sampler node to audio engine" }
 
-//  var event: InstrumentEvent { return InstrumentEvent(.SF2, soundSet.url) }
-
-  struct Preset: ByteArrayConvertible {
-    let fileURL: NSURL
-    let program: Program
-    let channel: Channel
-    var bytes: [Byte] { return program.bytes + channel.bytes + fileURL.absoluteString.bytes }
-    init(_ bytes: [Byte]) {
-      guard bytes.count > 2 else { fileURL = NSURL(string: "")!; program = 0; channel = 0; return }
-      program = bytes[0]
-      channel = bytes[1]
-      fileURL = NSURL(string: String(bytes[2..<])) ?? NSURL(string: "")!
-    }
-    init(fileURL f: NSURL, program p: Program, channel c: Channel) { fileURL = f; program = p; channel = c }
-  }
-
+  typealias Bank    = Byte
   typealias Program = Byte
   typealias Channel = Byte
 
+  typealias Preset = SF2File.Preset
+
   var soundSet: SoundSet
   var channel: Channel = 0
+  var bank: Bank = 0
   var program: Program = 0
-  var programPreset: SF2File.Preset { return soundSet[program] }
+  var preset: Preset { return soundSet[program, bank] }
   private let node = AVAudioUnitSampler()
 
   var bus: AVAudioNodeBus { return node.destinationForMixer(AudioManager.mixer, bus: 0)?.connectionPoint.bus ?? -1 }
 
-  var preset: Preset { return Preset(fileURL: soundSet.url, program: 0, channel: 0) }
+  /**
+  loadPreset:
+
+  - parameter preset: Preset
+  */
+  func loadPreset(preset: Preset) throws { try loadSoundSet(soundSet, program: preset.program, bank: preset.bank) }
 
   /**
   setProgram:onChannel:
@@ -51,14 +44,19 @@ final class Instrument: Equatable, CustomStringConvertible {
   - parameter program: Program
   - parameter onChannel: Channel
   */
-  func setProgram(program: Program) throws { try loadSoundSet(soundSet, program: program) }
+//  func setProgram(program: Program) throws { try loadSoundSet(soundSet, program: program) }
 
-  var volume: Float { get { return node.volume } set { node.volume = (0 ... 1).clampValue(newValue) } }
-  var pan: Float { get { return node.pan } set { node.pan = (-1 ... 1).clampValue(newValue) } }
+  var volume: Float { get { return node.volume } set { node.volume = (0 ... 1).clampValue(newValue)  } }
+  var pan:    Float { get { return node.pan    } set { node.pan    = (-1 ... 1).clampValue(newValue) } }
 
-  var description: String { return "Instrument { \n\tsoundSet: \(soundSet)\n\tprogram: \(program)\n\tchannel: \(channel)\n}" }
+  var description: String {
+    var result = "Instrument {\n\t"
+    result +=  "\n\t".join("soundSet: \(soundSet)","program: \(program)", "bank: \(bank)", "channel: \(channel)")
+    result += "\n}"
+    return result
+  }
 
-  private var client = MIDIClientRef()
+  private      var client   = MIDIClientRef()
   private(set) var endPoint = MIDIEndpointRef()
 
   /**
@@ -96,14 +94,16 @@ final class Instrument: Equatable, CustomStringConvertible {
 
   - parameter soundSet: SoundSet
   */
-  func loadSoundSet(soundSet: SoundSet, var program: Program = 0) throws {
+  func loadSoundSet(soundSet: SoundSet, var program: Program = 0, var bank: Bank = 0) throws {
     program = (0 ... 127).clampValue(program)
+    bank    = (0 ... 127).clampValue(bank)
     try node.loadSoundBankInstrumentAtURL(soundSet.url,
                                   program: program,
                                   bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB),
-                                  bankLSB: UInt8(kAUSampler_DefaultBankLSB))
+                                  bankLSB: bank)
     self.soundSet = soundSet
-    self.program = program
+    self.program  = program
+    self.bank     = bank
   }
 
   /**
@@ -114,7 +114,10 @@ final class Instrument: Equatable, CustomStringConvertible {
   - returns: Bool
   */
   func settingsEqualTo(instrument: Instrument) -> Bool {
-    return soundSet == instrument.soundSet && program == instrument.program && channel == instrument.channel
+    return soundSet == instrument.soundSet
+        && program  == instrument.program
+        && bank     == instrument.bank
+        && channel  == instrument.channel
   }
 
   /**
@@ -123,28 +126,20 @@ final class Instrument: Equatable, CustomStringConvertible {
   - parameter set: SoundSet
   - parameter program: Program
   */
-  init(soundSet: SoundSet, program: Program = 0, channel: Channel = 0) throws {
+  init(soundSet: SoundSet, program: Program = 0, bank: Bank = 0, channel: Channel = 0) throws {
     self.soundSet = soundSet
-    self.program = program
-    self.channel = channel
+    self.bank     = bank
+    self.program  = program
+    self.channel  = channel
 
     AudioManager.attachNode(node, forInstrument: self)
     guard node.engine != nil else { throw Error.AttachNodeFailed }
 
-    try loadSoundSet(soundSet, program: program)
+    try loadSoundSet(soundSet, program: program, bank: bank)
 
     let name = "Instrument \(ObjectIdentifier(self).uintValue)"
     try MIDIClientCreateWithBlock(name, &client, nil) ➤ "Failed to create midi client"
     try MIDIDestinationCreateWithBlock(client, name, &endPoint, read) ➤ "Failed to create end point for instrument"
-  }
-
-  /**
-  initWithPreset:
-
-  - parameter preset: Preset
-  */
-  convenience init(preset: Preset) throws {
-    try self.init(soundSet: try SoundSet(url: preset.fileURL), program: preset.program, channel: preset.channel)
   }
 
   /**
@@ -153,7 +148,7 @@ final class Instrument: Equatable, CustomStringConvertible {
   - parameter instrument: Instrument
   */
   convenience init(instrument: Instrument) {
-    try! self.init(soundSet: instrument.soundSet, program: instrument.program, channel: instrument.channel)
+    try! self.init(soundSet: instrument.soundSet, program: instrument.program, bank: instrument.bank, channel: instrument.channel)
   }
 
 }
@@ -166,6 +161,4 @@ Equatable compliance
 
 - returns: Bool
 */
-func ==(lhs: Instrument, rhs: Instrument) -> Bool {
-  return lhs.node === rhs.node
-}
+func ==(lhs: Instrument, rhs: Instrument) -> Bool { return lhs.node === rhs.node }

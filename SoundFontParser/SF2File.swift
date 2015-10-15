@@ -13,16 +13,16 @@ import MoonKit
 struct SF2File: CustomStringConvertible {
 
   enum Error: String, ErrorType {
-    case ReadFailure = "Failed to obtain data from the file specified"
+    case ReadFailure             = "Failed to obtain data from the file specified"
     case FileStructurallyUnsound = "The specified file is not structurally sound"
-    case FileHeaderInvalid = "The specified file does not contain a valid RIFF header"
+    case FileHeaderInvalid       = "The specified file does not contain a valid RIFF header"
     case INFOStructurallyUnsound = "Invalid INFO-list chunk"
     case SDTAStructurallyUnsound = "Invalid SDTA-list chunk"
     case PDTAStructurallyUnsound = "Invalid PDTA-list chunk"
-    case PresetHeaderInvalid = "Invalid preset header detected in PDTA chunk"
-    case INFOParseError = "Failed to parse INFO-list chunk"
-    case SDTAParseError = "Failed to parse SDTA-list chunk"
-    case PDTAParseError = "Failed to parse PDTA-list chunk"
+    case PresetHeaderInvalid     = "Invalid preset header detected in PDTA chunk"
+    case INFOParseError          = "Failed to parse INFO-list chunk"
+    case SDTAParseError          = "Failed to parse SDTA-list chunk"
+    case PDTAParseError          = "Failed to parse PDTA-list chunk"
   }
 
   let url: NSURL
@@ -31,10 +31,11 @@ struct SF2File: CustomStringConvertible {
   private let sdta: SDTAChunk
   private let pdta: PDTAChunk
 
-  struct Preset: Comparable {
+  struct Preset: Comparable, CustomStringConvertible {
     let name: String
     let program: Byte
     let bank: Byte
+    var description: String { return "Preset {name: \(name); program: \(program); bank: \(bank)}" }
   }
 
   var presets: [Preset] { return pdta.phdr.map { Preset(name: $0.name, program: Byte($0.preset), bank: Byte($0.bank))} }
@@ -67,63 +68,63 @@ struct SF2File: CustomStringConvertible {
     // Get a pointer to the underlying memory buffer
     let bytes = UnsafeBufferPointer<Byte>(start: UnsafePointer<Byte>(fileData.bytes), count: totalBytes)
 
-    guard String(bytes[bytes.startIndex ..< bytes.startIndex.advancedBy(4)]).lowercaseString == "riff" else {
+    guard String(bytes[bytes.startIndex ..< bytes.startIndex + 4]).lowercaseString == "riff" else {
       throw Error.FileHeaderInvalid
     }
 
     // Get the size specified by the file and make sure it is long enough to get to the first chunk size
-    let riffSize = Int(Byte4(bytes[bytes.startIndex.advancedBy(4) ..< bytes.startIndex.advancedBy(8)]).bigEndian)
+    let riffSize = Int(Byte4(bytes[bytes.startIndex + 4 ..< bytes.startIndex + 8]).bigEndian)
     guard riffSize + 8 == totalBytes && riffSize > 20 else {
       throw Error.FileStructurallyUnsound
     }
 
     // Check the bytes up to info size and get the info size
-    guard String(Array(bytes[bytes.startIndex.advancedBy(8) ..< bytes.startIndex.advancedBy(16)])) == "sfbkLIST" else {
+    guard String(Array(bytes[bytes.startIndex + 8 ..< bytes.startIndex + 16])) == "sfbkLIST" else {
       throw Error.FileStructurallyUnsound
     }
 
-    let infoSize = Int(Byte4(bytes[bytes.startIndex.advancedBy(16) ..< bytes.startIndex.advancedBy(20)]).bigEndian)
+    let infoSize = Int(Byte4(bytes[bytes.startIndex + 16 ..< bytes.startIndex + 20]).bigEndian)
 
     // Check that there are enough bytes for the info chunk size
-    guard totalBytes >= bytes.startIndex.advancedBy(infoSize + 20) else {
+    guard totalBytes >= bytes.startIndex + infoSize + 20 else {
       throw Error.INFOStructurallyUnsound
     }
 
     // Create a reference slice of the info chunk
-    let infoBytes = bytes[bytes.startIndex.advancedBy(20) ..< bytes.startIndex.advancedBy(infoSize + 20)]
+    let infoBytes = bytes[bytes.startIndex + 20 ..< bytes.startIndex + infoSize + 20]
 
 
     // Check for sdta list
-    guard bytes[infoBytes.endIndex ..< infoBytes.endIndex.advancedBy(4)].elementsEqual("LIST".utf8) else {
+    guard bytes[infoBytes.endIndex ..< infoBytes.endIndex + 4].elementsEqual("LIST".utf8) else {
       throw Error.SDTAStructurallyUnsound
     }
 
     // Get the sdta chunk size
-    let sdtaSize = Int(Byte4(bytes[infoBytes.endIndex.advancedBy(4) ..< infoBytes.endIndex.advancedBy(8)]).bigEndian)
+    let sdtaSize = Int(Byte4(bytes[infoBytes.endIndex + 4 ..< infoBytes.endIndex + 8]).bigEndian)
 
     // Check size against total bytes
-    guard totalBytes >= infoBytes.endIndex.advancedBy(sdtaSize + 8) else {
+    guard totalBytes >= infoBytes.endIndex + sdtaSize + 8 else {
       throw Error.SDTAStructurallyUnsound
     }
 
     // Create a reference slice of the sdta chunk
-    let sdtaBytes = bytes[infoBytes.endIndex.advancedBy(8) ..< infoBytes.endIndex.advancedBy(sdtaSize + 8)]
+    let sdtaBytes = bytes[infoBytes.endIndex + 8 ..< infoBytes.endIndex + sdtaSize + 8]
 
     // Check for pdta list
-    guard bytes[sdtaBytes.endIndex ..< sdtaBytes.endIndex.advancedBy(4)].elementsEqual("LIST".utf8) else {
+    guard bytes[sdtaBytes.endIndex ..< sdtaBytes.endIndex + 4].elementsEqual("LIST".utf8) else {
       throw Error.PDTAStructurallyUnsound
     }
 
     // Get the sdta chunk size
-    let pdtaSize = Int(Byte4(bytes[sdtaBytes.endIndex.advancedBy(4) ..< sdtaBytes.endIndex.advancedBy(8)]).bigEndian)
+    let pdtaSize = Int(Byte4(bytes[sdtaBytes.endIndex + 4 ..< sdtaBytes.endIndex + 8]).bigEndian)
 
     // Check size against total bytes
-    guard totalBytes >= sdtaBytes.endIndex.advancedBy(pdtaSize + 8) else {
+    guard totalBytes >= sdtaBytes.endIndex + pdtaSize + 8 else {
       throw Error.PDTAStructurallyUnsound
     }
 
     // Create a reference slice of the sdta chunk
-    let pdtaBytes = bytes[sdtaBytes.endIndex.advancedBy(8) ..< sdtaBytes.endIndex.advancedBy(pdtaSize + 8)]
+    let pdtaBytes = bytes[sdtaBytes.endIndex + 8 ..< sdtaBytes.endIndex + pdtaSize + 8]
 
     // Parse the chunks
     info = try INFOChunk(bytes: infoBytes)
@@ -174,10 +175,10 @@ struct SF2File: CustomStringConvertible {
     {
       let byteCount = bytes.count
       guard byteCount > 4 else { throw Error.INFOStructurallyUnsound }
-      guard String(bytes[bytes.startIndex ..< bytes.startIndex.advancedBy(4)]).lowercaseString == "info" else {
+      guard String(bytes[bytes.startIndex ..< bytes.startIndex + 4]).lowercaseString == "info" else {
         throw Error.INFOStructurallyUnsound
       }
-      var i = bytes.startIndex.advancedBy(4)
+      var i = bytes.startIndex + 4 
       var ifil: (major: Byte2, minor: Byte2)?
       var isng: String?
       var inam: String?
@@ -189,55 +190,55 @@ struct SF2File: CustomStringConvertible {
       var icop: String?
       var icmt: String?
       var isft: String?
-      while i.advancedBy(8) < byteCount {
-        let chunkType = String(Array(bytes[i ..< i.advancedBy(4)]))
-        let chunkSize = Int(Byte4(bytes[i.advancedBy(4) ..< i.advancedBy(8)]).bigEndian)
-        guard i.advancedBy(8 + chunkSize) <= bytes.endIndex else { throw Error.INFOStructurallyUnsound }
-        let chunkData = bytes[i.advancedBy(8) ..< i.advancedBy(8 + chunkSize)]
+      while i + 8  < byteCount {
+        let chunkType = String(Array(bytes[i ..< i + 4]))
+        let chunkSize = Int(Byte4(bytes[i + 4 ..< i + 8]).bigEndian)
+        guard i + 8 + chunkSize <= bytes.endIndex else { throw Error.INFOStructurallyUnsound }
+        let chunkData = bytes[i + 8 ..< i + 8 + chunkSize]
         switch chunkType.lowercaseString {
           case "ifil":
             guard ifil == nil else { throw Error.INFOStructurallyUnsound }
             guard chunkSize == 4 else { throw Error.INFOStructurallyUnsound }
-            ifil = (major: Byte2(chunkData[i.advancedBy(8) ... i.advancedBy(9)]), 
-                    minor: Byte2(chunkData[i.advancedBy(10) ... i.advancedBy(11)]))
+            ifil = (major: Byte2(chunkData[i + 8 ... i + 9]), 
+                    minor: Byte2(chunkData[i + 10 ... i + 11]))
           case "isng":
             guard isng == nil else { throw Error.INFOStructurallyUnsound }
-            isng = String(chunkData[i.advancedBy(8) ..< i.advancedBy(8 + chunkSize)])
+            isng = String(chunkData[i + 8 ..< i + 8 + chunkSize])
           case "inam":
             guard inam == nil else { throw Error.INFOStructurallyUnsound }
-            inam = String(chunkData[i.advancedBy(8) ..< i.advancedBy(8 + chunkSize)])
+            inam = String(chunkData[i + 8 ..< i + 8 + chunkSize])
           case "irom":
             guard irom == nil else { throw Error.INFOStructurallyUnsound }
-            let string = String(chunkData[i.advancedBy(8) ..< i.advancedBy(8 + chunkSize)])
+            let string = String(chunkData[i + 8 ..< i + 8 + chunkSize])
             if !string.isEmpty { irom = string }
           case "iver":
             guard iver == nil else { throw Error.INFOStructurallyUnsound }
             guard chunkSize == 4 else { throw Error.INFOStructurallyUnsound }
-            iver = (major: Byte2(chunkData[i.advancedBy(8) ... i.advancedBy(9)]), 
-                    minor: Byte2(chunkData[i.advancedBy(10) ... i.advancedBy(11)]))
+            iver = (major: Byte2(chunkData[i + 8 ... i + 9]), 
+                    minor: Byte2(chunkData[i + 10 ... i + 11]))
           case "icrd":
             guard icrd == nil else { throw Error.INFOStructurallyUnsound }
-            let string = String(chunkData[i.advancedBy(8) ..< i.advancedBy(8 + chunkSize)])
+            let string = String(chunkData[i + 8 ..< i + 8 + chunkSize])
             if !string.isEmpty { icrd = string }
           case "ieng":
             guard ieng == nil else { throw Error.INFOStructurallyUnsound }
-            let string = String(chunkData[i.advancedBy(8) ..< i.advancedBy(8 + chunkSize)])
+            let string = String(chunkData[i + 8 ..< i + 8 + chunkSize])
             if !string.isEmpty { ieng = string }
           case "iprd":
             guard iprd == nil else { throw Error.INFOStructurallyUnsound }
-            let string = String(chunkData[i.advancedBy(8) ..< i.advancedBy(8 + chunkSize)])
+            let string = String(chunkData[i + 8 ..< i + 8 + chunkSize])
             if !string.isEmpty { iprd = string }
           case "icop":
             guard icop == nil else { throw Error.INFOStructurallyUnsound }
-            let string = String(chunkData[i.advancedBy(8) ..< i.advancedBy(8 + chunkSize)])
+            let string = String(chunkData[i + 8 ..< i + 8 + chunkSize])
             if !string.isEmpty { icop = string }
           case "icmt":
             guard icmt == nil else { throw Error.INFOStructurallyUnsound }
-            let string = String(chunkData[i.advancedBy(8) ..< i.advancedBy(8 + chunkSize)])
+            let string = String(chunkData[i + 8 ..< i + 8 + chunkSize])
             if !string.isEmpty { icmt = string }
           case "isft":
             guard isft == nil else { throw Error.INFOStructurallyUnsound }
-            let string = String(chunkData[i.advancedBy(8) ..< i.advancedBy(8 + chunkSize)])
+            let string = String(chunkData[i + 8 ..< i + 8 + chunkSize])
             if !string.isEmpty { isft = string }
           default: continue
         }
@@ -269,25 +270,28 @@ struct SF2File: CustomStringConvertible {
 
     - parameter bytes: C
     */
-    init<C:CollectionType where C.Generator.Element == Byte,
-                                C.Index == Int, C.SubSequence.Generator.Element == Byte,
-                                C.SubSequence:CollectionType, C.SubSequence.Index == Int,
-                                C.SubSequence.SubSequence == C.SubSequence>(bytes: C) throws
+    init<C:CollectionType 
+      where C.Generator.Element == Byte,
+            C.Index == Int, 
+            C.SubSequence.Generator.Element == Byte,
+            C.SubSequence:CollectionType, 
+            C.SubSequence.Index == Int,
+            C.SubSequence.SubSequence == C.SubSequence>(bytes: C) throws
     {
       let byteCount = bytes.count
-      guard byteCount >= 4 && String(bytes[bytes.startIndex ..< bytes.startIndex.advancedBy(4)]).lowercaseString == "sdta" else {
+      guard byteCount >= 4 && String(bytes[bytes.startIndex ..< bytes.startIndex + 4]).lowercaseString == "sdta" else {
         throw Error.SDTAStructurallyUnsound
       }
 
       if byteCount > 8 {
-        guard String(bytes[bytes.startIndex.advancedBy(4) ..< bytes.startIndex.advancedBy(8)]).lowercaseString == "smpl" else {
+        guard String(bytes[bytes.startIndex + 4 ..< bytes.startIndex + 8]).lowercaseString == "smpl" else {
           throw Error.SDTAStructurallyUnsound
         }
-        let smplSize = Int(Byte4(bytes[bytes.startIndex.advancedBy(8) ..< bytes.startIndex.advancedBy(12)]).bigEndian)
+        let smplSize = Int(Byte4(bytes[bytes.startIndex + 8 ..< bytes.startIndex + 12]).bigEndian)
         guard byteCount >= smplSize + 12 else {
           throw Error.SDTAStructurallyUnsound
         }
-        smpl = bytes.startIndex.advancedBy(12) ..< bytes.startIndex.advancedBy(smplSize + 12)
+        smpl = bytes.startIndex + 12 ..< bytes.startIndex + smplSize + 12
       } else {
         smpl = nil
       }
@@ -319,19 +323,22 @@ struct SF2File: CustomStringConvertible {
 
       - parameter bytes: C
       */
-      init?<C:CollectionType where C.Generator.Element == Byte,
-                                   C.Index == Int, C.SubSequence.Generator.Element == Byte,
-                                   C.SubSequence:CollectionType, C.SubSequence.Index == Int,
-                                   C.SubSequence.SubSequence == C.SubSequence>(bytes: C) throws
+      init?<C:CollectionType
+        where C.Generator.Element == Byte,
+              C.Index == Int, 
+              C.SubSequence.Generator.Element == Byte,
+              C.SubSequence:CollectionType, 
+              C.SubSequence.Index == Int,
+              C.SubSequence.SubSequence == C.SubSequence>(bytes: C) throws
       {
         guard bytes.count == 38 else { throw Error.PresetHeaderInvalid }
-        name       = String(bytes[bytes.startIndex ..< (bytes.indexOf(Byte(0)) ?? bytes.startIndex.advancedBy(20))])
-        preset     = Byte2(bytes[bytes.startIndex.advancedBy(20) ... bytes.startIndex.advancedBy(21)]).bigEndian
-        bank       = Byte2(bytes[bytes.startIndex.advancedBy(22) ... bytes.startIndex.advancedBy(23)]).bigEndian
-        bagIndex   = Byte2(bytes[bytes.startIndex.advancedBy(24) ... bytes.startIndex.advancedBy(25)]).bigEndian
-        library    = Byte4(bytes[bytes.startIndex.advancedBy(26) ... bytes.startIndex.advancedBy(29)]).bigEndian
-        genre      = Byte4(bytes[bytes.startIndex.advancedBy(30) ... bytes.startIndex.advancedBy(33)]).bigEndian
-        morphology = Byte4(bytes[bytes.startIndex.advancedBy(34) ... bytes.startIndex.advancedBy(37)]).bigEndian
+        name       = String(bytes[bytes.startIndex ..< (bytes.indexOf(Byte(0)) ?? bytes.startIndex + 20)])
+        preset     = Byte2(bytes[bytes.startIndex + 20 ... bytes.startIndex + 21]).bigEndian
+        bank       = Byte2(bytes[bytes.startIndex + 22 ... bytes.startIndex + 23]).bigEndian
+        bagIndex   = Byte2(bytes[bytes.startIndex + 24 ... bytes.startIndex + 25]).bigEndian
+        library    = Byte4(bytes[bytes.startIndex + 26 ... bytes.startIndex + 29]).bigEndian
+        genre      = Byte4(bytes[bytes.startIndex + 30 ... bytes.startIndex + 33]).bigEndian
+        morphology = Byte4(bytes[bytes.startIndex + 34 ... bytes.startIndex + 37]).bigEndian
         if name == "EOP" || name.isEmpty { return nil }
       }
 
@@ -365,17 +372,20 @@ struct SF2File: CustomStringConvertible {
 
     - parameter bytes: C
     */
-    init<C:CollectionType where C.Generator.Element == Byte,
-                                C.Index == Int, C.SubSequence.Generator.Element == Byte,
-                                C.SubSequence:CollectionType, C.SubSequence.Index == Int,
-                                C.SubSequence.SubSequence == C.SubSequence>(bytes: C) throws
+    init<C:CollectionType 
+      where C.Generator.Element == Byte,
+            C.Index == Int, 
+            C.SubSequence.Generator.Element == Byte,
+            C.SubSequence:CollectionType, 
+            C.SubSequence.Index == Int,
+            C.SubSequence.SubSequence == C.SubSequence>(bytes: C) throws
     {
       let byteCount = bytes.count
       guard byteCount > 4 else { throw Error.PDTAStructurallyUnsound }
-      guard String(bytes[bytes.startIndex ..< bytes.startIndex.advancedBy(4)]).lowercaseString == "pdta" else {
+      guard String(bytes[bytes.startIndex ..< bytes.startIndex + 4]).lowercaseString == "pdta" else {
         throw Error.PDTAStructurallyUnsound
       }
-      var i = bytes.startIndex.advancedBy(4)
+      var i = bytes.startIndex + 4 
       var phdr: [PresetHeader]?
       var pbag: Range<Int>?
       var pmod: Range<Int>?
@@ -385,11 +395,11 @@ struct SF2File: CustomStringConvertible {
       var imod: Range<Int>?
       var igen: Range<Int>?
       var shdr: Range<Int>?
-      while i.advancedBy(8) < bytes.endIndex {
-        let chunkType = String(bytes[i ..< i.advancedBy(4)])
-        let chunkSize = Int(Byte4(bytes[i.advancedBy(4) ..< i.advancedBy(8)]).bigEndian)
-        guard byteCount >= i.advancedBy(8 + chunkSize) - bytes.startIndex else { throw Error.PDTAStructurallyUnsound }
-        let chunkData = bytes[i.advancedBy(8) ..< i.advancedBy(8 + chunkSize)]
+      while i + 8  < bytes.endIndex {
+        let chunkType = String(bytes[i ..< i + 4])
+        let chunkSize = Int(Byte4(bytes[i + 4 ..< i + 8]).bigEndian)
+        guard byteCount >= i + 8 + chunkSize - bytes.startIndex else { throw Error.PDTAStructurallyUnsound }
+        let chunkData = bytes[i + 8 ..< i + 8 + chunkSize]
         func uniqueAssign(inout value: Range<Int>?) {
           guard case .None = value else { return }
           value = chunkData.indices
@@ -399,9 +409,9 @@ struct SF2File: CustomStringConvertible {
             guard phdr == nil && chunkSize % 38 == 0 else { throw Error.PDTAStructurallyUnsound }
             var j = chunkData.startIndex
             var presetHeaders: [PresetHeader] = []
-            while j < chunkData.endIndex, let presetHeader = try PresetHeader(bytes: chunkData[j ..< j.advancedBy(38)]) {
+            while j < chunkData.endIndex, let presetHeader = try PresetHeader(bytes: chunkData[j ..< j + 38]) {
               presetHeaders.append(presetHeader)
-              j.advanceBy(38)
+              j += 38
             }
             phdr = presetHeaders
           case "pbag": uniqueAssign(&pbag)
@@ -449,5 +459,5 @@ struct SF2File: CustomStringConvertible {
 
 func ==(lhs: SF2File.Preset, rhs: SF2File.Preset) -> Bool { return lhs.bank == rhs.bank && lhs.program == rhs.program }
 func <(lhs: SF2File.Preset, rhs: SF2File.Preset) -> Bool {
-  return lhs.bank < rhs.bank || lhs.bank == rhs.bank && lhs.program < rhs.program
+  return lhs.bank < rhs.bank || (lhs.bank == rhs.bank && lhs.program < rhs.program)
 }

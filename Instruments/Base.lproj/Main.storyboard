@@ -26,7 +26,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tfq-bk-v4D" customClass="InlinePickerView" customModule="MoonKit">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tfq-bk-v4D" customClass="InlinePickerView" customModule="MoonKit">
                                 <rect key="frame" x="117.5" y="20" width="442.5" height="44"/>
                                 <animations/>
                                 <constraints>
@@ -56,7 +56,7 @@
                                     <action selector="didPickSoundSet:" destination="BYZ-38-t0r" eventType="valueChanged" id="xyQ-lm-6Td"/>
                                 </connections>
                             </view>
-                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ew9-17-dfT" customClass="InlinePickerView" customModule="MoonKit">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ew9-17-dfT" customClass="InlinePickerView" customModule="MoonKit">
                                 <rect key="frame" x="117.5" y="72" width="442.5" height="44"/>
                                 <animations/>
                                 <constraints>
@@ -102,7 +102,7 @@
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jCf-L5-VdH" customClass="InlinePickerView" customModule="MoonKit">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jCf-L5-VdH" customClass="InlinePickerView" customModule="MoonKit">
                                 <rect key="frame" x="117.5" y="124" width="442.5" height="44"/>
                                 <animations/>
                                 <constraints>
@@ -141,7 +141,7 @@
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QPa-KU-jec" userLabel="Duration Picker" customClass="InlinePickerView" customModule="MoonKit">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QPa-KU-jec" userLabel="Duration Picker" customClass="InlinePickerView" customModule="MoonKit">
                                 <rect key="frame" x="117.5" y="176" width="442.5" height="44"/>
                                 <animations/>
                                 <constraints>
@@ -172,7 +172,7 @@
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="64L-Ko-cVz" userLabel="Duration Picker" customClass="InlinePickerView" customModule="MoonKit">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="64L-Ko-cVz" userLabel="Duration Picker" customClass="InlinePickerView" customModule="MoonKit">
                                 <rect key="frame" x="117.5" y="228" width="442.5" height="44"/>
                                 <animations/>
                                 <constraints>

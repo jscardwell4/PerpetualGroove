@@ -12,7 +12,7 @@ import typealias AudioUnit.AudioUnitElement
 
 final class MixerViewController: UICollectionViewController {
 
-  private var notificationReceptionist: NotificationReceptionist?
+  private var receptionist: NotificationReceptionist?
 
   private var widthConstraint: NSLayoutConstraint?
   private var heightConstraint: NSLayoutConstraint?
@@ -102,8 +102,8 @@ final class MixerViewController: UICollectionViewController {
     collectionView?.allowsSelection = true
     collectionView?.clipsToBounds = false
 
-    guard notificationReceptionist == nil else { return }
-    notificationReceptionist = generateNotificationReceptionist()
+    guard receptionist == nil else { return }
+    receptionist = generateNotificationReceptionist()
   }
 
   /**
@@ -149,8 +149,13 @@ final class MixerViewController: UICollectionViewController {
   - parameter notification: NSNotification
   */
   private func documentChanged(notification: NSNotification) {
-    notificationReceptionist = generateNotificationReceptionist()
+    receptionist = generateNotificationReceptionist()
     collectionView?.reloadData()
+    if let currentTrackIndex = Sequencer.sequence?.currentTrack?.index {
+      collectionView?.selectItemAtIndexPath(NSIndexPath(forItem: currentTrackIndex, inSection: 1),
+                                   animated: true,
+                             scrollPosition: .CenteredHorizontally)
+    }
   }
 
 //  private var currentTrackIndexPath: NSIndexPath? {

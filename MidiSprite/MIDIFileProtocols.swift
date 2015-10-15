@@ -29,24 +29,45 @@ protocol MIDITrackEvent: CustomStringConvertible {
 // MARK: - The track type protocol
 
 /** Protocol for types that provide a collection of `MIDITrackEvent` values for a chunk and can produce that chunk */
-protocol MIDITrackType: CustomStringConvertible {
+protocol MIDITrackType: class, CustomStringConvertible {
   var chunk: MIDIFileTrackChunk { get }
   var name: String { get }
-  var events: [MIDITrackEvent] { get }
+  var eventContainer: MIDITrackEventContainer { get set }
   var trackEnd: CABarBeatTime { get }
   weak var sequence: MIDISequence? { get }
+  init(trackChunk: MIDIFileTrackChunk, sequence s: MIDISequence) throws
 }
 
 extension MIDITrackType {
 
-  /** Generates a MIDI file chunk from current track data */
+  var trackNameEvent: MetaEvent? { return eventContainer.trackNameEvent }
+
+  var endOfTrackEvent: MetaEvent? { return eventContainer.endOfTrackEvent }
+
+  /** validateFirstAndLastEvents */
+  func validateFirstAndLastEvents() {
+    if var event = trackNameEvent, case let .SequenceTrackName(n) = event.data where n != name {
+      event.data = .SequenceTrackName(name: name)
+      eventContainer.trackNameEvent = event
+    } else if trackNameEvent == nil {
+      eventContainer.trackNameEvent = MetaEvent(.SequenceTrackName(name: name))
+    }
+
+    if eventContainer.count < 2 { eventContainer.endOfTrackEvent = MetaEvent(.EndOfTrack) }
+    else if eventContainer.endOfTrackEvent == nil {
+      eventContainer.endOfTrackEvent = MetaEvent(.EndOfTrack, eventContainer.last?.time)
+    } else {
+      let previousEvent = eventContainer[eventContainer.count - 2]
+      if var event = endOfTrackEvent where event.time != previousEvent.time {
+        event.time = previousEvent.time
+        eventContainer.endOfTrackEvent = event
+      }
+    }
+  }
+
   var chunk: MIDIFileTrackChunk {
-    var trackEvents = events
-    trackEvents.insert(MetaEvent(.SequenceTrackName(name: name)), atIndex: 0)
-    var eotEvent = MetaEvent(.EndOfTrack)
-    if let lastEvent = trackEvents.last { eotEvent.time = lastEvent.time }
-    trackEvents.append(eotEvent)
-    return MIDIFileTrackChunk(events: trackEvents)
+    validateFirstAndLastEvents()
+    return MIDIFileTrackChunk(eventContainer: eventContainer)
   }
 
 }

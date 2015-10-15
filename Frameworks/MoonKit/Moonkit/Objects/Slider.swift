@@ -182,6 +182,29 @@ import Chameleon
     return thumbImage.size
   }
 
+  // MARK: - Alignment
+
+  @IBInspectable public var alignmentRectInsetsString: String? {
+    didSet {
+      guard alignmentRectInsetsString != oldValue else { return }
+      setNeedsLayout()
+    }
+  }
+
+  /**
+  alignmentRectInsets
+
+  - returns: UIEdgeInsets
+  */
+  public override func alignmentRectInsets() -> UIEdgeInsets {
+    let defaultInsets = axis == .Horizontal
+                          ? UIEdgeInsets(horizontal: half(_thumbSize.width - 1), vertical: 0)
+                          : UIEdgeInsets(horizontal: 0, vertical: half(_thumbSize.height - 1))
+    guard let string = alignmentRectInsetsString, insets = UIEdgeInsets(string) else { return defaultInsets }
+    
+    return defaultInsets + insets
+  }
+
   // MARK: - Values
 
   @IBInspectable public var value: Float = 0 { didSet { guard oldValue != value else { return }; setNeedsDisplay() } }
@@ -337,19 +360,6 @@ import Chameleon
       axisString = aDecoder.decodeObjectForKey("axisString") as? String ?? Axis.Horizontal.rawValue 
     }
   }
-
-  /**
-  alignmentRectInsets
-
-  - returns: UIEdgeInsets
-  */
-  public override func alignmentRectInsets() -> UIEdgeInsets {
-    return axis == .Horizontal
-      ? UIEdgeInsets(horizontal: half(_thumbSize.width - 1), vertical: 0)
-      : UIEdgeInsets(horizontal: 0, vertical: half(_thumbSize.height - 1))
-  }
-
-
 
   // MARK: - Drawing
 

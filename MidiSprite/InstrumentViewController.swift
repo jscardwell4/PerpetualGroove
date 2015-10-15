@@ -18,17 +18,23 @@ final class InstrumentViewController: UIViewController {
   /** didPickSoundSet */
   @IBAction func didPickSoundSet() {
     let soundSet = Sequencer.soundSets[soundSetPicker.selection]
-    let program = UInt8(soundSet.presets[0].program)
-    do { try instrument?.loadSoundSet(soundSet, program: program) } catch { logError(error) }
-    programPicker.labels = soundSet.presets.map({$0.name})
-    programPicker.selection = 0
+    do {
+      try instrument?.loadPreset(soundSet.presets[0])
+      programPicker.selection = 0
+      programPicker.labels = soundSet.presets.map({$0.name})
+    } catch {
+      logError(error)
+    }
   }
 
   /** didPickProgram */
   @IBAction func didPickProgram() {
     let soundSet = Sequencer.auditionInstrument.soundSet
-    let program = UInt8(soundSet.presets[programPicker.selection].program)
-    do { try instrument?.loadSoundSet(soundSet, program: program) } catch { logError(error) }
+    do {
+      try instrument?.loadPreset(soundSet.presets[programPicker.selection])
+    } catch {
+      logError(error)
+    }
   }
 
   /** didChangeChannel */
@@ -37,18 +43,15 @@ final class InstrumentViewController: UIViewController {
   /** auditionValues */
   @IBAction func auditionValues() { Sequencer.auditionCurrentNote() }
 
-  typealias Program = Instrument.Program
-  typealias Channel = Instrument.Channel
-
   var instrument: Instrument? {
     didSet {
       guard let instrument = instrument,
              soundSetIndex = Sequencer.soundSets.indexOf(instrument.soundSet),
-              programIndex = instrument.soundSet.presets.map({UInt8($0.program)}).indexOf(instrument.program)
+              presetIndex = instrument.soundSet.presets.indexOf(instrument.preset)
       else { return }
       soundSetPicker.selection = soundSetIndex
       programPicker.labels = instrument.soundSet.presets.map({$0.name})
-      programPicker.selection = programIndex
+      programPicker.selection = presetIndex
       channelStepper.value = Double(instrument.channel)
     }
   }

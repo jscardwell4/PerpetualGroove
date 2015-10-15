@@ -43,7 +43,7 @@ final class MIDIPlayerNode: SKShapeNode {
     physicsBody?.contactTestBitMask = 0xFFFFFFFF
     addChild(MIDIPlayerFieldNode(bezierPath: bezierPath, delegate: self))
 
-    notificationReceptionist = NotificationReceptionist(callbacks:
+    receptionist = NotificationReceptionist(callbacks:
       [
         Sequencer.Notification.DidReset.rawValue: (Sequencer.self, NSOperationQueue.mainQueue(), didReset)
       ]
@@ -83,7 +83,7 @@ final class MIDIPlayerNode: SKShapeNode {
     midiNodes.removeAll()
   }
 
-  private var notificationReceptionist: NotificationReceptionist!
+  private var receptionist: NotificationReceptionist!
 
   /**
   placeNew:

@@ -36,3 +36,4 @@ infix operator ¶| {}
 infix operator ~∩ { associativity none precedence 130 }
 infix operator !~∩ { associativity none precedence 130 }
 infix operator !~= { associativity none precedence 130 }
+infix operator ⟷ { associativity none precedence 170 }

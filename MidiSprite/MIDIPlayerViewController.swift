@@ -317,7 +317,7 @@ final class MIDIPlayerViewController: UIViewController {
 
   // MARK: - Managing state
 
-  private var notificationReceptionist: NotificationReceptionist?
+  private var receptionist: NotificationReceptionist?
 
   /**
   didPause:
@@ -391,23 +391,23 @@ final class MIDIPlayerViewController: UIViewController {
   /** initializeReceptionist */
   private func initializeReceptionist() {
 
-    guard notificationReceptionist == nil else { return }
+    guard receptionist == nil else { return }
 
-    notificationReceptionist = NotificationReceptionist()
+    receptionist = NotificationReceptionist()
 
     let queue = NSOperationQueue.mainQueue()
 
-    notificationReceptionist?.observe(Sequencer.Notification.DidPause, from: Sequencer.self, queue: queue, callback: didPause)
-    notificationReceptionist?.observe(Sequencer.Notification.DidStart, from: Sequencer.self, queue: queue, callback: didStart)
-    notificationReceptionist?.observe(Sequencer.Notification.DidStop,  from: Sequencer.self, queue: queue, callback: didStop)
+    receptionist?.observe(Sequencer.Notification.DidPause, from: Sequencer.self, queue: queue, callback: didPause)
+    receptionist?.observe(Sequencer.Notification.DidStart, from: Sequencer.self, queue: queue, callback: didStart)
+    receptionist?.observe(Sequencer.Notification.DidStop,  from: Sequencer.self, queue: queue, callback: didStop)
 
-    notificationReceptionist?.observe(MIDIDocumentManager.Notification.DidChangeDocument,
+    receptionist?.observe(MIDIDocumentManager.Notification.DidChangeDocument,
                                  from: MIDIDocumentManager.self,
                                 queue: queue,
                              callback: didChangeDocument)
 
-    notificationReceptionist?.observe(UIKeyboardWillShowNotification, from: nil, queue: queue, callback: willShowKeyboard)
-    notificationReceptionist?.observe(UIKeyboardDidHideNotification,  from: nil, queue: queue, callback: didHideKeyboard)
+    receptionist?.observe(UIKeyboardWillShowNotification, from: nil, queue: queue, callback: willShowKeyboard)
+    receptionist?.observe(UIKeyboardDidHideNotification,  from: nil, queue: queue, callback: didHideKeyboard)
     
   }
 

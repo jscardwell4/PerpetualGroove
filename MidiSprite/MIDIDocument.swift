@@ -26,7 +26,7 @@ final class MIDIDocument: UIDocument {
   */
   private func didAddTrack(notification: NSNotification) {
     guard let track = notification.userInfo?[SequenceNotification.Key.Track.rawValue] as? InstrumentTrack else { return }
-    notificationReceptionist.observe(MIDITrackNotification.DidUpdateEvents, from: track, callback: didUpdateTrack)
+    receptionist.observe(MIDITrackNotification.DidUpdateEvents, from: track, callback: didUpdateTrack)
     updateChangeCount(.Done)
   }
 
@@ -37,7 +37,7 @@ final class MIDIDocument: UIDocument {
   */
   private func didRemoveTrack(notification: NSNotification) {
     guard let track = notification.userInfo?[SequenceNotification.Key.Track.rawValue] as? InstrumentTrack else { return }
-    notificationReceptionist.stopObserving(MIDITrackNotification.DidUpdateEvents, from: track)
+    receptionist.stopObserving(MIDITrackNotification.DidUpdateEvents, from: track)
     updateChangeCount(.Done)
   }
 
@@ -57,11 +57,11 @@ final class MIDIDocument: UIDocument {
   */
   override init(fileURL url: NSURL) {
     super.init(fileURL: url)
-    notificationReceptionist.observe(SequenceNotification.DidAddTrack, from: sequence, callback: didAddTrack)
-    notificationReceptionist.observe(SequenceNotification.DidRemoveTrack, from: sequence, callback: didRemoveTrack)
+    receptionist.observe(SequenceNotification.DidAddTrack, from: sequence, callback: didAddTrack)
+    receptionist.observe(SequenceNotification.DidRemoveTrack, from: sequence, callback: didRemoveTrack)
   }
 
-  private let notificationReceptionist = NotificationReceptionist()
+  private let receptionist = NotificationReceptionist()
 
   /**
   loadFromContents:ofType:
@@ -95,9 +95,9 @@ final class MIDIDocument: UIDocument {
   {
 
     // TODO: Generate thumbnail
-    let image = UIImage()
+//    let image = UIImage()
 
-    return [NSURLHasHiddenExtensionKey: true, NSURLThumbnailDictionaryKey: [NSThumbnail1024x1024SizeKey: image]]
+    return [NSURLHasHiddenExtensionKey: true]//, NSURLThumbnailDictionaryKey: [NSThumbnail1024x1024SizeKey: image]]
   }
 
   /**

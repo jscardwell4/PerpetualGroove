@@ -12,7 +12,7 @@ import MoonKit
 /** Struct to hold a track chunk for a MIDI file where chunk = \<chunk type\> \<length\> \<track event\>+ */
 struct MIDIFileTrackChunk: MIDIChunk {
   let type = Byte4("MTrk".utf8)
-  let events: [MIDITrackEvent]
+  var events: [MIDITrackEvent] = []
 
   var description: String {
     var result = "\(self.dynamicType.self) {\n\t"
@@ -24,12 +24,22 @@ struct MIDIFileTrackChunk: MIDIChunk {
     return result
   }
 
+  /** init */
+  init() {}
+
   /**
   init:
 
   - parameter e: [MIDITrackEvent]
   */
   init(events e: [MIDITrackEvent]) { events = e }
+
+  /**
+  initWithEventContainer:
+
+  - parameter eventContainer: MIDITrackEventContainer
+  */
+  init(eventContainer: MIDITrackEventContainer) { events = eventContainer.events }
 
   /**
   initWithBytes:

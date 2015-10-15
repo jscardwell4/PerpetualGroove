@@ -24,7 +24,7 @@ final class PurgatorySegue: UIStoryboardSegue {
 
 final class PurgatoryViewController: UIViewController {
 
-  private var notificationReceptionist: NotificationReceptionist!
+  private var receptionist: NotificationReceptionist!
   @IBOutlet var backdrop: UIImageView!
 
   var backdropImage: UIImage?
@@ -33,13 +33,13 @@ final class PurgatoryViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    guard case .None = notificationReceptionist else { return }
+    guard case .None = receptionist else { return }
 
-    notificationReceptionist = NotificationReceptionist()
-    notificationReceptionist.observe(NSUbiquityIdentityDidChangeNotification,
+    receptionist = NotificationReceptionist()
+    receptionist.observe(NSUbiquityIdentityDidChangeNotification,
                                queue: NSOperationQueue.mainQueue(),
                             callback: identityDidChange)
-    notificationReceptionist.observe(SettingsManager.Notification.Name.iCloudStorageChanged.notificationName,
+    receptionist.observe(SettingsManager.Notification.Name.iCloudStorageChanged.notificationName,
                                 from: SettingsManager.self,
                                queue: NSOperationQueue.mainQueue(),
                             callback: iCloudStorageDidChange)

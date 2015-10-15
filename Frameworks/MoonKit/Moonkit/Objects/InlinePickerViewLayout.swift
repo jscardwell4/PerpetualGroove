@@ -140,7 +140,7 @@ class InlinePickerViewLayout: UICollectionViewLayout {
     let itemCount = collectionView.numberOfItemsInSection(0)
 
     guard itemCount > 0 else {
-      logVerbose("collection is empty … clearing cache and skipping prep")
+      logVerbose("<\(ObjectIdentifier(collectionView).uintValue)> collection is empty … clearing cache and skipping prep")
       clearCache()
       return
     }
@@ -149,7 +149,7 @@ class InlinePickerViewLayout: UICollectionViewLayout {
     let itemWidths = delegate.itemWidths
 
     guard delegate.itemWidths.count == collectionView.numberOfItemsInSection(0) else {
-      logVerbose("delegate.itemWidths.count != itemCount … clearing cache and skipping prep")
+      logVerbose("<\(ObjectIdentifier(collectionView).uintValue)> delegate.itemWidths.count != itemCount … clearing cache and skipping prep")
       clearCache()
       return
     }
@@ -159,7 +159,7 @@ class InlinePickerViewLayout: UICollectionViewLayout {
     let selection = delegate.selection
 
     guard (0 ..< itemCount).contains(selection) else {
-      logVerbose("no valid selection, really no point in performing calculations now … clearing cache and skipping prep")
+      logVerbose("<\(ObjectIdentifier(collectionView).uintValue)> no valid selection, really no point in performing calculations now … clearing cache and skipping prep")
       clearCache()
       return
     }
@@ -167,7 +167,7 @@ class InlinePickerViewLayout: UICollectionViewLayout {
 
     let rect = collectionView.bounds
     guard !rect.isEmpty else {
-      logVerbose("visible rect is empty … clearing cache and skipping prep")
+      logVerbose("<\(ObjectIdentifier(collectionView).uintValue)> visible rect is empty … clearing cache and skipping prep")
       clearCache()
       return
     }
@@ -179,7 +179,7 @@ class InlinePickerViewLayout: UICollectionViewLayout {
     performInitialCalculations()
 
     guard rawFrames.count == itemCount else {
-      logVerbose("something went wrong performing initial calculations … clearning cache and skipping prep")
+      logVerbose("<\(ObjectIdentifier(collectionView).uintValue)> something went wrong performing initial calculations … clearning cache and skipping prep")
       clearCache()
       return
     }
@@ -188,7 +188,7 @@ class InlinePickerViewLayout: UICollectionViewLayout {
     let offsetXAlignment = rawFrames[selection].midX - rect.midX
 
     if !interactiveSelectionInProgress && offsetXAlignment != 0 {
-      logVerbose("collection view is stationary and the collection view's x offset (\(rect.origin.x)) does not match " +
+      logVerbose("<\(ObjectIdentifier(collectionView).uintValue)> collection view is stationary and the collection view's x offset (\(rect.origin.x)) does not match " +
                    "selected item's x offset (\(rawFrames[selection].midX)) … adjusting by \(offsetXAlignment)")
       values.rect.origin.x += offsetXAlignment
       collectionView.setContentOffset(values.rect.origin, animated: false)

@@ -27,7 +27,7 @@ final class MIDIDocumentManager {
 
   static private(set) var currentDocument: MIDIDocument? {
     didSet {
-      logDebug("currentDocument = \(MIDIDocumentManager.currentDocument!)")
+      logDebug("currentDocument: " + (currentDocument == nil ? "nil" : String.fromCString(currentDocument!.fileURL.fileSystemRepresentation)!))
       guard oldValue != currentDocument else { return }
       do {
 
@@ -116,7 +116,7 @@ final class MIDIDocumentManager {
 
     queue.addOperationWithBlock {
       guard let fileName = noncollidingFileName(DefaultDocumentName) else { return }
-      let fileURL = url + [fileName, ".midi"]
+      let fileURL = url + ["\(fileName).midi"]
       let document = MIDIDocument(fileURL: fileURL)
       document.saveToURL(fileURL, forSaveOperation: .ForCreating, completionHandler: {
         guard $0 else { return }; MIDIDocumentManager.openDocument(document)
@@ -216,7 +216,7 @@ final class MIDIDocumentManager {
     currentDocument = nil
   }
 
-  private static let notificationReceptionist: NotificationReceptionist = {
+  private static let receptionist: NotificationReceptionist = {
     let metadataQuery = MIDIDocumentManager.metadataQuery
     let queue = MIDIDocumentManager.queue
     typealias Callback = NotificationReceptionist.Callback
@@ -234,7 +234,7 @@ final class MIDIDocumentManager {
   static func initialize() {
     guard !initialized else { return }
 
-    let _ = notificationReceptionist
+    let _ = receptionist
 
     if let data = SettingsManager.currentDocument {
       do {

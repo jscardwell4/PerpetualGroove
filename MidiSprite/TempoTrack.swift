@@ -15,35 +15,37 @@ import struct AudioToolbox.CABarBeatTime
 final class TempoTrack: MIDITrackType {
 
   let time = Sequencer.time
-  var trackEnd: CABarBeatTime {
-    if let endOfTrackEvent = events.last as? MetaEvent where endOfTrackEvent.data == .EndOfTrack {
-      return endOfTrackEvent.time
-    } else { return time.time }
-  }
+  var trackEnd: CABarBeatTime { return eventContainer.endOfTrackEvent?.time ?? time.time }
 
-  private(set) var events: [MIDITrackEvent] = [
-    MetaEvent(.TimeSignature(upper: 4, lower: 4, clocks: 36, notes: 8)),
-    MetaEvent(.Tempo(microseconds: Byte4(60_000_000 / Sequencer.tempo)))
-    ]
-  {
-    didSet {
-      MIDITrackNotification.DidUpdateEvents.post(object: self)
+  var eventContainer = MIDITrackEventContainer()
+
+  var hasTimeSignatureEvent: Bool {
+    let isTimeSignature: (MIDITrackEvent) -> Bool = {
+      if let event = $0 as? MetaEvent, case .TimeSignature = event.data { return true } else { return false }
     }
+    return eventContainer.events.filter(isTimeSignature).count != 0
   }
 
-  private var notificationReceptionist: NotificationReceptionist?
+  var hasTempoEvent: Bool {
+    let isTempoEvent: (MIDITrackEvent) -> Bool = {
+      if let event = $0 as? MetaEvent, case .Tempo = event.data { return true } else { return false }
+    }
+    return eventContainer.events.filter(isTempoEvent).count != 0
+  }
+
+  private var receptionist: NotificationReceptionist?
   private func recordingStatusDidChange(notification: NSNotification) { recording = Sequencer.recording }
 
   /** initializeNotificationReceptionist */
   private func initializeNotificationReceptionist() {
-    guard notificationReceptionist == nil else { return }
+    guard receptionist == nil else { return }
     typealias Notification = Sequencer.Notification
     let queue = NSOperationQueue.mainQueue()
     let object = Sequencer.self
     let callback: (NSNotification) -> Void = {[weak self] _ in self?.recording = Sequencer.recording}
-    notificationReceptionist = NotificationReceptionist()
-    notificationReceptionist?.observe(Notification.DidTurnOnRecording, from: object, queue: queue, callback: callback)
-    notificationReceptionist?.observe(Notification.DidTurnOffRecording, from: object, queue: queue, callback: callback)
+    receptionist = NotificationReceptionist()
+    receptionist?.observe(Notification.DidTurnOnRecording, from: object, queue: queue, callback: callback)
+    receptionist?.observe(Notification.DidTurnOffRecording, from: object, queue: queue, callback: callback)
   }
 
   /**
@@ -53,7 +55,7 @@ final class TempoTrack: MIDITrackType {
   */
   func insertTempoChange(tempo: Double) {
     guard recording else { return }
-    events.append(MetaEvent(time.time, .Tempo(microseconds: Byte4(60_000_000 / tempo))))
+    eventContainer.append(MetaEvent(time.time, .Tempo(microseconds: Byte4(60_000_000 / tempo))))
   }
 
   let name = "Tempo"
@@ -64,8 +66,24 @@ final class TempoTrack: MIDITrackType {
   
   - parameter s: MIDISequence
   */
-  init(sequence s: MIDISequence) { sequence = s; recording = Sequencer.recording }
+  init(sequence s: MIDISequence) {
+    sequence = s
+    recording = Sequencer.recording
+    eventContainer.append(TempoTrack.timeSignatureEvent)
+    eventContainer.append(TempoTrack.tempoEvent)
+  }
 
+
+  static private var timeSignatureEvent: MetaEvent {
+    return MetaEvent(.TimeSignature(upper: Sequencer.timeSignature.beatsPerBar,
+                                    lower: Sequencer.timeSignature.beatUnit,
+                                    clocks: 36,
+                                    notes: 8))
+  }
+
+  static private var tempoEvent: MetaEvent {
+    return MetaEvent(.Tempo(microseconds: Byte4(60_000_000 / Sequencer.tempo)))
+  }
 
   /**
   isTempoTrackEvent:
@@ -95,7 +113,7 @@ final class TempoTrack: MIDITrackType {
     for event in events where event is MetaEvent {
       switch (event as! MetaEvent).data {
         case let .Tempo(microseconds): Sequencer.tempo = Double(60_000_000 / microseconds)
-        case let .TimeSignature(upper, lower, _, _): Sequencer.timeSignature = SimpleTimeSignature(upper: upper, lower: lower)
+        case let .TimeSignature(upper, lower, _, _): Sequencer.timeSignature = TimeSignature(upper, lower)
         default: break
       }
     }
@@ -111,20 +129,25 @@ final class TempoTrack: MIDITrackType {
   */
   init(trackChunk: MIDIFileTrackChunk, sequence s: MIDISequence) {
     sequence = s
-    events = trackChunk.events.filter { TempoTrack.isTempoTrackEvent($0) }
+    var events = trackChunk.events.filter { TempoTrack.isTempoTrackEvent($0) }
+    if !hasTimeSignatureEvent { events.insert(TempoTrack.timeSignatureEvent, atIndex: 0) }
+    if !hasTempoEvent { events.insert(TempoTrack.tempoEvent, atIndex: 1) }
+
     for event in events {
       let eventTime = event.time
       var eventBag: [MIDITrackEvent] = eventMap[eventTime] ?? []
       eventBag.append(event)
       eventMap[eventTime] = eventBag
+      eventContainer.append(event)
     }
-    for eventTime in eventMap.keys { time.registerCallback(dispatchEventsForTime, forTime: eventTime) }
     logVerbose("eventMap = \(eventMap)")
+
+    for eventTime in eventMap.keys { time.registerCallback(dispatchEventsForTime, forTime: eventTime) }
   }
 
   var description: String {
     var result = "\(self.dynamicType.self) {\n"
-    result += "  events: {\n" + ",\n".join(events.map({$0.description.indentedBy(8)})) + "\n\t}\n"
+    result += "  events: {\n" + ",\n".join(eventContainer.events.map({$0.description.indentedBy(8)})) + "\n\t}\n"
     result += "}"
     return result
   }

@@ -14,11 +14,13 @@ import CoreMIDI
 
 final class InstrumentTrack: MIDITrackType, Equatable, Hashable {
 
+  typealias Color = TrackColor
+
   var description: String {
     var result = "Track(\(name)) {\n"
     result += "\tinstrument: \(instrument.description.indentedBy(4, true))\n"
     result += "\tcolor: \(color)\n\tevents: {\n"
-    result += ",\n".join(events.map({$0.description.indentedBy(8)}))
+    result += ",\n".join(eventContainer.events.map({$0.description.indentedBy(8)}))
     result += "\n\t}\n}"
     return result
   }
@@ -33,7 +35,7 @@ final class InstrumentTrack: MIDITrackType, Equatable, Hashable {
 
   // MARK: - Constant properties
 
-  let instrument: Instrument!
+  var instrument: Instrument!
   var color: Color = .White
   
   typealias NodeIdentifier = MIDINodeEvent.Identifier
@@ -59,32 +61,52 @@ final class InstrumentTrack: MIDITrackType, Equatable, Hashable {
 
   private func recordingStatusDidChange(notification: NSNotification) { recording = Sequencer.recording }
 
-  private var notificationReceptionist: NotificationReceptionist?
+  private var receptionist: NotificationReceptionist?
 
-  private func appendEvent(var event: MIDITrackEvent) {
-    guard recording else { return }
-    event.time = time.time
-    events.append(event)
-  }
-  private(set) var events: [MIDITrackEvent] = [] {
+  var eventContainer = MIDITrackEventContainer() {
     didSet {
       MIDITrackNotification.DidUpdateEvents.post(object: self)
     }
   }
 
-  var chunk: MIDIFileTrackChunk {
-    var trackEvents = events
-    trackEvents.insert(MetaEvent(.SequenceTrackName(name: name)), atIndex: 0)
+  var instrumentNameEvent: MetaEvent? {
+    if let event = eventContainer.metaEvents.first, case .Text = event.data { return event } else { return nil }
+  }
+
+  var instrumentProgramEvent: ChannelEvent? {
+    if let event = eventContainer.channelEvents.first where event.status.type == .ProgramChange { return event }
+    else { return nil }
+  }
+
+  /** validateInstrumentEvents */
+  private func validateInstrumentEvents() {
+
     let instrumentName = "instrument:\(instrument.soundSet.url.lastPathComponent!)"
-    trackEvents.insert(MetaEvent(.Text(text: instrumentName)), atIndex: 1)
-    trackEvents.insert(ChannelEvent(.ProgramChange, instrument.channel, instrument.program), atIndex: 2)
-    trackEvents.append(MetaEvent(.EndOfTrack))
-    return MIDIFileTrackChunk(events: trackEvents)
+    if var event = instrumentNameEvent, case .Text(let t) = event.data where t != instrumentName {
+      event.data = .Text(text: instrumentName)
+      eventContainer.insert(event, atIndex: 0)
+    } else if instrumentNameEvent == nil {
+      eventContainer.insert(MetaEvent(.Text(text: instrumentName)), atIndex: 0)
+    }
+
+    if var event = instrumentProgramEvent where event.status.channel != instrument.channel || event.data1 != instrument.program {
+      event.status.channel = instrument.channel
+      event.data1 = instrument.program
+      eventContainer.insert(event, atIndex: 1)
+    } else if instrumentProgramEvent == nil {
+      eventContainer.insert(ChannelEvent(.ProgramChange, instrument.channel, instrument.program), atIndex: 1)
+    }
+  }
+
+  var chunk: MIDIFileTrackChunk {
+    validateFirstAndLastEvents()
+    validateInstrumentEvents()
+    return MIDIFileTrackChunk(eventContainer: eventContainer)
   }
 
   // MARK: - Editable properties
 
-  var name: String { return label ?? instrument.programPreset.name }
+  var name: String { return label ?? instrument.preset.name }
   var label: String?
 
   private var _mute: Bool = false
@@ -134,12 +156,9 @@ final class InstrumentTrack: MIDITrackType, Equatable, Hashable {
       return
     }
     dispatch_async(fileQueue!) {
-      [placement = node.initialSnapshot.placement, attributes = node.note] in
-
-      self.appendEvent(
-        MIDINodeEvent(.Add(identifier: identifier, placement: placement, attributes: attributes)
-        )
-      )
+      [time = time.time, placement = node.initialSnapshot.placement, note = node.note, weak self] in
+      let event = MIDINodeEvent(.Add(identifier: identifier, placement: placement, attributes: note), time)
+      self?.eventContainer.append(event)
     }
   }
 
@@ -197,7 +216,8 @@ final class InstrumentTrack: MIDITrackType, Equatable, Hashable {
     Notification.DidRemoveNode.post(object: self)
     guard recording else { return }
     dispatch_async(fileQueue!) {
-      self.appendEvent(MIDINodeEvent(.Remove(identifier: identifier)))
+      [time = time.time, weak self] in
+      self?.eventContainer.append(MIDINodeEvent(.Remove(identifier: identifier), time))
     }
   }
 
@@ -231,6 +251,8 @@ final class InstrumentTrack: MIDITrackType, Equatable, Hashable {
     guard recording else { return }
     
     dispatch_async(fileQueue!) {
+      [weak self, time = time.time] in
+
       let packets = packetList.memory
       let packetPointer = UnsafeMutablePointer<MIDIPacket>.alloc(1)
       packetPointer.initialize(packets.packet)
@@ -240,11 +262,11 @@ final class InstrumentTrack: MIDITrackType, Equatable, Hashable {
       let ((status, channel), note, velocity) = ((packet.data.0 >> 4, packet.data.0 & 0xF), packet.data.1, packet.data.2)
       let event: MIDITrackEvent?
       switch status {
-        case 9:  event = ChannelEvent(.NoteOn, channel, note, velocity)
-        case 8:  event = ChannelEvent(.NoteOff, channel, note, velocity)
+        case 9:  event = ChannelEvent(.NoteOn, channel, note, velocity, time)
+        case 8:  event = ChannelEvent(.NoteOff, channel, note, velocity, time)
         default: event = nil
       }
-      if event != nil { self.appendEvent(event!) }
+      if event != nil { self?.eventContainer.append(event!) }
     }
   }
 
@@ -276,15 +298,15 @@ final class InstrumentTrack: MIDITrackType, Equatable, Hashable {
 
   /** initializeNotificationReceptionist */
   private func initializeNotificationReceptionist() {
-    guard notificationReceptionist == nil else { return }
+    guard receptionist == nil else { return }
     typealias Notification = Sequencer.Notification
     let queue = NSOperationQueue.mainQueue()
     let object = Sequencer.self
     let callback: (NSNotification) -> Void = {[weak self] _ in self?.recording = Sequencer.recording}
-    notificationReceptionist = NotificationReceptionist()
-    notificationReceptionist?.observe(Notification.DidTurnOnRecording, from: object, queue: queue, callback: callback)
-    notificationReceptionist?.observe(Notification.DidTurnOffRecording, from: object, queue: queue, callback: callback)
-    notificationReceptionist?.observe(Notification.DidStart, from: object, queue: queue, callback: didStart)
+    receptionist = NotificationReceptionist()
+    receptionist?.observe(Notification.DidTurnOnRecording, from: object, queue: queue, callback: callback)
+    receptionist?.observe(Notification.DidTurnOffRecording, from: object, queue: queue, callback: callback)
+    receptionist?.observe(Notification.DidStart, from: object, queue: queue, callback: didStart)
   }
 
   /** initializeMIDIClient */
@@ -344,57 +366,30 @@ final class InstrumentTrack: MIDITrackType, Equatable, Hashable {
   */
   init(trackChunk: MIDIFileTrackChunk, sequence s: MIDISequence) throws {
     sequence = s
-    events = trackChunk.events
+    eventContainer = MIDITrackEventContainer(events: trackChunk.events)
+//    let events = trackChunk.events
 
     // Find the end of track event
-    guard let endOfTrackEvent = trackChunk.events.first({
-      guard let metaEvent = $0 as? MetaEvent else { return false }
-      if case .EndOfTrack = metaEvent.data { return true } else { return false }
-    }) else {
-      instrument = nil
+    guard let endOfTrackEvent = self.endOfTrackEvent else {
       throw MIDIFileError(type: .MissingEvent, reason: "Missing end of track event")
     }
-
     _trackEnd = endOfTrackEvent.time
 
-    // Find the instrument event
-    guard let instrumentMetaEvent = trackChunk.events.first({
-      guard let metaEvent = $0 as? MetaEvent else { return false }
-      switch metaEvent.data {
-        case .Text(let text) where text.hasPrefix("instrument:"): return true
-        default: return false
-      }
-    }) as? MetaEvent else {
-      instrument = nil
-      throw MIDIFileError(type: .MissingEvent, reason: "Missing instrument event")
-    }
+    if let trackNameEvent = self.trackNameEvent, case .SequenceTrackName(let n) = trackNameEvent.data { label = n }
 
-    guard case var .Text(instrumentName) = instrumentMetaEvent.data else {
-      instrument = nil
+    // Find the instrument event
+    guard let instrumentNameEvent = self.instrumentNameEvent, case .Text(var instr) = instrumentNameEvent.data else {
       throw MIDIFileError(type: .FileStructurallyUnsound, reason: "Instrument event must be a text event")
     }
 
-    instrumentName = instrumentName[instrumentName.startIndex.advancedBy(11)..<]
+    instr = instr[instr.startIndex.advancedBy(11)..<]
 
-    guard let fileURL = NSBundle.mainBundle().URLForResource(instrumentName, withExtension: nil) else {
-      instrument = nil
-      throw Error.InvalidSoundSetURL
-    }
+    guard let url = NSBundle.mainBundle().URLForResource(instr, withExtension: nil) else { throw Error.InvalidSoundSetURL }
 
-    guard let soundSet = try? SoundSet(url: fileURL) else {
-      instrument = nil
-      throw Error.SoundSetInitializeFailure
-    }
+    guard let soundSet = try? SoundSet(url: url) else { throw Error.SoundSetInitializeFailure }
 
     // Find the program change event
-    guard let programEvent = trackChunk.events.first({
-      guard let channelEvent = $0 as? ChannelEvent else { return false }
-      switch channelEvent.status.type {
-        case .ProgramChange: return true
-        default: return false
-      }
-    }) as? ChannelEvent else {
-      instrument = nil
+    guard let programEvent = self.instrumentProgramEvent else {
       throw MIDIFileError(type: .MissingEvent, reason: "Missing program change event")
     }
 
@@ -402,7 +397,6 @@ final class InstrumentTrack: MIDITrackType, Equatable, Hashable {
     let channel = programEvent.status.channel
 
     guard let instrumentMaybe = try? Instrument(soundSet: soundSet, program: program, channel: channel) else {
-      instrument = nil
       throw Error.InstrumentInitializeFailure
     }
 
@@ -410,112 +404,33 @@ final class InstrumentTrack: MIDITrackType, Equatable, Hashable {
     fileQueue = serialQueueWithLabel("BUS \(instrument.bus)", qualityOfService: QOS_CLASS_BACKGROUND)
     recording = Sequencer.recording
 
-    for event in events {
+    for event in eventContainer.events {
       let eventTime = event.time
       var eventBag: [MIDITrackEvent] = eventMap[eventTime] ?? []
       eventBag.append(event)
       eventMap[eventTime] = eventBag
     }
+    
     for eventTime in eventMap.keys { time.registerCallback(dispatchEventsForTime, forTime: eventTime) }
 
     initializeNotificationReceptionist()
 
     try initializeMIDIClient()
-    
-    logVerbose("eventMap = \(eventMap)")
   }
 
-  // MARK: - Enumeration for specifying the color attached to a `MIDITrackType`
-  enum Color: UInt32, EnumerableType, CustomStringConvertible {
-    case MuddyWaters        = 0xad6140
-    case SteelBlue          = 0x386096
-    case Celery             = 0x8ea83d
-    case Chestnut           = 0xa93a43
-    case CrayonPurple       = 0x6b3096
-    case Verdigris          = 0x3b9396
-    case Twine              = 0xae7c40
-    case Tapestry           = 0x99327a
-    case VegasGold          = 0xafae40
-    case RichBlue           = 0x3d3296
-    case FruitSalad         = 0x459c38
-    case Husk               = 0xae9440
-    case Mahogany           = 0xb22d04
-    case MediumElectricBlue = 0x043489
-    case AppleGreen         = 0x7ca604
-    case VenetianRed        = 0xab000b
-    case Indigo             = 0x470089
-    case EasternBlue        = 0x108389
-    case Indochine          = 0xb35a04
-    case Flirt              = 0x8e005c
-    case Ultramarine        = 0x090089
-    case LaRioja            = 0xb5b106
-    case ForestGreen        = 0x189002
-    case Pizza              = 0xb48405
-    case White              = 0xffffff
-    case Portica            = 0xf7ea64
-    case MonteCarlo         = 0x7ac2a5
-    case FlamePea           = 0xda5d3a
-    case Crimson            = 0xd6223e
-    case HanPurple          = 0x361aee
-    case MangoTango         = 0xf88242
-    case Viking             = 0x6bcbe1
-    case Yellow             = 0xfde97e
-    case Conifer            = 0x9edc58
-    case Apache             = 0xce9f58
-
-
-    var value: UIColor { return UIColor(RGBHex: rawValue) }
-    var description: String {
-      switch self {
-        case .MuddyWaters:        return "MuddyWaters"
-        case .SteelBlue:          return "SteelBlue"
-        case .Celery:             return "Celery"
-        case .Chestnut:           return "Chestnut"
-        case .CrayonPurple:       return "CrayonPurple"
-        case .Verdigris:          return "Verdigris"
-        case .Twine:              return "Twine"
-        case .Tapestry:           return "Tapestry"
-        case .VegasGold:          return "VegasGold"
-        case .RichBlue:           return "RichBlue"
-        case .FruitSalad:         return "FruitSalad"
-        case .Husk:               return "Husk"
-        case .Mahogany:           return "Mahogany"
-        case .MediumElectricBlue: return "MediumElectricBlue"
-        case .AppleGreen:         return "AppleGreen"
-        case .VenetianRed:        return "VenetianRed"
-        case .Indigo:             return "Indigo"
-        case .EasternBlue:        return "EasternBlue"
-        case .Indochine:          return "Indochine"
-        case .Flirt:              return "Flirt"
-        case .Ultramarine:        return "Ultramarine"
-        case .LaRioja:            return "LaRioja"
-        case .ForestGreen:        return "ForestGreen"
-        case .Pizza:              return "Pizza"
-        case .White:              return "White"
-        case .Portica:            return "Portica"
-        case .MonteCarlo:         return "MonteCarlo"
-        case .FlamePea:           return "FlamePea"
-        case .Crimson:            return "Crimson"
-        case .HanPurple:          return "HanPurple"
-        case .MangoTango:         return "MangoTango"
-        case .Viking:             return "Viking"
-        case .Yellow:             return "Yellow"
-        case .Conifer:            return "Conifer"
-        case .Apache:             return "Apache"
-      }
-    }
-
-    /// `White` case is left out so that it is harder to assign the color used by `MasterTrack`
-    static let allCases: [Color] = [
-      .MuddyWaters, .SteelBlue, .Celery, .Chestnut, .CrayonPurple, .Verdigris, .Twine, .Tapestry, .VegasGold, 
-      .RichBlue, .FruitSalad, .Husk, .Mahogany, .MediumElectricBlue, .AppleGreen, .VenetianRed, .Indigo, 
-      .EasternBlue, .Indochine, .Flirt, .Ultramarine, .LaRioja, .ForestGreen, .Pizza, .White, .Portica, 
-      .MonteCarlo, .FlamePea, .Crimson, .HanPurple, .MangoTango, .Viking, .Yellow, .Conifer, .Apache
-    ]
-  }
 
 }
 
 
-func ==(lhs: InstrumentTrack, rhs: InstrumentTrack) -> Bool { return ObjectIdentifier(lhs) == ObjectIdentifier(rhs) }
+/**
+Equatable conformance
+
+- parameter lhs: InstrumentTrack
+- parameter rhs: InstrumentTrack
+
+- returns: Bool
+*/
+func ==(lhs: InstrumentTrack, rhs: InstrumentTrack) -> Bool {
+  return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
+}
 

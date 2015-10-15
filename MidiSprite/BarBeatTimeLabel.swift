@@ -108,7 +108,7 @@ import struct AudioToolbox.CABarBeatTime
   }
   private var barBeatTimeCallbackKey: String { return String(ObjectIdentifier(self).uintValue) }
 
-  private var notificationReceptionist: NotificationReceptionist!
+  private var receptionist: NotificationReceptionist!
 
   private var characterSize: CGSize {
     return "0123456789:.".characters.reduce(.zero) {[attributes = [NSFontAttributeName: font]] in
@@ -175,9 +175,9 @@ import struct AudioToolbox.CABarBeatTime
       let queue = NSOperationQueue.mainQueue()
       let object = Sequencer.self
       typealias Notification = Sequencer.Notification
-      notificationReceptionist = NotificationReceptionist()
-      notificationReceptionist?.observe(Notification.DidJog, from: object, queue: queue, callback: didJog)
-      notificationReceptionist?.observe(Notification.DidReset, from: object, queue: queue, callback: didReset)
+      receptionist = NotificationReceptionist()
+      receptionist?.observe(Notification.DidJog, from: object, queue: queue, callback: didJog)
+      receptionist?.observe(Notification.DidReset, from: object, queue: queue, callback: didReset)
     #endif
 
   }

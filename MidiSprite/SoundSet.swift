@@ -12,6 +12,7 @@ import AudioUnit.AudioUnitProperties
 
 /** Wrapper for a sound font file */
 struct SoundSet: Hashable, CustomStringConvertible, CustomDebugStringConvertible {
+  
   let url: NSURL
   var description: String {
     var result =  "SoundSet {\n"
@@ -23,11 +24,10 @@ struct SoundSet: Hashable, CustomStringConvertible, CustomDebugStringConvertible
   var debugDescription: String {
     var result =  "SoundSet {\n"
     result += "  name: \((url.lastPathComponent! as NSString).stringByDeletingPathExtension)\n"
-    result += "  sf2File: \(sf2File.description.indentedBy(4, true))\n"
-    result += "}"
+    result += "  presets: {\n" + ",\n".join(presets.map({$0.description})).indentedBy(4) + "\t\n}"
+    result += "\n}"
     return result
   }
-  let sf2File: SF2File
   var hashValue: Int { return url.hashValue }
   var displayName: String { return (url.lastPathComponent! as NSString).stringByDeletingPathExtension }
   var index: Int {
@@ -35,34 +35,19 @@ struct SoundSet: Hashable, CustomStringConvertible, CustomDebugStringConvertible
     return idx
   }
 
-  typealias Preset = SF2File.Preset
+  typealias Preset  = SF2File.Preset
+  typealias Bank    = Byte
+  typealias Program = Byte
+
   let presets: [Preset]
 
   subscript(idx: Int) -> Preset { return presets[idx] }
 
-  subscript(program: Byte) -> Preset {
-    if presets.count > Int(program) {
-      var idx = Int(program)
-      switch (presets[idx].program, program) {
-      case let (p1, p2) where p1 == p2: return presets[idx]
-      case let (p1, p2) where p1 < p2:
-        while idx + 1 < presets.count {
-          if presets[++idx].program == program { return presets[idx] }
-        }
-        fatalError("invalid program: '\(program)'")
-      case let (p1, p2) where p1 > p2:
-        while idx > 0 {
-          if presets[--idx].program == program { return presets[idx] }
-        }
-        fatalError("invalid program: '\(program)'")
-      default:
-        fatalError("invalid program: '\(program)'")
-      }
-    } else if let idx = presets.indexOf({$0.program == program}) {
-      return presets[idx]
-    } else {
-      fatalError("invalid program: '\(program)'")
+  subscript(program: Program, bank: Bank) -> Preset {
+    guard let idx = presets.indexOf({$0.program == program && $0.bank == bank}) else {
+      fatalError("invalid program-bank combination: \(program)-\(bank)")
     }
+    return self[idx]
   }
 
   /**
@@ -73,9 +58,8 @@ struct SoundSet: Hashable, CustomStringConvertible, CustomDebugStringConvertible
   init(url u: NSURL) throws {
     var error: NSError?
     guard u.checkResourceIsReachableAndReturnError(&error) else { throw error! }
-    sf2File = try SF2File(file: u)
+    presets = try SF2File(file: u).presets.sort()
     url = u
-    presets = sf2File.presets.sort()
   }
 
 }

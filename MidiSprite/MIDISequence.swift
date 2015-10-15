@@ -12,8 +12,6 @@ import struct AudioToolbox.CABarBeatTime
 
 final class MIDISequence {
 
-  static let ExtendedFileAttributeName = "com.MoondeerStudios.MIDISprite.MIDISequence"
-
   /** An enumeration to wrap up notifications */
   enum Notification: String, NotificationType, NotificationNameType {
     case DidAddTrack, DidRemoveTrack, DidChangeTrack, SoloCountDidChange
@@ -106,9 +104,13 @@ final class MIDISequence {
 
   /** Conversion to and from the `MIDIFile` type  */
   var file: MIDIFile {
-    get { return MIDIFile(format: .One, division: 480, tracks: tracks) }
+    get {
+      let file = MIDIFile(format: .One, division: 480, tracks: tracks)
+      logDebug("file: \(file)")
+      return file
+    }
     set {
-      logVerbose("file: \(newValue)")
+      logDebug("file: \(newValue)")
       var trackChunks = ArraySlice(newValue.tracks)
       if let trackChunk = trackChunks.first
         where trackChunk.events.count == trackChunk.events.filter({ TempoTrack.isTempoTrackEvent($0) }).count
@@ -119,6 +121,7 @@ final class MIDISequence {
 
       instrumentTracks = trackChunks.flatMap({ try? InstrumentTrack(trackChunk: $0, sequence: self) })
       zip(InstrumentTrack.Color.allCases, instrumentTracks).forEach { $1.color = $0 }
+      currentTrack = instrumentTracks.first
     }
   }
 
@@ -167,25 +170,6 @@ final class MIDISequence {
     guard Sequencer.recording else { return }
     tempoTrack.insertTempoChange(tempo)
   }
-
-  /**
-  writeToFile:
-
-  - parameter file: NSURL
-  */
-//  func writeToFile(file: NSURL, overwrite: Bool = false) throws {
-//    let midiFile = self.file
-//    dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)) {
-//      logVerbose(midiFile.description)
-//      let bytes = midiFile.bytes
-//      let data = NSData(bytes: bytes, length: bytes.count)
-//      do {
-//        try data.writeToURL(file, options: overwrite ? [.DataWritingAtomic] : [.DataWritingWithoutOverwriting])
-//      } catch {
-//        logError(error)
-//      }
-//    }
-//  }
 
 }
 

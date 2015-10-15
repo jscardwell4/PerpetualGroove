@@ -205,7 +205,7 @@ final class MIDINode: SKSpriteNode {
     currentSnapshot = snapshot
   }
 
-  private var notificationReceptionist: NotificationReceptionist!
+  private var receptionist: NotificationReceptionist!
 
   /** mark */
   func mark() {
@@ -237,12 +237,12 @@ final class MIDINode: SKSpriteNode {
 
     let queue = NSOperationQueue.mainQueue()
     typealias Notification = Sequencer.Notification
-    notificationReceptionist = NotificationReceptionist()
-    notificationReceptionist.observe(Notification.DidBeginJogging, from: Sequencer.self, queue: queue, callback: didBeginJogging)
-    notificationReceptionist.observe(Notification.DidJog, from: Sequencer.self, queue: queue, callback: didJog)
-    notificationReceptionist.observe(Notification.DidEndJogging, from: Sequencer.self, queue: queue, callback: didEndJogging)
-    notificationReceptionist.observe(Notification.DidStart, from: Sequencer.self, queue: queue, callback: didStart)
-    notificationReceptionist.observe(Notification.DidPause, from: Sequencer.self, queue: queue, callback: didPause)
+    receptionist = NotificationReceptionist()
+    receptionist.observe(Notification.DidBeginJogging, from: Sequencer.self, queue: queue, callback: didBeginJogging)
+    receptionist.observe(Notification.DidJog, from: Sequencer.self, queue: queue, callback: didJog)
+    receptionist.observe(Notification.DidEndJogging, from: Sequencer.self, queue: queue, callback: didEndJogging)
+    receptionist.observe(Notification.DidStart, from: Sequencer.self, queue: queue, callback: didStart)
+    receptionist.observe(Notification.DidPause, from: Sequencer.self, queue: queue, callback: didPause)
 
     _sourceID = Identifier(ObjectIdentifier(self).uintValue)
 

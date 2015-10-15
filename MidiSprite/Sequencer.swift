@@ -22,12 +22,14 @@ final class Sequencer {
   */
   static func initialize() {
     guard !initialized else { return }
-    let _ = notificationReceptionist
+    let _ = receptionist
     guard let urls = NSBundle.mainBundle().URLsForResourcesWithExtension("sf2", subdirectory: nil) else { return }
     do {
       try urls.forEach { soundSets.append(try SoundSet(url: $0)) }
       guard soundSets.count > 0 else { fatalError("failed to create any sound sets from bundled sf2 files") }
-      auditionInstrument = try Instrument(soundSet: soundSets[0], program: UInt8(soundSets[0].presets[0].program), channel: 0)
+      let soundSet = soundSets[0]
+      let program = UInt8(soundSet.presets[0].program)
+      auditionInstrument = try Instrument(soundSet: soundSet, program: program, channel: 0)
       Notification.DidInitializeSoundSets.post()
     } catch {
       logError(error)
@@ -68,30 +70,18 @@ final class Sequencer {
     case NotPermitted
   }
 
-
-  /**
-  didChangeCurrentDocument:
-
-  - parameter notification: NSNotification
-  */
-  private static func didChangeCurrentDocument(notification: NSNotification) {
-    logVerbose()
-    sequence = MIDIDocumentManager.currentDocument?.sequence
-  }
-
-  private static var notificationReceptionist: NotificationReceptionist = {
-    let queue = NSOperationQueue.mainQueue()
-    typealias Callback = NotificationReceptionist.Callback
-    let changeCurrentDocument: Callback = (MIDIDocumentManager.self, queue, Sequencer.didChangeCurrentDocument)
-    return NotificationReceptionist(callbacks:[
-      MIDIDocumentManager.Notification.DidChangeDocument.rawValue : changeCurrentDocument
-      ])
+  private static var receptionist: NotificationReceptionist = {
+    let receptionist = NotificationReceptionist()
+    receptionist.observe(MIDIDocumentManager.Notification.DidChangeDocument,
+                    from: MIDIDocumentManager.self,
+                   queue: NSOperationQueue.mainQueue(),
+                callback: {_ in Sequencer.sequence = MIDIDocumentManager.currentDocument?.sequence})
+    return receptionist
     }()
 
   // MARK: - Sequence
 
   static private(set) var sequence: MIDISequence? { didSet { if oldValue != nil { reset() } } }
-
 
   // MARK: - Time
 
@@ -122,7 +112,7 @@ final class Sequencer {
   }
 
   // ???: Don't we need to do anything about changes to timeSignature?
-  static var timeSignature: SimpleTimeSignature = .FourFour
+  static var timeSignature: TimeSignature = .FourFour
 
   // MARK: - Tracks
 

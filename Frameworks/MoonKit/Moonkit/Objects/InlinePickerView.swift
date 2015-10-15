@@ -142,10 +142,10 @@ import UIKit
       collectionView.selectItemAtIndexPath(NSIndexPath(forItem: selection, inSection: 0),
                                   animated: false,
                             scrollPosition: .None)
-      logVerbose("selecting cell for item \(selection) where offset = \(offset)")
+      logVerbose("<\(ObjectIdentifier(self).uintValue)> selecting cell for item \(selection) where offset = \(offset)")
       collectionView.setContentOffset(offset, animated: animated)
     } else {
-      logVerbose("could not get an offset for item \(item), invalidating layout …")
+      logVerbose("<\(ObjectIdentifier(self).uintValue)> could not get an offset for item \(item), invalidating layout …")
       layout.invalidateLayout()
     }
   }
@@ -358,7 +358,7 @@ extension InlinePickerView: UIScrollViewDelegate {
   */
   public func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
     guard let item = collectionView.indexPathsForSelectedItems()?.first?.item else {
-      logVerbose("failed to get index path for selected cell")
+      logVerbose("<\(ObjectIdentifier(self).uintValue)> failed to get index path for selected cell")
       return
     }
     // invoke selection handler
@@ -378,14 +378,14 @@ extension InlinePickerView: UIScrollViewDelegate {
   {
     let offset = targetContentOffset.memory
     guard let item = (collectionView.collectionViewLayout as! InlinePickerViewLayout).indexOfItemAtOffset(offset) else {
-      logVerbose("failed to get index path for cell at point \(offset)")
+      logVerbose("<\(ObjectIdentifier(self).uintValue)> failed to get index path for cell at point \(offset)")
       return
     }
 
-    guard item != selection else { logVerbose("item already selected"); return }
+    guard item != selection else { logVerbose("<\(ObjectIdentifier(self).uintValue)> item already selected"); return }
 
     // update selection
-    logVerbose("selecting cell for item \(item) where offset = \(offset)")
+    logVerbose("<\(ObjectIdentifier(self).uintValue)> selecting cell for item \(item) where offset = \(offset)")
 
     if selection > -1 { collectionView.deselectItemAtIndexPath(NSIndexPath(forItem: selection, inSection: 0), animated: true) }
     selection = item

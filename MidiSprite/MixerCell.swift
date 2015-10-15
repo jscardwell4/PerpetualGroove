@@ -73,7 +73,6 @@ final class TrackCell: MixerCell {
   override var selected: Bool {
     get { return super.selected }
     set {
-      logDebug("track.index: \(track!.index); newValue = \(newValue)")
       trackColor.selected = newValue
       super.selected = newValue
     }
@@ -156,11 +155,11 @@ final class TrackCell: MixerCell {
       trackColor.tintColor = track?.color.value
       muteButton.selected = track?.mute ?? false
       soloButton.selected = track?.solo ?? false
-      notificationReceptionist = receptionistForTrack(track)
+      receptionist = receptionistForTrack(track)
     }
   }
 
-  private var notificationReceptionist: NotificationReceptionist?
+  private var receptionist: NotificationReceptionist?
 
   /**
   muteStatusChanged:
@@ -212,7 +211,7 @@ final class TrackCell: MixerCell {
 
   override func prepareForReuse() {
     super.prepareForReuse()
-    notificationReceptionist = nil
+    receptionist = nil
     track = nil
   }
 

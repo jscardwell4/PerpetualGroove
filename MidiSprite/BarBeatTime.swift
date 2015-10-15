@@ -153,7 +153,7 @@ extension CABarBeatTime {
 
 }
 
-enum SimpleTimeSignature {
+enum TimeSignature {
   case FourFour
   case ThreeFour
   case TwoFour
@@ -175,7 +175,7 @@ enum SimpleTimeSignature {
   - parameter upper: UInt8
   - parameter lower: UInt8
   */
-  init(upper: UInt8, lower: UInt8) {
+  init(_ upper: UInt8, _ lower: UInt8) {
     switch (upper, lower) {
       case (4, 4): self = .FourFour
       case (3, 4): self = .ThreeFour

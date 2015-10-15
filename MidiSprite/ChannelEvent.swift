@@ -21,14 +21,23 @@ struct ChannelEvent: MIDITrackEvent {
     case ProgramChange         = 0xC
     case ChannelPressure       = 0xD
     case PitchBendChange       = 0xE
+
+    /**
+    init:
+
+    - parameter value: Byte
+    */
     init(integerLiteral value: Byte) { self.init(value) }
+
+    /**
+    init:
+
+    - parameter v: Byte
+    */
     init(_ v: Byte) { self = EventType(rawValue: ClosedInterval<Byte>(0x8, 0xE).clampValue(v))! }
-    var byteCount: Int {
-      switch self {
-        case .ControlChange, .ProgramChange, .ChannelPressure: return 2
-        default: return 3
-      }
-    }
+
+    var byteCount: Int { switch self { case .ControlChange, .ProgramChange, .ChannelPressure: return 2; default: return 3 } }
+
     var description: String {
       switch self {
         case .NoteOff:               return "NoteOff (0x8)"
@@ -43,19 +52,39 @@ struct ChannelEvent: MIDITrackEvent {
   }
 
   struct Status: IntegerLiteralConvertible {
+    var type: EventType
+    var channel: Byte
+
     var value: Byte { return (type.rawValue << 4) | channel }
-    let type: EventType
-    let channel: Byte
+
+    /**
+    init:
+
+    - parameter value: Byte
+    */
     init(integerLiteral value: Byte) { self.init(value) }
+
+    /**
+    init:
+
+    - parameter v: Byte
+    */
     init(_ v: Byte) { self.init(EventType(v >> 4), v & 0xF) }
+
+    /**
+    init:c:
+
+    - parameter t: EventType
+    - parameter c: Byte
+    */
     init(_ t: EventType, _ c: Byte) { type = t; channel = (0 ... 15).clampValue(c) }
   }
 
   var time: CABarBeatTime = .start
   var delta: VariableLengthQuantity?
-  let status: Status
-  let data1: Byte
-  let data2: Byte?
+  var status: Status
+  var data1: Byte
+  var data2: Byte?
 
   var bytes: [Byte] { return [status.value, data1] + (data2 != nil ? [data2!] : []) }
 
@@ -65,8 +94,8 @@ struct ChannelEvent: MIDITrackEvent {
   - parameter delta: VariableLengthQuantity
   - parameter bytes: C
   */
-  init<C:CollectionType where C.Generator.Element == Byte,
-    C.Index.Distance == Int>(delta: VariableLengthQuantity, bytes: C) throws
+  init<C:CollectionType
+    where C.Generator.Element == Byte, C.Index.Distance == Int>(delta: VariableLengthQuantity, bytes: C) throws
   {
     self.delta = delta
     guard let t = EventType(rawValue: bytes[bytes.startIndex] >> 4) else {
@@ -77,20 +106,22 @@ struct ChannelEvent: MIDITrackEvent {
     }
     status = Status(bytes[bytes.startIndex])
 
-    data1 = bytes[bytes.startIndex.successor()]
-    data2 =  t.byteCount == 3 ? bytes[bytes.startIndex.successor().successor()] : nil
+    data1 = bytes[bytes.startIndex + 1]
+    data2 =  t.byteCount == 3 ? bytes[bytes.startIndex + 2] : nil
   }
 
   /**
-  init:channel:d1:d2:
+  init:channel:d1:d2:t:
 
   - parameter type: Type
   - parameter channel: Byte
   - parameter d1: Byte
   - parameter d2: Byte? = nil
+  - parameter t: CABarBeatTime? = nil
   */
-  init(_ type: EventType, _ channel: Byte, _ d1: Byte, _ d2: Byte? = nil) {
+  init(_ type: EventType, _ channel: Byte, _ d1: Byte, _ d2: Byte? = nil, _ t: CABarBeatTime? = nil) {
     status = Status(type, channel); data1 = d1; data2 = d2
+    if let t = t { time = t }
   }
 
   /** Computed property for the equivalent `MIDIChannelMessage` struct consumed by the MusicPlayer API */

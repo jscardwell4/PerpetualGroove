@@ -131,7 +131,7 @@ final class SettingsManager {
     set { NSUserDefaults.standardUserDefaults().setBool(newValue, forKey: Setting.MakeNewTrackCurrent.key) }
   }
 
-  private static let notificationReceptionist: NotificationReceptionist = {
+  private static let receptionist: NotificationReceptionist = {
     let receptionist = NotificationReceptionist()
     receptionist.observe(NSUserDefaultsDidChangeNotification,
                     from: NSUserDefaults.standardUserDefaults(),
@@ -154,7 +154,7 @@ final class SettingsManager {
 
     Setting.allCases.forEach { SettingsManager.settingsCache[$0] = $0.currentValue }
 
-    let _ = notificationReceptionist
+    let _ = receptionist
     initialized = true
   }
   

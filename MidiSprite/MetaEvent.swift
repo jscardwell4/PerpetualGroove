@@ -13,51 +13,47 @@ import struct AudioToolbox.MIDIMetaEvent
 
 /** Struct to hold data for a meta event where event = \<delta time\> **FF** \<meta type\> \<length of meta\> \<meta\> */
 struct MetaEvent: MIDITrackEvent {
+
   var time: CABarBeatTime = .start
-  let data: Data
+  var data: Data
   var delta: VariableLengthQuantity?
   var bytes: [Byte] { return [0xFF, data.type] + data.length.bytes + data.bytes }
 
   /**
-  Initializer that taks the event's data
+  Initializer that takes the event's data and, optionally, the event's time
 
   - parameter d: Data
+  - paramter t: CABarBeatTime? = nil
   */
-  init(_ d: Data) { data = d }
+  init(_ d: Data, _ t: CABarBeatTime? = nil) { data = d; if let t = t { time = t } }
 
   /**
   initWithDelta:bytes:
 
-  - parameter delta: VariableLengthQuantity
+  - parameter d: VariableLengthQuantity
   - parameter bytes: C
   */
-  init<C:CollectionType where C.Generator.Element == Byte,
-    C.Index.Distance == Int, C.SubSequence.Generator.Element == Byte,
-    C.SubSequence:CollectionType, C.SubSequence.Index.Distance == Int,
-    C.SubSequence.SubSequence == C.SubSequence>(delta: VariableLengthQuantity, bytes: C) throws
+  init<C:CollectionType
+    where C.Generator.Element == Byte,
+          C.Index.Distance == Int,
+          C.SubSequence.Generator.Element == Byte,
+          C.SubSequence:CollectionType,
+          C.SubSequence.Index.Distance == Int,
+          C.SubSequence.SubSequence == C.SubSequence>(delta d: VariableLengthQuantity, bytes: C) throws
   {
-    self.delta = delta
-    guard bytes.count >= 3 else {
-      throw MIDIFileError(type: .InvalidLength, reason: "Not enough bytes in event")
-    }
-    guard bytes[bytes.startIndex] == 0xFF else {
-      throw MIDIFileError(type: .InvalidHeader, reason: "Meta events must have a first byte equal to 0xFF")
-    }
-    var currentIndex = bytes.startIndex.advancedBy(1)
-    let typeByte = bytes[currentIndex]
-    currentIndex.increment()
+    delta = d
+    guard bytes.count >= 3 else { throw MIDIFileError(type: .InvalidLength, reason: "Not enough bytes in event") }
+    guard bytes[bytes.startIndex] == 0xFF else { throw MIDIFileError(type: .InvalidHeader, reason: "First byte must be 0xFF") }
+    var currentIndex = bytes.startIndex + 1
+    let typeByte = bytes[currentIndex++]
     var i = currentIndex
-    while bytes[i] & 0x80 != 0 { i.increment() }
-    let dataLength = VariableLengthQuantity(bytes: bytes[currentIndex ... i])
-    i.increment()
+    while bytes[i] & 0x80 != 0 { i++ }
+    let dataLength = VariableLengthQuantity(bytes: bytes[currentIndex ... i++])
     currentIndex = i
-    i.advanceBy(dataLength.intValue)
-    guard bytes.endIndex == i else {
-      throw MIDIFileError(type: .InvalidLength, reason: "Length specified by event for the event's data does not match actual")
-    }
+    i += dataLength.intValue
+    guard bytes.endIndex == i else { throw MIDIFileError(type: .InvalidLength, reason: "Specified length does not match actual") }
 
-    let dataBytes = bytes[currentIndex ..< i]
-    data = try Data(type: typeByte, data: dataBytes)
+    data = try Data(type: typeByte, data: bytes[currentIndex ..< i])
   }
   
   /**
@@ -70,11 +66,7 @@ struct MetaEvent: MIDITrackEvent {
 
   var description: String {
     var result = "\(self.dynamicType.self) {\n\t"
-    result += "\n\t".join(
-      "data: \(data)",
-      "time: \(time)",
-      "delta: " + (delta?.description ?? "nil")
-    )
+    result += "\n\t".join("data: \(data)", "time: \(time)", "delta: " + (delta?.description ?? "nil"))
     result += "\n}"
     return result
   }
@@ -158,6 +150,11 @@ struct MetaEvent: MIDITrackEvent {
 
     var length: VariableLengthQuantity { return VariableLengthQuantity(bytes.count) }
 
+    /**
+    withEventPointer:
+
+    - parameter block: (UnsafePointer<MIDIMetaEvent>) throws -> Void
+    */
     func withEventPointer(@noescape block: (UnsafePointer<MIDIMetaEvent>) throws -> Void) rethrows {
       // Get the bytes to put into the struct
       var bytes = self.bytes
