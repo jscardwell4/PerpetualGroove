@@ -119,7 +119,7 @@ final class TempoTrack: MIDITrackType {
     }
   }
 
-  private(set) weak var sequence: MIDISequence?
+  private(set) unowned var sequence: MIDISequence
 
   /**
   initWithTrackChunk:

@@ -23,12 +23,6 @@ import UIKit
 
   public var actions: [Action] = []
 
-  /** refresh */
-  public override func refresh() {
-    super.refresh()
-    setNeedsDisplay()
-  }
-
   /**
   sendActionsForControlEvents:
 

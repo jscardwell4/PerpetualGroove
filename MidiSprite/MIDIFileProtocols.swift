@@ -34,7 +34,7 @@ protocol MIDITrackType: class, CustomStringConvertible {
   var name: String { get }
   var eventContainer: MIDITrackEventContainer { get set }
   var trackEnd: CABarBeatTime { get }
-  weak var sequence: MIDISequence? { get }
+  unowned var sequence: MIDISequence { get }
   init(trackChunk: MIDIFileTrackChunk, sequence s: MIDISequence) throws
 }
 

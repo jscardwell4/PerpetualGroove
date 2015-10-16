@@ -14,7 +14,57 @@ import CoreMIDI
 
 final class InstrumentTrack: MIDITrackType {
 
-  // MARK: - Listening for Sequencer notifications
+
+  struct State: OptionSetType, CustomStringConvertible {
+    let rawValue: Int
+    static let Recording     = State(rawValue: 0b0001)
+    static let Soloing       = State(rawValue: 0b0010)
+    static let InclusiveMute = State(rawValue: 0b0100)
+    static let ExclusiveMute = State(rawValue: 0b1000)
+
+    var description: String {
+      var result = "InstrumentTrack.State { "
+      var flagStrings: [String] = []
+      if self ∋ .Recording     { flagStrings.append("Recording")     }
+      if self ∋ .Soloing       { flagStrings.append("Soloing")       }
+      if self ∋ .InclusiveMute { flagStrings.append("InclusiveMute") }
+      if self ∋ .ExclusiveMute { flagStrings.append("ExclusiveMute") }
+      result += ", ".join(flagStrings)
+      result += " }"
+      return result
+    }
+  }
+
+  /// Holds the current state of the node
+  private var state: State = [] {
+    didSet {
+      guard state != oldValue else { return }
+
+      switch state ⊻ oldValue {
+
+        case [.Soloing]:
+          print("case [.Soloing]:")
+          Notification.SoloStatusDidChange.post(object: self, userInfo: [.OldValue: !solo, .NewValue: solo])
+          if state ~∩ [.ExclusiveMute, .InclusiveMute] {
+            Notification.MuteStatusDidChange.post(object: self, userInfo: [.OldValue: !mute, .NewValue: mute])
+          }
+
+        case [.ExclusiveMute], [.InclusiveMute]:
+          print("case [.ExclusiveMute], [.InclusiveMute]:")
+          let oldValue = oldValue ~∩ [.ExclusiveMute, .InclusiveMute] && oldValue ∌ .Soloing
+          let newValue = state    ~∩ [.ExclusiveMute, .InclusiveMute] && state    ∌ .Soloing
+          guard oldValue != newValue else { break }
+          if newValue { _volume = volume; volume = 0 } else { volume = _volume }
+          Notification.MuteStatusDidChange.post(object: self, userInfo: [.OldValue: oldValue, .NewValue: newValue])
+
+        default:
+          print("default:")
+      }
+
+    }
+  }
+
+  // MARK: - Listening for Sequencer and sequence notifications
 
   private var receptionist: NotificationReceptionist?
 
@@ -24,18 +74,45 @@ final class InstrumentTrack: MIDITrackType {
 
     let queue = NSOperationQueue.mainQueue()
     let object = Sequencer.self
-    let recordingCallback: (NSNotification) -> Void = {[weak self] _ in self?.recording = Sequencer.recording}
-    let didResetCallback:  (NSNotification) -> Void = {[weak self] _ in self?.resetNodes()}
+
+    typealias Callback = (NSNotification) -> Void
+
+    let recordingCallback:        Callback = {[weak self] _ in self?.recording = Sequencer.recording}
+    let didResetCallback:         Callback = {[weak self] _ in self?.resetNodes()}
+    let soloCountChangedCallback: Callback = {
+      [weak self] in
+      guard let state = self?.state,
+                newCount = ($0.userInfo?[MIDISequence.Notification.Key.NewCount.rawValue] as? NSNumber)?.integerValue else {
+        return
+      }
+           if state !~∩ [.Soloing, .InclusiveMute] && newCount > 0         { self?.state ∪= .InclusiveMute }
+      else if state ∌ .Soloing && state ∋ .InclusiveMute && newCount == 0 { self?.state ⊻= .InclusiveMute }
+    }
 
     receptionist = NotificationReceptionist()
-    receptionist?.observe(Sequencer.Notification.DidTurnOnRecording,  from: object, queue: queue, callback: recordingCallback)
-    receptionist?.observe(Sequencer.Notification.DidTurnOffRecording, from: object, queue: queue, callback: recordingCallback)
-    receptionist?.observe(Sequencer.Notification.DidReset,            from: object, queue: queue, callback: didResetCallback)
+    receptionist?.observe(Sequencer.Notification.DidTurnOnRecording,
+                     from: object,
+                    queue: queue,
+                 callback: recordingCallback)
+    receptionist?.observe(Sequencer.Notification.DidTurnOffRecording,
+                     from: object,
+                    queue: queue,
+                 callback: recordingCallback)
+    receptionist?.observe(Sequencer.Notification.DidReset,
+                     from: object,
+                    queue: queue,
+                 callback: didResetCallback)
+    receptionist?.observe(MIDISequence.Notification.SoloCountDidChange,
+                     from: sequence,
+                    queue: queue,
+                 callback: soloCountChangedCallback)
   }
 
   // MARK: - MIDI file related properties and methods
 
-  var eventContainer = MIDITrackEventContainer() { didSet { MIDITrackNotification.DidUpdateEvents.post(object: self) } }
+  var eventContainer = MIDITrackEventContainer() {
+    didSet { MIDITrackNotification.DidUpdateEvents.post(object: self) }
+  }
 
   var instrumentNameEvent: MetaEvent? {
     if let event = eventContainer.metaEvents.first, case .Text = event.data { return event } else { return nil }
@@ -81,23 +158,19 @@ final class InstrumentTrack: MIDITrackType {
   var name: String { return label ?? instrument.preset.name }
   var label: String?
 
-  private var _mute: Bool = false
-  var mute: Bool = false {
-    didSet {
-      guard mute != oldValue else { return }
-      if mute { _volume = volume; volume = 0 } else { volume = _volume }
-      Notification.MuteStatusDidChange.post(object: self, userInfo: [.OldValue: oldValue, .NewValue: mute])
-    }
+  var mute: Bool {
+    get { return state ~∩ [.ExclusiveMute, .InclusiveMute] && state ∌ .Soloing}
+    set { guard (state ∋ .ExclusiveMute) != newValue else { return }; state ⊻= .ExclusiveMute }
   }
 
-  var recording = false
+  var recording: Bool {
+    get { return state ∋ .Recording }
+    set { if newValue { state.insert(.Recording) } else { state.remove(.Recording) } }
+  }
 
-  var solo: Bool = false {
-    didSet {
-      guard solo != oldValue else { return }
-      if solo { _mute = mute; mute = false }
-      Notification.SoloStatusDidChange.post(object: self, userInfo: [.OldValue: oldValue, .NewValue: solo])
-    }
+  var solo: Bool {
+    get { return state ∋ .Soloing }
+    set { guard solo != newValue else { return }; state ⊻= .Soloing }
   }
 
   private var _volume: Float = 1
@@ -210,7 +283,11 @@ final class InstrumentTrack: MIDITrackType {
   // MARK: - MIDI events
 
   /// Queue used generating `MIDIFile` track events
-  private let eventQueue: NSOperationQueue = { let q = NSOperationQueue(); q.maxConcurrentOperationCount = 1; return q }()
+  private let eventQueue: NSOperationQueue = {
+    let q = NSOperationQueue()
+    q.maxConcurrentOperationCount = 1
+    return q
+    }()
 
   /// The end of the track as parsed when initializing from a `MIDIFileTrackChunk`
   private var _trackEnd: CABarBeatTime?
@@ -319,10 +396,10 @@ final class InstrumentTrack: MIDITrackType {
   }
 
   /// The track's owning sequence
-  private(set) weak var sequence: MIDISequence?
+  private(set) unowned var sequence: MIDISequence
 
   /// The index for the track in the sequence's array of instrument tracks, or nil
-  var index: Int? { return sequence?.instrumentTracks.indexOf(self) }
+  var index: Int? { return sequence.instrumentTracks.indexOf(self) }
 
   // MARK: - Initialization
 

@@ -56,7 +56,6 @@ public class ToggleControl: UIControl {
       case [.Disabled] where disabledTintColor != nil:                  color = disabledTintColor!
       case [.Selected] where selectedTintColor != nil:                  color = selectedTintColor!
       case [.Highlighted] where highlightedTintColor != nil:            color = highlightedTintColor!
-      case [.Disabled], [.Selected], [.Highlighted]:                    color = currentTintColor
       default:                                                          color = tintColor
     }
     return color

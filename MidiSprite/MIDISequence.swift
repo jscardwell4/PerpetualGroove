@@ -78,28 +78,45 @@ final class MIDISequence {
   - parameter track: InstrumentTrack
   */
   func toggleSoloForTrack(track: InstrumentTrack) {
-    var tracks = Set(instrumentTracks)
-    guard tracks.remove(track) != nil else { return }
-    let soloTracks = Set(self.soloTracks)
-    let oldCount = soloTracks.count
-    let newCount: Int
-    tracks ∖= soloTracks
-    switch track.solo {
-      case true:
-        guard let idx = _soloTracks.indexOf({$0.value == track}) else { fatalError("Failed to locate soloing track in array") }
-        _soloTracks.removeAtIndex(idx)
-        track.solo = false
-        newCount = oldCount - 1
-        if _soloTracks.isEmpty { tracks.forEach({$0.mute = false}) }
-        else { track.mute = true }
+    guard instrumentTracks ∋ track else { logWarning("Request to toggle track not owned by sequence"); return }
 
-      case false:
-        track.solo = true
-        newCount = oldCount + 1
-        _soloTracks.append(WeakObject(track))
-        if _soloTracks.count == 1 { tracks.forEach({$0.mute = true}) }
+    if let idx = soloTracks.indexOf(track), track = _soloTracks.removeAtIndex(idx).value {
+      guard track.solo else { fatalError("Internal inconsistency, track should have solo set to true to be in _soloTracks") }
+      track.solo = false
+      Notification.SoloCountDidChange.post(object: self,
+                                           userInfo: [.OldCount: _soloTracks.count + 1, .NewCount: _soloTracks.count])
+    } else {
+      track.solo = true
+      _soloTracks.append(WeakObject(track))
+      Notification.SoloCountDidChange.post(object: self,
+                                           userInfo: [.OldCount: _soloTracks.count - 1, .NewCount: _soloTracks.count])
     }
-    Notification.SoloCountDidChange.post(object: self, userInfo: [.OldCount: oldCount, .NewCount: newCount])
+//    let soloTracks = Set(self.soloTracks)
+//    let oldCount = soloTracks.count
+
+//    let newCount: Int
+
+//    tracks ∖= soloTracks
+
+//    switch track.solo {
+//      case true:
+//        guard let idx = _soloTracks.indexOf({$0.value == track}) else {
+//          fatalError("Failed to locate soloing track in array")
+//        }
+//        _soloTracks.removeAtIndex(idx)
+//        track.solo = false
+//        newCount = oldCount - 1
+//
+//        if _soloTracks.isEmpty { tracks.forEach({$0.mute = false}) }
+//        else { track.mute = true }
+//
+//      case false:
+//        track.solo = true
+//        newCount = oldCount + 1
+//        _soloTracks.append(WeakObject(track))
+//        if _soloTracks.count == 1 { tracks.forEach({$0.mute = true}) }
+//    }
+//    Notification.SoloCountDidChange.post(object: self, userInfo: [.OldCount: oldCount, .NewCount: newCount])
   }
 
   /** Conversion to and from the `MIDIFile` type  */
