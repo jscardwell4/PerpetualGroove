@@ -292,11 +292,11 @@
                                                     <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="TransportJogWheelStack"/>
                                                 </userDefinedRuntimeAttributes>
                                             </stackView>
-                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="NdS-rf-HyN" userLabel="TimeStackHorizontal">
-                                                <rect key="frame" x="460" y="-6" width="320" height="162"/>
+                                            <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" distribution="equalCentering" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="NdS-rf-HyN" userLabel="TimeStackHorizontal">
+                                                <rect key="frame" x="1071" y="14" width="211" height="122"/>
                                                 <subviews>
                                                     <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" axis="vertical" distribution="equalCentering" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="gSN-Me-39Z" userLabel="TimeStackVertical">
-                                                        <rect key="frame" x="20" y="20" width="280" height="122"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="211" height="122"/>
                                                         <subviews>
                                                             <view opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TLs-oa-qge" userLabel="Tempo" customClass="Slider" customModule="MoonKit">
                                                                 <rect key="frame" x="0.0" y="0.0" width="211" height="56"/>
@@ -365,8 +365,7 @@
                                                                         <exclude reference="a7T-hb-UY1"/>
                                                                     </mask>
                                                                 </variation>
-                                                                <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
-                                                                    <rect key="frame" x="-22.5" y="0.0" width="325" height="56"/>
+                                                                <variation key="heightClass=regular-widthClass=regular">
                                                                     <mask key="constraints">
                                                                         <include reference="a7T-hb-UY1"/>
                                                                     </mask>
@@ -1332,7 +1331,7 @@
                                     </mask>
                                 </variation>
                                 <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
-                                    <rect key="frame" x="20" y="574" width="250" height="128"/>
+                                    <rect key="frame" x="20" y="574" width="250" height="108"/>
                                 </variation>
                                 <connections>
                                     <outlet property="contentView" destination="41G-aM-2HB" id="nD9-0T-yny"/>

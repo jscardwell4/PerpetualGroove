@@ -169,7 +169,7 @@ import struct AudioToolbox.CABarBeatTime
 
     #if !TARGET_INTERFACE_BUILDER
       Sequencer.time.registerCallback(didUpdateBarBeatTime,
-                                   predicate: BarBeatTime.TruePredicate,
+                                   predicate: {_ in true},
                                       forKey: barBeatTimeCallbackKey)
 
       let queue = NSOperationQueue.mainQueue()

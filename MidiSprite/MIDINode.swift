@@ -13,13 +13,8 @@ import CoreMIDI
 
 final class MIDINode: SKSpriteNode {
 
-  typealias Snapshot = MIDINodeHistory.Snapshot
-  
-  var note: NoteAttributes
 
-  var initialSnapshot: Snapshot
-
-  static let useVelocityForOff = true
+// MARK: - Monitoring node state
 
   struct State: OptionSetType, CustomStringConvertible {
     let rawValue: Int
@@ -39,8 +34,28 @@ final class MIDINode: SKSpriteNode {
     }
   }
 
+  /// Holds the current state of the node
   private var state: State = []
 
+  // MARK: - Generating MIDI note events
+
+  private var client = MIDIClientRef()
+  private let time = Sequencer.time
+  private(set) var endPoint = MIDIEndpointRef()
+
+  /// Holds the octave, pitch, velocity and duration to use when generating MIDI events
+  var note: NoteAttributes
+
+  /// Whether a note is ended via a note on event with velocity of 0 or with a  note off event
+  static let useVelocityForOff = true
+
+  typealias Identifier = UInt64
+  private var _sourceID: Identifier = 0
+
+  /// Embedded in MIDI packets to allow a track with multiple nodes to identify the event's source
+  var sourceID: Identifier { return _sourceID }
+
+  /// Type for representing MIDI-related node actions
   enum Actions: String { case Play }
 
   /** play */
@@ -53,11 +68,6 @@ final class MIDINode: SKSpriteNode {
     let sequence = SKAction.sequence([SKAction.group([scaleUp, noteOn]), scaleDown, noteOff])
     runAction(sequence, withKey: Actions.Play.rawValue)
   }
-
-  typealias Identifier = UInt64
-
-  private var _sourceID: Identifier = 0
-  var sourceID: Identifier { return _sourceID }
 
   /** sendNoteOn */
   func sendNoteOn() {
@@ -100,15 +110,7 @@ final class MIDINode: SKSpriteNode {
     super.removeActionForKey(key)
   }
 
-  private var client = MIDIClientRef()
-  private let time = Sequencer.time
-  private(set) var endPoint = MIDIEndpointRef()
-
   private weak var track: InstrumentTrack?
-  private var currentSnapshot: Snapshot
-  private var history: MIDINodeHistory
-  private var breadcrumb: MIDINodeHistory.Breadcrumb?
-
   override var physicsBody: SKPhysicsBody! {
     get {
       guard let body = super.physicsBody else {
@@ -124,6 +126,9 @@ final class MIDINode: SKSpriteNode {
     }
   }
 
+  // MARK: - Listening for Sequencer notifications
+
+  private var receptionist: NotificationReceptionist!
 
   /**
   didBeginJogging:
@@ -132,10 +137,12 @@ final class MIDINode: SKSpriteNode {
   */
   private func didBeginJogging(notification: NSNotification) {
 
+    logDebug("<\(_sourceID)>")
+
     // Make sure we are not already jogging
     guard state ∌ .Jogging else { fatalError("internal inconsistency, should not already have `Jogging` flag set") }
 
-    mark() // Make sure the latest position gets added to history before jogging begins
+    pushBreadcrumb() // Make sure the latest position gets added to history before jogging begins
     state ⊻= .Jogging
 
     physicsBody.dynamic = false
@@ -147,6 +154,8 @@ final class MIDINode: SKSpriteNode {
   - parameter notification: NSNotification
   */
   private func didJog(notification: NSNotification) {
+    logDebug("<\(_sourceID)>")
+    guard state ∋ .Jogging else { fatalError("internal inconsistency, should have `Jogging` flag set") }
     guard let jogTime = (notification.userInfo?[Sequencer.Notification.Key.JogTime.rawValue] as? NSValue)?.barBeatTimeValue else {
       logError("notication does not contain jog tick value")
       return
@@ -160,9 +169,10 @@ final class MIDINode: SKSpriteNode {
   - parameter notification: NSNotification
   */
   private func didEndJogging(notification: NSNotification) {
+    logDebug("<\(_sourceID)>")
+
     guard state ∋ .Jogging else { fatalError("internal inconsistency, should have `Jogging` flag set") }
     state ⊻= .Jogging
-//    history.pruneAfter(currentSnapshot)
 
     guard state ∌ .Paused else { return }
     physicsBody.dynamic = true
@@ -175,6 +185,7 @@ final class MIDINode: SKSpriteNode {
   - parameter notification: NSNotification
   */
   private func didStart(notification: NSNotification) {
+    logDebug("<\(_sourceID)>")
     guard state ∋ .Paused else { return }
     physicsBody.dynamic = true
     physicsBody.velocity = currentSnapshot.velocity
@@ -187,14 +198,40 @@ final class MIDINode: SKSpriteNode {
   - parameter notification: NSNotification
   */
   private func didPause(notification: NSNotification) {
+    logDebug("<\(_sourceID)>")
     guard state ∌ .Paused else { return }
-    mark()
+    pushBreadcrumb()
     physicsBody.dynamic = false
     state ⊻= .Paused
   }
 
+  // MARK: - Snapshots
+
+  typealias Snapshot = MIDINodeHistory.Snapshot
+
+  /// Holds the nodes breadcrumbs to use in jogging calculations
+  private var history: MIDINodeHistory
+
+  /// The breadcrumb currently referenced in jogging calculations
+  private var breadcrumb: MIDINodeHistory.Breadcrumb?
+
+  /// Snapshot of the initial placement and velocity for the node
+  var initialSnapshot: Snapshot
+
+  /// Snapshot of the current placement and velocity for the node
+  private var currentSnapshot: Snapshot
+
+  /** Updates `currentSnapshot`, adding a new breadcrumb to `history` from the old value to the new value */
+  func pushBreadcrumb() {
+    guard state ∌ .Jogging else { logWarning("node has `Jogging` flag set, ignoring request to mark"); return }
+    let snapshot = Snapshot(ticks: time.ticks, position: position, velocity: physicsBody.velocity)
+    guard snapshot.ticks > currentSnapshot.ticks else { return }
+    history.append(from: currentSnapshot, to: snapshot)
+    currentSnapshot = snapshot
+  }
+
   /**
-  animateToSnapshot:
+  Animates the node to the location specified by the specified snapshot
 
   - parameter snapshot: Snapshot
   */
@@ -205,16 +242,7 @@ final class MIDINode: SKSpriteNode {
     currentSnapshot = snapshot
   }
 
-  private var receptionist: NotificationReceptionist!
-
-  /** mark */
-  func mark() {
-    guard state ∌ .Jogging else { logWarning("node has `Jogging` flag set, ignoring request to mark"); return }
-    let snapshot = Snapshot(ticks: time.ticks, position: position, velocity: physicsBody.velocity)
-    guard snapshot.ticks > currentSnapshot.ticks else { return }
-    history.append(from: currentSnapshot, to: snapshot)
-    currentSnapshot = snapshot
-  }
+  // MARK: - Initialization
 
   /**
   init:placement:instrument:note:
@@ -239,10 +267,10 @@ final class MIDINode: SKSpriteNode {
     typealias Notification = Sequencer.Notification
     receptionist = NotificationReceptionist()
     receptionist.observe(Notification.DidBeginJogging, from: Sequencer.self, queue: queue, callback: didBeginJogging)
-    receptionist.observe(Notification.DidJog, from: Sequencer.self, queue: queue, callback: didJog)
-    receptionist.observe(Notification.DidEndJogging, from: Sequencer.self, queue: queue, callback: didEndJogging)
-    receptionist.observe(Notification.DidStart, from: Sequencer.self, queue: queue, callback: didStart)
-    receptionist.observe(Notification.DidPause, from: Sequencer.self, queue: queue, callback: didPause)
+    receptionist.observe(Notification.DidJog,          from: Sequencer.self, queue: queue, callback: didJog)
+    receptionist.observe(Notification.DidEndJogging,   from: Sequencer.self, queue: queue, callback: didEndJogging)
+    receptionist.observe(Notification.DidStart,        from: Sequencer.self, queue: queue, callback: didStart)
+    receptionist.observe(Notification.DidPause,        from: Sequencer.self, queue: queue, callback: didPause)
 
     _sourceID = Identifier(ObjectIdentifier(self).uintValue)
 
@@ -265,18 +293,18 @@ final class MIDINode: SKSpriteNode {
     physicsBody.collisionBitMask = 1
   }
 
-  deinit {
-    do {
-      try MIDIEndpointDispose(endPoint) ➤ "Failed to dispose of end point"
-      try MIDIClientDispose(client) ➤ "Failed to dispose of midi client"
-    } catch { logError(error) }
-  }
-
   /**
   init:
 
   - parameter aDecoder: NSCoder
   */
   required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+  
+  deinit {
+    do {
+      try MIDIEndpointDispose(endPoint) ➤ "Failed to dispose of end point"
+      try MIDIClientDispose(client) ➤ "Failed to dispose of midi client"
+    } catch { logError(error) }
+  }
 
 }

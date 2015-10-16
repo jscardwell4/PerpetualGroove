@@ -120,7 +120,7 @@ final class MIDISequence {
       }
 
       instrumentTracks = trackChunks.flatMap({ try? InstrumentTrack(trackChunk: $0, sequence: self) })
-      zip(InstrumentTrack.Color.allCases, instrumentTracks).forEach { $1.color = $0 }
+      zip(TrackColor.allCases, instrumentTracks).forEach { $1.color = $0 }
       currentTrack = instrumentTracks.first
     }
   }
@@ -143,7 +143,7 @@ final class MIDISequence {
 
   func newTrackWithInstrument(instrument: Instrument) throws {
     let track = try InstrumentTrack(instrument: instrument, sequence: self)
-    track.color = InstrumentTrack.Color.allCases[(instrumentTracks.count + 1) % InstrumentTrack.Color.allCases.count]
+    track.color = TrackColor.allCases[(instrumentTracks.count + 1) % TrackColor.allCases.count]
     instrumentTracks.append(track)
     Notification.DidAddTrack.post(object: self, userInfo: [Notification.Key.Track: track])
     if SettingsManager.makeNewTrackCurrent { currentTrack = track }

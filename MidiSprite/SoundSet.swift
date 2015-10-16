@@ -24,7 +24,7 @@ struct SoundSet: Hashable, CustomStringConvertible, CustomDebugStringConvertible
   var debugDescription: String {
     var result =  "SoundSet {\n"
     result += "  name: \((url.lastPathComponent! as NSString).stringByDeletingPathExtension)\n"
-    result += "  presets: {\n" + ",\n".join(presets.map({$0.description})).indentedBy(4) + "\t\n}"
+    result += "  presets: {\n" + ",\n".join(presets.map({$0.description})).indentedBy(8) + "\n\t}"
     result += "\n}"
     return result
   }
@@ -60,6 +60,7 @@ struct SoundSet: Hashable, CustomStringConvertible, CustomDebugStringConvertible
     guard u.checkResourceIsReachableAndReturnError(&error) else { throw error! }
     presets = try SF2File(file: u).presets.sort()
     url = u
+    logDebug(debugDescription)
   }
 
 }

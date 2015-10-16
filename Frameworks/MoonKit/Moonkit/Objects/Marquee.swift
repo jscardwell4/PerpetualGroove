@@ -173,11 +173,33 @@ import UIKit
   public override init(frame: CGRect) { super.init(frame: frame); setup() }
 
   /**
+  encodeWithCoder:
+
+  - parameter aCoder: NSCoder
+  */
+  public override func encodeWithCoder(aCoder: NSCoder) {
+    super.encodeWithCoder(aCoder)
+    aCoder.encodeObject(font, forKey: "font")
+    aCoder.encodeObject(textColor, forKey: "textColor")
+    aCoder.encodeObject(text, forKey: "text")
+    aCoder.encodeObject(scrollSeparator, forKey: "scrollSeparator")
+    aCoder.encodeDouble(scrollSpeed, forKey: "scrollSpeed")
+  }
+
+  /**
   init:
 
   - parameter aDecoder: NSCoder
   */
-  public required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder); setup() }
+  public required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+    if let font = aDecoder.decodeObjectForKey("font")                       as? UIFont  { self.font = font                      }
+    if let text = aDecoder.decodeObjectForKey("text")                       as? String  { self.text = text                      }
+    if let textColor = aDecoder.decodeObjectForKey("textColor")             as? UIColor { self.textColor = textColor            }
+    if let scrollSeparator = aDecoder.decodeObjectForKey("scrollSeparator") as? String { self.scrollSeparator = scrollSeparator }
+    scrollSpeed = aDecoder.decodeDoubleForKey("scrollSpeed")
+    setup()
+  }
 
   /** layoutSubviews */
   public override func layoutSubviews() { super.layoutSubviews(); updateTextLayer() }

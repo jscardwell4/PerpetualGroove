@@ -32,19 +32,21 @@ final class Instrument: Equatable, CustomStringConvertible {
   var bus: AVAudioNodeBus { return node.destinationForMixer(AudioManager.mixer, bus: 0)?.connectionPoint.bus ?? -1 }
 
   /**
+  loadSoundSet:preset:
+
+  - parameter soundSet: SoundSet
+  - parameter preset: Preset
+  */
+  func loadSoundSet(soundSet: SoundSet, preset: Preset) throws {
+    try loadSoundSet(soundSet, program: preset.program, bank: preset.bank)
+  }
+
+  /**
   loadPreset:
 
   - parameter preset: Preset
   */
   func loadPreset(preset: Preset) throws { try loadSoundSet(soundSet, program: preset.program, bank: preset.bank) }
-
-  /**
-  setProgram:onChannel:
-
-  - parameter program: Program
-  - parameter onChannel: Channel
-  */
-//  func setProgram(program: Program) throws { try loadSoundSet(soundSet, program: program) }
 
   var volume: Float { get { return node.volume } set { node.volume = (0 ... 1).clampValue(newValue)  } }
   var pan:    Float { get { return node.pan    } set { node.pan    = (-1 ... 1).clampValue(newValue) } }

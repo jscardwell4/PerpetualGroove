@@ -12,62 +12,30 @@ import MoonKit
 import AudioToolbox
 import CoreMIDI
 
-final class InstrumentTrack: MIDITrackType, Equatable, Hashable {
+final class InstrumentTrack: MIDITrackType {
 
-  typealias Color = TrackColor
-
-  var description: String {
-    var result = "Track(\(name)) {\n"
-    result += "\tinstrument: \(instrument.description.indentedBy(4, true))\n"
-    result += "\tcolor: \(color)\n\tevents: {\n"
-    result += ",\n".join(eventContainer.events.map({$0.description.indentedBy(8)}))
-    result += "\n\t}\n}"
-    return result
-  }
-
-  enum Notification: String, NotificationType, NotificationNameType {
-    enum Key: String, KeyType { case OldValue, NewValue }
-    case MuteStatusDidChange, SoloStatusDidChange, DidAddNode, DidRemoveNode
-  }
-
-  typealias Program = Instrument.Program
-  typealias Channel = Instrument.Channel
-
-  // MARK: - Constant properties
-
-  var instrument: Instrument!
-  var color: Color = .White
-  
-  typealias NodeIdentifier = MIDINodeEvent.Identifier
-
-  private var nodes: Set<MIDINode> = []
-  private var notes: Set<NodeIdentifier> = []
-  private var fileIDToNodeID: [NodeIdentifier:NodeIdentifier] = [:]
-  private var client = MIDIClientRef()
-  private var inPort = MIDIPortRef()
-  private var outPort = MIDIPortRef()
-  private var fileQueue: dispatch_queue_t?
-  private var pendingIdentifier: NodeIdentifier?
-  private var _trackEnd: CABarBeatTime?
-
-
-  var hashValue: Int { return ObjectIdentifier(self).hashValue }
-
-  var trackEnd: CABarBeatTime { return _trackEnd ?? time.time }
-  
-  let time = Sequencer.time
-
-  var recording = false
-
-  private func recordingStatusDidChange(notification: NSNotification) { recording = Sequencer.recording }
+  // MARK: - Listening for Sequencer notifications
 
   private var receptionist: NotificationReceptionist?
 
-  var eventContainer = MIDITrackEventContainer() {
-    didSet {
-      MIDITrackNotification.DidUpdateEvents.post(object: self)
-    }
+  /** initializeNotificationReceptionist */
+  private func initializeNotificationReceptionist() {
+    guard receptionist == nil else { return }
+
+    let queue = NSOperationQueue.mainQueue()
+    let object = Sequencer.self
+    let recordingCallback: (NSNotification) -> Void = {[weak self] _ in self?.recording = Sequencer.recording}
+    let didResetCallback:  (NSNotification) -> Void = {[weak self] _ in self?.resetNodes()}
+
+    receptionist = NotificationReceptionist()
+    receptionist?.observe(Sequencer.Notification.DidTurnOnRecording,  from: object, queue: queue, callback: recordingCallback)
+    receptionist?.observe(Sequencer.Notification.DidTurnOffRecording, from: object, queue: queue, callback: recordingCallback)
+    receptionist?.observe(Sequencer.Notification.DidReset,            from: object, queue: queue, callback: didResetCallback)
   }
+
+  // MARK: - MIDI file related properties and methods
+
+  var eventContainer = MIDITrackEventContainer() { didSet { MIDITrackNotification.DidUpdateEvents.post(object: self) } }
 
   var instrumentNameEvent: MetaEvent? {
     if let event = eventContainer.metaEvents.first, case .Text = event.data { return event } else { return nil }
@@ -104,7 +72,11 @@ final class InstrumentTrack: MIDITrackType, Equatable, Hashable {
     return MIDIFileTrackChunk(eventContainer: eventContainer)
   }
 
-  // MARK: - Editable properties
+  // MARK: - Track properties
+
+  var instrument: Instrument!
+
+  var color: TrackColor = .White
 
   var name: String { return label ?? instrument.preset.name }
   var label: String?
@@ -118,6 +90,8 @@ final class InstrumentTrack: MIDITrackType, Equatable, Hashable {
     }
   }
 
+  var recording = false
+
   var solo: Bool = false {
     didSet {
       guard solo != oldValue else { return }
@@ -130,12 +104,21 @@ final class InstrumentTrack: MIDITrackType, Equatable, Hashable {
   var volume: Float { get { return instrument.volume } set { instrument.volume = newValue } }
   var pan: Float { get { return instrument.pan } set { instrument.pan = newValue } }
 
-  enum Error: String, ErrorType, CustomStringConvertible {
-    case NodeNotFound = "The specified node was not found among the track's nodes"
-    case SoundSetInitializeFailure = "Failed to create sound set"
-    case InvalidSoundSetURL = "Failed to resolve sound set url"
-    case InstrumentInitializeFailure = "Failed to create instrument"
-  }
+  // MARK: - Managing MIDI nodes
+
+  typealias NodeIdentifier = MIDINodeEvent.Identifier
+
+  /// The identifier parsed from a file awaiting the identifier of its generated node
+  private var pendingIdentifier: NodeIdentifier?
+
+  /// The set of `MIDINode` objects that have been added to the track
+  private var nodes: Set<MIDINode> = []
+
+  /// Index that maps the identifiers parsed from a file to the identifiers assigned to the generated nodes
+  private var fileIDToNodeID: [NodeIdentifier:NodeIdentifier] = [:]
+
+  /** Empties all node-referencing properties */
+  private func resetNodes() { pendingIdentifier = nil; nodes.removeAll(); fileIDToNodeID.removeAll() }
 
   /**
   addNode:
@@ -145,17 +128,16 @@ final class InstrumentTrack: MIDITrackType, Equatable, Hashable {
   func addNode(node: MIDINode) throws {
     nodes.insert(node)
     let identifier = NodeIdentifier(ObjectIdentifier(node).uintValue)
+    logDebug("identifier = \(identifier)")
     notes.insert(identifier)
     try MIDIPortConnectSource(inPort, node.endPoint, nil) ➤ "Failed to connect to node \(node.name!)"
     Notification.DidAddNode.post(object: self)
-    guard recording else {
-      if let pendingIdentifier = pendingIdentifier {
-        fileIDToNodeID[pendingIdentifier] = identifier
-        self.pendingIdentifier = nil
-      }
-      return
+    if let pendingIdentifier = pendingIdentifier {
+      fileIDToNodeID[pendingIdentifier] = identifier
+      self.pendingIdentifier = nil
     }
-    dispatch_async(fileQueue!) {
+    guard recording else { return }
+    eventQueue.addOperationWithBlock {
       [time = time.time, placement = node.initialSnapshot.placement, note = node.note, weak self] in
       let event = MIDINodeEvent(.Add(identifier: identifier, placement: placement, attributes: note), time)
       self?.eventContainer.append(event)
@@ -174,6 +156,8 @@ final class InstrumentTrack: MIDITrackType, Equatable, Hashable {
                            placement: Placement,
                           attributes: NoteAttributes)
   {
+    logDebug("identifier = \(identifier)")
+    guard fileIDToNodeID[identifier] == nil else { return }
     guard pendingIdentifier == nil else { fatalError("already have an identifier pending: \(pendingIdentifier!)") }
     guard let midiPlayer = MIDIPlayerNode.currentPlayer else { fatalError("trying to add node without a midi player") }
     pendingIdentifier = identifier
@@ -186,6 +170,7 @@ final class InstrumentTrack: MIDITrackType, Equatable, Hashable {
   - parameter identifier: NodeIdentifier
   */
   private func removeNodeWithIdentifier(identifier: NodeIdentifier) {
+    logDebug("identifier = \(identifier)")
     guard let mappedIdentifier = fileIDToNodeID[identifier] else {
       fatalError("trying to remove node for unmapped identifier \(identifier)")
     }
@@ -210,16 +195,37 @@ final class InstrumentTrack: MIDITrackType, Equatable, Hashable {
   func removeNode(node: MIDINode) throws {
     guard let node = nodes.remove(node) else { throw Error.NodeNotFound }
     let identifier = NodeIdentifier(ObjectIdentifier(node).uintValue)
+    logDebug("identifier = \(identifier)")
     notes.remove(identifier)
     node.sendNoteOff()
     try MIDIPortDisconnectSource(inPort, node.endPoint) ➤ "Failed to disconnect to node \(node.name!)"
     Notification.DidRemoveNode.post(object: self)
     guard recording else { return }
-    dispatch_async(fileQueue!) {
+    eventQueue.addOperationWithBlock {
       [time = time.time, weak self] in
       self?.eventContainer.append(MIDINodeEvent(.Remove(identifier: identifier), time))
     }
   }
+
+  // MARK: - MIDI events
+
+  /// Queue used generating `MIDIFile` track events
+  private let eventQueue: NSOperationQueue = { let q = NSOperationQueue(); q.maxConcurrentOperationCount = 1; return q }()
+
+  /// The end of the track as parsed when initializing from a `MIDIFileTrackChunk`
+  private var _trackEnd: CABarBeatTime?
+
+  /// The end of the track as parsed from a chunk or the current time
+  var trackEnd: CABarBeatTime { return _trackEnd ?? time.time }
+
+  /// A reference to the bar beat time object owned by the sequencer
+  let time = Sequencer.time
+
+  private var notes: Set<NodeIdentifier> = []
+
+  private var client  = MIDIClientRef()
+  private var inPort  = MIDIPortRef()
+  private var outPort = MIDIPortRef()
 
   /**
   Reconstructs the `uintValue` of an `ObjectIdentifier` using packet data bytes 4 through 11
@@ -250,7 +256,7 @@ final class InstrumentTrack: MIDITrackType, Equatable, Hashable {
     // Check if we are recording, otherwise skip event processing
     guard recording else { return }
     
-    dispatch_async(fileQueue!) {
+    eventQueue.addOperationWithBlock {
       [weak self, time = time.time] in
 
       let packets = packetList.memory
@@ -289,25 +295,36 @@ final class InstrumentTrack: MIDITrackType, Equatable, Hashable {
     }
   }
 
+  /// Holds events parsed from a `MIDIFile` keyed by their bar beat time
+  private var eventMap: [CABarBeatTime:[MIDITrackEvent]] = [:]
+
   /**
-  didStart:
+  dispatchEventsForTime:
 
-  - parameter notification: NSNotification
+  - parameter time: CABarBeatTime
   */
-  private func didStart(notification: NSNotification) { logVerbose("time = \(time)") }
+  private func dispatchEventsForTime(time: CABarBeatTime) {
+    guard let events = eventMap[time] where Sequencer.playing else { return }
+    for event in events {
+      switch event {
+        case let nodeEvent as MIDINodeEvent:
+          switch nodeEvent.data {
+            case let .Add(i, p, a):       addNodeWithIdentifier(i, placement: p, attributes: a)
+            case let .Remove(identifier): removeNodeWithIdentifier(identifier)
+          }
+        default: break
+      }
 
-  /** initializeNotificationReceptionist */
-  private func initializeNotificationReceptionist() {
-    guard receptionist == nil else { return }
-    typealias Notification = Sequencer.Notification
-    let queue = NSOperationQueue.mainQueue()
-    let object = Sequencer.self
-    let callback: (NSNotification) -> Void = {[weak self] _ in self?.recording = Sequencer.recording}
-    receptionist = NotificationReceptionist()
-    receptionist?.observe(Notification.DidTurnOnRecording, from: object, queue: queue, callback: callback)
-    receptionist?.observe(Notification.DidTurnOffRecording, from: object, queue: queue, callback: callback)
-    receptionist?.observe(Notification.DidStart, from: object, queue: queue, callback: didStart)
+    }
   }
+
+  /// The track's owning sequence
+  private(set) weak var sequence: MIDISequence?
+
+  /// The index for the track in the sequence's array of instrument tracks, or nil
+  var index: Int? { return sequence?.instrumentTracks.indexOf(self) }
+
+  // MARK: - Initialization
 
   /** initializeMIDIClient */
   private func initializeMIDIClient() throws {
@@ -325,38 +342,12 @@ final class InstrumentTrack: MIDITrackType, Equatable, Hashable {
   init(instrument i: Instrument, sequence s: MIDISequence) throws {
     sequence = s
     instrument = i
-    fileQueue = serialQueueWithLabel("BUS \(instrument.bus)", qualityOfService: QOS_CLASS_BACKGROUND)
+    eventQueue.name = "BUS \(instrument.bus)"
     recording = Sequencer.recording
 
     initializeNotificationReceptionist()
-
     try initializeMIDIClient()
   }
-
-  private var eventMap: [CABarBeatTime:[MIDITrackEvent]] = [:]
-
-  /**
-  dispatchEventsForTime:
-
-  - parameter time: CABarBeatTime
-  */
-  private func dispatchEventsForTime(time: CABarBeatTime) {
-    guard let events = eventMap[time] else { return }
-    for event in events {
-      switch event {
-        case let nodeEvent as MIDINodeEvent:
-          switch nodeEvent.data {
-            case let .Add(i, p, a):    addNodeWithIdentifier(i, placement: p, attributes: a)
-            case let .Remove(identifier): removeNodeWithIdentifier(identifier)
-          }
-        default: break
-      }
-
-    }
-  }
-
-  private(set) weak var sequence: MIDISequence?
-  var index: Int? { return sequence?.instrumentTracks.indexOf(self) }
 
   /**
   initWithTrackChunk:
@@ -367,7 +358,6 @@ final class InstrumentTrack: MIDITrackType, Equatable, Hashable {
   init(trackChunk: MIDIFileTrackChunk, sequence s: MIDISequence) throws {
     sequence = s
     eventContainer = MIDITrackEventContainer(events: trackChunk.events)
-//    let events = trackChunk.events
 
     // Find the end of track event
     guard let endOfTrackEvent = self.endOfTrackEvent else {
@@ -401,10 +391,10 @@ final class InstrumentTrack: MIDITrackType, Equatable, Hashable {
     }
 
     instrument = instrumentMaybe
-    fileQueue = serialQueueWithLabel("BUS \(instrument.bus)", qualityOfService: QOS_CLASS_BACKGROUND)
+    eventQueue.name = "BUS \(instrument.bus)"
     recording = Sequencer.recording
 
-    for event in eventContainer.events {
+    for event in eventContainer.nodeEvents {
       let eventTime = event.time
       var eventBag: [MIDITrackEvent] = eventMap[eventTime] ?? []
       eventBag.append(event)
@@ -414,13 +404,48 @@ final class InstrumentTrack: MIDITrackType, Equatable, Hashable {
     for eventTime in eventMap.keys { time.registerCallback(dispatchEventsForTime, forTime: eventTime) }
 
     initializeNotificationReceptionist()
-
     try initializeMIDIClient()
   }
 
-
 }
 
+// MARK: - Errors
+extension InstrumentTrack {
+  enum Error: String, ErrorType, CustomStringConvertible {
+    case NodeNotFound = "The specified node was not found among the track's nodes"
+    case SoundSetInitializeFailure = "Failed to create sound set"
+    case InvalidSoundSetURL = "Failed to resolve sound set url"
+    case InstrumentInitializeFailure = "Failed to create instrument"
+  }
+}
+
+// MARK: - Notifications
+extension InstrumentTrack {
+  enum Notification: String, NotificationType, NotificationNameType {
+    enum Key: String, KeyType { case OldValue, NewValue }
+    case MuteStatusDidChange, SoloStatusDidChange, DidAddNode, DidRemoveNode
+  }
+}
+
+// MARK: - CustomStringConvertible
+extension InstrumentTrack: CustomStringConvertible {
+  var description: String {
+    var result = "Track(\(name)) {\n"
+    result += "\tinstrument: \(instrument.description.indentedBy(4, true))\n"
+    result += "\tcolor: \(color)\n\tevents: {\n"
+    result += ",\n".join(eventContainer.events.map({$0.description.indentedBy(8)}))
+    result += "\n\t}\n}"
+    return result
+  }
+}
+
+// MARK: - Hashable
+extension InstrumentTrack: Hashable {
+  var hashValue: Int { return ObjectIdentifier(self).hashValue }
+}
+
+// MARK: - Equatable
+extension InstrumentTrack: Equatable {}
 
 /**
 Equatable conformance

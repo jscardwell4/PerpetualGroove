@@ -5625,3 +5625,9 @@
 2015-10-15 16:10:26 +0000 [40872730949902] <InlinePickerView.swift:138> selectItem(_:animated:)  4 is not a valid item index
 2015-10-15 16:10:26 +0000 [40872932099111] <InlinePickerView.swift:138> selectItem(_:animated:)  6 is not a valid item index
 2015-10-15 16:10:26 +0000 [40872940348771] <InlinePickerView.swift:138> selectItem(_:animated:)  4 is not a valid item index
+2015-10-16 00:11:08 +0000 [56458927372984] <InlinePickerView.swift:138> selectItem(_:animated:)  6 is not a valid item index
+2015-10-16 00:11:08 +0000 [56459148964932] <InlinePickerView.swift:138> selectItem(_:animated:)  6 is not a valid item index
+2015-10-16 00:11:08 +0000 [56459183951983] <InlinePickerView.swift:138> selectItem(_:animated:)  4 is not a valid item index
+2015-10-16 00:11:08 +0000 [56459362583309] <InlinePickerView.swift:138> selectItem(_:animated:)  6 is not a valid item index
+2015-10-16 00:11:08 +0000 [56459373260591] <InlinePickerView.swift:138> selectItem(_:animated:)  4 is not a valid item index
+2015-10-16 00:11:13 +0000 [56463999538444] <InlinePickerView.swift:138> selectItem(_:animated:)  4 is not a valid item index

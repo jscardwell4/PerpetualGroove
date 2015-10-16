@@ -123,11 +123,13 @@ struct MIDITrackEventContainer: CollectionType, MutableIndexable {
     for event in _events { if let event = event as? MetaEvent { result.append(event) } }
     return result
   }
+
   var channelEvents: [ChannelEvent] {
     var result: [ChannelEvent] = []
     for event in _events { if let event = event as? ChannelEvent { result.append(event) } }
     return result
   }
+  
   var nodeEvents: [MIDINodeEvent] {
     var result: [MIDINodeEvent] = []
     for event in _events { if let event = event as? MIDINodeEvent { result .append(event) } }

@@ -103,6 +103,9 @@
                                             <userDefinedRuntimeAttribute type="boolean" keyPath="showsTrackLabel" value="YES"/>
                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TempoSlider"/>
                                         </userDefinedRuntimeAttributes>
+                                        <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                            <rect key="frame" x="-22.5" y="8" width="247" height="56"/>
+                                        </variation>
                                         <connections>
                                             <action selector="tempoSliderValueDidChange" destination="mI6-ed-c1h" eventType="valueChanged" id="XwD-Wo-BXw"/>
                                         </connections>
@@ -131,6 +134,9 @@
                                             <mask key="constraints">
                                                 <exclude reference="m7q-Ma-UTW"/>
                                             </mask>
+                                        </variation>
+                                        <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                            <rect key="frame" x="212" y="8" width="56" height="56"/>
                                         </variation>
                                         <connections>
                                             <action selector="toggleMetronome" destination="mI6-ed-c1h" eventType="touchUpInside" id="ZOV-Tp-4H5"/>
@@ -618,6 +624,9 @@
                                                                 <userDefinedRuntimeAttribute type="boolean" keyPath="preservesThumbImageSize" value="YES"/>
                                                                 <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="VolumeSlider"/>
                                                             </userDefinedRuntimeAttributes>
+                                                            <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                                <rect key="frame" x="0.0" y="15.5" width="44" height="158"/>
+                                                            </variation>
                                                             <connections>
                                                                 <action selector="volumeDidChange" destination="Ywg-X3-Y1Q" eventType="valueChanged" id="Wgq-MX-8Yq"/>
                                                             </connections>
@@ -998,7 +1007,7 @@
                                                 <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TrackCellStack"/>
                                             </userDefinedRuntimeAttributes>
                                         </stackView>
-                                        <visualEffectView hidden="YES" opaque="NO" userInteractionEnabled="NO" alpha="0.0" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PLx-z8-sAo">
+                                        <visualEffectView hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PLx-z8-sAo">
                                             <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                                             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="center" ambiguous="YES" id="0px-uc-SZ1">
                                                 <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>

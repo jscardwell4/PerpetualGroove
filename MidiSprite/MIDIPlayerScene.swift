@@ -62,7 +62,7 @@ extension MIDIPlayerScene: SKPhysicsContactDelegate {
   func didBeginContact(contact: SKPhysicsContact) {
     guard let midiNode = contact.bodyB.node as? MIDINode else { return }
     // ???: Should we do anything with the impulse and normal values provided by SKPhysicsContact?
-    midiNode.mark()
+    midiNode.pushBreadcrumb()
     midiNode.play()
   }
 }

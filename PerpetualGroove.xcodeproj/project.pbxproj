@@ -121,6 +121,8 @@
 		C2F2ADC61B91203700FF4836 /* Metronome.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F2ADC51B91203700FF4836 /* Metronome.swift */; settings = {ASSET_TAGS = (); }; };
 		C2F35DB91BB4507800ECB045 /* MIDIPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F35DB81BB4507800ECB045 /* MIDIPlayerView.swift */; settings = {ASSET_TAGS = (); }; };
 		C2F589F91BAC688F009166D5 /* BarBeatTimeLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F589F81BAC688F009166D5 /* BarBeatTimeLabel.swift */; settings = {ASSET_TAGS = (); }; };
+		C2FF79851BD05F1E002CBA79 /* CABarBeatTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FF79841BD05F1E002CBA79 /* CABarBeatTime.swift */; settings = {ASSET_TAGS = (); }; };
+		C2FF79871BD06115002CBA79 /* TimeSignature.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FF79861BD06115002CBA79 /* TimeSignature.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -239,6 +241,8 @@
 		C2F2ADC51B91203700FF4836 /* Metronome.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Metronome.swift; sourceTree = "<group>"; };
 		C2F35DB81BB4507800ECB045 /* MIDIPlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIPlayerView.swift; sourceTree = "<group>"; };
 		C2F589F81BAC688F009166D5 /* BarBeatTimeLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BarBeatTimeLabel.swift; sourceTree = "<group>"; };
+		C2FF79841BD05F1E002CBA79 /* CABarBeatTime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CABarBeatTime.swift; sourceTree = "<group>"; };
+		C2FF79861BD06115002CBA79 /* TimeSignature.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeSignature.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -396,6 +400,8 @@
 		C26A27EC1B93C09200BD1698 /* Sequencer */ = {
 			isa = PBXGroup;
 			children = (
+				C2FF79841BD05F1E002CBA79 /* CABarBeatTime.swift */,
+				C2FF79861BD06115002CBA79 /* TimeSignature.swift */,
 				C2B2B03E1BCDCE5F007AF9DC /* TrackColor.swift */,
 				C2AA2BCA1B84FB2100A0B08D /* Sequencer.swift */,
 				C2DFBE791B8AA5AB00898C2A /* MIDISequence.swift */,
@@ -668,6 +674,7 @@
 				C2995C481BB8ABC70003AAB2 /* Placement.swift in Sources */,
 				C272B2A01B7D700600134E5F /* SoundSet.swift in Sources */,
 				C26EEB301B7FDAF300EC6979 /* MixerCell.swift in Sources */,
+				C2FF79871BD06115002CBA79 /* TimeSignature.swift in Sources */,
 				C2EFA0EC1B823642002EBA3D /* NoteAttributesViewController.swift in Sources */,
 				C291C3EF1B91EDCC00702AEA /* MetaEvent.swift in Sources */,
 				C25EBC831B8BFAFA00E57665 /* MIDIFile.swift in Sources */,
@@ -696,6 +703,7 @@
 				C22FA58B1BC7F3D300162DB4 /* TrackLabel.swift in Sources */,
 				C2CF38CD1B7EBED30085B3D5 /* InstrumentTrack.swift in Sources */,
 				C2EFA0EE1B824A2F002EBA3D /* AssetManager.swift in Sources */,
+				C2FF79851BD05F1E002CBA79 /* CABarBeatTime.swift in Sources */,
 				C2D406741BB9FDC700681DEF /* MIDIDocumentManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

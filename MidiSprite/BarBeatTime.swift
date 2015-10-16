@@ -11,186 +11,31 @@ import AudioToolbox
 import CoreMIDI
 import MoonKit
 
-extension NSValue {
-  convenience init(var barBeatTime: CABarBeatTime) {
-    self.init(bytes: &barBeatTime, objCType:"{CABarBeatTime=iSSSS}".withCString {$0})
-  }
-  var barBeatTimeValue: CABarBeatTime? {
-    guard String.fromCString(objCType) == "{CABarBeatTime=iSSSS}" else { return nil }
-    let pointer = UnsafeMutablePointer<CABarBeatTime>.alloc(1)
-    let voidPointer = UnsafeMutablePointer<Void>(pointer)
-    getValue(voidPointer)
-    return pointer.memory
-  }
-}
+final class BarBeatTime {
 
-extension CABarBeatTime: CustomStringConvertible {
-  public var description: String {
-    let barString = String(bar, radix: 10, pad: 3)
-    let beatString = String(beat)
-    let subbeatString = String(subbeat, radix: 10, pad: String(subbeatDivisor).utf8.count)
-    return "\(barString) : \(beatString) . \(subbeatString)"
-  }
-}
-
-extension CABarBeatTime: CustomDebugStringConvertible {
-  public var debugDescription: String {
-    return "{bar: \(bar); beat: \(beat); subbeat: \(subbeat); subbeatDivisor: \(subbeatDivisor); ticks: \(ticks)}"
-  }
-}
-
-extension CABarBeatTime: StringLiteralConvertible {
-  public init(_ string: String) {
-    let values = string.split(".")
-    guard values.count == 3,
-    let bar: Int32 = Int32(values[0]), beat = UInt16(values[1]), subbeat = UInt16(values[2]) else {
-      fatalError("Invalid `CABarBeatTime` string literal '\(string)'")
-    }
-    self = CABarBeatTime(bar: bar,
-                         beat: beat,
-                         subbeat: subbeat,
-                         subbeatDivisor: UInt16(Sequencer.resolution),
-                         reserved: 0)
-  }
-  public init(extendedGraphemeClusterLiteral value: String) { self.init(value) }
-  public init(unicodeScalarLiteral value: String) { self.init(value) }
-  public init(stringLiteral value: String) { self.init(value) }
-}
-
-extension CABarBeatTime: Hashable {
-  public var hashValue: Int { return "\(bar).\(beat).\(subbeat)╱\(subbeatDivisor)".hashValue }
-}
-
-public func ==(lhs: CABarBeatTime, rhs: CABarBeatTime) -> Bool { return lhs.hashValue == rhs.hashValue }
-
-extension CABarBeatTime: Comparable {}
-
-public func <(lhs: CABarBeatTime, rhs: CABarBeatTime) -> Bool {
-  guard lhs.bar == rhs.bar else { return lhs.bar < rhs.bar }
-  guard lhs.beat == rhs.beat else { return lhs.beat < rhs.beat }
-  guard lhs.subbeatDivisor != rhs.subbeatDivisor else { return lhs.subbeat < rhs.subbeat }
-  return lhs.subbeat╱lhs.subbeatDivisor < rhs.subbeat╱rhs.subbeatDivisor
-}
-
-extension CABarBeatTime {
-
-  /**
-  addedToBarBeatTime:beatsPerBar:
-
-  - parameter time: CABarBeatTime
-  - parameter beatsPerBar: UInt16
-
-  - returns: CABarBeatTime
-  */
-  public func addedToBarBeatTime(time: CABarBeatTime, beatsPerBar: UInt16) -> CABarBeatTime {
-    var bars = bar + time.bar
-    var beats = beat + time.beat
-    let subbeatsSum = (subbeat╱subbeatDivisor + time.subbeat╱time.subbeatDivisor).fractionWithBase(Int16(subbeatDivisor))
-    var subbeats = UInt16(subbeatsSum.numerator)
-    if subbeats > subbeatDivisor { beats += subbeats / subbeatDivisor; subbeats %= subbeatDivisor }
-    if beats > beatsPerBar { bars += Int32(beats / beatsPerBar); beats %= beatsPerBar }
-    return CABarBeatTime(bar: bars, beat: beats, subbeat: subbeats, subbeatDivisor: subbeatDivisor, reserved: 0)
-  }
-
-  public static var start: CABarBeatTime {
-    return CABarBeatTime(bar: 1, beat: 1, subbeat: 1, subbeatDivisor: UInt16(Sequencer.resolution), reserved: 0)
-  }
-
-  /**
-  init:beatsPerBar:subbeatDivisor:
-
-  - parameter tickValue: UInt64
-  - parameter beatsPerBar: UInt8 = Sequencer.timeSignature.beatsPerBar
-  - parameter subbeatDivisor: UInt16 = Sequencer.time.partsPerQuarter
-  */
-  init(var tickValue: UInt64,
-            beatsPerBar: UInt8 = Sequencer.timeSignature.beatsPerBar,
-            subbeatDivisor: UInt16 = Sequencer.time.partsPerQuarter)
-  {
-    let subbeat = tickValue % UInt64(subbeatDivisor)
-    tickValue -= subbeat
-    let totalBeats = tickValue / UInt64(subbeatDivisor)
-    let beat = totalBeats % UInt64(beatsPerBar) + 1
-    let bar = totalBeats / UInt64(beatsPerBar) + 1
-    self = CABarBeatTime(bar: Int32(bar),
-                         beat: UInt16(beat),
-                         subbeat: UInt16(subbeat + 1),
-                         subbeatDivisor: subbeatDivisor,
-                         reserved: 0)
-  }
-
-  /**
-  doubleValueWithBeatsPerBar:
-
-  - parameter beatsPerBar: UInt8
-
-  - returns: Double
-  */
-  func doubleValueWithBeatsPerBar(beatsPerBar: UInt8) -> Double {
-    let bar = Double(max(Int(self.bar) - 1, 0))
-    let beat = Double(max(Int(self.beat) - 1, 0))
-    let subbeat = Double(max(Int(self.subbeat) - 1, 0))
-    return bar * Double(beatsPerBar) + beat + subbeat / Double(subbeatDivisor)
-  }
-
-  var doubleValue: Double { return doubleValueWithBeatsPerBar(Sequencer.timeSignature.beatsPerBar) }
-
-  /**
-  tickValueWithBeatsPerBar:
-
-  - parameter beatsPerBar: UInt8
-
-  - returns: UInt64
-  */
-  func tickValueWithBeatsPerBar(beatsPerBar: UInt8) -> UInt64 {
-    let bar = UInt64(max(Int(self.bar) - 1, 0))
-    let beat = UInt64(max(Int(self.beat) - 1, 0))
-    let subbeat = UInt64(max(Int(self.subbeat) - 1, 0))
-    return (bar * UInt64(beatsPerBar) + beat) * UInt64(subbeatDivisor) + subbeat
-  }
-
-  var ticks: MIDITimeStamp { return tickValueWithBeatsPerBar(Sequencer.timeSignature.beatsPerBar) }
-
-}
-
-enum TimeSignature {
-  case FourFour
-  case ThreeFour
-  case TwoFour
-  case Other (UInt8, UInt8)
-
-  var beatUnit: UInt8 { if case .Other(_, let u) = self { return u } else { return 4 } }
-  var beatsPerBar: UInt8 {
-    switch self {
-      case .FourFour:        return 4
-      case .ThreeFour:       return 3
-      case .TwoFour:         return 2
-      case .Other(let b, _): return b
-    }
-  }
-
-  /**
-  initWithUpper:lower:
-
-  - parameter upper: UInt8
-  - parameter lower: UInt8
-  */
-  init(_ upper: UInt8, _ lower: UInt8) {
-    switch (upper, lower) {
-      case (4, 4): self = .FourFour
-      case (3, 4): self = .ThreeFour
-      case (2, 4): self = .TwoFour
-      default: self = .Other(upper, lower)
-    }
-  }
-}
-
-
-final class BarBeatTime: Hashable, CustomStringConvertible {
+  // MARK: - Receiving MIDI clocks
 
   private var client = MIDIClientRef()  /// Client for receiving MIDI clock
   private var inPort = MIDIPortRef()    /// Port for receiving MIDI clock
-  private var queue: dispatch_queue_t!
+
+  /**
+  read:context:
+
+  - parameter packetList: UnsafePointer<MIDIPacketList>
+  - parameter context: UnsafePointer<Void>
+  */
+  private func read(packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutablePointer<Void>) {
+    // Runs on MIDI Services thread
+    switch packetList.memory.packet.data.0 {
+      case 0b1111_1000: queue.addOperationWithBlock { [weak self] in self?.incrementClock() }
+      case 0b1111_1010: queue.addOperationWithBlock { [weak self] in self?.reset(); self?.invokeCallbacksForTime(self!.time) }
+      default: break
+    }
+  }
+
+  // MARK: - Keeping the time
+
+  private let queue: NSOperationQueue = { let q = NSOperationQueue(); q.maxConcurrentOperationCount = 1; return q }()
 
   /** The resolution used to divide a beat into subbeats */
   var partsPerQuarter: UInt16 {
@@ -203,13 +48,14 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
     }
   }
 
+  /// Valid beat range for the current settings
   private(set) var validBeats: Range<UInt16>
+
+  /// Valid subbeat range for the current settings
   private(set) var validSubbeats: Range<UInt16>
 
-  private var _time: CABarBeatTime
-
   /**
-  isValidTime:
+  Whether the specified `time` holds a valid representation
 
   - parameter time: CABarBeatTime
 
@@ -219,20 +65,13 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
     return validBeats ∋ time.beat && validSubbeats ∋ time.subbeat && time.subbeatDivisor == partsPerQuarter
   }
 
-  /** Stores the musical representation of the current time */
+  /// The musical representation of the current time
+  private var _time: CABarBeatTime { didSet { invokeCallbacksForTime(time) } }
+
+  /** Synchronized access to the musical representation of the current time */
   var time: CABarBeatTime {
-    get {
-      objc_sync_enter(self)
-      defer { objc_sync_exit(self) }
-      return _time
-    }
-    set {
-      objc_sync_enter(self)
-      defer { objc_sync_exit(self) }
-      guard isValidTime(newValue) else { return }
-      _time = newValue
-      checkCallbacksForTime(time)
-    }
+    get { objc_sync_enter(self); defer { objc_sync_exit(self) }; return _time }
+    set { objc_sync_enter(self); defer { objc_sync_exit(self) }; guard isValidTime(newValue) else { return }; _time = newValue }
   }
 
   /** The portion of `clockCount` that constitutes a beat */
@@ -260,12 +99,27 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
     }
   }
 
-  var hashValue: Int { return ObjectIdentifier(self).hashValue }
+  // MARK: - Time-triggered callbacks
 
-  private var marker: CABarBeatTime
+  typealias Callback  = (CABarBeatTime) -> Void
+  typealias Predicate = (CABarBeatTime) -> Bool
 
-  /** Updates `marker` with current `time` */
-  func setMarker() { marker = time }
+  private var callbacks:           [CABarBeatTime:[(Callback, ObjectIdentifier?)]]     = [:] { didSet { updateCallbackCheck() } }
+  private var predicatedCallbacks: [String:(predicate: Predicate, callback: Callback)] = [:] { didSet { updateCallbackCheck() } }
+
+  private var callbackCheck = false
+  private func updateCallbackCheck() { callbackCheck = callbacks.count > 0 || predicatedCallbacks.count > 0 }
+
+  /**
+  Invokes the blocks registered in `callbacks` for the specified time and any blocks in `predicatedCallbacks` 
+  whose predicate evaluates to `true`
+
+  - parameter t: CABarBeatTime
+  */
+  private func invokeCallbacksForTime(t: CABarBeatTime) {
+    callbacks[t]?.forEach({$0.0(t)})
+    predicatedCallbacks.values.filter({$0.predicate(t)}).forEach({$0.callback(t)})
+  }
 
   /**
   registerCallback:forTime:
@@ -273,14 +127,21 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
   - parameter callback: (CABarBeatTime) -> Void
   - parameter time: CABarBeatTime
   */
-  func registerCallback(callback: Callback, forTime time: CABarBeatTime) { callbacks[time] = callback }
+  func registerCallback(callback: Callback, forTime time: CABarBeatTime, forObject obj: AnyObject? = nil) {
+    var bag = callbacks[time] ?? []
+    if let obj = obj { bag.append((callback, ObjectIdentifier(obj))) } else { bag.append((callback, nil)) }
+    callbacks[time] = bag
+  }
 
   /**
   removeCallbackForTime:
 
   - parameter time: CABarBeatTime
   */
-  func removeCallbackForTime(time: CABarBeatTime) { callbacks[time] = nil }
+  func removeCallbackForTime(time: CABarBeatTime, forObject obj: AnyObject? = nil) {
+    if let obj = obj { callbacks[time] = callbacks[time]?.filter({[identifier = ObjectIdentifier(obj)] in $1 != identifier}) }
+    else { callbacks[time] = nil }
+  }
 
   /**
   removeCallbackForKey:
@@ -289,8 +150,6 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
   */
   func removeCallbackForKey(key: String) { predicatedCallbacks[key] = nil }
 
-  typealias Callback = (CABarBeatTime) -> Void
-  typealias Predicate = (CABarBeatTime) -> Bool
 
   /**
   Set the `inout Bool` to true to unregister the callback
@@ -302,26 +161,16 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
     predicatedCallbacks[key] = (predicate: predicate, callback: callback)
   }
 
-  private var callbackCheck = false
-  private func updateCallbackCheck() { callbackCheck = callbacks.count > 0 || predicatedCallbacks.count > 0 }
 
-  static let TruePredicate: Predicate = {_ in true }
+  // MARK: - Measurements and conversions
 
-  /**
-  checkCallbacksForTime:
+  /// Holds a bar beat time value that can be used later to measure the amount of time elapsed
+  private var marker: CABarBeatTime
 
-  - parameter t: CABarBeatTime
-  */
-  private func checkCallbacksForTime(t: CABarBeatTime) {
-    callbacks[t]?(t)
-    predicatedCallbacks.values.filter({$0.predicate(t)}).forEach({$0.callback(t)})
-  }
+  /** Updates `marker` with current `time` */
+  func setMarker() { marker = time }
 
-  private var callbacks: [CABarBeatTime:Callback] = [:] { didSet { updateCallbackCheck() } }
-
-  private typealias PredicateCallback = (predicate: Predicate, callback: Callback)
-  private var predicatedCallbacks: [String:PredicateCallback] = [:] { didSet { updateCallbackCheck() } }
-
+  /// The amount of time elapsed since `marker`
   var timeSinceMarker: CABarBeatTime {
     var t = time
     var result = CABarBeatTime(bar: 0, beat: 0, subbeat: 0, subbeatDivisor: 0, reserved: 0)
@@ -349,32 +198,13 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
     return result
   }
 
-  var bar: Int { return Int(time.bar) }          /// Accessor for `time.bar`
-  var beat: Int { return Int(time.beat) }        /// Accessor for `time.beat`
-  var subbeat: Int { return Int(time.subbeat) }  /// Accessor for `time.subbeat`
+  var bar:         Int           { return Int(time.bar)       }  /// Accessor for `time.bar`
+  var beat:        Int           { return Int(time.beat)      }  /// Accessor for `time.beat`
+  var subbeat:     Int           { return Int(time.subbeat)   }  /// Accessor for `time.subbeat`
+  var ticks:       MIDITimeStamp { return time.ticks          }  /// Accessor for `time.ticks`
+  var doubleValue: Double        { return time.doubleValue    }  /// Accessor for `time.doubleValue`
 
-  /// Generates the current `MIDI` representation of the current time
-  var ticks: MIDITimeStamp {  return time.ticks }
-
-  var doubleValue: Double {  return time.doubleValue }
-
-  var description: String { return time.description }
-
-  /**
-  reset:
-
-  - parameter completion: (() -> Void)? = nil
-  */
-  func reset(completion: (() -> Void)? = nil) {
-    dispatch_async(queue) {
-      [unowned self] in
-      let ppq = self._time.subbeatDivisor
-      self._time = CABarBeatTime(bar: 1, beat: 1, subbeat: 1, subbeatDivisor: ppq, reserved: 0)
-      objc_sync_enter(self)
-      defer { objc_sync_exit(self); completion?() }
-      self.clockCount = 0╱Float(ppq)
-    }
-  }
+  // MARK: - Initializing and resetting
 
   /**
   initWithClockSource:partsPerQuarter:
@@ -390,12 +220,10 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
     beatInterval = (Float(ppq) * Float(0.25))╱Float(ppq)
     validBeats = 1 ... UInt16(Sequencer.timeSignature.beatsPerBar)
     validSubbeats = 1 ... ppq
-
-    let name = "BarBeatTime[\(ObjectIdentifier(self).uintValue)]"
-    queue = serialQueueWithLabel(name)
+    queue.name = "BarBeatTime[\(ObjectIdentifier(self).uintValue)]"
 
     do {
-      try MIDIClientCreateWithBlock(name, &client, nil)
+      try MIDIClientCreateWithBlock(queue.name!, &client, nil)
         ➤ "Failed to create midi client for bar beat time"
       try MIDIInputPortCreateWithBlock(client, "Input", &inPort, read) ➤ "Failed to create in port for bar beat time"
       try MIDIPortConnectSource(inPort, clockSource, nil) ➤ "Failed to connect bar beat time to clock"
@@ -405,21 +233,21 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
   }
 
   /**
-  read:context:
+  reset:
 
-  - parameter packetList: UnsafePointer<MIDIPacketList>
-  - parameter context: UnsafePointer<Void>
+  - parameter completion: (() -> Void)? = nil
   */
-  private func read(packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutablePointer<Void>) {
-    // Runs on MIDI Services thread
-    switch packetList.memory.packet.data.0 {
-      case 0b1111_1000: dispatch_async(queue) { [weak self] in self?.incrementClock() }
-      case 0b1111_1010: dispatch_async(queue) { [weak self] in self?.reset(); self?.checkCallbacksForTime(self!.time) }
-      default: break
+  func reset(completion: (() -> Void)? = nil) {
+    queue.addOperationWithBlock  {
+      [unowned self] in
+      let ppq = self._time.subbeatDivisor
+      self._time = CABarBeatTime(bar: 1, beat: 1, subbeat: 1, subbeatDivisor: ppq, reserved: 0)
+      objc_sync_enter(self)
+      defer { objc_sync_exit(self); completion?() }
+      self.clockCount = 0╱Float(ppq)
     }
   }
 
-  // ???: Will this ever get called to remove the reference in Sequencer's `Set`?
   deinit {
     do {
       try MIDIPortDispose(inPort) ➤ "Failed to dispose of in port"
@@ -429,4 +257,11 @@ final class BarBeatTime: Hashable, CustomStringConvertible {
   }
 }
 
+// MARK: - CustomStringConvertible
+extension BarBeatTime: CustomStringConvertible { var description: String { return time.description } }
+
+// MARK: - Hashable
+extension BarBeatTime: Hashable { var hashValue: Int { return ObjectIdentifier(self).hashValue } }
+
+// MARK: - Equatable
 func ==(lhs: BarBeatTime, rhs: BarBeatTime) -> Bool { return ObjectIdentifier(lhs) == ObjectIdentifier(rhs) }

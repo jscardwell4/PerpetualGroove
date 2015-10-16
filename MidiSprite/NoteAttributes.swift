@@ -27,7 +27,7 @@ struct NoteAttributes {
   var channel: UInt8 = 0
 
   /** An enumeration for specifying a note's pitch and octave */
-  enum Note: RawRepresentable, Equatable, EnumerableType, MIDIValueConvertible {
+  enum Note: RawRepresentable, Equatable, EnumerableType, CustomStringConvertible, MIDIValueConvertible {
 
     enum Letter: String, EnumerableType {
       case C="C", CSharp="C♯", D="D", DSharp="D♯", E="E", F="F", FSharp="F♯", G="G", GSharp="G♯", A="A", ASharp="A♯", B="B"
@@ -67,13 +67,14 @@ struct NoteAttributes {
 
     static let allCases: [Note] = (0...127).map({Note(MIDIValue: $0)})
 
+    var description: String { return rawValue }
   }
 
   /// The pitch and octave
   var note: Note = Note(MIDIValue: 60)
 
   /** Enumeration for a musical note duration */
-  enum Duration: String, EnumerableType, ImageAssetLiteralType {
+  enum Duration: String, EnumerableType, ImageAssetLiteralType, CustomStringConvertible {
     case DoubleWhole, DottedWhole, Whole, DottedHalf, Half, DottedQuarter, Quarter, DottedEighth, Eighth, DottedSixteenth, 
          Sixteenth, DottedThirtySecond, ThirtySecond, DottedSixtyFourth, SixtyFourth, DottedHundredTwentyEighth, 
          HundredTwentyEighth, DottedTwoHundredFiftySixth, TwoHundredFiftySixth
@@ -107,13 +108,14 @@ struct NoteAttributes {
                                        .DottedEighth, .Eighth, .DottedSixteenth, .Sixteenth, .DottedThirtySecond,
                                        .ThirtySecond, .DottedSixtyFourth, .SixtyFourth, .DottedHundredTwentyEighth, 
                                        .HundredTwentyEighth, .DottedTwoHundredFiftySixth, .TwoHundredFiftySixth ]
+    var description: String { return rawValue }
   }
 
   /// The duration of the played note
   var duration: Duration = .Eighth
 
   /** Enumeration for musical dynamics */
-  enum Velocity: String, EnumerableType, ImageAssetLiteralType, MIDIValueConvertible {
+  enum Velocity: String, EnumerableType, ImageAssetLiteralType, MIDIValueConvertible, CustomStringConvertible {
     case Pianississimo, Pianissimo, Piano, MezzoPiano, MezzoForte, Forte, Fortissimo, Fortississimo
 
     var MIDIValue: Byte {
@@ -142,33 +144,45 @@ struct NoteAttributes {
     }
     static let allCases: [Velocity] = [.Pianississimo, .Pianissimo, .Piano, .MezzoPiano, .MezzoForte, 
                                        .Forte, .Fortissimo, .Fortississimo]
+    var description: String { return rawValue }
   }
 
   /// The dynmamics for the note
   var velocity: Velocity = .MezzoForte
 }
 
+// MARK: - ByteArrayConvertible
 extension NoteAttributes: ByteArrayConvertible {
+
   var bytes: [Byte] { return [channel, note.MIDIValue, velocity.MIDIValue] + duration.rawValue.bytes }
+
+  /**
+  init:
+
+  - parameter bytes: [Byte]
+  */
   init(_ bytes: [Byte]) {
     guard bytes.count >= 7 else { return }
-    print("bytes: \(String(hexBytes: bytes))")
-    channel = bytes[0]
-    note = Note(MIDIValue: bytes[1])
+    channel  = bytes[0]
+    note     = Note(MIDIValue: bytes[1])
     velocity = Velocity(MIDIValue: bytes[2])
     duration = Duration(rawValue: String(bytes[3..<])) ?? .Eighth
-    print("channel = \(channel); note = \(note); velocity = \(velocity); duration = \(duration)")
   }
 }
 
+// MARK: - CustomStringConvertible
+
+extension NoteAttributes: CustomStringConvertible {
+  var description: String {
+    return "NoteAttributes {channel: \(channel); note: \(note); duration: \(duration); velocity: \(velocity)}"
+  }
+}
+
+// MARK: - Equatable
 extension NoteAttributes: Equatable {}
 
 func ==(lhs: NoteAttributes.Note, rhs: NoteAttributes.Note) -> Bool { return lhs.MIDIValue == rhs.MIDIValue }
 
 func ==(lhs: NoteAttributes, rhs: NoteAttributes) -> Bool {
-  guard lhs.channel == rhs.channel   else { return false }
-  guard lhs.duration == rhs.duration else { return false }
-  guard lhs.velocity == rhs.velocity else { return false }
-  guard lhs.note == rhs.note         else { return false }
-  return true
+  return lhs.channel == rhs.channel && lhs.duration == rhs.duration && lhs.velocity == rhs.velocity && lhs.note == rhs.note
 }

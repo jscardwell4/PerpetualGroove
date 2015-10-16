@@ -19,7 +19,7 @@ final class InstrumentViewController: UIViewController {
   @IBAction func didPickSoundSet() {
     let soundSet = Sequencer.soundSets[soundSetPicker.selection]
     do {
-      try instrument?.loadPreset(soundSet.presets[0])
+      try instrument?.loadSoundSet(soundSet, preset: soundSet.presets[0])
       programPicker.selection = 0
       programPicker.labels = soundSet.presets.map({$0.name})
     } catch {
