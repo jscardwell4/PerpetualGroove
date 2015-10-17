@@ -38,7 +38,7 @@ extension CGSize {
   }
 
   public func ratioForFittingSize(size: CGSize) -> Ratio<CGFloat> {
-    let (w, h) = min(aspectMappedToWidth(size.width), s2: aspectMappedToHeight(size.height)).unpack
+    let (w, h) = min(aspectMappedToWidth(size.width), aspectMappedToHeight(size.height)).unpack
     return Ratio((width/w) / (height/h))
   }
 
@@ -49,7 +49,7 @@ extension CGSize {
   public func aspectMappedToSize(size: CGSize, binding: Bool = false) -> CGSize {
   	let widthMapped = aspectMappedToWidth(size.width)
   	let heightMapped = aspectMappedToHeight(size.height)
-  	return binding ? min(widthMapped, s2: heightMapped) : max(widthMapped, s2: heightMapped)
+  	return binding ? min(widthMapped, heightMapped) : max(widthMapped, heightMapped)
   }
   public mutating func transform(transform: CGAffineTransform) {
     self = sizeByApplyingTransform(transform)
@@ -65,8 +65,8 @@ extension CGSize: Unpackable2 {
 extension CGSize: Packable2 {
   public init(_ elements: (CGFloat, CGFloat)) { self.init(width: elements.0, height: elements.1) }
 }
-public func max(s1: CGSize, s2: CGSize) -> CGSize { return s1 > s2 ? s1 : s2 }
-public func min(s1: CGSize, s2: CGSize) -> CGSize { return s1 < s2 ? s1 : s2 }
+public func max(s1: CGSize, _ s2: CGSize) -> CGSize { return s1 > s2 ? s1 : s2 }
+public func min(s1: CGSize, _ s2: CGSize) -> CGSize { return s1 < s2 ? s1 : s2 }
 
 //public func +(lhs: CGSize, rhs: CGSize) -> CGSize {
 //	return CGSize(width: lhs.width + rhs.width, height: lhs.height + rhs.height)

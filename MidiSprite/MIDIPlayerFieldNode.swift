@@ -28,28 +28,52 @@ class MIDIPlayerFieldNode: SKShapeNode {
     strokeColor = .primaryColor
   }
 
+  /**
+  init:
+
+  - parameter aDecoder: NSCoder
+  */
   required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
   // MARK: - Touch handling
 
   private var timestamp = 0.0
-  private var location = CGPoint.nullPoint
+  private var location = CGPoint.null
   private var velocities: [CGVector] = []
 
   private var touch: UITouch? {
     didSet {
-      timestamp = touch?.timestamp ?? 0
-      location = touch?.locationInNode(self) ?? .nullPoint
       velocities = []
+      if let touch = touch {
+        timestamp = touch.timestamp
+        location = touch.locationInNode(self)
+        let image = UIImage(named: "ball")!
+        let color = (TrackColor.currentColor ?? TrackColor.nextColor).value
+        let size = image.size * 0.75
+        touchNode = SKSpriteNode(texture: SKTexture(image: image), color: color, size: size)
+        touchNode!.position = location
+        touchNode!.name = "touchNode"
+        touchNode!.colorBlendFactor = 1
+        addChild(touchNode!)
+      } else {
+        timestamp = 0
+        location = .null
+        touchNode?.removeFromParent()
+        touchNode = nil
+      }
     }
   }
 
+  private var touchNode: SKSpriteNode?
+
   /** updateData */
   private func updateData() {
-    guard let touch = touch where touch.timestamp != timestamp && touch.locationInNode(self) != self.location else { return }
-    velocities.append(CGVector((touch.locationInNode(self) - location) / (touch.timestamp - timestamp)))
-    timestamp = touch.timestamp
-    location = touch.locationInNode(self)
+    guard let timestamp = touch?.timestamp, location = touch?.locationInNode(self)
+      where timestamp != self.timestamp && location != self.location else { return }
+
+    velocities.append(CGVector((location - self.location) / (timestamp - self.timestamp)))
+    self.timestamp = timestamp
+    self.location = location
   }
 
   /**
@@ -58,10 +82,7 @@ class MIDIPlayerFieldNode: SKShapeNode {
   - parameter touches: Set<UITouch>
   - parameter event: UIEvent?
   */
-  override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-    let containedTouches = touches.filter({containsPoint($0.locationInNode(self))})
-    if containedTouches.count == 1 { touch = containedTouches.first }
-  }
+  override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) { if touch == nil { touch = touches.first } }
 
   /**
   touchesCancelled:withEvent:
@@ -69,9 +90,7 @@ class MIDIPlayerFieldNode: SKShapeNode {
   - parameter touches: Set<UITouch>?
   - parameter event: UIEvent?
   */
-  override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) {
-    if let touches = touches, touch = touch where touches.contains(touch) { self.touch = nil }
-  }
+  override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) { touch = nil }
 
   /**
   touchesEnded:withEvent:
@@ -80,10 +99,10 @@ class MIDIPlayerFieldNode: SKShapeNode {
   - parameter event: UIEvent?
   */
   override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-    guard let touch = touch where touches.contains(touch) else { return }
+    guard touch != nil && touches.contains(touch!) else { return }
     updateData()
     generate()
-    self.touch = nil
+    touch = nil
   }
 
   /**
@@ -93,9 +112,10 @@ class MIDIPlayerFieldNode: SKShapeNode {
   - parameter event: UIEvent?
   */
   override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
-    guard let touch = touch where touches.contains(touch) else { return }
-    if containsPoint(touch.locationInNode(self)) { updateData() }
-    else { self.touch = nil }
+    guard touch != nil && touches.contains(touch!) else { return }
+    guard let p = touch?.locationInNode(self) where containsPoint(p) else { touch = nil; return }
+    updateData()
+    touchNode?.position = p
   }
 
   // MARK: - MIDINode generation

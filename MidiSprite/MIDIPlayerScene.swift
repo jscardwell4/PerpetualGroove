@@ -15,9 +15,6 @@ final class MIDIPlayerScene: SKScene {
 
   private var contentCreated = false
 
-  /** revert */
-  func revert() { midiPlayer.dropLast() }
-
   /** createContent */
   private func createContent() {
     scaleMode = .AspectFit

@@ -43,16 +43,16 @@ final class MIDIPlayerNode: SKShapeNode {
     physicsBody?.contactTestBitMask = 0xFFFFFFFF
     addChild(MIDIPlayerFieldNode(bezierPath: bezierPath, delegate: self))
 
-    receptionist = NotificationReceptionist(callbacks:
-      [
-        Sequencer.Notification.DidReset.rawValue: (Sequencer.self, NSOperationQueue.mainQueue(), didReset)
-      ]
-    )
+    let queue = NSOperationQueue.mainQueue()
+
+    receptionist.observe(Sequencer.Notification.DidReset,
+                    from: Sequencer.self,
+                   queue: queue,
+                callback: didReset)
+    receptionist.observe(MIDIDocumentManager.Notification.DidChangeDocument, queue: queue, callback: didReset)
   }
 
   private(set) var midiNodes: [MIDINode] = []
-  
-  var emptyField: Bool { return midiNodes.count == 0 }
 
   /**
   init:
@@ -64,15 +64,6 @@ final class MIDIPlayerNode: SKShapeNode {
 
   // MARK: - Manipulating MIDINodes
 
-  /** dropLast */
-  func dropLast() {
-    guard midiNodes.count > 0, let track = Sequencer.sequence?.currentTrack else { return }
-    let node = midiNodes.removeLast()
-    do { try track.removeNode(node) } catch { logError(error) }
-    node.removeFromParent()
-    Notification.DidRemoveNode.post()
-  }
-
   /**
   didReset:
 
@@ -83,7 +74,7 @@ final class MIDIPlayerNode: SKShapeNode {
     midiNodes.removeAll()
   }
 
-  private var receptionist: NotificationReceptionist!
+  private let receptionist = NotificationReceptionist()
 
   /**
   placeNew:
@@ -100,15 +91,8 @@ final class MIDIPlayerNode: SKShapeNode {
     }
     
     do {
-//      // Get the track first to force a new track to be created when necessary before the `MIDINode` receives its color
-//      let track: InstrumentTrack
-//      if targetTrack != nil { track = targetTrack! }
-//      else if let t = Sequencer.currentTrack where t.instrument.settingsEqualTo(Sequencer.auditionInstrument) { track = t }
-//      else {
-//        track = try sequence.newTrackWithInstrument(Sequencer.instrumentWithCurrentSettings())
-//        Sequencer.currentTrack = track
-//      }
-      let midiNode = try MIDINode(placement: placement, name: "midiNode\(midiNodes.count)", track: track, note: attributes)
+      let name = "midiNode\(midiNodes.count)"
+      let midiNode = try MIDINode(placement: placement, name: name, track: track, note: attributes)
       addChild(midiNode)
       midiNodes.append(midiNode)
       try track.addNode(midiNode)

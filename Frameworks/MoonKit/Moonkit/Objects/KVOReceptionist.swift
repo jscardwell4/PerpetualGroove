@@ -12,42 +12,65 @@ private(set) var observingContext = UnsafeMutablePointer<Void>.alloc(1)
 
 public final class KVOReceptionist: NSObject {
 
-  public typealias Observation = (KVOReceptionist) -> Void
+  public typealias Callback = (String, AnyObject, [String:AnyObject]) -> Void
 
-  public let keyPath: String
-  public let queue: NSOperationQueue
-  public let options: NSKeyValueObservingOptions
-  public let handler: Observation
+  private struct Observation {
+    let object: WeakObject<AnyObject>
+    let keyPath: String
+    let queue: NSOperationQueue
+    let callback: Callback
+  }
 
-  private(set) public weak var observer: AnyObject?
-  private(set) public weak var object: AnyObject?
-
-  private(set) public var change: [NSObject:AnyObject]?
+  private var observations: [ObjectIdentifier:[String:Observation]] = [:]
 
   /**
-  init:keyPath:object:options:queue:handler:
+  observe:forChangesTo:withOptions:queue:callback:
 
-  - parameter obs: AnyObject
-  - parameter kp: String
-  - parameter obj: AnyObject
-  - parameter opt: NSKeyValueObservingOptions
-  - parameter q: NSOperationQueue
-  - parameter h: (KVOReceptionist) -> Void
+  - parameter object: AnyObject
+  - parameter keyPath: String
+  - parameter options: NSKeyValueObservingOptions = .New
+  - parameter queue: NSOperationQueue = NSOperationQueue.mainQueue()
+  - parameter callback: Callback
   */
-  public init(observer obs: AnyObject,
-              keyPath kp: String,
-              object obj: AnyObject,
-              options opt: NSKeyValueObservingOptions = .New,
-              queue q: NSOperationQueue = NSOperationQueue.mainQueue(),
-              handler h: Observation)
+  public func observe(object: AnyObject,
+     var forChangesTo keyPath: String,
+          withOptions options: NSKeyValueObservingOptions = .New,
+                queue: NSOperationQueue = NSOperationQueue.mainQueue(),
+             callback: Callback)
   {
-    observer = obs; keyPath = kp; object = obj; options = opt; queue = q; handler = h
-    super.init()
-    obj.addObserver(self, forKeyPath: NSStringFromSelector(NSSelectorFromString(kp)), options: opt, context: observingContext)
+    let identifier = ObjectIdentifier(object)
+    keyPath = NSStringFromSelector(NSSelectorFromString(keyPath))
+    var observationBag = observations[identifier] ?? [:]
+    observationBag[keyPath] = Observation(object: WeakObject(object), keyPath: keyPath, queue: queue, callback: callback)
+    observations[identifier] = observationBag
+    object.addObserver(self,
+            forKeyPath: keyPath,
+               options: options,
+               context: observingContext)
+  }
+
+  /**
+  stopObserving:forChangesTo:
+
+  - parameter object: AnyObject
+  - parameter keyPath: String
+  */
+  public func stopObserving(object: AnyObject, var forChangesTo keyPath: String) {
+    let identifier = ObjectIdentifier(object)
+    keyPath = NSStringFromSelector(NSSelectorFromString(keyPath))
+    guard var observationBag = observations[identifier], let observation = observationBag[keyPath] else { return }
+    observationBag[keyPath] = nil
+    observation.object.value?.removeObserver(self, forKeyPath: keyPath, context: observingContext)
+    observations[identifier] = observationBag
   }
 
 
-  deinit { object?.removeObserver(self, forKeyPath: keyPath, context: observingContext) }
+  deinit {
+    for observation in observations.values.map({$0.values}).flatten() {
+      observation.object.value?.removeObserver(self, forKeyPath: observation.keyPath, context: observingContext)
+    }
+    observations.removeAll()
+  }
 
   /**
   observeValueForKeyPath:ofObject:change:context:
@@ -62,9 +85,13 @@ public final class KVOReceptionist: NSObject {
                                        change: [String:AnyObject]?,
                                       context: UnsafeMutablePointer<Void>)
   {
-    if self.keyPath == keyPath && self.object === object && context == observingContext {
-      queue.addOperationWithBlock { [unowned self] in self.change = change; self.handler(self) }
-    }
+    guard context == observingContext,
+      let keyPath = keyPath,
+          object = object,
+          change = change,
+          observation = observations[ObjectIdentifier(object)]?[keyPath] else { return }
+
+    observation.queue.addOperationWithBlock { observation.callback(keyPath, object, change) }
   }
 
 }

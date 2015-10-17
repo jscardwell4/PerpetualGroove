@@ -60,7 +60,7 @@ struct SoundSet: Hashable, CustomStringConvertible, CustomDebugStringConvertible
     guard u.checkResourceIsReachableAndReturnError(&error) else { throw error! }
     presets = try SF2File(file: u).presets.sort()
     url = u
-    logDebug(debugDescription)
+    logVerbose(debugDescription)
   }
 
 }

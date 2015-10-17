@@ -97,4 +97,10 @@ enum TrackColor: UInt32, EnumerableType, CustomStringConvertible {
     .EasternBlue, .Indochine, .Flirt, .Ultramarine, .LaRioja, .ForestGreen, .Pizza, .White, .Portica, 
     .MonteCarlo, .FlamePea, .Crimson, .HanPurple, .MangoTango, .Viking, .Yellow, .Conifer, .Apache
   ]
+
+  static var currentColor: TrackColor? { return Sequencer.sequence?.currentTrack?.color }
+
+  static var nextColor: TrackColor {
+    return allCases[((Sequencer.sequence?.instrumentTracks.count ?? -1) + 1) % allCases.count]
+  }
 }

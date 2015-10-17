@@ -1056,84 +1056,39 @@
 		C277AB8519D7878A008DEE39 /* Objects */ = {
 			isa = PBXGroup;
 			children = (
-				C20534241BCB0A4400A9F040 /* ToggleControl.swift */,
+				C2B328451BD2885A003363BD /* Controls */,
 				C2618A751B7A889200122EBA /* InlinePickerViewLabelCell.swift */,
 				C2618A771B7A88A400122EBA /* InlinePickerViewImageCell.swift */,
-				C2618A731B7A68F900122EBA /* LabeledSlider.swift */,
-				C2618A671B7A436400122EBA /* FormTextField.swift */,
-				C2618A691B7A437200122EBA /* FormSliderField.swift */,
-				C2618A6B1B7A438100122EBA /* FormPickerField.swift */,
-				C2618A6D1B7A439100122EBA /* FormStepperField.swift */,
-				C2618A6F1B7A439D00122EBA /* FormCheckboxField.swift */,
-				C2618A711B7A43B500122EBA /* FormSwitchField.swift */,
-				C2404BC71B7831EC00A68A64 /* PopoverListView.swift */,
-				C2404BC81B78333F00A68A64 /* PopoverFormView.swift */,
-				C26254251B744A2500E81068 /* ControlNode.swift */,
-				C26254271B744C3F00E81068 /* ButtonNode.swift */,
+				C2B328431BD287D3003363BD /* Forms */,
+				C2B328441BD2880A003363BD /* Popovers */,
+				C2B328491BD2894D003363BD /* SpriteKit Nodes */,
 				C24D19E919EDAE1500CC3CD9 /* InlinePickerView.swift */,
 				C211C2C11B4607E5004A24E4 /* InlinePickerViewLayout.swift */,
 				C211C2C31B4607FD004A24E4 /* InlinePickerViewCell.swift */,
 				C28E35B91A451E3800438CCF /* CoreDataStack.swift */,
-				C28447101A3E051F005338AB /* LabeledCheckbox.swift */,
-				C2F8C30E1A36133E004229FE /* TwoToneSlider.swift */,
-				C21493C01A35302200D274A2 /* ColorInputView.swift */,
+				C2B328461BD288AC003363BD /* Input Views */,
 				C21493BE1A35285A00D274A2 /* ColorSwatch.swift */,
-				C21493BC1A33CEA100D274A2 /* Checkbox.swift */,
 				C2F094441A32A83A00681AB3 /* DrawingKit.swift */,
-				C2CEFF2B1A328B2000F3BE24 /* FloatInputView.swift */,
-				C2CEFF271A32236B00F3BE24 /* HexIntegerInputView.swift */,
-				C284EA5B1A1EAD6700B07BA8 /* TouchTrackingGesture.swift */,
-				C2EB15761A1D45C100B64D84 /* ConfiningBlockActionGesture.swift */,
-				C28E509A1A143FDC00DF3206 /* MultiselectGestureRecognizer.swift */,
-				C205852C1A1BEC2000212759 /* BlockActionGesture.swift */,
-				C277AB8619D787EA008DEE39 /* ToggleBarButtonItem.swift */,
-				C24ECC8F19DE085D00C1870E /* BlockBarButtonItem.swift */,
-				C295E30319E2FBBB008309B8 /* ToggleImageSegmentedControl.swift */,
-				C217E47A19E83D8900B36983 /* MSButton.swift */,
-				C217E47D19E860DE00B36983 /* IntegerInputView.swift */,
-				C225879919F9EF4C006D8B1D /* PanGesture.swift */,
-				C25E63DD19FEC06A00F54626 /* GestureManager.swift */,
-				C2F01E331A03EDD9007F6966 /* ToggleImageBarButtonItem.swift */,
-				C2404BBF1B77ACDC00A68A64 /* ImageBarButtonItem.swift */,
-				C205852A1A1BA22A00212759 /* LongPressGesture.swift */,
+				C2B328471BD288E1003363BD /* Gestures */,
+				C2B328481BD28900003363BD /* Bar Button Items */,
 				C201F73A1A2539E7004600BC /* PseudoConstraint.swift */,
 				C2CEFF211A30F34400F3BE24 /* Label.swift */,
-				C2CEFF251A3121F100F3BE24 /* TextField.swift */,
-				C2CEFF291A32807E00F3BE24 /* TextInputView.swift */,
-				C2F094461A32AA8600681AB3 /* KeyInputButton.swift */,
-				C2A6261E1A33598300152E97 /* _Slider.swift */,
 				C2B9B4091AC1C499005BA67C /* RegularExpression.swift */,
 				C2304E091AEECE1C0090D889 /* LayerProxy.swift */,
 				C210E9911AF27E3C0026A51D /* ViewProxy.swift */,
 				C20297FB1AF295A5003F647B /* KVOReceptionist.swift */,
 				C2B691891AFBCADB0041CE11 /* NetworkReachability.swift */,
 				C279530F1AFEBA0300F72C80 /* AKPickerView.swift */,
-				C27953111AFED61200F72C80 /* FormViewController.swift */,
-				C296498D1B00EBBF000C2D4A /* FormView.swift */,
-				C296498F1B00EBD0000C2D4A /* FieldView.swift */,
 				C2EEBA081B06BFD10041B1B1 /* NotificationReceptionist.swift */,
-				C28A61EA1B0CEA2100612469 /* LabeledStepper.swift */,
-				C2143B761B0D5DAE007863F0 /* ImageButtonView.swift */,
-				C2CF98691B0FD12900E32E41 /* PopoverView.swift */,
-				C20CBBEB1B5FF7960008F538 /* PopoverListController.swift */,
-				C26834091B10C24100A359A8 /* LabelButton.swift */,
 				C27978E31B17FF9E00B36BAD /* ZoomingCollectionViewLayout.swift */,
 				C2C17D491B5813EB00D9E9A6 /* Identifier.swift */,
 				C2E9A42D1B693CEB0006AFA8 /* InsettingViewController.swift */,
 				C22F5FE51B6FCF73006D225A /* Timer.swift */,
-				C274CB891B70FBBF00EC8E4A /* Form.swift */,
-				C274CB8B1B70FBCF00EC8E4A /* FormField.swift */,
-				C24133F71B7520D40040580B /* ToggleButtonNode.swift */,
-				C2CF38CE1B7FAFE00085B3D5 /* VerticalSlider.swift */,
 				C2EF05B01B87FFA500AE68F1 /* Fraction.swift */,
 				C2D664F01B88CC6F00D70FFA /* Ratio.swift */,
 				C26A27F01B94BD7A00BD1698 /* IntrinsicSizeDelegatingView.swift */,
 				C26A27F21B94C30500BD1698 /* DirectoryMonitor.swift */,
-				C26A27F61B9532A900BD1698 /* Knob.swift */,
 				C2F75A0C1B977075001EA2BA /* PropertyCoder.swift */,
-				C2D5F2411B97BC93005040EF /* Slider.swift */,
-				C226BB5E1BA0DA7300E4FC98 /* Stepper.swift */,
-				C25C6F611BA8F23800B3CBAB /* ScrollWheel.swift */,
 				C20E102B1BBF2DE600AAC01A /* TemplateImageView.swift */,
 				C2F619DF1BC599D00000891A /* Marquee.swift */,
 				C288B0471BCAF3A300D1FFE2 /* WeakObject.swift */,
@@ -1200,6 +1155,107 @@
 				C2A70E431ACD8EBA009C2CF7 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		C2B328431BD287D3003363BD /* Forms */ = {
+			isa = PBXGroup;
+			children = (
+				C27953111AFED61200F72C80 /* FormViewController.swift */,
+				C296498D1B00EBBF000C2D4A /* FormView.swift */,
+				C296498F1B00EBD0000C2D4A /* FieldView.swift */,
+				C274CB891B70FBBF00EC8E4A /* Form.swift */,
+				C274CB8B1B70FBCF00EC8E4A /* FormField.swift */,
+				C2618A671B7A436400122EBA /* FormTextField.swift */,
+				C2618A691B7A437200122EBA /* FormSliderField.swift */,
+				C2618A6B1B7A438100122EBA /* FormPickerField.swift */,
+				C2618A6D1B7A439100122EBA /* FormStepperField.swift */,
+				C2618A6F1B7A439D00122EBA /* FormCheckboxField.swift */,
+				C2618A711B7A43B500122EBA /* FormSwitchField.swift */,
+			);
+			name = Forms;
+			sourceTree = "<group>";
+		};
+		C2B328441BD2880A003363BD /* Popovers */ = {
+			isa = PBXGroup;
+			children = (
+				C2404BC71B7831EC00A68A64 /* PopoverListView.swift */,
+				C2404BC81B78333F00A68A64 /* PopoverFormView.swift */,
+				C2CF98691B0FD12900E32E41 /* PopoverView.swift */,
+				C20CBBEB1B5FF7960008F538 /* PopoverListController.swift */,
+			);
+			name = Popovers;
+			sourceTree = "<group>";
+		};
+		C2B328451BD2885A003363BD /* Controls */ = {
+			isa = PBXGroup;
+			children = (
+				C2A6261E1A33598300152E97 /* _Slider.swift */,
+				C2CF38CE1B7FAFE00085B3D5 /* VerticalSlider.swift */,
+				C20534241BCB0A4400A9F040 /* ToggleControl.swift */,
+				C2618A731B7A68F900122EBA /* LabeledSlider.swift */,
+				C28447101A3E051F005338AB /* LabeledCheckbox.swift */,
+				C2F8C30E1A36133E004229FE /* TwoToneSlider.swift */,
+				C21493BC1A33CEA100D274A2 /* Checkbox.swift */,
+				C295E30319E2FBBB008309B8 /* ToggleImageSegmentedControl.swift */,
+				C217E47A19E83D8900B36983 /* MSButton.swift */,
+				C2CEFF251A3121F100F3BE24 /* TextField.swift */,
+				C2CEFF291A32807E00F3BE24 /* TextInputView.swift */,
+				C2F094461A32AA8600681AB3 /* KeyInputButton.swift */,
+				C28A61EA1B0CEA2100612469 /* LabeledStepper.swift */,
+				C2143B761B0D5DAE007863F0 /* ImageButtonView.swift */,
+				C26834091B10C24100A359A8 /* LabelButton.swift */,
+				C26A27F61B9532A900BD1698 /* Knob.swift */,
+				C2D5F2411B97BC93005040EF /* Slider.swift */,
+				C226BB5E1BA0DA7300E4FC98 /* Stepper.swift */,
+				C25C6F611BA8F23800B3CBAB /* ScrollWheel.swift */,
+			);
+			name = Controls;
+			sourceTree = "<group>";
+		};
+		C2B328461BD288AC003363BD /* Input Views */ = {
+			isa = PBXGroup;
+			children = (
+				C21493C01A35302200D274A2 /* ColorInputView.swift */,
+				C2CEFF2B1A328B2000F3BE24 /* FloatInputView.swift */,
+				C2CEFF271A32236B00F3BE24 /* HexIntegerInputView.swift */,
+				C217E47D19E860DE00B36983 /* IntegerInputView.swift */,
+			);
+			name = "Input Views";
+			sourceTree = "<group>";
+		};
+		C2B328471BD288E1003363BD /* Gestures */ = {
+			isa = PBXGroup;
+			children = (
+				C284EA5B1A1EAD6700B07BA8 /* TouchTrackingGesture.swift */,
+				C2EB15761A1D45C100B64D84 /* ConfiningBlockActionGesture.swift */,
+				C28E509A1A143FDC00DF3206 /* MultiselectGestureRecognizer.swift */,
+				C205852C1A1BEC2000212759 /* BlockActionGesture.swift */,
+				C225879919F9EF4C006D8B1D /* PanGesture.swift */,
+				C25E63DD19FEC06A00F54626 /* GestureManager.swift */,
+				C205852A1A1BA22A00212759 /* LongPressGesture.swift */,
+			);
+			name = Gestures;
+			sourceTree = "<group>";
+		};
+		C2B328481BD28900003363BD /* Bar Button Items */ = {
+			isa = PBXGroup;
+			children = (
+				C277AB8619D787EA008DEE39 /* ToggleBarButtonItem.swift */,
+				C24ECC8F19DE085D00C1870E /* BlockBarButtonItem.swift */,
+				C2F01E331A03EDD9007F6966 /* ToggleImageBarButtonItem.swift */,
+				C2404BBF1B77ACDC00A68A64 /* ImageBarButtonItem.swift */,
+			);
+			name = "Bar Button Items";
+			sourceTree = "<group>";
+		};
+		C2B328491BD2894D003363BD /* SpriteKit Nodes */ = {
+			isa = PBXGroup;
+			children = (
+				C26254251B744A2500E81068 /* ControlNode.swift */,
+				C26254271B744C3F00E81068 /* ButtonNode.swift */,
+				C24133F71B7520D40040580B /* ToggleButtonNode.swift */,
+			);
+			name = "SpriteKit Nodes";
 			sourceTree = "<group>";
 		};
 		C2CE884518138C4900555D63 = {

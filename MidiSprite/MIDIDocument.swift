@@ -11,44 +11,44 @@ import MoonKit
 
 final class MIDIDocument: UIDocument {
 
-  typealias SequenceNotification = MIDISequence.Notification
-
-  enum Error: String, ErrorType {
-    case InvalidContentType
+  enum Notification: String, NotificationType, NotificationNameType {
+    case DidRenameFile
+    enum Key: String, KeyType { case OldName, NewName }
   }
+
+  enum Error: String, ErrorType { case InvalidContentType }
 
   let sequence = MIDISequence()
 
   /**
-  didAddTrack:
+  Callback for `DidAddTrack` notifications from `sequence`. Updates `receptionist` to observe `DidUpdateEvents` notificaton from
+  the new track.
 
   - parameter notification: NSNotification
   */
   private func didAddTrack(notification: NSNotification) {
-    guard let track = notification.userInfo?[SequenceNotification.Key.Track.rawValue] as? InstrumentTrack else { return }
+    guard let track = notification.userInfo?[MIDISequence.Notification.Key.Track.rawValue] as? InstrumentTrack else { return }
     receptionist.observe(MIDITrackNotification.DidUpdateEvents, from: track, callback: didUpdateTrack)
     updateChangeCount(.Done)
   }
 
   /**
-  didRemoveTrack:
+  Callback for `DidRemoveTrack` notifications from `sequence`. Updates `receptionist` to stop observing the removed track.
 
   - parameter notification: NSNotification
   */
   private func didRemoveTrack(notification: NSNotification) {
-    guard let track = notification.userInfo?[SequenceNotification.Key.Track.rawValue] as? InstrumentTrack else { return }
+    guard let track = notification.userInfo?[MIDISequence.Notification.Key.Track.rawValue] as? InstrumentTrack else { return }
     receptionist.stopObserving(MIDITrackNotification.DidUpdateEvents, from: track)
     updateChangeCount(.Done)
   }
 
   /**
-  didUpdateTrack:
+  Callback for `DidUpdateEvents` notifications from the tracks of `sequence`.
 
   - parameter notification: NSNotification
   */
-  private func didUpdateTrack(notification: NSNotification) {
-    updateChangeCount(.Done)
-  }
+  private func didUpdateTrack(notification: NSNotification) { updateChangeCount(.Done) }
 
   /**
   init:
@@ -57,8 +57,8 @@ final class MIDIDocument: UIDocument {
   */
   override init(fileURL url: NSURL) {
     super.init(fileURL: url)
-    receptionist.observe(SequenceNotification.DidAddTrack, from: sequence, callback: didAddTrack)
-    receptionist.observe(SequenceNotification.DidRemoveTrack, from: sequence, callback: didRemoveTrack)
+    receptionist.observe(MIDISequence.Notification.DidAddTrack,    from: sequence, callback: didAddTrack)
+    receptionist.observe(MIDISequence.Notification.DidRemoveTrack, from: sequence, callback: didRemoveTrack)
   }
 
   private let receptionist = NotificationReceptionist()
@@ -93,11 +93,7 @@ final class MIDIDocument: UIDocument {
   override func fileAttributesToWriteToURL(url: NSURL,
                           forSaveOperation saveOperation: UIDocumentSaveOperation) throws -> [NSObject: AnyObject]
   {
-
-    // TODO: Generate thumbnail
-//    let image = UIImage()
-
-    return [NSURLHasHiddenExtensionKey: true]//, NSURLThumbnailDictionaryKey: [NSThumbnail1024x1024SizeKey: image]]
+    return [NSURLHasHiddenExtensionKey: true]
   }
 
   /**
@@ -106,12 +102,9 @@ final class MIDIDocument: UIDocument {
   - parameter name: String
   */
   func renameTo(name: String) {
-    logDebug("name: \(name)")
     let (baseName, _) = name.baseNameExt
     guard let url = fileURL.URLByDeletingLastPathComponent else { return }
-    saveToURL(url + "\(baseName).midi", forSaveOperation: .ForCreating) {
-      logDebug("rename successful? \($0)")
-    }
+    saveToURL(url + "\(baseName).midi", forSaveOperation: .ForCreating, completionHandler: nil)
 
   }
 

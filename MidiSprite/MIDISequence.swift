@@ -91,43 +91,17 @@ final class MIDISequence {
       Notification.SoloCountDidChange.post(object: self,
                                            userInfo: [.OldCount: _soloTracks.count - 1, .NewCount: _soloTracks.count])
     }
-//    let soloTracks = Set(self.soloTracks)
-//    let oldCount = soloTracks.count
-
-//    let newCount: Int
-
-//    tracks ∖= soloTracks
-
-//    switch track.solo {
-//      case true:
-//        guard let idx = _soloTracks.indexOf({$0.value == track}) else {
-//          fatalError("Failed to locate soloing track in array")
-//        }
-//        _soloTracks.removeAtIndex(idx)
-//        track.solo = false
-//        newCount = oldCount - 1
-//
-//        if _soloTracks.isEmpty { tracks.forEach({$0.mute = false}) }
-//        else { track.mute = true }
-//
-//      case false:
-//        track.solo = true
-//        newCount = oldCount + 1
-//        _soloTracks.append(WeakObject(track))
-//        if _soloTracks.count == 1 { tracks.forEach({$0.mute = true}) }
-//    }
-//    Notification.SoloCountDidChange.post(object: self, userInfo: [.OldCount: oldCount, .NewCount: newCount])
   }
 
   /** Conversion to and from the `MIDIFile` type  */
   var file: MIDIFile {
     get {
       let file = MIDIFile(format: .One, division: 480, tracks: tracks)
-      logDebug("file: \(file)")
+      logDebug("<out> file: \(file)")
       return file
     }
     set {
-      logDebug("file: \(newValue)")
+      logDebug("<in> file: \(newValue)")
       var trackChunks = ArraySlice(newValue.tracks)
       if let trackChunk = trackChunks.first
         where trackChunk.events.count == trackChunk.events.filter({ TempoTrack.isTempoTrackEvent($0) }).count
@@ -137,6 +111,7 @@ final class MIDISequence {
       }
 
       instrumentTracks = trackChunks.flatMap({ try? InstrumentTrack(trackChunk: $0, sequence: self) })
+      for track in instrumentTracks { Notification.DidAddTrack.post(object: self, userInfo: [Notification.Key.Track: track]) }
       zip(TrackColor.allCases, instrumentTracks).forEach { $1.color = $0 }
       currentTrack = instrumentTracks.first
     }
@@ -184,8 +159,7 @@ final class MIDISequence {
   - parameter tempo: Double
   */
   func insertTempoChange(tempo: Double) {
-    guard Sequencer.recording else { return }
-    tempoTrack.insertTempoChange(tempo)
+    guard Sequencer.recording else { return }; tempoTrack.insertTempoChange(tempo)
   }
 
 }

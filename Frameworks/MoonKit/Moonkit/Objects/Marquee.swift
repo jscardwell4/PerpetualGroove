@@ -17,6 +17,17 @@ import UIKit
     return layer
   }()
 
+  public enum VerticalAlignment: String { case Top, Center, Bottom }
+
+  public var verticalAlignment: VerticalAlignment = .Center {
+    didSet { guard verticalAlignment != oldValue else { return }; staleCache = true }
+  }
+
+  @IBInspectable public var verticalAlignmentString: String {
+    get { return verticalAlignment.rawValue }
+    set { verticalAlignment = VerticalAlignment(rawValue: newValue) ?? .Center }
+  }
+
   private var staleCache = true { didSet { guard staleCache else { return }; setNeedsLayout() } }
 
   @IBInspectable public var text: String = "" {
@@ -48,7 +59,11 @@ import UIKit
 
     // Adjust the result according to how it fits the view's bounds
     var textFrame = textRect
-    textFrame.origin.y += half(bounds.height) - half(font.pointSize)
+    switch verticalAlignment {
+      case .Top: textFrame.origin.y = 0
+      case .Center: textFrame.origin.y += half(bounds.height) - half(font.pointSize)
+      case .Bottom: textFrame.origin.y += bounds.height - font.pointSize
+    }
 
     let extendText: Bool
 
@@ -86,6 +101,8 @@ import UIKit
 
     // Update the layer's contents
     textLayer.contents = image.CGImage
+    invalidateIntrinsicContentSize()
+    setNeedsDisplay()
   }
 
   @IBInspectable public var scrollSeparator: String = "•"
@@ -95,26 +112,27 @@ import UIKit
       textStorage.addAttribute(NSForegroundColorAttributeName, value: textColor, range: NSRange(0 ..< textStorage.length))
       textStorage.endEditing()
       staleCache = true
+      setNeedsDisplay()
     }
   }
-  public var font: UIFont = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline) {
+  public static let defaultFont = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
+  public var font: UIFont = Marquee.defaultFont {
     didSet {
       textStorage.beginEditing()
       textStorage.addAttribute(NSFontAttributeName, value: font, range: NSRange(0 ..< textStorage.length))
       textStorage.endEditing()
       staleCache = true
       invalidateIntrinsicContentSize()
+      setNeedsDisplay()
     }
   }
 
-  @IBInspectable public var fontName: String {
-    get { return font.fontName }
-    set { if let font = UIFont(name: newValue, size: font.pointSize) { self.font = font } }
+  @IBInspectable public var fontName: String = Marquee.defaultFont.fontName {
+    didSet { if let font = UIFont(name: fontName, size: font.pointSize) { self.font = font } }
   }
 
-  @IBInspectable public var fontSize: CGFloat {
-    get { return font.pointSize }
-    set { font = font.fontWithSize(newValue) }
+  @IBInspectable public var fontSize: CGFloat = Marquee.defaultFont.pointSize {
+    didSet { font = font.fontWithSize(fontSize) }
   }
 
   /** How fast to scroll text in characters per second */
@@ -180,6 +198,8 @@ import UIKit
   public override func encodeWithCoder(aCoder: NSCoder) {
     super.encodeWithCoder(aCoder)
     aCoder.encodeObject(font, forKey: "font")
+    aCoder.encodeObject(fontName, forKey: "fontName")
+    aCoder.encodeFloat(Float(fontSize), forKey: "fontSize")
     aCoder.encodeObject(textColor, forKey: "textColor")
     aCoder.encodeObject(text, forKey: "text")
     aCoder.encodeObject(scrollSeparator, forKey: "scrollSeparator")
@@ -193,10 +213,12 @@ import UIKit
   */
   public required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
-    if let font = aDecoder.decodeObjectForKey("font")                       as? UIFont  { self.font = font                      }
-    if let text = aDecoder.decodeObjectForKey("text")                       as? String  { self.text = text                      }
-    if let textColor = aDecoder.decodeObjectForKey("textColor")             as? UIColor { self.textColor = textColor            }
-    if let scrollSeparator = aDecoder.decodeObjectForKey("scrollSeparator") as? String { self.scrollSeparator = scrollSeparator }
+    if let font = aDecoder.decodeObjectForKey("font")                       as? UIFont  { self.font = font                       }
+    if let fontName = aDecoder.decodeObjectForKey("fontName")               as? String  { self.fontName = fontName               }
+    fontSize = CGFloat(aDecoder.decodeFloatForKey("fontSize"))
+    if let text = aDecoder.decodeObjectForKey("text")                       as? String  { self.text = text                       }
+    if let textColor = aDecoder.decodeObjectForKey("textColor")             as? UIColor { self.textColor = textColor             }
+    if let scrollSeparator = aDecoder.decodeObjectForKey("scrollSeparator") as? String  { self.scrollSeparator = scrollSeparator }
     scrollSpeed = aDecoder.decodeDoubleForKey("scrollSpeed")
     setup()
   }
@@ -241,25 +263,9 @@ import UIKit
     let animation = CABasicAnimation(keyPath: "transform.translation.x")
     animation.duration = scrollSpeed * CFTimeInterval(text.utf16.count + scrollSeparator.utf16.count)
     animation.toValue = -bounds.width - 𝝙w
-//    animation.delegate = self
     animation.repeatCount = Float.infinity
     textLayer.addAnimation(animation, forKey: Marquee.AnimationKey)
   }
-
-  /**
-  animationDidStart:
-
-  - parameter anim: CAAnimation
-  */
-//  public override func animationDidStart(anim: CAAnimation) { isScrolling = true }
-
-  /**
-  animationDidStop:finished:
-
-  - parameter anim: CAAnimation
-  - parameter flag: Bool
-  */
-//  public override func animationDidStop(anim: CAAnimation, finished flag: Bool) { isScrolling = false }
 
   /** endScrolling */
   private func endScrolling() { guard isScrolling else { return }; textLayer.removeAnimationForKey(Marquee.AnimationKey) }

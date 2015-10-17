@@ -87,6 +87,7 @@ public extension SequenceType {
 
     return result
   }
+
 }
 
 public struct InfiniteSequenceOf<T>: SequenceType {

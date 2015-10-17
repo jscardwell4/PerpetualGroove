@@ -14,9 +14,6 @@ final class MIDIPlayerView: SKView {
 
   var midiPlayerScene: MIDIPlayerScene? { return scene as? MIDIPlayerScene }
 
-  /** revert */
-  func revert() { midiPlayerScene?.revert() }
-
   /** setup */
   private func setup() {
     ignoresSiblingOrder = true

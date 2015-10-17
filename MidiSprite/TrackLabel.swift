@@ -33,7 +33,7 @@ import Eveleth
     }
   }
 
-  @IBInspectable var textColor: UIColor = .blackColor() {
+  @IBInspectable var textColor: UIColor = .primaryColor {
     didSet {
       marquee.textColor = textColor
       textField.textColor = textColor
@@ -41,10 +41,9 @@ import Eveleth
     }
   }
   
-  var font: UIFont = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline) {
+  var font: UIFont = .compressedControlFont {
     didSet {
       marquee.font = font
-      textField.font = font
       setNeedsDisplay()
       invalidateIntrinsicContentSize()
     }
@@ -60,24 +59,57 @@ import Eveleth
     set { font = font.fontWithSize(newValue) }
   }
 
+  @IBInspectable var editingFontName: String {
+    get { return editingFont.fontName }
+    set { if let font = UIFont(name: newValue, size: editingFont.pointSize) { self.editingFont = font } }
+  }
+
+  @IBInspectable var editingFontSize: CGFloat {
+    get { return editingFont.pointSize }
+    set { editingFont = editingFont.fontWithSize(newValue) }
+  }
+
+  var editingFont: UIFont = .compressedControlFontEditing {
+    didSet {
+      textField.font = editingFont
+      setNeedsDisplay()
+      invalidateIntrinsicContentSize()
+    }
+  }
+
+  @IBInspectable var textFieldHidden: Bool = true { didSet { textField.hidden = textFieldHidden } }
+  @IBInspectable var marqueeHidden: Bool = false { didSet { marquee.hidden = marqueeHidden } }
+
+
+  /** Overridden to force subviews to display the proper font and text color */
+  override func layoutSubviews() {
+    marquee.font = font
+    textField.font = editingFont
+    marquee.textColor = textColor
+    textField.textColor = textColor
+    super.layoutSubviews()
+  }
+
   /** setup */
   private func setup() {
     let id = Identifier(self, "Internal")
 
-    marquee.font = .compressedControlFont
-    marquee.textColor = .secondaryColor
+    marquee.font = font
+    marquee.textColor = textColor
+    marquee.verticalAlignment = .Top
     addSubview(marquee)
-    constrain([𝗩|marquee|𝗩, 𝗛|marquee|𝗛] --> id)
+    constrain([[𝗩|marquee], 𝗛|marquee|𝗛] --> id)
 
-    textField.font = .compressedControlFont
-    textField.textColor = .secondaryColor
+    textField.font = editingFont
+    textField.textColor = textColor
+    textField.textAlignment = .Center
     textField.backgroundColor = .clearColor()
     textField.enablesReturnKeyAutomatically = true
     textField.returnKeyType = .Done
     textField.delegate = self
     textField.hidden = true
     addSubview(textField)
-    constrain([𝗩|textField|𝗩, 𝗛|textField|𝗛] --> id)
+    constrain([[𝗩|textField], 𝗛|textField|𝗛] --> id)
 
     tapGesture.addTarget(self, action: "handleTap:")
     tapGesture.delaysTouchesBegan = true
@@ -89,7 +121,7 @@ import Eveleth
 
   - returns: CGSize
   */
-  override func intrinsicContentSize() -> CGSize { return marquee.intrinsicContentSize() }
+  override func intrinsicContentSize() -> CGSize { return max(marquee.intrinsicContentSize(), textField.intrinsicContentSize()) }
 
   /**
   initWithFrame:

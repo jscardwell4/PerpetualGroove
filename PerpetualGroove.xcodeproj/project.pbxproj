@@ -10,6 +10,10 @@
 		C207458F1B8DF6D5000A06D4 /* BarBeatTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = C207458E1B8DF6D5000A06D4 /* BarBeatTime.swift */; };
 		C21E44C11B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C21E44C01B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 */; };
 		C21E44C51B76546C00574BD2 /* AudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21E44C41B76546C00574BD2 /* AudioManager.swift */; };
+		C222E6C81BD2B78600DBBBDA /* FestivoLC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C222E6C71BD2B78600DBBBDA /* FestivoLC.framework */; };
+		C222E6C91BD2B78600DBBBDA /* FestivoLC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C222E6C71BD2B78600DBBBDA /* FestivoLC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C222E6CB1BD2B78600DBBBDA /* Triump.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C222E6CA1BD2B78600DBBBDA /* Triump.framework */; };
+		C222E6CC1BD2B78600DBBBDA /* Triump.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C222E6CA1BD2B78600DBBBDA /* Triump.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C22567821BB05ED100E4842B /* Lumberjack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C22567811BB05ED100E4842B /* Lumberjack.framework */; };
 		C22567831BB05ED100E4842B /* Lumberjack.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C22567811BB05ED100E4842B /* Lumberjack.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C22D93F11BADA24A00B04A2B /* MIDINodeHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22D93F01BADA24A00B04A2B /* MIDINodeHistory.swift */; settings = {ASSET_TAGS = (); }; };
@@ -135,7 +139,9 @@
 				C22567831BB05ED100E4842B /* Lumberjack.framework in Embed Frameworks */,
 				C27E18B31B965F8500626314 /* MoonKit.framework in Embed Frameworks */,
 				C27E18AE1B965F8500626314 /* Eveleth.framework in Embed Frameworks */,
+				C222E6C91BD2B78600DBBBDA /* FestivoLC.framework in Embed Frameworks */,
 				C27E18B51B965F8500626314 /* Chameleon.framework in Embed Frameworks */,
+				C222E6CC1BD2B78600DBBBDA /* Triump.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -162,6 +168,8 @@
 		C21E44C41B76546C00574BD2 /* AudioManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioManager.swift; sourceTree = "<group>"; };
 		C21E44C81B76739C00574BD2 /* sf2.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = sf2.playground; path = MidiSprite/sf2.playground; sourceTree = "<group>"; };
 		C2207B901B9DC63300E4D65D /* SF2File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SF2File.swift; path = ../SoundFontParser/SF2File.swift; sourceTree = "<group>"; };
+		C222E6C71BD2B78600DBBBDA /* FestivoLC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FestivoLC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C222E6CA1BD2B78600DBBBDA /* Triump.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Triump.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C22567811BB05ED100E4842B /* Lumberjack.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Lumberjack.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C22D93F01BADA24A00B04A2B /* MIDINodeHistory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINodeHistory.swift; sourceTree = "<group>"; };
 		C22FA58A1BC7F3D300162DB4 /* TrackLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackLabel.swift; sourceTree = "<group>"; };
@@ -259,11 +267,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C222E6C81BD2B78600DBBBDA /* FestivoLC.framework in Frameworks */,
 				C22567821BB05ED100E4842B /* Lumberjack.framework in Frameworks */,
 				C27E18AD1B965F8500626314 /* Eveleth.framework in Frameworks */,
 				C27E18B41B965F8500626314 /* Chameleon.framework in Frameworks */,
 				C27E18B21B965F8500626314 /* MoonKit.framework in Frameworks */,
 				C2AF09D51BB9DB410021A37E /* AudioToolbox.framework in Frameworks */,
+				C222E6CB1BD2B78600DBBBDA /* Triump.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -273,6 +283,10 @@
 		C2404BD71B78EF8200A68A64 /* Embedded Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C2AF09D41BB9DB410021A37E /* AudioToolbox.framework */,
+				C22567811BB05ED100E4842B /* Lumberjack.framework */,
+				C222E6C71BD2B78600DBBBDA /* FestivoLC.framework */,
+				C222E6CA1BD2B78600DBBBDA /* Triump.framework */,
 				C2404BD41B78EEC500A68A64 /* MoonKit.framework */,
 				C2404BD11B78EE3800A68A64 /* Chameleon.framework */,
 				C2404BCD1B78EDEB00A68A64 /* Eveleth.framework */,
@@ -454,8 +468,6 @@
 		C2E043281B72F4DC005F0675 = {
 			isa = PBXGroup;
 			children = (
-				C2AF09D41BB9DB410021A37E /* AudioToolbox.framework */,
-				C22567811BB05ED100E4842B /* Lumberjack.framework */,
 				C2404BD91B78EFD700A68A64 /* Playgrounds */,
 				C2404BD71B78EF8200A68A64 /* Embedded Frameworks */,
 				C2404BD81B78EFA800A68A64 /* Sound Sets */,

@@ -25,25 +25,41 @@ final class MIDIDocumentManager {
     var object: AnyObject? { return MIDIDocumentManager.self }
   }
 
-  static private(set) var currentDocument: MIDIDocument? {
-    didSet {
-      logDebug("currentDocument: " + (currentDocument == nil ? "nil" : String.fromCString(currentDocument!.fileURL.fileSystemRepresentation)!))
-      guard oldValue != currentDocument else { return }
+  /** refreshBookmark */
+  static private func refreshBookmark() {
       do {
-
         SettingsManager.currentDocument = try currentDocument?.fileURL.bookmarkDataWithOptions(.SuitableForBookmarkFile,
                                                                 includingResourceValuesForKeys: nil,
                                                                                  relativeToURL: nil)
       } catch {
         logError(error, message: "Failed to generate bookmark data for storage")
       }
+  }
+
+  static private(set) var currentDocument: MIDIDocument? {
+    didSet {
+      logDebug("currentDocument: " + (currentDocument == nil
+                                        ? "nil"
+                                        : String.fromCString(currentDocument!.fileURL.fileSystemRepresentation)!))
+
+      guard oldValue != currentDocument else { return }
+
+      if let oldValue = oldValue { observer.stopObserving(oldValue, forChangesTo: "fileURL") }
+
+      if let currentDocument = currentDocument {
+        observer.observe(currentDocument, forChangesTo: "fileURL", queue: queue) {
+          _, _, _ in MIDIDocumentManager.refreshBookmark()
+        }
+      }
+
+      refreshBookmark()
       Notification.DidChangeDocument.post()
     }
   }
 
   private static let queue: NSOperationQueue = {
     let queue = NSOperationQueue()
-    queue.name = "com.MoondeerStudios.MIDISprite.documentmanager"
+    queue.name = "com.moondeerstudios.perpetualgroove.documentmanager"
     queue.maxConcurrentOperationCount = 1
     return queue
   }()
@@ -56,8 +72,7 @@ final class MIDIDocumentManager {
 
   private static let metadataQuery: NSMetadataQuery = {
     let query = NSMetadataQuery()
-    query.searchScopes = [NSMetadataQueryUbiquitousDocumentsScope,
-                          NSMetadataQueryAccessibleUbiquitousExternalDocumentsScope]
+    query.searchScopes = [NSMetadataQueryUbiquitousDocumentsScope, NSMetadataQueryAccessibleUbiquitousExternalDocumentsScope]
     query.operationQueue = MIDIDocumentManager.queue
     return query
   }()
@@ -79,6 +94,17 @@ final class MIDIDocumentManager {
   private static func didFinishGathering(notification: NSNotification) {
     logVerbose()
     Notification.DidUpdateMetadataItems.post()
+  }
+
+  /**
+  didRenameFile:
+
+  - parameter notification: NSNotification
+  */
+  private static func didRenameFile(notification: NSNotification) {
+    guard let currentDocument = currentDocument,
+              object = notification.object as? MIDIDocument where currentDocument == object else { return }
+    refreshBookmark()
   }
 
   /**
@@ -206,26 +232,34 @@ final class MIDIDocumentManager {
       [url = item.URL] in
 
       NSFileCoordinator(filePresenter: nil).coordinateWritingItemAtURL(url,
-        options: .ForDeleting,
-        error: nil,
-        byAccessor: { do { try NSFileManager().removeItemAtURL($0) } catch { logError(error) } }
-      )
+                                                               options: .ForDeleting,
+                                                                 error: nil)
+        {
+          do { try NSFileManager().removeItemAtURL($0) }
+          catch { logError(error) }
+        }
     }
 
     guard currentDocument?.fileURL == item.URL else { return }
     currentDocument = nil
   }
 
+  private static let observer = KVOReceptionist()
+
   private static let receptionist: NotificationReceptionist = {
     let metadataQuery = MIDIDocumentManager.metadataQuery
     let queue = MIDIDocumentManager.queue
-    typealias Callback = NotificationReceptionist.Callback
-    let finishGatheringCallback: Callback = (metadataQuery, queue, MIDIDocumentManager.didFinishGathering)
-    let updateCallback         : Callback = (metadataQuery, queue, MIDIDocumentManager.didUpdate)
-    let receptionist = NotificationReceptionist(callbacks: [
-      NSMetadataQueryDidFinishGatheringNotification: finishGatheringCallback,
-      NSMetadataQueryDidUpdateNotification: updateCallback
-      ])
+
+    let receptionist = NotificationReceptionist()
+    receptionist.observe(NSMetadataQueryDidFinishGatheringNotification,
+                    from: metadataQuery,
+                   queue: queue,
+                callback: MIDIDocumentManager.didFinishGathering)
+    receptionist.observe(NSMetadataQueryDidUpdateNotification,
+                    from: metadataQuery,
+                   queue: queue,
+                callback: MIDIDocumentManager.didUpdate)
+    receptionist.observe(MIDIDocument.Notification.DidRenameFile, queue: queue, callback: MIDIDocumentManager.didRenameFile)
     metadataQuery.startQuery()
     return receptionist
   }()

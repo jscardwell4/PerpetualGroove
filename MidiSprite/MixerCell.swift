@@ -167,7 +167,7 @@ final class TrackCell: MixerCell {
   */
   private func muteStatusChanged(notification: NSNotification) {
     muteButton.selected = track?.mute ?? false
-    logDebug("<\(track!.name)> muteButton.selected = \(muteButton.selected)")
+    logVerbose("<\(track!.name)> muteButton.selected = \(muteButton.selected)")
   }
 
   /**
@@ -215,11 +215,12 @@ final class TrackCell: MixerCell {
     return receptionist
   }
 
-  override func prepareForReuse() {
-    super.prepareForReuse()
-    receptionist = nil
-    track = nil
-  }
+//  override func prepareForReuse() {
+//    super.prepareForReuse()
+//    receptionist = nil
+//    track = nil
+//    logDebug("m")
+//  }
 
 }
 

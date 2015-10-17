@@ -7,8 +7,10 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <customFonts key="customFonts">
+        <mutableArray key="Latinotype - Triump-Rg-Rock-02.otf">
+            <string>Triump-Rg-Rock-02</string>
+        </mutableArray>
         <mutableArray key="Yellow Design Studio - Eveleth Light.otf">
-            <string>EvelethLight</string>
             <string>EvelethLight</string>
         </mutableArray>
     </customFonts>
@@ -73,12 +75,12 @@
                                             <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="TopStack"/>
                                         </userDefinedRuntimeAttributes>
                                     </stackView>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="AwesomeSauce" textAlignment="right" clearsOnBeginEditing="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Gx0-9z-8e9">
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Awesome Sauce" textAlignment="right" clearsOnBeginEditing="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Gx0-9z-8e9">
                                         <rect key="frame" x="-25" y="-30" width="97" height="30"/>
                                         <animations/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                        <color key="textColor" red="0.87450999021530151" green="0.8274499773979187" blue="0.7607799768447876" alpha="1" colorSpace="calibratedRGB"/>
-                                        <fontDescription key="fontDescription" name="EvelethLight" family="Eveleth" pointSize="17"/>
+                                        <color key="textColor" red="0.72547006607055664" green="0.70085549354553223" blue="0.6621164083480835" alpha="1" colorSpace="calibratedRGB"/>
+                                        <fontDescription key="fontDescription" name="Triump-Rg-Rock-02" family="Triump Rg Rock" pointSize="20"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="words" autocorrectionType="no" spellCheckingType="no" keyboardType="alphabet" keyboardAppearance="alert" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="CurrentDocumentName"/>
@@ -184,6 +186,9 @@
                                                                     </userDefinedRuntimeAttribute>
                                                                     <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="record-selected"/>
                                                                 </userDefinedRuntimeAttributes>
+                                                                <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="56" height="56"/>
+                                                                </variation>
                                                                 <connections>
                                                                     <action selector="record" destination="BV1-FR-VrT" eventType="touchUpInside" id="n5c-Wk-WUa"/>
                                                                 </connections>
@@ -204,6 +209,9 @@
                                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="PlayPause"/>
                                                                     <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="play-selected"/>
                                                                 </userDefinedRuntimeAttributes>
+                                                                <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                                    <rect key="frame" x="66" y="0.0" width="56" height="56"/>
+                                                                </variation>
                                                                 <connections>
                                                                     <action selector="playPause" destination="BV1-FR-VrT" eventType="touchUpInside" id="67R-Wm-Kiq"/>
                                                                 </connections>
@@ -229,6 +237,9 @@
                                                                     <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="stop-selected"/>
                                                                     <userDefinedRuntimeAttribute type="image" keyPath="disabledImage" value="stop"/>
                                                                 </userDefinedRuntimeAttributes>
+                                                                <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                                    <rect key="frame" x="132" y="0.0" width="56" height="56"/>
+                                                                </variation>
                                                                 <connections>
                                                                     <action selector="stop" destination="BV1-FR-VrT" eventType="touchUpInside" id="jD9-0j-4ba"/>
                                                                 </connections>
@@ -239,6 +250,9 @@
                                                             <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="TransportStack"/>
                                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TransportStack"/>
                                                         </userDefinedRuntimeAttributes>
+                                                        <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                            <rect key="frame" x="0.0" y="47" width="188" height="56"/>
+                                                        </variation>
                                                     </stackView>
                                                     <view opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ndz-Vc-1wb" customClass="ScrollWheel" customModule="MoonKit">
                                                         <rect key="frame" x="490" y="0.0" width="150" height="150"/>
@@ -278,6 +292,9 @@
                                                                 <include reference="ywb-RY-e9s"/>
                                                             </mask>
                                                         </variation>
+                                                        <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                            <rect key="frame" x="208" y="0.0" width="150" height="150"/>
+                                                        </variation>
                                                         <connections>
                                                             <action selector="beginJog" destination="BV1-FR-VrT" eventType="touchDown" id="hQl-TJ-fU9"/>
                                                             <action selector="endJog" destination="BV1-FR-VrT" eventType="touchUpOutside" id="Egr-SV-2uD"/>
@@ -291,6 +308,9 @@
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TransportJogWheelStack"/>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="TransportJogWheelStack"/>
                                                 </userDefinedRuntimeAttributes>
+                                                <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                    <rect key="frame" x="85" y="0.0" width="358" height="150"/>
+                                                </variation>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" distribution="equalCentering" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="NdS-rf-HyN" userLabel="TimeStackHorizontal">
                                                 <rect key="frame" x="1071" y="14" width="211" height="122"/>
@@ -365,7 +385,8 @@
                                                                         <exclude reference="a7T-hb-UY1"/>
                                                                     </mask>
                                                                 </variation>
-                                                                <variation key="heightClass=regular-widthClass=regular">
+                                                                <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                                    <rect key="frame" x="-22.5" y="0.0" width="325" height="56"/>
                                                                     <mask key="constraints">
                                                                         <include reference="a7T-hb-UY1"/>
                                                                     </mask>
@@ -393,6 +414,9 @@
                                                                             </userDefinedRuntimeAttribute>
                                                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="MetronomeButton"/>
                                                                         </userDefinedRuntimeAttributes>
+                                                                        <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                                            <rect key="frame" x="0.0" y="0.0" width="56" height="56"/>
+                                                                        </variation>
                                                                         <connections>
                                                                             <action selector="toggleMetronome" destination="BV1-FR-VrT" eventType="touchUpInside" id="P9O-d8-MRc"/>
                                                                         </connections>
@@ -1743,7 +1767,7 @@
                                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please enable iCloud Drive in Settings" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="G6r-hu-iAC" userLabel="Message">
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Please enable iCloud Drive in Settings" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="G6r-hu-iAC" userLabel="Message">
                                                         <rect key="frame" x="91" y="290" width="417" height="20.5"/>
                                                         <animations/>
                                                         <accessibility key="accessibilityConfiguration" identifier="Message"/>

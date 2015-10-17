@@ -43,14 +43,12 @@ final class InstrumentTrack: MIDITrackType {
       switch state ⊻ oldValue {
 
         case [.Soloing]:
-          print("case [.Soloing]:")
           Notification.SoloStatusDidChange.post(object: self, userInfo: [.OldValue: !solo, .NewValue: solo])
           if state ~∩ [.ExclusiveMute, .InclusiveMute] {
             Notification.MuteStatusDidChange.post(object: self, userInfo: [.OldValue: !mute, .NewValue: mute])
           }
 
         case [.ExclusiveMute], [.InclusiveMute]:
-          print("case [.ExclusiveMute], [.InclusiveMute]:")
           let oldValue = oldValue ~∩ [.ExclusiveMute, .InclusiveMute] && oldValue ∌ .Soloing
           let newValue = state    ~∩ [.ExclusiveMute, .InclusiveMute] && state    ∌ .Soloing
           guard oldValue != newValue else { break }
@@ -58,7 +56,7 @@ final class InstrumentTrack: MIDITrackType {
           Notification.MuteStatusDidChange.post(object: self, userInfo: [.OldValue: oldValue, .NewValue: newValue])
 
         default:
-          print("default:")
+          break
       }
 
     }
@@ -111,7 +109,9 @@ final class InstrumentTrack: MIDITrackType {
   // MARK: - MIDI file related properties and methods
 
   var eventContainer = MIDITrackEventContainer() {
-    didSet { MIDITrackNotification.DidUpdateEvents.post(object: self) }
+    didSet {
+      MIDITrackNotification.DidUpdateEvents.post(object: self)
+    }
   }
 
   var instrumentNameEvent: MetaEvent? {
@@ -343,13 +343,14 @@ final class InstrumentTrack: MIDITrackType {
 
       let packet = packetPointer.memory
       let ((status, channel), note, velocity) = ((packet.data.0 >> 4, packet.data.0 & 0xF), packet.data.1, packet.data.2)
+      logVerbose("status: \(status); channel: \(channel); note: \(note); velocity: \(velocity)")
       let event: MIDITrackEvent?
       switch status {
         case 9:  event = ChannelEvent(.NoteOn, channel, note, velocity, time)
         case 8:  event = ChannelEvent(.NoteOff, channel, note, velocity, time)
         default: event = nil
       }
-      if event != nil { self?.eventContainer.append(event!) }
+      if event != nil { logVerbose("event: \(event!)"); self?.eventContainer.append(event!) }
     }
   }
 
@@ -445,7 +446,7 @@ final class InstrumentTrack: MIDITrackType {
     if let trackNameEvent = self.trackNameEvent, case .SequenceTrackName(let n) = trackNameEvent.data { label = n }
 
     // Find the instrument event
-    guard let instrumentNameEvent = self.instrumentNameEvent, case .Text(var instr) = instrumentNameEvent.data else {
+    guard let instrumentName = self.instrumentNameEvent, case .Text(var instr) = instrumentName.data else {
       throw MIDIFileError(type: .FileStructurallyUnsound, reason: "Instrument event must be a text event")
     }
 

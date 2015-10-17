@@ -11,7 +11,7 @@ import Foundation
 extension CGPoint {
 
   public init?(_ string: String?) { if let s = string { self = CGPointFromString(s) } else { return nil } }
-  public static var nullPoint: CGPoint = CGPoint(x: CGFloat.NaN, y: CGFloat.NaN)
+  public static var null: CGPoint = CGPoint(x: CGFloat.NaN, y: CGFloat.NaN)
   public var isNull: Bool { return x.isNaN || y.isNaN }
   public func xDelta(point: CGPoint) -> CGFloat { return point.isNull ? x : x - point.x }
   public func yDelta(point: CGPoint) -> CGFloat { return point.isNull ? y : y - point.y }
@@ -40,7 +40,7 @@ extension CGPoint {
 }
 
 extension CGPoint: NilLiteralConvertible {
-  public init(nilLiteral: ()) { self = CGPoint.nullPoint }
+  public init(nilLiteral: ()) { self = CGPoint.null }
 }
 
 extension UIOffset {

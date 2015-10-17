@@ -75,6 +75,7 @@ final class MIDINode: SKSpriteNode {
     let packet = MIDIPacketListInit(&packetList)
     let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
     let data: [Byte] = [0x90 | note.channel, note.note.MIDIValue, note.velocity.MIDIValue] + _sourceID.bytes
+    logVerbose("data: \(String(hexBytes: data))")
     let timeStamp = time.ticks
     MIDIPacketListAdd(&packetList, size, packet, timeStamp, 11, data)
     do {
@@ -92,6 +93,7 @@ final class MIDINode: SKSpriteNode {
     let data: [UInt8] = MIDINode.useVelocityForOff
                 ? [0x90 | note.channel, note.note.MIDIValue, 0] + _sourceID.bytes
                 : [0x80 | note.channel, note.note.MIDIValue, 0] + _sourceID.bytes
+    logVerbose("data: \(String(hexBytes: data))")
     let timeStamp = time.ticks
     MIDIPacketListAdd(&packetList, size, packet, timeStamp, 11, data)
     do {
@@ -154,7 +156,7 @@ final class MIDINode: SKSpriteNode {
   - parameter notification: NSNotification
   */
   private func didJog(notification: NSNotification) {
-    logDebug("<\(_sourceID)>")
+    logVerbose("<\(_sourceID)>")
     guard state ∋ .Jogging else { fatalError("internal inconsistency, should have `Jogging` flag set") }
     guard let jogTime = (notification.userInfo?[Sequencer.Notification.Key.JogTime.rawValue] as? NSValue)?.barBeatTimeValue else {
       logError("notication does not contain jog tick value")
@@ -169,7 +171,7 @@ final class MIDINode: SKSpriteNode {
   - parameter notification: NSNotification
   */
   private func didEndJogging(notification: NSNotification) {
-    logDebug("<\(_sourceID)>")
+    logVerbose("<\(_sourceID)>")
 
     guard state ∋ .Jogging else { fatalError("internal inconsistency, should have `Jogging` flag set") }
     state ⊻= .Jogging
@@ -185,7 +187,7 @@ final class MIDINode: SKSpriteNode {
   - parameter notification: NSNotification
   */
   private func didStart(notification: NSNotification) {
-    logDebug("<\(_sourceID)>")
+    logVerbose("<\(_sourceID)>")
     guard state ∋ .Paused else { return }
     physicsBody.dynamic = true
     physicsBody.velocity = currentSnapshot.velocity
@@ -198,7 +200,7 @@ final class MIDINode: SKSpriteNode {
   - parameter notification: NSNotification
   */
   private func didPause(notification: NSNotification) {
-    logDebug("<\(_sourceID)>")
+    logVerbose("<\(_sourceID)>")
     guard state ∌ .Paused else { return }
     pushBreadcrumb()
     physicsBody.dynamic = false
@@ -264,13 +266,14 @@ final class MIDINode: SKSpriteNode {
     super.init(texture: SKTexture(image: image), color: t.color.value, size: image.size * 0.75)
 
     let queue = NSOperationQueue.mainQueue()
+    let object = Sequencer.self
     typealias Notification = Sequencer.Notification
     receptionist = NotificationReceptionist()
-    receptionist.observe(Notification.DidBeginJogging, from: Sequencer.self, queue: queue, callback: didBeginJogging)
-    receptionist.observe(Notification.DidJog,          from: Sequencer.self, queue: queue, callback: didJog)
-    receptionist.observe(Notification.DidEndJogging,   from: Sequencer.self, queue: queue, callback: didEndJogging)
-    receptionist.observe(Notification.DidStart,        from: Sequencer.self, queue: queue, callback: didStart)
-    receptionist.observe(Notification.DidPause,        from: Sequencer.self, queue: queue, callback: didPause)
+    receptionist.observe(Notification.DidBeginJogging, from: object, queue: queue, callback: didBeginJogging)
+    receptionist.observe(Notification.DidJog,          from: object, queue: queue, callback: didJog)
+    receptionist.observe(Notification.DidEndJogging,   from: object, queue: queue, callback: didEndJogging)
+    receptionist.observe(Notification.DidStart,        from: object, queue: queue, callback: didStart)
+    receptionist.observe(Notification.DidPause,        from: object, queue: queue, callback: didPause)
 
     _sourceID = Identifier(ObjectIdentifier(self).uintValue)
 

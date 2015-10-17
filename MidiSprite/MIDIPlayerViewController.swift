@@ -9,6 +9,7 @@
 import UIKit
 import SpriteKit
 import MoonKit
+import Triump
 
 final class MIDIPlayerViewController: UIViewController {
 
@@ -199,7 +200,7 @@ final class MIDIPlayerViewController: UIViewController {
   // MARK: - Files
 
   @IBOutlet weak var documentsButton: ImageButtonView?
-  @IBOutlet weak var documentName: UITextField!
+  @IBOutlet weak var documentName: UITextField! { didSet { documentName.font = Triump.rock2FontWithSize(24) } }
 
   /** documents */
   @IBAction private func documents() {
@@ -245,7 +246,7 @@ final class MIDIPlayerViewController: UIViewController {
   // MARK: - Undo
 
 //  @IBOutlet weak var revertButton: ImageButtonView!
-  @IBAction private func revert() { midiPlayerView.revert() }
+//  @IBAction private func revert() { midiPlayerView.revert() }
 
   // MARK: - Tempo
 
