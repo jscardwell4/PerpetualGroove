@@ -33,19 +33,15 @@ final class TempoTrack: MIDITrackType {
     return eventContainer.events.filter(isTempoEvent).count != 0
   }
 
-  private var receptionist: NotificationReceptionist?
-  private func recordingStatusDidChange(notification: NSNotification) { recording = Sequencer.recording }
+  private let receptionist = NotificationReceptionist()
 
   /** initializeNotificationReceptionist */
   private func initializeNotificationReceptionist() {
-    guard receptionist == nil else { return }
-    typealias Notification = Sequencer.Notification
-    let queue = NSOperationQueue.mainQueue()
-    let object = Sequencer.self
-    let callback: (NSNotification) -> Void = {[weak self] _ in self?.recording = Sequencer.recording}
-    receptionist = NotificationReceptionist()
-    receptionist?.observe(Notification.DidTurnOnRecording, from: object, queue: queue, callback: callback)
-    receptionist?.observe(Notification.DidTurnOffRecording, from: object, queue: queue, callback: callback)
+    guard receptionist.count == 0 else { return }
+
+    receptionist.observe(Sequencer.Notification.DidToggleRecording, from: Sequencer.self, queue: NSOperationQueue.mainQueue()) {
+      [weak self] _ in self?.recording = Sequencer.recording
+    }
   }
 
   /**

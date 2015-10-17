@@ -67,9 +67,9 @@ final class Instrument: Equatable, CustomStringConvertible {
   - parameter attributes: NoteAttributes
   */
   func playNoteWithAttributes(attributes: NoteAttributes) {
-    node.startNote(attributes.note.MIDIValue, withVelocity: attributes.velocity.MIDIValue, onChannel: 0)
+    node.startNote(attributes.note.midi, withVelocity: attributes.velocity.midi, onChannel: 0)
     delayedDispatch(attributes.duration.seconds, dispatch_get_main_queue()) {
-      self.node.stopNote(attributes.note.MIDIValue, onChannel: 0)
+      self.node.stopNote(attributes.note.midi, onChannel: 0)
     }
   }
 

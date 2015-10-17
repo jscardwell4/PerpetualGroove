@@ -44,7 +44,12 @@ final class MIDINode: SKSpriteNode {
   private(set) var endPoint = MIDIEndpointRef()
 
   /// Holds the octave, pitch, velocity and duration to use when generating MIDI events
-  var note: NoteAttributes
+  var note: NoteAttributes {
+    didSet {
+      guard oldValue.duration != note.duration else { return }
+      playAction = Action(key: .Play, node: self)
+    }
+  }
 
   /// Whether a note is ended via a note on event with velocity of 0 or with a  note off event
   static let useVelocityForOff = true
@@ -56,25 +61,72 @@ final class MIDINode: SKSpriteNode {
   var sourceID: Identifier { return _sourceID }
 
   /// Type for representing MIDI-related node actions
-  enum Actions: String { case Play }
+  struct Action {
+
+    enum Key: String { case Play, FadeOut, FadeIn }
+
+    let key: String
+    let action: SKAction
+
+    /**
+    init:duration:
+
+    - parameter k: Key
+    - parameter d: NSTimeInterval
+    */
+    init(key k: Key, node: MIDINode? = nil) {
+      key = k.rawValue
+
+      switch k {
+        case .Play:
+          let halfDuration = half(node?.note.duration.seconds ?? 0)
+          let scaleUp = SKAction.scaleTo(2, duration: halfDuration)
+          let noteOn = SKAction.runBlock({ [weak node] in node?.sendNoteOn() })
+          let scaleDown = SKAction.scaleTo(1, duration: halfDuration)
+          let noteOff = SKAction.runBlock({ [weak node] in node?.sendNoteOff() })
+          action = SKAction.sequence([SKAction.group([scaleUp, noteOn]), scaleDown, noteOff])
+
+        case .FadeOut:
+          let fade = SKAction.fadeOutWithDuration(0.25)
+          let pause = SKAction.runBlock({[weak node] in node?.physicsBody.resting = true})
+          action = SKAction.sequence([fade, pause])
+
+        case .FadeIn:
+          let fade = SKAction.fadeInWithDuration(0.25)
+          let unpause = SKAction.runBlock({[weak node] in node?.physicsBody.resting = false})
+          action = SKAction.sequence([fade, unpause])
+      }
+
+    }
+
+  }
+
+  private lazy var playAction:    Action = Action(key: .Play,    node: self)
+  private lazy var fadeOutAction: Action = Action(key: .FadeOut, node: self)
+  private lazy var fadeInAction:  Action = Action(key: .FadeIn,  node: self)
+
+  /**
+  runAction:
+
+  - parameter action: Action
+  */
+  private func runAction(action: Action) { runAction(action.action, withKey: action.key) }
 
   /** play */
-  func play() {
-    let halfDuration = note.duration.seconds
-    let scaleUp = SKAction.scaleTo(2, duration: halfDuration)
-    let noteOn = SKAction.runBlock({ [weak self] in self?.sendNoteOn() })
-    let scaleDown = SKAction.scaleTo(1, duration: halfDuration)
-    let noteOff = SKAction.runBlock({ [weak self] in self?.sendNoteOff() })
-    let sequence = SKAction.sequence([SKAction.group([scaleUp, noteOn]), scaleDown, noteOff])
-    runAction(sequence, withKey: Actions.Play.rawValue)
-  }
+  func play() { runAction(playAction)  }
+
+  /** fadeOut */
+  func fadeOut() { runAction(fadeOutAction) }
+
+  /** fadeIn */
+  func fadeIn() { runAction(fadeInAction) }
 
   /** sendNoteOn */
   func sendNoteOn() {
     var packetList = MIDIPacketList()
     let packet = MIDIPacketListInit(&packetList)
     let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
-    let data: [Byte] = [0x90 | note.channel, note.note.MIDIValue, note.velocity.MIDIValue] + _sourceID.bytes
+    let data: [Byte] = [0x90 | note.channel, note.note.midi, note.velocity.midi] + _sourceID.bytes
     logVerbose("data: \(String(hexBytes: data))")
     let timeStamp = time.ticks
     MIDIPacketListAdd(&packetList, size, packet, timeStamp, 11, data)
@@ -91,8 +143,8 @@ final class MIDINode: SKSpriteNode {
     let packet = MIDIPacketListInit(&packetList)
     let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
     let data: [UInt8] = MIDINode.useVelocityForOff
-                ? [0x90 | note.channel, note.note.MIDIValue, 0] + _sourceID.bytes
-                : [0x80 | note.channel, note.note.MIDIValue, 0] + _sourceID.bytes
+                ? [0x90 | note.channel, note.note.midi, 0] + _sourceID.bytes
+                : [0x80 | note.channel, note.note.midi, 0] + _sourceID.bytes
     logVerbose("data: \(String(hexBytes: data))")
     let timeStamp = time.ticks
     MIDIPacketListAdd(&packetList, size, packet, timeStamp, 11, data)
@@ -103,12 +155,19 @@ final class MIDINode: SKSpriteNode {
   }
 
   /**
+  removeAction:
+
+  - parameter action: Action
+  */
+  private func removeAction(action: Action) { removeActionForKey(action.key) }
+
+  /**
   removeActionForKey:
 
   - parameter key: String
   */
   override func removeActionForKey(key: String) {
-    if actionForKey(key) != nil && Actions.Play.rawValue == key { sendNoteOff() }
+    if actionForKey(key) != nil && Action.Key.Play.rawValue == key { sendNoteOff() }
     super.removeActionForKey(key)
   }
 
@@ -139,7 +198,7 @@ final class MIDINode: SKSpriteNode {
   */
   private func didBeginJogging(notification: NSNotification) {
 
-    logDebug("<\(_sourceID)>")
+    logVerbose("<\(_sourceID)>")
 
     // Make sure we are not already jogging
     guard state ∌ .Jogging else { fatalError("internal inconsistency, should not already have `Jogging` flag set") }

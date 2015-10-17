@@ -10,16 +10,16 @@ import Foundation
 import MoonKit
 
 /** Protocol for types that can be converted to and from a value within the range of 0 ... 127  */
-protocol MIDIValueConvertible: Hashable, Equatable {
-  var MIDIValue: Byte { get }
-  init(MIDIValue: Byte)
+protocol MIDIConvertible: Hashable, Equatable {
+  var midi: Byte { get }
+  init(midi: Byte)
 }
 
-extension MIDIValueConvertible {
-  var hashValue: Int { return MIDIValue.hashValue }
+extension MIDIConvertible {
+  var hashValue: Int { return midi.hashValue }
 }
 
-func ==<M:MIDIValueConvertible>(lhs: M, rhs: M) -> Bool { return lhs.MIDIValue == rhs.MIDIValue }
+func ==<M:MIDIConvertible>(lhs: M, rhs: M) -> Bool { return lhs.midi == rhs.midi }
 
 /** Structure that encapsulates MIDI information necessary for playing a note */
 struct NoteAttributes {
@@ -27,10 +27,11 @@ struct NoteAttributes {
   var channel: UInt8 = 0
 
   /** An enumeration for specifying a note's pitch and octave */
-  enum Note: RawRepresentable, Equatable, EnumerableType, CustomStringConvertible, MIDIValueConvertible {
+  enum Note: RawRepresentable, Equatable, EnumerableType, CustomStringConvertible, MIDIConvertible {
 
     enum Letter: String, EnumerableType {
-      case C="C", CSharp="C♯", D="D", DSharp="D♯", E="E", F="F", FSharp="F♯", G="G", GSharp="G♯", A="A", ASharp="A♯", B="B"
+      case C="C", CSharp="C♯", D="D", DSharp="D♯", E="E", F="F", FSharp="F♯", G="G", GSharp="G♯",
+           A="A", ASharp="A♯", B="B"
 
       init(_ i: UInt8) { self = Letter.allCases[Int(i % 12)] }
       init(var index: Int) { index %= Letter.allCases.count; self = Letter.allCases[index] }
@@ -44,7 +45,9 @@ struct NoteAttributes {
 
     - parameter value: Int
     */
-    init(var MIDIValue value: Byte) { value %= 128; self = .Pitch(letter: Letter(value), octave: (Int(value) / 12) - 1) }
+    init(var midi value: Byte) {
+      value %= 128; self = .Pitch(letter: Letter(value), octave: (Int(value) / 12) - 1)
+    }
 
     /**
     Initialize with string representation
@@ -63,21 +66,22 @@ struct NoteAttributes {
 
     var rawValue: String { switch self { case let .Pitch(letter, octave): return "\(letter.rawValue)\(octave)" } }
 
-    var MIDIValue: Byte {  switch self { case let .Pitch(letter, octave): return UInt8((octave + 1) * 12 + letter.index) } }
+    var midi: Byte {  switch self { case let .Pitch(letter, octave): return UInt8((octave + 1) * 12 + letter.index) } }
 
-    static let allCases: [Note] = (0...127).map({Note(MIDIValue: $0)})
+    static let allCases: [Note] = (0...127).map({Note(midi: $0)})
 
     var description: String { return rawValue }
   }
 
   /// The pitch and octave
-  var note: Note = Note(MIDIValue: 60)
+  var note: Note = Note(midi: 60)
 
   /** Enumeration for a musical note duration */
   enum Duration: String, EnumerableType, ImageAssetLiteralType, CustomStringConvertible {
-    case DoubleWhole, DottedWhole, Whole, DottedHalf, Half, DottedQuarter, Quarter, DottedEighth, Eighth, DottedSixteenth, 
-         Sixteenth, DottedThirtySecond, ThirtySecond, DottedSixtyFourth, SixtyFourth, DottedHundredTwentyEighth, 
-         HundredTwentyEighth, DottedTwoHundredFiftySixth, TwoHundredFiftySixth
+    case DoubleWhole, DottedWhole, Whole, DottedHalf, Half, DottedQuarter, Quarter, DottedEighth,
+         Eighth, DottedSixteenth, Sixteenth, DottedThirtySecond, ThirtySecond, DottedSixtyFourth,
+         SixtyFourth, DottedHundredTwentyEighth, HundredTwentyEighth, DottedTwoHundredFiftySixth,
+         TwoHundredFiftySixth
 
     var seconds: Double {
       let secondsPerBeat = 60 / Sequencer.tempo
@@ -104,10 +108,13 @@ struct NoteAttributes {
       }
     }
 
-    static let allCases: [Duration] = [.DoubleWhole, .DottedWhole, .Whole, .DottedHalf, .Half, .DottedQuarter, .Quarter,
-                                       .DottedEighth, .Eighth, .DottedSixteenth, .Sixteenth, .DottedThirtySecond,
-                                       .ThirtySecond, .DottedSixtyFourth, .SixtyFourth, .DottedHundredTwentyEighth, 
-                                       .HundredTwentyEighth, .DottedTwoHundredFiftySixth, .TwoHundredFiftySixth ]
+    static let allCases: [Duration] = [
+      .DoubleWhole, .DottedWhole, .Whole, .DottedHalf, .Half, .DottedQuarter, .Quarter,
+      .DottedEighth, .Eighth, .DottedSixteenth, .Sixteenth, .DottedThirtySecond,
+      .ThirtySecond, .DottedSixtyFourth, .SixtyFourth, .DottedHundredTwentyEighth,
+      .HundredTwentyEighth, .DottedTwoHundredFiftySixth, .TwoHundredFiftySixth
+    ]
+
     var description: String { return rawValue }
   }
 
@@ -115,10 +122,10 @@ struct NoteAttributes {
   var duration: Duration = .Eighth
 
   /** Enumeration for musical dynamics */
-  enum Velocity: String, EnumerableType, ImageAssetLiteralType, MIDIValueConvertible, CustomStringConvertible {
+  enum Velocity: String, EnumerableType, ImageAssetLiteralType, MIDIConvertible, CustomStringConvertible {
     case Pianississimo, Pianissimo, Piano, MezzoPiano, MezzoForte, Forte, Fortissimo, Fortississimo
 
-    var MIDIValue: Byte {
+    var midi: Byte {
       switch self {
         case .Pianississimo: return 16
         case .Pianissimo:    return 33
@@ -130,7 +137,7 @@ struct NoteAttributes {
         case .Fortississimo: return 126
       }
     }
-    init(MIDIValue value: Byte) {
+    init(midi value: Byte) {
       switch value {
         case 0 ... 22:    self = .Pianississimo
         case 23 ... 40:   self = .Pianissimo
@@ -154,7 +161,7 @@ struct NoteAttributes {
 // MARK: - ByteArrayConvertible
 extension NoteAttributes: ByteArrayConvertible {
 
-  var bytes: [Byte] { return [channel, note.MIDIValue, velocity.MIDIValue] + duration.rawValue.bytes }
+  var bytes: [Byte] { return [channel, note.midi, velocity.midi] + duration.rawValue.bytes }
 
   /**
   init:
@@ -164,8 +171,8 @@ extension NoteAttributes: ByteArrayConvertible {
   init(_ bytes: [Byte]) {
     guard bytes.count >= 7 else { return }
     channel  = bytes[0]
-    note     = Note(MIDIValue: bytes[1])
-    velocity = Velocity(MIDIValue: bytes[2])
+    note     = Note(midi: bytes[1])
+    velocity = Velocity(midi: bytes[2])
     duration = Duration(rawValue: String(bytes[3..<])) ?? .Eighth
   }
 }
@@ -181,7 +188,7 @@ extension NoteAttributes: CustomStringConvertible {
 // MARK: - Equatable
 extension NoteAttributes: Equatable {}
 
-func ==(lhs: NoteAttributes.Note, rhs: NoteAttributes.Note) -> Bool { return lhs.MIDIValue == rhs.MIDIValue }
+func ==(lhs: NoteAttributes.Note, rhs: NoteAttributes.Note) -> Bool { return lhs.midi == rhs.midi }
 
 func ==(lhs: NoteAttributes, rhs: NoteAttributes) -> Bool {
   return lhs.channel == rhs.channel && lhs.duration == rhs.duration && lhs.velocity == rhs.velocity && lhs.note == rhs.note

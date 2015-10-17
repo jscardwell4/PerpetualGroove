@@ -43,7 +43,7 @@ final class Sequencer {
   enum Notification: String, NotificationType, NotificationNameType {
     case DidInitializeSoundSets
     case DidStart, DidPause, DidStop, DidReset
-    case DidTurnOnRecording, DidTurnOffRecording
+    case DidToggleRecording
     case DidBeginJogging, DidEndJogging
     case DidJog
 
@@ -235,10 +235,7 @@ final class Sequencer {
   }
 
   /** toggleRecord */
-  static func toggleRecord() {
-    state ⊻= .Recording
-    (recording ? Notification.DidTurnOnRecording : Notification.DidTurnOffRecording).post()
-  }
+  static func toggleRecord() { state ⊻= .Recording; Notification.DidToggleRecording.post() }
 
   /** pause */
   static func pause() {

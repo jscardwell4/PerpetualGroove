@@ -17,6 +17,8 @@ public final class NotificationReceptionist: NSObject {
 
   private var observers: [Int:NSObjectProtocol] = [:]
 
+  public var count: Int { return observers.count }
+
   private var notificationCenter: NSNotificationCenter { return NSNotificationCenter.defaultCenter() }
 
   /**
