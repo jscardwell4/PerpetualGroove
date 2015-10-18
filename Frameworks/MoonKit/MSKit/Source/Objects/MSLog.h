@@ -7,13 +7,19 @@
 //
 
 @import Foundation;
+#if TARGET_OS_IPHONE
 @import UIKit;
+#endif
 #import "MSLogMacros.h"
+#if TARGET_OS_IPHONE
 @import Lumberjack;
-#import "MSKitDefines.h"
-#import "MSKitMacros.h"
 #import "MSError.h"
 #import "NSObject+MSKitAdditions.h"
+#else
+@import LumberjackOSX;
+#endif
+#import "MSKitDefines.h"
+#import "MSKitMacros.h"
 
 // keys
 MSEXTERN_KEY(MSLogClassName);

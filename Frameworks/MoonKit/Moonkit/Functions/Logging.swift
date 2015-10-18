@@ -7,7 +7,11 @@
 //
 
 import Foundation
-import Lumberjack
+#if os(iOS)
+  import Lumberjack
+  #else
+  import LumberjackOSX
+#endif
 
 public struct ColorLog {
   public static let ESCAPE = "\u{001b}["
@@ -135,15 +139,19 @@ public class LogManager {
   }
 
   public static func addTTYLogger() {
-    MSLog.enableColor()
-    MSLog.addTaggingTTYLogger()
-    (DDTTYLogger.sharedInstance().logFormatter as! MSLogFormatter).useFileInsteadOfSEL = true
+    #if os(iOS)
+      MSLog.enableColor()
+      MSLog.addTaggingTTYLogger()
+      (DDTTYLogger.sharedInstance().logFormatter as! MSLogFormatter).useFileInsteadOfSEL = true
+    #endif
   }
 
   public static func addASLLogger() {
-    MSLog.enableColor()
-    MSLog.addTaggingASLLogger()
-    (DDASLLogger.sharedInstance().logFormatter as! MSLogFormatter).useFileInsteadOfSEL = true
+    #if os(iOS)
+      MSLog.enableColor()
+      MSLog.addTaggingASLLogger()
+      (DDASLLogger.sharedInstance().logFormatter as! MSLogFormatter).useFileInsteadOfSEL = true
+    #endif
   }
 
 }
@@ -165,7 +173,7 @@ public func MSLogMessage(message: String,
                 function: String = __FUNCTION__,
                     line: UInt = __LINE__,
                     file: String = __FILE__,
-                 context: Int = Int(LOG_CONTEXT_CONSOLE))
+                 context: Int = 0b110)
 {
 
   SwiftLogMacro(

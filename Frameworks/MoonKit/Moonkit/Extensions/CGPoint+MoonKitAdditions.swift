@@ -10,7 +10,15 @@ import Foundation
 
 extension CGPoint {
 
-  public init?(_ string: String?) { if let s = string { self = CGPointFromString(s) } else { return nil } }
+  public init?(_ string: String?) {
+    if let s = string {
+      #if os(OSX)
+        self = NSPointFromString(s)
+        #else
+        self = CGPointFromString(s)
+      #endif
+    } else { return nil }
+  }
   public static var null: CGPoint = CGPoint(x: CGFloat.NaN, y: CGFloat.NaN)
   public var isNull: Bool { return x.isNaN || y.isNaN }
   public func xDelta(point: CGPoint) -> CGFloat { return point.isNull ? x : x - point.x }
@@ -43,10 +51,11 @@ extension CGPoint: NilLiteralConvertible {
   public init(nilLiteral: ()) { self = CGPoint.null }
 }
 
+#if os(iOS)
 extension UIOffset {
   public static var zeroOffset: UIOffset { return UIOffset(horizontal: 0, vertical: 0) }
 }
-
+#endif
 extension CGPoint: Unpackable2 {
   public var unpack: (CGFloat, CGFloat) { return (x, y) }
 }
@@ -58,7 +67,13 @@ extension CGPoint: CustomStringConvertible {
   public var description: String { return "(\(x), \(y))" }
 }
 extension CGPoint: CustomDebugStringConvertible {
-  public var debugDescription: String { return NSStringFromCGPoint(self) }
+  public var debugDescription: String {
+    #if os(iOS)
+      return NSStringFromCGPoint(self)
+      #else
+      return NSStringFromPoint(self)
+    #endif
+  }
 }
 
 public func +(lhs: CGPoint, rhs: (CGFloat, CGFloat)) -> CGPoint {

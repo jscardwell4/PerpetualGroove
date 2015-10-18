@@ -21,18 +21,19 @@ extension String {
 
 extension String: ByteArrayConvertible {
   public var bytes: [Byte] { return Array(utf8) }
-  public init<S:SequenceType where S.Generator.Element == Byte>(_ bytes: S) {
+  public init?<S:SequenceType where S.Generator.Element == Byte>(_ bytes: S) {
     self.init(Array(bytes))
   }
 
-  public init(var _ bytes: [Byte]) {
+  public init?(var _ bytes: [Byte]) {
     var i = bytes.count - 1
     guard i > 0 else { self = ""; return }
     while i > -1 && bytes[i] == Byte(0) { i-- }
     guard i > 0 else { self = ""; return }
     if i++ == bytes.count - 1 { bytes.append(Byte(0)) }
     bytes = Array(bytes[0 ..< i])
-    if let s = String(bytes: bytes, encoding: NSUTF8StringEncoding) { self = s } else { self = "" }
+    guard let s = String(bytes: bytes, encoding: NSUTF8StringEncoding) else { return nil }
+    self = s
   }
 }
 
@@ -234,7 +235,8 @@ public extension String {
 
   - returns: String
   */
-  public func join(strings: String...) -> String { return join(strings) }
+  public func join(strings: String...) -> String { return strings.joinWithSeparator(self) }
+  public func join(strings: [String]) -> String { return strings.joinWithSeparator(self) }
 
   /**
   Convenience for joining string representations of `elements`

@@ -16,7 +16,15 @@ extension CGRect {
 
   - parameter string: String?
   */
-  public init?(_ string: String?) { if let s = string { self = CGRectFromString(s) } else { return nil } }
+  public init?(_ string: String?) {
+    if let s = string {
+      #if os(iOS)
+        self = CGRectFromString(s)
+        #else
+        self = NSRectFromString(s)
+      #endif
+    } else { return nil }
+  }
 
   /**
   initWithSize:
@@ -57,14 +65,23 @@ extension CGRect {
 
   // MARK: - Convenience methods that call to library `offsetBy` and `offsetInPlace` methods
 
+
+  #if os(iOS)
   @warn_unused_result(mutable_variant="offsetInPlace")
   public func offsetBy(offset: UIOffset) -> CGRect { return offsetBy(dx: offset.horizontal, dy: offset.vertical) }
+  #endif
 
+  #if os(iOS)
   @warn_unused_result(mutable_variant="offsetInPlace")
   public func offsetBy(point: CGPoint) -> CGRect { return offsetBy(dx: point.x, dy: point.y) }
+  #endif
 
+  #if os(iOS)
   public mutating func offsetInPlace(point: CGPoint) { offsetInPlace(dx: point.x, dy: point.y) }
+  #endif
+  #if os(iOS)
   public mutating func offsetInPlace(off: UIOffset) { offsetInPlace(dx: off.horizontal, dy: off.vertical) }
+  #endif
 
 //  public mutating func proportionallyInsetX(dx: CGFloat) {
 //    let (w, h) = size.unpack
@@ -144,7 +161,15 @@ extension CGRect {
 
 // MARK: - CustomStringConvertible
 
-extension CGRect: CustomStringConvertible { public var description: String { return NSStringFromCGRect(self) } }
+extension CGRect: CustomStringConvertible {
+  public var description: String {
+    #if os(iOS)
+      return NSStringFromCGRect(self)
+      #else
+      return NSStringFromRect(self)
+    #endif
+  }
+}
 
 // MARK: - Unpacking
 

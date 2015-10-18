@@ -9,7 +9,9 @@
 import Foundation
 
 extension CGVector {
+  #if os(iOS)
   public init?(_ string: String?) { if let s = string { self = CGVectorFromString(s) } else { return nil } }
+  #endif
   public static var nullVector: CGVector = CGVector(dx: CGFloat.NaN, dy: CGFloat.NaN)
   public var isNull: Bool { return dx.isNaN || dy.isNaN }
   public func dxDelta(vector: CGVector) -> CGFloat { return vector.isNull ? dx : dx - vector.dx }
@@ -33,9 +35,11 @@ extension CGVector: NilLiteralConvertible {
 extension CGVector: CustomStringConvertible {
   public var description: String { return "(\(dx), \(dy))" }
 }
-extension CGVector: CustomDebugStringConvertible {
-  public var debugDescription: String { return NSStringFromCGVector(self) }
-}
+#if os(iOS)
+  extension CGVector: CustomDebugStringConvertible {
+    public var debugDescription: String { return NSStringFromCGVector(self) }
+  }
+#endif
 
 extension CGVector: Unpackable2 {
   public var unpack: (CGFloat, CGFloat) { return (dx, dy) }

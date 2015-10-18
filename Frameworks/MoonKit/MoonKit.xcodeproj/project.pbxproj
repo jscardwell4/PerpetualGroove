@@ -42,37 +42,6 @@
 		C225677E1BB05E7600E4842B /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BDD1B797D4600A68A64 /* CoreImage.framework */; };
 		C22567801BB05E7600E4842B /* Lumberjack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C225677F1BB05E7600E4842B /* Lumberjack.framework */; };
 		C226BB5F1BA0DA7300E4FC98 /* Stepper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C226BB5E1BA0DA7300E4FC98 /* Stepper.swift */; settings = {ASSET_TAGS = (); }; };
-		C22733F11AE1539E00641CC3 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28E35B91A451E3800438CCF /* CoreDataStack.swift */; };
-		C22733F21AE1539E00641CC3 /* RegularExpression.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B9B4091AC1C499005BA67C /* RegularExpression.swift */; };
-		C22733F41AE153AE00641CC3 /* MoonFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23592DC19C8E04200920F8D /* MoonFunctions.swift */; };
-		C22733F51AE153C900641CC3 /* BitArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23592DE19C8E04200920F8D /* BitArray.swift */; };
-		C22733F61AE153CD00641CC3 /* OrderedDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23592DF19C8E04200920F8D /* OrderedDictionary.swift */; };
-		C22733F71AE153D200641CC3 /* OrderedSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25E63E01A00427100F54626 /* OrderedSet.swift */; };
-		C22733F81AE153FF00641CC3 /* NSManagedObjectModel+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BE96E71A467E85007599B2 /* NSManagedObjectModel+MoonKitAdditions.swift */; };
-		C22733F91AE153FF00641CC3 /* NSAttributedString+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F39D2E1A3A6D5A0024EE94 /* NSAttributedString+MoonKitAdditions.swift */; };
-		C22733FA1AE153FF00641CC3 /* NSCharacterSet+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C482E619CA2985002E84A9 /* NSCharacterSet+MoonKitAdditions.swift */; };
-		C22733FB1AE153FF00641CC3 /* NSScanner+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C482E819CA2997002E84A9 /* NSScanner+MoonKitAdditions.swift */; };
-		C22733FC1AE153FF00641CC3 /* MSDictionary+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A7CA9619CBB8FE00212F2D /* MSDictionary+MoonKitAdditions.swift */; };
-		C22733FD1AE153FF00641CC3 /* NSLayoutConstraint+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21F931A19E4AA4700E9FF2D /* NSLayoutConstraint+MoonKitAdditions.swift */; };
-		C22733FE1AE153FF00641CC3 /* NSManagedObject+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C4B72B1AA951D700912951 /* NSManagedObject+MoonKitAdditions.swift */; };
-		C22733FF1AE153FF00641CC3 /* Bool+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24E0EB81AC6141B0044248E /* Bool+MoonKitAdditions.swift */; };
-		C22734001AE153FF00641CC3 /* Set+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24416321ACB16F8007EDEFE /* Set+MoonKitAdditions.swift */; };
-		C22734011AE153FF00641CC3 /* NSNumber+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28E98ED1AD196B800E78711 /* NSNumber+MoonKitAdditions.swift */; };
-		C22734031AE1540700641CC3 /* SequenceManipulation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24A228E1ADB3AA60065E7EA /* SequenceManipulation.swift */; };
-		C22734041AE1540700641CC3 /* MappingOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24A22901ADB3B3C0065E7EA /* MappingOperations.swift */; };
-		C22734051AE1540700641CC3 /* SetOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24A22921ADB43620065E7EA /* SetOperations.swift */; };
-		C22734061AE1540700641CC3 /* RawOptionSetFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24A22941ADB45340065E7EA /* RawOptionSetFunctions.swift */; };
-		C22734071AE1540700641CC3 /* CollectionManipulations.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24A22961ADB47590065E7EA /* CollectionManipulations.swift */; };
-		C22734081AE1540700641CC3 /* FunctionManipulation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24A22981ADB4C1E0065E7EA /* FunctionManipulation.swift */; };
-		C22734091AE1541000641CC3 /* FontAwesomeIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23592F019C8E04200920F8D /* FontAwesomeIcon.swift */; };
-		C227340A1AE1541900641CC3 /* JSONValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A70E3A1ACC53D0009C2CF7 /* JSONValue.swift */; };
-		C227340B1AE1541900641CC3 /* JSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E936FF1ACE04D4003EB3E8 /* JSONParser.swift */; };
-		C227340C1AE1541900641CC3 /* JSONSerialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E937031ACF0736003EB3E8 /* JSONSerialization.swift */; };
-		C227340D1AE1541900641CC3 /* ArrayJSONValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24A22801ADAEC000065E7EA /* ArrayJSONValue.swift */; };
-		C227340E1AE1541900641CC3 /* ObjectJSONValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24A22821ADAEC0F0065E7EA /* ObjectJSONValue.swift */; };
-		C227340F1AE1541900641CC3 /* JSONValueRelatedExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24A22841ADAEC290065E7EA /* JSONValueRelatedExtensions.swift */; };
-		C22734101AE1541900641CC3 /* BoxedJSONValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24A22861ADAF0300065E7EA /* BoxedJSONValue.swift */; };
-		C22734121AE1549F00641CC3 /* CocoaLumberjack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C22734111AE1549F00641CC3 /* CocoaLumberjack.framework */; };
 		C22734401AE15CEE00641CC3 /* BackgroundColor_Dark_Normal.json in Resources */ = {isa = PBXBuildFile; fileRef = C227342B1AE15CEE00641CC3 /* BackgroundColor_Dark_Normal.json */; };
 		C22734411AE15CEE00641CC3 /* BackgroundColor_Default.json in Resources */ = {isa = PBXBuildFile; fileRef = C227342C1AE15CEE00641CC3 /* BackgroundColor_Default.json */; };
 		C22734421AE15CEE00641CC3 /* ForegroundColor_Disabled.json in Resources */ = {isa = PBXBuildFile; fileRef = C227342D1AE15CEE00641CC3 /* ForegroundColor_Disabled.json */; };
@@ -298,14 +267,6 @@
 		C24D19EA19EDAE1500CC3CD9 /* InlinePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24D19E919EDAE1500CC3CD9 /* InlinePickerView.swift */; };
 		C24E0EB91AC6141B0044248E /* Bool+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24E0EB81AC6141B0044248E /* Bool+MoonKitAdditions.swift */; };
 		C256F0831ABDFFE5005B7CB3 /* MoonKitOSX.h in Headers */ = {isa = PBXBuildFile; fileRef = C256F0821ABDFFE5005B7CB3 /* MoonKitOSX.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		C256F0971ABE0010005B7CB3 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E7C8311A1AA3F0006BC80E /* Protocols.swift */; };
-		C256F0981ABE0028005B7CB3 /* Generic.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23592EE19C8E04200920F8D /* Generic.swift */; };
-		C256F0991ABE0039005B7CB3 /* Operators.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2064FF91A13C05900342FDE /* Operators.swift */; };
-		C256F09A1ABE0041005B7CB3 /* Array+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28E35BD1A45DBF300438CCF /* Array+MoonKitAdditions.swift */; };
-		C256F09B1ABE0049005B7CB3 /* Dictionary+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28E35BB1A45DBAB00438CCF /* Dictionary+MoonKitAdditions.swift */; };
-		C256F09C1ABE0052005B7CB3 /* String+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23592E919C8E04200920F8D /* String+MoonKitAdditions.swift */; };
-		C256F09D1ABE005F005B7CB3 /* NSError+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21D7AE31AA60E3F000DE8A3 /* NSError+MoonKitAdditions.swift */; };
-		C256F09E1ABE0089005B7CB3 /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C482E419CA0225002E84A9 /* Stack.swift */; };
 		C25C6F621BA8F23800B3CBAB /* ScrollWheel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25C6F611BA8F23800B3CBAB /* ScrollWheel.swift */; settings = {ASSET_TAGS = (); }; };
 		C25D6A871B703E0C00EB7125 /* UILabel+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25D6A861B703E0C00EB7125 /* UILabel+MoonKitAdditions.swift */; };
 		C25E63E11A00427100F54626 /* OrderedSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25E63E01A00427100F54626 /* OrderedSet.swift */; };
@@ -369,6 +330,63 @@
 		C2B6914C1AFAC8EF0041CE11 /* XMLParserDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B6914B1AFAC8EF0041CE11 /* XMLParserDelegate.swift */; };
 		C2B6918A1AFBCADB0041CE11 /* NetworkReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B691891AFBCADB0041CE11 /* NetworkReachability.swift */; };
 		C2B9B40A1AC1C499005BA67C /* RegularExpression.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B9B4091AC1C499005BA67C /* RegularExpression.swift */; };
+		C2BDBBD01BD3F00E00E343F1 /* RegularExpression.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B9B4091AC1C499005BA67C /* RegularExpression.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBD11BD3F00E00E343F1 /* Identifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C17D491B5813EB00D9E9A6 /* Identifier.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBD21BD3F00E00E343F1 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22F5FE51B6FCF73006D225A /* Timer.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBD31BD3F00E00E343F1 /* Fraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EF05B01B87FFA500AE68F1 /* Fraction.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBD41BD3F00E00E343F1 /* Ratio.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D664F01B88CC6F00D70FFA /* Ratio.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBD51BD3F00E00E343F1 /* DirectoryMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A27F21B94C30500BD1698 /* DirectoryMonitor.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBD61BD3F00E00E343F1 /* PropertyCoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F75A0C1B977075001EA2BA /* PropertyCoder.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBD71BD3F00E00E343F1 /* WeakObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = C288B0471BCAF3A300D1FFE2 /* WeakObject.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBD81BD3F00E00E343F1 /* MoonFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23592DC19C8E04200920F8D /* MoonFunctions.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBD91BD3F00E00E343F1 /* Tree.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AA14711BB5857600D7C9E1 /* Tree.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBDA1BD3F00E00E343F1 /* List.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22E6B8E1B810860008D46A6 /* List.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBDB1BD3F00E00E343F1 /* Heap.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AA2BCC1B8508AA00A0B08D /* Heap.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBDC1BD3F00E00E343F1 /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26863711AF96E6E00D664E8 /* Queue.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBDD1BD3F00E00E343F1 /* BitArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23592DE19C8E04200920F8D /* BitArray.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBDF1BD3F00E00E343F1 /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C482E419CA0225002E84A9 /* Stack.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBE01BD3F00E00E343F1 /* OrderedSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25E63E01A00427100F54626 /* OrderedSet.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBE11BD3F07C00E343F1 /* CATransform3D.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A09771BC9F1B0002EFEE1 /* CATransform3D.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBE21BD3F07C00E343F1 /* NSRange+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CA852B1BC72EA00046AFC0 /* NSRange+MoonKitAdditions.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBE31BD3F07C00E343F1 /* NSURL+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D406751BBA0F6700681DEF /* NSURL+MoonKitAdditions.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBE41BD3F07C00E343F1 /* Array+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28E35BD1A45DBF300438CCF /* Array+MoonKitAdditions.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBE51BD3F07C00E343F1 /* Dictionary+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28E35BB1A45DBAB00438CCF /* Dictionary+MoonKitAdditions.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBE61BD3F07C00E343F1 /* String+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23592E919C8E04200920F8D /* String+MoonKitAdditions.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBE71BD3F07C00E343F1 /* Bool+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24E0EB81AC6141B0044248E /* Bool+MoonKitAdditions.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBE81BD3F07C00E343F1 /* Set+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24416321ACB16F8007EDEFE /* Set+MoonKitAdditions.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBE91BD3F07C00E343F1 /* NSCharacterSet+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C482E619CA2985002E84A9 /* NSCharacterSet+MoonKitAdditions.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBEA1BD3F07C00E343F1 /* NSScanner+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C482E819CA2997002E84A9 /* NSScanner+MoonKitAdditions.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBEB1BD3F07C00E343F1 /* CoreGraphics.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25E63D819FDBE7100F54626 /* CoreGraphics.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBEC1BD3F07C00E343F1 /* NSError+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21D7AE31AA60E3F000DE8A3 /* NSError+MoonKitAdditions.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBEF1BD3F07C00E343F1 /* NSIndexSet+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F84F421B14C4B700AF891D /* NSIndexSet+MoonKitAdditions.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBF21BD3F07C00E343F1 /* NSParagraphStyle+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A5B6F11B482F4700F34491 /* NSParagraphStyle+MoonKitAdditions.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBF31BD3F07C00E343F1 /* String+RegularExpression.swift in Sources */ = {isa = PBXBuildFile; fileRef = C266A6EF1B6523BB00EEA1C4 /* String+RegularExpression.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBF41BD3F07C00E343F1 /* Range+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C9EB6F1B65C5C70051BACF /* Range+MoonKitAdditions.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBF51BD3F07C00E343F1 /* ClosedInterval+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22E6B8C1B80E1CE008D46A6 /* ClosedInterval+MoonKitAdditions.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBF61BD3F07C00E343F1 /* Index.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2776C2C1B9E6053002FE5A8 /* Index.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBF71BD3F07C00E343F1 /* CGRect+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CA851D1BC724FC0046AFC0 /* CGRect+MoonKitAdditions.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBF81BD3F07C00E343F1 /* CGPoint+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CA851F1BC7250A0046AFC0 /* CGPoint+MoonKitAdditions.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBF91BD3F07C00E343F1 /* CGSize+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CA85231BC725250046AFC0 /* CGSize+MoonKitAdditions.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBFA1BD3F07C00E343F1 /* CGVector+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CA85251BC7261B0046AFC0 /* CGVector+MoonKitAdditions.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBFB1BD3F07C00E343F1 /* CGAffineTransform+MoonKitAddtions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CA85291BC726760046AFC0 /* CGAffineTransform+MoonKitAddtions.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBFC1BD3F07C00E343F1 /* Generic.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23592EE19C8E04200920F8D /* Generic.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBFE1BD3F07C00E343F1 /* Operators.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2064FF91A13C05900342FDE /* Operators.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBFF1BD3F07C00E343F1 /* SequenceManipulation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24A228E1ADB3AA60065E7EA /* SequenceManipulation.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBC001BD3F07C00E343F1 /* MappingOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24A22901ADB3B3C0065E7EA /* MappingOperations.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBC011BD3F07C00E343F1 /* SetOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24A22921ADB43620065E7EA /* SetOperations.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBC021BD3F07C00E343F1 /* RawOptionSetFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24A22941ADB45340065E7EA /* RawOptionSetFunctions.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBC031BD3F07C00E343F1 /* CollectionManipulations.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24A22961ADB47590065E7EA /* CollectionManipulations.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBC041BD3F07C00E343F1 /* FunctionManipulation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24A22981ADB4C1E0065E7EA /* FunctionManipulation.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBC051BD3F07C00E343F1 /* MiscellaneousFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29EECF71AFD010B00660EE6 /* MiscellaneousFunctions.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBC061BD3F07C00E343F1 /* SortingFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C238A6531B04DC8B00898DB8 /* SortingFunctions.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBC071BD3F07C00E343F1 /* Numbers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C238A6551B04DDA100898DB8 /* Numbers.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBC081BD3F07C00E343F1 /* Dispatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22F5FE31B6FC753006D225A /* Dispatch.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBC091BD3F07C00E343F1 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E7C8311A1AA3F0006BC80E /* Protocols.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBC0A1BD3F07C00E343F1 /* NotificationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28C9B081BC35740002945BC /* NotificationType.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBC0B1BD3F07C00E343F1 /* XMLParserDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B6914B1AFAC8EF0041CE11 /* XMLParserDelegate.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBC141BD3F07C00E343F1 /* XMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E043241B727547005F0675 /* XMLParser.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBC371BD3F1E300E343F1 /* LumberjackOSX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2BDBC361BD3F1E300E343F1 /* LumberjackOSX.framework */; };
+		C2BDBC3F1BD3F83500E343F1 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = C216E73F19CBAE0A0052E98A /* Logging.swift */; settings = {ASSET_TAGS = (); }; };
 		C2BE96E81A467E85007599B2 /* NSManagedObjectModel+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BE96E71A467E85007599B2 /* NSManagedObjectModel+MoonKitAdditions.swift */; };
 		C2C17D4A1B5813EB00D9E9A6 /* Identifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C17D491B5813EB00D9E9A6 /* Identifier.swift */; };
 		C2C482E519CA0225002E84A9 /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C482E419CA0225002E84A9 /* Stack.swift */; };
@@ -613,6 +631,7 @@
 		C2B6914B1AFAC8EF0041CE11 /* XMLParserDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XMLParserDelegate.swift; sourceTree = "<group>"; };
 		C2B691891AFBCADB0041CE11 /* NetworkReachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkReachability.swift; sourceTree = "<group>"; };
 		C2B9B4091AC1C499005BA67C /* RegularExpression.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegularExpression.swift; sourceTree = "<group>"; };
+		C2BDBC361BD3F1E300E343F1 /* LumberjackOSX.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LumberjackOSX.framework; path = ../../../MSRemote/Remote/MoonKit/Lumberjack/build/Debug/LumberjackOSX.framework; sourceTree = "<group>"; };
 		C2BE96E71A467E85007599B2 /* NSManagedObjectModel+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectModel+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C2C17D491B5813EB00D9E9A6 /* Identifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Identifier.swift; sourceTree = "<group>"; };
 		C2C3B91E1AC5DA7D001DC6CC /* CocoaLumberjack.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CocoaLumberjack.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -855,7 +874,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C22734121AE1549F00641CC3 /* CocoaLumberjack.framework in Frameworks */,
+				C2BDBC371BD3F1E300E343F1 /* LumberjackOSX.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1294,6 +1313,7 @@
 		C2CE885018138C4900555D63 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C2BDBC361BD3F1E300E343F1 /* LumberjackOSX.framework */,
 				C225677F1BB05E7600E4842B /* Lumberjack.framework */,
 				C22087FE1BB053C00010DC7B /* CocoaLumberjackSwift.framework */,
 				C29C72761BAE38F20000EA00 /* CocoaLumberjackSwift.framework */,
@@ -2182,44 +2202,62 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C22733F21AE1539E00641CC3 /* RegularExpression.swift in Sources */,
-				C22734091AE1541000641CC3 /* FontAwesomeIcon.swift in Sources */,
-				C256F0971ABE0010005B7CB3 /* Protocols.swift in Sources */,
-				C22734101AE1541900641CC3 /* BoxedJSONValue.swift in Sources */,
-				C22733F61AE153CD00641CC3 /* OrderedDictionary.swift in Sources */,
-				C227340F1AE1541900641CC3 /* JSONValueRelatedExtensions.swift in Sources */,
-				C22733F41AE153AE00641CC3 /* MoonFunctions.swift in Sources */,
-				C22733F51AE153C900641CC3 /* BitArray.swift in Sources */,
-				C22733F81AE153FF00641CC3 /* NSManagedObjectModel+MoonKitAdditions.swift in Sources */,
-				C22734041AE1540700641CC3 /* MappingOperations.swift in Sources */,
-				C22733FC1AE153FF00641CC3 /* MSDictionary+MoonKitAdditions.swift in Sources */,
-				C256F09A1ABE0041005B7CB3 /* Array+MoonKitAdditions.swift in Sources */,
-				C227340B1AE1541900641CC3 /* JSONParser.swift in Sources */,
-				C22734001AE153FF00641CC3 /* Set+MoonKitAdditions.swift in Sources */,
-				C22734051AE1540700641CC3 /* SetOperations.swift in Sources */,
-				C227340E1AE1541900641CC3 /* ObjectJSONValue.swift in Sources */,
-				C227340C1AE1541900641CC3 /* JSONSerialization.swift in Sources */,
-				C256F0981ABE0028005B7CB3 /* Generic.swift in Sources */,
-				C22733FF1AE153FF00641CC3 /* Bool+MoonKitAdditions.swift in Sources */,
-				C227340A1AE1541900641CC3 /* JSONValue.swift in Sources */,
-				C22733FB1AE153FF00641CC3 /* NSScanner+MoonKitAdditions.swift in Sources */,
-				C22733F11AE1539E00641CC3 /* CoreDataStack.swift in Sources */,
-				C22733FD1AE153FF00641CC3 /* NSLayoutConstraint+MoonKitAdditions.swift in Sources */,
-				C227340D1AE1541900641CC3 /* ArrayJSONValue.swift in Sources */,
-				C22733F71AE153D200641CC3 /* OrderedSet.swift in Sources */,
-				C22734071AE1540700641CC3 /* CollectionManipulations.swift in Sources */,
-				C256F0991ABE0039005B7CB3 /* Operators.swift in Sources */,
-				C256F09E1ABE0089005B7CB3 /* Stack.swift in Sources */,
-				C256F09D1ABE005F005B7CB3 /* NSError+MoonKitAdditions.swift in Sources */,
-				C256F09C1ABE0052005B7CB3 /* String+MoonKitAdditions.swift in Sources */,
-				C256F09B1ABE0049005B7CB3 /* Dictionary+MoonKitAdditions.swift in Sources */,
-				C22734031AE1540700641CC3 /* SequenceManipulation.swift in Sources */,
-				C22733FA1AE153FF00641CC3 /* NSCharacterSet+MoonKitAdditions.swift in Sources */,
-				C22734061AE1540700641CC3 /* RawOptionSetFunctions.swift in Sources */,
-				C22733F91AE153FF00641CC3 /* NSAttributedString+MoonKitAdditions.swift in Sources */,
-				C22734081AE1540700641CC3 /* FunctionManipulation.swift in Sources */,
-				C22733FE1AE153FF00641CC3 /* NSManagedObject+MoonKitAdditions.swift in Sources */,
-				C22734011AE153FF00641CC3 /* NSNumber+MoonKitAdditions.swift in Sources */,
+				C2BDBBD21BD3F00E00E343F1 /* Timer.swift in Sources */,
+				C2BDBBE11BD3F07C00E343F1 /* CATransform3D.swift in Sources */,
+				C2BDBBF51BD3F07C00E343F1 /* ClosedInterval+MoonKitAdditions.swift in Sources */,
+				C2BDBBF91BD3F07C00E343F1 /* CGSize+MoonKitAdditions.swift in Sources */,
+				C2BDBBF81BD3F07C00E343F1 /* CGPoint+MoonKitAdditions.swift in Sources */,
+				C2BDBC041BD3F07C00E343F1 /* FunctionManipulation.swift in Sources */,
+				C2BDBC021BD3F07C00E343F1 /* RawOptionSetFunctions.swift in Sources */,
+				C2BDBBE31BD3F07C00E343F1 /* NSURL+MoonKitAdditions.swift in Sources */,
+				C2BDBBFB1BD3F07C00E343F1 /* CGAffineTransform+MoonKitAddtions.swift in Sources */,
+				C2BDBC081BD3F07C00E343F1 /* Dispatch.swift in Sources */,
+				C2BDBC061BD3F07C00E343F1 /* SortingFunctions.swift in Sources */,
+				C2BDBBEF1BD3F07C00E343F1 /* NSIndexSet+MoonKitAdditions.swift in Sources */,
+				C2BDBC031BD3F07C00E343F1 /* CollectionManipulations.swift in Sources */,
+				C2BDBBD11BD3F00E00E343F1 /* Identifier.swift in Sources */,
+				C2BDBBD81BD3F00E00E343F1 /* MoonFunctions.swift in Sources */,
+				C2BDBBDB1BD3F00E00E343F1 /* Heap.swift in Sources */,
+				C2BDBBDC1BD3F00E00E343F1 /* Queue.swift in Sources */,
+				C2BDBBFF1BD3F07C00E343F1 /* SequenceManipulation.swift in Sources */,
+				C2BDBBF71BD3F07C00E343F1 /* CGRect+MoonKitAdditions.swift in Sources */,
+				C2BDBBE81BD3F07C00E343F1 /* Set+MoonKitAdditions.swift in Sources */,
+				C2BDBBE61BD3F07C00E343F1 /* String+MoonKitAdditions.swift in Sources */,
+				C2BDBC3F1BD3F83500E343F1 /* Logging.swift in Sources */,
+				C2BDBBD71BD3F00E00E343F1 /* WeakObject.swift in Sources */,
+				C2BDBBF31BD3F07C00E343F1 /* String+RegularExpression.swift in Sources */,
+				C2BDBC141BD3F07C00E343F1 /* XMLParser.swift in Sources */,
+				C2BDBBD41BD3F00E00E343F1 /* Ratio.swift in Sources */,
+				C2BDBC011BD3F07C00E343F1 /* SetOperations.swift in Sources */,
+				C2BDBBFC1BD3F07C00E343F1 /* Generic.swift in Sources */,
+				C2BDBBF61BD3F07C00E343F1 /* Index.swift in Sources */,
+				C2BDBBE51BD3F07C00E343F1 /* Dictionary+MoonKitAdditions.swift in Sources */,
+				C2BDBBFA1BD3F07C00E343F1 /* CGVector+MoonKitAdditions.swift in Sources */,
+				C2BDBBE41BD3F07C00E343F1 /* Array+MoonKitAdditions.swift in Sources */,
+				C2BDBBF41BD3F07C00E343F1 /* Range+MoonKitAdditions.swift in Sources */,
+				C2BDBBFE1BD3F07C00E343F1 /* Operators.swift in Sources */,
+				C2BDBBD91BD3F00E00E343F1 /* Tree.swift in Sources */,
+				C2BDBBE71BD3F07C00E343F1 /* Bool+MoonKitAdditions.swift in Sources */,
+				C2BDBBF21BD3F07C00E343F1 /* NSParagraphStyle+MoonKitAdditions.swift in Sources */,
+				C2BDBBDA1BD3F00E00E343F1 /* List.swift in Sources */,
+				C2BDBBE01BD3F00E00E343F1 /* OrderedSet.swift in Sources */,
+				C2BDBBEA1BD3F07C00E343F1 /* NSScanner+MoonKitAdditions.swift in Sources */,
+				C2BDBBD01BD3F00E00E343F1 /* RegularExpression.swift in Sources */,
+				C2BDBBD61BD3F00E00E343F1 /* PropertyCoder.swift in Sources */,
+				C2BDBBDD1BD3F00E00E343F1 /* BitArray.swift in Sources */,
+				C2BDBC071BD3F07C00E343F1 /* Numbers.swift in Sources */,
+				C2BDBBE21BD3F07C00E343F1 /* NSRange+MoonKitAdditions.swift in Sources */,
+				C2BDBBE91BD3F07C00E343F1 /* NSCharacterSet+MoonKitAdditions.swift in Sources */,
+				C2BDBBDF1BD3F00E00E343F1 /* Stack.swift in Sources */,
+				C2BDBC0A1BD3F07C00E343F1 /* NotificationType.swift in Sources */,
+				C2BDBC001BD3F07C00E343F1 /* MappingOperations.swift in Sources */,
+				C2BDBBD51BD3F00E00E343F1 /* DirectoryMonitor.swift in Sources */,
+				C2BDBBEC1BD3F07C00E343F1 /* NSError+MoonKitAdditions.swift in Sources */,
+				C2BDBC091BD3F07C00E343F1 /* Protocols.swift in Sources */,
+				C2BDBC0B1BD3F07C00E343F1 /* XMLParserDelegate.swift in Sources */,
+				C2BDBBD31BD3F00E00E343F1 /* Fraction.swift in Sources */,
+				C2BDBC051BD3F07C00E343F1 /* MiscellaneousFunctions.swift in Sources */,
+				C2BDBBEB1BD3F07C00E343F1 /* CoreGraphics.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2492,10 +2530,6 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"/Users/Moondeer/Projects/MSRemote/Remote/GitHub/CocoaLumberjack/Framework/Desktop/build/Debug-iphoneos",
-				);
 				FRAMEWORK_VERSION = A;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -2515,7 +2549,7 @@
 				INFOPLIST_FILE = MoonKitOSX/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.moondeerstudios.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2554,10 +2588,6 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"/Users/Moondeer/Projects/MSRemote/Remote/GitHub/CocoaLumberjack/Framework/Desktop/build/Debug-iphoneos",
-				);
 				FRAMEWORK_VERSION = A;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -2570,7 +2600,7 @@
 				INFOPLIST_FILE = MoonKitOSX/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.moondeerstudios.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";

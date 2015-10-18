@@ -10,11 +10,23 @@ import Foundation
 
 extension CGSize {
 
-  public init?(_ string: String?) { if let s = string { self = CGSizeFromString(s) } else { return nil } }
+  public init?(_ string: String?) {
+    if let s = string {
+      #if os(iOS)
+        self = CGSizeFromString(s)
+        #else
+        self = NSSizeFromString(s)
+      #endif
+    } else { return nil }
+  }
   public init(square: CGFloat) { self = CGSize(width: square, height: square) }
   public func contains(size: CGSize) -> Bool { return width >= size.width && height >= size.height }
+
+  #if os(iOS)
   public var minAxis: UILayoutConstraintAxis { return height < width ? .Vertical : .Horizontal }
   public var maxAxis: UILayoutConstraintAxis { return width < height ? .Vertical : .Horizontal }
+  #endif
+
   public var minAxisValue: CGFloat { return min(width, height) }
   public var maxAxisValue: CGFloat { return max(width, height) }
   public var area: CGFloat { return width * height }
@@ -58,7 +70,16 @@ extension CGSize {
     return CGSizeApplyAffineTransform(self, transform)
   }
 }
-extension CGSize: CustomStringConvertible { public var description: String { return NSStringFromCGSize(self) } }
+extension CGSize: CustomStringConvertible {
+  public var description: String {
+    #if os(iOS)
+      return NSStringFromCGSize(self)
+      #else
+      return NSStringFromSize(self)
+    #endif
+
+  }
+}
 extension CGSize: Unpackable2 {
   public var unpack: (CGFloat, CGFloat) { return (width, height) }
 }

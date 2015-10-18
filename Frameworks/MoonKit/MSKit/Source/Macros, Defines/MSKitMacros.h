@@ -6,7 +6,9 @@
 //  Copyright (c) 2012 Moondeer Studios. All rights reserved.
 //
 @import Foundation;
+#if TARGET_OS_IPHONE
 @import UIKit;
+#endif
 #import "MSKitDefines.h"
 #import "NSNull+MSKitAdditions.h"
 #import "NSString+MSKitAdditions.h"
