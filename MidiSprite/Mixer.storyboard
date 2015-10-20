@@ -1,0 +1,653 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="15A284" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <mutableArray key="Latinotype - Triump-Rg-Rock-02.otf">
+            <string>Triump-Rg-Rock-02</string>
+        </mutableArray>
+        <mutableArray key="Yellow Design Studio - Eveleth Regular.otf">
+            <string>EvelethRegular</string>
+            <string>EvelethRegular</string>
+            <string>EvelethRegular</string>
+            <string>EvelethRegular</string>
+        </mutableArray>
+    </customFonts>
+    <scenes>
+        <!--Mixer-->
+        <scene sceneID="6FS-5d-R84">
+            <objects>
+                <collectionViewController storyboardIdentifier="Mixer" title="Mixer" id="iF7-fT-LPT" userLabel="Mixer" customClass="MixerViewController" customModule="Groove" customModuleProvider="target" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" contentMode="scaleToFill" directionalLockEnabled="YES" bounces="NO" alwaysBounceHorizontal="YES" showsVerticalScrollIndicator="NO" dataMode="prototypes" id="QhA-gV-EZG">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="430"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <animations/>
+                        <color key="backgroundColor" red="0.20000000298023224" green="0.19607843458652496" blue="0.19215686619281769" alpha="1" colorSpace="calibratedRGB"/>
+                        <collectionViewLayout key="collectionViewLayout" id="I5F-pR-bWx" customClass="MixerLayout" customModule="Groove" customModuleProvider="target"/>
+                        <cells>
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" placeholderIntrinsicWidth="100" placeholderIntrinsicHeight="420" reuseIdentifier="MasterCell" id="Ywg-X3-Y1Q" userLabel="Master Cell" customClass="MasterCell" customModule="Groove" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="100" height="430"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="100" height="430"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="jXz-zn-JV2">
+                                            <rect key="frame" x="8" y="8" width="84" height="412"/>
+                                            <subviews>
+                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Mnc-ed-SYw">
+                                                    <rect key="frame" x="20" y="0.0" width="44" height="158"/>
+                                                    <subviews>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="256" text="VOL" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4EJ-Z0-Ecx" customClass="Label" customModule="MoonKit">
+                                                            <rect key="frame" x="8" y="0.0" width="28" height="15"/>
+                                                            <animations/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="15" id="z5c-Br-TDJ"/>
+                                                            </constraints>
+                                                            <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
+                                                            <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="calibratedRGB"/>
+                                                            <nil key="highlightedColor"/>
+                                                            <userDefinedRuntimeAttributes>
+                                                                <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="VolumeLabel"/>
+                                                            </userDefinedRuntimeAttributes>
+                                                        </label>
+                                                        <view opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="247" horizontalCompressionResistancePriority="749" verticalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="Evx-CT-UhF" userLabel="Volume Slider" customClass="Slider" customModule="MoonKit">
+                                                            <rect key="frame" x="0.0" y="15.5" width="44" height="152"/>
+                                                            <animations/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="133" id="Dq4-mh-SDn">
+                                                                    <variation key="heightClass=regular-widthClass=regular" constant="93"/>
+                                                                </constraint>
+                                                                <constraint firstAttribute="width" constant="44" identifier="VolumeSliderWidth" id="eUV-6O-sS4"/>
+                                                            </constraints>
+                                                            <userDefinedRuntimeAttributes>
+                                                                <userDefinedRuntimeAttribute type="number" keyPath="value">
+                                                                    <real key="value" value="11"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
+                                                                    <real key="value" value="0.0"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
+                                                                    <real key="value" value="11"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="color" keyPath="thumbColor">
+                                                                    <color key="value" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="calibratedRGB"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="color" keyPath="trackMaxColor">
+                                                                    <color key="value" red="0.30125221610000003" green="0.29395070670000001" blue="0.28606623409999998" alpha="1" colorSpace="calibratedRGB"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="color" keyPath="trackMinColor">
+                                                                    <color key="value" red="0.57254901960000004" green="0.52941176469999995" blue="0.47058823529999999" alpha="1" colorSpace="calibratedRGB"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="image" keyPath="thumbImage" value="vertical_thumb"/>
+                                                                <userDefinedRuntimeAttribute type="image" keyPath="trackMinImage" value="vertical_track"/>
+                                                                <userDefinedRuntimeAttribute type="image" keyPath="trackMaxImage" value="vertical_track"/>
+                                                                <userDefinedRuntimeAttribute type="string" keyPath="axisString" value="Vertical"/>
+                                                                <userDefinedRuntimeAttribute type="boolean" keyPath="preservesTrackMinImageSize" value="YES"/>
+                                                                <userDefinedRuntimeAttribute type="boolean" keyPath="preservesTrackMaxImageSize" value="YES"/>
+                                                                <userDefinedRuntimeAttribute type="boolean" keyPath="preservesThumbImageSize" value="YES"/>
+                                                                <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="VolumeSlider"/>
+                                                            </userDefinedRuntimeAttributes>
+                                                            <connections>
+                                                                <action selector="volumeDidChange" destination="Ywg-X3-Y1Q" eventType="valueChanged" id="Wgq-MX-8Yq"/>
+                                                            </connections>
+                                                        </view>
+                                                    </subviews>
+                                                    <animations/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="158" id="znL-7g-3La"/>
+                                                    </constraints>
+                                                </stackView>
+                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="klg-NE-H6j">
+                                                    <rect key="frame" x="0.0" y="168" width="84" height="109"/>
+                                                    <subviews>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="256" text="PAN" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Q27-Qm-1HH" customClass="Label" customModule="MoonKit">
+                                                            <rect key="frame" x="28" y="0.0" width="28" height="15"/>
+                                                            <animations/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="15" id="GRJ-E3-NbZ"/>
+                                                            </constraints>
+                                                            <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
+                                                            <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="calibratedRGB"/>
+                                                            <nil key="highlightedColor"/>
+                                                            <userDefinedRuntimeAttributes>
+                                                                <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="PanLabel"/>
+                                                            </userDefinedRuntimeAttributes>
+                                                        </label>
+                                                        <view opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="RJ4-aR-o07" customClass="Knob" customModule="MoonKit">
+                                                            <rect key="frame" x="0.0" y="25" width="84" height="84"/>
+                                                            <animations/>
+                                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="84" id="ADG-uP-L0j"/>
+                                                                <constraint firstAttribute="width" secondItem="RJ4-aR-o07" secondAttribute="height" multiplier="1:1" identifier="PanKnobAspectRatio" id="LAp-6H-dZc"/>
+                                                                <constraint firstAttribute="width" constant="84" id="QXE-4q-UuI"/>
+                                                            </constraints>
+                                                            <userDefinedRuntimeAttributes>
+                                                                <userDefinedRuntimeAttribute type="number" keyPath="value">
+                                                                    <real key="value" value="0.0"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
+                                                                    <real key="value" value="-1"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
+                                                                    <real key="value" value="1"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="image" keyPath="knobBase" value="knob"/>
+                                                                <userDefinedRuntimeAttribute type="color" keyPath="knobColor">
+                                                                    <color key="value" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="calibratedRGB"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="color" keyPath="indicatorColor">
+                                                                    <color key="value" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="PanKnob"/>
+                                                                <userDefinedRuntimeAttribute type="image" keyPath="indicatorImage" value="indicator"/>
+                                                                <userDefinedRuntimeAttribute type="image" keyPath="indicatorFillImage" value="indicator_fill"/>
+                                                                <userDefinedRuntimeAttribute type="string" keyPath="indicatorStyleString" value="XOR"/>
+                                                                <userDefinedRuntimeAttribute type="string" keyPath="indicatorFillStyleString" value="XOR"/>
+                                                            </userDefinedRuntimeAttributes>
+                                                            <connections>
+                                                                <action selector="panDidChange" destination="Ywg-X3-Y1Q" eventType="valueChanged" id="gQ1-Cd-Fes"/>
+                                                            </connections>
+                                                        </view>
+                                                    </subviews>
+                                                    <animations/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="109" id="M21-MR-BLp"/>
+                                                    </constraints>
+                                                </stackView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="MASTER" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zFx-2Q-V0k" customClass="Label" customModule="MoonKit">
+                                                    <rect key="frame" x="17" y="287" width="50.5" height="125"/>
+                                                    <animations/>
+                                                    <fontDescription key="fontDescription" name="Triump-Rg-Rock-02" family="Triump Rg Rock" pointSize="14"/>
+                                                    <color key="textColor" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="BusName"/>
+                                                        <userDefinedRuntimeAttribute type="string" keyPath="verticalAlignmentString" value="Bottom"/>
+                                                    </userDefinedRuntimeAttributes>
+                                                </label>
+                                            </subviews>
+                                            <animations/>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="MasterCellStack"/>
+                                            </userDefinedRuntimeAttributes>
+                                        </stackView>
+                                    </subviews>
+                                    <animations/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                                <animations/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="bottomMargin" secondItem="jXz-zn-JV2" secondAttribute="bottom" constant="2" identifier="ContentStretchDown" id="1uw-qs-5XC">
+                                        <variation key="heightClass=regular-widthClass=regular" constant="0.0"/>
+                                    </constraint>
+                                    <constraint firstAttribute="trailingMargin" secondItem="jXz-zn-JV2" secondAttribute="trailing" identifier="ContentStretchRight" id="MtC-Gt-qEW"/>
+                                    <constraint firstItem="jXz-zn-JV2" firstAttribute="top" secondItem="Ywg-X3-Y1Q" secondAttribute="topMargin" identifier="ContentStretchUp" id="orp-sR-obj">
+                                        <variation key="heightClass=regular-widthClass=regular" constant="0.0"/>
+                                    </constraint>
+                                    <constraint firstItem="jXz-zn-JV2" firstAttribute="leading" secondItem="Ywg-X3-Y1Q" secondAttribute="leadingMargin" identifier="ContentStretchLeft" id="sYv-jh-Pkp"/>
+                                </constraints>
+                                <size key="customSize" width="100" height="430"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="MixerSceneMasterCell"/>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <outlet property="panKnob" destination="RJ4-aR-o07" id="ThE-Ky-lgV"/>
+                                    <outlet property="stackView" destination="jXz-zn-JV2" id="Nzg-pI-3Yr"/>
+                                    <outlet property="volumeSlider" destination="Evx-CT-UhF" id="vDN-Mv-AOX"/>
+                                </connections>
+                            </collectionViewCell>
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" contentMode="center" reuseIdentifier="TrackCell" id="2AY-7g-m2Q" userLabel="Track Cell" customClass="TrackCell" customModule="Groove" customModuleProvider="target">
+                                <rect key="frame" x="110" y="0.0" width="100" height="430"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="100" height="430"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="sCc-QY-TMC">
+                                            <rect key="frame" x="8" y="8" width="84" height="433"/>
+                                            <subviews>
+                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="YGu-8C-M5R">
+                                                    <rect key="frame" x="20" y="0.0" width="44" height="158"/>
+                                                    <subviews>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="256" text="VOL" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1nN-5d-7mi" customClass="Label" customModule="MoonKit">
+                                                            <rect key="frame" x="8" y="0.0" width="28" height="15"/>
+                                                            <animations/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="15" id="yOg-Pr-U66"/>
+                                                            </constraints>
+                                                            <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
+                                                            <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="calibratedRGB"/>
+                                                            <nil key="highlightedColor"/>
+                                                            <userDefinedRuntimeAttributes>
+                                                                <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="VolumeLabel"/>
+                                                            </userDefinedRuntimeAttributes>
+                                                        </label>
+                                                        <view opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="247" horizontalCompressionResistancePriority="749" verticalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="fQV-Nj-rrF" userLabel="Volume Slider" customClass="Slider" customModule="MoonKit">
+                                                            <rect key="frame" x="0.0" y="15.5" width="44" height="152"/>
+                                                            <animations/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="133" id="6er-k4-NNO"/>
+                                                                <constraint firstAttribute="width" constant="44" identifier="VolumeSliderWidth" id="Jyz-qp-TR8"/>
+                                                            </constraints>
+                                                            <userDefinedRuntimeAttributes>
+                                                                <userDefinedRuntimeAttribute type="number" keyPath="value">
+                                                                    <real key="value" value="11"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
+                                                                    <real key="value" value="0.0"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
+                                                                    <real key="value" value="11"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="color" keyPath="trackMinColor">
+                                                                    <color key="value" red="0.5725490196078431" green="0.52941176470588236" blue="0.47058823529411764" alpha="1" colorSpace="calibratedRGB"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="color" keyPath="thumbColor">
+                                                                    <color key="value" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="color" keyPath="trackMaxColor">
+                                                                    <color key="value" red="0.30125221610000003" green="0.29395070670000001" blue="0.28606623409999998" alpha="1" colorSpace="calibratedRGB"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="image" keyPath="trackMinImage" value="vertical_track"/>
+                                                                <userDefinedRuntimeAttribute type="image" keyPath="trackMaxImage" value="vertical_track"/>
+                                                                <userDefinedRuntimeAttribute type="image" keyPath="thumbImage" value="vertical_thumb"/>
+                                                                <userDefinedRuntimeAttribute type="string" keyPath="axisString" value="Vertical"/>
+                                                                <userDefinedRuntimeAttribute type="boolean" keyPath="preservesTrackMinImageSize" value="YES"/>
+                                                                <userDefinedRuntimeAttribute type="boolean" keyPath="preservesThumbImageSize" value="YES"/>
+                                                                <userDefinedRuntimeAttribute type="boolean" keyPath="preservesTrackMaxImageSize" value="YES"/>
+                                                                <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="VolumeSlider"/>
+                                                            </userDefinedRuntimeAttributes>
+                                                            <connections>
+                                                                <action selector="volumeDidChange" destination="2AY-7g-m2Q" eventType="valueChanged" id="0PE-6k-RsM"/>
+                                                            </connections>
+                                                        </view>
+                                                    </subviews>
+                                                    <animations/>
+                                                </stackView>
+                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="tLa-UT-lvm">
+                                                    <rect key="frame" x="0.0" y="168" width="84" height="109"/>
+                                                    <subviews>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="256" text="PAN" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UVo-0O-vty" customClass="Label" customModule="MoonKit">
+                                                            <rect key="frame" x="28" y="0.0" width="28" height="15"/>
+                                                            <animations/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="15" id="ZDQ-OE-Tmw"/>
+                                                            </constraints>
+                                                            <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
+                                                            <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="calibratedRGB"/>
+                                                            <nil key="highlightedColor"/>
+                                                            <userDefinedRuntimeAttributes>
+                                                                <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="PanLabel"/>
+                                                            </userDefinedRuntimeAttributes>
+                                                        </label>
+                                                        <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="y4E-jp-B4L" customClass="Knob" customModule="MoonKit">
+                                                            <rect key="frame" x="0.0" y="25" width="84" height="84"/>
+                                                            <animations/>
+                                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="width" constant="84" id="EWv-pC-XEW"/>
+                                                                <constraint firstAttribute="width" secondItem="y4E-jp-B4L" secondAttribute="height" multiplier="1:1" identifier="PanKnobAspectRatio" id="HIX-Ud-ZYF"/>
+                                                            </constraints>
+                                                            <userDefinedRuntimeAttributes>
+                                                                <userDefinedRuntimeAttribute type="number" keyPath="value">
+                                                                    <real key="value" value="0.0"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
+                                                                    <real key="value" value="-1"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
+                                                                    <real key="value" value="1"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="image" keyPath="knobBase" value="knob"/>
+                                                                <userDefinedRuntimeAttribute type="color" keyPath="knobColor">
+                                                                    <color key="value" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="calibratedRGB"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="color" keyPath="indicatorColor">
+                                                                    <color key="value" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="PanKnob"/>
+                                                                <userDefinedRuntimeAttribute type="image" keyPath="indicatorImage" value="indicator"/>
+                                                                <userDefinedRuntimeAttribute type="image" keyPath="indicatorFillImage" value="indicator_fill"/>
+                                                                <userDefinedRuntimeAttribute type="string" keyPath="indicatorStyleString" value="XOR"/>
+                                                                <userDefinedRuntimeAttribute type="string" keyPath="indicatorFillStyleString" value="XOR"/>
+                                                            </userDefinedRuntimeAttributes>
+                                                            <connections>
+                                                                <action selector="panDidChange" destination="2AY-7g-m2Q" eventType="valueChanged" id="ZQM-8a-6Y0"/>
+                                                            </connections>
+                                                        </view>
+                                                    </subviews>
+                                                    <animations/>
+                                                </stackView>
+                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="13X-Pc-Np3">
+                                                    <rect key="frame" x="19.5" y="287" width="45" height="38"/>
+                                                    <subviews>
+                                                        <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ldg-6q-t2e" userLabel="Solo" customClass="LabelButton" customModule="MoonKit">
+                                                            <rect key="frame" x="0.0" y="0.0" width="45" height="19"/>
+                                                            <animations/>
+                                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                            <color key="tintColor" red="0.30125221610000003" green="0.29395070670000001" blue="0.28606623409999998" alpha="1" colorSpace="calibratedRGB"/>
+                                                            <userDefinedRuntimeAttributes>
+                                                                <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="SoloButton"/>
+                                                                <userDefinedRuntimeAttribute type="string" keyPath="text" value="Solo"/>
+                                                                <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="EvelethLight"/>
+                                                                <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
+                                                                    <real key="value" value="14"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
+                                                                <userDefinedRuntimeAttribute type="color" keyPath="selectedTintColor">
+                                                                    <color key="value" red="0.67391729354858398" green="0.64499717950820923" blue="0.59965932369232178" alpha="1" colorSpace="calibratedRGB"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
+                                                                    <color key="value" red="0.77479177710000002" green="0.75248193740000002" blue="0.71923178430000001" alpha="1" colorSpace="custom" customColorSpace="deviceRGB"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                            </userDefinedRuntimeAttributes>
+                                                            <variation key="heightClass=regular-widthClass=regular" ambiguous="YES" misplaced="YES">
+                                                                <rect key="frame" x="0.0" y="0.0" width="50" height="36"/>
+                                                            </variation>
+                                                            <connections>
+                                                                <action selector="solo" destination="2AY-7g-m2Q" eventType="touchUpInside" id="g3q-b6-WW4"/>
+                                                            </connections>
+                                                        </view>
+                                                        <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BZl-Ps-fwB" userLabel="Mute" customClass="LabelButton" customModule="MoonKit">
+                                                            <rect key="frame" x="0.0" y="19" width="45" height="19"/>
+                                                            <animations/>
+                                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                            <color key="tintColor" red="0.30125221610000003" green="0.29395070670000001" blue="0.28606623409999998" alpha="1" colorSpace="calibratedRGB"/>
+                                                            <userDefinedRuntimeAttributes>
+                                                                <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="MuteButton"/>
+                                                                <userDefinedRuntimeAttribute type="string" keyPath="text" value="Mute"/>
+                                                                <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="EvelethLight"/>
+                                                                <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
+                                                                    <real key="value" value="14"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
+                                                                <userDefinedRuntimeAttribute type="color" keyPath="selectedTintColor">
+                                                                    <color key="value" red="0.77479177710000002" green="0.75248193740000002" blue="0.71923178430000001" alpha="1" colorSpace="custom" customColorSpace="deviceRGB"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
+                                                                    <color key="value" red="0.77479177710000002" green="0.75248193740000002" blue="0.71923178430000001" alpha="1" colorSpace="custom" customColorSpace="deviceRGB"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                            </userDefinedRuntimeAttributes>
+                                                            <variation key="heightClass=regular-widthClass=regular" ambiguous="YES" misplaced="YES">
+                                                                <rect key="frame" x="0.0" y="36" width="50" height="0.0"/>
+                                                            </variation>
+                                                            <connections>
+                                                                <action selector="mute" destination="2AY-7g-m2Q" eventType="touchUpInside" id="DQT-1Z-Rzc"/>
+                                                            </connections>
+                                                        </view>
+                                                    </subviews>
+                                                    <animations/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="38" id="0SF-2D-Kf4">
+                                                            <variation key="heightClass=regular-widthClass=regular" constant="36"/>
+                                                        </constraint>
+                                                    </constraints>
+                                                    <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                        <rect key="frame" x="17" y="257" width="50" height="36"/>
+                                                    </variation>
+                                                </stackView>
+                                                <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9PR-nQ-iWa">
+                                                    <rect key="frame" x="14" y="335" width="56" height="56"/>
+                                                    <subviews>
+                                                        <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6he-9a-y4c" customClass="ImageButtonView" customModule="MoonKit">
+                                                            <rect key="frame" x="0.0" y="0.0" width="56" height="56"/>
+                                                            <animations/>
+                                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                            <color key="tintColor" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="calibratedRGB"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="width" constant="56" id="B01-fN-tWS"/>
+                                                                <constraint firstAttribute="height" constant="56" id="x2k-AE-9BF"/>
+                                                            </constraints>
+                                                            <userDefinedRuntimeAttributes>
+                                                                <userDefinedRuntimeAttribute type="image" keyPath="image" value="brass"/>
+                                                            </userDefinedRuntimeAttributes>
+                                                        </view>
+                                                    </subviews>
+                                                    <animations/>
+                                                </stackView>
+                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="G8k-76-kf1">
+                                                    <rect key="frame" x="0.0" y="401" width="84" height="32"/>
+                                                    <subviews>
+                                                        <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3Fc-u3-GOg" userLabel="TrackLabel" customClass="TrackLabel" customModule="Groove" customModuleProvider="target">
+                                                            <rect key="frame" x="0.0" y="0.0" width="84" height="15"/>
+                                                            <animations/>
+                                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                            <gestureRecognizers/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="15" id="ZMO-eC-OZu">
+                                                                    <variation key="heightClass=regular-widthClass=regular" constant="19"/>
+                                                                </constraint>
+                                                            </constraints>
+                                                            <userDefinedRuntimeAttributes>
+                                                                <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TrackLabel"/>
+                                                                <userDefinedRuntimeAttribute type="string" keyPath="text" value="Bus 1"/>
+                                                                <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="Triump-Rg-Rock-02"/>
+                                                                <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
+                                                                    <real key="value" value="14"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="color" keyPath="textColor">
+                                                                    <color key="value" red="0.72547006607055664" green="0.70085549354553223" blue="0.6621164083480835" alpha="1" colorSpace="calibratedRGB"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="string" keyPath="editingFontName" value="Triump-Rg-Rock-02"/>
+                                                                <userDefinedRuntimeAttribute type="number" keyPath="editingFontSize">
+                                                                    <real key="value" value="14"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                            </userDefinedRuntimeAttributes>
+                                                            <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                                <rect key="frame" x="0.0" y="0.0" width="84" height="19"/>
+                                                            </variation>
+                                                            <connections>
+                                                                <outlet property="delegate" destination="2AY-7g-m2Q" id="DMw-YC-Lce"/>
+                                                            </connections>
+                                                        </view>
+                                                        <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="i87-3C-3ae" userLabel="TrackColor" customClass="ImageButtonView" customModule="MoonKit">
+                                                            <rect key="frame" x="0.0" y="15" width="84" height="17"/>
+                                                            <animations/>
+                                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                            <color key="tintColor" red="0.68166375160217285" green="0.38204258680343628" blue="0.2524854838848114" alpha="1" colorSpace="calibratedRGB"/>
+                                                            <gestureRecognizers/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="17" id="4dU-t5-6R3"/>
+                                                            </constraints>
+                                                            <userDefinedRuntimeAttributes>
+                                                                <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TrackColor"/>
+                                                                <userDefinedRuntimeAttribute type="image" keyPath="image" value="color_swatch"/>
+                                                                <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="NO"/>
+                                                                <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="color_swatch_thicker-selected"/>
+                                                            </userDefinedRuntimeAttributes>
+                                                            <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                                <rect key="frame" x="0.0" y="19" width="84" height="17"/>
+                                                            </variation>
+                                                            <connections>
+                                                                <action selector="selectItem:" destination="iF7-fT-LPT" eventType="touchUpInside" id="ooi-Kn-TGK"/>
+                                                            </connections>
+                                                        </view>
+                                                    </subviews>
+                                                    <animations/>
+                                                    <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                        <rect key="frame" x="0.0" y="378" width="84" height="36"/>
+                                                    </variation>
+                                                </stackView>
+                                            </subviews>
+                                            <animations/>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TrackCellStack"/>
+                                            </userDefinedRuntimeAttributes>
+                                        </stackView>
+                                        <visualEffectView hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PLx-z8-sAo">
+                                            <rect key="frame" x="0.0" y="0.0" width="100" height="449"/>
+                                            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="center" id="0px-uc-SZ1">
+                                                <rect key="frame" x="0.0" y="0.0" width="100" height="449"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <visualEffectView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eZi-HU-WRM">
+                                                        <rect key="frame" x="0.0" y="0.0" width="100" height="449"/>
+                                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="eQW-ZI-j4I">
+                                                            <rect key="frame" x="0.0" y="0.0" width="100" height="449"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <subviews>
+                                                                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" image="trash-selected" translatesAutoresizingMaskIntoConstraints="NO" id="gNv-ZK-rjJ">
+                                                                    <rect key="frame" x="22" y="196.5" width="56" height="56"/>
+                                                                    <animations/>
+                                                                </imageView>
+                                                            </subviews>
+                                                            <animations/>
+                                                            <constraints>
+                                                                <constraint firstItem="gNv-ZK-rjJ" firstAttribute="centerX" secondItem="eQW-ZI-j4I" secondAttribute="centerX" id="5TH-f0-A9n"/>
+                                                                <constraint firstItem="gNv-ZK-rjJ" firstAttribute="centerY" secondItem="eQW-ZI-j4I" secondAttribute="centerY" id="i79-qO-PGT"/>
+                                                            </constraints>
+                                                        </view>
+                                                        <animations/>
+                                                        <vibrancyEffect>
+                                                            <blurEffect style="dark"/>
+                                                        </vibrancyEffect>
+                                                    </visualEffectView>
+                                                </subviews>
+                                                <animations/>
+                                                <constraints>
+                                                    <constraint firstItem="eZi-HU-WRM" firstAttribute="top" secondItem="0px-uc-SZ1" secondAttribute="top" id="QKo-0Y-hfh"/>
+                                                    <constraint firstAttribute="trailing" secondItem="eZi-HU-WRM" secondAttribute="trailing" id="agB-h0-kMb"/>
+                                                    <constraint firstAttribute="bottom" secondItem="eZi-HU-WRM" secondAttribute="bottom" id="lUa-Nn-ErE"/>
+                                                    <constraint firstItem="eZi-HU-WRM" firstAttribute="leading" secondItem="0px-uc-SZ1" secondAttribute="leading" id="urF-me-hsb"/>
+                                                </constraints>
+                                            </view>
+                                            <animations/>
+                                            <blurEffect style="dark"/>
+                                        </visualEffectView>
+                                    </subviews>
+                                    <animations/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                                <animations/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="PLx-z8-sAo" firstAttribute="leading" secondItem="2AY-7g-m2Q" secondAttribute="leading" id="9ac-bz-W6D"/>
+                                    <constraint firstItem="PLx-z8-sAo" firstAttribute="top" secondItem="2AY-7g-m2Q" secondAttribute="top" id="Ddx-zp-JY3"/>
+                                    <constraint firstAttribute="trailingMargin" secondItem="sCc-QY-TMC" secondAttribute="trailing" identifier="ContentStretchRight" id="Gju-vg-pOP"/>
+                                    <constraint firstItem="sCc-QY-TMC" firstAttribute="top" secondItem="2AY-7g-m2Q" secondAttribute="topMargin" identifier="ContentStretchUp" id="Ncr-XB-LXB"/>
+                                    <constraint firstAttribute="trailing" secondItem="PLx-z8-sAo" secondAttribute="trailing" id="NiX-3b-LrS"/>
+                                    <constraint firstAttribute="bottom" secondItem="PLx-z8-sAo" secondAttribute="bottom" id="ebH-51-OJU"/>
+                                    <constraint firstItem="sCc-QY-TMC" firstAttribute="leading" secondItem="2AY-7g-m2Q" secondAttribute="leadingMargin" identifier="ContentStretchLeft" id="h7b-Ps-gKq"/>
+                                    <constraint firstAttribute="bottomMargin" secondItem="sCc-QY-TMC" secondAttribute="bottom" identifier="ContentStretchDown" id="uVG-W8-cNW"/>
+                                </constraints>
+                                <size key="customSize" width="100" height="430"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="MixerSceneTrackCell"/>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <outlet property="controller" destination="iF7-fT-LPT" id="hf5-mu-tfY"/>
+                                    <outlet property="muteButton" destination="BZl-Ps-fwB" id="fPP-2n-qDK"/>
+                                    <outlet property="panKnob" destination="y4E-jp-B4L" id="yVA-ME-YEO"/>
+                                    <outlet property="panLabel" destination="UVo-0O-vty" id="l3g-yf-knH"/>
+                                    <outlet property="removalDisplay" destination="PLx-z8-sAo" id="xFR-eS-lai"/>
+                                    <outlet property="soloButton" destination="Ldg-6q-t2e" id="RUa-4A-QDo"/>
+                                    <outlet property="soundSetImage" destination="6he-9a-y4c" id="mWf-It-fxU"/>
+                                    <outlet property="stackView" destination="sCc-QY-TMC" id="Um8-Wv-ECM"/>
+                                    <outlet property="trackColor" destination="i87-3C-3ae" id="6y8-3i-4fB"/>
+                                    <outlet property="trackLabel" destination="3Fc-u3-GOg" id="b6h-6I-jBY"/>
+                                    <outlet property="volumeLabel" destination="1nN-5d-7mi" id="TL0-tR-AXy"/>
+                                    <outlet property="volumeSlider" destination="fQV-Nj-rrF" id="c6d-O8-cXX"/>
+                                </connections>
+                            </collectionViewCell>
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="AddTrackCell" id="h8g-3b-xY3" userLabel="Add Track Cell">
+                                <rect key="frame" x="220" y="0.0" width="100" height="430"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="100" height="430"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" alpha="0.34999999999999998" contentMode="center" image="add_track_background-outlines" translatesAutoresizingMaskIntoConstraints="NO" id="dMA-k2-N2G">
+                                            <rect key="frame" x="0.0" y="25" width="100" height="380"/>
+                                            <animations/>
+                                        </imageView>
+                                        <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6pi-bq-mPh" customClass="ImageButtonView" customModule="MoonKit">
+                                            <rect key="frame" x="32" y="197" width="36" height="36"/>
+                                            <animations/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                            <color key="tintColor" red="0.4992736279964447" green="0.45593017339706421" blue="0.39522531628608704" alpha="1" colorSpace="calibratedRGB"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="36" id="phL-Mc-ajN"/>
+                                                <constraint firstAttribute="width" secondItem="6pi-bq-mPh" secondAttribute="height" multiplier="1:1" id="swt-Fv-ACJ"/>
+                                            </constraints>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="image" keyPath="image" value="add-selected"/>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="AddTrackButton"/>
+                                                <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
+                                                    <color key="value" red="0.8608990312" green="0.29020571709999998" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="deviceRGB"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="color" keyPath="selectedTintColor">
+                                                    <color key="value" red="0.70097428560256958" green="0.17991100251674652" blue="0.015877731144428253" alpha="1" colorSpace="calibratedRGB"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                            <connections>
+                                                <action selector="addTrack" destination="iF7-fT-LPT" eventType="touchUpInside" id="6He-U3-HUV"/>
+                                            </connections>
+                                        </view>
+                                    </subviews>
+                                    <animations/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                                <animations/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="6pi-bq-mPh" firstAttribute="centerX" secondItem="h8g-3b-xY3" secondAttribute="centerX" id="45O-Z1-gKD"/>
+                                    <constraint firstItem="6pi-bq-mPh" firstAttribute="centerY" secondItem="h8g-3b-xY3" secondAttribute="centerY" id="5r0-ml-n0a"/>
+                                    <constraint firstItem="dMA-k2-N2G" firstAttribute="centerX" secondItem="h8g-3b-xY3" secondAttribute="centerX" id="Ykm-qU-p21"/>
+                                    <constraint firstItem="dMA-k2-N2G" firstAttribute="centerY" secondItem="h8g-3b-xY3" secondAttribute="centerY" id="g5B-3j-dzu"/>
+                                </constraints>
+                                <size key="customSize" width="100" height="430"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="AddTrackCell"/>
+                                </userDefinedRuntimeAttributes>
+                                <variation key="default">
+                                    <mask key="subviews">
+                                        <exclude reference="dMA-k2-N2G"/>
+                                    </mask>
+                                    <mask key="constraints">
+                                        <exclude reference="Ykm-qU-p21"/>
+                                        <exclude reference="g5B-3j-dzu"/>
+                                    </mask>
+                                </variation>
+                            </collectionViewCell>
+                        </cells>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="MixerSceneView"/>
+                        </userDefinedRuntimeAttributes>
+                        <connections>
+                            <outlet property="dataSource" destination="iF7-fT-LPT" id="ekL-VR-w3h"/>
+                            <outlet property="delegate" destination="iF7-fT-LPT" id="9kB-9B-DUj"/>
+                        </connections>
+                    </collectionView>
+                    <nil key="simulatedStatusBarMetrics"/>
+                    <nil key="simulatedTopBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
+                    <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="320" height="430"/>
+                </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="H3X-NX-nN4" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="256" y="-245"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="add-selected" width="56" height="56"/>
+        <image name="add_track_background-outlines" width="100" height="380"/>
+        <image name="brass" width="56" height="56"/>
+        <image name="color_swatch" width="84" height="17"/>
+        <image name="color_swatch_thicker-selected" width="84" height="17"/>
+        <image name="indicator" width="74" height="74"/>
+        <image name="indicator_fill" width="74" height="74"/>
+        <image name="knob" width="74" height="74"/>
+        <image name="trash-selected" width="56" height="56"/>
+        <image name="vertical_thumb" width="44" height="20"/>
+        <image name="vertical_track" width="46" height="20"/>
+    </resources>
+</document>

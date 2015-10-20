@@ -97,11 +97,11 @@ final class MIDISequence {
   var file: MIDIFile {
     get {
       let file = MIDIFile(format: .One, division: 480, tracks: tracks)
-      logDebug("<out> file: \(file)")
+      logVerbose("<out> file: \(file)")
       return file
     }
     set {
-      logDebug("<in> file: \(newValue)")
+      logVerbose("<in> file: \(newValue)")
       var trackChunks = ArraySlice(newValue.tracks)
       if let trackChunk = trackChunks.first
         where trackChunk.events.count == trackChunk.events.filter({ TempoTrack.isTempoTrackEvent($0) }).count

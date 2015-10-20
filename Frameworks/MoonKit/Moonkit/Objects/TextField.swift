@@ -8,7 +8,8 @@
 
 import UIKit
 
-@IBDesignable public class TextField: UITextField {
+//@IBDesignable
+public class TextField: UITextField {
 
   @IBInspectable public var gutter: UIEdgeInsets = .zeroInsets {
     didSet {

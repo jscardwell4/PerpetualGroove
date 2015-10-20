@@ -9,7 +9,8 @@
 import Foundation
 import UIKit
 
-@IBDesignable public class Stepper: UIControl {
+//@IBDesignable
+public class Stepper: UIControl {
 
 
   @IBInspectable public var continuous: Bool = true

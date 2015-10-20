@@ -8,7 +8,8 @@
 
 import UIKit
 
-@IBDesignable public class PopoverView: UIView {
+//@IBDesignable
+public class PopoverView: UIView {
 
   /** Enumeration to define which edge of the view will have an arrow */
   public enum Location: String { case Top, Bottom }

@@ -168,7 +168,7 @@ extension NoteAttributes: ByteArrayConvertible {
 
   - parameter bytes: [Byte]
   */
-  init(_ bytes: [Byte]) {
+  init!(_ bytes: [Byte]) {
     guard bytes.count >= 7 else { return }
     channel  = bytes[0]
     note     = Note(midi: bytes[1])

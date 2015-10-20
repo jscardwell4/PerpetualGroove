@@ -22,22 +22,24 @@ final class Instrument: Equatable, CustomStringConvertible {
 
   typealias Preset = SF2File.Preset
 
-  var soundSet: SoundSet
+  var soundSet: SoundSetType
   var channel: Channel = 0
   var bank: Bank = 0
   var program: Program = 0
   var preset: Preset { return soundSet[program, bank] }
   private let node = AVAudioUnitSampler()
 
-  var bus: AVAudioNodeBus { return node.destinationForMixer(AudioManager.mixer, bus: 0)?.connectionPoint.bus ?? -1 }
+  var bus: AVAudioNodeBus {
+    return node.destinationForMixer(AudioManager.mixer, bus: 0)?.connectionPoint.bus ?? -1
+  }
 
   /**
   loadSoundSet:preset:
 
-  - parameter soundSet: SoundSet
+  - parameter soundSet: SoundSetType
   - parameter preset: Preset
   */
-  func loadSoundSet(soundSet: SoundSet, preset: Preset) throws {
+  func loadSoundSet(soundSet: SoundSetType, preset: Preset) throws {
     try loadSoundSet(soundSet, program: preset.program, bank: preset.bank)
   }
 
@@ -94,9 +96,9 @@ final class Instrument: Equatable, CustomStringConvertible {
   /**
   loadSoundSet:
 
-  - parameter soundSet: SoundSet
+  - parameter soundSet: SoundSetType
   */
-  func loadSoundSet(soundSet: SoundSet, var program: Program = 0, var bank: Bank = 0) throws {
+  func loadSoundSet(soundSet: SoundSetType, var program: Program = 0, var bank: Bank = 0) throws {
     program = (0 ... 127).clampValue(program)
     bank    = (0 ... 127).clampValue(bank)
     try node.loadSoundBankInstrumentAtURL(soundSet.url,
@@ -116,19 +118,19 @@ final class Instrument: Equatable, CustomStringConvertible {
   - returns: Bool
   */
   func settingsEqualTo(instrument: Instrument) -> Bool {
-    return soundSet == instrument.soundSet
-        && program  == instrument.program
-        && bank     == instrument.bank
-        && channel  == instrument.channel
+    return soundSet.url == instrument.soundSet.url
+        && program      == instrument.program
+        && bank         == instrument.bank
+        && channel      == instrument.channel
   }
 
   /**
   init:
 
-  - parameter set: SoundSet
+  - parameter set: SoundSetType
   - parameter program: Program
   */
-  init(soundSet: SoundSet, program: Program = 0, bank: Bank = 0, channel: Channel = 0) throws {
+  init(soundSet: SoundSetType, program: Program = 0, bank: Bank = 0, channel: Channel = 0) throws {
     self.soundSet = soundSet
     self.bank     = bank
     self.program  = program

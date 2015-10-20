@@ -46,7 +46,7 @@ final class InstrumentViewController: UIViewController {
   var instrument: Instrument? {
     didSet {
       guard let instrument = instrument,
-             soundSetIndex = Sequencer.soundSets.indexOf(instrument.soundSet),
+             soundSetIndex = instrument.soundSet.index,
               presetIndex = instrument.soundSet.presets.indexOf(instrument.preset)
       else { return }
       soundSetPicker.selection = soundSetIndex

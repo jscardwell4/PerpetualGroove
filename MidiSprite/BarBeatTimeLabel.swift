@@ -10,7 +10,8 @@ import Foundation
 import MoonKit
 import struct AudioToolbox.CABarBeatTime
 
-@IBDesignable final class BarBeatTimeLabel: UIView {
+//@IBDesignable
+final class BarBeatTimeLabel: UIView {
 
   @IBInspectable var font: UIFont = .largeDisplayFont { didSet { updateFont() } }
   private var _font: UIFont = .largeDisplayFont { didSet { setNeedsDisplay() } }

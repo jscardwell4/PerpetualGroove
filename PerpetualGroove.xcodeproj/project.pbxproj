@@ -16,13 +16,18 @@
 		C222E6CC1BD2B78600DBBBDA /* Triump.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C222E6CA1BD2B78600DBBBDA /* Triump.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C22567821BB05ED100E4842B /* Lumberjack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C22567811BB05ED100E4842B /* Lumberjack.framework */; };
 		C22567831BB05ED100E4842B /* Lumberjack.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C22567811BB05ED100E4842B /* Lumberjack.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		C22D93F11BADA24A00B04A2B /* MIDINodeHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22D93F01BADA24A00B04A2B /* MIDINodeHistory.swift */; settings = {ASSET_TAGS = (); }; };
-		C22FA58B1BC7F3D300162DB4 /* TrackLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22FA58A1BC7F3D300162DB4 /* TrackLabel.swift */; settings = {ASSET_TAGS = (); }; };
-		C22FA58D1BC830D600162DB4 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22FA58C1BC830D600162DB4 /* SettingsManager.swift */; settings = {ASSET_TAGS = (); }; };
-		C2569E401B90005400EEB441 /* TempoTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2569E3F1B90005400EEB441 /* TempoTrack.swift */; settings = {ASSET_TAGS = (); }; };
+		C22D93F11BADA24A00B04A2B /* MIDINodeHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22D93F01BADA24A00B04A2B /* MIDINodeHistory.swift */; };
+		C22FA58B1BC7F3D300162DB4 /* TrackLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22FA58A1BC7F3D300162DB4 /* TrackLabel.swift */; };
+		C22FA58D1BC830D600162DB4 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22FA58C1BC830D600162DB4 /* SettingsManager.swift */; };
+		C255C4321BD664B000CAEE9C /* Mixer.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C255C4311BD664B000CAEE9C /* Mixer.storyboard */; settings = {ASSET_TAGS = (); }; };
+		C255C4351BD664CD00CAEE9C /* Instrument.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C255C4331BD664CD00CAEE9C /* Instrument.storyboard */; settings = {ASSET_TAGS = (); }; };
+		C255C4371BD664E400CAEE9C /* NoteAttributes.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C255C4361BD664E400CAEE9C /* NoteAttributes.storyboard */; settings = {ASSET_TAGS = (); }; };
+		C255C43A1BD664FB00CAEE9C /* Documents.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C255C4381BD664FB00CAEE9C /* Documents.storyboard */; settings = {ASSET_TAGS = (); }; };
+		C255C43C1BD6651100CAEE9C /* Tempo.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C255C43B1BD6651100CAEE9C /* Tempo.storyboard */; settings = {ASSET_TAGS = (); }; };
+		C2569E401B90005400EEB441 /* TempoTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2569E3F1B90005400EEB441 /* TempoTrack.swift */; };
 		C25EBC831B8BFAFA00E57665 /* MIDIFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25EBC821B8BFAFA00E57665 /* MIDIFile.swift */; };
-		C26A09761BC96B97002EFEE1 /* MixerLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A09751BC96B97002EFEE1 /* MixerLayout.swift */; settings = {ASSET_TAGS = (); }; };
-		C26A27EF1B948E4F00BD1698 /* DocumentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A27EE1B948E4E00BD1698 /* DocumentsViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		C26A09761BC96B97002EFEE1 /* MixerLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A09751BC96B97002EFEE1 /* MixerLayout.swift */; };
+		C26A27EF1B948E4F00BD1698 /* DocumentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A27EE1B948E4E00BD1698 /* DocumentsViewController.swift */; };
 		C26EEB2E1B7FDA8F00EC6979 /* MixerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26EEB2D1B7FDA8F00EC6979 /* MixerViewController.swift */; };
 		C26EEB301B7FDAF300EC6979 /* MixerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26EEB2F1B7FDAF300EC6979 /* MixerCell.swift */; };
 		C26FC16F1B7BA63300E271A3 /* MIDINode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26FC16E1B7BA63300E271A3 /* MIDINode.swift */; };
@@ -30,91 +35,85 @@
 		C26FC1731B7BAEBD00E271A3 /* MIDIPlayerFieldNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26FC1721B7BAEBD00E271A3 /* MIDIPlayerFieldNode.swift */; };
 		C272B2A01B7D700600134E5F /* SoundSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C272B29F1B7D700600134E5F /* SoundSet.swift */; };
 		C272B2A21B7D714B00134E5F /* PureOscillators.programlist in Resources */ = {isa = PBXBuildFile; fileRef = C272B2A11B7D714B00134E5F /* PureOscillators.programlist */; };
-		C27547161B9F572000115955 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C2E0433F1B72F4DC005F0675 /* Assets.xcassets */; settings = {ASSET_TAGS = (); }; };
-		C2776C201B9DF50D002FE5A8 /* Emax Volume 1.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2776C1A1B9DF50D002FE5A8 /* Emax Volume 1.sf2 */; settings = {ASSET_TAGS = (); }; };
-		C2776C221B9DF50D002FE5A8 /* Emax Volume 2.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2776C1B1B9DF50D002FE5A8 /* Emax Volume 2.sf2 */; settings = {ASSET_TAGS = (); }; };
-		C2776C241B9DF50D002FE5A8 /* Emax Volume 3.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2776C1C1B9DF50D002FE5A8 /* Emax Volume 3.sf2 */; settings = {ASSET_TAGS = (); }; };
-		C2776C261B9DF50D002FE5A8 /* Emax Volume 4.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2776C1D1B9DF50D002FE5A8 /* Emax Volume 4.sf2 */; settings = {ASSET_TAGS = (); }; };
-		C2776C281B9DF50D002FE5A8 /* Emax Volume 5.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2776C1E1B9DF50D002FE5A8 /* Emax Volume 5.sf2 */; settings = {ASSET_TAGS = (); }; };
-		C2776C2A1B9DF50D002FE5A8 /* Emax Volume 6.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2776C1F1B9DF50D002FE5A8 /* Emax Volume 6.sf2 */; settings = {ASSET_TAGS = (); }; };
-		C2776C301B9E8E72002FE5A8 /* SF2File.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2207B901B9DC63300E4D65D /* SF2File.swift */; settings = {ASSET_TAGS = (); }; };
+		C27547161B9F572000115955 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C2E0433F1B72F4DC005F0675 /* Assets.xcassets */; };
+		C2776C201B9DF50D002FE5A8 /* Emax Volume 1.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2776C1A1B9DF50D002FE5A8 /* Emax Volume 1.sf2 */; };
+		C2776C221B9DF50D002FE5A8 /* Emax Volume 2.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2776C1B1B9DF50D002FE5A8 /* Emax Volume 2.sf2 */; };
+		C2776C241B9DF50D002FE5A8 /* Emax Volume 3.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2776C1C1B9DF50D002FE5A8 /* Emax Volume 3.sf2 */; };
+		C2776C261B9DF50D002FE5A8 /* Emax Volume 4.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2776C1D1B9DF50D002FE5A8 /* Emax Volume 4.sf2 */; };
+		C2776C281B9DF50D002FE5A8 /* Emax Volume 5.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2776C1E1B9DF50D002FE5A8 /* Emax Volume 5.sf2 */; };
+		C2776C2A1B9DF50D002FE5A8 /* Emax Volume 6.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2776C1F1B9DF50D002FE5A8 /* Emax Volume 6.sf2 */; };
+		C2776C301B9E8E72002FE5A8 /* SF2File.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2207B901B9DC63300E4D65D /* SF2File.swift */; };
 		C27E18AD1B965F8500626314 /* Eveleth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BCD1B78EDEB00A68A64 /* Eveleth.framework */; };
 		C27E18AE1B965F8500626314 /* Eveleth.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BCD1B78EDEB00A68A64 /* Eveleth.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C27E18B21B965F8500626314 /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BD41B78EEC500A68A64 /* MoonKit.framework */; };
 		C27E18B31B965F8500626314 /* MoonKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BD41B78EEC500A68A64 /* MoonKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C27E18B41B965F8500626314 /* Chameleon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BD11B78EE3800A68A64 /* Chameleon.framework */; };
 		C27E18B51B965F8500626314 /* Chameleon.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BD11B78EE3800A68A64 /* Chameleon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		C283B69C1BC02E3B007A4A36 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C283B69B1BC02E3B007A4A36 /* Settings.bundle */; settings = {ASSET_TAGS = (); }; };
-		C283B69E1BC0495A007A4A36 /* DocumentItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C283B69D1BC0495A007A4A36 /* DocumentItem.swift */; settings = {ASSET_TAGS = (); }; };
+		C283B69C1BC02E3B007A4A36 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C283B69B1BC02E3B007A4A36 /* Settings.bundle */; };
+		C283B69E1BC0495A007A4A36 /* DocumentItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C283B69D1BC0495A007A4A36 /* DocumentItem.swift */; };
 		C283E7C21B9F272C00B1690D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C283E7C11B9F272C00B1690D /* AppDelegate.swift */; };
 		C283E7C41B9F272C00B1690D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C283E7C31B9F272C00B1690D /* ViewController.swift */; };
 		C283E7C71B9F272C00B1690D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C283E7C51B9F272C00B1690D /* Main.storyboard */; };
 		C283E7CC1B9F272C00B1690D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C283E7CA1B9F272C00B1690D /* LaunchScreen.storyboard */; };
 		C283E7D11B9F273A00B1690D /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BD41B78EEC500A68A64 /* MoonKit.framework */; };
 		C283E7D21B9F273A00B1690D /* MoonKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BD41B78EEC500A68A64 /* MoonKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		C283E7D61B9F278900B1690D /* AudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21E44C41B76546C00574BD2 /* AudioManager.swift */; settings = {ASSET_TAGS = (); }; };
-		C283E7D81B9F27E500B1690D /* SoundSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C272B29F1B7D700600134E5F /* SoundSet.swift */; settings = {ASSET_TAGS = (); }; };
-		C283E7DA1B9F27E900B1690D /* Instrument.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BC7AD41B76C85E001729BA /* Instrument.swift */; settings = {ASSET_TAGS = (); }; };
-		C283E7DB1B9F27EC00B1690D /* SF2File.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2207B901B9DC63300E4D65D /* SF2File.swift */; settings = {ASSET_TAGS = (); }; };
-		C283E7DD1B9F281900B1690D /* MIDIFileProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3F41B91F05900702AEA /* MIDIFileProtocols.swift */; settings = {ASSET_TAGS = (); }; };
-		C283E7DE1B9F281900B1690D /* MIDIFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25EBC821B8BFAFA00E57665 /* MIDIFile.swift */; settings = {ASSET_TAGS = (); }; };
-		C283E7DF1B9F281900B1690D /* MIDIFileHeaderChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3EC1B91EDB700702AEA /* MIDIFileHeaderChunk.swift */; settings = {ASSET_TAGS = (); }; };
-		C283E7E01B9F281900B1690D /* MIDIFileTrackChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3EA1B91EDA700702AEA /* MIDIFileTrackChunk.swift */; settings = {ASSET_TAGS = (); }; };
-		C283E7E11B9F281900B1690D /* MetaEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3EE1B91EDCC00702AEA /* MetaEvent.swift */; settings = {ASSET_TAGS = (); }; };
-		C283E7E21B9F281900B1690D /* ChannelEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3F01B91EDD600702AEA /* ChannelEvent.swift */; settings = {ASSET_TAGS = (); }; };
-		C283E7E31B9F281900B1690D /* VariableLengthQuantity.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3F21B91EDE100702AEA /* VariableLengthQuantity.swift */; settings = {ASSET_TAGS = (); }; };
-		C283E7E41B9F281900B1690D /* MIDINodeEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2ECC5E21B9C7FFA0010E76E /* MIDINodeEvent.swift */; settings = {ASSET_TAGS = (); }; };
-		C283E7E51B9F282F00B1690D /* BarBeatTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = C207458E1B8DF6D5000A06D4 /* BarBeatTime.swift */; settings = {ASSET_TAGS = (); }; };
-		C283E7E61B9F286700B1690D /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CD18E01B7E681A00705922 /* Error.swift */; settings = {ASSET_TAGS = (); }; };
-		C283E7E71B9F28B300B1690D /* Emax Volume 1.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2776C1A1B9DF50D002FE5A8 /* Emax Volume 1.sf2 */; settings = {ASSET_TAGS = (); }; };
-		C283E7E81B9F28B300B1690D /* Emax Volume 2.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2776C1B1B9DF50D002FE5A8 /* Emax Volume 2.sf2 */; settings = {ASSET_TAGS = (); }; };
-		C283E7E91B9F28B300B1690D /* Emax Volume 3.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2776C1C1B9DF50D002FE5A8 /* Emax Volume 3.sf2 */; settings = {ASSET_TAGS = (); }; };
-		C283E7EA1B9F28B300B1690D /* Emax Volume 4.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2776C1D1B9DF50D002FE5A8 /* Emax Volume 4.sf2 */; settings = {ASSET_TAGS = (); }; };
-		C283E7EB1B9F28B300B1690D /* Emax Volume 5.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2776C1E1B9DF50D002FE5A8 /* Emax Volume 5.sf2 */; settings = {ASSET_TAGS = (); }; };
-		C283E7EC1B9F28B300B1690D /* Emax Volume 6.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2776C1F1B9DF50D002FE5A8 /* Emax Volume 6.sf2 */; settings = {ASSET_TAGS = (); }; };
-		C283E7ED1B9F28B300B1690D /* SPYRO's Pure Oscillators.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C21E44C01B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 */; settings = {ASSET_TAGS = (); }; };
-		C283E7EE1B9F297A00B1690D /* Sequencer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AA2BCA1B84FB2100A0B08D /* Sequencer.swift */; settings = {ASSET_TAGS = (); }; };
-		C283E7EF1B9F29B000B1690D /* MIDISequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DFBE791B8AA5AB00898C2A /* MIDISequence.swift */; settings = {ASSET_TAGS = (); }; };
-		C283E7F01B9F29B000B1690D /* InstrumentTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CF38CC1B7EBED30085B3D5 /* InstrumentTrack.swift */; settings = {ASSET_TAGS = (); }; };
-		C283E7F11B9F29B000B1690D /* TempoTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2569E3F1B90005400EEB441 /* TempoTrack.swift */; settings = {ASSET_TAGS = (); }; };
-		C283E7F21B9F29B000B1690D /* Metronome.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F2ADC51B91203700FF4836 /* Metronome.swift */; settings = {ASSET_TAGS = (); }; };
-		C283E7F31B9F29B000B1690D /* MIDIClock.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B123BE1B864DCC008FED5E /* MIDIClock.swift */; settings = {ASSET_TAGS = (); }; };
-		C283E7F41B9F29BB00B1690D /* NoteAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F2ADC31B91098A00FF4836 /* NoteAttributes.swift */; settings = {ASSET_TAGS = (); }; };
-		C283E7F51B9F29CF00B1690D /* MIDINode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26FC16E1B7BA63300E271A3 /* MIDINode.swift */; settings = {ASSET_TAGS = (); }; };
-		C283E7F61B9F29E200B1690D /* MIDIPlayerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26FC1701B7BAC7F00E271A3 /* MIDIPlayerNode.swift */; settings = {ASSET_TAGS = (); }; };
-		C283E7F71B9F29ED00B1690D /* AssetManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EFA0ED1B824A2F002EBA3D /* AssetManager.swift */; settings = {ASSET_TAGS = (); }; };
-		C283E7F81B9F29FB00B1690D /* MIDIPlayerFieldNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26FC1721B7BAEBD00E271A3 /* MIDIPlayerFieldNode.swift */; settings = {ASSET_TAGS = (); }; };
-		C283E7F91B9F2A6A00B1690D /* Woodblock.wav in Resources */ = {isa = PBXBuildFile; fileRef = C2F2ADC11B90EBD300FF4836 /* Woodblock.wav */; settings = {ASSET_TAGS = (); }; };
-		C288335C1BB3760100AD2F1A /* Auxiliary.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C288335A1BB3760100AD2F1A /* Auxiliary.storyboard */; settings = {ASSET_TAGS = (); }; };
-		C28BB6021BBF110E00BF2F70 /* DocumentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28BB6011BBF110E00BF2F70 /* DocumentCell.swift */; settings = {ASSET_TAGS = (); }; };
-		C291C3EB1B91EDA700702AEA /* MIDIFileTrackChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3EA1B91EDA700702AEA /* MIDIFileTrackChunk.swift */; settings = {ASSET_TAGS = (); }; };
-		C291C3ED1B91EDB700702AEA /* MIDIFileHeaderChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3EC1B91EDB700702AEA /* MIDIFileHeaderChunk.swift */; settings = {ASSET_TAGS = (); }; };
-		C291C3EF1B91EDCC00702AEA /* MetaEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3EE1B91EDCC00702AEA /* MetaEvent.swift */; settings = {ASSET_TAGS = (); }; };
-		C291C3F11B91EDD600702AEA /* ChannelEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3F01B91EDD600702AEA /* ChannelEvent.swift */; settings = {ASSET_TAGS = (); }; };
-		C291C3F31B91EDE100702AEA /* VariableLengthQuantity.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3F21B91EDE100702AEA /* VariableLengthQuantity.swift */; settings = {ASSET_TAGS = (); }; };
-		C291C3F51B91F05900702AEA /* MIDIFileProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3F41B91F05900702AEA /* MIDIFileProtocols.swift */; settings = {ASSET_TAGS = (); }; };
-		C2995C481BB8ABC70003AAB2 /* Placement.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2995C471BB8ABC70003AAB2 /* Placement.swift */; settings = {ASSET_TAGS = (); }; };
+		C283E7D61B9F278900B1690D /* AudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21E44C41B76546C00574BD2 /* AudioManager.swift */; };
+		C283E7D81B9F27E500B1690D /* SoundSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C272B29F1B7D700600134E5F /* SoundSet.swift */; };
+		C283E7DA1B9F27E900B1690D /* Instrument.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BC7AD41B76C85E001729BA /* Instrument.swift */; };
+		C283E7DB1B9F27EC00B1690D /* SF2File.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2207B901B9DC63300E4D65D /* SF2File.swift */; };
+		C283E7DD1B9F281900B1690D /* MIDIFileProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3F41B91F05900702AEA /* MIDIFileProtocols.swift */; };
+		C283E7DE1B9F281900B1690D /* MIDIFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25EBC821B8BFAFA00E57665 /* MIDIFile.swift */; };
+		C283E7DF1B9F281900B1690D /* MIDIFileHeaderChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3EC1B91EDB700702AEA /* MIDIFileHeaderChunk.swift */; };
+		C283E7E01B9F281900B1690D /* MIDIFileTrackChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3EA1B91EDA700702AEA /* MIDIFileTrackChunk.swift */; };
+		C283E7E11B9F281900B1690D /* MetaEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3EE1B91EDCC00702AEA /* MetaEvent.swift */; };
+		C283E7E21B9F281900B1690D /* ChannelEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3F01B91EDD600702AEA /* ChannelEvent.swift */; };
+		C283E7E31B9F281900B1690D /* VariableLengthQuantity.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3F21B91EDE100702AEA /* VariableLengthQuantity.swift */; };
+		C283E7E41B9F281900B1690D /* MIDINodeEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2ECC5E21B9C7FFA0010E76E /* MIDINodeEvent.swift */; };
+		C283E7E51B9F282F00B1690D /* BarBeatTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = C207458E1B8DF6D5000A06D4 /* BarBeatTime.swift */; };
+		C283E7E61B9F286700B1690D /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CD18E01B7E681A00705922 /* Error.swift */; };
+		C283E7E71B9F28B300B1690D /* Emax Volume 1.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2776C1A1B9DF50D002FE5A8 /* Emax Volume 1.sf2 */; };
+		C283E7E81B9F28B300B1690D /* Emax Volume 2.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2776C1B1B9DF50D002FE5A8 /* Emax Volume 2.sf2 */; };
+		C283E7E91B9F28B300B1690D /* Emax Volume 3.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2776C1C1B9DF50D002FE5A8 /* Emax Volume 3.sf2 */; };
+		C283E7EA1B9F28B300B1690D /* Emax Volume 4.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2776C1D1B9DF50D002FE5A8 /* Emax Volume 4.sf2 */; };
+		C283E7EB1B9F28B300B1690D /* Emax Volume 5.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2776C1E1B9DF50D002FE5A8 /* Emax Volume 5.sf2 */; };
+		C283E7EC1B9F28B300B1690D /* Emax Volume 6.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2776C1F1B9DF50D002FE5A8 /* Emax Volume 6.sf2 */; };
+		C283E7ED1B9F28B300B1690D /* SPYRO's Pure Oscillators.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C21E44C01B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 */; };
+		C283E7EE1B9F297A00B1690D /* Sequencer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AA2BCA1B84FB2100A0B08D /* Sequencer.swift */; };
+		C283E7EF1B9F29B000B1690D /* MIDISequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DFBE791B8AA5AB00898C2A /* MIDISequence.swift */; };
+		C283E7F01B9F29B000B1690D /* InstrumentTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CF38CC1B7EBED30085B3D5 /* InstrumentTrack.swift */; };
+		C283E7F11B9F29B000B1690D /* TempoTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2569E3F1B90005400EEB441 /* TempoTrack.swift */; };
+		C283E7F21B9F29B000B1690D /* Metronome.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F2ADC51B91203700FF4836 /* Metronome.swift */; };
+		C283E7F31B9F29B000B1690D /* MIDIClock.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B123BE1B864DCC008FED5E /* MIDIClock.swift */; };
+		C283E7F41B9F29BB00B1690D /* NoteAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F2ADC31B91098A00FF4836 /* NoteAttributes.swift */; };
+		C283E7F51B9F29CF00B1690D /* MIDINode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26FC16E1B7BA63300E271A3 /* MIDINode.swift */; };
+		C283E7F61B9F29E200B1690D /* MIDIPlayerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26FC1701B7BAC7F00E271A3 /* MIDIPlayerNode.swift */; };
+		C283E7F71B9F29ED00B1690D /* AssetManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EFA0ED1B824A2F002EBA3D /* AssetManager.swift */; };
+		C283E7F81B9F29FB00B1690D /* MIDIPlayerFieldNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26FC1721B7BAEBD00E271A3 /* MIDIPlayerFieldNode.swift */; };
+		C283E7F91B9F2A6A00B1690D /* Woodblock.wav in Resources */ = {isa = PBXBuildFile; fileRef = C2F2ADC11B90EBD300FF4836 /* Woodblock.wav */; };
+		C288335C1BB3760100AD2F1A /* Auxiliary.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C288335A1BB3760100AD2F1A /* Auxiliary.storyboard */; };
+		C28BB6021BBF110E00BF2F70 /* DocumentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28BB6011BBF110E00BF2F70 /* DocumentCell.swift */; };
+		C291C3EB1B91EDA700702AEA /* MIDIFileTrackChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3EA1B91EDA700702AEA /* MIDIFileTrackChunk.swift */; };
+		C291C3ED1B91EDB700702AEA /* MIDIFileHeaderChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3EC1B91EDB700702AEA /* MIDIFileHeaderChunk.swift */; };
+		C291C3EF1B91EDCC00702AEA /* MetaEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3EE1B91EDCC00702AEA /* MetaEvent.swift */; };
+		C291C3F11B91EDD600702AEA /* ChannelEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3F01B91EDD600702AEA /* ChannelEvent.swift */; };
+		C291C3F31B91EDE100702AEA /* VariableLengthQuantity.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3F21B91EDE100702AEA /* VariableLengthQuantity.swift */; };
+		C291C3F51B91F05900702AEA /* MIDIFileProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3F41B91F05900702AEA /* MIDIFileProtocols.swift */; };
+		C2995C481BB8ABC70003AAB2 /* Placement.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2995C471BB8ABC70003AAB2 /* Placement.swift */; };
 		C2AA2BC81B84B04200A0B08D /* InstrumentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AA2BC71B84B04200A0B08D /* InstrumentViewController.swift */; };
 		C2AA2BCB1B84FB2100A0B08D /* Sequencer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AA2BCA1B84FB2100A0B08D /* Sequencer.swift */; };
-		C2AC3A971BA9D4CD00692EBB /* TempoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AC3A961BA9D4CD00692EBB /* TempoViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		C2AC3A971BA9D4CD00692EBB /* TempoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AC3A961BA9D4CD00692EBB /* TempoViewController.swift */; };
 		C2AF09D51BB9DB410021A37E /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2AF09D41BB9DB410021A37E /* AudioToolbox.framework */; };
 		C2B123BF1B864DCC008FED5E /* MIDIClock.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B123BE1B864DCC008FED5E /* MIDIClock.swift */; };
-		C2B2B03F1BCDCE5F007AF9DC /* TrackColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B2B03E1BCDCE5F007AF9DC /* TrackColor.swift */; settings = {ASSET_TAGS = (); }; };
-		C2B2B0431BCEA55D007AF9DC /* MIDITrackEventContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B2B0421BCEA55D007AF9DC /* MIDITrackEventContainer.swift */; settings = {ASSET_TAGS = (); }; };
+		C2B2B03F1BCDCE5F007AF9DC /* TrackColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B2B03E1BCDCE5F007AF9DC /* TrackColor.swift */; };
+		C2B2B0431BCEA55D007AF9DC /* MIDITrackEventContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B2B0421BCEA55D007AF9DC /* MIDITrackEventContainer.swift */; };
 		C2BC7AD51B76C85E001729BA /* Instrument.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BC7AD41B76C85E001729BA /* Instrument.swift */; };
-		C2BDBBC01BD3E12C00E343F1 /* INFOChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BDBBBF1BD3E12C00E343F1 /* INFOChunk.swift */; settings = {ASSET_TAGS = (); }; };
-		C2BDBBC21BD3E14900E343F1 /* SDTAChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BDBBC11BD3E14900E343F1 /* SDTAChunk.swift */; settings = {ASSET_TAGS = (); }; };
-		C2BDBBC41BD3E15D00E343F1 /* PDTAChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BDBBC31BD3E15D00E343F1 /* PDTAChunk.swift */; settings = {ASSET_TAGS = (); }; };
-		C2BDBBCC1BD3EEA700E343F1 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BDBBCB1BD3EEA700E343F1 /* main.swift */; };
-		C2BDBC411BD3FD0900E343F1 /* MoonKitOSX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2BDBC401BD3FD0900E343F1 /* MoonKitOSX.framework */; };
-		C2BDBC421BD3FD2F00E343F1 /* SF2File.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2207B901B9DC63300E4D65D /* SF2File.swift */; settings = {ASSET_TAGS = (); }; };
-		C2BDBC431BD3FD2F00E343F1 /* INFOChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BDBBBF1BD3E12C00E343F1 /* INFOChunk.swift */; settings = {ASSET_TAGS = (); }; };
-		C2BDBC441BD3FD2F00E343F1 /* SDTAChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BDBBC11BD3E14900E343F1 /* SDTAChunk.swift */; settings = {ASSET_TAGS = (); }; };
-		C2BDBC451BD3FD2F00E343F1 /* PDTAChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BDBBC31BD3E15D00E343F1 /* PDTAChunk.swift */; settings = {ASSET_TAGS = (); }; };
+		C2BDBBC01BD3E12C00E343F1 /* INFOChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BDBBBF1BD3E12C00E343F1 /* INFOChunk.swift */; };
+		C2BDBBC21BD3E14900E343F1 /* SDTAChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BDBBC11BD3E14900E343F1 /* SDTAChunk.swift */; };
+		C2BDBBC41BD3E15D00E343F1 /* PDTAChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BDBBC31BD3E15D00E343F1 /* PDTAChunk.swift */; };
 		C2CD18E11B7E681A00705922 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CD18E01B7E681A00705922 /* Error.swift */; };
 		C2CF38CD1B7EBED30085B3D5 /* InstrumentTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CF38CC1B7EBED30085B3D5 /* InstrumentTrack.swift */; };
-		C2CFB7FF1BBF486300983664 /* DocumentsViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CFB7FE1BBF486300983664 /* DocumentsViewLayout.swift */; settings = {ASSET_TAGS = (); }; };
-		C2D406741BB9FDC700681DEF /* MIDIDocumentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D406731BB9FDC700681DEF /* MIDIDocumentManager.swift */; settings = {ASSET_TAGS = (); }; };
+		C2CFB7FF1BBF486300983664 /* DocumentsViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CFB7FE1BBF486300983664 /* DocumentsViewLayout.swift */; };
+		C2D406741BB9FDC700681DEF /* MIDIDocumentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D406731BB9FDC700681DEF /* MIDIDocumentManager.swift */; };
 		C2DD41551BA0619400FF613F /* Eveleth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BCD1B78EDEB00A68A64 /* Eveleth.framework */; };
 		C2DD41561BA0619400FF613F /* Eveleth.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BCD1B78EDEB00A68A64 /* Eveleth.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C2DFBE7A1B8AA5AB00898C2A /* MIDISequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DFBE791B8AA5AB00898C2A /* MIDISequence.swift */; };
@@ -124,18 +123,20 @@
 		C2E0433E1B72F4DC005F0675 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C2E0433C1B72F4DC005F0675 /* Main.storyboard */; };
 		C2E043401B72F4DC005F0675 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C2E0433F1B72F4DC005F0675 /* Assets.xcassets */; };
 		C2E043431B72F4DC005F0675 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C2E043411B72F4DC005F0675 /* LaunchScreen.storyboard */; };
-		C2E705C51BBB17AE00636EF3 /* PurgatoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E705C41BBB17AE00636EF3 /* PurgatoryViewController.swift */; settings = {ASSET_TAGS = (); }; };
-		C2EA30531BB9DF3300020958 /* MIDIDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EA30521BB9DF3300020958 /* MIDIDocument.swift */; settings = {ASSET_TAGS = (); }; };
-		C2ECC5E31B9C7FFA0010E76E /* MIDINodeEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2ECC5E21B9C7FFA0010E76E /* MIDINodeEvent.swift */; settings = {ASSET_TAGS = (); }; };
+		C2E542391BD56E00005B452F /* SoundSetType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E542381BD56E00005B452F /* SoundSetType.swift */; };
+		C2E5423D1BD57252005B452F /* EmaxSoundSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E5423C1BD57252005B452F /* EmaxSoundSet.swift */; };
+		C2E705C51BBB17AE00636EF3 /* PurgatoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E705C41BBB17AE00636EF3 /* PurgatoryViewController.swift */; };
+		C2EA30531BB9DF3300020958 /* MIDIDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EA30521BB9DF3300020958 /* MIDIDocument.swift */; };
+		C2ECC5E31B9C7FFA0010E76E /* MIDINodeEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2ECC5E21B9C7FFA0010E76E /* MIDINodeEvent.swift */; };
 		C2EFA0EC1B823642002EBA3D /* NoteAttributesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EFA0EB1B823642002EBA3D /* NoteAttributesViewController.swift */; };
 		C2EFA0EE1B824A2F002EBA3D /* AssetManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EFA0ED1B824A2F002EBA3D /* AssetManager.swift */; };
-		C2F2ADC21B90EBD300FF4836 /* Woodblock.wav in Resources */ = {isa = PBXBuildFile; fileRef = C2F2ADC11B90EBD300FF4836 /* Woodblock.wav */; settings = {ASSET_TAGS = (); }; };
-		C2F2ADC41B91098A00FF4836 /* NoteAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F2ADC31B91098A00FF4836 /* NoteAttributes.swift */; settings = {ASSET_TAGS = (); }; };
-		C2F2ADC61B91203700FF4836 /* Metronome.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F2ADC51B91203700FF4836 /* Metronome.swift */; settings = {ASSET_TAGS = (); }; };
-		C2F35DB91BB4507800ECB045 /* MIDIPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F35DB81BB4507800ECB045 /* MIDIPlayerView.swift */; settings = {ASSET_TAGS = (); }; };
-		C2F589F91BAC688F009166D5 /* BarBeatTimeLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F589F81BAC688F009166D5 /* BarBeatTimeLabel.swift */; settings = {ASSET_TAGS = (); }; };
-		C2FF79851BD05F1E002CBA79 /* CABarBeatTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FF79841BD05F1E002CBA79 /* CABarBeatTime.swift */; settings = {ASSET_TAGS = (); }; };
-		C2FF79871BD06115002CBA79 /* TimeSignature.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FF79861BD06115002CBA79 /* TimeSignature.swift */; settings = {ASSET_TAGS = (); }; };
+		C2F2ADC21B90EBD300FF4836 /* Woodblock.wav in Resources */ = {isa = PBXBuildFile; fileRef = C2F2ADC11B90EBD300FF4836 /* Woodblock.wav */; };
+		C2F2ADC41B91098A00FF4836 /* NoteAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F2ADC31B91098A00FF4836 /* NoteAttributes.swift */; };
+		C2F2ADC61B91203700FF4836 /* Metronome.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F2ADC51B91203700FF4836 /* Metronome.swift */; };
+		C2F35DB91BB4507800ECB045 /* MIDIPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F35DB81BB4507800ECB045 /* MIDIPlayerView.swift */; };
+		C2F589F91BAC688F009166D5 /* BarBeatTimeLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F589F81BAC688F009166D5 /* BarBeatTimeLabel.swift */; };
+		C2FF79851BD05F1E002CBA79 /* CABarBeatTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FF79841BD05F1E002CBA79 /* CABarBeatTime.swift */; };
+		C2FF79871BD06115002CBA79 /* TimeSignature.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FF79861BD06115002CBA79 /* TimeSignature.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -167,15 +168,6 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C2BDBBC71BD3EEA700E343F1 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -197,6 +189,11 @@
 		C2404BD41B78EEC500A68A64 /* MoonKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MoonKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C245456D1B9B560700FF00E7 /* LabeledStepper.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LabeledStepper.xib; sourceTree = "<group>"; };
 		C245456F1B9B589E00FF00E7 /* InlinePickerView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InlinePickerView.xib; sourceTree = "<group>"; };
+		C255C4311BD664B000CAEE9C /* Mixer.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Mixer.storyboard; sourceTree = "<group>"; };
+		C255C4341BD664CD00CAEE9C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Instrument.storyboard; sourceTree = "<group>"; };
+		C255C4361BD664E400CAEE9C /* NoteAttributes.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = NoteAttributes.storyboard; sourceTree = "<group>"; };
+		C255C4391BD664FB00CAEE9C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Documents.storyboard; sourceTree = "<group>"; };
+		C255C43B1BD6651100CAEE9C /* Tempo.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Tempo.storyboard; sourceTree = "<group>"; };
 		C2569E3F1B90005400EEB441 /* TempoTrack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TempoTrack.swift; sourceTree = "<group>"; };
 		C25EBC821B8BFAFA00E57665 /* MIDIFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIFile.swift; sourceTree = "<group>"; };
 		C26A09751BC96B97002EFEE1 /* MixerLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MixerLayout.swift; sourceTree = "<group>"; };
@@ -247,9 +244,6 @@
 		C2BDBBBF1BD3E12C00E343F1 /* INFOChunk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = INFOChunk.swift; sourceTree = "<group>"; };
 		C2BDBBC11BD3E14900E343F1 /* SDTAChunk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SDTAChunk.swift; sourceTree = "<group>"; };
 		C2BDBBC31BD3E15D00E343F1 /* PDTAChunk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PDTAChunk.swift; sourceTree = "<group>"; };
-		C2BDBBC91BD3EEA700E343F1 /* sf2edit */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = sf2edit; sourceTree = BUILT_PRODUCTS_DIR; };
-		C2BDBBCB1BD3EEA700E343F1 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
-		C2BDBC401BD3FD0900E343F1 /* MoonKitOSX.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MoonKitOSX.framework; path = Frameworks/MoonKit/build/Debug/MoonKitOSX.framework; sourceTree = "<group>"; };
 		C2CD18E01B7E681A00705922 /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 		C2CF38CC1B7EBED30085B3D5 /* InstrumentTrack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstrumentTrack.swift; sourceTree = "<group>"; };
 		C2CFB7FE1BBF486300983664 /* DocumentsViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentsViewLayout.swift; sourceTree = "<group>"; };
@@ -263,6 +257,9 @@
 		C2E0433F1B72F4DC005F0675 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C2E043421B72F4DC005F0675 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C2E043441B72F4DC005F0675 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C2E542381BD56E00005B452F /* SoundSetType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundSetType.swift; sourceTree = "<group>"; };
+		C2E5423A1BD5721C005B452F /* sf2Info.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sf2Info.txt; sourceTree = "<group>"; };
+		C2E5423C1BD57252005B452F /* EmaxSoundSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmaxSoundSet.swift; sourceTree = "<group>"; };
 		C2E705C41BBB17AE00636EF3 /* PurgatoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PurgatoryViewController.swift; sourceTree = "<group>"; };
 		C2EA30521BB9DF3300020958 /* MIDIDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIDocument.swift; sourceTree = "<group>"; };
 		C2ECC5E21B9C7FFA0010E76E /* MIDINodeEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINodeEvent.swift; sourceTree = "<group>"; };
@@ -284,14 +281,6 @@
 			files = (
 				C2DD41551BA0619400FF613F /* Eveleth.framework in Frameworks */,
 				C283E7D11B9F273A00B1690D /* MoonKit.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C2BDBBC61BD3EEA700E343F1 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				C2BDBC411BD3FD0900E343F1 /* MoonKitOSX.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -371,6 +360,11 @@
 				C28AA0EB1B8BC74800DA2502 /* test.mid */,
 				C2E0433C1B72F4DC005F0675 /* Main.storyboard */,
 				C288335A1BB3760100AD2F1A /* Auxiliary.storyboard */,
+				C255C43B1BD6651100CAEE9C /* Tempo.storyboard */,
+				C255C4381BD664FB00CAEE9C /* Documents.storyboard */,
+				C255C4361BD664E400CAEE9C /* NoteAttributes.storyboard */,
+				C255C4331BD664CD00CAEE9C /* Instrument.storyboard */,
+				C255C4311BD664B000CAEE9C /* Mixer.storyboard */,
 				C2E0433F1B72F4DC005F0675 /* Assets.xcassets */,
 				C2E043411B72F4DC005F0675 /* LaunchScreen.storyboard */,
 				C2AA9EF11B7BB92F0025BE4D /* MIDIPlayerField.fsh */,
@@ -463,6 +457,7 @@
 		C26A27ED1B93C0AE00BD1698 /* Audio */ = {
 			isa = PBXGroup;
 			children = (
+				C2E5423A1BD5721C005B452F /* sf2Info.txt */,
 				C21E44C41B76546C00574BD2 /* AudioManager.swift */,
 				C2207B901B9DC63300E4D65D /* SF2File.swift */,
 				C2BC7AD41B76C85E001729BA /* Instrument.swift */,
@@ -470,6 +465,8 @@
 				C2BDBBBF1BD3E12C00E343F1 /* INFOChunk.swift */,
 				C2BDBBC11BD3E14900E343F1 /* SDTAChunk.swift */,
 				C2BDBBC31BD3E15D00E343F1 /* PDTAChunk.swift */,
+				C2E542381BD56E00005B452F /* SoundSetType.swift */,
+				C2E5423C1BD57252005B452F /* EmaxSoundSet.swift */,
 			);
 			name = Audio;
 			sourceTree = "<group>";
@@ -500,24 +497,14 @@
 			path = Instruments;
 			sourceTree = "<group>";
 		};
-		C2BDBBCA1BD3EEA700E343F1 /* sf2edit */ = {
-			isa = PBXGroup;
-			children = (
-				C2BDBBCB1BD3EEA700E343F1 /* main.swift */,
-			);
-			path = sf2edit;
-			sourceTree = "<group>";
-		};
 		C2E043281B72F4DC005F0675 = {
 			isa = PBXGroup;
 			children = (
-				C2BDBC401BD3FD0900E343F1 /* MoonKitOSX.framework */,
 				C2404BD91B78EFD700A68A64 /* Playgrounds */,
 				C2404BD71B78EF8200A68A64 /* Embedded Frameworks */,
 				C2404BD81B78EFA800A68A64 /* Sound Sets */,
 				C2E043331B72F4DC005F0675 /* MidiSprite */,
 				C283E7C01B9F272C00B1690D /* Instruments */,
-				C2BDBBCA1BD3EEA700E343F1 /* sf2edit */,
 				C2E043321B72F4DC005F0675 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -527,7 +514,6 @@
 			children = (
 				C2E043311B72F4DC005F0675 /* Groove.app */,
 				C283E7BF1B9F272C00B1690D /* Instruments.app */,
-				C2BDBBC91BD3EEA700E343F1 /* sf2edit */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -564,23 +550,6 @@
 			productReference = C283E7BF1B9F272C00B1690D /* Instruments.app */;
 			productType = "com.apple.product-type.application";
 		};
-		C2BDBBC81BD3EEA700E343F1 /* sf2edit */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = C2BDBBCD1BD3EEA700E343F1 /* Build configuration list for PBXNativeTarget "sf2edit" */;
-			buildPhases = (
-				C2BDBBC51BD3EEA700E343F1 /* Sources */,
-				C2BDBBC61BD3EEA700E343F1 /* Frameworks */,
-				C2BDBBC71BD3EEA700E343F1 /* CopyFiles */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = sf2edit;
-			productName = sf2edit;
-			productReference = C2BDBBC91BD3EEA700E343F1 /* sf2edit */;
-			productType = "com.apple.product-type.tool";
-		};
 		C2E043301B72F4DC005F0675 /* PerpetualGroove */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C2E043471B72F4DC005F0675 /* Build configuration list for PBXNativeTarget "PerpetualGroove" */;
@@ -606,13 +575,10 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0700;
-				LastUpgradeCheck = 0700;
+				LastUpgradeCheck = 0710;
 				ORGANIZATIONNAME = "Moondeer Studios";
 				TargetAttributes = {
 					C283E7BE1B9F272C00B1690D = {
-						CreatedOnToolsVersion = 7.0;
-					};
-					C2BDBBC81BD3EEA700E343F1 = {
 						CreatedOnToolsVersion = 7.0;
 					};
 					C2E043301B72F4DC005F0675 = {
@@ -647,7 +613,6 @@
 			targets = (
 				C2E043301B72F4DC005F0675 /* PerpetualGroove */,
 				C283E7BE1B9F272C00B1690D /* Instruments */,
-				C2BDBBC81BD3EEA700E343F1 /* sf2edit */,
 			);
 		};
 /* End PBXProject section */
@@ -676,11 +641,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				C2F2ADC21B90EBD300FF4836 /* Woodblock.wav in Resources */,
+				C255C43A1BD664FB00CAEE9C /* Documents.storyboard in Resources */,
 				C2776C281B9DF50D002FE5A8 /* Emax Volume 5.sf2 in Resources */,
+				C255C4321BD664B000CAEE9C /* Mixer.storyboard in Resources */,
 				C2776C201B9DF50D002FE5A8 /* Emax Volume 1.sf2 in Resources */,
 				C2E043431B72F4DC005F0675 /* LaunchScreen.storyboard in Resources */,
+				C255C43C1BD6651100CAEE9C /* Tempo.storyboard in Resources */,
+				C255C4351BD664CD00CAEE9C /* Instrument.storyboard in Resources */,
 				C2E043401B72F4DC005F0675 /* Assets.xcassets in Resources */,
 				C288335C1BB3760100AD2F1A /* Auxiliary.storyboard in Resources */,
+				C255C4371BD664E400CAEE9C /* NoteAttributes.storyboard in Resources */,
 				C283B69C1BC02E3B007A4A36 /* Settings.bundle in Resources */,
 				C2776C2A1B9DF50D002FE5A8 /* Emax Volume 6.sf2 in Resources */,
 				C2E0433E1B72F4DC005F0675 /* Main.storyboard in Resources */,
@@ -726,18 +696,6 @@
 				C283E7F11B9F29B000B1690D /* TempoTrack.swift in Sources */,
 				C283E7D81B9F27E500B1690D /* SoundSet.swift in Sources */,
 				C283E7E61B9F286700B1690D /* Error.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C2BDBBC51BD3EEA700E343F1 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				C2BDBBCC1BD3EEA700E343F1 /* main.swift in Sources */,
-				C2BDBC431BD3FD2F00E343F1 /* INFOChunk.swift in Sources */,
-				C2BDBC421BD3FD2F00E343F1 /* SF2File.swift in Sources */,
-				C2BDBC441BD3FD2F00E343F1 /* SDTAChunk.swift in Sources */,
-				C2BDBC451BD3FD2F00E343F1 /* PDTAChunk.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -787,6 +745,7 @@
 				C21E44C51B76546C00574BD2 /* AudioManager.swift in Sources */,
 				C2F35DB91BB4507800ECB045 /* MIDIPlayerView.swift in Sources */,
 				C291C3F51B91F05900702AEA /* MIDIFileProtocols.swift in Sources */,
+				C2E542391BD56E00005B452F /* SoundSetType.swift in Sources */,
 				C2F589F91BAC688F009166D5 /* BarBeatTimeLabel.swift in Sources */,
 				C2AA2BCB1B84FB2100A0B08D /* Sequencer.swift in Sources */,
 				C2ECC5E31B9C7FFA0010E76E /* MIDINodeEvent.swift in Sources */,
@@ -797,6 +756,7 @@
 				C2CF38CD1B7EBED30085B3D5 /* InstrumentTrack.swift in Sources */,
 				C2EFA0EE1B824A2F002EBA3D /* AssetManager.swift in Sources */,
 				C2FF79851BD05F1E002CBA79 /* CABarBeatTime.swift in Sources */,
+				C2E5423D1BD57252005B452F /* EmaxSoundSet.swift in Sources */,
 				C2D406741BB9FDC700681DEF /* MIDIDocumentManager.swift in Sources */,
 				C2BDBBC21BD3E14900E343F1 /* SDTAChunk.swift in Sources */,
 			);
@@ -805,6 +765,22 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		C255C4331BD664CD00CAEE9C /* Instrument.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C255C4341BD664CD00CAEE9C /* Base */,
+			);
+			name = Instrument.storyboard;
+			sourceTree = "<group>";
+		};
+		C255C4381BD664FB00CAEE9C /* Documents.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C255C4391BD664FB00CAEE9C /* Base */,
+			);
+			name = Documents.storyboard;
+			sourceTree = "<group>";
+		};
 		C283E7C51B9F272C00B1690D /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -867,24 +843,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.Instruments;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
-		C2BDBBCE1BD3EEA700E343F1 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
-			};
-			name = Debug;
-		};
-		C2BDBBCF1BD3EEA700E343F1 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
 			};
 			name = Release;
 		};
@@ -974,7 +932,6 @@
 		C2E043481B72F4DC005F0675 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = MidiSprite/PerpetualGroove.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -996,7 +953,6 @@
 		C2E043491B72F4DC005F0675 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = MidiSprite/PerpetualGroove.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -1023,15 +979,6 @@
 			buildConfigurations = (
 				C283E7CE1B9F272C00B1690D /* Debug */,
 				C283E7CF1B9F272C00B1690D /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		C2BDBBCD1BD3EEA700E343F1 /* Build configuration list for PBXNativeTarget "sf2edit" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				C2BDBBCE1BD3EEA700E343F1 /* Debug */,
-				C2BDBBCF1BD3EEA700E343F1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

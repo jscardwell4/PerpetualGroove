@@ -8,7 +8,8 @@
 
 import Foundation
 
-@IBDesignable public class TemplateImageView: UIImageView {
+//@IBDesignable
+public class TemplateImageView: UIImageView {
 
   override public var image: UIImage? {
     get { return super.image }

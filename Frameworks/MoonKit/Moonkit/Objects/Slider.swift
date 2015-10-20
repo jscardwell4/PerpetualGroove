@@ -9,7 +9,8 @@ import Foundation
 import UIKit
 import Chameleon
 
-@IBDesignable public class Slider: UIControl {
+@IBDesignable
+public class Slider: UIControl {
 
   // MARK: - Axis
   public enum Axis: String {

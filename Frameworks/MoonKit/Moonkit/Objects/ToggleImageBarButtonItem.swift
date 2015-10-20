@@ -8,7 +8,8 @@
 
 import UIKit
 
-@IBDesignable public class ToggleImageBarButtonItem: ToggleBarButtonItem {
+//@IBDesignable
+public class ToggleImageBarButtonItem: ToggleBarButtonItem {
 
   private weak var imageView: UIImageView!
 
@@ -99,7 +100,7 @@ import UIKit
 
     // store the image view and the action parameter
     self.imageView = imageView
-    toggleAction = {[unowned self] _ in self.target?.performSelector(action) }
+    toggleAction = {[unowned self] _ in self.target?.performSelector(self.action) }
   }
 
   /**

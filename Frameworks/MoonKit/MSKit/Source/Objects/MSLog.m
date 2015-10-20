@@ -6,11 +6,7 @@
 //  Copyright (c) 2013 Moondeer Studios. All rights reserved.
 //
 #import "MSLog.h"
-#if TARGET_OS_IPHONE
 @import Lumberjack;
-#else 
-@import LumberjackOSX;
-#endif
 #import "MSKitMiscellaneousFunctions.h"
 #import "NSString+MSKitAdditions.h"
 #import "NSOperationQueue+MSKitAdditions.h"

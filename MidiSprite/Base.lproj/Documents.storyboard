@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="15A284" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <mutableArray key="Yellow Design Studio - Eveleth Light.otf">
+            <string>EvelethLight</string>
+            <string>EvelethLight</string>
+        </mutableArray>
+    </customFonts>
+    <scenes>
+        <!--Documents-->
+        <scene sceneID="PRi-3n-XlO">
+            <objects>
+                <collectionViewController storyboardIdentifier="Documents" id="O6i-Zp-3qE" userLabel="Documents" customClass="DocumentsViewController" customModule="Groove" customModuleProvider="target" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="0IQ-bl-889" userLabel="DocumentsCollection">
+                        <rect key="frame" x="0.0" y="0.0" width="250" height="120"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <animations/>
+                        <color key="backgroundColor" red="0.1731918603181839" green="0.17318670451641083" blue="0.17318965494632721" alpha="1" colorSpace="calibratedRGB"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="9TN-1q-bYW" customClass="DocumentsViewLayout" customModule="Groove" customModuleProvider="target">
+                            <size key="itemSize" width="250" height="40"/>
+                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                        <cells>
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="DocumentCell" id="AUk-3s-KxI" customClass="DocumentCell" customModule="Groove" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="250" height="40"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="250" height="40"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="AwesomeSauce" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EwA-wV-vSP" userLabel="DisplayName">
+                                            <rect key="frame" x="-42" y="-21" width="42" height="21"/>
+                                            <animations/>
+                                            <accessibility key="accessibilityConfiguration" identifier="DisplayName"/>
+                                            <fontDescription key="fontDescription" name="EvelethLight" family="Eveleth" pointSize="17"/>
+                                            <color key="textColor" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="highlightedColor" red="0.76089900732040405" green="0.25649610161781311" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="DisplayName"/>
+                                            </userDefinedRuntimeAttributes>
+                                        </label>
+                                        <view opaque="NO" contentMode="scaleToFill" misplaced="YES" placeholderIntrinsicWidth="92" placeholderIntrinsicHeight="20.5" translatesAutoresizingMaskIntoConstraints="NO" id="GUG-cL-cTd" userLabel="Delete" customClass="LabelButton" customModule="MoonKit">
+                                            <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                            <animations/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                            <color key="tintColor" red="0.70097428560256958" green="0.17991100251674652" blue="0.015877731144428253" alpha="1" colorSpace="calibratedRGB"/>
+                                            <accessibility key="accessibilityConfiguration" identifier="Delete"/>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="Delete"/>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="text" value="Delete"/>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="EvelethLight"/>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
+                                                    <real key="value" value="17"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                            <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                <rect key="frame" x="250" y="6" width="92" height="20.5"/>
+                                            </variation>
+                                            <connections>
+                                                <action selector="deleteItem" destination="AUk-3s-KxI" eventType="touchUpInside" id="d6R-PR-av0"/>
+                                            </connections>
+                                        </view>
+                                    </subviews>
+                                    <animations/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                                <animations/>
+                                <constraints>
+                                    <constraint firstItem="GUG-cL-cTd" firstAttribute="leading" secondItem="EwA-wV-vSP" secondAttribute="trailing" id="EaZ-pH-vFF"/>
+                                    <constraint firstItem="EwA-wV-vSP" firstAttribute="centerY" secondItem="AUk-3s-KxI" secondAttribute="centerY" id="O2A-wv-gs4"/>
+                                    <constraint firstItem="GUG-cL-cTd" firstAttribute="height" secondItem="EwA-wV-vSP" secondAttribute="height" id="Qc9-qx-QNl"/>
+                                    <constraint firstItem="EwA-wV-vSP" firstAttribute="leading" secondItem="AUk-3s-KxI" secondAttribute="leading" identifier="Leading" id="Tc5-JE-Lg5"/>
+                                    <constraint firstItem="EwA-wV-vSP" firstAttribute="width" secondItem="AUk-3s-KxI" secondAttribute="width" id="Zqg-1f-DuZ"/>
+                                    <constraint firstItem="GUG-cL-cTd" firstAttribute="baseline" secondItem="EwA-wV-vSP" secondAttribute="baseline" id="pZI-C0-td8"/>
+                                </constraints>
+                                <connections>
+                                    <outlet property="deleteButton" destination="GUG-cL-cTd" id="t4s-55-3Eq"/>
+                                    <outlet property="label" destination="EwA-wV-vSP" id="kDG-XG-V7m"/>
+                                    <outlet property="leadingConstraint" destination="Tc5-JE-Lg5" id="EiQ-t4-wnD"/>
+                                </connections>
+                            </collectionViewCell>
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="CreateDocumentCell" id="6In-xp-QZD" customClass="CreateDocumentCell" customModule="Groove" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="50" width="250" height="40"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="250" height="40"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" misplaced="YES" text="Create Document" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r0p-MA-Lux" userLabel="Label">
+                                            <rect key="frame" x="-42" y="-21" width="42" height="21"/>
+                                            <animations/>
+                                            <color key="tintColor" red="0.76089900732040405" green="0.25649610161781311" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <accessibility key="accessibilityConfiguration" identifier="Label"/>
+                                            <fontDescription key="fontDescription" name="EvelethLight" family="Eveleth" pointSize="17"/>
+                                            <color key="textColor" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="highlightedColor" red="0.76089900732040405" green="0.25649610161781311" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="Label"/>
+                                            </userDefinedRuntimeAttributes>
+                                            <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                <rect key="frame" x="28" y="11" width="134" height="20"/>
+                                            </variation>
+                                        </label>
+                                        <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="add-selected" highlightedImage="add-selected" translatesAutoresizingMaskIntoConstraints="NO" id="l2e-0M-7I2" customClass="TemplateImageView" customModule="MoonKit">
+                                            <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                            <animations/>
+                                            <color key="tintColor" red="0.87450999021530151" green="0.8274499773979187" blue="0.7607799768447876" alpha="1" colorSpace="calibratedRGB"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" secondItem="l2e-0M-7I2" secondAttribute="height" multiplier="1:1" id="xro-M8-gxU"/>
+                                            </constraints>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
+                                                    <color key="value" red="0.76089900732040405" green="0.25649610161781311" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                            <variation key="default">
+                                                <mask key="constraints">
+                                                    <exclude reference="xro-M8-gxU"/>
+                                                </mask>
+                                            </variation>
+                                            <variation key="heightClass=regular-widthClass=regular">
+                                                <mask key="constraints">
+                                                    <include reference="xro-M8-gxU"/>
+                                                </mask>
+                                            </variation>
+                                        </imageView>
+                                    </subviews>
+                                    <animations/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                                <animations/>
+                                <constraints>
+                                    <constraint firstItem="l2e-0M-7I2" firstAttribute="centerY" secondItem="6In-xp-QZD" secondAttribute="centerY" id="3tu-GS-cGZ">
+                                        <variation key="heightClass=regular-widthClass=regular" constant="0.0"/>
+                                    </constraint>
+                                    <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="l2e-0M-7I2" secondAttribute="bottom" id="9IG-dp-ReX">
+                                        <variation key="heightClass=regular-widthClass=regular" constant="2"/>
+                                    </constraint>
+                                    <constraint firstItem="r0p-MA-Lux" firstAttribute="height" secondItem="l2e-0M-7I2" secondAttribute="height" id="BIs-Oy-LOC"/>
+                                    <constraint firstItem="l2e-0M-7I2" firstAttribute="leading" secondItem="6In-xp-QZD" secondAttribute="leading" id="R1K-ph-EUY"/>
+                                    <constraint firstItem="r0p-MA-Lux" firstAttribute="centerY" secondItem="l2e-0M-7I2" secondAttribute="centerY" id="dfS-Jy-nBP">
+                                        <variation key="heightClass=regular-widthClass=regular" constant="1"/>
+                                    </constraint>
+                                    <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="r0p-MA-Lux" secondAttribute="bottom" id="hJ9-ds-C18"/>
+                                    <constraint firstItem="r0p-MA-Lux" firstAttribute="top" relation="greaterThanOrEqual" secondItem="6In-xp-QZD" secondAttribute="top" id="kkd-r8-flp"/>
+                                    <constraint firstItem="l2e-0M-7I2" firstAttribute="top" relation="greaterThanOrEqual" secondItem="6In-xp-QZD" secondAttribute="top" id="o1E-54-Bi4">
+                                        <variation key="heightClass=regular-widthClass=regular" constant="2"/>
+                                    </constraint>
+                                    <constraint firstItem="r0p-MA-Lux" firstAttribute="leading" secondItem="l2e-0M-7I2" secondAttribute="trailing" constant="8" symbolic="YES" id="o9f-Ts-lKg"/>
+                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="r0p-MA-Lux" secondAttribute="trailing" id="pMZ-J0-VpB"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="CreateDocumentCell"/>
+                                </userDefinedRuntimeAttributes>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="BIs-Oy-LOC"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular-widthClass=regular">
+                                    <mask key="constraints">
+                                        <include reference="BIs-Oy-LOC"/>
+                                    </mask>
+                                </variation>
+                            </collectionViewCell>
+                        </cells>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="DocumentsCollection"/>
+                            <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="DocumentsCollection"/>
+                        </userDefinedRuntimeAttributes>
+                        <connections>
+                            <outlet property="dataSource" destination="O6i-Zp-3qE" id="vl1-ck-0xv"/>
+                            <outlet property="delegate" destination="O6i-Zp-3qE" id="I10-bw-Mvd"/>
+                        </connections>
+                    </collectionView>
+                    <nil key="simulatedStatusBarMetrics"/>
+                    <nil key="simulatedTopBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
+                    <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="250" height="120"/>
+                    <connections>
+                        <outlet property="documentsViewLayout" destination="9TN-1q-bYW" id="mSN-6g-6Lu"/>
+                    </connections>
+                </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="9SJ-ym-gDI" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="289" y="278"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="add-selected" width="56" height="56"/>
+    </resources>
+</document>

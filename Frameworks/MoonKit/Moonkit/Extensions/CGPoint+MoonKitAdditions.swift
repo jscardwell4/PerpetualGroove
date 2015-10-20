@@ -12,11 +12,7 @@ extension CGPoint {
 
   public init?(_ string: String?) {
     if let s = string {
-      #if os(OSX)
-        self = NSPointFromString(s)
-        #else
-        self = CGPointFromString(s)
-      #endif
+      self = CGPointFromString(s)
     } else { return nil }
   }
   public static var null: CGPoint = CGPoint(x: CGFloat.NaN, y: CGFloat.NaN)
@@ -51,11 +47,9 @@ extension CGPoint: NilLiteralConvertible {
   public init(nilLiteral: ()) { self = CGPoint.null }
 }
 
-#if os(iOS)
 extension UIOffset {
   public static var zeroOffset: UIOffset { return UIOffset(horizontal: 0, vertical: 0) }
 }
-#endif
 extension CGPoint: Unpackable2 {
   public var unpack: (CGFloat, CGFloat) { return (x, y) }
 }
@@ -68,11 +62,7 @@ extension CGPoint: CustomStringConvertible {
 }
 extension CGPoint: CustomDebugStringConvertible {
   public var debugDescription: String {
-    #if os(iOS)
       return NSStringFromCGPoint(self)
-      #else
-      return NSStringFromPoint(self)
-    #endif
   }
 }
 

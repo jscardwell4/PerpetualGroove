@@ -85,6 +85,9 @@
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="CurrentDocumentName"/>
                                         </userDefinedRuntimeAttributes>
+                                        <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                            <rect key="frame" x="0.0" y="208" width="760" height="26"/>
+                                        </variation>
                                         <connections>
                                             <outlet property="delegate" destination="BV1-FR-VrT" id="cTm-6d-H5n"/>
                                         </connections>
@@ -385,8 +388,7 @@
                                                                         <exclude reference="a7T-hb-UY1"/>
                                                                     </mask>
                                                                 </variation>
-                                                                <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
-                                                                    <rect key="frame" x="-22.5" y="0.0" width="325" height="56"/>
+                                                                <variation key="heightClass=regular-widthClass=regular">
                                                                     <mask key="constraints">
                                                                         <include reference="a7T-hb-UY1"/>
                                                                     </mask>
@@ -1354,9 +1356,6 @@
                                         <include reference="fdl-vn-1X6"/>
                                     </mask>
                                 </variation>
-                                <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
-                                    <rect key="frame" x="20" y="574" width="250" height="108"/>
-                                </variation>
                                 <connections>
                                     <outlet property="contentView" destination="41G-aM-2HB" id="nD9-0T-yny"/>
                                 </connections>
@@ -1709,7 +1708,7 @@
         <!--Tempo-->
         <scene sceneID="voM-Zu-4EI">
             <objects>
-                <viewControllerPlaceholder storyboardIdentifier="Tempo" storyboardName="Auxiliary" referencedIdentifier="Tempo" id="kvo-ab-yOc" sceneMemberID="viewController"/>
+                <viewControllerPlaceholder storyboardIdentifier="Tempo" storyboardName="Tempo" referencedIdentifier="Tempo" id="kvo-ab-yOc" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="l1g-sJ-d2t" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="366.375" y="1187.25"/>
@@ -1717,7 +1716,7 @@
         <!--Mixer-->
         <scene sceneID="A7a-AD-6Of">
             <objects>
-                <viewControllerPlaceholder storyboardIdentifier="Mixer" storyboardName="Auxiliary" referencedIdentifier="Mixer" id="kbm-WN-nc0" sceneMemberID="viewController"/>
+                <viewControllerPlaceholder storyboardIdentifier="Mixer" storyboardName="Mixer" referencedIdentifier="Mixer" id="kbm-WN-nc0" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8QL-P7-Hyc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="112.5" y="1180.5"/>
@@ -1725,7 +1724,7 @@
         <!--NoteAttributes-->
         <scene sceneID="nQF-Uk-kwg">
             <objects>
-                <viewControllerPlaceholder storyboardIdentifier="NoteAttributes" storyboardName="Auxiliary" referencedIdentifier="NoteAttributes" id="kzO-nC-kW2" sceneMemberID="viewController"/>
+                <viewControllerPlaceholder storyboardIdentifier="NoteAttributes" storyboardName="NoteAttributes" referencedIdentifier="NoteAttributes" id="kzO-nC-kW2" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="VWp-16-2Pf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="840" y="405"/>
@@ -1733,7 +1732,7 @@
         <!--Instrument-->
         <scene sceneID="zCl-gD-8Cj">
             <objects>
-                <viewControllerPlaceholder storyboardIdentifier="Instrument" storyboardName="Auxiliary" referencedIdentifier="Instrument" id="4eE-ek-zDs" sceneMemberID="viewController"/>
+                <viewControllerPlaceholder storyboardIdentifier="Instrument" storyboardName="Instrument" referencedIdentifier="Instrument" id="4eE-ek-zDs" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AML-F1-GBa" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="862.125" y="765"/>
@@ -1835,7 +1834,7 @@
         <!--Documents-->
         <scene sceneID="yJ1-PB-18M">
             <objects>
-                <viewControllerPlaceholder storyboardIdentifier="Files" storyboardName="Auxiliary" referencedIdentifier="Documents" id="Eww-vV-yXw" sceneMemberID="viewController"/>
+                <viewControllerPlaceholder storyboardIdentifier="Files" storyboardName="Documents" referencedIdentifier="Documents" id="Eww-vV-yXw" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Czz-jX-k9v" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-97.875" y="1036.5"/>

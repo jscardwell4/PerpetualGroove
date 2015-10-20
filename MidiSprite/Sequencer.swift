@@ -23,9 +23,20 @@ final class Sequencer {
   static func initialize() {
     guard !initialized else { return }
     let _ = receptionist
-    guard let urls = NSBundle.mainBundle().URLsForResourcesWithExtension("sf2", subdirectory: nil) else { return }
+    soundSets = [
+      EmaxSoundSet(.BrassAndWoodwinds),
+      EmaxSoundSet(.KeyboardsAndSynths),
+      EmaxSoundSet(.GuitarsAndBasses),
+      EmaxSoundSet(.WorldInstruments),
+      EmaxSoundSet(.DrumsAndPercussion),
+      EmaxSoundSet(.Orchestral)
+    ]
+    let bundle = NSBundle.mainBundle()
+    let exclude = soundSets.map({$0.url})
+    guard let urls = bundle.URLsForResourcesWithExtension("sf2", subdirectory: nil)?.flatMap({$0.fileReferenceURL()}) else { return }
+
     do {
-      try urls.forEach { soundSets.append(try SoundSet(url: $0)) }
+      try urls.filter({$0 ∉ exclude}).forEach { soundSets.append(try SoundSet(url: $0)) }
       guard soundSets.count > 0 else { fatalError("failed to create any sound sets from bundled sf2 files") }
       let soundSet = soundSets[0]
       let program = UInt8(soundSet.presets[0].program)
@@ -140,7 +151,7 @@ final class Sequencer {
 
   static private var state: State = []
   
-  static private(set) var soundSets: [SoundSet] = []
+  static private(set) var soundSets: [SoundSetType] = []
 
   static private(set) var auditionInstrument: Instrument!
 

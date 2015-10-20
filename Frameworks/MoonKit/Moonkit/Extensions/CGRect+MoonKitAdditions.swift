@@ -18,11 +18,7 @@ extension CGRect {
   */
   public init?(_ string: String?) {
     if let s = string {
-      #if os(iOS)
         self = CGRectFromString(s)
-        #else
-        self = NSRectFromString(s)
-      #endif
     } else { return nil }
   }
 
@@ -56,118 +52,30 @@ extension CGRect {
     set { self = CGRect(size: size, center: newValue) }
   }
 
-//  public func rectWithOrigin(origin: CGPoint) -> CGRect { return CGRect(origin: origin, size: size) }
-//  public func rectWithSize(size: CGSize, anchored: Bool = false) -> CGRect {
-//  	var rect =  CGRect(origin: origin, size: size)
-//  	if anchored { rect.offsetInPlace(dx: midX - rect.midX, dy: midY - rect.midY) }
-//  	return rect
-//  }
-
   // MARK: - Convenience methods that call to library `offsetBy` and `offsetInPlace` methods
 
 
-  #if os(iOS)
   @warn_unused_result(mutable_variant="offsetInPlace")
   public func offsetBy(offset: UIOffset) -> CGRect { return offsetBy(dx: offset.horizontal, dy: offset.vertical) }
-  #endif
 
-  #if os(iOS)
   @warn_unused_result(mutable_variant="offsetInPlace")
   public func offsetBy(point: CGPoint) -> CGRect { return offsetBy(dx: point.x, dy: point.y) }
-  #endif
 
-  #if os(iOS)
   public mutating func offsetInPlace(point: CGPoint) { offsetInPlace(dx: point.x, dy: point.y) }
-  #endif
-  #if os(iOS)
   public mutating func offsetInPlace(off: UIOffset) { offsetInPlace(dx: off.horizontal, dy: off.vertical) }
-  #endif
-
-//  public mutating func proportionallyInsetX(dx: CGFloat) {
-//    let (w, h) = size.unpack
-//    let ww = w - 2 * dx
-//    let ratio = ww / w
-//    let hh = h * ratio
-//    let dy = (h - hh) / 2
-//    origin.x += dx
-//    origin.y += dy
-//    size.width = ww
-//    size.height = hh
-//  }
-//  public func rectByProportionallyInsettingX(dx: CGFloat) -> CGRect {
-//    var r = self; r.proportionallyInsetX(dx); return r
-//  }
-//  public mutating func proportionallyInsetY(dy: CGFloat) {
-//    let (w, h) = size.unpack
-//    let hh = h - 2 * dy
-//    let ratio = hh / h
-//    let ww = w * ratio
-//    let dx = (w - ww) / 2
-//    origin.x += dx
-//    origin.y += dy
-//    size.width = ww
-//    size.height = hh
-//  }
-//  public func rectByProportionallyInsettingY(dy: CGFloat) -> CGRect {
-//    var r = self; r.proportionallyInsetY(dy); return r
-//  }
-//  public mutating func proportionallyInset(dx dx: CGFloat, dy: CGFloat) {
-//    let xRect = rectByProportionallyInsettingX(dx)
-//    let yRect = rectByProportionallyInsettingY(dy)
-//    // self = xRect.size > yRect.size ? xRect : yRect
-//    let w = width > height ? max(xRect.width, yRect.width) : min(xRect.width, yRect.width)
-//    let h = height > width ? max(xRect.height, yRect.height) : min(xRect.height, yRect.height)
-//    let x = (width - w) * 0.5
-//    let y = (height - h) * 0.5
-//    self = CGRect(x: x, y: y, width: w, height: h)
-//  }
-//  public func rectByProportionallyInsetting(dx dx: CGFloat, dy: CGFloat) -> CGRect {
-//    var r = self; r.proportionallyInset(dx: dx, dy: dy); return r
-//  }
-
 
   public mutating func transformInPlace(transform t: CGAffineTransform) { self = transform(t) }
   public func transform(transform: CGAffineTransform) -> CGRect {
     return CGRectApplyAffineTransform(self, transform)
   }
-//  public func rectWithHeight(height: CGFloat) -> CGRect {
-//  	return CGRect(origin: origin, size: CGSize(width: size.width, height: height))
-//  }
-//  public func rectWithWidth(width: CGFloat) -> CGRect {
-//  	return CGRect(origin: origin, size: CGSize(width: width, height: size.height))
-//  }
-//  public func rectByBindingToRect(rect: CGRect) -> CGRect {
-//  	let slaveMinX = minX
-//  	let slaveMaxX = maxX
-//  	let slaveMinY = minY
-//  	let slaveMaxY = maxY
-//
-//  	let masterMinX = rect.minX
-//  	let masterMaxX = rect.maxX
-//  	let masterMinY = rect.minY
-//  	let masterMaxY = rect.maxY
-//
-//  	let pushX = slaveMinX >= masterMinX ? 0.0 : masterMinX - slaveMinX
-//  	let pushY = slaveMinY >= masterMinY ? 0.0 : masterMinY - slaveMinY
-//  	let pullX = slaveMaxX <= masterMaxX ? 0.0 : slaveMaxX - masterMaxX
-//  	let pullY = slaveMaxY <= masterMaxY ? 0.0 : slaveMaxY - masterMaxY
-//
-//  	return CGRect(x: origin.x + pushX + pullX,
-//  		            y: origin.y + pushY + pullY,
-//                  width: min(size.width + pushX + pullY, size.width),
-//                  height: min(size.height + pushY + pullY, size.height))
-//  }
+
 }
 
 // MARK: - CustomStringConvertible
 
 extension CGRect: CustomStringConvertible {
   public var description: String {
-    #if os(iOS)
       return NSStringFromCGRect(self)
-      #else
-      return NSStringFromRect(self)
-    #endif
   }
 }
 

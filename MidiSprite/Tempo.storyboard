@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="15A284" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <scenes>
+        <!--Tempo-->
+        <scene sceneID="ezY-C8-2sa">
+            <objects>
+                <viewController storyboardIdentifier="Tempo" id="mI6-ed-c1h" userLabel="Tempo" customClass="TempoViewController" customModule="Groove" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="YZO-M2-LfQ"/>
+                        <viewControllerLayoutGuide type="bottom" id="lei-f0-gMd"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="EPL-wG-4nA">
+                        <rect key="frame" x="0.0" y="0.0" width="300" height="72"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="dQQ-Ui-KdC">
+                                <rect key="frame" x="16" y="0.0" width="268" height="72"/>
+                                <subviews>
+                                    <view opaque="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kjm-oe-fME" userLabel="Tempo" customClass="Slider" customModule="MoonKit">
+                                        <rect key="frame" x="0.0" y="8" width="208" height="56"/>
+                                        <animations/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="56" identifier="TempoSliderHeight" id="C6y-8h-MG8"/>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="thumbImage" value="horizontal_thumb"/>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="trackMinImage" value="horizontal_track"/>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="trackMaxImage" value="horizontal_track"/>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="thumbColor">
+                                                <color key="value" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="trackMinColor">
+                                                <color key="value" red="0.57254901960000004" green="0.52941176469999995" blue="0.47058823529999999" alpha="1" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="trackMaxColor">
+                                                <color key="value" red="0.30125221610000003" green="0.29395070670000001" blue="0.28606623409999998" alpha="1" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="preservesTrackMaxImageSize" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="preservesTrackMinImageSize" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="preservesThumbImageSize" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
+                                                <real key="value" value="24"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
+                                                <real key="value" value="400"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="value">
+                                                <real key="value" value="120"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="valueLabelTextColor">
+                                                <color key="value" red="0.96889215709999998" green="0.99298822880000004" blue="0.99992734189999999" alpha="1" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="showsValueLabel" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="valueLabelPrecision">
+                                                <integer key="value" value="0"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="valueLabelFontName" value="EvelethRegular"/>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="valueLabelFontSize">
+                                                <real key="value" value="12"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="valueLabelYOffset">
+                                                <real key="value" value="-10"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="continuous" value="NO"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="trackLabelText" value="Tempo"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="trackLabelFontName" value="EvelethLight"/>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="trackLabelFontSize">
+                                                <real key="value" value="13"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="trackLabelYOffset">
+                                                <real key="value" value="12"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="thumbYOffset">
+                                                <real key="value" value="5"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="showsTrackLabel" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TempoSlider"/>
+                                        </userDefinedRuntimeAttributes>
+                                        <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                            <rect key="frame" x="0.0" y="8" width="202" height="56"/>
+                                        </variation>
+                                        <connections>
+                                            <action selector="tempoSliderValueDidChange" destination="mI6-ed-c1h" eventType="valueChanged" id="XwD-Wo-BXw"/>
+                                        </connections>
+                                    </view>
+                                    <view contentMode="scaleToFill" horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="250" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3jR-a6-V5R" userLabel="Metronome" customClass="ImageButtonView" customModule="MoonKit">
+                                        <rect key="frame" x="218" y="11" width="50" height="50"/>
+                                        <animations/>
+                                        <color key="tintColor" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="calibratedRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="3jR-a6-V5R" secondAttribute="height" multiplier="1:1" identifier="MetronomeAspectRatio" id="RhJ-px-k17"/>
+                                            <constraint firstAttribute="width" constant="36" identifier="MetronomeWidth" id="m7q-Ma-UTW"/>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="image" value="metronome"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
+                                                <color key="value" red="0.90891814230000001" green="0.8747615218" blue="0.82637178899999997" alpha="1" colorSpace="custom" customColorSpace="deviceRGB"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="MetronomeButton"/>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="metronome-selected"/>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="selectedTintColor">
+                                                <color key="value" red="0.8434065580368042" green="0.78949379920959473" blue="0.71009701490402222" alpha="1" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <variation key="default">
+                                            <mask key="constraints">
+                                                <exclude reference="m7q-Ma-UTW"/>
+                                            </mask>
+                                        </variation>
+                                        <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                            <rect key="frame" x="212" y="8" width="56" height="56"/>
+                                        </variation>
+                                        <connections>
+                                            <action selector="toggleMetronome" destination="mI6-ed-c1h" eventType="touchUpInside" id="ZOV-Tp-4H5"/>
+                                        </connections>
+                                    </view>
+                                </subviews>
+                                <animations/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TempoSceneStackView"/>
+                                </userDefinedRuntimeAttributes>
+                            </stackView>
+                        </subviews>
+                        <animations/>
+                        <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="dQQ-Ui-KdC" secondAttribute="trailing" identifier="ContentStretchRight" id="794-VO-SSt"/>
+                            <constraint firstItem="lei-f0-gMd" firstAttribute="top" secondItem="dQQ-Ui-KdC" secondAttribute="bottom" identifier="ContentStretchDown" id="Whw-1b-jH1"/>
+                            <constraint firstItem="dQQ-Ui-KdC" firstAttribute="top" secondItem="YZO-M2-LfQ" secondAttribute="bottom" identifier="ContentStretchUp" id="Yss-Hb-5wY"/>
+                            <constraint firstItem="dQQ-Ui-KdC" firstAttribute="leading" secondItem="EPL-wG-4nA" secondAttribute="leadingMargin" identifier="ContentStretchLeft" id="lER-g2-fDV"/>
+                        </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TempoSceneView"/>
+                        </userDefinedRuntimeAttributes>
+                    </view>
+                    <extendedEdge key="edgesForExtendedLayout" top="YES"/>
+                    <value key="contentSizeForViewInPopover" type="size" width="300" height="72"/>
+                    <nil key="simulatedStatusBarMetrics"/>
+                    <nil key="simulatedTopBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
+                    <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="300" height="72"/>
+                    <connections>
+                        <outlet property="metronomeButton" destination="3jR-a6-V5R" id="veo-1G-YTl"/>
+                        <outlet property="tempoSlider" destination="kjm-oe-fME" id="zbT-sb-YO6"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Tm4-jA-NLz" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="266" y="66"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="horizontal_thumb" width="46" height="46"/>
+        <image name="horizontal_track" width="20" height="46"/>
+        <image name="metronome" width="56" height="56"/>
+        <image name="metronome-selected" width="56" height="56"/>
+    </resources>
+</document>

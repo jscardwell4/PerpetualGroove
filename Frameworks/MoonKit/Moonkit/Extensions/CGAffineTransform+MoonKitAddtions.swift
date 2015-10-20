@@ -70,11 +70,9 @@ extension CGAffineTransform {
   public mutating func invert() { self = inverted }
   public var inverted: CGAffineTransform { return CGAffineTransformInvert(self) }
   public static var identityTransform: CGAffineTransform { return CGAffineTransformIdentity }
-  #if os(iOS)
   public init?(_ string: String?) {
     if let s = string {
         self = CGAffineTransformFromString(s)
     } else { return nil }
   }
-  #endif
 }

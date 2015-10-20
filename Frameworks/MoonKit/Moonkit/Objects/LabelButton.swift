@@ -8,7 +8,8 @@
 
 import UIKit
 
-@IBDesignable public class LabelButton: ToggleControl {
+@IBDesignable
+public class LabelButton: ToggleControl {
 
   public typealias Action = (LabelButton) -> Void
 

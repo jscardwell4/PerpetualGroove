@@ -9,7 +9,8 @@
 import Foundation
 import UIKit
 
-@IBDesignable public class InlinePickerView: UIControl {
+//@IBDesignable
+public class InlinePickerView: UIControl {
 
   private enum CellType: String { case Label, Image }
 

@@ -55,6 +55,8 @@ final class TrackCell: MixerCell {
   @IBOutlet var volumeLabel: Label!
   @IBOutlet var panLabel:    Label!
 
+  @IBOutlet var soundSetImage: ImageButtonView!
+
   @IBOutlet var trackLabel: TrackLabel!
   @IBOutlet var trackColor: ImageButtonView! {
     didSet { trackColor?.addGestureRecognizer(longPress) }
@@ -132,9 +134,7 @@ final class TrackCell: MixerCell {
     Sequencer.sequence?.toggleSoloForTrack(track)
   }
 
-  private var muteDisengaged = false {
-    didSet { logDebug("muteDisengaged: \(muteDisengaged)"); muteButton.enabled = !muteDisengaged }
-  }
+  private var muteDisengaged = false { didSet { muteButton.enabled = !muteDisengaged } }
 
   /** mute */
   @IBAction func mute() { track?.mute.toggle() }
@@ -150,6 +150,7 @@ final class TrackCell: MixerCell {
       guard track != oldValue else { return }
       volume = track?.volume ?? 0
       pan = track?.pan ?? 0
+      soundSetImage.image = track?.instrument.soundSet.image
       trackLabel.text = track?.name ?? ""
       trackColor.tintColor = track?.color.value
       muteButton.selected = track?.mute ?? false
@@ -214,13 +215,6 @@ final class TrackCell: MixerCell {
                 callback: soloCountChanged)
     return receptionist
   }
-
-//  override func prepareForReuse() {
-//    super.prepareForReuse()
-//    receptionist = nil
-//    track = nil
-//    logDebug("m")
-//  }
 
 }
 

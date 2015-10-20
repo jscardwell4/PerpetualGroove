@@ -9,7 +9,8 @@
 import Foundation
 import UIKit
 
-@IBDesignable public class ScrollWheel: UIControl {
+//@IBDesignable
+public class ScrollWheel: UIControl {
 
   // MARK: - Colors
 

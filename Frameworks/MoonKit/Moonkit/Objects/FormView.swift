@@ -116,7 +116,7 @@ public final class FormView: UIView {
     let id = Identifier(self, "Internal")
     guard constraintsWithIdentifier(id).count == 0 else { return }
 
-    fieldViews.apply { constrain($0.left => self.left + 10.0 --> id, $0.right => self.right - 10.0 --> id) }
+    fieldViews.apply { self.constrain($0.left => self.left + 10.0 --> id, $0.right => self.right - 10.0 --> id) }
     if let first = fieldViews.first, last = fieldViews.last {
 
       constrain(first.top => self.top + 10.0 --> id)

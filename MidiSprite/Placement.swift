@@ -23,7 +23,7 @@ extension Placement: ByteArrayConvertible {
     let string = "{\(positionString), \(vectorString)}"
     return Array(string.utf8)
   }
-  init(_ bytes: [Byte]) {
+  init!(_ bytes: [Byte]) {
     let castBytes = bytes.map({CChar($0)})
     guard let string = String.fromCString(castBytes) else { self = .zero; return }
 

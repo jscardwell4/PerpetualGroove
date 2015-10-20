@@ -121,7 +121,6 @@ struct MIDINodeHistory: SequenceType {
   */
   mutating func pruneAfter(snapshot: Snapshot) {
 
-    logDebug("before prune: \(description)")
     guard let breadcrumb = breadcrumbs.find({$0.tickInterval.end < snapshot.ticks},
                                             {$0.tickInterval ∋ snapshot.ticks}) else
     {
@@ -132,13 +131,11 @@ struct MIDINodeHistory: SequenceType {
                                              {$0.tickInterval.end == breadcrumb.tickInterval.start}) else
     {
       breadcrumbs = [breadcrumb]
-      logDebug("after prune: \(description)")
       return
     }
     breadcrumbs.dropAfter(predecessor)
     breadcrumbs.insert(Breadcrumb(from: breadcrumb.from, to: snapshot))
 
-    logDebug("after prune: \(description)")
   }
 
   /**

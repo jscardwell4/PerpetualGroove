@@ -7,11 +7,7 @@
 //
 
 import Foundation
-#if os(iOS)
-  import Lumberjack
-  #else
-  import LumberjackOSX
-#endif
+import Lumberjack
 
 public struct ColorLog {
   public static let ESCAPE = "\u{001b}["
@@ -139,19 +135,15 @@ public class LogManager {
   }
 
   public static func addTTYLogger() {
-    #if os(iOS)
       MSLog.enableColor()
       MSLog.addTaggingTTYLogger()
       (DDTTYLogger.sharedInstance().logFormatter as! MSLogFormatter).useFileInsteadOfSEL = true
-    #endif
   }
 
   public static func addASLLogger() {
-    #if os(iOS)
       MSLog.enableColor()
       MSLog.addTaggingASLLogger()
       (DDASLLogger.sharedInstance().logFormatter as! MSLogFormatter).useFileInsteadOfSEL = true
-    #endif
   }
 
 }

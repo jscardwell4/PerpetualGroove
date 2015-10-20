@@ -204,7 +204,7 @@ final class InstrumentTrack: MIDITrackType {
   func addNode(node: MIDINode) throws {
     nodes.insert(node)
     let identifier = NodeIdentifier(ObjectIdentifier(node).uintValue)
-    logDebug("identifier = \(identifier)")
+    logVerbose("identifier = \(identifier)")
     notes.insert(identifier)
     try MIDIPortConnectSource(inPort, node.endPoint, nil) ➤ "Failed to connect to node \(node.name!)"
     Notification.DidAddNode.post(object: self)
@@ -232,7 +232,7 @@ final class InstrumentTrack: MIDITrackType {
                            placement: Placement,
                           attributes: NoteAttributes)
   {
-    logDebug("identifier = \(identifier)")
+    logVerbose("identifier = \(identifier)")
     guard fileIDToNodeID[identifier] == nil else { return }
     guard pendingIdentifier == nil else { fatalError("already have an identifier pending: \(pendingIdentifier!)") }
     guard let midiPlayer = MIDIPlayerNode.currentPlayer else { fatalError("trying to add node without a midi player") }
@@ -246,7 +246,7 @@ final class InstrumentTrack: MIDITrackType {
   - parameter identifier: NodeIdentifier
   */
   private func removeNodeWithIdentifier(identifier: NodeIdentifier) {
-    logDebug("identifier = \(identifier)")
+    logVerbose("identifier = \(identifier)")
     guard let mappedIdentifier = fileIDToNodeID[identifier] else {
       fatalError("trying to remove node for unmapped identifier \(identifier)")
     }
@@ -271,7 +271,7 @@ final class InstrumentTrack: MIDITrackType {
   func removeNode(node: MIDINode) throws {
     guard let node = nodes.remove(node) else { throw Error.NodeNotFound }
     let identifier = NodeIdentifier(ObjectIdentifier(node).uintValue)
-    logDebug("identifier = \(identifier)")
+    logVerbose("identifier = \(identifier)")
     notes.remove(identifier)
     node.sendNoteOff()
     try MIDIPortDisconnectSource(inPort, node.endPoint) ➤ "Failed to disconnect to node \(node.name!)"
@@ -466,7 +466,17 @@ final class InstrumentTrack: MIDITrackType {
 
     guard let url = NSBundle.mainBundle().URLForResource(instr, withExtension: nil) else { throw Error.InvalidSoundSetURL }
 
-    guard let soundSet = try? SoundSet(url: url) else { throw Error.SoundSetInitializeFailure }
+    let soundSet: SoundSetType
+    do {
+      soundSet = try EmaxSoundSet(url: url)
+    } catch {
+      do {
+        soundSet = try SoundSet(url: url)
+      } catch {
+        logError(error)
+        throw Error.SoundSetInitializeFailure
+      }
+    }
 
     // Find the program change event
     guard let programEvent = self.instrumentProgramEvent else {

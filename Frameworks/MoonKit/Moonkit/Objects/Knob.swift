@@ -9,7 +9,8 @@
 import Foundation
 import UIKit
 
-@IBDesignable public class Knob: UIControl {
+@IBDesignable
+public class Knob: UIControl {
 
   @IBInspectable public var value: Float = 0.5 {
     didSet {

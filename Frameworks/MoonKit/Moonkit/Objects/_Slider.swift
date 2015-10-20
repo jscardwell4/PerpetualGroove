@@ -9,7 +9,8 @@
 import Foundation
 import UIKit
 
-@IBDesignable public class ColorSlider: UISlider {
+//@IBDesignable
+public class ColorSlider: UISlider {
 
   // MARK: - Thumb image
 

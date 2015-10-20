@@ -9,7 +9,8 @@
 import Foundation
 import UIKit
 
-@IBDesignable public class Marquee: UIView {
+//@IBDesignable
+public class Marquee: UIView {
 
   private let textLayer: CALayer = {
     let layer = CALayer()

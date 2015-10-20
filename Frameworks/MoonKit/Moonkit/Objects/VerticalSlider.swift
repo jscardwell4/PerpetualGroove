@@ -8,7 +8,8 @@
 
 import UIKit
 
-@IBDesignable public class VerticalSlider: UIControl {
+//@IBDesignable
+public class VerticalSlider: UIControl {
 
   @IBInspectable private let slider = UISlider(autolayout: true)
 

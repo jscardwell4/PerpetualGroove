@@ -9,7 +9,8 @@
 import Foundation
 import UIKit
 
-@IBDesignable public class ImageBarButtonItem: UIBarButtonItem {
+//@IBDesignable
+public class ImageBarButtonItem: UIBarButtonItem {
 
   public override var image: UIImage? { didSet { imageButtonView?.image = image } }
   @IBInspectable public var highlightedImage: UIImage? {

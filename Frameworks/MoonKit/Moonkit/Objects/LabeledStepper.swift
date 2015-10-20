@@ -8,7 +8,8 @@
 
 import UIKit
 
-@IBDesignable public class LabeledStepper: UIControl {
+//@IBDesignable
+public class LabeledStepper: UIControl {
 
   /**
   initWithFrame:

@@ -9,7 +9,8 @@
 
 import UIKit
 
-@IBDesignable public class ImageButtonView: ToggleControl {
+@IBDesignable
+public class ImageButtonView: ToggleControl {
 
   // MARK: - Images
 
