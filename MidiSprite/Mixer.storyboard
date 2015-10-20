@@ -157,7 +157,7 @@
                                                     </constraints>
                                                 </stackView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="MASTER" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zFx-2Q-V0k" customClass="Label" customModule="MoonKit">
-                                                    <rect key="frame" x="17" y="274" width="51" height="123"/>
+                                                    <rect key="frame" x="17" y="274" width="50.5" height="123"/>
                                                     <animations/>
                                                     <fontDescription key="fontDescription" name="Triump-Rg-Rock-02" family="Triump Rg Rock" pointSize="14"/>
                                                     <color key="textColor" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="calibratedRGB"/>
@@ -267,7 +267,7 @@
                                                     <animations/>
                                                 </stackView>
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="tLa-UT-lvm">
-                                                    <rect key="frame" x="0.0" y="153" width="84" height="109"/>
+                                                    <rect key="frame" x="0.0" y="152.5" width="84" height="109"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="256" text="PAN" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UVo-0O-vty" customClass="Label" customModule="MoonKit">
                                                             <rect key="frame" x="28" y="0.0" width="28" height="15"/>
@@ -324,7 +324,7 @@
                                                     </constraints>
                                                 </stackView>
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="13X-Pc-Np3">
-                                                    <rect key="frame" x="20" y="269" width="45" height="38"/>
+                                                    <rect key="frame" x="19.5" y="269" width="45" height="38"/>
                                                     <subviews>
                                                         <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ldg-6q-t2e" userLabel="Solo" customClass="LabelButton" customModule="MoonKit">
                                                             <rect key="frame" x="0.0" y="0.0" width="45" height="19"/>
@@ -392,7 +392,7 @@
                                                     </variation>
                                                 </stackView>
                                                 <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9PR-nQ-iWa">
-                                                    <rect key="frame" x="14" y="315" width="56" height="56"/>
+                                                    <rect key="frame" x="14" y="314.5" width="56" height="56"/>
                                                     <subviews>
                                                         <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6he-9a-y4c" customClass="ImageButtonView" customModule="MoonKit">
                                                             <rect key="frame" x="0.0" y="0.0" width="56" height="56"/>
@@ -564,8 +564,8 @@
                                     <rect key="frame" x="0.0" y="0.0" width="100" height="430"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" alpha="0.34999999999999998" contentMode="center" image="add_track_background-outlines" translatesAutoresizingMaskIntoConstraints="NO" id="dMA-k2-N2G">
-                                            <rect key="frame" x="0.0" y="25" width="100" height="380"/>
+                                        <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" alpha="0.34999999999999998" contentMode="center" image="add_track_background" translatesAutoresizingMaskIntoConstraints="NO" id="dMA-k2-N2G">
+                                            <rect key="frame" x="0.0" y="0.0" width="100" height="410"/>
                                             <animations/>
                                         </imageView>
                                         <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6pi-bq-mPh" customClass="ImageButtonView" customModule="MoonKit">
@@ -601,21 +601,12 @@
                                     <constraint firstItem="6pi-bq-mPh" firstAttribute="centerX" secondItem="h8g-3b-xY3" secondAttribute="centerX" id="45O-Z1-gKD"/>
                                     <constraint firstItem="6pi-bq-mPh" firstAttribute="centerY" secondItem="h8g-3b-xY3" secondAttribute="centerY" id="5r0-ml-n0a"/>
                                     <constraint firstItem="dMA-k2-N2G" firstAttribute="centerX" secondItem="h8g-3b-xY3" secondAttribute="centerX" id="Ykm-qU-p21"/>
-                                    <constraint firstItem="dMA-k2-N2G" firstAttribute="centerY" secondItem="h8g-3b-xY3" secondAttribute="centerY" id="g5B-3j-dzu"/>
+                                    <constraint firstItem="dMA-k2-N2G" firstAttribute="centerY" secondItem="h8g-3b-xY3" secondAttribute="centerY" constant="-10" id="g5B-3j-dzu"/>
                                 </constraints>
                                 <size key="customSize" width="100" height="430"/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="AddTrackCell"/>
                                 </userDefinedRuntimeAttributes>
-                                <variation key="default">
-                                    <mask key="subviews">
-                                        <exclude reference="dMA-k2-N2G"/>
-                                    </mask>
-                                    <mask key="constraints">
-                                        <exclude reference="Ykm-qU-p21"/>
-                                        <exclude reference="g5B-3j-dzu"/>
-                                    </mask>
-                                </variation>
                             </collectionViewCell>
                         </cells>
                         <userDefinedRuntimeAttributes>
@@ -640,7 +631,7 @@
     </scenes>
     <resources>
         <image name="add-selected" width="56" height="56"/>
-        <image name="add_track_background-outlines" width="100" height="380"/>
+        <image name="add_track_background" width="100" height="410"/>
         <image name="brass" width="56" height="56"/>
         <image name="color_swatch" width="84" height="17"/>
         <image name="color_swatch_thicker-selected" width="84" height="17"/>
