@@ -15,7 +15,7 @@ import Eveleth
   func trackLabelDidChange(trackLabel: TrackLabel)
 }
 
-//@IBDesignable
+// @IBDesignable
 final class TrackLabel: UIView {
 
   private let marquee = Marquee(autolayout: true)

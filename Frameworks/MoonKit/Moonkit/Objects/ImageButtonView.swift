@@ -102,7 +102,7 @@ public class ImageButtonView: ToggleControl {
     CGContextClearRect(context, rect)
     image.drawInRect(rect)
 
-    currentTintColor.setFill()
+    tintColor.setFill()
     UIBezierPath(rect: rect).fillWithBlendMode(.SourceIn, alpha: 1)
 
     CGContextRestoreGState(context)

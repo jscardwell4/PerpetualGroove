@@ -34,8 +34,6 @@ public class Label: UILabel {
     }
   }
 
-  public enum VerticalAlignment: String { case Top, Center, Bottom }
-
   public var verticalAlignment: VerticalAlignment = .Center {
     didSet { guard verticalAlignment != oldValue else { return }; setNeedsDisplay() }
   }

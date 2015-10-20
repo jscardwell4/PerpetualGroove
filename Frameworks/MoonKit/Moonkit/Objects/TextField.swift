@@ -8,7 +8,7 @@
 
 import UIKit
 
-//@IBDesignable
+@IBDesignable
 public class TextField: UITextField {
 
   @IBInspectable public var gutter: UIEdgeInsets = .zeroInsets {
@@ -34,18 +34,35 @@ public class TextField: UITextField {
     }
   }
 
+  public var verticalAlignment: VerticalAlignment = .Center {
+    didSet { guard verticalAlignment != oldValue else { return }; setNeedsDisplay() }
+  }
+
+  @IBInspectable public var verticalAlignmentString: String {
+    get { return verticalAlignment.rawValue }
+    set { verticalAlignment = VerticalAlignment(rawValue: newValue) ?? .Center }
+  }
+  
+
   /**
   drawRect:
 
   - parameter rect: CGRect
   */
   public override func drawTextInRect(rect: CGRect) {
-    super.drawTextInRect(rect)
+
+    var textRect = textRectForBounds(rect)
+    switch verticalAlignment {
+    case .Top:    break
+    case .Center: textRect.origin.y += half(rect.height) - half(textRect.height)
+    case .Bottom: textRect.origin.y = rect.maxY - textRect.height
+    }
+
     let alpha = highlighted ? highlightedTintColorAlpha : tintColorAlpha
-    guard alpha > 0 else { return }
+    guard alpha > 0 else { super.drawTextInRect(textRect); return }
 
     UIGraphicsBeginImageContextWithOptions(rect.size, false, 0)
-    super.drawTextInRect(rect)
+    super.drawTextInRect(textRect)
     let image = UIGraphicsGetImageFromCurrentImageContext()
     UIGraphicsEndImageContext()
 
@@ -54,7 +71,7 @@ public class TextField: UITextField {
 
     image.addClip()
     tintColor.colorWithAlpha(alpha).setFill()
-    UIRectFillUsingBlendMode(rect, .Color)
+    UIRectFillUsingBlendMode(textRect, .Color)
 
     CGContextRestoreGState(context)
   }

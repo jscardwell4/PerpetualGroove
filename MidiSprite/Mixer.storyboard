@@ -36,10 +36,10 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="jXz-zn-JV2">
-                                            <rect key="frame" x="8" y="8" width="84" height="412"/>
+                                            <rect key="frame" x="8" y="8" width="84" height="397"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Mnc-ed-SYw">
-                                                    <rect key="frame" x="20" y="0.0" width="44" height="158"/>
+                                                    <rect key="frame" x="20" y="0.0" width="44" height="145"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="256" text="VOL" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4EJ-Z0-Ecx" customClass="Label" customModule="MoonKit">
                                                             <rect key="frame" x="8" y="0.0" width="28" height="15"/>
@@ -55,12 +55,10 @@
                                                             </userDefinedRuntimeAttributes>
                                                         </label>
                                                         <view opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="247" horizontalCompressionResistancePriority="749" verticalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="Evx-CT-UhF" userLabel="Volume Slider" customClass="Slider" customModule="MoonKit">
-                                                            <rect key="frame" x="0.0" y="15.5" width="44" height="152"/>
+                                                            <rect key="frame" x="0.0" y="15.5" width="44" height="139"/>
                                                             <animations/>
                                                             <constraints>
-                                                                <constraint firstAttribute="height" constant="133" id="Dq4-mh-SDn">
-                                                                    <variation key="heightClass=regular-widthClass=regular" constant="93"/>
-                                                                </constraint>
+                                                                <constraint firstAttribute="height" constant="120" id="Dq4-mh-SDn"/>
                                                                 <constraint firstAttribute="width" constant="44" identifier="VolumeSliderWidth" id="eUV-6O-sS4"/>
                                                             </constraints>
                                                             <userDefinedRuntimeAttributes>
@@ -98,11 +96,11 @@
                                                     </subviews>
                                                     <animations/>
                                                     <constraints>
-                                                        <constraint firstAttribute="height" constant="158" id="znL-7g-3La"/>
+                                                        <constraint firstAttribute="height" constant="145" id="znL-7g-3La"/>
                                                     </constraints>
                                                 </stackView>
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="klg-NE-H6j">
-                                                    <rect key="frame" x="0.0" y="168" width="84" height="109"/>
+                                                    <rect key="frame" x="0.0" y="155" width="84" height="109"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="256" text="PAN" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Q27-Qm-1HH" customClass="Label" customModule="MoonKit">
                                                             <rect key="frame" x="28" y="0.0" width="28" height="15"/>
@@ -122,7 +120,6 @@
                                                             <animations/>
                                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                             <constraints>
-                                                                <constraint firstAttribute="height" constant="84" id="ADG-uP-L0j"/>
                                                                 <constraint firstAttribute="width" secondItem="RJ4-aR-o07" secondAttribute="height" multiplier="1:1" identifier="PanKnobAspectRatio" id="LAp-6H-dZc"/>
                                                                 <constraint firstAttribute="width" constant="84" id="QXE-4q-UuI"/>
                                                             </constraints>
@@ -160,7 +157,7 @@
                                                     </constraints>
                                                 </stackView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="MASTER" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zFx-2Q-V0k" customClass="Label" customModule="MoonKit">
-                                                    <rect key="frame" x="17" y="287" width="50.5" height="125"/>
+                                                    <rect key="frame" x="17" y="274" width="51" height="123"/>
                                                     <animations/>
                                                     <fontDescription key="fontDescription" name="Triump-Rg-Rock-02" family="Triump Rg Rock" pointSize="14"/>
                                                     <color key="textColor" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="calibratedRGB"/>
@@ -184,9 +181,7 @@
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="bottomMargin" secondItem="jXz-zn-JV2" secondAttribute="bottom" constant="2" identifier="ContentStretchDown" id="1uw-qs-5XC">
-                                        <variation key="heightClass=regular-widthClass=regular" constant="0.0"/>
-                                    </constraint>
+                                    <constraint firstAttribute="bottomMargin" secondItem="jXz-zn-JV2" secondAttribute="bottom" constant="17" identifier="ContentStretchDown" id="1uw-qs-5XC"/>
                                     <constraint firstAttribute="trailingMargin" secondItem="jXz-zn-JV2" secondAttribute="trailing" identifier="ContentStretchRight" id="MtC-Gt-qEW"/>
                                     <constraint firstItem="jXz-zn-JV2" firstAttribute="top" secondItem="Ywg-X3-Y1Q" secondAttribute="topMargin" identifier="ContentStretchUp" id="orp-sR-obj">
                                         <variation key="heightClass=regular-widthClass=regular" constant="0.0"/>
@@ -210,11 +205,11 @@
                                     <rect key="frame" x="0.0" y="0.0" width="100" height="430"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="sCc-QY-TMC">
-                                            <rect key="frame" x="8" y="8" width="84" height="433"/>
+                                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="sCc-QY-TMC">
+                                            <rect key="frame" x="8" y="8" width="84" height="414"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="YGu-8C-M5R">
-                                                    <rect key="frame" x="20" y="0.0" width="44" height="158"/>
+                                                    <rect key="frame" x="20" y="0.0" width="44" height="145"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="256" text="VOL" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1nN-5d-7mi" customClass="Label" customModule="MoonKit">
                                                             <rect key="frame" x="8" y="0.0" width="28" height="15"/>
@@ -230,10 +225,10 @@
                                                             </userDefinedRuntimeAttributes>
                                                         </label>
                                                         <view opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="247" horizontalCompressionResistancePriority="749" verticalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="fQV-Nj-rrF" userLabel="Volume Slider" customClass="Slider" customModule="MoonKit">
-                                                            <rect key="frame" x="0.0" y="15.5" width="44" height="152"/>
+                                                            <rect key="frame" x="0.0" y="15.5" width="44" height="139"/>
                                                             <animations/>
                                                             <constraints>
-                                                                <constraint firstAttribute="height" constant="133" id="6er-k4-NNO"/>
+                                                                <constraint firstAttribute="height" constant="120" id="6er-k4-NNO"/>
                                                                 <constraint firstAttribute="width" constant="44" identifier="VolumeSliderWidth" id="Jyz-qp-TR8"/>
                                                             </constraints>
                                                             <userDefinedRuntimeAttributes>
@@ -272,7 +267,7 @@
                                                     <animations/>
                                                 </stackView>
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="tLa-UT-lvm">
-                                                    <rect key="frame" x="0.0" y="168" width="84" height="109"/>
+                                                    <rect key="frame" x="0.0" y="153" width="84" height="109"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="256" text="PAN" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UVo-0O-vty" customClass="Label" customModule="MoonKit">
                                                             <rect key="frame" x="28" y="0.0" width="28" height="15"/>
@@ -324,9 +319,12 @@
                                                         </view>
                                                     </subviews>
                                                     <animations/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="109" id="7Lp-IM-PkL"/>
+                                                    </constraints>
                                                 </stackView>
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="13X-Pc-Np3">
-                                                    <rect key="frame" x="19.5" y="287" width="45" height="38"/>
+                                                    <rect key="frame" x="20" y="269" width="45" height="38"/>
                                                     <subviews>
                                                         <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ldg-6q-t2e" userLabel="Solo" customClass="LabelButton" customModule="MoonKit">
                                                             <rect key="frame" x="0.0" y="0.0" width="45" height="19"/>
@@ -394,7 +392,7 @@
                                                     </variation>
                                                 </stackView>
                                                 <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9PR-nQ-iWa">
-                                                    <rect key="frame" x="14" y="335" width="56" height="56"/>
+                                                    <rect key="frame" x="14" y="315" width="56" height="56"/>
                                                     <subviews>
                                                         <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6he-9a-y4c" customClass="ImageButtonView" customModule="MoonKit">
                                                             <rect key="frame" x="0.0" y="0.0" width="56" height="56"/>
@@ -413,17 +411,16 @@
                                                     <animations/>
                                                 </stackView>
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="G8k-76-kf1">
-                                                    <rect key="frame" x="0.0" y="401" width="84" height="32"/>
+                                                    <rect key="frame" x="0.0" y="378" width="84" height="36"/>
                                                     <subviews>
-                                                        <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3Fc-u3-GOg" userLabel="TrackLabel" customClass="TrackLabel" customModule="Groove" customModuleProvider="target">
-                                                            <rect key="frame" x="0.0" y="0.0" width="84" height="15"/>
+                                                        <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3Fc-u3-GOg" userLabel="TrackLabel" customClass="MarqueeField" customModule="MoonKit">
+                                                            <rect key="frame" x="0.0" y="0.0" width="84" height="19"/>
                                                             <animations/>
                                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                            <color key="tintColor" red="0.72547006607055664" green="0.70085549354553223" blue="0.6621164083480835" alpha="1" colorSpace="calibratedRGB"/>
                                                             <gestureRecognizers/>
                                                             <constraints>
-                                                                <constraint firstAttribute="height" constant="15" id="ZMO-eC-OZu">
-                                                                    <variation key="heightClass=regular-widthClass=regular" constant="19"/>
-                                                                </constraint>
+                                                                <constraint firstAttribute="height" constant="19" id="ZMO-eC-OZu"/>
                                                             </constraints>
                                                             <userDefinedRuntimeAttributes>
                                                                 <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TrackLabel"/>
@@ -432,12 +429,16 @@
                                                                 <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
                                                                     <real key="value" value="14"/>
                                                                 </userDefinedRuntimeAttribute>
-                                                                <userDefinedRuntimeAttribute type="color" keyPath="textColor">
-                                                                    <color key="value" red="0.72547006607055664" green="0.70085549354553223" blue="0.6621164083480835" alpha="1" colorSpace="calibratedRGB"/>
-                                                                </userDefinedRuntimeAttribute>
                                                                 <userDefinedRuntimeAttribute type="string" keyPath="editingFontName" value="Triump-Rg-Rock-02"/>
                                                                 <userDefinedRuntimeAttribute type="number" keyPath="editingFontSize">
                                                                     <real key="value" value="14"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="boolean" keyPath="marqueeHidden" value="NO"/>
+                                                                <userDefinedRuntimeAttribute type="boolean" keyPath="textFieldHidden" value="YES"/>
+                                                                <userDefinedRuntimeAttribute type="boolean" keyPath="scrollEnabled" value="YES"/>
+                                                                <userDefinedRuntimeAttribute type="string" keyPath="verticalAlignmentString" value="Top"/>
+                                                                <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
+                                                                    <color key="value" red="0.72547006607055664" green="0.70085549354553223" blue="0.6621164083480835" alpha="1" colorSpace="calibratedRGB"/>
                                                                 </userDefinedRuntimeAttribute>
                                                             </userDefinedRuntimeAttributes>
                                                             <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
@@ -448,7 +449,7 @@
                                                             </connections>
                                                         </view>
                                                         <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="i87-3C-3ae" userLabel="TrackColor" customClass="ImageButtonView" customModule="MoonKit">
-                                                            <rect key="frame" x="0.0" y="15" width="84" height="17"/>
+                                                            <rect key="frame" x="0.0" y="19" width="84" height="17"/>
                                                             <animations/>
                                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                             <color key="tintColor" red="0.68166375160217285" green="0.38204258680343628" blue="0.2524854838848114" alpha="1" colorSpace="calibratedRGB"/>
@@ -482,19 +483,19 @@
                                             </userDefinedRuntimeAttributes>
                                         </stackView>
                                         <visualEffectView hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PLx-z8-sAo">
-                                            <rect key="frame" x="0.0" y="0.0" width="100" height="449"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="100" height="430"/>
                                             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="center" id="0px-uc-SZ1">
-                                                <rect key="frame" x="0.0" y="0.0" width="100" height="449"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="100" height="430"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <visualEffectView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eZi-HU-WRM">
-                                                        <rect key="frame" x="0.0" y="0.0" width="100" height="449"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="100" height="430"/>
                                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="eQW-ZI-j4I">
-                                                            <rect key="frame" x="0.0" y="0.0" width="100" height="449"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="100" height="430"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" image="trash-selected" translatesAutoresizingMaskIntoConstraints="NO" id="gNv-ZK-rjJ">
-                                                                    <rect key="frame" x="22" y="196.5" width="56" height="56"/>
+                                                                    <rect key="frame" x="22" y="187" width="56" height="56"/>
                                                                     <animations/>
                                                                 </imageView>
                                                             </subviews>

@@ -61,7 +61,7 @@ public class LabelButton: ToggleControl {
   */
   public override func drawRect(rect: CGRect) {
     guard let text = text else { return }
-    text.drawInRect(rect, withAttributes: [NSFontAttributeName: font, NSForegroundColorAttributeName: currentTintColor])
+    text.drawInRect(rect, withAttributes: [NSFontAttributeName: font, NSForegroundColorAttributeName: tintColor])
   }
 
 }

@@ -57,16 +57,18 @@ final class MIDIPlayerViewController: UIViewController {
     switch size.maxAxis {
       case .Vertical:
         guard topStackHeight.constant == 120 else { return }
-        topStackHeight.constant = 400
+        topStackHeight.constant = 430
         topStack.addArrangedSubview(mixerContainer)
         noteAttributesInstrumentStack.axis = .Vertical
         middleStack.insertArrangedSubview(noteAttributesInstrumentStack, atIndex: 0)
+        middleStackHeight.constant = 400
       case .Horizontal:
-        guard topStackHeight.constant == 400 else { return }
+        guard topStackHeight.constant == 430 else { return }
         topStackHeight.constant = 120
         noteAttributesInstrumentStack.axis = .Horizontal
         topStack.addArrangedSubview(noteAttributesInstrumentStack)
         middleStack.insertArrangedSubview(mixerContainer, atIndex: 0)
+        middleStackHeight.constant = 430
     }
     noteAttributesInstrumentStack.updateConstraintsIfNeeded()
   }
@@ -366,20 +368,7 @@ final class MIDIPlayerViewController: UIViewController {
     let overlap = responderFrame ∩ keyboardFrame
     guard !overlap.isEmpty else { return }
 
-    let ty = -overlap.height
-
-    logDebug(
-      "",
-      "notification = \(notification)",
-      "responder = \(responder)",
-      "responderFrame = \(responderFrame)",
-      "keyboardFrame = \(keyboardFrame)",
-      "overlap = \(overlap)",
-      "ty = \(ty)",
-      separator: "\n\t"
-    )
-
-    view.transform.ty = ty
+    view.transform.ty = -overlap.height
   }
 
   /**

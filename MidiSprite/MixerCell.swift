@@ -57,7 +57,7 @@ final class TrackCell: MixerCell {
 
   @IBOutlet var soundSetImage: ImageButtonView!
 
-  @IBOutlet var trackLabel: TrackLabel!
+  @IBOutlet var trackLabel: MarqueeField!
   @IBOutlet var trackColor: ImageButtonView! {
     didSet { trackColor?.addGestureRecognizer(longPress) }
   }
@@ -218,13 +218,13 @@ final class TrackCell: MixerCell {
 
 }
 
-extension TrackCell: TrackLabelDelegate {
+extension TrackCell: UITextFieldDelegate {
 
   /**
-  trackLabelDidChange:
+  textFieldDidEndEditing:
 
-  - parameter trackLabel: TrackLabel
+  - parameter textField: UITextField
   */
-  func trackLabelDidChange(trackLabel: TrackLabel) { track?.label = trackLabel.text }
+  func textFieldDidEndEditing(textField: UITextField) { track?.label = textField.text }
 
 }

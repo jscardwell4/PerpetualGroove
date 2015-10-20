@@ -25,6 +25,8 @@ extension CGSize {
   public var maxAxisValue: CGFloat { return max(width, height) }
   public var area: CGFloat { return width * height }
   public var integralSize: CGSize { return CGSize(width: round(width), height: round(height)) }
+  public var ceilSize: CGSize { return CGSize(width: ceil(width), height: ceil(height)) }
+  public var floorSize: CGSize { return CGSize(width: floor(width), height: floor(height)) }
   public var integralSizeRoundingUp: CGSize {
   	var size = CGSize(width: round(width), height: round(height))
   	if size.width < width { size.width += CGFloat(1) }

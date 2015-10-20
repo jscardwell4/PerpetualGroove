@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-//@IBDesignable
+@IBDesignable
 public class Marquee: UIView {
 
   private let textLayer: CALayer = {
@@ -17,8 +17,6 @@ public class Marquee: UIView {
     layer.contentsScale = UIScreen.mainScreen().scale
     return layer
   }()
-
-  public enum VerticalAlignment: String { case Top, Center, Bottom }
 
   public var verticalAlignment: VerticalAlignment = .Center {
     didSet { guard verticalAlignment != oldValue else { return }; staleCache = true }
@@ -137,7 +135,7 @@ public class Marquee: UIView {
   }
 
   /** How fast to scroll text in characters per second */
-  @IBInspectable public var scrollSpeed: CFTimeInterval = 1
+  @IBInspectable public var scrollSpeed: Double = 1
 
   /** Whether the text should scroll when it does not all fit */
   @IBInspectable public var scrollEnabled: Bool = true { didSet { scrollCheck() } }
@@ -246,7 +244,7 @@ public class Marquee: UIView {
 
   - returns: CGSize
   */
-  public override func intrinsicContentSize() -> CGSize { return textLayer.bounds.size }
+  public override func intrinsicContentSize() -> CGSize { return textStorage.size().ceilSize }
 
   /** didMoveToWindow */
   public override func didMoveToWindow() { super.didMoveToWindow(); guard window != nil else { return }; scrollCheck() }
