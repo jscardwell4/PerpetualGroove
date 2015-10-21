@@ -1782,9 +1782,6 @@
                                                         <userDefinedRuntimeAttributes>
                                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="Message"/>
                                                         </userDefinedRuntimeAttributes>
-                                                        <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
-                                                            <rect key="frame" x="255.5" y="390" width="289" height="20"/>
-                                                        </variation>
                                                     </label>
                                                 </subviews>
                                                 <animations/>

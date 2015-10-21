@@ -316,6 +316,10 @@
 		C28E50991A13CB1E00DF3206 /* IntegerInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C217E47D19E860DE00B36983 /* IntegerInputView.swift */; };
 		C28E509B1A143FDC00DF3206 /* MultiselectGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28E509A1A143FDC00DF3206 /* MultiselectGestureRecognizer.swift */; };
 		C28E98EE1AD196B800E78711 /* NSNumber+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28E98ED1AD196B800E78711 /* NSNumber+MoonKitAdditions.swift */; };
+		C29073911BD7021F0090399E /* ColorLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29073901BD7021F0090399E /* ColorLog.swift */; settings = {ASSET_TAGS = (); }; };
+		C29073931BD73F7F0090399E /* FileLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29073921BD73F7F0090399E /* FileLogger.swift */; settings = {ASSET_TAGS = (); }; };
+		C29073951BD740410090399E /* LogFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29073941BD740410090399E /* LogFileManager.swift */; settings = {ASSET_TAGS = (); }; };
+		C29073971BD747D70090399E /* LogFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29073961BD747D70090399E /* LogFormatter.swift */; settings = {ASSET_TAGS = (); }; };
 		C296498E1B00EBBF000C2D4A /* FormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C296498D1B00EBBF000C2D4A /* FormView.swift */; };
 		C29649901B00EBD0000C2D4A /* FieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C296498F1B00EBD0000C2D4A /* FieldView.swift */; };
 		C29EECF81AFD010B00660EE6 /* MiscellaneousFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29EECF71AFD010B00660EE6 /* MiscellaneousFunctions.swift */; };
@@ -613,6 +617,10 @@
 		C28E35BD1A45DBF300438CCF /* Array+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C28E509A1A143FDC00DF3206 /* MultiselectGestureRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiselectGestureRecognizer.swift; sourceTree = "<group>"; };
 		C28E98ED1AD196B800E78711 /* NSNumber+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSNumber+MoonKitAdditions.swift"; sourceTree = "<group>"; };
+		C29073901BD7021F0090399E /* ColorLog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorLog.swift; sourceTree = "<group>"; };
+		C29073921BD73F7F0090399E /* FileLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileLogger.swift; sourceTree = "<group>"; };
+		C29073941BD740410090399E /* LogFileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogFileManager.swift; sourceTree = "<group>"; };
+		C29073961BD747D70090399E /* LogFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogFormatter.swift; sourceTree = "<group>"; };
 		C295E30319E2FBBB008309B8 /* ToggleImageSegmentedControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToggleImageSegmentedControl.swift; sourceTree = "<group>"; };
 		C296498D1B00EBBF000C2D4A /* FormView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormView.swift; sourceTree = "<group>"; };
 		C296498F1B00EBD0000C2D4A /* FieldView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FieldView.swift; sourceTree = "<group>"; };
@@ -1015,6 +1023,10 @@
 				C238A6531B04DC8B00898DB8 /* SortingFunctions.swift */,
 				C238A6551B04DDA100898DB8 /* Numbers.swift */,
 				C22F5FE31B6FC753006D225A /* Dispatch.swift */,
+				C29073901BD7021F0090399E /* ColorLog.swift */,
+				C29073921BD73F7F0090399E /* FileLogger.swift */,
+				C29073941BD740410090399E /* LogFileManager.swift */,
+				C29073961BD747D70090399E /* LogFormatter.swift */,
 			);
 			path = Functions;
 			sourceTree = "<group>";
@@ -2046,6 +2058,7 @@
 				C22E6B8F1B810860008D46A6 /* List.swift in Sources */,
 				C2358F5619C78E0C00920F8D /* NSIndexPath+MSKitAdditions.m in Sources */,
 				C2358F5719C78E0C00920F8D /* MSColorInputViewController.m in Sources */,
+				C29073951BD740410090399E /* LogFileManager.swift in Sources */,
 				C2358F5819C78E0C00920F8D /* MSPickerInputViewController.m in Sources */,
 				C24A22951ADB45340065E7EA /* RawOptionSetFunctions.swift in Sources */,
 				C2C4B72C1AA951D700912951 /* NSManagedObject+MoonKitAdditions.swift in Sources */,
@@ -2064,6 +2077,7 @@
 				C28E50961A13CA7E00DF3206 /* ToggleBarButtonItem.swift in Sources */,
 				C2404BC01B77ACDC00A68A64 /* ImageBarButtonItem.swift in Sources */,
 				C21D7AE41AA60E3F000DE8A3 /* NSError+MoonKitAdditions.swift in Sources */,
+				C29073971BD747D70090399E /* LogFormatter.swift in Sources */,
 				C2B6918A1AFBCADB0041CE11 /* NetworkReachability.swift in Sources */,
 				C23693801B161ED600CBE460 /* PrintableExtensions.swift in Sources */,
 				C238A6541B04DC8B00898DB8 /* SortingFunctions.swift in Sources */,
@@ -2090,6 +2104,7 @@
 				C26A27F11B94BD7A00BD1698 /* IntrinsicSizeDelegatingView.swift in Sources */,
 				C2358F6119C78E0C00920F8D /* MSGestureManager.m in Sources */,
 				C2358F6219C78E0C00920F8D /* MSLongPressGestureRecognizer.m in Sources */,
+				C29073911BD7021F0090399E /* ColorLog.swift in Sources */,
 				C24A22811ADAEC010065E7EA /* ArrayJSONValue.swift in Sources */,
 				C2F094451A32A83A00681AB3 /* DrawingKit.swift in Sources */,
 				C2D664F11B88CC6F00D70FFA /* Ratio.swift in Sources */,
@@ -2168,6 +2183,7 @@
 				C2618A721B7A43B500122EBA /* FormSwitchField.swift in Sources */,
 				C2304E0A1AEECE1C0090D889 /* LayerProxy.swift in Sources */,
 				C2358F7E19C78E0C00920F8D /* MSColorInputView.m in Sources */,
+				C29073931BD73F7F0090399E /* FileLogger.swift in Sources */,
 				C26254261B744A2500E81068 /* ControlNode.swift in Sources */,
 				C27372851A1FC0750079624D /* UIColor+MoonKitAdditions.swift in Sources */,
 				C2358F7F19C78E0C00920F8D /* MSMultiselectView.m in Sources */,

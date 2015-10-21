@@ -9,65 +9,6 @@
 import Foundation
 import Lumberjack
 
-public struct ColorLog {
-  public static let ESCAPE = "\u{001b}["
-
-  public static let RESET_FG = ESCAPE + "fg;" // Clear any foreground color
-  public static let RESET_BG = ESCAPE + "bg;" // Clear any background color
-  public static let RESET = ESCAPE + ";"   // Clear any foreground or background color
-
-  public static func red<T>(object:T) {
-    print("\(ESCAPE)fg255,0,0;\(object)\(RESET)")
-  }
-
-  public static func green<T>(object:T) {
-    print("\(ESCAPE)fg0,255,0;\(object)\(RESET)")
-  }
-
-  public static func blue<T>(object:T) {
-    print("\(ESCAPE)fg0,0,255;\(object)\(RESET)")
-  }
-
-  public static func yellow<T>(object:T) {
-    print("\(ESCAPE)fg255,255,0;\(object)\(RESET)")
-  }
-
-  public static func purple<T>(object:T) {
-    print("\(ESCAPE)fg255,0,255;\(object)\(RESET)")
-  }
-
-  public static func cyan<T>(object:T) {
-    print("\(ESCAPE)fg0,255,255;\(object)\(RESET)")
-  }
-  public static func wrapRed<T>(object:T) -> String {
-    return "\(ESCAPE)fg255,0,0;\(object)\(RESET)"
-  }
-
-  public static func wrapGreen<T>(object:T) -> String {
-    return "\(ESCAPE)fg0,255,0;\(object)\(RESET)"
-  }
-
-  public static func wrapBlue<T>(object:T) -> String {
-    return "\(ESCAPE)fg0,0,255;\(object)\(RESET)"
-  }
-
-  public static func wrapYellow<T>(object:T) -> String {
-    return "\(ESCAPE)fg255,255,0;\(object)\(RESET)"
-  }
-
-  public static func wrapPurple<T>(object:T) -> String {
-    return "\(ESCAPE)fg255,0,255;\(object)\(RESET)"
-  }
-
-  public static func wrapCyan<T>(object:T) -> String {
-    return "\(ESCAPE)fg0,255,255;\(object)\(RESET)"
-  }
-
-  public static func wrapColor<T>(object:T, _ r: UInt8, _ g: UInt8, _ b: UInt8) -> String {
-    return "\(ESCAPE)fg\(r),\(g),\(b);\(object)\(RESET)"
-  }
-}
-
 public class LogManager {
 
   public struct LogFlag: OptionSetType {
@@ -98,11 +39,16 @@ public class LogManager {
     public static var All:      LogLevel = [.Error, .Warn, .Info, .Debug, .Verbose]
   }
 
+  public typealias LogContext = UInt
 
+  public static var defaultLogDirectory: NSURL {
+    return cacheURL.URLByAppendingPathComponent("Logs", isDirectory: true)
+  }
 
   public static var logLevel: LogLevel = .Debug
 
-  static var registeredLogLevels: [String:LogLevel] = [:]
+  static var logLevelsByFile: [String:LogLevel] = [:]
+  static var logLevelsByType: [ObjectIdentifier:LogLevel] = [:]
 
   /**
   logLevelForFile:
@@ -111,8 +57,8 @@ public class LogManager {
 
   - returns: LogLevel
   */
-  public class func logLevelForFile(file: String) -> LogManager.LogLevel {
-    return registeredLogLevels[file] ?? logLevel
+  public class func logLevelForFile(file: String) -> LogLevel {
+    return logLevelsByFile[file] ?? logLevel
   }
 
   /**
@@ -122,69 +68,150 @@ public class LogManager {
   - parameter file: String = __FILE__
   */
   public class func setLogLevel(level: LogManager.LogLevel, forFile file: String = __FILE__) {
-    registeredLogLevels[file] = level
+    logLevelsByFile[file] = level
   }
 
+  /**
+  logLevelForType:
+
+  - parameter type: Any.Type
+
+  - returns: LogLevel
+  */
+  public class func logLevelForType(type: Any.Type) -> LogLevel {
+    return logLevelsByType[ObjectIdentifier(type.dynamicType.self)] ?? logLevel
+  }
+
+  /**
+  setLogLevel:forType:
+
+  - parameter level: LogLevel
+  - parameter type: Any.Type
+  */
+  public class func setLogLevel(level: LogLevel, forType type: Any.Type) {
+    logLevelsByType[ObjectIdentifier(type.dynamicType.self)] = level
+  }
+
+  /**
+  setDefaultLogLevel:
+
+  - parameter level: LogManager.LogLevel
+  */
   public class func setDefaultLogLevel(level: LogManager.LogLevel) {
     logLevel = level
   }
 
+  /** addConsoleLoggers */
   public static func addConsoleLoggers() {
+    ColorLog.colorEnabled = true
     addTTYLogger()
     addASLLogger()
   }
 
-  public static func addTTYLogger() {
-      MSLog.enableColor()
-      MSLog.addTaggingTTYLogger()
-      (DDTTYLogger.sharedInstance().logFormatter as! MSLogFormatter).useFileInsteadOfSEL = true
+  /** addTTYLogger */
+  public class func addTTYLogger() {
+    let formatter = LogFormatter(context: UInt(LOG_CONTEXT_TTY), options: [.UseFileInsteadOfSEL])
+    formatter.prompt = ">"
+    let tty = DDTTYLogger.sharedInstance()
+    tty.logFormatter = formatter
+    tty.colorsEnabled = true
+    DDLog.addLogger(tty)
   }
 
-  public static func addASLLogger() {
-      MSLog.enableColor()
-      MSLog.addTaggingASLLogger()
-      (DDASLLogger.sharedInstance().logFormatter as! MSLogFormatter).useFileInsteadOfSEL = true
+  /** addASLLogger */
+  public class func addASLLogger() {
+    let formatter = LogFormatter(context: UInt(LOG_CONTEXT_ASL), options: [.UseFileInsteadOfSEL])
+    formatter.prompt = ">"
+    let asl = DDASLLogger.sharedInstance()
+    asl.logFormatter = formatter
+    DDLog.addLogger(asl)
+  }
+
+  /** addTaggingTTYLogger */
+  public class func addTaggingTTYLogger() {
+    let formatter = LogFormatter(context: UInt(LOG_CONTEXT_TTY), options: [.UseFileInsteadOfSEL], tagging: true)
+    let tty = DDTTYLogger.sharedInstance()
+    tty.logFormatter = formatter
+    tty.colorsEnabled = true
+    DDLog.addLogger(tty)
+  }
+
+  /** addTaggingASLLogger */
+  public class func addTaggingASLLogger() {
+    let formatter = LogFormatter(context: UInt(LOG_CONTEXT_ASL), options: [.UseFileInsteadOfSEL], tagging: true)
+    let asl = DDASLLogger.sharedInstance()
+    asl.logFormatter = formatter
+    DDLog.addLogger(asl)
+  }
+
+  /**
+  logMessage:flag:function:line:file:className:context:
+
+  - parameter message: String
+  - parameter flag: LogManager.LogFlag
+  - parameter function: String = __FUNCTION__
+  - parameter line: UInt = __LINE__
+  - parameter file: String = __FILE__
+  - parameter className: String? = nil
+  - parameter context: Int = Int(LOG_CONTEXT_CONSOLE)
+  */
+  public class func logMessage(message: String,
+                  asynchronous: Bool,
+                          flag: LogManager.LogFlag,
+                      function: String = __FUNCTION__,
+                          line: UInt = __LINE__,
+                          file: String = __FILE__,
+                       context: Int = 0b110)
+  {
+
+    SwiftLogMacro(
+      asynchronous,
+      level: DDLogLevel(rawValue: LogManager.logLevelForFile(file).rawValue)!,
+      flag: DDLogFlag(rawValue: flag.rawValue),
+      context: Int(context),
+      file: file,
+      function: function,
+      line: line,
+      tag: nil,
+      string: message
+    )
+
+    #if TARGET_INTERFACE_BUILDER
+      logIB(message, function: function, line: line, file: file, flag: flag)
+    #endif
+
+  }
+
+  /**
+  defaultFileLoggerForContext:directory:
+
+  - parameter context: LogContext
+  - parameter directory: String
+
+  - returns: DDFileLogger
+  */
+  public class func defaultFileLoggerForContext(context: LogContext, directory: String) -> DDFileLogger {
+    let fileManager = LogFileManager(logsDirectory: directory)
+    fileManager.maximumNumberOfLogFiles = 5
+    let fileLogger = FileLogger(logFileManager: fileManager)
+    fileLogger.rollingFrequency = 60 * 60 * 24
+    fileLogger.maximumFileSize = 0
+    fileLogger.logFormatter = LogFormatter(context: UInt(context), options: [.UseFileInsteadOfSEL], tagging: true)
+    return fileLogger
+  }
+
+  /**
+  addDefaultFileLoggerForContext:directory:
+
+  - parameter context: LogContext
+  - parameter directory: String
+  */
+  public class func addDefaultFileLoggerForContext(context: LogContext, directory: String) {
+    DDLog.addLogger(defaultFileLoggerForContext(context, directory: directory))
   }
 
 }
 
-/**
-MSLogMessage:flag:function:line:file:className:context:
-
-- parameter message: String
-- parameter flag: LogManager.LogFlag
-- parameter function: String = __FUNCTION__
-- parameter line: UInt = __LINE__
-- parameter file: String = __FILE__
-- parameter className: String? = nil
-- parameter context: Int = Int(LOG_CONTEXT_CONSOLE)
-*/
-public func MSLogMessage(message: String,
-            asynchronous: Bool,
-                    flag: LogManager.LogFlag,
-                function: String = __FUNCTION__,
-                    line: UInt = __LINE__,
-                    file: String = __FILE__,
-                 context: Int = 0b110)
-{
-
-  SwiftLogMacro(
-    asynchronous,
-    level: DDLogLevel(rawValue: LogManager.logLevelForFile(file).rawValue)!,
-    flag: DDLogFlag(rawValue: flag.rawValue),
-    context: Int(context),
-    file: file,
-    function: function,
-    line: line,
-    tag: nil,
-    string: message
-  )
-
-  #if TARGET_INTERFACE_BUILDER
-    logIB(message, function: function, line: line, file: file, flag: flag)
-  #endif
-
-}
 
 
 /**
@@ -197,8 +224,9 @@ logDebug:asynchronous:function:line:file:
 - parameter file: String = __FILE__
 */
 public func logDebug(message: String, asynchronous: Bool = true, function: String = __FUNCTION__, line: UInt = __LINE__, file: String = __FILE__) {
-  MSLogMessage(message, asynchronous: asynchronous, flag: .Debug, function: function, file: file, line: line)
+  LogManager.logMessage(message, asynchronous: asynchronous, flag: .Debug, function: function, file: file, line: line)
 }
+
 /**
 logDebug:function:line:file:
 
@@ -244,7 +272,7 @@ logError:asynchronous:function:line:file:
 - parameter file: String = __FILE__
 */
 public func logError(message: String, asynchronous: Bool = true, function: String = __FUNCTION__, line: UInt = __LINE__, file: String = __FILE__) {
-  MSLogMessage(message, asynchronous: asynchronous, flag: .Error, function: function, file: file, line: line)
+  LogManager.logMessage(message, asynchronous: asynchronous, flag: .Error, function: function, file: file, line: line)
 }
 
 /**
@@ -280,7 +308,7 @@ logInfo:asynchronous:function:line:file:
 - parameter file: String = __FILE__
 */
 public func logInfo(message: String, asynchronous: Bool = true, function: String = __FUNCTION__, line: UInt = __LINE__, file: String = __FILE__) {
-  MSLogMessage(message, asynchronous: asynchronous, flag: .Info, function: function, file: file, line: line)
+  LogManager.logMessage(message, asynchronous: asynchronous, flag: .Info, function: function, file: file, line: line)
 }
 
 /**
@@ -316,7 +344,7 @@ logWarning:asynchronous:function:line:file:
 - parameter file: String = __FILE__
 */
 public func logWarning(message: String, asynchronous: Bool = true, function: String = __FUNCTION__, line: UInt = __LINE__, file: String = __FILE__) {
-  MSLogMessage(message, asynchronous: asynchronous, flag: .Warn, function: function, file: file, line: line)
+  LogManager.logMessage(message, asynchronous: asynchronous, flag: .Warn, function: function, file: file, line: line)
 }
 
 /**
@@ -339,7 +367,11 @@ public func logWarning(items: Any...,
                        line: UInt = __LINE__,
                        file: String = __FILE__)
 {
-  logWarning(String(items: items, separator: separator, terminator: terminator), asynchronous: asynchronous, function: function, line: line, file: file)
+  logWarning(String(items: items, separator: separator, terminator: terminator),
+            asynchronous: asynchronous,
+            function: function,
+            line: line,
+            file: file)
 }
 
 /**
@@ -352,7 +384,7 @@ logVerbose:asynchronous:function:line:file:
 - parameter file: String = __FILE__
 */
 public func logVerbose(message: String, asynchronous: Bool = true, function: String = __FUNCTION__, line: UInt = __LINE__, file: String = __FILE__) {
-  MSLogMessage(message, asynchronous: asynchronous, flag: .Verbose, function: function, file: file, line: line)
+  LogManager.logMessage(message, asynchronous: asynchronous, flag: .Verbose, function: function, file: file, line: line)
 }
 
 /**
