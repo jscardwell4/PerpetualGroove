@@ -8,6 +8,8 @@
 
 import Foundation
 
+
+
 public protocol Loggable {
   static var logContext: LogManager.LogContext { get }
 }
@@ -172,6 +174,168 @@ asynchronous: asynchronous,
   - parameter file: String = __FILE__
   */
   static func logVerbose(message: String,
+     asynchronous: Bool = true,
+         function: String = __FUNCTION__,
+             line: UInt = __LINE__,
+             file: String = __FILE__)
+  {
+    log(message, asynchronous: asynchronous, flag: .Verbose, function: function, line: line, file: file)
+  }
+
+  
+  /**
+  log:asynchronous:flag:function:line:file:
+
+  - parameter message: String
+  - parameter asynchronous: Bool = true
+  - parameter flag: LogManager.LogFlag
+  - parameter function: String = __FUNCTION__
+  - parameter line: UInt = __LINE__
+  - parameter file: String = __FILE__
+  */
+  func log(message: String,
+           asynchronous: Bool = true,
+           flag: LogManager.LogFlag,
+           function: String = __FUNCTION__,
+           line: UInt = __LINE__,
+           file: String = __FILE__)
+  {
+    LogManager.logMessage(message,
+             asynchronous: asynchronous,
+                     flag: flag,
+                 function: function,
+                     line: line,
+                     file: file,
+                  context: self.dynamicType.logContext)
+  }
+
+  /**
+  logError:asynchronous:function:line:file:
+
+  - parameter message: String
+  - parameter asynchronous: Bool = true
+  - parameter function: String = __FUNCTION__
+  - parameter line: UInt = __LINE__
+  - parameter file: String = __FILE__
+  */
+  func logError(message: String,
+   asynchronous: Bool = true,
+       function: String = __FUNCTION__,
+           line: UInt = __LINE__,
+           file: String = __FILE__)
+  {
+    log(message, asynchronous: asynchronous, flag: .Error, function: function, line: line, file: file)
+  }
+
+  /**
+  logError:message:asynchronous:function:line:file:
+
+  - parameter error: ErrorType
+  - parameter message: String
+  - parameter asynchronous: Bool = true
+  - parameter function: String = __FUNCTION__
+  - parameter line: UInt = __LINE__
+  - parameter file: String = __FILE__
+  */
+  func logError(error: ErrorType,
+               message: String? = nil,
+          asynchronous: Bool = true,
+              function: String = __FUNCTION__,
+                  line: UInt = __LINE__,
+                  file: String = __FILE__)
+  {
+    var errorDescription = "\(error)"
+    if let e = error as? WrappedErrorType, u = e.underlyingError {
+      errorDescription += "underlying error: \(u)"
+    }
+
+    var logMessage = "-Error- "
+    if let message = message { logMessage += message + "\n" }
+    logMessage += errorDescription
+
+    logError(logMessage, asynchronous: asynchronous, function: function, line: line, file: file)
+  }
+
+  /**
+   logError:asynchronous:
+
+   - parameter e: ExtendedErrorType
+   - parameter asynchronous: Bool = true
+   */
+  func logError(error: ExtendedErrorType, asynchronous: Bool = true) {
+    logError(error,
+     message: error.reason,
+asynchronous: asynchronous,
+    function: error.function,
+        line: error.line,
+        file: error.file)
+  }
+
+
+  /**
+  logWarning:asynchronous:function:line:file:
+
+  - parameter message: String
+  - parameter asynchronous: Bool = true
+  - parameter function: String = __FUNCTION__
+  - parameter line: UInt = __LINE__
+  - parameter file: String = __FILE__
+  */
+  func logWarning(message: String,
+   asynchronous: Bool = true,
+       function: String = __FUNCTION__,
+           line: UInt = __LINE__,
+           file: String = __FILE__)
+  {
+    log(message, asynchronous: asynchronous, flag: .Warning, function: function, line: line, file: file)
+  }
+
+  /**
+  logDebug:asynchronous:function:line:file:
+
+  - parameter message: String
+  - parameter asynchronous: Bool = true
+  - parameter function: String = __FUNCTION__
+  - parameter line: UInt = __LINE__
+  - parameter file: String = __FILE__
+  */
+  func logDebug(message: String,
+   asynchronous: Bool = true,
+       function: String = __FUNCTION__,
+           line: UInt = __LINE__,
+           file: String = __FILE__)
+  {
+    log(message, asynchronous: asynchronous, flag: .Debug, function: function, line: line, file: file)
+  }
+
+  /**
+  logInfo:asynchronous:function:line:file:
+
+  - parameter message: String
+  - parameter asynchronous: Bool = true
+  - parameter function: String = __FUNCTION__
+  - parameter line: UInt = __LINE__
+  - parameter file: String = __FILE__
+  */
+  func logInfo(message: String,
+  asynchronous: Bool = true,
+      function: String = __FUNCTION__,
+          line: UInt = __LINE__,
+          file: String = __FILE__)
+  {
+    log(message, asynchronous: asynchronous, flag: .Info, function: function, line: line, file: file)
+  }
+
+  /**
+  logVerbose:asynchronous:function:line:file:
+
+  - parameter message: String
+  - parameter asynchronous: Bool = true
+  - parameter function: String = __FUNCTION__
+  - parameter line: UInt = __LINE__
+  - parameter file: String = __FILE__
+  */
+  func logVerbose(message: String,
      asynchronous: Bool = true,
          function: String = __FUNCTION__,
              line: UInt = __LINE__,

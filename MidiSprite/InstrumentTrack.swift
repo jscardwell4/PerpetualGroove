@@ -102,7 +102,7 @@ final class InstrumentTrack: MIDITrackType {
       guard let state = self?.state where state ∋ .TrackEnded else { return }
 
       guard let jogTime = ($0.userInfo?[Sequencer.Notification.Key.JogTime.rawValue] as? NSValue)?.barBeatTimeValue else {
-        logError("notication does not contain jog tick value")
+        self?.logError("notication does not contain jog tick value")
         return
       }
 
@@ -352,14 +352,14 @@ final class InstrumentTrack: MIDITrackType {
 
       let packet = packetPointer.memory
       let ((status, channel), note, velocity) = ((packet.data.0 >> 4, packet.data.0 & 0xF), packet.data.1, packet.data.2)
-      logVerbose("status: \(status); channel: \(channel); note: \(note); velocity: \(velocity)")
+      self?.logVerbose("status: \(status); channel: \(channel); note: \(note); velocity: \(velocity)")
       let event: MIDITrackEvent?
       switch status {
         case 9:  event = ChannelEvent(.NoteOn, channel, note, velocity, time)
         case 8:  event = ChannelEvent(.NoteOff, channel, note, velocity, time)
         default: event = nil
       }
-      if event != nil { logVerbose("event: \(event!)"); self?.eventContainer.append(event!) }
+      if event != nil { self?.logVerbose("event: \(event!)"); self?.eventContainer.append(event!) }
     }
   }
 

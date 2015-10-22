@@ -19,14 +19,14 @@
 		C22D93F11BADA24A00B04A2B /* MIDINodeHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22D93F01BADA24A00B04A2B /* MIDINodeHistory.swift */; };
 		C22FA58B1BC7F3D300162DB4 /* TrackLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22FA58A1BC7F3D300162DB4 /* TrackLabel.swift */; };
 		C22FA58D1BC830D600162DB4 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22FA58C1BC830D600162DB4 /* SettingsManager.swift */; };
-		C255C4321BD664B000CAEE9C /* Mixer.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C255C4311BD664B000CAEE9C /* Mixer.storyboard */; settings = {ASSET_TAGS = (); }; };
-		C255C4351BD664CD00CAEE9C /* Instrument.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C255C4331BD664CD00CAEE9C /* Instrument.storyboard */; settings = {ASSET_TAGS = (); }; };
-		C255C4371BD664E400CAEE9C /* NoteAttributes.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C255C4361BD664E400CAEE9C /* NoteAttributes.storyboard */; settings = {ASSET_TAGS = (); }; };
-		C255C43A1BD664FB00CAEE9C /* Documents.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C255C4381BD664FB00CAEE9C /* Documents.storyboard */; settings = {ASSET_TAGS = (); }; };
-		C255C43C1BD6651100CAEE9C /* Tempo.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C255C43B1BD6651100CAEE9C /* Tempo.storyboard */; settings = {ASSET_TAGS = (); }; };
+		C255C4321BD664B000CAEE9C /* Mixer.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C255C4311BD664B000CAEE9C /* Mixer.storyboard */; };
+		C255C4351BD664CD00CAEE9C /* Instrument.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C255C4331BD664CD00CAEE9C /* Instrument.storyboard */; };
+		C255C4371BD664E400CAEE9C /* NoteAttributes.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C255C4361BD664E400CAEE9C /* NoteAttributes.storyboard */; };
+		C255C43A1BD664FB00CAEE9C /* Documents.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C255C4381BD664FB00CAEE9C /* Documents.storyboard */; };
+		C255C43C1BD6651100CAEE9C /* Tempo.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C255C43B1BD6651100CAEE9C /* Tempo.storyboard */; };
 		C2569E401B90005400EEB441 /* TempoTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2569E3F1B90005400EEB441 /* TempoTrack.swift */; };
 		C25EBC831B8BFAFA00E57665 /* MIDIFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25EBC821B8BFAFA00E57665 /* MIDIFile.swift */; };
-		C269D1D71BD7FA190084A7EE /* LogManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C269D1D61BD7FA190084A7EE /* LogManager.swift */; settings = {ASSET_TAGS = (); }; };
+		C269D1D71BD7FA190084A7EE /* LogManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C269D1D61BD7FA190084A7EE /* LogManager.swift */; };
 		C26A09761BC96B97002EFEE1 /* MixerLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A09751BC96B97002EFEE1 /* MixerLayout.swift */; };
 		C26A27EF1B948E4F00BD1698 /* DocumentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A27EE1B948E4E00BD1698 /* DocumentsViewController.swift */; };
 		C26EEB2E1B7FDA8F00EC6979 /* MixerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26EEB2D1B7FDA8F00EC6979 /* MixerViewController.swift */; };
@@ -188,8 +188,6 @@
 		C2404BCD1B78EDEB00A68A64 /* Eveleth.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Eveleth.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2404BD11B78EE3800A68A64 /* Chameleon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Chameleon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2404BD41B78EEC500A68A64 /* MoonKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MoonKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C245456D1B9B560700FF00E7 /* LabeledStepper.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LabeledStepper.xib; sourceTree = "<group>"; };
-		C245456F1B9B589E00FF00E7 /* InlinePickerView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InlinePickerView.xib; sourceTree = "<group>"; };
 		C255C4311BD664B000CAEE9C /* Mixer.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Mixer.storyboard; sourceTree = "<group>"; };
 		C255C4341BD664CD00CAEE9C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Instrument.storyboard; sourceTree = "<group>"; };
 		C255C4361BD664E400CAEE9C /* NoteAttributes.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = NoteAttributes.storyboard; sourceTree = "<group>"; };
@@ -235,7 +233,6 @@
 		C2995C471BB8ABC70003AAB2 /* Placement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Placement.swift; sourceTree = "<group>"; };
 		C2AA2BC71B84B04200A0B08D /* InstrumentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstrumentViewController.swift; sourceTree = "<group>"; };
 		C2AA2BCA1B84FB2100A0B08D /* Sequencer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sequencer.swift; sourceTree = "<group>"; };
-		C2AA9EF11B7BB92F0025BE4D /* MIDIPlayerField.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = MIDIPlayerField.fsh; sourceTree = "<group>"; };
 		C2AC3A961BA9D4CD00692EBB /* TempoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TempoViewController.swift; sourceTree = "<group>"; };
 		C2AD8E881B7D99C60003579E /* PerpetualGroove.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PerpetualGroove.entitlements; sourceTree = "<group>"; };
 		C2AF09D41BB9DB410021A37E /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -370,10 +367,7 @@
 				C255C4311BD664B000CAEE9C /* Mixer.storyboard */,
 				C2E0433F1B72F4DC005F0675 /* Assets.xcassets */,
 				C2E043411B72F4DC005F0675 /* LaunchScreen.storyboard */,
-				C2AA9EF11B7BB92F0025BE4D /* MIDIPlayerField.fsh */,
 				C272B2A11B7D714B00134E5F /* PureOscillators.programlist */,
-				C245456D1B9B560700FF00E7 /* LabeledStepper.xib */,
-				C245456F1B9B589E00FF00E7 /* InlinePickerView.xib */,
 				C283B69B1BC02E3B007A4A36 /* Settings.bundle */,
 			);
 			name = Resources;

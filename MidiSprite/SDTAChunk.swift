@@ -42,7 +42,7 @@ struct SDTAChunk {
       try url.getResourceValue(&date, forKey: NSURLContentModificationDateKey)
       lastModified = date as? NSDate
     } catch {
-      logError(error)
+      SDTAChunk.logError(error)
     }
 
     let byteCount = bytes.count

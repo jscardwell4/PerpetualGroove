@@ -33,7 +33,6 @@ final class AudioManager {
   - parameter instrument: Instrument
   */
   static func attachNode(node: AVAudioNode, forInstrument instrument: Instrument) {
-    logVerbose()
     guard instruments ∌ instrument && node.engine == nil else { return }
     engine.attachNode(node)
     engine.connect(node, to: engine.mainMixerNode, format: node.outputFormatForBus(0))
@@ -53,7 +52,7 @@ final class AudioManager {
       engine.connect(node, to: engine.mainMixerNode, format: node.outputFormatForBus(0))
       metronome = try Metronome.init(node: node)
       initialized = true
-      logVerbose("AudioManager initialized")
+      logDebug("AudioManager initialized")
       try start()
     } catch {
       logError(error)
@@ -71,16 +70,16 @@ final class AudioManager {
 
 
   /** start */
-  static func start() throws { logVerbose(); try engine.start() }
+  static func start() throws { logDebug("starting audio…"); try engine.start() }
 
   /** stop */
-  static func stop() throws { logVerbose(); engine.stop() }
+  static func stop() throws { logDebug("stopping audio…"); engine.stop() }
 
   static var running: Bool { return engine.running }
 
   /** reset */
-  static func reset() { logVerbose(); engine.reset() }
+  static func reset() { logDebug("resetting audio…"); engine.reset() }
 
   /** pause */
-  static func pause() { logVerbose(); engine.pause() }
+  static func pause() { logDebug("pausing audio…"); engine.pause() }
 }

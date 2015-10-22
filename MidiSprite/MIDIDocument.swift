@@ -71,7 +71,10 @@ final class MIDIDocument: UIDocument {
   */
   override func loadFromContents(contents: AnyObject, ofType typeName: String?) throws {
     guard let data = contents as? NSData else { throw Error.InvalidContentType }
-    sequence.file = try MIDIFile(data: data)
+    let file = try MIDIFile(data: data)
+    logDebug("parsed data into midi file: \(file)")
+    sequence.file = file
+    logDebug("file loaded into sequence: \(sequence)")
   }
 
   /**
@@ -103,6 +106,7 @@ final class MIDIDocument: UIDocument {
   */
   func renameTo(name: String) {
     let (baseName, _) = name.baseNameExt
+    logDebug("renaming document '\(localizedName)' ⟹ '\(baseName)'")
     guard let url = fileURL.URLByDeletingLastPathComponent else { return }
     saveToURL(url + "\(baseName).midi", forSaveOperation: .ForCreating, completionHandler: nil)
 

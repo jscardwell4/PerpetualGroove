@@ -38,9 +38,7 @@ final class MIDIDocumentManager {
 
   static private(set) var currentDocument: MIDIDocument? {
     didSet {
-      logDebug("currentDocument: " + (currentDocument == nil
-                                        ? "nil"
-                                        : String.fromCString(currentDocument!.fileURL.fileSystemRepresentation)!))
+      logDebug("currentDocument: \(currentDocument == nil ? "nil" : currentDocument!.localizedName)")
 
       guard oldValue != currentDocument else { return }
 
@@ -81,7 +79,7 @@ final class MIDIDocumentManager {
     metadataQuery.disableUpdates()
     let results = metadataQuery.results as! [NSMetadataItem]
     metadataQuery.enableUpdates()
-    logVerbose("metadataItems: \(results)")
+    logDebug("metadataItems: \(results)")
     return results
   }
 
@@ -115,7 +113,12 @@ final class MIDIDocumentManager {
     let changed = notification.userInfo?[NSMetadataQueryUpdateChangedItemsKey] as? [NSMetadataItem] ?? []
     let removed = notification.userInfo?[NSMetadataQueryUpdateRemovedItemsKey] as? [NSMetadataItem] ?? []
     let added   = notification.userInfo?[NSMetadataQueryUpdateAddedItemsKey]   as? [NSMetadataItem] ?? []
-    logVerbose("changed: \(changed)\nremoved: \(removed)\nadded: \(added)")
+    logDebug("\n".join(
+      "number of documents changed: \(changed.count)",
+      "number of documents removed: \(removed.count)",
+      "number of documents added: \(added.count)"
+      )
+    )
     Notification.DidUpdateMetadataItems.post(userInfo: [Notification.Key.Changed: changed,
                                                         Notification.Key.Removed: removed,
                                                         Notification.Key.Added: added])
@@ -142,6 +145,7 @@ final class MIDIDocumentManager {
     queue.addOperationWithBlock {
       guard let fileName = noncollidingFileName(DefaultDocumentName) else { return }
       let fileURL = url + ["\(fileName).midi"]
+      logDebug("creating a new document at path '\(fileURL.path!)'")
       let document = MIDIDocument(fileURL: fileURL)
       document.saveToURL(fileURL, forSaveOperation: .ForCreating, completionHandler: {
         guard $0 else { return }; MIDIDocumentManager.openDocument(document)
@@ -195,7 +199,7 @@ final class MIDIDocumentManager {
   - parameter document: MIDIDocument
   */
   static func openDocument(document: MIDIDocument) {
-    logVerbose("document = \(document)")
+    logDebug("opening document '\(document.localizedName)'")
     openingDocument = true
     document.openWithCompletionHandler {
       guard $0 else { logError("failed to open document: \(document)"); return }
@@ -210,7 +214,6 @@ final class MIDIDocumentManager {
   - parameter url: NSURL
   */
   static func openURL(url: NSURL) {
-    logVerbose("url = \(url)")
     openDocument(MIDIDocument(fileURL: url))
   }
 
@@ -230,10 +233,8 @@ final class MIDIDocumentManager {
     backgroundDispatch {
       [url = item.URL] in
 
-      NSFileCoordinator(filePresenter: nil).coordinateWritingItemAtURL(url,
-                                                               options: .ForDeleting,
-                                                                 error: nil)
-        {
+      logDebug("removing item '\(url.path!)'")
+      NSFileCoordinator(filePresenter: nil).coordinateWritingItemAtURL(url, options: .ForDeleting, error: nil) {
           do { try NSFileManager().removeItemAtURL($0) }
           catch { logError(error) }
         }
@@ -280,7 +281,7 @@ final class MIDIDocumentManager {
       }
     }
     initialized = true
-    logVerbose("MIDIDocumentManager initialized")
+    logDebug("MIDIDocumentManager initialized")
   }
   
 }

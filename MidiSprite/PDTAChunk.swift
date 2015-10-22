@@ -51,7 +51,7 @@ struct PDTAChunk {
       try url.getResourceValue(&date, forKey: NSURLContentModificationDateKey)
       lastModified = date as? NSDate
     } catch {
-      logError(error)
+      PDTAChunk.logError(error)
     }
 
     let byteCount = bytes.count
