@@ -33,9 +33,14 @@ public struct ColorLog {
     return "\(ESCAPE)fg\(r),\(g),\(b);\(object)\(RESET)"
   }
 
+  private static var enabled = NSProcessInfo.processInfo().environment["XCODE_COLORS"] == "YES"
   public static var colorEnabled: Bool {
-    get { let result = UnsafePointer<Int8>(); getenv(result); return String.fromCString(result) == "YES" }
-    set { (newValue ? "YES" : "NO").withCString {  setenv("XCODE_COLORS", $0, 0) } }
+    get { return enabled }
+    set {
+      guard newValue != enabled else { return }
+      enabled = newValue
+      (newValue ? "YES" : "NO").withCString { setenv("XCODE_COLORS", $0, 0) }
+    }
   }
 }
 

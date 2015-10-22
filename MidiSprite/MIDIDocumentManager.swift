@@ -92,7 +92,6 @@ final class MIDIDocumentManager {
   - parameter notification: NSNotification
   */
   private static func didFinishGathering(notification: NSNotification) {
-    logVerbose()
     Notification.DidUpdateMetadataItems.post()
   }
 

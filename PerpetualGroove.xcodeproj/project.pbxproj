@@ -26,6 +26,7 @@
 		C255C43C1BD6651100CAEE9C /* Tempo.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C255C43B1BD6651100CAEE9C /* Tempo.storyboard */; settings = {ASSET_TAGS = (); }; };
 		C2569E401B90005400EEB441 /* TempoTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2569E3F1B90005400EEB441 /* TempoTrack.swift */; };
 		C25EBC831B8BFAFA00E57665 /* MIDIFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25EBC821B8BFAFA00E57665 /* MIDIFile.swift */; };
+		C269D1D71BD7FA190084A7EE /* LogManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C269D1D61BD7FA190084A7EE /* LogManager.swift */; settings = {ASSET_TAGS = (); }; };
 		C26A09761BC96B97002EFEE1 /* MixerLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A09751BC96B97002EFEE1 /* MixerLayout.swift */; };
 		C26A27EF1B948E4F00BD1698 /* DocumentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A27EE1B948E4E00BD1698 /* DocumentsViewController.swift */; };
 		C26EEB2E1B7FDA8F00EC6979 /* MixerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26EEB2D1B7FDA8F00EC6979 /* MixerViewController.swift */; };
@@ -196,6 +197,7 @@
 		C255C43B1BD6651100CAEE9C /* Tempo.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Tempo.storyboard; sourceTree = "<group>"; };
 		C2569E3F1B90005400EEB441 /* TempoTrack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TempoTrack.swift; sourceTree = "<group>"; };
 		C25EBC821B8BFAFA00E57665 /* MIDIFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIFile.swift; sourceTree = "<group>"; };
+		C269D1D61BD7FA190084A7EE /* LogManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogManager.swift; sourceTree = "<group>"; };
 		C26A09751BC96B97002EFEE1 /* MixerLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MixerLayout.swift; sourceTree = "<group>"; };
 		C26A27EE1B948E4E00BD1698 /* DocumentsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentsViewController.swift; sourceTree = "<group>"; };
 		C26EEB2D1B7FDA8F00EC6979 /* MixerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MixerViewController.swift; sourceTree = "<group>"; };
@@ -347,6 +349,7 @@
 				C2F2ADC31B91098A00FF4836 /* NoteAttributes.swift */,
 				C2CD18E01B7E681A00705922 /* Error.swift */,
 				C22FA58C1BC830D600162DB4 /* SettingsManager.swift */,
+				C269D1D61BD7FA190084A7EE /* LogManager.swift */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -748,6 +751,7 @@
 				C2E542391BD56E00005B452F /* SoundSetType.swift in Sources */,
 				C2F589F91BAC688F009166D5 /* BarBeatTimeLabel.swift in Sources */,
 				C2AA2BCB1B84FB2100A0B08D /* Sequencer.swift in Sources */,
+				C269D1D71BD7FA190084A7EE /* LogManager.swift in Sources */,
 				C2ECC5E31B9C7FFA0010E76E /* MIDINodeEvent.swift in Sources */,
 				C291C3EB1B91EDA700702AEA /* MIDIFileTrackChunk.swift in Sources */,
 				C22D93F11BADA24A00B04A2B /* MIDINodeHistory.swift in Sources */,

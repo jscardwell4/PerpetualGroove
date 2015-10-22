@@ -11,27 +11,32 @@ import Lumberjack
 
 public class LogFormatter: NSObject, DDLogFormatter {
 
-  public var context: LogManager.LogContext = 0
+  public typealias LogContext = LogManager.LogContext
+  public typealias LogLevel = LogManager.LogLevel
+  public typealias LogFlag = LogManager.LogFlag
+
+  public var context: LogContext = .Default
   public var prompt: String = ""
 
   public var options: Options = []
 
-  public struct Options: OptionSetType {
+  public struct Options: OptionSetType, CustomStringConvertible {
     public let rawValue: Int
     public init(rawValue: Int) { self.rawValue = rawValue }
-    public static let IncludeLogLevel         = Options(rawValue: 0b0000_0000_0001)
-    public static let IncludeContext          = Options(rawValue: 0b0000_0000_0010)
-    public static let IncludeTimeStamp        = Options(rawValue: 0b0000_0000_0100)
-    public static let AddReturnAfterPrefix    = Options(rawValue: 0b0000_0000_1000)
-    public static let AddReturnAfterObject    = Options(rawValue: 0b0000_0001_0000)
-    public static let AddReturnAfterMessage   = Options(rawValue: 0b0000_0010_0000)
-    public static let CollapseTrailingReturns = Options(rawValue: 0b0000_0100_0000)
-    public static let IndentMessageBody       = Options(rawValue: 0b0000_1000_0000)
-    public static let IncludeSEL              = Options(rawValue: 0b0000_0010_0000)
-    public static let UseFileInsteadOfSEL     = Options(rawValue: 0b0000_0100_0000)
-    public static let IncludeObjectName       = Options(rawValue: 0b0000_1000_0000)
-    public static let IncludePrompt           = Options(rawValue: 0b0000_1000_0000)
-    public static let AddReturnAfterSEL       = Options(rawValue: 0b0001_1000_0000)
+    public static let IncludeLogLevel         = Options(rawValue: 0b0000_0000_0000_0001)
+    public static let IncludeContext          = Options(rawValue: 0b0000_0000_0000_0010)
+    public static let IncludeTimeStamp        = Options(rawValue: 0b0000_0000_0000_0100)
+    public static let AddReturnAfterPrefix    = Options(rawValue: 0b0000_0000_0000_1000)
+    public static let AddReturnAfterObject    = Options(rawValue: 0b0000_0000_0001_0000)
+    public static let AddReturnAfterMessage   = Options(rawValue: 0b0000_0000_0010_0000)
+    public static let AddReturnAfterSEL       = Options(rawValue: 0b0000_0000_0100_0000)
+    public static let CollapseTrailingReturns = Options(rawValue: 0b0000_0000_1000_0000)
+    public static let IndentMessageBody       = Options(rawValue: 0b0000_0001_0000_0000)
+    public static let IncludeSEL              = Options(rawValue: 0b0000_0010_0000_0000)
+    public static let UseFileInsteadOfSEL     = Options(rawValue: 0b0000_0100_0000_0000)
+    public static let IncludeObjectName       = Options(rawValue: 0b0000_1000_0000_0000)
+    public static let IncludePrompt           = Options(rawValue: 0b0001_0000_0000_0000)
+    public static let EnableColor             = Options(rawValue: 0b0010_0000_0000_0000)
 
     public static let taggingOptions: Options = [
       .IncludeContext, 
@@ -40,6 +45,28 @@ public class LogFormatter: NSObject, DDLogFormatter {
       .AddReturnAfterSEL, 
       .AddReturnAfterMessage
     ]
+
+    public var description: String {
+      var result = "LogFormatter.Options { "
+      var flagStrings: [String] = []
+      if self ∋ .IncludeLogLevel         { flagStrings.append("IncludeLogLevel")         }
+      if self ∋ .IncludeContext          { flagStrings.append("IncludeContext")          }
+      if self ∋ .IncludeTimeStamp        { flagStrings.append("IncludeTimeStamp")        }
+      if self ∋ .AddReturnAfterPrefix    { flagStrings.append("AddReturnAfterPrefix")    }
+      if self ∋ .AddReturnAfterObject    { flagStrings.append("AddReturnAfterObject")    }
+      if self ∋ .AddReturnAfterMessage   { flagStrings.append("AddReturnAfterMessage")   }
+      if self ∋ .AddReturnAfterSEL       { flagStrings.append("AddReturnAfterSEL")       }
+      if self ∋ .CollapseTrailingReturns { flagStrings.append("CollapseTrailingReturns") }
+      if self ∋ .IndentMessageBody       { flagStrings.append("IndentMessageBody")       }
+      if self ∋ .IncludeSEL              { flagStrings.append("IncludeSEL")              }
+      if self ∋ .UseFileInsteadOfSEL     { flagStrings.append("UseFileInsteadOfSEL")     }
+      if self ∋ .IncludeObjectName       { flagStrings.append("IncludeObjectName")       }
+      if self ∋ .IncludePrompt           { flagStrings.append("IncludePrompt")           }
+      if self ∋ .EnableColor             { flagStrings.append("EnableColor")             }
+      result += ", ".join(flagStrings)
+      result += " }"
+      return result
+    }
   }
   
   /**
@@ -48,7 +75,7 @@ public class LogFormatter: NSObject, DDLogFormatter {
   - parameter context: LogManager.LogContext = 0
   - parameter options: Options = []
   */
-  public init(context: LogManager.LogContext = 0, options: Options = [], tagging: Bool = false) {
+  public init(context: LogContext = .Default, options: Options = [], tagging: Bool = false) {
     super.init()
     self.context = context
     self.options = tagging ? Options.taggingOptions ∪ options : options
@@ -62,9 +89,9 @@ public class LogFormatter: NSObject, DDLogFormatter {
   - returns: String?
   */
   @objc public func formatLogMessage(logMessage: DDLogMessage) -> String? {
-    guard context >= 0 && logMessage.context == Int(context)
-       || (logMessage.context & Int(context) == Int(context))
-       || (Int(context) & logMessage.context == Int(context)) else { return nil }
+    guard context != .Ignored && (context == .Default || LogContext(rawValue: logMessage.context) ∋ context) else {
+      return nil
+    }
     return formattedLogMessageForMessage(logMessage)
   }
 
@@ -78,8 +105,9 @@ public class LogFormatter: NSObject, DDLogFormatter {
   - returns: String
   */
   public func formattedLogMessageForMessage(logMessage: DDLogMessage) -> String {
-
     var result = ""
+
+    let useColor = ColorLog.colorEnabled && options ∋ .EnableColor
 
     if options ∋ .IncludePrompt { result += prompt }
 
@@ -99,13 +127,13 @@ public class LogFormatter: NSObject, DDLogFormatter {
     if options ∋ .IncludeContext, let contextName = contextName { result += "(\(contextName))" }
 
     if options ∋ .IncludeLogLevel {
-      switch logMessage.flag.rawValue {
-        case LogManager.LogLevel.Error.rawValue:   result += "[E"
-        case LogManager.LogLevel.Warn.rawValue:    result += "[W"
-        case LogManager.LogLevel.Info.rawValue:    result += "[I"
-        case LogManager.LogLevel.Debug.rawValue:   result += "[D"
-        case LogManager.LogLevel.Verbose.rawValue: result += "[V"
-        default:                                   result += "[?"
+      switch logMessage.flag {
+        case LogFlag.Error:   result += "[E"
+        case LogFlag.Warning: result += "[W"
+        case LogFlag.Info:    result += "[I"
+        case LogFlag.Debug:   result += "[D"
+        case LogFlag.Verbose: result += "[V"
+        default:              result += "[?"
       } 
     }
 
@@ -113,7 +141,7 @@ public class LogFormatter: NSObject, DDLogFormatter {
       let dateFormatter = NSDateFormatter()
       dateFormatter.dateFormat = "M/d/yy H:mm:ss.SSS"
       let stamp = dateFormatter.stringFromDate(logMessage.timestamp)
-      result += (ColorLog.colorEnabled ? ColorLog.wrapColor(stamp, 125, 125, 125) : stamp)
+      result += (useColor ? ColorLog.wrapColor(stamp, 125, 125, 125) : stamp)
     }
 
     if options ∋ .IncludeLogLevel { result += "]" }
@@ -121,9 +149,8 @@ public class LogFormatter: NSObject, DDLogFormatter {
     if options ∋ .AddReturnAfterPrefix && !result.isEmpty { result += "\n" } else { result += " " }
  
     if options ∋ .IncludeSEL {
-      if let lastCharacter = result.characters.last where NSCharacterSet.whitespaceAndNewlineCharacterSet() ∌ lastCharacter {
-        result += " "
-      }
+      if let lastCharacter = result.characters.last
+        where NSCharacterSet.whitespaceAndNewlineCharacterSet() ∌ lastCharacter { result += " " }
 
       let selString: String
       if options ∋ .UseFileInsteadOfSEL {
@@ -135,7 +162,7 @@ public class LogFormatter: NSObject, DDLogFormatter {
       } else {
         selString = "[\(logMessage.function)]"
       }
-      result += (ColorLog.colorEnabled ? ColorLog.wrapColor(selString, 171, 101, 38) : selString)
+      result += (useColor ? ColorLog.wrapColor(selString, 171, 101, 38) : selString)
       if options ∋ .AddReturnAfterSEL { result += "\n" } else { result += " "}
     }
 

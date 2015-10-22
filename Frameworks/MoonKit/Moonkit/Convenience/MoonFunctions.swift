@@ -25,7 +25,7 @@ public func libraryURLToFile(file: String) -> NSURL {
   return libraryURL.URLByAppendingPathComponent(file, isDirectory: false)
 }
 
-public var cacheURL: NSURL { return libraryURLToFile("Caches/\(NSBundle.mainBundle().bundleIdentifier)") }
+public var cacheURL: NSURL { return libraryURLToFile("Caches/\(NSBundle.mainBundle().bundleIdentifier!)") }
 
 /**
 cacheURLToFile:

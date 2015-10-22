@@ -7,20 +7,9 @@
 //
 
 import Foundation
-import Lumberjack
 
-public class FileLogger: DDFileLogger {
+public class FileLogger {
 
-  public var reopenLastFile = true
-
-  /**
-  rollLogFileWithCompletionBlock:
-
-  - parameter completionBlock: (() -> Void
-  */
-  public override func rollLogFileWithCompletionBlock(completionBlock: (() -> Void)!) {
-    if reopenLastFile { reopenLastFile = false }
-    else { super.rollLogFileWithCompletionBlock(completionBlock) }
-  }
+  
 
 }

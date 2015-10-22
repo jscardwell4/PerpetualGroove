@@ -1,5 +1,5 @@
 //
-//  Logging.swift
+//  LoggingFunctions.swift
 //  MSKit
 //
 //  Created by Jason Cardwell on 9/18/14.
@@ -8,211 +8,6 @@
 
 import Foundation
 import Lumberjack
-
-public class LogManager {
-
-  public struct LogFlag: OptionSetType {
-    public private(set) var rawValue: UInt
-    public init(rawValue: UInt) { self.rawValue = rawValue }
-    public init(nilLiteral: ()) { rawValue = 0 }
-    public static var allZeros: LogFlag { return LogFlag.None }
-    public static var None:     LogFlag = LogFlag(rawValue: 0b00000)
-    public static var Error:    LogFlag = LogFlag(rawValue: 0b00001)
-    public static var Warn:     LogFlag = LogFlag(rawValue: 0b00010)
-    public static var Info:     LogFlag = LogFlag(rawValue: 0b00100)
-    public static var Debug:    LogFlag = LogFlag(rawValue: 0b01000)
-    public static var Verbose:  LogFlag = LogFlag(rawValue: 0b10000)
-  }
-
-  public struct LogLevel: OptionSetType {
-    public private(set) var rawValue: UInt
-    public init(rawValue: UInt) { self.rawValue = rawValue }
-    public init(flags: LogFlag) { rawValue = flags.rawValue }
-    public init(nilLiteral: ()) { rawValue = 0 }
-    public static var allZeros: LogLevel { return LogLevel.Off }
-    public static var Off:      LogLevel = LogLevel(flags: LogFlag.None)
-    public static var Error:    LogLevel = LogLevel(flags: LogFlag.Error)
-    public static var Warn:     LogLevel = LogLevel.Error.union(LogLevel(flags: LogFlag.Warn))
-    public static var Info:     LogLevel = LogLevel.Warn.union(LogLevel(flags: LogFlag.Info))
-    public static var Debug:    LogLevel = LogLevel.Info.union(LogLevel(flags: LogFlag.Debug))
-    public static var Verbose:  LogLevel = LogLevel.Debug.union(LogLevel(flags: LogFlag.Verbose))
-    public static var All:      LogLevel = [.Error, .Warn, .Info, .Debug, .Verbose]
-  }
-
-  public typealias LogContext = UInt
-
-  public static var defaultLogDirectory: NSURL {
-    return cacheURL.URLByAppendingPathComponent("Logs", isDirectory: true)
-  }
-
-  public static var logLevel: LogLevel = .Debug
-
-  static var logLevelsByFile: [String:LogLevel] = [:]
-  static var logLevelsByType: [ObjectIdentifier:LogLevel] = [:]
-
-  /**
-  logLevelForFile:
-
-  - parameter file: String
-
-  - returns: LogLevel
-  */
-  public class func logLevelForFile(file: String) -> LogLevel {
-    return logLevelsByFile[file] ?? logLevel
-  }
-
-  /**
-  setLogLevel:forFile:
-
-  - parameter level: LogManager.LogLevel
-  - parameter file: String = __FILE__
-  */
-  public class func setLogLevel(level: LogManager.LogLevel, forFile file: String = __FILE__) {
-    logLevelsByFile[file] = level
-  }
-
-  /**
-  logLevelForType:
-
-  - parameter type: Any.Type
-
-  - returns: LogLevel
-  */
-  public class func logLevelForType(type: Any.Type) -> LogLevel {
-    return logLevelsByType[ObjectIdentifier(type.dynamicType.self)] ?? logLevel
-  }
-
-  /**
-  setLogLevel:forType:
-
-  - parameter level: LogLevel
-  - parameter type: Any.Type
-  */
-  public class func setLogLevel(level: LogLevel, forType type: Any.Type) {
-    logLevelsByType[ObjectIdentifier(type.dynamicType.self)] = level
-  }
-
-  /**
-  setDefaultLogLevel:
-
-  - parameter level: LogManager.LogLevel
-  */
-  public class func setDefaultLogLevel(level: LogManager.LogLevel) {
-    logLevel = level
-  }
-
-  /** addConsoleLoggers */
-  public static func addConsoleLoggers() {
-    ColorLog.colorEnabled = true
-    addTTYLogger()
-    addASLLogger()
-  }
-
-  /** addTTYLogger */
-  public class func addTTYLogger() {
-    let formatter = LogFormatter(context: UInt(LOG_CONTEXT_TTY), options: [.UseFileInsteadOfSEL])
-    formatter.prompt = ">"
-    let tty = DDTTYLogger.sharedInstance()
-    tty.logFormatter = formatter
-    tty.colorsEnabled = true
-    DDLog.addLogger(tty)
-  }
-
-  /** addASLLogger */
-  public class func addASLLogger() {
-    let formatter = LogFormatter(context: UInt(LOG_CONTEXT_ASL), options: [.UseFileInsteadOfSEL])
-    formatter.prompt = ">"
-    let asl = DDASLLogger.sharedInstance()
-    asl.logFormatter = formatter
-    DDLog.addLogger(asl)
-  }
-
-  /** addTaggingTTYLogger */
-  public class func addTaggingTTYLogger() {
-    let formatter = LogFormatter(context: UInt(LOG_CONTEXT_TTY), options: [.UseFileInsteadOfSEL], tagging: true)
-    let tty = DDTTYLogger.sharedInstance()
-    tty.logFormatter = formatter
-    tty.colorsEnabled = true
-    DDLog.addLogger(tty)
-  }
-
-  /** addTaggingASLLogger */
-  public class func addTaggingASLLogger() {
-    let formatter = LogFormatter(context: UInt(LOG_CONTEXT_ASL), options: [.UseFileInsteadOfSEL], tagging: true)
-    let asl = DDASLLogger.sharedInstance()
-    asl.logFormatter = formatter
-    DDLog.addLogger(asl)
-  }
-
-  /**
-  logMessage:flag:function:line:file:className:context:
-
-  - parameter message: String
-  - parameter flag: LogManager.LogFlag
-  - parameter function: String = __FUNCTION__
-  - parameter line: UInt = __LINE__
-  - parameter file: String = __FILE__
-  - parameter className: String? = nil
-  - parameter context: Int = Int(LOG_CONTEXT_CONSOLE)
-  */
-  public class func logMessage(message: String,
-                  asynchronous: Bool,
-                          flag: LogManager.LogFlag,
-                      function: String = __FUNCTION__,
-                          line: UInt = __LINE__,
-                          file: String = __FILE__,
-                       context: Int = 0b110)
-  {
-
-    SwiftLogMacro(
-      asynchronous,
-      level: DDLogLevel(rawValue: LogManager.logLevelForFile(file).rawValue)!,
-      flag: DDLogFlag(rawValue: flag.rawValue),
-      context: Int(context),
-      file: file,
-      function: function,
-      line: line,
-      tag: nil,
-      string: message
-    )
-
-    #if TARGET_INTERFACE_BUILDER
-      logIB(message, function: function, line: line, file: file, flag: flag)
-    #endif
-
-  }
-
-  /**
-  defaultFileLoggerForContext:directory:
-
-  - parameter context: LogContext
-  - parameter directory: String
-
-  - returns: DDFileLogger
-  */
-  public class func defaultFileLoggerForContext(context: LogContext, directory: String) -> DDFileLogger {
-    let fileManager = LogFileManager(logsDirectory: directory)
-    fileManager.maximumNumberOfLogFiles = 5
-    let fileLogger = FileLogger(logFileManager: fileManager)
-    fileLogger.rollingFrequency = 60 * 60 * 24
-    fileLogger.maximumFileSize = 0
-    fileLogger.logFormatter = LogFormatter(context: UInt(context), options: [.UseFileInsteadOfSEL], tagging: true)
-    return fileLogger
-  }
-
-  /**
-  addDefaultFileLoggerForContext:directory:
-
-  - parameter context: LogContext
-  - parameter directory: String
-  */
-  public class func addDefaultFileLoggerForContext(context: LogContext, directory: String) {
-    DDLog.addLogger(defaultFileLoggerForContext(context, directory: directory))
-  }
-
-}
-
-
 
 /**
 logDebug:asynchronous:function:line:file:
@@ -223,7 +18,12 @@ logDebug:asynchronous:function:line:file:
 - parameter line: UInt = __LINE__
 - parameter file: String = __FILE__
 */
-public func logDebug(message: String, asynchronous: Bool = true, function: String = __FUNCTION__, line: UInt = __LINE__, file: String = __FILE__) {
+public func logDebug(message: String,
+        asynchronous: Bool = true,
+            function: String = __FUNCTION__,
+                line: UInt = __LINE__,
+                file: String = __FILE__)
+{
   LogManager.logMessage(message, asynchronous: asynchronous, flag: .Debug, function: function, file: file, line: line)
 }
 
@@ -259,7 +59,13 @@ public func logDebug(items: Any...,
                      line: UInt = __LINE__,
                      file: String = __FILE__)
 {
-  logDebug(String(items: items, separator: separator, terminator: terminator), asynchronous: asynchronous, function: function, line: line, file: file)
+  logDebug(
+    String(items: items, separator: separator, terminator: terminator),
+    asynchronous: asynchronous,
+    function: function,
+    line: line,
+    file: file
+  )
 }
 
 /**
@@ -271,7 +77,12 @@ logError:asynchronous:function:line:file:
 - parameter line: UInt = __LINE__
 - parameter file: String = __FILE__
 */
-public func logError(message: String, asynchronous: Bool = true, function: String = __FUNCTION__, line: UInt = __LINE__, file: String = __FILE__) {
+public func logError(message: String,
+        asynchronous: Bool = true,
+            function: String = __FUNCTION__,
+                line: UInt = __LINE__,
+                file: String = __FILE__)
+{
   LogManager.logMessage(message, asynchronous: asynchronous, flag: .Error, function: function, file: file, line: line)
 }
 
@@ -295,7 +106,13 @@ public func logError(items items: Any...,
                      line: UInt = __LINE__,
                      file: String = __FILE__)
 {
-  logError(String(items: items, separator: separator, terminator: terminator), asynchronous: asynchronous, function: function, line: line, file: file)
+  logError(
+    String(items: items, separator: separator, terminator: terminator),
+    asynchronous: asynchronous,
+    function: function,
+    line: line,
+    file: file
+  )
 }
 
 /**
@@ -307,7 +124,12 @@ logInfo:asynchronous:function:line:file:
 - parameter line: UInt = __LINE__
 - parameter file: String = __FILE__
 */
-public func logInfo(message: String, asynchronous: Bool = true, function: String = __FUNCTION__, line: UInt = __LINE__, file: String = __FILE__) {
+public func logInfo(message: String,
+       asynchronous: Bool = true,
+           function: String = __FUNCTION__,
+               line: UInt = __LINE__,
+               file: String = __FILE__)
+{
   LogManager.logMessage(message, asynchronous: asynchronous, flag: .Info, function: function, file: file, line: line)
 }
 
@@ -324,14 +146,20 @@ logInfo:separator:terminator:asynchronous:function:line:file:
 - parameter file: String = __FILE__
 */
 public func logInfo(items: Any...,
-                    separator: String = " ",
-                    terminator: String = "\n",
-                    asynchronous: Bool = true,
-                    function: String = __FUNCTION__,
-                    line: UInt = __LINE__,
-                    file: String = __FILE__)
+          separator: String = " ",
+         terminator: String = "\n",
+       asynchronous: Bool = true,
+           function: String = __FUNCTION__,
+               line: UInt = __LINE__,
+               file: String = __FILE__)
 {
-  logInfo(String(items: items, separator: separator, terminator: terminator), asynchronous: asynchronous, function: function, line: line, file: file)
+  logInfo(
+    String(items: items, separator: separator, terminator: terminator),
+    asynchronous: asynchronous,
+    function: function,
+    line: line,
+    file: file
+  )
 }
 
 /**
@@ -343,8 +171,13 @@ logWarning:asynchronous:function:line:file:
 - parameter line: UInt = __LINE__
 - parameter file: String = __FILE__
 */
-public func logWarning(message: String, asynchronous: Bool = true, function: String = __FUNCTION__, line: UInt = __LINE__, file: String = __FILE__) {
-  LogManager.logMessage(message, asynchronous: asynchronous, flag: .Warn, function: function, file: file, line: line)
+public func logWarning(message: String,
+          asynchronous: Bool = true,
+              function: String = __FUNCTION__,
+                  line: UInt = __LINE__,
+                  file: String = __FILE__)
+{
+  LogManager.logMessage(message, asynchronous: asynchronous, flag: .Warning, function: function, file: file, line: line)
 }
 
 /**
@@ -360,18 +193,20 @@ logWarning:separator:terminator:asynchronous:function:line:file:
 - parameter file: String = __FILE__
 */
 public func logWarning(items: Any...,
-                       separator: String = " ",
-                       terminator: String = "\n",
-                       asynchronous: Bool = true,
-                       function: String = __FUNCTION__,
-                       line: UInt = __LINE__,
-                       file: String = __FILE__)
+             separator: String = " ",
+            terminator: String = "\n",
+          asynchronous: Bool = true,
+              function: String = __FUNCTION__,
+                  line: UInt = __LINE__,
+                  file: String = __FILE__)
 {
-  logWarning(String(items: items, separator: separator, terminator: terminator),
-            asynchronous: asynchronous,
-            function: function,
-            line: line,
-            file: file)
+  logWarning(
+    String(items: items, separator: separator, terminator: terminator),
+    asynchronous: asynchronous,
+    function: function,
+    line: line,
+    file: file
+  )
 }
 
 /**
@@ -383,7 +218,12 @@ logVerbose:asynchronous:function:line:file:
 - parameter line: UInt = __LINE__
 - parameter file: String = __FILE__
 */
-public func logVerbose(message: String, asynchronous: Bool = true, function: String = __FUNCTION__, line: UInt = __LINE__, file: String = __FILE__) {
+public func logVerbose(message: String,
+          asynchronous: Bool = true,
+              function: String = __FUNCTION__,
+                  line: UInt = __LINE__,
+                  file: String = __FILE__)
+{
   LogManager.logMessage(message, asynchronous: asynchronous, flag: .Verbose, function: function, file: file, line: line)
 }
 
@@ -400,14 +240,20 @@ logVerbose:separator:terminator:asynchronous:function:line:file:
 - parameter file: String = __FILE__
 */
 public func logVerbose(items: Any...,
-                       separator: String = " ",
-                       terminator: String = "\n",
-                       asynchronous: Bool = true,
-                       function: String = __FUNCTION__,
-                       line: UInt = __LINE__,
-                       file: String = __FILE__)
+             separator: String = " ",
+            terminator: String = "\n",
+          asynchronous: Bool = true,
+              function: String = __FUNCTION__,
+                  line: UInt = __LINE__,
+                  file: String = __FILE__)
 {
-  logVerbose(String(items: items, separator: separator, terminator: terminator), asynchronous: asynchronous, function: function, line: line, file: file)
+  logVerbose(
+    String(items: items, separator: separator, terminator: terminator),
+    asynchronous: asynchronous,
+    function: function,
+    line: line,
+    file: file
+  )
 }
 
 /**
@@ -418,7 +264,12 @@ logIB:function:line:file:
 - parameter line: UInt = __LINE__
 - parameter file: String = __FILE__
 */
-public func logIB(message: String, function: String = __FUNCTION__, line: UInt = __LINE__, file: String = __FILE__, flag: LogManager.LogFlag = .Debug) {
+public func logIB(message: String,
+         function: String = __FUNCTION__,
+             line: UInt = __LINE__,
+             file: String = __FILE__,
+             flag: LogManager.LogFlag = .Debug)
+{
   #if TARGET_INTERFACE_BUILDER
     guard LogManager.logLevelForFile(file) ∋ LogManager.LogLevel(flags: flag) else { return }
     backgroundDispatch {

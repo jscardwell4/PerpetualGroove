@@ -12,23 +12,24 @@ import Lumberjack
 public class LogFileManager: DDLogFileManagerDefault {
 
   public private(set) var currentLogFile: String?
-  public var customLogsDirectory: String?
+  public var logsDirectoryURL: NSURL
 
   public var fileNamePrefix: String?
 
-  public override func logsDirectory() -> String { return customLogsDirectory ?? super.logsDirectory() }
-
   /**
-  setLogsDirectory:
+  init:
 
-  - parameter directory: String
+  - parameter dir: NSURL
   */
-  public func setLogsDirectory(directory: String) throws {
+  public init(directory dir: NSURL) throws {
+    logsDirectoryURL = dir;
+    super.init(logsDirectory: dir.absoluteURL.path!)
     let manager = NSFileManager.defaultManager()
-    if !manager.fileExistsAtPath(directory) {
-      try manager.createDirectoryAtPath(directory, withIntermediateDirectories: true, attributes: nil)
+    var error: NSError?
+    if !dir.checkResourceIsReachableAndReturnError(&error) {
+      if let error = error { logError(error) }
+      try manager.createDirectoryAtURL(dir, withIntermediateDirectories: false, attributes: nil)
     }
-    customLogsDirectory = directory
   }
 
   /** deleteOldLogFiles */
@@ -74,19 +75,21 @@ public class LogFileManager: DDLogFileManagerDefault {
     let dateFormatter = NSDateFormatter()
     dateFormatter.dateFormat = "M/d/yy H:mm:ss.SSS"
     var fileName = "\(dateFormatter.stringFromDate(NSDate())).log"
-    let directory = logsDirectory()
-    if let prefix = fileNamePrefix { fileName = "\(prefix)-\(fileName)"}
-    else {
-      let lastPathComponent = (directory as NSString).lastPathComponent
-      if lastPathComponent != "Logs" { fileName = "\(lastPathComponent)-\(fileName)" }
+    var url = logsDirectoryURL
+    if let prefix = fileNamePrefix {
+      fileName = "\(prefix)-\(fileName)"
+    } else if let lastPathComponent = url.lastPathComponent where lastPathComponent != "Logs" {
+      fileName = "\(lastPathComponent)-\(fileName)"
     }
-    let filePath = "\(directory)/\(fileName)"
+    url += fileName
     let manager = NSFileManager.defaultManager()
-    if !manager.fileExistsAtPath(filePath) {
-      logVerbose("creating new log file: '\(filePath)'")
-      manager.createFileAtPath(filePath, contents: nil, attributes: nil)
+    var error: NSError?
+    if !url.checkResourceIsReachableAndReturnError(&error) {
+      if let error = error { logError(error) }
+      logVerbose("creating new log file: '\(url.path!)'")
+      manager.createFileAtPath(url.path!, contents: nil, attributes: nil)
       _ = try? deleteOldLogFiles()
-      currentLogFile = filePath
+      currentLogFile = url.path
     }
     return currentLogFile
   }

@@ -22,12 +22,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     Eveleth.registerFonts()
     Triump.registerFonts()
     FestivoLC.registerFonts()
-    LogManager.addConsoleLoggers()
-    let context = UInt(LOG_CONTEXT_FILE)
-    let directory = LogManager.defaultLogDirectory.absoluteString
-    LogManager.addDefaultFileLoggerForContext(context, directory: directory)
-    LogManager.setDefaultLogLevel(.Debug)
-    logDebug("main bundle: '\(NSBundle.mainBundle().bundlePath)'\ndefault log directory: '\(directory)'")
+    LogManager.initialize()
   }
 
   /**
@@ -38,7 +33,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 
   - returns: Bool
   */
-  func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+  func                application(application: UIApplication,
+    didFinishLaunchingWithOptions launchOptions: [NSObject:AnyObject]?) -> Bool
+  {
     SettingsManager.initialize()
     MIDIDocumentManager.initialize()
     AudioManager.initialize()
