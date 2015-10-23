@@ -17,17 +17,17 @@ final class TempoTrack: MIDITrackType {
   let time = Sequencer.time
   var trackEnd: CABarBeatTime { return eventContainer.endOfTrackEvent?.time ?? time.time }
 
-  var eventContainer = MIDITrackEventContainer()
+  var eventContainer = MIDIEventContainer()
 
   var hasTimeSignatureEvent: Bool {
-    let isTimeSignature: (MIDITrackEvent) -> Bool = {
+    let isTimeSignature: (MIDIEvent) -> Bool = {
       if let event = $0 as? MetaEvent, case .TimeSignature = event.data { return true } else { return false }
     }
     return eventContainer.events.filter(isTimeSignature).count != 0
   }
 
   var hasTempoEvent: Bool {
-    let isTempoEvent: (MIDITrackEvent) -> Bool = {
+    let isTempoEvent: (MIDIEvent) -> Bool = {
       if let event = $0 as? MetaEvent, case .Tempo = event.data { return true } else { return false }
     }
     return eventContainer.events.filter(isTempoEvent).count != 0
@@ -84,11 +84,11 @@ final class TempoTrack: MIDITrackType {
   /**
   isTempoTrackEvent:
 
-  - parameter trackEvent: MIDITrackEvent
+  - parameter trackEvent: MIDIEvent
 
   - returns: Bool
   */
-  static func isTempoTrackEvent(trackEvent: MIDITrackEvent) -> Bool {
+  static func isTempoTrackEvent(trackEvent: MIDIEvent) -> Bool {
     guard let metaEvent = trackEvent as? MetaEvent else { return false }
     switch metaEvent.data {
       case .Tempo, .TimeSignature, .EndOfTrack: return true
@@ -97,7 +97,7 @@ final class TempoTrack: MIDITrackType {
     }
   }
 
-  private var eventMap: [CABarBeatTime:[MIDITrackEvent]] = [:]
+  private(set) var eventMap = MIDIEventMap()
 
   /**
   dispatchEventsForTime:
@@ -105,7 +105,7 @@ final class TempoTrack: MIDITrackType {
   - parameter time: CABarBeatTime
   */
   private func dispatchEventsForTime(time: CABarBeatTime) {
-    guard let events = eventMap[time] else { return }
+    guard let events = eventMap.eventsForTime(time) else { return }
     for event in events where event is MetaEvent {
       switch (event as! MetaEvent).data {
         case let .Tempo(microseconds): Sequencer.tempo = Double(60_000_000 / microseconds)
@@ -125,27 +125,27 @@ final class TempoTrack: MIDITrackType {
   */
   init(trackChunk: MIDIFileTrackChunk, sequence s: MIDISequence) {
     sequence = s
-    var events = trackChunk.events.filter { TempoTrack.isTempoTrackEvent($0) }
-    if !hasTimeSignatureEvent { events.insert(TempoTrack.timeSignatureEvent, atIndex: 0) }
-    if !hasTempoEvent { events.insert(TempoTrack.tempoEvent, atIndex: 1) }
+    eventContainer = MIDIEventContainer(events: trackChunk.events.filter(TempoTrack.isTempoTrackEvent))
 
-    for event in events {
-      let eventTime = event.time
-      var eventBag: [MIDITrackEvent] = eventMap[eventTime] ?? []
-      eventBag.append(event)
-      eventMap[eventTime] = eventBag
-      eventContainer.append(event)
-    }
-    logVerbose("eventMap = \(eventMap)")
+    if !hasTimeSignatureEvent { eventContainer.insert(TempoTrack.timeSignatureEvent, atIndex: 0) }
+    if !hasTempoEvent { eventContainer.insert(TempoTrack.tempoEvent, atIndex: 1) }
 
-    for eventTime in eventMap.keys { time.registerCallback(dispatchEventsForTime, forTime: eventTime) }
+    eventMap.insert(eventContainer.events)
+
+    time.registerCallback(dispatchEventsForTime, forTimes: eventMap.times, forObject: self)
   }
 
+}
+
+extension TempoTrack: CustomStringConvertible {
   var description: String {
-    var result = "\(self.dynamicType.self) {\n"
-    result += "  events: {\n" + ",\n".join(eventContainer.events.map({$0.description.indentedBy(8)})) + "\n\t}\n"
-    result += "}"
-    return result
+    return "\n".join(
+      "events:\n\(eventContainer.description.indentedBy(1, useTabs: true))",
+      "map:\n\(eventMap.description.indentedBy(1, useTabs: true))"
+    )
   }
+}
 
+extension TempoTrack: CustomDebugStringConvertible {
+  var debugDescription: String { var result = ""; dump(self, &result); return result }
 }

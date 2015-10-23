@@ -79,7 +79,7 @@ final class MIDIDocumentManager {
     metadataQuery.disableUpdates()
     let results = metadataQuery.results as! [NSMetadataItem]
     metadataQuery.enableUpdates()
-    logDebug("metadataItems: \(results)")
+    logDebug("metadata item count: \(results.count)")
     return results
   }
 
@@ -113,11 +113,15 @@ final class MIDIDocumentManager {
     let changed = notification.userInfo?[NSMetadataQueryUpdateChangedItemsKey] as? [NSMetadataItem] ?? []
     let removed = notification.userInfo?[NSMetadataQueryUpdateRemovedItemsKey] as? [NSMetadataItem] ?? []
     let added   = notification.userInfo?[NSMetadataQueryUpdateAddedItemsKey]   as? [NSMetadataItem] ?? []
-    logDebug("\n".join(
-      "number of documents changed: \(changed.count)",
-      "number of documents removed: \(removed.count)",
-      "number of documents added: \(added.count)"
-      )
+    logDebug({
+      [changedCount = changed.count, removedCount = removed.count, addedCount = added.count] in
+        guard changedCount > 0 || removedCount > 0 || addedCount > 0 else { return "no changes" }
+        var results: [String] = []
+        if changedCount > 0 { results.append("changed: \(changedCount)") }
+        if removedCount > 0 { results.append("removed: \(removedCount)") }
+        if addedCount > 0   { results.append("added: \(addedCount)") }
+        return "  ".join(results)
+      }()
     )
     Notification.DidUpdateMetadataItems.post(userInfo: [Notification.Key.Changed: changed,
                                                         Notification.Key.Removed: removed,
@@ -199,7 +203,7 @@ final class MIDIDocumentManager {
   - parameter document: MIDIDocument
   */
   static func openDocument(document: MIDIDocument) {
-    logDebug("opening document '\(document.localizedName)'")
+    logDebug("opening document '\(document.fileURL.path ?? "???")'")
     openingDocument = true
     document.openWithCompletionHandler {
       guard $0 else { logError("failed to open document: \(document)"); return }

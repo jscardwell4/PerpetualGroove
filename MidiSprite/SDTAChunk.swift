@@ -93,10 +93,9 @@ struct SDTAChunk {
 }
 
 extension SDTAChunk: CustomStringConvertible {
-  var description: String {
-    var result = "SDTAChunk { "
-    if let smpl = smpl { result += "  smpl: \(smpl) (\(smpl.count) bytes)" }
-    result += " }"
-    return result
-  }
+  var description: String { if let smpl = smpl { return "smpl: \(smpl) (\(smpl.count) bytes)" } else { return "" } }
+}
+
+extension SDTAChunk: CustomDebugStringConvertible {
+  var debugDescription: String { var result = ""; dump(self, &result); return result }
 }

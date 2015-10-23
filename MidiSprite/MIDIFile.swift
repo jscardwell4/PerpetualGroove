@@ -12,7 +12,7 @@ import struct AudioToolbox.CABarBeatTime
 
 
 /** Struct that holds the data for a complete MIDI file */
-struct MIDIFile: CustomStringConvertible {
+struct MIDIFile {
 
   enum Format: Byte2 { case Zero, One, Two }
 
@@ -81,7 +81,7 @@ struct MIDIFile: CustomStringConvertible {
     var processedTracks: [MIDIFileTrackChunk] = []
     for trackChunk in t {
       var ticks: UInt64 = 0
-      var processedEvents: [MIDITrackEvent] = []
+      var processedEvents: [MIDIEvent] = []
       for var trackEvent in trackChunk.events {
         guard let delta = trackEvent.delta else {
           throw MIDIFileError(type: .FileStructurallyUnsound, reason: "Track event missing delta value")
@@ -138,15 +138,13 @@ struct MIDIFile: CustomStringConvertible {
 
     return bytes
   }
+}
 
-  var description: String {
-    var result = "\(self.dynamicType.self) {\n\t"
-    result += "\n\t".join(
-      "header: \(header.description.indentedBy(4, true))",
-      "tracks: {\n" + ",\n".join(tracks.map({$0.description.indentedBy(8)}))
-    )
-    result += "\n\t}\n}"
-    return result
-  }
+extension MIDIFile: CustomStringConvertible {
+  var description: String { return "\(header)\n\("\n".join(tracks.map({$0.description})))" }
+}
+
+extension MIDIFile: CustomDebugStringConvertible {
+  var debugDescription: String { var result = ""; dump(self, &result); return result }
 }
 

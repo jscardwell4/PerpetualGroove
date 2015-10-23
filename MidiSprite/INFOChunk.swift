@@ -161,21 +161,21 @@ extension INFOChunk {
 
 extension INFOChunk: CustomStringConvertible {
   var description: String {
-    var result = "INFOChunk {\n"
-    result += "  ifil: \(ifil)\n"
-    result += "  isng: \(isng)\n"
-    result += "  inam: \(inam)\n"
-    if let irom = irom { result += "  irom: \(irom)\n" }
-    if let iver = iver { result += "  iver: \(iver)\n" }
-    if let icrd = icrd { result += "  icrd: \(icrd)\n" }
-    if let ieng = ieng { result += "  ieng: \(ieng)\n" }
-    if let iprd = iprd { result += "  iprd: \(iprd)\n" }
-    if let icop = icop { result += "  icop: \(icop)\n" }
-    if let icmt = icmt { result += "  icmt: \(icmt)\n" }
-    if let isft = isft { result += "  isft: \(isft)\n" }
-    result += "}"
+    var result = "\n".join( "ifil: \(ifil)", "isng: \(isng)", "inam: \(inam)" )
+    if let irom = irom { result += "irom: \(irom)\n" }
+    if let iver = iver { result += "iver: \(iver)\n" }
+    if let icrd = icrd { result += "icrd: \(icrd)\n" }
+    if let ieng = ieng { result += "ieng: \(ieng)\n" }
+    if let iprd = iprd { result += "iprd: \(iprd)\n" }
+    if let icop = icop { result += "icop: \(icop)\n" }
+    if let icmt = icmt { result += "icmt: \(icmt)\n" }
+    if let isft = isft { result += "isft: \(isft)\n" }
     return result
   }
+}
+
+extension INFOChunk: CustomDebugStringConvertible {
+  var debugDescription: String { var result = ""; dump(self, &result); return result }
 }
 
 // MARK: - ChunkType

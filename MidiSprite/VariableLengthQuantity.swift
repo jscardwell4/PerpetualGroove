@@ -12,22 +12,13 @@ import MoonKit
 /** 
 Struct for converting values to MIDI variable length quanity representation
 
-These numbers are represented 7 bits per byte, most significant bits first. All bytes except the last have bit 7 set, and the 
-last byte has bit 7 clear. If the number is between 0 and 127, it is thus represented exactly as one byte.
+These numbers are represented 7 bits per byte, most significant bits first. All bytes except the last have bit 7 set,
+and the last byte has bit 7 clear. If the number is between 0 and 127, it is thus represented exactly as one byte.
 */
-struct VariableLengthQuantity: CustomDebugStringConvertible, CustomStringConvertible {
+struct VariableLengthQuantity {
+
   let bytes: [Byte]
   static let zero = VariableLengthQuantity(0)
-
-  var debugDescription: String {
-    let representedValue = self.representedValue
-    return "\(self.dynamicType.self) {" + "; ".join(
-      "bytes (hex, decimal): (\(String(hexBytes: bytes)), \(UInt64(bytes)))",
-      "representedValue (hex, decimal): (\(String(hexBytes: representedValue)), \(UInt64(representedValue)))"
-    ) + "}"
-  }
-
-  var description: String { return "\(UInt64(representedValue))" }
 
   var representedValue: [Byte] {
     let groups = bytes.segment(8)
@@ -82,6 +73,21 @@ struct VariableLengthQuantity: CustomDebugStringConvertible, CustomStringConvert
     } while true
     while let firstByte = result.first where result.count > 1 && firstByte == 0 { result.removeAtIndex(0) }
     bytes = result
+  }
+}
+
+extension VariableLengthQuantity: CustomStringConvertible {
+  var description: String { return "\(UInt64(representedValue))" }
+  var paddedDescription: String { return description.pad(" ", count: 6) }
+}
+
+extension VariableLengthQuantity: CustomDebugStringConvertible {
+  var debugDescription: String {
+    let representedValue = self.representedValue
+    return "\(self.dynamicType.self) {" + "; ".join(
+      "bytes (hex, decimal): (\(String(hexBytes: bytes)), \(UInt64(bytes)))",
+      "representedValue (hex, decimal): (\(String(hexBytes: representedValue)), \(UInt64(representedValue)))"
+      ) + "}"
   }
 }
 

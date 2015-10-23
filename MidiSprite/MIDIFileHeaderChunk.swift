@@ -18,16 +18,6 @@ struct MIDIFileHeaderChunk: MIDIChunk {
   let numberOfTracks: Byte2
   let division: Byte2
 
-  var description: String {
-    let result = "\(self.dynamicType.self) {\n\t" + "\n\t".join(
-      "type: MThd",
-      "length: \(length)",
-      "format: \(format)",
-      "numberOfTracks: \(numberOfTracks)",
-      "division: \(division)"
-    ) + "\n}"
-    return result
-  }
   var bytes: [Byte] { return type.bytes + length.bytes + format.rawValue.bytes + numberOfTracks.bytes + division.bytes }
 
   /**
@@ -65,4 +55,12 @@ struct MIDIFileHeaderChunk: MIDIChunk {
     numberOfTracks = Byte2(bytes[bytes.startIndex.advancedBy(10) ..< bytes.startIndex.advancedBy(12)])
     division = Byte2(bytes[bytes.startIndex.advancedBy(12) ..< bytes.startIndex.advancedBy(14)])
   }
+}
+
+extension MIDIFileHeaderChunk: CustomStringConvertible {
+  var description: String { return "MThd\n\tformat: \(format)\n\tnumber of tracks: \(numberOfTracks)\n\tdivision: \(division)" }
+}
+
+extension MIDIFileHeaderChunk: CustomDebugStringConvertible {
+  var debugDescription: String { var result = ""; dump(self, &result); return result }
 }

@@ -97,11 +97,11 @@ final class MIDISequence {
   var file: MIDIFile {
     get {
       let file = MIDIFile(format: .One, division: 480, tracks: tracks)
-      logVerbose("<out> file: \(file)")
+      logVerbose("<out> file: \(file.debugDescription)")
       return file
     }
     set {
-      logVerbose("<in> file: \(newValue)")
+      logVerbose("<in> file: \(newValue.debugDescription)")
       var trackChunks = ArraySlice(newValue.tracks)
       if let trackChunk = trackChunks.first
         where trackChunk.events.count == trackChunk.events.filter({ TempoTrack.isTempoTrackEvent($0) }).count
@@ -167,8 +167,12 @@ final class MIDISequence {
 extension MIDISequence: CustomStringConvertible {
   var description: String {
     var result = "\(self.dynamicType.self) {\n"
-    result += "\n".join(tracks.map({$0.description.indentedBy(4)}))
+    result += "\n".join(tracks.map({$0.description.indentedBy(1, useTabs: true)}))
     result += "\n}"
     return result
   }
+}
+
+extension MIDISequence: CustomDebugStringConvertible {
+  var debugDescription: String { var result = ""; dump(self, &result); return result }
 }

@@ -113,6 +113,16 @@ public extension String {
   }
 
   public enum PadType { case Prefix, Suffix }
+
+  /**
+  pad:count:type:
+
+  - parameter p: String
+  - parameter count: Int
+  - parameter type: PadType = .Suffix
+
+  - returns: String
+  */
   public func pad(p: String, count: Int, type: PadType = .Suffix) -> String {
     guard utf16.count < count else { return self }
     let padCount = p.utf16.count
@@ -216,7 +226,7 @@ public extension String {
 
   - returns: String
   */
-  public func indentedBy(indent: Int, _ preserveFirst: Bool = false, _ useTabs: Bool = false) -> String {
+  public func indentedBy(indent: Int, preserveFirst: Bool = false, useTabs: Bool = false) -> String {
     let spacer = (useTabs ? "\t" : " ") * indent
     let result = "\n\(spacer)".join("\n".split(self))
     return preserveFirst ? result : spacer + result

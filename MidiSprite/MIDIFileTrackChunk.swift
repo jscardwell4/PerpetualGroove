@@ -12,17 +12,7 @@ import MoonKit
 /** Struct to hold a track chunk for a MIDI file where chunk = \<chunk type\> \<length\> \<track event\>+ */
 struct MIDIFileTrackChunk: MIDIChunk {
   let type = Byte4("MTrk".utf8)
-  var events: [MIDITrackEvent] = []
-
-  var description: String {
-    var result = "\(self.dynamicType.self) {\n\t"
-    result += "\n\t".join(
-      "type: MTrk",
-      "events: {\n" + ",\n".join(events.map({$0.description.indentedBy(8)}))
-    )
-    result += "\n\t}\n}"
-    return result
-  }
+  var events: [MIDIEvent] = []
 
   /** init */
   init() {}
@@ -30,16 +20,16 @@ struct MIDIFileTrackChunk: MIDIChunk {
   /**
   init:
 
-  - parameter e: [MIDITrackEvent]
+  - parameter e: [MIDIEvent]
   */
-  init(events e: [MIDITrackEvent]) { events = e }
+  init(events e: [MIDIEvent]) { events = e }
 
   /**
   initWithEventContainer:
 
-  - parameter eventContainer: MIDITrackEventContainer
+  - parameter eventContainer: MIDIEventContainer
   */
-  init(eventContainer: MIDITrackEventContainer) { events = eventContainer.events }
+  init(eventContainer: MIDIEventContainer) { events = eventContainer.events }
 
   /**
   initWithBytes:
@@ -63,7 +53,7 @@ struct MIDIFileTrackChunk: MIDIChunk {
     }
 
     var currentIndex = bytes.startIndex.advancedBy(8)
-    var events: [MIDITrackEvent] = []
+    var events: [MIDIEvent] = []
 
     while currentIndex < bytes.endIndex {
       var i = currentIndex
@@ -104,4 +94,12 @@ struct MIDIFileTrackChunk: MIDIChunk {
 
     self.events = events
   }
+}
+
+extension MIDIFileTrackChunk: CustomStringConvertible {
+  var description: String { return "MTrk\n\("\n".join(events.map({$0.description.indentedBy(1, useTabs: true)})))" }
+}
+
+extension MIDIFileTrackChunk: CustomDebugStringConvertible {
+  var debugDescription: String { var result = ""; dump(self, &result); return result }
 }

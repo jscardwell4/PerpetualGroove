@@ -12,7 +12,7 @@ import AudioToolbox
 import CoreAudio
 import AVFoundation
 
-final class Instrument: Equatable, CustomStringConvertible {
+final class Instrument: Equatable {
 
   enum Error: String, ErrorType { case AttachNodeFailed = "Failed to attach sampler node to audio engine" }
 
@@ -52,13 +52,6 @@ final class Instrument: Equatable, CustomStringConvertible {
 
   var volume: Float { get { return node.volume } set { node.volume = (0 ... 1).clampValue(newValue)  } }
   var pan:    Float { get { return node.pan    } set { node.pan    = (-1 ... 1).clampValue(newValue) } }
-
-  var description: String {
-    var result = "Instrument {\n\t"
-    result +=  "\n\t".join("soundSet: \(soundSet)","program: \(program)", "bank: \(bank)", "channel: \(channel)")
-    result += "\n}"
-    return result
-  }
 
   private      var client   = MIDIClientRef()
   private(set) var endPoint = MIDIEndpointRef()
@@ -156,6 +149,19 @@ final class Instrument: Equatable, CustomStringConvertible {
   }
 
 }
+
+extension Instrument: CustomStringConvertible {
+
+  var description: String {
+    return "soundSet: \(soundSet), program: \(program), bank: \(bank), channel: \(channel)"
+  }
+
+}
+
+extension Instrument: CustomDebugStringConvertible {
+  var debugDescription: String { var result = ""; dump(self, &result); return result }
+}
+
 
 /**
 Equatable compliance

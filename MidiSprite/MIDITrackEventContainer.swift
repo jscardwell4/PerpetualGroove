@@ -1,5 +1,5 @@
 //
-//  MIDITrackEventContainer.swift
+//  MIDIEventContainer.swift
 //  PerpetualGroove
 //
 //  Created by Jason Cardwell on 10/14/15.
@@ -9,9 +9,9 @@
 import Foundation
 import MoonKit
 
-struct MIDITrackEventContainer: CollectionType, MutableIndexable {
+struct MIDIEventContainer: CollectionType, MutableIndexable {
 
-  typealias Element = MIDITrackEvent
+  typealias Element = MIDIEvent
   typealias SubSequence = ArraySlice<Element>
   typealias Generator = AnyGenerator<Element>
 
@@ -42,9 +42,9 @@ struct MIDITrackEventContainer: CollectionType, MutableIndexable {
 
   - parameter idx: Int
 
-  - returns: MIDITrackEvent
+  - returns: MIDIEvent
   */
-  subscript(idx: Int) -> MIDITrackEvent {
+  subscript(idx: Int) -> MIDIEvent {
     get {
       switch (trackNameEvent, endOfTrackEvent) {
         case (nil, _) where idx < _events.count:                               return _events[idx]
@@ -72,9 +72,9 @@ struct MIDITrackEventContainer: CollectionType, MutableIndexable {
   var trackNameEvent: MetaEvent?
   var endOfTrackEvent: MetaEvent?
 
-  private(set) var _events: [MIDITrackEvent] = []
+  private(set) var _events: [MIDIEvent] = []
 
-  var events: [MIDITrackEvent] {
+  var events: [MIDIEvent] {
     var events = self._events
     if let trackNameEvent = trackNameEvent { events.insert(trackNameEvent, atIndex: 0) }
     if let endOfTrackEvent = endOfTrackEvent { events.append(endOfTrackEvent) }
@@ -84,11 +84,11 @@ struct MIDITrackEventContainer: CollectionType, MutableIndexable {
   /**
   filterEvent:
 
-  - parameter event: MIDITrackEvent
+  - parameter event: MIDIEvent
 
   - returns: Bool
   */
-  private mutating func filterEvent(event: MIDITrackEvent) -> Bool {
+  private mutating func filterEvent(event: MIDIEvent) -> Bool {
     if let event = event as? MetaEvent, case .SequenceTrackName = event.data {
       trackNameEvent = event
       return true
@@ -104,19 +104,19 @@ struct MIDITrackEventContainer: CollectionType, MutableIndexable {
   Inserts the given event at relative index `i` (that is the index ignoring the 'track name' and 'end of track' 
   events), unless the event gets filtered out into `trackNameEvent` or `endOfTrackEvent`
 
-  - parameter event: MIDITrackEvent
+  - parameter event: MIDIEvent
   - parameter i: Int
   */
-  mutating func insert(event: MIDITrackEvent, atIndex i: Int) {
+  mutating func insert(event: MIDIEvent, atIndex i: Int) {
     if !filterEvent(event) { _events.insert(event, atIndex: i) }
   }
 
   /**
   append:
 
-  - parameter event: MIDITrackEvent
+  - parameter event: MIDIEvent
   */
-  mutating func append(event: MIDITrackEvent) { if !filterEvent(event) { _events.append(event) } }
+  mutating func append(event: MIDIEvent) { if !filterEvent(event) { _events.append(event) } }
 
   var metaEvents: [MetaEvent] {
     var result: [MetaEvent] = []
@@ -138,3 +138,12 @@ struct MIDITrackEventContainer: CollectionType, MutableIndexable {
 
   var count: Int { return _events.count + (trackNameEvent == nil ? 0 : 1) + (endOfTrackEvent == nil ? 0 : 1) }
 }
+
+extension MIDIEventContainer: CustomStringConvertible {
+  var description: String { return "\n".join(events.map({$0.description})) }
+}
+
+extension MIDIEventContainer: CustomDebugStringConvertible {
+  var debugDescription: String { var result = ""; dump(self, &result); return result }
+}
+

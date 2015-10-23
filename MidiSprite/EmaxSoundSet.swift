@@ -69,6 +69,7 @@ struct EmaxSoundSet: SoundSetType {
   let volume: Volume
   let presets: [SF2File.Preset]
   var displayName: String { return volume.displayName }
+  var fileName: String { return volume.fileName }
   var image: UIImage { return volume.image }
 
   /**
@@ -79,7 +80,6 @@ struct EmaxSoundSet: SoundSetType {
   init(_ vol: Volume) {
     volume = vol
     presets = try! SF2File(file: vol.url).presets.sort()
-    logVerbose(debugDescription)
   }
 
   /**

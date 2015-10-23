@@ -14,7 +14,7 @@ import Foundation
 #endif
 
 /** Parses the data from a SoundFont file, which consists of three chunks: info, sdta, and pdta */
-struct SF2File: CustomStringConvertible {
+struct SF2File {
 
   let url: NSURL
 
@@ -163,16 +163,23 @@ extension SF2File {
     return chunk.headers.map { Preset(name: $0.name, program: Byte($0.preset), bank: Byte($0.bank))}
   }
 
+}
+
+extension SF2File: CustomStringConvertible {
+
   var description: String {
-    var result = "SF2File {\n"
-    result += "  url: \(String.fromCString(url.fileSystemRepresentation)!)\n"
-    result += "  info: \(info.description.indentedBy(4, true))\n"
-    result += "  sdta: \(sdta.description.indentedBy(4, true))\n"
-    result += "  pdta: \(pdta.description.indentedBy(4, true))\n"
-    result += "}"
-    return result
+    return "\n".join(
+      "url: '\(url.path!)'",
+      "info:\n\(info.description.indentedBy(1, useTabs: true))",
+      "sdta:\n\(sdta.description.indentedBy(1, useTabs: true))",
+      "pdta:\n\(pdta.description.indentedBy(1, useTabs: true))"
+    )
   }
 
+}
+
+extension SF2File: CustomDebugStringConvertible {
+  var debugDescription: String { var result = ""; dump(self, &result); return result }
 }
 
 func ==(lhs: SF2File.Preset, rhs: SF2File.Preset) -> Bool {

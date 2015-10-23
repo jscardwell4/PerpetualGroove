@@ -27,7 +27,7 @@ struct NoteAttributes {
   var channel: UInt8 = 0
 
   /** An enumeration for specifying a note's pitch and octave */
-  enum Note: RawRepresentable, Equatable, EnumerableType, CustomStringConvertible, MIDIConvertible {
+  enum Note: RawRepresentable, Equatable, EnumerableType, MIDIConvertible {
 
     enum Letter: String, EnumerableType {
       case C="C", CSharp="C♯", D="D", DSharp="D♯", E="E", F="F", FSharp="F♯", G="G", GSharp="G♯",
@@ -70,14 +70,13 @@ struct NoteAttributes {
 
     static let allCases: [Note] = (0...127).map({Note(midi: $0)})
 
-    var description: String { return rawValue }
   }
 
   /// The pitch and octave
   var note: Note = Note(midi: 60)
 
   /** Enumeration for a musical note duration */
-  enum Duration: String, EnumerableType, ImageAssetLiteralType, CustomStringConvertible {
+  enum Duration: String, EnumerableType, ImageAssetLiteralType {
     case DoubleWhole, DottedWhole, Whole, DottedHalf, Half, DottedQuarter, Quarter, DottedEighth,
          Eighth, DottedSixteenth, Sixteenth, DottedThirtySecond, ThirtySecond, DottedSixtyFourth,
          SixtyFourth, DottedHundredTwentyEighth, HundredTwentyEighth, DottedTwoHundredFiftySixth,
@@ -115,14 +114,13 @@ struct NoteAttributes {
       .HundredTwentyEighth, .DottedTwoHundredFiftySixth, .TwoHundredFiftySixth
     ]
 
-    var description: String { return rawValue }
   }
 
   /// The duration of the played note
   var duration: Duration = .Eighth
 
   /** Enumeration for musical dynamics */
-  enum Velocity: String, EnumerableType, ImageAssetLiteralType, MIDIConvertible, CustomStringConvertible {
+  enum Velocity: String, EnumerableType, ImageAssetLiteralType, MIDIConvertible {
     case Pianississimo, Pianissimo, Piano, MezzoPiano, MezzoForte, Forte, Fortissimo, Fortississimo
 
     var midi: Byte {
@@ -151,7 +149,6 @@ struct NoteAttributes {
     }
     static let allCases: [Velocity] = [.Pianississimo, .Pianissimo, .Piano, .MezzoPiano, .MezzoForte, 
                                        .Forte, .Fortissimo, .Fortississimo]
-    var description: String { return rawValue }
   }
 
   /// The dynmamics for the note
@@ -177,12 +174,73 @@ extension NoteAttributes: ByteArrayConvertible {
   }
 }
 
+extension NoteAttributes.Note: CustomStringConvertible {
+  var description: String { return rawValue }
+}
+
+extension NoteAttributes.Note: CustomDebugStringConvertible {
+  var debugDescription: String { var result = ""; dump(self, &result); return result }
+}
+
+extension NoteAttributes.Duration: CustomStringConvertible {
+  var description: String {
+    switch self {
+      case .DoubleWhole:                return "double-whole note"
+      case .DottedWhole:                return "dotted whole note"
+      case .Whole:                      return "whole note"
+      case .DottedHalf:                 return "dotted half note"
+      case .Half:                       return "half note"
+      case .DottedQuarter:              return "dotted quarter note"
+      case .Quarter:                    return "quarter note"
+      case .DottedEighth:               return "dotted eighth note"
+      case .Eighth:                     return "eighth note"
+      case .DottedSixteenth:            return "dotted sixteenth note"
+      case .Sixteenth:                  return "sixteenth note"
+      case .DottedThirtySecond:         return "dotted thirty-second note"
+      case .ThirtySecond:               return "thirty-second note"
+      case .DottedSixtyFourth:          return "dotted sixty-fourth note"
+      case .SixtyFourth:                return "sixty-fourth note"
+      case .DottedHundredTwentyEighth:  return "dotted hundred twenty-eighth note"
+      case .HundredTwentyEighth:        return "hundred twenty-eighth note"
+      case .DottedTwoHundredFiftySixth: return "dotted two hundred-fifty-sixth note"
+      case .TwoHundredFiftySixth:       return "two hundred fifty-sixth note"
+    }
+  }  
+}
+
+extension NoteAttributes.Duration: CustomDebugStringConvertible {
+  var debugDescription: String { var result = ""; dump(self, &result); return result }
+}
+
+extension NoteAttributes.Velocity: CustomStringConvertible {
+  var description: String {
+    switch self {
+      case .Pianississimo: return "pianississimo"
+      case .Pianissimo:    return "pianissimo"
+      case .Piano:         return "piano"
+      case .MezzoPiano:    return "mezzo-piano"
+      case .MezzoForte:    return "mezzo-forte"
+      case .Forte:         return "forte"
+      case .Fortissimo:    return "fortissimo"
+      case .Fortississimo: return "fortississimo"
+    }
+  }
+}
+
+extension NoteAttributes.Velocity: CustomDebugStringConvertible {
+  var debugDescription: String { var result = ""; dump(self, &result); return result }
+}
+
 // MARK: - CustomStringConvertible
 
 extension NoteAttributes: CustomStringConvertible {
   var description: String {
-    return "NoteAttributes {channel: \(channel); note: \(note); duration: \(duration); velocity: \(velocity)}"
+    return "{ \(channel), \(note), \(duration), \(velocity) }"
   }
+}
+
+extension NoteAttributes: CustomDebugStringConvertible {
+  var debugDescription: String { var result = ""; dump(self, &result); return result }
 }
 
 // MARK: - Equatable

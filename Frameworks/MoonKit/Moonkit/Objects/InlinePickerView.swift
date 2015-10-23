@@ -124,8 +124,8 @@ public class InlinePickerView: UIControl {
       "cellType = \(cellType)",
       "labels = \(labels)",
       "images = \(images)",
-      "collectionView = " + "collection view layout".split(collectionView.description)[0].sub("(?<!frame = \\(0 0); ", "\n").indentedBy(2, true, true),
-      "collectionViewLayout = \(collectionView.collectionViewLayout.description.indentedBy(2, true, true))"
+      "collectionView = " + "collection view layout".split(collectionView.description)[0].sub("(?<!frame = \\(0 0); ", "\n").indentedBy(2, preserveFirst: true, useTabs: true),
+      "collectionViewLayout = \(collectionView.collectionViewLayout.description.indentedBy(2, preserveFirst: true, useTabs: true))"
     )
   }
 

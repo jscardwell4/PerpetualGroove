@@ -72,7 +72,7 @@ final class MIDIDocument: UIDocument {
   override func loadFromContents(contents: AnyObject, ofType typeName: String?) throws {
     guard let data = contents as? NSData else { throw Error.InvalidContentType }
     let file = try MIDIFile(data: data)
-    logDebug("parsed data into midi file: \(file)")
+    logDebug("parsed data into midi file:\n\(file)")
     sequence.file = file
     logDebug("file loaded into sequence: \(sequence)")
   }

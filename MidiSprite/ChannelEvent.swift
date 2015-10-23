@@ -11,9 +11,9 @@ import MoonKit
 import AudioToolbox
 
 /** Struct to hold data for a channel event where event = \<delta time\> \<status\> \<data1\> \<data2\> */
-struct ChannelEvent: MIDITrackEvent {
+struct ChannelEvent: MIDIEvent {
 
-  enum EventType: Byte, IntegerLiteralConvertible, CustomStringConvertible {
+  enum EventType: Byte, IntegerLiteralConvertible {
     case NoteOff               = 0x8
     case NoteOn                = 0x9
     case PolyphonicKeyPressure = 0xA
@@ -36,19 +36,13 @@ struct ChannelEvent: MIDITrackEvent {
     */
     init(_ v: Byte) { self = EventType(rawValue: ClosedInterval<Byte>(0x8, 0xE).clampValue(v))! }
 
-    var byteCount: Int { switch self { case .ControlChange, .ProgramChange, .ChannelPressure: return 2; default: return 3 } }
-
-    var description: String {
+    var byteCount: Int {
       switch self {
-        case .NoteOff:               return "NoteOff (0x8)"
-        case .NoteOn:                return "NoteOn (0x9)"
-        case .PolyphonicKeyPressure: return "PolyphonicKeyPressure (0xA)"
-        case .ControlChange:         return "ControlChange (0xB)"
-        case .ProgramChange:         return "ProgramChange (0xC)"
-        case .ChannelPressure:       return "ChannelPressure (0xD)"
-        case .PitchBendChange:       return "PitchBendChange (0xE)"
+        case .ControlChange, .ProgramChange, .ChannelPressure: return 2
+        default:                                               return 3
       }
     }
+
   }
 
   struct Status: IntegerLiteralConvertible {
@@ -99,7 +93,8 @@ struct ChannelEvent: MIDITrackEvent {
   {
     self.delta = delta
     guard let t = EventType(rawValue: bytes[bytes.startIndex] >> 4) else {
-      throw MIDIFileError(type: .UnsupportedEvent, reason: "\(bytes[bytes.startIndex] >> 4) is not a supported channel event")
+      throw MIDIFileError(type: .UnsupportedEvent,
+                          reason: "\(bytes[bytes.startIndex] >> 4) is not a supported channel event")
     }
     guard bytes.count == t.byteCount else {
       throw MIDIFileError(type: .InvalidLength, reason: "\(t) events expect a total byte count of \(t.byteCount)")
@@ -129,16 +124,33 @@ struct ChannelEvent: MIDITrackEvent {
     return MIDIChannelMessage(status: status.value, data1: data1, data2: data2 ?? 0, reserved: 0)
   }
 
+}
+
+extension ChannelEvent.EventType: CustomStringConvertible {
   var description: String {
-    var result = "\(self.dynamicType.self) {\n\t"
-    result += "\n\t".join(
-      "time: \(time)",
-      "delta: " + (delta?.description ?? "nil"),
-      "status: \(String(hexBytes: status.value))",
-      "data1: \(String(data1, radix: 16, uppercase: true, pad: 2, group: 2))",
-      "data2: " + (data2 == nil ? "nil" : String(hexBytes: data2!))
-    )
-    result += "\n}"
+    switch self {
+      case .NoteOff:               return "note off"
+      case .NoteOn:                return "note on"
+      case .PolyphonicKeyPressure: return "polyphonic key pressure"
+      case .ControlChange:         return "control change"
+      case .ProgramChange:         return "program change"
+      case .ChannelPressure:       return "channel pressure"
+      case .PitchBendChange:       return "pitch bend change"
+    }
+  }
+}
+
+extension ChannelEvent.Status: CustomStringConvertible { var description: String { return "\(type) (\(channel))" } }
+
+extension ChannelEvent: CustomStringConvertible {
+  var description: String {
+    var result = "\(status) "
+    switch status.type {
+      case .NoteOn, .NoteOff:
+        result += "\(NoteAttributes.Note(midi: data1)) \(NoteAttributes.Velocity(midi: data2!))"
+      default:
+        result += "\(data1)"
+    }
     return result
   }
 }

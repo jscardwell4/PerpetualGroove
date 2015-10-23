@@ -13,6 +13,7 @@ protocol SoundSetType: CustomStringConvertible, CustomDebugStringConvertible {
   var url: NSURL { get }
   var presets: [SF2File.Preset] { get }
   var displayName: String { get }
+  var fileName: String { get }
   var image: UIImage { get }
   subscript(idx: Int) -> SF2File.Preset { get }
   subscript(program: Byte, bank: Byte) -> SF2File.Preset { get }
@@ -34,21 +35,9 @@ extension SoundSetType {
   
   var displayName: String { return (url.lastPathComponent! as NSString).stringByDeletingPathExtension }
 
-  var description: String {
-    var result =  "\(self.dynamicType) {\n"
-    result += "  name: \((url.lastPathComponent! as NSString).stringByDeletingPathExtension)\n"
-    result += "  number of presets: \(presets.count)\n"
-    result += "}"
-    return result
-  }
+  var description: String { return "\(displayName) - \(fileName)" }
 
-  var debugDescription: String {
-    var result =  "\(self.dynamicType) {\n"
-    result += "  name: \((url.lastPathComponent! as NSString).stringByDeletingPathExtension)\n"
-    result += "  presets: {\n" + ",\n".join(presets.map({$0.description})).indentedBy(8) + "\n\t}"
-    result += "\n}"
-    return result
-  }
+  var debugDescription: String { var result = ""; dump(self, &result); return result }
 }
 
 /**

@@ -12,7 +12,7 @@ import struct AudioToolbox.CABarBeatTime
 import struct AudioToolbox.MIDIMetaEvent
 
 /** Struct to hold data for a meta event where event = \<delta time\> **FF** \<meta type\> \<length of meta\> \<meta\> */
-struct MetaEvent: MIDITrackEvent {
+struct MetaEvent: MIDIEvent {
 
   var time: CABarBeatTime = .start
   var data: Data
@@ -63,13 +63,6 @@ struct MetaEvent: MIDITrackEvent {
   - parameter data: Data
   */
   init(_ t: CABarBeatTime, _ d: Data) { time = t; data = d }
-
-  var description: String {
-    var result = "\(self.dynamicType.self) {\n\t"
-    result += "\n\t".join("data: \(data)", "time: \(time)", "delta: " + (delta?.description ?? "nil"))
-    result += "\n}"
-    return result
-  }
 
   /** Enumeration for encapsulating a type of meta event */
   enum Data: Equatable {
@@ -196,6 +189,28 @@ struct MetaEvent: MIDITrackEvent {
   }
 
 }
+
+extension MetaEvent.Data: CustomStringConvertible {
+  var description: String {
+    switch self {
+      case .Text(let text):                     return "text '\(text)'"
+      case .CopyrightNotice(let text):          return "copyright '\(text)'"
+      case .SequenceTrackName(let text):        return "sequence/track name '\(text)'"
+      case .InstrumentName(let text):           return "instrument name '\(text)'"
+      case .DeviceName(let text):               return "device name '\(text)'"
+      case .ProgramName(let text):              return "program name '\(text)'"
+      case .EndOfTrack:                         return "end of track"
+      case .Tempo(let microseconds):            return "tempo \(60_000_000 / microseconds)"
+      case .TimeSignature(let u, let l, _ , _): return "time signature \(u)╱\(l)"
+    }
+  }
+}
+
+extension MetaEvent.Data: CustomDebugStringConvertible {
+  var debugDescription: String { var result = ""; dump(self, &result); return result }
+}
+
+extension MetaEvent: CustomStringConvertible { var description: String { return data.description } }
 
 func ==(lhs: MetaEvent.Data, rhs: MetaEvent.Data) -> Bool {
   switch (lhs, rhs) {

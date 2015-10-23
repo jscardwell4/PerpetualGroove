@@ -14,15 +14,13 @@ final class LogManager: MoonKit.LogManager {
 
   private static var initialized = false
 
-  static let MIDIFileContext  = LogContext(rawValue: 0b0000_0010_0000)
-  static let SF2FileContext   = LogContext(rawValue: 0b0000_0100_0000)
-  static let SequencerContext = LogContext(rawValue: 0b0000_1000_0000)
-  static let SceneContext     = LogContext(rawValue: 0b0001_0000_0000)
+  static let MIDIFileContext  = LogContext(rawValue: 0b0000_0010_0000) ∪ .Console
+  static let SF2FileContext   = LogContext(rawValue: 0b0000_0100_0000) ∪ .Console
+  static let SequencerContext = LogContext(rawValue: 0b0000_1000_0000) ∪ .Console
+  static let SceneContext     = LogContext(rawValue: 0b0001_0000_0000) ∪ .Console
 
   static func initialize() {
     guard !initialized else { return }
-
-
 
     MIDIDocumentManager.logContext     = MIDIFileContext
     MIDIDocument.logContext            = MIDIFileContext
@@ -33,7 +31,8 @@ final class LogManager: MoonKit.LogManager {
     ChannelEvent.logContext            = MIDIFileContext
     VariableLengthQuantity.logContext  = MIDIFileContext
     MIDINodeEvent.logContext           = MIDIFileContext
-    MIDITrackEventContainer.logContext = MIDIFileContext
+    MIDIEventContainer.logContext      = MIDIFileContext
+    MIDIEventMap.logContext            = MIDIFileContext
 
     SF2File.logContext    = SF2FileContext
     Instrument.logContext = SF2FileContext
@@ -53,6 +52,13 @@ final class LogManager: MoonKit.LogManager {
     Metronome.logContext       = SequencerContext
     MIDIClock.logContext       = SequencerContext
     BarBeatTime.logContext     = SequencerContext
+
+    MIDIPlayerScene.logContext     = SceneContext
+    MIDINodeHistory.logContext     = SceneContext
+    MIDIPlayerNode.logContext      = SceneContext
+    MIDIPlayerFieldNode.logContext = SceneContext
+    MIDINode.logContext            = SceneContext
+    Placement.logContext           = SceneContext
 
     addConsoleLoggers()
 
@@ -103,4 +109,12 @@ extension MetaEvent: Loggable {}
 extension ChannelEvent: Loggable {}
 extension VariableLengthQuantity: Loggable {}
 extension MIDINodeEvent: Loggable {}
-extension MIDITrackEventContainer: Loggable {}
+extension MIDIEventContainer: Loggable {}
+extension MIDIEventMap: Loggable {}
+
+extension MIDINodeHistory: Loggable {}
+extension MIDIPlayerScene: Loggable {}
+extension MIDIPlayerNode: Loggable {}
+extension MIDIPlayerFieldNode: Loggable {}
+extension MIDINode: Loggable {}
+extension Placement: Loggable {}

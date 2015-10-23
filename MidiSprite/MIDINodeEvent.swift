@@ -11,24 +11,13 @@ import MoonKit
 import struct AudioToolbox.CABarBeatTime
 
 /** A MIDI meta event that uses the 'Cue Point' message to embed `MIDINode` placement and removal events for a track */
-struct MIDINodeEvent: MIDITrackEvent {
+struct MIDINodeEvent: MIDIEvent {
   var time: CABarBeatTime = .start
   let data: Data
   var delta: VariableLengthQuantity?
   var bytes: [Byte] { return [0xFF, 0x07] + data.length.bytes + data.bytes }
 
   typealias Identifier = MIDINode.Identifier
-
-  var description: String {
-    var result = "\(self.dynamicType.self) {\n\t"
-    result += "\n\t".join(
-      "delta: " + (delta?.description ?? "nil"),
-      "data: \(data)",
-      "time: \(time)"
-    )
-    result += "\n}"
-    return result
-  }
 
   /**
   Initializer that takes the event's data and, optionally, the event's bar beat time
@@ -119,5 +108,22 @@ struct MIDINodeEvent: MIDITrackEvent {
     var length: VariableLengthQuantity { return VariableLengthQuantity(bytes.count) }
   }
 }
+
+extension MIDINodeEvent.Data: CustomStringConvertible {
+  var description: String {
+    switch self {
+      case let .Add(identifier, placement, attributes):
+        return "add node '\(identifier)' ( \(placement), \(attributes) )"
+      case let .Remove(identifier):
+        return "remove node '\(identifier)'"
+    }
+  }
+}
+
+extension MIDINodeEvent.Data: CustomDebugStringConvertible {
+  var debugDescription: String { var result = ""; dump(self, &result); return result }
+}
+
+extension MIDINodeEvent: CustomStringConvertible { var description: String { return data.description } }
 
 func ==(lhs: MIDINodeEvent.Data, rhs: MIDINodeEvent.Data) -> Bool { return lhs.bytes.elementsEqual(rhs.bytes) }

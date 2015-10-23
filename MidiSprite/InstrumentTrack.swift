@@ -115,7 +115,7 @@ final class InstrumentTrack: MIDITrackType {
 
   // MARK: - MIDI file related properties and methods
 
-  var eventContainer = MIDITrackEventContainer() { didSet { MIDITrackNotification.DidUpdateEvents.post(object: self) } }
+  var eventContainer = MIDIEventContainer() { didSet { MIDITrackNotification.DidUpdateEvents.post(object: self) } }
 
   var instrumentNameEvent: MetaEvent? {
     if let event = eventContainer.metaEvents.first, case .Text = event.data { return event } else { return nil }
@@ -353,7 +353,7 @@ final class InstrumentTrack: MIDITrackType {
       let packet = packetPointer.memory
       let ((status, channel), note, velocity) = ((packet.data.0 >> 4, packet.data.0 & 0xF), packet.data.1, packet.data.2)
       self?.logVerbose("status: \(status); channel: \(channel); note: \(note); velocity: \(velocity)")
-      let event: MIDITrackEvent?
+      let event: MIDIEvent?
       switch status {
         case 9:  event = ChannelEvent(.NoteOn, channel, note, velocity, time)
         case 8:  event = ChannelEvent(.NoteOff, channel, note, velocity, time)
@@ -383,7 +383,7 @@ final class InstrumentTrack: MIDITrackType {
   }
 
   /// Holds events parsed from a `MIDIFile` keyed by their bar beat time
-  private var eventMap: [CABarBeatTime:[MIDITrackEvent]] = [:]
+  private(set) var eventMap = MIDIEventMap()
 
   /**
   dispatchEventsForTime:
@@ -391,7 +391,7 @@ final class InstrumentTrack: MIDITrackType {
   - parameter time: CABarBeatTime
   */
   private func dispatchEventsForTime(time: CABarBeatTime) {
-    guard let events = eventMap[time] where Sequencer.playing else { return }
+    guard let events = eventMap.eventsForTime(time) where Sequencer.playing else { return }
     for event in events {
       switch event {
         case let nodeEvent as MIDINodeEvent:
@@ -447,7 +447,7 @@ final class InstrumentTrack: MIDITrackType {
   */
   init(trackChunk: MIDIFileTrackChunk, sequence s: MIDISequence) throws {
     sequence = s
-    eventContainer = MIDITrackEventContainer(events: trackChunk.events)
+    eventContainer = MIDIEventContainer(events: trackChunk.events)
 
     // Find the end of track event
     guard let endOfTrackEvent = self.endOfTrackEvent else {
@@ -494,19 +494,11 @@ final class InstrumentTrack: MIDITrackType {
     eventQueue.name = "BUS \(instrument.bus)"
     recording = Sequencer.recording
 
-    for event in eventContainer.nodeEvents {
-      var eventBag: [MIDITrackEvent] = eventMap[event.time] ?? []
-      eventBag.append(event)
-      eventMap[event.time] = eventBag
-    }
+    eventMap.insert(typecast(eventContainer.nodeEvents) ?? [])
 
-    if let event = eventContainer.endOfTrackEvent {
-      var eventBag: [MIDITrackEvent] = eventMap[event.time] ?? []
-      eventBag.append(event)
-      eventMap[event.time] = eventBag
-    }
+    if let event = eventContainer.endOfTrackEvent { eventMap.insert([event]) }
 
-    for eventTime in eventMap.keys { time.registerCallback(dispatchEventsForTime, forTime: eventTime) }
+    time.registerCallback(dispatchEventsForTime, forTimes: eventMap.times, forObject: self)
 
     initializeNotificationReceptionist()
     try initializeMIDIClient()
@@ -535,13 +527,19 @@ extension InstrumentTrack {
 // MARK: - CustomStringConvertible
 extension InstrumentTrack: CustomStringConvertible {
   var description: String {
-    var result = "Track(\(name)) {\n"
-    result += "\tinstrument: \(instrument.description.indentedBy(4, true))\n"
-    result += "\tcolor: \(color)\n\tevents: {\n"
-    result += ",\n".join(eventContainer.events.map({$0.description.indentedBy(8)}))
-    result += "\n\t}\n}"
-    return result
+    return "\n".join(
+      "name: \(name)",
+      "instrument: \(instrument)",
+      "color: \(color)",
+      "events:\n\(eventContainer.description.indentedBy(1, useTabs: true))",
+      "map:\n\(eventMap.description.indentedBy(1, useTabs: true))"
+    )
   }
+}
+
+// MARK: - CustomStringConvertible
+extension InstrumentTrack: CustomDebugStringConvertible {
+  var debugDescription: String { var result = ""; dump(self, &result); return result }
 }
 
 // MARK: - Hashable

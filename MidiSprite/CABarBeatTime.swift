@@ -32,15 +32,13 @@ extension CABarBeatTime: CustomStringConvertible {
     let barString = String(bar, radix: 10, pad: 3)
     let beatString = String(beat)
     let subbeatString = String(subbeat, radix: 10, pad: String(subbeatDivisor).utf8.count)
-    return "\(barString) : \(beatString) . \(subbeatString)"
+    return "\(barString):\(beatString).\(subbeatString)"
   }
 }
 
 // MARK: - CustomDebugStringConvertible
 extension CABarBeatTime: CustomDebugStringConvertible {
-  public var debugDescription: String {
-    return "{bar: \(bar); beat: \(beat); subbeat: \(subbeat); subbeatDivisor: \(subbeatDivisor); ticks: \(ticks)}"
-  }
+  public var debugDescription: String { var result = ""; dump(self, &result); return result }
 }
 
 // MARK: - StringLiteralConvertible

@@ -14,6 +14,7 @@ import AudioUnit.AudioUnitProperties
 struct SoundSet: SoundSetType {
   
   let url: NSURL
+  var fileName: String { return (url.lastPathComponent?.baseNameExt.0)! }
 
   let presets: [SF2File.Preset]
 
@@ -29,7 +30,6 @@ struct SoundSet: SoundSetType {
     guard u.checkResourceIsReachableAndReturnError(&error) else { throw error! }
     presets = try SF2File(file: u).presets.sort()
     url = u
-    logDebug("\(debugDescription)")
   }
 
 }

@@ -15,6 +15,12 @@ public func ~=<T:Equatable>(lhs: T?, rhs: T?) -> Bool {
   else { return false }
 }
 
+public func typecast<T, S:SequenceType>(sequence: S) -> [T]? {
+  var result: [T] = []
+  for s in sequence { guard let t = s as? T else { return nil }; result.append(t) }
+  return result
+}
+
 public func typeCast<T,U>(t: T, _ u: U.Type) -> U? { return t as? U }
 public func typeCast<T,U>(t: T?, _ u: U.Type) -> U? { return t != nil ? typeCast(t!, u) : nil }
 

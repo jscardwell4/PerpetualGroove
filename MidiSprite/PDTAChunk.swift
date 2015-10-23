@@ -293,26 +293,29 @@ extension PDTAChunk {
     }
 
     var bytes: [Byte] { return headers.flatMap({$0.bytes}) + PresetHeader.EOP.bytes }
-    var description: String { return ",\n".join(headers.map({$0.description})) }
+    var description: String { return "\n".join(headers.map({$0.description})) }
   }
   
 }
 // MARK: - CustomStringCovnertible
 extension PDTAChunk: CustomStringConvertible {
   var description: String {
-    var result = "PDTAChunk {\n"
-    result += "  phdr:\n\(phdr.description.indentedBy(4))\n"
-    result += "  pbag: \(pbag)\n"
-    result += "  pmod: \(pmod)\n"
-    result += "  pgen: \(pgen)\n"
-    result += "  inst: \(inst)\n"
-    result += "  ibag: \(ibag)\n"
-    result += "  imod: \(imod)\n"
-    result += "  igen: \(igen)\n"
-    result += "  shdr: \(shdr)\n"
-    result += "\n}"
-    return result
+    return "\n".join(
+      "phdr:\n\(phdr.description.indentedBy(1, useTabs: true))",
+      "pbag: \(pbag)",
+      "pmod: \(pmod)",
+      "pgen: \(pgen)",
+      "inst: \(inst)",
+      "ibag: \(ibag)",
+      "imod: \(imod)",
+      "igen: \(igen)",
+      "shdr: \(shdr)"
+    )
   }
+}
+
+extension PDTAChunk: CustomDebugStringConvertible {
+  var debugDescription: String { var result = ""; dump(self, &result); return result }
 }
 
 // MARK: - PresetHeader
@@ -367,7 +370,14 @@ extension PDTAChunk {
       return result
     }
 
-    var description: String { return "\(name); preset: \(preset); bank: \(bank); bagIndex: \(bagIndex)" }
+    var description: String {
+      return "  ".join(
+        "\(name.pad(" ", count: 20))",
+        "preset: \("\(preset)".pad(" ", count: 3))",
+        "bank: \("\(bank)".pad(" ", count: 3))",
+        "bagIndex: \(bagIndex)"
+      )
+    }
 
   }
 

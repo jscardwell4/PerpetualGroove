@@ -13,26 +13,32 @@ import struct AudioToolbox.CABarBeatTime
 // MARK: - The chunk protocol
 
 /** Protocol for types that can produce a valid chunk for a MIDI file */
-protocol MIDIChunk : CustomStringConvertible {
+protocol MIDIChunk : CustomStringConvertible, CustomDebugStringConvertible {
   var type: Byte4 { get }
 }
 
 // MARK: - The track event protocol
 
 /**  Protocol for types that produce data for a track event in a track chunk */
-protocol MIDITrackEvent: CustomStringConvertible {
+protocol MIDIEvent: CustomStringConvertible, CustomDebugStringConvertible {
   var time: CABarBeatTime { get set }
   var delta: VariableLengthQuantity? { get set }
   var bytes: [Byte] { get }
 }
 
+extension MIDIEvent {
+  var debugDescription: String { var result = ""; dump(self, &result); return result }
+  var descriptionWithDelta: String { return "\(delta?.paddedDescription ?? (" " * 6)) \(description)" }
+}
+
 // MARK: - The track type protocol
 
-/** Protocol for types that provide a collection of `MIDITrackEvent` values for a chunk and can produce that chunk */
-protocol MIDITrackType: class, CustomStringConvertible {
+/** Protocol for types that provide a collection of `MIDIEvent` values for a chunk and can produce that chunk */
+protocol MIDITrackType: class, CustomStringConvertible, CustomDebugStringConvertible {
   var chunk: MIDIFileTrackChunk { get }
   var name: String { get }
-  var eventContainer: MIDITrackEventContainer { get set }
+  var eventContainer: MIDIEventContainer { get set }
+  var eventMap: MIDIEventMap { get }
   var trackEnd: CABarBeatTime { get }
   unowned var sequence: MIDISequence { get }
   init(trackChunk: MIDIFileTrackChunk, sequence s: MIDISequence) throws
@@ -69,6 +75,8 @@ extension MIDITrackType {
     validateFirstAndLastEvents()
     return MIDIFileTrackChunk(eventContainer: eventContainer)
   }
+
+  var debugDescription: String { var result = ""; dump(self, &result); return result }
 
 }
 

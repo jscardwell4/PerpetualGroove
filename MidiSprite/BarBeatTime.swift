@@ -128,9 +128,21 @@ final class BarBeatTime {
   - parameter time: CABarBeatTime
   */
   func registerCallback(callback: Callback, forTime time: CABarBeatTime, forObject obj: AnyObject? = nil) {
-    var bag = callbacks[time] ?? []
-    if let obj = obj { bag.append((callback, ObjectIdentifier(obj))) } else { bag.append((callback, nil)) }
-    callbacks[time] = bag
+    registerCallback(callback, forTimes: [time], forObject: obj)
+  }
+
+  /**
+  registerCallback:forTimes:forObject:
+
+  - parameter callback: Callback
+  - parameter times: S
+  - parameter obj: AnyObject? = nil
+  */
+  func registerCallback<S:SequenceType
+    where S.Generator.Element == CABarBeatTime>(callback: Callback, forTimes times: S, forObject obj: AnyObject? = nil)
+  {
+    let value: (Callback, ObjectIdentifier?) = obj != nil ? (callback, ObjectIdentifier(obj!)) : (callback, nil)
+    times.forEach { var bag = callbacks[$0] ?? []; bag.append(value); callbacks[$0] = bag }
   }
 
   /**
@@ -259,6 +271,11 @@ final class BarBeatTime {
 
 // MARK: - CustomStringConvertible
 extension BarBeatTime: CustomStringConvertible { var description: String { return time.description } }
+
+// MARK: - CustomDebugStringConvertible
+extension BarBeatTime: CustomDebugStringConvertible {
+  var debugDescription: String { var result = ""; dump(self, &result); return result }
+}
 
 // MARK: - Hashable
 extension BarBeatTime: Hashable { var hashValue: Int { return ObjectIdentifier(self).hashValue } }
