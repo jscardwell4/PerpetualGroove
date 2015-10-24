@@ -45,7 +45,7 @@ extension Placement: ByteArrayConvertible {
 
 extension Placement: CustomStringConvertible {
   var description: String {
-    return "{ \(position.description(3)), \(vector.description(3)) }"
+    return "{\(position.description(3)), \(vector.description(3))}"
   }
 }
 

@@ -23,8 +23,8 @@ final class MIDISequence {
   private(set) var instrumentTracks: [InstrumentTrack] = []
   private var _soloTracks: [WeakObject<InstrumentTrack>] = []
   var soloTracks: [InstrumentTrack] {
-    let result = _soloTracks.flatMap {$0.value}
-    if result.count < _soloTracks.count { _soloTracks = _soloTracks.filter { $0.value != nil } }
+    let result = _soloTracks.flatMap {$0.reference}
+    if result.count < _soloTracks.count { _soloTracks = _soloTracks.filter { $0.reference != nil } }
     return result
   }
 
@@ -63,7 +63,7 @@ final class MIDISequence {
   }
 
   /** The tempo track for the sequence is the first element in the `tracks` array */
-  private(set) lazy var tempoTrack: TempoTrack = TempoTrack(sequence: self)
+  private(set) var tempoTrack = TempoTrack()
 
   /** Collection of all the tracks in the composition */
   var tracks: [MIDITrackType] {
@@ -80,7 +80,7 @@ final class MIDISequence {
   func toggleSoloForTrack(track: InstrumentTrack) {
     guard instrumentTracks ∋ track else { logWarning("Request to toggle track not owned by sequence"); return }
 
-    if let idx = soloTracks.indexOf(track), track = _soloTracks.removeAtIndex(idx).value {
+    if let idx = soloTracks.indexOf(track), track = _soloTracks.removeAtIndex(idx).reference {
       guard track.solo else { fatalError("Internal inconsistency, track should have solo set to true to be in _soloTracks") }
       track.solo = false
       Notification.SoloCountDidChange.post(object: self,
@@ -106,11 +106,11 @@ final class MIDISequence {
       if let trackChunk = trackChunks.first
         where trackChunk.events.count == trackChunk.events.filter({ TempoTrack.isTempoTrackEvent($0) }).count
       {
-        tempoTrack = TempoTrack(trackChunk: trackChunk, sequence: self)
+        tempoTrack = TempoTrack(trackChunk: trackChunk/*, sequence: self*/)
         trackChunks = trackChunks.dropFirst()
       }
 
-      instrumentTracks = trackChunks.flatMap({ try? InstrumentTrack(trackChunk: $0, sequence: self) })
+      instrumentTracks = trackChunks.flatMap({ try? InstrumentTrack(trackChunk: $0/*, sequence: self*/) })
       for track in instrumentTracks { Notification.DidAddTrack.post(object: self, userInfo: [Notification.Key.Track: track]) }
       zip(TrackColor.allCases, instrumentTracks).forEach { $1.color = $0 }
       currentTrack = instrumentTracks.first
@@ -127,6 +127,10 @@ final class MIDISequence {
   */
   init(file f: MIDIFile) { file = f; currentTrack = instrumentTracks.first }
 
+  deinit {
+    logDebug("")
+  }
+
   /**
   newTrackWithInstrument:
 
@@ -134,7 +138,7 @@ final class MIDISequence {
   */
 
   func newTrackWithInstrument(instrument: Instrument) throws {
-    let track = try InstrumentTrack(instrument: instrument, sequence: self)
+    let track = try InstrumentTrack(instrument: instrument/*, sequence: self*/)
     track.color = TrackColor.allCases[(instrumentTracks.count + 1) % TrackColor.allCases.count]
     instrumentTracks.append(track)
     Notification.DidAddTrack.post(object: self, userInfo: [Notification.Key.Track: track])
@@ -165,12 +169,7 @@ final class MIDISequence {
 }
 
 extension MIDISequence: CustomStringConvertible {
-  var description: String {
-    var result = "\(self.dynamicType.self) {\n"
-    result += "\n".join(tracks.map({$0.description.indentedBy(1, useTabs: true)}))
-    result += "\n}"
-    return result
-  }
+  var description: String { return "\ntracks:\n" + "\n\n".join(tracks.map({$0.description.indentedBy(1, useTabs: true)})) }
 }
 
 extension MIDISequence: CustomDebugStringConvertible {

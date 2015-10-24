@@ -689,21 +689,21 @@ public protocol NonHomogeneousUnpackable2 {
 
 
 /** Protocol for an object guaranteed to have a name */
-@objc public protocol Named {
+public protocol Named {
   var name: String { get }
 }
 
-@objc public protocol DynamicallyNamed: Named {
+public protocol DynamicallyNamed: Named {
   var name: String { get set }
 }
 
 /** Protocol for an object that may have a name */
-@objc public protocol Nameable {
+public protocol Nameable {
   var name: String? { get }
 }
 
 /** Protocol for an object that may have a name and for which a name may be set */
-@objc public protocol Renameable: Nameable {
+public protocol Renameable: Nameable {
   var name: String? { get set }
 }
 

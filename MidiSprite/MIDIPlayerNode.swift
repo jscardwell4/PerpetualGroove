@@ -49,7 +49,11 @@ final class MIDIPlayerNode: SKShapeNode {
                     from: Sequencer.self,
                    queue: queue,
                 callback: didReset)
-    receptionist.observe(MIDIDocumentManager.Notification.DidChangeDocument, queue: queue, callback: didReset)
+
+    receptionist.observe(MIDIDocumentManager.Notification.DidChangeDocument,
+                    from: MIDIDocumentManager.self,
+                   queue: queue,
+                callback: didReset)
   }
 
   private(set) var midiNodes: [MIDINode] = []
@@ -72,6 +76,7 @@ final class MIDIPlayerNode: SKShapeNode {
   func didReset(notification: NSNotification) {
     midiNodes.forEach { $0.removeFromParent() }
     midiNodes.removeAll()
+    logDebug("midi nodes removed")
   }
 
   private let receptionist = NotificationReceptionist()
@@ -85,6 +90,8 @@ final class MIDIPlayerNode: SKShapeNode {
                 targetTrack: InstrumentTrack? = nil,
                 attributes: NoteAttributes = Sequencer.currentNoteAttributes)
   {
+    logDebug("adding node with placement: \(placement) and attributes: \(attributes)")
+
     guard let track = targetTrack ?? Sequencer.sequence?.currentTrack else {
       logWarning("Cannot place a node without a track")
       return

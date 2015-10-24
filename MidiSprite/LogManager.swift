@@ -109,10 +109,10 @@ extension MetaEvent: Loggable {}
 extension ChannelEvent: Loggable {}
 extension VariableLengthQuantity: Loggable {}
 extension MIDINodeEvent: Loggable {}
+extension MIDINodeHistory: Loggable {}
 extension MIDIEventContainer: Loggable {}
 extension MIDIEventMap: Loggable {}
 
-extension MIDINodeHistory: Loggable {}
 extension MIDIPlayerScene: Loggable {}
 extension MIDIPlayerNode: Loggable {}
 extension MIDIPlayerFieldNode: Loggable {}

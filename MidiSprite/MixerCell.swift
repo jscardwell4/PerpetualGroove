@@ -168,7 +168,6 @@ final class TrackCell: MixerCell {
   */
   private func muteStatusChanged(notification: NSNotification) {
     muteButton.selected = track?.mute ?? false
-    logVerbose("<\(track!.name)> muteButton.selected = \(muteButton.selected)")
   }
 
   /**
@@ -210,7 +209,7 @@ final class TrackCell: MixerCell {
                    queue: queue,
                 callback: soloStatusChanged)
     receptionist.observe(MIDISequence.Notification.SoloCountDidChange,
-                    from: track.sequence,
+                    from: Sequencer.sequence,
                    queue: queue,
                 callback: soloCountChanged)
     return receptionist

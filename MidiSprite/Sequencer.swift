@@ -47,38 +47,7 @@ final class Sequencer {
     }
     sequence = MIDIDocumentManager.currentDocument?.sequence
     initialized = true
-    logVerbose("Sequencer initialized")
-  }
-
-  // MARK: - Notifications
-  enum Notification: String, NotificationType, NotificationNameType {
-    case DidInitializeSoundSets
-    case DidStart, DidPause, DidStop, DidReset
-    case DidToggleRecording
-    case DidBeginJogging, DidEndJogging
-    case DidJog
-
-    var object: AnyObject? { return Sequencer.self }
-
-    var userInfo: [Key:AnyObject?]? {
-      switch self {
-        case .DidStart, .DidPause, .DidStop, .DidReset, .DidBeginJogging, .DidEndJogging, .DidJog:
-          var result: [Key:AnyObject?] = [
-            Key.Ticks: NSNumber(unsignedLongLong: Sequencer.time.ticks),
-            Key.Time: NSValue(barBeatTime: Sequencer.time.time)
-          ]
-          if case .DidJog = self { result[Key.JogTime] = NSValue(barBeatTime: Sequencer.jogTime) }
-          return result
-        default: return nil
-      }
-    }
-
-    enum Key: String, NotificationKeyType { case Time, Ticks, URL, FromTrack, ToTrack, JogTime}
-  }
-
-  enum Error: String, ErrorType {
-    case InvalidBarBeatTime
-    case NotPermitted
+    logDebug("Sequencer initialized")
   }
 
   private static var receptionist: NotificationReceptionist = {
@@ -86,9 +55,18 @@ final class Sequencer {
     receptionist.observe(MIDIDocumentManager.Notification.DidChangeDocument,
                     from: MIDIDocumentManager.self,
                    queue: NSOperationQueue.mainQueue(),
-                callback: {_ in Sequencer.sequence = MIDIDocumentManager.currentDocument?.sequence})
+                callback: Sequencer.didChangeDocument)
     return receptionist
     }()
+
+  /**
+  didChangeDocument:
+
+  - parameter notification: NSNotification
+  */
+  private static func didChangeDocument(notification: NSNotification) {
+    sequence = MIDIDocumentManager.currentDocument?.sequence
+  }
 
   // MARK: - Sequence
 
@@ -270,5 +248,43 @@ final class Sequencer {
     state ∖= [.Playing, .Paused]
     Notification.DidStop.post()
   }
+}
 
+// MARK: - Notification
+extension Sequencer {
+
+  // MARK: - Notifications
+  enum Notification: String, NotificationType, NotificationNameType {
+    case DidInitializeSoundSets
+    case DidStart, DidPause, DidStop, DidReset
+    case DidToggleRecording
+    case DidBeginJogging, DidEndJogging
+    case DidJog
+
+    var object: AnyObject? { return Sequencer.self }
+
+    var userInfo: [Key:AnyObject?]? {
+      switch self {
+        case .DidStart, .DidPause, .DidStop, .DidReset, .DidBeginJogging, .DidEndJogging, .DidJog:
+          var result: [Key:AnyObject?] = [
+            Key.Ticks: NSNumber(unsignedLongLong: Sequencer.time.ticks),
+            Key.Time: NSValue(barBeatTime: Sequencer.time.time)
+          ]
+          if case .DidJog = self { result[Key.JogTime] = NSValue(barBeatTime: Sequencer.jogTime) }
+          return result
+        default: return nil
+      }
+    }
+
+    enum Key: String, NotificationKeyType { case Time, Ticks, URL, FromTrack, ToTrack, JogTime}
+  }
+
+}
+
+// MARK: - Error
+extension Sequencer {
+  enum Error: String, ErrorType {
+    case InvalidBarBeatTime
+    case NotPermitted
+  }
 }

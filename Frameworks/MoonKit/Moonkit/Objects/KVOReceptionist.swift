@@ -60,14 +60,14 @@ public final class KVOReceptionist: NSObject {
     keyPath = NSStringFromSelector(NSSelectorFromString(keyPath))
     guard var observationBag = observations[identifier], let observation = observationBag[keyPath] else { return }
     observationBag[keyPath] = nil
-    observation.object.value?.removeObserver(self, forKeyPath: keyPath, context: observingContext)
+    observation.object.reference?.removeObserver(self, forKeyPath: keyPath, context: observingContext)
     observations[identifier] = observationBag
   }
 
 
   deinit {
     for observation in observations.values.map({$0.values}).flatten() {
-      observation.object.value?.removeObserver(self, forKeyPath: observation.keyPath, context: observingContext)
+      observation.object.reference?.removeObserver(self, forKeyPath: observation.keyPath, context: observingContext)
     }
     observations.removeAll()
   }

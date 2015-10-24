@@ -113,7 +113,7 @@ extension MIDINodeEvent.Data: CustomStringConvertible {
   var description: String {
     switch self {
       case let .Add(identifier, placement, attributes):
-        return "add node '\(identifier)' ( \(placement), \(attributes) )"
+        return "add node '\(identifier)' (\(placement), \(attributes))"
       case let .Remove(identifier):
         return "remove node '\(identifier)'"
     }

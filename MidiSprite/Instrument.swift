@@ -153,7 +153,7 @@ final class Instrument: Equatable {
 extension Instrument: CustomStringConvertible {
 
   var description: String {
-    return "soundSet: \(soundSet), program: \(program), bank: \(bank), channel: \(channel)"
+    return "{soundSet: \(soundSet), program: \(program), bank: \(bank), channel: \(channel)}"
   }
 
 }

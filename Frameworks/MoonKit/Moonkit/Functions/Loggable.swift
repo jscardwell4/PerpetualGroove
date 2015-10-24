@@ -8,10 +8,9 @@
 
 import Foundation
 
-
-
 public protocol Loggable {
   static var logContext: LogManager.LogContext { get }
+  var logTag: LogManager.LogMessage.Tag? { get }
 }
 
 public extension Loggable {
@@ -21,8 +20,10 @@ public extension Loggable {
     set { LogManager.setLogContext(newValue, forType: self.dynamicType.self) }
   }
 
+  var logTag: LogManager.LogMessage.Tag? { return LogManager.LogMessage.Tag(className: "\(self.dynamicType)") }
+
   /**
-  log:asynchronous:flag:function:line:file:
+  log:asynchronous:flag:function:line:file:tag:
 
   - parameter message: String
   - parameter asynchronous: Bool = true
@@ -32,11 +33,11 @@ public extension Loggable {
   - parameter file: String = __FILE__
   */
   static func log(message: String,
-           asynchronous: Bool = true,
-           flag: LogManager.LogFlag,
-           function: String = __FUNCTION__,
-           line: UInt = __LINE__,
-           file: String = __FILE__)
+     asynchronous: Bool = true,
+             flag: LogManager.LogFlag,
+         function: String = __FUNCTION__,
+             line: UInt = __LINE__,
+             file: String = __FILE__)
   {
     LogManager.logMessage(message,
              asynchronous: asynchronous,
@@ -44,7 +45,8 @@ public extension Loggable {
                  function: function,
                      line: line,
                      file: file,
-                  context: logContext)
+                  context: logContext,
+                      tag: LogManager.LogMessage.Tag(className: "\(self)"))
   }
 
   /**
@@ -57,10 +59,10 @@ public extension Loggable {
   - parameter file: String = __FILE__
   */
   static func logError(message: String,
-   asynchronous: Bool = true,
-       function: String = __FUNCTION__,
-           line: UInt = __LINE__,
-           file: String = __FILE__)
+          asynchronous: Bool = true,
+              function: String = __FUNCTION__,
+                  line: UInt = __LINE__,
+                  file: String = __FILE__)
   {
     log(message, asynchronous: asynchronous, flag: .Error, function: function, line: line, file: file)
   }
@@ -199,6 +201,7 @@ asynchronous: asynchronous,
            function: String = __FUNCTION__,
            line: UInt = __LINE__,
            file: String = __FILE__)
+
   {
     LogManager.logMessage(message,
              asynchronous: asynchronous,
@@ -206,7 +209,8 @@ asynchronous: asynchronous,
                  function: function,
                      line: line,
                      file: file,
-                  context: self.dynamicType.logContext)
+                  context: self.dynamicType.logContext,
+                      tag: logTag)
   }
 
   /**
@@ -344,4 +348,16 @@ asynchronous: asynchronous,
     log(message, asynchronous: asynchronous, flag: .Verbose, function: function, line: line, file: file)
   }
 
+}
+
+public extension Loggable where Self:Named {
+  var logTag: LogManager.LogMessage.Tag? {
+    return LogManager.LogMessage.Tag(objectName: name, className: "\(self.dynamicType)")
+  }
+}
+
+public extension Loggable where Self:Nameable {
+  var logTag: LogManager.LogMessage.Tag? {
+    return LogManager.LogMessage.Tag(objectName: name, className: "\(self.dynamicType)")
+  }
 }

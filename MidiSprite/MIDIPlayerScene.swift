@@ -38,16 +38,6 @@ final class MIDIPlayerScene: SKScene {
   */
   override func didMoveToView(view: SKView) { guard !contentCreated else { return }; createContent() }
 
-
-  /**
-  update:
-
-  - parameter currentTime: CFTimeInterval
-  */
-//  override func update(currentTime: CFTimeInterval) {
-    /* Called before each frame is rendered */
-//    backgroundDispatch {print("scene time = \(currentTime)")}
-//  }
 }
 
 extension MIDIPlayerScene: SKPhysicsContactDelegate {

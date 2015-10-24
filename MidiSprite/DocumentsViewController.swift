@@ -22,7 +22,7 @@ final class DocumentsViewController: UICollectionViewController {
   private var widthConstraint: NSLayoutConstraint?
   private var heightConstraint: NSLayoutConstraint?
 
-  private var receptionist: NotificationReceptionist!
+  private let receptionist = NotificationReceptionist()
 
   @IBOutlet weak var documentsViewLayout: DocumentsViewLayout! { didSet { documentsViewLayout.controller = self } }
 
@@ -60,14 +60,15 @@ final class DocumentsViewController: UICollectionViewController {
   /** setup */
   private func setup() {
     (collectionViewLayout as? DocumentsViewLayout)?.controller = self
-    guard case .None = receptionist else { return }
     let queue = NSOperationQueue.mainQueue()
-    receptionist = NotificationReceptionist(callbacks:
-      [
-        MIDIDocumentManager.Notification.DidUpdateMetadataItems.rawValue : (MIDIDocumentManager.self, queue, didUpdateItems),
-        SettingsManager.Notification.Name.iCloudStorageChanged.rawValue  : (SettingsManager.self, queue, iCloudStorageDidChange)
-      ]
-    )
+    receptionist.observe(MIDIDocumentManager.Notification.DidUpdateMetadataItems,
+                    from: MIDIDocumentManager.self,
+                   queue: queue,
+                callback: didUpdateItems)
+    receptionist.observe(SettingsManager.Notification.Name.iCloudStorageChanged.rawValue,
+                    from: SettingsManager.self,
+                   queue: queue,
+                callback: iCloudStorageDidChange)
   }
 
   /**

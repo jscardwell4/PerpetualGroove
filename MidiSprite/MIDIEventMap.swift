@@ -67,16 +67,6 @@ struct MIDIEventMap: CollectionType {
 
 extension MIDIEventMap: CustomStringConvertible {
   var description: String {
-    var result = ""
-    for (time, events) in _map {
-      result += "\(time): [\(", ".join(events.map({$0.description}))) + ]\n"
-//      switch event {
-//      case let metaEvent as MetaEvent: result += "\(time): \(metaEvent)"
-//      case let channelEvent as ChannelEvent: break
-//      case let nodeEvent as MIDINodeEvent: break
-//      default: fatalError("hell froze over on account of all the flying pigs blocking out the sun")
-//      }
-    }
-    return result
+    return "\n".join(_map.map({ time, events in "\(time): [\(", ".join(events.map({$0.description})))]"}))
   }
 }

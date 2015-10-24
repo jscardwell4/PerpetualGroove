@@ -40,8 +40,8 @@ protocol MIDITrackType: class, CustomStringConvertible, CustomDebugStringConvert
   var eventContainer: MIDIEventContainer { get set }
   var eventMap: MIDIEventMap { get }
   var trackEnd: CABarBeatTime { get }
-  unowned var sequence: MIDISequence { get }
-  init(trackChunk: MIDIFileTrackChunk, sequence s: MIDISequence) throws
+//  unowned var sequence: MIDISequence { get }
+  init(trackChunk: MIDIFileTrackChunk/*, sequence s: MIDISequence*/) throws
 }
 
 extension MIDITrackType {

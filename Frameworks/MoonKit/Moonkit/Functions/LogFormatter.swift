@@ -32,7 +32,7 @@ public class LogFormatter: NSObject, DDLogFormatter {
     public static let AddReturnAfterSEL       = Options(rawValue: 0b0000_0000_0100_0000)
     public static let CollapseTrailingReturns = Options(rawValue: 0b0000_0000_1000_0000)
     public static let IndentMessageBody       = Options(rawValue: 0b0000_0001_0000_0000)
-    public static let IncludeSEL              = Options(rawValue: 0b0000_0010_0000_0000)
+    public static let IncludeLocation         = Options(rawValue: 0b0000_0010_0000_0000)
     public static let UseFileInsteadOfSEL     = Options(rawValue: 0b0000_0100_0000_0000)
     public static let IncludeObjectName       = Options(rawValue: 0b0000_1000_0000_0000)
     public static let IncludePrompt           = Options(rawValue: 0b0001_0000_0000_0000)
@@ -41,7 +41,8 @@ public class LogFormatter: NSObject, DDLogFormatter {
     public static let taggingOptions: Options = [
       .IncludeContext, 
       .IncludeTimeStamp, 
-      .IncludeSEL, 
+      .IncludeLocation,
+      .IncludeObjectName,
       .AddReturnAfterSEL, 
       .AddReturnAfterMessage
     ]
@@ -58,7 +59,7 @@ public class LogFormatter: NSObject, DDLogFormatter {
       if self ∋ .AddReturnAfterSEL       { flagStrings.append("AddReturnAfterSEL")       }
       if self ∋ .CollapseTrailingReturns { flagStrings.append("CollapseTrailingReturns") }
       if self ∋ .IndentMessageBody       { flagStrings.append("IndentMessageBody")       }
-      if self ∋ .IncludeSEL              { flagStrings.append("IncludeSEL")              }
+      if self ∋ .IncludeLocation         { flagStrings.append("IncludeLocation")         }
       if self ∋ .UseFileInsteadOfSEL     { flagStrings.append("UseFileInsteadOfSEL")     }
       if self ∋ .IncludeObjectName       { flagStrings.append("IncludeObjectName")       }
       if self ∋ .IncludePrompt           { flagStrings.append("IncludePrompt")           }
@@ -89,13 +90,96 @@ public class LogFormatter: NSObject, DDLogFormatter {
   - returns: String?
   */
   @objc public func formatLogMessage(logMessage: DDLogMessage) -> String? {
-    guard context != .Ignored && (context == .Default || LogContext(rawValue: logMessage.context) ∋ context) else {
-      return nil
-    }
+    guard context != .Ignored && (context == .Default
+       || LogContext(rawValue: logMessage.context) ∋ context) else { return nil }
     return formattedLogMessageForMessage(logMessage)
   }
 
   public enum Key: String, KeyType { case ClassName, ObjectName, Object, Context }
+
+  /**
+  namesFromTag:
+
+  - parameter tag: [String
+
+  - returns: (objectName: String?, className: String?, contextName: String?)
+  */
+  private func namesFromTag(tag: [String:AnyObject]?) -> (String?, String?, String?) {
+    guard let tag = tag else { return (nil, nil, nil) }
+    let objectName: String?, className: String?, contextName: String?
+    let object  = tag[Key.Object.key]
+    objectName  = (tag[Key.ObjectName.key] as? String) ?? object?.shortDescription
+    contextName = tag[Key.Context.key] as? String
+    className   = (tag[Key.ClassName.key] as? String) ?? (object != nil ? "\(object!.dynamicType)" : nil)
+    return (objectName, className, contextName)
+  }
+
+  /**
+  namesFromTag:
+
+  - parameter tag: LogManager.LogMessage.Tag?
+
+  - returns: (String?, String?, String?)
+  */
+  private func namesFromTag(tag: LogManager.LogMessage.Tag?) -> (String?, String?, String?) {
+    guard let tag = tag else { return (nil, nil, nil) }
+    let objectName: String?, className: String?, contextName: String?
+    objectName  = tag.objectName
+    contextName = tag.contextName
+    className   = tag.className
+    return (objectName, className, contextName)
+  }
+
+  /**
+  namesFromTag:
+
+  - parameter tag: AnyObject?
+
+  - returns: (String?, String?, String?)
+  */
+  private func namesFromTag(tag: AnyObject?) -> (String?, String?, String?) {
+    switch tag {
+      case let tag as LogManager.LogMessage.Tag: return namesFromTag(tag)
+      case let tag as [String:AnyObject]:        return namesFromTag(tag)
+      default:                                   return (nil, nil, nil)
+    }
+  }
+
+  private var useColor: Bool { return ColorLog.colorEnabled && options ∋ .EnableColor }
+
+  /**
+  stringFromTimestamp:useColor:
+
+  - parameter timestamp: NSDate
+  - parameter useColor: Bool
+
+  - returns: String
+  */
+  private func stringFromTimestamp(timestamp: NSDate) -> String {
+    let dateFormatter = NSDateFormatter()
+    dateFormatter.dateFormat = "M/d/yy H:mm:ss.SSS"
+    let stamp = dateFormatter.stringFromDate(timestamp)
+    return (useColor ? ColorLog.wrapColor(stamp, 125, 125, 125) : stamp)
+  }
+
+  /**
+  location:className:
+
+  - parameter message: DDLogMessage
+  - parameter className: String?
+
+  - returns: String
+  */
+  private func location(message: DDLogMessage, _ className: String?) -> String {
+    let selString: String
+    switch ((message.file as NSString).lastPathComponent, message.function, className) {
+      case let (_, f?, c?) where options ∌ .UseFileInsteadOfSEL:  selString = "[\(c) \(f)]"
+      case let (n, f?, c?) where options ∋ .UseFileInsteadOfSEL:  selString = "«\(n) - \(c)» \(f)"
+      case let (n, f?, nil):                                      selString = "«\(n)» \(f)"
+      default:                                                    selString = ""
+    }
+    return (useColor ? ColorLog.wrapColor(selString, 171, 101, 38) : selString)
+  }
 
   /**
   formattedLogMessageForMessage:
@@ -104,81 +188,29 @@ public class LogFormatter: NSObject, DDLogFormatter {
 
   - returns: String
   */
-  public func formattedLogMessageForMessage(logMessage: DDLogMessage) -> String {
+  public func formattedLogMessageForMessage(msg: DDLogMessage) -> String {
     var result = ""
 
-    let useColor = ColorLog.colorEnabled && options ∋ .EnableColor
+    func space() -> String { return result.characters.last?.isWhitespace == true ? "" : " " }
+    func newline(flag: Bool) -> String { return flag && !result.isEmpty ? "\n" : "" }
 
-    if options ∋ .IncludePrompt { result += prompt }
+    let (objectName, className, contextName) = namesFromTag(msg.tag)
 
-    let objectName: String?, className: String?, contextName: String?
+    if options ∋ .IncludePrompt                          { result += prompt                                             }
+    if options ∋ .IncludeContext && contextName != nil   { result += "(\(contextName!))"                                }
+    if options ∋ .IncludeLogLevel                        { result += "[\(msg.flag)"                                     }
+    if options ∋ .IncludeTimeStamp                       { result += stringFromTimestamp(msg.timestamp)                 }
+    if options ∋ .IncludeLogLevel                        { result += "] " + newline(options ∋ .AddReturnAfterPrefix)    }
+    if options ∋ .IncludeLocation                        { result += space()
+                                                           result += location(msg, className)
+                                                           result += newline(options ∋ .AddReturnAfterSEL)              }
+    if options ∋ .IncludeObjectName && objectName != nil { result += space()
+                                                           result += "\u{00AB}\(objectName!)\u{00BB}  "
+                                                           result += newline(options ∋ .AddReturnAfterObject)           }
+    if let m = msg.message where !m.isEmpty              { result += options ∋ .IndentMessageBody ? m.indentedBy(4) : m }
+    if options ∋ .AddReturnAfterMessage                  { result += "\n\n"                                             }
+    if options ∋ .CollapseTrailingReturns                { result.subInPlace(~/"[\\n]+$", "")                           }
 
-    if let dict = logMessage.tag as? [String:AnyObject] {
-      let object  = dict[Key.Object.key]
-      objectName  = (dict[Key.ObjectName.key] as? String) ?? object?.shortDescription
-      contextName = dict[Key.Context.key] as? String
-      className   = (dict[Key.ClassName.key] as? String) ?? (object != nil ? "\(object!.dynamicType)" : nil)
-    } else { 
-      objectName  = nil
-      className   = nil
-      contextName = nil 
-    }
-
-    if options ∋ .IncludeContext, let contextName = contextName { result += "(\(contextName))" }
-
-    if options ∋ .IncludeLogLevel {
-      switch logMessage.flag {
-        case LogFlag.Error:   result += "[E"
-        case LogFlag.Warning: result += "[W"
-        case LogFlag.Info:    result += "[I"
-        case LogFlag.Debug:   result += "[D"
-        case LogFlag.Verbose: result += "[V"
-        default:              result += "[?"
-      } 
-    }
-
-    if options ∋ .IncludeTimeStamp {
-      let dateFormatter = NSDateFormatter()
-      dateFormatter.dateFormat = "M/d/yy H:mm:ss.SSS"
-      let stamp = dateFormatter.stringFromDate(logMessage.timestamp)
-      result += (useColor ? ColorLog.wrapColor(stamp, 125, 125, 125) : stamp)
-    }
-
-    if options ∋ .IncludeLogLevel { result += "]" }
-
-    if options ∋ .AddReturnAfterPrefix && !result.isEmpty { result += "\n" } else { result += " " }
- 
-    if options ∋ .IncludeSEL {
-      if let lastCharacter = result.characters.last
-        where NSCharacterSet.whitespaceAndNewlineCharacterSet() ∌ lastCharacter { result += " " }
-
-      let selString: String
-      if options ∋ .UseFileInsteadOfSEL {
-        let fileName = (logMessage.file as NSString).lastPathComponent
-        let functionName = logMessage.function
-        selString = "«\(fileName)» \(functionName)"
-      } else if let className = className {
-        selString = "[\(className) \(logMessage.function)]"
-      } else {
-        selString = "[\(logMessage.function)]"
-      }
-      result += (useColor ? ColorLog.wrapColor(selString, 171, 101, 38) : selString)
-      if options ∋ .AddReturnAfterSEL { result += "\n" } else { result += " "}
-    }
-
-    if let objectName = objectName where options ∋ .IncludeObjectName {
-      if let lastCharacter = result.characters.last where NSCharacterSet.whitespaceAndNewlineCharacterSet() ∌ lastCharacter {
-        result += " "
-      }
-      result += "\u{00AB}\(objectName)\u{00BB}"
-      if options ∋ .AddReturnAfterObject { result += " \n" } else { result += " " }
-    }
-
-    if let message = logMessage.message where !message.isEmpty {
-      if options ∋ .IndentMessageBody { result = message.indentedBy(4) } else { result += message }
-      if options ∋ .AddReturnAfterMessage { result += "\n\n" }
-      if options ∋ .CollapseTrailingReturns { result.subInPlace(~/"[\\n]+$", "") }
-    }
     return result
   }
 

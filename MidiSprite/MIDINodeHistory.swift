@@ -165,19 +165,7 @@ extension MIDINodeHistory.Breadcrumb: CustomStringConvertible {
   var description: String { return String(tickInterval) }
 }
 extension MIDINodeHistory.Breadcrumb: CustomDebugStringConvertible {
-  var debugDescription: String {
-    var result = "Breadcrumb {\n"
-    result += "  from: \(from)\n"
-    result += "  to: \(to)\n"
-    result += "  tickInterval: \(tickInterval)\n"
-    result += "  velocity: \(velocity)\n"
-    result += "  𝝙ticks: \(𝝙ticks)\n"
-    result += "  𝝙seconds: \(𝝙seconds)\n"
-    result += "  𝝙meters: \(𝝙meters)\n"
-    result += "  𝝙position: \(𝝙position)\n"
-    result += "\n}"
-    return result
-  }
+  var debugDescription: String { var result = ""; dump(self, &result); return result }
 }
 
 extension MIDINodeHistory.Breadcrumb: Comparable {}
@@ -203,15 +191,7 @@ extension MIDINodeHistory: CustomStringConvertible {
 }
 
 extension MIDINodeHistory: CustomDebugStringConvertible {
-  var debugDescription: String {
-    var result = "MIDINodeHistory {\n"
-    result += "  initialSnapshot: \(initialSnapshot)\n"
-    result += "  breadcrumbs: {\n"
-    result += ",\n".join(breadcrumbs.map({$0.debugDescription.indentedBy(4)}))
-    result += "\n  }"
-    result += "\n}"
-    return result
-  }
+  var debugDescription: String { var result = ""; dump(self, &result); return result }
 }
 
 extension MIDINodeHistory.Snapshot: Comparable {}
@@ -235,4 +215,8 @@ extension MIDINodeHistory.Snapshot: CustomStringConvertible {
     result += " }"
     return result
   }
+}
+
+extension MIDINodeHistory.Snapshot: CustomDebugStringConvertible {
+  var debugDescription: String { var result = ""; dump(self, &result); return result }
 }

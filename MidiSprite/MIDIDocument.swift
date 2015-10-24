@@ -18,7 +18,7 @@ final class MIDIDocument: UIDocument {
 
   enum Error: String, ErrorType { case InvalidContentType }
 
-  let sequence = MIDISequence()
+  private(set) var sequence: MIDISequence! = MIDISequence()
 
   /**
   Callback for `DidAddTrack` notifications from `sequence`. Updates `receptionist` to observe `DidUpdateEvents` notificaton from
@@ -51,12 +51,24 @@ final class MIDIDocument: UIDocument {
   private func didUpdateTrack(notification: NSNotification) { updateChangeCount(.Done) }
 
   /**
+  didChangeState:
+
+  - parameter notification: NSNotification
+  */
+  private func didChangeState(notification: NSNotification) {
+    guard documentState ∋ .InConflict, let versions = NSFileVersion.unresolvedConflictVersionsOfItemAtURL(fileURL) else { return }
+    logDebug("versions: \(versions)")
+    // TODO: resolve conflict
+  }
+
+  /**
   init:
 
   - parameter url: NSURL
   */
   override init(fileURL url: NSURL) {
     super.init(fileURL: url)
+    receptionist.observe(UIDocumentStateChangedNotification,       from: self, callback: didChangeState)
     receptionist.observe(MIDISequence.Notification.DidAddTrack,    from: sequence, callback: didAddTrack)
     receptionist.observe(MIDISequence.Notification.DidRemoveTrack, from: sequence, callback: didRemoveTrack)
   }
@@ -84,19 +96,36 @@ final class MIDIDocument: UIDocument {
   */
   override func contentsForType(typeName: String) throws -> AnyObject {
     let bytes = sequence.file.bytes
-    return NSData(bytes: bytes, length: bytes.count)
+    return NSData(bytes: sequence.file.bytes, length: bytes.count)
   }
 
   /**
-  fileAttributesToWriteToURL:forSaveOperation:
+  handleError:userInteractionPermitted:
 
-  - parameter url: NSURL
-  - parameter saveOperation: UIDocumentSaveOperation
+  - parameter error: NSError
+  - parameter userInteractionPermitted: Bool
   */
-  override func fileAttributesToWriteToURL(url: NSURL,
-                          forSaveOperation saveOperation: UIDocumentSaveOperation) throws -> [NSObject: AnyObject]
-  {
-    return [NSURLHasHiddenExtensionKey: true]
+  override func handleError(error: NSError, userInteractionPermitted: Bool) {
+    logError(error)
+    super.handleError(error, userInteractionPermitted: userInteractionPermitted)
+  }
+
+  /**
+  closeWithCompletionHandler:
+
+  - parameter completionHandler: ((Bool) -> Void
+  */
+  override func closeWithCompletionHandler(completionHandler: ((Bool) -> Void)?) {
+    for track in sequence.tracks {
+      receptionist.stopObserving(MIDITrackNotification.DidUpdateEvents, from: track)
+    }
+    receptionist.stopObserving(MIDISequence.Notification.DidAddTrack, from: sequence)
+    receptionist.stopObserving(MIDISequence.Notification.DidRemoveTrack, from: sequence)
+    super.closeWithCompletionHandler({[weak self] in self?.sequence = nil; completionHandler?($0)})
+  }
+
+  deinit {
+    logDebug("deinit")
   }
 
   /**

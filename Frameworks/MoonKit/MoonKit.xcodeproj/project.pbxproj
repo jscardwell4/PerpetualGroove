@@ -438,6 +438,7 @@
 		C2F39D2B1A3A51960024EE94 /* FontAwesome.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2F39D2A1A3A51960024EE94 /* FontAwesome.otf */; };
 		C2F39D2F1A3A6D5A0024EE94 /* NSAttributedString+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F39D2E1A3A6D5A0024EE94 /* NSAttributedString+MoonKitAdditions.swift */; };
 		C2F619E01BC599D00000891A /* Marquee.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F619DF1BC599D00000891A /* Marquee.swift */; };
+		C2F682BE1BDAEC45002FCA2B /* Character.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F682BD1BDAEC45002FCA2B /* Character.swift */; };
 		C2F75A0D1B977075001EA2BA /* PropertyCoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F75A0C1B977075001EA2BA /* PropertyCoder.swift */; };
 		C2F84F431B14C4B700AF891D /* NSIndexSet+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F84F421B14C4B700AF891D /* NSIndexSet+MoonKitAdditions.swift */; };
 		C2F8C30F1A36133E004229FE /* TwoToneSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F8C30E1A36133E004229FE /* TwoToneSlider.swift */; };
@@ -857,6 +858,7 @@
 		C2F4370219BB813F00B60FC3 /* MSKeyPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSKeyPath.h; sourceTree = "<group>"; };
 		C2F4370319BB813F00B60FC3 /* MSKeyPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSKeyPath.m; sourceTree = "<group>"; };
 		C2F619DF1BC599D00000891A /* Marquee.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Marquee.swift; sourceTree = "<group>"; };
+		C2F682BD1BDAEC45002FCA2B /* Character.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Character.swift; sourceTree = "<group>"; };
 		C2F75A0C1B977075001EA2BA /* PropertyCoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyCoder.swift; sourceTree = "<group>"; };
 		C2F84F421B14C4B700AF891D /* NSIndexSet+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSIndexSet+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C2F8C30E1A36133E004229FE /* TwoToneSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TwoToneSlider.swift; sourceTree = "<group>"; };
@@ -963,6 +965,7 @@
 		C23592E019C8E04200920F8D /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				C2F682BD1BDAEC45002FCA2B /* Character.swift */,
 				C26A09771BC9F1B0002EFEE1 /* CATransform3D.swift */,
 				C2CA852B1BC72EA00046AFC0 /* NSRange+MoonKitAdditions.swift */,
 				C2CA852D1BC731FF0046AFC0 /* NSLayoutManager+MoonKitAdditions.swift */,
@@ -2089,6 +2092,7 @@
 				C2064FFF1A13C71D00342FDE /* NSLayoutConstraint+MoonKitAdditions.swift in Sources */,
 				C28E50971A13CA8F00DF3206 /* ToggleImageBarButtonItem.swift in Sources */,
 				C23592D719C8785D00920F8D /* NSMutableString+MSKitAdditions.m in Sources */,
+				C2F682BE1BDAEC45002FCA2B /* Character.swift in Sources */,
 				C20297FC1AF295A5003F647B /* KVOReceptionist.swift in Sources */,
 				C28E50961A13CA7E00DF3206 /* ToggleBarButtonItem.swift in Sources */,
 				C2404BC01B77ACDC00A68A64 /* ImageBarButtonItem.swift in Sources */,

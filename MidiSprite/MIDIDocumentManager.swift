@@ -42,7 +42,11 @@ final class MIDIDocumentManager {
 
       guard oldValue != currentDocument else { return }
 
-      if let oldValue = oldValue { observer.stopObserving(oldValue, forChangesTo: "fileURL") }
+      if let oldValue = oldValue {
+        observer.stopObserving(oldValue, forChangesTo: "fileURL")
+        oldValue.updateChangeCount(.Done)
+        oldValue.closeWithCompletionHandler(nil)
+      }
 
       if let currentDocument = currentDocument {
         observer.observe(currentDocument, forChangesTo: "fileURL", queue: queue) {

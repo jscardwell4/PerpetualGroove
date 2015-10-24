@@ -9,6 +9,6 @@
 import Foundation
 
 public struct WeakObject<T:AnyObject> {
-  public private(set) weak var value: T?
-  public init(_ v: T) { value = v }
+  public private(set) weak var reference: T?
+  public init(_ ref: T) { reference = ref }
 }

@@ -13,7 +13,7 @@ import AudioToolbox
 import CoreMIDI
 import SpriteKit
 
-final class InstrumentTrack: MIDITrackType {
+final class InstrumentTrack: MIDITrackType, Named {
 
 
   struct State: OptionSetType, CustomStringConvertible {
@@ -84,7 +84,7 @@ final class InstrumentTrack: MIDITrackType {
       [weak self] _ in self?.resetNodes()
     }
 
-    receptionist.observe(MIDISequence.Notification.SoloCountDidChange, from: sequence, queue: NSOperationQueue.mainQueue()) {
+    receptionist.observe(MIDISequence.Notification.SoloCountDidChange, from: Sequencer.sequence, queue: NSOperationQueue.mainQueue()) {
       [weak self] in
 
       guard let state = self?.state,
@@ -194,7 +194,7 @@ final class InstrumentTrack: MIDITrackType {
   private var fileIDToNodeID: [NodeIdentifier:NodeIdentifier] = [:]
 
   /** Empties all node-referencing properties */
-  private func resetNodes() { pendingIdentifier = nil; nodes.removeAll(); fileIDToNodeID.removeAll() }
+  private func resetNodes() { pendingIdentifier = nil; nodes.removeAll(); fileIDToNodeID.removeAll(); logDebug("nodes reset") }
 
   /**
   addNode:
@@ -204,7 +204,7 @@ final class InstrumentTrack: MIDITrackType {
   func addNode(node: MIDINode) throws {
     nodes.insert(node)
     let identifier = NodeIdentifier(ObjectIdentifier(node).uintValue)
-    logVerbose("identifier = \(identifier)")
+    logDebug("identifier = \(identifier)")
     notes.insert(identifier)
     try MIDIPortConnectSource(inPort, node.endPoint, nil) ➤ "Failed to connect to node \(node.name!)"
     Notification.DidAddNode.post(object: self)
@@ -232,7 +232,7 @@ final class InstrumentTrack: MIDITrackType {
                            placement: Placement,
                           attributes: NoteAttributes)
   {
-    logVerbose("identifier = \(identifier)")
+    logDebug("identifier = \(identifier)")
     guard fileIDToNodeID[identifier] == nil else { return }
     guard pendingIdentifier == nil else { fatalError("already have an identifier pending: \(pendingIdentifier!)") }
     guard let midiPlayer = MIDIPlayerNode.currentPlayer else { fatalError("trying to add node without a midi player") }
@@ -246,7 +246,7 @@ final class InstrumentTrack: MIDITrackType {
   - parameter identifier: NodeIdentifier
   */
   private func removeNodeWithIdentifier(identifier: NodeIdentifier) {
-    logVerbose("identifier = \(identifier)")
+    logDebug("identifier = \(identifier)")
     guard let mappedIdentifier = fileIDToNodeID[identifier] else {
       fatalError("trying to remove node for unmapped identifier \(identifier)")
     }
@@ -271,7 +271,7 @@ final class InstrumentTrack: MIDITrackType {
   func removeNode(node: MIDINode) throws {
     guard let node = nodes.remove(node) else { throw Error.NodeNotFound }
     let identifier = NodeIdentifier(ObjectIdentifier(node).uintValue)
-    logVerbose("identifier = \(identifier)")
+    logDebug("identifier = \(identifier)")
     notes.remove(identifier)
     node.sendNoteOff()
     try MIDIPortDisconnectSource(inPort, node.endPoint) ➤ "Failed to disconnect to node \(node.name!)"
@@ -284,19 +284,15 @@ final class InstrumentTrack: MIDITrackType {
   }
 
   /** stopNodes */
-  private func stopNodes() { nodes.forEach {$0.fadeOut()} }
+  private func stopNodes() { nodes.forEach {$0.fadeOut()}; logDebug("nodes stopped") }
 
   /** startNodes */
-  private func startNodes() { nodes.forEach {$0.fadeIn()} }
+  private func startNodes() { nodes.forEach {$0.fadeIn()}; logDebug("nodes started") }
 
   // MARK: - MIDI events
 
   /// Queue used generating `MIDIFile` track events
-  private let eventQueue: NSOperationQueue = {
-    let q = NSOperationQueue()
-    q.maxConcurrentOperationCount = 1
-    return q
-    }()
+  private let eventQueue: NSOperationQueue = { let q = NSOperationQueue(); q.maxConcurrentOperationCount = 1; return q }()
 
   /// The end of the track as parsed when initializing from a `MIDIFileTrackChunk`
   private var _trackEnd: CABarBeatTime?
@@ -409,10 +405,10 @@ final class InstrumentTrack: MIDITrackType {
   }
 
   /// The track's owning sequence
-  private(set) unowned var sequence: MIDISequence
+//  private(set) unowned var sequence: MIDISequence
 
   /// The index for the track in the sequence's array of instrument tracks, or nil
-  var index: Int? { return sequence.instrumentTracks.indexOf(self) }
+  var index: Int? { return Sequencer.sequence?.instrumentTracks.indexOf(self) }
 
   // MARK: - Initialization
 
@@ -429,8 +425,8 @@ final class InstrumentTrack: MIDITrackType {
   - parameter b: Bus
   - parameter s: MIDISequence
   */
-  init(instrument i: Instrument, sequence s: MIDISequence) throws {
-    sequence = s
+  init(instrument i: Instrument/*, sequence s: MIDISequence*/) throws {
+//    sequence = s
     instrument = i
     eventQueue.name = "BUS \(instrument.bus)"
     recording = Sequencer.recording
@@ -445,8 +441,8 @@ final class InstrumentTrack: MIDITrackType {
   - parameter trackChunk: MIDIFileTrackChunk
   - parameter s: MIDISequence
   */
-  init(trackChunk: MIDIFileTrackChunk, sequence s: MIDISequence) throws {
-    sequence = s
+  init(trackChunk: MIDIFileTrackChunk/*, sequence s: MIDISequence*/) throws {
+//    sequence = s
     eventContainer = MIDIEventContainer(events: trackChunk.events)
 
     // Find the end of track event
@@ -504,6 +500,10 @@ final class InstrumentTrack: MIDITrackType {
     try initializeMIDIClient()
   }
 
+  deinit {
+    logDebug("")
+  }
+
 }
 
 // MARK: - Errors
@@ -543,9 +543,7 @@ extension InstrumentTrack: CustomDebugStringConvertible {
 }
 
 // MARK: - Hashable
-extension InstrumentTrack: Hashable {
-  var hashValue: Int { return ObjectIdentifier(self).hashValue }
-}
+extension InstrumentTrack: Hashable { var hashValue: Int { return ObjectIdentifier(self).hashValue } }
 
 // MARK: - Equatable
 extension InstrumentTrack: Equatable {}
@@ -558,7 +556,5 @@ Equatable conformance
 
 - returns: Bool
 */
-func ==(lhs: InstrumentTrack, rhs: InstrumentTrack) -> Bool {
-  return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
-}
+func ==(lhs: InstrumentTrack, rhs: InstrumentTrack) -> Bool { return ObjectIdentifier(lhs) == ObjectIdentifier(rhs) }
 

@@ -234,9 +234,7 @@ extension NoteAttributes.Velocity: CustomDebugStringConvertible {
 // MARK: - CustomStringConvertible
 
 extension NoteAttributes: CustomStringConvertible {
-  var description: String {
-    return "{ \(channel), \(note), \(duration), \(velocity) }"
-  }
+  var description: String { return "{\(channel), \(note), \(duration), \(velocity)}" }
 }
 
 extension NoteAttributes: CustomDebugStringConvertible {

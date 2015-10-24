@@ -62,8 +62,8 @@ final class TempoTrack: MIDITrackType {
   
   - parameter s: MIDISequence
   */
-  init(sequence s: MIDISequence) {
-    sequence = s
+  init(/*sequence s: MIDISequence*/) {
+//    sequence = s
     recording = Sequencer.recording
     eventContainer.append(TempoTrack.timeSignatureEvent)
     eventContainer.append(TempoTrack.tempoEvent)
@@ -115,7 +115,7 @@ final class TempoTrack: MIDITrackType {
     }
   }
 
-  private(set) unowned var sequence: MIDISequence
+//  private(set) unowned var sequence: MIDISequence
 
   /**
   initWithTrackChunk:
@@ -123,8 +123,8 @@ final class TempoTrack: MIDITrackType {
   - parameter trackChunk: MIDIFileTrackChunk
   - parameter s: MIDISequence
   */
-  init(trackChunk: MIDIFileTrackChunk, sequence s: MIDISequence) {
-    sequence = s
+  init(trackChunk: MIDIFileTrackChunk/*, sequence s: MIDISequence*/) {
+//    sequence = s
     eventContainer = MIDIEventContainer(events: trackChunk.events.filter(TempoTrack.isTempoTrackEvent))
 
     if !hasTimeSignatureEvent { eventContainer.insert(TempoTrack.timeSignatureEvent, atIndex: 0) }

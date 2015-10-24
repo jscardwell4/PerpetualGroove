@@ -13,7 +13,7 @@ public final class NotificationReceptionist: NSObject {
 
   public typealias Notification = String
 
-  public typealias Callback = (AnyObject?, NSOperationQueue?, (NSNotification) -> Void)
+  //  public typealias Callback = (WeakObject<AnyObject>?, NSOperationQueue?, (NSNotification) -> Void)
 
   private var observers: [Int:NSObjectProtocol] = [:]
 
@@ -102,15 +102,15 @@ public final class NotificationReceptionist: NSObject {
   /** init */
   public override init() { super.init() }
 
-  /**
-  initWithCallbacks:
-
-  - parameter callbacks: [Notification
-  */
-  public convenience init(callbacks: [Notification:Callback]) {
-    self.init()
-    callbacks.forEach { observe($0, from: $1.0, queue: $1.1, callback: $1.2) }
-  }
+//  /**
+//  initWithCallbacks:
+//
+//  - parameter callbacks: [Notification
+//  */
+//  public convenience init(callbacks: [Notification:Callback]) {
+//    self.init()
+//    callbacks.forEach { observe($0, from: $1.0, queue: $1.1, callback: $1.2) }
+//  }
 
   deinit {
     observers.values.forEach { notificationCenter.removeObserver($0) }
