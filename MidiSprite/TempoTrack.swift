@@ -34,11 +34,24 @@ final class TempoTrack: Track {
   - parameter tempo: Double
   */
   func insertTempoChange(tempo: Double) {
-    guard Sequencer.recording else { return }
-    eventContainer.append(MetaEvent(BarBeatTime.time, .Tempo(microseconds: Byte4(60_000_000 / tempo))))
+    guard recording else { return }
+    eventContainer.append(MetaEvent(Sequencer.time.time, .Tempo(bpm: tempo)))
   }
 
-  override var name: String { return "Tempo" }
+  /**
+  insertTimeSignature:
+
+  - parameter signature: TimeSignature
+  */
+  func insertTimeSignature(signature: TimeSignature) {
+    guard recording else { return }
+    eventContainer.append(MetaEvent(Sequencer.time.time, .TimeSignature(signature: signature, clocks: 36, notes: 8)))
+  }
+
+  override var name: String { get { return "Tempo" } set {} }
+
+  private(set) var tempo: Double = 120
+  private(set) var timeSignature: TimeSignature = .FourFour
 
   /**
   Initializer for non-playback mode tempo track
@@ -56,7 +69,7 @@ final class TempoTrack: Track {
   }
 
   static private var tempoEvent: MetaEvent {
-    return MetaEvent(.Tempo(microseconds: Byte4(60_000_000 / Sequencer.tempo)))
+    return MetaEvent(.Tempo(bpm: Sequencer.tempo))
   }
 
   /**
@@ -84,8 +97,8 @@ final class TempoTrack: Track {
     guard let events = eventMap.eventsForTime(time) else { return }
     for event in events where event is MetaEvent {
       switch (event as! MetaEvent).data {
-        case let .Tempo(microseconds): Sequencer.tempo = Double(60_000_000 / microseconds)
-        case let .TimeSignature(signature, _, _): Sequencer.timeSignature = signature
+        case let .Tempo(bpm): tempo = bpm; Sequencer.setTempo(bpm, automated: true)
+        case let .TimeSignature(signature, _, _): timeSignature = signature
         default: break
       }
     }
@@ -106,9 +119,9 @@ final class TempoTrack: Track {
 
     eventMap.insert(eventContainer.events)
 
-    BarBeatTime.registerCallback({ [weak self] in self?.dispatchEventsForTime($0) },
-                           times: eventMap.times,
-                          object: self)
+    Sequencer.time.registerCallback({ [weak self] in self?.dispatchEventsForTime($0) },
+                           forTimes: eventMap.times,
+                          forObject: self)
   }
 
 }

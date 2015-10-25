@@ -15,9 +15,9 @@ final class LogManager: MoonKit.LogManager {
   private static var initialized = false
 
   static let MIDIFileContext  = LogContext(rawValue: 0b0000_0010_0000) ∪ .Console
-  static let SF2FileContext   = LogContext(rawValue: 0b0000_0100_0000)// ∪ .Console
-  static let SequencerContext = LogContext(rawValue: 0b0000_1000_0000)// ∪ .Console
-  static let SceneContext     = LogContext(rawValue: 0b0001_0000_0000)// ∪ .Console
+  static let SF2FileContext   = LogContext(rawValue: 0b0000_0100_0000) ∪ .Console
+  static let SequencerContext = LogContext(rawValue: 0b0000_1000_0000) ∪ .Console
+  static let SceneContext     = LogContext(rawValue: 0b0001_0000_0000) ∪ .Console
 
   static func initialize() {
     guard !initialized else { return }

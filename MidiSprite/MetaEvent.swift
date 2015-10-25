@@ -65,7 +65,7 @@ struct MetaEvent: MIDIEvent {
   init(_ t: CABarBeatTime, _ d: Data) { time = t; data = d }
 
   /** Enumeration for encapsulating a type of meta event */
-  enum Data: Equatable {
+  enum Data {
     case Text (text: String)
     case CopyrightNotice (notice: String)
     case SequenceTrackName (name: String)
@@ -73,7 +73,7 @@ struct MetaEvent: MIDIEvent {
     case DeviceName (name: String)
     case ProgramName (name: String)
     case EndOfTrack
-    case Tempo (microseconds: Byte4)
+    case Tempo (bpm: Double)
     case TimeSignature (signature: Groove.TimeSignature, clocks: Byte, notes: Byte)
 
     var type: Byte {
@@ -99,7 +99,7 @@ struct MetaEvent: MIDIEvent {
         case let .DeviceName(text):         return text.bytes
         case let .ProgramName(text):        return text.bytes
         case .EndOfTrack:                   return []
-        case let .Tempo(tempo):             return Array(tempo.bytes.dropFirst())
+        case let .Tempo(tempo):             return Array(Byte4(60_000_000 / tempo).bytes.dropFirst())
         case let .TimeSignature(s, n, m):   return s.bytes + [n, m]
       }
     }
@@ -129,12 +129,11 @@ struct MetaEvent: MIDIEvent {
           guard data.count == 3 else {
             throw MIDIFileError(type: .InvalidLength, reason: "Tempo event data should have a 4 byte length")
           }
-          self = .Tempo(microseconds: Byte4(data))
+          self = .Tempo(bpm: Double(60_000_000 / Byte4(data)))
         case 0x58:
           guard data.count == 4 else {
             throw MIDIFileError(type: .InvalidLength, reason: "TimeSignature event data should have a 4 byte length")
           }
-//          print(String(hexBytes: data))
           self = .TimeSignature(signature: Groove.TimeSignature(data[..<(data.startIndex + 2)]),
                                 clocks: data[data.startIndex + 2],
                                 notes: data[data.startIndex + 3])
@@ -203,7 +202,7 @@ extension MetaEvent.Data: CustomStringConvertible {
       case .DeviceName(let text):        return "device name '\(text)'"
       case .ProgramName(let text):       return "program name '\(text)'"
       case .EndOfTrack:                  return "end of track"
-      case .Tempo(let microseconds):     return "tempo \(60_000_000 / microseconds)"
+      case .Tempo(let bpm):              return "tempo \(bpm)"
       case .TimeSignature(let s, _ , _): return "time signature \(s.beatsPerBar)╱\(s.beatUnit)"
     }
   }
@@ -214,6 +213,14 @@ extension MetaEvent.Data: CustomDebugStringConvertible {
 }
 
 extension MetaEvent: CustomStringConvertible { var description: String { return data.description } }
+
+extension MetaEvent: Equatable {}
+
+func ==(lhs: MetaEvent, rhs: MetaEvent) -> Bool {
+  return lhs.bytes == rhs.bytes
+}
+
+extension MetaEvent.Data: Equatable {}
 
 func ==(lhs: MetaEvent.Data, rhs: MetaEvent.Data) -> Bool {
   switch (lhs, rhs) {

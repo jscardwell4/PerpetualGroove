@@ -169,7 +169,7 @@ final class BarBeatTimeLabel: UIView {
     calculateFrames()
 
     #if !TARGET_INTERFACE_BUILDER
-      BarBeatTime.registerCallback({ [weak self] in self?.didUpdateBarBeatTime($0) },
+      Sequencer.time.registerCallback({ [weak self] in self?.didUpdateBarBeatTime($0) },
                          predicate: {_ in true},
                             forKey: barBeatTimeCallbackKey)
 

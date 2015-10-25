@@ -223,6 +223,6 @@ extension TrackCell: UITextFieldDelegate {
 
   - parameter textField: UITextField
   */
-  func textFieldDidEndEditing(textField: UITextField) { track?.label = textField.text }
+  func textFieldDidEndEditing(textField: UITextField) { if let text = textField.text { track?.name = text } }
 
 }

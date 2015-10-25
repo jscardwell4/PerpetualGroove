@@ -57,7 +57,11 @@ final class MIDISequence {
   }
 
   /** The tempo track for the sequence is the first element in the `tracks` array */
-  private(set) var tempoTrack = TempoTrack()
+  private var tempoTrack = TempoTrack()
+
+  var tempo: Double { return tempoTrack.tempo }
+
+  var timeSignature: TimeSignature { return tempoTrack.timeSignature }
 
   /** Collection of all the tracks in the composition */
   var tracks: [Track] { return [tempoTrack] + instrumentTracks }
@@ -100,16 +104,20 @@ final class MIDISequence {
         trackChunks = trackChunks.dropFirst()
       }
 
-      instrumentTracks = trackChunks.flatMap({ try? InstrumentTrack(trackChunk: $0) })
-      for track in instrumentTracks {
-        Notification.DidAddTrack.post(object: self, userInfo: [Notification.Key.Track: track])
+      while let track = instrumentTracks.popLast() { removeTrack(track) }
+      for track in trackChunks.flatMap({ try? InstrumentTrack(trackChunk: $0) }) {
+        addTrack(track)
       }
-      zip(TrackColor.allCases, instrumentTracks).forEach { $1.color = $0 }
+      previousTrack = nil
       currentTrack = instrumentTracks.first
     }
   }
 
-  let receptionist = NotificationReceptionist()
+  let receptionist: NotificationReceptionist = {
+    let r = NotificationReceptionist()
+    r.logContext = LogManager.MIDIFileContext
+    return r
+  }()
 
   /** initializeNotificationReceptionist */
   private func initializeNotificationReceptionist() {
@@ -129,7 +137,7 @@ final class MIDISequence {
 
   deinit {
     instrumentTracks.removeAll()
-    MoonKit.logDebug("deinit")
+    logDebug("deinit")
   }
 
   /**
@@ -139,8 +147,19 @@ final class MIDISequence {
   */
 
   func newTrackWithInstrument(instrument: Instrument) throws {
-    let track = try InstrumentTrack(instrument: instrument/*, sequence: self*/)
-    track.color = TrackColor.allCases[(instrumentTracks.count + 1) % TrackColor.allCases.count]
+    let track = try InstrumentTrack(instrument: instrument)
+    addTrack(track)
+    if SettingsManager.makeNewTrackCurrent { currentTrack = track }
+  }
+
+  /**
+  addTrack:
+
+  - parameter track: InstrumentTrack
+  */
+  private func addTrack(track: InstrumentTrack) {
+    guard instrumentTracks ∌ track else { return }
+    track.color = TrackColor.allCases[(instrumentTracks.count) % TrackColor.allCases.count]
     instrumentTracks.append(track)
     receptionist.observe(Track.Notification.DidUpdateEvents, from: track) {
       [weak self] _ in
@@ -148,7 +167,7 @@ final class MIDISequence {
       Notification.DidUpdate.post(object: weakself)
     }
     Notification.DidAddTrack.post(object: self, userInfo: [Notification.Key.Track: track])
-    if SettingsManager.makeNewTrackCurrent { currentTrack = track }
+
   }
 
   /**
@@ -175,6 +194,16 @@ final class MIDISequence {
     Notification.DidUpdate.post(object: self)
   }
 
+  /**
+  insertTimeSignature:
+
+  - parameter signature: TimeSignature
+  */
+  func insertTimeSignature(signature: TimeSignature) {
+    guard Sequencer.recording else { return }
+    tempoTrack.insertTimeSignature(signature)
+    Notification.DidUpdate.post(object: self)
+  }
 }
 
 extension MIDISequence: CustomStringConvertible {

@@ -22,7 +22,7 @@ final class Sequencer {
   */
   static func initialize() {
     guard !initialized else { return }
-    BarBeatTime.initialize(clock.endPoint)
+
     let _ = receptionist
     soundSets = [
       EmaxSoundSet(.BrassAndWoodwinds),
@@ -96,14 +96,31 @@ final class Sequencer {
   // TODO: Need to make sure the current tempo is set at the beginning of a new sequence
   static var tempo: Double {
     get { return Double(clock.beatsPerMinute) }
-    set {
-      clock.beatsPerMinute = UInt16(newValue)
-      if recording { sequence?.insertTempoChange(tempo) }
-    }
+    set { setTempo(newValue) }
   }
 
-  // ???: Don't we need to do anything about changes to timeSignature?
-  static var timeSignature: TimeSignature = .FourFour
+  /**
+  setTempo:automated:
+
+  - parameter tempo: Double
+  - parameter automated: Bool = false
+  */
+  static func setTempo(tempo: Double, automated: Bool = false) {
+    clock.beatsPerMinute = UInt16(tempo)
+    if recording && !automated { sequence?.insertTempoChange(tempo) }
+  }
+
+  static var timeSignature: TimeSignature { return sequence?.timeSignature ?? .FourFour }
+
+  /**
+  setTimeSignature:automated:
+
+  - parameter signature: TimeSignature
+  - parameter automated: Bool = false
+  */
+  static func setTimeSignature(signature: TimeSignature, automated: Bool = false) {
+    if recording && !automated { sequence?.insertTimeSignature(signature) }
+  }
 
   // MARK: - Tracks
 

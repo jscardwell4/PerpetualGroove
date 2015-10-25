@@ -10,44 +10,40 @@ import Foundation
 import MoonKit
 import struct AudioToolbox.CABarBeatTime
 
-class Track: CustomStringConvertible, CustomDebugStringConvertible {
+class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
 
-  var eventContainer = MIDIEventContainer() { didSet { Notification.DidUpdateEvents.post(object: self) } }
-  var eventMap = MIDIEventMap()
-
-  var endOfTrack: CABarBeatTime { return eventContainer.endOfTrackEvent?.time ?? BarBeatTime.time }
-
-  var name: String { return "" }
-
-  /** validateFirstAndLastEvents */
-  func validateFirstAndLastEvents() {
-    if var event = eventContainer.trackNameEvent,
-      case let .SequenceTrackName(n) = event.data where n != name
-    {
-      event.data = .SequenceTrackName(name: name)
-      eventContainer.trackNameEvent = event
-    } else if eventContainer.trackNameEvent == nil {
-      eventContainer.trackNameEvent = MetaEvent(.SequenceTrackName(name: name))
-    }
-
-    if eventContainer.count < 2 { eventContainer.endOfTrackEvent = MetaEvent(.EndOfTrack) }
-    else if eventContainer.endOfTrackEvent == nil {
-      eventContainer.endOfTrackEvent = MetaEvent(.EndOfTrack, eventContainer.last?.time)
-    } else {
-      let previousEvent = eventContainer[eventContainer.count - 2]
-      if var event = eventContainer.endOfTrackEvent where event.time != previousEvent.time {
-        event.time = previousEvent.time
-        eventContainer.endOfTrackEvent = event
-      }
+  var eventContainer = MIDIEventContainer() {
+    didSet {
+      logDebug("posing 'DidUpdateEvents'")
+      Notification.DidUpdateEvents.post(object: self)
     }
   }
+  var eventMap = MIDIEventMap()
+
+  var endOfTrack: CABarBeatTime { return eventContainer.endOfTrackEvent.time ?? Sequencer.time.time }
+
+  var name: String { get { return eventContainer.trackName } set { eventContainer.trackName = newValue } }
+
+  /** validateEvents */
+  func validateEvents() { eventContainer.validate() }
 
   var chunk: MIDIFileTrackChunk {
-    validateFirstAndLastEvents()
+    validateEvents()
     return MIDIFileTrackChunk(eventContainer: eventContainer)
   }
 
-  init() {}
+  private let receptionist = NotificationReceptionist()
+
+  private(set) var recording = false
+
+  /** init */
+  init() {
+    receptionist.logContext = LogManager.SequencerContext
+    receptionist.observe(Sequencer.Notification.DidToggleRecording, from: Sequencer.self, queue: NSOperationQueue.mainQueue()) {
+      [weak self] _ in self?.recording = Sequencer.recording
+    }
+    recording = Sequencer.recording
+  }
 
   var description: String {
     return "\n".join(

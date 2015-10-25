@@ -69,7 +69,7 @@ public final class NotificationReceptionist: NSObject, Loggable {
       observer: notificationCenter.addObserverForName(name, object: object, queue: queue, usingBlock: callback)
     )
     infos.insert(info)
-    logDebug("observing \(info)")
+    logVerbose("observing \(info)")
   }
 
   /**
@@ -156,7 +156,7 @@ public final class NotificationReceptionist: NSObject, Loggable {
   */
   private func stopObserving(info: ObservationInfo) {
     notificationCenter.removeObserver(info.observer, name: info.name, object: info.object.reference)
-    logDebug("stopped observing \(info)")
+    logVerbose("stopped observing \(info)")
   }
 
   deinit { while let info = infos.popFirst() { stopObserving(info) } }

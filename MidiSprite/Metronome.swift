@@ -20,8 +20,8 @@ final class Metronome {
   var on = false {
     didSet {
       guard oldValue != on else { return }
-      if on { BarBeatTime.registerCallback({ [weak self] in self?.click($0) }, predicate: isAudibleTick, forKey: callbackKey) }
-      else { BarBeatTime.removeCallbackForKey(callbackKey) }
+      if on { Sequencer.time.registerCallback({ [weak self] in self?.click($0) }, predicate: isAudibleTick, forKey: callbackKey) }
+      else { Sequencer.time.removeCallbackForKey(callbackKey) }
     }
   }
 

@@ -13,7 +13,7 @@ import AudioToolbox
 import CoreMIDI
 import SpriteKit
 
-final class InstrumentTrack: Track, Named {
+final class InstrumentTrack: Track {
 
 
   /// Holds the current state of the node
@@ -82,7 +82,7 @@ final class InstrumentTrack: Track, Named {
         return
       }
 
-      guard let trackEnd = self?._trackEnd where jogTime < trackEnd else { return }
+      guard let trackEnd = self?.endOfTrack where jogTime < trackEnd else { return }
 
       self?.state.remove(.TrackEnded)
     }
@@ -91,49 +91,31 @@ final class InstrumentTrack: Track, Named {
 
   // MARK: - MIDI file related properties and methods
 
-  var instrumentNameEvent: MetaEvent? {
-    if let event = eventContainer.metaEvents.first, case .Text = event.data { return event } else { return nil }
-  }
-
-  var instrumentProgramEvent: ChannelEvent? {
-    if let event = eventContainer.channelEvents.first where event.status.type == .ProgramChange { return event }
-    else { return nil }
-  }
-
-  /** validateInstrumentEvents */
-  private func validateInstrumentEvents() {
-
-    let instrumentName = "instrument:\(instrument.soundSet.url.lastPathComponent!)"
-    if var event = instrumentNameEvent, case .Text(let t) = event.data where t != instrumentName {
-      event.data = .Text(text: instrumentName)
-      eventContainer.insert(event, atIndex: 0)
-    } else if instrumentNameEvent == nil {
-      eventContainer.insert(MetaEvent(.Text(text: instrumentName)), atIndex: 0)
-    }
-
-    if var event = instrumentProgramEvent where event.status.channel != instrument.channel || event.data1 != instrument.program {
-      event.status.channel = instrument.channel
-      event.data1 = instrument.program
-      eventContainer.insert(event, atIndex: 1)
-    } else if instrumentProgramEvent == nil {
-      eventContainer.insert(ChannelEvent(.ProgramChange, instrument.channel, instrument.program), atIndex: 1)
-    }
-  }
-
-  override var chunk: MIDIFileTrackChunk {
-    validateFirstAndLastEvents()
-    validateInstrumentEvents()
-    return MIDIFileTrackChunk(eventContainer: eventContainer)
+  /** validateEvents */
+  override func validateEvents() {
+    eventContainer.instrumentName = "instrument:\(instrument.soundSet.url.lastPathComponent!)"
+    eventContainer.program = (instrument.channel, instrument.program)
+    super.validateEvents()
   }
 
   // MARK: - Track properties
 
-  var instrument: Instrument!
+  private(set) var instrument: Instrument!
 
   var color: TrackColor = .White
 
-  override var name: String { return label ?? instrument.preset.name }
-  var label: String?
+//  private var _label: String? {
+//    didSet {
+//      guard _label != oldValue, let label = _label else { return }
+//      name = label
+//    }
+//  }
+//  var label: String { get { return _label ?? instrument.preset.name } set { _label = newValue } }
+
+  override var name: String {
+    get { return super.name.isEmpty ? instrument.preset.name : super.name }
+    set { super.name = newValue }
+  }
 
   var mute: Bool {
     get { return state ~∩ [.ExclusiveMute, .InclusiveMute] && state ∌ .Soloing}
@@ -185,9 +167,9 @@ final class InstrumentTrack: Track, Named {
       fileIDToNodeID[pendingIdentifier] = identifier
       self.pendingIdentifier = nil
     }
-    guard Sequencer.recording else { return }
+    guard recording else { return }
     eventQueue.addOperationWithBlock {
-      [time = BarBeatTime.time, placement = node.initialSnapshot.placement, note = node.note, weak self] in
+      [time = Sequencer.time.time, placement = node.initialSnapshot.placement, note = node.note, weak self] in
       let event = MIDINodeEvent(.Add(identifier: identifier, placement: placement, attributes: note), time)
       self?.eventContainer.append(event)
     }
@@ -208,7 +190,9 @@ final class InstrumentTrack: Track, Named {
     logDebug("identifier = \(identifier)")
     guard fileIDToNodeID[identifier] == nil else { return }
     guard pendingIdentifier == nil else { fatalError("already have an identifier pending: \(pendingIdentifier!)") }
-    guard let midiPlayer = MIDIPlayerNode.currentPlayer else { fatalError("trying to add node without a midi player") }
+    guard let midiPlayer = MIDIPlayerNode.currentPlayer else {
+      fatalError("trying to add node without a midi player")
+    }
     pendingIdentifier = identifier
     midiPlayer.placeNew(placement, targetTrack: self, attributes: attributes)
   }
@@ -249,9 +233,9 @@ final class InstrumentTrack: Track, Named {
     node.sendNoteOff()
     try MIDIPortDisconnectSource(inPort, node.endPoint) ➤ "Failed to disconnect to node \(node.name!)"
     Notification.DidRemoveNode.post(object: self)
-    guard Sequencer.recording else { return }
+    guard recording else { return }
     eventQueue.addOperationWithBlock {
-      [time = BarBeatTime.time, weak self] in
+      [time = Sequencer.time.time, weak self] in
       self?.eventContainer.append(MIDINodeEvent(.Remove(identifier: identifier), time))
     }
   }
@@ -265,13 +249,11 @@ final class InstrumentTrack: Track, Named {
   // MARK: - MIDI events
 
   /// Queue used generating `MIDIFile` track events
-  private let eventQueue: NSOperationQueue = { let q = NSOperationQueue(); q.maxConcurrentOperationCount = 1; return q }()
-
-  /// The end of the track as parsed when initializing from a `MIDIFileTrackChunk`
-  private var _trackEnd: CABarBeatTime?
-
-  /// The end of the track as parsed from a chunk or the current time
-  var trackEnd: CABarBeatTime { return _trackEnd ?? BarBeatTime.time }
+  private let eventQueue: NSOperationQueue = {
+    let q = NSOperationQueue()
+    q.maxConcurrentOperationCount = 1
+    return q
+  }()
 
   private var notes: Set<NodeIdentifier> = []
 
@@ -306,10 +288,10 @@ final class InstrumentTrack: Track, Named {
     catch { logError(error) }
 
     // Check if we are recording, otherwise skip event processing
-    guard Sequencer.recording else { return }
+    guard recording else { return }
     
     eventQueue.addOperationWithBlock {
-      [weak self, time = BarBeatTime.time] in
+      [weak self, time = Sequencer.time.time] in
 
       let packets = packetList.memory
       let packetPointer = UnsafeMutablePointer<MIDIPacket>.alloc(1)
@@ -340,7 +322,7 @@ final class InstrumentTrack: Track, Named {
     let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
     var data: [Byte] = [channelEvent.status.value, channelEvent.data1]
     if let data2 = channelEvent.data2 { data.append(data2) }
-    let timeStamp = BarBeatTime.ticks
+    let timeStamp = Sequencer.time.ticks
     MIDIPacketListAdd(&packetList, size, packet, timeStamp, 3, data)
     withUnsafePointer(&packetList) {
       do { try MIDISend(outPort, instrument.endPoint, $0) ➤ "Failed to dispatch packet list to instrument" }
@@ -363,7 +345,7 @@ final class InstrumentTrack: Track, Named {
             case let .Remove(identifier): removeNodeWithIdentifier(identifier)
           }
         case let metaEvent as MetaEvent where metaEvent.data == .EndOfTrack:
-          guard _trackEnd == time else { break }
+          guard !recording && endOfTrack == time else { break }
           state.insert(.TrackEnded)
         default: break
       }
@@ -406,25 +388,23 @@ final class InstrumentTrack: Track, Named {
   */
   init(trackChunk: MIDIFileTrackChunk) throws {
     super.init()
-    eventContainer = MIDIEventContainer(events: trackChunk.events)
 
-    // Find the end of track event
-    guard let endOfTrackEvent = eventContainer.endOfTrackEvent else {
+    guard let event = trackChunk.events.last as? MetaEvent, case .EndOfTrack = event.data else {
       throw MIDIFileError(type: .MissingEvent, reason: "Missing end of track event")
     }
-    _trackEnd = endOfTrackEvent.time
 
-    if let trackNameEvent = eventContainer.trackNameEvent,
-      case .SequenceTrackName(let n) = trackNameEvent.data { label = n }
+    eventContainer = MIDIEventContainer(events: trackChunk.events)
+
+//    if !name.isEmpty { _label = name }
 
     // Find the instrument event
-    guard let instrumentName = self.instrumentNameEvent, case .Text(var instr) = instrumentName.data else {
+    guard var instrumentName = eventContainer.instrumentName else {
       throw MIDIFileError(type: .FileStructurallyUnsound, reason: "Instrument event must be a text event")
     }
 
-    instr = instr[instr.startIndex.advancedBy(11)..<]
+    instrumentName = instrumentName[instrumentName.startIndex.advancedBy(11)..<]
 
-    guard let url = NSBundle.mainBundle().URLForResource(instr, withExtension: nil) else {
+    guard let url = NSBundle.mainBundle().URLForResource(instrumentName, withExtension: nil) else {
       throw Error.InvalidSoundSetURL
     }
 
@@ -432,21 +412,16 @@ final class InstrumentTrack: Track, Named {
     do {
       soundSet = try EmaxSoundSet(url: url)
     } catch {
-      do {
-        soundSet = try SoundSet(url: url)
-      } catch {
-        logError(error)
-        throw Error.SoundSetInitializeFailure
-      }
+      do { soundSet = try SoundSet(url: url) } catch { logError(error); throw Error.SoundSetInitializeFailure }
     }
 
     // Find the program change event
-    guard let programEvent = self.instrumentProgramEvent else {
+    guard let programTuple = eventContainer.program else {
       throw MIDIFileError(type: .MissingEvent, reason: "Missing program change event")
     }
 
-    let program = programEvent.data1
-    let channel = programEvent.status.channel
+    let program = programTuple.program
+    let channel = programTuple.channel
 
     guard let instrumentMaybe = try? Instrument(soundSet: soundSet, program: program, channel: channel) else {
       throw Error.InstrumentInitializeFailure
@@ -457,18 +432,18 @@ final class InstrumentTrack: Track, Named {
 
     eventMap.insert(typecast(eventContainer.nodeEvents) ?? [])
 
-    if let event = eventContainer.endOfTrackEvent { eventMap.insert([event]) }
+    eventMap.insert([eventContainer.endOfTrackEvent])
 
-    BarBeatTime.registerCallback({ [weak self] in self?.dispatchEventsForTime($0) },
-                           times: eventMap.times,
-                          object: self)
+    Sequencer.time.registerCallback({ [weak self] in self?.dispatchEventsForTime($0) },
+                           forTimes: eventMap.times,
+                          forObject: self)
 
     initializeNotificationReceptionist()
     try initializeMIDIClient()
   }
 
   deinit {
-    logDebug("")
+    MoonKit.logDebug("")
   }
 
   override var description: String {

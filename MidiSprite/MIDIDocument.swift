@@ -40,9 +40,10 @@ final class MIDIDocument: UIDocument {
     super.init(fileURL: url)
     receptionist.logContext = LogManager.MIDIFileContext
     let callback: (NSNotification) -> Void = {[weak self] _ in self?.updateChangeCount(.Done)}
-    receptionist.observe(UIDocumentStateChangedNotification,       from: self)     { [weak self] in self?.didChangeState($0) }
-    receptionist.observe(MIDISequence.Notification.DidAddTrack,    from: sequence, callback: callback)
-    receptionist.observe(MIDISequence.Notification.DidRemoveTrack, from: sequence, callback: callback)
+    let queue = NSOperationQueue.mainQueue()
+    receptionist.observe(UIDocumentStateChangedNotification, from: self, queue: queue) { [weak self] in self?.didChangeState($0) }
+    receptionist.observe(MIDISequence.Notification.DidAddTrack, from: sequence, queue: queue, callback: callback)
+    receptionist.observe(MIDISequence.Notification.DidRemoveTrack, from: sequence, queue: queue, callback: callback)
   }
 
   private let receptionist = NotificationReceptionist()

@@ -271,7 +271,7 @@ public func logIB(message: String,
              flag: LogManager.LogFlag = .Debug)
 {
   #if TARGET_INTERFACE_BUILDER
-    guard LogManager.logLevelForFile(file) ∋ LogManager.LogLevel(flags: flag) else { return }
+    guard flag.rawValue & LogManager.logLevelForFile(file).rawValue != 0 else { return }
     backgroundDispatch {
       guard let sourceDirectory = NSProcessInfo.processInfo().environment["IB_PROJECT_SOURCE_DIRECTORIES"] else { return }
       let text = "\(NSDate()) [\(mach_absolute_time())] <\((file as NSString).lastPathComponent):\(line)> \(function)  \(message)"

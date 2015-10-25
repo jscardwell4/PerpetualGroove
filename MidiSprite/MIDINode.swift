@@ -127,7 +127,7 @@ final class MIDINode: SKSpriteNode {
     let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
     let data: [Byte] = [0x90 | note.channel, note.note.midi, note.velocity.midi] + _sourceID.bytes
     logVerbose("data: \(String(hexBytes: data))")
-    let timeStamp = BarBeatTime.ticks
+    let timeStamp = Sequencer.time.ticks
     MIDIPacketListAdd(&packetList, size, packet, timeStamp, 11, data)
     do {
       try withUnsafePointer(&packetList) { MIDIReceived(endPoint, $0) } ➤ "Unable to send note on event"
@@ -145,7 +145,7 @@ final class MIDINode: SKSpriteNode {
                 ? [0x90 | note.channel, note.note.midi, 0] + _sourceID.bytes
                 : [0x80 | note.channel, note.note.midi, 0] + _sourceID.bytes
     logVerbose("data: \(String(hexBytes: data))")
-    let timeStamp = BarBeatTime.ticks
+    let timeStamp = Sequencer.time.ticks
     MIDIPacketListAdd(&packetList, size, packet, timeStamp, 11, data)
     do {
       try withUnsafePointer(&packetList) { MIDIReceived(endPoint, $0) } ➤ "Unable to send note off event"
@@ -285,7 +285,7 @@ final class MIDINode: SKSpriteNode {
   /** Updates `currentSnapshot`, adding a new breadcrumb to `history` from the old value to the new value */
   func pushBreadcrumb() {
     guard state ∌ .Jogging else { logWarning("node has `Jogging` flag set, ignoring request to mark"); return }
-    let snapshot = Snapshot(ticks: BarBeatTime.ticks, position: position, velocity: physicsBody.velocity)
+    let snapshot = Snapshot(ticks: Sequencer.time.ticks, position: position, velocity: physicsBody.velocity)
     guard snapshot.ticks > currentSnapshot.ticks else { return }
     history.append(from: currentSnapshot, to: snapshot)
     currentSnapshot = snapshot
@@ -315,7 +315,7 @@ final class MIDINode: SKSpriteNode {
   */
   init(placement p: Placement, name n: String, track t: InstrumentTrack, note attrs: NoteAttributes) throws {
 
-    let snapshot = Snapshot(ticks: BarBeatTime.ticks, placement: p)
+    let snapshot = Snapshot(ticks: Sequencer.time.ticks, placement: p)
     initialSnapshot = snapshot
     currentSnapshot = snapshot
     track = t
