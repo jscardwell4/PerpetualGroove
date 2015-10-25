@@ -105,8 +105,8 @@ struct MIDIFile {
   - parameter division: Byte2
   - parameter tracks: [MIDITrackType]
   */
-  init(format: Format, division: Byte2, tracks: [MIDITrackType]) {
-    self.tracks = tracks.flatMap({$0.chunk})
+  init(format: Format, division: Byte2, tracks: [MIDIFileTrackChunk]) {
+    self.tracks = tracks
     header = MIDIFileHeaderChunk(format: .One, numberOfTracks: Byte2(tracks.count), division: division)
   }
 

@@ -9,17 +9,19 @@
 import Foundation
 
 public protocol Loggable {
-  static var logContext: LogManager.LogContext { get }
+  static var defaultLogContext: LogManager.LogContext { get }
+  var logContext: LogManager.LogContext { get }
   var logTag: LogManager.LogMessage.Tag? { get }
 }
 
 public extension Loggable {
 
-  static var logContext: LogManager.LogContext {
+  static var defaultLogContext: LogManager.LogContext {
     get { return LogManager.logContextForType(self.dynamicType.self) }
     set { LogManager.setLogContext(newValue, forType: self.dynamicType.self) }
   }
 
+  var logContext: LogManager.LogContext { return self.dynamicType.defaultLogContext }
   var logTag: LogManager.LogMessage.Tag? { return LogManager.LogMessage.Tag(className: "\(self.dynamicType)") }
 
   /**
@@ -45,7 +47,7 @@ public extension Loggable {
                  function: function,
                      line: line,
                      file: file,
-                  context: logContext,
+                  context: defaultLogContext,
                       tag: LogManager.LogMessage.Tag(className: "\(self)"))
   }
 
@@ -209,7 +211,7 @@ asynchronous: asynchronous,
                  function: function,
                      line: line,
                      file: file,
-                  context: self.dynamicType.logContext,
+                  context: logContext,
                       tag: logTag)
   }
 

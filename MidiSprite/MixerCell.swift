@@ -200,18 +200,17 @@ final class TrackCell: MixerCell {
     guard let track = track else { return nil }
     let queue = NSOperationQueue.mainQueue()
     let receptionist = NotificationReceptionist()
-    receptionist.observe(InstrumentTrack.Notification.MuteStatusDidChange,
-                    from: track,
-                   queue: queue,
-                callback: muteStatusChanged)
-    receptionist.observe(InstrumentTrack.Notification.SoloStatusDidChange,
-                    from: track,
-                   queue: queue,
-                callback: soloStatusChanged)
-    receptionist.observe(MIDISequence.Notification.SoloCountDidChange,
-                    from: Sequencer.sequence,
-                   queue: queue,
-                callback: soloCountChanged)
+    receptionist.logContext = LogManager.SequencerContext
+    
+    receptionist.observe(InstrumentTrack.Notification.MuteStatusDidChange, from: track, queue: queue) {
+      [weak self] in self?.muteStatusChanged($0)
+    }
+    receptionist.observe(InstrumentTrack.Notification.SoloStatusDidChange, from: track, queue: queue) {
+      [weak self] in self?.soloStatusChanged($0)
+    }
+    receptionist.observe(MIDISequence.Notification.SoloCountDidChange, from: Sequencer.sequence, queue: queue) {
+      [weak self] in self?.soloCountChanged($0)
+    }
     return receptionist
   }
 

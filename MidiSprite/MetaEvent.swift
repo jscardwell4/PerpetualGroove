@@ -74,7 +74,7 @@ struct MetaEvent: MIDIEvent {
     case ProgramName (name: String)
     case EndOfTrack
     case Tempo (microseconds: Byte4)
-    case TimeSignature (upper: Byte, lower: Byte, clocks: Byte, notes: Byte)
+    case TimeSignature (signature: Groove.TimeSignature, clocks: Byte, notes: Byte)
 
     var type: Byte {
       switch self {
@@ -92,15 +92,15 @@ struct MetaEvent: MIDIEvent {
 
     var bytes: [Byte] {
       switch self {
-        case let .Text(text):                return text.bytes
-        case let .CopyrightNotice(text):     return text.bytes
-        case let .SequenceTrackName(text):   return text.bytes
-        case let .InstrumentName(text):      return text.bytes
-        case let .DeviceName(text):          return text.bytes
-        case let .ProgramName(text):         return text.bytes
-        case .EndOfTrack:                    return []
-        case let .Tempo(tempo):              return Array(tempo.bytes.dropFirst())
-        case let .TimeSignature(u, l, n, m): return [u, Byte(log2(Double(l))), n, m]
+        case let .Text(text):               return text.bytes
+        case let .CopyrightNotice(text):    return text.bytes
+        case let .SequenceTrackName(text):  return text.bytes
+        case let .InstrumentName(text):     return text.bytes
+        case let .DeviceName(text):         return text.bytes
+        case let .ProgramName(text):        return text.bytes
+        case .EndOfTrack:                   return []
+        case let .Tempo(tempo):             return Array(tempo.bytes.dropFirst())
+        case let .TimeSignature(s, n, m):   return s.bytes + [n, m]
       }
     }
 
@@ -110,7 +110,9 @@ struct MetaEvent: MIDIEvent {
     - parameter type: Byte
     - parameter data: C
     */
-    init<C:CollectionType where C.Generator.Element == Byte>(type: Byte, data: C) throws {
+    init<C:CollectionType
+      where C.Generator.Element == Byte, C.SubSequence.Generator.Element == Byte>(type: Byte, data: C) throws
+    {
       switch type {
         case 0x01: self = .Text(text: String(data))
         case 0x02: self = .CopyrightNotice(notice: String(data))
@@ -132,9 +134,10 @@ struct MetaEvent: MIDIEvent {
           guard data.count == 4 else {
             throw MIDIFileError(type: .InvalidLength, reason: "TimeSignature event data should have a 4 byte length")
           }
-          var index  = data.startIndex
-          let upper = data[index++], lower = data[index++], clocks = data[index++], notes = data[index]
-          self = .TimeSignature(upper: upper, lower: Byte(pow(Double(lower), 2)), clocks: clocks, notes: notes)
+//          print(String(hexBytes: data))
+          self = .TimeSignature(signature: Groove.TimeSignature(data[..<(data.startIndex + 2)]),
+                                clocks: data[data.startIndex + 2],
+                                notes: data[data.startIndex + 3])
         default:
           throw MIDIFileError(type: .UnsupportedEvent,
                               reason: "\(String(hexBytes: [type])) is not a supported meta event type")
@@ -193,15 +196,15 @@ struct MetaEvent: MIDIEvent {
 extension MetaEvent.Data: CustomStringConvertible {
   var description: String {
     switch self {
-      case .Text(let text):                     return "text '\(text)'"
-      case .CopyrightNotice(let text):          return "copyright '\(text)'"
-      case .SequenceTrackName(let text):        return "sequence/track name '\(text)'"
-      case .InstrumentName(let text):           return "instrument name '\(text)'"
-      case .DeviceName(let text):               return "device name '\(text)'"
-      case .ProgramName(let text):              return "program name '\(text)'"
-      case .EndOfTrack:                         return "end of track"
-      case .Tempo(let microseconds):            return "tempo \(60_000_000 / microseconds)"
-      case .TimeSignature(let u, let l, _ , _): return "time signature \(u)╱\(l)"
+      case .Text(let text):              return "text '\(text)'"
+      case .CopyrightNotice(let text):   return "copyright '\(text)'"
+      case .SequenceTrackName(let text): return "sequence/track name '\(text)'"
+      case .InstrumentName(let text):    return "instrument name '\(text)'"
+      case .DeviceName(let text):        return "device name '\(text)'"
+      case .ProgramName(let text):       return "program name '\(text)'"
+      case .EndOfTrack:                  return "end of track"
+      case .Tempo(let microseconds):     return "tempo \(60_000_000 / microseconds)"
+      case .TimeSignature(let s, _ , _): return "time signature \(s.beatsPerBar)╱\(s.beatUnit)"
     }
   }
 }
@@ -220,8 +223,11 @@ func ==(lhs: MetaEvent.Data, rhs: MetaEvent.Data) -> Bool {
     case let (.InstrumentName(name1), .InstrumentName(name2)) where name1 == name2: return true
     case (.EndOfTrack, .EndOfTrack): return true
     case let (.Tempo(microseconds1), .Tempo(microseconds2)) where microseconds1 == microseconds2: return true
-    case let (.TimeSignature(upper1, lower1, clocks1, notes1), .TimeSignature(upper2, lower2, clocks2, notes2))
-      where upper1 == upper2 && lower1 == lower2 && clocks1 == clocks2 && notes1 == notes2: return true
+    case let (.TimeSignature(signature1, clocks1, notes1), .TimeSignature(signature2, clocks2, notes2))
+      where signature1.beatsPerBar == signature2.beatsPerBar
+         && signature1.beatUnit == signature2.beatUnit
+         && clocks1 == clocks2
+         && notes1 == notes2: return true
     default: return false
   }
 }

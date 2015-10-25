@@ -384,20 +384,30 @@ final class MIDIPlayerViewController: UIViewController {
     guard receptionist == nil else { return }
 
     receptionist = NotificationReceptionist()
-
+    receptionist?.logContext = LogManager.SceneContext
+    
     let queue = NSOperationQueue.mainQueue()
 
-    receptionist?.observe(Sequencer.Notification.DidPause, from: Sequencer.self, queue: queue, callback: didPause)
-    receptionist?.observe(Sequencer.Notification.DidStart, from: Sequencer.self, queue: queue, callback: didStart)
-    receptionist?.observe(Sequencer.Notification.DidStop,  from: Sequencer.self, queue: queue, callback: didStop)
+    receptionist?.observe(Sequencer.Notification.DidPause, from: Sequencer.self, queue: queue) {
+      [weak self] in self?.didPause($0)
+    }
+    receptionist?.observe(Sequencer.Notification.DidStart, from: Sequencer.self, queue: queue) {
+      [weak self] in self?.didStart($0)
+    }
+    receptionist?.observe(Sequencer.Notification.DidStop,  from: Sequencer.self, queue: queue) {
+      [weak self] in self?.didStop($0)
+    }
 
-    receptionist?.observe(MIDIDocumentManager.Notification.DidChangeDocument,
-                                 from: MIDIDocumentManager.self,
-                                queue: queue,
-                             callback: didChangeDocument)
+    receptionist?.observe(MIDIDocumentManager.Notification.DidChangeDocument, from: MIDIDocumentManager.self, queue: queue) {
+      [weak self] in self?.didChangeDocument($0)
+    }
 
-    receptionist?.observe(UIKeyboardWillShowNotification, from: nil, queue: queue, callback: willShowKeyboard)
-    receptionist?.observe(UIKeyboardDidHideNotification,  from: nil, queue: queue, callback: didHideKeyboard)
+    receptionist?.observe(UIKeyboardWillShowNotification, from: nil, queue: queue) {
+      [weak self] in self?.willShowKeyboard($0)
+    }
+    receptionist?.observe(UIKeyboardDidHideNotification,  from: nil, queue: queue) {
+      [weak self] in self?.didHideKeyboard($0)
+    }
     
   }
 

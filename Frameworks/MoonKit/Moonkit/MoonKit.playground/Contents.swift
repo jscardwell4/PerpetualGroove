@@ -1,28 +1,43 @@
 import Foundation
 import UIKit
 import MoonKit
-
 class A {}
 
-class B: A {}
-
-func downcastArray<T, U>(sequence: [U]) -> [T]? {
-  var result: [T] = []
-  for u in sequence {
-    if let ut = u as? T {
-      result.append(ut)
-    }
+struct _Weak<T:AnyObject> {
+  private(set) weak var reference: T?
+  init(_ ref: T) {
+    weak var r = ref
+    reference = r
   }
-
-  return result.count == sequence.count ? result : nil
 }
 
-let bs = [B]()
-let a: [A] = downcastArray(bs)!
+var a: A? = A()
 
-protocol P {}
+var weakA = _Weak(a!)
 
-struct C: P {}
+weakA.reference
 
-let cs = [C]()
-let p: [P] = downcastArray(cs)!
+a = nil
+
+weakA.reference
+a
+
+class B {}
+
+class __Weak<T:AnyObject> {
+  private var _value: (() -> T?)?
+  var value: T? { return _value?() }
+  init(_ v: T?) {
+    _value = {[weak v] in v }
+  }
+}
+
+var b: B? = B()
+
+var weakB = __Weak(b)
+
+weakB.value
+
+b = nil
+
+weakB.value

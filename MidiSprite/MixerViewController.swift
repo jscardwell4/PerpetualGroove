@@ -123,18 +123,25 @@ final class MixerViewController: UICollectionViewController {
   */
   private func generateNotificationReceptionist() -> NotificationReceptionist {
     let receptionist = NotificationReceptionist()
+    receptionist.logContext = LogManager.SequencerContext
+
     let queue = NSOperationQueue.mainQueue()
 
-    receptionist.observe(MIDIDocumentManager.Notification.DidChangeDocument,
-                    from: MIDIDocumentManager.self,
-                   queue: queue,
-                callback: documentChanged)
+    receptionist.observe(MIDIDocumentManager.Notification.DidChangeDocument, from: MIDIDocumentManager.self, queue: queue) {
+      [weak self] in self?.documentChanged($0)
+    }
 
     guard let sequence = Sequencer.sequence else { return receptionist }
 
-    receptionist.observe(MIDISequence.Notification.DidChangeTrack, from: sequence, queue: queue, callback: trackChanged)
-    receptionist.observe(MIDISequence.Notification.DidAddTrack,    from: sequence, queue: queue, callback: updateTracks)
-    receptionist.observe(MIDISequence.Notification.DidRemoveTrack, from: sequence, queue: queue, callback: updateTracks)
+    receptionist.observe(MIDISequence.Notification.DidChangeTrack, from: sequence, queue: queue) { 
+      [weak self] in self?.trackChanged($0) 
+    }
+    receptionist.observe(MIDISequence.Notification.DidAddTrack,    from: sequence, queue: queue) { 
+      [weak self] in self?.updateTracks($0) 
+    }
+    receptionist.observe(MIDISequence.Notification.DidRemoveTrack, from: sequence, queue: queue) { 
+      [weak self] in self?.updateTracks($0) 
+    }
 
     return receptionist
   }

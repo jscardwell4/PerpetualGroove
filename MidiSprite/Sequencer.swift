@@ -22,6 +22,7 @@ final class Sequencer {
   */
   static func initialize() {
     guard !initialized else { return }
+    BarBeatTime.initialize(clock.endPoint)
     let _ = receptionist
     soundSets = [
       EmaxSoundSet(.BrassAndWoodwinds),
@@ -50,8 +51,9 @@ final class Sequencer {
     logDebug("Sequencer initialized")
   }
 
-  private static var receptionist: NotificationReceptionist = {
+  private static let receptionist: NotificationReceptionist = {
     let receptionist = NotificationReceptionist()
+    receptionist.logContext = LogManager.SequencerContext
     receptionist.observe(MIDIDocumentManager.Notification.DidChangeDocument,
                     from: MIDIDocumentManager.self,
                    queue: NSOperationQueue.mainQueue(),

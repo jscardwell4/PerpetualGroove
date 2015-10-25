@@ -267,8 +267,8 @@ final class MIDIDocumentManager {
                     from: metadataQuery,
                    queue: queue,
                 callback: MIDIDocumentManager.didUpdate)
-    receptionist.observe(MIDIDocument.Notification.DidRenameFile, queue: queue, callback: MIDIDocumentManager.didRenameFile)
     metadataQuery.startQuery()
+    receptionist.logContext = LogManager.MIDIFileContext
     return receptionist
   }()
 

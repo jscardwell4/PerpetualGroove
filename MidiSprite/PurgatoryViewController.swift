@@ -36,13 +36,13 @@ final class PurgatoryViewController: UIViewController {
     guard case .None = receptionist else { return }
 
     receptionist = NotificationReceptionist()
-    receptionist.observe(NSUbiquityIdentityDidChangeNotification,
-                               queue: NSOperationQueue.mainQueue(),
-                            callback: identityDidChange)
-    receptionist.observe(SettingsManager.Notification.Name.iCloudStorageChanged.notificationName,
-                                from: SettingsManager.self,
-                               queue: NSOperationQueue.mainQueue(),
-                            callback: iCloudStorageDidChange)
+
+    let queue = NSOperationQueue.mainQueue()
+
+    receptionist.observe(NSUbiquityIdentityDidChangeNotification, queue: queue) { [weak self] in self?.identityDidChange($0) }
+    receptionist.observe(SettingsManager.Notification.Name.iCloudStorageChanged, from: SettingsManager.self, queue: queue) {
+      [weak self] in self?.iCloudStorageDidChange($0)
+    }
 
     backdrop.image = backdropImage
   }

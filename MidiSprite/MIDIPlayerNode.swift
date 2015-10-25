@@ -43,17 +43,15 @@ final class MIDIPlayerNode: SKShapeNode {
     physicsBody?.contactTestBitMask = 0xFFFFFFFF
     addChild(MIDIPlayerFieldNode(bezierPath: bezierPath, delegate: self))
 
+    receptionist.logContext = LogManager.SceneContext
+    
     let queue = NSOperationQueue.mainQueue()
 
-    receptionist.observe(Sequencer.Notification.DidReset,
-                    from: Sequencer.self,
-                   queue: queue,
-                callback: didReset)
+    receptionist.observe(Sequencer.Notification.DidReset, from: Sequencer.self, queue: queue) { [weak self] in self?.didReset($0) }
 
-    receptionist.observe(MIDIDocumentManager.Notification.DidChangeDocument,
-                    from: MIDIDocumentManager.self,
-                   queue: queue,
-                callback: didReset)
+    receptionist.observe(MIDIDocumentManager.Notification.DidChangeDocument, from: MIDIDocumentManager.self, queue: queue) {
+      [weak self] in self?.didReset($0)
+    }
   }
 
   private(set) var midiNodes: [MIDINode] = []

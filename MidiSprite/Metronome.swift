@@ -15,14 +15,13 @@ import MoonKit
 final class Metronome {
 
   private let sampler: AVAudioUnitSampler
-  private let time = Sequencer.time
 
   var channel: Byte = 0
   var on = false {
     didSet {
       guard oldValue != on else { return }
-      if on { time.registerCallback(click, predicate: isAudibleTick, forKey: callbackKey) }
-      else { time.removeCallbackForKey(callbackKey) }
+      if on { BarBeatTime.registerCallback({ [weak self] in self?.click($0) }, predicate: isAudibleTick, forKey: callbackKey) }
+      else { BarBeatTime.removeCallbackForKey(callbackKey) }
     }
   }
 

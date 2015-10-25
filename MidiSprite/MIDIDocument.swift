@@ -18,37 +18,7 @@ final class MIDIDocument: UIDocument {
 
   enum Error: String, ErrorType { case InvalidContentType }
 
-  private(set) var sequence: MIDISequence! = MIDISequence()
-
-  /**
-  Callback for `DidAddTrack` notifications from `sequence`. Updates `receptionist` to observe `DidUpdateEvents` notificaton from
-  the new track.
-
-  - parameter notification: NSNotification
-  */
-  private func didAddTrack(notification: NSNotification) {
-    guard let track = notification.userInfo?[MIDISequence.Notification.Key.Track.rawValue] as? InstrumentTrack else { return }
-    receptionist.observe(MIDITrackNotification.DidUpdateEvents, from: track, callback: didUpdateTrack)
-    updateChangeCount(.Done)
-  }
-
-  /**
-  Callback for `DidRemoveTrack` notifications from `sequence`. Updates `receptionist` to stop observing the removed track.
-
-  - parameter notification: NSNotification
-  */
-  private func didRemoveTrack(notification: NSNotification) {
-    guard let track = notification.userInfo?[MIDISequence.Notification.Key.Track.rawValue] as? InstrumentTrack else { return }
-    receptionist.stopObserving(MIDITrackNotification.DidUpdateEvents, from: track)
-    updateChangeCount(.Done)
-  }
-
-  /**
-  Callback for `DidUpdateEvents` notifications from the tracks of `sequence`.
-
-  - parameter notification: NSNotification
-  */
-  private func didUpdateTrack(notification: NSNotification) { updateChangeCount(.Done) }
+  let sequence = MIDISequence()
 
   /**
   didChangeState:
@@ -68,9 +38,11 @@ final class MIDIDocument: UIDocument {
   */
   override init(fileURL url: NSURL) {
     super.init(fileURL: url)
-    receptionist.observe(UIDocumentStateChangedNotification,       from: self, callback: didChangeState)
-    receptionist.observe(MIDISequence.Notification.DidAddTrack,    from: sequence, callback: didAddTrack)
-    receptionist.observe(MIDISequence.Notification.DidRemoveTrack, from: sequence, callback: didRemoveTrack)
+    receptionist.logContext = LogManager.MIDIFileContext
+    let callback: (NSNotification) -> Void = {[weak self] _ in self?.updateChangeCount(.Done)}
+    receptionist.observe(UIDocumentStateChangedNotification,       from: self)     { [weak self] in self?.didChangeState($0) }
+    receptionist.observe(MIDISequence.Notification.DidAddTrack,    from: sequence, callback: callback)
+    receptionist.observe(MIDISequence.Notification.DidRemoveTrack, from: sequence, callback: callback)
   }
 
   private let receptionist = NotificationReceptionist()
@@ -108,20 +80,6 @@ final class MIDIDocument: UIDocument {
   override func handleError(error: NSError, userInteractionPermitted: Bool) {
     logError(error)
     super.handleError(error, userInteractionPermitted: userInteractionPermitted)
-  }
-
-  /**
-  closeWithCompletionHandler:
-
-  - parameter completionHandler: ((Bool) -> Void
-  */
-  override func closeWithCompletionHandler(completionHandler: ((Bool) -> Void)?) {
-    for track in sequence.tracks {
-      receptionist.stopObserving(MIDITrackNotification.DidUpdateEvents, from: track)
-    }
-    receptionist.stopObserving(MIDISequence.Notification.DidAddTrack, from: sequence)
-    receptionist.stopObserving(MIDISequence.Notification.DidRemoveTrack, from: sequence)
-    super.closeWithCompletionHandler({[weak self] in self?.sequence = nil; completionHandler?($0)})
   }
 
   deinit {

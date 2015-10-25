@@ -15,7 +15,7 @@ public final class KVOReceptionist: NSObject {
   public typealias Callback = (String, AnyObject, [String:AnyObject]) -> Void
 
   private struct Observation {
-    let object: WeakObject<AnyObject>
+    let object: Weak<AnyObject>
     let keyPath: String
     let queue: NSOperationQueue
     let callback: Callback
@@ -41,7 +41,7 @@ public final class KVOReceptionist: NSObject {
     let identifier = ObjectIdentifier(object)
     keyPath = NSStringFromSelector(NSSelectorFromString(keyPath))
     var observationBag = observations[identifier] ?? [:]
-    observationBag[keyPath] = Observation(object: WeakObject(object), keyPath: keyPath, queue: queue, callback: callback)
+    observationBag[keyPath] = Observation(object: Weak(object), keyPath: keyPath, queue: queue, callback: callback)
     observations[identifier] = observationBag
     object.addObserver(self,
             forKeyPath: keyPath,

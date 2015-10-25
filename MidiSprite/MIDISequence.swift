@@ -12,16 +12,10 @@ import struct AudioToolbox.CABarBeatTime
 
 final class MIDISequence {
 
-  /** An enumeration to wrap up notifications */
-  enum Notification: String, NotificationType, NotificationNameType {
-    case DidAddTrack, DidRemoveTrack, DidChangeTrack, SoloCountDidChange
-    enum Key: String, NotificationKeyType { case Track, OldTrack, OldCount, NewCount }
-  }
-
-  var sequenceEnd: CABarBeatTime { return tracks.map({$0.trackEnd}).maxElement() ?? .start }
+  var sequenceEnd: CABarBeatTime { return tracks.map({$0.endOfTrack}).maxElement() ?? .start }
 
   private(set) var instrumentTracks: [InstrumentTrack] = []
-  private var _soloTracks: [WeakObject<InstrumentTrack>] = []
+  private var _soloTracks: [Weak<InstrumentTrack>] = []
   var soloTracks: [InstrumentTrack] {
     let result = _soloTracks.flatMap {$0.reference}
     if result.count < _soloTracks.count { _soloTracks = _soloTracks.filter { $0.reference != nil } }
@@ -50,9 +44,9 @@ final class MIDISequence {
     }
   }
 
-  private var previousTrack: InstrumentTrack?
+  private weak var previousTrack: InstrumentTrack?
 
-  var currentTrack: InstrumentTrack? {
+  weak var currentTrack: InstrumentTrack? {
     didSet {
       guard currentTrack == nil || instrumentTracks ∋ currentTrack else { currentTrack = nil; return }
       previousTrack = oldValue
@@ -66,11 +60,7 @@ final class MIDISequence {
   private(set) var tempoTrack = TempoTrack()
 
   /** Collection of all the tracks in the composition */
-  var tracks: [MIDITrackType] {
-    let tempo = [tempoTrack as MIDITrackType]
-    let instruments = instrumentTracks.map({$0 as MIDITrackType})
-    return tempo + instruments
-  }
+  var tracks: [Track] { return [tempoTrack] + instrumentTracks }
 
   /**
   toggleSoloForTrack:
@@ -87,7 +77,7 @@ final class MIDISequence {
                                            userInfo: [.OldCount: _soloTracks.count + 1, .NewCount: _soloTracks.count])
     } else {
       track.solo = true
-      _soloTracks.append(WeakObject(track))
+      _soloTracks.append(Weak(track))
       Notification.SoloCountDidChange.post(object: self,
                                            userInfo: [.OldCount: _soloTracks.count - 1, .NewCount: _soloTracks.count])
     }
@@ -96,25 +86,35 @@ final class MIDISequence {
   /** Conversion to and from the `MIDIFile` type  */
   var file: MIDIFile {
     get {
-      let file = MIDIFile(format: .One, division: 480, tracks: tracks)
-      logVerbose("<out> file: \(file.debugDescription)")
+      let file = MIDIFile(format: .One, division: 480, tracks: tracks.map({$0.chunk}))
+      logDebug("<out> file: \(file)")
       return file
     }
     set {
-      logVerbose("<in> file: \(newValue.debugDescription)")
+      logDebug("<in> file: \(newValue)")
       var trackChunks = ArraySlice(newValue.tracks)
       if let trackChunk = trackChunks.first
         where trackChunk.events.count == trackChunk.events.filter({ TempoTrack.isTempoTrackEvent($0) }).count
       {
-        tempoTrack = TempoTrack(trackChunk: trackChunk/*, sequence: self*/)
+        tempoTrack = TempoTrack(trackChunk: trackChunk)
         trackChunks = trackChunks.dropFirst()
       }
 
-      instrumentTracks = trackChunks.flatMap({ try? InstrumentTrack(trackChunk: $0/*, sequence: self*/) })
-      for track in instrumentTracks { Notification.DidAddTrack.post(object: self, userInfo: [Notification.Key.Track: track]) }
+      instrumentTracks = trackChunks.flatMap({ try? InstrumentTrack(trackChunk: $0) })
+      for track in instrumentTracks {
+        Notification.DidAddTrack.post(object: self, userInfo: [Notification.Key.Track: track])
+      }
       zip(TrackColor.allCases, instrumentTracks).forEach { $1.color = $0 }
       currentTrack = instrumentTracks.first
     }
+  }
+
+  let receptionist = NotificationReceptionist()
+
+  /** initializeNotificationReceptionist */
+  private func initializeNotificationReceptionist() {
+    guard receptionist.count == 0 else { return }
+    receptionist.logContext = LogManager.MIDIFileContext
   }
 
   /** init */
@@ -128,7 +128,8 @@ final class MIDISequence {
   init(file f: MIDIFile) { file = f; currentTrack = instrumentTracks.first }
 
   deinit {
-    logDebug("")
+    instrumentTracks.removeAll()
+    MoonKit.logDebug("deinit")
   }
 
   /**
@@ -141,6 +142,11 @@ final class MIDISequence {
     let track = try InstrumentTrack(instrument: instrument/*, sequence: self*/)
     track.color = TrackColor.allCases[(instrumentTracks.count + 1) % TrackColor.allCases.count]
     instrumentTracks.append(track)
+    receptionist.observe(Track.Notification.DidUpdateEvents, from: track) {
+      [weak self] _ in
+      guard let weakself = self else { return }
+      Notification.DidUpdate.post(object: weakself)
+    }
     Notification.DidAddTrack.post(object: self, userInfo: [Notification.Key.Track: track])
     if SettingsManager.makeNewTrackCurrent { currentTrack = track }
   }
@@ -152,6 +158,7 @@ final class MIDISequence {
   */
   func removeTrack(track: InstrumentTrack) {
     guard let idx = instrumentTracks.indexOf(track) else { return }
+    receptionist.stopObserving(Track.Notification.DidUpdateEvents, from: track)
     instrumentTracks.removeAtIndex(idx)
     Notification.DidRemoveTrack.post(object: self, userInfo: [Notification.Key.Track: track])
     if currentTrack == track { currentTrack = previousTrack }
@@ -163,15 +170,27 @@ final class MIDISequence {
   - parameter tempo: Double
   */
   func insertTempoChange(tempo: Double) {
-    guard Sequencer.recording else { return }; tempoTrack.insertTempoChange(tempo)
+    guard Sequencer.recording else { return }
+    tempoTrack.insertTempoChange(tempo)
+    Notification.DidUpdate.post(object: self)
   }
 
 }
 
 extension MIDISequence: CustomStringConvertible {
-  var description: String { return "\ntracks:\n" + "\n\n".join(tracks.map({$0.description.indentedBy(1, useTabs: true)})) }
+  var description: String {
+    return "\ntracks:\n" + "\n\n".join(tracks.map({$0.description.indentedBy(1, useTabs: true)}))
+  }
 }
 
 extension MIDISequence: CustomDebugStringConvertible {
   var debugDescription: String { var result = ""; dump(self, &result); return result }
+}
+
+extension MIDISequence {
+  /** An enumeration to wrap up notifications */
+  enum Notification: String, NotificationType, NotificationNameType {
+    case DidAddTrack, DidRemoveTrack, DidChangeTrack, SoloCountDidChange, DidUpdate
+    enum Key: String, NotificationKeyType { case Track, OldTrack, OldCount, NewCount }
+  }
 }

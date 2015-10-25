@@ -13,30 +13,8 @@ import AudioToolbox
 import CoreMIDI
 import SpriteKit
 
-final class InstrumentTrack: MIDITrackType, Named {
+final class InstrumentTrack: Track, Named {
 
-
-  struct State: OptionSetType, CustomStringConvertible {
-    let rawValue: Int
-    static let Recording     = State(rawValue: 0b0000_0001)
-    static let Soloing       = State(rawValue: 0b0000_0010)
-    static let InclusiveMute = State(rawValue: 0b0000_0100)
-    static let ExclusiveMute = State(rawValue: 0b0000_1000)
-    static let TrackEnded    = State(rawValue: 0b0001_0000)
-
-    var description: String {
-      var result = "InstrumentTrack.State { "
-      var flagStrings: [String] = []
-      if self ∋ .Recording     { flagStrings.append("Recording")     }
-      if self ∋ .Soloing       { flagStrings.append("Soloing")       }
-      if self ∋ .InclusiveMute { flagStrings.append("InclusiveMute") }
-      if self ∋ .ExclusiveMute { flagStrings.append("ExclusiveMute") }
-      if self ∋ .TrackEnded    { flagStrings.append("TrackEnded")    }
-      result += ", ".join(flagStrings)
-      result += " }"
-      return result
-    }
-  }
 
   /// Holds the current state of the node
   private var state: State = [] {
@@ -75,16 +53,14 @@ final class InstrumentTrack: MIDITrackType, Named {
   /** initializeNotificationReceptionist */
   private func initializeNotificationReceptionist() {
     guard receptionist.count == 0 else { return }
+    receptionist.logContext = LogManager.SequencerContext
+    let queue = NSOperationQueue.mainQueue()
 
-    receptionist.observe(Sequencer.Notification.DidToggleRecording, from: Sequencer.self, queue: NSOperationQueue.mainQueue()) {
-      [weak self] _ in self?.recording = Sequencer.recording
-    }
-
-    receptionist.observe(Sequencer.Notification.DidReset, from: Sequencer.self, queue: NSOperationQueue.mainQueue()) {
+    receptionist.observe(Sequencer.Notification.DidReset, from: Sequencer.self, queue: queue) {
       [weak self] _ in self?.resetNodes()
     }
 
-    receptionist.observe(MIDISequence.Notification.SoloCountDidChange, from: Sequencer.sequence, queue: NSOperationQueue.mainQueue()) {
+    receptionist.observe(MIDISequence.Notification.SoloCountDidChange, from: Sequencer.sequence, queue: queue) {
       [weak self] in
 
       guard let state = self?.state,
@@ -96,7 +72,7 @@ final class InstrumentTrack: MIDITrackType, Named {
       else if state ∌ .Soloing && state ∋ .InclusiveMute && newCount == 0 { self?.state ⊻= .InclusiveMute }
     }
 
-    receptionist.observe(Sequencer.Notification.DidJog, from: Sequencer.self, queue: NSOperationQueue.mainQueue()) {
+    receptionist.observe(Sequencer.Notification.DidJog, from: Sequencer.self, queue: queue) {
       [weak self] in
 
       guard let state = self?.state where state ∋ .TrackEnded else { return }
@@ -114,8 +90,6 @@ final class InstrumentTrack: MIDITrackType, Named {
   }
 
   // MARK: - MIDI file related properties and methods
-
-  var eventContainer = MIDIEventContainer() { didSet { MIDITrackNotification.DidUpdateEvents.post(object: self) } }
 
   var instrumentNameEvent: MetaEvent? {
     if let event = eventContainer.metaEvents.first, case .Text = event.data { return event } else { return nil }
@@ -146,7 +120,7 @@ final class InstrumentTrack: MIDITrackType, Named {
     }
   }
 
-  var chunk: MIDIFileTrackChunk {
+  override var chunk: MIDIFileTrackChunk {
     validateFirstAndLastEvents()
     validateInstrumentEvents()
     return MIDIFileTrackChunk(eventContainer: eventContainer)
@@ -158,17 +132,12 @@ final class InstrumentTrack: MIDITrackType, Named {
 
   var color: TrackColor = .White
 
-  var name: String { return label ?? instrument.preset.name }
+  override var name: String { return label ?? instrument.preset.name }
   var label: String?
 
   var mute: Bool {
     get { return state ~∩ [.ExclusiveMute, .InclusiveMute] && state ∌ .Soloing}
     set { guard (state ∋ .ExclusiveMute) != newValue else { return }; state ⊻= .ExclusiveMute }
-  }
-
-  var recording: Bool {
-    get { return state ∋ .Recording }
-    set { if newValue { state.insert(.Recording) } else { state.remove(.Recording) } }
   }
 
   var solo: Bool {
@@ -194,7 +163,11 @@ final class InstrumentTrack: MIDITrackType, Named {
   private var fileIDToNodeID: [NodeIdentifier:NodeIdentifier] = [:]
 
   /** Empties all node-referencing properties */
-  private func resetNodes() { pendingIdentifier = nil; nodes.removeAll(); fileIDToNodeID.removeAll(); logDebug("nodes reset") }
+  private func resetNodes() {
+    pendingIdentifier = nil
+    while let node = nodes.popFirst() { node.removeFromParent() }
+    fileIDToNodeID.removeAll()
+    logDebug("nodes reset") }
 
   /**
   addNode:
@@ -212,9 +185,9 @@ final class InstrumentTrack: MIDITrackType, Named {
       fileIDToNodeID[pendingIdentifier] = identifier
       self.pendingIdentifier = nil
     }
-    guard recording else { return }
+    guard Sequencer.recording else { return }
     eventQueue.addOperationWithBlock {
-      [time = time.time, placement = node.initialSnapshot.placement, note = node.note, weak self] in
+      [time = BarBeatTime.time, placement = node.initialSnapshot.placement, note = node.note, weak self] in
       let event = MIDINodeEvent(.Add(identifier: identifier, placement: placement, attributes: note), time)
       self?.eventContainer.append(event)
     }
@@ -276,9 +249,9 @@ final class InstrumentTrack: MIDITrackType, Named {
     node.sendNoteOff()
     try MIDIPortDisconnectSource(inPort, node.endPoint) ➤ "Failed to disconnect to node \(node.name!)"
     Notification.DidRemoveNode.post(object: self)
-    guard recording else { return }
+    guard Sequencer.recording else { return }
     eventQueue.addOperationWithBlock {
-      [time = time.time, weak self] in
+      [time = BarBeatTime.time, weak self] in
       self?.eventContainer.append(MIDINodeEvent(.Remove(identifier: identifier), time))
     }
   }
@@ -298,10 +271,7 @@ final class InstrumentTrack: MIDITrackType, Named {
   private var _trackEnd: CABarBeatTime?
 
   /// The end of the track as parsed from a chunk or the current time
-  var trackEnd: CABarBeatTime { return _trackEnd ?? time.time }
-
-  /// A reference to the bar beat time object owned by the sequencer
-  let time = Sequencer.time
+  var trackEnd: CABarBeatTime { return _trackEnd ?? BarBeatTime.time }
 
   private var notes: Set<NodeIdentifier> = []
 
@@ -336,10 +306,10 @@ final class InstrumentTrack: MIDITrackType, Named {
     catch { logError(error) }
 
     // Check if we are recording, otherwise skip event processing
-    guard recording else { return }
+    guard Sequencer.recording else { return }
     
     eventQueue.addOperationWithBlock {
-      [weak self, time = time.time] in
+      [weak self, time = BarBeatTime.time] in
 
       let packets = packetList.memory
       let packetPointer = UnsafeMutablePointer<MIDIPacket>.alloc(1)
@@ -370,16 +340,13 @@ final class InstrumentTrack: MIDITrackType, Named {
     let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
     var data: [Byte] = [channelEvent.status.value, channelEvent.data1]
     if let data2 = channelEvent.data2 { data.append(data2) }
-    let timeStamp = time.ticks
+    let timeStamp = BarBeatTime.ticks
     MIDIPacketListAdd(&packetList, size, packet, timeStamp, 3, data)
     withUnsafePointer(&packetList) {
       do { try MIDISend(outPort, instrument.endPoint, $0) ➤ "Failed to dispatch packet list to instrument" }
       catch { logError(error) }
     }
   }
-
-  /// Holds events parsed from a `MIDIFile` keyed by their bar beat time
-  private(set) var eventMap = MIDIEventMap()
 
   /**
   dispatchEventsForTime:
@@ -404,9 +371,6 @@ final class InstrumentTrack: MIDITrackType, Named {
     }
   }
 
-  /// The track's owning sequence
-//  private(set) unowned var sequence: MIDISequence
-
   /// The index for the track in the sequence's array of instrument tracks, or nil
   var index: Int? { return Sequencer.sequence?.instrumentTracks.indexOf(self) }
 
@@ -425,11 +389,10 @@ final class InstrumentTrack: MIDITrackType, Named {
   - parameter b: Bus
   - parameter s: MIDISequence
   */
-  init(instrument i: Instrument/*, sequence s: MIDISequence*/) throws {
-//    sequence = s
+  init(instrument i: Instrument) throws {
+    super.init()
     instrument = i
     eventQueue.name = "BUS \(instrument.bus)"
-    recording = Sequencer.recording
 
     initializeNotificationReceptionist()
     try initializeMIDIClient()
@@ -441,17 +404,18 @@ final class InstrumentTrack: MIDITrackType, Named {
   - parameter trackChunk: MIDIFileTrackChunk
   - parameter s: MIDISequence
   */
-  init(trackChunk: MIDIFileTrackChunk/*, sequence s: MIDISequence*/) throws {
-//    sequence = s
+  init(trackChunk: MIDIFileTrackChunk) throws {
+    super.init()
     eventContainer = MIDIEventContainer(events: trackChunk.events)
 
     // Find the end of track event
-    guard let endOfTrackEvent = self.endOfTrackEvent else {
+    guard let endOfTrackEvent = eventContainer.endOfTrackEvent else {
       throw MIDIFileError(type: .MissingEvent, reason: "Missing end of track event")
     }
     _trackEnd = endOfTrackEvent.time
 
-    if let trackNameEvent = self.trackNameEvent, case .SequenceTrackName(let n) = trackNameEvent.data { label = n }
+    if let trackNameEvent = eventContainer.trackNameEvent,
+      case .SequenceTrackName(let n) = trackNameEvent.data { label = n }
 
     // Find the instrument event
     guard let instrumentName = self.instrumentNameEvent, case .Text(var instr) = instrumentName.data else {
@@ -460,7 +424,9 @@ final class InstrumentTrack: MIDITrackType, Named {
 
     instr = instr[instr.startIndex.advancedBy(11)..<]
 
-    guard let url = NSBundle.mainBundle().URLForResource(instr, withExtension: nil) else { throw Error.InvalidSoundSetURL }
+    guard let url = NSBundle.mainBundle().URLForResource(instr, withExtension: nil) else {
+      throw Error.InvalidSoundSetURL
+    }
 
     let soundSet: SoundSetType
     do {
@@ -488,13 +454,14 @@ final class InstrumentTrack: MIDITrackType, Named {
 
     instrument = instrumentMaybe
     eventQueue.name = "BUS \(instrument.bus)"
-    recording = Sequencer.recording
 
     eventMap.insert(typecast(eventContainer.nodeEvents) ?? [])
 
     if let event = eventContainer.endOfTrackEvent { eventMap.insert([event]) }
 
-    time.registerCallback(dispatchEventsForTime, forTimes: eventMap.times, forObject: self)
+    BarBeatTime.registerCallback({ [weak self] in self?.dispatchEventsForTime($0) },
+                           times: eventMap.times,
+                          object: self)
 
     initializeNotificationReceptionist()
     try initializeMIDIClient()
@@ -504,6 +471,14 @@ final class InstrumentTrack: MIDITrackType, Named {
     logDebug("")
   }
 
+  override var description: String {
+    return "\n".join(
+      "name: \(name)",
+      "instrument: \(instrument)",
+      "color: \(color)",
+      super.description
+    )
+  }
 }
 
 // MARK: - Errors
@@ -524,22 +499,26 @@ extension InstrumentTrack {
   }
 }
 
-// MARK: - CustomStringConvertible
-extension InstrumentTrack: CustomStringConvertible {
-  var description: String {
-    return "\n".join(
-      "name: \(name)",
-      "instrument: \(instrument)",
-      "color: \(color)",
-      "events:\n\(eventContainer.description.indentedBy(1, useTabs: true))",
-      "map:\n\(eventMap.description.indentedBy(1, useTabs: true))"
-    )
-  }
-}
+extension InstrumentTrack {
+  struct State: OptionSetType, CustomStringConvertible {
+    let rawValue: Int
+    static let Soloing       = State(rawValue: 0b0000_0010)
+    static let InclusiveMute = State(rawValue: 0b0000_0100)
+    static let ExclusiveMute = State(rawValue: 0b0000_1000)
+    static let TrackEnded    = State(rawValue: 0b0001_0000)
 
-// MARK: - CustomStringConvertible
-extension InstrumentTrack: CustomDebugStringConvertible {
-  var debugDescription: String { var result = ""; dump(self, &result); return result }
+    var description: String {
+      var result = "InstrumentTrack.State { "
+      var flagStrings: [String] = []
+      if self ∋ .Soloing       { flagStrings.append("Soloing")       }
+      if self ∋ .InclusiveMute { flagStrings.append("InclusiveMute") }
+      if self ∋ .ExclusiveMute { flagStrings.append("ExclusiveMute") }
+      if self ∋ .TrackEnded    { flagStrings.append("TrackEnded")    }
+      result += ", ".join(flagStrings)
+      result += " }"
+      return result
+    }
+  }
 }
 
 // MARK: - Hashable

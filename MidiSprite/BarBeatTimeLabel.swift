@@ -109,7 +109,7 @@ final class BarBeatTimeLabel: UIView {
   }
   private var barBeatTimeCallbackKey: String { return String(ObjectIdentifier(self).uintValue) }
 
-  private var receptionist: NotificationReceptionist!
+  private let receptionist = NotificationReceptionist()
 
   private var characterSize: CGSize {
     return "0123456789:.".characters.reduce(.zero) {[attributes = [NSFontAttributeName: font]] in
@@ -169,16 +169,15 @@ final class BarBeatTimeLabel: UIView {
     calculateFrames()
 
     #if !TARGET_INTERFACE_BUILDER
-      Sequencer.time.registerCallback(didUpdateBarBeatTime,
-                                   predicate: {_ in true},
-                                      forKey: barBeatTimeCallbackKey)
+      BarBeatTime.registerCallback({ [weak self] in self?.didUpdateBarBeatTime($0) },
+                         predicate: {_ in true},
+                            forKey: barBeatTimeCallbackKey)
 
       let queue = NSOperationQueue.mainQueue()
       let object = Sequencer.self
-      typealias Notification = Sequencer.Notification
-      receptionist = NotificationReceptionist()
-      receptionist?.observe(Notification.DidJog, from: object, queue: queue, callback: didJog)
-      receptionist?.observe(Notification.DidReset, from: object, queue: queue, callback: didReset)
+      receptionist.logContext = LogManager.SceneContext
+      receptionist.observe(Sequencer.Notification.DidJog, from: object, queue: queue) { [weak self] in self?.didJog($0) }
+      receptionist.observe(Sequencer.Notification.DidReset, from: object, queue: queue) { [weak self] in self?.didReset($0) }
     #endif
 
   }

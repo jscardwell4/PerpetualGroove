@@ -15,50 +15,52 @@ final class LogManager: MoonKit.LogManager {
   private static var initialized = false
 
   static let MIDIFileContext  = LogContext(rawValue: 0b0000_0010_0000) ∪ .Console
-  static let SF2FileContext   = LogContext(rawValue: 0b0000_0100_0000) ∪ .Console
-  static let SequencerContext = LogContext(rawValue: 0b0000_1000_0000) ∪ .Console
-  static let SceneContext     = LogContext(rawValue: 0b0001_0000_0000) ∪ .Console
+  static let SF2FileContext   = LogContext(rawValue: 0b0000_0100_0000)// ∪ .Console
+  static let SequencerContext = LogContext(rawValue: 0b0000_1000_0000)// ∪ .Console
+  static let SceneContext     = LogContext(rawValue: 0b0001_0000_0000)// ∪ .Console
 
   static func initialize() {
     guard !initialized else { return }
 
-    MIDIDocumentManager.logContext     = MIDIFileContext
-    MIDIDocument.logContext            = MIDIFileContext
-    MIDIFile.logContext                = MIDIFileContext
-    MIDIFileHeaderChunk.logContext     = MIDIFileContext
-    MIDIFileTrackChunk.logContext      = MIDIFileContext
-    MetaEvent.logContext               = MIDIFileContext
-    ChannelEvent.logContext            = MIDIFileContext
-    VariableLengthQuantity.logContext  = MIDIFileContext
-    MIDINodeEvent.logContext           = MIDIFileContext
-    MIDIEventContainer.logContext      = MIDIFileContext
-    MIDIEventMap.logContext            = MIDIFileContext
+    setLogLevel(.Verbose, forType: NotificationReceptionist.self)
 
-    SF2File.logContext    = SF2FileContext
-    Instrument.logContext = SF2FileContext
-    SoundSet.logContext   = SF2FileContext
-    INFOChunk.logContext  = SF2FileContext
-    SDTAChunk.logContext  = SF2FileContext
-    PDTAChunk.logContext  = SF2FileContext
+    MIDIDocumentManager.defaultLogContext     = MIDIFileContext
+    MIDIDocument.defaultLogContext            = MIDIFileContext
+    MIDIFile.defaultLogContext                = MIDIFileContext
+    MIDIFileHeaderChunk.defaultLogContext     = MIDIFileContext
+    MIDIFileTrackChunk.defaultLogContext      = MIDIFileContext
+    MetaEvent.defaultLogContext               = MIDIFileContext
+    ChannelEvent.defaultLogContext            = MIDIFileContext
+    VariableLengthQuantity.defaultLogContext  = MIDIFileContext
+    MIDINodeEvent.defaultLogContext           = MIDIFileContext
+    MIDIEventContainer.defaultLogContext      = MIDIFileContext
+    MIDIEventMap.defaultLogContext            = MIDIFileContext
 
-    Sequencer.logContext       = SequencerContext
-    InstrumentTrack.logContext = SequencerContext
-    MIDISequence.logContext    = SequencerContext
-    AudioManager.logContext    = SequencerContext
-    CABarBeatTime.logContext   = SequencerContext
-    TimeSignature.logContext   = SequencerContext
-    TrackColor.logContext      = SequencerContext
-    TempoTrack.logContext      = SequencerContext
-    Metronome.logContext       = SequencerContext
-    MIDIClock.logContext       = SequencerContext
-    BarBeatTime.logContext     = SequencerContext
+    SF2File.defaultLogContext    = SF2FileContext
+    Instrument.defaultLogContext = SF2FileContext
+    SoundSet.defaultLogContext   = SF2FileContext
+    INFOChunk.defaultLogContext  = SF2FileContext
+    SDTAChunk.defaultLogContext  = SF2FileContext
+    PDTAChunk.defaultLogContext  = SF2FileContext
 
-    MIDIPlayerScene.logContext     = SceneContext
-    MIDINodeHistory.logContext     = SceneContext
-    MIDIPlayerNode.logContext      = SceneContext
-    MIDIPlayerFieldNode.logContext = SceneContext
-    MIDINode.logContext            = SceneContext
-    Placement.logContext           = SceneContext
+    Sequencer.defaultLogContext       = SequencerContext
+    InstrumentTrack.defaultLogContext = SequencerContext
+    MIDISequence.defaultLogContext    = SequencerContext
+    AudioManager.defaultLogContext    = SequencerContext
+    CABarBeatTime.defaultLogContext   = SequencerContext
+    TimeSignature.defaultLogContext   = SequencerContext
+    TrackColor.defaultLogContext      = SequencerContext
+    TempoTrack.defaultLogContext      = SequencerContext
+    Metronome.defaultLogContext       = SequencerContext
+    MIDIClock.defaultLogContext       = SequencerContext
+    BarBeatTime.defaultLogContext     = SequencerContext
+
+    MIDIPlayerScene.defaultLogContext     = SceneContext
+    MIDINodeHistory.defaultLogContext     = SceneContext
+    MIDIPlayerNode.defaultLogContext      = SceneContext
+    MIDIPlayerFieldNode.defaultLogContext = SceneContext
+    MIDINode.defaultLogContext            = SceneContext
+    Placement.defaultLogContext           = SceneContext
 
     addConsoleLoggers()
 

@@ -9,36 +9,30 @@
 import Foundation
 import UIKit
 
-public final class NotificationReceptionist: NSObject {
+public final class NotificationReceptionist: NSObject, Loggable {
 
-  public typealias Notification = String
+  private var _logContext: LogManager.LogContext?
+  public var logContext: LogManager.LogContext {
+    get { return _logContext ?? NotificationReceptionist.defaultLogContext }
+    set { _logContext = newValue }
+  }
 
-  //  public typealias Callback = (WeakObject<AnyObject>?, NSOperationQueue?, (NSNotification) -> Void)
+  private var infos: Set<ObservationInfo> = []
 
-  private var observers: [Int:NSObjectProtocol] = [:]
+  private struct ObservationInfo: Hashable, CustomStringConvertible {
+    let name: String
+    let object: Weak<AnyObject>
+    let observer: NSObjectProtocol
+    var hashValue: Int { return name.hashValue ^ object.hashValue ^ observer.hash }
 
-  public var count: Int { return observers.count }
-
-  private var notificationCenter: NSNotificationCenter { return NSNotificationCenter.defaultCenter() }
-
-  /**
-  hashForName:object:
-
-  - parameter name: String
-  - parameter object: AnyObject?
-
-  - returns: Int
-  */
-  private func hashForName(name: String, object: AnyObject?) -> Int {
-    guard let object = object else { return name.hashValue }
-    if let objectHash = object.hashValue {
-      return name.hashValue ^ objectHash
-    } else if let objectHash = object.hash {
-      return name.hashValue ^ objectHash
-    } else {
-      return name.hashValue
+    var description: String {
+      return "'\(name)'\(object.reference == nil ? "" : " from object \(object))")"
     }
   }
+
+  public var count: Int { return infos.count }
+
+  private var notificationCenter: NSNotificationCenter { return NSNotificationCenter.defaultCenter() }
 
   /**
   observe:from:queue:callback:
@@ -53,25 +47,61 @@ public final class NotificationReceptionist: NSObject {
                                     queue: NSOperationQueue? = nil,
                                  callback: (NSNotification) -> Void)
   {
-    let key = hashForName(notification._name, object: object)
-    observers[key] = notification.observe(object, queue: queue, callback: callback)
+    observe(notification.name.notificationName, from: object, queue: queue, callback: callback)
   }
 
   /**
   observe:from:queue:callback:
 
-  - parameter name: Notification
+  - parameter name: String
   - parameter object: AnyObject? = nil
   - parameter queue: NSOperationQueue? = nil
   - parameter callback: (NSNotification) -> Void
   */
-  public func observe(name: Notification,
+  public func observe(name: String,
                  from object: AnyObject? = nil,
                 queue: NSOperationQueue? = nil,
              callback: (NSNotification) -> Void)
   {
-    let key = hashForName(name, object: object)
-    observers[key] = notificationCenter.addObserverForName(name, object: object, queue: queue, usingBlock: callback)
+    let info = ObservationInfo(
+      name: name,
+      object: Weak(object),
+      observer: notificationCenter.addObserverForName(name, object: object, queue: queue, usingBlock: callback)
+    )
+    infos.insert(info)
+    logDebug("observing \(info)")
+  }
+
+  /**
+  observe:from:queue:callback:
+
+  - parameter notification: N
+  - parameter object: AnyObject? = nil
+  - parameter queue: NSOperationQueue? = nil
+  - parameter callback: (NSNotification) -> Void
+  */
+  public func observe<N:NotificationType where N:NotificationNameType>(notification: N,
+                                                                  from object: AnyObject? = nil,
+                                                                 queue: NSOperationQueue? = nil,
+                                                              callback: (NSNotification) -> Void)
+  {
+    observe(notification.notificationName, from: object, queue: queue, callback: callback)
+  }
+
+  /**
+  observe:from:queue:callback:
+
+  - parameter name: N
+  - parameter object: AnyObject? = nil
+  - parameter queue: NSOperationQueue? = nil
+  - parameter callback: (NSNotification) -> Void
+  */
+  public func observe<N:NotificationNameType>(name: N,
+                                         from object: AnyObject? = nil,
+                                        queue: NSOperationQueue? = nil,
+                                     callback: (NSNotification) -> Void)
+  {
+    observe(name.notificationName, from: object, queue: queue, callback: callback)
   }
 
   /**
@@ -87,34 +117,51 @@ public final class NotificationReceptionist: NSObject {
   /**
   stopObserving:from:
 
-  - parameter name: Notification
+  - parameter notification: N
   - parameter object: AnyObject? = nil
   */
-  public func stopObserving(name: Notification, from object: AnyObject? = nil) {
-    guard let observer = observers[hashForName(name, object: object)] else {
-      logWarning("no observer registered for '\(name)' from \(object)")
+  public func stopObserving<N:NotificationType where N:NotificationNameType>(notification: N, from object: AnyObject? = nil) {
+    stopObserving(notification._name, from: object)
+  }
+
+  /**
+  stopObserving:from:
+
+  - parameter name: N
+  - parameter object: AnyObject? = nil
+  */
+  public func stopObserving<N:NotificationNameType>(name: N, from object: AnyObject? = nil) {
+    stopObserving(name.notificationName, from: object)
+  }
+
+
+  /**
+  stopObserving:from:
+
+  - parameter name: String
+  - parameter object: AnyObject? = nil
+  */
+  public func stopObserving(name: String, from object: AnyObject? = nil) {
+    guard let idx = infos.indexOf({$0.name == name && $0.object.reference === object}) else {
+      logWarning("not observing \(name)'\(object == nil ? "" : "from object at address \(unsafeAddressOf(object!))")")
       return
     }
-    notificationCenter.removeObserver(observer, name: name, object: object)
-    observers[hash] = nil
+    stopObserving(infos.removeAtIndex(idx))
   }
 
-  /** init */
-  public override init() { super.init() }
+  /**
+  stopObserving:
 
-//  /**
-//  initWithCallbacks:
-//
-//  - parameter callbacks: [Notification
-//  */
-//  public convenience init(callbacks: [Notification:Callback]) {
-//    self.init()
-//    callbacks.forEach { observe($0, from: $1.0, queue: $1.1, callback: $1.2) }
-//  }
-
-  deinit {
-    observers.values.forEach { notificationCenter.removeObserver($0) }
-    observers.removeAll(keepCapacity: false)
-    notificationCenter.removeObserver(self)
+  - parameter info: ObservationInfo
+  */
+  private func stopObserving(info: ObservationInfo) {
+    notificationCenter.removeObserver(info.observer, name: info.name, object: info.object.reference)
+    logDebug("stopped observing \(info)")
   }
+
+  deinit { while let info = infos.popFirst() { stopObserving(info) } }
+}
+
+private func ==(lhs: NotificationReceptionist.ObservationInfo, rhs: NotificationReceptionist.ObservationInfo) -> Bool {
+  return lhs.hashValue == rhs.hashValue
 }

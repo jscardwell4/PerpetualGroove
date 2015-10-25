@@ -60,15 +60,14 @@ final class DocumentsViewController: UICollectionViewController {
   /** setup */
   private func setup() {
     (collectionViewLayout as? DocumentsViewLayout)?.controller = self
+    receptionist.logContext = LogManager.MIDIFileContext
     let queue = NSOperationQueue.mainQueue()
-    receptionist.observe(MIDIDocumentManager.Notification.DidUpdateMetadataItems,
-                    from: MIDIDocumentManager.self,
-                   queue: queue,
-                callback: didUpdateItems)
-    receptionist.observe(SettingsManager.Notification.Name.iCloudStorageChanged.rawValue,
-                    from: SettingsManager.self,
-                   queue: queue,
-                callback: iCloudStorageDidChange)
+    receptionist.observe(MIDIDocumentManager.Notification.DidUpdateMetadataItems, from: MIDIDocumentManager.self, queue: queue) {
+      [weak self] in self?.didUpdateItems($0)
+    }
+    receptionist.observe(SettingsManager.Notification.Name.iCloudStorageChanged, from: SettingsManager.self, queue: queue) {
+      [weak self] in self?.iCloudStorageDidChange($0)
+    }
   }
 
   /**

@@ -7,9 +7,9 @@
 //
 
 import Foundation
+import MoonKit
 
-
-enum TimeSignature {
+enum TimeSignature: ByteArrayConvertible {
   case FourFour
   case ThreeFour
   case TwoFour
@@ -38,5 +38,17 @@ enum TimeSignature {
     case (2, 4): self = .TwoFour
     default: self = .Other(upper, lower)
     }
+  }
+
+  var bytes: [Byte] { return [beatUnit, Byte(log2(Double(beatsPerBar)))] }
+
+  /**
+  init:
+
+  - parameter bytes: [Byte]
+  */
+  init(_ bytes: [Byte]) {
+    guard bytes.count == 2 else { self.init(4, 4); return }
+    self.init(bytes[0], Byte(pow(Double(bytes[1]), 2)))
   }
 }

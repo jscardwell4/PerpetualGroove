@@ -12,12 +12,7 @@ import MoonKit
 import struct AudioToolbox.CABarBeatTime
 
 
-final class TempoTrack: MIDITrackType {
-
-  let time = Sequencer.time
-  var trackEnd: CABarBeatTime { return eventContainer.endOfTrackEvent?.time ?? time.time }
-
-  var eventContainer = MIDIEventContainer()
+final class TempoTrack: Track {
 
   var hasTimeSignatureEvent: Bool {
     let isTimeSignature: (MIDIEvent) -> Bool = {
@@ -33,48 +28,31 @@ final class TempoTrack: MIDITrackType {
     return eventContainer.events.filter(isTempoEvent).count != 0
   }
 
-  private let receptionist = NotificationReceptionist()
-
-  /** initializeNotificationReceptionist */
-  private func initializeNotificationReceptionist() {
-    guard receptionist.count == 0 else { return }
-
-    receptionist.observe(Sequencer.Notification.DidToggleRecording, from: Sequencer.self, queue: NSOperationQueue.mainQueue()) {
-      [weak self] _ in self?.recording = Sequencer.recording
-    }
-  }
-
   /**
   insertTempoChange:
 
   - parameter tempo: Double
   */
   func insertTempoChange(tempo: Double) {
-    guard recording else { return }
-    eventContainer.append(MetaEvent(time.time, .Tempo(microseconds: Byte4(60_000_000 / tempo))))
+    guard Sequencer.recording else { return }
+    eventContainer.append(MetaEvent(BarBeatTime.time, .Tempo(microseconds: Byte4(60_000_000 / tempo))))
   }
 
-  let name = "Tempo"
-  var recording = false
+  override var name: String { return "Tempo" }
 
   /**
   Initializer for non-playback mode tempo track
   
   - parameter s: MIDISequence
   */
-  init(/*sequence s: MIDISequence*/) {
-//    sequence = s
-    recording = Sequencer.recording
+  override init() {
+    super.init()
     eventContainer.append(TempoTrack.timeSignatureEvent)
     eventContainer.append(TempoTrack.tempoEvent)
   }
 
-
   static private var timeSignatureEvent: MetaEvent {
-    return MetaEvent(.TimeSignature(upper: Sequencer.timeSignature.beatsPerBar,
-                                    lower: Sequencer.timeSignature.beatUnit,
-                                    clocks: 36,
-                                    notes: 8))
+    return MetaEvent(.TimeSignature(signature: Sequencer.timeSignature, clocks: 36, notes: 8))
   }
 
   static private var tempoEvent: MetaEvent {
@@ -97,8 +75,6 @@ final class TempoTrack: MIDITrackType {
     }
   }
 
-  private(set) var eventMap = MIDIEventMap()
-
   /**
   dispatchEventsForTime:
 
@@ -109,13 +85,11 @@ final class TempoTrack: MIDITrackType {
     for event in events where event is MetaEvent {
       switch (event as! MetaEvent).data {
         case let .Tempo(microseconds): Sequencer.tempo = Double(60_000_000 / microseconds)
-        case let .TimeSignature(upper, lower, _, _): Sequencer.timeSignature = TimeSignature(upper, lower)
+        case let .TimeSignature(signature, _, _): Sequencer.timeSignature = signature
         default: break
       }
     }
   }
-
-//  private(set) unowned var sequence: MIDISequence
 
   /**
   initWithTrackChunk:
@@ -123,8 +97,8 @@ final class TempoTrack: MIDITrackType {
   - parameter trackChunk: MIDIFileTrackChunk
   - parameter s: MIDISequence
   */
-  init(trackChunk: MIDIFileTrackChunk/*, sequence s: MIDISequence*/) {
-//    sequence = s
+  init(trackChunk: MIDIFileTrackChunk) {
+    super.init()
     eventContainer = MIDIEventContainer(events: trackChunk.events.filter(TempoTrack.isTempoTrackEvent))
 
     if !hasTimeSignatureEvent { eventContainer.insert(TempoTrack.timeSignatureEvent, atIndex: 0) }
@@ -132,20 +106,9 @@ final class TempoTrack: MIDITrackType {
 
     eventMap.insert(eventContainer.events)
 
-    time.registerCallback(dispatchEventsForTime, forTimes: eventMap.times, forObject: self)
+    BarBeatTime.registerCallback({ [weak self] in self?.dispatchEventsForTime($0) },
+                           times: eventMap.times,
+                          object: self)
   }
 
-}
-
-extension TempoTrack: CustomStringConvertible {
-  var description: String {
-    return "\n".join(
-      "events:\n\(eventContainer.description.indentedBy(1, useTabs: true))",
-      "map:\n\(eventMap.description.indentedBy(1, useTabs: true))"
-    )
-  }
-}
-
-extension TempoTrack: CustomDebugStringConvertible {
-  var debugDescription: String { var result = ""; dump(self, &result); return result }
 }
