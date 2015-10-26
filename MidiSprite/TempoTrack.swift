@@ -34,6 +34,7 @@ final class TempoTrack: Track {
   - parameter tempo: Double
   */
   func insertTempoChange(tempo: Double) {
+    logDebug("inserting event for tempo \(tempo)")
     guard recording else { return }
     eventContainer.append(MetaEvent(Sequencer.time.time, .Tempo(bpm: tempo)))
   }
@@ -44,6 +45,7 @@ final class TempoTrack: Track {
   - parameter signature: TimeSignature
   */
   func insertTimeSignature(signature: TimeSignature) {
+    logDebug("inserting event for signature \(signature)")
     guard recording else { return }
     eventContainer.append(MetaEvent(Sequencer.time.time, .TimeSignature(signature: signature, clocks: 36, notes: 8)))
   }

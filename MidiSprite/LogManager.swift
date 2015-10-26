@@ -9,6 +9,7 @@
 import Foundation
 import MoonKit
 import struct AudioToolbox.CABarBeatTime
+import class SpriteKit.SKNode
 
 final class LogManager: MoonKit.LogManager {
 
@@ -19,6 +20,7 @@ final class LogManager: MoonKit.LogManager {
   static let SequencerContext = LogContext(rawValue: 0b0000_1000_0000) ∪ .Console
   static let SceneContext     = LogContext(rawValue: 0b0001_0000_0000) ∪ .Console
 
+  /** initialize */
   static func initialize() {
     guard !initialized else { return }
 
@@ -64,7 +66,12 @@ final class LogManager: MoonKit.LogManager {
 
     addConsoleLoggers()
 
-    let defaultDirectory = defaultLogDirectory
+    let defaultDirectory: NSURL
+    if let path = NSProcessInfo.processInfo().environment["GROOVE_LOG_DIR"] {
+      defaultDirectory = NSURL(fileURLWithPath: path)
+    } else {
+      defaultDirectory = defaultLogDirectory
+    }
     addDefaultFileLoggerForContext(.Console, directory: defaultDirectory)
     addDefaultFileLoggerForContext(MIDIFileContext, directory: defaultDirectory + "MIDI")
     addDefaultFileLoggerForContext(SF2FileContext, directory: defaultDirectory + "SoundFont")
@@ -78,6 +85,20 @@ final class LogManager: MoonKit.LogManager {
                        "default log directory: '\(defaultDirectory.path!)'"))
 
     initialized = true
+  }
+
+  /**
+  defaultFileLoggerForContext:directory:
+
+  - parameter context: LogContext
+  - parameter directory: NSURL
+
+  - returns: DDFileLogger
+  */
+  static override func defaultFileLoggerForContext(context: LogContext, directory: NSURL) -> DDFileLogger {
+    let logger = super.defaultFileLoggerForContext(context, directory: directory)
+    logger.doNotReuseLogFiles = true
+    return logger
   }
 
 }
@@ -120,3 +141,4 @@ extension MIDIPlayerNode: Loggable {}
 extension MIDIPlayerFieldNode: Loggable {}
 extension MIDINode: Loggable {}
 extension Placement: Loggable {}
+extension SKNode: Nameable {}

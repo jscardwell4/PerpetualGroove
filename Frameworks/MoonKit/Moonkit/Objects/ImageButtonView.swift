@@ -12,6 +12,8 @@ import UIKit
 @IBDesignable
 public class ImageButtonView: ToggleControl {
 
+  override public var tintColor: UIColor! { didSet { setNeedsDisplay() } }
+
   // MARK: - Images
 
   @IBInspectable public var image:            UIImage? { didSet { refresh() } }
@@ -69,7 +71,7 @@ public class ImageButtonView: ToggleControl {
   */
   public override func encodeWithCoder(aCoder: NSCoder) {
     super.encodeWithCoder(aCoder)
-    aCoder.encodeBool(toggle, forKey: "toggle")
+    aCoder.encodeBool(toggle,             forKey: "toggle")
     aCoder.encodeObject(image,            forKey: "image")
     aCoder.encodeObject(selectedImage,    forKey: "selectedImage")
     aCoder.encodeObject(highlightedImage, forKey: "highlightedImage")

@@ -43,9 +43,6 @@
                                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="InstrumentContainer"/>
                                                             <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="InstrumentContainer"/>
                                                         </userDefinedRuntimeAttributes>
-                                                        <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
-                                                            <rect key="frame" x="0.0" y="0.0" width="370" height="120"/>
-                                                        </variation>
                                                         <connections>
                                                             <segue destination="4eE-ek-zDs" kind="embed" identifier="Instrument" id="tWu-Pf-pcN"/>
                                                         </connections>
@@ -57,9 +54,6 @@
                                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="NoteAttributesContainer"/>
                                                             <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="NoteAttributesContainer"/>
                                                         </userDefinedRuntimeAttributes>
-                                                        <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
-                                                            <rect key="frame" x="390" y="0.0" width="370" height="120"/>
-                                                        </variation>
                                                         <connections>
                                                             <segue destination="kzO-nC-kW2" kind="embed" identifier="NoteAttributes" id="naX-yf-zMX"/>
                                                         </connections>
@@ -1788,9 +1782,6 @@
                                                         <userDefinedRuntimeAttributes>
                                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="Message"/>
                                                         </userDefinedRuntimeAttributes>
-                                                        <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
-                                                            <rect key="frame" x="255.5" y="390" width="289" height="20"/>
-                                                        </variation>
                                                     </label>
                                                 </subviews>
                                                 <animations/>

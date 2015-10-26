@@ -124,29 +124,7 @@ final class Sequencer {
 
   // MARK: - Tracks
 
-  private struct State: OptionSetType, CustomStringConvertible {
-    let rawValue: Int
-    init(rawValue: Int) { self.rawValue = rawValue }
-
-    static let Playing   = State(rawValue: 0b0000_0010)
-    static let Recording = State(rawValue: 0b0000_0100)
-    static let Paused    = State(rawValue: 0b0001_0000)
-    static let Jogging   = State(rawValue: 0b0010_0000)
-
-    var description: String {
-      var result = "Sequencer.State { "
-      var flagStrings: [String] = []
-      if contains(.Playing)   { flagStrings.append("Playing")   }
-      if contains(.Recording) { flagStrings.append("Recording") }
-      if contains(.Paused)    { flagStrings.append("Paused")    }
-      if contains(.Jogging)   { flagStrings.append("Jogging")   }
-      result += ", ".join(flagStrings)
-      result += " }"
-      return result
-    }
-  }
-
-  static private var state: State = []
+  static private var state: State = [] { didSet { logDebug("new state \(state)") } }
   
   static private(set) var soundSets: [SoundSetType] = []
 
@@ -267,6 +245,33 @@ final class Sequencer {
     state ∖= [.Playing, .Paused]
     Notification.DidStop.post()
   }
+}
+
+// MARK: - State
+extension Sequencer {
+
+  private struct State: OptionSetType, CustomStringConvertible {
+    let rawValue: Int
+    init(rawValue: Int) { self.rawValue = rawValue }
+
+    static let Playing   = State(rawValue: 0b0000_0010)
+    static let Recording = State(rawValue: 0b0000_0100)
+    static let Paused    = State(rawValue: 0b0001_0000)
+    static let Jogging   = State(rawValue: 0b0010_0000)
+
+    var description: String {
+      var result = "Sequencer.State { "
+      var flagStrings: [String] = []
+      if contains(.Playing)   { flagStrings.append("Playing")   }
+      if contains(.Recording) { flagStrings.append("Recording") }
+      if contains(.Paused)    { flagStrings.append("Paused")    }
+      if contains(.Jogging)   { flagStrings.append("Jogging")   }
+      result += ", ".join(flagStrings)
+      result += " }"
+      return result
+    }
+  }
+
 }
 
 // MARK: - Notification

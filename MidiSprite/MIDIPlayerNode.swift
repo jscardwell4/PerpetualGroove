@@ -17,13 +17,6 @@ final class MIDIPlayerNode: SKShapeNode {
     return MIDIPlayerViewController.currentInstance?.midiPlayerView?.midiPlayerScene?.midiPlayer
   }
 
-  /** An enumeration to wrap up notifications */
-  enum Notification: String, NotificationType, NotificationNameType {
-    case DidAddNode, DidRemoveNode
-    var object: AnyObject? { return MIDIPlayerNode.self }
-    typealias Key = String
-  }
-
   // MARK: - Initialization
 
   /**
@@ -43,18 +36,18 @@ final class MIDIPlayerNode: SKShapeNode {
     physicsBody?.contactTestBitMask = 0xFFFFFFFF
     addChild(MIDIPlayerFieldNode(bezierPath: bezierPath, delegate: self))
 
-    receptionist.logContext = LogManager.SceneContext
-    
     let queue = NSOperationQueue.mainQueue()
 
-    receptionist.observe(Sequencer.Notification.DidReset, from: Sequencer.self, queue: queue) { [weak self] in self?.didReset($0) }
+    receptionist.observe(Sequencer.Notification.DidReset, from: Sequencer.self, queue: queue) {
+      [weak self] in self?.didReset($0)
+    }
 
     receptionist.observe(MIDIDocumentManager.Notification.DidChangeDocument, from: MIDIDocumentManager.self, queue: queue) {
       [weak self] in self?.didReset($0)
     }
   }
 
-  private(set) var midiNodes: [MIDINode] = []
+  private(set) var midiNodes: [MIDINode] = [] { didSet { logDebug("player now has \(midiNodes.count) nodes") } }
 
   /**
   init:
@@ -72,12 +65,15 @@ final class MIDIPlayerNode: SKShapeNode {
   - parameter notification: NSNotification
   */
   func didReset(notification: NSNotification) {
-    midiNodes.forEach { $0.removeFromParent() }
-    midiNodes.removeAll()
+    while let node = midiNodes.popLast() { node.removeFromParent() }
     logDebug("midi nodes removed")
   }
 
-  private let receptionist = NotificationReceptionist()
+  private let receptionist: NotificationReceptionist = {
+    let r = NotificationReceptionist()
+    r.logContext = LogManager.SceneContext
+    return r
+  }()
 
   /**
   placeNew:
@@ -88,24 +84,36 @@ final class MIDIPlayerNode: SKShapeNode {
                 targetTrack: InstrumentTrack? = nil,
                 attributes: NoteAttributes = Sequencer.currentNoteAttributes)
   {
-    logDebug("adding node with placement: \(placement) and attributes: \(attributes)")
-
     guard let track = targetTrack ?? Sequencer.sequence?.currentTrack else {
       logWarning("Cannot place a node without a track")
       return
     }
     
     do {
-      let name = "midiNode\(midiNodes.count)"
+      let name = "\(track.name) \(attributes)"
       let midiNode = try MIDINode(placement: placement, name: name, track: track, note: attributes)
       addChild(midiNode)
       midiNodes.append(midiNode)
       try track.addNode(midiNode)
       if !Sequencer.playing { Sequencer.play() }
       Notification.DidAddNode.post()
+      logDebug("added node \(name)")
+
     } catch {
       logError(error)
     }
+  }
+
+}
+
+// MARK: - Notification
+extension MIDIPlayerNode {
+
+  /** An enumeration to wrap up notifications */
+  enum Notification: String, NotificationType, NotificationNameType {
+    case DidAddNode, DidRemoveNode
+    var object: AnyObject? { return MIDIPlayerNode.self }
+    typealias Key = String
   }
 
 }

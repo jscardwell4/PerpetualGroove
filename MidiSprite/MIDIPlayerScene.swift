@@ -18,10 +18,8 @@ final class MIDIPlayerScene: SKScene {
   /** createContent */
   private func createContent() {
     scaleMode = .AspectFit
-//    let w = frame.width - 20
-//    let containerRect = CGRect(x: 10, y: frame.midY - w * 0.5, width: w, height: w)
 
-    midiPlayer = MIDIPlayerNode(bezierPath: UIBezierPath(rect: frame)) //containerRect))
+    midiPlayer = MIDIPlayerNode(bezierPath: UIBezierPath(rect: frame))
     addChild(midiPlayer)
 
     physicsWorld.gravity = .zero

@@ -67,11 +67,6 @@ public class LogManager {
 
   }
 
-  
-}
-
-// MARK: - LogMessage
-public extension LogManager {
   public class LogMessage: DDLogMessage {
 
     /**
@@ -130,25 +125,7 @@ public extension LogManager {
     }
     
   }
-  
-}
 
-// MARK: - Loglevel
-
-extension DDLogFlag: CustomStringConvertible {
-  public var description: String { 
-    switch self {
-      case DDLogFlag.Error:   return "E"
-      case DDLogFlag.Warning: return "W"
-      case DDLogFlag.Debug:   return "D"
-      case DDLogFlag.Info:    return "I"
-      case DDLogFlag.Verbose: return "V"
-      default:                return "?"
-    }
-  }
-}
-
-public extension LogManager {
   public typealias LogLevel = DDLogLevel
 
   /**
@@ -190,11 +167,7 @@ public extension LogManager {
   public static func setLogLevel(context: LogLevel, forType type: Any.Type) {
     logLevelsByType[ObjectIdentifier(type.dynamicType.self)] = context
   }
-  
-}
 
-// MARK: - LogContext
-public extension LogManager {
   public struct LogContext: OptionSetType {
     public let rawValue: Int
     public init(rawValue: Int) {
@@ -253,11 +226,6 @@ public extension LogManager {
   public static func setLogContext(context: LogContext, forType type: Any.Type) {
     logContextsByType[ObjectIdentifier(type.dynamicType.self)] = context
   }
-
-}
-
-// MARK: - Loggers
-public extension LogManager {
 
   public static var defaultLogDirectory: NSURL {
     let manager = NSFileManager.defaultManager()
@@ -359,3 +327,17 @@ public extension LogManager {
   }
 
 }
+
+extension DDLogFlag: CustomStringConvertible {
+  public var description: String {
+    switch self {
+      case DDLogFlag.Error:   return "E"
+      case DDLogFlag.Warning: return "W"
+      case DDLogFlag.Debug:   return "D"
+      case DDLogFlag.Info:    return "I"
+      case DDLogFlag.Verbose: return "V"
+      default:                return "?"
+    }
+  }
+}
+

@@ -12,81 +12,7 @@ import typealias AudioToolbox.MIDITimeStamp
 
 struct MIDINodeHistory: SequenceType {
 
-  struct Snapshot {
-    let ticks: MIDITimeStamp
-    let placement: Placement
-    var position: CGPoint { return placement.position }
-    var velocity: CGVector { return placement.vector }
-
-    /**
-    init:position:velocity:
-
-    - parameter t: MIDITimeStamp
-    - parameter p: CGPoint
-    - parameter v: CGVector
-    */
-    init(ticks t: MIDITimeStamp, position p: CGPoint, velocity v: CGVector) {
-      ticks = t; placement = Placement(position: p, vector: v)
-    }
-
-    /**
-    init:placement:
-
-    - parameter t: MIDITimeStamp
-    - parameter p: Placement
-    */
-    init(ticks t: MIDITimeStamp, placement p: Placement) { ticks = t; placement = p }
-  }
-
   let initialSnapshot: Snapshot
-
-  struct Breadcrumb {
-
-    let from: Snapshot
-    let to: Snapshot
-
-    /**
-    init:to:
-
-    - parameter f: MIDINode.Snapshot
-    - parameter t: MIDINode.Snapshot
-    */
-    init(from f: Snapshot, to t: Snapshot) {
-      guard f < t else { fatalError("Breadcrumb requires 'to.ticks' is greater than 'from.tricks'") }
-      from = f
-      to = t
-      tickInterval = from.ticks ... to.ticks
-      velocity = f.velocity
-      𝝙ticks = t.ticks - f.ticks
-      𝝙seconds = CGFloat(Sequencer.secondsPerTick) * CGFloat(𝝙ticks)
-      𝝙meters = velocity * 𝝙seconds
-      𝝙position = t.position - f.position
-    }
-
-    let velocity: CGVector
-    let 𝝙ticks: MIDITimeStamp
-    let 𝝙seconds: CGFloat
-    let 𝝙meters: CGVector
-    let 𝝙position: CGPoint
-    let tickInterval: ClosedInterval<MIDITimeStamp>
-
-    /**
-    positionForTicks:
-
-    - parameter ticks: MIDITimeStamp
-
-    - returns: CGPoint
-    */
-    func positionForTicks(ticks: MIDITimeStamp) -> CGPoint {
-      guard tickInterval ∋ ticks else { fatalError("\(tickInterval) ∌ \(ticks)") }
-      let 𝝙ticksʹ = ticks - from.ticks
-      let 𝝙metersʹ = 𝝙meters * CGFloat(Double(𝝙ticksʹ) / Double(𝝙ticks))
-      var position = from.position + (𝝙metersʹ * (𝝙position / 𝝙meters))
-      if isnan(position.x) { position.x = from.position.x }
-      if isnan(position.y) { position.y = from.position.y }
-      return position
-    }
-  }
 
   private var breadcrumbs = Tree<Breadcrumb>()
 
@@ -158,6 +84,90 @@ struct MIDINodeHistory: SequenceType {
   - parameter snapshot: Snapshot
   */
   init(initialSnapshot snapshot: Snapshot) { initialSnapshot = snapshot }
+}
+
+// MARK: - Breadcrumb
+extension MIDINodeHistory {
+
+  struct Breadcrumb {
+
+    let from: Snapshot
+    let to: Snapshot
+
+    /**
+    init:to:
+
+    - parameter f: MIDINode.Snapshot
+    - parameter t: MIDINode.Snapshot
+    */
+    init(from f: Snapshot, to t: Snapshot) {
+      guard f < t else { fatalError("Breadcrumb requires 'to.ticks' is greater than 'from.tricks'") }
+      from = f
+      to = t
+      tickInterval = from.ticks ... to.ticks
+      velocity = f.velocity
+      𝝙ticks = t.ticks - f.ticks
+      𝝙seconds = CGFloat(Sequencer.secondsPerTick) * CGFloat(𝝙ticks)
+      𝝙meters = velocity * 𝝙seconds
+      𝝙position = t.position - f.position
+    }
+
+    let velocity: CGVector
+    let 𝝙ticks: MIDITimeStamp
+    let 𝝙seconds: CGFloat
+    let 𝝙meters: CGVector
+    let 𝝙position: CGPoint
+    let tickInterval: ClosedInterval<MIDITimeStamp>
+
+    /**
+    positionForTicks:
+
+    - parameter ticks: MIDITimeStamp
+
+    - returns: CGPoint
+    */
+    func positionForTicks(ticks: MIDITimeStamp) -> CGPoint {
+      guard tickInterval ∋ ticks else { fatalError("\(tickInterval) ∌ \(ticks)") }
+      let 𝝙ticksʹ = ticks - from.ticks
+      let 𝝙metersʹ = 𝝙meters * CGFloat(Double(𝝙ticksʹ) / Double(𝝙ticks))
+      var position = from.position + (𝝙metersʹ * (𝝙position / 𝝙meters))
+      if isnan(position.x) { position.x = from.position.x }
+      if isnan(position.y) { position.y = from.position.y }
+      return position
+    }
+  }
+
+}
+
+// MARK: - Snapshot
+extension MIDINodeHistory {
+
+  struct Snapshot {
+    let ticks: MIDITimeStamp
+    let placement: Placement
+    var position: CGPoint { return placement.position }
+    var velocity: CGVector { return placement.vector }
+
+    /**
+    init:position:velocity:
+
+    - parameter t: MIDITimeStamp
+    - parameter p: CGPoint
+    - parameter v: CGVector
+    */
+    init(ticks t: MIDITimeStamp, position p: CGPoint, velocity v: CGVector) {
+      ticks = t; placement = Placement(position: p, vector: v)
+    }
+
+    /**
+    init:placement:
+
+    - parameter t: MIDITimeStamp
+    - parameter p: Placement
+    */
+    init(ticks t: MIDITimeStamp, placement p: Placement) { ticks = t; placement = p }
+  }
+
 }
 
 // MARK: - Internal type protocol conformances

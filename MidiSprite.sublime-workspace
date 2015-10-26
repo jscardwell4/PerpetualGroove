@@ -4,6 +4,62 @@
 		"selected_items":
 		[
 			[
+				"AddRe",
+				"AddReturnAfterMessage"
+			],
+			[
+				"object",
+				"objectName"
+			],
+			[
+				"AddRetur",
+				"AddReturnAfterMessage"
+			],
+			[
+				"Addreturn",
+				"addReturnAfterSEL"
+			],
+			[
+				"tu",
+				"turmeric"
+			],
+			[
+				"es",
+				"eastSide"
+			],
+			[
+				"tag",
+				"tagAttribute"
+			],
+			[
+				"funct",
+				"functionCall"
+			],
+			[
+				"func",
+				"functionCall"
+			],
+			[
+				"other",
+				"otherPreprocessor"
+			],
+			[
+				"commen",
+				"commentBlock"
+			],
+			[
+				"line",
+				"lineHighlight"
+			],
+			[
+				"text",
+				"textField"
+			],
+			[
+				"tex",
+				"textField"
+			],
+			[
 				"Float",
 				"Float80"
 			],
@@ -174,10 +230,6 @@
 			[
 				"closure_si",
 				"closure_signature_identifier_list"
-			],
-			[
-				"func",
-				"function_result"
 			],
 			[
 				"function",
@@ -462,75 +514,99 @@
 			[
 				"itemTo",
 				"itemToRootAttributeName"
-			],
-			[
-				"man",
-				"managedObjectContext"
-			],
-			[
-				"NSFetc",
-				"NSFetchedResultsController"
-			],
-			[
-				"enti",
-				"entityDescription"
-			],
-			[
-				"Moel",
-				"ModelObject"
-			],
-			[
-				"Create",
-				"CreateTransaction"
-			],
-			[
-				"create",
-				"createItem"
-			],
-			[
-				"NSFet",
-				"NSFetchedResultsController"
-			],
-			[
-				"Collec",
-				"CollectedModel"
-			],
-			[
-				"BankM",
-				"BankModelDelegate"
-			],
-			[
-				"BankMode",
-				"BankModelCollectionDelegate"
-			],
-			[
-				"fetc",
-				"fetchedCollections"
-			],
-			[
-				"fet",
-				"fetchedItems"
-			],
-			[
-				"mn",
-				"managedObjectContext"
 			]
 		]
 	},
 	"buffers":
 	[
 	],
-	"build_system": "",
+	"build_system": "Packages/AAAPackageDev/Support/Convert to ....sublime-build",
 	"build_system_choices":
 	[
+		[
+			[
+				[
+					"Packages/AAAPackageDev/Support/Convert to ....sublime-build",
+					""
+				],
+				[
+					"Packages/AAAPackageDev/Support/Convert to ....sublime-build",
+					"JSON"
+				],
+				[
+					"Packages/AAAPackageDev/Support/Convert to ....sublime-build",
+					"Property List"
+				],
+				[
+					"Packages/AAAPackageDev/Support/Convert to ....sublime-build",
+					"YAML (Block Style)"
+				],
+				[
+					"Packages/AAAPackageDev/Support/Convert to ....sublime-build",
+					"YAML (Default Style)"
+				]
+			],
+			[
+				"Packages/AAAPackageDev/Support/Convert to ....sublime-build",
+				"YAML (Block Style)"
+			]
+		]
 	],
 	"build_varint": "",
 	"command_palette":
 	{
 		"height": 392.0,
-		"last_filter": "",
+		"last_filter": "scop",
 		"selected_items":
 		[
+			[
+				"scop",
+				"Toggle ScopeAlways"
+			],
+			[
+				"ins",
+				"Package Control: Install Package"
+			],
+			[
+				"convert",
+				"Build With: Convert to ... - Property List"
+			],
+			[
+				"ssyam",
+				"Set Syntax: YAML"
+			],
+			[
+				"json",
+				"json2xml pretty"
+			],
+			[
+				"sssub",
+				"Set Syntax: Sublime Settings"
+			],
+			[
+				"ssjson",
+				"Set Syntax: JSON"
+			],
+			[
+				"x",
+				"xml2json pretty"
+			],
+			[
+				"xml",
+				"xml2json"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"sssw",
+				"Set Syntax: Swift"
+			],
+			[
+				"ssswi",
+				"Set Syntax: Swift"
+			],
 			[
 				"ssObj",
 				"Set Syntax: Objective-C"
@@ -546,18 +622,6 @@
 			[
 				"ssjs",
 				"Set Syntax: JavaScript"
-			],
-			[
-				"ssswi",
-				"Set Syntax: Swift"
-			],
-			[
-				"ssjson",
-				"Set Syntax: JSON"
-			],
-			[
-				"sssub",
-				"Set Syntax: Sublime Text Syntax Def (YAML)"
 			],
 			[
 				"ssmoo",
@@ -600,10 +664,6 @@
 				"Set Syntax: Swift"
 			],
 			[
-				"sssw",
-				"Set Syntax: Swift"
-			],
-			[
 				"ssswit",
 				"Set Syntax: Swift"
 			],
@@ -622,10 +682,6 @@
 			[
 				"ssshel",
 				"Set Syntax: Shell Script (Bash)"
-			],
-			[
-				"ins",
-				"Package Control: Install Package"
 			],
 			[
 				"instal",
@@ -714,10 +770,6 @@
 			[
 				"pep",
 				"PEP8: Format Code"
-			],
-			[
-				"insta",
-				"Package Control: Install Package"
 			],
 			[
 				"pret",
@@ -920,7 +972,7 @@
 				"Package Control: Install Package"
 			]
 		],
-		"width": 567.0
+		"width": 568.0
 	},
 	"console":
 	{
@@ -1017,10 +1069,34 @@
 	[
 		"/Users/Moondeer/Projects/MidiSprite",
 		"/Users/Moondeer/Projects/MidiSprite/Frameworks",
-		"/Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit"
+		"/Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit",
+		"/Users/Moondeer/Projects/MidiSprite/MidiSprite"
 	],
 	"file_history":
 	[
+		"/Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Functions/LogManager.swift",
+		"/Users/Moondeer/Projects/MidiSprite/MidiSprite/MIDIDocument.swift",
+		"/Users/Moondeer/Projects/MidiSprite/MidiSprite/NoteAttributes.swift",
+		"/Users/Moondeer/Projects/MidiSprite/MidiSprite/MetaEvent.swift",
+		"/Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/MSKit/Source/Objects/MSLog.m",
+		"/Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Functions/Logging.swift",
+		"/Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Functions/LogFormatter.swift",
+		"/Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/MSKit/Source/Objects/MSLogMacros.h",
+		"/Users/Moondeer/Library/Developer/CoreSimulator/Devices/27F2AE86-678C-455C-B1EF-02716BE020D2/data/Containers/Data/Application/9FCDF22E-1774-4384-B916-783DB3F45779/Library/Caches/com.moondeerstudios.PerpetualGroove/Logs/com.moondeerstudios.PerpetualGroove 2015-10-22 00-19.log",
+		"/Users/Moondeer/Library/Application Support/Sublime Text 3/Packages/Swift-for-f-ing-sublime/Swift.sublime-syntax",
+		"/Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Functions/ColorLog.swift",
+		"/Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Extensions/String+MoonKitAdditions.swift",
+		"/Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Extensions/NSCharacterSet+MoonKitAdditions.swift",
+		"/Users/Moondeer/Library/Application Support/Sublime Text 3/Packages/User/darcula (Flake8Lint).tmTheme",
+		"/Users/Moondeer/Library/Application Support/Sublime Text 3/Packages/ScopeAlways/ScopeAlways.sublime-settings",
+		"/Users/Moondeer/Library/Application Support/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+		"/Users/Moondeer/Projects/MidiSprite/MidiSprite/MixerCell.swift",
+		"/Users/Moondeer/Projects/MidiSprite/MidiSprite/TrackLabel.swift",
+		"/Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/MarqueeField.swift",
+		"/Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/Marquee.swift",
+		"/Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Extensions/CGSize+MoonKitAdditions.swift",
+		"/Users/Moondeer/Library/Application Support/Sublime Text 3/Packages/User/highlight_whitespaces.sublime-settings",
+		"/Users/Moondeer/.oh-my-zsh/custom/directories.zsh",
 		"/Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Functions/Dispatch.swift",
 		"/Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Extensions/Geometry.swift",
 		"/Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Other/Protocols.swift",
@@ -1029,15 +1105,12 @@
 		"/Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/Fraction.swift",
 		"/Users/Moondeer/Projects/MidiSprite/MidiSprite/Base.lproj/Main.storyboard",
 		"/Users/Moondeer/Projects/MidiSprite/MidiSprite.sublime-project",
-		"/Users/Moondeer/Library/Application Support/Sublime Text 3/Packages/User/Preferences.sublime-settings",
-		"/Users/Moondeer/Projects/MidiSprite/MidiSprite/MetaEvent.swift",
 		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/DocumentSelectionController.swift",
 		"/Users/Moondeer/Projects/MidiSprite/MidiSprite/Note.swift",
 		"/Users/Moondeer/Projects/MidiSprite/MidiSprite/Track.swift",
 		"/Users/Moondeer/Projects/MidiSprite/MidiSprite/MIDIFile.swift",
 		"/Users/Moondeer/Projects/CoreAudioUtilityClasses/CoreAudio/PublicUtility/CAHostTimeBase.h",
 		"/Users/Moondeer/Projects/CoreAudioUtilityClasses/CoreAudio/PublicUtility/CAHostTimeBase.cpp",
-		"/Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Extensions/String+MoonKitAdditions.swift",
 		"/Users/Moondeer/Projects/MidiSprite/MidiSprite/MIDIClockSource.swift",
 		"/Users/Moondeer/Projects/MidiSprite/MidiSprite/MIDIClock.swift",
 		"/Users/Moondeer/Projects/MidiSprite/MidiSprite/CAHostTimeBase.swift",
@@ -1128,27 +1201,7 @@
 		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/DetailController/NamedItemDetailController.swift",
 		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/DetailController/DetailController.swift",
 		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/BankCollectionFilteringDetailSection.swift",
-		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/DetailController.swift",
-		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/FilteringDetailSection.swift",
-		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/DetailSection.swift",
-		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/BankCollectionDetailRow/BankCollectionDetailAttributedTextRow.swift",
-		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/BankCollectionDetailRow/BankCollectionDetailButtonRow.swift",
-		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/BankCollectionDetailRow/BankCollectionDetailColorRow.swift",
-		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/BankCollectionDetailRow/BankCollectionDetailCustomRow.swift",
-		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/BankCollectionDetailRow/BankCollectionDetailImageRow.swift",
-		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/BankCollectionDetailRow/BankCollectionDetailLabeledImageRow.swift",
-		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/BankCollectionDetailRow/BankCollectionDetailPickerRow.swift",
-		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/BankCollectionDetailRow/BankCollectionDetailSliderRow.swift",
-		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/BankCollectionDetailRow/BankCollectionDetailStepperRow.swift",
-		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/BankCollectionDetailRow/BankCollectionDetailSwitchRow.swift",
-		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/BankCollectionDetailRow/BankCollectionDetailTextFieldRow.swift",
-		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/BankCollectionDetailRow/BankCollectionDetailTextInputRow.swift",
-		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/BankCollectionDetailRow/BankCollectionDetailTextViewRow.swift",
-		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/BankCollectionDetailRow/BankCollectionDetailTwoToneSliderRow.swift",
-		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/DetailCell/BankCollectionDetailCell.swift",
-		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/BankCollectionFilteringDetailSectionHeader.swift",
-		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/FilteringDetailSectionHeader.swift",
-		"/Users/Moondeer/Projects/MSRemote/Remote/MoonKit/Moonkit/Functions/FunctionManipulation.swift"
+		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/DetailController.swift"
 	],
 	"find":
 	{
@@ -1190,6 +1243,56 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"dotted-",
+			"Note",
+			"Level",
+			"Levels",
+			"level",
+			"Level",
+			"=",
+			"DDTTYLogger",
+			"@\"",
+			"NO",
+			";",
+			"+ (void)",
+			"public static",
+			",",
+			"*type",
+			"*string",
+			"*preprocessor",
+			"invisibles",
+			"*fg",
+			"fontStyle: ''",
+			"'#DA2000'",
+			"'#EDBA00'",
+			"'#981600'",
+			"'#F83333'",
+			"'#D0D3F6'",
+			"'#CFBFB2'",
+			"'#277ADD'",
+			"'#87AAB3'",
+			"'#FFC66C'",
+			"'#B6C1CE'",
+			"'#BBB528'",
+			"'#957E34'",
+			"'#8CBA00'",
+			"'#FFFFFF88'",
+			"'#B3CA6E'",
+			"'#C499E0'",
+			"'#79A7C7'",
+			"'#A489B4'",
+			"'#D2803C'",
+			"'#629654'",
+			"'#929292'",
+			"'#FF00FF04'",
+			"'#B4D5FE40'",
+			"'#B4D5FE12'",
+			"'#919191'",
+			"'#D7D7D7'",
+			"'#E0A4FF'",
+			"'#383838'",
+			"ceil",
+			"dismissTextField",
 			"Int16",
 			"UInt16",
 			"UInt8",
@@ -1267,57 +1370,7 @@
 			"inv",
 			"rebirth",
 			"pink",
-			"brown",
-			"white",
-			"(?<=Preset: )(.*)",
-			"topBar",
-			"piano",
-			"audioButton",
-			"sliders",
-			"slidersButton",
-			"revert",
-			"revertButton",
-			"Yellow Design Studio - ",
-			"Eveleth-",
-			"slantRegularBold",
-			"Bold",
-			"blackItalic",
-			"boldItalic",
-			"mediumItalic",
-			"regularItalic",
-			"lightItalic",
-			"thinItalic",
-			"black",
-			"bold",
-			"medium",
-			"regular",
-			"light",
-			"thin",
-			"hairlineFont",
-			"let",
-			"optional ",
-			"MoonKit.framework",
-			"../Debug-iphonesimulator/",
-			"CocoaLumberjack.framework",
-			"C24A05E91AE5C65D00C9255E",
-			"y",
-			"bezier2Path",
-			"bezierPath",
-			"controlPoint2",
-			"controlPoint1",
-			"CGPointMake\\(([^,]+), ([^)]+)\\)",
-			"238",
-			"0.",
-			"7",
-			"61.41",
-			"115.07",
-			"0.42225",
-			"110 0",
-			"8.73",
-			"44.93",
-			"26.34",
-			"80",
-			"1.34"
+			"brown"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -1470,7 +1523,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 19.0
+		"height": 23.0
 	},
 	"input":
 	{
@@ -1503,6 +1556,10 @@
 	{
 		"height": 0.0
 	},
+	"output.package_dev":
+	{
+		"height": 94.0
+	},
 	"pinned_build_system": "Packages/AAAPackageDev/Support/Convert to ....sublime-build",
 	"project": "MidiSprite.sublime-project",
 	"replace":
@@ -1516,6 +1573,46 @@
 		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"logm",
+				"Frameworks/MoonKit/Moonkit/Functions/LogManager.swift"
+			],
+			[
+				"mslogma",
+				"Frameworks/MoonKit/MSKit/Source/Objects/MSLogMacros.h"
+			],
+			[
+				"string",
+				"Frameworks/MoonKit/Moonkit/Extensions/String+MoonKitAdditions.swift"
+			],
+			[
+				"nsch",
+				"Frameworks/MoonKit/Moonkit/Extensions/NSCharacterSet+MoonKitAdditions.swift"
+			],
+			[
+				"color",
+				"Frameworks/MoonKit/Moonkit/Functions/ColorLog.swift"
+			],
+			[
+				"log",
+				"Frameworks/MoonKit/Moonkit/Functions/Logging.swift"
+			],
+			[
+				"cgsiz",
+				"Frameworks/MoonKit/Moonkit/Extensions/CGSize+MoonKitAdditions.swift"
+			],
+			[
+				"mar",
+				"Frameworks/MoonKit/Moonkit/Objects/Marquee.swift"
+			],
+			[
+				"marq",
+				"Frameworks/MoonKit/Moonkit/Objects/MarqueeField.swift"
+			],
+			[
+				"trackl",
+				"MidiSprite/TrackLabel.swift"
+			],
 			[
 				"geom",
 				"Frameworks/MoonKit/Moonkit/Extensions/Geometry.swift"
@@ -1543,10 +1640,6 @@
 			[
 				"messageque",
 				"Remote/Networking/Source/MessageQueueEntry.swift"
-			],
-			[
-				"string",
-				"Remote/MoonKit/Moonkit/Extensions/String+MoonKitAdditions.swift"
 			],
 			[
 				"proto",
@@ -1991,42 +2084,6 @@
 			[
 				"systemcom",
 				"Remote/DataModel/Model/RemoteElement/Commands/Command Subclasses/SystemCommand.swift"
-			],
-			[
-				"command",
-				"Remote/DataModel/Model/RemoteElement/Commands/Command.swift"
-			],
-			[
-				"macrocom",
-				"Remote/DataModel/Model/RemoteElement/Commands/Command Subclasses/MacroCommand.swift"
-			],
-			[
-				"delayc",
-				"Remote/DataModel/Model/RemoteElement/Commands/Command Subclasses/DelayCommand.swift"
-			],
-			[
-				"commandoper",
-				"Remote/DataModel/Model/RemoteElement/Commands/CommandOperation.swift"
-			],
-			[
-				"switch",
-				"Remote/DataModel/Model/RemoteElement/Commands/Command Subclasses/SwitchCommand.swift"
-			],
-			[
-				"backgrou",
-				"Remote/Bank/Resources/JSON/BackgroundColor_Dark_Normal.json"
-			],
-			[
-				"",
-				"Remote/Bank/Resources/JSON/ActivityController.json"
-			],
-			[
-				"activ",
-				"Remote/Bank/Resources/JSON/ActivityController.json"
-			],
-			[
-				"manufac",
-				"Remote/Bank/Resources/JSON/Manufacturer.json"
 			]
 		],
 		"width": 0.0

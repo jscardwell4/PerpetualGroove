@@ -159,7 +159,7 @@ final class InstrumentTrack: Track {
   func addNode(node: MIDINode) throws {
     nodes.insert(node)
     let identifier = NodeIdentifier(ObjectIdentifier(node).uintValue)
-    logDebug("identifier = \(identifier)")
+    logDebug("adding node \(node.name!) (\(identifier))")
     notes.insert(identifier)
     try MIDIPortConnectSource(inPort, node.endPoint, nil) ➤ "Failed to connect to node \(node.name!)"
     Notification.DidAddNode.post(object: self)
@@ -187,7 +187,7 @@ final class InstrumentTrack: Track {
                            placement: Placement,
                           attributes: NoteAttributes)
   {
-    logDebug("identifier = \(identifier)")
+    logDebug("adding node with identifier \(identifier), placement \(placement), attributes \(attributes)")
     guard fileIDToNodeID[identifier] == nil else { return }
     guard pendingIdentifier == nil else { fatalError("already have an identifier pending: \(pendingIdentifier!)") }
     guard let midiPlayer = MIDIPlayerNode.currentPlayer else {
@@ -203,7 +203,7 @@ final class InstrumentTrack: Track {
   - parameter identifier: NodeIdentifier
   */
   private func removeNodeWithIdentifier(identifier: NodeIdentifier) {
-    logDebug("identifier = \(identifier)")
+    logDebug("removing node with identifier \(identifier)")
     guard let mappedIdentifier = fileIDToNodeID[identifier] else {
       fatalError("trying to remove node for unmapped identifier \(identifier)")
     }
@@ -228,7 +228,7 @@ final class InstrumentTrack: Track {
   func removeNode(node: MIDINode) throws {
     guard let node = nodes.remove(node) else { throw Error.NodeNotFound }
     let identifier = NodeIdentifier(ObjectIdentifier(node).uintValue)
-    logDebug("identifier = \(identifier)")
+    logDebug("removing node \(node.name!) \(identifier)")
     notes.remove(identifier)
     node.sendNoteOff()
     try MIDIPortDisconnectSource(inPort, node.endPoint) ➤ "Failed to disconnect to node \(node.name!)"
@@ -394,8 +394,6 @@ final class InstrumentTrack: Track {
     }
 
     eventContainer = MIDIEventContainer(events: trackChunk.events)
-
-//    if !name.isEmpty { _label = name }
 
     // Find the instrument event
     guard var instrumentName = eventContainer.instrumentName else {

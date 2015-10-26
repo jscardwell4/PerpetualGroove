@@ -13,27 +13,6 @@ import CoreMIDI
 
 final class MIDINode: SKSpriteNode {
 
-
-// MARK: - Monitoring node state
-
-  struct State: OptionSetType, CustomStringConvertible {
-    let rawValue: Int
-    static let Playing = State(rawValue: 0b001)
-    static let Jogging = State(rawValue: 0b010)
-    static let Paused  = State(rawValue: 0b100)
-
-    var description: String {
-      var result = "MIDINode.State { "
-      var flagStrings: [String] = []
-      if self ∋ .Playing { flagStrings.append("Playing") }
-      if self ∋ .Jogging { flagStrings.append("Jogging") }
-      if self ∋ .Paused  { flagStrings.append("Paused")  }
-      result += ", ".join(flagStrings)
-      result += " }"
-      return result
-    }
-  }
-
   /// Holds the current state of the node
   private var state: State = []
 
@@ -58,47 +37,6 @@ final class MIDINode: SKSpriteNode {
 
   /// Embedded in MIDI packets to allow a track with multiple nodes to identify the event's source
   var sourceID: Identifier { return _sourceID }
-
-  /// Type for representing MIDI-related node actions
-  struct Action {
-
-    enum Key: String { case Play, FadeOut, FadeIn }
-
-    let key: String
-    let action: SKAction
-
-    /**
-    init:duration:
-
-    - parameter k: Key
-    - parameter d: NSTimeInterval
-    */
-    init(key k: Key, node: MIDINode? = nil) {
-      key = k.rawValue
-
-      switch k {
-        case .Play:
-          let halfDuration = half(node?.note.duration.seconds ?? 0)
-          let scaleUp = SKAction.scaleTo(2, duration: halfDuration)
-          let noteOn = SKAction.runBlock({ [weak node] in node?.sendNoteOn() })
-          let scaleDown = SKAction.scaleTo(1, duration: halfDuration)
-          let noteOff = SKAction.runBlock({ [weak node] in node?.sendNoteOff() })
-          action = SKAction.sequence([SKAction.group([scaleUp, noteOn]), scaleDown, noteOff])
-
-        case .FadeOut:
-          let fade = SKAction.fadeOutWithDuration(0.25)
-          let pause = SKAction.runBlock({[weak node] in node?.physicsBody.resting = true})
-          action = SKAction.sequence([fade, pause])
-
-        case .FadeIn:
-          let fade = SKAction.fadeInWithDuration(0.25)
-          let unpause = SKAction.runBlock({[weak node] in node?.physicsBody.resting = false})
-          action = SKAction.sequence([fade, unpause])
-      }
-
-    }
-
-  }
 
   private lazy var playAction:    Action = Action(key: .Play,    node: self)
   private lazy var fadeOutAction: Action = Action(key: .FadeOut, node: self)
@@ -126,7 +64,7 @@ final class MIDINode: SKSpriteNode {
     let packet = MIDIPacketListInit(&packetList)
     let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
     let data: [Byte] = [0x90 | note.channel, note.note.midi, note.velocity.midi] + _sourceID.bytes
-    logVerbose("data: \(String(hexBytes: data))")
+    logDebug("sending data \(String(hexBytes: data))")
     let timeStamp = Sequencer.time.ticks
     MIDIPacketListAdd(&packetList, size, packet, timeStamp, 11, data)
     do {
@@ -144,7 +82,7 @@ final class MIDINode: SKSpriteNode {
     let data: [UInt8] = MIDINode.useVelocityForOff
                 ? [0x90 | note.channel, note.note.midi, 0] + _sourceID.bytes
                 : [0x80 | note.channel, note.note.midi, 0] + _sourceID.bytes
-    logVerbose("data: \(String(hexBytes: data))")
+    logDebug("sending data \(String(hexBytes: data))")
     let timeStamp = Sequencer.time.ticks
     MIDIPacketListAdd(&packetList, size, packet, timeStamp, 11, data)
     do {
@@ -189,7 +127,11 @@ final class MIDINode: SKSpriteNode {
 
   // MARK: - Listening for Sequencer notifications
 
-  private let receptionist = NotificationReceptionist()
+  private let receptionist: NotificationReceptionist = {
+    let r = NotificationReceptionist()
+    r.logContext = LogManager.SceneContext
+    return r
+  }()
 
   /**
   didBeginJogging:
@@ -197,15 +139,9 @@ final class MIDINode: SKSpriteNode {
   - parameter notification: NSNotification
   */
   private func didBeginJogging(notification: NSNotification) {
-
-    logVerbose("<\(_sourceID)>")
-
-    // Make sure we are not already jogging
     guard state ∌ .Jogging else { fatalError("internal inconsistency, should not already have `Jogging` flag set") }
-
     pushBreadcrumb() // Make sure the latest position gets added to history before jogging begins
     state ⊻= .Jogging
-
     physicsBody.dynamic = false
   }
 
@@ -215,7 +151,6 @@ final class MIDINode: SKSpriteNode {
   - parameter notification: NSNotification
   */
   private func didJog(notification: NSNotification) {
-    logVerbose("<\(_sourceID)>")
     guard state ∋ .Jogging else { fatalError("internal inconsistency, should have `Jogging` flag set") }
     guard let jogTime = (notification.userInfo?[Sequencer.Notification.Key.JogTime.rawValue] as? NSValue)?.barBeatTimeValue else {
       logError("notication does not contain jog tick value")
@@ -230,11 +165,8 @@ final class MIDINode: SKSpriteNode {
   - parameter notification: NSNotification
   */
   private func didEndJogging(notification: NSNotification) {
-    logVerbose("<\(_sourceID)>")
-
     guard state ∋ .Jogging else { fatalError("internal inconsistency, should have `Jogging` flag set") }
     state ⊻= .Jogging
-
     guard state ∌ .Paused else { return }
     physicsBody.dynamic = true
     physicsBody.velocity = currentSnapshot.velocity
@@ -246,8 +178,8 @@ final class MIDINode: SKSpriteNode {
   - parameter notification: NSNotification
   */
   private func didStart(notification: NSNotification) {
-    logVerbose("<\(_sourceID)>")
     guard state ∋ .Paused else { return }
+    logDebug("unpausing")
     physicsBody.dynamic = true
     physicsBody.velocity = currentSnapshot.velocity
     state ⊻= .Paused
@@ -259,8 +191,8 @@ final class MIDINode: SKSpriteNode {
   - parameter notification: NSNotification
   */
   private func didPause(notification: NSNotification) {
-    logVerbose("<\(_sourceID)>")
     guard state ∌ .Paused else { return }
+    logDebug("pausing")
     pushBreadcrumb()
     physicsBody.dynamic = false
     state ⊻= .Paused
@@ -313,21 +245,21 @@ final class MIDINode: SKSpriteNode {
   - parameter tr: Track
   - parameter n: Note
   */
-  init(placement p: Placement, name n: String, track t: InstrumentTrack, note attrs: NoteAttributes) throws {
+  init(placement: Placement, name: String, track: InstrumentTrack, note: NoteAttributes) throws {
 
-    let snapshot = Snapshot(ticks: Sequencer.time.ticks, placement: p)
+    let snapshot = Snapshot(ticks: Sequencer.time.ticks, placement: placement)
     initialSnapshot = snapshot
     currentSnapshot = snapshot
-    track = t
+    self.track = track
     history = MIDINodeHistory(initialSnapshot: snapshot)
-    note = attrs
+    self.note = note
     let image = UIImage(named: "ball")!
-    super.init(texture: SKTexture(image: image), color: t.color.value, size: image.size * 0.75)
+    super.init(texture: SKTexture(image: image), color: track.color.value, size: image.size * 0.75)
 
     let queue = NSOperationQueue.mainQueue()
     let object = Sequencer.self
     typealias Notification = Sequencer.Notification
-    receptionist.logContext = LogManager.SceneContext
+
     receptionist.observe(Notification.DidBeginJogging, from: object, queue: queue) { [weak self] in self?.didBeginJogging($0) }
     receptionist.observe(Notification.DidJog,          from: object, queue: queue) { [weak self] in self?.didJog($0) }
     receptionist.observe(Notification.DidEndJogging,   from: object, queue: queue) { [weak self] in self?.didEndJogging($0) }
@@ -336,16 +268,16 @@ final class MIDINode: SKSpriteNode {
 
     _sourceID = Identifier(ObjectIdentifier(self).uintValue)
 
-    try MIDIClientCreateWithBlock(n, &client, nil) ➤ "Failed to create midi client"
-    try MIDISourceCreate(client, "\(n)", &endPoint) ➤ "Failed to create end point for node \(n)"
+    try MIDIClientCreateWithBlock(name, &client, nil) ➤ "Failed to create midi client"
+    try MIDISourceCreate(client, "\(name)", &endPoint) ➤ "Failed to create end point for node \(name)"
 
-    name = n
+    self.name = name
     colorBlendFactor = 1
 
-    position = p.position
+    position = placement.position
     physicsBody.affectedByGravity = false
     physicsBody.usesPreciseCollisionDetection = true
-    physicsBody.velocity = p.vector
+    physicsBody.velocity = placement.vector
     physicsBody.linearDamping = 0.0
     physicsBody.angularDamping = 0.0
     physicsBody.friction = 0.0
@@ -364,9 +296,75 @@ final class MIDINode: SKSpriteNode {
   
   deinit {
     do {
+      logDebug("disposing of MIDI client and end point")
       try MIDIEndpointDispose(endPoint) ➤ "Failed to dispose of end point"
       try MIDIClientDispose(client) ➤ "Failed to dispose of midi client"
     } catch { logError(error) }
   }
 
+}
+
+// MARK: - State
+extension MIDINode {
+  struct State: OptionSetType, CustomStringConvertible {
+    let rawValue: Int
+    static let Playing = State(rawValue: 0b001)
+    static let Jogging = State(rawValue: 0b010)
+    static let Paused  = State(rawValue: 0b100)
+
+    var description: String {
+      var result = "MIDINode.State { "
+      var flagStrings: [String] = []
+      if self ∋ .Playing { flagStrings.append("Playing") }
+      if self ∋ .Jogging { flagStrings.append("Jogging") }
+      if self ∋ .Paused  { flagStrings.append("Paused")  }
+      result += ", ".join(flagStrings)
+      result += " }"
+      return result
+    }
+  }
+}
+
+// MARK: - Action
+extension MIDINode {
+  /// Type for representing MIDI-related node actions
+  struct Action {
+
+    enum Key: String { case Play, FadeOut, FadeIn }
+
+    let key: String
+    let action: SKAction
+
+    /**
+    init:duration:
+
+    - parameter k: Key
+    - parameter d: NSTimeInterval
+    */
+    init(key k: Key, node: MIDINode? = nil) {
+      key = k.rawValue
+
+      switch k {
+        case .Play:
+          let halfDuration = half(node?.note.duration.seconds ?? 0)
+          let scaleUp = SKAction.scaleTo(2, duration: halfDuration)
+          let noteOn = SKAction.runBlock({ [weak node] in node?.sendNoteOn() })
+          let scaleDown = SKAction.scaleTo(1, duration: halfDuration)
+          let noteOff = SKAction.runBlock({ [weak node] in node?.sendNoteOff() })
+          action = SKAction.sequence([SKAction.group([scaleUp, noteOn]), scaleDown, noteOff])
+
+        case .FadeOut:
+          let fade = SKAction.fadeOutWithDuration(0.25)
+          let pause = SKAction.runBlock({[weak node] in node?.physicsBody.resting = true})
+          action = SKAction.sequence([fade, pause])
+
+        case .FadeIn:
+          let fade = SKAction.fadeInWithDuration(0.25)
+          let unpause = SKAction.runBlock({[weak node] in node?.physicsBody.resting = false})
+          action = SKAction.sequence([fade, unpause])
+      }
+
+    }
+
+  }
 }
