@@ -26,8 +26,8 @@ final class MIDIDocument: UIDocument {
   - parameter notification: NSNotification
   */
   private func didChangeState(notification: NSNotification) {
-    guard documentState ∋ .InConflict, let versions = NSFileVersion.unresolvedConflictVersionsOfItemAtURL(fileURL) else { return }
-    logDebug("versions: \(versions)")
+//    guard documentState ∋ .InConflict, let versions = NSFileVersion.unresolvedConflictVersionsOfItemAtURL(fileURL) else { return }
+//    logDebug("versions: \(versions)")
     // TODO: resolve conflict
   }
 

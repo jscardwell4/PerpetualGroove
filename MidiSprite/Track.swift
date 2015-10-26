@@ -14,7 +14,7 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
 
   var eventContainer = MIDIEventContainer() {
     didSet {
-      logDebug("posing 'DidUpdateEvents'")
+      logDebug("posting 'DidUpdateEvents'")
       Notification.DidUpdateEvents.post(object: self)
     }
   }

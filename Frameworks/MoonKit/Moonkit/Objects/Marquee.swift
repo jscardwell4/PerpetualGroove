@@ -171,6 +171,7 @@ public class Marquee: UIView {
 
   /** setup */
   private func setup() {
+    userInteractionEnabled = false
     layoutManager.usesFontLeading = false
     layoutManager.addTextContainer(textContainer)
     textStorage.addLayoutManager(layoutManager)

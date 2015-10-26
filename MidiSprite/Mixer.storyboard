@@ -54,7 +54,7 @@
                                                                 <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="VolumeLabel"/>
                                                             </userDefinedRuntimeAttributes>
                                                         </label>
-                                                        <view opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="247" horizontalCompressionResistancePriority="749" verticalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="Evx-CT-UhF" userLabel="Volume Slider" customClass="Slider" customModule="MoonKit">
+                                                        <view opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="247" horizontalCompressionResistancePriority="749" verticalCompressionResistancePriority="749" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Evx-CT-UhF" userLabel="Volume Slider" customClass="Slider" customModule="MoonKit">
                                                             <rect key="frame" x="0.0" y="25" width="44" height="120"/>
                                                             <animations/>
                                                             <constraints>
@@ -433,8 +433,6 @@
                                                                 <userDefinedRuntimeAttribute type="number" keyPath="editingFontSize">
                                                                     <real key="value" value="14"/>
                                                                 </userDefinedRuntimeAttribute>
-                                                                <userDefinedRuntimeAttribute type="boolean" keyPath="marqueeHidden" value="NO"/>
-                                                                <userDefinedRuntimeAttribute type="boolean" keyPath="textFieldHidden" value="YES"/>
                                                                 <userDefinedRuntimeAttribute type="boolean" keyPath="scrollEnabled" value="YES"/>
                                                                 <userDefinedRuntimeAttribute type="string" keyPath="verticalAlignmentString" value="Top"/>
                                                                 <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">

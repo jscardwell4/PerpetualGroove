@@ -138,7 +138,6 @@ public class MarqueeField: TintColorControl {
     textField.backgroundColor = .clearColor()
     textField.hidden = true
     textField.delegate = self
-    textField.addTarget(self, action: "textFieldValueChanged", forControlEvents: .ValueChanged)
 
     addTarget(self, action: "handleTap", forControlEvents: .TouchUpInside)
 
@@ -282,6 +281,7 @@ extension MarqueeField: UITextFieldDelegate {
     else { shouldReturn = true }
 
     if shouldReturn {
+      text = textField.text ?? text
       textField.resignFirstResponder()
     }
 
