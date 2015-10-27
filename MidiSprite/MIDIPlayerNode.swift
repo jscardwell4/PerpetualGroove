@@ -13,9 +13,7 @@ import typealias AudioToolbox.MusicDeviceGroupID
 
 final class MIDIPlayerNode: SKShapeNode {
 
-  static var currentPlayer: MIDIPlayerNode? {
-    return MIDIPlayerViewController.currentInstance?.midiPlayerView?.midiPlayerScene?.midiPlayer
-  }
+  static var currentInstance: MIDIPlayerNode? { return MIDIPlayerScene.currentInstance?.midiPlayer }
 
   // MARK: - Initialization
 

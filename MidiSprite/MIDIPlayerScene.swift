@@ -15,6 +15,8 @@ final class MIDIPlayerScene: SKScene {
 
   private var contentCreated = false
 
+  static var currentInstance: MIDIPlayerScene? { return MIDIPlayerView.currentInstance?.midiPlayerScene }
+
   /** createContent */
   private func createContent() {
     scaleMode = .AspectFit

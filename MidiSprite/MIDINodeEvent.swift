@@ -78,7 +78,9 @@ struct MIDINodeEvent: MIDIEvent {
       var i = Int(data[currentIndex]) + ++currentIndex
 
       guard i ⟷ data.endIndex > 0 else { throw MIDIFileError(type: .InvalidLength, reason: "Not enough bytes for event") }
+
       let placement = Placement(data[currentIndex ..< i])
+      guard placement != .null else { throw MIDIFileError(type: .ReadFailure, reason: "Null placement produced") }
 
       currentIndex = i
       i += Int(data[currentIndex++]) + 1

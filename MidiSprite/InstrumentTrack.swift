@@ -104,14 +104,6 @@ final class InstrumentTrack: Track {
 
   var color: TrackColor = .White
 
-//  private var _label: String? {
-//    didSet {
-//      guard _label != oldValue, let label = _label else { return }
-//      name = label
-//    }
-//  }
-//  var label: String { get { return _label ?? instrument.preset.name } set { _label = newValue } }
-
   override var name: String {
     get { return super.name.isEmpty ? instrument.preset.name : super.name }
     set { super.name = newValue }
@@ -133,23 +125,27 @@ final class InstrumentTrack: Track {
 
   // MARK: - Managing MIDI nodes
 
-  typealias NodeIdentifier = MIDINodeEvent.Identifier
+  typealias Identifier = MIDINode.Identifier
 
   /// The identifier parsed from a file awaiting the identifier of its generated node
-  private var pendingIdentifier: NodeIdentifier?
+  private var pendingID: Identifier?
+
+  /// The identifier for the node whose MIDI messages are eligible for event creation
+  private var recordableID: Identifier? { didSet { logDebug("recordableIdentifier = \(recordableID)") } }
 
   /// The set of `MIDINode` objects that have been added to the track
-  private var nodes: Set<MIDINode> = []
+  private var nodes: OrderedSet<Weak<MIDINode>> = []
 
   /// Index that maps the identifiers parsed from a file to the identifiers assigned to the generated nodes
-  private var fileIDToNodeID: [NodeIdentifier:NodeIdentifier] = [:]
+  private var fileIDToNodeID: [Identifier:Identifier] = [:]
 
   /** Empties all node-referencing properties */
   private func resetNodes() {
-    pendingIdentifier = nil
-    while let node = nodes.popFirst() { node.removeFromParent() }
+    pendingID = nil
+    nodes.removeAll()
     fileIDToNodeID.removeAll()
-    logDebug("nodes reset") }
+    logDebug("nodes reset")
+  }
 
   /**
   addNode:
@@ -157,20 +153,35 @@ final class InstrumentTrack: Track {
   - parameter node: MIDINode
   */
   func addNode(node: MIDINode) throws {
-    nodes.insert(node)
-    let identifier = NodeIdentifier(ObjectIdentifier(node).uintValue)
-    logDebug("adding node \(node.name!) (\(identifier))")
-    notes.insert(identifier)
+
+    // Insert the node into our set
+    nodes.append(Weak(node))
+    logDebug("adding node \(node.name!) (\(node.identifier))")
+
     try MIDIPortConnectSource(inPort, node.endPoint, nil) ➤ "Failed to connect to node \(node.name!)"
+
     Notification.DidAddNode.post(object: self)
-    if let pendingIdentifier = pendingIdentifier {
-      fileIDToNodeID[pendingIdentifier] = identifier
-      self.pendingIdentifier = nil
+
+    if let pendingIdentifier = pendingID {
+      fileIDToNodeID[pendingIdentifier] = node.identifier
+      self.pendingID = nil
     }
-    guard recording else { return }
+
+    if recordableID == nil { recordableID = node.identifier }
+
+    guard recording else { logDebug("not recording…skipping event creation"); return }
+
+    guard recordableID == node.identifier else {
+      logDebug("not recording node with identifier \(node.identifier)…skipping event creation")
+      return
+    }
+
     eventQueue.addOperationWithBlock {
-      [time = Sequencer.time.time, placement = node.initialSnapshot.placement, note = node.note, weak self] in
-      let event = MIDINodeEvent(.Add(identifier: identifier, placement: placement, attributes: note), time)
+      [time = Sequencer.time.time, unowned node, weak self] in
+      let event = MIDINodeEvent(.Add(identifier: node.identifier,
+                                     placement: node.initialSnapshot.placement,
+                                     attributes: node.note),
+                                time)
       self?.eventContainer.append(event)
     }
   }
@@ -183,17 +194,22 @@ final class InstrumentTrack: Track {
   - parameter attributes: NoteAttributes
   - parameter texture: MIDINode.TextureType
   */
-  private func addNodeWithIdentifier(identifier: NodeIdentifier,
-                           placement: Placement,
-                          attributes: NoteAttributes)
-  {
+  private func addNodeWithIdentifier(identifier: Identifier, placement: Placement, attributes: NoteAttributes) {
     logDebug("adding node with identifier \(identifier), placement \(placement), attributes \(attributes)")
+
+    // Make sure a node hasn't already been place for this identifier
     guard fileIDToNodeID[identifier] == nil else { return }
-    guard pendingIdentifier == nil else { fatalError("already have an identifier pending: \(pendingIdentifier!)") }
-    guard let midiPlayer = MIDIPlayerNode.currentPlayer else {
-      fatalError("trying to add node without a midi player")
-    }
-    pendingIdentifier = identifier
+
+    // Make sure there is not already a pending placement
+    guard pendingID == nil else { fatalError("already have an identifier pending: \(pendingID!)") }
+
+    // Make sure we have a `MIDIPlayerNode`
+    guard let midiPlayer = MIDIPlayerNode.currentInstance else { fatalError("requires a midi player instance") }
+
+    // Store the identifier
+    pendingID = identifier
+
+    // Place a node
     midiPlayer.placeNew(placement, targetTrack: self, attributes: attributes)
   }
 
@@ -202,15 +218,15 @@ final class InstrumentTrack: Track {
 
   - parameter identifier: NodeIdentifier
   */
-  private func removeNodeWithIdentifier(identifier: NodeIdentifier) {
+  private func removeNodeWithIdentifier(identifier: Identifier) {
     logDebug("removing node with identifier \(identifier)")
     guard let mappedIdentifier = fileIDToNodeID[identifier] else {
       fatalError("trying to remove node for unmapped identifier \(identifier)")
     }
-    guard let idx = nodes.indexOf({$0.sourceID == mappedIdentifier}) else {
+    guard let idx = nodes.indexOf({$0.reference?.identifier == mappedIdentifier}), node = nodes[idx].reference else {
       fatalError("failed to find node with mapped identifier \(mappedIdentifier)")
     }
-    let node = nodes[idx]
+
     do {
       try removeNode(node)
       node.removeFromParent()
@@ -226,14 +242,16 @@ final class InstrumentTrack: Track {
   - parameter node: MIDINode
   */
   func removeNode(node: MIDINode) throws {
-    guard let node = nodes.remove(node) else { throw Error.NodeNotFound }
-    let identifier = NodeIdentifier(ObjectIdentifier(node).uintValue)
+    guard let idx = nodes.indexOf({$0.reference == node}), node = nodes.removeAtIndex(idx).reference else {
+      throw Error.NodeNotFound
+    }
+    let identifier = Identifier(ObjectIdentifier(node).uintValue)
     logDebug("removing node \(node.name!) \(identifier)")
-    notes.remove(identifier)
+
     node.sendNoteOff()
     try MIDIPortDisconnectSource(inPort, node.endPoint) ➤ "Failed to disconnect to node \(node.name!)"
     Notification.DidRemoveNode.post(object: self)
-    guard recording else { return }
+    guard recording else { logDebug("not recording…skipping event creation"); return }
     eventQueue.addOperationWithBlock {
       [time = Sequencer.time.time, weak self] in
       self?.eventContainer.append(MIDINodeEvent(.Remove(identifier: identifier), time))
@@ -241,10 +259,10 @@ final class InstrumentTrack: Track {
   }
 
   /** stopNodes */
-  private func stopNodes() { nodes.forEach {$0.fadeOut()}; logDebug("nodes stopped") }
+  private func stopNodes() { nodes.forEach {$0.reference?.fadeOut()}; logDebug("nodes stopped") }
 
   /** startNodes */
-  private func startNodes() { nodes.forEach {$0.fadeIn()}; logDebug("nodes started") }
+  private func startNodes() { nodes.forEach {$0.reference?.fadeIn()}; logDebug("nodes started") }
 
   // MARK: - MIDI events
 
@@ -254,8 +272,6 @@ final class InstrumentTrack: Track {
     q.maxConcurrentOperationCount = 1
     return q
   }()
-
-  private var notes: Set<NodeIdentifier> = []
 
   private var client  = MIDIClientRef()
   private var inPort  = MIDIPortRef()
@@ -268,10 +284,10 @@ final class InstrumentTrack: Track {
 
   - returns: UInt?
   */
-  private func nodeIdentifierFromPacket(var packet: MIDIPacket) -> NodeIdentifier? {
-    guard packet.length == UInt16(sizeof(NodeIdentifier.self) + 3) else { return nil }
-    return NodeIdentifier(withUnsafePointer(&packet.data) {
-      UnsafeBufferPointer<Byte>(start: UnsafePointer<Byte>($0).advancedBy(3), count: sizeof(NodeIdentifier.self))
+  private func nodeIdentifierFromPacket(var packet: MIDIPacket) -> Identifier? {
+    guard packet.length == UInt16(sizeof(Identifier.self) + 3) else { return nil }
+    return Identifier(withUnsafePointer(&packet.data) {
+      UnsafeBufferPointer<Byte>(start: UnsafePointer<Byte>($0).advancedBy(3), count: sizeof(Identifier.self))
     })
   }
 
@@ -288,26 +304,22 @@ final class InstrumentTrack: Track {
     catch { logError(error) }
 
     // Check if we are recording, otherwise skip event processing
-    guard recording else { return }
-    
+    guard recording else { logDebug("not recording…skipping event creation"); return }
+
+    guard let recordableID = recordableID else { logDebug("no recordable identifier…skipping event creation"); return }
+
     eventQueue.addOperationWithBlock {
       [weak self, time = Sequencer.time.time] in
 
-      let packets = packetList.memory
-      let packetPointer = UnsafeMutablePointer<MIDIPacket>.alloc(1)
-      packetPointer.initialize(packets.packet)
-      guard packets.numPackets == 1 else { fatalError("Packets must be sent to track one at a time") }
+      guard let packet = MIDINode.Packet(packetList: packetList) where packet.identifier == recordableID else { return }
 
-      let packet = packetPointer.memory
-      let ((status, channel), note, velocity) = ((packet.data.0 >> 4, packet.data.0 & 0xF), packet.data.1, packet.data.2)
-      self?.logVerbose("status: \(status); channel: \(channel); note: \(note); velocity: \(velocity)")
       let event: MIDIEvent?
-      switch status {
-        case 9:  event = ChannelEvent(.NoteOn, channel, note, velocity, time)
-        case 8:  event = ChannelEvent(.NoteOff, channel, note, velocity, time)
+      switch packet.status {
+        case 9:  event = ChannelEvent(.NoteOn, packet.channel, packet.note, packet.velocity, time)
+        case 8:  event = ChannelEvent(.NoteOff, packet.channel, packet.note, packet.velocity, time)
         default: event = nil
       }
-      if event != nil { self?.logVerbose("event: \(event!)"); self?.eventContainer.append(event!) }
+      if event != nil { self?.eventContainer.append(event!) }
     }
   }
 
@@ -445,12 +457,7 @@ final class InstrumentTrack: Track {
   }
 
   override var description: String {
-    return "\n".join(
-      "name: \(name)",
-      "instrument: \(instrument)",
-      "color: \(color)",
-      super.description
-    )
+    return "\n".join( "name: \(name)", "instrument: \(instrument)", "color: \(color)", super.description )
   }
 }
 
@@ -472,6 +479,7 @@ extension InstrumentTrack {
   }
 }
 
+// MARK: - State
 extension InstrumentTrack {
   struct State: OptionSetType, CustomStringConvertible {
     let rawValue: Int

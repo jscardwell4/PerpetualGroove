@@ -33,10 +33,9 @@ final class MIDINode: SKSpriteNode {
   static let useVelocityForOff = true
 
   typealias Identifier = UInt64
-  private var _sourceID: Identifier = 0
 
   /// Embedded in MIDI packets to allow a track with multiple nodes to identify the event's source
-  var sourceID: Identifier { return _sourceID }
+  private(set) lazy var identifier: Identifier = Identifier(ObjectIdentifier(self).uintValue)
 
   private lazy var playAction:    Action = Action(key: .Play,    node: self)
   private lazy var fadeOutAction: Action = Action(key: .FadeOut, node: self)
@@ -58,17 +57,35 @@ final class MIDINode: SKSpriteNode {
   /** fadeIn */
   func fadeIn() { runAction(fadeInAction) }
 
+  private var noteOnPacket: Packet {
+    return Packet(status: 0x90, 
+                  channel: note.channel, 
+                  note: note.note.midi, 
+                  velocity: note.velocity.midi, 
+                  identifier: identifier)
+  }
+
+  private var noteOffPacket: Packet {
+    return MIDINode.useVelocityForOff 
+             ? Packet(status: 0x90, 
+                      channel: note.channel, 
+                      note: note.note.midi, 
+                      velocity: 0, 
+                      identifier: identifier)
+             : Packet(status: 0x80, 
+                      channel: note.channel, 
+                      note: note.note.midi, 
+                      velocity: note.velocity.midi, 
+                      identifier: identifier)
+  }
+
   /** sendNoteOn */
   func sendNoteOn() {
-    var packetList = MIDIPacketList()
-    let packet = MIDIPacketListInit(&packetList)
-    let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
-    let data: [Byte] = [0x90 | note.channel, note.note.midi, note.velocity.midi] + _sourceID.bytes
-    logDebug("sending data \(String(hexBytes: data))")
-    let timeStamp = Sequencer.time.ticks
-    MIDIPacketListAdd(&packetList, size, packet, timeStamp, 11, data)
+    let packet = noteOnPacket
+    logDebug("sending packet \(packet)")
+    var packetList = packet.packetList
     do {
-      try withUnsafePointer(&packetList) { MIDIReceived(endPoint, $0) } ➤ "Unable to send note on event"
+      try MIDIReceived(endPoint, &packetList) ➤ "Unable to send note on event"
       state ⊻= .Playing
     } catch { logError(error) }
   }
@@ -76,17 +93,13 @@ final class MIDINode: SKSpriteNode {
   /** sendNoteOff */
   func sendNoteOff() {
     guard state ∋ .Playing else { return }
-    var packetList = MIDIPacketList()
-    let packet = MIDIPacketListInit(&packetList)
-    let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
-    let data: [UInt8] = MIDINode.useVelocityForOff
-                ? [0x90 | note.channel, note.note.midi, 0] + _sourceID.bytes
-                : [0x80 | note.channel, note.note.midi, 0] + _sourceID.bytes
-    logDebug("sending data \(String(hexBytes: data))")
-    let timeStamp = Sequencer.time.ticks
-    MIDIPacketListAdd(&packetList, size, packet, timeStamp, 11, data)
+
+    let packet = noteOffPacket
+    logDebug("sending packet \(packet)")
+    var packetList = packet.packetList
+
     do {
-      try withUnsafePointer(&packetList) { MIDIReceived(endPoint, $0) } ➤ "Unable to send note off event"
+      try MIDIReceived(endPoint, &packetList) ➤ "Unable to send note off event"
       state ⊻= .Playing
     } catch { logError(error) }
   }
@@ -260,13 +273,15 @@ final class MIDINode: SKSpriteNode {
     let object = Sequencer.self
     typealias Notification = Sequencer.Notification
 
-    receptionist.observe(Notification.DidBeginJogging, from: object, queue: queue) { [weak self] in self?.didBeginJogging($0) }
-    receptionist.observe(Notification.DidJog,          from: object, queue: queue) { [weak self] in self?.didJog($0) }
-    receptionist.observe(Notification.DidEndJogging,   from: object, queue: queue) { [weak self] in self?.didEndJogging($0) }
-    receptionist.observe(Notification.DidStart,        from: object, queue: queue) { [weak self] in self?.didStart($0) }
-    receptionist.observe(Notification.DidPause,        from: object, queue: queue) { [weak self] in self?.didPause($0) }
-
-    _sourceID = Identifier(ObjectIdentifier(self).uintValue)
+    receptionist.observe(Notification.DidBeginJogging, from: object, queue: queue) {
+      [weak self] in self?.didBeginJogging($0)
+    }
+    receptionist.observe(Notification.DidJog, from: object, queue: queue) { [weak self] in self?.didJog($0) }
+    receptionist.observe(Notification.DidEndJogging, from: object, queue: queue) {
+      [weak self] in self?.didEndJogging($0)
+    }
+    receptionist.observe(Notification.DidStart, from: object, queue: queue) { [weak self] in self?.didStart($0) }
+    receptionist.observe(Notification.DidPause, from: object, queue: queue) { [weak self] in self?.didPause($0) }
 
     try MIDIClientCreateWithBlock(name, &client, nil) ➤ "Failed to create midi client"
     try MIDISourceCreate(client, "\(name)", &endPoint) ➤ "Failed to create end point for node \(name)"
@@ -300,6 +315,77 @@ final class MIDINode: SKSpriteNode {
       try MIDIEndpointDispose(endPoint) ➤ "Failed to dispose of end point"
       try MIDIClientDispose(client) ➤ "Failed to dispose of midi client"
     } catch { logError(error) }
+  }
+
+}
+
+extension MIDINode {
+
+  struct Packet: CustomStringConvertible {
+    let status: Byte
+    let channel: Byte
+    let note: Byte
+    let velocity: Byte
+    let identifier: Identifier
+
+    var packetList: MIDIPacketList {
+      var packetList = MIDIPacketList()
+      let packet = MIDIPacketListInit(&packetList)
+      let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
+      let data: [Byte] = [status | channel, note, velocity] + identifier.bytes
+      let timeStamp = Sequencer.time.ticks
+      MIDIPacketListAdd(&packetList, size, packet, timeStamp, data.count, data)
+      return packetList
+    }
+
+    /**
+    initWithStatus:channel:note:velocity:identifier:
+
+    - parameter status: Byte
+    - parameter channel: Byte
+    - parameter note: Byte
+    - parameter velocity: Byte
+    - parameter identifier: Identifier
+    */
+    init(status: Byte, channel: Byte, note: Byte, velocity: Byte, identifier: Identifier) {
+      self.status = status
+      self.channel = channel
+      self.note = note
+      self.velocity = velocity
+      self.identifier = identifier
+    }
+
+    /**
+    initWithPacketList:
+
+    - parameter packetList: UnsafePointer<MIDIPacketList>
+    */
+    init?(packetList: UnsafePointer<MIDIPacketList>) {
+      let packets = packetList.memory
+      let packetPointer = UnsafeMutablePointer<MIDIPacket>.alloc(1)
+      packetPointer.initialize(packets.packet)
+      guard packets.numPackets == 1 else { return nil }
+      let packet = packetPointer.memory
+      guard packet.length == UInt16(sizeof(Identifier.self) + 3) else { return nil }
+      var data = packet.data
+      status = data.0 >> 4
+      channel = data.0 & 0xF
+      note = data.1
+      velocity = data.2
+      identifier = Identifier(withUnsafePointer(&data) {
+        UnsafeBufferPointer<Byte>(start: UnsafePointer<Byte>($0).advancedBy(3), count: sizeof(Identifier.self))
+        })
+    }
+
+    var description: String { 
+      return "; ".join(
+        "{status: \(status)", 
+        "channel: \(channel)", 
+        "note: \(note)",
+        "velocity: \(velocity)", 
+        "identifier: \(identifier)}"
+        )
+    }
   }
 
 }

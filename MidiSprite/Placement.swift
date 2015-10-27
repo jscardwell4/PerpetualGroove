@@ -13,6 +13,7 @@ struct Placement {
   let position: CGPoint
   let vector: CGVector
   static let zero = Placement(position: .zero, vector: .zero)
+  static let null = Placement(position: .null, vector: .zero)
 }
 
 extension Placement: ByteArrayConvertible {
@@ -28,16 +29,15 @@ extension Placement: ByteArrayConvertible {
 
   - parameter bytes: [Byte]
   */
-  init!(_ bytes: [Byte]) {
-    let castBytes = bytes.map({CChar($0)})
-    guard let string = String.fromCString(castBytes) else { self = .zero; return }
-
+  init(_ bytes: [Byte]) {
+    let string = String(bytes)
+    MoonKit.logDebug("string from bytes: '\(string)'")
     let float = "-?[0-9]+(?:\\.[0-9]+)?"
     let value = "\\{\(float), \(float)\\}"
     guard let match = (~/"\\{(\(value)), (\(value))\\}").firstMatch(string, anchored: true),
       positionCapture = match.captures[1],
-      vectorCapture = match.captures[2] else { self = .zero; return }
-    guard let p = CGPoint(positionCapture.string), v = CGVector(vectorCapture.string) else { return nil }
+      vectorCapture = match.captures[2] else { self = .null; return }
+    guard let p = CGPoint(positionCapture.string), v = CGVector(vectorCapture.string) else { self = .null; return }
     position = p
     vector = v
   }

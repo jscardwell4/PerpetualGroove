@@ -11,22 +11,7 @@ import CoreMIDI
 import MoonKit
 import struct AudioToolbox.CABarBeatTime
 
-
 final class TempoTrack: Track {
-
-  var hasTimeSignatureEvent: Bool {
-    let isTimeSignature: (MIDIEvent) -> Bool = {
-      if let event = $0 as? MetaEvent, case .TimeSignature = event.data { return true } else { return false }
-    }
-    return eventContainer.events.filter(isTimeSignature).count != 0
-  }
-
-  var hasTempoEvent: Bool {
-    let isTempoEvent: (MIDIEvent) -> Bool = {
-      if let event = $0 as? MetaEvent, case .Tempo = event.data { return true } else { return false }
-    }
-    return eventContainer.events.filter(isTempoEvent).count != 0
-  }
 
   /**
   insertTempoChange:
@@ -35,7 +20,7 @@ final class TempoTrack: Track {
   */
   func insertTempoChange(tempo: Double) {
     logDebug("inserting event for tempo \(tempo)")
-    guard recording else { return }
+    guard recording else { logDebug("not recording…skipping event creation"); return }
     eventContainer.append(MetaEvent(Sequencer.time.time, .Tempo(bpm: tempo)))
   }
 
@@ -46,7 +31,7 @@ final class TempoTrack: Track {
   */
   func insertTimeSignature(signature: TimeSignature) {
     logDebug("inserting event for signature \(signature)")
-    guard recording else { return }
+    guard recording else { logDebug("not recording…skipping event creation"); return }
     eventContainer.append(MetaEvent(Sequencer.time.time, .TimeSignature(signature: signature, clocks: 36, notes: 8)))
   }
 
@@ -62,6 +47,7 @@ final class TempoTrack: Track {
   */
   override init() {
     super.init()
+    initializeNotificationReceptionist()
     eventContainer.append(TempoTrack.timeSignatureEvent)
     eventContainer.append(TempoTrack.tempoEvent)
   }
@@ -106,6 +92,20 @@ final class TempoTrack: Track {
     }
   }
 
+  private let receptionist: NotificationReceptionist = {
+    let r = NotificationReceptionist()
+    r.logContext = LogManager.SequencerContext
+    return r
+  }()
+
+  /** initializeNotificationReceptionist */
+  private func initializeNotificationReceptionist() {
+    receptionist.observe(Sequencer.Notification.DidToggleRecording, from: Sequencer.self, queue: NSOperationQueue.mainQueue()) {
+      [weak self] _ in
+      self?.recording = Sequencer.recording
+    }
+  }
+
   /**
   initWithTrackChunk:
 
@@ -114,10 +114,22 @@ final class TempoTrack: Track {
   */
   init(trackChunk: MIDIFileTrackChunk) {
     super.init()
+    initializeNotificationReceptionist()
     eventContainer = MIDIEventContainer(events: trackChunk.events.filter(TempoTrack.isTempoTrackEvent))
 
-    if !hasTimeSignatureEvent { eventContainer.insert(TempoTrack.timeSignatureEvent, atIndex: 0) }
-    if !hasTempoEvent { eventContainer.insert(TempoTrack.tempoEvent, atIndex: 1) }
+    if eventContainer.events.filter({
+      if let event = $0 as? MetaEvent, case .TimeSignature = event.data { return true } else { return false }
+    }).count == 0
+    {
+      eventContainer.insert(TempoTrack.timeSignatureEvent, atIndex: 0)
+    }
+
+    if eventContainer.events.filter({
+      if let event = $0 as? MetaEvent, case .Tempo = event.data { return true } else { return false }
+    }).count == 0
+    {
+      eventContainer.insert(TempoTrack.tempoEvent, atIndex: 1)
+    }
 
     eventMap.insert(eventContainer.events)
 

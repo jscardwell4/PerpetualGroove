@@ -15,10 +15,10 @@ final class LogManager: MoonKit.LogManager {
 
   private static var initialized = false
 
-  static let MIDIFileContext  = LogContext(rawValue: 0b0000_0010_0000) ∪ .Console
-  static let SF2FileContext   = LogContext(rawValue: 0b0000_0100_0000) ∪ .Console
-  static let SequencerContext = LogContext(rawValue: 0b0000_1000_0000) ∪ .Console
-  static let SceneContext     = LogContext(rawValue: 0b0001_0000_0000) ∪ .Console
+  static let MIDIFileContext  = LogContext(rawValue: 0b0000_0010_0000)// ∪ .Console
+  static let SF2FileContext   = LogContext(rawValue: 0b0000_0100_0000)// ∪ .Console
+  static let SequencerContext = LogContext(rawValue: 0b0000_1000_0000)// ∪ .Console
+  static let SceneContext     = LogContext(rawValue: 0b0001_0000_0000)// ∪ .Console
 
   /** initialize */
   static func initialize() {
@@ -46,13 +46,12 @@ final class LogManager: MoonKit.LogManager {
     PDTAChunk.defaultLogContext  = SF2FileContext
 
     Sequencer.defaultLogContext       = SequencerContext
-    InstrumentTrack.defaultLogContext = SequencerContext
+    Track.defaultLogContext           = SequencerContext
     MIDISequence.defaultLogContext    = SequencerContext
     AudioManager.defaultLogContext    = SequencerContext
     CABarBeatTime.defaultLogContext   = SequencerContext
     TimeSignature.defaultLogContext   = SequencerContext
     TrackColor.defaultLogContext      = SequencerContext
-    TempoTrack.defaultLogContext      = SequencerContext
     Metronome.defaultLogContext       = SequencerContext
     MIDIClock.defaultLogContext       = SequencerContext
     BarBeatTime.defaultLogContext     = SequencerContext
@@ -112,13 +111,12 @@ extension SDTAChunk: Loggable {}
 extension PDTAChunk: Loggable {}
 
 extension Sequencer: Loggable {}
-extension InstrumentTrack: Loggable {}
+extension Track: Loggable {}
 extension MIDISequence: Loggable {}
 extension AudioManager: Loggable {}
 extension CABarBeatTime: Loggable {}
 extension TimeSignature: Loggable {}
 extension TrackColor: Loggable {}
-extension TempoTrack: Loggable {}
 extension Metronome: Loggable {}
 extension MIDIClock: Loggable {}
 extension BarBeatTime: Loggable {}

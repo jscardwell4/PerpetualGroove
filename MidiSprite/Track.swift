@@ -25,25 +25,17 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
   var name: String { get { return eventContainer.trackName } set { eventContainer.trackName = newValue } }
 
   /** validateEvents */
-  func validateEvents() { eventContainer.validate() }
+  func validateEvents() { eventContainer.trackName = name; eventContainer.validate() }
 
   var chunk: MIDIFileTrackChunk {
     validateEvents()
     return MIDIFileTrackChunk(eventContainer: eventContainer)
   }
 
-  private let receptionist = NotificationReceptionist()
-
-  private(set) var recording = false
+  var recording = false { didSet { logDebug("recording = \(recording)") } }
 
   /** init */
-  init() {
-    receptionist.logContext = LogManager.SequencerContext
-    receptionist.observe(Sequencer.Notification.DidToggleRecording, from: Sequencer.self, queue: NSOperationQueue.mainQueue()) {
-      [weak self] _ in self?.recording = Sequencer.recording
-    }
-    recording = Sequencer.recording
-  }
+  init() {}
 
   var description: String {
     return "\n".join(

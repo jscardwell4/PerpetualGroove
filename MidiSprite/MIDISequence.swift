@@ -48,8 +48,10 @@ final class MIDISequence {
 
   weak var currentTrack: InstrumentTrack? {
     didSet {
+      if let oldTrack = oldValue where oldTrack.recording { oldTrack.recording = false }
       guard currentTrack == nil || instrumentTracks ∋ currentTrack else { currentTrack = nil; return }
       previousTrack = oldValue
+      currentTrack?.recording = Sequencer.recording
       Notification.DidChangeTrack.post(object: self,
                                        userInfo: [Notification.Key.OldTrack: oldValue as? AnyObject,
                                                   Notification.Key.Track:    currentTrack as? AnyObject])
@@ -123,17 +125,20 @@ final class MIDISequence {
   private func initializeNotificationReceptionist() {
     guard receptionist.count == 0 else { return }
     receptionist.logContext = LogManager.MIDIFileContext
+    receptionist.observe(Sequencer.Notification.DidToggleRecording, from: Sequencer.self, queue: NSOperationQueue.mainQueue()) {
+      [weak self] _ in self?.currentTrack?.recording = Sequencer.recording
+    }
   }
 
   /** init */
-  init() {}
+  init() { initializeNotificationReceptionist() }
 
   /**
   initWithFile:
 
   - parameter file: MIDIFile
   */
-  init(file f: MIDIFile) { file = f; currentTrack = instrumentTracks.first }
+  convenience init(file f: MIDIFile) { self.init(); file = f; currentTrack = instrumentTracks.first }
 
   deinit {
     instrumentTracks.removeAll()
@@ -164,6 +169,7 @@ final class MIDISequence {
     receptionist.observe(Track.Notification.DidUpdateEvents, from: track) {
       [weak self] _ in
       guard let weakself = self else { return }
+      
       Notification.DidUpdate.post(object: weakself)
     }
     Notification.DidAddTrack.post(object: self, userInfo: [Notification.Key.Track: track])

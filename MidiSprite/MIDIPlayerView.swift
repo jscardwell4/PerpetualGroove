@@ -14,6 +14,8 @@ final class MIDIPlayerView: SKView {
 
   var midiPlayerScene: MIDIPlayerScene? { return scene as? MIDIPlayerScene }
 
+  static var currentInstance: MIDIPlayerView? { return MIDIPlayerViewController.currentInstance?.midiPlayerView }
+
   /** setup */
   private func setup() {
     ignoresSiblingOrder = true

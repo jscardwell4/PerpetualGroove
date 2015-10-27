@@ -11,22 +11,39 @@ import MoonKit
 
 final class NoteAttributesViewController: UIViewController {
 
-  @IBOutlet weak var notePicker:     InlinePickerView!
+  @IBOutlet weak var pitchPicker:    InlinePickerView!
+  @IBOutlet weak var octavePicker:   InlinePickerView!
   @IBOutlet weak var durationPicker: InlinePickerView!
   @IBOutlet weak var velocityPicker: InlinePickerView!
 
   typealias Note     = NoteAttributes.Note
+  typealias Pitch    = Note.Pitch
+  typealias Octave   = Note.Octave
   typealias Duration = NoteAttributes.Duration
   typealias Velocity = NoteAttributes.Velocity
 
-  /** didPickNote */
-  @IBAction func didPickNote() { Sequencer.currentNoteAttributes.note = Note.allCases[notePicker.selection] }
+  var currentNote: NoteAttributes = NoteAttributes() {
+    didSet {
+      pitchPicker.selection    = currentNote.note.pitch.index
+      octavePicker.selection   = currentNote.note.octave.index
+      durationPicker.selection = currentNote.duration.index
+      velocityPicker.selection = currentNote.velocity.index
+
+      Sequencer.currentNoteAttributes = currentNote
+    }
+  }
+
+  /** didPickPitch */
+  @IBAction func didPickPitch() { currentNote.note.pitch = Pitch.allCases[pitchPicker.selection] }
+
+  /** didPickOctave */
+  @IBAction func didPickOctave() { currentNote.note.octave = Octave.allCases[octavePicker.selection] }
 
   /** didPickDuration */
-  @IBAction func didPickDuration() { Sequencer.currentNoteAttributes.duration = Duration.allCases[durationPicker.selection] }
+  @IBAction func didPickDuration() { currentNote.duration = Duration.allCases[durationPicker.selection] }
 
   /** didPickVelocity */
-  @IBAction func didPickVelocity() { Sequencer.currentNoteAttributes.velocity = Velocity.allCases[velocityPicker.selection] }
+  @IBAction func didPickVelocity() { currentNote.velocity = Velocity.allCases[velocityPicker.selection] }
 
   /** auditionValues */
   @IBAction func auditionValues() { Sequencer.auditionCurrentNote() }
@@ -34,8 +51,6 @@ final class NoteAttributesViewController: UIViewController {
   /** viewDidLoad */
   override func viewDidLoad() {
     super.viewDidLoad()
-    notePicker.selection = Sequencer.currentNoteAttributes.note.index
-    durationPicker.selection = Sequencer.currentNoteAttributes.duration.index
-    velocityPicker.selection = Sequencer.currentNoteAttributes.velocity.index
+    currentNote = Sequencer.currentNoteAttributes
   }
  }

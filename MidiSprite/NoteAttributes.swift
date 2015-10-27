@@ -27,18 +27,27 @@ struct NoteAttributes {
   var channel: UInt8 = 0
 
   /** An enumeration for specifying a note's pitch and octave */
-  enum Note: RawRepresentable, Equatable, EnumerableType, MIDIConvertible {
+  struct Note: RawRepresentable, Equatable, EnumerableType, MIDIConvertible {
 
-    enum Letter: String, EnumerableType {
+    enum Pitch: String, EnumerableType {
       case C="C", CSharp="C♯", D="D", DSharp="D♯", E="E", F="F", FSharp="F♯", G="G", GSharp="G♯",
            A="A", ASharp="A♯", B="B"
 
-      init(_ i: UInt8) { self = Letter.allCases[Int(i % 12)] }
-      init(var index: Int) { index %= Letter.allCases.count; self = Letter.allCases[index] }
-      static let allCases: [Letter] = [C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B]
+      init(_ i: UInt8) { self = Pitch.allCases[Int(i % 12)] }
+      init(var index: Int) { index %= Pitch.allCases.count; self = Pitch.allCases[index] }
+      static let allCases: [Pitch] = [C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B]
     }
 
-    case Pitch(letter: Letter, octave: Int)
+    enum Octave: String, EnumerableType {
+      case NegativeOne = "-1", Zero = "0", One = "1", Two = "2", Three = "3",
+           Four = "4", Five = "5", Six = "6", Seven = "7", Eight = "8", Nine = "9"
+      static let allCases: [Octave] = [.NegativeOne, .Zero, .One, .Two, .Three, .Four, .Five, .Six, .Seven, .Eight, .Nine]
+
+      var intValue: Int { return Int(rawValue)! }
+    }
+
+    var pitch: Pitch
+    var octave: Octave
 
     /**
     Initialize from MIDI value from 0 ... 127
@@ -46,7 +55,7 @@ struct NoteAttributes {
     - parameter value: Int
     */
     init(var midi value: Byte) {
-      value %= 128; self = .Pitch(letter: Letter(value), octave: (Int(value) / 12) - 1)
+      value %= 128;  pitch = Pitch(value); octave = Octave(rawValue: "\((Int(value) / 12) - 1)") ?? .Four
     }
 
     /**
@@ -56,17 +65,17 @@ struct NoteAttributes {
     */
     init?(rawValue: String) {
       guard let match = (~/"^([A-G]♯?)((?:-1)|[0-9])$").firstMatch(rawValue),
-        rawLetter = match.captures[1]?.string,
-        letter = Letter(rawValue: rawLetter),
+        rawPitch = match.captures[1]?.string,
+        pitch = Pitch(rawValue: rawPitch),
         rawOctave = match.captures[2]?.string,
-        octave = Int(rawOctave) else { return nil }
+        octave = Octave(rawValue: rawOctave) else { return nil }
 
-      self = .Pitch(letter: letter, octave :octave)
+      self.pitch = pitch; self.octave = octave
     }
 
-    var rawValue: String { switch self { case let .Pitch(letter, octave): return "\(letter.rawValue)\(octave)" } }
+    var rawValue: String { return "\(pitch.rawValue)\(octave.rawValue)" }
 
-    var midi: Byte {  switch self { case let .Pitch(letter, octave): return UInt8((octave + 1) * 12 + letter.index) } }
+    var midi: Byte { return UInt8((octave.intValue + 1) * 12 + pitch.index) }
 
     static let allCases: [Note] = (0...127).map({Note(midi: $0)})
 
@@ -119,40 +128,39 @@ struct NoteAttributes {
   /// The duration of the played note
   var duration: Duration = .Eighth
 
-  /** Enumeration for musical dynamics */
+  /** Enumeration for musical dynamics 𝑚𝑝𝑚𝑓 */
   enum Velocity: String, EnumerableType, ImageAssetLiteralType, MIDIConvertible {
-    case Pianississimo, Pianissimo, Piano, MezzoPiano, MezzoForte, Forte, Fortissimo, Fortississimo
+    case 𝑝𝑝𝑝, 𝑝𝑝, 𝑝, 𝑚𝑝, 𝑚𝑓, 𝑓, 𝑓𝑓, 𝑓𝑓𝑓
 
     var midi: Byte {
       switch self {
-        case .Pianississimo: return 16
-        case .Pianissimo:    return 33
-        case .Piano:         return 49
-        case .MezzoPiano:    return 64
-        case .MezzoForte:    return 80
-        case .Forte:         return 96
-        case .Fortissimo:    return 112
-        case .Fortississimo: return 126
+        case .𝑝𝑝𝑝:	return 16
+        case .𝑝𝑝:		return 33
+        case .𝑝:		return 49
+        case .𝑚𝑝:		return 64
+        case .𝑚𝑓:		return 80
+        case .𝑓:			return 96
+        case .𝑓𝑓:		return 112
+        case .𝑓𝑓𝑓:		return 126
       }
     }
     init(midi value: Byte) {
       switch value {
-        case 0 ... 22:    self = .Pianississimo
-        case 23 ... 40:   self = .Pianissimo
-        case 41 ... 51:   self = .Piano
-        case 52 ... 70:   self = .MezzoPiano
-        case 71 ... 88:   self = .MezzoForte
-        case 81 ... 102:  self = .Forte
-        case 103 ... 119: self = .Fortissimo
-        default:          self = .Fortississimo
+        case 0 ... 22:    self = .𝑝𝑝𝑝
+        case 23 ... 40:   self = .𝑝𝑝
+        case 41 ... 51:   self = .𝑝
+        case 52 ... 70:   self = .𝑚𝑝
+        case 71 ... 88:   self = .𝑚𝑓
+        case 81 ... 102:  self = .𝑓
+        case 103 ... 119: self = .𝑓𝑓
+        default:          self = .𝑓𝑓𝑓
       }
     }
-    static let allCases: [Velocity] = [.Pianississimo, .Pianissimo, .Piano, .MezzoPiano, .MezzoForte, 
-                                       .Forte, .Fortissimo, .Fortississimo]
+    static let allCases: [Velocity] = [.𝑝𝑝𝑝, .𝑝𝑝, .𝑝, .𝑚𝑝, .𝑚𝑓, .𝑓, .𝑓𝑓, .𝑓𝑓𝑓]
   }
 
   /// The dynmamics for the note
-  var velocity: Velocity = .MezzoForte
+  var velocity: Velocity = .𝑚𝑓
 }
 
 // MARK: - ByteArrayConvertible
@@ -213,18 +221,7 @@ extension NoteAttributes.Duration: CustomDebugStringConvertible {
 }
 
 extension NoteAttributes.Velocity: CustomStringConvertible {
-  var description: String {
-    switch self {
-      case .Pianississimo: return "pianississimo"
-      case .Pianissimo:    return "pianissimo"
-      case .Piano:         return "piano"
-      case .MezzoPiano:    return "mezzo-piano"
-      case .MezzoForte:    return "mezzo-forte"
-      case .Forte:         return "forte"
-      case .Fortissimo:    return "fortissimo"
-      case .Fortississimo: return "fortississimo"
-    }
-  }
+  var description: String { return rawValue }
 }
 
 extension NoteAttributes.Velocity: CustomDebugStringConvertible {
