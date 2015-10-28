@@ -63,7 +63,16 @@ final class DocumentsViewController: UICollectionViewController {
     receptionist.logContext = LogManager.MIDIFileContext
     let queue = NSOperationQueue.mainQueue()
     receptionist.observe(MIDIDocumentManager.Notification.DidUpdateMetadataItems, from: MIDIDocumentManager.self, queue: queue) {
-      [weak self] in self?.didUpdateItems($0)
+      [weak self] _ in if self?.isViewLoaded() == true { self?.updateItems() }
+    }
+    receptionist.observe(MIDIDocumentManager.Notification.DidGatherMetadataItems, from: MIDIDocumentManager.self, queue: queue) {
+      [weak self] _ in if self?.isViewLoaded() == true { self?.updateItems() }
+    }
+    receptionist.observe(MIDIDocumentManager.Notification.DidCreateDocument, from: MIDIDocumentManager.self, queue: queue) {
+      [weak self] in
+      if self?.isViewLoaded() == true {
+        self?.updateItems($0.userInfo?[MIDIDocumentManager.Notification.Key.FilePath.rawValue] as? String)
+      }
     }
     receptionist.observe(SettingsManager.Notification.Name.iCloudStorageChanged, from: SettingsManager.self, queue: queue) {
       [weak self] in self?.iCloudStorageDidChange($0)
@@ -97,11 +106,7 @@ final class DocumentsViewController: UICollectionViewController {
 
   // MARK: - Document items
 
-  private var iCloudStorage = SettingsManager.iCloudStorage {
-    didSet {
-      collectionView?.reloadData()
-    }
-  }
+  private var iCloudStorage = SettingsManager.iCloudStorage { didSet { collectionView?.reloadData() } }
 
   private var iCloudItems: [NSMetadataItem] = []
   private var localItems: [LocalDocumentItem] = []
@@ -152,13 +157,6 @@ final class DocumentsViewController: UICollectionViewController {
   // MARK: - Notifications
 
   /**
-  didUpdateFileURLs:
-
-  - parameter notification: NSNotification
-  */
-  private func didUpdateItems(notification: NSNotification) { updateItems() }
-
-  /**
   iCloudStorageDidChange:
 
   - parameter notification: NSNotification
@@ -171,7 +169,9 @@ final class DocumentsViewController: UICollectionViewController {
   }
 
   /** updateItems */
-  private func updateItems() {
+  private func updateItems(newDocumentPath: String? = nil) {
+    // TODO: Add cell for newly created document
+    
     iCloudItems = MIDIDocumentManager.metadataItems
     do {
       localItems = try documentsDirectoryContents().filter({

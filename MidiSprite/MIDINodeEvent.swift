@@ -126,6 +126,6 @@ extension MIDINodeEvent.Data: CustomDebugStringConvertible {
   var debugDescription: String { var result = ""; dump(self, &result); return result }
 }
 
-extension MIDINodeEvent: CustomStringConvertible { var description: String { return data.description } }
+extension MIDINodeEvent: CustomStringConvertible { var description: String { return "\(time) \(data)" } }
 
 func ==(lhs: MIDINodeEvent.Data, rhs: MIDINodeEvent.Data) -> Bool { return lhs.bytes.elementsEqual(rhs.bytes) }

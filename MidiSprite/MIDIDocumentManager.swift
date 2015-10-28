@@ -11,19 +11,9 @@ import MoonKit
 
 final class MIDIDocumentManager {
 
-  enum Error: String, ErrorType {
-    case iCloudUnavailable
-  }
-
   private static var initialized = false
   private static let DefaultDocumentName = "AwesomeSauce"
   private(set) static var openingDocument = false
-
-  enum Notification: String, NotificationType, NotificationNameType {
-    case DidUpdateMetadataItems, DidChangeDocument
-    enum Key: String, NotificationKeyType { case Changed, Added, Removed }
-    var object: AnyObject? { return MIDIDocumentManager.self }
-  }
 
   /** refreshBookmark */
   static private func refreshBookmark() {
@@ -42,11 +32,7 @@ final class MIDIDocumentManager {
 
       guard oldValue != currentDocument else { return }
 
-      if let oldValue = oldValue {
-        observer.stopObserving(oldValue, forChangesTo: "fileURL")
-        oldValue.updateChangeCount(.Done)
-        oldValue.closeWithCompletionHandler(nil)
-      }
+      if let oldValue = oldValue { observer.stopObserving(oldValue, forChangesTo: "fileURL") }
 
       if let currentDocument = currentDocument {
         observer.observe(currentDocument, forChangesTo: "fileURL", queue: queue) {
@@ -62,15 +48,9 @@ final class MIDIDocumentManager {
   private static let queue: NSOperationQueue = {
     let queue = NSOperationQueue()
     queue.name = "com.moondeerstudios.perpetualgroove.documentmanager"
-    queue.maxConcurrentOperationCount = 1
+    queue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount
     return queue
   }()
-
-  /** enabledUpdates */
-  static func enabledUpdates() { metadataQuery.enableUpdates() }
-
-  /** disableUpdates */
-  static func disableUpdates() { metadataQuery.disableUpdates() }
 
   private static let metadataQuery: NSMetadataQuery = {
     let query = NSMetadataQuery()
@@ -83,18 +63,7 @@ final class MIDIDocumentManager {
     metadataQuery.disableUpdates()
     let results = metadataQuery.results as! [NSMetadataItem]
     metadataQuery.enableUpdates()
-    logDebug("metadata item count: \(results.count)")
     return results
-  }
-
-
-  /**
-  didFinishGatheringNotification:
-
-  - parameter notification: NSNotification
-  */
-  private static func didFinishGathering(notification: NSNotification) {
-    Notification.DidUpdateMetadataItems.post()
   }
 
   /**
@@ -103,8 +72,7 @@ final class MIDIDocumentManager {
   - parameter notification: NSNotification
   */
   private static func didRenameFile(notification: NSNotification) {
-    guard let currentDocument = currentDocument,
-              object = notification.object as? MIDIDocument where currentDocument == object else { return }
+    guard notification.object as? MIDIDocument == currentDocument else { return }
     refreshBookmark()
   }
 
@@ -117,7 +85,7 @@ final class MIDIDocumentManager {
     let changed = notification.userInfo?[NSMetadataQueryUpdateChangedItemsKey] as? [NSMetadataItem] ?? []
     let removed = notification.userInfo?[NSMetadataQueryUpdateRemovedItemsKey] as? [NSMetadataItem] ?? []
     let added   = notification.userInfo?[NSMetadataQueryUpdateAddedItemsKey]   as? [NSMetadataItem] ?? []
-    logDebug({
+    logVerbose({
       [changedCount = changed.count, removedCount = removed.count, addedCount = added.count] in
         guard changedCount > 0 || removedCount > 0 || addedCount > 0 else { return "no changes" }
         var results: [String] = []
@@ -156,7 +124,9 @@ final class MIDIDocumentManager {
       logDebug("creating a new document at path '\(fileURL.path!)'")
       let document = MIDIDocument(fileURL: fileURL)
       document.saveToURL(fileURL, forSaveOperation: .ForCreating, completionHandler: {
-        guard $0 else { return }; MIDIDocumentManager.openDocument(document)
+        guard $0 else { return }
+        Notification.DidCreateDocument.post(userInfo: [Notification.Key.FilePath: fileURL.path!])
+        MIDIDocumentManager.openDocument(document)
       })
     }
 
@@ -221,9 +191,7 @@ final class MIDIDocumentManager {
 
   - parameter url: NSURL
   */
-  static func openURL(url: NSURL) {
-    openDocument(MIDIDocument(fileURL: url))
-  }
+  static func openURL(url: NSURL) { openDocument(MIDIDocument(fileURL: url)) }
 
   /**
   openItem:
@@ -259,16 +227,34 @@ final class MIDIDocumentManager {
     let queue = MIDIDocumentManager.queue
 
     let receptionist = NotificationReceptionist()
-    receptionist.observe(NSMetadataQueryDidFinishGatheringNotification,
-                    from: metadataQuery,
-                   queue: queue,
-                callback: MIDIDocumentManager.didFinishGathering)
-    receptionist.observe(NSMetadataQueryDidUpdateNotification,
-                    from: metadataQuery,
-                   queue: queue,
-                callback: MIDIDocumentManager.didUpdate)
-    metadataQuery.startQuery()
     receptionist.logContext = LogManager.MIDIFileContext
+
+    receptionist.observe(NSMetadataQueryDidFinishGatheringNotification, from: metadataQuery, queue: queue) {
+      _ in Notification.DidGatherMetadataItems.post()
+    }
+
+    receptionist.observe(NSMetadataQueryDidUpdateNotification, from: metadataQuery, queue: queue) {
+      let changed = $0.userInfo?[NSMetadataQueryUpdateChangedItemsKey] as? [NSMetadataItem] ?? []
+      let removed = $0.userInfo?[NSMetadataQueryUpdateRemovedItemsKey] as? [NSMetadataItem] ?? []
+      let added   = $0.userInfo?[NSMetadataQueryUpdateAddedItemsKey]   as? [NSMetadataItem] ?? []
+      logVerbose({
+        [changedCount = changed.count, removedCount = removed.count, addedCount = added.count] in
+        guard changedCount > 0 || removedCount > 0 || addedCount > 0 else { return "no changes" }
+        var results: [String] = []
+        if changedCount > 0 { results.append("changed: \(changedCount)") }
+        if removedCount > 0 { results.append("removed: \(removedCount)") }
+        if addedCount > 0   { results.append("added: \(addedCount)") }
+        return "  ".join(results)
+        }()
+      )
+
+      Notification.DidUpdateMetadataItems.post(userInfo:
+        [Notification.Key.Changed: changed, Notification.Key.Removed: removed, Notification.Key.Added: added]
+      )
+    }
+
+    metadataQuery.startQuery()
+
     return receptionist
   }()
 
@@ -290,6 +276,26 @@ final class MIDIDocumentManager {
     }
     initialized = true
     logDebug("MIDIDocumentManager initialized")
+  }
+  
+}
+
+// MARK: - Error
+extension MIDIDocumentManager {
+
+  enum Error: String, ErrorType {
+    case iCloudUnavailable
+  }
+
+}
+
+// MARK: - Notification
+extension MIDIDocumentManager {
+
+  enum Notification: String, NotificationType, NotificationNameType {
+    case DidUpdateMetadataItems, DidChangeDocument, DidGatherMetadataItems, DidCreateDocument
+    enum Key: String, NotificationKeyType { case Changed, Added, Removed, FilePath }
+    var object: AnyObject? { return MIDIDocumentManager.self }
   }
   
 }

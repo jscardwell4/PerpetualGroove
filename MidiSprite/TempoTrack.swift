@@ -82,7 +82,7 @@ final class TempoTrack: Track {
   - parameter time: CABarBeatTime
   */
   private func dispatchEventsForTime(time: CABarBeatTime) {
-    guard let events = eventMap.eventsForTime(time) else { return }
+    guard let events = eventContainer[time] else { return }
     for event in events where event is MetaEvent {
       switch (event as! MetaEvent).data {
         case let .Tempo(bpm): tempo = bpm; Sequencer.setTempo(bpm, automated: true)
@@ -121,21 +121,15 @@ final class TempoTrack: Track {
       if let event = $0 as? MetaEvent, case .TimeSignature = event.data { return true } else { return false }
     }).count == 0
     {
-      eventContainer.insert(TempoTrack.timeSignatureEvent, atIndex: 0)
+      eventContainer.append(TempoTrack.timeSignatureEvent)
     }
 
     if eventContainer.events.filter({
       if let event = $0 as? MetaEvent, case .Tempo = event.data { return true } else { return false }
     }).count == 0
     {
-      eventContainer.insert(TempoTrack.tempoEvent, atIndex: 1)
+      eventContainer.append(TempoTrack.tempoEvent)
     }
-
-    eventMap.insert(eventContainer.events)
-
-    Sequencer.time.registerCallback({ [weak self] in self?.dispatchEventsForTime($0) },
-                           forTimes: eventMap.times,
-                          forObject: self)
   }
 
 }

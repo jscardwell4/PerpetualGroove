@@ -16,35 +16,33 @@ public class LogFormatter: NSObject, DDLogFormatter {
   public typealias LogFlag = LogManager.LogFlag
 
   public var context: LogContext = .Default
-  public var prompt: String = ""
+  public var prompt = ""
+  public var afterPrefix = ""
+  public var afterLocation = "\n"
+  public var afterObjectName = " "
+  public var afterMessage = "\n"
 
   public var options: Options = []
 
   public struct Options: OptionSetType, CustomStringConvertible {
     public let rawValue: Int
     public init(rawValue: Int) { self.rawValue = rawValue }
-    public static let IncludeLogLevel         = Options(rawValue: 0b0000_0000_0000_0001)
-    public static let IncludeContext          = Options(rawValue: 0b0000_0000_0000_0010)
-    public static let IncludeTimeStamp        = Options(rawValue: 0b0000_0000_0000_0100)
-    public static let AddReturnAfterPrefix    = Options(rawValue: 0b0000_0000_0000_1000)
-    public static let AddReturnAfterObject    = Options(rawValue: 0b0000_0000_0001_0000)
-    public static let AddReturnAfterMessage   = Options(rawValue: 0b0000_0000_0010_0000)
-    public static let AddReturnAfterSEL       = Options(rawValue: 0b0000_0000_0100_0000)
-    public static let CollapseTrailingReturns = Options(rawValue: 0b0000_0000_1000_0000)
-    public static let IndentMessageBody       = Options(rawValue: 0b0000_0001_0000_0000)
-    public static let IncludeLocation         = Options(rawValue: 0b0000_0010_0000_0000)
-    public static let UseFileInsteadOfSEL     = Options(rawValue: 0b0000_0100_0000_0000)
-    public static let IncludeObjectName       = Options(rawValue: 0b0000_1000_0000_0000)
-    public static let IncludePrompt           = Options(rawValue: 0b0001_0000_0000_0000)
-    public static let EnableColor             = Options(rawValue: 0b0010_0000_0000_0000)
+    public static let IncludeLogLevel         = Options(rawValue: 0b0000_0000_0001)
+    public static let IncludeContext          = Options(rawValue: 0b0000_0000_0010)
+    public static let IncludeTimeStamp        = Options(rawValue: 0b0000_0000_0100)
+    public static let CollapseTrailingReturns = Options(rawValue: 0b0000_0000_1000)
+    public static let IndentMessageBody       = Options(rawValue: 0b0000_0001_0000)
+    public static let IncludeLocation         = Options(rawValue: 0b0000_0010_0000)
+    public static let UseFileInsteadOfSEL     = Options(rawValue: 0b0000_0100_0000)
+    public static let IncludeObjectName       = Options(rawValue: 0b0000_1000_0000)
+    public static let IncludePrompt           = Options(rawValue: 0b0001_0000_0000)
+    public static let EnableColor             = Options(rawValue: 0b0010_0000_0000)
 
     public static let taggingOptions: Options = [
       .IncludeContext, 
       .IncludeTimeStamp, 
       .IncludeLocation,
-      .IncludeObjectName,
-      .AddReturnAfterSEL, 
-      .AddReturnAfterMessage
+      .IncludeObjectName
     ]
 
     public var description: String {
@@ -53,10 +51,6 @@ public class LogFormatter: NSObject, DDLogFormatter {
       if self ∋ .IncludeLogLevel         { flagStrings.append("IncludeLogLevel")         }
       if self ∋ .IncludeContext          { flagStrings.append("IncludeContext")          }
       if self ∋ .IncludeTimeStamp        { flagStrings.append("IncludeTimeStamp")        }
-      if self ∋ .AddReturnAfterPrefix    { flagStrings.append("AddReturnAfterPrefix")    }
-      if self ∋ .AddReturnAfterObject    { flagStrings.append("AddReturnAfterObject")    }
-      if self ∋ .AddReturnAfterMessage   { flagStrings.append("AddReturnAfterMessage")   }
-      if self ∋ .AddReturnAfterSEL       { flagStrings.append("AddReturnAfterSEL")       }
       if self ∋ .CollapseTrailingReturns { flagStrings.append("CollapseTrailingReturns") }
       if self ∋ .IndentMessageBody       { flagStrings.append("IndentMessageBody")       }
       if self ∋ .IncludeLocation         { flagStrings.append("IncludeLocation")         }
@@ -178,11 +172,15 @@ public class LogFormatter: NSObject, DDLogFormatter {
       case let (n, f?, nil):                                      selString = "«\(n)» \(f)"
       default:                                                    selString = ""
     }
-    return (useColor ? ColorLog.wrapColor(selString, 171, 101, 38) : selString)
+    return (useColor ? ColorLog.wrapColor(selString, 171, 101, 38) : selString) + afterLocation
   }
 
   /**
-  formattedLogMessageForMessage:
+  Formats the log message like so:
+   
+  \<*prompt*>__(__<*context*>__)____[__<*flag*><*timestamp*>__]__ <*after-prefix*> &nbsp;<*location*>
+   <*after-location*> __«__<*object*>__»__ <*message*><*after-message*>
+
 
   - parameter logMessage: DDLogMessage
 
@@ -196,20 +194,15 @@ public class LogFormatter: NSObject, DDLogFormatter {
 
     let (objectName, className, contextName) = namesFromTag(msg.tag)
 
-    if options ∋ .IncludePrompt                          { result += prompt                                             }
-    if options ∋ .IncludeContext && contextName != nil   { result += "(\(contextName!))"                                }
-    if options ∋ .IncludeLogLevel                        { result += "[\(msg.flag)"                                     }
-    if options ∋ .IncludeTimeStamp                       { result += stringFromTimestamp(msg.timestamp)                 }
-    if options ∋ .IncludeLogLevel                        { result += "] " + newline(options ∋ .AddReturnAfterPrefix)    }
-    if options ∋ .IncludeLocation                        { result += space()
-                                                           result += location(msg, className)
-                                                           result += newline(options ∋ .AddReturnAfterSEL)              }
-    if options ∋ .IncludeObjectName && objectName != nil { result += space()
-                                                           result += "\u{00AB}\(objectName!)\u{00BB}  "
-                                                           result += newline(options ∋ .AddReturnAfterObject)           }
-    if let m = msg.message where !m.isEmpty              { result += options ∋ .IndentMessageBody ? m.indentedBy(4) : m }
-    if options ∋ .AddReturnAfterMessage                  { result += "\n\n"                                             }
-    if options ∋ .CollapseTrailingReturns                { result.subInPlace(~/"[\\n]+$", "")                           }
+    if options ∋ .IncludePrompt { result += prompt }
+    if options ∋ .IncludeContext && contextName != nil { result += "(\(contextName!))" }
+    if options ∋ .IncludeLogLevel { result += "[\(msg.flag)" }
+    if options ∋ .IncludeTimeStamp { result += stringFromTimestamp(msg.timestamp) }
+    if options ∋ .IncludeLogLevel { result += "] \(afterPrefix)" }
+    if options ∋ .IncludeLocation { result += "\(space())\(location(msg, className))" }
+    if options ∋ .IncludeObjectName && objectName != nil { result += "\(space())«\(objectName!)»\(afterObjectName)" }
+    if let m = msg.message where !m.isEmpty { result += "\(options ∋ .IndentMessageBody ? m.indentedBy(4) : m)\(afterMessage)" }
+    if options ∋ .CollapseTrailingReturns { result.subInPlace(~/"[\\n]+$", "") }
 
     return result
   }

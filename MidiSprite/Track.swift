@@ -18,8 +18,7 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
       Notification.DidUpdateEvents.post(object: self)
     }
   }
-  var eventMap = MIDIEventMap()
-
+  
   var endOfTrack: CABarBeatTime { return eventContainer.endOfTrackEvent.time ?? Sequencer.time.time }
 
   var name: String { get { return eventContainer.trackName } set { eventContainer.trackName = newValue } }
@@ -39,8 +38,9 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
 
   var description: String {
     return "\n".join(
-      "events:\n\(eventContainer.description.indentedBy(1, useTabs: true))",
-      "map:\n\(eventMap.description.indentedBy(1, useTabs: true))"
+      "name: \(name)",
+      "recording: \(recording)",
+      "events:\n\(eventContainer.description.indentedBy(1, useTabs: true))"
     )
   }
 

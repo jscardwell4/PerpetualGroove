@@ -28,6 +28,25 @@ protocol MIDIEvent: CustomStringConvertible, CustomDebugStringConvertible {
 
 extension MIDIEvent {
   var debugDescription: String { var result = ""; dump(self, &result); return result }
-  var descriptionWithDelta: String { return "\(delta?.paddedDescription ?? (" " * 6)) \(description)" }
 }
 
+/** Wrapper for MIDI events so they can be compared */
+struct AnyMIDIEvent: Comparable {
+  private(set) var event: MIDIEvent
+
+  init(_ event: MIDIEvent) { self.event = event }
+  
+  var time: CABarBeatTime {
+    get { return event.time }
+    set { event.time = newValue }
+  }
+  var delta: VariableLengthQuantity? {
+    get { return event.delta }
+    set { event.delta = newValue }
+  }
+  var bytes: [Byte] { return event.bytes }
+
+}
+
+func ==(lhs: AnyMIDIEvent, rhs: AnyMIDIEvent) -> Bool { return lhs.bytes == rhs.bytes }
+func <(lhs: AnyMIDIEvent, rhs: AnyMIDIEvent) -> Bool { return lhs.time < rhs.time }

@@ -481,6 +481,7 @@
 		C217E47A19E83D8900B36983 /* MSButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MSButton.swift; sourceTree = "<group>"; };
 		C217E47D19E860DE00B36983 /* IntegerInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntegerInputView.swift; sourceTree = "<group>"; };
 		C21D7AE31AA60E3F000DE8A3 /* NSError+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSError+MoonKitAdditions.swift"; sourceTree = "<group>"; };
+		C21D86051BDF089D00C79153 /* RedBlackTree.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = RedBlackTree.playground; sourceTree = "<group>"; };
 		C21F931A19E4AA4700E9FF2D /* NSLayoutConstraint+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSLayoutConstraint+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C2204D9B1AE1A0670079B731 /* JSONIncludeDirective.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = JSONIncludeDirective.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		C22087FE1BB053C00010DC7B /* CocoaLumberjackSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CocoaLumberjackSwift.framework; path = "../../../../Library/Developer/Xcode/DerivedData/Build/Products/Debug-iphoneos/CocoaLumberjackSwift.framework"; sourceTree = "<group>"; };
@@ -1301,6 +1302,7 @@
 		C2CE884518138C4900555D63 = {
 			isa = PBXGroup;
 			children = (
+				C21D86051BDF089D00C79153 /* RedBlackTree.playground */,
 				C2E076A31B4EF7420063D057 /* WTF.playground */,
 				C211C2C01B45FD81004A24E4 /* InlinePickerView.playground */,
 				C2EEBA2B1B0961CE0041B1B1 /* Fields.playground */,

@@ -212,7 +212,7 @@ extension MetaEvent.Data: CustomDebugStringConvertible {
   var debugDescription: String { var result = ""; dump(self, &result); return result }
 }
 
-extension MetaEvent: CustomStringConvertible { var description: String { return data.description } }
+extension MetaEvent: CustomStringConvertible { var description: String { return "\(time) \(data)" } }
 
 extension MetaEvent: Equatable {}
 

@@ -130,9 +130,6 @@ final class InstrumentTrack: Track {
   /// The identifier parsed from a file awaiting the identifier of its generated node
   private var pendingID: Identifier?
 
-  /// The identifier for the node whose MIDI messages are eligible for event creation
-  private var recordableID: Identifier? { didSet { logDebug("recordableIdentifier = \(recordableID)") } }
-
   /// The set of `MIDINode` objects that have been added to the track
   private var nodes: OrderedSet<Weak<MIDINode>> = []
 
@@ -165,24 +162,18 @@ final class InstrumentTrack: Track {
     if let pendingIdentifier = pendingID {
       fileIDToNodeID[pendingIdentifier] = node.identifier
       self.pendingID = nil
-    }
+    } else {
 
-    if recordableID == nil { recordableID = node.identifier }
+      guard recording else { logDebug("not recording…skipping event creation"); return }
 
-    guard recording else { logDebug("not recording…skipping event creation"); return }
-
-    guard recordableID == node.identifier else {
-      logDebug("not recording node with identifier \(node.identifier)…skipping event creation")
-      return
-    }
-
-    eventQueue.addOperationWithBlock {
-      [time = Sequencer.time.time, unowned node, weak self] in
-      let event = MIDINodeEvent(.Add(identifier: node.identifier,
-                                     placement: node.initialSnapshot.placement,
-                                     attributes: node.note),
-                                time)
-      self?.eventContainer.append(event)
+      eventQueue.addOperationWithBlock {
+        [time = Sequencer.time.time, unowned node, weak self] in
+        let event = MIDINodeEvent(.Add(identifier: node.identifier,
+                                       placement: node.initialSnapshot.placement,
+                                       attributes: node.note),
+                                  time)
+        self?.eventContainer.append(event)
+      }
     }
   }
 
@@ -278,20 +269,6 @@ final class InstrumentTrack: Track {
   private var outPort = MIDIPortRef()
 
   /**
-  Reconstructs the `uintValue` of an `ObjectIdentifier` using packet data bytes 4 through 11
-
-  - parameter packet: MIDIPacket
-
-  - returns: UInt?
-  */
-  private func nodeIdentifierFromPacket(var packet: MIDIPacket) -> Identifier? {
-    guard packet.length == UInt16(sizeof(Identifier.self) + 3) else { return nil }
-    return Identifier(withUnsafePointer(&packet.data) {
-      UnsafeBufferPointer<Byte>(start: UnsafePointer<Byte>($0).advancedBy(3), count: sizeof(Identifier.self))
-    })
-  }
-
-  /**
   read:context:
 
   - parameter packetList: UnsafePointer<MIDIPacketList>
@@ -306,12 +283,10 @@ final class InstrumentTrack: Track {
     // Check if we are recording, otherwise skip event processing
     guard recording else { logDebug("not recording…skipping event creation"); return }
 
-    guard let recordableID = recordableID else { logDebug("no recordable identifier…skipping event creation"); return }
-
     eventQueue.addOperationWithBlock {
       [weak self, time = Sequencer.time.time] in
 
-      guard let packet = MIDINode.Packet(packetList: packetList) where packet.identifier == recordableID else { return }
+      guard let packet = MIDINode.Packet(packetList: packetList) else { return }
 
       let event: MIDIEvent?
       switch packet.status {
@@ -324,31 +299,12 @@ final class InstrumentTrack: Track {
   }
 
   /**
-  dispatchChannelEvent:
-
-  - parameter channelEvent: ChannelEvent
-  */
-  private func dispatchChannelEvent(channelEvent: ChannelEvent) {
-    var packetList = MIDIPacketList()
-    let packet = MIDIPacketListInit(&packetList)
-    let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
-    var data: [Byte] = [channelEvent.status.value, channelEvent.data1]
-    if let data2 = channelEvent.data2 { data.append(data2) }
-    let timeStamp = Sequencer.time.ticks
-    MIDIPacketListAdd(&packetList, size, packet, timeStamp, 3, data)
-    withUnsafePointer(&packetList) {
-      do { try MIDISend(outPort, instrument.endPoint, $0) ➤ "Failed to dispatch packet list to instrument" }
-      catch { logError(error) }
-    }
-  }
-
-  /**
   dispatchEventsForTime:
 
   - parameter time: CABarBeatTime
   */
   private func dispatchEventsForTime(time: CABarBeatTime) {
-    guard let events = eventMap.eventsForTime(time) where Sequencer.playing else { return }
+    guard let events = eventContainer[time] where Sequencer.playing else { return }
     for event in events {
       switch event {
         case let nodeEvent as MIDINodeEvent:
@@ -401,11 +357,7 @@ final class InstrumentTrack: Track {
   init(trackChunk: MIDIFileTrackChunk) throws {
     super.init()
 
-    guard let event = trackChunk.events.last as? MetaEvent, case .EndOfTrack = event.data else {
-      throw MIDIFileError(type: .MissingEvent, reason: "Missing end of track event")
-    }
-
-    eventContainer = MIDIEventContainer(events: trackChunk.events)
+    eventContainer.appendEvents(trackChunk.events)
 
     // Find the instrument event
     guard var instrumentName = eventContainer.instrumentName else {
@@ -440,12 +392,8 @@ final class InstrumentTrack: Track {
     instrument = instrumentMaybe
     eventQueue.name = "BUS \(instrument.bus)"
 
-    eventMap.insert(typecast(eventContainer.nodeEvents) ?? [])
-
-    eventMap.insert([eventContainer.endOfTrackEvent])
-
     Sequencer.time.registerCallback({ [weak self] in self?.dispatchEventsForTime($0) },
-                           forTimes: eventMap.times,
+                           forTimes: eventContainer.nodeEvents.map({$0.time}) + [eventContainer.endOfTrack],
                           forObject: self)
 
     initializeNotificationReceptionist()

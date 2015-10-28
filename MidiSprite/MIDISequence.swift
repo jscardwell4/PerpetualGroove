@@ -166,10 +166,10 @@ final class MIDISequence {
     guard instrumentTracks ∌ track else { return }
     track.color = TrackColor.allCases[(instrumentTracks.count) % TrackColor.allCases.count]
     instrumentTracks.append(track)
-    receptionist.observe(Track.Notification.DidUpdateEvents, from: track) {
+    receptionist.observe(Track.Notification.DidUpdateEvents, from: track, queue: NSOperationQueue.mainQueue()) {
       [weak self] _ in
       guard let weakself = self else { return }
-      
+      MoonKit.logDebug("posting 'DidUpdate'")
       Notification.DidUpdate.post(object: weakself)
     }
     Notification.DidAddTrack.post(object: self, userInfo: [Notification.Key.Track: track])

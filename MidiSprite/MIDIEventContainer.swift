@@ -10,11 +10,12 @@ import Foundation
 import MoonKit
 import struct AudioToolbox.CABarBeatTime
 
-struct MIDIEventContainer: CollectionType, MutableIndexable {
+struct MIDIEventContainer: SequenceType {
 
-  typealias Element = MIDIEvent
-  typealias SubSequence = ArraySlice<Element>
-  typealias Generator = AnyGenerator<Element>
+  struct Index {
+    let time: CABarBeatTime
+    let position: Int
+  }
 
   /** init */
   init() {}
@@ -22,54 +23,22 @@ struct MIDIEventContainer: CollectionType, MutableIndexable {
   /**
   initWithEvents:
 
-  - parameter events: Element
+  - parameter events: MIDIEvent
   */
-  init(events: [Element]) { self.init(); for event in events { append(event) } }
+  init(events: [MIDIEvent]) { self.init(); for event in events { append(event) } }
 
   /**
   generate
 
   - returns: Generator
   */
-  func generate() -> Generator { return anyGenerator(_events.generate()) }
-
-  let startIndex = 0
-  var endIndex: Int { return _events.endIndex + 2 }
-
-  var isEmpty: Bool { return false }
-
-  /**
-  subscript:
-
-  - parameter idx: Int
-
-  - returns: MIDIEvent
-  */
-  subscript(idx: Int) -> MIDIEvent {
-    get {
-      switch idx {
-        case 0:                                         return trackNameEvent
-        case (startIndex + 1 ..< _events.endIndex + 1): return _events[idx - 1]
-        case _events.endIndex + 1:                      return endOfTrackEvent
-        default:                                        fatalError("out of bounds: '\(idx)'")
-      }
-    }
-    set {
-      if !filterEvent(newValue) { _events[idx] = newValue }
-    }
-  }
-
-  /**
-  subscript:
-
-  - parameter range: Range<Int>
-
-  - returns: SubSequence
-  */
-  subscript(range: Range<Int>) -> SubSequence { return events[range] }
+  func generate() -> IndexingGenerator<[MIDIEvent]> { return events.generate() }
 
   /** validate */
-  mutating func validate() { guard let event = _events.last else { return }; endOfTrack = event.time }
+  mutating func validate() {
+    guard let maxTime = _events.keys.maxElement() else { return }
+    endOfTrack = maxTime
+  }
 
   var trackName: String {
     get {
@@ -87,6 +56,20 @@ struct MIDIEventContainer: CollectionType, MutableIndexable {
 
   private(set) var endOfTrackEvent: MetaEvent = MetaEvent(.EndOfTrack)
 
+  var endOfTrack: CABarBeatTime {
+    get { return endOfTrackEvent.time }
+    set { endOfTrackEvent.time = newValue }
+  }
+
+  private var _events: [CABarBeatTime:EventBag] = [:]
+
+  var events: [MIDIEvent] {
+    var result: [MIDIEvent] = [trackNameEvent as MIDIEvent]
+    for time in _events.keys.sort() { result.appendContentsOf(_events[time]!) }
+    result.append(endOfTrackEvent as MIDIEvent)
+    return result
+  }
+
   var instrumentName: String? {
     get {
       guard let event = instrumentEvent, case .Text(let text) = event.data else { return nil }
@@ -98,33 +81,49 @@ struct MIDIEventContainer: CollectionType, MutableIndexable {
     }
   }
 
-  private var instrumentEventIndex: Int? {
-    return _events.indexOf {
-      if let event = $0 as? MetaEvent, case .Text = event.data { return true }
-      else { return false }
+  private var instrumentEventIndex: Index? {
+    for (time, bag) in _events {
+      guard let position = bag.indexOf({
+        if let event = $0 as? MetaEvent, case .Text = event.data { return true }
+        else { return false }
+      }) else { continue }
+      return Index(time: time, position: position)
     }
+    return nil
   }
 
   private(set) var instrumentEvent: MetaEvent? {
     get {
-      guard let idx = instrumentEventIndex else { return nil }
-      return (_events[idx] as! MetaEvent)
+      guard let index = instrumentEventIndex else { return nil }
+      return _events[index.time]?[index.position] as? MetaEvent
     }
     set {
       switch (newValue as? MIDIEvent, instrumentEventIndex) {
-        case let (event?, idx?): _events[idx] = event
-        case let (event?, nil):  _events.insert(event, atIndex: 0)
-        case let (nil, idx?):    _events.removeAtIndex(idx)
-        default:                 break
+        case let (event?, index?):
+          _events[index.time]?[index.position] = event
+        case let (event?, nil):
+          var bag = _events[event.time] ?? EventBag(event.time)
+          bag.append(event)
+          _events[event.time] = bag
+        case let (nil, index?):
+          _events[index.time]?.events.removeAtIndex(index.position)
+        default:
+          break
       }
     }
   }
 
-  private var programEventIndex: Int? {
-    return _events.indexOf {
-      if let event = $0 as? ChannelEvent where event.status.type == .ProgramChange { return true }
-      else { return false }
+  private var programEventIndex: Index? {
+    for (time, bag) in _events {
+      guard let position = bag.indexOf({
+        if let event = $0 as? ChannelEvent where event.status.type == .ProgramChange {
+          return true
+        } else { return false }
+      })
+        else { continue }
+      return Index(time: time, position: position)
     }
+    return nil
   }
 
   var program: (channel: Byte, program: Byte)? {
@@ -141,27 +140,24 @@ struct MIDIEventContainer: CollectionType, MutableIndexable {
 
   private(set) var programEvent: ChannelEvent? {
     get {
-      guard let idx = programEventIndex else { return nil }
-      return (_events[idx] as! ChannelEvent)
+      guard let index = programEventIndex else { return nil }
+      return _events[index.time]?[index.position] as? ChannelEvent
     }
     set {
       switch (newValue as? MIDIEvent, programEventIndex) {
-        case let (event?, idx?): _events[idx] = event
-        case let (event?, nil):  _events.insert(event, atIndex: (instrumentEventIndex?.advancedBy(1) ?? 0))
-        case let (nil, idx?):    _events.removeAtIndex(idx)
-        default:                 break
+        case let (event?, index?):
+          _events[index.time]?[index.position] = event
+        case let (event?, nil):
+          var bag = _events[event.time] ?? EventBag(event.time)
+          bag.append(event)
+          _events[event.time] = bag
+        case let (nil, index?):
+          _events[index.time]?.events.removeAtIndex(index.position)
+        default:
+          break
       }
     }
   }
-
-  var endOfTrack: CABarBeatTime {
-    get { return endOfTrackEvent.time }
-    set { endOfTrackEvent.time = newValue }
-  }
-
-  private(set) var _events: [MIDIEvent] = []
-
-  var events: [MIDIEvent] { return [trackNameEvent as MIDIEvent] + _events + [endOfTrackEvent as MIDIEvent] }
 
   /**
   filterEvent:
@@ -183,43 +179,103 @@ struct MIDIEventContainer: CollectionType, MutableIndexable {
   }
 
   /**
-  Inserts the given event at relative index `i` (that is the index ignoring the 'track name' and 'end of track' 
-  events), unless the event gets filtered out into `trackNameEvent` or `endOfTrackEvent`
-
-  - parameter event: MIDIEvent
-  - parameter i: Int
-  */
-  mutating func insert(event: MIDIEvent, atIndex i: Int) {
-    if !filterEvent(event) { _events.insert(event, atIndex: i) }
-  }
-
-  /**
   append:
 
   - parameter event: MIDIEvent
   */
-  mutating func append(event: MIDIEvent) { if !filterEvent(event) { _events.append(event) } }
+  mutating func append(event: MIDIEvent) {
+    guard !filterEvent(event) else { return }
+    var bag = _events[event.time] ?? EventBag(event.time)
+    bag.append(event)
+    _events[event.time] = bag
+  }
+
+  /**
+  appendEvents:
+
+  - parameter events: S
+  */
+  mutating func appendEvents<S: SequenceType where S.Generator.Element == MIDIEvent>(events: S) {
+    for event in events { append(event) }
+  }
 
   var metaEvents: [MetaEvent] {
     var result: [MetaEvent] = []
-    for event in _events { if let event = event as? MetaEvent { result.append(event) } }
+    for event in events { if let event = event as? MetaEvent { result.append(event) } }
     return result
   }
 
   var channelEvents: [ChannelEvent] {
     var result: [ChannelEvent] = []
-    for event in _events { if let event = event as? ChannelEvent { result.append(event) } }
+    for event in events { if let event = event as? ChannelEvent { result.append(event) } }
     return result
   }
   
   var nodeEvents: [MIDINodeEvent] {
     var result: [MIDINodeEvent] = []
-    for event in _events { if let event = event as? MIDINodeEvent { result .append(event) } }
+    for event in events { if let event = event as? MIDINodeEvent { result .append(event) } }
     return result
   }
 
-  var count: Int { return _events.count + 2 }
+  var isEmpty: Bool { return _events.isEmpty }
+
+  subscript(time: CABarBeatTime) -> [MIDIEvent]? { return _events[time]?.events }
 }
+
+private extension MIDIEventContainer {
+
+  struct EventBag: Comparable, CollectionType, MutableCollectionType {
+    let time: CABarBeatTime
+    var events: [MIDIEvent] = []
+
+    var startIndex: Int { return events.startIndex }
+    var endIndex: Int { return events.endIndex }
+
+    /**
+    Create a new bag for the specified time.
+
+    - parameter time: CABarBeatTime
+    */
+    init(_ time: CABarBeatTime) { self.time = time }
+
+    /**
+    Create a generator over the bag's events
+
+    - returns: IndexingGenerator<[MIDIEvent]>
+    */
+    func generate() -> IndexingGenerator<[MIDIEvent]> { return events.generate() }
+
+    /**
+    Append a new event to the bag
+
+    - parameter event: MIDIEvent
+    */
+    mutating func append(event: MIDIEvent) { events.append(event) }
+
+    /**
+    Get or set the event at the specified position
+
+    - parameter position: Int
+
+    - returns: MIDIEvent
+    */
+    subscript(position: Int) -> MIDIEvent { get { return events[position] } set { events[position] = newValue } }
+
+    /**
+    Get or set the events in the specified range
+
+    - parameter bounds: Range<Int>
+
+    - returns: ArraySlice<MIDIEvent>
+    */
+    subscript(bounds: Range<Int>) -> ArraySlice<MIDIEvent> { get { return events[bounds] } set { events[bounds] = newValue } }
+  }
+
+}
+
+private func ==(lhs: MIDIEventContainer.EventBag, rhs: MIDIEventContainer.EventBag) -> Bool { return lhs.time == rhs.time }
+
+private func <(lhs: MIDIEventContainer.EventBag, rhs: MIDIEventContainer.EventBag) -> Bool { return lhs.time < rhs.time }
 
 extension MIDIEventContainer: CustomStringConvertible {
   var description: String { return "\n".join(events.map({$0.description})) }

@@ -97,6 +97,7 @@ final class LogManager: MoonKit.LogManager {
   static override func defaultFileLoggerForContext(context: LogContext, directory: NSURL) -> DDFileLogger {
     let logger = super.defaultFileLoggerForContext(context, directory: directory)
     logger.doNotReuseLogFiles = true
+    (logger.logFormatter as? LogFormatter)?.afterMessage = ""
     return logger
   }
 

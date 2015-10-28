@@ -26,8 +26,8 @@ final class MIDIDocument: UIDocument {
   - parameter notification: NSNotification
   */
   private func didChangeState(notification: NSNotification) {
-//    guard documentState ∋ .InConflict, let versions = NSFileVersion.unresolvedConflictVersionsOfItemAtURL(fileURL) else { return }
-//    logDebug("versions: \(versions)")
+    guard documentState ∋ .InConflict, let versions = NSFileVersion.unresolvedConflictVersionsOfItemAtURL(fileURL) else { return }
+    logDebug("versions: \(versions)")
     // TODO: resolve conflict
   }
 
@@ -68,7 +68,9 @@ final class MIDIDocument: UIDocument {
   - parameter typeName: String
   */
   override func contentsForType(typeName: String) throws -> AnyObject {
-    let bytes = sequence.file.bytes
+    let file = sequence.file
+    logDebug("saving file:\n\(file)")
+    let bytes = file.bytes
     return NSData(bytes: sequence.file.bytes, length: bytes.count)
   }
 
@@ -81,10 +83,6 @@ final class MIDIDocument: UIDocument {
   override func handleError(error: NSError, userInteractionPermitted: Bool) {
     logError(error)
     super.handleError(error, userInteractionPermitted: userInteractionPermitted)
-  }
-
-  deinit {
-    logDebug("deinit")
   }
 
   /**

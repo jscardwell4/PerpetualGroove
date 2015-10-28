@@ -144,7 +144,7 @@ extension ChannelEvent.Status: CustomStringConvertible { var description: String
 
 extension ChannelEvent: CustomStringConvertible {
   var description: String {
-    var result = "\(status) "
+    var result = "\(time) \(status) "
     switch status.type {
       case .NoteOn, .NoteOff:
         result += "\(NoteAttributes.Note(midi: data1)) \(NoteAttributes.Velocity(midi: data2!))"
