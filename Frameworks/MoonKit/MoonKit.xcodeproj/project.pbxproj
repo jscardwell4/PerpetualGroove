@@ -318,7 +318,6 @@
 		C28E509B1A143FDC00DF3206 /* MultiselectGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28E509A1A143FDC00DF3206 /* MultiselectGestureRecognizer.swift */; };
 		C28E98EE1AD196B800E78711 /* NSNumber+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28E98ED1AD196B800E78711 /* NSNumber+MoonKitAdditions.swift */; };
 		C29073911BD7021F0090399E /* ColorLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29073901BD7021F0090399E /* ColorLog.swift */; };
-		C29073931BD73F7F0090399E /* FileLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29073921BD73F7F0090399E /* FileLogger.swift */; };
 		C29073951BD740410090399E /* LogFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29073941BD740410090399E /* LogFileManager.swift */; };
 		C29073971BD747D70090399E /* LogFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29073961BD747D70090399E /* LogFormatter.swift */; };
 		C296498E1B00EBBF000C2D4A /* FormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C296498D1B00EBBF000C2D4A /* FormView.swift */; };
@@ -623,7 +622,6 @@
 		C28E509A1A143FDC00DF3206 /* MultiselectGestureRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiselectGestureRecognizer.swift; sourceTree = "<group>"; };
 		C28E98ED1AD196B800E78711 /* NSNumber+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSNumber+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C29073901BD7021F0090399E /* ColorLog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorLog.swift; sourceTree = "<group>"; };
-		C29073921BD73F7F0090399E /* FileLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileLogger.swift; sourceTree = "<group>"; };
 		C29073941BD740410090399E /* LogFileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogFileManager.swift; sourceTree = "<group>"; };
 		C29073961BD747D70090399E /* LogFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogFormatter.swift; sourceTree = "<group>"; };
 		C295E30319E2FBBB008309B8 /* ToggleImageSegmentedControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToggleImageSegmentedControl.swift; sourceTree = "<group>"; };
@@ -1635,7 +1633,6 @@
 				C269D1D41BD7E02D0084A7EE /* LogManager.swift */,
 				C216E73F19CBAE0A0052E98A /* LoggingFunctions.swift */,
 				C29073901BD7021F0090399E /* ColorLog.swift */,
-				C29073921BD73F7F0090399E /* FileLogger.swift */,
 				C29073941BD740410090399E /* LogFileManager.swift */,
 				C29073961BD747D70090399E /* LogFormatter.swift */,
 			);
@@ -2206,7 +2203,6 @@
 				C2618A721B7A43B500122EBA /* FormSwitchField.swift in Sources */,
 				C2304E0A1AEECE1C0090D889 /* LayerProxy.swift in Sources */,
 				C2358F7E19C78E0C00920F8D /* MSColorInputView.m in Sources */,
-				C29073931BD73F7F0090399E /* FileLogger.swift in Sources */,
 				C26254261B744A2500E81068 /* ControlNode.swift in Sources */,
 				C27372851A1FC0750079624D /* UIColor+MoonKitAdditions.swift in Sources */,
 				C2358F7F19C78E0C00920F8D /* MSMultiselectView.m in Sources */,

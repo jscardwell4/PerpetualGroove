@@ -22,19 +22,20 @@ final class DocumentsViewController: UICollectionViewController {
   private var widthConstraint: NSLayoutConstraint?
   private var heightConstraint: NSLayoutConstraint?
 
-  private let receptionist = NotificationReceptionist()
+  private let receptionist: NotificationReceptionist = {
+    let receptionist = NotificationReceptionist(callbackQueue: NSOperationQueue.mainQueue())
+    receptionist.logContext = LogManager.UIContext
+    return receptionist
+  }()
 
   @IBOutlet weak var documentsViewLayout: DocumentsViewLayout! { didSet { documentsViewLayout.controller = self } }
 
   private(set) var itemSize: CGSize = .zero {
     didSet {
       guard itemSize != oldValue else { return }
-      guard let layout = collectionView?.collectionViewLayout else { fatalError("wtf") }
-      assert(collectionViewLayout == layout)
       collectionView?.collectionViewLayout.invalidateLayout()
       let (w, h) = itemSize.unpack
-      let itemCount = CGFloat(items.count + 1)
-      collectionViewSize = CGSize(width: w, height: h * itemCount)
+      collectionViewSize = CGSize(width: w, height: h * CGFloat(items.count + 1))
     }
   }
 
@@ -58,51 +59,24 @@ final class DocumentsViewController: UICollectionViewController {
   // MARK: - Initialization
 
   /** setup */
-  private func setup() {
+  override func awakeFromNib() {
+    super.awakeFromNib()
     (collectionViewLayout as? DocumentsViewLayout)?.controller = self
-    receptionist.logContext = LogManager.MIDIFileContext
-    let queue = NSOperationQueue.mainQueue()
-    receptionist.observe(MIDIDocumentManager.Notification.DidUpdateMetadataItems, from: MIDIDocumentManager.self, queue: queue) {
-      [weak self] _ in if self?.isViewLoaded() == true { self?.updateItems() }
-    }
-    receptionist.observe(MIDIDocumentManager.Notification.DidGatherMetadataItems, from: MIDIDocumentManager.self, queue: queue) {
-      [weak self] _ in if self?.isViewLoaded() == true { self?.updateItems() }
-    }
-    receptionist.observe(MIDIDocumentManager.Notification.DidCreateDocument, from: MIDIDocumentManager.self, queue: queue) {
+    let callback: (NSNotification) -> Void = {[weak self] in self?.updateItems($0)}
+    receptionist.observe(MIDIDocumentManager.Notification.DidUpdateMetadataItems,
+                    from: MIDIDocumentManager.self,
+                callback: callback)
+    receptionist.observe(MIDIDocumentManager.Notification.DidCreateDocument,
+                   from: MIDIDocumentManager.self,
+               callback: callback)
+    receptionist.observe(SettingsManager.Notification.Name.iCloudStorageChanged, from: SettingsManager.self) {
       [weak self] in
-      if self?.isViewLoaded() == true {
-        self?.updateItems($0.userInfo?[MIDIDocumentManager.Notification.Key.FilePath.rawValue] as? String)
+      guard let value = ($0.userInfo?[SettingsManager.Notification.Key.NewValue.rawValue] as? NSNumber)?.boolValue else {
+        return
       }
-    }
-    receptionist.observe(SettingsManager.Notification.Name.iCloudStorageChanged, from: SettingsManager.self, queue: queue) {
-      [weak self] in self?.iCloudStorageDidChange($0)
+      self?.iCloudStorage = value
     }
   }
-
-  /**
-  init:
-
-  - parameter layout: UICollectionViewLayout
-  */
-  override init(collectionViewLayout layout: UICollectionViewLayout) { super.init(collectionViewLayout: layout); setup() }
-
-  /**
-  init:bundle:
-
-  - parameter nibNameOrNil: String?
-  - parameter nibBundleOrNil: NSBundle?
-  */
-  override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
-    super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-    setup()
-  }
-
-  /**
-  init:
-
-  - parameter aDecoder: NSCoder
-  */
-  required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder); setup() }
 
   // MARK: - Document items
 
@@ -111,7 +85,10 @@ final class DocumentsViewController: UICollectionViewController {
   private var iCloudItems: [NSMetadataItem] = []
   private var localItems: [LocalDocumentItem] = []
 
-  private var items: [DocumentItemType] { return iCloudStorage ? iCloudItems : localItems }
+  private var items: [DocumentItemType] {
+    let items: [DocumentItemType] = iCloudStorage ? iCloudItems : localItems
+    return items
+  }
 
   // MARK: - View lifecycle
 
@@ -128,7 +105,7 @@ final class DocumentsViewController: UICollectionViewController {
 
   - parameter animated: Bool
   */
-  override func viewWillAppear(animated: Bool) { updateItems() }
+//  override func viewWillAppear(animated: Bool) { updateItems() }
 
   /** updateViewConstraints */
   override func updateViewConstraints() {
@@ -146,7 +123,6 @@ final class DocumentsViewController: UICollectionViewController {
     heightConstraint = (collectionView.height => h --> Identifier(self, "Content", "Height")).constraint
     heightConstraint?.active = true
 
-
     super.updateViewConstraints()
   }
 
@@ -156,23 +132,12 @@ final class DocumentsViewController: UICollectionViewController {
 
   // MARK: - Notifications
 
-  /**
-  iCloudStorageDidChange:
-
-  - parameter notification: NSNotification
-  */
-  private func iCloudStorageDidChange(notification: NSNotification) {
-    guard let value = (notification.userInfo?[SettingsManager.Notification.Key.NewValue.rawValue] as? NSNumber)?.boolValue else {
-      return
-    }
-    iCloudStorage = value
-  }
-
   /** updateItems */
-  private func updateItems(newDocumentPath: String? = nil) {
+  private func updateItems(notification: NSNotification) {
     // TODO: Add cell for newly created document
-    
-    iCloudItems = MIDIDocumentManager.metadataItems
+    guard isViewLoaded() else { return }
+
+    iCloudItems = MIDIDocumentManager.metadataItems.array
     do {
       localItems = try documentsDirectoryContents().filter({
         guard let ext = $0.pathExtension else { return false}
@@ -273,8 +238,7 @@ final class DocumentsViewController: UICollectionViewController {
   */
   override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
     switch indexPath.section {
-      case 0: do { try MIDIDocumentManager.createNewDocument() }
-              catch { logError(error, message: "Unable to create new document") }
+      case 0: do { try MIDIDocumentManager.createNewDocument() } catch { logError(error) }
       default: MIDIDocumentManager.openItem(items[indexPath.row])
     }
     dismiss?()

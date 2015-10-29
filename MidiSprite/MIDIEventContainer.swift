@@ -12,10 +12,7 @@ import struct AudioToolbox.CABarBeatTime
 
 struct MIDIEventContainer: SequenceType {
 
-  struct Index {
-    let time: CABarBeatTime
-    let position: Int
-  }
+  struct Index { let time: CABarBeatTime; let position: Int }
 
   /** init */
   init() {}

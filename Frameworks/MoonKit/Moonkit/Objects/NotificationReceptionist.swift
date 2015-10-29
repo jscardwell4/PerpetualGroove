@@ -19,6 +19,18 @@ public final class NotificationReceptionist: NSObject, Loggable {
 
   private var infos: Set<ObservationInfo> = []
 
+  public var callbackQueue: NSOperationQueue?
+
+  /**
+  init:
+
+  - parameter queue: NSOperationQueue? = nil
+  */
+  public init(callbackQueue queue: NSOperationQueue? = nil) {
+    super.init()
+    callbackQueue = queue
+  }
+
   private struct ObservationInfo: Hashable, CustomStringConvertible {
     let name: String
     let object: Weak<AnyObject>
@@ -31,8 +43,6 @@ public final class NotificationReceptionist: NSObject, Loggable {
   }
 
   public var count: Int { return infos.count }
-
-  private var notificationCenter: NSNotificationCenter { return NSNotificationCenter.defaultCenter() }
 
   /**
   observe:from:queue:callback:
@@ -47,7 +57,7 @@ public final class NotificationReceptionist: NSObject, Loggable {
                                     queue: NSOperationQueue? = nil,
                                  callback: (NSNotification) -> Void)
   {
-    observe(notification.name.notificationName, from: object, queue: queue, callback: callback)
+    observe(notification.name.notificationName, from: object, queue: queue ?? callbackQueue, callback: callback)
   }
 
   /**
@@ -66,7 +76,8 @@ public final class NotificationReceptionist: NSObject, Loggable {
     let info = ObservationInfo(
       name: name,
       object: Weak(object),
-      observer: notificationCenter.addObserverForName(name, object: object, queue: queue, usingBlock: callback)
+      observer: NSNotificationCenter.defaultCenter()
+                  .addObserverForName(name, object: object, queue: queue ?? callbackQueue, usingBlock: callback)
     )
     infos.insert(info)
     logVerbose("observing \(info)")
@@ -155,7 +166,7 @@ public final class NotificationReceptionist: NSObject, Loggable {
   - parameter info: ObservationInfo
   */
   private func stopObserving(info: ObservationInfo) {
-    notificationCenter.removeObserver(info.observer, name: info.name, object: info.object.reference)
+    NSNotificationCenter.defaultCenter().removeObserver(info.observer, name: info.name, object: info.object.reference)
     logVerbose("stopped observing \(info)")
   }
 

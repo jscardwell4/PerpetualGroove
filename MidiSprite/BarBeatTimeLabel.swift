@@ -109,7 +109,11 @@ final class BarBeatTimeLabel: UIView {
   }
   private var barBeatTimeCallbackKey: String { return String(ObjectIdentifier(self).uintValue) }
 
-  private let receptionist = NotificationReceptionist()
+  private let receptionist: NotificationReceptionist = {
+    let receptionist = NotificationReceptionist(callbackQueue: NSOperationQueue.mainQueue())
+    receptionist.logContext = LogManager.UIContext
+    return receptionist
+  }()
 
   private var characterSize: CGSize {
     return "0123456789:.".characters.reduce(.zero) {[attributes = [NSFontAttributeName: font]] in
@@ -130,54 +134,22 @@ final class BarBeatTimeLabel: UIView {
     return CGSize(width: characterSize.width * 9, height: characterSize.height).integralSize
   }
 
-  /**
-  didUpdateBarBeatTime:
-
-  - parameter time: CABarBeatTime
-  */
-  private func didUpdateBarBeatTime(time: CABarBeatTime) { currentTime = time }
-
-  /**
-  didJog:
-
-  - parameter notification: NSNotification
-  */
-  private func didJog(notification: NSNotification) {
-    guard let time = (notification.userInfo?[Sequencer.Notification.Key.JogTime.rawValue] as? NSValue)?.barBeatTimeValue else {
-      logError("notification does not contain a time for updating")
-      return
-    }
-    didUpdateBarBeatTime(time)
-  }
-
-  /**
-  didReset:
-
-  - parameter notification: NSNotification
-  */
-  private func didReset(notification: NSNotification) {
-    guard let time = (notification.userInfo?[Sequencer.Notification.Key.Time.rawValue] as? NSValue)?.barBeatTimeValue else {
-      logError("notification does not contain a time for updating")
-      return
-    }
-    didUpdateBarBeatTime(time)
-  }
-
   /** setup */
   private func setup() {
 
     calculateFrames()
 
     #if !TARGET_INTERFACE_BUILDER
-      Sequencer.time.registerCallback({ [weak self] in self?.didUpdateBarBeatTime($0) },
+      Sequencer.time.registerCallback({ [weak self] in self?.currentTime = $0 },
                          predicate: {_ in true},
                             forKey: barBeatTimeCallbackKey)
 
-      let queue = NSOperationQueue.mainQueue()
-      let object = Sequencer.self
-      receptionist.logContext = LogManager.SceneContext
-      receptionist.observe(Sequencer.Notification.DidJog, from: object, queue: queue) { [weak self] in self?.didJog($0) }
-      receptionist.observe(Sequencer.Notification.DidReset, from: object, queue: queue) { [weak self] in self?.didReset($0) }
+      receptionist.observe(Sequencer.Notification.DidJog, from: Sequencer.self) {
+        [weak self] in guard let time = $0.jogTime else { return }; self?.currentTime = time
+      }
+      receptionist.observe(Sequencer.Notification.DidReset, from: Sequencer.self) {
+        [weak self] in guard let time = $0.time else { return }; self?.currentTime = time
+      }
     #endif
 
   }
@@ -196,4 +168,13 @@ final class BarBeatTimeLabel: UIView {
   */
   required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder); setup() }
 
+}
+
+private extension NSNotification {
+  var jogTime: CABarBeatTime? {
+    return (userInfo?[Sequencer.Notification.Key.JogTime.rawValue] as? NSValue)?.barBeatTimeValue
+  }
+  var time: CABarBeatTime? {
+    return (userInfo?[Sequencer.Notification.Key.Time.rawValue] as? NSValue)?.barBeatTimeValue
+  }
 }

@@ -444,7 +444,7 @@ final class MIDIPlayerViewController: UIViewController {
       guard isViewLoaded() && state != oldValue else { return }
       guard state ∌ [.Playing, .Paused] else { fatalError("State invalid: cannot be both playing and paused") }
 
-      logVerbose("didSet…old state: \(oldValue); new state: \(state)")
+      logDebug("didSet…old state: \(oldValue); new state: \(state)")
 
       let modifiedState = state ⊻ oldValue
 

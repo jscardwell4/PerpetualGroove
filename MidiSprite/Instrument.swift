@@ -48,7 +48,9 @@ final class Instrument: Equatable {
 
   - parameter preset: Preset
   */
-  func loadPreset(preset: Preset) throws { try loadSoundSet(soundSet, program: preset.program, bank: preset.bank) }
+  func loadPreset(preset: Preset) throws {
+    try loadSoundSet(soundSet, program: preset.program, bank: preset.bank)
+  }
 
   var volume: Float { get { return node.volume } set { node.volume = (0 ... 1).clampValue(newValue)  } }
   var pan:    Float { get { return node.pan    } set { node.pan    = (-1 ... 1).clampValue(newValue) } }

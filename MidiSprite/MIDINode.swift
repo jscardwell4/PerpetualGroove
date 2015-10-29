@@ -141,9 +141,9 @@ final class MIDINode: SKSpriteNode {
   // MARK: - Listening for Sequencer notifications
 
   private let receptionist: NotificationReceptionist = {
-    let r = NotificationReceptionist()
-    r.logContext = LogManager.SceneContext
-    return r
+    let receptionist = NotificationReceptionist(callbackQueue: NSOperationQueue.mainQueue())
+    receptionist.logContext = LogManager.SceneContext
+    return receptionist
   }()
 
   /**
@@ -269,19 +269,14 @@ final class MIDINode: SKSpriteNode {
     let image = UIImage(named: "ball")!
     super.init(texture: SKTexture(image: image), color: track.color.value, size: image.size * 0.75)
 
-    let queue = NSOperationQueue.mainQueue()
     let object = Sequencer.self
     typealias Notification = Sequencer.Notification
 
-    receptionist.observe(Notification.DidBeginJogging, from: object, queue: queue) {
-      [weak self] in self?.didBeginJogging($0)
-    }
-    receptionist.observe(Notification.DidJog, from: object, queue: queue) { [weak self] in self?.didJog($0) }
-    receptionist.observe(Notification.DidEndJogging, from: object, queue: queue) {
-      [weak self] in self?.didEndJogging($0)
-    }
-    receptionist.observe(Notification.DidStart, from: object, queue: queue) { [weak self] in self?.didStart($0) }
-    receptionist.observe(Notification.DidPause, from: object, queue: queue) { [weak self] in self?.didPause($0) }
+    receptionist.observe(Notification.DidBeginJogging, from: object) { [weak self] in self?.didBeginJogging($0) }
+    receptionist.observe(Notification.DidJog, from: object) { [weak self] in self?.didJog($0) }
+    receptionist.observe(Notification.DidEndJogging, from: object) { [weak self] in self?.didEndJogging($0) }
+    receptionist.observe(Notification.DidStart, from: object) { [weak self] in self?.didStart($0) }
+    receptionist.observe(Notification.DidPause, from: object) { [weak self] in self?.didPause($0) }
 
     try MIDIClientCreateWithBlock(name, &client, nil) ➤ "Failed to create midi client"
     try MIDISourceCreate(client, "\(name)", &endPoint) ➤ "Failed to create end point for node \(name)"

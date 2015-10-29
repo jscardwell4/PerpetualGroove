@@ -12,18 +12,55 @@ import typealias AudioUnit.AudioUnitElement
 
 final class MixerViewController: UICollectionViewController {
 
-  private var receptionist: NotificationReceptionist?
+  private let receptionist: NotificationReceptionist = {
+    let receptionist = NotificationReceptionist(callbackQueue: NSOperationQueue.mainQueue())
+    receptionist.logContext = LogManager.SequencerContext
+    return receptionist
+  }()
 
   private var widthConstraint: NSLayoutConstraint?
   private var heightConstraint: NSLayoutConstraint?
+
+  private weak var sequence: MIDISequence? {
+    didSet {
+      if let idx = sequence?.currentTrackIndex { selectTrackAtIndex(idx) }
+      if let oldSequence = oldValue { stopObservingSequence(oldSequence) }
+      if let sequence = sequence { observeSequence(sequence) }
+      collectionView?.reloadData()
+    }
+  }
+
+  /**
+  observeSequence:
+
+  - parameter sequence: MIDISequence
+  */
+  private func observeSequence(sequence: MIDISequence) {
+    receptionist.observe(MIDISequence.Notification.DidChangeTrack, from: sequence) {
+      [weak self] _ in
+        guard let idx = self?.sequence?.currentTrack?.index else { return }
+        self?.selectTrackAtIndex(idx)
+    }
+    receptionist.observe(MIDISequence.Notification.DidAddTrack,    from: sequence) { [weak self] in self?.updateTracks($0) }
+    receptionist.observe(MIDISequence.Notification.DidRemoveTrack, from: sequence) { [weak self] in self?.updateTracks($0) }
+  }
+
+  /**
+  stopObservingSequence:
+
+  - parameter sequence: MIDISequence
+  */
+  private func stopObservingSequence(sequence: MIDISequence) {
+    receptionist.stopObserving(MIDISequence.Notification.DidChangeTrack, from: sequence)
+    receptionist.stopObserving(MIDISequence.Notification.DidAddTrack,    from: sequence)
+    receptionist.stopObserving(MIDISequence.Notification.DidRemoveTrack, from: sequence)
+  }
 
   private enum Section: Int { case Master, Instruments, Add }
 
   /** addTrack */
   @IBAction func addTrack() {
-    guard let sequence = Sequencer.sequence else { logWarning("Cannot add a track without a sequence"); return }
-    let instrument = Sequencer.instrumentWithCurrentSettings()
-    do { try sequence.newTrackWithInstrument(instrument) }
+    do { try sequence?.newTrackWithInstrument(Sequencer.instrumentWithCurrentSettings()) }
     catch { logError(error, message: "Failed to add new track") }
   }
 
@@ -35,8 +72,7 @@ final class MixerViewController: UICollectionViewController {
   - returns: NSIndexPath?
   */
   private func indexPathForSender(sender: UIView) -> NSIndexPath? {
-    guard let collectionView = collectionView else { return nil }
-    return collectionView.indexPathForItemAtPoint(collectionView.convertPoint(sender.center, fromView: sender.superview))
+    return collectionView?.indexPathForItemAtPoint(collectionView!.convertPoint(sender.center, fromView: sender.superview))
   }
 
   /**
@@ -44,9 +80,17 @@ final class MixerViewController: UICollectionViewController {
 
   - parameter sender: ImageButtonView
   */
-  @IBAction func selectItem(sender: ImageButtonView) {
-    guard let indexPath = indexPathForSender(sender) where indexPath.section == 1 else { return }
-    Sequencer.sequence?.currentTrack = Sequencer.sequence?.instrumentTracks[indexPath.item]
+  @IBAction func selectItem(sender: ImageButtonView) { sequence?.currentTrackIndex = indexPathForSender(sender)?.item }
+
+  /**
+  selectTrackAtIndex:
+
+  - parameter index: Int
+  */
+  private func selectTrackAtIndex(index: Int, animated: Bool = false) {
+    guard collectionView?.numberOfItemsInSection(1) > index else { return }
+    let indexPath = NSIndexPath(forItem: index, inSection: 1)
+    collectionView?.selectItemAtIndexPath( indexPath, animated: animated, scrollPosition: .CenteredHorizontally)
   }
 
   enum ShiftDirection: String { case Left, Right }
@@ -58,19 +102,18 @@ final class MixerViewController: UICollectionViewController {
   - parameter direction: ShiftDirection
   */
   func shiftCell(cell: TrackCell, direction: ShiftDirection) {
-    guard let collectionView = collectionView else { return }
 
-    switch (collectionView.indexPathForCell(cell), direction) {
+    switch (collectionView?.indexPathForCell(cell), direction) {
 
       case let (indexPath?, .Left) where indexPath.section == 1 && indexPath.item > 0:
         let indexPath2 = NSIndexPath(forItem: indexPath.item - 1, inSection: 1)
-        collectionView.moveItemAtIndexPath(indexPath, toIndexPath: indexPath2)
-        Sequencer.sequence?.exchangeInstrumentTrackAtIndex(indexPath.item, withTrackAtIndex: indexPath2.item)
+        collectionView!.moveItemAtIndexPath(indexPath, toIndexPath: indexPath2)
+        sequence?.exchangeInstrumentTrackAtIndex(indexPath.item, withTrackAtIndex: indexPath2.item)
 
-      case let (indexPath?, .Right) where indexPath.section == 1 && indexPath.item < collectionView.numberOfItemsInSection(1) - 1:
+      case let (indexPath?, .Right) where indexPath.section == 1 && indexPath.item < collectionView!.numberOfItemsInSection(1) - 1:
         let indexPath2 = NSIndexPath(forItem: indexPath.item + 1, inSection: 1)
-        collectionView.moveItemAtIndexPath(indexPath, toIndexPath: indexPath2)
-        Sequencer.sequence?.exchangeInstrumentTrackAtIndex(indexPath.item, withTrackAtIndex: indexPath2.item)
+        collectionView!.moveItemAtIndexPath(indexPath, toIndexPath: indexPath2)
+        sequence?.exchangeInstrumentTrackAtIndex(indexPath.item, withTrackAtIndex: indexPath2.item)
 
       default:
         break
@@ -85,9 +128,8 @@ final class MixerViewController: UICollectionViewController {
   */
   @IBAction func deleteItem(sender: UIView) {
     guard let indexPath = indexPathForSender(sender) where indexPath.section == 1 else { return }
-
     if SettingsManager.confirmDeleteTrack { logWarning("delete confirmation not yet implemented for tracks") }
-    Sequencer.sequence?.removeTrack(Sequencer.sequence!.instrumentTracks[indexPath.item])
+    sequence?.removeTrackAtIndex(indexPath.item)
   }
 
   /** viewDidLoad */
@@ -97,9 +139,14 @@ final class MixerViewController: UICollectionViewController {
     collectionView?.translatesAutoresizingMaskIntoConstraints = false
     collectionView?.allowsSelection = true
     collectionView?.clipsToBounds = false
+  }
 
-    guard receptionist == nil else { return }
-    receptionist = generateNotificationReceptionist()
+  /** awakeFromNib */
+  override func awakeFromNib() {
+    super.awakeFromNib()
+    receptionist.observe(MIDIDocumentManager.Notification.DidChangeDocument, from: MIDIDocumentManager.self) {
+      [weak self] _ in self?.sequence = MIDIDocumentManager.currentDocument?.sequence
+    }
   }
 
   /**
@@ -107,80 +154,12 @@ final class MixerViewController: UICollectionViewController {
 
   - parameter animated: Bool
   */
-  override func viewWillAppear(animated: Bool) {
-    super.viewWillAppear(animated)
-    if let idx = Sequencer.sequence?.currentTrackIndex {
-      collectionView?.selectItemAtIndexPath(NSIndexPath(forItem: idx, inSection: 1),
-                                   animated: false,
-                             scrollPosition: .CenteredHorizontally)
-    }
-  }
-
-  /**
-  generateNotificationReceptionist
-
-  - returns: NotificationReceptionist
-  */
-  private func generateNotificationReceptionist() -> NotificationReceptionist {
-    let receptionist = NotificationReceptionist()
-    receptionist.logContext = LogManager.SequencerContext
-
-    let queue = NSOperationQueue.mainQueue()
-
-    receptionist.observe(MIDIDocumentManager.Notification.DidChangeDocument, from: MIDIDocumentManager.self, queue: queue) {
-      [weak self] in self?.documentChanged($0)
-    }
-
-    guard let sequence = Sequencer.sequence else { return receptionist }
-
-    receptionist.observe(MIDISequence.Notification.DidChangeTrack, from: sequence, queue: queue) { 
-      [weak self] in self?.trackChanged($0) 
-    }
-    receptionist.observe(MIDISequence.Notification.DidAddTrack,    from: sequence, queue: queue) { 
-      [weak self] in self?.updateTracks($0) 
-    }
-    receptionist.observe(MIDISequence.Notification.DidRemoveTrack, from: sequence, queue: queue) { 
-      [weak self] in self?.updateTracks($0) 
-    }
-
-    return receptionist
-  }
-
-  /**
-  currentDocumentDidChange:
-
-  - parameter notification: NSNotification
-  */
-  private func documentChanged(notification: NSNotification) {
-    receptionist = generateNotificationReceptionist()
-    collectionView?.reloadData()
-    if let currentTrackIndex = Sequencer.sequence?.currentTrack?.index {
-      collectionView?.selectItemAtIndexPath(NSIndexPath(forItem: currentTrackIndex, inSection: 1),
-                                   animated: true,
-                             scrollPosition: .CenteredHorizontally)
-    }
-  }
-
-  /**
-  trackChanged:
-
-  - parameter notification: NSNotification
-  */
-  private func trackChanged(notification: NSNotification) {
-
-    if let newTrack = notification.userInfo?[MIDISequence.Notification.Key.Track.rawValue] as? InstrumentTrack,
-      idx = Sequencer.sequence?.instrumentTracks.indexOf(newTrack)
-    {
-      collectionView?.selectItemAtIndexPath(NSIndexPath(forItem: idx, inSection: 1),
-                                   animated: true,
-                             scrollPosition: .CenteredHorizontally)
-    }
-  }
+  override func viewWillAppear(animated: Bool) { super.viewWillAppear(animated); sequence = MIDIDocumentManager.currentDocument?.sequence }
 
   /** updateTracks */
   func updateTracks(notification: NSNotification) {
     guard let cellCount = collectionView?.numberOfItemsInSection(Section.Instruments.rawValue),
-              trackCount = Sequencer.sequence?.instrumentTracks.count where cellCount != trackCount else { return }
+              trackCount = sequence?.instrumentTracks.count where cellCount != trackCount else { return }
 
     let (w, h) = cellSize.unpack
     widthConstraint?.constant = w
@@ -212,10 +191,9 @@ final class MixerViewController: UICollectionViewController {
   }
 
   private var cellSize: CGSize {
-    guard let sequence = Sequencer.sequence,
+    guard let trackCount = sequence?.instrumentTracks.count,
               size = (collectionViewLayout as? MixerLayout)?.itemSize else { return .zero }
-    let itemCount = sequence.instrumentTracks.count + 2
-    return CGSize(width: CGFloat(Int(size.width) * itemCount), height: size.height)
+    return CGSize(width: CGFloat(Int(size.width) * (trackCount + 2)), height: size.height)
   }
 
   // MARK: UICollectionViewDataSource
@@ -238,7 +216,7 @@ final class MixerViewController: UICollectionViewController {
   - returns: Int
   */
   override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return section == Section.Instruments.rawValue ? Sequencer.sequence?.instrumentTracks.count ?? 0 : 1
+    return section == Section.Instruments.rawValue ? sequence?.instrumentTracks.count ?? 0 : 1
   }
 
   /**
@@ -261,7 +239,7 @@ final class MixerViewController: UICollectionViewController {
         cell = collectionView.dequeueReusableCellWithReuseIdentifier("AddTrackCell", forIndexPath: indexPath)
       default:
         cell = collectionView.dequeueReusableCellWithReuseIdentifier(TrackCell.Identifier, forIndexPath: indexPath)
-        (cell as? TrackCell)?.track = Sequencer.sequence?.instrumentTracks[indexPath.item]
+        (cell as? TrackCell)?.track = sequence?.instrumentTracks[indexPath.item]
     }
     
     return cell
@@ -288,7 +266,7 @@ final class MixerViewController: UICollectionViewController {
   - parameter indexPath: NSIndexPath
   */
   override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-    Sequencer.sequence?.currentTrack = Sequencer.sequence?.instrumentTracks[indexPath.item]
+    sequence?.currentTrackIndex = indexPath.item
   }
 
 }

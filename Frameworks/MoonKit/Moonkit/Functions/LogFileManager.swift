@@ -11,7 +11,7 @@ import Lumberjack
 
 public class LogFileManager: DDLogFileManagerDefault {
 
-  public private(set) var currentLogFile: String?
+//  public private(set) var currentLogFile: String?
   public var logsDirectoryURL: NSURL
 
   public var fileNamePrefix: String?
@@ -66,32 +66,47 @@ public class LogFileManager: DDLogFileManagerDefault {
   */
   public override func didRollAndArchiveLogFile(logFilePath: String!) {}
 
-  /**
-  createNewLogFile
+//  /**
+//  createNewLogFile
+//
+//  - returns: String!
+//  */
+//  public override func createNewLogFile() -> String! {
+//    let dateFormatter = NSDateFormatter()
+//    dateFormatter.dateFormat = "M/d/yy H:mm:ss.SSS"
+//    var fileName = "\(dateFormatter.stringFromDate(NSDate())).log"
+//    var url = logsDirectoryURL
+//    if let prefix = fileNamePrefix {
+//      fileName = "\(prefix)-\(fileName)"
+//    } else if let lastPathComponent = url.lastPathComponent where lastPathComponent != "Logs" {
+//      fileName = "\(lastPathComponent)-\(fileName)"
+//    }
+//    url += fileName
+//    let manager = NSFileManager.defaultManager()
+//    var error: NSError?
+//    if !url.checkResourceIsReachableAndReturnError(&error) {
+//      if let error = error { logError(error) }
+//      logVerbose("creating new log file: '\(url.path!)'")
+//      manager.createFileAtPath(url.path!, contents: nil, attributes: nil)
+//      _ = try? deleteOldLogFiles()
+//      currentLogFile = url.path
+//    }
+//    return currentLogFile
+//  }
 
-  - returns: String!
-  */
-  public override func createNewLogFile() -> String! {
+  static let dateFormatter: NSDateFormatter = {
     let dateFormatter = NSDateFormatter()
     dateFormatter.dateFormat = "M/d/yy H:mm:ss.SSS"
-    var fileName = "\(dateFormatter.stringFromDate(NSDate())).log"
-    var url = logsDirectoryURL
-    if let prefix = fileNamePrefix {
-      fileName = "\(prefix)-\(fileName)"
-    } else if let lastPathComponent = url.lastPathComponent where lastPathComponent != "Logs" {
-      fileName = "\(lastPathComponent)-\(fileName)"
-    }
-    url += fileName
-    let manager = NSFileManager.defaultManager()
-    var error: NSError?
-    if !url.checkResourceIsReachableAndReturnError(&error) {
-      if let error = error { logError(error) }
-      logVerbose("creating new log file: '\(url.path!)'")
-      manager.createFileAtPath(url.path!, contents: nil, attributes: nil)
-      _ = try? deleteOldLogFiles()
-      currentLogFile = url.path
-    }
-    return currentLogFile
+    dateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+    dateFormatter.timeZone = NSTimeZone.localTimeZone()
+    return dateFormatter
+  }()
+
+  public override var newLogFileName: String {
+    var result = "\(NSProcessInfo.processInfo().processName)"
+    if let prefix = fileNamePrefix { result += "-\(prefix)" }
+    result += "\(LogFileManager.dateFormatter.stringFromDate(NSDate()))"
+    return result
   }
 
   /**

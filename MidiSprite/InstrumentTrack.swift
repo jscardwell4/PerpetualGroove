@@ -48,19 +48,21 @@ final class InstrumentTrack: Track {
 
   // MARK: - Listening for Sequencer and sequence notifications
 
-  private let receptionist = NotificationReceptionist()
+  private let receptionist: NotificationReceptionist = {
+    let receptionist = NotificationReceptionist(callbackQueue: NSOperationQueue.mainQueue())
+    receptionist.logContext = LogManager.SequencerContext
+    return receptionist
+  }()
 
   /** initializeNotificationReceptionist */
   private func initializeNotificationReceptionist() {
     guard receptionist.count == 0 else { return }
-    receptionist.logContext = LogManager.SequencerContext
-    let queue = NSOperationQueue.mainQueue()
 
-    receptionist.observe(Sequencer.Notification.DidReset, from: Sequencer.self, queue: queue) {
+    receptionist.observe(Sequencer.Notification.DidReset, from: Sequencer.self) {
       [weak self] _ in self?.resetNodes()
     }
 
-    receptionist.observe(MIDISequence.Notification.SoloCountDidChange, from: Sequencer.sequence, queue: queue) {
+    receptionist.observe(MIDISequence.Notification.SoloCountDidChange, from: Sequencer.sequence) {
       [weak self] in
 
       guard let state = self?.state,
@@ -72,7 +74,7 @@ final class InstrumentTrack: Track {
       else if state ∌ .Soloing && state ∋ .InclusiveMute && newCount == 0 { self?.state ⊻= .InclusiveMute }
     }
 
-    receptionist.observe(Sequencer.Notification.DidJog, from: Sequencer.self, queue: queue) {
+    receptionist.observe(Sequencer.Notification.DidJog, from: Sequencer.self) {
       [weak self] in
 
       guard let state = self?.state where state ∋ .TrackEnded else { return }
@@ -92,10 +94,10 @@ final class InstrumentTrack: Track {
   // MARK: - MIDI file related properties and methods
 
   /** validateEvents */
-  override func validateEvents() {
-    eventContainer.instrumentName = "instrument:\(instrument.soundSet.url.lastPathComponent!)"
-    eventContainer.program = (instrument.channel, instrument.program)
-    super.validateEvents()
+  override func validateEvents(inout container: MIDIEventContainer) {
+    container.instrumentName = "instrument:\(instrument.soundSet.url.lastPathComponent!)"
+    container.program = (instrument.channel, instrument.program)
+    super.validateEvents(&container)
   }
 
   // MARK: - Track properties
@@ -105,7 +107,10 @@ final class InstrumentTrack: Track {
   var color: TrackColor = .White
 
   override var name: String {
-    get { return super.name.isEmpty ? instrument.preset.name : super.name }
+    get {
+      if super.name.isEmpty { super.name = instrument.preset.name }
+      return super.name
+    }
     set { super.name = newValue }
   }
 
@@ -121,11 +126,15 @@ final class InstrumentTrack: Track {
 
   private var _volume: Float = 1
   var volume: Float { get { return instrument.volume } set { instrument.volume = newValue } }
+
   var pan: Float { get { return instrument.pan } set { instrument.pan = newValue } }
 
   // MARK: - Managing MIDI nodes
 
   typealias Identifier = MIDINode.Identifier
+
+  /// Whether new events have been created and addd to the track
+  private var modified = false
 
   /// The identifier parsed from a file awaiting the identifier of its generated node
   private var pendingID: Identifier?
@@ -142,6 +151,11 @@ final class InstrumentTrack: Track {
     nodes.removeAll()
     fileIDToNodeID.removeAll()
     logDebug("nodes reset")
+    if modified {
+      logDebug("posting 'DidUpdateEvents'")
+      Track.Notification.DidUpdateEvents.post(object: self)
+      modified = false
+    }
   }
 
   /**
@@ -172,7 +186,8 @@ final class InstrumentTrack: Track {
                                        placement: node.initialSnapshot.placement,
                                        attributes: node.note),
                                   time)
-        self?.eventContainer.append(event)
+        self?.addEvent(event)
+        self?.modified = true
       }
     }
   }
@@ -186,7 +201,7 @@ final class InstrumentTrack: Track {
   - parameter texture: MIDINode.TextureType
   */
   private func addNodeWithIdentifier(identifier: Identifier, placement: Placement, attributes: NoteAttributes) {
-    logDebug("adding node with identifier \(identifier), placement \(placement), attributes \(attributes)")
+    logDebug("placing node with identifier \(identifier), placement \(placement), attributes \(attributes)")
 
     // Make sure a node hasn't already been place for this identifier
     guard fileIDToNodeID[identifier] == nil else { return }
@@ -245,7 +260,7 @@ final class InstrumentTrack: Track {
     guard recording else { logDebug("not recording…skipping event creation"); return }
     eventQueue.addOperationWithBlock {
       [time = Sequencer.time.time, weak self] in
-      self?.eventContainer.append(MIDINodeEvent(.Remove(identifier: identifier), time))
+      self?.addEvent(MIDINodeEvent(.Remove(identifier: identifier), time))
     }
   }
 
@@ -294,7 +309,7 @@ final class InstrumentTrack: Track {
         case 8:  event = ChannelEvent(.NoteOff, packet.channel, packet.note, packet.velocity, time)
         default: event = nil
       }
-      if event != nil { self?.eventContainer.append(event!) }
+      if event != nil { self?.addEvent(event!) }
     }
   }
 
@@ -304,7 +319,7 @@ final class InstrumentTrack: Track {
   - parameter time: CABarBeatTime
   */
   private func dispatchEventsForTime(time: CABarBeatTime) {
-    guard let events = eventContainer[time] where Sequencer.playing else { return }
+    guard let events = eventsForTime(time) where Sequencer.playing else { return }
     for event in events {
       switch event {
         case let nodeEvent as MIDINodeEvent:
@@ -357,10 +372,10 @@ final class InstrumentTrack: Track {
   init(trackChunk: MIDIFileTrackChunk) throws {
     super.init()
 
-    eventContainer.appendEvents(trackChunk.events)
+    addEvents(trackChunk.events)
 
     // Find the instrument event
-    guard var instrumentName = eventContainer.instrumentName else {
+    guard var instrumentName = instrumentName else {
       throw MIDIFileError(type: .FileStructurallyUnsound, reason: "Instrument event must be a text event")
     }
 
@@ -378,7 +393,7 @@ final class InstrumentTrack: Track {
     }
 
     // Find the program change event
-    guard let programTuple = eventContainer.program else {
+    guard let programTuple = self.program else {
       throw MIDIFileError(type: .MissingEvent, reason: "Missing program change event")
     }
 
@@ -393,7 +408,7 @@ final class InstrumentTrack: Track {
     eventQueue.name = "BUS \(instrument.bus)"
 
     Sequencer.time.registerCallback({ [weak self] in self?.dispatchEventsForTime($0) },
-                           forTimes: eventContainer.nodeEvents.map({$0.time}) + [eventContainer.endOfTrack],
+                           forTimes: nodeEvents.map({$0.time}) + [endOfTrack],
                           forObject: self)
 
     initializeNotificationReceptionist()
@@ -401,11 +416,11 @@ final class InstrumentTrack: Track {
   }
 
   deinit {
-    MoonKit.logDebug("")
+    logDebug("")
   }
 
   override var description: String {
-    return "\n".join( "name: \(name)", "instrument: \(instrument)", "color: \(color)", super.description )
+    return "\n".join( "instrument: \(instrument)", "color: \(color)", super.description )
   }
 }
 

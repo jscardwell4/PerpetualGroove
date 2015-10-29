@@ -15,10 +15,11 @@ final class LogManager: MoonKit.LogManager {
 
   private static var initialized = false
 
-  static let MIDIFileContext  = LogContext(rawValue: 0b0000_0010_0000)// ∪ .Console
-  static let SF2FileContext   = LogContext(rawValue: 0b0000_0100_0000)// ∪ .Console
-  static let SequencerContext = LogContext(rawValue: 0b0000_1000_0000)// ∪ .Console
-  static let SceneContext     = LogContext(rawValue: 0b0001_0000_0000)// ∪ .Console
+  static let MIDIFileContext  = LogContext(rawValue: 0b0000_0010_0000) ∪ .Console
+  static let SF2FileContext   = LogContext(rawValue: 0b0000_0100_0000) ∪ .Console
+  static let SequencerContext = LogContext(rawValue: 0b0000_1000_0000) ∪ .Console
+  static let SceneContext     = LogContext(rawValue: 0b0001_0000_0000) ∪ .Console
+  static let UIContext        = LogContext(rawValue: 0b0010_0000_0000) ∪ .Console
 
   /** initialize */
   static func initialize() {
@@ -36,7 +37,6 @@ final class LogManager: MoonKit.LogManager {
     VariableLengthQuantity.defaultLogContext  = MIDIFileContext
     MIDINodeEvent.defaultLogContext           = MIDIFileContext
     MIDIEventContainer.defaultLogContext      = MIDIFileContext
-    MIDIEventMap.defaultLogContext            = MIDIFileContext
 
     SF2File.defaultLogContext    = SF2FileContext
     Instrument.defaultLogContext = SF2FileContext
@@ -63,6 +63,17 @@ final class LogManager: MoonKit.LogManager {
     MIDINode.defaultLogContext            = SceneContext
     Placement.defaultLogContext           = SceneContext
 
+    MIDIPlayerViewController.defaultLogContext     = UIContext
+    PurgatoryViewController.defaultLogContext      = UIContext
+    DocumentsViewController.defaultLogContext      = UIContext
+    InstrumentViewController.defaultLogContext     = UIContext
+    NoteAttributesViewController.defaultLogContext = UIContext
+    DocumentsViewLayout.defaultLogContext          = UIContext
+    MixerLayout.defaultLogContext                  = UIContext
+    BarBeatTimeLabel.defaultLogContext             = UIContext
+    DocumentCell.defaultLogContext                 = UIContext
+    MixerCell.defaultLogContext                    = UIContext
+
     addConsoleLoggers()
 
     let defaultDirectory: NSURL
@@ -76,6 +87,7 @@ final class LogManager: MoonKit.LogManager {
     addDefaultFileLoggerForContext(SF2FileContext, directory: defaultDirectory + "SoundFont")
     addDefaultFileLoggerForContext(SequencerContext, directory: defaultDirectory + "Sequencer")
     addDefaultFileLoggerForContext(SceneContext, directory: defaultDirectory + "Scene")
+    addDefaultFileLoggerForContext(UIContext, directory: defaultDirectory + "UI")
 
     logLevel = .Debug
     logContext = .Console
@@ -133,7 +145,6 @@ extension VariableLengthQuantity: Loggable {}
 extension MIDINodeEvent: Loggable {}
 extension MIDINodeHistory: Loggable {}
 extension MIDIEventContainer: Loggable {}
-extension MIDIEventMap: Loggable {}
 
 extension MIDIPlayerScene: Loggable {}
 extension MIDIPlayerNode: Loggable {}
@@ -141,3 +152,14 @@ extension MIDIPlayerFieldNode: Loggable {}
 extension MIDINode: Loggable {}
 extension Placement: Loggable {}
 extension SKNode: Nameable {}
+
+extension MIDIPlayerViewController: Loggable {}
+extension PurgatoryViewController: Loggable {}
+extension DocumentsViewController: Loggable {}
+extension InstrumentViewController: Loggable {}
+extension NoteAttributesViewController: Loggable {}
+extension DocumentsViewLayout: Loggable {}
+extension MixerLayout: Loggable {}
+extension BarBeatTimeLabel: Loggable {}
+extension DocumentCell: Loggable {}
+extension MixerCell: Loggable {}

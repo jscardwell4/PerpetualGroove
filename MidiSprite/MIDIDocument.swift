@@ -56,9 +56,7 @@ final class MIDIDocument: UIDocument {
   */
   override func loadFromContents(contents: AnyObject, ofType typeName: String?) throws {
     guard let data = contents as? NSData else { throw Error.InvalidContentType }
-    let file = try MIDIFile(data: data)
-    logDebug("parsed data into midi file:\n\(file)")
-    sequence.file = file
+    sequence.file = try MIDIFile(data: data)
     logDebug("file loaded into sequence: \(sequence)")
   }
 
@@ -96,6 +94,19 @@ final class MIDIDocument: UIDocument {
     guard let url = fileURL.URLByDeletingLastPathComponent else { return }
     saveToURL(url + "\(baseName).midi", forSaveOperation: .ForCreating, completionHandler: nil)
 
+  }
+
+//  override func disableEditing() {}
+//  override func enableEditing() {}
+
+  /**
+  autosaveWithCompletionHandler:
+
+  - parameter completionHandler: ((Bool) -> Void
+  */
+  override func autosaveWithCompletionHandler(completionHandler: ((Bool) -> Void)?) {
+    logDebug("unsaved changes? \(hasUnsavedChanges())")
+    super.autosaveWithCompletionHandler(completionHandler)
   }
 
 }

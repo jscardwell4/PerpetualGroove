@@ -31,7 +31,6 @@ extension Placement: ByteArrayConvertible {
   */
   init(_ bytes: [Byte]) {
     let string = String(bytes)
-    MoonKit.logDebug("string from bytes: '\(string)'")
     let float = "-?[0-9]+(?:\\.[0-9]+)?"
     let value = "\\{\(float), \(float)\\}"
     guard let match = (~/"\\{(\(value)), (\(value))\\}").firstMatch(string, anchored: true),

@@ -24,7 +24,12 @@ final class PurgatorySegue: UIStoryboardSegue {
 
 final class PurgatoryViewController: UIViewController {
 
-  private var receptionist: NotificationReceptionist!
+  private let receptionist: NotificationReceptionist = {
+    let receptionist = NotificationReceptionist(callbackQueue: NSOperationQueue.mainQueue())
+    receptionist.logContext = LogManager.UIContext
+    return receptionist
+  }()
+
   @IBOutlet var backdrop: UIImageView!
 
   var backdropImage: UIImage?
@@ -33,15 +38,14 @@ final class PurgatoryViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    guard case .None = receptionist else { return }
-
-    receptionist = NotificationReceptionist()
-
-    let queue = NSOperationQueue.mainQueue()
-
-    receptionist.observe(NSUbiquityIdentityDidChangeNotification, queue: queue) { [weak self] in self?.identityDidChange($0) }
-    receptionist.observe(SettingsManager.Notification.Name.iCloudStorageChanged, from: SettingsManager.self, queue: queue) {
-      [weak self] in self?.iCloudStorageDidChange($0)
+    receptionist.observe(NSUbiquityIdentityDidChangeNotification) {
+      [weak self] _ in
+      guard NSFileManager.defaultManager().ubiquityIdentityToken != nil else { return }
+      self?.dismissViewControllerAnimated(true, completion: nil)
+    }
+    receptionist.observe(SettingsManager.Notification.Name.iCloudStorageChanged, from: SettingsManager.self) {
+      [weak self] _ in
+      if !SettingsManager.iCloudStorage { self?.dismissViewControllerAnimated(true, completion: nil) }
     }
 
     backdrop.image = backdropImage
@@ -61,25 +65,6 @@ final class PurgatoryViewController: UIViewController {
     guard NSFileManager.defaultManager().ubiquityIdentityToken == nil else {
       fatalError("This controller's view should only appear when ubiquityIdentityToken is nil")
     }
-  }
-
-  /**
-  iCloudStorageDidChange:
-
-  - parameter notification: NSNotification
-  */
-  private func iCloudStorageDidChange(notification: NSNotification) {
-    if !SettingsManager.iCloudStorage { dismissViewControllerAnimated(true, completion: nil) }
-  }
-
-  /**
-  identityDidChange:
-
-  - parameter notification: NSNotification
-  */
-  private func identityDidChange(notification: NSNotification) {
-    guard NSFileManager.defaultManager().ubiquityIdentityToken != nil else { return }
-    dismissViewControllerAnimated(true, completion: nil)
   }
 
 }

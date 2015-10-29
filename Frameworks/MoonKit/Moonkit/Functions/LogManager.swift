@@ -108,6 +108,7 @@ public class LogManager {
       var className: String?
       var objectName: String?
       var contextName: String?
+      var queueName: String?
 
       /**
       initWithObject:objectName:className:contextName:
@@ -117,10 +118,11 @@ public class LogManager {
       - parameter className: String? = nil
       - parameter contextName: String? = nil
       */
-      init(objectName: String? = nil, className: String? = nil, contextName: String? = nil) {
+      init(objectName: String? = nil, className: String? = nil, contextName: String? = nil, queueName: String? = nil) {
         self.objectName = objectName
         self.className = className
         self.contextName = contextName
+        self.queueName = queueName
       }
     }
     

@@ -59,12 +59,8 @@ final class MIDIDocumentManager {
     return query
   }()
 
-  static var metadataItems: [NSMetadataItem] {
-    metadataQuery.disableUpdates()
-    let results = metadataQuery.results as! [NSMetadataItem]
-    metadataQuery.enableUpdates()
-    return results
-  }
+  static private(set) var metadataItems: OrderedSet<NSMetadataItem> = []
+    { didSet { logDebug("metadataItems: \(", ".join(metadataItems.map({$0.displayName})))") } }
 
   /**
   didRenameFile:
@@ -74,30 +70,6 @@ final class MIDIDocumentManager {
   private static func didRenameFile(notification: NSNotification) {
     guard notification.object as? MIDIDocument == currentDocument else { return }
     refreshBookmark()
-  }
-
-  /**
-  didUpdate:
-
-  - parameter notification: NSNotification
-  */
-  private static func didUpdate(notification: NSNotification) {
-    let changed = notification.userInfo?[NSMetadataQueryUpdateChangedItemsKey] as? [NSMetadataItem] ?? []
-    let removed = notification.userInfo?[NSMetadataQueryUpdateRemovedItemsKey] as? [NSMetadataItem] ?? []
-    let added   = notification.userInfo?[NSMetadataQueryUpdateAddedItemsKey]   as? [NSMetadataItem] ?? []
-    logVerbose({
-      [changedCount = changed.count, removedCount = removed.count, addedCount = added.count] in
-        guard changedCount > 0 || removedCount > 0 || addedCount > 0 else { return "no changes" }
-        var results: [String] = []
-        if changedCount > 0 { results.append("changed: \(changedCount)") }
-        if removedCount > 0 { results.append("removed: \(removedCount)") }
-        if addedCount > 0   { results.append("added: \(addedCount)") }
-        return "  ".join(results)
-      }()
-    )
-    Notification.DidUpdateMetadataItems.post(userInfo: [Notification.Key.Changed: changed,
-                                                        Notification.Key.Removed: removed,
-                                                        Notification.Key.Added: added])
   }
 
   /** createNewFile */
@@ -224,33 +196,68 @@ final class MIDIDocumentManager {
 
   private static let receptionist: NotificationReceptionist = {
     let metadataQuery = MIDIDocumentManager.metadataQuery
-    let queue = MIDIDocumentManager.queue
 
-    let receptionist = NotificationReceptionist()
+    let receptionist = NotificationReceptionist(callbackQueue: MIDIDocumentManager.queue)
     receptionist.logContext = LogManager.MIDIFileContext
 
     receptionist.observe(NSMetadataQueryDidFinishGatheringNotification, from: metadataQuery, queue: queue) {
-      _ in Notification.DidGatherMetadataItems.post()
+      _ in
+
+      guard metadataItems.isEmpty else {
+        logWarning("received gathering notification but metadataItems is not empty")
+        return
+      }
+
+      metadataQuery.disableUpdates()
+      metadataItems = OrderedSet(metadataQuery.results as! [NSMetadataItem])
+      metadataQuery.enableUpdates()
+
+      guard metadataItems.count > 0 else { return }
+      Notification.DidUpdateMetadataItems.post(userInfo: [Notification.Key.Added:metadataItems.array])
     }
 
     receptionist.observe(NSMetadataQueryDidUpdateNotification, from: metadataQuery, queue: queue) {
-      let changed = $0.userInfo?[NSMetadataQueryUpdateChangedItemsKey] as? [NSMetadataItem] ?? []
-      let removed = $0.userInfo?[NSMetadataQueryUpdateRemovedItemsKey] as? [NSMetadataItem] ?? []
-      let added   = $0.userInfo?[NSMetadataQueryUpdateAddedItemsKey]   as? [NSMetadataItem] ?? []
-      logVerbose({
-        [changedCount = changed.count, removedCount = removed.count, addedCount = added.count] in
-        guard changedCount > 0 || removedCount > 0 || addedCount > 0 else { return "no changes" }
-        var results: [String] = []
-        if changedCount > 0 { results.append("changed: \(changedCount)") }
-        if removedCount > 0 { results.append("removed: \(removedCount)") }
-        if addedCount > 0   { results.append("added: \(addedCount)") }
-        return "  ".join(results)
-        }()
-      )
+      var userInfo: [Notification.Key:AnyObject?] = [:]
+      if let removed = $0.userInfo?[NSMetadataQueryUpdateRemovedItemsKey] as? [NSMetadataItem]
+        where !removed.isEmpty && removed ⊆ metadataItems
+      {
+        metadataItems ∖= removed
+        userInfo[Notification.Key.Removed] = removed
+      }
 
-      Notification.DidUpdateMetadataItems.post(userInfo:
-        [Notification.Key.Changed: changed, Notification.Key.Removed: removed, Notification.Key.Added: added]
+      if let changed = $0.userInfo?[NSMetadataQueryUpdateChangedItemsKey] as? [NSMetadataItem]
+        where !changed.isEmpty && changed ⊆ metadataItems
+      {
+        userInfo[Notification.Key.Changed] = changed
+      }
+
+      if let added = $0.userInfo?[NSMetadataQueryUpdateRemovedItemsKey] as? [NSMetadataItem]
+        where !added.isEmpty && added ⊈ metadataItems
+      {
+        metadataItems ∪= added
+        userInfo[Notification.Key.Added] = added
+      }
+
+      guard !userInfo.isEmpty else { return }
+
+      logDebug(
+        "".join(
+          "posting notification with user info:",
+          {
+            guard let removed = userInfo[Notification.Key.Removed] as? [NSMetadataItem] else { return "" }
+            return "\n\tremoved: \(", ".join(removed.map({$0.displayName})))"
+          }(),
+          {
+            guard let changed = userInfo[Notification.Key.Changed] as? [NSMetadataItem] else { return "" }
+            return "\n\tchanged: \(", ".join(changed.map({$0.displayName})))"
+          }(),
+          {
+            guard let added = userInfo[Notification.Key.Added] as? [NSMetadataItem] else { return "" }
+            return "\n\tadded: \(", ".join(added.map({$0.displayName})))"
+          }()
+        )
       )
+      Notification.DidUpdateMetadataItems.post(userInfo: userInfo)
     }
 
     metadataQuery.startQuery()
@@ -266,9 +273,7 @@ final class MIDIDocumentManager {
 
     if let data = SettingsManager.currentDocument {
       do {
-        var isStale: ObjCBool = false
-        let url = try NSURL(byResolvingBookmarkData: data, options: .WithoutUI, relativeToURL: nil, bookmarkDataIsStale: &isStale)
-        openURL(url)
+        openURL(try NSURL(byResolvingBookmarkData: data, options: .WithoutUI, relativeToURL: nil, bookmarkDataIsStale: nil))
       } catch {
         logError(error, message: "Failed to resolve bookmark data into a valid file url")
         SettingsManager.currentDocument = nil
@@ -293,7 +298,7 @@ extension MIDIDocumentManager {
 extension MIDIDocumentManager {
 
   enum Notification: String, NotificationType, NotificationNameType {
-    case DidUpdateMetadataItems, DidChangeDocument, DidGatherMetadataItems, DidCreateDocument
+    case DidUpdateMetadataItems, DidChangeDocument, DidCreateDocument
     enum Key: String, NotificationKeyType { case Changed, Added, Removed, FilePath }
     var object: AnyObject? { return MIDIDocumentManager.self }
   }

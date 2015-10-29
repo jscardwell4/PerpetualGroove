@@ -110,7 +110,11 @@ final class Sequencer {
     if recording && !automated { sequence?.insertTempoChange(tempo) }
   }
 
-  static var timeSignature: TimeSignature { return sequence?.timeSignature ?? .FourFour }
+  static var timeSignature: TimeSignature = .FourFour {
+    didSet {
+      sequence?.insertTimeSignature(timeSignature)
+    }
+  }
 
   /**
   setTimeSignature:automated:
@@ -124,7 +128,7 @@ final class Sequencer {
 
   // MARK: - Tracks
 
-  static private var state: State = [] { didSet { logDebug("new state \(state)") } }
+  static private var state: State = [] { didSet { logDebug("didSet…old state: \(oldValue); new state: \(state)") } }
   
   static private(set) var soundSets: [SoundSetType] = []
 

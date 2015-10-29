@@ -17,10 +17,9 @@ public class LogFormatter: NSObject, DDLogFormatter {
 
   public var context: LogContext = .Default
   public var prompt = ""
-  public var afterPrefix = ""
-  public var afterLocation = "\n"
-  public var afterObjectName = " "
-  public var afterMessage = "\n"
+  public var afterLocation = " "
+  public var afterObjectName = " ::: "
+  public var afterMessage = ""
 
   public var options: Options = []
 
@@ -37,12 +36,14 @@ public class LogFormatter: NSObject, DDLogFormatter {
     public static let IncludeObjectName       = Options(rawValue: 0b0000_1000_0000)
     public static let IncludePrompt           = Options(rawValue: 0b0001_0000_0000)
     public static let EnableColor             = Options(rawValue: 0b0010_0000_0000)
+    public static let IncludeQueueName        = Options(rawValue: 0b0100_0000_0000)
 
     public static let taggingOptions: Options = [
       .IncludeContext, 
       .IncludeTimeStamp, 
       .IncludeLocation,
-      .IncludeObjectName
+      .IncludeObjectName,
+      .IncludeQueueName
     ]
 
     public var description: String {
@@ -58,6 +59,7 @@ public class LogFormatter: NSObject, DDLogFormatter {
       if self ∋ .IncludeObjectName       { flagStrings.append("IncludeObjectName")       }
       if self ∋ .IncludePrompt           { flagStrings.append("IncludePrompt")           }
       if self ∋ .EnableColor             { flagStrings.append("EnableColor")             }
+      if self ∋ .IncludeQueueName        { flagStrings.append("IncludeQueueName")        }
       result += ", ".join(flagStrings)
       result += " }"
       return result
@@ -89,7 +91,7 @@ public class LogFormatter: NSObject, DDLogFormatter {
     return formattedLogMessageForMessage(logMessage)
   }
 
-  public enum Key: String, KeyType { case ClassName, ObjectName, Object, Context }
+  public enum Key: String, KeyType { case ClassName, ObjectName, Context, Queue }
 
   /**
   namesFromTag:
@@ -98,14 +100,14 @@ public class LogFormatter: NSObject, DDLogFormatter {
 
   - returns: (objectName: String?, className: String?, contextName: String?)
   */
-  private func namesFromTag(tag: [String:AnyObject]?) -> (String?, String?, String?) {
-    guard let tag = tag else { return (nil, nil, nil) }
-    let objectName: String?, className: String?, contextName: String?
-    let object  = tag[Key.Object.key]
-    objectName  = (tag[Key.ObjectName.key] as? String) ?? object?.shortDescription
-    contextName = tag[Key.Context.key] as? String
-    className   = (tag[Key.ClassName.key] as? String) ?? (object != nil ? "\(object!.dynamicType)" : nil)
-    return (objectName, className, contextName)
+  private func namesFromTag(tag: [String:AnyObject]?) -> (String?, String?, String?, String?) {
+    guard let tag = tag else { return (nil, nil, nil, nil) }
+    return (
+      tag[Key.ObjectName.key] as? String,
+      tag[Key.Context.key] as? String,
+      tag[Key.Context.key] as? String,
+      tag[Key.Queue.key] as? String
+    )
   }
 
   /**
@@ -115,13 +117,9 @@ public class LogFormatter: NSObject, DDLogFormatter {
 
   - returns: (String?, String?, String?)
   */
-  private func namesFromTag(tag: LogManager.LogMessage.Tag?) -> (String?, String?, String?) {
-    guard let tag = tag else { return (nil, nil, nil) }
-    let objectName: String?, className: String?, contextName: String?
-    objectName  = tag.objectName
-    contextName = tag.contextName
-    className   = tag.className
-    return (objectName, className, contextName)
+  private func namesFromTag(tag: LogManager.LogMessage.Tag?) -> (String?, String?, String?, String?) {
+    guard let tag = tag else { return (nil, nil, nil, nil) }
+    return (tag.objectName, tag.className, tag.contextName, (tag.queueName == NSOperationQueue.mainQueue().name ? "main" : tag.queueName))
   }
 
   /**
@@ -131,12 +129,19 @@ public class LogFormatter: NSObject, DDLogFormatter {
 
   - returns: (String?, String?, String?)
   */
-  private func namesFromTag(tag: AnyObject?) -> (String?, String?, String?) {
+  private func namesFromTag(tag: AnyObject?) -> (String?, String?, String?, String?) {
+    var names: (String?, String?, String?, String?)
     switch tag {
-      case let tag as LogManager.LogMessage.Tag: return namesFromTag(tag)
-      case let tag as [String:AnyObject]:        return namesFromTag(tag)
-      default:                                   return (nil, nil, nil)
+      case let tag as LogManager.LogMessage.Tag: names = namesFromTag(tag)
+      case let tag as [String:AnyObject]:        names = namesFromTag(tag)
+      default:                                   names = (nil, nil, nil, nil)
     }
+    guard useColor else { return names }
+    if let objectName  = names.0 { names.0 = ColorLog.wrapBlue(objectName)    }
+    if let className   = names.1 { names.1 = ColorLog.wrapCyan(className)     }
+    if let contextName = names.2 { names.2 = ColorLog.wrapPurple(contextName) }
+    if let queueName   = names.3 { names.3 = ColorLog.wrapGreen(queueName)    }
+    return names
   }
 
   private var useColor: Bool { return ColorLog.colorEnabled && options ∋ .EnableColor }
@@ -150,10 +155,8 @@ public class LogFormatter: NSObject, DDLogFormatter {
   - returns: String
   */
   private func stringFromTimestamp(timestamp: NSDate) -> String {
-    let dateFormatter = NSDateFormatter()
-    dateFormatter.dateFormat = "M/d/yy H:mm:ss.SSS"
-    let stamp = dateFormatter.stringFromDate(timestamp)
-    return (useColor ? ColorLog.wrapColor(stamp, 125, 125, 125) : stamp)
+    let stamp = LogFileManager.dateFormatter.stringFromDate(timestamp)
+    return (useColor ? ColorLog.wrapGray(stamp) : stamp)
   }
 
   /**
@@ -172,7 +175,7 @@ public class LogFormatter: NSObject, DDLogFormatter {
       case let (n, f?, nil):                                      selString = "«\(n)» \(f)"
       default:                                                    selString = ""
     }
-    return (useColor ? ColorLog.wrapColor(selString, 171, 101, 38) : selString) + afterLocation
+    return (useColor ? ColorLog.wrapYellow(selString) : selString) + afterLocation
   }
 
   /**
@@ -192,16 +195,20 @@ public class LogFormatter: NSObject, DDLogFormatter {
     func space() -> String { return result.characters.last?.isWhitespace == true ? "" : " " }
     func newline(flag: Bool) -> String { return flag && !result.isEmpty ? "\n" : "" }
 
-    let (objectName, className, contextName) = namesFromTag(msg.tag)
+    let (objectName, className, contextName, queueName) = namesFromTag(msg.tag)
 
     if options ∋ .IncludePrompt { result += prompt }
     if options ∋ .IncludeContext && contextName != nil { result += "(\(contextName!))" }
     if options ∋ .IncludeLogLevel { result += "[\(msg.flag)" }
     if options ∋ .IncludeTimeStamp { result += stringFromTimestamp(msg.timestamp) }
-    if options ∋ .IncludeLogLevel { result += "] \(afterPrefix)" }
+    if options ∋ .IncludeLogLevel { result += "] " }
+    if options ∋ .IncludeQueueName && queueName != nil { result += " ᛫\(queueName!)᛫ " }
     if options ∋ .IncludeLocation { result += "\(space())\(location(msg, className))" }
     if options ∋ .IncludeObjectName && objectName != nil { result += "\(space())«\(objectName!)»\(afterObjectName)" }
-    if let m = msg.message where !m.isEmpty { result += "\(options ∋ .IndentMessageBody ? m.indentedBy(4) : m)\(afterMessage)" }
+    if let m = msg.message where !m.isEmpty {
+      if m.characters ∋ "\n" && result.characters.last != "\n" { result += "\n" }
+      result += "\(options ∋ .IndentMessageBody ? m.indentedBy(4) : m)\(afterMessage)"
+    }
     if options ∋ .CollapseTrailingReturns { result.subInPlace(~/"[\\n]+$", "") }
 
     return result

@@ -13,51 +13,34 @@ import struct AudioToolbox.CABarBeatTime
 
 final class TempoTrack: Track {
 
-  /**
-  insertTempoChange:
-
-  - parameter tempo: Double
-  */
-  func insertTempoChange(tempo: Double) {
-    logDebug("inserting event for tempo \(tempo)")
-    guard recording else { logDebug("not recording…skipping event creation"); return }
-    eventContainer.append(MetaEvent(Sequencer.time.time, .Tempo(bpm: tempo)))
-  }
-
-  /**
-  insertTimeSignature:
-
-  - parameter signature: TimeSignature
-  */
-  func insertTimeSignature(signature: TimeSignature) {
-    logDebug("inserting event for signature \(signature)")
-    guard recording else { logDebug("not recording…skipping event creation"); return }
-    eventContainer.append(MetaEvent(Sequencer.time.time, .TimeSignature(signature: signature, clocks: 36, notes: 8)))
-  }
-
   override var name: String { get { return "Tempo" } set {} }
 
-  private(set) var tempo: Double = 120
-  private(set) var timeSignature: TimeSignature = .FourFour
-
-  /**
-  Initializer for non-playback mode tempo track
-  
-  - parameter s: MIDISequence
-  */
-  override init() {
-    super.init()
-    initializeNotificationReceptionist()
-    eventContainer.append(TempoTrack.timeSignatureEvent)
-    eventContainer.append(TempoTrack.tempoEvent)
+  var tempo: Double = Sequencer.tempo {
+    didSet {
+      guard tempo != oldValue else { return }
+      guard recording else { logDebug("not recording…skipping event creation"); return }
+      logDebug("inserting event for tempo \(tempo)")
+      addEvent(tempoEvent)
+      Notification.DidUpdateEvents.post(object: self)
+    }
   }
 
-  static private var timeSignatureEvent: MetaEvent {
-    return MetaEvent(.TimeSignature(signature: Sequencer.timeSignature, clocks: 36, notes: 8))
+  var timeSignature: TimeSignature = Sequencer.timeSignature {
+    didSet {
+      guard timeSignature != oldValue else { return }
+      guard recording else { logDebug("not recording…skipping event creation"); return }
+      logDebug("inserting event for signature \(timeSignature)")
+      addEvent(timeSignatureEvent)
+      Notification.DidUpdateEvents.post(object: self)
+    }
   }
 
-  static private var tempoEvent: MetaEvent {
-    return MetaEvent(.Tempo(bpm: Sequencer.tempo))
+  private var timeSignatureEvent: MetaEvent {
+    return MetaEvent(Sequencer.time.time, .TimeSignature(signature: timeSignature, clocks: 36, notes: 8))
+  }
+
+  private var tempoEvent: MetaEvent {
+    return MetaEvent(Sequencer.time.time, .Tempo(bpm: tempo))
   }
 
   /**
@@ -82,7 +65,7 @@ final class TempoTrack: Track {
   - parameter time: CABarBeatTime
   */
   private func dispatchEventsForTime(time: CABarBeatTime) {
-    guard let events = eventContainer[time] else { return }
+    guard let events = eventsForTime(time) else { return }
     for event in events where event is MetaEvent {
       switch (event as! MetaEvent).data {
         case let .Tempo(bpm): tempo = bpm; Sequencer.setTempo(bpm, automated: true)
@@ -93,17 +76,29 @@ final class TempoTrack: Track {
   }
 
   private let receptionist: NotificationReceptionist = {
-    let r = NotificationReceptionist()
-    r.logContext = LogManager.SequencerContext
-    return r
+    let receptionist = NotificationReceptionist()
+    receptionist.logContext = LogManager.SequencerContext
+    receptionist.callbackQueue = NSOperationQueue.mainQueue()
+    return receptionist
   }()
 
   /** initializeNotificationReceptionist */
   private func initializeNotificationReceptionist() {
-    receptionist.observe(Sequencer.Notification.DidToggleRecording, from: Sequencer.self, queue: NSOperationQueue.mainQueue()) {
-      [weak self] _ in
-      self?.recording = Sequencer.recording
+    receptionist.observe(Sequencer.Notification.DidToggleRecording, from: Sequencer.self) {
+      [weak self] _ in self?.recording = Sequencer.recording
     }
+  }
+
+  /**
+  Initializer for non-playback mode tempo track
+  
+  - parameter s: MIDISequence
+  */
+  override init() {
+    super.init()
+    initializeNotificationReceptionist()
+    addEvent(timeSignatureEvent)
+    addEvent(tempoEvent)
   }
 
   /**
@@ -115,20 +110,20 @@ final class TempoTrack: Track {
   init(trackChunk: MIDIFileTrackChunk) {
     super.init()
     initializeNotificationReceptionist()
-    eventContainer = MIDIEventContainer(events: trackChunk.events.filter(TempoTrack.isTempoTrackEvent))
+    addEvents(trackChunk.events.filter(TempoTrack.isTempoTrackEvent))
 
-    if eventContainer.events.filter({
+    if filterEvents({
       if let event = $0 as? MetaEvent, case .TimeSignature = event.data { return true } else { return false }
     }).count == 0
     {
-      eventContainer.append(TempoTrack.timeSignatureEvent)
+      addEvent(timeSignatureEvent)
     }
 
-    if eventContainer.events.filter({
+    if filterEvents({
       if let event = $0 as? MetaEvent, case .Tempo = event.data { return true } else { return false }
     }).count == 0
     {
-      eventContainer.append(TempoTrack.tempoEvent)
+      addEvent(tempoEvent)
     }
   }
 

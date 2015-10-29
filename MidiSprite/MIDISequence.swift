@@ -91,13 +91,8 @@ final class MIDISequence {
 
   /** Conversion to and from the `MIDIFile` type  */
   var file: MIDIFile {
-    get {
-      let file = MIDIFile(format: .One, division: 480, tracks: tracks.map({$0.chunk}))
-      logDebug("<out> file: \(file)")
-      return file
-    }
+    get { return MIDIFile(format: .One, division: 480, tracks: tracks.map({$0.chunk})) }
     set {
-      logDebug("<in> file: \(newValue)")
       var trackChunks = ArraySlice(newValue.tracks)
       if let trackChunk = trackChunks.first
         where trackChunk.events.count == trackChunk.events.filter({ TempoTrack.isTempoTrackEvent($0) }).count
@@ -116,22 +111,17 @@ final class MIDISequence {
   }
 
   let receptionist: NotificationReceptionist = {
-    let r = NotificationReceptionist()
-    r.logContext = LogManager.MIDIFileContext
-    return r
+    let receptionist = NotificationReceptionist(callbackQueue: NSOperationQueue.mainQueue())
+    receptionist.logContext = LogManager.MIDIFileContext
+    return receptionist
   }()
 
-  /** initializeNotificationReceptionist */
-  private func initializeNotificationReceptionist() {
-    guard receptionist.count == 0 else { return }
-    receptionist.logContext = LogManager.MIDIFileContext
-    receptionist.observe(Sequencer.Notification.DidToggleRecording, from: Sequencer.self, queue: NSOperationQueue.mainQueue()) {
+  /** init */
+  init() {
+    receptionist.observe(Sequencer.Notification.DidToggleRecording, from: Sequencer.self) {
       [weak self] _ in self?.currentTrack?.recording = Sequencer.recording
     }
   }
-
-  /** init */
-  init() { initializeNotificationReceptionist() }
 
   /**
   initWithFile:
@@ -140,10 +130,7 @@ final class MIDISequence {
   */
   convenience init(file f: MIDIFile) { self.init(); file = f; currentTrack = instrumentTracks.first }
 
-  deinit {
-    instrumentTracks.removeAll()
-    logDebug("deinit")
-  }
+  deinit { logDebug("") }
 
   /**
   newTrackWithInstrument:
@@ -166,12 +153,13 @@ final class MIDISequence {
     guard instrumentTracks ∌ track else { return }
     track.color = TrackColor.allCases[(instrumentTracks.count) % TrackColor.allCases.count]
     instrumentTracks.append(track)
-    receptionist.observe(Track.Notification.DidUpdateEvents, from: track, queue: NSOperationQueue.mainQueue()) {
+    receptionist.observe(Track.Notification.DidUpdateEvents, from: track) {
       [weak self] _ in
-      guard let weakself = self else { return }
-      MoonKit.logDebug("posting 'DidUpdate'")
-      Notification.DidUpdate.post(object: weakself)
+        guard let weakself = self else { return }
+        weakself.logDebug("posting 'DidUpdate'")
+        Notification.DidUpdate.post(object: weakself)
     }
+    logDebug("track added: \(track.name)")
     Notification.DidAddTrack.post(object: self, userInfo: [Notification.Key.Track: track])
 
   }
@@ -183,8 +171,13 @@ final class MIDISequence {
   */
   func removeTrack(track: InstrumentTrack) {
     guard let idx = instrumentTracks.indexOf(track) else { return }
+    removeTrackAtIndex(idx)
+  }
+
+  func removeTrackAtIndex(index: Int) {
+    let track = instrumentTracks.removeAtIndex(index)
     receptionist.stopObserving(Track.Notification.DidUpdateEvents, from: track)
-    instrumentTracks.removeAtIndex(idx)
+    logDebug("track removed: \(track.name)")
     Notification.DidRemoveTrack.post(object: self, userInfo: [Notification.Key.Track: track])
     if currentTrack == track { currentTrack = previousTrack }
   }
@@ -194,22 +187,14 @@ final class MIDISequence {
 
   - parameter tempo: Double
   */
-  func insertTempoChange(tempo: Double) {
-    guard Sequencer.recording else { return }
-    tempoTrack.insertTempoChange(tempo)
-    Notification.DidUpdate.post(object: self)
-  }
+  func insertTempoChange(tempo: Double) { tempoTrack.tempo = tempo }
 
   /**
   insertTimeSignature:
 
   - parameter signature: TimeSignature
   */
-  func insertTimeSignature(signature: TimeSignature) {
-    guard Sequencer.recording else { return }
-    tempoTrack.insertTimeSignature(signature)
-    Notification.DidUpdate.post(object: self)
-  }
+  func insertTimeSignature(signature: TimeSignature) { tempoTrack.timeSignature = signature }
 }
 
 extension MIDISequence: CustomStringConvertible {

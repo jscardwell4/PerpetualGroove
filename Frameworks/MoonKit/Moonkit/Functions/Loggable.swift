@@ -22,7 +22,7 @@ public extension Loggable {
   }
 
   var logContext: LogManager.LogContext { return self.dynamicType.defaultLogContext }
-  var logTag: LogManager.LogMessage.Tag? { return LogManager.LogMessage.Tag(className: "\(self.dynamicType)") }
+  var logTag: LogManager.LogMessage.Tag? { return LogManager.LogMessage.Tag(className: "\(self.dynamicType)", queueName: NSOperationQueue.currentQueue()?.name) }
 
   /**
   log:asynchronous:flag:function:line:file:tag:
@@ -48,7 +48,7 @@ public extension Loggable {
                      line: line,
                      file: file,
                   context: defaultLogContext,
-                      tag: LogManager.LogMessage.Tag(className: "\(self)"))
+                      tag: LogManager.LogMessage.Tag(objectName: "\(self)", className: "\(self)", queueName: NSOperationQueue.currentQueue()?.name))
   }
 
   /**
@@ -354,12 +354,12 @@ asynchronous: asynchronous,
 
 public extension Loggable where Self:Named {
   var logTag: LogManager.LogMessage.Tag? {
-    return LogManager.LogMessage.Tag(objectName: name, className: "\(self.dynamicType)")
+    return LogManager.LogMessage.Tag(objectName: name, className: "\(self.dynamicType)", queueName: NSOperationQueue.currentQueue()?.name)
   }
 }
 
 public extension Loggable where Self:Nameable {
   var logTag: LogManager.LogMessage.Tag? {
-    return LogManager.LogMessage.Tag(objectName: name, className: "\(self.dynamicType)")
+    return LogManager.LogMessage.Tag(objectName: name, className: "\(self.dynamicType)", queueName: NSOperationQueue.currentQueue()?.name)
   }
 }
