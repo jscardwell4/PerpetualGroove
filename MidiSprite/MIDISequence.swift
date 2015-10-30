@@ -119,7 +119,10 @@ final class MIDISequence {
   /** init */
   init() {
     receptionist.observe(Sequencer.Notification.DidToggleRecording, from: Sequencer.self) {
-      [weak self] _ in self?.currentTrack?.recording = Sequencer.recording
+      [weak self] _ in
+      let recording = Sequencer.recording
+      self?.currentTrack?.recording = recording
+      self?.tempoTrack.recording = recording
     }
   }
 
@@ -213,4 +216,14 @@ extension MIDISequence {
     case DidAddTrack, DidRemoveTrack, DidChangeTrack, SoloCountDidChange, DidUpdate
     enum Key: String, NotificationKeyType { case Track, OldTrack, OldCount, NewCount }
   }
+}
+
+extension NSNotification {
+
+  var track: InstrumentTrack?    { return userInfo?[MIDISequence.Notification.Key.Track.key] as? InstrumentTrack }
+  var oldTrack: InstrumentTrack? { return userInfo?[MIDISequence.Notification.Key.OldTrack.key] as? InstrumentTrack }
+
+  var oldCount: Int? { return (userInfo?[MIDISequence.Notification.Key.OldCount.key] as? NSNumber)?.integerValue }
+  var newCount: Int? { return (userInfo?[MIDISequence.Notification.Key.NewCount.key] as? NSNumber)?.integerValue }
+
 }

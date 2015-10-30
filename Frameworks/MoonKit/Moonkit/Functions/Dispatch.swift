@@ -8,8 +8,14 @@
 
 import Foundation
 
-public func secondsToNanoseconds(seconds: Double) -> UInt64 { return UInt64(seconds * Double(NSEC_PER_SEC)) }
-public func nanosecondsToSeconds(nanoseconds: UInt64) -> Double { return Double(nanoseconds) / Double(NSEC_PER_SEC) }
+public func secondsToNanoseconds(seconds: Double) -> UInt64 {
+  return UInt64(seconds * Double(NSEC_PER_SEC))
+}
+public func nanosecondsToSeconds(nanoseconds: UInt64) -> Double {
+  return Double(nanoseconds) / Double(NSEC_PER_SEC)
+}
+
+public var walltimeNow: dispatch_time_t { return dispatch_walltime(nil, 0) }
 
 /**
 createTimer:
@@ -22,8 +28,8 @@ createTimer:
 
 - returns: dispatch_source_t
 */
-public func createTimer(queue: dispatch_queue_t = dispatch_get_main_queue(),
-                        start: dispatch_time_t = dispatch_walltime(nil, 0),
+public func createTimer(queue: dispatch_queue_t = mainQueue,
+                        start: dispatch_time_t = walltimeNow,
                         interval: Double,
                         leeway: Double,
                         handler: dispatch_block_t) -> dispatch_source_t
@@ -43,8 +49,8 @@ dispatchToMain:block:
 */
 public func dispatchToMain(synchronous synchronous: Bool = false, _ block: dispatch_block_t) {
   if NSThread.isMainThread() { block() }
-  else if synchronous { dispatch_sync(dispatch_get_main_queue(), block) }
-  else { dispatch_async(dispatch_get_main_queue(), block) }
+  else if synchronous { mainQueue.sync(block) }
+  else { mainQueue.async(block) }
 }
 
 
@@ -61,8 +67,9 @@ public func serialQueueWithLabel(label: String,
                 qualityOfService qos: qos_class_t = QOS_CLASS_DEFAULT,
                 relativePriority priority: Int32 = 0) -> dispatch_queue_t
 {
-  return dispatch_queue_create(Array(label.utf8).map({Int8($0)}),
-                               dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, qos, priority))
+  let attributes = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, qos, priority)
+  let queue = label.withCString { dispatch_queue_create($0, attributes) }
+  return queue
 }
 
 /**
@@ -78,21 +85,34 @@ public func concurrentQueueWithLabel(label: String,
                     qualityOfService qos: qos_class_t = QOS_CLASS_DEFAULT,
                     relativePriority priority: Int32 = 0) -> dispatch_queue_t
 {
-  return dispatch_queue_create(Array(label.utf8).map({Int8($0)}),
-                               dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_CONCURRENT, qos, priority))
+  let attributes = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_CONCURRENT, qos, priority)
+  let queue = label.withCString { dispatch_queue_create($0, attributes) }
+  return queue
 }
 
-public var globalBackgroundQueue: dispatch_queue_t { return dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0) }
-public var globalUserInteractiveQueue: dispatch_queue_t { return dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0) }
-public var globalUserInitiatedQueue: dispatch_queue_t { return dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0) }
-public var globalUtilityQueue: dispatch_queue_t { return dispatch_get_global_queue(QOS_CLASS_UTILITY, 0) }
+/**
+Convenience func to make signature more compact
+
+- parameter type: qos_class_t
+
+- returns: dispatch_queue_t
+*/
+public func globalQueue(type: qos_class_t) -> dispatch_queue_t {
+  return dispatch_get_global_queue(type, 0)
+}
+
+public var mainQueue:                  dispatch_queue_t { return dispatch_get_main_queue()               }
+public var globalBackgroundQueue:      dispatch_queue_t { return globalQueue(QOS_CLASS_BACKGROUND)       }
+public var globalUserInteractiveQueue: dispatch_queue_t { return globalQueue(QOS_CLASS_USER_INTERACTIVE) }
+public var globalUserInitiatedQueue:   dispatch_queue_t { return globalQueue(QOS_CLASS_USER_INITIATED)   }
+public var globalUtilityQueue:         dispatch_queue_t { return globalQueue(QOS_CLASS_UTILITY)          }
 
 /**
 backgroundDispatch:
 
 - parameter block: () -> Void
 */
-public func backgroundDispatch(block: () -> Void) { dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), block) }
+public func backgroundDispatch(block: () -> Void) { globalBackgroundQueue.async(block) }
 
 
 public func delayedDispatch(delay: Double, _ queue: dispatch_queue_t, _ block: dispatch_block_t) {
@@ -111,5 +131,16 @@ delayedDispatchToMain:block:
 */
 public func delayedDispatchToMain(delay: Double, _ block: dispatch_block_t) {
   delayedDispatch(delay, dispatch_get_main_queue(), block)
+}
+
+/** Convenience methods for dispatching blocks on a queue */
+public extension dispatch_queue_t {
+
+  public func sync(block: dispatch_block_t)  { dispatch_sync(self, block) }
+  public func async(block: dispatch_block_t) { dispatch_async(self, block) }
+
+  public func syncBarrier(block: dispatch_block_t)  { dispatch_barrier_sync(self, block) }
+  public func asyncBarrier(block: dispatch_block_t) { dispatch_barrier_async(self, block) }
+
 }
 

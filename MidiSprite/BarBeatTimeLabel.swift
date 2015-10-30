@@ -169,12 +169,3 @@ final class BarBeatTimeLabel: UIView {
   required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder); setup() }
 
 }
-
-private extension NSNotification {
-  var jogTime: CABarBeatTime? {
-    return (userInfo?[Sequencer.Notification.Key.JogTime.rawValue] as? NSValue)?.barBeatTimeValue
-  }
-  var time: CABarBeatTime? {
-    return (userInfo?[Sequencer.Notification.Key.Time.rawValue] as? NSValue)?.barBeatTimeValue
-  }
-}

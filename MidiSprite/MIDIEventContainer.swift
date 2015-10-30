@@ -214,6 +214,17 @@ struct MIDIEventContainer: SequenceType {
     return result
   }
 
+  var timeEvents: [MetaEvent] {
+    var result: [MetaEvent] = []
+    for event in events {
+      switch (event as? MetaEvent)?.data {
+      case .TimeSignature?, .Tempo?: result.append(event as! MetaEvent)
+      default:                       break
+      }
+    }
+    return result
+  }
+
   var isEmpty: Bool { return _events.isEmpty }
 
   subscript(time: CABarBeatTime) -> [MIDIEvent]? { return _events[time]?.events }

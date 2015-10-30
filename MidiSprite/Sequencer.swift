@@ -304,7 +304,7 @@ extension Sequencer {
       }
     }
 
-    enum Key: String, NotificationKeyType { case Time, Ticks, URL, FromTrack, ToTrack, JogTime}
+    enum Key: String, NotificationKeyType { case Time, Ticks, JogTime}
   }
 
 }
@@ -314,5 +314,17 @@ extension Sequencer {
   enum Error: String, ErrorType {
     case InvalidBarBeatTime
     case NotPermitted
+  }
+}
+
+extension NSNotification {
+  var jogTime: CABarBeatTime? {
+    return (userInfo?[Sequencer.Notification.Key.JogTime.key] as? NSValue)?.barBeatTimeValue
+  }
+  var time: CABarBeatTime? {
+    return (userInfo?[Sequencer.Notification.Key.Time.key] as? NSValue)?.barBeatTimeValue
+  }
+  var ticks: MIDITimeStamp? {
+    return (userInfo?[Sequencer.Notification.Key.Ticks.key] as? NSNumber)?.unsignedLongLongValue
   }
 }
