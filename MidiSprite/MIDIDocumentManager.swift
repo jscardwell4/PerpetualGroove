@@ -11,86 +11,116 @@ import MoonKit
 
 final class MIDIDocumentManager {
 
-  private static var initialized = false
+  private static var state: State = [] { didSet { logDebug("\(oldValue) ➞ \(state)") } }
+
+  static var openingDocument: Bool {
+    objc_sync_enter(self)
+    defer { objc_sync_exit(self) }
+    return state ∋ .OpeningDocument
+  }
+  static var gatheringMetadataItems: Bool {
+    objc_sync_enter(self)
+    defer { objc_sync_exit(self) }
+    return state ∋ .GatheringMetadataItems
+  }
+
   private static let DefaultDocumentName = "AwesomeSauce"
-  private(set) static var openingDocument = false
 
   /** refreshBookmark */
   static private func refreshBookmark() {
-      do {
-        SettingsManager.currentDocument = try currentDocument?.fileURL.bookmarkDataWithOptions(.SuitableForBookmarkFile,
-                                                                includingResourceValuesForKeys: nil,
-                                                                                 relativeToURL: nil)
-      } catch {
-        logError(error, message: "Failed to generate bookmark data for storage")
-      }
-  }
-
-  static private(set) var currentDocument: MIDIDocument? {
-    didSet {
-      logDebug("currentDocument: \(currentDocument == nil ? "nil" : currentDocument!.localizedName)")
-
-      guard oldValue != currentDocument else { return }
-
-      if let oldValue = oldValue { observer.stopObserving(oldValue, forChangesTo: "fileURL") }
-
-      if let currentDocument = currentDocument {
-        observer.observe(currentDocument, forChangesTo: "fileURL", queue: queue) {
-          _, _, _ in MIDIDocumentManager.refreshBookmark()
+    queue.async {
+      guard let currentDocument = currentDocument else { return }
+        do {
+          SettingsManager.currentDocument = try currentDocument.fileURL.bookmarkDataWithOptions(.SuitableForBookmarkFile,
+                                                                 includingResourceValuesForKeys: nil,
+                                                                                  relativeToURL: nil)
+          logDebug("bookmark refreshed for '\(currentDocument.localizedName)'")
+        } catch {
+          logError(error, message: "Failed to generate bookmark data for storage")
         }
-      }
-
-      refreshBookmark()
-      Notification.DidChangeDocument.post()
     }
   }
 
-  private static let queue: NSOperationQueue = {
-    let queue = NSOperationQueue()
-    queue.name = "com.moondeerstudios.perpetualgroove.documentmanager"
-    queue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount
-    return queue
+  static private var _currentDocument: MIDIDocument? {
+    didSet {
+      queue.async {
+        logDebug("currentDocument: \(_currentDocument == nil ? "nil" : _currentDocument!.localizedName)")
+
+        guard oldValue != _currentDocument else { return }
+
+        if let oldValue = oldValue {
+          logDebug("closing document '\(oldValue.localizedName)'")
+          observer.stopObserving(oldValue, forChangesTo: "fileURL")
+          oldValue.closeWithCompletionHandler(nil)
+        }
+
+        if let currentDocument = _currentDocument {
+          observer.observe(currentDocument, forChangesTo: "fileURL", queue: operationQueue) {
+            _, _, _ in
+            logDebug("observed change to file URL of current document")
+            MIDIDocumentManager.refreshBookmark()
+          }
+        }
+
+        refreshBookmark()
+        Notification.DidChangeDocument.post()
+      }
+    }
+  }
+  static private(set) var currentDocument: MIDIDocument? {
+    get {
+      objc_sync_enter(self)
+      defer { objc_sync_exit(self) }
+      return _currentDocument
+    }
+    set {
+      objc_sync_enter(self)
+      defer { objc_sync_exit(self) }
+      _currentDocument = newValue
+    }
+  }
+
+  static let queue: dispatch_queue_t = concurrentQueueWithLabel("MIDIDocumentManager")
+  static let operationQueue: NSOperationQueue = {
+    let operationQueue = NSOperationQueue(name: "MIDIDocumentManager")
+    operationQueue.underlyingQueue = queue
+    return operationQueue
   }()
 
   private static let metadataQuery: NSMetadataQuery = {
     let query = NSMetadataQuery()
+    query.notificationBatchingInterval = 4
     query.searchScopes = [NSMetadataQueryUbiquitousDocumentsScope, NSMetadataQueryAccessibleUbiquitousExternalDocumentsScope]
-    query.operationQueue = MIDIDocumentManager.queue
+    query.operationQueue = operationQueue
     return query
   }()
 
-  static private(set) var metadataItems: OrderedSet<NSMetadataItem> = []
-    { didSet { logDebug("metadataItems: \(", ".join(metadataItems.map({$0.displayName})))") } }
-
-  /**
-  didRenameFile:
-
-  - parameter notification: NSNotification
-  */
-  private static func didRenameFile(notification: NSNotification) {
-    guard notification.object as? MIDIDocument == currentDocument else { return }
-    refreshBookmark()
+  static private(set) var metadataItems: OrderedSet<NSMetadataItem> = [] {
+    didSet {
+      logDebug("metadataItems: \(", ".join(metadataItems.map({$0.displayName})))")
+    }
   }
 
   /** createNewFile */
-  static func createNewDocument() throws {
+  static func createNewDocument() {
 
-    let url: NSURL
+    queue.async {
 
-    switch SettingsManager.iCloudStorage {
+      let url: NSURL
 
-      case true:
-        guard let baseURL = NSFileManager().URLForUbiquityContainerIdentifier(nil) else {
-          fatalError("createNewDocument() requires that the iCloud drive is available when the iCloud storage flag is set")
-        }
-        url = baseURL + "Documents"
+      switch SettingsManager.iCloudStorage {
 
-      case false:
-        url = documentsURL
+        case true:
+          guard let baseURL = NSFileManager().URLForUbiquityContainerIdentifier(nil) else {
+            fatalError("createNewDocument() requires that the iCloud drive is available when the iCloud storage flag is set")
+          }
+          url = baseURL + "Documents"
 
-    }
+        case false:
+          url = documentsURL
 
-    queue.addOperationWithBlock {
+      }
+
       guard let fileName = noncollidingFileName(DefaultDocumentName) else { return }
       let fileURL = url + ["\(fileName).midi"]
       logDebug("creating a new document at path '\(fileURL.path!)'")
@@ -149,12 +179,22 @@ final class MIDIDocumentManager {
   - parameter document: MIDIDocument
   */
   static func openDocument(document: MIDIDocument) {
-    logDebug("opening document '\(document.fileURL.path ?? "???")'")
-    openingDocument = true
-    document.openWithCompletionHandler {
-      guard $0 else { logError("failed to open document: \(document)"); return }
-      MIDIDocumentManager.currentDocument = document
-      MIDIDocumentManager.openingDocument = false
+    queue.async {
+      guard state ∌ .OpeningDocument else { logWarning("already opening a document"); return }
+      logDebug("opening document '\(document.fileURL.path ?? "???")'")
+      state ⊻= .OpeningDocument
+      document.openWithCompletionHandler {
+        guard $0  else {
+          logError("failed to open document: \(document)")
+          return
+        }
+        guard state ∋ .OpeningDocument else {
+          logError("internal inconsistency, expected state to contain `OpeningDocument`")
+          return
+        }
+        currentDocument = document
+        state ⊻= .OpeningDocument
+      }
     }
   }
 
@@ -178,111 +218,139 @@ final class MIDIDocumentManager {
   - parameter item: DocumentItemType
   */
   static func deleteItem(item: DocumentItemType) {
-    backgroundDispatch {
-      [url = item.URL] in
 
-      logDebug("removing item '\(url.path!)'")
-      NSFileCoordinator(filePresenter: nil).coordinateWritingItemAtURL(url, options: .ForDeleting, error: nil) {
-          do { try NSFileManager().removeItemAtURL($0) }
-          catch { logError(error) }
-        }
+    queue.async {
+
+      if currentDocument?.fileURL == item.URL { currentDocument = nil }
+
+      logDebug("removing item '\(item.URL.path!)'")
+      NSFileCoordinator(filePresenter: nil).coordinateWritingItemAtURL(item.URL, options: .ForDeleting, error: nil) {
+        do { try NSFileManager().removeItemAtURL($0) }
+        catch { logError(error) }
+      }
     }
-
-    guard currentDocument?.fileURL == item.URL else { return }
-    currentDocument = nil
   }
 
   private static let observer = KVOReceptionist()
 
-  private static let receptionist: NotificationReceptionist = {
-    let metadataQuery = MIDIDocumentManager.metadataQuery
+  /**
+  didUpdateMetadataItems:
 
-    let receptionist = NotificationReceptionist(callbackQueue: MIDIDocumentManager.queue)
-    receptionist.logContext = LogManager.MIDIFileContext
-
-    receptionist.observe(NSMetadataQueryDidFinishGatheringNotification, from: metadataQuery, queue: queue) {
-      _ in
-
-      guard metadataItems.isEmpty else {
-        logWarning("received gathering notification but metadataItems is not empty")
-        return
-      }
-
-      metadataQuery.disableUpdates()
-      metadataItems = OrderedSet(metadataQuery.results as! [NSMetadataItem])
-      metadataQuery.enableUpdates()
-
-      guard metadataItems.count > 0 else { return }
-      Notification.DidUpdateMetadataItems.post(userInfo: [Notification.Key.Added:metadataItems.array])
+  - parameter notification: NSNotification
+  */
+  private static func didUpdateMetadataItems(notification: NSNotification) {
+    var userInfo: [Notification.Key:AnyObject?] = [:]
+    if let removed = notification.removedMetadataItems where !removed.isEmpty && removed ⊆ metadataItems {
+      metadataItems ∖= removed
+      userInfo[Notification.Key.Removed] = removed
     }
 
-    receptionist.observe(NSMetadataQueryDidUpdateNotification, from: metadataQuery, queue: queue) {
-      var userInfo: [Notification.Key:AnyObject?] = [:]
-      if let removed = $0.userInfo?[NSMetadataQueryUpdateRemovedItemsKey] as? [NSMetadataItem]
-        where !removed.isEmpty && removed ⊆ metadataItems
-      {
-        metadataItems ∖= removed
-        userInfo[Notification.Key.Removed] = removed
-      }
+    if let changed = notification.changedMetadataItems where !changed.isEmpty && changed ⊆ metadataItems {
+      userInfo[Notification.Key.Changed] = changed
+    }
 
-      if let changed = $0.userInfo?[NSMetadataQueryUpdateChangedItemsKey] as? [NSMetadataItem]
-        where !changed.isEmpty && changed ⊆ metadataItems
-      {
-        userInfo[Notification.Key.Changed] = changed
-      }
+    if let added = notification.addedMetadataItems where !added.isEmpty && added ⊈ metadataItems {
+      metadataItems ∪= added
+      userInfo[Notification.Key.Added] = added
+    }
 
-      if let added = $0.userInfo?[NSMetadataQueryUpdateRemovedItemsKey] as? [NSMetadataItem]
-        where !added.isEmpty && added ⊈ metadataItems
-      {
-        metadataItems ∪= added
-        userInfo[Notification.Key.Added] = added
-      }
+    guard !userInfo.isEmpty else { return }
 
-      guard !userInfo.isEmpty else { return }
-
-      logDebug(
-        "".join(
-          "posting notification with user info:",
-          {
-            guard let removed = userInfo[Notification.Key.Removed] as? [NSMetadataItem] else { return "" }
-            return "\n\tremoved: \(", ".join(removed.map({$0.displayName})))"
-          }(),
-          {
-            guard let changed = userInfo[Notification.Key.Changed] as? [NSMetadataItem] else { return "" }
-            return "\n\tchanged: \(", ".join(changed.map({$0.displayName})))"
-          }(),
-          {
-            guard let added = userInfo[Notification.Key.Added] as? [NSMetadataItem] else { return "" }
-            return "\n\tadded: \(", ".join(added.map({$0.displayName})))"
-          }()
-        )
+    logDebug(
+      "".join(
+        "posting notification with user info:",
+        {
+          guard let removed = userInfo[Notification.Key.Removed] as? [NSMetadataItem] else { return "" }
+          return "\n\tremoved: \(", ".join(removed.map({$0.displayName})))"
+        }(),
+        {
+          guard let changed = userInfo[Notification.Key.Changed] as? [NSMetadataItem] else { return "" }
+          return "\n\tchanged: \(", ".join(changed.map({$0.displayName})))"
+        }(),
+        {
+          guard let added = userInfo[Notification.Key.Added] as? [NSMetadataItem] else { return "" }
+          return "\n\tadded: \(", ".join(added.map({$0.displayName})))"
+        }()
       )
-      Notification.DidUpdateMetadataItems.post(userInfo: userInfo)
+    )
+    Notification.DidUpdateMetadataItems.post(userInfo: userInfo)
+  }
+
+  /**
+  didGatherMetadataItems:
+
+  - parameter notificaiton: NSNotification
+  */
+  private static func didGatherMetadataItems(notificaiton: NSNotification) {
+    guard state ∋ .GatheringMetadataItems else {
+      logWarning("received gathering notification but state does not contain gathering flag")
+      return
     }
 
-    metadataQuery.startQuery()
+    metadataQuery.disableUpdates()
+    metadataItems = OrderedSet(metadataQuery.results as! [NSMetadataItem])
+    metadataQuery.enableUpdates()
 
-    return receptionist
-  }()
+    state ⊻= .GatheringMetadataItems
+
+    guard metadataItems.count > 0 else { return }
+    Notification.DidUpdateMetadataItems.post(userInfo: [Notification.Key.Added:metadataItems.array])
+  }
+
+  private static let receptionist = NotificationReceptionist(callbackQueue: MIDIDocumentManager.operationQueue)
 
   /** initialize */
   static func initialize() {
-    guard !initialized else { return }
+    queue.asyncBarrier {
 
-    let _ = receptionist
+      guard state ∌ .Initialized else { return }
 
-    if let data = SettingsManager.currentDocument {
-      do {
-        openURL(try NSURL(byResolvingBookmarkData: data, options: .WithoutUI, relativeToURL: nil, bookmarkDataIsStale: nil))
-      } catch {
-        logError(error, message: "Failed to resolve bookmark data into a valid file url")
-        SettingsManager.currentDocument = nil
+      receptionist.logContext = LogManager.MIDIFileContext
+
+      receptionist.observe(NSMetadataQueryDidFinishGatheringNotification,
+                      from: metadataQuery,
+                  callback: MIDIDocumentManager.didGatherMetadataItems)
+
+      receptionist.observe(NSMetadataQueryDidUpdateNotification,
+                      from: metadataQuery,
+                  callback: MIDIDocumentManager.didUpdateMetadataItems)
+
+      if let data = SettingsManager.currentDocument {
+        do {
+          let url = try NSURL(byResolvingBookmarkData: data, options: .WithoutUI, relativeToURL: nil, bookmarkDataIsStale: nil)
+          logDebug("opening bookmarked file at path '\(url.fileSystemRepresentation)'")
+          openURL(url)
+        } catch {
+          logError(error, message: "Failed to resolve bookmark data into a valid file url")
+          SettingsManager.currentDocument = nil
+        }
       }
+
+      metadataQuery.startQuery()
+
+      state ∪= [.Initialized, .GatheringMetadataItems]
     }
-    initialized = true
-    logDebug("MIDIDocumentManager initialized")
   }
   
+}
+
+extension MIDIDocumentManager {
+  private struct State: OptionSetType, CustomStringConvertible {
+    let rawValue: Int
+    static let Initialized            = State(rawValue: 0b0001)
+    static let OpeningDocument        = State(rawValue: 0b0010)
+    static let GatheringMetadataItems = State(rawValue: 0b0100)
+    var description: String {
+      var result = "["
+      var flagStrings: [String] = []
+      if contains(.Initialized)            { flagStrings.append("Initialized")            }
+      if contains(.OpeningDocument)        { flagStrings.append("OpeningDocument")        }
+      if contains(.GatheringMetadataItems) { flagStrings.append("GatheringMetadataItems") }
+      result += ", ".join(flagStrings)
+      result += "]"
+      return result
+    }
+  }
 }
 
 // MARK: - Error

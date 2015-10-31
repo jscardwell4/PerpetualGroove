@@ -60,20 +60,20 @@ final class DocumentsViewController: UICollectionViewController {
 
   /** setup */
   override func awakeFromNib() {
+
     super.awakeFromNib()
+
     (collectionViewLayout as? DocumentsViewLayout)?.controller = self
-    let callback: (NSNotification) -> Void = {[weak self] in self?.updateItems($0)}
+
     receptionist.observe(MIDIDocumentManager.Notification.DidUpdateMetadataItems,
                     from: MIDIDocumentManager.self,
-                callback: callback)
+                callback: weakMethod(self, method: DocumentsViewController.updateItems))
     receptionist.observe(MIDIDocumentManager.Notification.DidCreateDocument,
                    from: MIDIDocumentManager.self,
-               callback: callback)
+               callback: weakMethod(self, method: DocumentsViewController.updateItems))
     receptionist.observe(SettingsManager.Notification.Name.iCloudStorageChanged, from: SettingsManager.self) {
       [weak self] in
-      guard let value = ($0.userInfo?[SettingsManager.Notification.Key.NewValue.rawValue] as? NSNumber)?.boolValue else {
-        return
-      }
+      guard let value = $0.iCloudStorageSetting else { return }
       self?.iCloudStorage = value
     }
   }
@@ -85,10 +85,7 @@ final class DocumentsViewController: UICollectionViewController {
   private var iCloudItems: [NSMetadataItem] = []
   private var localItems: [LocalDocumentItem] = []
 
-  private var items: [DocumentItemType] {
-    let items: [DocumentItemType] = iCloudStorage ? iCloudItems : localItems
-    return items
-  }
+  private var items: [DocumentItemType] { return iCloudStorage ? iCloudItems : localItems }
 
   // MARK: - View lifecycle
 
@@ -105,7 +102,7 @@ final class DocumentsViewController: UICollectionViewController {
 
   - parameter animated: Bool
   */
-//  override func viewWillAppear(animated: Bool) { updateItems() }
+  override func viewWillAppear(animated: Bool) { guard !MIDIDocumentManager.gatheringMetadataItems else { return }; updateItems() }
 
   /** updateViewConstraints */
   override func updateViewConstraints() {
@@ -132,8 +129,12 @@ final class DocumentsViewController: UICollectionViewController {
 
   // MARK: - Notifications
 
-  /** updateItems */
-  private func updateItems(notification: NSNotification) {
+  /**
+  updateItems:
+
+  - parameter notification: NSNotification? = nil
+  */
+  private func updateItems(notification: NSNotification? = nil) {
     // TODO: Add cell for newly created document
     guard isViewLoaded() else { return }
 
@@ -150,6 +151,7 @@ final class DocumentsViewController: UICollectionViewController {
     let characterCount = max(CGFloat(items.map({$0.displayName.characters.count ?? 0}).maxElement() ?? 0), 15)
     itemSize = CGSize(width: characterCount * font.characterWidth, height: font.pointSize * 2).integralSize
     collectionView?.reloadData()
+    logDebug("items updated and data reloaded")
   }
 
   // MARK: UICollectionViewDataSource
@@ -238,7 +240,7 @@ final class DocumentsViewController: UICollectionViewController {
   */
   override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
     switch indexPath.section {
-      case 0: do { try MIDIDocumentManager.createNewDocument() } catch { logError(error) }
+      case 0:  MIDIDocumentManager.createNewDocument()
       default: MIDIDocumentManager.openItem(items[indexPath.row])
     }
     dismiss?()

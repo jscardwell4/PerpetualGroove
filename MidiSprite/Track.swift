@@ -12,29 +12,21 @@ import struct AudioToolbox.CABarBeatTime
 
 class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
 
-  private let eventContainerLock = NSObject()
+  private(set) weak var sequence: MIDISequence?
 
   /**
   addEvent:
 
   - parameter event: MIDIEvent
   */
-  func addEvent(event: MIDIEvent) {
-    objc_sync_enter(eventContainerLock)
-    defer { objc_sync_exit(eventContainerLock) }
-    eventContainer.append(event)
-  }
+  func addEvent(event: MIDIEvent) { eventContainer.append(event) }
 
   /**
   addEvents:
 
   - parameter events: [MIDIEvent]
   */
-  func addEvents(events: [MIDIEvent]) {
-    objc_sync_enter(eventContainerLock)
-    defer { objc_sync_exit(eventContainerLock) }
-    eventContainer.appendEvents(events)
-  }
+  func addEvents(events: [MIDIEvent]) { eventContainer.appendEvents(events) }
 
   /**
   eventsForTime:
@@ -43,11 +35,7 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
 
   - returns: [MIDIEvent]?
   */
-  func eventsForTime(time: CABarBeatTime) -> [MIDIEvent]? {
-    objc_sync_enter(eventContainerLock)
-    defer { objc_sync_exit(eventContainerLock) }
-    return eventContainer[time]
-  }
+  func eventsForTime(time: CABarBeatTime) -> [MIDIEvent]? { return eventContainer[time] }
 
   /**
   filterEvents:
@@ -57,63 +45,34 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
   - returns: [MIDIEvent]
   */
   func filterEvents(includeElement: (MIDIEvent) -> Bool) -> [MIDIEvent] {
-    objc_sync_enter(eventContainerLock)
-    defer { objc_sync_exit(eventContainerLock) }
     return eventContainer.events.filter(includeElement)
   }
 
-  private var eventContainer = MIDIEventContainer()
+
+  private var _eventContainer = MIDIEventContainer()
+
+  var eventContainer: MIDIEventContainer {
+    get { objc_sync_enter(self); defer { objc_sync_exit(self) }; return _eventContainer     }
+    set { objc_sync_enter(self); defer { objc_sync_exit(self) }; _eventContainer = newValue }
+  }
 
   var endOfTrack: CABarBeatTime {
-    objc_sync_enter(eventContainerLock)
-    defer { objc_sync_exit(eventContainerLock) }
     return eventContainer.endOfTrackEvent.time ?? Sequencer.time.time
   }
 
   var instrumentName: String? {
-    get {
-      objc_sync_enter(eventContainerLock)
-      defer { objc_sync_exit(eventContainerLock) }
-      return eventContainer.instrumentName
-    }
-    set {
-      objc_sync_enter(eventContainerLock)
-      defer { objc_sync_exit(eventContainerLock) }
-      eventContainer.instrumentName = newValue
-    }
+    get { return eventContainer.instrumentName }
+    set { eventContainer.instrumentName = newValue }
   }
 
   var program: (channel: Byte, program: Byte)? {
-    get {
-      objc_sync_enter(eventContainerLock)
-      defer { objc_sync_exit(eventContainerLock) }
-      return eventContainer.program
-    }
-    set {
-      objc_sync_enter(eventContainerLock)
-      defer { objc_sync_exit(eventContainerLock) }
-      eventContainer.program = newValue
-    }
+    get { return eventContainer.program }
+    set { eventContainer.program = newValue }
   }
 
-  var metaEvents: [MetaEvent] {
-    objc_sync_enter(eventContainerLock)
-    defer { objc_sync_exit(eventContainerLock) }
-    return eventContainer.metaEvents
-  }
-
-  var channelEvents: [ChannelEvent] {
-    objc_sync_enter(eventContainerLock)
-    defer { objc_sync_exit(eventContainerLock) }
-    return eventContainer.channelEvents
-  }
-
-  var nodeEvents: [MIDINodeEvent] {
-    objc_sync_enter(eventContainerLock)
-    defer { objc_sync_exit(eventContainerLock) }
-    return eventContainer.nodeEvents
-  }
-
+  var metaEvents: [MetaEvent] { return eventContainer.metaEvents } 
+  var channelEvents: [ChannelEvent] { return eventContainer.channelEvents } 
+  var nodeEvents: [MIDINodeEvent] { return eventContainer.nodeEvents } 
   var name: String {
     get { return eventContainer.trackName }
     set {
@@ -124,19 +83,24 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
   }
 
   /** validateEvents */
-  func validateEvents(inout container: MIDIEventContainer) { container.validate() }
+  func validateEvents(inout container: MIDIEventContainer) {
+    container.trackName = name
+    container.validate()
+  }
 
   var chunk: MIDIFileTrackChunk {
-    objc_sync_enter(eventContainerLock)
-    defer { objc_sync_exit(eventContainerLock) }
     validateEvents(&eventContainer)
     return MIDIFileTrackChunk(eventContainer: eventContainer)
   }
 
-  var recording = false { didSet { logDebug("recording = \(recording)") } }
+  private var _recording = false { didSet { logDebug("recording = \(_recording)") } }
+  var recording: Bool {
+    get { objc_sync_enter(self); defer { objc_sync_exit(self) }; return _recording     }
+    set { objc_sync_enter(self); defer { objc_sync_exit(self) }; _recording = newValue }
+  }
 
   /** init */
-  init() {}
+  init(sequence: MIDISequence) { self.sequence = sequence }
 
   var description: String {
     return "\n".join(

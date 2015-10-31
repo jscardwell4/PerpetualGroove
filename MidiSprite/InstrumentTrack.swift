@@ -108,7 +108,7 @@ final class InstrumentTrack: Track {
 
   override var name: String {
     get {
-      if super.name.isEmpty { super.name = instrument.preset.name }
+      if super.name.isEmpty, let instrument = instrument { return instrument.preset.name }
       return super.name
     }
     set { super.name = newValue }
@@ -296,7 +296,7 @@ final class InstrumentTrack: Track {
     catch { logError(error) }
 
     // Check if we are recording, otherwise skip event processing
-    guard recording else { logDebug("not recording…skipping event creation"); return }
+    guard recording else { logVerbose("not recording…skipping event creation"); return }
 
     eventQueue.addOperationWithBlock {
       [weak self, time = Sequencer.time.time] in
@@ -337,7 +337,7 @@ final class InstrumentTrack: Track {
   }
 
   /// The index for the track in the sequence's array of instrument tracks, or nil
-  var index: Int? { return Sequencer.sequence?.instrumentTracks.indexOf(self) }
+  var index: Int? { return sequence?.instrumentTracks.indexOf(self) }
 
   // MARK: - Initialization
 
@@ -349,14 +349,14 @@ final class InstrumentTrack: Track {
   }
 
   /**
-  initWithBus:track:
+  initWithSequence:instrument:
 
-  - parameter b: Bus
-  - parameter s: MIDISequence
+  - parameter sequence: MIDISequence
+  - parameter instrument: Instrument
   */
-  init(instrument i: Instrument) throws {
-    super.init()
-    instrument = i
+  init(sequence: MIDISequence, instrument: Instrument) throws {
+    super.init(sequence: sequence)
+    self.instrument = instrument
     eventQueue.name = "BUS \(instrument.bus)"
 
     initializeNotificationReceptionist()
@@ -364,13 +364,13 @@ final class InstrumentTrack: Track {
   }
 
   /**
-  initWithTrackChunk:
+  initWithSequence:trackChunk:
 
+  - parameter sequence: MIDISequence
   - parameter trackChunk: MIDIFileTrackChunk
-  - parameter s: MIDISequence
   */
-  init(trackChunk: MIDIFileTrackChunk) throws {
-    super.init()
+  init(sequence: MIDISequence, trackChunk: MIDIFileTrackChunk) throws {
+    super.init(sequence: sequence)
 
     addEvents(trackChunk.events)
 
@@ -452,14 +452,14 @@ extension InstrumentTrack {
     static let TrackEnded    = State(rawValue: 0b0001_0000)
 
     var description: String {
-      var result = "InstrumentTrack.State { "
+      var result = "["
       var flagStrings: [String] = []
       if self ∋ .Soloing       { flagStrings.append("Soloing")       }
       if self ∋ .InclusiveMute { flagStrings.append("InclusiveMute") }
       if self ∋ .ExclusiveMute { flagStrings.append("ExclusiveMute") }
       if self ∋ .TrackEnded    { flagStrings.append("TrackEnded")    }
       result += ", ".join(flagStrings)
-      result += " }"
+      result += "]"
       return result
     }
   }

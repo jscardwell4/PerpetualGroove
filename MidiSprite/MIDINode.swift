@@ -394,13 +394,13 @@ extension MIDINode {
     static let Paused  = State(rawValue: 0b100)
 
     var description: String {
-      var result = "MIDINode.State { "
+      var result = "["
       var flagStrings: [String] = []
       if self ∋ .Playing { flagStrings.append("Playing") }
       if self ∋ .Jogging { flagStrings.append("Jogging") }
       if self ∋ .Paused  { flagStrings.append("Paused")  }
       result += ", ".join(flagStrings)
-      result += " }"
+      result += "]"
       return result
     }
   }

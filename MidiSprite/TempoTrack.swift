@@ -94,8 +94,8 @@ final class TempoTrack: Track {
   
   - parameter s: MIDISequence
   */
-  override init() {
-    super.init()
+  override init(sequence: MIDISequence) {
+    super.init(sequence: sequence)
     initializeNotificationReceptionist()
     addEvent(timeSignatureEvent)
     addEvent(tempoEvent)
@@ -107,8 +107,8 @@ final class TempoTrack: Track {
   - parameter trackChunk: MIDIFileTrackChunk
   - parameter s: MIDISequence
   */
-  init(trackChunk: MIDIFileTrackChunk) {
-    super.init()
+  init(sequence: MIDISequence, trackChunk: MIDIFileTrackChunk) {
+    super.init(sequence: sequence)
     initializeNotificationReceptionist()
     addEvents(trackChunk.events.filter(TempoTrack.isTempoTrackEvent))
 

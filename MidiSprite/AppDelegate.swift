@@ -23,6 +23,10 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     Triump.registerFonts()
     FestivoLC.registerFonts()
     LogManager.initialize()
+    SettingsManager.initialize()
+    MIDIDocumentManager.initialize()
+    AudioManager.initialize()
+    Sequencer.initialize()
   }
 
   /**
@@ -36,10 +40,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
   func                application(application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [NSObject:AnyObject]?) -> Bool
   {
-    SettingsManager.initialize()
-    MIDIDocumentManager.initialize()
-    AudioManager.initialize()
-    Sequencer.initialize()
     return true
   }
 

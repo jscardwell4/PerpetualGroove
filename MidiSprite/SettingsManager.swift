@@ -12,67 +12,9 @@ import MoonKit
 
 final class SettingsManager {
 
-  enum Setting: String, KeyType, EnumerableType {
-    case iCloudStorage         = "iCloudStorage"
-    case ConfirmDeleteDocument = "confirmDeleteDocument"
-    case ConfirmDeleteTrack    = "confirmDeleteTrack"
-    case ScrollTrackLabels     = "scrollTrackLabels"
-    case CurrentDocument       = "currentDocument"
-    case MakeNewTrackCurrent   = "makeNewTrackCurrent"
-
-    var currentValue: Any? {
-      guard let value = NSUserDefaults.standardUserDefaults().objectForKey(rawValue) else { return nil }
-
-           if let number = value as? NSNumber { return number }
-      else if let data   = value as? NSData   { return data   }
-      else                                    { return nil    }
-    }
-
-    static var boolSettings: [Setting] {
-      return [.iCloudStorage, .ConfirmDeleteDocument, .ConfirmDeleteTrack, .ScrollTrackLabels, .MakeNewTrackCurrent]
-    }
-    static var allCases: [Setting] { return boolSettings + [.CurrentDocument] }
-  }
-
   private static var settingsCache: [Setting:Any] = [:]
   private static var initialized = false
 
-
-  struct Notification: NotificationType {
-
-    enum Name: String, NotificationNameType {
-      case iCloudStorageChanged
-      case ConfirmDeleteDocumentChanged, ConfirmDeleteTrackChanged
-      case ScrollTrackLabelsChanged
-      case CurrentDocumentChanged
-      case MakeNewTrackCurrentChanged
-    }
-
-    enum Key: String, KeyType { case OldValue, NewValue }
-
-    var object: AnyObject? { return SettingsManager.self }
-    let name: Name
-    let userInfo: [Key:AnyObject?]?
-
-    /**
-    init:
-
-    - parameter setting: Setting
-    */
-    init(_ setting: Setting) {
-      userInfo = [.OldValue: SettingsManager.settingsCache[setting] as? AnyObject,
-                  .NewValue: setting.currentValue as? AnyObject]
-      switch setting {
-        case .iCloudStorage:         name = .iCloudStorageChanged
-        case .ConfirmDeleteDocument: name = .ConfirmDeleteDocumentChanged
-        case .ConfirmDeleteTrack:    name = .ConfirmDeleteTrackChanged
-        case .ScrollTrackLabels:     name = .ScrollTrackLabelsChanged
-        case .CurrentDocument:       name = .CurrentDocumentChanged
-        case .MakeNewTrackCurrent:   name = .MakeNewTrackCurrentChanged
-      }
-    }
-
-  }
 
   /**
   userDefaultsDidChange:
@@ -158,4 +100,81 @@ final class SettingsManager {
     initialized = true
   }
   
+}
+
+// MARK: - Notification
+extension SettingsManager {
+
+  struct Notification: NotificationType {
+
+    enum Name: String, NotificationNameType {
+      case iCloudStorageChanged
+      case ConfirmDeleteDocumentChanged, ConfirmDeleteTrackChanged
+      case ScrollTrackLabelsChanged
+      case CurrentDocumentChanged
+      case MakeNewTrackCurrentChanged
+    }
+
+    enum Key: String, KeyType { case SettingValue }
+
+    var object: AnyObject? { return SettingsManager.self }
+    let name: Name
+    let userInfo: [Key:AnyObject?]?
+
+    /**
+    init:
+
+    - parameter setting: Setting
+    */
+    init(_ setting: Setting) {
+      userInfo = [.SettingValue: SettingsManager.settingsCache[setting] as? AnyObject]
+      switch setting {
+        case .iCloudStorage:         name = .iCloudStorageChanged
+        case .ConfirmDeleteDocument: name = .ConfirmDeleteDocumentChanged
+        case .ConfirmDeleteTrack:    name = .ConfirmDeleteTrackChanged
+        case .ScrollTrackLabels:     name = .ScrollTrackLabelsChanged
+        case .CurrentDocument:       name = .CurrentDocumentChanged
+        case .MakeNewTrackCurrent:   name = .MakeNewTrackCurrentChanged
+      }
+    }
+
+  }
+
+}
+
+extension NSNotification {
+  typealias  Key = SettingsManager.Notification.Key
+  var iCloudStorageSetting:         Bool?   { return (userInfo?[Key.SettingValue.key] as? NSNumber)?.boolValue }
+  var confirmDeleteDocumentSetting: Bool?   { return (userInfo?[Key.SettingValue.key] as? NSNumber)?.boolValue }
+  var confirmDeleteTrackSetting:    Bool?   { return (userInfo?[Key.SettingValue.key] as? NSNumber)?.boolValue }
+  var scrollTrackLabelsSetting:     Bool?   { return (userInfo?[Key.SettingValue.key] as? NSNumber)?.boolValue }
+  var makeNewTrackCurrentSetting:   Bool?   { return (userInfo?[Key.SettingValue.key] as? NSNumber)?.boolValue }
+  var currentDocumentSetting:       NSData? { return  userInfo?[Key.SettingValue.key] as? NSData               }
+}
+
+// MARK: - Setting
+extension SettingsManager {
+
+  enum Setting: String, KeyType, EnumerableType {
+    case iCloudStorage         = "iCloudStorage"
+    case ConfirmDeleteDocument = "confirmDeleteDocument"
+    case ConfirmDeleteTrack    = "confirmDeleteTrack"
+    case ScrollTrackLabels     = "scrollTrackLabels"
+    case CurrentDocument       = "currentDocument"
+    case MakeNewTrackCurrent   = "makeNewTrackCurrent"
+
+    var currentValue: Any? {
+      guard let value = NSUserDefaults.standardUserDefaults().objectForKey(rawValue) else { return nil }
+
+           if let number = value as? NSNumber { return number }
+      else if let data   = value as? NSData   { return data   }
+      else                                    { return nil    }
+    }
+
+    static var boolSettings: [Setting] {
+      return [.iCloudStorage, .ConfirmDeleteDocument, .ConfirmDeleteTrack, .ScrollTrackLabels, .MakeNewTrackCurrent]
+    }
+    static var allCases: [Setting] { return boolSettings + [.CurrentDocument] }
+  }
+
 }

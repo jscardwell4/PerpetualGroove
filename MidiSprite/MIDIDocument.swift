@@ -11,14 +11,28 @@ import MoonKit
 
 final class MIDIDocument: UIDocument {
 
-  enum Notification: String, NotificationType, NotificationNameType {
-    case DidRenameFile
-    enum Key: String, KeyType { case OldName, NewName }
+  private(set) var sequence: MIDISequence? {
+    didSet {
+      let stopObserving: (MIDISequence) -> Void = {
+        self.receptionist.stopObserving(MIDISequence.Notification.DidUpdate, from: $0)
+      }
+      let observe: (MIDISequence) -> Void = {
+        self.receptionist.observe(MIDISequence.Notification.DidUpdate, from: $0) {
+          [weak self] _ in
+          self?.logDebug("notification received that sequence has been updated")
+          self?.updateChangeCount(.Done)
+        }
+      }
+      switch (oldValue, sequence) {
+        case let (oldValue?, newValue?): stopObserving(oldValue); observe(newValue)
+        case let (nil, newValue?):       observe(newValue)
+        case let (oldValue?, nil):       stopObserving(oldValue)
+        case (nil, nil):                 break
+      }
+    }
   }
 
-  enum Error: String, ErrorType { case InvalidContentType }
-
-  let sequence = MIDISequence()
+  private var creating = false
 
   /**
   didChangeState:
@@ -38,15 +52,17 @@ final class MIDIDocument: UIDocument {
   */
   override init(fileURL url: NSURL) {
     super.init(fileURL: url)
-    receptionist.logContext = LogManager.MIDIFileContext
-    let callback: (NSNotification) -> Void = {[weak self] _ in self?.updateChangeCount(.Done)}
-    let queue = NSOperationQueue.mainQueue()
-    receptionist.observe(UIDocumentStateChangedNotification, from: self, queue: queue) { [weak self] in self?.didChangeState($0) }
-    receptionist.observe(MIDISequence.Notification.DidAddTrack, from: sequence, queue: queue, callback: callback)
-    receptionist.observe(MIDISequence.Notification.DidRemoveTrack, from: sequence, queue: queue, callback: callback)
+
+    receptionist.observe(UIDocumentStateChangedNotification,
+                    from: self,
+                callback: weakMethod(self, method: MIDIDocument.didChangeState))
   }
 
-  private let receptionist = NotificationReceptionist()
+  private let receptionist: NotificationReceptionist = {
+    let receptionist = NotificationReceptionist(callbackQueue: MIDIDocumentManager.operationQueue)
+    receptionist.logContext = LogManager.MIDIFileContext
+    return receptionist
+  }()
 
   /**
   loadFromContents:ofType:
@@ -56,8 +72,8 @@ final class MIDIDocument: UIDocument {
   */
   override func loadFromContents(contents: AnyObject, ofType typeName: String?) throws {
     guard let data = contents as? NSData else { throw Error.InvalidContentType }
-    sequence.file = try MIDIFile(data: data)
-    logDebug("file loaded into sequence: \(sequence)")
+    sequence = MIDISequence(file: try MIDIFile(data: data), document: self)
+    logDebug("file loaded into sequence: \(sequence!)")
   }
 
   /**
@@ -66,10 +82,14 @@ final class MIDIDocument: UIDocument {
   - parameter typeName: String
   */
   override func contentsForType(typeName: String) throws -> AnyObject {
-    let file = sequence.file
-    logDebug("saving file:\n\(file)")
+    if sequence == nil && creating {
+      sequence = MIDISequence(file: MIDIFile.emptyFile, document: self)
+      creating = false
+    }
+    guard let file = sequence?.file else { throw Error.MissingSequence }
+    logDebug("file contents:\n\(file)")
     let bytes = file.bytes
-    return NSData(bytes: sequence.file.bytes, length: bytes.count)
+    return NSData(bytes: bytes, length: bytes.count)
   }
 
   /**
@@ -99,6 +119,24 @@ final class MIDIDocument: UIDocument {
 //  override func disableEditing() {}
 //  override func enableEditing() {}
 
+  // MARK: - Saving
+
+  /**
+  saveToURL:forSaveOperation:completionHandler:
+
+  - parameter url: NSURL
+  - parameter saveOperation: UIDocumentSaveOperation
+  - parameter completionHandler: ((Bool) -> Void
+  */
+  override func saveToURL(url: NSURL,
+         forSaveOperation saveOperation: UIDocumentSaveOperation,
+        completionHandler: ((Bool) -> Void)?)
+  {
+    creating = saveOperation == .ForCreating
+    logDebug("(\(creating ? "saving" : "overwriting"))  '\(String(CString:url.fileSystemRepresentation, encoding: NSUTF8StringEncoding)!)'")
+    super.saveToURL(url, forSaveOperation: saveOperation, completionHandler: completionHandler)
+  }
+
   /**
   autosaveWithCompletionHandler:
 
@@ -108,5 +146,16 @@ final class MIDIDocument: UIDocument {
     logDebug("unsaved changes? \(hasUnsavedChanges())")
     super.autosaveWithCompletionHandler(completionHandler)
   }
+
+}
+
+extension MIDIDocument: Named {
+  var name: String { return localizedName.isEmpty ? "unamed" : localizedName }
+}
+
+// MARK: - Error
+extension MIDIDocument {
+
+  enum Error: String, ErrorType { case InvalidContentType, MissingSequence }
 
 }

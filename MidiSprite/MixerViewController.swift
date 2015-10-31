@@ -23,10 +23,10 @@ final class MixerViewController: UICollectionViewController {
 
   private weak var sequence: MIDISequence? {
     didSet {
-      if let idx = sequence?.currentTrackIndex { selectTrackAtIndex(idx) }
       if let oldSequence = oldValue { stopObservingSequence(oldSequence) }
       if let sequence = sequence { observeSequence(sequence) }
       collectionView?.reloadData()
+      if let idx = sequence?.currentTrackIndex { selectTrackAtIndex(idx) }
     }
   }
 
@@ -60,7 +60,7 @@ final class MixerViewController: UICollectionViewController {
 
   /** addTrack */
   @IBAction func addTrack() {
-    do { try sequence?.newTrackWithInstrument(Sequencer.instrumentWithCurrentSettings()) }
+    do { try sequence?.addTrackWithInstrument(Sequencer.instrumentWithCurrentSettings()) }
     catch { logError(error, message: "Failed to add new track") }
   }
 
@@ -154,7 +154,10 @@ final class MixerViewController: UICollectionViewController {
 
   - parameter animated: Bool
   */
-  override func viewWillAppear(animated: Bool) { super.viewWillAppear(animated); sequence = MIDIDocumentManager.currentDocument?.sequence }
+  override func viewWillAppear(animated: Bool) {
+    super.viewWillAppear(animated)
+    sequence = MIDIDocumentManager.currentDocument?.sequence
+  }
 
   /** updateTracks */
   func updateTracks(notification: NSNotification) {

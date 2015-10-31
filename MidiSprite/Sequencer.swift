@@ -107,12 +107,12 @@ final class Sequencer {
   */
   static func setTempo(tempo: Double, automated: Bool = false) {
     clock.beatsPerMinute = UInt16(tempo)
-    if recording && !automated { sequence?.insertTempoChange(tempo) }
+    if recording && !automated { sequence?.tempo = tempo }
   }
 
   static var timeSignature: TimeSignature = .FourFour {
     didSet {
-      sequence?.insertTimeSignature(timeSignature)
+      sequence?.timeSignature = timeSignature
     }
   }
 
@@ -123,7 +123,7 @@ final class Sequencer {
   - parameter automated: Bool = false
   */
   static func setTimeSignature(signature: TimeSignature, automated: Bool = false) {
-    if recording && !automated { sequence?.insertTimeSignature(signature) }
+    if recording && !automated { sequence?.timeSignature = signature }
   }
 
   // MARK: - Tracks
@@ -256,7 +256,7 @@ extension Sequencer {
 
   private struct State: OptionSetType, CustomStringConvertible {
     let rawValue: Int
-    init(rawValue: Int) { self.rawValue = rawValue }
+//    init(rawValue: Int) { self.rawValue = rawValue }
 
     static let Playing   = State(rawValue: 0b0000_0010)
     static let Recording = State(rawValue: 0b0000_0100)
@@ -264,14 +264,14 @@ extension Sequencer {
     static let Jogging   = State(rawValue: 0b0010_0000)
 
     var description: String {
-      var result = "Sequencer.State { "
+      var result = "["
       var flagStrings: [String] = []
       if contains(.Playing)   { flagStrings.append("Playing")   }
       if contains(.Recording) { flagStrings.append("Recording") }
       if contains(.Paused)    { flagStrings.append("Paused")    }
       if contains(.Jogging)   { flagStrings.append("Jogging")   }
       result += ", ".join(flagStrings)
-      result += " }"
+      result += " ]"
       return result
     }
   }

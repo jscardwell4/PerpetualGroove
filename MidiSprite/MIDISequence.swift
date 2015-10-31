@@ -12,6 +12,9 @@ import struct AudioToolbox.CABarBeatTime
 
 final class MIDISequence {
 
+
+  // MARK: - Managing tracks
+  
   var sequenceEnd: CABarBeatTime { return tracks.map({$0.endOfTrack}).maxElement() ?? .start }
 
   private(set) var instrumentTracks: [InstrumentTrack] = []
@@ -34,36 +37,49 @@ final class MIDISequence {
   }
 
   var currentTrackIndex: Int? {
-    get {
-      guard let currentTrack = currentTrack else { return nil }
-      return instrumentTracks.indexOf(currentTrack)
-    }
+    get { return currentTrack?.index }
     set {
       guard let newValue = newValue where instrumentTracks.indices ∋ newValue else { currentTrack = nil; return }
       currentTrack = instrumentTracks[newValue]
     }
   }
 
-  private weak var previousTrack: InstrumentTrack?
+  private var currentTrackStack: Stack<Weak<InstrumentTrack>> = []
 
   weak var currentTrack: InstrumentTrack? {
-    didSet {
-      if let oldTrack = oldValue where oldTrack.recording { oldTrack.recording = false }
-      guard currentTrack == nil || instrumentTracks ∋ currentTrack else { currentTrack = nil; return }
-      previousTrack = oldValue
-      currentTrack?.recording = Sequencer.recording
-      Notification.DidChangeTrack.post(object: self,
-                                       userInfo: [Notification.Key.OldTrack: oldValue as? AnyObject,
-                                                  Notification.Key.Track:    currentTrack as? AnyObject])
+    get { return currentTrackStack.peek?.reference }
+    set {
+      let userInfo: [Notification.Key:AnyObject?]?
+
+      switch (currentTrackStack.peek?.reference, newValue) {
+
+        case let (oldTrack, newTrack?) where instrumentTracks ∋ newTrack && oldTrack != newTrack:
+          userInfo = [Notification.Key.OldTrack: oldTrack, Notification.Key.Track: newTrack]
+          currentTrackStack.push(Weak(newTrack))
+          newTrack.recording = Sequencer.recording
+
+      case let (oldTrack?, nil):
+          userInfo = [Notification.Key.OldTrack: oldTrack, Notification.Key.Track: nil]
+          currentTrackStack.pop()
+
+        case (nil, nil):
+          fallthrough
+
+        default:
+          userInfo = nil
+
+      }
+      guard userInfo != nil else { return }
+      Notification.DidChangeTrack.post(object: self, userInfo: userInfo)
     }
   }
 
   /** The tempo track for the sequence is the first element in the `tracks` array */
-  private var tempoTrack = TempoTrack()
+  private var tempoTrack: TempoTrack!
 
-  var tempo: Double { return tempoTrack.tempo }
+  var tempo: Double { get { return tempoTrack.tempo } set { tempoTrack.tempo = newValue } }
 
-  var timeSignature: TimeSignature { return tempoTrack.timeSignature }
+  var timeSignature: TimeSignature { get { return tempoTrack.timeSignature } set { tempoTrack.timeSignature = newValue } }
 
   /** Collection of all the tracks in the composition */
   var tracks: [Track] { return [tempoTrack] + instrumentTracks }
@@ -89,63 +105,101 @@ final class MIDISequence {
     }
   }
 
-  /** Conversion to and from the `MIDIFile` type  */
-  var file: MIDIFile {
-    get { return MIDIFile(format: .One, division: 480, tracks: tracks.map({$0.chunk})) }
-    set {
-      var trackChunks = ArraySlice(newValue.tracks)
-      if let trackChunk = trackChunks.first
-        where trackChunk.events.count == trackChunk.events.filter({ TempoTrack.isTempoTrackEvent($0) }).count
-      {
-        tempoTrack = TempoTrack(trackChunk: trackChunk)
-        trackChunks = trackChunks.dropFirst()
-      }
+  /** Conversion to the `MIDIFile` type  */
+  var file: MIDIFile { return MIDIFile(format: .One, division: 480, tracks: tracks.map({$0.chunk})) }
 
-      while let track = instrumentTracks.popLast() { removeTrack(track) }
-      for track in trackChunks.flatMap({ try? InstrumentTrack(trackChunk: $0) }) {
-        addTrack(track)
-      }
-      previousTrack = nil
-      currentTrack = instrumentTracks.first
-    }
-  }
+  // MARK: - Receiving track and sequencer notifications
 
-  let receptionist: NotificationReceptionist = {
+  private let receptionist: NotificationReceptionist = {
     let receptionist = NotificationReceptionist(callbackQueue: NSOperationQueue.mainQueue())
     receptionist.logContext = LogManager.MIDIFileContext
     return receptionist
   }()
 
-  /** init */
-  init() {
-    receptionist.observe(Sequencer.Notification.DidToggleRecording, from: Sequencer.self) {
-      [weak self] _ in
-      let recording = Sequencer.recording
-      self?.currentTrack?.recording = recording
-      self?.tempoTrack.recording = recording
+  private var hasChanges = false
+
+  /**
+  trackDidUpdate:
+
+  - parameter notification: NSNotification
+  */
+  private func trackDidUpdate(notification: NSNotification) {
+    if Sequencer.playing { hasChanges = true }
+    else {
+      hasChanges = false
+      logDebug("posting 'DidUpdate'")
+      Notification.DidUpdate.post(object: self)
     }
   }
+
+  /**
+  toggleRecording:
+
+  - parameter notification: NSNotification
+  */
+  private func toggleRecording(notification: NSNotification) {
+    let recording = Sequencer.recording
+    currentTrack?.recording = recording
+    tempoTrack.recording = recording
+  }
+
+  /**
+  sequencerDidReset:
+
+  - parameter notification: NSNotification
+  */
+  private func sequencerDidReset(notification: NSNotification) {
+    guard hasChanges else { return }
+    hasChanges = false
+    logDebug("posting 'DidUpdate'")
+    Notification.DidUpdate.post(object: self)
+  }
+
+  private(set) weak var document: MIDIDocument?
+
+  // MARK: - Initializing
 
   /**
   initWithFile:
 
   - parameter file: MIDIFile
   */
-  convenience init(file f: MIDIFile) { self.init(); file = f; currentTrack = instrumentTracks.first }
+  init(file: MIDIFile, document: MIDIDocument) {
+    self.document = document
+    receptionist.observe(Sequencer.Notification.DidToggleRecording,
+                    from: Sequencer.self,
+                callback: weakMethod(self, method: MIDISequence.toggleRecording))
+    receptionist.observe(Sequencer.Notification.DidReset,
+                    from: Sequencer.self,
+                callback: weakMethod(self, method: MIDISequence.sequencerDidReset))
+
+    var trackChunks = ArraySlice(file.tracks)
+    if let trackChunk = trackChunks.first
+      where trackChunk.events.count == trackChunk.events.filter({ TempoTrack.isTempoTrackEvent($0) }).count
+    {
+      tempoTrack = TempoTrack(sequence: self, trackChunk: trackChunk)
+      trackChunks = trackChunks.dropFirst()
+    } else {
+      tempoTrack = TempoTrack(sequence: self)
+    }
+
+    while let track = instrumentTracks.popLast() { removeTrack(track) }
+    for track in trackChunks.flatMap({ try? InstrumentTrack(sequence: self, trackChunk: $0) }) {
+      addTrack(track)
+    }
+  }
 
   deinit { logDebug("") }
 
+  // MARK: - Adding tracks
+
   /**
-  newTrackWithInstrument:
+  addTrackWithInstrument:
 
   - parameter instrument: Instrument
   */
 
-  func newTrackWithInstrument(instrument: Instrument) throws {
-    let track = try InstrumentTrack(instrument: instrument)
-    addTrack(track)
-    if SettingsManager.makeNewTrackCurrent { currentTrack = track }
-  }
+  func addTrackWithInstrument(instrument: Instrument) throws { addTrack(try InstrumentTrack(sequence: self, instrument: instrument)) }
 
   /**
   addTrack:
@@ -156,16 +210,16 @@ final class MIDISequence {
     guard instrumentTracks ∌ track else { return }
     track.color = TrackColor.allCases[(instrumentTracks.count) % TrackColor.allCases.count]
     instrumentTracks.append(track)
-    receptionist.observe(Track.Notification.DidUpdateEvents, from: track) {
-      [weak self] _ in
-        guard let weakself = self else { return }
-        weakself.logDebug("posting 'DidUpdate'")
-        Notification.DidUpdate.post(object: weakself)
-    }
+    receptionist.observe(Track.Notification.DidUpdateEvents,
+                    from: track,
+                callback: weakMethod(self, method: MIDISequence.trackDidUpdate))
+
     logDebug("track added: \(track.name)")
     Notification.DidAddTrack.post(object: self, userInfo: [Notification.Key.Track: track])
-
+    if currentTrack == nil { currentTrack = track }
   }
+
+  // MARK: - Removing tracks
 
   /**
   removeTrack:
@@ -173,7 +227,7 @@ final class MIDISequence {
   - parameter track: InstrumentTrack
   */
   func removeTrack(track: InstrumentTrack) {
-    guard let idx = instrumentTracks.indexOf(track) else { return }
+    guard let idx = track.index where track.sequence === self else { return }
     removeTrackAtIndex(idx)
   }
 
@@ -182,33 +236,27 @@ final class MIDISequence {
     receptionist.stopObserving(Track.Notification.DidUpdateEvents, from: track)
     logDebug("track removed: \(track.name)")
     Notification.DidRemoveTrack.post(object: self, userInfo: [Notification.Key.Track: track])
-    if currentTrack == track { currentTrack = previousTrack }
+    if currentTrack == track { currentTrackStack.pop(); currentTrack?.recording = Sequencer.recording }
   }
 
-  /**
-  insertTempoChange:
-
-  - parameter tempo: Double
-  */
-  func insertTempoChange(tempo: Double) { tempoTrack.tempo = tempo }
-
-  /**
-  insertTimeSignature:
-
-  - parameter signature: TimeSignature
-  */
-  func insertTimeSignature(signature: TimeSignature) { tempoTrack.timeSignature = signature }
 }
 
+// MARK: - Nameable
+extension MIDISequence: Nameable { var name: String? { return document?.localizedName } }
+
+// MARK: - CustomStringConvertible
 extension MIDISequence: CustomStringConvertible {
   var description: String {
     return "\ntracks:\n" + "\n\n".join(tracks.map({$0.description.indentedBy(1, useTabs: true)}))
   }
 }
 
+// MARK: - CustomDebugStringConvertible
 extension MIDISequence: CustomDebugStringConvertible {
   var debugDescription: String { var result = ""; dump(self, &result); return result }
 }
+
+// MARK: - Notification
 
 extension MIDISequence {
   /** An enumeration to wrap up notifications */

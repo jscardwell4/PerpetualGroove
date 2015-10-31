@@ -100,7 +100,8 @@ final class MIDIPlayerViewController: UIViewController {
 
     guard MIDIDocumentManager.currentDocument == nil && !MIDIDocumentManager.openingDocument else { return }
 
-    do { try MIDIDocumentManager.createNewDocument() } catch { logError(error, message: "Failed to create new document") }
+    logDebug("no current document and manager is not opening a document…creating a new document…")
+    MIDIDocumentManager.createNewDocument()
   }
 
 
@@ -420,7 +421,7 @@ final class MIDIPlayerViewController: UIViewController {
     static let Jogging     = State(rawValue: 0b0001_0000)
 
     var description: String {
-      var result = "MIDIPlayerViewController.State { "
+      var result = "["
       var flagStrings: [String] = []
       if self ∋ .Popover     { flagStrings.append("Popover")     }
       if self ∋ .Playing     { flagStrings.append("Playing")     }
@@ -429,7 +430,7 @@ final class MIDIPlayerViewController: UIViewController {
       if self ∋ .Jogging     { flagStrings.append("Jogging")     }
 
       result += ", ".join(flagStrings)
-      result += " }"
+      result += "]"
       return result
     }
   }

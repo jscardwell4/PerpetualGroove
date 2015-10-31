@@ -16,6 +16,8 @@ struct MIDIFile {
 
   enum Format: Byte2 { case Zero, One, Two }
 
+  static let emptyFile = MIDIFile(tracks: [])
+
   let tracks: [MIDIFileTrackChunk]
 
   private let header: MIDIFileHeaderChunk
@@ -105,9 +107,9 @@ struct MIDIFile {
   - parameter division: Byte2
   - parameter tracks: [MIDITrackType]
   */
-  init(format: Format, division: Byte2, tracks: [MIDIFileTrackChunk]) {
+  init(format: Format = .One, division: Byte2 = 480, tracks: [MIDIFileTrackChunk]) {
     self.tracks = tracks
-    header = MIDIFileHeaderChunk(format: .One, numberOfTracks: Byte2(tracks.count), division: division)
+    header = MIDIFileHeaderChunk(format: format, numberOfTracks: Byte2(tracks.count), division: division)
   }
 
   var bytes: [Byte] {

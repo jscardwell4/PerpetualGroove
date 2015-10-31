@@ -97,3 +97,15 @@ extension NSMetadataItem: DocumentItemType {
   }
 
 }
+
+extension NSNotification {
+  var removedMetadataItems: [NSMetadataItem]? {
+    return userInfo?[NSMetadataQueryUpdateRemovedItemsKey] as? [NSMetadataItem]
+  }
+  var changedMetadataItems: [NSMetadataItem]? {
+    return userInfo?[NSMetadataQueryUpdateChangedItemsKey] as? [NSMetadataItem]
+  }
+  var addedMetadataItems: [NSMetadataItem]? {
+    return userInfo?[NSMetadataQueryUpdateAddedItemsKey] as? [NSMetadataItem]
+  }
+}
