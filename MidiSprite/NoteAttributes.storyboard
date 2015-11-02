@@ -45,10 +45,10 @@
                                                         <animations/>
                                                         <accessibility key="accessibilityConfiguration" identifier="Pitch Picker"/>
                                                         <userDefinedRuntimeAttributes>
-                                                            <userDefinedRuntimeAttribute type="color" keyPath="selectedTextColor">
+                                                            <userDefinedRuntimeAttribute type="color" keyPath="selectedItemColor">
                                                                 <color key="value" red="0.76089900730000004" green="0.25649610160000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                             </userDefinedRuntimeAttribute>
-                                                            <userDefinedRuntimeAttribute type="color" keyPath="textColor">
+                                                            <userDefinedRuntimeAttribute type="color" keyPath="itemColor">
                                                                 <color key="value" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
                                                             </userDefinedRuntimeAttribute>
                                                             <userDefinedRuntimeAttribute type="string" keyPath="labelsString" value="C, C♯, D, D♯, E, F, F♯, G, G♯, A, A♯, B"/>
@@ -64,6 +64,7 @@
                                                                 <real key="value" value="14"/>
                                                             </userDefinedRuntimeAttribute>
                                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="PitchPicker"/>
+                                                            <userDefinedRuntimeAttribute type="image" keyPath="marker" value="underbars"/>
                                                         </userDefinedRuntimeAttributes>
                                                         <connections>
                                                             <action selector="didPickPitch" destination="aQn-av-Bpr" eventType="valueChanged" id="mWm-7f-oG8"/>
@@ -74,10 +75,10 @@
                                                         <animations/>
                                                         <accessibility key="accessibilityConfiguration" identifier="Octave Picker"/>
                                                         <userDefinedRuntimeAttributes>
-                                                            <userDefinedRuntimeAttribute type="color" keyPath="selectedTextColor">
+                                                            <userDefinedRuntimeAttribute type="color" keyPath="selectedItemColor">
                                                                 <color key="value" red="0.76089900730000004" green="0.25649610160000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                             </userDefinedRuntimeAttribute>
-                                                            <userDefinedRuntimeAttribute type="color" keyPath="textColor">
+                                                            <userDefinedRuntimeAttribute type="color" keyPath="itemColor">
                                                                 <color key="value" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="calibratedRGB"/>
                                                             </userDefinedRuntimeAttribute>
                                                             <userDefinedRuntimeAttribute type="string" keyPath="labelsString" value="-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9"/>
@@ -93,6 +94,7 @@
                                                                 <real key="value" value="14"/>
                                                             </userDefinedRuntimeAttribute>
                                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="OctavePicker"/>
+                                                            <userDefinedRuntimeAttribute type="image" keyPath="marker" value="underbars"/>
                                                         </userDefinedRuntimeAttributes>
                                                         <connections>
                                                             <action selector="didPickOctave" destination="aQn-av-Bpr" eventType="valueChanged" id="Bpb-oD-Ic7"/>
@@ -125,18 +127,19 @@
                                                 <rect key="frame" x="80" y="0.0" width="208" height="40"/>
                                                 <animations/>
                                                 <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="color" keyPath="imageColor">
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="itemColor">
                                                         <color key="value" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
                                                     </userDefinedRuntimeAttribute>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="imagesString">
                                                         <string key="value">DoubleWhole, DottedWhole, Whole, DottedHalf, Half, DottedQuarter, Quarter, DottedEighth, Eighth, DottedSixteenth, Sixteenth, DottedThirtySecond, ThirtySecond, DottedSixtyFourth, SixtyFourth, DottedHundredTwentyEighth, HundredTwentyEighth, DottedTwoHundredFiftySixth, TwoHundredFiftySixth</string>
                                                     </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="color" keyPath="imageSelectedColor">
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="selectedItemColor">
                                                         <color key="value" red="0.76089900730000004" green="0.25649610160000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     </userDefinedRuntimeAttribute>
                                                     <userDefinedRuntimeAttribute type="number" keyPath="selection">
                                                         <integer key="value" value="6"/>
                                                     </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="marker" value="underbars"/>
                                                 </userDefinedRuntimeAttributes>
                                                 <variation key="widthClass=regular" misplaced="YES">
                                                     <rect key="frame" x="80" y="0.0" width="208" height="80"/>
@@ -165,16 +168,17 @@
                                                 <rect key="frame" x="80" y="0.0" width="208" height="40"/>
                                                 <animations/>
                                                 <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="color" keyPath="imageColor">
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="itemColor">
                                                         <color key="value" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
                                                     </userDefinedRuntimeAttribute>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="imagesString" value="𝑝𝑝𝑝, 𝑝𝑝, 𝑝, 𝑚𝑝, 𝑚𝑓, 𝑓, 𝑓𝑓, 𝑓𝑓𝑓"/>
-                                                    <userDefinedRuntimeAttribute type="color" keyPath="imageSelectedColor">
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="selectedItemColor">
                                                         <color key="value" red="0.76089900730000004" green="0.25649610160000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     </userDefinedRuntimeAttribute>
                                                     <userDefinedRuntimeAttribute type="number" keyPath="selection">
                                                         <integer key="value" value="4"/>
                                                     </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="marker" value="underbars"/>
                                                 </userDefinedRuntimeAttributes>
                                                 <variation key="widthClass=regular" misplaced="YES">
                                                     <rect key="frame" x="80" y="0.0" width="208" height="80"/>
@@ -232,4 +236,7 @@
             <point key="canvasLocation" x="697" y="61"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="underbars" width="68" height="14"/>
+    </resources>
 </document>

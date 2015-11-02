@@ -144,3 +144,57 @@ public extension dispatch_queue_t {
 
 }
 
+/*
+modified code from source found here: http://blog.scottlogic.com/2014/10/29/concurrent-functional-swift.html
+*/
+
+/**
+synchronized:fn:
+
+- parameter sync: AnyObject
+- parameter fn: () -> R
+
+- returns: R
+*/
+public func synchronized<R>(sync: AnyObject, f: () -> R) -> R {
+  objc_sync_enter(sync)
+  defer { objc_sync_exit(sync) }
+  return f()
+}
+
+
+extension Array {
+
+  /**
+  concurrentMap:callback:
+
+  - parameter transform: (Element) -> U
+
+   - returns: [U]
+*/
+  public func concurrentMap<U>(transform: (Element) -> U) -> [U] {
+    let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+    let element = transform(self[0])
+
+    var results = [U](count: count, repeatedValue:element)
+    results.withUnsafeMutableBufferPointer {
+      [iterations = count - 1] (inout buffer: UnsafeMutableBufferPointer<U>) in
+
+      dispatch_apply(iterations, queue) { buffer[$0 + 1] = transform(self[$0 + 1]) }
+    }
+    return results
+  }
+}
+
+extension SequenceType {
+  /**
+  concurrentMap:
+
+  - parameter transform: (Self.Generator.Element) -> U
+
+  - returns: [U]
+  */
+  public func concurrentMap<U>(transform: (Self.Generator.Element) -> U) -> [U] {
+    return Array(self).concurrentMap(transform)
+  }
+}

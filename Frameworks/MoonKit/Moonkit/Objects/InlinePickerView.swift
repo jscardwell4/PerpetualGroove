@@ -179,7 +179,7 @@ public class InlinePickerView: UIControl {
     set { font = font.fontWithSize(newValue) }
   }
 
-  @IBInspectable public var textColor: UIColor = .darkTextColor() //{ didSet { reloadData() } }
+  @IBInspectable public var itemColor: UIColor = .darkTextColor() //{ didSet { reloadData() } }
 
   public var selectedFont =  InlinePickerView.DefaultFont { didSet { reloadData() } }
   @IBInspectable public var selectedFontName: String  {
@@ -194,9 +194,20 @@ public class InlinePickerView: UIControl {
 
   @IBInspectable public var labelsString: String = "" { didSet { labels = ", ".split(labelsString) } }
   @IBInspectable public var imagesString: String = "" { didSet { images = ", ".split(imagesString).flatMap({UIImage(named: $0)}) } }
-  @IBInspectable public var selectedTextColor: UIColor = .darkTextColor() //{ didSet { reloadData() } }
-  @IBInspectable public var imageColor: UIColor = .darkTextColor() //{ didSet { reloadData() } }
-  @IBInspectable public var imageSelectedColor: UIColor = .darkTextColor() //{ didSet { reloadData() } }
+  @IBInspectable public var selectedItemColor: UIColor = .darkTextColor() //{ didSet { reloadData() } }
+
+  @IBInspectable public var marker: UIImage? {
+    didSet {
+      if let marker = marker?.imageWithRenderingMode(.AlwaysTemplate) {
+        let imageView = UIImageView(image: marker)
+        imageView.contentMode = .Bottom
+        imageView.tintColor = selectedItemColor
+        collectionView.backgroundView = imageView
+      } else {
+        collectionView.backgroundView = nil
+      }
+    }
+  }
 
   /** reloadData */
   public func reloadData() {
@@ -280,13 +291,13 @@ extension InlinePickerView: UICollectionViewDataSource {
     switch cell {
       case let labelCell as InlinePickerViewLabelCell:
         let text = labels[indexPath.item]
-        labelCell.text = text ¶| [font, textColor]
-        labelCell.selectedText = text ¶| [selectedFont, selectedTextColor]
+        labelCell.text = text ¶| [font, itemColor]
+        labelCell.selectedText = text ¶| [selectedFont, selectedItemColor]
 
       case let imageCell as InlinePickerViewImageCell:
         imageCell.image = images[indexPath.item]
-        imageCell.imageColor = imageColor
-        imageCell.imageSelectedColor = imageSelectedColor
+        imageCell.imageColor = itemColor
+        imageCell.imageSelectedColor = selectedItemColor
 
       default: break // Should be unreachable
     }

@@ -10,6 +10,9 @@ import Foundation
 
 extension CGRect {
 
+  public var x: CGFloat { return origin.x }
+  public var y: CGFloat { return origin.y }
+
   // MARK: - Initializers
   /**
   init:

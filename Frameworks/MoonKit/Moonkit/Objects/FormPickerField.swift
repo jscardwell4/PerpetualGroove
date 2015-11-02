@@ -38,10 +38,10 @@ public final class FormPickerField: FormField {
   override public var font: UIFont? { didSet { if let font = font { picker?.font = font } } }
   override public var selectedFont: UIFont? { didSet { if let font = selectedFont { picker?.selectedFont = font } } }
   override public var color: UIColor? {
-    didSet { if let color = color { picker?.textColor = color; picker?.imageColor = color } }
+    didSet { if let color = color { picker?.itemColor = color } }
   }
   override public var selectedColor: UIColor? {
-    didSet { if let color = selectedColor { picker?.selectedTextColor = color; picker?.imageSelectedColor = color } }
+    didSet { if let color = selectedColor { picker?.selectedItemColor = color } }
   }
 
   private weak var picker: InlinePickerView? { didSet { _control = picker } }
@@ -60,9 +60,9 @@ public final class FormPickerField: FormField {
     control.didSelectItem = { [unowned self] _, idx in self._value = idx; self.changeHandler?(self) }
 
     if let font = font { control.font = font }
-    if let color = color { control.textColor = color }
+    if let color = color { control.itemColor = color }
     if let font = selectedFont { control.selectedFont = font }
-    if let color = selectedColor { control.selectedTextColor = color }
+    if let color = selectedColor { control.selectedItemColor = color }
     if (0 ..< choices.count).contains(_value) { control.selectItem(_value, animated: false) }
     picker = control
     

@@ -59,7 +59,7 @@ class InlinePickerViewLayout: UICollectionViewLayout {
 
   weak var delegate: InlinePickerView?
 
-  var flat = false { didSet { invalidateLayout() } }
+  var flat = true { didSet { invalidateLayout() } }
 
   /// A private struct for use as a cache of the values necessary to perform layout-related calculations
   private struct LayoutValues: CustomStringConvertible {
@@ -67,7 +67,7 @@ class InlinePickerViewLayout: UICollectionViewLayout {
     var height: CGFloat = 0                 /// Caches `itemHeight` provided by `delegate`
     var padding: CGFloat = 8                /// Padding value provided by `delegate`
     var selection = -1                      /// Caches the `selection` property of `delegate`
-    var rect = CGRect.zero              /// Frame used during calculations
+    var rect = CGRect.zero                  /// Frame used during calculations
     var count = 0                           /// The total item count
 
     var description: String {
@@ -281,16 +281,17 @@ class InlinePickerViewLayout: UICollectionViewLayout {
     let item = attributes.indexPath.item
     let frame = attributes.frame
     let d = frame.midX - values.rect.midX
-    let r = values.rect.width / 2
+    let r = half(values.rect.width)
 
-    let L = CGFloat(M_PI_2) * r
+    let L = half(π) * r
     let l = d / r * L
 
     let alpha = l / r
     let sigma = CGFloat(M_PI_2) - alpha
-    let theta = !editing && values.selection == item ? 0 : (CGFloat(M_PI_2) - sigma) * (values.rect.width / contentSize.width)
+    let theta = !editing && values.selection == item ? 0 : (half(π) - sigma)// * (values.rect.width / contentSize.width)
 
     let tx = !editing && values.selection == item ? values.rect.maxX - frame.maxX : 0
+//    let tz = !editing ? 0 : (1 - abs((d % r) / r)) * r
 
     attributes.transform3D = CATransform3D(
       m11: cos(theta), m12: 0, m13: -sin(theta), m14: 0,
@@ -299,7 +300,7 @@ class InlinePickerViewLayout: UICollectionViewLayout {
       m41: tx, m42: 0, m43: 0, m44: 1
     )
 
-    attributes.zPosition = !editing ? 0 : sin(sigma) * r
+//    attributes.zPosition = !editing ? 0 : (1 - d / r) * r //sin(sigma) * r
     attributes.alpha = abs(theta) >= CGFloat(M_PI_2) ? 0 : 1
     attributes.hidden = !editing && values.selection != item
   }
