@@ -4,6 +4,14 @@
 		"selected_items":
 		[
 			[
+				"defau",
+				"defaultLogContext"
+			],
+			[
+				"sub",
+				"subtreeContains"
+			],
+			[
 				"AddRe",
 				"AddReturnAfterMessage"
 			],
@@ -506,14 +514,6 @@
 			[
 				"fetch",
 				"fetchedResultsForEntity"
-			],
-			[
-				"coll",
-				"collectionToRootAttributeName"
-			],
-			[
-				"itemTo",
-				"itemToRootAttributeName"
 			]
 		]
 	},
@@ -555,10 +555,18 @@
 	"build_varint": "",
 	"command_palette":
 	{
-		"height": 392.0,
-		"last_filter": "scop",
+		"height": 247.0,
+		"last_filter": "ssSw",
 		"selected_items":
 		[
+			[
+				"ssSw",
+				"Set Syntax: Swift-for-f-ing-sublime"
+			],
+			[
+				"sssw",
+				"Set Syntax: Swift-for-f-ing-sublime"
+			],
 			[
 				"scop",
 				"Toggle ScopeAlways"
@@ -598,10 +606,6 @@
 			[
 				"insta",
 				"Package Control: Install Package"
-			],
-			[
-				"sssw",
-				"Set Syntax: Swift"
 			],
 			[
 				"ssswi",
@@ -972,7 +976,7 @@
 				"Package Control: Install Package"
 			]
 		],
-		"width": 568.0
+		"width": 567.0
 	},
 	"console":
 	{
@@ -1074,6 +1078,10 @@
 	],
 	"file_history":
 	[
+		"/Users/Moondeer/Projects/MidiSprite/MidiSprite/SettingsManager.swift",
+		"/Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Data Structures/Tree.swift",
+		"/Users/Moondeer/Projects/MidiSprite/MidiSprite/LogManager.swift",
+		"/Users/Moondeer/Library/Application Support/Sublime Text 3/Packages/User/Preferences.sublime-settings",
 		"/Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Functions/LogManager.swift",
 		"/Users/Moondeer/Projects/MidiSprite/MidiSprite/MIDIDocument.swift",
 		"/Users/Moondeer/Projects/MidiSprite/MidiSprite/NoteAttributes.swift",
@@ -1089,7 +1097,6 @@
 		"/Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Extensions/NSCharacterSet+MoonKitAdditions.swift",
 		"/Users/Moondeer/Library/Application Support/Sublime Text 3/Packages/User/darcula (Flake8Lint).tmTheme",
 		"/Users/Moondeer/Library/Application Support/Sublime Text 3/Packages/ScopeAlways/ScopeAlways.sublime-settings",
-		"/Users/Moondeer/Library/Application Support/Sublime Text 3/Packages/User/Preferences.sublime-settings",
 		"/Users/Moondeer/Projects/MidiSprite/MidiSprite/MixerCell.swift",
 		"/Users/Moondeer/Projects/MidiSprite/MidiSprite/TrackLabel.swift",
 		"/Users/Moondeer/Projects/MidiSprite/Frameworks/MoonKit/Moonkit/Objects/MarqueeField.swift",
@@ -1198,10 +1205,7 @@
 		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/DetailController/ManufacturerDetailController.swift",
 		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/DetailController/ActivityDetailController.swift",
 		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/BankModelDelegate.swift",
-		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/DetailController/NamedItemDetailController.swift",
-		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/DetailController/DetailController.swift",
-		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/BankCollectionFilteringDetailSection.swift",
-		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/DetailController.swift"
+		"/Users/Moondeer/Projects/MSRemote/Remote/Bank/Source/View Controllers/DetailController/NamedItemDetailController.swift"
 	],
 	"find":
 	{
@@ -1243,6 +1247,26 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"Tree",
+			"tree",
+			"describeTree",
+			"l",
+			"r",
+			"x",
+			"Tree",
+			"red",
+			"value: ",
+			".Node",
+			"tree",
+			"balance",
+			"true",
+			"false",
+			"red",
+			"Tree",
+			"tree",
+			"Red",
+			"Black",
+			"return",
 			"dotted-",
 			"Note",
 			"Level",
@@ -1350,27 +1374,7 @@
 			"MIDI",
 			"case k",
 			"10873",
-			"MoonKit",
-			"MSLogError",
-			"_",
-			"vol",
-			"fast",
-			"'",
-			"´",
-			"+",
-			" ",
-			"tri",
-			"W/h",
-			"rare",
-			"saw",
-			"sine",
-			"vib",
-			"square",
-			"triangl",
-			"inv",
-			"rebirth",
-			"pink",
-			"brown"
+			"MoonKit"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -1523,7 +1527,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 23.0
+		"height": 21.0
 	},
 	"input":
 	{
@@ -1573,6 +1577,10 @@
 		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"tree",
+				"Frameworks/MoonKit/Moonkit/Data Structures/Tree.swift"
+			],
 			[
 				"logm",
 				"Frameworks/MoonKit/Moonkit/Functions/LogManager.swift"
@@ -2080,10 +2088,6 @@
 			[
 				"acti",
 				"Remote/Bank/Resources/JSON/ActivityController.json"
-			],
-			[
-				"systemcom",
-				"Remote/DataModel/Model/RemoteElement/Commands/Command Subclasses/SystemCommand.swift"
 			]
 		],
 		"width": 0.0

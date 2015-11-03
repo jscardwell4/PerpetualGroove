@@ -15,10 +15,13 @@ import MoonKit
 @UIApplicationMain
 final class AppDelegate: UIResponder, UIApplicationDelegate {
 
-  var window: UIWindow?
+  static var currentInstance: AppDelegate { return UIApplication.sharedApplication().delegate as! AppDelegate }
 
-  /** initialize */
-  override class func initialize() {
+  var window: UIWindow?
+  private(set) weak var viewController: MIDIPlayerViewController!
+
+  /** setup */
+  private func setup() {
     Eveleth.registerFonts()
     Triump.registerFonts()
     FestivoLC.registerFonts()
@@ -27,6 +30,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     MIDIDocumentManager.initialize()
     AudioManager.initialize()
     Sequencer.initialize()
+    viewController = window?.rootViewController as? MIDIPlayerViewController
   }
 
   /**
@@ -40,6 +44,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
   func                application(application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [NSObject:AnyObject]?) -> Bool
   {
+    setup()
     return true
   }
 

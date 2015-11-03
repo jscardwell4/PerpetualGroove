@@ -12,6 +12,13 @@ import Chameleon
 import CoreImage
 import typealias AudioToolbox.AudioUnitParameterValue
 
+final class AddTrackCell: UICollectionViewCell {
+
+  static let Identifier = "AddTrackCell"
+  @IBOutlet weak var plusButton: ImageButtonView!
+  @IBOutlet weak var trackCellImage: UIImageView!
+}
+
 class MixerCell: UICollectionViewCell {
 
   @IBOutlet weak var volumeSlider: Slider!
@@ -95,17 +102,16 @@ final class TrackCell: MixerCell {
   @objc private func handleLongPress(sender: UILongPressGestureRecognizer) {
     switch sender.state {
       case .Began:
-        startLocation = sender.locationInView(controller?.collectionView)
+        startLocation = sender.locationInView(superview)
         UIView.animateWithDuration(0.25) { [unowned self] in
           self.layer.transform = CATransform3D(sx: 1.1, sy: 1.1, sz: 1.1).translate(tx: 0, ty: 10, tz: 0)
         }
 
       case .Changed:
         guard let startLocation = startLocation else { break }
-        let currentLocation = sender.locationInView(controller?.collectionView)
-
+        let currentLocation = sender.locationInView(superview)
         switch (startLocation - currentLocation).unpack {
-        case let (x, _) where x < -50 && !markedForRemoval:
+          case let (x, _) where x < -50 && !markedForRemoval:
             controller?.shiftCell(self, direction: .Right); self.startLocation = currentLocation
           case let (x, _) where x > 50 && !markedForRemoval:
             controller?.shiftCell(self, direction: .Left); self.startLocation = currentLocation

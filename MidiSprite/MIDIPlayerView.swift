@@ -14,7 +14,10 @@ final class MIDIPlayerView: SKView {
 
   var midiPlayerScene: MIDIPlayerScene? { return scene as? MIDIPlayerScene }
 
-  static var currentInstance: MIDIPlayerView? { return MIDIPlayerViewController.currentInstance?.midiPlayerView }
+  static var currentInstance: MIDIPlayerView? {
+    guard MIDIPlayerViewController.currentInstance.isViewLoaded() else { return nil }
+    return MIDIPlayerViewController.currentInstance.midiPlayerView
+  }
 
   /** setup */
   private func setup() {

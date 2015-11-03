@@ -51,7 +51,7 @@
                                                             <userDefinedRuntimeAttribute type="color" keyPath="itemColor">
                                                                 <color key="value" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
                                                             </userDefinedRuntimeAttribute>
-                                                            <userDefinedRuntimeAttribute type="string" keyPath="labelsString" value="C, C♯, D, D♯, E, F, F♯, G, G♯, A, A♯, B"/>
+                                                            <userDefinedRuntimeAttribute type="string" keyPath="labelsString" value="C , C♯, D , D♯, E , F , F♯, G , G♯, A , A♯, B "/>
                                                             <userDefinedRuntimeAttribute type="number" keyPath="selection">
                                                                 <integer key="value" value="3"/>
                                                             </userDefinedRuntimeAttribute>
@@ -64,7 +64,6 @@
                                                                 <real key="value" value="14"/>
                                                             </userDefinedRuntimeAttribute>
                                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="PitchPicker"/>
-                                                            <userDefinedRuntimeAttribute type="image" keyPath="marker" value="underbars"/>
                                                         </userDefinedRuntimeAttributes>
                                                         <connections>
                                                             <action selector="didPickPitch" destination="aQn-av-Bpr" eventType="valueChanged" id="mWm-7f-oG8"/>
@@ -94,7 +93,6 @@
                                                                 <real key="value" value="14"/>
                                                             </userDefinedRuntimeAttribute>
                                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="OctavePicker"/>
-                                                            <userDefinedRuntimeAttribute type="image" keyPath="marker" value="underbars"/>
                                                         </userDefinedRuntimeAttributes>
                                                         <connections>
                                                             <action selector="didPickOctave" destination="aQn-av-Bpr" eventType="valueChanged" id="Bpb-oD-Ic7"/>
@@ -139,7 +137,6 @@
                                                     <userDefinedRuntimeAttribute type="number" keyPath="selection">
                                                         <integer key="value" value="6"/>
                                                     </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="image" keyPath="marker" value="underbars"/>
                                                 </userDefinedRuntimeAttributes>
                                                 <variation key="widthClass=regular" misplaced="YES">
                                                     <rect key="frame" x="80" y="0.0" width="208" height="80"/>
@@ -178,7 +175,6 @@
                                                     <userDefinedRuntimeAttribute type="number" keyPath="selection">
                                                         <integer key="value" value="4"/>
                                                     </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="image" keyPath="marker" value="underbars"/>
                                                 </userDefinedRuntimeAttributes>
                                                 <variation key="widthClass=regular" misplaced="YES">
                                                     <rect key="frame" x="80" y="0.0" width="208" height="80"/>
@@ -236,7 +232,4 @@
             <point key="canvasLocation" x="697" y="61"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="underbars" width="68" height="14"/>
-    </resources>
 </document>

@@ -13,12 +13,7 @@ import Triump
 
 final class MIDIPlayerViewController: UIViewController {
 
-  static var currentInstance: MIDIPlayerViewController? {
-    guard let delegate = UIApplication.sharedApplication().delegate,
-                window = delegate.window,
-            controller = window?.rootViewController as? MIDIPlayerViewController else { return nil }
-    return controller
-  }
+  static var currentInstance: MIDIPlayerViewController { return AppDelegate.currentInstance.viewController }
 
   // MARK: - View loading and layout
 
@@ -168,21 +163,21 @@ final class MIDIPlayerViewController: UIViewController {
     case None, Files, NoteAttributes, Instrument, Mixer, Tempo
     var view: PopoverView? {
       switch self {
-        case .Files:          return MIDIPlayerViewController.currentInstance?.documentsPopoverView
-        case .NoteAttributes: return MIDIPlayerViewController.currentInstance?.noteAttributesPopoverView
-        case .Instrument:     return MIDIPlayerViewController.currentInstance?.instrumentPopoverView
-        case .Mixer:          return MIDIPlayerViewController.currentInstance?.mixerPopoverView
-        case .Tempo:          return MIDIPlayerViewController.currentInstance?.tempoPopoverView
+        case .Files:          return MIDIPlayerViewController.currentInstance.documentsPopoverView
+        case .NoteAttributes: return MIDIPlayerViewController.currentInstance.noteAttributesPopoverView
+        case .Instrument:     return MIDIPlayerViewController.currentInstance.instrumentPopoverView
+        case .Mixer:          return MIDIPlayerViewController.currentInstance.mixerPopoverView
+        case .Tempo:          return MIDIPlayerViewController.currentInstance.tempoPopoverView
         case .None:           return nil
       }
     }
     var button: ImageButtonView? {
       switch self {
-        case .Files:          return MIDIPlayerViewController.currentInstance?.documentsButton
-        case .NoteAttributes: return MIDIPlayerViewController.currentInstance?.noteAttributesButton
-        case .Instrument:     return MIDIPlayerViewController.currentInstance?.instrumentButton
-        case .Mixer:          return MIDIPlayerViewController.currentInstance?.mixerButton
-        case .Tempo:          return MIDIPlayerViewController.currentInstance?.tempoButton
+        case .Files:          return MIDIPlayerViewController.currentInstance.documentsButton
+        case .NoteAttributes: return MIDIPlayerViewController.currentInstance.noteAttributesButton
+        case .Instrument:     return MIDIPlayerViewController.currentInstance.instrumentButton
+        case .Mixer:          return MIDIPlayerViewController.currentInstance.mixerButton
+        case .Tempo:          return MIDIPlayerViewController.currentInstance.tempoButton
         case .None:           return nil
       }
     }
@@ -222,7 +217,7 @@ final class MIDIPlayerViewController: UIViewController {
 
   @IBOutlet weak var mixerButton: ImageButtonView?
   @IBAction private func mixer() { updatePopover(.Mixer) }
-  private weak var mixerViewController: MixerViewController!
+  private(set) var mixerViewController: MixerViewController!
   @IBOutlet private weak var mixerPopoverView: PopoverView?
 
   // MARK: - Instrument

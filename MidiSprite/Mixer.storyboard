@@ -41,7 +41,7 @@
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Mnc-ed-SYw">
                                                     <rect key="frame" x="20" y="0.0" width="44" height="145"/>
                                                     <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="256" text="VOL" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4EJ-Z0-Ecx" customClass="Label" customModule="MoonKit">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="256" misplaced="YES" text="VOL" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4EJ-Z0-Ecx" customClass="Label" customModule="MoonKit">
                                                             <rect key="frame" x="8" y="0.0" width="28" height="15"/>
                                                             <animations/>
                                                             <constraints>
@@ -102,7 +102,7 @@
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="klg-NE-H6j">
                                                     <rect key="frame" x="0.0" y="155" width="84" height="109"/>
                                                     <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="256" text="PAN" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Q27-Qm-1HH" customClass="Label" customModule="MoonKit">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="256" misplaced="YES" text="PAN" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Q27-Qm-1HH" customClass="Label" customModule="MoonKit">
                                                             <rect key="frame" x="28" y="0.0" width="28" height="15"/>
                                                             <animations/>
                                                             <constraints>
@@ -157,7 +157,7 @@
                                                     </constraints>
                                                 </stackView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="MASTER" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zFx-2Q-V0k" customClass="Label" customModule="MoonKit">
-                                                    <rect key="frame" x="17" y="274" width="51" height="123"/>
+                                                    <rect key="frame" x="14" y="274" width="57" height="123"/>
                                                     <animations/>
                                                     <fontDescription key="fontDescription" name="Triump-Rg-Rock-02" family="Triump Rg Rock" pointSize="14"/>
                                                     <color key="textColor" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="calibratedRGB"/>
@@ -211,7 +211,7 @@
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="YGu-8C-M5R">
                                                     <rect key="frame" x="20" y="0.0" width="44" height="145"/>
                                                     <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="256" text="VOL" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1nN-5d-7mi" customClass="Label" customModule="MoonKit">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="256" misplaced="YES" text="VOL" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1nN-5d-7mi" customClass="Label" customModule="MoonKit">
                                                             <rect key="frame" x="8" y="0.0" width="28" height="15"/>
                                                             <animations/>
                                                             <constraints>
@@ -269,7 +269,7 @@
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="tLa-UT-lvm">
                                                     <rect key="frame" x="0.0" y="153" width="84" height="109"/>
                                                     <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="256" text="PAN" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UVo-0O-vty" customClass="Label" customModule="MoonKit">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="256" misplaced="YES" text="PAN" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UVo-0O-vty" customClass="Label" customModule="MoonKit">
                                                             <rect key="frame" x="28" y="0.0" width="28" height="15"/>
                                                             <animations/>
                                                             <constraints>
@@ -323,10 +323,10 @@
                                                         <constraint firstAttribute="height" constant="109" id="7Lp-IM-PkL"/>
                                                     </constraints>
                                                 </stackView>
-                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="13X-Pc-Np3">
+                                                <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="13X-Pc-Np3">
                                                     <rect key="frame" x="20" y="269" width="45" height="38"/>
                                                     <subviews>
-                                                        <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ldg-6q-t2e" userLabel="Solo" customClass="LabelButton" customModule="MoonKit">
+                                                        <view opaque="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ldg-6q-t2e" userLabel="Solo" customClass="LabelButton" customModule="MoonKit">
                                                             <rect key="frame" x="0.0" y="0.0" width="45" height="19"/>
                                                             <animations/>
                                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -353,7 +353,7 @@
                                                                 <action selector="solo" destination="2AY-7g-m2Q" eventType="touchUpInside" id="g3q-b6-WW4"/>
                                                             </connections>
                                                         </view>
-                                                        <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BZl-Ps-fwB" userLabel="Mute" customClass="LabelButton" customModule="MoonKit">
+                                                        <view opaque="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BZl-Ps-fwB" userLabel="Mute" customClass="LabelButton" customModule="MoonKit">
                                                             <rect key="frame" x="0.0" y="19" width="45" height="19"/>
                                                             <animations/>
                                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -565,6 +565,9 @@
                                         <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" alpha="0.34999999999999998" contentMode="center" image="add_track_background" translatesAutoresizingMaskIntoConstraints="NO" id="dMA-k2-N2G">
                                             <rect key="frame" x="0.0" y="0.0" width="100" height="410"/>
                                             <animations/>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="BackgroundImage"/>
+                                            </userDefinedRuntimeAttributes>
                                         </imageView>
                                         <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6pi-bq-mPh" customClass="ImageButtonView" customModule="MoonKit">
                                             <rect key="frame" x="32" y="197" width="36" height="36"/>
@@ -621,6 +624,9 @@
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="320" height="430"/>
+                    <connections>
+                        <outlet property="collectionView" destination="QhA-gV-EZG" id="hQA-3n-GqN"/>
+                    </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="H3X-NX-nN4" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

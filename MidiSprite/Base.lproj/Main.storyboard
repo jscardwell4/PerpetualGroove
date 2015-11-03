@@ -37,7 +37,7 @@
                                                 <rect key="frame" x="0.0" y="0.0" width="1282" height="120"/>
                                                 <subviews>
                                                     <containerView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HzR-qG-Aqv" userLabel="Instrument Container">
-                                                        <rect key="frame" x="0.0" y="0.0" width="561" height="120"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="631" height="120"/>
                                                         <animations/>
                                                         <userDefinedRuntimeAttributes>
                                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="InstrumentContainer"/>
@@ -48,7 +48,7 @@
                                                         </connections>
                                                     </containerView>
                                                     <containerView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ont-R1-PQ9" userLabel="NoteAttributes Container">
-                                                        <rect key="frame" x="721" y="0.0" width="561" height="120"/>
+                                                        <rect key="frame" x="651" y="0.0" width="631" height="120"/>
                                                         <animations/>
                                                         <userDefinedRuntimeAttributes>
                                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="NoteAttributesContainer"/>
@@ -234,6 +234,9 @@
                                                                         <color key="value" red="0.72547006607055664" green="0.70085549354553223" blue="0.6621164083480835" alpha="1" colorSpace="calibratedRGB"/>
                                                                     </userDefinedRuntimeAttribute>
                                                                 </userDefinedRuntimeAttributes>
+                                                                <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="56" height="56"/>
+                                                                </variation>
                                                                 <connections>
                                                                     <action selector="record" destination="BV1-FR-VrT" eventType="touchUpInside" id="n5c-Wk-WUa"/>
                                                                 </connections>
@@ -257,6 +260,9 @@
                                                                         <color key="value" red="0.72547006607055664" green="0.70085549354553223" blue="0.6621164083480835" alpha="1" colorSpace="calibratedRGB"/>
                                                                     </userDefinedRuntimeAttribute>
                                                                 </userDefinedRuntimeAttributes>
+                                                                <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                                    <rect key="frame" x="66" y="0.0" width="56" height="56"/>
+                                                                </variation>
                                                                 <connections>
                                                                     <action selector="playPause" destination="BV1-FR-VrT" eventType="touchUpInside" id="67R-Wm-Kiq"/>
                                                                 </connections>
@@ -285,6 +291,9 @@
                                                                         <color key="value" red="0.72547006607055664" green="0.70085549354553223" blue="0.6621164083480835" alpha="1" colorSpace="calibratedRGB"/>
                                                                     </userDefinedRuntimeAttribute>
                                                                 </userDefinedRuntimeAttributes>
+                                                                <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                                    <rect key="frame" x="132" y="0.0" width="56" height="56"/>
+                                                                </variation>
                                                                 <connections>
                                                                     <action selector="stop" destination="BV1-FR-VrT" eventType="touchUpInside" id="jD9-0j-4ba"/>
                                                                 </connections>
@@ -295,6 +304,9 @@
                                                             <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="TransportStack"/>
                                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TransportStack"/>
                                                         </userDefinedRuntimeAttributes>
+                                                        <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                            <rect key="frame" x="0.0" y="47" width="188" height="56"/>
+                                                        </variation>
                                                     </stackView>
                                                     <view opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ndz-Vc-1wb" customClass="ScrollWheel" customModule="MoonKit">
                                                         <rect key="frame" x="490" y="0.0" width="150" height="150"/>
@@ -334,6 +346,9 @@
                                                                 <include reference="ywb-RY-e9s"/>
                                                             </mask>
                                                         </variation>
+                                                        <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                            <rect key="frame" x="208" y="0.0" width="150" height="150"/>
+                                                        </variation>
                                                         <connections>
                                                             <action selector="beginJog" destination="BV1-FR-VrT" eventType="touchDown" id="hQl-TJ-fU9"/>
                                                             <action selector="endJog" destination="BV1-FR-VrT" eventType="touchUpOutside" id="Egr-SV-2uD"/>
@@ -347,6 +362,9 @@
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TransportJogWheelStack"/>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="TransportJogWheelStack"/>
                                                 </userDefinedRuntimeAttributes>
+                                                <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                    <rect key="frame" x="85" y="0.0" width="358" height="150"/>
+                                                </variation>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" distribution="equalCentering" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="NdS-rf-HyN" userLabel="TimeStackHorizontal">
                                                 <rect key="frame" x="1071" y="14" width="211" height="122"/>
@@ -421,7 +439,8 @@
                                                                         <exclude reference="a7T-hb-UY1"/>
                                                                     </mask>
                                                                 </variation>
-                                                                <variation key="heightClass=regular-widthClass=regular">
+                                                                <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                                    <rect key="frame" x="-22.5" y="0.0" width="325" height="56"/>
                                                                     <mask key="constraints">
                                                                         <include reference="a7T-hb-UY1"/>
                                                                     </mask>
@@ -452,6 +471,9 @@
                                                                                 <color key="value" red="0.72547006607055664" green="0.70085549354553223" blue="0.6621164083480835" alpha="1" colorSpace="calibratedRGB"/>
                                                                             </userDefinedRuntimeAttribute>
                                                                         </userDefinedRuntimeAttributes>
+                                                                        <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                                            <rect key="frame" x="0.0" y="0.0" width="56" height="56"/>
+                                                                        </variation>
                                                                         <connections>
                                                                             <action selector="toggleMetronome" destination="BV1-FR-VrT" eventType="touchUpInside" id="P9O-d8-MRc"/>
                                                                         </connections>
@@ -1782,6 +1804,9 @@
                                                         <userDefinedRuntimeAttributes>
                                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="Message"/>
                                                         </userDefinedRuntimeAttributes>
+                                                        <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                            <rect key="frame" x="255.5" y="390" width="289" height="20"/>
+                                                        </variation>
                                                     </label>
                                                 </subviews>
                                                 <animations/>

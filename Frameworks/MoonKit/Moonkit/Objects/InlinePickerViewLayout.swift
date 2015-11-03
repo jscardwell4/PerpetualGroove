@@ -14,6 +14,8 @@ class InlinePickerViewLayout: UICollectionViewLayout {
   class Attributes: UICollectionViewLayoutAttributes {
 
     var zPosition: CGFloat = 0
+    var containsMarker: Bool = false
+
 
     /**
     isEqual:
@@ -23,7 +25,8 @@ class InlinePickerViewLayout: UICollectionViewLayout {
     - returns: Bool
     */
     override func isEqual(object: AnyObject?) -> Bool {
-      return super.isEqual(object) && (object as? Attributes)?.zPosition == zPosition
+      guard let other = object as? Attributes else { return false }
+      return super.isEqual(other) && other.zPosition == zPosition && other.containsMarker == containsMarker
     }
 
     /**
@@ -36,6 +39,7 @@ class InlinePickerViewLayout: UICollectionViewLayout {
     override func copyWithZone(zone: NSZone) -> AnyObject {
       let result: Attributes = super.copyWithZone(zone) as! Attributes
       result.zPosition = zPosition
+      result.containsMarker = containsMarker
       return result
     }
 
@@ -47,7 +51,8 @@ class InlinePickerViewLayout: UICollectionViewLayout {
         "transform3D: {\n\(NSStringFromCATransform3D(transform3D).indentedBy(8))\n\t\t}",
         "alpha: \(alpha)",
         "hidden: \(hidden)",
-        "zPosition: \(zPosition)"
+        "zPosition: \(zPosition)",
+        "containsMarker: \(containsMarker)"
         ) + "\n}"
     }
   }
@@ -267,6 +272,10 @@ class InlinePickerViewLayout: UICollectionViewLayout {
     attributes.frame = rawFrames[indexPath.item]
 
     if !flat { applyTransformToAttributes(attributes) }
+
+    if abs(values.rect.midX - rawFrames[indexPath.item].midX) < half(rawFrames[indexPath.item].width) {
+      attributes.containsMarker = true
+    }
 
     return attributes
   }

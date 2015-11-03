@@ -64,7 +64,7 @@ struct NoteAttributes {
     - parameter rawValue: String
     */
     init?(rawValue: String) {
-      guard let match = (~/"^([A-G]♯?)((?:-1)|[0-9])$").firstMatch(rawValue),
+      guard let match = (~/"^([A-G]♯?) ?((?:-1)|[0-9])$").firstMatch(rawValue),
         rawPitch = match.captures[1]?.string,
         pitch = Pitch(rawValue: rawPitch),
         rawOctave = match.captures[2]?.string,

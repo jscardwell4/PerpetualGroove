@@ -34,6 +34,8 @@ final class MIDISequence {
   func exchangeInstrumentTrackAtIndex(idx1: Int, withTrackAtIndex idx2: Int) {
     guard instrumentTracks.indices ⊇ [idx1, idx2] else { return }
     swap(&instrumentTracks[idx1], &instrumentTracks[idx2])
+    logDebug("posting 'DidUpdate'")
+    Notification.DidUpdate.post(object: self)
   }
 
   var currentTrackIndex: Int? {
@@ -183,7 +185,6 @@ final class MIDISequence {
       tempoTrack = TempoTrack(sequence: self)
     }
 
-    while let track = instrumentTracks.popLast() { removeTrack(track) }
     for track in trackChunks.flatMap({ try? InstrumentTrack(sequence: self, trackChunk: $0) }) {
       addTrack(track)
     }
@@ -194,12 +195,16 @@ final class MIDISequence {
   // MARK: - Adding tracks
 
   /**
-  addTrackWithInstrument:
+  insertTrackWithInstrument:
 
   - parameter instrument: Instrument
   */
 
-  func addTrackWithInstrument(instrument: Instrument) throws { addTrack(try InstrumentTrack(sequence: self, instrument: instrument)) }
+  func insertTrackWithInstrument(instrument: Instrument) throws {
+    addTrack(try InstrumentTrack(sequence: self, instrument: instrument))
+    logDebug("posting 'DidUpdate'")
+    Notification.DidUpdate.post(object: self)
+  }
 
   /**
   addTrack:
@@ -215,7 +220,7 @@ final class MIDISequence {
                 callback: weakMethod(self, method: MIDISequence.trackDidUpdate))
 
     logDebug("track added: \(track.name)")
-    Notification.DidAddTrack.post(object: self, userInfo: [Notification.Key.Track: track])
+    Notification.DidAddTrack.post(object: self, userInfo: [Notification.Key.AddedIndex: instrumentTracks.count - 1])
     if currentTrack == nil { currentTrack = track }
   }
 
@@ -235,8 +240,10 @@ final class MIDISequence {
     let track = instrumentTracks.removeAtIndex(index)
     receptionist.stopObserving(Track.Notification.DidUpdateEvents, from: track)
     logDebug("track removed: \(track.name)")
-    Notification.DidRemoveTrack.post(object: self, userInfo: [Notification.Key.Track: track])
+    Notification.DidRemoveTrack.post(object: self, userInfo: [Notification.Key.RemovedIndex: index])
     if currentTrack == track { currentTrackStack.pop(); currentTrack?.recording = Sequencer.recording }
+    logDebug("posting 'DidUpdate'")
+    Notification.DidUpdate.post(object: self)
   }
 
 }
@@ -262,7 +269,7 @@ extension MIDISequence {
   /** An enumeration to wrap up notifications */
   enum Notification: String, NotificationType, NotificationNameType {
     case DidAddTrack, DidRemoveTrack, DidChangeTrack, SoloCountDidChange, DidUpdate
-    enum Key: String, NotificationKeyType { case Track, OldTrack, OldCount, NewCount }
+    enum Key: String, NotificationKeyType { case Track, OldTrack, OldCount, RemovedIndex, AddedIndex, NewCount }
   }
 }
 
@@ -273,5 +280,12 @@ extension NSNotification {
 
   var oldCount: Int? { return (userInfo?[MIDISequence.Notification.Key.OldCount.key] as? NSNumber)?.integerValue }
   var newCount: Int? { return (userInfo?[MIDISequence.Notification.Key.NewCount.key] as? NSNumber)?.integerValue }
+
+  var removedIndex: Int? {
+    return (userInfo?[MIDISequence.Notification.Key.RemovedIndex.key] as? NSNumber)?.integerValue
+  }
+  var addedIndex: Int? {
+    return (userInfo?[MIDISequence.Notification.Key.AddedIndex.key] as? NSNumber)?.integerValue
+  }
 
 }

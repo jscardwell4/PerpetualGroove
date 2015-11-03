@@ -64,7 +64,6 @@
                                                         <integer key="value" value="0"/>
                                                     </userDefinedRuntimeAttribute>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="SoundSetPicker"/>
-                                                    <userDefinedRuntimeAttribute type="image" keyPath="marker" value="underbars"/>
                                                 </userDefinedRuntimeAttributes>
                                                 <variation key="widthClass=regular" misplaced="YES">
                                                     <rect key="frame" x="94" y="0.0" width="194" height="80"/>
@@ -118,7 +117,6 @@
                                                         <integer key="value" value="0"/>
                                                     </userDefinedRuntimeAttribute>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="ProgramPicker"/>
-                                                    <userDefinedRuntimeAttribute type="image" keyPath="marker" value="underbars"/>
                                                 </userDefinedRuntimeAttributes>
                                                 <variation key="widthClass=regular" misplaced="YES">
                                                     <rect key="frame" x="94" y="0.0" width="194" height="80"/>
@@ -234,7 +232,6 @@
     </scenes>
     <resources>
         <image name="down_arrow" width="31" height="31"/>
-        <image name="underbars" width="68" height="14"/>
         <image name="up_arrow" width="31" height="31"/>
     </resources>
 </document>

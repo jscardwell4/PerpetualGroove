@@ -33,7 +33,9 @@ class InlinePickerViewCell: UICollectionViewCell {
   override func applyLayoutAttributes(layoutAttributes: UICollectionViewLayoutAttributes) {
     super.applyLayoutAttributes(layoutAttributes)
 
-    layer.zPosition = (layoutAttributes as? InlinePickerViewLayout.Attributes)?.zPosition ?? 0.0
+    guard let attributes = layoutAttributes as? InlinePickerViewLayout.Attributes else { return }
+    layer.zPosition = attributes.zPosition ?? 0.0
+    selected = attributes.containsMarker
   }
 
 

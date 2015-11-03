@@ -12,6 +12,10 @@ import typealias AudioUnit.AudioUnitElement
 
 final class MixerViewController: UICollectionViewController {
 
+  static var currentInstance: MixerViewController? {
+    return MIDIPlayerViewController.currentInstance?.mixerViewController
+  }
+
   private let receptionist: NotificationReceptionist = {
     let receptionist = NotificationReceptionist(callbackQueue: NSOperationQueue.mainQueue())
     receptionist.logContext = LogManager.SequencerContext
@@ -23,9 +27,17 @@ final class MixerViewController: UICollectionViewController {
 
   private weak var sequence: MIDISequence? {
     didSet {
-      guard oldValue !== sequence else { return }
-      if let oldSequence = oldValue { stopObservingSequence(oldSequence) }
-      if let sequence = sequence { observeSequence(sequence) }
+      switch (oldValue, sequence) {
+        case let (nil, newValue?):
+          observeSequence(newValue)
+        case let (oldValue?, nil):
+          stopObservingSequence(oldValue)
+        case let (oldValue?, newValue?) where oldValue !== newValue:
+          stopObservingSequence(oldValue)
+          observeSequence(newValue)
+        default:
+          return
+      }
       collectionView?.reloadData()
       if let idx = sequence?.currentTrackIndex { selectTrackAtIndex(idx) }
     }
@@ -63,7 +75,7 @@ final class MixerViewController: UICollectionViewController {
 
   /** addTrack */
   @IBAction func addTrack() {
-    do { try sequence?.insertTrackWithInstrument(Sequencer.instrumentWithCurrentSettings()) }
+    do { try sequence?.addTrackWithInstrument(Sequencer.instrumentWithCurrentSettings()) }
     catch { logError(error, message: "Failed to add new track") }
   }
 
@@ -75,8 +87,8 @@ final class MixerViewController: UICollectionViewController {
   - returns: NSIndexPath?
   */
   private func indexPathForSender(sender: UIView) -> NSIndexPath? {
-    return collectionView?.indexPathForItemAtPoint(collectionView!.convertPoint(sender.center, 
-                                          fromView: sender.superview))
+    guard let point = collectionView?.convertPoint(sender.center, fromView: sender.superview) else { return nil }
+    return collectionView?.indexPathForItemAtPoint(point)
   }
 
   /**
@@ -84,8 +96,8 @@ final class MixerViewController: UICollectionViewController {
 
   - parameter sender: ImageButtonView
   */
-  @IBAction func selectItem(sender: ImageButtonView) { 
-    sequence?.currentTrackIndex = indexPathForSender(sender)?.item 
+  @IBAction func selectItem(sender: ImageButtonView) {
+    sequence?.currentTrackIndex = indexPathForSender(sender)?.item
   }
 
   /**
@@ -95,10 +107,8 @@ final class MixerViewController: UICollectionViewController {
   */
   private func selectTrackAtIndex(index: Int, animated: Bool = false) {
     let section = Section.Instruments
-    guard section.cellCount(collectionView!) > index else { return }
-    collectionView?.selectItemAtIndexPath(section[index], 
-                                 animated: animated, 
-                           scrollPosition: .CenteredHorizontally)
+    guard section.cellCount > index else { return }
+    collectionView?.selectItemAtIndexPath(section[index], animated: animated, scrollPosition: .CenteredHorizontally)
   }
 
   enum ShiftDirection: String { case Left, Right }
@@ -110,20 +120,23 @@ final class MixerViewController: UICollectionViewController {
   - parameter direction: ShiftDirection
   */
   func shiftCell(cell: TrackCell, direction: ShiftDirection) {
+
     let section = Section.Instruments
     switch (collectionView?.indexPathForCell(cell), direction) {
+
       case let (path?, .Left) where section.contains(path) && path.item > 0:
         let path2 = section[path.item - 1]
         collectionView?.moveItemAtIndexPath(path, toIndexPath: path2)
         sequence?.exchangeInstrumentTrackAtIndex(path.item, withTrackAtIndex: path2.item)
 
-      case let (path?, .Right) where section.contains(path) && path.item < section.cellCount(collectionView!) - 1:
+      case let (path?, .Right) where section.contains(path) && path.item < section.cellCount - 1:
         let path2 = section[path.item + 1]
         collectionView?.moveItemAtIndexPath(path, toIndexPath: path2)
         sequence?.exchangeInstrumentTrackAtIndex(path.item, withTrackAtIndex: path2.item)
 
       default:
         break
+
     }
   }
 
@@ -160,33 +173,36 @@ final class MixerViewController: UICollectionViewController {
 
   - parameter animated: Bool
   */
-  override func viewWillAppear(animated: Bool) {
-    super.viewWillAppear(animated)
-    sequence = MIDIDocumentManager.currentDocument?.sequence
-  }
+//  override func viewWillAppear(animated: Bool) {
+//    super.viewWillAppear(animated)
+//    sequence = MIDIDocumentManager.currentDocument?.sequence
+//  }
 
   /** updateTracks */
   func updateTracks(notification: NSNotification) {
-
-    let section = Section.Instruments
-    switch (notification.addedIndex, notification.removedIndex) {
-      case let (added?, removed?):
-        collectionView?.performBatchUpdates({
-          [weak collectionView = collectionView] in
-            collectionView?.deleteItemsAtIndexPaths([section[removed]])
-            collectionView?.insertItemsAtIndexPaths([section[added]])
-          }, completion: nil)
-      case let (added?, nil):
-        collectionView?.insertItemsAtIndexPaths([section[added]])
-      case let (nil, removed?):
-        collectionView?.deleteItemsAtIndexPaths([section[removed]])
-      case (nil, nil): break
-    }
+//
+//    let section = Section.Instruments
+//    switch (notification.addedIndex, notification.removedIndex) {
+//      case let (added?, removed?):
+//        collectionView?.performBatchUpdates({
+//          [weak collectionView = collectionView] in
+//            collectionView?.deleteItemsAtIndexPaths([section[removed]])
+//            collectionView?.insertItemsAtIndexPaths([section[added]])
+//          }, completion: nil)
+//      case let (added?, nil):
+//        collectionView?.insertItemsAtIndexPaths([section[added]])
+//      case let (nil, removed?):
+//        collectionView?.deleteItemsAtIndexPaths([section[removed]])
+//      case (nil, nil): break
+//    }
 
     let (w, h) = viewSize.unpack
     widthConstraint?.constant = w
     heightConstraint?.constant = h
     collectionView?.contentSize = CGSize(width: w, height: h)
+
+//    collectionViewLayout.invalidateLayout()
+    collectionView?.reloadData()
   }
 
   /** updateViewConstraints */
@@ -250,11 +266,14 @@ final class MixerViewController: UICollectionViewController {
   override func collectionView(collectionView: UICollectionView,
         cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell
   {
-    let cell = Section.dequeueCellForIndexPath(indexPath, collectionView: collectionView)
+    let cell = Section.dequeueCellForIndexPath(indexPath)
     switch cell {
-      case let cell as MasterCell: cell.refresh()
-      case let cell as TrackCell:  cell.track = sequence?.instrumentTracks[indexPath.item]
-      default:                     break
+      case let cell as MasterCell:
+        cell.refresh()
+      case let cell as TrackCell:
+        cell.track = sequence?.instrumentTracks[indexPath.item]
+      default:
+        break
     }
     
     return cell
@@ -270,7 +289,9 @@ final class MixerViewController: UICollectionViewController {
 
   - returns: Bool
   */
-  override func collectionView(collectionView: UICollectionView, shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
+  override func  collectionView(collectionView: UICollectionView,
+    shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool
+  {
     return Section(indexPath) == .Instruments
   }
 
@@ -292,55 +313,48 @@ extension MixerViewController {
     case Master, Instruments, Add
 
     /**
-     init:
+    init:
 
-     - parameter value: Int
-     */
+    - parameter value: Int
+    */
     init(_ value: Int) {
       guard (0 ... 2) ∋ value else { fatalError("invalid value") }
       self.init(rawValue: value)!
     }
 
     /**
-     init:
+    init:
 
-     - parameter indexPath: NSIndexPath
-     */
+    - parameter indexPath: NSIndexPath
+    */
     init(_ indexPath: NSIndexPath) { self = Section(rawValue: indexPath.section) ?? .Master }
 
     /**
-     subscript:
+    subscript:
 
-     - parameter idx: Int
+    - parameter idx: Int
 
-     - returns: NSIndexPath
-     */
+    - returns: NSIndexPath
+    */
     subscript(idx: Int) -> NSIndexPath { return NSIndexPath(forItem: idx, inSection: rawValue) }
 
     /**
-     contains:
+    contains:
 
-     - parameter indexPath: NSIndexPath
+    - parameter indexPath: NSIndexPath
 
-     - returns: Bool
-     */
+    - returns: Bool
+    */
     func contains(indexPath: NSIndexPath) -> Bool { return indexPath.section == rawValue }
 
-    /**
-    cellCount:
-
-    - parameter collectionView: UICollectionView
-
-    - returns: Int
-    */
-    func cellCount(collectionView: UICollectionView) -> Int {
-      return collectionView.numberOfItemsInSection(rawValue)
+    var cellCount: Int {
+      return MixerViewController.currentInstance?.collectionView?.numberOfItemsInSection(rawValue) ?? 0
     }
 
     var itemCount: Int {
       switch self {
       case .Master, .Add: return 1
-      case .Instruments: return MIDIDocumentManager.currentDocument?.sequence?.instrumentTracks.count ?? 0
+      case .Instruments: return MixerViewController.currentInstance?.sequence?.instrumentTracks.count ?? 0
       }
     }
 
@@ -348,23 +362,18 @@ extension MixerViewController {
 
     var identifier: String {
       switch self {
-      case .Master:      return MasterCell.Identifier
-      case .Add:         return "AddTrackCell"
-      case .Instruments: return TrackCell.Identifier
+        case .Master:      return MasterCell.Identifier
+        case .Add:         return AddTrackCell.Identifier
+        case .Instruments: return TrackCell.Identifier
       }
     }
 
-    /**
-    dequeueCellForIndexPath:collectionView:
-
-    - parameter indexPath: NSIndexPath
-    - parameter collectionView: UICollectionView
-
-    - returns: UICollectionViewCell
-    */
-    static func dequeueCellForIndexPath(indexPath: NSIndexPath, collectionView: UICollectionView) -> UICollectionViewCell {
+    static func dequeueCellForIndexPath(indexPath: NSIndexPath) -> UICollectionViewCell {
+      guard let collectionView = MixerViewController.currentInstance?.collectionView else {
+        fatalError("Cannot dequeue a cell without a collection view")
+      }
       return collectionView.dequeueReusableCellWithReuseIdentifier(Section(indexPath).identifier, forIndexPath: indexPath)
     }
   }
-  
+
 }
