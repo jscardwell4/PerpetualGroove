@@ -35,6 +35,18 @@ struct EmaxSoundSet: SoundSetType {
       }
     }
 
+
+    var selectedImage: UIImage {
+      switch self {
+        case .BrassAndWoodwinds:  return UIImage(named: "brass-selected")!
+        case .KeyboardsAndSynths: return UIImage(named: "piano_keyboard-selected")!
+        case .GuitarsAndBasses:   return UIImage(named: "guitar_bass-selected")!
+        case .WorldInstruments:   return UIImage(named: "world-selected")!
+        case .DrumsAndPercussion: return UIImage(named: "percussion-selected")!
+        case .Orchestral:         return UIImage(named: "orchestral-selected")!
+      }
+    }
+
     var displayName: String {
       switch self {
         case .BrassAndWoodwinds:  return "Brass & Woodwinds"
@@ -71,6 +83,7 @@ struct EmaxSoundSet: SoundSetType {
   var displayName: String { return volume.displayName }
   var fileName: String { return volume.fileName }
   var image: UIImage { return volume.image }
+  var selectedImage: UIImage { return volume.selectedImage }
 
   /**
   init:

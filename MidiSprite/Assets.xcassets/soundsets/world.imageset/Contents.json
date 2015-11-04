@@ -2,17 +2,17 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "SoundSets_world.png",
+      "filename" : "world-selected.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "SoundSets_world@2x.png",
+      "filename" : "world-selected@2x.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "SoundSets_world@3x.png",
+      "filename" : "world-selected@3x.png",
       "scale" : "3x"
     }
   ],

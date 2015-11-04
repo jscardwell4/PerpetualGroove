@@ -12,6 +12,21 @@ import Chameleon
 import CoreImage
 import typealias AudioToolbox.AudioUnitParameterValue
 
+final class AddTrackCell: UICollectionViewCell {
+
+  static let Identifier = "AddTrackCell"
+  @IBOutlet weak var mockTrackBackground: UIImageView!
+  @IBOutlet weak var addTrackButton: ImageButtonView!
+
+  /** prepareForReuse */
+  override func prepareForReuse() {
+    super.prepareForReuse()
+    addTrackButton.selected = false
+    addTrackButton.highlighted = false
+  }
+
+}
+
 class MixerCell: UICollectionViewCell {
 
   @IBOutlet weak var volumeSlider: Slider!
@@ -119,6 +134,7 @@ final class TrackCell: MixerCell {
 
       case .Ended where markedForRemoval:
         controller?.deleteTrack(track)
+        markedForRemoval = false
 
       case .Cancelled, .Ended: fallthrough
 
@@ -127,6 +143,10 @@ final class TrackCell: MixerCell {
         UIView.animateWithDuration(0.25) { [unowned self] in self.layer.transform = .identity }
     }
   }
+
+
+  /** instrument */
+  @IBAction func instrument() { controller?.registerCellForSoundSetSelection(self) }
 
   /** solo */
   @IBAction func solo() {
@@ -151,6 +171,7 @@ final class TrackCell: MixerCell {
       volume = track?.volume ?? 0
       pan = track?.pan ?? 0
       soundSetImage.image = track?.instrument.soundSet.image
+      soundSetImage.selectedImage = track?.instrument.soundSet.selectedImage
       trackLabel.text = track?.name ?? ""
       trackColor.tintColor = track?.color.value
       muteButton.selected = track?.mute ?? false

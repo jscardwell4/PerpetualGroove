@@ -15,6 +15,7 @@ protocol SoundSetType: CustomStringConvertible, CustomDebugStringConvertible {
   var displayName: String { get }
   var fileName: String { get }
   var image: UIImage { get }
+  var selectedImage: UIImage { get }
   subscript(idx: Int) -> SF2File.Preset { get }
   subscript(program: Byte, bank: Byte) -> SF2File.Preset { get }
   init(url u: NSURL) throws

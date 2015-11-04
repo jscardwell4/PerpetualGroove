@@ -156,8 +156,8 @@
                                                         <constraint firstAttribute="height" constant="109" id="M21-MR-BLp"/>
                                                     </constraints>
                                                 </stackView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="MASTER" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zFx-2Q-V0k" customClass="Label" customModule="MoonKit">
-                                                    <rect key="frame" x="14" y="274" width="57" height="123"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" misplaced="YES" text="MASTER" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zFx-2Q-V0k" customClass="Label" customModule="MoonKit">
+                                                    <rect key="frame" x="17" y="274" width="51" height="123"/>
                                                     <animations/>
                                                     <fontDescription key="fontDescription" name="Triump-Rg-Rock-02" family="Triump Rg Rock" pointSize="14"/>
                                                     <color key="textColor" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="calibratedRGB"/>
@@ -405,7 +405,14 @@
                                                             </constraints>
                                                             <userDefinedRuntimeAttributes>
                                                                 <userDefinedRuntimeAttribute type="image" keyPath="image" value="brass"/>
+                                                                <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
+                                                                <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
+                                                                    <color key="value" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="calibratedRGB"/>
+                                                                </userDefinedRuntimeAttribute>
                                                             </userDefinedRuntimeAttributes>
+                                                            <connections>
+                                                                <action selector="instrument" destination="2AY-7g-m2Q" eventType="touchUpInside" id="L9b-R1-yDB"/>
+                                                            </connections>
                                                         </view>
                                                     </subviews>
                                                     <animations/>
@@ -555,7 +562,7 @@
                                     <outlet property="volumeSlider" destination="fQV-Nj-rrF" id="c6d-O8-cXX"/>
                                 </connections>
                             </collectionViewCell>
-                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="AddTrackCell" id="h8g-3b-xY3" userLabel="Add Track Cell">
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="AddTrackCell" id="h8g-3b-xY3" userLabel="Add Track Cell" customClass="AddTrackCell" customModule="Groove" customModuleProvider="target">
                                 <rect key="frame" x="220" y="0.0" width="100" height="430"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -587,6 +594,9 @@
                                                 <userDefinedRuntimeAttribute type="color" keyPath="selectedTintColor">
                                                     <color key="value" red="0.70097428560256958" green="0.17991100251674652" blue="0.015877731144428253" alpha="1" colorSpace="calibratedRGB"/>
                                                 </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
+                                                    <color key="value" red="0.4992736279964447" green="0.45593017339706421" blue="0.39522531628608704" alpha="1" colorSpace="calibratedRGB"/>
+                                                </userDefinedRuntimeAttribute>
                                             </userDefinedRuntimeAttributes>
                                             <connections>
                                                 <action selector="addTrack" destination="iF7-fT-LPT" eventType="touchUpInside" id="6He-U3-HUV"/>
@@ -608,6 +618,10 @@
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="AddTrackCell"/>
                                 </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <outlet property="addTrackButton" destination="6pi-bq-mPh" id="jqp-x1-Gan"/>
+                                    <outlet property="mockTrackBackground" destination="dMA-k2-N2G" id="IiI-Mz-gwV"/>
+                                </connections>
                             </collectionViewCell>
                         </cells>
                         <userDefinedRuntimeAttributes>

@@ -147,6 +147,16 @@ final class Sequencer {
     auditionInstrument.playNoteWithAttributes(currentNoteAttributes)
   }
 
+  static weak var soundSetSelectionTarget: Instrument! = Sequencer.auditionInstrument {
+    didSet {
+      guard oldValue !== soundSetSelectionTarget else { return }
+      Notification.SoundSetSelectionTargetDidChange.post(object: self, userInfo: [
+        .OldSoundSetSelectionTarget: oldValue,
+        .NewSoundSetSelectionTarget: soundSetSelectionTarget
+      ])
+    }
+  }
+
   // MARK: - Transport
 
   static var playing:   Bool { return state ∋ .Playing   }
@@ -288,6 +298,7 @@ extension Sequencer {
     case DidToggleRecording
     case DidBeginJogging, DidEndJogging
     case DidJog
+    case SoundSetSelectionTargetDidChange
 
     var object: AnyObject? { return Sequencer.self }
 
@@ -304,7 +315,9 @@ extension Sequencer {
       }
     }
 
-    enum Key: String, NotificationKeyType { case Time, Ticks, JogTime}
+    enum Key: String, NotificationKeyType {
+      case Time, Ticks, JogTime, OldSoundSetSelectionTarget, NewSoundSetSelectionTarget
+    }
   }
 
 }
@@ -326,5 +339,11 @@ extension NSNotification {
   }
   var ticks: MIDITimeStamp? {
     return (userInfo?[Sequencer.Notification.Key.Ticks.key] as? NSNumber)?.unsignedLongLongValue
+  }
+  var oldSoundSetSelectionTarget: Instrument? {
+    return userInfo?[Sequencer.Notification.Key.OldSoundSetSelectionTarget.key] as? Instrument
+  }
+  var newSoundSetSelectionTarget: Instrument? {
+    return userInfo?[Sequencer.Notification.Key.NewSoundSetSelectionTarget.key] as? Instrument
   }
 }

@@ -2,17 +2,17 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "SoundSets_piano_keyboard.png",
+      "filename" : "piano_keyboard-selected.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "SoundSets_piano_keyboard@2x.png",
+      "filename" : "piano_keyboard-selected@2x.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "SoundSets_piano_keyboard@3x.png",
+      "filename" : "piano_keyboard-selected@3x.png",
       "scale" : "3x"
     }
   ],

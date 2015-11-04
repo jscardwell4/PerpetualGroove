@@ -15,6 +15,20 @@ final class InstrumentViewController: UIViewController {
   @IBOutlet weak var programPicker:  InlinePickerView!
   @IBOutlet weak var channelStepper: LabeledStepper!
 
+  private let receptionist: NotificationReceptionist = {
+    let receptionist = NotificationReceptionist(callbackQueue: NSOperationQueue.mainQueue())
+    receptionist.logContext = LogManager.UIContext
+    return receptionist
+  }()
+
+  /** awakeFromNib */
+  override func awakeFromNib() {
+    super.awakeFromNib()
+    receptionist.observe(Sequencer.Notification.SoundSetSelectionTargetDidChange, from: Sequencer.self) {
+      [weak self] in self?.instrument = $0.newSoundSetSelectionTarget
+    }
+  }
+
   /** didPickSoundSet */
   @IBAction func didPickSoundSet() {
     let soundSet = Sequencer.soundSets[soundSetPicker.selection]
@@ -38,20 +52,17 @@ final class InstrumentViewController: UIViewController {
   }
 
   /** didChangeChannel */
-  @IBAction func didChangeChannel() { Sequencer.auditionInstrument.channel = UInt8(channelStepper.value) }
+  @IBAction func didChangeChannel() { instrument?.channel = UInt8(channelStepper.value) }
 
-  /** auditionValues */
-  @IBAction func auditionValues() { Sequencer.auditionCurrentNote() }
-
-  var instrument: Instrument? {
+  private weak var instrument: Instrument? {
     didSet {
       guard let instrument = instrument,
              soundSetIndex = instrument.soundSet.index,
-              presetIndex = instrument.soundSet.presets.indexOf(instrument.preset)
+              presetIndex = instrument.soundSet.presets.indexOf(instrument.preset) where isViewLoaded()
       else { return }
-      soundSetPicker.selection = soundSetIndex
+      soundSetPicker.selectItem(soundSetIndex, animated: true)
       programPicker.labels = instrument.soundSet.presets.map({$0.name})
-      programPicker.selection = presetIndex
+      programPicker.selectItem(presetIndex, animated: true)
       channelStepper.value = Double(instrument.channel)
     }
   }
@@ -60,7 +71,7 @@ final class InstrumentViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     soundSetPicker.labels = Sequencer.soundSets.map { $0.displayName }
-    instrument = Sequencer.auditionInstrument
+    instrument = Sequencer.soundSetSelectionTarget
   }
 
 }

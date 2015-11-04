@@ -19,6 +19,7 @@ struct SoundSet: SoundSetType {
   let presets: [SF2File.Preset]
 
   var image: UIImage { return UIImage(named: "oscillator")! }
+  var selectedImage: UIImage { return UIImage(named: "oscillator-selected")! }
 
   /**
   Initialize a sound set using the file located by the specified url.

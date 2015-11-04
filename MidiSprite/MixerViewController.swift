@@ -138,6 +138,36 @@ final class MixerViewController: UICollectionViewController {
     sequence?.removeTrackAtIndex(index)
   }
 
+  private weak var soundSetSelectionTargetCell: TrackCell? {
+    didSet {
+      let instrument: Instrument?
+      switch (oldValue, soundSetSelectionTargetCell) {
+        case let (oldValue?, newValue?):
+          oldValue.soundSetImage.selected = false
+          instrument = newValue.track?.instrument
+        case let (nil, newValue?):
+          instrument = newValue.track?.instrument
+        case let (oldValue?, nil):
+          oldValue.soundSetImage.selected = false
+          instrument = nil
+        case (nil, nil):
+          instrument = nil
+      }
+      Sequencer.soundSetSelectionTarget = instrument ?? Sequencer.auditionInstrument
+    }
+  }
+
+  /**
+  registerCellForSoundSetSelection:
+
+  - parameter cell: TrackCell
+  */
+  func registerCellForSoundSetSelection(cell: TrackCell) {
+    guard let collectionView = collectionView where cell.isDescendantOfView(collectionView) else { return }
+    if soundSetSelectionTargetCell == cell { soundSetSelectionTargetCell = nil }
+    else { soundSetSelectionTargetCell = cell }
+  }
+
   /** viewDidLoad */
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -225,7 +255,9 @@ final class MixerViewController: UICollectionViewController {
 
   - returns: Int
   */
-  override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int { return Section.allCases.count }
+  override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+    return Section.allCases.count
+  }
 
   /**
   collectionView:numberOfItemsInSection:
@@ -270,7 +302,8 @@ final class MixerViewController: UICollectionViewController {
 
   - returns: Bool
   */
-  override func collectionView(collectionView: UICollectionView, shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
+  override func  collectionView(collectionView: UICollectionView,
+    shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
     return Section(indexPath) == .Instruments
   }
 
@@ -349,7 +382,7 @@ extension MixerViewController {
     var identifier: String {
       switch self {
       case .Master:      return MasterCell.Identifier
-      case .Add:         return "AddTrackCell"
+      case .Add:         return AddTrackCell.Identifier
       case .Instruments: return TrackCell.Identifier
       }
     }

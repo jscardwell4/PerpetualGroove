@@ -9,6 +9,7 @@
             <string>EvelethRegular</string>
             <string>EvelethRegular</string>
             <string>EvelethRegular</string>
+            <string>EvelethRegular</string>
         </mutableArray>
     </customFonts>
     <scenes>
@@ -30,83 +31,83 @@
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="wVM-Za-orF">
                                         <rect key="frame" x="0.0" y="0.0" width="288" height="40"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Note" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="w5U-Eo-KhK">
-                                                <rect key="frame" x="0.0" y="0.0" width="70" height="40"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" verticalHuggingPriority="251" text="Pitch" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="w5U-Eo-KhK">
+                                                <rect key="frame" x="0.0" y="0.0" width="41" height="40"/>
                                                 <animations/>
                                                 <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
                                                 <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="6Vd-Xc-cKy" userLabel="PitchOctavePickers">
-                                                <rect key="frame" x="80" y="0.0" width="208" height="40"/>
-                                                <subviews>
-                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KML-VN-wa1" userLabel="Pitch Picker" customClass="InlinePickerView" customModule="MoonKit">
-                                                        <rect key="frame" x="0.0" y="0.0" width="99" height="40"/>
-                                                        <animations/>
-                                                        <accessibility key="accessibilityConfiguration" identifier="Pitch Picker"/>
-                                                        <userDefinedRuntimeAttributes>
-                                                            <userDefinedRuntimeAttribute type="color" keyPath="selectedItemColor">
-                                                                <color key="value" red="0.76089900730000004" green="0.25649610160000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                                            </userDefinedRuntimeAttribute>
-                                                            <userDefinedRuntimeAttribute type="color" keyPath="itemColor">
-                                                                <color key="value" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
-                                                            </userDefinedRuntimeAttribute>
-                                                            <userDefinedRuntimeAttribute type="string" keyPath="labelsString" value="C , C♯, D , D♯, E , F , F♯, G , G♯, A , A♯, B "/>
-                                                            <userDefinedRuntimeAttribute type="number" keyPath="selection">
-                                                                <integer key="value" value="3"/>
-                                                            </userDefinedRuntimeAttribute>
-                                                            <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="EvelethLight"/>
-                                                            <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
-                                                                <real key="value" value="14"/>
-                                                            </userDefinedRuntimeAttribute>
-                                                            <userDefinedRuntimeAttribute type="string" keyPath="selectedFontName" value="EvelethLight"/>
-                                                            <userDefinedRuntimeAttribute type="number" keyPath="selectedFontSize">
-                                                                <real key="value" value="14"/>
-                                                            </userDefinedRuntimeAttribute>
-                                                            <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="PitchPicker"/>
-                                                        </userDefinedRuntimeAttributes>
-                                                        <connections>
-                                                            <action selector="didPickPitch" destination="aQn-av-Bpr" eventType="valueChanged" id="mWm-7f-oG8"/>
-                                                        </connections>
-                                                    </view>
-                                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eOh-NG-HgE" userLabel="Octave Picker" customClass="InlinePickerView" customModule="MoonKit">
-                                                        <rect key="frame" x="109" y="0.0" width="99" height="40"/>
-                                                        <animations/>
-                                                        <accessibility key="accessibilityConfiguration" identifier="Octave Picker"/>
-                                                        <userDefinedRuntimeAttributes>
-                                                            <userDefinedRuntimeAttribute type="color" keyPath="selectedItemColor">
-                                                                <color key="value" red="0.76089900730000004" green="0.25649610160000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                                            </userDefinedRuntimeAttribute>
-                                                            <userDefinedRuntimeAttribute type="color" keyPath="itemColor">
-                                                                <color key="value" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="calibratedRGB"/>
-                                                            </userDefinedRuntimeAttribute>
-                                                            <userDefinedRuntimeAttribute type="string" keyPath="labelsString" value="-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9"/>
-                                                            <userDefinedRuntimeAttribute type="number" keyPath="selection">
-                                                                <integer key="value" value="5"/>
-                                                            </userDefinedRuntimeAttribute>
-                                                            <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="EvelethLight"/>
-                                                            <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
-                                                                <real key="value" value="14"/>
-                                                            </userDefinedRuntimeAttribute>
-                                                            <userDefinedRuntimeAttribute type="string" keyPath="selectedFontName" value="EvelethLight"/>
-                                                            <userDefinedRuntimeAttribute type="number" keyPath="selectedFontSize">
-                                                                <real key="value" value="14"/>
-                                                            </userDefinedRuntimeAttribute>
-                                                            <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="OctavePicker"/>
-                                                        </userDefinedRuntimeAttributes>
-                                                        <connections>
-                                                            <action selector="didPickOctave" destination="aQn-av-Bpr" eventType="valueChanged" id="Bpb-oD-Ic7"/>
-                                                        </connections>
-                                                    </view>
-                                                </subviews>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KML-VN-wa1" userLabel="Pitch Picker" customClass="InlinePickerView" customModule="MoonKit">
+                                                <rect key="frame" x="51" y="0.0" width="81.5" height="40"/>
                                                 <animations/>
+                                                <accessibility key="accessibilityConfiguration" identifier="Pitch Picker"/>
                                                 <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="PitchOctavePickers"/>
-                                                    <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="PitchOctavePickers"/>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="selectedItemColor">
+                                                        <color key="value" red="0.76089900730000004" green="0.25649610160000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="itemColor">
+                                                        <color key="value" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="labelsString" value="C , C♯, D , D♯, E , F , F♯, G , G♯, A , A♯, B "/>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="selection">
+                                                        <integer key="value" value="3"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="EvelethLight"/>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
+                                                        <real key="value" value="14"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="selectedFontName" value="EvelethLight"/>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="selectedFontSize">
+                                                        <real key="value" value="14"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="PitchPicker"/>
                                                 </userDefinedRuntimeAttributes>
-                                            </stackView>
+                                                <connections>
+                                                    <action selector="didPickPitch" destination="aQn-av-Bpr" eventType="valueChanged" id="mWm-7f-oG8"/>
+                                                </connections>
+                                            </view>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" verticalHuggingPriority="251" text="Octave" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fH9-NC-oNB">
+                                                <rect key="frame" x="142.5" y="0.0" width="54" height="40"/>
+                                                <animations/>
+                                                <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
+                                                <color key="textColor" red="0.57254904510000004" green="0.52941179279999995" blue="0.47058823700000002" alpha="1" colorSpace="calibratedRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eOh-NG-HgE" userLabel="Octave Picker" customClass="InlinePickerView" customModule="MoonKit">
+                                                <rect key="frame" x="206.5" y="0.0" width="81.5" height="40"/>
+                                                <animations/>
+                                                <accessibility key="accessibilityConfiguration" identifier="Octave Picker"/>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="selectedItemColor">
+                                                        <color key="value" red="0.76089900730000004" green="0.25649610160000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="itemColor">
+                                                        <color key="value" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="calibratedRGB"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="labelsString" value="-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9"/>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="selection">
+                                                        <integer key="value" value="5"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="EvelethLight"/>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
+                                                        <real key="value" value="14"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="selectedFontName" value="EvelethLight"/>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="selectedFontSize">
+                                                        <real key="value" value="14"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="OctavePicker"/>
+                                                </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="didPickOctave" destination="aQn-av-Bpr" eventType="valueChanged" id="Bpb-oD-Ic7"/>
+                                                </connections>
+                                            </view>
                                         </subviews>
                                         <animations/>
+                                        <constraints>
+                                            <constraint firstItem="eOh-NG-HgE" firstAttribute="width" secondItem="KML-VN-wa1" secondAttribute="width" id="dlp-PV-mHs"/>
+                                        </constraints>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="NoteStack"/>
                                         </userDefinedRuntimeAttributes>
@@ -193,8 +194,7 @@
                                 <animations/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="120" id="5cl-aA-H9I"/>
-                                    <constraint firstItem="0XJ-KP-C5j" firstAttribute="width" secondItem="w5U-Eo-KhK" secondAttribute="width" id="FdV-Qf-DOY"/>
-                                    <constraint firstItem="ziA-fb-WAR" firstAttribute="width" secondItem="w5U-Eo-KhK" secondAttribute="width" id="fUn-p4-Iyh"/>
+                                    <constraint firstItem="0XJ-KP-C5j" firstAttribute="width" secondItem="ziA-fb-WAR" secondAttribute="width" id="MjH-AM-8aM"/>
                                 </constraints>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="NoteAttributesStack"/>
