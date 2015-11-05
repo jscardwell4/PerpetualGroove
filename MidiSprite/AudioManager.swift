@@ -17,7 +17,7 @@ final class AudioManager {
 
   static let queue = dispatch_queue_create("midi", DISPATCH_QUEUE_SERIAL)
 
-  private static var initialized = false
+  private(set) static var initialized = false
 
   static private let engine = AVAudioEngine()
   static var mixer: AVAudioMixerNode { return engine.mainMixerNode }
@@ -41,23 +41,24 @@ final class AudioManager {
 
   /** initialize */
   static func initialize() {
-    guard !initialized else { return }
-    let outputFormat = engine.outputNode.outputFormatForBus(0)
-    guard outputFormat.sampleRate != 0 else { fatalError("output disabled (sample rate = 0)") }
+    globalBackgroundQueue.async {
+      guard !initialized else { return }
+      let outputFormat = engine.outputNode.outputFormatForBus(0)
+      guard outputFormat.sampleRate != 0 else { fatalError("output disabled (sample rate = 0)") }
 
-    do {
-      try configureAudioSession()
-      let node = AVAudioUnitSampler()
-      engine.attachNode(node)
-      engine.connect(node, to: engine.mainMixerNode, format: node.outputFormatForBus(0))
-      metronome = try Metronome.init(node: node)
-      initialized = true
-      logDebug("AudioManager initialized")
-      try start()
-    } catch {
-      logError(error)
+      do {
+        try configureAudioSession()
+        let node = AVAudioUnitSampler()
+        engine.attachNode(node)
+        engine.connect(node, to: engine.mainMixerNode, format: node.outputFormatForBus(0))
+        metronome = try Metronome.init(node: node)
+        initialized = true
+        logDebug("AudioManager initialized")
+        try start()
+      } catch {
+        logError(error)
+      }
     }
-
   }
 
   /** configureAudioSession */

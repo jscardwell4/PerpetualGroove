@@ -24,7 +24,7 @@ final class TempoViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     tempoSlider.value = Float(Sequencer.tempo)
-    metronomeButton.selected = AudioManager.metronome.on
+    metronomeButton.selected = AudioManager.metronome?.on ?? false
   }
 
 }

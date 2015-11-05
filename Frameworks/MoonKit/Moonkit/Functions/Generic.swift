@@ -60,13 +60,14 @@ public func sum<S:SequenceType where S.Generator.Element:ArithmeticType>(s: S) -
   return s.reduce(S.Generator.Element(intMax: 0), combine: +)
 }
 
-public func weakMethod<T:AnyObject, U>(object: T, method: T -> U -> Void) -> U -> Void {
+public func weakMethod<T:AnyObject, U>(object: T, _ method: T -> U -> Void) -> U -> Void {
   return {
     [weak object] in
     guard object != nil else { return }
     method(object!)($0)
   }
 }
+
 
 /**
 advance:amount:

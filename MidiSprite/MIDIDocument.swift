@@ -34,12 +34,15 @@ final class MIDIDocument: UIDocument {
 
   private var creating = false
 
+  override var presentedItemOperationQueue: NSOperationQueue { return MIDIDocumentManager.operationQueue }
+
   /**
   didChangeState:
 
   - parameter notification: NSNotification
   */
   private func didChangeState(notification: NSNotification) {
+    
     guard documentState ∋ .InConflict, let versions = NSFileVersion.unresolvedConflictVersionsOfItemAtURL(fileURL) else { return }
     logDebug("versions: \(versions)")
     // TODO: resolve conflict
@@ -55,7 +58,7 @@ final class MIDIDocument: UIDocument {
 
     receptionist.observe(UIDocumentStateChangedNotification,
                     from: self,
-                callback: weakMethod(self, method: MIDIDocument.didChangeState))
+                callback: weakMethod(self, MIDIDocument.didChangeState))
   }
 
   private let receptionist: NotificationReceptionist = {

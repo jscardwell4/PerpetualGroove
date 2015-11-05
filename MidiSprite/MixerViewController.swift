@@ -44,10 +44,10 @@ final class MixerViewController: UICollectionViewController {
     }
     receptionist.observe(MIDISequence.Notification.DidAddTrack,
                     from: sequence,
-                callback: weakMethod(self, method: MixerViewController.updateTracks))
+                callback: weakMethod(self, MixerViewController.updateTracks))
     receptionist.observe(MIDISequence.Notification.DidRemoveTrack,
                     from: sequence,
-                callback: weakMethod(self, method: MixerViewController.updateTracks))
+                callback: weakMethod(self, MixerViewController.updateTracks))
   }
 
   /**

@@ -170,10 +170,10 @@ final class MIDISequence {
     self.document = document
     receptionist.observe(Sequencer.Notification.DidToggleRecording,
                     from: Sequencer.self,
-                callback: weakMethod(self, method: MIDISequence.toggleRecording))
+                callback: weakMethod(self, MIDISequence.toggleRecording))
     receptionist.observe(Sequencer.Notification.DidReset,
                     from: Sequencer.self,
-                callback: weakMethod(self, method: MIDISequence.sequencerDidReset))
+                callback: weakMethod(self, MIDISequence.sequencerDidReset))
 
     var trackChunks = ArraySlice(file.tracks)
     if let trackChunk = trackChunks.first
@@ -217,7 +217,7 @@ final class MIDISequence {
     instrumentTracks.append(track)
     receptionist.observe(Track.Notification.DidUpdateEvents,
                     from: track,
-                callback: weakMethod(self, method: MIDISequence.trackDidUpdate))
+                callback: weakMethod(self, MIDISequence.trackDidUpdate))
 
     logDebug("track added: \(track.name)")
     Notification.DidAddTrack.post(object: self, userInfo: [Notification.Key.AddedIndex: instrumentTracks.count - 1])

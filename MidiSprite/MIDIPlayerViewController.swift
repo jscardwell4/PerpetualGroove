@@ -75,7 +75,7 @@ final class MIDIPlayerViewController: UIViewController {
     documentName.text = nil
 
     tempoSlider.value = Float(Sequencer.tempo)
-    metronomeButton.selected = AudioManager.metronome.on
+    metronomeButton.selected = AudioManager.metronome?.on ?? false
 
     layoutForSize(view.bounds.size)
 
@@ -92,11 +92,6 @@ final class MIDIPlayerViewController: UIViewController {
       performSegueWithIdentifier("Purgatory", sender: self)
       return
     }
-
-    guard MIDIDocumentManager.currentDocument == nil && !MIDIDocumentManager.openingDocument else { return }
-
-    logDebug("no current document and manager is not opening a document…creating a new document…")
-    MIDIDocumentManager.createNewDocument()
   }
 
 

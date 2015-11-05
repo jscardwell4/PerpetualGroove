@@ -27,7 +27,24 @@ final class InstrumentViewController: UIViewController {
     receptionist.observe(Sequencer.Notification.SoundSetSelectionTargetDidChange, from: Sequencer.self) {
       [weak self] in self?.instrument = $0.newSoundSetSelectionTarget
     }
+    receptionist.observe(Sequencer.Notification.DidUpdateAvailableSoundSets,
+                    from: Sequencer.self,
+                callback: weakMethod(self, InstrumentViewController.updateSoundSets))
   }
+
+  /**
+  updateSoundSets:
+
+  - parameter notification: NSNotification
+  */
+  private func updateSoundSets(notification: NSNotification) { updateSoundSets() }
+
+  /** updateSoundSets */
+  private func updateSoundSets() {
+    soundSetPicker.labels = Sequencer.soundSets.map { $0.displayName }
+    instrument = Sequencer.soundSetSelectionTarget
+  }
+
 
   /** didPickSoundSet */
   @IBAction func didPickSoundSet() {
@@ -58,7 +75,7 @@ final class InstrumentViewController: UIViewController {
     didSet {
       guard let instrument = instrument,
              soundSetIndex = instrument.soundSet.index,
-              presetIndex = instrument.soundSet.presets.indexOf(instrument.preset) where isViewLoaded()
+               presetIndex = instrument.soundSet.presets.indexOf(instrument.preset) where isViewLoaded()
       else { return }
       soundSetPicker.selectItem(soundSetIndex, animated: true)
       programPicker.labels = instrument.soundSet.presets.map({$0.name})
@@ -70,8 +87,8 @@ final class InstrumentViewController: UIViewController {
   /** viewDidLoad */
   override func viewDidLoad() {
     super.viewDidLoad()
-    soundSetPicker.labels = Sequencer.soundSets.map { $0.displayName }
-    instrument = Sequencer.soundSetSelectionTarget
+    guard Sequencer.initialized else { return }
+    updateSoundSets()
   }
 
 }

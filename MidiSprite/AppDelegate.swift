@@ -20,17 +20,14 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
   var window: UIWindow?
   private(set) weak var viewController: MIDIPlayerViewController!
 
-  /** setup */
-  private func setup() {
-    Eveleth.registerFonts()
-    Triump.registerFonts()
-    FestivoLC.registerFonts()
-    LogManager.initialize()
-    SettingsManager.initialize()
-    MIDIDocumentManager.initialize()
-    AudioManager.initialize()
-    Sequencer.initialize()
-    viewController = window?.rootViewController as? MIDIPlayerViewController
+  /** initialize */
+  override class func initialize() {
+    globalBackgroundQueue.async {
+      LogManager.initialize()
+      Eveleth.registerFonts()
+      Triump.registerFonts()
+      FestivoLC.registerFonts()
+    }
   }
 
   /**
@@ -44,7 +41,15 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
   func                application(application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [NSObject:AnyObject]?) -> Bool
   {
-    setup()
+    delayedDispatchToMain(1.0) {
+      globalBackgroundQueue.async {
+        SettingsManager.initialize()
+        MIDIDocumentManager.initialize()
+        AudioManager.initialize()
+        Sequencer.initialize()
+      }
+    }
+    viewController = window?.rootViewController as? MIDIPlayerViewController
     return true
   }
 

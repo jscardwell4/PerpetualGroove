@@ -13,7 +13,7 @@ import MoonKit
 final class SettingsManager {
 
   private static var settingsCache: [Setting:Any] = [:]
-  private static var initialized = false
+  private(set) static var initialized = false
 
 
   /**
@@ -44,22 +44,22 @@ final class SettingsManager {
   }
 
   static var iCloudStorage: Bool {
-    get { return settingsCache[Setting.iCloudStorage] as! Bool }
+    get { return (settingsCache[Setting.iCloudStorage] as? Bool) ?? Setting.iCloudStorage.defaultValue as? Bool == true }
     set { NSUserDefaults.standardUserDefaults().setBool(newValue, forKey: Setting.iCloudStorage.key) }
   }
 
   static var confirmDeleteDocument: Bool {
-    get { return settingsCache[Setting.ConfirmDeleteDocument] as! Bool }
+    get { return (settingsCache[Setting.ConfirmDeleteDocument] as? Bool) ?? Setting.ConfirmDeleteDocument.defaultValue as? Bool == true }
     set { NSUserDefaults.standardUserDefaults().setBool(newValue, forKey: Setting.ConfirmDeleteDocument.key) }
   }
 
   static var confirmDeleteTrack: Bool {
-    get { return settingsCache[Setting.ConfirmDeleteTrack] as! Bool }
+    get { return (settingsCache[Setting.ConfirmDeleteTrack] as? Bool) ?? Setting.ConfirmDeleteTrack.defaultValue as? Bool == true }
     set { NSUserDefaults.standardUserDefaults().setBool(newValue, forKey: Setting.ConfirmDeleteTrack.key) }
   }
 
   static var scrollTrackLabels: Bool {
-    get { return settingsCache[Setting.ScrollTrackLabels] as! Bool }
+    get { return (settingsCache[Setting.ScrollTrackLabels] as? Bool) ?? Setting.ScrollTrackLabels.defaultValue as? Bool == true }
     set { NSUserDefaults.standardUserDefaults().setBool(newValue, forKey: Setting.ScrollTrackLabels.key) }
   }
 
@@ -69,7 +69,7 @@ final class SettingsManager {
   }
 
   static var makeNewTrackCurrent: Bool {
-    get { return settingsCache[Setting.MakeNewTrackCurrent] as! Bool }
+    get { return (settingsCache[Setting.MakeNewTrackCurrent] as? Bool) ?? Setting.MakeNewTrackCurrent.defaultValue as? Bool == true }
     set { NSUserDefaults.standardUserDefaults().setBool(newValue, forKey: Setting.MakeNewTrackCurrent.key) }
   }
 
@@ -89,7 +89,7 @@ final class SettingsManager {
     NSUserDefaults.standardUserDefaults().registerDefaults(Setting.boolSettings.reduce([String:AnyObject]()) {
       (var dict: [String:AnyObject], setting: Setting) in
 
-      dict[setting.key] = true
+      dict[setting.key] = setting.defaultValue as? AnyObject
       return dict
 
       })
@@ -97,6 +97,7 @@ final class SettingsManager {
     Setting.allCases.forEach { SettingsManager.settingsCache[$0] = $0.currentValue }
 
     let _ = receptionist
+
     initialized = true
   }
   
@@ -169,6 +170,17 @@ extension SettingsManager {
            if let number = value as? NSNumber { return number }
       else if let data   = value as? NSData   { return data   }
       else                                    { return nil    }
+    }
+
+    var defaultValue: Any? {
+      switch self {
+        case .iCloudStorage:         return true
+        case .ConfirmDeleteDocument: return true
+        case .ConfirmDeleteTrack:    return true
+        case .ScrollTrackLabels:     return true
+        case .CurrentDocument:       return nil
+        case .MakeNewTrackCurrent:   return true
+      }
     }
 
     static var boolSettings: [Setting] {

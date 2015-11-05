@@ -15,40 +15,42 @@ final class Sequencer {
 
   // MARK: - Initialization
 
-  private static var initialized = false
+  private(set) static var initialized = false
 
   /** 
   Initializes `soundSets` using the bundled sound font files and creates `auditionInstrument` with the first found
   */
   static func initialize() {
-    guard !initialized else { return }
+    globalBackgroundQueue.async {
+      guard !initialized else { return }
 
-    let _ = receptionist
-    soundSets = [
-      EmaxSoundSet(.BrassAndWoodwinds),
-      EmaxSoundSet(.KeyboardsAndSynths),
-      EmaxSoundSet(.GuitarsAndBasses),
-      EmaxSoundSet(.WorldInstruments),
-      EmaxSoundSet(.DrumsAndPercussion),
-      EmaxSoundSet(.Orchestral)
-    ]
-    let bundle = NSBundle.mainBundle()
-    let exclude = soundSets.map({$0.url})
-    guard let urls = bundle.URLsForResourcesWithExtension("sf2", subdirectory: nil)?.flatMap({$0.fileReferenceURL()}) else { return }
-
-    do {
-      try urls.filter({$0 ∉ exclude}).forEach { soundSets.append(try SoundSet(url: $0)) }
-      guard soundSets.count > 0 else { fatalError("failed to create any sound sets from bundled sf2 files") }
-      let soundSet = soundSets[0]
-      let program = UInt8(soundSet.presets[0].program)
-      auditionInstrument = try Instrument(soundSet: soundSet, program: program, channel: 0)
-      Notification.DidInitializeSoundSets.post()
-    } catch {
-      logError(error)
+      let _ = receptionist
+      soundSets = [
+        EmaxSoundSet(.BrassAndWoodwinds),
+        EmaxSoundSet(.KeyboardsAndSynths),
+        EmaxSoundSet(.GuitarsAndBasses),
+        EmaxSoundSet(.WorldInstruments),
+        EmaxSoundSet(.DrumsAndPercussion),
+        EmaxSoundSet(.Orchestral)
+      ]
+      let bundle = NSBundle.mainBundle()
+      let exclude = soundSets.map({$0.url})
+      guard var urls = bundle.URLsForResourcesWithExtension("sf2", subdirectory: nil) else { return }
+      urls = urls.flatMap({$0.fileReferenceURL()})
+      do {
+        try urls.filter({$0 ∉ exclude}).forEach { soundSets.append(try SoundSet(url: $0)) }
+        guard soundSets.count > 0 else { fatalError("failed to create any sound sets from bundled sf2 files") }
+        let soundSet = soundSets[0]
+        let program = UInt8(soundSet.presets[0].program)
+        auditionInstrument = try Instrument(soundSet: soundSet, program: program, channel: 0)
+        Notification.DidUpdateAvailableSoundSets.post()
+      } catch {
+        logError(error)
+      }
+      sequence = MIDIDocumentManager.currentDocument?.sequence
+      initialized = true
+      logDebug("Sequencer initialized")
     }
-    sequence = MIDIDocumentManager.currentDocument?.sequence
-    initialized = true
-    logDebug("Sequencer initialized")
   }
 
   private static let receptionist: NotificationReceptionist = {
@@ -293,12 +295,12 @@ extension Sequencer {
 
   // MARK: - Notifications
   enum Notification: String, NotificationType, NotificationNameType {
-    case DidInitializeSoundSets
     case DidStart, DidPause, DidStop, DidReset
     case DidToggleRecording
     case DidBeginJogging, DidEndJogging
     case DidJog
     case SoundSetSelectionTargetDidChange
+    case DidUpdateAvailableSoundSets
 
     var object: AnyObject? { return Sequencer.self }
 

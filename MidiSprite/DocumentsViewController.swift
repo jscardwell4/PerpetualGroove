@@ -32,8 +32,6 @@ final class DocumentsViewController: UICollectionViewController {
 
   private(set) var itemSize: CGSize = .zero {
     didSet {
-      guard itemSize != oldValue else { return }
-      collectionView?.collectionViewLayout.invalidateLayout()
       let (w, h) = itemSize.unpack
       collectionViewSize = CGSize(width: w, height: h * CGFloat(items.count + 1))
     }
@@ -42,9 +40,14 @@ final class DocumentsViewController: UICollectionViewController {
   private var collectionViewSize: CGSize = .zero {
     didSet {
       guard collectionViewSize != oldValue else { return }
-      let (w, h) = collectionViewSize.unpack
-      widthConstraint?.constant = w
-      heightConstraint?.constant = h
+      switch (widthConstraint, heightConstraint) {
+        case let (widthConstraint?, heightConstraint?):
+          let (w, h) = collectionViewSize.unpack
+          widthConstraint.constant = w
+          heightConstraint.constant = h
+        default:
+          view?.setNeedsUpdateConstraints()
+      }
       collectionViewLayout.invalidateLayout()
    }
   }
@@ -67,10 +70,10 @@ final class DocumentsViewController: UICollectionViewController {
 
     receptionist.observe(MIDIDocumentManager.Notification.DidUpdateMetadataItems,
                     from: MIDIDocumentManager.self,
-                callback: weakMethod(self, method: DocumentsViewController.updateItems))
+                callback: weakMethod(self, DocumentsViewController.updateItems))
     receptionist.observe(MIDIDocumentManager.Notification.DidCreateDocument,
                    from: MIDIDocumentManager.self,
-               callback: weakMethod(self, method: DocumentsViewController.updateItems))
+               callback: weakMethod(self, DocumentsViewController.updateItems))
     receptionist.observe(SettingsManager.Notification.Name.iCloudStorageChanged, from: SettingsManager.self) {
       [weak self] in
       guard let value = $0.iCloudStorageSetting else { return }
@@ -83,6 +86,7 @@ final class DocumentsViewController: UICollectionViewController {
   private var iCloudStorage = SettingsManager.iCloudStorage { didSet { collectionView?.reloadData() } }
 
   private var iCloudItems: [NSMetadataItem] = []
+
   private var localItems: [LocalDocumentItem] = []
 
   private var items: [DocumentItemType] { return iCloudStorage ? iCloudItems : localItems }

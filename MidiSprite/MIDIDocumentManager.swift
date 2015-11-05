@@ -14,13 +14,9 @@ final class MIDIDocumentManager {
   private static var state: State = [] { didSet { logDebug("\(oldValue) ➞ \(state)") } }
 
   static var openingDocument: Bool {
-    objc_sync_enter(self)
-    defer { objc_sync_exit(self) }
     return state ∋ .OpeningDocument
   }
   static var gatheringMetadataItems: Bool {
-    objc_sync_enter(self)
-    defer { objc_sync_exit(self) }
     return state ∋ .GatheringMetadataItems
   }
 
@@ -63,19 +59,24 @@ final class MIDIDocumentManager {
         }
 
         refreshBookmark()
-        Notification.DidChangeDocument.post()
+        dispatchToMain {
+          Notification.DidChangeDocument.post()
+        }
       }
     }
   }
+
+  static private let currentDocumentLock = NSObject()
+
   static private(set) var currentDocument: MIDIDocument? {
     get {
-      objc_sync_enter(self)
-      defer { objc_sync_exit(self) }
+      objc_sync_enter(currentDocumentLock)
+      defer { objc_sync_exit(currentDocumentLock) }
       return _currentDocument
     }
     set {
-      objc_sync_enter(self)
-      defer { objc_sync_exit(self) }
+      objc_sync_enter(currentDocumentLock)
+      defer { objc_sync_exit(currentDocumentLock) }
       _currentDocument = newValue
     }
   }
@@ -87,18 +88,28 @@ final class MIDIDocumentManager {
     return operationQueue
   }()
 
+  private static let queryQueue: NSOperationQueue = {
+    let queryQueue = NSOperationQueue(name: "MIDIDocumentManager.MetadataQuery")
+    queryQueue.maxConcurrentOperationCount = 1
+    return queryQueue
+  }()
+
   private static let metadataQuery: NSMetadataQuery = {
     let query = NSMetadataQuery()
     query.notificationBatchingInterval = 4
     query.searchScopes = [NSMetadataQueryUbiquitousDocumentsScope, NSMetadataQueryAccessibleUbiquitousExternalDocumentsScope]
-    query.operationQueue = operationQueue
+    query.operationQueue = queryQueue
     return query
   }()
 
   static private(set) var metadataItems: OrderedSet<NSMetadataItem> = [] {
     didSet {
-      logDebug("metadataItems: \(", ".join(metadataItems.map({$0.displayName})))")
+      dispatchToMain { Notification.DidUpdateMetadataItems.post() }
     }
+  }
+
+  static private var metadataItemsDescription: String {
+    return "metadataItems:\n\("\n\n".join(metadataItems.map({$0.attributesDescription.indentedBy(4)})))"
   }
 
   /** createNewFile */
@@ -127,8 +138,10 @@ final class MIDIDocumentManager {
       let document = MIDIDocument(fileURL: fileURL)
       document.saveToURL(fileURL, forSaveOperation: .ForCreating, completionHandler: {
         guard $0 else { return }
-        Notification.DidCreateDocument.post(userInfo: [Notification.Key.FilePath: fileURL.path!])
-        MIDIDocumentManager.openDocument(document)
+        dispatchToMain {
+          Notification.DidCreateDocument.post(userInfo: [Notification.Key.FilePath: fileURL.path!])
+          MIDIDocumentManager.openDocument(document)
+        }
       })
     }
 
@@ -239,41 +252,13 @@ final class MIDIDocumentManager {
   - parameter notification: NSNotification
   */
   private static func didUpdateMetadataItems(notification: NSNotification) {
-    var userInfo: [Notification.Key:AnyObject?] = [:]
-    if let removed = notification.removedMetadataItems where !removed.isEmpty && removed ⊆ metadataItems {
-      metadataItems ∖= removed
-      userInfo[Notification.Key.Removed] = removed
+    queue.async {
+      var items = metadataItems
+      if let removed = notification.removedMetadataItems { items ∖= removed }
+      if let added = notification.addedMetadataItems { items ∪= added }
+      guard items.count != metadataItems.count else { return }
+      metadataItems = items
     }
-
-    if let changed = notification.changedMetadataItems where !changed.isEmpty && changed ⊆ metadataItems {
-      userInfo[Notification.Key.Changed] = changed
-    }
-
-    if let added = notification.addedMetadataItems where !added.isEmpty && added ⊈ metadataItems {
-      metadataItems ∪= added
-      userInfo[Notification.Key.Added] = added
-    }
-
-    guard !userInfo.isEmpty else { return }
-
-    logDebug(
-      "".join(
-        "posting notification with user info:",
-        {
-          guard let removed = userInfo[Notification.Key.Removed] as? [NSMetadataItem] else { return "" }
-          return "\n\tremoved: \(", ".join(removed.map({$0.displayName})))"
-        }(),
-        {
-          guard let changed = userInfo[Notification.Key.Changed] as? [NSMetadataItem] else { return "" }
-          return "\n\tchanged: \(", ".join(changed.map({$0.displayName})))"
-        }(),
-        {
-          guard let added = userInfo[Notification.Key.Added] as? [NSMetadataItem] else { return "" }
-          return "\n\tadded: \(", ".join(added.map({$0.displayName})))"
-        }()
-      )
-    )
-    Notification.DidUpdateMetadataItems.post(userInfo: userInfo)
   }
 
   /**
@@ -281,27 +266,27 @@ final class MIDIDocumentManager {
 
   - parameter notificaiton: NSNotification
   */
-  private static func didGatherMetadataItems(notificaiton: NSNotification) {
-    guard state ∋ .GatheringMetadataItems else {
-      logWarning("received gathering notification but state does not contain gathering flag")
-      return
+  private static func didGatherMetadataItems(notification: NSNotification) {
+    queue.async {
+      guard state ∋ .GatheringMetadataItems else {
+        logWarning("received gathering notification but state does not contain gathering flag")
+        return
+      }
+
+      metadataQuery.disableUpdates()
+      metadataItems = OrderedSet(metadataQuery.results as! [NSMetadataItem])
+      metadataQuery.enableUpdates()
+      logDebug(metadataItemsDescription)
+      state ⊻= .GatheringMetadataItems
+
     }
-
-    metadataQuery.disableUpdates()
-    metadataItems = OrderedSet(metadataQuery.results as! [NSMetadataItem])
-    metadataQuery.enableUpdates()
-
-    state ⊻= .GatheringMetadataItems
-
-    guard metadataItems.count > 0 else { return }
-    Notification.DidUpdateMetadataItems.post(userInfo: [Notification.Key.Added:metadataItems.array])
   }
 
   private static let receptionist = NotificationReceptionist(callbackQueue: MIDIDocumentManager.operationQueue)
 
   /** initialize */
   static func initialize() {
-    queue.asyncBarrier {
+    queue.async {
 
       guard state ∌ .Initialized else { return }
 
@@ -318,12 +303,14 @@ final class MIDIDocumentManager {
       if let data = SettingsManager.currentDocument {
         do {
           let url = try NSURL(byResolvingBookmarkData: data, options: .WithoutUI, relativeToURL: nil, bookmarkDataIsStale: nil)
-          logDebug("opening bookmarked file at path '\(url.fileSystemRepresentation)'")
+          logDebug("opening bookmarked file at path '\(String(CString: url.fileSystemRepresentation, encoding: NSUTF8StringEncoding)!)'")
           openURL(url)
         } catch {
           logError(error, message: "Failed to resolve bookmark data into a valid file url")
           SettingsManager.currentDocument = nil
         }
+      } else {
+        createNewDocument()
       }
 
       metadataQuery.startQuery()

@@ -8,6 +8,16 @@
 
 import Foundation
 
+/**
+nameForCurrentQueue
+
+- returns: String?
+*/
+private func nameForCurrentQueue() -> String? {
+  if let name = NSOperationQueue.currentQueue()?.name { return name }
+  else { return NSThread.currentThread().name }
+}
+
 public protocol Loggable {
   static var defaultLogContext: LogManager.LogContext { get }
   var logContext: LogManager.LogContext { get }
@@ -22,7 +32,7 @@ public extension Loggable {
   }
 
   var logContext: LogManager.LogContext { return self.dynamicType.defaultLogContext }
-  var logTag: LogManager.LogMessage.Tag? { return LogManager.LogMessage.Tag(className: "\(self.dynamicType)", queueName: NSOperationQueue.currentQueue()?.name) }
+  var logTag: LogManager.LogMessage.Tag? { return LogManager.LogMessage.Tag(className: "\(self.dynamicType)", queueName: nameForCurrentQueue()) }
 
   /**
   log:asynchronous:flag:function:line:file:tag:
@@ -48,7 +58,7 @@ public extension Loggable {
                      line: line,
                      file: file,
                   context: defaultLogContext,
-                      tag: LogManager.LogMessage.Tag(objectName: "\(self)", className: "\(self)", queueName: NSOperationQueue.currentQueue()?.name))
+                      tag: LogManager.LogMessage.Tag(objectName: "\(self)", className: "\(self)", queueName: nameForCurrentQueue()))
   }
 
   /**
@@ -354,12 +364,12 @@ asynchronous: asynchronous,
 
 public extension Loggable where Self:Named {
   var logTag: LogManager.LogMessage.Tag? {
-    return LogManager.LogMessage.Tag(objectName: name, className: "\(self.dynamicType)", queueName: NSOperationQueue.currentQueue()?.name)
+    return LogManager.LogMessage.Tag(objectName: name, className: "\(self.dynamicType)", queueName: nameForCurrentQueue())
   }
 }
 
 public extension Loggable where Self:Nameable {
   var logTag: LogManager.LogMessage.Tag? {
-    return LogManager.LogMessage.Tag(objectName: name, className: "\(self.dynamicType)", queueName: NSOperationQueue.currentQueue()?.name)
+    return LogManager.LogMessage.Tag(objectName: name, className: "\(self.dynamicType)", queueName: nameForCurrentQueue())
   }
 }
