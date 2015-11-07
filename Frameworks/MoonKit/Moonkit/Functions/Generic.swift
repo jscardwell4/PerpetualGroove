@@ -9,6 +9,18 @@
 import Foundation
 
 
+public func encode<T>(var value: T) -> NSData {
+  return withUnsafePointer(&value) { NSData(bytes: $0, length: sizeofValue(value)) }
+}
+
+public func decode<T>(data: NSData) -> T? {
+  let pointer = UnsafeMutablePointer<T>.alloc(1)
+  let length = sizeof(T)
+  guard data.length == length else { return nil }
+  data.getBytes(pointer, length: length)
+  return pointer.move()
+}
+
 public func ~=<T:Equatable>(lhs: T?, rhs: T?) -> Bool {
   if let l = lhs, r = rhs where l ~= r { return true }
   else if lhs == nil && rhs == nil { return true }
@@ -40,32 +52,87 @@ public func **(lhs: CGFloat, rhs: Int) -> CGFloat {
   return (0..<rhs).reduce(CGFloat(0.0), combine: {n, _ in n * lhs})
 }
 
+/**
+sum:
+
+- parameter s: S
+
+- returns: CGFloat
+*/
 public func sum<S:SequenceType where S.Generator.Element == CGFloat>(s: S) -> CGFloat {
   return s.reduce(CGFloat(), combine: {$0 + $1})
 }
 
+/**
+sum:
+
+- parameter s: S
+
+- returns: Float
+*/
 public func sum<S:SequenceType where S.Generator.Element == Float>(s: S) -> Float {
   return s.reduce(Float(), combine: {$0 + $1})
 }
 
+/**
+sum:
+
+- parameter s: S
+
+- returns: Double
+*/
 public func sum<S:SequenceType where S.Generator.Element == Double>(s: S) -> Double {
   return s.reduce(0.0, combine: {$0 + $1})
 }
 
+/**
+sum:
+
+- parameter s: S
+
+- returns: IntMax
+*/
 public func sum<S:SequenceType where S.Generator.Element:IntegerArithmeticType>(s: S) -> IntMax {
   return s.reduce(0, combine: {$0 + $1.toIntMax()})
 }
 
+/**
+sum:
+
+- parameter s: S
+
+- returns: S.Generator.Element
+*/
 public func sum<S:SequenceType where S.Generator.Element:ArithmeticType>(s: S) -> S.Generator.Element {
   return s.reduce(S.Generator.Element(intMax: 0), combine: +)
 }
 
+/**
+weakMethod:method:
+
+- parameter object: T
+- parameter method: T -> U -> Void
+
+- returns: U -> Void
+*/
 public func weakMethod<T:AnyObject, U>(object: T, _ method: T -> U -> Void) -> U -> Void {
   return {
     [weak object] in
     guard object != nil else { return }
     method(object!)($0)
   }
+}
+
+/**
+unownedMethod:method:
+
+- parameter object: T
+- parameter method: T -> U -> Void
+
+- returns: U -> Void
+*/
+public func unownedMethod<T:AnyObject, U>(object: T, _ method: T -> U -> Void) -> U -> Void {
+  return { [unowned object] in method(object)($0) }
 }
 
 

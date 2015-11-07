@@ -68,28 +68,49 @@ final class DocumentsViewController: UICollectionViewController {
 
     (collectionViewLayout as? DocumentsViewLayout)?.controller = self
 
-    receptionist.observe(MIDIDocumentManager.Notification.DidUpdateMetadataItems,
+    receptionist.observe(MIDIDocumentManager.Notification.DidUpdateItems,
                     from: MIDIDocumentManager.self,
-                callback: weakMethod(self, DocumentsViewController.updateItems))
+                callback: weakMethod(self, DocumentsViewController.didUpdateItems))
+
     receptionist.observe(MIDIDocumentManager.Notification.DidCreateDocument,
                    from: MIDIDocumentManager.self,
-               callback: weakMethod(self, DocumentsViewController.updateItems))
-    receptionist.observe(SettingsManager.Notification.Name.iCloudStorageChanged, from: SettingsManager.self) {
-      [weak self] in
-      guard let value = $0.iCloudStorageSetting else { return }
-      self?.iCloudStorage = value
-    }
+               callback: weakMethod(self, DocumentsViewController.didCreateDocument))
+
+    receptionist.observe(MIDIDocumentManager.Notification.DidChangeDocument,
+                    from: MIDIDocumentManager.self,
+                callback: weakMethod(self, DocumentsViewController.didChangeDocument))
   }
 
   // MARK: - Document items
 
-  private var iCloudStorage = SettingsManager.iCloudStorage { didSet { collectionView?.reloadData() } }
+//  private var selectedItemURL: NSURL? {
+//    didSet {
+//      guard let url = selectedItemURL, idx = items.indexOf({$0.URL == url}) else { selectedItem = nil; return }
+//      selectedItem = NSIndexPath(forItem: idx, inSection: 1)
+//    }
+//  }
 
-  private var iCloudItems: [NSMetadataItem] = []
+  private var selectedItem: NSIndexPath? {
+    didSet {
+      guard isViewLoaded() else { return }
+      collectionView?.selectItemAtIndexPath(selectedItem, animated: true, scrollPosition: .CenteredVertically)
+    }
+  }
 
-  private var localItems: [LocalDocumentItem] = []
+  private var items: [DocumentItem] = [] {
+    didSet {
+      updateItemSize()
+      collectionView?.reloadData()
+      logDebug("items updated and data reloaded")
+    }
+  }
 
-  private var items: [DocumentItemType] { return iCloudStorage ? iCloudItems : localItems }
+  /** updateItemSize */
+  private func updateItemSize() {
+    let font = UIFont.controlFont
+    let characterCount = max(CGFloat(items.map({$0.displayName.characters.count ?? 0}).maxElement() ?? 0), 15)
+    itemSize = CGSize(width: characterCount * font.characterWidth, height: font.pointSize * 2).integralSize
+  }
 
   // MARK: - View lifecycle
 
@@ -106,7 +127,10 @@ final class DocumentsViewController: UICollectionViewController {
 
   - parameter animated: Bool
   */
-  override func viewWillAppear(animated: Bool) { guard !MIDIDocumentManager.gatheringMetadataItems else { return }; updateItems() }
+  override func viewWillAppear(animated: Bool) {
+    guard !MIDIDocumentManager.gatheringMetadataItems else { return }
+    items = MIDIDocumentManager.items
+  }
 
   /** updateViewConstraints */
   override func updateViewConstraints() {
@@ -127,35 +151,43 @@ final class DocumentsViewController: UICollectionViewController {
     super.updateViewConstraints()
   }
 
-  private var cellShowingDelete: DocumentCell? {
-    return collectionView?.visibleCells().first({($0 as? DocumentCell)?.showingDelete == true}) as? DocumentCell
-  }
-
   // MARK: - Notifications
 
   /**
-  updateItems:
+  didChangeDocument:
+
+  - parameter notification: NSNotification
+  */
+  private func didChangeDocument(notification: NSNotification) {
+    logDebug("")
+  }
+
+  /**
+  didCreateDocument:
+
+  - parameter notification: NSNotification
+  */
+  private func didCreateDocument(notification: NSNotification) {
+    logDebug("")
+  }
+
+  /**
+  didUpdateItems:
 
   - parameter notification: NSNotification? = nil
   */
-  private func updateItems(notification: NSNotification? = nil) {
-    // TODO: Add cell for newly created document
+  private func didUpdateItems(notification: NSNotification) {
     guard isViewLoaded() else { return }
-
-    iCloudItems = MIDIDocumentManager.metadataItems.array
-    do {
-      localItems = try documentsDirectoryContents().filter({
-        guard let ext = $0.pathExtension else { return false}
-        return ext ~= ~/"^[mM][iI][dD][iI]?$"}
-      ).map({LocalDocumentItem($0)})
-    } catch {
-      logError(error, message: "Failed to obtain local items")
+    var items = self.items
+    if let addedItems = notification.addedItems {
+      logDebug("addedItems: \(addedItems)")
+      items += addedItems
     }
-    let font = UIFont.controlFont
-    let characterCount = max(CGFloat(items.map({$0.displayName.characters.count ?? 0}).maxElement() ?? 0), 15)
-    itemSize = CGSize(width: characterCount * font.characterWidth, height: font.pointSize * 2).integralSize
-    collectionView?.reloadData()
-    logDebug("items updated and data reloaded")
+    if let removedItems = notification.removedItems {
+      logDebug("removedItems: \(removedItems)")
+      items ∖= removedItems
+    }
+    self.items = items
   }
 
   // MARK: UICollectionViewDataSource
@@ -195,9 +227,11 @@ final class DocumentsViewController: UICollectionViewController {
     let cell: UICollectionViewCell
     switch indexPath.section {
       case 0:
-        cell = collectionView.dequeueReusableCellWithReuseIdentifier(CreateDocumentCell.Identifier, forIndexPath: indexPath)
+        cell = collectionView.dequeueReusableCellWithReuseIdentifier(CreateDocumentCell.Identifier,
+                                                        forIndexPath: indexPath)
       default:
-        cell = collectionView.dequeueReusableCellWithReuseIdentifier(DocumentCell.Identifier, forIndexPath: indexPath)
+        cell = collectionView.dequeueReusableCellWithReuseIdentifier(DocumentCell.Identifier,
+                                                        forIndexPath: indexPath)
         (cell as? DocumentCell)?.item = items[indexPath.row]
     }
     
@@ -217,21 +251,7 @@ final class DocumentsViewController: UICollectionViewController {
   override func     collectionView(collectionView: UICollectionView,
     shouldHighlightItemAtIndexPath indexPath: NSIndexPath) -> Bool
   {
-    guard let cell = cellShowingDelete else { return true }
-    cell.hideDelete()
-    return false
-  }
-
-  /**
-  collectionView:shouldSelectItemAtIndexPath:
-
-  - parameter collectionView: UICollectionView
-  - parameter indexPath: NSIndexPath
-
-  - returns: Bool
-  */
-  override func collectionView(collectionView: UICollectionView, shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
-    guard let cell = cellShowingDelete else { return true }
+    guard let cell = collectionView.cellForItemAtIndexPath(indexPath) as? DocumentCell where cell.showingDelete else { return true }
     cell.hideDelete()
     return false
   }

@@ -22,7 +22,7 @@ final class LogManager: MoonKit.LogManager {
 
     setLogLevel(.Verbose, forType: NotificationReceptionist.self)
 
-    MIDIDocumentManager.defaultLogContext     = MIDIFileContext// ∪ .Console
+    MIDIDocumentManager.defaultLogContext     = MIDIFileContext ∪ .Console
     MIDIDocument.defaultLogContext            = MIDIFileContext// ∪ .Console
     MIDIFile.defaultLogContext                = MIDIFileContext// ∪ .Console
     MIDIFileHeaderChunk.defaultLogContext     = MIDIFileContext// ∪ .Console

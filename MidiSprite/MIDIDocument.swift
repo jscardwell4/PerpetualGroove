@@ -119,9 +119,6 @@ final class MIDIDocument: UIDocument {
 
   }
 
-//  override func disableEditing() {}
-//  override func enableEditing() {}
-
   // MARK: - Saving
 
   /**

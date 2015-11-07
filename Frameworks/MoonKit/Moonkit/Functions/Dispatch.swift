@@ -73,6 +73,50 @@ public func serialQueueWithLabel(label: String,
 }
 
 /**
+serialBackgroundQueue:
+
+- parameter label: String
+
+- returns: dispatch_queue_t
+*/
+public func serialBackgroundQueue(label: String) -> dispatch_queue_t {
+  return serialQueueWithLabel(label, qualityOfService: QOS_CLASS_BACKGROUND)
+}
+
+/**
+ serialUtilityQueue:
+
+ - parameter label: String
+
+ - returns: dispatch_queue_t
+ */
+public func serialUtilityQueue(label: String) -> dispatch_queue_t {
+  return serialQueueWithLabel(label, qualityOfService: QOS_CLASS_UTILITY)
+}
+
+/**
+ serialInteractiveQueue:
+
+ - parameter label: String
+
+ - returns: dispatch_queue_t
+ */
+public func serialInteractiveQueue(label: String) -> dispatch_queue_t {
+  return serialQueueWithLabel(label, qualityOfService: QOS_CLASS_USER_INTERACTIVE)
+}
+
+/**
+ serialInitiatedQueue:
+
+ - parameter label: String
+
+ - returns: dispatch_queue_t
+ */
+public func serialInitiatedQueue(label: String) -> dispatch_queue_t {
+  return serialQueueWithLabel(label, qualityOfService: QOS_CLASS_USER_INITIATED)
+}
+
+/**
 concurrentQueueWithLabel:qualityOfService:relativePriority:
 
 - parameter label: String
@@ -88,6 +132,50 @@ public func concurrentQueueWithLabel(label: String,
   let attributes = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_CONCURRENT, qos, priority)
   let queue = label.withCString { dispatch_queue_create($0, attributes) }
   return queue
+}
+
+/**
+concurrentBackgroundQueue:
+
+- parameter label: String
+
+- returns: dispatch_queue_t
+*/
+public func concurrentBackgroundQueue(label: String) -> dispatch_queue_t {
+  return concurrentQueueWithLabel(label, qualityOfService: QOS_CLASS_BACKGROUND)
+}
+
+/**
+ concurrentUtilityQueue:
+
+ - parameter label: String
+
+ - returns: dispatch_queue_t
+ */
+public func concurrentUtilityQueue(label: String) -> dispatch_queue_t {
+  return concurrentQueueWithLabel(label, qualityOfService: QOS_CLASS_UTILITY)
+}
+
+/**
+ concurrentInteractiveQueue:
+
+ - parameter label: String
+
+ - returns: dispatch_queue_t
+ */
+public func concurrentInteractiveQueue(label: String) -> dispatch_queue_t {
+  return concurrentQueueWithLabel(label, qualityOfService: QOS_CLASS_USER_INTERACTIVE)
+}
+
+/**
+ concurrentInitiatedQueue:
+
+ - parameter label: String
+
+ - returns: dispatch_queue_t
+ */
+public func concurrentInitiatedQueue(label: String) -> dispatch_queue_t {
+  return concurrentQueueWithLabel(label, qualityOfService: QOS_CLASS_USER_INITIATED)
 }
 
 /**
@@ -141,6 +229,8 @@ public extension dispatch_queue_t {
 
   public func syncBarrier(block: dispatch_block_t)  { dispatch_barrier_sync(self, block) }
   public func asyncBarrier(block: dispatch_block_t) { dispatch_barrier_async(self, block) }
+
+  public func after(delay: Double, _ block: dispatch_block_t) { delayedDispatch(delay, self, block) }
 
 }
 

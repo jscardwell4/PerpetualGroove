@@ -11,16 +11,83 @@ import MoonKit
 
 final class MIDIDocumentManager {
 
+  // MARK: - Initialization
+
+  /** initialize */
+  static func initialize() {
+    queue.async {
+
+      guard state ∌ .Initialized else { return }
+
+      receptionist.logContext = LogManager.MIDIFileContext
+
+      receptionist.observe(SettingsManager.Notification.Name.iCloudStorageChanged, from: SettingsManager.self) {
+        _ in iCloudStorage = SettingsManager.iCloudStorage
+      }
+
+      receptionist.observe(NSMetadataQueryDidFinishGatheringNotification,
+                      from: metadataQuery,
+                  callback: MIDIDocumentManager.didGatherMetadataItems)
+
+      receptionist.observe(NSMetadataQueryDidUpdateNotification,
+                      from: metadataQuery,
+                  callback: MIDIDocumentManager.didUpdateMetadataItems)
+
+      if let data = SettingsManager.currentDocument {
+        do {
+          let url = try NSURL(byResolvingBookmarkData: data, options: .WithoutUI, relativeToURL: nil, bookmarkDataIsStale: nil)
+          logDebug("opening bookmarked file at path '\(String(CString: url.fileSystemRepresentation, encoding: NSUTF8StringEncoding)!)'")
+          openURL(url)
+        } catch {
+          logError(error, message: "Failed to resolve bookmark data into a valid file url")
+          SettingsManager.currentDocument = nil
+        }
+      } else {
+        createNewDocument()
+      }
+
+      if let fileWrappers = directoryMonitor.directoryWrapper.fileWrappers?.values {
+        let directory = directoryMonitor.directoryURL
+        localItems = fileWrappers.flatMap({
+          guard let name = $0.preferredFilename else { return nil }
+          return try? LocalDocumentItem(directory + name)
+        })
+      }
+
+      if iCloudStorage {
+        metadataQuery.startQuery()
+        state ∪= [.Initialized, .GatheringMetadataItems]
+      } else {
+        directoryMonitor.startMonitoring()
+        state ∪= [.Initialized]
+      }
+      logDebug("files: \(directoryMonitor.directoryWrapper.fileWrappers!.map({$1.preferredFilename!}))")
+    }
+  }
+  
+  // MARK: - Queues
+
+  static let queue: dispatch_queue_t = concurrentQueueWithLabel("MIDIDocumentManager")
+  static let operationQueue: NSOperationQueue = {
+    let operationQueue = NSOperationQueue(name: "MIDIDocumentManager")
+    operationQueue.underlyingQueue = queue
+    return operationQueue
+  }()
+
+  private static let queryQueue: NSOperationQueue = {
+    let queryQueue = NSOperationQueue(name: "MIDIDocumentManager.MetadataQuery")
+    queryQueue.maxConcurrentOperationCount = 1
+    return queryQueue
+  }()
+
+
+  // MARK: - Tracking state
   private static var state: State = [] { didSet { logDebug("\(oldValue) ➞ \(state)") } }
 
-  static var openingDocument: Bool {
-    return state ∋ .OpeningDocument
-  }
-  static var gatheringMetadataItems: Bool {
-    return state ∋ .GatheringMetadataItems
-  }
+  static var openingDocument: Bool { return state ∋ .OpeningDocument }
+  static var gatheringMetadataItems: Bool { return state ∋ .GatheringMetadataItems }
 
-  private static let DefaultDocumentName = "AwesomeSauce"
+  // MARK: - The currently open document
 
   /** refreshBookmark */
   static private func refreshBookmark() {
@@ -36,6 +103,8 @@ final class MIDIDocumentManager {
         }
     }
   }
+
+  private static let observer = KVOReceptionist()
 
   static private var _currentDocument: MIDIDocument? {
     didSet {
@@ -59,9 +128,7 @@ final class MIDIDocumentManager {
         }
 
         refreshBookmark()
-        dispatchToMain {
-          Notification.DidChangeDocument.post()
-        }
+        dispatchToMain { Notification.DidChangeDocument.post() }
       }
     }
   }
@@ -81,36 +148,135 @@ final class MIDIDocumentManager {
     }
   }
 
-  static let queue: dispatch_queue_t = concurrentQueueWithLabel("MIDIDocumentManager")
-  static let operationQueue: NSOperationQueue = {
-    let operationQueue = NSOperationQueue(name: "MIDIDocumentManager")
-    operationQueue.underlyingQueue = queue
-    return operationQueue
-  }()
+  // MARK: - Items
 
-  private static let queryQueue: NSOperationQueue = {
-    let queryQueue = NSOperationQueue(name: "MIDIDocumentManager.MetadataQuery")
-    queryQueue.maxConcurrentOperationCount = 1
-    return queryQueue
+  private static var iCloudStorage = SettingsManager.iCloudStorage {
+    didSet {
+      guard oldValue != iCloudStorage else { return }
+      logDebug("iCloudStorage: \(iCloudStorage)")
+      switch iCloudStorage {
+        case true:
+          metadataQuery.startQuery()
+          directoryMonitor.stopMonitoring()
+        case false:
+          metadataQuery.stopQuery()
+          directoryMonitor.startMonitoring()
+      }
+      items = iCloudStorage
+                ? metadataItems.map({DocumentItem($0)})
+                : localItems.map({DocumentItem($0)})
+    }
+  }
+
+  static private(set) var items: [DocumentItem] = [] {
+    didSet {
+      guard oldValue != items else { return }
+
+      let removed = oldValue ∖ items
+      let added = items ∖ oldValue
+
+      var userInfo: [Notification.Key:AnyObject?] = [:]
+      if removed.count > 0 { userInfo[Notification.Key.Removed] = removed.map({$0.data}) }
+      if added.count > 0 { userInfo[Notification.Key.Added] = added.map({$0.data}) }
+
+      guard userInfo.count > 0 else { return }
+
+      dispatchToMain { Notification.DidUpdateItems.post(object: self, userInfo: userInfo) }
+    }
+  }
+
+  private static let directoryMonitor: DirectoryMonitor = {
+    let monitor = try! DirectoryMonitor(directoryURL: documentsURL,
+                                        callback: MIDIDocumentManager.directoryContentsChanged)
+    monitor.callbackQueue = operationQueue
+    return monitor
   }()
 
   private static let metadataQuery: NSMetadataQuery = {
     let query = NSMetadataQuery()
-    query.notificationBatchingInterval = 4
-    query.searchScopes = [NSMetadataQueryUbiquitousDocumentsScope, NSMetadataQueryAccessibleUbiquitousExternalDocumentsScope]
+    query.notificationBatchingInterval = 1
+    query.searchScopes = [NSMetadataQueryUbiquitousDocumentsScope,
+                          NSMetadataQueryAccessibleUbiquitousExternalDocumentsScope]
     query.operationQueue = queryQueue
     return query
   }()
 
-  static private(set) var metadataItems: OrderedSet<NSMetadataItem> = [] {
+  static private(set) var metadataItems: [NSMetadataItem] = [] {
     didSet {
-      dispatchToMain { Notification.DidUpdateMetadataItems.post() }
+      guard metadataItems != oldValue && iCloudStorage else { return }
+      items = metadataItems.map({DocumentItem($0)})
+    }
+  }
+
+  static private(set) var localItems: [LocalDocumentItem] = [] {
+    didSet {
+      guard localItems != oldValue && !iCloudStorage else { return }
+      items = localItems.map({DocumentItem($0)})
     }
   }
 
   static private var metadataItemsDescription: String {
     return "metadataItems:\n\("\n\n".join(metadataItems.map({$0.attributesDescription.indentedBy(4)})))"
   }
+
+  // MARK: - Receiving notifications
+
+  private static let receptionist = NotificationReceptionist(callbackQueue: MIDIDocumentManager.operationQueue)
+
+  /**
+  directoryContentsChanged:
+
+  - parameter monitor: DirectoryMonitor
+  */
+  private static func directoryContentsChanged(added: [String], removed: [String]) {
+    logDebug("\n".join(
+      "files: \(directoryMonitor.directoryWrapper.fileWrappers!.map({$1.preferredFilename!}))",
+      "added: \(added)",
+      "removed: \(removed)"
+      ))
+    if let fileWrappers = directoryMonitor.directoryWrapper.fileWrappers?.values {
+      let directory = directoryMonitor.directoryURL
+      localItems = fileWrappers.flatMap({
+        guard let name = $0.preferredFilename else { return nil }
+        return try? LocalDocumentItem(directory + name)
+      })
+    }
+  }
+
+  /**
+  didUpdateMetadataItems:
+
+  - parameter notification: NSNotification
+  */
+  private static func didUpdateMetadataItems(notification: NSNotification) {
+    var items = metadataItems
+    if let removed = notification.removedMetadataItems { items ∖= removed }
+    if let added = notification.addedMetadataItems { items += added }
+    guard items.count != metadataItems.count else { return }
+    metadataItems = items
+  }
+
+  /**
+  didGatherMetadataItems:
+
+  - parameter notificaiton: NSNotification
+  */
+  private static func didGatherMetadataItems(notification: NSNotification) {
+    guard state ∋ .GatheringMetadataItems else {
+      logWarning("received gathering notification but state does not contain gathering flag")
+      return
+    }
+
+    metadataQuery.disableUpdates()
+    metadataItems = metadataQuery.results as! [NSMetadataItem]
+    metadataQuery.enableUpdates()
+    logDebug(metadataItemsDescription)
+    state ⊻= .GatheringMetadataItems
+  }
+
+  // MARK: - Creating new documents
+
+  private static let DefaultDocumentName = "AwesomeSauce"
 
   /** createNewFile */
   static func createNewDocument() {
@@ -186,6 +352,8 @@ final class MIDIDocumentManager {
     return "\(baseNameʹ)" + (ext.isEmpty ? "" : ".\(ext)")
   }
 
+  // MARK: - Opening documents
+
   /**
   openDocument:
 
@@ -223,14 +391,14 @@ final class MIDIDocumentManager {
 
   - parameter item: DocumentItemType
   */
-  static func openItem(item: DocumentItemType) { openURL(item.URL) }
+  static func openItem(item: DocumentItem) { openURL(item.URL) }
 
   /**
   deleteItem:
 
   - parameter item: DocumentItemType
   */
-  static func deleteItem(item: DocumentItemType) {
+  static func deleteItem(item: DocumentItem) {
 
     queue.async {
 
@@ -244,81 +412,6 @@ final class MIDIDocumentManager {
     }
   }
 
-  private static let observer = KVOReceptionist()
-
-  /**
-  didUpdateMetadataItems:
-
-  - parameter notification: NSNotification
-  */
-  private static func didUpdateMetadataItems(notification: NSNotification) {
-    queue.async {
-      var items = metadataItems
-      if let removed = notification.removedMetadataItems { items ∖= removed }
-      if let added = notification.addedMetadataItems { items ∪= added }
-      guard items.count != metadataItems.count else { return }
-      metadataItems = items
-    }
-  }
-
-  /**
-  didGatherMetadataItems:
-
-  - parameter notificaiton: NSNotification
-  */
-  private static func didGatherMetadataItems(notification: NSNotification) {
-    queue.async {
-      guard state ∋ .GatheringMetadataItems else {
-        logWarning("received gathering notification but state does not contain gathering flag")
-        return
-      }
-
-      metadataQuery.disableUpdates()
-      metadataItems = OrderedSet(metadataQuery.results as! [NSMetadataItem])
-      metadataQuery.enableUpdates()
-      logDebug(metadataItemsDescription)
-      state ⊻= .GatheringMetadataItems
-
-    }
-  }
-
-  private static let receptionist = NotificationReceptionist(callbackQueue: MIDIDocumentManager.operationQueue)
-
-  /** initialize */
-  static func initialize() {
-    queue.async {
-
-      guard state ∌ .Initialized else { return }
-
-      receptionist.logContext = LogManager.MIDIFileContext
-
-      receptionist.observe(NSMetadataQueryDidFinishGatheringNotification,
-                      from: metadataQuery,
-                  callback: MIDIDocumentManager.didGatherMetadataItems)
-
-      receptionist.observe(NSMetadataQueryDidUpdateNotification,
-                      from: metadataQuery,
-                  callback: MIDIDocumentManager.didUpdateMetadataItems)
-
-      if let data = SettingsManager.currentDocument {
-        do {
-          let url = try NSURL(byResolvingBookmarkData: data, options: .WithoutUI, relativeToURL: nil, bookmarkDataIsStale: nil)
-          logDebug("opening bookmarked file at path '\(String(CString: url.fileSystemRepresentation, encoding: NSUTF8StringEncoding)!)'")
-          openURL(url)
-        } catch {
-          logError(error, message: "Failed to resolve bookmark data into a valid file url")
-          SettingsManager.currentDocument = nil
-        }
-      } else {
-        createNewDocument()
-      }
-
-      metadataQuery.startQuery()
-
-      state ∪= [.Initialized, .GatheringMetadataItems]
-    }
-  }
-  
 }
 
 extension MIDIDocumentManager {
@@ -353,9 +446,20 @@ extension MIDIDocumentManager {
 extension MIDIDocumentManager {
 
   enum Notification: String, NotificationType, NotificationNameType {
-    case DidUpdateMetadataItems, DidChangeDocument, DidCreateDocument
+    case DidUpdateItems, DidChangeDocument, DidCreateDocument
     enum Key: String, NotificationKeyType { case Changed, Added, Removed, FilePath }
     var object: AnyObject? { return MIDIDocumentManager.self }
   }
   
+}
+
+extension NSNotification {
+  var addedItems: [DocumentItem]? {
+    guard let dataSet = userInfo?[MIDIDocumentManager.Notification.Key.Added.key] as? [NSData] else { return nil }
+    return dataSet.map({DocumentItem($0)!})
+  }
+  var removedItems: [DocumentItem]? {
+    guard let dataSet = userInfo?[MIDIDocumentManager.Notification.Key.Removed.key] as? [NSData] else { return nil }
+    return dataSet.map({DocumentItem($0)!})
+  }
 }

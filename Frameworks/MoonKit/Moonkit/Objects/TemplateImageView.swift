@@ -8,7 +8,7 @@
 
 import Foundation
 
-//@IBDesignable
+@IBDesignable
 public class TemplateImageView: UIImageView {
 
   override public var image: UIImage? {
@@ -42,6 +42,26 @@ public class TemplateImageView: UIImageView {
   */
   public override init(frame: CGRect) {
     super.init(frame: frame)
+  }
+
+  /**
+  initWithImage:highlightedImage:
+
+  - parameter image: UIImage?
+  - parameter highlightedImage: UIImage?
+  */
+  public override init(image: UIImage?, highlightedImage: UIImage?) {
+    super.init(image: image?.imageWithRenderingMode(.AlwaysTemplate),
+               highlightedImage: highlightedImage?.imageWithRenderingMode(.AlwaysTemplate))
+  }
+
+  /**
+  initWithImage:
+
+  - parameter image: UIImage?
+  */
+  public override init(image: UIImage?) {
+    super.init(image: image?.imageWithRenderingMode(.AlwaysTemplate))
   }
 
   /**

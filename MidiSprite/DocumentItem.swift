@@ -9,103 +9,130 @@
 import Foundation
 import MoonKit
 
-@objc protocol DocumentItemType: class {
-  var displayName: String { get }
-  var URL: NSURL { get }
-}
+struct DocumentItem: Equatable, Hashable {
 
-final class LocalDocumentItem: NSObject, DocumentItemType {
-  let URL: NSURL
-  var displayName: String {
-    var name: AnyObject?
-    do { try URL.getResourceValue(&name, forKey: NSURLLocalizedNameKey) }
-    catch { logError(error, message: "Failed to get display name from url '\(URL)'"); fatalError() }
-    guard let displayName = name as? String else { fatalError("object returned by URL is not a string") }
-    return displayName
+  let displayName: String
+  let filePath: String
+  private let modificationDateString: String?
+  private let creationDateString: String?
+  let size: UInt64
+
+  private static let dateFormatter: NSDateFormatter = {
+    let dateFormatter = NSDateFormatter()
+    dateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+    dateFormatter.dateFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"
+    dateFormatter.timeZone = NSTimeZone(forSecondsFromGMT: 0)
+    return dateFormatter
+  }()
+
+  var URL: NSURL { return NSURL(fileURLWithPath: filePath) }
+
+  var modificationDate: NSDate? {
+    guard let dateString = modificationDateString else { return nil }
+    return DocumentItem.dateFormatter.dateFromString(dateString)
   }
-  init(_ URL: NSURL) { self.URL = URL; super.init() }
-}
 
-extension NSMetadataItem: DocumentItemType {
+  var creationDate: NSDate? {
+    guard let dateString = creationDateString else { return nil }
+    return DocumentItem.dateFormatter.dateFromString(dateString)
+  }
 
-  enum ItemKey: String, EnumerableType {
-    case FSName                 = "kMDItemFSName"                           // NSString
-    case DisplayName            = "kMDItemDisplayName"                      // NSString
-    case URL                    = "kMDItemURL"                              // NSURL
-    case Path                   = "kMDItemPath"                             // NSString
-    case FSSize                 = "kMDItemFSSize"                           // NSNumber
-    case FSCreationDate         = "kMDItemFSCreationDate"                   // NSDate
-    case FSContentChangeDate    = "kMDItemFSContentChangeDate"              // NSDate
-    case IsUbiquitous           = "NSMetadataItemIsUbiquitousKey"                     // NSNumber: Bool
-    case HasUnresolvedConflicts = "NSMetadataUbiquitousItemHasUnresolvedConflictsKey" // NSNumber: Bool
-    case IsDownloading          = "NSMetadataUbiquitousItemIsDownloadingKey"          // NSNumber: Bool
-    case IsUploaded             = "NSMetadataUbiquitousItemIsUploadedKey"             // NSNumber: Bool
-    case IsUploading            = "NSMetadataUbiquitousItemIsUploadingKey"            // NSNumber: Bool
-    case PercentDownloaded      = "NSMetadataUbiquitousItemPercentDownloadedKey"      // NSNumber: Double
-    case PercentUploaded        = "NSMetadataUbiquitousItemPercentUploadedKey"        // NSNumber: Double
-    case DownloadingStatus      = "NSMetadataUbiquitousItemDownloadingStatusKey"      // NSString
-    case DownloadingError       = "NSMetadataUbiquitousItemDownloadingErrorKey"       // NSError
-    case UploadingError         = "NSMetadataUbiquitousItemUploadingErrorKey"         // NSError
-    static var allCases: [ItemKey] { 
-      return [FSName, DisplayName, URL, Path, FSSize, FSCreationDate, FSContentChangeDate, IsUbiquitous,
-              HasUnresolvedConflicts, IsDownloading, IsUploaded, IsUploading, PercentDownloaded,
-              PercentUploaded, DownloadingStatus, DownloadingError, UploadingError]
+  var hashValue: Int { return URL.hashValue }
+
+  var data: NSData { return encode(self) }
+
+  /**
+  init:
+
+  - parameter item: NSMetadataItem
+  */
+  init(_ item: NSMetadataItem) {
+    displayName = item.displayName.baseNameExt.0
+    filePath = item.URL.path!
+    if let date = item.modificationDate {
+      modificationDateString = DocumentItem.dateFormatter.stringFromDate(date)
+    } else {
+      modificationDateString = nil
     }
+    if let date = item.creationDate {
+      creationDateString = DocumentItem.dateFormatter.stringFromDate(date)
+    } else {
+       creationDateString = nil
+    }
+    size = item.size
   }
 
-  subscript(itemKey: ItemKey) -> AnyObject? { return valueForAttribute(itemKey.rawValue) }
+  /**
+  init:
 
-  var fileSystemName: String?       { return self[.FSName]                  as? String                   }
-  var displayName: String           { return self[.DisplayName]             as? String ?? "Unnamed Item" }
-  var URL: NSURL                    { return self[.URL]                     as! NSURL                    }
-  var path: String?                 { return self[.Path]                    as? String                   }
-  var size: Int?                    { return (self[.FSSize]                 as? NSNumber)?.integerValue  }
-  var creationDate: NSDate?         { return self[.FSCreationDate]          as? NSDate                   }
-  var modifiedDate: NSDate?         { return self[.FSContentChangeDate]     as? NSDate                   }
-  var isUbiquitous: Bool?           { return (self[.IsUbiquitous]           as? NSNumber)?.boolValue     }
-  var hasUnresolvedConflicts: Bool? { return (self[.HasUnresolvedConflicts] as? NSNumber)?.boolValue     }
-  var downloading: Bool?            { return (self[.IsDownloading]          as? NSNumber)?.boolValue     }
-  var uploaded: Bool?               { return (self[.IsUploaded]             as? NSNumber)?.boolValue     }
-  var uploading: Bool?              { return (self[.IsUploading]            as? NSNumber)?.boolValue     }
-  var percentDownloaded: Double?    { return (self[.PercentDownloaded]      as? NSNumber)?.doubleValue   }
-  var percentUploaded: Double?      { return (self[.PercentUploaded]        as? NSNumber)?.doubleValue   }
-  var downloadingStatus: String?    { return self[.DownloadingStatus]       as? String                   }
-  var downloadingError: NSError?    { return self[.DownloadingError]        as? NSError                  }
-  var uploadingError: NSError?      { return self[.UploadingError]          as? NSError                  }
-
-  var attributesDescription: String {
-    var result = "NSMetadataItem {\n\t"
-    result += "\n\t".join(ItemKey.allCases.flatMap({
-      guard let value = self[$0] else { return nil }
-      let key = $0.rawValue
-      let name: String?
-      switch key {
-        case ~/"^kMDItem[a-zA-Z]+$":
-          name = $0.rawValue[key.startIndex.advancedBy(7)..<]
-        case ~/"^NSMetadataItem[a-zA-Z]+Key$":
-          name = $0.rawValue[key.startIndex.advancedBy(14) ..< key.endIndex.advancedBy(-3)]
-        case ~/"^NSMetadataUbiquitousItem[a-zA-Z]+Key$":
-          name = $0.rawValue[key.startIndex.advancedBy(24) ..< key.endIndex.advancedBy(-3)]
-        default:
-          name = nil
-      }
-      guard name != nil else { return nil }
-      return "\(name!): \(value)"
-      }))
-    result += "\n}"
-    return result
+  - parameter item: LocalDocumentItem
+  */
+  init(_ item: LocalDocumentItem) {
+    displayName = item.displayName.baseNameExt.0
+    filePath = item.URL.path!
+    if let date = item.modificationDate {
+      modificationDateString = DocumentItem.dateFormatter.stringFromDate(date)
+    } else {
+      modificationDateString = nil
+    }
+    if let date = item.creationDate {
+      creationDateString = DocumentItem.dateFormatter.stringFromDate(date)
+    } else {
+       creationDateString = nil
+    }
+    size = item.size
   }
 
+  /**
+  init:
+
+  - parameter documentItem: DocumentItem
+  */
+  init(_ documentItem: DocumentItem) {
+    displayName = documentItem.displayName
+    filePath = documentItem.filePath
+    modificationDateString = documentItem.modificationDateString
+    creationDateString = documentItem.creationDateString
+    size = documentItem.size
+  }
+
+  /**
+  init:
+
+  - parameter item: AnyObject
+  */
+  init?(_ item: AnyObject) {
+    if let item = item as? NSMetadataItem { self.init(item) }
+    else if let item = item as? LocalDocumentItem { self.init(item) }
+    else if let data = item as? NSData, documentItem: DocumentItem = decode(data) { print("documentItem = \(documentItem)"); self.init(documentItem) }
+    else { return nil }
+  }
+
+  /**
+  init:base:
+
+  - parameter wrapper: NSFileWrapper
+  - parameter base: NSURL
+  */
+  init?(_ wrapper: NSFileWrapper, _ base: NSURL) {
+    guard let item = LocalDocumentItem(wrapper, base) else { return nil }
+    self.init(item)
+  }
 }
 
-extension NSNotification {
-  var removedMetadataItems: [NSMetadataItem]? {
-    return userInfo?[NSMetadataQueryUpdateRemovedItemsKey] as? [NSMetadataItem]
-  }
-  var changedMetadataItems: [NSMetadataItem]? {
-    return userInfo?[NSMetadataQueryUpdateChangedItemsKey] as? [NSMetadataItem]
-  }
-  var addedMetadataItems: [NSMetadataItem]? {
-    return userInfo?[NSMetadataQueryUpdateAddedItemsKey] as? [NSMetadataItem]
-  }
+/**
+Equatable compliance
+
+- parameter lhs: DocumentItem
+- parameter rhs: DocumentItem
+
+- returns: Bool
+*/
+func ==(lhs: DocumentItem, rhs: DocumentItem) -> Bool {
+  return lhs.filePath == rhs.filePath
+      && lhs.displayName == rhs.displayName
+      && lhs.creationDateString == rhs.creationDateString
+      && lhs.modificationDateString == rhs.modificationDateString
+      && lhs.size == rhs.size
 }
+

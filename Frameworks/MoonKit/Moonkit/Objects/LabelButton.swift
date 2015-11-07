@@ -41,8 +41,30 @@ public class LabelButton: ToggleControl {
   }
 
   public var font: UIFont = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline) {
-    didSet { invalidateIntrinsicContentSize(); setNeedsDisplay() }
+    didSet {
+      dummyBaselineViewHeightConstraint?.constant = font.ascender
+      invalidateIntrinsicContentSize()
+      setNeedsDisplay()
+    }
   }
+
+  private lazy var dummyBaselineView: UIView = {
+    let view = UIView(frame: CGRect(x: 0, y: 0, width: self.bounds.width, height: self.font.ascender))
+    view.userInteractionEnabled = false
+    view.translatesAutoresizingMaskIntoConstraints = false
+    self.addSubview(view)
+    self.dummyBaselineView = view
+    self.constrain(𝗛|view|𝗛, [𝗩|view])
+    guard let constraint = (view.height => self.font.ascender).constraint else { fatalError("something bad happened") }
+    constraint.active = true
+    self.dummyBaselineViewHeightConstraint = constraint
+    return view
+  }()
+
+  private weak var dummyBaselineViewHeightConstraint: NSLayoutConstraint?
+
+  public override var viewForFirstBaselineLayout: UIView { return dummyBaselineView  }
+  public override var viewForLastBaselineLayout: UIView { return dummyBaselineView  }
 
   @objc @IBInspectable private var fontName: String {
     get { return font.fontName }
