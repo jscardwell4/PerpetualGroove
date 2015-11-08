@@ -22,8 +22,8 @@ final class LogManager: MoonKit.LogManager {
 
     setLogLevel(.Verbose, forType: NotificationReceptionist.self)
 
-    MIDIDocumentManager.defaultLogContext     = MIDIFileContext ∪ .Console
-    MIDIDocument.defaultLogContext            = MIDIFileContext ∪ .Console
+    MIDIDocumentManager.defaultLogContext     = MIDIFileContext// ∪ .Console
+    MIDIDocument.defaultLogContext            = MIDIFileContext// ∪ .Console
     MIDIFile.defaultLogContext                = MIDIFileContext// ∪ .Console
     MIDIFileHeaderChunk.defaultLogContext     = MIDIFileContext// ∪ .Console
     MIDIFileTrackChunk.defaultLogContext      = MIDIFileContext// ∪ .Console
@@ -63,11 +63,11 @@ final class LogManager: MoonKit.LogManager {
     DocumentsViewController.defaultLogContext      = UIContext ∪ .Console
     InstrumentViewController.defaultLogContext     = UIContext// ∪ .Console
     NoteAttributesViewController.defaultLogContext = UIContext// ∪ .Console
-    DocumentsViewLayout.defaultLogContext          = UIContext ∪ .Console
+    DocumentsViewLayout.defaultLogContext          = UIContext// ∪ .Console
     MixerLayout.defaultLogContext                  = UIContext// ∪ .Console
     BarBeatTimeLabel.defaultLogContext             = UIContext// ∪ .Console
-    DocumentCell.defaultLogContext                 = UIContext ∪ .Console
-    DocumentItem.defaultLogContext                 = UIContext ∪ .Console
+    DocumentCell.defaultLogContext                 = UIContext// ∪ .Console
+    DocumentItem.defaultLogContext                 = UIContext// ∪ .Console
     MixerCell.defaultLogContext                    = UIContext// ∪ .Console
 
     addConsoleLoggers()

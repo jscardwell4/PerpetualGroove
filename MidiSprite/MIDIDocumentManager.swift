@@ -458,12 +458,28 @@ extension MIDIDocumentManager {
 }
 
 extension NSNotification {
+  var addedItemsData: [NSData]? {
+    return userInfo?[MIDIDocumentManager.Notification.Key.Added.key] as? [NSData]
+  }
+  var removedItemsData: [NSData]? {
+    return userInfo?[MIDIDocumentManager.Notification.Key.Removed.key] as? [NSData]
+  }
   var addedItems: [DocumentItem]? {
     guard let dataSet = userInfo?[MIDIDocumentManager.Notification.Key.Added.key] as? [NSData] else { return nil }
-    return dataSet.map({DocumentItem($0)!})
+    var result: [DocumentItem] = []
+    for data in dataSet {
+      if let item = DocumentItem(data) {
+        result.append(item)
+      }
+    }
+    return result
   }
   var removedItems: [DocumentItem]? {
     guard let dataSet = userInfo?[MIDIDocumentManager.Notification.Key.Removed.key] as? [NSData] else { return nil }
-    return dataSet.map({DocumentItem($0)!})
+    var result: [DocumentItem] = []
+    for data in dataSet {
+      if let item = DocumentItem(data) { result.append(item) }
+    }
+    return result
   }
 }

@@ -449,7 +449,7 @@ final class MIDIPlayerViewController: UIViewController {
       if modifiedState ∋ .Recording { recordButton.selected = recording }
 
       // Check if play/pause status changed
-      if modifiedState ~∩ [.Playing, .Paused] {
+      if modifiedState ⚭ [.Playing, .Paused] {
         stopButton.enabled = playing || paused
         (playing ? ControlImage.Pause : ControlImage.Play).decorateButton(playPauseButton)
       }

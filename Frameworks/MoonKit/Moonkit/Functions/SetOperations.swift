@@ -71,8 +71,8 @@ public func ⊻=<O:OptionSetType>(inout lhs: O, rhs: O) { lhs.exclusiveOrInPlace
 public func ~=<O:OptionSetType>(lhs: O, rhs: O) -> Bool { return (lhs ∩ rhs) == lhs }
 public func !~=<O:OptionSetType>(lhs: O, rhs: O) -> Bool { return !(lhs ~= rhs) }
 
-public func ~∩<O:OptionSetType>(lhs: O, rhs: O) -> Bool { return (lhs ∩ rhs) != [] }
-public func !~∩<O:OptionSetType>(lhs: O, rhs: O) -> Bool { return !(lhs ~∩ rhs) }
+public func ⚭<O:OptionSetType>(lhs: O, rhs: O) -> Bool { return (lhs ∩ rhs) != [] }
+public func !⚭<O:OptionSetType>(lhs: O, rhs: O) -> Bool { return !(lhs ⚭ rhs) }
 
 //public func ∪=<T, C:RangeReplaceableCollectionType, S:SequenceType
 //  where C.Generator.Element == S.Generator.Element> (inout lhs:C, rhs:S)
@@ -89,8 +89,7 @@ public func ∖<T:Equatable, S0:SequenceType, S1:SequenceType
 public func ∖=<C:RangeReplaceableCollectionType, S:SequenceType
   where C.Generator.Element == S.Generator.Element, C.Generator.Element:Hashable>(inout lhs: C, rhs: S)
 {
-  let rhsElements = Set(rhs)
-  for i in lhs.startIndex..<lhs.endIndex { if rhsElements.contains(lhs[i]) { lhs.removeAtIndex(i) } }
+  for element in rhs { if let idx = lhs.indexOf(element) { lhs.removeAtIndex(idx) } }
 }
 
 public func ∩<T:Equatable, S0:SequenceType, S1:SequenceType

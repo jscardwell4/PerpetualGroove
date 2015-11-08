@@ -268,7 +268,6 @@ extension Sequencer {
 
   private struct State: OptionSetType, CustomStringConvertible {
     let rawValue: Int
-//    init(rawValue: Int) { self.rawValue = rawValue }
 
     static let Playing   = State(rawValue: 0b0000_0010)
     static let Recording = State(rawValue: 0b0000_0100)

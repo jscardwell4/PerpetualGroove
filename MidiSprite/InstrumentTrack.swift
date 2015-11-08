@@ -25,13 +25,13 @@ final class InstrumentTrack: Track {
 
         case [.Soloing]:
           Notification.SoloStatusDidChange.post(object: self, userInfo: [.OldValue: !solo, .NewValue: solo])
-          if state ~∩ [.ExclusiveMute, .InclusiveMute] {
+          if state ⚭ [.ExclusiveMute, .InclusiveMute] {
             Notification.MuteStatusDidChange.post(object: self, userInfo: [.OldValue: !mute, .NewValue: mute])
           }
 
         case [.ExclusiveMute], [.InclusiveMute]:
-          let oldValue = oldValue ~∩ [.ExclusiveMute, .InclusiveMute] && oldValue ∌ .Soloing
-          let newValue = state    ~∩ [.ExclusiveMute, .InclusiveMute] && state    ∌ .Soloing
+          let oldValue = oldValue ⚭ [.ExclusiveMute, .InclusiveMute] && oldValue ∌ .Soloing
+          let newValue = state    ⚭ [.ExclusiveMute, .InclusiveMute] && state    ∌ .Soloing
           guard oldValue != newValue else { break }
           if newValue { _volume = volume; volume = 0 } else { volume = _volume }
           Notification.MuteStatusDidChange.post(object: self, userInfo: [.OldValue: oldValue, .NewValue: newValue])
@@ -70,7 +70,7 @@ final class InstrumentTrack: Track {
           return
       }
 
-           if state !~∩ [.Soloing, .InclusiveMute] && newCount > 0         { self?.state ∪= .InclusiveMute }
+           if state !⚭ [.Soloing, .InclusiveMute] && newCount > 0         { self?.state ∪= .InclusiveMute }
       else if state ∌ .Soloing && state ∋ .InclusiveMute && newCount == 0 { self?.state ⊻= .InclusiveMute }
     }
 
@@ -115,7 +115,7 @@ final class InstrumentTrack: Track {
   }
 
   var mute: Bool {
-    get { return state ~∩ [.ExclusiveMute, .InclusiveMute] && state ∌ .Soloing}
+    get { return state ⚭ [.ExclusiveMute, .InclusiveMute] && state ∌ .Soloing}
     set { guard (state ∋ .ExclusiveMute) != newValue else { return }; state ⊻= .ExclusiveMute }
   }
 

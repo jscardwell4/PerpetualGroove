@@ -9,7 +9,7 @@
 import Foundation
 import MoonKit
 
-struct DocumentItem: Equatable, Hashable {
+struct DocumentItem {
 
   let displayName: String
   let filePath: String
@@ -37,9 +37,42 @@ struct DocumentItem: Equatable, Hashable {
     return DocumentItem.dateFormatter.dateFromString(dateString)
   }
 
-  var hashValue: Int { return URL.hashValue }
+  var data: NSData {
+    let data = NSMutableData()
+    let coder = NSKeyedArchiver(forWritingWithMutableData: data)
+    encodeWithCoder(coder)
+    coder.finishEncoding()
+    return data
+  }
 
-  var data: NSData { return encode(self) }
+
+  /**
+  initWithCoder:
+
+  - parameter coder: NSKeyedArchiver
+  */
+  init?(coder: NSCoder) {
+    guard let displayName = coder.decodeObjectForKey("displayName") as? String,
+              filePath = coder.decodeObjectForKey("filePath") as? String else { return nil }
+    self.displayName = displayName
+    self.filePath = filePath
+    self.size = UInt64(coder.decodeInt64ForKey("size"))
+    modificationDateString = coder.decodeObjectForKey("modificationDateString") as? String
+    creationDateString = coder.decodeObjectForKey("creationDateString") as? String
+  }
+
+  /**
+  encodeWithCoder:
+
+  - parameter coder: NSKeyedArchiver
+  */
+  func encodeWithCoder(coder: NSKeyedArchiver) {
+    coder.encodeObject(displayName, forKey: "displayName")
+    coder.encodeObject(filePath, forKey: "filePath")
+    coder.encodeObject(modificationDateString, forKey: "modificationDateString")
+    coder.encodeObject(creationDateString, forKey: "creationDateString")
+    coder.encodeInt64(Int64(size), forKey: "size")
+  }
 
   /**
   init:
@@ -86,27 +119,15 @@ struct DocumentItem: Equatable, Hashable {
   /**
   init:
 
-  - parameter documentItem: DocumentItem
-  */
-  init(_ documentItem: DocumentItem) {
-    self = documentItem
-//    displayName = documentItem.displayName
-//    filePath = documentItem.filePath
-//    modificationDateString = documentItem.modificationDateString
-//    creationDateString = documentItem.creationDateString
-//    size = documentItem.size
-  }
-
-  /**
-  init:
-
   - parameter item: AnyObject
   */
   init?(_ item: AnyObject) {
     if let item = item as? NSMetadataItem { self.init(item) }
     else if let item = item as? LocalDocumentItem { self.init(item) }
-    else if let data = item as? NSData, documentItem: DocumentItem = decode(data) { print("documentItem = \(documentItem)"); self.init(documentItem) }
-    else { return nil }
+    else if let data = item as? NSData {
+      let coder = NSKeyedUnarchiver(forReadingWithData: data)
+      self.init(coder: coder)
+    } else { return nil }
   }
 
   /**
@@ -120,6 +141,23 @@ struct DocumentItem: Equatable, Hashable {
     self.init(item)
   }
 }
+
+extension DocumentItem: Named {
+  var name: String { return displayName }
+}
+
+extension DocumentItem: CustomStringConvertible {
+  var description: String {
+    let (baseName, ext) = filePath.baseNameExt
+    return "\(baseName).\(ext)"
+  }
+}
+
+extension DocumentItem: Hashable {
+  var hashValue: Int { return URL.hashValue }
+}
+
+extension DocumentItem: Equatable {}
 
 /**
 Equatable compliance
