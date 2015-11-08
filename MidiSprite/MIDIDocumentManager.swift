@@ -162,10 +162,17 @@ final class MIDIDocumentManager {
           metadataQuery.stopQuery()
           directoryMonitor.startMonitoring()
       }
-      items = iCloudStorage
-                ? metadataItems.map({DocumentItem($0)})
-                : localItems.map({DocumentItem($0)})
+      items = currentItems()
     }
+  }
+
+  /**
+  currentItems
+
+  - returns: [DocumentItem]
+  */
+  static private func currentItems() -> [DocumentItem] {
+    return iCloudStorage ? metadataItems.map({DocumentItem($0)}) : localItems.map({DocumentItem($0)})
   }
 
   static private(set) var items: [DocumentItem] = [] {
@@ -175,12 +182,15 @@ final class MIDIDocumentManager {
       let removed = oldValue ∖ items
       let added = items ∖ oldValue
 
+      logDebug("removed: \(removed); added: \(added)")
+
       var userInfo: [Notification.Key:AnyObject?] = [:]
       if removed.count > 0 { userInfo[Notification.Key.Removed] = removed.map({$0.data}) }
       if added.count > 0 { userInfo[Notification.Key.Added] = added.map({$0.data}) }
 
       guard userInfo.count > 0 else { return }
 
+      logDebug("posting 'DidUpdateItems'")
       dispatchToMain { Notification.DidUpdateItems.post(object: self, userInfo: userInfo) }
     }
   }
@@ -202,17 +212,11 @@ final class MIDIDocumentManager {
   }()
 
   static private(set) var metadataItems: [NSMetadataItem] = [] {
-    didSet {
-      guard metadataItems != oldValue && iCloudStorage else { return }
-      items = metadataItems.map({DocumentItem($0)})
-    }
+    didSet { items = currentItems() }
   }
 
   static private(set) var localItems: [LocalDocumentItem] = [] {
-    didSet {
-      guard localItems != oldValue && !iCloudStorage else { return }
-      items = localItems.map({DocumentItem($0)})
-    }
+    didSet { items = currentItems() }
   }
 
   static private var metadataItemsDescription: String {

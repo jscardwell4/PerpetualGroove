@@ -23,7 +23,7 @@ final class LogManager: MoonKit.LogManager {
     setLogLevel(.Verbose, forType: NotificationReceptionist.self)
 
     MIDIDocumentManager.defaultLogContext     = MIDIFileContext ∪ .Console
-    MIDIDocument.defaultLogContext            = MIDIFileContext// ∪ .Console
+    MIDIDocument.defaultLogContext            = MIDIFileContext ∪ .Console
     MIDIFile.defaultLogContext                = MIDIFileContext// ∪ .Console
     MIDIFileHeaderChunk.defaultLogContext     = MIDIFileContext// ∪ .Console
     MIDIFileTrackChunk.defaultLogContext      = MIDIFileContext// ∪ .Console
@@ -51,23 +51,24 @@ final class LogManager: MoonKit.LogManager {
     MIDIClock.defaultLogContext       = SequencerContext// ∪ .Console
     BarBeatTime.defaultLogContext     = SequencerContext// ∪ .Console
 
-    MIDIPlayerScene.defaultLogContext     = SceneContext
-    MIDINodeHistory.defaultLogContext     = SceneContext
-    MIDIPlayerNode.defaultLogContext      = SceneContext
-    MIDIPlayerFieldNode.defaultLogContext = SceneContext
-    MIDINode.defaultLogContext            = SceneContext
-    Placement.defaultLogContext           = SceneContext
+    MIDIPlayerScene.defaultLogContext     = SceneContext// ∪ .Console
+    MIDINodeHistory.defaultLogContext     = SceneContext// ∪ .Console
+    MIDIPlayerNode.defaultLogContext      = SceneContext// ∪ .Console
+    MIDIPlayerFieldNode.defaultLogContext = SceneContext// ∪ .Console
+    MIDINode.defaultLogContext            = SceneContext// ∪ .Console
+    Placement.defaultLogContext           = SceneContext// ∪ .Console
 
-    MIDIPlayerViewController.defaultLogContext     = UIContext
-    PurgatoryViewController.defaultLogContext      = UIContext
-    DocumentsViewController.defaultLogContext      = UIContext
-    InstrumentViewController.defaultLogContext     = UIContext
-    NoteAttributesViewController.defaultLogContext = UIContext
-    DocumentsViewLayout.defaultLogContext          = UIContext
-    MixerLayout.defaultLogContext                  = UIContext
-    BarBeatTimeLabel.defaultLogContext             = UIContext
-    DocumentCell.defaultLogContext                 = UIContext
-    MixerCell.defaultLogContext                    = UIContext
+    MIDIPlayerViewController.defaultLogContext     = UIContext// ∪ .Console
+    PurgatoryViewController.defaultLogContext      = UIContext// ∪ .Console
+    DocumentsViewController.defaultLogContext      = UIContext ∪ .Console
+    InstrumentViewController.defaultLogContext     = UIContext// ∪ .Console
+    NoteAttributesViewController.defaultLogContext = UIContext// ∪ .Console
+    DocumentsViewLayout.defaultLogContext          = UIContext ∪ .Console
+    MixerLayout.defaultLogContext                  = UIContext// ∪ .Console
+    BarBeatTimeLabel.defaultLogContext             = UIContext// ∪ .Console
+    DocumentCell.defaultLogContext                 = UIContext ∪ .Console
+    DocumentItem.defaultLogContext                 = UIContext ∪ .Console
+    MixerCell.defaultLogContext                    = UIContext// ∪ .Console
 
     addConsoleLoggers()
 
@@ -157,4 +158,5 @@ extension DocumentsViewLayout: Loggable {}
 extension MixerLayout: Loggable {}
 extension BarBeatTimeLabel: Loggable {}
 extension DocumentCell: Loggable {}
+extension DocumentItem: Loggable {}
 extension MixerCell: Loggable {}

@@ -89,11 +89,12 @@ struct DocumentItem: Equatable, Hashable {
   - parameter documentItem: DocumentItem
   */
   init(_ documentItem: DocumentItem) {
-    displayName = documentItem.displayName
-    filePath = documentItem.filePath
-    modificationDateString = documentItem.modificationDateString
-    creationDateString = documentItem.creationDateString
-    size = documentItem.size
+    self = documentItem
+//    displayName = documentItem.displayName
+//    filePath = documentItem.filePath
+//    modificationDateString = documentItem.modificationDateString
+//    creationDateString = documentItem.creationDateString
+//    size = documentItem.size
   }
 
   /**

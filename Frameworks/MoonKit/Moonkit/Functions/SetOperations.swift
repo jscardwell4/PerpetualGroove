@@ -10,10 +10,46 @@ import Foundation
 
 //TODO: All of these set operations need revisiting now that there is a real `Set` type
 
-public func ∪<T, S0:SequenceType, S1:SequenceType
+public func ∪<T:Equatable, S0:SequenceType, S1:SequenceType
   where S0.Generator.Element == T, S1.Generator.Element == T> (lhs:S0, rhs:S1) -> [T]
 {
-  return Array(lhs) + Array(rhs)
+
+  return Array(lhs) + rhs.filter({lhs ∌ $0})
+}
+
+//public func ∪=<T:Equatable, S:SequenceType where S.Generator.Element == T> (inout lhs:[T], rhs:S)
+//{
+//  return lhs += rhs.filter({lhs ∌ $0})
+//}
+
+public func ∪<C:RangeReplaceableCollectionType, S:CollectionType 
+  where S.Generator.Element == C.Generator.Element, S.Generator.Element:Equatable>(lhs: C, rhs: S) -> C 
+{
+  return lhs + rhs.filter({lhs ∌ $0})
+}
+
+public func ∪<C:RangeReplaceableCollectionType, S:SequenceType 
+  where S.Generator.Element == C.Generator.Element, S.Generator.Element:Equatable>(lhs: C, rhs: S) -> C 
+{
+  return lhs + rhs.filter({lhs ∌ $0})
+}
+
+public func ∪<C:RangeReplaceableCollectionType, S:SequenceType 
+  where S.Generator.Element == C.Generator.Element, S.Generator.Element:Equatable>(lhs: S, rhs: C) -> C 
+{
+  return rhs + lhs.filter({rhs ∌ $0})
+}
+
+public func ∪=<C:RangeReplaceableCollectionType, S:CollectionType 
+  where S.Generator.Element == C.Generator.Element, S.Generator.Element:Equatable>(inout lhs: C, rhs: S)
+{
+  lhs.appendContentsOf(rhs.filter({lhs ∌ $0}))
+}
+
+public func ∪=<C:RangeReplaceableCollectionType, S:SequenceType 
+  where S.Generator.Element == C.Generator.Element, S.Generator.Element:Equatable>(inout lhs: C, rhs: S)
+{
+  lhs.appendContentsOf(rhs.filter({lhs ∌ $0}))
 }
 
 public func ∪<O:OptionSetType>(lhs: O, rhs: O) -> O { return lhs.union(rhs) }

@@ -92,17 +92,48 @@ final class DocumentsViewController: UICollectionViewController {
 
   private var selectedItem: NSIndexPath? {
     didSet {
-      guard isViewLoaded() else { return }
+      logDebug("selectedItem: \(selectedItem)")
+      guard isViewLoaded() && selectedItem != oldValue else { return }
       collectionView?.selectItemAtIndexPath(selectedItem, animated: true, scrollPosition: .CenteredVertically)
     }
   }
 
-  private var items: [DocumentItem] = [] {
+  private var _items: [DocumentItem] = [] {
     didSet {
+      print("_items: \(_items)")
+      itemNames = _items.map({$0.displayName})
       updateItemSize()
-      collectionView?.reloadData()
-      logDebug("items updated and data reloaded")
+      refreshSelection()
     }
+  }
+  private var items: [DocumentItem] {
+    get {
+      objc_sync_enter(self)
+      defer { objc_sync_exit(self) }
+      return _items
+    }
+    set {
+      objc_sync_enter(self)
+      defer { objc_sync_exit(self) }
+      _items = newValue
+      collectionView?.reloadData()
+    }
+  }
+
+  private var itemNames: [String] = []
+
+
+  /** refreshSelection */
+  private func refreshSelection() {
+    guard isViewLoaded() else { return }
+
+    guard let currentFileURL = MIDIDocumentManager.currentDocument?.fileURL,
+              idx = items.indexOf({$0.URL == currentFileURL})
+      else {
+        selectedItem = nil
+        return
+    }
+    selectedItem = NSIndexPath(forItem: idx, inSection: 1)
   }
 
   /** updateItemSize */
@@ -160,6 +191,7 @@ final class DocumentsViewController: UICollectionViewController {
   */
   private func didChangeDocument(notification: NSNotification) {
     logDebug("")
+    refreshSelection()
   }
 
   /**
@@ -169,6 +201,7 @@ final class DocumentsViewController: UICollectionViewController {
   */
   private func didCreateDocument(notification: NSNotification) {
     logDebug("")
+//    refreshSelection()
   }
 
   /**
@@ -178,16 +211,44 @@ final class DocumentsViewController: UICollectionViewController {
   */
   private func didUpdateItems(notification: NSNotification) {
     guard isViewLoaded() else { return }
-    var items = self.items
-    if let addedItems = notification.addedItems {
-      logDebug("addedItems: \(addedItems)")
-      items += addedItems
-    }
-    if let removedItems = notification.removedItems {
-      logDebug("removedItems: \(removedItems)")
-      items ∖= removedItems
-    }
-    self.items = items
+
+    items = MIDIDocumentManager.items
+//    func indexPathsForItems(items: [DocumentItem]) -> [NSIndexPath] {
+//      return items.flatMap({_items.indexOf($0)}).map({NSIndexPath(forItem: $0, inSection: 1)})
+//    }
+//
+//    switch (notification.addedItems, notification.removedItems) {
+//      case let (addedItems?, removedItems?):
+//        logDebug("addedItems: \(addedItems)\nremovedItems: \(removedItems)")
+//        let indexPathsToRemove = indexPathsForItems(removedItems)
+//        _items ∖= removedItems
+//        let indexPathsToAdd = (_items.endIndex ..< _items.endIndex + addedItems.count).map({NSIndexPath(forItem: $0, inSection: 1)})
+//        _items ∪= addedItems
+//        collectionView?.performBatchUpdates({
+//          [unowned self] in
+//          self.collectionView?.deleteItemsAtIndexPaths(indexPathsToRemove)
+//          self.collectionView?.insertItemsAtIndexPaths(indexPathsToAdd)
+//          }, completion: nil)
+//        break
+//
+//      case let (nil, removedItems?):
+//        logDebug("removedItems: \(removedItems)")
+//        let indexPaths = indexPathsForItems(removedItems)
+//        _items ∖= removedItems
+//        collectionView?.deleteItemsAtIndexPaths(indexPaths)
+//        break
+//
+//      case let (addedItems?, nil):
+//        logDebug("addedItems: \(addedItems)")
+//        let indexPaths = (_items.endIndex ..< _items.endIndex + (addedItems ∖ _items).count).map({NSIndexPath(forItem: $0, inSection: 1)})
+//        guard indexPaths.count > 0 else { break }
+//        _items ∪= addedItems
+//        collectionView?.insertItemsAtIndexPaths(indexPaths)
+//        break
+//
+//      case (nil, nil):
+//        break
+//    }
   }
 
   // MARK: UICollectionViewDataSource
@@ -229,10 +290,14 @@ final class DocumentsViewController: UICollectionViewController {
       case 0:
         cell = collectionView.dequeueReusableCellWithReuseIdentifier(CreateDocumentCell.Identifier,
                                                         forIndexPath: indexPath)
-      default:
+      case 1:
         cell = collectionView.dequeueReusableCellWithReuseIdentifier(DocumentCell.Identifier,
                                                         forIndexPath: indexPath)
-        (cell as? DocumentCell)?.item = items[indexPath.row]
+        let itemName = itemNames[indexPath.item]
+        print("itemName: \(itemName)")
+        (cell as? DocumentCell)?.item = items[indexPath.item]
+      default:
+        fatalError("Invalid section")
     }
     
     return cell
