@@ -152,8 +152,8 @@ final class MIDIDocumentManager {
 
   private static var iCloudStorage = SettingsManager.iCloudStorage {
     didSet {
-      guard oldValue != iCloudStorage else { return }
       logDebug("iCloudStorage: \(iCloudStorage)")
+      guard oldValue != iCloudStorage else { return }
       switch iCloudStorage {
         case true:
           metadataQuery.startQuery()

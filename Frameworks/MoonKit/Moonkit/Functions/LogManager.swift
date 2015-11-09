@@ -264,10 +264,13 @@ public class LogManager {
     addTaggingASLLogger()
   }
 
+
+  public static var ttyFormatter: LogFormatter { return DDTTYLogger.sharedInstance().logFormatter as! LogFormatter }
+  public static var aslFormatter: LogFormatter { return DDASLLogger.sharedInstance().logFormatter as! LogFormatter }
+
   /** addTTYLogger */
   public class func addTTYLogger() {
     let formatter = LogFormatter(context: .TTY, options: [.UseFileInsteadOfSEL, .EnableColor])
-    formatter.prompt = ">"
     let tty = DDTTYLogger.sharedInstance()
     tty.logFormatter = formatter
     tty.colorsEnabled = true
@@ -277,7 +280,6 @@ public class LogManager {
   /** addASLLogger */
   public class func addASLLogger() {
     let formatter = LogFormatter(context: .ASL, options: [.UseFileInsteadOfSEL])
-    formatter.prompt = ">"
     let asl = DDASLLogger.sharedInstance()
     asl.logFormatter = formatter
     DDLog.addLogger(asl)

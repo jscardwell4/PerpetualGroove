@@ -20,9 +20,53 @@ final class LogManager: MoonKit.LogManager {
   static func initialize() {
     guard !initialized else { return }
 
+    logLevel = .Debug
     setLogLevel(.Verbose, forType: NotificationReceptionist.self)
 
-    MIDIDocumentManager.defaultLogContext     = MIDIFileContext// ∪ .Console
+    logContext = .Console
+    setDefaultLogContexts()
+
+    addConsoleLoggers()
+    addFileLoggers()
+
+    initialized = true
+  }
+
+  /**
+  defaultFileLoggerForContext:directory:
+
+  - parameter context: LogContext
+  - parameter directory: NSURL
+
+  - returns: DDFileLogger
+  */
+  static override func defaultFileLoggerForContext(context: LogContext, directory: NSURL) -> DDFileLogger {
+    let logger = super.defaultFileLoggerForContext(context, directory: directory)
+    logger.doNotReuseLogFiles = true
+    return logger
+  }
+
+  /** addFileLoggers */
+  static private func addFileLoggers() {
+    let defaultDirectory: NSURL
+    if let path = NSProcessInfo.processInfo().environment["GROOVE_LOG_DIR"] {
+      defaultDirectory = NSURL(fileURLWithPath: path)
+    } else {
+      defaultDirectory = defaultLogDirectory
+    }
+    addDefaultFileLoggerForContext(.Console, directory: defaultDirectory)
+    addDefaultFileLoggerForContext(MIDIFileContext, directory: defaultDirectory + "MIDI")
+    addDefaultFileLoggerForContext(SF2FileContext, directory: defaultDirectory + "SoundFont")
+    addDefaultFileLoggerForContext(SequencerContext, directory: defaultDirectory + "Sequencer")
+    addDefaultFileLoggerForContext(SceneContext, directory: defaultDirectory + "Scene")
+    addDefaultFileLoggerForContext(UIContext, directory: defaultDirectory + "UI")
+    logDebug("\n".join("main bundle: '\(NSBundle.mainBundle().bundlePath)'",
+                       "default log directory: '\(defaultDirectory.path!)'"))
+  }
+
+  /** setDefaultLogContexts */
+  static private func setDefaultLogContexts() {
+    MIDIDocumentManager.defaultLogContext     = MIDIFileContext ∪ .Console
     MIDIDocument.defaultLogContext            = MIDIFileContext// ∪ .Console
     MIDIFile.defaultLogContext                = MIDIFileContext// ∪ .Console
     MIDIFileHeaderChunk.defaultLogContext     = MIDIFileContext// ∪ .Console
@@ -60,7 +104,7 @@ final class LogManager: MoonKit.LogManager {
 
     MIDIPlayerViewController.defaultLogContext     = UIContext// ∪ .Console
     PurgatoryViewController.defaultLogContext      = UIContext// ∪ .Console
-    DocumentsViewController.defaultLogContext      = UIContext ∪ .Console
+    DocumentsViewController.defaultLogContext      = UIContext// ∪ .Console
     InstrumentViewController.defaultLogContext     = UIContext// ∪ .Console
     NoteAttributesViewController.defaultLogContext = UIContext// ∪ .Console
     DocumentsViewLayout.defaultLogContext          = UIContext// ∪ .Console
@@ -70,43 +114,7 @@ final class LogManager: MoonKit.LogManager {
     DocumentItem.defaultLogContext                 = UIContext// ∪ .Console
     MixerCell.defaultLogContext                    = UIContext// ∪ .Console
 
-    addConsoleLoggers()
-
-    let defaultDirectory: NSURL
-    if let path = NSProcessInfo.processInfo().environment["GROOVE_LOG_DIR"] {
-      defaultDirectory = NSURL(fileURLWithPath: path)
-    } else {
-      defaultDirectory = defaultLogDirectory
-    }
-    addDefaultFileLoggerForContext(.Console, directory: defaultDirectory)
-    addDefaultFileLoggerForContext(MIDIFileContext, directory: defaultDirectory + "MIDI")
-    addDefaultFileLoggerForContext(SF2FileContext, directory: defaultDirectory + "SoundFont")
-    addDefaultFileLoggerForContext(SequencerContext, directory: defaultDirectory + "Sequencer")
-    addDefaultFileLoggerForContext(SceneContext, directory: defaultDirectory + "Scene")
-    addDefaultFileLoggerForContext(UIContext, directory: defaultDirectory + "UI")
-
-    logLevel = .Debug
-    logContext = .Console
-
-    logDebug("\n".join("main bundle: '\(NSBundle.mainBundle().bundlePath)'",
-                       "default log directory: '\(defaultDirectory.path!)'"))
-
-    initialized = true
-  }
-
-  /**
-  defaultFileLoggerForContext:directory:
-
-  - parameter context: LogContext
-  - parameter directory: NSURL
-
-  - returns: DDFileLogger
-  */
-  static override func defaultFileLoggerForContext(context: LogContext, directory: NSURL) -> DDFileLogger {
-    let logger = super.defaultFileLoggerForContext(context, directory: directory)
-    logger.doNotReuseLogFiles = true
-    (logger.logFormatter as? LogFormatter)?.afterMessage = ""
-    return logger
+    SettingsManager.defaultLogContext = .Console
   }
 
 }
@@ -160,3 +168,5 @@ extension BarBeatTimeLabel: Loggable {}
 extension DocumentCell: Loggable {}
 extension DocumentItem: Loggable {}
 extension MixerCell: Loggable {}
+
+extension SettingsManager: Loggable {}

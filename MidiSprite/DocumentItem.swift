@@ -37,42 +37,14 @@ struct DocumentItem {
     return DocumentItem.dateFormatter.dateFromString(dateString)
   }
 
-  var data: NSData {
-    let data = NSMutableData()
-    let coder = NSKeyedArchiver(forWritingWithMutableData: data)
-    encodeWithCoder(coder)
-    coder.finishEncoding()
-    return data
-  }
+//  var data: NSData {
+//    let data = NSMutableData()
+//    let coder = NSKeyedArchiver(forWritingWithMutableData: data)
+//    encodeWithCoder(coder)
+//    coder.finishEncoding()
+//    return data
+//  }
 
-
-  /**
-  initWithCoder:
-
-  - parameter coder: NSKeyedArchiver
-  */
-  init?(coder: NSCoder) {
-    guard let displayName = coder.decodeObjectForKey("displayName") as? String,
-              filePath = coder.decodeObjectForKey("filePath") as? String else { return nil }
-    self.displayName = displayName
-    self.filePath = filePath
-    self.size = UInt64(coder.decodeInt64ForKey("size"))
-    modificationDateString = coder.decodeObjectForKey("modificationDateString") as? String
-    creationDateString = coder.decodeObjectForKey("creationDateString") as? String
-  }
-
-  /**
-  encodeWithCoder:
-
-  - parameter coder: NSKeyedArchiver
-  */
-  func encodeWithCoder(coder: NSKeyedArchiver) {
-    coder.encodeObject(displayName, forKey: "displayName")
-    coder.encodeObject(filePath, forKey: "filePath")
-    coder.encodeObject(modificationDateString, forKey: "modificationDateString")
-    coder.encodeObject(creationDateString, forKey: "creationDateString")
-    coder.encodeInt64(Int64(size), forKey: "size")
-  }
 
   /**
   init:
@@ -141,6 +113,39 @@ struct DocumentItem {
     self.init(item)
   }
 }
+
+extension DocumentItem: Coding {
+  /**
+   initWithCoder:
+
+   - parameter coder: NSCoder
+   */
+  init?(coder: NSCoder) {
+    guard let displayName = coder.decodeObjectForKey("displayName") as? String,
+      filePath = coder.decodeObjectForKey("filePath") as? String else { return nil }
+    self.displayName = displayName
+    self.filePath = filePath
+    self.size = UInt64(coder.decodeInt64ForKey("size"))
+    modificationDateString = coder.decodeObjectForKey("modificationDateString") as? String
+    creationDateString = coder.decodeObjectForKey("creationDateString") as? String
+  }
+
+  /**
+   encodeWithCoder:
+
+   - parameter coder: NSCoder
+   */
+  func encodeWithCoder(coder: NSCoder) {
+    coder.encodeObject(displayName, forKey: "displayName")
+    coder.encodeObject(filePath, forKey: "filePath")
+    coder.encodeObject(modificationDateString, forKey: "modificationDateString")
+    coder.encodeObject(creationDateString, forKey: "creationDateString")
+    coder.encodeInt64(Int64(size), forKey: "size")
+  }
+  
+}
+
+extension DocumentItem: DataConvertible {}
 
 extension DocumentItem: Named {
   var name: String { return displayName }

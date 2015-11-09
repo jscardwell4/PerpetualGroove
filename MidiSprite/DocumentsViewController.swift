@@ -212,6 +212,7 @@ final class DocumentsViewController: UICollectionViewController {
         let indexPathsToRemove = indexPathsForItems(removedItems)
         _items ∖= removedItems
         let indexPathsToAdd = (_items.endIndex ..< _items.endIndex + addedItems.count).map({NSIndexPath(forItem: $0, inSection: 1)})
+        logDebug("inserting items at index paths \(indexPathsToAdd.map({$0.description}))")
         _items ∪= addedItems
         collectionView?.performBatchUpdates({
           [unowned self] in
@@ -230,6 +231,7 @@ final class DocumentsViewController: UICollectionViewController {
         logDebug("addedItems: \(addedItems)")
         let indexPaths = (_items.endIndex ..< _items.endIndex + (addedItems ∖ _items).count).map({NSIndexPath(forItem: $0, inSection: 1)})
         guard indexPaths.count > 0 else { break }
+        logDebug("inserting items at index paths \(indexPaths.map({$0.description}))")
         _items ∪= addedItems
         collectionView?.insertItemsAtIndexPaths(indexPaths)
 //        completion(true)

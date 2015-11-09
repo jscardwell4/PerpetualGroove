@@ -253,6 +253,8 @@
 		C2404BC01B77ACDC00A68A64 /* ImageBarButtonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2404BBF1B77ACDC00A68A64 /* ImageBarButtonItem.swift */; };
 		C2404BC91B78333F00A68A64 /* PopoverFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2404BC81B78333F00A68A64 /* PopoverFormView.swift */; };
 		C24133F81B7520D40040580B /* ToggleButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24133F71B7520D40040580B /* ToggleButtonNode.swift */; };
+		C2421D181BEFE884009BA8B1 /* ByteArrayConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2421D171BEFE884009BA8B1 /* ByteArrayConvertible.swift */; };
+		C2421D1A1BEFE8DE009BA8B1 /* Bytes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2421D191BEFE8DE009BA8B1 /* Bytes.swift */; };
 		C24416331ACB16F8007EDEFE /* Set+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24416321ACB16F8007EDEFE /* Set+MoonKitAdditions.swift */; };
 		C24A22811ADAEC010065E7EA /* ArrayJSONValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24A22801ADAEC000065E7EA /* ArrayJSONValue.swift */; };
 		C24A22831ADAEC0F0065E7EA /* ObjectJSONValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24A22821ADAEC0F0065E7EA /* ObjectJSONValue.swift */; };
@@ -548,6 +550,8 @@
 		C2404BCB1B78EC6E00A68A64 /* Lumberjack.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lumberjack.framework; path = "Lumberjack/build/Debug-iphoneos/Lumberjack.framework"; sourceTree = "<group>"; };
 		C2404BDD1B797D4600A68A64 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
 		C24133F71B7520D40040580B /* ToggleButtonNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToggleButtonNode.swift; sourceTree = "<group>"; };
+		C2421D171BEFE884009BA8B1 /* ByteArrayConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ByteArrayConvertible.swift; sourceTree = "<group>"; };
+		C2421D191BEFE8DE009BA8B1 /* Bytes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bytes.swift; sourceTree = "<group>"; };
 		C24416321ACB16F8007EDEFE /* Set+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Set+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C2456BE319C39C8A007162F3 /* NSIndexPath+MSKitAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSIndexPath+MSKitAdditions.h"; sourceTree = "<group>"; };
 		C2456BE419C39C8A007162F3 /* NSIndexPath+MSKitAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSIndexPath+MSKitAdditions.m"; sourceTree = "<group>"; };
@@ -1042,6 +1046,8 @@
 				C23592F019C8E04200920F8D /* FontAwesomeIcon.swift */,
 				C2E7C8311A1AA3F0006BC80E /* Protocols.swift */,
 				C28C9B081BC35740002945BC /* NotificationType.swift */,
+				C2421D171BEFE884009BA8B1 /* ByteArrayConvertible.swift */,
+				C2421D191BEFE8DE009BA8B1 /* Bytes.swift */,
 			);
 			path = Other;
 			sourceTree = "<group>";
@@ -2079,6 +2085,7 @@
 				C22E6B8F1B810860008D46A6 /* List.swift in Sources */,
 				C2358F5619C78E0C00920F8D /* NSIndexPath+MSKitAdditions.m in Sources */,
 				C2358F5719C78E0C00920F8D /* MSColorInputViewController.m in Sources */,
+				C2421D181BEFE884009BA8B1 /* ByteArrayConvertible.swift in Sources */,
 				C29073951BD740410090399E /* LogFileManager.swift in Sources */,
 				C2358F5819C78E0C00920F8D /* MSPickerInputViewController.m in Sources */,
 				C24A22951ADB45340065E7EA /* RawOptionSetFunctions.swift in Sources */,
@@ -2225,6 +2232,7 @@
 				C2D5F2431B97BDC3005040EF /* _Slider.swift in Sources */,
 				C2358F8519C78E0C00920F8D /* MSTouchReporterView.m in Sources */,
 				C2358F8619C78E0C00920F8D /* MSView.m in Sources */,
+				C2421D1A1BEFE8DE009BA8B1 /* Bytes.swift in Sources */,
 				C2CA85261BC7261B0046AFC0 /* CGVector+MoonKitAdditions.swift in Sources */,
 				C2358F8719C78E0C00920F8D /* GCDAsyncSocket.m in Sources */,
 				C2358F8819C78E0C00920F8D /* GCDAsyncUdpSocket.m in Sources */,

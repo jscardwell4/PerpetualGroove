@@ -15,20 +15,17 @@ final class SettingsManager {
   private static var settingsCache: [Setting:Any] = [:]
   private(set) static var initialized = false
 
-
-  /**
-  userDefaultsDidChange:
-
-  - parameter notification: NSNotification
-  */
-  private static func userDefaultsDidChange(notification: NSNotification) {
+  /** updateCache */
+  static private func updateCache() {
     let changedSettings: [Setting] = Setting.allCases.filter {
-      switch ($0.currentValue, SettingsManager.settingsCache[$0]) {
+      let currentValue = $0.currentValue
+      let cachedValue = SettingsManager.settingsCache[$0]
+      switch (currentValue, cachedValue) {
         case let (current?, previous?):
           if let currentNumber = current as? NSNumber, previousNumber = previous as? NSNumber {
-            return currentNumber == previousNumber
+            return currentNumber != previousNumber
           } else if let currentData = current as? NSData, previousData = previous as? NSData {
-            return currentData == previousData
+            return currentData != previousData
           } else {
             return false
           }
@@ -37,10 +34,38 @@ final class SettingsManager {
       }
     }
 
+    guard changedSettings.count > 0 else { return }
+
+    logDebug("changed settings: \(changedSettings.map({$0.rawValue}))")
+
     for setting in changedSettings {
       Notification(setting).post()
       settingsCache[setting] = setting.currentValue
     }
+  }
+
+  /**
+  userDefaultsDidChange:
+
+  - parameter notification: NSNotification
+  */
+  private static func userDefaultsDidChange(notification: NSNotification) {
+    logDebug("")
+    updateCache()
+  }
+
+  /**
+   willEnterForeground:
+
+   - parameter notification: NSNotification
+   */
+  static private func willEnterForeground(notification: NSNotification) {
+    logDebug("iCloudStorage: \(NSUserDefaults.standardUserDefaults().boolForKey("iCloudStorage"))")
+    guard NSUserDefaults.standardUserDefaults().synchronize() else {
+      logWarning("failed to synchronize user defaults")
+      return
+    }
+    updateCache()
   }
 
   static var iCloudStorage: Bool {
@@ -75,10 +100,15 @@ final class SettingsManager {
 
   private static let receptionist: NotificationReceptionist = {
     let receptionist = NotificationReceptionist()
+
     receptionist.observe(NSUserDefaultsDidChangeNotification,
                     from: NSUserDefaults.standardUserDefaults(),
                    queue: NSOperationQueue.mainQueue(),
                 callback: SettingsManager.userDefaultsDidChange)
+
+    receptionist.observe(UIApplicationWillEnterForegroundNotification,
+                callback: SettingsManager.willEnterForeground)
+
     return receptionist
     }()
 

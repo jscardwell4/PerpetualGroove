@@ -16,7 +16,7 @@ public class LogFormatter: NSObject, DDLogFormatter {
   public typealias LogFlag = LogManager.LogFlag
 
   public var context: LogContext = .Default
-  public var prompt = ""
+  public var prompt = ">"
   public var afterLocation = " "
   public var afterObjectName = " ::: "
   public var afterMessage = ""
