@@ -48,7 +48,7 @@ public class LogManager {
     let level = logLevelForFile(file)
     let context = context ?? logContextForFile(file)
     
-    guard flag.rawValue & level.rawValue != 0 else { return }
+    guard level ∋ flag else { return }
     let logMessage = LogMessage(
       message: message,
       level: level,
@@ -344,4 +344,27 @@ extension DDLogFlag: CustomStringConvertible {
     }
   }
 }
+
+extension DDLogLevel {
+  public func contains(flag: DDLogFlag) -> Bool {
+    return rawValue & flag.rawValue == flag.rawValue
+  }
+}
+
+public func ∋(lhs: LogManager.LogLevel, rhs: LogManager.LogFlag) -> Bool {
+  return lhs.rawValue & rhs.rawValue == rhs.rawValue
+}
+
+public func ∈(lhs: LogManager.LogFlag, rhs: LogManager.LogLevel) -> Bool {
+  return rhs ∋ lhs
+}
+
+public func ∌(lhs: LogManager.LogLevel, rhs: LogManager.LogFlag) -> Bool {
+  return !(lhs ∋ rhs)
+}
+
+public func ∉(lhs: LogManager.LogFlag, rhs: LogManager.LogLevel) -> Bool {
+  return !(lhs ∈ rhs)
+}
+
 
