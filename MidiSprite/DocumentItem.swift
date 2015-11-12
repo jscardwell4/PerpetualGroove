@@ -155,7 +155,17 @@ extension DocumentItem: CustomStringConvertible {
 }
 
 extension DocumentItem: CustomDebugStringConvertible {
-  var debugDescription: String { return String(reflecting: self) }
+  var debugDescription: String {
+    var dict: [String:Any] = [
+      "displayName": displayName,
+      "filePath": filePath,
+      "size": size,
+      "isUbiquitous": isUbiquitous
+    ]
+    if let date = modificationDate { dict["modificationDate"] = date }
+    if let date = creationDate { dict["creationDate"] = date }
+    return "DocumentItem {\n\(dict.formattedDescription().indentedBy(4))\n}"
+  }
 }
 
 extension DocumentItem: Hashable {

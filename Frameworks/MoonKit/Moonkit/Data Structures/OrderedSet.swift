@@ -181,7 +181,7 @@ public struct OrderedSet<Element:Equatable> : MutableCollectionType {
 
   - parameter isOrderedBefore:  (Element, Element) -> Bool
   */
-  public mutating func sort(isOrderedBefore:  (Element, Element) -> Bool) { storage.sortInPlace(isOrderedBefore) }
+  public mutating func sort(isOrderedBefore:  (Element, Element) -> Bool) { storage = storage.sort(isOrderedBefore) }
 
   /**
   sorted:

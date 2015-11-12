@@ -280,7 +280,7 @@ public struct OrderedDictionary<Key : Hashable, Value> : KeyValueCollectionType 
 
   - parameter isOrderedBefore: (Key, Key) -> Bool
   */
-  public mutating func sort(isOrderedBefore: (Key, Key) -> Bool) { _keys.sortInPlace(isOrderedBefore) }
+  public mutating func sort(isOrderedBefore: (Key, Key) -> Bool) { _keys = _keys.sort(isOrderedBefore) }
 
   private static var defaultExpand: (Stack<String>, SelfType) -> Value {
     return {

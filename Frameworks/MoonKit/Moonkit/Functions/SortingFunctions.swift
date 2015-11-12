@@ -38,7 +38,7 @@ sortByName:
 - parameter array: [T]
 */
 @available(*, unavailable, message = "sortedByName() is unavailable, use the sort() method on the sequence")
-public func sortByName<T: Nameable>(inout array: [T]) { array.sortInPlace {$0.0.name < $0.1.name} }
+public func sortByName<T: Nameable>(inout array: [T]) { array = array.sort {$0.0.name < $0.1.name} }
 
 /**
 sortByName:
@@ -46,7 +46,7 @@ sortByName:
 - parameter array: [T]?
 */
 @available(*, unavailable, message = "sortByName() is unavailable, use the sort() method on the sequence")
-public func sortByName<T: Nameable>(inout array: [T]?) { array?.sortInPlace {$0.0.name < $0.1.name} }
+public func sortByName<T: Nameable>(inout array: [T]?) { array = array?.sort {$0.0.name < $0.1.name} }
 
 /**
 sortedByName:
@@ -78,7 +78,7 @@ sortByName:
 - parameter array: [T]
 */
 @available(*, unavailable, message = "sortByName() is unavailable, use the sort() method on the sequence")
-public func sortByName<T: Named>(inout array: [T]) { array.sortInPlace {$0.0.name < $0.1.name} }
+public func sortByName<T: Named>(inout array: [T]) { array = array.sort {$0.0.name < $0.1.name} }
 
 /**
 sortByName:
@@ -86,4 +86,4 @@ sortByName:
 - parameter array: [T]?
 */
 @available(*, unavailable, message = "sortByName() is unavailable, use the sort() method on the sequence")
-public func sortByName<T: Named>(inout array: [T]?) { array?.sortInPlace {$0.0.name < $0.1.name} }
+public func sortByName<T: Named>(inout array: [T]?) { array = array?.sort {$0.0.name < $0.1.name} }

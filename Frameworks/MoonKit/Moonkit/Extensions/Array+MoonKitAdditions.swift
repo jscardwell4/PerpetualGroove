@@ -53,6 +53,12 @@ extension Array: NestingContainer {
     }
     return result
   }
+
+  public var formattedDescription: String {
+    guard count > 0 else { return "[]" }
+    let description = "\(self)"
+    return "[\n\(description[description.startIndex.advancedBy(1) ..< description.endIndex.advancedBy(-1)].indentedBy(4))\n]"
+  }
 }
 
 extension Array: KeySearchable {

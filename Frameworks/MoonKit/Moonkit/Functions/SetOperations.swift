@@ -52,6 +52,32 @@ public func ∪=<C:RangeReplaceableCollectionType, S:SequenceType
   lhs.appendContentsOf(rhs.filter({lhs ∌ $0}))
 }
 
+public func ⚭<C:RangeReplaceableCollectionType, S:CollectionType
+  where S.Generator.Element == C.Generator.Element, S.Generator.Element:Equatable>(lhs: C, rhs: S) -> Bool
+{
+  return (lhs ∩ rhs).count > 0
+}
+
+public func ⚭<C:RangeReplaceableCollectionType, S:SequenceType
+  where S.Generator.Element == C.Generator.Element, S.Generator.Element:Equatable>(lhs: C, rhs: S) -> Bool
+{
+  return (lhs ∩ rhs).count > 0
+}
+
+
+public func !⚭<C:RangeReplaceableCollectionType, S:CollectionType
+  where S.Generator.Element == C.Generator.Element, S.Generator.Element:Equatable>(lhs: C, rhs: S) -> Bool
+{
+  return !(lhs ⚭ rhs)
+}
+
+public func !⚭<C:RangeReplaceableCollectionType, S:SequenceType
+  where S.Generator.Element == C.Generator.Element, S.Generator.Element:Equatable>(lhs: C, rhs: S) -> Bool
+{
+  return !(lhs ⚭ rhs)
+}
+
+
 public func ∪<O:OptionSetType>(lhs: O, rhs: O) -> O { return lhs.union(rhs) }
 
 public func ∩<O:OptionSetType>(lhs: O, rhs: O) -> O { return lhs.intersect(rhs) }

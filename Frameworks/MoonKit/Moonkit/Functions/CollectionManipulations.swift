@@ -8,9 +8,12 @@
 
 import Foundation
 
-public extension MutableCollectionType where Index:RandomAccessIndexType, Generator.Element:Named {
+public extension MutableCollectionType where Index == Int, Generator.Element:Named {
   public mutating func sortByNameInPlace() {
-    sortInPlace { $0.name < $1.name }
+    let sorted = self.sort({ $0.name < $1.name })
+    for i in sorted.indices {
+      self[i] = sorted[i]
+    }
   }
 }
 
