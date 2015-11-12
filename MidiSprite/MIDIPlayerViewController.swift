@@ -10,6 +10,7 @@ import UIKit
 import SpriteKit
 import MoonKit
 import Triump
+import Eveleth
 
 final class MIDIPlayerViewController: UIViewController {
 
@@ -193,7 +194,12 @@ final class MIDIPlayerViewController: UIViewController {
   // MARK: - Files
 
   @IBOutlet weak var documentsButton: ImageButtonView?
-  @IBOutlet weak var documentName: UITextField! { didSet { documentName.font = Triump.rock2FontWithSize(24) } }
+  @IBOutlet weak var documentName: UITextField! {
+    didSet {
+//      documentName.font = Triump.rock2FontWithSize(24)
+      documentName.attributedPlaceholder = "Create New Document" ¶| [Eveleth.lightFontWithSize(24), UIColor.primaryColor]
+    }
+  }
 
   /** documents */
   @IBAction private func documents() {
@@ -311,7 +317,11 @@ final class MIDIPlayerViewController: UIViewController {
 
   // MARK: - Managing state
 
-  private var receptionist: NotificationReceptionist?
+  private let receptionist: NotificationReceptionist = {
+    let receptionist = NotificationReceptionist(callbackQueue: NSOperationQueue.mainQueue())
+    receptionist.logContext = LogManager.UIContext
+    return receptionist
+  }()
 
   /**
   didPause:
@@ -340,7 +350,10 @@ final class MIDIPlayerViewController: UIViewController {
   - parameter notification: NSNotification
   */
   private func didChangeDocument(notification: NSNotification) {
-    documentName.text = MIDIDocumentManager.currentDocument?.localizedName
+    switch MIDIDocumentManager.currentDocument?.localizedName {
+      case let text?: documentName.text = text; state ∪= [.DocumentLoaded]
+      case nil:       documentName.text = nil;  state ∖= [.DocumentLoaded]
+    }
   }
 
   /**
@@ -372,52 +385,50 @@ final class MIDIPlayerViewController: UIViewController {
   /** initializeReceptionist */
   private func initializeReceptionist() {
 
-    guard receptionist == nil else { return }
+    guard receptionist.count == 0 else { return }
 
-    receptionist = NotificationReceptionist()
-    receptionist?.logContext = LogManager.SceneContext
-    
-    let queue = NSOperationQueue.mainQueue()
+    receptionist.observe(Sequencer.Notification.DidPause,
+                    from: Sequencer.self,
+                callback: weakMethod(self, MIDIPlayerViewController.didPause))
 
-    receptionist?.observe(Sequencer.Notification.DidPause, from: Sequencer.self, queue: queue) {
-      [weak self] in self?.didPause($0)
-    }
-    receptionist?.observe(Sequencer.Notification.DidStart, from: Sequencer.self, queue: queue) {
-      [weak self] in self?.didStart($0)
-    }
-    receptionist?.observe(Sequencer.Notification.DidStop,  from: Sequencer.self, queue: queue) {
-      [weak self] in self?.didStop($0)
-    }
+    receptionist.observe(Sequencer.Notification.DidStart,
+                    from: Sequencer.self,
+                callback: weakMethod(self, MIDIPlayerViewController.didStart))
 
-    receptionist?.observe(MIDIDocumentManager.Notification.DidChangeDocument, from: MIDIDocumentManager.self, queue: queue) {
-      [weak self] in self?.didChangeDocument($0)
-    }
+    receptionist.observe(Sequencer.Notification.DidStop,
+                    from: Sequencer.self,
+                callback: weakMethod(self, MIDIPlayerViewController.didStop))
 
-    receptionist?.observe(UIKeyboardWillShowNotification, from: nil, queue: queue) {
-      [weak self] in self?.willShowKeyboard($0)
-    }
-    receptionist?.observe(UIKeyboardDidHideNotification,  from: nil, queue: queue) {
-      [weak self] in self?.didHideKeyboard($0)
-    }
+    receptionist.observe(MIDIDocumentManager.Notification.DidChangeDocument,
+                    from: MIDIDocumentManager.self,
+                callback: weakMethod(self, MIDIPlayerViewController.didChangeDocument))
+
+    receptionist.observe(UIKeyboardWillShowNotification,
+                callback: weakMethod(self, MIDIPlayerViewController.willShowKeyboard))
+
+    receptionist.observe(UIKeyboardDidHideNotification,
+                callback: weakMethod(self, MIDIPlayerViewController.didHideKeyboard))
     
   }
 
   private struct State: OptionSetType, CustomStringConvertible {
     let rawValue: Int
-    static let Popover     = State(rawValue: 0b0000_0001)
-    static let Playing     = State(rawValue: 0b0000_0010)
-    static let Recording   = State(rawValue: 0b0000_0100)
-    static let Paused      = State(rawValue: 0b0000_1000)
-    static let Jogging     = State(rawValue: 0b0001_0000)
+    static let Popover        = State(rawValue: 0b0000_0001)
+    static let Playing        = State(rawValue: 0b0000_0010)
+    static let Recording      = State(rawValue: 0b0000_0100)
+    static let Paused         = State(rawValue: 0b0000_1000)
+    static let Jogging        = State(rawValue: 0b0001_0000)
+    static let DocumentLoaded = State(rawValue: 0b0010_0000)
 
     var description: String {
       var result = "["
       var flagStrings: [String] = []
-      if self ∋ .Popover     { flagStrings.append("Popover")     }
-      if self ∋ .Playing     { flagStrings.append("Playing")     }
-      if self ∋ .Recording   { flagStrings.append("Recording")   }
-      if self ∋ .Paused      { flagStrings.append("Paused")      }
-      if self ∋ .Jogging     { flagStrings.append("Jogging")     }
+      if self ∋ .Popover        { flagStrings.append("Popover")        }
+      if self ∋ .Playing        { flagStrings.append("Playing")        }
+      if self ∋ .Recording      { flagStrings.append("Recording")      }
+      if self ∋ .Paused         { flagStrings.append("Paused")         }
+      if self ∋ .Jogging        { flagStrings.append("Jogging")        }
+      if self ∋ .DocumentLoaded { flagStrings.append("DocumentLoaded") }
 
       result += ", ".join(flagStrings)
       result += "]"
@@ -425,10 +436,11 @@ final class MIDIPlayerViewController: UIViewController {
     }
   }
 
-  var paused: Bool { return state ∋ .Paused }
-  var playing: Bool { return state ∋ .Playing }
-  var recording: Bool { return state ∋ .Recording }
-  var jogging: Bool { return state ∋ .Jogging }
+  var paused:         Bool { return state ∋ .Paused         }
+  var playing:        Bool { return state ∋ .Playing        }
+  var recording:      Bool { return state ∋ .Recording      }
+  var jogging:        Bool { return state ∋ .Jogging        }
+  var documentLoaded: Bool { return state ∋ .DocumentLoaded }
 
   private var state: State = [] {
     didSet {
@@ -529,9 +541,9 @@ extension MIDIPlayerViewController: UITextFieldDelegate {
 
   - returns: Bool
   */
-  func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
-    return MIDIDocumentManager.currentDocument != nil
-  }
+//  func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
+//    return MIDIDocumentManager.currentDocument != nil
+//  }
 
   /**
   textFieldShouldReturn:
@@ -553,8 +565,11 @@ extension MIDIPlayerViewController: UITextFieldDelegate {
   - returns: Bool
   */
   func textFieldShouldEndEditing(textField: UITextField) -> Bool {
+    if (textField.text == nil || textField.text?.isEmpty == true) && !documentLoaded { return true }
+
     guard let text = textField.text,
               fileName = MIDIDocumentManager.noncollidingFileName(text) else { return false }
+
     if text != fileName { textField.text = fileName }
     return true
   }
@@ -566,6 +581,8 @@ extension MIDIPlayerViewController: UITextFieldDelegate {
   */
   func textFieldDidEndEditing(textField: UITextField) {
     guard let text = textField.text else { return }
-    MIDIDocumentManager.currentDocument?.renameTo(text)
+
+    if documentLoaded { MIDIDocumentManager.currentDocument?.renameTo(text) }
+    else              { MIDIDocumentManager.createNewDocument(text)         }
   }
 }

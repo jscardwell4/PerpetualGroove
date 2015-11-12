@@ -11,6 +11,12 @@ import MoonKit
 
 final class MIDIDocument: UIDocument {
 
+  var storageLocation: MIDIDocumentManager.StorageLocation {
+    var isUbiquitous: AnyObject?
+    do { try fileURL.getResourceValue(&isUbiquitous, forKey: NSURLIsUbiquitousItemKey) } catch { logError(error) }
+    return isUbiquitous != nil && (isUbiquitous as? NSNumber)?.boolValue == true ? .iCloud : .Local
+  }
+
   private(set) var sequence: MIDISequence? {
     didSet {
       let stopObserving: (MIDISequence) -> Void = {

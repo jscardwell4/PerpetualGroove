@@ -287,3 +287,28 @@ public func ⊉<T:Equatable, S0:SequenceType, S1:SequenceType
 {
   return lhs ⊅ rhs
 }
+
+//public func ∋<T1:RawRepresentable, T2:RawRepresentable
+//  where T1.RawValue:BitwiseOperationsType, T1.RawValue:Equatable, T1.RawValue == T2.RawValue>(lhs: T1, rhs: T2) -> Bool
+//{
+//  return lhs.rawValue & rhs.rawValue == rhs.rawValue
+//}
+//
+//public func ∈<T1:RawRepresentable, T2:RawRepresentable
+//  where T1.RawValue:BitwiseOperationsType, T1.RawValue:Equatable, T1.RawValue == T2.RawValue>(lhs: T1, rhs: T2) -> Bool
+//{
+//  return rhs ∋ lhs
+//}
+//
+//public func ∌<T1:RawRepresentable, T2:RawRepresentable
+//  where T1.RawValue:BitwiseOperationsType, T1.RawValue:Equatable, T1.RawValue == T2.RawValue>(lhs: T1, rhs: T2) -> Bool
+//{
+//  return !(lhs ∋ rhs)
+//}
+//
+//public func ∉<T1:RawRepresentable, T2:RawRepresentable
+//  where T1.RawValue:BitwiseOperationsType, T1.RawValue:Equatable, T1.RawValue == T2.RawValue>(lhs: T1, rhs: T2) -> Bool
+//{
+//  return !(lhs ∈ rhs)
+//}
+

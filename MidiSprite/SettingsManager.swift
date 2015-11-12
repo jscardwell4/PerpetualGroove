@@ -12,11 +12,14 @@ import MoonKit
 
 final class SettingsManager {
 
+  private static let defaults = NSUserDefaults.standardUserDefaults()
+
   private static var settingsCache: [Setting:Any] = [:]
   private(set) static var initialized = false
 
   /** updateCache */
   static private func updateCache() {
+    logDebug("")
     let changedSettings: [Setting] = Setting.allCases.filter {
       let currentValue = $0.currentValue
       let cachedValue = SettingsManager.settingsCache[$0]
@@ -39,8 +42,9 @@ final class SettingsManager {
     logDebug("changed settings: \(changedSettings.map({$0.rawValue}))")
 
     for setting in changedSettings {
-      Notification(setting).post()
       settingsCache[setting] = setting.currentValue
+      logDebug("posting notification for setting '\(setting.rawValue)'")
+      Notification(setting).post()
     }
   }
 
@@ -59,55 +63,113 @@ final class SettingsManager {
 
    - parameter notification: NSNotification
    */
-  static private func willEnterForeground(notification: NSNotification) {
-    logDebug("iCloudStorage: \(NSUserDefaults.standardUserDefaults().boolForKey("iCloudStorage"))")
-    guard NSUserDefaults.standardUserDefaults().synchronize() else {
-      logWarning("failed to synchronize user defaults")
-      return
-    }
-    updateCache()
-  }
+//  static private func willEnterForeground(notification: NSNotification) {
+//    logDebug("iCloudStorage: \(defaults.boolForKey("iCloudStorage"))")
+//    guard defaults.synchronize() else {
+//      logWarning("failed to synchronize user defaults")
+//      return
+//    }
+//    updateCache()
+//  }
 
   static var iCloudStorage: Bool {
-    get { return (settingsCache[Setting.iCloudStorage] as? Bool) ?? Setting.iCloudStorage.defaultValue as? Bool == true }
-    set { NSUserDefaults.standardUserDefaults().setBool(newValue, forKey: Setting.iCloudStorage.key) }
+    get { 
+      if let cachedValue = Setting.iCloudStorage.cachedValue as? Bool {
+         assert(Setting.iCloudStorage.currentValue as? Bool == cachedValue, "cached value is not up to date")
+         return cachedValue
+      } else {
+        guard let defaultValue = Setting.iCloudStorage.defaultValue as? Bool else { fatalError("unable to retrieve default value for 'iCloudStorage'") }
+        return defaultValue
+      }
+    }
+    set { logDebug(""); defaults.setBool(newValue, forKey: Setting.iCloudStorage.key) }
   }
 
   static var confirmDeleteDocument: Bool {
-    get { return (settingsCache[Setting.ConfirmDeleteDocument] as? Bool) ?? Setting.ConfirmDeleteDocument.defaultValue as? Bool == true }
-    set { NSUserDefaults.standardUserDefaults().setBool(newValue, forKey: Setting.ConfirmDeleteDocument.key) }
+    get { 
+      if let cachedValue = Setting.ConfirmDeleteDocument.cachedValue as? Bool {
+         assert(Setting.ConfirmDeleteDocument.currentValue as? Bool == cachedValue, "cached value is not up to date")
+         return cachedValue
+      } else {
+        guard let defaultValue = Setting.ConfirmDeleteDocument.defaultValue as? Bool else { fatalError("unable to retrieve default value for 'ConfirmDeleteDocument'") }
+        return defaultValue
+      }
+    }
+    set { logDebug(""); defaults.setBool(newValue, forKey: Setting.ConfirmDeleteDocument.key) }
   }
 
   static var confirmDeleteTrack: Bool {
-    get { return (settingsCache[Setting.ConfirmDeleteTrack] as? Bool) ?? Setting.ConfirmDeleteTrack.defaultValue as? Bool == true }
-    set { NSUserDefaults.standardUserDefaults().setBool(newValue, forKey: Setting.ConfirmDeleteTrack.key) }
+    get { 
+      if let cachedValue = Setting.ConfirmDeleteTrack.cachedValue as? Bool {
+         assert(Setting.ConfirmDeleteTrack.currentValue as? Bool == cachedValue, "cached value is not up to date")
+         return cachedValue
+      } else {
+        guard let defaultValue = Setting.ConfirmDeleteTrack.defaultValue as? Bool else { fatalError("unable to retrieve default value for 'ConfirmDeleteTrack'") }
+        return defaultValue
+      }
+    }
+    set { logDebug(""); defaults.setBool(newValue, forKey: Setting.ConfirmDeleteTrack.key) }
   }
 
   static var scrollTrackLabels: Bool {
-    get { return (settingsCache[Setting.ScrollTrackLabels] as? Bool) ?? Setting.ScrollTrackLabels.defaultValue as? Bool == true }
-    set { NSUserDefaults.standardUserDefaults().setBool(newValue, forKey: Setting.ScrollTrackLabels.key) }
+    get { 
+      if let cachedValue = Setting.ScrollTrackLabels.cachedValue as? Bool {
+         assert(Setting.ScrollTrackLabels.currentValue as? Bool == cachedValue, "cached value is not up to date")
+         return cachedValue
+      } else {
+        guard let defaultValue = Setting.ScrollTrackLabels.defaultValue as? Bool else { fatalError("unable to retrieve default value for 'ScrollTrackLabels'") }
+        return defaultValue
+      }
+    }
+    set { logDebug(""); defaults.setBool(newValue, forKey: Setting.ScrollTrackLabels.key) }
   }
 
-  static var currentDocument: NSData? {
-    get { return settingsCache[Setting.CurrentDocument] as? NSData }
-    set { NSUserDefaults.standardUserDefaults().setObject(newValue, forKey: Setting.CurrentDocument.key) }
+  static var currentDocumentLocal: NSData? {
+    get { 
+      if let cachedValue = Setting.CurrentDocumentLocal.cachedValue as? NSData {
+         assert(Setting.CurrentDocumentLocal.currentValue as? NSData == cachedValue, "cached value is not up to date")
+         return cachedValue
+      } else {
+        guard let defaultValue = Setting.CurrentDocumentLocal.defaultValue as? NSData else { return nil }
+        return defaultValue
+      }
+    }
+    set { logDebug(""); defaults.setObject(newValue, forKey: Setting.CurrentDocumentLocal.key) }
+  }
+
+  static var currentDocumentiCloud: NSData? {
+    get {
+      if let cachedValue = Setting.CurrentDocumentiCloud.cachedValue as? NSData {
+        assert(Setting.CurrentDocumentiCloud.currentValue as? NSData == cachedValue, "cached value is not up to date")
+        return cachedValue
+      } else {
+        guard let defaultValue = Setting.CurrentDocumentiCloud.defaultValue as? NSData else { return nil }
+        return defaultValue
+      }
+    }
+    set { logDebug(""); defaults.setObject(newValue, forKey: Setting.CurrentDocumentiCloud.key) }
   }
 
   static var makeNewTrackCurrent: Bool {
-    get { return (settingsCache[Setting.MakeNewTrackCurrent] as? Bool) ?? Setting.MakeNewTrackCurrent.defaultValue as? Bool == true }
-    set { NSUserDefaults.standardUserDefaults().setBool(newValue, forKey: Setting.MakeNewTrackCurrent.key) }
+    get { 
+      if let cachedValue = Setting.MakeNewTrackCurrent.cachedValue as? Bool {
+         assert(Setting.MakeNewTrackCurrent.currentValue as? Bool == cachedValue, "cached value is not up to date")
+         return cachedValue
+      } else {
+        guard let defaultValue = Setting.MakeNewTrackCurrent.defaultValue as? Bool else { fatalError("unable to retrieve default value for 'MakeNewTrackCurrent'") }
+        return defaultValue
+      }
+    }
+    set { logDebug(""); defaults.setBool(newValue, forKey: Setting.MakeNewTrackCurrent.key) }
   }
 
   private static let receptionist: NotificationReceptionist = {
     let receptionist = NotificationReceptionist()
 
     receptionist.observe(NSUserDefaultsDidChangeNotification,
-                    from: NSUserDefaults.standardUserDefaults(),
+                    from: defaults,
                    queue: NSOperationQueue.mainQueue(),
                 callback: SettingsManager.userDefaultsDidChange)
-
-    receptionist.observe(UIApplicationWillEnterForegroundNotification,
-                callback: SettingsManager.willEnterForeground)
 
     return receptionist
     }()
@@ -116,7 +178,7 @@ final class SettingsManager {
   static func initialize() {
     guard !initialized else { return }
 
-    NSUserDefaults.standardUserDefaults().registerDefaults(Setting.boolSettings.reduce([String:AnyObject]()) {
+    defaults.registerDefaults(Setting.boolSettings.reduce([String:AnyObject]()) {
       (var dict: [String:AnyObject], setting: Setting) in
 
       dict[setting.key] = setting.defaultValue as? AnyObject
@@ -142,7 +204,7 @@ extension SettingsManager {
       case iCloudStorageChanged
       case ConfirmDeleteDocumentChanged, ConfirmDeleteTrackChanged
       case ScrollTrackLabelsChanged
-      case CurrentDocumentChanged
+      case CurrentDocumentLocalChanged, CurrentDocumentiCloudChanged
       case MakeNewTrackCurrentChanged
     }
 
@@ -164,7 +226,8 @@ extension SettingsManager {
         case .ConfirmDeleteDocument: name = .ConfirmDeleteDocumentChanged
         case .ConfirmDeleteTrack:    name = .ConfirmDeleteTrackChanged
         case .ScrollTrackLabels:     name = .ScrollTrackLabelsChanged
-        case .CurrentDocument:       name = .CurrentDocumentChanged
+        case .CurrentDocumentLocal:  name = .CurrentDocumentLocalChanged
+        case .CurrentDocumentiCloud:  name = .CurrentDocumentiCloudChanged
         case .MakeNewTrackCurrent:   name = .MakeNewTrackCurrentChanged
       }
     }
@@ -191,32 +254,31 @@ extension SettingsManager {
     case ConfirmDeleteDocument = "confirmDeleteDocument"
     case ConfirmDeleteTrack    = "confirmDeleteTrack"
     case ScrollTrackLabels     = "scrollTrackLabels"
-    case CurrentDocument       = "currentDocument"
+    case CurrentDocumentLocal  = "currentDocumentLocal"
+    case CurrentDocumentiCloud = "currentDocumentiCloud"
     case MakeNewTrackCurrent   = "makeNewTrackCurrent"
 
     var currentValue: Any? {
-      guard let value = NSUserDefaults.standardUserDefaults().objectForKey(rawValue) else { return nil }
+      guard let value = defaults.objectForKey(rawValue) else { return nil }
 
            if let number = value as? NSNumber { return number }
       else if let data   = value as? NSData   { return data   }
       else                                    { return nil    }
     }
 
+    var cachedValue: Any? { return SettingsManager.settingsCache[self] }
+
     var defaultValue: Any? {
       switch self {
-        case .iCloudStorage:         return true
-        case .ConfirmDeleteDocument: return true
-        case .ConfirmDeleteTrack:    return true
-        case .ScrollTrackLabels:     return true
-        case .CurrentDocument:       return nil
-        case .MakeNewTrackCurrent:   return true
+        case .CurrentDocumentLocal, .CurrentDocumentiCloud: return nil
+      case .iCloudStorage, .ConfirmDeleteDocument, .ConfirmDeleteTrack, .ScrollTrackLabels, .MakeNewTrackCurrent: return true
       }
     }
 
     static var boolSettings: [Setting] {
       return [.iCloudStorage, .ConfirmDeleteDocument, .ConfirmDeleteTrack, .ScrollTrackLabels, .MakeNewTrackCurrent]
     }
-    static var allCases: [Setting] { return boolSettings + [.CurrentDocument] }
+    static var allCases: [Setting] { return boolSettings + [.CurrentDocumentLocal, .CurrentDocumentiCloud] }
   }
 
 }

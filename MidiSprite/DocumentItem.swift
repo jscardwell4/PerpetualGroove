@@ -16,6 +16,7 @@ struct DocumentItem {
   private let modificationDateString: String?
   private let creationDateString: String?
   let size: UInt64
+  let isUbiquitous: Bool
 
   private static let dateFormatter: NSDateFormatter = {
     let dateFormatter = NSDateFormatter()
@@ -37,15 +38,6 @@ struct DocumentItem {
     return DocumentItem.dateFormatter.dateFromString(dateString)
   }
 
-//  var data: NSData {
-//    let data = NSMutableData()
-//    let coder = NSKeyedArchiver(forWritingWithMutableData: data)
-//    encodeWithCoder(coder)
-//    coder.finishEncoding()
-//    return data
-//  }
-
-
   /**
   init:
 
@@ -65,6 +57,7 @@ struct DocumentItem {
        creationDateString = nil
     }
     size = item.size
+    isUbiquitous = item.isUbiquitous == true
   }
 
   /**
@@ -86,6 +79,7 @@ struct DocumentItem {
        creationDateString = nil
     }
     size = item.size
+    isUbiquitous = false
   }
 
   /**
@@ -125,7 +119,8 @@ extension DocumentItem: Coding {
       filePath = coder.decodeObjectForKey("filePath") as? String else { return nil }
     self.displayName = displayName
     self.filePath = filePath
-    self.size = UInt64(coder.decodeInt64ForKey("size"))
+    isUbiquitous = coder.decodeBoolForKey("isUbiquitous")
+    size = UInt64(coder.decodeInt64ForKey("size"))
     modificationDateString = coder.decodeObjectForKey("modificationDateString") as? String
     creationDateString = coder.decodeObjectForKey("creationDateString") as? String
   }
@@ -141,6 +136,7 @@ extension DocumentItem: Coding {
     coder.encodeObject(modificationDateString, forKey: "modificationDateString")
     coder.encodeObject(creationDateString, forKey: "creationDateString")
     coder.encodeInt64(Int64(size), forKey: "size")
+    coder.encodeBool(isUbiquitous, forKey: "isUbiquitous")
   }
   
 }
@@ -156,6 +152,10 @@ extension DocumentItem: CustomStringConvertible {
     let (baseName, ext) = filePath.baseNameExt
     return "\(baseName).\(ext)"
   }
+}
+
+extension DocumentItem: CustomDebugStringConvertible {
+  var debugDescription: String { return String(reflecting: self) }
 }
 
 extension DocumentItem: Hashable {
@@ -178,5 +178,6 @@ func ==(lhs: DocumentItem, rhs: DocumentItem) -> Bool {
       && lhs.creationDateString == rhs.creationDateString
       && lhs.modificationDateString == rhs.modificationDateString
       && lhs.size == rhs.size
+      && lhs.isUbiquitous == rhs.isUbiquitous
 }
 

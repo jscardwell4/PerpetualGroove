@@ -17,7 +17,7 @@ import Triump
 extension UIColor {
   static var backgroundColor: UIColor        { return rgb( 51,  50,  49) }
   static var popoverBackgroundColor: UIColor { return rgb( 25,  25,  24) }
-  static var primaryColor: UIColor           { return rgb(186, 179, 169) }
+  static var primaryColor: UIColor           { return rgb(185, 179, 169) }
   static var primaryColor2: UIColor          { return rgb(196, 191, 185) }
   static var secondaryColor: UIColor         { return rgb(146, 135, 120) }
   static var secondaryColor2: UIColor        { return rgb(169, 160, 148) }

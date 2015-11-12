@@ -193,27 +193,28 @@ final class DocumentsViewController: UICollectionViewController {
   - parameter notification: NSNotification? = nil
   */
   private func didUpdateItems(notification: NSNotification) {
+    logDebug("")
     guard isViewLoaded() else { return }
 
     func indexPathsForItems(items: [DocumentItem]) -> [NSIndexPath] {
       return items.flatMap({_items.indexOf($0)}).map({NSIndexPath(forItem: $0, inSection: 1)})
     }
 
-//    let completion = {
-//      [unowned self] (completed: Bool) -> Void in
-//      guard completed && self.state ⚭ [.DocumentCreated, .DocumentChanged] else { return }
-//      self.refreshSelection()
-//      self.state = []
-//    }
-
     switch (notification.addedItems, notification.removedItems) {
       case let (addedItems?, removedItems?):
         logDebug("addedItems: \(addedItems)\nremovedItems: \(removedItems)")
+        var items = _items
+        logDebug("items: \(items)")
         let indexPathsToRemove = indexPathsForItems(removedItems)
-        _items ∖= removedItems
-        let indexPathsToAdd = (_items.endIndex ..< _items.endIndex + addedItems.count).map({NSIndexPath(forItem: $0, inSection: 1)})
+        items ∖= removedItems
+        logDebug("items ∖ removedItems: \(items)")
+        let startIndex = items.endIndex
+        let endIndex = startIndex + addedItems.count
+        let indexPathsToAdd = (startIndex ..< endIndex).map({NSIndexPath(forItem: $0, inSection: 1)})
         logDebug("inserting items at index paths \(indexPathsToAdd.map({$0.description}))")
-        _items ∪= addedItems
+        items ∪= addedItems
+        logDebug("items ∪ addedItems: \(items)")
+        _items = items
         collectionView?.performBatchUpdates({
           [unowned self] in
             self.collectionView?.deleteItemsAtIndexPaths(indexPathsToRemove)
@@ -225,16 +226,14 @@ final class DocumentsViewController: UICollectionViewController {
         let indexPaths = indexPathsForItems(removedItems)
         _items ∖= removedItems
         collectionView?.deleteItemsAtIndexPaths(indexPaths)
-//        completion(true)
 
       case let (addedItems?, nil):
         logDebug("addedItems: \(addedItems)")
         let indexPaths = (_items.endIndex ..< _items.endIndex + (addedItems ∖ _items).count).map({NSIndexPath(forItem: $0, inSection: 1)})
         guard indexPaths.count > 0 else { break }
-        logDebug("inserting items at index paths \(indexPaths.map({$0.description}))")
+        logDebug("inserting items at indices \(indexPaths.map({$0.item}))")
         _items ∪= addedItems
         collectionView?.insertItemsAtIndexPaths(indexPaths)
-//        completion(true)
 
       case (nil, nil):
         break

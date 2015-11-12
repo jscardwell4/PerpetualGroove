@@ -10,11 +10,11 @@ final class LogManager: MoonKit.LogManager {
 
   private(set) static var initialized = false
 
-  static let MIDIFileContext  = LogContext(rawValue: 0b0000_0010_0000)
-  static let SF2FileContext   = LogContext(rawValue: 0b0000_0100_0000)
-  static let SequencerContext = LogContext(rawValue: 0b0000_1000_0000)
-  static let SceneContext     = LogContext(rawValue: 0b0001_0000_0000)
-  static let UIContext        = LogContext(rawValue: 0b0010_0000_0000)
+  static let MIDIFileContext  = LogContext(rawValue: 0b0000_0010_0000)// ∪ .Console
+  static let SF2FileContext   = LogContext(rawValue: 0b0000_0100_0000)// ∪ .Console
+  static let SequencerContext = LogContext(rawValue: 0b0000_1000_0000)// ∪ .Console
+  static let SceneContext     = LogContext(rawValue: 0b0001_0000_0000)// ∪ .Console
+  static let UIContext        = LogContext(rawValue: 0b0010_0000_0000)// ∪ .Console
 
   /** initialize */
   static func initialize() {
@@ -67,7 +67,7 @@ final class LogManager: MoonKit.LogManager {
   /** setDefaultLogContexts */
   static private func setDefaultLogContexts() {
     MIDIDocumentManager.defaultLogContext     = MIDIFileContext ∪ .Console
-    MIDIDocument.defaultLogContext            = MIDIFileContext// ∪ .Console
+    MIDIDocument.defaultLogContext            = MIDIFileContext ∪ .Console
     MIDIFile.defaultLogContext                = MIDIFileContext// ∪ .Console
     MIDIFileHeaderChunk.defaultLogContext     = MIDIFileContext// ∪ .Console
     MIDIFileTrackChunk.defaultLogContext      = MIDIFileContext// ∪ .Console
@@ -104,7 +104,7 @@ final class LogManager: MoonKit.LogManager {
 
     MIDIPlayerViewController.defaultLogContext     = UIContext// ∪ .Console
     PurgatoryViewController.defaultLogContext      = UIContext// ∪ .Console
-    DocumentsViewController.defaultLogContext      = UIContext// ∪ .Console
+    DocumentsViewController.defaultLogContext      = UIContext ∪ .Console
     InstrumentViewController.defaultLogContext     = UIContext// ∪ .Console
     NoteAttributesViewController.defaultLogContext = UIContext// ∪ .Console
     DocumentsViewLayout.defaultLogContext          = UIContext// ∪ .Console
