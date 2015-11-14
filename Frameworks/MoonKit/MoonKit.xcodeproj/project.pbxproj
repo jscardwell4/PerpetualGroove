@@ -301,6 +301,7 @@
 		C27953101AFEBA0300F72C80 /* AKPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C279530F1AFEBA0300F72C80 /* AKPickerView.swift */; };
 		C27953121AFED61200F72C80 /* FormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27953111AFED61200F72C80 /* FormViewController.swift */; };
 		C27978E41B17FF9E00B36BAD /* ZoomingCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27978E31B17FF9E00B36BAD /* ZoomingCollectionViewLayout.swift */; };
+		C280ED3A1BF6678B0032447D /* LogFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C280ED391BF6678B0032447D /* LogFileManager.swift */; };
 		C28447111A3E051F005338AB /* LabeledCheckbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28447101A3E051F005338AB /* LabeledCheckbox.swift */; };
 		C284EA5C1A1EAD6700B07BA8 /* TouchTrackingGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = C284EA5B1A1EAD6700B07BA8 /* TouchTrackingGesture.swift */; };
 		C285D8281AC44E7400C527F6 /* MoonKitLite.h in Headers */ = {isa = PBXBuildFile; fileRef = C285D8271AC44E5500C527F6 /* MoonKitLite.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -321,7 +322,6 @@
 		C28E509B1A143FDC00DF3206 /* MultiselectGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28E509A1A143FDC00DF3206 /* MultiselectGestureRecognizer.swift */; };
 		C28E98EE1AD196B800E78711 /* NSNumber+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28E98ED1AD196B800E78711 /* NSNumber+MoonKitAdditions.swift */; };
 		C29073911BD7021F0090399E /* ColorLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29073901BD7021F0090399E /* ColorLog.swift */; };
-		C29073951BD740410090399E /* LogFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29073941BD740410090399E /* LogFileManager.swift */; };
 		C29073971BD747D70090399E /* LogFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29073961BD747D70090399E /* LogFormatter.swift */; };
 		C296498E1B00EBBF000C2D4A /* FormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C296498D1B00EBBF000C2D4A /* FormView.swift */; };
 		C29649901B00EBD0000C2D4A /* FieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C296498F1B00EBD0000C2D4A /* FieldView.swift */; };
@@ -613,6 +613,7 @@
 		C279530F1AFEBA0300F72C80 /* AKPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AKPickerView.swift; sourceTree = "<group>"; };
 		C27953111AFED61200F72C80 /* FormViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormViewController.swift; sourceTree = "<group>"; };
 		C27978E31B17FF9E00B36BAD /* ZoomingCollectionViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoomingCollectionViewLayout.swift; sourceTree = "<group>"; };
+		C280ED391BF6678B0032447D /* LogFileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogFileManager.swift; sourceTree = "<group>"; };
 		C28447101A3E051F005338AB /* LabeledCheckbox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabeledCheckbox.swift; sourceTree = "<group>"; };
 		C284EA5B1A1EAD6700B07BA8 /* TouchTrackingGesture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TouchTrackingGesture.swift; sourceTree = "<group>"; };
 		C285D8231AC44D3500C527F6 /* MoonKitLite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MoonKitLite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -628,7 +629,6 @@
 		C28E509A1A143FDC00DF3206 /* MultiselectGestureRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiselectGestureRecognizer.swift; sourceTree = "<group>"; };
 		C28E98ED1AD196B800E78711 /* NSNumber+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSNumber+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C29073901BD7021F0090399E /* ColorLog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorLog.swift; sourceTree = "<group>"; };
-		C29073941BD740410090399E /* LogFileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogFileManager.swift; sourceTree = "<group>"; };
 		C29073961BD747D70090399E /* LogFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogFormatter.swift; sourceTree = "<group>"; };
 		C295E30319E2FBBB008309B8 /* ToggleImageSegmentedControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToggleImageSegmentedControl.swift; sourceTree = "<group>"; };
 		C296498D1B00EBBF000C2D4A /* FormView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormView.swift; sourceTree = "<group>"; };
@@ -1638,11 +1638,11 @@
 		C2EBE06B1BD861210069A6EB /* Logging */ = {
 			isa = PBXGroup;
 			children = (
+				C280ED391BF6678B0032447D /* LogFileManager.swift */,
 				C2B4EB711BD8291D00DD1486 /* Loggable.swift */,
 				C269D1D41BD7E02D0084A7EE /* LogManager.swift */,
 				C216E73F19CBAE0A0052E98A /* LoggingFunctions.swift */,
 				C29073901BD7021F0090399E /* ColorLog.swift */,
-				C29073941BD740410090399E /* LogFileManager.swift */,
 				C29073961BD747D70090399E /* LogFormatter.swift */,
 			);
 			name = Logging;
@@ -2086,7 +2086,6 @@
 				C2358F5619C78E0C00920F8D /* NSIndexPath+MSKitAdditions.m in Sources */,
 				C2358F5719C78E0C00920F8D /* MSColorInputViewController.m in Sources */,
 				C2421D181BEFE884009BA8B1 /* ByteArrayConvertible.swift in Sources */,
-				C29073951BD740410090399E /* LogFileManager.swift in Sources */,
 				C2358F5819C78E0C00920F8D /* MSPickerInputViewController.m in Sources */,
 				C24A22951ADB45340065E7EA /* RawOptionSetFunctions.swift in Sources */,
 				C2C4B72C1AA951D700912951 /* NSManagedObject+MoonKitAdditions.swift in Sources */,
@@ -2099,6 +2098,7 @@
 				C28E50931A13CA5000DF3206 /* MSButton.swift in Sources */,
 				C2E043251B727547005F0675 /* XMLParser.swift in Sources */,
 				C2064FFF1A13C71D00342FDE /* NSLayoutConstraint+MoonKitAdditions.swift in Sources */,
+				C280ED3A1BF6678B0032447D /* LogFileManager.swift in Sources */,
 				C28E50971A13CA8F00DF3206 /* ToggleImageBarButtonItem.swift in Sources */,
 				C23592D719C8785D00920F8D /* NSMutableString+MSKitAdditions.m in Sources */,
 				C2F682BE1BDAEC45002FCA2B /* Character.swift in Sources */,

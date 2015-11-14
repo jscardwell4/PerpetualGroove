@@ -62,11 +62,11 @@ final class InstrumentTrack: Track {
       [weak self] _ in self?.resetNodes()
     }
 
-    receptionist.observe(MIDISequence.Notification.SoloCountDidChange, from: Sequencer.sequence) {
+    receptionist.observe(Sequence.Notification.SoloCountDidChange, from: Sequencer.sequence) {
       [weak self] in
 
       guard let state = self?.state,
-        newCount = ($0.userInfo?[MIDISequence.Notification.Key.NewCount.rawValue] as? NSNumber)?.integerValue else {
+        newCount = ($0.userInfo?[Sequence.Notification.Key.NewCount.rawValue] as? NSNumber)?.integerValue else {
           return
       }
 
@@ -351,10 +351,10 @@ final class InstrumentTrack: Track {
   /**
   initWithSequence:instrument:
 
-  - parameter sequence: MIDISequence
+  - parameter sequence: Sequence
   - parameter instrument: Instrument
   */
-  init(sequence: MIDISequence, instrument: Instrument) throws {
+  init(sequence: Sequence, instrument: Instrument) throws {
     super.init(sequence: sequence)
     self.instrument = instrument
     eventQueue.name = "BUS \(instrument.bus)"
@@ -366,10 +366,10 @@ final class InstrumentTrack: Track {
   /**
   initWithSequence:trackChunk:
 
-  - parameter sequence: MIDISequence
+  - parameter sequence: Sequence
   - parameter trackChunk: MIDIFileTrackChunk
   */
-  init(sequence: MIDISequence, trackChunk: MIDIFileTrackChunk) throws {
+  init(sequence: Sequence, trackChunk: MIDIFileTrackChunk) throws {
     super.init(sequence: sequence)
 
     addEvents(trackChunk.events)

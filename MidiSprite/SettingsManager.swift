@@ -140,7 +140,7 @@ final class SettingsManager {
     {
       _ in
 
-      logDebug("observed notification that usr defaults have changed")
+      logDebug("observed notification that user defaults have changed")
       SettingsManager.updateCache()
     }
 

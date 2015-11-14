@@ -346,9 +346,9 @@ public extension String {
   - parameter data: NSData
   - parameter encoding: UInt = NSUTF8StringEncoding
   */
-  public init?(data: NSData, encoding: UInt = NSUTF8StringEncoding) { 
-    if let s = NSString(data: data, encoding: encoding) as? String { self = s } else { return nil }
-  }
+//  public init?(data: NSData, encoding: UInt = NSUTF8StringEncoding) { 
+//    if let s = NSString(data: data, encoding: encoding) as? String { self = s } else { return nil }
+//  }
 
   /**
   subscript:

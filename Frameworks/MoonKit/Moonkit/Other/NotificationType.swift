@@ -79,7 +79,7 @@ public extension NotificationType {
     } else {
       userInfo = _userInfo
     }
-
+//    logVerbose("posting <\(self.dynamicType)>'\(_name)' with object (\(object == nil ? "nil" : "\(unsafeAddressOf(object!))") and info (\(userInfo == nil ? "nil" : "\(userInfo!)"))", asynchronous: false)
     notificationCenter.postNotificationName(_name, object: object, userInfo: userInfo)
   }
 

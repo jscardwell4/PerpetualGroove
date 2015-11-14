@@ -229,32 +229,50 @@ public class LogManager {
     logContextsByType[ObjectIdentifier(type.dynamicType.self)] = context
   }
 
-  public static var defaultLogDirectory: NSURL {
-    let manager = NSFileManager.defaultManager()
-    let cache = cacheURL
-    var error: NSError?
-    if !cache.checkResourceIsReachableAndReturnError(&error) {
-      if let error = error { logError(error) }
-      do {
-        try manager.createDirectoryAtURL(cache, withIntermediateDirectories: false, attributes: nil)
-      } catch {
-        logError(error)
-        fatalError("Failed to create cache directory: '\(cache)'")
+  private static var _logsDirectory: NSURL?
+
+  public static var logsDirectory: NSURL {
+    guard _logsDirectory == nil else { return _logsDirectory! }
+
+    func generateLogDirectory() -> NSURL {
+      let manager = NSFileManager.defaultManager()
+      let cache = cacheURL
+      var error: NSError?
+      if !cache.checkResourceIsReachableAndReturnError(&error) {
+        if let error = error { logError(error) }
+        do {
+          try manager.createDirectoryAtURL(cache, withIntermediateDirectories: false, attributes: nil)
+        } catch {
+          logError(error)
+          fatalError("Failed to create cache directory: '\(cache)'")
+        }
       }
-    }
-    let logs = cache + "Logs"
-    error = nil
-    if !logs.checkResourceIsReachableAndReturnError(&error) {
-      if let error = error { logError(error) }
-      do {
-        try manager.createDirectoryAtURL(logs, withIntermediateDirectories: false, attributes: nil)
-      } catch {
-        logError(error)
-        fatalError("Failed to create logs directory: '\(logs)'")
+      let logs = cache + "Logs"
+      error = nil
+      if !logs.checkResourceIsReachableAndReturnError(&error) {
+        if let error = error { logError(error) }
+        do {
+          try manager.createDirectoryAtURL(logs, withIntermediateDirectories: false, attributes: nil)
+        } catch {
+          logError(error)
+          fatalError("Failed to create logs directory: '\(logs)'")
+        }
       }
+      return logs
     }
 
-    return logs
+    #if TARGET_IPHONE_SIMULATOR
+      let directory: NSURL
+      if let path = NSProcessInfo.processInfo().environment["MOONKIT_LOG_DIR"] {
+        _logsDirectory = NSURL(fileURLWithPath: path)
+      } else {
+        _logsDirectory = generateLogDirectory()
+      }
+    #else
+      _logsDirectory = generateLogDirectory()
+    #endif
+    guard _logsDirectory != nil else { fatalError("failed to determine suitable log directory") }
+    return _logsDirectory!
   }
 
   /** addConsoleLoggers */
@@ -306,12 +324,12 @@ public class LogManager {
   defaultFileLoggerForContext:directory:
 
   - parameter context: LogContext
-  - parameter directory: NSURL
+  - parameter subdirectory: String
 
   - returns: DDFileLogger
   */
-  public class func defaultFileLoggerForContext(context: LogContext, directory: NSURL) -> DDFileLogger {
-    let fileManager = DDLogFileManagerDefault(logsDirectory: directory.path)
+  public class func defaultFileLoggerForContext(context: LogContext, subdirectory: String?) -> DDFileLogger {
+    let fileManager = subdirectory == nil ? LogFileManager() : LogFileManager(subdirectory: subdirectory!)
     fileManager.maximumNumberOfLogFiles = 5
     let fileLogger = DDFileLogger(logFileManager: fileManager)
     fileLogger.rollingFrequency = 60 * 60 * 24
@@ -324,10 +342,10 @@ public class LogManager {
   addDefaultFileLoggerForContext:directory:
 
   - parameter context: LogContext
-  - parameter directory: NSURL
+  - parameter subdirectory: String?
   */
-  public class func addDefaultFileLoggerForContext(context: LogContext, directory: NSURL) {
-    DDLog.addLogger(defaultFileLoggerForContext(context, directory: directory))
+  public class func addDefaultFileLoggerForContext(context: LogContext, subdirectory: String? = nil) {
+    DDLog.addLogger(defaultFileLoggerForContext(context, subdirectory: subdirectory))
   }
 
 }

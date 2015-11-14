@@ -1,5 +1,5 @@
 //
-//  MIDISequence.swift
+//  Sequence.swift
 //  MidiSprite
 //
 //  Created by Jason Cardwell on 8/23/15.
@@ -10,7 +10,7 @@ import Foundation
 import MoonKit
 import struct AudioToolbox.CABarBeatTime
 
-final class MIDISequence {
+final class Sequence {
 
 
   // MARK: - Managing tracks
@@ -170,10 +170,10 @@ final class MIDISequence {
     self.document = document
     receptionist.observe(Sequencer.Notification.DidToggleRecording,
                     from: Sequencer.self,
-                callback: weakMethod(self, MIDISequence.toggleRecording))
+                callback: weakMethod(self, Sequence.toggleRecording))
     receptionist.observe(Sequencer.Notification.DidReset,
                     from: Sequencer.self,
-                callback: weakMethod(self, MIDISequence.sequencerDidReset))
+                callback: weakMethod(self, Sequence.sequencerDidReset))
 
     var trackChunks = ArraySlice(file.tracks)
     if let trackChunk = trackChunks.first
@@ -217,10 +217,16 @@ final class MIDISequence {
     instrumentTracks.append(track)
     receptionist.observe(Track.Notification.DidUpdateEvents,
                     from: track,
-                callback: weakMethod(self, MIDISequence.trackDidUpdate))
+                callback: weakMethod(self, Sequence.trackDidUpdate))
 
     logDebug("track added: \(track.name)")
-    Notification.DidAddTrack.post(object: self, userInfo: [Notification.Key.AddedIndex: instrumentTracks.count - 1])
+    Notification.DidAddTrack.post(
+      object: self,
+      userInfo: [
+        Notification.Key.AddedIndex: instrumentTracks.count - 1,
+        Notification.Key.AddedTrack: track
+      ]
+    )
     if currentTrack == nil { currentTrack = track }
   }
 
@@ -240,7 +246,13 @@ final class MIDISequence {
     let track = instrumentTracks.removeAtIndex(index)
     receptionist.stopObserving(Track.Notification.DidUpdateEvents, from: track)
     logDebug("track removed: \(track.name)")
-    Notification.DidRemoveTrack.post(object: self, userInfo: [Notification.Key.RemovedIndex: index])
+    Notification.DidRemoveTrack.post(
+      object: self,
+      userInfo: [
+        Notification.Key.RemovedIndex: index,
+        Notification.Key.RemovedTrack: track
+      ]
+    )
     if currentTrack == track { currentTrackStack.pop(); currentTrack?.recording = Sequencer.recording }
     logDebug("posting 'DidUpdate'")
     Notification.DidUpdate.post(object: self)
@@ -249,43 +261,52 @@ final class MIDISequence {
 }
 
 // MARK: - Nameable
-extension MIDISequence: Nameable { var name: String? { return document?.localizedName } }
+extension Sequence: Nameable { var name: String? { return document?.localizedName } }
 
 // MARK: - CustomStringConvertible
-extension MIDISequence: CustomStringConvertible {
+extension Sequence: CustomStringConvertible {
   var description: String {
     return "\ntracks:\n" + "\n\n".join(tracks.map({$0.description.indentedBy(1, useTabs: true)}))
   }
 }
 
 // MARK: - CustomDebugStringConvertible
-extension MIDISequence: CustomDebugStringConvertible {
+extension Sequence: CustomDebugStringConvertible {
   var debugDescription: String { var result = ""; dump(self, &result); return result }
 }
 
 // MARK: - Notification
 
-extension MIDISequence {
+extension Sequence {
   /** An enumeration to wrap up notifications */
   enum Notification: String, NotificationType, NotificationNameType {
     case DidAddTrack, DidRemoveTrack, DidChangeTrack, SoloCountDidChange, DidUpdate
-    enum Key: String, NotificationKeyType { case Track, OldTrack, OldCount, RemovedIndex, AddedIndex, NewCount }
+    enum Key: String, NotificationKeyType {
+      case Track, OldTrack, OldCount, RemovedIndex, AddedIndex, NewCount, AddedTrack, RemovedTrack
+    }
   }
 }
 
 extension NSNotification {
 
-  var track: InstrumentTrack?    { return userInfo?[MIDISequence.Notification.Key.Track.key] as? InstrumentTrack }
-  var oldTrack: InstrumentTrack? { return userInfo?[MIDISequence.Notification.Key.OldTrack.key] as? InstrumentTrack }
+  var track: InstrumentTrack?    { return userInfo?[Sequence.Notification.Key.Track.key] as? InstrumentTrack }
+  var oldTrack: InstrumentTrack? { return userInfo?[Sequence.Notification.Key.OldTrack.key] as? InstrumentTrack }
 
-  var oldCount: Int? { return (userInfo?[MIDISequence.Notification.Key.OldCount.key] as? NSNumber)?.integerValue }
-  var newCount: Int? { return (userInfo?[MIDISequence.Notification.Key.NewCount.key] as? NSNumber)?.integerValue }
+  var oldCount: Int? { return (userInfo?[Sequence.Notification.Key.OldCount.key] as? NSNumber)?.integerValue }
+  var newCount: Int? { return (userInfo?[Sequence.Notification.Key.NewCount.key] as? NSNumber)?.integerValue }
 
   var removedIndex: Int? {
-    return (userInfo?[MIDISequence.Notification.Key.RemovedIndex.key] as? NSNumber)?.integerValue
+    return (userInfo?[Sequence.Notification.Key.RemovedIndex.key] as? NSNumber)?.integerValue
   }
   var addedIndex: Int? {
-    return (userInfo?[MIDISequence.Notification.Key.AddedIndex.key] as? NSNumber)?.integerValue
+    return (userInfo?[Sequence.Notification.Key.AddedIndex.key] as? NSNumber)?.integerValue
+  }
+
+  var addedTrack: InstrumentTrack? {
+    return userInfo?[Sequence.Notification.Key.AddedTrack.key] as? InstrumentTrack
+  }
+  var removedTrack: InstrumentTrack? {
+    return userInfo?[Sequence.Notification.Key.RemovedTrack.key] as? InstrumentTrack
   }
 
 }

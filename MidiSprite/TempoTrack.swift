@@ -92,9 +92,9 @@ final class TempoTrack: Track {
   /**
   Initializer for non-playback mode tempo track
   
-  - parameter s: MIDISequence
+  - parameter s: Sequence
   */
-  override init(sequence: MIDISequence) {
+  override init(sequence: Sequence) {
     super.init(sequence: sequence)
     initializeNotificationReceptionist()
     addEvent(timeSignatureEvent)
@@ -105,9 +105,9 @@ final class TempoTrack: Track {
   initWithTrackChunk:
 
   - parameter trackChunk: MIDIFileTrackChunk
-  - parameter s: MIDISequence
+  - parameter s: Sequence
   */
-  init(sequence: MIDISequence, trackChunk: MIDIFileTrackChunk) {
+  init(sequence: Sequence, trackChunk: MIDIFileTrackChunk) {
     super.init(sequence: sequence)
     initializeNotificationReceptionist()
     addEvents(trackChunk.events.filter(TempoTrack.isTempoTrackEvent))

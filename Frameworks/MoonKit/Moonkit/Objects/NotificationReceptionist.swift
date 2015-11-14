@@ -11,6 +11,21 @@ import UIKit
 
 public final class NotificationReceptionist: NSObject, Loggable {
 
+  /**
+  receiveNotification:
+
+  - parameter notification: NSNotification
+  */
+  @objc private func receiveNotification(notification: NSNotification) {
+    guard let idx = infos.indexOf({$0.name == notification.name && $0.object.reference === notification.object}) else {
+      logWarning("not observing \(notification.name)'\(notification.object == nil ? "" : "from object at address \(unsafeAddressOf(notification.object!))")")
+      return
+    }
+    let info = infos[idx]
+    (info.queue ?? callbackQueue ?? NSOperationQueue.mainQueue()).addOperationWithBlock { info.callback(notification) }
+  }
+
+
   private var _logContext: LogManager.LogContext?
   public var logContext: LogManager.LogContext {
     get { return _logContext ?? NotificationReceptionist.defaultLogContext }
@@ -29,17 +44,6 @@ public final class NotificationReceptionist: NSObject, Loggable {
   public init(callbackQueue queue: NSOperationQueue? = nil) {
     super.init()
     callbackQueue = queue
-  }
-
-  private struct ObservationInfo: Hashable, CustomStringConvertible {
-    let name: String
-    let object: Weak<AnyObject>
-    let observer: NSObjectProtocol
-    var hashValue: Int { return name.hashValue ^ object.hashValue ^ observer.hash }
-
-    var description: String {
-      return "'\(name)'\(object.reference == nil ? "" : " from object \(object))")"
-    }
   }
 
   public var count: Int { return infos.count }
@@ -73,14 +77,8 @@ public final class NotificationReceptionist: NSObject, Loggable {
                 queue: NSOperationQueue? = nil,
              callback: (NSNotification) -> Void)
   {
-    let info = ObservationInfo(
-      name: name,
-      object: Weak(object),
-      observer: NSNotificationCenter.defaultCenter()
-                  .addObserverForName(name, object: object, queue: queue ?? callbackQueue, usingBlock: callback)
-    )
-    infos.insert(info)
-    logVerbose("observing \(info)")
+    infos.insert(ObservationInfo(name: name, object: Weak(object), callback: callback, queue: queue))
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: "receiveNotification:", name: name, object: object)
   }
 
   /**
@@ -166,11 +164,25 @@ public final class NotificationReceptionist: NSObject, Loggable {
   - parameter info: ObservationInfo
   */
   private func stopObserving(info: ObservationInfo) {
-    NSNotificationCenter.defaultCenter().removeObserver(info.observer, name: info.name, object: info.object.reference)
+    NSNotificationCenter.defaultCenter().removeObserver(self, name: info.name, object: info.object.reference)
     logVerbose("stopped observing \(info)")
   }
 
   deinit { while let info = infos.popFirst() { stopObserving(info) } }
+}
+
+extension NotificationReceptionist {
+  private struct ObservationInfo: Hashable, CustomStringConvertible {
+    let name: String
+    let object: Weak<AnyObject>
+    let callback: (NSNotification) -> Void
+    var hashValue: Int { return name.hashValue ^ object.hashValue }
+    weak var queue: NSOperationQueue?
+
+    var description: String {
+      return "'\(name)'\(object.reference == nil ? "" : " from object \(object))")"
+    }
+  }
 }
 
 private func ==(lhs: NotificationReceptionist.ObservationInfo, rhs: NotificationReceptionist.ObservationInfo) -> Bool {

@@ -12,7 +12,7 @@ import struct AudioToolbox.CABarBeatTime
 
 class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
 
-  private(set) weak var sequence: MIDISequence?
+  private(set) weak var sequence: Sequence?
 
   /**
   addEvent:
@@ -100,7 +100,7 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
   }
 
   /** init */
-  init(sequence: MIDISequence) { self.sequence = sequence }
+  init(sequence: Sequence) { self.sequence = sequence }
 
   var description: String {
     return "\n".join(

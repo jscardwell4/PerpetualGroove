@@ -11,88 +11,7 @@ import Lumberjack
 
 public class LogFileManager: DDLogFileManagerDefault {
 
-//  public private(set) var currentLogFile: String?
-  public var logsDirectoryURL: NSURL
-
-  public var fileNamePrefix: String?
-
-  /**
-  init:
-
-  - parameter dir: NSURL
-  */
-  public init(directory dir: NSURL) throws {
-    logsDirectoryURL = dir;
-    super.init(logsDirectory: dir.absoluteURL.path!)
-    let manager = NSFileManager.defaultManager()
-    var error: NSError?
-    if !dir.checkResourceIsReachableAndReturnError(&error) {
-      if let error = error { logError(error) }
-      try manager.createDirectoryAtURL(dir, withIntermediateDirectories: false, attributes: nil)
-    }
-  }
-
-  /** deleteOldLogFiles */
-  private func deleteOldLogFiles() throws {
-    guard maximumNumberOfLogFiles > 0 else { return }
-    var sortedLogFileInfos = self.sortedLogFileInfos()
-
-    // Do we consider the first file?
-    // We are only supposed to be deleting archived files.
-    // The first file is likely the log file that is currently being written to.
-    // So in most cases, we do not want to consider this file for deletion.
-    var count = sortedLogFileInfos.count
-    var excludeFirstFile = false
-
-    if count > 0 {
-      let logFileInfo = sortedLogFileInfos[0] as! DDLogFileInfo
-      if !logFileInfo.isArchived { excludeFirstFile = true }
-    }
-
-    if excludeFirstFile {
-      count--
-      sortedLogFileInfos.removeAtIndex(0)
-    }
-
-    let manager = NSFileManager.defaultManager()
-    for info in sortedLogFileInfos { try manager.removeItemAtPath(info.filePath) }
-
-  }
-
-  /**
-  didRollAndArchiveLogFile:
-
-  - parameter logFilePath: String!
-  */
-  public override func didRollAndArchiveLogFile(logFilePath: String!) {}
-
-//  /**
-//  createNewLogFile
-//
-//  - returns: String!
-//  */
-//  public override func createNewLogFile() -> String! {
-//    let dateFormatter = NSDateFormatter()
-//    dateFormatter.dateFormat = "M/d/yy H:mm:ss.SSS"
-//    var fileName = "\(dateFormatter.stringFromDate(NSDate())).log"
-//    var url = logsDirectoryURL
-//    if let prefix = fileNamePrefix {
-//      fileName = "\(prefix)-\(fileName)"
-//    } else if let lastPathComponent = url.lastPathComponent where lastPathComponent != "Logs" {
-//      fileName = "\(lastPathComponent)-\(fileName)"
-//    }
-//    url += fileName
-//    let manager = NSFileManager.defaultManager()
-//    var error: NSError?
-//    if !url.checkResourceIsReachableAndReturnError(&error) {
-//      if let error = error { logError(error) }
-//      logVerbose("creating new log file: '\(url.path!)'")
-//      manager.createFileAtPath(url.path!, contents: nil, attributes: nil)
-//      _ = try? deleteOldLogFiles()
-//      currentLogFile = url.path
-//    }
-//    return currentLogFile
-//  }
+  public let directory: LogsDirectory
 
   static let dateFormatter: NSDateFormatter = {
     let dateFormatter = NSDateFormatter()
@@ -102,21 +21,60 @@ public class LogFileManager: DDLogFileManagerDefault {
     return dateFormatter
   }()
 
-  public override var newLogFileName: String {
-    var result = "\(NSProcessInfo.processInfo().processName)"
-    if let prefix = fileNamePrefix { result += "-\(prefix)" }
-    result += "\(LogFileManager.dateFormatter.stringFromDate(NSDate()))"
-    return result
+  /**
+  Convenience initializer for a subdirectory of the logs directory
+
+  - parameter subdirectory: String
+  */
+  public init(subdirectory: String? = nil) {
+    let directory = LogsDirectory(subdirectory: subdirectory)
+    guard let path = directory.URL.path else { fatalError("URL must be a valid file reference (i.e. URL.path != nil)") }
+    self.directory = directory
+    super.init(logsDirectory: path)
+  }
+
+}
+
+public struct LogsDirectory: CustomStringConvertible {
+
+  public let URL: NSURL
+  private let wrapper: NSFileWrapper
+
+  public var subdirectories: [NSFileWrapper] { return wrapper.fileWrappers?.values.filter({$0.directory}) ?? [] }
+  public var logs: [NSFileWrapper] { return wrapper.fileWrappers?.values.filter({$0.regularFile}) ?? [] }
+  public var latestLog: NSFileWrapper? {
+    return logs.maxElement({
+      switch (($0.fileAttributes[NSFileModificationDate] as? NSDate), ($1.fileAttributes[NSFileModificationDate] as? NSDate)) {
+        case let (date1?, date2?) where date1.earlierDate(date2) === date1: return true
+        default: return false
+      }
+
+    })
+  }
+
+  public var latestLogContent: String {
+    guard let fileContent = latestLog?.regularFileContents else { return "" }
+    return String(data: fileContent, encoding: NSUTF8StringEncoding) ?? ""
   }
 
   /**
-  isLogFile:
+  initWithSubdirectory:
 
-  - parameter fileName: String!
-
-  - returns: Bool
+  - parameter subdirectory: String? = nil
   */
-  public override func isLogFile(fileName: String!) -> Bool {
-    return fileName.hasSuffix(".log")
+  public init(subdirectory: String? = nil, createIfNeeded: Bool = true) {
+    URL = NSURL(string: subdirectory ?? "", relativeToURL: LogManager.logsDirectory)!
+    if !URL.checkResourceIsReachableAndReturnError(nil) {
+      do {
+        try NSFileManager.defaultManager().createDirectoryAtURL(URL,
+                                    withIntermediateDirectories: true,
+                                                     attributes: nil)
+      } catch {
+        logError(error)
+      }
+    }
+    wrapper = try! NSFileWrapper(URL: URL, options: [.Immediate, .WithoutMapping])
   }
+
+  public var description: String { return "\(URL.path!)" }
 }

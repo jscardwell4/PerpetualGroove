@@ -12,259 +12,102 @@ import Lumberjack
 /**
 logDebug:asynchronous:function:line:file:
 
-- parameter message: String
+- parameter message: () -> String
 - parameter asynchronous: Bool = true
 - parameter function: String = __FUNCTION__
 - parameter line: UInt = __LINE__
 - parameter file: String = __FILE__
 */
-public func logDebug(message: String,
+public func logDebug(@autoclosure message: () -> String,
         asynchronous: Bool = true,
             function: String = __FUNCTION__,
                 line: UInt = __LINE__,
                 file: String = __FILE__)
 {
-  LogManager.logMessage(message, asynchronous: asynchronous, flag: .Debug, function: function, file: file, line: line)
-}
-
-/**
-logDebug:function:line:file:
-
-- parameter asynchronous: Bool = true
-- parameter function: String = __FUNCTION__
-- parameter line: UInt = __LINE__
-- parameter file: String = __FILE__
-*/
-public func logDebug(asynchronous: Bool = true, function: String = __FUNCTION__, line: UInt = __LINE__, file: String = __FILE__) {
-  logDebug("", asynchronous: asynchronous, function: function, line: line, file: file)
-}
-
-/**
-logDebug:separator:terminator:asynchronous:function:line:file:
-
-- parameter items: Any...
-- parameter separator: String = " "
-- parameter terminator: String = "
-"
-- parameter asynchronous: Bool = true
-- parameter function: String = __FUNCTION__
-- parameter line: UInt = __LINE__
-- parameter file: String = __FILE__
-*/
-public func logDebug(items: Any...,
-                     separator: String = " ",
-                     terminator: String = "\n",
-                     asynchronous: Bool = true,
-                     function: String = __FUNCTION__,
-                     line: UInt = __LINE__,
-                     file: String = __FILE__)
-{
-  logDebug(
-    String(items: items, separator: separator, terminator: terminator),
-    asynchronous: asynchronous,
-    function: function,
-    line: line,
-    file: file
-  )
+  LogManager.logMessage(message(), asynchronous: asynchronous, flag: .Debug, function: function, file: file, line: line)
 }
 
 /**
 logError:asynchronous:function:line:file:
 
-- parameter message: String
+- parameter message: () -> String
 - parameter asynchronous: Bool = true
 - parameter function: String = __FUNCTION__
 - parameter line: UInt = __LINE__
 - parameter file: String = __FILE__
 */
-public func logError(message: String,
+public func logError(@autoclosure message: () -> String,
         asynchronous: Bool = true,
             function: String = __FUNCTION__,
                 line: UInt = __LINE__,
                 file: String = __FILE__)
 {
-  LogManager.logMessage(message, asynchronous: asynchronous, flag: .Error, function: function, file: file, line: line)
-}
-
-/**
-logError:separator:terminator:asynchronous:function:line:file:
-
-- parameter items: Any...
-- parameter separator: String = " "
-- parameter terminator: String = "
-"
-- parameter asynchronous: Bool = true
-- parameter function: String = __FUNCTION__
-- parameter line: UInt = __LINE__
-- parameter file: String = __FILE__
-*/
-public func logError(items items: Any...,
-                     separator: String = " ",
-                     terminator: String = "\n",
-                     asynchronous: Bool = true,
-                     function: String = __FUNCTION__,
-                     line: UInt = __LINE__,
-                     file: String = __FILE__)
-{
-  logError(
-    String(items: items, separator: separator, terminator: terminator),
-    asynchronous: asynchronous,
-    function: function,
-    line: line,
-    file: file
-  )
+  LogManager.logMessage(message(), asynchronous: asynchronous, flag: .Error, function: function, file: file, line: line)
 }
 
 /**
 logInfo:asynchronous:function:line:file:
 
-- parameter message: String
+- parameter message: () -> String
 - parameter asynchronous: Bool = true
 - parameter function: String = __FUNCTION__
 - parameter line: UInt = __LINE__
 - parameter file: String = __FILE__
 */
-public func logInfo(message: String,
+public func logInfo(@autoclosure message: () -> String,
        asynchronous: Bool = true,
            function: String = __FUNCTION__,
                line: UInt = __LINE__,
                file: String = __FILE__)
 {
-  LogManager.logMessage(message, asynchronous: asynchronous, flag: .Info, function: function, file: file, line: line)
-}
-
-/**
-logInfo:separator:terminator:asynchronous:function:line:file:
-
-- parameter items: Any...
-- parameter separator: String = " "
-- parameter terminator: String = "
-"
-- parameter asynchronous: Bool = true
-- parameter function: String = __FUNCTION__
-- parameter line: UInt = __LINE__
-- parameter file: String = __FILE__
-*/
-public func logInfo(items: Any...,
-          separator: String = " ",
-         terminator: String = "\n",
-       asynchronous: Bool = true,
-           function: String = __FUNCTION__,
-               line: UInt = __LINE__,
-               file: String = __FILE__)
-{
-  logInfo(
-    String(items: items, separator: separator, terminator: terminator),
-    asynchronous: asynchronous,
-    function: function,
-    line: line,
-    file: file
-  )
+  LogManager.logMessage(message(), asynchronous: asynchronous, flag: .Info, function: function, file: file, line: line)
 }
 
 /**
 logWarning:asynchronous:function:line:file:
 
-- parameter message: String
+- parameter message: () -> String
 - parameter asynchronous: Bool = true
 - parameter function: String = __FUNCTION__
 - parameter line: UInt = __LINE__
 - parameter file: String = __FILE__
 */
-public func logWarning(message: String,
+public func logWarning(@autoclosure message: () -> String,
           asynchronous: Bool = true,
               function: String = __FUNCTION__,
                   line: UInt = __LINE__,
                   file: String = __FILE__)
 {
-  LogManager.logMessage(message, asynchronous: asynchronous, flag: .Warning, function: function, file: file, line: line)
-}
-
-/**
-logWarning:separator:terminator:asynchronous:function:line:file:
-
-- parameter items: Any...
-- parameter separator: String = " "
-- parameter terminator: String = "
-"
-- parameter asynchronous: Bool = true
-- parameter function: String = __FUNCTION__
-- parameter line: UInt = __LINE__
-- parameter file: String = __FILE__
-*/
-public func logWarning(items: Any...,
-             separator: String = " ",
-            terminator: String = "\n",
-          asynchronous: Bool = true,
-              function: String = __FUNCTION__,
-                  line: UInt = __LINE__,
-                  file: String = __FILE__)
-{
-  logWarning(
-    String(items: items, separator: separator, terminator: terminator),
-    asynchronous: asynchronous,
-    function: function,
-    line: line,
-    file: file
-  )
+  LogManager.logMessage(message(), asynchronous: asynchronous, flag: .Warning, function: function, file: file, line: line)
 }
 
 /**
 logVerbose:asynchronous:function:line:file:
 
-- parameter message: String
+- parameter message: () -> String
 - parameter asynchronous: Bool = true
 - parameter function: String = __FUNCTION__
 - parameter line: UInt = __LINE__
 - parameter file: String = __FILE__
 */
-public func logVerbose(message: String,
+public func logVerbose(@autoclosure message: () -> String,
           asynchronous: Bool = true,
               function: String = __FUNCTION__,
                   line: UInt = __LINE__,
                   file: String = __FILE__)
 {
-  LogManager.logMessage(message, asynchronous: asynchronous, flag: .Verbose, function: function, file: file, line: line)
-}
-
-/**
-logVerbose:separator:terminator:asynchronous:function:line:file:
-
-- parameter items: Any...
-- parameter separator: String = " "
-- parameter terminator: String = "
-"
-- parameter asynchronous: Bool = true
-- parameter function: String = __FUNCTION__
-- parameter line: UInt = __LINE__
-- parameter file: String = __FILE__
-*/
-public func logVerbose(items: Any...,
-             separator: String = " ",
-            terminator: String = "\n",
-          asynchronous: Bool = true,
-              function: String = __FUNCTION__,
-                  line: UInt = __LINE__,
-                  file: String = __FILE__)
-{
-  logVerbose(
-    String(items: items, separator: separator, terminator: terminator),
-    asynchronous: asynchronous,
-    function: function,
-    line: line,
-    file: file
-  )
+  LogManager.logMessage(message(), asynchronous: asynchronous, flag: .Verbose, function: function, file: file, line: line)
 }
 
 /**
 logIB:function:line:file:
 
-- parameter message: String
+- parameter message: () -> String
 - parameter function: String = __FUNCTION__
 - parameter line: UInt = __LINE__
 - parameter file: String = __FILE__
 */
-public func logIB(message: String,
+public func logIB(@autoclosure message: () -> String,
          function: String = __FUNCTION__,
              line: UInt = __LINE__,
              file: String = __FILE__,
@@ -274,7 +117,7 @@ public func logIB(message: String,
     guard flag.rawValue & LogManager.logLevelForFile(file).rawValue != 0 else { return }
     backgroundDispatch {
       guard let sourceDirectory = NSProcessInfo.processInfo().environment["IB_PROJECT_SOURCE_DIRECTORIES"] else { return }
-      let text = "\(NSDate()) [\(mach_absolute_time())] <\((file as NSString).lastPathComponent):\(line)> \(function)  \(message)"
+      let text = "\(NSDate()) [\(mach_absolute_time())] <\((file as NSString).lastPathComponent):\(line)> \(function)  \(message())"
       let _ = try? text.appendToFile("\(sourceDirectory)/IB.log")
     }
   #endif

@@ -17,13 +17,13 @@ final class MIDIDocument: UIDocument {
     return isUbiquitous != nil && (isUbiquitous as? NSNumber)?.boolValue == true ? .iCloud : .Local
   }
 
-  private(set) var sequence: MIDISequence? {
+  private(set) var sequence: Sequence? {
     didSet {
-      let stopObserving: (MIDISequence) -> Void = {
-        self.receptionist.stopObserving(MIDISequence.Notification.DidUpdate, from: $0)
+      let stopObserving: (Sequence) -> Void = {
+        self.receptionist.stopObserving(Sequence.Notification.DidUpdate, from: $0)
       }
-      let observe: (MIDISequence) -> Void = {
-        self.receptionist.observe(MIDISequence.Notification.DidUpdate, from: $0) {
+      let observe: (Sequence) -> Void = {
+        self.receptionist.observe(Sequence.Notification.DidUpdate, from: $0) {
           [weak self] _ in
           self?.logDebug("notification received that sequence has been updated")
           self?.updateChangeCount(.Done)
@@ -81,7 +81,7 @@ final class MIDIDocument: UIDocument {
   */
   override func loadFromContents(contents: AnyObject, ofType typeName: String?) throws {
     guard let data = contents as? NSData else { throw Error.InvalidContentType }
-    sequence = MIDISequence(file: try MIDIFile(data: data), document: self)
+    sequence = Sequence(file: try MIDIFile(data: data), document: self)
     logDebug("file loaded into sequence: \(sequence!)")
   }
 
@@ -92,7 +92,7 @@ final class MIDIDocument: UIDocument {
   */
   override func contentsForType(typeName: String) throws -> AnyObject {
     if sequence == nil && creating {
-      sequence = MIDISequence(file: MIDIFile.emptyFile, document: self)
+      sequence = Sequence(file: MIDIFile.emptyFile, document: self)
       creating = false
     }
     guard let file = sequence?.file else { throw Error.MissingSequence }

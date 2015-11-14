@@ -14,14 +14,19 @@ final class MixerViewController: UICollectionViewController {
 
   private let receptionist: NotificationReceptionist = {
     let receptionist = NotificationReceptionist(callbackQueue: NSOperationQueue.mainQueue())
-    receptionist.logContext = LogManager.SequencerContext
+    receptionist.logContext = LogManager.UIContext
     return receptionist
   }()
 
   private var widthConstraint: NSLayoutConstraint?
   private var heightConstraint: NSLayoutConstraint?
 
-  private weak var sequence: MIDISequence? {
+  override var collectionView: UICollectionView? {
+    get { return super.collectionView }
+    set { super.collectionView = newValue }
+  }
+
+  private weak var sequence: Sequence? {
     didSet {
       guard oldValue !== sequence else { return }
       if let oldSequence = oldValue { stopObservingSequence(oldSequence) }
@@ -34,18 +39,18 @@ final class MixerViewController: UICollectionViewController {
   /**
   observeSequence:
 
-  - parameter sequence: MIDISequence
+  - parameter sequence: Sequence
   */
-  private func observeSequence(sequence: MIDISequence) {
-    receptionist.observe(MIDISequence.Notification.DidChangeTrack, from: sequence) {
+  private func observeSequence(sequence: Sequence) {
+    receptionist.observe(Sequence.Notification.DidChangeTrack, from: sequence) {
       [weak self] _ in
         guard let idx = self?.sequence?.currentTrack?.index else { return }
         self?.selectTrackAtIndex(idx)
     }
-    receptionist.observe(MIDISequence.Notification.DidAddTrack,
+    receptionist.observe(Sequence.Notification.DidAddTrack,
                     from: sequence,
                 callback: weakMethod(self, MixerViewController.updateTracks))
-    receptionist.observe(MIDISequence.Notification.DidRemoveTrack,
+    receptionist.observe(Sequence.Notification.DidRemoveTrack,
                     from: sequence,
                 callback: weakMethod(self, MixerViewController.updateTracks))
   }
@@ -53,12 +58,12 @@ final class MixerViewController: UICollectionViewController {
   /**
   stopObservingSequence:
 
-  - parameter sequence: MIDISequence
+  - parameter sequence: Sequence
   */
-  private func stopObservingSequence(sequence: MIDISequence) {
-    receptionist.stopObserving(MIDISequence.Notification.DidChangeTrack, from: sequence)
-    receptionist.stopObserving(MIDISequence.Notification.DidAddTrack,    from: sequence)
-    receptionist.stopObserving(MIDISequence.Notification.DidRemoveTrack, from: sequence)
+  private func stopObservingSequence(sequence: Sequence) {
+    receptionist.stopObserving(Sequence.Notification.DidChangeTrack, from: sequence)
+    receptionist.stopObserving(Sequence.Notification.DidAddTrack,    from: sequence)
+    receptionist.stopObserving(Sequence.Notification.DidRemoveTrack, from: sequence)
   }
 
   /** addTrack */
@@ -168,6 +173,8 @@ final class MixerViewController: UICollectionViewController {
     else { soundSetSelectionTargetCell = cell }
   }
 
+  private var initialized = false
+
   /** viewDidLoad */
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -180,9 +187,11 @@ final class MixerViewController: UICollectionViewController {
   /** awakeFromNib */
   override func awakeFromNib() {
     super.awakeFromNib()
+    guard !initialized else { return }
     receptionist.observe(MIDIDocumentManager.Notification.DidChangeDocument, from: MIDIDocumentManager.self) {
       [weak self] _ in self?.sequence = MIDIDocumentManager.currentDocument?.sequence
     }
+    initialized = true
   }
 
   /**
@@ -198,18 +207,54 @@ final class MixerViewController: UICollectionViewController {
   /** updateTracks */
   func updateTracks(notification: NSNotification) {
 
+    guard collectionView != nil else { return }
+    guard sequence != nil else { fatalError("internal inconsistency…if sequence is nil what sent this notification?") }
+
+    logDebug("\n".join(
+      "total instrument tracks in sequence: \(sequence!.instrumentTracks.count)",
+      "total track cells: \(collectionView!.numberOfItemsInSection(Section.Instruments.rawValue))"
+      ))
+
     let section = Section.Instruments
+//    let insertionIndices: [NSIndexPath]
+//    let deletionIndices: [NSIndexPath]
+//
+//    if let addedIndex = notification.addedIndex, addedTrack = notification.addedTrack {
+//      insertionIndices = [section[addedIndex]]
+//    } else {
+//      insertionIndices = []
+//    }
+//
+//    if let removedIndex = notification.removedIndex, removedTrack = notification.removedTrack {
+//      deletionIndices = [section[removedIndex]]
+//    } else {
+//      deletionIndices = []
+//    }
+//
+//    collectionView?.performBatchUpdates({
+//      [weak collectionView = collectionView] in
+//      collectionView?.deleteItemsAtIndexPaths(deletionIndices)
+//      collectionView?.insertItemsAtIndexPaths(insertionIndices)
+//      }, completion: nil)
+
     switch (notification.addedIndex, notification.removedIndex) {
+
       case let (added?, removed?):
+        logDebug("added index: \(added); removed index: \(removed)")
         collectionView?.performBatchUpdates({
           [weak collectionView = collectionView] in
             collectionView?.deleteItemsAtIndexPaths([section[removed]])
             collectionView?.insertItemsAtIndexPaths([section[added]])
           }, completion: nil)
+
       case let (added?, nil):
+        logDebug("added index: \(added)")
         collectionView?.insertItemsAtIndexPaths([section[added]])
+
       case let (nil, removed?):
+        logDebug("removed index: \(removed)")
         collectionView?.deleteItemsAtIndexPaths([section[removed]])
+
       case (nil, nil): break
     }
 

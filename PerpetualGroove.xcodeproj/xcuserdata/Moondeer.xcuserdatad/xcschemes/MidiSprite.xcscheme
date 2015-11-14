@@ -68,7 +68,7 @@
             isEnabled = "YES">
          </EnvironmentVariable>
          <EnvironmentVariable
-            key = "GROOVE_LOG_DIR"
+            key = "MOONKIT_LOG_DIR"
             value = "/Users/Moondeer/Projects/MidiSprite/Logs"
             isEnabled = "YES">
          </EnvironmentVariable>

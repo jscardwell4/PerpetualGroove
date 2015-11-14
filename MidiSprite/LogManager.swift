@@ -36,38 +36,33 @@ final class LogManager: MoonKit.LogManager {
   defaultFileLoggerForContext:directory:
 
   - parameter context: LogContext
-  - parameter directory: NSURL
+  - parameter subdirectory: String?
 
   - returns: DDFileLogger
   */
-  static override func defaultFileLoggerForContext(context: LogContext, directory: NSURL) -> DDFileLogger {
-    let logger = super.defaultFileLoggerForContext(context, directory: directory)
+  static override func defaultFileLoggerForContext(context: LogContext, subdirectory: String?) -> DDFileLogger {
+    let logger = super.defaultFileLoggerForContext(context, subdirectory: subdirectory)
     logger.doNotReuseLogFiles = true
     return logger
   }
 
   /** addFileLoggers */
   static private func addFileLoggers() {
-    let defaultDirectory: NSURL
-    if let path = NSProcessInfo.processInfo().environment["GROOVE_LOG_DIR"] {
-      defaultDirectory = NSURL(fileURLWithPath: path)
-    } else {
-      defaultDirectory = defaultLogDirectory
-    }
-    addDefaultFileLoggerForContext(.Console, directory: defaultDirectory)
-    addDefaultFileLoggerForContext(MIDIFileContext, directory: defaultDirectory + "MIDI")
-    addDefaultFileLoggerForContext(SF2FileContext, directory: defaultDirectory + "SoundFont")
-    addDefaultFileLoggerForContext(SequencerContext, directory: defaultDirectory + "Sequencer")
-    addDefaultFileLoggerForContext(SceneContext, directory: defaultDirectory + "Scene")
-    addDefaultFileLoggerForContext(UIContext, directory: defaultDirectory + "UI")
+    let logsDirectory = self.logsDirectory
+    addDefaultFileLoggerForContext(.Console)
+    addDefaultFileLoggerForContext(MIDIFileContext, subdirectory: "MIDI")
+    addDefaultFileLoggerForContext(SF2FileContext, subdirectory: "SoundFont")
+    addDefaultFileLoggerForContext(SequencerContext, subdirectory: "Sequencer")
+    addDefaultFileLoggerForContext(SceneContext, subdirectory: "Scene")
+    addDefaultFileLoggerForContext(UIContext, subdirectory: "UI")
     logDebug("\n".join("main bundle: '\(NSBundle.mainBundle().bundlePath)'",
-                       "default log directory: '\(defaultDirectory.path!)'"))
+                       "default log directory: '\(logsDirectory.path!)'"))
   }
 
   /** setDefaultLogContexts */
   static private func setDefaultLogContexts() {
-    MIDIDocumentManager.defaultLogContext     = MIDIFileContext ∪ .Console
-    MIDIDocument.defaultLogContext            = MIDIFileContext ∪ .Console
+    MIDIDocumentManager.defaultLogContext     = MIDIFileContext// ∪ .Console
+    MIDIDocument.defaultLogContext            = MIDIFileContext// ∪ .Console
     MIDIFile.defaultLogContext                = MIDIFileContext// ∪ .Console
     MIDIFileHeaderChunk.defaultLogContext     = MIDIFileContext// ∪ .Console
     MIDIFileTrackChunk.defaultLogContext      = MIDIFileContext// ∪ .Console
@@ -86,7 +81,7 @@ final class LogManager: MoonKit.LogManager {
 
     Sequencer.defaultLogContext       = SequencerContext// ∪ .Console
     Track.defaultLogContext           = SequencerContext// ∪ .Console
-    MIDISequence.defaultLogContext    = SequencerContext// ∪ .Console
+    Sequence.defaultLogContext    = SequencerContext// ∪ .Console
     AudioManager.defaultLogContext    = SequencerContext// ∪ .Console
     CABarBeatTime.defaultLogContext   = SequencerContext// ∪ .Console
     TimeSignature.defaultLogContext   = SequencerContext// ∪ .Console
@@ -104,7 +99,7 @@ final class LogManager: MoonKit.LogManager {
 
     MIDIPlayerViewController.defaultLogContext     = UIContext// ∪ .Console
     PurgatoryViewController.defaultLogContext      = UIContext// ∪ .Console
-    DocumentsViewController.defaultLogContext      = UIContext ∪ .Console
+    DocumentsViewController.defaultLogContext      = UIContext// ∪ .Console
     InstrumentViewController.defaultLogContext     = UIContext// ∪ .Console
     NoteAttributesViewController.defaultLogContext = UIContext// ∪ .Console
     DocumentsViewLayout.defaultLogContext          = UIContext// ∪ .Console
@@ -113,6 +108,7 @@ final class LogManager: MoonKit.LogManager {
     DocumentCell.defaultLogContext                 = UIContext// ∪ .Console
     DocumentItem.defaultLogContext                 = UIContext// ∪ .Console
     MixerCell.defaultLogContext                    = UIContext// ∪ .Console
+    MixerViewController.defaultLogContext          = UIContext// ∪ .Console
 
     SettingsManager.defaultLogContext = .Console
   }
@@ -129,7 +125,7 @@ extension PDTAChunk: Loggable {}
 
 extension Sequencer: Loggable {}
 extension Track: Loggable {}
-extension MIDISequence: Loggable {}
+extension Sequence: Loggable {}
 extension AudioManager: Loggable {}
 extension CABarBeatTime: Loggable {}
 extension TimeSignature: Loggable {}
@@ -163,6 +159,7 @@ extension DocumentsViewController: Loggable {}
 extension InstrumentViewController: Loggable {}
 extension NoteAttributesViewController: Loggable {}
 extension DocumentsViewLayout: Loggable {}
+extension MixerViewController: Loggable {}
 extension MixerLayout: Loggable {}
 extension BarBeatTimeLabel: Loggable {}
 extension DocumentCell: Loggable {}

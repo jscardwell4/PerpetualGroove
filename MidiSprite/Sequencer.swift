@@ -74,7 +74,7 @@ final class Sequencer {
 
   // MARK: - Sequence
 
-  static private(set) var sequence: MIDISequence? { didSet { if oldValue != nil { reset() } } }
+  static private(set) var sequence: Sequence? { didSet { if oldValue != nil { reset() } } }
 
   // MARK: - Time
 

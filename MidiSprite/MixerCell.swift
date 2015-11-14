@@ -204,7 +204,7 @@ final class TrackCell: MixerCell {
   - parameter notification: NSNotification
   */
   private func soloCountChanged(notification: NSNotification) {
-    guard let count = (notification.userInfo?[MIDISequence.Notification.Key.NewCount.rawValue] as? NSNumber)?.integerValue else {
+    guard let count = (notification.userInfo?[Sequence.Notification.Key.NewCount.rawValue] as? NSNumber)?.integerValue else {
       return
     }
     muteDisengaged = count > 0
@@ -229,7 +229,7 @@ final class TrackCell: MixerCell {
     receptionist.observe(InstrumentTrack.Notification.SoloStatusDidChange, from: track, queue: queue) {
       [weak self] in self?.soloStatusChanged($0)
     }
-    receptionist.observe(MIDISequence.Notification.SoloCountDidChange, from: Sequencer.sequence, queue: queue) {
+    receptionist.observe(Sequence.Notification.SoloCountDidChange, from: Sequencer.sequence, queue: queue) {
       [weak self] in self?.soloCountChanged($0)
     }
     return receptionist
