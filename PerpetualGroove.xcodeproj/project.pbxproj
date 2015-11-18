@@ -73,6 +73,7 @@
 		C2BDBBC01BD3E12C00E343F1 /* INFOChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BDBBBF1BD3E12C00E343F1 /* INFOChunk.swift */; };
 		C2BDBBC21BD3E14900E343F1 /* SDTAChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BDBBC11BD3E14900E343F1 /* SDTAChunk.swift */; };
 		C2BDBBC41BD3E15D00E343F1 /* PDTAChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BDBBC31BD3E15D00E343F1 /* PDTAChunk.swift */; };
+		C2CBE87D1BFA3BAC00EDA3A3 /* Chord.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CBE87C1BFA3BAC00EDA3A3 /* Chord.swift */; };
 		C2CD18E11B7E681A00705922 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CD18E01B7E681A00705922 /* Error.swift */; };
 		C2CF38CD1B7EBED30085B3D5 /* InstrumentTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CF38CC1B7EBED30085B3D5 /* InstrumentTrack.swift */; };
 		C2CFB7FF1BBF486300983664 /* DocumentsViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CFB7FE1BBF486300983664 /* DocumentsViewLayout.swift */; };
@@ -92,7 +93,7 @@
 		C2EFA0EC1B823642002EBA3D /* NoteAttributesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EFA0EB1B823642002EBA3D /* NoteAttributesViewController.swift */; };
 		C2EFA0EE1B824A2F002EBA3D /* AssetManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EFA0ED1B824A2F002EBA3D /* AssetManager.swift */; };
 		C2F2ADC21B90EBD300FF4836 /* Woodblock.wav in Resources */ = {isa = PBXBuildFile; fileRef = C2F2ADC11B90EBD300FF4836 /* Woodblock.wav */; };
-		C2F2ADC41B91098A00FF4836 /* NoteAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F2ADC31B91098A00FF4836 /* NoteAttributes.swift */; };
+		C2F2ADC41B91098A00FF4836 /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F2ADC31B91098A00FF4836 /* Note.swift */; };
 		C2F2ADC61B91203700FF4836 /* Metronome.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F2ADC51B91203700FF4836 /* Metronome.swift */; };
 		C2F35DB91BB4507800ECB045 /* MIDIPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F35DB81BB4507800ECB045 /* MIDIPlayerView.swift */; };
 		C2F589F91BAC688F009166D5 /* BarBeatTimeLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F589F81BAC688F009166D5 /* BarBeatTimeLabel.swift */; };
@@ -123,9 +124,9 @@
 		C20745891B8CE4C3000A06D4 /* morse_code_a.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = morse_code_a.mid; sourceTree = "<group>"; };
 		C207458C1B8CFB91000A06D4 /* test_morse_code_a.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = test_morse_code_a.mid; sourceTree = "<group>"; };
 		C207458E1B8DF6D5000A06D4 /* BarBeatTime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BarBeatTime.swift; sourceTree = "<group>"; };
-		C21E44C01B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SPYRO's Pure Oscillators.sf2"; path = "MidiSprite/SPYRO's Pure Oscillators.sf2"; sourceTree = "<group>"; };
+		C21E44C01B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SPYRO's Pure Oscillators.sf2"; path = "PerpetualGroove/SPYRO's Pure Oscillators.sf2"; sourceTree = "<group>"; };
 		C21E44C41B76546C00574BD2 /* AudioManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioManager.swift; sourceTree = "<group>"; };
-		C21E44C81B76739C00574BD2 /* sf2.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = sf2.playground; path = MidiSprite/sf2.playground; sourceTree = "<group>"; };
+		C21E44C81B76739C00574BD2 /* sf2.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = sf2.playground; path = PerpetualGroove/sf2.playground; sourceTree = "<group>"; };
 		C2207B901B9DC63300E4D65D /* SF2File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SF2File.swift; sourceTree = "<group>"; };
 		C222E6C71BD2B78600DBBBDA /* FestivoLC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FestivoLC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C222E6CA1BD2B78600DBBBDA /* Triump.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Triump.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -163,7 +164,7 @@
 		C2776C1F1B9DF50D002FE5A8 /* Emax Volume 6.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Emax Volume 6.sf2"; sourceTree = "<group>"; };
 		C283B69B1BC02E3B007A4A36 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		C283B69D1BC0495A007A4A36 /* DocumentItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentItem.swift; sourceTree = "<group>"; };
-		C286CE1B1B73D2C10003FCBF /* MidiSprite.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = MidiSprite.playground; path = /Users/Moondeer/Projects/MidiSprite/MidiSprite.playground; sourceTree = "<absolute>"; };
+		C286CE1B1B73D2C10003FCBF /* PerpetualGroove.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = PerpetualGroove.playground; path = /Users/Moondeer/Projects/PerpetualGroove/PerpetualGroove.playground; sourceTree = "<absolute>"; };
 		C288335B1BB3760100AD2F1A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Auxiliary.storyboard; sourceTree = "<group>"; };
 		C28AA0EB1B8BC74800DA2502 /* test.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = test.mid; sourceTree = "<group>"; };
 		C28AA0ED1B8BE1F800DA2502 /* Ping Puh Ping.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = "Ping Puh Ping.mid"; sourceTree = "<group>"; };
@@ -178,7 +179,7 @@
 		C2AA2BC71B84B04200A0B08D /* InstrumentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstrumentViewController.swift; sourceTree = "<group>"; };
 		C2AA2BCA1B84FB2100A0B08D /* Sequencer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sequencer.swift; sourceTree = "<group>"; };
 		C2AC3A961BA9D4CD00692EBB /* TempoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TempoViewController.swift; sourceTree = "<group>"; };
-		C2AD8E881B7D99C60003579E /* PerpetualGroove.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PerpetualGroove.entitlements; sourceTree = "<group>"; };
+		C2AD8E881B7D99C60003579E /* Groove.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Groove.entitlements; sourceTree = "<group>"; };
 		C2AF09D41BB9DB410021A37E /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		C2B123BE1B864DCC008FED5E /* MIDIClock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIClock.swift; sourceTree = "<group>"; };
 		C2B12D961BDC531500A6C719 /* Track.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Track.swift; sourceTree = "<group>"; };
@@ -188,6 +189,7 @@
 		C2BDBBBF1BD3E12C00E343F1 /* INFOChunk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = INFOChunk.swift; sourceTree = "<group>"; };
 		C2BDBBC11BD3E14900E343F1 /* SDTAChunk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SDTAChunk.swift; sourceTree = "<group>"; };
 		C2BDBBC31BD3E15D00E343F1 /* PDTAChunk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PDTAChunk.swift; sourceTree = "<group>"; };
+		C2CBE87C1BFA3BAC00EDA3A3 /* Chord.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chord.swift; sourceTree = "<group>"; };
 		C2CD18E01B7E681A00705922 /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 		C2CF38CC1B7EBED30085B3D5 /* InstrumentTrack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstrumentTrack.swift; sourceTree = "<group>"; };
 		C2CFB7FE1BBF486300983664 /* DocumentsViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentsViewLayout.swift; sourceTree = "<group>"; };
@@ -211,7 +213,7 @@
 		C2EFA0EB1B823642002EBA3D /* NoteAttributesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteAttributesViewController.swift; sourceTree = "<group>"; };
 		C2EFA0ED1B824A2F002EBA3D /* AssetManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssetManager.swift; sourceTree = "<group>"; };
 		C2F2ADC11B90EBD300FF4836 /* Woodblock.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Woodblock.wav; sourceTree = "<group>"; };
-		C2F2ADC31B91098A00FF4836 /* NoteAttributes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteAttributes.swift; sourceTree = "<group>"; };
+		C2F2ADC31B91098A00FF4836 /* Note.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
 		C2F2ADC51B91203700FF4836 /* Metronome.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Metronome.swift; sourceTree = "<group>"; };
 		C2F35DB81BB4507800ECB045 /* MIDIPlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIPlayerView.swift; sourceTree = "<group>"; };
 		C2F589F81BAC688F009166D5 /* BarBeatTimeLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BarBeatTimeLabel.swift; sourceTree = "<group>"; };
@@ -265,7 +267,7 @@
 			isa = PBXGroup;
 			children = (
 				C21E44C81B76739C00574BD2 /* sf2.playground */,
-				C286CE1B1B73D2C10003FCBF /* MidiSprite.playground */,
+				C286CE1B1B73D2C10003FCBF /* PerpetualGroove.playground */,
 			);
 			name = Playgrounds;
 			sourceTree = "<group>";
@@ -280,7 +282,7 @@
 				C26A27ED1B93C0AE00BD1698 /* Audio */,
 				C26A27EC1B93C09200BD1698 /* Sequencer */,
 				C26A27EB1B93C06200BD1698 /* MIDI Files */,
-				C2F2ADC31B91098A00FF4836 /* NoteAttributes.swift */,
+				C2F2ADC31B91098A00FF4836 /* Note.swift */,
 				C2CD18E01B7E681A00705922 /* Error.swift */,
 				C22FA58C1BC830D600162DB4 /* SettingsManager.swift */,
 				C269D1D61BD7FA190084A7EE /* LogManager.swift */,
@@ -376,6 +378,7 @@
 		C26A27EC1B93C09200BD1698 /* Sequencer */ = {
 			isa = PBXGroup;
 			children = (
+				C2CBE87C1BFA3BAC00EDA3A3 /* Chord.swift */,
 				C2FF79841BD05F1E002CBA79 /* CABarBeatTime.swift */,
 				C2FF79861BD06115002CBA79 /* TimeSignature.swift */,
 				C2B2B03E1BCDCE5F007AF9DC /* TrackColor.swift */,
@@ -419,7 +422,7 @@
 				C2776C1F1B9DF50D002FE5A8 /* Emax Volume 6.sf2 */,
 			);
 			name = Emax_Collections_Bundle;
-			path = MidiSprite/Emax_Collections_Bundle;
+			path = PerpetualGroove/Emax_Collections_Bundle;
 			sourceTree = "<group>";
 		};
 		C2E043281B72F4DC005F0675 = {
@@ -428,7 +431,7 @@
 				C2404BD91B78EFD700A68A64 /* Playgrounds */,
 				C2404BD71B78EF8200A68A64 /* Embedded Frameworks */,
 				C2404BD81B78EFA800A68A64 /* Sound Sets */,
-				C2E043331B72F4DC005F0675 /* MidiSprite */,
+				C2E043331B72F4DC005F0675 /* PerpetualGroove */,
 				C2E043321B72F4DC005F0675 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -441,16 +444,16 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		C2E043331B72F4DC005F0675 /* MidiSprite */ = {
+		C2E043331B72F4DC005F0675 /* PerpetualGroove */ = {
 			isa = PBXGroup;
 			children = (
 				C2D0EFA21BDD793F00AE49FD /* Logs */,
-				C2AD8E881B7D99C60003579E /* PerpetualGroove.entitlements */,
+				C2AD8E881B7D99C60003579E /* Groove.entitlements */,
 				C2404BDA1B78F02C00A68A64 /* Source */,
 				C2404BDB1B78F03E00A68A64 /* Resources */,
 				C2404BDC1B78F04700A68A64 /* Supporting Files */,
 			);
-			path = MidiSprite;
+			path = PerpetualGroove;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -470,7 +473,7 @@
 			dependencies = (
 			);
 			name = PerpetualGroove;
-			productName = MidiSprite;
+			productName = PerpetualGroove;
 			productReference = C2E043311B72F4DC005F0675 /* Groove.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -559,9 +562,10 @@
 				C26FC16F1B7BA63300E271A3 /* MIDINode.swift in Sources */,
 				C291C3F31B91EDE100702AEA /* VariableLengthQuantity.swift in Sources */,
 				C2F2ADC61B91203700FF4836 /* Metronome.swift in Sources */,
+				C2CBE87D1BFA3BAC00EDA3A3 /* Chord.swift in Sources */,
 				C207458F1B8DF6D5000A06D4 /* BarBeatTime.swift in Sources */,
 				C2EA30531BB9DF3300020958 /* MIDIDocument.swift in Sources */,
-				C2F2ADC41B91098A00FF4836 /* NoteAttributes.swift in Sources */,
+				C2F2ADC41B91098A00FF4836 /* Note.swift in Sources */,
 				C26EEB2E1B7FDA8F00EC6979 /* MixerViewController.swift in Sources */,
 				C2AC3A971BA9D4CD00692EBB /* TempoViewController.swift in Sources */,
 				C26A27EF1B948E4F00BD1698 /* DocumentsViewController.swift in Sources */,
@@ -749,14 +753,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "Brand Assets";
-				CODE_SIGN_ENTITLEMENTS = MidiSprite/PerpetualGroove.entitlements;
+				CODE_SIGN_ENTITLEMENTS = PerpetualGroove/Groove.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
-				INFOPLIST_FILE = MidiSprite/Info.plist;
+				INFOPLIST_FILE = PerpetualGroove/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
-				OTHER_SWIFT_FLAGS = "-DDebug";
+				OTHER_SWIFT_FLAGS = "-DDebug -DLogLevelDebug";
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.PerpetualGroove;
 				PRODUCT_NAME = Groove;
 				PROVISIONING_PROFILE = "";
@@ -771,13 +775,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "Brand Assets";
-				CODE_SIGN_ENTITLEMENTS = MidiSprite/PerpetualGroove.entitlements;
+				CODE_SIGN_ENTITLEMENTS = PerpetualGroove/Groove.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
-				INFOPLIST_FILE = MidiSprite/Info.plist;
+				INFOPLIST_FILE = PerpetualGroove/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
-				OTHER_SWIFT_FLAGS = "-DRelease";
+				OTHER_SWIFT_FLAGS = "-DRelease -DLogLevelWarning";
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.PerpetualGroove;
 				PRODUCT_NAME = Groove;
 				PROVISIONING_PROFILE = "";

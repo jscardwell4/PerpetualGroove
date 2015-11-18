@@ -261,8 +261,7 @@ public class LogManager {
       return logs
     }
 
-    #if TARGET_IPHONE_SIMULATOR
-      let directory: NSURL
+    #if arch(i386) || arch(x86_64)
       if let path = NSProcessInfo.processInfo().environment["MOONKIT_LOG_DIR"] {
         _logsDirectory = NSURL(fileURLWithPath: path)
       } else {

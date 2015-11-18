@@ -85,8 +85,10 @@ public extension Loggable {
                   line: UInt = __LINE__,
                   file: String = __FILE__)
   {
+    #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
     guard defaultLogLevel ∋ LogManager.LogFlag.Error else { return }
     log(message(), asynchronous: asynchronous, flag: .Error, function: function, line: line, file: file)
+    #endif
   }
 
   /**
@@ -106,6 +108,7 @@ public extension Loggable {
                   line: UInt = __LINE__,
                   file: String = __FILE__)
   {
+    #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
     guard defaultLogLevel ∋ LogManager.LogFlag.Error else { return }
     var errorDescription = "\(error)"
     if let e = error as? WrappedErrorType, u = e.underlyingError {
@@ -117,6 +120,7 @@ public extension Loggable {
     logMessage += errorDescription
 
     logError(logMessage, asynchronous: asynchronous, function: function, line: line, file: file)
+    #endif
   }
 
   /**
@@ -126,6 +130,7 @@ public extension Loggable {
    - parameter asynchronous: Bool = true
    */
   static func logError(error: ExtendedErrorType, asynchronous: Bool = true) {
+    #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
     guard defaultLogLevel ∋ LogManager.LogFlag.Error else { return }
     logError(error,
      message: error.reason,
@@ -133,6 +138,7 @@ asynchronous: asynchronous,
     function: error.function,
         line: error.line,
         file: error.file)
+    #endif
   }
 
 
@@ -151,8 +157,10 @@ asynchronous: asynchronous,
            line: UInt = __LINE__,
            file: String = __FILE__)
   {
+    #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning
     guard defaultLogLevel ∋ LogManager.LogFlag.Warning else { return }
     log(message(), asynchronous: asynchronous, flag: .Warning, function: function, line: line, file: file)
+    #endif
   }
 
   /**
@@ -170,8 +178,10 @@ asynchronous: asynchronous,
            line: UInt = __LINE__,
            file: String = __FILE__)
   {
+    #if LogLevelVerbose || LogLevelDebug
     guard defaultLogLevel ∋ LogManager.LogFlag.Debug else { return }
     log(message(), asynchronous: asynchronous, flag: .Debug, function: function, line: line, file: file)
+    #endif
   }
 
   /**
@@ -189,8 +199,10 @@ asynchronous: asynchronous,
           line: UInt = __LINE__,
           file: String = __FILE__)
   {
+    #if LogLevelVerbose || LogLevelDebug || LogLevelInfo
     guard defaultLogLevel ∋ LogManager.LogFlag.Info else { return }
     log(message(), asynchronous: asynchronous, flag: .Info, function: function, line: line, file: file)
+    #endif
   }
 
   /**
@@ -208,8 +220,10 @@ asynchronous: asynchronous,
              line: UInt = __LINE__,
              file: String = __FILE__)
   {
+    #if LogLevelVerbose
     guard defaultLogLevel ∋ LogManager.LogFlag.Verbose else { return }
     log(message(), asynchronous: asynchronous, flag: .Verbose, function: function, line: line, file: file)
+    #endif
   }
 
   
@@ -256,8 +270,10 @@ asynchronous: asynchronous,
            line: UInt = __LINE__,
            file: String = __FILE__)
   {
+    #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
     guard logLevel ∋ LogManager.LogFlag.Error else { return }
     log(message(), asynchronous: asynchronous, flag: .Error, function: function, line: line, file: file)
+    #endif
   }
 
   /**
@@ -277,6 +293,7 @@ asynchronous: asynchronous,
                   line: UInt = __LINE__,
                   file: String = __FILE__)
   {
+    #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
     guard logLevel ∋ LogManager.LogFlag.Error else { return }
     var errorDescription = "\(error)"
     if let e = error as? WrappedErrorType, u = e.underlyingError {
@@ -288,6 +305,7 @@ asynchronous: asynchronous,
     logMessage += errorDescription
 
     logError(logMessage, asynchronous: asynchronous, function: function, line: line, file: file)
+    #endif
   }
 
   /**
@@ -297,6 +315,7 @@ asynchronous: asynchronous,
    - parameter asynchronous: Bool = true
    */
   func logError(error: ExtendedErrorType, asynchronous: Bool = true) {
+    #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
     guard logLevel ∋ LogManager.LogFlag.Error else { return }
     logError(error,
      message: error.reason,
@@ -304,6 +323,7 @@ asynchronous: asynchronous,
     function: error.function,
         line: error.line,
         file: error.file)
+    #endif
   }
 
 
@@ -322,8 +342,10 @@ asynchronous: asynchronous,
            line: UInt = __LINE__,
            file: String = __FILE__)
   {
+    #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning
     guard logLevel ∋ LogManager.LogFlag.Warning else { return }
     log(message(), asynchronous: asynchronous, flag: .Warning, function: function, line: line, file: file)
+    #endif
   }
 
   /**
@@ -341,8 +363,10 @@ asynchronous: asynchronous,
            line: UInt = __LINE__,
            file: String = __FILE__)
   {
+    #if LogLevelVerbose || LogLevelDebug
     guard logLevel ∋ LogManager.LogFlag.Debug else { return }
     log(message(), asynchronous: asynchronous, flag: .Debug, function: function, line: line, file: file)
+    #endif
   }
 
   /**
@@ -360,8 +384,10 @@ asynchronous: asynchronous,
           line: UInt = __LINE__,
           file: String = __FILE__)
   {
+    #if LogLevelVerbose || LogLevelDebug || LogLevelInfo
     guard logLevel ∋ LogManager.LogFlag.Info else { return }
     log(message(), asynchronous: asynchronous, flag: .Info, function: function, line: line, file: file)
+    #endif
   }
 
   /**
@@ -379,8 +405,10 @@ asynchronous: asynchronous,
              line: UInt = __LINE__,
              file: String = __FILE__)
   {
+    #if LogLevelVerbose
     guard logLevel ∋ LogManager.LogFlag.Verbose else { return }
     log(message(), asynchronous: asynchronous, flag: .Verbose, function: function, line: line, file: file)
+    #endif
   }
 
   /**
@@ -396,8 +424,10 @@ asynchronous: asynchronous,
                   line: UInt = __LINE__,
                   file: String = __FILE__)
   {
+    #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
     guard defaultLogLevel ∋ LogManager.LogFlag.Error else { return }
     log(message(), asynchronous: false, flag: .Error, function: function, line: line, file: file)
+    #endif
   }
 
   /**
@@ -415,6 +445,7 @@ asynchronous: asynchronous,
                   line: UInt = __LINE__,
                   file: String = __FILE__)
   {
+    #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
     guard defaultLogLevel ∋ LogManager.LogFlag.Error else { return }
     var errorDescription = "\(error)"
     if let e = error as? WrappedErrorType, u = e.underlyingError {
@@ -426,6 +457,7 @@ asynchronous: asynchronous,
     logMessage += errorDescription
 
     logError(logMessage, asynchronous: false, function: function, line: line, file: file)
+    #endif
   }
 
   /**
@@ -434,6 +466,7 @@ asynchronous: asynchronous,
    - parameter e: ExtendedErrorType
    */
   static func logSyncError(error: ExtendedErrorType) {
+    #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
     guard defaultLogLevel ∋ LogManager.LogFlag.Error else { return }
     logError(error,
      message: error.reason,
@@ -441,6 +474,7 @@ asynchronous: false,
     function: error.function,
         line: error.line,
         file: error.file)
+    #endif
   }
 
 
@@ -457,8 +491,10 @@ asynchronous: false,
            line: UInt = __LINE__,
            file: String = __FILE__)
   {
+    #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning
     guard defaultLogLevel ∋ LogManager.LogFlag.Warning else { return }
     log(message(), asynchronous: false, flag: .Warning, function: function, line: line, file: file)
+    #endif
   }
 
   /**
@@ -474,8 +510,10 @@ asynchronous: false,
            line: UInt = __LINE__,
            file: String = __FILE__)
   {
+    #if LogLevelVerbose || LogLevelDebug
     guard defaultLogLevel ∋ LogManager.LogFlag.Debug else { return }
     log(message(), asynchronous: false, flag: .Debug, function: function, line: line, file: file)
+    #endif
   }
 
   /**
@@ -491,8 +529,10 @@ asynchronous: false,
           line: UInt = __LINE__,
           file: String = __FILE__)
   {
+    #if LogLevelVerbose || LogLevelDebug || LogLevelInfo
     guard defaultLogLevel ∋ LogManager.LogFlag.Info else { return }
     log(message(), asynchronous: false, flag: .Info, function: function, line: line, file: file)
+    #endif
   }
 
   /**
@@ -508,8 +548,10 @@ asynchronous: false,
              line: UInt = __LINE__,
              file: String = __FILE__)
   {
+    #if LogLevelVerbose
     guard defaultLogLevel ∋ LogManager.LogFlag.Verbose else { return }
     log(message(), asynchronous: false, flag: .Verbose, function: function, line: line, file: file)
+    #endif
   }
 
   
@@ -526,8 +568,10 @@ asynchronous: false,
            line: UInt = __LINE__,
            file: String = __FILE__)
   {
+    #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
     guard logLevel ∋ LogManager.LogFlag.Error else { return }
     log(message(), asynchronous: false, flag: .Error, function: function, line: line, file: file)
+    #endif
   }
 
   /**
@@ -545,6 +589,7 @@ asynchronous: false,
                   line: UInt = __LINE__,
                   file: String = __FILE__)
   {
+    #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
     guard logLevel ∋ LogManager.LogFlag.Error else { return }
     var errorDescription = "\(error)"
     if let e = error as? WrappedErrorType, u = e.underlyingError {
@@ -556,6 +601,7 @@ asynchronous: false,
     logMessage += errorDescription
 
     logError(logMessage, asynchronous: false, function: function, line: line, file: file)
+    #endif
   }
 
   /**
@@ -564,6 +610,7 @@ asynchronous: false,
    - parameter e: ExtendedErrorType
    */
   func logSyncError(error: ExtendedErrorType) {
+    #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
     guard logLevel ∋ LogManager.LogFlag.Error else { return }
     logError(error,
      message: error.reason,
@@ -571,6 +618,7 @@ asynchronous: false,
     function: error.function,
         line: error.line,
         file: error.file)
+    #endif
   }
 
 
@@ -587,8 +635,10 @@ asynchronous: false,
            line: UInt = __LINE__,
            file: String = __FILE__)
   {
+    #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning
     guard logLevel ∋ LogManager.LogFlag.Warning else { return }
     log(message(), asynchronous: false, flag: .Warning, function: function, line: line, file: file)
+    #endif
   }
 
   /**
@@ -604,8 +654,10 @@ asynchronous: false,
            line: UInt = __LINE__,
            file: String = __FILE__)
   {
+    #if LogLevelVerbose || LogLevelDebug
     guard logLevel ∋ LogManager.LogFlag.Debug else { return }
     log(message(), asynchronous: false, flag: .Debug, function: function, line: line, file: file)
+    #endif
   }
 
   /**
@@ -621,8 +673,10 @@ asynchronous: false,
           line: UInt = __LINE__,
           file: String = __FILE__)
   {
+    #if LogLevelVerbose || LogLevelDebug || LogLevelInfo
     guard logLevel ∋ LogManager.LogFlag.Info else { return }
     log(message(), asynchronous: false, flag: .Info, function: function, line: line, file: file)
+    #endif
   }
 
   /**
@@ -638,8 +692,10 @@ asynchronous: false,
              line: UInt = __LINE__,
              file: String = __FILE__)
   {
+    #if LogLevelVerbose
     guard logLevel ∋ LogManager.LogFlag.Verbose else { return }
     log(message(), asynchronous: false, flag: .Verbose, function: function, line: line, file: file)
+    #endif
   }
 
 }

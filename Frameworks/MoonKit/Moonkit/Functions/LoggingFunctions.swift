@@ -24,7 +24,10 @@ public func logDebug(@autoclosure message: () -> String,
                 line: UInt = __LINE__,
                 file: String = __FILE__)
 {
-  LogManager.logMessage(message(), asynchronous: asynchronous, flag: .Debug, function: function, file: file, line: line)
+  #if LogLevelVerbose || LogLevelDebug
+    guard LogManager.logLevelForFile(file) ∋ .Debug else { return }
+    LogManager.logMessage(message(), asynchronous: asynchronous, flag: .Debug, function: function, file: file, line: line)
+  #endif
 }
 
 /**
@@ -42,7 +45,10 @@ public func logError(@autoclosure message: () -> String,
                 line: UInt = __LINE__,
                 file: String = __FILE__)
 {
-  LogManager.logMessage(message(), asynchronous: asynchronous, flag: .Error, function: function, file: file, line: line)
+  #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
+    guard LogManager.logLevelForFile(file) ∋ .Error else { return }
+    LogManager.logMessage(message(), asynchronous: asynchronous, flag: .Error, function: function, file: file, line: line)
+  #endif
 }
 
 /**
@@ -60,7 +66,10 @@ public func logInfo(@autoclosure message: () -> String,
                line: UInt = __LINE__,
                file: String = __FILE__)
 {
-  LogManager.logMessage(message(), asynchronous: asynchronous, flag: .Info, function: function, file: file, line: line)
+  #if LogLevelVerbose || LogLevelDebug || LogLevelInfo
+    guard LogManager.logLevelForFile(file) ∋ .Info else { return }
+    LogManager.logMessage(message(), asynchronous: asynchronous, flag: .Info, function: function, file: file, line: line)
+  #endif
 }
 
 /**
@@ -78,7 +87,10 @@ public func logWarning(@autoclosure message: () -> String,
                   line: UInt = __LINE__,
                   file: String = __FILE__)
 {
-  LogManager.logMessage(message(), asynchronous: asynchronous, flag: .Warning, function: function, file: file, line: line)
+  #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning
+    guard LogManager.logLevelForFile(file) ∋ .Warning else { return }
+    LogManager.logMessage(message(), asynchronous: asynchronous, flag: .Warning, function: function, file: file, line: line)
+  #endif
 }
 
 /**
@@ -96,7 +108,10 @@ public func logVerbose(@autoclosure message: () -> String,
                   line: UInt = __LINE__,
                   file: String = __FILE__)
 {
-  LogManager.logMessage(message(), asynchronous: asynchronous, flag: .Verbose, function: function, file: file, line: line)
+  #if LogLevelVerbose
+    guard LogManager.logLevelForFile(file) ∋ .Verbose else { return }
+    LogManager.logMessage(message(), asynchronous: asynchronous, flag: .Verbose, function: function, file: file, line: line)
+  #endif
 }
 
 /**
@@ -114,7 +129,7 @@ public func logIB(@autoclosure message: () -> String,
              flag: LogManager.LogFlag = .Debug)
 {
   #if TARGET_INTERFACE_BUILDER
-    guard flag.rawValue & LogManager.logLevelForFile(file).rawValue != 0 else { return }
+    guard LogManager.logLevelForFile(file) ∋ flag else { return }
     backgroundDispatch {
       guard let sourceDirectory = NSProcessInfo.processInfo().environment["IB_PROJECT_SOURCE_DIRECTORIES"] else { return }
       let text = "\(NSDate()) [\(mach_absolute_time())] <\((file as NSString).lastPathComponent):\(line)> \(function)  \(message())"
@@ -207,6 +222,8 @@ public func logError(e: ErrorType,
                      line: UInt = __LINE__,
                      file: String = __FILE__)
 {
+  #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
+    guard LogManager.logLevelForFile(file) ∋ .Error else { return }
   var errorDescription = "\(e)"
   if let e = e as? WrappedErrorType, u = e.underlyingError { errorDescription += "underlying error: \(u)" }
 
@@ -215,6 +232,7 @@ public func logError(e: ErrorType,
   logMessage += errorDescription
 
   logError(logMessage, asynchronous: asynchronous, function: function, line: line, file: file)
+  #endif
 }
 
 /**
@@ -224,7 +242,10 @@ logError:asynchronous:
 - parameter asynchronous: Bool = true
 */
 public func logError(e: ExtendedErrorType, asynchronous: Bool = true) {
+  #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
+    guard LogManager.logLevelForFile(e.file) ∋ .Error else { return }
   logError(e, message: e.reason, asynchronous: asynchronous, function: e.function, line: e.line, file: e.file)
+  #endif
 }
 
 /**
