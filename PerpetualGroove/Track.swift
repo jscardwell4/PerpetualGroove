@@ -12,7 +12,7 @@ import struct AudioToolbox.CABarBeatTime
 
 class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
 
-  private(set) weak var sequence: Sequence?
+  unowned let sequence: Sequence
 
   /**
   addEvent:
@@ -52,7 +52,6 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
   func filterEvents(includeElement: (MIDIEvent) -> Bool) -> [MIDIEvent] {
     return eventContainer.events.filter(includeElement)
   }
-
 
   private var _eventContainer = MIDIEventContainer()
 
@@ -104,28 +103,8 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
     set { objc_sync_enter(self); defer { objc_sync_exit(self) }; _recording = newValue }
   }
 
-  private let receptionist: NotificationReceptionist = {
-    let receptionist = NotificationReceptionist(callbackQueue: NSOperationQueue.mainQueue())
-    receptionist.logContext = LogManager.SequencerContext
-    return receptionist
-  }()
-
-  /**
-  didToggleRecording:
-
-  - parameter notification: NSNotification
-  */
-  private func didToggleRecording(notification: NSNotification) {
-    recording = Sequencer.recording
-  }
-
   /** init */
-  init(sequence: Sequence) {
-    self.sequence = sequence
-    receptionist.observe(Sequencer.Notification.DidToggleRecording,
-                    from: Sequencer.self,
-                callback: weakMethod(self, Track.didToggleRecording))
-  }
+  init(sequence: Sequence) { self.sequence = sequence }
 
   /**
   registrationTimesForAddedEvents:
@@ -161,7 +140,9 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
     )
   }
 
-  var debugDescription: String { var result = ""; dump(self, &result); return result }
+  var debugDescription: String { return String(reflecting: self) }
+
+  deinit { print("\(self.dynamicType):\(name)") }
 }
 
 extension Track {

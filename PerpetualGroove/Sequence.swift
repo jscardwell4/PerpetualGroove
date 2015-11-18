@@ -185,12 +185,13 @@ final class Sequence {
       tempoTrack = TempoTrack(sequence: self)
     }
 
+//    for trackChunk in trackChunks { addTrack(trackChunk) }
     for track in trackChunks.flatMap({ try? InstrumentTrack(sequence: self, trackChunk: $0) }) {
       addTrack(track)
     }
   }
 
-  deinit { logDebug("") }
+  deinit { print("instrumentTracks.count = \(instrumentTracks.count)") }
 
   // MARK: - Adding tracks
 
@@ -205,6 +206,20 @@ final class Sequence {
     logDebug("posting 'DidUpdate'")
     Notification.DidUpdate.post(object: self)
   }
+
+  /**
+  addTrack:
+
+  - parameter trackChunk: MIDIFileTrackChunk
+  */
+//  private func addTrack(trackChunk: MIDIFileTrackChunk) {
+//    do {
+//      let track = try InstrumentTrack(sequence: self, trackChunk: trackChunk)
+//      addTrack(track)
+//    } catch {
+//      logError(error)
+//    }
+//  }
 
   /**
   addTrack:

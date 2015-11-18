@@ -80,7 +80,7 @@ final class LogManager: MoonKit.LogManager {
     PDTAChunk.defaultLogContext  = SF2FileContext// ∪ .Console
 
     Sequencer.defaultLogContext       = SequencerContext// ∪ .Console
-    Track.defaultLogContext           = SequencerContext ∪ .Console
+    Track.defaultLogContext           = SequencerContext// ∪ .Console
     Sequence.defaultLogContext        = SequencerContext// ∪ .Console
     AudioManager.defaultLogContext    = SequencerContext// ∪ .Console
     CABarBeatTime.defaultLogContext   = SequencerContext// ∪ .Console
@@ -90,7 +90,7 @@ final class LogManager: MoonKit.LogManager {
     MIDIClock.defaultLogContext       = SequencerContext// ∪ .Console
     BarBeatTime.defaultLogContext     = SequencerContext// ∪ .Console
 
-    MIDIPlayerScene.defaultLogContext     = SceneContext ∪ .Console
+    MIDIPlayerScene.defaultLogContext     = SceneContext// ∪ .Console
     MIDINodeHistory.defaultLogContext     = SceneContext// ∪ .Console
     MIDIPlayerNode.defaultLogContext      = SceneContext// ∪ .Console
     MIDIPlayerFieldNode.defaultLogContext = SceneContext// ∪ .Console

@@ -237,7 +237,7 @@ final class BarBeatTime {
     do {
       try MIDIClientCreateWithBlock(queue.name!, &client, nil)
         ➤ "Failed to create midi client for bar beat time"
-      try MIDIInputPortCreateWithBlock(client, "Input", &inPort, read) ➤ "Failed to create in port for bar beat time"
+      try MIDIInputPortCreateWithBlock(client, "Input", &inPort, weakMethod(self, BarBeatTime.read)) ➤ "Failed to create in port for bar beat time"
       try MIDIPortConnectSource(inPort, clockSource, nil) ➤ "Failed to connect bar beat time to clock"
     } catch {
       logError(error)

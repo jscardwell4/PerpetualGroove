@@ -357,7 +357,7 @@ final class InstrumentTrack: Track {
   }
 
   /// The index for the track in the sequence's array of instrument tracks, or nil
-  var index: Int? { return sequence?.instrumentTracks.indexOf(self) }
+  var index: Int? { return sequence.instrumentTracks.indexOf(self) }
 
   // MARK: - Initialization
 
@@ -365,7 +365,7 @@ final class InstrumentTrack: Track {
   private func initializeMIDIClient() throws {
     try MIDIClientCreateWithBlock("track \(instrument.bus)", &client, nil) ➤ "Failed to create midi client"
     try MIDIOutputPortCreate(client, "Output", &outPort) ➤ "Failed to create out port"
-    try MIDIInputPortCreateWithBlock(client, name, &inPort, read) ➤ "Failed to create in port"
+    try MIDIInputPortCreateWithBlock(client, name, &inPort, weakMethod(self, InstrumentTrack.read)) ➤ "Failed to create in port"
   }
 
   /**
@@ -429,10 +429,6 @@ final class InstrumentTrack: Track {
 
     initializeNotificationReceptionist()
     try initializeMIDIClient()
-  }
-
-  deinit {
-    logSyncDebug("")
   }
 
   override var description: String {
