@@ -284,13 +284,6 @@ final class InstrumentTrack: Track {
 
   // MARK: - MIDI events
 
-  /// Queue used generating `MIDIFile` track events
-  private let eventQueue: NSOperationQueue = {
-    let q = NSOperationQueue()
-    q.maxConcurrentOperationCount = 1
-    return q
-  }()
-
   private var client  = MIDIClientRef()
   private var inPort  = MIDIPortRef()
   private var outPort = MIDIPortRef()

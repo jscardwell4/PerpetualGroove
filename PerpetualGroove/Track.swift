@@ -14,12 +14,20 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
 
   unowned let sequence: Sequence
 
+  /// Queue used generating `MIDIFile` track events
+  let eventQueue: NSOperationQueue = {
+    let q = NSOperationQueue()
+    q.maxConcurrentOperationCount = 1
+    return q
+  }()
+
+
   /**
   addEvent:
 
   - parameter event: MIDIEvent
   */
-  func addEvent(event: MIDIEvent) { eventContainer.append(event) }
+  func addEvent(event: MIDIEvent) { addEvents([event]) }
 
   /**
   addEvents:

@@ -10,33 +10,211 @@ import Foundation
 import MoonKit
 import CoreMIDI
 
-/** Protocol for types that can be converted to and from a value within the range of 0 ... 127  */
-protocol MIDIConvertible: Hashable, Equatable {
-  var midi: Byte { get }
-  init(midi: Byte)
+enum DiatonicPitch: String, EnumerableType {
+  case C, D, E, F, G, A, B
+  static let allCases: [DiatonicPitch] = [.C, .D, .E, .F, .G, .A, .B]
+
+  enum StepSize { case Half, Whole }
+
+
+  var next: DiatonicPitch {
+    switch self {
+      case .C: return .D
+      case .D: return .E
+      case .E: return .F
+      case .F: return .G
+      case .G: return .A
+      case .A: return .B
+      case .B: return .C
+    }
+  }
+
+  var previous: DiatonicPitch {
+    switch self {
+      case .C: return .B
+      case .D: return .C
+      case .E: return .D
+      case .F: return .E
+      case .G: return .F
+      case .A: return .G
+      case .B: return .A
+    }
+  }
+
+  var nextInterval: StepSize {
+    switch self {
+      case .B, .E: return .Half
+      default: return .Whole
+    }
+  }
+
+  var previousInterval: StepSize {
+    switch self {
+      case .C, .F: return .Half
+      default: return .Whole
+    }
+  }
+
 }
 
-extension MIDIConvertible {
-  var hashValue: Int { return midi.hashValue }
+extension DiatonicPitch: BidirectionalIndexType {
+  /**
+   successor
+
+   - returns: DiatonicPitch
+   */
+  func successor() -> DiatonicPitch { return next }
+
+  /**
+   predecessor
+
+   - returns: DiatonicPitch
+   */
+  func predecessor() -> DiatonicPitch { return previous }
+
 }
 
-func ==<M:MIDIConvertible>(lhs: M, rhs: M) -> Bool { return lhs.midi == rhs.midi }
+enum Accidental: String, EnumerableType {
+  case Flat = "♭", Natural = "", Sharp = "♯"
+  static let allCases: [Accidental] = [.Flat, .Natural, .Sharp]
+}
 
 /** Structure that encapsulates MIDI information necessary for playing a note */
 struct Note {
 
   var channel: UInt8 = 0
 
-  /** An enumeration for specifying a note's pitch and octave */
-  struct Tone: RawRepresentable, Equatable, EnumerableType, MIDIConvertible {
+  /// The pitch and octave
+  var note: Tone = Tone(midi: 60)
 
-    enum Pitch: String, EnumerableType {
+  /// The duration of the played note
+  var duration: Duration = .Eighth
+
+  /// The dynmamics for the note
+  var velocity: Velocity = .𝑚𝑓
+
+  init() {}
+  init(tone: Tone, duration: Duration, velocity: Velocity) {
+    self.note = tone
+    self.duration = duration
+    self.velocity = velocity
+  }
+
+}
+
+// MARK: - Tone
+extension Note {
+  /** An enumeration for specifying a note's pitch and octave */
+  struct Tone: RawRepresentable, Equatable, EnumerableType, MIDIConvertible, CustomStringConvertible {
+
+
+
+    enum Pitch: String, EnumerableType, BidirectionalIndexType {
+
       case C="C", CSharp="C♯", D="D", DSharp="D♯", E="E", F="F", FSharp="F♯", G="G", GSharp="G♯",
            A="A", ASharp="A♯", B="B"
 
-      init(_ i: UInt8) { self = Pitch.allCases[Int(i % 12)] }
-      init(var index: Int) { index %= Pitch.allCases.count; self = Pitch.allCases[index] }
       static let allCases: [Pitch] = [C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B]
+
+      func successor() -> Pitch {
+        switch self {
+          case .C:      return .CSharp
+          case .CSharp: return .D
+          case .D:      return .DSharp
+          case .DSharp: return .E
+          case .E:      return .F
+          case .F:      return .FSharp
+          case .FSharp: return .G
+          case .G:      return .GSharp
+          case .GSharp: return .A
+          case .A:      return .ASharp
+          case .ASharp: return .B
+          case .B:      return .C
+        }
+      }
+
+      func predecessor() -> Pitch {
+        switch self {
+          case .C:      return .B
+          case .CSharp: return .C
+          case .D:      return .CSharp
+          case .DSharp: return .D
+          case .E:      return .DSharp
+          case .F:      return .E
+          case .FSharp: return .F
+          case .G:      return .FSharp
+          case .GSharp: return .G
+          case .A:      return .GSharp
+          case .ASharp: return .A
+          case .B:      return .ASharp
+        }
+      }
+
+      var diatonicPitch: DiatonicPitch {
+        switch self {
+          case .C, .CSharp: return .C
+          case .D, DSharp:  return .D
+          case .E:          return .E
+          case .F, .FSharp: return .F
+          case .G, .GSharp: return .G
+          case .A, .ASharp: return .A
+          case .B:          return .B
+        }
+      }
+
+      var accidental: Accidental {
+        switch self {
+          case .CSharp, .DSharp, .FSharp, .GSharp, .ASharp: return .Sharp
+          default:                                          return .Natural
+        }
+      }
+
+      /**
+      Initialize from a number
+
+      - parameter i: UInt8
+      */
+      init(_ i: UInt8) { self = Pitch.allCases[Int(i % 12)] }
+
+      /**
+      Initialize from an index into `Pitch.allCases`
+
+      - parameter index: Int
+      */
+      init(var index: Int) { index %= Pitch.allCases.count; self = Pitch.allCases[index] }
+
+      /**
+      Initialize from a diatonic pitch and an accidental
+
+      - parameter pitch: DiatonicPitch
+      - parameter accidental: Accidental
+      */
+      init(_ pitch: DiatonicPitch, _ accidental: Accidental) {
+        switch pitch {
+          case .C where accidental == .Sharp: self = .CSharp
+          case .C where accidental == .Flat:  self = .B
+          case .C:                            self = .C
+          case .D where accidental == .Sharp: self = .DSharp
+          case .D where accidental == .Flat:  self = .CSharp
+          case .D:                            self = .D
+          case .E where accidental == .Sharp: self = .F
+          case .E where accidental == .Flat:  self = .DSharp
+          case .E:                            self = .E
+          case .F where accidental == .Sharp: self = .FSharp
+          case .F where accidental == .Flat:  self = .E
+          case .F:                            self = .F
+          case .G where accidental == .Sharp: self = .GSharp
+          case .G where accidental == .Flat:  self = .FSharp
+          case .G:                            self = .G
+          case .A where accidental == .Sharp: self = .ASharp
+          case .A where accidental == .Flat:  self = .GSharp
+          case .A:                            self = .A
+          case .B where accidental == .Sharp: self = .C
+          case .B where accidental == .Flat:  self = .ASharp
+          case .B:                            self = .B
+        }
+      }
+
     }
 
     enum Octave: String, EnumerableType {
@@ -49,6 +227,17 @@ struct Note {
 
     var pitch: Pitch
     var octave: Octave
+
+    /**
+    init:octave:
+
+    - parameter pitch: Pitch
+    - parameter octave: Octave
+    */
+    init(_ pitch: Pitch, _ octave: Octave) {
+      self.pitch = pitch
+      self.octave = octave
+    }
 
     /**
     Initialize from MIDI value from 0 ... 127
@@ -80,13 +269,14 @@ struct Note {
 
     static let allCases: [Tone] = (0...127).map({Tone(midi: $0)})
 
+    var description: String { return rawValue }
   }
+}
 
-  /// The pitch and octave
-  var note: Tone = Tone(midi: 60)
-
+// MARK: - Duration
+extension Note {
   /** Enumeration for a musical note duration */
-  enum Duration: String, EnumerableType, ImageAssetLiteralType {
+  enum Duration: String, EnumerableType, ImageAssetLiteralType, CustomStringConvertible {
     case DoubleWhole, DottedWhole, Whole, DottedHalf, Half, DottedQuarter, Quarter, DottedEighth,
          Eighth, DottedSixteenth, Sixteenth, DottedThirtySecond, ThirtySecond, DottedSixtyFourth,
          SixtyFourth, DottedHundredTwentyEighth, HundredTwentyEighth, DottedTwoHundredFiftySixth,
@@ -124,13 +314,37 @@ struct Note {
       .HundredTwentyEighth, .DottedTwoHundredFiftySixth, .TwoHundredFiftySixth
     ]
 
+    var description: String {
+      switch self {
+        case .DoubleWhole:                return "double-whole note"
+        case .DottedWhole:                return "dotted whole note"
+        case .Whole:                      return "whole note"
+        case .DottedHalf:                 return "dotted half note"
+        case .Half:                       return "half note"
+        case .DottedQuarter:              return "dotted quarter note"
+        case .Quarter:                    return "quarter note"
+        case .DottedEighth:               return "dotted eighth note"
+        case .Eighth:                     return "eighth note"
+        case .DottedSixteenth:            return "dotted sixteenth note"
+        case .Sixteenth:                  return "sixteenth note"
+        case .DottedThirtySecond:         return "dotted thirty-second note"
+        case .ThirtySecond:               return "thirty-second note"
+        case .DottedSixtyFourth:          return "dotted sixty-fourth note"
+        case .SixtyFourth:                return "sixty-fourth note"
+        case .DottedHundredTwentyEighth:  return "dotted hundred twenty-eighth note"
+        case .HundredTwentyEighth:        return "hundred twenty-eighth note"
+        case .DottedTwoHundredFiftySixth: return "dotted two hundred-fifty-sixth note"
+        case .TwoHundredFiftySixth:       return "two hundred fifty-sixth note"
+      }
+    }  
+
   }
+}
 
-  /// The duration of the played note
-  var duration: Duration = .Eighth
-
+// MARK: - Velocity
+extension Note {
   /** Enumeration for musical dynamics 𝑚𝑝𝑚𝑓 */
-  enum Velocity: String, EnumerableType, ImageAssetLiteralType, MIDIConvertible {
+  enum Velocity: String, EnumerableType, ImageAssetLiteralType, MIDIConvertible, CustomStringConvertible {
     case 𝑝𝑝𝑝, 𝑝𝑝, 𝑝, 𝑚𝑝, 𝑚𝑓, 𝑓, 𝑓𝑓, 𝑓𝑓𝑓
 
     var midi: Byte {
@@ -158,22 +372,22 @@ struct Note {
       }
     }
     static let allCases: [Velocity] = [.𝑝𝑝𝑝, .𝑝𝑝, .𝑝, .𝑚𝑝, .𝑚𝑓, .𝑓, .𝑓𝑓, .𝑓𝑓𝑓]
-  }
 
-  /// The dynmamics for the note
-  var velocity: Velocity = .𝑚𝑓
+    var description: String { return rawValue }
+  }
 }
 
+// MARK: - MIDINoteGenerator
 extension Note: MIDINoteGenerator {
 
   typealias Packet = MIDINode.Packet
 
   /**
-   sendNoteOn:
+   receiveNoteOn:
 
    - parameter endPoint: MIDIEndpointRef
    */
-  func sendNoteOn(endPoint: MIDIEndpointRef, identifier: UInt64) throws {
+  func receiveNoteOn(endPoint: MIDIEndpointRef, _ identifier: UInt64) throws {
     let packet = Packet(status: 0x90,
                         channel: channel,
                         note: note.midi,
@@ -184,11 +398,11 @@ extension Note: MIDINoteGenerator {
   }
 
   /**
-   sendNoteOff:
+   receiveNoteOff:
 
    - parameter endPoint: MIDIEndpointRef
    */
-  func sendNoteOff(endPoint: MIDIEndpointRef, identifier: UInt64) throws {
+  func receiveNoteOff(endPoint: MIDIEndpointRef, _ identifier: UInt64) throws {
     let packet = Packet(status: 0x80,
                         channel: channel,
                         note: note.midi,
@@ -196,6 +410,36 @@ extension Note: MIDINoteGenerator {
                         identifier: identifier)
     var packetList = packet.packetList
     try MIDIReceived(endPoint, &packetList) ➤ "Unable to send note off event"
+  }
+
+  /**
+   sendNoteOn:endPoint:
+
+   - parameter endPoint: MIDIEndpointRef
+   */
+  func sendNoteOn(outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws {
+    let packet = Packet(status: 0x90,
+      channel: channel,
+      note: note.midi,
+      velocity: velocity.midi,
+      identifier: 0)
+    var packetList = packet.packetList
+    try MIDISend(outPort, endPoint, &packetList) ➤ "Unable to send note on event"
+  }
+
+  /**
+   sendNoteOff:endPoint:
+
+   - parameter endPoint: MIDIEndpointRef
+   */
+  func sendNoteOff(outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws {
+    let packet = Packet(status: 0x80,
+      channel: channel,
+      note: note.midi,
+      velocity: velocity.midi,
+      identifier: 0)
+    var packetList = packet.packetList
+    try MIDISend(outPort, endPoint, &packetList) ➤ "Unable to send note off event"
   }
 
 }
@@ -219,60 +463,9 @@ extension Note: ByteArrayConvertible {
   }
 }
 
-extension Note.Tone: CustomStringConvertible {
-  var description: String { return rawValue }
-}
-
-extension Note.Tone: CustomDebugStringConvertible {
-  var debugDescription: String { var result = ""; dump(self, &result); return result }
-}
-
-extension Note.Duration: CustomStringConvertible {
-  var description: String {
-    switch self {
-      case .DoubleWhole:                return "double-whole note"
-      case .DottedWhole:                return "dotted whole note"
-      case .Whole:                      return "whole note"
-      case .DottedHalf:                 return "dotted half note"
-      case .Half:                       return "half note"
-      case .DottedQuarter:              return "dotted quarter note"
-      case .Quarter:                    return "quarter note"
-      case .DottedEighth:               return "dotted eighth note"
-      case .Eighth:                     return "eighth note"
-      case .DottedSixteenth:            return "dotted sixteenth note"
-      case .Sixteenth:                  return "sixteenth note"
-      case .DottedThirtySecond:         return "dotted thirty-second note"
-      case .ThirtySecond:               return "thirty-second note"
-      case .DottedSixtyFourth:          return "dotted sixty-fourth note"
-      case .SixtyFourth:                return "sixty-fourth note"
-      case .DottedHundredTwentyEighth:  return "dotted hundred twenty-eighth note"
-      case .HundredTwentyEighth:        return "hundred twenty-eighth note"
-      case .DottedTwoHundredFiftySixth: return "dotted two hundred-fifty-sixth note"
-      case .TwoHundredFiftySixth:       return "two hundred fifty-sixth note"
-    }
-  }  
-}
-
-extension Note.Duration: CustomDebugStringConvertible {
-  var debugDescription: String { var result = ""; dump(self, &result); return result }
-}
-
-extension Note.Velocity: CustomStringConvertible {
-  var description: String { return rawValue }
-}
-
-extension Note.Velocity: CustomDebugStringConvertible {
-  var debugDescription: String { var result = ""; dump(self, &result); return result }
-}
-
 // MARK: - CustomStringConvertible
-
 extension Note: CustomStringConvertible {
   var description: String { return "{\(channel), \(note), \(duration), \(velocity)}" }
-}
-
-extension Note: CustomDebugStringConvertible {
-  var debugDescription: String { var result = ""; dump(self, &result); return result }
 }
 
 // MARK: - Equatable

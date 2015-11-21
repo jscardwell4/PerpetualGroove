@@ -10,6 +10,20 @@ import Foundation
 import MoonKit
 import struct AudioToolbox.CABarBeatTime
 
+
+/** Protocol for types that can be converted to and from a value within the range of 0 ... 127  */
+protocol MIDIConvertible: Hashable, Equatable {
+  var midi: Byte { get }
+  init(midi: Byte)
+}
+
+extension MIDIConvertible {
+  var hashValue: Int { return midi.hashValue }
+}
+
+func ==<M:MIDIConvertible>(lhs: M, rhs: M) -> Bool { return lhs.midi == rhs.midi }
+
+
 // MARK: - The chunk protocol
 
 /** Protocol for types that can produce a valid chunk for a MIDI file */

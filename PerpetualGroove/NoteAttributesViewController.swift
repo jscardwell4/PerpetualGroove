@@ -16,12 +16,6 @@ final class NoteViewController: UIViewController {
   @IBOutlet weak var durationPicker: InlinePickerView!
   @IBOutlet weak var velocityPicker: InlinePickerView!
 
-  typealias Tone     = Note.Tone
-//  typealias Pitch    = Note.Pitch
-//  typealias Octave   = Note.Octave
-  typealias Duration = Note.Duration
-  typealias Velocity = Note.Velocity
-
   var currentNote: Note = Note() {
     didSet {
       pitchPicker.selection    = currentNote.note.pitch.index
@@ -34,23 +28,40 @@ final class NoteViewController: UIViewController {
   }
 
   /** didPickPitch */
-  @IBAction func didPickPitch() { currentNote.note.pitch = Note.Tone.Pitch.allCases[pitchPicker.selection] }
+  @IBAction func didPickPitch() {
+    currentNote.note.pitch = Note.Tone.Pitch.allCases[pitchPicker.selection]
+    audition()
+  }
 
   /** didPickOctave */
-  @IBAction func didPickOctave() { currentNote.note.octave = Note.Tone.Octave.allCases[octavePicker.selection] }
+  @IBAction func didPickOctave() {
+    currentNote.note.octave = Note.Tone.Octave.allCases[octavePicker.selection]
+    audition()
+  }
 
   /** didPickDuration */
-  @IBAction func didPickDuration() { currentNote.duration = Duration.allCases[durationPicker.selection] }
+  @IBAction func didPickDuration() {
+    currentNote.duration = Note.Duration.allCases[durationPicker.selection]
+    audition()
+  }
 
   /** didPickVelocity */
-  @IBAction func didPickVelocity() { currentNote.velocity = Velocity.allCases[velocityPicker.selection] }
+  @IBAction func didPickVelocity() {
+    currentNote.velocity = Note.Velocity.allCases[velocityPicker.selection]
+    audition()
+  }
 
-  /** auditionValues */
-  @IBAction func auditionValues() { Sequencer.auditionCurrentNote() }
+  /** audition */
+  private func audition() { Sequencer.soundSetSelectionTarget.playNote(currentNote) }
   
   /** viewDidLoad */
   override func viewDidLoad() {
     super.viewDidLoad()
-    currentNote = Sequencer.currentNote
+    switch Sequencer.currentNote {
+      case let note as Note: currentNote = note
+      case let chord as Chord: currentNote = chord.rootNote
+      default: break
+    }
   }
+  
  }

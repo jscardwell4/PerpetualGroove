@@ -56,17 +56,25 @@ final class Instrument: Equatable {
   var pan:    Float { get { return node.pan    } set { node.pan    = (-1 ... 1).clampValue(newValue) } }
 
   private      var client   = MIDIClientRef()
+  private(set) var outPort  = MIDIPortRef()
   private(set) var endPoint = MIDIEndpointRef()
 
   /**
-  playNoteWithAttributes:
+  playNote:
 
-  - parameter attributes: Note
+  - parameter noteGenerator: MIDINoteGenerator
   */
-  func playNoteWithAttributes(attributes: Note) {
-    node.startNote(attributes.note.midi, withVelocity: attributes.velocity.midi, onChannel: 0)
-    delayedDispatch(attributes.duration.seconds, dispatch_get_main_queue()) {
-      self.node.stopNote(attributes.note.midi, onChannel: 0)
+  func playNote(noteGenerator: MIDINoteGenerator) {
+    do {
+      try noteGenerator.sendNoteOn(outPort, endPoint)
+      delayedDispatchToMain(noteGenerator.duration.seconds) {
+        [weak self] in
+        guard let weakself = self else { return }
+        do { try noteGenerator.sendNoteOff(weakself.outPort, weakself.endPoint) }
+        catch { MoonKit.logError(error) }
+      }
+    } catch {
+      logError(error)
     }
   }
 
@@ -138,6 +146,7 @@ final class Instrument: Equatable {
 
     let name = "Instrument \(ObjectIdentifier(self).uintValue)"
     try MIDIClientCreateWithBlock(name, &client, nil) ➤ "Failed to create midi client"
+    try MIDIOutputPortCreate(client, "Output", &outPort) ➤ "Failed to create out port"
     try MIDIDestinationCreateWithBlock(client, name, &endPoint, read) ➤ "Failed to create end point for instrument"
   }
 

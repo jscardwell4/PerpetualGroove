@@ -53,6 +53,7 @@ final class InstrumentViewController: UIViewController {
       try instrument?.loadSoundSet(soundSet, preset: soundSet.presets[0])
       programPicker.selection = 0
       programPicker.labels = soundSet.presets.map({$0.name})
+      audition()
     } catch {
       logError(error)
     }
@@ -63,6 +64,7 @@ final class InstrumentViewController: UIViewController {
     let soundSet = Sequencer.auditionInstrument.soundSet
     do {
       try instrument?.loadPreset(soundSet.presets[programPicker.selection])
+      audition()
     } catch {
       logError(error)
     }
@@ -82,6 +84,11 @@ final class InstrumentViewController: UIViewController {
       programPicker.selectItem(presetIndex, animated: true)
       channelStepper.value = Double(instrument.channel)
     }
+  }
+
+  /** audition */
+  private func audition() {
+    instrument?.playNote(Sequencer.currentNote)
   }
 
   /** viewDidLoad */

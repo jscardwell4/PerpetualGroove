@@ -13,8 +13,10 @@ import CoreMIDI
 
 protocol MIDINoteGenerator {
   var duration: Note.Duration { get }
-  func sendNoteOn(endPoint: MIDIEndpointRef, identifier: UInt64) throws
-  func sendNoteOff(endPoint: MIDIEndpointRef, identifier: UInt64) throws
+  func sendNoteOn(outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws
+  func sendNoteOff(outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws
+  func receiveNoteOn(endPoint: MIDIEndpointRef, _ identifier: UInt64) throws
+  func receiveNoteOff(endPoint: MIDIEndpointRef, _ identifier: UInt64) throws
 }
 
 final class MIDINode: SKSpriteNode {
@@ -65,7 +67,7 @@ final class MIDINode: SKSpriteNode {
   /** sendNoteOn */
   func sendNoteOn() {
     do {
-      try noteGenerator.sendNoteOn(endPoint, identifier: identifier)
+      try noteGenerator.receiveNoteOn(endPoint, identifier)
       state ⊻= .Playing
     } catch { logError(error) }
   }
@@ -74,7 +76,7 @@ final class MIDINode: SKSpriteNode {
   func sendNoteOff() {
     guard state ∋ .Playing else { return }
     do {
-      try noteGenerator.sendNoteOff(endPoint, identifier: identifier)
+      try noteGenerator.receiveNoteOff(endPoint, identifier)
       state ⊻= .Playing
     } catch { logError(error) }
   }
