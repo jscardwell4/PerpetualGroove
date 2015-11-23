@@ -9,7 +9,7 @@
 import Foundation
 import MoonKit
 
-enum PitchModifier: String { case Flat = "♭", Sharp = "♯" }
+enum PitchModifier: String { case Flat = "♭", Sharp = "♯", DoubleFlat = "𝄫" }
 
 
 /** Specifies an absolute pitch class value */
@@ -62,6 +62,7 @@ enum Note: RawRepresentable {
         }
       case let .Modified(n, .Sharp): return .Default(n)
       case let .Modified(n, .Flat): return .Default(n.predecessor())
+      case let .Modified(n, .DoubleFlat): return .Modified(n.predecessor(), .Flat)
     }
   }
 
@@ -80,6 +81,7 @@ enum Note: RawRepresentable {
         }
       case let .Modified(n, .Sharp): return .Default(n.successor())
       case let .Modified(n, .Flat): return .Default(n)
+      case let .Modified(n, .DoubleFlat): return .Modified(n, .Flat)
     }
   }
 

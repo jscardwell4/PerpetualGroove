@@ -35,16 +35,16 @@ struct ChordGenerator {
       }
     }
 
+    var currentOctave = octave
+    var previousNote = chord.root
     for note in notes[rootIndex..<] {
-      let octave: Octave?
-      if note < chord.root {
-        octave = Octave(rawValue: self.octave.rawValue + 1)
-      } else {
-        octave = self.octave
+      if note < previousNote {
+        guard let nextOctave = Octave(rawValue: currentOctave.rawValue + 1) else { return result }
+        currentOctave = nextOctave
       }
-      guard octave != nil else { continue }
-      let tone = MIDINote.Tone(note, octave!)
+      let tone = MIDINote.Tone(note, currentOctave)
       result.append(MIDINote(tone: tone, duration: duration, velocity: velocity))
+      previousNote = note
     }
 
     return result

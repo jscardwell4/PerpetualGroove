@@ -14,6 +14,8 @@ enum Octave: Int, EnumerableType {
   static let allCases: [Octave] = [
     .NegativeOne, .Zero, .One, .Two, .Three, .Four, .Five, .Six, .Seven, .Eight, .Nine
   ]
+  static var minOctave: Octave { return .NegativeOne }
+  static var maxOctave: Octave { return .Nine }
 }
 
 extension Octave: Comparable {}

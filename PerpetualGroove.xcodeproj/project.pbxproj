@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		C207458F1B8DF6D5000A06D4 /* BarBeatTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = C207458E1B8DF6D5000A06D4 /* BarBeatTime.swift */; };
+		C20827541C03B2A2004D68FC /* StandardChordPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20827531C03B2A2004D68FC /* StandardChordPattern.swift */; };
 		C21E44C11B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C21E44C01B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 */; };
 		C21E44C51B76546C00574BD2 /* AudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21E44C41B76546C00574BD2 /* AudioManager.swift */; };
 		C222E6C81BD2B78600DBBBDA /* FestivoLC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C222E6C71BD2B78600DBBBDA /* FestivoLC.framework */; };
@@ -142,6 +143,7 @@
 		C20745891B8CE4C3000A06D4 /* morse_code_a.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = morse_code_a.mid; sourceTree = "<group>"; };
 		C207458C1B8CFB91000A06D4 /* test_morse_code_a.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = test_morse_code_a.mid; sourceTree = "<group>"; };
 		C207458E1B8DF6D5000A06D4 /* BarBeatTime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BarBeatTime.swift; sourceTree = "<group>"; };
+		C20827531C03B2A2004D68FC /* StandardChordPattern.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandardChordPattern.swift; sourceTree = "<group>"; };
 		C21E44C01B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SPYRO's Pure Oscillators.sf2"; path = "PerpetualGroove/SPYRO's Pure Oscillators.sf2"; sourceTree = "<group>"; };
 		C21E44C41B76546C00574BD2 /* AudioManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioManager.swift; sourceTree = "<group>"; };
 		C21E44C81B76739C00574BD2 /* sf2.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = sf2.playground; path = PerpetualGroove/sf2.playground; sourceTree = "<group>"; };
@@ -319,6 +321,7 @@
 		C2404BDA1B78F02C00A68A64 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				C20827531C03B2A2004D68FC /* StandardChordPattern.swift */,
 				C23B059C1C026F4C0081AC6E /* ChordGenerator.swift */,
 				C2E043341B72F4DC005F0675 /* AppDelegate.swift */,
 				C2EFA0ED1B824A2F002EBA3D /* AssetManager.swift */,
@@ -679,6 +682,7 @@
 				C23B058D1C014EBD0081AC6E /* Note.swift in Sources */,
 				C25EBC831B8BFAFA00E57665 /* MIDIFile.swift in Sources */,
 				C26FC1711B7BAC7F00E271A3 /* MIDIPlayerNode.swift in Sources */,
+				C20827541C03B2A2004D68FC /* StandardChordPattern.swift in Sources */,
 				C291C3F11B91EDD600702AEA /* ChannelEvent.swift in Sources */,
 				C2E705C51BBB17AE00636EF3 /* PurgatoryViewController.swift in Sources */,
 				C28BB6021BBF110E00BF2F70 /* DocumentCell.swift in Sources */,
@@ -934,6 +938,7 @@
 				C23B059B1C0219560081AC6E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		C2E0432C1B72F4DC005F0675 /* Build configuration list for PBXProject "PerpetualGroove" */ = {
 			isa = XCConfigurationList;

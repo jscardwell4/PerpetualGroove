@@ -43,18 +43,18 @@ extension MIDINote {
 
     static func indexForNote(note: Note) -> Int {
       switch note {
-        case .Default(.C), .Modified(.B, .Sharp):         return 0
-        case .Modified(.C, .Sharp), .Modified(.D, .Flat): return 1
-        case .Default(.D):                                return 2
-        case .Modified(.D, .Sharp), .Modified(.E, .Flat): return 3
-        case .Default(.E), .Modified(.F, .Flat):          return 4
-        case .Default(.F), .Modified(.E, .Sharp):         return 5
-        case .Modified(.F, .Sharp), .Modified(.G, .Flat): return 6
-        case .Default(.G):                                return 7
-        case .Modified(.G, .Sharp),.Modified(.A, .Flat):  return 8
-        case .Default(.A):                                return 9
-        case .Modified(.A, .Sharp),.Modified(.B, .Flat):  return 10
-        case .Default(.B), .Modified(.C, .Flat):          return 11
+        case .Default(.C), .Modified(.B, .Sharp), .Modified(.D, .DoubleFlat):         return 0
+        case .Modified(.C, .Sharp), .Modified(.D, .Flat):                             return 1
+        case .Default(.D), .Modified(.E, .DoubleFlat):                                return 2
+        case .Modified(.D, .Sharp), .Modified(.E, .Flat), .Modified(.F, .DoubleFlat): return 3
+        case .Default(.E), .Modified(.F, .Flat):                                      return 4
+        case .Default(.F), .Modified(.E, .Sharp), .Modified(.G, .DoubleFlat):         return 5
+        case .Modified(.F, .Sharp), .Modified(.G, .Flat):                             return 6
+        case .Default(.G), .Modified(.A, .DoubleFlat):                                return 7
+        case .Modified(.G, .Sharp),.Modified(.A, .Flat):                              return 8
+        case .Default(.A), .Modified(.B, .DoubleFlat):                                return 9
+        case .Modified(.A, .Sharp),.Modified(.B, .Flat), .Modified(.C, .DoubleFlat):  return 10
+        case .Default(.B), .Modified(.C, .Flat):                                      return 11
       }
     }
 
