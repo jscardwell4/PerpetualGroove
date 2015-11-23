@@ -306,7 +306,7 @@ final class InstrumentTrack: Track {
     eventQueue.addOperationWithBlock {
       [weak self, time = Sequencer.time.time] in
 
-      guard let packet = MIDINode.Packet(packetList: packetList) else { return }
+      guard let packet = Packet(packetList: packetList) else { return }
 
       let event: MIDIEvent?
       switch packet.status {

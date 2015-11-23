@@ -16,9 +16,9 @@ final class NoteViewController: UIViewController {
   @IBOutlet weak var durationPicker: InlinePickerView!
   @IBOutlet weak var velocityPicker: InlinePickerView!
 
-  var currentNote: Note = Note() {
+  var currentNote: MIDINote = MIDINote() {
     didSet {
-      pitchPicker.selection    = currentNote.note.pitch.index
+      pitchPicker.selection    = MIDINote.Tone.indexForNote(currentNote.note.pitch)
       octavePicker.selection   = currentNote.note.octave.index
       durationPicker.selection = currentNote.duration.index
       velocityPicker.selection = currentNote.velocity.index
@@ -29,25 +29,25 @@ final class NoteViewController: UIViewController {
 
   /** didPickPitch */
   @IBAction func didPickPitch() {
-    currentNote.note.pitch = Note.Tone.Pitch.allCases[pitchPicker.selection]
+    currentNote.note.pitch = MIDINote.Tone.noteForIndex(pitchPicker.selection)!
     audition()
   }
 
   /** didPickOctave */
   @IBAction func didPickOctave() {
-    currentNote.note.octave = Note.Tone.Octave.allCases[octavePicker.selection]
+    currentNote.note.octave = Octave.allCases[octavePicker.selection]
     audition()
   }
 
   /** didPickDuration */
   @IBAction func didPickDuration() {
-    currentNote.duration = Note.Duration.allCases[durationPicker.selection]
+    currentNote.duration = Duration.allCases[durationPicker.selection]
     audition()
   }
 
   /** didPickVelocity */
   @IBAction func didPickVelocity() {
-    currentNote.velocity = Note.Velocity.allCases[velocityPicker.selection]
+    currentNote.velocity = Velocity.allCases[velocityPicker.selection]
     audition()
   }
 
@@ -58,8 +58,8 @@ final class NoteViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     switch Sequencer.currentNote {
-      case let note as Note: currentNote = note
-      case let chord as Chord: currentNote = chord.rootNote
+      case let note as MIDINote: currentNote = note
+//      case let chord as Chord: currentNote = chord.rootNote
       default: break
     }
   }
