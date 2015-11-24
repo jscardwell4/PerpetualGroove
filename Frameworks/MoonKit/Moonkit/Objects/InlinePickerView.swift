@@ -163,7 +163,12 @@ public class InlinePickerView: UIControl {
   public var didSelectItem: ((InlinePickerView, Int) -> Void)?
 
   public static let DefaultFont = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
-  public var font = InlinePickerView.DefaultFont { didSet { reloadData() } }
+  public var font = InlinePickerView.DefaultFont {
+    didSet {
+      guard cellType == .Label &&  collectionView.visibleCells().count > 0 else { return }
+      reloadData()
+    }
+  }
   @IBInspectable public var fontName: String  {
     get { return font.fontName }
     set { if let font = UIFont(name: newValue, size: self.font.pointSize) { self.font = font } }
@@ -181,7 +186,12 @@ public class InlinePickerView: UIControl {
 
   @IBInspectable public var itemColor: UIColor = .darkTextColor() //{ didSet { reloadData() } }
 
-  public var selectedFont =  InlinePickerView.DefaultFont { didSet { reloadData() } }
+  public var selectedFont =  InlinePickerView.DefaultFont {
+    didSet {
+      guard cellType == .Label && collectionView.visibleCells().count > 0 else { return }
+      reloadData()
+    }
+  }
   @IBInspectable public var selectedFontName: String  {
     get { return selectedFont.fontName }
     set { if let font = UIFont(name: newValue, size: selectedFont.pointSize) { selectedFont = font } }
@@ -317,7 +327,7 @@ extension InlinePickerView: UICollectionViewDelegate {
   - returns: Bool
   */
   public func collectionView(collectionView: UICollectionView, shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
-    return false
+    return true
   }
 
   /**
@@ -329,7 +339,7 @@ extension InlinePickerView: UICollectionViewDelegate {
   - returns: Bool
   */
   public func collectionView(collectionView: UICollectionView, shouldDeselectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
-    return false
+    return true
   }
 
   /**
@@ -339,8 +349,12 @@ extension InlinePickerView: UICollectionViewDelegate {
   - parameter indexPath: NSIndexPath
   */
   public func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-    assert(false)
-    didSelectItem?(self, indexPath.item)
+    selection = indexPath.item
+    sendActionsForControlEvents(.ValueChanged)
+    didSelectItem?(self, selection)
+    if let offset = layout.offsetForItemAtIndex(selection) {
+      collectionView.setContentOffset(offset, animated: true)
+    }
   }
 
   /**
@@ -389,7 +403,7 @@ extension InlinePickerView: UIScrollViewDelegate {
                    targetContentOffset: UnsafeMutablePointer<CGPoint>)
   {
     let offset = targetContentOffset.memory
-    guard let item = (collectionView.collectionViewLayout as! InlinePickerViewLayout).indexOfItemAtOffset(offset) else {
+    guard let item = layout.indexOfItemAtOffset(offset) else {
       logVerbose("<\(ObjectIdentifier(self).uintValue)> failed to get index path for cell at point \(offset)")
       return
     }

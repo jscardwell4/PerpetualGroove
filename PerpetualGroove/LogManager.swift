@@ -66,7 +66,7 @@ final class LogManager: MoonKit.LogManager {
 
   /** setDefaultLogContexts */
   static private func setDefaultLogContexts() {
-    MIDIDocumentManager.defaultLogContext     = MIDIFileContext// ∪ .Console
+    MIDIDocumentManager.defaultLogContext     = MIDIFileContext ∪ .Console
     MIDIDocument.defaultLogContext            = MIDIFileContext// ∪ .Console
     MIDIFile.defaultLogContext                = MIDIFileContext// ∪ .Console
     MIDIFileHeaderChunk.defaultLogContext     = MIDIFileContext// ∪ .Console
@@ -102,7 +102,7 @@ final class LogManager: MoonKit.LogManager {
     MIDINode.defaultLogContext            = SceneContext// ∪ .Console
     Placement.defaultLogContext           = SceneContext// ∪ .Console
 
-    MIDIPlayerViewController.defaultLogContext     = UIContext// ∪ .Console
+    MIDIPlayerViewController.defaultLogContext     = UIContext ∪ .Console
     PurgatoryViewController.defaultLogContext      = UIContext// ∪ .Console
     DocumentsViewController.defaultLogContext      = UIContext// ∪ .Console
     InstrumentViewController.defaultLogContext     = UIContext// ∪ .Console

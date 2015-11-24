@@ -93,7 +93,7 @@
                                             <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="tRy-qY-hGk" userLabel="DocumentPlayerStack">
                                                 <rect key="frame" x="882" y="0.0" width="400" height="430"/>
                                                 <subviews>
-                                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Awesome Sauce" placeholder="Create New Document" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Gx0-9z-8e9">
+                                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Awesome Sauce" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Gx0-9z-8e9">
                                                         <rect key="frame" x="0.0" y="0.0" width="400" height="30"/>
                                                         <animations/>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -102,7 +102,7 @@
                                                         </constraints>
                                                         <color key="textColor" red="0.72547006607055664" green="0.70085549354553223" blue="0.6621164083480835" alpha="1" colorSpace="calibratedRGB"/>
                                                         <fontDescription key="fontDescription" name="Triump-Rg-Rock-02" family="Triump Rg Rock" pointSize="24"/>
-                                                        <textInputTraits key="textInputTraits" autocapitalizationType="words" autocorrectionType="no" spellCheckingType="no" keyboardType="alphabet" keyboardAppearance="alert" returnKeyType="done"/>
+                                                        <textInputTraits key="textInputTraits" autocapitalizationType="words" autocorrectionType="no" spellCheckingType="no" keyboardType="alphabet" keyboardAppearance="alert" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
                                                         <userDefinedRuntimeAttributes>
                                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="CurrentDocumentName"/>
                                                         </userDefinedRuntimeAttributes>
@@ -658,11 +658,21 @@
                                     <outlet property="contentView" destination="41G-aM-2HB" id="nD9-0T-yny"/>
                                 </connections>
                             </view>
+                            <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="spinner1" translatesAutoresizingMaskIntoConstraints="NO" id="53d-bc-Qlh" userLabel="Spinner">
+                                <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                <animations/>
+                                <color key="tintColor" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="calibratedRGB"/>
+                                <accessibility key="accessibilityConfiguration" identifier="Spinner"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="Spinner"/>
+                                </userDefinedRuntimeAttributes>
+                            </imageView>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" red="0.20000000000000001" green="0.1960784314" blue="0.19215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                         <accessibility key="accessibilityConfiguration" identifier="RootView"/>
                         <constraints>
+                            <constraint firstItem="53d-bc-Qlh" firstAttribute="centerY" secondItem="3se-qz-xqx" secondAttribute="centerY" id="Bas-Md-R3C"/>
                             <constraint firstItem="L5k-qi-Yb6" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leadingMargin" constant="5" id="BtT-VP-Fff"/>
                             <constraint firstItem="qHh-Mt-9TT" firstAttribute="top" secondItem="KR6-ig-M7J" secondAttribute="bottom" constant="8" symbolic="YES" id="CAu-z8-d5k"/>
                             <constraint firstAttribute="trailingMargin" secondItem="KR6-ig-M7J" secondAttribute="trailing" constant="-68" id="JF0-3d-TlM">
@@ -674,6 +684,7 @@
                             <constraint firstAttribute="leadingMargin" secondItem="KR6-ig-M7J" secondAttribute="leading" id="byd-8v-duj"/>
                             <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="L5k-qi-Yb6" secondAttribute="trailing" constant="5" id="qJJ-cs-JQx"/>
                             <constraint firstItem="L5k-qi-Yb6" firstAttribute="centerX" secondItem="gJq-1L-zk3" secondAttribute="centerX" priority="750" id="qch-rM-rEc"/>
+                            <constraint firstItem="53d-bc-Qlh" firstAttribute="centerX" secondItem="3se-qz-xqx" secondAttribute="centerX" id="tjc-fy-Eqw"/>
                             <constraint firstItem="KR6-ig-M7J" firstAttribute="top" secondItem="8aa-yV-Osq" secondAttribute="bottom" constant="8" symbolic="YES" id="x9p-rm-dbe"/>
                             <constraint firstItem="gJq-1L-zk3" firstAttribute="top" secondItem="L5k-qi-Yb6" secondAttribute="bottom" constant="11" id="xu4-CY-JBV"/>
                         </constraints>
@@ -685,15 +696,17 @@
                                 <exclude reference="L5k-qi-Yb6"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="CAu-z8-d5k"/>
-                                <exclude reference="xu4-CY-JBV"/>
+                                <exclude reference="JF0-3d-TlM"/>
+                                <exclude reference="byd-8v-duj"/>
+                                <exclude reference="x9p-rm-dbe"/>
+                                <exclude reference="Bas-Md-R3C"/>
+                                <exclude reference="tjc-fy-Eqw"/>
                                 <exclude reference="BtT-VP-Fff"/>
                                 <exclude reference="RcU-6e-GRW"/>
                                 <exclude reference="qJJ-cs-JQx"/>
                                 <exclude reference="qch-rM-rEc"/>
-                                <exclude reference="JF0-3d-TlM"/>
-                                <exclude reference="byd-8v-duj"/>
-                                <exclude reference="x9p-rm-dbe"/>
+                                <exclude reference="xu4-CY-JBV"/>
+                                <exclude reference="CAu-z8-d5k"/>
                             </mask>
                         </variation>
                         <variation key="widthClass=compact">
@@ -716,13 +729,15 @@
                         </variation>
                         <variation key="heightClass=regular-widthClass=regular">
                             <mask key="constraints">
-                                <include reference="CAu-z8-d5k"/>
-                                <include reference="xu4-CY-JBV"/>
-                                <include reference="RcU-6e-GRW"/>
-                                <include reference="qch-rM-rEc"/>
                                 <include reference="JF0-3d-TlM"/>
                                 <include reference="byd-8v-duj"/>
                                 <include reference="x9p-rm-dbe"/>
+                                <include reference="Bas-Md-R3C"/>
+                                <include reference="tjc-fy-Eqw"/>
+                                <include reference="RcU-6e-GRW"/>
+                                <include reference="qch-rM-rEc"/>
+                                <include reference="xu4-CY-JBV"/>
+                                <include reference="CAu-z8-d5k"/>
                             </mask>
                         </variation>
                     </view>
@@ -749,6 +764,7 @@
                         <outlet property="noteAttributesInstrumentStack" destination="wxb-Bs-OQW" id="oLd-k4-ykH"/>
                         <outlet property="playPauseButton" destination="AbD-fM-IZj" id="HIw-lB-jVc"/>
                         <outlet property="recordButton" destination="u5D-xu-7GP" id="3UW-Ad-LsE"/>
+                        <outlet property="spinner" destination="53d-bc-Qlh" id="WFV-gO-wXZ"/>
                         <outlet property="stopButton" destination="5UP-3s-pkz" id="ydf-jc-Hc9"/>
                         <outlet property="tempoSlider" destination="TLs-oa-qge" id="c4y-Bv-cwF"/>
                         <outlet property="topStack" destination="cIl-mB-kk1" id="F7e-1X-gEa"/>
@@ -914,6 +930,7 @@
         <image name="play-selected" width="56" height="56"/>
         <image name="record" width="56" height="56"/>
         <image name="record-selected" width="56" height="56"/>
+        <image name="spinner1" width="56" height="56"/>
         <image name="stop" width="56" height="56"/>
         <image name="stop-selected" width="56" height="56"/>
         <image name="wheel" width="200" height="200"/>

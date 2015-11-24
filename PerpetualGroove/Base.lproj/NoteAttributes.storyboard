@@ -81,7 +81,6 @@
                                                     <userDefinedRuntimeAttribute type="color" keyPath="itemColor">
                                                         <color key="value" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="calibratedRGB"/>
                                                     </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="string" keyPath="labelsString" value="♭, ♮, ♯"/>
                                                     <userDefinedRuntimeAttribute type="number" keyPath="selection">
                                                         <integer key="value" value="1"/>
                                                     </userDefinedRuntimeAttribute>
@@ -94,6 +93,7 @@
                                                         <real key="value" value="18"/>
                                                     </userDefinedRuntimeAttribute>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="ModifierPicker"/>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="imagesString" value="flat, natural, sharp"/>
                                                 </userDefinedRuntimeAttributes>
                                                 <connections>
                                                     <action selector="didPickModifier" destination="aQn-av-Bpr" eventType="valueChanged" id="TRn-dl-9Wq"/>

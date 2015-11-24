@@ -76,7 +76,7 @@ final class MIDIDocumentManager {
 
 
   // MARK: - Tracking state
-  private static var state: State = [] { didSet { logDebug("\(oldValue) ➞ \(state)") } }
+  private static var state: State = [] { didSet { logSyncDebug("\(oldValue) ➞ \(state)") } }
 
   static var openingDocument: Bool { return state ∋ .OpeningDocument }
   static var gatheringMetadataItems: Bool { return state ∋ .GatheringMetadataItems }

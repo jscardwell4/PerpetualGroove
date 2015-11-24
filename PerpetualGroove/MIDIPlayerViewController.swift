@@ -89,6 +89,8 @@ final class MIDIPlayerViewController: UIViewController {
   - parameter animated: Bool
   */
   override func viewDidAppear(animated: Bool) {
+    super.viewDidAppear(animated)
+
     guard !SettingsManager.initialized || !SettingsManager.iCloudStorage || NSFileManager.defaultManager().ubiquityIdentityToken != nil else {
       performSegueWithIdentifier("Purgatory", sender: self)
       return
@@ -201,6 +203,14 @@ final class MIDIPlayerViewController: UIViewController {
     }
   }
 
+  @IBOutlet weak var spinner: UIImageView! {
+    didSet {
+      spinner?.animationImages = (1 ... 8).flatMap({UIImage(named: "spinner\($0)")?.imageWithColor(.whiteColor())})
+      spinner?.animationDuration = 0.8
+      spinner?.startAnimating()
+    }
+  }
+  
   /** documents */
   @IBAction private func documents() {
     if case .Files = popover { popover = .None } else { popover = .Files }

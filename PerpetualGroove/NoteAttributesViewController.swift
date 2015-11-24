@@ -58,7 +58,6 @@ final class NoteViewController: UIViewController {
 
   private var noteGenerator: MIDINoteGenerator = Sequencer.currentNote {
     didSet {
-//      refresh()
       Sequencer.currentNote = noteGenerator
     }
   }
@@ -66,12 +65,6 @@ final class NoteViewController: UIViewController {
   /** didPickPitch */
   @IBAction func didPickPitch() {
     noteGenerator.root.natural = Natural.allCases[pitchPicker.selection]
-//    let newValue = Natural.allCases[pitchPicker.selection]
-//    switch noteGenerator {
-//      case var generator as NoteGenerator:  generator.tone.note.natural = newValue; noteGenerator = generator
-//      case var generator as ChordGenerator: generator.chord.root.natural = newValue; noteGenerator = generator
-//      default:                              break
-//    }
     audition()
   }
 
@@ -83,23 +76,11 @@ final class NoteViewController: UIViewController {
 
   /** didPickModifier */
   @IBAction func didPickModifier() {
-    let newValue: PitchModifier?
     switch modifierPicker.selection {
-      case 0: newValue = .Flat
-      case 2: newValue = .Sharp
-      default: newValue = nil
+      case 0: noteGenerator.root.modifier = .Flat
+      case 2: noteGenerator.root.modifier = .Sharp
+      default: noteGenerator.root.modifier = nil
     }
-    noteGenerator.root.modifier = newValue
-//    switch noteGenerator {
-//      case var generator as NoteGenerator:
-//        generator.tone.note.modifier = newValue
-//        noteGenerator = generator
-//      case var generator as ChordGenerator:
-//        generator.chord.root.modifier = newValue
-//        noteGenerator = generator
-//      default:
-//        break
-//    }
     audition()
   }
 
