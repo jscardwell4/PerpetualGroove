@@ -15,53 +15,130 @@ final class NoteViewController: UIViewController {
   @IBOutlet weak var octavePicker:   InlinePickerView!
   @IBOutlet weak var durationPicker: InlinePickerView!
   @IBOutlet weak var velocityPicker: InlinePickerView!
-
-  var currentNote: MIDINote = MIDINote() {
+  @IBOutlet weak var modifierPicker: InlinePickerView!
+  @IBOutlet weak var chordPicker: InlinePickerView! {
     didSet {
-      pitchPicker.selection    = MIDINote.Tone.indexForNote(currentNote.note.pitch)
-      octavePicker.selection   = currentNote.note.octave.index
-      durationPicker.selection = currentNote.duration.index
-      velocityPicker.selection = currentNote.velocity.index
+      chordPicker?.labels = ["–"] + Chord.ChordPattern.StandardChordPattern.allCases.map {$0.name}
+    }
+  }
 
-      Sequencer.currentNote = currentNote
+  /**
+  indexForModifier:
+
+  - parameter modifier: PitchModifier?
+
+  - returns: Int
+  */
+  private func indexForModifier(modifier: PitchModifier?) -> Int {
+    switch modifier {
+      case .Flat?:  return 0
+      case .Sharp?: return 2
+      default:     return 1
+    }
+  }
+
+  /** refresh */
+  private func refresh() {
+    pitchPicker.selection    = noteGenerator.root.natural.index
+    modifierPicker.selection = indexForModifier(noteGenerator.root.modifier)
+    octavePicker.selection   = noteGenerator.octave.index
+    durationPicker.selection = noteGenerator.duration.index
+    velocityPicker.selection = noteGenerator.velocity.index
+    switch noteGenerator {
+      case _ as NoteGenerator: chordPicker.selection = 0
+      case let generator as ChordGenerator:
+        if let pattern = Chord.ChordPattern.StandardChordPattern(rawValue: generator.chord.pattern.rawValue) {
+          chordPicker.selection = pattern.index
+        } else {
+          chordPicker.selection = 0
+        }
+      default: break
+    }
+  }
+
+  private var noteGenerator: MIDINoteGenerator = Sequencer.currentNote {
+    didSet {
+//      refresh()
+      Sequencer.currentNote = noteGenerator
     }
   }
 
   /** didPickPitch */
   @IBAction func didPickPitch() {
-    currentNote.note.pitch = MIDINote.Tone.noteForIndex(pitchPicker.selection)!
+    noteGenerator.root.natural = Natural.allCases[pitchPicker.selection]
+//    let newValue = Natural.allCases[pitchPicker.selection]
+//    switch noteGenerator {
+//      case var generator as NoteGenerator:  generator.tone.note.natural = newValue; noteGenerator = generator
+//      case var generator as ChordGenerator: generator.chord.root.natural = newValue; noteGenerator = generator
+//      default:                              break
+//    }
     audition()
   }
 
   /** didPickOctave */
   @IBAction func didPickOctave() {
-    currentNote.note.octave = Octave.allCases[octavePicker.selection]
+    noteGenerator.octave = Octave.allCases[octavePicker.selection]
+    audition()
+  }
+
+  /** didPickModifier */
+  @IBAction func didPickModifier() {
+    let newValue: PitchModifier?
+    switch modifierPicker.selection {
+      case 0: newValue = .Flat
+      case 2: newValue = .Sharp
+      default: newValue = nil
+    }
+    noteGenerator.root.modifier = newValue
+//    switch noteGenerator {
+//      case var generator as NoteGenerator:
+//        generator.tone.note.modifier = newValue
+//        noteGenerator = generator
+//      case var generator as ChordGenerator:
+//        generator.chord.root.modifier = newValue
+//        noteGenerator = generator
+//      default:
+//        break
+//    }
+    audition()
+  }
+
+  /** didPickChord */
+  @IBAction func didPickChord() {
+    let newValue: Chord.ChordPattern.StandardChordPattern?
+    switch chordPicker.selection {
+      case 0: newValue = nil
+      case let idx: newValue = Chord.ChordPattern.StandardChordPattern.allCases[idx - 1]
+    }
+    switch (noteGenerator, newValue) {
+      case let (generator as NoteGenerator, newValue?):
+        noteGenerator = ChordGenerator(pattern: newValue.pattern, generator: generator)
+      case (var generator as ChordGenerator, let newValue?):
+        generator.chord.pattern = newValue.pattern; noteGenerator = generator
+      case (let generator as ChordGenerator, nil):
+        noteGenerator = NoteGenerator(generator: generator)
+      default:
+        break
+    }
     audition()
   }
 
   /** didPickDuration */
   @IBAction func didPickDuration() {
-    currentNote.duration = Duration.allCases[durationPicker.selection]
+    noteGenerator.duration = Duration.allCases[durationPicker.selection]
     audition()
   }
 
   /** didPickVelocity */
   @IBAction func didPickVelocity() {
-    currentNote.velocity = Velocity.allCases[velocityPicker.selection]
+    noteGenerator.velocity = Velocity.allCases[velocityPicker.selection]
     audition()
   }
 
   /** audition */
-  private func audition() { Sequencer.soundSetSelectionTarget.playNote(currentNote) }
+  private func audition() { Sequencer.soundSetSelectionTarget.playNote(noteGenerator) }
   
   /** viewDidLoad */
-  override func viewDidLoad() {
-    super.viewDidLoad()
-    switch Sequencer.currentNote {
-      case let note as MIDINote: currentNote = note
-//      case let chord as Chord: currentNote = chord.rootNote
-      default: break
-    }
-  }
+  override func viewDidLoad() { super.viewDidLoad(); refresh() }
   
  }

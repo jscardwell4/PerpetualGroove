@@ -192,6 +192,8 @@ extension Chord.ChordPattern {
       }
     }
 
+    var pattern: Chord.ChordPattern { return Chord.ChordPattern(self) }
+
   }
 
 }

@@ -19,10 +19,34 @@ enum Note: RawRepresentable {
 
 
   var natural: Natural {
-    switch self { case let .Default(n): return n; case let .Modified(n, _): return n }
+    get {
+      switch self {
+        case let .Default(n):     return n
+        case let .Modified(n, _): return n
+      }
+    }
+    set {
+      switch self {
+        case .Default:            self = .Default(newValue)
+        case .Modified(_, let m): self = .Modified(newValue, m)
+      }
+    }
   }
   var modifier: PitchModifier? {
-    switch self { case .Default: return nil; case let .Modified(_, m): return m }
+    get {
+      switch self {
+        case .Default:            return nil
+        case let .Modified(_, m): return m
+      }
+    }
+    set {
+      switch (self, newValue) {
+        case let (.Default(n), m?):      self = .Modified(n, m)
+        case     (.Default(_), nil):     break
+        case let (.Modified(n, _), m?):  self = .Modified(n, m)
+        case let (.Modified(n, _), nil): self = .Default(n)
+      }
+    }
   }
 
   var rawValue: String {

@@ -10,8 +10,10 @@ import Foundation
 import MoonKit
 
 /** The seven 'natural' note names in western tonal music */
-enum Natural: String, BidirectionalIndexType, Comparable {
+enum Natural: String, BidirectionalIndexType, Equatable, Hashable, EnumerableType, Comparable {
   case A, B, C, D, E, F, G
+
+  static let allCases: [Natural] = [.A, .B, .C, .D, .E, .F, .G]
 
   func successor() -> Natural {
     switch self {

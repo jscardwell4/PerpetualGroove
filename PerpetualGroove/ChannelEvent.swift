@@ -147,7 +147,7 @@ extension ChannelEvent: CustomStringConvertible {
     var result = "\(time) \(status) "
     switch status.type {
       case .NoteOn, .NoteOff:
-        result += "\(MIDINote.Tone(midi: data1)) \(Velocity(midi: data2!))"
+        result += "\(NoteGenerator.Tone(midi: data1)) \(Velocity(midi: data2!))"
       default:
         result += "\(data1)"
     }

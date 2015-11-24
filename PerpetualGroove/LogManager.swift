@@ -1,5 +1,10 @@
-//   LogManager.swift   PerpetualGroove    Created by Jason Cardwell on
-//10/21/15.   Copyright © 2015 Moondeer Studios. All rights reserved.
+//
+// LogManager.swift
+// PerpetualGroove
+//
+// Created by Jason Cardwell on 10/21/15.
+// Copyright © 2015 Moondeer Studios. All rights reserved.
+//
 
 import Foundation
 import MoonKit

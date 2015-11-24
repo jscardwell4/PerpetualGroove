@@ -466,7 +466,10 @@ public protocol EnumerableType {
 }
 
 public extension EnumerableType where Self: Equatable {
-  public var index: Int { return Self.allCases.indexOf(self)! }
+  public var index: Int {
+    guard let index = Self.allCases.indexOf(self) else { fatalError("`allCases` does not contain \(self)") }
+    return index
+  }
   public init(index: Int) {
     guard Self.allCases.indices.contains(index) else { fatalError("index out of bounds") }
     self = Self.allCases[index]

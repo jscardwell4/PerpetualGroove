@@ -12,7 +12,10 @@ import MoonKit
 import CoreMIDI
 
 protocol MIDINoteGenerator {
-  var duration: Duration { get }
+  var duration: Duration { get set }
+  var velocity: Velocity { get set }
+  var octave: Octave     { get set }
+  var root: Note { get set }
   func sendNoteOn(outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws
   func sendNoteOff(outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws
   func receiveNoteOn(endPoint: MIDIEndpointRef, _ identifier: UInt64) throws

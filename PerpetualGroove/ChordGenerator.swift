@@ -16,8 +16,10 @@ struct ChordGenerator {
   var duration = Duration.Eighth
   var velocity = Velocity.𝑚𝑓
 
-  var midiNotes: [MIDINote] {
-    var result: [MIDINote] = []
+  var root: Note { get { return chord.root } set { chord.root = newValue } }
+
+  var midiNotes: [NoteGenerator] {
+    var result: [NoteGenerator] = []
     let notes = chord.notes
     guard let rootIndex = notes.indexOf(chord.root) else { return result }
 
@@ -30,8 +32,8 @@ struct ChordGenerator {
           octave = self.octave
         }
         guard octave != nil else { continue }
-        let tone = MIDINote.Tone(note, octave!)
-        result.append(MIDINote(tone: tone, duration: duration, velocity: velocity))
+        let tone = NoteGenerator.Tone(note, octave!)
+        result.append(NoteGenerator(tone: tone, duration: duration, velocity: velocity))
       }
     }
 
@@ -42,14 +44,41 @@ struct ChordGenerator {
         guard let nextOctave = Octave(rawValue: currentOctave.rawValue + 1) else { return result }
         currentOctave = nextOctave
       }
-      let tone = MIDINote.Tone(note, currentOctave)
-      result.append(MIDINote(tone: tone, duration: duration, velocity: velocity))
+      let tone = NoteGenerator.Tone(note, currentOctave)
+      result.append(NoteGenerator(tone: tone, duration: duration, velocity: velocity))
       previousNote = note
     }
 
     return result
   }
 
+  /**
+  initWithChord:octave:duration:velocity:
+
+  - parameter chord: Chord
+  - parameter octave: Octave
+  - parameter duration: Duration
+  - parameter velocity: Velocity
+  */
+  init(chord: Chord, octave: Octave, duration: Duration, velocity: Velocity) {
+    self.chord = chord
+    self.octave = octave
+    self.duration = duration
+    self.velocity = velocity
+  }
+
+  /**
+  initWithPattern:generator:
+
+  - parameter pattern: Chord.ChordPattern
+  - parameter generator: NoteGenerator
+  */
+  init(pattern: Chord.ChordPattern, generator: NoteGenerator) {
+    chord = Chord(generator.tone.note, pattern)
+    octave = generator.octave
+    duration = generator.duration
+    velocity = generator.velocity
+  }
 }
 
 extension ChordGenerator: MIDINoteGenerator {

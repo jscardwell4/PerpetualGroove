@@ -87,7 +87,7 @@ struct MIDINodeEvent: MIDIEvent {
 
       guard i ⟷ data.endIndex == 0 else { throw MIDIFileError(type: .InvalidLength, reason: "Incorrect number of bytes") }
 
-      let attributes = MIDINote(data[currentIndex ..< i])
+      let attributes = NoteGenerator(data[currentIndex ..< i])
       self = .Add(identifier: identifier, placement: placement, attributes: attributes)
     }
 
@@ -98,7 +98,7 @@ struct MIDINodeEvent: MIDIEvent {
           let placementBytes = placement.bytes
           bytes.append(Byte(placementBytes.count))
           bytes += placementBytes
-          if let noteAttributes = attributes as? MIDINote {
+          if let noteAttributes = attributes as? NoteGenerator {
             let attributesBytes = noteAttributes.bytes
             bytes.append(Byte(attributesBytes.count))
             bytes += attributesBytes

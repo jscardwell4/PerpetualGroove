@@ -1,5 +1,5 @@
 //
-//  MIDINote.swift
+//  NoteGenerator.swift
 //  PerpetualGroove
 //
 //  Created by Jason Cardwell on 8/28/15.
@@ -11,12 +11,12 @@ import MoonKit
 import CoreMIDI
 
 /** Structure that encapsulates MIDI information necessary for playing a note */
-struct MIDINote {
+struct NoteGenerator {
 
   var channel: UInt8 = 0
 
   /// The pitch and octave
-  var note: Tone = Tone(midi: 60)
+  var tone: Tone = Tone(midi: 60)
 
   /// The duration of the played note
   var duration: Duration = .Eighth
@@ -24,21 +24,38 @@ struct MIDINote {
   /// The dynmamics for the note
   var velocity: Velocity = .𝑚𝑓
 
+  /// The octave held by `tone`
+  var octave: Octave { get { return tone.octave } set { tone.octave = newValue } }
+
+  /// The pitch held by `tone`
+  var root: Note { get { return tone.note } set { tone.note = newValue } }
+
   init() {}
   init(tone: Tone, duration: Duration, velocity: Velocity) {
-    self.note = tone
+    self.tone = tone
     self.duration = duration
     self.velocity = velocity
+  }
+
+  /**
+  initWithGenerator:
+
+  - parameter generator: ChordGenerator
+  */
+  init(generator: ChordGenerator) {
+    self.init(tone: Tone(generator.chord.root, generator.octave),
+              duration: generator.duration,
+              velocity: generator.velocity)
   }
 
 }
 
 // MARK: - Tone
-extension MIDINote {
+extension NoteGenerator {
   /** An enumeration for specifying a note's pitch and octave */
   struct Tone: RawRepresentable, Equatable, MIDIConvertible, CustomStringConvertible {
 
-    var pitch: Note
+    var note: Note
     var octave: Octave
 
     static func indexForNote(note: Note) -> Int {
@@ -79,11 +96,11 @@ extension MIDINote {
     /**
     init:octave:
 
-    - parameter pitch: Pitch
+    - parameter note: Note
     - parameter octave: Octave
     */
-    init(_ pitch: Note, _ octave: Octave) {
-      self.pitch = pitch
+    init(_ note: Note, _ octave: Octave) {
+      self.note = note
       self.octave = octave
     }
 
@@ -93,7 +110,7 @@ extension MIDINote {
     - parameter value: Int
     */
     init(midi value: Byte) {
-      pitch = Tone.noteForIndex(Int(value) % 12)!
+      note = Tone.noteForIndex(Int(value) % 12)!
       octave = Octave(rawValue: Int(value / 12 - 1)) ?? .Four
     }
 
@@ -110,19 +127,19 @@ extension MIDINote {
         rawOctave = Int(rawOctaveString),
         octave = Octave(rawValue: rawOctave) else { return nil }
 
-      self.pitch = pitch; self.octave = octave
+      self.note = pitch; self.octave = octave
     }
 
-    var rawValue: String { return "\(pitch.rawValue)\(octave.rawValue)" }
+    var rawValue: String { return "\(note.rawValue)\(octave.rawValue)" }
 
-    var midi: Byte { return UInt8((octave.rawValue + 1) * 12 + Tone.indexForNote(pitch)) }
+    var midi: Byte { return UInt8((octave.rawValue + 1) * 12 + Tone.indexForNote(note)) }
 
     var description: String { return rawValue }
   }
 }
 
 // MARK: - MIDINoteGenerator
-extension MIDINote: MIDINoteGenerator {
+extension NoteGenerator: MIDINoteGenerator {
 
   /**
    receiveNoteOn:
@@ -132,7 +149,7 @@ extension MIDINote: MIDINoteGenerator {
   func receiveNoteOn(endPoint: MIDIEndpointRef, _ identifier: UInt64) throws {
     let packet = Packet(status: 0x90,
                         channel: channel,
-                        note: note.midi,
+                        note: tone.midi,
                         velocity: velocity.midi,
                         identifier: identifier)
     var packetList = packet.packetList
@@ -147,7 +164,7 @@ extension MIDINote: MIDINoteGenerator {
   func receiveNoteOff(endPoint: MIDIEndpointRef, _ identifier: UInt64) throws {
     let packet = Packet(status: 0x80,
                         channel: channel,
-                        note: note.midi,
+                        note: tone.midi,
                         velocity: velocity.midi,
                         identifier: identifier)
     var packetList = packet.packetList
@@ -162,7 +179,7 @@ extension MIDINote: MIDINoteGenerator {
   func sendNoteOn(outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws {
     let packet = Packet(status: 0x90,
       channel: channel,
-      note: note.midi,
+      note: tone.midi,
       velocity: velocity.midi,
       identifier: 0)
     var packetList = packet.packetList
@@ -177,7 +194,7 @@ extension MIDINote: MIDINoteGenerator {
   func sendNoteOff(outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws {
     let packet = Packet(status: 0x80,
       channel: channel,
-      note: note.midi,
+      note: tone.midi,
       velocity: velocity.midi,
       identifier: 0)
     var packetList = packet.packetList
@@ -187,9 +204,9 @@ extension MIDINote: MIDINoteGenerator {
 }
 
 // MARK: - ByteArrayConvertible
-extension MIDINote: ByteArrayConvertible {
+extension NoteGenerator: ByteArrayConvertible {
 
-  var bytes: [Byte] { return [channel, note.midi, velocity.midi] + duration.rawValue.bytes }
+  var bytes: [Byte] { return [channel, tone.midi, velocity.midi] + duration.rawValue.bytes }
 
   /**
   init:
@@ -199,25 +216,25 @@ extension MIDINote: ByteArrayConvertible {
   init!(_ bytes: [Byte]) {
     guard bytes.count >= 7 else { return }
     channel  = bytes[0]
-    note     = Tone(midi: bytes[1])
+    tone     = Tone(midi: bytes[1])
     velocity = Velocity(midi: bytes[2])
     duration = Duration(rawValue: String(bytes[3..<])) ?? .Eighth
   }
 }
 
 // MARK: - CustomStringConvertible
-extension MIDINote: CustomStringConvertible {
-  var description: String { return "{\(channel), \(note), \(duration), \(velocity)}" }
+extension NoteGenerator: CustomStringConvertible {
+  var description: String { return "{\(channel), \(tone), \(duration), \(velocity)}" }
 }
 
 // MARK: - Equatable
-extension MIDINote: Equatable {}
+extension NoteGenerator: Equatable {}
 
-func ==(lhs: MIDINote.Tone, rhs: MIDINote.Tone) -> Bool { return lhs.midi == rhs.midi }
+func ==(lhs: NoteGenerator.Tone, rhs: NoteGenerator.Tone) -> Bool { return lhs.midi == rhs.midi }
 
-func ==(lhs: MIDINote, rhs: MIDINote) -> Bool {
+func ==(lhs: NoteGenerator, rhs: NoteGenerator) -> Bool {
   return lhs.channel == rhs.channel
       && lhs.duration == rhs.duration
       && lhs.velocity == rhs.velocity
-      && lhs.note == rhs.note
+      && lhs.tone == rhs.tone
 }
