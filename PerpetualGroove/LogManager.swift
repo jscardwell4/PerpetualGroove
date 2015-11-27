@@ -60,13 +60,13 @@ final class LogManager: MoonKit.LogManager {
     addDefaultFileLoggerForContext(SequencerContext, subdirectory: "Sequencer")
     addDefaultFileLoggerForContext(SceneContext,     subdirectory: "Scene")
     addDefaultFileLoggerForContext(UIContext,        subdirectory: "UI")
-    logDebug("\n".join("main bundle: '\(NSBundle.mainBundle().bundlePath)'",
-                       "default log directory: '\(logsDirectory.path!)'"))
+    print("\n".join("main bundle: '\(NSBundle.mainBundle().bundlePath)'",
+                     "default log directory: '\(logsDirectory.path!)'"))
   }
 
   /** setDefaultLogContexts */
   static private func setDefaultLogContexts() {
-    MIDIDocumentManager.defaultLogContext     = MIDIFileContext ∪ .Console
+    MIDIDocumentManager.defaultLogContext     = MIDIFileContext// ∪ .Console
     MIDIDocument.defaultLogContext            = MIDIFileContext// ∪ .Console
     MIDIFile.defaultLogContext                = MIDIFileContext// ∪ .Console
     MIDIFileHeaderChunk.defaultLogContext     = MIDIFileContext// ∪ .Console
@@ -102,7 +102,7 @@ final class LogManager: MoonKit.LogManager {
     MIDINode.defaultLogContext            = SceneContext// ∪ .Console
     Placement.defaultLogContext           = SceneContext// ∪ .Console
 
-    MIDIPlayerViewController.defaultLogContext     = UIContext ∪ .Console
+    MIDIPlayerViewController.defaultLogContext     = UIContext// ∪ .Console
     PurgatoryViewController.defaultLogContext      = UIContext// ∪ .Console
     DocumentsViewController.defaultLogContext      = UIContext// ∪ .Console
     InstrumentViewController.defaultLogContext     = UIContext// ∪ .Console

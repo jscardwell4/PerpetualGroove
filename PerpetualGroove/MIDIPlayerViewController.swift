@@ -39,6 +39,7 @@ final class MIDIPlayerViewController: UIViewController {
   - parameter toSize: CGSize
   */
   private func transitionFromSize(fromSize: CGSize, toSize: CGSize, animated: Bool) {
+    print("\((__FILE__ as NSString).lastPathComponent): \(__LINE__) - \(__FUNCTION__)")
     guard fromSize.maxAxis != toSize.maxAxis else { return }
     layoutForSize(toSize)
     UIView.animateWithDuration(animated ? 0.25 : 0) { self.layoutForSize(toSize) }
@@ -71,6 +72,7 @@ final class MIDIPlayerViewController: UIViewController {
 
   /** viewDidLoad */
   override func viewDidLoad() {
+    print("\((__FILE__ as NSString).lastPathComponent): \(__LINE__) - \(__FUNCTION__)")
     super.viewDidLoad()
 
     documentName.text = nil
@@ -89,6 +91,7 @@ final class MIDIPlayerViewController: UIViewController {
   - parameter animated: Bool
   */
   override func viewDidAppear(animated: Bool) {
+    print("\((__FILE__ as NSString).lastPathComponent): \(__LINE__) - \(__FUNCTION__)")
     super.viewDidAppear(animated)
 
     guard !SettingsManager.initialized || !SettingsManager.iCloudStorage || NSFileManager.defaultManager().ubiquityIdentityToken != nil else {
@@ -100,6 +103,7 @@ final class MIDIPlayerViewController: UIViewController {
 
   /** viewDidLayoutSubviews */
   override func viewDidLayoutSubviews() {
+    print("\((__FILE__ as NSString).lastPathComponent): \(__LINE__) - \(__FUNCTION__)")
     super.viewDidLayoutSubviews()
 
     /**
@@ -140,14 +144,15 @@ final class MIDIPlayerViewController: UIViewController {
   - parameter sender: AnyObject?
   */
   override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    print("\((__FILE__ as NSString).lastPathComponent): \(__LINE__) - \(__FUNCTION__)")
     super.prepareForSegue(segue, sender: sender)
     switch segue.destinationViewController {
-      case let controller as MixerViewController:          mixerViewController          = controller
-      case let controller as InstrumentViewController:     instrumentViewController     = controller
-      case let controller as NoteViewController: noteAttributesViewController = controller
-      case let controller as DocumentsViewController:      documentsViewController      = controller
-      case let controller as TempoViewController:          tempoViewController          = controller
-      default:                                             break
+      case let controller as MixerViewController:      mixerViewController          = controller
+      case let controller as InstrumentViewController: instrumentViewController     = controller
+      case let controller as NoteViewController:       noteAttributesViewController = controller
+      case let controller as DocumentsViewController:  documentsViewController      = controller
+      case let controller as TempoViewController:      tempoViewController          = controller
+      default:                                         break
     }
   }
 
@@ -161,22 +166,22 @@ final class MIDIPlayerViewController: UIViewController {
     case None, Files, Note, Instrument, Mixer, Tempo
     var view: PopoverView? {
       switch self {
-        case .Files:          return MIDIPlayerViewController.currentInstance.documentsPopoverView
-        case .Note: return MIDIPlayerViewController.currentInstance.noteAttributesPopoverView
-        case .Instrument:     return MIDIPlayerViewController.currentInstance.instrumentPopoverView
-        case .Mixer:          return MIDIPlayerViewController.currentInstance.mixerPopoverView
-        case .Tempo:          return MIDIPlayerViewController.currentInstance.tempoPopoverView
-        case .None:           return nil
+        case .Files:      return MIDIPlayerViewController.currentInstance.documentsPopoverView
+        case .Note:       return MIDIPlayerViewController.currentInstance.noteAttributesPopoverView
+        case .Instrument: return MIDIPlayerViewController.currentInstance.instrumentPopoverView
+        case .Mixer:      return MIDIPlayerViewController.currentInstance.mixerPopoverView
+        case .Tempo:      return MIDIPlayerViewController.currentInstance.tempoPopoverView
+        case .None:       return nil
       }
     }
     var button: ImageButtonView? {
       switch self {
-        case .Files:          return MIDIPlayerViewController.currentInstance.documentsButton
-        case .Note: return MIDIPlayerViewController.currentInstance.noteAttributesButton
-        case .Instrument:     return MIDIPlayerViewController.currentInstance.instrumentButton
-        case .Mixer:          return MIDIPlayerViewController.currentInstance.mixerButton
-        case .Tempo:          return MIDIPlayerViewController.currentInstance.tempoButton
-        case .None:           return nil
+        case .Files:      return MIDIPlayerViewController.currentInstance.documentsButton
+        case .Note:       return MIDIPlayerViewController.currentInstance.noteAttributesButton
+        case .Instrument: return MIDIPlayerViewController.currentInstance.instrumentButton
+        case .Mixer:      return MIDIPlayerViewController.currentInstance.mixerButton
+        case .Tempo:      return MIDIPlayerViewController.currentInstance.tempoButton
+        case .None:       return nil
       }
     }
   }
@@ -196,21 +201,38 @@ final class MIDIPlayerViewController: UIViewController {
   // MARK: - Files
 
   @IBOutlet weak var documentsButton: ImageButtonView?
-  @IBOutlet weak var documentName: UITextField! {
-    didSet {
-//      documentName.font = Triump.rock2FontWithSize(24)
-      documentName.attributedPlaceholder = "Create New Document" ¶| [Eveleth.lightFontWithSize(24), UIColor.primaryColor]
-    }
-  }
+  @IBOutlet weak var documentName: UITextField!
 
   @IBOutlet weak var spinner: UIImageView! {
     didSet {
       spinner?.animationImages = (1 ... 8).flatMap({UIImage(named: "spinner\($0)")?.imageWithColor(.whiteColor())})
       spinner?.animationDuration = 0.8
-      spinner?.startAnimating()
+      spinner?.hidden = true
     }
   }
-  
+
+  /**
+  willOpenDocument:
+
+  - parameter notification: NSNotification
+  */
+  private func willOpenDocument(notification: NSNotification) {
+    print("\((__FILE__ as NSString).lastPathComponent): \(__LINE__) - \(__FUNCTION__)")
+    spinner.startAnimating()
+    spinner.hidden = false
+  }
+
+  /**
+  didOpenDocument:
+
+  - parameter notification: NSNotification
+  */
+  private func didOpenDocument(notification: NSNotification) {
+    print("\((__FILE__ as NSString).lastPathComponent): \(__LINE__) - \(__FUNCTION__)")
+    spinner.stopAnimating()
+    spinner.hidden = true
+  }
+
   /** documents */
   @IBAction private func documents() {
     if case .Files = popover { popover = .None } else { popover = .Files }
@@ -360,6 +382,7 @@ final class MIDIPlayerViewController: UIViewController {
   - parameter notification: NSNotification
   */
   private func didChangeDocument(notification: NSNotification) {
+    print("\((__FILE__ as NSString).lastPathComponent): \(__LINE__) - \(__FUNCTION__)")
     switch MIDIDocumentManager.currentDocument?.localizedName {
       case let text?: documentName.text = text; state ∪= [.DocumentLoaded]
       case nil:       documentName.text = nil;  state ∖= [.DocumentLoaded]
@@ -418,7 +441,14 @@ final class MIDIPlayerViewController: UIViewController {
 
     receptionist.observe(UIKeyboardDidHideNotification,
                 callback: weakMethod(self, MIDIPlayerViewController.didHideKeyboard))
-    
+
+    receptionist.observe(MIDIDocumentManager.Notification.WillOpenDocument,
+                    from: MIDIDocumentManager.self,
+                callback: weakMethod(self, MIDIPlayerViewController.willOpenDocument))
+
+    receptionist.observe(MIDIDocumentManager.Notification.DidOpenDocument,
+                    from: MIDIDocumentManager.self,
+                callback: weakMethod(self, MIDIPlayerViewController.didOpenDocument))
   }
 
   private struct State: OptionSetType, CustomStringConvertible {

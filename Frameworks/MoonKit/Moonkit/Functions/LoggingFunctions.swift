@@ -130,9 +130,9 @@ public func logIB(@autoclosure message: () -> String,
 {
   #if TARGET_INTERFACE_BUILDER
     guard LogManager.logLevelForFile(file) ∋ flag else { return }
-    backgroundDispatch {
+    backgroundDispatch { [message = message()] in
       guard let sourceDirectory = NSProcessInfo.processInfo().environment["IB_PROJECT_SOURCE_DIRECTORIES"] else { return }
-      let text = "\(NSDate()) [\(mach_absolute_time())] <\((file as NSString).lastPathComponent):\(line)> \(function)  \(message())"
+      let text = "\(NSDate()) [\(mach_absolute_time())] <\((file as NSString).lastPathComponent):\(line)> \(function)  \(message)"
       let _ = try? text.appendToFile("\(sourceDirectory)/IB.log")
     }
   #endif

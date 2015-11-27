@@ -432,6 +432,108 @@
                                                                     <action selector="tempoSliderValueDidChange" destination="BV1-FR-VrT" eventType="valueChanged" id="ZyQ-QR-NaN"/>
                                                                 </connections>
                                                             </view>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="pUb-F8-nPr">
+                                                                <rect key="frame" x="60" y="-20" width="96" height="124"/>
+                                                                <subviews>
+                                                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dWZ-Lj-xkl" customClass="ImageButtonView" customModule="MoonKit">
+                                                                        <rect key="frame" x="46" y="20" width="4" height="4"/>
+                                                                        <animations/>
+                                                                        <color key="tintColor" red="0.72547006609999998" green="0.70085549349999998" blue="0.66211640829999996" alpha="1" colorSpace="calibratedRGB"/>
+                                                                        <constraints>
+                                                                            <constraint firstAttribute="width" secondItem="dWZ-Lj-xkl" secondAttribute="height" multiplier="1:1" id="5UR-VU-7A1"/>
+                                                                        </constraints>
+                                                                        <userDefinedRuntimeAttributes>
+                                                                            <userDefinedRuntimeAttribute type="image" keyPath="image" value="pencil"/>
+                                                                            <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="pencil-selected"/>
+                                                                            <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
+                                                                            <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
+                                                                                <color key="value" red="0.72547006609999998" green="0.70085549349999998" blue="0.66211640829999996" alpha="1" colorSpace="calibratedRGB"/>
+                                                                            </userDefinedRuntimeAttribute>
+                                                                            <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
+                                                                                <color key="value" red="0.68166375160000003" green="0.38204258679999997" blue="0.25248548389999997" alpha="1" colorSpace="calibratedRGB"/>
+                                                                            </userDefinedRuntimeAttribute>
+                                                                            <userDefinedRuntimeAttribute type="color" keyPath="selectedTintColor">
+                                                                                <color key="value" red="0.72547006609999998" green="0.70085549349999998" blue="0.66211640829999996" alpha="1" colorSpace="calibratedRGB"/>
+                                                                            </userDefinedRuntimeAttribute>
+                                                                        </userDefinedRuntimeAttributes>
+                                                                        <variation key="default">
+                                                                            <mask key="constraints">
+                                                                                <exclude reference="5UR-VU-7A1"/>
+                                                                            </mask>
+                                                                        </variation>
+                                                                        <variation key="heightClass=regular-widthClass=regular">
+                                                                            <mask key="constraints">
+                                                                                <include reference="5UR-VU-7A1"/>
+                                                                            </mask>
+                                                                        </variation>
+                                                                    </view>
+                                                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZqP-Oy-b8H" customClass="ImageButtonView" customModule="MoonKit">
+                                                                        <rect key="frame" x="20" y="34" width="56" height="56"/>
+                                                                        <animations/>
+                                                                        <color key="tintColor" red="0.72547006607055664" green="0.70085549354553223" blue="0.6621164083480835" alpha="1" colorSpace="calibratedRGB"/>
+                                                                        <constraints>
+                                                                            <constraint firstAttribute="width" secondItem="ZqP-Oy-b8H" secondAttribute="height" multiplier="1:1" id="QNh-Z3-blP"/>
+                                                                        </constraints>
+                                                                        <userDefinedRuntimeAttributes>
+                                                                            <userDefinedRuntimeAttribute type="image" keyPath="image" value="eraser"/>
+                                                                            <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="eraser-selected"/>
+                                                                            <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
+                                                                            <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
+                                                                                <color key="value" red="0.72547006607055664" green="0.70085549354553223" blue="0.6621164083480835" alpha="1" colorSpace="calibratedRGB"/>
+                                                                            </userDefinedRuntimeAttribute>
+                                                                            <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
+                                                                                <color key="value" red="0.68166375160217285" green="0.38204258680343628" blue="0.2524854838848114" alpha="1" colorSpace="calibratedRGB"/>
+                                                                            </userDefinedRuntimeAttribute>
+                                                                            <userDefinedRuntimeAttribute type="color" keyPath="selectedTintColor">
+                                                                                <color key="value" red="0.72547006607055664" green="0.70085549354553223" blue="0.6621164083480835" alpha="1" colorSpace="calibratedRGB"/>
+                                                                            </userDefinedRuntimeAttribute>
+                                                                        </userDefinedRuntimeAttributes>
+                                                                        <variation key="default">
+                                                                            <mask key="constraints">
+                                                                                <exclude reference="QNh-Z3-blP"/>
+                                                                            </mask>
+                                                                        </variation>
+                                                                        <variation key="heightClass=regular-widthClass=regular">
+                                                                            <mask key="constraints">
+                                                                                <include reference="QNh-Z3-blP"/>
+                                                                            </mask>
+                                                                        </variation>
+                                                                    </view>
+                                                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jBC-fB-VOV" customClass="ImageButtonView" customModule="MoonKit">
+                                                                        <rect key="frame" x="46" y="100" width="4" height="4"/>
+                                                                        <animations/>
+                                                                        <color key="tintColor" red="0.72547006609999998" green="0.70085549349999998" blue="0.66211640829999996" alpha="1" colorSpace="calibratedRGB"/>
+                                                                        <constraints>
+                                                                            <constraint firstAttribute="width" secondItem="jBC-fB-VOV" secondAttribute="height" multiplier="1:1" id="qCu-eQ-TKv"/>
+                                                                        </constraints>
+                                                                        <userDefinedRuntimeAttributes>
+                                                                            <userDefinedRuntimeAttribute type="image" keyPath="image" value="generator"/>
+                                                                            <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="generator-selected"/>
+                                                                            <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
+                                                                            <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
+                                                                                <color key="value" red="0.72547006609999998" green="0.70085549349999998" blue="0.66211640829999996" alpha="1" colorSpace="calibratedRGB"/>
+                                                                            </userDefinedRuntimeAttribute>
+                                                                            <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
+                                                                                <color key="value" red="0.68166375160000003" green="0.38204258679999997" blue="0.25248548389999997" alpha="1" colorSpace="calibratedRGB"/>
+                                                                            </userDefinedRuntimeAttribute>
+                                                                            <userDefinedRuntimeAttribute type="color" keyPath="selectedTintColor">
+                                                                                <color key="value" red="0.72547006609999998" green="0.70085549349999998" blue="0.66211640829999996" alpha="1" colorSpace="calibratedRGB"/>
+                                                                            </userDefinedRuntimeAttribute>
+                                                                        </userDefinedRuntimeAttributes>
+                                                                        <variation key="default">
+                                                                            <mask key="constraints">
+                                                                                <exclude reference="qCu-eQ-TKv"/>
+                                                                            </mask>
+                                                                        </variation>
+                                                                        <variation key="heightClass=regular-widthClass=regular">
+                                                                            <mask key="constraints">
+                                                                                <include reference="qCu-eQ-TKv"/>
+                                                                            </mask>
+                                                                        </variation>
+                                                                    </view>
+                                                                </subviews>
+                                                                <animations/>
+                                                            </stackView>
                                                             <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" distribution="equalCentering" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="v6c-VS-mrm" userLabel="MetronomeBarBeatTimeStack">
                                                                 <rect key="frame" x="1" y="66" width="210" height="56"/>
                                                                 <subviews>
@@ -489,6 +591,9 @@
                                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TimeStackVertical"/>
                                                         </userDefinedRuntimeAttributes>
                                                         <variation key="default">
+                                                            <mask key="subviews">
+                                                                <exclude reference="pUb-F8-nPr"/>
+                                                            </mask>
                                                             <mask key="constraints">
                                                                 <exclude reference="Gw2-jc-gZL"/>
                                                                 <exclude reference="JIS-g3-iLp"/>
@@ -658,7 +763,7 @@
                                     <outlet property="contentView" destination="41G-aM-2HB" id="nD9-0T-yny"/>
                                 </connections>
                             </view>
-                            <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="spinner1" translatesAutoresizingMaskIntoConstraints="NO" id="53d-bc-Qlh" userLabel="Spinner">
+                            <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="spinner1" translatesAutoresizingMaskIntoConstraints="NO" id="53d-bc-Qlh" userLabel="Spinner">
                                 <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                                 <animations/>
                                 <color key="tintColor" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="calibratedRGB"/>
@@ -696,17 +801,17 @@
                                 <exclude reference="L5k-qi-Yb6"/>
                             </mask>
                             <mask key="constraints">
+                                <exclude reference="Bas-Md-R3C"/>
+                                <exclude reference="tjc-fy-Eqw"/>
                                 <exclude reference="JF0-3d-TlM"/>
                                 <exclude reference="byd-8v-duj"/>
                                 <exclude reference="x9p-rm-dbe"/>
-                                <exclude reference="Bas-Md-R3C"/>
-                                <exclude reference="tjc-fy-Eqw"/>
+                                <exclude reference="CAu-z8-d5k"/>
+                                <exclude reference="xu4-CY-JBV"/>
                                 <exclude reference="BtT-VP-Fff"/>
                                 <exclude reference="RcU-6e-GRW"/>
                                 <exclude reference="qJJ-cs-JQx"/>
                                 <exclude reference="qch-rM-rEc"/>
-                                <exclude reference="xu4-CY-JBV"/>
-                                <exclude reference="CAu-z8-d5k"/>
                             </mask>
                         </variation>
                         <variation key="widthClass=compact">
@@ -729,15 +834,15 @@
                         </variation>
                         <variation key="heightClass=regular-widthClass=regular">
                             <mask key="constraints">
+                                <include reference="Bas-Md-R3C"/>
+                                <include reference="tjc-fy-Eqw"/>
                                 <include reference="JF0-3d-TlM"/>
                                 <include reference="byd-8v-duj"/>
                                 <include reference="x9p-rm-dbe"/>
-                                <include reference="Bas-Md-R3C"/>
-                                <include reference="tjc-fy-Eqw"/>
+                                <include reference="CAu-z8-d5k"/>
+                                <include reference="xu4-CY-JBV"/>
                                 <include reference="RcU-6e-GRW"/>
                                 <include reference="qch-rM-rEc"/>
-                                <include reference="xu4-CY-JBV"/>
-                                <include reference="CAu-z8-d5k"/>
                             </mask>
                         </variation>
                     </view>
@@ -853,9 +958,6 @@
                                                         <userDefinedRuntimeAttributes>
                                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="Message"/>
                                                         </userDefinedRuntimeAttributes>
-                                                        <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
-                                                            <rect key="frame" x="255.5" y="390" width="289" height="20"/>
-                                                        </variation>
                                                     </label>
                                                 </subviews>
                                                 <animations/>
@@ -920,12 +1022,18 @@
     <resources>
         <image name="dimple" width="64" height="64"/>
         <image name="dimple_fill" width="64" height="64"/>
+        <image name="eraser" width="56" height="56"/>
+        <image name="eraser-selected" width="56" height="56"/>
         <image name="files" width="56" height="56"/>
         <image name="files-selected" width="56" height="56"/>
+        <image name="generator" width="56" height="56"/>
+        <image name="generator-selected" width="56" height="56"/>
         <image name="horizontal_thumb" width="46" height="46"/>
         <image name="horizontal_track" width="20" height="46"/>
         <image name="metronome" width="56" height="56"/>
         <image name="metronome-selected" width="56" height="56"/>
+        <image name="pencil" width="56" height="56"/>
+        <image name="pencil-selected" width="56" height="56"/>
         <image name="play" width="56" height="56"/>
         <image name="play-selected" width="56" height="56"/>
         <image name="record" width="56" height="56"/>

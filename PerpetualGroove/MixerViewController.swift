@@ -42,6 +42,7 @@ final class MixerViewController: UICollectionViewController {
   - parameter sequence: Sequence
   */
   private func observeSequence(sequence: Sequence) {
+    print("\((__FILE__ as NSString).lastPathComponent): \(__LINE__) - \(__FUNCTION__)")
     receptionist.observe(Sequence.Notification.DidChangeTrack, from: sequence) {
       [weak self] _ in
         guard let idx = self?.sequence?.currentTrack?.index else { return }
@@ -61,6 +62,7 @@ final class MixerViewController: UICollectionViewController {
   - parameter sequence: Sequence
   */
   private func stopObservingSequence(sequence: Sequence) {
+    print("\((__FILE__ as NSString).lastPathComponent): \(__LINE__) - \(__FUNCTION__)")
     receptionist.stopObserving(Sequence.Notification.DidChangeTrack, from: sequence)
     receptionist.stopObserving(Sequence.Notification.DidAddTrack,    from: sequence)
     receptionist.stopObserving(Sequence.Notification.DidRemoveTrack, from: sequence)
@@ -68,6 +70,7 @@ final class MixerViewController: UICollectionViewController {
 
   /** addTrack */
   @IBAction func addTrack() {
+    print("\((__FILE__ as NSString).lastPathComponent): \(__LINE__) - \(__FUNCTION__)")
     do { try sequence?.insertTrackWithInstrument(Sequencer.instrumentWithCurrentSettings()) }
     catch { logError(error, message: "Failed to add new track") }
   }
@@ -177,6 +180,7 @@ final class MixerViewController: UICollectionViewController {
 
   /** viewDidLoad */
   override func viewDidLoad() {
+    print("\((__FILE__ as NSString).lastPathComponent): \(__LINE__) - \(__FUNCTION__)")
     super.viewDidLoad()
     view.translatesAutoresizingMaskIntoConstraints = false
     collectionView?.translatesAutoresizingMaskIntoConstraints = false
@@ -207,6 +211,7 @@ final class MixerViewController: UICollectionViewController {
   /** updateTracks */
   func updateTracks(notification: NSNotification) {
 
+    print("\((__FILE__ as NSString).lastPathComponent): \(__LINE__) - \(__FUNCTION__)")
     guard collectionView != nil else { return }
     guard sequence != nil else { fatalError("internal inconsistency…if sequence is nil what sent this notification?") }
 

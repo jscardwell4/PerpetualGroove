@@ -178,9 +178,9 @@ public class LogManager {
     }
     public static let Ignored  = LogContext(rawValue: Int.min)
     public static let Default  = LogContext(rawValue: 0b0000_0000)
-    public static let File     = LogContext(rawValue: 0b0000_1000)
-    public static let TTY      = LogContext(rawValue: 0b0000_1000)
-    public static let ASL      = LogContext(rawValue: 0b0000_1000)
+    public static let File     = LogContext(rawValue: 0b0000_0001)
+    public static let TTY      = LogContext(rawValue: 0b0000_0010)
+    public static let ASL      = LogContext(rawValue: 0b0000_0100)
     public static let MoonKit  = LogContext(rawValue: 0b0000_1000)
     public static let UnitTest = LogContext(rawValue: 0b0001_0000)
     

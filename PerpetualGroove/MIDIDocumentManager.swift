@@ -15,6 +15,9 @@ final class MIDIDocumentManager {
 
   /** initialize */
   static func initialize() {
+
+    print("\((__FILE__ as NSString).lastPathComponent): \(__LINE__) - \(__FUNCTION__)")
+
     queue.async {
 
       guard state ∌ .Initialized else { return }
@@ -76,7 +79,20 @@ final class MIDIDocumentManager {
 
 
   // MARK: - Tracking state
-  private static var state: State = [] { didSet { logSyncDebug("\(oldValue) ➞ \(state)") } }
+  private static var state: State = [] {
+    didSet {
+      print("\((__FILE__ as NSString).lastPathComponent): \(__LINE__) - \(__FUNCTION__)")
+      logDebug("\(oldValue) ➞ \(state)")
+
+      let modifiedState = state ⊻ oldValue
+
+      if modifiedState ∋ .OpeningDocument {
+        dispatchToMain {
+          (openingDocument ? Notification.WillOpenDocument : Notification.DidOpenDocument).post(object: self)
+        }
+      }
+    }
+  }
 
   static var openingDocument: Bool { return state ∋ .OpeningDocument }
   static var gatheringMetadataItems: Bool { return state ∋ .GatheringMetadataItems }
@@ -149,6 +165,7 @@ final class MIDIDocumentManager {
   // MARK: - Items
 
   static private func updateStorageLocation() {
+    print("\((__FILE__ as NSString).lastPathComponent): \(__LINE__) - \(__FUNCTION__)")
     switch (SettingsManager.iCloudStorage, storageLocation) {
       case (true, .Local), (true, .iCloud) where state ∌ .Initialized:
         storageLocation = .iCloud
@@ -178,7 +195,6 @@ final class MIDIDocumentManager {
   - returns: [DocumentItem]
   */
   static private func currentItems() -> [DocumentItem] {
-    logDebug("")
     switch storageLocation {
       case .iCloud: return metadataItems
       case .Local:  return localItems
@@ -251,7 +267,6 @@ final class MIDIDocumentManager {
 
   /** refreshLocalItems */
   static private func refreshLocalItems() {
-    logDebug("")
     guard let fileWrappers = directoryMonitor.directoryWrapper.fileWrappers?.values else { return }
     let localDocumentItems: [LocalDocumentItem] = fileWrappers.flatMap({[directory = directoryMonitor.directoryURL] in
       guard let name = $0.preferredFilename else { return nil }
@@ -350,6 +365,7 @@ final class MIDIDocumentManager {
   - parameter document: MIDIDocument
   */
   static func openDocument(document: MIDIDocument) {
+    print("\((__FILE__ as NSString).lastPathComponent): \(__LINE__) - \(__FUNCTION__)")
     queue.async {
       guard state ∌ .OpeningDocument else { logWarning("already opening a document"); return }
       logDebug("opening document '\(document.fileURL.path ?? "???")'")
@@ -382,6 +398,7 @@ final class MIDIDocumentManager {
   - parameter data: NSData?
   */
   static private func openBookmarkedDocument(data: NSData?) throws {
+    print("\((__FILE__ as NSString).lastPathComponent): \(__LINE__) - \(__FUNCTION__)")
     guard let data = data else { return }
     let url = try NSURL(byResolvingBookmarkData: data, options: .WithoutUI, relativeToURL: nil, bookmarkDataIsStale: nil)
     logDebug("opening bookmarked file at path '\(String(CString: url.fileSystemRepresentation, encoding: NSUTF8StringEncoding)!)'")
@@ -457,7 +474,7 @@ extension MIDIDocumentManager {
 extension MIDIDocumentManager {
 
   enum Notification: String, NotificationType, NotificationNameType {
-    case DidUpdateItems, DidChangeDocument, DidCreateDocument
+    case DidUpdateItems, DidChangeDocument, DidCreateDocument, WillOpenDocument, DidOpenDocument
     enum Key: String, NotificationKeyType { case Changed, Added, Removed, FilePath }
     var object: AnyObject? { return MIDIDocumentManager.self }
   }

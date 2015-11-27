@@ -130,7 +130,9 @@ final class Sequencer {
 
   // MARK: - Tracks
 
-  static private var state: State = [] { didSet { logDebug("didSet…old state: \(oldValue); new state: \(state)") } }
+  static private var state: State = [] {
+    didSet { logDebug("didSet…old state: \(oldValue); new state: \(state)") }
+  }
   
   static private(set) var soundSets: [SoundSetType] = []
 

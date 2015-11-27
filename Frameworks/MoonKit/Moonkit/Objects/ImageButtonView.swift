@@ -16,10 +16,38 @@ public class ImageButtonView: ToggleControl {
 
   // MARK: - Images
 
-  @IBInspectable public var image:            UIImage? { didSet { refresh() } }
-  @IBInspectable public var highlightedImage: UIImage? { didSet { refresh() } }
-  @IBInspectable public var disabledImage:    UIImage? { didSet { refresh() } }
-  @IBInspectable public var selectedImage:    UIImage? { didSet { refresh() } }
+  @IBInspectable public var image: UIImage? { 
+    didSet { 
+      if let image = image where image.renderingMode != .AlwaysTemplate {
+        self.image = image.imageWithRenderingMode(.AlwaysTemplate)
+      }
+      refresh() 
+    } 
+  }
+  @IBInspectable public var highlightedImage: UIImage? { 
+    didSet { 
+      if let highlightedImage = highlightedImage where highlightedImage.renderingMode != .AlwaysTemplate {
+        self.highlightedImage = highlightedImage.imageWithRenderingMode(.AlwaysTemplate)
+      }
+      refresh() 
+    } 
+  }
+  @IBInspectable public var disabledImage: UIImage? { 
+    didSet { 
+      if let disabledImage = disabledImage where disabledImage.renderingMode != .AlwaysTemplate {
+        self.disabledImage = disabledImage.imageWithRenderingMode(.AlwaysTemplate)
+      }
+      refresh() 
+    } 
+  }
+  @IBInspectable public var selectedImage: UIImage? { 
+    didSet { 
+      if let selectedImage = selectedImage where selectedImage.renderingMode != .AlwaysTemplate {
+        self.selectedImage = selectedImage.imageWithRenderingMode(.AlwaysTemplate)
+      }
+      refresh() 
+    } 
+  }
 
   private weak var _currentImage: UIImage? { didSet { if _currentImage != oldValue { setNeedsDisplay() } } }
   public var currentImage: UIImage? { return _currentImage ?? image }

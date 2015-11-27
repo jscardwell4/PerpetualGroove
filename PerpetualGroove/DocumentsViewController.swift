@@ -202,19 +202,19 @@ final class DocumentsViewController: UICollectionViewController {
 
     switch (notification.addedItems, notification.removedItems) {
       case let (addedItems?, removedItems?) where _items !⚭ addedItems && removedItems ⊆ _items:
-        logSyncDebug("addedItems: \(addedItems.formattedDescription)\nremovedItems: \(removedItems.formattedDescription)")
+        logDebug("addedItems: \(addedItems.formattedDescription)\nremovedItems: \(removedItems.formattedDescription)")
         var items = _items
-        logSyncDebug("items: \(items.formattedDescription)")
+        logDebug("items: \(items.formattedDescription)")
         let indexPathsToRemove = indexPathsForItems(removedItems)
-        logSyncDebug("removing items at indices \(indexPathsToRemove.map({$0.item}))")
+        logDebug("removing items at indices \(indexPathsToRemove.map({$0.item}))")
         items ∖= removedItems
-        logSyncDebug("items ∖ removedItems: \(items.formattedDescription)")
+        logDebug("items ∖ removedItems: \(items.formattedDescription)")
         let startIndex = items.endIndex
         let endIndex = startIndex + addedItems.count
         let indexPathsToAdd = (startIndex ..< endIndex).map({NSIndexPath(forItem: $0, inSection: 1)})
-        logSyncDebug("inserting items at indices \(indexPathsToAdd.map({$0.item}))")
+        logDebug("inserting items at indices \(indexPathsToAdd.map({$0.item}))")
         items ∪= addedItems
-        logSyncDebug("items ∪ addedItems: \(items.formattedDescription)")
+        logDebug("items ∪ addedItems: \(items.formattedDescription)")
         _items = items
         collectionView?.performBatchUpdates({
           [unowned self] in
@@ -223,17 +223,17 @@ final class DocumentsViewController: UICollectionViewController {
           }, completion: nil)
 
       case let (nil, removedItems?) where removedItems ⊆ _items:
-        logSyncDebug("removedItems: \(removedItems.formattedDescription)")
+        logDebug("removedItems: \(removedItems.formattedDescription)")
         let indexPaths = indexPathsForItems(removedItems)
-        logSyncDebug("removing items at indices \(indexPaths.map({$0.item}))")
+        logDebug("removing items at indices \(indexPaths.map({$0.item}))")
         _items ∖= removedItems
         collectionView?.deleteItemsAtIndexPaths(indexPaths)
 
       case let (addedItems?, nil) where _items !⚭ addedItems:
-        logSyncDebug("addedItems: \(addedItems.formattedDescription)")
+        logDebug("addedItems: \(addedItems.formattedDescription)")
         let indexPaths = (_items.endIndex ..< _items.endIndex + (addedItems ∖ _items).count).map({NSIndexPath(forItem: $0, inSection: 1)})
         guard indexPaths.count > 0 else { break }
-        logSyncDebug("inserting items at indices \(indexPaths.map({$0.item}))")
+        logDebug("inserting items at indices \(indexPaths.map({$0.item}))")
         _items ∪= addedItems
         collectionView?.insertItemsAtIndexPaths(indexPaths)
 
