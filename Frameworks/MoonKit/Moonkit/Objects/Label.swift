@@ -11,10 +11,16 @@ import UIKit
 @IBDesignable
 public class Label: UILabel {
 
-  @IBInspectable public var gutter: UIEdgeInsets = .zeroInsets {
+  @IBInspectable public var gutterString: String {
+    get { return gutter.stringValue }
+    set { gutter = UIEdgeInsets(newValue) ?? .zeroInsets }
+  }
+
+  public var gutter: UIEdgeInsets = .zeroInsets {
     didSet {
       guard gutter != oldValue else { return }
       invalidateIntrinsicContentSize()
+      setNeedsDisplay()
     }
   }
 
@@ -82,7 +88,9 @@ public class Label: UILabel {
   - returns: CGSize
   */
   public override func intrinsicContentSize() -> CGSize {
-    return gutter.insetRect(CGRect(size: super.intrinsicContentSize())).size
+    let size = gutter.outsetRect(CGRect(size: super.intrinsicContentSize())).size
+    logIB("gutter: \(gutter); intrinsicContentSize: \(size)")
+    return size
   }
 
 }

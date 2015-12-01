@@ -48,6 +48,28 @@ public class LabelButton: ToggleControl {
     }
   }
 
+  public enum TextAlignment: String {
+    case Left, Center, Right
+
+    var value: NSTextAlignment {
+      switch self {
+        case .Left: return .Left
+        case .Center: return .Center
+        case .Right: return .Right
+      }
+    }
+  }
+
+  public var textAlignment: TextAlignment = .Center { didSet { setNeedsDisplay() } }
+
+  @IBInspectable public var textAlignmentString: String {
+    get { return textAlignment.rawValue }
+    set {
+      guard let alignment = TextAlignment(rawValue: newValue) where textAlignment != alignment else { return }
+      textAlignment = alignment
+    }
+  }
+
   private lazy var dummyBaselineView: UIView = {
     let view = UIView(frame: CGRect(x: 0, y: 0, width: self.bounds.width, height: self.font.ascender))
     view.userInteractionEnabled = false
@@ -83,7 +105,11 @@ public class LabelButton: ToggleControl {
   */
   public override func drawRect(rect: CGRect) {
     guard let text = text else { return }
-    text.drawInRect(rect, withAttributes: [NSFontAttributeName: font, NSForegroundColorAttributeName: tintColor])
+    text.drawInRect(rect, withAttributes: [
+      NSFontAttributeName: font,
+      NSForegroundColorAttributeName: tintColor,
+      NSParagraphStyleAttributeName: NSParagraphStyle.paragraphStyleWithAttributes(alignment: textAlignment.value)
+      ])
   }
 
 }

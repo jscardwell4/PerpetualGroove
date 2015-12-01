@@ -16,8 +16,6 @@ final class MIDIDocumentManager {
   /** initialize */
   static func initialize() {
 
-    print("\((__FILE__ as NSString).lastPathComponent): \(__LINE__) - \(__FUNCTION__)")
-
     queue.async {
 
       guard state ∌ .Initialized else { return }
@@ -81,7 +79,6 @@ final class MIDIDocumentManager {
   // MARK: - Tracking state
   private static var state: State = [] {
     didSet {
-      print("\((__FILE__ as NSString).lastPathComponent): \(__LINE__) - \(__FUNCTION__)")
       logDebug("\(oldValue) ➞ \(state)")
 
       let modifiedState = state ⊻ oldValue
@@ -164,27 +161,28 @@ final class MIDIDocumentManager {
 
   // MARK: - Items
 
+  /** updateStorageLocation */
   static private func updateStorageLocation() {
-    print("\((__FILE__ as NSString).lastPathComponent): \(__LINE__) - \(__FUNCTION__)")
+    let bookmarkData: NSData?
     switch (SettingsManager.iCloudStorage, storageLocation) {
       case (true, .Local), (true, .iCloud) where state ∌ .Initialized:
         storageLocation = .iCloud
         state ∪= [.GatheringMetadataItems]
         metadataQuery.startQuery()
         directoryMonitor.stopMonitoring()
-        do { try openBookmarkedDocument(SettingsManager.currentDocumentiCloud) }
-        catch { logError(error, message: "Failed to resolve bookmark data into a valid file url") }
+        bookmarkData = SettingsManager.currentDocumentiCloud
       case (false, .iCloud), (false, .Local) where state ∌ .Initialized:
         storageLocation = .Local
         metadataQuery.stopQuery()
         refreshLocalItems()
         directoryMonitor.startMonitoring()
-        do { try openBookmarkedDocument(SettingsManager.currentDocumentLocal) }
-        catch { logError(error, message: "Failed to resolve bookmark data into a valid file url") }
-
+        bookmarkData = SettingsManager.currentDocumentLocal
       default:
-        break
+        bookmarkData = nil
     }
+
+    do { try openBookmarkedDocument(bookmarkData) }
+    catch { logError(error, message: "Failed to resolve bookmark data into a valid file url") }
   }
 
   static private(set) var storageLocation: StorageLocation = SettingsManager.iCloudStorage ? .iCloud: .Local
@@ -365,7 +363,6 @@ final class MIDIDocumentManager {
   - parameter document: MIDIDocument
   */
   static func openDocument(document: MIDIDocument) {
-    print("\((__FILE__ as NSString).lastPathComponent): \(__LINE__) - \(__FUNCTION__)")
     queue.async {
       guard state ∌ .OpeningDocument else { logWarning("already opening a document"); return }
       logDebug("opening document '\(document.fileURL.path ?? "???")'")
@@ -398,7 +395,6 @@ final class MIDIDocumentManager {
   - parameter data: NSData?
   */
   static private func openBookmarkedDocument(data: NSData?) throws {
-    print("\((__FILE__ as NSString).lastPathComponent): \(__LINE__) - \(__FUNCTION__)")
     guard let data = data else { return }
     let url = try NSURL(byResolvingBookmarkData: data, options: .WithoutUI, relativeToURL: nil, bookmarkDataIsStale: nil)
     logDebug("opening bookmarked file at path '\(String(CString: url.fileSystemRepresentation, encoding: NSUTF8StringEncoding)!)'")

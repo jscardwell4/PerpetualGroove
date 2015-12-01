@@ -13,7 +13,6 @@ public class ToggleControl: TintColorControl {
 
   // MARK: - Toggling
 
-  // TODO: Make this work again
   /// Whether changes to `highlighted` should toggle `selected`
   @IBInspectable public var toggle: Bool = false
 
@@ -26,8 +25,6 @@ public class ToggleControl: TintColorControl {
       else if toggle && !toggleBegan && highlighted { toggleBegan = true }
     }
   }
-
-
 
   /// Overridden to implement optional toggling
   public override var selected: Bool { didSet { if selected != oldValue { toggleBegan = false } } }

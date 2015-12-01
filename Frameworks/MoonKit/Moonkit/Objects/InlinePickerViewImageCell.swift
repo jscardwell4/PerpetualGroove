@@ -14,8 +14,17 @@ final class InlinePickerViewImageCell: InlinePickerViewCell {
   private let imageView = UIImageView(autolayout: true)
 
   var image: UIImage? { didSet { imageView.image = image } }
+
+  var imageHeight: CGFloat? { didSet { setNeedsUpdateConstraints() } }
+  private weak var imageHeightConstraint: NSLayoutConstraint?
+
   var imageColor: UIColor? { didSet { imageView.tintColor = imageColor } }
-  var imageSelectedColor: UIColor? { didSet { guard selected else { return }; imageView.tintColor = imageSelectedColor } }
+  var imageSelectedColor: UIColor? {
+    didSet {
+      guard selected else { return }
+      imageView.tintColor = imageSelectedColor
+    }
+  }
 
   /** initializeIVARs */
   override func initializeIVARs() {
@@ -25,7 +34,11 @@ final class InlinePickerViewImageCell: InlinePickerViewCell {
     contentView.addSubview(imageView)
   }
 
-  override var selected: Bool { didSet { imageView.tintColor = selected ? imageSelectedColor : imageColor } }
+  override var selected: Bool {
+    didSet {
+      imageView.tintColor = selected ? imageSelectedColor : imageColor
+    }
+  }
 
   /**
   initWithFrame:
@@ -59,7 +72,24 @@ final class InlinePickerViewImageCell: InlinePickerViewCell {
   /** updateConstraints */
   override func updateConstraints() {
     super.updateConstraints()
-    constrain(𝗛|imageView|𝗛, 𝗩|imageView|𝗩)
+
+    let id = Identifier(self, "ImageViewAlignment")
+
+    removeConstraints(constraintsWithIdentifier(id))
+
+    switch (image, imageHeight, imageHeightConstraint) {
+      case let (.Some, imageHeight?, nil):
+        guard let constraint = (imageView.height => imageHeight --> id).constraint else { break }
+        constraint.active = true
+        imageHeightConstraint = constraint
+        imageView.constrain([imageView.centerX => centerX, imageView.centerY => centerY] --> id)
+      case let (.Some, imageHeight?, imageHeightConstraint?):
+        imageHeightConstraint.constant = imageHeight
+        imageView.constrain([imageView.centerX => centerX, imageView.centerY => centerY] --> id)
+      default: break
+    }
+
+    if imageHeightConstraint == nil { constrain([𝗛|imageView|𝗛, 𝗩|imageView|𝗩] --> id) }
   }
 
 }

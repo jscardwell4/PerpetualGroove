@@ -102,7 +102,7 @@ final class LogManager: MoonKit.LogManager {
     MIDINode.defaultLogContext            = SceneContext// ∪ .Console
     Placement.defaultLogContext           = SceneContext// ∪ .Console
 
-    MIDIPlayerViewController.defaultLogContext     = UIContext// ∪ .Console
+    MIDIPlayerViewController.defaultLogContext     = UIContext ∪ .Console
     PurgatoryViewController.defaultLogContext      = UIContext// ∪ .Console
     DocumentsViewController.defaultLogContext      = UIContext// ∪ .Console
     InstrumentViewController.defaultLogContext     = UIContext// ∪ .Console
@@ -114,6 +114,8 @@ final class LogManager: MoonKit.LogManager {
     DocumentItem.defaultLogContext                 = UIContext// ∪ .Console
     MixerCell.defaultLogContext                    = UIContext// ∪ .Console
     MixerViewController.defaultLogContext          = UIContext// ∪ .Console
+    RootViewController.defaultLogContext           = UIContext// ∪ .Console
+    TransportViewController.defaultLogContext      = UIContext// ∪ .Console
 
     SettingsManager.defaultLogContext = .File
   }
@@ -158,6 +160,8 @@ extension MIDINode: Loggable {}
 extension Placement: Loggable {}
 extension SKNode: Nameable {}
 
+extension RootViewController: Loggable {}
+extension TransportViewController: Loggable {}
 extension MIDIPlayerViewController: Loggable {}
 extension PurgatoryViewController: Loggable {}
 extension DocumentsViewController: Loggable {}

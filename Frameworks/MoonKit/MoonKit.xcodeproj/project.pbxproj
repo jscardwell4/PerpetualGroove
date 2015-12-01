@@ -295,12 +295,14 @@
 		C26A27F71B9532A900BD1698 /* Knob.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A27F61B9532A900BD1698 /* Knob.swift */; };
 		C2729AE11BEE9836004FA34F /* NSValue+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2729AE01BEE9836004FA34F /* NSValue+MoonKitAdditions.swift */; };
 		C27372851A1FC0750079624D /* UIColor+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27372841A1FC0750079624D /* UIColor+MoonKitAdditions.swift */; };
+		C27393DB1C0931DE004D694B /* ColorSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A6261E1A33598300152E97 /* ColorSlider.swift */; };
 		C274CB8A1B70FBBF00EC8E4A /* Form.swift in Sources */ = {isa = PBXBuildFile; fileRef = C274CB891B70FBBF00EC8E4A /* Form.swift */; };
 		C274CB8C1B70FBCF00EC8E4A /* FormField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C274CB8B1B70FBCF00EC8E4A /* FormField.swift */; };
 		C2776C2D1B9E6053002FE5A8 /* Index.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2776C2C1B9E6053002FE5A8 /* Index.swift */; };
 		C27953101AFEBA0300F72C80 /* AKPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C279530F1AFEBA0300F72C80 /* AKPickerView.swift */; };
 		C27953121AFED61200F72C80 /* FormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27953111AFED61200F72C80 /* FormViewController.swift */; };
 		C27978E41B17FF9E00B36BAD /* ZoomingCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27978E31B17FF9E00B36BAD /* ZoomingCollectionViewLayout.swift */; };
+		C27AC8991C0C9C7200762AAF /* ImageSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27AC8981C0C9C7200762AAF /* ImageSegmentedControl.swift */; };
 		C280ED3A1BF6678B0032447D /* LogFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C280ED391BF6678B0032447D /* LogFileManager.swift */; };
 		C28447111A3E051F005338AB /* LabeledCheckbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28447101A3E051F005338AB /* LabeledCheckbox.swift */; };
 		C284EA5C1A1EAD6700B07BA8 /* TouchTrackingGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = C284EA5B1A1EAD6700B07BA8 /* TouchTrackingGesture.swift */; };
@@ -423,7 +425,6 @@
 		C2CF986A1B0FD12900E32E41 /* PopoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CF98691B0FD12900E32E41 /* PopoverView.swift */; };
 		C2D406761BBA0F6700681DEF /* NSURL+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D406751BBA0F6700681DEF /* NSURL+MoonKitAdditions.swift */; };
 		C2D5F2421B97BC93005040EF /* Slider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D5F2411B97BC93005040EF /* Slider.swift */; };
-		C2D5F2431B97BDC3005040EF /* _Slider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A6261E1A33598300152E97 /* _Slider.swift */; };
 		C2D664F11B88CC6F00D70FFA /* Ratio.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D664F01B88CC6F00D70FFA /* Ratio.swift */; };
 		C2E043251B727547005F0675 /* XMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E043241B727547005F0675 /* XMLParser.swift */; };
 		C2E7C8321A1AA3F0006BC80E /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E7C8311A1AA3F0006BC80E /* Protocols.swift */; };
@@ -613,6 +614,7 @@
 		C279530F1AFEBA0300F72C80 /* AKPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AKPickerView.swift; sourceTree = "<group>"; };
 		C27953111AFED61200F72C80 /* FormViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormViewController.swift; sourceTree = "<group>"; };
 		C27978E31B17FF9E00B36BAD /* ZoomingCollectionViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoomingCollectionViewLayout.swift; sourceTree = "<group>"; };
+		C27AC8981C0C9C7200762AAF /* ImageSegmentedControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageSegmentedControl.swift; sourceTree = "<group>"; };
 		C280ED391BF6678B0032447D /* LogFileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogFileManager.swift; sourceTree = "<group>"; };
 		C28447101A3E051F005338AB /* LabeledCheckbox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabeledCheckbox.swift; sourceTree = "<group>"; };
 		C284EA5B1A1EAD6700B07BA8 /* TouchTrackingGesture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TouchTrackingGesture.swift; sourceTree = "<group>"; };
@@ -638,7 +640,7 @@
 		C2A169CF1B15386300E3A5A0 /* UIImage+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C2A46E651AD703E70030E3CC /* MoonKit.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = MoonKit.playground; path = Moonkit/MoonKit.playground; sourceTree = "<group>"; };
 		C2A5B6F11B482F4700F34491 /* NSParagraphStyle+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSParagraphStyle+MoonKitAdditions.swift"; sourceTree = "<group>"; };
-		C2A6261E1A33598300152E97 /* _Slider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _Slider.swift; sourceTree = "<group>"; };
+		C2A6261E1A33598300152E97 /* ColorSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorSlider.swift; sourceTree = "<group>"; };
 		C2A70E3A1ACC53D0009C2CF7 /* JSONValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = JSONValue.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		C2A70E401ACD8EBA009C2CF7 /* MoonKit Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "MoonKit Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2A70E431ACD8EBA009C2CF7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1235,7 +1237,7 @@
 		C2B328451BD2885A003363BD /* Controls */ = {
 			isa = PBXGroup;
 			children = (
-				C2A6261E1A33598300152E97 /* _Slider.swift */,
+				C2A6261E1A33598300152E97 /* ColorSlider.swift */,
 				C2CF38CE1B7FAFE00085B3D5 /* VerticalSlider.swift */,
 				C20534241BCB0A4400A9F040 /* ToggleControl.swift */,
 				C2618A731B7A68F900122EBA /* LabeledSlider.swift */,
@@ -1256,6 +1258,7 @@
 				C25C6F611BA8F23800B3CBAB /* ScrollWheel.swift */,
 				C2AFC9071BD675F60057F055 /* MarqueeField.swift */,
 				C2AFC9091BD678C60057F055 /* TintColorControl.swift */,
+				C27AC8981C0C9C7200762AAF /* ImageSegmentedControl.swift */,
 			);
 			name = Controls;
 			sourceTree = "<group>";
@@ -2087,6 +2090,7 @@
 				C2358F5719C78E0C00920F8D /* MSColorInputViewController.m in Sources */,
 				C2421D181BEFE884009BA8B1 /* ByteArrayConvertible.swift in Sources */,
 				C2358F5819C78E0C00920F8D /* MSPickerInputViewController.m in Sources */,
+				C27393DB1C0931DE004D694B /* ColorSlider.swift in Sources */,
 				C24A22951ADB45340065E7EA /* RawOptionSetFunctions.swift in Sources */,
 				C2C4B72C1AA951D700912951 /* NSManagedObject+MoonKitAdditions.swift in Sources */,
 				C2F84F431B14C4B700AF891D /* NSIndexSet+MoonKitAdditions.swift in Sources */,
@@ -2169,6 +2173,7 @@
 				C2AFC90A1BD678C60057F055 /* TintColorControl.swift in Sources */,
 				C2358F6D19C78E0C00920F8D /* MSError.m in Sources */,
 				C2358F6E19C78E0C00920F8D /* MSKVOReceptionist.m in Sources */,
+				C27AC8991C0C9C7200762AAF /* ImageSegmentedControl.swift in Sources */,
 				C2B9B40A1AC1C499005BA67C /* RegularExpression.swift in Sources */,
 				C2CA85241BC725250046AFC0 /* CGSize+MoonKitAdditions.swift in Sources */,
 				C2358F6F19C78E0C00920F8D /* MSLog.m in Sources */,
@@ -2229,7 +2234,6 @@
 				C2C482E519CA0225002E84A9 /* Stack.swift in Sources */,
 				C28E509B1A143FDC00DF3206 /* MultiselectGestureRecognizer.swift in Sources */,
 				C2F619E01BC599D00000891A /* Marquee.swift in Sources */,
-				C2D5F2431B97BDC3005040EF /* _Slider.swift in Sources */,
 				C2358F8519C78E0C00920F8D /* MSTouchReporterView.m in Sources */,
 				C2358F8619C78E0C00920F8D /* MSView.m in Sources */,
 				C2421D1A1BEFE8DE009BA8B1 /* Bytes.swift in Sources */,

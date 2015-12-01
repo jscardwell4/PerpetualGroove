@@ -120,7 +120,7 @@ final class MIDIDocument: UIDocument {
   func renameTo(name: String) {
     let (baseName, _) = name.baseNameExt
     logDebug("renaming document '\(localizedName)' ⟹ '\(baseName)'")
-    guard let url = fileURL.URLByDeletingLastPathComponent else { return }
+    guard name != localizedName, let url = fileURL.URLByDeletingLastPathComponent else { return }
     saveToURL(url + "\(baseName).midi", forSaveOperation: .ForCreating, completionHandler: nil)
 
   }

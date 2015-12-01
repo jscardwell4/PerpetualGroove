@@ -231,12 +231,13 @@ public class InlinePickerView: UIControl {
 
   public var defaultItemHeight: CGFloat {
     switch cellType {
-      case .Label: return ceil(max(font.lineHeight, selectedFont.lineHeight))// * 2
-      case .Image: return 36 //44
+      case .Label: return ceil(max(font.lineHeight, selectedFont.lineHeight))
+      case .Image: return 36 //ceil(images.map({$0.size.height}).maxElement() ?? 0)
     }
   }
 
-  public var itemHeight: CGFloat?
+  @IBInspectable public var itemHeight: CGFloat?
+  @IBInspectable public var imageHeight: CGFloat = 0 { didSet { layout.invalidateLayout() } }
   @IBInspectable public var itemPadding: CGFloat = 8.0 { didSet { reloadData() } }
   @IBInspectable public var usePerspective: Bool = false { didSet { updatePerspective() } }
 
@@ -308,6 +309,7 @@ extension InlinePickerView: UICollectionViewDataSource {
         imageCell.image = images[indexPath.item]
         imageCell.imageColor = itemColor
         imageCell.imageSelectedColor = selectedItemColor
+        imageCell.imageHeight = imageHeight > 0 ? imageHeight : nil
 
       default: break // Should be unreachable
     }

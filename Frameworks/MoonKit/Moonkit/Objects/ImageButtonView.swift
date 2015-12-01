@@ -14,6 +14,8 @@ public class ImageButtonView: ToggleControl {
 
   override public var tintColor: UIColor! { didSet { setNeedsDisplay() } }
 
+  public enum ImageState: String, Equatable, Hashable { case Default, Highlighted, Disabled, Selected }
+
   // MARK: - Images
 
   @IBInspectable public var image: UIImage? { 
@@ -47,6 +49,37 @@ public class ImageButtonView: ToggleControl {
       }
       refresh() 
     } 
+  }
+
+  /**
+  imageForState:
+
+  - parameter state: ImageState
+
+  - returns: UIImage?
+  */
+  public func imageForState(state: ImageState) -> UIImage? {
+    switch state {
+      case .Default: return image
+      case .Highlighted: return highlightedImage
+      case .Disabled: return disabledImage
+      case .Selected: return selectedImage
+    }
+  }
+
+  /**
+  setImage:forState:
+
+  - parameter image: UIImage?
+  - parameter forState: ImageState
+  */
+  public func setImage(image: UIImage?, forState state: ImageState) {
+    switch state {
+        case .Default: self.image = image
+        case .Highlighted: highlightedImage = image
+        case .Disabled: disabledImage = image
+        case .Selected: selectedImage = image
+    }
   }
 
   private weak var _currentImage: UIImage? { didSet { if _currentImage != oldValue { setNeedsDisplay() } } }

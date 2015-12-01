@@ -18,7 +18,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
   static var currentInstance: AppDelegate { return UIApplication.sharedApplication().delegate as! AppDelegate }
 
   var window: UIWindow?
-  private(set) weak var viewController: MIDIPlayerViewController!
+  private(set) weak var viewController: RootViewController!
 
   /** initialize */
   override class func initialize() {
@@ -49,7 +49,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         Sequencer.initialize()
       }
     }
-    viewController = window?.rootViewController as? MIDIPlayerViewController
+    viewController = window?.rootViewController as? RootViewController
     return true
   }
 

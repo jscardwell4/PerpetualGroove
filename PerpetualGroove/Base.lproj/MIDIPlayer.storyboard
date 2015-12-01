@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9060" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="6xH-va-xT7">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9051"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <mutableArray key="Latinotype - Triump-Rg-Rock-02.otf">
+            <string>Triump-Rg-Rock-02</string>
+        </mutableArray>
+    </customFonts>
+    <scenes>
+        <!--Player View Controller-->
+        <scene sceneID="Klf-hv-dkY">
+            <objects>
+                <viewController storyboardIdentifier="MIDIPlayer" id="6xH-va-xT7" customClass="MIDIPlayerViewController" customModule="Groove" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="3bO-nI-SWz"/>
+                        <viewControllerLayoutGuide type="bottom" id="MgW-0J-CjH"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="bEj-LH-pPP">
+                        <rect key="frame" x="0.0" y="0.0" width="487" height="575"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" verticalHuggingPriority="1000" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Awesome Sauce" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="i4O-SR-ImV">
+                                <rect key="frame" x="0.0" y="0.0" width="487" height="32"/>
+                                <animations/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <color key="textColor" red="0.72547006609999998" green="0.70085549349999998" blue="0.66211640829999996" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" name="Triump-Rg-Rock-02" family="Triump Rg Rock" pointSize="24"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="words" autocorrectionType="no" spellCheckingType="no" keyboardType="alphabet" keyboardAppearance="alert" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="DocumentName"/>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <outlet property="delegate" destination="6xH-va-xT7" id="7cP-70-k1G"/>
+                                </connections>
+                            </textField>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JSz-xf-acH" userLabel="MIDI Player" customClass="MIDIPlayerView" customModule="Groove" customModuleProvider="target">
+                                <rect key="frame" x="-0.5" y="39.5" width="488" height="487.5"/>
+                                <animations/>
+                                <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="calibratedRGB"/>
+                                <accessibility key="accessibilityConfiguration" identifier="MIDIPlayer"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="JSz-xf-acH" secondAttribute="height" multiplier="1:1" identifier="MIDIPlayerAspectRatio" id="EWs-d5-4VK"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="MIDIPlayer"/>
+                                </userDefinedRuntimeAttributes>
+                            </view>
+                            <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="spinner1" translatesAutoresizingMaskIntoConstraints="NO" id="Qhw-iu-ZQX" userLabel="Spinner" customClass="TemplateImageView" customModule="MoonKit">
+                                <rect key="frame" x="215" y="256" width="56" height="56"/>
+                                <animations/>
+                                <color key="tintColor" red="0.88567054270000001" green="0.84600132699999997" blue="0.78708314899999998" alpha="1" colorSpace="calibratedRGB"/>
+                                <accessibility key="accessibilityConfiguration" identifier="Spinner"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="Spinner"/>
+                                </userDefinedRuntimeAttributes>
+                            </imageView>
+                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gkj-sJ-IZN" userLabel="Tools" customClass="ImageSegmentedControl" customModule="MoonKit">
+                                <rect key="frame" x="307" y="535" width="160" height="40"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="bvY-A7-VNE">
+                                        <rect key="frame" x="0.0" y="0.0" width="160" height="40"/>
+                                        <subviews>
+                                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Axm-CN-6iz" userLabel="Add" customClass="ImageButtonView" customModule="MoonKit">
+                                                <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
+                                                <animations/>
+                                                <accessibility key="accessibilityConfiguration" identifier="AddButton"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="Axm-CN-6iz" secondAttribute="height" multiplier="1:1" id="ICk-J0-1AW"/>
+                                                </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="pencil"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="pencil-selected"/>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="AddButton"/>
+                                                </userDefinedRuntimeAttributes>
+                                            </view>
+                                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YHK-Is-Vea" userLabel="Remove" customClass="ImageButtonView" customModule="MoonKit">
+                                                <rect key="frame" x="60" y="0.0" width="40" height="40"/>
+                                                <animations/>
+                                                <accessibility key="accessibilityConfiguration" identifier="RemoveButton"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="YHK-Is-Vea" secondAttribute="height" multiplier="1:1" id="x9h-EF-oem"/>
+                                                </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="eraser"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="eraser-selected"/>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="RemoveButton"/>
+                                                </userDefinedRuntimeAttributes>
+                                            </view>
+                                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RVW-Dd-0QR" userLabel="Generator" customClass="ImageButtonView" customModule="MoonKit">
+                                                <rect key="frame" x="120" y="0.0" width="40" height="40"/>
+                                                <animations/>
+                                                <accessibility key="accessibilityConfiguration" identifier="GeneratorButton"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="RVW-Dd-0QR" secondAttribute="height" multiplier="1:1" id="fEe-z8-p4T"/>
+                                                </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="generator"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="generator-selected"/>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="GeneratorButton"/>
+                                                </userDefinedRuntimeAttributes>
+                                            </view>
+                                        </subviews>
+                                        <animations/>
+                                    </stackView>
+                                </subviews>
+                                <animations/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <accessibility key="accessibilityConfiguration" identifier="Tools"/>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="bvY-A7-VNE" secondAttribute="bottom" id="Bqt-LA-vr4"/>
+                                    <constraint firstItem="bvY-A7-VNE" firstAttribute="top" secondItem="gkj-sJ-IZN" secondAttribute="top" id="NRF-dp-Tlw"/>
+                                    <constraint firstAttribute="trailing" secondItem="bvY-A7-VNE" secondAttribute="trailing" id="Vk4-pc-Rw4"/>
+                                    <constraint firstItem="bvY-A7-VNE" firstAttribute="leading" secondItem="gkj-sJ-IZN" secondAttribute="leading" id="oHG-Xs-dCi"/>
+                                    <constraint firstAttribute="width" constant="160" id="qOr-GZ-Xvd"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
+                                        <color key="value" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="calibratedRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="selectedSegmentIndex">
+                                        <integer key="value" value="0"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="didSelectTool:" destination="6xH-va-xT7" eventType="valueChanged" id="Ugc-1g-ypp"/>
+                                    <outlet property="stack" destination="bvY-A7-VNE" id="dDk-1a-Lo1"/>
+                                </connections>
+                            </view>
+                        </subviews>
+                        <animations/>
+                        <color key="backgroundColor" red="0.20000000298023224" green="0.19607843458652496" blue="0.19215686619281769" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="i4O-SR-ImV" secondAttribute="trailing" id="7nS-JX-As3"/>
+                            <constraint firstItem="Qhw-iu-ZQX" firstAttribute="centerX" secondItem="JSz-xf-acH" secondAttribute="centerX" id="DHJ-lw-ylz"/>
+                            <constraint firstItem="JSz-xf-acH" firstAttribute="leading" secondItem="bEj-LH-pPP" secondAttribute="leading" priority="999" id="Frd-UB-tJr"/>
+                            <constraint firstItem="Qhw-iu-ZQX" firstAttribute="centerY" secondItem="JSz-xf-acH" secondAttribute="centerY" id="HgV-GR-Z2m"/>
+                            <constraint firstItem="JSz-xf-acH" firstAttribute="centerX" secondItem="bEj-LH-pPP" secondAttribute="centerX" id="ad4-rH-eaj"/>
+                            <constraint firstItem="gkj-sJ-IZN" firstAttribute="top" secondItem="JSz-xf-acH" secondAttribute="bottom" constant="8" symbolic="YES" id="hNv-vo-Y8U"/>
+                            <constraint firstItem="i4O-SR-ImV" firstAttribute="top" secondItem="3bO-nI-SWz" secondAttribute="bottom" id="mVO-0w-fZ0"/>
+                            <constraint firstItem="MgW-0J-CjH" firstAttribute="top" secondItem="gkj-sJ-IZN" secondAttribute="bottom" id="tt1-l6-rpJ"/>
+                            <constraint firstAttribute="trailing" secondItem="JSz-xf-acH" secondAttribute="trailing" priority="999" id="uIO-7b-Nwj"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="gkj-sJ-IZN" secondAttribute="trailing" id="vdc-lB-jYv"/>
+                            <constraint firstItem="JSz-xf-acH" firstAttribute="top" secondItem="i4O-SR-ImV" secondAttribute="bottom" constant="8" symbolic="YES" id="ycp-lE-YcG"/>
+                            <constraint firstItem="i4O-SR-ImV" firstAttribute="leading" secondItem="bEj-LH-pPP" secondAttribute="leading" id="yoX-wz-9lN"/>
+                        </constraints>
+                    </view>
+                    <nil key="simulatedStatusBarMetrics"/>
+                    <nil key="simulatedTopBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="487" height="575"/>
+                    <connections>
+                        <outlet property="documentName" destination="i4O-SR-ImV" id="w3K-VE-60D"/>
+                        <outlet property="midiPlayerView" destination="JSz-xf-acH" id="ofi-cC-JSG"/>
+                        <outlet property="spinner" destination="Qhw-iu-ZQX" id="3JM-k1-OXT"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="QVT-aD-hfO" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="294.5" y="412.5"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="eraser" width="56" height="56"/>
+        <image name="eraser-selected" width="56" height="56"/>
+        <image name="generator" width="56" height="56"/>
+        <image name="generator-selected" width="56" height="56"/>
+        <image name="pencil" width="56" height="56"/>
+        <image name="pencil-selected" width="56" height="56"/>
+        <image name="spinner1" width="56" height="56"/>
+    </resources>
+    <color key="tintColor" red="0.8434065580368042" green="0.78949379920959473" blue="0.71009701490402222" alpha="1" colorSpace="calibratedRGB"/>
+</document>

@@ -11,7 +11,7 @@ import MoonKit
 
 final class MixerLayout: UICollectionViewLayout {
 
-  let itemSize = CGSize(width: 100, height: 430)
+  let itemSize = CGSize(width: 100, height: 575)
 
   private typealias AttributesIndex = OrderedDictionary<NSIndexPath, UICollectionViewLayoutAttributes>
   private var storedAttributes: AttributesIndex = [:]
