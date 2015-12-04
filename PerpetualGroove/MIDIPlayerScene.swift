@@ -11,18 +11,18 @@ import MoonKit
 
 final class MIDIPlayerScene: SKScene {
 
-  private(set) var midiPlayer: MIDIPlayerNode!
+  private(set) var player: MIDIPlayerNode!
 
   private var contentCreated = false
 
-  static var currentInstance: MIDIPlayerScene? { return MIDIPlayerView.currentInstance?.midiPlayerScene }
+  static var currentInstance: MIDIPlayerScene? { return MIDIPlayerView.currentInstance?.playerScene }
 
   /** createContent */
   private func createContent() {
     scaleMode = .AspectFit
 
-    midiPlayer = MIDIPlayerNode(bezierPath: UIBezierPath(rect: frame))
-    addChild(midiPlayer)
+    player = MIDIPlayerNode(bezierPath: UIBezierPath(rect: frame))
+    addChild(player)
 
     physicsWorld.gravity = .zero
     physicsWorld.contactDelegate = self

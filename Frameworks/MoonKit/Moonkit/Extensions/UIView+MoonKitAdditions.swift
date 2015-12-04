@@ -228,7 +228,9 @@ public extension UIView {
 
   - returns: T?
   */
-  public func firstSubviewOfKind<T:UIView>(kind: T.Type) -> T? { return findFirst(subviews, {$0 as? T != nil}) as? T }
+  public func firstSubviewOfKind<T:UIView>(kind: T.Type) -> T? {
+    return findFirst(subviews, {$0 as? T != nil}) as? T
+  }
 
   /**
   subviewsOfType:

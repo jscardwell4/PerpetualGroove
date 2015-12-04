@@ -26,3 +26,16 @@ extension Weak: CustomStringConvertible {
     return "\(object.dynamicType)(\(unsafeAddressOf(object))"
   }
 }
+
+public func compact<C:RangeReplaceableCollectionType, T:AnyObject
+                     where C.Generator.Element == Weak<T>,
+                           C.SubSequence == C>(inout collection: C)
+{
+  var result = collection.prefix(0)
+  for element in collection where element.reference != nil { result.append(element) }
+  collection = result
+}
+
+public func compact<T:AnyObject>(inout set: Set<Weak<T>>) {
+  set = Set(set.filter({$0.reference != nil}))
+}

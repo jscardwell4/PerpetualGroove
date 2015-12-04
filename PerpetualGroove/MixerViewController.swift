@@ -103,7 +103,7 @@ final class MixerViewController: UICollectionViewController {
     guard section.cellCount(collectionView!) > index else { return }
     collectionView?.selectItemAtIndexPath(section[index], 
                                  animated: animated, 
-                           scrollPosition: .CenteredHorizontally)
+                           scrollPosition: .None)
   }
 
   enum ShiftDirection: String { case Left, Right }

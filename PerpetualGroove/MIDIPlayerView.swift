@@ -12,18 +12,17 @@ import MoonKit
 
 final class MIDIPlayerView: SKView {
 
-  var midiPlayerScene: MIDIPlayerScene? { return scene as? MIDIPlayerScene }
+  var playerScene: MIDIPlayerScene? { return scene as? MIDIPlayerScene }
 
   static var currentInstance: MIDIPlayerView? {
     guard MIDIPlayerViewController.currentInstance.isViewLoaded() else { return nil }
-    return MIDIPlayerViewController.currentInstance.midiPlayerView
+    return MIDIPlayerViewController.currentInstance.playerView
   }
 
   /** setup */
   private func setup() {
     ignoresSiblingOrder = true
     presentScene(MIDIPlayerScene(size: bounds.size))
-//    paused = true
   }
 
   /**

@@ -149,7 +149,7 @@ final class InstrumentTrack: Track {
   private var pendingID: Identifier?
 
   /// The set of `MIDINode` objects that have been added to the track
-  private var nodes: OrderedSet<Weak<MIDINode>> = []
+  private(set) var nodes: OrderedSet<Weak<MIDINode>> = []
 
   /// Index that maps the identifiers parsed from a file to the identifiers assigned to the generated nodes
   private var fileIDToNodeID: [Identifier:Identifier] = [:]
@@ -260,9 +260,9 @@ final class InstrumentTrack: Track {
   - parameter node: MIDINode
   */
   func removeNode(node: MIDINode) throws {
-    guard let idx = nodes.indexOf({$0.reference == node}), node = nodes.removeAtIndex(idx).reference else {
-      throw Error.NodeNotFound
-    }
+    guard let idx = nodes.indexOf({$0.reference == node}),
+      node = nodes.removeAtIndex(idx).reference else { throw Error.NodeNotFound }
+    
     let identifier = Identifier(ObjectIdentifier(node).uintValue)
     logDebug("removing node \(node.name!) \(identifier)")
 

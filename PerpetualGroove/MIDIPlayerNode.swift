@@ -11,9 +11,69 @@ import SpriteKit
 import MoonKit
 import typealias AudioToolbox.MusicDeviceGroupID
 
+protocol MIDIPlayerNodeDelegate: class {
+  init(playerNode: MIDIPlayerNode)
+  var active: Bool { get set }
+  func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?)
+  func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?)
+  func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?)
+  func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?)
+}
+
 final class MIDIPlayerNode: SKShapeNode {
 
-  static var currentInstance: MIDIPlayerNode? { return MIDIPlayerScene.currentInstance?.midiPlayer }
+  static var currentInstance: MIDIPlayerNode? { return MIDIPlayerScene.currentInstance?.player }
+
+  private lazy var addToolDelegate:       AddToolDelegate = AddToolDelegate(playerNode: self)
+  private lazy var removeToolDelegate:    RemoveToolDelegate = RemoveToolDelegate(playerNode: self)
+  private lazy var generatorToolDelegate: GeneratorToolDelegate = GeneratorToolDelegate(playerNode: self)
+
+  private weak var delegate: MIDIPlayerNodeDelegate? {
+    didSet {
+      guard oldValue !== delegate else { return }
+      switch delegate {
+        case let d? where d === addToolDelegate:       logDebug("addToolDelegate active")
+        case let d? where d === removeToolDelegate:    logDebug("removeToolDelegate active")
+        case let d? where d === generatorToolDelegate: logDebug("generatorToolDelegate active")
+        default: logDebug("no active delegate")
+      }
+    }
+  }
+
+  var activeTool: Tool = .Add { didSet { activateDelegateForTool(activeTool) } }
+
+  /**
+   delegateForTool:
+
+   - parameter tool: Tool
+
+    - returns: MIDIPlayerNodeDelegate
+  */
+  private func delegateForTool(tool: Tool) -> MIDIPlayerNodeDelegate {
+    switch tool {
+      case .Add: return addToolDelegate
+      case .Remove: return removeToolDelegate
+      case .Generator: return generatorToolDelegate
+    }
+  }
+
+  /**
+   activateDelegateForTool:
+
+   - parameter tool: Tool
+  */
+  private func activateDelegateForTool(tool: Tool) {
+    let toolDelegate: MIDIPlayerNodeDelegate
+    switch tool {
+      case .Add:      toolDelegate = addToolDelegate
+      case .Remove:   toolDelegate = removeToolDelegate
+      case .Generator: toolDelegate = generatorToolDelegate
+    }
+    guard delegate !== toolDelegate else { return }
+    delegate?.active = false
+    delegate = toolDelegate
+    delegate?.active = true
+  }
 
   // MARK: - Initialization
 
@@ -27,40 +87,47 @@ final class MIDIPlayerNode: SKShapeNode {
     name = "player"
     path = bezierPath.CGPath
     strokeColor = .primaryColor
+    userInteractionEnabled = true
 
     let borderRect = bezierPath.bounds
     let (minX, maxX, minY, maxY) = (borderRect.minX, borderRect.maxX, borderRect.minY, borderRect.maxY)
 
-    let leftEdge = SKNode()
-    leftEdge.name = "leftEdge"
-    let leftBody = SKPhysicsBody(edgeFromPoint: CGPoint(x: minX, y: minY), toPoint: CGPoint(x: minX, y: maxY))
-    leftBody.categoryBitMask = Edges.Left.rawValue
-    leftEdge.physicsBody = leftBody
-    addChild(leftEdge)
 
-    let topEdge = SKNode()
-    topEdge.name = "topEdge"
-    let topBody = SKPhysicsBody(edgeFromPoint: CGPoint(x: minX, y: maxY), toPoint: CGPoint(x: maxX, y: maxY))
-    topBody.categoryBitMask = Edges.Top.rawValue
-    topEdge.physicsBody = topBody
-    addChild(topEdge)
+    addChild({
+      let node = SKNode()
+      node.name = "leftEdge"
+      let leftBody = SKPhysicsBody(edgeFromPoint: CGPoint(x: minX, y: minY), toPoint: CGPoint(x: minX, y: maxY))
+      leftBody.categoryBitMask = Edges.Left.rawValue
+      node.physicsBody = leftBody
+      return node
+    }())
 
-    let rightEdge = SKNode()
-    rightEdge.name = "rightEdge"
-    let rightBody = SKPhysicsBody(edgeFromPoint: CGPoint(x: maxX, y: maxY), toPoint: CGPoint(x: maxX, y: minY))
-    rightBody.categoryBitMask = Edges.Right.rawValue
-    rightEdge.physicsBody = rightBody
-    addChild(rightEdge)
+    addChild({
+      let node = SKNode()
+      node.name = "topEdge"
+      let topBody = SKPhysicsBody(edgeFromPoint: CGPoint(x: minX, y: maxY), toPoint: CGPoint(x: maxX, y: maxY))
+      topBody.categoryBitMask = Edges.Top.rawValue
+      node.physicsBody = topBody
+      return node
+    }())
 
-    let bottomEdge = SKNode()
-    bottomEdge.name = "bottomEdge"
-    let bottomBody = SKPhysicsBody(edgeFromPoint: CGPoint(x: minX, y: minY), toPoint: CGPoint(x: maxX, y: minY))
-    bottomBody.categoryBitMask = Edges.Bottom.rawValue
-    bottomEdge.physicsBody = bottomBody
-    addChild(bottomEdge)
+    addChild({
+      let node = SKNode()
+      node.name = "rightEdge"
+      let rightBody = SKPhysicsBody(edgeFromPoint: CGPoint(x: maxX, y: maxY), toPoint: CGPoint(x: maxX, y: minY))
+      rightBody.categoryBitMask = Edges.Right.rawValue
+      node.physicsBody = rightBody
+      return node
+    }())
 
-
-    addChild(MIDIPlayerFieldNode(bezierPath: bezierPath, delegate: self))
+    addChild({
+      let node = SKNode()
+      node.name = "bottomEdge"
+      let bottomBody = SKPhysicsBody(edgeFromPoint: CGPoint(x: minX, y: minY), toPoint: CGPoint(x: maxX, y: minY))
+      bottomBody.categoryBitMask = Edges.Bottom.rawValue
+      node.physicsBody = bottomBody
+      return node
+    }())
 
     receptionist.observe(Sequencer.Notification.DidReset,
                     from: Sequencer.self,
@@ -69,9 +136,11 @@ final class MIDIPlayerNode: SKShapeNode {
     receptionist.observe(MIDIDocumentManager.Notification.DidChangeDocument,
                     from: MIDIDocumentManager.self,
                 callback: weakMethod(self, MIDIPlayerNode.didReset))
+
+    activateDelegateForTool(activeTool)
   }
 
-  private(set) var midiNodes: [MIDINode] = [] { didSet { logDebug("player now has \(midiNodes.count) nodes") } }
+  private(set) var midiNodes: [MIDINode] = []
 
   /**
   init:
@@ -120,12 +189,59 @@ final class MIDIPlayerNode: SKShapeNode {
       midiNodes.append(midiNode)
       try track.addNode(midiNode)
       if !Sequencer.playing { Sequencer.play() }
-      Notification.DidAddNode.post()
+      Notification.DidAddNode.post(
+        object: self,
+        userInfo: [
+          Notification.Key.AddedNode: midiNode,
+          Notification.Key.AddedNodeTrack: track
+        ]
+      )
       logDebug("added node \(name)")
 
     } catch {
       logError(error)
     }
+  }
+
+
+  /**
+   touchesBegan:withEvent:
+
+   - parameter touches: Set<UITouch>
+   - parameter event: UIEvent?
+   */
+  override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    delegate?.touchesBegan(touches, withEvent: event)
+  }
+
+  /**
+   touchesCancelled:withEvent:
+
+   - parameter touches: Set<UITouch>?
+   - parameter event: UIEvent?
+   */
+  override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) {
+    delegate?.touchesCancelled(touches, withEvent: event)
+  }
+
+  /**
+   touchesEnded:withEvent:
+
+   - parameter touches: Set<UITouch>
+   - parameter event: UIEvent?
+   */
+  override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    delegate?.touchesEnded(touches, withEvent: event)
+  }
+
+  /**
+   touchesMoved:withEvent:
+
+   - parameter touches: Set<UITouch>
+   - parameter event: UIEvent?
+   */
+  override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    delegate?.touchesMoved(touches, withEvent: event)
   }
 
 }
@@ -168,7 +284,22 @@ extension MIDIPlayerNode {
   enum Notification: String, NotificationType, NotificationNameType {
     case DidAddNode, DidRemoveNode
     var object: AnyObject? { return MIDIPlayerNode.self }
-    typealias Key = String
+    enum Key: String, NotificationKeyType { case AddedNode, AddedNodeTrack }
   }
 
 }
+
+extension NSNotification {
+  var addedNode: MIDINode? {
+    return userInfo?[MIDIPlayerNode.Notification.Key.AddedNode.key] as? MIDINode
+  }
+  var addedNodeTrack: InstrumentTrack? {
+    return userInfo?[MIDIPlayerNode.Notification.Key.AddedNodeTrack.key] as? InstrumentTrack
+  }
+}
+
+// MARK: - Tool
+extension MIDIPlayerNode {
+  enum Tool { case Add, Remove, Generator }
+}
+

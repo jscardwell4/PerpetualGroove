@@ -155,7 +155,7 @@
                     <size key="freeformSize" width="487" height="575"/>
                     <connections>
                         <outlet property="documentName" destination="i4O-SR-ImV" id="w3K-VE-60D"/>
-                        <outlet property="midiPlayerView" destination="JSz-xf-acH" id="ofi-cC-JSG"/>
+                        <outlet property="playerView" destination="JSz-xf-acH" id="ZKy-bi-Pqo"/>
                         <outlet property="spinner" destination="Qhw-iu-ZQX" id="3JM-k1-OXT"/>
                     </connections>
                 </viewController>

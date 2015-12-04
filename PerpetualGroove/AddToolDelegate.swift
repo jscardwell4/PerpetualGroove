@@ -1,5 +1,5 @@
 //
-//  MIDIPlayerFieldNode.swift
+//  AddToolDelegate.swift
 //  PerpetualGroove
 //
 //  Created by Jason Cardwell on 8/12/15.
@@ -10,30 +10,18 @@ import UIKit
 import SpriteKit
 import MoonKit
 
-class MIDIPlayerFieldNode: SKShapeNode {
+final class AddToolDelegate: MIDIPlayerNodeDelegate {
 
-  unowned let delegate: MIDIPlayerNode
+  unowned let player: MIDIPlayerNode
+
+  var active = false
 
   /**
   initWithBezierPath:
 
   - parameter bezierPath: UIBezierPath
   */
-  init(bezierPath: UIBezierPath, delegate: MIDIPlayerNode) {
-    self.delegate = delegate
-    super.init()
-    name = "midiPlayerField"
-    path = bezierPath.CGPath
-    userInteractionEnabled = true
-    strokeColor = .primaryColor
-  }
-
-  /**
-  init:
-
-  - parameter aDecoder: NSCoder
-  */
-  required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+  init(playerNode: MIDIPlayerNode) { player = playerNode }
 
   // MARK: - Touch handling
 
@@ -46,7 +34,7 @@ class MIDIPlayerFieldNode: SKShapeNode {
       velocities = []
       if let touch = touch {
         timestamp = touch.timestamp
-        location = touch.locationInNode(self)
+        location = touch.locationInNode(player)
         let image = UIImage(named: "ball")!
         let color = (TrackColor.currentColor ?? TrackColor.nextColor).value
         let size = image.size * 0.75
@@ -54,7 +42,7 @@ class MIDIPlayerFieldNode: SKShapeNode {
         touchNode!.position = location
         touchNode!.name = "touchNode"
         touchNode!.colorBlendFactor = 1
-        addChild(touchNode!)
+        player.addChild(touchNode!)
       } else {
         timestamp = 0
         location = .null
@@ -68,7 +56,7 @@ class MIDIPlayerFieldNode: SKShapeNode {
 
   /** updateData */
   private func updateData() {
-    guard let timestamp = touch?.timestamp, location = touch?.locationInNode(self)
+    guard let timestamp = touch?.timestamp, location = touch?.locationInNode(player)
       where timestamp != self.timestamp && location != self.location else { return }
 
     velocities.append(CGVector((location - self.location) / (timestamp - self.timestamp)))
@@ -82,7 +70,9 @@ class MIDIPlayerFieldNode: SKShapeNode {
   - parameter touches: Set<UITouch>
   - parameter event: UIEvent?
   */
-  override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) { if touch == nil { touch = touches.first } }
+  func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    if active && touch == nil { touch = touches.first }
+  }
 
   /**
   touchesCancelled:withEvent:
@@ -90,7 +80,7 @@ class MIDIPlayerFieldNode: SKShapeNode {
   - parameter touches: Set<UITouch>?
   - parameter event: UIEvent?
   */
-  override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) { touch = nil }
+  func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) { touch = nil }
 
   /**
   touchesEnded:withEvent:
@@ -98,7 +88,7 @@ class MIDIPlayerFieldNode: SKShapeNode {
   - parameter touches: Set<UITouch>
   - parameter event: UIEvent?
   */
-  override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+  func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
     guard touch != nil && touches.contains(touch!) else { return }
     updateData()
     generate()
@@ -111,9 +101,12 @@ class MIDIPlayerFieldNode: SKShapeNode {
   - parameter touches: Set<UITouch>
   - parameter event: UIEvent?
   */
-  override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+  func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
     guard touch != nil && touches.contains(touch!) else { return }
-    guard let p = touch?.locationInNode(self) where containsPoint(p) else { touch = nil; return }
+    guard let p = touch?.locationInNode(player) where player.containsPoint(p) else {
+      touch = nil
+      return
+    }
     updateData()
     touchNode?.position = p
   }
@@ -123,6 +116,6 @@ class MIDIPlayerFieldNode: SKShapeNode {
   /** generate */
   private func generate() {
     guard velocities.count > 0 && !location.isNull else { return }
-    delegate.placeNew(Placement(position: location, vector: sum(velocities) / CGFloat(velocities.count)))
+    player.placeNew(Placement(position: location, vector: sum(velocities) / CGFloat(velocities.count)))
   }
 }

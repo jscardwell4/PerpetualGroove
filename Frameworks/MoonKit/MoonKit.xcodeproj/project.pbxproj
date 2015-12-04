@@ -447,6 +447,7 @@
 		C2F8C30F1A36133E004229FE /* TwoToneSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F8C30E1A36133E004229FE /* TwoToneSlider.swift */; };
 		C2F8C3171A362606004229FE /* UIResponder+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F8C3161A362606004229FE /* UIResponder+MoonKitAdditions.swift */; };
 		C2FE79E61B1E62590087F72C /* NSIndexPath+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FE79E51B1E62590087F72C /* NSIndexPath+MoonKitAdditions.swift */; };
+		C2FEB0271C0FCD5A000BD1B7 /* SKNode+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FEB0261C0FCD5A000BD1B7 /* SKNode+MoonKitAdditions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -875,6 +876,7 @@
 		C2F9414319BE7D01007B5CC1 /* GCDAsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncUdpSocket.h; sourceTree = "<group>"; };
 		C2F9414419BE7D01007B5CC1 /* GCDAsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncUdpSocket.m; sourceTree = "<group>"; };
 		C2FE79E51B1E62590087F72C /* NSIndexPath+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSIndexPath+MoonKitAdditions.swift"; sourceTree = "<group>"; };
+		C2FEB0261C0FCD5A000BD1B7 /* SKNode+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SKNode+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1019,6 +1021,7 @@
 				C2CA85271BC7263B0046AFC0 /* UIOffset+MoonKitAdditions.swift */,
 				C2CA85291BC726760046AFC0 /* CGAffineTransform+MoonKitAddtions.swift */,
 				C20534261BCB3BB900A9F040 /* UIControlState+MoonKitAdditions.swift */,
+				C2FEB0261C0FCD5A000BD1B7 /* SKNode+MoonKitAdditions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1996,6 +1999,7 @@
 				C2358F3319C78E0C00920F8D /* NSArray+MSKitAdditions.m in Sources */,
 				C2618A681B7A436400122EBA /* FormTextField.swift in Sources */,
 				C2358F3519C78E0C00920F8D /* NSDictionary+MSKitAdditions.m in Sources */,
+				C2FEB0271C0FCD5A000BD1B7 /* SKNode+MoonKitAdditions.swift in Sources */,
 				C2358F3619C78E0C00920F8D /* NSFetchedResultsController+MSKitAdditions.m in Sources */,
 				C2358F3719C78E0C00920F8D /* NSFetchRequest+MSKitAdditions.m in Sources */,
 				C2064FF81A13BF8100342FDE /* MSDictionary+MoonKitAdditions.swift in Sources */,

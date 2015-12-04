@@ -8,10 +8,11 @@
 
 import Foundation
 import UIKit
+import class SpriteKit.SKTexture
 import MoonKit
 
 // MARK: - Enumeration for specifying the color attached to a `MIDITrackType`
-enum TrackColor: UInt32, EnumerableType, CustomStringConvertible {
+enum TrackColor: UInt32, Equatable, Hashable, EnumerableType, CustomStringConvertible {
   case MuddyWaters        = 0xad6140
   case SteelBlue          = 0x386096
   case Celery             = 0x8ea83d
@@ -50,6 +51,7 @@ enum TrackColor: UInt32, EnumerableType, CustomStringConvertible {
 
 
   var value: UIColor { return UIColor(RGBHex: rawValue) }
+
   var description: String {
     switch self {
       case .MuddyWaters:        return "MuddyWaters"

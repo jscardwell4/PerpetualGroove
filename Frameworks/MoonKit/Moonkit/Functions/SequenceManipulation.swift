@@ -39,6 +39,19 @@ public enum SegmentOptions<PadType> {
   case UnpaddedLastGroup
 }
 public extension SequenceType {
+
+  /**
+   bisect:
+
+   - parameter predicate: (Self.Generator.Element) throws -> Bool
+  */
+  public func bisect(@noescape predicate: (Self.Generator.Element) throws -> Bool) rethrows -> ([Self.Generator.Element], [Self.Generator.Element]) {
+    var group1: [Self.Generator.Element] = [], group2: [Self.Generator.Element] = []
+    for element in self { if try predicate(element) { group1.append(element) } else { group2.append(element) } }
+    return (group1, group2)
+  }
+
+
   /**
   segment:options:
 

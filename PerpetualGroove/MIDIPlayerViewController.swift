@@ -46,9 +46,9 @@ final class MIDIPlayerViewController: UIViewController {
     spinner.hidden = false
   }
 
-  // MARK: - Scene-relatd properties
+  // MARK: - Scene-related properties
 
-  @IBOutlet weak var midiPlayerView: MIDIPlayerView!
+  @IBOutlet weak var playerView: MIDIPlayerView!
 
   // MARK: - Managing state
 
@@ -85,25 +85,15 @@ final class MIDIPlayerViewController: UIViewController {
 
   }
 
-  private var activeTool: Tool = .Add {
-    didSet {
-      logDebug("activeTool = \(activeTool)")
-    }
-  }
-
   @IBAction private func didSelectTool(sender: ImageSegmentedControl) {
     switch sender.selectedSegmentIndex {
-      case 0:  activeTool = .Add
-      case 1:  activeTool = .Remove
-      case 2:  activeTool = .Generator
+      case 0:  playerView.playerScene?.player.activeTool = .Add
+      case 1:  playerView.playerScene?.player.activeTool = .Remove
+      case 2:  playerView.playerScene?.player.activeTool = .Generator
       default: break
     }
   }
 
-}
-
-extension MIDIPlayerViewController {
-  enum Tool { case Add, Remove, Generator }
 }
 
 extension MIDIPlayerViewController: UITextFieldDelegate {
@@ -143,7 +133,9 @@ extension MIDIPlayerViewController: UITextFieldDelegate {
     guard let text = textField.text,
               fileName = MIDIDocumentManager.noncollidingFileName(text) else { return false }
 
-    if text != fileName { textField.text = fileName }
+    if let currentDocument = MIDIDocumentManager.currentDocument
+      where [fileName, currentDocument.localizedName] ∌ text { textField.text = fileName }
+
     return true
   }
 
@@ -153,8 +145,8 @@ extension MIDIPlayerViewController: UITextFieldDelegate {
   - parameter textField: UITextField
   */
   func textFieldDidEndEditing(textField: UITextField) {
-    guard let text = textField.text else { return }
-
-    MIDIDocumentManager.currentDocument?.renameTo(text)
+    guard let text = textField.text,
+      currentDocument = MIDIDocumentManager.currentDocument where currentDocument.localizedName != text else { return }
+    currentDocument.renameTo(text)
   }
 }

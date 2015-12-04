@@ -11,6 +11,7 @@ import SpriteKit
 import MoonKit
 import CoreMIDI
 
+// MARK: MIDINoteGenerator protocol
 protocol MIDINoteGenerator {
   var duration: Duration { get set }
   var velocity: Velocity { get set }
@@ -22,12 +23,13 @@ protocol MIDINoteGenerator {
   func receiveNoteOff(endPoint: MIDIEndpointRef, _ identifier: UInt64) throws
 }
 
+// MARK:- MIDINode
 final class MIDINode: SKSpriteNode {
 
   /// Holds the current state of the node
   private var state: State = []
 
-  // MARK: - Generating MIDI note events
+  // MARK: Generating MIDI note events
 
   private var client = MIDIClientRef()
   private(set) var endPoint = MIDIEndpointRef()
@@ -47,9 +49,10 @@ final class MIDINode: SKSpriteNode {
   /// Embedded in MIDI packets to allow a track with multiple nodes to identify the event's source
   private(set) lazy var identifier: Identifier = Identifier(ObjectIdentifier(self).uintValue)
 
-  private lazy var playAction:    Action = Action(key: .Play,    node: self)
-  private lazy var fadeOutAction: Action = Action(key: .FadeOut, node: self)
-  private lazy var fadeInAction:  Action = Action(key: .FadeIn,  node: self)
+  private lazy var playAction:             Action = Action(key: .Play,    node: self)
+  private lazy var fadeOutAction:          Action = Action(key: .FadeOut, node: self)
+  private lazy var fadeOutAndRemoveAction: Action = Action(key: .FadeOutAndRemove, node: self)
+  private lazy var fadeInAction:           Action = Action(key: .FadeIn,  node: self)
 
   /**
   runAction:
@@ -62,7 +65,7 @@ final class MIDINode: SKSpriteNode {
   func play() { runAction(playAction)  }
 
   /** fadeOut */
-  func fadeOut() { runAction(fadeOutAction) }
+  func fadeOut(remove remove: Bool = false) { runAction(remove ? fadeOutAndRemoveAction : fadeOutAction) }
 
   /** fadeIn */
   func fadeIn() { runAction(fadeInAction) }
@@ -133,7 +136,7 @@ final class MIDINode: SKSpriteNode {
     didSet { physicsBody.contactTestBitMask = edges.rawValue }
   }
 
-  // MARK: - Listening for Sequencer notifications
+  // MARK: Listening for Sequencer notifications
 
   private let receptionist: NotificationReceptionist = {
     let receptionist = NotificationReceptionist(callbackQueue: NSOperationQueue.mainQueue())
@@ -206,7 +209,7 @@ final class MIDINode: SKSpriteNode {
     state ⊻= .Paused
   }
 
-  // MARK: - Snapshots
+  // MARK: Snapshots
 
   typealias Snapshot = MIDINodeHistory.Snapshot
 
@@ -243,7 +246,19 @@ final class MIDINode: SKSpriteNode {
     currentSnapshot = snapshot
   }
 
-  // MARK: - Initialization
+  // MARK: Initialization
+
+  private static var textureCache: [TrackColor:(texture: SKTexture, normalMap: SKTexture)] = [:]
+  private static func texturesForColor(color: TrackColor) -> (texture: SKTexture, normalMap: SKTexture) {
+    if let tuple = textureCache[color] { return tuple }
+    else {
+      let texture = SKTexture(image: UIImage(named: "ball")!.imageWithColor(color.value))
+      let normalMap = texture.textureByGeneratingNormalMap()
+      let tuple = (texture, normalMap)
+      textureCache[color] = tuple
+      return tuple
+    }
+  }
 
   /**
   init:placement:instrument:note:
@@ -265,8 +280,9 @@ final class MIDINode: SKSpriteNode {
     self.track = track
     history = MIDINodeHistory(initialSnapshot: snapshot)
     noteGenerator = note
-    let image = UIImage(named: "ball")!
-    super.init(texture: SKTexture(image: image), color: track.color.value, size: image.size * 0.75)
+    let (texture, normalMap) = MIDINode.texturesForColor(track.color)
+
+    super.init(texture: texture, color: track.color.value, size: texture.size() * 0.75)
 
     let object = Sequencer.self
     typealias Notification = Sequencer.Notification
@@ -291,10 +307,11 @@ final class MIDINode: SKSpriteNode {
     try MIDISourceCreate(client, "\(name)", &endPoint) ➤ "Failed to create end point for node \(name)"
 
     self.name = name
-    colorBlendFactor = 1
+    colorBlendFactor = 0
 
     position = placement.position
     physicsBody.velocity = placement.vector
+    normalTexture = normalMap
   }
 
   /**
@@ -314,7 +331,7 @@ final class MIDINode: SKSpriteNode {
 
 }
 
-// MARK: - State
+// MARK: State
 extension MIDINode {
   struct State: OptionSetType, CustomStringConvertible {
     let rawValue: Int
@@ -335,12 +352,12 @@ extension MIDINode {
   }
 }
 
-// MARK: - Action
+// MARK: Action
 extension MIDINode {
   /// Type for representing MIDI-related node actions
   struct Action {
 
-    enum Key: String { case Play, FadeOut, FadeIn }
+    enum Key: String { case Play, FadeOut, FadeOutAndRemove, FadeIn }
 
     let key: String
     let action: SKAction
@@ -367,6 +384,11 @@ extension MIDINode {
           let fade = SKAction.fadeOutWithDuration(0.25)
           let pause = SKAction.runBlock({[weak node] in node?.physicsBody.resting = true})
           action = SKAction.sequence([fade, pause])
+
+        case .FadeOutAndRemove:
+          let fade = SKAction.fadeOutWithDuration(0.25)
+          let remove = SKAction.removeFromParent()
+          action = SKAction.sequence([fade, remove])
 
         case .FadeIn:
           let fade = SKAction.fadeInWithDuration(0.25)

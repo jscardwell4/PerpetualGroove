@@ -95,12 +95,14 @@ final class LogManager: MoonKit.LogManager {
     MIDIClock.defaultLogContext       = SequencerContext// ∪ .Console
     BarBeatTime.defaultLogContext     = SequencerContext// ∪ .Console
 
-    MIDIPlayerScene.defaultLogContext     = SceneContext// ∪ .Console
-    MIDINodeHistory.defaultLogContext     = SceneContext// ∪ .Console
-    MIDIPlayerNode.defaultLogContext      = SceneContext// ∪ .Console
-    MIDIPlayerFieldNode.defaultLogContext = SceneContext// ∪ .Console
-    MIDINode.defaultLogContext            = SceneContext// ∪ .Console
-    Placement.defaultLogContext           = SceneContext// ∪ .Console
+    MIDIPlayerScene.defaultLogContext       = SceneContext// ∪ .Console
+    MIDINodeHistory.defaultLogContext       = SceneContext// ∪ .Console
+    MIDIPlayerNode.defaultLogContext        = SceneContext ∪ .Console
+    AddToolDelegate.defaultLogContext       = SceneContext ∪ .Console
+    RemoveToolDelegate.defaultLogContext    = SceneContext ∪ .Console
+    GeneratorToolDelegate.defaultLogContext = SceneContext ∪ .Console
+    MIDINode.defaultLogContext              = SceneContext// ∪ .Console
+    Placement.defaultLogContext             = SceneContext// ∪ .Console
 
     MIDIPlayerViewController.defaultLogContext     = UIContext ∪ .Console
     PurgatoryViewController.defaultLogContext      = UIContext// ∪ .Console
@@ -155,7 +157,9 @@ extension MIDIEventContainer: Loggable {}
 
 extension MIDIPlayerScene: Loggable {}
 extension MIDIPlayerNode: Loggable {}
-extension MIDIPlayerFieldNode: Loggable {}
+extension AddToolDelegate: Loggable {}
+extension RemoveToolDelegate: Loggable {}
+extension GeneratorToolDelegate: Loggable {}
 extension MIDINode: Loggable {}
 extension Placement: Loggable {}
 extension SKNode: Nameable {}
