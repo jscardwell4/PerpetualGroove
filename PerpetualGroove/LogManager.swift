@@ -95,20 +95,21 @@ final class LogManager: MoonKit.LogManager {
     MIDIClock.defaultLogContext       = SequencerContext// ∪ .Console
     BarBeatTime.defaultLogContext     = SequencerContext// ∪ .Console
 
-    MIDIPlayerScene.defaultLogContext       = SceneContext// ∪ .Console
-    MIDINodeHistory.defaultLogContext       = SceneContext// ∪ .Console
-    MIDIPlayerNode.defaultLogContext        = SceneContext ∪ .Console
-    AddToolDelegate.defaultLogContext       = SceneContext ∪ .Console
-    RemoveToolDelegate.defaultLogContext    = SceneContext ∪ .Console
-    GeneratorToolDelegate.defaultLogContext = SceneContext ∪ .Console
-    MIDINode.defaultLogContext              = SceneContext// ∪ .Console
-    Placement.defaultLogContext             = SceneContext// ∪ .Console
+    MIDIPlayer.defaultLogContext      = SceneContext ∪ .Console
+    MIDIPlayerScene.defaultLogContext = SceneContext ∪ .Console
+    MIDINodeHistory.defaultLogContext = SceneContext// ∪ .Console
+    MIDIPlayerNode.defaultLogContext  = SceneContext ∪ .Console
+    AddTool.defaultLogContext         = SceneContext ∪ .Console
+    RemoveTool.defaultLogContext      = SceneContext ∪ .Console
+    GeneratorTool.defaultLogContext   = SceneContext ∪ .Console
+    MIDINode.defaultLogContext        = SceneContext ∪ .Console
+    Placement.defaultLogContext       = SceneContext// ∪ .Console
 
     MIDIPlayerViewController.defaultLogContext     = UIContext ∪ .Console
     PurgatoryViewController.defaultLogContext      = UIContext// ∪ .Console
     DocumentsViewController.defaultLogContext      = UIContext// ∪ .Console
     InstrumentViewController.defaultLogContext     = UIContext// ∪ .Console
-    NoteViewController.defaultLogContext           = UIContext// ∪ .Console
+    GeneratorViewController.defaultLogContext      = UIContext// ∪ .Console
     DocumentsViewLayout.defaultLogContext          = UIContext// ∪ .Console
     MixerLayout.defaultLogContext                  = UIContext// ∪ .Console
     BarBeatTimeLabel.defaultLogContext             = UIContext// ∪ .Console
@@ -155,11 +156,12 @@ extension MIDINodeEvent: Loggable {}
 extension MIDINodeHistory: Loggable {}
 extension MIDIEventContainer: Loggable {}
 
+extension MIDIPlayer: Loggable {}
 extension MIDIPlayerScene: Loggable {}
 extension MIDIPlayerNode: Loggable {}
-extension AddToolDelegate: Loggable {}
-extension RemoveToolDelegate: Loggable {}
-extension GeneratorToolDelegate: Loggable {}
+extension AddTool: Loggable {}
+extension RemoveTool: Loggable {}
+extension GeneratorTool: Loggable {}
 extension MIDINode: Loggable {}
 extension Placement: Loggable {}
 extension SKNode: Nameable {}
@@ -170,7 +172,7 @@ extension MIDIPlayerViewController: Loggable {}
 extension PurgatoryViewController: Loggable {}
 extension DocumentsViewController: Loggable {}
 extension InstrumentViewController: Loggable {}
-extension NoteViewController: Loggable {}
+extension GeneratorViewController: Loggable {}
 extension DocumentsViewLayout: Loggable {}
 extension MixerViewController: Loggable {}
 extension MixerLayout: Loggable {}

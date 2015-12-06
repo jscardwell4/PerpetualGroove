@@ -185,7 +185,6 @@ final class Sequence {
       tempoTrack = TempoTrack(sequence: self)
     }
 
-//    for trackChunk in trackChunks { addTrack(trackChunk) }
     for track in trackChunks.flatMap({ try? InstrumentTrack(sequence: self, trackChunk: $0) }) {
       addTrack(track)
     }

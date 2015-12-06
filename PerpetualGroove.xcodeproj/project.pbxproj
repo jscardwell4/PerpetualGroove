@@ -33,10 +33,11 @@
 		C2516B331C08F77F0060710B /* MIDIPlayer.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C2516B311C08F77F0060710B /* MIDIPlayer.storyboard */; };
 		C255C4321BD664B000CAEE9C /* Mixer.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C255C4311BD664B000CAEE9C /* Mixer.storyboard */; };
 		C255C4351BD664CD00CAEE9C /* Instrument.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C255C4331BD664CD00CAEE9C /* Instrument.storyboard */; };
-		C255C4371BD664E400CAEE9C /* NoteAttributes.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C255C4361BD664E400CAEE9C /* NoteAttributes.storyboard */; };
+		C255C4371BD664E400CAEE9C /* Generator.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C255C4361BD664E400CAEE9C /* Generator.storyboard */; };
 		C255C43A1BD664FB00CAEE9C /* Documents.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C255C4381BD664FB00CAEE9C /* Documents.storyboard */; };
 		C255C43C1BD6651100CAEE9C /* Tempo.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C255C43B1BD6651100CAEE9C /* Tempo.storyboard */; };
 		C2569E401B90005400EEB441 /* TempoTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2569E3F1B90005400EEB441 /* TempoTrack.swift */; };
+		C2576E0D1C13343E00F9A192 /* MIDIPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2576E0C1C13343E00F9A192 /* MIDIPlayer.swift */; };
 		C25EBC831B8BFAFA00E57665 /* MIDIFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25EBC821B8BFAFA00E57665 /* MIDIFile.swift */; };
 		C269D1D71BD7FA190084A7EE /* LogManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C269D1D61BD7FA190084A7EE /* LogManager.swift */; };
 		C26A09761BC96B97002EFEE1 /* MixerLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A09751BC96B97002EFEE1 /* MixerLayout.swift */; };
@@ -45,7 +46,7 @@
 		C26EEB301B7FDAF300EC6979 /* MixerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26EEB2F1B7FDAF300EC6979 /* MixerCell.swift */; };
 		C26FC16F1B7BA63300E271A3 /* MIDINode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26FC16E1B7BA63300E271A3 /* MIDINode.swift */; };
 		C26FC1711B7BAC7F00E271A3 /* MIDIPlayerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26FC1701B7BAC7F00E271A3 /* MIDIPlayerNode.swift */; };
-		C26FC1731B7BAEBD00E271A3 /* AddToolDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26FC1721B7BAEBD00E271A3 /* AddToolDelegate.swift */; };
+		C26FC1731B7BAEBD00E271A3 /* AddTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26FC1721B7BAEBD00E271A3 /* AddTool.swift */; };
 		C2729ADD1BEE6B3D004FA34F /* LocalDocumentItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2729ADC1BEE6B3D004FA34F /* LocalDocumentItem.swift */; };
 		C2729ADF1BEE6B7C004FA34F /* NSMetadataItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2729ADE1BEE6B7C004FA34F /* NSMetadataItem.swift */; };
 		C272B2A01B7D700600134E5F /* SoundSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C272B29F1B7D700600134E5F /* SoundSet.swift */; };
@@ -57,7 +58,7 @@
 		C2776C281B9DF50D002FE5A8 /* Emax Volume 5.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2776C1E1B9DF50D002FE5A8 /* Emax Volume 5.sf2 */; };
 		C2776C2A1B9DF50D002FE5A8 /* Emax Volume 6.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2776C1F1B9DF50D002FE5A8 /* Emax Volume 6.sf2 */; };
 		C2776C301B9E8E72002FE5A8 /* SF2File.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2207B901B9DC63300E4D65D /* SF2File.swift */; };
-		C27AC89B1C0E8ACC00762AAF /* RemoveToolDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27AC89A1C0E8ACC00762AAF /* RemoveToolDelegate.swift */; };
+		C27AC89B1C0E8ACC00762AAF /* RemoveTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27AC89A1C0E8ACC00762AAF /* RemoveTool.swift */; };
 		C27E18AD1B965F8500626314 /* Eveleth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BCD1B78EDEB00A68A64 /* Eveleth.framework */; };
 		C27E18AE1B965F8500626314 /* Eveleth.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BCD1B78EDEB00A68A64 /* Eveleth.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C27E18B21B965F8500626314 /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BD41B78EEC500A68A64 /* MoonKit.framework */; };
@@ -103,14 +104,14 @@
 		C2E705C51BBB17AE00636EF3 /* PurgatoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E705C41BBB17AE00636EF3 /* PurgatoryViewController.swift */; };
 		C2EA30531BB9DF3300020958 /* MIDIDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EA30521BB9DF3300020958 /* MIDIDocument.swift */; };
 		C2ECC5E31B9C7FFA0010E76E /* MIDINodeEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2ECC5E21B9C7FFA0010E76E /* MIDINodeEvent.swift */; };
-		C2EFA0EC1B823642002EBA3D /* NoteAttributesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EFA0EB1B823642002EBA3D /* NoteAttributesViewController.swift */; };
+		C2EFA0EC1B823642002EBA3D /* GeneratorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EFA0EB1B823642002EBA3D /* GeneratorViewController.swift */; };
 		C2EFA0EE1B824A2F002EBA3D /* AssetManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EFA0ED1B824A2F002EBA3D /* AssetManager.swift */; };
 		C2F2ADC21B90EBD300FF4836 /* Woodblock.wav in Resources */ = {isa = PBXBuildFile; fileRef = C2F2ADC11B90EBD300FF4836 /* Woodblock.wav */; };
 		C2F2ADC41B91098A00FF4836 /* NoteGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F2ADC31B91098A00FF4836 /* NoteGenerator.swift */; };
 		C2F2ADC61B91203700FF4836 /* Metronome.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F2ADC51B91203700FF4836 /* Metronome.swift */; };
 		C2F35DB91BB4507800ECB045 /* MIDIPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F35DB81BB4507800ECB045 /* MIDIPlayerView.swift */; };
 		C2F589F91BAC688F009166D5 /* BarBeatTimeLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F589F81BAC688F009166D5 /* BarBeatTimeLabel.swift */; };
-		C2FEB0251C0F6183000BD1B7 /* GeneratorToolDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FEB0241C0F6183000BD1B7 /* GeneratorToolDelegate.swift */; };
+		C2FEB0251C0F6183000BD1B7 /* GeneratorTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FEB0241C0F6183000BD1B7 /* GeneratorTool.swift */; };
 		C2FF79851BD05F1E002CBA79 /* CABarBeatTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FF79841BD05F1E002CBA79 /* CABarBeatTime.swift */; };
 		C2FF79871BD06115002CBA79 /* TimeSignature.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FF79861BD06115002CBA79 /* TimeSignature.swift */; };
 /* End PBXBuildFile section */
@@ -178,10 +179,11 @@
 		C2516B321C08F77F0060710B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MIDIPlayer.storyboard; sourceTree = "<group>"; };
 		C255C4311BD664B000CAEE9C /* Mixer.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Mixer.storyboard; path = Base.lproj/Mixer.storyboard; sourceTree = "<group>"; };
 		C255C4341BD664CD00CAEE9C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Instrument.storyboard; sourceTree = "<group>"; };
-		C255C4361BD664E400CAEE9C /* NoteAttributes.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = NoteAttributes.storyboard; path = Base.lproj/NoteAttributes.storyboard; sourceTree = "<group>"; };
+		C255C4361BD664E400CAEE9C /* Generator.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Generator.storyboard; path = Base.lproj/Generator.storyboard; sourceTree = "<group>"; };
 		C255C4391BD664FB00CAEE9C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Documents.storyboard; sourceTree = "<group>"; };
 		C255C43B1BD6651100CAEE9C /* Tempo.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Tempo.storyboard; path = Base.lproj/Tempo.storyboard; sourceTree = "<group>"; };
 		C2569E3F1B90005400EEB441 /* TempoTrack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TempoTrack.swift; sourceTree = "<group>"; };
+		C2576E0C1C13343E00F9A192 /* MIDIPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIPlayer.swift; sourceTree = "<group>"; };
 		C25EBC821B8BFAFA00E57665 /* MIDIFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIFile.swift; sourceTree = "<group>"; };
 		C269D1D61BD7FA190084A7EE /* LogManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogManager.swift; sourceTree = "<group>"; };
 		C26A09751BC96B97002EFEE1 /* MixerLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MixerLayout.swift; sourceTree = "<group>"; };
@@ -190,7 +192,7 @@
 		C26EEB2F1B7FDAF300EC6979 /* MixerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MixerCell.swift; sourceTree = "<group>"; };
 		C26FC16E1B7BA63300E271A3 /* MIDINode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINode.swift; sourceTree = "<group>"; };
 		C26FC1701B7BAC7F00E271A3 /* MIDIPlayerNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIPlayerNode.swift; sourceTree = "<group>"; };
-		C26FC1721B7BAEBD00E271A3 /* AddToolDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddToolDelegate.swift; sourceTree = "<group>"; };
+		C26FC1721B7BAEBD00E271A3 /* AddTool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddTool.swift; sourceTree = "<group>"; };
 		C2729ADC1BEE6B3D004FA34F /* LocalDocumentItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalDocumentItem.swift; sourceTree = "<group>"; };
 		C2729ADE1BEE6B7C004FA34F /* NSMetadataItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSMetadataItem.swift; sourceTree = "<group>"; };
 		C272B29F1B7D700600134E5F /* SoundSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundSet.swift; sourceTree = "<group>"; };
@@ -201,7 +203,7 @@
 		C2776C1D1B9DF50D002FE5A8 /* Emax Volume 4.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Emax Volume 4.sf2"; sourceTree = "<group>"; };
 		C2776C1E1B9DF50D002FE5A8 /* Emax Volume 5.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Emax Volume 5.sf2"; sourceTree = "<group>"; };
 		C2776C1F1B9DF50D002FE5A8 /* Emax Volume 6.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Emax Volume 6.sf2"; sourceTree = "<group>"; };
-		C27AC89A1C0E8ACC00762AAF /* RemoveToolDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoveToolDelegate.swift; sourceTree = "<group>"; };
+		C27AC89A1C0E8ACC00762AAF /* RemoveTool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoveTool.swift; sourceTree = "<group>"; };
 		C283B69B1BC02E3B007A4A36 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		C283B69D1BC0495A007A4A36 /* DocumentItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentItem.swift; sourceTree = "<group>"; };
 		C286CE1B1B73D2C10003FCBF /* PerpetualGroove.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = PerpetualGroove.playground; path = /Users/Moondeer/Projects/PerpetualGroove/PerpetualGroove.playground; sourceTree = "<absolute>"; };
@@ -249,14 +251,14 @@
 		C2E705C41BBB17AE00636EF3 /* PurgatoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PurgatoryViewController.swift; sourceTree = "<group>"; };
 		C2EA30521BB9DF3300020958 /* MIDIDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIDocument.swift; sourceTree = "<group>"; };
 		C2ECC5E21B9C7FFA0010E76E /* MIDINodeEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINodeEvent.swift; sourceTree = "<group>"; };
-		C2EFA0EB1B823642002EBA3D /* NoteAttributesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteAttributesViewController.swift; sourceTree = "<group>"; };
+		C2EFA0EB1B823642002EBA3D /* GeneratorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneratorViewController.swift; sourceTree = "<group>"; };
 		C2EFA0ED1B824A2F002EBA3D /* AssetManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssetManager.swift; sourceTree = "<group>"; };
 		C2F2ADC11B90EBD300FF4836 /* Woodblock.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Woodblock.wav; sourceTree = "<group>"; };
 		C2F2ADC31B91098A00FF4836 /* NoteGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteGenerator.swift; sourceTree = "<group>"; };
 		C2F2ADC51B91203700FF4836 /* Metronome.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Metronome.swift; sourceTree = "<group>"; };
 		C2F35DB81BB4507800ECB045 /* MIDIPlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIPlayerView.swift; sourceTree = "<group>"; };
 		C2F589F81BAC688F009166D5 /* BarBeatTimeLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BarBeatTimeLabel.swift; sourceTree = "<group>"; };
-		C2FEB0241C0F6183000BD1B7 /* GeneratorToolDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneratorToolDelegate.swift; sourceTree = "<group>"; };
+		C2FEB0241C0F6183000BD1B7 /* GeneratorTool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneratorTool.swift; sourceTree = "<group>"; };
 		C2FF79841BD05F1E002CBA79 /* CABarBeatTime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CABarBeatTime.swift; sourceTree = "<group>"; };
 		C2FF79861BD06115002CBA79 /* TimeSignature.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeSignature.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -350,6 +352,7 @@
 				C2CD18E01B7E681A00705922 /* Error.swift */,
 				C22FA58C1BC830D600162DB4 /* SettingsManager.swift */,
 				C269D1D61BD7FA190084A7EE /* LogManager.swift */,
+				C2576E0C1C13343E00F9A192 /* MIDIPlayer.swift */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -366,7 +369,7 @@
 				C255C43B1BD6651100CAEE9C /* Tempo.storyboard */,
 				C2516B2E1C08F47C0060710B /* Transport.storyboard */,
 				C255C4381BD664FB00CAEE9C /* Documents.storyboard */,
-				C255C4361BD664E400CAEE9C /* NoteAttributes.storyboard */,
+				C255C4361BD664E400CAEE9C /* Generator.storyboard */,
 				C255C4331BD664CD00CAEE9C /* Instrument.storyboard */,
 				C255C4311BD664B000CAEE9C /* Mixer.storyboard */,
 				C2E0433F1B72F4DC005F0675 /* Assets.xcassets */,
@@ -391,9 +394,9 @@
 				C22D93F01BADA24A00B04A2B /* MIDINodeHistory.swift */,
 				C2E043381B72F4DC005F0675 /* MIDIPlayerScene.swift */,
 				C26FC1701B7BAC7F00E271A3 /* MIDIPlayerNode.swift */,
-				C26FC1721B7BAEBD00E271A3 /* AddToolDelegate.swift */,
-				C27AC89A1C0E8ACC00762AAF /* RemoveToolDelegate.swift */,
-				C2FEB0241C0F6183000BD1B7 /* GeneratorToolDelegate.swift */,
+				C26FC1721B7BAEBD00E271A3 /* AddTool.swift */,
+				C27AC89A1C0E8ACC00762AAF /* RemoveTool.swift */,
+				C2FEB0241C0F6183000BD1B7 /* GeneratorTool.swift */,
 				C26FC16E1B7BA63300E271A3 /* MIDINode.swift */,
 				C2995C471BB8ABC70003AAB2 /* Placement.swift */,
 			);
@@ -413,7 +416,7 @@
 				C26EEB2D1B7FDA8F00EC6979 /* MixerViewController.swift */,
 				C26EEB2F1B7FDAF300EC6979 /* MixerCell.swift */,
 				C2AA2BC71B84B04200A0B08D /* InstrumentViewController.swift */,
-				C2EFA0EB1B823642002EBA3D /* NoteAttributesViewController.swift */,
+				C2EFA0EB1B823642002EBA3D /* GeneratorViewController.swift */,
 				C2AC3A961BA9D4CD00692EBB /* TempoViewController.swift */,
 				C2F589F81BAC688F009166D5 /* BarBeatTimeLabel.swift */,
 				C2F35DB81BB4507800ECB045 /* MIDIPlayerView.swift */,
@@ -639,7 +642,7 @@
 				C2516B301C08F47C0060710B /* Transport.storyboard in Resources */,
 				C2E043401B72F4DC005F0675 /* Assets.xcassets in Resources */,
 				C2516B331C08F77F0060710B /* MIDIPlayer.storyboard in Resources */,
-				C255C4371BD664E400CAEE9C /* NoteAttributes.storyboard in Resources */,
+				C255C4371BD664E400CAEE9C /* Generator.storyboard in Resources */,
 				C283B69C1BC02E3B007A4A36 /* Settings.bundle in Resources */,
 				C2776C2A1B9DF50D002FE5A8 /* Emax Volume 6.sf2 in Resources */,
 				C2E0433E1B72F4DC005F0675 /* Main.storyboard in Resources */,
@@ -668,7 +671,7 @@
 			files = (
 				C2B123BF1B864DCC008FED5E /* MIDIClock.swift in Sources */,
 				C2DFBE7A1B8AA5AB00898C2A /* Sequence.swift in Sources */,
-				C26FC1731B7BAEBD00E271A3 /* AddToolDelegate.swift in Sources */,
+				C26FC1731B7BAEBD00E271A3 /* AddTool.swift in Sources */,
 				C26FC16F1B7BA63300E271A3 /* MIDINode.swift in Sources */,
 				C291C3F31B91EDE100702AEA /* VariableLengthQuantity.swift in Sources */,
 				C2F2ADC61B91203700FF4836 /* Metronome.swift in Sources */,
@@ -680,6 +683,7 @@
 				C2F2ADC41B91098A00FF4836 /* NoteGenerator.swift in Sources */,
 				C26EEB2E1B7FDA8F00EC6979 /* MixerViewController.swift in Sources */,
 				C2AC3A971BA9D4CD00692EBB /* TempoViewController.swift in Sources */,
+				C2576E0D1C13343E00F9A192 /* MIDIPlayer.swift in Sources */,
 				C26A27EF1B948E4F00BD1698 /* DocumentsViewController.swift in Sources */,
 				C2776C301B9E8E72002FE5A8 /* SF2File.swift in Sources */,
 				C2569E401B90005400EEB441 /* TempoTrack.swift in Sources */,
@@ -693,12 +697,12 @@
 				C26EEB301B7FDAF300EC6979 /* MixerCell.swift in Sources */,
 				C2FF79871BD06115002CBA79 /* TimeSignature.swift in Sources */,
 				C2BDBBC41BD3E15D00E343F1 /* PDTAChunk.swift in Sources */,
-				C2EFA0EC1B823642002EBA3D /* NoteAttributesViewController.swift in Sources */,
+				C2EFA0EC1B823642002EBA3D /* GeneratorViewController.swift in Sources */,
 				C291C3EF1B91EDCC00702AEA /* MetaEvent.swift in Sources */,
 				C23B058D1C014EBD0081AC6E /* Note.swift in Sources */,
 				C25EBC831B8BFAFA00E57665 /* MIDIFile.swift in Sources */,
 				C26FC1711B7BAC7F00E271A3 /* MIDIPlayerNode.swift in Sources */,
-				C27AC89B1C0E8ACC00762AAF /* RemoveToolDelegate.swift in Sources */,
+				C27AC89B1C0E8ACC00762AAF /* RemoveTool.swift in Sources */,
 				C20827541C03B2A2004D68FC /* StandardChordPattern.swift in Sources */,
 				C291C3F11B91EDD600702AEA /* ChannelEvent.swift in Sources */,
 				C2E705C51BBB17AE00636EF3 /* PurgatoryViewController.swift in Sources */,
@@ -728,7 +732,7 @@
 				C291C3EB1B91EDA700702AEA /* MIDIFileTrackChunk.swift in Sources */,
 				C22D93F11BADA24A00B04A2B /* MIDINodeHistory.swift in Sources */,
 				C2E043351B72F4DC005F0675 /* AppDelegate.swift in Sources */,
-				C2FEB0251C0F6183000BD1B7 /* GeneratorToolDelegate.swift in Sources */,
+				C2FEB0251C0F6183000BD1B7 /* GeneratorTool.swift in Sources */,
 				C2CF38CD1B7EBED30085B3D5 /* InstrumentTrack.swift in Sources */,
 				C23B059D1C026F4C0081AC6E /* ChordGenerator.swift in Sources */,
 				C23B05831C01251D0081AC6E /* Duration.swift in Sources */,

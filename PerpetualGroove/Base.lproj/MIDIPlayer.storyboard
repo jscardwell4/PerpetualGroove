@@ -23,8 +23,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="487" height="575"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" verticalHuggingPriority="1000" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Awesome Sauce" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="i4O-SR-ImV">
-                                <rect key="frame" x="0.0" y="0.0" width="487" height="32"/>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" verticalHuggingPriority="1000" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Awesome Sauce" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="i4O-SR-ImV">
+                                <rect key="frame" x="0.0" y="0.0" width="487" height="30.5"/>
                                 <animations/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <color key="textColor" red="0.72547006609999998" green="0.70085549349999998" blue="0.66211640829999996" alpha="1" colorSpace="calibratedRGB"/>
@@ -37,8 +37,8 @@
                                     <outlet property="delegate" destination="6xH-va-xT7" id="7cP-70-k1G"/>
                                 </connections>
                             </textField>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JSz-xf-acH" userLabel="MIDI Player" customClass="MIDIPlayerView" customModule="Groove" customModuleProvider="target">
-                                <rect key="frame" x="-0.5" y="39.5" width="488" height="487.5"/>
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JSz-xf-acH" userLabel="MIDI Player" customClass="MIDIPlayerView" customModule="Groove" customModuleProvider="target">
+                                <rect key="frame" x="-1" y="39.5" width="488" height="487.5"/>
                                 <animations/>
                                 <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="calibratedRGB"/>
                                 <accessibility key="accessibilityConfiguration" identifier="MIDIPlayer"/>
@@ -50,7 +50,7 @@
                                 </userDefinedRuntimeAttributes>
                             </view>
                             <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="spinner1" translatesAutoresizingMaskIntoConstraints="NO" id="Qhw-iu-ZQX" userLabel="Spinner" customClass="TemplateImageView" customModule="MoonKit">
-                                <rect key="frame" x="215" y="256" width="56" height="56"/>
+                                <rect key="frame" x="215" y="255" width="56" height="56"/>
                                 <animations/>
                                 <color key="tintColor" red="0.88567054270000001" green="0.84600132699999997" blue="0.78708314899999998" alpha="1" colorSpace="calibratedRGB"/>
                                 <accessibility key="accessibilityConfiguration" identifier="Spinner"/>
@@ -58,14 +58,37 @@
                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="Spinner"/>
                                 </userDefinedRuntimeAttributes>
                             </imageView>
+                            <visualEffectView hidden="YES" opaque="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ALc-TK-7UT">
+                                <rect key="frame" x="-1" y="39.5" width="488" height="487.5"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="KjO-sd-ALP">
+                                    <rect key="frame" x="0.0" y="0.0" width="488" height="487.5"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <animations/>
+                                </view>
+                                <animations/>
+                                <blurEffect style="dark"/>
+                            </visualEffectView>
                             <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gkj-sJ-IZN" userLabel="Tools" customClass="ImageSegmentedControl" customModule="MoonKit">
-                                <rect key="frame" x="307" y="535" width="160" height="40"/>
+                                <rect key="frame" x="241" y="533.5" width="226" height="41.5"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="bvY-A7-VNE">
-                                        <rect key="frame" x="0.0" y="0.0" width="160" height="40"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="226" height="42"/>
                                         <subviews>
+                                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="u5W-aV-tWA" userLabel="NodeNote" customClass="ImageButtonView" customModule="MoonKit">
+                                                <rect key="frame" x="0.0" y="0.0" width="42" height="42"/>
+                                                <animations/>
+                                                <accessibility key="accessibilityConfiguration" identifier="NodeNoteButton"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="u5W-aV-tWA" secondAttribute="height" multiplier="1:1" id="WQF-9N-SrU"/>
+                                                </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="node_note"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="node_note-selected"/>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="NodeNoteButton"/>
+                                                </userDefinedRuntimeAttributes>
+                                            </view>
                                             <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Axm-CN-6iz" userLabel="Add" customClass="ImageButtonView" customModule="MoonKit">
-                                                <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
+                                                <rect key="frame" x="62" y="0.0" width="42" height="42"/>
                                                 <animations/>
                                                 <accessibility key="accessibilityConfiguration" identifier="AddButton"/>
                                                 <constraints>
@@ -78,7 +101,7 @@
                                                 </userDefinedRuntimeAttributes>
                                             </view>
                                             <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YHK-Is-Vea" userLabel="Remove" customClass="ImageButtonView" customModule="MoonKit">
-                                                <rect key="frame" x="60" y="0.0" width="40" height="40"/>
+                                                <rect key="frame" x="123" y="0.0" width="42" height="42"/>
                                                 <animations/>
                                                 <accessibility key="accessibilityConfiguration" identifier="RemoveButton"/>
                                                 <constraints>
@@ -91,7 +114,7 @@
                                                 </userDefinedRuntimeAttributes>
                                             </view>
                                             <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RVW-Dd-0QR" userLabel="Generator" customClass="ImageButtonView" customModule="MoonKit">
-                                                <rect key="frame" x="120" y="0.0" width="40" height="40"/>
+                                                <rect key="frame" x="185" y="0.0" width="42" height="42"/>
                                                 <animations/>
                                                 <accessibility key="accessibilityConfiguration" identifier="GeneratorButton"/>
                                                 <constraints>
@@ -105,24 +128,26 @@
                                             </view>
                                         </subviews>
                                         <animations/>
+                                        <constraints>
+                                            <constraint firstItem="u5W-aV-tWA" firstAttribute="width" secondItem="u5W-aV-tWA" secondAttribute="height" multiplier="1:1" id="GaS-zf-Zwi"/>
+                                        </constraints>
                                     </stackView>
                                 </subviews>
                                 <animations/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <accessibility key="accessibilityConfiguration" identifier="Tools"/>
                                 <constraints>
                                     <constraint firstAttribute="bottom" secondItem="bvY-A7-VNE" secondAttribute="bottom" id="Bqt-LA-vr4"/>
                                     <constraint firstItem="bvY-A7-VNE" firstAttribute="top" secondItem="gkj-sJ-IZN" secondAttribute="top" id="NRF-dp-Tlw"/>
                                     <constraint firstAttribute="trailing" secondItem="bvY-A7-VNE" secondAttribute="trailing" id="Vk4-pc-Rw4"/>
                                     <constraint firstItem="bvY-A7-VNE" firstAttribute="leading" secondItem="gkj-sJ-IZN" secondAttribute="leading" id="oHG-Xs-dCi"/>
-                                    <constraint firstAttribute="width" constant="160" id="qOr-GZ-Xvd"/>
+                                    <constraint firstAttribute="width" constant="226" id="qOr-GZ-Xvd"/>
                                 </constraints>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
                                         <color key="value" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="calibratedRGB"/>
                                     </userDefinedRuntimeAttribute>
                                     <userDefinedRuntimeAttribute type="number" keyPath="selectedSegmentIndex">
-                                        <integer key="value" value="0"/>
+                                        <integer key="value" value="-1"/>
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                                 <connections>
@@ -138,8 +163,12 @@
                             <constraint firstItem="Qhw-iu-ZQX" firstAttribute="centerX" secondItem="JSz-xf-acH" secondAttribute="centerX" id="DHJ-lw-ylz"/>
                             <constraint firstItem="JSz-xf-acH" firstAttribute="leading" secondItem="bEj-LH-pPP" secondAttribute="leading" priority="999" id="Frd-UB-tJr"/>
                             <constraint firstItem="Qhw-iu-ZQX" firstAttribute="centerY" secondItem="JSz-xf-acH" secondAttribute="centerY" id="HgV-GR-Z2m"/>
+                            <constraint firstItem="ALc-TK-7UT" firstAttribute="leading" secondItem="JSz-xf-acH" secondAttribute="leading" id="UgP-Mu-5sg"/>
+                            <constraint firstItem="ALc-TK-7UT" firstAttribute="bottom" secondItem="JSz-xf-acH" secondAttribute="bottom" id="YuO-UJ-sca"/>
                             <constraint firstItem="JSz-xf-acH" firstAttribute="centerX" secondItem="bEj-LH-pPP" secondAttribute="centerX" id="ad4-rH-eaj"/>
+                            <constraint firstItem="ALc-TK-7UT" firstAttribute="top" secondItem="JSz-xf-acH" secondAttribute="top" id="gjD-Me-rpw"/>
                             <constraint firstItem="gkj-sJ-IZN" firstAttribute="top" secondItem="JSz-xf-acH" secondAttribute="bottom" constant="8" symbolic="YES" id="hNv-vo-Y8U"/>
+                            <constraint firstItem="ALc-TK-7UT" firstAttribute="trailing" secondItem="JSz-xf-acH" secondAttribute="trailing" id="jYP-B4-4N2"/>
                             <constraint firstItem="i4O-SR-ImV" firstAttribute="top" secondItem="3bO-nI-SWz" secondAttribute="bottom" id="mVO-0w-fZ0"/>
                             <constraint firstItem="MgW-0J-CjH" firstAttribute="top" secondItem="gkj-sJ-IZN" secondAttribute="bottom" id="tt1-l6-rpJ"/>
                             <constraint firstAttribute="trailing" secondItem="JSz-xf-acH" secondAttribute="trailing" priority="999" id="uIO-7b-Nwj"/>
@@ -154,6 +183,7 @@
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="487" height="575"/>
                     <connections>
+                        <outlet property="blurView" destination="ALc-TK-7UT" id="Uu0-A1-16W"/>
                         <outlet property="documentName" destination="i4O-SR-ImV" id="w3K-VE-60D"/>
                         <outlet property="playerView" destination="JSz-xf-acH" id="ZKy-bi-Pqo"/>
                         <outlet property="spinner" destination="Qhw-iu-ZQX" id="3JM-k1-OXT"/>
@@ -169,6 +199,8 @@
         <image name="eraser-selected" width="56" height="56"/>
         <image name="generator" width="56" height="56"/>
         <image name="generator-selected" width="56" height="56"/>
+        <image name="node_note" width="56" height="56"/>
+        <image name="node_note-selected" width="56" height="56"/>
         <image name="pencil" width="56" height="56"/>
         <image name="pencil-selected" width="56" height="56"/>
         <image name="spinner1" width="56" height="56"/>

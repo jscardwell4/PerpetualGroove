@@ -1,5 +1,5 @@
 //
-//  NoteViewController.swift
+//  GeneratorViewController.swift
 //  PerpetualGroove
 //
 //  Created by Jason Cardwell on 8/17/15.
@@ -9,38 +9,30 @@
 import UIKit
 import MoonKit
 
-final class NoteViewController: UIViewController {
+final class GeneratorViewController: UIViewController {
 
   @IBOutlet weak var pitchPicker:    InlinePickerView!
   @IBOutlet weak var octavePicker:   InlinePickerView!
   @IBOutlet weak var durationPicker: InlinePickerView!
   @IBOutlet weak var velocityPicker: InlinePickerView!
   @IBOutlet weak var modifierPicker: InlinePickerView!
-  @IBOutlet weak var chordPicker: InlinePickerView! {
+  @IBOutlet weak var chordPicker:    InlinePickerView! {
     didSet {
       chordPicker?.labels = ["–"] + Chord.ChordPattern.StandardChordPattern.allCases.map {$0.name}
     }
   }
 
-  /**
-  indexForModifier:
-
-  - parameter modifier: PitchModifier?
-
-  - returns: Int
-  */
-  private func indexForModifier(modifier: PitchModifier?) -> Int {
-    switch modifier {
-      case .Flat?:  return 0
-      case .Sharp?: return 2
-      default:     return 1
-    }
-  }
+  var didChangeGenerator: ((MIDINoteGenerator) -> Void)?
 
   /** refresh */
   private func refresh() {
+    guard isViewLoaded() else { return }
     pitchPicker.selection    = noteGenerator.root.natural.index
-    modifierPicker.selection = indexForModifier(noteGenerator.root.modifier)
+    switch noteGenerator.root.modifier {
+      case .Flat?:  modifierPicker.selection = 0
+      case .Sharp?: modifierPicker.selection = 2
+      default:      modifierPicker.selection = 1
+    }
     octavePicker.selection   = noteGenerator.octave.index
     durationPicker.selection = noteGenerator.duration.index
     velocityPicker.selection = noteGenerator.velocity.index
@@ -56,22 +48,29 @@ final class NoteViewController: UIViewController {
     }
   }
 
-  private var noteGenerator: MIDINoteGenerator = Sequencer.currentNote {
+  private var loading = false
+  func loadGenerator(generator: MIDINoteGenerator) {
+    loading = true
+    noteGenerator = generator
+    loading = false
+  }
+
+  private var noteGenerator: MIDINoteGenerator = NoteGenerator() {
     didSet {
-      Sequencer.currentNote = noteGenerator
+      guard !loading else { return }
+      didChangeGenerator?(noteGenerator)
+      Sequencer.soundSetSelectionTarget.playNote(noteGenerator)
     }
   }
 
   /** didPickPitch */
   @IBAction func didPickPitch() {
     noteGenerator.root.natural = Natural.allCases[pitchPicker.selection]
-    audition()
   }
 
   /** didPickOctave */
   @IBAction func didPickOctave() {
     noteGenerator.octave = Octave.allCases[octavePicker.selection]
-    audition()
   }
 
   /** didPickModifier */
@@ -81,7 +80,6 @@ final class NoteViewController: UIViewController {
       case 2: noteGenerator.root.modifier = .Sharp
       default: noteGenerator.root.modifier = nil
     }
-    audition()
   }
 
   /** didPickChord */
@@ -101,25 +99,19 @@ final class NoteViewController: UIViewController {
       default:
         break
     }
-    audition()
   }
 
   /** didPickDuration */
   @IBAction func didPickDuration() {
     noteGenerator.duration = Duration.allCases[durationPicker.selection]
-    audition()
   }
 
   /** didPickVelocity */
   @IBAction func didPickVelocity() {
     noteGenerator.velocity = Velocity.allCases[velocityPicker.selection]
-    audition()
   }
 
-  /** audition */
-  private func audition() { Sequencer.soundSetSelectionTarget.playNote(noteGenerator) }
-  
   /** viewDidLoad */
-  override func viewDidLoad() { super.viewDidLoad(); refresh() }
+  override func viewDidAppear(animated: Bool) { super.viewDidAppear(animated); refresh() }
   
  }

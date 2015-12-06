@@ -50,6 +50,8 @@ final class MIDINode: SKSpriteNode {
   private(set) lazy var identifier: Identifier = Identifier(ObjectIdentifier(self).uintValue)
 
   private lazy var playAction:             Action = Action(key: .Play,    node: self)
+  private lazy var horizontalPlayAction:   Action = Action(key: .HorizontalPlay,    node: self)
+  private lazy var verticalPlayAction:     Action = Action(key: .VerticalPlay,    node: self)
   private lazy var fadeOutAction:          Action = Action(key: .FadeOut, node: self)
   private lazy var fadeOutAndRemoveAction: Action = Action(key: .FadeOutAndRemove, node: self)
   private lazy var fadeInAction:           Action = Action(key: .FadeIn,  node: self)
@@ -63,6 +65,20 @@ final class MIDINode: SKSpriteNode {
 
   /** play */
   func play() { runAction(playAction)  }
+
+  /**
+   playForEdge:
+
+   - parameter edge: MIDIPlayerNode.Edge
+  */
+  func playForEdge(edge: MIDIPlayerNode.Edge) {
+    runAction(playAction)
+//    switch edge {
+//      case .Top, .Bottom: runAction(verticalPlayAction)
+//      case .Left, .Right: runAction(horizontalPlayAction)
+//      case .None: runAction(playAction)
+//    }
+  }
 
   /** fadeOut */
   func fadeOut(remove remove: Bool = false) { runAction(remove ? fadeOutAndRemoveAction : fadeOutAction) }
@@ -357,7 +373,7 @@ extension MIDINode {
   /// Type for representing MIDI-related node actions
   struct Action {
 
-    enum Key: String { case Play, FadeOut, FadeOutAndRemove, FadeIn }
+    enum Key: String { case Play, VerticalPlay, HorizontalPlay, FadeOut, FadeOutAndRemove, FadeIn }
 
     let key: String
     let action: SKAction
@@ -379,6 +395,28 @@ extension MIDINode {
           let scaleDown = SKAction.scaleTo(1, duration: halfDuration)
           let noteOff = SKAction.runBlock({ [weak node] in node?.sendNoteOff() })
           action = SKAction.sequence([SKAction.group([scaleUp, noteOn]), scaleDown, noteOff])
+
+        case .VerticalPlay:
+//          let halfDuration = half(node?.noteGenerator.duration.seconds ?? 0)
+//          let scaleUp = SKAction.scaleTo(2, duration: halfDuration)
+          let noteOn = SKAction.runBlock({ [weak node] in node?.sendNoteOn() })
+//          let scaleDown = SKAction.scaleTo(1, duration: halfDuration)
+          let noteOff = SKAction.runBlock({ [weak node] in node?.sendNoteOff() })
+          let squish = SKAction.scaleXBy(1.5, y: 0.5, duration: 0.25)
+          let unsquish = squish.reversedAction()
+          let squishAndUnsquish = SKAction.sequence([squish, unsquish])
+          action = SKAction.sequence([SKAction.group([squishAndUnsquish, /*scaleUp,*/ noteOn]), /*scaleDown,*/ noteOff])
+
+        case .HorizontalPlay:
+//          let halfDuration = half(node?.noteGenerator.duration.seconds ?? 0)
+//          let scaleUp = SKAction.scaleTo(2, duration: halfDuration)
+          let noteOn = SKAction.runBlock({ [weak node] in node?.sendNoteOn() })
+//          let scaleDown = SKAction.scaleTo(1, duration: halfDuration)
+          let noteOff = SKAction.runBlock({ [weak node] in node?.sendNoteOff() })
+          let squish = SKAction.scaleXBy(0.5, y: 1.5, duration: 0.25)
+          let unsquish = squish.reversedAction()
+          let squishAndUnsquish = SKAction.sequence([squish, unsquish])
+          action = SKAction.sequence([SKAction.group([squishAndUnsquish, /*scaleUp,*/ noteOn]), /*scaleDown,*/ noteOff])
 
         case .FadeOut:
           let fade = SKAction.fadeOutWithDuration(0.25)

@@ -25,9 +25,9 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" axis="vertical" distribution="equalCentering" translatesAutoresizingMaskIntoConstraints="NO" id="KR6-ig-M7J" userLabel="ContentStack">
-                                <rect key="frame" x="0.0" y="-12" width="1731" height="715"/>
+                                <rect key="frame" x="0.0" y="-12" width="2180" height="750"/>
                                 <subviews>
-                                    <stackView hidden="YES" opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cIl-mB-kk1" userLabel="TopStack">
+                                    <stackView hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cIl-mB-kk1" userLabel="TopStack">
                                         <rect key="frame" x="0.0" y="0.0" width="1731" height="120"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" distribution="fillEqually" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="wxb-Bs-OQW" userLabel="NoteAttributesInstrumentStack">
@@ -89,10 +89,10 @@
                                         </variation>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" distribution="fillEqually" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="NZR-ya-29p" userLabel="MiddleStack">
-                                        <rect key="frame" x="0.0" y="135" width="1731" height="430"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="2180" height="600"/>
                                         <subviews>
                                             <containerView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Xii-MX-zKn" userLabel="Mixer Container">
-                                                <rect key="frame" x="0.0" y="0.0" width="1085" height="430"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="1085" height="600"/>
                                                 <animations/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="MixerContainer"/>
@@ -102,7 +102,7 @@
                                                 </connections>
                                             </containerView>
                                             <containerView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cDh-C7-9la">
-                                                <rect key="frame" x="1095" y="0.0" width="636" height="430"/>
+                                                <rect key="frame" x="1095" y="0.0" width="1085" height="600"/>
                                                 <animations/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="375" id="OMe-oy-u7R"/>
@@ -140,7 +140,7 @@
                                         </userDefinedRuntimeAttributes>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" distribution="equalCentering" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="n4A-7M-eOV" userLabel="BottomStack">
-                                        <rect key="frame" x="0.0" y="565" width="1731" height="150"/>
+                                        <rect key="frame" x="0.0" y="600" width="2180" height="150"/>
                                         <subviews>
                                             <view opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gJq-1L-zk3" userLabel="DocumentsButton" customClass="ImageButtonView" customModule="MoonKit">
                                                 <rect key="frame" x="0.0" y="50" width="760" height="50"/>
@@ -177,7 +177,7 @@
                                                 </connections>
                                             </view>
                                             <containerView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="neB-2q-lJV">
-                                                <rect key="frame" x="760" y="0.0" width="760" height="150"/>
+                                                <rect key="frame" x="848" y="0.0" width="760" height="150"/>
                                                 <animations/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="150" id="248-Pj-xhM"/>
@@ -203,7 +203,7 @@
                                                 </connections>
                                             </containerView>
                                             <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" distribution="equalCentering" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="NdS-rf-HyN" userLabel="TimeStackHorizontal">
-                                                <rect key="frame" x="1520" y="14" width="211" height="122"/>
+                                                <rect key="frame" x="1969" y="14" width="211" height="122"/>
                                                 <subviews>
                                                     <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" axis="vertical" distribution="equalCentering" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="gSN-Me-39Z" userLabel="TimeStackVertical">
                                                         <rect key="frame" x="0.0" y="0.0" width="211" height="122"/>
@@ -275,8 +275,7 @@
                                                                         <exclude reference="a7T-hb-UY1"/>
                                                                     </mask>
                                                                 </variation>
-                                                                <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
-                                                                    <rect key="frame" x="-22.5" y="0.0" width="325" height="56"/>
+                                                                <variation key="heightClass=regular-widthClass=regular">
                                                                     <mask key="constraints">
                                                                         <include reference="a7T-hb-UY1"/>
                                                                     </mask>
@@ -644,15 +643,15 @@
                                 <exclude reference="L5k-qi-Yb6"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="JF0-3d-TlM"/>
-                                <exclude reference="byd-8v-duj"/>
-                                <exclude reference="x9p-rm-dbe"/>
+                                <exclude reference="CAu-z8-d5k"/>
+                                <exclude reference="Y1X-bS-yfl"/>
                                 <exclude reference="BtT-VP-Fff"/>
                                 <exclude reference="RcU-6e-GRW"/>
                                 <exclude reference="XoL-bV-ELt"/>
                                 <exclude reference="qJJ-cs-JQx"/>
-                                <exclude reference="Y1X-bS-yfl"/>
-                                <exclude reference="CAu-z8-d5k"/>
+                                <exclude reference="JF0-3d-TlM"/>
+                                <exclude reference="byd-8v-duj"/>
+                                <exclude reference="x9p-rm-dbe"/>
                             </mask>
                         </variation>
                         <variation key="widthClass=compact">
@@ -675,13 +674,13 @@
                         </variation>
                         <variation key="heightClass=regular-widthClass=regular">
                             <mask key="constraints">
+                                <include reference="CAu-z8-d5k"/>
+                                <include reference="Y1X-bS-yfl"/>
+                                <include reference="RcU-6e-GRW"/>
+                                <include reference="XoL-bV-ELt"/>
                                 <include reference="JF0-3d-TlM"/>
                                 <include reference="byd-8v-duj"/>
                                 <include reference="x9p-rm-dbe"/>
-                                <include reference="RcU-6e-GRW"/>
-                                <include reference="XoL-bV-ELt"/>
-                                <include reference="Y1X-bS-yfl"/>
-                                <include reference="CAu-z8-d5k"/>
                             </mask>
                         </variation>
                     </view>
@@ -701,8 +700,6 @@
                         <outlet property="middleStack" destination="NZR-ya-29p" id="hcq-EU-qf7"/>
                         <outlet property="middleStackHeight" destination="zSM-Hw-lw3" id="aS8-9f-kuD"/>
                         <outlet property="mixerContainer" destination="Xii-MX-zKn" id="66b-hf-2hE"/>
-                        <outlet property="noteAttributesContainer" destination="Ont-R1-PQ9" id="uSq-Ob-G9b"/>
-                        <outlet property="noteAttributesInstrumentStack" destination="wxb-Bs-OQW" id="oLd-k4-ykH"/>
                         <outlet property="tempoSlider" destination="TLs-oa-qge" id="c4y-Bv-cwF"/>
                         <outlet property="topStack" destination="cIl-mB-kk1" id="F7e-1X-gEa"/>
                         <outlet property="topStackHeight" destination="MMd-Lz-wkq" id="843-dy-mOn"/>
@@ -734,10 +731,10 @@
             </objects>
             <point key="canvasLocation" x="325.125" y="1094.25"/>
         </scene>
-        <!--NoteAttributes-->
+        <!--Generator-->
         <scene sceneID="nQF-Uk-kwg">
             <objects>
-                <viewControllerPlaceholder storyboardIdentifier="NoteAttributes" storyboardName="NoteAttributes" referencedIdentifier="NoteAttributes" id="kzO-nC-kW2" sceneMemberID="viewController"/>
+                <viewControllerPlaceholder storyboardIdentifier="NoteAttributes" storyboardName="Generator" referencedIdentifier="Generator" id="kzO-nC-kW2" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="VWp-16-2Pf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="840" y="405"/>
@@ -797,9 +794,6 @@
                                                         <userDefinedRuntimeAttributes>
                                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="Message"/>
                                                         </userDefinedRuntimeAttributes>
-                                                        <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
-                                                            <rect key="frame" x="191.5" y="390" width="417" height="20.5"/>
-                                                        </variation>
                                                     </label>
                                                 </subviews>
                                                 <animations/>

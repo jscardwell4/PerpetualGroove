@@ -49,6 +49,8 @@ public extension String {
   public var length: Int { return characters.count }
   public var count: Int { return characters.count }
 
+  public init(@autoclosure subbingNil expr: () -> String?) { self = expr() ?? "nil" }
+
   /**
   init:radix:uppercase:var:
 

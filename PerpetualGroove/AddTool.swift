@@ -1,5 +1,5 @@
 //
-//  AddToolDelegate.swift
+//  AddTool.swift
 //  PerpetualGroove
 //
 //  Created by Jason Cardwell on 8/12/15.
@@ -10,11 +10,13 @@ import UIKit
 import SpriteKit
 import MoonKit
 
-final class AddToolDelegate: MIDIPlayerNodeDelegate {
+final class AddTool: MIDIPlayerNodeDelegate, ToolType {
 
   unowned let player: MIDIPlayerNode
 
-  var active = false
+  var active = false { didSet { logDebug("oldValue = \(oldValue)  active = \(active)") } }
+
+  var noteGenerator: MIDINoteGenerator = NoteGenerator()
 
   /**
   initWithBezierPath:
@@ -116,6 +118,7 @@ final class AddToolDelegate: MIDIPlayerNodeDelegate {
   /** generate */
   private func generate() {
     guard velocities.count > 0 && !location.isNull else { return }
-    player.placeNew(Placement(position: location, vector: sum(velocities) / CGFloat(velocities.count)))
+    let placement = Placement(position: location, vector: sum(velocities) / CGFloat(velocities.count))
+    MIDIPlayer.placeNew(placement, generator: noteGenerator)
   }
 }

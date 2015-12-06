@@ -143,13 +143,13 @@ final class Sequencer {
 
   // MARK: - Properties used to initialize a new `MIDINode`
 
-  static var currentNote: MIDINoteGenerator = NoteGenerator()
+//  static var currentNote: MIDINoteGenerator = NoteGenerator()
 
   /** Plays a note using the current note attributes and instrument settings */
-  static func auditionCurrentNote() {
-    guard let auditionInstrument = auditionInstrument else { return }
-    auditionInstrument.playNote(currentNote)
-  }
+//  static func auditionCurrentNote() {
+//    guard let auditionInstrument = auditionInstrument else { return }
+//    auditionInstrument.playNote(currentNote)
+//  }
 
   static weak var soundSetSelectionTarget: Instrument! = Sequencer.auditionInstrument {
     didSet {

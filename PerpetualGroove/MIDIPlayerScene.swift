@@ -11,11 +11,34 @@ import MoonKit
 
 final class MIDIPlayerScene: SKScene {
 
+  /** setup */
+  private func setup() {
+    MIDIPlayer.playerScene = self
+  }
+
+  /**
+   initWithSize:
+
+   - parameter size: CGSize
+  */
+  override init(size: CGSize) {
+    super.init(size: size)
+    setup()
+  }
+
+  /**
+   init:
+
+   - parameter aDecoder: NSCoder
+  */
+  required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+    setup()
+  }
+
   private(set) var player: MIDIPlayerNode!
 
   private var contentCreated = false
-
-  static var currentInstance: MIDIPlayerScene? { return MIDIPlayerView.currentInstance?.playerScene }
 
   /** createContent */
   private func createContent() {
@@ -47,16 +70,15 @@ extension MIDIPlayerScene: SKPhysicsContactDelegate {
   - parameter contact: SKPhysicsContact
   */
   func didBeginContact(contact: SKPhysicsContact) {
-    guard let midiNode = contact.bodyB.node as? MIDINode  else { return }
+    guard let midiNode = contact.bodyB.node as? MIDINode,
+              edge = MIDIPlayerNode.Edge(rawValue: contact.bodyA.categoryBitMask) else { return }
 
-    let edge = MIDIPlayerNode.Edges(rawValue: contact.bodyA.categoryBitMask)
-
-    midiNode.edges = MIDIPlayerNode.Edges.All ∖ edge
+    midiNode.edges = MIDIPlayerNode.Edges.All ∖ MIDIPlayerNode.Edges(edge)
 
     logVerbose("edge: \(edge); midiNode: \(midiNode.name!)")
 
     // ???: Should we do anything with the impulse and normal values provided by SKPhysicsContact?
     midiNode.pushBreadcrumb()
-    midiNode.play()
+    midiNode.playForEdge(edge)
   }
 }

@@ -88,7 +88,7 @@ final class InstrumentViewController: UIViewController {
 
   /** audition */
   private func audition() {
-    instrument?.playNote(Sequencer.currentNote)
+    instrument?.playNote(NoteGenerator())
   }
 
   /** viewDidLoad */

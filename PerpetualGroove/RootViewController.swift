@@ -26,9 +26,9 @@ final class RootViewController: UIViewController {
   @IBOutlet var bottomStackHeight: NSLayoutConstraint!
 
   @IBOutlet var mixerContainer: UIView!
-  @IBOutlet var noteAttributesContainer: UIView!
+  @IBOutlet var generatorContainer: UIView!
   @IBOutlet var instrumentContainer: UIView!
-  @IBOutlet var noteAttributesInstrumentStack: UIStackView!
+  @IBOutlet var generatorInstrumentStack: UIStackView!
 
   /**
   animateFromSize:toSize:
@@ -53,18 +53,18 @@ final class RootViewController: UIViewController {
         guard topStackHeight.constant == 120 else { return }
         topStackHeight.constant = 430
         topStack.addArrangedSubview(mixerContainer)
-        noteAttributesInstrumentStack.axis = .Vertical
-        middleStack.insertArrangedSubview(noteAttributesInstrumentStack, atIndex: 0)
+        generatorInstrumentStack.axis = .Vertical
+        middleStack.insertArrangedSubview(generatorInstrumentStack, atIndex: 0)
         middleStackHeight.constant = 400
       case .Horizontal:
         guard topStackHeight.constant == 430 else { return }
         topStackHeight.constant = 120
-        noteAttributesInstrumentStack.axis = .Horizontal
-        topStack.addArrangedSubview(noteAttributesInstrumentStack)
+        generatorInstrumentStack.axis = .Horizontal
+        topStack.addArrangedSubview(generatorInstrumentStack)
         middleStack.insertArrangedSubview(mixerContainer, atIndex: 0)
         middleStackHeight.constant = 430
     }
-    noteAttributesInstrumentStack.updateConstraintsIfNeeded()
+    generatorInstrumentStack.updateConstraintsIfNeeded()
   }
 
   /** viewDidLoad */
@@ -110,7 +110,7 @@ final class RootViewController: UIViewController {
     }
 
     adjustPopover(documentsPopoverView, documentsButton)
-    adjustPopover(noteAttributesPopoverView, noteAttributesButton)
+    adjustPopover(generatorPopoverView, generatorButton)
     adjustPopover(mixerPopoverView, mixerButton)
     adjustPopover(tempoPopoverView, tempoButton)
     adjustPopover(instrumentPopoverView, instrumentButton)
@@ -136,13 +136,13 @@ final class RootViewController: UIViewController {
   override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
     super.prepareForSegue(segue, sender: sender)
     switch segue.destinationViewController {
-      case let controller as MixerViewController:      mixerViewController          = controller
-      case let controller as InstrumentViewController: instrumentViewController     = controller
-      case let controller as NoteViewController:       noteAttributesViewController = controller
-      case let controller as DocumentsViewController:  documentsViewController      = controller
-      case let controller as TempoViewController:      tempoViewController          = controller
-      case let controller as MIDIPlayerViewController: playerViewController         = controller
-      case let controller as TransportViewController:  transportViewController      = controller
+      case let controller as MixerViewController:      mixerViewController      = controller
+      case let controller as InstrumentViewController: instrumentViewController = controller
+      case let controller as GeneratorViewController:  generatorViewController  = controller
+      case let controller as DocumentsViewController:  documentsViewController  = controller
+      case let controller as TempoViewController:      tempoViewController      = controller
+      case let controller as MIDIPlayerViewController: playerViewController     = controller
+      case let controller as TransportViewController:  transportViewController  = controller
       default:                                         break
     }
   }
@@ -158,7 +158,7 @@ final class RootViewController: UIViewController {
     var view: PopoverView? {
       switch self {
         case .Files:      return RootViewController.currentInstance.documentsPopoverView
-        case .Note:       return RootViewController.currentInstance.noteAttributesPopoverView
+        case .Note:       return RootViewController.currentInstance.generatorPopoverView
         case .Instrument: return RootViewController.currentInstance.instrumentPopoverView
         case .Mixer:      return RootViewController.currentInstance.mixerPopoverView
         case .Tempo:      return RootViewController.currentInstance.tempoPopoverView
@@ -168,7 +168,7 @@ final class RootViewController: UIViewController {
     var button: ImageButtonView? {
       switch self {
         case .Files:      return RootViewController.currentInstance.documentsButton
-        case .Note:       return RootViewController.currentInstance.noteAttributesButton
+        case .Note:       return RootViewController.currentInstance.generatorButton
         case .Instrument: return RootViewController.currentInstance.instrumentButton
         case .Mixer:      return RootViewController.currentInstance.mixerButton
         case .Tempo:      return RootViewController.currentInstance.tempoButton
@@ -222,10 +222,10 @@ final class RootViewController: UIViewController {
 
   // MARK: - Note
 
-  @IBOutlet weak var noteAttributesButton: ImageButtonView?
-  private(set) weak var noteAttributesViewController: NoteViewController!
-  @IBAction private func noteAttributes() { updatePopover(.Note) }
-  @IBOutlet private weak var noteAttributesPopoverView: PopoverView?
+  @IBOutlet weak var generatorButton: ImageButtonView?
+  private(set) weak var generatorViewController: GeneratorViewController!
+  @IBAction private func generator() { updatePopover(.Note) }
+  @IBOutlet private weak var generatorPopoverView: PopoverView?
 
   // MARK: - Tempo
 
@@ -253,7 +253,6 @@ final class RootViewController: UIViewController {
   // MARK: - Player
 
   private(set) weak var playerViewController: MIDIPlayerViewController!
-
 
   // MARK: - Transport
   private(set) weak var transportViewController: TransportViewController!
@@ -293,7 +292,7 @@ extension RootViewController {
 //        containerDescription += "instrument"
 //      case let controller as MixerViewController where controller === mixerViewController:
 //        containerDescription += "instrument"
-//      case let controller as NoteViewController where controller === noteAttributesViewController:
+//      case let controller as GeneratorViewController where controller === generatorViewController:
 //        containerDescription += "instrument"
 //      case let controller as TempoViewController where controller === tempoViewController:
 //        containerDescription += "instrument"

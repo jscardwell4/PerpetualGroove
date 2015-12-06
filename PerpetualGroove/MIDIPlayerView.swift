@@ -14,15 +14,11 @@ final class MIDIPlayerView: SKView {
 
   var playerScene: MIDIPlayerScene? { return scene as? MIDIPlayerScene }
 
-  static var currentInstance: MIDIPlayerView? {
-    guard MIDIPlayerViewController.currentInstance.isViewLoaded() else { return nil }
-    return MIDIPlayerViewController.currentInstance.playerView
-  }
-
   /** setup */
   private func setup() {
     ignoresSiblingOrder = true
     presentScene(MIDIPlayerScene(size: bounds.size))
+    MIDIPlayer.playerView = self
   }
 
   /**

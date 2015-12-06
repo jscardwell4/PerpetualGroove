@@ -1,5 +1,5 @@
 //
-//  RemoveToolDelegate.swift
+//  RemoveTool.swift
 //  PerpetualGroove
 //
 //  Created by Jason Cardwell on 12/1/15.
@@ -10,12 +10,13 @@ import UIKit
 import SpriteKit
 import MoonKit
 
-final class RemoveToolDelegate: MIDIPlayerNodeDelegate {
+final class RemoveTool: MIDIPlayerNodeDelegate, ToolType {
 
   unowned let player: MIDIPlayerNode
 
   var active = false {
     didSet {
+      logDebug("oldValue = \(oldValue)  active = \(active)")
       guard active != oldValue else { return }
       switch active {
         case true:
@@ -33,6 +34,7 @@ final class RemoveToolDelegate: MIDIPlayerNodeDelegate {
   private var touch: UITouch? { didSet { if touch == nil { nodesToRemove.removeAll() } } }
   private var nodesToRemove: Set<NodeRef> = [] {
     didSet {
+      logDebug("old count = \(oldValue.count)  new count = \(nodesToRemove.count)")
       nodesToRemove.flatMap({$0.reference}).forEach {
         guard let light = $0.childNodeWithName("removeToolLighting") as? SKLightNode
                 where light.categoryBitMask != 1 else { return }
@@ -44,6 +46,7 @@ final class RemoveToolDelegate: MIDIPlayerNodeDelegate {
   private static var categoryShift: UInt32 = 1 {
     didSet { categoryShift = (1 ... 31).clampValue(categoryShift) }
   }
+
   private static var foregroundLightNode: SKLightNode  {
     let node = SKLightNode()
     node.name = lightNodeName
@@ -67,6 +70,7 @@ final class RemoveToolDelegate: MIDIPlayerNodeDelegate {
 
   private weak var sequence: Sequence? {
     didSet {
+      logDebug("oldValue: \(oldValue?.document?.localizedName ?? "nil")  sequence: \(sequence?.document?.localizedName ?? "nil")")
       guard oldValue !== sequence else { return }
       if let oldSequence = oldValue {
         receptionist.stopObserving(Sequence.Notification.DidChangeTrack, from: oldSequence)
@@ -90,10 +94,10 @@ final class RemoveToolDelegate: MIDIPlayerNodeDelegate {
     switch node.childNodeWithName("removeToolLighting") as? SKLightNode {
       case let light? where light.categoryBitMask != 1:
         light.categoryBitMask = 1
-        light.lightColor = RemoveToolDelegate.backgroundLightColor
+        light.lightColor = RemoveTool.backgroundLightColor
         lightNode = light
       case nil:
-        lightNode = RemoveToolDelegate.backgroundLightNode
+        lightNode = RemoveTool.backgroundLightNode
         node.addChild(lightNode)
       default:
         return
@@ -111,11 +115,11 @@ final class RemoveToolDelegate: MIDIPlayerNodeDelegate {
     let lightNode: SKLightNode
     switch node.childNodeWithName("removeToolLighting") as? SKLightNode {
       case let light? where light.categoryBitMask == 1:
-        light.categoryBitMask = 1 << RemoveToolDelegate.categoryShift++
-        light.lightColor = RemoveToolDelegate.foregroundLightColor
+        light.categoryBitMask = 1 << RemoveTool.categoryShift++
+        light.lightColor = RemoveTool.foregroundLightColor
         lightNode = light
       case nil:
-        lightNode = RemoveToolDelegate.foregroundLightNode
+        lightNode = RemoveTool.foregroundLightNode
         node.addChild(lightNode)
       default:
         return
@@ -145,6 +149,7 @@ final class RemoveToolDelegate: MIDIPlayerNodeDelegate {
 
   private weak var track: InstrumentTrack? {
     didSet {
+      logDebug("oldValue: \(String(subbingNil: oldValue?.name))  track: \(track?.name ?? "nil")")
       if touch != nil { touch = nil }
       guard active && oldValue !== track else { return }
       oldValue?.nodes.flatMap({$0.reference}).forEach { lightNodeForBackground($0) }
@@ -162,10 +167,10 @@ final class RemoveToolDelegate: MIDIPlayerNodeDelegate {
     receptionist.observe(MIDIDocumentManager.Notification.DidChangeDocument,
       from: MIDIDocumentManager.self,
       callback: {[weak self] _ in self?.sequence = MIDIDocumentManager.currentDocument?.sequence})
-    receptionist.observe(MIDIPlayerNode.Notification.DidAddNode,
-      from: playerNode,
+    receptionist.observe(MIDIPlayer.Notification.DidAddNode,
+      from: MIDIPlayer.self,
       callback: {[weak self] notification in
-        guard let node = notification.addedNode, track = notification.addedNodeTrack else { return }
+        guard self?.active == true, let node = notification.addedNode, track = notification.addedNodeTrack else { return }
         if self?.track === track { self?.lightNodeForForeground(node) }
         else { self?.lightNodeForBackground(node) }
       })

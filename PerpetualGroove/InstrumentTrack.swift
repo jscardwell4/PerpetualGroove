@@ -206,14 +206,14 @@ final class InstrumentTrack: Track {
 
   - parameter identifier: NodeIdentifier
   - parameter placement: Placement
-  - parameter attributes: Note
+  - parameter generator: MIDINoteGenerator
   - parameter texture: MIDINode.TextureType
   */
   private func addNodeWithIdentifier(identifier: Identifier,
                            placement: Placement,
-                          attributes: MIDINoteGenerator)
+                          generator: MIDINoteGenerator)
   {
-    logDebug("placing node with identifier \(identifier), placement \(placement), attributes \(attributes)")
+    logDebug("placing node with identifier \(identifier), placement \(placement), attributes \(generator)")
 
     // Make sure a node hasn't already been place for this identifier
     guard fileIDToNodeID[identifier] == nil else { return }
@@ -222,13 +222,13 @@ final class InstrumentTrack: Track {
     guard pendingID == nil else { fatalError("already have an identifier pending: \(pendingID!)") }
 
     // Make sure we have a `MIDIPlayerNode`
-    guard let midiPlayer = MIDIPlayerNode.currentInstance else { fatalError("requires a midi player instance") }
+//    guard let midiPlayer = MIDIPlayerNode.currentInstance else { fatalError("requires a midi player instance") }
 
     // Store the identifier
     pendingID = identifier
 
     // Place a node
-    midiPlayer.placeNew(placement, targetTrack: self, attributes: attributes)
+    MIDIPlayer.placeNew(placement, targetTrack: self, generator: generator)
   }
 
   /**
@@ -327,7 +327,7 @@ final class InstrumentTrack: Track {
       switch event {
         case let nodeEvent as MIDINodeEvent:
           switch nodeEvent.data {
-            case let .Add(i, p, a):       addNodeWithIdentifier(i, placement: p, attributes: a)
+            case let .Add(i, p, a):       addNodeWithIdentifier(i, placement: p, generator: a)
             case let .Remove(identifier): removeNodeWithIdentifier(identifier)
           }
         case let metaEvent as MetaEvent where metaEvent.data == .EndOfTrack:

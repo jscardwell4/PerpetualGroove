@@ -31,7 +31,8 @@ import Foundation
    - parameter button: ImageButtonView
    */
   @objc private func touchUp(button: ImageButtonView) {
-    guard let idx = segments.indexOf(button) where idx != selectedSegmentIndex else { return }
+    guard let idx = segments.indexOf(button) else { return }
+    guard allowsEmptySelection || idx != selectedSegmentIndex else { return }
     if !momentary { selectedSegmentIndex = idx }
     sendActionsForControlEvents(.ValueChanged)
   }
@@ -185,6 +186,8 @@ import Foundation
 
   public static let NoSegment = UISegmentedControlNoSegment
 
+  @IBInspectable public var allowsEmptySelection: Bool = true
+
   @IBInspectable public var momentary: Bool = false {
     didSet {
       guard oldValue != momentary
@@ -196,7 +199,13 @@ import Foundation
 
   @IBInspectable public var selectedSegmentIndex: Int = ImageSegmentedControl.NoSegment {
     didSet {
-      guard oldValue != selectedSegmentIndex else { return }
+      guard oldValue != selectedSegmentIndex else {
+        if selectedSegmentIndex != ImageSegmentedControl.NoSegment && allowsEmptySelection && !momentary{
+          segments[selectedSegmentIndex].selected = false
+          selectedSegmentIndex = ImageSegmentedControl.NoSegment
+        }
+        return
+      }
       switch (momentary, oldValue, selectedSegmentIndex) {
         case let (false, ImageSegmentedControl.NoSegment, newIndex) where segments.indices ∋ newIndex:
           segments[newIndex].selected = true

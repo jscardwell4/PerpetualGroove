@@ -14,14 +14,39 @@ import Eveleth
 
 final class MIDIPlayerViewController: UIViewController {
 
-  static var currentInstance: MIDIPlayerViewController { return RootViewController.currentInstance.playerViewController }
+  @IBOutlet weak var blurView: UIVisualEffectView!
+
+  /** setup */
+  private func setup() {
+    initializeReceptionist()
+    MIDIPlayer.playerViewController = self
+  }
+
+  /**
+   init:bundle:
+
+   - parameter nibNameOrNil: String?
+   - parameter nibBundleOrNil: NSBundle?
+  */
+  override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+    super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    setup()
+  }
+
+  /**
+   init:
+
+   - parameter aDecoder: NSCoder
+  */
+  required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+    setup()
+  }
 
   /** viewDidLoad */
   override func viewDidLoad() {
     super.viewDidLoad()
-
     documentName.text = nil
-    initializeReceptionist()
   }
 
   // MARK: - Files
@@ -45,6 +70,7 @@ final class MIDIPlayerViewController: UIViewController {
     spinner.startAnimating()
     spinner.hidden = false
   }
+
 
   // MARK: - Scene-related properties
 
@@ -85,12 +111,37 @@ final class MIDIPlayerViewController: UIViewController {
 
   }
 
+  // MARK: - Tools
+
+  var toolViewController: UIViewController? {
+    didSet {
+      guard toolViewController != oldValue else { return }
+      if let oldController = oldValue {
+        oldController.willMoveToParentViewController(nil)
+        oldController.removeFromParentViewController()
+        if oldController.isViewLoaded() {
+          oldController.view.removeFromSuperview()
+        }
+      }
+      if let newController = toolViewController {
+        addChildViewController(newController)
+        blurView.contentView.addSubview(newController.view)
+        newController.didMoveToParentViewController(self)
+        blurView.hidden = false
+      } else {
+        blurView.hidden = true
+      }
+    }
+  }
+
   @IBAction private func didSelectTool(sender: ImageSegmentedControl) {
     switch sender.selectedSegmentIndex {
-      case 0:  playerView.playerScene?.player.activeTool = .Add
-      case 1:  playerView.playerScene?.player.activeTool = .Remove
-      case 2:  playerView.playerScene?.player.activeTool = .Generator
-      default: break
+      case 0:                               MIDIPlayer.configureGenerator()
+      case 1:                               MIDIPlayer.currentTool = .Add
+      case 2:                               MIDIPlayer.currentTool = .Remove
+      case 3:                               MIDIPlayer.currentTool = .Generator
+      case ImageSegmentedControl.NoSegment: MIDIPlayer.currentTool = .None
+      default:                              break
     }
   }
 
