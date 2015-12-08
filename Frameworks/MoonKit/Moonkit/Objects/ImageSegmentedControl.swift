@@ -199,21 +199,27 @@ import Foundation
 
   @IBInspectable public var selectedSegmentIndex: Int = ImageSegmentedControl.NoSegment {
     didSet {
+      // Make sure we are not momentary
+      guard !momentary else { return }
+
+      // Make sure the index has changed
       guard oldValue != selectedSegmentIndex else {
-        if selectedSegmentIndex != ImageSegmentedControl.NoSegment && allowsEmptySelection && !momentary{
+        // If the index is the same, make sure we de-select the segment if flagged appropriately
+        if selectedSegmentIndex != ImageSegmentedControl.NoSegment && allowsEmptySelection {
           segments[selectedSegmentIndex].selected = false
           selectedSegmentIndex = ImageSegmentedControl.NoSegment
         }
         return
       }
-      switch (momentary, oldValue, selectedSegmentIndex) {
-        case let (false, ImageSegmentedControl.NoSegment, newIndex) where segments.indices ∋ newIndex:
+
+      switch (oldValue, selectedSegmentIndex) {
+        case let (ImageSegmentedControl.NoSegment, newIndex) where segments.indices ∋ newIndex:
           segments[newIndex].selected = true
-        case let (false, oldIndex, newIndex) where segments.indices ∋ newIndex:
+        case let (newIndex, ImageSegmentedControl.NoSegment) where segments.indices ∋ newIndex:
+          segments[newIndex].selected = false
+        case let (oldIndex, newIndex) where segments.indices ∋ newIndex:
           segments[oldIndex].selected = false
           segments[newIndex].selected = true
-        case let (true, _, newIndex) where newIndex != ImageSegmentedControl.NoSegment:
-          selectedSegmentIndex = ImageSegmentedControl.NoSegment
         default:
           break
       }

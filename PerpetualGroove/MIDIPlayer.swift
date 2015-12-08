@@ -21,14 +21,16 @@ final class MIDIPlayer {
       guard let node = playerNode else { return }
       addTool = AddTool(playerNode: node)
       removeTool = RemoveTool(playerNode: node)
-      generatorTool = GeneratorTool(playerNode: node)
+      existingGeneratorTool = GeneratorTool(playerNode: node, mode: .Existing)
+      newGeneratorTool = GeneratorTool(playerNode: node, mode: .New)
       currentTool = .None
     }
   }
 
-  static private var addTool: AddTool?
-  static private var removeTool: RemoveTool?
-  static private var generatorTool: GeneratorTool?
+  static private(set) var addTool: AddTool?
+  static private(set) var removeTool: RemoveTool?
+  static private(set) var existingGeneratorTool: GeneratorTool?
+  static private(set) var newGeneratorTool: GeneratorTool?
 
   static var currentTool: Tool = .None {
     didSet {
@@ -36,12 +38,37 @@ final class MIDIPlayer {
       guard currentTool != oldValue else { return }
       oldValue.toolType?.active = false
       currentTool.toolType?.active = true
+
+      if let tools = playerViewController?.tools
+        where currentTool == .None && tools.selectedSegmentIndex != ImageSegmentedControl.NoSegment
+      {
+        tools.selectedSegmentIndex = ImageSegmentedControl.NoSegment
+      }
     }
   }
 
-  /** configureGenerator */
-  static func configureGenerator() {
+  static private var toolControllerIndex: [ObjectIdentifier:Tool] = [:]
 
+  /**
+   presentViewController:forTool:
+
+   - parameter viewController: UIViewController
+   - parameter tool: ToolTyp
+  */
+  static func presentViewController(viewController: UIViewController, forTool tool: ToolType) {
+    guard currentTool.toolType === tool else { return }
+    playerViewController?.toolViewController = viewController
+    toolControllerIndex[ObjectIdentifier(viewController)] = Tool(tool)
+    currentTool.toolType?.didShowViewController()
+  }
+
+  /**
+   didDismissToolControllerForPlayerViewController:
+
+   - parameter controller: MIDIPlayerViewController
+  */
+  static func didDismissViewController(controller: UIViewController) {
+    toolControllerIndex.removeValueForKey(ObjectIdentifier(controller))?.toolType?.didHideViewController()
   }
 
   /**
@@ -129,28 +156,35 @@ protocol ToolType: class {
   func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?)
   func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?)
   func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?)
+
+  func didShowViewController()
+  func didHideViewController()
 }
 
 // MARK: - Tool
 extension MIDIPlayer {
-  enum Tool {
-    case None, Add, Remove, Generator
+  enum Tool: Int {
+    case None = -1, NewGenerator, Add, Remove, ExistingGenerator
 
     var toolType: ToolType? {
       switch self {
-        case .Add:       return MIDIPlayer.addTool
-        case .Remove:    return MIDIPlayer.removeTool
-        case .Generator: return MIDIPlayer.generatorTool
-        case .None:      return nil
+        case .None:              return nil
+        case .NewGenerator:      return MIDIPlayer.newGeneratorTool
+        case .Add:               return MIDIPlayer.addTool
+        case .Remove:            return MIDIPlayer.removeTool
+        case .ExistingGenerator: return MIDIPlayer.existingGeneratorTool
       }
     }
 
+    var isCurrentTool: Bool { return MIDIPlayer.currentTool == self }
+
     private init(_ toolType: ToolType?) {
       switch toolType {
-        case let t? where MIDIPlayer.addTool === t:       self = .Add
-        case let t? where MIDIPlayer.removeTool === t:    self = .Remove
-        case let t? where MIDIPlayer.generatorTool === t: self = .Generator
-        default:                                          self = .None
+        case let t? where MIDIPlayer.newGeneratorTool === t:      self = .NewGenerator
+        case let t? where MIDIPlayer.addTool === t:               self = .Add
+        case let t? where MIDIPlayer.removeTool === t:            self = .Remove
+        case let t? where MIDIPlayer.existingGeneratorTool === t: self = .ExistingGenerator
+        default:                                                  self = .None
       }
     }
 

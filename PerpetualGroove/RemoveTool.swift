@@ -10,9 +10,12 @@ import UIKit
 import SpriteKit
 import MoonKit
 
-final class RemoveTool: MIDIPlayerNodeDelegate, ToolType {
+final class RemoveTool: ToolType {
 
   unowned let player: MIDIPlayerNode
+
+  func didShowViewController() {}
+  func didHideViewController() {}
 
   var active = false {
     didSet {

@@ -268,6 +268,7 @@
 		C24A22991ADB4C1E0065E7EA /* FunctionManipulation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24A22981ADB4C1E0065E7EA /* FunctionManipulation.swift */; };
 		C24D19EA19EDAE1500CC3CD9 /* InlinePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24D19E919EDAE1500CC3CD9 /* InlinePickerView.swift */; };
 		C24E0EB91AC6141B0044248E /* Bool+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24E0EB81AC6141B0044248E /* Bool+MoonKitAdditions.swift */; };
+		C2507BDB1C1601E900941C14 /* TapGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2507BDA1C1601E900941C14 /* TapGesture.swift */; };
 		C256F0831ABDFFE5005B7CB3 /* MoonKitOSX.h in Headers */ = {isa = PBXBuildFile; fileRef = C256F0821ABDFFE5005B7CB3 /* MoonKitOSX.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C25C6F621BA8F23800B3CBAB /* ScrollWheel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25C6F611BA8F23800B3CBAB /* ScrollWheel.swift */; };
 		C25D6A871B703E0C00EB7125 /* UILabel+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25D6A861B703E0C00EB7125 /* UILabel+MoonKitAdditions.swift */; };
@@ -572,6 +573,7 @@
 		C24DD28A1AE4056D000306A0 /* Constraints.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = Constraints.playground; path = Moonkit/Constraints.playground; sourceTree = "<group>"; };
 		C24E0EB81AC6141B0044248E /* Bool+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Bool+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C24ECC8F19DE085D00C1870E /* BlockBarButtonItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockBarButtonItem.swift; sourceTree = "<group>"; };
+		C2507BDA1C1601E900941C14 /* TapGesture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TapGesture.swift; sourceTree = "<group>"; };
 		C256F07E1ABDFFE5005B7CB3 /* MoonKitOSX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MoonKitOSX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C256F0811ABDFFE5005B7CB3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C256F0821ABDFFE5005B7CB3 /* MoonKitOSX.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MoonKitOSX.h; sourceTree = "<group>"; };
@@ -1287,6 +1289,7 @@
 				C225879919F9EF4C006D8B1D /* PanGesture.swift */,
 				C25E63DD19FEC06A00F54626 /* GestureManager.swift */,
 				C205852A1A1BA22A00212759 /* LongPressGesture.swift */,
+				C2507BDA1C1601E900941C14 /* TapGesture.swift */,
 			);
 			name = Gestures;
 			sourceTree = "<group>";
@@ -2105,6 +2108,7 @@
 				C2358F5919C78E0C00920F8D /* MSBarButtonItem.m in Sources */,
 				C28E50931A13CA5000DF3206 /* MSButton.swift in Sources */,
 				C2E043251B727547005F0675 /* XMLParser.swift in Sources */,
+				C2507BDB1C1601E900941C14 /* TapGesture.swift in Sources */,
 				C2064FFF1A13C71D00342FDE /* NSLayoutConstraint+MoonKitAdditions.swift in Sources */,
 				C280ED3A1BF6678B0032447D /* LogFileManager.swift in Sources */,
 				C28E50971A13CA8F00DF3206 /* ToggleImageBarButtonItem.swift in Sources */,

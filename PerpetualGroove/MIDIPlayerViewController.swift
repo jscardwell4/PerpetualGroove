@@ -15,6 +15,15 @@ import Eveleth
 final class MIDIPlayerViewController: UIViewController {
 
   @IBOutlet weak var blurView: UIVisualEffectView!
+//    {
+//    didSet {
+//      let gesture = TapGesture(callback: { [weak self] _ in self?.toolViewController = nil })
+//      gesture.delegate = self
+//      blurView.contentView.addGestureRecognizer(gesture)
+//    }
+//  }
+
+
 
   /** setup */
   private func setup() {
@@ -113,6 +122,11 @@ final class MIDIPlayerViewController: UIViewController {
 
   // MARK: - Tools
 
+  @IBOutlet private(set) weak var tools: ImageSegmentedControl!
+
+  /** dismissToolViewController */
+  @IBAction private func dismissToolViewController() { toolViewController = nil }
+
   var toolViewController: UIViewController? {
     didSet {
       guard toolViewController != oldValue else { return }
@@ -121,11 +135,23 @@ final class MIDIPlayerViewController: UIViewController {
         oldController.removeFromParentViewController()
         if oldController.isViewLoaded() {
           oldController.view.removeFromSuperview()
+          MIDIPlayer.didDismissViewController(oldController)
         }
       }
       if let newController = toolViewController {
         addChildViewController(newController)
-        blurView.contentView.addSubview(newController.view)
+        let controllerView = newController.view
+        controllerView.translatesAutoresizingMaskIntoConstraints = false
+        controllerView.backgroundColor = nil
+        blurView.contentView.insertSubview(controllerView, atIndex: 0)
+        view.constrain(
+          controllerView.left => playerView.left + 20,
+          controllerView.right => playerView.right - 20,
+          controllerView.top => playerView.top + 20,
+          controllerView.bottom => playerView.bottom - 20
+        )
+//        let preferredHeight = newController.preferredContentSize.height
+//        if preferredHeight > 0 { controllerView.constrain(controllerView.height => preferredHeight) }
         newController.didMoveToParentViewController(self)
         blurView.hidden = false
       } else {
@@ -135,17 +161,29 @@ final class MIDIPlayerViewController: UIViewController {
   }
 
   @IBAction private func didSelectTool(sender: ImageSegmentedControl) {
-    switch sender.selectedSegmentIndex {
-      case 0:                               MIDIPlayer.configureGenerator()
-      case 1:                               MIDIPlayer.currentTool = .Add
-      case 2:                               MIDIPlayer.currentTool = .Remove
-      case 3:                               MIDIPlayer.currentTool = .Generator
-      case ImageSegmentedControl.NoSegment: MIDIPlayer.currentTool = .None
-      default:                              break
-    }
+    MIDIPlayer.currentTool = MIDIPlayer.Tool(rawValue: sender.selectedSegmentIndex) ?? .None
   }
 
 }
+
+//extension MIDIPlayerViewController: UIGestureRecognizerDelegate {
+//
+//  /**
+//   gestureRecognizer:shouldReceiveTouch:
+//
+//   - parameter gestureRecognizer: UIGestureRecognizer
+//   - parameter touch: UITouch
+//
+//    - returns: Bool
+//  */
+//  func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
+//    guard let toolViewController = toolViewController where toolViewController.isViewLoaded() else { return false }
+//    let point = touch.locationInView(toolViewController.view)
+//    let result = !toolViewController.view.pointInside(point, withEvent: nil)
+//    return result
+//  }
+//
+//}
 
 extension MIDIPlayerViewController: UITextFieldDelegate {
 

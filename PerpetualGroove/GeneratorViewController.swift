@@ -27,7 +27,7 @@ final class GeneratorViewController: UIViewController {
   /** refresh */
   private func refresh() {
     guard isViewLoaded() else { return }
-    pitchPicker.selection    = noteGenerator.root.natural.index
+    pitchPicker.selection = noteGenerator.root.natural.index
     switch noteGenerator.root.modifier {
       case .Flat?:  modifierPicker.selection = 0
       case .Sharp?: modifierPicker.selection = 2
@@ -59,7 +59,6 @@ final class GeneratorViewController: UIViewController {
     didSet {
       guard !loading else { return }
       didChangeGenerator?(noteGenerator)
-      Sequencer.soundSetSelectionTarget.playNote(noteGenerator)
     }
   }
 

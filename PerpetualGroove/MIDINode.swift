@@ -120,7 +120,7 @@ final class MIDINode: SKSpriteNode {
     super.removeActionForKey(key)
   }
 
-  private weak var track: InstrumentTrack?  {
+  private(set) weak var track: InstrumentTrack?  {
     didSet { if track == nil && parent != nil { removeFromParent() } }
   }
 
@@ -264,25 +264,16 @@ final class MIDINode: SKSpriteNode {
 
   // MARK: Initialization
 
-  private static var textureCache: [TrackColor:(texture: SKTexture, normalMap: SKTexture)] = [:]
-  private static func texturesForColor(color: TrackColor) -> (texture: SKTexture, normalMap: SKTexture) {
-    if let tuple = textureCache[color] { return tuple }
-    else {
-      let texture = SKTexture(image: UIImage(named: "ball")!.imageWithColor(color.value))
-      let normalMap = texture.textureByGeneratingNormalMap()
-      let tuple = (texture, normalMap)
-      textureCache[color] = tuple
-      return tuple
-    }
-  }
+  private static let texture = SKTexture(image: UIImage(named: "ball")!)
+  private static let normalMap = MIDINode.texture.textureByGeneratingNormalMap()
 
   /**
-  init:placement:instrument:note:
+   initWithPlacement:name:track:note:
 
-  - parameter t: TextureType
-  - parameter p: Placement
-  - parameter tr: Track
-  - parameter n: Note
+   - parameter placement: Placement
+   - parameter name: String
+   - parameter track: InstrumentTrack
+   - parameter note: MIDINoteGenerator
   */
   init(placement: Placement,
        name: String,
@@ -296,9 +287,8 @@ final class MIDINode: SKSpriteNode {
     self.track = track
     history = MIDINodeHistory(initialSnapshot: snapshot)
     noteGenerator = note
-    let (texture, normalMap) = MIDINode.texturesForColor(track.color)
 
-    super.init(texture: texture, color: track.color.value, size: texture.size() * 0.75)
+    super.init(texture: MIDINode.texture, color: track.color.value, size: MIDINode.texture.size() * 0.75)
 
     let object = Sequencer.self
     typealias Notification = Sequencer.Notification
@@ -323,11 +313,11 @@ final class MIDINode: SKSpriteNode {
     try MIDISourceCreate(client, "\(name)", &endPoint) ➤ "Failed to create end point for node \(name)"
 
     self.name = name
-    colorBlendFactor = 0
+    colorBlendFactor = 1
 
     position = placement.position
     physicsBody.velocity = placement.vector
-    normalTexture = normalMap
+    normalTexture = MIDINode.normalMap
   }
 
   /**
