@@ -256,8 +256,14 @@ final class Sequence {
     removeTrackAtIndex(idx)
   }
 
+  /**
+   removeTrackAtIndex:
+
+   - parameter index: Int
+  */
   func removeTrackAtIndex(index: Int) {
     let track = instrumentTracks.removeAtIndex(index)
+    track.nodes.forEach { $0.reference?.fadeOut(remove: true) }
     receptionist.stopObserving(Track.Notification.DidUpdateEvents, from: track)
     logDebug("track removed: \(track.name)")
     Notification.DidRemoveTrack.post(

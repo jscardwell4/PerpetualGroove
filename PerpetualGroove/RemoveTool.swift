@@ -14,9 +14,6 @@ final class RemoveTool: ToolType {
 
   unowned let player: MIDIPlayerNode
 
-  func didShowViewController() {}
-  func didHideViewController() {}
-
   var active = false {
     didSet {
       logDebug("oldValue = \(oldValue)  active = \(active)")

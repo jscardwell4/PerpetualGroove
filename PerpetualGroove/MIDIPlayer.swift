@@ -32,43 +32,46 @@ final class MIDIPlayer {
   static private(set) var existingGeneratorTool: GeneratorTool?
   static private(set) var newGeneratorTool: GeneratorTool?
 
+  static private var toolViewController: UIViewController?
+
+  static func dismissToolViewController() {
+    guard let viewController = toolViewController else { return }
+    playerViewController?.dismissToolViewController(viewController)
+  }
+
+  /** presentToolViewController */
+  static func presentToolViewController() {
+    guard toolViewController == nil,
+      let viewController = (currentTool.toolType as? ConfigurableToolType)?.viewController else { return }
+
+    toolViewController = viewController
+    playerViewController?.presentToolViewController(viewController)
+    (currentTool.toolType as? ConfigurableToolType)?.didShowViewController(viewController)
+  }
+
+
   static var currentTool: Tool = .None {
+    willSet {
+      guard currentTool != newValue && toolViewController != nil else { return }
+      dismissToolViewController()
+    }
     didSet {
       logDebug("oldValue = \(oldValue)  currentTool = \(currentTool)")
       guard currentTool != oldValue else { return }
       oldValue.toolType?.active = false
       currentTool.toolType?.active = true
-
-      if let tools = playerViewController?.tools
-        where currentTool == .None && tools.selectedSegmentIndex != ImageSegmentedControl.NoSegment
-      {
-        tools.selectedSegmentIndex = ImageSegmentedControl.NoSegment
-      }
     }
   }
 
-  static private var toolControllerIndex: [ObjectIdentifier:Tool] = [:]
-
   /**
-   presentViewController:forTool:
+   didDismissViewController:
 
-   - parameter viewController: UIViewController
-   - parameter tool: ToolTyp
+   - parameter viewController: MIDIPlayerViewController
   */
-  static func presentViewController(viewController: UIViewController, forTool tool: ToolType) {
-    guard currentTool.toolType === tool else { return }
-    playerViewController?.toolViewController = viewController
-    toolControllerIndex[ObjectIdentifier(viewController)] = Tool(tool)
-    currentTool.toolType?.didShowViewController()
-  }
-
-  /**
-   didDismissToolControllerForPlayerViewController:
-
-   - parameter controller: MIDIPlayerViewController
-  */
-  static func didDismissViewController(controller: UIViewController) {
-    toolControllerIndex.removeValueForKey(ObjectIdentifier(controller))?.toolType?.didHideViewController()
+  static func didDismissViewController(viewController: UIViewController) {
+    guard viewController === toolViewController else { return }
+    (currentTool.toolType as? ConfigurableToolType)?.didHideViewController(viewController)
+    toolViewController = nil
   }
 
   /**
@@ -106,6 +109,17 @@ final class MIDIPlayer {
     } catch {
       logError(error)
     }
+  }
+
+  /**
+   removeNode:
+
+   - parameter node: MIDINode
+  */
+  static func removeNode(node: MIDINode) {
+    guard node.parent === playerNode else { return }
+    node.fadeOut(remove: true)
+    Notification.DidRemoveNode.post()
   }
 
   /**
@@ -150,15 +164,50 @@ final class MIDIPlayer {
 
 }
 
+extension MIDIPlayerViewController {
+
+  /** dismissToolViewController */
+  private func dismissToolViewController(viewController: UIViewController) {
+    guard viewController.parentViewController === self else { return }
+    viewController.willMoveToParentViewController(nil)
+    viewController.removeFromParentViewController()
+    if viewController.isViewLoaded() { viewController.view.removeFromSuperview() }
+    blurView.hidden = true
+    MIDIPlayer.didDismissViewController(viewController)
+  }
+
+  /** presentToolViewController */
+  private func presentToolViewController(viewController: UIViewController) {
+    guard viewController.parentViewController == nil else { return }
+    addChildViewController(viewController)
+    let controllerView = viewController.view
+    controllerView.translatesAutoresizingMaskIntoConstraints = false
+    controllerView.backgroundColor = nil
+    blurView.contentView.insertSubview(controllerView, atIndex: 0)
+    view.constrain(
+      controllerView.left => playerView.left + 20,
+      controllerView.right => playerView.right - 20,
+      controllerView.top => playerView.top + 20,
+      controllerView.bottom => playerView.bottom - 20
+    )
+    viewController.didMoveToParentViewController(self)
+    blurView.hidden = false
+  }
+
+}
+
 protocol ToolType: class {
   var active: Bool { get set }
   func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?)
   func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?)
   func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?)
   func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?)
+}
 
-  func didShowViewController()
-  func didHideViewController()
+protocol ConfigurableToolType: ToolType {
+  func didShowViewController(viewController: UIViewController)
+  func didHideViewController(viewController: UIViewController)
+  var viewController: UIViewController { get }
 }
 
 // MARK: - Tool
@@ -178,7 +227,7 @@ extension MIDIPlayer {
 
     var isCurrentTool: Bool { return MIDIPlayer.currentTool == self }
 
-    private init(_ toolType: ToolType?) {
+    init(_ toolType: ToolType?) {
       switch toolType {
         case let t? where MIDIPlayer.newGeneratorTool === t:      self = .NewGenerator
         case let t? where MIDIPlayer.addTool === t:               self = .Add
@@ -198,7 +247,7 @@ extension MIDIPlayer {
   /** An enumeration to wrap up notifications */
   enum Notification: String, NotificationType, NotificationNameType {
     case DidAddNode, DidRemoveNode
-    var object: AnyObject? { return MIDIPlayerNode.self }
+    var object: AnyObject? { return MIDIPlayer.self }
     enum Key: String, NotificationKeyType { case AddedNode, AddedNodeTrack }
   }
 

@@ -14,10 +14,11 @@ final class AddTool: ToolType {
 
   unowned let player: MIDIPlayerNode
 
-  func didShowViewController() {}
-  func didHideViewController() {}
-
-  var active = false { didSet { logDebug("oldValue = \(oldValue)  active = \(active)") } }
+  var active = false {
+    didSet {
+      logDebug("oldValue = \(oldValue)  active = \(active)")
+    }
+  }
 
   var noteGenerator: MIDINoteGenerator = NoteGenerator()
 

@@ -80,7 +80,7 @@
                                                 <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="CloseButton"/>
                                             </userDefinedRuntimeAttributes>
                                             <connections>
-                                                <action selector="dismissToolViewController" destination="6xH-va-xT7" eventType="touchUpInside" id="sGJ-Ib-1pE"/>
+                                                <action selector="dismissAction" destination="6xH-va-xT7" eventType="touchUpInside" id="Wbo-oo-SfI"/>
                                             </connections>
                                         </view>
                                     </subviews>
@@ -97,10 +97,10 @@
                                 <rect key="frame" x="241" y="533.5" width="226" height="41.5"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="bvY-A7-VNE">
-                                        <rect key="frame" x="0.0" y="0.0" width="226" height="41.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="226" height="42"/>
                                         <subviews>
                                             <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="u5W-aV-tWA" userLabel="NodeNote" customClass="ImageButtonView" customModule="MoonKit">
-                                                <rect key="frame" x="0.0" y="0.0" width="41.5" height="41.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="42" height="42"/>
                                                 <animations/>
                                                 <accessibility key="accessibilityConfiguration" identifier="NodeNoteButton"/>
                                                 <constraints>
@@ -113,7 +113,7 @@
                                                 </userDefinedRuntimeAttributes>
                                             </view>
                                             <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Axm-CN-6iz" userLabel="Add" customClass="ImageButtonView" customModule="MoonKit">
-                                                <rect key="frame" x="61.5" y="0.0" width="41.5" height="41.5"/>
+                                                <rect key="frame" x="62" y="0.0" width="42" height="42"/>
                                                 <animations/>
                                                 <accessibility key="accessibilityConfiguration" identifier="AddButton"/>
                                                 <constraints>
@@ -126,7 +126,7 @@
                                                 </userDefinedRuntimeAttributes>
                                             </view>
                                             <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YHK-Is-Vea" userLabel="Remove" customClass="ImageButtonView" customModule="MoonKit">
-                                                <rect key="frame" x="123" y="0.0" width="41.5" height="41.5"/>
+                                                <rect key="frame" x="123" y="0.0" width="42" height="42"/>
                                                 <animations/>
                                                 <accessibility key="accessibilityConfiguration" identifier="RemoveButton"/>
                                                 <constraints>
@@ -139,7 +139,7 @@
                                                 </userDefinedRuntimeAttributes>
                                             </view>
                                             <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RVW-Dd-0QR" userLabel="Generator" customClass="ImageButtonView" customModule="MoonKit">
-                                                <rect key="frame" x="184.5" y="0.0" width="41.5" height="41.5"/>
+                                                <rect key="frame" x="185" y="0.0" width="42" height="42"/>
                                                 <animations/>
                                                 <accessibility key="accessibilityConfiguration" identifier="GeneratorButton"/>
                                                 <constraints>

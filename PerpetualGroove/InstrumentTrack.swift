@@ -247,7 +247,7 @@ final class InstrumentTrack: Track {
 
     do {
       try removeNode(node)
-      node.removeFromParent()
+      MIDIPlayer.removeNode(node)
       fileIDToNodeID[identifier] = nil
     } catch {
       logError(error)

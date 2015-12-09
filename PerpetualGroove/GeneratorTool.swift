@@ -10,15 +10,15 @@ import UIKit
 import SpriteKit
 import MoonKit
 
-final class GeneratorTool: ToolType {
+final class GeneratorTool: ConfigurableToolType {
 
   unowned let player: MIDIPlayerNode
 
   var active = false {
     didSet {
       logDebug("[\(mode)] oldValue = \(oldValue)  active = \(active)")
-      guard active != oldValue && mode == .New else { return }
-      showViewController()
+      guard active != oldValue && active && mode == .New else { return }
+      MIDIPlayer.presentToolViewController()
     }
   }
 
@@ -27,12 +27,12 @@ final class GeneratorTool: ToolType {
   private weak var node: MIDINode? {
     didSet {
       guard node != oldValue else { return }
-      guard oldValue == nil || node == nil else { fatalError("node should be cleared before being set again") }
+
       let name = "generatorToolLighting"
+
       if let node = node {
-        guard node.childNodeWithName(name) == nil else {
-          fatalError("node already lit")
-        }
+        guard node.childNodeWithName(name) == nil else { fatalError("node already lit") }
+
         let light = SKLightNode()
         light.name = name
         light.categoryBitMask = 1
@@ -40,46 +40,109 @@ final class GeneratorTool: ToolType {
         node.lightingBitMask = 1
         node.runAction(SKAction.colorizeWithColor(.whiteColor(), colorBlendFactor: 1, duration: 0.25))
       }
-      else if let oldNode = oldValue {
+
+      if let oldNode = oldValue {
         oldNode.childNodeWithName(name)?.removeFromParent()
         oldNode.lightingBitMask = 0
         if let track = oldNode.track {
           oldNode.runAction(SKAction.colorizeWithColor(track.color.value, colorBlendFactor: 1, duration: 0.25))
         }
       }
+
     }
   }
 
-  init(playerNode: MIDIPlayerNode, mode: Mode) { player = playerNode; self.mode = mode }
+  private let receptionist: NotificationReceptionist = {
+    let receptionist = NotificationReceptionist(callbackQueue: NSOperationQueue.mainQueue())
+    receptionist.logContext = LogManager.MIDIFileContext
+    return receptionist
+  }()
+
+
+  init(playerNode: MIDIPlayerNode, mode: Mode) {
+    player = playerNode
+    self.mode = mode
+    receptionist.observe(MIDIPlayer.Notification.DidAddNode,
+                    from: MIDIPlayer.self,
+                callback: weakMethod(self, GeneratorTool.didAddNode))
+        receptionist.observe(MIDIPlayer.Notification.DidRemoveNode,
+                    from: MIDIPlayer.self,
+                callback: weakMethod(self, GeneratorTool.didRemoveNode))
+
+  }
 
   private typealias NodeRef = Weak<MIDINode>
 
-  /** showViewController */
-  private func showViewController() {
+  /**
+   didAddNode:
+
+   - parameter notification: NSNotification
+  */
+  private func didAddNode(notification: NSNotification) {
+    guard active && mode == .Existing && player.midiNodes.count == 2 else { return }
+    _viewController?.navigationArrows = [.Previous, .Next]
+  }
+
+  /**
+   didRemoveNode:
+
+   - parameter notification: NSNotification
+   */
+  private func didRemoveNode(notification: NSNotification) {
+    guard active && mode == .Existing && player.midiNodes.count < 2 else { return }
+    _viewController?.navigationArrows = [.None]
+  }
+
+  /** previousNode */
+  private func previousNode() {
+    let nodes = player.midiNodes
+    guard let node = node, var idx = nodes.indexOf(node) else { return }
+    self.node = ++idx < nodes.endIndex ? nodes[idx] : nodes[nodes.startIndex]
+  }
+
+  /** nextNode */
+  private func nextNode() {
+    let nodes = player.midiNodes
+    guard let node = node, var idx = nodes.indexOf(node) else { return }
+    self.node = --idx >= nodes.startIndex ? nodes[idx] : nodes[nodes.endIndex - 1]
+  }
+
+  private weak var _viewController: GeneratorViewController?
+  var viewController: UIViewController {
     let storyboard = UIStoryboard(name: "Generator", bundle: nil)
-    guard let viewController = storyboard.instantiateInitialViewController() as? GeneratorViewController else {
-      return
-    }
+    let viewController: GeneratorViewController
+
     switch mode {
+
       case .Existing:
         guard let node = node else { fatalError("cannot show view controller when no node has been chosen") }
+        viewController = storyboard.instantiateViewControllerWithIdentifier("GeneratorWithArrows") as! GeneratorViewController
         viewController.loadGenerator(node.noteGenerator)
         viewController.didChangeGenerator = { [weak self] in self?.node?.noteGenerator = $0 }
+        viewController.previousAction = weakMethod(self, GeneratorTool.previousNode)
+        viewController.nextAction = weakMethod(self, GeneratorTool.nextNode)
+
       case .New:
+        viewController = storyboard.instantiateViewControllerWithIdentifier("Generator") as! GeneratorViewController
         viewController.didChangeGenerator = {
           MIDIPlayer.addTool?.noteGenerator = $0
           Sequencer.soundSetSelectionTarget.playNote($0)
         }
+
     }
-    MIDIPlayer.presentViewController(viewController, forTool: self)
+
+    viewController.navigationArrows = player.midiNodes.count > 1 ? [.Previous, .Next] : [.None]
+    return viewController
   }
 
   /** didShowViewController */
-  func didShowViewController() {}
+  func didShowViewController(viewController: UIViewController) {
+    _viewController = viewController as? GeneratorViewController
+  }
 
   /** didHideViewController */
-  func didHideViewController() {
-    guard active else { return }
+  func didHideViewController(viewController: UIViewController) {
+    guard active && viewController === self._viewController else { return }
     switch mode {
       case .New: if MIDIPlayer.currentTool.toolType === self { MIDIPlayer.currentTool = .None }
       case .Existing: node = nil
@@ -134,7 +197,7 @@ final class GeneratorTool: ToolType {
   */
   func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
     guard active && mode == .Existing && node != nil else { return }
-    showViewController()
+    MIDIPlayer.presentToolViewController()
   }
 
 }

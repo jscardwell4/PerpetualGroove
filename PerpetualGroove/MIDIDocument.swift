@@ -19,21 +19,16 @@ final class MIDIDocument: UIDocument {
 
   private(set) var sequence: Sequence? {
     didSet {
-      let stopObserving: (Sequence) -> Void = {
-        self.receptionist.stopObserving(Sequence.Notification.DidUpdate, from: $0)
+      guard oldValue !== sequence else { return }
+
+      if let oldSequence = oldValue {
+        receptionist.stopObserving(Sequence.Notification.DidUpdate, from: oldSequence)
       }
-      let observe: (Sequence) -> Void = {
-        self.receptionist.observe(Sequence.Notification.DidUpdate, from: $0) {
-          [weak self] _ in
-          self?.logDebug("notification received that sequence has been updated")
-          self?.updateChangeCount(.Done)
-        }
-      }
-      switch (oldValue, sequence) {
-        case let (oldValue?, newValue?): stopObserving(oldValue); observe(newValue)
-        case let (nil, newValue?):       observe(newValue)
-        case let (oldValue?, nil):       stopObserving(oldValue)
-        case (nil, nil):                 break
+
+      if let sequence = sequence {
+        receptionist.observe(Sequence.Notification.DidUpdate,
+                        from: sequence,
+                    callback: weakMethod(self, MIDIDocument.didUpdate))
       }
     }
   }
@@ -41,6 +36,16 @@ final class MIDIDocument: UIDocument {
   private var creating = false
 
   override var presentedItemOperationQueue: NSOperationQueue { return MIDIDocumentManager.operationQueue }
+
+  /**
+   didUpdate:
+
+   - parameter notification: NSNotification
+  */
+  private func didUpdate(notification: NSNotification) {
+    logDebug("")
+    updateChangeCount(.Done)
+  }
 
   /**
   didChangeState:

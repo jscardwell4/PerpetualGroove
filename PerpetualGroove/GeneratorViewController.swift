@@ -22,7 +22,27 @@ final class GeneratorViewController: UIViewController {
     }
   }
 
+  @IBOutlet weak var leftArrow: ImageButtonView?
+  @IBOutlet weak var rightArrow: ImageButtonView?
+
   var didChangeGenerator: ((MIDINoteGenerator) -> Void)?
+  var nextAction: (() -> Void)?
+  var previousAction: (() -> Void)?
+
+  var navigationArrows: NavigationArrows = .None {
+    didSet {
+      guard oldValue != navigationArrows
+        && (navigationArrows == .None || (leftArrow != nil && rightArrow != nil) ) else { return }
+      leftArrow?.enabled = navigationArrows ∋ .Previous
+      rightArrow?.enabled = navigationArrows ∋ .Next
+    }
+  }
+
+  /** next */
+  @IBAction private func next() { nextAction?() }
+
+  /** previous */
+  @IBAction private func previous() { previousAction?() }
 
   /** refresh */
   private func refresh() {
@@ -114,3 +134,12 @@ final class GeneratorViewController: UIViewController {
   override func viewDidAppear(animated: Bool) { super.viewDidAppear(animated); refresh() }
   
  }
+
+extension GeneratorViewController {
+  struct NavigationArrows: OptionSetType {
+    let rawValue: Int
+    static let None     = NavigationArrows(rawValue: 0b00)
+    static let Previous = NavigationArrows(rawValue: 0b01)
+    static let Next     = NavigationArrows(rawValue: 0b10)
+  }
+}
