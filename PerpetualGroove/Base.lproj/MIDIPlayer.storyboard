@@ -72,8 +72,8 @@
                                                 <constraint firstAttribute="width" secondItem="VcN-oh-JaR" secondAttribute="height" multiplier="1:1" id="52o-Yf-8JI"/>
                                             </constraints>
                                             <userDefinedRuntimeAttributes>
-                                                <userDefinedRuntimeAttribute type="image" keyPath="image" value="close"/>
-                                                <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="close-selected"/>
+                                                <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/close"/>
+                                                <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="Editing/close-selected"/>
                                                 <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
                                                     <color key="value" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="calibratedRGB"/>
                                                 </userDefinedRuntimeAttribute>
@@ -107,8 +107,8 @@
                                                     <constraint firstAttribute="width" secondItem="u5W-aV-tWA" secondAttribute="height" multiplier="1:1" id="WQF-9N-SrU"/>
                                                 </constraints>
                                                 <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="node_note"/>
-                                                    <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="node_note-selected"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/node_note"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="Editing/node_note-selected"/>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="NodeNoteButton"/>
                                                 </userDefinedRuntimeAttributes>
                                             </view>
@@ -120,8 +120,8 @@
                                                     <constraint firstAttribute="width" secondItem="Axm-CN-6iz" secondAttribute="height" multiplier="1:1" id="ICk-J0-1AW"/>
                                                 </constraints>
                                                 <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="pencil"/>
-                                                    <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="pencil-selected"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/pencil"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="Editing/pencil-selected"/>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="AddButton"/>
                                                 </userDefinedRuntimeAttributes>
                                             </view>
@@ -133,8 +133,8 @@
                                                     <constraint firstAttribute="width" secondItem="YHK-Is-Vea" secondAttribute="height" multiplier="1:1" id="x9h-EF-oem"/>
                                                 </constraints>
                                                 <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="eraser"/>
-                                                    <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="eraser-selected"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/eraser"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="Editing/eraser-selected"/>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="RemoveButton"/>
                                                 </userDefinedRuntimeAttributes>
                                             </view>
@@ -146,8 +146,8 @@
                                                     <constraint firstAttribute="width" secondItem="RVW-Dd-0QR" secondAttribute="height" multiplier="1:1" id="fEe-z8-p4T"/>
                                                 </constraints>
                                                 <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="generator"/>
-                                                    <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="generator-selected"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/generator"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="Editing/generator-selected"/>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="GeneratorButton"/>
                                                 </userDefinedRuntimeAttributes>
                                             </view>
@@ -221,16 +221,16 @@
         </scene>
     </scenes>
     <resources>
-        <image name="close" width="56" height="56"/>
-        <image name="close-selected" width="56" height="56"/>
-        <image name="eraser" width="56" height="56"/>
-        <image name="eraser-selected" width="56" height="56"/>
-        <image name="generator" width="56" height="56"/>
-        <image name="generator-selected" width="56" height="56"/>
-        <image name="node_note" width="56" height="56"/>
-        <image name="node_note-selected" width="56" height="56"/>
-        <image name="pencil" width="56" height="56"/>
-        <image name="pencil-selected" width="56" height="56"/>
+        <image name="Editing/close" width="56" height="56"/>
+        <image name="Editing/close-selected" width="56" height="56"/>
+        <image name="Editing/eraser" width="56" height="56"/>
+        <image name="Editing/eraser-selected" width="56" height="56"/>
+        <image name="Editing/generator" width="56" height="56"/>
+        <image name="Editing/generator-selected" width="56" height="56"/>
+        <image name="Editing/node_note" width="56" height="56"/>
+        <image name="Editing/node_note-selected" width="56" height="56"/>
+        <image name="Editing/pencil" width="56" height="56"/>
+        <image name="Editing/pencil-selected" width="56" height="56"/>
         <image name="spinner1" width="56" height="56"/>
     </resources>
     <color key="tintColor" red="0.8434065580368042" green="0.78949379920959473" blue="0.71009701490402222" alpha="1" colorSpace="calibratedRGB"/>
