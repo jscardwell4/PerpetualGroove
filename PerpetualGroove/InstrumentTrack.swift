@@ -259,7 +259,17 @@ final class InstrumentTrack: Track {
 
   - parameter node: MIDINode
   */
-  func removeNode(node: MIDINode) throws {
+  func removeNode(node: MIDINode) throws { try _removeNode(node, delete: false) }
+
+  func deleteNode(node: MIDINode) throws { try _removeNode(node, delete: true) }
+
+  /**
+   _removeNode:delete:
+
+   - parameter node: MIDINode
+   - parameter delete: Bool
+  */
+  private func _removeNode(node: MIDINode, delete: Bool) throws {
     guard let idx = nodes.indexOf({$0.reference == node}),
       node = nodes.removeAtIndex(idx).reference else { throw Error.NodeNotFound }
     
@@ -269,10 +279,16 @@ final class InstrumentTrack: Track {
     node.sendNoteOff()
     try MIDIPortDisconnectSource(inPort, node.endPoint) ➤ "Failed to disconnect to node \(node.name!)"
     Notification.DidRemoveNode.post(object: self)
-    guard recording else { logDebug("not recording…skipping event creation"); return }
-    eventQueue.addOperationWithBlock {
-      [time = Sequencer.time.time, weak self] in
-      self?.addEvent(MIDINodeEvent(.Remove(identifier: identifier), time))
+
+    switch delete {
+      case true:
+        eventContainer.removeEventsMatching { ($0 as? MIDINodeEvent)?.identifier == identifier }
+      case false:
+        guard recording else { logDebug("not recording…skipping event creation"); return }
+        eventQueue.addOperationWithBlock {
+          [time = Sequencer.time.time, weak self] in
+          self?.addEvent(MIDINodeEvent(.Remove(identifier: identifier), time))
+        }
     }
   }
 

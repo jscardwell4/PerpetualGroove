@@ -55,6 +55,48 @@ extension CGRect {
     set { self = CGRect(size: size, center: newValue) }
   }
 
+  public typealias ResizingAxis = UILayoutConstraintAxis
+//  public enum ResizingAxis { case Horizontal, Vertical }
+  public enum ResizingAnchor {
+    case TopLeft, Top, TopRight, Left, Center, Right, BottomLeft, Bottom, BottomRight
+  }
+
+  @warn_unused_result(mutable_variant="applyRatioInPlace")
+  public func applyRatio(ratio: Ratio<CGFloat>,
+                    axis: ResizingAxis = .Vertical,
+                  anchor: ResizingAnchor = .Center) -> CGRect
+  {
+    var result = self
+    result.applyRatioInPlace(ratio, axis: axis, anchor: anchor)
+    return result
+  }
+
+  public mutating func applyRatioInPlace(ratio: Ratio<CGFloat>,
+                                    axis: ResizingAxis = .Vertical,
+                                  anchor: ResizingAnchor = .Center)
+  {
+    let newSize: CGSize
+    switch axis {
+      case .Horizontal: newSize = CGSize(width: size.width, height: size.height * ratio.value)
+      case .Vertical:   newSize = CGSize(width: size.width * ratio.value, height: size.height)
+    }
+
+    let newOrigin: CGPoint
+    switch anchor {
+      case .TopLeft:     newOrigin = CGPoint(x: origin.x, y: origin.y)
+      case .Top:         newOrigin = CGPoint(x: midX - half(newSize.width), y: origin.y)
+      case .TopRight:    newOrigin = CGPoint(x: maxX - newSize.width, y: origin.y)
+      case .Left:        newOrigin = CGPoint(x: origin.x, y: midY - half(newSize.height))
+      case .Center:      newOrigin = CGPoint(x: midX - half(newSize.width), y: midY - half(newSize.height))
+      case .Right:       newOrigin = CGPoint(x: maxX - newSize.width, y: midY - half(newSize.height))
+      case .BottomLeft:  newOrigin = CGPoint(x: origin.x, y: maxY - newSize.height)
+      case .Bottom:      newOrigin = CGPoint(x: midX - half(newSize.width), y: maxY - newSize.height)
+      case .BottomRight: newOrigin = CGPoint(x: maxX - newSize.width, y: maxY - newSize.height)
+    }
+    size = newSize
+    origin = newOrigin
+  }
+
   // MARK: - Convenience methods that call to library `offsetBy` and `offsetInPlace` methods
 
 

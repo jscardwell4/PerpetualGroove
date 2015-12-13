@@ -102,6 +102,8 @@ extension CABarBeatTime {
     return CABarBeatTime(bar: 1, beat: 1, subbeat: 1, subbeatDivisor: UInt16(Sequencer.resolution), reserved: 0)
   }
 
+  public static var Nil: CABarBeatTime = CABarBeatTime(bar: -1, beat: 0, subbeat: 0, subbeatDivisor: 0, reserved: 0)
+
   /**
   init:beatsPerBar:subbeatDivisor:
 

@@ -157,12 +157,15 @@ final class RemoveTool: ToolType {
     }
   }
 
+  let deleteFromTrack: Bool
+
   /**
    initWithPlayerNode:
 
    - parameter playerNode: MIDIPlayerNode
    */
-  init(playerNode: MIDIPlayerNode) {
+  init(playerNode: MIDIPlayerNode, delete: Bool = false) {
+    deleteFromTrack = delete
     player = playerNode
     receptionist.observe(MIDIDocumentManager.Notification.DidChangeDocument,
       from: MIDIDocumentManager.self,
@@ -179,8 +182,10 @@ final class RemoveTool: ToolType {
   /** removeMarkedNodes */
   private func removeMarkedNodes() {
     do {
+      guard let track = track else { return }
+      let remove = deleteFromTrack ? InstrumentTrack.deleteNode : InstrumentTrack.removeNode
       for node in nodesToRemove.flatMap({$0.reference}) {
-        try track?.removeNode(node)
+        try remove(track)(node)
         node.fadeOut(remove: true)
       }
     } catch {

@@ -48,7 +48,7 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
 
   - returns: [MIDIEvent]?
   */
-  func eventsForTime(time: CABarBeatTime) -> [MIDIEvent]? { return eventContainer[time] }
+  func eventsForTime(time: CABarBeatTime) -> [MIDIEvent]? { return eventContainer.eventsForTime(time) }
 
   /**
   filterEvents:

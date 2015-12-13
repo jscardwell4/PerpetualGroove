@@ -18,6 +18,7 @@ struct MIDINodeEvent: MIDIEvent {
   var bytes: [Byte] { return [0xFF, 0x07] + data.length.bytes + data.bytes }
 
   typealias Identifier = MIDINode.Identifier
+  var identifier: Identifier { switch data { case let .Add(id, _, _): return id; case let .Remove(id): return id } }
 
   /**
   Initializer that takes the event's data and, optionally, the event's bar beat time

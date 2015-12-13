@@ -18,7 +18,7 @@ final class GeneratorTool: ConfigurableToolType {
     didSet {
       logDebug("[\(mode)] oldValue = \(oldValue)  active = \(active)")
       guard active != oldValue && active && mode == .New else { return }
-      MIDIPlayer.presentToolViewController()
+      MIDIPlayer.playerViewController?.presentControllerForTool(self)
     }
   }
 
@@ -107,8 +107,12 @@ final class GeneratorTool: ConfigurableToolType {
     self.node = --idx >= nodes.startIndex ? nodes[idx] : nodes[nodes.endIndex - 1]
   }
 
+  var isShowingViewController: Bool { return _viewController != nil }
+
   private weak var _viewController: GeneratorViewController?
   var viewController: UIViewController {
+    guard _viewController == nil else { return _viewController! }
+
     let storyboard = UIStoryboard(name: "Generator", bundle: nil)
     let viewController: GeneratorViewController
 
@@ -142,7 +146,7 @@ final class GeneratorTool: ConfigurableToolType {
 
   /** didHideViewController */
   func didHideViewController(viewController: UIViewController) {
-    guard active && viewController === self._viewController else { return }
+    guard active && viewController === _viewController else { return }
     switch mode {
       case .New: if MIDIPlayer.currentTool.toolType === self { MIDIPlayer.currentTool = .None }
       case .Existing: node = nil
@@ -197,7 +201,7 @@ final class GeneratorTool: ConfigurableToolType {
   */
   func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
     guard active && mode == .Existing && node != nil else { return }
-    MIDIPlayer.presentToolViewController()
+    MIDIPlayer.playerViewController?.presentControllerForTool(self)
   }
 
 }

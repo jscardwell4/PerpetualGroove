@@ -1,5 +1,4 @@
 //
-
 //  ImageButtonView.swift
 //  MoonKit
 //
@@ -163,7 +162,60 @@ public class ImageButtonView: ToggleControl {
     let context = UIGraphicsGetCurrentContext()
     CGContextSaveGState(context)
     CGContextClearRect(context, rect)
-    image.drawInRect(rect)
+    UIRectClip(rect)
+
+    let 𝝙size = image.size - rect.size
+    let x: CGFloat, y: CGFloat, w: CGFloat, h: CGFloat
+
+    switch contentMode {
+      case .ScaleToFill, .Redraw:
+        (x, y, w, h) = rect.unpack4
+      case .ScaleAspectFit:
+        (w, h) = image.size.aspectMappedToSize(rect.size, binding: true).unpack
+        x = rect.midX - half(w)
+        y = rect.midY - half(h)
+      case .ScaleAspectFill:
+        (w, h) = image.size.aspectMappedToSize(rect.size, binding: false).unpack
+        x = rect.midX - half(w)
+        y = rect.midY - half(h)
+      case .Center:
+        x = rect.x - half(𝝙size.width)
+        y = rect.y - half(𝝙size.height)
+        (w, h) = image.size.unpack
+      case .Top:
+        x = rect.x - half(𝝙size.width)
+        y = rect.y
+        (w, h) = image.size.unpack
+      case .Bottom:
+        x = rect.x - half(𝝙size.width)
+        y = rect.maxY - image.size.height
+        (w, h) = image.size.unpack
+      case .Left:
+        x = rect.x
+        y = rect.y - half(𝝙size.height)
+        (w, h) = image.size.unpack
+      case .Right:
+        x = rect.maxX - image.size.width
+        y = rect.y - half(𝝙size.height)
+        (w, h) = image.size.unpack
+      case .TopLeft:
+        (x, y) = rect.origin.unpack
+        (w, h) = image.size.unpack
+      case .TopRight:
+        x = rect.maxX - image.size.width
+        y = rect.y
+        (w, h) = image.size.unpack
+      case .BottomLeft:
+        x = rect.x
+        y = rect.maxY - image.size.height
+        (w, h) = image.size.unpack
+      case .BottomRight:
+        x = rect.maxX - image.size.width
+        y = rect.maxY - image.size.height
+        (w, h) = image.size.unpack
+    }
+
+    image.drawInRect(CGRect(x: x, y: y, width: w, height: h))
 
     tintColor.setFill()
     UIBezierPath(rect: rect).fillWithBlendMode(.SourceIn, alpha: 1)

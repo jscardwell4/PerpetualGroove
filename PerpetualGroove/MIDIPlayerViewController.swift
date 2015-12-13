@@ -17,15 +17,58 @@ final class MIDIPlayerViewController: UIViewController {
   @IBOutlet weak var blurView: UIVisualEffectView!
 
   /** dismissAction */
-  @IBAction private func dismissAction() {
-    MIDIPlayer.dismissToolViewController()
+  @IBAction private func dismissAction() { dismissController() }
+
+  private weak var controllerTool: ConfigurableToolType?
+
+  /**
+   presentControllerForTool:
+
+   - parameter tool: ConfigurableToolType
+  */
+  func presentControllerForTool(tool: ConfigurableToolType) {
+    let controller = tool.viewController
+    guard controller.parentViewController == nil && childViewControllers.isEmpty else { return }
+
+    addChildViewController(controller)
+
+    let controllerView = controller.view
+    controllerView.frame = playerView.bounds.insetBy(dx: 20, dy: 20)
+    controllerView.translatesAutoresizingMaskIntoConstraints = false
+    controllerView.backgroundColor = nil
+    blurView.contentView.insertSubview(controllerView, atIndex: 0)
+
+    view.constrain(
+      controllerView.left => playerView.left + 20,
+      controllerView.right => playerView.right - 20,
+      controllerView.top => playerView.top + 20,
+      controllerView.bottom => playerView.bottom - 20
+    )
+
+    controller.didMoveToParentViewController(self)
+
+    blurView.hidden = false
+
+    tool.didShowViewController(controller)
+
+    controllerTool = tool
+  }
+
+  /** dismissController */
+  func dismissController() {
+    guard let tool = controllerTool where tool.isShowingViewController else { return }
+    let controller = tool.viewController
+    guard controller.parentViewController === self else { return }
+    controller.willMoveToParentViewController(nil)
+    controller.removeFromParentViewController()
+    if controller.isViewLoaded() { controller.view.removeFromSuperview() }
+    blurView.hidden = true
+    tool.didHideViewController(controller)
+    controllerTool = nil
   }
 
   /** setup */
-  private func setup() {
-    initializeReceptionist()
-    MIDIPlayer.playerViewController = self
-  }
+  private func setup() { initializeReceptionist(); MIDIPlayer.playerViewController = self }
 
   /**
    init:bundle:
@@ -43,16 +86,10 @@ final class MIDIPlayerViewController: UIViewController {
 
    - parameter aDecoder: NSCoder
   */
-  required init?(coder aDecoder: NSCoder) {
-    super.init(coder: aDecoder)
-    setup()
-  }
+  required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder); setup() }
 
   /** viewDidLoad */
-  override func viewDidLoad() {
-    super.viewDidLoad()
-    documentName.text = nil
-  }
+  override func viewDidLoad() { super.viewDidLoad(); documentName.text = nil }
 
   // MARK: - Files
 
@@ -60,7 +97,9 @@ final class MIDIPlayerViewController: UIViewController {
 
   @IBOutlet weak var spinner: UIImageView! {
     didSet {
-      spinner?.animationImages = (1 ... 8).flatMap({UIImage(named: "spinner\($0)")?.imageWithColor(.whiteColor())})
+      spinner?.animationImages = (1...8).flatMap{
+        UIImage(named: "spinner\($0)")?.imageWithColor(.whiteColor())
+      }
       spinner?.animationDuration = 0.8
       spinner?.hidden = true
     }
@@ -102,6 +141,11 @@ final class MIDIPlayerViewController: UIViewController {
     }
   }
 
+  private func didSelectTool(notification: NSNotification) {
+    guard let tool = notification.selectedTool else { return }
+    if tools.selectedSegmentIndex != tool.rawValue { tools.selectedSegmentIndex = tool.rawValue }
+  }
+
   /** initializeReceptionist */
   private func initializeReceptionist() {
 
@@ -113,6 +157,9 @@ final class MIDIPlayerViewController: UIViewController {
     receptionist.observe(MIDIDocumentManager.Notification.WillOpenDocument,
                     from: MIDIDocumentManager.self,
                 callback: weakMethod(self, MIDIPlayerViewController.willOpenDocument))
+    receptionist.observe(MIDIPlayer.Notification.DidSelectTool,
+                    from: MIDIPlayer.self,
+                callback: weakMethod(self, MIDIPlayerViewController.didSelectTool))
 
   }
 
@@ -121,29 +168,10 @@ final class MIDIPlayerViewController: UIViewController {
   @IBOutlet private(set) weak var tools: ImageSegmentedControl!
 
   @IBAction private func didSelectTool(sender: ImageSegmentedControl) {
-    MIDIPlayer.currentTool = MIDIPlayer.Tool(rawValue: sender.selectedSegmentIndex) ?? .None
+    MIDIPlayer.currentTool = Tool(sender.selectedSegmentIndex)
   }
 
 }
-
-//extension MIDIPlayerViewController: UIGestureRecognizerDelegate {
-//
-//  /**
-//   gestureRecognizer:shouldReceiveTouch:
-//
-//   - parameter gestureRecognizer: UIGestureRecognizer
-//   - parameter touch: UITouch
-//
-//    - returns: Bool
-//  */
-//  func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
-//    guard let toolViewController = toolViewController where toolViewController.isViewLoaded() else { return false }
-//    let point = touch.locationInView(toolViewController.view)
-//    let result = !toolViewController.view.pointInside(point, withEvent: nil)
-//    return result
-//  }
-//
-//}
 
 extension MIDIPlayerViewController: UITextFieldDelegate {
 
@@ -194,7 +222,8 @@ extension MIDIPlayerViewController: UITextFieldDelegate {
   - parameter textField: UITextField
   */
   func textFieldDidEndEditing(textField: UITextField) {
-    guard let text = textField.text where MIDIDocumentManager.currentDocument?.localizedName != text else { return }
+    guard let text = textField.text
+      where MIDIDocumentManager.currentDocument?.localizedName != text else { return }
     MIDIDocumentManager.currentDocument?.renameTo(text)
   }
 }
