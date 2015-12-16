@@ -316,13 +316,13 @@
                                         <rect key="frame" x="0.0" y="0.0" width="288" height="56"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" verticalHuggingPriority="251" text="Note" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="o8W-Sq-PWR">
-                                                <rect key="frame" x="0.0" y="0.0" width="37.5" height="56"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="38" height="56"/>
                                                 <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
                                                 <color key="textColor" red="0.57254904510000004" green="0.52941179279999995" blue="0.47058823700000002" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LAk-vc-QCj" userLabel="Pitch Picker" customClass="InlinePickerView" customModule="MoonKit">
-                                                <rect key="frame" x="47.5" y="0.0" width="66.5" height="56"/>
+                                                <rect key="frame" x="48" y="0.0" width="67" height="56"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="Pitch Picker"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="color" keyPath="selectedItemColor">
@@ -425,13 +425,13 @@
                                         <rect key="frame" x="0.0" y="56" width="288" height="56"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Chord" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="liU-QZ-DFN">
-                                                <rect key="frame" x="0.0" y="0.0" width="49.5" height="56"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="50" height="56"/>
                                                 <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
                                                 <color key="textColor" red="0.57254904510000004" green="0.52941179279999995" blue="0.47058823700000002" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WmI-eQ-XEC" userLabel="Chord Picker" customClass="InlinePickerView" customModule="MoonKit">
-                                                <rect key="frame" x="59.5" y="0.0" width="228.5" height="56"/>
+                                                <rect key="frame" x="60" y="0.0" width="229" height="56"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="number" keyPath="selection">
                                                         <integer key="value" value="0"/>

@@ -67,7 +67,7 @@ final class LogManager: MoonKit.LogManager {
   /** setDefaultLogContexts */
   static private func setDefaultLogContexts() {
     MIDIDocumentManager.defaultLogContext     = MIDIFileContext// ∪ .Console
-    MIDIDocument.defaultLogContext            = MIDIFileContext ∪ .Console
+    MIDIDocument.defaultLogContext            = MIDIFileContext// ∪ .Console
     MIDIFile.defaultLogContext                = MIDIFileContext// ∪ .Console
     MIDIFileHeaderChunk.defaultLogContext     = MIDIFileContext// ∪ .Console
     MIDIFileTrackChunk.defaultLogContext      = MIDIFileContext// ∪ .Console
@@ -95,17 +95,17 @@ final class LogManager: MoonKit.LogManager {
     MIDIClock.defaultLogContext       = SequencerContext// ∪ .Console
     BarBeatTime.defaultLogContext     = SequencerContext// ∪ .Console
 
-    MIDIPlayer.defaultLogContext      = SceneContext ∪ .Console
-    MIDIPlayerScene.defaultLogContext = SceneContext ∪ .Console
+    MIDIPlayer.defaultLogContext      = SceneContext// ∪ .Console
+    MIDIPlayerScene.defaultLogContext = SceneContext// ∪ .Console
     MIDINodeHistory.defaultLogContext = SceneContext// ∪ .Console
-    MIDIPlayerNode.defaultLogContext  = SceneContext ∪ .Console
-    AddTool.defaultLogContext         = SceneContext ∪ .Console
-    RemoveTool.defaultLogContext      = SceneContext ∪ .Console
-    GeneratorTool.defaultLogContext   = SceneContext ∪ .Console
-    MIDINode.defaultLogContext        = SceneContext ∪ .Console
+    MIDIPlayerNode.defaultLogContext  = SceneContext// ∪ .Console
+    AddTool.defaultLogContext         = SceneContext// ∪ .Console
+    RemoveTool.defaultLogContext      = SceneContext// ∪ .Console
+    GeneratorTool.defaultLogContext   = SceneContext// ∪ .Console
+    MIDINode.defaultLogContext        = SceneContext// ∪ .Console
     Placement.defaultLogContext       = SceneContext// ∪ .Console
 
-    MIDIPlayerViewController.defaultLogContext     = UIContext ∪ .Console
+    MIDIPlayerViewController.defaultLogContext     = UIContext// ∪ .Console
     PurgatoryViewController.defaultLogContext      = UIContext// ∪ .Console
     DocumentsViewController.defaultLogContext      = UIContext// ∪ .Console
     InstrumentViewController.defaultLogContext     = UIContext// ∪ .Console

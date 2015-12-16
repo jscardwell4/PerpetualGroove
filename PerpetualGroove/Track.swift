@@ -88,9 +88,11 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
   var name: String {
     get { return eventContainer.trackName }
     set {
+      guard name != newValue else { return }
       logDebug("'\(name)' ➞ '\(newValue)'")
       eventContainer.trackName = newValue
       Notification.DidUpdateEvents.post(object: self)
+      Notification.DidChangeName.post(object: self)
     }
   }
 
@@ -155,7 +157,7 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
 
 extension Track {
   enum Notification: String, NotificationType, NotificationNameType {
-    case DidUpdateEvents
+    case DidUpdateEvents, DidChangeName
     typealias Key = String
   }
 }

@@ -60,7 +60,7 @@ final class MIDIPlayer {
            targetTrack: InstrumentTrack? = nil,
              generator: MIDINoteGenerator)
   {
-    guard let track = targetTrack ?? Sequencer.sequence?.currentTrack else {
+    guard let track = targetTrack ?? MIDIDocumentManager.currentDocument?.sequence?.currentTrack else {
       logWarning("cannot place a node without a track")
       return
     }

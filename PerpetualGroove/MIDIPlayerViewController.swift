@@ -14,7 +14,7 @@ import Eveleth
 
 final class MIDIPlayerViewController: UIViewController {
 
-  @IBOutlet weak var blurView: UIVisualEffectView!
+  @IBOutlet private weak var blurView: UIVisualEffectView!
 
   /** dismissAction */
   @IBAction private func dismissAction() { dismissController() }

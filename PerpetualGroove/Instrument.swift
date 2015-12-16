@@ -27,6 +27,7 @@ final class Instrument: Equatable {
   var bank: Bank = 0
   var program: Program = 0
   var preset: Preset { return soundSet[program, bank] }
+  weak var track: InstrumentTrack?
   private let node = AVAudioUnitSampler()
 
   var bus: AVAudioNodeBus {
@@ -97,11 +98,13 @@ final class Instrument: Equatable {
   }
 
   /**
-  loadSoundSet:
+  All program changes run through this method
 
   - parameter soundSet: SoundSetType
   */
   func loadSoundSet(soundSet: SoundSetType, var program: Program = 0, var bank: Bank = 0) throws {
+    guard !(self.soundSet.isEqualTo(soundSet) && preset == soundSet[program, bank]) else { return }
+    let oldPresetName = preset.name
     program = (0 ... 127).clampValue(program)
     bank    = (0 ... 127).clampValue(bank)
     try node.loadSoundBankInstrumentAtURL(soundSet.url,
@@ -111,6 +114,8 @@ final class Instrument: Equatable {
     self.soundSet = soundSet
     self.program  = program
     self.bank     = bank
+    let newPresetName = preset.name
+    Notification.PresetDidChange.post(object: self, userInfo: [.OldValue: oldPresetName, .NewValue: newPresetName])
   }
 
   /**
@@ -133,7 +138,13 @@ final class Instrument: Equatable {
   - parameter set: SoundSetType
   - parameter program: Program
   */
-  init(soundSet: SoundSetType, program: Program = 0, bank: Bank = 0, channel: Channel = 0) throws {
+  init(track: InstrumentTrack?,
+       soundSet: SoundSetType,
+       program: Program = 0,
+       bank: Bank = 0,
+       channel: Channel = 0) throws
+  {
+    self.track = track
     self.soundSet = soundSet
     self.bank     = bank
     self.program  = program
@@ -155,8 +166,12 @@ final class Instrument: Equatable {
 
   - parameter instrument: Instrument
   */
-  convenience init(instrument: Instrument) {
-    try! self.init(soundSet: instrument.soundSet, program: instrument.program, bank: instrument.bank, channel: instrument.channel)
+  convenience init(track: InstrumentTrack?, instrument: Instrument) {
+    try! self.init(track: track,
+                   soundSet: instrument.soundSet,
+                   program: instrument.program,
+                   bank: instrument.bank,
+                   channel: instrument.channel)
   }
 
 }
@@ -173,6 +188,18 @@ extension Instrument: CustomDebugStringConvertible {
   var debugDescription: String { var result = ""; dump(self, &result); return result }
 }
 
+// MARK: - Notifications
+extension Instrument {
+  enum Notification: String, NotificationType, NotificationNameType {
+    enum Key: String, KeyType { case OldValue, NewValue }
+    case PresetDidChange
+  }
+}
+
+extension NSNotification {
+  var oldPresetName: String? { return userInfo?[Instrument.Notification.Key.OldValue.key] as? String }
+  var newPresetName: String? { return userInfo?[Instrument.Notification.Key.NewValue.key] as? String }
+}
 
 /**
 Equatable compliance

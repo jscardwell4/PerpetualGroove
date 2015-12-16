@@ -18,7 +18,8 @@ final class Sequencer {
   private(set) static var initialized = false
 
   /** 
-  Initializes `soundSets` using the bundled sound font files and creates `auditionInstrument` with the first found
+   Initializes `soundSets` using the bundled sound font files and creates `auditionInstrument` with the
+   first found
   */
   static func initialize() {
     globalBackgroundQueue.async {
@@ -39,15 +40,17 @@ final class Sequencer {
       urls = urls.flatMap({$0.fileReferenceURL()})
       do {
         try urls.filter({$0 ∉ exclude}).forEach { soundSets.append(try SoundSet(url: $0)) }
-        guard soundSets.count > 0 else { fatalError("failed to create any sound sets from bundled sf2 files") }
+        guard soundSets.count > 0 else {
+          fatalError("failed to create any sound sets from bundled sf2 files")
+        }
         let soundSet = soundSets[0]
         let program = UInt8(soundSet.presets[0].program)
-        auditionInstrument = try Instrument(soundSet: soundSet, program: program, channel: 0)
+        auditionInstrument = try Instrument(track: nil, soundSet: soundSet, program: program, channel: 0)
         Notification.DidUpdateAvailableSoundSets.post()
       } catch {
         logError(error)
       }
-      sequence = MIDIDocumentManager.currentDocument?.sequence
+//      sequence = MIDIDocumentManager.currentDocument?.sequence
       initialized = true
       logDebug("Sequencer initialized")
     }
@@ -69,12 +72,13 @@ final class Sequencer {
   - parameter notification: NSNotification
   */
   private static func didChangeDocument(notification: NSNotification) {
-    sequence = MIDIDocumentManager.currentDocument?.sequence
+//    sequence = MIDIDocumentManager.currentDocument?.sequence
+    reset()
   }
 
   // MARK: - Sequence
 
-  static private(set) var sequence: Sequence? { didSet { if oldValue != nil { reset() } } }
+  static private var sequence: Sequence? { return MIDIDocumentManager.currentDocument?.sequence }
 
   // MARK: - Time
 
@@ -139,17 +143,9 @@ final class Sequencer {
   static private(set) var auditionInstrument: Instrument!
 
   /** instrumentWithCurrentSettings */
-  static func instrumentWithCurrentSettings() -> Instrument { return Instrument(instrument: auditionInstrument) }
-
-  // MARK: - Properties used to initialize a new `MIDINode`
-
-//  static var currentNote: MIDINoteGenerator = NoteGenerator()
-
-  /** Plays a note using the current note attributes and instrument settings */
-//  static func auditionCurrentNote() {
-//    guard let auditionInstrument = auditionInstrument else { return }
-//    auditionInstrument.playNote(currentNote)
-//  }
+  static func instrumentWithCurrentSettings() -> Instrument {
+    return Instrument(track: nil, instrument: auditionInstrument)
+  }
 
   static weak var soundSetSelectionTarget: Instrument! = Sequencer.auditionInstrument {
     didSet {

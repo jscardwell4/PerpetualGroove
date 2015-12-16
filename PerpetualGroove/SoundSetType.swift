@@ -19,6 +19,7 @@ protocol SoundSetType: CustomStringConvertible, CustomDebugStringConvertible {
   subscript(idx: Int) -> SF2File.Preset { get }
   subscript(program: Byte, bank: Byte) -> SF2File.Preset { get }
   init(url u: NSURL) throws
+  func isEqualTo(soundSet: SoundSetType) -> Bool
 }
 
 extension SoundSetType {
@@ -33,6 +34,8 @@ extension SoundSetType {
     }
     return self[idx]
   }
+
+  func isEqualTo(soundSet: SoundSetType) -> Bool { return url == soundSet.url }
   
   var displayName: String { return (url.lastPathComponent! as NSString).stringByDeletingPathExtension }
 
@@ -50,4 +53,3 @@ Equatable compliance
 - returns: Bool
 */
 func ==<S:SoundSetType>(lhs: S, rhs: S) -> Bool { return lhs.url == rhs.url }
-

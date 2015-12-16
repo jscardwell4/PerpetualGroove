@@ -13,6 +13,16 @@ final class MixerLayout: UICollectionViewLayout {
 
   let itemSize = CGSize(width: 100, height: 575)
 
+  static private let SecondaryControllerKind = "SecondaryController"
+  static private let secondaryControllerIndexPath = NSIndexPath(forItem: 0, inSection: 3)
+
+  var presentingSecondaryController: Bool = false {
+    didSet {
+      guard presentingSecondaryController != oldValue else { return }
+      invalidateLayout()
+    }
+  }
+
   private typealias AttributesIndex = OrderedDictionary<NSIndexPath, UICollectionViewLayoutAttributes>
   private var storedAttributes: AttributesIndex = [:]
 
@@ -37,7 +47,14 @@ final class MixerLayout: UICollectionViewLayout {
   - returns: [UICollectionViewLayoutAttributes]?
   */
   override func layoutAttributesForElementsInRect(rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
-    return storedAttributes.values.filter { $0.frame.intersects(rect) }
+    var result = Array(storedAttributes.values.filter({ $0.frame.intersects(rect) }))
+    if presentingSecondaryController,
+      let attributes = layoutAttributesForSupplementaryViewOfKind(MixerLayout.SecondaryControllerKind,
+                                                      atIndexPath: MixerLayout.secondaryControllerIndexPath)
+    {
+      result.append(attributes)
+    }
+    return result
   }
 
   /**
@@ -65,6 +82,26 @@ final class MixerLayout: UICollectionViewLayout {
     }
     attributes.frame = CGRect(origin: origin, size: itemSize)
 
+    return attributes
+  }
+
+  /**
+   layoutAttributesForSupplementaryViewOfKind:atIndexPath:
+
+   - parameter elementKind: String
+   - parameter indexPath: NSIndexPath
+
+    - returns: UICollectionViewLayoutAttributes?
+  */
+  override func layoutAttributesForSupplementaryViewOfKind(elementKind: String,
+    atIndexPath indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes?
+  {
+    guard let collectionView = collectionView else { return nil }
+
+    let attributesClass = self.dynamicType.layoutAttributesClass() as! UICollectionViewLayoutAttributes.Type
+    let attributes = attributesClass.init(forSupplementaryViewOfKind: elementKind, withIndexPath: indexPath)
+    attributes.frame = collectionView.bounds
+    attributes.zIndex = 100
     return attributes
   }
 

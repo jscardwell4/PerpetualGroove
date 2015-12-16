@@ -12,6 +12,8 @@ import typealias AudioUnit.AudioUnitElement
 
 final class MixerViewController: UICollectionViewController {
 
+  @IBOutlet private var blurView: UIVisualEffectView!
+
   private let receptionist: NotificationReceptionist = {
     let receptionist = NotificationReceptionist(callbackQueue: NSOperationQueue.mainQueue())
     receptionist.logContext = LogManager.UIContext
@@ -35,6 +37,54 @@ final class MixerViewController: UICollectionViewController {
       if let idx = sequence?.currentTrackIndex { selectTrackAtIndex(idx) }
     }
   }
+
+  /**
+   presentSecondaryController:
+
+   - parameter controller: UIViewController
+  */
+  func presentSecondaryController(controller: UIViewController) {
+    guard childViewControllers.isEmpty && isViewLoaded() && blurView.superview == nil else { return }
+
+    addChildViewController(controller)
+    let controllerView = controller.view
+    controllerView.frame = view.bounds.insetBy(dx: 20, dy: 20)
+    controllerView.translatesAutoresizingMaskIntoConstraints = false
+    controllerView.backgroundColor = nil
+    blurView.contentView.insertSubview(controllerView, atIndex: 0)
+    blurView.contentView.constrain(𝗩|--20--controllerView--20--|𝗩, 𝗛|--20--controllerView--20--|𝗛)
+    blurView.frame = view.bounds
+    UIView.transitionWithView(view,
+                     duration: 0.25,
+                      options: [.AllowAnimatedContent],
+                   animations: {
+                    [unowned self] in
+                     self.view.addSubview(self.blurView)
+                     self.view.constrain(𝗩|self.blurView|𝗩, 𝗛|self.blurView|𝗛)
+                   },
+                   completion: { [unowned self] _ in controller.didMoveToParentViewController(self) })
+  }
+
+  /** dismissSecondaryController */
+  func dismissSecondaryController() {
+    guard let controller = childViewControllers.first
+      where controller.isViewLoaded() && blurView.superview != nil else { return }
+    controller.willMoveToParentViewController(nil)
+    controller.removeFromParentViewController()
+    UIView.transitionWithView(view,
+                     duration: 0.25,
+                      options: [.AllowAnimatedContent],
+                   animations: {
+                    [unowned self] in
+                     controller.view.removeFromSuperview()
+                     self.blurView.removeFromSuperview()
+                    if controller is InstrumentViewController { self.soundSetSelectionTargetCell = nil }
+                   },
+                   completion: nil)
+  }
+
+  /** dismissAction */
+  @IBAction private func dismissAction() { dismissSecondaryController() }
 
   /**
   observeSequence:
@@ -170,7 +220,13 @@ final class MixerViewController: UICollectionViewController {
   func registerCellForSoundSetSelection(cell: TrackCell) {
     guard let collectionView = collectionView where cell.isDescendantOfView(collectionView) else { return }
     if soundSetSelectionTargetCell == cell { soundSetSelectionTargetCell = nil }
-    else { soundSetSelectionTargetCell = cell }
+    else {
+      soundSetSelectionTargetCell = cell
+      guard let controller = UIStoryboard(name: "Instrument", bundle: nil).instantiateInitialViewController() else {
+        fatalError("Failed to instantiate instrument view controller from storyboard")
+      }
+      presentSecondaryController(controller)
+    }
   }
 
   private var initialized = false
@@ -328,7 +384,8 @@ final class MixerViewController: UICollectionViewController {
   - returns: Bool
   */
   override func  collectionView(collectionView: UICollectionView,
-    shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
+    shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool
+  {
     return Section(indexPath) == .Instruments
   }
 
@@ -420,8 +477,11 @@ extension MixerViewController {
 
     - returns: UICollectionViewCell
     */
-    static func dequeueCellForIndexPath(indexPath: NSIndexPath, collectionView: UICollectionView) -> UICollectionViewCell {
-      return collectionView.dequeueReusableCellWithReuseIdentifier(Section(indexPath).identifier, forIndexPath: indexPath)
+    static func dequeueCellForIndexPath(indexPath: NSIndexPath,
+                         collectionView: UICollectionView) -> UICollectionViewCell
+    {
+      return collectionView.dequeueReusableCellWithReuseIdentifier(Section(indexPath).identifier,
+                                                      forIndexPath: indexPath)
     }
   }
   

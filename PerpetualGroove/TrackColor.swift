@@ -100,9 +100,11 @@ enum TrackColor: UInt32, Equatable, Hashable, EnumerableType, CustomStringConver
     .MonteCarlo, .FlamePea, .Crimson, .HanPurple, .MangoTango, .Viking, .Yellow, .Conifer, .Apache
   ]
 
-  static var currentColor: TrackColor? { return Sequencer.sequence?.currentTrack?.color }
+  static var currentColor: TrackColor? {
+    return MIDIDocumentManager.currentDocument?.sequence?.currentTrack?.color
+  }
 
   static var nextColor: TrackColor {
-    return allCases[((Sequencer.sequence?.instrumentTracks.count ?? -1) + 1) % allCases.count]
+    return allCases[((MIDIDocumentManager.currentDocument?.sequence?.instrumentTracks.count ?? -1) + 1) % allCases.count]
   }
 }

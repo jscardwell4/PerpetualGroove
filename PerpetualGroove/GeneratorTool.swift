@@ -130,7 +130,7 @@ final class GeneratorTool: ConfigurableToolType {
         viewController = storyboard.instantiateViewControllerWithIdentifier("Generator") as! GeneratorViewController
         viewController.didChangeGenerator = {
           MIDIPlayer.addTool?.noteGenerator = $0
-          Sequencer.soundSetSelectionTarget.playNote($0)
+          MIDIDocumentManager.currentDocument?.sequence?.currentTrack?.instrument.playNote($0)
         }
 
     }

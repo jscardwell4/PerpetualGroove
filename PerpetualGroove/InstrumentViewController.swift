@@ -49,8 +49,9 @@ final class InstrumentViewController: UIViewController {
   /** didPickSoundSet */
   @IBAction func didPickSoundSet() {
     let soundSet = Sequencer.soundSets[soundSetPicker.selection]
+    guard let instrument = instrument else { return }
     do {
-      try instrument?.loadSoundSet(soundSet, preset: soundSet.presets[0])
+      try instrument.loadSoundSet(soundSet, preset: soundSet.presets[0])
       programPicker.selection = 0
       programPicker.labels = soundSet.presets.map({$0.name})
       audition()
@@ -61,9 +62,9 @@ final class InstrumentViewController: UIViewController {
 
   /** didPickProgram */
   @IBAction func didPickProgram() {
-    let soundSet = Sequencer.auditionInstrument.soundSet
+    guard let instrument = instrument else { return }
     do {
-      try instrument?.loadPreset(soundSet.presets[programPicker.selection])
+      try instrument.loadPreset(instrument.soundSet.presets[programPicker.selection])
       audition()
     } catch {
       logError(error)
@@ -88,7 +89,8 @@ final class InstrumentViewController: UIViewController {
 
   /** audition */
   private func audition() {
-    instrument?.playNote(NoteGenerator())
+    guard let instrument = instrument else { return }
+    instrument.playNote(NoteGenerator())
   }
 
   /** viewDidLoad */

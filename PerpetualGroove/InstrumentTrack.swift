@@ -64,12 +64,27 @@ final class InstrumentTrack: Track {
                 callback: weakMethod(self, InstrumentTrack.didReset))
 
     receptionist.observe(Sequence.Notification.SoloCountDidChange,
-                    from: Sequencer.sequence,
+                    from: sequence,
                 callback: weakMethod(self, InstrumentTrack.soloCountDidChange))
 
     receptionist.observe(Sequencer.Notification.DidJog,
                     from: Sequencer.self,
                 callback: weakMethod(self, InstrumentTrack.didJog))
+
+    receptionist.observe(Instrument.Notification.PresetDidChange,
+                    from: instrument,
+                callback: weakMethod(self, InstrumentTrack.didChangePreset))
+}
+
+  /**
+   didChangePreset:
+
+   - parameter notification: NSNotification
+  */
+  private func didChangePreset(notification: NSNotification) {
+    guard let oldPresetName = notification.oldPresetName, newPresetName = notification.newPresetName
+      where oldPresetName == super.name && oldPresetName != newPresetName else { return }
+    super.name = newPresetName
   }
 
   /**
@@ -112,7 +127,6 @@ final class InstrumentTrack: Track {
   // MARK: - Track properties
 
   private(set) var instrument: Instrument!
-
   var color: TrackColor = .White
 
   override var name: String {
@@ -386,6 +400,7 @@ final class InstrumentTrack: Track {
   init(sequence: Sequence, instrument: Instrument) throws {
     super.init(sequence: sequence)
     self.instrument = instrument
+    instrument.track = self
     eventQueue.name = "BUS \(instrument.bus)"
 
     initializeNotificationReceptionist()
@@ -429,7 +444,11 @@ final class InstrumentTrack: Track {
     let program = programTuple.program
     let channel = programTuple.channel
 
-    guard let instrumentMaybe = try? Instrument(soundSet: soundSet, program: program, channel: channel) else {
+    guard let instrumentMaybe = try? Instrument(track: self,
+                                                soundSet: soundSet,
+                                                program: program,
+                                                channel: channel) else
+    {
       throw Error.InstrumentInitializeFailure
     }
 

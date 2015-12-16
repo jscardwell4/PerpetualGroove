@@ -151,7 +151,7 @@ final class TrackCell: MixerCell {
   /** solo */
   @IBAction func solo() {
     guard let track = track else { return }
-    Sequencer.sequence?.toggleSoloForTrack(track)
+    MIDIDocumentManager.currentDocument?.sequence?.toggleSoloForTrack(track)
   }
 
   private var muteDisengaged = false { didSet { muteButton.enabled = !muteDisengaged } }
@@ -218,7 +218,7 @@ final class TrackCell: MixerCell {
   - returns: NotificationReceptionist
   */
   private func receptionistForTrack(track: InstrumentTrack?) -> NotificationReceptionist? {
-    guard let track = track else { return nil }
+    guard let track = track, sequence = MIDIDocumentManager.currentDocument?.sequence else { return nil }
     let queue = NSOperationQueue.mainQueue()
     let receptionist = NotificationReceptionist()
     receptionist.logContext = LogManager.SequencerContext
@@ -229,8 +229,11 @@ final class TrackCell: MixerCell {
     receptionist.observe(InstrumentTrack.Notification.SoloStatusDidChange, from: track, queue: queue) {
       [weak self] in self?.soloStatusChanged($0)
     }
-    receptionist.observe(Sequence.Notification.SoloCountDidChange, from: Sequencer.sequence, queue: queue) {
+    receptionist.observe(Sequence.Notification.SoloCountDidChange, from: sequence, queue: queue) {
       [weak self] in self?.soloCountChanged($0)
+    }
+    receptionist.observe(Track.Notification.DidChangeName, from: track, queue: queue) {
+      [weak self] _ in self?.trackLabel.text = self?.track?.name ?? ""
     }
     return receptionist
   }

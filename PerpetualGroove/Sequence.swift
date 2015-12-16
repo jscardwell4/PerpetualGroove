@@ -60,7 +60,7 @@ final class Sequence {
           currentTrackStack.push(Weak(newTrack))
           newTrack.recording = Sequencer.recording
 
-      case let (oldTrack?, nil):
+        case let (oldTrack?, nil):
           userInfo = [Notification.Key.OldTrack: oldTrack, Notification.Key.Track: nil]
           currentTrackStack.pop()
 
