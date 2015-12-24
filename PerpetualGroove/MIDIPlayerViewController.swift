@@ -16,8 +16,37 @@ final class MIDIPlayerViewController: UIViewController {
 
   @IBOutlet private weak var blurView: UIVisualEffectView!
 
+  private var constructingLoop = false
+
   /** dismissAction */
   @IBAction private func dismissAction() { dismissController() }
+
+  /** startLoopAction */
+  @IBAction private func startLoopAction() {
+    guard Sequencer.mode == .Loop && !constructingLoop else {
+      fatalError("This method should only be called when a loop is under construction")
+    }
+  }
+
+  /** stopLoopAction */
+  @IBAction private func stopLoopAction() {
+    guard Sequencer.mode == .Loop && constructingLoop else {
+      fatalError("This method should only be called when a loop is under construction")
+    }
+  }
+
+  /** toggleLoopAction */
+  @IBAction private func toggleLoopAction() {
+    switch loopToggleButton.selected {
+      // At this point the button's `selected` property has yet to be updated for the current event
+      case true: Sequencer.mode = .Default
+      case false: Sequencer.mode = .Loop
+    }
+  }
+
+  @IBOutlet weak var loopStartButton: ImageButtonView!
+  @IBOutlet weak var loopEndButton: ImageButtonView!
+  @IBOutlet weak var loopToggleButton: ImageButtonView!
 
   private weak var controllerTool: ConfigurableToolType?
 

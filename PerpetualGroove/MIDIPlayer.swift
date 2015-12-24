@@ -13,6 +13,52 @@ import MoonKit
 
 final class MIDIPlayer {
 
+  private static let receptionist: NotificationReceptionist = {
+    let receptionist = NotificationReceptionist()
+    receptionist.logContext = LogManager.SceneContext
+    return receptionist
+  }()
+
+  /**
+   willEnterLoopMode:
+
+   - parameter notification: NSNotification
+   */
+  static private func willEnterLoopMode(notification: NSNotification) {
+    logDebug("")
+    playerNode?.defaultNodes.forEach { $0.fadeOut() }
+  }
+
+  /**
+   willExitLoopMode:
+
+   - parameter notification: NSNotification
+   */
+  static private func willExitLoopMode(notification: NSNotification) {
+    logDebug("")
+    playerNode?.loopNodes.forEach { $0.fadeOut(remove: true) }
+  }
+
+  /**
+   didEnterLoopMode:
+
+   - parameter notification: NSNotification
+  */
+  static private func didEnterLoopMode(notification: NSNotification) {
+    logDebug("")
+//    playerNode?.defaultNodes.forEach { $0.fadeOut() }
+  }
+
+  /**
+   didExitLoopMode:
+
+   - parameter notification: NSNotification
+  */
+  static private func didExitLoopMode(notification: NSNotification) {
+    logDebug("")
+    playerNode?.defaultNodes.forEach { $0.fadeIn() }
+  }
+
   static weak var playerViewController: MIDIPlayerViewController?
   static weak var playerView:           MIDIPlayerView?
   static weak var playerScene:          MIDIPlayerScene?
@@ -25,6 +71,22 @@ final class MIDIPlayer {
       existingGeneratorTool = GeneratorTool(playerNode: node, mode: .Existing)
       newGeneratorTool = GeneratorTool(playerNode: node, mode: .New)
       currentTool = .None
+      receptionist.observe(Sequencer.Notification.DidEnterLoopMode,
+                      from: Sequencer.self,
+                     queue: NSOperationQueue.mainQueue(),
+                  callback: MIDIPlayer.didEnterLoopMode)
+      receptionist.observe(Sequencer.Notification.DidExitLoopMode,
+                      from: Sequencer.self,
+                     queue: NSOperationQueue.mainQueue(),
+                  callback: MIDIPlayer.didExitLoopMode)
+      receptionist.observe(Sequencer.Notification.WillEnterLoopMode,
+                      from: Sequencer.self,
+                     queue: NSOperationQueue.mainQueue(),
+                  callback: MIDIPlayer.willEnterLoopMode)
+      receptionist.observe(Sequencer.Notification.WillExitLoopMode,
+                      from: Sequencer.self,
+                     queue: NSOperationQueue.mainQueue(),
+                  callback: MIDIPlayer.willExitLoopMode)
     }
   }
 
@@ -70,7 +132,7 @@ final class MIDIPlayer {
     }
 
     do {
-      let name = "\(track.name) \(generator)"
+      let name = "<\(Sequencer.mode.rawValue)> \(track.name)\(track.nodes.count + 1)"
       let midiNode = try MIDINode(placement: placement, name: name, track: track, note: generator)
       node.addChild(midiNode)
       try track.addNode(midiNode)

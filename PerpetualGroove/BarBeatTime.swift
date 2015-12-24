@@ -85,18 +85,22 @@ final class BarBeatTime {
     objc_sync_enter(self)
     defer { objc_sync_exit(self) }
 
+    var updatedTime = time
+
     clockCount.numerator += 1
     if clockCount == 1 {
       clockCount.numerator = 0
-      time.bar++
-      time.beat = 1
-      time.subbeat = 1
+      updatedTime.bar++
+      updatedTime.beat = 1
+      updatedTime.subbeat = 1
     } else if clockCount % beatInterval == 0 {
-      time.beat++
-      time.subbeat = 1
+      updatedTime.beat++
+      updatedTime.subbeat = 1
     } else {
-      time.subbeat++
+      updatedTime.subbeat++
     }
+
+    time = updatedTime
   }
 
   // MARK: - Time-triggered callbacks
@@ -104,11 +108,34 @@ final class BarBeatTime {
   typealias Callback  = (CABarBeatTime) -> Void
   typealias Predicate = (CABarBeatTime) -> Bool
 
-  private var callbacks:           [CABarBeatTime:[(Callback, ObjectIdentifier?)]]     = [:] { didSet { updateCallbackCheck() } }
-  private var predicatedCallbacks: [String:(predicate: Predicate, callback: Callback)] = [:] { didSet { updateCallbackCheck() } }
+  private var callbacks: [CABarBeatTime:[(Callback, ObjectIdentifier?)]] = [:] {
+    didSet { haveCallbacks = callbacks.count > 0 || predicatedCallbacks.count > 0 }
+  }
+  private var predicatedCallbacks: [String:(predicate: Predicate, callback: Callback)] = [:] {
+    didSet { haveCallbacks = callbacks.count > 0 || predicatedCallbacks.count > 0 }
+  }
 
-  private var callbackCheck = false
-  private func updateCallbackCheck() { callbackCheck = callbacks.count > 0 || predicatedCallbacks.count > 0 }
+  /**
+   callbackRegisteredForKey:
+
+   - parameter key: String
+
+    - returns: Bool
+  */
+  func callbackRegisteredForKey(key: String) -> Bool {
+    return predicatedCallbacks[key] != nil
+  }
+
+  var suppressCallbacks = false
+  private var haveCallbacks = false
+  private var checkCallbacks: Bool { return haveCallbacks && !suppressCallbacks }
+
+  /** clearCallbacks */
+  func clearCallbacks() {
+    logDebug("clearing all registered callbacks…")
+    callbacks.removeAll(keepCapacity: true)
+    predicatedCallbacks.removeAll(keepCapacity: true)
+  }
 
   /**
   Invokes the blocks registered in `callbacks` for the specified time and any blocks in `predicatedCallbacks` 
@@ -117,6 +144,7 @@ final class BarBeatTime {
   - parameter t: CABarBeatTime
   */
   private func invokeCallbacksForTime(t: CABarBeatTime) {
+    guard checkCallbacks else { return }
     callbacks[t]?.forEach({$0.0(t)})
     predicatedCallbacks.values.filter({$0.predicate(t)}).forEach({$0.callback(t)})
   }
@@ -216,6 +244,8 @@ final class BarBeatTime {
   var ticks:       MIDITimeStamp { return time.ticks          }  /// Accessor for `time.ticks`
   var doubleValue: Double        { return time.doubleValue    }  /// Accessor for `time.doubleValue`
 
+  let clockName: String
+
   // MARK: - Initializing and resetting
 
   /**
@@ -225,6 +255,15 @@ final class BarBeatTime {
   - parameter ppq: UInt16 = 480
   */
   init(clockSource: MIDIEndpointRef, partsPerQuarter ppq: UInt16 = 480) {
+
+    var unmanagedProperties: Unmanaged<CFPropertyList>?
+    MIDIObjectGetProperties(clockSource, &unmanagedProperties, true)
+
+    var unmanagedName: Unmanaged<CFString>?
+    MIDIObjectGetStringProperty(clockSource, kMIDIPropertyName, &unmanagedName)
+    guard unmanagedName != nil else { fatalError("wtf") }
+    clockName = unmanagedName!.takeUnretainedValue() as String
+
     let t = CABarBeatTime(bar: 1, beat: 1, subbeat: 1, subbeatDivisor: ppq, reserved: 0)
     _time = t
     marker = t
@@ -232,7 +271,7 @@ final class BarBeatTime {
     beatInterval = (Float(ppq) * Float(0.25))╱Float(ppq)
     validBeats = 1 ... UInt16(Sequencer.timeSignature.beatsPerBar)
     validSubbeats = 1 ... ppq
-    queue.name = "BarBeatTime[\(ObjectIdentifier(self).uintValue)]"
+    queue.name = name
 
     do {
       try MIDIClientCreateWithBlock(queue.name!, &client, nil)
@@ -250,6 +289,7 @@ final class BarBeatTime {
   - parameter completion: (() -> Void)? = nil
   */
   func reset(completion: (() -> Void)? = nil) {
+    logDebug("time ➞ 1:1.1╱\(_time.subbeatDivisor); clockCount ➞ 0╱\(_time.subbeatDivisor)")
     queue.addOperationWithBlock  {
       [unowned self] in
       let ppq = self._time.subbeatDivisor
@@ -260,6 +300,16 @@ final class BarBeatTime {
     }
   }
 
+  /**
+   hardReset:
+
+   - parameter completion: (() -> Void
+  */
+  func hardReset(completion: (() -> Void)? = nil) {
+    clearCallbacks()
+    reset(completion)
+  }
+
   deinit {
     do {
       try MIDIPortDispose(inPort) ➤ "Failed to dispose of in port"
@@ -267,6 +317,10 @@ final class BarBeatTime {
     } catch { logError(error) }
 
   }
+}
+
+extension BarBeatTime: Named {
+  var name: String { return clockName }
 }
 
 // MARK: - CustomStringConvertible

@@ -69,28 +69,26 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
   }
 
   var endOfTrack: CABarBeatTime {
-    return eventContainer.endOfTrackEvent.time ?? Sequencer.time.time
+    return eventContainer.maxTime
   }
 
-  var instrumentName: String? {
-    get { return eventContainer.instrumentName }
-    set { eventContainer.instrumentName = newValue }
-  }
+  private var trackNameEvent: MetaEvent = MetaEvent(.SequenceTrackName(name: ""))
+  private var endOfTrackEvent: MetaEvent = MetaEvent(.EndOfTrack)
 
-  var program: (channel: Byte, program: Byte)? {
-    get { return eventContainer.program }
-    set { eventContainer.program = newValue }
-  }
-
-  var metaEvents: [MetaEvent] { return eventContainer.metaEvents } 
+  var metaEvents: [MetaEvent] { return eventContainer.metaEvents }
   var channelEvents: [ChannelEvent] { return eventContainer.channelEvents } 
   var nodeEvents: [MIDINodeEvent] { return eventContainer.nodeEvents } 
   var name: String {
-    get { return eventContainer.trackName }
+    get {
+      switch trackNameEvent.data {
+        case .SequenceTrackName(let name): return name
+        default: return ""
+      }
+    }
     set {
       guard name != newValue else { return }
       logDebug("'\(name)' ➞ '\(newValue)'")
-      eventContainer.trackName = newValue
+      trackNameEvent = MetaEvent(.SequenceTrackName(name: newValue))
       Notification.DidUpdateEvents.post(object: self)
       Notification.DidChangeName.post(object: self)
     }
@@ -98,18 +96,26 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
 
   /** validateEvents */
   func validateEvents(inout container: MIDIEventContainer) {
-    container.trackName = name
-    container.validate()
+    endOfTrackEvent.time = endOfTrack
   }
 
   var chunk: MIDIFileTrackChunk {
     validateEvents(&eventContainer)
-    return MIDIFileTrackChunk(eventContainer: eventContainer)
+    let events: [MIDIEvent] = headEvents + eventContainer.events + tailEvents
+    return MIDIFileTrackChunk(events: events)
+  }
+
+  var headEvents: [MIDIEvent] {
+    return [trackNameEvent as MIDIEvent]
+  }
+
+  var tailEvents: [MIDIEvent] {
+    return [endOfTrackEvent as MIDIEvent]
   }
 
   private var _recording = false { didSet { logDebug("recording = \(_recording)") } }
   var recording: Bool {
-    get { objc_sync_enter(self); defer { objc_sync_exit(self) }; return _recording     }
+    get { objc_sync_enter(self); defer { objc_sync_exit(self) }; return _recording && Sequencer.mode == .Default }
     set { objc_sync_enter(self); defer { objc_sync_exit(self) }; _recording = newValue }
   }
 

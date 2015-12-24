@@ -18,7 +18,12 @@ struct MIDIEventContainer: SequenceType, Indexable, MutableIndexable {
     private let successorTime: CABarBeatTime
     private let successorPosition: Int
     func successor() -> Index { return Index(time: successorTime, position: successorPosition) }
-    private init(time: CABarBeatTime, position: Int) { self.time = time; self.position = position; successorTime = .Nil; successorPosition = -1 }
+    private init(time: CABarBeatTime, position: Int) {
+      self.time = time
+      self.position = position
+      successorTime = .Nil
+      successorPosition = -1
+    }
     private init(container: MIDIEventContainer, time: CABarBeatTime, var position: Int) {
       guard let bag = container._events[time] where bag.events.count > position else {
         self.time = .Nil
@@ -80,148 +85,15 @@ struct MIDIEventContainer: SequenceType, Indexable, MutableIndexable {
   */
   func generate() -> IndexingGenerator<MIDIEventContainer> { return IndexingGenerator(self) }
 
-  /** validate */
-  mutating func validate() {
-    guard let maxTime = _events.keys.maxElement() else { return }
-    endOfTrack = maxTime
-  }
-
-  var trackName: String {
-    get {
-      switch trackNameEvent.data {
-        case .SequenceTrackName(let name): return name
-        default: return ""
-      }
-    }
-    set {
-      trackNameEvent = MetaEvent(.SequenceTrackName(name: newValue))
-    }
-  }
-
-  private(set) var trackNameEvent: MetaEvent = MetaEvent(.SequenceTrackName(name: ""))
-
-  private(set) var endOfTrackEvent: MetaEvent = MetaEvent(.EndOfTrack)
-
-  var endOfTrack: CABarBeatTime {
-    get { return endOfTrackEvent.time }
-    set { endOfTrackEvent.time = newValue }
-  }
+  var minTime: CABarBeatTime { return _events.keys.minElement() ?? .start              }
+  var maxTime: CABarBeatTime { return _events.keys.maxElement() ?? Sequencer.time.time }
 
   private var _events: [CABarBeatTime:EventBag] = [:]
 
   var events: [MIDIEvent] {
-    var result: [MIDIEvent] = [trackNameEvent as MIDIEvent]
+    var result: [MIDIEvent] = []
     for time in _events.keys.sort() { result.appendContentsOf(_events[time]!) }
-    result.append(endOfTrackEvent as MIDIEvent)
     return result
-  }
-
-  var instrumentName: String? {
-    get {
-      guard let event = instrumentEvent, case .Text(let text) = event.data else { return nil }
-      return text
-    }
-    set {
-      guard instrumentName != newValue else { return }
-      if let text = newValue { instrumentEvent = MetaEvent(.Text(text: text)) } else { instrumentEvent = nil }
-    }
-  }
-
-  private var instrumentEventIndex: Index? {
-    for (time, bag) in _events {
-      guard let position = bag.indexOf({
-        if let event = $0 as? MetaEvent, case .Text = event.data { return true }
-        else { return false }
-      }) else { continue }
-      return Index(container: self, time: time, position: position)
-    }
-    return nil
-  }
-
-  private(set) var instrumentEvent: MetaEvent? {
-    get {
-      guard let index = instrumentEventIndex else { return nil }
-      return _events[index.time]?[index.position] as? MetaEvent
-    }
-    set {
-      switch (newValue as? MIDIEvent, instrumentEventIndex) {
-        case let (event?, index?):
-          _events[index.time]?[index.position] = event
-        case let (event?, nil):
-          var bag = _events[event.time] ?? EventBag(event.time)
-          bag.append(event)
-          _events[event.time] = bag
-        case let (nil, index?):
-          _events[index.time]?.events.removeAtIndex(index.position)
-        default:
-          break
-      }
-    }
-  }
-
-  private var programEventIndex: Index? {
-    for (time, bag) in _events {
-      guard let position = bag.indexOf({
-        if let event = $0 as? ChannelEvent where event.status.type == .ProgramChange {
-          return true
-        } else { return false }
-      })
-        else { continue }
-      return Index(container: self, time: time, position: position)
-    }
-    return nil
-  }
-
-  var program: (channel: Byte, program: Byte)? {
-    get { guard let event = programEvent else { return nil }; return (event.status.channel, event.data1) }
-    set {
-      switch (program, newValue) {
-        case let ((c1, p1)?, (c2, p2)?) where c1 == c2 && p1 == p2: return
-        default: break
-      }
-      if let program = newValue { programEvent = ChannelEvent(.ProgramChange, program.channel, program.program) }
-      else { programEvent = nil }
-    }
-  }
-
-  private(set) var programEvent: ChannelEvent? {
-    get {
-      guard let index = programEventIndex else { return nil }
-      return _events[index.time]?[index.position] as? ChannelEvent
-    }
-    set {
-      switch (newValue as? MIDIEvent, programEventIndex) {
-        case let (event?, index?):
-          _events[index.time]?[index.position] = event
-        case let (event?, nil):
-          var bag = _events[event.time] ?? EventBag(event.time)
-          bag.append(event)
-          _events[event.time] = bag
-        case let (nil, index?):
-          _events[index.time]?.events.removeAtIndex(index.position)
-        default:
-          break
-      }
-    }
-  }
-
-  /**
-  filterEvent:
-
-  - parameter event: MIDIEvent
-
-  - returns: Bool
-  */
-  private mutating func filterEvent(event: MIDIEvent) -> Bool {
-    if let event = event as? MetaEvent, case .SequenceTrackName = event.data {
-      trackNameEvent = event
-      return true
-    } else if let event = event as? MetaEvent, case .EndOfTrack = event.data {
-      endOfTrackEvent = event
-      return true
-    } else {
-      return false
-    }
   }
 
   /**
@@ -230,7 +102,9 @@ struct MIDIEventContainer: SequenceType, Indexable, MutableIndexable {
   - parameter event: MIDIEvent
   */
   mutating func append(event: MIDIEvent) {
-    guard !filterEvent(event) else { return }
+    if let event = event as? MetaEvent, case .SequenceTrackName = event.data { return }
+    else if let event = event as? MetaEvent, case .EndOfTrack = event.data { return }
+
     var bag = _events[event.time] ?? EventBag(event.time)
     bag.append(event)
     _events[event.time] = bag

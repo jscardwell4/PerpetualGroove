@@ -134,6 +134,19 @@ final class BarBeatTimeLabel: UIView {
     return CGSize(width: characterSize.width * 9, height: characterSize.height).integralSize
   }
 
+  /**
+   didChangeBarBeatTime:
+
+   - parameter notification: NSNotification
+  */
+  private func didChangeBarBeatTime(notification: NSNotification) {
+    guard Sequencer.time.callbackRegisteredForKey(barBeatTimeCallbackKey) == false else { return }
+    Sequencer.time.registerCallback({ [weak self] in self?.currentTime = $0 },
+                             predicate: {_ in true},
+                                forKey: barBeatTimeCallbackKey)
+    currentTime = Sequencer.time.time
+  }
+
   /** setup */
   private func setup() {
 
@@ -143,7 +156,9 @@ final class BarBeatTimeLabel: UIView {
       Sequencer.time.registerCallback({ [weak self] in self?.currentTime = $0 },
                          predicate: {_ in true},
                             forKey: barBeatTimeCallbackKey)
-
+      receptionist.observe(Sequencer.Notification.DidChangeTransport,
+                      from: Sequencer.self,
+                  callback: weakMethod(self, BarBeatTimeLabel.didChangeBarBeatTime))
       receptionist.observe(Sequencer.Notification.DidJog, from: Sequencer.self) {
         [weak self] in guard let time = $0.jogTime else { return }; self?.currentTime = time
       }

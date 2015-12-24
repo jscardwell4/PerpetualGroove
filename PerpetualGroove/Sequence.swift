@@ -209,20 +209,6 @@ final class Sequence {
   /**
   addTrack:
 
-  - parameter trackChunk: MIDIFileTrackChunk
-  */
-//  private func addTrack(trackChunk: MIDIFileTrackChunk) {
-//    do {
-//      let track = try InstrumentTrack(sequence: self, trackChunk: trackChunk)
-//      addTrack(track)
-//    } catch {
-//      logError(error)
-//    }
-//  }
-
-  /**
-  addTrack:
-
   - parameter track: InstrumentTrack
   */
   private func addTrack(track: InstrumentTrack) {

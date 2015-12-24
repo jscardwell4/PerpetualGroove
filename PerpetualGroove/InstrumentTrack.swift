@@ -101,7 +101,7 @@ final class InstrumentTrack: Track {
   */
   private func soloCountDidChange(notification: NSNotification) {
     guard let newCount = notification.newCount else { return }
-         if state !⚭ [.Soloing, .InclusiveMute] && newCount > 0        { state ∪= .InclusiveMute }
+         if state !⚭ [.Soloing, .InclusiveMute] && newCount > 0       { state ∪= .InclusiveMute }
     else if state ∌ .Soloing && state ∋ .InclusiveMute && newCount == 0 { state ⊻= .InclusiveMute }
   }
 
@@ -119,9 +119,33 @@ final class InstrumentTrack: Track {
 
   /** validateEvents */
   override func validateEvents(inout container: MIDIEventContainer) {
-    container.instrumentName = "instrument:\(instrument.soundSet.url.lastPathComponent!)"
-    container.program = (instrument.channel, instrument.program)
+    instrumentEvent = MetaEvent(.Text(text: "instrument:\(instrument.soundSet.url.lastPathComponent!)"))
+    programEvent = ChannelEvent(.ProgramChange, instrument.channel, instrument.program)
     super.validateEvents(&container)
+  }
+
+  /**
+   addEvents:
+
+   - parameter events: [MIDIEvent]
+  */
+  override func addEvents(events: [MIDIEvent]) {
+    var filteredEvents: [MIDIEvent] = []
+    for event in events {
+      if let event = event as? MetaEvent, case .Text(let text) = event.data where text.hasPrefix("instrument:") {
+        instrumentEvent = event
+      } else if let event = event as? ChannelEvent where event.status.type == .ProgramChange {
+        programEvent = event
+      } else { filteredEvents.append(event) }
+    }
+    super.addEvents(filteredEvents)
+  }
+
+  private var instrumentEvent: MetaEvent!
+  private var programEvent: ChannelEvent!
+
+  override var headEvents: [MIDIEvent] {
+    return super.headEvents + [instrumentEvent as MIDIEvent, programEvent as MIDIEvent]
   }
 
   // MARK: - Track properties
@@ -235,9 +259,6 @@ final class InstrumentTrack: Track {
     // Make sure there is not already a pending placement
     guard pendingID == nil else { fatalError("already have an identifier pending: \(pendingID!)") }
 
-    // Make sure we have a `MIDIPlayerNode`
-//    guard let midiPlayer = MIDIPlayerNode.currentInstance else { fatalError("requires a midi player instance") }
-
     // Store the identifier
     pendingID = identifier
 
@@ -311,6 +332,15 @@ final class InstrumentTrack: Track {
 
   /** startNodes */
   private func startNodes() { nodes.forEach {$0.reference?.fadeIn()}; logDebug("nodes started") }
+
+  // MARK: - Loops
+
+  /**
+   insertLoop:
+
+   - parameter loop: Loop
+  */
+  func insertLoop(loop: Loop) { addEvents(Array(loop)) }
 
   // MARK: - MIDI events
 
@@ -402,6 +432,8 @@ final class InstrumentTrack: Track {
     self.instrument = instrument
     instrument.track = self
     eventQueue.name = "BUS \(instrument.bus)"
+    instrumentEvent = MetaEvent(.Text(text: "instrument:\(instrument.soundSet.url.lastPathComponent!)"))
+    programEvent = ChannelEvent(.ProgramChange, instrument.channel, instrument.program)
 
     initializeNotificationReceptionist()
     try initializeMIDIClient()
@@ -419,7 +451,8 @@ final class InstrumentTrack: Track {
     addEvents(trackChunk.events)
 
     // Find the instrument event
-    guard var instrumentName = instrumentName else {
+
+    guard let instrumentEvent = instrumentEvent, case .Text(var instrumentName) = instrumentEvent.data else {
       throw MIDIFileError(type: .FileStructurallyUnsound, reason: "Instrument event must be a text event")
     }
 
@@ -437,12 +470,11 @@ final class InstrumentTrack: Track {
     }
 
     // Find the program change event
-    guard let programTuple = self.program else {
+    guard let programEvent = programEvent else {
       throw MIDIFileError(type: .MissingEvent, reason: "Missing program change event")
     }
 
-    let program = programTuple.program
-    let channel = programTuple.channel
+    let channel = programEvent.status.channel, program = programEvent.data1
 
     guard let instrumentMaybe = try? Instrument(track: self,
                                                 soundSet: soundSet,

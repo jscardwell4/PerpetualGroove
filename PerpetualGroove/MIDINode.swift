@@ -49,12 +49,21 @@ final class MIDINode: SKSpriteNode {
   /// Embedded in MIDI packets to allow a track with multiple nodes to identify the event's source
   private(set) lazy var identifier: Identifier = Identifier(ObjectIdentifier(self).uintValue)
 
-  private lazy var playAction:             Action = Action(key: .Play,    node: self)
-  private lazy var horizontalPlayAction:   Action = Action(key: .HorizontalPlay,    node: self)
-  private lazy var verticalPlayAction:     Action = Action(key: .VerticalPlay,    node: self)
-  private lazy var fadeOutAction:          Action = Action(key: .FadeOut, node: self)
-  private lazy var fadeOutAndRemoveAction: Action = Action(key: .FadeOutAndRemove, node: self)
-  private lazy var fadeInAction:           Action = Action(key: .FadeIn,  node: self)
+  private lazy var playAction:             Action = self.action(.Play)
+  private lazy var horizontalPlayAction:   Action = self.action(.HorizontalPlay)
+  private lazy var verticalPlayAction:     Action = self.action(.VerticalPlay)
+  private lazy var fadeOutAction:          Action = self.action(.FadeOut)
+  private lazy var fadeOutAndRemoveAction: Action = self.action(.FadeOutAndRemove)
+  private lazy var fadeInAction:           Action = self.action(.FadeIn)
+
+  /**
+   action:
+
+   - parameter key: Action.Key
+
+    - returns: Action
+  */
+  private func action(key: Action.Key) -> Action { return Action(key: key, node: self) }
 
   /**
   runAction:
@@ -152,6 +161,8 @@ final class MIDINode: SKSpriteNode {
     didSet { physicsBody.contactTestBitMask = edges.rawValue }
   }
 
+  private var previousVelocity: CGVector?
+
   // MARK: Listening for Sequencer notifications
 
   private let receptionist: NotificationReceptionist = {
@@ -179,7 +190,7 @@ final class MIDINode: SKSpriteNode {
   */
   private func didJog(notification: NSNotification) {
     guard state ∋ .Jogging else { fatalError("internal inconsistency, should have `Jogging` flag set") }
-    guard let jogTime = (notification.userInfo?[Sequencer.Notification.Key.JogTime.rawValue] as? NSValue)?.barBeatTimeValue else {
+    guard let jogTime = (notification.userInfo?[Transport.Notification.Key.JogTime.key] as? NSValue)?.barBeatTimeValue else {
       logError("notication does not contain jog tick value")
       return
     }
@@ -387,30 +398,27 @@ extension MIDINode {
           action = SKAction.sequence([SKAction.group([scaleUp, noteOn]), scaleDown, noteOff])
 
         case .VerticalPlay:
-//          let halfDuration = half(node?.noteGenerator.duration.seconds ?? 0)
-//          let scaleUp = SKAction.scaleTo(2, duration: halfDuration)
           let noteOn = SKAction.runBlock({ [weak node] in node?.sendNoteOn() })
-//          let scaleDown = SKAction.scaleTo(1, duration: halfDuration)
           let noteOff = SKAction.runBlock({ [weak node] in node?.sendNoteOff() })
           let squish = SKAction.scaleXBy(1.5, y: 0.5, duration: 0.25)
           let unsquish = squish.reversedAction()
           let squishAndUnsquish = SKAction.sequence([squish, unsquish])
-          action = SKAction.sequence([SKAction.group([squishAndUnsquish, /*scaleUp,*/ noteOn]), /*scaleDown,*/ noteOff])
+          action = SKAction.sequence([SKAction.group([squishAndUnsquish, noteOn]), noteOff])
 
         case .HorizontalPlay:
-//          let halfDuration = half(node?.noteGenerator.duration.seconds ?? 0)
-//          let scaleUp = SKAction.scaleTo(2, duration: halfDuration)
           let noteOn = SKAction.runBlock({ [weak node] in node?.sendNoteOn() })
-//          let scaleDown = SKAction.scaleTo(1, duration: halfDuration)
           let noteOff = SKAction.runBlock({ [weak node] in node?.sendNoteOff() })
           let squish = SKAction.scaleXBy(0.5, y: 1.5, duration: 0.25)
           let unsquish = squish.reversedAction()
           let squishAndUnsquish = SKAction.sequence([squish, unsquish])
-          action = SKAction.sequence([SKAction.group([squishAndUnsquish, /*scaleUp,*/ noteOn]), /*scaleDown,*/ noteOff])
+          action = SKAction.sequence([SKAction.group([squishAndUnsquish, noteOn]), noteOff])
 
         case .FadeOut:
           let fade = SKAction.fadeOutWithDuration(0.25)
-          let pause = SKAction.runBlock({[weak node] in node?.physicsBody.resting = true})
+          let pause = SKAction.runBlock({[weak node] in
+            node?.previousVelocity = node!.physicsBody.velocity
+            node?.physicsBody.resting = true
+            })
           action = SKAction.sequence([fade, pause])
 
         case .FadeOutAndRemove:
@@ -420,7 +428,10 @@ extension MIDINode {
 
         case .FadeIn:
           let fade = SKAction.fadeInWithDuration(0.25)
-          let unpause = SKAction.runBlock({[weak node] in node?.physicsBody.resting = false})
+          let unpause = SKAction.runBlock({[weak node] in
+            node?.physicsBody.resting = false
+            if let velocity = node?.previousVelocity { node?.physicsBody.velocity = velocity }
+            })
           action = SKAction.sequence([fade, unpause])
       }
 

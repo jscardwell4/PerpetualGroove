@@ -171,8 +171,8 @@ public class LogFormatter: NSObject, DDLogFormatter {
     let selString: String
     switch ((message.file as NSString).lastPathComponent, message.function, className) {
       case let (_, f?, c?) where options ∌ .UseFileInsteadOfSEL:  selString = "[\(c) \(f)]"
-      case let (n, f?, c?) where options ∋ .UseFileInsteadOfSEL:  selString = "«\(n) - \(c)» \(f)"
-      case let (n, f?, nil):                                      selString = "«\(n)» \(f)"
+      case let (n, f?, c?) where options ∋ .UseFileInsteadOfSEL:  selString = "«\(n):\(message.line) - \(c)» \(f)"
+      case let (n, f?, nil):                                      selString = "«\(n):\(message.line)» \(f)"
       default:                                                    selString = ""
     }
     return (useColor ? ColorLog.wrapYellow(selString) : selString) + afterLocation

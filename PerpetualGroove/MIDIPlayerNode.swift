@@ -87,6 +87,21 @@ final class MIDIPlayerNode: SKShapeNode {
 
   var midiNodes: [MIDINode] { return children.flatMap({$0 as? MIDINode}) }
 
+  var defaultNodes: [MIDINode] { return midiNodesForMode(.Default) }
+
+  var loopNodes: [MIDINode] { return midiNodesForMode(.Loop) }
+
+  /**
+   midiNodesForMode:
+
+   - parameter mode: Sequencer.Mode
+
+    - returns: [MIDINode]
+  */
+  private func midiNodesForMode(mode: Sequencer.Mode) -> [MIDINode] {
+    return self["<\(mode.rawValue)>*"].flatMap({$0 as? MIDINode}) ?? []
+  }
+
   // MARK: - Manipulating MIDINodes
 
   /**

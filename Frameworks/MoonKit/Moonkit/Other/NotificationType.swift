@@ -46,6 +46,7 @@ public protocol NotificationType: _NotificationType, CustomStringConvertible {
   typealias Callback = (NSNotification) -> Void
 
   func post(object obj: AnyObject?, userInfo info: [Key:AnyObject?]?)
+  func post(object obj: AnyObject?, userInfo info: [NSObject:AnyObject]?)
   func observe(object: AnyObject?, queue: NSOperationQueue?, callback: Callback) -> NSObjectProtocol
 }
 
@@ -68,7 +69,6 @@ public extension NotificationType {
   - parameter info: [NSObject:AnyObject]? = nil
   */
   func post(object obj: AnyObject? = nil, userInfo info: [Key:AnyObject?]? = nil) {
-    let notificationCenter = NSNotificationCenter.defaultCenter()
     let object = obj ?? self.object
     let userInfo: [NSObject:AnyObject]?
     if let info = info {
@@ -80,7 +80,17 @@ public extension NotificationType {
       userInfo = _userInfo
     }
 //    logVerbose("posting <\(self.dynamicType)>'\(_name)' with object (\(object == nil ? "nil" : "\(unsafeAddressOf(object!))") and info (\(userInfo == nil ? "nil" : "\(userInfo!)"))", asynchronous: false)
-    notificationCenter.postNotificationName(_name, object: object, userInfo: userInfo)
+    post(object: object, userInfo: userInfo)
+  }
+
+  /**
+   post:userInfo:
+
+   - parameter obj: AnyObject?
+   - parameter info: [String
+  */
+  func post(object obj: AnyObject?, userInfo info: [NSObject:AnyObject]?) {
+    NSNotificationCenter.defaultCenter().postNotificationName(_name, object: obj, userInfo: info)
   }
 
   /**

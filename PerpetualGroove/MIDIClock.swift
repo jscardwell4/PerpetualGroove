@@ -12,10 +12,11 @@ import CoreMIDI
 import AudioToolbox
 
 /** A class capable of keeping time for MIDI events */
-final class MIDIClock: CustomStringConvertible {
+final class MIDIClock: CustomStringConvertible, Named {
 
   var description: String {
     return "\(self.dynamicType.self) {\n\t" + "\n\t".join(
+      "name: \(name)",
       "beatsPerMinute: \(beatsPerMinute)",
       "resolution: \(resolution)",
       "ticks: \(ticks)",
@@ -25,9 +26,11 @@ final class MIDIClock: CustomStringConvertible {
     )
   }
 
+  let name: String
+
   private static let queue = concurrentQueueWithLabel("MIDI Clock", qualityOfService: QOS_CLASS_USER_INTERACTIVE)
 
-  var resolution: UInt64 { didSet { recalculate() } }
+  let resolution: UInt64 = 480
 
   var beatsPerMinute: UInt16 = 120 { didSet { recalculate() } }
 
@@ -50,6 +53,7 @@ final class MIDIClock: CustomStringConvertible {
   /** start */
   func start() {
     guard !timer.running else { return }
+    logDebug("setting ticks to 0, sending start message and starting timer…")
     ticks = 0
     sendStart()
     timer.start()
@@ -60,16 +64,22 @@ final class MIDIClock: CustomStringConvertible {
   /** resume */
   func resume() {
     guard !timer.running else { return }
+    logDebug("sending continue message and starting timer…")
     sendContinue()
     timer.start()
   }
 
   /** reset */
-  func reset() { guard !timer.running else { return }; ticks = 0 }
+  func reset() {
+    guard !timer.running else { return }
+    logDebug("setting ticks to 0…")
+    ticks = 0
+  }
 
   /** stop */
   func stop() {
     guard timer.running else { return }
+    logDebug("stopping timer and sending stop message…")
     timer.stop()
     sendStop()
   }
@@ -88,13 +98,14 @@ final class MIDIClock: CustomStringConvertible {
   private(set) var ticks: MIDITimeStamp = 0
 
   /** init */
-  init(resolution r: UInt64) {
-    resolution = r
+  init(name: String) {
+    self.name = name
     recalculate()
     timer.handler = sendClock
     do {
       try MIDIClientCreateWithBlock("Clock", &client, nil) ➤ "Failed to create midi client for clock"
       try MIDISourceCreate(client, "Clock", &endPoint) ➤ "Failed to create end point for clock"
+      MIDIObjectSetStringProperty(endPoint, kMIDIPropertyName, "\(name) clock")
     } catch {
       logError(error)
       #if !TARGET_INTERFACE_BUILDER

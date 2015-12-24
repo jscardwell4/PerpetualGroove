@@ -43,7 +43,9 @@ struct MetaEvent: MIDIEvent {
   {
     delta = d
     guard bytes.count >= 3 else { throw MIDIFileError(type: .InvalidLength, reason: "Not enough bytes in event") }
-    guard bytes[bytes.startIndex] == 0xFF else { throw MIDIFileError(type: .InvalidHeader, reason: "First byte must be 0xFF") }
+    guard bytes[bytes.startIndex] == 0xFF else {
+      throw MIDIFileError(type: .InvalidHeader, reason: "First byte must be 0xFF")
+    }
     var currentIndex = bytes.startIndex + 1
     let typeByte = bytes[currentIndex++]
     var i = currentIndex
@@ -70,6 +72,7 @@ struct MetaEvent: MIDIEvent {
     case CopyrightNotice (notice: String)
     case SequenceTrackName (name: String)
     case InstrumentName (name: String)
+    case Marker (name: String)
     case DeviceName (name: String)
     case ProgramName (name: String)
     case EndOfTrack
@@ -82,8 +85,9 @@ struct MetaEvent: MIDIEvent {
         case .CopyrightNotice:   return 0x02
         case .SequenceTrackName: return 0x03
         case .InstrumentName:    return 0x04
-        case .DeviceName:        return 0x09
+        case .Marker:            return 0x06
         case .ProgramName:       return 0x08
+        case .DeviceName:        return 0x09
         case .EndOfTrack:        return 0x2F
         case .Tempo:             return 0x51
         case .TimeSignature:     return 0x58
@@ -96,8 +100,9 @@ struct MetaEvent: MIDIEvent {
         case let .CopyrightNotice(text):    return text.bytes
         case let .SequenceTrackName(text):  return text.bytes
         case let .InstrumentName(text):     return text.bytes
-        case let .DeviceName(text):         return text.bytes
+        case let .Marker(text):             return text.bytes
         case let .ProgramName(text):        return text.bytes
+        case let .DeviceName(text):         return text.bytes
         case .EndOfTrack:                   return []
         case let .Tempo(tempo):             return Array(Byte4(60_000_000 / tempo).bytes.dropFirst())
         case let .TimeSignature(s, n, m):   return s.bytes + [n, m]
@@ -118,8 +123,9 @@ struct MetaEvent: MIDIEvent {
         case 0x02: self = .CopyrightNotice(notice: String(data))
         case 0x03: self = .SequenceTrackName(name: String(data))
         case 0x04: self = .InstrumentName(name: String(data))
+        case 0x06: self = .Marker(name: String(data))
+        case 0x08: self = .ProgramName(name: String(data))
         case 0x09: self = .DeviceName(name: String(data))
-        case 0x0B: self = .ProgramName(name: String(data))
         case 0x2F:
           guard data.count == 0 else {
             throw MIDIFileError(type: .InvalidLength, reason: "EndOfTrack event has no data")
@@ -199,8 +205,9 @@ extension MetaEvent.Data: CustomStringConvertible {
       case .CopyrightNotice(let text):   return "copyright '\(text)'"
       case .SequenceTrackName(let text): return "sequence/track name '\(text)'"
       case .InstrumentName(let text):    return "instrument name '\(text)'"
-      case .DeviceName(let text):        return "device name '\(text)'"
+      case .Marker(let text):            return "marker '\(text)'"
       case .ProgramName(let text):       return "program name '\(text)'"
+      case .DeviceName(let text):        return "device name '\(text)'"
       case .EndOfTrack:                  return "end of track"
       case .Tempo(let bpm):              return "tempo \(bpm)"
       case .TimeSignature(let s, _ , _): return "time signature \(s.beatsPerBar)╱\(s.beatUnit)"
@@ -216,9 +223,7 @@ extension MetaEvent: CustomStringConvertible { var description: String { return 
 
 extension MetaEvent: Equatable {}
 
-func ==(lhs: MetaEvent, rhs: MetaEvent) -> Bool {
-  return lhs.bytes == rhs.bytes
-}
+func ==(lhs: MetaEvent, rhs: MetaEvent) -> Bool { return lhs.bytes == rhs.bytes }
 
 extension MetaEvent.Data: Equatable {}
 
