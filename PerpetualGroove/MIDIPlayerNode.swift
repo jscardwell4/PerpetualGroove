@@ -67,14 +67,14 @@ final class MIDIPlayerNode: SKShapeNode {
       return node
     }())
 
-    receptionist.observe(Sequencer.Notification.DidReset,
-                    from: Sequencer.self,
-                callback: weakMethod(self, MIDIPlayerNode.didReset))
+//    receptionist.observe(Sequencer.Notification.DidReset,
+//                    from: Sequencer.self,
+//                callback: weakMethod(self, MIDIPlayerNode.didReset))
 
-    receptionist.observe(MIDIDocumentManager.Notification.DidChangeDocument,
-                    from: MIDIDocumentManager.self,
-                callback: weakMethod(self, MIDIPlayerNode.didReset))
-
+//    receptionist.observe(MIDIDocumentManager.Notification.DidChangeDocument,
+//                    from: MIDIDocumentManager.self,
+//                callback: weakMethod(self, MIDIPlayerNode.didReset))
+//
     MIDIPlayer.playerNode = self
   }
 
@@ -109,16 +109,16 @@ final class MIDIPlayerNode: SKShapeNode {
 
   - parameter notification: NSNotification
   */
-  func didReset(notification: NSNotification) {
-    midiNodes.forEach { $0.removeFromParent() }
-    logDebug("nodes removed")
-  }
+//  func didReset(notification: NSNotification) {
+//    midiNodes.forEach { $0.removeFromParent() }
+//    logDebug("nodes removed")
+//  }
 
-  private let receptionist: NotificationReceptionist = {
-    let receptionist = NotificationReceptionist(callbackQueue: NSOperationQueue.mainQueue())
-    receptionist.logContext = LogManager.SceneContext
-    return receptionist
-  }()
+//  private let receptionist: NotificationReceptionist = {
+//    let receptionist = NotificationReceptionist(callbackQueue: NSOperationQueue.mainQueue())
+//    receptionist.logContext = LogManager.SceneContext
+//    return receptionist
+//  }()
 
   /**
    touchesBegan:withEvent:

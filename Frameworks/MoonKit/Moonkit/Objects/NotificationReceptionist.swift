@@ -17,7 +17,7 @@ public final class NotificationReceptionist: NSObject, Loggable {
   - parameter notification: NSNotification
   */
   @objc private func receiveNotification(notification: NSNotification) {
-    guard let idx = infos.indexOf({$0.name == notification.name && $0.object.reference === notification.object}) else {
+    guard let idx = infos.indexOf({$0.name == notification.name && ($0.object.reference === notification.object || $0.object == nil)}) else {
       logWarning("not observing \(notification.name)'\(notification.object == nil ? "" : "from object at address \(unsafeAddressOf(notification.object!))")")
       return
     }
@@ -67,11 +67,44 @@ public final class NotificationReceptionist: NSObject, Loggable {
   /**
   observe:from:queue:callback:
 
+  - parameter notification: N
+  - parameter objects: [AnyObject]
+  - parameter queue: NSOperationQueue? = nil
+  - parameter callback: (NSNotification) -> Void
+  */
+  public func observe<N:NotificationType>(notification: N,
+                                     from objects: [AnyObject],
+                                    queue: NSOperationQueue? = nil,
+                                 callback: (NSNotification) -> Void)
+  {
+    objects.forEach { observe(notification.name.notificationName, from: $0, queue: queue ?? callbackQueue, callback: callback) }
+  }
+
+  /**
+  observe:from:queue:callback:
+
+  - parameter name: String
+  - parameter objects: [AnyObject]
+  - parameter queue: NSOperationQueue? = nil
+  - parameter callback: (NSNotification) -> Void
+  */
+  public func observe(name: String,
+                 from objects: [AnyObject],
+                queue: NSOperationQueue? = nil,
+             callback: (NSNotification) -> Void)
+  {
+    objects.forEach { observe(name, from: $0, queue: queue, callback: callback) }
+  }
+
+  /**
+  observe:from:queue:callback:
+
   - parameter name: String
   - parameter object: AnyObject? = nil
   - parameter queue: NSOperationQueue? = nil
   - parameter callback: (NSNotification) -> Void
   */
+  @objc(observe:fromObjects:queue:callback:)
   public func observe(name: String,
                  from object: AnyObject? = nil,
                 queue: NSOperationQueue? = nil,

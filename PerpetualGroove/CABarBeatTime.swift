@@ -99,11 +99,11 @@ extension CABarBeatTime {
   }
 
   public static var start: CABarBeatTime {
-    return CABarBeatTime(bar: 1, beat: 1, subbeat: 1, subbeatDivisor: Sequencer.time.partsPerQuarter, reserved: 0)
+    return CABarBeatTime(bar: 1, beat: 1, subbeat: 1, subbeatDivisor: Sequencer.partsPerQuarter, reserved: 0)
   }
 
   public static var zero: CABarBeatTime {
-    return CABarBeatTime(bar: 0, beat: 0, subbeat: 0, subbeatDivisor: Sequencer.time.partsPerQuarter, reserved: 0)
+    return CABarBeatTime(bar: 0, beat: 0, subbeat: 0, subbeatDivisor: Sequencer.partsPerQuarter, reserved: 0)
   }
 
   public static var Nil: CABarBeatTime = CABarBeatTime(bar: -1, beat: 0, subbeat: 0, subbeatDivisor: 0, reserved: 0)
@@ -117,7 +117,7 @@ extension CABarBeatTime {
   */
   init(var tickValue: UInt64,
             beatsPerBar: UInt8 = Sequencer.timeSignature.beatsPerBar,
-            subbeatDivisor: UInt16 = Sequencer.time.partsPerQuarter)
+            subbeatDivisor: UInt16 = Sequencer.partsPerQuarter)
   {
     let subbeat = tickValue % UInt64(subbeatDivisor)
     tickValue -= subbeat

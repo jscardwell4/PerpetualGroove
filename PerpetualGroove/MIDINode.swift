@@ -236,6 +236,15 @@ final class MIDINode: SKSpriteNode {
     state ⊻= .Paused
   }
 
+  /**
+   didReset:
+
+   - parameter notification: NSNotification
+  */
+  private func didReset(notification: NSNotification) {
+    fadeOut(remove: true)
+  }
+
   // MARK: Snapshots
 
   typealias Snapshot = MIDINodeHistory.Snapshot
@@ -301,8 +310,8 @@ final class MIDINode: SKSpriteNode {
 
     super.init(texture: MIDINode.texture, color: track.color.value, size: MIDINode.texture.size() * 0.75)
 
-    let object = Sequencer.self
-    typealias Notification = Sequencer.Notification
+    let object = Sequencer.transport
+    typealias Notification = Transport.Notification
 
     receptionist.observe(Notification.DidBeginJogging,
                     from: object,
@@ -319,6 +328,9 @@ final class MIDINode: SKSpriteNode {
     receptionist.observe(Notification.DidPause,
                     from: object,
                 callback: weakMethod(self, MIDINode.didPause))
+    receptionist.observe(Notification.DidReset,
+                    from: object,
+                callback: weakMethod(self, MIDINode.didReset))
 
     try MIDIClientCreateWithBlock(name, &client, nil) ➤ "Failed to create midi client"
     try MIDISourceCreate(client, "\(name)", &endPoint) ➤ "Failed to create end point for node \(name)"

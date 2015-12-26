@@ -12,7 +12,15 @@ import typealias AudioToolbox.MIDITimeStamp
 import struct AudioToolbox.CABarBeatTime
 
 final class Transport {
-  var state: State = []
+  var state: State = [] {
+    didSet {
+      guard state != oldValue else { return }
+      Notification.DidChangeState.post(object: self, userInfo: [
+        .TransportState: state.rawValue,
+        .PreviousTransportState: oldValue.rawValue
+        ])
+    }
+  }
   let name: String
   let clock: MIDIClock
   let time: BarBeatTime
@@ -34,7 +42,10 @@ final class Transport {
   /** Starts the MIDI clock */
   func play() {
     guard !playing else { logWarning("already playing"); return }
-    Notification.DidStart.post()
+    Notification.DidStart.post(object: self, userInfo:[
+      .Ticks: NSNumber(unsignedLongLong: time.ticks),
+      .Time: NSValue(barBeatTime: time.time)
+      ])
     if paused { clock.resume(); state ⊻= [.Paused, .Playing] }
     else { clock.start(); state ⊻= [.Playing] }
   }
@@ -87,7 +98,7 @@ final class Transport {
     clock.stop()
     jogTime = time.time
     maxTicks = max(jogTime.ticks, sequence.sequenceEnd.ticks)
-    ticksPerRevolution = MIDITimeStamp(Sequencer.timeSignature.beatsPerBar) * MIDITimeStamp(time.partsPerQuarter)
+    ticksPerRevolution = MIDITimeStamp(Sequencer.timeSignature.beatsPerBar) * MIDITimeStamp(Sequencer.partsPerQuarter)
     state ⊻= [.Jogging]
     Notification.DidBeginJogging.post(object: self, userInfo:[
       .Ticks: NSNumber(unsignedLongLong: time.ticks),
@@ -187,9 +198,10 @@ extension Transport {
     case DidToggleRecording
     case DidBeginJogging, DidEndJogging
     case DidJog
+    case DidChangeState
 
     enum Key: String, NotificationKeyType {
-      case Time, Ticks, JogTime
+      case Time, Ticks, JogTime, TransportState, PreviousTransportState
     }
   }
 
@@ -204,5 +216,17 @@ extension NSNotification {
   }
   var ticks: MIDITimeStamp? {
     return (userInfo?[Transport.Notification.Key.Ticks.key] as? NSNumber)?.unsignedLongLongValue
+  }
+  var transportState: Transport.State? {
+    guard let rawState = (userInfo?[Transport.Notification.Key.TransportState.key] as? NSNumber)?.integerValue else {
+      return nil
+    }
+    return Transport.State(rawValue: rawState)
+  }
+  var previousTransportState: Transport.State? {
+    guard let rawState = (userInfo?[Transport.Notification.Key.PreviousTransportState.key] as? NSNumber)?.integerValue else {
+      return nil
+    }
+    return Transport.State(rawValue: rawState)
   }
 }

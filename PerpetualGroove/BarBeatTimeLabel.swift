@@ -13,6 +13,32 @@ import struct AudioToolbox.CABarBeatTime
 @IBDesignable
 final class BarBeatTimeLabel: UIView {
 
+  private weak var transport: Transport! {
+    didSet {
+      guard transport !== oldValue else { return }
+      currentTime = transport.time.time
+
+      if let oldTransport = oldValue {
+        oldTransport.time.removeCallbackForKey(barBeatTimeCallbackKey)
+        receptionist.stopObserving(Transport.Notification.DidJog, from: oldValue)
+        receptionist.stopObserving(Transport.Notification.DidReset, from: oldValue)
+      }
+
+      guard let transport = transport else { return }
+
+      guard transport.time.callbackRegisteredForKey(barBeatTimeCallbackKey) == false else { return }
+      transport.time.registerCallback({ [weak self] in self?.currentTime = $0 },
+                            predicate: {_ in true},
+                               forKey: barBeatTimeCallbackKey)
+      receptionist.observe(Transport.Notification.DidJog, from: transport) {
+        [weak self] in guard let time = $0.jogTime else { return }; self?.currentTime = time
+      }
+      receptionist.observe(Transport.Notification.DidReset, from: transport) {
+        [weak self] in guard let time = $0.time else { return }; self?.currentTime = time
+      }
+    }
+  }
+
   @IBInspectable var font: UIFont = .largeDisplayFont { didSet { updateFont() } }
   private var _font: UIFont = .largeDisplayFont { didSet { setNeedsDisplay() } }
 
@@ -135,11 +161,11 @@ final class BarBeatTimeLabel: UIView {
   }
 
   /**
-   didChangeBarBeatTime:
+   didChangeTransport:
 
    - parameter notification: NSNotification
   */
-  private func didChangeBarBeatTime(notification: NSNotification) {
+  private func didChangeTransport(notification: NSNotification) {
     guard Sequencer.time.callbackRegisteredForKey(barBeatTimeCallbackKey) == false else { return }
     Sequencer.time.registerCallback({ [weak self] in self?.currentTime = $0 },
                              predicate: {_ in true},
@@ -153,18 +179,10 @@ final class BarBeatTimeLabel: UIView {
     calculateFrames()
 
     #if !TARGET_INTERFACE_BUILDER
-      Sequencer.time.registerCallback({ [weak self] in self?.currentTime = $0 },
-                         predicate: {_ in true},
-                            forKey: barBeatTimeCallbackKey)
-      receptionist.observe(Sequencer.Notification.DidChangeTransport,
-                      from: Sequencer.self,
-                  callback: weakMethod(self, BarBeatTimeLabel.didChangeBarBeatTime))
-      receptionist.observe(Sequencer.Notification.DidJog, from: Sequencer.self) {
-        [weak self] in guard let time = $0.jogTime else { return }; self?.currentTime = time
+      receptionist.observe(Sequencer.Notification.DidChangeTransport, from: Sequencer.self) {
+        [weak self] _ in self?.transport = Sequencer.transport
       }
-      receptionist.observe(Sequencer.Notification.DidReset, from: Sequencer.self) {
-        [weak self] in guard let time = $0.time else { return }; self?.currentTime = time
-      }
+      transport = Sequencer.transport
     #endif
 
   }

@@ -11,6 +11,27 @@ import MoonKit
 
 final class TransportViewController: UIViewController {
 
+  private weak var transport: Transport! {
+    didSet {
+      guard transport !== oldValue else { return }
+
+      if let oldTransport = oldValue {
+        receptionist.stopObserving(Transport.Notification.DidPause,       from: oldTransport)
+        receptionist.stopObserving(Transport.Notification.DidStart,       from: oldTransport)
+        receptionist.stopObserving(Transport.Notification.DidStop,        from: oldTransport)
+        receptionist.stopObserving(Transport.Notification.DidChangeState, from: oldTransport)
+      }
+
+      guard let transport = transport else { return }
+
+      state = transport.state
+
+      receptionist.observe(Transport.Notification.DidChangeState,
+                      from: transport,
+                  callback: weakMethod(self, TransportViewController.didChangeState))
+    }
+  }
+
   @IBOutlet weak var transportStack: UIStackView!
   @IBOutlet weak var recordButton: ImageButtonView!
   @IBOutlet weak var playPauseButton: ImageButtonView!
@@ -21,17 +42,7 @@ final class TransportViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    receptionist.observe(Sequencer.Notification.DidPause,
-                    from: Sequencer.self,
-                callback: weakMethod(self, TransportViewController.didPause))
-
-    receptionist.observe(Sequencer.Notification.DidStart,
-                    from: Sequencer.self,
-                callback: weakMethod(self, TransportViewController.didStart))
-
-    receptionist.observe(Sequencer.Notification.DidStop,
-                    from: Sequencer.self,
-                callback: weakMethod(self, TransportViewController.didStop))
+    transport = Sequencer.transport
   }
 
   /** record */
@@ -41,22 +52,22 @@ final class TransportViewController: UIViewController {
   @IBAction func playPause() { if state ∋ .Playing { pause() } else { play() } }
 
   /** play */
-  func play() { Sequencer.play() }
+  func play() { transport.play() }
 
   /** pause */
-  func pause() { Sequencer.pause() }
+  func pause() { transport.pause() }
 
   /** stop */
-  @IBAction func stop() { Sequencer.reset() }
+  @IBAction func stop() { transport.reset() }
 
   /** beginJog */
-  @IBAction private func beginJog(){ Sequencer.beginJog() }
+  @IBAction private func beginJog(){ transport.beginJog() }
 
   /** jog */
-  @IBAction private func jog() { Sequencer.jog(jogWheel.revolutions) }
+  @IBAction private func jog() { transport.jog(jogWheel.revolutions) }
 
   /** endJog */
-  @IBAction private func endJog() { Sequencer.endJog() }
+  @IBAction private func endJog() { transport.endJog() }
 
   private enum ControlImage {
     case Pause, Play
@@ -80,38 +91,17 @@ final class TransportViewController: UIViewController {
 
   // MARK: - Managing state
 
-  private struct State: OptionSetType, CustomStringConvertible {
-    let rawValue: Int
-    static let Playing        = State(rawValue: 0b0000_0010)
-    static let Recording      = State(rawValue: 0b0000_0100)
-    static let Paused         = State(rawValue: 0b0000_1000)
-    static let Jogging        = State(rawValue: 0b0001_0000)
-
-    var description: String {
-      var result = "["
-      var flagStrings: [String] = []
-      if self ∋ .Playing        { flagStrings.append("Playing")        }
-      if self ∋ .Recording      { flagStrings.append("Recording")      }
-      if self ∋ .Paused         { flagStrings.append("Paused")         }
-      if self ∋ .Jogging        { flagStrings.append("Jogging")        }
-
-      result += ", ".join(flagStrings)
-      result += "]"
-      return result
-    }
-  }
-
   var paused:         Bool { return state ∋ .Paused         }
   var playing:        Bool { return state ∋ .Playing        }
   var recording:      Bool { return state ∋ .Recording      }
   var jogging:        Bool { return state ∋ .Jogging        }
 
-  private var state: State = [] {
+  private var state: Transport.State = [] {
     didSet {
       guard isViewLoaded() && state != oldValue else { return }
       guard state ∌ [.Playing, .Paused] else { fatalError("State invalid: cannot be both playing and paused") }
 
-      logDebug("didSet…old state: \(oldValue); new state: \(state)")
+      logDebug("\(oldValue) ➞ \(state)")
 
       let modifiedState = state ⊻ oldValue
 
@@ -136,24 +126,14 @@ final class TransportViewController: UIViewController {
   }()
 
   /**
-  didPause:
+   didChangeState:
 
-  - parameter notification: NSNotification
+   - parameter notification: NSNotification
   */
-  private func didPause(notification: NSNotification) { state ⊻= [.Playing, .Paused] }
-
-  /**
-  didStart:
-
-  - parameter notification: NSNotification
-  */
-  private func didStart(notification: NSNotification) { state ⊻= state ∋ .Paused ? [.Playing, .Paused] : [.Playing] }
-
-  /**
-  didStop:
-
-  - parameter notification: NSNotification
-  */
-  private func didStop(notification: NSNotification) { state ∖= [.Playing, .Paused] }
+  private func didChangeState(notification: NSNotification) {
+    guard let oldState = notification.previousTransportState, newState = notification.transportState else { return }
+    logDebug("\(oldState) ➞ \(newState)")
+    state = newState
+  }
 
 }

@@ -118,7 +118,7 @@ final class LogManager: MoonKit.LogManager {
     MixerCell.defaultLogContext                    = UIContext// ∪ .Console
     MixerViewController.defaultLogContext          = UIContext// ∪ .Console
     RootViewController.defaultLogContext           = UIContext// ∪ .Console
-    TransportViewController.defaultLogContext      = UIContext// ∪ .Console
+    TransportViewController.defaultLogContext      = UIContext ∪ .Console
 
     SettingsManager.defaultLogContext = .File
   }

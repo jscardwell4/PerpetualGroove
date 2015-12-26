@@ -38,15 +38,15 @@ final class BarBeatTime {
   private let queue: NSOperationQueue = { let q = NSOperationQueue(); q.maxConcurrentOperationCount = 1; return q }()
 
   /** The resolution used to divide a beat into subbeats */
-  var partsPerQuarter: UInt16 {
-    get { return time.subbeatDivisor }
-    set {
-      time.subbeatDivisor = newValue
-      let n = clockCount.numerator % Float(newValue)
-      clockCount = n╱Float(newValue)
-      beatInterval = Fraction((Float(newValue) * Float(0.25)), Float(newValue))
-    }
-  }
+//  var partsPerQuarter: UInt16 {
+//    get { return time.subbeatDivisor }
+//    set {
+//      time.subbeatDivisor = newValue
+//      let n = clockCount.numerator % Float(newValue)
+//      clockCount = n╱Float(newValue)
+//      beatInterval = Fraction((Float(newValue) * Float(0.25)), Float(newValue))
+//    }
+//  }
 
   /// Valid beat range for the current settings
   private(set) var validBeats: Range<UInt16>
@@ -62,7 +62,7 @@ final class BarBeatTime {
   - returns: Bool
   */
   func isValidTime(time: CABarBeatTime) -> Bool {
-    return validBeats ∋ time.beat && validSubbeats ∋ time.subbeat && time.subbeatDivisor == partsPerQuarter
+    return validBeats ∋ time.beat && validSubbeats ∋ time.subbeat && time.subbeatDivisor == Sequencer.partsPerQuarter
   }
 
   /// The musical representation of the current time
@@ -252,18 +252,18 @@ final class BarBeatTime {
   initWithClockSource:partsPerQuarter:
 
   - parameter clockSource: MIDIEndpointRef
-  - parameter ppq: UInt16 = 480
   */
-  init(clockSource: MIDIEndpointRef, partsPerQuarter ppq: UInt16 = 480) {
+  init(clockSource: MIDIEndpointRef) {
 
     var unmanagedProperties: Unmanaged<CFPropertyList>?
     MIDIObjectGetProperties(clockSource, &unmanagedProperties, true)
 
     var unmanagedName: Unmanaged<CFString>?
     MIDIObjectGetStringProperty(clockSource, kMIDIPropertyName, &unmanagedName)
-    guard unmanagedName != nil else { fatalError("wtf") }
+    guard unmanagedName != nil else { fatalError("Endpoint should have been given a name") }
     clockName = unmanagedName!.takeUnretainedValue() as String
 
+    let ppq = Sequencer.partsPerQuarter
     let t = CABarBeatTime(bar: 1, beat: 1, subbeat: 1, subbeatDivisor: ppq, reserved: 0)
     _time = t
     marker = t
