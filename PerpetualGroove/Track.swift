@@ -115,7 +115,7 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
 
   private var _recording = false { didSet { logDebug("recording = \(_recording)") } }
   var recording: Bool {
-    get { objc_sync_enter(self); defer { objc_sync_exit(self) }; return _recording && Sequencer.mode == .Default }
+    get { objc_sync_enter(self); defer { objc_sync_exit(self) }; return /*_recording &&*/ Sequencer.mode == .Default }
     set { objc_sync_enter(self); defer { objc_sync_exit(self) }; _recording = newValue }
   }
 
