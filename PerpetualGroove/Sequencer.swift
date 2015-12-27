@@ -174,13 +174,6 @@ final class Sequencer {
 
   static let partsPerQuarter: UInt16 = 480
 
-  /** The MIDI clock */
-//  static private let primaryClock = MIDIClock(name: "primary")
-//  static private let primaryTime = BarBeatTime(clockSource: primaryClock.endPoint)
-
-//  static private let auxiliaryClock = MIDIClock(name: "auxiliary")
-//  static private let auxiliaryTime = BarBeatTime(clockSource: auxiliaryClock.endPoint)
-
   static let primaryTransport = Transport(name: "primary")
   static let auxiliaryTransport = Transport(name: "auxiliary")
 
@@ -190,13 +183,6 @@ final class Sequencer {
       case .Loop:    return auxiliaryTransport
     }
   }
-
-//  static private var clock: MIDIClock {
-//    switch mode {
-//      case .Default: return primaryClock
-//      case .Loop:    return auxiliaryClock
-//    }
-//  }
 
   static var time: BarBeatTime { return transport.time }
 

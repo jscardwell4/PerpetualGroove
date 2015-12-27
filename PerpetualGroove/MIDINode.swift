@@ -190,11 +190,12 @@ final class MIDINode: SKSpriteNode {
   */
   private func didJog(notification: NSNotification) {
     guard state ∋ .Jogging else { fatalError("internal inconsistency, should have `Jogging` flag set") }
-    guard let jogTime = (notification.userInfo?[Transport.Notification.Key.JogTime.key] as? NSValue)?.barBeatTimeValue else {
+    guard let jogTime = (notification.userInfo?[Transport.Notification.Key.JogTime.key] as? NSValue)?.barBeatTimeValue,
+      snapshot = history.snapshotForTicks(jogTime.ticks) else {
       logError("notication does not contain jog tick value")
       return
     }
-    animateToSnapshot(history.snapshotForTicks(jogTime.ticks))
+    animateToSnapshot(snapshot)
   }
 
   /**

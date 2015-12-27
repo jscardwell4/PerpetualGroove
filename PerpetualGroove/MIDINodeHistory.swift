@@ -71,9 +71,10 @@ struct MIDINodeHistory: SequenceType {
 
   - returns: Snapshot
   */
-  func snapshotForTicks(ticks: MIDITimeStamp) -> Snapshot {
+  func snapshotForTicks(ticks: MIDITimeStamp) -> Snapshot? {
     guard let breadcrumb = breadcrumbs.find({$0.tickInterval.end < ticks}, {$0.tickInterval ∋ ticks}) else {
-      fatalError("failed to retrieve breadcrumb for ticks = \(ticks)")
+      logSyncWarning("failed to locate breadcrumb for ticks '\(ticks)' in breadcrumbs \(breadcrumbs)")
+      return nil
     }
     return Snapshot(ticks: ticks, placement: Placement(position: breadcrumb.positionForTicks(ticks), vector: breadcrumb.velocity))
   }

@@ -54,12 +54,12 @@ final class LogManager: MoonKit.LogManager {
   /** addFileLoggers */
   static private func addFileLoggers() {
     let logsDirectory = self.logsDirectory
-    addDefaultFileLoggerForContext([.File, .Console])
-    addDefaultFileLoggerForContext(MIDIFileContext,  subdirectory: "MIDI")
-    addDefaultFileLoggerForContext(SF2FileContext,   subdirectory: "SoundFont")
-    addDefaultFileLoggerForContext(SequencerContext, subdirectory: "Sequencer")
-    addDefaultFileLoggerForContext(SceneContext,     subdirectory: "Scene")
-    addDefaultFileLoggerForContext(UIContext,        subdirectory: "UI")
+    addDefaultFileLoggerForContext([.File, .Console], subdirectory: "Default")
+    addDefaultFileLoggerForContext(MIDIFileContext,   subdirectory: "MIDI")
+    addDefaultFileLoggerForContext(SF2FileContext,    subdirectory: "SoundFont")
+    addDefaultFileLoggerForContext(SequencerContext,  subdirectory: "Sequencer")
+    addDefaultFileLoggerForContext(SceneContext,      subdirectory: "Scene")
+    addDefaultFileLoggerForContext(UIContext,         subdirectory: "UI")
     print("\n".join("main bundle: '\(NSBundle.mainBundle().bundlePath)'",
                      "default log directory: '\(logsDirectory.path!)'"))
   }

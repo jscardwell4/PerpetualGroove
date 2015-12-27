@@ -125,6 +125,7 @@ final class Transport {
       default:                                          ticks = time.ticks + 𝝙ticks
     }
 
+    guard ticks <= maxTicks else { return }
     do { try jogToTime(CABarBeatTime(tickValue: ticks)) } catch { logError(error) }
   }
 
