@@ -70,6 +70,7 @@ extension MIDIPlayerScene: SKPhysicsContactDelegate {
   - parameter contact: SKPhysicsContact
   */
   func didBeginContact(contact: SKPhysicsContact) {
+    assert(false)
     guard let midiNode = contact.bodyB.node as? MIDINode,
               edge = MIDIPlayerNode.Edge(rawValue: contact.bodyA.categoryBitMask) else { return }
 

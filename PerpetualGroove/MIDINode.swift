@@ -125,40 +125,38 @@ final class MIDINode: SKSpriteNode {
   - parameter key: String
   */
   override func removeActionForKey(key: String) {
-    if actionForKey(key) != nil && Action.Key.Play.rawValue == key { sendNoteOff() }
+    switch key {
+      case Action.Key.Play.rawValue where actionForKey(key) != nil:
+        sendNoteOff()
+      case Action.Key.Move.rawValue where actionForKey(key) != nil:
+        pushBreadcrumb()
+      default: break
+    }
     super.removeActionForKey(key)
+  }
+
+  /** didMove */
+  private func didMove() {
+    guard let (minX, maxX, minY, maxY) = minMaxValues else { return }
+
+    trajectory.p = position
+
+    switch position.unpack {
+      case (minX, _), (maxX, _): trajectory.dx *= -1
+      case (_, minY), (_, maxY): trajectory.dy *= -1
+      default: break
+    }
+
+    play()
+    runAction(action(.Move))
   }
 
   private(set) weak var track: InstrumentTrack?  {
     didSet { if track == nil && parent != nil { removeFromParent() } }
   }
 
-  override var physicsBody: SKPhysicsBody! {
-    get {
-      guard let body = super.physicsBody else {
-        let body = SKPhysicsBody(circleOfRadius: size.width * 0.5)
-        body.affectedByGravity = false
-        body.usesPreciseCollisionDetection = true
-        body.linearDamping = 0.0
-        body.angularDamping = 0.0
-        body.friction = 0.0
-        body.restitution = 1.0
-        body.contactTestBitMask = MIDIPlayerNode.Edges.All.rawValue
-        body.categoryBitMask = 0
-        body.collisionBitMask = MIDIPlayerNode.Edges.All.rawValue
-        super.physicsBody = body
-        return body
-      }
-      return body
-    }
-    set {
-      guard let body = newValue else { return }
-      super.physicsBody = body
-    }
-  }
-
   var edges: MIDIPlayerNode.Edges = .All {
-    didSet { physicsBody.contactTestBitMask = edges.rawValue }
+    didSet { physicsBody?.contactTestBitMask = edges.rawValue }
   }
 
   private var previousVelocity: CGVector?
@@ -180,7 +178,7 @@ final class MIDINode: SKSpriteNode {
     guard state ∌ .Jogging else { fatalError("internal inconsistency, should not already have `Jogging` flag set") }
     pushBreadcrumb() // Make sure the latest position gets added to history before jogging begins
     state ⊻= .Jogging
-    physicsBody.dynamic = false
+    removeActionForKey(Action.Key.Move.rawValue)
   }
 
   /**
@@ -207,8 +205,7 @@ final class MIDINode: SKSpriteNode {
     guard state ∋ .Jogging else { fatalError("internal inconsistency, should have `Jogging` flag set") }
     state ⊻= .Jogging
     guard state ∌ .Paused else { return }
-    physicsBody.dynamic = true
-    physicsBody.velocity = currentSnapshot.velocity
+    runAction(action(.Move))
   }
 
   /**
@@ -219,9 +216,8 @@ final class MIDINode: SKSpriteNode {
   private func didStart(notification: NSNotification) {
     guard state ∋ .Paused else { return }
     logDebug("unpausing")
-    physicsBody.dynamic = true
-    physicsBody.velocity = currentSnapshot.velocity
     state ⊻= .Paused
+    runAction(action(.Move))
   }
 
   /**
@@ -233,8 +229,8 @@ final class MIDINode: SKSpriteNode {
     guard state ∌ .Paused else { return }
     logDebug("pausing")
     pushBreadcrumb()
-    physicsBody.dynamic = false
     state ⊻= .Paused
+    removeActionForKey(Action.Key.Move.rawValue)
   }
 
   /**
@@ -265,22 +261,23 @@ final class MIDINode: SKSpriteNode {
   /** Updates `currentSnapshot`, adding a new breadcrumb to `history` from the old value to the new value */
   func pushBreadcrumb() {
     guard state ∌ .Jogging else { logWarning("node has `Jogging` flag set, ignoring request to mark"); return }
-    let snapshot = Snapshot(ticks: Sequencer.time.ticks, position: position, velocity: physicsBody.velocity)
+    let snapshot = Snapshot(ticks: Sequencer.time.ticks, position: position, velocity: trajectory.v)
     guard snapshot.ticks > currentSnapshot.ticks else { return }
     history.append(from: currentSnapshot, to: snapshot)
     currentSnapshot = snapshot
   }
 
   /**
-  Animates the node to the location specified by the specified snapshot
+   Animates the node to the location specified by the specified snapshot
 
-  - parameter snapshot: Snapshot
+   - parameter snapshot: Snapshot
+   - parameter completion: (() -> Void)?
   */
   private func animateToSnapshot(snapshot: Snapshot) {
     let from = currentSnapshot.ticks, to = snapshot.ticks, 𝝙ticks = Double(max(from, to) - min(from, to))
-    let 𝝙seconds = Sequencer.secondsPerTick * 𝝙ticks
-    runAction(SKAction.moveTo(snapshot.position, duration: 𝝙seconds))
-    currentSnapshot = snapshot
+    runAction(SKAction.moveTo(snapshot.position, duration: Sequencer.secondsPerTick * 𝝙ticks)) {
+      [weak self] in self?.currentSnapshot = snapshot
+    }
   }
 
   // MARK: Initialization
@@ -301,7 +298,7 @@ final class MIDINode: SKSpriteNode {
        track: InstrumentTrack,
        note: MIDINoteGenerator) throws
   {
-
+    trajectory = Trajectory(placement: placement)
     let snapshot = Snapshot(ticks: Sequencer.time.ticks, placement: placement)
     initialSnapshot = snapshot
     currentSnapshot = snapshot
@@ -340,9 +337,12 @@ final class MIDINode: SKSpriteNode {
     colorBlendFactor = 1
 
     position = placement.position
-    physicsBody.velocity = placement.vector
     normalTexture = MIDINode.normalMap
+    runAction(action(.Move))
   }
+
+
+  private var trajectory: Trajectory
 
   /**
   init:
@@ -352,11 +352,60 @@ final class MIDINode: SKSpriteNode {
   required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
   
   deinit {
+    if state ∋ .Playing { sendNoteOff() }
     do {
       logDebug("disposing of MIDI client and end point")
       try MIDIEndpointDispose(endPoint) ➤ "Failed to dispose of end point"
       try MIDIClientDispose(client) ➤ "Failed to dispose of midi client"
     } catch { logError(error) }
+  }
+
+  private var minMaxValues: (minX: CGFloat, maxX: CGFloat, minY: CGFloat, maxY: CGFloat)? {
+    guard let playerSize = MIDIPlayer.playerNode?.frame.size else { return nil }
+    let offset = MIDINode.texture.size() * 0.375
+    let (maxX, maxY) = (playerSize - offset).unpack
+    let (minX, minY) = offset.unpack
+    return (minX, maxX, minY, maxY)
+  }
+
+  /**
+   nextLocation
+
+    - returns: (CGPoint, MIDITimeStamp)?
+  */
+  func nextLocation() -> (CGPoint, NSTimeInterval)? {
+    guard let (minX, maxX, minY, maxY) = minMaxValues else { return nil }
+
+    print("\n\nposition: \(position)")
+    print("maxX: \(maxX)", "maxY: \(maxY)", "minX: \(minX)", "minY: \(minY)", separator: "\n")
+    print("trajectory: \(trajectory)")
+
+    let projectedX: CGFloat = trajectory.dx.isSignMinus ? minX : maxX,
+        projectedY: CGFloat = trajectory.dy.isSignMinus ? minY : maxY
+
+    print("projectedX: \(projectedX)", "projectedY: \(projectedY)", separator: "\n")
+
+    let pX = trajectory.pointAtX(projectedX)
+    let pY = trajectory.pointAtY(projectedY)
+    print("pX: \(pX)", "pY: \(pY)", separator: "\n")
+
+    let tX = trajectory.timeFromX(position.x, toX: projectedX)
+    let tY = trajectory.timeFromY(position.y, toY: projectedY)
+    print("tX: \(tX)", "tY: \(tY)", separator: "\n")
+
+    func validPoint(p: CGPoint) -> Bool {
+      return (minX ... maxX).contains(p.x) && (minY ... maxY).contains(p.y)
+    }
+
+    let result: (CGPoint, NSTimeInterval)
+
+        if validPoint(pX) && validPoint(pY) { result = tX < tY ? (pX, tX) : (pY, tY)   }
+    else if validPoint(pX)                  { result = (pX, tX) }
+    else if validPoint(pY)                  { result = (pY, tY)   }
+    else                                    { fatalError("wtf") }
+
+    print("result: ({x: \(result.0.x); y: \(result.0.y)}, \(result.1))")
+    return result
   }
 
 }
@@ -382,12 +431,103 @@ extension MIDINode {
   }
 }
 
+extension MIDINode {
+  struct Trajectory: CustomStringConvertible {
+
+    /// slope of the line
+    var m: CGFloat { return dy / dx }
+
+    /// velocity in units per second
+    var v: CGVector
+
+    /// initial point
+    var p: CGPoint
+
+    /// horizontal velocity in units per second
+    var dx: CGFloat { get { return v.dx } set { v.dx = newValue } }
+
+    /// vertical velocity in units per second
+    var dy: CGFloat { get { return v.dy } set { v.dy = newValue } }
+
+    /**
+     initWithVector:point:
+
+     - parameter vector: CGVector
+     - parameter p: CGPoint
+    */
+    init(vector: CGVector, point: CGPoint) { v = vector; p = point }
+
+    /**
+     initWithPlacement:
+
+     - parameter placement: Placement
+    */
+    init(placement: Placement) { self.init(vector: placement.vector, point: placement.position) }
+
+    /**
+     initWithSnapshot:
+
+     - parameter snapshot: Snapshot
+    */
+    init(snapshot: Snapshot) { self.init(vector: snapshot.velocity, point: snapshot.position) }
+
+    /**
+     pointAtX:
+
+     - parameter x: CGFloat
+
+      - returns: CGPoint
+    */
+    func pointAtX(x: CGFloat) -> CGPoint {
+      return CGPoint(x: x, y: m * (x - p.x) + p.y)
+    }
+
+    /**
+     pointAtY:
+
+     - parameter y: CGFloat
+
+      - returns: CGPoint
+    */
+    func pointAtY(y: CGFloat) -> CGPoint {
+      return CGPoint(x: (y - p.y + m * p.x) / m, y: y)
+    }
+
+    /**
+     timeFromX:toX:
+
+     - parameter x1: CGFloat
+     - parameter x2: CGFloat
+
+      - returns: NSTimeInterval
+    */
+    func timeFromX(x1: CGFloat, toX x2: CGFloat) -> NSTimeInterval {
+      return NSTimeInterval((x2 - x1) / dx)
+    }
+
+    /**
+     timeFromY:toY:
+
+     - parameter y1: CGFloat
+     - parameter y2: CGFloat
+
+      - returns: NSTimeInterval
+    */
+    func timeFromY(y1: CGFloat, toY y2: CGFloat) -> NSTimeInterval {
+      return NSTimeInterval((y2 - y1) / dy)
+    }
+
+    var description: String { return "{dx: \(dx); dy: \(dy)}" }
+  }
+
+}
+
 // MARK: Action
 extension MIDINode {
   /// Type for representing MIDI-related node actions
   struct Action {
 
-    enum Key: String { case Play, VerticalPlay, HorizontalPlay, FadeOut, FadeOutAndRemove, FadeIn }
+    enum Key: String { case Move, Play, VerticalPlay, HorizontalPlay, FadeOut, FadeOutAndRemove, FadeIn }
 
     let key: String
     let action: SKAction
@@ -402,6 +542,10 @@ extension MIDINode {
       key = k.rawValue
 
       switch k {
+        case .Move:
+          guard let (location, duration) = node?.nextLocation() else { fatalError("the 'Move' action requires a location and duration") }
+          action = SKAction.sequence([SKAction.moveTo(location, duration: duration), SKAction.runBlock({[weak node] in node?.didMove()})])
+
         case .Play:
           let halfDuration = half(node?.noteGenerator.duration.seconds ?? 0)
           let scaleUp = SKAction.scaleTo(2, duration: halfDuration)
@@ -428,10 +572,7 @@ extension MIDINode {
 
         case .FadeOut:
           let fade = SKAction.fadeOutWithDuration(0.25)
-          let pause = SKAction.runBlock({[weak node] in
-            node?.previousVelocity = node!.physicsBody.velocity
-            node?.physicsBody.resting = true
-            })
+          let pause = SKAction.runBlock({[weak node] in node?.sendNoteOff(); node?.paused = true })
           action = SKAction.sequence([fade, pause])
 
         case .FadeOutAndRemove:
@@ -441,10 +582,7 @@ extension MIDINode {
 
         case .FadeIn:
           let fade = SKAction.fadeInWithDuration(0.25)
-          let unpause = SKAction.runBlock({[weak node] in
-            node?.physicsBody.resting = false
-            if let velocity = node?.previousVelocity { node?.physicsBody.velocity = velocity }
-            })
+          let unpause = SKAction.runBlock({[weak node] in node?.paused = false })
           action = SKAction.sequence([fade, unpause])
       }
 

@@ -157,8 +157,6 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
   }
 
   var debugDescription: String { return String(reflecting: self) }
-
-  deinit { print("\(self.dynamicType):\(name)") }
 }
 
 extension Track {

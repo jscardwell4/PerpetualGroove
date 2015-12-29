@@ -190,8 +190,6 @@ final class Sequence {
     }
   }
 
-  deinit { print("instrumentTracks.count = \(instrumentTracks.count)") }
-
   // MARK: - Adding tracks
 
   /**
