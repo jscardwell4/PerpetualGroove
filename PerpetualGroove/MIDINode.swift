@@ -252,10 +252,10 @@ final class MIDINode: SKSpriteNode {
   /// The breadcrumb currently referenced in jogging calculations
   private var breadcrumb: MIDINodeHistory.Breadcrumb?
 
-  /// Snapshot of the initial placement and velocity for the node
+  /// Snapshot of the initial trajectory and velocity for the node
   var initialSnapshot: Snapshot
 
-  /// Snapshot of the current placement and velocity for the node
+  /// Snapshot of the current trajectory and velocity for the node
   private var currentSnapshot: Snapshot
 
   /** Updates `currentSnapshot`, adding a new breadcrumb to `history` from the old value to the new value */
@@ -275,8 +275,8 @@ final class MIDINode: SKSpriteNode {
   */
   private func animateToSnapshot(snapshot: Snapshot) {
     let from = currentSnapshot.ticks, to = snapshot.ticks, 𝝙ticks = Double(max(from, to) - min(from, to))
-    runAction(SKAction.moveTo(snapshot.position, duration: Sequencer.secondsPerTick * 𝝙ticks)) {
-      [weak self] in self?.currentSnapshot = snapshot
+    runAction(SKAction.moveTo(snapshot.trajectory.p, duration: Sequencer.secondsPerTick * 𝝙ticks)) {
+      [weak self] in self?.currentSnapshot = snapshot; self?.trajectory = snapshot.trajectory
     }
   }
 
@@ -286,20 +286,20 @@ final class MIDINode: SKSpriteNode {
   private static let normalMap = MIDINode.texture.textureByGeneratingNormalMap()
 
   /**
-   initWithPlacement:name:track:note:
+   initWithTrajectory:name:track:note:
 
-   - parameter placement: Placement
+   - parameter trajectory: Trajectory
    - parameter name: String
    - parameter track: InstrumentTrack
    - parameter note: MIDINoteGenerator
   */
-  init(placement: Placement,
+  init(trajectory: Trajectory,
        name: String,
        track: InstrumentTrack,
        note: MIDINoteGenerator) throws
   {
-    trajectory = Trajectory(placement: placement)
-    let snapshot = Snapshot(ticks: Sequencer.time.ticks, placement: placement)
+    self.trajectory = trajectory
+    let snapshot = Snapshot(ticks: Sequencer.time.ticks, trajectory: trajectory)
     initialSnapshot = snapshot
     currentSnapshot = snapshot
     self.track = track
@@ -336,7 +336,7 @@ final class MIDINode: SKSpriteNode {
     self.name = name
     colorBlendFactor = 1
 
-    position = placement.position
+    position = trajectory.p
     normalTexture = MIDINode.normalMap
     runAction(action(.Move))
   }
@@ -376,22 +376,14 @@ final class MIDINode: SKSpriteNode {
   func nextLocation() -> (CGPoint, NSTimeInterval)? {
     guard let (minX, maxX, minY, maxY) = minMaxValues else { return nil }
 
-    print("\n\nposition: \(position)")
-    print("maxX: \(maxX)", "maxY: \(maxY)", "minX: \(minX)", "minY: \(minY)", separator: "\n")
-    print("trajectory: \(trajectory)")
-
     let projectedX: CGFloat = trajectory.dx.isSignMinus ? minX : maxX,
         projectedY: CGFloat = trajectory.dy.isSignMinus ? minY : maxY
 
-    print("projectedX: \(projectedX)", "projectedY: \(projectedY)", separator: "\n")
-
     let pX = trajectory.pointAtX(projectedX)
     let pY = trajectory.pointAtY(projectedY)
-    print("pX: \(pX)", "pY: \(pY)", separator: "\n")
 
     let tX = trajectory.timeFromX(position.x, toX: projectedX)
     let tY = trajectory.timeFromY(position.y, toY: projectedY)
-    print("tX: \(tX)", "tY: \(tY)", separator: "\n")
 
     func validPoint(p: CGPoint) -> Bool {
       return (minX ... maxX).contains(p.x) && (minY ... maxY).contains(p.y)
@@ -402,9 +394,8 @@ final class MIDINode: SKSpriteNode {
         if validPoint(pX) && validPoint(pY) { result = tX < tY ? (pX, tX) : (pY, tY)   }
     else if validPoint(pX)                  { result = (pX, tX) }
     else if validPoint(pY)                  { result = (pY, tY)   }
-    else                                    { fatalError("wtf") }
+    else                                    { fatalError("failed to obtain a valid point for the next location") }
 
-    print("result: ({x: \(result.0.x); y: \(result.0.y)}, \(result.1))")
     return result
   }
 
@@ -431,97 +422,6 @@ extension MIDINode {
   }
 }
 
-extension MIDINode {
-  struct Trajectory: CustomStringConvertible {
-
-    /// slope of the line
-    var m: CGFloat { return dy / dx }
-
-    /// velocity in units per second
-    var v: CGVector
-
-    /// initial point
-    var p: CGPoint
-
-    /// horizontal velocity in units per second
-    var dx: CGFloat { get { return v.dx } set { v.dx = newValue } }
-
-    /// vertical velocity in units per second
-    var dy: CGFloat { get { return v.dy } set { v.dy = newValue } }
-
-    /**
-     initWithVector:point:
-
-     - parameter vector: CGVector
-     - parameter p: CGPoint
-    */
-    init(vector: CGVector, point: CGPoint) { v = vector; p = point }
-
-    /**
-     initWithPlacement:
-
-     - parameter placement: Placement
-    */
-    init(placement: Placement) { self.init(vector: placement.vector, point: placement.position) }
-
-    /**
-     initWithSnapshot:
-
-     - parameter snapshot: Snapshot
-    */
-    init(snapshot: Snapshot) { self.init(vector: snapshot.velocity, point: snapshot.position) }
-
-    /**
-     pointAtX:
-
-     - parameter x: CGFloat
-
-      - returns: CGPoint
-    */
-    func pointAtX(x: CGFloat) -> CGPoint {
-      return CGPoint(x: x, y: m * (x - p.x) + p.y)
-    }
-
-    /**
-     pointAtY:
-
-     - parameter y: CGFloat
-
-      - returns: CGPoint
-    */
-    func pointAtY(y: CGFloat) -> CGPoint {
-      return CGPoint(x: (y - p.y + m * p.x) / m, y: y)
-    }
-
-    /**
-     timeFromX:toX:
-
-     - parameter x1: CGFloat
-     - parameter x2: CGFloat
-
-      - returns: NSTimeInterval
-    */
-    func timeFromX(x1: CGFloat, toX x2: CGFloat) -> NSTimeInterval {
-      return NSTimeInterval((x2 - x1) / dx)
-    }
-
-    /**
-     timeFromY:toY:
-
-     - parameter y1: CGFloat
-     - parameter y2: CGFloat
-
-      - returns: NSTimeInterval
-    */
-    func timeFromY(y1: CGFloat, toY y2: CGFloat) -> NSTimeInterval {
-      return NSTimeInterval((y2 - y1) / dy)
-    }
-
-    var description: String { return "{dx: \(dx); dy: \(dy)}" }
-  }
-
-}
-
 // MARK: Action
 extension MIDINode {
   /// Type for representing MIDI-related node actions
@@ -543,8 +443,12 @@ extension MIDINode {
 
       switch k {
         case .Move:
-          guard let (location, duration) = node?.nextLocation() else { fatalError("the 'Move' action requires a location and duration") }
-          action = SKAction.sequence([SKAction.moveTo(location, duration: duration), SKAction.runBlock({[weak node] in node?.didMove()})])
+          guard let (location, duration) = node?.nextLocation() else {
+            fatalError("the 'Move' action requires a location and duration")
+          }
+          let move = SKAction.moveTo(location, duration: duration)
+          let callback = SKAction.runBlock({[weak node] in node?.didMove()})
+          action = SKAction.sequence([move, callback])
 
         case .Play:
           let halfDuration = half(node?.noteGenerator.duration.seconds ?? 0)

@@ -103,7 +103,7 @@ final class LogManager: MoonKit.LogManager {
     RemoveTool.defaultLogContext      = SceneContext// ∪ .Console
     GeneratorTool.defaultLogContext   = SceneContext// ∪ .Console
     MIDINode.defaultLogContext        = SceneContext// ∪ .Console
-    Placement.defaultLogContext       = SceneContext// ∪ .Console
+    Trajectory.defaultLogContext       = SceneContext// ∪ .Console
 
     MIDIPlayerViewController.defaultLogContext     = UIContext// ∪ .Console
     PurgatoryViewController.defaultLogContext      = UIContext// ∪ .Console
@@ -163,7 +163,7 @@ extension AddTool: Loggable {}
 extension RemoveTool: Loggable {}
 extension GeneratorTool: Loggable {}
 extension MIDINode: Loggable {}
-extension Placement: Loggable {}
+extension Trajectory: Loggable {}
 extension SKNode: Nameable {}
 
 extension RootViewController: Loggable {}

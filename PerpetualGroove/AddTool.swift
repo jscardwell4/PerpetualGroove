@@ -122,7 +122,7 @@ final class AddTool: ToolType {
   /** generate */
   private func generate() {
     guard velocities.count > 0 && !location.isNull else { return }
-    let placement = Placement(position: location, vector: sum(velocities) / CGFloat(velocities.count))
-    MIDIPlayer.placeNew(placement, generator: noteGenerator)
+    let trajectory = Trajectory(vector: sum(velocities) / CGFloat(velocities.count), point: location )
+    MIDIPlayer.placeNew(trajectory, generator: noteGenerator)
   }
 }

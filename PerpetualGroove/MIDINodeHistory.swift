@@ -76,7 +76,8 @@ struct MIDINodeHistory: SequenceType {
       logSyncWarning("failed to locate breadcrumb for ticks '\(ticks)' in breadcrumbs \(breadcrumbs)")
       return nil
     }
-    return Snapshot(ticks: ticks, placement: Placement(position: breadcrumb.positionForTicks(ticks), vector: breadcrumb.velocity))
+    let trajectory = Trajectory(vector: breadcrumb.velocity, point: breadcrumb.positionForTicks(ticks))
+    return Snapshot(ticks: ticks, trajectory: trajectory)
   }
 
   /**
@@ -106,11 +107,11 @@ extension MIDINodeHistory {
       from = f
       to = t
       tickInterval = from.ticks ... to.ticks
-      velocity = f.velocity
+      velocity = f.trajectory.v
       𝝙ticks = t.ticks - f.ticks
       𝝙seconds = CGFloat(Sequencer.secondsPerTick) * CGFloat(𝝙ticks)
       𝝙meters = velocity * 𝝙seconds
-      𝝙position = t.position - f.position
+      𝝙position = t.trajectory.p - f.trajectory.p
     }
 
     let velocity: CGVector
@@ -131,9 +132,9 @@ extension MIDINodeHistory {
       guard tickInterval ∋ ticks else { fatalError("\(tickInterval) ∌ \(ticks)") }
       let 𝝙ticksʹ = ticks - from.ticks
       let 𝝙metersʹ = 𝝙meters * CGFloat(Double(𝝙ticksʹ) / Double(𝝙ticks))
-      var position = from.position + (𝝙metersʹ * (𝝙position / 𝝙meters))
-      if isnan(position.x) { position.x = from.position.x }
-      if isnan(position.y) { position.y = from.position.y }
+      var position = from.trajectory.p + (𝝙metersʹ * (𝝙position / 𝝙meters))
+      if isnan(position.x) { position.x = from.trajectory.p.x }
+      if isnan(position.y) { position.y = from.trajectory.p.y }
       return position
     }
   }
@@ -145,9 +146,7 @@ extension MIDINodeHistory {
 
   struct Snapshot {
     let ticks: MIDITimeStamp
-    let placement: Placement
-    var position: CGPoint { return placement.position }
-    var velocity: CGVector { return placement.vector }
+    let trajectory: Trajectory
 
     /**
     init:position:velocity:
@@ -157,16 +156,16 @@ extension MIDINodeHistory {
     - parameter v: CGVector
     */
     init(ticks t: MIDITimeStamp, position p: CGPoint, velocity v: CGVector) {
-      ticks = t; placement = Placement(position: p, vector: v)
+      ticks = t; trajectory = Trajectory(vector: v, point: p)
     }
 
     /**
-    init:placement:
+    init:trajectory:
 
     - parameter t: MIDITimeStamp
-    - parameter p: Placement
+    - parameter p: Trajectory
     */
-    init(ticks t: MIDITimeStamp, placement p: Placement) { ticks = t; placement = p }
+    init(ticks: MIDITimeStamp, trajectory: Trajectory) { self.ticks = ticks; self.trajectory = trajectory }
   }
 
 }
@@ -220,8 +219,8 @@ extension MIDINodeHistory.Snapshot: CustomStringConvertible {
     var result = "Snapshot { "
     result += "; ".join(
       "ticks: \(ticks)",
-      "position: \(position.description(3))",
-      "velocity: \(velocity.description(3))"
+      "position: \(trajectory.p.description(3))",
+      "velocity: \(trajectory.v.description(3))"
     )
     result += " }"
     return result

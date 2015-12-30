@@ -114,11 +114,11 @@ final class MIDIPlayer {
   /**
    placeNew:targetTrack:generator:
 
-   - parameter placement: Placement
+   - parameter trajectory: Trajectory
    - parameter targetTrack: InstrumentTrack? = nil
    - parameter generator: MIDINoteGenerator
   */
-  static func placeNew(placement: Placement,
+  static func placeNew(trajectory: Trajectory,
            targetTrack: InstrumentTrack? = nil,
              generator: MIDINoteGenerator)
   {
@@ -133,7 +133,7 @@ final class MIDIPlayer {
 
     do {
       let name = "<\(Sequencer.mode.rawValue)> \(track.name)\(track.nodes.count + 1)"
-      let midiNode = try MIDINode(placement: placement, name: name, track: track, note: generator)
+      let midiNode = try MIDINode(trajectory: trajectory, name: name, track: track, note: generator)
       node.addChild(midiNode)
       try track.addNode(midiNode)
       if !Sequencer.playing { Sequencer.play() }

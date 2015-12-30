@@ -230,7 +230,7 @@ final class InstrumentTrack: Track {
       eventQueue.addOperationWithBlock {
         [time = Sequencer.time.time, unowned node, weak self] in
         let event = MIDINodeEvent(.Add(identifier: node.identifier,
-                                       placement: node.initialSnapshot.placement,
+                                       trajectory: node.initialSnapshot.trajectory,
                                        attributes: node.noteGenerator),
                                   time)
         self?.addEvent(event)
@@ -240,30 +240,30 @@ final class InstrumentTrack: Track {
   }
 
   /**
-  addNodeWithIdentifier:placement:attributes:texture:
+  addNodeWithIdentifier:trajectory:attributes:texture:
 
   - parameter identifier: NodeIdentifier
-  - parameter placement: Placement
+  - parameter trajectory: Trajectory
   - parameter generator: MIDINoteGenerator
   - parameter texture: MIDINode.TextureType
   */
   private func addNodeWithIdentifier(identifier: Identifier,
-                           placement: Placement,
+                           trajectory: Trajectory,
                           generator: MIDINoteGenerator)
   {
-    logDebug("placing node with identifier \(identifier), placement \(placement), attributes \(generator)")
+    logDebug("placing node with identifier \(identifier), trajectory \(trajectory), attributes \(generator)")
 
     // Make sure a node hasn't already been place for this identifier
     guard fileIDToNodeID[identifier] == nil else { return }
 
-    // Make sure there is not already a pending placement
+    // Make sure there is not already a pending trajectory
     guard pendingID == nil else { fatalError("already have an identifier pending: \(pendingID!)") }
 
     // Store the identifier
     pendingID = identifier
 
     // Place a node
-    MIDIPlayer.placeNew(placement, targetTrack: self, generator: generator)
+    MIDIPlayer.placeNew(trajectory, targetTrack: self, generator: generator)
   }
 
   /**
@@ -387,7 +387,7 @@ final class InstrumentTrack: Track {
       switch event {
         case let nodeEvent as MIDINodeEvent:
           switch nodeEvent.data {
-            case let .Add(i, p, a):       addNodeWithIdentifier(i, placement: p, generator: a)
+            case let .Add(i, p, a):       addNodeWithIdentifier(i, trajectory: p, generator: a)
             case let .Remove(identifier): removeNodeWithIdentifier(identifier)
           }
         case let metaEvent as MetaEvent where metaEvent.data == .EndOfTrack:

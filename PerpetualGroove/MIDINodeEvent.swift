@@ -10,7 +10,7 @@ import Foundation
 import MoonKit
 import struct AudioToolbox.CABarBeatTime
 
-/** A MIDI meta event that uses the 'Cue Point' message to embed `MIDINode` placement and removal events for a track */
+/** A MIDI meta event that uses the 'Cue Point' message to embed `MIDINode` trajectory and removal events for a track */
 struct MIDINodeEvent: MIDIEvent {
   var time: CABarBeatTime = .start
   let data: Data
@@ -52,7 +52,7 @@ struct MIDINodeEvent: MIDIEvent {
   }
 
   enum Data: Equatable {
-    case Add(identifier: Identifier, placement: Placement, attributes: MIDINoteGenerator)
+    case Add(identifier: Identifier, trajectory: Trajectory, attributes: MIDINoteGenerator)
     case Remove(identifier: Identifier)
 
     /**
@@ -80,8 +80,8 @@ struct MIDINodeEvent: MIDIEvent {
 
       guard i ⟷ data.endIndex > 0 else { throw MIDIFileError(type: .InvalidLength, reason: "Not enough bytes for event") }
 
-      let placement = Placement(data[currentIndex ..< i])
-      guard placement != .null else { throw MIDIFileError(type: .ReadFailure, reason: "Null placement produced") }
+      let trajectory = Trajectory(data[currentIndex ..< i])
+      guard trajectory != .null else { throw MIDIFileError(type: .ReadFailure, reason: "Null trajectory produced") }
 
       currentIndex = i
       i += Int(data[currentIndex++]) + 1
@@ -89,16 +89,16 @@ struct MIDINodeEvent: MIDIEvent {
       guard i ⟷ data.endIndex == 0 else { throw MIDIFileError(type: .InvalidLength, reason: "Incorrect number of bytes") }
 
       let attributes = NoteGenerator(data[currentIndex ..< i])
-      self = .Add(identifier: identifier, placement: placement, attributes: attributes)
+      self = .Add(identifier: identifier, trajectory: trajectory, attributes: attributes)
     }
 
     var bytes: [Byte] {
       switch self {
-        case let .Add(identifier, placement, attributes):
+        case let .Add(identifier, trajectory, attributes):
           var bytes = identifier.bytes
-          let placementBytes = placement.bytes
-          bytes.append(Byte(placementBytes.count))
-          bytes += placementBytes
+          let trajectoryBytes = trajectory.bytes
+          bytes.append(Byte(trajectoryBytes.count))
+          bytes += trajectoryBytes
           if let noteAttributes = attributes as? NoteGenerator {
             let attributesBytes = noteAttributes.bytes
             bytes.append(Byte(attributesBytes.count))
@@ -117,8 +117,8 @@ struct MIDINodeEvent: MIDIEvent {
 extension MIDINodeEvent.Data: CustomStringConvertible {
   var description: String {
     switch self {
-      case let .Add(identifier, placement, attributes):
-        return "add node '\(identifier)' (\(placement), \(attributes))"
+      case let .Add(identifier, trajectory, attributes):
+        return "add node '\(identifier)' (\(trajectory), \(attributes))"
       case let .Remove(identifier):
         return "remove node '\(identifier)'"
     }
