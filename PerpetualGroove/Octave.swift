@@ -18,6 +18,17 @@ enum Octave: Int, EnumerableType {
   static var maxOctave: Octave { return .Nine }
 }
 
+extension Octave: JSONValueConvertible {
+  var jsonValue: JSONValue { return rawValue.jsonValue }
+}
+
+extension Octave: JSONValueInitializable {
+  init?(_ jsonValue: JSONValue?) {
+    guard let rawValue = Int(jsonValue) else { return nil }
+    self.init(rawValue: rawValue)
+  }
+}
+
 extension Octave: Comparable {}
 
 func <(lhs: Octave, rhs: Octave) -> Bool { return lhs.rawValue < rhs.rawValue }

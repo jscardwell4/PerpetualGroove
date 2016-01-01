@@ -7,6 +7,15 @@
 //
 import Foundation
 
+public protocol JSONValueConvertible {
+  var jsonValue: JSONValue { get }
+}
+
+public protocol JSONValueInitializable {
+  init?(_ jsonValue: JSONValue?)
+}
+
+
 // MARK: - JSONValue
 /** Enumeration of discriminating union to represent a JSON value */
 public enum JSONValue {
@@ -256,6 +265,10 @@ public enum JSONValue {
   }
 }
 
+extension JSONValue: JSONValueConvertible {
+  public var jsonValue: JSONValue { return self }
+}
+
 // MARK: RawRepresentable
 extension JSONValue: RawRepresentable {
   public var rawValue: Swift.String {
@@ -269,6 +282,7 @@ extension JSONValue: RawRepresentable {
     }
   }
   public init?(rawValue: Swift.String) {
+    guard rawValue.characters.count > 0 else { return nil }
     let parser = JSONParser(string: rawValue, allowFragment: true)
     do {
       self = try parser.parse()
@@ -381,3 +395,10 @@ extension JSONValue: CustomDebugStringConvertible {
   }
 }
 
+extension JSONValue: DataConvertible {
+  public var data: NSData { return rawValue.data }
+  public init?(data: NSData) {
+    guard let string = Swift.String(data: data) else { return nil }
+    self.init(rawValue: string)
+  }
+}

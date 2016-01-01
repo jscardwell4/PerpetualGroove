@@ -73,3 +73,15 @@ enum Duration: String, EnumerableType, ImageAssetLiteralType, CustomStringConver
   }  
 
 }
+
+extension Duration: JSONValueConvertible {
+  var jsonValue: JSONValue { return rawValue.jsonValue }
+}
+
+extension Duration: JSONValueInitializable {
+  init?(_ jsonValue: JSONValue?) {
+    guard let rawValue = String(jsonValue) else { return nil }
+    self.init(rawValue: rawValue)
+  }
+}
+

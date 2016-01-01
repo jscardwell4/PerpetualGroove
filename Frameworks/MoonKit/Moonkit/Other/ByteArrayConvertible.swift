@@ -15,6 +15,11 @@ public protocol ByteArrayConvertible: Equatable, Coding, DataConvertible {
 }
 
 public extension ByteArrayConvertible {
+  var data: NSData { let bytes = self.bytes; return NSData(bytes: bytes, length: bytes.count) }
+  init?(data: NSData) {
+    self.init(UnsafeBufferPointer<Byte>(start: UnsafePointer<Byte>(data.bytes), count: data.length))
+  }
+
   init?(coder: NSCoder) {
     var length = 0
     let bytes = coder.decodeBytesWithReturnedLength(&length)

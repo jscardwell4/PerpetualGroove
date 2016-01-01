@@ -151,11 +151,24 @@ extension SF2File {
 
 extension SF2File {
 
-  struct Preset: Comparable, CustomStringConvertible {
+  struct Preset: Comparable, CustomStringConvertible, JSONValueConvertible {
     let name: String
     let program: Byte
     let bank: Byte
     var description: String { return "Preset {name: \(name); program: \(program); bank: \(bank)}" }
+    var jsonValue: JSONValue {
+      return ObjectJSONValue(["name": name.jsonValue, "program": program.jsonValue, "bank": bank.jsonValue]).jsonValue
+    }
+    init(name: String, program: Byte, bank: Byte) { self.name = name; self.program = program; self.bank = bank }
+    init?(_ jsonValue: JSONValue?) {
+      guard let dict = ObjectJSONValue(jsonValue),
+        name = String(dict["name"]),
+                program = Byte(dict["program"]),
+                bank = Byte(dict["bank"]) else { return nil }
+      self.name = name
+      self.program = program
+      self.bank = bank
+    }
   }
 
   var presets: [Preset] {

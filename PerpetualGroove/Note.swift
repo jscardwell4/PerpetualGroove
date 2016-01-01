@@ -167,3 +167,14 @@ func <(lhs: Note, rhs: Note) -> Bool {
   }
 }
 extension Note: Hashable { var hashValue: Int { return rawValue.hashValue } }
+
+extension Note: JSONValueConvertible {
+  var jsonValue: JSONValue { return rawValue.jsonValue }
+}
+
+extension Note: JSONValueInitializable {
+  init?(_ jsonValue: JSONValue?) {
+    guard let rawValue = String(jsonValue) else { return nil }
+    self.init(rawValue: rawValue)
+  }
+}

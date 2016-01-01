@@ -77,7 +77,7 @@ final class Sequence {
   }
 
   /** The tempo track for the sequence is the first element in the `tracks` array */
-  private var tempoTrack: TempoTrack!
+  private(set) var tempoTrack: TempoTrack!
 
   var tempo: Double { get { return tempoTrack.tempo } set { tempoTrack.tempo = newValue } }
 
@@ -106,9 +106,6 @@ final class Sequence {
                                            userInfo: [.OldCount: _soloTracks.count - 1, .NewCount: _soloTracks.count])
     }
   }
-
-  /** Conversion to the `MIDIFile` type  */
-  var file: MIDIFile { return MIDIFile(format: .One, division: 480, tracks: tracks.map({$0.chunk})) }
 
   // MARK: - Receiving track and sequencer notifications
 
@@ -157,16 +154,16 @@ final class Sequence {
     Notification.DidUpdate.post(object: self)
   }
 
-  private(set) weak var document: MIDIDocument?
+  private(set) weak var document: MIDIDocument!
 
   // MARK: - Initializing
 
   /**
-  initWithFile:
+   initWithDocument:
 
-  - parameter file: MIDIFile
+   - parameter document: MIDIDocument
   */
-  init(file: MIDIFile, document: MIDIDocument) {
+  init(document: MIDIDocument) {
     self.document = document
     receptionist.observe(Sequencer.Notification.DidToggleRecording,
                     from: Sequencer.self,
@@ -174,6 +171,17 @@ final class Sequence {
     receptionist.observe(Sequencer.Notification.DidReset,
                     from: Sequencer.self,
                 callback: weakMethod(self, Sequence.sequencerDidReset))
+    tempoTrack = TempoTrack(sequence: self)
+  }
+
+  /**
+   initWithFile:document:
+
+   - parameter file: MIDIFile
+   - parameter document: MIDIDocument
+  */
+  convenience init(file: MIDIFile, document: MIDIDocument) {
+    self.init(document: document)
 
     var trackChunks = ArraySlice(file.tracks)
     if let trackChunk = trackChunks.first
@@ -186,6 +194,25 @@ final class Sequence {
     }
 
     for track in trackChunks.flatMap({ try? InstrumentTrack(sequence: self, trackChunk: $0) }) {
+      addTrack(track)
+    }
+  }
+
+  /**
+   initWithFile:document:
+
+   - parameter file: GrooveFile
+   - parameter document: MIDIDocument
+  */
+  convenience init(file: GrooveFile, document: MIDIDocument) {
+    self.init(document: document)
+    var tempoEvents: [MIDIEvent] = []
+    for (_, rawTime, bpmValue) in file.tempoChanges.value {
+      guard let time = CABarBeatTime(rawValue: rawTime), bpm = Double(bpmValue) else { continue }
+      tempoEvents.append(MetaEvent(.Tempo(bpm: bpm), time))
+    }
+    tempoTrack.addEvents(tempoEvents)
+    for track in file.tracks.flatMap({try? InstrumentTrack(sequence: self, grooveTrack: $0)}) {
       addTrack(track)
     }
   }

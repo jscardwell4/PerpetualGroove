@@ -64,3 +64,16 @@ public func sum<S:SequenceType where S.Generator.Element == CGVector>(s: S) -> C
   return s.reduce(CGVector(), combine: +)
 }
 
+extension CGVector: JSONValueConvertible {
+  public var jsonValue: JSONValue {
+    return ObjectJSONValue(["dx": dx.jsonValue, "dy": dy.jsonValue]).jsonValue
+  }
+}
+
+extension CGVector: JSONValueInitializable {
+  public init?(_ jsonValue: JSONValue?) {
+    guard let dict = ObjectJSONValue(jsonValue), dx = CGFloat(dict["dx"]), dy = CGFloat(dict["dy"]) else { return nil }
+    self.init(dx: dx, dy: dy)
+  }
+}
+

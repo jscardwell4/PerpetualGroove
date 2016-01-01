@@ -187,3 +187,13 @@ extension Chord.ChordPattern {
 
 }
 
+extension Chord: JSONValueConvertible {
+  var jsonValue: JSONValue { return rawValue.jsonValue }
+}
+
+extension Chord: JSONValueInitializable {
+  init?(_ jsonValue: JSONValue?) {
+    guard let rawValue = String(jsonValue) else { return nil }
+    self.init(rawValue: rawValue)
+  }
+}

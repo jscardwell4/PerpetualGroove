@@ -50,10 +50,40 @@ struct NoteGenerator {
 
 }
 
+extension NoteGenerator: JSONValueConvertible {
+  var jsonValue: JSONValue {
+    return ObjectJSONValue([
+      "tone": tone.jsonValue,
+      "duration": duration.jsonValue,
+      "velocity": velocity.jsonValue,
+      "octave": octave.jsonValue,
+      "root": root.jsonValue
+      ]).jsonValue
+  }
+}
+
+extension NoteGenerator: JSONValueInitializable {
+  init?(_ jsonValue: JSONValue?) {
+    guard let dict = ObjectJSONValue(jsonValue),
+              tone = Tone(dict["tone"]),
+              duration = Duration(dict["duration"]),
+              velocity = Velocity(dict["velocity"]),
+              octave = Octave(dict["octave"]),
+              root = Note(dict["root"]) else { return nil }
+    self.tone = tone
+    self.duration = duration
+    self.velocity = velocity
+    self.octave = octave
+    self.root = root
+  }
+}
+
 // MARK: - Tone
 extension NoteGenerator {
   /** An enumeration for specifying a note's pitch and octave */
-  struct Tone: RawRepresentable, Equatable, MIDIConvertible, CustomStringConvertible {
+  struct Tone: RawRepresentable, Equatable, MIDIConvertible, CustomStringConvertible,
+               JSONValueConvertible, JSONValueInitializable
+  {
 
     var note: Note
     var octave: Octave
@@ -135,6 +165,11 @@ extension NoteGenerator {
     var midi: Byte { return UInt8((octave.rawValue + 1) * 12 + Tone.indexForNote(note)) }
 
     var description: String { return rawValue }
+    var jsonValue: JSONValue { return rawValue.jsonValue }
+    init?(_ jsonValue: JSONValue?) {
+      guard let rawValue = String(jsonValue) else { return nil }
+      self.init(rawValue: rawValue)
+    }
   }
 }
 

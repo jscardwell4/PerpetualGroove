@@ -34,6 +34,7 @@ final class Sequencer {
         EmaxSoundSet(.DrumsAndPercussion),
         EmaxSoundSet(.Orchestral)
       ]
+
       let bundle = NSBundle.mainBundle()
       let exclude = soundSets.map({$0.url})
       guard var urls = bundle.URLsForResourcesWithExtension("sf2", subdirectory: nil) else { return }
@@ -259,6 +260,10 @@ final class Sequencer {
   // MARK: - Tracks
 
   static private(set) var soundSets: [SoundSetType] = []
+
+  static func soundSetWithURL(url: NSURL) -> SoundSetType? { return soundSets.first({$0.url == url}) }
+
+  static func soundSetWithName(name: String) -> SoundSetType? { return soundSets.first({$0.fileName == name}) }
 
   static private(set) var auditionInstrument: Instrument!
 

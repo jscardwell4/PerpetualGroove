@@ -10,17 +10,16 @@ import Foundation
 import MoonKit
 import struct AudioToolbox.CABarBeatTime
 
-
 /** Struct that holds the data for a complete MIDI file */
-struct MIDIFile {
+struct MIDIFile: ByteArrayConvertible {
 
-  enum Format: Byte2 { case Zero, One, Two }
+//  enum Format: Byte2 { case Zero, One, Two }
 
-  static let emptyFile = MIDIFile(tracks: [])
+//  static let emptyFile = MIDIFile(tracks: [])
 
   let tracks: [MIDIFileTrackChunk]
 
-  private let header: MIDIFileHeaderChunk
+  let header: MIDIFileHeaderChunk
 
   /**
   initWithFile:
@@ -49,7 +48,8 @@ struct MIDIFile {
     // Get a pointer to the underlying memory buffer
     let bytes = UnsafeBufferPointer<Byte>(start: UnsafePointer<Byte>(data.bytes), count: totalBytes)
 
-    let headerBytes = bytes[bytes.startIndex ..< bytes.startIndex.advancedBy(14)]
+    let headerBytes = bytes[bytes.startIndex ➞ 14]
+//    let headerBytes = bytes[bytes.startIndex ..< bytes.startIndex.advancedBy(14)]
     let h = try MIDIFileHeaderChunk(bytes: headerBytes)
 
     var tracksRemaining = h.numberOfTracks
@@ -100,16 +100,9 @@ struct MIDIFile {
     tracks = processedTracks
   }
 
-  /**
-  initWithFormat:division:tracks:
-
-  - parameter format: Format
-  - parameter division: Byte2
-  - parameter tracks: [MIDITrackType]
-  */
-  init(format: Format = .One, division: Byte2 = 480, tracks: [MIDIFileTrackChunk]) {
-    self.tracks = tracks
-    header = MIDIFileHeaderChunk(format: format, numberOfTracks: Byte2(tracks.count), division: division)
+  init(sequence: Sequence) {
+    tracks = sequence.tracks.map {$0.chunk}
+    header = MIDIFileHeaderChunk(numberOfTracks: Byte2(tracks.count))
   }
 
   var bytes: [Byte] {

@@ -81,6 +81,31 @@ struct ChordGenerator {
   }
 }
 
+extension ChordGenerator: JSONValueConvertible {
+  var jsonValue: JSONValue {
+    return ObjectJSONValue([
+      "chord": chord.jsonValue,
+      "octave": octave.jsonValue,
+      "duration": duration.jsonValue,
+      "velocity": velocity.jsonValue
+      ]).jsonValue
+  }
+}
+
+extension ChordGenerator: JSONValueInitializable {
+  init?(_ jsonValue: JSONValue?) {
+    guard let dict = ObjectJSONValue(jsonValue),
+              chord = Chord(dict["chord"]),
+              octave = Octave(dict["octave"]),
+              duration = Duration(dict["duration"]),
+              velocity = Velocity(dict["velocity"]) else { return nil }
+    self.chord = chord
+    self.octave = octave
+    self.duration = duration
+    self.velocity = velocity
+  }
+}
+
 extension ChordGenerator: MIDINoteGenerator {
 
   /**

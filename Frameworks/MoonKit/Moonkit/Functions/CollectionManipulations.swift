@@ -17,7 +17,27 @@ public extension MutableCollectionType where Index == Int, Generator.Element:Nam
   }
 }
 
+infix operator ➞ { associativity none precedence 130 }
+
+public struct SubSequenceIndex<I:ForwardIndexType> {
+  let start: I
+  let length: I.Distance
+}
+
+public func ➞ <I:ForwardIndexType>(lhs: I, rhs: I.Distance) -> SubSequenceIndex<I> {
+  return SubSequenceIndex(start: lhs, length: rhs)
+}
+
+public extension MutableCollectionType {
+  public subscript(i: SubSequenceIndex<Index>) -> SubSequence {
+    get { return self[i.start ..< i.start.advancedBy(i.length)] }
+    set { self[i.start ..< i.start.advancedBy(i.length)] = newValue }
+  }
+}
+
 public extension CollectionType {
+
+  public subscript(i: SubSequenceIndex<Index>) -> SubSequence { return self[i.start ..< i.start.advancedBy(i.length)] }
 
   /**
   first:

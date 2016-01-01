@@ -66,9 +66,10 @@ final class LogManager: MoonKit.LogManager {
 
   /** setDefaultLogContexts */
   static private func setDefaultLogContexts() {
-    MIDIDocumentManager.defaultLogContext     = MIDIFileContext// ∪ .Console
-    MIDIDocument.defaultLogContext            = MIDIFileContext// ∪ .Console
+    MIDIDocumentManager.defaultLogContext     = MIDIFileContext ∪ .Console
+    MIDIDocument.defaultLogContext            = MIDIFileContext ∪ .Console
     MIDIFile.defaultLogContext                = MIDIFileContext// ∪ .Console
+    GrooveFile.defaultLogContext              = MIDIFileContext ∪ .Console
     MIDIFileHeaderChunk.defaultLogContext     = MIDIFileContext// ∪ .Console
     MIDIFileTrackChunk.defaultLogContext      = MIDIFileContext// ∪ .Console
     MetaEvent.defaultLogContext               = MIDIFileContext// ∪ .Console
@@ -155,6 +156,7 @@ extension VariableLengthQuantity: Loggable {}
 extension MIDINodeEvent: Loggable {}
 extension MIDINodeHistory: Loggable {}
 extension MIDIEventContainer: Loggable {}
+extension GrooveFile: Loggable {}
 
 extension MIDIPlayer: Loggable {}
 extension MIDIPlayerScene: Loggable {}

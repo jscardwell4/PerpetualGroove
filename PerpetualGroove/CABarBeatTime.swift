@@ -62,7 +62,35 @@ extension CABarBeatTime: StringLiteralConvertible {
 
 // MARK: - Hashable
 extension CABarBeatTime: Hashable {
-  public var hashValue: Int { return "\(bar).\(beat).\(subbeat)╱\(subbeatDivisor)".hashValue }
+  public var hashValue: Int { return rawValue.hashValue }
+}
+
+extension CABarBeatTime: RawRepresentable {
+  public var rawValue: String { return "\(bar).\(beat).\(subbeat)╱\(subbeatDivisor)" }
+
+  public init?(rawValue: String) {
+    guard let match = (~/"^([0-9]+)\\.([0-9]+)\\.([0-9]+)╱([0-9]+)$").firstMatch(rawValue),
+              barString = match.captures[1]?.string,
+              beatString = match.captures[2]?.string,
+              subbeatString = match.captures[3]?.string,
+              subbeatDivisorString = match.captures[4]?.string,
+              bar = Int32(barString),
+              beat = UInt16(beatString),
+              subbeat = UInt16(subbeatString),
+              subbeatDivisor = UInt16(subbeatDivisorString) else { return nil }
+    self.init(bar: bar, beat: beat, subbeat: subbeat, subbeatDivisor: subbeatDivisor, reserved: 0)
+  }
+}
+
+extension CABarBeatTime: JSONValueConvertible {
+  public var jsonValue: JSONValue { return rawValue.jsonValue }
+}
+
+extension CABarBeatTime: JSONValueInitializable {
+  public init?(_ jsonValue: JSONValue?) {
+    guard let rawValue = String(jsonValue) else { return nil }
+    self.init(rawValue: rawValue)
+  }
 }
 
 public func ==(lhs: CABarBeatTime, rhs: CABarBeatTime) -> Bool { return lhs.hashValue == rhs.hashValue }

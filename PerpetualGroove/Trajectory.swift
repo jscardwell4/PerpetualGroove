@@ -113,6 +113,21 @@ extension Trajectory: ByteArrayConvertible {
   }
 }
 
+extension Trajectory: JSONValueConvertible {
+  var jsonValue: JSONValue {
+    return ObjectJSONValue(["p": p.jsonValue, "v": v.jsonValue]).jsonValue
+  }
+}
+
+extension Trajectory: JSONValueInitializable {
+  init?(_ jsonValue: JSONValue?) {
+    guard let dict = ObjectJSONValue(jsonValue), p = CGPoint(dict["p"]), v = CGVector(dict["v"]) else {
+      return nil
+    }
+    self.init(vector: v, point: p)
+  }
+}
+
 extension Trajectory: CustomStringConvertible {
   var description: String { return "{\(p.description(3)), \(v.description(3))}" }
 }

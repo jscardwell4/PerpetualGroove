@@ -128,19 +128,19 @@ extension CGRect: JSONValueInitializable {
   public init?(_ jsonValue: JSONValue?) { if let s = jsonValue?.CGRectValue { self = s } else { return nil } }
 }
 
-extension CGPoint: JSONValueConvertible {
-  public var jsonValue: JSONValue { return .String(NSStringFromCGPoint(self)) }
-}
-extension CGPoint: JSONValueInitializable {
-  public init?(_ jsonValue: JSONValue?) { if let s = jsonValue?.CGPointValue { self = s } else { return nil } }
-}
-
-extension CGVector: JSONValueConvertible {
-  public var jsonValue: JSONValue { return .String(NSStringFromCGVector(self)) }
-}
-extension CGVector: JSONValueInitializable {
-  public init?(_ jsonValue: JSONValue?) { if let s = jsonValue?.CGVectorValue { self = s } else { return nil } }
-}
+//extension CGPoint: JSONValueConvertible {
+//  public var jsonValue: JSONValue { return .String(NSStringFromCGPoint(self)) }
+//}
+//extension CGPoint: JSONValueInitializable {
+//  public init?(_ jsonValue: JSONValue?) { if let s = jsonValue?.CGPointValue { self = s } else { return nil } }
+//}
+//
+//extension CGVector: JSONValueConvertible {
+//  public var jsonValue: JSONValue { return .String(NSStringFromCGVector(self)) }
+//}
+//extension CGVector: JSONValueInitializable {
+//  public init?(_ jsonValue: JSONValue?) { if let s = jsonValue?.CGVectorValue { self = s } else { return nil } }
+//}
 
 extension UIOffset: JSONValueConvertible {
   public var jsonValue: JSONValue { return .String(NSStringFromUIOffset(self)) }

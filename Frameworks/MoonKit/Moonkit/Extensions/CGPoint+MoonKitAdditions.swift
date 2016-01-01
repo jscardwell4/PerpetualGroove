@@ -93,6 +93,18 @@ public func *(lhs: CGPoint, rhs: CGFloatable) -> CGPoint {
 public func *=(inout lhs: CGPoint, rhs: CGFloat) { lhs = lhs * rhs }
 public func *=(inout lhs: CGPoint, rhs: CGFloatable) { lhs = lhs * rhs }
 
+extension CGPoint: JSONValueConvertible {
+  public var jsonValue: JSONValue {
+    return ObjectJSONValue(["x": x.jsonValue, "y": y.jsonValue]).jsonValue
+  }
+}
+
+extension CGPoint: JSONValueInitializable {
+  public init?(_ jsonValue: JSONValue?) {
+    guard let dict = ObjectJSONValue(jsonValue), x = CGFloat(dict["x"]), y = CGFloat(dict["y"]) else { return nil }
+    self.init(x: x, y: y)
+  }
+}
 
 //extension CGPoint: ArithmeticType {}
 

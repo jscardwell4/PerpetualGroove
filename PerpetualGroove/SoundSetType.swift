@@ -9,7 +9,7 @@
 import Foundation
 import MoonKit
 
-protocol SoundSetType: CustomStringConvertible, CustomDebugStringConvertible {
+protocol SoundSetType: CustomStringConvertible, CustomDebugStringConvertible, JSONValueConvertible, JSONValueInitializable {
   var url: NSURL { get }
   var presets: [SF2File.Preset] { get }
   var displayName: String { get }
@@ -23,6 +23,18 @@ protocol SoundSetType: CustomStringConvertible, CustomDebugStringConvertible {
 }
 
 extension SoundSetType {
+
+  var jsonValue: JSONValue {
+    return ObjectJSONValue([ "url": url.absoluteString.jsonValue, "fileName": fileName.jsonValue ]).jsonValue
+  }
+
+  init?(_ jsonValue: JSONValue?) {
+    guard let dict = ObjectJSONValue(jsonValue),
+              urlString = String(dict["url"]),
+              url = NSURL(string: urlString) else { return nil }
+    do { try self.init(url: url) } catch { return nil }
+  }
+
   var hashValue: Int { return url.hashValue }
   var index: Int? { return Sequencer.soundSets.indexOf({$0.url == url}) }
 
@@ -35,7 +47,13 @@ extension SoundSetType {
     return self[idx]
   }
 
-  func isEqualTo(soundSet: SoundSetType) -> Bool { return url == soundSet.url }
+  func isEqualTo(soundSet: SoundSetType) -> Bool {
+    switch (soundSet.url.fileReferenceURL(), url.fileReferenceURL()) {
+      case let (url1?, url2?) where url1 == url2: return true
+      case (nil, nil): return true
+      default: return false
+    }
+  }
   
   var displayName: String { return (url.lastPathComponent! as NSString).stringByDeletingPathExtension }
 

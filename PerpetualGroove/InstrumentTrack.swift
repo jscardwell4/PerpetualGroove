@@ -231,7 +231,7 @@ final class InstrumentTrack: Track {
         [time = Sequencer.time.time, unowned node, weak self] in
         let event = MIDINodeEvent(.Add(identifier: node.identifier,
                                        trajectory: node.initialSnapshot.trajectory,
-                                       attributes: node.noteGenerator),
+                                       generator: node.noteGenerator),
                                   time)
         self?.addEvent(event)
         self?.modified = true
@@ -248,8 +248,8 @@ final class InstrumentTrack: Track {
   - parameter texture: MIDINode.TextureType
   */
   private func addNodeWithIdentifier(identifier: Identifier,
-                           trajectory: Trajectory,
-                          generator: MIDINoteGenerator)
+                          trajectory: Trajectory,
+                           generator: MIDINoteGenerator)
   {
     logDebug("placing node with identifier \(identifier), trajectory \(trajectory), attributes \(generator)")
 
@@ -439,6 +439,39 @@ final class InstrumentTrack: Track {
     try initializeMIDIClient()
   }
 
+
+  /**
+   initWithSequence:grooveTrack:
+
+   - parameter sequence: Sequence
+   - parameter grooveTrack: GrooveTrack
+  */
+  init(sequence: Sequence, grooveTrack: GrooveTrack) throws {
+    super.init(sequence: sequence)
+    print("\(grooveTrack)")
+    guard let instrument = Instrument(grooveTrack.instrument.jsonValue) else {
+      throw Error.InstrumentInitializeFailure
+    }
+    instrument.track = self
+    self.instrument = instrument
+    eventQueue.name = "BUS \(instrument.bus)"
+
+    name = grooveTrack.name
+    var events: [MIDIEvent] = []
+    for (_, node) in grooveTrack.nodes {
+      let generator: MIDINoteGenerator? = ChordGenerator(node.generator.jsonValue) ?? NoteGenerator(node.generator.jsonValue)
+      guard generator != nil else { continue }
+      events.append(MIDINodeEvent(.Add(identifier: node.identifier,
+                                       trajectory: node.trajectory,
+                                       generator: generator!), node.addTime))
+      if let time = node.removeTime { events.append(MIDINodeEvent(.Remove(identifier: node.identifier), time)) }
+    }
+    addEvents(events)
+
+    initializeNotificationReceptionist()
+    try initializeMIDIClient()
+  }
+
   /**
   initWithSequence:trackChunk:
 
@@ -476,15 +509,15 @@ final class InstrumentTrack: Track {
 
     let channel = programEvent.status.channel, program = programEvent.data1
 
-    guard let instrumentMaybe = try? Instrument(track: self,
-                                                soundSet: soundSet,
-                                                program: program,
-                                                channel: channel) else
+    guard let instrument = try? Instrument(track: self,
+                                           soundSet: soundSet,
+                                           program: program,
+                                           channel: channel) else
     {
       throw Error.InstrumentInitializeFailure
     }
 
-    instrument = instrumentMaybe
+    self.instrument = instrument
     eventQueue.name = "BUS \(instrument.bus)"
 
     initializeNotificationReceptionist()

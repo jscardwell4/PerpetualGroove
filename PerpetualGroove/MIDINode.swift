@@ -12,7 +12,7 @@ import MoonKit
 import CoreMIDI
 
 // MARK: MIDINoteGenerator protocol
-protocol MIDINoteGenerator {
+protocol MIDINoteGenerator: JSONValueConvertible, JSONValueInitializable {
   var duration: Duration { get set }
   var velocity: Velocity { get set }
   var octave: Octave     { get set }

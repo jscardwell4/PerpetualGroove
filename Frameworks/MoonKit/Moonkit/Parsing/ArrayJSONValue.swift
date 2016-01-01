@@ -15,7 +15,7 @@ public struct ArrayJSONValue: JSONValueConvertible, JSONValueInitializable {
 
   public init(_ value: [JSONValue]) { self.value = value }
   public init<J:JSONValueConvertible>(_ value: [J]) { self.value = value.map({$0.jsonValue}) }
-  public init?(_ v: JSONValue?) { switch v ?? .Null { case .Array(let a): value = a; default: return nil } }
+  public init?(_ jsonValue: JSONValue?) { switch jsonValue ?? .Null { case .Array(let a): value = a; default: return nil } }
 
   public func filter(includeElement: (JSONValue) -> Bool) -> ArrayJSONValue {
     return ArrayJSONValue(value.filter(includeElement))
@@ -28,6 +28,7 @@ public struct ArrayJSONValue: JSONValueConvertible, JSONValueInitializable {
   public mutating func appendContentsOf(other: [JSONValue]) { value.appendContentsOf(other) }
 
   public func map<U>(transform: (JSONValue) -> U) -> [U] { return value.map(transform) }
+  public func flatMap<U>(transform: (JSONValue) -> U?) -> [U] { return value.flatMap(transform) }
   public func map(transform: (JSONValue) -> JSONValue) -> ArrayJSONValue { return ArrayJSONValue(value.map(transform)) }
 
   public func compressedMap<U>(transform: (JSONValue) -> U?) -> [U] { return value.compressedMap(transform) }

@@ -11,6 +11,19 @@ import MoonKit
 
 final class MIDIDocument: UIDocument {
 
+  enum SourceType: String {
+    case MIDI = "midi", Groove = "groove"
+    init?(_ string: String?) {
+      switch string?.lowercaseString {
+        case "midi", "mid", "public.midi-audio": self = .MIDI
+        case "groove", "com.moondeerstudios.groove-document": self = .Groove
+        default: return nil
+      }
+    }
+  }
+
+  var sourceType: SourceType? { return SourceType(fileType) }
+
   var storageLocation: MIDIDocumentManager.StorageLocation {
     var isUbiquitous: AnyObject?
     do { try fileURL.getResourceValue(&isUbiquitous, forKey: NSURLIsUbiquitousItemKey) } catch { logError(error) }
@@ -85,9 +98,20 @@ final class MIDIDocument: UIDocument {
   - parameter typeName: String?
   */
   override func loadFromContents(contents: AnyObject, ofType typeName: String?) throws {
-    guard let data = contents as? NSData else { throw Error.InvalidContentType }
-    sequence = Sequence(file: try MIDIFile(data: data), document: self)
+    guard let data = contents as? NSData, type = SourceType(typeName) else { throw Error.InvalidContentType }
+    guard data.length > 0 else { sequence = Sequence(document: self); return }
+    switch type {
+      case .MIDI:
+        let file = try MIDIFile(data: data)
+        print(file.description)
+        sequence = Sequence(file: file, document: self)
+      case .Groove:
+        guard let file = GrooveFile(data: data) else { throw Error.InvalidContent }
+        print(file.jsonValue.prettyRawValue)
+        sequence = Sequence(file: file, document: self)
+    }
     logDebug("file loaded into sequence: \(sequence!)")
+    print(GrooveFile(sequence: sequence!).jsonValue.prettyRawValue)
   }
 
   /**
@@ -97,13 +121,18 @@ final class MIDIDocument: UIDocument {
   */
   override func contentsForType(typeName: String) throws -> AnyObject {
     if sequence == nil && creating {
-      sequence = Sequence(file: MIDIFile.emptyFile, document: self)
+      sequence = Sequence(document: self)
       creating = false
     }
-    guard let file = sequence?.file else { throw Error.MissingSequence }
+    guard let sequence = sequence, type = SourceType(typeName) else { throw Error.MissingSequence }
+
+    let file: DataConvertible
+    switch type {
+      case .MIDI:   file = MIDIFile(sequence: sequence)
+      case .Groove: file = GrooveFile(sequence: sequence)
+    }
     logDebug("file contents:\n\(file)")
-    let bytes = file.bytes
-    return NSData(bytes: bytes, length: bytes.count)
+    return file.data
   }
 
   /**
@@ -126,7 +155,7 @@ final class MIDIDocument: UIDocument {
     let (baseName, _) = name.baseNameExt
     logDebug("renaming document '\(localizedName)' ⟹ '\(baseName)'")
     guard name != localizedName, let url = fileURL.URLByDeletingLastPathComponent else { return }
-    saveToURL(url + "\(baseName).midi", forSaveOperation: .ForCreating, completionHandler: nil)
+    saveToURL(url + "\(baseName).groove", forSaveOperation: .ForCreating, completionHandler: nil)
 
   }
 
@@ -167,6 +196,6 @@ extension MIDIDocument: Named {
 // MARK: - Error
 extension MIDIDocument {
 
-  enum Error: String, ErrorType { case InvalidContentType, MissingSequence }
+  enum Error: String, ErrorType { case InvalidContentType, InvalidContent, MissingSequence }
 
 }

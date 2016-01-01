@@ -40,22 +40,20 @@ public class JSONSerialization {
 
 
   /**
-  objectByParsingString:options:error:
+   objectByParsingString:options:error:
 
-  - parameter string: String
-  - parameter options: JSONSerializationReadOptions = .None
-  - parameter error: NSErrorPointer = nil
+   - parameter string: String
+   - parameter options: JSONSerializationReadOptions = .None
+   - parameter error: NSErrorPointer = nil
 
-  - returns: AnyObject?
+   - returns: AnyObject?
   */
-  public class func objectByParsingString(string: String?,
-                                  options: ReadOptions = .None) throws -> JSONValue
-  {
-    if string == nil { return nil }
+  public class func objectByParsingString(string: String?, options: ReadOptions = .None) throws -> JSONValue {
+    guard let string = string else { return nil }
 
     // Create the parser with the provided string
     let ignoreExcess = options.contains(.IgnoreExcess)
-    let parser = JSONParser(string: string!, ignoreExcess: ignoreExcess)
+    let parser = JSONParser(string: string, ignoreExcess: ignoreExcess)
     do {
       var object = try parser.parse()
       if options.contains(.InflateKeypaths) { object = object.inflatedValue }
@@ -63,6 +61,17 @@ public class JSONSerialization {
     } catch {
       throw error
     }
+  }
+
+  /**
+   objectByParsingData:options:
+
+   - parameter data: NSData?
+   - parameter options: ReadOptions = .None
+  */
+  public class func objectByParsingData(data: NSData?, options: ReadOptions = .None) throws -> JSONValue {
+    guard let data = data else { return nil }
+    return try objectByParsingString(String(data: data), options: options)
   }
 
   /**

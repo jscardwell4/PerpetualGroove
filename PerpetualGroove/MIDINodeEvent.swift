@@ -52,7 +52,7 @@ struct MIDINodeEvent: MIDIEvent {
   }
 
   enum Data: Equatable {
-    case Add(identifier: Identifier, trajectory: Trajectory, attributes: MIDINoteGenerator)
+    case Add(identifier: Identifier, trajectory: Trajectory, generator: MIDINoteGenerator)
     case Remove(identifier: Identifier)
 
     /**
@@ -88,21 +88,21 @@ struct MIDINodeEvent: MIDIEvent {
 
       guard i ⟷ data.endIndex == 0 else { throw MIDIFileError(type: .InvalidLength, reason: "Incorrect number of bytes") }
 
-      let attributes = NoteGenerator(data[currentIndex ..< i])
-      self = .Add(identifier: identifier, trajectory: trajectory, attributes: attributes)
+      let generator = NoteGenerator(data[currentIndex ..< i])
+      self = .Add(identifier: identifier, trajectory: trajectory, generator: generator)
     }
 
     var bytes: [Byte] {
       switch self {
-        case let .Add(identifier, trajectory, attributes):
+        case let .Add(identifier, trajectory, generator):
           var bytes = identifier.bytes
           let trajectoryBytes = trajectory.bytes
           bytes.append(Byte(trajectoryBytes.count))
           bytes += trajectoryBytes
-          if let noteAttributes = attributes as? NoteGenerator {
-            let attributesBytes = noteAttributes.bytes
-            bytes.append(Byte(attributesBytes.count))
-            bytes += attributesBytes
+          if let noteAttributes = generator as? NoteGenerator {
+            let generatorBytes = noteAttributes.bytes
+            bytes.append(Byte(generatorBytes.count))
+            bytes += generatorBytes
           }
           return bytes
 
@@ -117,8 +117,8 @@ struct MIDINodeEvent: MIDIEvent {
 extension MIDINodeEvent.Data: CustomStringConvertible {
   var description: String {
     switch self {
-      case let .Add(identifier, trajectory, attributes):
-        return "add node '\(identifier)' (\(trajectory), \(attributes))"
+      case let .Add(identifier, trajectory, generator):
+        return "add node '\(identifier)' (\(trajectory), \(generator))"
       case let .Remove(identifier):
         return "remove node '\(identifier)'"
     }

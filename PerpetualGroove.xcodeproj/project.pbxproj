@@ -27,6 +27,8 @@
 		C23B058D1C014EBD0081AC6E /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23B058C1C014EBD0081AC6E /* Note.swift */; };
 		C23B05951C0219560081AC6E /* NoteChordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23B05941C0219560081AC6E /* NoteChordTests.swift */; };
 		C23B059D1C026F4C0081AC6E /* ChordGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23B059C1C026F4C0081AC6E /* ChordGenerator.swift */; };
+		C24DCE381C3438A800AD98BE /* GrooveFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24DCE371C3438A800AD98BE /* GrooveFile.swift */; };
+		C24DCE3A1C343C0C00AD98BE /* GrooveTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24DCE391C343C0C00AD98BE /* GrooveTrack.swift */; };
 		C2516B2B1C08ECE10060710B /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2516B2A1C08ECE10060710B /* RootViewController.swift */; };
 		C2516B2D1C08F1B50060710B /* TransportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2516B2C1C08F1B50060710B /* TransportViewController.swift */; };
 		C2516B301C08F47C0060710B /* Transport.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C2516B2E1C08F47C0060710B /* Transport.storyboard */; };
@@ -176,6 +178,8 @@
 		C2404BCD1B78EDEB00A68A64 /* Eveleth.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Eveleth.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2404BD11B78EE3800A68A64 /* Chameleon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Chameleon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2404BD41B78EEC500A68A64 /* MoonKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MoonKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C24DCE371C3438A800AD98BE /* GrooveFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GrooveFile.swift; sourceTree = "<group>"; };
+		C24DCE391C343C0C00AD98BE /* GrooveTrack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GrooveTrack.swift; sourceTree = "<group>"; };
 		C2516B2A1C08ECE10060710B /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		C2516B2C1C08F1B50060710B /* TransportViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransportViewController.swift; sourceTree = "<group>"; };
 		C2516B2F1C08F47C0060710B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Transport.storyboard; sourceTree = "<group>"; };
@@ -339,8 +343,7 @@
 		C2404BDA1B78F02C00A68A64 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				C20827531C03B2A2004D68FC /* StandardChordPattern.swift */,
-				C23B059C1C026F4C0081AC6E /* ChordGenerator.swift */,
+				C24DCE361C34389400AD98BE /* Groove Files */,
 				C2E043341B72F4DC005F0675 /* AppDelegate.swift */,
 				C2EFA0ED1B824A2F002EBA3D /* AssetManager.swift */,
 				C26A27EA1B93C04400BD1698 /* View Controllers */,
@@ -348,18 +351,9 @@
 				C26A27ED1B93C0AE00BD1698 /* Audio */,
 				C26A27EC1B93C09200BD1698 /* Sequencer */,
 				C26A27EB1B93C06200BD1698 /* MIDI Files */,
-				C2F2ADC31B91098A00FF4836 /* NoteGenerator.swift */,
-				C23B05821C01251D0081AC6E /* Duration.swift */,
-				C23B05841C0125240081AC6E /* Velocity.swift */,
-				C23B05861C01258D0081AC6E /* Packet.swift */,
-				C23B05881C0127140081AC6E /* Octave.swift */,
-				C23B058A1C014AC50081AC6E /* Natural.swift */,
-				C23B058C1C014EBD0081AC6E /* Note.swift */,
 				C2CD18E01B7E681A00705922 /* Error.swift */,
 				C22FA58C1BC830D600162DB4 /* SettingsManager.swift */,
 				C269D1D61BD7FA190084A7EE /* LogManager.swift */,
-				C2576E0C1C13343E00F9A192 /* MIDIPlayer.swift */,
-				C282911C1C1DFFD600F9975C /* Tool.swift */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -393,6 +387,15 @@
 				C2E043441B72F4DC005F0675 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		C24DCE361C34389400AD98BE /* Groove Files */ = {
+			isa = PBXGroup;
+			children = (
+				C24DCE371C3438A800AD98BE /* GrooveFile.swift */,
+				C24DCE391C343C0C00AD98BE /* GrooveTrack.swift */,
+			);
+			name = "Groove Files";
 			sourceTree = "<group>";
 		};
 		C26A27E91B93C02900BD1698 /* Scene */ = {
@@ -457,6 +460,17 @@
 		C26A27EC1B93C09200BD1698 /* Sequencer */ = {
 			isa = PBXGroup;
 			children = (
+				C20827531C03B2A2004D68FC /* StandardChordPattern.swift */,
+				C23B059C1C026F4C0081AC6E /* ChordGenerator.swift */,
+				C2576E0C1C13343E00F9A192 /* MIDIPlayer.swift */,
+				C282911C1C1DFFD600F9975C /* Tool.swift */,
+				C2F2ADC31B91098A00FF4836 /* NoteGenerator.swift */,
+				C23B05821C01251D0081AC6E /* Duration.swift */,
+				C23B05841C0125240081AC6E /* Velocity.swift */,
+				C23B05861C01258D0081AC6E /* Packet.swift */,
+				C23B05881C0127140081AC6E /* Octave.swift */,
+				C23B058A1C014AC50081AC6E /* Natural.swift */,
+				C23B058C1C014EBD0081AC6E /* Note.swift */,
 				C2CBE87C1BFA3BAC00EDA3A3 /* Chord.swift */,
 				C2FF79841BD05F1E002CBA79 /* CABarBeatTime.swift */,
 				C2FF79861BD06115002CBA79 /* TimeSignature.swift */,
@@ -681,6 +695,7 @@
 				C2B123BF1B864DCC008FED5E /* MIDIClock.swift in Sources */,
 				C2DFBE7A1B8AA5AB00898C2A /* Sequence.swift in Sources */,
 				C26FC1731B7BAEBD00E271A3 /* AddTool.swift in Sources */,
+				C24DCE3A1C343C0C00AD98BE /* GrooveTrack.swift in Sources */,
 				C26FC16F1B7BA63300E271A3 /* MIDINode.swift in Sources */,
 				C291C3F31B91EDE100702AEA /* VariableLengthQuantity.swift in Sources */,
 				C2F2ADC61B91203700FF4836 /* Metronome.swift in Sources */,
@@ -717,6 +732,7 @@
 				C291C3F11B91EDD600702AEA /* ChannelEvent.swift in Sources */,
 				C2E705C51BBB17AE00636EF3 /* PurgatoryViewController.swift in Sources */,
 				C2516B2B1C08ECE10060710B /* RootViewController.swift in Sources */,
+				C24DCE381C3438A800AD98BE /* GrooveFile.swift in Sources */,
 				C28BB6021BBF110E00BF2F70 /* DocumentCell.swift in Sources */,
 				C2AA2BC81B84B04200A0B08D /* InstrumentViewController.swift in Sources */,
 				C291C3ED1B91EDB700702AEA /* MIDIFileHeaderChunk.swift in Sources */,

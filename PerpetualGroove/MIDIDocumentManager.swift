@@ -302,7 +302,7 @@ final class MIDIDocumentManager {
       }
 
       guard let fileName = noncollidingFileName(name ?? DefaultDocumentName) else { return }
-      let fileURL = url + ["\(fileName).midi"]
+      let fileURL = url + ["\(fileName).groove"]
       logDebug("creating a new document at path '\(fileURL.path!)'")
       let document = MIDIDocument(fileURL: fileURL)
       document.saveToURL(fileURL, forSaveOperation: .ForCreating, completionHandler: {
@@ -327,7 +327,7 @@ final class MIDIDocumentManager {
     guard let (baseName, ext) = fileName?.baseNameExt else { return nil }
 
     var extʹ = ext
-    if extʹ.isEmpty { extʹ = "midi" }
+    if extʹ.isEmpty { extʹ = "groove" }
 
 
     let url: NSURL
@@ -363,7 +363,7 @@ final class MIDIDocumentManager {
   - parameter document: MIDIDocument
   */
   static func openDocument(document: MIDIDocument) {
-    queue.async {
+    let openBlock = {
       guard state ∌ .OpeningDocument else { logWarning("already opening a document"); return }
       logDebug("opening document '\(document.fileURL.path ?? "???")'")
       state ⊻= .OpeningDocument
@@ -378,6 +378,14 @@ final class MIDIDocumentManager {
         }
         currentDocument = document
         state ⊻= .OpeningDocument
+      }
+    }
+    if Sequencer.soundSets.count > 0 { queue.async(openBlock) }
+    else {
+      receptionist.observe(Sequencer.Notification.DidUpdateAvailableSoundSets, from: Sequencer.self, queue: operationQueue) {
+        _ in
+        receptionist.stopObserving(Sequencer.Notification.DidUpdateAvailableSoundSets, from: Sequencer.self)
+        openBlock()
       }
     }
   }

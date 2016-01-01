@@ -21,7 +21,8 @@ struct EmaxSoundSet: SoundSetType {
     var fileName: String { return "Emax Volume \(rawValue)" }
 
     var url: NSURL {
-      return NSBundle.mainBundle().URLForResource(fileName, withExtension: "sf2")!.fileReferenceURL()!
+      // ???: Why did we need to us the reference URL?
+      return NSBundle.mainBundle().URLForResource(fileName, withExtension: "sf2")!
     }
 
     var image: UIImage {
@@ -64,7 +65,7 @@ struct EmaxSoundSet: SoundSetType {
     - parameter url: NSURL
     */
     init?(url: NSURL) {
-      guard let name = url.URLByDeletingPathExtension?.lastPathComponent else { return nil }
+      guard let name = url.filePathURL?.URLByDeletingPathExtension?.lastPathComponent else { return nil }
       switch name {
         case Volume.BrassAndWoodwinds.fileName:  self = .BrassAndWoodwinds
         case Volume.KeyboardsAndSynths.fileName: self = .KeyboardsAndSynths

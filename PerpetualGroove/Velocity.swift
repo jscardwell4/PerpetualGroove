@@ -10,8 +10,14 @@ import Foundation
 import MoonKit
 
 /** Enumeration for musical dynamics 𝑚𝑝𝑚𝑓 */
-enum Velocity: String, EnumerableType, ImageAssetLiteralType, MIDIConvertible, CustomStringConvertible {
+enum Velocity: String, EnumerableType, ImageAssetLiteralType {
   case 𝑝𝑝𝑝, 𝑝𝑝, 𝑝, 𝑚𝑝, 𝑚𝑓, 𝑓, 𝑓𝑓, 𝑓𝑓𝑓
+
+  static let allCases: [Velocity] = [.𝑝𝑝𝑝, .𝑝𝑝, .𝑝, .𝑚𝑝, .𝑚𝑓, .𝑓, .𝑓𝑓, .𝑓𝑓𝑓]
+
+}
+
+extension Velocity: MIDIConvertible {
 
   var midi: Byte {
     switch self {
@@ -25,6 +31,7 @@ enum Velocity: String, EnumerableType, ImageAssetLiteralType, MIDIConvertible, C
       case .𝑓𝑓𝑓:		return 126
     }
   }
+
   init(midi value: Byte) {
     switch value {
       case 0 ... 22:    self = .𝑝𝑝𝑝
@@ -37,7 +44,21 @@ enum Velocity: String, EnumerableType, ImageAssetLiteralType, MIDIConvertible, C
       default:          self = .𝑓𝑓𝑓
     }
   }
-  static let allCases: [Velocity] = [.𝑝𝑝𝑝, .𝑝𝑝, .𝑝, .𝑚𝑝, .𝑚𝑓, .𝑓, .𝑓𝑓, .𝑓𝑓𝑓]
 
+}
+
+extension Velocity: CustomStringConvertible {
   var description: String { return rawValue }
 }
+
+extension Velocity: JSONValueConvertible {
+  var jsonValue: JSONValue { return rawValue.jsonValue }
+}
+
+extension Velocity: JSONValueInitializable {
+  init?(_ jsonValue: JSONValue?) {
+    guard let rawValue = String(jsonValue) else { return nil }
+    self.init(rawValue: rawValue)
+  }
+}
+

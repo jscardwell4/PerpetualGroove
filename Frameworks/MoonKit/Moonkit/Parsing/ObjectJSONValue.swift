@@ -13,12 +13,13 @@ public struct ObjectJSONValue: JSONValueConvertible, JSONValueInitializable {
   public var jsonValue: JSONValue { return .Object(value) }
   public private(set) var value: JSONValue.ObjectValue
   public var count: Int { return value.count }
+  public init() { value = [:] }
   public init(_ value: JSONValue.ObjectValue) { self.value = value }
   public init<J:JSONValueConvertible>(_ value: OrderedDictionary<String, J>) { self.value = value.map({$2.jsonValue}) }
   public init(_ value: [String:JSONValue]) { self.value = OrderedDictionary(value) }
   public init<J:JSONValueConvertible>(_ value: [String:J]) { self.value = OrderedDictionary(value).map({$2.jsonValue}) }
 
-  public init?(_ v: JSONValue?) { switch v ?? .Null { case .Object(let o): value = o; default: return nil } }
+  public init?(_ jsonValue: JSONValue?) { switch jsonValue ?? .Null { case .Object(let o): value = o; default: return nil } }
   public subscript(key: String) -> JSONValue? { get { return value[key] } mutating set { value[key] = newValue } }
   public var keys: LazyCollection<[String]> { return value.keys }
   public var values: LazyMapCollection<[String], JSONValue> { return value.values }

@@ -188,6 +188,31 @@ extension Instrument: CustomDebugStringConvertible {
   var debugDescription: String { var result = ""; dump(self, &result); return result }
 }
 
+extension Instrument: JSONValueConvertible {
+  var jsonValue: JSONValue {
+    return ObjectJSONValue([
+      "soundset":soundSet.jsonValue,
+      "preset": preset.jsonValue,
+      "channel": channel.jsonValue
+      ]).jsonValue
+  }
+}
+
+extension Instrument: JSONValueInitializable {
+  convenience init?(_ jsonValue: JSONValue?) {
+    guard let dict = ObjectJSONValue(jsonValue),
+      soundSet: SoundSetType = EmaxSoundSet(dict["soundset"]) ?? SoundSet(dict["soundset"]),
+      preset = Preset(dict["preset"]),
+      channel = Channel(dict["channel"])
+    else { return nil }
+    do {
+      try self.init(track: nil, soundSet: soundSet, program: preset.program, bank: preset.bank, channel: channel)
+    } catch {
+      return nil
+    }
+  }
+}
+
 // MARK: - Notifications
 extension Instrument {
   enum Notification: String, NotificationType, NotificationNameType {

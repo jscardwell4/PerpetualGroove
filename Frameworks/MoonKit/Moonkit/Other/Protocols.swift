@@ -12,15 +12,7 @@ import Foundation
 import Swift
 
 
-  extension GCDAsyncUdpSocketError: ErrorType {}
-
-public protocol JSONValueConvertible {
-  var jsonValue: JSONValue { get }
-}
-
-public protocol JSONValueInitializable {
-  init?(_ jsonValue: JSONValue?)
-}
+extension GCDAsyncUdpSocketError: ErrorType {}
 
 public protocol Divisible {
   func /(lhs: Self, rhs: Self) -> Self
