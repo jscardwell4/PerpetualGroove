@@ -156,9 +156,7 @@ extension SF2File {
     let program: Byte
     let bank: Byte
     var description: String { return "Preset {name: \(name); program: \(program); bank: \(bank)}" }
-    var jsonValue: JSONValue {
-      return ObjectJSONValue(["name": name.jsonValue, "program": program.jsonValue, "bank": bank.jsonValue]).jsonValue
-    }
+    var jsonValue: JSONValue { return ["name": name, "program": program, "bank": bank] }
     init(name: String, program: Byte, bank: Byte) { self.name = name; self.program = program; self.bank = bank }
     init?(_ jsonValue: JSONValue?) {
       guard let dict = ObjectJSONValue(jsonValue),

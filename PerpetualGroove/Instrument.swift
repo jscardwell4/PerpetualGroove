@@ -189,13 +189,7 @@ extension Instrument: CustomDebugStringConvertible {
 }
 
 extension Instrument: JSONValueConvertible {
-  var jsonValue: JSONValue {
-    return ObjectJSONValue([
-      "soundset":soundSet.jsonValue,
-      "preset": preset.jsonValue,
-      "channel": channel.jsonValue
-      ]).jsonValue
-  }
+  var jsonValue: JSONValue { return ["soundset":soundSet, "preset": preset, "channel": channel] }
 }
 
 extension Instrument: JSONValueInitializable {

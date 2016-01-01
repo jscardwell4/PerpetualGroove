@@ -12,10 +12,10 @@
         </mutableArray>
     </customFonts>
     <scenes>
-        <!--MIDIPlayer-->
+        <!--RootController-->
         <scene sceneID="tXr-a1-R10">
             <objects>
-                <viewController storyboardIdentifier="MIDIPlayer" id="BV1-FR-VrT" userLabel="MIDIPlayer" customClass="RootViewController" customModule="Groove" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="RootController" id="BV1-FR-VrT" userLabel="RootController" customClass="RootViewController" customModule="Groove" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="8aa-yV-Osq"/>
                         <viewControllerLayoutGuide type="bottom" id="qHh-Mt-9TT"/>
@@ -265,7 +265,8 @@
                                                                         <exclude reference="a7T-hb-UY1"/>
                                                                     </mask>
                                                                 </variation>
-                                                                <variation key="heightClass=regular-widthClass=regular">
+                                                                <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                                    <rect key="frame" x="-22.5" y="0.0" width="325" height="56"/>
                                                                     <mask key="constraints">
                                                                         <include reference="a7T-hb-UY1"/>
                                                                     </mask>
@@ -668,6 +669,7 @@
                         <outlet property="barBeatTimeLabel" destination="pTr-VL-22H" id="gZk-3S-Feh"/>
                         <outlet property="bottomStack" destination="n4A-7M-eOV" id="PzM-e9-r9m"/>
                         <outlet property="bottomStackHeight" destination="SE4-Jy-u0O" id="GaT-LS-gqo"/>
+                        <outlet property="contentStack" destination="KR6-ig-M7J" id="pxB-lb-19Q"/>
                         <outlet property="documentsButton" destination="gJq-1L-zk3" id="z0d-NV-cbd"/>
                         <outlet property="documentsPopoverView" destination="L5k-qi-Yb6" id="ib7-VB-2Y5"/>
                         <outlet property="instrumentContainer" destination="HzR-qG-Aqv" id="Jfd-Ff-vUD"/>

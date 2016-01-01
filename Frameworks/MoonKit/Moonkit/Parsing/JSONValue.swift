@@ -71,6 +71,19 @@ public enum JSONValue {
   }
 
   /**
+   Initialize to case `Object` using a dictionary literal
+
+   - parameter dict: DictionaryLiteral<S, J>
+   */
+  public init(dict: DictionaryLiteral<StringValueConvertible,JSONValueConvertible>) {
+    var objectValue: OrderedDictionary<Swift.String, JSONValue> = [:]
+    for (k, v) in dict { objectValue[k.stringValue] = v.jsonValue }
+    self = Object(objectValue)
+  }
+
+//  public init<J:JSONValueConvertible>(
+
+  /**
   Initialize to case `Object` using a key-value collection
 
   - parameter c: C
@@ -351,6 +364,16 @@ extension JSONValue: StringInterpolationConvertible {
 // MARK: Streamable
 extension JSONValue: Streamable { public func writeTo<T:OutputStreamType>(inout target: T) { target.write(rawValue) } }
 
+extension JSONValue: DictionaryLiteralConvertible {
+  public init(dictionaryLiteral elements: (StringValueConvertible, JSONValueConvertible)...) {
+    var objectValue: OrderedDictionary<Swift.String, JSONValue> = [:]
+    for (k, v) in elements {
+      objectValue[k.stringValue] = v.jsonValue
+    }
+    self = .Object(objectValue)
+  }
+}
+
 // MARK: Printable
 extension JSONValue: CustomStringConvertible { public var description: Swift.String { return rawValue } }
 
@@ -397,6 +420,7 @@ extension JSONValue: CustomDebugStringConvertible {
 
 extension JSONValue: DataConvertible {
   public var data: NSData { return rawValue.data }
+  public var prettyData: NSData { return prettyRawValue.data }
   public init?(data: NSData) {
     guard let string = Swift.String(data: data) else { return nil }
     self.init(rawValue: string)

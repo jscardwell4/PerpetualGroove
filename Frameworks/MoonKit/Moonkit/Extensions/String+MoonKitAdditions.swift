@@ -19,6 +19,10 @@ extension String {
   }
 }
 
+extension String: StringValueConvertible {
+  public var stringValue: String { return self }
+}
+
 extension String: ByteArrayConvertible {
   public var bytes: [Byte] { return Array(utf8) }
   public init<S:SequenceType where S.Generator.Element == Byte>(_ bytes: S) {

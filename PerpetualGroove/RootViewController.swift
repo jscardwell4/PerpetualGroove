@@ -16,6 +16,7 @@ final class RootViewController: UIViewController {
 
   // MARK: - View loading and layout
 
+  @IBOutlet var contentStack: UIStackView!
   @IBOutlet var topStack: UIStackView!
   @IBOutlet var middleStack: UIStackView!
   @IBOutlet var bottomStack: UIStackView!
@@ -70,7 +71,8 @@ final class RootViewController: UIViewController {
   /** viewDidLoad */
   override func viewDidLoad() {
     super.viewDidLoad()
-    
+
+    contentStack.bringSubviewToFront(middleStack)
     tempoSlider.value = Float(Sequencer.tempo)
     metronomeButton.selected = AudioManager.metronome?.on ?? false
 

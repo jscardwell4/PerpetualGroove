@@ -24,9 +24,7 @@ protocol SoundSetType: CustomStringConvertible, CustomDebugStringConvertible, JS
 
 extension SoundSetType {
 
-  var jsonValue: JSONValue {
-    return ObjectJSONValue([ "url": url.absoluteString.jsonValue, "fileName": fileName.jsonValue ]).jsonValue
-  }
+  var jsonValue: JSONValue { return ["url": url.absoluteString, "fileName": fileName] }
 
   init?(_ jsonValue: JSONValue?) {
     guard let dict = ObjectJSONValue(jsonValue),

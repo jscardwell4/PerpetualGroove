@@ -114,9 +114,7 @@ extension Trajectory: ByteArrayConvertible {
 }
 
 extension Trajectory: JSONValueConvertible {
-  var jsonValue: JSONValue {
-    return ObjectJSONValue(["p": p.jsonValue, "v": v.jsonValue]).jsonValue
-  }
+  var jsonValue: JSONValue { return ["p": p, "v": v] }
 }
 
 extension Trajectory: JSONValueInitializable {

@@ -14,6 +14,16 @@ extension Array {
   }
 }
 
+extension Array: JSONValueConvertible {
+  public var jsonValue: JSONValue {
+    var elements: [JSONValue] = []
+    for element in flatMap({$0 as? JSONValueConvertible}) {
+      elements.append(element.jsonValue)
+    }
+    return JSONValue.Array(elements)
+  }
+}
+
 extension Array: NestingContainer {
   public var topLevelObjects: [Any] {
     var result: [Any] = []

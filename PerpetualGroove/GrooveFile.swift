@@ -32,18 +32,18 @@ struct GrooveFile {
 }
 
 extension GrooveFile: DataConvertible {
-  var data: NSData { return jsonValue.data }
+  var data: NSData { return jsonValue.prettyData }
   init?(data: NSData) { self.init(JSONValue(data: data)) }
 }
 
 extension GrooveFile: JSONValueConvertible {
   var jsonValue: JSONValue {
-    return ObjectJSONValue([
-      "source": source?.absoluteString.jsonValue ?? .Null,
-      "tracks": ArrayJSONValue(tracks.map({$0.jsonValue})).jsonValue,
-      "tempoChanges": tempoChanges.jsonValue,
-      "endOfFile": endOfFile.jsonValue
-    ]).jsonValue
+    return [
+      "source": source?.absoluteString,
+      "tracks": tracks,
+      "tempoChanges": tempoChanges,
+      "endOfFile": endOfFile
+    ]
   }
 }
 

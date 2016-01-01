@@ -77,14 +77,9 @@ struct GrooveTrack {
 }
 
 extension GrooveTrack: JSONValueConvertible {
-  var jsonValue: JSONValue {
-    return ObjectJSONValue([
-      "name": name.jsonValue,
-      "instrument": instrument.jsonValue,
-      "nodes": ArrayJSONValue(nodes.values.map({$0.jsonValue})).jsonValue
-      ]).jsonValue
-  }
+  var jsonValue: JSONValue { return [ "name": name, "instrument": instrument, "nodes": Array(nodes.values) ] }
 }
+
 extension GrooveTrack: JSONValueInitializable {
   init?(_ jsonValue: JSONValue?) {
     guard let dict = ObjectJSONValue(jsonValue),

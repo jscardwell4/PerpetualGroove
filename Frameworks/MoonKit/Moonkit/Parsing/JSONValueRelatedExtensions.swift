@@ -128,6 +128,15 @@ extension CGRect: JSONValueInitializable {
   public init?(_ jsonValue: JSONValue?) { if let s = jsonValue?.CGRectValue { self = s } else { return nil } }
 }
 
+extension Optional: JSONValueConvertible {
+  public var jsonValue: JSONValue {
+    switch self {
+      case .Some(let wrapped as JSONValueConvertible): return wrapped.jsonValue
+      default: return .Null
+    }
+  }
+}
+
 //extension CGPoint: JSONValueConvertible {
 //  public var jsonValue: JSONValue { return .String(NSStringFromCGPoint(self)) }
 //}
