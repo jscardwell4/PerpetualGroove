@@ -18,21 +18,45 @@ struct Loop: SequenceType {
   var repeatDelay: UInt64 = 0
   var events: MIDIEventContainer
   var start: CABarBeatTime = .start
+  let identifier: Identifier
 
+  typealias Identifier = String
+
+  /**
+   initWithIdentifier:events:
+
+   - parameter identifier: String = nonce()
+   - parameter events: MIDIEventContainer
+  */
+  init(identifier: Identifier = nonce(), events: MIDIEventContainer) {
+    self.identifier = identifier
+    self.events = events
+  }
+
+  /**
+   generate
+
+    - returns: AnyGenerator<MIDIEvent>
+  */
   func generate() -> AnyGenerator<MIDIEvent> {
-    let startTicks = start.ticks
-    let repeatCount = repetitions
-    let totalTicks = time.ticks
-    let delay = repeatDelay
     var startEventInserted = false
     var endEventInserted = false
     var iteration = 0
     var offset: UInt64 = 0
     var currentGenerator: AnyGenerator<MIDIEvent> = anyGenerator(events.generate())
-    return anyGenerator { () -> MIDIEvent? in
+    return anyGenerator {
+      [
+        identifier = identifier,
+        startTicks = start.ticks,
+        repeatCount = repetitions,
+        totalTicks = time.ticks,
+        delay = repeatDelay
+      ]
+      () -> MIDIEvent? in
+
       if !startEventInserted {
         startEventInserted = true
-        var event = MetaEvent(.Marker(name: "start:\(repeatCount)"))
+        var event = MetaEvent(.Marker(name: "start\(identifier):\(repeatCount)"))
         event.time = CABarBeatTime(tickValue: startTicks)
         return event
       } else if var event = currentGenerator.next() {

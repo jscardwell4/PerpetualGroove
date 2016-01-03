@@ -89,7 +89,7 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
       guard name != newValue else { return }
       logDebug("'\(name)' ➞ '\(newValue)'")
       trackNameEvent = MetaEvent(.SequenceTrackName(name: newValue))
-      Notification.DidUpdateEvents.post(object: self)
+      Notification.DidUpdate.post(object: self)
       Notification.DidChangeName.post(object: self)
     }
   }
@@ -161,7 +161,7 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
 
 extension Track {
   enum Notification: String, NotificationType, NotificationNameType {
-    case DidUpdateEvents, DidChangeName
+    case DidUpdate, DidChangeName
     typealias Key = String
   }
 }

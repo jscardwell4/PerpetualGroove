@@ -62,18 +62,20 @@ struct MIDIFile: ByteArrayConvertible {
         throw MIDIFileError(type: .FileStructurallyUnsound,
                             reason: "Not enough bytes for remaining track chunks (\(tracksRemaining))")
       }
-      guard bytes[currentIndex ..< currentIndex.advancedBy(4)].elementsEqual("MTrk".utf8) else {
+      guard bytes[currentIndex ➞ 4].elementsEqual("MTrk".utf8) else {
         throw MIDIFileError(type: .InvalidHeader, reason: "Expected chunk header with type 'MTrk'")
       }
-      let chunkLength = Byte4(bytes[currentIndex.advancedBy(4) ..< currentIndex.advancedBy(8)])
-      guard currentIndex.advancedBy(Int(chunkLength) + 8) <= bytes.endIndex else {
+      currentIndex += 4
+      let chunkLength = Int(Byte4(bytes[currentIndex ➞ 4]))
+      currentIndex += 4
+      guard currentIndex + chunkLength <= bytes.endIndex else {
         throw MIDIFileError(type:.FileStructurallyUnsound, reason: "Not enough bytes in track chunk \(t.count)")
       }
 
-      let trackBytes = bytes[currentIndex ..< currentIndex.advancedBy(Int(chunkLength) + 8)]
+      let trackBytes = bytes[currentIndex ➞ chunkLength]
 
       t.append(try MIDIFileTrackChunk(bytes: trackBytes))
-      currentIndex.advanceBy(Int(chunkLength) + 8)
+      currentIndex += chunkLength
       tracksRemaining--
     }
 

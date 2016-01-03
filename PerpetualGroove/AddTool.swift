@@ -42,7 +42,7 @@ final class AddTool: ToolType {
         timestamp = touch.timestamp
         location = touch.locationInNode(player)
         let image = UIImage(named: "ball")!
-        let color = (TrackColor.currentColor ?? TrackColor.nextColor).value
+        let color = (MIDIDocumentManager.currentDocument?.sequence?.currentTrack?.color ?? TrackColor.nextColor).value
         let size = image.size * 0.75
         touchNode = SKSpriteNode(texture: SKTexture(image: image), color: color, size: size)
         touchNode!.position = location

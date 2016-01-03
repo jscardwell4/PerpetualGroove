@@ -238,9 +238,8 @@ final class Sequence {
   */
   private func addTrack(track: InstrumentTrack) {
     guard instrumentTracks ∌ track else { return }
-    track.color = TrackColor.allCases[(instrumentTracks.count) % TrackColor.allCases.count]
     instrumentTracks.append(track)
-    receptionist.observe(Track.Notification.DidUpdateEvents,
+    receptionist.observe(Track.Notification.DidUpdate,
                     from: track,
                 callback: weakMethod(self, Sequence.trackDidUpdate))
 
@@ -275,7 +274,7 @@ final class Sequence {
   func removeTrackAtIndex(index: Int) {
     let track = instrumentTracks.removeAtIndex(index)
     track.nodes.forEach { $0.reference?.fadeOut(remove: true) }
-    receptionist.stopObserving(Track.Notification.DidUpdateEvents, from: track)
+    receptionist.stopObserving(Track.Notification.DidUpdate, from: track)
     logDebug("track removed: \(track.name)")
     Notification.DidRemoveTrack.post(
       object: self,

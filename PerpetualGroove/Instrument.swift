@@ -22,7 +22,12 @@ final class Instrument: Equatable {
 
   typealias Preset = SF2File.Preset
 
-  var soundSet: SoundSetType
+  var soundSet: SoundSetType {
+    didSet {
+      guard !soundSet.isEqualTo(oldValue) else { return }
+      Notification.SoundSetDidChange.post(object: self)
+    }
+  }
   var channel: Channel = 0
   var bank: Bank = 0
   var program: Program = 0
@@ -211,7 +216,7 @@ extension Instrument: JSONValueInitializable {
 extension Instrument {
   enum Notification: String, NotificationType, NotificationNameType {
     enum Key: String, KeyType { case OldValue, NewValue }
-    case PresetDidChange
+    case PresetDidChange, SoundSetDidChange
   }
 }
 

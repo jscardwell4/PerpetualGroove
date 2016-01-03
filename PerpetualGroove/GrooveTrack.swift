@@ -14,56 +14,42 @@ struct GrooveTrack {
 
   var instrument: ObjectJSONValue
   var name: String
+  var color: TrackColor
 
-  var nodes: [UInt64:Node] = [:]
+  var nodes: [MIDINodeEvent.Identifier:Node] = [:]
 
-  struct Node: JSONValueConvertible, JSONValueInitializable {
-    let identifier: UInt64
-    var trajectory: Trajectory
-    var generator: ObjectJSONValue
-    var addTime: CABarBeatTime
-    var removeTime: CABarBeatTime? { didSet { if let time = removeTime where time < addTime { removeTime = nil } } }
-
-    var jsonValue: JSONValue {
-      return ObjectJSONValue([
-        "identifier": identifier.jsonValue,
-        "generator": generator.jsonValue,
-        "trajectory": trajectory.jsonValue,
-        "addTime": addTime.jsonValue,
-        "removeTime": removeTime?.jsonValue ?? JSONValue.Null
-        ]).jsonValue
-    }
-
-    init?(event: MIDINodeEvent) {
-      guard case let .Add(identifier, trajectory, generator) = event.data else { return nil }
-      addTime = event.time
-      self.identifier = identifier
-      self.trajectory = trajectory
-      self.generator = ObjectJSONValue(generator.jsonValue)!
-    }
-
-    init?(_ jsonValue: JSONValue?) {
-    guard let dict = ObjectJSONValue(jsonValue),
-              identifier = UInt64(dict["identifier"]),
-              trajectory = Trajectory(dict["trajectory"]),
-              generator = ObjectJSONValue(dict["generator"]),
-              addTime = CABarBeatTime(dict["addTime"])
-      else { return nil }
-      self.identifier = identifier
-      self.generator = generator
-      self.trajectory = trajectory
-      self.addTime = addTime
-      switch dict["removeTime"] {
-        case .String(let s)?: removeTime = CABarBeatTime(rawValue: s)
-        case .Null?: fallthrough
-        default: removeTime = nil
-      }
-    }
-  }
 
   init(track: InstrumentTrack) {
     name = track.name
     instrument = ObjectJSONValue(track.instrument.jsonValue)!
+    color = track.color
+
+    for event in track.eventContainer {
+      switch event {
+      case let event as MetaEvent:
+        switch event.data {
+        case .Marker(let text):
+          switch text {
+            case ~/"^start.*":
+              guard let match = (~/"^start\\(([^)]+)\\):([0-9]+)$").firstMatch(text),
+                        identifier = match.captures[1]?.string,
+                        repetitionsString = match.captures[2]?.string,
+                        repetitions = Int(repetitionsString) else { continue }
+
+            case ~/"^end.*": break
+            default: break
+          }
+        default: break
+        }
+      case let event as MIDINodeEvent:
+        switch event.data {
+          case .Add: guard let node = Node(event: event) else { continue }; nodes[event.identifier] = node
+          case .Remove: nodes[event.identifier]?.removeTime = event.time
+        }
+      default: break
+      }
+    }
+
     let (addEvents, removeEvents) = track.nodeEvents.bisect({
       switch $0.data {
         case .Add: return true
@@ -77,17 +63,19 @@ struct GrooveTrack {
 }
 
 extension GrooveTrack: JSONValueConvertible {
-  var jsonValue: JSONValue { return [ "name": name, "instrument": instrument, "nodes": Array(nodes.values) ] }
+  var jsonValue: JSONValue { return [ "name": name, "color": color, "instrument": instrument, "nodes": Array(nodes.values) ] }
 }
 
 extension GrooveTrack: JSONValueInitializable {
   init?(_ jsonValue: JSONValue?) {
     guard let dict = ObjectJSONValue(jsonValue),
               name = String(dict["name"]),
+              color = TrackColor(dict["color"]),
               instrument = ObjectJSONValue(dict["instrument"]),
               nodes = ArrayJSONValue(dict["nodes"]) else { return nil }
     self.name = name
     self.instrument = instrument
+    self.color = color
     for node in nodes.flatMap({Node($0)}) { self.nodes[node.identifier] = node }
   }
 }

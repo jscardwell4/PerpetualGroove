@@ -100,11 +100,24 @@ enum TrackColor: UInt32, Equatable, Hashable, EnumerableType, CustomStringConver
     .MonteCarlo, .FlamePea, .Crimson, .HanPurple, .MangoTango, .Viking, .Yellow, .Conifer, .Apache
   ]
 
-  static var currentColor: TrackColor? {
-    return MIDIDocumentManager.currentDocument?.sequence?.currentTrack?.color
-  }
+//  static var currentColor: TrackColor? {
+//    return MIDIDocumentManager.currentDocument?.sequence?.currentTrack?.color
+//  }
 
   static var nextColor: TrackColor {
-    return allCases[((MIDIDocumentManager.currentDocument?.sequence?.instrumentTracks.count ?? -1) + 1) % allCases.count]
+    let existingColors = MIDIDocumentManager.currentDocument?.sequence?.instrumentTracks.map({$0.color}) ?? []
+    guard existingColors.count > 0 else { return allCases[0] }
+    return allCases.filter({existingColors ∌ $0}).first ?? allCases[0]
+  }
+}
+
+extension TrackColor: JSONValueConvertible {
+  var jsonValue: JSONValue { return value.jsonValue }
+}
+
+extension TrackColor: JSONValueInitializable {
+  init?(_ jsonValue: JSONValue?) {
+    guard let hex = UIColor(jsonValue)?.rgbHex else { return nil }
+    self.init(rawValue: hex)
   }
 }

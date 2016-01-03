@@ -427,6 +427,7 @@
 		C2D406761BBA0F6700681DEF /* NSURL+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D406751BBA0F6700681DEF /* NSURL+MoonKitAdditions.swift */; };
 		C2D5F2421B97BC93005040EF /* Slider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D5F2411B97BC93005040EF /* Slider.swift */; };
 		C2D664F11B88CC6F00D70FFA /* Ratio.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D664F01B88CC6F00D70FFA /* Ratio.swift */; };
+		C2DDA2331C39A07B005F0965 /* UUID.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DDA2321C39A07B005F0965 /* UUID.swift */; };
 		C2E043251B727547005F0675 /* XMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E043241B727547005F0675 /* XMLParser.swift */; };
 		C2E7C8321A1AA3F0006BC80E /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E7C8311A1AA3F0006BC80E /* Protocols.swift */; };
 		C2E8C8B71AE7325300F8AC45 /* UITableViewCell+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E8C8B61AE7325300F8AC45 /* UITableViewCell+MoonKitAdditions.swift */; };
@@ -845,6 +846,7 @@
 		C2D406751BBA0F6700681DEF /* NSURL+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURL+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C2D5F2411B97BC93005040EF /* Slider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Slider.swift; sourceTree = "<group>"; };
 		C2D664F01B88CC6F00D70FFA /* Ratio.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Ratio.swift; sourceTree = "<group>"; };
+		C2DDA2321C39A07B005F0965 /* UUID.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UUID.swift; sourceTree = "<group>"; };
 		C2E043241B727547005F0675 /* XMLParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XMLParser.swift; sourceTree = "<group>"; };
 		C2E076A31B4EF7420063D057 /* WTF.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = WTF.playground; path = Moonkit/WTF.playground; sourceTree = "<group>"; };
 		C2E3777F181C2F900066ACDB /* MSLogMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSLogMacros.h; sourceTree = "<group>"; };
@@ -1055,6 +1057,7 @@
 				C28C9B081BC35740002945BC /* NotificationType.swift */,
 				C2421D171BEFE884009BA8B1 /* ByteArrayConvertible.swift */,
 				C2421D191BEFE8DE009BA8B1 /* Bytes.swift */,
+				C2DDA2321C39A07B005F0965 /* UUID.swift */,
 			);
 			path = Other;
 			sourceTree = "<group>";
@@ -2168,6 +2171,7 @@
 				C2618A761B7A889300122EBA /* InlinePickerViewLabelCell.swift in Sources */,
 				C2358F6A19C78E0C00920F8D /* MSContextChangeReceptionist.m in Sources */,
 				C2E8C8B71AE7325300F8AC45 /* UITableViewCell+MoonKitAdditions.swift in Sources */,
+				C2DDA2331C39A07B005F0965 /* UUID.swift in Sources */,
 				C24A22871ADAF0300065E7EA /* BoxedJSONValue.swift in Sources */,
 				C25E63E11A00427100F54626 /* OrderedSet.swift in Sources */,
 				C2618A741B7A68F900122EBA /* LabeledSlider.swift in Sources */,

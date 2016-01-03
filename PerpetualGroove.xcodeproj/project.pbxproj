@@ -97,6 +97,8 @@
 		C2CF38CD1B7EBED30085B3D5 /* InstrumentTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CF38CC1B7EBED30085B3D5 /* InstrumentTrack.swift */; };
 		C2CFB7FF1BBF486300983664 /* DocumentsViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CFB7FE1BBF486300983664 /* DocumentsViewLayout.swift */; };
 		C2D406741BB9FDC700681DEF /* MIDIDocumentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D406731BB9FDC700681DEF /* MIDIDocumentManager.swift */; };
+		C2DDA22F1C38A6CF005F0965 /* GrooveTrack.Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DDA22E1C38A6CF005F0965 /* GrooveTrack.Node.swift */; };
+		C2DDA2311C38A8B5005F0965 /* GrooveTrack.Loop.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DDA2301C38A8B5005F0965 /* GrooveTrack.Loop.swift */; };
 		C2DFBE7A1B8AA5AB00898C2A /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DFBE791B8AA5AB00898C2A /* Sequence.swift */; };
 		C2E043351B72F4DC005F0675 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E043341B72F4DC005F0675 /* AppDelegate.swift */; };
 		C2E043391B72F4DC005F0675 /* MIDIPlayerScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E043381B72F4DC005F0675 /* MIDIPlayerScene.swift */; };
@@ -246,6 +248,8 @@
 		C2CFB7FE1BBF486300983664 /* DocumentsViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentsViewLayout.swift; sourceTree = "<group>"; };
 		C2D0EFA21BDD793F00AE49FD /* Logs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Logs; sourceTree = SOURCE_ROOT; };
 		C2D406731BB9FDC700681DEF /* MIDIDocumentManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIDocumentManager.swift; sourceTree = "<group>"; };
+		C2DDA22E1C38A6CF005F0965 /* GrooveTrack.Node.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GrooveTrack.Node.swift; sourceTree = "<group>"; };
+		C2DDA2301C38A8B5005F0965 /* GrooveTrack.Loop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GrooveTrack.Loop.swift; sourceTree = "<group>"; };
 		C2DFBE791B8AA5AB00898C2A /* Sequence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sequence.swift; sourceTree = "<group>"; };
 		C2E043311B72F4DC005F0675 /* Groove.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Groove.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2E043341B72F4DC005F0675 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -394,6 +398,8 @@
 			children = (
 				C24DCE371C3438A800AD98BE /* GrooveFile.swift */,
 				C24DCE391C343C0C00AD98BE /* GrooveTrack.swift */,
+				C2DDA22E1C38A6CF005F0965 /* GrooveTrack.Node.swift */,
+				C2DDA2301C38A8B5005F0965 /* GrooveTrack.Loop.swift */,
 			);
 			name = "Groove Files";
 			sourceTree = "<group>";
@@ -692,6 +698,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C2DDA22F1C38A6CF005F0965 /* GrooveTrack.Node.swift in Sources */,
 				C2B123BF1B864DCC008FED5E /* MIDIClock.swift in Sources */,
 				C2DFBE7A1B8AA5AB00898C2A /* Sequence.swift in Sources */,
 				C26FC1731B7BAEBD00E271A3 /* AddTool.swift in Sources */,
@@ -739,6 +746,7 @@
 				C26A09761BC96B97002EFEE1 /* MixerLayout.swift in Sources */,
 				C2B2B0431BCEA55D007AF9DC /* MIDIEventContainer.swift in Sources */,
 				C2729ADD1BEE6B3D004FA34F /* LocalDocumentItem.swift in Sources */,
+				C2DDA2311C38A8B5005F0965 /* GrooveTrack.Loop.swift in Sources */,
 				C2E0433B1B72F4DC005F0675 /* MIDIPlayerViewController.swift in Sources */,
 				C2981BA81C2468FD007FC51F /* Loop.swift in Sources */,
 				C2BC7AD51B76C85E001729BA /* Instrument.swift in Sources */,

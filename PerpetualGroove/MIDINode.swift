@@ -44,10 +44,9 @@ final class MIDINode: SKSpriteNode {
   /// Whether a note is ended via a note on event with velocity of 0 or with a  note off event
   static let useVelocityForOff = true
 
-  typealias Identifier = UInt64
+  typealias Identifier = UUID
 
-  /// Embedded in MIDI packets to allow a track with multiple nodes to identify the event's source
-  private(set) lazy var identifier: Identifier = Identifier(ObjectIdentifier(self).uintValue)
+  let identifier: Identifier
 
   private lazy var playAction:             Action = self.action(.Play)
   private lazy var horizontalPlayAction:   Action = self.action(.HorizontalPlay)
@@ -98,7 +97,7 @@ final class MIDINode: SKSpriteNode {
   /** sendNoteOn */
   func sendNoteOn() {
     do {
-      try noteGenerator.receiveNoteOn(endPoint, identifier)
+      try noteGenerator.receiveNoteOn(endPoint, UInt64(ObjectIdentifier(self).uintValue))
       state ⊻= .Playing
     } catch { logError(error) }
   }
@@ -107,7 +106,7 @@ final class MIDINode: SKSpriteNode {
   func sendNoteOff() {
     guard state ∋ .Playing else { return }
     do {
-      try noteGenerator.receiveNoteOff(endPoint, identifier)
+      try noteGenerator.receiveNoteOff(endPoint, UInt64(ObjectIdentifier(self).uintValue))
       state ⊻= .Playing
     } catch { logError(error) }
   }
@@ -296,7 +295,8 @@ final class MIDINode: SKSpriteNode {
   init(trajectory: Trajectory,
        name: String,
        track: InstrumentTrack,
-       note: MIDINoteGenerator) throws
+       note: MIDINoteGenerator,
+       identifier: Identifier = UUID()) throws
   {
     self.trajectory = trajectory
     let snapshot = Snapshot(ticks: Sequencer.time.ticks, trajectory: trajectory)
@@ -305,7 +305,8 @@ final class MIDINode: SKSpriteNode {
     self.track = track
     history = MIDINodeHistory(initialSnapshot: snapshot)
     noteGenerator = note
-
+    self.identifier = identifier
+    
     super.init(texture: MIDINode.texture, color: track.color.value, size: MIDINode.texture.size() * 0.75)
 
     let object = Sequencer.transport

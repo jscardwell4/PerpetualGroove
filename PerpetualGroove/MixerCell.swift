@@ -172,7 +172,7 @@ final class TrackCell: MixerCell {
       pan = track?.pan ?? 0
       soundSetImage.image = track?.instrument.soundSet.image
       soundSetImage.selectedImage = track?.instrument.soundSet.selectedImage
-      trackLabel.text = track?.name ?? ""
+      trackLabel.text = track?.displayName ?? ""
       trackColor.tintColor = track?.color.value
       muteButton.selected = track?.mute ?? false
       soloButton.selected = track?.solo ?? false
@@ -211,6 +211,40 @@ final class TrackCell: MixerCell {
   }
 
   /**
+   didChangeName:
+
+   - parameter notification: NSNotification
+  */
+  private func didChangeName(notification: NSNotification) {
+    trackLabel.text = track?.name ?? ""
+  }
+
+  /**
+   soundSetDidChange:
+
+   - parameter notifciation: NSNotification
+  */
+  private func soundSetDidChange(notifciation: NSNotification) {
+    let image: UIImage?
+    switch track?.instrument {
+      case let instrument? where Sequencer.soundSetSelectionTarget === instrument: image = instrument.soundSet.selectedImage
+      case let instrument?: image = instrument.soundSet.image
+      default: image = nil
+    }
+    soundSetImage.image = image
+    trackLabel.text = track?.displayName ?? ""
+  }
+
+  /**
+   presetDidChange:
+
+   - parameter notification: NSNotification
+  */
+  private func presetDidChange(notification: NSNotification) {
+    trackLabel.text = track?.displayName ?? ""
+  }
+
+  /**
   receptionistForTrack:
 
   - parameter track: InstrumentTrack
@@ -219,22 +253,27 @@ final class TrackCell: MixerCell {
   */
   private func receptionistForTrack(track: InstrumentTrack?) -> NotificationReceptionist? {
     guard let track = track, sequence = MIDIDocumentManager.currentDocument?.sequence else { return nil }
-    let queue = NSOperationQueue.mainQueue()
-    let receptionist = NotificationReceptionist()
+    let receptionist = NotificationReceptionist(callbackQueue: NSOperationQueue.mainQueue())
     receptionist.logContext = LogManager.SequencerContext
     
-    receptionist.observe(InstrumentTrack.Notification.MuteStatusDidChange, from: track, queue: queue) {
-      [weak self] in self?.muteStatusChanged($0)
-    }
-    receptionist.observe(InstrumentTrack.Notification.SoloStatusDidChange, from: track, queue: queue) {
-      [weak self] in self?.soloStatusChanged($0)
-    }
-    receptionist.observe(Sequence.Notification.SoloCountDidChange, from: sequence, queue: queue) {
-      [weak self] in self?.soloCountChanged($0)
-    }
-    receptionist.observe(Track.Notification.DidChangeName, from: track, queue: queue) {
-      [weak self] _ in self?.trackLabel.text = self?.track?.name ?? ""
-    }
+    receptionist.observe(InstrumentTrack.Notification.MuteStatusDidChange,
+                    from: track,
+                callback: weakMethod(self, TrackCell.muteStatusChanged))
+    receptionist.observe(InstrumentTrack.Notification.SoloStatusDidChange,
+                    from: track,
+                callback: weakMethod(self, TrackCell.soloStatusChanged))
+    receptionist.observe(Sequence.Notification.SoloCountDidChange,
+                    from: sequence,
+                callback: weakMethod(self, TrackCell.soloCountChanged))
+    receptionist.observe(Track.Notification.DidChangeName,
+                    from: track,
+                callback: weakMethod(self, TrackCell.didChangeName))
+    receptionist.observe(Instrument.Notification.SoundSetDidChange,
+                    from: track.instrument,
+                callback: weakMethod(self, TrackCell.soundSetDidChange))
+    receptionist.observe(Instrument.Notification.PresetDidChange,
+                    from: track.instrument,
+                callback: weakMethod(self, TrackCell.presetDidChange))
     return receptionist
   }
 

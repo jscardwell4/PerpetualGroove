@@ -120,7 +120,8 @@ final class MIDIPlayer {
   */
   static func placeNew(trajectory: Trajectory,
            targetTrack: InstrumentTrack? = nil,
-             generator: MIDINoteGenerator)
+             generator: MIDINoteGenerator,
+            identifier: MIDINode.Identifier = UUID())
   {
     guard let track = targetTrack ?? MIDIDocumentManager.currentDocument?.sequence?.currentTrack else {
       logWarning("cannot place a node without a track")
@@ -133,7 +134,7 @@ final class MIDIPlayer {
 
     do {
       let name = "<\(Sequencer.mode.rawValue)> \(track.name)\(track.nodes.count + 1)"
-      let midiNode = try MIDINode(trajectory: trajectory, name: name, track: track, note: generator)
+      let midiNode = try MIDINode(trajectory: trajectory, name: name, track: track, note: generator, identifier: identifier)
       node.addChild(midiNode)
       try track.addNode(midiNode)
       if !Sequencer.playing { Sequencer.play() }
