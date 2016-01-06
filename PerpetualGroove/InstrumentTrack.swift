@@ -181,22 +181,14 @@ final class InstrumentTrack: Track {
   /// Whether new events have been created and addd to the track
   private var modified = false
 
-  /// The identifier parsed from a file awaiting the identifier of its generated node
-//  private var pendingID: MIDINode.Identifier?
-
   /// The set of `MIDINode` objects that have been added to the track
   private(set) var nodes: OrderedSet<Weak<MIDINode>> = []
 
   var nodeIdentifiers: Set<MIDINode.Identifier> { return Set(nodes.flatMap({$0.reference?.identifier})) }
 
-  /// Index that maps the identifiers parsed from a file to the identifiers assigned to the generated nodes
-//  private var fileIDToNodeID: [Identifier:MIDINode.Identifier] = [:]
-
   /** Empties all node-referencing properties */
   private func resetNodes() {
-//    pendingID = nil
     nodes.removeAll()
-//    fileIDToNodeID.removeAll()
     logDebug("nodes reset")
     if modified {
       logDebug("posting 'DidUpdate'")
@@ -212,14 +204,7 @@ final class InstrumentTrack: Track {
   */
   func addNode(node: MIDINode) throws {
 
-    guard nodeIdentifiers ∌ node.identifier else { return }
-
     try MIDIPortConnectSource(inPort, node.endPoint, nil) ➤ "Failed to connect to node \(node.name!)"
-
-//    if pendingID == node.identifier {
-//      fileIDToNodeID[pendingIdentifier] = node.identifier
-//      pendingID = nil
-//    } else {
 
       guard recording else { logDebug("not recording…skipping event creation"); return }
 
@@ -232,7 +217,6 @@ final class InstrumentTrack: Track {
         self?.addEvent(event)
         self?.modified = true
       }
-//    }
 
     // Insert the node into our set
     nodes.append(Weak(node))
@@ -258,13 +242,7 @@ final class InstrumentTrack: Track {
     logDebug("placing node with identifier \(identifier), trajectory \(trajectory), generator \(generator)")
 
     // Make sure a node hasn't already been place for this identifier
-//    guard fileIDToNodeID[identifier] == nil else { return }
-
-    // Make sure there is not already a pending trajectory
-//    guard pendingID == nil else { fatalError("already have an identifier pending: \(pendingID!)") }
-
-    // Store the identifier
-//    pendingID = identifier
+    guard nodeIdentifiers ∌ identifier else { return }
 
     // Place a node
     MIDIPlayer.placeNew(trajectory, targetTrack: self, generator: generator, identifier: identifier)
@@ -344,7 +322,9 @@ final class InstrumentTrack: Track {
 
    - parameter loop: Loop
   */
-  func insertLoop(loop: Loop) { addEvents(Array(loop)) }
+  func insertLoop(loop: MIDILoop) { loops[loop.identifier] = loop; addEvents(Array(loop)) }
+
+  private var loops: [MIDILoop.Identifier:MIDILoop] = [:]
 
   // MARK: - MIDI events
 
@@ -477,6 +457,8 @@ final class InstrumentTrack: Track {
       }
     }
     addEvents(events)
+
+    grooveTrack.loops.values.forEach { insertLoop(MIDILoop(grooveLoop: $0)) }
 
     initializeNotificationReceptionist()
     try initializeMIDIClient()

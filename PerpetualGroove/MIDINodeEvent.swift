@@ -27,8 +27,8 @@ struct MIDINodeEvent: MIDIEvent {
   typealias NodeIdentifier = MIDINode.Identifier
   var nodeIdentifier: NodeIdentifier { return identifier.nodeIdentifier }
 
-  typealias LoopIdentifier = Loop.Identifier
-  var loopIdentifier: LoopIdentifier  { return identifier.loopIdentifier }
+  typealias LoopIdentifier = MIDILoop.Identifier
+  var loopIdentifier: LoopIdentifier?  { return identifier.loopIdentifier }
 
   /**
   Initializer that takes the event's data and, optionally, the event's bar beat time
@@ -67,7 +67,7 @@ struct MIDINodeEvent: MIDIEvent {
 extension MIDINodeEvent {
 
   struct Identifier {
-    let loopIdentifier: LoopIdentifier
+    let loopIdentifier: LoopIdentifier?
     let nodeIdentifier: NodeIdentifier
 
     typealias NodeIdentifier = MIDINodeEvent.NodeIdentifier
@@ -79,13 +79,18 @@ extension MIDINodeEvent {
      - parameter loopIdentifier: LoopIdentifier = ""
      - parameter nodeIdentifier: NodeIdentifier
     */
-    init(loopIdentifier: LoopIdentifier = "", nodeIdentifier: NodeIdentifier) {
+    init(loopIdentifier: LoopIdentifier? = nil, nodeIdentifier: NodeIdentifier) {
       self.loopIdentifier = loopIdentifier
       self.nodeIdentifier = nodeIdentifier
     }
 
     var bytes: [Byte] {
-      return Byte4(loopIdentifier.utf8.count).bytes + loopIdentifier.bytes + ":".bytes + nodeIdentifier.bytes
+      if let loopIdentifier = loopIdentifier {
+        let loopIdentifierBytes = loopIdentifier.bytes
+        return Byte4(loopIdentifierBytes.count).bytes + loopIdentifierBytes + ":".bytes + nodeIdentifier.bytes
+      } else {
+        return Byte4(0).bytes + ":".bytes + nodeIdentifier.bytes
+      }
     }
 
     var length: Byte4 { return Byte4(bytes.count) }
@@ -109,8 +114,8 @@ extension MIDINodeEvent {
         throw MIDIFileError(type: .InvalidLength, reason: "Not enough bytes for node event identifier")
       }
 
-      if loopIDByteCount > 0 { loopIdentifier = String(data[currentIndex ➞ loopIDByteCount]) }
-      else { loopIdentifier = "" }
+      if loopIDByteCount > 0 { loopIdentifier = LoopIdentifier(data[currentIndex ➞ loopIDByteCount]) }
+      else { loopIdentifier = nil }
 
       currentIndex += loopIDByteCount
 
@@ -146,10 +151,9 @@ extension MIDINodeEvent.Identifier: JSONValueInitializable {
    */
   init?(_ jsonValue: JSONValue?) {
     guard let dict = ObjectJSONValue(jsonValue),
-      nodeIdentifier = NodeIdentifier(dict["nodeIdentifier"]),
-      loopIdentifier = LoopIdentifier(dict["loopIdentifier"]) else { return nil }
+      nodeIdentifier = NodeIdentifier(dict["nodeIdentifier"]) else { return nil }
     self.nodeIdentifier = nodeIdentifier
-    self.loopIdentifier = loopIdentifier
+    loopIdentifier = LoopIdentifier(dict["loopIdentifier"])
   }
 }
 

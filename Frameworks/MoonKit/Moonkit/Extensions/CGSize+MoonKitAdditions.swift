@@ -107,6 +107,7 @@ public func <=(lhs: CGSize, rhs: CGSize) -> Bool { return lhs.area <= rhs.area }
 
 public func *(lhs: CGSize, rhs: CGFloat) -> CGSize { return CGSize(width: lhs.width * rhs, height: lhs.height * rhs) }
 public func *(lhs: CGFloat, rhs: CGSize) -> CGSize { return rhs * lhs }
+public func *=(inout lhs: CGSize, rhs: CGFloat) { lhs = lhs * rhs }
 public func ∪(lhs: CGSize, rhs: CGSize) -> CGSize {
   return CGSize(width: max(lhs.width, rhs.width), height: max(lhs.height, rhs.height))
 }

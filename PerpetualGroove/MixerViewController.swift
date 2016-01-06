@@ -13,6 +13,7 @@ import typealias AudioUnit.AudioUnitElement
 final class MixerViewController: UICollectionViewController {
 
   @IBOutlet private var blurView: UIVisualEffectView!
+  @IBOutlet private var magnifyingGesture: UILongPressGestureRecognizer!
 
   private let receptionist: NotificationReceptionist = {
     let receptionist = NotificationReceptionist(callbackQueue: NSOperationQueue.mainQueue())
@@ -23,10 +24,12 @@ final class MixerViewController: UICollectionViewController {
   private var widthConstraint: NSLayoutConstraint?
   private var heightConstraint: NSLayoutConstraint?
 
-  override var collectionView: UICollectionView? {
-    get { return super.collectionView }
-    set { super.collectionView = newValue }
-  }
+//  override var collectionView: UICollectionView? {
+//    get { return super.collectionView }
+//    set { super.collectionView = newValue }
+//  }
+
+  override var collectionViewLayout: MixerLayout { return super.collectionViewLayout as! MixerLayout }
 
   private weak var sequence: Sequence? {
     didSet {
@@ -125,13 +128,19 @@ final class MixerViewController: UICollectionViewController {
   /**
   indexPathForSender:
 
-  - parameter sender: UIView
+  - parameter sender: AnyObject
 
   - returns: NSIndexPath?
   */
-  private func indexPathForSender(sender: UIView) -> NSIndexPath? {
-    return collectionView?.indexPathForItemAtPoint(collectionView!.convertPoint(sender.center, 
-                                          fromView: sender.superview))
+  private func indexPathForSender(sender: AnyObject) -> NSIndexPath? {
+    switch sender {
+      case let view as UIView:
+        return collectionView?.indexPathForItemAtPoint(collectionView!.convertPoint(view.center, fromView: view.superview))
+      case let gesture as UILongPressGestureRecognizer:
+        return collectionView?.indexPathForItemAtPoint(gesture.locationInView(gesture.view))
+      default:
+        return nil
+    }
   }
 
   /**
@@ -141,6 +150,97 @@ final class MixerViewController: UICollectionViewController {
   */
   @IBAction func selectItem(sender: ImageButtonView) { 
     sequence?.currentTrackIndex = indexPathForSender(sender)?.item 
+  }
+
+//  private(set) var magnifiedItemIndex: NSIndexPath? {
+//    didSet {
+//      guard magnifiedItemIndex != oldValue else { return }
+//      if let index = magnifiedItemIndex where magnifiedCell == nil,
+//         let cell = collectionView?.cellForItemAtIndexPath(index) as? TrackCell { magnifiedCell = cell }
+//      else if magnifiedItemIndex == nil { magnifiedCell = nil }
+//      collectionViewLayout.invalidateLayout()
+//    }
+//  }
+
+//  private weak var magnifiedCell: TrackCell? {
+//    willSet {
+//      guard magnifiedCell != newValue && newValue == nil else { return }
+//      markedForRemoval = false
+//      magnifiedCellLocation = nil
+//      magnifiedCell?.layer.shouldRasterize = false
+//    }
+//    didSet {
+//      guard magnifiedCell != oldValue && magnifiedCell != nil else { return }
+//      magnifiedCellLocation = magnifyingGesture.locationInView(collectionView)
+//      magnifiedCell?.layer.shouldRasterize = true
+//    }
+//  }
+
+  private var magnifiedCellLocation: CGPoint?
+  private var markedForRemoval = false {
+    didSet {
+      guard markedForRemoval != oldValue,
+        let item = collectionViewLayout.magnifiedItem,
+            cell = collectionView?.cellForItemAtIndexPath(item) as? TrackCell else { return }
+      UIView.animateWithDuration(0.25) {
+        [weak cell = cell, marked = markedForRemoval] in cell?.removalDisplay.hidden = !marked
+      }
+    }
+  }
+//  private(set) var magnifiedCellHorizontalOffset: CGFloat = 0 {
+//    didSet {
+//      guard magnifiedCellHorizontalOffset != oldValue else { return }
+//      collectionViewLayout.invalidateLayout()
+//    }
+//  }
+
+  /**
+   magnifyItem:
+
+   - parameter sender: UILongPressGestureRecognizer
+  */
+  @IBAction private func magnifyItem(sender: UILongPressGestureRecognizer) {
+
+
+    switch sender.state {
+      case .Began:
+        guard let indexPath = indexPathForSender(sender) where Section.Instruments.contains(indexPath) else { return }
+        collectionViewLayout.magnifiedItem = indexPath
+        magnifiedCellLocation = sender.locationInView(collectionView)
+
+      case .Changed:
+        guard let previousLocation = magnifiedCellLocation, indexPath = collectionViewLayout.magnifiedItem else { break }
+        let currentLocation = sender.locationInView(collectionView)
+
+        switch currentLocation.y {
+          case let y where y > view.bounds.height && !markedForRemoval: markedForRemoval = true; return
+          case let y where y < view.bounds.height && markedForRemoval:  markedForRemoval = false; return
+          default:                                                      break
+        }
+
+        let threshold = half(MixerLayout.itemSize.width)
+        let newPath: NSIndexPath
+
+        switch (currentLocation - previousLocation).unpack {
+          case let (x, _) where x > threshold && !markedForRemoval:  newPath = Section.Instruments[indexPath.item + 1]
+          case let (x, _) where x < -threshold && !markedForRemoval: newPath = Section.Instruments[indexPath.item - 1]
+          default:                                                   return
+        }
+
+        guard Section.Instruments.contains(newPath) else { return }
+        collectionView?.moveItemAtIndexPath(indexPath, toIndexPath: newPath)
+        sequence?.exchangeInstrumentTrackAtIndex(indexPath.item, withTrackAtIndex: newPath.item)
+        magnifiedCellLocation = currentLocation
+
+      case .Ended:
+        guard let indexPath = collectionViewLayout.magnifiedItem else { return }
+        if markedForRemoval, let cell = collectionView?.cellForItemAtIndexPath(indexPath) as? TrackCell {
+          deleteTrack(cell.track)
+        }
+        collectionViewLayout.magnifiedItem = nil
+
+      default: break
+    }
   }
 
   /**
@@ -154,32 +254,6 @@ final class MixerViewController: UICollectionViewController {
     collectionView?.selectItemAtIndexPath(section[index], 
                                  animated: animated, 
                            scrollPosition: .None)
-  }
-
-  enum ShiftDirection: String { case Left, Right }
-
-  /**
-  shiftCell:direction:
-
-  - parameter cell: TrackCell
-  - parameter direction: ShiftDirection
-  */
-  func shiftCell(cell: TrackCell, direction: ShiftDirection) {
-    let section = Section.Instruments
-    switch (collectionView?.indexPathForCell(cell), direction) {
-      case let (path?, .Left) where section.contains(path) && path.item > 0:
-        let path2 = section[path.item - 1]
-        collectionView?.moveItemAtIndexPath(path, toIndexPath: path2)
-        sequence?.exchangeInstrumentTrackAtIndex(path.item, withTrackAtIndex: path2.item)
-
-      case let (path?, .Right) where section.contains(path) && path.item < section.cellCount(collectionView!) - 1:
-        let path2 = section[path.item + 1]
-        collectionView?.moveItemAtIndexPath(path, toIndexPath: path2)
-        sequence?.exchangeInstrumentTrackAtIndex(path.item, withTrackAtIndex: path2.item)
-
-      default:
-        break
-    }
   }
 
   /**
@@ -234,10 +308,11 @@ final class MixerViewController: UICollectionViewController {
   /** viewDidLoad */
   override func viewDidLoad() {
     super.viewDidLoad()
-    view.translatesAutoresizingMaskIntoConstraints = false
-    collectionView?.translatesAutoresizingMaskIntoConstraints = false
-    collectionView?.allowsSelection = true
-    collectionView?.clipsToBounds = false
+    let maskView = UIView(frame: CGRect(size: CGSize(width: view.bounds.width, height: MixerLayout.itemSize.height * 1.1)))
+    maskView.backgroundColor = UIColor.whiteColor()
+    view.maskView = maskView
+
+//    collectionView?.allowsSelection = true
   }
 
   /** awakeFromNib */
@@ -323,8 +398,8 @@ final class MixerViewController: UICollectionViewController {
   }
 
   private var viewSize: CGSize {
-    guard let size = (collectionViewLayout as? MixerLayout)?.itemSize else { return .zero }
-    return CGSize(width: CGFloat(Int(size.width) * (Section.allCases.reduce(0){$0 + $1.itemCount})), height: size.height)
+    let size = MixerLayout.itemSize
+    return CGSize(width: CGFloat(Int(size.width) * (Section.allCases.reduce(0){$0 + $1.itemCount})), height: size.height) - 20
   }
 
   // MARK: UICollectionViewDataSource
@@ -439,7 +514,7 @@ extension MixerViewController {
 
      - returns: Bool
      */
-    func contains(indexPath: NSIndexPath) -> Bool { return indexPath.section == rawValue }
+    func contains(indexPath: NSIndexPath) -> Bool { return indexPath.section == rawValue && (0 ..< itemCount) ∋ indexPath.item }
 
     /**
     cellCount:

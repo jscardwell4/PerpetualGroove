@@ -37,36 +37,36 @@ final class RootViewController: UIViewController {
   - parameter fromSize: CGSize
   - parameter toSize: CGSize
   */
-  private func transitionFromSize(fromSize: CGSize, toSize: CGSize, animated: Bool) {
+//  private func transitionFromSize(fromSize: CGSize, toSize: CGSize, animated: Bool) {
 //    guard fromSize.maxAxis != toSize.maxAxis else { return }
 //    layoutForSize(toSize)
 //    UIView.animateWithDuration(animated ? 0.25 : 0) { self.layoutForSize(toSize) }
-  }
+//  }
 
   /**
   layoutForSize:
 
   - parameter size: CGSize
   */
-  private func layoutForSize(size: CGSize) {
-    switch size.maxAxis {
-      case .Vertical:
-        guard topStackHeight.constant == 120 else { return }
-        topStackHeight.constant = 430
-        topStack.addArrangedSubview(mixerContainer)
-        generatorInstrumentStack.axis = .Vertical
-        middleStack.insertArrangedSubview(generatorInstrumentStack, atIndex: 0)
-        middleStackHeight.constant = 400
-      case .Horizontal:
-        guard topStackHeight.constant == 430 else { return }
-        topStackHeight.constant = 120
-        generatorInstrumentStack.axis = .Horizontal
-        topStack.addArrangedSubview(generatorInstrumentStack)
-        middleStack.insertArrangedSubview(mixerContainer, atIndex: 0)
-        middleStackHeight.constant = 430
-    }
-    generatorInstrumentStack.updateConstraintsIfNeeded()
-  }
+//  private func layoutForSize(size: CGSize) {
+//    switch size.maxAxis {
+//      case .Vertical:
+//        guard topStackHeight.constant == 120 else { return }
+//        topStackHeight.constant = 430
+//        topStack.addArrangedSubview(mixerContainer)
+//        generatorInstrumentStack.axis = .Vertical
+//        middleStack.insertArrangedSubview(generatorInstrumentStack, atIndex: 0)
+//        middleStackHeight.constant = 400
+//      case .Horizontal:
+//        guard topStackHeight.constant == 430 else { return }
+//        topStackHeight.constant = 120
+//        generatorInstrumentStack.axis = .Horizontal
+//        topStack.addArrangedSubview(generatorInstrumentStack)
+//        middleStack.insertArrangedSubview(mixerContainer, atIndex: 0)
+//        middleStackHeight.constant = 430
+//    }
+//    generatorInstrumentStack.updateConstraintsIfNeeded()
+//  }
 
   /** viewDidLoad */
   override func viewDidLoad() {
@@ -76,7 +76,7 @@ final class RootViewController: UIViewController {
     tempoSlider.value = Float(Sequencer.tempo)
     metronomeButton.selected = AudioManager.metronome?.on ?? false
 
-    layoutForSize(view.bounds.size)
+//    layoutForSize(view.bounds.size)
   }
 
   /**
@@ -112,10 +112,10 @@ final class RootViewController: UIViewController {
     }
 
     adjustPopover(documentsPopoverView, documentsButton)
-    adjustPopover(generatorPopoverView, generatorButton)
-    adjustPopover(mixerPopoverView, mixerButton)
-    adjustPopover(tempoPopoverView, tempoButton)
-    adjustPopover(instrumentPopoverView, instrumentButton)
+//    adjustPopover(generatorPopoverView, generatorButton)
+//    adjustPopover(mixerPopoverView, mixerButton)
+//    adjustPopover(tempoPopoverView, tempoButton)
+//    adjustPopover(instrumentPopoverView, instrumentButton)
   }
 
   // MARK: Status bar
@@ -270,12 +270,12 @@ extension RootViewController {
   - parameter newCollection: UITraitCollection
   - parameter coordinator: UIViewControllerTransitionCoordinator
   */
-  override func willTransitionToTraitCollection(newCollection: UITraitCollection,
-                      withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator)
-  {
-    logDebug("newCollection: \(newCollection)\ncoordinator: \(coordinator)")
-    super.willTransitionToTraitCollection(newCollection, withTransitionCoordinator: coordinator)
-  }
+//  override func willTransitionToTraitCollection(newCollection: UITraitCollection,
+//                      withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator)
+//  {
+//    logDebug("newCollection: \(newCollection)\ncoordinator: \(coordinator)")
+//    super.willTransitionToTraitCollection(newCollection, withTransitionCoordinator: coordinator)
+//  }
 
   /**
   sizeForChildContentContainer:withParentContainerSize:
@@ -312,13 +312,13 @@ extension RootViewController {
   - parameter size: CGSize
   - parameter coordinator: UIViewControllerTransitionCoordinator
   */
-  override func viewWillTransitionToSize(size: CGSize,
-               withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator)
-  {
-
-    super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
-
-    transitionFromSize(view.bounds.size, toSize: size, animated: true)
-  }
+//  override func viewWillTransitionToSize(size: CGSize,
+//               withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator)
+//  {
+//
+//    super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
+//
+//    transitionFromSize(view.bounds.size, toSize: size, animated: true)
+//  }
 
 }

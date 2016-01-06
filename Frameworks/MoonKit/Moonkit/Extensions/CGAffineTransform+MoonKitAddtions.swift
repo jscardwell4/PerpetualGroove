@@ -61,7 +61,7 @@ extension CGAffineTransform {
   public init(sx: CGFloat, sy: CGFloat) { self = CGAffineTransformMakeScale(sx, sy) }
   public init(angle: CGFloat) { self = CGAffineTransformMakeRotation(angle) }
   public var isIdentity: Bool { return CGAffineTransformIsIdentity(self) }
-  public mutating func translate(tx: CGFloat, ty: CGFloat) { self = translated(tx, ty) }
+  public mutating func translate(tx: CGFloat, _ ty: CGFloat) { self = translated(tx, ty) }
   public func translated(tx: CGFloat, _ ty: CGFloat) -> CGAffineTransform { return CGAffineTransformTranslate(self, tx, ty) }
   public mutating func scale(sx: CGFloat, sy: CGFloat) { self = scaled(sx, sy) }
   public func scaled(sx: CGFloat, _ sy: CGFloat) -> CGAffineTransform { return CGAffineTransformScale(self, sx, sy) }

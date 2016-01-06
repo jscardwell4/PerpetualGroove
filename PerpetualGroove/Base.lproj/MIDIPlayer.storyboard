@@ -3,6 +3,7 @@
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <customFonts key="customFonts">
         <mutableArray key="Latinotype - Triump-Rg-Rock-02.otf">
@@ -23,7 +24,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" verticalHuggingPriority="1000" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Awesome Sauce" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="i4O-SR-ImV">
-                                <rect key="frame" x="0.0" y="0.0" width="487" height="30"/>
+                                <rect key="frame" x="20" y="0.0" width="447" height="70"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <color key="textColor" red="0.72547006609999998" green="0.70085549349999998" blue="0.66211640829999996" alpha="1" colorSpace="calibratedRGB"/>
                                 <fontDescription key="fontDescription" name="Triump-Rg-Rock-02" family="Triump Rg Rock" pointSize="24"/>
@@ -36,7 +37,7 @@
                                 </connections>
                             </textField>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JSz-xf-acH" userLabel="MIDI Player" customClass="MIDIPlayerView" customModule="Groove" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="38" width="487" height="487"/>
+                                <rect key="frame" x="20" y="78" width="447" height="447"/>
                                 <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="calibratedRGB"/>
                                 <accessibility key="accessibilityConfiguration" identifier="MIDIPlayer"/>
                                 <constraints>
@@ -47,7 +48,7 @@
                                 </userDefinedRuntimeAttributes>
                             </view>
                             <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="spinner1" translatesAutoresizingMaskIntoConstraints="NO" id="Qhw-iu-ZQX" userLabel="Spinner" customClass="TemplateImageView" customModule="MoonKit">
-                                <rect key="frame" x="215" y="253" width="56" height="56"/>
+                                <rect key="frame" x="215" y="273" width="56" height="56"/>
                                 <color key="tintColor" red="0.88567054270000001" green="0.84600132699999997" blue="0.78708314899999998" alpha="1" colorSpace="calibratedRGB"/>
                                 <accessibility key="accessibilityConfiguration" identifier="Spinner"/>
                                 <userDefinedRuntimeAttributes>
@@ -55,13 +56,13 @@
                                 </userDefinedRuntimeAttributes>
                             </imageView>
                             <visualEffectView hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ALc-TK-7UT">
-                                <rect key="frame" x="0.0" y="38" width="487" height="487"/>
+                                <rect key="frame" x="20" y="78" width="447" height="447"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="KjO-sd-ALP">
-                                    <rect key="frame" x="0.0" y="0.0" width="487" height="487"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="447" height="447"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VcN-oh-JaR" userLabel="Close" customClass="ImageButtonView" customModule="MoonKit">
-                                            <rect key="frame" x="425" y="20" width="42" height="42"/>
+                                            <rect key="frame" x="385" y="20" width="42" height="42"/>
                                             <accessibility key="accessibilityConfiguration" identifier="CloseButton"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" secondItem="VcN-oh-JaR" secondAttribute="height" multiplier="1:1" id="52o-Yf-8JI"/>
@@ -90,7 +91,7 @@
                                 <blurEffect style="dark"/>
                             </visualEffectView>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="h0o-PY-Uep">
-                                <rect key="frame" x="327" y="533" width="160" height="42"/>
+                                <rect key="frame" x="307" y="533" width="160" height="42"/>
                                 <subviews>
                                     <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="u5W-aV-tWA" userLabel="BeginRepeat" customClass="ImageButtonView" customModule="MoonKit">
                                         <rect key="frame" x="0.0" y="0.0" width="40" height="42"/>
@@ -160,15 +161,20 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="42" id="9Pk-nh-Buh"/>
                                 </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="9Pk-nh-Buh"/>
+                                    </mask>
+                                </variation>
                             </stackView>
                             <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gkj-sJ-IZN" userLabel="Tools" customClass="ImageSegmentedControl" customModule="MoonKit">
-                                <rect key="frame" x="0.0" y="533" width="287" height="42"/>
+                                <rect key="frame" x="20" y="533" width="247" height="42"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="bvY-A7-VNE">
-                                        <rect key="frame" x="0.0" y="0.0" width="287" height="42"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="247" height="42"/>
                                         <subviews>
                                             <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="6PF-rp-kmP" userLabel="AddNote" customClass="ImageButtonView" customModule="MoonKit">
-                                                <rect key="frame" x="0.0" y="0.0" width="42" height="42"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="33.5" height="42"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="AddNoteButton"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/node_note_add"/>
@@ -177,7 +183,7 @@
                                                 </userDefinedRuntimeAttributes>
                                             </view>
                                             <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="ajH-64-K10" userLabel="Add" customClass="ImageButtonView" customModule="MoonKit">
-                                                <rect key="frame" x="62" y="0.0" width="42" height="42"/>
+                                                <rect key="frame" x="53.5" y="0.0" width="33.5" height="42"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="AddButton"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/node_add"/>
@@ -186,7 +192,7 @@
                                                 </userDefinedRuntimeAttributes>
                                             </view>
                                             <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="k9y-ve-9u9" userLabel="Remove" customClass="ImageButtonView" customModule="MoonKit">
-                                                <rect key="frame" x="123" y="0.0" width="41" height="42"/>
+                                                <rect key="frame" x="107" y="0.0" width="33" height="42"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="RemoveButton"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/node_remove"/>
@@ -195,7 +201,7 @@
                                                 </userDefinedRuntimeAttributes>
                                             </view>
                                             <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="Axm-CN-6iz" userLabel="Delete" customClass="ImageButtonView" customModule="MoonKit">
-                                                <rect key="frame" x="184" y="0.0" width="42" height="42"/>
+                                                <rect key="frame" x="160" y="0.0" width="33.5" height="42"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="DeleteButton"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/node_delete"/>
@@ -204,7 +210,7 @@
                                                 </userDefinedRuntimeAttributes>
                                             </view>
                                             <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="vcL-FB-on7" userLabel="Generator" customClass="ImageButtonView" customModule="MoonKit">
-                                                <rect key="frame" x="246" y="0.0" width="42" height="42"/>
+                                                <rect key="frame" x="213.5" y="0.0" width="33.5" height="42"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="GeneratorButton"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/node_note"/>
@@ -239,12 +245,12 @@
                         </subviews>
                         <color key="backgroundColor" red="0.20000000298023224" green="0.19607843458652496" blue="0.19215686619281769" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="i4O-SR-ImV" secondAttribute="trailing" id="7nS-JX-As3"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="i4O-SR-ImV" secondAttribute="trailing" id="7nS-JX-As3"/>
                             <constraint firstItem="h0o-PY-Uep" firstAttribute="top" secondItem="ALc-TK-7UT" secondAttribute="bottom" constant="8" symbolic="YES" id="B7N-Vm-MKd"/>
                             <constraint firstItem="Qhw-iu-ZQX" firstAttribute="centerX" secondItem="JSz-xf-acH" secondAttribute="centerX" id="DHJ-lw-ylz"/>
-                            <constraint firstItem="JSz-xf-acH" firstAttribute="leading" secondItem="bEj-LH-pPP" secondAttribute="leading" priority="999" id="Frd-UB-tJr"/>
+                            <constraint firstItem="JSz-xf-acH" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="bEj-LH-pPP" secondAttribute="leadingMargin" id="Frd-UB-tJr"/>
                             <constraint firstItem="Qhw-iu-ZQX" firstAttribute="centerY" secondItem="JSz-xf-acH" secondAttribute="centerY" id="HgV-GR-Z2m"/>
-                            <constraint firstAttribute="trailing" secondItem="h0o-PY-Uep" secondAttribute="trailing" id="Naq-MG-sHb"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="h0o-PY-Uep" secondAttribute="trailing" id="Naq-MG-sHb"/>
                             <constraint firstItem="ALc-TK-7UT" firstAttribute="leading" secondItem="JSz-xf-acH" secondAttribute="leading" id="UgP-Mu-5sg"/>
                             <constraint firstItem="ALc-TK-7UT" firstAttribute="bottom" secondItem="JSz-xf-acH" secondAttribute="bottom" id="YuO-UJ-sca"/>
                             <constraint firstItem="gkj-sJ-IZN" firstAttribute="leading" secondItem="JSz-xf-acH" secondAttribute="leading" id="aVs-3l-nq6"/>
@@ -256,10 +262,15 @@
                             <constraint firstItem="i4O-SR-ImV" firstAttribute="top" secondItem="3bO-nI-SWz" secondAttribute="bottom" id="mVO-0w-fZ0"/>
                             <constraint firstItem="h0o-PY-Uep" firstAttribute="leading" secondItem="gkj-sJ-IZN" secondAttribute="trailing" constant="40" id="mlv-cF-4xj"/>
                             <constraint firstItem="MgW-0J-CjH" firstAttribute="top" secondItem="gkj-sJ-IZN" secondAttribute="bottom" id="tt1-l6-rpJ"/>
-                            <constraint firstAttribute="trailing" secondItem="JSz-xf-acH" secondAttribute="trailing" priority="999" id="uIO-7b-Nwj"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="JSz-xf-acH" secondAttribute="trailing" priority="999" id="uIO-7b-Nwj"/>
                             <constraint firstItem="JSz-xf-acH" firstAttribute="top" secondItem="i4O-SR-ImV" secondAttribute="bottom" constant="8" symbolic="YES" id="ycp-lE-YcG"/>
-                            <constraint firstItem="i4O-SR-ImV" firstAttribute="leading" secondItem="bEj-LH-pPP" secondAttribute="leading" id="yoX-wz-9lN"/>
+                            <constraint firstItem="i4O-SR-ImV" firstAttribute="leading" secondItem="bEj-LH-pPP" secondAttribute="leadingMargin" id="yoX-wz-9lN"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="uIO-7b-Nwj"/>
+                            </mask>
+                        </variation>
                     </view>
                     <nil key="simulatedStatusBarMetrics"/>
                     <nil key="simulatedTopBarMetrics"/>

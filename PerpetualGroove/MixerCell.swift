@@ -73,15 +73,7 @@ final class TrackCell: MixerCell {
   @IBOutlet var soundSetImage: ImageButtonView!
 
   @IBOutlet var trackLabel: MarqueeField!
-  @IBOutlet var trackColor: ImageButtonView! {
-    didSet { trackColor?.addGestureRecognizer(longPress) }
-  }
-
-  private lazy var longPress: UILongPressGestureRecognizer = {
-    let gesture = UILongPressGestureRecognizer(target: self, action: "handleLongPress:")
-    gesture.delaysTouchesBegan = true
-    return gesture
-  }()
+  @IBOutlet var trackColor: ImageButtonView!
 
   private var startLocation: CGPoint?
 
@@ -95,54 +87,57 @@ final class TrackCell: MixerCell {
     }
   }
 
-  private var markedForRemoval = false {
-    didSet {
-      guard markedForRemoval != oldValue else { return }
-      UIView.animateWithDuration(0.25) {[unowned self] in self.removalDisplay.hidden = !self.markedForRemoval }
-    }
-  }
+//  override func applyLayoutAttributes(layoutAttributes: UICollectionViewLayoutAttributes) {
+//    frame = layoutAttributes.frame
+//  }
+//  private var markedForRemoval = false {
+//    didSet {
+//      guard markedForRemoval != oldValue else { return }
+//      UIView.animateWithDuration(0.25) {[unowned self] in self.removalDisplay.hidden = !self.markedForRemoval }
+//    }
+//  }
 
   /**
   handleLongPress:
 
   - parameter sender: UILongPressGestureRecognizer
   */
-  @objc private func handleLongPress(sender: UILongPressGestureRecognizer) {
-    switch sender.state {
-      case .Began:
-        startLocation = sender.locationInView(controller?.collectionView)
-        UIView.animateWithDuration(0.25) { [unowned self] in
-          self.layer.transform = CATransform3D(sx: 1.1, sy: 1.1, sz: 1.1).translate(tx: 0, ty: 10, tz: 0)
-        }
+//  @IBAction private func handleLongPress(sender: UILongPressGestureRecognizer) {
+//    switch sender.state {
+//      case .Began:
+//        startLocation = sender.locationInView(controller?.collectionView)
+//        UIView.animateWithDuration(0.25) { [unowned self] in
+//          self.layer.transform = CATransform3D(sx: 1.1, sy: 1.1, sz: 1.1).translate(tx: 0, ty: 20, tz: 0)
+//        }
 
-      case .Changed:
-        guard let startLocation = startLocation else { break }
-        let currentLocation = sender.locationInView(controller?.collectionView)
+//      case .Changed: break
+//        guard let startLocation = startLocation else { break }
+//        let currentLocation = sender.locationInView(controller?.collectionView)
+//
+//        switch (startLocation - currentLocation).unpack {
+//        case let (x, _) where x < -50 && !markedForRemoval:
+//            controller?.shiftCell(self, direction: .Right); self.startLocation = currentLocation
+//          case let (x, _) where x > 50 && !markedForRemoval:
+//            controller?.shiftCell(self, direction: .Left); self.startLocation = currentLocation
+//          case let (_, y) where y < -50 && !markedForRemoval:
+//            markedForRemoval = true
+//          case let (_, y) where y > -50 && markedForRemoval:
+//            markedForRemoval = false
+//          default:
+//            break
+//        }
 
-        switch (startLocation - currentLocation).unpack {
-        case let (x, _) where x < -50 && !markedForRemoval:
-            controller?.shiftCell(self, direction: .Right); self.startLocation = currentLocation
-          case let (x, _) where x > 50 && !markedForRemoval:
-            controller?.shiftCell(self, direction: .Left); self.startLocation = currentLocation
-          case let (_, y) where y < -50 && !markedForRemoval:
-            markedForRemoval = true
-          case let (_, y) where y > -50 && markedForRemoval:
-            markedForRemoval = false
-          default:
-            break
-        }
-
-      case .Ended where markedForRemoval:
-        controller?.deleteTrack(track)
-        markedForRemoval = false
-
-      case .Cancelled, .Ended: fallthrough
-
-      default:
-        startLocation = nil
-        UIView.animateWithDuration(0.25) { [unowned self] in self.layer.transform = .identity }
-    }
-  }
+//      case .Ended where markedForRemoval:
+//        controller?.deleteTrack(track)
+//        markedForRemoval = false
+//
+//      case .Cancelled, .Ended: fallthrough
+//
+//      default:
+//        startLocation = nil
+//        UIView.animateWithDuration(0.25) { [unowned self] in self.layer.transform = .identity }
+//    }
+//  }
 
 
   /** instrument */
@@ -171,7 +166,6 @@ final class TrackCell: MixerCell {
       volume = track?.volume ?? 0
       pan = track?.pan ?? 0
       soundSetImage.image = track?.instrument.soundSet.image
-      soundSetImage.selectedImage = track?.instrument.soundSet.selectedImage
       trackLabel.text = track?.displayName ?? ""
       trackColor.tintColor = track?.color.value
       muteButton.selected = track?.mute ?? false
@@ -225,13 +219,7 @@ final class TrackCell: MixerCell {
    - parameter notifciation: NSNotification
   */
   private func soundSetDidChange(notifciation: NSNotification) {
-    let image: UIImage?
-    switch track?.instrument {
-      case let instrument? where Sequencer.soundSetSelectionTarget === instrument: image = instrument.soundSet.selectedImage
-      case let instrument?: image = instrument.soundSet.image
-      default: image = nil
-    }
-    soundSetImage.image = image
+    soundSetImage.image = track?.instrument.soundSet.image
     trackLabel.text = track?.displayName ?? ""
   }
 

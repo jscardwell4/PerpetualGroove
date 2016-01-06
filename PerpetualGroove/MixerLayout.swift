@@ -11,10 +11,24 @@ import MoonKit
 
 final class MixerLayout: UICollectionViewLayout {
 
-  let itemSize = CGSize(width: 100, height: 575)
+  static let itemSize = CGSize(width: 100, height: 575)
+  static let magnifiedItemSize = CGSize(width: 104.347826086957, height: 600)
 
   static private let SecondaryControllerKind = "SecondaryController"
   static private let secondaryControllerIndexPath = NSIndexPath(forItem: 0, inSection: 3)
+
+  @IBOutlet weak var delegate: MixerViewController!
+
+  private var previouslyMagnifiedItem: NSIndexPath?
+  var magnifiedItem: NSIndexPath? {
+    didSet {
+      guard magnifiedItem != oldValue else { return }
+//      if magnifiedItem == nil { magnifiedItemOffset = 0 }
+      invalidateLayout()
+    }
+  }
+
+//  var magnifiedItemOffset: CGFloat = 0 { didSet { guard magnifiedItemOffset != oldValue && magnifiedItem != nil else { return }; invalidateLayout() } }
 
   var presentingSecondaryController: Bool = false {
     didSet {
@@ -65,8 +79,18 @@ final class MixerLayout: UICollectionViewLayout {
   - returns: UICollectionViewLayoutAttributes!
   */
   override func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
-    guard let collectionView = collectionView else { return nil }
+    guard collectionView != nil else { return nil }
+    return attributesForItem(indexPath, magnified: magnifiedItem == indexPath)
+  }
 
+  /**
+   attributesForItem:
+
+   - parameter indexPath: NSIndexPath
+
+    - returns: UICollectionViewLayoutAttributes
+  */
+  private func attributesForItem(indexPath: NSIndexPath, magnified: Bool = false) -> UICollectionViewLayoutAttributes {
     let attributesClass = self.dynamicType.layoutAttributesClass() as! UICollectionViewLayoutAttributes.Type
     let attributes = attributesClass.init(forCellWithIndexPath: indexPath)
 
@@ -75,15 +99,66 @@ final class MixerLayout: UICollectionViewLayout {
       case 0:
         origin = .zero
       case 1:
-        origin = CGPoint(x: itemSize.width * CGFloat(indexPath.item + 1), y: 0)
+        origin = CGPoint(x: MixerLayout.itemSize.width * CGFloat(indexPath.item + 1), y: 0)
       case 2: fallthrough
       default:
-        origin = CGPoint(x: itemSize.width * CGFloat(collectionView.numberOfItemsInSection(1) + 1), y: 0)
+        origin = CGPoint(x: MixerLayout.itemSize.width * CGFloat((collectionView?.numberOfItemsInSection(1) ?? 0 ) + 1), y: 0)
     }
-    attributes.frame = CGRect(origin: origin, size: itemSize)
-
+    attributes.frame = CGRect(origin: origin, size: MixerLayout.itemSize)
+    if magnified {
+      var transform = CGAffineTransform(sx: 1.1, sy: 1.1)
+      transform.translate(0, half(MixerLayout.itemSize.height * 1.1 - MixerLayout.itemSize.height))
+      attributes.transform = transform
+//      magnifyAttributes(attributes)
+    }
     return attributes
   }
+
+  /**
+   magnifyAttributes:
+
+   - parameter attributes: UICollectionViewLayoutAttributes
+  */
+//  private func magnifyAttributes(attributes: UICollectionViewLayoutAttributes) {
+//    attributes.transform = CGAffineTransform(sx: 1.1, sy: 1.1).translated(0, half(MixerLayout.itemSize.height * 1.1 - MixerLayout.itemSize.height))
+//    let 𝝙size = MixerLayout.magnifiedItemSize - MixerLayout.itemSize
+//    attributes.frame.origin.x += magnifiedItemOffset - half(𝝙size.width)
+//    attributes.frame.origin.y += 𝝙size.height
+//    attributes.frame.size = MixerLayout.magnifiedItemSize
+//  }
+
+  /**
+   prepareForCollectionViewUpdates:
+
+   - parameter updateItems: [UICollectionViewUpdateItem]
+  */
+  override func prepareForCollectionViewUpdates(updateItems: [UICollectionViewUpdateItem]) {
+    defer { super.prepareForCollectionViewUpdates(updateItems) }
+    guard updateItems.count == 1,
+      let updateItem = updateItems.first,
+          beforePath = updateItem.indexPathBeforeUpdate where magnifiedItem == beforePath,
+      let afterPath = updateItem.indexPathAfterUpdate else { return }
+    previouslyMagnifiedItem = beforePath
+    magnifiedItem = afterPath
+//    if previouslyMagnifiedItem < magnifiedItem { magnifiedItemOffset = -half(MixerLayout.itemSize.width) }
+//    else { magnifiedItemOffset = half(MixerLayout.itemSize.width) }
+  }
+
+//  override func initialLayoutAttributesForAppearingItemAtIndexPath(path: NSIndexPath) -> UICollectionViewLayoutAttributes? {
+//    let attributes = attributesForItem(path)
+//    if magnifiedItem == path {
+//      magnifyAttributes(attributes)
+//      attributes.hidden = true
+//    }
+//    return attributes
+//  }
+
+//  override func finalLayoutAttributesForDisappearingItemAtIndexPath(path: NSIndexPath) -> UICollectionViewLayoutAttributes? {
+//    switch (previouslyMagnifiedItem, magnifiedItem) {
+//    case let (previous?, current?) where path == previous: return attributesForItem(current, magnified: true)
+//    default:                                               return attributesForItem(path)
+//    }
+//  }
 
   /**
    layoutAttributesForSupplementaryViewOfKind:atIndexPath:

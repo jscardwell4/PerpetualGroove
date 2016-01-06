@@ -18,3 +18,7 @@ extension NSIndexPath {
 extension NSIndexPath {
   override public var description: String { return "NSIndexPath {item: \(item); section: \(section)}" }
 }
+
+extension NSIndexPath: Comparable {}
+
+public func <(lhs: NSIndexPath, rhs: NSIndexPath) -> Bool { return lhs.section < rhs.section || lhs.item < rhs.item }

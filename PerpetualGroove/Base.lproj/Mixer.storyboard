@@ -23,11 +23,15 @@
         <scene sceneID="6FS-5d-R84">
             <objects>
                 <collectionViewController storyboardIdentifier="Mixer" title="Mixer" id="iF7-fT-LPT" userLabel="Mixer" customClass="MixerViewController" customModule="Groove" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" contentMode="scaleToFill" directionalLockEnabled="YES" bounces="NO" alwaysBounceHorizontal="YES" showsVerticalScrollIndicator="NO" dataMode="prototypes" id="QhA-gV-EZG">
+                    <collectionView key="view" contentMode="scaleToFill" directionalLockEnabled="YES" bounces="NO" alwaysBounceHorizontal="YES" showsVerticalScrollIndicator="NO" dataMode="prototypes" id="QhA-gV-EZG">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="575"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.20000000298023224" green="0.19607843458652496" blue="0.19215686619281769" alpha="1" colorSpace="calibratedRGB"/>
-                        <collectionViewLayout key="collectionViewLayout" id="I5F-pR-bWx" customClass="MixerLayout" customModule="Groove" customModuleProvider="target"/>
+                        <collectionViewLayout key="collectionViewLayout" id="I5F-pR-bWx" customClass="MixerLayout" customModule="Groove" customModuleProvider="target">
+                            <connections>
+                                <outlet property="delegate" destination="iF7-fT-LPT" id="r8A-PA-DAj"/>
+                            </connections>
+                        </collectionViewLayout>
                         <cells>
                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" placeholderIntrinsicWidth="100" placeholderIntrinsicHeight="420" reuseIdentifier="MasterCell" id="Ywg-X3-Y1Q" userLabel="Master Cell" customClass="MasterCell" customModule="Groove" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="100" height="575"/>
@@ -171,7 +175,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="VOL" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1nN-5d-7mi" customClass="Label" customModule="MoonKit">
-                                            <rect key="frame" x="36" y="8" width="28" height="14.5"/>
+                                            <rect key="frame" x="36.5" y="8" width="28" height="14.5"/>
                                             <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
                                             <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
@@ -180,7 +184,7 @@
                                             </userDefinedRuntimeAttributes>
                                         </label>
                                         <view opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="241" translatesAutoresizingMaskIntoConstraints="NO" id="fQV-Nj-rrF" userLabel="Volume Slider" customClass="Slider" customModule="MoonKit">
-                                            <rect key="frame" x="28" y="21" width="44" height="274.5"/>
+                                            <rect key="frame" x="28" y="21" width="44" height="274"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="44" identifier="VolumeSliderWidth" id="Jyz-qp-TR8"/>
                                             </constraints>
@@ -217,7 +221,7 @@
                                             </connections>
                                         </view>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="PAN" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UVo-0O-vty" customClass="Label" customModule="MoonKit">
-                                            <rect key="frame" x="36" y="293.5" width="28" height="14.5"/>
+                                            <rect key="frame" x="36.5" y="293.5" width="28" height="14.5"/>
                                             <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
                                             <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
@@ -325,17 +329,32 @@
                                                 <action selector="mute" destination="2AY-7g-m2Q" eventType="touchUpInside" id="DQT-1Z-Rzc"/>
                                             </connections>
                                         </view>
-                                        <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6he-9a-y4c" customClass="ImageButtonView" customModule="MoonKit">
+                                        <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="6he-9a-y4c" customClass="ImageButtonView" customModule="MoonKit">
                                             <rect key="frame" x="22" y="466.5" width="56" height="56"/>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             <color key="tintColor" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="calibratedRGB"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="56" id="hGN-Rk-tRg"/>
+                                                <constraint firstAttribute="width" secondItem="6he-9a-y4c" secondAttribute="height" multiplier="1:1" id="x0J-sU-eaE"/>
+                                            </constraints>
                                             <userDefinedRuntimeAttributes>
                                                 <userDefinedRuntimeAttribute type="image" keyPath="image" value="brass"/>
                                                 <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
                                                 <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
                                                     <color key="value" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="calibratedRGB"/>
                                                 </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
+                                                    <color key="value" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="color" keyPath="selectedTintColor">
+                                                    <color key="value" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                </userDefinedRuntimeAttribute>
                                             </userDefinedRuntimeAttributes>
+                                            <variation key="default">
+                                                <mask key="constraints">
+                                                    <exclude reference="hGN-Rk-tRg"/>
+                                                </mask>
+                                            </variation>
                                             <connections>
                                                 <action selector="instrument" destination="2AY-7g-m2Q" eventType="touchUpInside" id="L9b-R1-yDB"/>
                                             </connections>
@@ -394,7 +413,7 @@
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" image="trash-selected" translatesAutoresizingMaskIntoConstraints="NO" id="gNv-ZK-rjJ">
-                                                                    <rect key="frame" x="22" y="259.5" width="56" height="56"/>
+                                                                    <rect key="frame" x="22" y="259" width="56" height="56"/>
                                                                 </imageView>
                                                             </subviews>
                                                             <constraints>
@@ -420,6 +439,7 @@
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstItem="1nN-5d-7mi" firstAttribute="top" secondItem="2AY-7g-m2Q" secondAttribute="topMargin" id="0yT-aY-cGD"/>
                                     <constraint firstItem="6he-9a-y4c" firstAttribute="top" secondItem="BZl-Ps-fwB" secondAttribute="bottom" constant="8" symbolic="YES" id="14M-m0-Y5N"/>
@@ -429,6 +449,7 @@
                                     <constraint firstItem="UVo-0O-vty" firstAttribute="height" secondItem="1nN-5d-7mi" secondAttribute="height" id="5FE-He-p7N"/>
                                     <constraint firstAttribute="trailingMargin" secondItem="2QL-te-Ivd" secondAttribute="trailing" constant="8" id="5NE-Od-r4R"/>
                                     <constraint firstItem="y4E-jp-B4L" firstAttribute="top" secondItem="UVo-0O-vty" secondAttribute="bottom" constant="8" symbolic="YES" id="5TK-bB-gRE"/>
+                                    <constraint firstItem="6he-9a-y4c" firstAttribute="leading" secondItem="2AY-7g-m2Q" secondAttribute="leadingMargin" constant="14" id="6Rd-RQ-4hN"/>
                                     <constraint firstItem="3Fc-u3-GOg" firstAttribute="centerX" secondItem="2AY-7g-m2Q" secondAttribute="centerX" id="6Rh-Xb-ibM"/>
                                     <constraint firstItem="BZl-Ps-fwB" firstAttribute="top" secondItem="Ldg-6q-t2e" secondAttribute="bottom" constant="8" symbolic="YES" id="6hg-3V-vRN"/>
                                     <constraint firstItem="PLx-z8-sAo" firstAttribute="leading" secondItem="2AY-7g-m2Q" secondAttribute="leading" id="9ac-bz-W6D"/>
@@ -439,6 +460,7 @@
                                     <constraint firstAttribute="trailingMargin" secondItem="BZl-Ps-fwB" secondAttribute="trailing" constant="8" id="HGt-bv-khR"/>
                                     <constraint firstItem="2QL-te-Ivd" firstAttribute="top" secondItem="y4E-jp-B4L" secondAttribute="bottom" constant="8" symbolic="YES" id="JxR-Hf-gGU"/>
                                     <constraint firstItem="1nN-5d-7mi" firstAttribute="centerX" secondItem="2AY-7g-m2Q" secondAttribute="centerX" id="K18-Es-37Z"/>
+                                    <constraint firstAttribute="trailingMargin" secondItem="6he-9a-y4c" secondAttribute="trailing" constant="14" id="KbB-nd-Aog"/>
                                     <constraint firstAttribute="trailingMargin" secondItem="3Fc-u3-GOg" secondAttribute="trailing" id="LnZ-YM-4Yd"/>
                                     <constraint firstItem="2QL-te-Ivd" firstAttribute="centerX" secondItem="2AY-7g-m2Q" secondAttribute="centerX" id="MDh-uC-bZd"/>
                                     <constraint firstAttribute="trailing" secondItem="PLx-z8-sAo" secondAttribute="trailing" id="NiX-3b-LrS"/>
@@ -487,7 +509,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="VOL" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ckA-uv-GCY" customClass="Label" customModule="MoonKit">
-                                            <rect key="frame" x="36" y="8" width="28" height="14.5"/>
+                                            <rect key="frame" x="36.5" y="8" width="28" height="14.5"/>
                                             <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
                                             <color key="textColor" red="0.57254904510000004" green="0.52941179279999995" blue="0.47058823700000002" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
@@ -530,7 +552,7 @@
                                             </userDefinedRuntimeAttributes>
                                         </view>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="PAN" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X6K-EB-nxp" customClass="Label" customModule="MoonKit">
-                                            <rect key="frame" x="36" y="294" width="28" height="14.5"/>
+                                            <rect key="frame" x="36.5" y="294" width="28" height="14.5"/>
                                             <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
                                             <color key="textColor" red="0.57254904510000004" green="0.52941179279999995" blue="0.47058823700000002" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
@@ -629,10 +651,14 @@
                                                 </userDefinedRuntimeAttribute>
                                             </userDefinedRuntimeAttributes>
                                         </view>
-                                        <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qhC-wG-5Ac" customClass="ImageButtonView" customModule="MoonKit">
+                                        <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="qhC-wG-5Ac" customClass="ImageButtonView" customModule="MoonKit">
                                             <rect key="frame" x="22" y="466" width="56" height="56"/>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             <color key="tintColor" red="0.88567054270000001" green="0.84600132699999997" blue="0.78708314899999998" alpha="1" colorSpace="calibratedRGB"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="56" id="FlM-Pd-BE5"/>
+                                                <constraint firstAttribute="width" secondItem="qhC-wG-5Ac" secondAttribute="height" multiplier="1:1" id="pcN-98-eqx"/>
+                                            </constraints>
                                             <userDefinedRuntimeAttributes>
                                                 <userDefinedRuntimeAttribute type="image" keyPath="image" value="brass"/>
                                                 <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
@@ -665,7 +691,7 @@
                                             </userDefinedRuntimeAttributes>
                                         </view>
                                         <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="HUK-fb-hqg" userLabel="TrackColor" customClass="ImageButtonView" customModule="MoonKit">
-                                            <rect key="frame" x="8" y="552" width="84" height="14.5"/>
+                                            <rect key="frame" x="8" y="552.5" width="84" height="14.5"/>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             <color key="tintColor" red="0.68166375160000003" green="0.38204258679999997" blue="0.25248548389999997" alpha="1" colorSpace="calibratedRGB"/>
                                             <gestureRecognizers/>
@@ -792,6 +818,7 @@
                         <connections>
                             <outlet property="dataSource" destination="iF7-fT-LPT" id="ekL-VR-w3h"/>
                             <outlet property="delegate" destination="iF7-fT-LPT" id="9kB-9B-DUj"/>
+                            <outletCollection property="gestureRecognizers" destination="krI-eI-hYy" appends="YES" id="9sN-iK-ar6"/>
                         </connections>
                     </collectionView>
                     <nil key="simulatedStatusBarMetrics"/>
@@ -802,6 +829,7 @@
                     <size key="freeformSize" width="320" height="575"/>
                     <connections>
                         <outlet property="blurView" destination="cbP-oc-qCr" id="LeV-tG-i6f"/>
+                        <outlet property="magnifyingGesture" destination="krI-eI-hYy" id="FmA-JX-bzY"/>
                     </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="H3X-NX-nN4" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -845,13 +873,18 @@
                         <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="Blur"/>
                     </userDefinedRuntimeAttributes>
                 </visualEffectView>
+                <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.5" id="krI-eI-hYy">
+                    <connections>
+                        <action selector="magnifyItem:" destination="iF7-fT-LPT" id="Rtb-mv-rt1"/>
+                    </connections>
+                </pongPressGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="256" y="-245"/>
         </scene>
     </scenes>
     <resources>
         <image name="add-selected" width="56" height="56"/>
-        <image name="brass" width="56" height="56"/>
+        <image name="brass" width="112" height="112"/>
         <image name="close-selected" width="56" height="56"/>
         <image name="color_swatch" width="84" height="17"/>
         <image name="color_swatch_thicker-selected" width="84" height="17"/>

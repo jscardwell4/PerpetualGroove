@@ -2,18 +2,7 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "guitar_bass-selected.png",
-      "scale" : "1x"
-    },
-    {
-      "idiom" : "universal",
-      "filename" : "guitar_bass-selected@2x.png",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "universal",
-      "filename" : "guitar_bass-selected@3x.png",
-      "scale" : "3x"
+      "filename" : "SoundSets_guitar_bass.pdf"
     }
   ],
   "info" : {
