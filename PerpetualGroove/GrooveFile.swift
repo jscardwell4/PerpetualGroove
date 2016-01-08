@@ -31,6 +31,8 @@ struct GrooveFile {
 
 }
 
+extension GrooveFile: SequenceDataProvider { var storedData: Sequence.Data { return .Groove(self) } }
+
 extension GrooveFile: DataConvertible {
   var data: NSData { return jsonValue.prettyData }
   init?(data: NSData) { self.init(JSONValue(data: data)) }
@@ -58,4 +60,8 @@ extension GrooveFile: JSONValueInitializable {
     self.endOfFile = endOfFile
     if let sourceString = String(dict["source"]) { source = NSURL(string: sourceString) }
   }
+}
+
+extension GrooveFile: CustomStringConvertible {
+  var description: String { return jsonValue.prettyRawValue }
 }

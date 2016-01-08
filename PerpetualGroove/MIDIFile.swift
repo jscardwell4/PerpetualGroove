@@ -137,6 +137,8 @@ struct MIDIFile: ByteArrayConvertible {
   }
 }
 
+extension MIDIFile: SequenceDataProvider { var storedData: Sequence.Data { return .MIDI(self) } }
+
 extension MIDIFile: CustomStringConvertible {
   var description: String { return "\(header)\n\("\n".join(tracks.map({$0.description})))" }
 }

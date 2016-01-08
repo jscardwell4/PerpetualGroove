@@ -25,7 +25,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" axis="vertical" distribution="equalCentering" translatesAutoresizingMaskIntoConstraints="NO" id="KR6-ig-M7J" userLabel="ContentStack">
-                                <rect key="frame" x="0.0" y="-12" width="2180" height="750"/>
+                                <rect key="frame" x="0.0" y="-12" width="2190" height="750"/>
                                 <subviews>
                                     <stackView hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cIl-mB-kk1" userLabel="TopStack">
                                         <rect key="frame" x="0.0" y="0.0" width="1731" height="120"/>
@@ -85,7 +85,7 @@
                                         </variation>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" distribution="fillEqually" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="NZR-ya-29p" userLabel="MiddleStack">
-                                        <rect key="frame" x="0.0" y="0.0" width="2180" height="600"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="2190" height="600"/>
                                         <subviews>
                                             <containerView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Xii-MX-zKn" userLabel="Mixer Container">
                                                 <rect key="frame" x="0.0" y="0.0" width="1085" height="600"/>
@@ -97,7 +97,7 @@
                                                 </connections>
                                             </containerView>
                                             <containerView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cDh-C7-9la">
-                                                <rect key="frame" x="1095" y="0.0" width="1085" height="600"/>
+                                                <rect key="frame" x="1105" y="0.0" width="1085" height="600"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="375" id="OMe-oy-u7R"/>
                                                     <constraint firstAttribute="height" constant="430" id="xgv-2v-ZG3"/>
@@ -133,7 +133,7 @@
                                         </userDefinedRuntimeAttributes>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" distribution="equalCentering" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="n4A-7M-eOV" userLabel="BottomStack">
-                                        <rect key="frame" x="0.0" y="600" width="2180" height="150"/>
+                                        <rect key="frame" x="0.0" y="600" width="2190" height="150"/>
                                         <subviews>
                                             <view opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gJq-1L-zk3" userLabel="DocumentsButton" customClass="ImageButtonView" customModule="MoonKit">
                                                 <rect key="frame" x="0.0" y="50" width="760" height="50"/>
@@ -169,7 +169,7 @@
                                                 </connections>
                                             </view>
                                             <containerView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="neB-2q-lJV">
-                                                <rect key="frame" x="848" y="0.0" width="760" height="150"/>
+                                                <rect key="frame" x="853" y="0.0" width="760" height="150"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="150" id="248-Pj-xhM"/>
                                                     <constraint firstAttribute="width" constant="358" id="Cjv-EF-OUo"/>
@@ -194,7 +194,7 @@
                                                 </connections>
                                             </containerView>
                                             <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" distribution="equalCentering" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="NdS-rf-HyN" userLabel="TimeStackHorizontal">
-                                                <rect key="frame" x="1969" y="14" width="211" height="122"/>
+                                                <rect key="frame" x="1979" y="14" width="211" height="122"/>
                                                 <subviews>
                                                     <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" axis="vertical" distribution="equalCentering" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="gSN-Me-39Z" userLabel="TimeStackVertical">
                                                         <rect key="frame" x="0.0" y="0.0" width="211" height="122"/>
@@ -393,6 +393,9 @@
                                                                                 <color key="value" red="0.72547006607055664" green="0.70085549354553223" blue="0.6621164083480835" alpha="1" colorSpace="calibratedRGB"/>
                                                                             </userDefinedRuntimeAttribute>
                                                                         </userDefinedRuntimeAttributes>
+                                                                        <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
+                                                                            <rect key="frame" x="0.0" y="0.0" width="56" height="56"/>
+                                                                        </variation>
                                                                         <connections>
                                                                             <action selector="toggleMetronome" destination="BV1-FR-VrT" eventType="touchUpInside" id="P9O-d8-MRc"/>
                                                                         </connections>
@@ -691,10 +694,10 @@
             </objects>
             <point key="canvasLocation" x="231.5" y="639.5"/>
         </scene>
-        <!--Mixer-->
+        <!--MixerContainer-->
         <scene sceneID="A7a-AD-6Of">
             <objects>
-                <viewControllerPlaceholder storyboardIdentifier="Mixer" storyboardName="Mixer" referencedIdentifier="Mixer" id="kbm-WN-nc0" sceneMemberID="viewController"/>
+                <viewControllerPlaceholder storyboardIdentifier="Mixer" storyboardName="MixerContainer" id="kbm-WN-nc0" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8QL-P7-Hyc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="112.5" y="1180.5"/>
@@ -715,10 +718,10 @@
             </objects>
             <point key="canvasLocation" x="840" y="405"/>
         </scene>
-        <!--MIDIPlayer-->
+        <!--MIDIPlayerContainer-->
         <scene sceneID="8Az-Bg-Kgb">
             <objects>
-                <viewControllerPlaceholder storyboardName="MIDIPlayer" id="9eP-6Y-Ip3" sceneMemberID="viewController"/>
+                <viewControllerPlaceholder storyboardName="MIDIPlayerContainer" id="9eP-6Y-Ip3" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8v7-d4-8pw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="705.375" y="591.75"/>

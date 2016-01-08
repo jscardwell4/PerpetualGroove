@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="ANH-iZ-FUo">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+    </dependencies>
+    <scenes>
+        <!--Mixer-->
+        <scene sceneID="Heg-Ng-dYj">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Mixer" id="H9k-bd-7Rh" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="9WI-q6-aoj" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="808" y="400"/>
+        </scene>
+        <!--Mixer Container View Controller-->
+        <scene sceneID="wQo-RF-yqm">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="WkB-TE-Lqp" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <viewController id="ANH-iZ-FUo" customClass="MixerContainerViewController" customModule="Groove" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="MSX-be-vq5"/>
+                        <viewControllerLayoutGuide type="bottom" id="ANJ-Gd-RJH"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="abF-KI-zCY">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vuM-GP-avi">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <connections>
+                                    <segue destination="H9k-bd-7Rh" kind="embed" identifier="Mixer" id="P8a-Ri-pXb"/>
+                                </connections>
+                            </containerView>
+                        </subviews>
+                        <color key="backgroundColor" red="0.30125221610069275" green="0.29395070672035217" blue="0.28606623411178589" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="ANJ-Gd-RJH" firstAttribute="top" secondItem="vuM-GP-avi" secondAttribute="bottom" id="DNO-wh-BdW"/>
+                            <constraint firstItem="vuM-GP-avi" firstAttribute="leading" secondItem="abF-KI-zCY" secondAttribute="leading" id="IfY-fx-xfx"/>
+                            <constraint firstAttribute="trailing" secondItem="vuM-GP-avi" secondAttribute="trailing" id="a5G-H7-VtB"/>
+                            <constraint firstItem="vuM-GP-avi" firstAttribute="top" secondItem="MSX-be-vq5" secondAttribute="bottom" id="fpN-cH-ksG"/>
+                        </constraints>
+                    </view>
+                    <nil key="simulatedStatusBarMetrics"/>
+                    <nil key="simulatedTopBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="blurView" destination="S9A-eL-Ok6" id="Ilp-FC-gLz"/>
+                        <outlet property="cancelButton" destination="Sye-7S-BzZ" id="WzE-MH-qCA"/>
+                        <outlet property="confirmButton" destination="9Kv-eg-SJI" id="A0A-WM-Gj3"/>
+                        <outlet property="containerView" destination="vuM-GP-avi" id="Em7-8x-Au2"/>
+                    </connections>
+                </viewController>
+                <visualEffectView opaque="NO" contentMode="scaleToFill" id="S9A-eL-Ok6" userLabel="Blur">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="575"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="GRq-Ux-EKx">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="575"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9Kv-eg-SJI" userLabel="Confirm" customClass="ImageButtonView" customModule="MoonKit">
+                                <rect key="frame" x="258" y="20" width="42" height="42"/>
+                                <accessibility key="accessibilityConfiguration" identifier="CloseButton"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="42" id="H8r-sh-sFb"/>
+                                    <constraint firstAttribute="width" secondItem="9Kv-eg-SJI" secondAttribute="height" multiplier="1:1" id="NlR-Ou-3YS"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="Confirm"/>
+                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="confirm"/>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
+                                        <color key="value" red="0.84340655799999997" green="0.78949379919999996" blue="0.71009701489999999" alpha="1" colorSpace="calibratedRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
+                                        <color key="value" red="0.88567054270000001" green="0.84600132699999997" blue="0.78708314899999998" alpha="1" colorSpace="calibratedRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="confirm" destination="ANH-iZ-FUo" eventType="touchUpInside" id="4la-nq-uOv"/>
+                                </connections>
+                            </view>
+                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Sye-7S-BzZ" userLabel="Cancel" customClass="ImageButtonView" customModule="MoonKit">
+                                <rect key="frame" x="20" y="20" width="42" height="42"/>
+                                <accessibility key="accessibilityConfiguration" identifier="CloseButton"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="42" id="29r-ol-fwP"/>
+                                    <constraint firstAttribute="width" secondItem="Sye-7S-BzZ" secondAttribute="height" multiplier="1:1" id="9WA-2f-2jU"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="Cancel"/>
+                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="cancel"/>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
+                                        <color key="value" red="0.84340655799999997" green="0.78949379919999996" blue="0.71009701489999999" alpha="1" colorSpace="calibratedRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
+                                        <color key="value" red="0.88567054270000001" green="0.84600132699999997" blue="0.78708314899999998" alpha="1" colorSpace="calibratedRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="cancel" destination="ANH-iZ-FUo" eventType="touchUpInside" id="P6a-tP-khq"/>
+                                </connections>
+                            </view>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="Sye-7S-BzZ" firstAttribute="leading" secondItem="GRq-Ux-EKx" secondAttribute="leading" constant="20" id="G4v-Tt-Qzd"/>
+                            <constraint firstAttribute="trailing" secondItem="9Kv-eg-SJI" secondAttribute="trailing" constant="20" id="TD1-lF-ZTs"/>
+                            <constraint firstItem="Sye-7S-BzZ" firstAttribute="top" secondItem="GRq-Ux-EKx" secondAttribute="top" constant="20" id="UnG-J2-X4B"/>
+                            <constraint firstItem="9Kv-eg-SJI" firstAttribute="top" secondItem="GRq-Ux-EKx" secondAttribute="top" constant="20" id="aqj-ma-XKt"/>
+                        </constraints>
+                    </view>
+                    <color key="tintColor" red="0.84340655799999997" green="0.78949379919999996" blue="0.71009701489999999" alpha="1" colorSpace="calibratedRGB"/>
+                    <blurEffect style="dark"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="Blur"/>
+                    </userDefinedRuntimeAttributes>
+                </visualEffectView>
+            </objects>
+            <point key="canvasLocation" x="356" y="400"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="cancel" width="56" height="56"/>
+        <image name="confirm" width="56" height="56"/>
+    </resources>
+</document>

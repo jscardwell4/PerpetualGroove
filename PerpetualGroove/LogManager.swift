@@ -15,11 +15,11 @@ final class LogManager: MoonKit.LogManager {
 
   private(set) static var initialized = false
 
-  static let MIDIFileContext  = LogContext(rawValue: 0b0000_0010_0000)// ∪ .Console
-  static let SF2FileContext   = LogContext(rawValue: 0b0000_0100_0000)// ∪ .Console
-  static let SequencerContext = LogContext(rawValue: 0b0000_1000_0000)// ∪ .Console
-  static let SceneContext     = LogContext(rawValue: 0b0001_0000_0000)// ∪ .Console
-  static let UIContext        = LogContext(rawValue: 0b0010_0000_0000)// ∪ .Console
+  static let MIDIFileContext  = LogContext(rawValue: 0b0000_0010_0000) ∪ .File
+  static let SF2FileContext   = LogContext(rawValue: 0b0000_0100_0000) ∪ .File
+  static let SequencerContext = LogContext(rawValue: 0b0000_1000_0000) ∪ .File
+  static let SceneContext     = LogContext(rawValue: 0b0001_0000_0000) ∪ .File
+  static let UIContext        = LogContext(rawValue: 0b0010_0000_0000) ∪ .File
 
   /** initialize */
   static func initialize() {
@@ -27,6 +27,8 @@ final class LogManager: MoonKit.LogManager {
 
     logLevel = .Debug
     setLogLevel(.Verbose, forType: NotificationReceptionist.self)
+
+    registerLogContextNames()
 
     logContext = .Console
     setDefaultLogContexts()
@@ -49,6 +51,20 @@ final class LogManager: MoonKit.LogManager {
     let logger = super.defaultFileLoggerForContext(context, subdirectory: subdirectory)
     logger.doNotReuseLogFiles = true
     return logger
+  }
+
+  /** registerLogContextNames */
+  static private func registerLogContextNames() {
+    logContextNames[MIDIFileContext] = "MIDI"
+    logContextNames[SF2FileContext] = "SoundFont"
+    logContextNames[SequencerContext] = "Sequencer"
+    logContextNames[SceneContext] = "Scene"
+    logContextNames[UIContext] = "UI"
+    logContextNames[MIDIFileContext ∪ .Console] = "MIDI"
+    logContextNames[SF2FileContext ∪ .Console] = "SoundFont"
+    logContextNames[SequencerContext ∪ .Console] = "Sequencer"
+    logContextNames[SceneContext ∪ .Console] = "Scene"
+    logContextNames[UIContext ∪ .Console] = "UI"
   }
 
   /** addFileLoggers */

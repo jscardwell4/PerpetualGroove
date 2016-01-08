@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="pGy-FY-X8Y">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+    </dependencies>
+    <scenes>
+        <!--MIDIPlayer-->
+        <scene sceneID="nih-nN-Z58">
+            <objects>
+                <viewControllerPlaceholder storyboardName="MIDIPlayer" id="DN1-fg-RLZ" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1kt-w4-w0q" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="658" y="591"/>
+        </scene>
+        <!--Player Container View Controller-->
+        <scene sceneID="th2-7M-uWS">
+            <objects>
+                <viewController id="pGy-FY-X8Y" customClass="MIDIPlayerContainerViewController" customModule="Groove" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="zNj-XQ-VlV"/>
+                        <viewControllerLayoutGuide type="bottom" id="Zyg-Zx-L8U"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="dqP-mg-IGU">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Kk4-LH-wbv">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <connections>
+                                    <segue destination="DN1-fg-RLZ" kind="embed" identifier="MIDIPlayer" id="BRW-ZN-JTo"/>
+                                </connections>
+                            </containerView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Zyg-Zx-L8U" firstAttribute="top" secondItem="Kk4-LH-wbv" secondAttribute="bottom" id="8Hh-u8-5Kg"/>
+                            <constraint firstItem="Kk4-LH-wbv" firstAttribute="leading" secondItem="dqP-mg-IGU" secondAttribute="leading" id="guh-jE-awc"/>
+                            <constraint firstAttribute="trailing" secondItem="Kk4-LH-wbv" secondAttribute="trailing" id="jY2-KI-CWd"/>
+                            <constraint firstItem="Kk4-LH-wbv" firstAttribute="top" secondItem="zNj-XQ-VlV" secondAttribute="bottom" id="zBW-AC-ZPE"/>
+                        </constraints>
+                    </view>
+                    <nil key="simulatedStatusBarMetrics"/>
+                    <nil key="simulatedTopBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="blurView" destination="PMl-r3-xnQ" id="zxF-eD-sir"/>
+                        <outlet property="containerView" destination="Kk4-LH-wbv" id="AJC-YC-KxZ"/>
+                    </connections>
+                </viewController>
+                <visualEffectView opaque="NO" contentMode="scaleToFill" id="PMl-r3-xnQ" userLabel="Blur">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="575"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="WAY-aQ-Qqf">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="575"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                    </view>
+                    <color key="tintColor" red="0.84340655799999997" green="0.78949379919999996" blue="0.71009701489999999" alpha="1" colorSpace="calibratedRGB"/>
+                    <blurEffect style="dark"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="Blur"/>
+                    </userDefinedRuntimeAttributes>
+                </visualEffectView>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dMJ-sF-YWj" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="184" y="590"/>
+        </scene>
+    </scenes>
+</document>

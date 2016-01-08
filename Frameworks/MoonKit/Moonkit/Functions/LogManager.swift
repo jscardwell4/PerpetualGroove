@@ -18,6 +18,14 @@ public class LogManager {
   static var logLevelsByFile: [String:LogLevel] = [:]
   static var logLevelsByType: [ObjectIdentifier:LogLevel] = [:]
 
+  public static var logContextNames: [LogContext:String] = [
+    .Default: "Default",
+    .File: "File",
+    .TTY: "TTY",
+    .ASL: "ASL",
+    .MoonKit: "MoonKit",
+    .UnitTest: "UnitTest"
+  ]
 
   public static var logContext: LogContext = .Console
 
@@ -176,6 +184,8 @@ public class LogManager {
       if rawValue != Int.min && rawValue < 0 { self = .Ignored }
       else { self.rawValue = rawValue }
     }
+
+    public var name: String?
     public static let Ignored  = LogContext(rawValue: Int.min)
     public static let Default  = LogContext(rawValue: 0b0000_0000)
     public static let File     = LogContext(rawValue: 0b0000_0001)
@@ -360,6 +370,10 @@ extension DDLogFlag: CustomStringConvertible {
       default:                return "?"
     }
   }
+}
+
+extension LogManager.LogContext: Hashable {
+  public var hashValue: Int { return rawValue.hashValue }
 }
 
 extension DDLogLevel {

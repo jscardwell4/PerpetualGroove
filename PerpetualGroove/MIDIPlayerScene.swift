@@ -11,31 +11,6 @@ import MoonKit
 
 final class MIDIPlayerScene: SKScene {
 
-  /** setup */
-  private func setup() {
-    MIDIPlayer.playerScene = self
-  }
-
-  /**
-   initWithSize:
-
-   - parameter size: CGSize
-  */
-  override init(size: CGSize) {
-    super.init(size: size)
-    setup()
-  }
-
-  /**
-   init:
-
-   - parameter aDecoder: NSCoder
-  */
-  required init?(coder aDecoder: NSCoder) {
-    super.init(coder: aDecoder)
-    setup()
-  }
-
   private(set) var player: MIDIPlayerNode!
 
   private var contentCreated = false

@@ -14,12 +14,12 @@ public struct ColorLog {
   public static let RESET_FG = ESCAPE + "fg;" // Clear any foreground color
   public static let RESET_BG = ESCAPE + "bg;" // Clear any background color
   public static let RESET    = ESCAPE + ";"   // Clear any foreground or background color
-  public static let RED      = ESCAPE + "fg172,40,28;"
-  public static let GREEN    = ESCAPE + "fg49,163,67;"
-  public static let BLUE     = ESCAPE + "fg39,105,176;"
-  public static let YELLOW   = ESCAPE + "fg217,108,0;"
-  public static let PURPLE   = ESCAPE + "fg71,47,151;"
-  public static let CYAN     = ESCAPE + "fg0,166,178;"
+  public static let RED      = ESCAPE + "fg170,55,49;"
+  public static let GREEN    = ESCAPE + "fg68,140,39;"
+  public static let BLUE     = ESCAPE + "fg75,131,205;"
+  public static let YELLOW   = ESCAPE + "fg255,147,0;"
+  public static let PURPLE   = ESCAPE + "fg122,62,157;"
+  public static let CYAN     = ESCAPE + "fg108,134,168;"
   public static let GRAY     = ESCAPE + "fg125,125,125;"
 
 

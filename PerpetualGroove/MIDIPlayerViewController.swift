@@ -18,9 +18,6 @@ final class MIDIPlayerViewController: UIViewController {
 
   private var constructingLoop = false
 
-  /** dismissAction */
-  @IBAction private func dismissAction() { dismissController() }
-
   /** startLoopAction */
   @IBAction private func startLoopAction() {
     guard Sequencer.mode == .Loop && !constructingLoop else {
@@ -48,56 +45,8 @@ final class MIDIPlayerViewController: UIViewController {
   @IBOutlet weak var loopEndButton: ImageButtonView!
   @IBOutlet weak var loopToggleButton: ImageButtonView!
 
-  private weak var controllerTool: ConfigurableToolType?
-
-  /**
-   presentControllerForTool:
-
-   - parameter tool: ConfigurableToolType
-  */
-  func presentControllerForTool(tool: ConfigurableToolType) {
-    let controller = tool.viewController
-    guard controller.parentViewController == nil && childViewControllers.isEmpty else { return }
-
-    addChildViewController(controller)
-
-    let controllerView = controller.view
-    controllerView.frame = playerView.bounds.insetBy(dx: 20, dy: 20)
-    controllerView.translatesAutoresizingMaskIntoConstraints = false
-    controllerView.backgroundColor = nil
-    blurView.contentView.insertSubview(controllerView, atIndex: 0)
-
-    view.constrain(
-      controllerView.left => playerView.left + 20,
-      controllerView.right => playerView.right - 20,
-      controllerView.top => playerView.top + 20,
-      controllerView.bottom => playerView.bottom - 20
-    )
-
-    controller.didMoveToParentViewController(self)
-
-    blurView.hidden = false
-
-    tool.didShowViewController(controller)
-
-    controllerTool = tool
-  }
-
-  /** dismissController */
-  func dismissController() {
-    guard let tool = controllerTool where tool.isShowingViewController else { return }
-    let controller = tool.viewController
-    guard controller.parentViewController === self else { return }
-    controller.willMoveToParentViewController(nil)
-    controller.removeFromParentViewController()
-    if controller.isViewLoaded() { controller.view.removeFromSuperview() }
-    blurView.hidden = true
-    tool.didHideViewController(controller)
-    controllerTool = nil
-  }
-
   /** setup */
-  private func setup() { initializeReceptionist(); MIDIPlayer.playerViewController = self }
+  private func setup() { initializeReceptionist() }
 
   /**
    init:bundle:

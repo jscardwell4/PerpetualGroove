@@ -18,7 +18,7 @@ final class GeneratorTool: ConfigurableToolType {
     didSet {
       logDebug("[\(mode)] oldValue = \(oldValue)  active = \(active)")
       guard active != oldValue && active && mode == .New else { return }
-      MIDIPlayer.playerViewController?.presentControllerForTool(self)
+      MIDIPlayer.playerContainer?.presentControllerForTool(self)
     }
   }
 
@@ -201,7 +201,7 @@ final class GeneratorTool: ConfigurableToolType {
   */
   func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
     guard active && mode == .Existing && node != nil else { return }
-    MIDIPlayer.playerViewController?.presentControllerForTool(self)
+    MIDIPlayer.playerContainer?.presentControllerForTool(self)
   }
 
 }

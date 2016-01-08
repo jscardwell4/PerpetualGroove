@@ -59,10 +59,9 @@ final class MIDIPlayer {
     playerNode?.defaultNodes.forEach { $0.fadeIn() }
   }
 
-  static weak var playerViewController: MIDIPlayerViewController?
-  static weak var playerView:           MIDIPlayerView?
-  static weak var playerScene:          MIDIPlayerScene?
-  static weak var playerNode:           MIDIPlayerNode? {
+  static weak var playerContainer: MIDIPlayerContainerViewController?
+  
+  static weak var playerNode: MIDIPlayerNode? {
     didSet {
       guard let node = playerNode else { return }
       addTool = AddTool(playerNode: node)
@@ -100,7 +99,7 @@ final class MIDIPlayer {
     willSet {
       guard currentTool != newValue
         && (currentTool.toolType as? ConfigurableToolType)?.isShowingViewController == true else { return }
-      playerViewController?.dismissController()
+      playerContainer?.dismissSecondaryController()
     }
     didSet {
       logDebug("oldValue = \(oldValue)  currentTool = \(currentTool)")

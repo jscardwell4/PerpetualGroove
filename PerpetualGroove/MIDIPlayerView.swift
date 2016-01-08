@@ -18,7 +18,6 @@ final class MIDIPlayerView: SKView {
   private func setup() {
     ignoresSiblingOrder = true
     presentScene(MIDIPlayerScene(size: bounds.size))
-    MIDIPlayer.playerView = self
   }
 
   /**

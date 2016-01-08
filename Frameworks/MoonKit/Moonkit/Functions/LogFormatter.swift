@@ -94,53 +94,69 @@ public class LogFormatter: NSObject, DDLogFormatter {
   public enum Key: String, KeyType { case ClassName, ObjectName, Context, Queue }
 
   /**
-  namesFromTag:
+  namesFromMessage:
 
   - parameter tag: [String
 
   - returns: (objectName: String?, className: String?, contextName: String?)
   */
-  private func namesFromTag(tag: [String:AnyObject]?) -> (String?, String?, String?, String?) {
+  private func namesFromMessage(tag: [String:AnyObject]?) -> (String?, String?, String?, String?) {
     guard let tag = tag else { return (nil, nil, nil, nil) }
     return (
       tag[Key.ObjectName.key] as? String,
-      tag[Key.Context.key] as? String,
+      tag[Key.ClassName.key] as? String,
       tag[Key.Context.key] as? String,
       tag[Key.Queue.key] as? String
     )
   }
 
   /**
-  namesFromTag:
+  namesFromMessage:
 
   - parameter tag: LogManager.LogMessage.Tag?
 
   - returns: (String?, String?, String?)
   */
-  private func namesFromTag(tag: LogManager.LogMessage.Tag?) -> (String?, String?, String?, String?) {
+  private func namesFromMessage(tag: LogManager.LogMessage.Tag?) -> (String?, String?, String?, String?) {
     guard let tag = tag else { return (nil, nil, nil, nil) }
     return (tag.objectName, tag.className, tag.contextName, (tag.queueName == NSOperationQueue.mainQueue().name ? "main" : tag.queueName))
   }
 
   /**
-  namesFromTag:
+  namesFromMessage:
 
   - parameter tag: AnyObject?
 
   - returns: (String?, String?, String?)
   */
-  private func namesFromTag(tag: AnyObject?) -> (String?, String?, String?, String?) {
+  private func namesFromMessage(tag: AnyObject?) -> (String?, String?, String?, String?) {
     var names: (String?, String?, String?, String?)
     switch tag {
-      case let tag as LogManager.LogMessage.Tag: names = namesFromTag(tag)
-      case let tag as [String:AnyObject]:        names = namesFromTag(tag)
+      case let tag as LogManager.LogMessage.Tag: names = namesFromMessage(tag)
+      case let tag as [String:AnyObject]:        names = namesFromMessage(tag)
       default:                                   names = (nil, nil, nil, nil)
     }
     guard useColor else { return names }
     if let objectName  = names.0 { names.0 = ColorLog.wrapBlue(objectName)    }
-    if let className   = names.1 { names.1 = ColorLog.wrapCyan(className)     }
+    if let className   = names.1 { names.1 = ColorLog.wrapCyan(className)   }
     if let contextName = names.2 { names.2 = ColorLog.wrapPurple(contextName) }
     if let queueName   = names.3 { names.3 = ColorLog.wrapGreen(queueName)    }
+    return names
+  }
+
+  /**
+   namesFromMessage:
+
+   - parameter message: DDLogMessage
+
+    - returns: (String?, String?, String?, String?)
+  */
+  private func namesFromMessage(message: DDLogMessage) -> (String?, String?, String?, String?) {
+    var names = namesFromMessage(message.tag)
+    if names.2 == nil, let contextName = LogManager.logContextNames[LogContext(rawValue: message.context)] {
+      names.2 = useColor ? ColorLog.wrapPurple(contextName) : contextName
+    }
+
     return names
   }
 
@@ -175,7 +191,7 @@ public class LogFormatter: NSObject, DDLogFormatter {
       case let (n, f?, nil):                                      selString = "«\(n):\(message.line)» \(f)"
       default:                                                    selString = ""
     }
-    return (useColor ? ColorLog.wrapYellow(selString) : selString) + afterLocation
+    return selString + afterLocation
   }
 
   /**
@@ -195,10 +211,10 @@ public class LogFormatter: NSObject, DDLogFormatter {
     func space() -> String { return result.characters.last?.isWhitespace == true ? "" : " " }
     func newline(flag: Bool) -> String { return flag && !result.isEmpty ? "\n" : "" }
 
-    let (objectName, className, contextName, queueName) = namesFromTag(msg.tag)
+    let (objectName, className, contextName, queueName) = namesFromMessage(msg)
 
     if options ∋ .IncludePrompt { result += prompt }
-    if options ∋ .IncludeContext && contextName != nil { result += "(\(contextName!))" }
+    if options ∋ .IncludeContext && contextName != nil { result += "(\(contextName!)) " }
     if options ∋ .IncludeLogLevel { result += "[\(msg.flag)" }
     if options ∋ .IncludeTimeStamp { result += stringFromTimestamp(msg.timestamp) }
     if options ∋ .IncludeLogLevel { result += "] " }

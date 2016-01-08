@@ -10,7 +10,11 @@ import Foundation
 import MoonKit
 import struct AudioToolbox.CABarBeatTime
 
+protocol SequenceDataProvider { var storedData: Sequence.Data { get } }
+
 final class Sequence {
+
+  enum Data { case MIDI (MIDIFile), Groove (GrooveFile) }
 
 
   // MARK: - Managing tracks
@@ -214,6 +218,19 @@ final class Sequence {
     tempoTrack.addEvents(tempoEvents)
     for track in file.tracks.flatMap({try? InstrumentTrack(sequence: self, grooveTrack: $0)}) {
       addTrack(track)
+    }
+  }
+
+  /**
+   initWithData:document:
+
+   - parameter data: SequenceDataProvider
+   - parameter document: MIDIDocument
+  */
+  convenience init(data: SequenceDataProvider, document: MIDIDocument) {
+    switch data.storedData {
+      case .MIDI(let file): self.init(file: file, document: document)
+      case .Groove(let file): self.init(file: file, document: document)
     }
   }
 

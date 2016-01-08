@@ -100,18 +100,13 @@ final class MIDIDocument: UIDocument {
   override func loadFromContents(contents: AnyObject, ofType typeName: String?) throws {
     guard let data = contents as? NSData, type = SourceType(typeName) else { throw Error.InvalidContentType }
     guard data.length > 0 else { sequence = Sequence(document: self); return }
+    let file: SequenceDataProvider
     switch type {
-      case .MIDI:
-        let file = try MIDIFile(data: data)
-        print(file.description)
-        sequence = Sequence(file: file, document: self)
-      case .Groove:
-        guard let file = GrooveFile(data: data) else { throw Error.InvalidContent }
-        print(file.jsonValue.prettyRawValue)
-        sequence = Sequence(file: file, document: self)
+      case .MIDI: file = try MIDIFile(data: data)
+      case .Groove: guard let f = GrooveFile(data: data) else { throw Error.InvalidContent }; file = f
     }
-    logDebug("file loaded into sequence: \(sequence!)")
-    print(GrooveFile(sequence: sequence!).jsonValue.prettyRawValue)
+    sequence = Sequence(data: file, document: self)
+    logDebug("file: \(file)\nloaded into sequence: \(sequence!)")
   }
 
   /**

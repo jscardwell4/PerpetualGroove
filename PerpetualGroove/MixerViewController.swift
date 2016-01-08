@@ -12,7 +12,6 @@ import typealias AudioUnit.AudioUnitElement
 
 final class MixerViewController: UICollectionViewController {
 
-  @IBOutlet private var blurView: UIVisualEffectView!
   @IBOutlet private var magnifyingGesture: UILongPressGestureRecognizer!
 
   private let receptionist: NotificationReceptionist = {
@@ -23,11 +22,6 @@ final class MixerViewController: UICollectionViewController {
 
   private var widthConstraint: NSLayoutConstraint?
   private var heightConstraint: NSLayoutConstraint?
-
-//  override var collectionView: UICollectionView? {
-//    get { return super.collectionView }
-//    set { super.collectionView = newValue }
-//  }
 
   override var collectionViewLayout: MixerLayout { return super.collectionViewLayout as! MixerLayout }
 
@@ -40,54 +34,6 @@ final class MixerViewController: UICollectionViewController {
       if let idx = sequence?.currentTrackIndex { selectTrackAtIndex(idx) }
     }
   }
-
-  /**
-   presentSecondaryController:
-
-   - parameter controller: UIViewController
-  */
-  func presentSecondaryController(controller: UIViewController) {
-    guard childViewControllers.isEmpty && isViewLoaded() && blurView.superview == nil else { return }
-
-    addChildViewController(controller)
-    let controllerView = controller.view
-    controllerView.frame = view.bounds.insetBy(dx: 20, dy: 20)
-    controllerView.translatesAutoresizingMaskIntoConstraints = false
-    controllerView.backgroundColor = nil
-    blurView.contentView.insertSubview(controllerView, atIndex: 0)
-    blurView.contentView.constrain(𝗩|--20--controllerView--20--|𝗩, 𝗛|--20--controllerView--20--|𝗛)
-    blurView.frame = view.bounds
-    UIView.transitionWithView(view,
-                     duration: 0.25,
-                      options: [.AllowAnimatedContent],
-                   animations: {
-                    [unowned self] in
-                     self.view.addSubview(self.blurView)
-                     self.view.constrain(𝗩|self.blurView|𝗩, 𝗛|self.blurView|𝗛)
-                   },
-                   completion: { [unowned self] _ in controller.didMoveToParentViewController(self) })
-  }
-
-  /** dismissSecondaryController */
-  func dismissSecondaryController() {
-    guard let controller = childViewControllers.first
-      where controller.isViewLoaded() && blurView.superview != nil else { return }
-    controller.willMoveToParentViewController(nil)
-    controller.removeFromParentViewController()
-    UIView.transitionWithView(view,
-                     duration: 0.25,
-                      options: [.AllowAnimatedContent],
-                   animations: {
-                    [unowned self] in
-                     controller.view.removeFromSuperview()
-                     self.blurView.removeFromSuperview()
-                    if controller is InstrumentViewController { self.soundSetSelectionTargetCell = nil }
-                   },
-                   completion: nil)
-  }
-
-  /** dismissAction */
-  @IBAction private func dismissAction() { dismissSecondaryController() }
 
   /**
   observeSequence:
@@ -152,30 +98,6 @@ final class MixerViewController: UICollectionViewController {
     sequence?.currentTrackIndex = indexPathForSender(sender)?.item 
   }
 
-//  private(set) var magnifiedItemIndex: NSIndexPath? {
-//    didSet {
-//      guard magnifiedItemIndex != oldValue else { return }
-//      if let index = magnifiedItemIndex where magnifiedCell == nil,
-//         let cell = collectionView?.cellForItemAtIndexPath(index) as? TrackCell { magnifiedCell = cell }
-//      else if magnifiedItemIndex == nil { magnifiedCell = nil }
-//      collectionViewLayout.invalidateLayout()
-//    }
-//  }
-
-//  private weak var magnifiedCell: TrackCell? {
-//    willSet {
-//      guard magnifiedCell != newValue && newValue == nil else { return }
-//      markedForRemoval = false
-//      magnifiedCellLocation = nil
-//      magnifiedCell?.layer.shouldRasterize = false
-//    }
-//    didSet {
-//      guard magnifiedCell != oldValue && magnifiedCell != nil else { return }
-//      magnifiedCellLocation = magnifyingGesture.locationInView(collectionView)
-//      magnifiedCell?.layer.shouldRasterize = true
-//    }
-//  }
-
   private var magnifiedCellLocation: CGPoint?
   private var markedForRemoval = false {
     didSet {
@@ -187,12 +109,6 @@ final class MixerViewController: UICollectionViewController {
       }
     }
   }
-//  private(set) var magnifiedCellHorizontalOffset: CGFloat = 0 {
-//    didSet {
-//      guard magnifiedCellHorizontalOffset != oldValue else { return }
-//      collectionViewLayout.invalidateLayout()
-//    }
-//  }
 
   /**
    magnifyItem:
@@ -267,7 +183,7 @@ final class MixerViewController: UICollectionViewController {
     sequence?.removeTrackAtIndex(index)
   }
 
-  private weak var soundSetSelectionTargetCell: TrackCell? {
+  weak var soundSetSelectionTargetCell: TrackCell? {
     didSet {
       let instrument: Instrument?
       switch (oldValue, soundSetSelectionTargetCell) {
@@ -296,11 +212,15 @@ final class MixerViewController: UICollectionViewController {
     if soundSetSelectionTargetCell == cell { soundSetSelectionTargetCell = nil }
     else {
       soundSetSelectionTargetCell = cell
-      guard let controller = UIStoryboard(name: "Instrument", bundle: nil).instantiateInitialViewController() else {
-        fatalError("Failed to instantiate instrument view controller from storyboard")
-      }
-      presentSecondaryController(controller)
+      presentInstrumentController()
     }
+  }
+
+  /** presentInstrumentController */
+  private func presentInstrumentController(){
+    guard let controller = UIStoryboard(name: "Instrument", bundle: nil).instantiateInitialViewController(),
+              container = parentViewController as? MixerContainerViewController else { return }
+    container.presentSecondaryController(controller)
   }
 
   private var initialized = false
@@ -311,8 +231,6 @@ final class MixerViewController: UICollectionViewController {
     let maskView = UIView(frame: CGRect(size: CGSize(width: view.bounds.width, height: MixerLayout.itemSize.height * 1.1)))
     maskView.backgroundColor = UIColor.whiteColor()
     view.maskView = maskView
-
-//    collectionView?.allowsSelection = true
   }
 
   /** awakeFromNib */
@@ -514,7 +432,9 @@ extension MixerViewController {
 
      - returns: Bool
      */
-    func contains(indexPath: NSIndexPath) -> Bool { return indexPath.section == rawValue && (0 ..< itemCount) ∋ indexPath.item }
+    func contains(indexPath: NSIndexPath) -> Bool {
+      return indexPath.section == rawValue && (0 ..< itemCount) ∋ indexPath.item
+    }
 
     /**
     cellCount:

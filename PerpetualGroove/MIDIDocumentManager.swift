@@ -250,7 +250,13 @@ final class MIDIDocumentManager {
     let removed = oldItems ∖ items
     let added = items ∖ oldItems
 
-    logDebug("removed: \(removed); added: \(added)")
+    logDebug({
+      guard removed.count + added.count > 0 else { return "" }
+      var string = ""
+      if removed.count > 0 { string += "removed: \(removed)" }
+      if added.count > 0 { if !string.isEmpty { string += "\n" }; string += "added: \(added)" }
+      return string
+      }())
 
     var userInfo: [Notification.Key:AnyObject?] = [:]
     if removed.count > 0 { userInfo[Notification.Key.Removed] = removed.map({$0.data}) }
