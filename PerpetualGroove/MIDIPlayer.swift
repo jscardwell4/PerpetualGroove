@@ -16,8 +16,47 @@ final class MIDIPlayer {
   private static let receptionist: NotificationReceptionist = {
     let receptionist = NotificationReceptionist()
     receptionist.logContext = LogManager.SceneContext
+    receptionist.observe(MIDIDocumentManager.Notification.WillChangeDocument,
+                    from: MIDIDocumentManager.self,
+                callback: MIDIPlayer.willChangeDocument)
+    receptionist.observe(MIDIDocumentManager.Notification.DidChangeDocument,
+                    from: MIDIDocumentManager.self,
+                callback: MIDIPlayer.didChangeDocument)
     return receptionist
   }()
+
+  static private weak var sequence: Sequence?
+
+  /**
+   willChangeDocument:
+
+   - parameter notification: NSNotification
+   */
+  static private func willChangeDocument(notification: NSNotification) {
+    guard let sequence = sequence else { return }
+    receptionist.stopObservingObject(sequence)
+  }
+
+  /**
+   didChangeDocument:
+
+   - parameter notification: NSNotification
+  */
+  static private func didChangeDocument(notification: NSNotification) {
+    guard let sequence = MIDIDocumentManager.currentDocument?.sequence else { return }
+    self.sequence = sequence
+    receptionist.observe(Sequence.Notification.DidRemoveTrack, from: sequence, callback: MIDIPlayer.didRemoveTrack)
+  }
+
+  /**
+   didRemoveTrack:
+
+   - parameter notification: NSNotification
+  */
+  static private func didRemoveTrack(notification: NSNotification) {
+    guard let track = notification.removedTrack else { return }
+    loops[ObjectIdentifier(track)] = nil
+  }
 
   /**
    willEnterLoopMode:
@@ -25,9 +64,15 @@ final class MIDIPlayer {
    - parameter notification: NSNotification
    */
   static private func willEnterLoopMode(notification: NSNotification) {
-    logDebug("")
     playerNode?.defaultNodes.forEach { $0.fadeOut() }
   }
+
+  /**
+   didEnterLoopMode:
+
+   - parameter notification: NSNotification
+   */
+  static private func didEnterLoopMode(notification: NSNotification) { loops.removeAll() }
 
   /**
    willExitLoopMode:
@@ -35,18 +80,7 @@ final class MIDIPlayer {
    - parameter notification: NSNotification
    */
   static private func willExitLoopMode(notification: NSNotification) {
-    logDebug("")
     playerNode?.loopNodes.forEach { $0.fadeOut(remove: true) }
-  }
-
-  /**
-   didEnterLoopMode:
-
-   - parameter notification: NSNotification
-  */
-  static private func didEnterLoopMode(notification: NSNotification) {
-    logDebug("")
-//    playerNode?.defaultNodes.forEach { $0.fadeOut() }
   }
 
   /**
@@ -55,7 +89,6 @@ final class MIDIPlayer {
    - parameter notification: NSNotification
   */
   static private func didExitLoopMode(notification: NSNotification) {
-    logDebug("")
     playerNode?.defaultNodes.forEach { $0.fadeIn() }
   }
 
@@ -97,17 +130,25 @@ final class MIDIPlayer {
 
   static var currentTool: Tool = .None {
     willSet {
+    logDebug("willSet: \(currentTool) ➞ \(newValue)")
       guard currentTool != newValue
         && (currentTool.toolType as? ConfigurableToolType)?.isShowingViewController == true else { return }
       playerContainer?.dismissSecondaryController()
     }
     didSet {
-      logDebug("oldValue = \(oldValue)  currentTool = \(currentTool)")
+      logDebug("didSet: \(oldValue) ➞ \(currentTool)")
       guard currentTool != oldValue else { return }
       oldValue.toolType?.active = false
       currentTool.toolType?.active = true
       Notification.DidSelectTool.post(userInfo: [.SelectedTool: currentTool.rawValue])
     }
+  }
+
+  static private var loops: [ObjectIdentifier:MIDILoop] = [:]
+
+  /** insertLoops */
+  static private func insertLoops() {
+
   }
 
   /**

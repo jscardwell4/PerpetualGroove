@@ -11,7 +11,7 @@ import MoonKit
 import struct AudioToolbox.CABarBeatTime
 
 /** A MIDI meta event that uses the 'Cue Point' message to embed `MIDINode` trajectory and removal events for a track */
-struct MIDINodeEvent: MIDIEvent {
+struct MIDINodeEvent: MIDIEventType {
   var time: CABarBeatTime = .start
   let data: Data
   var delta: VariableLengthQuantity?
@@ -237,6 +237,10 @@ extension MIDINodeEvent {
     var length: VariableLengthQuantity { return VariableLengthQuantity(bytes.count) }
   }
 }
+
+extension MIDINodeEvent: Equatable {}
+
+func ==(lhs: MIDINodeEvent, rhs: MIDINodeEvent) -> Bool { return lhs.bytes == rhs.bytes }
 
 extension MIDINodeEvent.Data: CustomStringConvertible {
   var description: String {

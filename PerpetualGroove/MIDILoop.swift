@@ -24,14 +24,14 @@ struct MIDILoop: SequenceType {
 
   /// 'Marker' meta event in the following format:<br>
   ///      `start(`*identifier*`):`*repetitions*`:`*repeatDelay*
-  var beginLoopEvent: MetaEvent {
-    return MetaEvent(.Marker(name: "start(\(identifier.stringValue)):\(repetitions):\(repeatDelay)"))
+  var beginLoopEvent: MIDIEvent {
+    return .Meta(MetaEvent(.Marker(name: "start(\(identifier.stringValue)):\(repetitions):\(repeatDelay)")))
   }
 
   /// 'Marker' meta event in the following format:<br>
   ///      `end(`*identifier*`)`
-  var endLoopEvent: MetaEvent {
-    return MetaEvent(.Marker(name: "end(\(identifier.stringValue))"))
+  var endLoopEvent: MIDIEvent {
+    return .Meta(MetaEvent(.Marker(name: "end(\(identifier.stringValue))")))
   }
 
   /**
@@ -57,8 +57,8 @@ struct MIDILoop: SequenceType {
     start = grooveLoop.start
     var events: [MIDIEvent] = []
     for node in grooveLoop.nodes.values {
-      events.append(node.addEvent)
-      if let removeEvent = node.removeEvent { events.append(removeEvent) }
+      events.append(.Node(node.addEvent))
+      if let removeEvent = node.removeEvent { events.append(.Node(removeEvent)) }
     }
 
     self.events = MIDIEventContainer(events: events)
@@ -67,7 +67,7 @@ struct MIDILoop: SequenceType {
   /**
    generate
 
-    - returns: AnyGenerator<MIDIEvent>
+    - returns: AnyGenerator<MIDIEventType>
   */
   func generate() -> AnyGenerator<MIDIEvent> {
     var startEventInserted = false

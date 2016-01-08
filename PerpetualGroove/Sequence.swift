@@ -213,7 +213,7 @@ final class Sequence {
     var tempoEvents: [MIDIEvent] = []
     for (_, rawTime, bpmValue) in file.tempoChanges.value {
       guard let time = CABarBeatTime(rawValue: rawTime), bpm = Double(bpmValue) else { continue }
-      tempoEvents.append(MetaEvent(.Tempo(bpm: bpm), time))
+      tempoEvents.append(.Meta(MetaEvent(.Tempo(bpm: bpm), time)))
     }
     tempoTrack.addEvents(tempoEvents)
     for track in file.tracks.flatMap({try? InstrumentTrack(sequence: self, grooveTrack: $0)}) {

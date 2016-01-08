@@ -172,16 +172,6 @@ final class MIDIDocument: UIDocument {
     super.saveToURL(url, forSaveOperation: saveOperation, completionHandler: completionHandler)
   }
 
-  /**
-  autosaveWithCompletionHandler:
-
-  - parameter completionHandler: ((Bool) -> Void
-  */
-  override func autosaveWithCompletionHandler(completionHandler: ((Bool) -> Void)?) {
-    logDebug("unsaved changes? \(hasUnsavedChanges())")
-    super.autosaveWithCompletionHandler(completionHandler)
-  }
-
 }
 
 extension MIDIDocument: Named {

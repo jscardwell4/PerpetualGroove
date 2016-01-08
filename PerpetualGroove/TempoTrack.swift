@@ -19,7 +19,7 @@ final class TempoTrack: Track {
     didSet {
       guard tempo != oldValue && recording else { return }
       logDebug("inserting event for tempo \(tempo)")
-      addEvent(tempoEvent)
+      addEvent(.Meta(tempoEvent))
       Notification.DidUpdate.post(object: self)
     }
   }
@@ -28,7 +28,7 @@ final class TempoTrack: Track {
     didSet {
       guard timeSignature != oldValue && recording else { return }
       logDebug("inserting event for signature \(timeSignature)")
-      addEvent(timeSignatureEvent)
+      addEvent(.Meta(timeSignatureEvent))
       Notification.DidUpdate.post(object: self)
     }
   }
@@ -49,7 +49,7 @@ final class TempoTrack: Track {
   - returns: Bool
   */
   static func isTempoTrackEvent(trackEvent: MIDIEvent) -> Bool {
-    guard let metaEvent = trackEvent as? MetaEvent else { return false }
+    guard case .Meta(let metaEvent) = trackEvent else { return false }
     switch metaEvent.data {
       case .Tempo, .TimeSignature, .EndOfTrack: return true
       case .SequenceTrackName(let name) where name.lowercaseString == "tempo": return true
@@ -63,7 +63,7 @@ final class TempoTrack: Track {
   - parameter event: MIDIEvent
   */
   override func dispatchEvent(event: MIDIEvent) {
-    guard let metaEvent = event as? MetaEvent else { return }
+    guard case .Meta(let metaEvent) = event else { return }
     switch metaEvent.data {
       case let .Tempo(bpm): tempo = bpm; Sequencer.setTempo(bpm, automated: true)
       case let .TimeSignature(signature, _, _): timeSignature = signature
@@ -78,8 +78,8 @@ final class TempoTrack: Track {
   */
   override init(sequence: Sequence) {
     super.init(sequence: sequence)
-    addEvent(timeSignatureEvent)
-    addEvent(tempoEvent)
+    addEvent(.Meta(timeSignatureEvent))
+    addEvent(.Meta(tempoEvent))
   }
 
   /**
@@ -93,17 +93,17 @@ final class TempoTrack: Track {
     addEvents(trackChunk.events.filter(TempoTrack.isTempoTrackEvent))
 
     if filterEvents({
-      if let event = $0 as? MetaEvent, case .TimeSignature = event.data { return true } else { return false }
+      if case .Meta(let event) = $0, case .TimeSignature = event.data { return true } else { return false }
     }).count == 0
     {
-      addEvent(timeSignatureEvent)
+      addEvent(.Meta(timeSignatureEvent))
     }
 
     if filterEvents({
-      if let event = $0 as? MetaEvent, case .Tempo = event.data { return true } else { return false }
+      if case .Meta(let event) = $0, case .Tempo = event.data { return true } else { return false }
     }).count == 0
     {
-      addEvent(tempoEvent)
+      addEvent(.Meta(tempoEvent))
     }
   }
 

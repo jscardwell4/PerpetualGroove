@@ -81,7 +81,7 @@ extension NoteGenerator: JSONValueInitializable {
 // MARK: - Tone
 extension NoteGenerator {
   /** An enumeration for specifying a note's pitch and octave */
-  struct Tone: RawRepresentable, Equatable, MIDIConvertible, CustomStringConvertible,
+  struct Tone: RawRepresentable, Equatable, CustomStringConvertible,
                JSONValueConvertible, JSONValueInitializable
   {
 

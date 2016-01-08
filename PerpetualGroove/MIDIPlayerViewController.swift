@@ -124,6 +124,21 @@ final class MIDIPlayerViewController: UIViewController {
     if tools.selectedSegmentIndex != tool.rawValue { tools.selectedSegmentIndex = tool.rawValue }
   }
 
+  /**
+   didEnterLoopMode:
+
+   - parameter notification: NSNotification
+  */
+  private func didEnterLoopMode(notification: NSNotification) {}
+
+  /**
+   didExitLoopMode:
+
+   - parameter notification: NSNotification
+  */
+  private func didExitLoopMode(notification: NSNotification) {}
+
+
   /** initializeReceptionist */
   private func initializeReceptionist() {
 
@@ -138,6 +153,12 @@ final class MIDIPlayerViewController: UIViewController {
     receptionist.observe(MIDIPlayer.Notification.DidSelectTool,
                     from: MIDIPlayer.self,
                 callback: weakMethod(self, MIDIPlayerViewController.didSelectTool))
+    receptionist.observe(Sequencer.Notification.DidEnterLoopMode,
+                    from: Sequencer.self,
+                callback: weakMethod(self, MIDIPlayerViewController.didEnterLoopMode))
+    receptionist.observe(Sequencer.Notification.DidExitLoopMode,
+                    from: Sequencer.self,
+                callback: weakMethod(self, MIDIPlayerViewController.didExitLoopMode))
 
   }
 

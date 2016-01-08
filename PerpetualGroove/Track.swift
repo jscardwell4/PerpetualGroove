@@ -48,7 +48,7 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
 
   - returns: [MIDIEvent]?
   */
-  func eventsForTime(time: CABarBeatTime) -> [MIDIEvent]? { return eventContainer.eventsForTime(time) }
+  func eventsForTime(time: CABarBeatTime) -> OrderedSet<MIDIEvent>? { return eventContainer.eventsForTime(time) }
 
   /**
   filterEvents:
@@ -72,23 +72,27 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
     return eventContainer.maxTime
   }
 
-  private var trackNameEvent: MetaEvent = MetaEvent(.SequenceTrackName(name: ""))
-  private var endOfTrackEvent: MetaEvent = MetaEvent(.EndOfTrack)
+  private var trackNameEvent: MIDIEvent = .Meta(MetaEvent(.SequenceTrackName(name: "")))
+  private var endOfTrackEvent: MIDIEvent = .Meta(MetaEvent(.EndOfTrack))
 
   var metaEvents: [MetaEvent] { return eventContainer.metaEvents }
   var channelEvents: [ChannelEvent] { return eventContainer.channelEvents } 
   var nodeEvents: [MIDINodeEvent] { return eventContainer.nodeEvents } 
   var name: String {
     get {
-      switch trackNameEvent.data {
-        case .SequenceTrackName(let name): return name
-        default: return ""
+      switch trackNameEvent {
+        case .Meta(let event):
+          switch event.data {
+            case .SequenceTrackName(let name): return name
+            default: return ""
+          }
+      default: return ""
       }
     }
     set {
       guard name != newValue else { return }
       logDebug("'\(name)' ➞ '\(newValue)'")
-      trackNameEvent = MetaEvent(.SequenceTrackName(name: newValue))
+      trackNameEvent = .Meta(MetaEvent(.SequenceTrackName(name: newValue)))
       Notification.DidUpdate.post(object: self)
       Notification.DidChangeName.post(object: self)
     }
@@ -106,11 +110,11 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
   }
 
   var headEvents: [MIDIEvent] {
-    return [trackNameEvent as MIDIEvent]
+    return [trackNameEvent]
   }
 
   var tailEvents: [MIDIEvent] {
-    return [endOfTrackEvent as MIDIEvent]
+    return [endOfTrackEvent]
   }
 
   private var _recording = false { didSet { logDebug("recording = \(_recording)") } }
@@ -130,7 +134,7 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
   - returns: [CABarBeatTime]
   */
   func registrationTimesForAddedEvents(events: [MIDIEvent]) -> [CABarBeatTime] {
-    guard let eot = events.first({($0 as? MetaEvent)?.data == .EndOfTrack}) else { return [] }
+    guard let eot = events.first({($0.event as? MetaEvent)?.data == .EndOfTrack}) else { return [] }
     return [eot.time]
   }
 

@@ -12,7 +12,7 @@ import struct AudioToolbox.CABarBeatTime
 import struct AudioToolbox.MIDIMetaEvent
 
 /** Struct to hold data for a meta event where event = \<delta time\> **FF** \<meta type\> \<length of meta\> \<meta\> */
-struct MetaEvent: MIDIEvent {
+struct MetaEvent: MIDIEventType {
 
   var time: CABarBeatTime = .start
   var data: Data

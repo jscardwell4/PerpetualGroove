@@ -11,7 +11,7 @@ import MoonKit
 import AudioToolbox
 
 /** Struct to hold data for a channel event where event = \<delta time\> \<status\> \<data1\> \<data2\> */
-struct ChannelEvent: MIDIEvent {
+struct ChannelEvent: MIDIEventType {
 
   enum EventType: Byte, IntegerLiteralConvertible {
     case NoteOff               = 0x8
@@ -155,3 +155,8 @@ extension ChannelEvent: CustomStringConvertible {
   }
 }
 
+extension ChannelEvent: Equatable {}
+
+func ==(lhs: ChannelEvent, rhs: ChannelEvent) -> Bool {
+  return lhs.bytes == rhs.bytes
+}

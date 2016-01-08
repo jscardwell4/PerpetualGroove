@@ -10,7 +10,7 @@ import Foundation
 import MoonKit
 
 /** Struct to hold a track chunk for a MIDI file where chunk = \<chunk type\> \<length\> \<track event\>+ */
-struct MIDIFileTrackChunk: MIDIChunk {
+struct MIDIFileTrackChunk {
   let type = Byte4("MTrk".utf8)
   var events: [MIDIEvent] = []
 
@@ -76,9 +76,9 @@ struct MIDIFileTrackChunk: MIDIChunk {
 
           let eventBytes = bytes[eventStart ..< i]
           if type == 0x07 {
-            events.append(try MIDINodeEvent(delta: delta, bytes: eventBytes))
+            events.append(.Node(try MIDINodeEvent(delta: delta, bytes: eventBytes)))
           } else {
-            events.append(try MetaEvent(delta: delta, bytes: eventBytes))
+            events.append(.Meta(try MetaEvent(delta: delta, bytes: eventBytes)))
           }
           currentIndex = i
 
@@ -87,7 +87,7 @@ struct MIDIFileTrackChunk: MIDIChunk {
             throw MIDIFileError(type: .UnsupportedEvent, reason: "\(bytes[currentIndex] >> 4) is not a supported ChannelEvent")
           }
           i = currentIndex.advancedBy(type.byteCount)
-          events.append(try ChannelEvent(delta: delta, bytes: bytes[currentIndex ..< i]))
+          events.append(.Channel(try ChannelEvent(delta: delta, bytes: bytes[currentIndex ..< i])))
           currentIndex = i
       }
     }

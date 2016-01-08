@@ -118,6 +118,10 @@ final class MIDIDocumentManager {
   private static let observer = KVOReceptionist()
 
   static private var _currentDocument: MIDIDocument? {
+    willSet {
+      guard _currentDocument != newValue else { return }
+      Notification.WillChangeDocument.post()
+    }
     didSet {
       queue.async {
         logDebug("currentDocument: \(_currentDocument == nil ? "nil" : _currentDocument!.localizedName)")
@@ -411,7 +415,7 @@ final class MIDIDocumentManager {
   static private func openBookmarkedDocument(data: NSData?) throws {
     guard let data = data else { return }
     let url = try NSURL(byResolvingBookmarkData: data, options: .WithoutUI, relativeToURL: nil, bookmarkDataIsStale: nil)
-    logDebug("opening bookmarked file at path '\(String(CString: url.fileSystemRepresentation, encoding: NSUTF8StringEncoding)!)'")
+    logDebug("opening bookmarked file at path '\(url.path!)'")
     openURL(url)
 
   }
@@ -484,7 +488,7 @@ extension MIDIDocumentManager {
 extension MIDIDocumentManager {
 
   enum Notification: String, NotificationType, NotificationNameType {
-    case DidUpdateItems, DidChangeDocument, DidCreateDocument, WillOpenDocument, DidOpenDocument
+    case DidUpdateItems, WillChangeDocument, DidChangeDocument, DidCreateDocument, WillOpenDocument, DidOpenDocument
     enum Key: String, NotificationKeyType { case Changed, Added, Removed, FilePath }
     var object: AnyObject? { return MIDIDocumentManager.self }
   }

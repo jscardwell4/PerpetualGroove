@@ -30,7 +30,7 @@ struct GrooveTrack {
     for event in track.eventContainer {
       switch event {
 
-        case let event as MetaEvent:
+        case .Meta(let event):
           switch event.data {
             case .Marker(let text):
               switch text {
@@ -49,7 +49,7 @@ struct GrooveTrack {
             default: break
           }
 
-        case let event as MIDINodeEvent:
+        case .Node(let event):
           switch event.data {
             case .Add:
               guard let node = GrooveNode(event: event) else { continue }

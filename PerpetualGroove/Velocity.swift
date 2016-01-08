@@ -15,10 +15,6 @@ enum Velocity: String, EnumerableType, ImageAssetLiteralType {
 
   static let allCases: [Velocity] = [.𝑝𝑝𝑝, .𝑝𝑝, .𝑝, .𝑚𝑝, .𝑚𝑓, .𝑓, .𝑓𝑓, .𝑓𝑓𝑓]
 
-}
-
-extension Velocity: MIDIConvertible {
-
   var midi: Byte {
     switch self {
       case .𝑝𝑝𝑝:	return 16

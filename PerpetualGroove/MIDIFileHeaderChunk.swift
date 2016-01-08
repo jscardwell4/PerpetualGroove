@@ -10,7 +10,7 @@ import Foundation
 import MoonKit
 
 /** Struct to hold the header chunk of a MIDI file */
-struct MIDIFileHeaderChunk: MIDIChunk {
+struct MIDIFileHeaderChunk {
   let type = Byte4("MThd".utf8)
   let format: Byte2 = 1
   let length: Byte4 = 6
@@ -61,7 +61,9 @@ struct MIDIFileHeaderChunk: MIDIChunk {
 }
 
 extension MIDIFileHeaderChunk: CustomStringConvertible {
-  var description: String { return "MThd\n\tformat: \(format)\n\tnumber of tracks: \(numberOfTracks)\n\tdivision: \(division)" }
+  var description: String {
+    return "MThd\n\tformat: \(format)\n\tnumber of tracks: \(numberOfTracks)\n\tdivision: \(division)"
+  }
 }
 
 extension MIDIFileHeaderChunk: CustomDebugStringConvertible {

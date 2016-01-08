@@ -133,11 +133,15 @@ final class InstrumentTrack: Track {
   override func addEvents(events: [MIDIEvent]) {
     var filteredEvents: [MIDIEvent] = []
     for event in events {
-      if let event = event as? MetaEvent, case .Text(let text) = event.data where text.hasPrefix("instrument:") {
-        instrumentEvent = event
-      } else if let event = event as? ChannelEvent where event.status.type == .ProgramChange {
-        programEvent = event
-      } else { filteredEvents.append(event) }
+      switch event {
+        case .Meta(let metaEvent):
+          switch metaEvent.data {
+            case .Text(let text) where text.hasPrefix("instrument:"): instrumentEvent = metaEvent
+            default: filteredEvents.append(event)
+          }
+        case .Channel(let channelEvent) where channelEvent.status.type == .ProgramChange: programEvent = channelEvent
+        default: filteredEvents.append(event)
+      }
     }
     super.addEvents(filteredEvents)
   }
@@ -150,7 +154,7 @@ final class InstrumentTrack: Track {
   typealias EventData = MIDINodeEvent.Data
 
   override var headEvents: [MIDIEvent] {
-    return super.headEvents + [instrumentEvent as MIDIEvent, programEvent as MIDIEvent]
+    return super.headEvents + [.Meta(instrumentEvent), .Channel(programEvent)]
   }
 
   // MARK: - Track properties
@@ -214,7 +218,7 @@ final class InstrumentTrack: Track {
                                        trajectory: node.initialSnapshot.trajectory,
                                        generator: node.noteGenerator),
                                   time)
-        self?.addEvent(event)
+        self?.addEvent(.Node(event))
         self?.modified = true
       }
 
@@ -299,12 +303,15 @@ final class InstrumentTrack: Track {
 
     switch delete {
       case true:
-        eventContainer.removeEventsMatching { ($0 as? MIDINodeEvent)?.identifier.nodeIdentifier == identifier }
+        eventContainer.removeEventsMatching {
+          if case .Node(let event) = $0 where event.identifier.nodeIdentifier == identifier { return true }
+          else { return false }
+        }
       case false:
         guard recording else { logDebug("not recording…skipping event creation"); return }
         eventQueue.addOperationWithBlock {
           [time = Sequencer.time.time, weak self] in
-          self?.addEvent(MIDINodeEvent(.Remove(identifier: MIDINodeEvent.Identifier(nodeIdentifier: identifier)), time))
+          self?.addEvent(.Node(MIDINodeEvent(.Remove(identifier: MIDINodeEvent.Identifier(nodeIdentifier: identifier)), time)))
         }
     }
   }
@@ -354,8 +361,8 @@ final class InstrumentTrack: Track {
 
       let event: MIDIEvent?
       switch packet.status {
-        case 9:  event = ChannelEvent(.NoteOn, packet.channel, packet.note, packet.velocity, time)
-        case 8:  event = ChannelEvent(.NoteOff, packet.channel, packet.note, packet.velocity, time)
+        case 9:  event = .Channel(ChannelEvent(.NoteOn, packet.channel, packet.note, packet.velocity, time))
+        case 8:  event = .Channel(ChannelEvent(.NoteOff, packet.channel, packet.note, packet.velocity, time))
         default: event = nil
       }
       if event != nil { self?.addEvent(event!) }
@@ -369,14 +376,14 @@ final class InstrumentTrack: Track {
   */
   override func dispatchEvent(event: MIDIEvent) {
       switch event {
-        case let nodeEvent as MIDINodeEvent:
+        case .Node(let nodeEvent):
           switch nodeEvent.data {
             case let .Add(identifier, trajectory, generator):
               addNodeWithIdentifier(identifier.nodeIdentifier, trajectory: trajectory, generator: generator)
             case let .Remove(identifier):
               removeNodeWithIdentifier(identifier.nodeIdentifier)
           }
-        case let metaEvent as MetaEvent where metaEvent.data == .EndOfTrack:
+        case .Meta(let metaEvent) where metaEvent.data == .EndOfTrack:
           guard !recording && endOfTrack == metaEvent.time else { break }
           state.insert(.TrackEnded)
         default: break
@@ -392,7 +399,8 @@ final class InstrumentTrack: Track {
   - returns: [CABarBeatTime]
   */
   override func registrationTimesForAddedEvents(events: [MIDIEvent]) -> [CABarBeatTime] {
-    return events.filter({$0 is MIDINodeEvent}).map({$0.time}) + super.registrationTimesForAddedEvents(events)
+    return events.filter({ if case .Node(_) = $0 { return true } else { return false } }).map({$0.time})
+      + super.registrationTimesForAddedEvents(events)
   }
 
   /// The index for the track in the sequence's array of instrument tracks, or nil
@@ -435,7 +443,6 @@ final class InstrumentTrack: Track {
   */
   init(sequence: Sequence, grooveTrack: GrooveTrack) throws {
     super.init(sequence: sequence)
-    print("\(grooveTrack)")
     guard let instrument = Instrument(grooveTrack.instrument.jsonValue) else {
       throw Error.InstrumentInitializeFailure
     }
@@ -449,11 +456,11 @@ final class InstrumentTrack: Track {
     for (_, node) in grooveTrack.nodes {
       let generator: MIDINoteGenerator? = ChordGenerator(node.generator.jsonValue) ?? NoteGenerator(node.generator.jsonValue)
       guard generator != nil else { continue }
-      events.append(MIDINodeEvent(.Add(identifier: node.identifier,
-                                       trajectory: node.trajectory,
-                                       generator: generator!), node.addTime))
+      events.append(.Node(MIDINodeEvent(.Add(identifier: node.identifier,
+                                             trajectory: node.trajectory,
+                                             generator: generator!), node.addTime)))
       if let time = node.removeTime {
-        events.append(MIDINodeEvent(.Remove(identifier: node.identifier), time))
+        events.append(.Node(MIDINodeEvent(.Remove(identifier: node.identifier), time)))
       }
     }
     addEvents(events)
