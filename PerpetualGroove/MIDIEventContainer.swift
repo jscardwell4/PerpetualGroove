@@ -12,23 +12,38 @@ import struct AudioToolbox.CABarBeatTime
 
 struct MIDIEventContainer: SequenceType, Indexable, MutableIndexable {
 
-  var startIndex: Index {
-    guard let time = _events.keys.sort().first where _events[time]?.events.count > 0 else { return endIndex }
-    return Index(container: self, time: time, position: 0)
-  }
+  private(set) var startIndex: Index = .EndIndex
 
-  var endIndex: Index { return Index(time: .Nil, position: -1) }
+  var endIndex: Index { return .EndIndex }
 
-  var isEmpty: Bool { return _events.isEmpty || _events.values.flatMap({$0.events.isEmpty ? $0 : nil}).count > 0 }
+  var isEmpty: Bool { return events.isEmpty || events.values.flatMap({$0.events.isEmpty ? $0 : nil}).count > 0 }
 
   subscript(index: Index) -> MIDIEvent {
     get {
-      guard let event = _events[index.time]?[index.position] else { fatalError("invalid index \(index)") }
+      guard let event = events[index.time]?[index.position] else { fatalError("invalid index \(index)") }
       return event
     }
     set {
-      _events[index.time]?[index.position] = newValue
+      events[index.time]?[index.position] = newValue
     }
+  }
+
+  private(set) var eventTimes: [CABarBeatTime] = []
+
+  private var _indices: Range<Index> = .EndIndex ..< .EndIndex
+
+  private mutating func rebuildIndices() {
+    var currentIndex: Index = .EndIndex
+    var indices: [Index] = [currentIndex]
+    for time in eventTimes.reverse() {
+      let bagIndices = Array(events[time]!.indices).reverse()
+      for bagIndex in bagIndices {
+        let index: Index = .ValueIndex(time, bagIndex, currentIndex)
+        indices.append(index)
+        currentIndex = index
+      }
+    }
+    startIndex = currentIndex
   }
 
   /** init */
@@ -46,17 +61,22 @@ struct MIDIEventContainer: SequenceType, Indexable, MutableIndexable {
 
   - returns: Generator
   */
-  func generate() -> IndexingGenerator<MIDIEventContainer> { return IndexingGenerator(self) }
+  func generate() -> AnyGenerator<MIDIEvent> {
+    var index = startIndex
+    let container = self
+    return anyGenerator({
+      guard index != .EndIndex else { return nil }
+      let event = container[index]
+      index = index.successor()
+      return event
+    })
+  }
 
-  var minTime: CABarBeatTime { return _events.keys.minElement() ?? .start              }
-  var maxTime: CABarBeatTime { return _events.keys.maxElement() ?? Sequencer.time.time }
+  var minTime: CABarBeatTime { return events.keys.minElement() ?? .start              }
+  var maxTime: CABarBeatTime { return events.keys.maxElement() ?? Sequencer.time.time }
 
-  private var _events: [CABarBeatTime:EventBag] = [:]
-
-  var events: [MIDIEvent] {
-    var result: [MIDIEvent] = []
-    for time in _events.keys.sort() { result.appendContentsOf(_events[time]!) }
-    return result
+  private var events: [CABarBeatTime:EventBag] = [:] {
+    didSet { eventTimes = events.keys.sort(); rebuildIndices() }
   }
 
   /**
@@ -72,9 +92,9 @@ struct MIDIEventContainer: SequenceType, Indexable, MutableIndexable {
       default: break
     }
 
-    var bag = _events[event.time] ?? EventBag(event.time)
+    var bag = events[event.time] ?? EventBag(event.time)
     bag.append(event)
-    _events[event.time] = bag
+    events[event.time] = bag
   }
 
   /**
@@ -88,19 +108,19 @@ struct MIDIEventContainer: SequenceType, Indexable, MutableIndexable {
 
   var metaEvents: [MetaEvent] {
     var result: [MetaEvent] = []
-    for event in events { if case .Meta(let event) = event { result.append(event) } }
+    for event in self { if case .Meta(let event) = event { result.append(event) } }
     return result
   }
 
   var channelEvents: [ChannelEvent] {
     var result: [ChannelEvent] = []
-    for event in events { if case .Channel(let event) = event { result.append(event) } }
+    for event in self { if case .Channel(let event) = event { result.append(event) } }
     return result
   }
   
   var nodeEvents: [MIDINodeEvent] {
     var result: [MIDINodeEvent] = []
-    for event in events { if case .Node(let event) = event { result .append(event) } }
+    for event in self { if case .Node(let event) = event { result .append(event) } }
     return result
   }
 
@@ -122,7 +142,7 @@ struct MIDIEventContainer: SequenceType, Indexable, MutableIndexable {
 
     - returns: [MIDIEvent]?
   */
-  func eventsForTime(time: CABarBeatTime) -> OrderedSet<MIDIEvent>? { return _events[time]?.events }
+  func eventsForTime(time: CABarBeatTime) -> OrderedSet<MIDIEvent>? { return events[time]?.events }
 
   /**
    removeEventsMatching:
@@ -131,12 +151,12 @@ struct MIDIEventContainer: SequenceType, Indexable, MutableIndexable {
   */
   mutating func removeEventsMatching(predicate: (MIDIEvent) -> Bool) {
     var result: [CABarBeatTime:EventBag] = [:]
-    for (time, bag) in _events {
+    for (time, bag) in events {
       var resultBag = EventBag(time)
       for event in bag where !predicate(event) { resultBag.append(event) }
       if resultBag.count > 0 { result[time] = resultBag }
     }
-    _events = result
+    events = result
   }
 }
 
@@ -198,42 +218,33 @@ private extension MIDIEventContainer {
 }
 
 extension MIDIEventContainer {
-  struct Index: ForwardIndexType {
-    let time: CABarBeatTime
-    let position: Int
-    private let successorTime: CABarBeatTime
-    private let successorPosition: Int
-    func successor() -> Index { return Index(time: successorTime, position: successorPosition) }
-    private init(time: CABarBeatTime, position: Int) {
-      self.time = time
-      self.position = position
-      successorTime = .Nil
-      successorPosition = -1
-    }
-    private init(container: MIDIEventContainer, time: CABarBeatTime, var position: Int) {
-      guard let bag = container._events[time] where bag.events.count > position else {
-        self.time = .Nil
-        self.position = -1
-        successorTime = .Nil
-        successorPosition = -1
-        return
-      }
-      self.time = time
-      self.position = position
-      if ++position < bag.events.count { successorTime = time; successorPosition = position }
-      else {
-        let sortedTimes = container._events.keys.sort()
-        guard var idx = sortedTimes.indexOf(time) where ++idx < sortedTimes.count else {
-          successorTime = .Nil; successorPosition = -1; return
-        }
-        guard container._events[sortedTimes[idx]]!.events.count > 0 else {
-          successorTime = .Nil; successorPosition = -1; return
-        }
-        successorTime = time
-        successorPosition = 0
+  enum Index: ForwardIndexType {
+    indirect case ValueIndex (CABarBeatTime, Int, Index)
+    case EndIndex
+
+    func successor() -> Index {
+      switch self {
+        case .ValueIndex(_, _, let index): return index
+        case .EndIndex: return .EndIndex
       }
     }
+
+    var time: CABarBeatTime {
+      switch self {
+        case .ValueIndex(let time, _, _): return time
+        case .EndIndex: return .Nil
+      }
+    }
+
+    var position: Int {
+      switch self {
+        case .ValueIndex(_, let position, _): return position
+        case .EndIndex: return -1
+      }
+    }
+
   }
+
 }
 
 func ==(lhs: MIDIEventContainer.Index, rhs: MIDIEventContainer.Index) -> Bool {
@@ -249,7 +260,7 @@ private func <(lhs: MIDIEventContainer.EventBag, rhs: MIDIEventContainer.EventBa
 }
 
 extension MIDIEventContainer: CustomStringConvertible {
-  var description: String { return "\n".join(events.map({$0.description})) }
+  var description: String { return "\n".join(map({$0.description})) }
 }
 
 extension MIDIEventContainer: CustomDebugStringConvertible {

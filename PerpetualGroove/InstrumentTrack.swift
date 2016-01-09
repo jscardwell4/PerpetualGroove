@@ -303,7 +303,7 @@ final class InstrumentTrack: Track {
 
     switch delete {
       case true:
-        eventContainer.removeEventsMatching {
+        events.removeEventsMatching {
           if case .Node(let event) = $0 where event.identifier.nodeIdentifier == identifier { return true }
           else { return false }
         }

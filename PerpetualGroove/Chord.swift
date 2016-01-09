@@ -41,10 +41,6 @@ extension Chord: CustomStringConvertible {
   var description: String { return " ".join(notes.map({$0.rawValue})) }
 }
 
-extension Chord: CustomDebugStringConvertible {
-  var debugDescription: String { return String(reflecting: self) }
-}
-
 extension Chord: Equatable {}
 
 func ==(lhs: Chord, rhs: Chord) -> Bool {

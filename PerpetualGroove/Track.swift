@@ -35,7 +35,7 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
   - parameter events: [MIDIEvent]
   */
   func addEvents(events: [MIDIEvent]) {
-    eventContainer.appendEvents(events)
+    self.events.appendEvents(events)
     Sequencer.time.registerCallback(weakMethod(self, Track.dispatchEventsForTime),
                            forTimes: registrationTimesForAddedEvents(events),
                           forObject: self)
@@ -48,7 +48,7 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
 
   - returns: [MIDIEvent]?
   */
-  func eventsForTime(time: CABarBeatTime) -> OrderedSet<MIDIEvent>? { return eventContainer.eventsForTime(time) }
+  func eventsForTime(time: CABarBeatTime) -> OrderedSet<MIDIEvent>? { return events.eventsForTime(time) }
 
   /**
   filterEvents:
@@ -58,26 +58,26 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
   - returns: [MIDIEvent]
   */
   func filterEvents(includeElement: (MIDIEvent) -> Bool) -> [MIDIEvent] {
-    return eventContainer.events.filter(includeElement)
+    return events.filter(includeElement)
   }
 
-  private var _eventContainer = MIDIEventContainer()
+  var events = MIDIEventContainer()
 
-  var eventContainer: MIDIEventContainer {
-    get { objc_sync_enter(self); defer { objc_sync_exit(self) }; return _eventContainer     }
-    set { objc_sync_enter(self); defer { objc_sync_exit(self) }; _eventContainer = newValue }
-  }
+//  var events: MIDIEventContainer {
+//    get { objc_sync_enter(self); defer { objc_sync_exit(self) }; return _events     }
+//    set { objc_sync_enter(self); defer { objc_sync_exit(self) }; _events = newValue }
+//  }
 
   var endOfTrack: CABarBeatTime {
-    return eventContainer.maxTime
+    return events.maxTime
   }
 
   private var trackNameEvent: MIDIEvent = .Meta(MetaEvent(.SequenceTrackName(name: "")))
   private var endOfTrackEvent: MIDIEvent = .Meta(MetaEvent(.EndOfTrack))
 
-  var metaEvents: [MetaEvent] { return eventContainer.metaEvents }
-  var channelEvents: [ChannelEvent] { return eventContainer.channelEvents } 
-  var nodeEvents: [MIDINodeEvent] { return eventContainer.nodeEvents } 
+  var metaEvents: [MetaEvent] { return events.metaEvents }
+  var channelEvents: [ChannelEvent] { return events.channelEvents } 
+  var nodeEvents: [MIDINodeEvent] { return events.nodeEvents } 
   var name: String {
     get {
       switch trackNameEvent {
@@ -104,8 +104,8 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
   }
 
   var chunk: MIDIFileTrackChunk {
-    validateEvents(&eventContainer)
-    let events: [MIDIEvent] = headEvents + eventContainer.events + tailEvents
+    validateEvents(&self.events)
+    let events: [MIDIEvent] = headEvents + self.events + tailEvents
     return MIDIFileTrackChunk(events: events)
   }
 
@@ -156,7 +156,7 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
     return "\n".join(
       "name: \(name)",
       "recording: \(recording)",
-      "events:\n\(eventContainer.description.indentedBy(1, useTabs: true))"
+      "events:\n\(events.description.indentedBy(1, useTabs: true))"
     )
   }
 

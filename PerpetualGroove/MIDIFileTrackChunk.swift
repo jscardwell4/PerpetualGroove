@@ -29,7 +29,7 @@ struct MIDIFileTrackChunk {
 
   - parameter eventContainer: MIDIEventContainer
   */
-  init(eventContainer: MIDIEventContainer) { events = eventContainer.events }
+  init(eventContainer: MIDIEventContainer) { events = Array(eventContainer) }
 
   /**
   initWithBytes:

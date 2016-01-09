@@ -27,7 +27,7 @@ struct GrooveTrack {
 
     var loops: [GrooveLoop.Identifier:GrooveLoop] = [:]
 
-    for event in track.eventContainer {
+    for event in track.events {
       switch event {
 
         case .Meta(let event):
