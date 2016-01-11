@@ -10,7 +10,7 @@ import Foundation
 import MoonKit
 import struct AudioToolbox.CABarBeatTime
 
-class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
+class Track: CustomStringConvertible, Named, MIDIEventDispatch {
 
   unowned let sequence: Sequence
 
@@ -21,52 +21,7 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
     return q
   }()
 
-
-  /**
-  addEvent:
-
-  - parameter event: MIDIEvent
-  */
-  func addEvent(event: MIDIEvent) { addEvents([event]) }
-
-  /**
-  addEvents:
-
-  - parameter events: [MIDIEvent]
-  */
-  func addEvents(events: [MIDIEvent]) {
-    self.events.appendEvents(events)
-    Sequencer.time.registerCallback(weakMethod(self, Track.dispatchEventsForTime),
-                           forTimes: registrationTimesForAddedEvents(events),
-                          forObject: self)
-  }
-
-  /**
-  eventsForTime:
-
-  - parameter time: CABarBeatTime
-
-  - returns: [MIDIEvent]?
-  */
-  func eventsForTime(time: CABarBeatTime) -> OrderedSet<MIDIEvent>? { return events.eventsForTime(time) }
-
-  /**
-  filterEvents:
-
-  - parameter includeElement: (MIDIEvent) -> Bool
-
-  - returns: [MIDIEvent]
-  */
-  func filterEvents(includeElement: (MIDIEvent) -> Bool) -> [MIDIEvent] {
-    return events.filter(includeElement)
-  }
-
   var events = MIDIEventContainer()
-
-//  var events: MIDIEventContainer {
-//    get { objc_sync_enter(self); defer { objc_sync_exit(self) }; return _events     }
-//    set { objc_sync_enter(self); defer { objc_sync_exit(self) }; _events = newValue }
-//  }
 
   var endOfTrack: CABarBeatTime {
     return events.maxTime
@@ -75,9 +30,6 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
   private var trackNameEvent: MIDIEvent = .Meta(MetaEvent(.SequenceTrackName(name: "")))
   private var endOfTrackEvent: MIDIEvent = .Meta(MetaEvent(.EndOfTrack))
 
-  var metaEvents: [MetaEvent] { return events.metaEvents }
-  var channelEvents: [ChannelEvent] { return events.channelEvents } 
-  var nodeEvents: [MIDINodeEvent] { return events.nodeEvents } 
   var name: String {
     get {
       switch trackNameEvent {
@@ -98,6 +50,8 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
     }
   }
 
+  var displayName: String { return name }
+
   /** validateEvents */
   func validateEvents(inout container: MIDIEventContainer) {
     endOfTrackEvent.time = endOfTrack
@@ -117,11 +71,11 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
     return [endOfTrackEvent]
   }
 
-  private var _recording = false { didSet { logDebug("recording = \(_recording)") } }
-  var recording: Bool {
-    get { objc_sync_enter(self); defer { objc_sync_exit(self) }; return /*_recording &&*/ Sequencer.mode == .Default }
-    set { objc_sync_enter(self); defer { objc_sync_exit(self) }; _recording = newValue }
-  }
+//  private var _recording = false { didSet { logDebug("recording = \(_recording)") } }
+//  var recording: Bool {
+//    get { objc_sync_enter(self); defer { objc_sync_exit(self) }; return _recording && Sequencer.mode == .Default }
+//    set { objc_sync_enter(self); defer { objc_sync_exit(self) }; _recording = newValue }
+//  }
 
   /** init */
   init(sequence: Sequence) { self.sequence = sequence }
@@ -133,17 +87,10 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
 
   - returns: [CABarBeatTime]
   */
-  func registrationTimesForAddedEvents(events: [MIDIEvent]) -> [CABarBeatTime] {
-    guard let eot = events.first({($0.event as? MetaEvent)?.data == .EndOfTrack}) else { return [] }
+  func registrationTimesForAddedEvents<S:SequenceType where S.Generator.Element == MIDIEvent>(events: S) -> [CABarBeatTime] {
+    guard let eot = events.filter({($0.event as? MetaEvent)?.data == .EndOfTrack}).first else { return [] }
     return [eot.time]
   }
-
-  /**
-  Invokes `dispatchEvent:` for each event associated with the specified `time`
-
-  - parameter time: CABarBeatTime
-  */
-  private func dispatchEventsForTime(time: CABarBeatTime) { eventsForTime(time)?.forEach(dispatchEvent) }
 
   /**
   Overridden by subclasses to handle actual event generation
@@ -155,12 +102,9 @@ class Track: CustomStringConvertible, CustomDebugStringConvertible, Named {
   var description: String {
     return "\n".join(
       "name: \(name)",
-      "recording: \(recording)",
       "events:\n\(events.description.indentedBy(1, useTabs: true))"
     )
   }
-
-  var debugDescription: String { return String(reflecting: self) }
 }
 
 extension Track {

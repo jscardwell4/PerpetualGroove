@@ -16,37 +16,77 @@ final class MIDIPlayer {
   private static let receptionist: NotificationReceptionist = {
     let receptionist = NotificationReceptionist()
     receptionist.logContext = LogManager.SceneContext
-    receptionist.observe(MIDIDocumentManager.Notification.WillChangeDocument,
-                    from: MIDIDocumentManager.self,
-                callback: MIDIPlayer.willChangeDocument)
-    receptionist.observe(MIDIDocumentManager.Notification.DidChangeDocument,
-                    from: MIDIDocumentManager.self,
-                callback: MIDIPlayer.didChangeDocument)
+    receptionist.observe(Sequencer.Notification.DidChangeSequence,
+                    from: Sequencer.self,
+                callback: MIDIPlayer.didChangeSequence)
+      receptionist.observe(Sequencer.Notification.DidEnterLoopMode,
+                      from: Sequencer.self,
+                     queue: NSOperationQueue.mainQueue(),
+                  callback: MIDIPlayer.didEnterLoopMode)
+      receptionist.observe(Sequencer.Notification.DidExitLoopMode,
+                      from: Sequencer.self,
+                     queue: NSOperationQueue.mainQueue(),
+                  callback: MIDIPlayer.didExitLoopMode)
+      receptionist.observe(Sequencer.Notification.WillEnterLoopMode,
+                      from: Sequencer.self,
+                     queue: NSOperationQueue.mainQueue(),
+                  callback: MIDIPlayer.willEnterLoopMode)
+      receptionist.observe(Sequencer.Notification.WillExitLoopMode,
+                      from: Sequencer.self,
+                     queue: NSOperationQueue.mainQueue(),
+                  callback: MIDIPlayer.willExitLoopMode)
     return receptionist
   }()
 
-  static private weak var sequence: Sequence?
+  static weak var currentDispatch: MIDINodeDispatch? {
+    didSet {
+      guard currentDispatch !== oldValue else { return }
+      logDebug("\(oldValue) ➞ \(currentDispatch)")
+    }
+  }
 
-  /**
-   willChangeDocument:
+  /** updateCurrentDispatch */
+  static private func updateCurrentDispatch() {
+    guard let track = Sequencer.sequence?.currentTrack else { currentDispatch = nil; return }
+    switch Sequencer.mode {
+      case .Default: currentDispatch = track
+      case .Loop:
+        if let loop = loops[ObjectIdentifier(track)] { currentDispatch = loop }
+        else {
+          let loop = Loop(track: track)
+          loops[ObjectIdentifier(track)] = loop
+          currentDispatch = loop
+        }
+    }
+  }
 
-   - parameter notification: NSNotification
-   */
-  static private func willChangeDocument(notification: NSNotification) {
-    guard let sequence = sequence else { return }
-    receptionist.stopObservingObject(sequence)
+  private(set) static var initialized = false
+
+  private static weak var sequence: Sequence? {
+    didSet {
+      guard sequence !== oldValue else { return }
+      if let oldSequence = oldValue { receptionist.stopObservingObject(oldSequence) }
+      if let sequence = sequence {
+        receptionist.observe(Sequence.Notification.DidRemoveTrack, from: sequence, callback: MIDIPlayer.didRemoveTrack)
+        receptionist.observe(Sequence.Notification.DidChangeTrack, from: sequence, callback: MIDIPlayer.didChangeTrack)
+      }
+      updateCurrentDispatch()
+    }
+  }
+
+  /** initialize */
+  static func initialize() {
+    guard !initialized else { return }
+    touch(receptionist)
+    initialized = true
   }
 
   /**
-   didChangeDocument:
+   didChangeSequence:
 
    - parameter notification: NSNotification
   */
-  static private func didChangeDocument(notification: NSNotification) {
-    guard let sequence = MIDIDocumentManager.currentDocument?.sequence else { return }
-    self.sequence = sequence
-    receptionist.observe(Sequence.Notification.DidRemoveTrack, from: sequence, callback: MIDIPlayer.didRemoveTrack)
-  }
+  static private func didChangeSequence(notification: NSNotification) { sequence = Sequencer.sequence }
 
   /**
    didRemoveTrack:
@@ -56,8 +96,18 @@ final class MIDIPlayer {
   static private func didRemoveTrack(notification: NSNotification) {
     guard let track = notification.removedTrack else { return }
     loops[ObjectIdentifier(track)] = nil
+    updateCurrentDispatch()
   }
 
+  /**
+   didChangeTrack:
+
+   - parameter notification: NSNotification
+   */
+  static private func didChangeTrack(notification: NSNotification) {
+    updateCurrentDispatch()
+  }
+  
   /**
    willEnterLoopMode:
 
@@ -72,7 +122,10 @@ final class MIDIPlayer {
 
    - parameter notification: NSNotification
    */
-  static private func didEnterLoopMode(notification: NSNotification) { loops.removeAll() }
+  static private func didEnterLoopMode(notification: NSNotification) {
+    loops.removeAll()
+    updateCurrentDispatch()
+  }
 
   /**
    willExitLoopMode:
@@ -90,6 +143,8 @@ final class MIDIPlayer {
   */
   static private func didExitLoopMode(notification: NSNotification) {
     playerNode?.defaultNodes.forEach { $0.fadeIn() }
+    pushLoops()
+    updateCurrentDispatch()
   }
 
   static weak var playerContainer: MIDIPlayerContainerViewController?
@@ -103,22 +158,6 @@ final class MIDIPlayer {
       existingGeneratorTool = GeneratorTool(playerNode: node, mode: .Existing)
       newGeneratorTool = GeneratorTool(playerNode: node, mode: .New)
       currentTool = .None
-      receptionist.observe(Sequencer.Notification.DidEnterLoopMode,
-                      from: Sequencer.self,
-                     queue: NSOperationQueue.mainQueue(),
-                  callback: MIDIPlayer.didEnterLoopMode)
-      receptionist.observe(Sequencer.Notification.DidExitLoopMode,
-                      from: Sequencer.self,
-                     queue: NSOperationQueue.mainQueue(),
-                  callback: MIDIPlayer.didExitLoopMode)
-      receptionist.observe(Sequencer.Notification.WillEnterLoopMode,
-                      from: Sequencer.self,
-                     queue: NSOperationQueue.mainQueue(),
-                  callback: MIDIPlayer.willEnterLoopMode)
-      receptionist.observe(Sequencer.Notification.WillExitLoopMode,
-                      from: Sequencer.self,
-                     queue: NSOperationQueue.mainQueue(),
-                  callback: MIDIPlayer.willExitLoopMode)
     }
   }
 
@@ -144,11 +183,13 @@ final class MIDIPlayer {
     }
   }
 
-  static private var loops: [ObjectIdentifier:MIDILoop] = [:]
+  static private var loops: [ObjectIdentifier:Loop] = [:]
 
-  /** insertLoops */
-  static private func insertLoops() {
-
+  /** pushLoops */
+  static private func pushLoops() {
+    logDebug("pushing loops: \(loops)")
+    for loop in loops.values where !loop.events.isEmpty { loop.track.addLoop(loop) }
+    loops.removeAll()
   }
 
   /**
@@ -156,29 +197,32 @@ final class MIDIPlayer {
 
    - parameter trajectory: Trajectory
    - parameter targetTrack: InstrumentTrack? = nil
-   - parameter generator: MIDINoteGenerator
+   - parameter generator: MIDINodeGenerator
   */
   static func placeNew(trajectory: Trajectory,
-           targetTrack: InstrumentTrack? = nil,
-             generator: MIDINoteGenerator,
+                target: MIDINodeDispatch,
+             generator: MIDINodeGenerator,
             identifier: MIDINode.Identifier = UUID())
   {
-    guard let track = targetTrack ?? MIDIDocumentManager.currentDocument?.sequence?.currentTrack else {
-      logWarning("cannot place a node without a track")
-      return
-    }
     guard let node = playerNode else {
       logWarning("cannot place a node without a player node")
       return
     }
 
     do {
-      let name = "<\(Sequencer.mode.rawValue)> \(track.name)\(track.nodes.count + 1)"
-      let midiNode = try MIDINode(trajectory: trajectory, name: name, track: track, note: generator, identifier: identifier)
+      let name = "<\(Sequencer.mode.rawValue)> \(target.nextNodeName)"
+      let midiNode = try MIDINode(trajectory: trajectory,
+                                  name: name,
+                                  dispatch: target,
+                                  note: generator,
+                                  identifier: identifier)
       node.addChild(midiNode)
-      try track.addNode(midiNode)
+
+      try target.addNode(midiNode)
+
+
       if !Sequencer.playing { Sequencer.play() }
-      Notification.DidAddNode.post(userInfo: [.AddedNode: midiNode, .AddedNodeTrack: track])
+      Notification.DidAddNode.post(userInfo: [.AddedNode: midiNode, .AddedNodeTrack: target])
       logDebug("added node \(name)")
 
     } catch {

@@ -68,9 +68,9 @@ final class Instrument: Equatable {
   /**
   playNote:
 
-  - parameter noteGenerator: MIDINoteGenerator
+  - parameter noteGenerator: MIDINodeGenerator
   */
-  func playNote(noteGenerator: MIDINoteGenerator) {
+  func playNote(noteGenerator: MIDINodeGenerator) {
     do {
       try noteGenerator.sendNoteOn(outPort, endPoint)
       delayedDispatchToMain(noteGenerator.duration.seconds) {

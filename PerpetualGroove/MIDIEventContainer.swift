@@ -10,7 +10,7 @@ import Foundation
 import MoonKit
 import struct AudioToolbox.CABarBeatTime
 
-struct MIDIEventContainer: SequenceType, Indexable, MutableIndexable {
+struct MIDIEventContainer: CollectionType, Indexable, MutableIndexable {
 
   private(set) var startIndex: Index = .EndIndex
 
@@ -27,6 +27,12 @@ struct MIDIEventContainer: SequenceType, Indexable, MutableIndexable {
       events[index.time]?[index.position] = newValue
     }
   }
+
+  subscript(bounds: Range<Index>) -> MIDIEventContainer {
+    return MIDIEventContainer(events: bounds.map({self[$0]}))
+  }
+
+  var count: Int { return _indices.count }
 
   private(set) var eventTimes: [CABarBeatTime] = []
 
@@ -95,6 +101,19 @@ struct MIDIEventContainer: SequenceType, Indexable, MutableIndexable {
     var bag = events[event.time] ?? EventBag(event.time)
     bag.append(event)
     events[event.time] = bag
+  }
+
+  /**
+   Implemented because default map wasn't working correctly.
+
+   - parameter transform: (MIDIEvent) throws -> T
+  */
+  func map<T>(@noescape transform: (MIDIEvent) throws -> T) rethrows -> [T] {
+    var result: [T] = []
+    for event in self {
+      result.append(try transform(event))
+    }
+    return result
   }
 
   /**
@@ -215,6 +234,12 @@ private extension MIDIEventContainer {
     }
   }
 
+}
+
+extension MIDIEventContainer: ArrayLiteralConvertible {
+  init(arrayLiteral elements: MIDIEvent...) {
+    self.init(events: elements)
+  }
 }
 
 extension MIDIEventContainer {

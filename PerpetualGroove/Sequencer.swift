@@ -164,12 +164,22 @@ final class Sequencer {
   - parameter notification: NSNotification
   */
   private static func didChangeDocument(notification: NSNotification) {
-    reset()
+    sequence = MIDIDocumentManager.currentDocument?.sequence
   }
 
   // MARK: - Sequence
 
-  static private var sequence: Sequence? { return MIDIDocumentManager.currentDocument?.sequence }
+  static private(set) weak var sequence: Sequence? {
+    willSet {
+      guard sequence !== newValue else { return }
+      Notification.WillChangeSequence.post()
+    }
+    didSet {
+      guard sequence !== oldValue else { return }
+      Notification.DidChangeSequence.post()
+      reset()
+    }
+  }
 
   // MARK: - Time
 
@@ -338,6 +348,7 @@ extension Sequencer {
     case WillEnterLoopMode, WillExitLoopMode
     case DidEnterLoopMode, DidExitLoopMode
     case DidChangeTransport
+    case WillChangeSequence, DidChangeSequence
     case SoundSetSelectionTargetDidChange
     case DidUpdateAvailableSoundSets
 

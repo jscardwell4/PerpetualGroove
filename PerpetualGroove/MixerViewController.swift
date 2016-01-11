@@ -237,8 +237,8 @@ final class MixerViewController: UICollectionViewController {
   override func awakeFromNib() {
     super.awakeFromNib()
     guard !initialized else { return }
-    receptionist.observe(MIDIDocumentManager.Notification.DidChangeDocument, from: MIDIDocumentManager.self) {
-      [weak self] _ in self?.sequence = MIDIDocumentManager.currentDocument?.sequence
+    receptionist.observe(Sequencer.Notification.DidChangeSequence, from: Sequencer.self) {
+      [weak self] _ in self?.sequence = Sequencer.sequence
     }
     initialized = true
   }
@@ -250,7 +250,7 @@ final class MixerViewController: UICollectionViewController {
   */
   override func viewWillAppear(animated: Bool) {
     super.viewWillAppear(animated)
-    sequence = MIDIDocumentManager.currentDocument?.sequence
+    sequence = Sequencer.sequence
   }
 
   /** updateTracks */
@@ -450,7 +450,7 @@ extension MixerViewController {
     var itemCount: Int {
       switch self {
       case .Master, .Add: return 1
-      case .Instruments: return MIDIDocumentManager.currentDocument?.sequence?.instrumentTracks.count ?? 0
+      case .Instruments: return Sequencer.sequence?.instrumentTracks.count ?? 0
       }
     }
 

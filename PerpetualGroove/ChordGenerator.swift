@@ -106,7 +106,7 @@ extension ChordGenerator: JSONValueInitializable {
   }
 }
 
-extension ChordGenerator: MIDINoteGenerator {
+extension ChordGenerator: MIDINodeGenerator {
 
   /**
    receiveNoteOn:

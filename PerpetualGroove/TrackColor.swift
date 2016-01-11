@@ -101,11 +101,11 @@ enum TrackColor: UInt32, Equatable, Hashable, EnumerableType, CustomStringConver
   ]
 
 //  static var currentColor: TrackColor? {
-//    return MIDIDocumentManager.currentDocument?.sequence?.currentTrack?.color
+//    return Sequencer.sequence?.currentTrack?.color
 //  }
 
   static var nextColor: TrackColor {
-    let existingColors = MIDIDocumentManager.currentDocument?.sequence?.instrumentTracks.map({$0.color}) ?? []
+    let existingColors = Sequencer.sequence?.instrumentTracks.map({$0.color}) ?? []
     guard existingColors.count > 0 else { return allCases[0] }
     return allCases.filter({existingColors ∌ $0}).first ?? allCases[0]
   }

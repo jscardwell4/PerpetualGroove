@@ -86,6 +86,7 @@ public class LogFormatter: NSObject, DDLogFormatter {
   - returns: String?
   */
   @objc public func formatLogMessage(logMessage: DDLogMessage) -> String? {
+//    print("logMessage.context: \(LogContext(rawValue: logMessage.context))  context: \(context)")
     guard context != .Ignored && (context == .Default
        || LogContext(rawValue: logMessage.context) ∋ context) else { return nil }
     return formattedLogMessageForMessage(logMessage)

@@ -11,8 +11,8 @@ import SpriteKit
 import MoonKit
 import CoreMIDI
 
-// MARK: MIDINoteGenerator protocol
-protocol MIDINoteGenerator: JSONValueConvertible, JSONValueInitializable {
+// MARK: MIDINodeGenerator protocol
+protocol MIDINodeGenerator: JSONValueConvertible, JSONValueInitializable {
   var duration: Duration { get set }
   var velocity: Velocity { get set }
   var octave: Octave     { get set }
@@ -22,6 +22,154 @@ protocol MIDINoteGenerator: JSONValueConvertible, JSONValueInitializable {
   func receiveNoteOn(endPoint: MIDIEndpointRef, _ identifier: UInt64) throws
   func receiveNoteOff(endPoint: MIDIEndpointRef, _ identifier: UInt64) throws
 }
+
+typealias MIDINodeRef = Weak<MIDINode>
+protocol MIDINodeDispatch: class, MIDIEventDispatch, Loggable, Named {
+  var nodes: OrderedSet<MIDINodeRef> { get set }
+  var nodeIdentifiers: Set<MIDINode.Identifier> { get }
+  var nextNodeName: String { get }
+  var color: TrackColor { get }
+  func addNode(node: MIDINode) throws
+  func addNodeWithIdentifier(identifier: MIDINode.Identifier, trajectory: Trajectory, generator: MIDINodeGenerator)
+  func removeNodeWithIdentifier(identifier: MIDINode.Identifier, delete: Bool) throws
+  func removeNode(node: MIDINode, delete: Bool) throws
+  func removeNode(node: MIDINode) throws
+  func deleteNode(node: MIDINode) throws
+  func connectNode(node: MIDINode) throws
+  func disconnectNode(node: MIDINode) throws
+
+  var recording: Bool { get }
+  func startNodes()
+  func stopNodes()
+}
+
+extension MIDINodeDispatch {
+  var nodeIdentifiers: Set<MIDINode.Identifier> { return Set(nodes.flatMap({$0.reference?.identifier})) }
+  /**
+   addNodeWithIdentifier:trajectory:generator:
+
+   - parameter identifier: MIDINode.Identifier
+   - parameter trajectory: Trajectory
+   - parameter generator: MIDINodeGenerator
+  */
+  func addNodeWithIdentifier(identifier: MIDINode.Identifier, trajectory: Trajectory, generator: MIDINodeGenerator) {
+    logDebug("placing node with identifier \(identifier), trajectory \(trajectory), generator \(generator)")
+
+    // Make sure a node hasn't already been place for this identifier
+    guard nodeIdentifiers ∌ identifier else { return }
+
+    // Place a node
+    MIDIPlayer.placeNew(trajectory, target: self, generator: generator, identifier: identifier)
+  }
+
+  /**
+   removeNodeWithIdentifier:delete:
+
+   - parameter identifier: NodeIdentifier
+   - parameter delete: Bool = false
+  */
+  func removeNodeWithIdentifier(identifier: MIDINode.Identifier, delete: Bool = false) throws {
+    logDebug("removing node with identifier \(identifier)")
+    guard let idx = nodes.indexOf({$0.reference?.identifier == identifier}), node = nodes[idx].reference else {
+      fatalError("failed to find node with mapped identifier \(identifier)")
+    }
+
+    try removeNode(node, delete: delete)
+    MIDIPlayer.removeNode(node)
+  }
+
+  /** stopNodes */
+  func stopNodes() { nodes.forEach {$0.reference?.fadeOut()}; logDebug("nodes stopped") }
+
+  /** startNodes */
+  func startNodes() { nodes.forEach {$0.reference?.fadeIn()}; logDebug("nodes started") }
+
+  /**
+   removeNode:
+
+   - parameter node: MIDINode
+  */
+  func removeNode(node: MIDINode) throws { try removeNode(node, delete: false) }
+
+  /**
+   deleteNode:
+
+   - parameter node: MIDINode
+  */
+  func deleteNode(node: MIDINode) throws { try removeNode(node, delete: true) }
+
+
+  /**
+   addNode:
+
+   - parameter node: MIDINode
+  */
+  func addNode(node: MIDINode) throws {
+    try connectNode(node)
+
+    guard recording else { logDebug("not recording…skipping event creation"); return }
+
+    eventQueue.addOperationWithBlock {
+      [time = Sequencer.time.time, unowned node, weak self] in
+      let event = MIDINodeEvent(.Add(identifier: MIDINodeEvent.Identifier(nodeIdentifier: node.identifier),
+        trajectory: node.initialSnapshot.trajectory,
+        generator: node.noteGenerator),
+        time)
+      self?.addEvent(.Node(event))
+    }
+
+    // Insert the node into our set
+    nodes.append(Weak(node))
+    logDebug("adding node \(node.name!) (\(node.identifier))")
+
+    MIDINodeDispatchNotification.DidAddNode.post(object: self)
+
+  }
+
+  /**
+   removeNode:delete:
+
+   - parameter node: MIDINode
+   - parameter delete: Bool
+  */
+  func removeNode(node: MIDINode, delete: Bool) throws {
+    guard let idx = nodes.indexOf({$0.reference === node}),
+      node = nodes.removeAtIndex(idx).reference else { throw MIDINodeDispatchError.NodeNotFound }
+    
+    let id = node.identifier
+    logDebug("removing node \(node.name!) \(id)")
+
+    node.sendNoteOff()
+    try disconnectNode(node)
+    MIDINodeDispatchNotification.DidRemoveNode.post(object: self)
+
+    switch delete {
+      case true:
+        events.removeEventsMatching {
+          if case .Node(let event) = $0 where event.identifier.nodeIdentifier == id { return true }
+          else { return false }
+        }
+      case false:
+        guard recording else { logDebug("not recording…skipping event creation"); return }
+        eventQueue.addOperationWithBlock {
+          [time = Sequencer.time.time, weak self] in
+          self?.addEvent(.Node(MIDINodeEvent(.Remove(identifier: MIDINodeEvent.Identifier(nodeIdentifier: id)), time)))
+        }
+    }
+  }
+
+}
+
+enum MIDINodeDispatchNotification: String, NotificationType, NotificationNameType {
+  enum Key: String, KeyType { case OldValue, NewValue }
+  case DidAddNode, DidRemoveNode
+}
+
+enum MIDINodeDispatchError: String, ErrorType, CustomStringConvertible {
+  case NodeNotFound = "The specified node was not found among the track's nodes"
+  case NodeAlreadyConnected = "The specified node has already been connected"
+}
+
 
 // MARK:- MIDINode
 final class MIDINode: SKSpriteNode {
@@ -34,7 +182,7 @@ final class MIDINode: SKSpriteNode {
   private var client = MIDIClientRef()
   private(set) var endPoint = MIDIEndpointRef()
 
-  var noteGenerator: MIDINoteGenerator {
+  var noteGenerator: MIDINodeGenerator {
     didSet {
       guard oldValue.duration != noteGenerator.duration else { return }
       playAction = Action(key: .Play, node: self)
@@ -150,8 +298,8 @@ final class MIDINode: SKSpriteNode {
     runAction(action(.Move))
   }
 
-  private(set) weak var track: InstrumentTrack?  {
-    didSet { if track == nil && parent != nil { removeFromParent() } }
+  private(set) weak var dispatch: MIDINodeDispatch?  {
+    didSet { if dispatch == nil && parent != nil { removeFromParent() } }
   }
 
   var edges: MIDIPlayerNode.Edges = .All {
@@ -290,24 +438,24 @@ final class MIDINode: SKSpriteNode {
    - parameter trajectory: Trajectory
    - parameter name: String
    - parameter track: InstrumentTrack
-   - parameter note: MIDINoteGenerator
+   - parameter note: MIDINodeGenerator
   */
   init(trajectory: Trajectory,
        name: String,
-       track: InstrumentTrack,
-       note: MIDINoteGenerator,
+       dispatch: MIDINodeDispatch,
+       note: MIDINodeGenerator,
        identifier: Identifier = UUID()) throws
   {
     self.trajectory = trajectory
     let snapshot = Snapshot(ticks: Sequencer.time.ticks, trajectory: trajectory)
     initialSnapshot = snapshot
     currentSnapshot = snapshot
-    self.track = track
+    self.dispatch = dispatch
     history = MIDINodeHistory(initialSnapshot: snapshot)
     noteGenerator = note
     self.identifier = identifier
     
-    super.init(texture: MIDINode.texture, color: track.color.value, size: MIDINode.texture.size() * 0.75)
+    super.init(texture: MIDINode.texture, color: dispatch.color.value, size: MIDINode.texture.size() * 0.75)
 
     let object = Sequencer.transport
     typealias Notification = Transport.Notification

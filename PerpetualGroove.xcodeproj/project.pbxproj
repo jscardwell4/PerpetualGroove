@@ -82,7 +82,7 @@
 		C291C3F11B91EDD600702AEA /* ChannelEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3F01B91EDD600702AEA /* ChannelEvent.swift */; };
 		C291C3F31B91EDE100702AEA /* VariableLengthQuantity.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3F21B91EDE100702AEA /* VariableLengthQuantity.swift */; };
 		C291C3F51B91F05900702AEA /* MIDIEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3F41B91F05900702AEA /* MIDIEvent.swift */; };
-		C2981BA81C2468FD007FC51F /* MIDILoop.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2981BA71C2468FD007FC51F /* MIDILoop.swift */; };
+		C2981BA81C2468FD007FC51F /* Loop.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2981BA71C2468FD007FC51F /* Loop.swift */; };
 		C2981BAA1C2B85F4007FC51F /* Transport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2981BA91C2B85F4007FC51F /* Transport.swift */; };
 		C2995C481BB8ABC70003AAB2 /* Trajectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2995C471BB8ABC70003AAB2 /* Trajectory.swift */; };
 		C2AA2BC81B84B04200A0B08D /* InstrumentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AA2BC71B84B04200A0B08D /* InstrumentViewController.swift */; };
@@ -236,7 +236,7 @@
 		C291C3F01B91EDD600702AEA /* ChannelEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelEvent.swift; sourceTree = "<group>"; };
 		C291C3F21B91EDE100702AEA /* VariableLengthQuantity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VariableLengthQuantity.swift; sourceTree = "<group>"; };
 		C291C3F41B91F05900702AEA /* MIDIEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIEvent.swift; sourceTree = "<group>"; };
-		C2981BA71C2468FD007FC51F /* MIDILoop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDILoop.swift; sourceTree = "<group>"; };
+		C2981BA71C2468FD007FC51F /* Loop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Loop.swift; sourceTree = "<group>"; };
 		C2981BA91C2B85F4007FC51F /* Transport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Transport.swift; sourceTree = "<group>"; };
 		C2995C471BB8ABC70003AAB2 /* Trajectory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Trajectory.swift; sourceTree = "<group>"; };
 		C2AA2BC71B84B04200A0B08D /* InstrumentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstrumentViewController.swift; sourceTree = "<group>"; };
@@ -504,7 +504,7 @@
 				C2B123BE1B864DCC008FED5E /* MIDIClock.swift */,
 				C207458E1B8DF6D5000A06D4 /* BarBeatTime.swift */,
 				C2B12D961BDC531500A6C719 /* Track.swift */,
-				C2981BA71C2468FD007FC51F /* MIDILoop.swift */,
+				C2981BA71C2468FD007FC51F /* Loop.swift */,
 				C2981BA91C2B85F4007FC51F /* Transport.swift */,
 			);
 			name = Sequencer;
@@ -766,7 +766,7 @@
 				C2729ADD1BEE6B3D004FA34F /* LocalDocumentItem.swift in Sources */,
 				C2DDA2311C38A8B5005F0965 /* GrooveLoop.swift in Sources */,
 				C2E0433B1B72F4DC005F0675 /* MIDIPlayerViewController.swift in Sources */,
-				C2981BA81C2468FD007FC51F /* MIDILoop.swift in Sources */,
+				C2981BA81C2468FD007FC51F /* Loop.swift in Sources */,
 				C2BC7AD51B76C85E001729BA /* Instrument.swift in Sources */,
 				C22FA58D1BC830D600162DB4 /* SettingsManager.swift in Sources */,
 				C2CFB7FF1BBF486300983664 /* DocumentsViewLayout.swift in Sources */,

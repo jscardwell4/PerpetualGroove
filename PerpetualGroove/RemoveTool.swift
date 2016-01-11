@@ -20,7 +20,7 @@ final class RemoveTool: ToolType {
       guard active != oldValue else { return }
       switch active {
         case true:
-          sequence = MIDIDocumentManager.currentDocument?.sequence
+          sequence = Sequencer.sequence
           refreshAllNodeLighting()
         case false:
           sequence = nil
@@ -167,9 +167,9 @@ final class RemoveTool: ToolType {
   init(playerNode: MIDIPlayerNode, delete: Bool = false) {
     deleteFromTrack = delete
     player = playerNode
-    receptionist.observe(MIDIDocumentManager.Notification.DidChangeDocument,
-      from: MIDIDocumentManager.self,
-      callback: {[weak self] _ in self?.sequence = MIDIDocumentManager.currentDocument?.sequence})
+    receptionist.observe(Sequencer.Notification.DidChangeSequence,
+      from: Sequencer.self,
+      callback: {[weak self] _ in self?.sequence = Sequencer.sequence})
     receptionist.observe(MIDIPlayer.Notification.DidAddNode,
       from: MIDIPlayer.self,
       callback: {[weak self] notification in

@@ -15,6 +15,7 @@ final class TempoTrack: Track {
 
   override var name: String { get { return "Tempo" } set {} }
 
+  var recording: Bool = false
   var tempo: Double = Sequencer.tempo {
     didSet {
       guard tempo != oldValue && recording else { return }

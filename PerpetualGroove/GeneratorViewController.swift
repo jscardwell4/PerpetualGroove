@@ -25,7 +25,7 @@ final class GeneratorViewController: UIViewController {
   @IBOutlet weak var leftArrow: ImageButtonView?
   @IBOutlet weak var rightArrow: ImageButtonView?
 
-  var didChangeGenerator: ((MIDINoteGenerator) -> Void)?
+  var didChangeGenerator: ((MIDINodeGenerator) -> Void)?
   var nextAction: (() -> Void)?
   var previousAction: (() -> Void)?
 
@@ -69,13 +69,13 @@ final class GeneratorViewController: UIViewController {
   }
 
   private var loading = false
-  func loadGenerator(generator: MIDINoteGenerator) {
+  func loadGenerator(generator: MIDINodeGenerator) {
     loading = true
     noteGenerator = generator
     loading = false
   }
 
-  private var noteGenerator: MIDINoteGenerator = NoteGenerator() {
+  private var noteGenerator: MIDINodeGenerator = NoteGenerator() {
     didSet {
       guard !loading else { return }
       didChangeGenerator?(noteGenerator)

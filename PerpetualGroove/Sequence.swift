@@ -62,7 +62,7 @@ final class Sequence {
         case let (oldTrack, newTrack?) where instrumentTracks ∋ newTrack && oldTrack != newTrack:
           userInfo = [Notification.Key.OldTrack: oldTrack, Notification.Key.Track: newTrack]
           currentTrackStack.push(Weak(newTrack))
-          newTrack.recording = Sequencer.recording
+//          newTrack.recording = true
 
         case let (oldTrack?, nil):
           userInfo = [Notification.Key.OldTrack: oldTrack, Notification.Key.Track: nil]
@@ -141,9 +141,7 @@ final class Sequence {
   - parameter notification: NSNotification
   */
   private func toggleRecording(notification: NSNotification) {
-    let recording = Sequencer.recording
-    currentTrack?.recording = recording
-    tempoTrack.recording = recording
+    tempoTrack.recording = Sequencer.recording
   }
 
   /**
@@ -300,7 +298,7 @@ final class Sequence {
         Notification.Key.RemovedTrack: track
       ]
     )
-    if currentTrack == track { currentTrackStack.pop(); currentTrack?.recording = Sequencer.recording }
+    if currentTrack == track { currentTrackStack.pop() }
     logDebug("posting 'DidUpdate'")
     Notification.DidUpdate.post(object: self)
   }

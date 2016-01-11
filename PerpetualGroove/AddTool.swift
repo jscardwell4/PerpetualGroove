@@ -20,7 +20,7 @@ final class AddTool: ToolType {
     }
   }
 
-  var noteGenerator: MIDINoteGenerator = NoteGenerator()
+  var noteGenerator: MIDINodeGenerator = NoteGenerator()
 
   /**
   initWithBezierPath:
@@ -42,7 +42,7 @@ final class AddTool: ToolType {
         timestamp = touch.timestamp
         location = touch.locationInNode(player)
         let image = UIImage(named: "ball")!
-        let color = (MIDIDocumentManager.currentDocument?.sequence?.currentTrack?.color ?? TrackColor.nextColor).value
+        let color = (Sequencer.sequence?.currentTrack?.color ?? TrackColor.nextColor).value
         let size = image.size * 0.75
         touchNode = SKSpriteNode(texture: SKTexture(image: image), color: color, size: size)
         touchNode!.position = location
@@ -122,7 +122,8 @@ final class AddTool: ToolType {
   /** generate */
   private func generate() {
     guard velocities.count > 0 && !location.isNull else { return }
+    guard let track = Sequencer.sequence?.currentTrack else { return }
     let trajectory = Trajectory(vector: sum(velocities) / CGFloat(velocities.count), point: location )
-    MIDIPlayer.placeNew(trajectory, generator: noteGenerator)
+    MIDIPlayer.placeNew(trajectory, target: track, generator: noteGenerator)
   }
 }

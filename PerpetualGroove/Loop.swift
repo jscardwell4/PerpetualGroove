@@ -1,5 +1,5 @@
 //
-//  MIDILoop.swift
+//  Loop.swift
 //  PerpetualGroove
 //
 //  Created by Jason Cardwell on 12/18/15.
@@ -10,7 +10,7 @@ import Foundation
 import MoonKit
 import struct AudioToolbox.CABarBeatTime
 
-struct MIDILoop: SequenceType {
+final class Loop: SequenceType, MIDINodeDispatch {
 
   var time: CABarBeatTime { return CABarBeatTime(tickValue: events.maxTime.ticks - events.minTime.ticks) }
 
@@ -19,6 +19,32 @@ struct MIDILoop: SequenceType {
   var events: MIDIEventContainer
   var start: CABarBeatTime = .start
   let identifier: Identifier
+  var eventQueue: NSOperationQueue { return track.eventQueue }
+
+  var nodes: OrderedSet<MIDINodeRef> = []
+
+  unowned let track: InstrumentTrack
+
+  var color: TrackColor { return track.color }
+
+  var recording: Bool { return Sequencer.mode == .Loop && MIDIPlayer.currentDispatch === self }
+
+  var nextNodeName: String { return "\(name) \(nodes.count + 1)" }
+
+  var name: String { return "\(track.displayName) (\(identifier.stringValue))" }
+  /**
+   connectNode:
+
+   - parameter node: MIDINode
+  */
+  func connectNode(node: MIDINode) throws { try track.connectNode(node) }
+
+  /**
+   disconnectNode:
+
+   - parameter node: MIDINode
+  */
+  func disconnectNode(node: MIDINode) throws { try track.disconnectNode(node) }
 
   typealias Identifier = UUID
 
@@ -35,14 +61,14 @@ struct MIDILoop: SequenceType {
   }
 
   /**
-   initWithIdentifier:events:
+   initWithTrack:
 
-   - parameter identifier: String = nonce()
-   - parameter events: MIDIEventContainer
+   - parameter track: InstrumentTrack
   */
-  init(identifier: Identifier = UUID(), events: MIDIEventContainer) {
-    self.identifier = identifier
-    self.events = events
+  init(track: InstrumentTrack) {
+    self.track = track
+    identifier = UUID()
+    events = []
   }
 
   /**
@@ -50,7 +76,8 @@ struct MIDILoop: SequenceType {
 
    - parameter grooveLoop: GrooveTrack.Loop
   */
-  init(grooveLoop: GrooveLoop) {
+  init(grooveLoop: GrooveLoop, track: InstrumentTrack) {
+    self.track = track
     identifier = grooveLoop.identifier
     repetitions = grooveLoop.repetitions
     repeatDelay = grooveLoop.repeatDelay
@@ -62,6 +89,32 @@ struct MIDILoop: SequenceType {
     }
 
     self.events = MIDIEventContainer(events: events)
+  }
+
+  /**
+   registrationTimesForAddedEvents:
+
+   - parameter events: [MIDIEvent]
+
+    - returns: [CABarBeatTime]
+  */
+  func registrationTimesForAddedEvents<S:SequenceType where S.Generator.Element == MIDIEvent>(events: S) -> [CABarBeatTime] {
+    return events.filter({ if case .Node(_) = $0 { return true } else { return false } }).map({$0.time})
+  }
+
+  /**
+   dispatchEvent:
+
+   - parameter event: MIDIEvent
+  */
+  func dispatchEvent(event: MIDIEvent) {
+    guard case .Node(let nodeEvent) = event else { return }
+      switch nodeEvent.data {
+        case let .Add(identifier, trajectory, generator):
+          addNodeWithIdentifier(identifier.nodeIdentifier, trajectory: trajectory, generator: generator)
+        case let .Remove(identifier):
+          do { try removeNodeWithIdentifier(identifier.nodeIdentifier, delete: false) } catch { logError(error) }
+      }
   }
 
   /**
@@ -119,4 +172,21 @@ struct MIDILoop: SequenceType {
     }
   }
 
+}
+
+extension Loop: CustomStringConvertible {
+  var description: String {
+    return "\n".join(
+      "time: \(time)",
+      "repetitions: \(repetitions)",
+      "repeatDelay: \(repeatDelay)",
+      "start: \(start)",
+      "identifier: \(identifier)",
+      "color: \(color)",
+      "recording: \(recording)",
+      "name: \(name)",
+      "nodes: \(nodes)",
+      "events: \(events)"
+    )
+  }
 }

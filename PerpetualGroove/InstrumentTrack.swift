@@ -13,7 +13,7 @@ import AudioToolbox
 import CoreMIDI
 import SpriteKit
 
-final class InstrumentTrack: Track {
+final class InstrumentTrack: Track, MIDINodeDispatch {
 
   // MARK: - Monitoring state changes
 
@@ -130,7 +130,7 @@ final class InstrumentTrack: Track {
 
    - parameter events: [MIDIEvent]
   */
-  override func addEvents(events: [MIDIEvent]) {
+  func addEvents<S:SequenceType where S.Generator.Element == MIDIEvent>(events: S) {
     var filteredEvents: [MIDIEvent] = []
     for event in events {
       switch event {
@@ -143,6 +143,7 @@ final class InstrumentTrack: Track {
         default: filteredEvents.append(event)
       }
     }
+    modified = modified || filteredEvents.count > 0
     super.addEvents(filteredEvents)
   }
 
@@ -162,8 +163,11 @@ final class InstrumentTrack: Track {
   private(set) var instrument: Instrument!
   var color: TrackColor = .White
 
+  var recording: Bool { return Sequencer.mode == .Default && MIDIPlayer.currentDispatch === self }
 
-  var displayName: String { guard name.isEmpty else { return name }; return instrument?.preset.name ?? "" }
+  var nextNodeName: String { return "\(displayName) \(nodes.count + 1)" }
+
+  override var displayName: String { guard name.isEmpty else { return name }; return instrument?.preset.name ?? "" }
 
   var mute: Bool {
     get { return state ⚭ [.ExclusiveMute, .InclusiveMute] && state ∌ .Soloing}
@@ -186,9 +190,7 @@ final class InstrumentTrack: Track {
   private var modified = false
 
   /// The set of `MIDINode` objects that have been added to the track
-  private(set) var nodes: OrderedSet<Weak<MIDINode>> = []
-
-  var nodeIdentifiers: Set<MIDINode.Identifier> { return Set(nodes.flatMap({$0.reference?.identifier})) }
+  var nodes: OrderedSet<MIDINodeRef> = []
 
   /** Empties all node-referencing properties */
   private func resetNodes() {
@@ -201,137 +203,45 @@ final class InstrumentTrack: Track {
     }
   }
 
-  /**
-  addNode:
-
-  - parameter node: MIDINode
-  */
-  func addNode(node: MIDINode) throws {
-
-    try MIDIPortConnectSource(inPort, node.endPoint, nil) ➤ "Failed to connect to node \(node.name!)"
-
-      guard recording else { logDebug("not recording…skipping event creation"); return }
-
-      eventQueue.addOperationWithBlock {
-        [time = Sequencer.time.time, unowned node, weak self] in
-        let event = MIDINodeEvent(.Add(identifier: Identifier(nodeIdentifier: node.identifier),
-                                       trajectory: node.initialSnapshot.trajectory,
-                                       generator: node.noteGenerator),
-                                  time)
-        self?.addEvent(.Node(event))
-        self?.modified = true
-      }
-
-    // Insert the node into our set
-    nodes.append(Weak(node))
-    logDebug("adding node \(node.name!) (\(node.identifier))")
-
-    Notification.DidAddNode.post(object: self)
-
-
-  }
+  private var connectedEndPoints: Set<MIDIEndpointRef> = []
 
   /**
-  addNodeWithIdentifier:trajectory:attributes:texture:
-
-  - parameter identifier: NodeIdentifier
-  - parameter trajectory: Trajectory
-  - parameter generator: MIDINoteGenerator
-  - parameter texture: MIDINode.TextureType
-  */
-  private func addNodeWithIdentifier(identifier: NodeIdentifier,
-                          trajectory: Trajectory,
-                           generator: MIDINoteGenerator)
-  {
-    logDebug("placing node with identifier \(identifier), trajectory \(trajectory), generator \(generator)")
-
-    // Make sure a node hasn't already been place for this identifier
-    guard nodeIdentifiers ∌ identifier else { return }
-
-    // Place a node
-    MIDIPlayer.placeNew(trajectory, targetTrack: self, generator: generator, identifier: identifier)
-  }
-
-  /**
-  removeNodeWithIdentifier:
-
-  - parameter identifier: NodeIdentifier
-  */
-  private func removeNodeWithIdentifier(identifier: NodeIdentifier) {
-    logDebug("removing node with identifier \(identifier)")
-//    guard let mappedIdentifier = fileIDToNodeID[identifier] else {
-//      fatalError("trying to remove node for unmapped identifier \(identifier)")
-//    }
-    guard let idx = nodes.indexOf({$0.reference?.identifier == identifier}), node = nodes[idx].reference else {
-      fatalError("failed to find node with mapped identifier \(identifier)")
-    }
-
-    do {
-      try removeNode(node)
-      MIDIPlayer.removeNode(node)
-//      fileIDToNodeID[identifier] = nil
-    } catch {
-      logError(error)
-    }
-  }
-
-  /**
-  removeNode:
-
-  - parameter node: MIDINode
-  */
-  func removeNode(node: MIDINode) throws { try _removeNode(node, delete: false) }
-
-  func deleteNode(node: MIDINode) throws { try _removeNode(node, delete: true) }
-
-  /**
-   _removeNode:delete:
+   connectNode:
 
    - parameter node: MIDINode
-   - parameter delete: Bool
   */
-  private func _removeNode(node: MIDINode, delete: Bool) throws {
-    guard let idx = nodes.indexOf({$0.reference === node}),
-      node = nodes.removeAtIndex(idx).reference else { throw Error.NodeNotFound }
-    
-    let identifier = node.identifier
-    logDebug("removing node \(node.name!) \(identifier)")
-
-    node.sendNoteOff()
-    try MIDIPortDisconnectSource(inPort, node.endPoint) ➤ "Failed to disconnect to node \(node.name!)"
-    Notification.DidRemoveNode.post(object: self)
-
-    switch delete {
-      case true:
-        events.removeEventsMatching {
-          if case .Node(let event) = $0 where event.identifier.nodeIdentifier == identifier { return true }
-          else { return false }
-        }
-      case false:
-        guard recording else { logDebug("not recording…skipping event creation"); return }
-        eventQueue.addOperationWithBlock {
-          [time = Sequencer.time.time, weak self] in
-          self?.addEvent(.Node(MIDINodeEvent(.Remove(identifier: MIDINodeEvent.Identifier(nodeIdentifier: identifier)), time)))
-        }
-    }
+  func connectNode(node: MIDINode) throws {
+    guard connectedEndPoints ∌ node.endPoint else { throw MIDINodeDispatchError.NodeAlreadyConnected }
+    try MIDIPortConnectSource(inPort, node.endPoint, nil) ➤ "Failed to connect to node \(node.name!)"
+    connectedEndPoints.insert(node.endPoint)
   }
 
-  /** stopNodes */
-  private func stopNodes() { nodes.forEach {$0.reference?.fadeOut()}; logDebug("nodes stopped") }
+  /**
+   disconnectNode:
 
-  /** startNodes */
-  private func startNodes() { nodes.forEach {$0.reference?.fadeIn()}; logDebug("nodes started") }
+   - parameter node: MIDINode
+  */
+  func disconnectNode(node: MIDINode) throws {
+    guard connectedEndPoints ∋ node.endPoint else { throw MIDINodeDispatchError.NodeNotFound }
+    try MIDIPortDisconnectSource(inPort, node.endPoint) ➤ "Failed to disconnect to node \(node.name!)"
+    connectedEndPoints.remove(node.endPoint)
+  }
 
   // MARK: - Loops
 
   /**
-   insertLoop:
+   addLoop:
 
    - parameter loop: Loop
   */
-  func insertLoop(loop: MIDILoop) { loops[loop.identifier] = loop; addEvents(Array(loop)) }
+  func addLoop(loop: Loop) {
+    guard loops[loop.identifier] == nil else { return }
+    logDebug("adding loop: \(loop)")
+    loops[loop.identifier] = loop
+    addEvents(loop)
+  }
 
-  private var loops: [MIDILoop.Identifier:MIDILoop] = [:]
+  private var loops: [Loop.Identifier:Loop] = [:]
 
   // MARK: - MIDI events
 
@@ -381,7 +291,7 @@ final class InstrumentTrack: Track {
             case let .Add(identifier, trajectory, generator):
               addNodeWithIdentifier(identifier.nodeIdentifier, trajectory: trajectory, generator: generator)
             case let .Remove(identifier):
-              removeNodeWithIdentifier(identifier.nodeIdentifier)
+              do { try removeNodeWithIdentifier(identifier.nodeIdentifier) } catch { logError(error) }
           }
         case .Meta(let metaEvent) where metaEvent.data == .EndOfTrack:
           guard !recording && endOfTrack == metaEvent.time else { break }
@@ -398,7 +308,9 @@ final class InstrumentTrack: Track {
 
   - returns: [CABarBeatTime]
   */
-  override func registrationTimesForAddedEvents(events: [MIDIEvent]) -> [CABarBeatTime] {
+  override func registrationTimesForAddedEvents<S:SequenceType
+    where S.Generator.Element == MIDIEvent>(events: S) -> [CABarBeatTime]
+  {
     return events.filter({ if case .Node(_) = $0 { return true } else { return false } }).map({$0.time})
       + super.registrationTimesForAddedEvents(events)
   }
@@ -412,7 +324,8 @@ final class InstrumentTrack: Track {
   private func initializeMIDIClient() throws {
     try MIDIClientCreateWithBlock("track \(instrument.bus)", &client, nil) ➤ "Failed to create midi client"
     try MIDIOutputPortCreate(client, "Output", &outPort) ➤ "Failed to create out port"
-    try MIDIInputPortCreateWithBlock(client, name, &inPort, weakMethod(self, InstrumentTrack.read)) ➤ "Failed to create in port"
+    try MIDIInputPortCreateWithBlock(client, name, &inPort, weakMethod(self, InstrumentTrack.read))
+      ➤ "Failed to create in port"
   }
 
   /**
@@ -443,9 +356,7 @@ final class InstrumentTrack: Track {
   */
   init(sequence: Sequence, grooveTrack: GrooveTrack) throws {
     super.init(sequence: sequence)
-    guard let instrument = Instrument(grooveTrack.instrument.jsonValue) else {
-      throw Error.InstrumentInitializeFailure
-    }
+    guard let instrument = Instrument(grooveTrack.instrument.jsonValue) else { throw Error.InstrumentInitializeFailure }
     instrument.track = self
     self.instrument = instrument
     eventQueue.name = "BUS \(instrument.bus)"
@@ -454,7 +365,7 @@ final class InstrumentTrack: Track {
     name = grooveTrack.name
     var events: [MIDIEvent] = []
     for (_, node) in grooveTrack.nodes {
-      let generator: MIDINoteGenerator? = ChordGenerator(node.generator.jsonValue) ?? NoteGenerator(node.generator.jsonValue)
+      let generator: MIDINodeGenerator? = ChordGenerator(node.generator.jsonValue) ?? NoteGenerator(node.generator.jsonValue)
       guard generator != nil else { continue }
       events.append(.Node(MIDINodeEvent(.Add(identifier: node.identifier,
                                              trajectory: node.trajectory,
@@ -465,7 +376,7 @@ final class InstrumentTrack: Track {
     }
     addEvents(events)
 
-    grooveTrack.loops.values.forEach { insertLoop(MIDILoop(grooveLoop: $0)) }
+    grooveTrack.loops.values.forEach { addLoop(Loop(grooveLoop: $0, track: self)) }
 
     initializeNotificationReceptionist()
     try initializeMIDIClient()
@@ -532,7 +443,6 @@ final class InstrumentTrack: Track {
 // MARK: - Errors
 extension InstrumentTrack {
   enum Error: String, ErrorType, CustomStringConvertible {
-    case NodeNotFound = "The specified node was not found among the track's nodes"
     case SoundSetInitializeFailure = "Failed to create sound set"
     case InvalidSoundSetURL = "Failed to resolve sound set url"
     case InstrumentInitializeFailure = "Failed to create instrument"
@@ -543,7 +453,7 @@ extension InstrumentTrack {
 extension InstrumentTrack {
   enum Notification: String, NotificationType, NotificationNameType {
     enum Key: String, KeyType { case OldValue, NewValue }
-    case MuteStatusDidChange, SoloStatusDidChange, DidAddNode, DidRemoveNode
+    case MuteStatusDidChange, SoloStatusDidChange
   }
 }
 

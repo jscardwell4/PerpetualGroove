@@ -47,6 +47,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         MIDIDocumentManager.initialize()
         AudioManager.initialize()
         Sequencer.initialize()
+        MIDIPlayer.initialize()
       }
     }
     viewController = window?.rootViewController as? RootViewController

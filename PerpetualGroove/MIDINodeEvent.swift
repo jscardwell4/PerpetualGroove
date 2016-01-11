@@ -27,7 +27,7 @@ struct MIDINodeEvent: MIDIEventType {
   typealias NodeIdentifier = MIDINode.Identifier
   var nodeIdentifier: NodeIdentifier { return identifier.nodeIdentifier }
 
-  typealias LoopIdentifier = MIDILoop.Identifier
+  typealias LoopIdentifier = Loop.Identifier
   var loopIdentifier: LoopIdentifier?  { return identifier.loopIdentifier }
 
   /**
@@ -172,7 +172,7 @@ func ==(lhs: MIDINodeEvent.Identifier, rhs: MIDINodeEvent.Identifier) -> Bool {
 extension MIDINodeEvent {
 
   enum Data: Equatable {
-    case Add(identifier: Identifier, trajectory: Trajectory, generator: MIDINoteGenerator)
+    case Add(identifier: Identifier, trajectory: Trajectory, generator: MIDINodeGenerator)
     case Remove(identifier: Identifier)
 
     /**

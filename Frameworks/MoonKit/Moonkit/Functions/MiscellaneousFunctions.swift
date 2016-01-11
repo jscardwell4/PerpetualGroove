@@ -15,6 +15,13 @@ nonce
 */
 public func nonce() -> String { return NSUUID().UUIDString }
 
+/**
+ No-op function intended to be used as a more noticeable way to force instantiation of lazy properties
+
+ - parameter t: T
+*/
+public func touch<T>(t: T) {}
+
 public func gcd<T:ArithmeticType>(a: T, _ b: T) -> T {
   var aMax = a.toIntMax(), bMax = b.toIntMax()
   while bMax != 0 {

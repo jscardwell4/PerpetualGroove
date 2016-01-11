@@ -44,8 +44,8 @@ final class GeneratorTool: ConfigurableToolType {
       if let oldNode = oldValue {
         oldNode.childNodeWithName(name)?.removeFromParent()
         oldNode.lightingBitMask = 0
-        if let track = oldNode.track {
-          oldNode.runAction(SKAction.colorizeWithColor(track.color.value, colorBlendFactor: 1, duration: 0.25))
+        if let dispatch = oldNode.dispatch {
+          oldNode.runAction(SKAction.colorizeWithColor(dispatch.color.value, colorBlendFactor: 1, duration: 0.25))
         }
       }
 
@@ -130,7 +130,7 @@ final class GeneratorTool: ConfigurableToolType {
         viewController = storyboard.instantiateViewControllerWithIdentifier("Generator") as! GeneratorViewController
         viewController.didChangeGenerator = {
           MIDIPlayer.addTool?.noteGenerator = $0
-          MIDIDocumentManager.currentDocument?.sequence?.currentTrack?.instrument.playNote($0)
+          Sequencer.sequence?.currentTrack?.instrument.playNote($0)
         }
 
     }

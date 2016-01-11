@@ -94,7 +94,7 @@ final class Transport {
 
   /** beginJog */
   func beginJog() {
-    guard !jogging, let sequence = MIDIDocumentManager.currentDocument?.sequence else { return }
+    guard !jogging, let sequence = Sequencer.sequence else { return }
     clock.stop()
     jogTime = time.time
     maxTicks = max(jogTime.ticks, sequence.sequenceEnd.ticks)

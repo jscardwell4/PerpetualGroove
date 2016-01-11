@@ -24,7 +24,9 @@ public class LogManager {
     .TTY: "TTY",
     .ASL: "ASL",
     .MoonKit: "MoonKit",
-    .UnitTest: "UnitTest"
+    .UnitTest: "UnitTest",
+    .Console: "Console",
+    .Any: "Any"
   ]
 
   public static var logContext: LogContext = .Console
@@ -178,14 +180,14 @@ public class LogManager {
     logLevelsByType[ObjectIdentifier(type.dynamicType.self)] = context
   }
 
-  public struct LogContext: OptionSetType {
+  public struct LogContext: OptionSetType, CustomStringConvertible {
     public let rawValue: Int
     public init(rawValue: Int) {
       if rawValue != Int.min && rawValue < 0 { self = .Ignored }
       else { self.rawValue = rawValue }
     }
 
-    public var name: String?
+    public var name: String? { return LogManager.logContextNames[self] }
     public static let Ignored  = LogContext(rawValue: Int.min)
     public static let Default  = LogContext(rawValue: 0b0000_0000)
     public static let File     = LogContext(rawValue: 0b0000_0001)
@@ -197,6 +199,10 @@ public class LogManager {
     public static let Test     = LogContext.UnitTest ∪ LogContext.Console ∪ LogContext.File
     public static let Console  = LogContext.TTY ∪ LogContext.ASL
     public static let Any      = LogContext(rawValue: Int.max)
+
+    public var description: String {
+      return "\(name ?? "LogContext") (\(String(binaryBytes: rawValue)))"
+    }
   }
 
   /**

@@ -12,7 +12,7 @@ import struct AudioToolbox.CABarBeatTime
 
 struct GrooveLoop {
 
-  typealias Identifier = MIDILoop.Identifier
+  typealias Identifier = Loop.Identifier
 
   var identifier: Identifier
   var repetitions: Int
