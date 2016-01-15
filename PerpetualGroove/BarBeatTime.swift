@@ -1,330 +1,158 @@
 //
-//  BarBeatTime.swift
+//  BarBeatTime
 //  PerpetualGroove
 //
-//  Created by Jason Cardwell on 8/26/15.
+//  Created by Jason Cardwell on 10/15/15.
 //  Copyright © 2015 Moondeer Studios. All rights reserved.
 //
 
 import Foundation
-import AudioToolbox
-import CoreMIDI
+import typealias CoreMIDI.MIDITimeStamp
 import MoonKit
 
-final class BarBeatTime {
-
-  // MARK: - Receiving MIDI clocks
-
-  private var client = MIDIClientRef()  /// Client for receiving MIDI clock
-  private var inPort = MIDIPortRef()    /// Port for receiving MIDI clock
+struct BarBeatTime {
+  var bar = 0
+  var beat = 0
+  var subbeat = 0
+  var subbeatDivisor = Sequencer.partsPerQuarter
+  var beatsPerBar = Sequencer.timeSignature.beatsPerBar
 
   /**
-  read:context:
+   initWithBar:beat:subbeat:subbeatDivisor:beatsPerBar:
 
-  - parameter packetList: UnsafePointer<MIDIPacketList>
-  - parameter context: UnsafePointer<Void>
+   - parameter bar: Int = 0
+   - parameter beat: Int = 0
+   - parameter subbeat: Int = 0
+   - parameter subbeatDivisor: Int = Sequencer.partsPerQuarter
+   - parameter beatsPerBar: Int = Sequencer.timeSignature.beatsPerBar
   */
-  private func read(packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutablePointer<Void>) {
-    // Runs on MIDI Services thread
-    switch packetList.memory.packet.data.0 {
-      case 0b1111_1000: queue.addOperationWithBlock { [weak self] in self?.incrementClock() }
-      case 0b1111_1010: queue.addOperationWithBlock { [weak self] in self?.reset(); self?.invokeCallbacksForTime(self!.time) }
-      default: break
-    }
+  init(bar: Int = 0,
+       beat: Int = 0,
+       subbeat: Int = 0,
+       subbeatDivisor: Int = Sequencer.partsPerQuarter,
+       beatsPerBar: Int = Sequencer.timeSignature.beatsPerBar)
+  {
+    self.bar = bar
+    self.beat = beat
+    self.subbeat = subbeat
+    self.subbeatDivisor = subbeatDivisor
+    self.beatsPerBar = beatsPerBar
   }
 
-  // MARK: - Keeping the time
+  var isNormal: Bool {
+    return subbeatDivisor > 0
+      && beatsPerBar > 0 && bar > 0
+      && (1 ... beatsPerBar).contains(beat)
+      && (1 ... subbeatDivisor).contains(subbeat)
+  }
 
-  private let queue: NSOperationQueue = { let q = NSOperationQueue(); q.maxConcurrentOperationCount = 1; return q }()
+  static let start = BarBeatTime(bar: 1, beat: 1, subbeat: 1)
+  static let zero  = BarBeatTime(bar: 0, beat: 0, subbeat: 0)
+  static let null  = BarBeatTime(bar: -1, beat: 0, subbeat: 0)
+  
+  /**
+   addedToBarBeatTime:beatsPerBar:
 
-  /** The resolution used to divide a beat into subbeats */
-//  var partsPerQuarter: UInt16 {
-//    get { return time.subbeatDivisor }
-//    set {
-//      time.subbeatDivisor = newValue
-//      let n = clockCount.numerator % Float(newValue)
-//      clockCount = n╱Float(newValue)
-//      beatInterval = Fraction((Float(newValue) * Float(0.25)), Float(newValue))
-//    }
+   - parameter time: BarBeatTime
+   - parameter beatsPerBar: UInt16
+
+   - returns: BarBeatTime
+   */
+//  func addedToBarBeatTime(time: BarBeatTime, beatsPerBar: Int) -> BarBeatTime {
+//    var bars = bar + time.bar
+//    var beats = beat + time.beat
+//    let subbeatsSum = (subbeat╱subbeatDivisor + time.subbeat╱time.subbeatDivisor).fractionWithBase(subbeatDivisor)
+//    var subbeats = subbeatsSum.numerator
+//    if subbeats > subbeatDivisor { beats += subbeats / subbeatDivisor; subbeats %= subbeatDivisor }
+//    if beats > beatsPerBar { bars += beats / beatsPerBar; beats %= beatsPerBar }
+//    return BarBeatTime(bar: bars, beat: beats, subbeat: subbeats, subbeatDivisor: subbeatDivisor)
 //  }
 
-  /// Valid beat range for the current settings
-  private(set) var validBeats: Range<UInt16>
-
-  /// Valid subbeat range for the current settings
-  private(set) var validSubbeats: Range<UInt16>
-
   /**
-  Whether the specified `time` holds a valid representation
+   init:beatsPerBar:subbeatDivisor:
 
-  - parameter time: CABarBeatTime
-
-  - returns: Bool
-  */
-  func isValidTime(time: CABarBeatTime) -> Bool {
-    return validBeats ∋ time.beat && validSubbeats ∋ time.subbeat && time.subbeatDivisor == Sequencer.partsPerQuarter
-  }
-
-  /// The musical representation of the current time
-  private var _time: CABarBeatTime { didSet { if Sequencer.playing { invokeCallbacksForTime(time) } } }
-
-  /** Synchronized access to the musical representation of the current time */
-  var time: CABarBeatTime {
-    get { objc_sync_enter(self); defer { objc_sync_exit(self) }; return _time }
-    set { objc_sync_enter(self); defer { objc_sync_exit(self) }; guard isValidTime(newValue) else { return }; _time = newValue }
-  }
-
-  /** The portion of `clockCount` that constitutes a beat */
-  private var beatInterval: Fraction<Float>
-
-  /** Tracks the current subdivision of a beat, incrementing `time` as it updates */
-  private var clockCount: Fraction<Float>
-
-  /** incrementClock */
-  private func incrementClock() {
-    objc_sync_enter(self)
-    defer { objc_sync_exit(self) }
-
-    var updatedTime = time
-
-    clockCount.numerator += 1
-    if clockCount == 1 {
-      clockCount.numerator = 0
-      updatedTime.bar++
-      updatedTime.beat = 1
-      updatedTime.subbeat = 1
-    } else if clockCount % beatInterval == 0 {
-      updatedTime.beat++
-      updatedTime.subbeat = 1
-    } else {
-      updatedTime.subbeat++
-    }
-
-    time = updatedTime
-  }
-
-  // MARK: - Time-triggered callbacks
-
-  typealias Callback  = (CABarBeatTime) -> Void
-  typealias Predicate = (CABarBeatTime) -> Bool
-
-  private var callbacks: [CABarBeatTime:[(Callback, ObjectIdentifier?)]] = [:] {
-    didSet { haveCallbacks = callbacks.count > 0 || predicatedCallbacks.count > 0 }
-  }
-  private var predicatedCallbacks: [String:(predicate: Predicate, callback: Callback)] = [:] {
-    didSet { haveCallbacks = callbacks.count > 0 || predicatedCallbacks.count > 0 }
-  }
-
-  /**
-   callbackRegisteredForKey:
-
-   - parameter key: String
-
-    - returns: Bool
-  */
-  func callbackRegisteredForKey(key: String) -> Bool {
-    return predicatedCallbacks[key] != nil
-  }
-
-  var suppressCallbacks = false
-  private var haveCallbacks = false
-  private var checkCallbacks: Bool { return haveCallbacks && !suppressCallbacks }
-
-  /** clearCallbacks */
-  func clearCallbacks() {
-    logDebug("clearing all registered callbacks…")
-    callbacks.removeAll(keepCapacity: true)
-    predicatedCallbacks.removeAll(keepCapacity: true)
-  }
-
-  /**
-  Invokes the blocks registered in `callbacks` for the specified time and any blocks in `predicatedCallbacks` 
-  whose predicate evaluates to `true`
-
-  - parameter t: CABarBeatTime
-  */
-  private func invokeCallbacksForTime(t: CABarBeatTime) {
-    guard checkCallbacks else { return }
-    callbacks[t]?.forEach({$0.0(t)})
-    predicatedCallbacks.values.filter({$0.predicate(t)}).forEach({$0.callback(t)})
-  }
-
-  /**
-  registerCallback:forTime:
-
-  - parameter callback: (CABarBeatTime) -> Void
-  - parameter time: CABarBeatTime
-  */
-  func registerCallback(callback: Callback, forTime time: CABarBeatTime, forObject obj: AnyObject? = nil) {
-    registerCallback(callback, forTimes: [time], forObject: obj)
-  }
-
-  /**
-  registerCallback:forTimes:forObject:
-
-  - parameter callback: Callback
-  - parameter times: S
-  - parameter obj: AnyObject? = nil
-  */
-  func registerCallback<S:SequenceType
-    where S.Generator.Element == CABarBeatTime>(callback: Callback, forTimes times: S, forObject obj: AnyObject? = nil)
+   - parameter tickValue: UInt64
+   - parameter beatsPerBar: UInt8 = Sequencer.timeSignature.beatsPerBar
+   - parameter subbeatDivisor: UInt16 = Sequencer.time.partsPerQuarter
+   */
+  init(var tickValue: UInt64,
+    beatsPerBar: Int = Sequencer.timeSignature.beatsPerBar,
+    subbeatDivisor: Int = Sequencer.partsPerQuarter)
   {
-    let value: (Callback, ObjectIdentifier?) = obj != nil ? (callback, ObjectIdentifier(obj!)) : (callback, nil)
-    times.forEach { var bag = callbacks[$0] ?? []; bag.append(value); callbacks[$0] = bag }
-  }
-
-  /**
-  removeCallbackForTime:
-
-  - parameter time: CABarBeatTime
-  */
-  func removeCallbackForTime(time: CABarBeatTime, forObject obj: AnyObject? = nil) {
-    if let obj = obj { callbacks[time] = callbacks[time]?.filter({[identifier = ObjectIdentifier(obj)] in $1 != identifier}) }
-    else { callbacks[time] = nil }
-  }
-
-  /**
-  removeCallbackForKey:
-
-  - parameter key: String
-  */
-  func removeCallbackForKey(key: String) { predicatedCallbacks[key] = nil }
-
-
-  /**
-  Set the `inout Bool` to true to unregister the callback
-
-  - parameter callback: (CABarBeatTime) -> Void
-  - parameter predicate: (CABarBeatTime) -> Bool
-  */
-  func registerCallback(callback: Callback, predicate: Predicate, forKey key: String) {
-    predicatedCallbacks[key] = (predicate: predicate, callback: callback)
-  }
-
-
-  // MARK: - Measurements and conversions
-
-  /// Holds a bar beat time value that can be used later to measure the amount of time elapsed
-  private var marker: CABarBeatTime
-
-  /** Updates `marker` with current `time` */
-  func setMarker() { marker = time }
-
-  /// The amount of time elapsed since `marker`
-  var timeSinceMarker: CABarBeatTime {
-    var t = time
-    var result = CABarBeatTime(bar: 0, beat: 0, subbeat: 0, subbeatDivisor: 0, reserved: 0)
-    if t.subbeatDivisor != marker.subbeatDivisor {
-      let divisor = max(t.subbeatDivisor, marker.subbeatDivisor)
-      t.subbeat *= divisor / t.subbeatDivisor
-      t.subbeatDivisor = divisor
-      marker.subbeat *= divisor / marker.subbeatDivisor
-      marker.subbeatDivisor = divisor
-      result.subbeatDivisor = divisor
+    let subbeat = Int(tickValue % UInt64(subbeatDivisor)) + 1
+    guard tickValue > UInt64(subbeat) else {
+      self = BarBeatTime(bar: 1, beat: 1, subbeat: subbeat, subbeatDivisor: subbeatDivisor, beatsPerBar: beatsPerBar)
+      return
     }
-
-    if t.subbeat < marker.subbeat {
-      t.subbeat += t.subbeatDivisor
-      t.beat -= 1
-    }
-    result.subbeat = t.subbeat - marker.subbeat
-
-    if t.beat < marker.beat {
-      t.beat += 4
-      t.bar -= 1
-    }
-    result.beat = t.beat - marker.beat
-    result.bar = t.bar - marker.bar
-    return result
+    tickValue -= UInt64(subbeat)
+    let totalBeats = tickValue / UInt64(subbeatDivisor)
+    let beat = Int(totalBeats % UInt64(beatsPerBar)) + 1
+    let bar = Int(totalBeats / UInt64(beatsPerBar)) + 1
+    self = BarBeatTime(bar: bar, beat: beat, subbeat: subbeat, subbeatDivisor: subbeatDivisor, beatsPerBar: beatsPerBar)
   }
 
-  var bar:         Int           { return Int(time.bar)       }  /// Accessor for `time.bar`
-  var beat:        Int           { return Int(time.beat)      }  /// Accessor for `time.beat`
-  var subbeat:     Int           { return Int(time.subbeat)   }  /// Accessor for `time.subbeat`
-  var ticks:       MIDITimeStamp { return time.ticks          }  /// Accessor for `time.ticks`
-  var doubleValue: Double        { return time.doubleValue    }  /// Accessor for `time.doubleValue`
-
-  let clockName: String
-
-  // MARK: - Initializing and resetting
-
-  /**
-  initWithClockSource:partsPerQuarter:
-
-  - parameter clockSource: MIDIEndpointRef
-  */
-  init(clockSource: MIDIEndpointRef) {
-
-    var unmanagedProperties: Unmanaged<CFPropertyList>?
-    MIDIObjectGetProperties(clockSource, &unmanagedProperties, true)
-
-    var unmanagedName: Unmanaged<CFString>?
-    MIDIObjectGetStringProperty(clockSource, kMIDIPropertyName, &unmanagedName)
-    guard unmanagedName != nil else { fatalError("Endpoint should have been given a name") }
-    clockName = unmanagedName!.takeUnretainedValue() as String
-
-    let ppq = Sequencer.partsPerQuarter
-    let t = CABarBeatTime(bar: 1, beat: 1, subbeat: 1, subbeatDivisor: ppq, reserved: 0)
-    _time = t
-    marker = t
-    clockCount = 0╱Float(ppq)
-    beatInterval = (Float(ppq) * Float(0.25))╱Float(ppq)
-    validBeats = 1 ... UInt16(Sequencer.timeSignature.beatsPerBar)
-    validSubbeats = 1 ... ppq
-    queue.name = name
-
-    do {
-      try MIDIClientCreateWithBlock(queue.name!, &client, nil)
-        ➤ "Failed to create midi client for bar beat time"
-      try MIDIInputPortCreateWithBlock(client, "Input", &inPort, weakMethod(self, BarBeatTime.read)) ➤ "Failed to create in port for bar beat time"
-      try MIDIPortConnectSource(inPort, clockSource, nil) ➤ "Failed to connect bar beat time to clock"
-    } catch {
-      logError(error)
-    }
+  var doubleValue: Double {
+    let bar = Double(max(Int(self.bar) - 1, 0))
+    let beat = Double(max(Int(self.beat) - 1, 0))
+    let subbeat = Double(max(Int(self.subbeat) - 1, 0))
+    return bar * Double(beatsPerBar) + beat + subbeat / Double(subbeatDivisor)
   }
 
-  /**
-  reset:
-
-  - parameter completion: (() -> Void)? = nil
-  */
-  func reset(completion: (() -> Void)? = nil) {
-    logDebug("time ➞ 1:1.1╱\(_time.subbeatDivisor); clockCount ➞ 0╱\(_time.subbeatDivisor)")
-    queue.addOperationWithBlock  {
-      [unowned self] in
-      let ppq = self._time.subbeatDivisor
-      self._time = CABarBeatTime(bar: 1, beat: 1, subbeat: 1, subbeatDivisor: ppq, reserved: 0)
-      objc_sync_enter(self)
-      defer { objc_sync_exit(self); completion?() }
-      self.clockCount = 0╱Float(ppq)
-    }
-  }
-
-  /**
-   hardReset:
-
-   - parameter completion: (() -> Void
-  */
-  func hardReset(completion: (() -> Void)? = nil) {
-    clearCallbacks()
-    reset(completion)
-  }
-
-  deinit {
-    do {
-      try MIDIPortDispose(inPort) ➤ "Failed to dispose of in port"
-      try MIDIClientDispose(client) ➤ "Failed to dispose of midi client"
-    } catch { logError(error) }
-
+  var ticks: UInt64 {
+    let bar = UInt64(max(Int(self.bar) - 1, 0))
+    let beat = UInt64(max(Int(self.beat) - 1, 0))
+    let subbeat = UInt64(max(Int(self.subbeat) - 1, 0))
+    return (bar * UInt64(beatsPerBar) + beat) * UInt64(subbeatDivisor) + subbeat
   }
 }
 
-extension BarBeatTime: Named {
-  var name: String { return clockName }
+func +(lhs: BarBeatTime, rhs: BarBeatTime) -> BarBeatTime {
+  let beatsPerBar = lcm(lhs.beatsPerBar, rhs.beatsPerBar)
+  let lhsBeat = (lhs.beat╱lhs.beatsPerBar).fractionWithBase(beatsPerBar)
+  let rhsBeat = (rhs.beat╱rhs.beatsPerBar).fractionWithBase(beatsPerBar)
+  let subbeatDivisor = lcm(lhs.subbeatDivisor, rhs.subbeatDivisor)
+  let lhsSubbeat = (lhs.subbeat╱lhs.subbeatDivisor).fractionWithBase(subbeatDivisor)
+  let rhsSubbeat = (rhs.subbeat╱rhs.subbeatDivisor).fractionWithBase(subbeatDivisor)
+  var result = BarBeatTime(bar: lhs.bar + rhs.bar,
+                           beat: (lhsBeat + rhsBeat).numerator,
+                           subbeat: (lhsSubbeat + rhsSubbeat).numerator,
+                           subbeatDivisor: subbeatDivisor,
+                           beatsPerBar: beatsPerBar)
+
+  if result.subbeat > subbeatDivisor { result.beat++; result.subbeat -= subbeatDivisor }
+  if result.beat > beatsPerBar { result.bar++; result.beat -= beatsPerBar }
+
+  return result
+}
+
+func -(lhs: BarBeatTime, rhs: BarBeatTime) -> BarBeatTime {
+  let beatsPerBar = lcm(lhs.beatsPerBar, rhs.beatsPerBar)
+  let lhsBeat = (lhs.beat╱lhs.beatsPerBar).fractionWithBase(beatsPerBar)
+  let rhsBeat = (rhs.beat╱rhs.beatsPerBar).fractionWithBase(beatsPerBar)
+  let subbeatDivisor = lcm(lhs.subbeatDivisor, rhs.subbeatDivisor)
+  let lhsSubbeat = (lhs.subbeat╱lhs.subbeatDivisor).fractionWithBase(subbeatDivisor)
+  let rhsSubbeat = (rhs.subbeat╱rhs.subbeatDivisor).fractionWithBase(subbeatDivisor)
+  var result = BarBeatTime(bar: lhs.bar - rhs.bar,
+                           beat: (lhsBeat - rhsBeat).numerator,
+                           subbeat: (lhsSubbeat - rhsSubbeat).numerator,
+                           subbeatDivisor: subbeatDivisor,
+                           beatsPerBar: beatsPerBar)
+
+  if result.subbeat < 1 { result.beat--; result.subbeat += subbeatDivisor }
+  if result.beat < 1 { result.bar--; result.beat += beatsPerBar }
+
+  return result
 }
 
 // MARK: - CustomStringConvertible
-extension BarBeatTime: CustomStringConvertible { var description: String { return time.description } }
+extension BarBeatTime: CustomStringConvertible {
+  var description: String {
+    let barString = String(bar, radix: 10, pad: 3)
+    let beatString = String(beat)
+    let subbeatString = String(subbeat, radix: 10, pad: String(subbeatDivisor).utf8.count)
+    return "\(barString):\(beatString).\(subbeatString)"
+  }
+}
 
 // MARK: - CustomDebugStringConvertible
 extension BarBeatTime: CustomDebugStringConvertible {
@@ -332,7 +160,49 @@ extension BarBeatTime: CustomDebugStringConvertible {
 }
 
 // MARK: - Hashable
-extension BarBeatTime: Hashable { var hashValue: Int { return ObjectIdentifier(self).hashValue } }
+extension BarBeatTime: Hashable {
+  var hashValue: Int { return rawValue.hashValue }
+}
 
-// MARK: - Equatable
-func ==(lhs: BarBeatTime, rhs: BarBeatTime) -> Bool { return ObjectIdentifier(lhs) == ObjectIdentifier(rhs) }
+extension BarBeatTime: RawRepresentable {
+  var rawValue: String { return "\(bar):\(beat)╱\(beatsPerBar).\(subbeat)╱\(subbeatDivisor)" }
+
+  init?(rawValue: String) {
+    guard let match = (~/"^([0-9]+):([0-9]+)╱([0-9]+)\\.([0-9]+)╱([0-9]+)$").firstMatch(rawValue),
+              barString = match.captures[1]?.string,
+              beatString = match.captures[2]?.string,
+              beatsPerBarString = match.captures[3]?.string,
+              subbeatString = match.captures[4]?.string,
+              subbeatDivisorString = match.captures[5]?.string,
+              bar = Int(barString),
+              beat = Int(beatString),
+              beatsPerBar = Int(beatsPerBarString),
+              subbeat = Int(subbeatString),
+              subbeatDivisor = Int(subbeatDivisorString) else { return nil }
+    self.init(bar: bar, beat: beat, subbeat: subbeat, subbeatDivisor: subbeatDivisor, beatsPerBar: beatsPerBar)
+  }
+}
+
+extension BarBeatTime: JSONValueConvertible {
+  var jsonValue: JSONValue { return rawValue.jsonValue }
+}
+
+extension BarBeatTime: JSONValueInitializable {
+  init?(_ jsonValue: JSONValue?) {
+    guard let rawValue = String(jsonValue) else { return nil }
+    self.init(rawValue: rawValue)
+  }
+}
+
+func ==(lhs: BarBeatTime, rhs: BarBeatTime) -> Bool { return lhs.rawValue == rhs.rawValue }
+
+// MARK: - Comparable
+extension BarBeatTime: Comparable {}
+
+func <(lhs: BarBeatTime, rhs: BarBeatTime) -> Bool {
+  guard lhs.bar == rhs.bar else { return lhs.bar < rhs.bar }
+  guard lhs.beat == rhs.beat else { return lhs.beat < rhs.beat }
+  guard lhs.subbeatDivisor != rhs.subbeatDivisor else { return lhs.subbeat < rhs.subbeat }
+  return lhs.subbeat╱lhs.subbeatDivisor < rhs.subbeat╱rhs.subbeatDivisor
+}
+

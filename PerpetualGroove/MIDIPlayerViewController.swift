@@ -14,36 +14,44 @@ import Eveleth
 
 final class MIDIPlayerViewController: UIViewController {
 
-  @IBOutlet private weak var blurView: UIVisualEffectView!
-
-  private var constructingLoop = false
-
   /** startLoopAction */
-  @IBAction private func startLoopAction() {
-    guard Sequencer.mode == .Loop && !constructingLoop else {
-      fatalError("This method should only be called when a loop is under construction")
-    }
-  }
+  @IBAction private func startLoopAction() { MIDIPlayer.loopStart = Sequencer.transport.time.barBeatTime }
+
+  private let buttonWidth: CGFloat = 42
+  private let buttonPadding: CGFloat = 10
 
   /** stopLoopAction */
-  @IBAction private func stopLoopAction() {
-    guard Sequencer.mode == .Loop && constructingLoop else {
-      fatalError("This method should only be called when a loop is under construction")
-    }
-  }
+  @IBAction private func stopLoopAction() { MIDIPlayer.loopEnd = Sequencer.transport.time.barBeatTime }
 
   /** toggleLoopAction */
-  @IBAction private func toggleLoopAction() {
-    switch loopToggleButton.selected {
-      // At this point the button's `selected` property has yet to be updated for the current event
-      case true: Sequencer.mode = .Default
-      case false: Sequencer.mode = .Loop
-    }
+  @IBAction private func toggleLoopAction() { Sequencer.mode = .Loop }
+
+  /** cancelLoopAction */
+  @IBAction private func cancelLoopAction() { Sequencer.mode = .Default }
+
+  /** confirmLoopAction */
+  @IBAction private func confirmLoopAction() { MIDIPlayer.shouldInsertLoops = true;  Sequencer.mode = .Default }
+
+  // MARK: - Tools
+
+  @IBOutlet private(set) weak var primaryTools: ImageSegmentedControl!
+
+  @IBOutlet private weak var loopTools: UIStackView!
+
+  @IBAction private func didSelectTool(sender: ImageSegmentedControl) {
+    MIDIPlayer.currentTool = Tool(sender.selectedSegmentIndex)
   }
 
-  @IBOutlet weak var loopStartButton: ImageButtonView!
-  @IBOutlet weak var loopEndButton: ImageButtonView!
-  @IBOutlet weak var loopToggleButton: ImageButtonView!
+  @IBOutlet private weak var loopToggleButton: ImageButtonView!
+
+  @IBOutlet private weak var loopStartButton: ImageButtonView!
+  @IBOutlet private weak var loopEndButton: ImageButtonView!
+  @IBOutlet private weak var loopCancelButton: ImageButtonView!
+  @IBOutlet private weak var loopConfirmButton: ImageButtonView!
+
+  private var loopToolButtons: [ImageButtonView] { return [loopStartButton, loopEndButton, loopCancelButton, loopConfirmButton] }
+
+  @IBOutlet private weak var loopToolsWidthConstraint: NSLayoutConstraint!
 
   /** setup */
   private func setup() { initializeReceptionist() }
@@ -121,7 +129,7 @@ final class MIDIPlayerViewController: UIViewController {
 
   private func didSelectTool(notification: NSNotification) {
     guard let tool = notification.selectedTool else { return }
-    if tools.selectedSegmentIndex != tool.rawValue { tools.selectedSegmentIndex = tool.rawValue }
+    if primaryTools.selectedSegmentIndex != tool.rawValue { primaryTools.selectedSegmentIndex = tool.rawValue }
   }
 
   /**
@@ -129,14 +137,31 @@ final class MIDIPlayerViewController: UIViewController {
 
    - parameter notification: NSNotification
   */
-  private func didEnterLoopMode(notification: NSNotification) {}
+  private func didEnterLoopMode(notification: NSNotification) {
+    UIView.animateWithDuration(0.25) {
+      [unowned self] in
+
+      self.loopToggleButton.hidden = true
+      self.loopToolButtons.forEach { $0.hidden = false; $0.setNeedsDisplay() }
+      self.loopToolsWidthConstraint.constant = 4 * self.buttonWidth + 3 * self.buttonPadding
+    }
+  }
 
   /**
    didExitLoopMode:
 
    - parameter notification: NSNotification
   */
-  private func didExitLoopMode(notification: NSNotification) {}
+  private func didExitLoopMode(notification: NSNotification) {
+    UIView.animateWithDuration(0.25) {
+      [unowned self] in
+
+      self.loopToggleButton.hidden = false
+      self.loopToggleButton.setNeedsDisplay()
+      self.loopToolButtons.forEach { $0.hidden = true }
+      self.loopToolsWidthConstraint.constant = self.buttonWidth
+    }
+  }
 
 
   /** initializeReceptionist */
@@ -160,14 +185,6 @@ final class MIDIPlayerViewController: UIViewController {
                     from: Sequencer.self,
                 callback: weakMethod(self, MIDIPlayerViewController.didExitLoopMode))
 
-  }
-
-  // MARK: - Tools
-
-  @IBOutlet private(set) weak var tools: ImageSegmentedControl!
-
-  @IBAction private func didSelectTool(sender: ImageSegmentedControl) {
-    MIDIPlayer.currentTool = Tool(sender.selectedSegmentIndex)
   }
 
 }

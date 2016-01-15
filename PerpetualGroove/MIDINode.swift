@@ -11,164 +11,6 @@ import SpriteKit
 import MoonKit
 import CoreMIDI
 
-// MARK: MIDINodeGenerator protocol
-protocol MIDINodeGenerator: JSONValueConvertible, JSONValueInitializable {
-  var duration: Duration { get set }
-  var velocity: Velocity { get set }
-  var octave: Octave     { get set }
-  var root: Note { get set }
-  func sendNoteOn(outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws
-  func sendNoteOff(outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws
-  func receiveNoteOn(endPoint: MIDIEndpointRef, _ identifier: UInt64) throws
-  func receiveNoteOff(endPoint: MIDIEndpointRef, _ identifier: UInt64) throws
-}
-
-typealias MIDINodeRef = Weak<MIDINode>
-protocol MIDINodeDispatch: class, MIDIEventDispatch, Loggable, Named {
-  var nodes: OrderedSet<MIDINodeRef> { get set }
-  var nodeIdentifiers: Set<MIDINode.Identifier> { get }
-  var nextNodeName: String { get }
-  var color: TrackColor { get }
-  func addNode(node: MIDINode) throws
-  func addNodeWithIdentifier(identifier: MIDINode.Identifier, trajectory: Trajectory, generator: MIDINodeGenerator)
-  func removeNodeWithIdentifier(identifier: MIDINode.Identifier, delete: Bool) throws
-  func removeNode(node: MIDINode, delete: Bool) throws
-  func removeNode(node: MIDINode) throws
-  func deleteNode(node: MIDINode) throws
-  func connectNode(node: MIDINode) throws
-  func disconnectNode(node: MIDINode) throws
-
-  var recording: Bool { get }
-  func startNodes()
-  func stopNodes()
-}
-
-extension MIDINodeDispatch {
-  var nodeIdentifiers: Set<MIDINode.Identifier> { return Set(nodes.flatMap({$0.reference?.identifier})) }
-  /**
-   addNodeWithIdentifier:trajectory:generator:
-
-   - parameter identifier: MIDINode.Identifier
-   - parameter trajectory: Trajectory
-   - parameter generator: MIDINodeGenerator
-  */
-  func addNodeWithIdentifier(identifier: MIDINode.Identifier, trajectory: Trajectory, generator: MIDINodeGenerator) {
-    logDebug("placing node with identifier \(identifier), trajectory \(trajectory), generator \(generator)")
-
-    // Make sure a node hasn't already been place for this identifier
-    guard nodeIdentifiers ∌ identifier else { return }
-
-    // Place a node
-    MIDIPlayer.placeNew(trajectory, target: self, generator: generator, identifier: identifier)
-  }
-
-  /**
-   removeNodeWithIdentifier:delete:
-
-   - parameter identifier: NodeIdentifier
-   - parameter delete: Bool = false
-  */
-  func removeNodeWithIdentifier(identifier: MIDINode.Identifier, delete: Bool = false) throws {
-    logDebug("removing node with identifier \(identifier)")
-    guard let idx = nodes.indexOf({$0.reference?.identifier == identifier}), node = nodes[idx].reference else {
-      fatalError("failed to find node with mapped identifier \(identifier)")
-    }
-
-    try removeNode(node, delete: delete)
-    MIDIPlayer.removeNode(node)
-  }
-
-  /** stopNodes */
-  func stopNodes() { nodes.forEach {$0.reference?.fadeOut()}; logDebug("nodes stopped") }
-
-  /** startNodes */
-  func startNodes() { nodes.forEach {$0.reference?.fadeIn()}; logDebug("nodes started") }
-
-  /**
-   removeNode:
-
-   - parameter node: MIDINode
-  */
-  func removeNode(node: MIDINode) throws { try removeNode(node, delete: false) }
-
-  /**
-   deleteNode:
-
-   - parameter node: MIDINode
-  */
-  func deleteNode(node: MIDINode) throws { try removeNode(node, delete: true) }
-
-
-  /**
-   addNode:
-
-   - parameter node: MIDINode
-  */
-  func addNode(node: MIDINode) throws {
-    try connectNode(node)
-
-    guard recording else { logDebug("not recording…skipping event creation"); return }
-
-    eventQueue.addOperationWithBlock {
-      [time = Sequencer.time.time, unowned node, weak self] in
-      let event = MIDINodeEvent(.Add(identifier: MIDINodeEvent.Identifier(nodeIdentifier: node.identifier),
-        trajectory: node.initialSnapshot.trajectory,
-        generator: node.noteGenerator),
-        time)
-      self?.addEvent(.Node(event))
-    }
-
-    // Insert the node into our set
-    nodes.append(Weak(node))
-    logDebug("adding node \(node.name!) (\(node.identifier))")
-
-    MIDINodeDispatchNotification.DidAddNode.post(object: self)
-
-  }
-
-  /**
-   removeNode:delete:
-
-   - parameter node: MIDINode
-   - parameter delete: Bool
-  */
-  func removeNode(node: MIDINode, delete: Bool) throws {
-    guard let idx = nodes.indexOf({$0.reference === node}),
-      node = nodes.removeAtIndex(idx).reference else { throw MIDINodeDispatchError.NodeNotFound }
-    
-    let id = node.identifier
-    logDebug("removing node \(node.name!) \(id)")
-
-    node.sendNoteOff()
-    try disconnectNode(node)
-    MIDINodeDispatchNotification.DidRemoveNode.post(object: self)
-
-    switch delete {
-      case true:
-        events.removeEventsMatching {
-          if case .Node(let event) = $0 where event.identifier.nodeIdentifier == id { return true }
-          else { return false }
-        }
-      case false:
-        guard recording else { logDebug("not recording…skipping event creation"); return }
-        eventQueue.addOperationWithBlock {
-          [time = Sequencer.time.time, weak self] in
-          self?.addEvent(.Node(MIDINodeEvent(.Remove(identifier: MIDINodeEvent.Identifier(nodeIdentifier: id)), time)))
-        }
-    }
-  }
-
-}
-
-enum MIDINodeDispatchNotification: String, NotificationType, NotificationNameType {
-  enum Key: String, KeyType { case OldValue, NewValue }
-  case DidAddNode, DidRemoveNode
-}
-
-enum MIDINodeDispatchError: String, ErrorType, CustomStringConvertible {
-  case NodeNotFound = "The specified node was not found among the track's nodes"
-  case NodeAlreadyConnected = "The specified node has already been connected"
-}
 
 
 // MARK:- MIDINode
@@ -182,9 +24,9 @@ final class MIDINode: SKSpriteNode {
   private var client = MIDIClientRef()
   private(set) var endPoint = MIDIEndpointRef()
 
-  var noteGenerator: MIDINodeGenerator {
+  var generator: MIDIGenerator {
     didSet {
-      guard oldValue.duration != noteGenerator.duration else { return }
+      guard generator != oldValue else { return }
       playAction = Action(key: .Play, node: self)
     }
   }
@@ -245,7 +87,7 @@ final class MIDINode: SKSpriteNode {
   /** sendNoteOn */
   func sendNoteOn() {
     do {
-      try noteGenerator.receiveNoteOn(endPoint, UInt64(ObjectIdentifier(self).uintValue))
+      try generator.receiveNoteOn(endPoint, UInt64(ObjectIdentifier(self).uintValue))
       state ⊻= .Playing
     } catch { logError(error) }
   }
@@ -254,7 +96,7 @@ final class MIDINode: SKSpriteNode {
   func sendNoteOff() {
     guard state ∋ .Playing else { return }
     do {
-      try noteGenerator.receiveNoteOff(endPoint, UInt64(ObjectIdentifier(self).uintValue))
+      try generator.receiveNoteOff(endPoint, UInt64(ObjectIdentifier(self).uintValue))
       state ⊻= .Playing
     } catch { logError(error) }
   }
@@ -275,8 +117,8 @@ final class MIDINode: SKSpriteNode {
     switch key {
       case Action.Key.Play.rawValue where actionForKey(key) != nil:
         sendNoteOff()
-      case Action.Key.Move.rawValue where actionForKey(key) != nil:
-        pushBreadcrumb()
+//      case Action.Key.Move.rawValue where actionForKey(key) != nil:
+//        pushBreadcrumb()
       default: break
     }
     super.removeActionForKey(key)
@@ -284,15 +126,15 @@ final class MIDINode: SKSpriteNode {
 
   /** didMove */
   private func didMove() {
-    guard let (minX, maxX, minY, maxY) = minMaxValues else { return }
-
-    trajectory.p = position
-
-    switch position.unpack {
-      case (minX, _), (maxX, _): trajectory.dx *= -1
-      case (_, minY), (_, maxY): trajectory.dy *= -1
-      default: break
-    }
+//    guard let (minX, maxX, minY, maxY) = minMaxValues else { return }
+//
+//    trajectory.p = position
+//
+//    switch position.unpack {
+//      case (minX, _), (maxX, _): trajectory.dx *= -1
+//      case (_, minY), (_, maxY): trajectory.dy *= -1
+//      default: break
+//    }
 
     play()
     runAction(action(.Move))
@@ -323,7 +165,7 @@ final class MIDINode: SKSpriteNode {
   */
   private func didBeginJogging(notification: NSNotification) {
     guard state ∌ .Jogging else { fatalError("internal inconsistency, should not already have `Jogging` flag set") }
-    pushBreadcrumb() // Make sure the latest position gets added to history before jogging begins
+//    pushBreadcrumb() // Make sure the latest position gets added to history before jogging begins
     state ⊻= .Jogging
     removeActionForKey(Action.Key.Move.rawValue)
   }
@@ -335,12 +177,15 @@ final class MIDINode: SKSpriteNode {
   */
   private func didJog(notification: NSNotification) {
     guard state ∋ .Jogging else { fatalError("internal inconsistency, should have `Jogging` flag set") }
-    guard let jogTime = (notification.userInfo?[Transport.Notification.Key.JogTime.key] as? NSValue)?.barBeatTimeValue,
-      snapshot = history.snapshotForTicks(jogTime.ticks) else {
+    guard let jogTime = notification.jogTime else {
       logError("notication does not contain jog tick value")
       return
     }
-    animateToSnapshot(snapshot)
+//    guard let snapshot = history.snapshotForTicks(jogTime.ticks) else {
+//      logError("history does not contain snapshot for jog time '\(jogTime.rawValue)'")
+//      return
+//    }
+//    animateToSnapshot(snapshot)
   }
 
   /**
@@ -375,7 +220,7 @@ final class MIDINode: SKSpriteNode {
   private func didPause(notification: NSNotification) {
     guard state ∌ .Paused else { return }
     logDebug("pausing")
-    pushBreadcrumb()
+//    pushBreadcrumb()
     state ⊻= .Paused
     removeActionForKey(Action.Key.Move.rawValue)
   }
@@ -391,28 +236,28 @@ final class MIDINode: SKSpriteNode {
 
   // MARK: Snapshots
 
-  typealias Snapshot = MIDINodeHistory.Snapshot
+//  typealias Snapshot = MIDINodeHistory.Snapshot
 
   /// Holds the nodes breadcrumbs to use in jogging calculations
-  private var history: MIDINodeHistory
+//  private var history: MIDINodeHistory
 
   /// The breadcrumb currently referenced in jogging calculations
-  private var breadcrumb: MIDINodeHistory.Breadcrumb?
+//  private var breadcrumb: MIDINodeHistory.Breadcrumb?
 
   /// Snapshot of the initial trajectory and velocity for the node
-  var initialSnapshot: Snapshot
+//  var initialSnapshot: Snapshot
 
   /// Snapshot of the current trajectory and velocity for the node
-  private var currentSnapshot: Snapshot
+//  private var currentSnapshot: Snapshot
 
   /** Updates `currentSnapshot`, adding a new breadcrumb to `history` from the old value to the new value */
-  func pushBreadcrumb() {
-    guard state ∌ .Jogging else { logWarning("node has `Jogging` flag set, ignoring request to mark"); return }
-    let snapshot = Snapshot(ticks: Sequencer.time.ticks, position: position, velocity: trajectory.v)
-    guard snapshot.ticks > currentSnapshot.ticks else { return }
-    history.append(from: currentSnapshot, to: snapshot)
-    currentSnapshot = snapshot
-  }
+//  func pushBreadcrumb() {
+//    guard state ∌ .Jogging else { logWarning("node has `Jogging` flag set, ignoring request to mark"); return }
+//    let snapshot = Snapshot(ticks: Sequencer.time.ticks, position: position, velocity: trajectory.v)
+//    guard snapshot.ticks > currentSnapshot.ticks else { return }
+//    history.append(from: currentSnapshot, to: snapshot)
+//    currentSnapshot = snapshot
+//  }
 
   /**
    Animates the node to the location specified by the specified snapshot
@@ -420,41 +265,46 @@ final class MIDINode: SKSpriteNode {
    - parameter snapshot: Snapshot
    - parameter completion: (() -> Void)?
   */
-  private func animateToSnapshot(snapshot: Snapshot) {
-    let from = currentSnapshot.ticks, to = snapshot.ticks, 𝝙ticks = Double(max(from, to) - min(from, to))
-    runAction(SKAction.moveTo(snapshot.trajectory.p, duration: Sequencer.secondsPerTick * 𝝙ticks)) {
-      [weak self] in self?.currentSnapshot = snapshot; self?.trajectory = snapshot.trajectory
-    }
-  }
+//  private func animateToSnapshot(snapshot: Snapshot) {
+//    let from = currentSnapshot.ticks, to = snapshot.ticks, 𝝙ticks = Double(max(from, to) - min(from, to))
+//    runAction(SKAction.moveTo(snapshot.trajectory.p, duration: Sequencer.secondsPerTick * 𝝙ticks)) {
+//      [weak self] in self?.currentSnapshot = snapshot; self?.trajectory = snapshot.trajectory
+//    }
+//  }
 
   // MARK: Initialization
 
-  private static let texture = SKTexture(image: UIImage(named: "ball")!)
+  static let texture = SKTexture(image: UIImage(named: "ball")!)
   private static let normalMap = MIDINode.texture.textureByGeneratingNormalMap()
 
   /**
-   initWithTrajectory:name:track:note:
+   initWithTrajectory:name:dispatch:generator:identifier:
 
    - parameter trajectory: Trajectory
    - parameter name: String
-   - parameter track: InstrumentTrack
-   - parameter note: MIDINodeGenerator
+   - parameter dispatch: MIDINodeDispatch
+   - parameter generator: MIDIGenerator
+   - parameter identifier: Identifier = UUID()
   */
   init(trajectory: Trajectory,
        name: String,
        dispatch: MIDINodeDispatch,
-       note: MIDINodeGenerator,
+       generator: MIDIGenerator,
        identifier: Identifier = UUID()) throws
   {
-    self.trajectory = trajectory
-    let snapshot = Snapshot(ticks: Sequencer.time.ticks, trajectory: trajectory)
-    initialSnapshot = snapshot
-    currentSnapshot = snapshot
+//    self.trajectory = trajectory
+//    let snapshot = Snapshot(ticks: Sequencer.time.ticks, trajectory: trajectory)
+//    initialSnapshot = snapshot
+//    currentSnapshot = snapshot
     self.dispatch = dispatch
-    history = MIDINodeHistory(initialSnapshot: snapshot)
-    noteGenerator = note
+//    history = MIDINodeHistory(initialSnapshot: snapshot)
+    self.generator = generator
     self.identifier = identifier
-    
+
+    guard let playerSize = MIDIPlayer.playerNode?.size else {
+      fatalError("creating node with nil value for `MIDIPlayer.playerNode`")
+    }
+    path = MIDINodePath(trajectory: trajectory, playerSize: playerSize)
     super.init(texture: MIDINode.texture, color: dispatch.color.value, size: MIDINode.texture.size() * 0.75)
 
     let object = Sequencer.transport
@@ -491,7 +341,8 @@ final class MIDINode: SKSpriteNode {
   }
 
 
-  private var trajectory: Trajectory
+  let path: MIDINodePath
+//  private var trajectory: Trajectory
 
   /**
   init:
@@ -520,34 +371,14 @@ final class MIDINode: SKSpriteNode {
   /**
    nextLocation
 
-    - returns: (CGPoint, MIDITimeStamp)?
+    - returns: (CGPoint, NSTimeInterval)?
   */
   func nextLocation() -> (CGPoint, NSTimeInterval)? {
-    guard let (minX, maxX, minY, maxY) = minMaxValues else { return nil }
-
-    let projectedX: CGFloat = trajectory.dx.isSignMinus ? minX : maxX,
-        projectedY: CGFloat = trajectory.dy.isSignMinus ? minY : maxY
-
-    let pX = trajectory.pointAtX(projectedX)
-    let pY = trajectory.pointAtY(projectedY)
-
-    let tX = trajectory.timeFromX(position.x, toX: projectedX)
-    let tY = trajectory.timeFromY(position.y, toY: projectedY)
-
-    func validPoint(p: CGPoint) -> Bool {
-      return (minX ... maxX).contains(p.x) && (minY ... maxY).contains(p.y)
+    guard let location = path.nextLocationForTime(Sequencer.transport.time.doubleValue, fromPoint: position) else {
+      fatalError("failed to obtain next location from path")
     }
-
-    let result: (CGPoint, NSTimeInterval)
-
-        if validPoint(pX) && validPoint(pY) { result = tX < tY ? (pX, tX) : (pY, tY)   }
-    else if validPoint(pX)                  { result = (pX, tX) }
-    else if validPoint(pY)                  { result = (pY, tY)   }
-    else                                    { fatalError("failed to obtain a valid point for the next location") }
-
-    return result
+    return location
   }
-
 }
 
 // MARK: State
@@ -600,7 +431,7 @@ extension MIDINode {
           action = SKAction.sequence([move, callback])
 
         case .Play:
-          let halfDuration = half(node?.noteGenerator.duration.seconds ?? 0)
+          let halfDuration = half(node?.generator.duration.seconds ?? 0)
           let scaleUp = SKAction.scaleTo(2, duration: halfDuration)
           let noteOn = SKAction.runBlock({ [weak node] in node?.sendNoteOn() })
           let scaleDown = SKAction.scaleTo(1, duration: halfDuration)

@@ -8,7 +8,6 @@
 
 import Foundation
 import MoonKit
-import struct AudioToolbox.CABarBeatTime
 
 struct MIDIEventContainer: CollectionType, Indexable, MutableIndexable {
 
@@ -34,7 +33,7 @@ struct MIDIEventContainer: CollectionType, Indexable, MutableIndexable {
 
   var count: Int { return _indices.count }
 
-  private(set) var eventTimes: [CABarBeatTime] = []
+  private(set) var eventTimes: [BarBeatTime] = []
 
   private var _indices: Range<Index> = .EndIndex ..< .EndIndex
 
@@ -78,10 +77,10 @@ struct MIDIEventContainer: CollectionType, Indexable, MutableIndexable {
     })
   }
 
-  var minTime: CABarBeatTime { return events.keys.minElement() ?? .start              }
-  var maxTime: CABarBeatTime { return events.keys.maxElement() ?? Sequencer.time.time }
+  var minTime: BarBeatTime { return events.keys.minElement() ?? .start              }
+  var maxTime: BarBeatTime { return events.keys.maxElement() ?? Sequencer.time.barBeatTime }
 
-  private var events: [CABarBeatTime:EventBag] = [:] {
+  private var events: [BarBeatTime:EventBag] = [:] {
     didSet { eventTimes = events.keys.sort(); rebuildIndices() }
   }
 
@@ -157,11 +156,11 @@ struct MIDIEventContainer: CollectionType, Indexable, MutableIndexable {
   /**
    eventsForTime:
 
-   - parameter time: CABarBeatTime
+   - parameter time: BarBeatTime
 
     - returns: [MIDIEvent]?
   */
-  func eventsForTime(time: CABarBeatTime) -> OrderedSet<MIDIEvent>? { return events[time]?.events }
+  func eventsForTime(time: BarBeatTime) -> OrderedSet<MIDIEvent>? { return events[time]?.events }
 
   /**
    removeEventsMatching:
@@ -169,7 +168,7 @@ struct MIDIEventContainer: CollectionType, Indexable, MutableIndexable {
    - parameter predicate: (MIDIEvent) -> Bool
   */
   mutating func removeEventsMatching(predicate: (MIDIEvent) -> Bool) {
-    var result: [CABarBeatTime:EventBag] = [:]
+    var result: [BarBeatTime:EventBag] = [:]
     for (time, bag) in events {
       var resultBag = EventBag(time)
       for event in bag where !predicate(event) { resultBag.append(event) }
@@ -182,7 +181,7 @@ struct MIDIEventContainer: CollectionType, Indexable, MutableIndexable {
 private extension MIDIEventContainer {
 
   struct EventBag: Comparable, CollectionType, MutableCollectionType {
-    let time: CABarBeatTime
+    let time: BarBeatTime
     var events: OrderedSet<MIDIEvent> = []
 
     var startIndex: Int { return events.startIndex }
@@ -191,9 +190,9 @@ private extension MIDIEventContainer {
     /**
     Create a new bag for the specified time.
 
-    - parameter time: CABarBeatTime
+    - parameter time: BarBeatTime
     */
-    init(_ time: CABarBeatTime) { self.time = time }
+    init(_ time: BarBeatTime) { self.time = time }
 
     /**
     Create a generator over the bag's events
@@ -244,7 +243,7 @@ extension MIDIEventContainer: ArrayLiteralConvertible {
 
 extension MIDIEventContainer {
   enum Index: ForwardIndexType {
-    indirect case ValueIndex (CABarBeatTime, Int, Index)
+    indirect case ValueIndex (BarBeatTime, Int, Index)
     case EndIndex
 
     func successor() -> Index {
@@ -254,10 +253,10 @@ extension MIDIEventContainer {
       }
     }
 
-    var time: CABarBeatTime {
+    var time: BarBeatTime {
       switch self {
         case .ValueIndex(let time, _, _): return time
-        case .EndIndex: return .Nil
+        case .EndIndex: return .null
       }
     }
 

@@ -8,7 +8,6 @@
 
 import Foundation
 import MoonKit
-import struct AudioToolbox.CABarBeatTime
 
 class Track: CustomStringConvertible, Named, MIDIEventDispatch {
 
@@ -23,7 +22,7 @@ class Track: CustomStringConvertible, Named, MIDIEventDispatch {
 
   var events = MIDIEventContainer()
 
-  var endOfTrack: CABarBeatTime {
+  var endOfTrack: BarBeatTime {
     return events.maxTime
   }
 
@@ -85,9 +84,9 @@ class Track: CustomStringConvertible, Named, MIDIEventDispatch {
 
   - parameter events: [MIDIEvent]
 
-  - returns: [CABarBeatTime]
+  - returns: [BarBeatTime]
   */
-  func registrationTimesForAddedEvents<S:SequenceType where S.Generator.Element == MIDIEvent>(events: S) -> [CABarBeatTime] {
+  func registrationTimesForAddedEvents<S:SequenceType where S.Generator.Element == MIDIEvent>(events: S) -> [BarBeatTime] {
     guard let eot = events.filter({($0.event as? MetaEvent)?.data == .EndOfTrack}).first else { return [] }
     return [eot.time]
   }

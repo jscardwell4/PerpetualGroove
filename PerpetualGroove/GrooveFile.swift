@@ -8,14 +8,13 @@
 
 import Foundation
 import MoonKit
-import struct AudioToolbox.CABarBeatTime
 
 /** Struct that holds data for a 'Groove' sequence */
 struct GrooveFile {
   var source: NSURL?
   var tracks: [GrooveTrack] = []
-  var tempoChanges = ObjectJSONValue([CABarBeatTime.start.rawValue: 120.0.jsonValue])
-  var endOfFile: CABarBeatTime = .start
+  var tempoChanges = ObjectJSONValue([BarBeatTime.start.rawValue: 120.0.jsonValue])
+  var endOfFile: BarBeatTime = .start
 
   init(sequence: Sequence) {
     source = sequence.document.fileURL
@@ -54,7 +53,7 @@ extension GrooveFile: JSONValueInitializable {
     guard let dict = ObjectJSONValue(jsonValue),
               tracks = ArrayJSONValue(dict["tracks"]),
               tempoChanges = ObjectJSONValue(dict["tempoChanges"]),
-              endOfFile = CABarBeatTime(dict["endOfFile"]) else { return nil }
+              endOfFile = BarBeatTime(dict["endOfFile"]) else { return nil }
     self.tracks = tracks.flatMap({GrooveTrack($0)})
     self.tempoChanges = tempoChanges
     self.endOfFile = endOfFile

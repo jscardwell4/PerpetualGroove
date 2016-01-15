@@ -68,6 +68,7 @@ public extension String {
     guard pad > 0 else { return }
     let s = v < 0 ? self[startIndex.advancedBy(1)..<] : self
     pad -= s.utf16.count
+    guard pad > 0 else { return }
     let ps = String(count: pad, repeatedValue: Character("0")) + s
     self = v < 0 ? "-\(ps)" : ps
   }

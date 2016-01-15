@@ -8,15 +8,14 @@
 
 import Foundation
 import MoonKit
-import struct AudioToolbox.CABarBeatTime
 
 struct GrooveNode: JSONValueConvertible, JSONValueInitializable {
   typealias Identifier = MIDINodeEvent.Identifier
   let identifier: Identifier
   var trajectory: Trajectory
-  var generator: MIDINodeGenerator
-  var addTime: CABarBeatTime
-  var removeTime: CABarBeatTime? {
+  var generator: MIDIGenerator
+  var addTime: BarBeatTime
+  var removeTime: BarBeatTime? {
     didSet { if let time = removeTime where time < addTime { removeTime = nil } }
   }
 
@@ -51,15 +50,15 @@ struct GrooveNode: JSONValueConvertible, JSONValueInitializable {
     guard let dict = ObjectJSONValue(jsonValue),
       identifier = MIDINodeEvent.Identifier(dict["identifier"]),
       trajectory = Trajectory(dict["trajectory"]),
-      generator = (ChordGenerator(dict["generator"]) as? MIDINodeGenerator) ?? NoteGenerator(dict["generator"]),
-      addTime = CABarBeatTime(dict["addTime"])
+      generator = MIDIGenerator(dict["generator"]),
+      addTime = BarBeatTime(dict["addTime"])
       else { return nil }
     self.identifier = identifier
     self.generator = generator
     self.trajectory = trajectory
     self.addTime = addTime
     switch dict["removeTime"] {
-    case .String(let s)?: removeTime = CABarBeatTime(rawValue: s)
+    case .String(let s)?: removeTime = BarBeatTime(rawValue: s)
     case .Null?: fallthrough
     default: removeTime = nil
     }

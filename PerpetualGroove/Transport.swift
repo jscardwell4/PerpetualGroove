@@ -9,7 +9,6 @@
 import Foundation
 import MoonKit
 import typealias AudioToolbox.MIDITimeStamp
-import struct AudioToolbox.CABarBeatTime
 
 final class Transport {
   var state: State = [] {
@@ -23,14 +22,14 @@ final class Transport {
   }
   let name: String
   let clock: MIDIClock
-  let time: BarBeatTime
+  let time: Time
 
   var tempo: Double { get { return Double(clock.beatsPerMinute) } set { clock.beatsPerMinute = UInt16(newValue) } }
 
   init(name: String) {
     self.name = name
     let clock = MIDIClock(name: name)
-    time = BarBeatTime(clockSource: clock.endPoint)
+    time = Time(clockSource: clock.endPoint)
     self.clock = clock
   }
 
@@ -44,7 +43,7 @@ final class Transport {
     guard !playing else { logWarning("already playing"); return }
     Notification.DidStart.post(object: self, userInfo:[
       .Ticks: NSNumber(unsignedLongLong: time.ticks),
-      .Time: NSValue(barBeatTime: time.time)
+      .Time: time.barBeatTime.rawValue
       ])
     if paused { clock.resume(); state ⊻= [.Paused, .Playing] }
     else { clock.start(); state ⊻= [.Playing] }
@@ -60,7 +59,7 @@ final class Transport {
     state ⊻= [.Paused, .Playing]
     Notification.DidPause.post(object: self, userInfo:[
       .Ticks: NSNumber(unsignedLongLong: time.ticks),
-      .Time: NSValue(barBeatTime: time.time)
+      .Time: time.barBeatTime.rawValue
       ])
   }
 
@@ -72,7 +71,7 @@ final class Transport {
       guard let weakself = self else { return }
       Notification.DidReset.post(object: weakself, userInfo:[
         .Ticks: NSNumber(unsignedLongLong: weakself.time.ticks),
-        .Time: NSValue(barBeatTime: weakself.time.time)
+        .Time: weakself.time.barBeatTime.rawValue
         ])}
   }
 
@@ -83,26 +82,26 @@ final class Transport {
     state ∖= [.Playing, .Paused]
     Notification.DidStop.post(object: self, userInfo:[
       .Ticks: NSNumber(unsignedLongLong: time.ticks),
-      .Time: NSValue(barBeatTime: time.time)
+      .Time: time.barBeatTime.rawValue
       ])
   }
 
   private var jogStartTimeTicks: UInt64 = 0
   private var maxTicks: MIDITimeStamp = 0
-  private var jogTime: CABarBeatTime = .start
+  private var jogTime: BarBeatTime = .start
   private var ticksPerRevolution: MIDITimeStamp = 0
 
   /** beginJog */
   func beginJog() {
     guard !jogging, let sequence = Sequencer.sequence else { return }
     clock.stop()
-    jogTime = time.time
+    jogTime = time.barBeatTime
     maxTicks = max(jogTime.ticks, sequence.sequenceEnd.ticks)
     ticksPerRevolution = MIDITimeStamp(Sequencer.timeSignature.beatsPerBar) * MIDITimeStamp(Sequencer.partsPerQuarter)
     state ⊻= [.Jogging]
     Notification.DidBeginJogging.post(object: self, userInfo:[
       .Ticks: NSNumber(unsignedLongLong: time.ticks),
-      .Time: NSValue(barBeatTime: time.time)
+      .Time: time.barBeatTime.rawValue
       ])
   }
 
@@ -126,18 +125,18 @@ final class Transport {
     }
 
     guard ticks <= maxTicks else { return }
-    do { try jogToTime(CABarBeatTime(tickValue: ticks)) } catch { logError(error) }
+    do { try jogToTime(BarBeatTime(tickValue: ticks)) } catch { logError(error) }
   }
 
   /** endJog */
   func endJog() {
     guard jogging && clock.paused else { logWarning("not jogging"); return }
     state ⊻= [.Jogging]
-    time.time = jogTime
+    time.barBeatTime = jogTime
     maxTicks = 0
     Notification.DidEndJogging.post(object: self, userInfo:[
       .Ticks: NSNumber(unsignedLongLong: time.ticks),
-      .Time: NSValue(barBeatTime: time.time)
+      .Time: time.barBeatTime.rawValue
       ])
     guard !paused else { return }
     clock.resume()
@@ -146,17 +145,17 @@ final class Transport {
   /**
   jogToTime:
 
-  - parameter time: CABarBeatTime
+  - parameter time: BarBeatTime
   */
-  func jogToTime(t: CABarBeatTime) throws {
+  func jogToTime(t: BarBeatTime) throws {
     guard jogTime != t else { return }
     guard jogging else { throw Error.NotPermitted }
     guard time.isValidTime(t) else { throw Error.InvalidBarBeatTime }
     jogTime = t
     Notification.DidJog.post(object: self, userInfo:[
       .Ticks: NSNumber(unsignedLongLong: time.ticks),
-      .Time: NSValue(barBeatTime: time.time),
-      .JogTime: NSValue(barBeatTime: jogTime)
+      .Time: time.barBeatTime.rawValue,
+      .JogTime: jogTime.rawValue
       ])
   }
 
@@ -209,11 +208,13 @@ extension Transport {
 }
 
 extension NSNotification {
-  var jogTime: CABarBeatTime? {
-    return (userInfo?[Transport.Notification.Key.JogTime.key] as? NSValue)?.barBeatTimeValue
+  var jogTime: BarBeatTime? {
+    guard let string = userInfo?[Transport.Notification.Key.JogTime.key] as? String else { return nil }
+    return BarBeatTime(rawValue: string)
   }
-  var time: CABarBeatTime? {
-    return (userInfo?[Transport.Notification.Key.Time.key] as? NSValue)?.barBeatTimeValue
+  var time: BarBeatTime? {
+    guard let string = userInfo?[Transport.Notification.Key.Time.key] as? String else { return nil }
+    return BarBeatTime(rawValue: string)
   }
   var ticks: MIDITimeStamp? {
     return (userInfo?[Transport.Notification.Key.Ticks.key] as? NSNumber)?.unsignedLongLongValue

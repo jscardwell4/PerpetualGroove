@@ -54,7 +54,7 @@ extension MIDIPlayerScene: SKPhysicsContactDelegate {
     logVerbose("edge: \(edge); midiNode: \(midiNode.name!)")
 
     // ???: Should we do anything with the impulse and normal values provided by SKPhysicsContact?
-    midiNode.pushBreadcrumb()
+//    midiNode.pushBreadcrumb()
     midiNode.playForEdge(edge)
   }
 }

@@ -90,7 +90,7 @@ final class InstrumentViewController: UIViewController {
   /** audition */
   private func audition() {
     guard let instrument = instrument else { return }
-    instrument.playNote(NoteGenerator())
+    instrument.playNote(MIDIGenerator(NoteGenerator()))
   }
 
   /** viewDidLoad */

@@ -8,11 +8,10 @@
 
 import Foundation
 import MoonKit
-import struct AudioToolbox.CABarBeatTime
 
 /** A MIDI meta event that uses the 'Cue Point' message to embed `MIDINode` trajectory and removal events for a track */
 struct MIDINodeEvent: MIDIEventType {
-  var time: CABarBeatTime = .start
+  var time: BarBeatTime = .start
   let data: Data
   var delta: VariableLengthQuantity?
   var bytes: [Byte] { return [0xFF, 0x07] + data.length.bytes + data.bytes }
@@ -34,9 +33,9 @@ struct MIDINodeEvent: MIDIEventType {
   Initializer that takes the event's data and, optionally, the event's bar beat time
 
   - parameter d: MetaEventData
-  - parameter t: CABarBeatTime? = nil
+  - parameter t: BarBeatTime? = nil
   */
-  init(_ d: Data, _ t: CABarBeatTime? = nil) { data = d; if let t = t { time = t } }
+  init(_ d: Data, _ t: BarBeatTime? = nil) { data = d; if let t = t { time = t } }
 
   init<C:CollectionType
     where C.Generator.Element == Byte,
@@ -172,7 +171,7 @@ func ==(lhs: MIDINodeEvent.Identifier, rhs: MIDINodeEvent.Identifier) -> Bool {
 extension MIDINodeEvent {
 
   enum Data: Equatable {
-    case Add(identifier: Identifier, trajectory: Trajectory, generator: MIDINodeGenerator)
+    case Add(identifier: Identifier, trajectory: Trajectory, generator: MIDIGenerator)
     case Remove(identifier: Identifier)
 
     /**
@@ -189,7 +188,7 @@ extension MIDINodeEvent {
             C.SubSequence.SubSequence == C.SubSequence>(data: C) throws
     {
       var currentIndex = data.startIndex
-      let identifierByteCount = Int(Byte4(data[data.startIndex ➞ 4])) //sizeof(NodeIdentifier.self)
+      let identifierByteCount = Int(Byte4(data[data.startIndex ➞ 4]))
       guard data.count >= identifierByteCount else {
         throw MIDIFileError(type: .InvalidLength,
                             reason: "Data length must be at least as large as the bytes required for identifier")
@@ -212,7 +211,7 @@ extension MIDINodeEvent {
 
       guard i ⟷ data.endIndex == 0 else { throw MIDIFileError(type: .InvalidLength, reason: "Incorrect number of bytes") }
 
-      let generator = NoteGenerator(data[currentIndex ..< i])
+      let generator = MIDIGenerator(NoteGenerator(data[currentIndex ..< i]))
       self = .Add(identifier: identifier, trajectory: trajectory, generator: generator)
     }
 
@@ -223,8 +222,8 @@ extension MIDINodeEvent {
           let trajectoryBytes = trajectory.bytes
           bytes.append(Byte(trajectoryBytes.count))
           bytes += trajectoryBytes
-          if let noteAttributes = generator as? NoteGenerator {
-            let generatorBytes = noteAttributes.bytes
+          if case .Note(let noteGenerator) = generator {
+            let generatorBytes = noteGenerator.bytes
             bytes.append(Byte(generatorBytes.count))
             bytes += generatorBytes
           }

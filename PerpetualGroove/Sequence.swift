@@ -8,7 +8,6 @@
 
 import Foundation
 import MoonKit
-import struct AudioToolbox.CABarBeatTime
 
 protocol SequenceDataProvider { var storedData: Sequence.Data { get } }
 
@@ -19,7 +18,7 @@ final class Sequence {
 
   // MARK: - Managing tracks
   
-  var sequenceEnd: CABarBeatTime { return tracks.map({$0.endOfTrack}).maxElement() ?? .start }
+  var sequenceEnd: BarBeatTime { return tracks.map({$0.endOfTrack}).maxElement() ?? .start }
 
   private(set) var instrumentTracks: [InstrumentTrack] = []
   private var _soloTracks: [Weak<InstrumentTrack>] = []
@@ -210,7 +209,7 @@ final class Sequence {
     self.init(document: document)
     var tempoEvents: [MIDIEvent] = []
     for (_, rawTime, bpmValue) in file.tempoChanges.value {
-      guard let time = CABarBeatTime(rawValue: rawTime), bpm = Double(bpmValue) else { continue }
+      guard let time = BarBeatTime(rawValue: rawTime), bpm = Double(bpmValue) else { continue }
       tempoEvents.append(.Meta(MetaEvent(.Tempo(bpm: bpm), time)))
     }
     tempoTrack.addEvents(tempoEvents)

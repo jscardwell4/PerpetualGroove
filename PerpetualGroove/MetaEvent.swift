@@ -8,13 +8,12 @@
 
 import Foundation
 import MoonKit
-import struct AudioToolbox.CABarBeatTime
 import struct AudioToolbox.MIDIMetaEvent
 
 /** Struct to hold data for a meta event where event = \<delta time\> **FF** \<meta type\> \<length of meta\> \<meta\> */
 struct MetaEvent: MIDIEventType {
 
-  var time: CABarBeatTime = .start
+  var time: BarBeatTime = .start
   var data: Data
   var delta: VariableLengthQuantity?
   var bytes: [Byte] { return [0xFF, data.type] + data.length.bytes + data.bytes }
@@ -23,9 +22,9 @@ struct MetaEvent: MIDIEventType {
   Initializer that takes the event's data and, optionally, the event's time
 
   - parameter d: Data
-  - paramter t: CABarBeatTime? = nil
+  - paramter t: BarBeatTime? = nil
   */
-  init(_ d: Data, _ t: CABarBeatTime? = nil) { data = d; if let t = t { time = t } }
+  init(_ d: Data, _ t: BarBeatTime? = nil) { data = d; if let t = t { time = t } }
 
   /**
   initWithDelta:bytes:
@@ -64,7 +63,7 @@ struct MetaEvent: MIDIEventType {
   - parameter barBeatTime: CABarBeatTiime
   - parameter data: Data
   */
-  init(_ t: CABarBeatTime, _ d: Data) { time = t; data = d }
+  init(_ t: BarBeatTime, _ d: Data) { time = t; data = d }
 
   /** Enumeration for encapsulating a type of meta event */
   enum Data {

@@ -265,7 +265,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     guard recording else { return }
 
     eventQueue.addOperationWithBlock {
-      [weak self, time = Sequencer.time.time] in
+      [weak self, time = Sequencer.time.barBeatTime] in
 
       guard let packet = Packet(packetList: packetList) else { return }
 
@@ -306,10 +306,10 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 
   - parameter events: [MIDIEvent]
 
-  - returns: [CABarBeatTime]
+  - returns: [BarBeatTime]
   */
   override func registrationTimesForAddedEvents<S:SequenceType
-    where S.Generator.Element == MIDIEvent>(events: S) -> [CABarBeatTime]
+    where S.Generator.Element == MIDIEvent>(events: S) -> [BarBeatTime]
   {
     return events.filter({ if case .Node(_) = $0 { return true } else { return false } }).map({$0.time})
       + super.registrationTimesForAddedEvents(events)
@@ -365,11 +365,9 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     name = grooveTrack.name
     var events: [MIDIEvent] = []
     for (_, node) in grooveTrack.nodes {
-      let generator: MIDINodeGenerator? = ChordGenerator(node.generator.jsonValue) ?? NoteGenerator(node.generator.jsonValue)
-      guard generator != nil else { continue }
       events.append(.Node(MIDINodeEvent(.Add(identifier: node.identifier,
                                              trajectory: node.trajectory,
-                                             generator: generator!), node.addTime)))
+                                             generator: node.generator), node.addTime)))
       if let time = node.removeTime {
         events.append(.Node(MIDINodeEvent(.Remove(identifier: node.identifier), time)))
       }

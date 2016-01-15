@@ -55,68 +55,77 @@
                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="Spinner"/>
                                 </userDefinedRuntimeAttributes>
                             </imageView>
-                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="h0o-PY-Uep">
-                                <rect key="frame" x="307" y="533" width="160" height="42"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="250" distribution="fillEqually" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="h0o-PY-Uep">
+                                <rect key="frame" x="425" y="533" width="42" height="42"/>
                                 <subviews>
-                                    <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="u5W-aV-tWA" userLabel="BeginRepeat" customClass="ImageButtonView" customModule="MoonKit">
-                                        <rect key="frame" x="0.0" y="0.0" width="40" height="42"/>
+                                    <view hidden="YES" opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="u5W-aV-tWA" userLabel="BeginRepeat" customClass="ImageButtonView" customModule="MoonKit">
+                                        <rect key="frame" x="-5" y="0.0" width="0.0" height="42"/>
                                         <accessibility key="accessibilityConfiguration" identifier="BeginRepeatButton"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/begin_repeat"/>
                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="BeginRepeatButton"/>
                                             <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
-                                                <color key="value" red="0.8434065580368042" green="0.78949379920959473" blue="0.71009701490402222" alpha="1" colorSpace="calibratedRGB"/>
-                                            </userDefinedRuntimeAttribute>
-                                            <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
                                                 <color key="value" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="calibratedRGB"/>
                                             </userDefinedRuntimeAttribute>
-                                            <userDefinedRuntimeAttribute type="color" keyPath="disabledTintColor">
-                                                <color key="value" red="0.33464810252189636" green="0.32476550340652466" blue="0.31318235397338867" alpha="1" colorSpace="calibratedRGB"/>
-                                            </userDefinedRuntimeAttribute>
-                                            <userDefinedRuntimeAttribute type="boolean" keyPath="enabled" value="NO"/>
                                         </userDefinedRuntimeAttributes>
                                         <connections>
                                             <action selector="startLoopAction" destination="6xH-va-xT7" eventType="touchUpInside" id="x0I-83-Vbf"/>
                                         </connections>
                                     </view>
-                                    <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="YHK-Is-Vea" userLabel="EndRepeat" customClass="ImageButtonView" customModule="MoonKit">
-                                        <rect key="frame" x="60" y="0.0" width="40" height="42"/>
+                                    <view hidden="YES" opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="YHK-Is-Vea" userLabel="EndRepeat" customClass="ImageButtonView" customModule="MoonKit">
+                                        <rect key="frame" x="-5" y="0.0" width="0.0" height="42"/>
                                         <accessibility key="accessibilityConfiguration" identifier="EndRepeatButton"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/end_repeat"/>
                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="EndRepeatButton"/>
                                             <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
-                                                <color key="value" red="0.8434065580368042" green="0.78949379920959473" blue="0.71009701490402222" alpha="1" colorSpace="calibratedRGB"/>
-                                            </userDefinedRuntimeAttribute>
-                                            <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
                                                 <color key="value" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="calibratedRGB"/>
                                             </userDefinedRuntimeAttribute>
-                                            <userDefinedRuntimeAttribute type="color" keyPath="disabledTintColor">
-                                                <color key="value" red="0.33464810252189636" green="0.32476550340652466" blue="0.31318235397338867" alpha="1" colorSpace="calibratedRGB"/>
-                                            </userDefinedRuntimeAttribute>
-                                            <userDefinedRuntimeAttribute type="boolean" keyPath="enabled" value="NO"/>
                                         </userDefinedRuntimeAttributes>
                                         <connections>
                                             <action selector="stopLoopAction" destination="6xH-va-xT7" eventType="touchUpInside" id="R1j-B6-3qn"/>
                                         </connections>
                                     </view>
-                                    <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="RVW-Dd-0QR" userLabel="Tape" customClass="ImageButtonView" customModule="MoonKit">
-                                        <rect key="frame" x="120" y="0.0" width="40" height="42"/>
-                                        <accessibility key="accessibilityConfiguration" identifier="TapeButton"/>
+                                    <view hidden="YES" opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="aYX-60-jIT" userLabel="LoopCancel" customClass="ImageButtonView" customModule="MoonKit">
+                                        <rect key="frame" x="-5" y="0.0" width="0.0" height="42"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="LoopCancelButton"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/cancel_loop"/>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="Editing/cancel_loop-selected"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="LoopCancelButton"/>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
+                                                <color key="value" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="cancelLoopAction" destination="6xH-va-xT7" eventType="touchUpInside" id="ume-CI-mBa"/>
+                                        </connections>
+                                    </view>
+                                    <view hidden="YES" opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="WxC-Hj-9Vz" userLabel="LoopConfirm" customClass="ImageButtonView" customModule="MoonKit">
+                                        <rect key="frame" x="-5" y="0.0" width="0.0" height="42"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="LoopConfirmButton"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/confirm_loop"/>
+                                            <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="Editing/confirm_loop-selected"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="LoopConfirmButton"/>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
+                                                <color key="value" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="confirmLoopAction" destination="6xH-va-xT7" eventType="touchUpInside" id="kzt-bX-V5t"/>
+                                        </connections>
+                                    </view>
+                                    <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="RVW-Dd-0QR" userLabel="LoopToggle" customClass="ImageButtonView" customModule="MoonKit">
+                                        <rect key="frame" x="0.0" y="0.0" width="42" height="42"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="LoopToggleButton"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/tape"/>
                                             <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="Editing/tape-selected"/>
-                                            <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TapeButton"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="LoopToggleButton"/>
                                             <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
-                                                <color key="value" red="0.8434065580368042" green="0.78949379920959473" blue="0.71009701490402222" alpha="1" colorSpace="calibratedRGB"/>
-                                            </userDefinedRuntimeAttribute>
-                                            <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
                                                 <color key="value" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="calibratedRGB"/>
                                             </userDefinedRuntimeAttribute>
-                                            <userDefinedRuntimeAttribute type="color" keyPath="disabledTintColor">
-                                                <color key="value" red="0.33464810252189636" green="0.32476550340652466" blue="0.31318235397338867" alpha="1" colorSpace="calibratedRGB"/>
-                                            </userDefinedRuntimeAttribute>
-                                            <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
                                         </userDefinedRuntimeAttributes>
                                         <connections>
                                             <action selector="toggleLoopAction" destination="6xH-va-xT7" eventType="touchUpInside" id="e4L-fB-WCS"/>
@@ -124,22 +133,17 @@
                                     </view>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="42" id="9Pk-nh-Buh"/>
+                                    <constraint firstAttribute="width" constant="42" id="7Om-et-a1i"/>
                                 </constraints>
-                                <variation key="default">
-                                    <mask key="constraints">
-                                        <exclude reference="9Pk-nh-Buh"/>
-                                    </mask>
-                                </variation>
                             </stackView>
                             <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gkj-sJ-IZN" userLabel="Tools" customClass="ImageSegmentedControl" customModule="MoonKit">
-                                <rect key="frame" x="20" y="533" width="247" height="42"/>
+                                <rect key="frame" x="20" y="533" width="250" height="42"/>
                                 <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="bvY-A7-VNE">
-                                        <rect key="frame" x="0.0" y="0.0" width="247" height="42"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="bvY-A7-VNE">
+                                        <rect key="frame" x="0.0" y="0.0" width="250" height="42"/>
                                         <subviews>
                                             <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="6PF-rp-kmP" userLabel="AddNote" customClass="ImageButtonView" customModule="MoonKit">
-                                                <rect key="frame" x="0.0" y="0.0" width="34" height="42"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="42" height="42"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="AddNoteButton"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/node_note_add"/>
@@ -148,7 +152,7 @@
                                                 </userDefinedRuntimeAttributes>
                                             </view>
                                             <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="ajH-64-K10" userLabel="Add" customClass="ImageButtonView" customModule="MoonKit">
-                                                <rect key="frame" x="54" y="0.0" width="34" height="42"/>
+                                                <rect key="frame" x="52" y="0.0" width="42" height="42"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="AddButton"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/node_add"/>
@@ -157,7 +161,7 @@
                                                 </userDefinedRuntimeAttributes>
                                             </view>
                                             <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="k9y-ve-9u9" userLabel="Remove" customClass="ImageButtonView" customModule="MoonKit">
-                                                <rect key="frame" x="107" y="0.0" width="33" height="42"/>
+                                                <rect key="frame" x="104" y="0.0" width="42" height="42"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="RemoveButton"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/node_remove"/>
@@ -166,7 +170,7 @@
                                                 </userDefinedRuntimeAttributes>
                                             </view>
                                             <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="Axm-CN-6iz" userLabel="Delete" customClass="ImageButtonView" customModule="MoonKit">
-                                                <rect key="frame" x="160" y="0.0" width="34" height="42"/>
+                                                <rect key="frame" x="156" y="0.0" width="42" height="42"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="DeleteButton"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/node_delete"/>
@@ -175,7 +179,7 @@
                                                 </userDefinedRuntimeAttributes>
                                             </view>
                                             <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="vcL-FB-on7" userLabel="Generator" customClass="ImageButtonView" customModule="MoonKit">
-                                                <rect key="frame" x="214" y="0.0" width="34" height="42"/>
+                                                <rect key="frame" x="208" y="0.0" width="42" height="42"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="GeneratorButton"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/node_note"/>
@@ -192,6 +196,7 @@
                                     <constraint firstAttribute="height" constant="42" id="K8s-Oj-DZT"/>
                                     <constraint firstItem="bvY-A7-VNE" firstAttribute="top" secondItem="gkj-sJ-IZN" secondAttribute="top" id="NRF-dp-Tlw"/>
                                     <constraint firstAttribute="trailing" secondItem="bvY-A7-VNE" secondAttribute="trailing" id="Vk4-pc-Rw4"/>
+                                    <constraint firstAttribute="width" constant="250" id="hJT-9u-0Wz"/>
                                     <constraint firstItem="bvY-A7-VNE" firstAttribute="leading" secondItem="gkj-sJ-IZN" secondAttribute="leading" id="oHG-Xs-dCi"/>
                                 </constraints>
                                 <userDefinedRuntimeAttributes>
@@ -216,12 +221,13 @@
                             <constraint firstItem="Qhw-iu-ZQX" firstAttribute="centerY" secondItem="JSz-xf-acH" secondAttribute="centerY" id="HgV-GR-Z2m"/>
                             <constraint firstItem="h0o-PY-Uep" firstAttribute="top" secondItem="JSz-xf-acH" secondAttribute="bottom" constant="8" id="HsX-2b-Gkr"/>
                             <constraint firstAttribute="trailingMargin" secondItem="h0o-PY-Uep" secondAttribute="trailing" id="Naq-MG-sHb"/>
+                            <constraint firstItem="h0o-PY-Uep" firstAttribute="height" secondItem="gkj-sJ-IZN" secondAttribute="height" id="QuA-ep-Cmi"/>
                             <constraint firstItem="gkj-sJ-IZN" firstAttribute="leading" secondItem="JSz-xf-acH" secondAttribute="leading" id="aVs-3l-nq6"/>
                             <constraint firstItem="JSz-xf-acH" firstAttribute="centerX" secondItem="bEj-LH-pPP" secondAttribute="centerX" id="ad4-rH-eaj"/>
                             <constraint firstItem="MgW-0J-CjH" firstAttribute="top" secondItem="h0o-PY-Uep" secondAttribute="bottom" id="gyq-qA-kSA"/>
                             <constraint firstItem="gkj-sJ-IZN" firstAttribute="top" secondItem="JSz-xf-acH" secondAttribute="bottom" constant="8" symbolic="YES" id="hNv-vo-Y8U"/>
                             <constraint firstItem="i4O-SR-ImV" firstAttribute="top" secondItem="3bO-nI-SWz" secondAttribute="bottom" id="mVO-0w-fZ0"/>
-                            <constraint firstItem="h0o-PY-Uep" firstAttribute="leading" secondItem="gkj-sJ-IZN" secondAttribute="trailing" constant="40" id="mlv-cF-4xj"/>
+                            <constraint firstItem="h0o-PY-Uep" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="gkj-sJ-IZN" secondAttribute="trailing" constant="10" id="mlv-cF-4xj"/>
                             <constraint firstItem="MgW-0J-CjH" firstAttribute="top" secondItem="gkj-sJ-IZN" secondAttribute="bottom" id="tt1-l6-rpJ"/>
                             <constraint firstItem="JSz-xf-acH" firstAttribute="top" secondItem="i4O-SR-ImV" secondAttribute="bottom" constant="8" symbolic="YES" id="ycp-lE-YcG"/>
                             <constraint firstItem="i4O-SR-ImV" firstAttribute="leading" secondItem="bEj-LH-pPP" secondAttribute="leadingMargin" id="yoX-wz-9lN"/>
@@ -234,12 +240,16 @@
                     <size key="freeformSize" width="487" height="575"/>
                     <connections>
                         <outlet property="documentName" destination="i4O-SR-ImV" id="w3K-VE-60D"/>
+                        <outlet property="loopCancelButton" destination="aYX-60-jIT" id="lvN-xo-CUk"/>
+                        <outlet property="loopConfirmButton" destination="WxC-Hj-9Vz" id="IQW-FS-XSj"/>
                         <outlet property="loopEndButton" destination="YHK-Is-Vea" id="s7I-h9-SH1"/>
                         <outlet property="loopStartButton" destination="u5W-aV-tWA" id="EFb-8s-90p"/>
                         <outlet property="loopToggleButton" destination="RVW-Dd-0QR" id="NUb-U2-7e3"/>
+                        <outlet property="loopTools" destination="h0o-PY-Uep" id="fCc-Vq-dSe"/>
+                        <outlet property="loopToolsWidthConstraint" destination="7Om-et-a1i" id="y3U-8a-75i"/>
                         <outlet property="playerView" destination="JSz-xf-acH" id="ZKy-bi-Pqo"/>
+                        <outlet property="primaryTools" destination="gkj-sJ-IZN" id="Job-Gd-ylJ"/>
                         <outlet property="spinner" destination="Qhw-iu-ZQX" id="3JM-k1-OXT"/>
-                        <outlet property="tools" destination="gkj-sJ-IZN" id="e0I-pC-bq6"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QVT-aD-hfO" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -249,6 +259,10 @@
     </scenes>
     <resources>
         <image name="Editing/begin_repeat" width="40" height="56"/>
+        <image name="Editing/cancel_loop" width="56" height="56"/>
+        <image name="Editing/cancel_loop-selected" width="56" height="56"/>
+        <image name="Editing/confirm_loop" width="56" height="56"/>
+        <image name="Editing/confirm_loop-selected" width="56" height="56"/>
         <image name="Editing/end_repeat" width="40" height="56"/>
         <image name="Editing/node_add" width="56" height="56"/>
         <image name="Editing/node_add-selected" width="56" height="56"/>

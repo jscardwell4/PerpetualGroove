@@ -8,7 +8,6 @@
 
 import Foundation
 import MoonKit
-import struct AudioToolbox.CABarBeatTime
 
 /** Struct that holds the data for a complete MIDI file */
 struct MIDIFile: ByteArrayConvertible {
@@ -80,8 +79,8 @@ struct MIDIFile: ByteArrayConvertible {
     }
 
     // TODO: We need to track signature changes to do this properly
-    let beatsPerBar: UInt8 = 4
-    let subbeatDivisor = h.division
+    let beatsPerBar = 4
+    let subbeatDivisor = Int(h.division)
     var processedTracks: [MIDIFileTrackChunk] = []
     for trackChunk in t {
       var ticks: UInt64 = 0
@@ -92,7 +91,7 @@ struct MIDIFile: ByteArrayConvertible {
         }
         let deltaTicks = UInt64(delta.intValue)
         ticks += deltaTicks
-        trackEvent.time = CABarBeatTime(tickValue: ticks, beatsPerBar: beatsPerBar, subbeatDivisor: subbeatDivisor)
+        trackEvent.time = BarBeatTime(tickValue: ticks, beatsPerBar: beatsPerBar, subbeatDivisor: subbeatDivisor)
         processedEvents.append(trackEvent)
       }
       processedTracks.append(MIDIFileTrackChunk(events: processedEvents))
@@ -110,14 +109,13 @@ struct MIDIFile: ByteArrayConvertible {
   var bytes: [Byte] {
     var bytes = header.bytes
     var trackData: [[Byte]] = []
-    let beatsPerBar = Sequencer.timeSignature.beatsPerBar
     for track in tracks {
-      var previousTime: CABarBeatTime = .start
+      var previousTime: BarBeatTime = .start
       var trackBytes: [Byte] = []
       for event in track.events {
         let eventTime = event.time
-        let eventTimeTicks = eventTime.tickValueWithBeatsPerBar(beatsPerBar)
-        let previousTimeTicks = previousTime.tickValueWithBeatsPerBar(beatsPerBar)
+        let eventTimeTicks = eventTime.ticks
+        let previousTimeTicks = previousTime.ticks
         let delta = eventTimeTicks > previousTimeTicks ? eventTimeTicks - previousTimeTicks : 0
         previousTime = eventTime
         let deltaTime = VariableLengthQuantity(delta)

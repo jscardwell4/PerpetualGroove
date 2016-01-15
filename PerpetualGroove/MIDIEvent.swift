@@ -8,11 +8,10 @@
 
 import Foundation
 import MoonKit
-import struct AudioToolbox.CABarBeatTime
 
 /**  Protocol for types that produce data for a track event in a track chunk */
 protocol MIDIEventType: CustomStringConvertible, CustomDebugStringConvertible {
-  var time: CABarBeatTime { get set }
+  var time: BarBeatTime { get set }
   var delta: VariableLengthQuantity? { get set }
   var bytes: [Byte] { get }
 }
@@ -24,11 +23,11 @@ extension MIDIEventType {
 protocol MIDIEventDispatch: class, Loggable {
   func addEvent(event: MIDIEvent)
   func addEvents<S:SequenceType where S.Generator.Element == MIDIEvent>(events: S)
-  func eventsForTime(time: CABarBeatTime) -> OrderedSet<MIDIEvent>?
+  func eventsForTime(time: BarBeatTime) -> OrderedSet<MIDIEvent>?
   func filterEvents(includeElement: (MIDIEvent) -> Bool) -> [MIDIEvent]
-  func dispatchEventsForTime(time: CABarBeatTime)
+  func dispatchEventsForTime(time: BarBeatTime)
   func dispatchEvent(event: MIDIEvent)
-  func registrationTimesForAddedEvents<S:SequenceType where S.Generator.Element == MIDIEvent>(events: S) -> [CABarBeatTime]
+  func registrationTimesForAddedEvents<S:SequenceType where S.Generator.Element == MIDIEvent>(events: S) -> [BarBeatTime]
   var events: MIDIEventContainer { get set }
   var metaEvents: [MetaEvent] { get }
   var channelEvents: [ChannelEvent] { get }
@@ -44,9 +43,9 @@ extension MIDIEventDispatch {
       forTimes: registrationTimesForAddedEvents(events),
       forObject: self)
   }
-  func eventsForTime(time: CABarBeatTime) -> OrderedSet<MIDIEvent>? { return events.eventsForTime(time) }
+  func eventsForTime(time: BarBeatTime) -> OrderedSet<MIDIEvent>? { return events.eventsForTime(time) }
   func filterEvents(includeElement: (MIDIEvent) -> Bool) -> [MIDIEvent] { return events.filter(includeElement) }
-  func dispatchEventsForTime(time: CABarBeatTime) { eventsForTime(time)?.forEach(dispatchEvent) }
+  func dispatchEventsForTime(time: BarBeatTime) { eventsForTime(time)?.forEach(dispatchEvent) }
   var metaEvents: [MetaEvent] { return events.metaEvents }
   var channelEvents: [ChannelEvent] { return events.channelEvents }
   var nodeEvents: [MIDINodeEvent] { return events.nodeEvents }
@@ -65,7 +64,7 @@ enum MIDIEvent: MIDIEventType {
     }
   }
 
-  var time: CABarBeatTime {
+  var time: BarBeatTime {
     get {
       return event.time
     }

@@ -8,7 +8,6 @@
 
 import Foundation
 import MoonKit
-import struct AudioToolbox.CABarBeatTime
 
 @IBDesignable
 final class BarBeatTimeLabel: UIView {
@@ -16,7 +15,7 @@ final class BarBeatTimeLabel: UIView {
   private weak var transport: Transport! {
     didSet {
       guard transport !== oldValue else { return }
-      currentTime = transport.time.time
+      currentTime = transport.time.barBeatTime
 
       if let oldTransport = oldValue {
         oldTransport.time.removeCallbackForKey(barBeatTimeCallbackKey)
@@ -121,7 +120,7 @@ final class BarBeatTimeLabel: UIView {
     }
   }
 
-  private var currentTime: CABarBeatTime = .start {
+  private var currentTime: BarBeatTime = .start {
     didSet {
       guard currentTime != oldValue else { return }
       dispatchToMain {
@@ -170,7 +169,7 @@ final class BarBeatTimeLabel: UIView {
     Sequencer.time.registerCallback({ [weak self] in self?.currentTime = $0 },
                              predicate: {_ in true},
                                 forKey: barBeatTimeCallbackKey)
-    currentTime = Sequencer.time.time
+    currentTime = Sequencer.time.barBeatTime
   }
 
   /** setup */

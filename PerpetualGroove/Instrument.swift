@@ -68,15 +68,15 @@ final class Instrument: Equatable {
   /**
   playNote:
 
-  - parameter noteGenerator: MIDINodeGenerator
+  - parameter generator: MIDIGenerator
   */
-  func playNote(noteGenerator: MIDINodeGenerator) {
+  func playNote(generator: MIDIGenerator) {
     do {
-      try noteGenerator.sendNoteOn(outPort, endPoint)
-      delayedDispatchToMain(noteGenerator.duration.seconds) {
+      try generator.sendNoteOn(outPort, endPoint)
+      delayedDispatchToMain(generator.duration.seconds) {
         [weak self] in
         guard let weakself = self else { return }
-        do { try noteGenerator.sendNoteOff(weakself.outPort, weakself.endPoint) }
+        do { try generator.sendNoteOff(weakself.outPort, weakself.endPoint) }
         catch { MoonKit.logError(error) }
       }
     } catch {

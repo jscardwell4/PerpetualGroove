@@ -16,12 +16,12 @@ enum TimeSignature: ByteArrayConvertible {
   case Other (UInt8, UInt8)
 
   var beatUnit: UInt8 { if case .Other(_, let u) = self { return u } else { return 4 } }
-  var beatsPerBar: UInt8 {
+  var beatsPerBar: Int {
     switch self {
     case .FourFour:        return 4
     case .ThreeFour:       return 3
     case .TwoFour:         return 2
-    case .Other(let b, _): return b
+    case .Other(let b, _): return Int(b)
     }
   }
 

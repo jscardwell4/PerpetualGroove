@@ -8,7 +8,6 @@
 
 import Foundation
 import MoonKit
-import struct AudioToolbox.CABarBeatTime
 import class SpriteKit.SKNode
 
 final class LogManager: MoonKit.LogManager {
@@ -105,12 +104,12 @@ final class LogManager: MoonKit.LogManager {
     Track.defaultLogContext           = SequencerContext ∪ .Console
     Sequence.defaultLogContext        = SequencerContext ∪ .Console
     AudioManager.defaultLogContext    = SequencerContext ∪ .Console
-    CABarBeatTime.defaultLogContext   = SequencerContext ∪ .Console
+    BarBeatTime.defaultLogContext   = SequencerContext ∪ .Console
     TimeSignature.defaultLogContext   = SequencerContext ∪ .Console
     TrackColor.defaultLogContext      = SequencerContext ∪ .Console
     Metronome.defaultLogContext       = SequencerContext ∪ .Console
     MIDIClock.defaultLogContext       = SequencerContext ∪ .Console
-    BarBeatTime.defaultLogContext     = SequencerContext ∪ .Console
+    Time.defaultLogContext     = SequencerContext ∪ .Console
 
     MIDIPlayer.defaultLogContext      = SceneContext ∪ .Console
     MIDIPlayerScene.defaultLogContext = SceneContext ∪ .Console
@@ -154,12 +153,12 @@ extension Sequencer: Loggable {}
 extension Track: Loggable {}
 extension Sequence: Loggable {}
 extension AudioManager: Loggable {}
-extension CABarBeatTime: Loggable {}
+extension BarBeatTime: Loggable {}
 extension TimeSignature: Loggable {}
 extension TrackColor: Loggable {}
 extension Metronome: Loggable {}
 extension MIDIClock: Loggable {}
-extension BarBeatTime: Loggable {}
+extension Time: Loggable {}
 
 extension MIDIDocumentManager: Loggable {}
 extension MIDIDocument: Loggable {}

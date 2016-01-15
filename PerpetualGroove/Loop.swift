@@ -8,16 +8,17 @@
 
 import Foundation
 import MoonKit
-import struct AudioToolbox.CABarBeatTime
 
 final class Loop: SequenceType, MIDINodeDispatch {
 
-  var time: CABarBeatTime { return CABarBeatTime(tickValue: events.maxTime.ticks - events.minTime.ticks) }
+  var time: BarBeatTime { return min(end - start, .start) }
 
   var repetitions: Int = 0
   var repeatDelay: UInt64 = 0
   var events: MIDIEventContainer
-  var start: CABarBeatTime = .start
+  var start: BarBeatTime = .start
+  var end: BarBeatTime = .start
+
   let identifier: Identifier
   var eventQueue: NSOperationQueue { return track.eventQueue }
 
@@ -32,6 +33,7 @@ final class Loop: SequenceType, MIDINodeDispatch {
   var nextNodeName: String { return "\(name) \(nodes.count + 1)" }
 
   var name: String { return "\(track.displayName) (\(identifier.stringValue))" }
+  
   /**
    connectNode:
 
@@ -96,9 +98,9 @@ final class Loop: SequenceType, MIDINodeDispatch {
 
    - parameter events: [MIDIEvent]
 
-    - returns: [CABarBeatTime]
+    - returns: [BarBeatTime]
   */
-  func registrationTimesForAddedEvents<S:SequenceType where S.Generator.Element == MIDIEvent>(events: S) -> [CABarBeatTime] {
+  func registrationTimesForAddedEvents<S:SequenceType where S.Generator.Element == MIDIEvent>(events: S) -> [BarBeatTime] {
     return events.filter({ if case .Node(_) = $0 { return true } else { return false } }).map({$0.time})
   }
 
@@ -142,21 +144,21 @@ final class Loop: SequenceType, MIDINodeDispatch {
       if !startEventInserted {
         startEventInserted = true
         var event = beginEvent
-        event.time = CABarBeatTime(tickValue: startTicks)
+        event.time = BarBeatTime(tickValue: startTicks)
         return event
       } else if var event = currentGenerator.next() {
-        event.time = CABarBeatTime(tickValue: startTicks + event.time.ticks + offset)
+        event.time = BarBeatTime(tickValue: startTicks + event.time.ticks + offset)
         return event
       } else if repeatCount >= iteration++ || repeatCount < 0 {
         offset += delay + totalTicks
         currentGenerator = anyGenerator(self.events.generate())
         if var event = currentGenerator.next() {
-          event.time = CABarBeatTime(tickValue: startTicks + event.time.ticks + offset)
+          event.time = BarBeatTime(tickValue: startTicks + event.time.ticks + offset)
           return event
         } else if !endEventInserted {
           endEventInserted = true
           var event = endEvent
-          event.time = CABarBeatTime(tickValue: startTicks + event.time.ticks + offset)
+          event.time = BarBeatTime(tickValue: startTicks + event.time.ticks + offset)
           return event
         } else {
           return nil
@@ -164,7 +166,7 @@ final class Loop: SequenceType, MIDINodeDispatch {
       } else if !endEventInserted {
         endEventInserted = true
         var event = endEvent
-        event.time = CABarBeatTime(tickValue: startTicks + event.time.ticks + offset)
+        event.time = BarBeatTime(tickValue: startTicks + event.time.ticks + offset)
         return event
       } else {
         return nil
@@ -181,6 +183,7 @@ extension Loop: CustomStringConvertible {
       "repetitions: \(repetitions)",
       "repeatDelay: \(repeatDelay)",
       "start: \(start)",
+      "end: \(end)",
       "identifier: \(identifier)",
       "color: \(color)",
       "recording: \(recording)",

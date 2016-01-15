@@ -9,7 +9,6 @@
 import Foundation
 import CoreMIDI
 import MoonKit
-import struct AudioToolbox.CABarBeatTime
 
 final class TempoTrack: Track {
 
@@ -35,11 +34,11 @@ final class TempoTrack: Track {
   }
 
   private var timeSignatureEvent: MetaEvent {
-    return MetaEvent(Sequencer.time.time, .TimeSignature(signature: timeSignature, clocks: 36, notes: 8))
+    return MetaEvent(Sequencer.time.barBeatTime, .TimeSignature(signature: timeSignature, clocks: 36, notes: 8))
   }
 
   private var tempoEvent: MetaEvent {
-    return MetaEvent(Sequencer.time.time, .Tempo(bpm: tempo))
+    return MetaEvent(Sequencer.time.barBeatTime, .Tempo(bpm: tempo))
   }
 
   /**

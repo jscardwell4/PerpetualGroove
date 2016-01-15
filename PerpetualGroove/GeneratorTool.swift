@@ -71,8 +71,6 @@ final class GeneratorTool: ConfigurableToolType {
 
   }
 
-  private typealias NodeRef = Weak<MIDINode>
-
   /**
    didAddNode:
 
@@ -121,15 +119,15 @@ final class GeneratorTool: ConfigurableToolType {
       case .Existing:
         guard let node = node else { fatalError("cannot show view controller when no node has been chosen") }
         viewController = storyboard.instantiateViewControllerWithIdentifier("GeneratorWithArrows") as! GeneratorViewController
-        viewController.loadGenerator(node.noteGenerator)
-        viewController.didChangeGenerator = { [weak self] in self?.node?.noteGenerator = $0 }
+        viewController.loadGenerator(node.generator)
+        viewController.didChangeGenerator = { [weak self] in self?.node?.generator = $0 }
         viewController.previousAction = weakMethod(self, GeneratorTool.previousNode)
         viewController.nextAction = weakMethod(self, GeneratorTool.nextNode)
 
       case .New:
         viewController = storyboard.instantiateViewControllerWithIdentifier("Generator") as! GeneratorViewController
         viewController.didChangeGenerator = {
-          MIDIPlayer.addTool?.noteGenerator = $0
+          MIDIPlayer.addTool?.generator = $0
           Sequencer.sequence?.currentTrack?.instrument.playNote($0)
         }
 

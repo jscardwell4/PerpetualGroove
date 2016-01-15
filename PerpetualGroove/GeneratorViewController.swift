@@ -25,7 +25,7 @@ final class GeneratorViewController: UIViewController {
   @IBOutlet weak var leftArrow: ImageButtonView?
   @IBOutlet weak var rightArrow: ImageButtonView?
 
-  var didChangeGenerator: ((MIDINodeGenerator) -> Void)?
+  var didChangeGenerator: ((MIDIGenerator) -> Void)?
   var nextAction: (() -> Void)?
   var previousAction: (() -> Void)?
 
@@ -47,57 +47,56 @@ final class GeneratorViewController: UIViewController {
   /** refresh */
   private func refresh() {
     guard isViewLoaded() else { return }
-    pitchPicker.selection = noteGenerator.root.natural.index
-    switch noteGenerator.root.modifier {
+    pitchPicker.selection = generator.root.natural.index
+    switch generator.root.modifier {
       case .Flat?:  modifierPicker.selection = 0
       case .Sharp?: modifierPicker.selection = 2
       default:      modifierPicker.selection = 1
     }
-    octavePicker.selection   = noteGenerator.octave.index
-    durationPicker.selection = noteGenerator.duration.index
-    velocityPicker.selection = noteGenerator.velocity.index
-    switch noteGenerator {
-      case _ as NoteGenerator: chordPicker.selection = 0
-      case let generator as ChordGenerator:
+    octavePicker.selection   = generator.octave.index
+    durationPicker.selection = generator.duration.index
+    velocityPicker.selection = generator.velocity.index
+    switch generator {
+      case .Note: chordPicker.selection = 0
+      case .Chord(let generator):
         if let pattern = Chord.ChordPattern.StandardChordPattern(rawValue: generator.chord.pattern.rawValue) {
           chordPicker.selection = pattern.index
         } else {
           chordPicker.selection = 0
         }
-      default: break
     }
   }
 
   private var loading = false
-  func loadGenerator(generator: MIDINodeGenerator) {
+  func loadGenerator(generator: MIDIGenerator) {
     loading = true
-    noteGenerator = generator
+    self.generator = generator
     loading = false
   }
 
-  private var noteGenerator: MIDINodeGenerator = NoteGenerator() {
+  private var generator = MIDIGenerator(NoteGenerator()) {
     didSet {
       guard !loading else { return }
-      didChangeGenerator?(noteGenerator)
+      didChangeGenerator?(generator)
     }
   }
 
   /** didPickPitch */
   @IBAction func didPickPitch() {
-    noteGenerator.root.natural = Natural.allCases[pitchPicker.selection]
+    generator.root.natural = Natural.allCases[pitchPicker.selection]
   }
 
   /** didPickOctave */
   @IBAction func didPickOctave() {
-    noteGenerator.octave = Octave.allCases[octavePicker.selection]
+    generator.octave = Octave.allCases[octavePicker.selection]
   }
 
   /** didPickModifier */
   @IBAction func didPickModifier() {
     switch modifierPicker.selection {
-      case 0: noteGenerator.root.modifier = .Flat
-      case 2: noteGenerator.root.modifier = .Sharp
-      default: noteGenerator.root.modifier = nil
+      case 0: generator.root.modifier = .Flat
+      case 2: generator.root.modifier = .Sharp
+      default: generator.root.modifier = nil
     }
   }
 
@@ -108,13 +107,13 @@ final class GeneratorViewController: UIViewController {
       case 0: newValue = nil
       case let idx: newValue = Chord.ChordPattern.StandardChordPattern.allCases[idx - 1]
     }
-    switch (noteGenerator, newValue) {
-      case let (generator as NoteGenerator, newValue?):
-        noteGenerator = ChordGenerator(pattern: newValue.pattern, generator: generator)
-      case (var generator as ChordGenerator, let newValue?):
-        generator.chord.pattern = newValue.pattern; noteGenerator = generator
-      case (let generator as ChordGenerator, nil):
-        noteGenerator = NoteGenerator(generator: generator)
+    switch (generator, newValue) {
+      case let (.Note(generator), newValue?):
+        self.generator = MIDIGenerator(ChordGenerator(pattern: newValue.pattern, generator: generator))
+      case (.Chord(var generator), let newValue?):
+        generator.chord.pattern = newValue.pattern; self.generator = MIDIGenerator(generator)
+      case (.Chord(let generator), nil):
+        self.generator = MIDIGenerator(NoteGenerator(generator: generator))
       default:
         break
     }
@@ -122,12 +121,12 @@ final class GeneratorViewController: UIViewController {
 
   /** didPickDuration */
   @IBAction func didPickDuration() {
-    noteGenerator.duration = Duration.allCases[durationPicker.selection]
+    generator.duration = Duration.allCases[durationPicker.selection]
   }
 
   /** didPickVelocity */
   @IBAction func didPickVelocity() {
-    noteGenerator.velocity = Velocity.allCases[velocityPicker.selection]
+    generator.velocity = Velocity.allCases[velocityPicker.selection]
   }
 
   /** viewDidLoad */

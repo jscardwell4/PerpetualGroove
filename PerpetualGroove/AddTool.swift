@@ -20,7 +20,7 @@ final class AddTool: ToolType {
     }
   }
 
-  var noteGenerator: MIDINodeGenerator = NoteGenerator()
+  var generator = MIDIGenerator(NoteGenerator())
 
   /**
   initWithBezierPath:
@@ -124,6 +124,6 @@ final class AddTool: ToolType {
     guard velocities.count > 0 && !location.isNull else { return }
     guard let track = Sequencer.sequence?.currentTrack else { return }
     let trajectory = Trajectory(vector: sum(velocities) / CGFloat(velocities.count), point: location )
-    MIDIPlayer.placeNew(trajectory, target: track, generator: noteGenerator)
+    MIDIPlayer.placeNew(trajectory, target: track, generator: generator)
   }
 }

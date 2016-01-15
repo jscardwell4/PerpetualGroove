@@ -25,7 +25,8 @@ final class Sequencer {
     globalBackgroundQueue.async {
       guard !initialized else { return }
 
-      let _ = receptionist
+      observeTransport(transport)
+
       soundSets = [
         EmaxSoundSet(.BrassAndWoodwinds),
         EmaxSoundSet(.KeyboardsAndSynths),
@@ -62,110 +63,9 @@ final class Sequencer {
     receptionist.observe(MIDIDocumentManager.Notification.DidChangeDocument,
                     from: MIDIDocumentManager.self,
                    queue: NSOperationQueue.mainQueue(),
-                callback: Sequencer.didChangeDocument)
-    receptionist.observe(Transport.Notification.DidStart,        
-                    from: [primaryTransport, auxiliaryTransport], 
-                callback: Sequencer.didStart)
-    receptionist.observe(Transport.Notification.DidPause,        
-                    from: [primaryTransport, auxiliaryTransport], 
-                callback: Sequencer.didPause)
-    receptionist.observe(Transport.Notification.DidStop,         
-                    from: [primaryTransport, auxiliaryTransport], 
-                callback: Sequencer.didStop)
-    receptionist.observe(Transport.Notification.DidJog,          
-                    from: [primaryTransport, auxiliaryTransport], 
-                callback: Sequencer.didJog)
-    receptionist.observe(Transport.Notification.DidBeginJogging, 
-                    from: [primaryTransport, auxiliaryTransport], 
-                callback: Sequencer.didBeginJogging)
-    receptionist.observe(Transport.Notification.DidEndJogging,   
-                    from: [primaryTransport, auxiliaryTransport], 
-                callback: Sequencer.didEndJogging)
-    receptionist.observe(Transport.Notification.DidReset,        
-                    from: [primaryTransport, auxiliaryTransport], 
-                callback: Sequencer.didReset)
+                callback: {_ in Sequencer.sequence = MIDIDocumentManager.currentDocument?.sequence})
     return receptionist
     }()
-
-  /**
-   didStart:
-
-   - parameter notification: NSNotification
-  */
-  private static func didStart(notification: NSNotification) {
-    guard notification.object as? Transport === transport else { return }
-    Notification.DidStart.post(object: self, userInfo: notification.userInfo)
-  }
-
-  /**
-   didPause:
-
-   - parameter notification: NSNotification
-  */
-  private static func didPause(notification: NSNotification) {
-    guard notification.object as? Transport === transport else { return }
-    Notification.DidPause.post(object: self, userInfo: notification.userInfo)
-  }
-
-  /**
-   didStop:
-
-   - parameter notification: NSNotification
-  */
-  private static func didStop(notification: NSNotification) {
-    guard notification.object as? Transport === transport else { return }
-    Notification.DidStop.post(object: self, userInfo: notification.userInfo)
-  }
-
-  /**
-   didJog:
-
-   - parameter notification: NSNotification
-  */
-  private static func didJog(notification: NSNotification) {
-    guard notification.object as? Transport === transport else { return }
-    Notification.DidJog.post(object: self, userInfo: notification.userInfo)
-  }
-
-  /**
-   didBeginJogging:
-
-   - parameter notification: NSNotification
-  */
-  private static func didBeginJogging(notification: NSNotification) {
-    guard notification.object as? Transport === transport else { return }
-    Notification.DidBeginJogging.post(object: self, userInfo: notification.userInfo)
-  }
-
-  /**
-   didEndJogging:
-
-   - parameter notification: NSNotification
-  */
-  private static func didEndJogging(notification: NSNotification) {
-    guard notification.object as? Transport === transport else { return }
-    Notification.DidEndJogging.post(object: self, userInfo: notification.userInfo)
-  }
-
-  /**
-   didReset:
-
-   - parameter notification: NSNotification
-  */
-  private static func didReset(notification: NSNotification) {
-    guard notification.object as? Transport === transport else { return }
-    Notification.DidReset.post(object: self, userInfo: notification.userInfo)
-  }
-
-
-  /**
-  didChangeDocument:
-
-  - parameter notification: NSNotification
-  */
-  private static func didChangeDocument(notification: NSNotification) {
-    sequence = MIDIDocumentManager.currentDocument?.sequence
-  }
 
   // MARK: - Sequence
 
@@ -183,19 +83,63 @@ final class Sequencer {
 
   // MARK: - Time
 
-  static let partsPerQuarter: UInt16 = 480
+  static let partsPerQuarter = 480
 
-  static let primaryTransport = Transport(name: "primary")
-  static let auxiliaryTransport = Transport(name: "auxiliary")
+  enum TransportAssignment: Equatable {
+    case Primary(Transport)
+    case Auxiliary(Transport)
 
-  static var transport: Transport {
-    switch mode {
-      case .Default: return primaryTransport
-      case .Loop:    return auxiliaryTransport
+    var transport: Transport { switch self { case .Primary(let t): return t; case .Auxiliary(let t): return t } }
+  }
+
+  static let primaryTransport: TransportAssignment = .Primary(Transport(name: "primary"))
+  static let auxiliaryTransport: TransportAssignment = .Auxiliary(Transport(name: "auxiliary"))
+
+  static private var transportAssignment: TransportAssignment = Sequencer.primaryTransport {
+    willSet {
+      guard transportAssignment != newValue else { return }
+      receptionist.stopObservingObject(transportAssignment.transport)
+      let transport = transportAssignment.transport
+      if case .Primary(_) = transportAssignment {
+        clockRunning = transport.clock.running
+        transport.clock.stop()
+      } else {
+        transport.clock.stop()
+        transport.reset()
+        clockRunning = false
+      }
+    }
+    didSet {
+      guard transportAssignment != oldValue else { return }
+      observeTransport(transportAssignment.transport)
+      if case .Primary(let transport) = transportAssignment where clockRunning {
+        transport.clock.resume()
+        clockRunning = false
+      }
+      Notification.DidChangeTransport.post()
     }
   }
 
-  static var time: BarBeatTime { return transport.time }
+  static var transport: Transport { return transportAssignment.transport }
+
+  static private func observeTransport(transport: Transport) {
+    receptionist.observe(Transport.Notification.DidStart,
+                    from: transport) {Notification.DidStart.post(object: self, userInfo: $0.userInfo)}
+    receptionist.observe(Transport.Notification.DidPause,
+                    from: transport) {Notification.DidPause.post(object: self, userInfo: $0.userInfo)}
+    receptionist.observe(Transport.Notification.DidStop,
+                    from: transport) {Notification.DidStop.post(object: self, userInfo: $0.userInfo)}
+    receptionist.observe(Transport.Notification.DidJog,
+                    from: transport) {Notification.DidJog.post(object: self, userInfo: $0.userInfo)}
+    receptionist.observe(Transport.Notification.DidBeginJogging,
+                    from: transport) {Notification.DidBeginJogging.post(object: self, userInfo: $0.userInfo)}
+    receptionist.observe(Transport.Notification.DidEndJogging,
+                    from: transport) {Notification.DidEndJogging.post(object: self, userInfo: $0.userInfo)}
+    receptionist.observe(Transport.Notification.DidReset,
+                    from: transport) {Notification.DidReset.post(object: self, userInfo: $0.userInfo)}
+  }
+
+  static var time: Time { return transport.time }
 
   static let resolution: UInt64 = 480
 
@@ -216,8 +160,8 @@ final class Sequencer {
   - parameter automated: Bool = false
   */
   static func setTempo(tempo: Double, automated: Bool = false) {
-    primaryTransport.clock.beatsPerMinute = UInt16(tempo)
-    auxiliaryTransport.clock.beatsPerMinute = UInt16(tempo)
+    primaryTransport.transport.clock.beatsPerMinute = UInt16(tempo)
+    auxiliaryTransport.transport.clock.beatsPerMinute = UInt16(tempo)
     if recording && !automated { sequence?.tempo = tempo }
   }
 
@@ -242,25 +186,19 @@ final class Sequencer {
       guard mode != newValue else { return }
       logDebug("willSet: \(mode.rawValue) ➞ \(newValue.rawValue)")
       switch newValue {
-        case .Default:
-          Notification.WillExitLoopMode.post()
-          auxiliaryTransport.clock.stop()
-        case .Loop:
-          clockRunning = primaryTransport.clock.running
-          primaryTransport.clock.stop()
-          Notification.WillEnterLoopMode.post()
+        case .Default: Notification.WillExitLoopMode.post()
+        case .Loop:    Notification.WillEnterLoopMode.post()
       }
-      Notification.DidStop.post()
     }
     didSet {
       guard mode != oldValue else { return }
       logDebug("didSet: \(oldValue.rawValue) ➞ \(mode.rawValue)")
       switch mode {
         case .Default:
-          if clockRunning { primaryTransport.clock.resume() }
+          transportAssignment = primaryTransport
           Notification.DidExitLoopMode.post()
         case .Loop:
-          auxiliaryTransport.clock.reset()
+          transportAssignment = auxiliaryTransport
           Notification.DidEnterLoopMode.post()
       }
       Notification.DidChangeTransport.post()
@@ -315,9 +253,9 @@ final class Sequencer {
   /**
   jogToTime:
 
-  - parameter time: CABarBeatTime
+  - parameter time: BarBeatTime
   */
-  static func jogToTime(t: CABarBeatTime) throws { try transport.jogToTime(t) }
+  static func jogToTime(t: BarBeatTime) throws { try transport.jogToTime(t) }
 
   /** Starts the MIDI clock */
   static func play() { transport.play() }
@@ -361,6 +299,13 @@ extension Sequencer {
 
 }
 
+func == (lhs: Sequencer.TransportAssignment, rhs: Sequencer.TransportAssignment) -> Bool {
+  switch (lhs, rhs) {
+    case let (.Primary(t1),   .Primary(t2))   where t1 === t2: return true
+    case let (.Auxiliary(t1), .Auxiliary(t2)) where t1 === t2: return true
+    default:                                                   return false
+  }
+}
 extension Sequencer {
   enum Mode: String { case Default, Loop }
 }

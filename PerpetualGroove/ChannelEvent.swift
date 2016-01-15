@@ -74,7 +74,7 @@ struct ChannelEvent: MIDIEventType {
     init(_ t: EventType, _ c: Byte) { type = t; channel = (0 ... 15).clampValue(c) }
   }
 
-  var time: CABarBeatTime = .start
+  var time: BarBeatTime = .start
   var delta: VariableLengthQuantity?
   var status: Status
   var data1: Byte
@@ -112,9 +112,9 @@ struct ChannelEvent: MIDIEventType {
   - parameter channel: Byte
   - parameter d1: Byte
   - parameter d2: Byte? = nil
-  - parameter t: CABarBeatTime? = nil
+  - parameter t: BarBeatTime? = nil
   */
-  init(_ type: EventType, _ channel: Byte, _ d1: Byte, _ d2: Byte? = nil, _ t: CABarBeatTime? = nil) {
+  init(_ type: EventType, _ channel: Byte, _ d1: Byte, _ d2: Byte? = nil, _ t: BarBeatTime? = nil) {
     status = Status(type, channel); data1 = d1; data2 = d2
     if let t = t { time = t }
   }

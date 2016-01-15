@@ -111,14 +111,20 @@ public func %=<U1:Unpackable2, U2:Unpackable2
   lhs = U1(values1)
 }
 
+public func rounded(v: CGFloat, _ mantissaLength: Int) -> CGFloat {
+  let remainder = v % pow(10, -CGFloat(mantissaLength))
+  return v - remainder + round(remainder * pow(10, CGFloat(mantissaLength))) / pow(10, CGFloat(mantissaLength))
+}
+
+public func rounded(v: Double, _ mantissaLength: Int) -> Double {
+  let remainder = v % pow(10, -Double(mantissaLength))
+  return v - remainder + round(remainder * pow(10, Double(mantissaLength))) / pow(10, Double(mantissaLength))
+}
+
 extension CGFloat {
   public var degrees: CGFloat { return self * 180 / π }
   public var radians: CGFloat { return self * π / 180 }
-  public func rounded(mantissaLength: Int) -> CGFloat {
-    let remainder = self % pow(10, -CGFloat(mantissaLength))
-    return self - remainder
-         + round(remainder * pow(10, CGFloat(mantissaLength))) / pow(10, CGFloat(mantissaLength))
-  }
+  public func rounded(mantissaLength: Int) -> CGFloat { return MoonKit.rounded(self, mantissaLength) }
 }
 
 public extension CGBlendMode {

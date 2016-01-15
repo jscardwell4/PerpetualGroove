@@ -21,6 +21,7 @@ final class MIDIPlayerNode: SKShapeNode {
   - parameter bezierPath: UIBezierPath
   */
   init(bezierPath: UIBezierPath) {
+    size = bezierPath.bounds.size
     super.init()
     name = "player"
     path = bezierPath.CGPath
@@ -90,6 +91,8 @@ final class MIDIPlayerNode: SKShapeNode {
   var defaultNodes: [MIDINode] { return midiNodesForMode(.Default) }
 
   var loopNodes: [MIDINode] { return midiNodesForMode(.Loop) }
+
+  let size: CGSize
 
   /**
    midiNodesForMode:

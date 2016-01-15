@@ -40,9 +40,9 @@ final class Metronome {
   /**
   click:
 
-  - parameter time: CABarBeatTime
+  - parameter time: BarBeatTime
   */
-  private func click(time: CABarBeatTime) {
+  private func click(time: BarBeatTime) {
     guard Sequencer.playing else { return }
     sampler.startNote(time.beat == 1 ? 0x3C : 0x37, withVelocity: 64, onChannel: 0)
   }
@@ -51,10 +51,10 @@ final class Metronome {
   /**
   isAudibleTick:
 
-  - parameter time: CABarBeatTime
+  - parameter time: BarBeatTime
 
   - returns: Bool
   */
-  private func isAudibleTick(time: CABarBeatTime) -> Bool { return time.subbeat  == 1 }
+  private func isAudibleTick(time: BarBeatTime) -> Bool { return time.subbeat  == 1 }
 
 }

@@ -10,81 +10,122 @@ import Foundation
 import MoonKit
 
 struct Trajectory {
-    /// slope of the line
-    var m: CGFloat { return dy / dx }
 
-    /// velocity in units per second
-    var v: CGVector
+  /// slope of the line (`dy` / `dx`)
+  var m: CGFloat { return dy / dx }
 
-    /// initial point
-    var p: CGPoint
+  /// velocity in units per second
+  var v: CGVector
 
-    /// horizontal velocity in units per second
-    var dx: CGFloat { get { return v.dx } set { v.dx = newValue } }
+  /// initial point
+  var p: CGPoint
 
-    /// vertical velocity in units per second
-    var dy: CGFloat { get { return v.dy } set { v.dy = newValue } }
+  /// horizontal velocity in units per second
+  var dx: CGFloat { get { return v.dx } set { v.dx = newValue } }
 
-    /**
-     initWithVector:point:
+  /// vertical velocity in units per second
+  var dy: CGFloat { get { return v.dy } set { v.dy = newValue } }
 
-     - parameter vector: CGVector
-     - parameter p: CGPoint
-    */
-    init(vector: CGVector, point: CGPoint) { v = vector; p = point }
+  /// initial position along the x axis
+  var x: CGFloat { get { return p.x } set { p.x = newValue } }
 
-    /**
-     initWithSnapshot:
+  /// initial position along the y axis
+  var y: CGFloat { get { return p.y } set { p.y = newValue } }
 
-     - parameter snapshot: Snapshot
-    */
-    init(snapshot: MIDINodeHistory.Snapshot) { self = snapshot.trajectory }
+  /**
+   Default initializer
 
-    /**
-     pointAtX:
+   - parameter vector: CGVector
+   - parameter p: CGPoint
+  */
+  init(vector: CGVector, point: CGPoint) { v = vector; p = point }
 
-     - parameter x: CGFloat
+  /**
+   y = m (x - x<sub>1</sub>) + y<sub>1</sub>
 
-      - returns: CGPoint
-    */
-    func pointAtX(x: CGFloat) -> CGPoint {
-      return CGPoint(x: x, y: m * (x - p.x) + p.y)
+   - parameter x: CGFloat
+
+    - returns: CGPoint
+  */
+  func pointAtX(x: CGFloat) -> CGPoint {
+    return CGPoint(x: x, y: m * (x - p.x) + p.y)
+  }
+
+  /**
+   x = (y - y<sub>1</sub> + mx<sub>1</sub>) / m
+
+   - parameter y: CGFloat
+
+    - returns: CGPoint
+  */
+  func pointAtY(y: CGFloat) -> CGPoint {
+    return CGPoint(x: (y - p.y + m * p.x) / m, y: y)
+  }
+
+  /**
+   (x<sub>2</sub> - x<sub>1</sub>) / `dx`
+
+   - parameter x1: CGFloat
+   - parameter x2: CGFloat
+
+    - returns: NSTimeInterval
+  */
+  func timeFromX(x1: CGFloat, toX x2: CGFloat) -> NSTimeInterval {
+    return NSTimeInterval((x2 - x1) / dx)
+  }
+
+  /**
+   (y<sub>2</sub> - y<sub>1</sub>) / `dy`
+
+   - parameter y1: CGFloat
+   - parameter y2: CGFloat
+
+    - returns: NSTimeInterval
+  */
+  func timeFromY(y1: CGFloat, toY y2: CGFloat) -> NSTimeInterval {
+    return NSTimeInterval((y2 - y1) / dy)
+  }
+
+  /**
+   timeFromPoint:toPoint:
+
+   - parameter p1: CGPoint
+   - parameter p2: CGPoint
+
+    - returns: NSTimeInterval
+  */
+  func timeFromPoint(p1: CGPoint, toPoint p2: CGPoint) -> NSTimeInterval {
+    guard containsPoint(p1) && containsPoint(p2) else {
+      fatalError("one or both of the provided points do not lie along the trajectory")
     }
+    let tx = timeFromX(p1.x, toX: p2.x)
+    let ty = timeFromY(p1.y, toY: p2.y)
+    guard tx == ty else { fatalError("expected tx '\(tx)' and ty '\(ty)' to be equal") }
+    return tx
+  }
 
-    /**
-     pointAtY:
+  /**
+   The point along trajectory given the specified delta time.
 
-     - parameter y: CGFloat
+   - parameter time: NSTimeInterval
 
-      - returns: CGPoint
-    */
-    func pointAtY(y: CGFloat) -> CGPoint {
-      return CGPoint(x: (y - p.y + m * p.x) / m, y: y)
-    }
+    - returns: CGPoint
+  */
+  func pointAtTime(time: NSTimeInterval) -> CGPoint {
+    var result = p
+    result.x += CGFloat(time) * dx
+    result.y += CGFloat(time) * dy
+    return result
+  }
 
-    /**
-     timeFromX:toX:
+  /**
+   containsPoint:
 
-     - parameter x1: CGFloat
-     - parameter x2: CGFloat
+   - parameter point: CGPoint
 
-      - returns: NSTimeInterval
-    */
-    func timeFromX(x1: CGFloat, toX x2: CGFloat) -> NSTimeInterval {
-      return NSTimeInterval((x2 - x1) / dx)
-    }
-
-    /**
-     timeFromY:toY:
-
-     - parameter y1: CGFloat
-     - parameter y2: CGFloat
-
-      - returns: NSTimeInterval
-    */
-    func timeFromY(y1: CGFloat, toY y2: CGFloat) -> NSTimeInterval {
-      return NSTimeInterval((y2 - y1) / dy)
-    }
+    - returns: Bool
+  */
+  func containsPoint(point: CGPoint) -> Bool { return point.y - p.y == m * (point.x - p.x) }
 
   static let zero = Trajectory(vector: CGVector.zero, point: CGPoint.zero)
   static let null = Trajectory(vector: CGVector.zero, point: CGPoint.null)
@@ -107,7 +148,10 @@ extension Trajectory: ByteArrayConvertible {
     guard let match = (~/"\\{(\(value)), (\(value))\\}").firstMatch(string, anchored: true),
       positionCapture = match.captures[1],
       vectorCapture = match.captures[2] else { self = .null; return }
-    guard let point = CGPoint(positionCapture.string), vector = CGVector(vectorCapture.string) else { self = .null; return }
+    guard let point = CGPoint(positionCapture.string), vector = CGVector(vectorCapture.string) else {
+      self = .null
+      return
+    }
     p = point
     v = vector
   }
@@ -127,7 +171,7 @@ extension Trajectory: JSONValueInitializable {
 }
 
 extension Trajectory: CustomStringConvertible {
-  var description: String { return "{\(p.description(3)), \(v.description(3))}" }
+  var description: String { return "{ p: \(p.description(3)); v: \(v.description(3)) }" }
 }
 
 extension Trajectory: CustomDebugStringConvertible {

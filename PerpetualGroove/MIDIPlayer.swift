@@ -41,7 +41,7 @@ final class MIDIPlayer {
   static weak var currentDispatch: MIDINodeDispatch? {
     didSet {
       guard currentDispatch !== oldValue else { return }
-      logDebug("\(oldValue) ➞ \(currentDispatch)")
+      logDebug("\(oldValue?.name ?? "nil") ➞ \(currentDispatch?.name ?? "nil")")
     }
   }
 
@@ -75,11 +75,7 @@ final class MIDIPlayer {
   }
 
   /** initialize */
-  static func initialize() {
-    guard !initialized else { return }
-    touch(receptionist)
-    initialized = true
-  }
+  static func initialize() { guard !initialized else { return }; touch(receptionist); initialized = true }
 
   /**
    didChangeSequence:
@@ -104,9 +100,7 @@ final class MIDIPlayer {
 
    - parameter notification: NSNotification
    */
-  static private func didChangeTrack(notification: NSNotification) {
-    updateCurrentDispatch()
-  }
+  static private func didChangeTrack(notification: NSNotification) { updateCurrentDispatch() }
   
   /**
    willEnterLoopMode:
@@ -122,10 +116,7 @@ final class MIDIPlayer {
 
    - parameter notification: NSNotification
    */
-  static private func didEnterLoopMode(notification: NSNotification) {
-    loops.removeAll()
-    updateCurrentDispatch()
-  }
+  static private func didEnterLoopMode(notification: NSNotification) { loops.removeAll(); updateCurrentDispatch() }
 
   /**
    willExitLoopMode:
@@ -143,8 +134,30 @@ final class MIDIPlayer {
   */
   static private func didExitLoopMode(notification: NSNotification) {
     playerNode?.defaultNodes.forEach { $0.fadeIn() }
-    pushLoops()
+    insertLoops()
+    resetLoops()
     updateCurrentDispatch()
+  }
+
+  static var shouldInsertLoops = false
+
+  static private func insertLoops() {
+    logDebug("inserting loops: \(loops)")
+    let startTime = Sequencer.time.barBeatTime + loopStart
+    let endTime = Sequencer.time.barBeatTime + loopEnd
+    for loop in loops.values where !loop.events.isEmpty {
+      loop.start = startTime
+      loop.end = endTime
+      loop.track.addLoop(loop)
+    }
+  }
+
+  /** resetLoops */
+  static private func resetLoops() {
+    loops.removeAll()
+    loopStart = .start
+    loopEnd = .start
+    shouldInsertLoops = false
   }
 
   static weak var playerContainer: MIDIPlayerContainerViewController?
@@ -185,23 +198,19 @@ final class MIDIPlayer {
 
   static private var loops: [ObjectIdentifier:Loop] = [:]
 
-  /** pushLoops */
-  static private func pushLoops() {
-    logDebug("pushing loops: \(loops)")
-    for loop in loops.values where !loop.events.isEmpty { loop.track.addLoop(loop) }
-    loops.removeAll()
-  }
+  static var loopStart: BarBeatTime = .start
+  static var loopEnd: BarBeatTime = .start
 
   /**
    placeNew:targetTrack:generator:
 
    - parameter trajectory: Trajectory
    - parameter targetTrack: InstrumentTrack? = nil
-   - parameter generator: MIDINodeGenerator
+   - parameter generator: MIDIGenerator
   */
   static func placeNew(trajectory: Trajectory,
                 target: MIDINodeDispatch,
-             generator: MIDINodeGenerator,
+             generator: MIDIGenerator,
             identifier: MIDINode.Identifier = UUID())
   {
     guard let node = playerNode else {
@@ -214,7 +223,7 @@ final class MIDIPlayer {
       let midiNode = try MIDINode(trajectory: trajectory,
                                   name: name,
                                   dispatch: target,
-                                  note: generator,
+                                  generator: generator,
                                   identifier: identifier)
       node.addChild(midiNode)
 

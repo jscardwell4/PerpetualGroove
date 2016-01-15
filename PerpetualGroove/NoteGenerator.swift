@@ -173,8 +173,8 @@ extension NoteGenerator {
   }
 }
 
-// MARK: - MIDINodeGenerator
-extension NoteGenerator: MIDINodeGenerator {
+// MARK: - MIDIGeneratorType
+extension NoteGenerator: MIDIGeneratorType {
 
   /**
    receiveNoteOn:

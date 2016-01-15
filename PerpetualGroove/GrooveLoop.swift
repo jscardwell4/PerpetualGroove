@@ -8,7 +8,6 @@
 
 import Foundation
 import MoonKit
-import struct AudioToolbox.CABarBeatTime
 
 struct GrooveLoop {
 
@@ -17,9 +16,9 @@ struct GrooveLoop {
   var identifier: Identifier
   var repetitions: Int
   var repeatDelay: UInt64
-  var start: CABarBeatTime
+  var start: BarBeatTime
   var nodes: [GrooveNode.Identifier:GrooveNode] = [:]
-  var end: CABarBeatTime?
+  var end: BarBeatTime
 
   /**
    initWithIdentifier:repetitions:repeatDelay:start:
@@ -27,13 +26,14 @@ struct GrooveLoop {
    - parameter identifier: Identifier
    - parameter repetitions: Int
    - parameter repeatDelay: UInt64
-   - parameter start: CABarBeatTime
+   - parameter start: BarBeatTime
   */
-  init(identifier: Identifier, repetitions: Int, repeatDelay: UInt64, start: CABarBeatTime) {
+  init(identifier: Identifier, repetitions: Int, repeatDelay: UInt64, start: BarBeatTime, end: BarBeatTime) {
     self.identifier = identifier
     self.repetitions = repetitions
     self.repeatDelay = repeatDelay
     self.start = start
+    self.end = end
   }
 
   /**
@@ -54,5 +54,6 @@ struct GrooveLoop {
     self.repetitions = repetitions
     self.repeatDelay = repeatDelay
     start = event.time
+    end = event.time
   }
 }

@@ -20,38 +20,7 @@ private indirect enum Node<Element: Comparable> {
   }
 }
 
-// MARK: - Equatable
-//extension Node: Equatable {}
-
-/**
-Determines whether two trees are equal
-
-- parameter lhs: Node<T>
-- parameter rhs: Node<T>
-
-- returns: Bool
-*/
-//private func ==<T:Comparable>(lhs: Node<T>, rhs: Node<T>) -> Bool {
-//  switch (lhs, rhs) {
-//    case (.None, .None): return true
-//    case let (.Some(_, left1, value1, right1), .Some(_, left2, value2, right2)):
-//      return value1 == value2 && left1 == left2 && right1 == right2
-//    default: return false
-//  }
-
-  // if case .None = lhs, case .None = rhs { return true }
-  // else if case .None = lhs { return false }
-  // else if case .None = rhs { return false }
-  // else {
-  //   let lhsArray = Array(lhs)
-  //   let rhsArray = Array(rhs)
-  //   guard lhsArray.count == rhsArray.count else { return false }
-  //   for (l, r) in zip(lhsArray, rhsArray) {
-  //     if l < r || l > r { return false }
-  //   }
-  //   return true
-  // }
-//}
+private enum FindOptions { case Default, NearestNotGreaterThan, NearestNotLessThan }
 
 public struct Tree<Element: Comparable> {
 
@@ -69,7 +38,9 @@ public struct Tree<Element: Comparable> {
 
    - parameter source: S
    */
-  public init<S: SequenceType where S.Generator.Element == Element>(_ source: S) { for element in source { insert(element) } }
+  public init<S: SequenceType where S.Generator.Element == Element>(_ source: S) {
+    for element in source { insert(element) }
+  }
 
   /**
   Whether the tree contains the specified element
@@ -136,19 +107,6 @@ public struct Tree<Element: Comparable> {
   - parameter element2: Element
   */
   public mutating func replace(element1: Element, with element2: Element) {
-//    switch find(element1) {
-//      case let .Some(color, left, value, right)?:
-//        func updateNode(node: Node<Element>) -> Node<Element> {
-//          switch node {
-//          case let .Some(_, .Some(_, .None, v, .None), _, _) where v == value:
-//            break
-//          }
-//        }
-//        break
-//      default: break
-//    }
-
-
     var elements = Array(self)
     guard let idx = elements.indexOf(element1) else { return }
     elements[idx] = element2
@@ -235,44 +193,110 @@ public struct Tree<Element: Comparable> {
     root = .Some(.Black, left, value, right)
   }
 
-  /**
-  Return the node containing the specified element
-
-  - parameter element: Element
-
-  - returns: Node<Element>?
-  */
-  private func find(element: Element) -> Node<Element>? {
-    func find(node: Node<Element>) -> Node<Element>? {
-      switch node {
-        case .None:                                                 return nil
-        case let .Some(_, left, value,     _) where element < value: return find(left)
-        case let .Some(_,    _, value, right) where element > value: return find(right)
-        default:                                                     return node
-      }
-    }
-    return find(root)
-  }
-
   /** 
   Find an element in the tree using the specified comparator closures
   
   - parameter isOrderedBefore: (Element) -> Bool
-  - parameter isEqual: (Element) -> Bool
+  - parameter predicate: (Element) -> Bool
   
   - returns: Element?
   */
-  public func find(isOrderedBefore: (Element) -> Bool, _ isEqual: (Element) -> Bool) -> Element? {
-    func find(node: Node<Element>) -> Element? {
-      switch node {
-        case let .Some(_,    _, value,     _) where isEqual(value):          return value
-        case let .Some(_, left, value,     _) where !isOrderedBefore(value): return find(left)
-        case let .Some(_,    _, value, right) where isOrderedBefore(value):  return find(right)
-        case .None:                                                         fallthrough
-        default:                                                             return nil
-      }
+  public func find(isOrderedBefore: (Element) -> Bool, _ predicate: (Element) -> Bool) -> Element? {
+    return find(root, isOrderedBefore: isOrderedBefore, predicate: predicate)
+  }
+
+  /**
+   findNearestNotGreaterThan:
+
+   - parameter value: Element
+
+    - returns: Element?
+  */
+  public func findNearestNotGreaterThan(value: Element) -> Element? {
+    return findNearestNotGreaterThan({$0 < value}, {$0 == value})
+  }
+
+
+  /**
+   findNearestNotGreaterThan:predicate:
+
+   - parameter isOrderedBefore: (Element) -> Bool
+   - parameter predicate: (Element) -> Bool
+
+    - returns: Element?
+  */
+  public func findNearestNotGreaterThan(isOrderedBefore: (Element) -> Bool,
+                                  _ predicate: (Element) -> Bool) -> Element?
+  {
+    return find(root, options: .NearestNotGreaterThan, isOrderedBefore: isOrderedBefore, predicate: predicate)
+  }
+
+  /**
+   findNearestNotLessThan:
+
+   - parameter value: Element
+
+    - returns: Element?
+  */
+  public func findNearestNotLessThan(value: Element) -> Element? {
+    return findNearestNotLessThan({$0 < value}, {$0 == value})
+  }
+
+  /**
+   findNearestNotLessThan:predicate:
+
+   - parameter isOrderedBefore: (Element) -> Bool
+   - parameter predicate: (Element) -> Bool
+
+    - returns: Element?
+  */
+  public func findNearestNotLessThan(isOrderedBefore: (Element) -> Bool,
+                                   _ predicate: (Element) -> Bool) -> Element?
+  {
+    return find(root, options: .NearestNotLessThan, isOrderedBefore: isOrderedBefore, predicate: predicate)
+  }
+
+  /**
+   find:isOrderedBefore:predicate:
+
+   - parameter node: Node<Element>
+   - parameter isOrderedBefore: (Element) -> Bool
+   - parameter predicate: (Element) -> Bool
+
+    - returns: Element?
+  */
+  private func find(node: Node<Element>,
+            options: FindOptions = .Default,
+      possibleMatch: Element? = nil,
+    isOrderedBefore: (Element) -> Bool,
+          predicate: (Element) -> Bool) -> Element?
+  {
+    switch node {
+
+      // The node's value satisfies the predicate
+      case let .Some(_, _, value, _) where predicate(value):
+        return value
+
+      // The node's value is greater than desired without a left child and options specify nearest not less than
+      case let .Some(_, .None, value, _) where !isOrderedBefore(value) && options == .NearestNotLessThan:
+        return value
+
+      // The node's value is greater than desired
+      case let .Some(_, left, value, _) where !isOrderedBefore(value):
+        return find(left, options: options, possibleMatch: options == .NearestNotLessThan ? value : possibleMatch, isOrderedBefore: isOrderedBefore, predicate: predicate)
+
+      // The node's value is less than desired without a right child and options specify nearest not greater
+      case let .Some(_, _, value, .None) where isOrderedBefore(value) && options == .NearestNotGreaterThan:
+        return value
+
+      // The node's value is less than desired
+      case let .Some(_, _, value, right) where isOrderedBefore(value):
+        return find(right, options: options, possibleMatch: options == .NearestNotGreaterThan ? value : possibleMatch, isOrderedBefore: isOrderedBefore, predicate: predicate)
+
+      // Leaf
+      default:
+        return possibleMatch
     }
-    return find(root)
   }
 
   /**
