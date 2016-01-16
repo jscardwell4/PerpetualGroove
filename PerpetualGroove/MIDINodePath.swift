@@ -20,7 +20,12 @@ final class MIDINodePath {
   let startTime: NSTimeInterval
   let initialTrajectory: Trajectory
 
-  private weak var currentSegment: Segment!
+  var initialSegment: Segment {
+    guard let segment = segments.minElement() else {
+      fatalError("segments is empty, no min element")
+    }
+    return segment
+  }
 
   /**
    initWithTrajectory:playerSize:time:
@@ -36,9 +41,7 @@ final class MIDINodePath {
     min = CGPoint(offset.unpack)
     startTime = time
     initialTrajectory = trajectory
-    let segment = Segment(trajectory: trajectory, time: time, path: self)
-    segments.insert(segment)
-    currentSegment = segment
+    segments.insert(Segment(trajectory: trajectory, time: time, path: self))
   }
 
   /**
@@ -71,96 +74,48 @@ final class MIDINodePath {
 
     - returns: Segment?
   */
-  private func segmentForTime(time: NSTimeInterval) -> Segment?  {
+  func segmentForTime(time: NSTimeInterval) -> Segment?  {
     guard time >= startTime else { return nil }
 
     if let segment = segments.find({$0.endTime < time}, {$0.interval ∋ time}) { return segment }
     guard let segment = segments.maxElement() else { fatalError("segments is empty, no max element") }
 
     var currentSegment = segment
-    var additionalSegments: [Segment] = []
-    while currentSegment.endTime < time {
-      let newSegment = currentSegment.advance()
-      newSegment.predessor = currentSegment
-      currentSegment.successor = newSegment
-      additionalSegments.append(newSegment)
-      currentSegment = newSegment
-    }
-    segments.insert(additionalSegments)
+    while currentSegment.endTime < time { currentSegment = currentSegment.successor }
     return currentSegment
   }
 
 }
 
-/**
- advance
-
-  - returns: Segment
-*/
-//private func advanceSegmentWithTrajectory(trajectory: Trajectory,
-//                                     time: NSTimeInterval,
-//                                     path: MIDINodePath) -> (Trajectory, NSTimeInterval)
-//{
-//
-//  // Determine possible end point axes
-//  let projectedX: CGFloat = trajectory.dx.isSignMinus ? path.min.x : path.max.x,
-//      projectedY: CGFloat = trajectory.dy.isSignMinus ? path.min.y : path.max.y
-//
-//  // Calculate projected end points
-//  let pX = trajectory.pointAtX(projectedX)
-//  let pY = trajectory.pointAtY(projectedY)
-//
-//  // Calculate the time elapsed from  trajectory to end points
-//  let tX = trajectory.timeFromX(trajectory.p.x, toX: projectedX)
-//  let tY = trajectory.timeFromY(trajectory.p.y, toY: projectedY)
-//
-//  /**
-//   Helper function for determining whether a given point lies within bounds
-//
-//   - parameter p: CGPoint
-//
-//    - returns: Bool
-//  */
-//  func validPoint(p: CGPoint) -> Bool {
-//    return (path.min.x ... path.max.x).contains(p.x)
-//        && (path.min.y ... path.max.y).contains(p.y)
-//  }
-//
-//  let p: CGPoint           // The extrapolated location
-//  let 𝝙t: NSTimeInterval  // The time from trajectory to extrapolated location
-//  let t: NSTimeInterval   // The total elapsed time at extrapolated location
-//  let v: CGVector         // The extrapolated velocity
-//
-//  // If both projected points are valid, use the point with a smaller travel time
-//  switch (validPoint(pX), validPoint(pY)) {
-//    case (true, true):   (p, 𝝙t) = tX < tY ? (pX, tX) : (pY, tY)
-//    case (true, false):  (p, 𝝙t) = (pX, tX)
-//    case (false, true):  (p, 𝝙t) = (pY, tY)
-//    case (false, false): fatalError("failed to obtain a valid point for the next location")
-//  }
-//
-//  t = time + 𝝙t  // Add the delta time to origin time
-//
-//  // Redirect trajectory according to which boundary edge the new location touches
-//  switch p.unpack {
-//    case (path.min.x, _), (path.max.x, _):
-//      v = CGVector(dx: trajectory.dx * -1, dy: trajectory.dy)
-//    case (_, path.min.y), (_, path.max.y):
-//      v = CGVector(dx: trajectory.dx, dy: trajectory.dy * -1)
-//    default:
-//      fatalError("next location should contact an edge of the player")
-//  }
-//
-//  return (Trajectory(vector: v, point: p), t)
-//}
+extension MIDINodePath: CustomStringConvertible {
+  var description: String {
+    return "MIDINodePath {\n\t" + "\n\t".join(
+      "min: \(min)",
+      "max: \(max)",
+      "startTime: \(startTime)",
+      "initialTrajectory: \(initialTrajectory)",
+      "segments: [\n\t\t\(",\n\t\t".join(segments.map({$0.description.indentedBy(2, preserveFirst: true, useTabs: true)})))\n\t]"
+      ) + "\n}"
+  }
+}
 
 extension MIDINodePath {
-  private final class Segment: Equatable, Comparable, CustomStringConvertible {
+  final class Segment: Equatable, Comparable, CustomStringConvertible {
     let trajectory: Trajectory
     let startTime: NSTimeInterval
     let endTime: NSTimeInterval
 
-    weak var successor: Segment?
+    private weak var _successor: Segment?
+
+    var successor: Segment {
+      guard _successor == nil else { return _successor! }
+      let segment = advance()
+      segment.predessor = self
+      _successor = segment
+      path.segments.insert(segment)
+      return segment
+    }
+
     weak var predessor: Segment?
 
     var interval: HalfOpenInterval<NSTimeInterval> { return startTime ..< endTime }
@@ -191,9 +146,9 @@ extension MIDINodePath {
       - returns: NSTimeInterval
     */
     func timeToEndLocationFromPoint(point: CGPoint) -> NSTimeInterval {
-      guard trajectory.containsPoint(point) else {
-        fatalError("segment does not contain point '\(point)'")
-      }
+//      guard trajectory.containsPoint(point) else {
+//        fatalError("segment does not contain point '\(point)'")
+//      }
       return trajectory.timeFromPoint(point, toPoint: endLocation)
     }
 
@@ -270,17 +225,21 @@ extension MIDINodePath {
     }
 
     var description: String {
-      return "{ trajectory: \(trajectory);"
-            + " interval: (\(rounded(startTime, 3)) ..< \(rounded(endTime, 3))) }"
+      return "Segment {\n\t" + "\n\t".join(
+        "trajectory: \(trajectory)",
+        "startTime: \(startTime)",
+        "endTime: \(endTime)",
+        "endLocation: \(endLocation)"
+        ) + "\n}"
     }
 
   }
 }
 
-private func ==(lhs: MIDINodePath.Segment, rhs: MIDINodePath.Segment) -> Bool {
+func ==(lhs: MIDINodePath.Segment, rhs: MIDINodePath.Segment) -> Bool {
   return lhs.startTime == rhs.startTime
 }
 
-private func <(lhs: MIDINodePath.Segment, rhs: MIDINodePath.Segment) -> Bool {
+func <(lhs: MIDINodePath.Segment, rhs: MIDINodePath.Segment) -> Bool {
   return lhs.startTime < rhs.startTime
 }

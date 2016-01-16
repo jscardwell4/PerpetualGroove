@@ -16,17 +16,7 @@ func AssertEqualElements<S1:SequenceType, S2:SequenceType
   XCTAssert(s1.elementsEqual(s2), "the elements in \(s1) are not equal to the elements in \(s2)", file: file, line: line)
 }
 
-class NoteChordTests: XCTestCase {
-
-  override func setUp() {
-    super.setUp()
-    // Put setup code here. This method is called before the invocation of each test method in the class.
-  }
-
-  override func tearDown() {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
-    super.tearDown()
-  }
+final class NoteChordTests: XCTestCase {
 
   func testNoteCreation() {
     XCTAssert(Note(rawValue: "A") == .Default(.A))
@@ -71,541 +61,541 @@ class NoteChordTests: XCTestCase {
 
   func testChordGenerator() {
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.Major)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.Minor)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.Augmented)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.G, .Sharp), .Four), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.G, .Sharp), .Four), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.Diminished)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.G, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.G, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.SuspendedFourth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.F), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.F), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.FlatFifth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.G, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.G, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.SuspendedSecond)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.D), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.D), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.Sixth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.A), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.A), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.AddTwo)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.D), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.D), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.MajorSeventh)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.B), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.B), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.MajorSeventhFlatFifth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.G, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.B), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.G, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.B), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.MajorSeventhSharpFifth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.G, .Sharp), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.B), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.G, .Sharp), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.B), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.Seventh)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.SeventhFlatFifth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.G, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.G, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.SeventhSharpFifth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.G, .Sharp), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.G, .Sharp), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.SeventhSuspendedFourth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.F), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.F), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.MinorAddTwo)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.D), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.D), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.MinorSixth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.A), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.A), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.MinorSeventh)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.MinorMajorSeventh)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.B), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.B), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.MinorSeventhFlatFifth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.G, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.G, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.DiminishedSeventh)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.G, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.A), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.G, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.A), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.DiminishedMajorSeventh)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.G, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.B), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.G, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.B), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.Fifth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.SixthNinth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.A), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.A), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.MajorSixthNinth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.A), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.B), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.A), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.B), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.MajorSeventhSharpEleventh)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.B), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.F, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.B), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.F, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.MajorNinth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.B), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.B), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.MajorNinthFlatFifth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.G, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.B), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.G, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.B), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.MajorNinthSharpFifth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.G, .Sharp), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.B), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.G, .Sharp), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.B), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.MajorNinthSharpEleventh)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.B), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.F, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.B), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.F, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.MajorThirteenth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.B), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.A), .Six), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.B), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.A), .Six), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.MajorThirteenthFlatFifth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.G, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.B), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.A), .Six), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.G, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.B), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.A), .Six), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.MajorThirteenthSharpEleventh)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.B), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.F, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.A), .Six), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.B), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.F, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.A), .Six), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.SeventhFlatNinth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.D, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.D, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.SeventhSharpNinth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.D, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.D, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.SeventhSharpEleventh)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.F, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.F, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.SeventhFlatFifthFlatNinth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.G, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.D, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.G, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.D, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.SeventhFlatFifthSharpNinth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.G, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.D, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.G, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.D, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.SeventhSharpFifthFlatNinth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.G, .Sharp), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.D, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.G, .Sharp), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.D, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.SeventhSharpFifthSharpNinth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.G, .Sharp), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.D, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.G, .Sharp), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.D, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.SeventhFlatNinthSharpNinth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.D, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.D, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.D, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.D, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.SeventhAddThirteenth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.A), .Six), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.A), .Six), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.SeventhFlatThirteenth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.A, .Flat), .Six), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.A, .Flat), .Six), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.SeventhFlatNinthSharpEleventh)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.D, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.F, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.D, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.F, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.SeventhSharpNinthSharpEleventh)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.D, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.F, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.D, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.F, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.SeventhFlatNinthFlatThirteenth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.D, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.A, .Flat), .Six), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.D, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.A, .Flat), .Six), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.SeventhSharpNinthFlatThirteenth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.D, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.A, .Flat), .Six), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.D, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.A, .Flat), .Six), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.SeventhSharpEleventhFlatThirteenth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.F, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.A, .Flat), .Six), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.F, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.A, .Flat), .Six), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.SeventhFlatNinthSharpNinthSharpEleventh)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.D, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.D, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.F, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.D, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.D, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.F, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.Ninth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.NinthFlatFifth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.G, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.G, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.NinthSharpFifth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.G, .Sharp), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.G, .Sharp), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.NinthSharpEleventh)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.F, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.F, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.NinthFlatThirteenth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.A, .Flat), .Six), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.A, .Flat), .Six), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.NinthSharpEleventhFlatThirteenth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.F, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.A, .Flat), .Six), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.F, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.A, .Flat), .Six), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.Eleventh)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.F), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.F), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.Thirteenth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.A), .Six), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.A), .Six), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.ThirteenthFlatFifth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.G, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.A), .Six), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.G, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.A), .Six), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.ThirteenthFlatNinth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.D, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.A), .Six), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.D, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.A), .Six), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.ThirteenthSharpNinth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.D, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.A), .Six), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.D, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.A), .Six), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.ThirteenthSharpEleventh)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.F, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.A), .Six), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.F, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.A), .Six), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.ThirteenthSuspendedFourth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.F), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.A), .Six), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.F), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.A), .Six), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.MinorSharpFifth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.G, .Sharp), .Four), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.G, .Sharp), .Four), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.MinorSixthNinth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.A), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.A), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.MinorSeventhAddFourth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.F), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.F), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.MinorSeventhAddEleventh)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.F), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.F), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.MinorSeventhFlatFifthFlatNinth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.G, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.D, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.G, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.D, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.MinorNinth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.MinorNinthMajorSeventh)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.B), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.B), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.MinorNinthFlatFifth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.G, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.G, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.MinorEleventh)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.F), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.F), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.MinorThirteenth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.F), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.A), .Six), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.F), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.A), .Six), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.DiminishedSeventhAddNinth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.G, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.A), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.G, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.A), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.MinorEleventhFlatFifth)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.G, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.F), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.G, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.F), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.MinorEleventhMajorSeventh)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.B), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.F), .Five), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.E, .Flat), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.B), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.D), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.F), .Five), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
     AssertEqualElements(ChordGenerator(chord: Chord(.Default(.C), Chord.ChordPattern(.SeventhAltered)), octave: .Four, duration: .Eighth, velocity: .𝑚𝑓).midiNotes, [
-                  MIDINote(tone: MIDINote.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.D, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.D, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.F, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓),
-                  MIDINote(tone: MIDINote.Tone(.Modified(.A, .Flat), .Six), duration: .Eighth, velocity: .𝑚𝑓)
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.C), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.E), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Default(.G), .Four), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.B, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.D, .Flat), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.D, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.F, .Sharp), .Five), duration: .Eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.Modified(.A, .Flat), .Six), duration: .Eighth, velocity: .𝑚𝑓)
                 ])
   }
 

@@ -136,6 +136,7 @@ final class MIDINode: SKSpriteNode {
 //      default: break
 //    }
 
+    currentSegment = currentSegment.successor
     play()
     runAction(action(.Move))
   }
@@ -177,10 +178,16 @@ final class MIDINode: SKSpriteNode {
   */
   private func didJog(notification: NSNotification) {
     guard state ∋ .Jogging else { fatalError("internal inconsistency, should have `Jogging` flag set") }
-    guard let jogTime = notification.jogTime else {
-      logError("notication does not contain jog tick value")
+    guard let jogTime = notification.jogTime?.doubleValue else {
+      logError("notication does not contain jog time")
       return
     }
+    guard let location = path.locationForTime(jogTime) else {
+      logError("failed to obtain location for time '\(jogTime)'")
+      return
+    }
+
+    runAction(SKAction.moveTo(location, duration: abs(Sequencer.transport.time.doubleValue - jogTime)))
 //    guard let snapshot = history.snapshotForTicks(jogTime.ticks) else {
 //      logError("history does not contain snapshot for jog time '\(jogTime.rawValue)'")
 //      return
@@ -304,8 +311,13 @@ final class MIDINode: SKSpriteNode {
     guard let playerSize = MIDIPlayer.playerNode?.size else {
       fatalError("creating node with nil value for `MIDIPlayer.playerNode`")
     }
-    path = MIDINodePath(trajectory: trajectory, playerSize: playerSize)
+    path = MIDINodePath(trajectory: trajectory, playerSize: playerSize, time: Sequencer.transport.time.doubleValue)
+    currentSegment = path.initialSegment
+
     super.init(texture: MIDINode.texture, color: dispatch.color.value, size: MIDINode.texture.size() * 0.75)
+
+//    let _ = path.locationForTime(23)
+//    logDebug("path: \(path)")
 
     let object = Sequencer.transport
     typealias Notification = Transport.Notification
@@ -342,6 +354,7 @@ final class MIDINode: SKSpriteNode {
 
 
   let path: MIDINodePath
+  private unowned var currentSegment: MIDINodePath.Segment
 //  private var trajectory: Trajectory
 
   /**
@@ -373,11 +386,8 @@ final class MIDINode: SKSpriteNode {
 
     - returns: (CGPoint, NSTimeInterval)?
   */
-  func nextLocation() -> (CGPoint, NSTimeInterval)? {
-    guard let location = path.nextLocationForTime(Sequencer.transport.time.doubleValue, fromPoint: position) else {
-      fatalError("failed to obtain next location from path")
-    }
-    return location
+  func nextLocation() -> (CGPoint, NSTimeInterval) {
+    return (currentSegment.endLocation, currentSegment.timeToEndLocationFromPoint(position))
   }
 }
 

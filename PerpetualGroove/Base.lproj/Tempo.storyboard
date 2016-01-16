@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9060" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9051"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
@@ -23,7 +23,6 @@
                                 <subviews>
                                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kjm-oe-fME" userLabel="Tempo" customClass="Slider" customModule="MoonKit">
                                         <rect key="frame" x="-22.5" y="8" width="247" height="56"/>
-                                        <animations/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="56" identifier="TempoSliderHeight" id="C6y-8h-MG8"/>
@@ -91,7 +90,6 @@
                                     </view>
                                     <view contentMode="scaleToFill" horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="3jR-a6-V5R" userLabel="Metronome" customClass="ImageButtonView" customModule="MoonKit">
                                         <rect key="frame" x="212" y="8" width="56" height="56"/>
-                                        <animations/>
                                         <color key="tintColor" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="3jR-a6-V5R" secondAttribute="height" multiplier="1:1" identifier="MetronomeAspectRatio" id="RhJ-px-k17"/>
@@ -122,13 +120,11 @@
                                         </connections>
                                     </view>
                                 </subviews>
-                                <animations/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TempoSceneStackView"/>
                                 </userDefinedRuntimeAttributes>
                             </stackView>
                         </subviews>
-                        <animations/>
                         <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstAttribute="trailingMargin" secondItem="dQQ-Ui-KdC" secondAttribute="trailing" identifier="ContentStretchRight" id="794-VO-SSt"/>

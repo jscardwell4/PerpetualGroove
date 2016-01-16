@@ -29,20 +29,20 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="190"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="vc5-x2-Dna" userLabel="NoteAttributesStack">
-                                <rect key="frame" x="16" y="20" width="288" height="150"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="vc5-x2-Dna" userLabel="NoteAttributesStack">
+                                <rect key="frame" x="16" y="20" width="288" height="200"/>
                                 <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="wVM-Za-orF">
-                                        <rect key="frame" x="0.0" y="0.0" width="288" height="37.5"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="wVM-Za-orF">
+                                        <rect key="frame" x="0.0" y="0.0" width="288" height="50"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" verticalHuggingPriority="251" text="Note" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="w5U-Eo-KhK">
-                                                <rect key="frame" x="0.0" y="0.0" width="37.5" height="37.5"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" verticalHuggingPriority="251" misplaced="YES" text="Note" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="w5U-Eo-KhK">
+                                                <rect key="frame" x="0.0" y="0.0" width="24" height="50"/>
                                                 <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
                                                 <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KML-VN-wa1" userLabel="Pitch Picker" customClass="InlinePickerView" customModule="MoonKit">
-                                                <rect key="frame" x="47.5" y="0.0" width="66.5" height="37.5"/>
+                                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KML-VN-wa1" userLabel="Pitch Picker" customClass="InlinePickerView" customModule="MoonKit">
+                                                <rect key="frame" x="34" y="0.0" width="73" height="50"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="Pitch Picker"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="color" keyPath="selectedItemColor">
@@ -69,8 +69,8 @@
                                                     <action selector="didPickPitch" destination="aQn-av-Bpr" eventType="valueChanged" id="mWm-7f-oG8"/>
                                                 </connections>
                                             </view>
-                                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eOh-NG-HgE" userLabel="Modifier Picker" customClass="InlinePickerView" customModule="MoonKit">
-                                                <rect key="frame" x="124" y="0.0" width="88" height="37.5"/>
+                                            <view opaque="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eOh-NG-HgE" userLabel="Modifier Picker" customClass="InlinePickerView" customModule="MoonKit">
+                                                <rect key="frame" x="117" y="0.0" width="88" height="50"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="Octave Picker"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="88" id="SRk-St-teL"/>
@@ -103,8 +103,8 @@
                                                     <action selector="didPickModifier" destination="aQn-av-Bpr" eventType="valueChanged" id="TRn-dl-9Wq"/>
                                                 </connections>
                                             </view>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="G8I-bj-ouc" userLabel="Octave Picker" customClass="InlinePickerView" customModule="MoonKit">
-                                                <rect key="frame" x="222" y="0.0" width="66" height="37.5"/>
+                                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="G8I-bj-ouc" userLabel="Octave Picker" customClass="InlinePickerView" customModule="MoonKit">
+                                                <rect key="frame" x="215" y="0.0" width="73" height="50"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="number" keyPath="selection">
                                                         <integer key="value" value="6"/>
@@ -141,17 +141,17 @@
                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="NoteStack"/>
                                         </userDefinedRuntimeAttributes>
                                     </stackView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="5PY-Ys-nEm">
-                                        <rect key="frame" x="0.0" y="37.5" width="288" height="37.5"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="5PY-Ys-nEm">
+                                        <rect key="frame" x="0.0" y="50" width="288" height="50"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Chord" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ljp-n0-GSd">
-                                                <rect key="frame" x="0.0" y="0.0" width="49.5" height="37.5"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" misplaced="YES" text="Chord" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ljp-n0-GSd">
+                                                <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                                 <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
                                                 <color key="textColor" red="0.57254904510000004" green="0.52941179279999995" blue="0.47058823700000002" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lo0-nl-cDp" userLabel="Chord Picker" customClass="InlinePickerView" customModule="MoonKit">
-                                                <rect key="frame" x="59.5" y="0.0" width="228.5" height="37.5"/>
+                                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lo0-nl-cDp" userLabel="Chord Picker" customClass="InlinePickerView" customModule="MoonKit">
+                                                <rect key="frame" x="60" y="0.0" width="229" height="50"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="number" keyPath="selection">
                                                         <integer key="value" value="0"/>
@@ -184,17 +184,17 @@
                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="DurationStack"/>
                                         </userDefinedRuntimeAttributes>
                                     </stackView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="myD-SH-GHa">
-                                        <rect key="frame" x="0.0" y="75" width="288" height="37.5"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="myD-SH-GHa">
+                                        <rect key="frame" x="0.0" y="100" width="288" height="50"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Duration" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ziA-fb-WAR">
-                                                <rect key="frame" x="0.0" y="0.0" width="70" height="37.5"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" misplaced="YES" text="Duration" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ziA-fb-WAR">
+                                                <rect key="frame" x="0.0" y="0.0" width="70" height="50"/>
                                                 <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
                                                 <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KLS-oH-mjI" userLabel="Duration Picker" customClass="InlinePickerView" customModule="MoonKit">
-                                                <rect key="frame" x="80" y="0.0" width="208" height="37.5"/>
+                                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KLS-oH-mjI" userLabel="Duration Picker" customClass="InlinePickerView" customModule="MoonKit">
+                                                <rect key="frame" x="80" y="0.0" width="208" height="50"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="color" keyPath="itemColor">
                                                         <color key="value" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
@@ -221,17 +221,17 @@
                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="DurationStack"/>
                                         </userDefinedRuntimeAttributes>
                                     </stackView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="QQD-5l-KOY">
-                                        <rect key="frame" x="0.0" y="112.5" width="288" height="37.5"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="QQD-5l-KOY">
+                                        <rect key="frame" x="0.0" y="150" width="288" height="50"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Velocity" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0XJ-KP-C5j">
-                                                <rect key="frame" x="0.0" y="0.0" width="70" height="37.5"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" misplaced="YES" text="Velocity" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0XJ-KP-C5j">
+                                                <rect key="frame" x="0.0" y="0.0" width="70" height="50"/>
                                                 <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
                                                 <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gSZ-JK-0W9" userLabel="Velocity Picker" customClass="InlinePickerView" customModule="MoonKit">
-                                                <rect key="frame" x="80" y="0.0" width="208" height="37.5"/>
+                                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gSZ-JK-0W9" userLabel="Velocity Picker" customClass="InlinePickerView" customModule="MoonKit">
+                                                <rect key="frame" x="80" y="0.0" width="208" height="50"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="color" keyPath="itemColor">
                                                         <color key="value" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="calibratedRGB"/>
@@ -315,14 +315,14 @@
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="QbC-65-Bsh">
                                         <rect key="frame" x="0.0" y="0.0" width="288" height="56"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" verticalHuggingPriority="251" text="Note" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="o8W-Sq-PWR">
-                                                <rect key="frame" x="0.0" y="0.0" width="38" height="56"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" verticalHuggingPriority="251" misplaced="YES" text="Note" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="o8W-Sq-PWR">
+                                                <rect key="frame" x="0.0" y="0.0" width="26" height="56"/>
                                                 <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
                                                 <color key="textColor" red="0.57254904510000004" green="0.52941179279999995" blue="0.47058823700000002" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LAk-vc-QCj" userLabel="Pitch Picker" customClass="InlinePickerView" customModule="MoonKit">
-                                                <rect key="frame" x="48" y="0.0" width="67" height="56"/>
+                                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LAk-vc-QCj" userLabel="Pitch Picker" customClass="InlinePickerView" customModule="MoonKit">
+                                                <rect key="frame" x="36" y="0.0" width="72" height="56"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="Pitch Picker"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="color" keyPath="selectedItemColor">
@@ -349,8 +349,8 @@
                                                     <action selector="didPickPitch" destination="mkH-rp-flL" eventType="valueChanged" id="L7X-NP-VaH"/>
                                                 </connections>
                                             </view>
-                                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="to4-1r-evZ" userLabel="Modifier Picker" customClass="InlinePickerView" customModule="MoonKit">
-                                                <rect key="frame" x="124" y="0.0" width="88" height="56"/>
+                                            <view opaque="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="to4-1r-evZ" userLabel="Modifier Picker" customClass="InlinePickerView" customModule="MoonKit">
+                                                <rect key="frame" x="118" y="0.0" width="88" height="56"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="Octave Picker"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="88" id="CDL-WO-KCA"/>
@@ -383,8 +383,8 @@
                                                     <action selector="didPickModifier" destination="mkH-rp-flL" eventType="valueChanged" id="HHN-cj-shC"/>
                                                 </connections>
                                             </view>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ssE-JU-CSp" userLabel="Octave Picker" customClass="InlinePickerView" customModule="MoonKit">
-                                                <rect key="frame" x="222" y="0.0" width="66" height="56"/>
+                                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ssE-JU-CSp" userLabel="Octave Picker" customClass="InlinePickerView" customModule="MoonKit">
+                                                <rect key="frame" x="216" y="0.0" width="72" height="56"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="number" keyPath="selection">
                                                         <integer key="value" value="6"/>

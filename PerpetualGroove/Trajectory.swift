@@ -95,13 +95,13 @@ struct Trajectory {
     - returns: NSTimeInterval
   */
   func timeFromPoint(p1: CGPoint, toPoint p2: CGPoint) -> NSTimeInterval {
-    guard containsPoint(p1) && containsPoint(p2) else {
-      fatalError("one or both of the provided points do not lie along the trajectory")
-    }
+//    guard containsPoint(p1) && containsPoint(p2) else {
+//      fatalError("one or both of the provided points do not lie along the trajectory")
+//    }
     let tx = timeFromX(p1.x, toX: p2.x)
     let ty = timeFromY(p1.y, toY: p2.y)
-    guard tx == ty else { fatalError("expected tx '\(tx)' and ty '\(ty)' to be equal") }
-    return tx
+//    guard tx == ty else { fatalError("expected tx '\(tx)' and ty '\(ty)' to be equal") }
+    return min(tx, ty)
   }
 
   /**
@@ -125,7 +125,11 @@ struct Trajectory {
 
     - returns: Bool
   */
-  func containsPoint(point: CGPoint) -> Bool { return point.y - p.y == m * (point.x - p.x) }
+  func containsPoint(point: CGPoint) -> Bool {
+    let lhs = abs((point.y - p.y).rounded(3))
+    let rhs = abs((m * (point.x - p.x)).rounded(3))
+    return lhs == rhs
+  }
 
   static let zero = Trajectory(vector: CGVector.zero, point: CGPoint.zero)
   static let null = Trajectory(vector: CGVector.zero, point: CGPoint.null)
