@@ -26,7 +26,8 @@ public func logDebug(@autoclosure message: () -> String,
 {
   #if LogLevelVerbose || LogLevelDebug
     guard LogManager.logLevelForFile(file) ∋ .Debug else { return }
-    LogManager.logMessage(message(), asynchronous: asynchronous, flag: .Debug, function: function, file: file, line: line)
+    LogManager.logMessage(message(), asynchronous: asynchronous, flag: .Debug,
+                          function: function, file: file, line: line)
   #endif
 }
 
@@ -47,7 +48,8 @@ public func logError(@autoclosure message: () -> String,
 {
   #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
     guard LogManager.logLevelForFile(file) ∋ .Error else { return }
-    LogManager.logMessage(message(), asynchronous: asynchronous, flag: .Error, function: function, file: file, line: line)
+    LogManager.logMessage(message(), asynchronous: asynchronous, flag: .Error,
+                          function: function, file: file, line: line)
   #endif
 }
 
@@ -68,7 +70,8 @@ public func logInfo(@autoclosure message: () -> String,
 {
   #if LogLevelVerbose || LogLevelDebug || LogLevelInfo
     guard LogManager.logLevelForFile(file) ∋ .Info else { return }
-    LogManager.logMessage(message(), asynchronous: asynchronous, flag: .Info, function: function, file: file, line: line)
+    LogManager.logMessage(message(), asynchronous: asynchronous, flag: .Info,
+                          function: function, file: file, line: line)
   #endif
 }
 
@@ -89,7 +92,8 @@ public func logWarning(@autoclosure message: () -> String,
 {
   #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning
     guard LogManager.logLevelForFile(file) ∋ .Warning else { return }
-    LogManager.logMessage(message(), asynchronous: asynchronous, flag: .Warning, function: function, file: file, line: line)
+    LogManager.logMessage(message(), asynchronous: asynchronous, flag: .Warning,
+                          function: function, file: file, line: line)
   #endif
 }
 
@@ -110,7 +114,8 @@ public func logVerbose(@autoclosure message: () -> String,
 {
   #if LogLevelVerbose
     guard LogManager.logLevelForFile(file) ∋ .Verbose else { return }
-    LogManager.logMessage(message(), asynchronous: asynchronous, flag: .Verbose, function: function, file: file, line: line)
+    LogManager.logMessage(message(), asynchronous: asynchronous, flag: .Verbose,
+                          function: function, file: file, line: line)
   #endif
 }
 
@@ -132,7 +137,8 @@ public func logIB(@autoclosure message: () -> String,
     guard LogManager.logLevelForFile(file) ∋ flag else { return }
     backgroundDispatch { [message = message()] in
       guard let sourceDirectory = NSProcessInfo.processInfo().environment["IB_PROJECT_SOURCE_DIRECTORIES"] else { return }
-      let text = "\(NSDate()) [\(mach_absolute_time())] <\((file as NSString).lastPathComponent):\(line)> \(function)  \(message)"
+      let text = "\(NSDate()) [\(mach_absolute_time())] <\((file as NSString).lastPathComponent):"
+               + "\(line)> \(function)  \(message)"
       let _ = try? text.appendToFile("\(sourceDirectory)/IB.log")
     }
   #endif
@@ -225,7 +231,9 @@ public func logError(e: ErrorType,
   #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
     guard LogManager.logLevelForFile(file) ∋ .Error else { return }
   var errorDescription = "\(e)"
-  if let e = e as? WrappedErrorType, u = e.underlyingError { errorDescription += "underlying error: \(u)" }
+  if let e = e as? WrappedErrorType, u = e.underlyingError {
+    errorDescription += "underlying error: \(u)"
+    }
 
   var logMessage = ColorLog.wrapRed("-Error- ")
   if let message = message { logMessage += message + "\n" }
@@ -244,7 +252,8 @@ logError:asynchronous:
 public func logError(e: ExtendedErrorType, asynchronous: Bool = true) {
   #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
     guard LogManager.logLevelForFile(e.file) ∋ .Error else { return }
-  logError(e, message: e.reason, asynchronous: asynchronous, function: e.function, line: e.line, file: e.file)
+  logError(e, message: e.reason, asynchronous: asynchronous,
+           function: e.function, line: e.line, file: e.file)
   #endif
 }
 

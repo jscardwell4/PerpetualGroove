@@ -74,7 +74,7 @@ struct ChannelEvent: MIDIEventType {
     init(_ t: EventType, _ c: Byte) { type = t; channel = (0 ... 15).clampValue(c) }
   }
 
-  var time: BarBeatTime = .start
+  var time: BarBeatTime = .start1
   var delta: VariableLengthQuantity?
   var status: Status
   var data1: Byte

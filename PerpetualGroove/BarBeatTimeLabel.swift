@@ -120,7 +120,7 @@ final class BarBeatTimeLabel: UIView {
     }
   }
 
-  private var currentTime: BarBeatTime = .start {
+  private var currentTime: BarBeatTime = .start1 {
     didSet {
       guard currentTime != oldValue else { return }
       dispatchToMain {

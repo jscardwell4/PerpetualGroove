@@ -87,16 +87,14 @@ final class Transport {
   }
 
   private var jogStartTimeTicks: UInt64 = 0
-  private var maxTicks: MIDITimeStamp = 0
-  private var jogTime: BarBeatTime = .start
+  private var jogTime: BarBeatTime = .start1
   private var ticksPerRevolution: MIDITimeStamp = 0
 
   /** beginJog */
   func beginJog() {
-    guard !jogging, let sequence = Sequencer.sequence else { return }
+    guard !jogging else { return }
     clock.stop()
     jogTime = time.barBeatTime
-    maxTicks = max(jogTime.ticks, sequence.sequenceEnd.ticks)
     ticksPerRevolution = MIDITimeStamp(Sequencer.timeSignature.beatsPerBar) * MIDITimeStamp(Sequencer.partsPerQuarter)
     state ⊻= [.Jogging]
     Notification.DidBeginJogging.post(object: self, userInfo:[
@@ -120,11 +118,9 @@ final class Transport {
     switch revolutions.isSignMinus {
       case true where time.ticks < 𝝙ticks:             	ticks = 0
       case true:                                        ticks = time.ticks - 𝝙ticks
-      case false where time.ticks + 𝝙ticks > maxTicks: 	ticks = maxTicks
       default:                                          ticks = time.ticks + 𝝙ticks
     }
 
-    guard ticks <= maxTicks else { return }
     do { try jogToTime(BarBeatTime(tickValue: ticks)) } catch { logError(error) }
   }
 
@@ -133,7 +129,6 @@ final class Transport {
     guard jogging && clock.paused else { logWarning("not jogging"); return }
     state ⊻= [.Jogging]
     time.barBeatTime = jogTime
-    maxTicks = 0
     Notification.DidEndJogging.post(object: self, userInfo:[
       .Ticks: NSNumber(unsignedLongLong: time.ticks),
       .Time: time.barBeatTime.rawValue
@@ -149,8 +144,8 @@ final class Transport {
   */
   func jogToTime(t: BarBeatTime) throws {
     guard jogTime != t else { return }
-    guard jogging else { throw Error.NotPermitted }
-    guard time.isValidTime(t) else { throw Error.InvalidBarBeatTime }
+    guard jogging else { throw Error.NotPermitted("state ∌ jogging") }
+    guard time.isValidTime(t) else { throw Error.InvalidBarBeatTime("\(t)") }
     jogTime = t
     Notification.DidJog.post(object: self, userInfo:[
       .Ticks: NSNumber(unsignedLongLong: time.ticks),
@@ -185,9 +180,23 @@ extension Transport {
 }
 
 extension Transport {
-  enum Error: String, ErrorType {
-    case InvalidBarBeatTime
-    case NotPermitted
+  enum Error: ErrorMessageType {
+    case InvalidBarBeatTime (String)
+    case NotPermitted (String)
+
+    var name: String {
+      switch self {
+        case .InvalidBarBeatTime: return "InvalidBarBeatTime"
+        case .NotPermitted:       return "NotPermitted"
+      }
+    }
+
+    var reason: String {
+      switch self {
+        case .InvalidBarBeatTime(let reason): return reason
+        case .NotPermitted(let reason):       return reason
+      }
+    }
   }
 }
 

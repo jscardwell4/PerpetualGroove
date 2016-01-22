@@ -111,15 +111,17 @@ final class LogManager: MoonKit.LogManager {
     MIDIClock.defaultLogContext       = SequencerContext//  ∪ .Console
     Time.defaultLogContext     = SequencerContext//  ∪ .Console
 
-    MIDIPlayer.defaultLogContext      = SceneContext//  ∪ .Console
-    MIDIPlayerScene.defaultLogContext = SceneContext//  ∪ .Console
-    MIDINodeHistory.defaultLogContext = SceneContext//  ∪ .Console
-    MIDIPlayerNode.defaultLogContext  = SceneContext//  ∪ .Console
-    AddTool.defaultLogContext         = SceneContext//  ∪ .Console
-    RemoveTool.defaultLogContext      = SceneContext//  ∪ .Console
-    GeneratorTool.defaultLogContext   = SceneContext//  ∪ .Console
-    MIDINode.defaultLogContext        = SceneContext//  ∪ .Console
-    Trajectory.defaultLogContext       = SceneContext//  ∪ .Console
+    MIDIPlayer.defaultLogContext           = SceneContext//  ∪ .Console
+    MIDIPlayerScene.defaultLogContext      = SceneContext//  ∪ .Console
+    MIDINodeHistory.defaultLogContext      = SceneContext//  ∪ .Console
+    MIDIPlayerNode.defaultLogContext       = SceneContext//  ∪ .Console
+    AddTool.defaultLogContext              = SceneContext//  ∪ .Console
+    RemoveTool.defaultLogContext           = SceneContext//  ∪ .Console
+    GeneratorTool.defaultLogContext        = SceneContext//  ∪ .Console
+    MIDINode.defaultLogContext             = SceneContext  ∪ .Console
+    Trajectory.defaultLogContext           = SceneContext  ∪ .Console
+    MIDINodePath.defaultLogContext         = SceneContext  ∪ .Console
+    Segment.defaultLogContext              = SceneContext  ∪ .Console
 
     MIDIPlayerViewController.defaultLogContext     = UIContext//  ∪ .Console
     PurgatoryViewController.defaultLogContext      = UIContext//  ∪ .Console
@@ -182,6 +184,8 @@ extension GeneratorTool: Loggable {}
 extension MIDINode: Loggable {}
 extension Trajectory: Loggable {}
 extension SKNode: Nameable {}
+extension MIDINodePath: Loggable {}
+extension Segment: Loggable {}
 
 extension RootViewController: Loggable {}
 extension TransportViewController: Loggable {}

@@ -34,6 +34,10 @@ public func ╱(lhs: UInt, rhs: UInt) -> Fraction<Int> {
   return Fraction<Int>(Int(lhs), Int(rhs))
 }
 
+public func ╱(lhs: Int, rhs: Int) -> Fraction<Int> {
+  return Fraction<Int>(lhs, rhs)
+}
+
 
 /**
 Converts two fractions into equivalent fractions with a common denominator
@@ -170,6 +174,12 @@ public func ==<F:FractionType, I:SignedIntegerType>(lhs: I, rhs: Fraction<F>) ->
 extension Fraction { //: AbsoluteValuable {
   public static func abs(x: Fraction) -> Fraction {
     return Fraction(Swift.abs(x.numerator), Swift.abs(x.denominator))
+  }
+}
+
+extension Fraction: CustomPlaygroundQuickLookable {
+  public func customPlaygroundQuickLook() -> PlaygroundQuickLook {
+    return .Text("\(numerator)╱\(denominator)")
   }
 }
 

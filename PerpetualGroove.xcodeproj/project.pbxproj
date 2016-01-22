@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		C207458F1B8DF6D5000A06D4 /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = C207458E1B8DF6D5000A06D4 /* Time.swift */; };
 		C20827541C03B2A2004D68FC /* StandardChordPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20827531C03B2A2004D68FC /* StandardChordPattern.swift */; };
+		C20A10991C51332B00522FD7 /* Segment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20A10981C51332B00522FD7 /* Segment.swift */; };
+		C20A10A11C51552B00522FD7 /* BarBeatTimeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20A10A01C51552B00522FD7 /* BarBeatTimeTests.swift */; };
 		C21E44C11B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C21E44C01B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 */; };
 		C21E44C51B76546C00574BD2 /* AudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21E44C41B76546C00574BD2 /* AudioManager.swift */; };
 		C222E6C81BD2B78600DBBBDA /* FestivoLC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C222E6C71BD2B78600DBBBDA /* FestivoLC.framework */; };
@@ -133,6 +135,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		C20A10A31C51552B00522FD7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C2E043291B72F4DC005F0675 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C2E043301B72F4DC005F0675;
+			remoteInfo = PerpetualGroove;
+		};
 		C23B05971C0219560081AC6E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C2E043291B72F4DC005F0675 /* Project object */;
@@ -173,6 +182,10 @@
 		C207458C1B8CFB91000A06D4 /* test_morse_code_a.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = test_morse_code_a.mid; sourceTree = "<group>"; };
 		C207458E1B8DF6D5000A06D4 /* Time.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
 		C20827531C03B2A2004D68FC /* StandardChordPattern.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandardChordPattern.swift; sourceTree = "<group>"; };
+		C20A10981C51332B00522FD7 /* Segment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Segment.swift; sourceTree = "<group>"; };
+		C20A109E1C51552B00522FD7 /* BarBeatTimeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BarBeatTimeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C20A10A01C51552B00522FD7 /* BarBeatTimeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarBeatTimeTests.swift; sourceTree = "<group>"; };
+		C20A10A21C51552B00522FD7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C21E44C01B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SPYRO's Pure Oscillators.sf2"; path = "PerpetualGroove/SPYRO's Pure Oscillators.sf2"; sourceTree = "<group>"; };
 		C21E44C41B76546C00574BD2 /* AudioManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioManager.swift; sourceTree = "<group>"; };
 		C21E44C81B76739C00574BD2 /* sf2.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = sf2.playground; path = PerpetualGroove/sf2.playground; sourceTree = "<group>"; };
@@ -305,6 +318,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		C20A109B1C51552B00522FD7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C23B058F1C0219560081AC6E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -336,6 +356,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C20A109F1C51552B00522FD7 /* BarBeatTimeTests */ = {
+			isa = PBXGroup;
+			children = (
+				C20A10A01C51552B00522FD7 /* BarBeatTimeTests.swift */,
+				C20A10A21C51552B00522FD7 /* Info.plist */,
+			);
+			path = BarBeatTimeTests;
+			sourceTree = "<group>";
+		};
 		C23B05931C0219560081AC6E /* NoteChordTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -454,6 +483,7 @@
 				C2995C471BB8ABC70003AAB2 /* Trajectory.swift */,
 				C2670CCD1C46FEF6000F76F9 /* MIDIGenerator.swift */,
 				C2670CCF1C4704A2000F76F9 /* MIDINodeDispatch.swift */,
+				C20A10981C51332B00522FD7 /* Segment.swift */,
 			);
 			name = Scene;
 			sourceTree = "<group>";
@@ -586,6 +616,7 @@
 				C2E043331B72F4DC005F0675 /* PerpetualGroove */,
 				C23B05931C0219560081AC6E /* NoteChordTests */,
 				C284F7C91C49C8A8009C72A0 /* MIDINodePathTests */,
+				C20A109F1C51552B00522FD7 /* BarBeatTimeTests */,
 				C2E043321B72F4DC005F0675 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -596,6 +627,7 @@
 				C2E043311B72F4DC005F0675 /* Groove.app */,
 				C23B05921C0219560081AC6E /* NoteChordTests.xctest */,
 				C284F7C81C49C8A8009C72A0 /* MIDINodePathTests.xctest */,
+				C20A109E1C51552B00522FD7 /* BarBeatTimeTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -615,6 +647,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		C20A109D1C51552B00522FD7 /* BarBeatTimeTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C20A10A51C51552B00522FD7 /* Build configuration list for PBXNativeTarget "BarBeatTimeTests" */;
+			buildPhases = (
+				C20A109A1C51552B00522FD7 /* Sources */,
+				C20A109B1C51552B00522FD7 /* Frameworks */,
+				C20A109C1C51552B00522FD7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C20A10A41C51552B00522FD7 /* PBXTargetDependency */,
+			);
+			name = BarBeatTimeTests;
+			productName = BarBeatTimeTests;
+			productReference = C20A109E1C51552B00522FD7 /* BarBeatTimeTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		C23B05911C0219560081AC6E /* NoteChordTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C23B05991C0219560081AC6E /* Build configuration list for PBXNativeTarget "NoteChordTests" */;
@@ -679,6 +729,10 @@
 				LastUpgradeCheck = 0710;
 				ORGANIZATIONNAME = "Moondeer Studios";
 				TargetAttributes = {
+					C20A109D1C51552B00522FD7 = {
+						CreatedOnToolsVersion = 7.2;
+						TestTargetID = C2E043301B72F4DC005F0675;
+					};
 					C23B05911C0219560081AC6E = {
 						CreatedOnToolsVersion = 7.1.1;
 						TestTargetID = C2E043301B72F4DC005F0675;
@@ -720,11 +774,19 @@
 				C2E043301B72F4DC005F0675 /* PerpetualGroove */,
 				C23B05911C0219560081AC6E /* NoteChordTests */,
 				C284F7C71C49C8A8009C72A0 /* MIDINodePathTests */,
+				C20A109D1C51552B00522FD7 /* BarBeatTimeTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		C20A109C1C51552B00522FD7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C23B05901C0219560081AC6E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -771,6 +833,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		C20A109A1C51552B00522FD7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C20A10A11C51552B00522FD7 /* BarBeatTimeTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C23B058E1C0219560081AC6E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -864,6 +934,7 @@
 				C291C3EB1B91EDA700702AEA /* MIDIFileTrackChunk.swift in Sources */,
 				C22D93F11BADA24A00B04A2B /* MIDINodeHistory.swift in Sources */,
 				C2E043351B72F4DC005F0675 /* AppDelegate.swift in Sources */,
+				C20A10991C51332B00522FD7 /* Segment.swift in Sources */,
 				C2FEB0251C0F6183000BD1B7 /* GeneratorTool.swift in Sources */,
 				C24E83981C3EE0A300B4A16A /* MixerContainerViewController.swift in Sources */,
 				C2CF38CD1B7EBED30085B3D5 /* InstrumentTrack.swift in Sources */,
@@ -883,6 +954,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		C20A10A41C51552B00522FD7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C2E043301B72F4DC005F0675 /* PerpetualGroove */;
+			targetProxy = C20A10A31C51552B00522FD7 /* PBXContainerItemProxy */;
+		};
 		C23B05981C0219560081AC6E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = C2E043301B72F4DC005F0675 /* PerpetualGroove */;
@@ -947,6 +1023,32 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		C20A10A61C51552B00522FD7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = BarBeatTimeTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.BarBeatTimeTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
+			};
+			name = Debug;
+		};
+		C20A10A71C51552B00522FD7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = BarBeatTimeTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.BarBeatTimeTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
+			};
+			name = Release;
+		};
 		C23B059A1C0219560081AC6E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1129,6 +1231,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		C20A10A51C51552B00522FD7 /* Build configuration list for PBXNativeTarget "BarBeatTimeTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C20A10A61C51552B00522FD7 /* Debug */,
+				C20A10A71C51552B00522FD7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		C23B05991C0219560081AC6E /* Build configuration list for PBXNativeTarget "NoteChordTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -1145,6 +1255,7 @@
 				C284F7D01C49C8A8009C72A0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		C2E0432C1B72F4DC005F0675 /* Build configuration list for PBXProject "PerpetualGroove" */ = {
 			isa = XCConfigurationList;

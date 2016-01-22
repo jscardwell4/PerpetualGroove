@@ -22,12 +22,12 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 
   /** initialize */
   override class func initialize() {
-    globalBackgroundQueue.async {
+//    globalBackgroundQueue.async {
       if NSProcessInfo.processInfo().environment["XCInjectBundle"] == nil { LogManager.initialize() }
       Eveleth.registerFonts()
       Triump.registerFonts()
       FestivoLC.registerFonts()
-    }
+//    }
   }
 
   /**

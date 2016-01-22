@@ -54,6 +54,7 @@ final class Sequencer {
       }
       initialized = true
       logDebug("Sequencer initialized")
+      print(transport.clock)
     }
   }
 
@@ -83,7 +84,8 @@ final class Sequencer {
 
   // MARK: - Time
 
-  static let partsPerQuarter = 480
+  static let partsPerQuarter: UInt = 480
+  static var beatsPerBar: UInt { return UInt(timeSignature.beatsPerBar) }
 
   enum TransportAssignment: Equatable {
     case Primary(Transport)
@@ -152,6 +154,7 @@ final class Sequencer {
   /** The tempo used by the MIDI clock in beats per minute */
   // TODO: Need to make sure the current tempo is set at the beginning of a new sequence
   static var tempo: Double { get { return transport.tempo } set { setTempo(newValue) } }
+  static var beatsPerMinute: UInt = 120 { didSet { tempo = Double(beatsPerMinute) } }
 
   /**
   setTempo:automated:

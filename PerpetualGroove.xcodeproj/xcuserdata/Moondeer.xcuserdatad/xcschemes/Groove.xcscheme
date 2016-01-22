@@ -48,6 +48,16 @@
                ReferencedContainer = "container:PerpetualGroove.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "C20A109D1C51552B00522FD7"
+               BuildableName = "BarBeatTimeTests.xctest"
+               BlueprintName = "BarBeatTimeTests"
+               ReferencedContainer = "container:PerpetualGroove.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference

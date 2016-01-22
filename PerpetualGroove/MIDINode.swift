@@ -137,6 +137,7 @@ final class MIDINode: SKSpriteNode {
 //    }
 
     currentSegment = currentSegment.successor
+    print(currentSegment)
     play()
     runAction(action(.Move))
   }
@@ -166,10 +167,14 @@ final class MIDINode: SKSpriteNode {
   */
   private func didBeginJogging(notification: NSNotification) {
     guard state ∌ .Jogging else { fatalError("internal inconsistency, should not already have `Jogging` flag set") }
+    guard let time = notification.time else { fatalError("notification missing time") }
+    jogTime = time
 //    pushBreadcrumb() // Make sure the latest position gets added to history before jogging begins
     state ⊻= .Jogging
     removeActionForKey(Action.Key.Move.rawValue)
   }
+
+  private var jogTime: BarBeatTime?
 
   /**
   didJog:
@@ -178,21 +183,48 @@ final class MIDINode: SKSpriteNode {
   */
   private func didJog(notification: NSNotification) {
     guard state ∋ .Jogging else { fatalError("internal inconsistency, should have `Jogging` flag set") }
-    guard let jogTime = notification.jogTime?.doubleValue else {
-      logError("notication does not contain jog time")
-      return
-    }
-    guard let location = path.locationForTime(jogTime) else {
-      logError("failed to obtain location for time '\(jogTime)'")
-      return
-    }
 
-    runAction(SKAction.moveTo(location, duration: abs(Sequencer.transport.time.doubleValue - jogTime)))
-//    guard let snapshot = history.snapshotForTicks(jogTime.ticks) else {
-//      logError("history does not contain snapshot for jog time '\(jogTime.rawValue)'")
+    guard let jogTime = notification.jogTime else { fatalError("notification does not contain ticks") }
+
+    if let previousJogTime = self.jogTime, location = path.locationForTime(jogTime) {
+      print("previousJogTime: \(previousJogTime), jogTime: \(jogTime), position: \(position), location: \(location)")
+      position = location
+      self.jogTime = jogTime
+      runAction(SKAction.moveTo(location, duration: abs(previousJogTime.seconds - jogTime.seconds)))
+    }
+//    guard let jogTime = notification.jogTime?.doubleValue else {
+//      logError("notication does not contain jog time")
 //      return
 //    }
-//    animateToSnapshot(snapshot)
+//
+//    let currentTime = Sequencer.time.doubleValue
+//
+//    print("before jogging…")
+//    print("currentTime: \(currentTime)", "position: \(position)", "jogTime: \(jogTime)", "currentSegment: \(currentSegment)", "\n", separator: "\n")
+//
+//    if currentSegment.interval ∌ jogTime, let segment = path.segmentForTime(jogTime) { currentSegment = segment }
+//
+//    if let location = currentSegment.locationForTime(jogTime) { position = location }
+//
+//    print("after jogging…")
+//    print("currentTime: \(currentTime)", "position: \(position)", "jogTime: \(jogTime)", "currentSegment: \(currentSegment)", "\n", separator: "\n")
+
+//    let location = currentSegment.locationForTime(jogTime)
+
+//    if location == nil && currentSegment.startTime > jogTime, let previousSegment = currentSegment.predessor {
+//      currentSegment = previousSegment
+//      logDebug("current segment ➞ previous segment (\(currentSegment))")
+//      location = currentSegment.locationForTime(jogTime)
+//    } else if location == nil && currentSegment.endTime <= jogTime {
+//      currentSegment = currentSegment.successor
+//      logDebug("current segment ➞ next segment (\(currentSegment))")
+//      location = currentSegment.locationForTime(jogTime)
+//    }
+
+//    if location != nil {
+//      logDebug("position \(position) ➞ \(location!)")
+//      position = location!
+//    }
   }
 
   /**
@@ -203,6 +235,8 @@ final class MIDINode: SKSpriteNode {
   private func didEndJogging(notification: NSNotification) {
     guard state ∋ .Jogging else { fatalError("internal inconsistency, should have `Jogging` flag set") }
     state ⊻= .Jogging
+    jogTime = nil
+    currentSegment = path.segmentForTime(Sequencer.time.barBeatTime) ?? currentSegment
     guard state ∌ .Paused else { return }
     runAction(action(.Move))
   }
@@ -311,8 +345,9 @@ final class MIDINode: SKSpriteNode {
     guard let playerSize = MIDIPlayer.playerNode?.size else {
       fatalError("creating node with nil value for `MIDIPlayer.playerNode`")
     }
-    path = MIDINodePath(trajectory: trajectory, playerSize: playerSize, time: Sequencer.transport.time.doubleValue)
+    path = MIDINodePath(trajectory: trajectory, playerSize: playerSize, time: Sequencer.transport.time.barBeatTime)
     currentSegment = path.initialSegment
+    print(currentSegment)
 
     super.init(texture: MIDINode.texture, color: dispatch.color.value, size: MIDINode.texture.size() * 0.75)
 
@@ -354,7 +389,7 @@ final class MIDINode: SKSpriteNode {
 
 
   let path: MIDINodePath
-  private unowned var currentSegment: MIDINodePath.Segment
+  private unowned var currentSegment: Segment
 //  private var trajectory: Trajectory
 
   /**

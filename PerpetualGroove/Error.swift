@@ -58,6 +58,7 @@ struct MIDIFileError: ExtendedErrorType {
     set { _reason = newValue }
   }
   var type: Type = .Unspecified
+  var name: String { return type.rawValue }
   init() {}
 
   init(type: Type,  line: UInt = __LINE__, function: String = __FUNCTION__, file: String = __FILE__, reason: String) {

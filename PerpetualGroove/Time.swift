@@ -35,24 +35,17 @@ final class Time {
 
   // MARK: - Keeping the time
 
-  private let queue: NSOperationQueue = { let q = NSOperationQueue(); q.maxConcurrentOperationCount = 1; return q }()
-
-  /** The resolution used to divide a beat into subbeats */
-//  var partsPerQuarter: UInt16 {
-//    get { return time.subbeatDivisor }
-//    set {
-//      time.subbeatDivisor = newValue
-//      let n = clockCount.numerator % Float(newValue)
-//      clockCount = n╱Float(newValue)
-//      beatInterval = Fraction((Float(newValue) * Float(0.25)), Float(newValue))
-//    }
-//  }
+  private let queue: NSOperationQueue = {
+    let q = NSOperationQueue()
+    q.maxConcurrentOperationCount = 1
+    return q
+  }()
 
   /// Valid beat range for the current settings
-  private(set) var validBeats: Range<Int>
+  private(set) var validBeats: Range<UInt>
 
   /// Valid subbeat range for the current settings
-  private(set) var validSubbeats: Range<Int>
+  private(set) var validSubbeats: Range<UInt>
 
   /**
   Whether the specified `time` holds a valid representation
@@ -66,7 +59,9 @@ final class Time {
   }
 
   /// The musical representation of the current time
-  private var _barBeatTime: BarBeatTime = .start { didSet { if Sequencer.playing { invokeCallbacksForTime(barBeatTime) } } }
+  private var _barBeatTime: BarBeatTime = .start1 {
+    didSet { if Sequencer.playing { invokeCallbacksForTime(barBeatTime) } }
+  }
 
   /** Synchronized access to the musical representation of the current time */
   var barBeatTime: BarBeatTime {
@@ -138,10 +133,10 @@ final class Time {
   }
 
   /**
-  Invokes the blocks registered in `callbacks` for the specified time and any blocks in `predicatedCallbacks` 
-  whose predicate evaluates to `true`
+   Invokes the blocks registered in `callbacks` for the specified time and any blocks in
+   `predicatedCallbacks` whose predicate evaluates to `true`
 
-  - parameter t: BarBeatTime
+   - parameter t: BarBeatTime
   */
   private func invokeCallbacksForTime(t: BarBeatTime) {
     guard checkCallbacks else { return }
@@ -167,9 +162,13 @@ final class Time {
   - parameter obj: AnyObject? = nil
   */
   func registerCallback<S:SequenceType
-    where S.Generator.Element == BarBeatTime>(callback: Callback, forTimes times: S, forObject obj: AnyObject? = nil)
+    where S.Generator.Element == BarBeatTime>(callback: Callback,
+                                     forTimes times: S,
+                                    forObject obj: AnyObject? = nil)
   {
-    let value: (Callback, ObjectIdentifier?) = obj != nil ? (callback, ObjectIdentifier(obj!)) : (callback, nil)
+    let value: (Callback, ObjectIdentifier?) = obj != nil
+                                                 ? (callback, ObjectIdentifier(obj!))
+                                                 : (callback, nil)
     times.forEach { var bag = callbacks[$0] ?? []; bag.append(value); callbacks[$0] = bag }
   }
 
@@ -179,8 +178,11 @@ final class Time {
   - parameter time: BarBeatTime
   */
   func removeCallbackForTime(time: BarBeatTime, forObject obj: AnyObject? = nil) {
-    if let obj = obj { callbacks[time] = callbacks[time]?.filter({[identifier = ObjectIdentifier(obj)] in $1 != identifier}) }
-    else { callbacks[time] = nil }
+    if let obj = obj {
+      callbacks[time] = callbacks[time]?.filter {
+        [identifier = ObjectIdentifier(obj)] in $1 != identifier
+      }
+    } else { callbacks[time] = nil }
   }
 
   /**
@@ -205,7 +207,7 @@ final class Time {
   // MARK: - Measurements and conversions
 
   /// Holds a bar beat time value that can be used later to measure the amount of time elapsed
-  private var marker: BarBeatTime = .start
+  private var marker: BarBeatTime = .start1
 
   /** Updates `marker` with current `time` */
   func setMarker() { marker = barBeatTime }
@@ -238,11 +240,11 @@ final class Time {
     return result
   }
 
-  var bar:         Int           { return barBeatTime.bar         }  /// Accessor for `time.bar`
-  var beat:        Int           { return barBeatTime.beat        }  /// Accessor for `time.beat`
-  var subbeat:     Int           { return barBeatTime.subbeat     }  /// Accessor for `time.subbeat`
-  var ticks:       MIDITimeStamp { return barBeatTime.ticks       }  /// Accessor for `time.ticks`
-  var doubleValue: Double        { return barBeatTime.doubleValue }  /// Accessor for `time.doubleValue`
+  var bar:     Int            { return barBeatTime.bar     }  /// Accessor for `time.bar`
+  var beat:    UInt           { return barBeatTime.beat    }  /// Accessor for `time.beat`
+  var subbeat: UInt           { return barBeatTime.subbeat }  /// Accessor for `time.subbeat`
+  var ticks:   MIDITimeStamp  { return barBeatTime.ticks   }  /// Accessor for `time.ticks`
+  var seconds: NSTimeInterval { return barBeatTime.seconds }  /// Accessor for `time.doubleValue`
 
   let clockName: String
 
@@ -266,7 +268,7 @@ final class Time {
     let ppq = Sequencer.partsPerQuarter
     clockCount = 0╱Float(ppq)
     beatInterval = (Float(ppq) * Float(0.25))╱Float(ppq)
-    validBeats = 1 ... Sequencer.timeSignature.beatsPerBar
+    validBeats = 1 ... Sequencer.beatsPerBar
     validSubbeats = 1 ... ppq
     queue.name = name
 
@@ -290,7 +292,7 @@ final class Time {
     queue.addOperationWithBlock  {
       [unowned self] in
       let ppq = self._barBeatTime.subbeatDivisor
-      self._barBeatTime = .start
+      self._barBeatTime = .start1
       objc_sync_enter(self)
       defer { objc_sync_exit(self); completion?() }
       self.clockCount = 0╱Float(ppq)

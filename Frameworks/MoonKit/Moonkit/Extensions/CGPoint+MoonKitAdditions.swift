@@ -89,9 +89,16 @@ public func *(lhs: CGPoint, rhs: CGFloat) -> CGPoint { return CGPoint(x: lhs.x *
 public func *(lhs: CGPoint, rhs: CGFloatable) -> CGPoint {
   return CGPoint(x: lhs.x * rhs.CGFloatValue, y: lhs.y * rhs.CGFloatValue)
 }
+public func *(lhs: CGPoint, rhs: (CGFloat, CGFloat)) -> CGPoint { return CGPoint(x: lhs.x * rhs.0, y: lhs.y * rhs.1) }
+public func *(lhs: CGPoint, rhs: (CGFloatable, CGFloatable)) -> CGPoint {
+  return CGPoint(x: lhs.x * rhs.0.CGFloatValue, y: lhs.y * rhs.1.CGFloatValue)
+}
+
 
 public func *=(inout lhs: CGPoint, rhs: CGFloat) { lhs = lhs * rhs }
 public func *=(inout lhs: CGPoint, rhs: CGFloatable) { lhs = lhs * rhs }
+public func *=(inout lhs: CGPoint, rhs: (CGFloat, CGFloat)) { lhs = lhs * rhs }
+public func *=(inout lhs: CGPoint, rhs: (CGFloatable, CGFloatable)) { lhs = lhs * rhs }
 
 extension CGPoint: JSONValueConvertible {
   public var jsonValue: JSONValue {

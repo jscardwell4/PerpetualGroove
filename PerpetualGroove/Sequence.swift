@@ -18,7 +18,7 @@ final class Sequence {
 
   // MARK: - Managing tracks
   
-  var sequenceEnd: BarBeatTime { return tracks.map({$0.endOfTrack}).maxElement() ?? .start }
+  var sequenceEnd: BarBeatTime { return tracks.map({$0.endOfTrack}).maxElement() ?? .start1 }
 
   private(set) var instrumentTracks: [InstrumentTrack] = []
   private var _soloTracks: [Weak<InstrumentTrack>] = []

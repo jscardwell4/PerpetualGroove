@@ -13,8 +13,8 @@ import MoonKit
 struct GrooveFile {
   var source: NSURL?
   var tracks: [GrooveTrack] = []
-  var tempoChanges = ObjectJSONValue([BarBeatTime.start.rawValue: 120.0.jsonValue])
-  var endOfFile: BarBeatTime = .start
+  var tempoChanges = ObjectJSONValue([BarBeatTime.start1.rawValue: 120.0.jsonValue])
+  var endOfFile: BarBeatTime = .start1
 
   init(sequence: Sequence) {
     source = sequence.document.fileURL

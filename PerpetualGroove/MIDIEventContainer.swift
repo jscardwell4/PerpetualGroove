@@ -77,7 +77,7 @@ struct MIDIEventContainer: CollectionType, Indexable, MutableIndexable {
     })
   }
 
-  var minTime: BarBeatTime { return events.keys.minElement() ?? .start              }
+  var minTime: BarBeatTime { return events.keys.minElement() ?? .start1              }
   var maxTime: BarBeatTime { return events.keys.maxElement() ?? Sequencer.time.barBeatTime }
 
   private var events: [BarBeatTime:EventBag] = [:] {

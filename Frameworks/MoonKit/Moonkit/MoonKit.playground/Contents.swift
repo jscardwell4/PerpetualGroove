@@ -1,24 +1,25 @@
 import Foundation
 import MoonKit
 
-/*
-				16
-		4				36
-	1		9		25	49
-*/
+let x1:  CGFloat =  143.2811126708984
+let y1:  CGFloat =  206.8070373535156
+let dx: CGFloat =  144.9763520779608
+let dy: CGFloat = -223.4146814806358
 
-let tree: Tree<Int> = [1, 4, 9, 16, 25, 36, 49]
+let m = dy/dx
 
-print(tree.debugDescription)
+// y2 - y1 = m * (x2 - x1)
+var x2: CGFloat = 426
+var y2 = m * (x2 - x1) + y1
 
-var result = tree.find({$0 < 25}, {$0 == 25})
-result
-print("\n")
-result = tree.find({$0 < 20}, {$0 == 20})
-result
-print("\n")
-result = tree.findNearestNotGreaterThan({$0 < 20}, {$0 == 20})
-result
-print("\n")
-result = tree.findNearestNotLessThan({$0 < 20}, {$0 == 20})
-result
+y2 = 21
+x2 = (y2 - y1) / m + x1
+
+let p1 = CGPoint(x: x1, y: y1)
+let p2 = CGPoint(x: x2, y: y2)
+let d = p1.distanceTo(p2)
+let modifier: CGFloat = 1 / 100
+d / m * modifier
+p2.distanceTo(p1)
+
+abs(NSTimeInterval(p1.distanceTo(p2) / m * 0.01))

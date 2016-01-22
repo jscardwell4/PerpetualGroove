@@ -14,6 +14,7 @@ public struct RegularExpression {
   // MARK: - Stored properties
 
   public let regex: NSRegularExpression?
+  private let namedCaptureGroups: [String:Int]
 
   // MARK: - Computed properties
 
@@ -39,6 +40,14 @@ public struct RegularExpression {
       return fullCapture.string
     }
     public let matchedString: String
+    public let namedCaptureGroups: [String:Int]
+
+    public subscript(name: String) -> Capture? {
+      guard let idx = namedCaptureGroups[name], capture = captures[idx] else { return nil }
+      return capture
+    }
+
+    public subscript(idx: Int) -> Capture? { return captures[idx] }
 
     public var description: String { return "{\n\t" + "\n\t".join(compressed(captures).map { $0.description }) + "\n}" }
 
@@ -48,9 +57,10 @@ public struct RegularExpression {
     - parameter result: NSTextCheckingResult
     - parameter string: String The string from which `result` was derived
     */
-    public init?(result: NSTextCheckingResult, string: String) {
+    public init?(result: NSTextCheckingResult, string: String, namedCaptureGroups: [String:Int]) {
       guard result.range.location != NSNotFound else { return nil }
       matchedString = string
+      self.namedCaptureGroups = namedCaptureGroups
       captures = (0 ..< result.numberOfRanges).map { Capture(group: $0, range: result.rangeAtIndex($0), string: string) }
     }
   }
@@ -94,12 +104,24 @@ public struct RegularExpression {
   - parameter pattern: String
   - parameter options: NSRegularExpressionOptions = nil
   */
-  public init(pattern: String, options: NSRegularExpressionOptions = NSRegularExpressionOptions(rawValue: 0)) {
-    do {
-      regex = try NSRegularExpression(pattern: pattern, options: options)
-    } catch  {
-      regex = nil
+  public init(pattern: String, options: NSRegularExpressionOptions) {
+    regex = try? NSRegularExpression(pattern: pattern, options: options)
+    guard regex != nil else { namedCaptureGroups = [:]; return }
+    let re = RegularExpression(pattern: "(?<![\\\\\\[])[(](?:\\?<([^>]+)>)?(?![?]:)")
+    let matches = re.match(pattern)
+    var namedCaptures: [String:Int] = [:]
+    for (i, name) in matches.map({$0.captures[1]?.string})
+                            .enumerate()
+                            .flatMap({$0.1 != nil ? ($0.0, $0.1!) : nil})
+    {
+      namedCaptures[name] = i + 1
     }
+    namedCaptureGroups = namedCaptures
+  }
+
+  private init(pattern: String) {
+    regex = try? NSRegularExpression(pattern: pattern, options: [])
+    namedCaptureGroups = [:]
   }
 
   // MARK: - Private helpers
@@ -172,7 +194,7 @@ public struct RegularExpression {
   public func match(s: String, anchored a: Bool = false, range r: Range<String.Index>? = nil) -> [Match] {
     guard let regex = regex else { return [] }
     return regex.matchesInString(s, options: options(anchored: a), range: range(r, overString: s)).flatMap {
-      Match(result: $0, string: s)
+      Match(result: $0, string: s, namedCaptureGroups: namedCaptureGroups)
     }
   }
 
@@ -246,7 +268,9 @@ public struct RegularExpression {
       guard let result = result else { return }
 
       var shouldStop = false
-      if let match = Match(result: result, string: s) { block(match, &shouldStop) }
+      if let match = Match(result: result, string: s, namedCaptureGroups: self.namedCaptureGroups) {
+        block(match, &shouldStop)
+      }
       if shouldStop { stop.memory = true }
     }
 
@@ -324,9 +348,9 @@ public struct RegularExpression {
 
 // MARK: - StringLiteralConvertible
 extension RegularExpression: StringLiteralConvertible {
-  public init(stringLiteral value: String) { self = RegularExpression(pattern: value) }
-  public init(extendedGraphemeClusterLiteral value: String) { self = RegularExpression(pattern: value) }
-  public init(unicodeScalarLiteral value: String) { self = RegularExpression(pattern: value) }
+  public init(stringLiteral value: String) { self = RegularExpression(pattern: value, options: []) }
+  public init(extendedGraphemeClusterLiteral value: String) { self = RegularExpression(pattern: value, options: []) }
+  public init(unicodeScalarLiteral value: String) { self = RegularExpression(pattern: value, options: []) }
 }
 
 // MARK: - The pattern matching operator
@@ -341,4 +365,4 @@ public func ~=(lhs: RegularExpression, rhs: String) -> Bool { return lhs.pattern
 prefix operator ~/ {}
 
 /** func for an operator that creates a regular expression from a string */
-public prefix func ~/(pattern: String) -> RegularExpression { return RegularExpression(pattern: pattern) }
+public prefix func ~/(pattern: String) -> RegularExpression { return RegularExpression(pattern: pattern, options: []) }
