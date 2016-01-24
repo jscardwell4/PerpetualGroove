@@ -18,7 +18,7 @@ final class Segment: Equatable, Comparable, CustomStringConvertible {
 
   var startTime: BarBeatTime { return timeInterval.start }
   var endTime: BarBeatTime { return timeInterval.end }
-  var totalTime: BarBeatTime { return timeInterval.length }
+  var totalTime: BarBeatTime { return timeInterval.end - timeInterval.start }
 
   var startTicks: MIDITimeStamp { return tickInterval.start }
   var endTicks: MIDITimeStamp { return tickInterval.end }
@@ -53,7 +53,12 @@ final class Segment: Equatable, Comparable, CustomStringConvertible {
    */
   func locationForTime(time: BarBeatTime) -> CGPoint? {
     guard timeInterval ∋ time else { return nil }
-    return trajectory.pointAtTime(time.seconds - startTime.seconds)
+    let 𝝙ticks = CGFloat(time.ticks - startTime.ticks)
+    let ratio = 𝝙ticks / CGFloat(tickInterval.length)
+    var result = trajectory.p
+    result.x += ratio * (endLocation.x - result.x)
+    result.y += ratio * (endLocation.y - result.y)
+    return result
   }
 
   /**

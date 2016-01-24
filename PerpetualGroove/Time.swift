@@ -42,10 +42,10 @@ final class Time {
   }()
 
   /// Valid beat range for the current settings
-  private(set) var validBeats: Range<UInt>
+//  private(set) var validBeats: Range<UInt>
 
   /// Valid subbeat range for the current settings
-  private(set) var validSubbeats: Range<UInt>
+//  private(set) var validSubbeats: Range<UInt>
 
   /**
   Whether the specified `time` holds a valid representation
@@ -54,9 +54,9 @@ final class Time {
 
   - returns: Bool
   */
-  func isValidTime(time: BarBeatTime) -> Bool {
-    return validBeats ∋ time.beat && validSubbeats ∋ time.subbeat && time.subbeatDivisor == Sequencer.partsPerQuarter
-  }
+//  func isValidTime(time: BarBeatTime) -> Bool {
+//    return validBeats ∋ time.beat && validSubbeats ∋ time.subbeat && time.subbeatDivisor == Sequencer.partsPerQuarter
+//  }
 
   /// The musical representation of the current time
   private var _barBeatTime: BarBeatTime = .start1 {
@@ -66,36 +66,37 @@ final class Time {
   /** Synchronized access to the musical representation of the current time */
   var barBeatTime: BarBeatTime {
     get { objc_sync_enter(self); defer { objc_sync_exit(self) }; return _barBeatTime }
-    set { objc_sync_enter(self); defer { objc_sync_exit(self) }; guard isValidTime(newValue) else { return }; _barBeatTime = newValue }
+    set { objc_sync_enter(self); defer { objc_sync_exit(self) }; /*guard isValidTime(newValue) else { return };*/ _barBeatTime = newValue }
   }
 
   /** The portion of `clockCount` that constitutes a beat */
-  private var beatInterval: Fraction<Float>
+//  private var beatInterval: Fraction<Float>
 
   /** Tracks the current subdivision of a beat, incrementing `time` as it updates */
-  private var clockCount: Fraction<Float>
+//  private var clockCount: Fraction<Float>
 
   /** incrementClock */
   private func incrementClock() {
     objc_sync_enter(self)
     defer { objc_sync_exit(self) }
 
-    var updatedTime = barBeatTime
-
-    clockCount.numerator += 1
-    if clockCount == 1 {
-      clockCount.numerator = 0
-      updatedTime.bar++
-      updatedTime.beat = 1
-      updatedTime.subbeat = 1
-    } else if clockCount % beatInterval == 0 {
-      updatedTime.beat++
-      updatedTime.subbeat = 1
-    } else {
-      updatedTime.subbeat++
-    }
-
-    barBeatTime = updatedTime
+    barBeatTime = barBeatTime.successor()
+//    var updatedTime = barBeatTime
+//
+//    clockCount.numerator += 1
+//    if clockCount == 1 {
+//      clockCount.numerator = 0
+//      updatedTime.bar++
+//      updatedTime.beat = 1
+//      updatedTime.subbeat = 1
+//    } else if clockCount % beatInterval == 0 {
+//      updatedTime.beat++
+//      updatedTime.subbeat = 1
+//    } else {
+//      updatedTime.subbeat++
+//    }
+//
+//    barBeatTime = updatedTime
   }
 
   // MARK: - Time-triggered callbacks
@@ -207,38 +208,38 @@ final class Time {
   // MARK: - Measurements and conversions
 
   /// Holds a bar beat time value that can be used later to measure the amount of time elapsed
-  private var marker: BarBeatTime = .start1
+//  private var marker: BarBeatTime = .start1
 
   /** Updates `marker` with current `time` */
-  func setMarker() { marker = barBeatTime }
+//  func setMarker() { marker = barBeatTime }
 
   /// The amount of time elapsed since `marker`
-  var timeSinceMarker: BarBeatTime {
-    var t = barBeatTime
-    var result = BarBeatTime()
-    if t.subbeatDivisor != marker.subbeatDivisor {
-      let divisor = max(t.subbeatDivisor, marker.subbeatDivisor)
-      t.subbeat *= divisor / t.subbeatDivisor
-      t.subbeatDivisor = divisor
-      marker.subbeat *= divisor / marker.subbeatDivisor
-      marker.subbeatDivisor = divisor
-      result.subbeatDivisor = divisor
-    }
-
-    if t.subbeat < marker.subbeat {
-      t.subbeat += t.subbeatDivisor
-      t.beat -= 1
-    }
-    result.subbeat = t.subbeat - marker.subbeat
-
-    if t.beat < marker.beat {
-      t.beat += 4
-      t.bar -= 1
-    }
-    result.beat = t.beat - marker.beat
-    result.bar = t.bar - marker.bar
-    return result
-  }
+//  var timeSinceMarker: BarBeatTime {
+//    var t = barBeatTime
+//    var result = BarBeatTime()
+//    if t.subbeatDivisor != marker.subbeatDivisor {
+//      let divisor = max(t.subbeatDivisor, marker.subbeatDivisor)
+//      t.subbeat *= divisor / t.subbeatDivisor
+//      t.subbeatDivisor = divisor
+//      marker.subbeat *= divisor / marker.subbeatDivisor
+//      marker.subbeatDivisor = divisor
+//      result.subbeatDivisor = divisor
+//    }
+//
+//    if t.subbeat < marker.subbeat {
+//      t.subbeat += t.subbeatDivisor
+//      t.beat -= 1
+//    }
+//    result.subbeat = t.subbeat - marker.subbeat
+//
+//    if t.beat < marker.beat {
+//      t.beat += 4
+//      t.bar -= 1
+//    }
+//    result.beat = t.beat - marker.beat
+//    result.bar = t.bar - marker.bar
+//    return result
+//  }
 
   var bar:     Int            { return barBeatTime.bar     }  /// Accessor for `time.bar`
   var beat:    UInt           { return barBeatTime.beat    }  /// Accessor for `time.beat`
@@ -265,11 +266,11 @@ final class Time {
     guard unmanagedName != nil else { fatalError("Endpoint should have been given a name") }
     clockName = unmanagedName!.takeUnretainedValue() as String
 
-    let ppq = Sequencer.partsPerQuarter
-    clockCount = 0╱Float(ppq)
-    beatInterval = (Float(ppq) * Float(0.25))╱Float(ppq)
-    validBeats = 1 ... Sequencer.beatsPerBar
-    validSubbeats = 1 ... ppq
+//    let ppq = Sequencer.partsPerQuarter
+//    clockCount = 0╱Float(ppq)
+//    beatInterval = (Float(ppq) * Float(0.25))╱Float(ppq)
+//    validBeats = 1 ... Sequencer.beatsPerBar
+//    validSubbeats = 1 ... ppq
     queue.name = name
 
     do {
@@ -288,14 +289,14 @@ final class Time {
   - parameter completion: (() -> Void)? = nil
   */
   func reset(completion: (() -> Void)? = nil) {
-    logDebug("time ➞ 1:1.1╱\(_barBeatTime.subbeatDivisor); clockCount ➞ 0╱\(_barBeatTime.subbeatDivisor)")
+//    logDebug("time ➞ 1:1.1╱\(_barBeatTime.subbeatDivisor); clockCount ➞ 0╱\(_barBeatTime.subbeatDivisor)")
     queue.addOperationWithBlock  {
       [unowned self] in
-      let ppq = self._barBeatTime.subbeatDivisor
+//      let ppq = self._barBeatTime.subbeatDivisor
       self._barBeatTime = .start1
       objc_sync_enter(self)
       defer { objc_sync_exit(self); completion?() }
-      self.clockCount = 0╱Float(ppq)
+//      self.clockCount = 0╱Float(ppq)
     }
   }
 

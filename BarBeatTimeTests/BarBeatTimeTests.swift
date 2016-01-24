@@ -7,6 +7,7 @@
 //
 
 import XCTest
+import MoonKit
 @testable import Groove
 
 final class BarBeatTimeTests: XCTestCase {
@@ -146,5 +147,11 @@ final class BarBeatTimeTests: XCTestCase {
     let time4 = BarBeatTime(tickValue: 3790, beatsPerBar: 4, subbeatDivisor: 480, beatsPerMinute: 120, base: .One)
     XCTAssertEqual(time4, time1)
     XCTAssertEqual(time4, time2)
+  }
+
+  func testIntervals() {
+    let time: BarBeatTime = "8:3/4.478/480@120₀"
+    let interval: HalfOpenInterval<BarBeatTime> = "9:3/4.310@120₀" ..< "10:2/4.30/480@120₀"
+    XCTAssert(interval ∌ time)
   }
 }

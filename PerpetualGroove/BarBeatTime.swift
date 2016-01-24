@@ -265,16 +265,19 @@ struct BarBeatTime {
     let subbeat = MIDITimeStamp(max(Int(self.subbeat) - base.rawValue, 0))
     return (bar * MIDITimeStamp(beatsPerBar) + beat) * MIDITimeStamp(subbeatDivisor) + subbeat
   }
-}
 
-// MARK: - CustomStringConvertible
-extension BarBeatTime: CustomStringConvertible {
-  var description: String {
+  var display: String {
     let barString = String(bar, radix: 10, pad: 3)
     let beatString = String(beat)
     let subbeatString = String(subbeat, radix: 10, pad: String(subbeatDivisor).utf8.count)
     return "\(barString):\(beatString).\(subbeatString)"
   }
+
+}
+
+// MARK: - CustomStringConvertible
+extension BarBeatTime: CustomStringConvertible {
+  var description: String { return display }
 }
 
 extension BarBeatTime: CustomPlaygroundQuickLookable {
@@ -283,7 +286,7 @@ extension BarBeatTime: CustomPlaygroundQuickLookable {
 
 // MARK: - CustomDebugStringConvertible
 extension BarBeatTime: CustomDebugStringConvertible {
-  var debugDescription: String { var result = ""; dump(self, &result); return result }
+  var debugDescription: String { return rawValue }
 }
 
 // MARK: - Hashable

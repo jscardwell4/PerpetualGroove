@@ -117,8 +117,6 @@ final class MIDINode: SKSpriteNode {
     switch key {
       case Action.Key.Play.rawValue where actionForKey(key) != nil:
         sendNoteOff()
-//      case Action.Key.Move.rawValue where actionForKey(key) != nil:
-//        pushBreadcrumb()
       default: break
     }
     super.removeActionForKey(key)
@@ -126,19 +124,8 @@ final class MIDINode: SKSpriteNode {
 
   /** didMove */
   private func didMove() {
-//    guard let (minX, maxX, minY, maxY) = minMaxValues else { return }
-//
-//    trajectory.p = position
-//
-//    switch position.unpack {
-//      case (minX, _), (maxX, _): trajectory.dx *= -1
-//      case (_, minY), (_, maxY): trajectory.dy *= -1
-//      default: break
-//    }
-
-    currentSegment = currentSegment.successor
-    print(currentSegment)
     play()
+    currentSegment = currentSegment.successor
     runAction(action(.Move))
   }
 
@@ -149,8 +136,6 @@ final class MIDINode: SKSpriteNode {
   var edges: MIDIPlayerNode.Edges = .All {
     didSet { physicsBody?.contactTestBitMask = edges.rawValue }
   }
-
-  private var previousVelocity: CGVector?
 
   // MARK: Listening for Sequencer notifications
 
@@ -167,14 +152,9 @@ final class MIDINode: SKSpriteNode {
   */
   private func didBeginJogging(notification: NSNotification) {
     guard state ∌ .Jogging else { fatalError("internal inconsistency, should not already have `Jogging` flag set") }
-    guard let time = notification.time else { fatalError("notification missing time") }
-    jogTime = time
-//    pushBreadcrumb() // Make sure the latest position gets added to history before jogging begins
     state ⊻= .Jogging
     removeActionForKey(Action.Key.Move.rawValue)
   }
-
-  private var jogTime: BarBeatTime?
 
   /**
   didJog:
@@ -186,45 +166,7 @@ final class MIDINode: SKSpriteNode {
 
     guard let jogTime = notification.jogTime else { fatalError("notification does not contain ticks") }
 
-    if let previousJogTime = self.jogTime, location = path.locationForTime(jogTime) {
-      print("previousJogTime: \(previousJogTime), jogTime: \(jogTime), position: \(position), location: \(location)")
-      position = location
-      self.jogTime = jogTime
-      runAction(SKAction.moveTo(location, duration: abs(previousJogTime.seconds - jogTime.seconds)))
-    }
-//    guard let jogTime = notification.jogTime?.doubleValue else {
-//      logError("notication does not contain jog time")
-//      return
-//    }
-//
-//    let currentTime = Sequencer.time.doubleValue
-//
-//    print("before jogging…")
-//    print("currentTime: \(currentTime)", "position: \(position)", "jogTime: \(jogTime)", "currentSegment: \(currentSegment)", "\n", separator: "\n")
-//
-//    if currentSegment.interval ∌ jogTime, let segment = path.segmentForTime(jogTime) { currentSegment = segment }
-//
-//    if let location = currentSegment.locationForTime(jogTime) { position = location }
-//
-//    print("after jogging…")
-//    print("currentTime: \(currentTime)", "position: \(position)", "jogTime: \(jogTime)", "currentSegment: \(currentSegment)", "\n", separator: "\n")
-
-//    let location = currentSegment.locationForTime(jogTime)
-
-//    if location == nil && currentSegment.startTime > jogTime, let previousSegment = currentSegment.predessor {
-//      currentSegment = previousSegment
-//      logDebug("current segment ➞ previous segment (\(currentSegment))")
-//      location = currentSegment.locationForTime(jogTime)
-//    } else if location == nil && currentSegment.endTime <= jogTime {
-//      currentSegment = currentSegment.successor
-//      logDebug("current segment ➞ next segment (\(currentSegment))")
-//      location = currentSegment.locationForTime(jogTime)
-//    }
-
-//    if location != nil {
-//      logDebug("position \(position) ➞ \(location!)")
-//      position = location!
-//    }
+    if let location = path.locationForTime(jogTime) { position = location }
   }
 
   /**
@@ -235,9 +177,8 @@ final class MIDINode: SKSpriteNode {
   private func didEndJogging(notification: NSNotification) {
     guard state ∋ .Jogging else { fatalError("internal inconsistency, should have `Jogging` flag set") }
     state ⊻= .Jogging
-    jogTime = nil
-    currentSegment = path.segmentForTime(Sequencer.time.barBeatTime) ?? currentSegment
     guard state ∌ .Paused else { return }
+    currentSegment = path.segmentForTime(Sequencer.time.barBeatTime) ?? path.initialSegment
     runAction(action(.Move))
   }
 
@@ -261,7 +202,6 @@ final class MIDINode: SKSpriteNode {
   private func didPause(notification: NSNotification) {
     guard state ∌ .Paused else { return }
     logDebug("pausing")
-//    pushBreadcrumb()
     state ⊻= .Paused
     removeActionForKey(Action.Key.Move.rawValue)
   }
@@ -274,44 +214,6 @@ final class MIDINode: SKSpriteNode {
   private func didReset(notification: NSNotification) {
     fadeOut(remove: true)
   }
-
-  // MARK: Snapshots
-
-//  typealias Snapshot = MIDINodeHistory.Snapshot
-
-  /// Holds the nodes breadcrumbs to use in jogging calculations
-//  private var history: MIDINodeHistory
-
-  /// The breadcrumb currently referenced in jogging calculations
-//  private var breadcrumb: MIDINodeHistory.Breadcrumb?
-
-  /// Snapshot of the initial trajectory and velocity for the node
-//  var initialSnapshot: Snapshot
-
-  /// Snapshot of the current trajectory and velocity for the node
-//  private var currentSnapshot: Snapshot
-
-  /** Updates `currentSnapshot`, adding a new breadcrumb to `history` from the old value to the new value */
-//  func pushBreadcrumb() {
-//    guard state ∌ .Jogging else { logWarning("node has `Jogging` flag set, ignoring request to mark"); return }
-//    let snapshot = Snapshot(ticks: Sequencer.time.ticks, position: position, velocity: trajectory.v)
-//    guard snapshot.ticks > currentSnapshot.ticks else { return }
-//    history.append(from: currentSnapshot, to: snapshot)
-//    currentSnapshot = snapshot
-//  }
-
-  /**
-   Animates the node to the location specified by the specified snapshot
-
-   - parameter snapshot: Snapshot
-   - parameter completion: (() -> Void)?
-  */
-//  private func animateToSnapshot(snapshot: Snapshot) {
-//    let from = currentSnapshot.ticks, to = snapshot.ticks, 𝝙ticks = Double(max(from, to) - min(from, to))
-//    runAction(SKAction.moveTo(snapshot.trajectory.p, duration: Sequencer.secondsPerTick * 𝝙ticks)) {
-//      [weak self] in self?.currentSnapshot = snapshot; self?.trajectory = snapshot.trajectory
-//    }
-//  }
 
   // MARK: Initialization
 
@@ -333,26 +235,19 @@ final class MIDINode: SKSpriteNode {
        generator: MIDIGenerator,
        identifier: Identifier = UUID()) throws
   {
-//    self.trajectory = trajectory
-//    let snapshot = Snapshot(ticks: Sequencer.time.ticks, trajectory: trajectory)
-//    initialSnapshot = snapshot
-//    currentSnapshot = snapshot
     self.dispatch = dispatch
-//    history = MIDINodeHistory(initialSnapshot: snapshot)
     self.generator = generator
     self.identifier = identifier
 
     guard let playerSize = MIDIPlayer.playerNode?.size else {
       fatalError("creating node with nil value for `MIDIPlayer.playerNode`")
     }
-    path = MIDINodePath(trajectory: trajectory, playerSize: playerSize, time: Sequencer.transport.time.barBeatTime)
+    path = MIDINodePath(trajectory: trajectory,
+                        playerSize: playerSize,
+                        time: Sequencer.transport.time.barBeatTime)
     currentSegment = path.initialSegment
-    print(currentSegment)
 
     super.init(texture: MIDINode.texture, color: dispatch.color.value, size: MIDINode.texture.size() * 0.75)
-
-//    let _ = path.locationForTime(23)
-//    logDebug("path: \(path)")
 
     let object = Sequencer.transport
     typealias Notification = Transport.Notification
@@ -389,8 +284,7 @@ final class MIDINode: SKSpriteNode {
 
 
   let path: MIDINodePath
-  private unowned var currentSegment: Segment
-//  private var trajectory: Trajectory
+  private var currentSegment: Segment
 
   /**
   init:
@@ -416,14 +310,6 @@ final class MIDINode: SKSpriteNode {
     return (minX, maxX, minY, maxY)
   }
 
-  /**
-   nextLocation
-
-    - returns: (CGPoint, NSTimeInterval)?
-  */
-  func nextLocation() -> (CGPoint, NSTimeInterval) {
-    return (currentSegment.endLocation, currentSegment.timeToEndLocationFromPoint(position))
-  }
 }
 
 // MARK: State
@@ -468,9 +354,12 @@ extension MIDINode {
 
       switch k {
         case .Move:
-          guard let (location, duration) = node?.nextLocation() else {
-            fatalError("the 'Move' action requires a location and duration")
+          guard let segment = node?.currentSegment else {
+            fatalError("Failed to obtain segment from node")
           }
+          let location = segment.endLocation
+          guard let position = node?.position else { fatalError("failed to obtain node's current position") }
+          let duration = segment.timeToEndLocationFromPoint(position)
           let move = SKAction.moveTo(location, duration: duration)
           let callback = SKAction.runBlock({[weak node] in node?.didMove()})
           action = SKAction.sequence([move, callback])

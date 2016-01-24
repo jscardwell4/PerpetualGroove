@@ -121,7 +121,7 @@ final class Transport {
       default:                                          ticks = time.ticks + 𝝙ticks
     }
 
-    do { try jogToTime(BarBeatTime(tickValue: ticks)) } catch { logError(error) }
+    do { try jogToTime(BarBeatTime(tickValue: ticks, base: .One)) } catch { logError(error) }
   }
 
   /** endJog */
@@ -145,7 +145,7 @@ final class Transport {
   func jogToTime(t: BarBeatTime) throws {
     guard jogTime != t else { return }
     guard jogging else { throw Error.NotPermitted("state ∌ jogging") }
-    guard time.isValidTime(t) else { throw Error.InvalidBarBeatTime("\(t)") }
+    guard t.isNormal else { throw Error.InvalidBarBeatTime("\(t)") }
     jogTime = t
     Notification.DidJog.post(object: self, userInfo:[
       .Ticks: NSNumber(unsignedLongLong: time.ticks),

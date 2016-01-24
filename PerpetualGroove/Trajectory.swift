@@ -145,7 +145,9 @@ struct Trajectory {
 
     - returns: CGPoint
   */
-  func pointAtTime(time: NSTimeInterval) -> CGPoint { return pointAtTime(BarBeatTime(seconds: time)) }
+//  func pointAtTime(time: NSTimeInterval) -> CGPoint {
+//    return pointAtTime(BarBeatTime(seconds: time))
+//  }
 
   /**
    The point along trajectory given the specified delta time.
@@ -154,13 +156,24 @@ struct Trajectory {
 
     - returns: CGPoint
   */
-  func pointAtTime(time: BarBeatTime) -> CGPoint {
-    let distance = CGFloat(time.ticks) * CGFloat(Trajectory.pointsPerTick)
-    let y = distance * m / sqrt(1 + pow(m, 2)) + p.y
-    let result = pointAtY(y)
-    logVerbose("self = \(self)\ntime = \(time)\ndistance = \(distance)\ny = \(y)\nresult = \(result)")
-    return result
-  }
+//  func pointAtTime(time: BarBeatTime) -> CGPoint {
+//    return pointAtTime(time.ticks)
+//  }
+
+  /**
+   The point along trajectory given the specified delta time.
+
+   - parameter time: BarBeatTime
+
+    - returns: CGPoint
+  */
+//  func pointAtTime(time: MIDITimeStamp) -> CGPoint {
+//    let distance = CGFloat(time) * CGFloat(Trajectory.pointsPerTick)
+//    let y = distance * m / sqrt(1 + pow(m, 2)) + p.y
+//    let result = pointAtY(y)
+//    logVerbose("self = \(self)\ntime = \(time)\ndistance = \(distance)\ny = \(y)\nresult = \(result)")
+//    return result
+//  }
 
   /**
    Whether the specified point lies along the trajectory (approximated by rounding to three decimal places).

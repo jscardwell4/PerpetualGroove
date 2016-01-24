@@ -91,6 +91,9 @@ final class MIDINodePath {
 
     if let segment = segments.find({$0.endTime < time}, {$0.timeInterval ∋ time}) {
       logDebug("time = \(time)\nresult = \(segment)")
+      guard segment.timeInterval ∋ time else {
+        fatalError("segment to return does not contain time specified")
+      }
       return segment
     }
     guard let segment = segments.maxElement() else { fatalError("segments is empty, no max element") }
@@ -98,6 +101,10 @@ final class MIDINodePath {
     var currentSegment = segment
     while currentSegment.endTime < time { currentSegment = currentSegment.successor }
     logDebug("time = \(time)\nresult = \(currentSegment)")
+    guard currentSegment.timeInterval ∋ time else {
+      fatalError("segment to return does not contain time specified")
+    }
+
     return currentSegment
   }
 

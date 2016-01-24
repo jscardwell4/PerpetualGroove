@@ -8,6 +8,6 @@
 
 import Foundation
 
-extension HalfOpenInterval where Bound:SignedNumberType {
+extension HalfOpenInterval where Bound:IntegerType {
   public var length: Bound { return end - start }
 }
