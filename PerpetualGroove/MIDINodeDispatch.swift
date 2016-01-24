@@ -40,7 +40,10 @@ extension MIDINodeDispatch {
    - parameter trajectory: Trajectory
    - parameter generator: MIDIGenerator
   */
-  func addNodeWithIdentifier(identifier: MIDINode.Identifier, trajectory: Trajectory, generator: MIDIGenerator) {
+  func addNodeWithIdentifier(identifier: MIDINode.Identifier,
+                  trajectory: Trajectory,
+                   generator: MIDIGenerator)
+  {
     logDebug("placing node with identifier \(identifier), trajectory \(trajectory), generator \(generator)")
 
     // Make sure a node hasn't already been place for this identifier
@@ -97,12 +100,13 @@ extension MIDINodeDispatch {
 
     guard recording else { logDebug("not recording…skipping event creation"); return }
 
-    eventQueue.addOperationWithBlock {
+    eventQueue.async {
       [time = Sequencer.time.barBeatTime, unowned node, weak self] in
-      let event = MIDINodeEvent(.Add(identifier: MIDINodeEvent.Identifier(nodeIdentifier: node.identifier),
-        trajectory: node.path.initialTrajectory,
-        generator: node.generator),
-        time)
+      let identifier = MIDINodeEvent.Identifier(nodeIdentifier: node.identifier)
+      let data = MIDINodeEvent.Data.Add(identifier: identifier,
+                                        trajectory: node.path.initialTrajectory,
+                                        generator: node.generator)
+      let event = MIDINodeEvent(data, time)
       self?.addEvent(.Node(event))
     }
 
@@ -139,9 +143,10 @@ extension MIDINodeDispatch {
         }
       case false:
         guard recording else { logDebug("not recording…skipping event creation"); return }
-        eventQueue.addOperationWithBlock {
+        eventQueue.async {
           [time = Sequencer.time.barBeatTime, weak self] in
-          self?.addEvent(.Node(MIDINodeEvent(.Remove(identifier: MIDINodeEvent.Identifier(nodeIdentifier: id)), time)))
+          let event = MIDINodeEvent(.Remove(identifier: MIDINodeEvent.Identifier(nodeIdentifier: id)), time)
+          self?.addEvent(.Node(event))
         }
     }
   }

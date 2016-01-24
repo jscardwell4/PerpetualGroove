@@ -27,36 +27,16 @@ final class Time {
   private func read(packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutablePointer<Void>) {
     // Runs on MIDI Services thread
     switch packetList.memory.packet.data.0 {
-      case 0b1111_1000: queue.addOperationWithBlock { [weak self] in self?.incrementClock() }
-      case 0b1111_1010: queue.addOperationWithBlock { [weak self] in self?.reset(); self?.invokeCallbacksForTime(self!.barBeatTime) }
+      case 0b1111_1000: queue.sync { [unowned self] in self.incrementClock() }
+      case 0b1111_1010: queue.sync { [unowned self] in self._reset()
+                                                        self.invokeCallbacksForTime(self.barBeatTime) }
       default: break
     }
   }
 
   // MARK: - Keeping the time
 
-  private let queue: NSOperationQueue = {
-    let q = NSOperationQueue()
-    q.maxConcurrentOperationCount = 1
-    return q
-  }()
-
-  /// Valid beat range for the current settings
-//  private(set) var validBeats: Range<UInt>
-
-  /// Valid subbeat range for the current settings
-//  private(set) var validSubbeats: Range<UInt>
-
-  /**
-  Whether the specified `time` holds a valid representation
-
-  - parameter time: BarBeatTime
-
-  - returns: Bool
-  */
-//  func isValidTime(time: BarBeatTime) -> Bool {
-//    return validBeats ∋ time.beat && validSubbeats ∋ time.subbeat && time.subbeatDivisor == Sequencer.partsPerQuarter
-//  }
+  private let queue: dispatch_queue_t
 
   /// The musical representation of the current time
   private var _barBeatTime: BarBeatTime = .start1 {
@@ -65,15 +45,9 @@ final class Time {
 
   /** Synchronized access to the musical representation of the current time */
   var barBeatTime: BarBeatTime {
-    get { objc_sync_enter(self); defer { objc_sync_exit(self) }; return _barBeatTime }
+    get { /*objc_sync_enter(self); defer { objc_sync_exit(self) };*/ return _barBeatTime }
     set { objc_sync_enter(self); defer { objc_sync_exit(self) }; /*guard isValidTime(newValue) else { return };*/ _barBeatTime = newValue }
   }
-
-  /** The portion of `clockCount` that constitutes a beat */
-//  private var beatInterval: Fraction<Float>
-
-  /** Tracks the current subdivision of a beat, incrementing `time` as it updates */
-//  private var clockCount: Fraction<Float>
 
   /** incrementClock */
   private func incrementClock() {
@@ -81,22 +55,6 @@ final class Time {
     defer { objc_sync_exit(self) }
 
     barBeatTime = barBeatTime.successor()
-//    var updatedTime = barBeatTime
-//
-//    clockCount.numerator += 1
-//    if clockCount == 1 {
-//      clockCount.numerator = 0
-//      updatedTime.bar++
-//      updatedTime.beat = 1
-//      updatedTime.subbeat = 1
-//    } else if clockCount % beatInterval == 0 {
-//      updatedTime.beat++
-//      updatedTime.subbeat = 1
-//    } else {
-//      updatedTime.subbeat++
-//    }
-//
-//    barBeatTime = updatedTime
   }
 
   // MARK: - Time-triggered callbacks
@@ -204,43 +162,6 @@ final class Time {
     predicatedCallbacks[key] = (predicate: predicate, callback: callback)
   }
 
-
-  // MARK: - Measurements and conversions
-
-  /// Holds a bar beat time value that can be used later to measure the amount of time elapsed
-//  private var marker: BarBeatTime = .start1
-
-  /** Updates `marker` with current `time` */
-//  func setMarker() { marker = barBeatTime }
-
-  /// The amount of time elapsed since `marker`
-//  var timeSinceMarker: BarBeatTime {
-//    var t = barBeatTime
-//    var result = BarBeatTime()
-//    if t.subbeatDivisor != marker.subbeatDivisor {
-//      let divisor = max(t.subbeatDivisor, marker.subbeatDivisor)
-//      t.subbeat *= divisor / t.subbeatDivisor
-//      t.subbeatDivisor = divisor
-//      marker.subbeat *= divisor / marker.subbeatDivisor
-//      marker.subbeatDivisor = divisor
-//      result.subbeatDivisor = divisor
-//    }
-//
-//    if t.subbeat < marker.subbeat {
-//      t.subbeat += t.subbeatDivisor
-//      t.beat -= 1
-//    }
-//    result.subbeat = t.subbeat - marker.subbeat
-//
-//    if t.beat < marker.beat {
-//      t.beat += 4
-//      t.bar -= 1
-//    }
-//    result.beat = t.beat - marker.beat
-//    result.bar = t.bar - marker.bar
-//    return result
-//  }
-
   var bar:     Int            { return barBeatTime.bar     }  /// Accessor for `time.bar`
   var beat:    UInt           { return barBeatTime.beat    }  /// Accessor for `time.beat`
   var subbeat: UInt           { return barBeatTime.subbeat }  /// Accessor for `time.subbeat`
@@ -257,26 +178,17 @@ final class Time {
   - parameter clockSource: MIDIEndpointRef
   */
   init(clockSource: MIDIEndpointRef) {
-
-    var unmanagedProperties: Unmanaged<CFPropertyList>?
-    MIDIObjectGetProperties(clockSource, &unmanagedProperties, true)
-
     var unmanagedName: Unmanaged<CFString>?
     MIDIObjectGetStringProperty(clockSource, kMIDIPropertyName, &unmanagedName)
     guard unmanagedName != nil else { fatalError("Endpoint should have been given a name") }
-    clockName = unmanagedName!.takeUnretainedValue() as String
-
-//    let ppq = Sequencer.partsPerQuarter
-//    clockCount = 0╱Float(ppq)
-//    beatInterval = (Float(ppq) * Float(0.25))╱Float(ppq)
-//    validBeats = 1 ... Sequencer.beatsPerBar
-//    validSubbeats = 1 ... ppq
-    queue.name = name
-
+    let name = unmanagedName!.takeUnretainedValue() as String
+    clockName = name
+    queue = serialQueueWithLabel(name)
     do {
-      try MIDIClientCreateWithBlock(queue.name!, &client, nil)
+      try MIDIClientCreateWithBlock(name, &client, nil)
         ➤ "Failed to create midi client for bar beat time"
-      try MIDIInputPortCreateWithBlock(client, "Input", &inPort, weakMethod(self, Time.read)) ➤ "Failed to create in port for bar beat time"
+      try MIDIInputPortCreateWithBlock(client, "Input", &inPort, weakMethod(self, Time.read))
+        ➤ "Failed to create in port for bar beat time"
       try MIDIPortConnectSource(inPort, clockSource, nil) ➤ "Failed to connect bar beat time to clock"
     } catch {
       logError(error)
@@ -284,20 +196,21 @@ final class Time {
   }
 
   /**
-  reset:
+   reset:
+
+   - parameter completion: (() -> Void)? = nil
+   */
+  func reset(completion: (() -> Void)? = nil) { queue.sync { [unowned self] in self._reset(completion) } }
+
+  /**
+  _reset:
 
   - parameter completion: (() -> Void)? = nil
   */
-  func reset(completion: (() -> Void)? = nil) {
-//    logDebug("time ➞ 1:1.1╱\(_barBeatTime.subbeatDivisor); clockCount ➞ 0╱\(_barBeatTime.subbeatDivisor)")
-    queue.addOperationWithBlock  {
-      [unowned self] in
-//      let ppq = self._barBeatTime.subbeatDivisor
-      self._barBeatTime = .start1
-      objc_sync_enter(self)
-      defer { objc_sync_exit(self); completion?() }
-//      self.clockCount = 0╱Float(ppq)
-    }
+  private func _reset(completion: (() -> Void)? = nil) {
+    _barBeatTime = .start1
+    objc_sync_enter(self)
+    defer { objc_sync_exit(self); completion?() }
   }
 
   /**

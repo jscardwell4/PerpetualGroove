@@ -32,7 +32,7 @@ protocol MIDIEventDispatch: class, Loggable {
   var metaEvents: [MetaEvent] { get }
   var channelEvents: [ChannelEvent] { get }
   var nodeEvents: [MIDINodeEvent] { get }
-  var eventQueue: NSOperationQueue { get }
+  var eventQueue: dispatch_queue_t { get }
 }
 
 extension MIDIEventDispatch {

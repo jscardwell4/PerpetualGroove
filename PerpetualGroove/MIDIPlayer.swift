@@ -213,29 +213,31 @@ final class MIDIPlayer {
              generator: MIDIGenerator,
             identifier: MIDINode.Identifier = UUID())
   {
-    guard let node = playerNode else {
-      logWarning("cannot place a node without a player node")
-      return
-    }
+    dispatchToMain {
+      guard let node = playerNode else {
+        logWarning("cannot place a node without a player node")
+        return
+      }
 
-    do {
-      let name = "<\(Sequencer.mode.rawValue)> \(target.nextNodeName)"
-      let midiNode = try MIDINode(trajectory: trajectory,
-                                  name: name,
-                                  dispatch: target,
-                                  generator: generator,
-                                  identifier: identifier)
-      node.addChild(midiNode)
+      do {
+        let name = "<\(Sequencer.mode.rawValue)> \(target.nextNodeName)"
+        let midiNode = try MIDINode(trajectory: trajectory,
+                                    name: name,
+                                    dispatch: target,
+                                    generator: generator,
+                                    identifier: identifier)
+        node.addChild(midiNode)
 
-      try target.addNode(midiNode)
+        try target.addNode(midiNode)
 
 
-      if !Sequencer.playing { Sequencer.play() }
-      Notification.DidAddNode.post(userInfo: [.AddedNode: midiNode, .AddedNodeTrack: target])
-      logDebug("added node \(name)")
+        if !Sequencer.playing { Sequencer.play() }
+        Notification.DidAddNode.post(userInfo: [.AddedNode: midiNode, .AddedNodeTrack: target])
+        logDebug("added node \(name)")
 
-    } catch {
-      logError(error)
+      } catch {
+        logError(error)
+      }
     }
   }
 
@@ -245,9 +247,11 @@ final class MIDIPlayer {
    - parameter node: MIDINode
   */
   static func removeNode(node: MIDINode) {
-    guard node.parent === playerNode else { return }
-    node.fadeOut(remove: true)
-    Notification.DidRemoveNode.post()
+    dispatchToMain {
+      guard node.parent === playerNode else { return }
+      node.fadeOut(remove: true)
+      Notification.DidRemoveNode.post()
+    }
   }
 
   /**

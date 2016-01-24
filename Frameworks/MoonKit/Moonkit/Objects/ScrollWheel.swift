@@ -20,45 +20,64 @@ public class ScrollWheel: UIControl {
   @IBInspectable public var wheelColor: UIColor = .darkGrayColor() {
     didSet {
       guard wheelColor != oldValue else { return }
-      wheelColorModified = true
-      wheelImage = wheelImage?.imageWithColor(wheelColor)
-      wheelColorModified = false
-      setNeedsDisplay()
+
+      backgroundDispatch {
+        [weak self] in
+        self?.wheelColorModified = true
+        self?._wheelImage = self?.wheelImage?.imageWithColor(self!.wheelColor)
+        self?.wheelColorModified = false
+        dispatchToMain { self?.setNeedsDisplay() }
+      }
     }
   }
 
   @IBInspectable public var dimpleColor: UIColor = .lightGrayColor() {
     didSet {
       guard dimpleColor != oldValue else { return }
-      dimpleColorModified = true
-      dimpleImage = dimpleImage?.imageWithColor(dimpleColor)
-      dimpleFillImage = dimpleFillImage?.imageWithColor(dimpleColor)
-      dimpleColorModified = false
-      setNeedsDisplay()
+      backgroundDispatch {
+        [weak self] in
+        self?.dimpleColorModified = true
+        self?._dimpleImage = self?.dimpleImage?.imageWithColor(self!.dimpleColor)
+        self?._dimpleFillImage = self?.dimpleFillImage?.imageWithColor(self!.dimpleColor)
+        self?.dimpleColorModified = false
+        dispatchToMain { self?.setNeedsDisplay() }
+      }
     }
   }
 
   // MARK: - Images
 
+  private var _wheelImage: UIImage?
   @IBInspectable public var wheelImage: UIImage? {
     didSet {
       guard wheelImage != oldValue && !wheelColorModified else { return }
-      wheelImage = wheelImage?.imageWithColor(wheelColor)
-      setNeedsDisplay()
+      backgroundDispatch {
+        [weak self] in
+        self?._wheelImage = self?.wheelImage?.imageWithColor(self!.wheelColor)
+        dispatchToMain { self?.setNeedsDisplay() }
+      }
     }
   }
+  private var _dimpleImage: UIImage?
   @IBInspectable public var dimpleImage: UIImage? {
     didSet {
       guard dimpleImage != oldValue && !dimpleColorModified else { return }
-      dimpleImage = dimpleImage?.imageWithColor(dimpleColor)
-      setNeedsDisplay()
+      backgroundDispatch {
+        [weak self] in
+        self?._dimpleImage = self?.dimpleImage?.imageWithColor(self!.dimpleColor)
+        dispatchToMain { self?.setNeedsDisplay() }
+      }
     }
   }
+  private var _dimpleFillImage: UIImage?
   @IBInspectable public var dimpleFillImage: UIImage? {
     didSet {
       guard dimpleFillImage != oldValue && !dimpleColorModified else { return }
-      dimpleFillImage = dimpleFillImage?.imageWithColor(dimpleColor)
-      setNeedsDisplay()
+      backgroundDispatch {
+        [weak self] in
+        self?._dimpleFillImage = self?.dimpleFillImage?.imageWithColor(self!.dimpleColor)
+        dispatchToMain { self?.setNeedsDisplay() }
+      }
     }
   }
 
@@ -106,7 +125,7 @@ public class ScrollWheel: UIControl {
     CGContextTranslateCTM(context, -half(rect.width), -half(rect.height))
 
     let baseFrame = rect.centerInscribedSquare
-    if let wheelBase = wheelImage {
+    if let wheelBase = _wheelImage {
       wheelBase.drawInRect(baseFrame)
     } else {
       wheelColor.setFill()
@@ -116,7 +135,7 @@ public class ScrollWheel: UIControl {
 
     let dimpleSize = CGSize(square: baseFrame.height * 0.25)
     let dimpleFrame = CGRect(origin: CGPoint(x: baseFrame.midX - half(dimpleSize.width), y: baseFrame.minY + 10), size: dimpleSize)
-    if let dimple = dimpleImage, dimpleFill = dimpleFillImage {
+    if let dimple = _dimpleImage, dimpleFill = _dimpleFillImage {
 
       UIBezierPath(ovalInRect: dimpleFrame).addClip()
       dimple.drawInRect(dimpleFrame, blendMode: dimpleStyle, alpha: 1)

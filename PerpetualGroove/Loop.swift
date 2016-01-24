@@ -20,7 +20,7 @@ final class Loop: SequenceType, MIDINodeDispatch {
   var end: BarBeatTime = .start1
 
   let identifier: Identifier
-  var eventQueue: NSOperationQueue { return track.eventQueue }
+  var eventQueue: dispatch_queue_t { return track.eventQueue }
 
   var nodes: OrderedSet<MIDINodeRef> = []
 

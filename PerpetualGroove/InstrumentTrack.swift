@@ -264,7 +264,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     // Check if we are recording, otherwise skip event processing
     guard recording else { return }
 
-    eventQueue.addOperationWithBlock {
+    eventQueue.async {
       [weak self, time = Sequencer.time.barBeatTime] in
 
       guard let packet = Packet(packetList: packetList) else { return }
@@ -338,7 +338,6 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     super.init(sequence: sequence)
     self.instrument = instrument
     instrument.track = self
-    eventQueue.name = "BUS \(instrument.bus)"
     instrumentEvent = MetaEvent(.Text(text: "instrument:\(instrument.soundSet.url.lastPathComponent!)"))
     programEvent = ChannelEvent(.ProgramChange, instrument.channel, instrument.program)
     color = TrackColor.nextColor
@@ -359,7 +358,6 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     guard let instrument = Instrument(grooveTrack.instrument.jsonValue) else { throw Error.InstrumentInitializeFailure }
     instrument.track = self
     self.instrument = instrument
-    eventQueue.name = "BUS \(instrument.bus)"
     color = grooveTrack.color
 
     name = grooveTrack.name
@@ -426,7 +424,6 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     }
 
     self.instrument = instrument
-    eventQueue.name = "BUS \(instrument.bus)"
     color = TrackColor.nextColor
 
     initializeNotificationReceptionist()

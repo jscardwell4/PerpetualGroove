@@ -230,7 +230,14 @@ public extension dispatch_queue_t {
   public func syncBarrier(block: dispatch_block_t)  { dispatch_barrier_sync(self, block) }
   public func asyncBarrier(block: dispatch_block_t) { dispatch_barrier_async(self, block) }
 
-  public func after(delay: Double, _ block: dispatch_block_t) { delayedDispatch(delay, self, block) }
+  public func after(delay: Double, _ block: dispatch_block_t) {
+    delayedDispatch(delay, self, block)
+  }
+
+  public func forEach<S:SequenceType>(elements: S, body: (S.Generator.Element) -> Void) {
+    let array = Array(elements)
+    dispatch_apply(array.count, self) { body(array[$0]) }
+  }
 
 }
 

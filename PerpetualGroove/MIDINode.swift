@@ -44,6 +44,7 @@ final class MIDINode: SKSpriteNode {
   private lazy var fadeOutAction:          Action = self.action(.FadeOut)
   private lazy var fadeOutAndRemoveAction: Action = self.action(.FadeOutAndRemove)
   private lazy var fadeInAction:           Action = self.action(.FadeIn)
+  private lazy var moveAction:             Action = self.action(.Move)
 
   /**
    action:
@@ -59,10 +60,10 @@ final class MIDINode: SKSpriteNode {
 
   - parameter action: Action
   */
-  private func runAction(action: Action) { runAction(action.action, withKey: action.key) }
+//  private func runAction(action: Action) { action.run() }
 
   /** play */
-  func play() { runAction(playAction)  }
+  func play() { playAction.run()  }
 
   /**
    playForEdge:
@@ -70,7 +71,7 @@ final class MIDINode: SKSpriteNode {
    - parameter edge: MIDIPlayerNode.Edge
   */
   func playForEdge(edge: MIDIPlayerNode.Edge) {
-    runAction(playAction)
+    playAction.run()
 //    switch edge {
 //      case .Top, .Bottom: runAction(verticalPlayAction)
 //      case .Left, .Right: runAction(horizontalPlayAction)
@@ -79,10 +80,10 @@ final class MIDINode: SKSpriteNode {
   }
 
   /** fadeOut */
-  func fadeOut(remove remove: Bool = false) { runAction(remove ? fadeOutAndRemoveAction : fadeOutAction) }
+  func fadeOut(remove remove: Bool = false) { (remove ? fadeOutAndRemoveAction : fadeOutAction).run() }
 
   /** fadeIn */
-  func fadeIn() { runAction(fadeInAction) }
+  func fadeIn() { fadeInAction.run() }
 
   /** sendNoteOn */
   func sendNoteOn() {
@@ -106,7 +107,7 @@ final class MIDINode: SKSpriteNode {
 
   - parameter action: Action
   */
-  private func removeAction(action: Action) { removeActionForKey(action.key) }
+  private func removeAction(action: Action) { removeActionForKey(action.key.key) }
 
   /**
   removeActionForKey:
@@ -126,7 +127,7 @@ final class MIDINode: SKSpriteNode {
   private func didMove() {
     play()
     currentSegment = currentSegment.successor
-    runAction(action(.Move))
+    moveAction.run()
   }
 
   private(set) weak var dispatch: MIDINodeDispatch?  {
@@ -179,7 +180,7 @@ final class MIDINode: SKSpriteNode {
     state ⊻= .Jogging
     guard state ∌ .Paused else { return }
     currentSegment = path.segmentForTime(Sequencer.time.barBeatTime) ?? path.initialSegment
-    runAction(action(.Move))
+    moveAction.run()
   }
 
   /**
@@ -191,7 +192,7 @@ final class MIDINode: SKSpriteNode {
     guard state ∋ .Paused else { return }
     logDebug("unpausing")
     state ⊻= .Paused
-    runAction(action(.Move))
+    moveAction.run()
   }
 
   /**
@@ -279,7 +280,7 @@ final class MIDINode: SKSpriteNode {
 
     position = trajectory.p
     normalTexture = MIDINode.normalMap
-    runAction(action(.Move))
+    moveAction.run()
   }
 
 
@@ -338,73 +339,73 @@ extension MIDINode {
   /// Type for representing MIDI-related node actions
   struct Action {
 
-    enum Key: String { case Move, Play, VerticalPlay, HorizontalPlay, FadeOut, FadeOutAndRemove, FadeIn }
+    enum Key: String, KeyType { case Move, Play, VerticalPlay, HorizontalPlay, FadeOut, FadeOutAndRemove, FadeIn }
 
-    let key: String
-    let action: SKAction
+    unowned let node: MIDINode
+    let key: Key
 
-    /**
-    init:duration:
-
-    - parameter k: Key
-    - parameter d: NSTimeInterval
-    */
-    init(key k: Key, node: MIDINode? = nil) {
-      key = k.rawValue
-
-      switch k {
+    var action: SKAction {
+      switch key {
         case .Move:
-          guard let segment = node?.currentSegment else {
-            fatalError("Failed to obtain segment from node")
-          }
+          let segment = node.currentSegment
           let location = segment.endLocation
-          guard let position = node?.position else { fatalError("failed to obtain node's current position") }
+          let position = node.position
           let duration = segment.timeToEndLocationFromPoint(position)
           let move = SKAction.moveTo(location, duration: duration)
           let callback = SKAction.runBlock({[weak node] in node?.didMove()})
-          action = SKAction.sequence([move, callback])
+          return SKAction.sequence([move, callback])
 
         case .Play:
-          let halfDuration = half(node?.generator.duration.seconds ?? 0)
+          let halfDuration = half(node.generator.duration.seconds)
           let scaleUp = SKAction.scaleTo(2, duration: halfDuration)
-          let noteOn = SKAction.runBlock({ [weak node] in node?.sendNoteOn() })
+          let noteOn = SKAction.runBlock({ self.node.sendNoteOn() })
           let scaleDown = SKAction.scaleTo(1, duration: halfDuration)
-          let noteOff = SKAction.runBlock({ [weak node] in node?.sendNoteOff() })
-          action = SKAction.sequence([SKAction.group([scaleUp, noteOn]), scaleDown, noteOff])
+          let noteOff = SKAction.runBlock({ self.node.sendNoteOff() })
+          return SKAction.sequence([SKAction.group([scaleUp, noteOn]), scaleDown, noteOff])
 
         case .VerticalPlay:
-          let noteOn = SKAction.runBlock({ [weak node] in node?.sendNoteOn() })
-          let noteOff = SKAction.runBlock({ [weak node] in node?.sendNoteOff() })
+          let noteOn = SKAction.runBlock({ self.node.sendNoteOn() })
+          let noteOff = SKAction.runBlock({ self.node.sendNoteOff() })
           let squish = SKAction.scaleXBy(1.5, y: 0.5, duration: 0.25)
           let unsquish = squish.reversedAction()
           let squishAndUnsquish = SKAction.sequence([squish, unsquish])
-          action = SKAction.sequence([SKAction.group([squishAndUnsquish, noteOn]), noteOff])
+          return SKAction.sequence([SKAction.group([squishAndUnsquish, noteOn]), noteOff])
 
         case .HorizontalPlay:
-          let noteOn = SKAction.runBlock({ [weak node] in node?.sendNoteOn() })
-          let noteOff = SKAction.runBlock({ [weak node] in node?.sendNoteOff() })
+          let noteOn = SKAction.runBlock({ self.node.sendNoteOn() })
+          let noteOff = SKAction.runBlock({ self.node.sendNoteOff() })
           let squish = SKAction.scaleXBy(0.5, y: 1.5, duration: 0.25)
           let unsquish = squish.reversedAction()
           let squishAndUnsquish = SKAction.sequence([squish, unsquish])
-          action = SKAction.sequence([SKAction.group([squishAndUnsquish, noteOn]), noteOff])
+          return SKAction.sequence([SKAction.group([squishAndUnsquish, noteOn]), noteOff])
 
         case .FadeOut:
           let fade = SKAction.fadeOutWithDuration(0.25)
-          let pause = SKAction.runBlock({[weak node] in node?.sendNoteOff(); node?.paused = true })
-          action = SKAction.sequence([fade, pause])
+          let pause = SKAction.runBlock({ self.node.sendNoteOff(); self.node.paused = true })
+          return SKAction.sequence([fade, pause])
 
         case .FadeOutAndRemove:
           let fade = SKAction.fadeOutWithDuration(0.25)
           let remove = SKAction.removeFromParent()
-          action = SKAction.sequence([fade, remove])
+          return SKAction.sequence([fade, remove])
 
         case .FadeIn:
           let fade = SKAction.fadeInWithDuration(0.25)
-          let unpause = SKAction.runBlock({[weak node] in node?.paused = false })
-          action = SKAction.sequence([fade, unpause])
+          let unpause = SKAction.runBlock({ self.node.paused = false })
+          return SKAction.sequence([fade, unpause])
       }
-
     }
+
+    /**
+     initWithKey:node:
+
+     - parameter key: Key
+     - parameter node: MIDINode
+    */
+    init(key: Key, node: MIDINode) { self.key = key; self.node = node }
+
+    /** run */
+    func run() { node.runAction(action, withKey: key.key) }
 
   }
 }

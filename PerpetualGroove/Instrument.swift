@@ -91,14 +91,17 @@ final class Instrument: Equatable {
   - parameter context: UnsafeMutablePointer<Void>
   */
   private func read(packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutablePointer<Void>) {
-    let packets = packetList.memory
-    var packetPointer = UnsafeMutablePointer<MIDIPacket>.alloc(1)
-    packetPointer.initialize(packets.packet)
-
-    for _ in 0 ..< packets.numPackets {
-      let packet = packetPointer.memory
+//    let packets = packetList.memory
+//    var packetPointer = UnsafeMutablePointer<MIDIPacket>.alloc(1)
+//    packetPointer.initialize(packets.packet)
+//
+//    for _ in 0 ..< packets.numPackets {
+//      let packet = packetPointer.memory
+//      node.sendMIDIEvent(packet.data.0, data1: packet.data.1, data2: packet.data.2)
+//      packetPointer = MIDIPacketNext(packetPointer)
+//    }
+    for packet in packetList.memory {
       node.sendMIDIEvent(packet.data.0, data1: packet.data.1, data2: packet.data.2)
-      packetPointer = MIDIPacketNext(packetPointer)
     }
   }
 

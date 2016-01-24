@@ -87,7 +87,10 @@ final class Sequence {
   var timeSignature: TimeSignature { get { return tempoTrack.timeSignature } set { tempoTrack.timeSignature = newValue } }
 
   /** Collection of all the tracks in the composition */
-  var tracks: [Track] { return [tempoTrack] + instrumentTracks }
+  var tracks: [Track] {
+    guard tempoTrack != nil else { return instrumentTracks }
+    return [tempoTrack] + instrumentTracks
+  }
 
   /**
   toggleSoloForTrack:

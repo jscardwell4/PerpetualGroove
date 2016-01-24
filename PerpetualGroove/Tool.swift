@@ -10,6 +10,8 @@ import Foundation
 import UIKit
 import MoonKit
 
+// TODO: Nudge, Throttle, Rotate tools
+
 protocol ToolType: class {
   var active: Bool { get set }
   func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?)

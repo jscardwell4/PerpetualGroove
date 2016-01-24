@@ -25,7 +25,7 @@ final class LogManager: MoonKit.LogManager {
     guard !initialized else { return }
 
     logLevel = .Debug
-    setLogLevel(.Verbose, forType: NotificationReceptionist.self)
+    setLogLevel(.Off, forType: NotificationReceptionist.self)
 
     registerLogContextNames()
 

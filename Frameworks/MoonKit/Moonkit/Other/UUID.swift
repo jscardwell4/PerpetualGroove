@@ -21,6 +21,8 @@ public struct UUID: ByteArrayConvertible, StringValueConvertible {
     let bytesBuffer = UnsafeBufferPointer(start: bytesPointer, count: 16)
     bytes = Array(bytesBuffer)
     stringValue = object.UUIDString
+    bytesPointer.destroy()
+    bytesPointer.dealloc(16)
   }
 }
 

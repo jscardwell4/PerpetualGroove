@@ -135,6 +135,18 @@
                                 <constraints>
                                     <constraint firstAttribute="width" constant="42" id="7Om-et-a1i"/>
                                 </constraints>
+                                <variation key="default">
+                                    <mask key="subviews">
+                                        <exclude reference="u5W-aV-tWA"/>
+                                        <exclude reference="YHK-Is-Vea"/>
+                                        <exclude reference="aYX-60-jIT"/>
+                                        <exclude reference="WxC-Hj-9Vz"/>
+                                        <exclude reference="RVW-Dd-0QR"/>
+                                    </mask>
+                                    <mask key="constraints">
+                                        <exclude reference="7Om-et-a1i"/>
+                                    </mask>
+                                </variation>
                             </stackView>
                             <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gkj-sJ-IZN" userLabel="Tools" customClass="ImageSegmentedControl" customModule="MoonKit">
                                 <rect key="frame" x="20" y="533" width="250" height="42"/>
@@ -232,6 +244,18 @@
                             <constraint firstItem="JSz-xf-acH" firstAttribute="top" secondItem="i4O-SR-ImV" secondAttribute="bottom" constant="8" symbolic="YES" id="ycp-lE-YcG"/>
                             <constraint firstItem="i4O-SR-ImV" firstAttribute="leading" secondItem="bEj-LH-pPP" secondAttribute="leadingMargin" id="yoX-wz-9lN"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="subviews">
+                                <exclude reference="h0o-PY-Uep"/>
+                            </mask>
+                            <mask key="constraints">
+                                <exclude reference="gyq-qA-kSA"/>
+                                <exclude reference="HsX-2b-Gkr"/>
+                                <exclude reference="Naq-MG-sHb"/>
+                                <exclude reference="QuA-ep-Cmi"/>
+                                <exclude reference="mlv-cF-4xj"/>
+                            </mask>
+                        </variation>
                     </view>
                     <nil key="simulatedStatusBarMetrics"/>
                     <nil key="simulatedTopBarMetrics"/>

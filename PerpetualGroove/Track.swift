@@ -14,11 +14,7 @@ class Track: CustomStringConvertible, Named, MIDIEventDispatch {
   unowned let sequence: Sequence
 
   /// Queue used generating `MIDIFile` track events
-  let eventQueue: NSOperationQueue = {
-    let q = NSOperationQueue()
-    q.maxConcurrentOperationCount = 1
-    return q
-  }()
+  let eventQueue: dispatch_queue_t
 
   var events = MIDIEventContainer()
 
@@ -77,7 +73,10 @@ class Track: CustomStringConvertible, Named, MIDIEventDispatch {
 //  }
 
   /** init */
-  init(sequence: Sequence) { self.sequence = sequence }
+  init(sequence: Sequence) {
+    self.sequence = sequence
+    eventQueue = serialQueueWithLabel("Track\(sequence.tracks.count)")
+  }
 
   /**
   registrationTimesForAddedEvents:

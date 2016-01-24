@@ -10,6 +10,20 @@ import Foundation
 import CoreMIDI
 import MoonKit
 
+extension MIDIPacketList: SequenceType {
+  public func generate() -> AnyGenerator<MIDIPacket> {
+    var iterator: MIDIPacket?
+    var nextIndex: UInt32 = 0
+
+    return anyGenerator {
+      if nextIndex++ >= self.numPackets { return nil }
+      if iterator == nil { iterator = self.packet }
+      else { iterator = withUnsafePointer(&iterator!) { MIDIPacketNext($0).memory } }
+      return iterator
+    }
+  }
+}
+
 struct Packet: CustomStringConvertible {
   let status: Byte
   let channel: Byte
@@ -50,11 +64,7 @@ struct Packet: CustomStringConvertible {
   - parameter packetList: UnsafePointer<MIDIPacketList>
   */
   init?(packetList: UnsafePointer<MIDIPacketList>) {
-    let packets = packetList.memory
-    let packetPointer = UnsafeMutablePointer<MIDIPacket>.alloc(1)
-    packetPointer.initialize(packets.packet)
-    guard packets.numPackets == 1 else { return nil }
-    let packet = packetPointer.memory
+    let packet = packetList.memory.packet
     guard packet.length == UInt16(sizeof(Identifier.self) + 3) else { return nil }
     var data = packet.data
     status = data.0 >> 4
