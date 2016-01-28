@@ -290,7 +290,7 @@ final class Sequence {
   */
   func removeTrackAtIndex(index: Int) {
     let track = instrumentTracks.removeAtIndex(index)
-    track.nodes.forEach { $0.reference?.fadeOut(remove: true) }
+    track.stopNodes(remove: true)
     receptionist.stopObserving(Track.Notification.DidUpdate, from: track)
     logDebug("track removed: \(track.name)")
     Notification.DidRemoveTrack.post(

@@ -22,7 +22,7 @@ final class Loop: SequenceType, MIDINodeDispatch {
   let identifier: Identifier
   var eventQueue: dispatch_queue_t { return track.eventQueue }
 
-  var nodes: OrderedSet<MIDINodeRef> = []
+  var nodes: OrderedSet<HashableTuple<BarBeatTime, MIDINodeRef>> = []
 
   unowned let track: InstrumentTrack
 

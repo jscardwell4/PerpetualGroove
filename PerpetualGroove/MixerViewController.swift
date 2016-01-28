@@ -65,10 +65,18 @@ final class MixerViewController: UICollectionViewController {
     receptionist.stopObserving(Sequence.Notification.DidRemoveTrack, from: sequence)
   }
 
+  private var pendingTrackIndex: Int?
+  private var addedTrackIndex: NSIndexPath?
+
   /** addTrack */
   @IBAction func addTrack() {
-    do { try sequence?.insertTrackWithInstrument(Sequencer.instrumentWithCurrentSettings()) }
-    catch { logError(error, message: "Failed to add new track") }
+    do {
+      pendingTrackIndex = Section.Instruments.itemCount
+      try sequence?.insertTrackWithInstrument(Sequencer.instrumentWithCurrentSettings())
+    } catch {
+      logError(error, message: "Failed to add new track")
+      pendingTrackIndex = nil
+    }
   }
 
   /**
@@ -270,6 +278,7 @@ final class MixerViewController: UICollectionViewController {
 
       case let (added?, removed?):
         logDebug("added index: \(added); removed index: \(removed)")
+        if pendingTrackIndex == added { addedTrackIndex = section[added] }
         collectionView?.performBatchUpdates({
           [weak collectionView = collectionView] in
             collectionView?.deleteItemsAtIndexPaths([section[removed]])
@@ -277,6 +286,7 @@ final class MixerViewController: UICollectionViewController {
           }, completion: nil)
 
       case let (added?, nil):
+        if pendingTrackIndex == added { addedTrackIndex = section[added] }
         logDebug("added index: \(added)")
         collectionView?.insertItemsAtIndexPaths([section[added]])
 
@@ -392,6 +402,22 @@ final class MixerViewController: UICollectionViewController {
     sequence?.currentTrackIndex = indexPath.item
   }
 
+  /**
+   collectionView:willDisplayCell:forItemAtIndexPath:
+
+   - parameter collectionView: UICollectionView
+   - parameter cell: UICollectionViewCell
+   - parameter indexPath: NSIndexPath
+  */
+  override func collectionView(collectionView: UICollectionView,
+               willDisplayCell cell: UICollectionViewCell,
+            forItemAtIndexPath indexPath: NSIndexPath)
+  {
+    guard addedTrackIndex == indexPath, let cell = cell as? TrackCell else { return }
+    defer { pendingTrackIndex = nil; addedTrackIndex = nil }
+    collectionView.selectItemAtIndexPath(indexPath, animated: true, scrollPosition: .None)
+    cell.instrument()
+  }
 }
 
 extension MixerViewController {

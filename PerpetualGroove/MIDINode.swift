@@ -24,6 +24,8 @@ final class MIDINode: SKSpriteNode {
   private var client = MIDIClientRef()
   private(set) var endPoint = MIDIEndpointRef()
 
+  private let initTime: BarBeatTime
+
   var generator: MIDIGenerator {
     didSet {
       guard generator != oldValue else { return }
@@ -152,7 +154,9 @@ final class MIDINode: SKSpriteNode {
   - parameter notification: NSNotification
   */
   private func didBeginJogging(notification: NSNotification) {
-    guard state ∌ .Jogging else { fatalError("internal inconsistency, should not already have `Jogging` flag set") }
+    guard state ∌ .Jogging else {
+      fatalError("internal inconsistency, should not already have `Jogging` flag set")
+    }
     state ⊻= .Jogging
     removeActionForKey(Action.Key.Move.rawValue)
   }
@@ -167,7 +171,8 @@ final class MIDINode: SKSpriteNode {
 
     guard let jogTime = notification.jogTime else { fatalError("notification does not contain ticks") }
 
-    if let location = path.locationForTime(jogTime) { position = location }
+    if jogTime < initTime { fadeOutAndRemoveAction.run() }
+    else if let location = path.locationForTime(jogTime) { position = location }
   }
 
   /**
@@ -236,6 +241,8 @@ final class MIDINode: SKSpriteNode {
        generator: MIDIGenerator,
        identifier: Identifier = UUID()) throws
   {
+    initTime = Sequencer.time.barBeatTime
+    state = Sequencer.jogging ? [.Jogging] : []
     self.dispatch = dispatch
     self.generator = generator
     self.identifier = identifier
@@ -248,7 +255,9 @@ final class MIDINode: SKSpriteNode {
                         time: Sequencer.transport.time.barBeatTime)
     currentSegment = path.initialSegment
 
-    super.init(texture: MIDINode.texture, color: dispatch.color.value, size: MIDINode.texture.size() * 0.75)
+    super.init(texture: MIDINode.texture,
+               color: dispatch.color.value,
+               size: MIDINode.texture.size() * 0.75)
 
     let object = Sequencer.transport
     typealias Notification = Transport.Notification

@@ -48,8 +48,8 @@ final class MIDIClock: CustomStringConvertible, Named {
     nanosecondsPerBeat = UInt64(60.0e9) / UInt64(beatsPerMinute)
     microsecondsPerBeat = UInt64(60.0e6) / UInt64(beatsPerMinute)
     secondsPerBeat = 60 / Double(beatsPerMinute)
-    secondsPerTick = secondsPerBeat / Double(resolution)// * 4)
-    tickInterval = nanosecondsPerBeat / UInt64(resolution)// * 4 // ???: Still don't know why I need to multiply by 4
+    secondsPerTick = secondsPerBeat / Double(resolution)
+    tickInterval = nanosecondsPerBeat / UInt64(resolution)
     timer.interval = tickInterval
   }
 

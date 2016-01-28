@@ -134,6 +134,7 @@ struct Trajectory {
   */
   func timeFromPoint(p1: CGPoint, toPoint p2: CGPoint) -> NSTimeInterval {
     let result = abs(NSTimeInterval(p1.distanceTo(p2) / m * Trajectory.modifier))
+    guard result.isFinite else { fatalError("wtf") }
     logVerbose("self = \(self)\np1 = \(p1)\np2 = \(p2)\nresult = \(result)")
     return result
   }

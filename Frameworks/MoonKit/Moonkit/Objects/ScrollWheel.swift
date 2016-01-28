@@ -14,18 +14,13 @@ public class ScrollWheel: UIControl {
 
   // MARK: - Colors
 
-  private var wheelColorModified = false
-  private var dimpleColorModified = false
-
   @IBInspectable public var wheelColor: UIColor = .darkGrayColor() {
     didSet {
       guard wheelColor != oldValue else { return }
 
       backgroundDispatch {
         [weak self] in
-        self?.wheelColorModified = true
         self?._wheelImage = self?.wheelImage?.imageWithColor(self!.wheelColor)
-        self?.wheelColorModified = false
         dispatchToMain { self?.setNeedsDisplay() }
       }
     }
@@ -36,10 +31,8 @@ public class ScrollWheel: UIControl {
       guard dimpleColor != oldValue else { return }
       backgroundDispatch {
         [weak self] in
-        self?.dimpleColorModified = true
         self?._dimpleImage = self?.dimpleImage?.imageWithColor(self!.dimpleColor)
         self?._dimpleFillImage = self?.dimpleFillImage?.imageWithColor(self!.dimpleColor)
-        self?.dimpleColorModified = false
         dispatchToMain { self?.setNeedsDisplay() }
       }
     }
@@ -50,7 +43,7 @@ public class ScrollWheel: UIControl {
   private var _wheelImage: UIImage?
   @IBInspectable public var wheelImage: UIImage? {
     didSet {
-      guard wheelImage != oldValue && !wheelColorModified else { return }
+      guard wheelImage != oldValue else { return }
       backgroundDispatch {
         [weak self] in
         self?._wheelImage = self?.wheelImage?.imageWithColor(self!.wheelColor)
@@ -61,7 +54,7 @@ public class ScrollWheel: UIControl {
   private var _dimpleImage: UIImage?
   @IBInspectable public var dimpleImage: UIImage? {
     didSet {
-      guard dimpleImage != oldValue && !dimpleColorModified else { return }
+      guard dimpleImage != oldValue else { return }
       backgroundDispatch {
         [weak self] in
         self?._dimpleImage = self?.dimpleImage?.imageWithColor(self!.dimpleColor)
@@ -72,7 +65,7 @@ public class ScrollWheel: UIControl {
   private var _dimpleFillImage: UIImage?
   @IBInspectable public var dimpleFillImage: UIImage? {
     didSet {
-      guard dimpleFillImage != oldValue && !dimpleColorModified else { return }
+      guard dimpleFillImage != oldValue else { return }
       backgroundDispatch {
         [weak self] in
         self?._dimpleFillImage = self?.dimpleFillImage?.imageWithColor(self!.dimpleColor)
@@ -134,7 +127,9 @@ public class ScrollWheel: UIControl {
 
 
     let dimpleSize = CGSize(square: baseFrame.height * 0.25)
-    let dimpleFrame = CGRect(origin: CGPoint(x: baseFrame.midX - half(dimpleSize.width), y: baseFrame.minY + 10), size: dimpleSize)
+    let dimpleFrame = CGRect(origin: CGPoint(x: baseFrame.midX - half(dimpleSize.width),
+                                             y: baseFrame.minY + 10),
+                             size: dimpleSize)
     if let dimple = _dimpleImage, dimpleFill = _dimpleFillImage {
 
       UIBezierPath(ovalInRect: dimpleFrame).addClip()
@@ -175,7 +170,8 @@ public class ScrollWheel: UIControl {
     touchPath = UIBezierPath(ovalInRect: square)
     let outterRadius = half(square.width)
     let innerRadius = square.width * 0.125
-    touchPath.moveToPoint(CGPoint(x: square.minX + outterRadius + innerRadius, y: square.minY + outterRadius))
+    touchPath.moveToPoint(CGPoint(x: square.minX + outterRadius + innerRadius,
+                                  y: square.minY + outterRadius))
     touchPath.usesEvenOddFillRule = true
     touchPath.addArcWithCenter(CGPoint(x: square.midX, y: square.midY),
                         radius: innerRadius,
@@ -186,7 +182,6 @@ public class ScrollWheel: UIControl {
 
   public override var bounds: CGRect { didSet { updateTouchPath() } }
   public override var frame: CGRect { didSet { updateTouchPath() } }
-
 
   /**
   angleForTouchLocation:withCenter:direction:
@@ -220,7 +215,25 @@ public class ScrollWheel: UIControl {
     return a
   }
 
+  /// Whether the last touch location was too close to the center of the wheel
   private var innerLastTouch = false
+
+  private var directionalTrend: Direction {
+    var n = 0.0
+    let directions = directionHistory.reverse().prefix(5)
+    guard directions.count > 0 else { return .Unknown }
+    for (i, d) in zip((1 ... directions.count).reverse(), directions) {
+      n += Double(d.rawValue) * (5.0 + Double(i) * 0.1)
+    }
+    let result: Direction
+    switch n {
+      case -26.5 ..< 0:   result = .CounterClockwise
+      case 0.1 ... 26.5:  result = .Clockwise
+      default:            result = .Unknown
+    }
+
+    return result
+  }
 
   /**
   updateForTouch:
@@ -235,28 +248,44 @@ public class ScrollWheel: UIControl {
       touchOffset = 0
       let touchAngle = angleForTouchLocation(touch.locationInView(nil))
       touchOffset = (angle - touchAngle) % (π * 2)
-      self.geometry = nil
+      directionHistory.removeAll(keepCapacity: true)
+      previousLocation = nil
+      previousAngle = nil
+      previousQuadrant = nil
+      previousDirection = .Unknown
+//      self.geometry = nil
       innerLastTouch = false
     }
 
     let location = touch.locationInView(nil)
     angle = angleForTouchLocation(location)
+    let quadrant = Quadrant(angle: angle - touchOffset - π * 0.5)
 
-    guard let previousGeometry = self.geometry else {
-      self.geometry = Geometry(location: location, angle: angle, offset: touchOffset)
+    guard let //previousGeometry = self.geometry,
+              previousLocation = self.previousLocation,
+              previousAngle = self.previousAngle,
+              previousQuadrant = self.previousQuadrant else
+    {
+      self.previousLocation = location
+      self.previousAngle = angle
+      self.previousQuadrant = quadrant
+//      self.geometry = Geometry(location: location, angle: angle, offset: touchOffset)
       return
     }
 
-    guard location != previousGeometry.location else { return }
+    guard location != previousLocation else { return }
 
-    let trending: Direction? = previousGeometry.direction == .Unknown ? nil : previousGeometry.direction
-    let direction = Direction(from: previousGeometry.location, to: location, about: wheelCenter, trending: trending)
+//    let trending: Direction? = previousGeometry.direction == .Unknown ? nil : previousGeometry.direction
+    let direction = Direction(from: previousLocation,
+                              to: location,
+                              about: wheelCenter,
+                           trending: directionalTrend)//trending)
 
-    let geometry = Geometry(location: location, angle: angle, offset: touchOffset, direction: direction)
+//    let geometry = Geometry(location: location, angle: angle, offset: touchOffset, direction: direction)
 
 
-    var deltaAngle = abs(angle - previousGeometry.angle)
-    switch (previousGeometry.quadrant, geometry.quadrant) {
+    var deltaAngle = abs(angle - previousAngle)
+    switch (previousQuadrant, quadrant) {
       case (.IV, .I), (.I, .IV): deltaAngle -= π * 2
       default:                   break
     }
@@ -268,148 +297,29 @@ public class ScrollWheel: UIControl {
       case .Unknown:          return
     }
 
-    self.geometry = geometry
+    self.previousLocation = location
+    self.previousAngle = angle
+    self.previousQuadrant = quadrant
+    previousDirection = direction
+    directionHistory.append(direction)
+//    self.geometry = geometry
   }
 
-  private var geometry: Geometry?
-
-  // MARK: - Supporting types
-
-  private struct Angle {
-    init(_ a: CGFloat) { counterClockwise = a }
-    var clockwise: CGFloat { return π * 2 - counterClockwise }
-    var counterClockwise: CGFloat
-  }
-
-  private struct Geometry {
-    let location: CGPoint
-    let angle: CGFloat
-    let offset: CGFloat
-    var quadrant: Quadrant { return Quadrant(angle: angle - offset - π * 0.5) }
-    let direction: Direction
-    init(location: CGPoint, angle: CGFloat, offset: CGFloat = 0, direction: Direction = .Unknown) {
-      self.location = location
-      self.angle = angle
-      self.direction = direction
-      self.offset = offset
-    }
-  }
-
-  private enum Direction: String {
-    case Clockwise, CounterClockwise, Unknown
-
-    /**
-    initWithFrom:to:about:trending:
-
-    - parameter from: CGPoint
-    - parameter to: CGPoint
-    - parameter about: CGPoint
-    - parameter trending: Direction?
-    */
-    init(from: CGPoint, to: CGPoint, about: CGPoint, trending: Direction?) {
-      let direction: Direction
-      let fromQuadrant = Quadrant(point: from, center: about)
-      let toQuadrant = Quadrant(point: to, center: about)
-
-      switch (fromQuadrant, toQuadrant) {
-      case (.I, .II), (.II, .III), (.III, .IV), (.IV, .I):
-        direction = .CounterClockwise
-      case (.I, .IV), (.IV, .III), (.III, .II), (.II, .I):
-        direction = .Clockwise
-      default:
-        switch (from.unpack, to.unpack) {
-
-        case let ((x1, y1), (x2, y2)) where y2 == y1 && x2 < x1:
-          switch toQuadrant { case .I, .II: direction = .CounterClockwise; default: direction = .Clockwise }
-
-        case let ((x1, y1), (x2, y2)) where y2 == y1 && x2 >= x1:
-          switch toQuadrant { case .I, .II: direction = .Clockwise; default: direction = .CounterClockwise }
-
-        case let ((x1, y1), (x2, y2)) where x2 == x1 && y2 <= y1:
-          switch toQuadrant { case .II, .III: direction = .Clockwise; default: direction = .CounterClockwise }
-
-        case let ((x1, y1), (x2, y2)) where x2 == x1 && y2 >= y1:
-          switch toQuadrant { case .II, .III: direction = .CounterClockwise; default: direction = .Clockwise }
-
-        case let ((x1, y1), (x2, y2)) where y2 < y1 && x2 < x1:
-          switch toQuadrant {
-          case .III: direction = .Clockwise
-          case .I:   direction = .CounterClockwise
-          case .II:  direction = trending ?? .Unknown
-          case .IV:  direction = trending ?? .Unknown
-          }
-
-        case let ((x1, y1), (x2, y2)) where y2 < y1 && x2 > x1:
-          switch toQuadrant {
-          case .III: direction = trending ?? .CounterClockwise
-          case .I:   direction = trending ?? .Clockwise
-          case .II:  direction = .Clockwise
-          case .IV:  direction = .CounterClockwise
-          }
-
-        case let ((x1, y1), (x2, y2)) where y2 > y1 && x2 < x1:
-          switch toQuadrant {
-          case .III: direction = trending ?? .Unknown
-          case .I:   direction = trending ?? .Unknown
-          case .II:  direction = .CounterClockwise
-          case .IV:  direction = .Clockwise
-          }
-
-        case let ((x1, y1), (x2, y2)) where y2 > y1 && x2 > x1:
-          switch toQuadrant {
-          case .III: direction = trending ?? .Unknown
-          case .I:   direction = trending ?? .Unknown
-          case .II:  direction = .Clockwise
-          case .IV:  direction = .CounterClockwise
-          }
-
-        default:
-          direction = .Unknown
-        }
-      }
-
-      self = direction
-    }
-  }
+//  private var geometry: Geometry?
+  private var previousAngle: CGFloat?
+  private var previousQuadrant: Quadrant?
+  private var directionHistory: [Direction] = []
+  private var previousLocation: CGPoint?
+  private var previousDirection: Direction = .Unknown
+  public var direction: Direction { return directionalTrend }
 
   /**
   intrinsicContentSize
 
   - returns: CGSize
   */
-  public override func intrinsicContentSize() -> CGSize { return CGSize(square: wheelImage?.size.maxAxisValue ?? 100) }
-
-  private enum Quadrant: String {
-    case I, II, III, IV
-
-    /**
-    initWithPoint:center:
-
-    - parameter point: CGPoint
-    - parameter center: CGPoint
-    */
-    init(point: CGPoint, center: CGPoint) {
-      switch (point.unpack, center.unpack) {
-        case let ((px, py), (cx, cy)) where px >= cx && py <= cy: self = .I
-        case let ((px, py), (cx, cy)) where px <= cx && py <= cy: self = .II
-        case let ((px, py), (cx, cy)) where px <= cx && py >= cy: self = .III
-        default:                                                  self = .IV
-      }
-    }
-
-    /**
-    initWithAngle:
-
-    - parameter angle: CGFloat
-    */
-    init(angle: CGFloat) {
-      switch angle {
-        case 0 ... (π * 0.5): self = .IV
-        case (π * 0.5) ... π: self = .III
-        case π ... (π * 1.5): self = .II
-        default:              self = .I
-      }
-    }
+  public override func intrinsicContentSize() -> CGSize {
+    return CGSize(square: wheelImage?.size.maxAxisValue ?? 100)
   }
 
   /**
@@ -423,7 +333,12 @@ public class ScrollWheel: UIControl {
   public override func beginTrackingWithTouch(touch: UITouch, withEvent event: UIEvent?) -> Bool {
     guard touchPath.containsPoint(touch.locationInView(self)) else { return false }
     if beginResetsRevolutions { theta = 0 }
-    geometry = nil
+//    geometry = nil
+    previousLocation = nil
+    previousQuadrant = nil
+    previousDirection = .Unknown
+    previousAngle = nil
+    directionHistory.removeAll(keepCapacity: true)
     touchOffset = 0
     wheelCenter = window!.convertPoint(self.center, fromView: superview)
     let touchAngle = angleForTouchLocation(touch.locationInView(nil))
@@ -476,20 +391,175 @@ private func -(lhs: ScrollWheel.Angle, rhs: ScrollWheel.Angle) -> ScrollWheel.An
   return ScrollWheel.Angle(lhs.counterClockwise - rhs.counterClockwise)
 }
 
-extension ScrollWheel.Angle: CustomStringConvertible {
-  var description: String {
-    return "{ clockwise: \(clockwise.degrees.rounded(2)); counterClockwise: \(counterClockwise.degrees.rounded(2)) }"
+extension ScrollWheel {
+  private enum Quadrant: String {
+    case I, II, III, IV
+
+    /**
+    initWithPoint:center:
+
+    - parameter point: CGPoint
+    - parameter center: CGPoint
+    */
+    init(point: CGPoint, center: CGPoint) {
+      switch (point.unpack, center.unpack) {
+        case let ((px, py), (cx, cy)) where px >= cx && py <= cy: self = .I
+        case let ((px, py), (cx, cy)) where px <= cx && py <= cy: self = .II
+        case let ((px, py), (cx, cy)) where px <= cx && py >= cy: self = .III
+        default:                                                  self = .IV
+      }
+    }
+
+    /**
+    initWithAngle:
+
+    - parameter angle: CGFloat
+    */
+    init(angle: CGFloat) {
+      switch angle {
+        case 0 ... (π * 0.5): self = .IV
+        case (π * 0.5) ... π: self = .III
+        case π ... (π * 1.5): self = .II
+        default:              self = .I
+      }
+    }
+  }
+
+}
+
+extension ScrollWheel {
+  public enum Direction: Int, CustomStringConvertible {
+    case CounterClockwise = -1, Unknown, Clockwise
+
+    /**
+    initWithFrom:to:about:trending:
+
+    - parameter from: CGPoint
+    - parameter to: CGPoint
+    - parameter about: CGPoint
+    - parameter trending: Direction?
+    */
+    init(from: CGPoint, to: CGPoint, about: CGPoint, trending: Direction?) {
+      let direction: Direction
+      let fromQuadrant = Quadrant(point: from, center: about)
+      let toQuadrant = Quadrant(point: to, center: about)
+
+      switch (fromQuadrant, toQuadrant) {
+      case (.I, .II), (.II, .III), (.III, .IV), (.IV, .I):
+        direction = .CounterClockwise
+      case (.I, .IV), (.IV, .III), (.III, .II), (.II, .I):
+        direction = .Clockwise
+      default:
+        switch (from.unpack, to.unpack) {
+
+        case let ((x1, y1), (x2, y2)) where y2 == y1 && x2 < x1:
+          switch toQuadrant {
+            case .I, .II: direction = .CounterClockwise
+            default: direction = .Clockwise
+          }
+
+        case let ((x1, y1), (x2, y2)) where y2 == y1 && x2 >= x1:
+          switch toQuadrant {
+            case .I, .II: direction = .Clockwise
+            default: direction = .CounterClockwise
+          }
+
+        case let ((x1, y1), (x2, y2)) where x2 == x1 && y2 <= y1:
+          switch toQuadrant {
+            case .II, .III: direction = .Clockwise
+            default: direction = .CounterClockwise
+          }
+
+        case let ((x1, y1), (x2, y2)) where x2 == x1 && y2 >= y1:
+          switch toQuadrant {
+            case .II, .III: direction = .CounterClockwise
+            default: direction = .Clockwise
+          }
+
+        case let ((x1, y1), (x2, y2)) where y2 < y1 && x2 < x1:
+          switch toQuadrant {
+            case .III: direction = .Clockwise
+            case .I:   direction = .CounterClockwise
+            case .II:  direction = trending ?? .Unknown
+            case .IV:  direction = trending ?? .Unknown
+          }
+
+        case let ((x1, y1), (x2, y2)) where y2 < y1 && x2 > x1:
+          switch toQuadrant {
+            case .III: direction = trending ?? .CounterClockwise
+            case .I:   direction = trending ?? .Clockwise
+            case .II:  direction = .Clockwise
+            case .IV:  direction = .CounterClockwise
+          }
+
+        case let ((x1, y1), (x2, y2)) where y2 > y1 && x2 < x1:
+          switch toQuadrant {
+            case .III: direction = trending ?? .Unknown
+            case .I:   direction = trending ?? .Unknown
+            case .II:  direction = .CounterClockwise
+            case .IV:  direction = .Clockwise
+          }
+
+        case let ((x1, y1), (x2, y2)) where y2 > y1 && x2 > x1:
+          switch toQuadrant {
+            case .III: direction = trending ?? .Unknown
+            case .I:   direction = trending ?? .Unknown
+            case .II:  direction = .Clockwise
+            case .IV:  direction = .CounterClockwise
+          }
+
+        default:
+          direction = .Unknown
+        }
+      }
+
+      self = direction
+    }
+
+    public var description: String {
+      switch self {
+        case .Clockwise:        return "Clockwise"
+        case .Unknown:          return "Unknown"
+        case .CounterClockwise: return "CounterClockwise"
+      }
+    }
   }
 }
 
-extension ScrollWheel.Geometry: CustomStringConvertible {
-  var description: String {
+extension ScrollWheel {
+  private struct Angle: CustomStringConvertible {
+    init(_ a: CGFloat) { counterClockwise = a }
+    var clockwise: CGFloat { return π * 2 - counterClockwise }
+    var counterClockwise: CGFloat
+    var description: String {
+      return "{ clockwise: \(clockwise.degrees.rounded(2)); counterClockwise: \(counterClockwise.degrees.rounded(2)) }"
+    }
+  }
+}
+
+extension ScrollWheel {
+  private struct Geometry: CustomStringConvertible {
+    let location: CGPoint
+    let angle: CGFloat
+    let offset: CGFloat
+    var quadrant: Quadrant { return Quadrant(angle: angle - offset - π * 0.5) }
+    let direction: Direction
+
+    init(location: CGPoint, angle: CGFloat, offset: CGFloat = 0, direction: Direction = .Unknown) {
+      self.location = location
+      self.angle = angle
+      self.direction = direction
+      self.offset = offset
+    }
+
+    var description: String {
     return "; ".join(
-      "location: (\(location.x.rounded(2)), \(location.y.rounded(2)))",
-      "quadrant: \(quadrant.rawValue)",
-      "direction: \(direction.rawValue)",
-      "angle: \(angle)"
-    )
+        "location: (\(location.x.rounded(2)), \(location.y.rounded(2)))",
+        "quadrant: \(quadrant.rawValue)",
+        "direction: \(direction.rawValue)",
+        "angle: \(angle)"
+      )
+    }
   }
 }
 

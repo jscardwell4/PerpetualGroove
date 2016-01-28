@@ -69,7 +69,7 @@ final class LogManager: MoonKit.LogManager {
   /** addFileLoggers */
   static private func addFileLoggers() {
     let logsDirectory = self.logsDirectory
-    addDefaultFileLoggerForContext(.Console, subdirectory: "Default")
+    addDefaultFileLoggerForContext(.Any, subdirectory: "Default")
     addDefaultFileLoggerForContext(MIDIFileContext,   subdirectory: "MIDI")
     addDefaultFileLoggerForContext(SF2FileContext,    subdirectory: "SoundFont")
     addDefaultFileLoggerForContext(SequencerContext,  subdirectory: "Sequencer")
@@ -118,10 +118,10 @@ final class LogManager: MoonKit.LogManager {
     AddTool.defaultLogContext              = SceneContext//  ∪ .Console
     RemoveTool.defaultLogContext           = SceneContext//  ∪ .Console
     GeneratorTool.defaultLogContext        = SceneContext//  ∪ .Console
-    MIDINode.defaultLogContext             = SceneContext  ∪ .Console
-    Trajectory.defaultLogContext           = SceneContext  ∪ .Console
-    MIDINodePath.defaultLogContext         = SceneContext  ∪ .Console
-    Segment.defaultLogContext              = SceneContext  ∪ .Console
+    MIDINode.defaultLogContext             = SceneContext//  ∪ .Console
+    Trajectory.defaultLogContext           = SceneContext//  ∪ .Console
+    MIDINodePath.defaultLogContext         = SceneContext//  ∪ .Console
+    Segment.defaultLogContext              = SceneContext//  ∪ .Console
 
     MIDIPlayerViewController.defaultLogContext     = UIContext//  ∪ .Console
     PurgatoryViewController.defaultLogContext      = UIContext//  ∪ .Console

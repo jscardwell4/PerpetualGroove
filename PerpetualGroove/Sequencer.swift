@@ -91,7 +91,9 @@ final class Sequencer {
     case Primary(Transport)
     case Auxiliary(Transport)
 
-    var transport: Transport { switch self { case .Primary(let t): return t; case .Auxiliary(let t): return t } }
+    var transport: Transport {
+      switch self { case .Primary(let t): return t; case .Auxiliary(let t): return t }
+    }
   }
 
   static let primaryTransport: TransportAssignment = .Primary(Transport(name: "primary"))
@@ -248,7 +250,7 @@ final class Sequencer {
 
   - parameter revolutions: Float
   */
-  static func jog(revolutions: Float) { transport.jog(revolutions) }
+//  static func jog(revolutions: Float) { transport.jog(revolutions) }
 
   /** endJog */
   static func endJog() { transport.endJog() }
@@ -258,7 +260,7 @@ final class Sequencer {
 
   - parameter time: BarBeatTime
   */
-  static func jogToTime(t: BarBeatTime) throws { try transport.jogToTime(t) }
+//  static func jogToTime(t: BarBeatTime) throws { try transport.jogToTime(t) }
 
   /** Starts the MIDI clock */
   static func play() { transport.play() }

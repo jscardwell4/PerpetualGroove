@@ -15,7 +15,9 @@ struct MIDIEventContainer: CollectionType, Indexable, MutableIndexable {
 
   var endIndex: Index { return .EndIndex }
 
-  var isEmpty: Bool { return events.isEmpty || events.values.flatMap({$0.events.isEmpty ? $0 : nil}).count > 0 }
+  var isEmpty: Bool {
+    return events.isEmpty || events.values.flatMap({$0.events.isEmpty ? $0 : nil}).count > 0
+  }
 
   subscript(index: Index) -> MIDIEvent {
     get {
@@ -29,6 +31,15 @@ struct MIDIEventContainer: CollectionType, Indexable, MutableIndexable {
 
   subscript(bounds: Range<Index>) -> MIDIEventContainer {
     return MIDIEventContainer(events: bounds.map({self[$0]}))
+  }
+
+  subscript(bounds: Range<BarBeatTime>) -> MIDIEventContainer {
+    var result: [MIDIEvent] = []
+    for (time, bag) in events where bounds ∋ time {
+      result.appendContentsOf(bag.events)
+    }
+
+    return MIDIEventContainer(events: result)
   }
 
   var count: Int { return _indices.count }

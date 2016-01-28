@@ -29,10 +29,8 @@ final class RemoveTool: ToolType {
     }
   }
 
-  private typealias NodeRef = Weak<MIDINode>
-
   private var touch: UITouch? { didSet { if touch == nil { nodesToRemove.removeAll() } } }
-  private var nodesToRemove: Set<NodeRef> = [] {
+  private var nodesToRemove: Set<MIDINodeRef> = [] {
     didSet {
       logDebug("old count = \(oldValue.count)  new count = \(nodesToRemove.count)")
       nodesToRemove.flatMap({$0.reference}).forEach {
@@ -131,7 +129,7 @@ final class RemoveTool: ToolType {
   /** refreshAllNodeLighting */
   private func refreshAllNodeLighting() {
     guard let track = track else { return }
-    let trackNodes = track.nodes.flatMap({$0.reference})
+    let trackNodes = track.nodes.flatMap({$0.element2.reference})
     let (foregroundNodes, backgroundNodes) = player.midiNodes.bisect { trackNodes ∋ $0 }
     foregroundNodes.forEach { lightNodeForForeground($0) }
     backgroundNodes.forEach { lightNodeForBackground($0) }
@@ -152,8 +150,8 @@ final class RemoveTool: ToolType {
       logDebug("oldValue: \(String(subbingNil: oldValue?.name))  track: \(track?.name ?? "nil")")
       if touch != nil { touch = nil }
       guard active && oldValue !== track else { return }
-      oldValue?.nodes.flatMap({$0.reference}).forEach { lightNodeForBackground($0) }
-      track?.nodes.flatMap({$0.reference}).forEach { lightNodeForForeground($0) }
+      oldValue?.nodes.flatMap({$0.element2.reference}).forEach { lightNodeForBackground($0) }
+      track?.nodes.flatMap({$0.element2.reference}).forEach { lightNodeForForeground($0) }
     }
   }
 
@@ -206,9 +204,13 @@ final class RemoveTool: ToolType {
 
   - returns: [Weak<MIDINode>]
   */
-  private func trackNodesAtPoint(point: CGPoint) -> [NodeRef] {
-    let midiNodes = player.nodesAtPoint(point).flatMap({$0 as? MIDINode}).map({NodeRef($0)})
-    return midiNodes.filter({track?.nodes.contains($0) == true})
+  private func trackNodesAtPoint(point: CGPoint) -> [MIDINodeRef] {
+    let midiNodes = player.nodesAtPoint(point).flatMap({$0 as? MIDINode}).map({MIDINodeRef($0)})
+    return midiNodes.filter({
+      guard let identifier = $0.reference?.identifier else { return false }
+      return track?.nodeIdentifiers.contains(identifier) == true
+      }
+    )
   }
 
   /**

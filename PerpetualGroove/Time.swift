@@ -45,7 +45,7 @@ final class Time {
 
   /** Synchronized access to the musical representation of the current time */
   var barBeatTime: BarBeatTime {
-    get { /*objc_sync_enter(self); defer { objc_sync_exit(self) };*/ return _barBeatTime }
+    get { objc_sync_enter(self); defer { objc_sync_exit(self) }; return _barBeatTime }
     set { objc_sync_enter(self); defer { objc_sync_exit(self) }; /*guard isValidTime(newValue) else { return };*/ _barBeatTime = newValue }
   }
 

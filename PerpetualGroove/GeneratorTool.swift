@@ -10,11 +10,9 @@ import UIKit
 import SpriteKit
 import MoonKit
 
-final class GeneratorTool: ConfigurableToolType {
+final class GeneratorTool: NodeSelectionTool, ConfigurableToolType {
 
-  unowned let player: MIDIPlayerNode
-
-  var active = false {
+  override var active: Bool  {
     didSet {
       logDebug("[\(mode)] oldValue = \(oldValue)  active = \(active)")
       guard active != oldValue && active && mode == .New else { return }
@@ -22,35 +20,8 @@ final class GeneratorTool: ConfigurableToolType {
     }
   }
 
+  enum Mode { case New, Existing }
   let mode: Mode
-
-  private weak var node: MIDINode? {
-    didSet {
-      guard node != oldValue else { return }
-
-      let name = "generatorToolLighting"
-
-      if let node = node {
-        guard node.childNodeWithName(name) == nil else { fatalError("node already lit") }
-
-        let light = SKLightNode()
-        light.name = name
-        light.categoryBitMask = 1
-        node.addChild(light)
-        node.lightingBitMask = 1
-        node.runAction(SKAction.colorizeWithColor(.whiteColor(), colorBlendFactor: 1, duration: 0.25))
-      }
-
-      if let oldNode = oldValue {
-        oldNode.childNodeWithName(name)?.removeFromParent()
-        oldNode.lightingBitMask = 0
-        if let dispatch = oldNode.dispatch {
-          oldNode.runAction(SKAction.colorizeWithColor(dispatch.color.value, colorBlendFactor: 1, duration: 0.25))
-        }
-      }
-
-    }
-  }
 
   private let receptionist: NotificationReceptionist = {
     let receptionist = NotificationReceptionist(callbackQueue: NSOperationQueue.mainQueue())
@@ -59,9 +30,15 @@ final class GeneratorTool: ConfigurableToolType {
   }()
 
 
+  /**
+   initWithPlayerNode:mode:
+
+   - parameter playerNode: MIDIPlayerNode
+   - parameter mode: Mode
+  */
   init(playerNode: MIDIPlayerNode, mode: Mode) {
-    player = playerNode
     self.mode = mode
+    super.init(playerNode: playerNode)
     receptionist.observe(MIDIPlayer.Notification.DidAddNode,
                     from: MIDIPlayer.self,
                 callback: weakMethod(self, GeneratorTool.didAddNode))
@@ -117,15 +94,19 @@ final class GeneratorTool: ConfigurableToolType {
     switch mode {
 
       case .Existing:
-        guard let node = node else { fatalError("cannot show view controller when no node has been chosen") }
-        viewController = storyboard.instantiateViewControllerWithIdentifier("GeneratorWithArrows") as! GeneratorViewController
+        guard let node = node else {
+          fatalError("cannot show view controller when no node has been chosen")
+        }
+        viewController = storyboard.instantiateViewControllerWithIdentifier("GeneratorWithArrows")
+                           as! GeneratorViewController
         viewController.loadGenerator(node.generator)
         viewController.didChangeGenerator = { [weak self] in self?.node?.generator = $0 }
         viewController.previousAction = weakMethod(self, GeneratorTool.previousNode)
         viewController.nextAction = weakMethod(self, GeneratorTool.nextNode)
 
       case .New:
-        viewController = storyboard.instantiateViewControllerWithIdentifier("Generator") as! GeneratorViewController
+        viewController = storyboard.instantiateViewControllerWithIdentifier("Generator")
+                           as! GeneratorViewController
         viewController.didChangeGenerator = {
           MIDIPlayer.addTool?.generator = $0
           Sequencer.sequence?.currentTrack?.instrument.playNote($0)
@@ -170,40 +151,14 @@ final class GeneratorTool: ConfigurableToolType {
    - parameter touches: Set<UITouch>
    - parameter event: UIEvent?
   */
-  func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-    guard active && mode == .Existing && node == nil else { return }
-    node = nodeAtPoint(touches.first?.locationInNode(player))
+  override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    guard mode == .Existing else { return }
+    super.touchesBegan(touches, withEvent: event)
   }
 
-  /**
-   touchesMoved:withEvent:
-
-   - parameter touches: Set<UITouch>
-   - parameter event: UIEvent?
-  */
-  func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {}
-
-  /**
-   touchesCancelled:withEvent:
-
-   - parameter touches: Set<UITouch>?
-   - parameter event: UIEvent?
-  */
-  func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) { node = nil }
-
-  /**
-   touchesEnded:withEvent:
-
-   - parameter touches: Set<UITouch>
-   - parameter event: UIEvent?
-  */
-  func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+  /** didSelectNode */
+  override func didSelectNode() {
     guard active && mode == .Existing && node != nil else { return }
     MIDIPlayer.playerContainer?.presentControllerForTool(self)
   }
-
-}
-
-extension GeneratorTool {
-  enum Mode { case New, Existing }
 }

@@ -35,6 +35,8 @@ final class Instrument: Equatable {
   weak var track: InstrumentTrack?
   private let node = AVAudioUnitSampler()
 
+  private var soundLoaded = false
+
   var bus: AVAudioNodeBus {
     return node.destinationForMixer(AudioManager.mixer, bus: 0)?.connectionPoint.bus ?? -1
   }
@@ -60,6 +62,12 @@ final class Instrument: Equatable {
 
   var volume: Float { get { return node.volume } set { node.volume = (0 ... 1).clampValue(newValue)  } }
   var pan:    Float { get { return node.pan    } set { node.pan    = (-1 ... 1).clampValue(newValue) } }
+
+  /// The default value is 0.0 db. The range of valid values is -90.0 db to 12.0 db.
+  var masterGain: Float { get { return node.masterGain } set { node.masterGain = newValue } }
+
+  /// Adjusts the stereo panning for all the notes played.
+  var stereoPan: Float { get { return node.stereoPan } set { node.stereoPan = newValue } }
 
   private      var client   = MIDIClientRef()
   private(set) var outPort  = MIDIPortRef()
@@ -91,15 +99,6 @@ final class Instrument: Equatable {
   - parameter context: UnsafeMutablePointer<Void>
   */
   private func read(packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutablePointer<Void>) {
-//    let packets = packetList.memory
-//    var packetPointer = UnsafeMutablePointer<MIDIPacket>.alloc(1)
-//    packetPointer.initialize(packets.packet)
-//
-//    for _ in 0 ..< packets.numPackets {
-//      let packet = packetPointer.memory
-//      node.sendMIDIEvent(packet.data.0, data1: packet.data.1, data2: packet.data.2)
-//      packetPointer = MIDIPacketNext(packetPointer)
-//    }
     for packet in packetList.memory {
       node.sendMIDIEvent(packet.data.0, data1: packet.data.1, data2: packet.data.2)
     }
@@ -111,7 +110,7 @@ final class Instrument: Equatable {
   - parameter soundSet: SoundSetType
   */
   func loadSoundSet(soundSet: SoundSetType, var program: Program = 0, var bank: Bank = 0) throws {
-    guard !(self.soundSet.isEqualTo(soundSet) && preset == soundSet[program, bank]) else { return }
+    guard !soundLoaded || !(self.soundSet.isEqualTo(soundSet) && preset == soundSet[program, bank]) else { return }
     let oldPresetName = preset.name
     program = (0 ... 127).clampValue(program)
     bank    = (0 ... 127).clampValue(bank)
@@ -119,6 +118,7 @@ final class Instrument: Equatable {
                                   program: program,
                                   bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB),
                                   bankLSB: bank)
+    soundLoaded = true
     self.soundSet = soundSet
     self.program  = program
     self.bank     = bank

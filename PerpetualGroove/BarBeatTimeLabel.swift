@@ -29,14 +29,25 @@ final class BarBeatTimeLabel: UIView {
       transport.time.registerCallback({ [weak self] in self?.currentTime = $0 },
                             predicate: {_ in true},
                                forKey: barBeatTimeCallbackKey)
+      receptionist.observe(Transport.Notification.DidBeginJogging, from: transport) {
+        [weak self] _ in self?.jogging = true
+      }
+      receptionist.observe(Transport.Notification.DidEndJogging, from: transport) {
+        [weak self] _ in self?.jogging = false
+      }
       receptionist.observe(Transport.Notification.DidJog, from: transport) {
-        [weak self] in guard let time = $0.jogTime else { return }; self?.currentTime = time
+        [weak self] in
+        guard self?.jogging == true, let time = $0.jogTime, direction = $0.jogDirection else { return }
+        self?.currentTime = time
+        print("DidJog: jogTime = \(time), jogDirection: \(direction)")
       }
       receptionist.observe(Transport.Notification.DidReset, from: transport) {
         [weak self] in guard let time = $0.time else { return }; self?.currentTime = time
       }
     }
   }
+
+  private var jogging = false
 
   @IBInspectable var font: UIFont = .largeDisplayFont { didSet { updateFont() } }
   private var _font: UIFont = .largeDisplayFont { didSet { setNeedsDisplay() } }
@@ -88,13 +99,13 @@ final class BarBeatTimeLabel: UIView {
       subbeatFrame = .zero
       return
     }
-    let characterWidth = bounds.width / 9
+    let w = bounds.width / 9
     let height = bounds.height
-    barFrame                = CGRect(x: 0,                  y: 0, width: characterWidth * 3, height: height)
-    barBeatDividerFrame     = CGRect(x: characterWidth * 3, y: 0, width: characterWidth,     height: height)
-    beatFrame               = CGRect(x: characterWidth * 4, y: 0, width: characterWidth,     height: height)
-    beatSubbeatDividerFrame = CGRect(x: characterWidth * 5, y: 0, width: characterWidth,     height: height)
-    subbeatFrame            = CGRect(x: characterWidth * 6, y: 0, width: characterWidth * 3, height: height)
+    barFrame                = CGRect(x: 0,     y: 0, width: w * 3, height: height)
+    barBeatDividerFrame     = CGRect(x: w * 3, y: 0, width: w,     height: height)
+    beatFrame               = CGRect(x: w * 4, y: 0, width: w,     height: height)
+    beatSubbeatDividerFrame = CGRect(x: w * 5, y: 0, width: w,     height: height)
+    subbeatFrame            = CGRect(x: w * 6, y: 0, width: w * 3, height: height)
     setNeedsDisplay()
   }
 
@@ -104,7 +115,10 @@ final class BarBeatTimeLabel: UIView {
   - parameter rect: CGRect
   */
   override func drawRect(rect: CGRect) {
-    let attributes: [String:AnyObject] = [NSFontAttributeName: _font, NSForegroundColorAttributeName: fontColor]
+    let attributes: [String:AnyObject] = [
+      NSFontAttributeName: _font,
+      NSForegroundColorAttributeName: fontColor
+    ]
     switch rect {
     case barFrame:                  barString.drawInRect(rect, withAttributes: attributes)
       case barBeatDividerFrame:     barBeatDividerString.drawInRect(rect, withAttributes: attributes)
@@ -148,7 +162,9 @@ final class BarBeatTimeLabel: UIView {
   }
 
   /** updateFont */
-  private func updateFont() { _font = font.fontWithSize((characterSize.width / (bounds.width / 9)) * font.pointSize) }
+  private func updateFont() {
+    _font = font.fontWithSize((characterSize.width / (bounds.width / 9)) * font.pointSize)
+  }
 
   /**
   intrinsicContentSize

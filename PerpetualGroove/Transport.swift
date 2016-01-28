@@ -95,7 +95,7 @@ final class Transport {
     guard !jogging else { return }
     clock.stop()
     jogTime = time.barBeatTime
-    ticksPerRevolution = MIDITimeStamp(Sequencer.timeSignature.beatsPerBar) * MIDITimeStamp(Sequencer.partsPerQuarter)
+    ticksPerRevolution = MIDITimeStamp(Sequencer.beatsPerBar) * MIDITimeStamp(Sequencer.partsPerQuarter)
     state ⊻= [.Jogging]
     Notification.DidBeginJogging.post(object: self, userInfo:[
       .Ticks: NSNumber(unsignedLongLong: time.ticks),
@@ -108,7 +108,7 @@ final class Transport {
 
   - parameter revolutions: Float
   */
-  func jog(revolutions: Float) {
+  func jog(revolutions: Float, direction: ScrollWheel.Direction) {
     guard jogging else { logWarning("not jogging"); return }
 
     let 𝝙ticks = MIDITimeStamp(Double(abs(revolutions)) * Double(ticksPerRevolution))
@@ -121,7 +121,11 @@ final class Transport {
       default:                                          ticks = time.ticks + 𝝙ticks
     }
 
-    do { try jogToTime(BarBeatTime(tickValue: ticks, base: .One)) } catch { logError(error) }
+    do {
+      try jogToTime(BarBeatTime(tickValue: ticks, base: .One), direction: direction)
+    } catch {
+      logError(error)
+    }
   }
 
   /** endJog */
@@ -142,7 +146,8 @@ final class Transport {
 
   - parameter time: BarBeatTime
   */
-  func jogToTime(t: BarBeatTime) throws {
+  func jogToTime(t: BarBeatTime, direction: ScrollWheel.Direction) throws {
+    print("jogToTime: t = \(t), direction = \(direction)")
     guard jogTime != t else { return }
     guard jogging else { throw Error.NotPermitted("state ∌ jogging") }
     guard t.isNormal else { throw Error.InvalidBarBeatTime("\(t)") }
@@ -150,7 +155,8 @@ final class Transport {
     Notification.DidJog.post(object: self, userInfo:[
       .Ticks: NSNumber(unsignedLongLong: time.ticks),
       .Time: time.barBeatTime.rawValue,
-      .JogTime: jogTime.rawValue
+      .JogTime: jogTime.rawValue,
+      .JogDirection: direction.rawValue
       ])
   }
 
@@ -210,7 +216,7 @@ extension Transport {
     case DidChangeState
 
     enum Key: String, NotificationKeyType {
-      case Time, Ticks, JogTime, TransportState, PreviousTransportState
+      case Time, Ticks, JogTime, JogDirection, TransportState, PreviousTransportState
     }
   }
 
@@ -220,6 +226,12 @@ extension NSNotification {
   var jogTime: BarBeatTime? {
     guard let string = userInfo?[Transport.Notification.Key.JogTime.key] as? String else { return nil }
     return BarBeatTime(rawValue: string)
+  }
+  var jogDirection: ScrollWheel.Direction? {
+    guard let raw = userInfo?[Transport.Notification.Key.JogDirection.key] as? Int else {
+      return nil
+    }
+    return ScrollWheel.Direction(rawValue: raw)
   }
   var time: BarBeatTime? {
     guard let string = userInfo?[Transport.Notification.Key.Time.key] as? String else { return nil }

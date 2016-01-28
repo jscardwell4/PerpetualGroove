@@ -340,6 +340,7 @@
 		C2AA2BCD1B8508AA00A0B08D /* Heap.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AA2BCC1B8508AA00A0B08D /* Heap.swift */; };
 		C2AFC9081BD675F60057F055 /* MarqueeField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AFC9071BD675F60057F055 /* MarqueeField.swift */; };
 		C2AFC90A1BD678C60057F055 /* TintColorControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AFC9091BD678C60057F055 /* TintColorControl.swift */; };
+		C2B3B2ED1C592EC60001152F /* HashableTuple.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B3B2EC1C592EC60001152F /* HashableTuple.swift */; };
 		C2B4EB721BD8291D00DD1486 /* Loggable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B4EB711BD8291D00DD1486 /* Loggable.swift */; };
 		C2B6914C1AFAC8EF0041CE11 /* XMLParserDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B6914B1AFAC8EF0041CE11 /* XMLParserDelegate.swift */; };
 		C2B6918A1AFBCADB0041CE11 /* NetworkReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B691891AFBCADB0041CE11 /* NetworkReachability.swift */; };
@@ -658,6 +659,7 @@
 		C2AA2BCC1B8508AA00A0B08D /* Heap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Heap.swift; sourceTree = "<group>"; };
 		C2AFC9071BD675F60057F055 /* MarqueeField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarqueeField.swift; sourceTree = "<group>"; };
 		C2AFC9091BD678C60057F055 /* TintColorControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TintColorControl.swift; sourceTree = "<group>"; };
+		C2B3B2EC1C592EC60001152F /* HashableTuple.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HashableTuple.swift; sourceTree = "<group>"; };
 		C2B4EB711BD8291D00DD1486 /* Loggable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Loggable.swift; sourceTree = "<group>"; };
 		C2B6914B1AFAC8EF0041CE11 /* XMLParserDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XMLParserDelegate.swift; sourceTree = "<group>"; };
 		C2B691891AFBCADB0041CE11 /* NetworkReachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkReachability.swift; sourceTree = "<group>"; };
@@ -975,6 +977,7 @@
 				C23592DF19C8E04200920F8D /* OrderedDictionary.swift */,
 				C2C482E419CA0225002E84A9 /* Stack.swift */,
 				C25E63E01A00427100F54626 /* OrderedSet.swift */,
+				C2B3B2EC1C592EC60001152F /* HashableTuple.swift */,
 			);
 			path = "Data Structures";
 			sourceTree = "<group>";
@@ -2134,6 +2137,7 @@
 				C238A6541B04DC8B00898DB8 /* SortingFunctions.swift in Sources */,
 				C2F8C3171A362606004229FE /* UIResponder+MoonKitAdditions.swift in Sources */,
 				C2CA852A1BC726760046AFC0 /* CGAffineTransform+MoonKitAddtions.swift in Sources */,
+				C2B3B2ED1C592EC60001152F /* HashableTuple.swift in Sources */,
 				C2358F5A19C78E0C00920F8D /* MSColorInputButton.m in Sources */,
 				C29649901B00EBD0000C2D4A /* FieldView.swift in Sources */,
 				C2BE96E81A467E85007599B2 /* NSManagedObjectModel+MoonKitAdditions.swift in Sources */,

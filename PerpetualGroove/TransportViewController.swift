@@ -64,7 +64,7 @@ final class TransportViewController: UIViewController {
   @IBAction private func beginJog(){ transport.beginJog() }
 
   /** jog */
-  @IBAction private func jog() { transport.jog(jogWheel.revolutions) }
+  @IBAction private func jog() { transport.jog(jogWheel.revolutions, direction: jogWheel.direction) }
 
   /** endJog */
   @IBAction private func endJog() { transport.endJog() }
@@ -99,7 +99,9 @@ final class TransportViewController: UIViewController {
   private var state: Transport.State = [] {
     didSet {
       guard isViewLoaded() && state != oldValue else { return }
-      guard state ∌ [.Playing, .Paused] else { fatalError("State invalid: cannot be both playing and paused") }
+      guard state ∌ [.Playing, .Paused] else {
+        fatalError("State invalid: cannot be both playing and paused")
+      }
 
       logDebug("\(oldValue) ➞ \(state)")
 

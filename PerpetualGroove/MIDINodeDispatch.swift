@@ -13,12 +13,14 @@ typealias MIDINodeRef = Weak<MIDINode>
 
 // MARK: - MIDINodeDispatch
 protocol MIDINodeDispatch: class, MIDIEventDispatch, Loggable, Named {
-  var nodes: OrderedSet<MIDINodeRef> { get set }
+  var nodes: OrderedSet<HashableTuple<BarBeatTime,MIDINodeRef>> { get set }
   var nodeIdentifiers: Set<MIDINode.Identifier> { get }
   var nextNodeName: String { get }
   var color: TrackColor { get }
   func addNode(node: MIDINode) throws
-  func addNodeWithIdentifier(identifier: MIDINode.Identifier, trajectory: Trajectory, generator: MIDIGenerator)
+  func addNodeWithIdentifier(identifier: MIDINode.Identifier,
+                  trajectory: Trajectory,
+                   generator: MIDIGenerator)
   func removeNodeWithIdentifier(identifier: MIDINode.Identifier, delete: Bool) throws
   func removeNode(node: MIDINode, delete: Bool) throws
   func removeNode(node: MIDINode) throws
@@ -28,11 +30,15 @@ protocol MIDINodeDispatch: class, MIDIEventDispatch, Loggable, Named {
 
   var recording: Bool { get }
   func startNodes()
-  func stopNodes()
+  func stopNodes(remove remove: Bool)
 }
 
 extension MIDINodeDispatch {
-  var nodeIdentifiers: Set<MIDINode.Identifier> { return Set(nodes.flatMap({$0.reference?.identifier})) }
+
+  var nodeIdentifiers: Set<MIDINode.Identifier> {
+    return Set(nodes.flatMap({$0.element2.reference?.identifier}))
+  }
+
   /**
    addNodeWithIdentifier:trajectory:generator:
 
@@ -44,7 +50,9 @@ extension MIDINodeDispatch {
                   trajectory: Trajectory,
                    generator: MIDIGenerator)
   {
-    logDebug("placing node with identifier \(identifier), trajectory \(trajectory), generator \(generator)")
+    logDebug(", ".join("placing node with identifier \(identifier)",
+                       "trajectory \(trajectory)",
+                       "generator \(generator)"))
 
     // Make sure a node hasn't already been place for this identifier
     guard nodeIdentifiers ∌ identifier else { return }
@@ -61,7 +69,9 @@ extension MIDINodeDispatch {
   */
   func removeNodeWithIdentifier(identifier: MIDINode.Identifier, delete: Bool = false) throws {
     logDebug("removing node with identifier \(identifier)")
-    guard let idx = nodes.indexOf({$0.reference?.identifier == identifier}), node = nodes[idx].reference else {
+    guard let idx = nodes.indexOf({$0.element2.reference?.identifier == identifier}),
+              node = nodes[idx].element2.reference else
+    {
       fatalError("failed to find node with mapped identifier \(identifier)")
     }
 
@@ -70,10 +80,13 @@ extension MIDINodeDispatch {
   }
 
   /** stopNodes */
-  func stopNodes() { nodes.forEach {$0.reference?.fadeOut()}; logDebug("nodes stopped") }
+  func stopNodes(remove remove: Bool = false) {
+    nodes.forEach {$0.element2.reference?.fadeOut(remove: remove)}
+    logDebug("nodes stopped\(remove ? " and removed" : "")")
+  }
 
   /** startNodes */
-  func startNodes() { nodes.forEach {$0.reference?.fadeIn()}; logDebug("nodes started") }
+  func startNodes() { nodes.forEach {$0.element2.reference?.fadeIn()}; logDebug("nodes started") }
 
   /**
    removeNode:
@@ -111,7 +124,7 @@ extension MIDINodeDispatch {
     }
 
     // Insert the node into our set
-    nodes.append(Weak(node))
+    nodes.append(HashableTuple(Sequencer.time.barBeatTime, Weak(node)))
     logDebug("adding node \(node.name!) (\(node.identifier))")
 
     MIDINodeDispatchNotification.DidAddNode.post(object: self)
@@ -125,8 +138,11 @@ extension MIDINodeDispatch {
    - parameter delete: Bool
   */
   func removeNode(node: MIDINode, delete: Bool) throws {
-    guard let idx = nodes.indexOf({$0.reference === node}),
-      node = nodes.removeAtIndex(idx).reference else { throw MIDINodeDispatchError.NodeNotFound }
+    guard let idx = nodes.indexOf({$0.element2.reference === node}),
+              node = nodes.removeAtIndex(idx).element2.reference else
+    {
+        throw MIDINodeDispatchError.NodeNotFound
+    }
     
     let id = node.identifier
     logDebug("removing node \(node.name!) \(id)")
