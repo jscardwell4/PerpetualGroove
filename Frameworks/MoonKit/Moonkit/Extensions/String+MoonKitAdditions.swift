@@ -79,7 +79,7 @@ public extension String {
   public init<B:ByteArrayConvertible>(hexBytes: B) { self.init(hexBytes: hexBytes.bytes) }
 
   public init(binaryBytes: [Byte]) {
-    var groups = binaryBytes.map({String($0, radix: 2, uppercase: true, pad: 4, group: 4)})
+    var groups = binaryBytes.map({String(String($0, radix: 2, uppercase: true, pad: 4, group: 4).characters.reverse())})
     while groups.count > 1 && groups.first == "0000" { groups.removeAtIndex(0) }
     self = " ".join(groups)
   }

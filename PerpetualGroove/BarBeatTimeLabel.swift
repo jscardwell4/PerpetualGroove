@@ -37,9 +37,8 @@ final class BarBeatTimeLabel: UIView {
       }
       receptionist.observe(Transport.Notification.DidJog, from: transport) {
         [weak self] in
-        guard self?.jogging == true, let time = $0.jogTime, direction = $0.jogDirection else { return }
+        guard self?.jogging == true, let time = $0.jogTime, _ = $0.jogDirection else { return }
         self?.currentTime = time
-        print("DidJog: jogTime = \(time), jogDirection: \(direction)")
       }
       receptionist.observe(Transport.Notification.DidReset, from: transport) {
         [weak self] in guard let time = $0.time else { return }; self?.currentTime = time
@@ -137,6 +136,7 @@ final class BarBeatTimeLabel: UIView {
   private var currentTime: BarBeatTime = .start1 {
     didSet {
       guard currentTime != oldValue else { return }
+      logDebug("currentTime = \(currentTime.debugDescription)")
       dispatchToMain {
         [unowned self, newValue = currentTime] in
 

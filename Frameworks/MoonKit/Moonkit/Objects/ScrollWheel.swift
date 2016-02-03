@@ -102,7 +102,10 @@ public class ScrollWheel: UIControl {
 
   // MARK: - Drawing
 
-  private var angle: CGFloat = 0 { didSet { setNeedsDisplay() } }
+  /// The angle used in drawing the wheel
+  private var angle: CGFloat = 0.0 { didSet { setNeedsDisplay() } }
+
+  /// The wheel's center point in window coordinates
   private var wheelCenter: CGPoint = .zero
 
   /**
@@ -148,33 +151,56 @@ public class ScrollWheel: UIControl {
     CGContextRestoreGState(context)
   }
 
-  // MARK: - Behavior
-
-  @IBInspectable public var confineTouchToBounds: Bool = false
-  @IBInspectable public var beginResetsRevolutions: Bool = true
-
   // MARK: - Values
 
-  public var revolutions: Float { return Float(theta / (π * 2)) }
+  /// One full revolution in radians
+  private static let revolution = π * 2
 
-  @IBInspectable public var theta: CGFloat = 0
+  /// Half a revolution in radians
+  private static let halfRevolution = π
+
+  /// A quarter revolution in radians
+  private static let quarterRevolution = π / 2
+
+  /// Total rotation in radians
+  public private(set) var radians = 0.0 {
+    didSet {
+      guard radians != oldValue else { return }
+      sendActionsForControlEvents(.ValueChanged)
+    }
+  }
+
+  /// Total number of revolutions
+  public var revolutions: Double { return radians / Double(ScrollWheel.revolution) }
+  @objc(deltaRevolutions) public var 𝝙revolutions: Double { return 𝝙radians / Double(ScrollWheel.revolution) }
+
+  @objc(deltaRadians) public private(set) var 𝝙radians = 0.0
+  @objc(deltaSeconds) public private(set) var 𝝙seconds = 0.0
+
+  /// Velocity in radians per second
+  public var velocity: Double { return 𝝙radians / 𝝙seconds }
+
+  /// The current direction of rotation
+  public var direction: Direction { return directionalTrend }
 
   // MARK: - Touches
 
+  /// The path within which valid touch events occur
   private var touchPath = UIBezierPath()
-  private var touchOffset: CGFloat = 0
+
+  /// The difference between the `angle` and the angle of the initial touch location
+  private var touchOffset: CGFloat = 0.0
 
   /** updateTouchPath */
   private func updateTouchPath() {
     let square = bounds.centerInscribedSquare
     touchPath = UIBezierPath(ovalInRect: square)
     let outterRadius = half(square.width)
-    let innerRadius = square.width * 0.125
-    touchPath.moveToPoint(CGPoint(x: square.minX + outterRadius + innerRadius,
+    touchPath.moveToPoint(CGPoint(x: square.minX + outterRadius + 1,
                                   y: square.minY + outterRadius))
     touchPath.usesEvenOddFillRule = true
     touchPath.addArcWithCenter(CGPoint(x: square.midX, y: square.midY),
-                        radius: innerRadius,
+                        radius: 1,
                     startAngle: 0,
                       endAngle: π * 2,
                      clockwise: true)
@@ -184,40 +210,41 @@ public class ScrollWheel: UIControl {
   public override var frame: CGRect { didSet { updateTouchPath() } }
 
   /**
-  angleForTouchLocation:withCenter:direction:
+   angleForTouchLocation:
 
-  - parameter location: CGPoint
+   - parameter location: CGPoint
 
-  - returns: (Angle, Quadrant)
+    - returns: Double
   */
   private func angleForTouchLocation(location: CGPoint) -> CGFloat {
 
-    let delta = location - wheelCenter
+    let 𝝙 = location - wheelCenter
     let quadrant = Quadrant(point: location, center: wheelCenter)
-    let (x, y) = delta.absolute.unpack
-    let h = sqrt(pow(x, 2) + pow(y, 2))
-    var a = acos(x / h)
+    let (x, y) = 𝝙.absolute.unpack
+    let h = hypot(x, y)
+    var α = acos(x / h)
 
     // Adjust the angle for the quadrant
     switch quadrant {
-      case .I: a = π * 2 - a
-      case .II: a += π
-      case .III: a = π - a
-      case .IV: break
+      case .I:   α = ScrollWheel.revolution - α
+      case .II:  α += ScrollWheel.halfRevolution
+      case .III: α = ScrollWheel.halfRevolution - α
+      case .IV:  break
     }
 
     // Adjust the angle for the rotated dimple
-    a += π * 0.5
+    α += ScrollWheel.quarterRevolution
 
     // Adjust for initial touch offset
-    a += touchOffset
+    α += touchOffset
 
-    return a
+    return α
   }
 
-  /// Whether the last touch location was too close to the center of the wheel
-  private var innerLastTouch = false
+  /// Values required for updating rotation
+  private var preliminaryValues: (location: CGPoint, quadrant: Quadrant, timestamp: NSTimeInterval)?
 
+  /// The direction indicated by the weighted average of the contents of `directionHistory`
   private var directionalTrend: Direction {
     var n = 0.0
     let directions = directionHistory.reverse().prefix(5)
@@ -227,9 +254,9 @@ public class ScrollWheel: UIControl {
     }
     let result: Direction
     switch n {
-      case -26.5 ..< 0:   result = .CounterClockwise
-      case 0.1 ... 26.5:  result = .Clockwise
-      default:            result = .Unknown
+      case ..<0: result = .CounterClockwise
+      case 0..<: result = .Clockwise
+      default:   result = .Unknown
     }
 
     return result
@@ -242,76 +269,60 @@ public class ScrollWheel: UIControl {
   */
   private func updateForTouch(touch: UITouch, withEvent event: UIEvent? = nil) {
 
-    guard touchPath.containsPoint(touch.locationInView(self)) else { innerLastTouch = true; return }
+    // Make sure the touch is located inside `touchPath`
+    guard touchPath.containsPoint(touch.locationInView(self)) else { /*innerLastTouch = true;*/ return }
 
-    if innerLastTouch {
-      touchOffset = 0
-      let touchAngle = angleForTouchLocation(touch.locationInView(nil))
-      touchOffset = (angle - touchAngle) % (π * 2)
-      directionHistory.removeAll(keepCapacity: true)
-      previousLocation = nil
-      previousAngle = nil
-      previousQuadrant = nil
-      previousDirection = .Unknown
-//      self.geometry = nil
-      innerLastTouch = false
-    }
+    // Get the new location, angle and quadrant
+    let locationʹ = touch.locationInView(nil)
+    let angleʹ = angleForTouchLocation(locationʹ)
+    let quadrantʹ = Quadrant(point: locationʹ, center: wheelCenter)
 
-    let location = touch.locationInView(nil)
-    angle = angleForTouchLocation(location)
-    let quadrant = Quadrant(angle: angle - touchOffset - π * 0.5)
-
-    guard let //previousGeometry = self.geometry,
-              previousLocation = self.previousLocation,
-              previousAngle = self.previousAngle,
-              previousQuadrant = self.previousQuadrant else
-    {
-      self.previousLocation = location
-      self.previousAngle = angle
-      self.previousQuadrant = quadrant
-//      self.geometry = Geometry(location: location, angle: angle, offset: touchOffset)
+    // Make sure we already had some values or cache the new values and return
+    guard let (location, quadrant, timestamp) = preliminaryValues else {
+      preliminaryValues = (locationʹ, quadrantʹ, touch.timestamp)
       return
     }
 
-    guard location != previousLocation else { return }
+    // Make sure the location has actually changed
+    guard locationʹ != location else { return }
 
-//    let trending: Direction? = previousGeometry.direction == .Unknown ? nil : previousGeometry.direction
-    let direction = Direction(from: previousLocation,
-                              to: location,
-                              about: wheelCenter,
-                           trending: directionalTrend)//trending)
-
-//    let geometry = Geometry(location: location, angle: angle, offset: touchOffset, direction: direction)
-
-
-    var deltaAngle = abs(angle - previousAngle)
-    switch (previousQuadrant, quadrant) {
-      case (.IV, .I), (.I, .IV): deltaAngle -= π * 2
-      default:                   break
-    }
-
-    guard !isnan(deltaAngle) else { return }
-    switch direction {
-      case .Clockwise:        theta += deltaAngle
-      case .CounterClockwise: theta -= deltaAngle
-      case .Unknown:          return
-    }
-
-    self.previousLocation = location
-    self.previousAngle = angle
-    self.previousQuadrant = quadrant
-    previousDirection = direction
+    // Get the current direction of rotation and cache it
+    let direction = Direction(from: location, to: locationʹ, about: wheelCenter, trending: directionalTrend)
     directionHistory.append(direction)
-//    self.geometry = geometry
+
+    // Make sure we haven't changed direction or clear cached values and return
+    guard direction == directionalTrend else { preliminaryValues = nil; return }
+
+    // Get the absolute change in radians between the previous angle and the current angle and validate the value
+    var 𝝙angle = abs(angleʹ - angle)
+    guard !isnan(𝝙angle) else { fatalError("unexptected NaN for 𝝙angle") }
+
+    // Correct the value if we've crossed the 0/2π threshold
+    switch (quadrantʹ, quadrant) { case (.IV, .I), (.I, .IV): 𝝙angle -= ScrollWheel.revolution; default: break }
+
+    // Get the change in radians signed for the current direction
+    let 𝝙radiansʹ = Double(direction == .CounterClockwise ? -𝝙angle : 𝝙angle)
+
+    // Calculate the updated total radians
+    let radiansʹ = radians + 𝝙radiansʹ
+
+    // Calculate the number of seconds over which the change in radians occurred
+    let 𝝙secondsʹ = touch.timestamp - timestamp
+
+    // Update the cached values
+    preliminaryValues = (locationʹ, quadrantʹ, touch.timestamp)
+
+    // Update property values
+    𝝙radians = 𝝙radiansʹ
+    𝝙seconds = 𝝙secondsʹ
+    angle = angleʹ
+
+    // Update radians last so all values have been updated when actions are sent
+    radians = radiansʹ
   }
 
-//  private var geometry: Geometry?
-  private var previousAngle: CGFloat?
-  private var previousQuadrant: Quadrant?
+  /// Cache of calculated direction values
   private var directionHistory: [Direction] = []
-  private var previousLocation: CGPoint?
-  private var previousDirection: Direction = .Unknown
-  public var direction: Direction { return directionalTrend }
 
   /**
   intrinsicContentSize
@@ -332,17 +343,11 @@ public class ScrollWheel: UIControl {
   */
   public override func beginTrackingWithTouch(touch: UITouch, withEvent event: UIEvent?) -> Bool {
     guard touchPath.containsPoint(touch.locationInView(self)) else { return false }
-    if beginResetsRevolutions { theta = 0 }
-//    geometry = nil
-    previousLocation = nil
-    previousQuadrant = nil
-    previousDirection = .Unknown
-    previousAngle = nil
-    directionHistory.removeAll(keepCapacity: true)
-    touchOffset = 0
+    preliminaryValues = nil
     wheelCenter = window!.convertPoint(self.center, fromView: superview)
-    let touchAngle = angleForTouchLocation(touch.locationInView(nil))
-    touchOffset = (angle - touchAngle) % (π * 2)
+    touchOffset = (angle - angleForTouchLocation(touch.locationInView(nil))) % ScrollWheel.revolution
+    radians = 0
+    𝝙radians = 0
     updateForTouch(touch)
     return true
   }
@@ -360,9 +365,7 @@ public class ScrollWheel: UIControl {
   - returns: Bool
   */
   public override func continueTrackingWithTouch(touch: UITouch, withEvent event: UIEvent?) -> Bool {
-    guard !confineTouchToBounds || touchPath.containsPoint(touch.locationInView(self)) else { return false }
     updateForTouch(touch, withEvent: event)
-    sendActionsForControlEvents(.ValueChanged)
     return true
   }
 
@@ -373,8 +376,7 @@ public class ScrollWheel: UIControl {
   - parameter event: UIEvent?
   */
   public override func endTrackingWithTouch(touch: UITouch?, withEvent event: UIEvent?) {
-    guard let touch = touch else { return }
-    guard !confineTouchToBounds || touchPath.containsPoint(touch.locationInView(self)) else { return }
+    guard let touch = touch  else { return }
     updateForTouch(touch)
   }
 
@@ -383,12 +385,10 @@ public class ScrollWheel: UIControl {
 
   - parameter event: UIEvent?
   */
-  public override func cancelTrackingWithEvent(event: UIEvent?) { sendActionsForControlEvents(.TouchCancel) }
+  public override func cancelTrackingWithEvent(event: UIEvent?) {
+    sendActionsForControlEvents(.TouchCancel)
+  }
 
-}
-
-private func -(lhs: ScrollWheel.Angle, rhs: ScrollWheel.Angle) -> ScrollWheel.Angle {
-  return ScrollWheel.Angle(lhs.counterClockwise - rhs.counterClockwise)
 }
 
 extension ScrollWheel {
@@ -415,12 +415,12 @@ extension ScrollWheel {
 
     - parameter angle: CGFloat
     */
-    init(angle: CGFloat) {
+    init(angle: Double) {
       switch angle {
-        case 0 ... (π * 0.5): self = .IV
-        case (π * 0.5) ... π: self = .III
-        case π ... (π * 1.5): self = .II
-        default:              self = .I
+        case 0 ... Double(π * 0.5):         self = .IV
+        case Double(π * 0.5) ... Double(π): self = .III
+        case Double(π) ... Double(π * 1.5): self = .II
+        default:                            self = .I
       }
     }
   }
@@ -525,41 +525,3 @@ extension ScrollWheel {
     }
   }
 }
-
-extension ScrollWheel {
-  private struct Angle: CustomStringConvertible {
-    init(_ a: CGFloat) { counterClockwise = a }
-    var clockwise: CGFloat { return π * 2 - counterClockwise }
-    var counterClockwise: CGFloat
-    var description: String {
-      return "{ clockwise: \(clockwise.degrees.rounded(2)); counterClockwise: \(counterClockwise.degrees.rounded(2)) }"
-    }
-  }
-}
-
-extension ScrollWheel {
-  private struct Geometry: CustomStringConvertible {
-    let location: CGPoint
-    let angle: CGFloat
-    let offset: CGFloat
-    var quadrant: Quadrant { return Quadrant(angle: angle - offset - π * 0.5) }
-    let direction: Direction
-
-    init(location: CGPoint, angle: CGFloat, offset: CGFloat = 0, direction: Direction = .Unknown) {
-      self.location = location
-      self.angle = angle
-      self.direction = direction
-      self.offset = offset
-    }
-
-    var description: String {
-    return "; ".join(
-        "location: (\(location.x.rounded(2)), \(location.y.rounded(2)))",
-        "quadrant: \(quadrant.rawValue)",
-        "direction: \(direction.rawValue)",
-        "angle: \(angle)"
-      )
-    }
-  }
-}
-

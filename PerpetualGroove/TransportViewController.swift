@@ -61,13 +61,13 @@ final class TransportViewController: UIViewController {
   @IBAction func stop() { transport.reset() }
 
   /** beginJog */
-  @IBAction private func beginJog(){ transport.beginJog() }
+  @IBAction private func beginJog(){ transport.beginJog(jogWheel) }
 
   /** jog */
-  @IBAction private func jog() { transport.jog(jogWheel.revolutions, direction: jogWheel.direction) }
+  @IBAction private func jog() { transport.jog(jogWheel) }
 
   /** endJog */
-  @IBAction private func endJog() { transport.endJog() }
+  @IBAction private func endJog() { transport.endJog(jogWheel) }
 
   private enum ControlImage {
     case Pause, Play

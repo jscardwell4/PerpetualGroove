@@ -54,7 +54,6 @@ final class Sequencer {
       }
       initialized = true
       logDebug("Sequencer initialized")
-      print(transport.clock)
     }
   }
 
@@ -145,7 +144,7 @@ final class Sequencer {
 
   static var time: Time { return transport.time }
 
-  static let resolution: UInt64 = 480
+//  static let resolution: UInt64 = 480
 
   static var tickInterval: UInt64 { return transport.clock.tickInterval }
   static var nanosecondsPerBeat: UInt64 { return transport.clock.nanosecondsPerBeat }
@@ -170,7 +169,13 @@ final class Sequencer {
     if recording && !automated { sequence?.tempo = tempo }
   }
 
-  static var timeSignature: TimeSignature = .FourFour { didSet { sequence?.timeSignature = timeSignature } }
+  static var timeSignature: TimeSignature = .FourFour {
+    didSet {
+      guard timeSignature != oldValue else { return }
+      sequence?.timeSignature = timeSignature
+      Notification.TimeSignatureDidChange.post()
+    }
+  }
 
   /**
   setTimeSignature:automated:
@@ -214,9 +219,13 @@ final class Sequencer {
 
   static private(set) var soundSets: [SoundSetType] = []
 
-  static func soundSetWithURL(url: NSURL) -> SoundSetType? { return soundSets.first({$0.url == url}) }
+  static func soundSetWithURL(url: NSURL) -> SoundSetType? {
+    return soundSets.first({$0.url == url})
+  }
 
-  static func soundSetWithName(name: String) -> SoundSetType? { return soundSets.first({$0.fileName == name}) }
+  static func soundSetWithName(name: String) -> SoundSetType? {
+    return soundSets.first({$0.fileName == name})
+  }
 
   static private(set) var auditionInstrument: Instrument!
 
@@ -243,7 +252,7 @@ final class Sequencer {
   static var recording:        Bool { return transport.recording }
 
   /** beginJog */
-  static func beginJog() { transport.beginJog() }
+//  static func beginJog() { transport.beginJog() }
 
   /**
   jog:
@@ -253,7 +262,7 @@ final class Sequencer {
 //  static func jog(revolutions: Float) { transport.jog(revolutions) }
 
   /** endJog */
-  static func endJog() { transport.endJog() }
+//  static func endJog() { transport.endJog() }
 
   /**
   jogToTime:
@@ -294,6 +303,7 @@ extension Sequencer {
     case WillChangeSequence, DidChangeSequence
     case SoundSetSelectionTargetDidChange
     case DidUpdateAvailableSoundSets
+    case TimeSignatureDidChange
 
     var object: AnyObject? { return Sequencer.self }
 

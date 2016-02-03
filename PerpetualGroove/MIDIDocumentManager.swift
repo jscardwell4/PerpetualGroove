@@ -53,7 +53,6 @@ final class MIDIDocumentManager {
         metadataItems = items 
       }
 
-
       updateStorageLocation()
 
       state ∪= [.Initialized]
@@ -185,8 +184,24 @@ final class MIDIDocumentManager {
         bookmarkData = nil
     }
 
-    do { try openBookmarkedDocument(bookmarkData) }
-    catch { logError(error, message: "Failed to resolve bookmark data into a valid file url") }
+    switch (bookmarkData, Sequencer.initialized) {
+      case (nil, _): return
+      case (let data?, true):
+        do { try openBookmarkedDocument(data) }
+        catch { logError(error, message: "Failed to resolve bookmark data into a valid file url") }
+      case (let data?, false):
+        receptionist.observe(Sequencer.Notification.DidUpdateAvailableSoundSets, from: Sequencer.self) {
+          _ in
+          receptionist.stopObserving(Sequencer.Notification.DidUpdateAvailableSoundSets)
+          queue.async {
+            do {
+              try openBookmarkedDocument(data)
+            } catch {
+              logError(error, message: "Failed to resolve bookmark data into a valid file url")
+            }
+          }
+        }
+    }
   }
 
   static private(set) var storageLocation: StorageLocation = SettingsManager.iCloudStorage ? .iCloud: .Local
@@ -412,8 +427,7 @@ final class MIDIDocumentManager {
 
   - parameter data: NSData?
   */
-  static private func openBookmarkedDocument(data: NSData?) throws {
-    guard let data = data else { return }
+  static private func openBookmarkedDocument(data: NSData) throws {
     let url = try NSURL(byResolvingBookmarkData: data, options: .WithoutUI, relativeToURL: nil, bookmarkDataIsStale: nil)
     logDebug("opening bookmarked file at path '\(url.path!)'")
     openURL(url)

@@ -172,7 +172,9 @@ final class MIDINode: SKSpriteNode {
     guard let jogTime = notification.jogTime else { fatalError("notification does not contain ticks") }
 
     if jogTime < initTime { fadeOutAndRemoveAction.run() }
-    else if let location = path.locationForTime(jogTime) { position = location }
+    else if let location = path.locationForTime(jogTime) {
+      runAction(SKAction.moveTo(location, duration: 0))
+    }
   }
 
   /**

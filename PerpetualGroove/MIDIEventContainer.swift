@@ -81,10 +81,13 @@ struct MIDIEventContainer: CollectionType, Indexable, MutableIndexable {
     var index = startIndex
     let container = self
     return anyGenerator({
-      guard index != .EndIndex else { return nil }
-      let event = container[index]
-      index = index.successor()
-      return event
+      switch index {
+      case .EndIndex: return nil
+      case .ValueIndex(_, _, let successor):
+        let event = container[index]
+        index = successor
+        return event
+      }
     })
   }
 

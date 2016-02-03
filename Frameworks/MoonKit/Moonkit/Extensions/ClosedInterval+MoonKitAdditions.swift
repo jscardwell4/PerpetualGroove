@@ -14,8 +14,14 @@ public extension ClosedInterval {
     else if start > value { return start }
     else { return end }
   }
+  public func clampValue(inout value: Bound) { value = clampValue(value) }
   public var reversed: ReverseClosedInterval<Bound> { return ReverseClosedInterval<Bound>(self) }
 }
+
+public extension ClosedInterval where Bound:FloatingPointType, Bound:SignedNumberType {
+  public static var infinity: ClosedInterval<Bound> { return -Bound.infinity...Bound.infinity }
+}
+
 public extension ClosedInterval where Bound:SignedNumberType, Bound:ArithmeticType {
   // FIXME: I think this only works for positive start intervals and intervals of the form -x ... x
   public var diameter: Bound { return abs(end - start) }

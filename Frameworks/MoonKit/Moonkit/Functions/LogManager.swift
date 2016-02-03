@@ -378,6 +378,20 @@ extension DDLogFlag: CustomStringConvertible {
   }
 }
 
+extension DDLogLevel: CustomStringConvertible {
+  public var description: String {
+    switch self {
+      case .Off:     return "Off"
+      case .Error:   return "Error"
+      case .Warning: return "Warning"
+      case .Info:    return "Info"
+      case .Debug:   return "Debug"
+      case .Verbose: return "Verbose"
+      case .All:     return "All"
+    }
+  }
+}
+
 extension LogManager.LogContext: Hashable {
   public var hashValue: Int { return rawValue.hashValue }
 }

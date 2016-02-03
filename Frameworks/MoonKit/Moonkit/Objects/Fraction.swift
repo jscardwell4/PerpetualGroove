@@ -50,8 +50,8 @@ Converts two fractions into equivalent fractions with a common denominator
 private func commonize<F:FractionType>(x: Fraction<F>, _ y: Fraction<F>) -> (Fraction<F>, Fraction<F>) {
   switch (x.denominator, y.denominator) {
   case let (n, m) where n == m: return (x, y)
-  case let (n, m) where n % m == F(intMax: 0): return (x, Fraction((n / m) * y.numerator, n))
-  case let (n, m) where m % n == F(intMax: 0): return (Fraction((m / n) * x.numerator, m), y)
+  case let (n, m) where n % m == F(): return (x, Fraction((n / m) * y.numerator, n))
+  case let (n, m) where m % n == F(): return (Fraction((m / n) * x.numerator, m), y)
   case let (n, m):
     let commonBase = lcm(n, m)
     return (Fraction((commonBase / n) * x.numerator, commonBase),
@@ -60,17 +60,19 @@ private func commonize<F:FractionType>(x: Fraction<F>, _ y: Fraction<F>) -> (Fra
   }
 }
 
-public typealias FractionType = protocol<Comparable, SignedNumberType, ArithmeticType, Hashable>
+public typealias FractionType = protocol<Comparable, IntegerLiteralConvertible, /*IntegerType, SignedNumberType,*/ ArithmeticType, Hashable>
 
 public struct Fraction<ValueType:FractionType>   {
 
-  public var numerator: ValueType = ValueType(intMax: 0)
-  public var denominator: ValueType = ValueType(intMax: 1)
+  public var numerator: ValueType = 0
+  public var denominator: ValueType = 1
+
   public var value: ValueType { return numerator / denominator }
   public var inverse: Fraction { return Fraction(denominator, numerator) }
 
   public var reduced: Fraction { var result = self; result.reduce(); return result }
   mutating public func reduce() {
+    guard !denominator.isZero else { return }
     let divisor = gcd(numerator, denominator); numerator /= divisor; denominator /= divisor
   }
 
@@ -80,11 +82,12 @@ public struct Fraction<ValueType:FractionType>   {
   }
 
   public init(_ value: ValueType) {
-    let pieces = ".".split(String(value))
-    guard pieces.count == 2 else { numerator = value; return }
-    denominator = ValueType(intMax: IntMax(pow(10.0, Double(pieces[1].characters.count))))
-    numerator = ValueType(intMax: IntMax("".join(pieces))!)
-    reduce()
+    numerator = value
+//    let pieces = ".".split(String(value))
+//    guard pieces.count == 2 else { numerator = value; return }
+//    denominator = ValueType(integerLiteral: ValueType.IntegerLiteralType.init(pow(10.0, Double(pieces[1].characters.count))))
+//    numerator = ValueType(integerLiteral: IntMax("".join(pieces))!)
+//    reduce()
   }
   public init(_ n: ValueType, _ d: ValueType) { numerator = n; denominator = d}
 }
@@ -95,7 +98,7 @@ extension Fraction: Hashable { public var hashValue: Int { return value.hashValu
 // MARK: - SignedNumberType
 //extension Fraction: SignedNumberType {}
 
-public prefix func -<F:FractionType>(x: Fraction<F>) -> Fraction<F> { return Fraction(-x.numerator, x.denominator) }
+public prefix func -<F:FractionType where F:SignedNumberType>(x: Fraction<F>) -> Fraction<F> { return Fraction(-x.numerator, x.denominator) }
 public func -<F:FractionType>(lhs: Fraction<F>, rhs: Fraction<F>) -> Fraction<F> {
   let (l, r) = commonize(lhs, rhs)
   return Fraction(l.numerator - r.numerator, l.denominator).reduced
@@ -160,18 +163,18 @@ public func ==<F:FractionType>(var lhs: Fraction<F>, var rhs: Fraction<F>) -> Bo
 
 public func ==<F:FractionType>(lhs: Fraction<F>, rhs: F) -> Bool { return lhs.value == rhs }
 public func ==<F:FractionType>(lhs: F, rhs: Fraction<F>) -> Bool { return rhs.value == lhs }
-public func ==<F:FractionType, I:SignedIntegerType>(lhs: Fraction<F>, rhs: I) -> Bool {
-  guard lhs.value % 1 == 0 else { return false }
-  return lhs.value.toIntMax() == rhs.toIntMax()
-}
+//public func ==<F:FractionType, I:SignedIntegerType>(lhs: Fraction<F>, rhs: I) -> Bool {
+//  guard lhs.value % 1 == 0 else { return false }
+//  return lhs.value.toIntMax() == rhs.toIntMax()
+//}
 
-public func ==<F:FractionType, I:SignedIntegerType>(lhs: I, rhs: Fraction<F>) -> Bool {
-  guard rhs.value % 1 == 0 else { return false }
-  return rhs.value.toIntMax() == lhs.toIntMax()
-}
+//public func ==<F:FractionType, I:SignedIntegerType>(lhs: I, rhs: Fraction<F>) -> Bool {
+//  guard rhs.value % 1 == 0 else { return false }
+//  return rhs.value.toIntMax() == lhs.toIntMax()
+//}
 
 // MARK: - AbsoluteValuable
-extension Fraction { //: AbsoluteValuable {
+extension Fraction where ValueType:SignedNumberType { //: AbsoluteValuable {
   public static func abs(x: Fraction) -> Fraction {
     return Fraction(Swift.abs(x.numerator), Swift.abs(x.denominator))
   }

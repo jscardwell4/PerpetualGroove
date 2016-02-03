@@ -27,8 +27,8 @@ final class Time {
   private func read(packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutablePointer<Void>) {
     // Runs on MIDI Services thread
     switch packetList.memory.packet.data.0 {
-      case 0b1111_1000: queue.sync { [unowned self] in self.incrementClock() }
-      case 0b1111_1010: queue.sync { [unowned self] in self._reset()
+      case 0b1111_1000: queue.async { [unowned self] in self.incrementClock() }
+      case 0b1111_1010: queue.async { [unowned self] in self._reset()
                                                         self.invokeCallbacksForTime(self.barBeatTime) }
       default: break
     }
@@ -162,7 +162,7 @@ final class Time {
     predicatedCallbacks[key] = (predicate: predicate, callback: callback)
   }
 
-  var bar:     Int            { return barBeatTime.bar     }  /// Accessor for `time.bar`
+  var bar:     UInt           { return barBeatTime.bar     }  /// Accessor for `time.bar`
   var beat:    UInt           { return barBeatTime.beat    }  /// Accessor for `time.beat`
   var subbeat: UInt           { return barBeatTime.subbeat }  /// Accessor for `time.subbeat`
   var ticks:   MIDITimeStamp  { return barBeatTime.ticks   }  /// Accessor for `time.ticks`
@@ -200,7 +200,7 @@ final class Time {
 
    - parameter completion: (() -> Void)? = nil
    */
-  func reset(completion: (() -> Void)? = nil) { queue.sync { [unowned self] in self._reset(completion) } }
+  func reset(completion: (() -> Void)? = nil) { queue.async { [unowned self] in self._reset(completion) } }
 
   /**
   _reset:

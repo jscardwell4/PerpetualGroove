@@ -44,33 +44,41 @@ extension ByteArrayConvertible {
   public init<S:SequenceType where S.Generator.Element == Byte>(_ bytes: S) { self.init(Array(bytes)) }
 }
 
+private func _bytes<T>(var value: T) -> [Byte] {
+  return withUnsafePointer(&value) { (pointer: UnsafePointer<T>) -> [Byte] in
+    let bytePointer = UnsafePointer<Byte>(pointer)
+    let byteBuffer = UnsafeBufferPointer<Byte>(start: bytePointer, count: sizeof(T))
+    return Array(byteBuffer)
+  }
+}
+
 extension UInt: ByteArrayConvertible {
-  public var bytes: [Byte] { return sizeof(UInt.self) == 8 ? UInt64(self).bytes : UInt32(self).bytes }
+  public var bytes: [Byte] { return _bytes(self) }
   public init(_ bytes: [Byte]) {
     self = sizeof(UInt.self) == 8 ? UInt(UInt64(bytes)) : UInt(UInt32(bytes))
   }
 }
 
 extension Int: ByteArrayConvertible {
-  public var bytes: [Byte] { return UInt(self).bytes }
+  public var bytes: [Byte] { return _bytes(self) }
   public init<S:SequenceType where S.Generator.Element == Byte>(_ bytes: S) { self = Int(UInt(bytes)) }
 }
 
 
 extension UInt8: ByteArrayConvertible {
-  public var bytes: [Byte] { return [self] }
+  public var bytes: [Byte] { return _bytes(self) }
   public init(_ bytes: [Byte]) {
     guard let byte = bytes.first else { self = 0; return }
     self = byte
   }
 }
 extension Int8: ByteArrayConvertible {
-  public var bytes: [Byte] { return [UInt8(self)] }
+  public var bytes: [Byte] { return _bytes(self) }
   public init(_ bytes: [Byte]) { self = Int8(UInt8(bytes)) }
 }
 
 extension UInt16: ByteArrayConvertible {
-  public var bytes: [Byte] { return [Byte(self >> 8 & 0xFF), Byte(self & 0xFF)] }
+  public var bytes: [Byte] { return _bytes(self) }
   public init(_ bytes: [Byte]) {
     let count = bytes.count
     guard count < 3 else { self = UInt16(bytes[count - 2 ..< count]); return }
@@ -85,14 +93,12 @@ extension UInt16: ByteArrayConvertible {
   }
 }
 extension Int16: ByteArrayConvertible {
-  public var bytes: [Byte] { return UInt16(self).bytes }
+  public var bytes: [Byte] { return _bytes(self) }
   public init(_ bytes: [Byte]) { self = Int16(UInt16(bytes)) }
 }
 
 extension UInt32: ByteArrayConvertible {
-  public var bytes: [Byte] {
-    return [Byte(self >> 24 & 0xFF), Byte(self >> 16 & 0xFF), Byte(self >> 8 & 0xFF), Byte(self & 0xFF)]
-  }
+  public var bytes: [Byte] { return _bytes(self) }
   public init(_ bytes: [Byte]) {
     let count = bytes.count
     guard count > 2 else { self = UInt32(UInt16(bytes)); return }
@@ -100,12 +106,12 @@ extension UInt32: ByteArrayConvertible {
   }
 }
 extension Int32: ByteArrayConvertible {
-  public var bytes: [Byte] { return UInt32(self).bytes }
+  public var bytes: [Byte] { return _bytes(self) }
   public init(_ bytes: [Byte]) { self = Int32(UInt32(bytes)) }
 }
 
 extension UInt64: ByteArrayConvertible {
-  public var bytes: [Byte] { return UInt32(self >> 32 & 0xFFFFFFFF).bytes  + UInt32(self & 0xFFFFFFFF).bytes }
+  public var bytes: [Byte] { return _bytes(self) }
   public init(_ bytes: [Byte]) {
     let count = bytes.count
     guard count > 4 else { self = UInt64(UInt32(bytes)); return }
@@ -113,6 +119,6 @@ extension UInt64: ByteArrayConvertible {
   }
 }
 extension Int64: ByteArrayConvertible {
-  public var bytes: [Byte] { return UInt64(self).bytes }
+  public var bytes: [Byte] { return _bytes(self) }
   public init(_ bytes: [Byte]) { self = Int64(UInt64(bytes)) }
 }

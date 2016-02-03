@@ -13,6 +13,9 @@ import Foundation
 postfix operator ..< { }
 prefix operator ..< { }
 
+postfix operator ... {}
+prefix operator ... {}
+
 // then, declare a couple of simple custom types that indicate one-sided ranges:
 public struct RangeStart<I: ForwardIndexType> { let start: I }
 public struct RangeEnd<I: ForwardIndexType> { let end: I }
@@ -34,6 +37,41 @@ private func sortedRanges<T:ForwardIndexType where T:Comparable>(ranges: [Range<
     (lhs: Range<T>, rhs: Range<T>) -> Bool in
     return lhs.startIndex < rhs.startIndex
   })
+}
+
+public struct OpenIntervalStart<I: Comparable> { let start: I }
+public struct OpenIntervalEnd<I: Comparable> { let end: I }
+
+public postfix func ..<<I:Comparable>(lhs: I) -> OpenIntervalStart<I>
+{ return OpenIntervalStart(start: lhs) }
+
+public prefix func ..<<I:Comparable>(rhs: I) -> OpenIntervalEnd<I>
+{ return OpenIntervalEnd(end: rhs) }
+
+public func ~=<I:Comparable>(lhs: OpenIntervalStart<I>, rhs: I) -> Bool {
+  return rhs > lhs.start
+}
+
+public func ~=<I:Comparable>(lhs: OpenIntervalEnd<I>, rhs: I) -> Bool {
+  return rhs < lhs.end
+}
+
+public struct ClosedIntervalStart<I: Comparable> { let start: I }
+public struct ClosedIntervalEnd<I: Comparable> { let end: I }
+
+public postfix func ...<I:Comparable>(lhs: I) -> ClosedIntervalStart<I>
+{ return ClosedIntervalStart(start: lhs) }
+
+public prefix func ...<I:Comparable>(rhs: I) -> ClosedIntervalEnd<I>
+{ return ClosedIntervalEnd(end: rhs) }
+
+
+public func ~=<I:Comparable>(lhs: ClosedIntervalStart<I>, rhs: I) -> Bool {
+  return rhs >= lhs.start
+}
+
+public func ~=<I:Comparable>(lhs: ClosedIntervalEnd<I>, rhs: I) -> Bool {
+  return rhs <= lhs.end
 }
 
 public extension Range where Element: Comparable {

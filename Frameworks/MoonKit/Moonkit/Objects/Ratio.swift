@@ -14,7 +14,7 @@ public func ∶<F:FractionType>(lhs: F, rhs: F) -> Ratio<F> { return Ratio<F>(lh
 
 public struct Ratio<T:FractionType> {
 
-  private var fraction = T(intMax: 1)╱T(intMax: 1)
+  private var fraction: Fraction<T> = 1╱1
   public var numerator: T { get { return fraction.numerator } set { fraction.numerator = newValue } }
   public var denominator: T { get { return fraction.denominator } set { fraction.denominator = newValue } }
 
@@ -36,7 +36,7 @@ extension Ratio: CustomStringConvertible {
 // MARK: - SignedNumberType
 //extension Ratio: SignedNumberType {}
 
-public prefix func -<T:FractionType>(x: Ratio<T>) -> Ratio<T> { return Ratio(-x.fraction) }
+public prefix func -<T:FractionType where T:SignedNumberType>(x: Ratio<T>) -> Ratio<T> { return Ratio(-x.fraction) }
 public func -<T:FractionType>(lhs: Ratio<T>, rhs: Ratio<T>) -> Ratio<T> { return Ratio(lhs.fraction - rhs.fraction) }
 public func +<T:FractionType>(lhs: Ratio<T>, rhs: Ratio<T>) -> Ratio<T> { return Ratio(lhs.fraction + rhs.fraction) }
 public func *<T:FractionType>(lhs: Ratio<T>, rhs: Ratio<T>) -> Ratio<T> { return Ratio(lhs.fraction * rhs.fraction) }

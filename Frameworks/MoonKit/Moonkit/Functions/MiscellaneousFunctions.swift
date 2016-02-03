@@ -22,14 +22,13 @@ public func nonce() -> String { return NSUUID().UUIDString }
 */
 public func touch<T>(t: T) {}
 
-public func gcd<T:ArithmeticType>(a: T, _ b: T) -> T {
-  var aMax = a.toIntMax(), bMax = b.toIntMax()
-  while bMax != 0 {
-    let t = bMax
-    bMax = aMax % bMax
-    aMax = t
+public func gcd<T:ArithmeticType>(var a: T, var _ b: T) -> T {
+  while !b.isZero {
+    let t = b
+    b = a % b
+    a = t
   }
-  return T(intMax: aMax)
+  return a
 }
 public func lcm<T:ArithmeticType>(a: T, _ b: T) -> T {
   return a / gcd(a, b) * b

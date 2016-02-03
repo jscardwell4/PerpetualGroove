@@ -13,7 +13,7 @@ import MoonKit
 struct BarBeatTime {
 
   /// Type for specifying whether an empty time would be represented by 0:0.0 or 1:1.1
-  enum Base: Int {
+  enum Base: UInt {
     case Zero, One
     var string: String { return self == .One ? "₁" : "₀" }
     init(string: String) { self = string == "₁" ? .One : .Zero }
@@ -29,45 +29,45 @@ struct BarBeatTime {
     }
   }
 
-  var negative: Bool { return bar < 0 }
+  var negative = false
 
   /// The number of complete bars
   ///
   /// Must satisfy `bar >= 0` to qualify as 'normal'.
-  var bar = 0
+  var bar: UInt = 0
+
+  private var rawBar: UInt { return bar - base.rawValue }
 
   /// The number of complete beats. 
   ///
   /// Must satisfy `1...beatsPerBar ∋ beat` to qualify as 'normal'
-  var beat: UInt {
-    get { return UInt(beatFraction.numerator) }
-    set { beatFraction.numerator = Int(newValue) }
-  }
+  var beat: UInt { get { return beatFraction.numerator } set { beatFraction.numerator = newValue } }
+
+  private var rawBeat: UInt { return beat - base.rawValue }
 
   /// The number of subbeats.
   ///
   /// Must satisfy `1...subbeatDivisor ∋ subbeat` to qualify as 'normal'
-  var subbeat: UInt {
-    get { return UInt(subbeatFraction.numerator) }
-    set { subbeatFraction.numerator = Int(newValue) }
-  }
+  var subbeat: UInt { get { return subbeatFraction.numerator } set { subbeatFraction.numerator = newValue } }
+
+  private var rawSubbeat: UInt { return subbeat - base.rawValue }
 
   /// The number of subbeats per beat
   var subbeatDivisor: UInt {
-    get { return UInt(subbeatFraction.denominator) }
+    get { return subbeatFraction.denominator }
     set {
-      guard newValue > 0 && UInt(subbeatFraction.denominator) != newValue else { return }
-      subbeatFraction = subbeatFraction.fractionWithBase(Int(newValue))
+      guard subbeatFraction.denominator != newValue else { return }
+      subbeatFraction = subbeatFraction.fractionWithBase(newValue)
       normalize()
     }
   }
 
   /// The number of beats per bar
   var beatsPerBar: UInt {
-    get { return UInt(beatFraction.denominator) }
+    get { return beatFraction.denominator }
     set {
-      guard newValue > 0 && UInt(beatFraction.denominator) != newValue else { return }
-      beatFraction = beatFraction.fractionWithBase(Int(newValue))
+      guard beatFraction.denominator != newValue else { return }
+      beatFraction = beatFraction.fractionWithBase(newValue)
       normalize()
     }
   }
@@ -75,9 +75,9 @@ struct BarBeatTime {
   /// The number of beats per minute. This value is used when converting to/from seconds.
   var beatsPerMinute = Sequencer.beatsPerMinute
 
-  private var beatFraction: Fraction<Int> = 0╱Int(Sequencer.beatsPerBar)
+  private var beatFraction: Fraction<UInt> = 0╱Sequencer.beatsPerBar
 
-  private var subbeatFraction: Fraction<Int> = 0╱Int(Sequencer.partsPerQuarter)
+  private var subbeatFraction: Fraction<UInt> = 0╱Sequencer.partsPerQuarter
 
   /// The time's zero-based representation
   var zeroBased: BarBeatTime { guard base != .Zero else { return self }; var result = self; result.base = .Zero; return result }
@@ -95,20 +95,23 @@ struct BarBeatTime {
    - parameter beatsPerBar: Int = Sequencer.beatsPerBar
    - parameter beatsPerMinute: Int = Sequencer.beatsPerMinute
    - parameter base: Base = .Zero
+   - parameter negative: Bool = false
   */
-  init(bar: Int = 0,
+  init(bar: UInt = 0,
        beat: UInt = 0,
        subbeat: UInt = 0,
        subbeatDivisor: UInt = Sequencer.partsPerQuarter,
        beatsPerBar: UInt = Sequencer.beatsPerBar,
        beatsPerMinute: UInt = Sequencer.beatsPerMinute,
-       base: Base = .Zero)
+       base: Base = .Zero,
+       negative: Bool = false)
   {
     self.bar = bar
-    beatFraction = Int(beat)╱Int(beatsPerBar)
-    subbeatFraction = Int(subbeat)╱Int(subbeatDivisor)
+    beatFraction = beat╱beatsPerBar
+    subbeatFraction = subbeat╱subbeatDivisor
     self.beatsPerMinute = beatsPerMinute
     self.base = base
+    self.negative = negative
   }
 
   /// Whether the time qualifies as 'normal'
@@ -119,11 +122,8 @@ struct BarBeatTime {
   /// - `1...subbeatDivisor ∋ subbeat`
   /// - `subbeatDivisor > 0`
   var isNormal: Bool {
-    guard subbeatDivisor > 0 && beatsPerBar > 0 else { return false }
-    switch base {
-      case .Zero: return bar >= 0 && 0 ..< beatsPerBar ∋ beat && 0 ..< subbeatDivisor ∋ subbeat
-      case .One:  return bar >= 1 && 1 ... beatsPerBar ∋ beat && 1 ... subbeatDivisor ∋ subbeat
-    }
+    return base.rawValue ..< (beatsPerBar + base.rawValue) ∋ beat
+        && base.rawValue ..< (subbeatDivisor + base.rawValue) ∋ subbeat
   }
 
   /// Attempts to adjust the time into a normalized form. 
@@ -132,56 +132,26 @@ struct BarBeatTime {
 
   /** Updates `self` to equal its `normalized` form. */
   mutating func normalize() {
-    guard !isNormal && subbeatDivisor > 0 && beatsPerBar > 0 && bar >= 0 else { return }
-    switch base {
-      case .Zero:
-        if subbeat >= subbeatDivisor {
-          beat += subbeat / subbeatDivisor
-          subbeat %= subbeatDivisor
-        }
-        while subbeat < 0 {
-          subbeat += subbeatDivisor
-          beat--
-        }
+    guard !isNormal else { return }
 
-        if beat >= beatsPerBar {
-          bar += Int(beat / beatsPerBar)
-          beat %= beatsPerBar
-        }
-
-        while beat < 0 {
-          beat += beatsPerBar
-          bar--
-        }
-
-      case .One:
-        if subbeat > subbeatDivisor {
-          beat += subbeat / subbeatDivisor
-          subbeat %= subbeatDivisor
-        }
-        while subbeat < 1 {
-          subbeat += subbeatDivisor
-          beat--
-        }
-        if beat > beatsPerBar {
-          bar += Int(beat / beatsPerBar)
-          beat %= beatsPerBar
-        }
-        while beat < 1 {
-          beat += beatsPerBar
-          bar--
-        }
+    if subbeat >= subbeatDivisor + base.rawValue {
+      beat += subbeat / subbeatDivisor
+      subbeat %= subbeatDivisor
+    }
+    if beat >= beatsPerBar + base.rawValue {
+      bar += beat / beatsPerBar
+      beat %= beatsPerBar
     }
   }
 
   /// The starting point for a zero-based bar-beat time, '0:0.0'
-  static let start0 = BarBeatTime()
+  static var start0: BarBeatTime { return BarBeatTime() }
 
   /// The starting point for one-based bar-beat time, '1:1.1'
-  static let start1 = BarBeatTime(bar: 1, beat: 1, subbeat: 1, base: .One)
+  static var start1: BarBeatTime { return BarBeatTime(bar: 1, beat: 1, subbeat: 1, base: .One) }
 
   /// A bar-beat time for representing a null value, -1:-1:-1
-  static let null  = BarBeatTime(bar: Int.min, beat: 0, subbeat: 0)
+  static let null = BarBeatTime(bar: 0, beat: 0, subbeat: 0, subbeatDivisor: 0, beatsPerBar: 0, beatsPerMinute: 0)
 
   /**
    Initialize with a tick value
@@ -191,86 +161,99 @@ struct BarBeatTime {
    - parameter subbeatDivisor: UInt16 = Sequencer.time.partsPerQuarter
    - parameter beatsPerMinute: Int = Sequencer.beatsPerMinute
    - parameter base: Base = .Zero
+   - parameter negative: Bool = false
    */
   init(tickValue: MIDITimeStamp,
        beatsPerBar: UInt = Sequencer.beatsPerBar,
        subbeatDivisor: UInt = Sequencer.partsPerQuarter,
        beatsPerMinute: UInt = Sequencer.beatsPerMinute,
-       base: Base = .Zero)
+       base: Base = .Zero,
+       negative: Bool = false)
   {
-    let subbeat = Int(tickValue % MIDITimeStamp(subbeatDivisor))
-    guard tickValue > MIDITimeStamp(subbeat) else {
-      self = BarBeatTime(bar: base.rawValue,
-                         beat: UInt(base.rawValue),
-                         subbeat: UInt(subbeat + base.rawValue),
-                         subbeatDivisor: subbeatDivisor,
-                         beatsPerBar: beatsPerBar,
-                         base: base)
-      return
-    }
-    let totalBeats = (tickValue - MIDITimeStamp(subbeat)) / MIDITimeStamp(subbeatDivisor)
-    let beat = Int(totalBeats % MIDITimeStamp(beatsPerBar))
-    let bar = Int(totalBeats / MIDITimeStamp(beatsPerBar))
-    self = BarBeatTime(bar: bar + base.rawValue,
-                       beat: UInt(beat + base.rawValue),
-                       subbeat: UInt(subbeat + base.rawValue),
-                       subbeatDivisor: subbeatDivisor,
-                       beatsPerBar: beatsPerBar,
-                       beatsPerMinute: beatsPerMinute,
-                       base: base)
+    let totalBeats = Double(tickValue) / Double(subbeatDivisor)
+    self.init(totalBeats: negative ? -totalBeats : totalBeats,
+              beatsPerBar: beatsPerBar,
+              subbeatDivisor: subbeatDivisor,
+              beatsPerMinute: beatsPerMinute,
+              base: base)
   }
 
   /**
    Initialize with the number of seconds
 
-   - parameter seconds: Double
+   - parameter seconds: NSTimeInterval
    - parameter beatsPerBar: Int = Sequencer.beatsPerBar
    - parameter subbeatDivisor: Int = Sequencer.partsPerQuarter
    - parameter beatsPerMinute: Int = Sequencer.beatsPerMinute
    - parameter base: Base = .Zero
+   - parameter negative: Bool = false
    */
-  init(seconds: Double,
+  init(seconds: NSTimeInterval,
+       beatsPerBar: UInt = Sequencer.beatsPerBar,
+       subbeatDivisor: UInt = Sequencer.partsPerQuarter,
+       beatsPerMinute: UInt = Sequencer.beatsPerMinute,
+       base: Base = .Zero,
+       negative: Bool = false)
+  {
+    let totalBeats = seconds * NSTimeInterval(beatsPerMinute) / 60
+    self.init(totalBeats: negative ? -totalBeats : totalBeats,
+              beatsPerBar: beatsPerBar,
+              subbeatDivisor: subbeatDivisor,
+              beatsPerMinute: beatsPerMinute,
+              base: base)
+  }
+
+  /**
+   initWithTotalBeats:beatsPerBar:subbeatDivisor:beatsPerMinute:base:
+
+   - parameter totalBeats: Double
+   - parameter beatsPerBar: UInt = Sequencer.beatsPerBar
+   - parameter subbeatDivisor: UInt = Sequencer.partsPerQuarter
+   - parameter beatsPerMinute: UInt = Sequencer.beatsPerMinute
+   - parameter base: Base = .Zero
+   - parameter negative: Bool = false
+  */
+  init(totalBeats: Double,
        beatsPerBar: UInt = Sequencer.beatsPerBar,
        subbeatDivisor: UInt = Sequencer.partsPerQuarter,
        beatsPerMinute: UInt = Sequencer.beatsPerMinute,
        base: Base = .Zero)
   {
-    let beatsPerSecond = NSTimeInterval(beatsPerMinute) / 60
-    let totalBeats = seconds * beatsPerSecond
-    let bar = Int(totalBeats) / Int(beatsPerBar) + base.rawValue
-    let beat = Int(totalBeats) % Int(beatsPerBar) + base.rawValue
-    let subbeat = Int(totalBeats % 1 * NSTimeInterval(subbeatDivisor)) + base.rawValue
+    let negative = totalBeats.isSignMinus
+    let totalBeats = abs(totalBeats)
+    let bar = UInt(totalBeats) / beatsPerBar + base.rawValue
+    let beat = UInt(totalBeats) % beatsPerBar + base.rawValue
+    let subbeat = UInt(modf(totalBeats).1 * Double(subbeatDivisor)) + base.rawValue
     self.init(bar: bar,
-              beat: UInt(beat),
-              subbeat: UInt(subbeat),
+              beat: beat,
+              subbeat: subbeat,
               subbeatDivisor: subbeatDivisor,
               beatsPerBar: beatsPerBar,
               beatsPerMinute: beatsPerMinute,
-              base: base)
+              base: base,
+              negative: negative)
   }
 
   /// The time's value in seconds
-  var seconds: NSTimeInterval {
-    let beatsPerSecond = NSTimeInterval(beatsPerMinute) / 60
-    let wholeBeats = NSTimeInterval((bar - base.rawValue) * Int(beatsPerBar) + Int(beat) - base.rawValue)
-    let fractionalBeat = NSTimeInterval(Int(subbeat) - base.rawValue) / NSTimeInterval(subbeatDivisor)
+  var seconds: NSTimeInterval { return totalBeats / NSTimeInterval(beatsPerMinute) / 60 }
+
+  var totalBeats: Double {
+    let wholeBeats = Double((rawBar) * beatsPerBar + rawBeat)
+    let fractionalBeat = Double(rawSubbeat) / Double(subbeatDivisor)
     let totalBeats = wholeBeats + fractionalBeat
-    return totalBeats / beatsPerSecond
+    return negative ? -totalBeats : totalBeats
   }
 
   /// The time's value in ticks
   var ticks: MIDITimeStamp {
-    let bar = MIDITimeStamp(max(self.bar - base.rawValue, 0))
-    let beat = MIDITimeStamp(max(Int(self.beat) - base.rawValue, 0))
-    let subbeat = MIDITimeStamp(max(Int(self.subbeat) - base.rawValue, 0))
-    return (bar * MIDITimeStamp(beatsPerBar) + beat) * MIDITimeStamp(subbeatDivisor) + subbeat
+    return MIDITimeStamp((rawBar * beatsPerBar + rawBeat) * subbeatDivisor + rawSubbeat)
   }
 
   var display: String {
     let barString = String(bar, radix: 10, pad: 3)
     let beatString = String(beat)
     let subbeatString = String(subbeat, radix: 10, pad: String(subbeatDivisor).utf8.count)
-    return "\(barString):\(beatString).\(subbeatString)"
+    return "\(negative ? "-" : "")\(barString):\(beatString).\(subbeatString)"
   }
 
 }
@@ -294,8 +277,11 @@ extension BarBeatTime: Hashable {
   var hashValue: Int { return rawValue.hashValue }
 }
 
+// MARK: - RawRepresentable
 extension BarBeatTime: RawRepresentable {
-  var rawValue: String { return "\(bar):\(beatFraction).\(subbeatFraction)@\(beatsPerMinute)\(base.string)" }
+  var rawValue: String {
+    return "\(negative ? "-" : "")\(bar):\(beatFraction).\(subbeatFraction)@\(beatsPerMinute)\(base.string)"
+  }
 
   /**
    initWithRawValue:
@@ -305,7 +291,8 @@ extension BarBeatTime: RawRepresentable {
   init?(rawValue: String) {
     let pattern = "".join(
       "^",
-      "(?<bar>-?[0-9]+)",
+      "(?<negative>-)?",
+      "(?<bar>[0-9]+)",
       ":",
       "(?<beat>[0-9]+)",
       "(?:",
@@ -330,13 +317,14 @@ extension BarBeatTime: RawRepresentable {
               barString = match["bar"]?.string,
               beatString = match["beat"]?.string,
               subbeatString = match["subbeat"]?.string,
-              bar = Int(barString),
+              bar = UInt(barString),
               beat = UInt(beatString),
               subbeat = UInt(subbeatString) else { return nil }
     let beatsPerBar: UInt
     let beatsPerMinute: Int
     let subbeatDivisor: Int
     let base: Base
+    let negative = match["negative"] != nil
     if let beatsPerBarString = match["beatsPerBar"]?.string, beatsPerBarUInt = UInt(beatsPerBarString) {
       beatsPerBar = beatsPerBarUInt
     } else {
@@ -359,20 +347,24 @@ extension BarBeatTime: RawRepresentable {
               subbeatDivisor: UInt(subbeatDivisor),
               beatsPerBar: beatsPerBar,
               beatsPerMinute: UInt(beatsPerMinute),
-              base: base)
+              base: base,
+              negative: negative)
   }
 }
 
+// MARK: - StringLiteralConvertible
 extension BarBeatTime: StringLiteralConvertible {
   init(stringLiteral value: String) { self = BarBeatTime(rawValue: value) ?? .null }
   init(unicodeScalarLiteral value: String) { self.init(stringLiteral: value) }
   init(extendedGraphemeClusterLiteral value: String) { self.init(stringLiteral: value) }
 }
 
+// MARK: - JSONValueConvertible
 extension BarBeatTime: JSONValueConvertible {
   var jsonValue: JSONValue { return rawValue.jsonValue }
 }
 
+// MARK: - JSONValueInitializable
 extension BarBeatTime: JSONValueInitializable {
   init?(_ jsonValue: JSONValue?) {
     guard let rawValue = String(jsonValue) else { return nil }
@@ -380,27 +372,19 @@ extension BarBeatTime: JSONValueInitializable {
   }
 }
 
-func ==(var lhs: BarBeatTime, var rhs: BarBeatTime) -> Bool {
-  lhs.normalize()
-  rhs.normalize()
-  rhs.base = lhs.base
-  guard lhs.bar == rhs.bar else { return false }
-  guard lhs.beatFraction.reduced == rhs.beatFraction.reduced else { return false }
-  guard lhs.subbeatFraction.reduced == rhs.subbeatFraction.reduced else { return false }
-  guard lhs.base == rhs.base else { return false }
-  guard lhs.beatsPerMinute == rhs.beatsPerMinute else { return false }
-  return lhs.negative == rhs.negative
-}
+func ==(lhs: BarBeatTime, rhs: BarBeatTime) -> Bool { return lhs.totalBeats == rhs.totalBeats }
 
+// MARK: - BidirectionalIndexType
 extension BarBeatTime: BidirectionalIndexType {
 
   typealias Distance = BarBeatTime
 
   func predecessor() -> BarBeatTime {
-    var result = self
-    result.subbeat--
-    result.normalize()
-    return result
+    return BarBeatTime(totalBeats: totalBeats - 1 / Double(subbeatDivisor),
+                       beatsPerBar: beatsPerBar,
+                       subbeatDivisor: subbeatDivisor,
+                       beatsPerMinute: beatsPerMinute,
+                       base: base)
   }
 
   /**
@@ -409,14 +393,30 @@ extension BarBeatTime: BidirectionalIndexType {
     - returns: BarBeatTime
   */
   func successor() -> BarBeatTime {
-    var result = self
-    result.subbeat++
-    result.normalize()
-    return result
+    return BarBeatTime(totalBeats: totalBeats + 1 / Double(subbeatDivisor),
+                       beatsPerBar: beatsPerBar,
+                       subbeatDivisor: subbeatDivisor,
+                       beatsPerMinute: beatsPerMinute,
+                       base: base)
   }
 
 }
 
+// MARK: - NilLiteralConvertible
+extension BarBeatTime: NilLiteralConvertible {
+  init(nilLiteral: ()) {
+    self = BarBeatTime.null
+  }
+}
+
+// MARK: - FloatLiteralConvertible
+extension BarBeatTime: FloatLiteralConvertible {
+  init(floatLiteral value: Double) {
+    self.init(totalBeats: value)
+  }
+}
+
+// MARK: - SignedNumberType, _SignedIntegerType, BitwiseOperationsType
 extension BarBeatTime: SignedNumberType, _SignedIntegerType, BitwiseOperationsType {
   typealias IntegerLiteralType = UInt64
   init(integerLiteral value: UInt64) { self.init(tickValue: value) }
@@ -425,164 +425,98 @@ extension BarBeatTime: SignedNumberType, _SignedIntegerType, BitwiseOperationsTy
   }
   init(_ value: IntMax) { self.init(integerLiteral: UInt64(value)) }
   func toIntMax() -> IntMax { return IntMax(ticks) }
-  static func addWithOverflow(lhs: BarBeatTime, var _ rhs: BarBeatTime) -> (BarBeatTime, overflow: Bool) {
-    rhs.base = lhs.base
-    let (ticks, overflow) = MIDITimeStamp.addWithOverflow(lhs.ticks, rhs.ticks)
-    let result = BarBeatTime(tickValue: ticks,
-                             beatsPerBar: lhs.beatsPerBar,
-                             subbeatDivisor: lhs.subbeatDivisor,
-                             beatsPerMinute: lhs.beatsPerMinute,
-                             base: lhs.base)
-    return (result, overflow)
+
+  static func addWithOverflow(lhs: BarBeatTime, _ rhs: BarBeatTime) -> (BarBeatTime, overflow: Bool) {
+    return (BarBeatTime(totalBeats: lhs.totalBeats + rhs.totalBeats,
+                        beatsPerBar: lhs.beatsPerBar,
+                        subbeatDivisor: lhs.subbeatDivisor,
+                        beatsPerMinute: lhs.beatsPerMinute,
+                        base: lhs.base),
+            false)
   }
-  static func subtractWithOverflow(lhs: BarBeatTime, var _ rhs: BarBeatTime) -> (BarBeatTime, overflow: Bool) {
-    rhs.base = lhs.base
-    let (ticks, overflow) = MIDITimeStamp.subtractWithOverflow(lhs.ticks, rhs.ticks)
-    let result = BarBeatTime(tickValue: ticks,
-                             beatsPerBar: lhs.beatsPerBar,
-                             subbeatDivisor: lhs.subbeatDivisor,
-                             beatsPerMinute: lhs.beatsPerMinute,
-                             base: lhs.base)
-    return (result, overflow)
+  static func subtractWithOverflow(lhs: BarBeatTime, _ rhs: BarBeatTime) -> (BarBeatTime, overflow: Bool) {
+    return (BarBeatTime(totalBeats: lhs.totalBeats - rhs.totalBeats,
+                        beatsPerBar: lhs.beatsPerBar,
+                        subbeatDivisor: lhs.subbeatDivisor,
+                        beatsPerMinute: lhs.beatsPerMinute,
+                        base: lhs.base),
+            false)
   }
-  static func multiplyWithOverflow(lhs: BarBeatTime, var _ rhs: BarBeatTime) -> (BarBeatTime, overflow: Bool) {
-    rhs.base = lhs.base
-    let (ticks, overflow) = MIDITimeStamp.multiplyWithOverflow(lhs.ticks, rhs.ticks)
-    let result = BarBeatTime(tickValue: ticks,
-                             beatsPerBar: lhs.beatsPerBar,
-                             subbeatDivisor: lhs.subbeatDivisor,
-                             beatsPerMinute: lhs.beatsPerMinute,
-                             base: lhs.base)
-    return (result, overflow)
+  static func multiplyWithOverflow(lhs: BarBeatTime, _ rhs: BarBeatTime) -> (BarBeatTime, overflow: Bool) {
+    return (BarBeatTime(totalBeats: lhs.totalBeats * rhs.totalBeats,
+                        beatsPerBar: lhs.beatsPerBar,
+                        subbeatDivisor: lhs.subbeatDivisor,
+                        beatsPerMinute: lhs.beatsPerMinute,
+                        base: lhs.base),
+            false)
   }
-  static func remainderWithOverflow(lhs: BarBeatTime, var _ rhs: BarBeatTime) -> (BarBeatTime, overflow: Bool) {
-    rhs.base = lhs.base
-    let (ticks, overflow) = MIDITimeStamp.remainderWithOverflow(lhs.ticks, rhs.ticks)
-    let result = BarBeatTime(tickValue: ticks,
-                             beatsPerBar: lhs.beatsPerBar,
-                             subbeatDivisor: lhs.subbeatDivisor,
-                             beatsPerMinute: lhs.beatsPerMinute,
-                             base: lhs.base)
-    return (result, overflow)
+  static func remainderWithOverflow(lhs: BarBeatTime, _ rhs: BarBeatTime) -> (BarBeatTime, overflow: Bool) {
+    return (BarBeatTime(totalBeats: lhs.totalBeats % rhs.totalBeats,
+                        beatsPerBar: lhs.beatsPerBar,
+                        subbeatDivisor: lhs.subbeatDivisor,
+                        beatsPerMinute: lhs.beatsPerMinute,
+                        base: lhs.base),
+            false)
   }
-  static func divideWithOverflow(lhs: BarBeatTime, var _ rhs: BarBeatTime) -> (BarBeatTime, overflow: Bool) {
-    rhs.base = lhs.base
-    let (ticks, overflow) = MIDITimeStamp.divideWithOverflow(lhs.ticks, rhs.ticks)
-    let result = BarBeatTime(tickValue: ticks,
-                             beatsPerBar: lhs.beatsPerBar,
-                             subbeatDivisor: lhs.subbeatDivisor,
-                             beatsPerMinute: lhs.beatsPerMinute,
-                             base: lhs.base)
-    return (result, overflow)
+  static func divideWithOverflow(lhs: BarBeatTime, _ rhs: BarBeatTime) -> (BarBeatTime, overflow: Bool) {
+    return (BarBeatTime(totalBeats: lhs.totalBeats / rhs.totalBeats,
+                        beatsPerBar: lhs.beatsPerBar,
+                        subbeatDivisor: lhs.subbeatDivisor,
+                        beatsPerMinute: lhs.beatsPerMinute,
+                        base: lhs.base),
+            false)
   }
 
   static var allZeros: BarBeatTime { return start0 }
 
 }
 
-func +(lhs: BarBeatTime, var rhs: BarBeatTime) -> BarBeatTime {
-
-  rhs.base = lhs.base
-  let subbeats = (lhs.subbeatFraction + rhs.subbeatFraction).fractionWithBase(lhs.subbeatFraction.denominator)
-  let beats = (lhs.beatFraction + rhs.beatFraction).fractionWithBase(lhs.beatFraction.denominator)
-  let bars = lhs.bar + rhs.bar
-
-  var result = BarBeatTime(bar: bars,
-                           beat: UInt(beats.numerator),
-                           subbeat: UInt(subbeats.numerator),
-                           subbeatDivisor: lhs.subbeatDivisor,
-                           beatsPerBar: lhs.beatsPerBar,
-                           base: lhs.base)
-
-  result.normalize()
-
-  return result
+func +(lhs: BarBeatTime, rhs: BarBeatTime) -> BarBeatTime {
+  return BarBeatTime.addWithOverflow(lhs, rhs).0
 }
 
-func -(lhs: BarBeatTime, var rhs: BarBeatTime) -> BarBeatTime {
-  rhs.base = lhs.base
-  var subbeats = (lhs.subbeatFraction - rhs.subbeatFraction).fractionWithBase(lhs.subbeatFraction.denominator)
-  var beats = (lhs.beatFraction - rhs.beatFraction).fractionWithBase(lhs.beatFraction.denominator)
-  var bars = lhs.bar - rhs.bar
-
-  while subbeats.numerator < 0 {
-    beats.numerator--
-    subbeats.numerator += subbeats.denominator
-  }
-
-  while beats.numerator < 0 {
-    bars--
-    beats.numerator += beats.denominator
-  }
-
-  var result = BarBeatTime(bar: bars,
-                           beat: UInt(beats.numerator),
-                           subbeat: UInt(subbeats.numerator),
-                           subbeatDivisor: lhs.subbeatDivisor,
-                           beatsPerBar: lhs.beatsPerBar,
-                           base: lhs.base)
-
-  result.normalize()
-
-  return result
+func -(lhs: BarBeatTime, rhs: BarBeatTime) -> BarBeatTime {
+  return BarBeatTime.subtractWithOverflow(lhs, rhs).0
 }
 
-prefix func -(var value: BarBeatTime) -> BarBeatTime {
-  value.bar *= -1
-  return value
+prefix func -(value: BarBeatTime) -> BarBeatTime {
+  return BarBeatTime(totalBeats: -value.totalBeats,
+                     subbeatDivisor: value.subbeatDivisor,
+                     beatsPerBar: value.beatsPerBar,
+                     beatsPerMinute: value.beatsPerMinute,
+                     base: value.base)
 }
 
-func *(lhs: BarBeatTime, var rhs: BarBeatTime) -> BarBeatTime {
-  rhs.base = lhs.base
-  return BarBeatTime(tickValue: lhs.ticks * rhs.ticks,
+func *(lhs: BarBeatTime, rhs: BarBeatTime) -> BarBeatTime {
+  return BarBeatTime.multiplyWithOverflow(lhs, rhs).0
+}
+
+func /(lhs: BarBeatTime, rhs: BarBeatTime) -> BarBeatTime {
+  return BarBeatTime.divideWithOverflow(lhs, rhs).0
+}
+
+func %(lhs: BarBeatTime, rhs: BarBeatTime) -> BarBeatTime {
+  return BarBeatTime.remainderWithOverflow(lhs, rhs).0
+}
+
+func &(lhs: BarBeatTime, rhs: BarBeatTime) -> BarBeatTime {
+  return BarBeatTime(tickValue: lhs.ticks & rhs.ticks,
                      beatsPerBar: lhs.beatsPerBar,
                      subbeatDivisor: lhs.subbeatDivisor,
                      beatsPerMinute: lhs.beatsPerMinute,
                      base: lhs.base)
 }
 
-func /(lhs: BarBeatTime, var rhs: BarBeatTime) -> BarBeatTime {
-  rhs.base = lhs.base
-  return BarBeatTime(tickValue: lhs.ticks / rhs.ticks,
+func ^(lhs: BarBeatTime, rhs: BarBeatTime) -> BarBeatTime {
+  return BarBeatTime(tickValue: lhs.ticks ^ rhs.ticks,
                      beatsPerBar: lhs.beatsPerBar,
                      subbeatDivisor: lhs.subbeatDivisor,
                      beatsPerMinute: lhs.beatsPerMinute,
                      base: lhs.base)
 }
 
-func %(lhs: BarBeatTime, var rhs: BarBeatTime) -> BarBeatTime {
-  rhs.base = lhs.base
-  return BarBeatTime(tickValue: lhs.ticks % rhs.ticks,
-                     beatsPerBar: lhs.beatsPerBar,
-                     subbeatDivisor: lhs.subbeatDivisor,
-                     beatsPerMinute: lhs.beatsPerMinute,
-                     base: lhs.base)
-}
-
-func &(lhs: BarBeatTime, var rhs: BarBeatTime) -> BarBeatTime {
-  rhs.base = lhs.base
-  let ticks = lhs.ticks & rhs.ticks
-  return BarBeatTime(tickValue: ticks,
-                     beatsPerBar: lhs.beatsPerBar,
-                     subbeatDivisor: lhs.subbeatDivisor,
-                     beatsPerMinute: lhs.beatsPerMinute,
-                     base: lhs.base)
-}
-
-func ^(lhs: BarBeatTime, var rhs: BarBeatTime) -> BarBeatTime {
-  rhs.base = lhs.base
-  let ticks = lhs.ticks ^ rhs.ticks
-  return BarBeatTime(tickValue: ticks,
-                     beatsPerBar: lhs.beatsPerBar,
-                     subbeatDivisor: lhs.subbeatDivisor,
-                     beatsPerMinute: lhs.beatsPerMinute,
-                     base: lhs.base)
-}
-
-func |(lhs: BarBeatTime, var rhs: BarBeatTime) -> BarBeatTime {
-  rhs.base = lhs.base
-  let ticks = lhs.ticks | rhs.ticks
-  return BarBeatTime(tickValue: ticks,
+func |(lhs: BarBeatTime, rhs: BarBeatTime) -> BarBeatTime {
+  return BarBeatTime(tickValue: lhs.ticks | rhs.ticks,
                      beatsPerBar: lhs.beatsPerBar,
                      subbeatDivisor: lhs.subbeatDivisor,
                      beatsPerMinute: lhs.beatsPerMinute,
@@ -590,21 +524,48 @@ func |(lhs: BarBeatTime, var rhs: BarBeatTime) -> BarBeatTime {
 }
 
 prefix func ~(value: BarBeatTime) -> BarBeatTime {
-  let ticks = ~value.ticks
-  return BarBeatTime(tickValue: ticks,
+  return BarBeatTime(tickValue: ~value.ticks,
                      beatsPerBar: value.beatsPerBar,
                      subbeatDivisor: value.subbeatDivisor,
                      beatsPerMinute: value.beatsPerMinute,
                      base: value.base)
 }
 
+func *<T:DoubleConvertible>(lhs: BarBeatTime, rhs: T) -> BarBeatTime {
+  return BarBeatTime(totalBeats: lhs.totalBeats * rhs.DoubleValue,
+                     beatsPerBar: lhs.beatsPerBar,
+                     subbeatDivisor: lhs.subbeatDivisor,
+                     beatsPerMinute: lhs.beatsPerMinute,
+                     base: lhs.base)
+}
+
+func /<T:DoubleConvertible>(lhs: BarBeatTime, rhs: T) -> BarBeatTime {
+  return BarBeatTime(totalBeats: lhs.totalBeats / rhs.DoubleValue,
+                     beatsPerBar: lhs.beatsPerBar,
+                     subbeatDivisor: lhs.subbeatDivisor,
+                     beatsPerMinute: lhs.beatsPerMinute,
+                     base: lhs.base)
+}
+
+func +<T:DoubleConvertible>(lhs: BarBeatTime, rhs: T) -> BarBeatTime {
+  return BarBeatTime(totalBeats: lhs.totalBeats + rhs.DoubleValue,
+                     beatsPerBar: lhs.beatsPerBar,
+                     subbeatDivisor: lhs.subbeatDivisor,
+                     beatsPerMinute: lhs.beatsPerMinute,
+                     base: lhs.base)
+}
+
+func -<T:DoubleConvertible>(lhs: BarBeatTime, rhs: T) -> BarBeatTime {
+  return BarBeatTime(totalBeats: lhs.totalBeats - rhs.DoubleValue,
+                     beatsPerBar: lhs.beatsPerBar,
+                     subbeatDivisor: lhs.subbeatDivisor,
+                     beatsPerMinute: lhs.beatsPerMinute,
+                     base: lhs.base)
+}
+
 // MARK: - Comparable
 extension BarBeatTime: Comparable {}
 
-func <(lhs: BarBeatTime, var rhs: BarBeatTime) -> Bool {
-  rhs.base = lhs.base
-  guard lhs.bar == rhs.bar else { return lhs.bar < rhs.bar }
-  guard lhs.beat == rhs.beat else { return lhs.beat < rhs.beat }
-  guard lhs.subbeatDivisor != rhs.subbeatDivisor else { return lhs.subbeat < rhs.subbeat }
-  return lhs.subbeat╱lhs.subbeatDivisor < rhs.subbeat╱rhs.subbeatDivisor
-}
+func <(lhs: BarBeatTime, rhs: BarBeatTime) -> Bool { return lhs.totalBeats < rhs.totalBeats }
+
+

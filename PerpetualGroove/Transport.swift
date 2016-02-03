@@ -24,8 +24,16 @@ final class Transport {
   let clock: MIDIClock
   let time: Time
 
-  var tempo: Double { get { return Double(clock.beatsPerMinute) } set { clock.beatsPerMinute = UInt16(newValue) } }
+  var tempo: Double {
+    get { return Double(clock.beatsPerMinute) }
+    set { clock.beatsPerMinute = UInt16(newValue) }
+  }
 
+  /**
+   initWithName:
+
+   - parameter name: String
+  */
   init(name: String) {
     self.name = name
     let clock = MIDIClock(name: name)
@@ -86,16 +94,17 @@ final class Transport {
       ])
   }
 
-  private var jogStartTimeTicks: UInt64 = 0
-  private var jogTime: BarBeatTime = .start1
-  private var ticksPerRevolution: MIDITimeStamp = 0
+  private var jogTime: BarBeatTime = nil
 
-  /** beginJog */
-  func beginJog() {
+  /**
+   beginJog:
+
+   - parameter wheel: ScrollWheel
+  */
+  func beginJog(wheel: ScrollWheel) {
     guard !jogging else { return }
-    clock.stop()
+    if clock.running { clock.stop() }
     jogTime = time.barBeatTime
-    ticksPerRevolution = MIDITimeStamp(Sequencer.beatsPerBar) * MIDITimeStamp(Sequencer.partsPerQuarter)
     state ⊻= [.Jogging]
     Notification.DidBeginJogging.post(object: self, userInfo:[
       .Ticks: NSNumber(unsignedLongLong: time.ticks),
@@ -104,40 +113,31 @@ final class Transport {
   }
 
   /**
-  jog:
+   jog:
 
-  - parameter revolutions: Float
+   - parameter wheel: ScrollWheel
   */
-  func jog(revolutions: Float, direction: ScrollWheel.Direction) {
-    guard jogging else { logWarning("not jogging"); return }
-
-    let 𝝙ticks = MIDITimeStamp(Double(abs(revolutions)) * Double(ticksPerRevolution))
-
-    let ticks: MIDITimeStamp
-
-    switch revolutions.isSignMinus {
-      case true where time.ticks < 𝝙ticks:             	ticks = 0
-      case true:                                        ticks = time.ticks - 𝝙ticks
-      default:                                          ticks = time.ticks + 𝝙ticks
-    }
-
-    do {
-      try jogToTime(BarBeatTime(tickValue: ticks, base: .One), direction: direction)
-    } catch {
-      logError(error)
-    }
+  func jog(wheel: ScrollWheel) {
+    guard jogging && jogTime != nil else { logWarning("not jogging"); return }
+    let 𝝙time = BarBeatTime(totalBeats: Double(Sequencer.beatsPerBar) * wheel.𝝙revolutions)
+    do { try jogToTime(max(jogTime + 𝝙time, .start1), direction: wheel.direction) } catch { logError(error) }
   }
 
-  /** endJog */
-  func endJog() {
-    guard jogging && clock.paused else { logWarning("not jogging"); return }
+  /**
+   endJog:
+
+   - parameter wheel: ScrollWheel
+  */
+  func endJog(wheel: ScrollWheel) {
+    guard jogging /*&& clock.paused*/ else { logWarning("not jogging"); return }
     state ⊻= [.Jogging]
     time.barBeatTime = jogTime
+    jogTime = nil
     Notification.DidEndJogging.post(object: self, userInfo:[
       .Ticks: NSNumber(unsignedLongLong: time.ticks),
       .Time: time.barBeatTime.rawValue
       ])
-    guard !paused else { return }
+    guard !paused && clock.paused else { return }
     clock.resume()
   }
 
@@ -147,14 +147,13 @@ final class Transport {
   - parameter time: BarBeatTime
   */
   func jogToTime(t: BarBeatTime, direction: ScrollWheel.Direction) throws {
-    print("jogToTime: t = \(t), direction = \(direction)")
-    guard jogTime != t else { return }
     guard jogging else { throw Error.NotPermitted("state ∌ jogging") }
+    guard jogTime != t else { return }
     guard t.isNormal else { throw Error.InvalidBarBeatTime("\(t)") }
     jogTime = t
     Notification.DidJog.post(object: self, userInfo:[
-      .Ticks: NSNumber(unsignedLongLong: time.ticks),
-      .Time: time.barBeatTime.rawValue,
+//      .Ticks: NSNumber(unsignedLongLong: time.ticks),
+//      .Time: time.barBeatTime.rawValue,
       .JogTime: jogTime.rawValue,
       .JogDirection: direction.rawValue
       ])
@@ -166,10 +165,10 @@ extension Transport {
   struct State: OptionSetType, CustomStringConvertible {
     let rawValue: Int
 
-    static let Playing   = State(rawValue: 0b0000_0010)
-    static let Recording = State(rawValue: 0b0000_0100)
-    static let Paused    = State(rawValue: 0b0001_0000)
-    static let Jogging   = State(rawValue: 0b0010_0000)
+    static let Playing   = State(rawValue: 0b0001)
+    static let Recording = State(rawValue: 0b0010)
+    static let Paused    = State(rawValue: 0b0100)
+    static let Jogging   = State(rawValue: 0b1000)
 
     var description: String {
       var result = "["

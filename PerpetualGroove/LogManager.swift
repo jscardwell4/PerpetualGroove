@@ -24,7 +24,20 @@ final class LogManager: MoonKit.LogManager {
   static func initialize() {
     guard !initialized else { return }
 
-    logLevel = .Debug
+    #if LogLevelVerbose
+      logLevel = .Verbose
+    #elseif LogLevelDebug
+      logLevel = .Debug
+    #elseif LogLevelInfo
+      logLevel = .Info
+    #elseif LogLevelWarning
+      logLevel = .Warning
+    #elseif LogLevelError
+      logLevel = .Error
+    #elseif LogLevelOff
+      logLevel = .Off
+    #endif
+
     setLogLevel(.Off, forType: NotificationReceptionist.self)
 
     registerLogContextNames()
@@ -76,7 +89,8 @@ final class LogManager: MoonKit.LogManager {
     addDefaultFileLoggerForContext(SceneContext,      subdirectory: "Scene")
     addDefaultFileLoggerForContext(UIContext,         subdirectory: "UI")
     print("\n".join("main bundle: '\(NSBundle.mainBundle().bundlePath)'",
-                     "default log directory: '\(logsDirectory.path!)'"))
+                     "default log directory: '\(logsDirectory.path!)'",
+                     "log level: \(logLevel)"))
   }
 
   /** setDefaultLogContexts */
@@ -104,12 +118,13 @@ final class LogManager: MoonKit.LogManager {
     Track.defaultLogContext           = SequencerContext//  ∪ .Console
     Sequence.defaultLogContext        = SequencerContext//  ∪ .Console
     AudioManager.defaultLogContext    = SequencerContext//  ∪ .Console
-    BarBeatTime.defaultLogContext   = SequencerContext//  ∪ .Console
+    BarBeatTime.defaultLogContext     = SequencerContext//  ∪ .Console
     TimeSignature.defaultLogContext   = SequencerContext//  ∪ .Console
     TrackColor.defaultLogContext      = SequencerContext//  ∪ .Console
     Metronome.defaultLogContext       = SequencerContext//  ∪ .Console
     MIDIClock.defaultLogContext       = SequencerContext//  ∪ .Console
-    Time.defaultLogContext     = SequencerContext//  ∪ .Console
+    Time.defaultLogContext            = SequencerContext//  ∪ .Console
+    Transport.defaultLogContext       = SequencerContext  ∪ .Console
 
     MIDIPlayer.defaultLogContext           = SceneContext//  ∪ .Console
     MIDIPlayerScene.defaultLogContext      = SceneContext//  ∪ .Console
@@ -136,7 +151,7 @@ final class LogManager: MoonKit.LogManager {
     MixerCell.defaultLogContext                    = UIContext//  ∪ .Console
     MixerViewController.defaultLogContext          = UIContext//  ∪ .Console
     RootViewController.defaultLogContext           = UIContext//  ∪ .Console
-    TransportViewController.defaultLogContext      = UIContext//  ∪ .Console
+    TransportViewController.defaultLogContext      = UIContext ∪ .Console
 
     SettingsManager.defaultLogContext = .File
   }
@@ -189,6 +204,7 @@ extension Segment: Loggable {}
 
 extension RootViewController: Loggable {}
 extension TransportViewController: Loggable {}
+extension Transport: Loggable {}
 extension MIDIPlayerViewController: Loggable {}
 extension PurgatoryViewController: Loggable {}
 extension DocumentsViewController: Loggable {}
