@@ -136,7 +136,7 @@ final class BarBeatTimeLabel: UIView {
   private var currentTime: BarBeatTime = .start1 {
     didSet {
       guard currentTime != oldValue else { return }
-      logDebug("currentTime = \(currentTime.debugDescription)")
+//      logSyncDebug("currentTime = \(currentTime.debugDescription)")
       dispatchToMain {
         [unowned self, newValue = currentTime] in
 

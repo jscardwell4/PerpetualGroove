@@ -45,6 +45,11 @@ public protocol NotificationType: _NotificationType, CustomStringConvertible {
 
   typealias Callback = (NSNotification) -> Void
 
+  var notification: NSNotification { get }
+  var notificationQueue: NSNotificationQueue? { get }
+  var postingStyle: NSPostingStyle { get }
+  var coalescing: NSNotificationCoalescing { get }
+
   func post(object obj: AnyObject?, userInfo info: [Key:AnyObject?]?)
   func post(object obj: AnyObject?, userInfo info: [NSObject:AnyObject]?)
   func observe(object: AnyObject?, queue: NSOperationQueue?, callback: Callback) -> NSObjectProtocol
@@ -61,6 +66,10 @@ public extension NotificationType {
   }
   var userInfo: [Key:AnyObject?]? { return nil }
 
+  var notification: NSNotification { return NSNotification(name: _name, object: object, userInfo: _userInfo) }
+  var notificationQueue: NSNotificationQueue? { return NSNotificationQueue.defaultQueue() }
+  var postingStyle: NSPostingStyle { return .PostWhenIdle }
+  var coalescing: NSNotificationCoalescing { return [.CoalescingOnName, .CoalescingOnSender] }
 
   /**
   postObject:userInfo:
@@ -79,7 +88,6 @@ public extension NotificationType {
     } else {
       userInfo = _userInfo
     }
-//    logVerbose("posting <\(self.dynamicType)>'\(_name)' with object (\(object == nil ? "nil" : "\(unsafeAddressOf(object!))") and info (\(userInfo == nil ? "nil" : "\(userInfo!)"))", asynchronous: false)
     post(object: object, userInfo: userInfo)
   }
 
@@ -90,7 +98,12 @@ public extension NotificationType {
    - parameter info: [String
   */
   func post(object obj: AnyObject?, userInfo info: [NSObject:AnyObject]?) {
-    NSNotificationCenter.defaultCenter().postNotificationName(_name, object: obj, userInfo: info)
+    let notification = NSNotification(name: _name, object: obj, userInfo: info)
+    if let queue = notificationQueue {
+      queue.enqueueNotification(notification, postingStyle: postingStyle, coalesceMask: coalescing, forModes: nil)
+    } else {
+      NSNotificationCenter.defaultCenter().postNotification(notification)
+    }
   }
 
   /**

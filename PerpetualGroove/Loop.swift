@@ -22,6 +22,8 @@ final class Loop: SequenceType, MIDINodeDispatch {
   let identifier: Identifier
   var eventQueue: dispatch_queue_t { return track.eventQueue }
 
+  private(set) var nodeManager: MIDINodeManager!
+
   var nodes: OrderedSet<HashableTuple<BarBeatTime, MIDINodeRef>> = []
 
   unowned let track: InstrumentTrack
@@ -91,6 +93,7 @@ final class Loop: SequenceType, MIDINodeDispatch {
     }
 
     self.events = MIDIEventContainer(events: events)
+    nodeManager = MIDINodeManager(owner: self)
   }
 
   /**
@@ -113,9 +116,9 @@ final class Loop: SequenceType, MIDINodeDispatch {
     guard case .Node(let nodeEvent) = event else { return }
       switch nodeEvent.data {
         case let .Add(identifier, trajectory, generator):
-          addNodeWithIdentifier(identifier.nodeIdentifier, trajectory: trajectory, generator: generator)
+          nodeManager.addNodeWithIdentifier(identifier.nodeIdentifier, trajectory: trajectory, generator: generator)
         case let .Remove(identifier):
-          do { try removeNodeWithIdentifier(identifier.nodeIdentifier, delete: false) } catch { logError(error) }
+          do { try nodeManager.removeNodeWithIdentifier(identifier.nodeIdentifier, delete: false) } catch { logError(error) }
       }
   }
 

@@ -228,7 +228,7 @@ final class MIDIPlayer {
                                     identifier: identifier)
         node.addChild(midiNode)
 
-        try target.addNode(midiNode)
+        try target.nodeManager.addNode(midiNode)
 
 
         if !Sequencer.playing { Sequencer.play() }

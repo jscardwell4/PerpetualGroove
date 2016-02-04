@@ -180,10 +180,10 @@ final class RemoveTool: ToolType {
   /** removeMarkedNodes */
   private func removeMarkedNodes() {
     do {
-      guard let track = track else { return }
-      let remove = deleteFromTrack ? InstrumentTrack.deleteNode : InstrumentTrack.removeNode
+      guard let manager = track?.nodeManager else { return }
+      let remove = deleteFromTrack ? MIDINodeManager.deleteNode : MIDINodeManager.removeNode
       for node in nodesToRemove.flatMap({$0.reference}) {
-        try remove(track)(node)
+        try remove(manager)(node)
         node.fadeOut(remove: true)
       }
     } catch {
@@ -208,7 +208,7 @@ final class RemoveTool: ToolType {
     let midiNodes = player.nodesAtPoint(point).flatMap({$0 as? MIDINode}).map({MIDINodeRef($0)})
     return midiNodes.filter({
       guard let identifier = $0.reference?.identifier else { return false }
-      return track?.nodeIdentifiers.contains(identifier) == true
+      return track?.nodeManager.nodeIdentifiers.contains(identifier) == true
       }
     )
   }

@@ -38,7 +38,7 @@ final class LogManager: MoonKit.LogManager {
       logLevel = .Off
     #endif
 
-    setLogLevel(.Off, forType: NotificationReceptionist.self)
+    setLogLevel(.Verbose, forType: NotificationReceptionist.self)
 
     registerLogContextNames()
 
@@ -124,7 +124,7 @@ final class LogManager: MoonKit.LogManager {
     Metronome.defaultLogContext       = SequencerContext//  ∪ .Console
     MIDIClock.defaultLogContext       = SequencerContext//  ∪ .Console
     Time.defaultLogContext            = SequencerContext//  ∪ .Console
-    Transport.defaultLogContext       = SequencerContext  ∪ .Console
+    Transport.defaultLogContext       = SequencerContext//  ∪ .Console
 
     MIDIPlayer.defaultLogContext           = SceneContext//  ∪ .Console
     MIDIPlayerScene.defaultLogContext      = SceneContext//  ∪ .Console
@@ -151,7 +151,7 @@ final class LogManager: MoonKit.LogManager {
     MixerCell.defaultLogContext                    = UIContext//  ∪ .Console
     MixerViewController.defaultLogContext          = UIContext//  ∪ .Console
     RootViewController.defaultLogContext           = UIContext//  ∪ .Console
-    TransportViewController.defaultLogContext      = UIContext ∪ .Console
+    TransportViewController.defaultLogContext      = UIContext//  ∪ .Console
 
     SettingsManager.defaultLogContext = .File
   }

@@ -31,7 +31,7 @@ final class MIDIClock: CustomStringConvertible, Named {
 
   let name: String
 
-  private static let queue = concurrentQueueWithLabel("MIDI Clock", qualityOfService: QOS_CLASS_USER_INTERACTIVE)
+  private let dispatchQueue = serialInteractiveQueue("MIDI Clock (Dispatch)")
 
   let resolution: UInt64 = 480
 
@@ -54,7 +54,9 @@ final class MIDIClock: CustomStringConvertible, Named {
   }
 
   /** start */
-  func start() {
+  func start() { dispatchQueue.async(_start) }
+
+  private func _start() {
     guard !timer.running else { return }
     logDebug("setting ticks to 0, sending start message and starting timer…")
     ticks = 0
@@ -65,7 +67,9 @@ final class MIDIClock: CustomStringConvertible, Named {
   var paused: Bool { return !running && ticks > 0 }
 
   /** resume */
-  func resume() {
+  func resume() { dispatchQueue.async(_resume) }
+
+  private func _resume() {
     guard !timer.running else { return }
     logDebug("sending continue message and starting timer…")
     sendContinue()
@@ -73,14 +77,18 @@ final class MIDIClock: CustomStringConvertible, Named {
   }
 
   /** reset */
-  func reset() {
+  func reset() { dispatchQueue.async(_reset) }
+
+  private func _reset() {
     guard !timer.running else { return }
     logDebug("setting ticks to 0…")
     ticks = 0
   }
 
   /** stop */
-  func stop() {
+  func stop() { dispatchQueue.async(_stop) }
+
+  private func _stop() {
     guard timer.running else { return }
     logDebug("stopping timer and sending stop message…")
     timer.stop()
@@ -91,10 +99,14 @@ final class MIDIClock: CustomStringConvertible, Named {
     let currentHostTicks = hostTicks
     let nsPerTick = nanosecondsPerHostTick
     let currentHostTime = currentHostTicks * UInt64(nsPerTick.value)
-    return "{ hostTicks: \(currentHostTicks); nanosecondsPerTick: \(nsPerTick); hostTime: \(currentHostTime)}"
+    return "{ ; }".wrap("; ".join("hostTicks: \(currentHostTicks)",
+                                  "nanosecondsPerTick: \(nsPerTick)",
+                                  "hostTime: \(currentHostTime)"),
+              separator: ";")
   }
 
-  private let timer = Timer(queue:MIDIClock.queue)
+  private let timer = Timer(queue: serialInteractiveQueue("MIDI Clock (Timer)"))
+
   var running: Bool { return timer.running }
 
   /// The running number of MIDI clocks that have elapsed
@@ -136,8 +148,11 @@ final class MIDIClock: CustomStringConvertible, Named {
     try withUnsafePointer(&packetList) { MIDIReceived(endPoint, $0) } ➤ "Failed to send packets"
   }
 
+  private func sendClock() { dispatchQueue.async(_sendClock) }
+
   /** sendClock */
-  private func sendClock() {
+  private func _sendClock() {
+
     guard timer.running else { return }
     ticks++
     do { try sendEvent(0b1111_1000) } catch { logError(error) }

@@ -17,6 +17,9 @@ final class MIDIPlayerView: SKView {
   /** setup */
   private func setup() {
     ignoresSiblingOrder = true
+    shouldCullNonVisibleNodes = false
+    showsFPS = true
+    showsNodeCount = true
     presentScene(MIDIPlayerScene(size: bounds.size))
   }
 

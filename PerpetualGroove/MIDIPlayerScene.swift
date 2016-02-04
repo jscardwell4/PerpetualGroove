@@ -23,7 +23,6 @@ final class MIDIPlayerScene: SKScene {
     addChild(player)
 
     physicsWorld.gravity = .zero
-    physicsWorld.contactDelegate = self
 
     backgroundColor = .backgroundColor
     contentCreated = true
@@ -36,25 +35,12 @@ final class MIDIPlayerScene: SKScene {
   */
   override func didMoveToView(view: SKView) { guard !contentCreated else { return }; createContent() }
 
-}
-
-extension MIDIPlayerScene: SKPhysicsContactDelegate {
   /**
-  didBeginContact:
+   update:
 
-  - parameter contact: SKPhysicsContact
+   - parameter currentTime: NSTimeInterval
   */
-  func didBeginContact(contact: SKPhysicsContact) {
-    assert(false)
-    guard let midiNode = contact.bodyB.node as? MIDINode,
-              edge = MIDIPlayerNode.Edge(rawValue: contact.bodyA.categoryBitMask) else { return }
-
-    midiNode.edges = MIDIPlayerNode.Edges.All ∖ MIDIPlayerNode.Edges(edge)
-
-    logVerbose("edge: \(edge); midiNode: \(midiNode.name!)")
-
-    // ???: Should we do anything with the impulse and normal values provided by SKPhysicsContact?
-//    midiNode.pushBreadcrumb()
-    midiNode.playForEdge(edge)
+  override func update(currentTime: NSTimeInterval) {
+    player.midiNodes.forEach({$0.updatePosition()})
   }
 }

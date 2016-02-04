@@ -26,6 +26,8 @@ final class MIDINode: SKSpriteNode {
 
   private let initTime: BarBeatTime
 
+  private(set) var pendingPosition: CGPoint?
+
   var generator: MIDIGenerator {
     didSet {
       guard generator != oldValue else { return }
@@ -57,28 +59,15 @@ final class MIDINode: SKSpriteNode {
   */
   private func action(key: Action.Key) -> Action { return Action(key: key, node: self) }
 
-  /**
-  runAction:
-
-  - parameter action: Action
-  */
-//  private func runAction(action: Action) { action.run() }
-
   /** play */
   func play() { playAction.run()  }
 
-  /**
-   playForEdge:
-
-   - parameter edge: MIDIPlayerNode.Edge
-  */
-  func playForEdge(edge: MIDIPlayerNode.Edge) {
-    playAction.run()
-//    switch edge {
-//      case .Top, .Bottom: runAction(verticalPlayAction)
-//      case .Left, .Right: runAction(horizontalPlayAction)
-//      case .None: runAction(playAction)
-//    }
+  /** updatePosition */
+  func updatePosition() {
+    guard let position = pendingPosition else { return }
+    logDebug("position: \(position)")
+    self.position = position
+    pendingPosition = nil
   }
 
   /** fadeOut */
@@ -136,10 +125,6 @@ final class MIDINode: SKSpriteNode {
     didSet { if dispatch == nil && parent != nil { removeFromParent() } }
   }
 
-  var edges: MIDIPlayerNode.Edges = .All {
-    didSet { physicsBody?.contactTestBitMask = edges.rawValue }
-  }
-
   // MARK: Listening for Sequencer notifications
 
   private let receptionist: NotificationReceptionist = {
@@ -157,6 +142,7 @@ final class MIDINode: SKSpriteNode {
     guard state ∌ .Jogging else {
       fatalError("internal inconsistency, should not already have `Jogging` flag set")
     }
+    logDebug("position: \(position); path: \(path)")
     state ⊻= .Jogging
     removeActionForKey(Action.Key.Move.rawValue)
   }
@@ -169,12 +155,15 @@ final class MIDINode: SKSpriteNode {
   private func didJog(notification: NSNotification) {
     guard state ∋ .Jogging else { fatalError("internal inconsistency, should have `Jogging` flag set") }
 
-    guard let jogTime = notification.jogTime else { fatalError("notification does not contain ticks") }
+    guard let time = notification.jogTime else { fatalError("notification does not contain ticks") }
 
-    if jogTime < initTime { fadeOutAndRemoveAction.run() }
-    else if let location = path.locationForTime(jogTime) {
-      runAction(SKAction.moveTo(location, duration: 0))
-    }
+    logDebug("time: \(time)")
+
+    if time < initTime { fadeOutAndRemoveAction.run() }
+    else { pendingPosition = path.locationForTime(time) }
+//    else if let location = path.locationForTime(jogTime) {
+//      runAction(SKAction.moveTo(location, duration: 0.01))
+//    }
   }
 
   /**
@@ -183,7 +172,7 @@ final class MIDINode: SKSpriteNode {
   - parameter notification: NSNotification
   */
   private func didEndJogging(notification: NSNotification) {
-    guard state ∋ .Jogging else { fatalError("internal inconsistency, should have `Jogging` flag set") }
+    guard state ∋ .Jogging else { logError("internal inconsistency, should have `Jogging` flag set"); return }
     state ⊻= .Jogging
     guard state ∌ .Paused else { return }
     currentSegment = path.segmentForTime(Sequencer.time.barBeatTime) ?? path.initialSegment
@@ -227,6 +216,9 @@ final class MIDINode: SKSpriteNode {
 
   static let texture = SKTexture(image: UIImage(named: "ball")!)
   private static let normalMap = MIDINode.texture.textureByGeneratingNormalMap()
+
+  static let defaultSize: CGSize = MIDINode.texture.size() * 0.75
+  static let playingSize: CGSize = MIDINode.texture.size()
 
   /**
    initWithTrajectory:name:dispatch:generator:identifier:
@@ -368,9 +360,9 @@ extension MIDINode {
 
         case .Play:
           let halfDuration = half(node.generator.duration.seconds)
-          let scaleUp = SKAction.scaleTo(2, duration: halfDuration)
+          let scaleUp = SKAction.resizeToWidth(MIDINode.playingSize.width, height: MIDINode.playingSize.height, duration: halfDuration) //SKAction.scaleTo(2, duration: halfDuration)
           let noteOn = SKAction.runBlock({ self.node.sendNoteOn() })
-          let scaleDown = SKAction.scaleTo(1, duration: halfDuration)
+          let scaleDown = SKAction.resizeToWidth(MIDINode.defaultSize.width, height: MIDINode.defaultSize.height, duration: halfDuration) //SKAction.scaleTo(1, duration: halfDuration)
           let noteOff = SKAction.runBlock({ self.node.sendNoteOff() })
           return SKAction.sequence([SKAction.group([scaleUp, noteOn]), scaleDown, noteOff])
 

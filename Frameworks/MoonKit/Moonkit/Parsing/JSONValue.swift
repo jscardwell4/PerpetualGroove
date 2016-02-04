@@ -289,7 +289,7 @@ extension JSONValue: RawRepresentable {
       case .Boolean(let b): return Swift.String(b)
       case .Null:           return "null"
       case .Number(let n):  return Swift.String(n)
-      case .String(let s):  return "\"".sandwhich(s)
+      case .String(let s):  return "\"".wrap(s)
       case .Array(let a):   return "[" + ",".join(a.map({$0.rawValue})) + "]"
       case .Object(let o):  return "{" + ",".join(o.keyValuePairs.map({"\"\($0)\":\($1.rawValue)"})) + "}"
     }

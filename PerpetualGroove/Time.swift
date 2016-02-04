@@ -27,7 +27,7 @@ final class Time {
   private func read(packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutablePointer<Void>) {
     // Runs on MIDI Services thread
     switch packetList.memory.packet.data.0 {
-      case 0b1111_1000: queue.async { [unowned self] in self.incrementClock() }
+      case 0b1111_1000: queue.async(incrementClock)
       case 0b1111_1010: queue.async { [unowned self] in self._reset()
                                                         self.invokeCallbacksForTime(self.barBeatTime) }
       default: break
@@ -45,14 +45,14 @@ final class Time {
 
   /** Synchronized access to the musical representation of the current time */
   var barBeatTime: BarBeatTime {
-    get { objc_sync_enter(self); defer { objc_sync_exit(self) }; return _barBeatTime }
-    set { objc_sync_enter(self); defer { objc_sync_exit(self) }; /*guard isValidTime(newValue) else { return };*/ _barBeatTime = newValue }
+    get { /*objc_sync_enter(self); defer { objc_sync_exit(self) };*/ return _barBeatTime }
+    set { /*objc_sync_enter(self); defer { objc_sync_exit(self) };*/ /*guard isValidTime(newValue) else { return };*/ _barBeatTime = newValue }
   }
 
   /** incrementClock */
   private func incrementClock() {
-    objc_sync_enter(self)
-    defer { objc_sync_exit(self) }
+//    objc_sync_enter(self)
+//    defer { objc_sync_exit(self) }
 
     barBeatTime = barBeatTime.successor()
   }
@@ -183,7 +183,7 @@ final class Time {
     guard unmanagedName != nil else { fatalError("Endpoint should have been given a name") }
     let name = unmanagedName!.takeUnretainedValue() as String
     clockName = name
-    queue = serialQueueWithLabel(name)
+    queue = serialInteractiveQueue(name)
     do {
       try MIDIClientCreateWithBlock(name, &client, nil)
         ➤ "Failed to create midi client for bar beat time"
@@ -209,8 +209,8 @@ final class Time {
   */
   private func _reset(completion: (() -> Void)? = nil) {
     _barBeatTime = .start1
-    objc_sync_enter(self)
-    defer { objc_sync_exit(self); completion?() }
+//    objc_sync_enter(self)
+    /*defer { objc_sync_exit(self); */completion?()// }
   }
 
   /**

@@ -41,7 +41,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
                                                 userInfo: [.OldValue: oldValue, .NewValue: newValue])
 
         case [.TrackEnded]:
-          if state ∋ .TrackEnded { stopNodes() } else { startNodes() }
+          if state ∋ .TrackEnded { nodeManager.stopNodes() } else { nodeManager.startNodes() }
 
         default:
           break
@@ -49,6 +49,8 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 
     }
   }
+
+  private(set) var nodeManager: MIDINodeManager!
 
   // MARK: - Listening for Sequencer and sequence notifications
 
@@ -329,11 +331,11 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
         case .Node(let nodeEvent):
           switch nodeEvent.data {
             case let .Add(identifier, trajectory, generator):
-              addNodeWithIdentifier(identifier.nodeIdentifier,
-                         trajectory: trajectory,
-                          generator: generator)
+              nodeManager.addNodeWithIdentifier(identifier.nodeIdentifier,
+                                     trajectory: trajectory,
+                                      generator: generator)
             case let .Remove(identifier):
-              do { try removeNodeWithIdentifier(identifier.nodeIdentifier) } catch { logError(error) }
+              do { try nodeManager.removeNodeWithIdentifier(identifier.nodeIdentifier) } catch { logError(error) }
           }
         case .Meta(let metaEvent) where metaEvent.data == .EndOfTrack:
           guard !recording && endOfTrack == metaEvent.time else { break }
@@ -380,6 +382,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
   */
   init(sequence: Sequence, instrument: Instrument) throws {
     super.init(sequence: sequence)
+    nodeManager = MIDINodeManager(owner: self)
     self.instrument = instrument
     instrument.track = self
     instrumentEvent = MetaEvent(.Text(text: "instrument:\(instrument.soundSet.url.lastPathComponent!)"))
@@ -399,6 +402,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
   */
   init(sequence: Sequence, grooveTrack: GrooveTrack) throws {
     super.init(sequence: sequence)
+    nodeManager = MIDINodeManager(owner: self)
     guard let instrument = Instrument(grooveTrack.instrument.jsonValue) else {
       throw Error.InstrumentInitializeFailure
     }
@@ -432,6 +436,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
   */
   init(sequence: Sequence, trackChunk: MIDIFileTrackChunk) throws {
     super.init(sequence: sequence)
+    nodeManager = MIDINodeManager(owner: self)
 
     addEvents(trackChunk.events)
 

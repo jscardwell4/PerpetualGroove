@@ -45,6 +45,7 @@
 		C255C4371BD664E400CAEE9C /* Generator.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C255C4361BD664E400CAEE9C /* Generator.storyboard */; };
 		C255C43A1BD664FB00CAEE9C /* Documents.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C255C4381BD664FB00CAEE9C /* Documents.storyboard */; };
 		C255C43C1BD6651100CAEE9C /* Tempo.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C255C43B1BD6651100CAEE9C /* Tempo.storyboard */; };
+		C2562D0A1C63DBFC0086789D /* MIDINodeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2562D091C63DBFB0086789D /* MIDINodeManager.swift */; };
 		C2569E401B90005400EEB441 /* TempoTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2569E3F1B90005400EEB441 /* TempoTrack.swift */; };
 		C2576E0D1C13343E00F9A192 /* MIDIPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2576E0C1C13343E00F9A192 /* MIDIPlayer.swift */; };
 		C25EBC831B8BFAFA00E57665 /* MIDIFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25EBC821B8BFAFA00E57665 /* MIDIFile.swift */; };
@@ -226,6 +227,7 @@
 		C255C4361BD664E400CAEE9C /* Generator.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Generator.storyboard; path = Base.lproj/Generator.storyboard; sourceTree = "<group>"; };
 		C255C4391BD664FB00CAEE9C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Documents.storyboard; sourceTree = "<group>"; };
 		C255C43B1BD6651100CAEE9C /* Tempo.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Tempo.storyboard; path = Base.lproj/Tempo.storyboard; sourceTree = "<group>"; };
+		C2562D091C63DBFB0086789D /* MIDINodeManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINodeManager.swift; sourceTree = "<group>"; };
 		C2569E3F1B90005400EEB441 /* TempoTrack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TempoTrack.swift; sourceTree = "<group>"; };
 		C2576E0C1C13343E00F9A192 /* MIDIPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIPlayer.swift; sourceTree = "<group>"; };
 		C25EBC821B8BFAFA00E57665 /* MIDIFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIFile.swift; sourceTree = "<group>"; };
@@ -487,6 +489,7 @@
 				C2670CCF1C4704A2000F76F9 /* MIDINodeDispatch.swift */,
 				C20A10981C51332B00522FD7 /* Segment.swift */,
 				C2B3B2EA1C55A9110001152F /* NodeSelectionTool.swift */,
+				C2562D091C63DBFB0086789D /* MIDINodeManager.swift */,
 			);
 			name = Scene;
 			sourceTree = "<group>";
@@ -899,6 +902,7 @@
 				C2BDBBC41BD3E15D00E343F1 /* PDTAChunk.swift in Sources */,
 				C2EFA0EC1B823642002EBA3D /* GeneratorViewController.swift in Sources */,
 				C291C3EF1B91EDCC00702AEA /* MetaEvent.swift in Sources */,
+				C2562D0A1C63DBFC0086789D /* MIDINodeManager.swift in Sources */,
 				C23B058D1C014EBD0081AC6E /* Note.swift in Sources */,
 				C25EBC831B8BFAFA00E57665 /* MIDIFile.swift in Sources */,
 				C2670CD01C4704A2000F76F9 /* MIDINodeDispatch.swift in Sources */,
@@ -1078,6 +1082,113 @@
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
 			};
 			name = Release;
+		};
+		C2562CEC1C63A3C30086789D /* Debug-Verbose */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = "Debug-Verbose";
+		};
+		C2562CED1C63A3C30086789D /* Debug-Verbose */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "Brand Assets";
+				CODE_SIGN_ENTITLEMENTS = PerpetualGroove/Groove.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				GENERATE_PROFILING_CODE = YES;
+				INFOPLIST_FILE = PerpetualGroove/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				OTHER_SWIFT_FLAGS = "-DDebug -DLogLevelVerbose";
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.PerpetualGroove;
+				PRODUCT_NAME = Groove;
+				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
+				STRIP_STYLE = debugging;
+				VALID_ARCHS = "arm64 armv7s armv7";
+			};
+			name = "Debug-Verbose";
+		};
+		C2562CEE1C63A3C30086789D /* Debug-Verbose */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = NoteChordTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.NoteChordTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
+			};
+			name = "Debug-Verbose";
+		};
+		C2562CEF1C63A3C30086789D /* Debug-Verbose */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = MIDINodePathTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.MIDINodePathTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
+			};
+			name = "Debug-Verbose";
+		};
+		C2562CF01C63A3C30086789D /* Debug-Verbose */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = BarBeatTimeTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.BarBeatTimeTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
+			};
+			name = "Debug-Verbose";
 		};
 		C274C7D71C5A869800A5FC23 /* Profile */ = {
 			isa = XCBuildConfiguration;
@@ -1348,6 +1459,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C20A10A61C51552B00522FD7 /* Debug */,
+				C2562CF01C63A3C30086789D /* Debug-Verbose */,
 				C274C7DB1C5A869800A5FC23 /* Profile */,
 				C20A10A71C51552B00522FD7 /* Release */,
 			);
@@ -1358,6 +1470,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C23B059A1C0219560081AC6E /* Debug */,
+				C2562CEE1C63A3C30086789D /* Debug-Verbose */,
 				C274C7D91C5A869800A5FC23 /* Profile */,
 				C23B059B1C0219560081AC6E /* Release */,
 			);
@@ -1368,6 +1481,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C284F7CF1C49C8A8009C72A0 /* Debug */,
+				C2562CEF1C63A3C30086789D /* Debug-Verbose */,
 				C274C7DA1C5A869800A5FC23 /* Profile */,
 				C284F7D01C49C8A8009C72A0 /* Release */,
 			);
@@ -1378,6 +1492,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C2E043451B72F4DC005F0675 /* Debug */,
+				C2562CEC1C63A3C30086789D /* Debug-Verbose */,
 				C274C7D71C5A869800A5FC23 /* Profile */,
 				C2E043461B72F4DC005F0675 /* Release */,
 			);
@@ -1388,6 +1503,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C2E043481B72F4DC005F0675 /* Debug */,
+				C2562CED1C63A3C30086789D /* Debug-Verbose */,
 				C274C7D81C5A869800A5FC23 /* Profile */,
 				C2E043491B72F4DC005F0675 /* Release */,
 			);

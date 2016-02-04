@@ -13,15 +13,15 @@ import typealias AudioToolbox.MIDITimeStamp
 struct Trajectory {
 
   /// The constant used to adjust the velocity units when calculating times
-  static let modifier: Ratio<CGFloat> = 1∶100
+  static let modifier: Ratio<CGFloat> = 1∶1000
 
   /// The ticks per cartesian point. Can be calculated with a segment along the trajectory 
   /// by dividing the segment's total elapsed ticks by the length of the segment.
-  static let ticksPerPoint = 6.22897042913752
+//  static let ticksPerPoint = 6.22897042913752
 
   /// The cartesian points per tick. Can be calculated with a segment along the trajectory
   /// by dividing the length of the segment by the segment's total elapsed ticks.
-  static let pointsPerTick = 0.160540174556337
+//  static let pointsPerTick = 0.160540174556337
 
   /// The slope of the trajectory (`dy` / `dx`)
   var m: CGFloat { return dy / dx }
@@ -133,7 +133,7 @@ struct Trajectory {
     - returns: NSTimeInterval
   */
   func timeFromPoint(p1: CGPoint, toPoint p2: CGPoint) -> NSTimeInterval {
-    let result = abs(NSTimeInterval(p1.distanceTo(p2) / m * Trajectory.modifier))
+    let result = abs(NSTimeInterval(p1.distanceTo(p2) / m)) * NSTimeInterval(Trajectory.modifier.value)
     guard result.isFinite else { fatalError("wtf") }
     logVerbose("self = \(self)\np1 = \(p1)\np2 = \(p2)\nresult = \(result)")
     return result

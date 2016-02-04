@@ -32,23 +32,20 @@ struct BarBeatTime {
   var negative = false
 
   /// The number of complete bars
-  ///
-  /// Must satisfy `bar >= 0` to qualify as 'normal'.
   var bar: UInt = 0
 
   private var rawBar: UInt { return bar - base.rawValue }
 
   /// The number of complete beats. 
-  ///
-  /// Must satisfy `1...beatsPerBar ∋ beat` to qualify as 'normal'
   var beat: UInt { get { return beatFraction.numerator } set { beatFraction.numerator = newValue } }
 
   private var rawBeat: UInt { return beat - base.rawValue }
 
   /// The number of subbeats.
-  ///
-  /// Must satisfy `1...subbeatDivisor ∋ subbeat` to qualify as 'normal'
-  var subbeat: UInt { get { return subbeatFraction.numerator } set { subbeatFraction.numerator = newValue } }
+  var subbeat: UInt {
+    get { return subbeatFraction.numerator }
+    set { subbeatFraction.numerator = newValue }
+  }
 
   private var rawSubbeat: UInt { return subbeat - base.rawValue }
 
@@ -73,17 +70,27 @@ struct BarBeatTime {
   }
 
   /// The number of beats per minute. This value is used when converting to/from seconds.
-  var beatsPerMinute = Sequencer.beatsPerMinute
+  var beatsPerMinute: UInt = 120
 
-  private var beatFraction: Fraction<UInt> = 0╱Sequencer.beatsPerBar
+  private var beatFraction: Fraction<UInt> = 0╱4
 
-  private var subbeatFraction: Fraction<UInt> = 0╱Sequencer.partsPerQuarter
+  private var subbeatFraction: Fraction<UInt> = 0╱480
 
   /// The time's zero-based representation
-  var zeroBased: BarBeatTime { guard base != .Zero else { return self }; var result = self; result.base = .Zero; return result }
+  var zeroBased: BarBeatTime {
+    guard base != .Zero else { return self }
+    var result = self
+    result.base = .Zero
+    return result
+  }
 
   /// The time's one-based representation
-  var oneBased: BarBeatTime { guard base != .One else { return self }; var result = self; result.base = .One; return result }
+  var oneBased: BarBeatTime {
+    guard base != .One else { return self }
+    var result = self
+    result.base = .One
+    return result
+  }
 
   /**
    Default initializer
@@ -100,9 +107,9 @@ struct BarBeatTime {
   init(bar: UInt = 0,
        beat: UInt = 0,
        subbeat: UInt = 0,
-       subbeatDivisor: UInt = Sequencer.partsPerQuarter,
-       beatsPerBar: UInt = Sequencer.beatsPerBar,
-       beatsPerMinute: UInt = Sequencer.beatsPerMinute,
+       subbeatDivisor: UInt = 480,
+       beatsPerBar: UInt = 4,
+       beatsPerMinute: UInt = 120,
        base: Base = .Zero,
        negative: Bool = false)
   {
@@ -150,8 +157,8 @@ struct BarBeatTime {
   /// The starting point for one-based bar-beat time, '1:1.1'
   static var start1: BarBeatTime { return BarBeatTime(bar: 1, beat: 1, subbeat: 1, base: .One) }
 
-  /// A bar-beat time for representing a null value, -1:-1:-1
-  static let null = BarBeatTime(bar: 0, beat: 0, subbeat: 0, subbeatDivisor: 0, beatsPerBar: 0, beatsPerMinute: 0)
+  /// A bar-beat time for representing a null value
+  static let null = BarBeatTime(subbeatDivisor: 0, beatsPerBar: 0, beatsPerMinute: 0)
 
   /**
    Initialize with a tick value
@@ -164,9 +171,9 @@ struct BarBeatTime {
    - parameter negative: Bool = false
    */
   init(tickValue: MIDITimeStamp,
-       beatsPerBar: UInt = Sequencer.beatsPerBar,
-       subbeatDivisor: UInt = Sequencer.partsPerQuarter,
-       beatsPerMinute: UInt = Sequencer.beatsPerMinute,
+       beatsPerBar: UInt = 4,
+       subbeatDivisor: UInt = 480,
+       beatsPerMinute: UInt = 120,
        base: Base = .Zero,
        negative: Bool = false)
   {
@@ -189,13 +196,13 @@ struct BarBeatTime {
    - parameter negative: Bool = false
    */
   init(seconds: NSTimeInterval,
-       beatsPerBar: UInt = Sequencer.beatsPerBar,
-       subbeatDivisor: UInt = Sequencer.partsPerQuarter,
-       beatsPerMinute: UInt = Sequencer.beatsPerMinute,
+       beatsPerBar: UInt = 4,
+       subbeatDivisor: UInt = 480,
+       beatsPerMinute: UInt = 120,
        base: Base = .Zero,
        negative: Bool = false)
   {
-    let totalBeats = seconds * NSTimeInterval(beatsPerMinute) / 60
+    let totalBeats = seconds * (NSTimeInterval(beatsPerMinute) / 60)
     self.init(totalBeats: negative ? -totalBeats : totalBeats,
               beatsPerBar: beatsPerBar,
               subbeatDivisor: subbeatDivisor,
@@ -214,9 +221,9 @@ struct BarBeatTime {
    - parameter negative: Bool = false
   */
   init(totalBeats: Double,
-       beatsPerBar: UInt = Sequencer.beatsPerBar,
-       subbeatDivisor: UInt = Sequencer.partsPerQuarter,
-       beatsPerMinute: UInt = Sequencer.beatsPerMinute,
+       beatsPerBar: UInt = 4,
+       subbeatDivisor: UInt = 480,
+       beatsPerMinute: UInt = 120,
        base: Base = .Zero)
   {
     let negative = totalBeats.isSignMinus
@@ -234,8 +241,12 @@ struct BarBeatTime {
               negative: negative)
   }
 
+  var secondsPerBeat: NSTimeInterval {
+    return 1 / (NSTimeInterval(beatsPerMinute) / 60)
+  }
+
   /// The time's value in seconds
-  var seconds: NSTimeInterval { return totalBeats / NSTimeInterval(beatsPerMinute) / 60 }
+  var seconds: NSTimeInterval { return totalBeats * secondsPerBeat }
 
   var totalBeats: Double {
     let wholeBeats = Double((rawBar) * beatsPerBar + rawBeat)
@@ -321,32 +332,35 @@ extension BarBeatTime: RawRepresentable {
               beat = UInt(beatString),
               subbeat = UInt(subbeatString) else { return nil }
     let beatsPerBar: UInt
-    let beatsPerMinute: Int
-    let subbeatDivisor: Int
+    let beatsPerMinute: UInt
+    let subbeatDivisor: UInt
     let base: Base
     let negative = match["negative"] != nil
     if let beatsPerBarString = match["beatsPerBar"]?.string, beatsPerBarUInt = UInt(beatsPerBarString) {
       beatsPerBar = beatsPerBarUInt
     } else {
-      beatsPerBar = Sequencer.beatsPerBar
+      beatsPerBar = 4
     }
-    if let subbeatDivisorString = match["subbeatDivisor"]?.string, subbeatDivisorInt = Int(subbeatDivisorString) {
-      subbeatDivisor = subbeatDivisorInt
+    if let subbeatDivisorString = match["subbeatDivisor"]?.string,
+           subbeatDivisorUInt = UInt(subbeatDivisorString) {
+           subbeatDivisor = subbeatDivisorUInt
     } else {
-      subbeatDivisor = Int(Sequencer.partsPerQuarter)
+      subbeatDivisor = 480
     }
-    if let beatsPerMinuteString = match["beatsPerMinute"]?.string, beatsPerMinuteInt = Int(beatsPerMinuteString) {
-      beatsPerMinute = beatsPerMinuteInt
+    if let beatsPerMinuteString = match["beatsPerMinute"]?.string, beatsPerMinuteUInt = UInt(beatsPerMinuteString) {
+      beatsPerMinute = beatsPerMinuteUInt
     } else {
-      beatsPerMinute = Int(Sequencer.beatsPerMinute)
+      beatsPerMinute = 120
     }
-    if let baseString = match["base"]?.string where baseString == "₁" { base = .One } else { base = .Zero }
+    if let baseString = match["base"]?.string where baseString == "₁" { base = .One } else {
+      base = .Zero
+    }
     self.init(bar: bar,
               beat: beat,
               subbeat: subbeat,
-              subbeatDivisor: UInt(subbeatDivisor),
+              subbeatDivisor: subbeatDivisor,
               beatsPerBar: beatsPerBar,
-              beatsPerMinute: UInt(beatsPerMinute),
+              beatsPerMinute: beatsPerMinute,
               base: base,
               negative: negative)
   }
@@ -393,11 +407,10 @@ extension BarBeatTime: BidirectionalIndexType {
     - returns: BarBeatTime
   */
   func successor() -> BarBeatTime {
-    return BarBeatTime(totalBeats: totalBeats + 1 / Double(subbeatDivisor),
-                       beatsPerBar: beatsPerBar,
-                       subbeatDivisor: subbeatDivisor,
-                       beatsPerMinute: beatsPerMinute,
-                       base: base)
+    var result = self
+    result.subbeat++
+    result.normalize()
+    return result
   }
 
 }
@@ -567,5 +580,3 @@ func -<T:DoubleConvertible>(lhs: BarBeatTime, rhs: T) -> BarBeatTime {
 extension BarBeatTime: Comparable {}
 
 func <(lhs: BarBeatTime, rhs: BarBeatTime) -> Bool { return lhs.totalBeats < rhs.totalBeats }
-
-

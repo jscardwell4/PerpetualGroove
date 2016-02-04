@@ -33,6 +33,7 @@ public final class NotificationReceptionist: NSObject, Loggable {
       logWarning("not observing \(notification.name)'\(notification.object == nil ? "" : "from object at address \(unsafeAddressOf(notification.object!))")")
       return
     }
+    logVerbose("notification: \(notification)")
     (info.queue ?? callbackQueue ?? NSOperationQueue.mainQueue()).addOperationWithBlock { info.callback(notification) }
   }
 

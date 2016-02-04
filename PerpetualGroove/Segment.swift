@@ -122,8 +122,9 @@ final class Segment: Equatable, Comparable, CustomStringConvertible {
     length = trajectory.p.distanceTo(endLocation)
 
     let 𝝙t = trajectory.timeFromPoint(trajectory.p, toPoint: endLocation)
+    let endTime = BarBeatTime(seconds: time.seconds + 𝝙t, base: .One)
 
-    timeInterval = time ..< BarBeatTime(seconds: time.seconds + 𝝙t, base: .One)
+    timeInterval = time ..< endTime
     tickInterval = timeInterval.start.ticks ..< timeInterval.end.ticks
   }
 

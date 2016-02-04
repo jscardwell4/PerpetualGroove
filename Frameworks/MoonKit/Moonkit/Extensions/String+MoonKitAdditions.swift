@@ -271,7 +271,12 @@ public extension String {
 
   - returns: String
   */
-  public func sandwhich(string: String) -> String { return self + string + self }
+  public func wrap(string: String, separator: String? = nil) -> String {
+    guard let separator = separator else { return self + string + self }
+    guard let range = rangeOfString(separator) else { return self + string + self }
+
+    return self[..<range.startIndex] + string + self[range.endIndex..<]
+  }
 
   /**
   split:

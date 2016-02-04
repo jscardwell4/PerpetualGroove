@@ -24,6 +24,8 @@ final class Transport {
   let clock: MIDIClock
   let time: Time
 
+  static let notificationQueue = NSNotificationQueue(notificationCenter: NSNotificationCenter.defaultCenter())
+
   var tempo: Double {
     get { return Double(clock.beatsPerMinute) }
     set { clock.beatsPerMinute = UInt16(newValue) }
@@ -41,16 +43,15 @@ final class Transport {
     self.clock = clock
   }
 
-  var playing:          Bool { return state ∋ .Playing          }
-  var paused:           Bool { return state ∋ .Paused           }
-  var jogging:          Bool { return state ∋ .Jogging          }
-  var recording:        Bool { return state ∋ .Recording        }
+  var playing:          Bool { return state ∋ .Playing   }
+  var paused:           Bool { return state ∋ .Paused    }
+  var jogging:          Bool { return state ∋ .Jogging   }
+  var recording:        Bool { return state ∋ .Recording }
 
   /** Starts the MIDI clock */
   func play() {
     guard !playing else { logWarning("already playing"); return }
     Notification.DidStart.post(object: self, userInfo:[
-      .Ticks: NSNumber(unsignedLongLong: time.ticks),
       .Time: time.barBeatTime.rawValue
       ])
     if paused { clock.resume(); state ⊻= [.Paused, .Playing] }
@@ -66,7 +67,6 @@ final class Transport {
     clock.stop()
     state ⊻= [.Paused, .Playing]
     Notification.DidPause.post(object: self, userInfo:[
-      .Ticks: NSNumber(unsignedLongLong: time.ticks),
       .Time: time.barBeatTime.rawValue
       ])
   }
@@ -78,7 +78,6 @@ final class Transport {
     time.reset {[weak self] in
       guard let weakself = self else { return }
       Notification.DidReset.post(object: weakself, userInfo:[
-        .Ticks: NSNumber(unsignedLongLong: weakself.time.ticks),
         .Time: weakself.time.barBeatTime.rawValue
         ])}
   }
@@ -89,7 +88,6 @@ final class Transport {
     clock.stop()
     state ∖= [.Playing, .Paused]
     Notification.DidStop.post(object: self, userInfo:[
-      .Ticks: NSNumber(unsignedLongLong: time.ticks),
       .Time: time.barBeatTime.rawValue
       ])
   }
@@ -107,7 +105,6 @@ final class Transport {
     jogTime = time.barBeatTime
     state ⊻= [.Jogging]
     Notification.DidBeginJogging.post(object: self, userInfo:[
-      .Ticks: NSNumber(unsignedLongLong: time.ticks),
       .Time: time.barBeatTime.rawValue
       ])
   }
@@ -134,7 +131,6 @@ final class Transport {
     time.barBeatTime = jogTime
     jogTime = nil
     Notification.DidEndJogging.post(object: self, userInfo:[
-      .Ticks: NSNumber(unsignedLongLong: time.ticks),
       .Time: time.barBeatTime.rawValue
       ])
     guard !paused && clock.paused else { return }
@@ -152,8 +148,7 @@ final class Transport {
     guard t.isNormal else { throw Error.InvalidBarBeatTime("\(t)") }
     jogTime = t
     Notification.DidJog.post(object: self, userInfo:[
-//      .Ticks: NSNumber(unsignedLongLong: time.ticks),
-//      .Time: time.barBeatTime.rawValue,
+      .Time: time.barBeatTime.rawValue,
       .JogTime: jogTime.rawValue,
       .JogDirection: direction.rawValue
       ])
@@ -214,41 +209,45 @@ extension Transport {
     case DidJog
     case DidChangeState
 
+    var notificationQueue: NSNotificationQueue? { return Transport.notificationQueue }
+
     enum Key: String, NotificationKeyType {
-      case Time, Ticks, JogTime, JogDirection, TransportState, PreviousTransportState
+      case Time, JogTime, JogDirection, TransportState, PreviousTransportState
     }
   }
 
 }
 
 extension NSNotification {
+
   var jogTime: BarBeatTime? {
     guard let string = userInfo?[Transport.Notification.Key.JogTime.key] as? String else { return nil }
     return BarBeatTime(rawValue: string)
   }
+
   var jogDirection: ScrollWheel.Direction? {
     guard let raw = userInfo?[Transport.Notification.Key.JogDirection.key] as? Int else {
       return nil
     }
     return ScrollWheel.Direction(rawValue: raw)
   }
+
   var time: BarBeatTime? {
     guard let string = userInfo?[Transport.Notification.Key.Time.key] as? String else { return nil }
     return BarBeatTime(rawValue: string)
   }
-  var ticks: MIDITimeStamp? {
-    return (userInfo?[Transport.Notification.Key.Ticks.key] as? NSNumber)?.unsignedLongLongValue
-  }
+
   var transportState: Transport.State? {
-    guard let rawState = (userInfo?[Transport.Notification.Key.TransportState.key] as? NSNumber)?.integerValue else {
+    guard let rawState = userInfo?[Transport.Notification.Key.TransportState.key] as? NSNumber else {
       return nil
     }
-    return Transport.State(rawValue: rawState)
+    return Transport.State(rawValue: rawState.integerValue)
   }
+
   var previousTransportState: Transport.State? {
-    guard let rawState = (userInfo?[Transport.Notification.Key.PreviousTransportState.key] as? NSNumber)?.integerValue else {
+    guard let rawState = userInfo?[Transport.Notification.Key.PreviousTransportState.key] as? NSNumber else {
       return nil
     }
-    return Transport.State(rawValue: rawState)
+    return Transport.State(rawValue: rawState.integerValue)
   }
 }
