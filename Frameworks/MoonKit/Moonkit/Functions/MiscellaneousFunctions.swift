@@ -34,6 +34,8 @@ public func lcm<T:ArithmeticType>(a: T, _ b: T) -> T {
   return a / gcd(a, b) * b
 }
 
+public func reinterpretCast<T,U>(obj: T) -> U { return unsafeBitCast(obj, U.self) }
+
 /**
 typeName:
 

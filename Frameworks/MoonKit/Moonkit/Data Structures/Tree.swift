@@ -283,7 +283,11 @@ public struct Tree<Element: Comparable> {
 
       // The node's value is greater than desired
       case let .Some(_, left, value, _) where !isOrderedBefore(value):
-        return find(left, options: options, possibleMatch: options == .NearestNotLessThan ? value : possibleMatch, isOrderedBefore: isOrderedBefore, predicate: predicate)
+        return find(left,
+            options: options,
+      possibleMatch: options == .NearestNotLessThan ? value : possibleMatch,
+    isOrderedBefore: isOrderedBefore,
+          predicate: predicate)
 
       // The node's value is less than desired without a right child and options specify nearest not greater
       case let .Some(_, _, value, .None) where isOrderedBefore(value) && options == .NearestNotGreaterThan:
@@ -291,7 +295,11 @@ public struct Tree<Element: Comparable> {
 
       // The node's value is less than desired
       case let .Some(_, _, value, right) where isOrderedBefore(value):
-        return find(right, options: options, possibleMatch: options == .NearestNotGreaterThan ? value : possibleMatch, isOrderedBefore: isOrderedBefore, predicate: predicate)
+        return find(right,
+            options: options,
+      possibleMatch: options == .NearestNotGreaterThan ? value : possibleMatch,
+    isOrderedBefore: isOrderedBefore,
+          predicate: predicate)
 
       // Leaf
       default:

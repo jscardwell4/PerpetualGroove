@@ -12,16 +12,46 @@ import UIKit
 @IBDesignable
 public class ScrollWheel: UIControl {
 
+  /** Called as part of the initialization process */
+  private func setup() {
+    wheelLayer.anchorPoint = .zero
+    dimpleLayer.anchorPoint = .zero
+    dimpleFillLayer.anchorPoint = .zero
+    wheelLayer.contentsScale = UIScreen.mainScreen().scale
+    wheelLayer.contentsScale = UIScreen.mainScreen().scale
+    dimpleLayer.contentsScale = UIScreen.mainScreen().scale
+    dimpleFillLayer.contentsScale = UIScreen.mainScreen().scale
+    calculateFrames()
+    layer.addSublayer(wheelLayer)
+    layer.addSublayer(dimpleLayer)
+    layer.addSublayer(dimpleFillLayer)
+  }
+
+  /**
+   initWithFrame:
+
+   - parameter frame: CGRect
+  */
+  public override init(frame: CGRect) { super.init(frame: frame); setup() }
+
+  /**
+   init:
+
+   - parameter aDecoder: NSCoder
+  */
+  required public init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder); setup() }
+
+
   // MARK: - Colors
 
-  @IBInspectable public var wheelColor: UIColor = .darkGrayColor() {
+  @IBInspectable public var wheelColor: UIColor = .redColor() {
     didSet {
       guard wheelColor != oldValue else { return }
 
       backgroundDispatch {
         [weak self] in
         self?._wheelImage = self?.wheelImage?.imageWithColor(self!.wheelColor)
-        dispatchToMain { self?.setNeedsDisplay() }
+        dispatchToMain { self?.refreshLayers(.Wheel) }
       }
     }
   }
@@ -33,62 +63,102 @@ public class ScrollWheel: UIControl {
         [weak self] in
         self?._dimpleImage = self?.dimpleImage?.imageWithColor(self!.dimpleColor)
         self?._dimpleFillImage = self?.dimpleFillImage?.imageWithColor(self!.dimpleColor)
-        dispatchToMain { self?.setNeedsDisplay() }
+        dispatchToMain { self?.refreshLayers([.Dimple, .DimpleFill]) }
       }
     }
+  }
+
+  // MARK: - Frames
+
+  private var baseFrame: CGRect = .zero
+  private var dimpleFrame: CGRect = .zero
+
+  private func calculateFrames() {
+    baseFrame = bounds.centerInscribedSquare
+    let dimpleSize = CGSize(square: baseFrame.height * 0.25)
+    dimpleFrame = CGRect(
+      origin: CGPoint(x: baseFrame.midX - half(dimpleSize.width), y: baseFrame.minY + 10),
+      size: dimpleSize
+    )
+    wheelLayer.frame = baseFrame
+    dimpleLayer.frame = dimpleFrame
+    dimpleFillLayer.frame = dimpleFrame
+    updateTouchPath()
+    refreshLayers(.All)
   }
 
   // MARK: - Images
 
   private var _wheelImage: UIImage?
+  private let wheelLayer = CALayer()
   @IBInspectable public var wheelImage: UIImage? {
     didSet {
       guard wheelImage != oldValue else { return }
       backgroundDispatch {
         [weak self] in
         self?._wheelImage = self?.wheelImage?.imageWithColor(self!.wheelColor)
-        dispatchToMain { self?.setNeedsDisplay() }
+        dispatchToMain { self?.refreshLayers(.Wheel) }
       }
     }
   }
+
+  private func circleOfSize(size: CGSize, color: UIColor) -> UIImage {
+    UIGraphicsBeginImageContextWithOptions(size, false, UIScreen.mainScreen().scale)
+    color.setFill()
+    UIBezierPath(ovalInRect: CGRect(size: size)).fill()
+    let result = UIGraphicsGetImageFromCurrentImageContext()
+    UIGraphicsEndImageContext()
+    return result
+  }
+
+  private var defaultWheelImage: UIImage { return circleOfSize(baseFrame.size, color: wheelColor) }
+
   private var _dimpleImage: UIImage?
+  private let dimpleLayer = CALayer()
   @IBInspectable public var dimpleImage: UIImage? {
     didSet {
       guard dimpleImage != oldValue else { return }
       backgroundDispatch {
         [weak self] in
         self?._dimpleImage = self?.dimpleImage?.imageWithColor(self!.dimpleColor)
-        dispatchToMain { self?.setNeedsDisplay() }
+        dispatchToMain { self?.refreshLayers(.Dimple) }
       }
     }
   }
+
+  private var defaultDimpleImage: UIImage { return circleOfSize(dimpleFrame.size, color: dimpleColor) }
+
+
   private var _dimpleFillImage: UIImage?
+  private let dimpleFillLayer = CALayer()
   @IBInspectable public var dimpleFillImage: UIImage? {
     didSet {
       guard dimpleFillImage != oldValue else { return }
       backgroundDispatch {
         [weak self] in
         self?._dimpleFillImage = self?.dimpleFillImage?.imageWithColor(self!.dimpleColor)
-        dispatchToMain { self?.setNeedsDisplay() }
+        dispatchToMain { self?.refreshLayers(.DimpleFill) }
       }
     }
   }
 
   // MARK: - Styles
 
-  public var dimpleStyle: CGBlendMode = .Normal {
-    didSet {
-      guard dimpleStyle != oldValue else { return }
-      setNeedsDisplay()
-    }
-  }
+  public var dimpleStyle: CGBlendMode = .Normal
+//    {
+//    didSet {
+//      guard dimpleStyle != oldValue else { return }
+//      setNeedsDisplay()
+//    }
+//  }
 
-  public var dimpleFillStyle: CGBlendMode = .Normal {
-    didSet {
-      guard dimpleFillStyle != oldValue else { return }
-      setNeedsDisplay()
-    }
-  }
+  public var dimpleFillStyle: CGBlendMode = .Normal
+//    {
+//    didSet {
+//      guard dimpleFillStyle != oldValue else { return }
+//      setNeedsDisplay()
+//    }
+//  }
 
   @IBInspectable public var dimpleStyleString: String {
     get { return dimpleStyle.stringValue }
@@ -103,53 +173,82 @@ public class ScrollWheel: UIControl {
   // MARK: - Drawing
 
   /// The angle used in drawing the wheel
-  private var angle: CGFloat = 0.0 { didSet { setNeedsDisplay() } }
+  public var angle: CGFloat = 0.0 { didSet { layer.sublayerTransform.rotation = angle } }
 
   /// The wheel's center point in window coordinates
   private var wheelCenter: CGPoint = .zero
+
+  private struct LayerMask: OptionSetType {
+    let rawValue: Int
+    static let None       = LayerMask(rawValue: 0b000)
+    static let Wheel      = LayerMask(rawValue: 0b001)
+    static let Dimple     = LayerMask(rawValue: 0b010)
+    static let DimpleFill = LayerMask(rawValue: 0b100)
+    static let All        = LayerMask(rawValue: 0b111)
+  }
+
+  /**
+   refreshLayers:context:
+
+   - parameter layers: LayerMask = []
+  */
+  private func refreshLayers(layers: LayerMask = []) {
+    if layers ∋ .Wheel {
+//      _wheelImage = wheelImage?.imageWithColor(wheelColor)
+      wheelLayer.contents = _wheelImage?.CGImage ?? defaultWheelImage.CGImage
+    }
+    if layers ∋ .Dimple {
+//      _dimpleImage = dimpleImage?.imageWithColor(dimpleColor)
+      dimpleLayer.contents = _dimpleImage?.CGImage ?? defaultDimpleImage.CGImage
+    }
+    if layers ∋ .DimpleFill {
+//      _dimpleFillImage = dimpleFillImage?.imageWithColor(dimpleColor)
+      dimpleFillLayer.contents = _dimpleFillImage?.CGImage
+    }
+  }
 
   /**
   drawRect:
 
   - parameter rect: CGRect
   */
-  public override func drawRect(rect: CGRect) {
-    let context = UIGraphicsGetCurrentContext()
-    CGContextSaveGState(context)
-    CGContextTranslateCTM(context, half(rect.width), half(rect.height))
-    CGContextRotateCTM(context, angle)
-    CGContextTranslateCTM(context, -half(rect.width), -half(rect.height))
-
-    let baseFrame = rect.centerInscribedSquare
-    if let wheelBase = _wheelImage {
-      wheelBase.drawInRect(baseFrame)
-    } else {
-      wheelColor.setFill()
-      UIBezierPath(ovalInRect: baseFrame).fill()
-    }
-
-
-    let dimpleSize = CGSize(square: baseFrame.height * 0.25)
-    let dimpleFrame = CGRect(origin: CGPoint(x: baseFrame.midX - half(dimpleSize.width),
-                                             y: baseFrame.minY + 10),
-                             size: dimpleSize)
-    if let dimple = _dimpleImage, dimpleFill = _dimpleFillImage {
-
-      UIBezierPath(ovalInRect: dimpleFrame).addClip()
-      dimple.drawInRect(dimpleFrame, blendMode: dimpleStyle, alpha: 1)
-
-      let dimpleFillFrame = dimpleFrame.insetBy(dx: 1, dy: 1)
-
-      UIBezierPath(ovalInRect: dimpleFillFrame.insetBy(dx: 1, dy: 1)).addClip()
-      dimpleFill.drawInRect(dimpleFillFrame, blendMode: dimpleFillStyle, alpha: 1)
-
-    } else {
-      dimpleColor.setFill()
-      UIBezierPath(ovalInRect: dimpleFrame).fill()
-    }
-
-    CGContextRestoreGState(context)
-  }
+//  public override func drawRect(rect: CGRect) {
+//    let context = UIGraphicsGetCurrentContext()
+//    CGContextSaveGState(context)
+//    CGContextTranslateCTM(context, half(rect.width), half(rect.height))
+//    CGContextRotateCTM(context, angle)
+//    CGContextTranslateCTM(context, -half(rect.width), -half(rect.height))
+//
+//    let baseFrame = rect.centerInscribedSquare
+//    if let wheelBase = _wheelImage {
+//      wheelBase.drawInRect(baseFrame)
+//    } else {
+//      wheelColor.setFill()
+//      UIBezierPath(ovalInRect: baseFrame).fill()
+//    }
+//
+//
+//    let dimpleSize = CGSize(square: baseFrame.height * 0.25)
+//    let dimpleFrame = CGRect(origin: CGPoint(x: baseFrame.midX - half(dimpleSize.width),
+//                                             y: baseFrame.minY + 10),
+//                             size: dimpleSize)
+//    if let dimple = _dimpleImage, dimpleFill = _dimpleFillImage {
+//
+//      UIBezierPath(ovalInRect: dimpleFrame).addClip()
+//      dimple.drawInRect(dimpleFrame, blendMode: dimpleStyle, alpha: 1)
+//
+//      let dimpleFillFrame = dimpleFrame.insetBy(dx: 1, dy: 1)
+//
+//      UIBezierPath(ovalInRect: dimpleFillFrame.insetBy(dx: 1, dy: 1)).addClip()
+//      dimpleFill.drawInRect(dimpleFillFrame, blendMode: dimpleFillStyle, alpha: 1)
+//
+//    } else {
+//      dimpleColor.setFill()
+//      UIBezierPath(ovalInRect: dimpleFrame).fill()
+//    }
+//
+//    CGContextRestoreGState(context)
+//  }
 
   // MARK: - Values
 
@@ -169,6 +268,8 @@ public class ScrollWheel: UIControl {
       sendActionsForControlEvents(.ValueChanged)
     }
   }
+
+  @IBInspectable public var dimpleOffset: CGFloat = ScrollWheel.quarterRevolution
 
   /// Total number of revolutions
   public var revolutions: Double { return radians / Double(ScrollWheel.revolution) }
@@ -193,21 +294,16 @@ public class ScrollWheel: UIControl {
 
   /** updateTouchPath */
   private func updateTouchPath() {
-    let square = bounds.centerInscribedSquare
-    touchPath = UIBezierPath(ovalInRect: square)
-    let outterRadius = half(square.width)
-    touchPath.moveToPoint(CGPoint(x: square.minX + outterRadius + 1,
-                                  y: square.minY + outterRadius))
+    touchPath = UIBezierPath(ovalInRect: baseFrame)
+    let outterRadius = half(baseFrame.width)
+    touchPath.moveToPoint(CGPoint(x: baseFrame.minX + outterRadius + 1,
+                                  y: baseFrame.minY + outterRadius))
     touchPath.usesEvenOddFillRule = true
-    touchPath.addArcWithCenter(CGPoint(x: square.midX, y: square.midY),
-                        radius: 1,
-                    startAngle: 0,
-                      endAngle: π * 2,
-                     clockwise: true)
+    touchPath.addArcWithCenter(baseFrame.center, radius: 1, startAngle: 0, endAngle: π * 2, clockwise: true)
   }
 
-  public override var bounds: CGRect { didSet { updateTouchPath() } }
-  public override var frame: CGRect { didSet { updateTouchPath() } }
+  public override var bounds: CGRect { didSet { guard bounds != oldValue else { return }; calculateFrames() } }
+//  public override var frame: CGRect { didSet { updateTouchPath() } }
 
   /**
    angleForTouchLocation:
@@ -233,7 +329,7 @@ public class ScrollWheel: UIControl {
     }
 
     // Adjust the angle for the rotated dimple
-    α += ScrollWheel.quarterRevolution
+    α += dimpleOffset
 
     // Adjust for initial touch offset
     α += touchOffset

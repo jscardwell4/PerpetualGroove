@@ -38,7 +38,19 @@ final class MIDIPlayerNode: SKShapeNode {
   */
   required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
-  var midiNodes: [MIDINode] { return children.flatMap({$0 as? MIDINode}) }
+  /**
+   addChild:
+
+   - parameter node: SKNode
+  */
+  override func addChild(node: SKNode) {
+    super.addChild(node)
+    guard let midiNode = node as? MIDINode else { return }
+    midiNodes.append(midiNode)
+  }
+
+
+  private(set) var midiNodes: WeakArray<MIDINode> = []
 
   var defaultNodes: [MIDINode] { return midiNodesForMode(.Default) }
 

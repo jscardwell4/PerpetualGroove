@@ -80,7 +80,7 @@ struct MIDIEventContainer: CollectionType, Indexable, MutableIndexable {
   func generate() -> AnyGenerator<MIDIEvent> {
     var index = startIndex
     let container = self
-    return anyGenerator({
+    return anyGenerator {
       switch index {
       case .EndIndex: return nil
       case .ValueIndex(_, _, let successor):
@@ -88,7 +88,7 @@ struct MIDIEventContainer: CollectionType, Indexable, MutableIndexable {
         index = successor
         return event
       }
-    })
+    }
   }
 
   var minTime: BarBeatTime { return events.keys.minElement() ?? .start1              }

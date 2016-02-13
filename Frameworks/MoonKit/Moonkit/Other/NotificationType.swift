@@ -68,7 +68,7 @@ public extension NotificationType {
 
   var notification: NSNotification { return NSNotification(name: _name, object: object, userInfo: _userInfo) }
   var notificationQueue: NSNotificationQueue? { return NSNotificationQueue.defaultQueue() }
-  var postingStyle: NSPostingStyle { return .PostWhenIdle }
+  var postingStyle: NSPostingStyle { return .PostNow }
   var coalescing: NSNotificationCoalescing { return [.CoalescingOnName, .CoalescingOnSender] }
 
   /**

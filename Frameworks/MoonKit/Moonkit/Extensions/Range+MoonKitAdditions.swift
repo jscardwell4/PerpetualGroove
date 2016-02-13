@@ -74,7 +74,14 @@ public func ~=<I:Comparable>(lhs: ClosedIntervalEnd<I>, rhs: I) -> Bool {
   return rhs <= lhs.end
 }
 
+public extension Range {
+  public var middleIndex: Element {
+    return startIndex.advancedBy(startIndex.distanceTo(endIndex) / 2)
+  }
+}
+
 public extension Range where Element: Comparable {
+
 
   /**
   split:noImplicitJoin:

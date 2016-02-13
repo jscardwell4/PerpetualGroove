@@ -24,8 +24,6 @@ final class Transport {
   let clock: MIDIClock
   let time: Time
 
-  static let notificationQueue = NSNotificationQueue(notificationCenter: NSNotificationCenter.defaultCenter())
-
   var tempo: Double {
     get { return Double(clock.beatsPerMinute) }
     set { clock.beatsPerMinute = UInt16(newValue) }
@@ -208,8 +206,6 @@ extension Transport {
     case DidBeginJogging, DidEndJogging
     case DidJog
     case DidChangeState
-
-    var notificationQueue: NSNotificationQueue? { return Transport.notificationQueue }
 
     enum Key: String, NotificationKeyType {
       case Time, JogTime, JogDirection, TransportState, PreviousTransportState

@@ -88,3 +88,68 @@ public func valuesForKey<C: KeyValueCollectionType, K:Hashable, V where C.Key ==
   return containers.flatMap { $0[key] as? V }
 }
 
+
+/**
+ Perform a binary search of the specified collection and return the index of `element` if found.
+
+ - parameter collection: C
+ - parameter element: C.Generator.Element
+
+ - returns: C.Index?
+
+ - requires: The collection to search is already sorted
+*/
+public func binarySearch<C:CollectionType
+  where C.Generator.Element: Comparable,
+  C.Index:BidirectionalIndexType,
+  C.SubSequence.Index == C.Index,
+  C.SubSequence._Element == C._Element,
+  C._Element == C.Generator.Element>(collection: C, element: C.Generator.Element) -> C.Index?
+{
+  func searchSlice(slice: Slice<C>) -> C.Index? {
+    let range = slice.indices
+    let index = range.middleIndex
+    let maybeElement = slice[index]
+    guard maybeElement != element else { return index }
+    if maybeElement < element && index.successor() != range.endIndex {
+      return searchSlice(slice[index.successor() ..< range.endIndex])
+    } else if maybeElement > element && index != range.startIndex {
+      return searchSlice(slice[range.startIndex ..< index])
+    }
+    return nil
+  }
+
+  return searchSlice(Slice(base: collection, bounds: collection.indices))
+}
+
+public func binaryInsertion<C:CollectionType
+  where C.Generator.Element: Comparable,
+  C.Index:BidirectionalIndexType,
+  C.SubSequence.Index == C.Index,
+  C.SubSequence._Element == C._Element,
+  C._Element == C.Generator.Element>(collection: C, element: C.Generator.Element) -> C.Index
+{
+  guard !collection.isEmpty else { return collection.endIndex }
+  guard collection[collection.startIndex] < element else { return collection.startIndex }
+  guard collection[collection.endIndex.predecessor()] > element else { return collection.endIndex }
+
+  func searchSlice(slice: Slice<C>) -> C.Index {
+    let range = slice.indices
+    let index = range.middleIndex
+    let maybeElement = slice[index]
+    guard maybeElement != element else { return index }
+    if maybeElement < element {
+      guard index.successor() != range.endIndex else { return range.endIndex }
+
+      return searchSlice(slice[index.successor() ..< range.endIndex])
+
+    } else if maybeElement > element {
+      guard index != range.startIndex else { return range.startIndex }
+      return searchSlice(slice[range.startIndex ..< index])
+
+    }
+    return collection.endIndex
+  }
+
+  return searchSlice(Slice(base: collection, bounds: collection.indices))
+}

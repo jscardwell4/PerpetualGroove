@@ -24,21 +24,21 @@ final class Segment: Equatable, Comparable, CustomStringConvertible {
   var endTicks: MIDITimeStamp { return tickInterval.end }
   var totalTicks: MIDITimeStamp { return endTicks > startTicks ? endTicks - startTicks : 0 }
 
-  private weak var _successor: Segment?
+//  private weak var _successor: Segment?
+//
+//  var successor: Segment {
+//    guard _successor == nil else { return _successor! }
+//    let segment = advance()
+//    segment.predessor = self
+//    _successor = segment
+//    path.insertSegment(segment)
+//    return segment
+//  }
+//
+//  weak var predessor: Segment?
 
-  var successor: Segment {
-    guard _successor == nil else { return _successor! }
-    let segment = advance()
-    segment.predessor = self
-    _successor = segment
-    path.insertSegment(segment)
-    return segment
-  }
 
-  weak var predessor: Segment?
-
-
-  unowned let path: MIDINodePath
+//  unowned let path: MIDINodePath
 
   var startLocation: CGPoint { return trajectory.p }
   let endLocation: CGPoint
@@ -77,23 +77,24 @@ final class Segment: Equatable, Comparable, CustomStringConvertible {
 
    - parameter trajectory: Trajectory
    - parameter time: BarBeatTime
-   - parameter path: MIDINodePath
+   - parameter min: CGPoint
+   - parameter max: CGPoint
    */
-  init(trajectory: Trajectory, time: BarBeatTime, path: MIDINodePath) {
+  init(trajectory: Trajectory, time: BarBeatTime, min: CGPoint, max: CGPoint) {
     self.trajectory = trajectory
-    self.path = path
+//    self.path = path
 
     let endY: CGFloat
 
     switch trajectory.direction.vertical {
       case .None: endY = trajectory.p.y
-      case .Up:   endY = path.max.y
-      case .Down: endY = path.min.y
+      case .Up:   endY = max.y
+      case .Down: endY = min.y
     }
 
     let pY: CGPoint? = {
       let p = trajectory.pointAtY(endY)
-      guard (path.min.x ... path.max.x).contains(p.x) else { return nil }
+      guard (min.x ... max.x).contains(p.x) else { return nil }
       return p
     }()
 
@@ -101,13 +102,13 @@ final class Segment: Equatable, Comparable, CustomStringConvertible {
 
     switch trajectory.direction.horizontal {
       case .None:  endX = trajectory.p.x
-      case .Left:  endX = path.min.x
-      case .Right: endX = path.max.x
+      case .Left:  endX = min.x
+      case .Right: endX = max.x
     }
 
     let pX: CGPoint? = {
       let p = trajectory.pointAtX(endX)
-      guard (path.min.y ... path.max.y).contains(p.y) else { return nil }
+      guard (min.y ... max.y).contains(p.y) else { return nil }
       return p
     }()
 
@@ -133,21 +134,21 @@ final class Segment: Equatable, Comparable, CustomStringConvertible {
 
    - returns: Segment
    */
-  private func advance() -> Segment {
-    // Redirect trajectory according to which boundary edge the new location touches
-    let v: CGVector
-    switch endLocation.unpack {
-    case (path.min.x, _), (path.max.x, _):
-      v = CGVector(dx: trajectory.dx * -1, dy: trajectory.dy)
-    case (_, path.min.y), (_, path.max.y):
-      v = CGVector(dx: trajectory.dx, dy: trajectory.dy * -1)
-    default:
-      fatalError("next location should contact an edge of the player")
-    }
-
-    let nextTrajectory = Trajectory(vector: v, point: endLocation)
-    return Segment(trajectory: nextTrajectory, time: endTime, path: path)
-  }
+//  private func advance() -> Segment {
+//    // Redirect trajectory according to which boundary edge the new location touches
+//    let v: CGVector
+//    switch endLocation.unpack {
+//    case (path.min.x, _), (path.max.x, _):
+//      v = CGVector(dx: trajectory.dx * -1, dy: trajectory.dy)
+//    case (_, path.min.y), (_, path.max.y):
+//      v = CGVector(dx: trajectory.dx, dy: trajectory.dy * -1)
+//    default:
+//      fatalError("next location should contact an edge of the player")
+//    }
+//
+//    let nextTrajectory = Trajectory(vector: v, point: endLocation)
+//    return Segment(trajectory: nextTrajectory, time: endTime, path: path)
+//  }
 
   var description: String {
     return "Segment {\n\t" + "\n\t".join(
@@ -171,4 +172,3 @@ func ==(lhs: Segment, rhs: Segment) -> Bool {
 func <(lhs: Segment, rhs: Segment) -> Bool {
   return lhs.startTime < rhs.startTime
 }
-

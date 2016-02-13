@@ -85,6 +85,20 @@ public extension String {
   }
   public init<B:ByteArrayConvertible>(binaryBytes: B) { self.init(binaryBytes: binaryBytes.bytes) }
 
+  public init<T>(var rawContentsOf x: T) {
+    self = withUnsafePointer(&x) {
+      UnsafeBufferPointer<UInt>(start: UnsafePointer<UInt>($0), count: sizeof(T) / sizeof(UInt))
+        .map {
+        [length = sizeof(UInt) * 2] word -> String in
+        let s = String(word, radix: 16)
+        let pad = length - s.characters.count
+        return s.characters.count < length
+                 ? "\(String(count: pad, repeatedValue: Character("0")))\(s)"
+                 : s
+      }.joinWithSeparator(" ")
+    }
+  }
+
   public init(items: [Any], separator: String = " ", terminator: String = "\n") {
     self = items.map({String($0)}).joinWithSeparator(separator) + terminator
   }

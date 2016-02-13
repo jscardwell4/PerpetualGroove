@@ -117,7 +117,7 @@ final class MIDINode: SKSpriteNode {
   /** didMove */
   private func didMove() {
     play()
-    currentSegment = currentSegment.successor
+//    currentSegment = currentSegment.successor
     moveAction.run()
   }
 

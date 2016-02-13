@@ -167,6 +167,20 @@ extension CATransform3D {
 
   public var isIdentity: Bool { return CATransform3DIsIdentity(self) }
 
+  public var rotation: CGFloat {
+    get {
+      guard m11 == m22 && m12 == -m21 else { return 0 }
+      return m12.isSignMinus ? -acos(m11) : acos(m11)
+    }
+    set {
+      let cosine = cos(abs(newValue))
+      let sine = sin(abs(newValue))
+      m11 = cosine
+      m22 = cosine
+      m12 = newValue.isSignMinus ? -sine : sine
+      m21 = newValue.isSignMinus ? sine : -sine
+    }
+  }
 }
 
 extension CATransform3D: Equatable {}

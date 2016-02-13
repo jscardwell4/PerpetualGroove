@@ -2,200 +2,481 @@
 
 import Foundation
 import UIKit
-
-
-enum Color { case Red, Black }
-
-indirect enum _Tree<Element: Comparable> {
-    case Empty
-    case Node(Color, _Tree<Element>, Element, _Tree<Element>)
-    
-    init() { self = .Empty }
-    
-    init(_ x: Element, color: Color = .Black, 
-        left: _Tree<Element> = .Empty, right: _Tree<Element> = .Empty)
-    {
-        self = .Node(color, left, x, right)
-    }
-}
-
-
-extension _Tree {
-    func contains(x: Element) -> Bool {
-        switch self {
-        case .Empty: return false
-        case let .Node(_, left, y, right):
-            if x < y { return left.contains(x) }
-            if y < x { return right.contains(x) }
-            return true
-        }
-    }
-}
-
-
-private func balance<T>(tree: _Tree<T>) -> _Tree<T> {
-    switch tree {
-    case let .Node(.Black, .Node(.Red, .Node(.Red, a, x, b), y, c), z, d):
-        return .Node(.Red, .Node(.Black, a, x, b), y, .Node(.Black, c, z, d))
-    case let .Node(.Black, .Node(.Red, a, x, .Node(.Red, b, y, c)), z, d):
-        return .Node(.Red, .Node(.Black, a, x, b), y, .Node(.Black, c, z, d))
-    case let .Node(.Black, a, x, .Node(.Red, .Node(.Red, b, y, c), z, d)):
-        return .Node(.Red, .Node(.Black, a, x, b), y, .Node(.Black, c, z, d))
-    case let .Node(.Black, a, x, .Node(.Red, b, y, .Node(.Red, c, z, d))):
-        return .Node(.Red, .Node(.Black, a, x, b), y, .Node(.Black, c, z, d))
-    default:
-        return tree
-    }
-}
-
-
-private func ins<T>(into: _Tree<T>, _ x: T) -> _Tree<T> {
-    switch into {
-    case .Empty: return _Tree(x, color: .Red)
-    case let .Node(c, l, y, r):
-        if x < y { return balance(_Tree(y, color: c, left: ins(l, x), right: r)) }
-        if y < x { return balance(_Tree(y, color: c, left: l, right: ins(r, x))) }
-        return into
-    }
-}
-
-
-extension _Tree {
-    func insert(x: Element) -> _Tree {
-        switch ins(self, x) {
-        case let .Node(_, l, y, r):
-            return .Node(.Black, l, y, r)
-        default:
-            fatalError("ins should never return an empty tree")
-        }
-    }
-}
-
-
-extension _Tree: SequenceType {
-    func generate() -> AnyGenerator<Element> {
-        // stack-based iterative inorder traversal to
-        // make it easy to use with anyGenerator
-        var stack: [_Tree] = []
-        var current: _Tree = self
-        return anyGenerator { _ -> Element? in
-            while true {
-                switch current {
-                case let .Node(_, l, _, _):
-                    stack.append(current)
-                    current = l
-                case .Empty where !stack.isEmpty:
-                    switch stack.removeLast() {
-                    case let .Node(_, _, x, r):
-                        current = r
-                        return x
-                    default:
-                        break
-                    }
-                case .Empty:
-                    return nil
-                }
-            }
-        }
-    }
-}
-
-
-extension _Tree: ArrayLiteralConvertible {
-    init<S: SequenceType where S.Generator.Element == Element>(_ source: S) {
-        self = source.reduce(_Tree()) { $0.insert($1) }
-    }
-    
-    init(arrayLiteral elements: Element...) {
-        self = _Tree(elements)
-    }
-}
-
 import MoonKit
 
-extension _Tree {
+private enum Color: String { case Red, Black }
 
-  /// A more visually tree-like description
-  var treeDescription: String {
-    var result = ""
-    func describeTree(tree: _Tree<Element>, _ height: Int, _ kind: String ) {
-      let indent = "  " * height
-      let heightString = "[" + String(height).pad(" ", count: 2, type: .Prefix) + "\(kind)]"
-      switch tree {
-      case .Empty:
-        let colorString = "black"
-        result += "\(indent)\(heightString) <\(colorString)> nil\n"
-      case let .Node(color, left, value, right):
-        let colorString = "\(color)"
-        let valueString = String(value)
-        result += "\(indent)\(heightString) <\(colorString)> \(valueString)\n"
-        describeTree(left, height + 1, "L")
-        describeTree(right, height + 1, "R")
+private indirect enum Node<Element: Comparable>: CustomPlaygroundQuickLookable, CustomStringConvertible {
+  case None
+  case Some(Color, Node<Element>, Element, Node<Element>)
+
+//  private mutating func update(color: Color, left: Node<Element>, value: Element, right: Node<Element>) {
+//    self = .Some(color, left, value, right)
+//  }
+  func customPlaygroundQuickLook() -> PlaygroundQuickLook { return PlaygroundQuickLook.Text(description) }
+
+  var description: String {
+    switch self {
+      case .None:
+        return "None"
+      case let .Some(color, .Some, element, .Some):
+        return "\(color.rawValue) - \(element) { left, right }"
+      case let .Some(color, .None, element, .Some):
+        return "\(color.rawValue) - \(element) { right }"
+      case let .Some(color, .Some, element, .None):
+        return "\(color.rawValue) - \(element) { left }"
+      case let .Some(color, .None, element, .None):
+        return "\(color.rawValue) - \(element) { }"
+    }
+  }
+}
+
+private enum FindOptions { case Default, NearestNotGreaterThan, NearestNotLessThan }
+
+public struct Tree<Element: Comparable> {
+
+
+  private var root: Node<Element> = .None
+
+  /// Whether the node is a leaf node
+  public var isEmpty: Bool { if case .None = root { return true } else { return false } }
+
+  /** Create an empty tree */
+  public init() {}
+
+  /**
+   Create a tree with the specified elements
+
+   - parameter source: S
+   */
+  public init<S: SequenceType where S.Generator.Element == Element>(_ source: S) {
+    for element in source { insert(element) }
+  }
+
+  /**
+  Whether the tree contains the specified element
+
+  - parameter x: Element
+
+  - returns: Bool
+  */
+  public func contains(element: Element) -> Bool {
+    func subtreeContainsElement(subtree: Node<Element>) -> Bool {
+      switch subtree {
+        case .None: return false
+        case let .Some(_, left, value, _)  where element < value:  return subtreeContainsElement(left)
+        case let .Some(_, _, value, right) where element > value:  return subtreeContainsElement(right)
+        case let .Some(_, _, value, _)     where element == value: fallthrough
+        default:                                                   return true
+      }
+    }
+    return subtreeContainsElement(root)
+  }
+
+  /**
+  Helper for balancing the tree
+
+  - parameter tree: Node<Element>
+
+  - returns: Node<Element>
+  */
+  private func balance(node: Node<Element>) -> Node<Element> {
+    /**
+    Helper for composing tree from case-extracted values
+
+    - parameter a: Node<Element>
+    - parameter x: Element
+    - parameter b: Node<Element>
+    - parameter y: Element
+    - parameter c: Node<Element>
+    - parameter z: Element
+    - parameter d: Node<Element>
+
+    - returns: Node<Element>
+    */
+    func result(a: Node<Element>, _ x: Element,
+              _ b: Node<Element>, _ y: Element,
+              _ c: Node<Element>, _ z: Element, _ d: Node<Element>) -> Node<Element>
+    {
+      return .Some(.Red, .Some(.Black, a, x, b), y, .Some(.Black, c, z, d))
+    }
+
+    switch node {
+      case let .Some(.Black, .Some(.Red, .Some(.Red, a, x, b), y, c), z, d): return result(a, x, b, y, c, z, d)
+      case let .Some(.Black, .Some(.Red, a, x, .Some(.Red, b, y, c)), z, d): return result(a, x, b, y, c, z, d)
+      case let .Some(.Black, a, x, .Some(.Red, .Some(.Red, b, y, c), z, d)): return result(a, x, b, y, c, z, d)
+      case let .Some(.Black, a, x, .Some(.Red, b, y, .Some(.Red, c, z, d))): return result(a, x, b, y, c, z, d)
+      default:                                                               return node
+    }
+
+  }
+
+  /**
+  Replace an element in the tree
+
+  - parameter element1: Element
+  - parameter element2: Element
+  */
+  public mutating func replace(element1: Element, with element2: Element) {
+    var elements = Array(self)
+    guard let idx = elements.indexOf(element1) else { return }
+    elements[idx] = element2
+    self = Tree(elements)
+  }
+
+  /**
+  Replace some elements with some other elements
+
+  - parameter elements1: S1
+  - parameter elements2: S2
+  */
+  public mutating func replace<S1:SequenceType, S2:SequenceType
+    where S1.Generator.Element == Element, S2.Generator.Element == Element>(elements1: S1, with elements2: S2)
+  {
+    self = Tree(filter({elements1 ∌ $0}) + Array(elements2))
+  }
+
+  /**
+  Remove an element from the tree
+
+  - parameter element: Element
+  */
+  public mutating func remove(element: Element) {
+    // TODO: Remove without using an Array
+    var elements = Array(self)
+    guard let idx = elements.indexOf(element) else { return }
+    elements.removeAtIndex(idx)
+    self = Tree(elements)
+  }
+
+  /**
+  Remove some elements from the tree
+
+  - parameter elements: S
+  */
+  public mutating func remove<S:SequenceType where S.Generator.Element == Element>(elements: S) {
+    self = Tree(filter({elements ∌ $0}))
+  }
+
+  /**
+  Add some elements to the tree
+
+  - parameter elements: S
+  */
+  public mutating func insert<S:SequenceType where S.Generator.Element == Element>(elements: S) {
+    elements.forEach({insert($0)})
+  }
+
+  /**
+  Add an element to the tree
+
+  - parameter element: Element
+
+  - returns: Tree
+  */
+  public mutating func insert(element: Element) {
+
+    /**
+    Helper to handle recursive balancing
+
+    - parameter element: Element
+    - parameter root: Tree<Element>
+
+    - returns: Tree<Element>
+    */
+    func insert(element: Element, into root: Node<Element>) -> Node<Element> {
+      switch root {
+        case .None:
+          return .Some(.Red, .None, element, .None)
+        case let .Some(color, left, value, right) where element < value:
+          return balance(.Some(color, insert(element, into: left), value, right))
+        case let .Some(color, left, value, right) where element > value:
+          return balance(.Some(color, left, value, insert(element, into: right)))
+        default:
+          return root
       }
     }
 
-    describeTree(self, 0, " ")
+    guard case let .Some(_, left, value, right) = insert(element, into: root) else {
+      fatalError("insert should never return an empty tree")
+    }
+
+    root = .Some(.Black, left, value, right)
+  }
+
+  /** 
+  Find an element in the tree using the specified comparator closures
+  
+  - parameter isOrderedBefore: (Element) -> Bool
+  - parameter predicate: (Element) -> Bool
+  
+  - returns: Element?
+  */
+  public func find(isOrderedBefore: (Element) -> Bool, _ predicate: (Element) -> Bool) -> Element? {
+    return find(root, isOrderedBefore: isOrderedBefore, predicate: predicate)
+  }
+
+  /**
+   findNearestNotGreaterThan:
+
+   - parameter value: Element
+
+    - returns: Element?
+  */
+  public func findNearestNotGreaterThan(value: Element) -> Element? {
+    return findNearestNotGreaterThan({$0 < value}, {$0 == value})
+  }
+
+
+  /**
+   findNearestNotGreaterThan:predicate:
+
+   - parameter isOrderedBefore: (Element) -> Bool
+   - parameter predicate: (Element) -> Bool
+
+    - returns: Element?
+  */
+  public func findNearestNotGreaterThan(isOrderedBefore: (Element) -> Bool,
+                                  _ predicate: (Element) -> Bool) -> Element?
+  {
+    return find(root, options: .NearestNotGreaterThan, isOrderedBefore: isOrderedBefore, predicate: predicate)
+  }
+
+  /**
+   findNearestNotLessThan:
+
+   - parameter value: Element
+
+    - returns: Element?
+  */
+  public func findNearestNotLessThan(value: Element) -> Element? {
+    return findNearestNotLessThan({$0 < value}, {$0 == value})
+  }
+
+  /**
+   findNearestNotLessThan:predicate:
+
+   - parameter isOrderedBefore: (Element) -> Bool
+   - parameter predicate: (Element) -> Bool
+
+    - returns: Element?
+  */
+  public func findNearestNotLessThan(isOrderedBefore: (Element) -> Bool,
+                                   _ predicate: (Element) -> Bool) -> Element?
+  {
+    return find(root, options: .NearestNotLessThan, isOrderedBefore: isOrderedBefore, predicate: predicate)
+  }
+
+  /**
+   find:isOrderedBefore:predicate:
+
+   - parameter node: Node<Element>
+   - parameter isOrderedBefore: (Element) -> Bool
+   - parameter predicate: (Element) -> Bool
+
+    - returns: Element?
+  */
+  private func find(node: Node<Element>,
+            options: FindOptions = .Default,
+      possibleMatch: Element? = nil,
+    isOrderedBefore: (Element) -> Bool,
+          predicate: (Element) -> Bool) -> Element?
+  {
+    switch node {
+
+      // The node's value satisfies the predicate
+      case let .Some(_, _, value, _) where predicate(value):
+        return value
+
+      // The node's value is greater than desired without a left child and options specify nearest not less than
+      case let .Some(_, .None, value, _) where !isOrderedBefore(value) && options == .NearestNotLessThan:
+        return value
+
+      // The node's value is greater than desired
+      case let .Some(_, left, value, _) where !isOrderedBefore(value):
+        return find(left,
+            options: options,
+      possibleMatch: options == .NearestNotLessThan ? value : possibleMatch,
+    isOrderedBefore: isOrderedBefore,
+          predicate: predicate)
+
+      // The node's value is less than desired without a right child and options specify nearest not greater
+      case let .Some(_, _, value, .None) where isOrderedBefore(value) && options == .NearestNotGreaterThan:
+        return value
+
+      // The node's value is less than desired
+      case let .Some(_, _, value, right) where isOrderedBefore(value):
+        return find(right,
+            options: options,
+      possibleMatch: options == .NearestNotGreaterThan ? value : possibleMatch,
+    isOrderedBefore: isOrderedBefore,
+          predicate: predicate)
+
+      // Leaf
+      default:
+        return possibleMatch
+    }
+  }
+
+  /**
+  Remove all elements after the specified element
+
+  - parameter element: Element
+  */
+  public mutating func dropAfter(element: Element) {
+    var elements = Array(self)
+    guard let idx = elements.indexOf(element) else { return }
+    self = Tree(elements[elements.startIndex ... idx])
+  }
+
+  /**
+  Remove all elements before the specified element
+
+  - parameter element: Element
+  */
+  public mutating func dropBefore(element: Element) {
+    var elements = Array(self)
+    guard let idx = elements.indexOf(element) else { return }
+    self = Tree(elements[idx ..< elements.endIndex])
+  }
+
+}
+
+// MARK: - SequenceType
+extension Tree: SequenceType {
+
+  private func generateNodes() -> AnyGenerator<Node<Element>> {
+    // stack-based iterative inorder traversal to make it easy to use with anyGenerator
+    var stack: [Node<Element>] = []
+    var current: Node<Element> = root
+    return anyGenerator { _ -> Node<Element>? in
+      repeat {
+        switch current {
+          case .Some(_, let left, _, _): 
+            stack.append(current); current = left
+          case .None where !stack.isEmpty:
+            guard let nextNode: Node<Element> = stack.removeLast(), case let .Some(_, _, _, right) = nextNode else { break }
+            current = right
+            return nextNode
+          case .None: 
+            return nil
+        }
+      } while true
+    }
+  }
+
+  /**
+  Create a generator for an in-order traversal
+
+  - returns: AnyGenerator<Element>
+  */
+  public func generate() -> AnyGenerator<Element> {
+    // stack-based iterative inorder traversal to make it easy to use with anyGenerator
+    var stack: [Node<Element>] = []
+    var current: Node<Element> = root
+    return anyGenerator { _ -> Element? in
+      repeat {
+        switch current {
+          case .Some(_, let left, _, _): 
+            stack.append(current); current = left
+          case .None where !stack.isEmpty:
+            guard case let .Some(_, _, value, right) = stack.removeLast() else { break }
+            current = right
+            return value
+          case .None: 
+            return nil
+        }
+      } while true
+    }
+  }
+
+  /**
+  The tree is already sorted so return it converted to an array
+
+  - returns: [Element]
+  */
+  public func sort() -> [Element] { return Array(self) }
+
+}
+
+// MARK: - ArrayLiteralConvertible
+extension Tree: ArrayLiteralConvertible {
+
+  /**
+  Create a tree from an array literal
+
+  - parameter elements: Element...
+  */
+  public init(arrayLiteral elements: Element...) { self.init(elements) }
+
+}
+
+// MARK: - CustomStringConvertible
+extension Tree: CustomStringConvertible {
+  /// Array-like tree description
+  public var description: String { return "[" + ", ".join(Array(self).map({String($0)})) + "]" }
+}
+
+// MARK: - CustomDebugStringConvertible
+extension Tree: CustomDebugStringConvertible {
+
+  /// A more visually tree-like description
+  public var debugDescription: String {
+    var result = ""
+    func describeNode(node: Node<Element>, _ height: Int, _ kind: String ) {
+        let indent = "  " * height
+        let heightString = "[" + String(height).pad(" ", count: 2, type: .Prefix) + "\(kind)]"
+      switch node {
+        case .None:
+          result += "\(indent)\(heightString) <\(Color.Black)> nil\n"
+        case let .Some(color, left, value, right):
+          result += "\(indent)\(heightString) <\(color)> \(value)\n"
+          describeNode(left,  height + 1, "L")
+          describeNode(right, height + 1, "R")
+      }
+    }
+
+    describeNode(root, 0, " ")
     return result
   }
 }
 
-import Darwin
 
-extension Array {
-    func shuffle() -> [Element] {
-        var list = self
-        for i in 0..<(list.count - 1) {
-            let j = Int(arc4random_uniform(UInt32(list.count - i))) + i
-          guard i != j else { continue }
-            swap(&list[i], &list[j])
-        }
-        return list
+func contents<T>(ptr: UnsafePointer<T>, _ length: Int) -> String {
+  let wordPtr = UnsafePointer<UInt>(ptr)
+  let words = length / sizeof(UInt.self)
+  let wordChars = sizeof(UInt.self) * 2
+
+  let buffer = UnsafeBufferPointer<UInt>(start: wordPtr, count: words)
+  let wordStrings = buffer.map({ word -> String in
+    var wordString = String(word, radix: 16)
+    while wordString.characters.count < wordChars {
+      wordString = "0" + wordString
     }
+    return wordString
+  })
+  return wordStrings.joinWithSeparator(" ")
 }
 
-
-let engines = [
-    "Daisy", "Salty", "Harold", "Cranky", 
-    "Thomas", "Henry", "James", "Toby", 
-    "Belle", "Diesel", "Stepney", "Gordon", 
-    "Captain", "Percy", "Arry", "Bert", 
-    "Spencer", 
-]
-let permutations = [engines, engines.sort(), engines.sort(>), engines.shuffle(), engines.shuffle(), engines.shuffle()]
-// test various inserting engines in various different permutations
-let h1 = hostTime
-for permutation in permutations {
-  let t = _Tree(permutation)
-  var t2 = t.insert("Thomas")
-  assert(!t.contains("Fred"))
-  assert(t.contains("James"))
-  assert(t.elementsEqual(t2))
-  assert(!engines.contains { !t.contains($0) })
-  assert(t.elementsEqual(engines.sort()))
-  //  print(t.joinWithSeparator(", "))
-  //    print(t.treeDescription)
+func dumpNonClassInstance<T>(var obj: T) {
+  guard !_swift_isClass(obj) else { print("\(obj.dynamicType) is not a class"); return }
+  withUnsafePointer(&obj) {
+    ptr in
+    let length = sizeof(T)
+    let bytes = contents(ptr, length)
+    print("\(obj.dynamicType): \(ptr): \(bytes)")
+  }
 }
-let h2 = hostTime
 
-//print("")
-
-
-// test various inserting engines in various different permutations
-for permutation in permutations {
-  let t = Tree<String>(permutation)
-  var t2 = t
-  t2.insert("Thomas")
-  assert(!t.contains("Fred"))
-  assert(t.contains("James"))
-  assert(t.elementsEqual(t2))
-  assert(!engines.contains { !t.contains($0) })
-  assert(t.elementsEqual(engines.sort()))
-  //  print(t.joinWithSeparator(", "))
-  //  print(t.debugDescription)
-  //  assert(t.minElement() == "Arry")
-  //  assert(t.maxElement() == "Toby")
+func dumpClassInstance(obj: AnyObject) {
+  let ptr = unsafeBitCast(obj, UnsafePointer<Void>.self)
+  let length = class_getInstanceSize(obj.dynamicType)
+  let bytes = contents(ptr, length)
+  print("\(obj.dynamicType): \(ptr): \(bytes)")
 }
-let h3 = hostTime
 
-h2 - h1
-h3 - h2
+let testData = [96.356, 24.2416, 935.2234, 1004.33, 3453.12, 77743423.2422, 24.55, 982.25]
+dumpNonClassInstance(testData)
+
+let testTree = Tree(testData)
+
