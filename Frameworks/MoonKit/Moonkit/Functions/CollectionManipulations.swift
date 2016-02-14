@@ -122,6 +122,42 @@ public func binarySearch<C:CollectionType
   return searchSlice(Slice(base: collection, bounds: collection.indices))
 }
 
+/**
+ Perform a binary search of the specified collection and return the index of the first
+ element to satisfy `predicate` or nil.
+
+ - parameter collection: C
+ - parameter isOrderedBefore: (Element) -> Bool
+ - parameter predicate: (Element) -> Bool
+
+  - returns: C.Index?
+
+ - requires: The collection to search is already sorted
+ */
+public func binarySearch<Element, C:CollectionType
+  where C.Generator.Element == Element,
+  C.Index:BidirectionalIndexType,
+  C.SubSequence.Index == C.Index,
+  C.SubSequence._Element == Element,
+  C._Element == Element>(collection: C, isOrderedBefore: (Element) throws -> Bool, predicate: (Element) throws -> Bool) rethrows -> C.Index?
+{
+  func searchSlice(slice: Slice<C>) throws -> C.Index? {
+    let range = slice.indices
+    let index = range.middleIndex
+    let maybeElement = slice[index]
+    guard try !predicate(maybeElement) else { return index }
+    if try isOrderedBefore(maybeElement) && index.successor() != range.endIndex {
+      return try searchSlice(slice[index.successor() ..< range.endIndex])
+    } else if index != range.startIndex {
+      return try searchSlice(slice[range.startIndex ..< index])
+    }
+    return nil
+  }
+
+  return try searchSlice(Slice(base: collection, bounds: collection.indices))
+}
+
+
 public func binaryInsertion<C:CollectionType
   where C.Generator.Element: Comparable,
   C.Index:BidirectionalIndexType,

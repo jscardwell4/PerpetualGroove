@@ -41,9 +41,7 @@ public struct SortedArray<Element: Comparable>: _CollectionWrapperType, Collecti
     - returns: Bool?
   */
   public func _customContainsEquatableElement(element: Element) -> Bool? {
-    return  binarySearch(UnsafeBufferPointer(start: _base._buffer.firstElementAddress,
-                                             count: _base._buffer.count),
-                 element: element) != nil
+    return _base._buffer.withUnsafeBufferPointer { binarySearch($0, element: element) != nil }
   }
 
   /**
@@ -51,12 +49,10 @@ public struct SortedArray<Element: Comparable>: _CollectionWrapperType, Collecti
 
    - parameter element: Element
 
-    - returns: Int??
+   - returns: Int??
   */
   public func _customIndexOfEquatableElement(element: Element) -> Int?? {
-    return binarySearch(UnsafeBufferPointer(start: _base._buffer.firstElementAddress,
-                                            count: _base._buffer.count),
-                element: element)
+    return _base._buffer.withUnsafeBufferPointer { binarySearch($0, element: element) }
   }
 
   /**
@@ -64,7 +60,7 @@ public struct SortedArray<Element: Comparable>: _CollectionWrapperType, Collecti
 
    - parameter ptr: UnsafeMutablePointer<Element>
 
-    - returns: UnsafeMutablePointer<Element>
+   - returns: UnsafeMutablePointer<Element>
   */
   public func _initializeTo(ptr: UnsafeMutablePointer<Element>) -> UnsafeMutablePointer<Element> {
 
@@ -93,6 +89,22 @@ public struct SortedArray<Element: Comparable>: _CollectionWrapperType, Collecti
       sort(0 ..< count)
     }
 
+  }
+
+  /**
+   indexOf:predicate:
+
+   - parameter isOrderedBefore: (Element) throws -> Bool
+   - parameter predicate: (Element) throws -> Bool
+
+   - returns: Int?
+  */
+  public func indexOf(isOrderedBefore isOrderedBefore: (Element) throws -> Bool,
+            predicate: (Element) throws -> Bool) rethrows -> Int?
+  {
+    let buffer = _base._buffer.withUnsafeBufferPointer {$0}
+    defer { _fixLifetime(buffer) }
+    return try binarySearch(buffer, isOrderedBefore: isOrderedBefore, predicate: predicate)
   }
 
   /**

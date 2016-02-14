@@ -78,16 +78,5 @@ final class MIDINodePathTests: XCTestCase {
     let time: BarBeatTime = "581:1/4.116/480@120₁"
     measureBlock { let _ = path.locationForTime(time) }
   }
-  
-  func testSegmentGenerationPerformance2() {
-    let path = MIDINodePath(trajectory: initialTrajectory, playerSize: playerSize, time: startTime)
-    let time: BarBeatTime = "581:1/4.116/480@120₁"
-    measureBlock { let _ = path.locationForTime2(time) }
-  }
 
-  func testSegmentGenerationPerformance3() {
-    let path = MIDINodePath(trajectory: initialTrajectory, playerSize: playerSize, time: startTime)
-    let time: BarBeatTime = "581:1/4.116/480@120₁"
-    measureBlock { let _ = path.locationForTime3(time) }
-  }
 }

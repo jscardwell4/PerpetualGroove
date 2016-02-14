@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		C207458F1B8DF6D5000A06D4 /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = C207458E1B8DF6D5000A06D4 /* Time.swift */; };
 		C20827541C03B2A2004D68FC /* StandardChordPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20827531C03B2A2004D68FC /* StandardChordPattern.swift */; };
-		C20A10991C51332B00522FD7 /* Segment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20A10981C51332B00522FD7 /* Segment.swift */; };
 		C20A10A11C51552B00522FD7 /* BarBeatTimeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20A10A01C51552B00522FD7 /* BarBeatTimeTests.swift */; };
 		C21E44C11B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C21E44C01B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 */; };
 		C21E44C51B76546C00574BD2 /* AudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21E44C41B76546C00574BD2 /* AudioManager.swift */; };
@@ -184,7 +183,6 @@
 		C207458C1B8CFB91000A06D4 /* test_morse_code_a.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = test_morse_code_a.mid; sourceTree = "<group>"; };
 		C207458E1B8DF6D5000A06D4 /* Time.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
 		C20827531C03B2A2004D68FC /* StandardChordPattern.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandardChordPattern.swift; sourceTree = "<group>"; };
-		C20A10981C51332B00522FD7 /* Segment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Segment.swift; sourceTree = "<group>"; };
 		C20A109E1C51552B00522FD7 /* BarBeatTimeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BarBeatTimeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C20A10A01C51552B00522FD7 /* BarBeatTimeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarBeatTimeTests.swift; sourceTree = "<group>"; };
 		C20A10A21C51552B00522FD7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -487,7 +485,6 @@
 				C2995C471BB8ABC70003AAB2 /* Trajectory.swift */,
 				C2670CCD1C46FEF6000F76F9 /* MIDIGenerator.swift */,
 				C2670CCF1C4704A2000F76F9 /* MIDINodeDispatch.swift */,
-				C20A10981C51332B00522FD7 /* Segment.swift */,
 				C2B3B2EA1C55A9110001152F /* NodeSelectionTool.swift */,
 				C2562D091C63DBFB0086789D /* MIDINodeManager.swift */,
 			);
@@ -942,7 +939,6 @@
 				C291C3EB1B91EDA700702AEA /* MIDIFileTrackChunk.swift in Sources */,
 				C22D93F11BADA24A00B04A2B /* MIDINodeHistory.swift in Sources */,
 				C2E043351B72F4DC005F0675 /* AppDelegate.swift in Sources */,
-				C20A10991C51332B00522FD7 /* Segment.swift in Sources */,
 				C2FEB0251C0F6183000BD1B7 /* GeneratorTool.swift in Sources */,
 				C24E83981C3EE0A300B4A16A /* MixerContainerViewController.swift in Sources */,
 				C2CF38CD1B7EBED30085B3D5 /* InstrumentTrack.swift in Sources */,
