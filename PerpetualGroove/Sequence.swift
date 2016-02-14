@@ -21,11 +21,9 @@ final class Sequence {
   var sequenceEnd: BarBeatTime { return tracks.map({$0.endOfTrack}).maxElement() ?? .start1 }
 
   private(set) var instrumentTracks: [InstrumentTrack] = []
-  private var _soloTracks: [Weak<InstrumentTrack>] = []
-  var soloTracks: [InstrumentTrack] {
-    let result = _soloTracks.flatMap {$0.reference}
-    if result.count < _soloTracks.count { _soloTracks = _soloTracks.filter { $0.reference != nil } }
-    return result
+
+  var soloTracks: LazyFilterCollection<[InstrumentTrack]> {
+    return LazyFilterCollection<[InstrumentTrack]>(instrumentTracks, whereElementsSatisfy: {$0.solo})
   }
 
   /**
@@ -100,17 +98,16 @@ final class Sequence {
   func toggleSoloForTrack(track: InstrumentTrack) {
     guard instrumentTracks ∋ track else { logWarning("Request to toggle track not owned by sequence"); return }
 
-    if let idx = soloTracks.indexOf(track), track = _soloTracks.removeAtIndex(idx).reference {
-      guard track.solo else { fatalError("Internal inconsistency, track should have solo set to true to be in _soloTracks") }
+    let oldCount = soloTracks.count,  newCount: Int
+    if track.solo {
       track.solo = false
-      Notification.SoloCountDidChange.post(object: self,
-                                           userInfo: [.OldCount: _soloTracks.count + 1, .NewCount: _soloTracks.count])
+      newCount = oldCount - 1
     } else {
       track.solo = true
-      _soloTracks.append(Weak(track))
-      Notification.SoloCountDidChange.post(object: self,
-                                           userInfo: [.OldCount: _soloTracks.count - 1, .NewCount: _soloTracks.count])
+      newCount = oldCount + 1
     }
+
+    Notification.SoloCountDidChange.post(object: self, userInfo: [.OldCount: oldCount, .NewCount: newCount])
   }
 
   // MARK: - Receiving track and sequencer notifications

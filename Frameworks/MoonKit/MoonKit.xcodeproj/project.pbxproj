@@ -478,6 +478,7 @@
 		C205852C1A1BEC2000212759 /* BlockActionGesture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockActionGesture.swift; sourceTree = "<group>"; };
 		C2064FF91A13C05900342FDE /* Operators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Operators.swift; sourceTree = "<group>"; };
 		C20A10961C512E4A00522FD7 /* ErrorType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ErrorType.swift; sourceTree = "<group>"; };
+		C20A82B31C70D99300B4DA5C /* SortedArray.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = SortedArray.playground; path = Moonkit/SortedArray.playground; sourceTree = "<group>"; };
 		C20CBBEB1B5FF7960008F538 /* PopoverListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopoverListController.swift; sourceTree = "<group>"; };
 		C20E102B1BBF2DE600AAC01A /* TemplateImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TemplateImageView.swift; sourceTree = "<group>"; };
 		C20FF1F119AEB67100D11F33 /* MSNotificationReceptionist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSNotificationReceptionist.h; sourceTree = "<group>"; };
@@ -1348,6 +1349,7 @@
 				C24DD28A1AE4056D000306A0 /* Constraints.playground */,
 				C22734571AE1622E00641CC3 /* JSON.playground */,
 				C2A46E651AD703E70030E3CC /* MoonKit.playground */,
+				C20A82B31C70D99300B4DA5C /* SortedArray.playground */,
 				C285D8251AC44E0300C527F6 /* MoonKitLite */,
 				C29C22E51A3A4CBF00B0101F /* Resources */,
 				C2CE885318138C4900555D63 /* MSKit */,

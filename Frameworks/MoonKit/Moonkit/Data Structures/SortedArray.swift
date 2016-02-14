@@ -52,7 +52,7 @@ public struct SortedArray<Element: Comparable>: _CollectionWrapperType, Collecti
    - returns: Int??
   */
   public func _customIndexOfEquatableElement(element: Element) -> Int?? {
-    return _base._buffer.withUnsafeBufferPointer { binarySearch($0, element: element) }
+    return Optional(_base._buffer.withUnsafeBufferPointer { binarySearch($0, element: element) })
   }
 
   /**

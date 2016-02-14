@@ -89,7 +89,7 @@ final class MIDINodePath {
     guard time >= startTime else { return nil }
 
     if let segmentIndex = segments.indexOf(isOrderedBefore: {$0.endTime <= time},
-                                            predicate: {$0.timeInterval ∋ time})
+                                           predicate: {$0.timeInterval ∋ time})
     {
       return segments[segmentIndex]
     }

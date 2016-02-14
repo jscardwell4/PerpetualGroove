@@ -416,6 +416,7 @@ final class MixerViewController: UICollectionViewController {
     guard addedTrackIndex == indexPath, let cell = cell as? TrackCell else { return }
     defer { pendingTrackIndex = nil; addedTrackIndex = nil }
     collectionView.selectItemAtIndexPath(indexPath, animated: true, scrollPosition: .None)
+    sequence?.currentTrackIndex = indexPath.item
     cell.instrument()
   }
 }

@@ -152,7 +152,9 @@ final class TrackCell: MixerCell {
   private var muteDisengaged = false { didSet { muteButton.enabled = !muteDisengaged } }
 
   /** mute */
-  @IBAction func mute() { track?.mute.toggle() }
+  @IBAction func mute() {
+    track?.mute.toggle()
+  }
 
   /** volumeDidChange */
   @IBAction func volumeDidChange() { track?.volume = volume }
@@ -190,7 +192,9 @@ final class TrackCell: MixerCell {
 
   - parameter notification: NSNotification
   */
-  private func soloStatusChanged(notification: NSNotification) { soloButton.selected = track?.solo ?? false }
+  private func soloStatusChanged(notification: NSNotification) {
+    soloButton.selected = track?.solo ?? false
+  }
 
   /**
   soloCountChanged:
@@ -198,9 +202,7 @@ final class TrackCell: MixerCell {
   - parameter notification: NSNotification
   */
   private func soloCountChanged(notification: NSNotification) {
-    guard let count = (notification.userInfo?[Sequence.Notification.Key.NewCount.rawValue] as? NSNumber)?.integerValue else {
-      return
-    }
+    guard let count = notification.newCount else { return }
     muteDisengaged = count > 0
   }
 

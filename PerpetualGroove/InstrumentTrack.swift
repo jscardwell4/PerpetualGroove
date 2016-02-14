@@ -15,41 +15,6 @@ import SpriteKit
 
 final class InstrumentTrack: Track, MIDINodeDispatch {
 
-  // MARK: - Monitoring state changes
-
-  /// Holds the current state of the node
-  private var state: State = [] {
-    didSet {
-      guard state != oldValue else { return }
-
-      switch state ⊻ oldValue {
-
-        case [.Soloing]:
-          Notification.SoloStatusDidChange.post(object: self,
-                                                userInfo: [.OldValue: !solo, .NewValue: solo])
-          if state ⚭ [.ExclusiveMute, .InclusiveMute] {
-            Notification.MuteStatusDidChange.post(object: self,
-                                                  userInfo: [.OldValue: !mute, .NewValue: mute])
-          }
-
-        case [.ExclusiveMute], [.InclusiveMute]:
-          let oldValue = oldValue ⚭ [.ExclusiveMute, .InclusiveMute] && oldValue ∌ .Soloing
-          let newValue = state    ⚭ [.ExclusiveMute, .InclusiveMute] && state    ∌ .Soloing
-          guard oldValue != newValue else { break }
-          if newValue { _volume = volume; volume = 0 } else { volume = _volume }
-          Notification.MuteStatusDidChange.post(object: self,
-                                                userInfo: [.OldValue: oldValue, .NewValue: newValue])
-
-        case [.TrackEnded]:
-          if state ∋ .TrackEnded { nodeManager.stopNodes() } else { nodeManager.startNodes() }
-
-        default:
-          break
-      }
-
-    }
-  }
-
   private(set) var nodeManager: MIDINodeManager!
 
   // MARK: - Listening for Sequencer and sequence notifications
@@ -113,8 +78,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
   */
   private func soloCountDidChange(notification: NSNotification) {
     guard let newCount = notification.newCount else { return }
-         if state !⚭ [.Soloing, .InclusiveMute] && newCount > 0       { state ∪= .InclusiveMute }
-    else if state ∌ .Soloing && state ∋ .InclusiveMute && newCount == 0 { state ⊻= .InclusiveMute }
+    forceMute = newCount > 0 && !solo
   }
 
   /**
@@ -124,8 +88,8 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
   */
   private func didJog(notification: NSNotification) {
     // Toggle track ended flag if we jogged back before the end of the track
-    if state ∋ .TrackEnded, let jogTime = notification.jogTime where jogTime < endOfTrack {
-      state ⊻= .TrackEnded
+    if trackEnded, let jogTime = notification.jogTime where jogTime < endOfTrack {
+      trackEnded = false
     }
 
 
@@ -192,6 +156,13 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     return super.headEvents + [.Meta(instrumentEvent), .Channel(programEvent)]
   }
 
+  private(set) var trackEnded = false {
+    didSet {
+      guard trackEnded != oldValue else { return }
+      if trackEnded { nodeManager.stopNodes() } else { nodeManager.startNodes() }
+    }
+  }
+
   // MARK: - Track properties
 
   private(set) var instrument: Instrument!
@@ -206,14 +177,34 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     return instrument?.preset.name ?? ""
   }
 
-  var mute: Bool {
-    get { return state ⚭ [.ExclusiveMute, .InclusiveMute] && state ∌ .Soloing}
-    set { guard (state ∋ .ExclusiveMute) != newValue else { return }; state ⊻= .ExclusiveMute }
+  var isMuted: Bool { return mute || forceMute }
+
+  private var forceMute = false {
+    didSet {
+      guard forceMute != oldValue && !mute else { return }
+      Notification.MuteStatusDidChange.post(object: self, userInfo: [.OldValue: !forceMute, .NewValue: forceMute])
+    }
   }
 
-  var solo: Bool {
-    get { return state ∋ .Soloing }
-    set { guard solo != newValue else { return }; state ⊻= .Soloing }
+  var mute = false {
+    willSet {
+      guard !(solo && newValue) else {
+        logWarning("muting track while soloing")
+        return
+      }
+    }
+    didSet {
+      guard mute != oldValue && !forceMute else { return }
+      Notification.MuteStatusDidChange.post(object: self, userInfo: [.OldValue: !mute, .NewValue: mute])
+    }
+  }
+
+  var solo = false {
+    didSet {
+      guard solo != oldValue else { return }
+      Notification.SoloStatusDidChange.post(object: self, userInfo: [.OldValue: !solo, .NewValue: solo])
+      forceMute = sequence.soloTracks.count > 0
+    }
   }
 
   private var _volume: Float = 1
@@ -339,7 +330,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
           }
         case .Meta(let metaEvent) where metaEvent.data == .EndOfTrack:
           guard !recording && endOfTrack == metaEvent.time else { break }
-          state.insert(.TrackEnded)
+          trackEnded = true
         default: break
       }
 
@@ -511,28 +502,6 @@ extension InstrumentTrack {
   }
 }
 
-// MARK: - State
-extension InstrumentTrack {
-  struct State: OptionSetType, CustomStringConvertible {
-    let rawValue: Int
-    static let Soloing       = State(rawValue: 0b0001)
-    static let InclusiveMute = State(rawValue: 0b0010)
-    static let ExclusiveMute = State(rawValue: 0b0100)
-    static let TrackEnded    = State(rawValue: 0b1000)
-
-    var description: String {
-      var result = "["
-      var flagStrings: [String] = []
-      if self ∋ .Soloing       { flagStrings.append("Soloing")       }
-      if self ∋ .InclusiveMute { flagStrings.append("InclusiveMute") }
-      if self ∋ .ExclusiveMute { flagStrings.append("ExclusiveMute") }
-      if self ∋ .TrackEnded    { flagStrings.append("TrackEnded")    }
-      result += ", ".join(flagStrings)
-      result += "]"
-      return result
-    }
-  }
-}
 
 // MARK: - Hashable
 extension InstrumentTrack: Hashable { var hashValue: Int { return ObjectIdentifier(self).hashValue } }
