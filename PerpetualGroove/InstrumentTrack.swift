@@ -177,27 +177,31 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     return instrument?.preset.name ?? ""
   }
 
-  var isMuted: Bool { return mute || forceMute }
-
-  private var forceMute = false {
+  private(set) var isMuted = false {
     didSet {
-      guard forceMute != oldValue && !mute else { return }
-      Notification.MuteStatusDidChange.post(object: self, userInfo: [.OldValue: !forceMute, .NewValue: forceMute])
+      guard isMuted != oldValue else { return }
+      swap(&volume, &_volume)
+      Notification.MuteStatusDidChange.post(object: self, userInfo: [.OldValue: oldValue, .NewValue: isMuted])
     }
   }
 
-  var mute = false {
-    willSet {
-      guard !(solo && newValue) else {
-        logWarning("muting track while soloing")
-        return
+  /** updateIsMuted */
+  private func updateIsMuted() {
+      switch (forceMute, mute, solo) {
+        case (true,   true,  true): fallthrough
+        case (true,  false,  true): fallthrough
+        case (false,  true,  true): fallthrough
+        case (false, false,  true): fallthrough
+        case (false, false, false): isMuted = false
+        case (true,   true, false): fallthrough
+        case (true,  false, false): fallthrough
+        case (false,  true, false): isMuted = true
       }
-    }
-    didSet {
-      guard mute != oldValue && !forceMute else { return }
-      Notification.MuteStatusDidChange.post(object: self, userInfo: [.OldValue: !mute, .NewValue: mute])
-    }
   }
+
+  private var forceMute = false { didSet { guard forceMute != oldValue else { return }; updateIsMuted() } }
+
+  var mute = false { didSet { guard mute != oldValue else { return }; updateIsMuted() } }
 
   var solo = false {
     didSet {
@@ -207,7 +211,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     }
   }
 
-  private var _volume: Float = 1
+  private var _volume: Float = 0
   var volume: Float { get { return instrument.volume } set { instrument.volume = newValue } }
 
   var pan: Float { get { return instrument.pan } set { instrument.pan = newValue } }

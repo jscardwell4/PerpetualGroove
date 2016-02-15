@@ -27,7 +27,15 @@ public class ToggleControl: TintColorControl {
   }
 
   /// Overridden to implement optional toggling
-  public override var selected: Bool { didSet { if selected != oldValue { toggleBegan = false } } }
+  public override var selected: Bool {
+    get {
+    return super.selected
+    }
+    set {
+      if super.selected != newValue { toggleBegan = false }
+      super.selected = newValue
+    }
+  }
 
   /**
   initWithFrame:

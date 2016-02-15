@@ -20,9 +20,9 @@ public class TintColorControl: UIControl {
 
   // MARK: - State
 
-  public override var enabled:     Bool { didSet { guard enabled     != oldValue else { return }; refresh() } }
-  public override var highlighted: Bool { didSet { guard highlighted != oldValue else { return }; refresh() } }
-  public override var selected:    Bool { didSet { guard selected    != oldValue else { return }; refresh() } }
+  public override var enabled:     Bool { get { return super.enabled } set { super.enabled = newValue; refresh() } }
+  public override var highlighted: Bool { get { return super.highlighted } set  { super.highlighted = newValue; refresh() } }
+  public override var selected:    Bool { get { return super.selected } set { super.selected = newValue; refresh() } }
 
   /**
   tintColorForState:
@@ -43,7 +43,7 @@ public class TintColorControl: UIControl {
   }
 
   /** refresh */
-  public func refresh() { tintColor = tintColorForState(state) }
+  public func refresh() { tintColor = tintColorForState(state); setNeedsDisplay() }
 
   /**
   initWithFrame:
