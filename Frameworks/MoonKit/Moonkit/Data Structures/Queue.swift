@@ -29,7 +29,7 @@ public struct Queue<T> {
     let value = head?.value
     if head != nil {
       head = head?.next
-      count--
+      count -= 1
       if count < 2 { tail = head }
     }
     return value
@@ -50,7 +50,7 @@ public struct Queue<T> {
       head = node
       tail = node
     }
-    count++
+    count += 1
   }
 
   /** empty */

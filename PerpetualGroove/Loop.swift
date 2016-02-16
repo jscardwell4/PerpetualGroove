@@ -132,8 +132,8 @@ final class Loop: SequenceType, MIDINodeDispatch {
     var endEventInserted = false
     var iteration = 0
     var offset: UInt64 = 0
-    var currentGenerator: AnyGenerator<MIDIEvent> = anyGenerator(events.generate())
-    return anyGenerator {
+    var currentGenerator: AnyGenerator<MIDIEvent> = AnyGenerator(events.generate())
+    return AnyGenerator {
       [
         startTicks = start.ticks,
         repeatCount = repetitions,
@@ -152,9 +152,9 @@ final class Loop: SequenceType, MIDINodeDispatch {
       } else if var event = currentGenerator.next() {
         event.time = BarBeatTime(tickValue: startTicks + event.time.ticks + offset)
         return event
-      } else if repeatCount >= iteration++ || repeatCount < 0 {
+      } else if repeatCount >= {let i = iteration; iteration += 1; return i}() || repeatCount < 0 {
         offset += delay + totalTicks
-        currentGenerator = anyGenerator(self.events.generate())
+        currentGenerator = AnyGenerator(self.events.generate())
         if var event = currentGenerator.next() {
           event.time = BarBeatTime(tickValue: startTicks + event.time.ticks + offset)
           return event

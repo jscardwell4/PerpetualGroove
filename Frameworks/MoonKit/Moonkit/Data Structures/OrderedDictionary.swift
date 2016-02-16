@@ -538,7 +538,7 @@ public struct OrderedDictionaryGenerator<Key:Hashable, Value> : GeneratorType {
       let key: Key = dictionary._keys[index]
       let value: Value = dictionary.dictionary[key]!
       let element = (index, key, value)
-      index++
+      index += 1
       return element
     } else { return nil }
   }

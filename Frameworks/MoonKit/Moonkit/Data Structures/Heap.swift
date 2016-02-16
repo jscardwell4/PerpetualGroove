@@ -97,7 +97,7 @@ extension Heap: SequenceType {
   public func generate() -> Generator {
     var stack: [HeapNode<Element>] = []
     var current = root
-    return anyGenerator {
+    return AnyGenerator {
       while true {
         if case let .Node(_, l, _) = current {
           stack.append(current)

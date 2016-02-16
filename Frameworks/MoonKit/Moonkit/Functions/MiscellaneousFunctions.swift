@@ -43,7 +43,7 @@ typeName:
 
 - returns: String
 */
-public func typeName(object: Any) -> String { return _stdlib_getDemangledTypeName(object) }
+public func typeName(object: Any) -> String { return "\(object.dynamicType)" }
 
 /** Ticks since last device reboot */
 public var hostTicks: UInt64 { return mach_absolute_time() }

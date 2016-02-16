@@ -31,7 +31,7 @@ struct VariableLengthQuantity {
         var i = 1
         var next = Byte(0)
         repeat {
-          next = (i < group.count ? group[i++] : 0)
+          next = (i < group.count ? {let n = group[i]; i += 1; return n}() : 0)
           groupValue = (groupValue << UInt64(7)) + UInt64(next & 0x7F)
         } while next & 0x80 != 0
       }

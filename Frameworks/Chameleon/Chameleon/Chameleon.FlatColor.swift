@@ -76,7 +76,7 @@ extension Chameleon {
       () -> AnyGenerator<UIColor> in
         var lightGenerator = Chameleon.lightColors.generate()
         var darkGenerator = Chameleon.darkColors.generate()
-        return anyGenerator({lightGenerator.next() ?? darkGenerator.next()})
+        return AnyGenerator(body: {lightGenerator.next() ?? darkGenerator.next()})
     })
   }
 

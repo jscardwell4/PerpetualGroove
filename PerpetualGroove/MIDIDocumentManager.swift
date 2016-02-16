@@ -374,7 +374,8 @@ final class MIDIDocumentManager {
     var baseNameʹ = baseName
     var i = 2
     while (url + "\(baseNameʹ).\(extʹ)").checkPromisedItemIsReachableAndReturnError(nil) {
-      baseNameʹ = "\(baseName)\(i++)"
+      baseNameʹ = "\(baseName)\(i)"
+      i += 1
     }
 
     return "\(baseNameʹ)" + (ext.isEmpty ? "" : ".\(ext)")

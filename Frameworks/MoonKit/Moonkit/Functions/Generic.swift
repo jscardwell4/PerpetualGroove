@@ -146,7 +146,7 @@ public func advance<T: ForwardIndexType>(inout range: Range<T>, amount: T.Distan
   let d = range.startIndex.distanceTo(range.endIndex)
   let start: T = range.startIndex.advancedBy(amount)
   let end: T = range.startIndex.advancedBy(amount + d)
-  range = Range<T>(start: start, end: end)
+  range = start ..< end
 }
 
 /**
@@ -180,7 +180,7 @@ advance:amount:
 - returns: Range<T>
 */
 public func advance<T: ForwardIndexType>(range: Range<T>, amount: T.Distance) -> Range<T> {
-  return Range<T>(start: range.startIndex.advancedBy(amount), end: range.endIndex.advancedBy(amount))
+  return range.startIndex.advancedBy(amount) ..< range.endIndex.advancedBy(amount)
 }
 
 /**

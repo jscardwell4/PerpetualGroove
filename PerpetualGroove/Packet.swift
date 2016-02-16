@@ -15,8 +15,8 @@ extension MIDIPacketList: SequenceType {
     var iterator: MIDIPacket?
     var nextIndex: UInt32 = 0
 
-    return anyGenerator {
-      if nextIndex++ >= self.numPackets { return nil }
+    return AnyGenerator {
+      if ({let i = nextIndex; nextIndex += 1; return i}()) >= self.numPackets { return nil }
       if iterator == nil { iterator = self.packet }
       else { iterator = withUnsafePointer(&iterator!) { MIDIPacketNext($0).memory } }
       return iterator

@@ -75,7 +75,7 @@ struct MIDIFile: ByteArrayConvertible {
 
       t.append(try MIDIFileTrackChunk(bytes: trackBytes))
       currentIndex += chunkLength
-      tracksRemaining--
+      tracksRemaining -= 1
     }
 
     // TODO: We need to track signature changes to do this properly

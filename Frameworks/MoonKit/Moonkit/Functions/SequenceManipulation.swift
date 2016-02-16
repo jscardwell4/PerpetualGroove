@@ -106,7 +106,7 @@ public extension SequenceType {
 public struct InfiniteSequenceOf<T>: SequenceType {
   private let value: T
   public init(_ v: T) { value = v }
-  public func generate() -> AnyGenerator<T> { return anyGenerator({self.value}) }
+  public func generate() -> AnyGenerator<T> { return AnyGenerator(body: {self.value}) }
 }
 
 public func zip<S:SequenceType, T>(seq: S, value: T) -> [(S.Generator.Element, T)] {

@@ -249,7 +249,7 @@ final class RootViewController: UIViewController {
 
   // MARK: - Transport
 
-  @IBOutlet weak var barBeatTimeLabel: BarBeatTimeLabel!
+  weak var barBeatTimeLabel: BarBeatTimeLabel!
 
 
   // MARK: - Player

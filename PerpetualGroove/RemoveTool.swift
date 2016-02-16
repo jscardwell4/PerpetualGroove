@@ -24,7 +24,7 @@ final class RemoveTool: ToolType {
           refreshAllNodeLighting()
         case false:
           sequence = nil
-          player.midiNodes.forEach { removeLightingFromNode($0) }
+          player.midiNodes.generate().forEach { removeLightingFromNode($0) }
       }
     }
   }
@@ -48,7 +48,8 @@ final class RemoveTool: ToolType {
   private static var foregroundLightNode: SKLightNode  {
     let node = SKLightNode()
     node.name = lightNodeName
-    node.categoryBitMask = 1 << categoryShift++
+    node.categoryBitMask = 1 << categoryShift
+    categoryShift += 1
     node.lightColor = foregroundLightColor
     node.falloff = 1
     return node
@@ -113,7 +114,8 @@ final class RemoveTool: ToolType {
     let lightNode: SKLightNode
     switch node.childNodeWithName("removeToolLighting") as? SKLightNode {
       case let light? where light.categoryBitMask == 1:
-        light.categoryBitMask = 1 << RemoveTool.categoryShift++
+        light.categoryBitMask = 1 << RemoveTool.categoryShift
+        RemoveTool.categoryShift += 1
         light.lightColor = RemoveTool.foregroundLightColor
         lightNode = light
       case nil:
@@ -130,7 +132,7 @@ final class RemoveTool: ToolType {
   private func refreshAllNodeLighting() {
     guard let track = track else { return }
     let trackNodes = track.nodes.flatMap({$0.element2.reference})
-    let (foregroundNodes, backgroundNodes) = player.midiNodes.bisect { trackNodes ∋ $0 }
+    let (foregroundNodes, backgroundNodes) = player.midiNodes.generate().bisect { trackNodes ∋ $0 }
     foregroundNodes.forEach { lightNodeForForeground($0) }
     backgroundNodes.forEach { lightNodeForBackground($0) }
   }

@@ -158,7 +158,7 @@ import Foundation
       }
       stack.insertArrangedSubview(imageButtonView, atIndex: idx)
     }
-    if selectedSegmentIndex >= segment { selectedSegmentIndex++ }
+    if selectedSegmentIndex >= segment { selectedSegmentIndex += 1 }
   }
 
   /**

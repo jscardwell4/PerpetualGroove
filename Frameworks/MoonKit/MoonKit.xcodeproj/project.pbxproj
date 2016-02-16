@@ -238,7 +238,6 @@
 		C2358FE619C78E4400920F8D /* GCDAsyncUdpSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = C2F9414319BE7D01007B5CC1 /* GCDAsyncUdpSocket.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C23592D719C8785D00920F8D /* NSMutableString+MSKitAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = C23592D519C8783E00920F8D /* NSMutableString+MSKitAdditions.m */; };
 		C23592D819C8786700920F8D /* NSMutableString+MSKitAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = C23592D419C8783E00920F8D /* NSMutableString+MSKitAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		C23592F419C8E04200920F8D /* BitArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23592DE19C8E04200920F8D /* BitArray.swift */; };
 		C23592F519C8E04200920F8D /* OrderedDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23592DF19C8E04200920F8D /* OrderedDictionary.swift */; };
 		C23592FE19C8E04200920F8D /* String+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23592E919C8E04200920F8D /* String+MoonKitAdditions.swift */; };
 		C23693801B161ED600CBE460 /* PrintableExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C236937F1B161ED600CBE460 /* PrintableExtensions.swift */; };
@@ -361,7 +360,6 @@
 		C2BDBBDA1BD3F00E00E343F1 /* List.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22E6B8E1B810860008D46A6 /* List.swift */; };
 		C2BDBBDB1BD3F00E00E343F1 /* Heap.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AA2BCC1B8508AA00A0B08D /* Heap.swift */; };
 		C2BDBBDC1BD3F00E00E343F1 /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26863711AF96E6E00D664E8 /* Queue.swift */; };
-		C2BDBBDD1BD3F00E00E343F1 /* BitArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23592DE19C8E04200920F8D /* BitArray.swift */; };
 		C2BDBBDF1BD3F00E00E343F1 /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C482E419CA0225002E84A9 /* Stack.swift */; };
 		C2BDBBE01BD3F00E00E343F1 /* OrderedSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25E63E01A00427100F54626 /* OrderedSet.swift */; };
 		C2BDBBE11BD3F07C00E343F1 /* CATransform3D.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A09771BC9F1B0002EFEE1 /* CATransform3D.swift */; };
@@ -1906,6 +1904,7 @@
 		C2CE884618138C4900555D63 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftMigration = 0730;
 				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Jason Cardwell";
@@ -2091,7 +2090,6 @@
 				C2618A6A1B7A437200122EBA /* FormSliderField.swift in Sources */,
 				C2EEBA091B06BFD10041B1B1 /* NotificationReceptionist.swift in Sources */,
 				C2358F4719C78E0C00920F8D /* NSValue+MSKitAdditions.m in Sources */,
-				C23592F419C8E04200920F8D /* BitArray.swift in Sources */,
 				C2358F4919C78E0C00920F8D /* UICollectionViewFlowLayout+MSKitAdditions.m in Sources */,
 				C2B4EB721BD8291D00DD1486 /* Loggable.swift in Sources */,
 				C24A22931ADB43620065E7EA /* SetOperations.swift in Sources */,
@@ -2343,7 +2341,6 @@
 				C2BDBBEA1BD3F07C00E343F1 /* NSScanner+MoonKitAdditions.swift in Sources */,
 				C2BDBBD01BD3F00E00E343F1 /* RegularExpression.swift in Sources */,
 				C2BDBBD61BD3F00E00E343F1 /* PropertyCoder.swift in Sources */,
-				C2BDBBDD1BD3F00E00E343F1 /* BitArray.swift in Sources */,
 				C2BDBC071BD3F07C00E343F1 /* Numbers.swift in Sources */,
 				C2BDBBE21BD3F07C00E343F1 /* NSRange+MoonKitAdditions.swift in Sources */,
 				C2BDBBE91BD3F07C00E343F1 /* NSCharacterSet+MoonKitAdditions.swift in Sources */,

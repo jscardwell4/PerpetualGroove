@@ -173,7 +173,7 @@ extension SortedArray: _ArrayType {
     }
 
     (firstElement + insertionPoint).initialize(element)
-    _base._buffer.count++
+    _base._buffer.count += 1
 
   }
 

@@ -71,15 +71,15 @@ final class GeneratorTool: NodeSelectionTool, ConfigurableToolType {
   /** previousNode */
   private func previousNode() {
     let nodes = player.midiNodes
-    guard let node = node, var idx = nodes.indexOf(node) else { return }
-    self.node = ++idx < nodes.endIndex ? nodes[idx] : nodes[nodes.startIndex]
+    guard let node = node, let idx = Array(nodes.generate()).indexOf(node) else { return }
+    self.node = idx + 1 < nodes.endIndex ? nodes[idx + 1] : nodes[nodes.startIndex]
   }
 
   /** nextNode */
   private func nextNode() {
     let nodes = player.midiNodes
-    guard let node = node, var idx = nodes.indexOf(node) else { return }
-    self.node = --idx >= nodes.startIndex ? nodes[idx] : nodes[nodes.endIndex - 1]
+    guard let node = node, let idx = Array(nodes.generate()).indexOf(node) else { return }
+    self.node = idx - 1 >= nodes.startIndex ? nodes[idx - 1] : nodes[nodes.endIndex - 1]
   }
 
   var isShowingViewController: Bool { return _viewController != nil }

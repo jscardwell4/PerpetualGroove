@@ -82,10 +82,10 @@ public extension SequenceType {
     AnySequence({() -> AnyGenerator<(Generator.Element, Generator.Element)> in
       let sequenceArray = Array(self)
       var i = 1
-      return anyGenerator({
+      return AnyGenerator(body: {
         let result: (Generator.Element, Generator.Element)?
         if i < sequenceArray.count { result = (sequenceArray[i - 1], sequenceArray[i]) } else { result = nil }
-        i++
+        i += 1
         return result
       })
     }).apply(f)
@@ -100,10 +100,10 @@ public func pairwiseApply<S:SequenceType>(sequence: S, _ f: (S.Generator.Element
   apply(AnySequence({() -> AnyGenerator<(S.Generator.Element, S.Generator.Element)> in
     let sequenceArray = Array(sequence)
     var i = 1
-    return anyGenerator({
+    return AnyGenerator(body: {
       let result: (S.Generator.Element, S.Generator.Element)?
       if i < sequenceArray.count { result = (sequenceArray[i - 1], sequenceArray[i]) } else { result = nil }
-      i++
+      i += 1
       return result
     })
   }), f)

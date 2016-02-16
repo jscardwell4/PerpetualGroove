@@ -127,7 +127,7 @@ public final class DirectoryMonitor {
       let newData = try directoryMetadata()
       isDirectoryChanging = !newData.elementsEqual(oldData)
       if isDirectoryChanging { retryCount = DirectoryMonitor.maxRetries }
-      if isDirectoryChanging || 0 < retryCount-- { checkAfterDelay(newData) }
+      if isDirectoryChanging || 0 < retryCount { retryCount -= 1; checkAfterDelay(newData) }
       else { callbackQueue.addOperationWithBlock { [unowned self] in self.invokeCallback() } }
     } catch {
       logError(error)

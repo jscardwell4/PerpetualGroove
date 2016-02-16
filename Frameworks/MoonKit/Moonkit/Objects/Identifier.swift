@@ -9,7 +9,7 @@
 import Foundation
 
 
-public struct Identifier: MutableSliceable, RangeReplaceableCollectionType {
+public struct Identifier: RangeReplaceableCollectionType {
   public private(set) var tags: [Tag] = [] { didSet { tags = filteredTags(tags) } }
 
   public mutating func reserveCapacity(n: Index.Distance) { tags.reserveCapacity(n) }

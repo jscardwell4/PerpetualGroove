@@ -343,7 +343,7 @@ extension Tree: SequenceType {
     // stack-based iterative inorder traversal to make it easy to use with anyGenerator
     var stack: [Node<Element>] = []
     var current: Node<Element> = root
-    return anyGenerator { _ -> Element? in
+    return AnyGenerator { _ -> Element? in
       repeat {
         switch current {
           case .Some(_, let left, _, _): 

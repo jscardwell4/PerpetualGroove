@@ -102,11 +102,14 @@ public func valuesForKey<C: KeyValueCollectionType, K:Hashable, V where C.Key ==
 public func binarySearch<C:CollectionType
   where C.Generator.Element: Comparable,
   C.Index:BidirectionalIndexType,
+  C.SubSequence.SubSequence == C.SubSequence,
+  C.SubSequence:CollectionType,
   C.SubSequence.Index == C.Index,
+  C.SubSequence.Generator.Element == C._Element,
   C.SubSequence._Element == C._Element,
   C._Element == C.Generator.Element>(collection: C, element: C.Generator.Element) -> C.Index?
 {
-  func searchSlice(slice: Slice<C>) -> C.Index? {
+  func searchSlice(slice: C.SubSequence) -> C.Index? {
     let range = slice.indices
     let index = range.middleIndex
     let maybeElement = slice[index]
@@ -119,7 +122,7 @@ public func binarySearch<C:CollectionType
     return nil
   }
 
-  return searchSlice(Slice(base: collection, bounds: collection.indices))
+  return searchSlice(collection[collection.indices])
 }
 
 /**
@@ -137,11 +140,14 @@ public func binarySearch<C:CollectionType
 public func binarySearch<Element, C:CollectionType
   where C.Generator.Element == Element,
   C.Index:BidirectionalIndexType,
+  C.SubSequence.SubSequence == C.SubSequence,
+  C.SubSequence:CollectionType,
   C.SubSequence.Index == C.Index,
+  C.SubSequence.Generator.Element == C._Element,
   C.SubSequence._Element == Element,
   C._Element == Element>(collection: C, isOrderedBefore: (Element) throws -> Bool, predicate: (Element) throws -> Bool) rethrows -> C.Index?
 {
-  func searchSlice(slice: Slice<C>) throws -> C.Index? {
+  func searchSlice(slice: C.SubSequence) throws -> C.Index? {
     let range = slice.indices
     let index = range.middleIndex
     let maybeElement = slice[index]
@@ -154,14 +160,17 @@ public func binarySearch<Element, C:CollectionType
     return nil
   }
 
-  return try searchSlice(Slice(base: collection, bounds: collection.indices))
+  return try searchSlice(collection[collection.indices])
 }
 
 
 public func binaryInsertion<C:CollectionType
   where C.Generator.Element: Comparable,
   C.Index:BidirectionalIndexType,
+  C.SubSequence.SubSequence == C.SubSequence,
+  C.SubSequence:CollectionType,
   C.SubSequence.Index == C.Index,
+  C.SubSequence.Generator.Element == C._Element,
   C.SubSequence._Element == C._Element,
   C._Element == C.Generator.Element>(collection: C, element: C.Generator.Element) -> C.Index
 {
@@ -169,7 +178,7 @@ public func binaryInsertion<C:CollectionType
   guard collection[collection.startIndex] < element else { return collection.startIndex }
   guard collection[collection.endIndex.predecessor()] > element else { return collection.endIndex }
 
-  func searchSlice(slice: Slice<C>) -> C.Index {
+  func searchSlice(slice: C.SubSequence) -> C.Index {
     let range = slice.indices
     let index = range.middleIndex
     let maybeElement = slice[index]
@@ -187,5 +196,5 @@ public func binaryInsertion<C:CollectionType
     return collection.endIndex
   }
 
-  return searchSlice(Slice(base: collection, bounds: collection.indices))
+  return searchSlice(collection[collection.indices])
 }

@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-private let identifierKey = UnsafePointer<Void>()
+private let identifierKey: UnsafePointer<Void> = nil
 
 public extension UIView {
 

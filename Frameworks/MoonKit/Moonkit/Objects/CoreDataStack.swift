@@ -51,7 +51,8 @@ public class CoreDataStack {
                                                                    options: options)
       persistentStore = store
       rootContext = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
-      stackInstances[ObjectIdentifier(self)] = ++stackInstanceCount
+      stackInstanceCount += 1
+      stackInstances[ObjectIdentifier(self)] = stackInstanceCount
       rootContext.persistentStoreCoordinator = persistentStoreCoordinator
       rootContext.nametag = "\(nametag)<root>"
       logDebug("\(nametag) initialized")
@@ -71,7 +72,8 @@ public class CoreDataStack {
   public func mainContext() -> NSManagedObjectContext {
     let context = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
     context.parentContext = rootContext
-    context.nametag = "\(nametag)<main\(++mainContextCount)>"
+    mainContextCount += 1
+    context.nametag = "\(nametag)<main\(mainContextCount)>"
     logDebug("context created: \(String(prettyNil: context.nametag))")
     return context
   }
@@ -84,7 +86,8 @@ public class CoreDataStack {
   public func isolatedContext() -> NSManagedObjectContext {
     let context = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
     context.persistentStoreCoordinator = persistentStoreCoordinator
-    context.nametag = "\(nametag)<isolated\(++isolatedContextCount)>"
+    isolatedContextCount += 1
+    context.nametag = "\(nametag)<isolated\(isolatedContextCount)>"
     logDebug("context created: \(String(prettyNil: context.nametag))")
     return context
   }
@@ -96,7 +99,8 @@ public class CoreDataStack {
   public func privateContext() -> NSManagedObjectContext {
     let context = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
     context.parentContext = rootContext
-    context.nametag = "\(nametag)<private\(++privateContextCount)>"
+    privateContextCount += 1
+    context.nametag = "\(nametag)<private\(privateContextCount)>"
     logDebug("context created: \(String(prettyNil: context.nametag))")
     return context
   }

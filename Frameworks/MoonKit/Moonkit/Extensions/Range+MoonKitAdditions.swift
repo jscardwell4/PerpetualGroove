@@ -123,9 +123,9 @@ public extension Range where Element: Comparable {
   */
   public func split(range: Range<Element>) -> [Range<Element>] {
     if range.startIndex == startIndex {
-      return [Range<Element>(start: range.endIndex, end: endIndex)]
+      return [range.endIndex ..< endIndex]
     } else {
-      return [Range<Element>(start: startIndex, end: range.startIndex), Range<Element>(start: range.endIndex, end: endIndex)]
+      return [startIndex ..< range.startIndex, range.endIndex ..< endIndex]
     }
   }
 

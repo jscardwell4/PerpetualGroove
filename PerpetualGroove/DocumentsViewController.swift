@@ -28,7 +28,7 @@ final class DocumentsViewController: UICollectionViewController {
     return receptionist
   }()
 
-  @IBOutlet weak var documentsViewLayout: DocumentsViewLayout! { didSet { documentsViewLayout.controller = self } }
+  weak var documentsViewLayout: DocumentsViewLayout! { didSet { documentsViewLayout.controller = self } }
 
   private(set) var itemSize: CGSize = .zero {
     didSet {

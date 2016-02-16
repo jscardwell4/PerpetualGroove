@@ -154,7 +154,7 @@ final class MIDIClock: CustomStringConvertible, Named {
   private func _sendClock() {
 
     guard timer.running else { return }
-    ticks++
+    ticks += 1
     do { try sendEvent(0b1111_1000) } catch { logError(error) }
   }
 

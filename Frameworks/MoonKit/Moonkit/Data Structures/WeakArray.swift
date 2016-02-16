@@ -31,14 +31,14 @@ private final class WeakArrayBuffer<Element: AnyObject> : ManagedBuffer<(count: 
       [count = count] pointer in
         (pointer + index).moveInitializeFrom(pointer + index + 1 , count: count - index - 1)
     }
-    count--
+    count -= 1
   }
 
   func purgeNilReferences() -> Int {
     let gaps = weakElements.enumerate().filter({$1.reference == nil}).map({$0.0})
     guard gaps.count > 0 else { return 0}
     var offset = 0
-    for gap in gaps { purgeAtIndex(gap - offset++) }
+    for gap in gaps { purgeAtIndex(gap - offset); offset += 1 }
     return offset
   }
 
@@ -85,11 +85,11 @@ private final class WeakArrayBuffer<Element: AnyObject> : ManagedBuffer<(count: 
     purgeNilReferences()
     precondition(count + 1 <= capacity)
     withUnsafeMutablePointerToElements { [count = count] in ($0 + count).initialize(Weak(element)) }
-    count++
+    count += 1
   }
 }
 
-public struct WeakArray<Element:AnyObject>: MutableCollectionType {
+public struct WeakArray<Element:AnyObject> { //: MutableCollectionType {
   private var storage: WeakArrayBuffer<Element>
   private var elements: [Element] { return storage.elements }
 
@@ -128,14 +128,15 @@ public struct WeakArray<Element:AnyObject>: MutableCollectionType {
     var index = startIndex
     var purgeNeeded = false
     let collection = self
-    return anyGenerator {
+    return AnyGenerator {
       guard index < collection.endIndex else {
         if purgeNeeded { collection.storage.purgeNilReferences() }
         return nil
       }
       var element: Element?
       while index < collection.endIndex && element == nil {
-        element = collection.storage[index++].reference
+        element = collection.storage[index].reference
+        index += 1
         if element == nil { purgeNeeded = true }
       }
       return element

@@ -32,9 +32,9 @@ extension String: ByteArrayConvertible {
   public init(var _ bytes: [Byte]) {
     var i = bytes.count - 1
     guard i > 0 else { self = ""; return }
-    while i > -1 && bytes[i] == Byte(0) { i-- }
+    while i > -1 && bytes[i] == Byte(0) { i -= 1 }
     guard i > 0 else { self = ""; return }
-    if i++ == bytes.count - 1 { bytes.append(Byte(0)) }
+    if i == bytes.count - 1 { i += 1; bytes.append(Byte(0)) }
     bytes = Array(bytes[0 ..< i])
     guard let s = String(bytes: bytes, encoding: NSUTF8StringEncoding) else { self = ""; return }
     self = s
@@ -185,9 +185,9 @@ public extension String {
     guard components.count > 0 else { return self }
 
     var i = 0
-    while i < components.count && components[i] ~= ~/"^\\p{Lu}$" { components[i] = components[i++].lowercaseString }
+    while i < components.count && components[i] ~= ~/"^\\p{Lu}$" { components[i] = components[i].lowercaseString; i += 1 }
 
-    if i++ == 0 { components[0] = components[0].lowercaseFirst }
+    if i == 0 { i += 1; components[0] = components[0].lowercaseFirst }
 
     for j in i ..< components.count where components[j] ~= ~/"^\\p{Ll}" { components[j] = components[j].uppercaseFirst }
 
@@ -431,8 +431,7 @@ public extension String {
   public subscript (r: Range<UInt>) -> String {
     let rangeStart: String.Index = startIndex.advancedBy(Int(r.startIndex))
     let rangeEnd:   String.Index = startIndex.advancedBy(Int(r.startIndex.distanceTo(r.endIndex)))
-    let range: Range<String.Index> = Range<String.Index>(start: rangeStart, end: rangeEnd)
-    return self[range]
+    return self[rangeStart ..< rangeEnd]
   }
 
   /**
@@ -445,8 +444,7 @@ public extension String {
   public subscript (r: NSRange) -> String {
     let rangeStart: String.Index = startIndex.advancedBy(r.location)
     let rangeEnd:   String.Index = startIndex.advancedBy(r.location + r.length)
-    let range: Range<String.Index> = Range<String.Index>(start: rangeStart, end: rangeEnd)
-    return self[range]
+    return self[rangeStart ..< rangeEnd]
   }
 
   public var indices: Range<String.Index> { return characters.indices }
@@ -473,7 +471,7 @@ public extension String {
   - returns: Range<String.Index>?
   */
   public func convertRange(r: NSRange) -> Range<String.Index>? {
-    let range = Range(start: UTF16Index(_offset: r.location), end: UTF16Index(_offset: r.location).advancedBy(r.length))
+    let range = UTF16Index(_offset: r.location) ..< UTF16Index(_offset: r.location).advancedBy(r.length)
     guard let lhs = String(utf16[utf16.startIndex ..< range.startIndex]), rhs = String(utf16[range]) else { return nil }
     let start = startIndex.advancedBy(lhs.startIndex.distanceTo(lhs.endIndex))
     let end = start.advancedBy(rhs.startIndex.distanceTo(rhs.endIndex))
@@ -491,7 +489,7 @@ public extension String {
     assert(false, "we shouldn't be using this")
     let s = startIndex.advancedBy(range.startIndex)
     let e = startIndex.advancedBy(range.endIndex)
-    return Range<String.Index>(start: s, end: e)
+    return s ..< e
   }
 
 }
@@ -506,4 +504,4 @@ public prefix func ∀(predicate: (String, [AnyObject]?)) -> NSPredicate! {
 }
 
 /** func for an operator that creates a string by repeating a string multiple times */
-public func *(lhs: String, var rhs: Int) -> String { var s = ""; while rhs-- > 0 { s += lhs }; return s }
+public func *(lhs: String, var rhs: Int) -> String { var s = ""; while rhs > 0 { rhs -= 1; s += lhs }; return s }

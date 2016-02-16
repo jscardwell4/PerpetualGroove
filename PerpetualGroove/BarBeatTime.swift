@@ -408,7 +408,7 @@ extension BarBeatTime: BidirectionalIndexType {
   */
   func successor() -> BarBeatTime {
     var result = self
-    result.subbeat++
+    result.subbeat += 1
     result.normalize()
     return result
   }
