@@ -240,6 +240,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     didSet {
       guard solo != oldValue else { return }
       Notification.SoloStatusDidChange.post(object: self, userInfo: [.OldValue: !solo, .NewValue: solo])
+      updateIsMuted()
     }
   }
 

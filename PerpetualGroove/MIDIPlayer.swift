@@ -75,7 +75,10 @@ final class MIDIPlayer {
   }
 
   /** initialize */
-  static func initialize() { guard !initialized else { return }; touch(receptionist); initialized = true }
+  static func initialize() {
+    guard !initialized else { return }
+    touch(receptionist); initialized = true
+  }
 
   /**
    didChangeSequence:

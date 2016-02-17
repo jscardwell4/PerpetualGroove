@@ -33,6 +33,7 @@ final class AudioManager {
   - parameter instrument: Instrument
   */
   static func attachNode(node: AVAudioNode, forInstrument instrument: Instrument) {
+    guard initialized else { fatalError("attempt to attach node before engine initialized") }
     guard instruments ∌ instrument && node.engine == nil else { return }
     engine.attachNode(node)
     engine.connect(node, to: engine.mainMixerNode, format: node.outputFormatForBus(0))
@@ -41,23 +42,21 @@ final class AudioManager {
 
   /** initialize */
   static func initialize() {
-    globalBackgroundQueue.async {
-      guard !initialized else { return }
-      let outputFormat = engine.outputNode.outputFormatForBus(0)
-      guard outputFormat.sampleRate != 0 else { fatalError("output disabled (sample rate = 0)") }
+    guard !initialized else { return }
+    let outputFormat = engine.outputNode.outputFormatForBus(0)
+    guard outputFormat.sampleRate != 0 else { fatalError("output disabled (sample rate = 0)") }
 
-      do {
-        try configureAudioSession()
-        let node = AVAudioUnitSampler()
-        engine.attachNode(node)
-        engine.connect(node, to: engine.mainMixerNode, format: node.outputFormatForBus(0))
-        metronome = try Metronome.init(node: node)
-        initialized = true
-        logDebug("AudioManager initialized")
-        try start()
-      } catch {
-        logError(error)
-      }
+    do {
+      try configureAudioSession()
+      let node = AVAudioUnitSampler()
+      engine.attachNode(node)
+      engine.connect(node, to: engine.mainMixerNode, format: node.outputFormatForBus(0))
+      metronome = try Metronome.init(node: node)
+      initialized = true
+      logDebug("AudioManager initialized")
+      try start()
+    } catch {
+      logError(error)
     }
   }
 

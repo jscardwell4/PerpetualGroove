@@ -22,39 +22,37 @@ final class Sequencer {
    first found
   */
   static func initialize() {
-    globalBackgroundQueue.async {
-      guard !initialized else { return }
+    guard !initialized else { return }
 
-      observeTransport(transport)
+    observeTransport(transport)
 
-      soundSets = [
-        EmaxSoundSet(.BrassAndWoodwinds),
-        EmaxSoundSet(.KeyboardsAndSynths),
-        EmaxSoundSet(.GuitarsAndBasses),
-        EmaxSoundSet(.WorldInstruments),
-        EmaxSoundSet(.DrumsAndPercussion),
-        EmaxSoundSet(.Orchestral)
-      ]
+    soundSets = [
+      EmaxSoundSet(.BrassAndWoodwinds),
+      EmaxSoundSet(.KeyboardsAndSynths),
+      EmaxSoundSet(.GuitarsAndBasses),
+      EmaxSoundSet(.WorldInstruments),
+      EmaxSoundSet(.DrumsAndPercussion),
+      EmaxSoundSet(.Orchestral)
+    ]
 
-      let bundle = NSBundle.mainBundle()
-      let exclude = soundSets.map({$0.url})
-      guard var urls = bundle.URLsForResourcesWithExtension("sf2", subdirectory: nil) else { return }
-      urls = urls.flatMap({$0.fileReferenceURL()})
-      do {
-        try urls.filter({$0 ∉ exclude}).forEach { soundSets.append(try SoundSet(url: $0)) }
-        guard soundSets.count > 0 else {
-          fatalError("failed to create any sound sets from bundled sf2 files")
-        }
-        let soundSet = soundSets[0]
-        let program = UInt8(soundSet.presets[0].program)
-        auditionInstrument = try Instrument(track: nil, soundSet: soundSet, program: program, channel: 0)
-        Notification.DidUpdateAvailableSoundSets.post()
-      } catch {
-        logError(error)
+    let bundle = NSBundle.mainBundle()
+    let exclude = soundSets.map({$0.url})
+    guard var urls = bundle.URLsForResourcesWithExtension("sf2", subdirectory: nil) else { return }
+    urls = urls.flatMap({$0.fileReferenceURL()})
+    do {
+      try urls.filter({$0 ∉ exclude}).forEach { soundSets.append(try SoundSet(url: $0)) }
+      guard soundSets.count > 0 else {
+        fatalError("failed to create any sound sets from bundled sf2 files")
       }
-      initialized = true
-      logDebug("Sequencer initialized")
+      let soundSet = soundSets[0]
+      let program = UInt8(soundSet.presets[0].program)
+      auditionInstrument = try Instrument(track: nil, soundSet: soundSet, program: program, channel: 0)
+      Notification.DidUpdateAvailableSoundSets.post()
+    } catch {
+      logError(error)
     }
+    initialized = true
+    logDebug("Sequencer initialized")
   }
 
   private static let receptionist: NotificationReceptionist = {
