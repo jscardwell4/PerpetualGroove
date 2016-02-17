@@ -67,8 +67,8 @@ final class MIDIPlayer {
       guard sequence !== oldValue else { return }
       if let oldSequence = oldValue { receptionist.stopObservingObject(oldSequence) }
       if let sequence = sequence {
-        receptionist.observe(Sequence.Notification.DidRemoveTrack, from: sequence, callback: MIDIPlayer.didRemoveTrack)
-        receptionist.observe(Sequence.Notification.DidChangeTrack, from: sequence, callback: MIDIPlayer.didChangeTrack)
+        receptionist.observe(.DidRemoveTrack, from: sequence, callback: MIDIPlayer.didRemoveTrack)
+        receptionist.observe(.DidChangeTrack, from: sequence, callback: MIDIPlayer.didChangeTrack)
       }
       updateCurrentDispatch()
     }

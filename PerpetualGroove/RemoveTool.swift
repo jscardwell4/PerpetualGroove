@@ -74,9 +74,9 @@ final class RemoveTool: ToolType {
         receptionist.stopObserving(Sequence.Notification.DidChangeTrack, from: oldSequence)
       }
       if let sequence = sequence {
-        receptionist.observe(Sequence.Notification.DidChangeTrack,
-          from: sequence,
-          callback: {[weak self] _ in self?.track = self?.sequence?.currentTrack})
+        receptionist.observe(.DidChangeTrack, from: sequence) {
+          [weak self] _ in self?.track = self?.sequence?.currentTrack
+        }
       }
       track = sequence?.currentTrack
     }

@@ -289,7 +289,7 @@ final class Sequencer {
 }
 
 // MARK: - Notification
-extension Sequencer {
+extension Sequencer: NotificationDispatchType {
 
   // MARK: - Notifications
   enum Notification: String, NotificationType, NotificationNameType {

@@ -42,7 +42,10 @@ final class Sequence {
   var currentTrackIndex: Int? {
     get { return currentTrack?.index }
     set {
-      guard let newValue = newValue where instrumentTracks.indices ∋ newValue else { currentTrack = nil; return }
+      guard let newValue = newValue where instrumentTracks.indices ∋ newValue else {
+        currentTrack = nil
+        return
+      }
       currentTrack = instrumentTracks[newValue]
     }
   }
@@ -82,32 +85,15 @@ final class Sequence {
 
   var tempo: Double { get { return tempoTrack.tempo } set { tempoTrack.tempo = newValue } }
 
-  var timeSignature: TimeSignature { get { return tempoTrack.timeSignature } set { tempoTrack.timeSignature = newValue } }
+  var timeSignature: TimeSignature {
+    get { return tempoTrack.timeSignature }
+    set { tempoTrack.timeSignature = newValue }
+  }
 
   /** Collection of all the tracks in the composition */
   var tracks: [Track] {
     guard tempoTrack != nil else { return instrumentTracks }
     return [tempoTrack] + instrumentTracks
-  }
-
-  /**
-  toggleSoloForTrack:
-
-  - parameter track: InstrumentTrack
-  */
-  func toggleSoloForTrack(track: InstrumentTrack) {
-    guard instrumentTracks ∋ track else { logWarning("Request to toggle track not owned by sequence"); return }
-
-    let oldCount = soloTracks.count,  newCount: Int
-    if track.solo {
-      track.solo = false
-      newCount = oldCount - 1
-    } else {
-      track.solo = true
-      newCount = oldCount + 1
-    }
-
-    Notification.SoloCountDidChange.post(object: self, userInfo: [.OldCount: oldCount, .NewCount: newCount])
   }
 
   // MARK: - Receiving track and sequencer notifications
@@ -153,6 +139,21 @@ final class Sequence {
     hasChanges = false
     logDebug("posting 'DidUpdate'")
     Notification.DidUpdate.post(object: self)
+  }
+
+  /**
+   observeTrack:
+
+   - parameter track: Track
+  */
+  private func observeTrack(track: Track) {
+    receptionist.observe(.DidUpdate,
+                    from: track,
+                callback: weakMethod(self, Sequence.trackDidUpdate))
+
+    receptionist.observe(.SoloStatusDidChange,
+                    from: track,
+                callback: weakMethod(self, Sequence.trackSoloStatusDidChange))
   }
 
   private(set) weak var document: MIDIDocument!
@@ -253,10 +254,7 @@ final class Sequence {
   private func addTrack(track: InstrumentTrack) {
     guard instrumentTracks ∌ track else { return }
     instrumentTracks.append(track)
-    receptionist.observe(Track.Notification.DidUpdate,
-                    from: track,
-                callback: weakMethod(self, Sequence.trackDidUpdate))
-
+    observeTrack(track)
     logDebug("track added: \(track.name)")
     Notification.DidAddTrack.post(
       object: self,
@@ -321,7 +319,7 @@ extension Sequence: CustomDebugStringConvertible {
 
 // MARK: - Notification
 
-extension Sequence {
+extension Sequence: NotificationDispatchType {
   /** An enumeration to wrap up notifications */
   enum Notification: String, NotificationType, NotificationNameType {
     case DidAddTrack, DidRemoveTrack, DidChangeTrack, SoloCountDidChange, DidUpdate

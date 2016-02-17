@@ -39,9 +39,7 @@ final class MIDIDocument: UIDocument {
       }
 
       if let sequence = sequence {
-        receptionist.observe(Sequence.Notification.DidUpdate,
-                        from: sequence,
-                    callback: weakMethod(self, MIDIDocument.didUpdate))
+        receptionist.observe(.DidUpdate, from: sequence, callback: weakMethod(self, MIDIDocument.didUpdate))
       }
     }
   }

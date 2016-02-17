@@ -13,6 +13,33 @@ import AudioToolbox
 import CoreMIDI
 import SpriteKit
 
+extension Sequence {
+  /**
+   trackSoloStatusDidChange:
+
+   - parameter notification: NSNotification
+  */
+  func trackSoloStatusDidChange(notification: NSNotification) {
+    guard instrumentTracks ∋ notification.object as? InstrumentTrack else { return }
+    let soloTracks = self.soloTracks
+    if soloTracks.count == 0 {
+      instrumentTracks.forEach {
+        logDebug("clearing force mute for track '\($0.displayName)'")
+        $0.forceMute = false
+      }
+    } else {
+      soloTracks.forEach {
+        logDebug("clearing forced mute for track '\($0.displayName)'")
+        $0.forceMute = false
+      }
+      (instrumentTracks ∖ soloTracks).forEach {
+        logDebug("force muting track '\($0.displayName)'")
+        $0.forceMute = true
+      }
+    }
+  }
+}
+
 final class InstrumentTrack: Track, MIDINodeDispatch {
 
   private(set) var nodeManager: MIDINodeManager!
@@ -33,7 +60,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
                     from: Sequencer.self,
                 callback: weakMethod(self, InstrumentTrack.didReset))
 
-    receptionist.observe(Sequence.Notification.SoloCountDidChange,
+    receptionist.observe(.SoloCountDidChange,
                     from: sequence,
                 callback: weakMethod(self, InstrumentTrack.soloCountDidChange))
 
@@ -47,10 +74,10 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
                     from: Sequencer.self,
                 callback: weakMethod(self, InstrumentTrack.didEndJogging))
 
-    receptionist.observe(Instrument.Notification.PresetDidChange,
+    receptionist.observe(.PresetDidChange,
                     from: instrument,
                 callback: weakMethod(self, InstrumentTrack.didChangePreset))
-    receptionist.observe(Instrument.Notification.SoundSetDidChange,
+    receptionist.observe(.SoundSetDidChange,
                     from: instrument,
                 callback: weakMethod(self, InstrumentTrack.didChangePreset))
 }
@@ -187,19 +214,25 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 
   /** updateIsMuted */
   private func updateIsMuted() {
-      switch (forceMute, mute, solo) {
-        case (true,   true,  true): fallthrough
-        case (true,  false,  true): fallthrough
-        case (false,  true,  true): fallthrough
-        case (false, false,  true): fallthrough
-        case (false, false, false): isMuted = false
-        case (true,   true, false): fallthrough
-        case (true,  false, false): fallthrough
-        case (false,  true, false): isMuted = true
-      }
+    switch (forceMute, mute, solo) {
+      case (true,   true,  true): fallthrough
+      case (true,  false,  true): fallthrough
+      case (false,  true,  true): fallthrough
+      case (false, false,  true): fallthrough
+      case (false, false, false): isMuted = false
+      case (true,   true, false): fallthrough
+      case (true,  false, false): fallthrough
+      case (false,  true, false): isMuted = true
+    }
   }
 
-  private var forceMute = false { didSet { guard forceMute != oldValue else { return }; updateIsMuted() } }
+  private(set) var forceMute = false {
+    didSet {
+      guard forceMute != oldValue else { return }
+      Notification.ForceMuteStatusDidChange.post(object: self, userInfo: [.OldValue: oldValue, .NewValue: forceMute])
+      updateIsMuted()
+    }
+  }
 
   var mute = false { didSet { guard mute != oldValue else { return }; updateIsMuted() } }
 
@@ -207,7 +240,6 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     didSet {
       guard solo != oldValue else { return }
       Notification.SoloStatusDidChange.post(object: self, userInfo: [.OldValue: !solo, .NewValue: solo])
-      forceMute = sequence.soloTracks.count > 0
     }
   }
 
@@ -497,15 +529,6 @@ extension InstrumentTrack {
     case InstrumentInitializeFailure = "Failed to create instrument"
   }
 }
-
-// MARK: - Notifications
-extension InstrumentTrack {
-  enum Notification: String, NotificationType, NotificationNameType {
-    enum Key: String, KeyType { case OldValue, NewValue }
-    case MuteStatusDidChange, SoloStatusDidChange
-  }
-}
-
 
 // MARK: - Hashable
 extension InstrumentTrack: Hashable { var hashValue: Int { return ObjectIdentifier(self).hashValue } }

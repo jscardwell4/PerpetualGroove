@@ -114,10 +114,14 @@ final class Instrument: Equatable {
     let oldPresetName = preset.name
     program = (0 ... 127).clampValue(program)
     bank    = (0 ... 127).clampValue(bank)
-    try node.loadSoundBankInstrumentAtURL(soundSet.url,
-                                  program: program,
-                                  bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB),
-                                  bankLSB: bank)
+    do {
+      try node.loadSoundBankInstrumentAtURL(soundSet.url,
+                                    program: program,
+                                    bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB),
+                                    bankLSB: bank)
+    } catch {
+      throw error
+    }
     soundLoaded = true
     self.soundSet = soundSet
     self.program  = program
@@ -216,7 +220,7 @@ extension Instrument: JSONValueInitializable {
 }
 
 // MARK: - Notifications
-extension Instrument {
+extension Instrument: NotificationDispatchType {
   enum Notification: String, NotificationType, NotificationNameType {
     enum Key: String, KeyType { case OldValue, NewValue }
     case PresetDidChange, SoundSetDidChange
@@ -224,8 +228,12 @@ extension Instrument {
 }
 
 extension NSNotification {
-  var oldPresetName: String? { return userInfo?[Instrument.Notification.Key.OldValue.key] as? String }
-  var newPresetName: String? { return userInfo?[Instrument.Notification.Key.NewValue.key] as? String }
+  var oldPresetName: String? {
+    return userInfo?[Instrument.Notification.Key.OldValue.key] as? String
+  }
+  var newPresetName: String? {
+    return userInfo?[Instrument.Notification.Key.NewValue.key] as? String
+  }
 }
 
 /**

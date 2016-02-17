@@ -40,11 +40,16 @@ public class Knob: UIControl {
   @IBInspectable public var knobBase: UIImage? {
     didSet {
       guard oldValue != value else { return }
-      backgroundDispatch {
-        [weak self] in
-        self?._knobBase = self?.knobBase?.imageWithColor(self!.knobColor)
-        dispatchToMain { self?.setNeedsDisplay() }
-      }
+      #if TARGET_INTERFACE_BUILDER
+        _knobBase = knobBase?.imageWithColor(knobColor)
+        setNeedsDisplay()
+      #else
+        backgroundDispatch {
+          [weak self] in
+          self?._knobBase = self?.knobBase?.imageWithColor(self!.knobColor)
+          dispatchToMain { self?.setNeedsDisplay() }
+        }
+      #endif
     }
   }
 
@@ -52,22 +57,32 @@ public class Knob: UIControl {
   @IBInspectable public var indicatorImage: UIImage? {
     didSet {
       guard indicatorImage != oldValue else { return }
-      backgroundDispatch {
-        [weak self] in
-        self?._indicatorImage = self?.indicatorImage?.imageWithColor(self!.indicatorColor)
-        dispatchToMain { self?.setNeedsDisplay() }
-      }
+      #if TARGET_INTERFACE_BUILDER
+        _indicatorImage = indicatorImage?.imageWithColor(indicatorColor)
+        setNeedsDisplay()
+      #else
+        backgroundDispatch {
+          [weak self] in
+          self?._indicatorImage = self?.indicatorImage?.imageWithColor(self!.indicatorColor)
+          dispatchToMain { self?.setNeedsDisplay() }
+        }
+      #endif
     }
   }
   private var _indicatorFillImage: UIImage?
   @IBInspectable public var indicatorFillImage: UIImage? {
     didSet {
       guard indicatorFillImage != oldValue else { return }
-      backgroundDispatch {
-        [weak self] in
-        self?._indicatorFillImage = self?.indicatorFillImage?.imageWithColor(self!.indicatorFillColor)
-        dispatchToMain { self?.setNeedsDisplay() }
-      }
+      #if TARGET_INTERFACE_BUILDER
+        _indicatorFillImage = indicatorFillImage?.imageWithColor(indicatorFillColor)
+        setNeedsDisplay()
+      #else
+        backgroundDispatch {
+          [weak self] in
+          self?._indicatorFillImage = self?.indicatorFillImage?.imageWithColor(self!.indicatorFillColor)
+          dispatchToMain { self?.setNeedsDisplay() }
+        }
+      #endif
     }
   }
 
@@ -122,33 +137,47 @@ public class Knob: UIControl {
 
   @IBInspectable public var knobColor: UIColor = .darkGrayColor() {
     didSet {
+      #if TARGET_INTERFACE_BUILDER
+        _knobBase = knobBase?.imageWithColor(knobColor)
+        setNeedsDisplay()
+        #else
       backgroundDispatch {
         [weak self] in
         self?._knobBase = self?.knobBase?.imageWithColor(self!.knobColor)
         dispatchToMain { self?.setNeedsDisplay() }
       }
+      #endif
     }
   }
 
   @IBInspectable public var indicatorColor: UIColor = .lightGrayColor() {
     didSet {
       guard indicatorColor != oldValue else { return }
+      #if TARGET_INTERFACE_BUILDER
+        _indicatorImage = indicatorImage?.imageWithColor(indicatorColor)
+      #else
       backgroundDispatch {
         [weak self] in
         self?._indicatorImage = self?.indicatorImage?.imageWithColor(self!.indicatorColor)
         dispatchToMain { self?.setNeedsDisplay() }
       }
+      #endif
     }
   }
 
   @IBInspectable public var indicatorFillColor: UIColor = .lightGrayColor() {
     didSet {
       guard indicatorFillColor != oldValue else { return }
+      #if TARGET_INTERFACE_BUILDER
+        _indicatorFillImage = indicatorFillImage?.imageWithColor(indicatorFillColor)
+        setNeedsDisplay()
+      #else
       backgroundDispatch {
         [weak self] in
         self?._indicatorFillImage = self?.indicatorFillImage?.imageWithColor(self!.indicatorFillColor)
         dispatchToMain { self?.setNeedsDisplay() }
       }
+      #endif
     }
   }
   private var valueInterval: ClosedInterval<Float> = 0 ... 1 { didSet { value = valueInterval.clampValue(value) } }

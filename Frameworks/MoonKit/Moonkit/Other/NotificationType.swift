@@ -17,7 +17,9 @@ public extension NotificationNameType where Self.RawValue == String {
   var hashValue: Int { return rawValue.hashValue }
 }
 
-public func ==<N:NotificationNameType>(lhs: N, rhs: N) -> Bool { return lhs.notificationName == rhs.notificationName }
+public func ==<N:NotificationNameType>(lhs: N, rhs: N) -> Bool {
+  return lhs.notificationName == rhs.notificationName
+}
 
 public typealias NotificationKeyType = KeyType
 
@@ -66,7 +68,9 @@ public extension NotificationType {
   }
   var userInfo: [Key:AnyObject?]? { return nil }
 
-  var notification: NSNotification { return NSNotification(name: _name, object: object, userInfo: _userInfo) }
+  var notification: NSNotification {
+    return NSNotification(name: _name, object: object, userInfo: _userInfo)
+  }
   var notificationQueue: NSNotificationQueue? { return NSNotificationQueue.defaultQueue() }
   var postingStyle: NSPostingStyle { return .PostNow }
   var coalescing: NSNotificationCoalescing { return [.CoalescingOnName, .CoalescingOnSender] }
@@ -100,7 +104,10 @@ public extension NotificationType {
   func post(object obj: AnyObject?, userInfo info: [NSObject:AnyObject]?) {
     let notification = NSNotification(name: _name, object: obj, userInfo: info)
     if let queue = notificationQueue {
-      queue.enqueueNotification(notification, postingStyle: postingStyle, coalesceMask: coalescing, forModes: nil)
+      queue.enqueueNotification(notification,
+                   postingStyle: postingStyle,
+                   coalesceMask: coalescing,
+                       forModes: nil)
     } else {
       NSNotificationCenter.defaultCenter().postNotification(notification)
     }
@@ -126,8 +133,11 @@ public extension NotificationType {
   var description: String {
     var result = "\(self.dynamicType) {\n"
     result += "\tname: \(_name)\n"
-    if let object = object { result += "\tobject: \(object)\n" } else { result += "\tobject: nil\n" }
-    if let info = _userInfo { result += "\tuserInfo: {\n\(info.formattedDescription().indentedBy(8))\n\t}\n" }
+    if let object = object { result += "\tobject: \(object)\n" }
+    else { result += "\tobject: nil\n" }
+    if let info = _userInfo {
+      result += "\tuserInfo: {\n\(info.formattedDescription().indentedBy(8))\n\t}\n"
+    }
     else { result += "\tuserInfo: nil\n" }
     result += "}"
     return result
@@ -136,4 +146,9 @@ public extension NotificationType {
 
 public extension NotificationType where Self:NotificationNameType {
   var name: Self { return self }
+}
+
+
+public protocol NotificationDispatchType {
+  typealias Notification: NotificationType
 }

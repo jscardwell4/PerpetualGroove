@@ -11,6 +11,15 @@ import Foundation
 //import SpriteKit
 import Swift
 
+public func withWeakReferenceToObject<T:AnyObject, U, R>(object: T?, body: (T?, U) -> R) -> (U) -> R {
+  return { [weak object] in body(object, $0) }
+}
+
+extension NSObject {
+  public func withWeakReference<T:NSObject, U, R>(body: (T?, U) -> R) -> (U) -> R {
+    return withWeakReferenceToObject(self as? T, body: body)
+  }
+}
 
 extension GCDAsyncUdpSocketError: ErrorType {}
 
