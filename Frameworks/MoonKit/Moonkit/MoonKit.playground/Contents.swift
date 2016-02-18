@@ -23,3 +23,8 @@ path.applyTransform(CGAffineTransform(angle: π/2))
 var path2 = UIBezierPath()
 path2.moveToPoint(.zero)
 path2.addLineToPoint(CGPoint(x: dxʹ, y: dyʹ))
+
+var transform = CGAffineTransform(angle: π/2)
+transform.rotation.degrees
+transform.rotation = π/4
+transform.rotation.degrees

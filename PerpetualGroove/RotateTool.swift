@@ -13,7 +13,7 @@ final class RotateTool: NodeAdjustmentTool, ConfigurableToolType {
 
   private weak var _viewController: RotateViewController?
 
-  var viewController: UIViewController {
+  var viewController: SecondaryContentViewController {
     guard _viewController == nil else { return _viewController! }
     let storyboard = UIStoryboard(name: "Rotate", bundle: nil)
     let viewController = storyboard.instantiateInitialViewController() as! RotateViewController
@@ -23,11 +23,11 @@ final class RotateTool: NodeAdjustmentTool, ConfigurableToolType {
 
   var isShowingViewController: Bool { return _viewController != nil }
 
-  func didShowViewController(viewController: UIViewController) {
+  func didShowViewController(viewController: SecondaryContentViewController) {
     _viewController = viewController as? RotateViewController
   }
 
-  func didHideViewController(viewController: UIViewController) {
+  func didHideViewController(viewController: SecondaryContentViewController) {
 
   }
 
@@ -39,7 +39,7 @@ final class RotateTool: NodeAdjustmentTool, ConfigurableToolType {
 
 }
 
-final class RotateViewController: UIViewController {
+final class RotateViewController: SecondaryContentViewController {
 
   weak var node: MIDINode?
 
@@ -47,6 +47,7 @@ final class RotateViewController: UIViewController {
     super.viewWillAppear(animated)
     guard let node = node else { return }
     ball.tintColor = node.dispatch?.color.value
+    arrow.tintColor = .quaternaryColor
     let angle = node.initialTrajectory.v.angle
     arrow.transform = CGAffineTransform(angle: angle)
     rotationGesture.rotation = angle
@@ -64,11 +65,8 @@ final class RotateViewController: UIViewController {
   @IBAction private func handleRotation(sender: UIRotationGestureRecognizer) {
 
     switch sender.state {
-      case .Began:
-        print(".Began - rotation: \(sender.rotation)")
-      break
-      case .Changed:
-        print(".Changed - rotation: \(sender.rotation)")
+      case .Began, .Changed:
+        arrow.transform.rotation = sender.rotation
       break
 
       case .Cancelled, .Failed: break

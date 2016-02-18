@@ -47,18 +47,13 @@ final class MIDIPlayerContainerViewController: SecondaryControllerContainerViewC
   }
 
   override var anyAction: (() -> Void)? {
-    get {
       let action = super.anyAction
-      return {
-        [unowned self] in
-        guard let tool = self.controllerTool where tool.isShowingViewController else { action?(); return }
-        tool.didHideViewController(tool.viewController)
-        self.controllerTool = nil
-        action?()
-      }
-    }
-    set {
-      super.anyAction = newValue
+    return {
+      [unowned self] in
+      guard let tool = self.controllerTool where tool.isShowingViewController else { action?(); return }
+      tool.didHideViewController(tool.viewController)
+      self.controllerTool = nil
+      action?()
     }
   }
 

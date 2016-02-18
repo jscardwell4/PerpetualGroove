@@ -14,7 +14,6 @@
 		C20534271BCB3BB900A9F040 /* UIControlState+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20534261BCB3BB900A9F040 /* UIControlState+MoonKitAdditions.swift */; };
 		C205852B1A1BA22A00212759 /* LongPressGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = C205852A1A1BA22A00212759 /* LongPressGesture.swift */; };
 		C205852D1A1BEC2000212759 /* BlockActionGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = C205852C1A1BEC2000212759 /* BlockActionGesture.swift */; };
-		C2064FF81A13BF8100342FDE /* MSDictionary+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A7CA9619CBB8FE00212F2D /* MSDictionary+MoonKitAdditions.swift */; };
 		C2064FFA1A13C05900342FDE /* Operators.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2064FF91A13C05900342FDE /* Operators.swift */; };
 		C2064FFB1A13C6F000342FDE /* MoonFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23592DC19C8E04200920F8D /* MoonFunctions.swift */; };
 		C2064FFC1A13C70200342FDE /* LoggingFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C216E73F19CBAE0A0052E98A /* LoggingFunctions.swift */; };
@@ -38,6 +37,8 @@
 		C21493BD1A33CEA100D274A2 /* Checkbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21493BC1A33CEA100D274A2 /* Checkbox.swift */; };
 		C21493BF1A35285A00D274A2 /* ColorSwatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21493BE1A35285A00D274A2 /* ColorSwatch.swift */; };
 		C21493C11A35302200D274A2 /* ColorInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21493C01A35302200D274A2 /* ColorInputView.swift */; };
+		C219235C1C76130D00E82437 /* HexIntegerInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CEFF271A32236B00F3BE24 /* HexIntegerInputView.swift */; };
+		C219235D1C76132000E82437 /* MSDictionary+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A7CA9619CBB8FE00212F2D /* MSDictionary+MoonKitAdditions.swift */; };
 		C21D7AE41AA60E3F000DE8A3 /* NSError+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21D7AE31AA60E3F000DE8A3 /* NSError+MoonKitAdditions.swift */; };
 		C2204D9C1AE1A0670079B731 /* JSONIncludeDirective.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2204D9B1AE1A0670079B731 /* JSONIncludeDirective.swift */; };
 		C225677E1BB05E7600E4842B /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BDD1B797D4600A68A64 /* CoreImage.framework */; };
@@ -425,7 +426,6 @@
 		C2CE82771AD08D8F00406CE7 /* example3.json in Resources */ = {isa = PBXBuildFile; fileRef = C2CE82761AD08D8F00406CE7 /* example3.json */; };
 		C2CEFF221A30F34400F3BE24 /* Label.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CEFF211A30F34400F3BE24 /* Label.swift */; };
 		C2CEFF261A3121F100F3BE24 /* TextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CEFF251A3121F100F3BE24 /* TextField.swift */; };
-		C2CEFF281A32236B00F3BE24 /* HexIntegerInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CEFF271A32236B00F3BE24 /* HexIntegerInputView.swift */; };
 		C2CEFF2A1A32807E00F3BE24 /* TextInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CEFF291A32807E00F3BE24 /* TextInputView.swift */; };
 		C2CEFF2C1A328B2000F3BE24 /* FloatInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CEFF2B1A328B2000F3BE24 /* FloatInputView.swift */; };
 		C2CF38CF1B7FAFE00085B3D5 /* VerticalSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CF38CE1B7FAFE00085B3D5 /* VerticalSlider.swift */; };
@@ -2030,11 +2030,9 @@
 				C2FEB0271C0FCD5A000BD1B7 /* SKNode+MoonKitAdditions.swift in Sources */,
 				C2358F3619C78E0C00920F8D /* NSFetchedResultsController+MSKitAdditions.m in Sources */,
 				C2358F3719C78E0C00920F8D /* NSFetchRequest+MSKitAdditions.m in Sources */,
-				C2064FF81A13BF8100342FDE /* MSDictionary+MoonKitAdditions.swift in Sources */,
 				C20650011A13C72E00342FDE /* NSScanner+MoonKitAdditions.swift in Sources */,
 				C2358F3819C78E0C00920F8D /* NSHashTable+MSKitAdditions.m in Sources */,
 				C28E50941A13CA6400DF3206 /* BlockBarButtonItem.swift in Sources */,
-				C2CEFF281A32236B00F3BE24 /* HexIntegerInputView.swift in Sources */,
 				C28A61EB1B0CEA2100612469 /* LabeledStepper.swift in Sources */,
 				C2064FFA1A13C05900342FDE /* Operators.swift in Sources */,
 				C2776C2D1B9E6053002FE5A8 /* Index.swift in Sources */,
@@ -2106,6 +2104,7 @@
 				C2358F4D19C78E0C00920F8D /* UIGestureRecognizer+MSKitAdditions.m in Sources */,
 				C24133F81B7520D40040580B /* ToggleButtonNode.swift in Sources */,
 				C2358F4E19C78E0C00920F8D /* UIImage+ImageEffects.m in Sources */,
+				C219235C1C76130D00E82437 /* HexIntegerInputView.swift in Sources */,
 				C2358F4F19C78E0C00920F8D /* UIImage+MSKitAdditions.m in Sources */,
 				C20650061A13C90A00342FDE /* FontAwesomeIcon.swift in Sources */,
 				C205852B1A1BA22A00212759 /* LongPressGesture.swift in Sources */,
@@ -2173,6 +2172,7 @@
 				C26A27F11B94BD7A00BD1698 /* IntrinsicSizeDelegatingView.swift in Sources */,
 				C2358F6119C78E0C00920F8D /* MSGestureManager.m in Sources */,
 				C2358F6219C78E0C00920F8D /* MSLongPressGestureRecognizer.m in Sources */,
+				C219235D1C76132000E82437 /* MSDictionary+MoonKitAdditions.swift in Sources */,
 				C29073911BD7021F0090399E /* ColorLog.swift in Sources */,
 				C24A22811ADAEC010065E7EA /* ArrayJSONValue.swift in Sources */,
 				C2F094451A32A83A00681AB3 /* DrawingKit.swift in Sources */,

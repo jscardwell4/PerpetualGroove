@@ -32,12 +32,12 @@
                                 </connections>
                             </imageView>
                             <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Editing/rotate_arrow" translatesAutoresizingMaskIntoConstraints="NO" id="uwj-MS-m5R" userLabel="Arrow" customClass="TemplateImageView" customModule="MoonKit">
-                                <rect key="frame" x="216" y="216" width="168" height="168"/>
-                                <color key="tintColor" red="0.8434065580368042" green="0.78949379920959473" blue="0.71009701490402222" alpha="1" colorSpace="calibratedRGB"/>
+                                <rect key="frame" x="200" y="200" width="200" height="200"/>
+                                <color key="tintColor" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="calibratedRGB"/>
                                 <accessibility key="accessibilityConfiguration" identifier="Arrow"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="168" id="3uy-Jz-kHo"/>
-                                    <constraint firstAttribute="height" constant="168" id="SOs-hI-ntk"/>
+                                    <constraint firstAttribute="width" constant="200" id="3uy-Jz-kHo"/>
+                                    <constraint firstAttribute="height" constant="200" id="SOs-hI-ntk"/>
                                 </constraints>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="Arrow"/>
@@ -72,7 +72,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Editing/rotate_arrow" width="168" height="168"/>
+        <image name="Editing/rotate_arrow" width="200" height="200"/>
         <image name="Editing/rotate_ball" width="168" height="168"/>
     </resources>
 </document>

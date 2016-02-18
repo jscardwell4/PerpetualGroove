@@ -193,7 +193,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
   // MARK: - Track properties
 
   private(set) var instrument: Instrument!
-  var color: TrackColor = .White
+  var color: TrackColor = .MuddyWaters
 
   var recording: Bool { return Sequencer.mode == .Default && MIDIPlayer.currentDispatch === self }
 

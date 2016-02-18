@@ -21,9 +21,9 @@ protocol ToolType: class {
 }
 
 protocol ConfigurableToolType: ToolType {
-  func didShowViewController(viewController: UIViewController)
-  func didHideViewController(viewController: UIViewController)
-  var viewController: UIViewController { get }
+  func didShowViewController(viewController: SecondaryContentViewController)
+  func didHideViewController(viewController: SecondaryContentViewController)
+  var viewController: SecondaryContentViewController { get }
   var isShowingViewController: Bool { get }
 }
 

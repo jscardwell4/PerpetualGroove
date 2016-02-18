@@ -16,7 +16,6 @@
         <!--Mixer Container View Controller-->
         <scene sceneID="wQo-RF-yqm">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="WkB-TE-Lqp" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController id="ANH-iZ-FUo" customClass="MixerContainerViewController" customModule="Groove" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="MSX-be-vq5"/>
@@ -51,6 +50,7 @@
                         <outlet property="containerView" destination="vuM-GP-avi" id="Em7-8x-Au2"/>
                     </connections>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="WkB-TE-Lqp" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <visualEffectView opaque="NO" contentMode="scaleToFill" id="S9A-eL-Ok6" userLabel="Blur">
                     <rect key="frame" x="0.0" y="0.0" width="320" height="575"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>

@@ -10,6 +10,7 @@
 		C207458F1B8DF6D5000A06D4 /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = C207458E1B8DF6D5000A06D4 /* Time.swift */; };
 		C20827541C03B2A2004D68FC /* StandardChordPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20827531C03B2A2004D68FC /* StandardChordPattern.swift */; };
 		C20A10A11C51552B00522FD7 /* BarBeatTimeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20A10A01C51552B00522FD7 /* BarBeatTimeTests.swift */; };
+		C219235F1C76371D00E82437 /* SecondaryContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C219235E1C76371D00E82437 /* SecondaryContentViewController.swift */; };
 		C21E44C11B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C21E44C01B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 */; };
 		C21E44C51B76546C00574BD2 /* AudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21E44C41B76546C00574BD2 /* AudioManager.swift */; };
 		C222E6C81BD2B78600DBBBDA /* FestivoLC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C222E6C71BD2B78600DBBBDA /* FestivoLC.framework */; };
@@ -128,7 +129,6 @@
 		C2E705C51BBB17AE00636EF3 /* PurgatoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E705C41BBB17AE00636EF3 /* PurgatoryViewController.swift */; };
 		C2EA30531BB9DF3300020958 /* MIDIDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EA30521BB9DF3300020958 /* MIDIDocument.swift */; };
 		C2ECC5E31B9C7FFA0010E76E /* MIDINodeEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2ECC5E21B9C7FFA0010E76E /* MIDINodeEvent.swift */; };
-		C2EFA0EC1B823642002EBA3D /* GeneratorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EFA0EB1B823642002EBA3D /* GeneratorViewController.swift */; };
 		C2EFA0EE1B824A2F002EBA3D /* AssetManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EFA0ED1B824A2F002EBA3D /* AssetManager.swift */; };
 		C2F2ADC21B90EBD300FF4836 /* Woodblock.wav in Resources */ = {isa = PBXBuildFile; fileRef = C2F2ADC11B90EBD300FF4836 /* Woodblock.wav */; };
 		C2F2ADC41B91098A00FF4836 /* NoteGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F2ADC31B91098A00FF4836 /* NoteGenerator.swift */; };
@@ -191,6 +191,7 @@
 		C20A109E1C51552B00522FD7 /* BarBeatTimeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BarBeatTimeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C20A10A01C51552B00522FD7 /* BarBeatTimeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarBeatTimeTests.swift; sourceTree = "<group>"; };
 		C20A10A21C51552B00522FD7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C219235E1C76371D00E82437 /* SecondaryContentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecondaryContentViewController.swift; sourceTree = "<group>"; };
 		C21E44C01B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SPYRO's Pure Oscillators.sf2"; path = "PerpetualGroove/SPYRO's Pure Oscillators.sf2"; sourceTree = "<group>"; };
 		C21E44C41B76546C00574BD2 /* AudioManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioManager.swift; sourceTree = "<group>"; };
 		C21E44C81B76739C00574BD2 /* sf2.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = sf2.playground; path = PerpetualGroove/sf2.playground; sourceTree = "<group>"; };
@@ -317,7 +318,6 @@
 		C2E705C41BBB17AE00636EF3 /* PurgatoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PurgatoryViewController.swift; sourceTree = "<group>"; };
 		C2EA30521BB9DF3300020958 /* MIDIDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIDocument.swift; sourceTree = "<group>"; };
 		C2ECC5E21B9C7FFA0010E76E /* MIDINodeEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINodeEvent.swift; sourceTree = "<group>"; };
-		C2EFA0EB1B823642002EBA3D /* GeneratorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneratorViewController.swift; sourceTree = "<group>"; };
 		C2EFA0ED1B824A2F002EBA3D /* AssetManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssetManager.swift; sourceTree = "<group>"; };
 		C2F2ADC11B90EBD300FF4836 /* Woodblock.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Woodblock.wav; sourceTree = "<group>"; };
 		C2F2ADC31B91098A00FF4836 /* NoteGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteGenerator.swift; sourceTree = "<group>"; };
@@ -519,7 +519,6 @@
 				C26EEB2D1B7FDA8F00EC6979 /* MixerViewController.swift */,
 				C26EEB2F1B7FDAF300EC6979 /* MixerCell.swift */,
 				C2AA2BC71B84B04200A0B08D /* InstrumentViewController.swift */,
-				C2EFA0EB1B823642002EBA3D /* GeneratorViewController.swift */,
 				C2AC3A961BA9D4CD00692EBB /* TempoViewController.swift */,
 				C2F589F81BAC688F009166D5 /* BarBeatTimeLabel.swift */,
 				C2F35DB81BB4507800ECB045 /* MIDIPlayerView.swift */,
@@ -529,6 +528,7 @@
 				C26A09751BC96B97002EFEE1 /* MixerLayout.swift */,
 				C2729ADE1BEE6B7C004FA34F /* NSMetadataItem.swift */,
 				C24E83951C3EDFD800B4A16A /* SecondaryControllerContainerViewController.swift */,
+				C219235E1C76371D00E82437 /* SecondaryContentViewController.swift */,
 				C24E83971C3EE0A300B4A16A /* MixerContainerViewController.swift */,
 				C24E83991C3EE0D100B4A16A /* MIDIPlayerContainerViewController.swift */,
 			);
@@ -914,7 +914,6 @@
 				C26EEB301B7FDAF300EC6979 /* MixerCell.swift in Sources */,
 				C2FF79871BD06115002CBA79 /* TimeSignature.swift in Sources */,
 				C2BDBBC41BD3E15D00E343F1 /* PDTAChunk.swift in Sources */,
-				C2EFA0EC1B823642002EBA3D /* GeneratorViewController.swift in Sources */,
 				C291C3EF1B91EDCC00702AEA /* MetaEvent.swift in Sources */,
 				C2562D0A1C63DBFC0086789D /* MIDINodeManager.swift in Sources */,
 				C23B058D1C014EBD0081AC6E /* Note.swift in Sources */,
@@ -942,6 +941,7 @@
 				C2CFB7FF1BBF486300983664 /* DocumentsViewLayout.swift in Sources */,
 				C2729ADF1BEE6B7C004FA34F /* NSMetadataItem.swift in Sources */,
 				C283B69E1BC0495A007A4A36 /* DocumentItem.swift in Sources */,
+				C219235F1C76371D00E82437 /* SecondaryContentViewController.swift in Sources */,
 				C21E44C51B76546C00574BD2 /* AudioManager.swift in Sources */,
 				C282911D1C1DFFD600F9975C /* Tool.swift in Sources */,
 				C2F35DB91BB4507800ECB045 /* MIDIPlayerView.swift in Sources */,

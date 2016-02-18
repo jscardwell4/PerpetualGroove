@@ -225,8 +225,9 @@ final class MixerViewController: UICollectionViewController {
   }
 
   /** presentInstrumentController */
-  private func presentInstrumentController(){
-    guard let controller = UIStoryboard(name: "Instrument", bundle: nil).instantiateInitialViewController(),
+  private func presentInstrumentController() {
+    let storyboard = UIStoryboard(name: "Instrument", bundle: nil)
+    guard let controller = storyboard.instantiateInitialViewController() as? InstrumentViewController,
               container = parentViewController as? MixerContainerViewController else { return }
     container.presentSecondaryController(controller)
   }
