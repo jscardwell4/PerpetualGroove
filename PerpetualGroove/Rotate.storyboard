@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Z6e-cu-tmb">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+    </dependencies>
+    <scenes>
+        <!--Rotate View Controller-->
+        <scene sceneID="Ova-t5-fQj">
+            <objects>
+                <viewController storyboardIdentifier="Rotate" id="Z6e-cu-tmb" customClass="RotateViewController" customModule="Groove" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="8ay-G4-vKi"/>
+                        <viewControllerLayoutGuide type="bottom" id="Q1c-Ld-1IE"/>
+                    </layoutGuides>
+                    <view key="view" opaque="NO" contentMode="scaleToFill" id="Z2c-IZ-xa0">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView opaque="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Editing/rotate_ball" translatesAutoresizingMaskIntoConstraints="NO" id="gfq-O5-xs9" userLabel="Ball" customClass="TemplateImageView" customModule="MoonKit">
+                                <rect key="frame" x="216" y="216" width="168" height="168"/>
+                                <color key="tintColor" red="0.68166375160217285" green="0.38204258680343628" blue="0.2524854838848114" alpha="1" colorSpace="calibratedRGB"/>
+                                <accessibility key="accessibilityConfiguration" identifier="Ball"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="168" id="Orc-ff-rEc"/>
+                                    <constraint firstAttribute="width" constant="168" id="ZP9-mS-8MN"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="Ball"/>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="Ueu-n9-Lt7" appends="YES" id="I90-Sw-EvS"/>
+                                </connections>
+                            </imageView>
+                            <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Editing/rotate_arrow" translatesAutoresizingMaskIntoConstraints="NO" id="uwj-MS-m5R" userLabel="Arrow" customClass="TemplateImageView" customModule="MoonKit">
+                                <rect key="frame" x="216" y="216" width="168" height="168"/>
+                                <color key="tintColor" red="0.8434065580368042" green="0.78949379920959473" blue="0.71009701490402222" alpha="1" colorSpace="calibratedRGB"/>
+                                <accessibility key="accessibilityConfiguration" identifier="Arrow"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="168" id="3uy-Jz-kHo"/>
+                                    <constraint firstAttribute="height" constant="168" id="SOs-hI-ntk"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="Arrow"/>
+                                </userDefinedRuntimeAttributes>
+                            </imageView>
+                        </subviews>
+                        <gestureRecognizers/>
+                        <constraints>
+                            <constraint firstItem="uwj-MS-m5R" firstAttribute="centerX" secondItem="gfq-O5-xs9" secondAttribute="centerX" id="CXF-r3-3DH"/>
+                            <constraint firstItem="uwj-MS-m5R" firstAttribute="centerY" secondItem="gfq-O5-xs9" secondAttribute="centerY" id="J6B-x6-5g0"/>
+                            <constraint firstItem="gfq-O5-xs9" firstAttribute="centerY" secondItem="Z2c-IZ-xa0" secondAttribute="centerY" id="mUW-Hx-Rim"/>
+                            <constraint firstItem="gfq-O5-xs9" firstAttribute="centerX" secondItem="Z2c-IZ-xa0" secondAttribute="centerX" id="yho-0E-vAV"/>
+                        </constraints>
+                    </view>
+                    <nil key="simulatedStatusBarMetrics"/>
+                    <nil key="simulatedTopBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="arrow" destination="uwj-MS-m5R" id="0Hw-OX-kx8"/>
+                        <outlet property="ball" destination="gfq-O5-xs9" id="Gdl-kM-zBg"/>
+                        <outlet property="rotationGesture" destination="Ueu-n9-Lt7" id="avV-kx-hcV"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="NIm-RY-1fb" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <rotationGestureRecognizer id="Ueu-n9-Lt7">
+                    <connections>
+                        <action selector="handleRotation:" destination="Z6e-cu-tmb" id="sPN-Rm-ur6"/>
+                    </connections>
+                </rotationGestureRecognizer>
+            </objects>
+            <point key="canvasLocation" x="466" y="530"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="Editing/rotate_arrow" width="168" height="168"/>
+        <image name="Editing/rotate_ball" width="168" height="168"/>
+    </resources>
+</document>

@@ -14,7 +14,9 @@ class NodeSelectionTool: ToolType {
 
   unowned let player: MIDIPlayerNode
 
-  var active = false { didSet { guard active != oldValue && active == false else { return }; node = nil } }
+  var active = false {
+    didSet { guard active != oldValue && active == false else { return }; node = nil }
+  }
 
   weak var node: MIDINode? {
     didSet {
@@ -50,20 +52,18 @@ class NodeSelectionTool: ToolType {
     player = playerNode
   }
 
-  /**
-   nodeAtPoint:
-
-   - parameter point: CGPoint
-
-   - returns: [Weak<MIDINode>]
-   */
-  private func nodeAtPoint(point: CGPoint?) -> MIDINode? {
-    guard let point = point where player.containsPoint(point) else { return nil }
-    return player.nodesAtPoint(point).flatMap({$0 as? MIDINode}).first
-  }
-
   /** didSelectNode */
   func didSelectNode() {}
+
+  /**
+   grabNodeForTouch:
+
+   - parameter touch: UITouch?
+  */
+  private func grabNodeForTouch(touch: UITouch?) {
+    guard let point = touch?.locationInNode(player) where player.containsPoint(point) else { return }
+    node = player.nodesAtPoint(point).flatMap({$0 as? MIDINode}).first
+  }
 
   /**
    touchesBegan:withEvent:
@@ -73,7 +73,7 @@ class NodeSelectionTool: ToolType {
   */
   func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
     guard active && node == nil else { return }
-    node = nodeAtPoint(touches.first?.locationInNode(player))
+    grabNodeForTouch(touches.first)
   }
 
   /**
@@ -82,7 +82,10 @@ class NodeSelectionTool: ToolType {
    - parameter touches: Set<UITouch>
    - parameter event: UIEvent?
   */
-  func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {}
+  func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    guard active && node == nil else { return }
+    grabNodeForTouch(touches.first)
+  }
 
   /**
    touchesCancelled:withEvent:

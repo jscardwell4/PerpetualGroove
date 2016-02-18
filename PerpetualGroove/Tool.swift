@@ -29,14 +29,15 @@ protocol ConfigurableToolType: ToolType {
 
 enum Tool: Int {
   case None = -1
-  case NewNodeGenerator = 0
-  case AddNode = 1
-  case RemoveNode = 2
-  case DeleteNode = 3
-  case NodeGenerator = 4
-  case LoopStart = 5
-  case LoopEnd = 6
-  case LoopToggle = 7
+  case NewNodeGenerator
+  case AddNode
+  case RemoveNode
+  case DeleteNode
+  case NodeGenerator
+  case Rotate
+  case LoopStart
+  case LoopEnd
+  case LoopToggle
 
   var toolType: ToolType? {
     switch self {
@@ -46,6 +47,7 @@ enum Tool: Int {
       case .RemoveNode:        return MIDIPlayer.removeTool
       case .DeleteNode:        return MIDIPlayer.deleteTool
       case .NodeGenerator:     return MIDIPlayer.existingGeneratorTool
+      case .Rotate:            return MIDIPlayer.rotateTool
       case .LoopStart:         return nil
       case .LoopEnd:           return nil
       case .LoopToggle:        return nil

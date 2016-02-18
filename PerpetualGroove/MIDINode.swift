@@ -24,7 +24,8 @@ final class MIDINode: SKSpriteNode {
   private var client = MIDIClientRef()
   private(set) var endPoint = MIDIEndpointRef()
 
-  private let initTime: BarBeatTime
+  let initTime: BarBeatTime
+  let initialTrajectory: Trajectory
 
   private(set) var pendingPosition: CGPoint?
 
@@ -172,7 +173,9 @@ final class MIDINode: SKSpriteNode {
   - parameter notification: NSNotification
   */
   private func didEndJogging(notification: NSNotification) {
-    guard state ∋ .Jogging else { logError("internal inconsistency, should have `Jogging` flag set"); return }
+    guard state ∋ .Jogging else {
+      logError("internal inconsistency, should have `Jogging` flag set"); return
+    }
     state ⊻= .Jogging
     guard state ∌ .Paused else { return }
     currentSegment = path.segmentForTime(Sequencer.time.barBeatTime) ?? path.initialSegment
@@ -236,6 +239,7 @@ final class MIDINode: SKSpriteNode {
        identifier: Identifier = UUID()) throws
   {
     initTime = Sequencer.time.barBeatTime
+    initialTrajectory = trajectory
     state = Sequencer.jogging ? [.Jogging] : []
     self.dispatch = dispatch
     self.generator = generator
@@ -280,7 +284,6 @@ final class MIDINode: SKSpriteNode {
 
     self.name = name
     colorBlendFactor = 1
-
     position = trajectory.p
     normalTexture = MIDINode.normalMap
     moveAction.run()

@@ -22,6 +22,25 @@ extension CGVector {
   public init(_ point: CGPoint) { dx = point.x; dy = point.y }
   public var max: CGFloat { return dy > dx ? dy : dx }
   public var min: CGFloat { return dy < dx ? dy : dx }
+  public var angle: CGFloat {
+    switch (dx, dy) {
+      case (0, 0): return CGFloat.NaN
+      case (0, _): return π * 0.5
+      case (_, 0): return 0
+      default:     return atan(dy / dx)
+    }
+  }
+  public mutating func rotateInPlace(angle: CGFloat) {
+    let dxʹ = dx * cos(angle) - dy * sin(angle)
+    let dyʹ = dx * sin(angle) + dy * cos(angle)
+    dx = dxʹ; dy = dyʹ
+  }
+
+  public mutating func rotateInPlaceTo(angle: CGFloat) { rotateInPlace(angle - self.angle) }
+
+  public func rotateTo(angle: CGFloat) -> CGVector { var v = self; v.rotateInPlaceTo(angle); return v }
+
+  public func rotate(angle: CGFloat) -> CGVector { var v = self; v.rotateInPlace(angle); return v }
   public func description(precision: Int) -> String {
     return precision >= 0 ? "(\(dx.rounded(precision)), \(dy.rounded(precision)))" : description
   }
