@@ -34,10 +34,9 @@ enum TrackColor: UInt32, Equatable, Hashable, EnumerableType, CustomStringConver
   case Indochine          = 0xC26E00
   case Flirt              = 0xA2006F
   case Ultramarine        = 0x0C009B
-  case Larioja            = 0xC2BC00
+  case LaRioja            = 0xC2BC00
   case ForestGreen        = 0x119E00
   case Pizza              = 0xC29500
-  case Grenadier          = 0xDC4A00
 
   var value: UIColor { return UIColor(RGBHex: rawValue) }
 
@@ -64,10 +63,9 @@ enum TrackColor: UInt32, Equatable, Hashable, EnumerableType, CustomStringConver
       case .Indochine:          return "Indochine"
       case .Flirt:              return "Flirt"
       case .Ultramarine:        return "Ultramarine"
-      case .Larioja:            return "Larioja"
+      case .LaRioja:            return "Larioja"
       case .ForestGreen:        return "ForestGreen"
       case .Pizza:              return "Pizza"
-      case .Grenadier:          return "Grenadier"
     }
   }
 
@@ -76,7 +74,7 @@ enum TrackColor: UInt32, Equatable, Hashable, EnumerableType, CustomStringConver
     .MuddyWaters, .SteelBlue, .Celery, .Chestnut, .CrayonPurple, .Verdigris, .Twine, 
     .Tapestry, .VegasGold, .RichBlue, .FruitSalad, .Husk, .Mahogany, .MediumElectricBlue, 
     .AppleGreen, .VenetianRed, .Indigo, .EasternBlue, .Indochine, .Flirt, .Ultramarine, 
-    .Larioja, .ForestGreen, .Pizza, .Grenadier
+    .LaRioja, .ForestGreen, .Pizza
   ]
 
 //  static var currentColor: TrackColor? {
@@ -91,12 +89,13 @@ enum TrackColor: UInt32, Equatable, Hashable, EnumerableType, CustomStringConver
 }
 
 extension TrackColor: JSONValueConvertible {
-  var jsonValue: JSONValue { return value.jsonValue }
+  var jsonValue: JSONValue { return "#\(String(rawValue, radix: 16, uppercase: true))".jsonValue }
 }
 
 extension TrackColor: JSONValueInitializable {
   init?(_ jsonValue: JSONValue?) {
-    guard let hex = UIColor(jsonValue)?.rgbHex else { return nil }
+    guard let string = String(jsonValue) where string.hasPrefix("#"),
+          let hex = UInt32(string[string.startIndex.successor()..<], radix: 16) else { return nil }
     self.init(rawValue: hex)
   }
 }

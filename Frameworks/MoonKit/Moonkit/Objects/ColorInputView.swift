@@ -55,7 +55,7 @@ public final class ColorInputView: UIInputView {
     a.addActionBlock({ colorInput.alphaValue = a.value }, forControlEvents: .ValueChanged)
     addSubview(a)
 
-    constrain(𝗛|-r-|𝗛, 𝗛|-g-|𝗛, 𝗛|-b-|𝗛, 𝗛|-a-|𝗛, 𝗩|--(≥20)--r--g--b--a--(≥20)--|𝗩)
+    constrain(𝗛|--r--|𝗛, 𝗛|--g--|𝗛, 𝗛|--b--|𝗛, 𝗛|--a--|𝗛, 𝗩|--(≥20)--r--g--b--a--(≥20)--|𝗩)
   }
 
   /**

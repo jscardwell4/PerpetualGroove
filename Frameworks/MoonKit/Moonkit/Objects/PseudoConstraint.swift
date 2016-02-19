@@ -610,9 +610,9 @@ public func |(var lhs: [Pseudo], rhs: Axis) -> [Pseudo] {
 }
 
 // MARK: - Offset from superview left/top using standard margin
-infix operator |- { associativity left precedence 140 }
+//infix operator |- { associativity left precedence 140 }
 
-public func |-(lhs: Axis, rhs: UIView) -> Pseudo {
+public func |--(lhs: Axis, rhs: UIView) -> Pseudo {
   assert(rhs.superview != nil, "operator requires a proper view hierarchy has been established")
   switch lhs {
     case .Horizontal: return rhs.left => rhs.superview!.left + 20
@@ -621,9 +621,9 @@ public func |-(lhs: Axis, rhs: UIView) -> Pseudo {
 }
 
 // MARK: - Offset from superview right/bottom using standard margin
-infix operator -| { associativity left precedence 140 }
+//infix operator -| { associativity left precedence 140 }
 
-public func -|(lhs: UIView, rhs: Axis) -> Pseudo {
+public func --|(lhs: UIView, rhs: Axis) -> Pseudo {
   precondition(lhs.superview != nil, "operator requires a proper view hierarchy has been established")
   switch rhs {
     case .Horizontal: return lhs.right => lhs.superview!.right - 20
@@ -631,9 +631,10 @@ public func -|(lhs: UIView, rhs: Axis) -> Pseudo {
   }
 }
 
-public func -|(lhs:   Pseudo, rhs: Axis) -> [Pseudo] { return [lhs]-|rhs }
-public func -|(var lhs: [Pseudo], rhs: Axis) -> [Pseudo] {
-  precondition(lhs.last?.firstObject as? UIView != nil, "operator requires a view for the last constraint's firstObject")
+public func --|(lhs:   Pseudo, rhs: Axis) -> [Pseudo] { return [lhs]--|rhs }
+public func --|(var lhs: [Pseudo], rhs: Axis) -> [Pseudo] {
+  precondition(lhs.last?.firstObject as? UIView != nil,
+               "operator requires a view for the last constraint's firstObject")
   let view = lhs.last!.firstObject as! UIView
   precondition(view.superview != nil, "operator requires a proper view hierarchy has been established")
   switch rhs {
@@ -646,8 +647,12 @@ public func -|(var lhs: [Pseudo], rhs: Axis) -> [Pseudo] {
 // MARK: - Offset from superview left/top operator
 infix operator |-- {associativity left precedence 140}
 
-public func |--(lhs: Axis, rhs: Floatable        ) -> (Axis, Float, Relation) { return (lhs, rhs.FloatValue, Equal) }
-public func |--(lhs: Axis, rhs: (Float, Relation)) -> (Axis, Float, Relation) { return (lhs, rhs.0,          rhs.1) }
+public func |--(lhs: Axis, rhs: Floatable) -> (Axis, Float, Relation) {
+  return (lhs, rhs.FloatValue, Equal)
+}
+public func |--(lhs: Axis, rhs: (Float, Relation)) -> (Axis, Float, Relation) {
+  return (lhs, rhs.0, rhs.1)
+}
 
 // MARK: - Offset from superview right/bottom operator
 infix operator --| {associativity left precedence 140}
@@ -675,7 +680,10 @@ public func --|(lhs: (Pseudo, Float, Relation), rhs: Axis) -> [Pseudo] {
 public func --|(lhs: ([Pseudo], Float, Relation), rhs: Axis) -> [Pseudo] {
   var superview: UIView?
   for constraint in lhs.0 {
-    superview = discernNearestAncestor(discernNearestAncestor(constraint.firstObject, constraint.secondObject), superview)
+    superview = discernNearestAncestor(
+      discernNearestAncestor(constraint.firstObject, constraint.secondObject),
+      superview
+    )
   }
   precondition(superview != nil, "operator requires a proper view hierarchy has been established")
   if let lastConstraint = lhs.0.last, lastView = lastConstraint.firstObject as? UIView {
@@ -722,12 +730,24 @@ infix operator -- {associativity left precedence 140}
 
 // MARK: Prefix
 
-public func --(lhs: [Pseudo], rhs: Floatable        ) -> ([Pseudo], Float, Relation) { return (lhs, rhs.FloatValue,  Equal) }
-public func --(lhs:   Pseudo, rhs: Floatable        ) -> (  Pseudo, Float, Relation) { return (lhs, rhs.FloatValue,  Equal) }
-public func --(lhs:   UIView, rhs: Floatable        ) -> (  UIView, Float, Relation) { return (lhs, rhs.FloatValue,  Equal) }
-public func --(lhs: [Pseudo], rhs: (Float, Relation)) -> ([Pseudo], Float, Relation) { return (lhs, rhs.0,           rhs.1) }
-public func --(lhs:   Pseudo, rhs: (Float, Relation)) -> (  Pseudo, Float, Relation) { return (lhs, rhs.0,           rhs.1) }
-public func --(lhs:   UIView, rhs: (Float, Relation)) -> (  UIView, Float, Relation) { return (lhs, rhs.0,           rhs.1) }
+public func --(lhs: [Pseudo], rhs: Floatable) -> ([Pseudo], Float, Relation) {
+  return (lhs, rhs.FloatValue, Equal)
+}
+public func --(lhs: Pseudo, rhs: Floatable) -> (Pseudo, Float, Relation) {
+  return (lhs, rhs.FloatValue, Equal)
+}
+public func --(lhs: UIView, rhs: Floatable) -> (UIView, Float, Relation) {
+  return (lhs, rhs.FloatValue, Equal)
+}
+public func --(lhs: [Pseudo], rhs: (Float, Relation)) -> ([Pseudo], Float, Relation) {
+  return (lhs, rhs.0, rhs.1)
+}
+public func --(lhs: Pseudo, rhs: (Float, Relation)) -> (Pseudo, Float, Relation) {
+  return (lhs, rhs.0, rhs.1)
+}
+public func --(lhs: UIView, rhs: (Float, Relation)) -> (UIView, Float, Relation) {
+  return (lhs, rhs.0, rhs.1)
+}
 
 // MARK: Resolution
 
@@ -777,7 +797,9 @@ public func --(lhs: (Axis, Float, Relation), rhs: UIView) -> Pseudo {
   }
 }
 
-public func --(lhs: (Pseudo, Float, Relation), rhs: UIView) -> [Pseudo] { return ([lhs.0], lhs.1, lhs.2) -- rhs }
+public func --(lhs: (Pseudo, Float, Relation), rhs: UIView) -> [Pseudo] {
+  return ([lhs.0], lhs.1, lhs.2) -- rhs
+}
 public func --(lhs: (UIView, Float, Relation), rhs: UIView) -> Pseudo {
   switch lhs.2 {
     case .Equal:              return rhs.left => lhs.0.right + lhs.1
