@@ -21,6 +21,20 @@ public struct OrderedSetSlice<Element:Hashable>: CollectionType {
   }
 }
 
+extension OrderedSetSlice: CustomStringConvertible {
+  public var description: String {
+    var result = "["
+    var first = true
+    for item in self {
+      if first { first = false } else { result += ", " }
+      debugPrint(item, terminator: "", toStream: &result)
+    }
+    result += "]"
+    return result
+  }
+}
+
+
 public struct OrderedSet<Element:Hashable>: CollectionType {
 
   private typealias Base = ContiguousArray<Element>
@@ -352,10 +366,7 @@ extension OrderedSet: CustomStringConvertible {
 extension OrderedSet: SetType {
 
   public mutating func insert(member: Element) {
-    let hashValue = member.hashValue
-    guard hashValues ∌ hashValue else { return }
-    hashValues.insert(hashValue)
-    _base.append(member)
+    append(member)
   }
 
   public mutating func remove(member: Element) -> Element? {
@@ -370,34 +381,27 @@ extension OrderedSet: SetType {
   public func isSubsetOf<S:SequenceType
     where S.Generator.Element == Element>(sequence: S) -> Bool
   {
-    let elements = Set(sequence)
-    for element in _base { guard elements ∋ element else { return false } }
-    return true
+    return hashValues.isSubsetOf(Set(sequence.map{$0.hashValue}))
   }
 
   public func isStrictSubsetOf<S:SequenceType
     where S.Generator.Element == Element>(sequence: S) -> Bool
   {
-    let elements = Set(sequence)
-    for element in _base { guard elements ∋ element else { return false } }
-    return _base.count < elements.count
+    return hashValues.isStrictSubsetOf(Set(sequence.map{$0.hashValue}))
   }
 
   public func isSupersetOf<S:SequenceType where S.Generator.Element == Element>(sequence: S) -> Bool {
-    for element in sequence { guard hashValues ∋ element.hashValue else { return false } }
-    return true
+    return hashValues.isSupersetOf(Set(sequence.map{$0.hashValue}))
   }
 
   public func isStrictSupersetOf<S:SequenceType
     where S.Generator.Element == Element>(sequence: S) -> Bool
   {
-    for element in sequence { guard hashValues ∋ element.hashValue else { return false } }
-    return _base.count > sequence.underestimateCount()
+    return hashValues.isStrictSupersetOf(Set(sequence.map{$0.hashValue}))
   }
 
   public func isDisjointWith<S:SequenceType where S.Generator.Element == Element>(sequence: S) -> Bool {
-    for element in sequence { guard hashValues ∌ element.hashValue else { return false } }
-    return true
+    return hashValues.isDisjointWith(Set(sequence.map{$0.hashValue}))
   }
 
   public func union<S:SequenceType
