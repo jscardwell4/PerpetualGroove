@@ -62,9 +62,10 @@ public struct SortedArray<Element: Comparable>: _CollectionWrapperType, Collecti
 
    - returns: UnsafeMutablePointer<Element>
   */
-  public func _initializeTo(ptr: UnsafeMutablePointer<Element>) -> UnsafeMutablePointer<Element> {
-
-    return _base._initializeTo(ptr)
+  public mutating func _initializeTo(ptr: UnsafeMutablePointer<Element>) -> UnsafeMutablePointer<Element> {
+    let result = _base._initializeTo(ptr)
+    sortElements()
+    return result
   }
 
   /** sortElements */
@@ -130,7 +131,9 @@ extension SortedArray: _ArrayType {
 
   /// If the elements are stored contiguously, a pointer to the first
   /// element. Otherwise, `nil`.
-  public var _baseAddressIfContiguous: UnsafeMutablePointer<Element> { return _base._baseAddressIfContiguous }
+  public var _baseAddressIfContiguous: UnsafeMutablePointer<Element> {
+    return _base._baseAddressIfContiguous
+  }
 
   public var _buffer: _Buffer { return _base._buffer }
 
@@ -157,11 +160,13 @@ extension SortedArray: _ArrayType {
       let newBuffer = _ContiguousArrayBuffer<Element>(count: count, minimumCapacity: minimumCapacity)
 
       _base._buffer._uninitializedCopy(_base._buffer.indices, target: newBuffer.firstElementAddress)
-      _base._buffer = _ContiguousArrayBuffer<Element>(newBuffer, shiftedToStartIndex: _base._buffer.startIndex)
+      _base._buffer = _ContiguousArrayBuffer<Element>(newBuffer,
+                                                      shiftedToStartIndex: _base._buffer.startIndex)
     }
 
     let firstElement = _base._buffer.firstElementAddress
-    let insertionPoint = binaryInsertion(UnsafeBufferPointer(start: firstElement, count: count), element: element)
+    let insertionPoint = binaryInsertion(UnsafeBufferPointer(start: firstElement, count: count),
+                                 element: element)
 
     if insertionPoint != count {
       let countToMove = count - insertionPoint

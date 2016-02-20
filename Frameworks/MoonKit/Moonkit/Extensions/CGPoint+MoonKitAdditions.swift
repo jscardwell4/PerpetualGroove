@@ -48,6 +48,10 @@ extension CGPoint: NilLiteralConvertible {
   public init(nilLiteral: ()) { self = CGPoint.null }
 }
 
+extension CGPoint: Hashable {
+  public var hashValue: Int { return _mixInt(x.hashValue) ^ _mixInt(y.hashValue) }
+}
+
 extension CGPoint: Unpackable2 {
   public var unpack: (CGFloat, CGFloat) { return (x, y) }
 }

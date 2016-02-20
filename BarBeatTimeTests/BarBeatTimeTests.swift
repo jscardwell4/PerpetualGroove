@@ -79,28 +79,64 @@ final class BarBeatTimeTests: XCTestCase {
     XCTAssertEqual(time0.base, BarBeatTime.Base.Zero)
   }
 
-  func testAddition() {
-    let time1: BarBeatTime = "1:3/4.210/480@120₁"
-    let time2: BarBeatTime = "3:1/4.112/480@120₁"
-    XCTAssertEqual(time1 + time2, "4:4/4.322/480@120₁")
-    XCTAssertEqual(time1 + time2.zeroBased, "4:4/4.322/480@120₁")
-    let time3: BarBeatTime = "3:1/4.112/480@120₀"
-    XCTAssertEqual(time1 + time3, "6:1/4.323/480@120₁")
-    let time4: BarBeatTime = "0:2/4.400/480@120₀"
-    let time5: BarBeatTime = "0:0/4.90/480@120₀"
-    XCTAssertEqual(time4 + time5, "0:3/4.10/480@120₀")
+  func testTotalBeats() {
+    let time1₀: BarBeatTime = "0:2/4.209/480@120₀"
+    XCTAssertEqual(time1₀.totalBeats, 2 + 209/480)
+    let time2₀: BarBeatTime = "2:0/4.111/480@120₀"
+    XCTAssertEqual(time2₀.totalBeats, 8 + 111/480)
+    let time3₀: BarBeatTime = "0:2/4.400/480@120₀"
+    XCTAssertEqual(time3₀.totalBeats, 2 + 400/480)
+    let time4₀: BarBeatTime = "0:0/4.90/480@120₀"
+    XCTAssertEqual(time4₀.totalBeats, 90/480)
+
+    let time1₁: BarBeatTime = "1:3/4.210/480@120₁"
+    XCTAssertEqual(time1₁.totalBeats, 2 + 209/480)
+    let time2₁: BarBeatTime = "3:1/4.112/480@120₁"
+    XCTAssertEqual(time2₁.totalBeats, 8 + 111/480)
+    let time3₁: BarBeatTime = "1:3/4.401/480@120₁"
+    XCTAssertEqual(time3₁.totalBeats, 2 + 400/480)
+    let time4₁: BarBeatTime = "1:1/4.91/480@120₁"
+    XCTAssertEqual(time4₁.totalBeats, 90/480)
   }
 
-  func testSubtraction() {
+  func testZeroBaseAddition() {
+    let time1: BarBeatTime = "0:2/4.209/480@120₀"
+    let time2: BarBeatTime = "2:0/4.111/480@120₀"
+    XCTAssertEqual(time1 + time2, "2:2/4.320/480@120₀")
+    let time3: BarBeatTime = "0:2/4.400/480@120₀"
+    let time4: BarBeatTime = "0:0/4.90/480@120₀"
+    XCTAssertEqual(time3 + time4, "0:3/4.10/480@120₀")
+  }
+
+  func testOneBaseAddition() {
     let time1: BarBeatTime = "1:3/4.210/480@120₁"
     let time2: BarBeatTime = "3:1/4.112/480@120₁"
-    XCTAssertEqual(time2 - time1, "1:1/4.382/480@120₁")
-    XCTAssertEqual(time2 - time1.zeroBased, "1:1/4.382/480@120₁")
+    XCTAssertEqual(time1 + time2, "3:3/4.321/480@120₁")
+    let time3: BarBeatTime = "1:3/4.401/480@120₁"
+    let time4: BarBeatTime = "1:1/4.91/480@120₁"
+    XCTAssertEqual(time3 + time4, "1:4/4.11/480@120₁")
+  }
+
+  func testZeroBasSubtraction() {
+    let time1: BarBeatTime = "0:2/4.209/480@120₀"
+    let time2: BarBeatTime = "2:0/4.111/480@120₀"
+    XCTAssertEqual(time2 - time1, "1:1/4.382/480@120₀")
     let time3: BarBeatTime = "3:1/4.112/480@120₀"
     XCTAssertEqual(time3 - time1, "2:2/4.383/480@120₀")
     let time4: BarBeatTime = "0:2/4.400/480@120₀"
     let time5: BarBeatTime = "0:0/4.90/480@120₀"
-    XCTAssertEqual(time5 - time4, "-1:1/4.170/480@120₀")
+    XCTAssertEqual(time5 - time4, "-0:2/4.310/480@120₀")
+  }
+
+  func testOneBaseSubtraction() {
+    let time1: BarBeatTime = "1:3/4.210/480@120₁"
+    let time2: BarBeatTime = "3:1/4.112/480@120₁"
+    XCTAssertEqual(time2 - time1, "2:2/4.383/480@120₁")
+    let time3: BarBeatTime = "4:2/4.113/480@120₁"
+    XCTAssertEqual(time3 - time1, "3:3/4.384/480@120₁")
+    let time4: BarBeatTime = "1:3/4.401/480@120₁"
+    let time5: BarBeatTime = "1:1/4.91/480@120₁"
+    XCTAssertEqual(time5 - time4, "-1:3/4.311/480@120₁")
   }
 
   func testSeconds() {

@@ -230,7 +230,7 @@ struct BarBeatTime {
     let totalBeats = abs(totalBeats)
     let bar = UInt(totalBeats) / beatsPerBar + base.rawValue
     let beat = UInt(totalBeats) % beatsPerBar + base.rawValue
-    let subbeat = UInt(modf(totalBeats).1 * Double(subbeatDivisor)) + base.rawValue
+    let subbeat = UInt(round(modf(totalBeats).1 * Double(subbeatDivisor))) + base.rawValue
     self.init(bar: bar,
               beat: beat,
               subbeat: subbeat,
