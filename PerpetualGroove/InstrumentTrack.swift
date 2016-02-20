@@ -20,7 +20,7 @@ extension Sequence {
    - parameter notification: NSNotification
   */
   func trackSoloStatusDidChange(notification: NSNotification) {
-    guard instrumentTracks ∋ notification.object as? InstrumentTrack else { return }
+    guard let track = notification.object as? InstrumentTrack where instrumentTracks ∋ track else { return }
     let soloTracks = self.soloTracks
     if soloTracks.count == 0 {
       instrumentTracks.forEach {

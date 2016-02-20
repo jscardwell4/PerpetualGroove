@@ -197,6 +197,15 @@ struct MetaEvent: MIDIEventType {
 
 }
 
+extension MetaEvent: Hashable {
+  var hashValue: Int {
+    let bytesHash = Int(_mixUInt64(bytes.segment(8).map({UInt64($0)}).reduce(0) { $0 ^ $1 }))
+    let deltaHash = _mixInt(delta?.intValue ?? 0)
+    let timeHash = time.totalBeats.hashValue
+    return bytesHash ^ deltaHash ^ timeHash
+  }
+}
+
 extension MetaEvent.Data: CustomStringConvertible {
   var description: String {
     switch self {

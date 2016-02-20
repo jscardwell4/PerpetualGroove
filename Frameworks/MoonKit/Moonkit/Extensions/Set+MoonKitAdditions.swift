@@ -118,7 +118,7 @@ public func !⚭<S:SequenceType, Element:Hashable
 public func ⚭<S:SequenceType, Element:Hashable
   where S.Generator.Element == Element>(lhs: Set<Element>, rhs: S) -> Bool
 {
-  return !(lhs ⚭ rhs)
+  return !lhs.isDisjointWith(rhs)
 }
 
 //public func filter<T>(source: Set<T>, includeElement: (T) -> Bool) -> Set<T> {

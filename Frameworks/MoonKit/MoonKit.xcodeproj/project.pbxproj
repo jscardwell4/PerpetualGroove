@@ -68,7 +68,7 @@
 		C22734521AE15CEE00641CC3 /* TitleAttributes_Default_Icon.json in Resources */ = {isa = PBXBuildFile; fileRef = C227343D1AE15CEE00641CC3 /* TitleAttributes_Default_Icon.json */; };
 		C22734531AE15CEE00641CC3 /* TitleAttributes_Default_Text.json in Resources */ = {isa = PBXBuildFile; fileRef = C227343E1AE15CEE00641CC3 /* TitleAttributes_Default_Text.json */; };
 		C22734541AE15CEE00641CC3 /* TitleEdgeInsets_Default.json in Resources */ = {isa = PBXBuildFile; fileRef = C227343F1AE15CEE00641CC3 /* TitleEdgeInsets_Default.json */; };
-		C22E6B8D1B80E1CE008D46A6 /* ClosedInterval+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22E6B8C1B80E1CE008D46A6 /* ClosedInterval+MoonKitAdditions.swift */; };
+		C22E6B8D1B80E1CE008D46A6 /* Intervals.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22E6B8C1B80E1CE008D46A6 /* Intervals.swift */; };
 		C22E6B8F1B810860008D46A6 /* List.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22E6B8E1B810860008D46A6 /* List.swift */; };
 		C22F5FE41B6FC753006D225A /* Dispatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22F5FE31B6FC753006D225A /* Dispatch.swift */; };
 		C22F5FE61B6FCF73006D225A /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22F5FE51B6FCF73006D225A /* Timer.swift */; };
@@ -382,7 +382,7 @@
 		C2BDBBF21BD3F07C00E343F1 /* NSParagraphStyle+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A5B6F11B482F4700F34491 /* NSParagraphStyle+MoonKitAdditions.swift */; };
 		C2BDBBF31BD3F07C00E343F1 /* String+RegularExpression.swift in Sources */ = {isa = PBXBuildFile; fileRef = C266A6EF1B6523BB00EEA1C4 /* String+RegularExpression.swift */; };
 		C2BDBBF41BD3F07C00E343F1 /* Range+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C9EB6F1B65C5C70051BACF /* Range+MoonKitAdditions.swift */; };
-		C2BDBBF51BD3F07C00E343F1 /* ClosedInterval+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22E6B8C1B80E1CE008D46A6 /* ClosedInterval+MoonKitAdditions.swift */; };
+		C2BDBBF51BD3F07C00E343F1 /* Intervals.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22E6B8C1B80E1CE008D46A6 /* Intervals.swift */; };
 		C2BDBBF61BD3F07C00E343F1 /* Index.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2776C2C1B9E6053002FE5A8 /* Index.swift */; };
 		C2BDBBF71BD3F07C00E343F1 /* CGRect+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CA851D1BC724FC0046AFC0 /* CGRect+MoonKitAdditions.swift */; };
 		C2BDBBF81BD3F07C00E343F1 /* CGPoint+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CA851F1BC7250A0046AFC0 /* CGPoint+MoonKitAdditions.swift */; };
@@ -409,7 +409,6 @@
 		C2BDBC3F1BD3F83500E343F1 /* LoggingFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C216E73F19CBAE0A0052E98A /* LoggingFunctions.swift */; };
 		C2BE96E81A467E85007599B2 /* NSManagedObjectModel+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BE96E71A467E85007599B2 /* NSManagedObjectModel+MoonKitAdditions.swift */; };
 		C2C17D4A1B5813EB00D9E9A6 /* Identifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C17D491B5813EB00D9E9A6 /* Identifier.swift */; };
-		C2C417821C4EB1C200007B84 /* HalfOpenInterval.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C417811C4EB1C200007B84 /* HalfOpenInterval.swift */; };
 		C2C482E519CA0225002E84A9 /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C482E419CA0225002E84A9 /* Stack.swift */; };
 		C2C4B72C1AA951D700912951 /* NSManagedObject+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C4B72B1AA951D700912951 /* NSManagedObject+MoonKitAdditions.swift */; };
 		C2C9EB701B65C5C70051BACF /* Range+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C9EB6F1B65C5C70051BACF /* Range+MoonKitAdditions.swift */; };
@@ -532,7 +531,7 @@
 		C227343E1AE15CEE00641CC3 /* TitleAttributes_Default_Text.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TitleAttributes_Default_Text.json; sourceTree = "<group>"; };
 		C227343F1AE15CEE00641CC3 /* TitleEdgeInsets_Default.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TitleEdgeInsets_Default.json; sourceTree = "<group>"; };
 		C22734571AE1622E00641CC3 /* JSON.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = JSON.playground; path = Moonkit/JSON.playground; sourceTree = "<group>"; };
-		C22E6B8C1B80E1CE008D46A6 /* ClosedInterval+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ClosedInterval+MoonKitAdditions.swift"; sourceTree = "<group>"; };
+		C22E6B8C1B80E1CE008D46A6 /* Intervals.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Intervals.swift; sourceTree = "<group>"; };
 		C22E6B8E1B810860008D46A6 /* List.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = List.swift; sourceTree = "<group>"; };
 		C22F5FE31B6FC753006D225A /* Dispatch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dispatch.swift; sourceTree = "<group>"; };
 		C22F5FE51B6FCF73006D225A /* Timer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
@@ -681,7 +680,6 @@
 		C2BE96E71A467E85007599B2 /* NSManagedObjectModel+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectModel+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C2C17D491B5813EB00D9E9A6 /* Identifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Identifier.swift; sourceTree = "<group>"; };
 		C2C3B91E1AC5DA7D001DC6CC /* CocoaLumberjack.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CocoaLumberjack.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C2C417811C4EB1C200007B84 /* HalfOpenInterval.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HalfOpenInterval.swift; sourceTree = "<group>"; };
 		C2C482E419CA0225002E84A9 /* Stack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Stack.swift; sourceTree = "<group>"; };
 		C2C482E619CA2985002E84A9 /* NSCharacterSet+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSCharacterSet+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C2C482E819CA2997002E84A9 /* NSScanner+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSScanner+MoonKitAdditions.swift"; sourceTree = "<group>"; };
@@ -1005,7 +1003,6 @@
 		C23592E019C8E04200920F8D /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				C2C417811C4EB1C200007B84 /* HalfOpenInterval.swift */,
 				C2729AE01BEE9836004FA34F /* NSValue+MoonKitAdditions.swift */,
 				C2F682BD1BDAEC45002FCA2B /* Character.swift */,
 				C26A09771BC9F1B0002EFEE1 /* CATransform3D.swift */,
@@ -1043,7 +1040,7 @@
 				C266A6EF1B6523BB00EEA1C4 /* String+RegularExpression.swift */,
 				C2C9EB6F1B65C5C70051BACF /* Range+MoonKitAdditions.swift */,
 				C25D6A861B703E0C00EB7125 /* UILabel+MoonKitAdditions.swift */,
-				C22E6B8C1B80E1CE008D46A6 /* ClosedInterval+MoonKitAdditions.swift */,
+				C22E6B8C1B80E1CE008D46A6 /* Intervals.swift */,
 				C2776C2C1B9E6053002FE5A8 /* Index.swift */,
 				C2CA851D1BC724FC0046AFC0 /* CGRect+MoonKitAdditions.swift */,
 				C2CA851F1BC7250A0046AFC0 /* CGPoint+MoonKitAdditions.swift */,
@@ -2091,7 +2088,7 @@
 				C2618A701B7A439D00122EBA /* FormCheckboxField.swift in Sources */,
 				C2358F4519C78E0C00920F8D /* NSURL+MSKitAdditions.m in Sources */,
 				C28E35BA1A451E3800438CCF /* CoreDataStack.swift in Sources */,
-				C22E6B8D1B80E1CE008D46A6 /* ClosedInterval+MoonKitAdditions.swift in Sources */,
+				C22E6B8D1B80E1CE008D46A6 /* Intervals.swift in Sources */,
 				C2A70E3B1ACC53D0009C2CF7 /* JSONValue.swift in Sources */,
 				C2064FFD1A13C70F00342FDE /* CoreGraphics.swift in Sources */,
 				C2358F4619C78E0C00920F8D /* NSUserDefaults+MSKitAdditions.m in Sources */,
@@ -2257,7 +2254,6 @@
 				C25D6A871B703E0C00EB7125 /* UILabel+MoonKitAdditions.swift in Sources */,
 				C2358F7A19C78E0C00920F8D /* MSNotificationReceptionist.m in Sources */,
 				C2729AE11BEE9836004FA34F /* NSValue+MoonKitAdditions.swift in Sources */,
-				C2C417821C4EB1C200007B84 /* HalfOpenInterval.swift in Sources */,
 				C2358F7B19C78E0C00920F8D /* MSXMLParserDelegate.m in Sources */,
 				C2AA14721BB5857600D7C9E1 /* Tree.swift in Sources */,
 				C20650001A13C72600342FDE /* UIBarButtonItem+MoonKitAdditions.swift in Sources */,
@@ -2318,7 +2314,7 @@
 			files = (
 				C2BDBBD21BD3F00E00E343F1 /* Timer.swift in Sources */,
 				C2BDBBE11BD3F07C00E343F1 /* CATransform3D.swift in Sources */,
-				C2BDBBF51BD3F07C00E343F1 /* ClosedInterval+MoonKitAdditions.swift in Sources */,
+				C2BDBBF51BD3F07C00E343F1 /* Intervals.swift in Sources */,
 				C2BDBBF91BD3F07C00E343F1 /* CGSize+MoonKitAdditions.swift in Sources */,
 				C2BDBBF81BD3F07C00E343F1 /* CGPoint+MoonKitAdditions.swift in Sources */,
 				C2BDBC041BD3F07C00E343F1 /* FunctionManipulation.swift in Sources */,

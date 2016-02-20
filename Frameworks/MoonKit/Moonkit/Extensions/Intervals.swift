@@ -8,6 +8,15 @@
 
 import Foundation
 
+public func ∋<I:IntervalType>(lhs: I, rhs: I.Bound) -> Bool { return lhs.contains(rhs) }
+public func ∌<I:IntervalType>(lhs: I, rhs: I.Bound) -> Bool { return !(lhs ∋ rhs) }
+public func ∈<I:IntervalType>(lhs: I.Bound, rhs: I) -> Bool { return rhs ∋ lhs }
+public func ∉<I:IntervalType>(lhs: I.Bound, rhs: I) -> Bool { return rhs ∌ lhs }
+
+public extension HalfOpenInterval where Bound:IntegerType {
+  public var length: Bound { return end - start }
+}
+
 public extension ClosedInterval {
   public func clampValue(value: Bound) -> Bound {
     if contains(value) { return value }

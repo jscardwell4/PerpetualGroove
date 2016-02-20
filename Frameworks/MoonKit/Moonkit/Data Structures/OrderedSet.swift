@@ -42,6 +42,8 @@ public struct OrderedSet<Element:Hashable>: CollectionType {
 
   private var hashValues: Set<Int>
 
+  public var count: Int { return _base.count }
+
   /**
    initWithMinimumCapacity:
 
@@ -272,14 +274,24 @@ extension OrderedSet: RangeReplaceableCollectionType {
 
 }
 
-extension OrderedSet: MutableSliceable {}
 
 extension OrderedSet: SequenceType {
   public typealias Generator = AnyGenerator<Element>
   public typealias SubSequence = OrderedSetSlice<Element>
 
-  public func generate() -> Generator { return anyGenerator(_base.generate()) }
-
+  public func generate() -> Generator { return AnyGenerator(_base.generate()) }
+  public func dropFirst(n: Int) -> SubSequence { return OrderedSetSlice(_base.dropFirst(n)) }
+  public func dropLast(n: Int) -> SubSequence { return OrderedSetSlice(_base.dropLast(n)) }
+  public func prefix(maxLength: Int) -> SubSequence { return OrderedSetSlice(_base.prefix(maxLength)) }
+  public func suffix(maxLength: Int) -> SubSequence { return OrderedSetSlice(_base.suffix(maxLength)) }
+  public func split(maxSplit: Int,
+              allowEmptySlices: Bool,
+              @noescape isSeparator: (Element) throws -> Bool) rethrows -> [SubSequence]
+  {
+    return try _base.split(maxSplit, allowEmptySlices: allowEmptySlices, isSeparator: isSeparator).map {
+      OrderedSetSlice($0)
+    }
+  }
 }
 
 extension OrderedSet: _ArrayType {
@@ -657,5 +669,5 @@ public func !⚭<Element:Hashable>(lhs: OrderedSet<Element>, rhs: OrderedSet<Ele
 }
 public func ⚭<Element:Hashable>(lhs: OrderedSet<Element>, rhs: OrderedSet<Element>) -> Bool
 {
-  return !(lhs ⚭ rhs)
+  return !lhs.isDisjointWith(rhs)
 }

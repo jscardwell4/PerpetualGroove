@@ -63,11 +63,11 @@ import UIKit
 
   - returns: CGPoint
   */
-  func centroidForTouches<C:CollectionType where C.Generator.Element == UITouch, C.Index.Distance == Int>
+  func centroidForTouches<C:CollectionType where C.Generator.Element == UITouch>
     (touches: C) -> CGPoint
   {
     guard touches.count > 0, let view = view else { return CGPoint.null }
-    return touches.map {$0.locationInView(view)}.reduce(CGPoint.zero, combine: +) / CGFloat(touches.count)
+    return touches.map {$0.locationInView(view)}.reduce(CGPoint.zero, combine: +) / CGFloat(touches.count.toIntMax())
   }
 
   /**

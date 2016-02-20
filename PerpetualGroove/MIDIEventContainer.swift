@@ -213,7 +213,7 @@ private extension MIDIEventContainer {
 
     - returns: IndexingGenerator<[MIDIEvent]>
     */
-    func generate() -> IndexingGenerator<[MIDIEvent]> { return events.generate() }
+    func generate() -> AnyGenerator<MIDIEvent> { return events.generate() }
 
     /**
     Append a new event to the bag
@@ -241,7 +241,7 @@ private extension MIDIEventContainer {
 
     - returns: ArraySlice<MIDIEvent>
     */
-    subscript(bounds: Range<Int>) -> OrderedSet<MIDIEvent> {
+    subscript(bounds: Range<Int>) -> OrderedSetSlice<MIDIEvent> {
       get { return events[bounds] }
       set { events[bounds] = newValue }
     }

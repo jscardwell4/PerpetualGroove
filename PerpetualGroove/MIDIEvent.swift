@@ -17,6 +17,15 @@ protocol MIDIEventType: CustomStringConvertible, CustomDebugStringConvertible {
 }
 
 extension MIDIEventType {
+  var hashValue: Int {
+    let bytesHash = Int(_mixUInt64(bytes.segment(8).map({UInt64($0)}).reduce(0) { $0 ^ $1 }))
+    let deltaHash = _mixInt(delta?.intValue ?? 0)
+    let timeHash = time.totalBeats.hashValue
+    return bytesHash ^ deltaHash ^ timeHash
+  }
+}
+
+extension MIDIEventType {
   var debugDescription: String { var result = ""; dump(self, &result); return result }
 }
 
@@ -51,7 +60,7 @@ extension MIDIEventDispatch {
   var nodeEvents: [MIDINodeEvent] { return events.nodeEvents }
 }
 
-enum MIDIEvent: MIDIEventType {
+enum MIDIEvent: MIDIEventType, Hashable {
   case Meta (MetaEvent)
   case Channel (ChannelEvent)
   case Node (MIDINodeEvent)

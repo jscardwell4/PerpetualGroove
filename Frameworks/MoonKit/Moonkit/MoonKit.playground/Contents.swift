@@ -9,3 +9,8 @@ set.insert(33)
 set.appendContentsOf([3, 6, 7, 22])
 set ∋ 4
 
+func wtf<C:CollectionType where C.Generator.Element == Int>(collection: C) {
+  print(collection)
+}
+
+wtf(set)
