@@ -149,7 +149,7 @@ final class DocumentsViewController: UICollectionViewController {
     guard let collectionView = collectionView else { super.updateViewConstraints(); return }
 
     if view.constraintsWithIdentifier(constraintID).count == 0 {
-      view.constrain([𝗩|-collectionView-|𝗩, 𝗛|-collectionView-|𝗛] --> constraintID)
+      view.constrain([𝗩|--collectionView--|𝗩, 𝗛|--collectionView--|𝗛] --> constraintID)
     }
 
     guard case (.None, .None) = (widthConstraint, heightConstraint) else { super.updateViewConstraints(); return }

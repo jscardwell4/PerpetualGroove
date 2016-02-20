@@ -56,14 +56,14 @@ public class MultiselectGestureRecognizer: UIGestureRecognizer {
 
   - returns: [CGPoint]
   */
-  public func touchLocationsInView(view: UIView) -> [CGPoint] { return touchLocations.array.map{view.convertPoint($0, fromView: nil)} }
+  public func touchLocationsInView(view: UIView) -> [CGPoint] { return touchLocations.map{view.convertPoint($0, fromView: nil)} }
 
   /** reset */
   public override func reset() {
     super.reset()
-    touchLocations.removeAll()
-    anchoringTouches.removeAll()
-    registeredTouches.removeAll()
+    touchLocations.removeAll(true)
+    anchoringTouches.removeAll(true)
+    registeredTouches.removeAll(true)
     firstTouchDate = nil
     state = .Possible
   }

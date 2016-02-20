@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="6xH-va-xT7">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
@@ -155,48 +156,75 @@
                                         <rect key="frame" x="0.0" y="0.0" width="250" height="42"/>
                                         <subviews>
                                             <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="6PF-rp-kmP" userLabel="AddNote" customClass="ImageButtonView" customModule="MoonKit">
-                                                <rect key="frame" x="0.0" y="0.0" width="42" height="42"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="34" height="42"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="AddNoteButton"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/node_note_add"/>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="Editing/node_note_add-selected"/>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="AddNoteButton"/>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
+                                                        <color key="value" red="0.64416515827178955" green="0.5787731409072876" blue="0.48529356718063354" alpha="1" colorSpace="calibratedRGB"/>
+                                                    </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
                                             </view>
                                             <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="ajH-64-K10" userLabel="Add" customClass="ImageButtonView" customModule="MoonKit">
-                                                <rect key="frame" x="52" y="0.0" width="42" height="42"/>
+                                                <rect key="frame" x="44" y="0.0" width="33" height="42"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="AddButton"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/node_add"/>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="Editing/node_add-selected"/>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="AddButton"/>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
+                                                        <color key="value" red="0.64416515827178955" green="0.5787731409072876" blue="0.48529356718063354" alpha="1" colorSpace="calibratedRGB"/>
+                                                    </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
                                             </view>
                                             <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="k9y-ve-9u9" userLabel="Remove" customClass="ImageButtonView" customModule="MoonKit">
-                                                <rect key="frame" x="104" y="0.0" width="42" height="42"/>
+                                                <rect key="frame" x="87" y="0.0" width="34" height="42"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="RemoveButton"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/node_remove"/>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="Editing/node_remove-selected"/>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="RemoveButton"/>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
+                                                        <color key="value" red="0.64416515827178955" green="0.5787731409072876" blue="0.48529356718063354" alpha="1" colorSpace="calibratedRGB"/>
+                                                    </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
                                             </view>
                                             <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="Axm-CN-6iz" userLabel="Delete" customClass="ImageButtonView" customModule="MoonKit">
-                                                <rect key="frame" x="156" y="0.0" width="42" height="42"/>
+                                                <rect key="frame" x="130" y="0.0" width="34" height="42"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="DeleteButton"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/node_delete"/>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="Editing/node_delete-selected"/>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="DeleteButton"/>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
+                                                        <color key="value" red="0.64416515827178955" green="0.5787731409072876" blue="0.48529356718063354" alpha="1" colorSpace="calibratedRGB"/>
+                                                    </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
                                             </view>
                                             <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="vcL-FB-on7" userLabel="Generator" customClass="ImageButtonView" customModule="MoonKit">
-                                                <rect key="frame" x="208" y="0.0" width="42" height="42"/>
+                                                <rect key="frame" x="174" y="0.0" width="33" height="42"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="GeneratorButton"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/node_note"/>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="Editing/node_note-selected"/>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="GeneratorButton"/>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
+                                                        <color key="value" red="0.64416515827178955" green="0.5787731409072876" blue="0.48529356718063354" alpha="1" colorSpace="calibratedRGB"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                            </view>
+                                            <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="1Q9-KO-Oxv" userLabel="Rotate" customClass="ImageButtonView" customModule="MoonKit">
+                                                <rect key="frame" x="217" y="0.0" width="34" height="42"/>
+                                                <accessibility key="accessibilityConfiguration" identifier="RotateButton"/>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/rotate"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="Editing/rotate-selected"/>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="GeneratorButton"/>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
+                                                        <color key="value" red="0.64416515827178955" green="0.5787731409072876" blue="0.48529356718063354" alpha="1" colorSpace="calibratedRGB"/>
+                                                    </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
                                             </view>
                                         </subviews>
@@ -298,6 +326,8 @@
         <image name="Editing/node_note_add-selected" width="56" height="56"/>
         <image name="Editing/node_remove" width="56" height="56"/>
         <image name="Editing/node_remove-selected" width="56" height="56"/>
+        <image name="Editing/rotate" width="56" height="56"/>
+        <image name="Editing/rotate-selected" width="56" height="56"/>
         <image name="Editing/tape" width="56" height="56"/>
         <image name="Editing/tape-selected" width="56" height="56"/>
         <image name="spinner1" width="56" height="56"/>

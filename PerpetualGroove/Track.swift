@@ -105,10 +105,15 @@ class Track: CustomStringConvertible, Named, MIDIEventDispatch {
   }
 }
 
-extension Track {
+// MARK: - Notifications
+extension Track: NotificationDispatchType {
+
   enum Notification: String, NotificationType, NotificationNameType {
+    enum Key: String, KeyType { case OldValue, NewValue }
     case DidUpdate, DidChangeName
-    typealias Key = String
+    case ForceMuteStatusDidChange, MuteStatusDidChange, SoloStatusDidChange
   }
+
 }
+
 

@@ -9,45 +9,123 @@
 import Foundation
 
 // contains
-//public func ∈<T>(lhs: T, rhs: Set<T>) -> Bool { return rhs.contains(lhs) }
-public func ∈<T>(lhs: T, rhs: Set<T>) -> Bool { return rhs.contains(lhs) }
-public func ∋<T>(lhs: Set<T>, rhs: T) -> Bool { return lhs.contains(rhs) }
-public func ∉<T>(lhs: T, rhs: Set<T>) -> Bool { return !(lhs ∈ rhs) }
-public func ∌<T>(lhs: Set<T>, rhs: T) -> Bool { return !(lhs ∋ rhs) }
+public func ∈<Element:Hashable>(lhs: Element, rhs: Set<Element>) -> Bool {
+  return rhs.contains(lhs)
+}
+public func ∋<Element:Hashable>(lhs: Set<Element>, rhs: Element) -> Bool {
+  return lhs.contains(rhs)
+}
+
+public func ∉<Element:Hashable>(lhs: Element, rhs: Set<Element>) -> Bool { return !(lhs ∈ rhs) }
+public func ∌<Element:Hashable>(lhs: Set<Element>, rhs: Element) -> Bool { return !(lhs ∋ rhs) }
 
 // subset/superset
-public func ⊂<S:SequenceType, T where S.Generator.Element == T>(lhs: Set<T>, rhs: S) -> Bool {
+public func ⊂<S:SequenceType, Element:Hashable
+  where S.Generator.Element == Element>(lhs: Set<Element>, rhs: S) -> Bool
+{
   return lhs.isStrictSubsetOf(rhs)
 }
-public func ⊃<S:SequenceType, T where S.Generator.Element == T>(lhs: Set<T>, rhs: S) -> Bool {
+public func ⊃<S:SequenceType, Element:Hashable
+  where S.Generator.Element == Element>(lhs: Set<Element>, rhs: S) -> Bool
+{
   return lhs.isStrictSupersetOf(rhs)
 }
-public func ⊄<S:SequenceType, T where S.Generator.Element == T>(lhs: Set<T>, rhs: S) -> Bool { return !(lhs ⊂ rhs) }
-public func ⊅<S:SequenceType, T where S.Generator.Element == T>(lhs: Set<T>, rhs: S) -> Bool { return !(lhs ⊃ rhs) }
-public func ⊆<S:SequenceType, T where S.Generator.Element == T>(lhs: Set<T>, rhs: S) -> Bool { return lhs.isSubsetOf(rhs) }
-public func ⊇<S:SequenceType, T where S.Generator.Element == T>(lhs: Set<T>, rhs: S) -> Bool { return lhs.isSupersetOf(rhs) }
-public func ⊈<S:SequenceType, T where S.Generator.Element == T>(lhs: Set<T>, rhs: S) -> Bool { return !(lhs ⊆ rhs) }
-public func ⊉<S:SequenceType, T where S.Generator.Element == T>(lhs: Set<T>, rhs: S) -> Bool { return !(lhs ⊇ rhs) }
+public func ⊆<S:SequenceType, Element:Hashable
+  where S.Generator.Element == Element>(lhs: Set<Element>, rhs: S) -> Bool
+{
+  return lhs.isSubsetOf(rhs)
+}
+public func ⊇<S:SequenceType, Element:Hashable
+  where S.Generator.Element == Element>(lhs: Set<Element>, rhs: S) -> Bool
+{
+  return lhs.isSupersetOf(rhs)
+}
+public func ⊄<S:SequenceType, Element:Hashable
+  where S.Generator.Element == Element>(lhs: Set<Element>, rhs: S) -> Bool
+{
+  return !(lhs ⊂ rhs)
+}
+public func ⊅<S:SequenceType, Element:Hashable
+  where S.Generator.Element == Element>(lhs: Set<Element>, rhs: S) -> Bool
+{
+  return !(lhs ⊃ rhs)
+}
+public func ⊈<S:SequenceType, Element:Hashable
+  where S.Generator.Element == Element>(lhs: Set<Element>, rhs: S) -> Bool
+{
+  return !(lhs ⊆ rhs)
+}
+public func ⊉<S:SequenceType, Element:Hashable
+  where S.Generator.Element == Element>(lhs: Set<Element>, rhs: S) -> Bool
+{
+  return !(lhs ⊇ rhs)
+}
 
 // union
-public func ∪<S:SequenceType, T where S.Generator.Element == T>(lhs: Set<T>, rhs: S) -> Set<T> { return lhs.union(rhs) }
-public func ∪=<S:SequenceType, T where S.Generator.Element == T>(inout lhs: Set<T>, rhs: S) { lhs.unionInPlace(rhs) }
+public func ∪<S:SequenceType, Element:Hashable
+  where S.Generator.Element == Element>(lhs: Set<Element>, rhs: S) -> Set<Element>
+{
+  return lhs.union(rhs)
+}
+public func ∪=<S:SequenceType
+  where S.Generator.Element:Hashable>(inout lhs: Set<S.Generator.Element>, rhs: S)
+{
+  lhs.unionInPlace(rhs)
+}
 
 // minus
-public func ∖<S:SequenceType, T where S.Generator.Element == T>(lhs: Set<T>, rhs: S) -> Set<T> { return lhs.subtract(rhs) }
-public func ∖=<S:SequenceType, T where S.Generator.Element == T>(inout lhs: Set<T>, rhs: S) { lhs.subtractInPlace(rhs) }
+public func ∖<S:SequenceType, Element:Hashable
+  where S.Generator.Element == Element>(lhs: Set<Element>, rhs: S) -> Set<Element>
+{
+  return lhs.subtract(rhs)
+}
+public func ∖=<S:SequenceType
+  where S.Generator.Element:Hashable>(inout lhs: Set<S.Generator.Element>, rhs: S)
+{
+  lhs.subtractInPlace(rhs)
+}
 
 // intersect
-public func ∩<S:SequenceType, T where S.Generator.Element == T>(lhs: Set<T>, rhs: S) -> Set<T> { return lhs.intersect(rhs) }
-public func ∩=<S:SequenceType, T where S.Generator.Element == T>(inout lhs: Set<T>, rhs: S) { lhs.intersectInPlace(rhs) }
+public func ∩<S:SequenceType, Element:Hashable
+  where S.Generator.Element == Element>(lhs: Set<Element>, rhs: S) -> Set<Element>
+{
+  return lhs.intersect(rhs)
+}
+public func ∩=<S:SequenceType
+  where S.Generator.Element:Hashable>(inout lhs: Set<S.Generator.Element>, rhs: S)
+{
+  lhs.intersectInPlace(rhs)
+}
 
 // xor
-public func ∆<S:SequenceType, T where S.Generator.Element == T>(lhs: Set<T>, rhs: S) -> Set<T> { return lhs.exclusiveOr(rhs) }
-public func ∆=<S:SequenceType, T where S.Generator.Element == T>(inout lhs: Set<T>, rhs: S) { lhs.exclusiveOrInPlace(rhs) }
-
-public func filter<T>(source: Set<T>, includeElement: (T) -> Bool) -> Set<T> {
-  return Set(Array(source).filter(includeElement))
+public func ⊻<S:SequenceType, Element:Hashable
+  where S.Generator.Element == Element>(lhs: Set<Element>, rhs: S) -> Set<Element>
+{
+  return lhs.exclusiveOr(rhs)
 }
+public func ⊻=<S:SequenceType
+  where S.Generator.Element:Hashable>(inout lhs: Set<S.Generator.Element>, rhs: S)
+{
+  lhs.exclusiveOrInPlace(rhs)
+}
+
+// disjoint
+public func !⚭<S:SequenceType, Element:Hashable
+  where S.Generator.Element == Element>(lhs: Set<Element>, rhs: S) -> Bool
+{
+  return lhs.isDisjointWith(rhs)
+}
+public func ⚭<S:SequenceType, Element:Hashable
+  where S.Generator.Element == Element>(lhs: Set<Element>, rhs: S) -> Bool
+{
+  return !(lhs ⚭ rhs)
+}
+
+//public func filter<T>(source: Set<T>, includeElement: (T) -> Bool) -> Set<T> {
+//  return Set(Array(source).filter(includeElement))
+//}
+
+extension Set: SetType {}
 
 extension Set: NestingContainer {
   public var topLevelObjects: [Any] {

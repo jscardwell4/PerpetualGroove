@@ -45,6 +45,22 @@ extension CGAffineTransform: CustomStringConvertible {
     }
     return result//NSStringFromCGAffineTransform(self)
   }
+
+  public var rotation: CGFloat {
+    get {
+      guard a == d && b == -c else { return 0 }
+      return b.isSignMinus ? -acos(a) : acos(a)
+    }
+    set {
+      let cosine = cos(abs(newValue))
+      let sine = sin(abs(newValue))
+      a = cosine
+      d = cosine
+      b = newValue.isSignMinus ? -sine : sine
+      c = newValue.isSignMinus ? sine : -sine
+    }
+  }
+    
 }
 
 public func +(lhs: CGAffineTransform, rhs: CGAffineTransform) -> CGAffineTransform {

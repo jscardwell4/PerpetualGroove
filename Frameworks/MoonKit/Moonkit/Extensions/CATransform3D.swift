@@ -181,6 +181,10 @@ extension CATransform3D {
       m21 = newValue.isSignMinus ? sine : -sine
     }
   }
+
+  public init(affine: CGAffineTransform) {
+    self = CATransform3DMakeAffineTransform(affine)
+  }
 }
 
 extension CATransform3D: Equatable {}

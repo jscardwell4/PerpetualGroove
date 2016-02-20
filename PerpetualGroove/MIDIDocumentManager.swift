@@ -500,10 +500,11 @@ extension MIDIDocumentManager {
 }
 
 // MARK: - Notification
-extension MIDIDocumentManager {
+extension MIDIDocumentManager: NotificationDispatchType {
 
   enum Notification: String, NotificationType, NotificationNameType {
-    case DidUpdateItems, WillChangeDocument, DidChangeDocument, DidCreateDocument, WillOpenDocument, DidOpenDocument
+    case DidUpdateItems, WillChangeDocument, DidChangeDocument, DidCreateDocument
+    case WillOpenDocument, DidOpenDocument
     enum Key: String, NotificationKeyType { case Changed, Added, Removed, FilePath }
     var object: AnyObject? { return MIDIDocumentManager.self }
   }

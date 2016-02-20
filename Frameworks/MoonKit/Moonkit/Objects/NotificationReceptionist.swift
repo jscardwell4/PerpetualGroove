@@ -30,11 +30,16 @@ public final class NotificationReceptionist: NSObject, Loggable {
   */
   @objc private func receiveNotification(notification: NSNotification) {
     guard let info = infoForNotification(notification) else {
-      logWarning("not observing \(notification.name)'\(notification.object == nil ? "" : "from object at address \(unsafeAddressOf(notification.object!))")")
+      logWarning("not observing \(notification.name)"
+        + (notification.object == nil
+            ? ""
+            : "from object at address \(unsafeAddressOf(notification.object!))"))
       return
     }
     logVerbose("notification: \(notification)")
-    (info.queue ?? callbackQueue ?? NSOperationQueue.mainQueue()).addOperationWithBlock { info.callback(notification) }
+    (info.queue ?? callbackQueue ?? NSOperationQueue.mainQueue()).addOperationWithBlock {
+      info.callback(notification)
+    }
   }
 
 
@@ -73,7 +78,30 @@ public final class NotificationReceptionist: NSObject, Loggable {
                                     queue: NSOperationQueue? = nil,
                                  callback: (NSNotification) -> Void)
   {
-    observe(notification.name.notificationName, from: object, queue: queue ?? callbackQueue, callback: callback)
+    observe(notification.name.notificationName,
+       from: object,
+      queue: queue ?? callbackQueue,
+   callback: callback)
+  }
+
+  /**
+   observe:from:queue:callback:
+
+   - parameter notification: N.Notification
+   - parameter object: N?
+   - parameter queue: NSOperationQueue? = nil
+   - parameter callback: (NSNotification) -> Void
+  */
+  public func observe<N:NotificationDispatchType
+                      where N:AnyObject>(notification: N.Notification,
+                                    from object: N?,
+                                   queue: NSOperationQueue? = nil,
+                                callback: (NSNotification) -> Void)
+  {
+    observe(notification.name.notificationName,
+       from: object,
+      queue: queue ?? callbackQueue,
+   callback: callback)
   }
 
   /**
@@ -89,7 +117,10 @@ public final class NotificationReceptionist: NSObject, Loggable {
                                     queue: NSOperationQueue? = nil,
                                  callback: (NSNotification) -> Void)
   {
-    objects.forEach { observe(notification.name.notificationName, from: $0, queue: queue ?? callbackQueue, callback: callback) }
+    objects.forEach { observe(notification.name.notificationName,
+                         from: $0,
+                        queue: queue ?? callbackQueue,
+                     callback: callback) }
   }
 
   /**
@@ -122,8 +153,14 @@ public final class NotificationReceptionist: NSObject, Loggable {
                 queue: NSOperationQueue? = nil,
              callback: (NSNotification) -> Void)
   {
-    infos.insert(ObservationInfo(name: name, object: Weak(object), callback: callback, queue: queue))
-    NSNotificationCenter.defaultCenter().addObserver(self, selector: "receiveNotification:", name: name, object: object)
+    infos.insert(ObservationInfo(name: name,
+                                 object: Weak(object),
+                                 callback: callback,
+                                 queue: queue))
+    NSNotificationCenter.defaultCenter().addObserver(self,
+                                            selector: "receiveNotification:",
+                                                name: name,
+                                              object: object)
   }
 
   /**
@@ -174,7 +211,9 @@ public final class NotificationReceptionist: NSObject, Loggable {
   - parameter notification: N
   - parameter object: AnyObject? = nil
   */
-  public func stopObserving<N:NotificationType where N:NotificationNameType>(notification: N, from object: AnyObject? = nil) {
+  public func stopObserving<N:NotificationType
+    where N:NotificationNameType>(notification: N, from object: AnyObject? = nil)
+  {
     stopObserving(notification._name, from: object)
   }
 
@@ -197,7 +236,10 @@ public final class NotificationReceptionist: NSObject, Loggable {
   */
   public func stopObserving(name: String, from object: AnyObject? = nil) {
     guard let idx = infos.indexOf({$0.name == name && $0.object?.reference === object}) else {
-      logWarning("not observing \(name)'\(object == nil ? "" : "from object at address \(unsafeAddressOf(object!))")")
+      logWarning("not observing \(name)"
+        + (object == nil
+            ? ""
+            : "from object at address \(unsafeAddressOf(object!))"))
       return
     }
     stopObserving(infos.removeAtIndex(idx))
@@ -218,7 +260,9 @@ public final class NotificationReceptionist: NSObject, Loggable {
   - parameter info: ObservationInfo
   */
   private func stopObserving(info: ObservationInfo) {
-    NSNotificationCenter.defaultCenter().removeObserver(self, name: info.name, object: info.object?.reference)
+    NSNotificationCenter.defaultCenter().removeObserver(self,
+                                                   name: info.name,
+                                                 object: info.object?.reference)
     logVerbose("stopped observing \(info)")
   }
 
@@ -241,6 +285,8 @@ extension NotificationReceptionist {
   }
 }
 
-private func ==(lhs: NotificationReceptionist.ObservationInfo, rhs: NotificationReceptionist.ObservationInfo) -> Bool {
+private func ==(lhs: NotificationReceptionist.ObservationInfo,
+                rhs: NotificationReceptionist.ObservationInfo) -> Bool
+{
   return lhs.hashValue == rhs.hashValue
 }

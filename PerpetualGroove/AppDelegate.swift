@@ -44,10 +44,10 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     delayedDispatchToMain(1.0) {
       globalBackgroundQueue.async {
         SettingsManager.initialize()
-        Sequencer.initialize()
-        MIDIDocumentManager.initialize()
         AudioManager.initialize()
+        Sequencer.initialize()
         MIDIPlayer.initialize()
+        MIDIDocumentManager.initialize()
       }
     }
     viewController = window?.rootViewController as? RootViewController

@@ -30,7 +30,7 @@
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="r1D-9L-561">
                                         <rect key="frame" x="0.0" y="0.0" width="288" height="40"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Sound Set" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e1T-sL-nID">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" misplaced="YES" text="Sound Set" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e1T-sL-nID">
                                                 <rect key="frame" x="0.0" y="0.0" width="84" height="40"/>
                                                 <fontDescription key="fontDescription" name="EvelethLight" family="Eveleth" pointSize="13"/>
                                                 <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="calibratedRGB"/>
@@ -39,7 +39,7 @@
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="SoundSetLabel"/>
                                                 </userDefinedRuntimeAttributes>
                                             </label>
-                                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3qS-GK-dh1" customClass="InlinePickerView" customModule="MoonKit">
+                                            <view opaque="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3qS-GK-dh1" customClass="InlinePickerView" customModule="MoonKit">
                                                 <rect key="frame" x="94" y="0.0" width="194" height="40"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <userDefinedRuntimeAttributes>
@@ -78,7 +78,7 @@
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Bes-Lg-AnT">
                                         <rect key="frame" x="0.0" y="40" width="288" height="40"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Program" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ydy-Ex-abe">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" misplaced="YES" text="Program" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ydy-Ex-abe">
                                                 <rect key="frame" x="0.0" y="0.0" width="84" height="40"/>
                                                 <fontDescription key="fontDescription" name="EvelethLight" family="Eveleth" pointSize="13"/>
                                                 <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="calibratedRGB"/>
@@ -87,7 +87,7 @@
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="ProgramLabel"/>
                                                 </userDefinedRuntimeAttributes>
                                             </label>
-                                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yew-6y-DAi" customClass="InlinePickerView" customModule="MoonKit">
+                                            <view opaque="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yew-6y-DAi" customClass="InlinePickerView" customModule="MoonKit">
                                                 <rect key="frame" x="94" y="0.0" width="194" height="40"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <userDefinedRuntimeAttributes>
@@ -128,7 +128,7 @@
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="VUO-QA-GS1">
                                         <rect key="frame" x="0.0" y="80" width="288" height="40"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Channel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Cf-bk-X5q">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" misplaced="YES" text="Channel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Cf-bk-X5q">
                                                 <rect key="frame" x="0.0" y="0.0" width="84" height="40"/>
                                                 <fontDescription key="fontDescription" name="EvelethLight" family="Eveleth" pointSize="13"/>
                                                 <color key="textColor" red="0.57254904510000004" green="0.52941179279999995" blue="0.47058823700000002" alpha="1" colorSpace="calibratedRGB"/>
@@ -137,7 +137,7 @@
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="ChannelLabel"/>
                                                 </userDefinedRuntimeAttributes>
                                             </label>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NJk-vD-Q1I" customClass="LabeledStepper" customModule="MoonKit">
+                                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NJk-vD-Q1I" customClass="LabeledStepper" customModule="MoonKit">
                                                 <rect key="frame" x="94" y="0.0" width="194" height="40"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <color key="tintColor" red="0.87450980389999999" green="0.82745098039999998" blue="0.76470588240000004" alpha="1" colorSpace="deviceRGB"/>

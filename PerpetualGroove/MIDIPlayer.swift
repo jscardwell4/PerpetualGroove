@@ -67,15 +67,18 @@ final class MIDIPlayer {
       guard sequence !== oldValue else { return }
       if let oldSequence = oldValue { receptionist.stopObservingObject(oldSequence) }
       if let sequence = sequence {
-        receptionist.observe(Sequence.Notification.DidRemoveTrack, from: sequence, callback: MIDIPlayer.didRemoveTrack)
-        receptionist.observe(Sequence.Notification.DidChangeTrack, from: sequence, callback: MIDIPlayer.didChangeTrack)
+        receptionist.observe(.DidRemoveTrack, from: sequence, callback: MIDIPlayer.didRemoveTrack)
+        receptionist.observe(.DidChangeTrack, from: sequence, callback: MIDIPlayer.didChangeTrack)
       }
       updateCurrentDispatch()
     }
   }
 
   /** initialize */
-  static func initialize() { guard !initialized else { return }; touch(receptionist); initialized = true }
+  static func initialize() {
+    guard !initialized else { return }
+    touch(receptionist); initialized = true
+  }
 
   /**
    didChangeSequence:
@@ -170,6 +173,7 @@ final class MIDIPlayer {
       deleteTool = RemoveTool(playerNode: node, delete: true)
       existingGeneratorTool = GeneratorTool(playerNode: node, mode: .Existing)
       newGeneratorTool = GeneratorTool(playerNode: node, mode: .New)
+      rotateTool = RotateTool(playerNode: node)
       currentTool = .None
     }
   }
@@ -179,6 +183,7 @@ final class MIDIPlayer {
   static private(set) var deleteTool: RemoveTool?
   static private(set) var existingGeneratorTool: GeneratorTool?
   static private(set) var newGeneratorTool: GeneratorTool?
+  static private(set) var rotateTool: RotateTool?
 
   static var currentTool: Tool = .None {
     willSet {

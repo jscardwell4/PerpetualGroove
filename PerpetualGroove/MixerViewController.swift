@@ -41,15 +41,15 @@ final class MixerViewController: UICollectionViewController {
   - parameter sequence: Sequence
   */
   private func observeSequence(sequence: Sequence) {
-    receptionist.observe(Sequence.Notification.DidChangeTrack, from: sequence) {
+    receptionist.observe(.DidChangeTrack, from: sequence) {
       [weak self] _ in
         guard let idx = self?.sequence?.currentTrack?.index else { return }
         self?.selectTrackAtIndex(idx)
     }
-    receptionist.observe(Sequence.Notification.DidAddTrack,
+    receptionist.observe(.DidAddTrack,
                     from: sequence,
                 callback: weakMethod(self, MixerViewController.updateTracks))
-    receptionist.observe(Sequence.Notification.DidRemoveTrack,
+    receptionist.observe(.DidRemoveTrack,
                     from: sequence,
                 callback: weakMethod(self, MixerViewController.updateTracks))
   }
@@ -225,8 +225,9 @@ final class MixerViewController: UICollectionViewController {
   }
 
   /** presentInstrumentController */
-  private func presentInstrumentController(){
-    guard let controller = UIStoryboard(name: "Instrument", bundle: nil).instantiateInitialViewController(),
+  private func presentInstrumentController() {
+    let storyboard = UIStoryboard(name: "Instrument", bundle: nil)
+    guard let controller = storyboard.instantiateInitialViewController() as? InstrumentViewController,
               container = parentViewController as? MixerContainerViewController else { return }
     container.presentSecondaryController(controller)
   }

@@ -23,16 +23,11 @@ final class MixerContainerViewController: SecondaryControllerContainerViewContro
   }
 
   override var anyAction: (() -> Void)? {
-    get {
-      let action = super.anyAction
-      return {
-        [mixer = mixerViewController] in
-        mixer?.soundSetSelectionTargetCell = nil
-        action?()
-      }
-    }
-    set {
-      super.anyAction = newValue
+    let action = super.anyAction
+    return {
+      [mixer = mixerViewController] in
+      mixer?.soundSetSelectionTargetCell = nil
+      action?()
     }
   }
 

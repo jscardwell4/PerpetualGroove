@@ -60,10 +60,10 @@ public struct OrderedDictionary<Key : Hashable, Value> : KeyValueCollectionType 
 
   - parameter dict: MSDictionary
   */
-  public init(_ dict: MSDictionary) {
-    self.init(dict as NSDictionary)
-    if let kArray = typeCast(dict.allKeys, Array<Key>.self) { _keys = kArray }
-  }
+//  public init(_ dict: MSDictionary) {
+//    self.init(dict as NSDictionary)
+//    if let kArray = typeCast(dict.allKeys, Array<Key>.self) { _keys = kArray }
+//  }
 
   /**
   Initialize with a dictionary
@@ -387,9 +387,9 @@ public struct OrderedDictionary<Key : Hashable, Value> : KeyValueCollectionType 
     return result
   }
 
-  public static func dictionaryWithXMLData(data: NSData) -> OrderedDictionary<String, AnyObject> {
-    return OrderedDictionary<String,AnyObject>(MSDictionary(byParsingXML: data))
-  }
+//  public static func dictionaryWithXMLData(data: NSData) -> OrderedDictionary<String, AnyObject> {
+//    return OrderedDictionary<String,AnyObject>(MSDictionary(byParsingXML: data))
+//  }
 
 }
 

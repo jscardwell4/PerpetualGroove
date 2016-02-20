@@ -8,13 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		C201F73B1A2539E7004600BC /* PseudoConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = C201F73A1A2539E7004600BC /* PseudoConstraint.swift */; };
+		C2022A5C1C77C1DB003C2C6E /* OrderedSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CD95021C7772BA001FB80B /* OrderedSet.swift */; };
+		C2022A601C77C6DC003C2C6E /* SetType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2022A5F1C77C6DC003C2C6E /* SetType.swift */; };
+		C2022A621C77C9FC003C2C6E /* SetAlgebraType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2022A611C77C9FC003C2C6E /* SetAlgebraType.swift */; };
 		C20297FC1AF295A5003F647B /* KVOReceptionist.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20297FB1AF295A5003F647B /* KVOReceptionist.swift */; };
 		C2037B7119D0D339001F6AD9 /* MSKitGeometryFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = C2037B7019D0D339001F6AD9 /* MSKitGeometryFunctions.m */; };
 		C20534251BCB0A4400A9F040 /* ToggleControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20534241BCB0A4400A9F040 /* ToggleControl.swift */; };
 		C20534271BCB3BB900A9F040 /* UIControlState+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20534261BCB3BB900A9F040 /* UIControlState+MoonKitAdditions.swift */; };
 		C205852B1A1BA22A00212759 /* LongPressGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = C205852A1A1BA22A00212759 /* LongPressGesture.swift */; };
 		C205852D1A1BEC2000212759 /* BlockActionGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = C205852C1A1BEC2000212759 /* BlockActionGesture.swift */; };
-		C2064FF81A13BF8100342FDE /* MSDictionary+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A7CA9619CBB8FE00212F2D /* MSDictionary+MoonKitAdditions.swift */; };
 		C2064FFA1A13C05900342FDE /* Operators.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2064FF91A13C05900342FDE /* Operators.swift */; };
 		C2064FFB1A13C6F000342FDE /* MoonFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23592DC19C8E04200920F8D /* MoonFunctions.swift */; };
 		C2064FFC1A13C70200342FDE /* LoggingFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C216E73F19CBAE0A0052E98A /* LoggingFunctions.swift */; };
@@ -38,6 +40,8 @@
 		C21493BD1A33CEA100D274A2 /* Checkbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21493BC1A33CEA100D274A2 /* Checkbox.swift */; };
 		C21493BF1A35285A00D274A2 /* ColorSwatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21493BE1A35285A00D274A2 /* ColorSwatch.swift */; };
 		C21493C11A35302200D274A2 /* ColorInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21493C01A35302200D274A2 /* ColorInputView.swift */; };
+		C219235C1C76130D00E82437 /* HexIntegerInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CEFF271A32236B00F3BE24 /* HexIntegerInputView.swift */; };
+		C219235D1C76132000E82437 /* MSDictionary+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A7CA9619CBB8FE00212F2D /* MSDictionary+MoonKitAdditions.swift */; };
 		C21D7AE41AA60E3F000DE8A3 /* NSError+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21D7AE31AA60E3F000DE8A3 /* NSError+MoonKitAdditions.swift */; };
 		C2204D9C1AE1A0670079B731 /* JSONIncludeDirective.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2204D9B1AE1A0670079B731 /* JSONIncludeDirective.swift */; };
 		C225677E1BB05E7600E4842B /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BDD1B797D4600A68A64 /* CoreImage.framework */; };
@@ -267,6 +271,8 @@
 		C24A22951ADB45340065E7EA /* RawOptionSetFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24A22941ADB45340065E7EA /* RawOptionSetFunctions.swift */; };
 		C24A22971ADB47590065E7EA /* CollectionManipulations.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24A22961ADB47590065E7EA /* CollectionManipulations.swift */; };
 		C24A22991ADB4C1E0065E7EA /* FunctionManipulation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24A22981ADB4C1E0065E7EA /* FunctionManipulation.swift */; };
+		C24D04C71C7800A800370AB9 /* _OrderedSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25E63E01A00427100F54626 /* _OrderedSet.swift */; };
+		C24D04C81C7800A900370AB9 /* _OrderedSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25E63E01A00427100F54626 /* _OrderedSet.swift */; };
 		C24D19EA19EDAE1500CC3CD9 /* InlinePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24D19E919EDAE1500CC3CD9 /* InlinePickerView.swift */; };
 		C24E0EB91AC6141B0044248E /* Bool+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24E0EB81AC6141B0044248E /* Bool+MoonKitAdditions.swift */; };
 		C2507BDB1C1601E900941C14 /* TapGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2507BDA1C1601E900941C14 /* TapGesture.swift */; };
@@ -274,7 +280,6 @@
 		C256F0831ABDFFE5005B7CB3 /* MoonKitOSX.h in Headers */ = {isa = PBXBuildFile; fileRef = C256F0821ABDFFE5005B7CB3 /* MoonKitOSX.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C25C6F621BA8F23800B3CBAB /* ScrollWheel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25C6F611BA8F23800B3CBAB /* ScrollWheel.swift */; };
 		C25D6A871B703E0C00EB7125 /* UILabel+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25D6A861B703E0C00EB7125 /* UILabel+MoonKitAdditions.swift */; };
-		C25E63E11A00427100F54626 /* OrderedSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25E63E01A00427100F54626 /* OrderedSet.swift */; };
 		C2618A681B7A436400122EBA /* FormTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2618A671B7A436400122EBA /* FormTextField.swift */; };
 		C2618A6A1B7A437200122EBA /* FormSliderField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2618A691B7A437200122EBA /* FormSliderField.swift */; };
 		C2618A6C1B7A438100122EBA /* FormPickerField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2618A6B1B7A438100122EBA /* FormPickerField.swift */; };
@@ -361,7 +366,6 @@
 		C2BDBBDB1BD3F00E00E343F1 /* Heap.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AA2BCC1B8508AA00A0B08D /* Heap.swift */; };
 		C2BDBBDC1BD3F00E00E343F1 /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26863711AF96E6E00D664E8 /* Queue.swift */; };
 		C2BDBBDF1BD3F00E00E343F1 /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C482E419CA0225002E84A9 /* Stack.swift */; };
-		C2BDBBE01BD3F00E00E343F1 /* OrderedSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25E63E01A00427100F54626 /* OrderedSet.swift */; };
 		C2BDBBE11BD3F07C00E343F1 /* CATransform3D.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A09771BC9F1B0002EFEE1 /* CATransform3D.swift */; };
 		C2BDBBE21BD3F07C00E343F1 /* NSRange+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CA852B1BC72EA00046AFC0 /* NSRange+MoonKitAdditions.swift */; };
 		C2BDBBE31BD3F07C00E343F1 /* NSURL+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D406751BBA0F6700681DEF /* NSURL+MoonKitAdditions.swift */; };
@@ -418,12 +422,13 @@
 		C2CA852A1BC726760046AFC0 /* CGAffineTransform+MoonKitAddtions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CA85291BC726760046AFC0 /* CGAffineTransform+MoonKitAddtions.swift */; };
 		C2CA852C1BC72EA00046AFC0 /* NSRange+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CA852B1BC72EA00046AFC0 /* NSRange+MoonKitAdditions.swift */; };
 		C2CA852E1BC731FF0046AFC0 /* NSLayoutManager+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CA852D1BC731FF0046AFC0 /* NSLayoutManager+MoonKitAdditions.swift */; };
+		C2CD95031C7772BA001FB80B /* OrderedSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CD95021C7772BA001FB80B /* OrderedSet.swift */; };
+		C2CD95051C778C78001FB80B /* BitMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CD95041C778C78001FB80B /* BitMap.swift */; };
 		C2CDB8FA1AD77617006DF88C /* example6.json in Resources */ = {isa = PBXBuildFile; fileRef = C2CDB8F91AD77617006DF88C /* example6.json */; };
 		C2CE82751AD07D0400406CE7 /* example2.json in Resources */ = {isa = PBXBuildFile; fileRef = C2CE82741AD07D0400406CE7 /* example2.json */; };
 		C2CE82771AD08D8F00406CE7 /* example3.json in Resources */ = {isa = PBXBuildFile; fileRef = C2CE82761AD08D8F00406CE7 /* example3.json */; };
 		C2CEFF221A30F34400F3BE24 /* Label.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CEFF211A30F34400F3BE24 /* Label.swift */; };
 		C2CEFF261A3121F100F3BE24 /* TextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CEFF251A3121F100F3BE24 /* TextField.swift */; };
-		C2CEFF281A32236B00F3BE24 /* HexIntegerInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CEFF271A32236B00F3BE24 /* HexIntegerInputView.swift */; };
 		C2CEFF2A1A32807E00F3BE24 /* TextInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CEFF291A32807E00F3BE24 /* TextInputView.swift */; };
 		C2CEFF2C1A328B2000F3BE24 /* FloatInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CEFF2B1A328B2000F3BE24 /* FloatInputView.swift */; };
 		C2CF38CF1B7FAFE00085B3D5 /* VerticalSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CF38CE1B7FAFE00085B3D5 /* VerticalSlider.swift */; };
@@ -468,6 +473,8 @@
 
 /* Begin PBXFileReference section */
 		C201F73A1A2539E7004600BC /* PseudoConstraint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PseudoConstraint.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		C2022A5F1C77C6DC003C2C6E /* SetType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetType.swift; sourceTree = "<group>"; };
+		C2022A611C77C9FC003C2C6E /* SetAlgebraType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetAlgebraType.swift; sourceTree = "<group>"; };
 		C20297FB1AF295A5003F647B /* KVOReceptionist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KVOReceptionist.swift; sourceTree = "<group>"; };
 		C2037B7019D0D339001F6AD9 /* MSKitGeometryFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSKitGeometryFunctions.m; sourceTree = "<group>"; };
 		C20534241BCB0A4400A9F040 /* ToggleControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToggleControl.swift; sourceTree = "<group>"; };
@@ -591,7 +598,7 @@
 		C25D6A861B703E0C00EB7125 /* UILabel+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UILabel+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C25E63D819FDBE7100F54626 /* CoreGraphics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreGraphics.swift; sourceTree = "<group>"; };
 		C25E63DD19FEC06A00F54626 /* GestureManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GestureManager.swift; sourceTree = "<group>"; };
-		C25E63E01A00427100F54626 /* OrderedSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderedSet.swift; sourceTree = "<group>"; };
+		C25E63E01A00427100F54626 /* _OrderedSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _OrderedSet.swift; sourceTree = "<group>"; };
 		C2618A671B7A436400122EBA /* FormTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormTextField.swift; sourceTree = "<group>"; };
 		C2618A691B7A437200122EBA /* FormSliderField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormSliderField.swift; sourceTree = "<group>"; };
 		C2618A6B1B7A438100122EBA /* FormPickerField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormPickerField.swift; sourceTree = "<group>"; };
@@ -689,6 +696,8 @@
 		C2CA85291BC726760046AFC0 /* CGAffineTransform+MoonKitAddtions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGAffineTransform+MoonKitAddtions.swift"; sourceTree = "<group>"; };
 		C2CA852B1BC72EA00046AFC0 /* NSRange+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSRange+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C2CA852D1BC731FF0046AFC0 /* NSLayoutManager+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSLayoutManager+MoonKitAdditions.swift"; sourceTree = "<group>"; };
+		C2CD95021C7772BA001FB80B /* OrderedSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderedSet.swift; sourceTree = "<group>"; };
+		C2CD95041C778C78001FB80B /* BitMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BitMap.swift; sourceTree = "<group>"; };
 		C2CDB8F91AD77617006DF88C /* example6.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = example6.json; sourceTree = "<group>"; };
 		C2CE82741AD07D0400406CE7 /* example2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = example2.json; sourceTree = "<group>"; };
 		C2CE82761AD08D8F00406CE7 /* example3.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = example3.json; sourceTree = "<group>"; };
@@ -975,6 +984,7 @@
 		C23592DD19C8E04200920F8D /* Data Structures */ = {
 			isa = PBXGroup;
 			children = (
+				C2022A5F1C77C6DC003C2C6E /* SetType.swift */,
 				C2AA14711BB5857600D7C9E1 /* Tree.swift */,
 				C22E6B8E1B810860008D46A6 /* List.swift */,
 				C2AA2BCC1B8508AA00A0B08D /* Heap.swift */,
@@ -982,10 +992,12 @@
 				C23592DE19C8E04200920F8D /* BitArray.swift */,
 				C23592DF19C8E04200920F8D /* OrderedDictionary.swift */,
 				C2C482E419CA0225002E84A9 /* Stack.swift */,
-				C25E63E01A00427100F54626 /* OrderedSet.swift */,
+				C25E63E01A00427100F54626 /* _OrderedSet.swift */,
+				C2CD95021C7772BA001FB80B /* OrderedSet.swift */,
 				C2B3B2EC1C592EC60001152F /* HashableTuple.swift */,
 				C2562D0B1C64F9150086789D /* WeakArray.swift */,
 				C246961A1C6BD3E100120DAF /* SortedArray.swift */,
+				C2CD95041C778C78001FB80B /* BitMap.swift */,
 			);
 			path = "Data Structures";
 			sourceTree = "<group>";
@@ -1043,6 +1055,7 @@
 				C20534261BCB3BB900A9F040 /* UIControlState+MoonKitAdditions.swift */,
 				C2FEB0261C0FCD5A000BD1B7 /* SKNode+MoonKitAdditions.swift */,
 				C20A10961C512E4A00522FD7 /* ErrorType.swift */,
+				C2022A611C77C9FC003C2C6E /* SetAlgebraType.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -2029,11 +2042,9 @@
 				C2FEB0271C0FCD5A000BD1B7 /* SKNode+MoonKitAdditions.swift in Sources */,
 				C2358F3619C78E0C00920F8D /* NSFetchedResultsController+MSKitAdditions.m in Sources */,
 				C2358F3719C78E0C00920F8D /* NSFetchRequest+MSKitAdditions.m in Sources */,
-				C2064FF81A13BF8100342FDE /* MSDictionary+MoonKitAdditions.swift in Sources */,
 				C20650011A13C72E00342FDE /* NSScanner+MoonKitAdditions.swift in Sources */,
 				C2358F3819C78E0C00920F8D /* NSHashTable+MSKitAdditions.m in Sources */,
 				C28E50941A13CA6400DF3206 /* BlockBarButtonItem.swift in Sources */,
-				C2CEFF281A32236B00F3BE24 /* HexIntegerInputView.swift in Sources */,
 				C28A61EB1B0CEA2100612469 /* LabeledStepper.swift in Sources */,
 				C2064FFA1A13C05900342FDE /* Operators.swift in Sources */,
 				C2776C2D1B9E6053002FE5A8 /* Index.swift in Sources */,
@@ -2104,6 +2115,8 @@
 				C2358F4D19C78E0C00920F8D /* UIGestureRecognizer+MSKitAdditions.m in Sources */,
 				C24133F81B7520D40040580B /* ToggleButtonNode.swift in Sources */,
 				C2358F4E19C78E0C00920F8D /* UIImage+ImageEffects.m in Sources */,
+				C2CD95051C778C78001FB80B /* BitMap.swift in Sources */,
+				C219235C1C76130D00E82437 /* HexIntegerInputView.swift in Sources */,
 				C2358F4F19C78E0C00920F8D /* UIImage+MSKitAdditions.m in Sources */,
 				C20650061A13C90A00342FDE /* FontAwesomeIcon.swift in Sources */,
 				C205852B1A1BA22A00212759 /* LongPressGesture.swift in Sources */,
@@ -2113,6 +2126,7 @@
 				C2358F5219C78E0C00920F8D /* UIView+MSKitAdditions.m in Sources */,
 				C2358F5319C78E0C00920F8D /* UIViewController+MSKitAdditions.m in Sources */,
 				C2E7C8321A1AA3F0006BC80E /* Protocols.swift in Sources */,
+				C2CD95031C7772BA001FB80B /* OrderedSet.swift in Sources */,
 				C2CA852C1BC72EA00046AFC0 /* NSRange+MoonKitAdditions.swift in Sources */,
 				C2358F5419C78E0C00920F8D /* NSPointerArray+MSKitAdditions.m in Sources */,
 				C2358F5519C78E0C00920F8D /* NSAssertionHandler+MSKitAdditions.m in Sources */,
@@ -2171,6 +2185,7 @@
 				C26A27F11B94BD7A00BD1698 /* IntrinsicSizeDelegatingView.swift in Sources */,
 				C2358F6119C78E0C00920F8D /* MSGestureManager.m in Sources */,
 				C2358F6219C78E0C00920F8D /* MSLongPressGestureRecognizer.m in Sources */,
+				C219235D1C76132000E82437 /* MSDictionary+MoonKitAdditions.swift in Sources */,
 				C29073911BD7021F0090399E /* ColorLog.swift in Sources */,
 				C24A22811ADAEC010065E7EA /* ArrayJSONValue.swift in Sources */,
 				C2F094451A32A83A00681AB3 /* DrawingKit.swift in Sources */,
@@ -2196,7 +2211,6 @@
 				C2E8C8B71AE7325300F8AC45 /* UITableViewCell+MoonKitAdditions.swift in Sources */,
 				C2DDA2331C39A07B005F0965 /* UUID.swift in Sources */,
 				C24A22871ADAF0300065E7EA /* BoxedJSONValue.swift in Sources */,
-				C25E63E11A00427100F54626 /* OrderedSet.swift in Sources */,
 				C2618A741B7A68F900122EBA /* LabeledSlider.swift in Sources */,
 				C2CEFF261A3121F100F3BE24 /* TextField.swift in Sources */,
 				C2358F6B19C78E0C00920F8D /* MSDictionary.m in Sources */,
@@ -2219,6 +2233,7 @@
 				C2064FFB1A13C6F000342FDE /* MoonFunctions.swift in Sources */,
 				C2562D0C1C64F9150086789D /* WeakArray.swift in Sources */,
 				C2064FFC1A13C70200342FDE /* LoggingFunctions.swift in Sources */,
+				C2022A601C77C6DC003C2C6E /* SetType.swift in Sources */,
 				C2358F7119C78E0C00920F8D /* MSPainter.m in Sources */,
 				C2F8C30F1A36133E004229FE /* TwoToneSlider.swift in Sources */,
 				C2358F7219C78E0C00920F8D /* MSQueue.m in Sources */,
@@ -2251,8 +2266,10 @@
 				C296498E1B00EBBF000C2D4A /* FormView.swift in Sources */,
 				C24416331ACB16F8007EDEFE /* Set+MoonKitAdditions.swift in Sources */,
 				C2E937001ACE04D4003EB3E8 /* JSONParser.swift in Sources */,
+				C2022A621C77C9FC003C2C6E /* SetAlgebraType.swift in Sources */,
 				C2358F7D19C78E0C00920F8D /* MSCheckboxView.m in Sources */,
 				C2CA852E1BC731FF0046AFC0 /* NSLayoutManager+MoonKitAdditions.swift in Sources */,
+				C24D04C71C7800A800370AB9 /* _OrderedSet.swift in Sources */,
 				C268340A1B10C24100A359A8 /* LabelButton.swift in Sources */,
 				C2618A721B7A43B500122EBA /* FormSwitchField.swift in Sources */,
 				C2304E0A1AEECE1C0090D889 /* LayerProxy.swift in Sources */,
@@ -2328,6 +2345,7 @@
 				C2BDBC011BD3F07C00E343F1 /* SetOperations.swift in Sources */,
 				C2BDBBFC1BD3F07C00E343F1 /* Generic.swift in Sources */,
 				C2BDBBF61BD3F07C00E343F1 /* Index.swift in Sources */,
+				C24D04C81C7800A900370AB9 /* _OrderedSet.swift in Sources */,
 				C2BDBBE51BD3F07C00E343F1 /* Dictionary+MoonKitAdditions.swift in Sources */,
 				C2BDBBFA1BD3F07C00E343F1 /* CGVector+MoonKitAdditions.swift in Sources */,
 				C2BDBBE41BD3F07C00E343F1 /* Array+MoonKitAdditions.swift in Sources */,
@@ -2335,9 +2353,9 @@
 				C2BDBBFE1BD3F07C00E343F1 /* Operators.swift in Sources */,
 				C2BDBBD91BD3F00E00E343F1 /* Tree.swift in Sources */,
 				C2BDBBE71BD3F07C00E343F1 /* Bool+MoonKitAdditions.swift in Sources */,
+				C2022A5C1C77C1DB003C2C6E /* OrderedSet.swift in Sources */,
 				C2BDBBF21BD3F07C00E343F1 /* NSParagraphStyle+MoonKitAdditions.swift in Sources */,
 				C2BDBBDA1BD3F00E00E343F1 /* List.swift in Sources */,
-				C2BDBBE01BD3F00E00E343F1 /* OrderedSet.swift in Sources */,
 				C2BDBBEA1BD3F07C00E343F1 /* NSScanner+MoonKitAdditions.swift in Sources */,
 				C2BDBBD01BD3F00E00E343F1 /* RegularExpression.swift in Sources */,
 				C2BDBBD61BD3F00E00E343F1 /* PropertyCoder.swift in Sources */,

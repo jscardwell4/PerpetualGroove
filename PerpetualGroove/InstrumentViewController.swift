@@ -9,7 +9,7 @@
 import UIKit
 import MoonKit
 
-final class InstrumentViewController: UIViewController {
+final class InstrumentViewController: SecondaryContentViewController {
 
   @IBOutlet weak var soundSetPicker: InlinePickerView!
   @IBOutlet weak var programPicker:  InlinePickerView!

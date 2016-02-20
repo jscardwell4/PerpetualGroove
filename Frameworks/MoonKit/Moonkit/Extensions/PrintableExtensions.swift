@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-
+import enum CoreData.NSFetchedResultsChangeType
 extension NSFetchedResultsChangeType: CustomStringConvertible {
   public var description: String {
     switch self {

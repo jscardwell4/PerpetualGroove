@@ -61,7 +61,7 @@ public class TouchTrackingGesture: BlockActionGesture {
   - returns: OrderedSet<UIView>
   */
   public func touchedViews() -> OrderedSet<UIView> {
-    return view == nil ? [] : OrderedSet(compressed(touchLocations.array.map{self.view!.window!.hitTest($0, withEvent: nil)}))
+    return view == nil ? [] : OrderedSet(compressed(touchLocations.map{self.view!.window!.hitTest($0, withEvent: nil)}))
   }
 
   /**
@@ -73,7 +73,7 @@ public class TouchTrackingGesture: BlockActionGesture {
   - returns: OrderedSet<UIView>
   */
   public func touchedSubviewsInView(view: UIView, includeView: (UIView) -> Bool) -> OrderedSet<UIView> {
-    return touchedSubviewsInView(view).filter(includeView)
+    return OrderedSet(touchedSubviewsInView(view).filter(includeView))
   }
 
   /**
@@ -84,7 +84,7 @@ public class TouchTrackingGesture: BlockActionGesture {
   - returns: OrderedSet<UIView>
   */
   public func touchedSubviewsInView(view: UIView) -> OrderedSet<UIView> {
-    return touchedViews().filter({$0.isDescendantOfView(view)})
+    return OrderedSet(touchedViews().filter({$0.isDescendantOfView(view)}))
   }
 
   /**
@@ -95,7 +95,7 @@ public class TouchTrackingGesture: BlockActionGesture {
   - returns: [CGPoint]
   */
   public func touchLocationsInView(view: UIView) -> OrderedSet<CGPoint> {
-    return touchLocations.map{view.convertPoint($0, fromView: nil)}
+    return OrderedSet(touchLocations.map{view.convertPoint($0, fromView: nil)})
   }
 
   /** reset */

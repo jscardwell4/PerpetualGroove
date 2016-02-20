@@ -33,7 +33,7 @@ public class LongPressGesture: ConfiningBlockActionGesture {
   /// MARK: -
 
   private var centroid: CGPoint = CGPoint.null
-  private var pressingTouches: OrderedSet<UITouch> = [] { didSet { centroid = centroidForTouches(pressingTouches.array)} }
+  private var pressingTouches: OrderedSet<UITouch> = [] { didSet { centroid = centroidForTouches(pressingTouches)} }
   private var pressTimestamp: Double = 0.0 {
     didSet {
       if pressTimestamp > 0.0 {
@@ -54,7 +54,7 @@ public class LongPressGesture: ConfiningBlockActionGesture {
  /** reset */
   public override func reset() {
     state = .Possible
-    pressingTouches.removeAll()
+    pressingTouches.removeAll(true)
     pressTimestamp = 0.0
     pressRecognized = false
     centroid = CGPoint.null
@@ -93,7 +93,7 @@ public class LongPressGesture: ConfiningBlockActionGesture {
       if !validateTouchLocations(movedTouches, withEvent: event) { state = pressRecognized ? .Cancelled : .Failed }
       else if !pressRecognized {
         assert(centroid != CGPoint.null, "why haven't we calculated a centroid for the beginning state?")
-        let currentCentroid = centroidForTouches(pressingTouches.array)
+        let currentCentroid = centroidForTouches(pressingTouches)
         let delta = (currentCentroid - centroid).absolute
         let movement = max(delta.x, delta.y)
         if movement > allowableMovement { state = .Failed }

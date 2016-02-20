@@ -131,7 +131,9 @@ final class MIDIPlayerViewController: UIViewController {
 
   private func didSelectTool(notification: NSNotification) {
     guard let tool = notification.selectedTool else { return }
-    if primaryTools.selectedSegmentIndex != tool.rawValue { primaryTools.selectedSegmentIndex = tool.rawValue }
+    if primaryTools.selectedSegmentIndex != tool.rawValue {
+      primaryTools.selectedSegmentIndex = tool.rawValue
+    }
   }
 
   /**

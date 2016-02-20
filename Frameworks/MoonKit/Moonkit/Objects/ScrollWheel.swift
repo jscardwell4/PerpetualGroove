@@ -44,7 +44,7 @@ public class ScrollWheel: UIControl {
 
   // MARK: - Colors
 
-  @IBInspectable public var wheelColor: UIColor = .redColor() {
+  @IBInspectable public var wheelColor: UIColor = .grayColor() {
     didSet {
       guard wheelColor != oldValue else { return }
 

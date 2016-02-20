@@ -13,42 +13,30 @@ import MoonKit
 
 // MARK: - Enumeration for specifying the color attached to a `MIDITrackType`
 enum TrackColor: UInt32, Equatable, Hashable, EnumerableType, CustomStringConvertible {
-  case MuddyWaters        = 0xad6140
-  case SteelBlue          = 0x386096
-  case Celery             = 0x8ea83d
-  case Chestnut           = 0xa93a43
-  case CrayonPurple       = 0x6b3096
-  case Verdigris          = 0x3b9396
-  case Twine              = 0xae7c40
-  case Tapestry           = 0x99327a
-  case VegasGold          = 0xafae40
-  case RichBlue           = 0x3d3296
-  case FruitSalad         = 0x459c38
-  case Husk               = 0xae9440
-  case Mahogany           = 0xb22d04
-  case MediumElectricBlue = 0x043489
-  case AppleGreen         = 0x7ca604
-  case VenetianRed        = 0xab000b
-  case Indigo             = 0x470089
-  case EasternBlue        = 0x108389
-  case Indochine          = 0xb35a04
-  case Flirt              = 0x8e005c
-  case Ultramarine        = 0x090089
-  case LaRioja            = 0xb5b106
-  case ForestGreen        = 0x189002
-  case Pizza              = 0xb48405
-  case White              = 0xffffff
-  case Portica            = 0xf7ea64
-  case MonteCarlo         = 0x7ac2a5
-  case FlamePea           = 0xda5d3a
-  case Crimson            = 0xd6223e
-  case HanPurple          = 0x361aee
-  case MangoTango         = 0xf88242
-  case Viking             = 0x6bcbe1
-  case Yellow             = 0xfde97e
-  case Conifer            = 0x9edc58
-  case Apache             = 0xce9f58
-
+  case MuddyWaters        = 0xBD7651
+  case SteelBlue          = 0x4875A8
+  case Celery             = 0x9FB44D
+  case Chestnut           = 0xBA5055
+  case CrayonPurple       = 0x8048A8
+  case Verdigris          = 0x48A4A8
+  case Twine              = 0xBD8F51
+  case Tapestry           = 0xAB4A8D
+  case VegasGold          = 0xBDBA51
+  case RichBlue           = 0x5048A8
+  case FruitSalad         = 0x53A949
+  case Husk               = 0xBDA451
+  case Mahogany           = 0xC24100
+  case MediumElectricBlue = 0x00499B
+  case AppleGreen         = 0x8EB200
+  case VenetianRed        = 0xBC000A
+  case Indigo             = 0x5B009B
+  case EasternBlue        = 0x00959B
+  case Indochine          = 0xC26E00
+  case Flirt              = 0xA2006F
+  case Ultramarine        = 0x0C009B
+  case LaRioja            = 0xC2BC00
+  case ForestGreen        = 0x119E00
+  case Pizza              = 0xC29500
 
   var value: UIColor { return UIColor(RGBHex: rawValue) }
 
@@ -75,29 +63,18 @@ enum TrackColor: UInt32, Equatable, Hashable, EnumerableType, CustomStringConver
       case .Indochine:          return "Indochine"
       case .Flirt:              return "Flirt"
       case .Ultramarine:        return "Ultramarine"
-      case .LaRioja:            return "LaRioja"
+      case .LaRioja:            return "Larioja"
       case .ForestGreen:        return "ForestGreen"
       case .Pizza:              return "Pizza"
-      case .White:              return "White"
-      case .Portica:            return "Portica"
-      case .MonteCarlo:         return "MonteCarlo"
-      case .FlamePea:           return "FlamePea"
-      case .Crimson:            return "Crimson"
-      case .HanPurple:          return "HanPurple"
-      case .MangoTango:         return "MangoTango"
-      case .Viking:             return "Viking"
-      case .Yellow:             return "Yellow"
-      case .Conifer:            return "Conifer"
-      case .Apache:             return "Apache"
     }
   }
 
   /// `White` case is left out so that it is harder to assign the color used by `MasterTrack`
   static let allCases: [TrackColor] = [
-    .MuddyWaters, .SteelBlue, .Celery, .Chestnut, .CrayonPurple, .Verdigris, .Twine, .Tapestry, .VegasGold, 
-    .RichBlue, .FruitSalad, .Husk, .Mahogany, .MediumElectricBlue, .AppleGreen, .VenetianRed, .Indigo, 
-    .EasternBlue, .Indochine, .Flirt, .Ultramarine, .LaRioja, .ForestGreen, .Pizza, .White, .Portica, 
-    .MonteCarlo, .FlamePea, .Crimson, .HanPurple, .MangoTango, .Viking, .Yellow, .Conifer, .Apache
+    .MuddyWaters, .SteelBlue, .Celery, .Chestnut, .CrayonPurple, .Verdigris, .Twine, 
+    .Tapestry, .VegasGold, .RichBlue, .FruitSalad, .Husk, .Mahogany, .MediumElectricBlue, 
+    .AppleGreen, .VenetianRed, .Indigo, .EasternBlue, .Indochine, .Flirt, .Ultramarine, 
+    .LaRioja, .ForestGreen, .Pizza
   ]
 
 //  static var currentColor: TrackColor? {
@@ -112,12 +89,13 @@ enum TrackColor: UInt32, Equatable, Hashable, EnumerableType, CustomStringConver
 }
 
 extension TrackColor: JSONValueConvertible {
-  var jsonValue: JSONValue { return value.jsonValue }
+  var jsonValue: JSONValue { return "#\(String(rawValue, radix: 16, uppercase: true))".jsonValue }
 }
 
 extension TrackColor: JSONValueInitializable {
   init?(_ jsonValue: JSONValue?) {
-    guard let hex = UIColor(jsonValue)?.rgbHex else { return nil }
+    guard let string = String(jsonValue) where string.hasPrefix("#"),
+          let hex = UInt32(string[string.startIndex.successor()..<], radix: 16) else { return nil }
     self.init(rawValue: hex)
   }
 }
