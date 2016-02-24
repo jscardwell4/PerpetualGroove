@@ -14,20 +14,16 @@ public struct BitMap {
   public let values: UnsafeMutablePointer<UInt>
   public let bitCount: Int
 
-  // Note: We use UInt here to get unsigned math (shifts).
-  @warn_unused_result
   public static func wordIndex(i: UInt) -> UInt {
     return i / UInt._sizeInBits
   }
 
-  @warn_unused_result
   public static func bitIndex(i: UInt) -> UInt {
     return i % UInt._sizeInBits
   }
 
-  @warn_unused_result
   public static func wordsFor(bitCount: Int) -> Int {
-    return bitCount + sizeof(Int) - 1 / sizeof(Int)
+    return (bitCount + sizeof(UInt) - 1) / sizeof(UInt)
   }
 
   public init(storage: UnsafeMutablePointer<UInt>, bitCount: Int) {
@@ -35,18 +31,9 @@ public struct BitMap {
     self.values = storage
   }
 
-  public var numberOfWords: Int {
-    @warn_unused_result
-    get {
-      return BitMap.wordsFor(bitCount)
-    }
-  }
+  public var numberOfWords: Int { return BitMap.wordsFor(bitCount) }
 
-  public func initializeToZero() {
-    for i in 0 ..< numberOfWords {
-      (values + i).initialize(0)
-    }
-  }
+  public func initializeToZero() { for i in 0 ..< numberOfWords { (values + i).initialize(0) } }
 
   public subscript(i: Int) -> Bool {
     @warn_unused_result
@@ -69,5 +56,15 @@ public struct BitMap {
           values[Int(wordIdx)] & ~(1 << BitMap.bitIndex(idx))
       }
     }
+  }
+}
+
+extension BitMap: CustomStringConvertible {
+  public var description: String {
+    var result = "(total words: \(numberOfWords); total bits: \(bitCount)) "
+
+    result += "".join((0 ..< bitCount).map({self[$0] ? "1" : "0"}))
+
+    return result
   }
 }

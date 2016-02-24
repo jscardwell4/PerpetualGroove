@@ -87,6 +87,7 @@
 		C283B69C1BC02E3B007A4A36 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C283B69B1BC02E3B007A4A36 /* Settings.bundle */; };
 		C283B69E1BC0495A007A4A36 /* DocumentItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C283B69D1BC0495A007A4A36 /* DocumentItem.swift */; };
 		C284F7CB1C49C8A8009C72A0 /* MIDINodePathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C284F7CA1C49C8A8009C72A0 /* MIDINodePathTests.swift */; };
+		C28831951C78E8AD00F6865D /* MIDIEventContainerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28831941C78E8AD00F6865D /* MIDIEventContainerTests.swift */; };
 		C28BB6021BBF110E00BF2F70 /* DocumentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28BB6011BBF110E00BF2F70 /* DocumentCell.swift */; };
 		C291C3EB1B91EDA700702AEA /* MIDIFileTrackChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3EA1B91EDA700702AEA /* MIDIFileTrackChunk.swift */; };
 		C291C3ED1B91EDB700702AEA /* MIDIFileHeaderChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3EC1B91EDB700702AEA /* MIDIFileHeaderChunk.swift */; };
@@ -156,6 +157,13 @@
 			remoteInfo = PerpetualGroove;
 		};
 		C284F7CD1C49C8A8009C72A0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C2E043291B72F4DC005F0675 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C2E043301B72F4DC005F0675;
+			remoteInfo = PerpetualGroove;
+		};
+		C28831971C78E8AD00F6865D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C2E043291B72F4DC005F0675 /* Project object */;
 			proxyType = 1;
@@ -269,6 +277,9 @@
 		C284F7C81C49C8A8009C72A0 /* MIDINodePathTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MIDINodePathTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C284F7CA1C49C8A8009C72A0 /* MIDINodePathTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MIDINodePathTests.swift; sourceTree = "<group>"; };
 		C284F7CC1C49C8A8009C72A0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C28831921C78E8AC00F6865D /* MIDIEventContainerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MIDIEventContainerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C28831941C78E8AD00F6865D /* MIDIEventContainerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MIDIEventContainerTests.swift; sourceTree = "<group>"; };
+		C28831961C78E8AD00F6865D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C28AA0EB1B8BC74800DA2502 /* test.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = test.mid; sourceTree = "<group>"; };
 		C28AA0ED1B8BE1F800DA2502 /* Ping Puh Ping.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = "Ping Puh Ping.mid"; sourceTree = "<group>"; };
 		C28BB6011BBF110E00BF2F70 /* DocumentCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentCell.swift; sourceTree = "<group>"; };
@@ -345,6 +356,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		C284F7C51C49C8A8009C72A0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C288318F1C78E8AC00F6865D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -625,6 +643,15 @@
 			path = MIDINodePathTests;
 			sourceTree = "<group>";
 		};
+		C28831931C78E8AD00F6865D /* MIDIEventContainerTests */ = {
+			isa = PBXGroup;
+			children = (
+				C28831941C78E8AD00F6865D /* MIDIEventContainerTests.swift */,
+				C28831961C78E8AD00F6865D /* Info.plist */,
+			);
+			path = MIDIEventContainerTests;
+			sourceTree = "<group>";
+		};
 		C2E043281B72F4DC005F0675 = {
 			isa = PBXGroup;
 			children = (
@@ -635,6 +662,7 @@
 				C23B05931C0219560081AC6E /* NoteChordTests */,
 				C284F7C91C49C8A8009C72A0 /* MIDINodePathTests */,
 				C20A109F1C51552B00522FD7 /* BarBeatTimeTests */,
+				C28831931C78E8AD00F6865D /* MIDIEventContainerTests */,
 				C2E043321B72F4DC005F0675 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -646,6 +674,7 @@
 				C23B05921C0219560081AC6E /* NoteChordTests.xctest */,
 				C284F7C81C49C8A8009C72A0 /* MIDINodePathTests.xctest */,
 				C20A109E1C51552B00522FD7 /* BarBeatTimeTests.xctest */,
+				C28831921C78E8AC00F6865D /* MIDIEventContainerTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -719,6 +748,24 @@
 			productReference = C284F7C81C49C8A8009C72A0 /* MIDINodePathTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		C28831911C78E8AC00F6865D /* MIDIEventContainerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C288319D1C78E8AD00F6865D /* Build configuration list for PBXNativeTarget "MIDIEventContainerTests" */;
+			buildPhases = (
+				C288318E1C78E8AC00F6865D /* Sources */,
+				C288318F1C78E8AC00F6865D /* Frameworks */,
+				C28831901C78E8AC00F6865D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C28831981C78E8AD00F6865D /* PBXTargetDependency */,
+			);
+			name = MIDIEventContainerTests;
+			productName = MIDIEventContainerTests;
+			productReference = C28831921C78E8AC00F6865D /* MIDIEventContainerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		C2E043301B72F4DC005F0675 /* PerpetualGroove */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C2E043471B72F4DC005F0675 /* Build configuration list for PBXNativeTarget "PerpetualGroove" */;
@@ -744,7 +791,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftMigration = 0730;
-				LastSwiftUpdateCheck = 0720;
+				LastSwiftUpdateCheck = 0730;
 				LastUpgradeCheck = 0710;
 				ORGANIZATIONNAME = "Moondeer Studios";
 				TargetAttributes = {
@@ -758,6 +805,10 @@
 					};
 					C284F7C71C49C8A8009C72A0 = {
 						CreatedOnToolsVersion = 7.2;
+						TestTargetID = C2E043301B72F4DC005F0675;
+					};
+					C28831911C78E8AC00F6865D = {
+						CreatedOnToolsVersion = 7.3;
 						TestTargetID = C2E043301B72F4DC005F0675;
 					};
 					C2E043301B72F4DC005F0675 = {
@@ -794,6 +845,7 @@
 				C23B05911C0219560081AC6E /* NoteChordTests */,
 				C284F7C71C49C8A8009C72A0 /* MIDINodePathTests */,
 				C20A109D1C51552B00522FD7 /* BarBeatTimeTests */,
+				C28831911C78E8AC00F6865D /* MIDIEventContainerTests */,
 			);
 		};
 /* End PBXProject section */
@@ -814,6 +866,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		C284F7C61C49C8A8009C72A0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C28831901C78E8AC00F6865D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -874,6 +933,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				C284F7CB1C49C8A8009C72A0 /* MIDINodePathTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C288318E1C78E8AC00F6865D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C28831951C78E8AD00F6865D /* MIDIEventContainerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -993,6 +1060,11 @@
 			isa = PBXTargetDependency;
 			target = C2E043301B72F4DC005F0675 /* PerpetualGroove */;
 			targetProxy = C284F7CD1C49C8A8009C72A0 /* PBXContainerItemProxy */;
+		};
+		C28831981C78E8AD00F6865D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C2E043301B72F4DC005F0675 /* PerpetualGroove */;
+			targetProxy = C28831971C78E8AD00F6865D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1340,6 +1412,62 @@
 			};
 			name = Release;
 		};
+		C28831991C78E8AD00F6865D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NONNULL = YES;
+				INFOPLIST_FILE = MIDIEventContainerTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.MIDIEventContainerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
+			};
+			name = Debug;
+		};
+		C288319A1C78E8AD00F6865D /* Debug-Verbose */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NONNULL = YES;
+				INFOPLIST_FILE = MIDIEventContainerTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.MIDIEventContainerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
+			};
+			name = "Debug-Verbose";
+		};
+		C288319B1C78E8AD00F6865D /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NONNULL = YES;
+				INFOPLIST_FILE = MIDIEventContainerTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.MIDIEventContainerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
+			};
+			name = Profile;
+		};
+		C288319C1C78E8AD00F6865D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NONNULL = YES;
+				INFOPLIST_FILE = MIDIEventContainerTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.MIDIEventContainerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
+			};
+			name = Release;
+		};
 		C2E043451B72F4DC005F0675 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1504,6 +1632,16 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		C288319D1C78E8AD00F6865D /* Build configuration list for PBXNativeTarget "MIDIEventContainerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C28831991C78E8AD00F6865D /* Debug */,
+				C288319A1C78E8AD00F6865D /* Debug-Verbose */,
+				C288319B1C78E8AD00F6865D /* Profile */,
+				C288319C1C78E8AD00F6865D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 		C2E0432C1B72F4DC005F0675 /* Build configuration list for PBXProject "PerpetualGroove" */ = {
 			isa = XCConfigurationList;

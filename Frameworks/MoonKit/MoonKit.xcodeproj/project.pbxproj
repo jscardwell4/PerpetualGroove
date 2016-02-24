@@ -271,6 +271,7 @@
 		C24A22951ADB45340065E7EA /* RawOptionSetFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24A22941ADB45340065E7EA /* RawOptionSetFunctions.swift */; };
 		C24A22971ADB47590065E7EA /* CollectionManipulations.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24A22961ADB47590065E7EA /* CollectionManipulations.swift */; };
 		C24A22991ADB4C1E0065E7EA /* FunctionManipulation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24A22981ADB4C1E0065E7EA /* FunctionManipulation.swift */; };
+		C24AF3DF1C7BFC2500C55223 /* BitArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24AF3DE1C7BFC2500C55223 /* BitArray.swift */; };
 		C24D04C71C7800A800370AB9 /* _OrderedSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25E63E01A00427100F54626 /* _OrderedSet.swift */; };
 		C24D04C81C7800A900370AB9 /* _OrderedSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25E63E01A00427100F54626 /* _OrderedSet.swift */; };
 		C24D19EA19EDAE1500CC3CD9 /* InlinePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24D19E919EDAE1500CC3CD9 /* InlinePickerView.swift */; };
@@ -542,7 +543,7 @@
 		C23592D419C8783E00920F8D /* NSMutableString+MSKitAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableString+MSKitAdditions.h"; sourceTree = "<group>"; };
 		C23592D519C8783E00920F8D /* NSMutableString+MSKitAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableString+MSKitAdditions.m"; sourceTree = "<group>"; };
 		C23592DC19C8E04200920F8D /* MoonFunctions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoonFunctions.swift; sourceTree = "<group>"; };
-		C23592DE19C8E04200920F8D /* BitArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BitArray.swift; sourceTree = "<group>"; };
+		C23592DE19C8E04200920F8D /* _BitArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _BitArray.swift; sourceTree = "<group>"; };
 		C23592DF19C8E04200920F8D /* OrderedDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = OrderedDictionary.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		C23592E919C8E04200920F8D /* String+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = "String+MoonKitAdditions.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		C23592EB19C8E04200920F8D /* UIFont+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIFont+MoonKitAdditions.swift"; sourceTree = "<group>"; };
@@ -583,6 +584,8 @@
 		C24A22941ADB45340065E7EA /* RawOptionSetFunctions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RawOptionSetFunctions.swift; sourceTree = "<group>"; };
 		C24A22961ADB47590065E7EA /* CollectionManipulations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionManipulations.swift; sourceTree = "<group>"; };
 		C24A22981ADB4C1E0065E7EA /* FunctionManipulation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FunctionManipulation.swift; sourceTree = "<group>"; };
+		C24AF3DD1C7B644F00C55223 /* OrderedDictionary.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = OrderedDictionary.playground; sourceTree = "<group>"; };
+		C24AF3DE1C7BFC2500C55223 /* BitArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BitArray.swift; sourceTree = "<group>"; };
 		C24D19E919EDAE1500CC3CD9 /* InlinePickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InlinePickerView.swift; sourceTree = "<group>"; };
 		C24D19EC19EDB54400CC3CD9 /* UIView+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C24DD28A1AE4056D000306A0 /* Constraints.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = Constraints.playground; path = Moonkit/Constraints.playground; sourceTree = "<group>"; };
@@ -987,7 +990,7 @@
 				C22E6B8E1B810860008D46A6 /* List.swift */,
 				C2AA2BCC1B8508AA00A0B08D /* Heap.swift */,
 				C26863711AF96E6E00D664E8 /* Queue.swift */,
-				C23592DE19C8E04200920F8D /* BitArray.swift */,
+				C23592DE19C8E04200920F8D /* _BitArray.swift */,
 				C23592DF19C8E04200920F8D /* OrderedDictionary.swift */,
 				C2C482E419CA0225002E84A9 /* Stack.swift */,
 				C25E63E01A00427100F54626 /* _OrderedSet.swift */,
@@ -996,6 +999,7 @@
 				C2562D0B1C64F9150086789D /* WeakArray.swift */,
 				C246961A1C6BD3E100120DAF /* SortedArray.swift */,
 				C2CD95041C778C78001FB80B /* BitMap.swift */,
+				C24AF3DE1C7BFC2500C55223 /* BitArray.swift */,
 			);
 			path = "Data Structures";
 			sourceTree = "<group>";
@@ -1349,6 +1353,7 @@
 		C2CE884518138C4900555D63 = {
 			isa = PBXGroup;
 			children = (
+				C24AF3DD1C7B644F00C55223 /* OrderedDictionary.playground */,
 				C24696191C6A3CD800120DAF /* IntervalMap.playground */,
 				C21D86051BDF089D00C79153 /* RedBlackTree.playground */,
 				C2E076A31B4EF7420063D057 /* WTF.playground */,
@@ -2060,6 +2065,7 @@
 				C24A22971ADB47590065E7EA /* CollectionManipulations.swift in Sources */,
 				C23592FE19C8E04200920F8D /* String+MoonKitAdditions.swift in Sources */,
 				C2CEFF2A1A32807E00F3BE24 /* TextInputView.swift in Sources */,
+				C24AF3DF1C7BFC2500C55223 /* BitArray.swift in Sources */,
 				C28C9B091BC35740002945BC /* NotificationType.swift in Sources */,
 				C26A27F71B9532A900BD1698 /* Knob.swift in Sources */,
 				C2358F3F19C78E0C00920F8D /* NSObject+MSKitAdditions.m in Sources */,

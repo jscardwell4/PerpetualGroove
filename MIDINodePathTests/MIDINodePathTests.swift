@@ -39,7 +39,7 @@ final class MIDINodePathTests: XCTestCase {
     let segment = path.initialSegment
     XCTAssertEqualWithAccuracy(segment.endLocation.x, 286.156655407142, accuracy: 0.0001)
     XCTAssertEqual(segment.endLocation.y, 21)
-    XCTAssertEqual(segment.endTime, "3:3/4.144/480@120₁")
+    XCTAssertEqual(segment.endTime, "3:3/4.145/480@120₁")
   }
 
   func testCreation() {

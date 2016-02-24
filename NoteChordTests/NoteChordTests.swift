@@ -11,7 +11,7 @@ import XCTest
 
 func AssertEqualElements<S1:SequenceType, S2:SequenceType
   where S1.Generator.Element:Equatable,
-        S1.Generator.Element == S2.Generator.Element>(s1: S1, _ s2: S2, file: String = __FILE__, line: UInt = __LINE__)
+        S1.Generator.Element == S2.Generator.Element>(s1: S1, _ s2: S2, file: StaticString = __FILE__, line: UInt = __LINE__)
 {
   XCTAssert(s1.elementsEqual(s2), "the elements in \(s1) are not equal to the elements in \(s2)", file: file, line: line)
 }
