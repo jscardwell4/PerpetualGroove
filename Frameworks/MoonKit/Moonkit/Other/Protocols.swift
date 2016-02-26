@@ -11,6 +11,15 @@ import Foundation
 //import SpriteKit
 import Swift
 
+public protocol Valued {
+  typealias ValueType
+  var value: ValueType { get }
+}
+
+public protocol IntValued {
+  var value: Int { get }
+}
+
 public func withWeakReferenceToObject<T:AnyObject, U, R>(object: T?, body: (T?, U) -> R) -> (U) -> R {
   return { [weak object] in body(object, $0) }
 }
