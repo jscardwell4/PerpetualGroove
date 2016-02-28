@@ -35,8 +35,8 @@ public extension ClosedInterval where Bound:SignedNumberType, Bound:ArithmeticTy
   // FIXME: I think this only works for positive start intervals and intervals of the form -x ... x
   public var diameter: Bound { return abs(end - start) }
 
-  public func normalizeValue(var value: Bound) -> Bound {
-    value = clampValue(value)
+  public func normalizeValue(value: Bound) -> Bound {
+    let value = clampValue(value)
     if start < 0 { return (value + abs(start)) / diameter }
     else if start > 0 { return (value - start) / diameter }
     else { return value / diameter }

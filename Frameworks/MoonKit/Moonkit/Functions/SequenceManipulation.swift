@@ -60,10 +60,10 @@ public extension SequenceType {
 
   - returns: [[Generator.Element]]
   */
-  public func segment(var segmentSize: Int = 2, options: SegmentOptions<Generator.Element> = .UnpaddedLastGroup) -> [[Generator.Element]] {
+  public func segment(segmentSize: Int = 2, options: SegmentOptions<Generator.Element> = .UnpaddedLastGroup) -> [[Generator.Element]] {
     var result: [[Generator.Element]] = []
     var array: [Generator.Element] = []
-    segmentSize = max(segmentSize, 1)
+    let segmentSize = max(segmentSize, 1)
 
     switch options {
       case .UnpaddedLastGroup:
@@ -209,7 +209,8 @@ unzip:S1>:
 - returns: ([E0], [E1])
 */
 public func unzip<S0:SequenceType, S1:SequenceType, E0, E1 where E0 == S0.Generator.Element, E1 == S1.Generator.Element>(z: Zip2Sequence<S0, S1>) -> ([E0], [E1]) {
-  return z.reduce(([], []), combine: { (var result: ([E0], [E1]), p: (E0, E1)) -> ([E0], [E1]) in
+  return z.reduce(([], []), combine: { (result: ([E0], [E1]), p: (E0, E1)) -> ([E0], [E1]) in
+    var result = result
     result.0.append(p.0)
     result.1.append(p.1)
     return result
@@ -224,14 +225,16 @@ unzip:
 - returns: ([E0], [E1])
 */
 public func unzip<E0, E1, S:SequenceType where S.Generator.Element == (E0, E1)>(s: S) -> ([E0], [E1]) {
-  return s.reduce(([], []), combine: { (var result: ([E0], [E1]), p: (E0, E1)) -> ([E0], [E1]) in
+  return s.reduce(([], []), combine: { (result: ([E0], [E1]), p: (E0, E1)) -> ([E0], [E1]) in
+    var result = result
     result.0.append(p.0)
     result.1.append(p.1)
     return result
   })
 }
 
-public func collect<T where T:GeneratorType>(var generator: T) -> [T.Element] {
+public func collect<T where T:GeneratorType>(generator: T) -> [T.Element] {
+  var generator = generator
   var result: [T.Element] = []
   var done = false
   while !done { if let e = generator.next() { result += [e] } else { done = true } }

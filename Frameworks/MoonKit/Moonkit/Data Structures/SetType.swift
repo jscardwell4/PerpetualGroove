@@ -9,7 +9,7 @@
 import Foundation
 
 public protocol SetType: CollectionType {
-  typealias Element: Hashable
+  associatedtype Element: Hashable
   init(minimumCapacity: Int)
   mutating func insert(member: Element)
   mutating func remove(member: Element) -> Element?

@@ -16,7 +16,7 @@ public class BlockBarButtonItem: UIBarButtonItem {
   public override init() {
     super.init()
     super.target = self
-    super.action = "handler"
+    super.action = #selector(BlockBarButtonItem.handler)
   }
 
 //  public convenience init(image: UIImage, toggledImage: UIImage, action: ((Void) -> Void)?) {

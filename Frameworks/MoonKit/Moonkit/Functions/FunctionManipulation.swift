@@ -133,7 +133,7 @@ public func ➤|<T>(lhs: T, rhs: (T) -> Void) -> T { return pipedApply(lhs, rhs)
 public func >>><T>(lhs: T, rhs: T -> Void) { rhs(lhs) }
 public func >>><T, U>(lhs: T, rhs: T -> U) -> U { return rhs(lhs) }
 public func >>><T, U>(lhs: T, rhs: U) -> (T, U) { return (lhs, rhs) }
-public func >>><T, U, V>(lhs: (T, U), rhs: (T, U) -> V) -> V { return rhs(lhs) }
+public func >>><T, U, V>(lhs: (T, U), rhs: (T, U) -> V) -> V { return rhs(lhs.0, lhs.1) }
 
 /** Operator for monadic bind */
 //public func ?>><T, U>(lhs: T?, rhs: T -> U?) -> U? { return flatMap(lhs, rhs) }
@@ -142,5 +142,5 @@ public func ?>><T,U>(lhs: T?, rhs: T -> U) -> U? { if let x = lhs { return rhs(x
 
 /** Accumulating args */
 public func >?><T, U>(lhs: T?, rhs: U) -> (T, U)? { if let x = lhs { return (x, rhs) } else { return nil } }
-public func >?><T, U, V>(lhs: (T, U)?, rhs: (T, U) -> V) -> V? { if let x = lhs { return rhs(x) } else { return nil } }
+public func >?><T, U, V>(lhs: (T, U)?, rhs: (T, U) -> V) -> V? { if let x = lhs { return rhs(x.0, x.1) } else { return nil } }
 

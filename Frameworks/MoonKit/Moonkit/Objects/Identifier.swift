@@ -177,4 +177,4 @@ public func ==(lhs: Identifier, rhs: Identifier) -> Bool { return lhs.string == 
 public func <(lhs: Identifier, rhs: Identifier) -> Bool { return lhs.string < rhs.string }
 
 public func ∋(lhs: Identifier, rhs: Identifier.Tag) -> Bool { return lhs.tags ∋ rhs }
-public func +(var lhs: Identifier, rhs: Identifier.Tag) -> Identifier { lhs.append(rhs); return lhs }
+public func +( lhs: Identifier, rhs: Identifier.Tag) -> Identifier { var lhs = lhs; lhs.append(rhs); return lhs }

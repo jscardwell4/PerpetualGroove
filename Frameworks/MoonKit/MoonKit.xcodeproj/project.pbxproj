@@ -30,6 +30,7 @@
 		C20650051A13C8FB00342FDE /* Generic.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23592EE19C8E04200920F8D /* Generic.swift */; };
 		C20650061A13C90A00342FDE /* FontAwesomeIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23592F019C8E04200920F8D /* FontAwesomeIcon.swift */; };
 		C20650071A13C99500342FDE /* GestureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25E63DD19FEC06A00F54626 /* GestureManager.swift */; };
+		C208359A1C80D0F000D4A10E /* OldOrderedDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20835991C80D0F000D4A10E /* OldOrderedDictionary.swift */; };
 		C20A10971C512E4A00522FD7 /* ErrorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20A10961C512E4A00522FD7 /* ErrorType.swift */; };
 		C20CBBEC1B5FF7960008F538 /* PopoverListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20CBBEB1B5FF7960008F538 /* PopoverListController.swift */; };
 		C20E102C1BBF2DE600AAC01A /* TemplateImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20E102B1BBF2DE600AAC01A /* TemplateImageView.swift */; };
@@ -491,6 +492,9 @@
 		C205852A1A1BA22A00212759 /* LongPressGesture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LongPressGesture.swift; sourceTree = "<group>"; };
 		C205852C1A1BEC2000212759 /* BlockActionGesture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockActionGesture.swift; sourceTree = "<group>"; };
 		C2064FF91A13C05900342FDE /* Operators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Operators.swift; sourceTree = "<group>"; };
+		C20835991C80D0F000D4A10E /* OldOrderedDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OldOrderedDictionary.swift; sourceTree = "<group>"; };
+		C208359B1C80E6FD00D4A10E /* WTF.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = WTF.playground; sourceTree = "<group>"; };
+		C208359C1C80E73600D4A10E /* WTFWTF.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = WTFWTF.playground; sourceTree = "<group>"; };
 		C20A10961C512E4A00522FD7 /* ErrorType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ErrorType.swift; sourceTree = "<group>"; };
 		C20A82B31C70D99300B4DA5C /* SortedArray.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = SortedArray.playground; path = Moonkit/SortedArray.playground; sourceTree = "<group>"; };
 		C20CBBEB1B5FF7960008F538 /* PopoverListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopoverListController.swift; sourceTree = "<group>"; };
@@ -1012,6 +1016,7 @@
 				C26863711AF96E6E00D664E8 /* Queue.swift */,
 				C23592DE19C8E04200920F8D /* _BitArray.swift */,
 				C23592DF19C8E04200920F8D /* OrderedDictionary.swift */,
+				C20835991C80D0F000D4A10E /* OldOrderedDictionary.swift */,
 				C2C482E419CA0225002E84A9 /* Stack.swift */,
 				C25E63E01A00427100F54626 /* _OrderedSet.swift */,
 				C2CD95021C7772BA001FB80B /* OrderedSet.swift */,
@@ -1373,6 +1378,8 @@
 		C2CE884518138C4900555D63 = {
 			isa = PBXGroup;
 			children = (
+				C208359C1C80E73600D4A10E /* WTFWTF.playground */,
+				C208359B1C80E6FD00D4A10E /* WTF.playground */,
 				C24AF3DD1C7B644F00C55223 /* OrderedDictionary.playground */,
 				C24696191C6A3CD800120DAF /* IntervalMap.playground */,
 				C21D86051BDF089D00C79153 /* RedBlackTree.playground */,
@@ -2108,6 +2115,7 @@
 				C2358F3819C78E0C00920F8D /* NSHashTable+MSKitAdditions.m in Sources */,
 				C28E50941A13CA6400DF3206 /* BlockBarButtonItem.swift in Sources */,
 				C28A61EB1B0CEA2100612469 /* LabeledStepper.swift in Sources */,
+				C208359A1C80D0F000D4A10E /* OldOrderedDictionary.swift in Sources */,
 				C2064FFA1A13C05900342FDE /* Operators.swift in Sources */,
 				C2776C2D1B9E6053002FE5A8 /* Index.swift in Sources */,
 				C2EF05B11B87FFA500AE68F1 /* Fraction.swift in Sources */,
@@ -3641,7 +3649,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.OrderedDictionaryTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 			};
 			name = Debug;
 		};
@@ -3851,6 +3859,7 @@
 				C2EE618C1C7F8C760091C5AC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};

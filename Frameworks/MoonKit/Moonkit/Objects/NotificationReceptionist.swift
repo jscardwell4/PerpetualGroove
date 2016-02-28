@@ -158,7 +158,7 @@ public final class NotificationReceptionist: NSObject, Loggable {
                                  callback: callback,
                                  queue: queue))
     NSNotificationCenter.defaultCenter().addObserver(self,
-                                            selector: "receiveNotification:",
+                                            selector: #selector(NotificationReceptionist.receiveNotification(_:)),
                                                 name: name,
                                               object: object)
   }

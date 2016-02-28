@@ -21,7 +21,7 @@ public class LabeledSlider: UIControl {
     label.font = font
     label.highlightedTextColor = highlightedTextColor
     
-    slider.addTarget(self, action: "updateLabel", forControlEvents: .ValueChanged)
+    slider.addTarget(self, action: #selector(LabeledSlider.updateLabel), forControlEvents: .ValueChanged)
   }
 
   public override class func requiresConstraintBasedLayout() -> Bool { return true }

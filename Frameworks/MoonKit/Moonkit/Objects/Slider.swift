@@ -369,9 +369,8 @@ public class Slider: UIControl {
 
   - parameter rect: CGRect
   */
-  override public func drawRect(var rect: CGRect) {
-    guard rect == bounds else { fatalError("wtf") }
-    rect = bounds
+  override public func drawRect(rect: CGRect) {
+    let rect = bounds
 
     // Get a reference to the current context
     let context = UIGraphicsGetCurrentContext()

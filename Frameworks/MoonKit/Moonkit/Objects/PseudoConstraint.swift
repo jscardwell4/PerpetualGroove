@@ -534,9 +534,9 @@ func discernNearestAncestor(obj1: AnyObject?, _ obj2: AnyObject?) -> UIView? {
 // MARK: - Identifier operator
 infix operator --> {associativity left}
 
-public func -->(var lhs:     Pseudo, rhs: String?) ->  Pseudo  { lhs.identifier = rhs; return lhs }
-public func -->(    lhs:   [Pseudo], rhs: String?) -> [Pseudo] { return lhs.map {$0 --> rhs}      }
-public func -->(    lhs: [[Pseudo]], rhs: String?) -> [Pseudo] { return lhs.flatMap {$0 --> rhs} }
+public func -->(lhs:     Pseudo, rhs: String?) ->  Pseudo  { var lhs = lhs; lhs.identifier = rhs; return lhs }
+public func -->(lhs:   [Pseudo], rhs: String?) -> [Pseudo] { return lhs.map {$0 --> rhs}      }
+public func -->(lhs: [[Pseudo]], rhs: String?) -> [Pseudo] { return lhs.flatMap {$0 --> rhs} }
 
 public func -->(lhs:     Pseudo, rhs: Identifier?) ->  Pseudo  { return lhs --> rhs?.string }
 public func -->(lhs:   [Pseudo], rhs: Identifier?) -> [Pseudo] { return lhs --> rhs?.string }
@@ -545,9 +545,9 @@ public func -->(lhs: [[Pseudo]], rhs: Identifier?) -> [Pseudo] { return lhs --> 
 // MARK: - Priority operator
 infix operator -!> {associativity left}
 
-public func -!>(var lhs:     Pseudo, rhs: Float) -> Pseudo   { lhs.priority = rhs; return lhs   }
-public func -!>(    lhs:   [Pseudo], rhs: Float) -> [Pseudo] { return lhs.map {$0 -!> rhs}      }
-public func -!>(    lhs: [[Pseudo]], rhs: Float) -> [Pseudo] { return lhs.flatMap {$0 -!> rhs} }
+public func -!>(lhs:     Pseudo, rhs: Float) -> Pseudo   { var lhs = lhs; lhs.priority = rhs; return lhs   }
+public func -!>(lhs:   [Pseudo], rhs: Float) -> [Pseudo] { return lhs.map {$0 -!> rhs}      }
+public func -!>(lhs: [[Pseudo]], rhs: Float) -> [Pseudo] { return lhs.flatMap {$0 -!> rhs} }
 
 // MARK: - Equal operator
 infix operator => {precedence 160}
@@ -569,13 +569,13 @@ public func ≤(lhs: ViewAttribute, rhs: Floatable) -> Pseudo { return Pseudo(pa
 
 // MARK: - Multiplication, division, and subtraction operators
 
-public func *(var lhs: Pseudo, rhs: Floatable) -> Pseudo { lhs.multiplier =  rhs.FloatValue; return lhs }
-public func +(var lhs: Pseudo, rhs: Floatable) -> Pseudo { lhs.constant   =  rhs.FloatValue; return lhs }
-public func -(var lhs: Pseudo, rhs: Floatable) -> Pseudo { lhs.constant   = -rhs.FloatValue; return lhs }
+public func *(lhs: Pseudo, rhs: Floatable) -> Pseudo { var lhs = lhs; lhs.multiplier =  rhs.FloatValue; return lhs }
+public func +(lhs: Pseudo, rhs: Floatable) -> Pseudo { var lhs = lhs; lhs.constant   =  rhs.FloatValue; return lhs }
+public func -(lhs: Pseudo, rhs: Floatable) -> Pseudo { var lhs = lhs; lhs.constant   = -rhs.FloatValue; return lhs }
 
-public func *(var lhs: Pseudo, rhs: Int) -> Pseudo { lhs.multiplier =  Float(rhs); return lhs }
-public func +(var lhs: Pseudo, rhs: Int) -> Pseudo { lhs.constant   =  Float(rhs); return lhs }
-public func -(var lhs: Pseudo, rhs: Int) -> Pseudo { lhs.constant   = -Float(rhs); return lhs }
+public func *(lhs: Pseudo, rhs: Int) -> Pseudo { var lhs = lhs; lhs.multiplier =  Float(rhs); return lhs }
+public func +(lhs: Pseudo, rhs: Int) -> Pseudo { var lhs = lhs; lhs.constant   =  Float(rhs); return lhs }
+public func -(lhs: Pseudo, rhs: Int) -> Pseudo { var lhs = lhs; lhs.constant   = -Float(rhs); return lhs }
 
 // MARK: - Flush to superview left/top operator
 
@@ -598,7 +598,8 @@ public func |(lhs: UIView, rhs: Axis) -> Pseudo {
 }
 
 public func |(lhs:   Pseudo, rhs: Axis) -> [Pseudo] { return [lhs]|rhs }
-public func |(var lhs: [Pseudo], rhs: Axis) -> [Pseudo] {
+public func |(lhs: [Pseudo], rhs: Axis) -> [Pseudo] {
+  var lhs = lhs
   precondition(lhs.last?.firstObject as? UIView != nil, "operator requires a view for the last constraint's firstObject")
   let view = lhs.last!.firstObject as! UIView
   precondition(view.superview != nil, "operator requires a proper view hierarchy has been established")
@@ -632,9 +633,10 @@ public func --|(lhs: UIView, rhs: Axis) -> Pseudo {
 }
 
 public func --|(lhs:   Pseudo, rhs: Axis) -> [Pseudo] { return [lhs]--|rhs }
-public func --|(var lhs: [Pseudo], rhs: Axis) -> [Pseudo] {
+public func --|(lhs: [Pseudo], rhs: Axis) -> [Pseudo] {
   precondition(lhs.last?.firstObject as? UIView != nil,
                "operator requires a view for the last constraint's firstObject")
+  var lhs = lhs
   let view = lhs.last!.firstObject as! UIView
   precondition(view.superview != nil, "operator requires a proper view hierarchy has been established")
   switch rhs {

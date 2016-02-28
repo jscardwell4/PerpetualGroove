@@ -44,7 +44,8 @@ extension ByteArrayConvertible {
   public init<S:SequenceType where S.Generator.Element == Byte>(_ bytes: S) { self.init(Array(bytes)) }
 }
 
-private func _bytes<T>(var value: T) -> [Byte] {
+private func _bytes<T>(value: T) -> [Byte] {
+  var value = value
   return withUnsafePointer(&value) { (pointer: UnsafePointer<T>) -> [Byte] in
     let bytePointer = UnsafePointer<Byte>(pointer)
     let byteBuffer = UnsafeBufferPointer<Byte>(start: bytePointer, count: sizeof(T))

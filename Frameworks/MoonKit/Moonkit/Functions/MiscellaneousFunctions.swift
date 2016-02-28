@@ -22,7 +22,8 @@ public func nonce() -> String { return NSUUID().UUIDString }
 */
 public func touch<T>(t: T) {}
 
-public func gcd<T:ArithmeticType>(var a: T, var _ b: T) -> T {
+public func gcd<T:ArithmeticType>(a: T, _ b: T) -> T {
+  var a = a, b = b
   while !b.isZero {
     let t = b
     b = a % b

@@ -49,16 +49,16 @@ public extension Loggable {
   - parameter message: String
   - parameter asynchronous: Bool = true
   - parameter flag: LogManager.LogFlag
-  - parameter function: String = __FUNCTION__
-  - parameter line: UInt = __LINE__
-  - parameter file: String = __FILE__
+  - parameter function: String = #function
+  - parameter line: UInt = #line
+  - parameter file: String = #file
   */
   static func log(message: String,
      asynchronous: Bool = true,
              flag: LogManager.LogFlag,
-         function: String = __FUNCTION__,
-             line: UInt = __LINE__,
-             file: String = __FILE__)
+         function: String = #function,
+             line: UInt = #line,
+             file: String = #file)
   {
     LogManager.logMessage(message,
              asynchronous: asynchronous,
@@ -75,15 +75,15 @@ public extension Loggable {
 
   - parameter message: String
   - parameter asynchronous: Bool = true
-  - parameter function: String = __FUNCTION__
-  - parameter line: UInt = __LINE__
-  - parameter file: String = __FILE__
+  - parameter function: String = #function
+  - parameter line: UInt = #line
+  - parameter file: String = #file
   */
   static func logError(@autoclosure message: () -> String,
           asynchronous: Bool = true,
-              function: String = __FUNCTION__,
-                  line: UInt = __LINE__,
-                  file: String = __FILE__)
+              function: String = #function,
+                  line: UInt = #line,
+                  file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
     guard defaultLogLevel ∋ LogManager.LogFlag.Error else { return }
@@ -97,16 +97,16 @@ public extension Loggable {
   - parameter error: ErrorType
   - parameter message: String
   - parameter asynchronous: Bool = true
-  - parameter function: String = __FUNCTION__
-  - parameter line: UInt = __LINE__
-  - parameter file: String = __FILE__
+  - parameter function: String = #function
+  - parameter line: UInt = #line
+  - parameter file: String = #file
   */
   static func logError(error: ErrorType,
                message: String? = nil,
           asynchronous: Bool = true,
-              function: String = __FUNCTION__,
-                  line: UInt = __LINE__,
-                  file: String = __FILE__)
+              function: String = #function,
+                  line: UInt = #line,
+                  file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
     guard defaultLogLevel ∋ LogManager.LogFlag.Error else { return }
@@ -147,15 +147,15 @@ asynchronous: asynchronous,
 
   - parameter message: String
   - parameter asynchronous: Bool = true
-  - parameter function: String = __FUNCTION__
-  - parameter line: UInt = __LINE__
-  - parameter file: String = __FILE__
+  - parameter function: String = #function
+  - parameter line: UInt = #line
+  - parameter file: String = #file
   */
   static func logWarning(@autoclosure message: () -> String,
    asynchronous: Bool = true,
-       function: String = __FUNCTION__,
-           line: UInt = __LINE__,
-           file: String = __FILE__)
+       function: String = #function,
+           line: UInt = #line,
+           file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning
     guard defaultLogLevel ∋ LogManager.LogFlag.Warning else { return }
@@ -168,15 +168,15 @@ asynchronous: asynchronous,
 
   - parameter message: String
   - parameter asynchronous: Bool = true
-  - parameter function: String = __FUNCTION__
-  - parameter line: UInt = __LINE__
-  - parameter file: String = __FILE__
+  - parameter function: String = #function
+  - parameter line: UInt = #line
+  - parameter file: String = #file
   */
   static func logDebug(@autoclosure message: () -> String,
    asynchronous: Bool = true,
-       function: String = __FUNCTION__,
-           line: UInt = __LINE__,
-           file: String = __FILE__)
+       function: String = #function,
+           line: UInt = #line,
+           file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug
     guard defaultLogLevel ∋ LogManager.LogFlag.Debug else { return }
@@ -189,15 +189,15 @@ asynchronous: asynchronous,
 
   - parameter message: String
   - parameter asynchronous: Bool = true
-  - parameter function: String = __FUNCTION__
-  - parameter line: UInt = __LINE__
-  - parameter file: String = __FILE__
+  - parameter function: String = #function
+  - parameter line: UInt = #line
+  - parameter file: String = #file
   */
   static func logInfo(@autoclosure message: () -> String,
   asynchronous: Bool = true,
-      function: String = __FUNCTION__,
-          line: UInt = __LINE__,
-          file: String = __FILE__)
+      function: String = #function,
+          line: UInt = #line,
+          file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo
     guard defaultLogLevel ∋ LogManager.LogFlag.Info else { return }
@@ -210,15 +210,15 @@ asynchronous: asynchronous,
 
   - parameter message: String
   - parameter asynchronous: Bool = true
-  - parameter function: String = __FUNCTION__
-  - parameter line: UInt = __LINE__
-  - parameter file: String = __FILE__
+  - parameter function: String = #function
+  - parameter line: UInt = #line
+  - parameter file: String = #file
   */
   static func logVerbose(@autoclosure message: () -> String,
      asynchronous: Bool = true,
-         function: String = __FUNCTION__,
-             line: UInt = __LINE__,
-             file: String = __FILE__)
+         function: String = #function,
+             line: UInt = #line,
+             file: String = #file)
   {
     #if LogLevelVerbose
     guard defaultLogLevel ∋ LogManager.LogFlag.Verbose else { return }
@@ -233,16 +233,16 @@ asynchronous: asynchronous,
   - parameter message: String
   - parameter asynchronous: Bool = true
   - parameter flag: LogManager.LogFlag
-  - parameter function: String = __FUNCTION__
-  - parameter line: UInt = __LINE__
-  - parameter file: String = __FILE__
+  - parameter function: String = #function
+  - parameter line: UInt = #line
+  - parameter file: String = #file
   */
   func log(message: String,
            asynchronous: Bool = true,
            flag: LogManager.LogFlag,
-           function: String = __FUNCTION__,
-           line: UInt = __LINE__,
-           file: String = __FILE__)
+           function: String = #function,
+           line: UInt = #line,
+           file: String = #file)
 
   {
     LogManager.logMessage(message,
@@ -260,15 +260,15 @@ asynchronous: asynchronous,
 
   - parameter message: String
   - parameter asynchronous: Bool = true
-  - parameter function: String = __FUNCTION__
-  - parameter line: UInt = __LINE__
-  - parameter file: String = __FILE__
+  - parameter function: String = #function
+  - parameter line: UInt = #line
+  - parameter file: String = #file
   */
   func logError(@autoclosure message: () -> String,
    asynchronous: Bool = true,
-       function: String = __FUNCTION__,
-           line: UInt = __LINE__,
-           file: String = __FILE__)
+       function: String = #function,
+           line: UInt = #line,
+           file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
     guard logLevel ∋ LogManager.LogFlag.Error else { return }
@@ -282,16 +282,16 @@ asynchronous: asynchronous,
   - parameter error: ErrorType
   - parameter message: String
   - parameter asynchronous: Bool = true
-  - parameter function: String = __FUNCTION__
-  - parameter line: UInt = __LINE__
-  - parameter file: String = __FILE__
+  - parameter function: String = #function
+  - parameter line: UInt = #line
+  - parameter file: String = #file
   */
   func logError(error: ErrorType,
                message: String? = nil,
           asynchronous: Bool = true,
-              function: String = __FUNCTION__,
-                  line: UInt = __LINE__,
-                  file: String = __FILE__)
+              function: String = #function,
+                  line: UInt = #line,
+                  file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
     guard logLevel ∋ LogManager.LogFlag.Error else { return }
@@ -332,15 +332,15 @@ asynchronous: asynchronous,
 
   - parameter message: String
   - parameter asynchronous: Bool = true
-  - parameter function: String = __FUNCTION__
-  - parameter line: UInt = __LINE__
-  - parameter file: String = __FILE__
+  - parameter function: String = #function
+  - parameter line: UInt = #line
+  - parameter file: String = #file
   */
   func logWarning(@autoclosure message: () -> String,
    asynchronous: Bool = true,
-       function: String = __FUNCTION__,
-           line: UInt = __LINE__,
-           file: String = __FILE__)
+       function: String = #function,
+           line: UInt = #line,
+           file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning
     guard logLevel ∋ LogManager.LogFlag.Warning else { return }
@@ -353,15 +353,15 @@ asynchronous: asynchronous,
 
   - parameter message: String
   - parameter asynchronous: Bool = true
-  - parameter function: String = __FUNCTION__
-  - parameter line: UInt = __LINE__
-  - parameter file: String = __FILE__
+  - parameter function: String = #function
+  - parameter line: UInt = #line
+  - parameter file: String = #file
   */
   func logDebug(@autoclosure message: () -> String,
    asynchronous: Bool = true,
-       function: String = __FUNCTION__,
-           line: UInt = __LINE__,
-           file: String = __FILE__)
+       function: String = #function,
+           line: UInt = #line,
+           file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug
     guard logLevel ∋ LogManager.LogFlag.Debug else { return }
@@ -374,15 +374,15 @@ asynchronous: asynchronous,
 
   - parameter message: String
   - parameter asynchronous: Bool = true
-  - parameter function: String = __FUNCTION__
-  - parameter line: UInt = __LINE__
-  - parameter file: String = __FILE__
+  - parameter function: String = #function
+  - parameter line: UInt = #line
+  - parameter file: String = #file
   */
   func logInfo(@autoclosure message: () -> String,
   asynchronous: Bool = true,
-      function: String = __FUNCTION__,
-          line: UInt = __LINE__,
-          file: String = __FILE__)
+      function: String = #function,
+          line: UInt = #line,
+          file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo
     guard logLevel ∋ LogManager.LogFlag.Info else { return }
@@ -395,15 +395,15 @@ asynchronous: asynchronous,
 
   - parameter message: String
   - parameter asynchronous: Bool = true
-  - parameter function: String = __FUNCTION__
-  - parameter line: UInt = __LINE__
-  - parameter file: String = __FILE__
+  - parameter function: String = #function
+  - parameter line: UInt = #line
+  - parameter file: String = #file
   */
   func logVerbose(@autoclosure message: () -> String,
      asynchronous: Bool = true,
-         function: String = __FUNCTION__,
-             line: UInt = __LINE__,
-             file: String = __FILE__)
+         function: String = #function,
+             line: UInt = #line,
+             file: String = #file)
   {
     #if LogLevelVerbose
     guard logLevel ∋ LogManager.LogFlag.Verbose else { return }
@@ -415,14 +415,14 @@ asynchronous: asynchronous,
   logSyncError:function:line:file:
 
   - parameter message: String
-  - parameter function: String = __FUNCTION__
-  - parameter line: UInt = __LINE__
-  - parameter file: String = __FILE__
+  - parameter function: String = #function
+  - parameter line: UInt = #line
+  - parameter file: String = #file
   */
   static func logSyncError(@autoclosure message: () -> String,
-              function: String = __FUNCTION__,
-                  line: UInt = __LINE__,
-                  file: String = __FILE__)
+              function: String = #function,
+                  line: UInt = #line,
+                  file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
     guard defaultLogLevel ∋ LogManager.LogFlag.Error else { return }
@@ -435,15 +435,15 @@ asynchronous: asynchronous,
 
   - parameter error: ErrorType
   - parameter message: String
-  - parameter function: String = __FUNCTION__
-  - parameter line: UInt = __LINE__
-  - parameter file: String = __FILE__
+  - parameter function: String = #function
+  - parameter line: UInt = #line
+  - parameter file: String = #file
   */
   static func logSyncError(error: ErrorType,
                message: String? = nil,
-              function: String = __FUNCTION__,
-                  line: UInt = __LINE__,
-                  file: String = __FILE__)
+              function: String = #function,
+                  line: UInt = #line,
+                  file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
     guard defaultLogLevel ∋ LogManager.LogFlag.Error else { return }
@@ -482,14 +482,14 @@ asynchronous: false,
   logSyncWarning:function:line:file:
 
   - parameter message: String
-  - parameter function: String = __FUNCTION__
-  - parameter line: UInt = __LINE__
-  - parameter file: String = __FILE__
+  - parameter function: String = #function
+  - parameter line: UInt = #line
+  - parameter file: String = #file
   */
   static func logSyncWarning(@autoclosure message: () -> String,
-       function: String = __FUNCTION__,
-           line: UInt = __LINE__,
-           file: String = __FILE__)
+       function: String = #function,
+           line: UInt = #line,
+           file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning
     guard defaultLogLevel ∋ LogManager.LogFlag.Warning else { return }
@@ -501,14 +501,14 @@ asynchronous: false,
   logSyncDebug:function:line:file:
 
   - parameter message: String
-  - parameter function: String = __FUNCTION__
-  - parameter line: UInt = __LINE__
-  - parameter file: String = __FILE__
+  - parameter function: String = #function
+  - parameter line: UInt = #line
+  - parameter file: String = #file
   */
   static func logSyncDebug(@autoclosure message: () -> String,
-       function: String = __FUNCTION__,
-           line: UInt = __LINE__,
-           file: String = __FILE__)
+       function: String = #function,
+           line: UInt = #line,
+           file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug
     guard defaultLogLevel ∋ LogManager.LogFlag.Debug else { return }
@@ -520,14 +520,14 @@ asynchronous: false,
   logSyncInfo:function:line:file:
 
   - parameter message: String
-  - parameter function: String = __FUNCTION__
-  - parameter line: UInt = __LINE__
-  - parameter file: String = __FILE__
+  - parameter function: String = #function
+  - parameter line: UInt = #line
+  - parameter file: String = #file
   */
   static func logSyncInfo(@autoclosure message: () -> String,
-      function: String = __FUNCTION__,
-          line: UInt = __LINE__,
-          file: String = __FILE__)
+      function: String = #function,
+          line: UInt = #line,
+          file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo
     guard defaultLogLevel ∋ LogManager.LogFlag.Info else { return }
@@ -539,14 +539,14 @@ asynchronous: false,
   logSyncVerbose:function:line:file:
 
   - parameter message: String
-  - parameter function: String = __FUNCTION__
-  - parameter line: UInt = __LINE__
-  - parameter file: String = __FILE__
+  - parameter function: String = #function
+  - parameter line: UInt = #line
+  - parameter file: String = #file
   */
   static func logSyncVerbose(@autoclosure message: () -> String,
-         function: String = __FUNCTION__,
-             line: UInt = __LINE__,
-             file: String = __FILE__)
+         function: String = #function,
+             line: UInt = #line,
+             file: String = #file)
   {
     #if LogLevelVerbose
     guard defaultLogLevel ∋ LogManager.LogFlag.Verbose else { return }
@@ -559,14 +559,14 @@ asynchronous: false,
   logSyncError:function:line:file:
 
   - parameter message: String
-  - parameter function: String = __FUNCTION__
-  - parameter line: UInt = __LINE__
-  - parameter file: String = __FILE__
+  - parameter function: String = #function
+  - parameter line: UInt = #line
+  - parameter file: String = #file
   */
   func logSyncError(@autoclosure message: () -> String,
-       function: String = __FUNCTION__,
-           line: UInt = __LINE__,
-           file: String = __FILE__)
+       function: String = #function,
+           line: UInt = #line,
+           file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
     guard logLevel ∋ LogManager.LogFlag.Error else { return }
@@ -579,15 +579,15 @@ asynchronous: false,
 
   - parameter error: ErrorType
   - parameter message: String
-  - parameter function: String = __FUNCTION__
-  - parameter line: UInt = __LINE__
-  - parameter file: String = __FILE__
+  - parameter function: String = #function
+  - parameter line: UInt = #line
+  - parameter file: String = #file
   */
   func logSyncError(error: ErrorType,
                message: String? = nil,
-              function: String = __FUNCTION__,
-                  line: UInt = __LINE__,
-                  file: String = __FILE__)
+              function: String = #function,
+                  line: UInt = #line,
+                  file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
     guard logLevel ∋ LogManager.LogFlag.Error else { return }
@@ -626,14 +626,14 @@ asynchronous: false,
   logSyncWarning:function:line:file:
 
   - parameter message: String
-  - parameter function: String = __FUNCTION__
-  - parameter line: UInt = __LINE__
-  - parameter file: String = __FILE__
+  - parameter function: String = #function
+  - parameter line: UInt = #line
+  - parameter file: String = #file
   */
   func logSyncWarning(@autoclosure message: () -> String,
-       function: String = __FUNCTION__,
-           line: UInt = __LINE__,
-           file: String = __FILE__)
+       function: String = #function,
+           line: UInt = #line,
+           file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning
     guard logLevel ∋ LogManager.LogFlag.Warning else { return }
@@ -645,14 +645,14 @@ asynchronous: false,
   logSyncDebug:function:line:file:
 
   - parameter message: String
-  - parameter function: String = __FUNCTION__
-  - parameter line: UInt = __LINE__
-  - parameter file: String = __FILE__
+  - parameter function: String = #function
+  - parameter line: UInt = #line
+  - parameter file: String = #file
   */
   func logSyncDebug(@autoclosure message: () -> String,
-       function: String = __FUNCTION__,
-           line: UInt = __LINE__,
-           file: String = __FILE__)
+       function: String = #function,
+           line: UInt = #line,
+           file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug
     guard logLevel ∋ LogManager.LogFlag.Debug else { return }
@@ -664,14 +664,14 @@ asynchronous: false,
   logSyncInfo:function:line:file:
 
   - parameter message: String
-  - parameter function: String = __FUNCTION__
-  - parameter line: UInt = __LINE__
-  - parameter file: String = __FILE__
+  - parameter function: String = #function
+  - parameter line: UInt = #line
+  - parameter file: String = #file
   */
   func logSyncInfo(@autoclosure message: () -> String,
-      function: String = __FUNCTION__,
-          line: UInt = __LINE__,
-          file: String = __FILE__)
+      function: String = #function,
+          line: UInt = #line,
+          file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo
     guard logLevel ∋ LogManager.LogFlag.Info else { return }
@@ -683,14 +683,14 @@ asynchronous: false,
   logSyncVerbose:function:line:file:
 
   - parameter message: String
-  - parameter function: String = __FUNCTION__
-  - parameter line: UInt = __LINE__
-  - parameter file: String = __FILE__
+  - parameter function: String = #function
+  - parameter line: UInt = #line
+  - parameter file: String = #file
   */
   func logSyncVerbose(@autoclosure message: () -> String,
-         function: String = __FUNCTION__,
-             line: UInt = __LINE__,
-             file: String = __FILE__)
+         function: String = #function,
+             line: UInt = #line,
+             file: String = #file)
   {
     #if LogLevelVerbose
     guard logLevel ∋ LogManager.LogFlag.Verbose else { return }

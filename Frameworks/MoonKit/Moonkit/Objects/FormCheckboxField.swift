@@ -29,7 +29,7 @@ public final class FormCheckboxField: FormField {
     control.identifier = "checkbox"
     control.userInteractionEnabled = editable
     control.checked = _value
-    control.addTarget(self, action: "valueDidChange:", forControlEvents: .ValueChanged)
+    control.addTarget(self, action: #selector(FormCheckboxField.valueDidChange(_:)), forControlEvents: .ValueChanged)
     checkbox = control
     return control
   }

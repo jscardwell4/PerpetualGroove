@@ -216,7 +216,7 @@ public class ZoomingCollectionViewLayout: UICollectionViewLayout {
     return CGSize(width: w, height: h)
   }
 
-  private typealias AttributesIndex = OrderedDictionary<NSIndexPath, UICollectionViewLayoutAttributes>
+  private typealias AttributesIndex = OldOrderedDictionary<NSIndexPath, UICollectionViewLayoutAttributes>
 
   private var storedAttributes: AttributesIndex = [:]
 

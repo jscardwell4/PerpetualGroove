@@ -55,8 +55,8 @@ public class Label: UILabel {
 
   - parameter rect: CGRect
   */
-  public override func drawTextInRect(var rect: CGRect) {
-    rect = gutter.insetRect(rect)
+  public override func drawTextInRect(rect: CGRect) {
+    let rect = gutter.insetRect(rect)
     var textRect = textRectForBounds(rect, limitedToNumberOfLines: numberOfLines)
     switch verticalAlignment {
       case .Top:    break

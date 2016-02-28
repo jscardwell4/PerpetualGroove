@@ -84,7 +84,7 @@ public class ToggleImageSegmentedControl: UISegmentedControl {
     let image = UIGraphicsGetImageFromCurrentImageContext()
     UIGraphicsEndImageContext()
     setBackgroundImage(image, forState: .Normal, barMetrics: .Default)
-    addTarget(self, action: "toggleImage:", forControlEvents: .ValueChanged)
+    addTarget(self, action: #selector(ToggleImageSegmentedControl.toggleImage(_:)), forControlEvents: .ValueChanged)
   }
 
   /**
@@ -130,7 +130,7 @@ public class ToggleImageSegmentedControl: UISegmentedControl {
     UIGraphicsEndImageContext()
     setBackgroundImage(image, forState: .Normal, barMetrics: .Default)
 
-    addTarget(self, action: "toggleImage:", forControlEvents: .ValueChanged)
+    addTarget(self, action: #selector(ToggleImageSegmentedControl.toggleImage(_:)), forControlEvents: .ValueChanged)
 
   }
 

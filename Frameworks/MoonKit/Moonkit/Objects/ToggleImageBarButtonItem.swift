@@ -58,7 +58,7 @@ public class ToggleImageBarButtonItem: ToggleBarButtonItem {
     super.init(customView: container)
 
     // add a gesture for triggering our action
-    imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "toggle:"))
+    imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(ToggleBarButtonItem.toggle(_:))))
 
     // store the image view and the action parameter
     self.imageView = imageView
@@ -96,7 +96,7 @@ public class ToggleImageBarButtonItem: ToggleBarButtonItem {
     customView = container
 
     // add a gesture for triggering our action
-    imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "toggle:"))
+    imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(ToggleBarButtonItem.toggle(_:))))
 
     // store the image view and the action parameter
     self.imageView = imageView

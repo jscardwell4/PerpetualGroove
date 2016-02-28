@@ -28,10 +28,11 @@ public final class FormSwitchField: FormField {
     let control = UISwitch(autolayout: true)
     control.identifier = "switch"
     control.userInteractionEnabled = editable
-    control.addTarget(self, action: "valueDidChange:", forControlEvents: .ValueChanged)
+    control.addTarget(self, action: #selector(FormSwitchField.valueDidChange(_:)), forControlEvents: .ValueChanged)
     control.on = _value
     `switch` = control
 
     return control
   }
+  func valueDidChange(`switch`: UISwitch) { _value = `switch`.on; changeHandler?(self) }
 }

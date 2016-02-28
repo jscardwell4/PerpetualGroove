@@ -33,13 +33,13 @@ public final class KVOReceptionist: NSObject {
   - parameter callback: Callback
   */
   public func observe(object: AnyObject,
-     var forChangesTo keyPath: String,
+     forChangesTo keyPath: String,
           withOptions options: NSKeyValueObservingOptions = .New,
                 queue: NSOperationQueue = NSOperationQueue.mainQueue(),
              callback: Callback)
   {
     let identifier = ObjectIdentifier(object)
-    keyPath = NSStringFromSelector(NSSelectorFromString(keyPath))
+    let keyPath = NSStringFromSelector(NSSelectorFromString(keyPath))
     var observationBag = observations[identifier] ?? [:]
     observationBag[keyPath] = Observation(object: Weak(object), keyPath: keyPath, queue: queue, callback: callback)
     observations[identifier] = observationBag
@@ -55,9 +55,9 @@ public final class KVOReceptionist: NSObject {
   - parameter object: AnyObject
   - parameter keyPath: String
   */
-  public func stopObserving(object: AnyObject, var forChangesTo keyPath: String) {
+  public func stopObserving(object: AnyObject, forChangesTo keyPath: String) {
     let identifier = ObjectIdentifier(object)
-    keyPath = NSStringFromSelector(NSSelectorFromString(keyPath))
+    let keyPath = NSStringFromSelector(NSSelectorFromString(keyPath))
     guard var observationBag = observations[identifier], let observation = observationBag[keyPath] else { return }
     observationBag[keyPath] = nil
     observation.object.reference?.removeObserver(self, forKeyPath: keyPath, context: observingContext)

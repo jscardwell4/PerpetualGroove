@@ -117,7 +117,7 @@ public class Knob: UIControl {
   override public func addTarget(target: AnyObject?, action: Selector, forControlEvents controlEvents: UIControlEvents) {
     super.addTarget(target, action: action, forControlEvents: controlEvents)
     guard self.rotationGesture == nil else { return }
-    let rotationGesture = UIRotationGestureRecognizer(target: self, action: "didRotate")
+    let rotationGesture = UIRotationGestureRecognizer(target: self, action: #selector(Knob.didRotate))
     addGestureRecognizer(rotationGesture)
     self.rotationGesture = rotationGesture
   }

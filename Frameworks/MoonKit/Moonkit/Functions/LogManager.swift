@@ -40,18 +40,18 @@ public class LogManager {
   - parameter message: String
   - parameter asynchronous: Bool
   - parameter flag: LogFlag
-  - parameter function: String = __FUNCTION__
-  - parameter line: UInt = __LINE__
-  - parameter file: String = __FILE__
+  - parameter function: String = #function
+  - parameter line: UInt = #line
+  - parameter file: String = #file
   - parameter context: LogContext? = nil
   - parameter tag: AnyObject? = nil
   */
   public static func logMessage(message: String,
                   asynchronous: Bool,
                           flag: LogFlag,
-                      function: String = __FUNCTION__,
-                          line: UInt = __LINE__,
-                          file: String = __FILE__,
+                      function: String = #function,
+                          line: UInt = #line,
+                          file: String = #file,
                        context: LogContext? = nil,
                            tag: LogMessage.Tag? = nil)
   {
@@ -86,18 +86,18 @@ public class LogManager {
     - parameter level: LogLevel = LogManager.logLevel
     - parameter flag: LogFlag = .Debug
     - parameter context: LogContext = .Console
-    - parameter file: String = __FILE__
+    - parameter file: String = #file
     - parameter fileName: String? = nil
-    - parameter function: String = __FUNCTION__
-    - parameter line: UInt = __LINE__
+    - parameter function: String = #function
+    - parameter line: UInt = #line
     */
     init(message: String = "",
          level: LogLevel = LogManager.logLevel,
          flag: LogFlag = .Debug,
          context: LogContext = .Console,
-         file: String = __FILE__,
-         function: String = __FUNCTION__,
-         line: UInt = __LINE__,
+         file: String = #file,
+         function: String = #function,
+         line: UInt = #line,
          tag: Tag? = nil)
     {
       super.init(
@@ -153,9 +153,9 @@ public class LogManager {
   setLogLevel:forFile:
 
   - parameter level: LogManager.LogLevel
-  - parameter file: String = __FILE__
+  - parameter file: String = #file
   */
-  public static func setLogLevel(level: LogManager.LogLevel, forFile file: String = __FILE__) {
+  public static func setLogLevel(level: LogManager.LogLevel, forFile file: String = #file) {
     logLevelsByFile[file] = level
   }
 
@@ -218,9 +218,9 @@ public class LogManager {
   setLogContext:forFile:
 
   - parameter context: LogManager.LogContext
-  - parameter file: String = __FILE__
+  - parameter file: String = #file
   */
-  public static func setLogContext(context: LogManager.LogContext, forFile file: String = __FILE__) {
+  public static func setLogContext(context: LogManager.LogContext, forFile file: String = #file) {
     logContextsByFile[file] = context
   }
 

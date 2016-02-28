@@ -9,7 +9,8 @@
 import Foundation
 
 
-public func encode<T>(var value: T) -> NSData {
+public func encode<T>(value: T) -> NSData {
+  var value = value
   return withUnsafePointer(&value) { NSData(bytes: $0, length: sizeofValue(value)) }
 }
 

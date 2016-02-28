@@ -78,7 +78,7 @@ import UIKit
   public convenience init(handler: (BlockActionGesture) -> Void) {
     self.init()
     self.handler = handler
-    addTarget(self, action: "dispatchHandler:")
+    addTarget(self, action: #selector(BlockActionGesture.dispatchHandler(_:)))
   }
 
   /**
@@ -98,7 +98,7 @@ import UIKit
   */
   public override init(target: AnyObject?, action: Selector) {
     super.init(target: target, action: action)
-    addTarget(self, action: "dispatchHandler:")
+    addTarget(self, action: #selector(BlockActionGesture.dispatchHandler(_:)))
   }
 
 }

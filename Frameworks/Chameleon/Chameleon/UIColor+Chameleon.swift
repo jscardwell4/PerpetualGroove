@@ -110,8 +110,8 @@ public func sRGBToXYZ(r: CGFloat, _ g: CGFloat, _ b: CGFloat) -> (x: CGFloat, y:
   return (x: x, y: y, z: z)
 }
 
-public func rgbToXYZ(var r: CGFloat, var _ g: CGFloat, var _ b: CGFloat) -> (x: CGFloat, y: CGFloat, z: CGFloat) {
-  (r, g, b) = rgbTosRGB(r, g, b)
+public func rgbToXYZ(r: CGFloat, _ g: CGFloat, _ b: CGFloat) -> (x: CGFloat, y: CGFloat, z: CGFloat) {
+  let (r, g, b) = rgbTosRGB(r, g, b)
   return sRGBToXYZ(r, g, b)
 }
 
@@ -120,14 +120,14 @@ public func rgbToLAB(r: CGFloat, _ g: CGFloat, _ b: CGFloat) -> (l: CGFloat, a: 
   return xyzToLAB(x, y, z)
 }
 
-public func xyzToLAB(var x: CGFloat, var _ y: CGFloat, var _ z: CGFloat) -> (l: CGFloat, a: CGFloat, b: CGFloat) {
+public func xyzToLAB( x: CGFloat, _ y: CGFloat, _ z: CGFloat) -> (l: CGFloat, a: CGFloat, b: CGFloat) {
   // The corresponding original XYZ values are such that white is D65 with unit luminance (X,Y,Z = 0.9505, 1.0000, 1.0890).
   // Calculations are also to assume the 2° standard colorimetric observer.
   // D65: http://en.wikipedia.org/wiki/CIE_Standard_Illuminant_D65
   // Standard Colorimetric Observer: http://en.wikipedia.org/wiki/Standard_colorimetric_observer#CIE_standard_observer
   // Since we mutiplied our XYZ values by 100 to produce a percentage we should also multiply our unit luminance values
   // by 100.
-  x /= 95.05; y /= 100.0; z /= 108.9
+  var x = x / 95.05, y = y / 100.0, z = z / 108.9
 
   // Use the forward transformation function for CIELAB-CIEXYZ conversions
   // Function: http://upload.wikimedia.org/math/e/5/1/e513d25d50d406bfffb6ed3c854bd8a4.png

@@ -20,7 +20,7 @@ public class ToggleBarButtonItem: UIBarButtonItem {
   public override var target: AnyObject? { get { return super.target } set {} }
 
   /** toggle */
-  public func toggle(sender: AnyObject?) { isToggled = !isToggled; if sender != nil { toggleAction?(self) } }
+  @objc public func toggle(sender: AnyObject?) { isToggled = !isToggled; if sender != nil { toggleAction?(self) } }
 
   /**
   encodeWithCoder:
@@ -30,7 +30,7 @@ public class ToggleBarButtonItem: UIBarButtonItem {
   public override func encodeWithCoder(aCoder: NSCoder) { super.encodeWithCoder(aCoder) }
 
   /** init */
-  public override init() { super.init(); super.target = self; super.action = "toggle:" }
+  public override init() { super.init(); super.target = self; super.action = #selector(ToggleBarButtonItem.toggle(_:)) }
 
   /**
   initWithCustomView:

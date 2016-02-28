@@ -36,7 +36,7 @@ public class LabeledStepper: UIControl {
     updateLabel()
 
     stepper.setContentHuggingPriority(UILayoutPriorityRequired, forAxis: .Horizontal)
-    stepper.addTarget(self, action: "updateLabel", forControlEvents: .ValueChanged)
+    stepper.addTarget(self, action: #selector(LabeledStepper.updateLabel), forControlEvents: .ValueChanged)
   }
 
   /**

@@ -69,7 +69,7 @@ public final class FormSliderField: FormField {
     control.setMaximumTrackImage(maxTrack, forState: .Normal)
     control.setThumbImage(thumb, forState: .Normal)
     if let offset = offset { control.thumbOffset = offset }
-    control.addTarget(self, action: "valueDidChange:", forControlEvents: .ValueChanged)
+    control.addTarget(self, action: #selector(FormSliderField.valueDidChange(_:)), forControlEvents: .ValueChanged)
     slider = control
     return control
   }

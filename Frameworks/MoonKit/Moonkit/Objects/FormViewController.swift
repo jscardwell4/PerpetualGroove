@@ -76,9 +76,9 @@ public class FormViewController: UIViewController {
     toolbar.identifier = "toolbar"
     toolbar.setBackgroundImage(UIImage(), forToolbarPosition: .Any, barMetrics: .Default)
     toolbar.tintColor = UIColor(white: 0.5, alpha: 1)
-    toolbar.items = [UIBarButtonItem(title: "Cancel", style: .Plain, target: self, action: "cancelAction"),
+    toolbar.items = [UIBarButtonItem(title: "Cancel", style: .Plain, target: self, action: #selector(FormViewController.cancelAction)),
                      UIBarButtonItem.flexibleSpace(),
-                     UIBarButtonItem(title: "Submit", style: .Done, target: self, action: "submitAction")]
+                     UIBarButtonItem(title: "Submit", style: .Done, target: self, action: #selector(FormViewController.submitAction))]
     effectView.contentView.addSubview(toolbar)
     self.toolbar = toolbar
 

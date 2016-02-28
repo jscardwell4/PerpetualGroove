@@ -61,7 +61,7 @@ struct MIDIFileError: ExtendedErrorType {
   var name: String { return type.rawValue }
   init() {}
 
-  init(type: Type,  line: UInt = __LINE__, function: String = __FUNCTION__, file: String = __FILE__, reason: String) {
+  init(type: Type,  line: UInt = #line, function: String = #function, file: String = #file, reason: String) {
     self.init(line: line, function: function, file: file, reason: reason)
     self.type = type
   }
@@ -233,12 +233,12 @@ enum Error: ErrorType, CustomStringConvertible {
 /**
 Function of convenience for capturing function and line information to include in an error message
 
-- parameter function: String = __FUNCTION__
-- parameter line: Int32 = __LINE__
+- parameter function: String = #function
+- parameter line: Int32 = #line
 
 - returns: String
 */
-func location(function: String = __FUNCTION__, line: Int32 = __LINE__) -> String {
+func location(function: String = #function, line: Int32 = #line) -> String {
   return "[\(function):\(line)]"
 }
 

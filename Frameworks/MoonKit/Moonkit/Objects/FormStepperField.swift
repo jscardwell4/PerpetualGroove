@@ -67,7 +67,7 @@ public final class FormStepperField: FormField {
 
     if let font = font { control.font = font }
     if let color = color { control.textColor = color }
-    control.addTarget(self, action: "valueDidChange:", forControlEvents: .ValueChanged)
+    control.addTarget(self, action: #selector(FormStepperField.valueDidChange(_:)), forControlEvents: .ValueChanged)
     stepper = control
     return control
   }

@@ -8,579 +8,9 @@
 
 import Foundation
 
-/* Should generator be switched to `IndexingGenerator`? */
-
-public struct OrderedDictionary<Key : Hashable, Value> : KeyValueCollectionType {
-
-  public typealias Index = Int
-  public typealias SelfType = OrderedDictionary<Key, Value>
-
-  private(set) public var dictionary: [Key:Value]
-  private(set) var _keys: [Key]
-  public var keys: LazyCollection<Array<Key>> { return LazyCollection(_keys) }
-  public var printableKeys: Bool { return typeCast(_keys, Array<CustomStringConvertible>.self) != nil }
-
-  public var userInfo: [String:AnyObject]?
-  public var count: Int { return _keys.count }
-  public var isEmpty: Bool { return _keys.isEmpty }
-  public var values: LazyMapCollection<[Key], Value> {
-    return keys.map({self.dictionary[$0]!})
-  }
-
-  public var keyValuePairs: [(Key, Value)] { return Array(zip(_keys, _keys.map({self.dictionary[$0]!}))) }
-
-  /**
-  Initialize with a minimum capacity
-
-  - parameter minimumCapacity: Int = 4
-  */
-  public init(minimumCapacity: Int = 4) {
-    dictionary = Dictionary(minimumCapacity: minimumCapacity)
-    _keys = []
-    _keys.reserveCapacity(minimumCapacity)
-  }
-
-
-  /**
-  Initialize with an `NSDictionary`
-
-  - parameter dict: NSDictionary
-  */
-  public init(_ dict: NSDictionary) {
-    if let kArray = typeCast(dict.allKeys, Array<Key>.self), vArray = typeCast(dict.allValues, Array<Value>.self) {
-      self = SelfType(keys: kArray, values: vArray)
-    } else {
-      _keys = []
-      dictionary = [:]
-    }
-  }
-
-  /**
-  Initialize with an `MSDictionary`, preserving order
-
-  - parameter dict: MSDictionary
-  */
-//  public init(_ dict: MSDictionary) {
-//    self.init(dict as NSDictionary)
-//    if let kArray = typeCast(dict.allKeys, Array<Key>.self) { _keys = kArray }
-//  }
-
-  /**
-  Initialize with a dictionary
-
-  - parameter dict: [Key
-  */
-  public init(_ dict: [Key:Value]) {
-    dictionary = dict
-    _keys = Array(dict.keys)
-  }
-
-  /**
-  Initialize with a sequence of keys and a sequence of values
-
-  - parameter keys: S1
-  - parameter values: S2
-  */
-  public init<S1:SequenceType, S2:SequenceType where S1.Generator.Element == Key, S2.Generator.Element == Value>(keys: S1, values: S2) {
-    self.init(zip(keys, values))
-  }
-
-  /**
-  Initialize with sequence of (Key, Value) tuples
-
-  - parameter elements: S
-  */
-  public init<S:SequenceType where S.Generator.Element == (Key,Value)>(_ elements: S) {
-    _keys = []
-    dictionary = [:]
-    for (k, v) in elements { _keys.append(k); dictionary[k] = v }
-  }
-
-  // MARK: - Indexes
-
-  public var startIndex: Index { return 0 }
-  public var endIndex: Index { return _keys.count }
-
-
-  public func indexForKey(key: Key) -> Index? { return _keys.indexOf(key) }
-
-  public func keyForIndex(idx: Index) -> Key { return _keys[idx] }
-
-  public func valueAtIndex(idx: Index) -> Value? { return dictionary[_keys[idx]] }
-
-  /**
-  subscript:
-
-  - parameter key: Key
-
-  - returns: Value?
-  */
-  public subscript (key: Key) -> Value? {
-    get { return dictionary[key] }
-    mutating set { setValue(newValue, forKey: key) }
-  }
-
-  /**
-  subscript:
-
-  - parameter i: Index
-
-  - returns: (Key, Value)
-  */
-  public subscript(i: Index) -> (Index, Key, Value) {
-    get {
-      precondition(i < _keys.count)
-      return (i, _keys[i], values[i])
-    }
-    mutating set {
-      precondition(i < _keys.count)
-      insertValue(newValue.2, atIndex: i, forKey: newValue.1)
-    }
-  }
-
-  /**
-  subscript:
-
-  - parameter keys: [Key]
-
-  - returns: [Value?]
-  */
-  public subscript(keys: [Key]) -> [Value?] {
-    get {
-      var values: [Value?] = []
-      for key in keys { values.append(self[key]) }
-      return values
-    }
-    mutating set {
-      if newValue.count == keys.count {
-        for (i, key) in keys.enumerate() { self[key] = newValue[i] }
-      }
-    }
-  }
-
-
-  // MARK: - Updating and removing values
-
-
-  /**
-  insertValue:atIndex:forKey:
-
-  - parameter value: Value?
-  - parameter index: Int
-  - parameter key: Key
-  */
-  public mutating func insertValue(value: Value?, atIndex index: Int, forKey key: Key) {
-    precondition(index < _keys.count)
-    if let v = value {
-      if let currentIndex = indexForKey(key) {
-        if currentIndex != index {
-          _keys.removeAtIndex(currentIndex)
-          _keys.insert(key, atIndex: index)
-        }
-      } else {
-        _keys.insert(key, atIndex: index)
-      }
-      dictionary[key] = v
-    } else {
-      if let currentIndex = indexForKey(key) { _keys.removeAtIndex(currentIndex) }
-      dictionary[key] = nil
-    }
-  }
-
-
-  /**
-  setValue:forKey:
-
-  - parameter value: Value?
-  - parameter key: Key
-  */
-  public mutating func setValue(value: Value?, forKey key: Key) {
-    if let v = value {
-      if !_keys.contains(key) { _keys.append(key) }
-      dictionary[key] = v
-    } else {
-      if let idx = indexForKey(key) { _keys.removeAtIndex(idx) }
-      dictionary[key] = nil
-    }
-  }
-
-
-  /**
-  updateValue:forKey:
-
-  - parameter value: Value
-  - parameter key: Key
-
-  - returns: Value?
-  */
-  public mutating func updateValue(value: Value, forKey key: Key) -> Value? {
-    if !_keys.contains(key) { _keys.append(key) }
-    return dictionary.updateValue(value, forKey: key)
-  }
-
-  /**
-  updateValue:atIndex:
-
-  - parameter value: Value
-  - parameter atIndex: idx Index
-
-  - returns: Value?
-  */
-  public mutating func updateValue(value: Value, atIndex index: Index) -> Value? {
-    precondition(index < _keys.count)
-    return dictionary.updateValue(value, forKey: _keys[index])
-  }
-
-  public mutating func appendContentsOf<S: SequenceType where S.Generator.Element == (Int, Key, Value)>(s: S) {
-    for (_, k, v) in s { self[k] = v }
-  }
-
-  /**
-  removeAtIndex:
-
-  - parameter index: Index
-
-  - returns: Value?
-  */
-  public mutating func removeAtIndex(index: Index) -> Value? {
-    precondition(index < _keys.count)
-    return removeValueForKey(_keys[index])
-  }
-
-
-  /**
-  removeValueForKey:
-
-  - parameter key: Key
-
-  - returns: Value?
-  */
-  public mutating func removeValueForKey(key: Key) -> Value? {
-    if let idx = indexForKey(key) { _keys.removeAtIndex(idx) }
-    return dictionary.removeValueForKey(key)
-  }
-
-  public mutating func removeValuesForKeys<S:SequenceType where S.Generator.Element == Key>(keys: S) {
-    keys ➤ {self.removeValueForKey($0)}
-  }
-
-  /**
-  removeAll:
-
-  - parameter keepCapacity: Bool = false
-  */
-  public mutating func removeAll(keepCapacity keepCapacity: Bool = false) {
-    _keys.removeAll(keepCapacity: keepCapacity)
-    dictionary.removeAll(keepCapacity: keepCapacity)
-  }
-
-
-  /**
-  sort:
-
-  - parameter isOrderedBefore: (Key, Key) -> Bool
-  */
-  public mutating func sort(isOrderedBefore: (Key, Key) -> Bool) { _keys = _keys.sort(isOrderedBefore) }
-
-  private static var defaultExpand: (Stack<String>, SelfType) -> Value {
-    return {
-      (var kp: Stack<String>, var leaf: SelfType) -> Value  in
-
-      // If there are stops along the way from first to last, recursively embed in dictionaries
-      while let k = kp.pop() { leaf = [k as! Key: leaf as! Value] }
-
-      return leaf as! Value
-    }
-  }
-
-  public func inflated(expand: (Stack<String>, SelfType) -> Value = defaultExpand)  -> SelfType {
-    var result = self
-    result.inflate(expand)
-    return result
-  }
-
-  /** inflate */
-  public mutating func inflate(expand: (Stack<String>, SelfType) -> Value = defaultExpand) {
-    if let stringKeys = typeCast(_keys, Array<String>.self) {
-
-      // First gather a list of keys to inflate
-      let inflatableKeys = Array(stringKeys.filter({$0 ~= "(?:\\w\\.)+\\w"}))
-
-      // Enumerate the list inflating each key
-      for key in inflatableKeys {
-
-        let keyComponents = ".".split(key)
-        let firstKey = keyComponents.first!
-        let lastKey = keyComponents.last!
-        let keypath = Stack(keyComponents.dropFirst().dropLast())
-        let value: Value
-
-        // If our value is an array, we embed each value in the array and keep our value as an array
-        if let valueArray = typeCast(self[key as! Key], Array<Value>.self) {
-          value = valueArray.map({expand(keypath, [lastKey as! Key:$0])}) as! Value
-        }
-
-          // Otherwise we embed the value
-        else { value = expand(keypath, [lastKey as! Key: self[key as! Key]!]) }
-
-        insertValue(value, atIndex: _keys.indexOf(key as! Key)!, forKey: firstKey as! Key)
-        self[key as! Key] = nil // Remove the compressed key-value entry
-      }
-    }
-  }
-
-
-
-  /**
-  reverse
-
-  - returns: OrderedDictionary<Key, Value>
-  */
-  public mutating func reverse() -> SelfType {
-    var result = self
-    result._keys = Array(result._keys.reverse())
-    return result
-  }
-
-
-  /**
-  filter
-
-  - parameter includeElement: (Key,Value) -> Bool
-
-  - returns: OrderedDictionary<Key, Value>
-  */
-  public func filter(includeElement: (Index, Key, Value) -> Bool) -> SelfType {
-    var result: SelfType = [:]
-    for (i, k, v) in self { if includeElement((i, k, v)) { result.setValue(v, forKey: k) } }
-    return result
-  }
-
-
-  /**
-  map
-
-  - parameter transform: (Key, Value) -> U
-
-  - returns: OrderedDictionary<Key, U>
-  */
-  public func map<U>(transform: (Index, Key, Value) -> U) -> OrderedDictionary<Key, U> {
-    var result: OrderedDictionary<Key, U> = [:]
-    for (i, k, v) in self { result[k] = transform(i, k, v) }
-    return result
-  }
-
-  /**
-  coompressedMap
-
-  - parameter transform: (Key, Value) -> U?
-
-  - returns: OrderedDictionary<Key, U>
-  */
-  public func compressedMap<U>(transform: (Index, Key, Value) -> U?) -> OrderedDictionary<Key, U> {
-    return map(transform).filter({$2 != nil}).map({$2!})
-  }
-
-  public func valuesForKeys<S:SequenceType where S.Generator.Element == Key>(keys: S) -> OrderedDictionary<Key, Value?> {
-    var result: OrderedDictionary<Key, Value?> = [:]
-    keys ➤ {result[$0] = self[$0]}
-    return result
-  }
-
-//  public static func dictionaryWithXMLData(data: NSData) -> OrderedDictionary<String, AnyObject> {
-//    return OrderedDictionary<String,AnyObject>(MSDictionary(byParsingXML: data))
-//  }
-
-}
-
-extension OrderedDictionary: NestingContainer {
-  public var topLevelObjects: [Any] {
-    var result: [Any] = []
-    for value in values {
-      result.append(value as Any)
-    }
-    return result
-  }
-  public func topLevelObjects<T>(type: T.Type) -> [T] {
-    var result: [T] = []
-    for value in values {
-      if let v = value as? T {
-        result.append(v)
-      }
-    }
-    return result
-  }
-  public var allObjects: [Any] {
-    var result: [Any] = []
-    for value in values {
-      if let container = value as? NestingContainer {
-        result.appendContentsOf(container.allObjects)
-      } else {
-        result.append(value as Any)
-      }
-    }
-    return result
-  }
-  public func allObjects<T>(type: T.Type) -> [T] {
-    var result: [T] = []
-    for value in values {
-      if let container = value as? NestingContainer {
-        result.appendContentsOf(container.allObjects(type))
-      } else if let v = value as? T {
-        result.append(v)
-      }
-    }
-    return result
-  }
-}
-
-extension OrderedDictionary: KeySearchable {
-  public var allValues: [Any] { return topLevelObjects }
-}
-
-extension OrderedDictionary: KeyedContainer {
-  public func hasKey(key: Key) -> Bool { return _keys.contains(key) }
-  public func valueForKey(key: Key) -> Any? { return self[key] }
-}
-
-// MARK: - Printing
-extension  OrderedDictionary: CustomStringConvertible, CustomDebugStringConvertible {
-
-  public var description: String {
-    var description = "{\n\t"
-    description += "\n\t".join(keyValuePairs.map({String(prettyNil: $0) + ": " + String(prettyNil: $1)}))
-    description += "\n}"
-    return description
-  }
-  public var debugDescription: String { return "\(self.dynamicType.self): " + description }
-
-}
-
-// MARK: DictionaryLiteralConvertible
-extension  OrderedDictionary: DictionaryLiteralConvertible {
-  public init(dictionaryLiteral elements: (Key, Value)...) { self = OrderedDictionary(elements) }
-}
-
-// MARK: _ObjectiveBridgeable
-extension OrderedDictionary: _ObjectiveCBridgeable {
-  static public func _isBridgedToObjectiveC() -> Bool {
-    return true
-  }
-  public typealias _ObjectiveCType = MSDictionary
-  static public func _getObjectiveCType() -> Any.Type { return _ObjectiveCType.self }
-  public func _bridgeToObjectiveC() -> _ObjectiveCType {
-    var keys: [AnyObject] = []
-    var values: [AnyObject] = []
-    for key in self.keys {
-      if key is AnyObject {
-        keys.append(key as! AnyObject)
-      }
-    }
-    for value in self.values {
-      if value is AnyObject {
-        values.append(value as! AnyObject)
-      }
-    }
-    if keys.count == values.count && keys.count == self.count {
-      return MSDictionary(values: values, forKeys: keys)
-    } else {
-      return MSDictionary()
-    }
-  }
-
-  static public func _forceBridgeFromObjectiveC(source: MSDictionary, inout result: OrderedDictionary?) {
-    var d = OrderedDictionary(minimumCapacity: source.count)
-    for (k, v) in zip(source.allKeys, source.allValues) {
-      if let key = typeCast(k, Key.self), value = typeCast(v, Value.self) {
-        d[key] = value
-      }
-    }
-    if d.count == source.count {
-      result = d
-    }
-  }
-  static public func _conditionallyBridgeFromObjectiveC(source: MSDictionary, inout result: OrderedDictionary?) -> Bool {
-    var d = OrderedDictionary(minimumCapacity: source.count)
-    for (k, v) in zip(source.allKeys, source.allValues) {
-      if let key = typeCast(k, Key.self), value = typeCast(v, Value.self) {
-        d[key] = value
-      }
-    }
-    if d.count == source.count {
-      result = d
-      return true
-    }
-    return false
-  }
-}
-
-// MARK: - Generator
-
-extension  OrderedDictionary: SequenceType  {
-  public func generate() -> OrderedDictionaryGenerator<Key, Value> {
-    return OrderedDictionaryGenerator(self)
-  }
-}
-
-public struct OrderedDictionaryGenerator<Key:Hashable, Value> : GeneratorType {
-
-  public typealias Index = OrderedDictionary<Key, Value>.Index
-  let dictionary: OrderedDictionary<Key, Value>
-  var index: Index
-
-
-  init(_ value: OrderedDictionary<Key,Value>) {
-    dictionary = value; index = dictionary.startIndex
-  }
-
-  public mutating func next() -> (Index, Key, Value)? {
-    if index < dictionary.endIndex {
-      let key: Key = dictionary._keys[index]
-      let value: Value = dictionary.dictionary[key]!
-      let element = (index, key, value)
-      index += 1
-      return element
-    } else { return nil }
-  }
-
-}
-
-// MARK: - Operations
-
-//public func +<K, V>(lhs: OrderedDictionary<K, V>, rhs: OrderedDictionary<K,V>) -> OrderedDictionary<K, V> {
-//  let keys: [K] = lhs._keys + rhs._keys
-//  let values: [V] = Array(lhs.values) + Array(rhs.values)
-//  return OrderedDictionary<K,V>(keys: keys, values: values)
-//}
-
-public func +<K, V, S:SequenceType where S.Generator.Element == (Int, K, V)>(var lhs: OrderedDictionary<K, V>, rhs: S) -> OrderedDictionary<K,V> {
-  for (_, k, v) in rhs { lhs[k] = v }
-  return lhs
-}
-
-public func +=<K, V, S:SequenceType where S.Generator.Element == (Int, K, V)>(inout lhs: OrderedDictionary<K, V>, rhs: S) {
-  lhs = lhs + rhs
-}
-
-public func -<K, V>(var lhs: OrderedDictionary<K, V>, rhs: K) -> OrderedDictionary<K, V> {
-  lhs.removeValueForKey(rhs)
-  return lhs
-}
-
-public func -<K, V>(var lhs: OrderedDictionary<K, V>, rhs: [K]) -> OrderedDictionary<K, V> {
-  lhs.removeValuesForKeys(rhs)
-  return lhs
-}
-
-public func -=<K, V>(inout lhs: OrderedDictionary<K, V>, rhs: K) {
-  lhs.removeValueForKey(rhs)
-}
-
-public func -=<K, V>(inout lhs: OrderedDictionary<K, V>, rhs: [K]) {
-  lhs.removeValuesForKeys(rhs)
-}
-
-private struct OrderedDictionaryStorageHeader {
+// MARK: - Storage
+// MARK: -
+internal struct OrderedDictionaryStorageHeader {
   var count: Int
   let capacity: Int
   let bytesAllocated: Int
@@ -594,43 +24,71 @@ private struct OrderedDictionaryStorageHeader {
   }
 }
 
-private final class OrderedDictionaryStorage<Key:Hashable, Value>: ManagedBuffer<OrderedDictionaryStorageHeader, UInt8> {
+internal final class OrderedDictionaryStorage
+<Key:Hashable, Value>: ManagedBuffer<OrderedDictionaryStorageHeader, UInt8>
+{
 
-  typealias BytePointer = UnsafeMutablePointer<UInt8>
+  typealias Storage = OrderedDictionaryStorage<Key, Value>
 
+  /**
+   bytesForBitMap:
+
+   - parameter capacity: Int
+
+    - returns: Int
+  */
   static func bytesForBitMap(capacity: Int) -> Int {
-    
     let numWords = BitMap.wordsFor(capacity)
     return numWords * sizeof(UInt) + alignof(UInt)
   }
 
-  var bitMapBytes: Int { return OrderedDictionaryStorage<Key, Value>.bytesForBitMap(capacity) }
+  var bitMapBytes: Int { return Storage.bytesForBitMap(capacity) }
 
+  /**
+   bytesForKeyMap:
+
+   - parameter capacity: Int
+
+    - returns: Int
+  */
   static func bytesForKeyMap(capacity: Int) -> Int {
-    
+
     let padding = max(0, alignof(Int) - alignof(UInt))
     return strideof(Int) * capacity + padding
   }
 
-  var keyMapBytes: Int { return OrderedDictionaryStorage<Key, Value>.bytesForKeyMap(capacity) }
+  var keyMapBytes: Int { return Storage.bytesForKeyMap(capacity) }
 
+  /**
+   bytesForKeys:
+
+   - parameter capacity: Int
+
+    - returns: Int
+  */
   static func bytesForKeys(capacity: Int) -> Int {
-    
+
     let maxPrevAlignment = max(alignof(Int), alignof(UInt))
     let padding = max(0, alignof(Key) - maxPrevAlignment)
     return strideof(Key) * capacity + padding
   }
 
-  var keysBytes: Int { return OrderedDictionaryStorage<Key, Value>.bytesForKeys(capacity) }
+  var keysBytes: Int { return Storage.bytesForKeys(capacity) }
 
+  /**
+   bytesForValues:
+
+   - parameter capacity: Int
+
+    - returns: Int
+  */
   static func bytesForValues(capacity: Int) -> Int {
-    
     let maxPrevAlignment = max(alignof(Key), alignof(UInt), alignof(Int))
-    let padding = max(0, alignof(Key) - maxPrevAlignment)
-    return strideof(Key) * capacity + padding
+    let padding = max(0, alignof(Value) - maxPrevAlignment)
+    return strideof(Value) * capacity + padding
   }
 
-  var valuesBytes: Int { return OrderedDictionaryStorage<Key, Value>.bytesForValues(capacity) }
+  var valuesBytes: Int { return Storage.bytesForValues(capacity) }
 
   var capacity: Int { return value.capacity }
 
@@ -659,74 +117,104 @@ private final class OrderedDictionaryStorage<Key:Hashable, Value>: ManagedBuffer
     return UnsafeMutablePointer<Value>(UnsafePointer<UInt8>(keys) + keysBytes)
   }
 
-  class func create(capacity: Int) -> OrderedDictionaryStorage {
-    
+  /**
+   capacityForMinimumCapacity:
+
+   - parameter minimumCapacity: Int
+
+   - returns: Int
+   */
+  static func capacityForMinimumCapacity(minimumCapacity: Int) -> Int {
+    // Make sure there's a representable power of 2 >= minimumCapacity
+    assert(minimumCapacity <= (Int.max >> 1) + 1)
+    var capacity = 2
+    while capacity < minimumCapacity { capacity <<= 1 }
+    return capacity
+  }
+
+  /**
+   create:
+
+   - parameter capacity: Int
+
+    - returns: OrderedDictionaryStorage
+  */
+  class func create(minimumCapacity: Int) -> OrderedDictionaryStorage {
+    let capacity = capacityForMinimumCapacity(minimumCapacity)
     let bitMapBytes = bytesForBitMap(capacity)
     let requiredCapacity = bitMapBytes
-      + bytesForKeys(capacity)
-      + bytesForKeyMap(capacity)
-      + bytesForValues(capacity)
+                         + bytesForKeys(capacity)
+                         + bytesForKeyMap(capacity)
+                         + bytesForValues(capacity)
 
     let storage = super.create(requiredCapacity) {
       $0.withUnsafeMutablePointerToElements {
         BitMap(storage: UnsafeMutablePointer<UInt>($0), bitCount: capacity).initializeToZero()
-        let keyMap = UnsafeMutablePointer<Int>($0 + bitMapBytes)
-        for i in 0 ..< capacity { (keyMap + i).initialize(-1) }
+//        let keyMap = UnsafeMutablePointer<Int>($0 + bitMapBytes)
+//        for i in 0 ..< capacity { (keyMap + i).initialize(-1) }
       }
       return OrderedDictionaryStorageHeader(capacity: capacity, bytesAllocated: $0.allocatedElementCount)
     }
 
-    return storage as! OrderedDictionaryStorage<Key, Value>
+    return storage as! Storage
   }
 
-  func resize(capacity: Int) -> OrderedDictionaryStorage<Key, Value> {
 
-    assert(count <= capacity, "Cannot resize to a capacity less than count")
-    let storage = OrderedDictionaryStorage<Key, Value>.create(capacity)
 
-    BytePointer(storage.bitMap).initializeFrom(BytePointer(self.bitMap), count: self.bitMapBytes)
-    BytePointer(storage.keyMap).initializeFrom(BytePointer(self.keyMap), count: self.keyMapBytes)
-    BytePointer(storage.keys).initializeFrom(BytePointer(self.keys), count: self.keysBytes)
-    BytePointer(storage.values).initializeFrom(BytePointer(self.values), count: self.valuesBytes)
+  /**
+   clone
+
+    - returns: Storage
+  */
+  func clone() -> Storage {
+
+    let storage = Storage.create(capacity)
+
+    func initialize<Memory>(target: UnsafeMutablePointer<Memory>,
+                       from: UnsafeMutablePointer<Memory>,
+                      count: Int)
+    {
+      UnsafeMutablePointer<UInt8>(target).initializeFrom(UnsafeMutablePointer<UInt8>(from), count: count)
+    }
+
+    initialize(storage.bitMap, from: bitMap, count: bitMapBytes)
+    initialize(storage.keyMap, from: keyMap, count: keyMapBytes)
+    initialize(storage.keys, from: keys, count: keysBytes)
+    initialize(storage.values, from: values, count: valuesBytes)
     storage.count = count
+
     return storage
   }
 
-  func clone() -> OrderedDictionaryStorage<Key, Value> {
-    
-    return withUnsafeMutablePointers {
-      (head: UnsafeMutablePointer<OrderedDictionaryStorageHeader>,
-      elements: UnsafeMutablePointer<UInt8>) -> OrderedDictionaryStorage<Key, Value> in
-
-      OrderedDictionaryStorage<Key, Value>.create(head.memory.capacity) {
-        proto in
-        proto.withUnsafeMutablePointerToElements {
-          $0.initializeFrom(elements, count: head.memory.bytesAllocated)
-        }
-        return head.memory
-        } as! OrderedDictionaryStorage<Key, Value>
-    }
-  }
 
   deinit {
     defer { _fixLifetime(self) }
-    for i in 0 ..< count {
-      let h = keyMap[i]
-      (keyMap + i).destroy()
-      (keys + h).destroy()
-      (values + h).destroy()
+    switch (_isPOD(Key), _isPOD(Value)) {
+      case (true, true): return
+      case (true, false):
+        (0 ..< count).map({ keyMap[$0] }).forEach { (values + $0).destroy() }
+      case (false, true):
+        (0 ..< count).map({ keyMap[$0] }).forEach { (keys + $0).destroy() }
+      case (false, false):
+        (0 ..< count).map({ keyMap[$0] }).forEach { (keys + $0).destroy()
+                                                    (values + $0).destroy() }
     }
-    //    let capacity = self.capacity
-    //    let initializedEntries = BitMap(storage: bitMap, bitCount: capacity)
-    //    let keys = self.keys
-    //    let values = self.values
-    //
-    //    for i in 0 ..< capacity where initializedEntries[i] {
-    //      if !_isPOD(Key) {(keys+i).destroy() }
-    //      if !_isPOD(Value) { (values + i).destroy() }
-    //    }
-
-    withUnsafeMutablePointerToValue {$0.destroy()}
+//    let capacity = self.capacity
+//    let keys = self.keys
+//    let values = self.values
+//    let bitMap = BitMap(storage: self.bitMap, bitCount: capacity)
+//    if !_isPOD(Key) {
+//      for bucket in 0 ..< capacity where bitMap[bucket] {
+//        (keys + bucket).destroy()
+//      }
+//    }
+//    if !_isPOD(Value) {
+//      for bucket in 0 ..< capacity where bitMap[bucket] {
+//        (values + bucket).destroy()
+//      }
+//    }
+//    keyMap.destroy(capacity)
+//    withUnsafeMutablePointerToValue({$0.destroy()})
   }
 }
 
@@ -756,13 +244,15 @@ extension OrderedDictionaryStorage {
     return result
   }
 }
-private let defaultMaxLoadFactorInverse = 1.0 / 0.75
 
-public struct __OrderedDictionaryGenerator__<Key: Hashable, Value>: GeneratorType {
-  private typealias Buffer = OrderedDictionaryBuffer<Key, Value>
-  private let buffer: Buffer
-  private var index: OrderedDictionaryIndex<Key, Value>
-  private init(buffer: Buffer) {
+// MARK: - Generator
+// MARK: -
+
+public struct OrderedDictionaryGenerator<Key: Hashable, Value>: GeneratorType {
+  internal typealias Buffer = OrderedDictionaryBuffer<Key, Value>
+  internal let buffer: Buffer
+  internal var index: Int //OrderedDictionaryIndex<Key, Value>
+  internal init(buffer: Buffer) {
     self.buffer = buffer
     index = buffer.startIndex
   }
@@ -770,65 +260,61 @@ public struct __OrderedDictionaryGenerator__<Key: Hashable, Value>: GeneratorTyp
     
     guard index < buffer.count else { return nil }
     defer { index = index.successor() }
-    return buffer.elementAt(index)
+    return buffer.elementAtPosition(index)
   }
 }
 
-extension UnsafeMutablePointer {
-  subscript(position: IntValued) -> Memory {
-    get { return self[position.value] }
-    set { self[position.value] = newValue }
-  }
-}
+// MARK: - Extension of existing types
 
-extension BitMap {
-  subscript(position: IntValued) -> Bool {
-    get { return self[position.value] }
-    set { self[position.value] = newValue }
-  }
-}
+//extension UnsafeMutablePointer {
+//  subscript(position: IntValued) -> Memory {
+//    get { return self[position.value] }
+//    set { self[position.value] = newValue }
+//  }
+//}
+//
+//extension BitMap {
+//  subscript(position: IntValued) -> Bool {
+//    get { return self[position.value] }
+//    set { self[position.value] = newValue }
+//  }
+//}
 
+// MARK: - Buffer
+// MARK: -
 public struct OrderedDictionaryBuffer<Key:Hashable, Value>: SequenceType {
 
-  public typealias Index = OrderedDictionaryIndex<Key, Value>
+  public typealias Index = Int//OrderedDictionaryIndex<Key, Value>
   public typealias Element = (Key, Value)
-  public typealias Generator = __OrderedDictionaryGenerator__<Key, Value>
+  public typealias Generator = OrderedDictionaryGenerator<Key, Value>
 
-  private typealias Buffer = OrderedDictionaryBuffer<Key, Value>
-  private typealias Storage = OrderedDictionaryStorage<Key, Value>
+  internal typealias Buffer = OrderedDictionaryBuffer<Key, Value>
+  internal typealias Storage = OrderedDictionaryStorage<Key, Value>
+  internal typealias Bucket = Int
 
-  private var storage: Storage
+  // MARK: Pointers to the underlying memory
 
-  // MARK: - Pointers to the underlying memory
+  internal var storage: Storage
+  internal var bitMap: BitMap
+  internal var keys: UnsafeMutablePointer<Key>
+  internal var keyMap: UnsafeMutablePointer<Int>
+  internal var values: UnsafeMutablePointer<Value>
 
-  private var bitMap: BitMap
-  private var keys: UnsafeMutablePointer<Key>
-  private var keyMap: UnsafeMutablePointer<Int>
-  private var values: UnsafeMutablePointer<Value>
-
-  // MARK: - Accessors for the storage header properties
+  // MARK: Accessors for the storage header properties
 
   public var capacity: Int { return storage.capacity }
 
-  public private(set) var count: Int { get { return storage.count } nonmutating set { storage.count = newValue } }
-
-  var maxLoadFactorInverse: Double { return storage.maxLoadFactorInverse }
-
-  // MARK: - Initializing by capacity
-
-  /**
-   initWithCapacity:
-
-   - parameter capacity: Int
-   */
-  init(capacity: Int) {
-    storage = Storage.create(capacity)
-    bitMap = BitMap(storage: storage.bitMap, bitCount: capacity)
-    keys = storage.keys
-    values = storage.values
-    keyMap = storage.keyMap
-    _fixLifetime(storage)
+  public private(set) var count: Int {
+    get { return storage.count }
+    nonmutating set { storage.count = newValue }
   }
+
+  var maxLoadFactorInverse: Double {
+    get { return storage.maxLoadFactorInverse }
+    set { storage.maxLoadFactorInverse = newValue }
+  }
+
+  // MARK: Initializing by capacity
 
   /**
    initWithMinimumCapacity:
@@ -836,13 +322,12 @@ public struct OrderedDictionaryBuffer<Key:Hashable, Value>: SequenceType {
    - parameter minimumCapacity: Int = 2
    */
   init(minimumCapacity: Int = 2) {
-    // Make sure there's a representable power of 2 >= minimumCapacity
-    assert(minimumCapacity <= (Int.max >> 1) + 1)
-
-    var capacity = 2
-    while capacity < minimumCapacity { capacity <<= 1 }
-
-    self.init(capacity: capacity)
+    storage = Storage.create(Buffer.minimumCapacityForCount(minimumCapacity, 1 / 0.75))
+    bitMap = BitMap(storage: storage.bitMap, bitCount: storage.capacity)
+    keys = storage.keys
+    values = storage.values
+    keyMap = storage.keyMap
+    _fixLifetime(storage)
   }
 
   /**
@@ -858,14 +343,14 @@ public struct OrderedDictionaryBuffer<Key:Hashable, Value>: SequenceType {
     return max(Int(Double(count) * maxLoadFactorInverse), count + 1)
   }
 
-    // MARK: - Initializing with data
+    // MARK: Initializing with data
 
   /**
    initWithStorage:
 
    - parameter storage: Storage
   */
-  private init(storage: Storage) {
+  internal init(storage: Storage) {
     self.storage = storage
     bitMap = BitMap(storage: storage.bitMap, bitCount: storage.capacity)
     keyMap = storage.keyMap
@@ -880,14 +365,14 @@ public struct OrderedDictionaryBuffer<Key:Hashable, Value>: SequenceType {
    - parameter capacity: Int? = nil
   */
   init(elements: [Element], capacity: Int? = nil) {
-    let minimumCapacity = Buffer.minimumCapacityForCount(elements.count, defaultMaxLoadFactorInverse)
+    let minimumCapacity = Buffer.minimumCapacityForCount(elements.count, 1 / 0.75)
     let requiredCapacity = max(minimumCapacity, capacity ?? 0)
     let buffer = Buffer(minimumCapacity: requiredCapacity)
 
-    for (p, (k, v)) in elements.enumerate() {
-      let (idx, found) = buffer.find(k)
+    for (position, (key, value)) in elements.enumerate() {
+      let (bucket, found) = buffer.find(key)
       precondition(!found, "Dictionary literal contains duplicate keys")
-      buffer.initializeKey(k, value: v, position: p, bucket: idx.value)
+      buffer.initializeKey(key, value: value, position: position, bucket: bucket)
     }
     buffer.count = elements.count
 
@@ -895,148 +380,195 @@ public struct OrderedDictionaryBuffer<Key:Hashable, Value>: SequenceType {
   }
 
 
-  // MARK: - Queries
+  // MARK: Queries
+
+  internal var bucketMask: Int { return capacity &- 1 }
+
+  /**
+   bucketForKey:
+
+   - parameter key: Key
+
+    - returns: Bucket
+  */
+  internal func bucketForKey(key: Key) -> Bucket { return _squeezeHashValue(key.hashValue, 0 ..< capacity) }
+
+
+  /**
+   positionForBucket:
+
+   - parameter bucket: Bucket
+
+    - returns: Index
+  */
+  internal func positionForBucket(bucket: Bucket) -> Index {
+    for position in 0 ..< count { guard keyMap[position] != bucket else { return position } }
+    return count
+  }
+
+  /**
+   bucketForPosition:
+
+   - parameter position: Index
+
+    - returns: Bucket
+  */
+  internal func bucketForPosition(position: Index) -> Bucket { return keyMap[position] }
+
+  /**
+   nextBucket:
+
+   - parameter bucket: Bucket
+
+    - returns: Bucket
+  */
+  internal func nextBucket(bucket: Bucket) -> Bucket { return (bucket &+ 1) & bucketMask }
+
+  /**
+   previousBucket:
+
+   - parameter bucket: Bucket
+
+    - returns: Bucket
+  */
+  internal func previousBucket(bucket: Bucket) -> Bucket { return (bucket &- 1) & bucketMask }
 
   /**
    find:
 
    - parameter key: Key
 
-    - returns: (position: Index, found: Bool)
+    - returns: (position: Bucket, found: Bool)
   */
-  private func find(k: Key) -> (position: Index, found: Bool) {
+  internal func find(key: Key) -> (position: Bucket, found: Bool) {
     
-    let startBucket = Index(k, self)
-    var b = startBucket
+    let startBucket = bucketForKey(key)
+    var bucket = startBucket
 
     repeat {
-      guard isInitializedEntry(b) else { return (b, false) }
-      guard keyAt(b) != k else { return (b, true) }
-      b._successorInPlace()
-    } while b != startBucket
+      guard isInitializedBucket(bucket) else { return (bucket, false) }
+      guard keyInBucket(bucket) != key  else { return (bucket, true)  }
+      bucket = nextBucket(bucket)
+    } while bucket != startBucket
 
     fatalError("failed to locate hole")
   }
-
   /**
-   keyAt:
+   keyInBucket:
 
-   - parameter idx: Index
+   - parameter bucket: Bucket
 
     - returns: Key
   */
-  func keyAt(idx: Index) -> Key {
-    guard let h = idx.hashedInitialized else {
-      fatalError("failed to get hashed index from index: \(idx)")
-    }
-    return (keys + h).memory
-  }
+  internal func keyInBucket(bucket: Bucket) -> Key { return keys[bucket] }
 
   /**
-   valueAt:
+   valueInBucket:
 
-   - parameter idx: Index
+   - parameter bucket: Bucket
 
     - returns: Value
   */
-  func valueAt(idx: Index) -> Value {
-    guard let h = idx.hashedInitialized else {
-      fatalError("failed to get hashed index from index: \(idx)")
-    }
-    return values[h]
-  }
+  internal func valueInBucket(bucket: Bucket) -> Value { return values[bucket] }
 
   /**
    valueForKey:
 
-   - parameter k: Key
+   - parameter key: Key
 
     - returns: Value?
   */
-  func valueForKey(k: Key) -> Value? {
+  internal func valueForKey(key: Key) -> Value? {
     guard count > 0 else { return nil }
-    guard let idx = indexForKey(k) else { return nil }
-    return valueAt(idx)
+    let (bucket, found) = find(key)
+    return found ? valueInBucket(bucket) : nil
   }
 
   /**
-   elementAt:
+   elementInBucket:
 
-   - parameter idx: Index
+   - parameter bucket: Bucket
 
     - returns: Element
   */
-  func elementAt(idx: Index) -> Element { return (keyAt(idx), valueAt(idx)) }
+  internal func elementInBucket(bucket: Bucket) -> Element { return (keyInBucket(bucket), valueInBucket(bucket)) }
 
   /**
-   isInitializedEntry:
+   elementAtPosition:
+
+   - parameter position: Index
+
+    - returns: Element
+  */
+  internal func elementAtPosition(position: Index) -> Element {
+    return elementInBucket(bucketForPosition(position))
+  }
+
+  /**
+   isInitializedBucket:
 
    - parameter index: Index
 
     - returns: Bool
   */
-  private func isInitializedEntry(index: Index) -> Bool {
-    guard let h = index.hashed else { return false }
-    return bitMap[h]
-  }
+  internal func isInitializedBucket(bucket: Bucket) -> Bool { return bitMap[bucket] }
 
   /**
    indexForKey:
 
-   - parameter k: Key
+   - parameter key: Key
 
     - returns: Index?
   */
-  func indexForKey(k: Key) -> Index? {
+  internal func indexForKey(key: Key) -> Index? {
     guard count > 0 else { return nil }
-    let (idx, found) = find(k)
+    let (bucket, found) = find(key)
     guard found else { return nil }
-    return idx
+    return positionForBucket(bucket)
   }
 
-  // MARK: - Removing data
+  // MARK: Removing data
 
   /**
    destroyEntryAt:
 
    - parameter index: Index
   */
-  mutating func destroyEntryAt(index: Index) {
-    guard let o = index.orderedInitialized, h = index.hashedInitialized else {
-      fatalError("failed to retrieve ordered and hashed indices from index: (index)")
-    }
+  internal func destroyEntryAt(position: Index) {
     defer { _fixLifetime(self) }
-    let k = keyAt(h)
-    let from = keyMap + o + 1
-    let moveCount = count - o - 1
-    (keyMap + o).moveInitializeFrom(from, count: moveCount)
-    (keys + h).destroy()
-    (values + h).destroy()
-    bitMap[h] = false
+    var bucket = bucketForPosition(position)
+    var idealBucket = bucketForKey((keys + bucket).move())
+    (values + bucket).destroy()
+    keyMap[position] = -1
+    bitMap[bucket] = false
+
+    let from = keyMap + position + 1
+    let moveCount = count - position - 1
+    (keyMap + position).moveInitializeFrom(from, count: moveCount)
 
     //TODO: rework to use position-based bucket checks
 
     // If we've put a hole in a chain of contiguous elements, some
     // element after the hole may belong where the new hole is.
-    var hole = h
+    var hole = bucket
 
     // Find the first bucket in the contiguous chain
-    var start = Index(k, self)
-    while isInitializedEntry(start.predecessor()) { start._predecessorInPlace() }
+    var start = idealBucket
+    while isInitializedBucket(previousBucket(start)) { start = previousBucket(start) }
 
     // Find the last bucket in the contiguous chain
     var lastInChain = hole
-    var b = lastInChain.successor()
-    while isInitializedEntry(b) { lastInChain = b; b._successorInPlace() }
+    bucket = nextBucket(lastInChain)
+    while isInitializedBucket(bucket) { lastInChain = bucket; bucket = nextBucket(bucket) }
 
     // Relocate out-of-place elements in the chain, repeating until
     // none are found.
     while hole != lastInChain {
       // Walk backwards from the end of the chain looking for
       // something out-of-place.
-      var b = lastInChain
-      while b != hole {
-        let idealBucket = Index(keyAt(b), self)
+      bucket = lastInChain
+      while bucket != hole {
+        idealBucket = bucketForKey(keyInBucket(bucket))
 
         // Does this element belong between start and hole?  We need
         // two separate tests depending on whether [start,hole] wraps
@@ -1046,56 +578,57 @@ public struct OrderedDictionaryBuffer<Key:Hashable, Value>: SequenceType {
         if start <= hole ? (c0 && c1) : (c0 || c1) {
           break // Found it
         }
-        b._predecessorInPlace()
+        bucket = previousBucket(bucket)
       }
 
-      if b == hole { // No out-of-place elements found; we're done adjusting
+      if bucket == hole { // No out-of-place elements found; we're done adjusting
         break
       }
 
       // Move the found element into the hole
-      moveInitializeFrom(b, to: hole)
-      hole = b
+      (keys + hole).initialize((keys + bucket).move())
+      (values + hole).initialize((values + bucket).move())
+      bitMap[hole] = true
+      bitMap[bucket] = false
+      keyMap[positionForBucket(bucket)] = hole
+      hole = bucket
     }
 
     count -= 1
   }
 
-  // MARK: - Initializing with data
+  // MARK: Initializing with data
 
   /**
    initializeKey:value:position:bucket:
 
-   - parameter k: Key
-   - parameter v: Value
-   - parameter p: Int
-   - parameter b: Int
+   - parameter key: Key
+   - parameter value: Value
+   - parameter position: Int
+   - parameter bucket: Int
   */
-  func initializeKey(k: Key, value v: Value, position p: Int, bucket b: Int) {
+  internal func initializeKey(key: Key, value: Value, position: Int, bucket: Int) {
     defer { _fixLifetime(self) }
-    let r = 0 ..< capacity
-    guard r ∋ b else { fatalError("Invalid bucket: \(b)") }
-    guard !bitMap[b] else { fatalError("Expected uninitialized bucket") }
-    guard r ∋ p else { fatalError("Invalid postion: \(p)") }
-    (keys + b).initialize(k)
-    (values + b).initialize(v)
-    bitMap[b] = true
-    (keyMap + p).initialize(b)
+//    let r = 0 ..< capacity
+//    guard r ∋ bucket else { fatalError("Invalid bucket: \(bucket)") }
+//    guard !bitMap[bucket] else { fatalError("Expected uninitialized bucket") }
+//    guard r ∋ position else { fatalError("Invalid postion: \(position)") }
+    (keys + bucket).initialize(key)
+    (values + bucket).initialize(value)
+    bitMap[bucket] = true
+    (keyMap + position).initialize(bucket)
   }
 
 
   /**
    initializeKey:value:at:
 
-   - parameter k: Key
-   - parameter v: Value
-   - parameter i: Index
+   - parameter key: Key
+   - parameter value: Value
+   - parameter bucket: Bucket
   */
-  func initializeKey(k: Key, value v: Value, at i: Index) {
-    guard let b = i.hashedUninitialized?.value else {
-      fatalError("failed to get hashed uninitialized index from index: \(i)")
-    }
-    initializeKey(k, value: v, position: count, bucket: b)
+  internal func initializeKey(key: Key, value: Value, bucket: Bucket) {
+    initializeKey(key, value: value, position: count, bucket: bucket)
   }
 
   /**
@@ -1105,28 +638,28 @@ public struct OrderedDictionaryBuffer<Key:Hashable, Value>: SequenceType {
    - parameter b2: Int
    - parameter p: Int
   */
-  private func uncheckedMoveInitializeFrom(b1: Int, to b2: Int, forPosition p: Int) {
-    (keys + b2).initialize((keys + b1).move())
-    (values + b2).initialize((values + b1).move())
-    keyMap[p] = b2
-    bitMap[b1] = false
-    bitMap[b2] = true
-  }
+//  internal func uncheckedMoveInitializeFrom(bucket1: Bucket, to bucket2: Bucket, forPosition position: Index) {
+//    (keys + bucket2).initialize((keys + bucket1).move())
+//    (values + bucket2).initialize((values + bucket1).move())
+//    keyMap[position] = bucket2
+//    bitMap[bucket1] = false
+//    bitMap[bucket2] = true
+//  }
 
   /**
    moveInitializeFrom:to:forPosition:
 
-   - parameter b1: Int
-   - parameter b2: Int
-   - parameter p: Int
+   - parameter bucket1: Bucket
+   - parameter bucket2: Bucket
+   - parameter position: Index
   */
-  private func moveInitializeFrom(b1: Int, to b2: Int, forPosition p: Int) {
-    let r = 0 ..< capacity
-    guard r ∋ b1 && bitMap[b1] else { fatalError("from bucket invalid or uninitialized: \(b1)") }
-    guard r ∋ b2 && !bitMap[b2] else { fatalError("to bucket invalid or already initialized: \(b1)") }
-    guard r ∋ p && keyMap[p] == b1 else { fatalError("position invalid: \(p)") }
-    uncheckedMoveInitializeFrom(b1, to: b2, forPosition: p)
-  }
+//  internal func moveInitializeFrom(bucket1: Bucket, to bucket2: Bucket, forPosition position: Index) {
+//    let r = 0 ..< capacity
+//    guard r ∋ bucket1 && bitMap[bucket1] else { fatalError("from bucket invalid or uninitialized: \(bucket1)") }
+//    guard r ∋ bucket2 && !bitMap[bucket2] else { fatalError("to bucket invalid or already initialized: \(bucket1)") }
+//    guard r ∋ position && keyMap[position] == bucket1 else { fatalError("position invalid: \(position)") }
+//    uncheckedMoveInitializeFrom(bucket1, to: bucket2, forPosition: position)
+//  }
 
   /**
    moveInitializeFrom:to:
@@ -1134,41 +667,25 @@ public struct OrderedDictionaryBuffer<Key:Hashable, Value>: SequenceType {
    - parameter from: Index
    - parameter to: Index
   */
-  private func moveInitializeFrom(from: Index, to: Index) {
+//  internal func moveInitializeFrom(from: Index, to: Index) {
+//    uncheckedMoveInitializeFrom(bucketForPosition(from), to: bucketForPosition(to), forPosition: from)
+//  }
 
-    guard let b1 = from.hashedInitialized?.value else {
-      fatalError("failed to get hashed initialized index from index: \(from)")
-    }
-
-    guard let p = from.ordered?.value else {
-      fatalError("failed to get ordered index from index: \(from)")
-    }
-
-    guard let b2 = to.hashedUninitialized?.value else {
-      fatalError("failed to get hashed unitialized index from index: \(to)")
-    }
-
-    uncheckedMoveInitializeFrom(b1, to: b2, forPosition: p)
-  }
-
-  // MARK: - Assigning into already initialized data
+  // MARK: Assigning into already initialized data
 
   /**
-   setKey:value:at:
+   setValue:at:
 
-   - parameter key: Key
    - parameter value: Value
-   - parameter index: Index
+   - parameter idx: Index
   */
-  mutating func setKey(key: Key, value: Value, at index: Index) {
-    guard let h = index.hashedInitialized else {
-      fatalError("failed to get hashed index from index: \(index)")
-    }
-    keys[h] = key
-    values[h] = value
+  internal func setValue(value: Value, at position: Index) {
+    values[bucketForPosition(position)] = value
   }
 
 }
+
+// MARK: CustomStringConvertible, CustomDebugStringConvertible
 
 extension OrderedDictionaryBuffer : CustomStringConvertible, CustomDebugStringConvertible {
     
@@ -1177,10 +694,10 @@ extension OrderedDictionaryBuffer : CustomStringConvertible, CustomDebugStringCo
 
     var result = "["
     var first = true
-    for (k, v) in self {
+    for (key, value) in self {
       if first { first = false } else { result += ", " }
-      debugPrint(k, terminator: ": ", toStream: &result)
-      debugPrint(v, terminator: "",   toStream: &result)
+      debugPrint(key, terminator: ": ", toStream: &result)
+      debugPrint(value, terminator: "",   toStream: &result)
     }
     result += "]"
     return result
@@ -1192,410 +709,528 @@ extension OrderedDictionaryBuffer : CustomStringConvertible, CustomDebugStringCo
   /// A textual representation of `self`, suitable for debugging.
   public var debugDescription: String {
     var result = elementsDescription + "\n"
-    for i in startIndex ..< endIndex {
-      if isInitializedEntry(i) {
-        let k = keyAt(i)
-        result += "bucket \(i), ideal bucket = \(Index(k, self)), actual bucket = \(i.hashed), key = \(k)\n"
+    for position in 0 ..< capacity {
+      let bucket = keyMap[position]
+      if bucket > -1 {
+        result += "position \(position) ➞ bucket \(bucket)\n"
       } else {
-        result += "bucket \(i), empty\n"
+        result += "position \(position), empty\n"
+      }
+    }
+    for bucket in 0 ..< capacity {
+      if isInitializedBucket(bucket) {
+        let key = keyInBucket(bucket)
+        result += "bucket \(bucket), ideal bucket = \(bucketForKey(key)), key = \(key)\n"
+      } else {
+        result += "bucket \(bucket), empty\n"
       }
     }
     return result
   }
 }
 
+// MARK: CollectionType
 extension OrderedDictionaryBuffer: CollectionType {
 
   public typealias _Element = Element
 
-  public var startIndex: Index { return .Ordered(0, self) }
+  public var startIndex: Index { return 0 }
 
-  public var endIndex: Index { return .Ordered(count, self) }
+  public var endIndex: Index { return count }
 
 
   public subscript(position: Index) -> Element {
-    return elementAt(position)
+    return elementInBucket(position)
   }
 
   public func generate() -> Generator { return Generator(buffer: self) }
 }
 
-public enum OrderedDictionaryIndex<Key: Hashable, Value>: BidirectionalIndexType, Comparable, CustomStringConvertible, IntValued {
-  public typealias Buffer = OrderedDictionaryBuffer<Key, Value>
-  case Ordered(Int, Buffer)
-  case Hashed(Int, Buffer)
+// MARK: - Index
+// MARK: -
+//public enum OrderedDictionaryIndex<Key: Hashable, Value>: Comparable {
+//  public typealias Buffer = OrderedDictionaryBuffer<Key, Value>
+//
+//  case Ordered(Int, Buffer)
+//  case Hashed (Int, Buffer)
+//
+//  var buffer: Buffer {
+//    switch self {
+//      case .Ordered(_, let bucket): return bucket
+//      case .Hashed (_, let bucket): return bucket
+//    }
+//  }
+//
+//  /**
+//   init:buffer:
+//
+//   - parameter key: Key
+//   - parameter buffer: Buffer
+//  */
+//  internal init(_ key: Key, _ buffer: Buffer) {
+//    self = .Hashed(_squeezeHashValue(key.hashValue, 0 ..< buffer.capacity), buffer)
+//  }
+//
+//  internal typealias Index = OrderedDictionaryIndex<Key, Value>
+//
+//  internal var ordered: Index? {
+//    if case .Hashed(let h, let buffer) = self {
+//      for i in 0 ..< buffer.count {
+//        guard buffer.keyMap[i] != h else { return .Ordered(i, buffer) }
+//      }
+//      return .Ordered(buffer.count, buffer)
+//    } else {
+//      return self
+//    }
+//  }
+//
+//  internal var orderedInitialized: Index? {
+//    if case .Hashed(let h, let buffer) = self {
+//      guard buffer.isInitializedEntry(self) else { return nil }
+//      for i in 0 ..< buffer.count {
+//        guard buffer.keyMap[i] != h else { return .Ordered(i, buffer) }
+//      }
+//      return nil
+//    } else if case .Ordered(let value, let bucket) = self where bucket.count > value {
+//      return self
+//    } else { return nil }
+//  }
+//
+//  internal var orderedUninitialized: Index? {
+//    if case .Hashed(_, let buffer) = self {
+//      guard !buffer.isInitializedEntry(self) else { return nil }
+//      return .Ordered(buffer.count, buffer)
+//    } else if case .Ordered(let value, let bucket) = self where value == bucket.count {
+//      return self
+//    } else {
+//      return nil
+//    }
+//  }
+//
+//  internal var hashed: Index? {
+//    if case .Ordered(let o, let buffer) = self {
+//      guard o < buffer.count else { fatalError("ordered index greater than buffer count") }
+//      let h = buffer.keyMap[o]
+//      guard (0 ..< buffer.capacity) ∋ h else { return nil }
+//      return .Hashed(h, buffer)
+//    } else {
+//      return self
+//    }
+//  }
+//
+//  internal var hashedInitialized: Index? {
+//    guard let h = hashed where buffer.isInitializedEntry(h) else { return nil }
+//    return h
+//  }
+//
+//  internal var hashedUninitialized: Index? {
+//    guard let h = hashed where !buffer.isInitializedEntry(h) else { return nil }
+//    return h
+//  }
+//
+//}
 
-  public var value: Int { switch self { case .Ordered(let i, _): return i; case .Hashed(let i, _): return i } }
-  var buffer: Buffer { switch self { case .Ordered(_, let b): return b; case .Hashed(_, let b): return b } }
+// MARK: BidirectionalIndexType
+//extension OrderedDictionaryIndex: BidirectionalIndexType {
+//  public func successor() -> OrderedDictionaryIndex {
+//    switch self {
+//      case .Ordered(let i, let buffer): return .Ordered(i.successor(), buffer)
+//      case .Hashed (let i, let buffer): return .Hashed (i.successor() & (buffer.capacity &- 1), buffer)
+//    }
+//  }
+//
+//  public func predecessor() -> OrderedDictionaryIndex {
+//    switch self {
+//      case .Ordered(let i, let buffer): return .Ordered(i.predecessor(), buffer)
+//      case .Hashed (let i, let buffer): return .Hashed (i.predecessor() & (buffer.capacity &- 1), buffer)
+//    }
+//  }
+//
+//}
+//
+//// MARK: IntValued
+//extension OrderedDictionaryIndex: IntValued {
+//  public var value: Int {
+//    switch self {
+//      case .Ordered(let i, _): return i
+//      case .Hashed (let i, _): return i
+//    }
+//  }
+//}
+//
+//// MARK: CustomStringConvertible
+//extension OrderedDictionaryIndex: CustomStringConvertible {
+//  public var description: String {
+//    switch self {
+//      case .Ordered(let value, _): return "Ordered(\(value))"
+//      case .Hashed(let value, _): return "Hashed(\(value))"
+//    }
+//  }
+//}
+//
+//// MARK: Comparable and arithemtic functions
+//
+//public func <<K, V, T:SignedIntegerType>(lhs: OrderedDictionaryIndex<K, V>, rhs: T) -> Bool {
+//  return lhs.value < numericCast(rhs)
+//}
+//
+//public func ><K, V, T:SignedIntegerType>(lhs: OrderedDictionaryIndex<K, V>, rhs: T) -> Bool {
+//  return lhs.value > numericCast(rhs)
+//}
+//
+//public func <=<K, V, T:SignedIntegerType>(lhs: OrderedDictionaryIndex<K, V>, rhs: T) -> Bool {
+//  return lhs.value <= numericCast(rhs)
+//}
+//
+//public func >=<K, V, T:SignedIntegerType>(lhs: OrderedDictionaryIndex<K, V>, rhs: T) -> Bool {
+//  return lhs.value >= numericCast(rhs)
+//}
+//
+//public func <<K, V, T:SignedIntegerType>(lhs: T, rhs: OrderedDictionaryIndex<K, V>) -> Bool {
+//  return numericCast(lhs) < rhs.value
+//}
+//
+//public func ><K, V, T:SignedIntegerType>(lhs: T, rhs: OrderedDictionaryIndex<K, V>) -> Bool {
+//  return numericCast(lhs) > rhs.value
+//}
+//
+//public func <=<K, V, T:SignedIntegerType>(lhs: T, rhs: OrderedDictionaryIndex<K, V>) -> Bool {
+//  return numericCast(lhs) <= rhs.value
+//}
+//
+//public func >=<K, V, T:SignedIntegerType>(lhs: T, rhs: OrderedDictionaryIndex<K, V>) -> Bool {
+//  return numericCast(lhs) >= rhs.value
+//}
+//
+//private func compareIndices<K, V>
+//  (lhs: OrderedDictionaryIndex<K, V>,
+//   rhs: OrderedDictionaryIndex<K, V>,
+//   operation: (Int, Int) -> Bool) -> Bool
+//{
+//  if case .Hashed = lhs {
+//    guard let rhsHashed = rhs.hashed else { return false }
+//    return operation(lhs.value, rhsHashed.value)
+//  } else {
+//    guard let rhsOrdered = rhs.ordered else { return false }
+//    return operation(lhs.value, rhsOrdered.value)
+//  }
+//}
+//public func <<K, V>(lhs: OrderedDictionaryIndex<K, V>, rhs: OrderedDictionaryIndex<K, V>) -> Bool {
+//  return compareIndices(lhs, rhs: rhs, operation: <)
+//}
+//
+//public func ><K, V>(lhs: OrderedDictionaryIndex<K, V>, rhs: OrderedDictionaryIndex<K, V>) -> Bool {
+//  return compareIndices(lhs, rhs: rhs, operation: >)
+//}
+//
+//public func <=<K, V>(lhs: OrderedDictionaryIndex<K, V>, rhs: OrderedDictionaryIndex<K, V>) -> Bool {
+//  return compareIndices(lhs, rhs: rhs, operation: <=)
+//}
+//
+//public func >=<K, V>(lhs: OrderedDictionaryIndex<K, V>, rhs: OrderedDictionaryIndex<K, V>) -> Bool {
+//  return compareIndices(lhs, rhs: rhs, operation: >=)
+//}
+//
+//public func +<K, V, Memory>
+//  (lhs: UnsafeMutablePointer<Memory>, rhs: OrderedDictionaryIndex<K, V>) -> UnsafeMutablePointer<Memory>
+//{
+//  return lhs + rhs.value
+//}
+//
+//public func +<K, V, Memory>
+//  (lhs: OrderedDictionaryIndex<K, V>, rhs: UnsafeMutablePointer<Memory>) -> UnsafeMutablePointer<Memory>
+//{
+//  return rhs + lhs
+//}
+//
+//public func -<K, V, Memory>
+//  (lhs: UnsafeMutablePointer<Memory>, rhs: OrderedDictionaryIndex<K, V>) -> UnsafeMutablePointer<Memory>
+//{
+//  return lhs - rhs.value
+//}
+//public func -<K, V, Memory>
+//  (lhs: OrderedDictionaryIndex<K, V>, rhs: UnsafeMutablePointer<Memory>) -> UnsafeMutablePointer<Memory>
+//{
+//  
+//  return rhs - lhs
+//}
+//
+//public func +<K, V, Memory>
+//  (lhs: UnsafePointer<Memory>, rhs: OrderedDictionaryIndex<K, V>) -> UnsafePointer<Memory>
+//{
+//  return lhs + rhs.value
+//}
+//
+//public func +<K, V, Memory>
+//  (lhs: OrderedDictionaryIndex<K, V>, rhs: UnsafePointer<Memory>) -> UnsafePointer<Memory>
+//{
+//  return rhs + lhs
+//}
+//
+//public func -<K, V, Memory>
+//  (lhs: UnsafePointer<Memory>, rhs: OrderedDictionaryIndex<K, V>) -> UnsafePointer<Memory>
+//{
+//  return lhs - rhs.value
+//}
+//public func -<K, V, Memory>
+//  (lhs: OrderedDictionaryIndex<K, V>, rhs: UnsafePointer<Memory>) -> UnsafePointer<Memory>
+//{
+//  return rhs - lhs
+//}
+//
+//public func +<K, V, T:SignedIntegerType>(lhs: T, rhs: OrderedDictionaryIndex<K, V>) -> T {
+//  return lhs + numericCast(rhs.value)
+//}
+//
+//public func +<K, V, T:SignedIntegerType>
+//  (lhs: OrderedDictionaryIndex<K, V>, rhs: T) -> OrderedDictionaryIndex<K, V>
+//{
+//  switch lhs {
+//    case let .Ordered(value, bucket): return .Ordered(value + numericCast(rhs), bucket)
+//    case let .Hashed(value, bucket):  return .Hashed(value + numericCast(rhs), bucket)
+//  }
+//}
+//
+//public func -<K, V, T:SignedIntegerType>(lhs: T, rhs: OrderedDictionaryIndex<K, V>) -> T {
+//  return lhs - numericCast(rhs.value)
+//}
+//public func -<K, V, T:SignedIntegerType>
+//  (lhs: OrderedDictionaryIndex<K, V>, rhs: T) -> OrderedDictionaryIndex<K, V>
+//{
+//  switch lhs {
+//    case let .Ordered(value, bucket): return .Ordered(value - numericCast(rhs), bucket)
+//    case let .Hashed(value, bucket):  return .Hashed(value - numericCast(rhs), bucket)
+//  }
+//}
+//
+//public func &<K, V, T:SignedIntegerType>(lhs: T, rhs: OrderedDictionaryIndex<K, V>) -> T {
+//  return lhs & numericCast(rhs.value)
+//}
+//
+//public func &<K, V, T:SignedIntegerType>
+//  (lhs: OrderedDictionaryIndex<K, V>, rhs: T) -> OrderedDictionaryIndex<K, V>
+//{
+//  switch lhs {
+//    case let .Ordered(value, bucket): return .Ordered(value & numericCast(rhs), bucket)
+//    case let .Hashed(value, bucket):  return .Hashed(value & numericCast(rhs), bucket)
+//  }
+//}
+//
+//public func |<K, V, T:SignedIntegerType>(lhs: T, rhs: OrderedDictionaryIndex<K, V>) -> T {
+//  return lhs | numericCast(rhs.value)
+//}
+//
+//public func |<K, V, T:SignedIntegerType>
+//  (lhs: OrderedDictionaryIndex<K, V>, rhs: T) -> OrderedDictionaryIndex<K, V>
+//{
+//  switch lhs {
+//    case let .Ordered(value, bucket): return .Ordered(value | numericCast(rhs), bucket)
+//    case let .Hashed(value, bucket):  return .Hashed(value | numericCast(rhs), bucket)
+//  }
+//}
+//
+//public func &+<K, V, T:SignedIntegerType>(lhs: T, rhs: OrderedDictionaryIndex<K, V>) -> T {
+//  return lhs &+ numericCast(rhs.value)
+//}
+//
+//public func &+<K, V, T:SignedIntegerType>
+//  (lhs: OrderedDictionaryIndex<K, V>, rhs: T) -> OrderedDictionaryIndex<K, V>
+//{
+//  switch lhs {
+//    case let .Ordered(value, bucket): return .Ordered(value &+ numericCast(rhs), bucket)
+//    case let .Hashed(value, bucket):  return .Hashed(value &+ numericCast(rhs), bucket)
+//  }
+//}
+//
+//public func &-<K, V, T:SignedIntegerType>(lhs: T, rhs: OrderedDictionaryIndex<K, V>) -> T {
+//  return lhs &- numericCast(rhs.value)
+//}
+//
+//public func &-<K, V, T:SignedIntegerType>
+//  (lhs: OrderedDictionaryIndex<K, V>, rhs: T) -> OrderedDictionaryIndex<K, V>
+//{
+//  switch lhs {
+//    case let .Ordered(value, bucket): return .Ordered(value &- numericCast(rhs), bucket)
+//    case let .Hashed(value, bucket):  return .Hashed(value &- numericCast(rhs), bucket)
+//  }
+//}
+//
+//public func ==<K:Hashable, V>
+//  (lhs: OrderedDictionaryIndex<K, V>, rhs: OrderedDictionaryIndex<K, V>) -> Bool
+//{
+//  switch (lhs, rhs) {
+//    case (.Ordered(let v1, let buffer1), .Ordered(let v2, let buffer2))
+//      where v1 == v2 && buffer1.storage === buffer2.storage:
+//      return true
+//    case (.Hashed(let v1, let buffer1), .Hashed(let v2, let buffer2))
+//      where v1 == v2 && buffer1.storage === buffer2.storage:
+//      return true
+//    default: return false
+//  }
+//}
 
-  public func successor() -> OrderedDictionaryIndex {
-    switch self {
-      case .Ordered(let i, let buffer): return .Ordered(i.successor(), buffer)
-      case .Hashed(let i, let buffer): return .Hashed(i.successor() & (buffer.capacity &- 1), buffer)
-    }
-  }
+// MARK: - Owner
+// MARK: -
 
-  private init(_ k: Key, _ buffer: Buffer) {
-    self = .Hashed(_squeezeHashValue(k.hashValue, 0 ..< buffer.capacity), buffer)
-  }
-
-  public func predecessor() -> OrderedDictionaryIndex {
-    switch self {
-      case .Ordered(let i, let buffer): return .Ordered(i.predecessor(), buffer)
-      case .Hashed(let i, let buffer): return .Hashed(i.predecessor() & (buffer.capacity &- 1), buffer)
-    }
-  }
-
-  var ordered: OrderedDictionaryIndex<Key, Value>? {
-    if case .Hashed(let h, let buffer) = self {
-      for i in 0 ..< buffer.count {
-        guard buffer.keyMap[i] != h else { return .Ordered(i, buffer) }
-      }
-      return .Ordered(buffer.count, buffer)
-    } else {
-      return self
-    }
-  }
-
-  var orderedInitialized: OrderedDictionaryIndex<Key, Value>? {
-    if case .Hashed(let h, let buffer) = self {
-      guard buffer.isInitializedEntry(self) else { return nil }
-      for i in 0 ..< buffer.count {
-        guard buffer.keyMap[i] != h else { return .Ordered(i, buffer) }
-      }
-      return nil
-    } else if case .Ordered(let v, let b) = self where b.count > v {
-      return self
-    } else { return nil }
-  }
-
-  var orderedUninitialized: OrderedDictionaryIndex<Key, Value>? {
-    if case .Hashed(_, let buffer) = self {
-      guard !buffer.isInitializedEntry(self) else { return nil }
-      return .Ordered(buffer.count, buffer)
-    } else if case .Ordered(let v, let b) = self where v == b.count {
-      return self
-    } else {
-      return nil
-    }
-  }
-
-  var hashed: OrderedDictionaryIndex<Key, Value>? {
-    if case .Ordered(let o, let buffer) = self {
-      guard o < buffer.count else { fatalError("ordered index greater than buffer count") }
-      let h = buffer.keyMap[o]
-      guard (0 ..< buffer.capacity) ∋ h else { return nil }
-      return .Hashed(h, buffer)
-    } else {
-      return self
-    }
-  }
-
-  var hashedInitialized: OrderedDictionaryIndex<Key, Value>? {
-    guard let h = hashed where buffer.isInitializedEntry(h) else {
-      return nil
-    }
-    return h
-  }
-
-  var hashedUninitialized: OrderedDictionaryIndex<Key, Value>? {
-    guard let h = hashed where !buffer.isInitializedEntry(h) else {
-      return nil
-    }
-    return h
-  }
-
-  public var description: String {
-    switch self {
-      case .Ordered(let v, _): return "Ordered(\(v))"
-      case .Hashed(let v, _): return "Hashed(\(v))"
-    }
-  }
-}
-
-public func <<K, V, T:SignedIntegerType>(lhs: OrderedDictionaryIndex<K, V>, rhs: T) -> Bool {
-  
-  return lhs.value < numericCast(rhs)
-}
-
-public func ><K, V, T:SignedIntegerType>(lhs: OrderedDictionaryIndex<K, V>, rhs: T) -> Bool {
-  
-  return lhs.value > numericCast(rhs)
-}
-
-public func <=<K, V, T:SignedIntegerType>(lhs: OrderedDictionaryIndex<K, V>, rhs: T) -> Bool {
-  
-  return lhs.value <= numericCast(rhs)
-}
-
-public func >=<K, V, T:SignedIntegerType>(lhs: OrderedDictionaryIndex<K, V>, rhs: T) -> Bool {
-  
-  return lhs.value >= numericCast(rhs)
-}
-
-public func <<K, V, T:SignedIntegerType>(lhs: T, rhs: OrderedDictionaryIndex<K, V>) -> Bool {
-  
-  return numericCast(lhs) < rhs.value
-}
-
-public func ><K, V, T:SignedIntegerType>(lhs: T, rhs: OrderedDictionaryIndex<K, V>) -> Bool {
-  
-  return numericCast(lhs) > rhs.value
-}
-
-public func <=<K, V, T:SignedIntegerType>(lhs: T, rhs: OrderedDictionaryIndex<K, V>) -> Bool {
-  
-  return numericCast(lhs) <= rhs.value
-}
-
-public func >=<K, V, T:SignedIntegerType>(lhs: T, rhs: OrderedDictionaryIndex<K, V>) -> Bool {
-  
-  return numericCast(lhs) >= rhs.value
-}
-private func compareIndices<K, V>(lhs: OrderedDictionaryIndex<K, V>, rhs: OrderedDictionaryIndex<K, V>, operation: (Int, Int) -> Bool) -> Bool {
-  if case .Hashed = lhs {
-    guard let rhsHashed = rhs.hashed else { return false }
-    return operation(lhs.value, rhsHashed.value)
-  } else {
-    guard let rhsOrdered = rhs.ordered else { return false }
-    return operation(lhs.value, rhsOrdered.value)
-  }
-}
-public func <<K, V>(lhs: OrderedDictionaryIndex<K, V>, rhs: OrderedDictionaryIndex<K, V>) -> Bool {
-  return compareIndices(lhs, rhs: rhs, operation: <)
-}
-
-public func ><K, V>(lhs: OrderedDictionaryIndex<K, V>, rhs: OrderedDictionaryIndex<K, V>) -> Bool {
-  return compareIndices(lhs, rhs: rhs, operation: >)
-}
-
-public func <=<K, V>(lhs: OrderedDictionaryIndex<K, V>, rhs: OrderedDictionaryIndex<K, V>) -> Bool {
-  return compareIndices(lhs, rhs: rhs, operation: <=)
-}
-
-public func >=<K, V>(lhs: OrderedDictionaryIndex<K, V>, rhs: OrderedDictionaryIndex<K, V>) -> Bool {
-  return compareIndices(lhs, rhs: rhs, operation: >=)
-}
-
-public func +<K, V, Memory>(lhs: UnsafeMutablePointer<Memory>, rhs: OrderedDictionaryIndex<K, V>) -> UnsafeMutablePointer<Memory> {
-  
-  return lhs + rhs.value
-}
-
-public func +<K, V, Memory>(lhs: OrderedDictionaryIndex<K, V>, rhs: UnsafeMutablePointer<Memory>) -> UnsafeMutablePointer<Memory> {
-  
-  return rhs + lhs
-}
-
-public func -<K, V, Memory>(lhs: UnsafeMutablePointer<Memory>, rhs: OrderedDictionaryIndex<K, V>) -> UnsafeMutablePointer<Memory> {
-  
-  return lhs - rhs.value
-}
-public func -<K, V, Memory>(lhs: OrderedDictionaryIndex<K, V>, rhs: UnsafeMutablePointer<Memory>) -> UnsafeMutablePointer<Memory> {
-  
-  return rhs - lhs
-}
-
-public func +<K, V, Memory>(lhs: UnsafePointer<Memory>, rhs: OrderedDictionaryIndex<K, V>) -> UnsafePointer<Memory> {
-
-  return lhs + rhs.value
-}
-
-public func +<K, V, Memory>(lhs: OrderedDictionaryIndex<K, V>, rhs: UnsafePointer<Memory>) -> UnsafePointer<Memory> {
-
-  return rhs + lhs
-}
-
-public func -<K, V, Memory>(lhs: UnsafePointer<Memory>, rhs: OrderedDictionaryIndex<K, V>) -> UnsafePointer<Memory> {
-
-  return lhs - rhs.value
-}
-public func -<K, V, Memory>(lhs: OrderedDictionaryIndex<K, V>, rhs: UnsafePointer<Memory>) -> UnsafePointer<Memory> {
-
-  return rhs - lhs
-}
-
-public func +<K, V, T:SignedIntegerType>(lhs: T, rhs: OrderedDictionaryIndex<K, V>) -> T {
-  
-  return lhs + numericCast(rhs.value)
-}
-
-public func +<K, V, T:SignedIntegerType>(lhs: OrderedDictionaryIndex<K, V>, rhs: T) -> OrderedDictionaryIndex<K, V> {
-  
-  switch lhs {
-  case let .Ordered(v, b): return .Ordered(v + numericCast(rhs), b)
-  case let .Hashed(v, b):  return .Hashed(v + numericCast(rhs), b)
-  }
-}
-
-public func -<K, V, T:SignedIntegerType>(lhs: T, rhs: OrderedDictionaryIndex<K, V>) -> T {
-  
-  return lhs - numericCast(rhs.value)
-}
-public func -<K, V, T:SignedIntegerType>(lhs: OrderedDictionaryIndex<K, V>, rhs: T) -> OrderedDictionaryIndex<K, V> {
-  
-  switch lhs {
-  case let .Ordered(v, b): return .Ordered(v - numericCast(rhs), b)
-  case let .Hashed(v, b):  return .Hashed(v - numericCast(rhs), b)
-  }
-}
-
-public func &<K, V, T:SignedIntegerType>(lhs: T, rhs: OrderedDictionaryIndex<K, V>) -> T {
-  
-  return lhs & numericCast(rhs.value)
-}
-
-public func &<K, V, T:SignedIntegerType>(lhs: OrderedDictionaryIndex<K, V>, rhs: T) -> OrderedDictionaryIndex<K, V> {
-  
-  switch lhs {
-  case let .Ordered(v, b): return .Ordered(v & numericCast(rhs), b)
-  case let .Hashed(v, b):  return .Hashed(v & numericCast(rhs), b)
-  }
-}
-
-public func |<K, V, T:SignedIntegerType>(lhs: T, rhs: OrderedDictionaryIndex<K, V>) -> T {
-  
-  return lhs | numericCast(rhs.value)
-}
-public func |<K, V, T:SignedIntegerType>(lhs: OrderedDictionaryIndex<K, V>, rhs: T) -> OrderedDictionaryIndex<K, V> {
-  
-  switch lhs {
-  case let .Ordered(v, b): return .Ordered(v | numericCast(rhs), b)
-  case let .Hashed(v, b):  return .Hashed(v | numericCast(rhs), b)
-  }
-}
-
-public func &+<K, V, T:SignedIntegerType>(lhs: T, rhs: OrderedDictionaryIndex<K, V>) -> T {
-  
-  return lhs &+ numericCast(rhs.value)
-}
-
-public func &+<K, V, T:SignedIntegerType>(lhs: OrderedDictionaryIndex<K, V>, rhs: T) -> OrderedDictionaryIndex<K, V> {
-  
-  switch lhs {
-  case let .Ordered(v, b): return .Ordered(v &+ numericCast(rhs), b)
-  case let .Hashed(v, b):  return .Hashed(v &+ numericCast(rhs), b)
-  }
-}
-
-public func &-<K, V, T:SignedIntegerType>(lhs: T, rhs: OrderedDictionaryIndex<K, V>) -> T {
-  
-  return lhs &- numericCast(rhs.value)
-}
-public func &-<K, V, T:SignedIntegerType>(lhs: OrderedDictionaryIndex<K, V>, rhs: T) -> OrderedDictionaryIndex<K, V> {
-  
-  switch lhs {
-  case let .Ordered(v, b): return .Ordered(v &- numericCast(rhs), b)
-  case let .Hashed(v, b):  return .Hashed(v &- numericCast(rhs), b)
-  }
-}
-
-public func ==<K:Hashable, V>(lhs: OrderedDictionaryIndex<K, V>, rhs: OrderedDictionaryIndex<K, V>) -> Bool {
-  
-  switch (lhs, rhs) {
-  case (.Ordered(let v1, let buffer1), .Ordered(let v2, let buffer2))
-    where v1 == v2 && buffer1.storage === buffer2.storage:
-    return true
-  case (.Hashed(let v1, let buffer1), .Hashed(let v2, let buffer2))
-    where v1 == v2 && buffer1.storage === buffer2.storage:
-    return true
-  default: return false
-  }
-}
-
-private final class Owner<Key: Hashable, Value>: NonObjectiveCBase {
+internal final class OrderedDictionaryStorageOwner<Key: Hashable, Value>: NonObjectiveCBase {
 
   typealias Buffer = OrderedDictionaryBuffer<Key, Value>
   var buffer: Buffer
-  init(minimumCapacity: Int) {
-    buffer = Buffer(minimumCapacity: minimumCapacity)
-  }
+  init(minimumCapacity: Int) { buffer = Buffer(minimumCapacity: minimumCapacity) }
   init(buffer: Buffer) { self.buffer = buffer }
 }
 
+// MARK: - OrderedDictionary
+// MARK: -
+
 /// A hash-based mapping from `Key` to `Value` instances that preserves elment order.
-public struct __OrderedDictionary__<Key: Hashable, Value>: CollectionType, DictionaryLiteralConvertible {
+public struct OrderedDictionary<Key: Hashable, Value>: CollectionType, DictionaryLiteralConvertible {
 
-  public typealias Index = OrderedDictionaryIndex<Key, Value>
-  public typealias Generator = __OrderedDictionaryGenerator__<Key, Value>
-  public typealias _Element = (Key, Value)
-  private typealias Storage = OrderedDictionaryStorage<Key, Value>
-  private typealias Buffer = OrderedDictionaryBuffer<Key, Value>
+  public typealias Index = Int//OrderedDictionaryIndex<Key, Value>
+  public typealias Generator = OrderedDictionaryGenerator<Key, Value>
+  public typealias Element = (Key, Value)
+  public typealias _Element = Element
+  internal typealias Storage = OrderedDictionaryStorage<Key, Value>
+  internal typealias Buffer = OrderedDictionaryBuffer<Key, Value>
+  internal typealias Owner = OrderedDictionaryStorageOwner<Key, Value>
 
-  //  private var buffer: OrderedDictionaryBuffer<Key, Value> { return owner.buffer }
-  private var buffer: Buffer {
-    unsafeAddress { return withUnsafePointer(&owner.buffer, {$0}) }
-    unsafeMutableAddress { return withUnsafeMutablePointer(&owner.buffer, {$0}) }
+  internal var buffer: Buffer {
+    get { return owner.buffer }
+    set { owner.buffer = newValue }
   }
 
-  private var owner: Owner<Key, Value>
+  internal var owner: Owner
 
-  private mutating func cloneStorage() { owner.buffer.storage = buffer.storage.clone() }
+  /**
+   ensureUniqueWithCapacity:
 
-  private mutating func rehashKeys() {
-    
+   - parameter minimumCapacity: Int
 
-  }
-
-
-  private mutating func resizeStorage(capacity: Int) {
-    buffer = Buffer(storage: buffer.storage.resize(capacity))
-  }
-
-  mutating func ensureUniqueWithCapacity(minimumCapacity: Int) -> (reallocated: Bool, capacityChanged: Bool) {
+    - returns: (reallocated: Bool, capacityChanged: Bool)
+  */
+  internal mutating func ensureUniqueWithCapacity(minimumCapacity: Int)
+    -> (reallocated: Bool, capacityChanged: Bool)
+  {
     
     if capacity >= minimumCapacity {
       guard !isUniquelyReferenced(&owner) else { return(reallocated: false, capacityChanged: false) }
-      cloneStorage()
+      owner = Owner(buffer: Buffer(storage: buffer.storage.clone()))
       return (reallocated: true, capacityChanged: false)
     }
-    resizeStorage(minimumCapacity)
+
+    let newBuffer = Buffer(minimumCapacity: minimumCapacity)
+    for (position, (key, value)) in buffer.enumerate() {
+      let (bucket, _) = newBuffer.find(key)
+      newBuffer.initializeKey(key, value: value, position: position, bucket: bucket)
+    }
+    newBuffer.count = buffer.count
+    owner = Owner(buffer: newBuffer)
     return (reallocated: true, capacityChanged: true)
 
   }
 
   /// Create an empty dictionary.
-  public init() { self.init(minimumCapacity: 0) }
+  public init() { owner = Owner(minimumCapacity: 0) }
 
-  public init(minimumCapacity: Int) { owner = Owner<Key, Value>(minimumCapacity: minimumCapacity) }
+  /**
+   initWithMinimumCapacity:
 
-  private init(buffer: Buffer) { owner = Owner<Key, Value>(buffer: buffer) }
+   - parameter minimumCapacity: Int
+  */
+  public init(minimumCapacity: Int) { owner = Owner(minimumCapacity: minimumCapacity) }
+
+  /**
+   initWithBuffer:
+
+   - parameter buffer: Buffer
+  */
+  internal init(buffer: Buffer) { owner = Owner(buffer: buffer) }
 
   public var startIndex: Index { return buffer.startIndex }
 
   public var endIndex: Index { return buffer.endIndex }
 
-  public func indexForKey(key: Key) -> Index? {
-        return buffer.indexForKey(key) }
+  /**
+   indexForKey:
 
-  public subscript(position: Index) -> (Key, Value) { return buffer.elementAt(position) }
+   - parameter key: Key
 
-  public subscript(position: Int) -> Value {
-    get {
-      guard let h = Index.Ordered(position, buffer).hashedInitialized else {
-        fatalError("Index out of bounds: \(position)")
-      }
-      return buffer.values[h.value]
-    }
-    set {
-      guard let h = Index.Ordered(position, buffer).hashedInitialized else {
-        fatalError("Index out of bounds: \(position)")
-      }
-      buffer.values[h.value] = newValue
-    }
-  }
+    - returns: Index?
+  */
+  public func indexForKey(key: Key) -> Index? { return buffer.indexForKey(key) }
 
+  /**
+   subscript:
+
+   - parameter position: Index
+
+    - returns: (Key, Value)
+  */
+  public subscript(position: Index) -> (Key, Value) { return buffer.elementAtPosition(position) }
+
+  /**
+   subscript:
+
+   - parameter position: Int
+
+    - returns: Value
+  */
+//  public subscript(position: Int) -> Value {
+//    get {
+//      guard let h = Index.Ordered(position, buffer).hashedInitialized else {
+//        fatalError("Index out of bounds: \(position)")
+//      }
+//      return buffer.valueAt(h)
+//    }
+//    set {
+//      guard let h = Index.Ordered(position, buffer).hashedInitialized else {
+//        fatalError("Index out of bounds: \(position)")
+//      }
+//      buffer.setValue(newValue, at: h)
+//    }
+//  }
+
+  /**
+   subscript:
+
+   - parameter key: Key
+
+    - returns: Value?
+  */
   public subscript(key: Key) -> Value? {
     get { return buffer.valueForKey(key) }
     set {
-      if let value = newValue { _updateValue(value, forKey: key) }
-      else { _removeValueForKey(key) }
+      if let value = newValue { _updateValue(value, forKey: key, oldValue: nil, oldKey: nil) }
+      else { _removeValueForKey(key, oldValue: nil) }
     }
   }
 
-  private mutating func _updateValue(value: Value, forKey key: Key) {
-    
-    let (i, found) = buffer.find(key)
+  /**
+   _updateValue:forKey:oldValue:oldKey:
+
+   - parameter value: Value
+   - parameter key: Key
+   - parameter oldValue: UnsafeMutablePointer<Value?>
+   - parameter oldKey: UnsafeMutablePointer<Key?>
+  */
+  internal mutating func _updateValue(value: Value,
+                              forKey key: Key,
+                            oldValue: UnsafeMutablePointer<Value?>,
+                              oldKey: UnsafeMutablePointer<Key?>)
+  {
+    let (bucket, found) = buffer.find(key)
+
+    if oldValue != nil || oldKey != nil {
+      if found {
+        let (key, value) = buffer.elementInBucket(bucket)
+        if oldKey != nil { oldKey.initialize(key) }
+        if oldValue != nil { oldValue.initialize(value) }
+      } else {
+        if oldKey != nil { oldKey.initialize(nil) }
+        if oldValue != nil { oldValue.initialize(nil) }
+      }
+    }
+
     let minCapacity = found
       ? capacity
       : Buffer.minimumCapacityForCount(buffer.count + 1, buffer.maxLoadFactorInverse)
@@ -1603,50 +1238,94 @@ public struct __OrderedDictionary__<Key: Hashable, Value>: CollectionType, Dicti
     ensureUniqueWithCapacity(minCapacity)
 
     if found {
-      buffer.setKey(key, value: value, at: i)
+      buffer.setValue(value, at: bucket)
     } else {
-      buffer.initializeKey(key, value: value, at: i)
+      buffer.initializeKey(key, value: value, bucket: bucket)
       buffer.count += 1
     }
   }
 
-  public mutating func updateValue(value: Value, forKey key: Key) -> Value? {
-    
-    let oldValue = buffer.valueForKey(key)
+  /**
+   updateValue:forKey:
 
-    _updateValue(value, forKey: key)
-    return oldValue
+   - parameter value: Value
+   - parameter key: Key
+
+    - returns: Value?
+  */
+  public mutating func updateValue(value: Value, forKey key: Key) -> Value? {
+    let oldValue = UnsafeMutablePointer<Value?>.alloc(1)
+    _updateValue(value, forKey: key, oldValue: oldValue, oldKey: nil)
+    return oldValue.memory
   }
 
-  private mutating func _removeAtIndex(index: Index) {    
+  /**
+   _removeAtIndex:oldElement:
+
+   - parameter index: Index
+   - parameter oldElement: UnsafeMutablePointer<Element>
+  */
+  internal mutating func _removeAtIndex(index: Index, oldElement: UnsafeMutablePointer<Element>) {
+    if oldElement != nil { oldElement.initialize(buffer.elementInBucket(index)) }
     ensureUniqueWithCapacity(capacity)
     buffer.destroyEntryAt(index)
   }
 
+  /**
+   removeAtIndex:
+
+   - parameter index: Index
+
+    - returns: (Key, Value)
+  */
   public mutating func removeAtIndex(index: Index) -> (Key, Value) {
-    
-    let (key, value) = buffer.elementAt(index)
-    _removeAtIndex(index)
-    return (key, value)
+    let oldElement = UnsafeMutablePointer<Element>.alloc(1)
+    _removeAtIndex(index, oldElement: oldElement)
+    return oldElement.memory
   }
 
-  private mutating func _removeValueForKey(key: Key) {
-    
-    guard let index = buffer.indexForKey(key) else { return }
-    _removeAtIndex(index)
+  /**
+   _removeValueForKey:oldValue:
+
+   - parameter key: Key
+   - parameter oldValue: UnsafeMutablePointer<Value?>
+  */
+  internal mutating func _removeValueForKey(key: Key, oldValue: UnsafeMutablePointer<Value?>) {
+    guard let index = buffer.indexForKey(key) else {
+      if oldValue != nil { oldValue.initialize(nil) }
+      return
+    }
+    if oldValue != nil {
+      let oldElement = UnsafeMutablePointer<Element>.alloc(1)
+      _removeAtIndex(index, oldElement: oldElement)
+      oldValue.initialize(oldElement.memory.1)
+    } else {
+      _removeAtIndex(index, oldElement: nil)
+    }
   }
 
+  /**
+   removeValueForKey:
+
+   - parameter key: Key
+
+    - returns: Value?
+  */
   public mutating func removeValueForKey(key: Key) -> Value? {
-    
-    let oldValue = buffer.valueForKey(key)
-    _removeValueForKey(key)
-    return oldValue
+    let oldValue = UnsafeMutablePointer<Value?>.alloc(1)
+    _removeValueForKey(key, oldValue: oldValue)
+    return oldValue.memory
   }
 
+  /**
+   removeAll:
+
+   - parameter keepCapacity: Bool = false
+  */
   public mutating func removeAll(keepCapacity keepCapacity: Bool = false) {
-    
+
     guard isUniquelyReferenced(&owner) else {
-      owner = Owner<Key, Value>(minimumCapacity: keepCapacity ? capacity : 2)
+      owner = Owner(minimumCapacity: keepCapacity ? capacity : 0)
       return
     }
 
@@ -1662,70 +1341,75 @@ public struct __OrderedDictionary__<Key: Hashable, Value>: CollectionType, Dicti
   public var count: Int { return buffer.count }
   public var capacity: Int { return buffer.capacity }
 
-  public func generate() -> __OrderedDictionaryGenerator__<Key, Value> {
-    
-    return __OrderedDictionaryGenerator__<Key, Value>(buffer: buffer)
+  /**
+   generate
+
+    - returns: Generator<Key, Value>
+  */
+  public func generate() -> Generator { return Generator(buffer: buffer) }
+
+  /**
+   init:
+
+   - parameter elements: Element...
+  */
+  public init(dictionaryLiteral elements: Element...) {
+    self.init(buffer: Buffer(elements: elements))
   }
 
-  //  @effects(readonly)
-  public init(dictionaryLiteral elements: (Key, Value)...) {
-    self.init(buffer: OrderedDictionaryBuffer(elements: elements))
-  }
-
-  public var keys: LazyMapCollection<__OrderedDictionary__<Key, Value>, Key> {
+  public var keys: LazyMapCollection<OrderedDictionary<Key, Value>, Key> {
     return lazy.map { $0.0 }
   }
 
-  public var values: LazyMapCollection<__OrderedDictionary__<Key, Value>, Value> {
+  public var values: LazyMapCollection<OrderedDictionary<Key, Value>, Value> {
     return lazy.map { $0.1 }
   }
 
   public var isEmpty: Bool { return count == 0 }
 
 }
-extension __OrderedDictionary__: CustomStringConvertible, CustomDebugStringConvertible {
-  func _makeDescription() -> String {
-    
-    if count == 0 {
-      return "[:]"
-    }
+
+extension OrderedDictionary: CustomStringConvertible, CustomDebugStringConvertible {
+  /**
+   _makeDescription
+
+    - returns: String
+  */
+  private var elementsDescription: String {
+    guard count > 0 else { return "[:]" }
 
     var result = "["
     var first = true
-    for (k, v) in self {
+    for (key, value) in self {
       if first {
         first = false
       } else {
         result += ", "
       }
-      debugPrint(k, terminator: "", toStream: &result)
+      debugPrint(key, terminator: "", toStream: &result)
       result += ": "
-      debugPrint(v, terminator: "", toStream: &result)
+      debugPrint(value, terminator: "", toStream: &result)
     }
     result += "]"
     return result
   }
 
   /// A textual representation of `self`.
-  public var description: String {
-    return _makeDescription()
-  }
+  public var description: String { return elementsDescription }
   
   /// A textual representation of `self`, suitable for debugging.
-  public var debugDescription: String {
-    return _makeDescription()
-  }
+  public var debugDescription: String { return elementsDescription }
 }
 
 public func == <Key: Hashable, Value: Equatable>
-  (lhs: __OrderedDictionary__<Key, Value>, rhs: __OrderedDictionary__<Key, Value>) -> Bool
+  (lhs: OrderedDictionary<Key, Value>, rhs: OrderedDictionary<Key, Value>) -> Bool
 {
     
   guard lhs.owner !== rhs.owner else { return true }
   guard lhs.count == rhs.count else { return false }
   
-  for i in 0 ..< lhs.count {
-    guard lhs[i] == rhs[i] else { return false }
+  for ((k1, v1), (k2, v2)) in zip(lhs, rhs) {
+    guard k1 == k2 && v1 == v2 else { return false }
   }
   
   return true

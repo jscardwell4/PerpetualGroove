@@ -12,7 +12,7 @@ import Foundation
 import Swift
 
 public protocol Valued {
-  typealias ValueType
+  associatedtype ValueType
   var value: ValueType { get }
 }
 
@@ -62,17 +62,17 @@ public protocol JSONExport {
 }
 
 public protocol KeyValueCollectionType: CollectionType {
-  typealias Key: Hashable
-  typealias Value
+  associatedtype Key: Hashable
+  associatedtype Value
   subscript (key: Key) -> Value? { get }
-  typealias KeysType: LazyCollectionType
-  typealias ValuesType: LazyCollectionType
+  associatedtype KeysType: LazyCollectionType
+  associatedtype ValuesType: LazyCollectionType
   var keys: KeysType { get }
   var values: ValuesType { get }
 }
 
 public protocol KeyedContainer {
-  typealias Key: Hashable
+  associatedtype Key: Hashable
   func hasKey(key: Key) -> Bool
   func valueForKey(key: Key) -> Any?
 }
@@ -225,12 +225,12 @@ public protocol OptionalSubscriptingCollectionType: CollectionType {
 }
 
 public protocol Unpackable2 {
-  typealias Element
+  associatedtype Element
   var unpack: (Element, Element) { get }
 }
 
 public protocol Packable2 {
-  typealias Element
+  associatedtype Element
   init(_ elements: (Element, Element))
 }
 
@@ -239,12 +239,12 @@ public extension Unpackable2 {
 }
 
 public protocol Unpackable3 {
-  typealias Element
+  associatedtype Element
   var unpack: (Element, Element, Element) { get }
 }
 
 public protocol Packable3 {
-  typealias Element
+  associatedtype Element
   init(_ elements: (Element, Element, Element))
 }
 
@@ -253,7 +253,7 @@ public extension Unpackable3 {
 }
 
 public protocol Unpackable4 {
-  typealias Element
+  associatedtype Element
   var unpack4: (Element, Element, Element, Element) { get }
 }
 
@@ -262,13 +262,13 @@ public extension Unpackable4 {
 }
 
 public protocol Packable4 {
-  typealias Element
+  associatedtype Element
   init(_ elements: (Element, Element, Element, Element))
 }
 
 public protocol NonHomogeneousUnpackable2 {
-  typealias Type1
-  typealias Type2
+  associatedtype Type1
+  associatedtype Type2
   var unpack2: (Type1, Type2) { get }
 }
 

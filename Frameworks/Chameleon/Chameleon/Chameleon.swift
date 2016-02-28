@@ -42,7 +42,7 @@ protocol ColorBaseType {
 }
 
 protocol ColorType {
-  typealias BaseType: ColorBaseType
+  associatedtype BaseType: ColorBaseType
   var shade: Chameleon.Shade { get }
   var base: BaseType { get }
   var name: String { get }

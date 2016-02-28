@@ -29,7 +29,8 @@ extension String: ByteArrayConvertible {
     self.init(Array(bytes))
   }
 
-  public init(var _ bytes: [Byte]) {
+  public init(_ bytes: [Byte]) {
+    var bytes = bytes
     var i = bytes.count - 1
     guard i > 0 else { self = ""; return }
     while i > -1 && bytes[i] == Byte(0) { i -= 1 }
@@ -63,7 +64,8 @@ public extension String {
   - parameter uppercase: Bool = false
   - parameter pad: Int
   */
-  public init<T : _SignedIntegerType>(_ v: T, radix: Int, uppercase: Bool = false, var pad: Int) {
+  public init<T : _SignedIntegerType>(_ v: T, radix: Int, uppercase: Bool = false, pad: Int) {
+    var pad = pad
     self = String(v, radix: radix, uppercase: uppercase)
     guard pad > 0 else { return }
     let s = v < 0 ? self[startIndex.advancedBy(1)..<] : self
@@ -85,7 +87,8 @@ public extension String {
   }
   public init<B:ByteArrayConvertible>(binaryBytes: B) { self.init(binaryBytes: binaryBytes.bytes) }
 
-  public init<T>(var rawContentsOf x: T, radix: Int = 16) {
+  public init<T>(rawContentsOf x: T, radix: Int = 16) {
+    var x = x
     self = withUnsafePointer(&x) {
       UnsafeBufferPointer<UInt8>(start: UnsafePointer<UInt8>($0), count: sizeof(T) / sizeof(UInt8))
         .map {
@@ -116,11 +119,12 @@ public extension String {
   public init<T : UnsignedIntegerType>(_ v: T,
                                        radix: Int,
                                        uppercase: Bool = false,
-                                   var pad: Int,
+                                       pad: Int,
                                        group: Int = 0,
                                        separator: String = " ")
   {
     self = String(v, radix: radix, uppercase: uppercase)
+    var pad = pad
     guard pad > 0 else { return }
     pad -= utf16.count
     if pad > 0 { self = String(count: pad, repeatedValue: Character("0")) + self }
@@ -504,4 +508,4 @@ public prefix func ∀(predicate: (String, [AnyObject]?)) -> NSPredicate! {
 }
 
 /** func for an operator that creates a string by repeating a string multiple times */
-public func *(lhs: String, var rhs: Int) -> String { var s = ""; while rhs > 0 { rhs -= 1; s += lhs }; return s }
+public func *(lhs: String, rhs: Int) -> String { var s = "", rhs = rhs; while rhs > 0 { rhs -= 1; s += lhs }; return s }

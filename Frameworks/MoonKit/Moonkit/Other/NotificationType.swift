@@ -39,13 +39,13 @@ public protocol _NotificationType {
 public func ==<N:_NotificationType>(lhs: N, rhs: N) -> Bool { return lhs._name == rhs._name }
 
 public protocol NotificationType: _NotificationType, CustomStringConvertible {
-  typealias NameType: NotificationNameType
+  associatedtype NameType: NotificationNameType
   var name: NameType { get }
 
-  typealias Key: NotificationKeyType
+  associatedtype Key: NotificationKeyType
   var userInfo: [Key:AnyObject?]? { get }
 
-  typealias Callback = (NSNotification) -> Void
+  associatedtype Callback = (NSNotification) -> Void
 
   var notification: NSNotification { get }
   var notificationQueue: NSNotificationQueue? { get }
@@ -150,5 +150,5 @@ public extension NotificationType where Self:NotificationNameType {
 
 
 public protocol NotificationDispatchType {
-  typealias Notification: NotificationType
+  associatedtype Notification: NotificationType
 }

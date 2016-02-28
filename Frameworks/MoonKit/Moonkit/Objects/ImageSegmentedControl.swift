@@ -16,7 +16,7 @@ import Foundation
   @IBOutlet private var stack: UIStackView! {
     didSet {
       segments.forEach {
-        $0.addTarget(self, action: "touchUp:", forControlEvents: .TouchUpInside)
+        $0.addTarget(self, action: #selector(ImageSegmentedControl.touchUp(_:)), forControlEvents: .TouchUpInside)
         $0.normalTintColor = normalTintColor
         $0.highlightedTintColor = highlightedTintColor
         $0.disabledTintColor = disabledTintColor

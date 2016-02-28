@@ -156,7 +156,8 @@ extension Fraction { //: Strideable, _Strideable {
 // MARK: - Comparable, Equatable
 extension Fraction: Comparable, Equatable {}
 public func <<F:FractionType>(lhs: Fraction<F>, rhs: Fraction<F>) -> Bool { return lhs.value < rhs.value }
-public func ==<F:FractionType>(var lhs: Fraction<F>, var rhs: Fraction<F>) -> Bool {
+public func ==<F:FractionType>(lhs: Fraction<F>, rhs: Fraction<F>) -> Bool {
+  var lhs = lhs, rhs = rhs
   lhs.reduce(); rhs.reduce()
   return lhs.numerator == rhs.numerator && lhs.denominator == rhs.denominator
 }

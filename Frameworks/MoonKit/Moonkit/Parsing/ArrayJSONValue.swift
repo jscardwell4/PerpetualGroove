@@ -67,14 +67,14 @@ extension ArrayJSONValue: CustomStringConvertible, CustomDebugStringConvertible 
   public var debugDescription: String { return "MoonKit.ArrayJSONValue - value: \(description)" }
 }
 
-public func +(var lhs: ArrayJSONValue, rhs: ArrayJSONValue) -> ArrayJSONValue { lhs.appendContentsOf(rhs); return lhs }
+public func +(lhs: ArrayJSONValue, rhs: ArrayJSONValue) -> ArrayJSONValue { var lhs = lhs; lhs.appendContentsOf(rhs); return lhs }
 public func +=(inout lhs: ArrayJSONValue, rhs: ArrayJSONValue) { lhs.appendContentsOf(rhs) }
 
-public func +(var lhs: ArrayJSONValue, rhs: JSONValue) -> ArrayJSONValue { lhs.append(rhs); return lhs }
+public func +(lhs: ArrayJSONValue, rhs: JSONValue) -> ArrayJSONValue { var lhs = lhs; lhs.append(rhs); return lhs }
 public func +=(inout lhs: ArrayJSONValue, rhs: JSONValue) { lhs.append(rhs) }
 
-public func +(var lhs: ArrayJSONValue, rhs: JSONValue.ArrayValue) -> ArrayJSONValue { lhs.appendContentsOf(rhs); return lhs }
+public func +(lhs: ArrayJSONValue, rhs: JSONValue.ArrayValue) -> ArrayJSONValue { var lhs = lhs; lhs.appendContentsOf(rhs); return lhs }
 public func +=(inout lhs: ArrayJSONValue, rhs: JSONValue.ArrayValue) { lhs.appendContentsOf(rhs) }
 
-public func +<J:JSONValueConvertible>(var lhs: ArrayJSONValue, rhs: J) -> ArrayJSONValue { lhs.append(rhs); return lhs }
+public func +<J:JSONValueConvertible>(lhs: ArrayJSONValue, rhs: J) -> ArrayJSONValue { var lhs = lhs; lhs.append(rhs); return lhs }
 public func +=<J:JSONValueConvertible>(inout lhs: ArrayJSONValue, rhs: J) { lhs.append(rhs) }

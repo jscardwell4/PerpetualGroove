@@ -139,7 +139,7 @@ public class MarqueeField: TintColorControl {
     textField.hidden = true
     textField.delegate = self
 
-    addTarget(self, action: "handleTap", forControlEvents: .TouchUpInside)
+    addTarget(self, action: #selector(MarqueeField.handleTap), forControlEvents: .TouchUpInside)
 
   }
 

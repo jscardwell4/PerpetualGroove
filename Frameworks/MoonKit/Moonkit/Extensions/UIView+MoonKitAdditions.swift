@@ -71,7 +71,7 @@ public extension UIView {
         }
 
         guard value != nil
-           && (!value!.respondsToSelector("count") || value!.valueForKey("count") as! Int != 0) else { continue }
+           && (!value!.respondsToSelector(Selector("count")) || value!.valueForKey("count") as! Int != 0) else { continue }
 
         propertyValues[property] = String(value)
       }
@@ -651,7 +651,8 @@ public extension UIView {
         // unless both the first and second objects are the ancestor
       else if let ancestor = deepestAncestor where self != ancestor && ancestor.isDescendantOfView(self) {
         constraints = constraints.map {
-          (var c: PseudoConstraint) -> PseudoConstraint in
+          (c: PseudoConstraint) -> PseudoConstraint in
+          var c = c
           if c.firstObject === ancestor && c.secondObject !== ancestor { c.firstObject = self }
           else if c.secondObject === ancestor && c.firstObject !== ancestor { c.secondObject = self }
           return c

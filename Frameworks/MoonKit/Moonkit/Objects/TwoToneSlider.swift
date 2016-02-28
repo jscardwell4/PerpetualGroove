@@ -46,7 +46,7 @@ public class TwoToneSlider: UISlider {
   */
   public override init(frame: CGRect) {
     super.init(frame: frame)
-    addTarget(self, action: "updateThumbImage", forControlEvents: .ValueChanged)
+    addTarget(self, action: #selector(TwoToneSlider.updateThumbImage), forControlEvents: .ValueChanged)
   }
 
   /**

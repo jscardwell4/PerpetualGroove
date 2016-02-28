@@ -19,9 +19,9 @@ public protocol JSONValueInitializable {
 // MARK: - JSONValue
 /** Enumeration of discriminating union to represent a JSON value */
 public enum JSONValue {
-  public typealias ObjectValue = OrderedDictionary<Swift.String, JSONValue>
+  public typealias ObjectValue = OldOrderedDictionary<Swift.String, JSONValue>
   public typealias ArrayValue = Swift.Array<JSONValue>
-  public typealias AnyMappedObjectValue = OrderedDictionary<Swift.String, Any>
+  public typealias AnyMappedObjectValue = OldOrderedDictionary<Swift.String, Any>
   public typealias AnyMappedArrayValue = Swift.Array<Any>
 
   case Boolean (Bool)
@@ -67,7 +67,7 @@ public enum JSONValue {
   public init<C:KeyValueCollectionType where C.KeysType.Generator.Element == Swift.String,
                                              C.ValuesType.Generator.Element == JSONValue>(_ c: C)
   {
-    self = Object(OrderedDictionary<Swift.String, JSONValue>(keys: c.keys, values: c.values))
+    self = Object(OldOrderedDictionary<Swift.String, JSONValue>(keys: c.keys, values: c.values))
   }
 
   /**
@@ -76,7 +76,7 @@ public enum JSONValue {
    - parameter dict: DictionaryLiteral<S, J>
    */
   public init(dict: DictionaryLiteral<StringValueConvertible,JSONValueConvertible>) {
-    var objectValue: OrderedDictionary<Swift.String, JSONValue> = [:]
+    var objectValue: OldOrderedDictionary<Swift.String, JSONValue> = [:]
     for (k, v) in dict { objectValue[k.stringValue] = v.jsonValue }
     self = Object(objectValue)
   }
@@ -91,7 +91,7 @@ public enum JSONValue {
   public init<C:KeyValueCollectionType where C.KeysType.Generator.Element == Swift.String,
     C.ValuesType.Generator.Element:JSONValueConvertible>(_ c: C)
   {
-    self = Object(OrderedDictionary<Swift.String, JSONValue>(keys: c.keys, values: c.values.map({$0.jsonValue})))
+    self = Object(OldOrderedDictionary<Swift.String, JSONValue>(keys: c.keys, values: c.values.map({$0.jsonValue})))
   }
 
   public init?(_ v: Any) {
@@ -110,7 +110,7 @@ public enum JSONValue {
       if converted.count == x.count { self = Array(converted) }
       else { return nil }
     }
-    else if let x = v as? OrderedDictionary<Swift.String, Any> {
+    else if let x = v as? OldOrderedDictionary<Swift.String, Any> {
       let converted = x.compressedMap({JSONValue($2)})
       if converted.count == x.count { self = Object(converted) }
       else { return nil }
@@ -118,7 +118,7 @@ public enum JSONValue {
     else if let x = v as? NSDictionary {
       let keys = x.allKeys.map({Swift.String($0)})
       let values = compressedMap(x.allValues, {JSONValue($0)})
-      if keys.count == values.count { self = Object(OrderedDictionary(Swift.Array(zip(keys, values)))) }
+      if keys.count == values.count { self = Object(OldOrderedDictionary(Swift.Array(zip(keys, values)))) }
       else { return nil }
     }
     else { return nil }
@@ -242,7 +242,9 @@ public enum JSONValue {
     switch self {
       case .Array(let a): return .Array(a.map({$0.inflatedValue}))
       case .Object(let o):
-        let expand = {(var keypath: Stack<Swift.String>, var leaf: ObjectValue) -> JSONValue in
+        let expand = {(keypath: Stack<Swift.String>, leaf: ObjectValue) -> JSONValue in
+          var keypath = keypath
+          var leaf = leaf
           while let k = keypath.pop() { leaf = [k:.Object(leaf)] }
           return .Object(leaf)
         }
@@ -366,7 +368,7 @@ extension JSONValue: Streamable { public func writeTo<T:OutputStreamType>(inout 
 
 extension JSONValue: DictionaryLiteralConvertible {
   public init(dictionaryLiteral elements: (StringValueConvertible, JSONValueConvertible)...) {
-    var objectValue: OrderedDictionary<Swift.String, JSONValue> = [:]
+    var objectValue: OldOrderedDictionary<Swift.String, JSONValue> = [:]
     for (k, v) in elements {
       objectValue[k.stringValue] = v.jsonValue
     }

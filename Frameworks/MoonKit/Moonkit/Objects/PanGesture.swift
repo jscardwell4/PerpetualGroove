@@ -137,7 +137,8 @@ public class PanGesture: ConfiningBlockActionGesture {
 
   - returns: CGPoint A point identifying the new location of a view in the coordinate system of its designated superview.
   */
-  public func translationInView(var v: UIView? = nil) -> CGPoint {
+  public func translationInView(v: UIView? = nil) -> CGPoint {
+    var v = v
     if v == nil { v = view }
     let initial = v == view
                     ? initialData.centroid

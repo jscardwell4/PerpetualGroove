@@ -91,7 +91,7 @@ public class ColorSlider: UISlider {
         removeTarget(self, action: nil, forControlEvents: .ValueChanged)
       } else if actionsForTarget(self, forControlEvent: .ValueChanged) == nil {
         updateThumbImage()
-        addTarget(self, action: "updateThumbImage", forControlEvents: .ValueChanged)
+        addTarget(self, action: #selector(ColorSlider.updateThumbImage), forControlEvents: .ValueChanged)
       }
     }
   }
@@ -261,7 +261,7 @@ public class ColorSlider: UISlider {
     trackLabel.layer.zPosition = 100
     addSubview(trackLabel)
 
-    addTarget(self, action: "valueDidChange", forControlEvents: [.ValueChanged])
+    addTarget(self, action: #selector(ColorSlider.valueDidChange), forControlEvents: [.ValueChanged])
     valueLabel.setContentCompressionResistancePriority(1000, forAxis: .Vertical)
     valueLabel.setContentCompressionResistancePriority(1000, forAxis: .Horizontal)
     valueLabel.setContentHuggingPriority(1000, forAxis: .Vertical)

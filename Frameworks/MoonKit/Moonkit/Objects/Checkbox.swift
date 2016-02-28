@@ -33,7 +33,7 @@ public class Checkbox: UIControl {
     super.init(frame: frame)
     opaque = false
     backgroundColor = UIColor.clearColor()
-    addTarget(self, action: "toggleChecked", forControlEvents: .TouchUpInside)
+    addTarget(self, action: #selector(Checkbox.toggleChecked), forControlEvents: .TouchUpInside)
     setContentHuggingPriority(1000, forAxis: .Vertical)
     setContentHuggingPriority(1000, forAxis: .Horizontal)
   }

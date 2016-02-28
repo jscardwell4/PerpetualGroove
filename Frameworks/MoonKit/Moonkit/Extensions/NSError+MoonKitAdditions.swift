@@ -18,7 +18,8 @@ extension NSError {
   - parameter userInfo: [NSObject
   */
   public
-  convenience init(domain: String, code: Int, underlyingErrors: [NSError], var userInfo: [NSObject:AnyObject]? = nil) {
+  convenience init(domain: String, code: Int, underlyingErrors: [NSError], userInfo: [NSObject:AnyObject]? = nil) {
+    var userInfo = userInfo
     if userInfo == nil { userInfo = [:] }
     userInfo![NSUnderlyingErrorKey] = underlyingErrors
     self.init(domain: domain, code: code, userInfo: userInfo!)

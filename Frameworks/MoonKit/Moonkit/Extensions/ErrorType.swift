@@ -37,9 +37,9 @@ public protocol ExtendedErrorType: ErrorMessageType, CustomStringConvertible {
 }
 
 public extension ExtendedErrorType {
-  public init(line: UInt = __LINE__,
-              function: String = __FUNCTION__,
-              file: String = __FILE__,
+  public init(line: UInt = #line,
+              function: String = #function,
+              file: String = #file,
               reason: String)
   {
     self.init()

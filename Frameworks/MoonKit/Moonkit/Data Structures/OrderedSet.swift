@@ -670,4 +670,5 @@ public func !⚭<Element:Hashable>(lhs: OrderedSet<Element>, rhs: OrderedSet<Ele
 public func ⚭<Element:Hashable>(lhs: OrderedSet<Element>, rhs: OrderedSet<Element>) -> Bool
 {
   return !lhs.isDisjointWith(rhs)
+  
 }
