@@ -152,7 +152,6 @@ final class OrderedDictionaryTests: XCTestCase {
     XCTAssertFalse(orderedDictionary1.buffer.storage === orderedDictionary2.buffer.storage)
   }
 
-
   func testSubscriptAccessors() {
     var orderedDictionary: OrderedDictionary<String, Int> = ["one": 1, "two": 2, "three": 3]
     XCTAssertEqual(orderedDictionary["two"], 2)
@@ -178,6 +177,21 @@ final class OrderedDictionaryTests: XCTestCase {
       for i in 1000 ..< 1200 { d[i] = String(i) }
     }
 
+  }
+
+  func testContainerAsValue() {
+    var orderedDictionary = OrderedDictionary<String, Array<Int>>()
+    orderedDictionary["first"] = [1, 2, 3, 4]
+    orderedDictionary["second"] = [5, 6, 7, 8]
+    orderedDictionary["third"] = [9, 10]
+    XCTAssertEqual(orderedDictionary.count, 3)
+    XCTAssertTrue(orderedDictionary[0].1.elementsEqual([1, 2, 3, 4]))
+    XCTAssertTrue(orderedDictionary[1].1.elementsEqual([5, 6, 7, 8]))
+    XCTAssertTrue(orderedDictionary[2].1.elementsEqual([9, 10]))
+    var array = orderedDictionary[1].1
+    array.appendContentsOf([11, 12, 13, 14, 15, 16, 17, 18, 19, 20])
+    orderedDictionary["second"] = array
+    XCTAssertTrue(orderedDictionary[1].1.elementsEqual([5, 6, 7, 8, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]))
   }
 
 }

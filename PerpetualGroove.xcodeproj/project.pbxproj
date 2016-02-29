@@ -17,6 +17,7 @@
 		C222E6C91BD2B78600DBBBDA /* FestivoLC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C222E6C71BD2B78600DBBBDA /* FestivoLC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C222E6CB1BD2B78600DBBBDA /* Triump.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C222E6CA1BD2B78600DBBBDA /* Triump.framework */; };
 		C222E6CC1BD2B78600DBBBDA /* Triump.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C222E6CA1BD2B78600DBBBDA /* Triump.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C223B1A21C8364ED006CF6B5 /* _MIDIEventContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C223B1A11C8364ED006CF6B5 /* _MIDIEventContainer.swift */; };
 		C22567821BB05ED100E4842B /* Lumberjack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C22567811BB05ED100E4842B /* Lumberjack.framework */; };
 		C22567831BB05ED100E4842B /* Lumberjack.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C22567811BB05ED100E4842B /* Lumberjack.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C22D93F11BADA24A00B04A2B /* MIDINodeHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22D93F01BADA24A00B04A2B /* MIDINodeHistory.swift */; };
@@ -206,6 +207,7 @@
 		C2207B901B9DC63300E4D65D /* SF2File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SF2File.swift; sourceTree = "<group>"; };
 		C222E6C71BD2B78600DBBBDA /* FestivoLC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FestivoLC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C222E6CA1BD2B78600DBBBDA /* Triump.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Triump.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C223B1A11C8364ED006CF6B5 /* _MIDIEventContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _MIDIEventContainer.swift; sourceTree = "<group>"; };
 		C22567811BB05ED100E4842B /* Lumberjack.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Lumberjack.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C22D93F01BADA24A00B04A2B /* MIDINodeHistory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINodeHistory.swift; sourceTree = "<group>"; };
 		C22FA58A1BC7F3D300162DB4 /* TrackLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackLabel.swift; sourceTree = "<group>"; };
@@ -567,6 +569,7 @@
 				C2ECC5E21B9C7FFA0010E76E /* MIDINodeEvent.swift */,
 				C2EA30521BB9DF3300020958 /* MIDIDocument.swift */,
 				C2B2B0421BCEA55D007AF9DC /* MIDIEventContainer.swift */,
+				C223B1A11C8364ED006CF6B5 /* _MIDIEventContainer.swift */,
 			);
 			name = "MIDI Files";
 			sourceTree = "<group>";
@@ -1007,6 +1010,7 @@
 				C2BC7AD51B76C85E001729BA /* Instrument.swift in Sources */,
 				C22FA58D1BC830D600162DB4 /* SettingsManager.swift in Sources */,
 				C2CFB7FF1BBF486300983664 /* DocumentsViewLayout.swift in Sources */,
+				C223B1A21C8364ED006CF6B5 /* _MIDIEventContainer.swift in Sources */,
 				C2729ADF1BEE6B7C004FA34F /* NSMetadataItem.swift in Sources */,
 				C283B69E1BC0495A007A4A36 /* DocumentItem.swift in Sources */,
 				C219235F1C76371D00E82437 /* SecondaryContentViewController.swift in Sources */,
@@ -1642,6 +1646,7 @@
 				C288319C1C78E8AD00F6865D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		C2E0432C1B72F4DC005F0675 /* Build configuration list for PBXProject "PerpetualGroove" */ = {
 			isa = XCConfigurationList;

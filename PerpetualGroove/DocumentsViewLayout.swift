@@ -26,15 +26,18 @@ final class DocumentsViewLayout: UICollectionViewLayout {
   override func prepareLayout() {
     super.prepareLayout()
     guard let collectionView = collectionView else { storedAttributes = [:]; return }
-      storedAttributes = AttributesIndex(
-        (0 ..< collectionView.numberOfSections()).flatMap {
-          s in (0 ..< collectionView.numberOfItemsInSection(s)).map {
+    storedAttributes.removeAll(keepCapacity: true)
+      for (k, v) in
+        (0 ..< collectionView.numberOfSections()).flatMap({
+          s in (0 ..< collectionView.numberOfItemsInSection(s)).map({
             r in NSIndexPath(forRow: r, inSection: s)
-          }
-        } .map {
+          })
+        }).map({
           ($0, self.layoutAttributesForItemAtIndexPath($0)!)
-        }
-      )
+        })
+      {
+        storedAttributes[k] = v
+    }
   }
 
 

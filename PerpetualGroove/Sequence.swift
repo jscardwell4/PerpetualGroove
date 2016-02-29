@@ -23,7 +23,8 @@ final class Sequence {
   private(set) var instrumentTracks: [InstrumentTrack] = []
 
   var soloTracks: LazyFilterCollection<[InstrumentTrack]> {
-    return LazyFilterCollection<[InstrumentTrack]>(instrumentTracks, whereElementsSatisfy: {$0.solo})
+    return instrumentTracks.lazy.filter { $0.solo }
+//    return LazyFilterCollection<[InstrumentTrack]>(instrumentTracks, whereElementsSatisfy: {$0.solo})
   }
 
   /**

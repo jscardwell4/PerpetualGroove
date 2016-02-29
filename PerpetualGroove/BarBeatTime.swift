@@ -285,7 +285,10 @@ extension BarBeatTime: CustomDebugStringConvertible {
 
 // MARK: - Hashable
 extension BarBeatTime: Hashable {
-  var hashValue: Int { return rawValue.hashValue }
+  var hashValue: Int {
+    defer { _fixLifetime(self) }
+    return rawValue.hashValue
+  }
 }
 
 // MARK: - RawRepresentable

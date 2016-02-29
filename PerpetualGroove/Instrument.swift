@@ -109,11 +109,11 @@ final class Instrument: Equatable {
 
   - parameter soundSet: SoundSetType
   */
-  func loadSoundSet(soundSet: SoundSetType, var program: Program = 0, var bank: Bank = 0) throws {
+  func loadSoundSet(soundSet: SoundSetType, program: Program = 0, bank: Bank = 0) throws {
     guard !soundLoaded || !(self.soundSet.isEqualTo(soundSet) && preset == soundSet[program, bank]) else { return }
     let oldPresetName = preset.name
-    program = (0 ... 127).clampValue(program)
-    bank    = (0 ... 127).clampValue(bank)
+    let program = (0 ... 127).clampValue(program)
+    let bank    = (0 ... 127).clampValue(bank)
     do {
       try node.loadSoundBankInstrumentAtURL(soundSet.url,
                                     program: program,

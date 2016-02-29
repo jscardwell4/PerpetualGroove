@@ -12,6 +12,36 @@ import struct MoonKit.UUID
 
 final class MIDIEventContainerTests: XCTestCase {
 
+  static func eventsAdvancedBy(amount: Double) -> [MIDIEvent] {
+    let events = self.events
+    var result: [MIDIEvent] = []
+    for event in events {
+      var event = event
+      event.time = event.time + amount
+      result.append(event)
+    }
+    return result
+  }
+
+  static func generateEvents(count: Int) -> [MIDIEvent] {
+    var result: [MIDIEvent] = events
+    for i in 0 ..< max(count, 1) {
+      result.appendContentsOf(eventsAdvancedBy(Double(i) * 26))
+    }
+    return result
+  }
+
+  /*
+   event types:
+   Meta
+   Meta (Time)
+   Meta (Time)
+   Channel
+   Channel
+   Node
+   Node
+   Meta
+   */
   static let events: [MIDIEvent] = {
     var events: [MIDIEvent] = []
     events.append(.Meta(MetaEvent(.start1, .SequenceTrackName(name: "Track1"))))
@@ -44,18 +74,77 @@ final class MIDIEventContainerTests: XCTestCase {
     return events
   }()
 
+  static let metaEventCount: Int = {
+    events.reduce(0) { if case .Meta = $1 { return $0 + 1 } else { return $0 } }
+  }()
+
+  static let channelEventCount: Int = {
+    events.reduce(0) { if case .Channel = $1 { return $0 + 1 } else { return $0 } }
+  }()
+
+  static let nodeEventCount: Int = {
+    events.reduce(0) { if case .Node = $1 { return $0 + 1 } else { return $0 } }
+  }()
+
+  static let timeEventCount: Int = {
+    events.reduce(0) {
+      if case .Meta(let event) = $1 {
+        switch event.data {
+          case .TimeSignature, .Tempo: return $0 + 1
+          default: return $0
+        }
+      } else { return $0 }
+    }
+  }()
+
   func testCreation() {
     let events = MIDIEventContainerTests.events
-    let container = MIDIEventContainer(events: events)
-    print(container)
+    let container = _MIDIEventContainer(events: events)
     XCTAssertEqual(events.count, container.count)
   }
 
-//  func testPerformanceExample() {
-//    // This is an example of a performance test case.
-//    self.measureBlock {
-//      // Put the code you want to measure the time of here.
-//    }
-//  }
+  func testLazyMetaEvents() {
+    let events = MIDIEventContainerTests.generateEvents(10)
+    let container = _MIDIEventContainer(events: events)
+    let metaEvents = container.metaEvents
+    XCTAssertEqual(metaEvents.count, MIDIEventContainerTests.metaEventCount * 10)
+  }
+
+  func testLazyChannelEvents() {
+    let events = MIDIEventContainerTests.generateEvents(10)
+    let container = _MIDIEventContainer(events: events)
+    let channelEvents = container.channelEvents
+    XCTAssertEqual(channelEvents.count, MIDIEventContainerTests.channelEventCount * 10)
+  }
+
+  func testLazyNodeEvents() {
+    let events = MIDIEventContainerTests.generateEvents(10)
+    let container = _MIDIEventContainer(events: events)
+    let nodeEvents = container.nodeEvents
+    XCTAssertEqual(nodeEvents.count, MIDIEventContainerTests.nodeEventCount * 10)
+  }
+
+  func testLazyTimeEvents() {
+    let events = MIDIEventContainerTests.generateEvents(10)
+    let container = _MIDIEventContainer(events: events)
+    let timeEvents = container.timeEvents
+    XCTAssertEqual(timeEvents.count, MIDIEventContainerTests.timeEventCount * 10)
+  }
+
+  func testOldContainerPerformance() {
+    let events = MIDIEventContainerTests.generateEvents(10)
+    measureBlock { 
+      var container = MIDIEventContainer()
+      for event in events { container.append(event) }
+    }
+  }
+
+  func testContainerPerformance() {
+    let events = MIDIEventContainerTests.generateEvents(10)
+    measureBlock {
+      var container = _MIDIEventContainer()
+      for event in events { container.append(event) }
+    }
+  }
 
 }

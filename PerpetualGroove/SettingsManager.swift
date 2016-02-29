@@ -176,8 +176,8 @@ final class SettingsManager {
     guard !initialized else { return }
 
     defaults.registerDefaults(Setting.boolSettings.reduce([String:AnyObject]()) {
-      (var dict: [String:AnyObject], setting: Setting) in
-
+      (dict: [String:AnyObject], setting: Setting) in
+      var dict = dict
       dict[setting.key] = setting.defaultValue as? AnyObject
       return dict
 

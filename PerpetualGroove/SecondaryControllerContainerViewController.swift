@@ -77,7 +77,7 @@ class SecondaryControllerContainerViewController: UIViewController {
     cancelButton.highlightedTintColor = .mahogany
     cancelButton.identifier = "ConfirmButton"
     cancelButton.accessibilityIdentifier = cancelButton.identifier
-    cancelButton.addTarget(self, action: "cancel", forControlEvents: .TouchUpInside)
+    cancelButton.addTarget(self, action: #selector(SecondaryControllerContainerViewController.cancel), forControlEvents: .TouchUpInside)
     blurView.contentView.addSubview(cancelButton)
     blurView.contentView.constrain(𝗩|--cancelButton, 𝗛|--cancelButton)
     self.cancelButton = cancelButton
@@ -88,7 +88,7 @@ class SecondaryControllerContainerViewController: UIViewController {
     confirmButton.highlightedTintColor = .mahogany
     confirmButton.identifier = "ConfirmButton"
     confirmButton.accessibilityIdentifier = confirmButton.identifier
-    confirmButton.addTarget(self, action: "confirm", forControlEvents: .TouchUpInside)
+    confirmButton.addTarget(self, action: #selector(SecondaryControllerContainerViewController.confirm), forControlEvents: .TouchUpInside)
     blurView.contentView.addSubview(confirmButton)
     blurView.contentView.constrain(𝗩|--confirmButton, confirmButton--|𝗛)
     self.confirmButton = confirmButton
@@ -99,7 +99,7 @@ class SecondaryControllerContainerViewController: UIViewController {
     leftArrow.highlightedTintColor = .mahogany
     leftArrow.identifier = "PreviousButton"
     leftArrow.accessibilityIdentifier = leftArrow.identifier
-    leftArrow.addTarget(self, action: "previous", forControlEvents: .TouchUpInside)
+    leftArrow.addTarget(self, action: #selector(SecondaryControllerContainerViewController.previous), forControlEvents: .TouchUpInside)
     blurView.contentView.addSubview(leftArrow)
     blurView.contentView.constrain(leftArrow--|𝗩, 𝗛|--leftArrow)
     self.leftArrow = leftArrow
@@ -110,7 +110,7 @@ class SecondaryControllerContainerViewController: UIViewController {
     rightArrow.highlightedTintColor = .mahogany
     rightArrow.identifier = "NextButton"
     rightArrow.accessibilityIdentifier = rightArrow.identifier
-    rightArrow.addTarget(self, action: "next", forControlEvents: .TouchUpInside)
+    rightArrow.addTarget(self, action: #selector(SecondaryControllerContainerViewController.next), forControlEvents: .TouchUpInside)
     blurView.contentView.addSubview(rightArrow)
     blurView.contentView.constrain(rightArrow--|𝗩, rightArrow--|𝗛)
     self.rightArrow = rightArrow
