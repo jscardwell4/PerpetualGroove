@@ -8,7 +8,14 @@
 
 import Foundation
 
-private final class WeakArrayStorage<Element: AnyObject>:
+internal final class WeakArrayStorageOwner<Element:AnyObject>: NonObjectiveCBase {
+  typealias Buffer = WeakArrayBuffer<Element>
+  var buffer: Buffer
+  init(minimumCapacity: Int) { buffer = Buffer(minimumCapacity: minimumCapacity) }
+  init(buffer: Buffer) { self.buffer = buffer }
+}
+
+internal final class WeakArrayStorage<Element: AnyObject>:
   ManagedBuffer<(count: Int, capacity: Int), Weak<Element>>
 {
   class func create(capacity: Int) -> WeakArrayStorage {
@@ -91,15 +98,17 @@ extension WeakArrayStorage: CustomStringConvertible {
 
 
 
-public struct UnfilteredWeakArrayBuffer<Element:AnyObject>: MutableCollectionType, RangeReplaceableCollectionType {
-  private typealias Storage = WeakArrayStorage<Element>
+struct WeakArrayBuffer<Element:AnyObject>: MutableCollectionType, RangeReplaceableCollectionType {
+  typealias Storage = WeakArrayStorage<Element>
 
-  private var storage: Storage
-  public typealias _Element = Element?
+  var storage: Storage
+  typealias _Element = Element?
 
-  public init() { storage = Storage.create(0) }
+  init() { self.init(minimumCapacity: 0) }
+  init(minimumCapacity: Int) { storage = Storage.create(minimumCapacity) }
+  init(storage: Storage) { self.storage = storage }
 
-  public init<S:SequenceType where S.Generator.Element == Element>(_ sequence: S) {
+  init<S:SequenceType where S.Generator.Element == Element>(_ sequence: S) {
     let array = sequence.map {Weak<Element>($0)}
     storage = Storage.create(array.count)
     storage.elements.initializeFrom(array)
@@ -107,7 +116,7 @@ public struct UnfilteredWeakArrayBuffer<Element:AnyObject>: MutableCollectionTyp
   }
 
   /// Get or set the index'th element.
-  public subscript(index: Int) -> _Element {
+  subscript(index: Int) -> _Element {
     get {
       precondition(index < count, "Index '\(index)' ≥ count '\(count)'")
       return storage.elements[index].reference
@@ -124,9 +133,6 @@ public struct UnfilteredWeakArrayBuffer<Element:AnyObject>: MutableCollectionTyp
     }
   }
 
-  /// Call `body(p)`, where `p` is an `UnsafeBufferPointer` over the
-  /// underlying contiguous storage.  If no such storage exists, it is
-  /// created on-demand.
   func withUnsafeBufferPointer<R>(
     @noescape body: (UnsafeBufferPointer<Weak<Element>>) throws -> R
     ) rethrows -> R
@@ -135,10 +141,6 @@ public struct UnfilteredWeakArrayBuffer<Element:AnyObject>: MutableCollectionTyp
     return try body(UnsafeBufferPointer(start: firstElementAddress, count: count))
   }
 
-  /// Call `body(p)`, where `p` is an `UnsafeMutableBufferPointer`
-  /// over the underlying contiguous storage.
-  ///
-  /// - Requires: Such contiguous storage exists or the buffer is empty.
   mutating func withUnsafeMutableBufferPointer<R>(
     @noescape body: (UnsafeMutableBufferPointer<Weak<Element>>) throws -> R
     ) rethrows -> R
@@ -147,56 +149,22 @@ public struct UnfilteredWeakArrayBuffer<Element:AnyObject>: MutableCollectionTyp
     return try body(UnsafeMutableBufferPointer(start: firstElementAddress, count: count))
   }
 
-  /// The number of elements the buffer stores.
-  public var count: Int { get { return storage.count } set { storage.count = newValue } }
+  var count: Int { get { return storage.count } set { storage.count = newValue } }
 
-  /// The number of elements the buffer can store without reallocation.
-  public var capacity: Int { return storage.capacity }
+  var capacity: Int { return storage.capacity }
 
-  /// An object that keeps the elements stored in this buffer alive.
-  var owner: AnyObject { return storage }
-
-  /// If the elements are stored contiguously, a pointer to the first
-  /// element. Otherwise, `nil`.
   var firstElementAddress: UnsafeMutablePointer<Weak<Element>> { return storage.elements }
 
-  /// A value that identifies the storage used by the buffer.  Two
-  /// buffers address the same elements when they have the same
-  /// identity and count.
-  var identity: UnsafePointer<Void> { return withUnsafeBufferPointer { UnsafePointer($0.baseAddress) } }
-  
-  public var startIndex: Int { return 0 }
-  public var endIndex: Int { return count }
+  var startIndex: Int { return 0 }
+  var endIndex: Int { return count }
 
-  /**
-   ensureUniqueWithCapacity:
-
-   - parameter capacity: Int
-  */
-  private mutating func ensureUniqueWithCapacity(capacity: Int) {
-    guard !(isUniquelyReferenced(&storage) && storage.capacity >= capacity) else { return }
-    guard storage.capacity < capacity else { storage = storage.clone(); return }
-    let newStorage = Storage.create(capacity)
-    newStorage.elements.moveInitializeFrom(storage.elements, count: storage.count)
-    newStorage.count = storage.count
-    storage = newStorage
-  }
-
-  /**
-   append:
-
-   - parameter element: Pointee
-  */
-  public mutating func append(element: Element) {
-    let minimumCapacity = storage.capacity > storage.count
-                            ? storage.capacity
-                            : max(storage.capacity, 1) * 2
-    ensureUniqueWithCapacity(minimumCapacity)
+  mutating func append(element: Element) {
+    assert(capacity > count, "not enough capacity to add an element")
     (storage.elements + storage.count).initialize(Weak(element))
     storage.count += 1
   }
 
-  public func generate() -> AnyGenerator<_Element> {
+  func generate() -> AnyGenerator<_Element> {
     var index = 0
     return AnyGenerator {
       [storage = storage] in
@@ -207,7 +175,7 @@ public struct UnfilteredWeakArrayBuffer<Element:AnyObject>: MutableCollectionTyp
     }
   }
 
-  public func indexOf(element: Element) -> Int? {
+  func indexOf(element: Element) -> Int? {
     let elements = storage.elements
     for i in 0 ..< count {
       guard let e = elements[i].reference else { continue }
@@ -217,7 +185,7 @@ public struct UnfilteredWeakArrayBuffer<Element:AnyObject>: MutableCollectionTyp
     return nil
   }
 
-  public mutating func replaceRange<C:CollectionType
+  mutating func replaceRange<C:CollectionType
     where C.Generator.Element == _Element>(subRange: Range<Int>, with newElements: C)
   {
     defer { _fixLifetime(self); _fixLifetime(storage) }
@@ -225,7 +193,7 @@ public struct UnfilteredWeakArrayBuffer<Element:AnyObject>: MutableCollectionTyp
     let removeCount: Int = subRange.count
     let insertCount: Int = numericCast(newElements.count)
     let newCount = oldCount - removeCount + insertCount
-    ensureUniqueWithCapacity(newCount)
+    assert(capacity >= newCount, "not enough capacity for new count: \(newCount)")
 
     let elements = storage.elements
     for (index, offset) in subRange.enumerate() {
@@ -250,7 +218,7 @@ public struct UnfilteredWeakArrayBuffer<Element:AnyObject>: MutableCollectionTyp
         let moveCount = storage.count - subRange.endIndex
         let moveSource = elements + subRange.endIndex
         let destination = elements + subRange.startIndex.advancedBy(insertCount)
-        destination.moveAssignFrom(moveSource, count: moveCount)
+        destination.moveInitializeFrom(moveSource, count: moveCount)
       }
 
       // Shift backward when inserting more elements than are being removed
@@ -266,9 +234,10 @@ public struct UnfilteredWeakArrayBuffer<Element:AnyObject>: MutableCollectionTyp
         let uninsertedElementsDestinationOffset = subRange.endIndex
         let uinsertedElementsDestination = elements + uninsertedElementsDestinationOffset
 
-        let uninsertedElements = newElements[newElements.startIndex.advancedBy(numericCast(removeCount))..<].map({
+        let uninsertedElementsStart = newElements.startIndex.advancedBy(numericCast(removeCount))
+        let uninsertedElements = newElements[uninsertedElementsStart..<].map {
           Weak<Element>($0 as? Element)
-        })
+        }
 
         uinsertedElementsDestination.initializeFrom(uninsertedElements)
 
@@ -278,11 +247,7 @@ public struct UnfilteredWeakArrayBuffer<Element:AnyObject>: MutableCollectionTyp
   }
 }
 
-extension UnfilteredWeakArrayBuffer: ArrayLiteralConvertible {
-  public init(arrayLiteral elements: Element...) { self.init(elements) }
-}
-
-extension UnfilteredWeakArrayBuffer: CustomStringConvertible, CustomDebugStringConvertible {
+extension WeakArrayBuffer: CustomStringConvertible, CustomDebugStringConvertible {
   private var elementsDescription: String {
     defer { _fixLifetime(self) }
     var result = "["
@@ -295,361 +260,77 @@ extension UnfilteredWeakArrayBuffer: CustomStringConvertible, CustomDebugStringC
     result += "]"
     return result
   }
-  public var description: String { return elementsDescription }
-  public var debugDescription: String { return storage.description }
+  var description: String { return elementsDescription }
+  var debugDescription: String { return storage.description }
 }
-
-public struct FilteredWeakArrayBuffer<Element:AnyObject>: MutableCollectionType, RangeReplaceableCollectionType {
-  private typealias Storage = WeakArrayStorage<Element>
-  public typealias _Element = Element
-
-  private var storage: Storage
-  private var needsPurge = false
-
-  public init() { storage = Storage.create(0) }
-
-  public init<S:SequenceType where S.Generator.Element == Element>(_ sequence: S) {
-    let array = sequence.map {Weak<Element>($0)}
-    storage = Storage.create(array.count)
-    storage.elements.initializeFrom(array)
-    storage.count = array.count
-  }
-
-  /// Get or set the index'th element.
-  public subscript(index: Int) -> _Element {
-    get {
-      let index = index - storage.purge()
-      precondition(index < _count, "Index '\(index)' ≥ count '\(_count)'")
-      guard let result = storage.elements[index].reference else {
-        fatalError("unexpected nil weak reference")
-      }
-      return result
-    }
-    nonmutating set {
-      precondition(index < count, "Index '\(index)' ≥ count '\(count)'")
-      // FIXME: Manually swap because it makes the ARC optimizer happy.  See
-      // <rdar://problem/16831852> check retain/release order
-      // firstElementAddress[i] = newValue
-      var nv = Optional(newValue)
-      let tmp = nv
-      nv = firstElementAddress[index].reference
-      firstElementAddress[index] = Weak<Element>(tmp)
-    }
-  }
-
-  /// Call `body(p)`, where `p` is an `UnsafeBufferPointer` over the
-  /// underlying contiguous storage.  If no such storage exists, it is
-  /// created on-demand.
-  func withUnsafeBufferPointer<R>(
-    @noescape body: (UnsafeBufferPointer<Weak<Element>>) throws -> R
-    ) rethrows -> R
-  {
-    defer { _fixLifetime(self) }
-    return try body(UnsafeBufferPointer(start: firstElementAddress, count: count))
-  }
-
-  /// Call `body(p)`, where `p` is an `UnsafeMutableBufferPointer`
-  /// over the underlying contiguous storage.
-  ///
-  /// - Requires: Such contiguous storage exists or the buffer is empty.
-  mutating func withUnsafeMutableBufferPointer<R>(
-    @noescape body: (UnsafeMutableBufferPointer<Weak<Element>>) throws -> R
-    ) rethrows -> R
-  {
-    defer { _fixLifetime(self) }
-    return try body(UnsafeMutableBufferPointer(start: firstElementAddress, count: count))
-  }
-
-  private var _count: Int { get { return storage.count } set { storage.count = newValue } }
-
-  /// The number of elements the buffer stores.
-  public var count: Int { get { storage.purge(); return _count } set { _count = newValue } }
-
-  /// The number of elements the buffer can store without reallocation.
-  public var capacity: Int { return storage.capacity }
-
-  /// An object that keeps the elements stored in this buffer alive.
-  var owner: AnyObject { return storage }
-
-  /// If the elements are stored contiguously, a pointer to the first
-  /// element. Otherwise, `nil`.
-  var firstElementAddress: UnsafeMutablePointer<Weak<Element>> { return storage.elements }
-
-  /// A value that identifies the storage used by the buffer.  Two
-  /// buffers address the same elements when they have the same
-  /// identity and count.
-  var identity: UnsafePointer<Void> { return withUnsafeBufferPointer { UnsafePointer($0.baseAddress) } }
-  
-  public var startIndex: Int { return 0 }
-  public var endIndex: Int { return count }
-
-  /**
-   ensureUniqueWithCapacity:
-
-   - parameter capacity: Int
-  */
-  private mutating func ensureUniqueWithCapacity(capacity: Int) {
-    storage.purge()
-    guard !(isUniquelyReferenced(&storage) && storage.capacity >= capacity) else { return }
-    guard storage.capacity < capacity else { storage = storage.clone(); return }
-    let newStorage = Storage.create(capacity)
-    newStorage.elements.moveInitializeFrom(storage.elements, count: storage.count)
-    newStorage.count = storage.count
-    storage = newStorage
-  }
-
-  /**
-   append:
-
-   - parameter element: Pointee
-  */
-  public mutating func append(element: Element) {
-    let minimumCapacity = storage.capacity > storage.count
-                            ? storage.capacity
-                            : max(storage.capacity, 1) * 2
-    ensureUniqueWithCapacity(minimumCapacity)
-    (storage.elements + storage.count).initialize(Weak(element))
-    storage.count += 1
-  }
-
-  public func generate() -> AnyGenerator<_Element> {
-    storage.purge()
-    var index = 0
-    return AnyGenerator {
-      [storage = storage] in
-      guard index < storage.count else { return nil }
-      guard let element = storage.elements[index].reference else {
-        fatalError("expected weak reference not to be nil")
-      }
-      index += 1
-      return element
-    }
-  }
-
-  public func indexOf(element: Element) -> Int? {
-    let elements = storage.elements
-    for i in 0 ..< count {
-      guard let e = elements[i].reference else { fatalError("expected weak reference not to be nil") }
-      guard e === element else { continue }
-      return i
-    }
-    return nil
-  }
-
-  public mutating func replaceRange<C:CollectionType
-    where C.Generator.Element == _Element>(subRange: Range<Int>, with newElements: C)
-  {
-    defer { _fixLifetime(self); _fixLifetime(storage) }
-    let purgeCount = storage.purge()
-    assert(subRange.endIndex <= _count, "purging \(purgeCount) invalidated subRange '\(subRange)'")
-    let oldCount = storage.count
-    let removeCount: Int = subRange.count
-    let insertCount: Int = numericCast(newElements.count)
-    let newCount = oldCount - removeCount + insertCount
-    ensureUniqueWithCapacity(newCount)
-
-    let elements = storage.elements
-    for (index, offset) in subRange.enumerate() {
-      let elementPointer = elements + offset
-      if index < insertCount {
-        let element = newElements[newElements.startIndex.advancedBy(numericCast(index))]
-        let weakElement = Weak<Element>(element)
-        elementPointer.initialize(weakElement)
-      } else {
-        elementPointer.destroy()
-      }
-    }
-
-    // Return early if we don't need to shift old elements or insert remaining new elements
-    guard removeCount != insertCount else { return }
-
-    // Check if we need to shift old elements
-    if subRange.endIndex < storage.count {
-
-      // Shift forward when removing more elements than are being inserted
-      if removeCount > insertCount {
-        let moveCount = storage.count - subRange.endIndex
-        let moveSource = elements + subRange.endIndex
-        let destination = elements + subRange.startIndex.advancedBy(insertCount)
-        destination.moveAssignFrom(moveSource, count: moveCount)
-      }
-
-      // Shift backward when inserting more elements than are being removed
-      else if removeCount < insertCount {
-        let moveCount = storage.count - subRange.endIndex
-        let moveSource = elements + subRange.endIndex
-
-        let oldElementsDestinationOffset = subRange.startIndex.advancedBy(insertCount)
-        let oldElementsDestination = elements + oldElementsDestinationOffset
-
-        oldElementsDestination.moveInitializeBackwardFrom(moveSource, count: moveCount)
-
-        let uninsertedElementsDestinationOffset = subRange.endIndex
-        let uinsertedElementsDestination = elements + uninsertedElementsDestinationOffset
-
-        let uninsertedElements = newElements[newElements.startIndex.advancedBy(numericCast(removeCount))..<].map({
-          Weak<Element>($0 as? Element)
-        })
-
-        uinsertedElementsDestination.initializeFrom(uninsertedElements)
-
-      }
-    }
-    storage.count = newCount
-  }
-}
-
-extension FilteredWeakArrayBuffer: ArrayLiteralConvertible {
-  public init(arrayLiteral elements: Element...) { self.init(elements) }
-}
-
-extension FilteredWeakArrayBuffer: CustomStringConvertible, CustomDebugStringConvertible {
-  private var elementsDescription: String {
-    defer { _fixLifetime(self) }
-    var result = "["
-    var first = true
-    for i in 0 ..< count {
-      if first { first = false }
-      else { result += ", " }
-      result += "\(self[i])"
-    }
-    result += "]"
-    return result
-  }
-  public var description: String { return elementsDescription }
-  public var debugDescription: String { return storage.description }
-}
-
 
 public struct WeakArray<Element:AnyObject>: MutableCollectionType, RangeReplaceableCollectionType {
-  private var storage: WeakArrayStorage<Element>
-//  public typealias Generator = IndexingGenerator<WeakArray<Element>>
+  internal typealias Storage = WeakArrayStorage<Element>
+  internal typealias Buffer = WeakArrayBuffer<Element>
+  internal typealias Owner = WeakArrayStorageOwner<Element>
+
+  internal var owner: Owner
+  internal var buffer: Buffer { get { return owner.buffer } set { owner.buffer = newValue } }
+
+  //  public typealias Generator = IndexingGenerator<WeakArray<Element>>
   public typealias _Element = Element?
 //  private var elements: [Element] { return storage.elements }
 
-  public var startIndex: Int { return 0 }
-  public var endIndex: Int { return storage.count }
+
+  public var startIndex: Int { return buffer.startIndex }
+  public var endIndex: Int { return buffer.endIndex }
 
   public subscript(position: Int) -> Element? {
     get {
       precondition(position < count, "Index '\(position)' ≥ count '\(count)'")
-      let weakElement = storage.elements[position]
-      return weakElement.reference
+      return buffer[position]
     }
     set {
       precondition(position < count, "Index '\(position)' ≥ count '\(count)'")
-      storage.elements[position] = Weak(newValue)
+      ensureUniqueWithCapacity(capacity)
+      buffer[position] = newValue
     }
   }
 
-  public var count: Int { defer { _fixLifetime(storage) }; return storage.count }
+  public var count: Int { return buffer.count }
+  public var capacity: Int { return buffer.capacity }
 
   private mutating func ensureUniqueWithCapacity(capacity: Int) {
-    guard !(isUniquelyReferenced(&storage) && storage.capacity >= capacity) else { return }
-    guard storage.capacity < capacity else { storage = storage.clone(); return }
-    let newStorage = WeakArrayStorage<Element>.create(capacity)
-    newStorage.elements.moveInitializeFrom(storage.elements, count: storage.count)
-    newStorage.count = storage.count
-    storage = newStorage
+    guard !(isUniquelyReferenced(&owner) && self.capacity >= capacity) else { return }
+    guard self.capacity < capacity else {
+      owner = Owner(buffer: Buffer(storage: buffer.storage.clone()))
+      return
+    }
+    let newStorage = Storage.create(capacity)
+    newStorage.elements.moveInitializeFrom(buffer.storage.elements, count: buffer.storage.count)
+    newStorage.count = buffer.storage.count
+    owner = Owner(buffer: Buffer(storage: newStorage))
   }
 
   public mutating func append(element: Element) {
-    let minimumCapacity = storage.capacity > storage.count
-                            ? storage.capacity
-                            : max(storage.capacity, 1) * 2
-    ensureUniqueWithCapacity(minimumCapacity)
-    (storage.elements + storage.count).initialize(Weak(element))
-    storage.count += 1
+    ensureUniqueWithCapacity(count + 1)
+    buffer.append(element)
   }
 
-  public init() { storage = WeakArrayStorage<Element>.create(0) }
+  public init() { owner = Owner(minimumCapacity: 0) }
 
   public init<S:SequenceType where S.Generator.Element == Element>(_ sequence: S) {
-    let array = sequence.map {Weak<Element>($0)}
-    storage = WeakArrayStorage<Element>.create(array.count)
-    storage.elements.initializeFrom(array)
-    storage.count = array.count
+    owner = Owner(buffer: Buffer(sequence))
   }
 
   public func generate() -> AnyGenerator<Element?> {
-    var index = 0
-    return AnyGenerator {
-      [storage = storage] in
-      guard index < storage.count else { return nil }
-      let element = storage.elements[index].reference
-      index += 1
-      return element
-    }
+    return AnyGenerator(buffer.generate())
   }
 
   public func indexOf(element: Element) -> Int? {
-    let elements = storage.elements
-    for i in 0 ..< count {
-      guard let e = elements[i].reference else { continue }
-      guard e === element else { continue }
-      return i
-    }
-    return nil
+    return buffer.indexOf(element)
   }
 
   public mutating func replaceRange<C:CollectionType
     where C.Generator.Element == Element?>(subRange: Range<Int>, with newElements: C)
   {
-    defer { _fixLifetime(self); _fixLifetime(storage) }
-    let oldCount = storage.count
-    let removeCount: Int = subRange.count
-    let insertCount: Int = numericCast(newElements.count)
-    let newCount = oldCount - removeCount + insertCount
-    ensureUniqueWithCapacity(newCount)
-
-    let elements = storage.elements
-    for (index, offset) in subRange.enumerate() {
-      let elementPointer = elements + offset
-      if index < insertCount {
-        let element = newElements[newElements.startIndex.advancedBy(numericCast(index))]
-        let weakElement = Weak<Element>(element)
-        elementPointer.initialize(weakElement)
-      } else {
-        elementPointer.destroy()
-      }
-    }
-
-    // Return early if we don't need to shift old elements or insert remaining new elements
-    guard removeCount != insertCount else { return }
-
-    // Check if we need to shift old elements
-    if subRange.endIndex < storage.count {
-
-      // Shift forward when removing more elements than are being inserted
-      if removeCount > insertCount {
-        let moveCount = storage.count - subRange.endIndex
-        let moveSource = elements + subRange.endIndex
-        let destination = elements + subRange.startIndex.advancedBy(insertCount)
-        destination.moveAssignFrom(moveSource, count: moveCount)
-      }
-
-      // Shift backward when inserting more elements than are being removed
-      else if removeCount < insertCount {
-        let moveCount = storage.count - subRange.endIndex
-        let moveSource = elements + subRange.endIndex
-
-        let oldElementsDestinationOffset = subRange.startIndex.advancedBy(insertCount)
-        let oldElementsDestination = elements + oldElementsDestinationOffset
-
-        oldElementsDestination.moveInitializeBackwardFrom(moveSource, count: moveCount)
-
-        let uninsertedElementsDestinationOffset = subRange.endIndex
-        let uinsertedElementsDestination = elements + uninsertedElementsDestinationOffset
-
-        let uninsertedElements = newElements[newElements.startIndex.advancedBy(numericCast(removeCount))..<].map({
-          Weak<Element>($0 as? Element)
-        })
-
-        uinsertedElementsDestination.initializeFrom(uninsertedElements)
-
-      }
-    }
-    storage.count = newCount
+    ensureUniqueWithCapacity(capacity - subRange.count + numericCast(newElements.count))
+    buffer.replaceRange(subRange, with: newElements)
   }
 }
 
@@ -658,22 +339,14 @@ extension WeakArray: ArrayLiteralConvertible {
 }
 
 extension WeakArray: CustomStringConvertible, CustomDebugStringConvertible {
-  private var elementsDescription: String {
-    defer { _fixLifetime(self) }
-      var result = "["
-      var first = true
-      for i in 0 ..< count {
-        if first { first = false }
-        else { result += ", " }
-        result += "\(self[i])"
-      }
-      result += "]"
-      return result
-  }
-  public var description: String { return elementsDescription }
-  public var debugDescription: String { return storage.description }
+  public var description: String { return buffer.description }
+  public var debugDescription: String { return buffer.debugDescription }
 }
-//extension WeakArray: CustomPlaygroundQuickLookable {
-//  public func customPlaygroundQuickLook() -> PlaygroundQuickLook { return .Text(elements.description) }
-//}
 
+//public struct WeakArrayStrongView<Element:AnyObject> {
+//
+//}
+//
+//extension WeakArray {
+//  public typealias StrongView = WeakArrayStrongView<Element>
+//}
