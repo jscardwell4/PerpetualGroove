@@ -10,13 +10,13 @@ import UIKit
 import SpriteKit
 import MoonKit
 
-final class GeneratorTool: NodeSelectionTool, ConfigurableToolType {
+final class GeneratorTool: NodeSelectionTool {//, ConfigurableToolType {
 
   override var active: Bool  {
     didSet {
       logDebug("[\(mode)] oldValue = \(oldValue)  active = \(active)")
       guard active != oldValue && active && mode == .New else { return }
-      MIDIPlayer.playerContainer?.presentControllerForTool(self)
+      MIDIPlayer.playerContainer?.presentContentForTool(self)
     }
   }
 
@@ -54,8 +54,10 @@ final class GeneratorTool: NodeSelectionTool, ConfigurableToolType {
    - parameter notification: NSNotification
   */
   private func didAddNode(notification: NSNotification) {
-    guard active && mode == .Existing && player.midiNodes.count == 2 else { return }
-    _viewController?.navigationArrows = [.Previous, .Next]
+    guard active && mode == .Existing && player.midiNodes.count == 2,
+      let secondaryContent = _secondaryContent
+        where secondaryContent.disabledActions ⚭ [.Previous, .Next] else { return }
+    secondaryContent.disabledActions = .None
   }
 
   /**
@@ -64,25 +66,28 @@ final class GeneratorTool: NodeSelectionTool, ConfigurableToolType {
    - parameter notification: NSNotification
    */
   private func didRemoveNode(notification: NSNotification) {
-    guard active && mode == .Existing && player.midiNodes.count < 2 else { return }
-    _viewController?.navigationArrows = [.None]
+    guard active && mode == .Existing && player.midiNodes.count < 2,
+      let secondaryContent = _secondaryContent
+        where secondaryContent.disabledActions !⚭ [.Previous, .Next] else { return }
+    secondaryContent.disabledActions ∪= [.Previous, .Next]
   }
 
   /** previousNode */
   private func previousNode() {
+    guard let node = node else { return }
     let nodes = player.midiNodes
-    guard let node = node, let idx = Array(nodes.generate()).indexOf(node) else { return }
+    guard let idx = nodes.indexOf(node) else { return }
     self.node = idx + 1 < nodes.endIndex ? nodes[idx + 1] : nodes[nodes.startIndex]
   }
 
   /** nextNode */
   private func nextNode() {
     let nodes = player.midiNodes
-    guard let node = node, let idx = Array(nodes.generate()).indexOf(node) else { return }
+    guard let node = node, let idx = nodes.indexOf(node) else { return }
     self.node = idx - 1 >= nodes.startIndex ? nodes[idx - 1] : nodes[nodes.endIndex - 1]
   }
 
-  var isShowingViewController: Bool { return _viewController != nil }
+  var isShowingContent: Bool { return _secondaryContent != nil }
 
   /**
    didChangeGenerator:
@@ -93,12 +98,12 @@ final class GeneratorTool: NodeSelectionTool, ConfigurableToolType {
     node?.generator = generator
   }
 
-  private weak var _viewController: GeneratorViewController?
-  var viewController: SecondaryContentViewController {
-    guard _viewController == nil else { return _viewController! }
+  private weak var _secondaryContent: GeneratorViewController?
+  var secondaryContent: SecondaryContent {
+    guard _secondaryContent == nil else { return _secondaryContent! }
 
     let storyboard = UIStoryboard(name: "Generator", bundle: nil)
-    let viewController: GeneratorViewController
+    let secondaryContent: GeneratorViewController
 
     switch mode {
 
@@ -106,36 +111,38 @@ final class GeneratorTool: NodeSelectionTool, ConfigurableToolType {
         guard let node = node else {
           fatalError("cannot show view controller when no node has been chosen")
         }
-        viewController = storyboard.instantiateViewControllerWithIdentifier("GeneratorWithArrows")
+        secondaryContent = storyboard.instantiateViewControllerWithIdentifier("GeneratorWithArrows")
                            as! GeneratorViewController
-        viewController.loadGenerator(node.generator)
-        viewController.didChangeGenerator = weakMethod(self, GeneratorTool.didChangeGenerator)
-        viewController.previousAction = weakMethod(self, GeneratorTool.previousNode)
-        viewController.nextAction = weakMethod(self, GeneratorTool.nextNode)
+        secondaryContent.loadGenerator(node.generator)
+        secondaryContent.didChangeGenerator = weakMethod(self, GeneratorTool.didChangeGenerator)
+        secondaryContent.previousAction = weakMethod(self, GeneratorTool.previousNode)
+        secondaryContent.nextAction = weakMethod(self, GeneratorTool.nextNode)
+        secondaryContent.supportedActions ∪= [.Previous, .Next]
+        secondaryContent.disabledActions = player.midiNodes.count > 1 ? [.None] : [.Previous, .Next]
         //TODO: Add cancel/confirm actions?
 
       case .New:
-        viewController = storyboard.instantiateViewControllerWithIdentifier("Generator")
+        secondaryContent = storyboard.instantiateViewControllerWithIdentifier("Generator")
                            as! GeneratorViewController
-        viewController.didChangeGenerator = {
+        secondaryContent.didChangeGenerator = {
           MIDIPlayer.addTool?.generator = $0
           Sequencer.sequence?.currentTrack?.instrument.playNote($0)
         }
 
     }
 
-    viewController.navigationArrows = player.midiNodes.count > 1 ? [.Previous, .Next] : [.None]
-    return viewController
+
+    return secondaryContent
   }
 
-  /** didShowViewController */
-  func didShowViewController(viewController: SecondaryContentViewController) {
-    _viewController = viewController as? GeneratorViewController
+  /** didShowContent */
+  func didShowContent(content: SecondaryContent) {
+    _secondaryContent = content as? GeneratorViewController
   }
 
-  /** didHideViewController */
-  func didHideViewController(viewController: SecondaryContentViewController) {
-    guard active && viewController === _viewController else { return }
+  /** didHideContent */
+  func didHideContent() {
+    guard active && _secondaryContent != nil else { return }
     switch mode {
       case .New: if MIDIPlayer.currentTool.toolType === self { MIDIPlayer.currentTool = .None }
       case .Existing: node = nil
@@ -169,11 +176,11 @@ final class GeneratorTool: NodeSelectionTool, ConfigurableToolType {
   /** didSelectNode */
   override func didSelectNode() {
     guard active && mode == .Existing && node != nil else { return }
-    MIDIPlayer.playerContainer?.presentControllerForTool(self)
+    MIDIPlayer.playerContainer?.presentContentForTool(self)
   }
 }
 
-final class GeneratorViewController: SecondaryContentViewController {
+final class GeneratorViewController: SecondaryContent {
 
   @IBOutlet weak var pitchPicker:    InlinePickerView!
   @IBOutlet weak var octavePicker:   InlinePickerView!

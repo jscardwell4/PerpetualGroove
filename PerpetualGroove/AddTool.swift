@@ -14,7 +14,7 @@ final class AddTool: ToolType {
 
   unowned let player: MIDIPlayerNode
 
-  var active = false {
+  @objc var active = false {
     didSet {
       logDebug("oldValue = \(oldValue)  active = \(active)")
     }
@@ -76,7 +76,7 @@ final class AddTool: ToolType {
   - parameter touches: Set<UITouch>
   - parameter event: UIEvent?
   */
-  func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+  @objc func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
     if active && touch == nil { touch = touches.first }
   }
 
@@ -86,7 +86,7 @@ final class AddTool: ToolType {
   - parameter touches: Set<UITouch>?
   - parameter event: UIEvent?
   */
-  func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) { touch = nil }
+  @objc func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) { touch = nil }
 
   /**
   touchesEnded:withEvent:
@@ -94,7 +94,7 @@ final class AddTool: ToolType {
   - parameter touches: Set<UITouch>
   - parameter event: UIEvent?
   */
-  func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+  @objc func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
     guard touch != nil && touches.contains(touch!) else { return }
     updateData()
     generate()
@@ -107,7 +107,7 @@ final class AddTool: ToolType {
   - parameter touches: Set<UITouch>
   - parameter event: UIEvent?
   */
-  func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+  @objc func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
     guard touch != nil && touches.contains(touch!) else { return }
     guard let p = touch?.locationInNode(player) where player.containsPoint(p) else {
       touch = nil

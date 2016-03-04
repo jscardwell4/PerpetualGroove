@@ -9,11 +9,11 @@
 import Foundation
 import MoonKit
 
-final class RotateTool: NodeAdjustmentTool, ConfigurableToolType {
+final class RotateTool: NodeAdjustmentTool {//, ConfigurableToolType {
 
   private weak var _viewController: RotateViewController?
 
-  var viewController: SecondaryContentViewController {
+  var secondaryContent: SecondaryContent {
     guard _viewController == nil else { return _viewController! }
     let storyboard = UIStoryboard(name: "Rotate", bundle: nil)
     let viewController = storyboard.instantiateInitialViewController() as! RotateViewController
@@ -21,27 +21,29 @@ final class RotateTool: NodeAdjustmentTool, ConfigurableToolType {
     return viewController
   }
 
-  var isShowingViewController: Bool { return _viewController != nil }
+  var isShowingContent: Bool { return _viewController != nil }
 
-  func didShowViewController(viewController: SecondaryContentViewController) {
-    _viewController = viewController as? RotateViewController
+  func didShowContent(content: SecondaryContent) {
+    _viewController = content as? RotateViewController
   }
 
-  func didHideViewController(viewController: SecondaryContentViewController) {
+  func didHideContent(viewController: SecondaryContent) {
 
   }
 
   /** didSelectNode */
   override func didSelectNode() {
     guard active else { return }
-    MIDIPlayer.playerContainer?.presentControllerForTool(self)
+    MIDIPlayer.playerContainer?.presentContentForTool(self)
   }
 
 }
 
-final class RotateViewController: SecondaryContentViewController {
+final class RotateViewController: SecondaryContent {
 
   weak var node: MIDINode?
+
+  private weak var tool: RotateTool?
 
   override func viewWillAppear(animated: Bool) {
     super.viewWillAppear(animated)
@@ -65,9 +67,11 @@ final class RotateViewController: SecondaryContentViewController {
   @IBAction private func handleRotation(sender: UIRotationGestureRecognizer) {
 
     switch sender.state {
-      case .Began, .Changed:
+      case .Began:
         arrow.transform.rotation = sender.rotation
-      break
+      case .Changed:
+        arrow.transform.rotation = sender.rotation
+        tool?.adjustNode{ node?.initialTrajectory.rotateToInPlace(sender.rotation) }
 
       case .Cancelled, .Failed: break
       case .Possible: break

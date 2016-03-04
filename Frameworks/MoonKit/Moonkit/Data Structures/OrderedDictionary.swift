@@ -348,9 +348,11 @@ internal struct OrderedDictionaryBuffer<Key:Hashable, Value> {
     keyMap[position] = -1
     bitMap[bucket] = false
 
-    let from = keyMap + position + 1
-    let moveCount = count - position - 1
-    (keyMap + position).moveInitializeFrom(from, count: moveCount)
+    if position + 1 < count {
+      let from = keyMap + position + 1
+      let moveCount = count - position - 1
+      (keyMap + position).moveInitializeFrom(from, count: moveCount)
+    }
 
     //TODO: rework to use position-based bucket checks
 
@@ -424,7 +426,9 @@ internal struct OrderedDictionaryBuffer<Key:Hashable, Value> {
   }
 
   internal func setValue(value: Value, inBucket bucket: Bucket) {
-    values[bucket] = value
+    print("value = \(value)")
+//    print("values[bucket] = \(values[bucket])")
+    (values + bucket).initialize(value)
   }
 
 }
@@ -451,6 +455,8 @@ extension OrderedDictionaryBuffer : CustomStringConvertible, CustomDebugStringCo
 
   internal var debugDescription: String {
     var result = elementsDescription + "\n"
+    result += "count = \(count)\n"
+    result += "capacity = \(capacity)\n"
     for position in 0 ..< capacity {
       let bucket = keyMap[position]
       if bucket > -1 {
@@ -622,6 +628,7 @@ public struct OrderedDictionary<Key: Hashable, Value>: CollectionType, Dictionar
 
   public mutating func removeAll(keepCapacity keepCapacity: Bool = false) {
 
+    logDebug("buffer = \(buffer.debugDescription)")
     guard isUniquelyReferenced(&owner) else {
       owner = Owner(minimumCapacity: keepCapacity ? capacity : 0)
       return

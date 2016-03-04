@@ -273,6 +273,10 @@ public protocol NonHomogeneousUnpackable2 {
 }
 
 
+public prefix func *<U:Unpackable2>(u: U) -> (U.Element, U.Element) { return u.unpack }
+public prefix func *<U:Unpackable3>(u: U) -> (U.Element, U.Element, U.Element) { return u.unpack }
+public prefix func *<U:Unpackable4>(u: U) -> (U.Element, U.Element, U.Element, U.Element) { return u.unpack4 }
+
 /** Protocol for an object guaranteed to have a name */
 public protocol Named {
   var name: String { get }

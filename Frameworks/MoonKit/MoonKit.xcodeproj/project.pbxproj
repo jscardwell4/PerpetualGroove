@@ -258,6 +258,9 @@
 		C2404BC01B77ACDC00A68A64 /* ImageBarButtonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2404BBF1B77ACDC00A68A64 /* ImageBarButtonItem.swift */; };
 		C2404BC91B78333F00A68A64 /* PopoverFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2404BC81B78333F00A68A64 /* PopoverFormView.swift */; };
 		C24133F81B7520D40040580B /* ToggleButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24133F71B7520D40040580B /* ToggleButtonNode.swift */; };
+		C2416E361C88B62E00734CA1 /* WeakArrayTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2416E351C88B62E00734CA1 /* WeakArrayTests.swift */; };
+		C2416E381C88B62E00734CA1 /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2358F1619C78D6D00920F8D /* MoonKit.framework */; };
+		C2416E411C88B83000734CA1 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2416E401C88B83000734CA1 /* Tests.swift */; };
 		C2421D181BEFE884009BA8B1 /* ByteArrayConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2421D171BEFE884009BA8B1 /* ByteArrayConvertible.swift */; };
 		C2421D1A1BEFE8DE009BA8B1 /* Bytes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2421D191BEFE8DE009BA8B1 /* Bytes.swift */; };
 		C24416331ACB16F8007EDEFE /* Set+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24416321ACB16F8007EDEFE /* Set+MoonKitAdditions.swift */; };
@@ -465,6 +468,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		C2416E391C88B62E00734CA1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C2CE884618138C4900555D63 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C2358F1519C78D6D00920F8D;
+			remoteInfo = MoonKit;
+		};
 		C2A70E471ACD8EBA009C2CF7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C2CE884618138C4900555D63 /* Project object */;
@@ -580,6 +590,11 @@
 		C2404BCB1B78EC6E00A68A64 /* Lumberjack.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lumberjack.framework; path = "Lumberjack/build/Debug-iphoneos/Lumberjack.framework"; sourceTree = "<group>"; };
 		C2404BDD1B797D4600A68A64 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
 		C24133F71B7520D40040580B /* ToggleButtonNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToggleButtonNode.swift; sourceTree = "<group>"; };
+		C2416E331C88B62E00734CA1 /* WeakArrayTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WeakArrayTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C2416E351C88B62E00734CA1 /* WeakArrayTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakArrayTests.swift; sourceTree = "<group>"; };
+		C2416E371C88B62E00734CA1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C2416E401C88B83000734CA1 /* Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
+		C2416E521C88BB5E00734CA1 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		C2421D171BEFE884009BA8B1 /* ByteArrayConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ByteArrayConvertible.swift; sourceTree = "<group>"; };
 		C2421D191BEFE8DE009BA8B1 /* Bytes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bytes.swift; sourceTree = "<group>"; };
 		C24416321ACB16F8007EDEFE /* Set+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Set+MoonKitAdditions.swift"; sourceTree = "<group>"; };
@@ -939,6 +954,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C2416E301C88B62E00734CA1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C2416E381C88B62E00734CA1 /* MoonKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C256F07A1ABDFFE5005B7CB3 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1102,6 +1125,7 @@
 				C238A6551B04DDA100898DB8 /* Numbers.swift */,
 				C22F5FE31B6FC753006D225A /* Dispatch.swift */,
 				C2A963491C691DAA009DB0F4 /* Playgrounds.swift */,
+				C2416E401C88B83000734CA1 /* Tests.swift */,
 			);
 			path = Functions;
 			sourceTree = "<group>";
@@ -1147,6 +1171,15 @@
 				C23F44441B55532700D09ECA /* Info.plist */,
 			);
 			path = TransformTest;
+			sourceTree = "<group>";
+		};
+		C2416E341C88B62E00734CA1 /* WeakArrayTests */ = {
+			isa = PBXGroup;
+			children = (
+				C2416E351C88B62E00734CA1 /* WeakArrayTests.swift */,
+				C2416E371C88B62E00734CA1 /* Info.plist */,
+			);
+			path = WeakArrayTests;
 			sourceTree = "<group>";
 		};
 		C256F07F1ABDFFE5005B7CB3 /* MoonKitOSX */ = {
@@ -1398,6 +1431,7 @@
 				C2A70E411ACD8EBA009C2CF7 /* MoonKit Tests */,
 				C23F44371B55532700D09ECA /* TransformTest */,
 				C2EE61821C7F8C760091C5AC /* OrderedDictionaryTests */,
+				C2416E341C88B62E00734CA1 /* WeakArrayTests */,
 				C2CE885018138C4900555D63 /* Frameworks */,
 				C2CE884F18138C4900555D63 /* Products */,
 			);
@@ -1412,6 +1446,7 @@
 				C2A70E401ACD8EBA009C2CF7 /* MoonKit Tests.xctest */,
 				C23F44361B55532700D09ECA /* TransformTest.app */,
 				C2EE61811C7F8C760091C5AC /* OrderedDictionaryTests.xctest */,
+				C2416E331C88B62E00734CA1 /* WeakArrayTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1419,6 +1454,7 @@
 		C2CE885018138C4900555D63 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C2416E521C88BB5E00734CA1 /* XCTest.framework */,
 				C2BDBC361BD3F1E300E343F1 /* LumberjackOSX.framework */,
 				C225677F1BB05E7600E4842B /* Lumberjack.framework */,
 				C22087FE1BB053C00010DC7B /* CocoaLumberjackSwift.framework */,
@@ -1897,6 +1933,24 @@
 			productReference = C23F44361B55532700D09ECA /* TransformTest.app */;
 			productType = "com.apple.product-type.application";
 		};
+		C2416E321C88B62E00734CA1 /* WeakArrayTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C2416E3F1C88B62E00734CA1 /* Build configuration list for PBXNativeTarget "WeakArrayTests" */;
+			buildPhases = (
+				C2416E2F1C88B62E00734CA1 /* Sources */,
+				C2416E301C88B62E00734CA1 /* Frameworks */,
+				C2416E311C88B62E00734CA1 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C2416E3A1C88B62E00734CA1 /* PBXTargetDependency */,
+			);
+			name = WeakArrayTests;
+			productName = WeakArrayTests;
+			productReference = C2416E331C88B62E00734CA1 /* WeakArrayTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		C256F07D1ABDFFE5005B7CB3 /* MoonKitOSX */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C256F0951ABDFFE5005B7CB3 /* Build configuration list for PBXNativeTarget "MoonKitOSX" */;
@@ -1987,6 +2041,9 @@
 					C23F44351B55532700D09ECA = {
 						CreatedOnToolsVersion = 7.0;
 					};
+					C2416E321C88B62E00734CA1 = {
+						CreatedOnToolsVersion = 7.3;
+					};
 					C256F07D1ABDFFE5005B7CB3 = {
 						CreatedOnToolsVersion = 6.3;
 					};
@@ -2017,6 +2074,7 @@
 				C2A70E3F1ACD8EBA009C2CF7 /* MoonKit Tests */,
 				C23F44351B55532700D09ECA /* TransformTest */,
 				C2EE61801C7F8C760091C5AC /* OrderedDictionaryTests */,
+				C2416E321C88B62E00734CA1 /* WeakArrayTests */,
 			);
 		};
 /* End PBXProject section */
@@ -2038,6 +2096,13 @@
 				C23F44431B55532700D09ECA /* LaunchScreen.storyboard in Resources */,
 				C23F44401B55532700D09ECA /* Assets.xcassets in Resources */,
 				C23F443E1B55532700D09ECA /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C2416E311C88B62E00734CA1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2288,6 +2353,7 @@
 				C24A22991ADB4C1E0065E7EA /* FunctionManipulation.swift in Sources */,
 				C24A228F1ADB3AA60065E7EA /* SequenceManipulation.swift in Sources */,
 				C20534271BCB3BB900A9F040 /* UIControlState+MoonKitAdditions.swift in Sources */,
+				C2416E411C88B83000734CA1 /* Tests.swift in Sources */,
 				C2F75A0D1B977075001EA2BA /* PropertyCoder.swift in Sources */,
 				C2358F6C19C78E0C00920F8D /* MSDictionaryIndex.m in Sources */,
 				C2AFC90A1BD678C60057F055 /* TintColorControl.swift in Sources */,
@@ -2382,6 +2448,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C2416E2F1C88B62E00734CA1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C2416E361C88B62E00734CA1 /* WeakArrayTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C256F0791ABDFFE5005B7CB3 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2471,6 +2545,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		C2416E3A1C88B62E00734CA1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C2358F1519C78D6D00920F8D /* MoonKit */;
+			targetProxy = C2416E391C88B62E00734CA1 /* PBXContainerItemProxy */;
+		};
 		C2A70E481ACD8EBA009C2CF7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = C2358F1519C78D6D00920F8D /* MoonKit */;
@@ -2700,6 +2779,180 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.TransformTest;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		C2416E3B1C88B62E00734CA1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = WeakArrayTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.WeakArrayTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		C2416E3C1C88B62E00734CA1 /* Debug-Verbose */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = WeakArrayTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.WeakArrayTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = "Debug-Verbose";
+		};
+		C2416E3D1C88B62E00734CA1 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = WeakArrayTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.WeakArrayTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Profile;
+		};
+		C2416E3E1C88B62E00734CA1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = WeakArrayTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.WeakArrayTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -3805,6 +4058,16 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
+		};
+		C2416E3F1C88B62E00734CA1 /* Build configuration list for PBXNativeTarget "WeakArrayTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C2416E3B1C88B62E00734CA1 /* Debug */,
+				C2416E3C1C88B62E00734CA1 /* Debug-Verbose */,
+				C2416E3D1C88B62E00734CA1 /* Profile */,
+				C2416E3E1C88B62E00734CA1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 		C256F0951ABDFFE5005B7CB3 /* Build configuration list for PBXNativeTarget "MoonKitOSX" */ = {
 			isa = XCConfigurationList;

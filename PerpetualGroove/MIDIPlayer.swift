@@ -189,7 +189,7 @@ final class MIDIPlayer {
     willSet {
     logDebug("willSet: \(currentTool) ➞ \(newValue)")
       guard currentTool != newValue
-        && (currentTool.toolType as? ConfigurableToolType)?.isShowingViewController == true else { return }
+        && currentTool.toolType?.isShowingContent == true else { return }
       playerContainer?.dismissSecondaryController()
     }
     didSet {

@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import MoonKit
 
-final class MixerContainerViewController: SecondaryControllerContainerViewController {
+final class MixerContainerViewController: SecondaryControllerContainer {
   
   private(set) weak var mixerViewController: MixerViewController!
 

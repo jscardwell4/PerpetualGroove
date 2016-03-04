@@ -47,11 +47,18 @@ final class MixerLayout: UICollectionViewLayout {
     guard let collectionView = collectionView else { storedAttributes = [:]; return }
 
     storedAttributes.removeAll(keepCapacity: true)
-      for (k, v) in (0 ..< collectionView.numberOfSections()).flatMap({
-        s in (0 ..< collectionView.numberOfItemsInSection(s)).map({ r in NSIndexPath(forRow: r, inSection: s) })
-    }).map({ ($0, self.layoutAttributesForItemAtIndexPath($0)!) }) {
-      storedAttributes[k] = v
+    for section in 0 ..< collectionView.numberOfSections() {
+      for item in 0 ..< collectionView.numberOfItemsInSection(section) {
+        let indexPath = NSIndexPath(forItem: item, inSection: section)
+        let layoutAttributes = layoutAttributesForItemAtIndexPath(indexPath)
+        storedAttributes[indexPath] = layoutAttributes
+      }
     }
+//      for (k, v) in (0 ..< collectionView.numberOfSections()).flatMap({
+//        s in (0 ..< collectionView.numberOfItemsInSection(s)).map({ r in NSIndexPath(forRow: r, inSection: s) })
+//    }).map({ ($0, self.layoutAttributesForItemAtIndexPath($0)!) }) {
+//      storedAttributes[k] = v
+//    }
 
   }
 

@@ -14,7 +14,7 @@ class NodeSelectionTool: ToolType {
 
   unowned let player: MIDIPlayerNode
 
-  var active = false {
+  @objc var active = false {
     didSet { guard active != oldValue && active == false else { return }; node = nil }
   }
 
@@ -48,6 +48,11 @@ class NodeSelectionTool: ToolType {
     }
   }
 
+  /**
+   initWithPlayerNode:
+
+   - parameter playerNode: MIDIPlayerNode
+  */
   init(playerNode: MIDIPlayerNode) {
     player = playerNode
   }
@@ -71,7 +76,7 @@ class NodeSelectionTool: ToolType {
    - parameter touches: Set<UITouch>
    - parameter event: UIEvent?
   */
-  func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+  @objc func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
     guard active && node == nil else { return }
     grabNodeForTouch(touches.first)
   }
@@ -82,7 +87,7 @@ class NodeSelectionTool: ToolType {
    - parameter touches: Set<UITouch>
    - parameter event: UIEvent?
   */
-  func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+  @objc func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
     guard active && node == nil else { return }
     grabNodeForTouch(touches.first)
   }
@@ -93,7 +98,7 @@ class NodeSelectionTool: ToolType {
    - parameter touches: Set<UITouch>?
    - parameter event: UIEvent?
   */
-  func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) { node = nil }
+  @objc func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) { node = nil }
 
   /**
    touchesEnded:withEvent:
@@ -101,9 +106,24 @@ class NodeSelectionTool: ToolType {
    - parameter touches: Set<UITouch>
    - parameter event: UIEvent?
   */
-  func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+  @objc func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
     guard active && node != nil else { return }
     didSelectNode()
   }
+
+  /** previousNode */
+  private func previousNode() {
+    let nodes = player.midiNodes
+    guard let node = node, let idx = nodes.indexOf(node) else { return }
+    self.node = idx + 1 < nodes.endIndex ? nodes[idx + 1] : nodes[nodes.startIndex]
+  }
+
+  /** nextNode */
+  private func nextNode() {
+    let nodes = player.midiNodes
+    guard let node = node, let idx = nodes.indexOf(node) else { return }
+    self.node = idx - 1 >= nodes.startIndex ? nodes[idx - 1] : nodes[nodes.endIndex - 1]
+  }
+  
 
 }

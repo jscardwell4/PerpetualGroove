@@ -23,7 +23,7 @@ public func ==<T:AnyObject>(lhs: Weak<T>, rhs: Weak<T>) -> Bool { return lhs.has
 extension Weak: CustomStringConvertible {
   public var description: String {
     guard let object = reference else { return "nil" }
-    return "\(object.dynamicType)(\(unsafeAddressOf(object))"
+    return "\(object.dynamicType)(\(unsafeAddressOf(object)))"
   }
 }
 

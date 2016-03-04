@@ -99,34 +99,34 @@ final class MIDIEventContainerTests: XCTestCase {
 
   func testCreation() {
     let events = MIDIEventContainerTests.events
-    let container = _MIDIEventContainer(events: events)
+    let container = MIDIEventContainer(events: events)
     XCTAssertEqual(events.count, container.count)
   }
 
   func testLazyMetaEvents() {
     let events = MIDIEventContainerTests.generateEvents(10)
-    let container = _MIDIEventContainer(events: events)
+    let container = MIDIEventContainer(events: events)
     let metaEvents = container.metaEvents
     XCTAssertEqual(metaEvents.count, MIDIEventContainerTests.metaEventCount * 10)
   }
 
   func testLazyChannelEvents() {
     let events = MIDIEventContainerTests.generateEvents(10)
-    let container = _MIDIEventContainer(events: events)
+    let container = MIDIEventContainer(events: events)
     let channelEvents = container.channelEvents
     XCTAssertEqual(channelEvents.count, MIDIEventContainerTests.channelEventCount * 10)
   }
 
   func testLazyNodeEvents() {
     let events = MIDIEventContainerTests.generateEvents(10)
-    let container = _MIDIEventContainer(events: events)
+    let container = MIDIEventContainer(events: events)
     let nodeEvents = container.nodeEvents
     XCTAssertEqual(nodeEvents.count, MIDIEventContainerTests.nodeEventCount * 10)
   }
 
   func testLazyTimeEvents() {
     let events = MIDIEventContainerTests.generateEvents(10)
-    let container = _MIDIEventContainer(events: events)
+    let container = MIDIEventContainer(events: events)
     let timeEvents = container.timeEvents
     XCTAssertEqual(timeEvents.count, MIDIEventContainerTests.timeEventCount * 10)
   }
@@ -134,7 +134,7 @@ final class MIDIEventContainerTests: XCTestCase {
   func testOldContainerPerformance() {
     let events = MIDIEventContainerTests.generateEvents(10)
     measureBlock { 
-      var container = MIDIEventContainer()
+      var container = OldMIDIEventContainer()
       for event in events { container.append(event) }
     }
   }
@@ -142,7 +142,7 @@ final class MIDIEventContainerTests: XCTestCase {
   func testContainerPerformance() {
     let events = MIDIEventContainerTests.generateEvents(10)
     measureBlock {
-      var container = _MIDIEventContainer()
+      var container = MIDIEventContainer()
       for event in events { container.append(event) }
     }
   }

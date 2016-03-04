@@ -14,7 +14,7 @@ final class RemoveTool: ToolType {
 
   unowned let player: MIDIPlayerNode
 
-  var active = false {
+  @objc var active = false {
     didSet {
       logDebug("oldValue = \(oldValue)  active = \(active)")
       guard active != oldValue else { return }
@@ -24,7 +24,7 @@ final class RemoveTool: ToolType {
           refreshAllNodeLighting()
         case false:
           sequence = nil
-          player.midiNodes.generate().forEach { removeLightingFromNode($0) }
+          player.midiNodes.forEach { if $0 != nil { removeLightingFromNode($0!) } }
       }
     }
   }
@@ -132,7 +132,7 @@ final class RemoveTool: ToolType {
   private func refreshAllNodeLighting() {
     guard let track = track else { return }
     let trackNodes = track.nodes.flatMap({$0.element2.reference})
-    let (foregroundNodes, backgroundNodes) = player.midiNodes.generate().bisect { trackNodes ∋ $0 }
+    let (foregroundNodes, backgroundNodes) = player.midiNodes.flatMap({$0}).bisect { trackNodes ∋ $0 }
     foregroundNodes.forEach { lightNodeForForeground($0) }
     backgroundNodes.forEach { lightNodeForBackground($0) }
   }
@@ -221,7 +221,7 @@ final class RemoveTool: ToolType {
   - parameter touches: Set<UITouch>
   - parameter event: UIEvent?
   */
-  func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+  @objc func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
     guard active && self.touch == nil else { return }
     touch = touches.first
     guard let point = touch?.locationInNode(player) where player.containsPoint(point) else { return }
@@ -234,7 +234,7 @@ final class RemoveTool: ToolType {
   - parameter touches: Set<UITouch>?
   - parameter event: UIEvent?
   */
-  func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) { touch = nil }
+  @objc func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) { touch = nil }
 
   /**
   touchesEnded:withEvent:
@@ -242,7 +242,7 @@ final class RemoveTool: ToolType {
   - parameter touches: Set<UITouch>
   - parameter event: UIEvent?
   */
-  func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+  @objc func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
     guard touch != nil && touches.contains(touch!) else { return }
     removeMarkedNodes()
     touch = nil
@@ -254,7 +254,7 @@ final class RemoveTool: ToolType {
   - parameter touches: Set<UITouch>
   - parameter event: UIEvent?
   */
-  func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+  @objc func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
     guard touch != nil && touches.contains(touch!) else { return }
     guard let point = touch?.locationInNode(player) where player.containsPoint(point) else {
       touch = nil

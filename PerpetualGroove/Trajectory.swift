@@ -50,6 +50,48 @@ struct Trajectory {
     }
   }
 
+  /**
+   rotate:
+
+   - parameter radians: CGFloat
+
+    - returns: Trajectory
+  */
+  func rotate(radians: CGFloat) -> Trajectory {
+    var result = self
+    result.rotateInPlace(radians)
+    return result
+  }
+
+  /**
+   rotateInPlace:
+
+   - parameter radians: CGFloat
+  */
+  mutating func rotateInPlace(radians: CGFloat) { (dx, dy) = *v.rotate(radians) }
+
+  /**
+   rotateTo:
+
+   - parameter angle: CGFloat
+
+    - returns: Trajectory
+  */
+  func rotateTo(angle: CGFloat) -> Trajectory {
+    var result = self
+    result.rotateToInPlace(angle)
+    return result
+  }
+
+  /**
+   rotateToInPlace:
+
+   - parameter angle: CGFloat
+  */
+  mutating func rotateToInPlace(angle: CGFloat) {
+    (dx, dy) = *v.rotateTo(angle)
+  }
+
   /// The horizontal velocity in units along the lines of those used by `SpriteKit`.
   var dx: CGFloat
 

@@ -1,5 +1,5 @@
 //
-//  SecondaryControllerContainerViewController.swift
+//  SecondaryControllerContainer.swift
 //  PerpetualGroove
 //
 //  Created by Jason Cardwell on 1/7/16.
@@ -10,45 +10,48 @@ import Foundation
 import UIKit
 import MoonKit
 
-protocol SecondaryControllerContentType: class {
-  var showsCancelButton: Bool { get }
-  var showsConfirmButton: Bool { get }
-  var showsNavigationArrows: Bool { get }
-  var navigationArrows: SecondaryControllerContainerViewController.NavigationArrows { get }
-  var actions: SecondaryControllerContainerViewController.SecondaryContentActions { get }
+protocol SecondaryControllerContent: class {
+  var anyAction: (() -> Void)? { get }
+  var cancelAction: (() -> Void)? { get }
+  var confirmAction: (() -> Void)? { get }
+  var nextAction: (() -> Void)? { get }
+  var previousAction: (() -> Void)? { get }
+
+  var supportedActions: SecondaryControllerContainer.SupportedActions { get }
+  var disabledActions: SecondaryControllerContainer.SupportedActions { get }
 }
 
-extension SecondaryControllerContentType {
-  var showsCancelButton: Bool { return true }
-  var showsConfirmButton: Bool { return true }
-  var showsNavigationArrows: Bool { return false }
-  var navigationArrows: SecondaryControllerContainerViewController.NavigationArrows { return .None }
-  var actions: SecondaryControllerContainerViewController.SecondaryContentActions {
-    return SecondaryControllerContainerViewController.SecondaryContentActions()
-  }
+extension SecondaryControllerContent {
+  var supportedActions: SecondaryControllerContainer.SupportedActions { return .None }
+  var disabledActions: SecondaryControllerContainer.SupportedActions { return .None }
+
+  var anyAction: (() -> Void)? { return nil }
+  var cancelAction: (() -> Void)? { return nil }
+  var confirmAction: (() -> Void)? { return nil }
+  var nextAction: (() -> Void)? { return nil }
+  var previousAction: (() -> Void)? { return nil }
 }
 
-class SecondaryControllerContainerViewController: UIViewController {
+class SecondaryControllerContainer: UIViewController {
 
   var primaryController: UIViewController? { return childViewControllers.first }
   
-  private(set) weak var secondaryController: SecondaryContentViewController? {
+  private(set) weak var secondaryController: SecondaryContent? {
     didSet {
       guard let controller = secondaryController else { return }
 
       // Hide or reveal the buttons according to the controller's settings
-      cancelButton?.hidden = !controller.showsCancelButton
-      confirmButton?.hidden = !controller.showsConfirmButton
+      cancelButton?.hidden = controller.supportedActions ∌ .Cancel
+      confirmButton?.hidden = controller.supportedActions ∌ .Confirm
 
-      if controller.showsNavigationArrows {
-        leftArrow?.hidden = false
-        rightArrow?.hidden = false
-        leftArrow?.enabled = controller.navigationArrows ∋ .Previous
-        rightArrow?.enabled = controller.navigationArrows ∋ .Next
-      } else {
-        leftArrow?.hidden = true
-        rightArrow?.hidden = true
-      }
+      leftArrow?.hidden = controller.supportedActions ∌ .Previous
+      rightArrow?.hidden = controller.supportedActions ∌ .Next
+
+      cancelButton?.enabled = controller.disabledActions ∌ .Cancel
+      confirmButton?.enabled = controller.disabledActions ∌ .Confirm
+
+      leftArrow?.enabled = controller.disabledActions ∌ .Previous
+      rightArrow?.enabled = controller.disabledActions ∌ .Next
 
       // Add the controller's view to the blur view content
       let controllerView = controller.view
@@ -77,7 +80,7 @@ class SecondaryControllerContainerViewController: UIViewController {
     cancelButton.highlightedTintColor = .mahogany
     cancelButton.identifier = "ConfirmButton"
     cancelButton.accessibilityIdentifier = cancelButton.identifier
-    cancelButton.addTarget(self, action: #selector(SecondaryControllerContainerViewController.cancel), forControlEvents: .TouchUpInside)
+    cancelButton.addTarget(self, action: #selector(SecondaryControllerContainer.cancel), forControlEvents: .TouchUpInside)
     blurView.contentView.addSubview(cancelButton)
     blurView.contentView.constrain(𝗩|--cancelButton, 𝗛|--cancelButton)
     self.cancelButton = cancelButton
@@ -88,7 +91,7 @@ class SecondaryControllerContainerViewController: UIViewController {
     confirmButton.highlightedTintColor = .mahogany
     confirmButton.identifier = "ConfirmButton"
     confirmButton.accessibilityIdentifier = confirmButton.identifier
-    confirmButton.addTarget(self, action: #selector(SecondaryControllerContainerViewController.confirm), forControlEvents: .TouchUpInside)
+    confirmButton.addTarget(self, action: #selector(SecondaryControllerContainer.confirm), forControlEvents: .TouchUpInside)
     blurView.contentView.addSubview(confirmButton)
     blurView.contentView.constrain(𝗩|--confirmButton, confirmButton--|𝗛)
     self.confirmButton = confirmButton
@@ -99,7 +102,7 @@ class SecondaryControllerContainerViewController: UIViewController {
     leftArrow.highlightedTintColor = .mahogany
     leftArrow.identifier = "PreviousButton"
     leftArrow.accessibilityIdentifier = leftArrow.identifier
-    leftArrow.addTarget(self, action: #selector(SecondaryControllerContainerViewController.previous), forControlEvents: .TouchUpInside)
+    leftArrow.addTarget(self, action: #selector(SecondaryControllerContainer.previous), forControlEvents: .TouchUpInside)
     blurView.contentView.addSubview(leftArrow)
     blurView.contentView.constrain(leftArrow--|𝗩, 𝗛|--leftArrow)
     self.leftArrow = leftArrow
@@ -110,7 +113,7 @@ class SecondaryControllerContainerViewController: UIViewController {
     rightArrow.highlightedTintColor = .mahogany
     rightArrow.identifier = "NextButton"
     rightArrow.accessibilityIdentifier = rightArrow.identifier
-    rightArrow.addTarget(self, action: #selector(SecondaryControllerContainerViewController.next), forControlEvents: .TouchUpInside)
+    rightArrow.addTarget(self, action: #selector(SecondaryControllerContainer.next), forControlEvents: .TouchUpInside)
     blurView.contentView.addSubview(rightArrow)
     blurView.contentView.constrain(rightArrow--|𝗩, rightArrow--|𝗛)
     self.rightArrow = rightArrow
@@ -136,11 +139,11 @@ class SecondaryControllerContainerViewController: UIViewController {
   /** previous */
   @objc private func previous() { previousAction?() }
 
-  var anyAction: (() -> Void)?      { return secondaryController?.actions.anyAction      }
-  var cancelAction: (() -> Void)?   { return secondaryController?.actions.cancelAction   }
-  var confirmAction: (() -> Void)?  { return secondaryController?.actions.confirmAction  }
-  var nextAction: (() -> Void)?     { return secondaryController?.actions.nextAction     }
-  var previousAction: (() -> Void)? { return secondaryController?.actions.previousAction }
+  var anyAction: (() -> Void)?      { return secondaryController?.anyAction      }
+  var cancelAction: (() -> Void)?   { return secondaryController?.cancelAction   }
+  var confirmAction: (() -> Void)?  { return secondaryController?.confirmAction  }
+  var nextAction: (() -> Void)?     { return secondaryController?.nextAction     }
+  var previousAction: (() -> Void)? { return secondaryController?.previousAction }
 
   /** refreshNavigationArrows */
   func refreshNavigationArrows() {
@@ -152,10 +155,10 @@ class SecondaryControllerContainerViewController: UIViewController {
   /**
    presentSecondaryController:completion:
 
-   - parameter controller: SecondaryContentViewController
+   - parameter controller: SecondaryContent
    - parameter completion: ((Bool) -> Void
   */
-  func presentSecondaryController(controller: SecondaryContentViewController,
+  func presentSecondaryController(controller: SecondaryContent,
                        completion: ((Bool) -> Void)? = nil)
   {
     guard secondaryController == nil else { return }
@@ -223,21 +226,13 @@ class SecondaryControllerContainerViewController: UIViewController {
 
 }
 
-extension SecondaryControllerContainerViewController {
-  struct SecondaryContentActions {
-    var anyAction: (() -> Void)?
-    var cancelAction: (() -> Void)?
-    var confirmAction: (() -> Void)?
-    var nextAction: (() -> Void)?
-    var previousAction: (() -> Void)?
-  }
-}
-
-extension SecondaryControllerContainerViewController {
-  struct NavigationArrows: OptionSetType {
+extension SecondaryControllerContainer {
+  struct SupportedActions: OptionSetType {
     let rawValue: Int
-    static let None     = NavigationArrows(rawValue: 0b00)
-    static let Previous = NavigationArrows(rawValue: 0b01)
-    static let Next     = NavigationArrows(rawValue: 0b10)
+    static let None     = SupportedActions(rawValue: 0b0000)
+    static let Cancel   = SupportedActions(rawValue: 0b0001)
+    static let Confirm  = SupportedActions(rawValue: 0b0010)
+    static let Previous = SupportedActions(rawValue: 0b0100)
+    static let Next     = SupportedActions(rawValue: 0b1000)
   }
 }

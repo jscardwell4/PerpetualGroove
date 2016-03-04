@@ -24,8 +24,8 @@ final class MIDINode: SKSpriteNode {
   private var client = MIDIClientRef()
   private(set) var endPoint = MIDIEndpointRef()
 
-  let initTime: BarBeatTime
-  let initialTrajectory: Trajectory
+  var initTime: BarBeatTime
+  var initialTrajectory: Trajectory
 
   private(set) var pendingPosition: CGPoint?
 
@@ -66,7 +66,7 @@ final class MIDINode: SKSpriteNode {
   /** updatePosition */
   func updatePosition() {
     guard let position = pendingPosition else { return }
-    logDebug("position: \(position)")
+//    logDebug("position: \(position)")
     self.position = position
     pendingPosition = nil
   }
@@ -160,11 +160,13 @@ final class MIDINode: SKSpriteNode {
 
     logDebug("time: \(time)")
 
-    if time < initTime { fadeOutAndRemoveAction.run() }
-    else { pendingPosition = path.locationForTime(time) }
-//    else if let location = path.locationForTime(jogTime) {
-//      runAction(SKAction.moveTo(location, duration: 0.01))
-//    }
+    if time < initTime && state ∌ .PendingRemoval {
+      state ∪= .PendingRemoval
+      hidden = true
+    } else if time >= initTime {
+      if  state ∋ .PendingRemoval { state.remove(.PendingRemoval); hidden = false }
+      pendingPosition = path.locationForTime(time)
+    }
   }
 
   /**
@@ -177,6 +179,7 @@ final class MIDINode: SKSpriteNode {
       logError("internal inconsistency, should have `Jogging` flag set"); return
     }
     state ⊻= .Jogging
+    guard state ∌ .PendingRemoval else { removeFromParent(); return }
     guard state ∌ .Paused else { return }
     currentSegment = path.segmentForTime(Sequencer.time.barBeatTime) ?? path.initialSegment
     moveAction.run()
@@ -323,16 +326,18 @@ final class MIDINode: SKSpriteNode {
 extension MIDINode {
   struct State: OptionSetType, CustomStringConvertible {
     let rawValue: Int
-    static let Playing = State(rawValue: 0b001)
-    static let Jogging = State(rawValue: 0b010)
-    static let Paused  = State(rawValue: 0b100)
+    static let Playing        = State(rawValue: 0b0001)
+    static let Jogging        = State(rawValue: 0b0010)
+    static let Paused         = State(rawValue: 0b0100)
+    static let PendingRemoval = State(rawValue: 0b1000)
 
     var description: String {
       var result = "["
       var flagStrings: [String] = []
-      if self ∋ .Playing { flagStrings.append("Playing") }
-      if self ∋ .Jogging { flagStrings.append("Jogging") }
-      if self ∋ .Paused  { flagStrings.append("Paused")  }
+      if self ∋ .Playing         { flagStrings.append("Playing")         }
+      if self ∋ .Jogging         { flagStrings.append("Jogging")         }
+      if self ∋ .Paused          { flagStrings.append("Paused")          }
+      if self ∋ .PendingRemoval  { flagStrings.append("PendingRemoval")  }
       result += ", ".join(flagStrings)
       result += "]"
       return result

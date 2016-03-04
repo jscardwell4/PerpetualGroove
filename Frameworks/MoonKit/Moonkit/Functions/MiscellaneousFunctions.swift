@@ -8,6 +8,12 @@
 
 import Foundation
 
+public func branch(tuples: (() -> Bool, () -> Void)...) {
+  for (predicate, action) in tuples {
+    guard !predicate() else { action(); return }
+  }
+}
+
 /**
 nonce
 

@@ -10,9 +10,9 @@ import Foundation
 import UIKit
 import MoonKit
 
-final class MIDIPlayerContainerViewController: SecondaryControllerContainerViewController {
+final class MIDIPlayerContainerViewController: SecondaryControllerContainer {
 
-  private weak var controllerTool: ConfigurableToolType?
+  private weak var controllerTool: ToolType?
 
   private(set) weak var playerViewController: MIDIPlayerViewController! {
     didSet { MIDIPlayer.playerContainer = self }
@@ -32,16 +32,16 @@ final class MIDIPlayerContainerViewController: SecondaryControllerContainerViewC
   }
 
   /**
-   presentControllerForTool:
+   presentContentForTool:
 
    - parameter tool: ConfigurableToolType
    */
-  func presentControllerForTool(tool: ConfigurableToolType) {
-    let controller = tool.viewController
+  func presentContentForTool(tool: ToolType) {
+    guard let controller = tool.secondaryContent else { return }
     presentSecondaryController(controller) {
       [unowned self] in
         guard $0 else { return }
-        tool.didShowViewController(controller)
+        tool.didShowContent?(controller)
         self.controllerTool = tool
     }
   }
@@ -50,8 +50,8 @@ final class MIDIPlayerContainerViewController: SecondaryControllerContainerViewC
       let action = super.anyAction
     return {
       [unowned self] in
-      guard let tool = self.controllerTool where tool.isShowingViewController else { action?(); return }
-      tool.didHideViewController(tool.viewController)
+      guard let tool = self.controllerTool where tool.isShowingContent == true else { action?(); return }
+      tool.didHideContent?()
       self.controllerTool = nil
       action?()
     }

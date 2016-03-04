@@ -19,7 +19,7 @@ class Track: CustomStringConvertible, Named, MIDIEventDispatch {
   var events = MIDIEventContainer()
 
   var endOfTrack: BarBeatTime {
-    return events.maxTime
+    return events.maxTime ?? Sequencer.time.barBeatTime
   }
 
   private var trackNameEvent: MIDIEvent = .Meta(MetaEvent(.SequenceTrackName(name: "")))

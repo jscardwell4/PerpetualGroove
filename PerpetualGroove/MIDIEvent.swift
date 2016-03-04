@@ -38,9 +38,10 @@ protocol MIDIEventDispatch: class, Loggable {
   func dispatchEvent(event: MIDIEvent)
   func registrationTimesForAddedEvents<S:SequenceType where S.Generator.Element == MIDIEvent>(events: S) -> [BarBeatTime]
   var events: MIDIEventContainer { get set }
-  var metaEvents: [MetaEvent] { get }
-  var channelEvents: [ChannelEvent] { get }
-  var nodeEvents: [MIDINodeEvent] { get }
+  var metaEvents: LazyMapCollection<LazyFilterCollection<MIDIEventContainer>, MetaEvent> { get }
+  var channelEvents: LazyMapCollection<LazyFilterCollection<MIDIEventContainer>, ChannelEvent> { get }
+  var nodeEvents: LazyMapCollection<LazyFilterCollection<MIDIEventContainer>, MIDINodeEvent> { get }
+  var timeEvents: LazyMapCollection<LazyFilterCollection<MIDIEventContainer>, MetaEvent> { get }
   var eventQueue: dispatch_queue_t { get }
 }
 
@@ -52,12 +53,13 @@ extension MIDIEventDispatch {
       forTimes: registrationTimesForAddedEvents(events),
       forObject: self)
   }
-  func eventsForTime(time: BarBeatTime) -> OrderedSet<MIDIEvent>? { return events.eventsForTime(time) }
+  func eventsForTime(time: BarBeatTime) -> OrderedSet<MIDIEvent>? { return events[time] }
   func filterEvents(includeElement: (MIDIEvent) -> Bool) -> [MIDIEvent] { return events.filter(includeElement) }
   func dispatchEventsForTime(time: BarBeatTime) { eventsForTime(time)?.forEach(dispatchEvent) }
-  var metaEvents: [MetaEvent] { return events.metaEvents }
-  var channelEvents: [ChannelEvent] { return events.channelEvents }
-  var nodeEvents: [MIDINodeEvent] { return events.nodeEvents }
+  var metaEvents: LazyMapCollection<LazyFilterCollection<MIDIEventContainer>, MetaEvent> { return events.metaEvents }
+  var channelEvents: LazyMapCollection<LazyFilterCollection<MIDIEventContainer>, ChannelEvent> { return events.channelEvents }
+  var nodeEvents: LazyMapCollection<LazyFilterCollection<MIDIEventContainer>, MIDINodeEvent> { return events.nodeEvents }
+  var timeEvents: LazyMapCollection<LazyFilterCollection<MIDIEventContainer>, MetaEvent> { return events.timeEvents }
 }
 
 enum MIDIEvent: MIDIEventType, Hashable {

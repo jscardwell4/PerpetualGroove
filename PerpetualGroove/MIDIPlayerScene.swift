@@ -41,6 +41,6 @@ final class MIDIPlayerScene: SKScene {
    - parameter currentTime: NSTimeInterval
   */
   override func update(currentTime: NSTimeInterval) {
-    player.midiNodes.generate().forEach({$0.updatePosition()})
+    player.midiNodes.generate().forEach({$0?.updatePosition()})
   }
 }
