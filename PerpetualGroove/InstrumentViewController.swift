@@ -9,7 +9,7 @@
 import UIKit
 import MoonKit
 
-final class InstrumentViewController: SecondaryContent {
+final class InstrumentViewController: UIViewController, SecondaryControllerContent {
 
   @IBOutlet weak var soundSetPicker: InlinePickerView!
   @IBOutlet weak var programPicker:  InlinePickerView!
@@ -24,10 +24,10 @@ final class InstrumentViewController: SecondaryContent {
   /** awakeFromNib */
   override func awakeFromNib() {
     super.awakeFromNib()
-    receptionist.observe(Sequencer.Notification.SoundSetSelectionTargetDidChange, from: Sequencer.self) {
+    receptionist.observe(.SoundSetSelectionTargetDidChange, from: Sequencer.self) {
       [weak self] in self?.instrument = $0.newSoundSetSelectionTarget
     }
-    receptionist.observe(Sequencer.Notification.DidUpdateAvailableSoundSets,
+    receptionist.observe(.DidUpdateAvailableSoundSets,
                     from: Sequencer.self,
                 callback: weakMethod(self, InstrumentViewController.updateSoundSets))
   }
@@ -74,12 +74,25 @@ final class InstrumentViewController: SecondaryContent {
   /** didChangeChannel */
   @IBAction func didChangeChannel() { instrument?.channel = UInt8(channelStepper.value) }
 
+
+  func rollBackInstrument() {
+    guard let instrument = instrument, initialSoundSet = initialSoundSet, initialPreset = initialPreset else {
+      return
+    }
+    do { try instrument.loadSoundSet(initialSoundSet, preset: initialPreset) } catch { logError(error) }
+  }
+
+  private(set) var initialSoundSet: SoundSetType?
+  private(set) var initialPreset: Instrument.Preset?
+
   private weak var instrument: Instrument? {
     didSet {
       guard let instrument = instrument,
              soundSetIndex = instrument.soundSet.index,
                presetIndex = instrument.soundSet.presets.indexOf(instrument.preset) where isViewLoaded()
       else { return }
+      initialSoundSet = instrument.soundSet
+      initialPreset = instrument.preset
       soundSetPicker.selectItem(soundSetIndex, animated: true)
       programPicker.labels = instrument.soundSet.presets.map({$0.name})
       programPicker.selectItem(presetIndex, animated: true)

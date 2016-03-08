@@ -317,7 +317,7 @@ final class MIDIDocumentManager {
 
         case .iCloud:
           guard let baseURL = NSFileManager().URLForUbiquityContainerIdentifier(nil) else {
-            fatalError("createNewDocument() requires that the iCloud drive is available when the iCloud storage flag is set")
+            fatalError("\(#function) requires that the iCloud drive is available to use iCloud storage")
           }
           url = baseURL + "Documents"
 
@@ -408,9 +408,9 @@ final class MIDIDocumentManager {
     }
     if Sequencer.soundSets.count > 0 { queue.async(openBlock) }
     else {
-      receptionist.observe(Sequencer.Notification.DidUpdateAvailableSoundSets, from: Sequencer.self, queue: operationQueue) {
+      receptionist.observe(.DidUpdateAvailableSoundSets, from: Sequencer.self, queue: operationQueue) {
         _ in
-        receptionist.stopObserving(Sequencer.Notification.DidUpdateAvailableSoundSets, from: Sequencer.self)
+        receptionist.stopObserving(.DidUpdateAvailableSoundSets, from: Sequencer.self)
         openBlock()
       }
     }
@@ -429,7 +429,10 @@ final class MIDIDocumentManager {
   - parameter data: NSData?
   */
   static private func openBookmarkedDocument(data: NSData) throws {
-    let url = try NSURL(byResolvingBookmarkData: data, options: .WithoutUI, relativeToURL: nil, bookmarkDataIsStale: nil)
+    let url = try NSURL(byResolvingBookmarkData: data,
+                        options: .WithoutUI,
+                        relativeToURL: nil,
+                        bookmarkDataIsStale: nil)
     logDebug("opening bookmarked file at path '\(url.path!)'")
     openURL(url)
 
@@ -455,7 +458,8 @@ final class MIDIDocumentManager {
       if currentDocument?.fileURL == item.URL { currentDocument = nil }
 
       logDebug("removing item '\(item.URL.path!)'")
-      NSFileCoordinator(filePresenter: nil).coordinateWritingItemAtURL(item.URL, options: .ForDeleting, error: nil) {
+      let coordinator = NSFileCoordinator(filePresenter: nil)
+      coordinator.coordinateWritingItemAtURL(item.URL, options: .ForDeleting, error: nil) {
         do { try NSFileManager().removeItemAtURL($0) }
         catch { logError(error) }
       }

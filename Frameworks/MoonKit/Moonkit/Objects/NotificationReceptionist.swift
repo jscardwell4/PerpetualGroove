@@ -104,6 +104,18 @@ public final class NotificationReceptionist: NSObject, Loggable {
    callback: callback)
   }
 
+    public func observe<N:NotificationDispatchType
+                      where N:AnyObject>(notification: N.Notification,
+                                    from object: N.Type?,
+                                   queue: NSOperationQueue? = nil,
+                                callback: (NSNotification) -> Void)
+  {
+    observe(notification.name.notificationName,
+       from: object,
+      queue: queue ?? callbackQueue,
+   callback: callback)
+  }
+
   /**
   observe:from:queue:callback:
 
@@ -202,6 +214,18 @@ public final class NotificationReceptionist: NSObject, Loggable {
   - parameter object: AnyObject? = nil
   */
   public func stopObserving<N:NotificationType>(notification: N, from object: AnyObject? = nil) {
+    stopObserving(notification._name, from: object)
+  }
+
+  /**
+   stopObserving:from:
+
+   - parameter notification: N.Notification
+   - parameter object: N.Type? = nil
+  */
+  public func stopObserving<N:NotificationDispatchType
+    where N:AnyObject>(notification: N.Notification, from object: N.Type? = nil)
+  {
     stopObserving(notification._name, from: object)
   }
 

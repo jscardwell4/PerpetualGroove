@@ -88,9 +88,7 @@ struct Trajectory {
 
    - parameter angle: CGFloat
   */
-  mutating func rotateToInPlace(angle: CGFloat) {
-    (dx, dy) = *v.rotateTo(angle)
-  }
+  mutating func rotateToInPlace(angle: CGFloat) { self.angle = angle }
 
   /// The horizontal velocity in units along the lines of those used by `SpriteKit`.
   var dx: CGFloat
@@ -103,6 +101,11 @@ struct Trajectory {
 
   /// The initial position along the y axis
   var y: CGFloat
+
+  var angle: CGFloat {
+    get { return v.angle }
+    set { (dx, dy) = *v.rotateTo(newValue) }
+  }
 
   /**
    Default initializer

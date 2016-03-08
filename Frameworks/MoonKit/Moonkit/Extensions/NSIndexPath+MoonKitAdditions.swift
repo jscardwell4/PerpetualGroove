@@ -16,7 +16,7 @@ extension NSIndexPath {
 }
 
 extension NSIndexPath {
-  override public var description: String { return "NSIndexPath {item: \(item); section: \(section)}" }
+  override public var description: String { return "{\(section), \(item)}" }
 }
 
 extension NSIndexPath: Comparable {}

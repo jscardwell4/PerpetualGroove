@@ -9,32 +9,33 @@
 import Foundation
 import MoonKit
 
-final class RotateTool: NodeAdjustmentTool {//, ConfigurableToolType {
+final class RotateTool: NodeAdjustmentTool, SecondaryControllerContentDelegate {//, ConfigurableToolType {
 
-  private weak var _viewController: RotateViewController?
-
-  var secondaryContent: SecondaryContent {
-    guard _viewController == nil else { return _viewController! }
+  var secondaryContent: SecondaryControllerContent {
+    guard _secondaryContent == nil else { return _secondaryContent! }
     let storyboard = UIStoryboard(name: "Rotate", bundle: nil)
     let viewController = storyboard.instantiateInitialViewController() as! RotateViewController
     viewController.node = node
+    viewController.didRotate = weakMethod(self, RotateTool.didRotate)
     return viewController
   }
 
-  var isShowingContent: Bool { return _viewController != nil }
-
-  func didShowContent(content: SecondaryContent) {
-    _viewController = content as? RotateViewController
-  }
-
-  func didHideContent(viewController: SecondaryContent) {
-
+  private func didRotate(rotation: CGFloat) {
+    guard let node = node where node.initialTrajectory.angle != rotation else { return }
+    let oldTrajectory = node.initialTrajectory
+    let newTrajectory = node.initialTrajectory.rotateTo(rotation)
+    MIDIPlayer.undoManager.registerUndoWithTarget(node) {
+      node in
+      node.initialTrajectory = oldTrajectory
+      MIDIPlayer.undoManager.registerUndoWithTarget(node) { $0.initialTrajectory = newTrajectory }
+    }
+    adjustNode{ node.initialTrajectory.rotateToInPlace(rotation) }
   }
 
   /** didSelectNode */
   override func didSelectNode() {
     guard active else { return }
-    MIDIPlayer.playerContainer?.presentContentForTool(self)
+    MIDIPlayer.playerContainer?.presentContentForDelegate(self)
   }
 
 }
@@ -42,8 +43,6 @@ final class RotateTool: NodeAdjustmentTool {//, ConfigurableToolType {
 final class RotateViewController: SecondaryContent {
 
   weak var node: MIDINode?
-
-  private weak var tool: RotateTool?
 
   override func viewWillAppear(animated: Bool) {
     super.viewWillAppear(animated)
@@ -59,6 +58,8 @@ final class RotateViewController: SecondaryContent {
   @IBOutlet private weak var arrow: TemplateImageView!
   @IBOutlet private weak var rotationGesture: UIRotationGestureRecognizer!
 
+  var didRotate: ((CGFloat) -> Void)?
+
   /**
    handleRotation:
 
@@ -71,7 +72,7 @@ final class RotateViewController: SecondaryContent {
         arrow.transform.rotation = sender.rotation
       case .Changed:
         arrow.transform.rotation = sender.rotation
-        tool?.adjustNode{ node?.initialTrajectory.rotateToInPlace(sender.rotation) }
+        didRotate?(sender.rotation)
 
       case .Cancelled, .Failed: break
       case .Possible: break

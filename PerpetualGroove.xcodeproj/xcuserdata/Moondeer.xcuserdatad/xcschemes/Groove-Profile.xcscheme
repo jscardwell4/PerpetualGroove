@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0720"
+   LastUpgradeVersion = "0730"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "NO"
@@ -156,6 +156,16 @@
                BlueprintIdentifier = "C28831911C78E8AC00F6865D"
                BuildableName = "MIDIEventContainerTests.xctest"
                BlueprintName = "MIDIEventContainerTests"
+               ReferencedContainer = "container:PerpetualGroove.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "C25BF5B11C8CA74700F6BF5D"
+               BuildableName = "MIDIPlayerUndoTests.xctest"
+               BlueprintName = "MIDIPlayerUndoTests"
                ReferencedContainer = "container:PerpetualGroove.xcodeproj">
             </BuildableReference>
          </TestableReference>

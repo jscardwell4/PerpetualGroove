@@ -22,13 +22,12 @@ final class MixerContainerViewController: SecondaryControllerContainer {
     }
   }
 
-  override var anyAction: (() -> Void)? {
-    let action = super.anyAction
+  override func completionForDismissalAction(dismissalAction: DismissalAction) -> (Bool) -> Void {
+    let completion = super.completionForDismissalAction(dismissalAction)
     return {
-      [mixer = mixerViewController] in
+      [weak mixer = mixerViewController] completed in
       mixer?.soundSetSelectionTargetCell = nil
-      action?()
+      completion(completed)
     }
   }
-
 }

@@ -263,22 +263,22 @@ final class MIDINode: SKSpriteNode {
     let object = Sequencer.transport
     typealias Notification = Transport.Notification
 
-    receptionist.observe(Notification.DidBeginJogging,
+    receptionist.observe(.DidBeginJogging,
                     from: object,
                 callback: weakMethod(self, MIDINode.didBeginJogging))
-    receptionist.observe(Notification.DidJog,
+    receptionist.observe(.DidJog,
                     from: object,
                 callback: weakMethod(self, MIDINode.didJog))
-    receptionist.observe(Notification.DidEndJogging,
+    receptionist.observe(.DidEndJogging,
                     from: object,
                 callback: weakMethod(self, MIDINode.didEndJogging))
-    receptionist.observe(Notification.DidStart,
+    receptionist.observe(.DidStart,
                     from: object,
                 callback: weakMethod(self, MIDINode.didStart))
-    receptionist.observe(Notification.DidPause,
+    receptionist.observe(.DidPause,
                     from: object,
                 callback: weakMethod(self, MIDINode.didPause))
-    receptionist.observe(Notification.DidReset,
+    receptionist.observe(.DidReset,
                     from: object,
                 callback: weakMethod(self, MIDINode.didReset))
 

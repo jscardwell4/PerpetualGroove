@@ -13,25 +13,31 @@ import MoonKit
 
 final class MIDIPlayer {
 
+  static let undoManager: NSUndoManager = {
+    let undoManager = NSUndoManager()
+    undoManager.groupsByEvent = false
+    return undoManager
+  }()
+
   private static let receptionist: NotificationReceptionist = {
     let receptionist = NotificationReceptionist()
     receptionist.logContext = LogManager.SceneContext
-    receptionist.observe(Sequencer.Notification.DidChangeSequence,
+    receptionist.observe(.DidChangeSequence,
                     from: Sequencer.self,
                 callback: MIDIPlayer.didChangeSequence)
-      receptionist.observe(Sequencer.Notification.DidEnterLoopMode,
+      receptionist.observe(.DidEnterLoopMode,
                       from: Sequencer.self,
                      queue: NSOperationQueue.mainQueue(),
                   callback: MIDIPlayer.didEnterLoopMode)
-      receptionist.observe(Sequencer.Notification.DidExitLoopMode,
+      receptionist.observe(.DidExitLoopMode,
                       from: Sequencer.self,
                      queue: NSOperationQueue.mainQueue(),
                   callback: MIDIPlayer.didExitLoopMode)
-      receptionist.observe(Sequencer.Notification.WillEnterLoopMode,
+      receptionist.observe(.WillEnterLoopMode,
                       from: Sequencer.self,
                      queue: NSOperationQueue.mainQueue(),
                   callback: MIDIPlayer.willEnterLoopMode)
-      receptionist.observe(Sequencer.Notification.WillExitLoopMode,
+      receptionist.observe(.WillExitLoopMode,
                       from: Sequencer.self,
                      queue: NSOperationQueue.mainQueue(),
                   callback: MIDIPlayer.willExitLoopMode)
@@ -119,7 +125,10 @@ final class MIDIPlayer {
 
    - parameter notification: NSNotification
    */
-  static private func didEnterLoopMode(notification: NSNotification) { loops.removeAll(); updateCurrentDispatch() }
+  static private func didEnterLoopMode(notification: NSNotification) {
+    loops.removeAll()
+    updateCurrentDispatch()
+  }
 
   /**
    willExitLoopMode:
@@ -187,16 +196,19 @@ final class MIDIPlayer {
 
   static var currentTool: Tool = .None {
     willSet {
-    logDebug("willSet: \(currentTool) ➞ \(newValue)")
-      guard currentTool != newValue
-        && currentTool.toolType?.isShowingContent == true else { return }
+      logDebug("willSet: \(currentTool) ➞ \(newValue)")
+      guard currentTool != newValue else { return }
+      if undoManager.groupingLevel > 0 { undoManager.endUndoGrouping() }
+      guard currentTool.toolType?.isShowingContent == true else { return }
       playerContainer?.dismissSecondaryController()
     }
     didSet {
       logDebug("didSet: \(oldValue) ➞ \(currentTool)")
       guard currentTool != oldValue else { return }
+      if currentTool != .None { undoManager.beginUndoGrouping() }
       oldValue.toolType?.active = false
       currentTool.toolType?.active = true
+      playerNode?.touchReceiver = currentTool.toolType
       Notification.DidSelectTool.post(userInfo: [.SelectedTool: currentTool.rawValue])
     }
   }
@@ -219,25 +231,25 @@ final class MIDIPlayer {
             identifier: MIDINode.Identifier = UUID())
   {
     dispatchToMain {
-      guard let node = playerNode else {
+      guard let playerNode = playerNode else {
         logWarning("cannot place a node without a player node")
         return
       }
 
       do {
         let name = "<\(Sequencer.mode.rawValue)> \(target.nextNodeName)"
-        let midiNode = try MIDINode(trajectory: trajectory,
+        let node = try MIDINode(trajectory: trajectory,
                                     name: name,
                                     dispatch: target,
                                     generator: generator,
                                     identifier: identifier)
-        node.addChild(midiNode)
+        playerNode.addChild(node)
 
-        try target.nodeManager.addNode(midiNode)
+        try target.nodeManager.addNode(node)
 
 
         if !Sequencer.playing { Sequencer.play() }
-        Notification.DidAddNode.post(userInfo: [.AddedNode: midiNode, .AddedNodeTrack: target])
+        Notification.DidAddNode.post(userInfo: [.AddedNode: node, .AddedNodeTrack: target])
         logDebug("added node \(name)")
 
       } catch {
@@ -259,50 +271,10 @@ final class MIDIPlayer {
     }
   }
 
-  /**
-   touchesBegan:withEvent:
-
-   - parameter touches: Set<UITouch>
-   - parameter event: UIEvent?
-   */
-  static func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-    currentTool.toolType?.touchesBegan(touches, withEvent: event)
-  }
-
-  /**
-   touchesCancelled:withEvent:
-
-   - parameter touches: Set<UITouch>?
-   - parameter event: UIEvent?
-   */
-  static func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) {
-    currentTool.toolType?.touchesCancelled(touches, withEvent: event)
-  }
-
-  /**
-   touchesEnded:withEvent:
-
-   - parameter touches: Set<UITouch>
-   - parameter event: UIEvent?
-   */
-  static func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-    currentTool.toolType?.touchesEnded(touches, withEvent: event)
-  }
-
-  /**
-   touchesMoved:withEvent:
-
-   - parameter touches: Set<UITouch>
-   - parameter event: UIEvent?
-   */
-  static func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
-    currentTool.toolType?.touchesMoved(touches, withEvent: event)
-  }
-
 }
 
 // MARK: - Notification
-extension MIDIPlayer {
+extension MIDIPlayer: NotificationDispatchType {
 
   /** An enumeration to wrap up notifications */
   enum Notification: String, NotificationType, NotificationNameType {

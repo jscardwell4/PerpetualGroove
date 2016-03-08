@@ -12,25 +12,14 @@ import MoonKit
 
 // TODO: Nudge, Throttle, Rotate tools
 
-@objc protocol ToolType: class {
+@objc protocol ToolType: TouchReceiver {
   var active: Bool { get set }
-  func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?)
-  func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?)
-  func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?)
-  func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?)
 
   optional func didShowContent(content: SecondaryContent)
-  optional func didHideContent()
+  optional func didHideContent(dismissalAction: SecondaryControllerContainer.DismissalAction)
   optional var secondaryContent: SecondaryContent { get }
   optional var isShowingContent: Bool { get }
 }
-
-//protocol ConfigurableToolType: ToolType {
-//  func didShowContent(viewController: SecondaryContent)
-//  func didHideContent(viewController: SecondaryContent)
-//  var secondaryContent: SecondaryContent { get }
-//  var isShowingContent: Bool { get }
-//}
 
 enum Tool: Int {
   case None = -1

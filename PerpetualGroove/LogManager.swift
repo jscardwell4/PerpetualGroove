@@ -140,14 +140,14 @@ final class LogManager: MoonKit.LogManager {
 
     MIDIPlayerViewController.defaultLogContext     = UIContext//  ∪ .Console
     PurgatoryViewController.defaultLogContext      = UIContext//  ∪ .Console
-    DocumentsViewController.defaultLogContext      = UIContext//  ∪ .Console
+    DocumentsViewController.defaultLogContext      = UIContext  ∪ .Console
     InstrumentViewController.defaultLogContext     = UIContext//  ∪ .Console
     GeneratorViewController.defaultLogContext      = UIContext//  ∪ .Console
     DocumentsViewLayout.defaultLogContext          = UIContext//  ∪ .Console
     MixerLayout.defaultLogContext                  = UIContext//  ∪ .Console
     BarBeatTimeLabel.defaultLogContext             = UIContext//  ∪ .Console
-    DocumentCell.defaultLogContext                 = UIContext//  ∪ .Console
-    DocumentItem.defaultLogContext                 = UIContext//  ∪ .Console
+    DocumentCell.defaultLogContext                 = UIContext  ∪ .Console
+    DocumentItem.defaultLogContext                 = UIContext  ∪ .Console
     MixerCell.defaultLogContext                    = UIContext//  ∪ .Console
     MixerViewController.defaultLogContext          = UIContext//  ∪ .Console
     RootViewController.defaultLogContext           = UIContext//  ∪ .Console

@@ -14,6 +14,21 @@ class NodeSelectionTool: ToolType {
 
   unowned let player: MIDIPlayerNode
 
+  private(set) weak var _secondaryContent: SecondaryContent?
+
+  @objc var isShowingContent: Bool { return _secondaryContent != nil }
+
+  @objc func didShowContent(content: SecondaryContent) { _secondaryContent = content }
+
+  @objc func didHideContent(dismissalAction: SecondaryControllerContainer.DismissalAction) {
+    assert(active && _secondaryContent != nil, "expected active and valid _secondaryContent")
+    if dismissalAction == .Cancel && MIDIPlayer.undoManager.canUndo {
+      if MIDIPlayer.undoManager.groupingLevel > 0 { MIDIPlayer.undoManager.endUndoGrouping() }
+      MIDIPlayer.undoManager.undo()
+    }
+    node = nil
+  }
+
   @objc var active = false {
     didSet { guard active != oldValue && active == false else { return }; node = nil }
   }
@@ -21,105 +36,93 @@ class NodeSelectionTool: ToolType {
   weak var node: MIDINode? {
     didSet {
       guard node != oldValue else { return }
-
-      let name = "nodeSelectionToolLighting"
-
-      if let node = node {
-        guard node.childNodeWithName(name) == nil else { fatalError("node already lit") }
-
-        let light = SKLightNode()
-        light.name = name
-        light.categoryBitMask = 1
-        node.addChild(light)
-        node.lightingBitMask = 1
-        node.runAction(SKAction.colorizeWithColor(.whiteColor(), colorBlendFactor: 1, duration: 0.25))
-      }
-
-      if let oldNode = oldValue {
-        oldNode.childNodeWithName(name)?.removeFromParent()
-        oldNode.lightingBitMask = 0
-        if let dispatch = oldNode.dispatch {
-          oldNode.runAction(SKAction.colorizeWithColor(dispatch.color.value,
-                                      colorBlendFactor: 1,
-                                              duration: 0.25))
-        }
-      }
-
+      if let node = node { addLightingToNode(node) }
+      if let oldNode = oldValue { removeLightingFromNode(oldNode) }
     }
   }
 
-  /**
-   initWithPlayerNode:
+  private static let nodeLightingName = "nodeSelectionToolLighting"
 
-   - parameter playerNode: MIDIPlayerNode
-  */
-  init(playerNode: MIDIPlayerNode) {
-    player = playerNode
+  private func addLightingToNode(node: MIDINode) {
+    guard node.childNodeWithName(NodeSelectionTool.nodeLightingName) == nil else { return }
+    let light = SKLightNode()
+    light.name = NodeSelectionTool.nodeLightingName
+    light.categoryBitMask = 1
+    node.addChild(light)
+    node.lightingBitMask = 1
+    node.runAction(SKAction.colorizeWithColor(.whiteColor(), colorBlendFactor: 1, duration: 0.25))
+
   }
 
-  /** didSelectNode */
+  private func removeLightingFromNode(node: MIDINode) {
+    guard let light = node.childNodeWithName(NodeSelectionTool.nodeLightingName) else { return }
+    light.removeFromParent()
+    node.lightingBitMask = 0
+    guard let color = node.dispatch?.color.value else { return }
+    node.runAction(SKAction.colorizeWithColor(color, colorBlendFactor: 1, duration: 0.25))
+  }
+
+  private let receptionist: NotificationReceptionist = {
+    let receptionist = NotificationReceptionist(callbackQueue: NSOperationQueue.mainQueue())
+    receptionist.logContext = LogManager.UIContext
+    return receptionist
+  }()
+
+  init(playerNode: MIDIPlayerNode) {
+    player = playerNode
+    receptionist.observe(.DidAddNode,
+                    from: MIDIPlayer.self,
+                callback: weakMethod(self, NodeSelectionTool.didAddNode))
+    receptionist.observe(.DidRemoveNode,
+                    from: MIDIPlayer.self,
+                callback: weakMethod(self, NodeSelectionTool.didRemoveNode))
+  }
+
   func didSelectNode() {}
 
-  /**
-   grabNodeForTouch:
+  func didAddNode(notification: NSNotification) {
+    guard active && player.midiNodes.count == 2,
+      let secondaryContent = _secondaryContent
+      where secondaryContent.disabledActions ⚭ [.Previous, .Next] else { return }
+    secondaryContent.disabledActions = .None
+  }
 
-   - parameter touch: UITouch?
-  */
+  func didRemoveNode(notification: NSNotification) {
+    guard active && player.midiNodes.count < 2,
+      let secondaryContent = _secondaryContent
+      where secondaryContent.disabledActions !⚭ [.Previous, .Next] else { return }
+    secondaryContent.disabledActions ∪= [.Previous, .Next]
+  }
+
   private func grabNodeForTouch(touch: UITouch?) {
     guard let point = touch?.locationInNode(player) where player.containsPoint(point) else { return }
     node = player.nodesAtPoint(point).flatMap({$0 as? MIDINode}).first
   }
 
-  /**
-   touchesBegan:withEvent:
-
-   - parameter touches: Set<UITouch>
-   - parameter event: UIEvent?
-  */
   @objc func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
     guard active && node == nil else { return }
     grabNodeForTouch(touches.first)
   }
 
-  /**
-   touchesMoved:withEvent:
-
-   - parameter touches: Set<UITouch>
-   - parameter event: UIEvent?
-  */
   @objc func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
     guard active && node == nil else { return }
     grabNodeForTouch(touches.first)
   }
 
-  /**
-   touchesCancelled:withEvent:
-
-   - parameter touches: Set<UITouch>?
-   - parameter event: UIEvent?
-  */
   @objc func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) { node = nil }
 
-  /**
-   touchesEnded:withEvent:
-
-   - parameter touches: Set<UITouch>
-   - parameter event: UIEvent?
-  */
   @objc func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
     guard active && node != nil else { return }
     didSelectNode()
   }
 
-  /** previousNode */
-  private func previousNode() {
+  func previousNode() {
     let nodes = player.midiNodes
     guard let node = node, let idx = nodes.indexOf(node) else { return }
     self.node = idx + 1 < nodes.endIndex ? nodes[idx + 1] : nodes[nodes.startIndex]
   }
 
-  /** nextNode */
-  private func nextNode() {
+  func nextNode() {
     let nodes = player.midiNodes
     guard let node = node, let idx = nodes.indexOf(node) else { return }
     self.node = idx - 1 >= nodes.startIndex ? nodes[idx - 1] : nodes[nodes.endIndex - 1]

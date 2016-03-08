@@ -119,20 +119,28 @@ public class LogManager {
       var objectName: String?
       var contextName: String?
       var queueName: String?
+      var address: String?
 
       /**
-      initWithObject:objectName:className:contextName:
+       initWithObjectName:className:contextName:queueName:address:
 
-      - parameter object: Any? = nil
-      - parameter objectName: String? = nil
-      - parameter className: String? = nil
-      - parameter contextName: String? = nil
+       - parameter objectName: String? = nil
+       - parameter className: String? = nil
+       - parameter contextName: String? = nil
+       - parameter queueName: String? = nil
+       - parameter address: String? = nil
       */
-      init(objectName: String? = nil, className: String? = nil, contextName: String? = nil, queueName: String? = nil) {
+      init(objectName: String? = nil,
+           className: String? = nil,
+           contextName: String? = nil,
+           queueName: String? = nil,
+           address: String? = nil)
+      {
         self.objectName = objectName
         self.className = className
         self.contextName = contextName
         self.queueName = queueName
+        self.address = address
       }
     }
     

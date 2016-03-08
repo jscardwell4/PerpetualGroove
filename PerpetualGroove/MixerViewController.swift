@@ -10,7 +10,7 @@ import UIKit
 import MoonKit
 import typealias AudioUnit.AudioUnitElement
 
-final class MixerViewController: UICollectionViewController {
+final class MixerViewController: UICollectionViewController, SecondaryControllerContentDelegate {
 
   @IBOutlet private var magnifyingGesture: UILongPressGestureRecognizer!
 
@@ -226,18 +226,35 @@ final class MixerViewController: UICollectionViewController {
 
   /** presentInstrumentController */
   private func presentInstrumentController() {
-    let storyboard = UIStoryboard(name: "Instrument", bundle: nil)
-    guard let controller = storyboard.instantiateInitialViewController() as? InstrumentViewController,
-              container = parentViewController as? MixerContainerViewController else { return }
-    container.presentSecondaryController(controller)
+    guard let container = parentViewController as? MixerContainerViewController else { return }
+    container.presentContentForDelegate(self)
   }
 
+  private weak var _secondaryContent: SecondaryControllerContent?
+  var secondaryContent: SecondaryControllerContent {
+    guard _secondaryContent == nil else { return _secondaryContent! }
+    let storyboard = UIStoryboard(name: "Instrument", bundle: nil)
+    return storyboard.instantiateInitialViewController() as! InstrumentViewController
+  }
+
+  func didShowContent(content: SecondaryControllerContent) {
+    _secondaryContent = content
+  }
+
+  func didHideContent(content: SecondaryControllerContent,
+                      dismissalAction: SecondaryControllerContainer.DismissalAction)
+  {
+    guard case .Cancel = dismissalAction,
+      let instrumentController = content as? InstrumentViewController else { return }
+    instrumentController.rollBackInstrument()
+  }
   private var initialized = false
 
   /** viewDidLoad */
   override func viewDidLoad() {
     super.viewDidLoad()
-    let maskView = UIView(frame: CGRect(size: CGSize(width: view.bounds.width, height: MixerLayout.itemSize.height * 1.1)))
+    let maskHeight = MixerLayout.itemSize.height * 1.1
+    let maskView = UIView(frame: CGRect(size: CGSize(width: view.bounds.width, height: maskHeight)))
     maskView.backgroundColor = UIColor.whiteColor()
     view.maskView = maskView
   }
@@ -266,7 +283,9 @@ final class MixerViewController: UICollectionViewController {
   func updateTracks(notification: NSNotification) {
 
     guard collectionView != nil else { return }
-    guard sequence != nil else { fatalError("internal inconsistency…if sequence is nil what sent this notification?") }
+    guard sequence != nil else {
+      fatalError("internal inconsistency…if sequence is nil what sent this notification?")
+    }
 
     logDebug("\n".join(
       "total instrument tracks in sequence: \(sequence!.instrumentTracks.count)",

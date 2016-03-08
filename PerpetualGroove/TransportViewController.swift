@@ -26,7 +26,7 @@ final class TransportViewController: UIViewController {
 
       state = transport.state
 
-      receptionist.observe(Transport.Notification.DidChangeState,
+      receptionist.observe(.DidChangeState,
                       from: transport,
                   callback: weakMethod(self, TransportViewController.didChangeState))
     }

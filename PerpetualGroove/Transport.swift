@@ -220,7 +220,7 @@ extension Transport {
   }
 }
 
-extension Transport {
+extension Transport: NotificationDispatchType {
   // MARK: - Notifications
   enum Notification: String, NotificationType, NotificationNameType {
     case DidStart, DidPause, DidStop, DidReset

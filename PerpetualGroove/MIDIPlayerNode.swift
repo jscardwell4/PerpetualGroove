@@ -11,6 +11,13 @@ import SpriteKit
 import MoonKit
 import typealias AudioToolbox.MusicDeviceGroupID
 
+@objc protocol TouchReceiver {
+  func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?)
+  func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?)
+  func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?)
+  func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?)
+}
+
 final class MIDIPlayerNode: SKShapeNode {
 
   // MARK: - Initialization
@@ -56,6 +63,8 @@ final class MIDIPlayerNode: SKShapeNode {
 
   var loopNodes: [MIDINode] { return midiNodesForMode(.Loop) }
 
+  weak var touchReceiver: TouchReceiver?
+
   let size: CGSize
 
   /**
@@ -76,7 +85,7 @@ final class MIDIPlayerNode: SKShapeNode {
    - parameter event: UIEvent?
    */
   override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-    MIDIPlayer.touchesBegan(touches, withEvent: event)
+    touchReceiver?.touchesBegan(touches, withEvent: event)
   }
 
   /**
@@ -86,7 +95,7 @@ final class MIDIPlayerNode: SKShapeNode {
    - parameter event: UIEvent?
    */
   override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) {
-    MIDIPlayer.touchesCancelled(touches, withEvent: event)
+    touchReceiver?.touchesCancelled(touches, withEvent: event)
   }
 
   /**
@@ -96,7 +105,7 @@ final class MIDIPlayerNode: SKShapeNode {
    - parameter event: UIEvent?
    */
   override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-    MIDIPlayer.touchesEnded(touches, withEvent: event)
+    touchReceiver?.touchesEnded(touches, withEvent: event)
   }
 
   /**
@@ -106,7 +115,7 @@ final class MIDIPlayerNode: SKShapeNode {
    - parameter event: UIEvent?
    */
   override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
-    MIDIPlayer.touchesMoved(touches, withEvent: event)
+    touchReceiver?.touchesMoved(touches, withEvent: event)
   }
 
 }

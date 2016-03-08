@@ -28,38 +28,45 @@ public protocol Loggable {
 
 public extension Loggable {
 
-  static var defaultLogContext: LogManager.LogContext {
+  public typealias MessageContent = () -> String
+  public typealias LogLevel = LogManager.LogLevel
+  public typealias LogContext = LogManager.LogContext
+  public typealias LogFlag = LogManager.LogFlag
+  public typealias LogTag = LogManager.LogMessage.Tag
+
+  static var defaultLogContext: LogContext {
     get { return LogManager.logContextForType(self.dynamicType.self) }
     set { LogManager.setLogContext(newValue, forType: self.dynamicType.self) }
   }
 
-  static var defaultLogLevel: LogManager.LogLevel {
+  static var defaultLogLevel: LogLevel {
     get { return LogManager.logLevelForType(self) }
     set { LogManager.setLogLevel(newValue, forType: self) }
   }
 
-  var logLevel: LogManager.LogLevel { return self.dynamicType.defaultLogLevel }
+  var logLevel: LogLevel { return self.dynamicType.defaultLogLevel }
 
-  var logContext: LogManager.LogContext { return self.dynamicType.defaultLogContext }
-  var logTag: LogManager.LogMessage.Tag? { return LogManager.LogMessage.Tag(className: "\(self.dynamicType)", queueName: nameForCurrentQueue()) }
+  var logContext: LogContext { return self.dynamicType.defaultLogContext }
+  var logTag: LogTag? { return LogTag(className: "\(self.dynamicType)", queueName: nameForCurrentQueue()) }
 
   /**
   log:asynchronous:flag:function:line:file:tag:
 
   - parameter message: String
   - parameter asynchronous: Bool = true
-  - parameter flag: LogManager.LogFlag
+  - parameter flag: LogFlag
   - parameter function: String = #function
   - parameter line: UInt = #line
   - parameter file: String = #file
   */
   static func log(message: String,
      asynchronous: Bool = true,
-             flag: LogManager.LogFlag,
+             flag: LogFlag,
          function: String = #function,
              line: UInt = #line,
              file: String = #file)
   {
+    let tag = LogTag(objectName: String(self), className: String(self), queueName: nameForCurrentQueue())
     LogManager.logMessage(message,
              asynchronous: asynchronous,
                      flag: flag,
@@ -67,7 +74,7 @@ public extension Loggable {
                      line: line,
                      file: file,
                   context: defaultLogContext,
-                      tag: LogManager.LogMessage.Tag(objectName: "\(self)", className: "\(self)", queueName: nameForCurrentQueue()))
+                      tag: tag)
   }
 
   /**
@@ -79,14 +86,14 @@ public extension Loggable {
   - parameter line: UInt = #line
   - parameter file: String = #file
   */
-  static func logError(@autoclosure message: () -> String,
+  static func logError(@autoclosure message: MessageContent,
           asynchronous: Bool = true,
               function: String = #function,
                   line: UInt = #line,
                   file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
-    guard defaultLogLevel ∋ LogManager.LogFlag.Error else { return }
+    guard defaultLogLevel ∋ .Error else { return }
     log(message(), asynchronous: asynchronous, flag: .Error, function: function, line: line, file: file)
     #endif
   }
@@ -109,7 +116,7 @@ public extension Loggable {
                   file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
-    guard defaultLogLevel ∋ LogManager.LogFlag.Error else { return }
+    guard defaultLogLevel ∋ .Error else { return }
     var errorDescription = "\(error)"
     if let e = error as? WrappedErrorType, u = e.underlyingError {
       errorDescription += "underlying error: \(u)"
@@ -131,7 +138,7 @@ public extension Loggable {
    */
   static func logError(error: ExtendedErrorType, asynchronous: Bool = true) {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
-    guard defaultLogLevel ∋ LogManager.LogFlag.Error else { return }
+    guard defaultLogLevel ∋ .Error else { return }
     logError(error,
      message: error.reason,
 asynchronous: asynchronous,
@@ -151,14 +158,14 @@ asynchronous: asynchronous,
   - parameter line: UInt = #line
   - parameter file: String = #file
   */
-  static func logWarning(@autoclosure message: () -> String,
+  static func logWarning(@autoclosure message: MessageContent,
    asynchronous: Bool = true,
        function: String = #function,
            line: UInt = #line,
            file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning
-    guard defaultLogLevel ∋ LogManager.LogFlag.Warning else { return }
+    guard defaultLogLevel ∋ .Warning else { return }
     log(message(), asynchronous: asynchronous, flag: .Warning, function: function, line: line, file: file)
     #endif
   }
@@ -172,14 +179,14 @@ asynchronous: asynchronous,
   - parameter line: UInt = #line
   - parameter file: String = #file
   */
-  static func logDebug(@autoclosure message: () -> String,
+  static func logDebug(@autoclosure message: MessageContent,
    asynchronous: Bool = true,
        function: String = #function,
            line: UInt = #line,
            file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug
-    guard defaultLogLevel ∋ LogManager.LogFlag.Debug else { return }
+    guard defaultLogLevel ∋ .Debug else { return }
     log(message(), asynchronous: asynchronous, flag: .Debug, function: function, line: line, file: file)
     #endif
   }
@@ -193,14 +200,14 @@ asynchronous: asynchronous,
   - parameter line: UInt = #line
   - parameter file: String = #file
   */
-  static func logInfo(@autoclosure message: () -> String,
+  static func logInfo(@autoclosure message: MessageContent,
   asynchronous: Bool = true,
       function: String = #function,
           line: UInt = #line,
           file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo
-    guard defaultLogLevel ∋ LogManager.LogFlag.Info else { return }
+    guard defaultLogLevel ∋ .Info else { return }
     log(message(), asynchronous: asynchronous, flag: .Info, function: function, line: line, file: file)
     #endif
   }
@@ -214,14 +221,14 @@ asynchronous: asynchronous,
   - parameter line: UInt = #line
   - parameter file: String = #file
   */
-  static func logVerbose(@autoclosure message: () -> String,
+  static func logVerbose(@autoclosure message: MessageContent,
      asynchronous: Bool = true,
          function: String = #function,
              line: UInt = #line,
              file: String = #file)
   {
     #if LogLevelVerbose
-    guard defaultLogLevel ∋ LogManager.LogFlag.Verbose else { return }
+    guard defaultLogLevel ∋ .Verbose else { return }
     log(message(), asynchronous: asynchronous, flag: .Verbose, function: function, line: line, file: file)
     #endif
   }
@@ -232,14 +239,14 @@ asynchronous: asynchronous,
 
   - parameter message: String
   - parameter asynchronous: Bool = true
-  - parameter flag: LogManager.LogFlag
+  - parameter flag: LogFlag
   - parameter function: String = #function
   - parameter line: UInt = #line
   - parameter file: String = #file
   */
   func log(message: String,
            asynchronous: Bool = true,
-           flag: LogManager.LogFlag,
+           flag: LogFlag,
            function: String = #function,
            line: UInt = #line,
            file: String = #file)
@@ -264,14 +271,14 @@ asynchronous: asynchronous,
   - parameter line: UInt = #line
   - parameter file: String = #file
   */
-  func logError(@autoclosure message: () -> String,
+  func logError(@autoclosure message: MessageContent,
    asynchronous: Bool = true,
        function: String = #function,
            line: UInt = #line,
            file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
-    guard logLevel ∋ LogManager.LogFlag.Error else { return }
+    guard logLevel ∋ .Error else { return }
     log(message(), asynchronous: asynchronous, flag: .Error, function: function, line: line, file: file)
     #endif
   }
@@ -294,7 +301,7 @@ asynchronous: asynchronous,
                   file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
-    guard logLevel ∋ LogManager.LogFlag.Error else { return }
+    guard logLevel ∋ .Error else { return }
     var errorDescription = "\(error)"
     if let e = error as? WrappedErrorType, u = e.underlyingError {
       errorDescription += "underlying error: \(u)"
@@ -316,7 +323,7 @@ asynchronous: asynchronous,
    */
   func logError(error: ExtendedErrorType, asynchronous: Bool = true) {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
-    guard logLevel ∋ LogManager.LogFlag.Error else { return }
+    guard logLevel ∋ .Error else { return }
     logError(error,
      message: error.reason,
 asynchronous: asynchronous,
@@ -336,14 +343,14 @@ asynchronous: asynchronous,
   - parameter line: UInt = #line
   - parameter file: String = #file
   */
-  func logWarning(@autoclosure message: () -> String,
+  func logWarning(@autoclosure message: MessageContent,
    asynchronous: Bool = true,
        function: String = #function,
            line: UInt = #line,
            file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning
-    guard logLevel ∋ LogManager.LogFlag.Warning else { return }
+    guard logLevel ∋ .Warning else { return }
     log(message(), asynchronous: asynchronous, flag: .Warning, function: function, line: line, file: file)
     #endif
   }
@@ -357,14 +364,14 @@ asynchronous: asynchronous,
   - parameter line: UInt = #line
   - parameter file: String = #file
   */
-  func logDebug(@autoclosure message: () -> String,
+  func logDebug(@autoclosure message: MessageContent,
    asynchronous: Bool = true,
        function: String = #function,
            line: UInt = #line,
            file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug
-    guard logLevel ∋ LogManager.LogFlag.Debug else { return }
+    guard logLevel ∋ .Debug else { return }
     log(message(), asynchronous: asynchronous, flag: .Debug, function: function, line: line, file: file)
     #endif
   }
@@ -378,14 +385,14 @@ asynchronous: asynchronous,
   - parameter line: UInt = #line
   - parameter file: String = #file
   */
-  func logInfo(@autoclosure message: () -> String,
+  func logInfo(@autoclosure message: MessageContent,
   asynchronous: Bool = true,
       function: String = #function,
           line: UInt = #line,
           file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo
-    guard logLevel ∋ LogManager.LogFlag.Info else { return }
+    guard logLevel ∋ .Info else { return }
     log(message(), asynchronous: asynchronous, flag: .Info, function: function, line: line, file: file)
     #endif
   }
@@ -399,14 +406,14 @@ asynchronous: asynchronous,
   - parameter line: UInt = #line
   - parameter file: String = #file
   */
-  func logVerbose(@autoclosure message: () -> String,
+  func logVerbose(@autoclosure message: MessageContent,
      asynchronous: Bool = true,
          function: String = #function,
              line: UInt = #line,
              file: String = #file)
   {
     #if LogLevelVerbose
-    guard logLevel ∋ LogManager.LogFlag.Verbose else { return }
+    guard logLevel ∋ .Verbose else { return }
     log(message(), asynchronous: asynchronous, flag: .Verbose, function: function, line: line, file: file)
     #endif
   }
@@ -419,13 +426,13 @@ asynchronous: asynchronous,
   - parameter line: UInt = #line
   - parameter file: String = #file
   */
-  static func logSyncError(@autoclosure message: () -> String,
+  static func logSyncError(@autoclosure message: MessageContent,
               function: String = #function,
                   line: UInt = #line,
                   file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
-    guard defaultLogLevel ∋ LogManager.LogFlag.Error else { return }
+    guard defaultLogLevel ∋ .Error else { return }
     log(message(), asynchronous: false, flag: .Error, function: function, line: line, file: file)
     #endif
   }
@@ -446,7 +453,7 @@ asynchronous: asynchronous,
                   file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
-    guard defaultLogLevel ∋ LogManager.LogFlag.Error else { return }
+    guard defaultLogLevel ∋ .Error else { return }
     var errorDescription = "\(error)"
     if let e = error as? WrappedErrorType, u = e.underlyingError {
       errorDescription += "underlying error: \(u)"
@@ -467,7 +474,7 @@ asynchronous: asynchronous,
    */
   static func logSyncError(error: ExtendedErrorType) {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
-    guard defaultLogLevel ∋ LogManager.LogFlag.Error else { return }
+    guard defaultLogLevel ∋ .Error else { return }
     logError(error,
      message: error.reason,
 asynchronous: false,
@@ -486,13 +493,13 @@ asynchronous: false,
   - parameter line: UInt = #line
   - parameter file: String = #file
   */
-  static func logSyncWarning(@autoclosure message: () -> String,
+  static func logSyncWarning(@autoclosure message: MessageContent,
        function: String = #function,
            line: UInt = #line,
            file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning
-    guard defaultLogLevel ∋ LogManager.LogFlag.Warning else { return }
+    guard defaultLogLevel ∋ .Warning else { return }
     log(message(), asynchronous: false, flag: .Warning, function: function, line: line, file: file)
     #endif
   }
@@ -505,13 +512,13 @@ asynchronous: false,
   - parameter line: UInt = #line
   - parameter file: String = #file
   */
-  static func logSyncDebug(@autoclosure message: () -> String,
+  static func logSyncDebug(@autoclosure message: MessageContent,
        function: String = #function,
            line: UInt = #line,
            file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug
-    guard defaultLogLevel ∋ LogManager.LogFlag.Debug else { return }
+    guard defaultLogLevel ∋ .Debug else { return }
     log(message(), asynchronous: false, flag: .Debug, function: function, line: line, file: file)
     #endif
   }
@@ -524,13 +531,13 @@ asynchronous: false,
   - parameter line: UInt = #line
   - parameter file: String = #file
   */
-  static func logSyncInfo(@autoclosure message: () -> String,
+  static func logSyncInfo(@autoclosure message: MessageContent,
       function: String = #function,
           line: UInt = #line,
           file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo
-    guard defaultLogLevel ∋ LogManager.LogFlag.Info else { return }
+    guard defaultLogLevel ∋ .Info else { return }
     log(message(), asynchronous: false, flag: .Info, function: function, line: line, file: file)
     #endif
   }
@@ -543,13 +550,13 @@ asynchronous: false,
   - parameter line: UInt = #line
   - parameter file: String = #file
   */
-  static func logSyncVerbose(@autoclosure message: () -> String,
+  static func logSyncVerbose(@autoclosure message: MessageContent,
          function: String = #function,
              line: UInt = #line,
              file: String = #file)
   {
     #if LogLevelVerbose
-    guard defaultLogLevel ∋ LogManager.LogFlag.Verbose else { return }
+    guard defaultLogLevel ∋ .Verbose else { return }
     log(message(), asynchronous: false, flag: .Verbose, function: function, line: line, file: file)
     #endif
   }
@@ -563,13 +570,13 @@ asynchronous: false,
   - parameter line: UInt = #line
   - parameter file: String = #file
   */
-  func logSyncError(@autoclosure message: () -> String,
+  func logSyncError(@autoclosure message: MessageContent,
        function: String = #function,
            line: UInt = #line,
            file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
-    guard logLevel ∋ LogManager.LogFlag.Error else { return }
+    guard logLevel ∋ .Error else { return }
     log(message(), asynchronous: false, flag: .Error, function: function, line: line, file: file)
     #endif
   }
@@ -590,7 +597,7 @@ asynchronous: false,
                   file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
-    guard logLevel ∋ LogManager.LogFlag.Error else { return }
+    guard logLevel ∋ .Error else { return }
     var errorDescription = "\(error)"
     if let e = error as? WrappedErrorType, u = e.underlyingError {
       errorDescription += "underlying error: \(u)"
@@ -611,7 +618,7 @@ asynchronous: false,
    */
   func logSyncError(error: ExtendedErrorType) {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning || LogLevelError
-    guard logLevel ∋ LogManager.LogFlag.Error else { return }
+    guard logLevel ∋ .Error else { return }
     logError(error,
      message: error.reason,
 asynchronous: false,
@@ -630,13 +637,13 @@ asynchronous: false,
   - parameter line: UInt = #line
   - parameter file: String = #file
   */
-  func logSyncWarning(@autoclosure message: () -> String,
+  func logSyncWarning(@autoclosure message: MessageContent,
        function: String = #function,
            line: UInt = #line,
            file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo || LogLevelWarning
-    guard logLevel ∋ LogManager.LogFlag.Warning else { return }
+    guard logLevel ∋ .Warning else { return }
     log(message(), asynchronous: false, flag: .Warning, function: function, line: line, file: file)
     #endif
   }
@@ -649,13 +656,13 @@ asynchronous: false,
   - parameter line: UInt = #line
   - parameter file: String = #file
   */
-  func logSyncDebug(@autoclosure message: () -> String,
+  func logSyncDebug(@autoclosure message: MessageContent,
        function: String = #function,
            line: UInt = #line,
            file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug
-    guard logLevel ∋ LogManager.LogFlag.Debug else { return }
+    guard logLevel ∋ .Debug else { return }
     log(message(), asynchronous: false, flag: .Debug, function: function, line: line, file: file)
     #endif
   }
@@ -668,13 +675,13 @@ asynchronous: false,
   - parameter line: UInt = #line
   - parameter file: String = #file
   */
-  func logSyncInfo(@autoclosure message: () -> String,
+  func logSyncInfo(@autoclosure message: MessageContent,
       function: String = #function,
           line: UInt = #line,
           file: String = #file)
   {
     #if LogLevelVerbose || LogLevelDebug || LogLevelInfo
-    guard logLevel ∋ LogManager.LogFlag.Info else { return }
+    guard logLevel ∋ .Info else { return }
     log(message(), asynchronous: false, flag: .Info, function: function, line: line, file: file)
     #endif
   }
@@ -687,27 +694,57 @@ asynchronous: false,
   - parameter line: UInt = #line
   - parameter file: String = #file
   */
-  func logSyncVerbose(@autoclosure message: () -> String,
+  func logSyncVerbose(@autoclosure message: MessageContent,
          function: String = #function,
              line: UInt = #line,
              file: String = #file)
   {
     #if LogLevelVerbose
-    guard logLevel ∋ LogManager.LogFlag.Verbose else { return }
+    guard logLevel ∋ .Verbose else { return }
     log(message(), asynchronous: false, flag: .Verbose, function: function, line: line, file: file)
     #endif
   }
 
 }
 
+public extension Loggable where Self:AnyObject {
+  var logTag: LogTag? {
+    return LogTag(className: String(self.dynamicType),
+                  queueName: nameForCurrentQueue(),
+                  address: String(unsafeAddressOf(self)))
+  }
+}
+
 public extension Loggable where Self:Named {
-  var logTag: LogManager.LogMessage.Tag? {
-    return LogManager.LogMessage.Tag(objectName: name, className: "\(self.dynamicType)", queueName: nameForCurrentQueue())
+  var logTag: LogTag? {
+    return LogTag(objectName: name,
+                  className: String(self.dynamicType),
+                  queueName: nameForCurrentQueue())
   }
 }
 
 public extension Loggable where Self:Nameable {
-  var logTag: LogManager.LogMessage.Tag? {
-    return LogManager.LogMessage.Tag(objectName: name, className: "\(self.dynamicType)", queueName: nameForCurrentQueue())
+  var logTag: LogTag? {
+    return LogTag(objectName: name,
+                  className: String(self.dynamicType),
+                  queueName: nameForCurrentQueue())
+  }
+}
+
+public extension Loggable where Self:Named, Self:AnyObject {
+  var logTag: LogTag? {
+    return LogTag(objectName: name,
+                  className: String(self.dynamicType),
+                  queueName: nameForCurrentQueue(),
+                  address: String(unsafeAddressOf(self)))
+  }
+}
+
+public extension Loggable where Self:Nameable, Self:AnyObject {
+  var logTag: LogTag? {
+    return LogTag(objectName: name,
+                  className: String(self.dynamicType),
+                  queueName: nameForCurrentQueue(),
+                  address: String(unsafeAddressOf(self)))
   }
 }

@@ -68,59 +68,54 @@ final class DocumentsViewController: UICollectionViewController {
 
     (collectionViewLayout as? DocumentsViewLayout)?.controller = self
 
-    receptionist.observe(MIDIDocumentManager.Notification.DidUpdateItems,
+    receptionist.observe(.DidUpdateItems,
                     from: MIDIDocumentManager.self,
                 callback: weakMethod(self, DocumentsViewController.didUpdateItems))
 
-    receptionist.observe(MIDIDocumentManager.Notification.DidCreateDocument,
-                   from: MIDIDocumentManager.self,
-               callback: weakMethod(self, DocumentsViewController.didCreateDocument))
+    receptionist.observe(.DidCreateDocument, from: MIDIDocumentManager.self) {
+      [weak self] notification in self?.logDebug("\(notification)")
+    }
 
-    receptionist.observe(MIDIDocumentManager.Notification.DidChangeDocument,
-                    from: MIDIDocumentManager.self,
-                callback: weakMethod(self, DocumentsViewController.didChangeDocument))
+    receptionist.observe(.DidChangeDocument, from: MIDIDocumentManager.self) {
+      [weak self] _ in self?.refreshSelection()
+    }
   }
 
   // MARK: - Document items
 
   private var selectedItem: NSIndexPath? {
     didSet {
-      logDebug("selectedItem: \(selectedItem)")
-      guard isViewLoaded() && selectedItem != oldValue else { return }
+      guard isViewLoaded() else { return }
+      if oldValue != selectedItem { logDebug("\(oldValue?.description ?? "nil") ➞ \(selectedItem?.description ?? "nil")") }
       collectionView?.selectItemAtIndexPath(selectedItem, animated: true, scrollPosition: .CenteredVertically)
     }
   }
 
-  private var _items: [DocumentItem] = [] {
+  private var items: OrderedSet<DocumentItem> = [] {
     didSet {
-      logVerbose("_items: \(_items)")
-      updateItemSize()
-      mainQueue.async { [weak self] in self?.refreshSelection() }
+      let font = UIFont.controlFont
+      let characterCount = max(CGFloat(items.map({$0.displayName.characters.count ?? 0}).maxElement() ?? 0), 15)
+      let width = characterCount * font.characterWidth
+      let height = font.pointSize * 2
+      let size = CGSize(width: width, height: height)
+      itemSize = size.integralSize
+      mainQueue.async {
+        [weak self] in
+        self?.collectionView?.reloadData()
+        self?.refreshSelection()
+      }
     }
-  }
-  private var items: [DocumentItem] {
-    get { return _items }
-    set { _items = newValue; collectionView?.reloadData() }
   }
 
   /** refreshSelection */
   private func refreshSelection() {
     guard isViewLoaded() else { return }
+    guard let document = MIDIDocumentManager.currentDocument else { selectedItem = nil; return }
 
-    guard let currentFileURL = MIDIDocumentManager.currentDocument?.fileURL,
-              idx = items.indexOf({$0.URL == currentFileURL})
-      else {
-        selectedItem = nil
-        return
+    guard let idx = items.indexOf({$0.URL == document.fileURL}) else {
+        fatalError("document not found in items: \(document)")
     }
     selectedItem = NSIndexPath(forItem: idx, inSection: 1)
-  }
-
-  /** updateItemSize */
-  private func updateItemSize() {
-    let font = UIFont.controlFont
-    let characterCount = max(CGFloat(items.map({$0.displayName.characters.count ?? 0}).maxElement() ?? 0), 15)
-    itemSize = CGSize(width: characterCount * font.characterWidth, height: font.pointSize * 2).integralSize
   }
 
   // MARK: - View lifecycle
@@ -140,7 +135,7 @@ final class DocumentsViewController: UICollectionViewController {
   */
   override func viewWillAppear(animated: Bool) {
     guard !MIDIDocumentManager.gatheringMetadataItems else { return }
-    items = MIDIDocumentManager.items
+    items = OrderedSet(MIDIDocumentManager.items)
     refreshSelection()
   }
 
@@ -165,27 +160,22 @@ final class DocumentsViewController: UICollectionViewController {
 
   // MARK: - Notifications
 
-  private var state: State = []
-
-  /**
-  didChangeDocument:
-
-  - parameter notification: NSNotification
-  */
-  private func didChangeDocument(notification: NSNotification) {
-    refreshSelection()
-//    if state ∌ .DocumentCreated {  refreshSelection() }
-//    else { state ∪= [.DocumentChanged] }
+  private func addItems(items: [DocumentItem]) -> [NSIndexPath] {
+    let oldCount = self.items.count
+    self.items ∪= items
+    let newCount = self.items.count
+    return (oldCount ..< newCount).map { NSIndexPath(forItem: $0, inSection: 1) }
   }
 
-  /**
-  didCreateDocument:
-
-  - parameter notification: NSNotification
-  */
-  private func didCreateDocument(notification: NSNotification) {
-//    state ∪= [.DocumentCreated]
+  private func removeItems(items: [DocumentItem]) -> [NSIndexPath] {
+    let indexPaths: [NSIndexPath] = items.flatMap {
+      guard let idx = self.items.indexOf($0) else { return nil }
+      return NSIndexPath(forItem: idx, inSection: 1)
+    }
+    self.items ∖= items
+    return indexPaths
   }
+
 
   /**
   didUpdateItems:
@@ -193,52 +183,35 @@ final class DocumentsViewController: UICollectionViewController {
   - parameter notification: NSNotification? = nil
   */
   private func didUpdateItems(notification: NSNotification) {
-    logDebug("")
     guard isViewLoaded() else { return }
 
-    func indexPathsForItems(items: [DocumentItem]) -> [NSIndexPath] {
-      return items.flatMap({_items.indexOf($0)}).map({NSIndexPath(forItem: $0, inSection: 1)})
-    }
+    collectionView?.performBatchUpdates({
+      [unowned self] in
+        switch (notification.addedItems, notification.removedItems) {
+          case let (addedItems?, removedItems?) where !(addedItems.isEmpty && removedItems.isEmpty):
+            let added = self.addItems(addedItems)
+            self.logDebug("adding items at indices \(added)")
+            let removed = self.removeItems(removedItems)
+            self.logDebug("removing items at indices \(removed)")
 
-    switch (notification.addedItems, notification.removedItems) {
-      case let (addedItems?, removedItems?) where _items !⚭ addedItems && removedItems ⊆ _items:
-        logDebug("addedItems: \(addedItems.formattedDescription)\nremovedItems: \(removedItems.formattedDescription)")
-        var items = _items
-        logDebug("items: \(items.formattedDescription)")
-        let indexPathsToRemove = indexPathsForItems(removedItems)
-        logDebug("removing items at indices \(indexPathsToRemove.map({$0.item}))")
-        items ∖= removedItems
-        logDebug("items ∖ removedItems: \(items.formattedDescription)")
-        let startIndex = items.endIndex
-        let endIndex = startIndex + addedItems.count
-        let indexPathsToAdd = (startIndex ..< endIndex).map({NSIndexPath(forItem: $0, inSection: 1)})
-        logDebug("inserting items at indices \(indexPathsToAdd.map({$0.item}))")
-        items ∪= addedItems
-        logDebug("items ∪ addedItems: \(items.formattedDescription)")
-        _items = items
-        collectionView?.performBatchUpdates({
-          [unowned self] in
-            self.collectionView?.deleteItemsAtIndexPaths(indexPathsToRemove)
-            self.collectionView?.insertItemsAtIndexPaths(indexPathsToAdd)
-          }, completion: nil)
+            if !removed.isEmpty { self.collectionView?.deleteItemsAtIndexPaths(removed) }
+            if !added.isEmpty { self.collectionView?.insertItemsAtIndexPaths(added) }
 
-      case let (nil, removedItems?) where removedItems ⊆ _items:
-        logDebug("removedItems: \(removedItems.formattedDescription)")
-        let indexPaths = indexPathsForItems(removedItems)
-        logDebug("removing items at indices \(indexPaths.map({$0.item}))")
-        _items ∖= removedItems
-        collectionView?.deleteItemsAtIndexPaths(indexPaths)
+          case let (nil, removedItems?) where !removedItems.isEmpty:
+            let removed = self.removeItems(removedItems)
+            guard !removed.isEmpty else { return }
+            self.logDebug("removing items at indices \(removed)")
+            self.collectionView?.deleteItemsAtIndexPaths(removed)
 
-      case let (addedItems?, nil) where _items !⚭ addedItems:
-        logDebug("addedItems: \(addedItems.formattedDescription)")
-        let indexPaths = (_items.endIndex ..< _items.endIndex + (addedItems ∖ _items).count).map({NSIndexPath(forItem: $0, inSection: 1)})
-        guard indexPaths.count > 0 else { break }
-        logDebug("inserting items at indices \(indexPaths.map({$0.item}))")
-        _items ∪= addedItems
-        collectionView?.insertItemsAtIndexPaths(indexPaths)
+          case let (addedItems?, nil) where !addedItems.isEmpty:
+            let added = self.addItems(addedItems)
+            guard !added.isEmpty else { break }
+            self.logDebug("adding items at indices \(added)")
+            self.collectionView?.insertItemsAtIndexPaths(added)
 
-      default: break
-    }
+          default: break
+        }
+      }, completion: {[unowned self] completed in guard completed else { return }; self.refreshSelection() })
   }
 
   // MARK: UICollectionViewDataSource
@@ -283,7 +256,7 @@ final class DocumentsViewController: UICollectionViewController {
       case 1:
         cell = collectionView.dequeueReusableCellWithReuseIdentifier(DocumentCell.Identifier,
                                                         forIndexPath: indexPath)
-        (cell as? DocumentCell)?.item = items[indexPath.item]
+        (cell as! DocumentCell).item = items[indexPath.item]
       default:
         fatalError("Invalid section")
     }
@@ -304,7 +277,8 @@ final class DocumentsViewController: UICollectionViewController {
   override func     collectionView(collectionView: UICollectionView,
     shouldHighlightItemAtIndexPath indexPath: NSIndexPath) -> Bool
   {
-    guard let cell = collectionView.cellForItemAtIndexPath(indexPath) as? DocumentCell where cell.showingDelete else { return true }
+    guard let cell = collectionView.cellForItemAtIndexPath(indexPath) as? DocumentCell
+      where cell.showingDelete else { return true }
     cell.hideDelete()
     return false
   }
@@ -315,33 +289,13 @@ final class DocumentsViewController: UICollectionViewController {
   - parameter collectionView: UICollectionView
   - parameter indexPath: NSIndexPath
   */
-  override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+  override func collectionView(collectionView: UICollectionView,
+      didSelectItemAtIndexPath indexPath: NSIndexPath)
+  {
     switch indexPath.section {
       case 0:  MIDIDocumentManager.createNewDocument()
       default: MIDIDocumentManager.openItem(items[indexPath.row])
     }
     dismiss?()
   }
-}
-
-// MARK: - State
-extension DocumentsViewController {
-
-  private struct State: OptionSetType, CustomStringConvertible {
-    let rawValue: Int
-
-    static let DocumentCreated = State(rawValue: 0b01)
-    static let DocumentChanged = State(rawValue: 0b10)
-
-    var description: String {
-      var result = "["
-      var flagStrings: [String] = []
-      if contains(.DocumentCreated)   { flagStrings.append("DocumentCreated")   }
-      if contains(.DocumentChanged) { flagStrings.append("DocumentChanged") }
-      result += ", ".join(flagStrings)
-      result += " ]"
-      return result
-    }
-  }
-  
 }

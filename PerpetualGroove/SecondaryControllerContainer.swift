@@ -11,12 +11,12 @@ import UIKit
 import MoonKit
 
 protocol SecondaryControllerContent: class {
-  var anyAction: (() -> Void)? { get }
-  var cancelAction: (() -> Void)? { get }
-  var confirmAction: (() -> Void)? { get }
+//  var anyAction: (() -> Void)? { get }
+//  var cancelAction: (() -> Void)? { get }
+//  var confirmAction: (() -> Void)? { get }
   var nextAction: (() -> Void)? { get }
   var previousAction: (() -> Void)? { get }
-
+  var viewController: UIViewController { get }
   var supportedActions: SecondaryControllerContainer.SupportedActions { get }
   var disabledActions: SecondaryControllerContainer.SupportedActions { get }
 }
@@ -25,17 +25,40 @@ extension SecondaryControllerContent {
   var supportedActions: SecondaryControllerContainer.SupportedActions { return .None }
   var disabledActions: SecondaryControllerContainer.SupportedActions { return .None }
 
-  var anyAction: (() -> Void)? { return nil }
-  var cancelAction: (() -> Void)? { return nil }
-  var confirmAction: (() -> Void)? { return nil }
+//  var anyAction: (() -> Void)? { return nil }
+//  var cancelAction: (() -> Void)? { return nil }
+//  var confirmAction: (() -> Void)? { return nil }
   var nextAction: (() -> Void)? { return nil }
   var previousAction: (() -> Void)? { return nil }
 }
 
+extension SecondaryControllerContent where Self:UIViewController {
+  var viewController: UIViewController { return self }
+}
+
+protocol SecondaryControllerContentDelegate {
+  var secondaryContent: SecondaryControllerContent { get }
+  func didShowContent(content: SecondaryControllerContent)
+  func didHideContent(content: SecondaryControllerContent,
+                      dismissalAction: SecondaryControllerContainer.DismissalAction)
+}
+
+extension SecondaryControllerContentDelegate {
+  func didShowContent(content: SecondaryControllerContent) {}
+  func didHideContent(content: SecondaryControllerContent,
+                      dismissalAction: SecondaryControllerContainer.DismissalAction) {}
+}
+
 class SecondaryControllerContainer: UIViewController {
 
+  typealias ContentDelegate = SecondaryControllerContentDelegate
+  typealias Content = SecondaryControllerContent
+
   var primaryController: UIViewController? { return childViewControllers.first }
-  
+
+  private(set) var secondaryContentDelegate: ContentDelegate?
+  private(set) var secondaryContent: Content?
+
   private(set) weak var secondaryController: SecondaryContent? {
     didSet {
       guard let controller = secondaryController else { return }
@@ -80,7 +103,9 @@ class SecondaryControllerContainer: UIViewController {
     cancelButton.highlightedTintColor = .mahogany
     cancelButton.identifier = "ConfirmButton"
     cancelButton.accessibilityIdentifier = cancelButton.identifier
-    cancelButton.addTarget(self, action: #selector(SecondaryControllerContainer.cancel), forControlEvents: .TouchUpInside)
+    cancelButton.addTarget(self,
+                           action: #selector(SecondaryControllerContainer.cancel),
+                           forControlEvents: .TouchUpInside)
     blurView.contentView.addSubview(cancelButton)
     blurView.contentView.constrain(𝗩|--cancelButton, 𝗛|--cancelButton)
     self.cancelButton = cancelButton
@@ -91,7 +116,9 @@ class SecondaryControllerContainer: UIViewController {
     confirmButton.highlightedTintColor = .mahogany
     confirmButton.identifier = "ConfirmButton"
     confirmButton.accessibilityIdentifier = confirmButton.identifier
-    confirmButton.addTarget(self, action: #selector(SecondaryControllerContainer.confirm), forControlEvents: .TouchUpInside)
+    confirmButton.addTarget(self,
+                            action: #selector(SecondaryControllerContainer.confirm),
+                            forControlEvents: .TouchUpInside)
     blurView.contentView.addSubview(confirmButton)
     blurView.contentView.constrain(𝗩|--confirmButton, confirmButton--|𝗛)
     self.confirmButton = confirmButton
@@ -102,7 +129,9 @@ class SecondaryControllerContainer: UIViewController {
     leftArrow.highlightedTintColor = .mahogany
     leftArrow.identifier = "PreviousButton"
     leftArrow.accessibilityIdentifier = leftArrow.identifier
-    leftArrow.addTarget(self, action: #selector(SecondaryControllerContainer.previous), forControlEvents: .TouchUpInside)
+    leftArrow.addTarget(self,
+                        action: #selector(SecondaryControllerContainer.previous),
+                        forControlEvents: .TouchUpInside)
     blurView.contentView.addSubview(leftArrow)
     blurView.contentView.constrain(leftArrow--|𝗩, 𝗛|--leftArrow)
     self.leftArrow = leftArrow
@@ -113,7 +142,9 @@ class SecondaryControllerContainer: UIViewController {
     rightArrow.highlightedTintColor = .mahogany
     rightArrow.identifier = "NextButton"
     rightArrow.accessibilityIdentifier = rightArrow.identifier
-    rightArrow.addTarget(self, action: #selector(SecondaryControllerContainer.next), forControlEvents: .TouchUpInside)
+    rightArrow.addTarget(self,
+                         action: #selector(SecondaryControllerContainer.next),
+                         forControlEvents: .TouchUpInside)
     blurView.contentView.addSubview(rightArrow)
     blurView.contentView.constrain(rightArrow--|𝗩, rightArrow--|𝗛)
     self.rightArrow = rightArrow
@@ -139,9 +170,9 @@ class SecondaryControllerContainer: UIViewController {
   /** previous */
   @objc private func previous() { previousAction?() }
 
-  var anyAction: (() -> Void)?      { return secondaryController?.anyAction      }
-  var cancelAction: (() -> Void)?   { return secondaryController?.cancelAction   }
-  var confirmAction: (() -> Void)?  { return secondaryController?.confirmAction  }
+//  var anyAction: (() -> Void)?      { return secondaryController?.anyAction      }
+//  var cancelAction: (() -> Void)?   { return secondaryController?.cancelAction   }
+//  var confirmAction: (() -> Void)?  { return secondaryController?.confirmAction  }
   var nextAction: (() -> Void)?     { return secondaryController?.nextAction     }
   var previousAction: (() -> Void)? { return secondaryController?.previousAction }
 
@@ -150,21 +181,18 @@ class SecondaryControllerContainer: UIViewController {
 
   }
 
-  enum DismissalAction { case None, Cancel, Confirm }
+  @objc enum DismissalAction: Int { case None, Cancel, Confirm }
 
-  /**
-   presentSecondaryController:completion:
-
-   - parameter controller: SecondaryContent
-   - parameter completion: ((Bool) -> Void
-  */
-  func presentSecondaryController(controller: SecondaryContent,
+  func presentContentForDelegate(delegate: SecondaryControllerContentDelegate,
                        completion: ((Bool) -> Void)? = nil)
   {
-    guard secondaryController == nil else { return }
+//    guard secondaryController == nil else { return }
+    secondaryContentDelegate = delegate
+    secondaryContent = delegate.secondaryContent
 
+    let controller = secondaryContent!.viewController
     addChildViewController(controller)
-    secondaryController = controller
+//    secondaryController = controller
 
 
     let options: UIViewAnimationOptions = [.AllowAnimatedContent]
@@ -186,6 +214,55 @@ class SecondaryControllerContainer: UIViewController {
 
   }
 
+  /**
+   presentSecondaryController:completion:
+
+   - parameter controller: SecondaryContent
+   - parameter completion: ((Bool) -> Void
+  */
+//  func presentSecondaryController(controller: SecondaryContent,
+//                       completion: ((Bool) -> Void)? = nil)
+//  {
+//    guard secondaryController == nil else { return }
+//
+//    addChildViewController(controller)
+//    secondaryController = controller
+//
+//
+//    let options: UIViewAnimationOptions = [.AllowAnimatedContent]
+//
+//    let animations = {
+//      [view = view, blurView = blurView] in
+//      view.addSubview(blurView)
+//      view.constrain(
+//        𝗩|--blurView.frame.y--blurView--(view.bounds.maxY - blurView.frame.maxY)--|𝗩,
+//        𝗛|--blurView.frame.x--blurView--(view.bounds.maxX - blurView.frame.maxX)--|𝗛
+//      )
+//    }
+//
+//    UIView.transitionWithView(view, duration: 0.25, options: options, animations: animations) {
+//      [unowned self] completed in
+//      controller.didMoveToParentViewController(self)
+//      completion?(completed)
+//    }
+//
+//  }
+
+  func completionForDismissalAction(dismissalAction: DismissalAction) -> (Bool) -> Void {
+    return {
+      [weak self] completed in
+      guard completed,
+        let delegate = self?.secondaryContentDelegate, content = self?.secondaryContent else { return }
+
+      delegate.didHideContent(content, dismissalAction: dismissalAction)
+//      switch dismissalAction {
+//        case .Cancel:  self?.cancelAction?()
+//        case .Confirm: self?.confirmAction?()
+//        case .None:    break
+//      }
+    }
+  }
+
   /** dismissSecondaryController */
   func dismissSecondaryController(dismissalAction: DismissalAction = .None) {
     guard let controller = secondaryController else { return }
@@ -196,32 +273,17 @@ class SecondaryControllerContainer: UIViewController {
     let options: UIViewAnimationOptions = [.AllowAnimatedContent]
 
     let animations = {
-      [unowned self] in
-      controller.view.removeFromSuperview()
-      self.blurView.removeFromSuperview()
+      [weak blurView = blurView, weak controllerView = controller.view] in
+      controllerView?.removeFromSuperview()
+      blurView?.removeFromSuperview()
     }
-
-    let completion: (Bool) -> Void = {
-      [unowned self] completed in
-      guard completed else { return }
-
-      self.anyAction?()
-
-      switch dismissalAction {
-      case .Cancel:
-        self.cancelAction?()
-      case .Confirm:
-        self.confirmAction?()
-      case .None:
-        break
-      }
-    }
+    let completion = completionForDismissalAction(dismissalAction)
 
     UIView.transitionWithView(view,
-                     duration: 0.25,
-                      options: options,
-                   animations: animations,
-                   completion: completion)
+                              duration: 0.25,
+                              options: options,
+                              animations: animations,
+                              completion: completion)
   }
 
 }

@@ -3353,7 +3353,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ENABLE_TESTABILITY = YES;
-				ONLY_ACTIVE_ARCH = YES;
 				OTHER_SWIFT_FLAGS = "-DDebug";
 				SDKROOT = iphoneos;
 			};
@@ -4068,6 +4067,7 @@
 				C2416E3E1C88B62E00734CA1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
 		};
 		C256F0951ABDFFE5005B7CB3 /* Build configuration list for PBXNativeTarget "MoonKitOSX" */ = {
 			isa = XCConfigurationList;

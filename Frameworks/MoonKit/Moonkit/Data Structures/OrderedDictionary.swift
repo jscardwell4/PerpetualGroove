@@ -343,7 +343,10 @@ internal struct OrderedDictionaryBuffer<Key:Hashable, Value> {
   internal func destroyEntryAt(position: Index) {
     defer { _fixLifetime(self) }
     var bucket = bucketForPosition(position)
+//    print("\(debugDescription)")
+    assert(bitMap[bucket], "bucket empty")
     var idealBucket = bucketForKey((keys + bucket).move())
+//    print("(values + bucket).memory = \((values + bucket).memory)")
     (values + bucket).destroy()
     keyMap[position] = -1
     bitMap[bucket] = false
@@ -426,7 +429,7 @@ internal struct OrderedDictionaryBuffer<Key:Hashable, Value> {
   }
 
   internal func setValue(value: Value, inBucket bucket: Bucket) {
-    print("value = \(value)")
+//    print("value = \(value)")
 //    print("values[bucket] = \(values[bucket])")
     (values + bucket).initialize(value)
   }
@@ -628,16 +631,17 @@ public struct OrderedDictionary<Key: Hashable, Value>: CollectionType, Dictionar
 
   public mutating func removeAll(keepCapacity keepCapacity: Bool = false) {
 
-    logDebug("buffer = \(buffer.debugDescription)")
-    guard isUniquelyReferenced(&owner) else {
-      owner = Owner(minimumCapacity: keepCapacity ? capacity : 0)
-      return
-    }
+    owner = Owner(minimumCapacity: keepCapacity ? capacity : 0)
+//    logVerbose("buffer = \(buffer.debugDescription)")
+//    guard isUniquelyReferenced(&owner) else {
+//      return
+//    }
 
-    guard keepCapacity else { owner.buffer = Buffer(minimumCapacity: 0); return }
+//    guard keepCapacity else { owner.buffer = Buffer(minimumCapacity: 0); return }
 
-    for i in startIndex ..< endIndex { buffer.destroyEntryAt(i) }
-    buffer.count = 0
+//    print("startIndex = \(startIndex); endIndex = \(endIndex); count = \(count); buffer.count = \(buffer.count); buffer.storage.count = \(buffer.storage.count)")
+//    for i in startIndex ..< endIndex { buffer.destroyEntryAt(i) }
+//    buffer.count = 0
   }
 
   public var count: Int { return buffer.count }

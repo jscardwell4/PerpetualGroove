@@ -12,7 +12,7 @@ import MoonKit
 
 final class MIDIPlayerContainerViewController: SecondaryControllerContainer {
 
-  private weak var controllerTool: ToolType?
+//  private weak var controllerTool: ToolType?
 
   private(set) weak var playerViewController: MIDIPlayerViewController! {
     didSet { MIDIPlayer.playerContainer = self }
@@ -36,25 +36,25 @@ final class MIDIPlayerContainerViewController: SecondaryControllerContainer {
 
    - parameter tool: ConfigurableToolType
    */
-  func presentContentForTool(tool: ToolType) {
-    guard let controller = tool.secondaryContent else { return }
-    presentSecondaryController(controller) {
-      [unowned self] in
-        guard $0 else { return }
-        tool.didShowContent?(controller)
-        self.controllerTool = tool
-    }
-  }
+//  func presentContentForTool<T:ToolType where T:SecondaryControllerContentDelegate>(tool: T) {
+//    presentContentForDelegate(tool) {
+//      [unowned self] in
+//        guard $0 else { return }
+//        self.controllerTool = tool
+//    }
+//  }
 
-  override var anyAction: (() -> Void)? {
-      let action = super.anyAction
-    return {
-      [unowned self] in
-      guard let tool = self.controllerTool where tool.isShowingContent == true else { action?(); return }
-      tool.didHideContent?()
-      self.controllerTool = nil
-      action?()
-    }
-  }
+//  override func completionForDismissalAction(dismissalAction: DismissalAction) -> (Bool) -> Void {
+//    let completion = super.completionForDismissalAction(dismissalAction)
+//    return {
+//      [weak self] completed in
+//      completion(completed)
+//      guard let tool = self?.controllerTool where tool.isShowingContent == true else {
+//        return
+//      }
+//      tool.didHideContent?(dismissalAction)
+//      self?.controllerTool = nil
+//    }
+//  }
 
 }

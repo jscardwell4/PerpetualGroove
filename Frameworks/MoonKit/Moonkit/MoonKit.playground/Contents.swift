@@ -1,4 +1,6 @@
 import Foundation
 import XCPlayground
+import MoonKit
 
-var pointer = UnsafeMutablePointer<Int>.alloc(1)
+"wtf"
+

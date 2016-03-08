@@ -124,20 +124,27 @@ final class Sequencer {
   static var transport: Transport { return transportAssignment.transport }
 
   static private func observeTransport(transport: Transport) {
-    receptionist.observe(Transport.Notification.DidStart,
-                    from: transport) {Notification.DidStart.post(object: self, userInfo: $0.userInfo)}
-    receptionist.observe(Transport.Notification.DidPause,
-                    from: transport) {Notification.DidPause.post(object: self, userInfo: $0.userInfo)}
-    receptionist.observe(Transport.Notification.DidStop,
-                    from: transport) {Notification.DidStop.post(object: self, userInfo: $0.userInfo)}
-    receptionist.observe(Transport.Notification.DidJog,
-                    from: transport) {Notification.DidJog.post(object: self, userInfo: $0.userInfo)}
-    receptionist.observe(Transport.Notification.DidBeginJogging,
-                    from: transport) {Notification.DidBeginJogging.post(object: self, userInfo: $0.userInfo)}
-    receptionist.observe(Transport.Notification.DidEndJogging,
-                    from: transport) {Notification.DidEndJogging.post(object: self, userInfo: $0.userInfo)}
-    receptionist.observe(Transport.Notification.DidReset,
-                    from: transport) {Notification.DidReset.post(object: self, userInfo: $0.userInfo)}
+    receptionist.observe(.DidStart, from: transport) {
+      Notification.DidStart.post(object: self, userInfo: $0.userInfo)
+    }
+    receptionist.observe(.DidPause, from: transport) {
+      Notification.DidPause.post(object: self, userInfo: $0.userInfo)
+    }
+    receptionist.observe(.DidStop, from: transport) {
+      Notification.DidStop.post(object: self, userInfo: $0.userInfo)
+    }
+    receptionist.observe(.DidJog, from: transport) {
+      Notification.DidJog.post(object: self, userInfo: $0.userInfo)
+    }
+    receptionist.observe(.DidBeginJogging, from: transport) {
+      Notification.DidBeginJogging.post(object: self, userInfo: $0.userInfo)
+    }
+    receptionist.observe(.DidEndJogging, from: transport) {
+      Notification.DidEndJogging.post(object: self, userInfo: $0.userInfo)
+    }
+    receptionist.observe(.DidReset, from: transport) {
+      Notification.DidReset.post(object: self, userInfo: $0.userInfo)
+    }
   }
 
   static var time: Time { return transport.time }
