@@ -1,5 +1,5 @@
 //
-//  MIDIDocumentManager.swift
+//  DocumentManager.swift
 //  PerpetualGroove
 //
 //  Created by Jason Cardwell on 9/28/15.
@@ -9,7 +9,7 @@
 import Foundation
 import MoonKit
 
-final class MIDIDocumentManager {
+final class DocumentManager {
 
   // MARK: - Initialization
 
@@ -22,38 +22,19 @@ final class MIDIDocumentManager {
 
       receptionist.logContext = LogManager.MIDIFileContext
 
-      receptionist.observe(SettingsManager.Notification.Name.iCloudStorageChanged,
-                      from: SettingsManager.self)
-      {
-        _ in
-        logDebug("observed notification of iCloud storage setting change")
-        updateStorageLocation()
-      }
+      receptionist.observe(notification: .iCloudStorageChanged,
+                           from: SettingsManager.self,
+                           callback: DocumentManager.didChangeStorage)
 
-      receptionist.observe(NSMetadataQueryDidFinishGatheringNotification, from: metadataQuery) {
-        _ in
+      receptionist.observe(name: NSMetadataQueryDidFinishGatheringNotification,
+                           from: metadataQuery,
+                           callback: DocumentManager.didGatherMetadataItems)
 
-        logDebug("observed notification metadata query has finished gathering")
-        guard state ∋ .GatheringMetadataItems else {
-          logWarning("received gathering notification but state does not contain gathering flag")
-          return
-        }
+      receptionist.observe(name: NSMetadataQueryDidUpdateNotification,
+                           from: metadataQuery,
+                           callback: DocumentManager.didUpdateMetadataItems)
 
-        metadataQuery.disableUpdates()
-        metadataItems = (metadataQuery.results as! [NSMetadataItem]).map(DocumentItem.init)
-        metadataQuery.enableUpdates()
-        state ⊻= .GatheringMetadataItems
-      }
-
-      receptionist.observe(NSMetadataQueryDidUpdateNotification, from: metadataQuery) {
-        logDebug("observed metadata query update notification")
-        var items = metadataItems
-        if let removed = $0.removedMetadataItems?.map(DocumentItem.init) { items ∖= removed }
-        if let added   = $0.addedMetadataItems?.map(DocumentItem.init)   { items += added   }
-        metadataItems = items 
-      }
-
-      updateStorageLocation()
+      storageLocation = SettingsManager.iCloudStorage ? .iCloud : .Local
 
       state ∪= [.Initialized]
     }
@@ -61,15 +42,19 @@ final class MIDIDocumentManager {
   
   // MARK: - Queues
 
-  static let queue: dispatch_queue_t = concurrentQueueWithLabel("MIDIDocumentManager")
+  /// Queue for document manipulations
+  static let queue: dispatch_queue_t = concurrentQueueWithLabel("DocumentManager")
+
+  /// Operation queue that dispatches to `queue`
   static let operationQueue: NSOperationQueue = {
-    let operationQueue = NSOperationQueue(name: "MIDIDocumentManager")
+    let operationQueue = NSOperationQueue(name: "DocumentManager")
     operationQueue.underlyingQueue = queue
     return operationQueue
   }()
 
+  /// Operation queue for metadata queries
   private static let queryQueue: NSOperationQueue = {
-    let queryQueue = NSOperationQueue(name: "MIDIDocumentManager.MetadataQuery")
+    let queryQueue = NSOperationQueue(name: "DocumentManager.MetadataQuery")
     queryQueue.maxConcurrentOperationCount = 1
     return queryQueue
   }()
@@ -95,7 +80,7 @@ final class MIDIDocumentManager {
 
   // MARK: - The currently open document
 
-  /** refreshBookmark */
+  /// Updates contents of bookmark data for storage relevant setting
   static private func refreshBookmark() {
     queue.async {
       guard let currentDocument = currentDocument else { return }
@@ -114,12 +99,13 @@ final class MIDIDocumentManager {
     }
   }
 
+  /// Receptionist for KVO of the current document
   private static let observer = KVOReceptionist()
 
-  static private var _currentDocument: MIDIDocument? {
+  static private var _currentDocument: Document? {
     willSet {
       guard _currentDocument != newValue else { return }
-      Notification.WillChangeDocument.post()
+      dispatchToMain { Notification.WillChangeDocument.post() }
     }
     didSet {
       queue.async {
@@ -137,7 +123,7 @@ final class MIDIDocumentManager {
           observer.observe(currentDocument, forChangesTo: "fileURL", queue: operationQueue) {
             _, _, _ in
             logDebug("observed change to file URL of current document")
-            MIDIDocumentManager.refreshBookmark()
+            DocumentManager.refreshBookmark()
           }
         }
 
@@ -147,87 +133,137 @@ final class MIDIDocumentManager {
     }
   }
 
+  /// Used as lock for synchronized access to `_currentDocument`
   static private let currentDocumentLock = NSObject()
 
-  static private(set) var currentDocument: MIDIDocument? {
+  static private(set) var currentDocument: Document? {
     get {
-      objc_sync_enter(currentDocumentLock)
-      defer { objc_sync_exit(currentDocumentLock) }
-      return _currentDocument
+      return synchronized(currentDocumentLock) { _currentDocument }
+//      objc_sync_enter(currentDocumentLock)
+//      defer { objc_sync_exit(currentDocumentLock) }
+//      return _currentDocument
     }
     set {
-      objc_sync_enter(currentDocumentLock)
-      defer { objc_sync_exit(currentDocumentLock) }
-      _currentDocument = newValue
+      synchronized(currentDocumentLock) { _currentDocument = newValue }
+//      objc_sync_enter(currentDocumentLock)
+//      defer { objc_sync_exit(currentDocumentLock) }
+//      _currentDocument = newValue
     }
   }
 
   // MARK: - Items
 
   /** updateStorageLocation */
-  static private func updateStorageLocation() {
-    let bookmarkData: NSData?
-    switch (SettingsManager.iCloudStorage, storageLocation) {
-      case (true, .Local), (true, .iCloud) where state ∌ .Initialized:
-        storageLocation = .iCloud
-        state ∪= [.GatheringMetadataItems]
-        metadataQuery.startQuery()
-        directoryMonitor.stopMonitoring()
-        bookmarkData = SettingsManager.currentDocumentiCloud
-      case (false, .iCloud), (false, .Local) where state ∌ .Initialized:
-        storageLocation = .Local
-        metadataQuery.stopQuery()
-        refreshLocalItems()
-        directoryMonitor.startMonitoring()
-        bookmarkData = SettingsManager.currentDocumentLocal
-      default:
-        bookmarkData = nil
-    }
+//  static private func updateStorageLocation() {
+//    let bookmarkData: NSData?
+//    switch (SettingsManager.iCloudStorage, storageLocation) {
+//      case (true, .Local), (true, .iCloud) where state ∌ .Initialized:
+//        storageLocation = .iCloud
+//        state ∪= [.GatheringMetadataItems]
+//        metadataQuery.startQuery()
+//        directoryMonitor.stopMonitoring()
+//        bookmarkData = SettingsManager.currentDocumentiCloud
+//      case (false, .iCloud), (false, .Local) where state ∌ .Initialized:
+//        storageLocation = .Local
+//        metadataQuery.stopQuery()
+//        refreshLocalItems()
+//        directoryMonitor.startMonitoring()
+//        bookmarkData = SettingsManager.currentDocumentLocal
+//      default:
+//        bookmarkData = nil
+//    }
+//
+//    switch (bookmarkData, Sequencer.initialized) {
+//      case (nil, _): return
+//      case (let data?, true):
+//        do { try openBookmarkedDocument(data) }
+//        catch { logError(error, message: "Failed to resolve bookmark data into a valid file url") }
+//      case (let data?, false):
+//        receptionist.observe(notification: .DidUpdateAvailableSoundSets, from: Sequencer.self) {
+//          _ in
+//          receptionist.stopObserving(notification: .DidUpdateAvailableSoundSets, from: Sequencer.self)
+//          queue.async {
+//            do {
+//              try openBookmarkedDocument(data)
+//            } catch {
+//              logError(error, message: "Failed to resolve bookmark data into a valid file url")
+//            }
+//          }
+//        }
+//    }
+//  }
 
-    switch (bookmarkData, Sequencer.initialized) {
-      case (nil, _): return
-      case (let data?, true):
-        do { try openBookmarkedDocument(data) }
-        catch { logError(error, message: "Failed to resolve bookmark data into a valid file url") }
-      case (let data?, false):
-        receptionist.observe(Sequencer.Notification.DidUpdateAvailableSoundSets, from: Sequencer.self) {
-          _ in
-          receptionist.stopObserving(Sequencer.Notification.DidUpdateAvailableSoundSets)
+  static private(set) var storageLocation: StorageLocation! {
+    didSet {
+      guard let storageLocation = storageLocation where storageLocation != oldValue else { return }
+
+      let bookmarkData: NSData?
+
+      switch storageLocation {
+        case .iCloud:
+          state ∪= [.GatheringMetadataItems]
+          metadataQuery.startQuery()
+          directoryMonitor.stopMonitoring()
+          bookmarkData = SettingsManager.currentDocumentiCloud
+
+        case .Local:
+          metadataQuery.stopQuery()
+          refreshLocalItems()
+          directoryMonitor.startMonitoring()
+          bookmarkData = SettingsManager.currentDocumentLocal
+
+      }
+
+      let openData = {
+        (data: NSData) -> Void in
           queue.async {
             do {
               try openBookmarkedDocument(data)
             } catch {
               logError(error, message: "Failed to resolve bookmark data into a valid file url")
+              switch storageLocation {
+                case .iCloud: SettingsManager.currentDocumentiCloud = nil
+                case .Local: SettingsManager.currentDocumentLocal = nil
+              }
             }
           }
-        }
+      }
+
+      switch (bookmarkData, Sequencer.initialized) {
+        case (nil, _): return
+        case (let data?, true):
+          openData(data)
+        case (let data?, false):
+          receptionist.observeOnce(notification: .DidUpdateAvailableSoundSets, from: Sequencer.self) {
+            _ in openData(data)
+          }
+      }
     }
   }
 
-  static private(set) var storageLocation: StorageLocation = SettingsManager.iCloudStorage ? .iCloud: .Local
-
-  /**
-  currentItems
-
-  - returns: [DocumentItem]
-  */
-  static private func currentItems() -> [DocumentItem] {
-    switch storageLocation {
-      case .iCloud: return metadataItems
-      case .Local:  return localItems
-    }
+  private static func didChangeStorage(notification: NSNotification) {
+    logDebug("observed notification of iCloud storage setting change")
+    storageLocation = SettingsManager.iCloudStorage ? .iCloud : .Local
   }
 
-  static var items: [DocumentItem] { return storageLocation == .iCloud ? metadataItems : localItems }
+  /// Accessor for the current collection of document items
+  static var items: [DocumentItem] {
+    guard let storageLocation = storageLocation else { return [] }
+    return storageLocation == .iCloud ? metadataItems : localItems
+  }
 
+  static private var updateNotificationItems: [DocumentItem] = []
+
+  /// Monitor for observing changes to local files
   private static let directoryMonitor: DirectoryMonitor = {
     let monitor = try! DirectoryMonitor(directoryURL: documentsURL) {
-      _, _ in MIDIDocumentManager.refreshLocalItems()
+      _, _ in DocumentManager.refreshLocalItems()
     }
     monitor.callbackQueue = operationQueue
     return monitor
   }()
 
+  /// Query for iCloud file discovery
   private static let metadataQuery: NSMetadataQuery = {
     let query = NSMetadataQuery()
     query.notificationBatchingInterval = 1
@@ -237,6 +273,30 @@ final class MIDIDocumentManager {
     return query
   }()
 
+  /// Callback for `NSMetadataQueryDidFinishGatheringNotification`
+  private static func didGatherMetadataItems(notification: NSNotification) {
+    logDebug("observed notification metadata query has finished gathering")
+    guard state ∋ .GatheringMetadataItems else {
+      logWarning("received gathering notification but state does not contain gathering flag")
+      return
+    }
+
+    metadataQuery.disableUpdates()
+    metadataItems = (metadataQuery.results as! [NSMetadataItem]).map(DocumentItem.init)
+    metadataQuery.enableUpdates()
+    state ⊻= .GatheringMetadataItems
+  }
+
+  /// Callback for `NSMetadataQueryDidUpdateNotification`
+  private static func didUpdateMetadataItems(notification: NSNotification) {
+    logDebug("observed metadata query update notification")
+    var items = metadataItems
+    if let removed = notification.removedMetadataItems?.map(DocumentItem.init) { items ∖= removed }
+    if let added   = notification.addedMetadataItems?.map(DocumentItem.init)   { items += added   }
+    metadataItems = items
+  }
+
+  /// Collection of `DocumentItem` instances for available iCloud documents
   static private(set) var metadataItems: [DocumentItem] = [] {
     didSet {
       guard storageLocation == .iCloud else { return }
@@ -244,15 +304,13 @@ final class MIDIDocumentManager {
     }
   }
 
+  /// Collection of `DocumentItem` instances for available local documents
   static private(set) var localItems: [DocumentItem] = [] {
     didSet {
-      guard storageLocation == .Local else { return }
+      guard storageLocation == .Local && localItems.elementsEqual(oldValue) else { return }
       postItemUpdateNotification(localItems)
     }
   }
-
-  static private var oldItems: [DocumentItem] = []
-
 
   /**
   postItemNotificationWithItems:oldItems:
@@ -261,13 +319,13 @@ final class MIDIDocumentManager {
   - parameter oldItems: [DocumentItem]
   */
   static private func postItemUpdateNotification(items: [DocumentItem]) {
-    defer { oldItems = items }
+    defer { updateNotificationItems = items }
 
     logDebug("items: \(items.map(({$0.displayName})))")
-    guard oldItems != items else { logDebug("no change…"); return }
+    guard updateNotificationItems != items else { logDebug("no change…"); return }
 
-    let removed = oldItems ∖ items
-    let added = items ∖ oldItems
+    let removed = updateNotificationItems ∖ items
+    let added = items ∖ updateNotificationItems
 
     logDebug({
       guard removed.count + added.count > 0 else { return "" }
@@ -300,7 +358,7 @@ final class MIDIDocumentManager {
 
   // MARK: - Receiving notifications
 
-  private static let receptionist = NotificationReceptionist(callbackQueue: MIDIDocumentManager.operationQueue)
+  private static let receptionist = NotificationReceptionist(callbackQueue: DocumentManager.operationQueue)
 
   // MARK: - Creating new documents
 
@@ -308,6 +366,10 @@ final class MIDIDocumentManager {
 
   /** createNewFile */
   static func createNewDocument(name: String? = nil) {
+    guard let storageLocation = storageLocation else {
+      logWarning("Cannot create a new document without a valid storage location")
+      return
+    }
 
     queue.async {
 
@@ -329,12 +391,12 @@ final class MIDIDocumentManager {
       guard let fileName = noncollidingFileName(name ?? DefaultDocumentName) else { return }
       let fileURL = url + ["\(fileName).groove"]
       logDebug("creating a new document at path '\(fileURL.path!)'")
-      let document = MIDIDocument(fileURL: fileURL)
+      let document = Document(fileURL: fileURL)
       document.saveToURL(fileURL, forSaveOperation: .ForCreating, completionHandler: {
         guard $0 else { return }
         dispatchToMain {
           Notification.DidCreateDocument.post(userInfo: [Notification.Key.FilePath: fileURL.path!])
-          MIDIDocumentManager.openDocument(document)
+          DocumentManager.openDocument(document)
         }
       })
     }
@@ -386,9 +448,9 @@ final class MIDIDocumentManager {
   /**
   openDocument:
 
-  - parameter document: MIDIDocument
+  - parameter document: Document
   */
-  static func openDocument(document: MIDIDocument) {
+  static func openDocument(document: Document) {
     let openBlock = {
       guard state ∌ .OpeningDocument else { logWarning("already opening a document"); return }
       logDebug("opening document '\(document.fileURL.path ?? "???")'")
@@ -408,9 +470,9 @@ final class MIDIDocumentManager {
     }
     if Sequencer.soundSets.count > 0 { queue.async(openBlock) }
     else {
-      receptionist.observe(.DidUpdateAvailableSoundSets, from: Sequencer.self, queue: operationQueue) {
+      receptionist.observe(notification: .DidUpdateAvailableSoundSets, from: Sequencer.self, queue: operationQueue) {
         _ in
-        receptionist.stopObserving(.DidUpdateAvailableSoundSets, from: Sequencer.self)
+        receptionist.stopObserving(notification: .DidUpdateAvailableSoundSets, from: Sequencer.self)
         openBlock()
       }
     }
@@ -421,7 +483,7 @@ final class MIDIDocumentManager {
 
   - parameter url: NSURL
   */
-  static func openURL(url: NSURL) { openDocument(MIDIDocument(fileURL: url)) }
+  static func openURL(url: NSURL) { openDocument(Document(fileURL: url)) }
 
   /**
   openBookmarkedDocument:
@@ -468,7 +530,7 @@ final class MIDIDocumentManager {
 
 }
 
-extension MIDIDocumentManager {
+extension DocumentManager {
   private struct State: OptionSetType, CustomStringConvertible {
     let rawValue: Int
     static let Initialized            = State(rawValue: 0b0001)
@@ -490,12 +552,12 @@ extension MIDIDocumentManager {
 
 // MARK: - StorageLocation
 
-extension MIDIDocumentManager {
+extension DocumentManager {
   enum StorageLocation { case iCloud, Local }
 }
 
 // MARK: - Error
-extension MIDIDocumentManager {
+extension DocumentManager {
 
   enum Error: String, ErrorType {
     case iCloudUnavailable
@@ -504,23 +566,23 @@ extension MIDIDocumentManager {
 }
 
 // MARK: - Notification
-extension MIDIDocumentManager: NotificationDispatchType {
+extension DocumentManager: NotificationDispatchType {
 
   enum Notification: String, NotificationType, NotificationNameType {
     case DidUpdateItems, WillChangeDocument, DidChangeDocument, DidCreateDocument
     case WillOpenDocument, DidOpenDocument
     enum Key: String, NotificationKeyType { case Changed, Added, Removed, FilePath }
-    var object: AnyObject? { return MIDIDocumentManager.self }
+    var object: AnyObject? { return DocumentManager.self }
   }
   
 }
 
 extension NSNotification {
   var addedItemsData: [NSData]? {
-    return userInfo?[MIDIDocumentManager.Notification.Key.Added.key] as? [NSData]
+    return userInfo?[DocumentManager.Notification.Key.Added.key] as? [NSData]
   }
   var removedItemsData: [NSData]? {
-    return userInfo?[MIDIDocumentManager.Notification.Key.Removed.key] as? [NSData]
+    return userInfo?[DocumentManager.Notification.Key.Removed.key] as? [NSData]
   }
   var addedItems: [DocumentItem]?   { return addedItemsData?.flatMap(DocumentItem.init)   }
   var removedItems: [DocumentItem]? { return removedItemsData?.flatMap(DocumentItem.init) }

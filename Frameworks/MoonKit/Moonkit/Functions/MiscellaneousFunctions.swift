@@ -14,6 +14,13 @@ public func branch(tuples: (() -> Bool, () -> Void)...) {
   }
 }
 
+@inline(__always)
+public func synchronized<R>(lock: AnyObject, @noescape block: () -> R) -> R {
+  objc_sync_enter(lock)
+  defer { objc_sync_exit(lock) }
+  return block()
+}
+
 /**
 nonce
 

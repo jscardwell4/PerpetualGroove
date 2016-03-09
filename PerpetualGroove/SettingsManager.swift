@@ -158,7 +158,7 @@ final class SettingsManager {
   private static let receptionist: NotificationReceptionist = {
     let receptionist = NotificationReceptionist()
 
-    receptionist.observe(NSUserDefaultsDidChangeNotification,
+    receptionist.observe(name: NSUserDefaultsDidChangeNotification,
                     from: defaults,
                    queue: NSOperationQueue.mainQueue())
     {
@@ -208,9 +208,35 @@ extension SettingsManager: NotificationDispatchType {
 
     enum Key: String, KeyType { case SettingValue }
 
+    static let iCloudStorageChanged         = Notification(name: .iCloudStorageChanged)
+    static let ConfirmDeleteDocumentChanged = Notification(name: .ConfirmDeleteDocumentChanged)
+    static let ConfirmDeleteTrackChanged    = Notification(name: .ConfirmDeleteTrackChanged)
+    static let ScrollTrackLabelsChanged     = Notification(name: .ScrollTrackLabelsChanged)
+    static let CurrentDocumentLocalChanged  = Notification(name: .CurrentDocumentLocalChanged)
+    static let CurrentDocumentiCloudChanged = Notification(name: .CurrentDocumentiCloudChanged)
+    static let MakeNewTrackCurrentChanged   = Notification(name: .MakeNewTrackCurrentChanged)
+    static let DidInitializeSettings        = Notification(name: .DidInitializeSettings)
+
     var object: AnyObject? { return SettingsManager.self }
     let name: Name
-    let userInfo: [Key:AnyObject?]?
+    var setting: Setting? {
+      switch name {
+        case .iCloudStorageChanged:         return .iCloudStorage
+        case .ConfirmDeleteDocumentChanged: return .ConfirmDeleteDocument
+        case .ConfirmDeleteTrackChanged:    return .ConfirmDeleteTrack
+        case .ScrollTrackLabelsChanged:     return .ScrollTrackLabels
+        case .CurrentDocumentLocalChanged:  return .CurrentDocumentLocal
+        case .CurrentDocumentiCloudChanged: return .CurrentDocumentiCloud
+        case .MakeNewTrackCurrentChanged:   return .MakeNewTrackCurrent
+        case .DidInitializeSettings:        return nil
+      }
+    }
+    var userInfo: [Key:AnyObject?]? {
+      guard let setting = setting else { return nil }
+      return [.SettingValue: SettingsManager.settingsCache[setting] as? AnyObject]
+    }
+
+    private init(name: Name) { self.name = name }
 
     /**
     init:
@@ -218,20 +244,15 @@ extension SettingsManager: NotificationDispatchType {
     - parameter setting: Setting
     */
     private init(_ setting: Setting?) {
-      guard let setting = setting  else {
-        userInfo = nil
-        name = .DidInitializeSettings
-        return
-      }
-      userInfo = [.SettingValue: SettingsManager.settingsCache[setting] as? AnyObject]
+      guard let setting = setting  else { self = Notification.DidInitializeSettings; return }
       switch setting {
-        case .iCloudStorage:         name = .iCloudStorageChanged
-        case .ConfirmDeleteDocument: name = .ConfirmDeleteDocumentChanged
-        case .ConfirmDeleteTrack:    name = .ConfirmDeleteTrackChanged
-        case .ScrollTrackLabels:     name = .ScrollTrackLabelsChanged
-        case .CurrentDocumentLocal:  name = .CurrentDocumentLocalChanged
-        case .CurrentDocumentiCloud: name = .CurrentDocumentiCloudChanged
-        case .MakeNewTrackCurrent:   name = .MakeNewTrackCurrentChanged
+        case .iCloudStorage:         self = Notification.iCloudStorageChanged
+        case .ConfirmDeleteDocument: self = Notification.ConfirmDeleteDocumentChanged
+        case .ConfirmDeleteTrack:    self = Notification.ConfirmDeleteTrackChanged
+        case .ScrollTrackLabels:     self = Notification.ScrollTrackLabelsChanged
+        case .CurrentDocumentLocal:  self = Notification.CurrentDocumentLocalChanged
+        case .CurrentDocumentiCloud: self = Notification.CurrentDocumentiCloudChanged
+        case .MakeNewTrackCurrent:   self = Notification.MakeNewTrackCurrentChanged
       }
     }
 

@@ -122,7 +122,7 @@ final class MIDIPlayerViewController: UIViewController {
   - parameter notification: NSNotification
   */
   private func didChangeDocument(notification: NSNotification) {
-    documentName.text = MIDIDocumentManager.currentDocument?.localizedName
+    documentName.text = DocumentManager.currentDocument?.localizedName
     if spinner.hidden == false {
       spinner.stopAnimating()
       spinner.hidden = true
@@ -173,19 +173,19 @@ final class MIDIPlayerViewController: UIViewController {
 
     guard receptionist.count == 0 else { return }
 
-    receptionist.observe(MIDIDocumentManager.Notification.DidChangeDocument,
-                    from: MIDIDocumentManager.self,
+    receptionist.observe(notification: DocumentManager.Notification.DidChangeDocument,
+                    from: DocumentManager.self,
                 callback: weakMethod(self, MIDIPlayerViewController.didChangeDocument))
-    receptionist.observe(MIDIDocumentManager.Notification.WillOpenDocument,
-                    from: MIDIDocumentManager.self,
+    receptionist.observe(notification: DocumentManager.Notification.WillOpenDocument,
+                    from: DocumentManager.self,
                 callback: weakMethod(self, MIDIPlayerViewController.willOpenDocument))
-    receptionist.observe(MIDIPlayer.Notification.DidSelectTool,
+    receptionist.observe(notification: MIDIPlayer.Notification.DidSelectTool,
                     from: MIDIPlayer.self,
                 callback: weakMethod(self, MIDIPlayerViewController.didSelectTool))
-    receptionist.observe(Sequencer.Notification.DidEnterLoopMode,
+    receptionist.observe(notification: Sequencer.Notification.DidEnterLoopMode,
                     from: Sequencer.self,
                 callback: weakMethod(self, MIDIPlayerViewController.didEnterLoopMode))
-    receptionist.observe(Sequencer.Notification.DidExitLoopMode,
+    receptionist.observe(notification: Sequencer.Notification.DidExitLoopMode,
                     from: Sequencer.self,
                 callback: weakMethod(self, MIDIPlayerViewController.didExitLoopMode))
 
@@ -203,7 +203,7 @@ extension MIDIPlayerViewController: UITextFieldDelegate {
   - returns: Bool
   */
   func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
-    return MIDIDocumentManager.currentDocument != nil
+    return DocumentManager.currentDocument != nil
   }
 
   /**
@@ -228,9 +228,9 @@ extension MIDIPlayerViewController: UITextFieldDelegate {
   func textFieldShouldEndEditing(textField: UITextField) -> Bool {
 
     guard let text = textField.text,
-              fileName = MIDIDocumentManager.noncollidingFileName(text) else { return false }
+              fileName = DocumentManager.noncollidingFileName(text) else { return false }
 
-    if let currentDocument = MIDIDocumentManager.currentDocument
+    if let currentDocument = DocumentManager.currentDocument
       where [fileName, currentDocument.localizedName] ∌ text { textField.text = fileName }
 
     return true
@@ -243,7 +243,7 @@ extension MIDIPlayerViewController: UITextFieldDelegate {
   */
   func textFieldDidEndEditing(textField: UITextField) {
     guard let text = textField.text
-      where MIDIDocumentManager.currentDocument?.localizedName != text else { return }
-    MIDIDocumentManager.currentDocument?.renameTo(text)
+      where DocumentManager.currentDocument?.localizedName != text else { return }
+    DocumentManager.currentDocument?.renameTo(text)
   }
 }

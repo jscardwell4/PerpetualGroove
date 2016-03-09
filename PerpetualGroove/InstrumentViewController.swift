@@ -24,12 +24,12 @@ final class InstrumentViewController: UIViewController, SecondaryControllerConte
   /** awakeFromNib */
   override func awakeFromNib() {
     super.awakeFromNib()
-    receptionist.observe(.SoundSetSelectionTargetDidChange, from: Sequencer.self) {
+    receptionist.observe(notification: .SoundSetSelectionTargetDidChange, from: Sequencer.self) {
       [weak self] in self?.instrument = $0.newSoundSetSelectionTarget
     }
-    receptionist.observe(.DidUpdateAvailableSoundSets,
-                    from: Sequencer.self,
-                callback: weakMethod(self, InstrumentViewController.updateSoundSets))
+    receptionist.observe(notification: .DidUpdateAvailableSoundSets,
+                         from: Sequencer.self,
+                         callback: weakMethod(self, InstrumentViewController.updateSoundSets))
   }
 
   /**

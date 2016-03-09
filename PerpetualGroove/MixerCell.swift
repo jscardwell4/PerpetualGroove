@@ -131,34 +131,34 @@ final class TrackCell: MixerCell {
     let receptionist = NotificationReceptionist(callbackQueue: NSOperationQueue.mainQueue())
     receptionist.logContext = LogManager.SequencerContext
     
-    receptionist.observe(.MuteStatusDidChange, from: track) {
+    receptionist.observe(notification: .MuteStatusDidChange, from: track) {
       [weak self] _ in
       guard let weakself = self, track = weakself.track else { return }
       weakself.muteButton.selected = track.isMuted
     }
-    receptionist.observe(.ForceMuteStatusDidChange, from: track) {
+    receptionist.observe(notification: .ForceMuteStatusDidChange, from: track) {
       [weak self] _ in
       guard let weakself = self, track = weakself.track else { return }
       weakself.muteDisengaged = track.forceMute || track.solo
     }
-    receptionist.observe(.SoloStatusDidChange, from: track) {
+    receptionist.observe(notification: .SoloStatusDidChange, from: track) {
       [weak self] _ in
       guard let weakself = self, track = weakself.track else { return }
       weakself.soloButton.selected = track.solo
       weakself.muteDisengaged = track.forceMute || track.solo
     }
-    receptionist.observe(.DidChangeName, from: track) {
+    receptionist.observe(notification: .DidChangeName, from: track) {
       [weak self] _ in
       guard let weakself = self, track = weakself.track else { return }
       weakself.trackLabel.text = track.displayName
     }
-    receptionist.observe(.SoundSetDidChange, from: track.instrument) {
+    receptionist.observe(notification: .SoundSetDidChange, from: track.instrument) {
       [weak self] _ in
       guard let weakself = self, track = weakself.track else { return }
       weakself.soundSetImage.image = track.instrument.soundSet.image
       weakself.trackLabel.text = track.displayName
     }
-    receptionist.observe(.PresetDidChange, from: track.instrument) {
+    receptionist.observe(notification: .PresetDidChange, from: track.instrument) {
       [weak self] _ in
       guard let weakself = self, track = weakself.track else { return }
       weakself.trackLabel.text = track.displayName

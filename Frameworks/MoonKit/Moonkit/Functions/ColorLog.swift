@@ -17,7 +17,7 @@ public struct ColorLog {
   public static let RED      = ESCAPE + "fg170,55,49;"
   public static let GREEN    = ESCAPE + "fg68,140,39;"
   public static let BLUE     = ESCAPE + "fg75,131,205;"
-  public static let YELLOW   = ESCAPE + "fg255,147,0;"
+  public static let YELLOW   = ESCAPE + "fg153,119,0;"
   public static let PURPLE   = ESCAPE + "fg122,62,157;"
   public static let CYAN     = ESCAPE + "fg108,134,168;"
   public static let GRAY     = ESCAPE + "fg125,125,125;"

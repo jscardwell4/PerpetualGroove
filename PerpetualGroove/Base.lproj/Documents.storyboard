@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10112" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10083"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -93,7 +93,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="250" height="40"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="Create Document" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r0p-MA-Lux" userLabel="Label">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" misplaced="YES" text="Create Document" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r0p-MA-Lux" userLabel="Label">
                                             <rect key="frame" x="59" y="10" width="191" height="20.5"/>
                                             <color key="tintColor" red="0.76089900732040405" green="0.25649610161781311" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <accessibility key="accessibilityConfiguration" identifier="Label"/>
@@ -107,7 +107,7 @@
                                                 <rect key="frame" x="28" y="11" width="134" height="20"/>
                                             </variation>
                                         </label>
-                                        <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="add-selected" highlightedImage="add-selected" translatesAutoresizingMaskIntoConstraints="NO" id="l2e-0M-7I2" customClass="TemplateImageView" customModule="MoonKit">
+                                        <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="add-selected" highlightedImage="add-selected" translatesAutoresizingMaskIntoConstraints="NO" id="l2e-0M-7I2" customClass="TemplateImageView" customModule="MoonKit">
                                             <rect key="frame" x="0.0" y="0.0" width="51" height="40"/>
                                             <color key="tintColor" red="0.87450999021530151" green="0.8274499773979187" blue="0.7607799768447876" alpha="1" colorSpace="calibratedRGB"/>
                                             <constraints>
@@ -184,7 +184,6 @@
                     <size key="freeformSize" width="250" height="120"/>
                     <connections>
                         <outlet property="collectionView" destination="0IQ-bl-889" id="2aY-eR-Jw8"/>
-                        <outlet property="documentsViewLayout" destination="9TN-1q-bYW" id="mSN-6g-6Lu"/>
                     </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9SJ-ym-gDI" userLabel="First Responder" sceneMemberID="firstResponder"/>

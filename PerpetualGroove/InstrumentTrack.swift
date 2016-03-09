@@ -56,30 +56,30 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
   private func initializeNotificationReceptionist() {
     guard receptionist.count == 0 else { return }
 
-    receptionist.observe(Sequencer.Notification.DidReset,
-                    from: Sequencer.self,
-                callback: weakMethod(self, InstrumentTrack.didReset))
+    receptionist.observe(notification: .DidReset,
+                         from: Sequencer.self,
+                         callback: weakMethod(self, InstrumentTrack.didReset))
 
-    receptionist.observe(.SoloCountDidChange,
-                    from: sequence,
-                callback: weakMethod(self, InstrumentTrack.soloCountDidChange))
+    receptionist.observe(notification: .SoloCountDidChange,
+                         from: sequence,
+                         callback: weakMethod(self, InstrumentTrack.soloCountDidChange))
 
-    receptionist.observe(Sequencer.Notification.DidBeginJogging,
-                    from: Sequencer.self,
-                callback: weakMethod(self, InstrumentTrack.didBeginJogging))
-    receptionist.observe(Sequencer.Notification.DidJog,
-                    from: Sequencer.self,
-                callback: weakMethod(self, InstrumentTrack.didEndJogging))
-    receptionist.observe(Sequencer.Notification.DidJog,
-                    from: Sequencer.self,
-                callback: weakMethod(self, InstrumentTrack.didEndJogging))
+    receptionist.observe(notification: .DidBeginJogging,
+                         from: Sequencer.self,
+                         callback: weakMethod(self, InstrumentTrack.didBeginJogging))
+    receptionist.observe(notification: .DidEndJogging,
+                         from: Sequencer.self,
+                         callback: weakMethod(self, InstrumentTrack.didEndJogging))
+    receptionist.observe(notification: .DidJog,
+                         from: Sequencer.self,
+                         callback: weakMethod(self, InstrumentTrack.didJog))
 
-    receptionist.observe(.PresetDidChange,
-                    from: instrument,
-                callback: weakMethod(self, InstrumentTrack.didChangePreset))
-    receptionist.observe(.SoundSetDidChange,
-                    from: instrument,
-                callback: weakMethod(self, InstrumentTrack.didChangePreset))
+    receptionist.observe(notification: .PresetDidChange,
+                         from: instrument,
+                         callback: weakMethod(self, InstrumentTrack.didChangePreset))
+    receptionist.observe(notification: .SoundSetDidChange,
+                         from: instrument,
+                         callback: weakMethod(self, InstrumentTrack.didChangePreset))
 }
 
   /**

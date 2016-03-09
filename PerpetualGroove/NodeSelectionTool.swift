@@ -70,10 +70,10 @@ class NodeSelectionTool: ToolType {
 
   init(playerNode: MIDIPlayerNode) {
     player = playerNode
-    receptionist.observe(.DidAddNode,
+    receptionist.observe(notification: .DidAddNode,
                     from: MIDIPlayer.self,
                 callback: weakMethod(self, NodeSelectionTool.didAddNode))
-    receptionist.observe(.DidRemoveNode,
+    receptionist.observe(notification: .DidRemoveNode,
                     from: MIDIPlayer.self,
                 callback: weakMethod(self, NodeSelectionTool.didRemoveNode))
   }

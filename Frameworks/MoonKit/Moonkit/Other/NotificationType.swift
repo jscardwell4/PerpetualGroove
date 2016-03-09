@@ -29,50 +29,46 @@ extension String: RawRepresentable {
   public init?(rawValue: String) { self = rawValue }
 }
 extension String: KeyType { public var key: String { return self } }
+extension String: NotificationNameType { public var notificationName: String { return self } }
 
-public protocol _NotificationType {
-  var _name: String { get }
-  var object: AnyObject? { get }
-  var _userInfo: [NSObject:AnyObject]? { get }
-}
-
-public func ==<N:_NotificationType>(lhs: N, rhs: N) -> Bool { return lhs._name == rhs._name }
-
-public protocol NotificationType: _NotificationType, CustomStringConvertible {
-  associatedtype NameType: NotificationNameType
+public protocol NotificationType: CustomStringConvertible {
+  associatedtype NameType: NotificationNameType = String
   var name: NameType { get }
 
-  associatedtype Key: NotificationKeyType
-  var userInfo: [Key:AnyObject?]? { get }
+  associatedtype Key: NotificationKeyType = String
 
-  associatedtype Callback = (NSNotification) -> Void
+  var object: AnyObject? { get }
+
+  var userInfo: [Key:AnyObject?]? { get }
 
   var notification: NSNotification { get }
   var notificationQueue: NSNotificationQueue? { get }
   var postingStyle: NSPostingStyle { get }
   var coalescing: NSNotificationCoalescing { get }
 
-  func post(object obj: AnyObject?, userInfo info: [Key:AnyObject?]?)
-  func post(object obj: AnyObject?, userInfo info: [NSObject:AnyObject]?)
-  func observe(object: AnyObject?, queue: NSOperationQueue?, callback: Callback) -> NSObjectProtocol
 }
 
 public extension NotificationType {
-  var _name: String { return name.notificationName }
+
   var object: AnyObject? { return nil }
-  var _userInfo: [NSObject:AnyObject]? {
+
+  private var _userInfo: [NSObject:AnyObject]? {
     guard let userInfo = self.userInfo else { return nil }
     var result: [NSObject:AnyObject] = [:]
     for (k, v) in userInfo { result[k.key] = v ?? NSNull() }
     return result
   }
+
   var userInfo: [Key:AnyObject?]? { return nil }
 
   var notification: NSNotification {
-    return NSNotification(name: _name, object: object, userInfo: _userInfo)
+    return NSNotification(name: name.notificationName, object: object, userInfo: _userInfo)
   }
+
   var notificationQueue: NSNotificationQueue? { return NSNotificationQueue.defaultQueue() }
+
   var postingStyle: NSPostingStyle { return .PostNow }
+
   var coalescing: NSNotificationCoalescing { return [.CoalescingOnName, .CoalescingOnSender] }
 
   /**
@@ -102,7 +98,7 @@ public extension NotificationType {
    - parameter info: [String
   */
   func post(object obj: AnyObject?, userInfo info: [NSObject:AnyObject]?) {
-    let notification = NSNotification(name: _name, object: obj, userInfo: info)
+    let notification = NSNotification(name: name.notificationName, object: obj, userInfo: info)
     if let queue = notificationQueue {
       queue.enqueueNotification(notification,
                    postingStyle: postingStyle,
@@ -113,26 +109,9 @@ public extension NotificationType {
     }
   }
 
-  /**
-  observe:queue:callback:
-
-  - parameter object: AnyObject? = nil
-  - parameter queue: NSOperationQueue? = nil
-  - parameter callback: (NSNotification) -> Void
-
-  - returns: NSObjectProtocol
-  */
-  func observe(object: AnyObject? = nil,
-         queue: NSOperationQueue? = nil,
-      callback: (NSNotification) -> Void) -> NSObjectProtocol
-  {
-    return NSNotificationCenter.defaultCenter()
-             .addObserverForName(_name, object: object, queue: queue, usingBlock: callback)
-  }
-
   var description: String {
     var result = "\(self.dynamicType) {\n"
-    result += "\tname: \(_name)\n"
+    result += "\tname: \(name.notificationName)\n"
     if let object = object { result += "\tobject: \(object)\n" }
     else { result += "\tobject: nil\n" }
     if let info = _userInfo {
@@ -149,6 +128,6 @@ public extension NotificationType where Self:NotificationNameType {
 }
 
 
-public protocol NotificationDispatchType {
+public protocol NotificationDispatchType: class {
   associatedtype Notification: NotificationType
 }

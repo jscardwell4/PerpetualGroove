@@ -234,21 +234,21 @@ public class LogFormatter: NSObject, DDLogFormatter {
     let objectString: String
 
     switch (objectName, address) {
-      case (objectName?, address?) where options ⊇ [.IncludeObjectName, .IncludeAddress]:
+      case let (objectName?, address?) where options ⊇ [.IncludeObjectName, .IncludeAddress]:
         objectString = "＜\(objectName)(\(address))＞"
-      case (objectName?, address?) where options ∋ .IncludeObjectName:
+      case let (objectName?, .Some) where options ∋ .IncludeObjectName:
         objectString = "＜\(objectName)＞"
-      case (objectName?, address?) where options ∋ .IncludeAddress:
+      case let (.Some, address?) where options ∋ .IncludeAddress:
         objectString = "＜\(address)＞"
-      case (nil, address?) where options ∋ .IncludeAddress:
+      case let (nil, address?) where options ∋ .IncludeAddress:
         objectString = "＜\(address)＞"
-      case (objectName?, nil) where options ∋ .IncludeObjectName:
+      case let (objectName?, nil) where options ∋ .IncludeObjectName:
         objectString = "＜\(objectName)＞"
       default:
         objectString = ""
     }
 
-    if options ∋ .IncludeObjectName && objectName != nil { result += "\(space())\(objectString)\(afterObjectName)" }
+    result += "\(space())\(objectString)\(afterObjectName)"
 
 
     if let m = msg.message where !m.isEmpty {

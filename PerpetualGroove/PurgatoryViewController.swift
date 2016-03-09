@@ -38,14 +38,14 @@ final class PurgatoryViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    receptionist.observe(NSUbiquityIdentityDidChangeNotification,
+    receptionist.observe(name: NSUbiquityIdentityDidChangeNotification,
                 callback: weakMethod(self, PurgatoryViewController.ubiquityIdentityDidChange))
 
-    receptionist.observe(SettingsManager.Notification.Name.iCloudStorageChanged,
+    receptionist.observe(notification: .iCloudStorageChanged,
                     from: SettingsManager.self,
                 callback: weakMethod(self, PurgatoryViewController.iCloudStorageChanged))
 
-    receptionist.observe(UIApplicationDidBecomeActiveNotification,
+    receptionist.observe(name: UIApplicationDidBecomeActiveNotification,
                     from: UIApplication.sharedApplication(),
                 callback: weakMethod(self, PurgatoryViewController.applicationDidBecomeActive))
 

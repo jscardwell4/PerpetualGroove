@@ -41,15 +41,15 @@ final class MixerViewController: UICollectionViewController, SecondaryController
   - parameter sequence: Sequence
   */
   private func observeSequence(sequence: Sequence) {
-    receptionist.observe(.DidChangeTrack, from: sequence) {
+    receptionist.observe(notification: .DidChangeTrack, from: sequence) {
       [weak self] _ in
         guard let idx = self?.sequence?.currentTrack?.index else { return }
         self?.selectTrackAtIndex(idx)
     }
-    receptionist.observe(.DidAddTrack,
+    receptionist.observe(notification: .DidAddTrack,
                     from: sequence,
                 callback: weakMethod(self, MixerViewController.updateTracks))
-    receptionist.observe(.DidRemoveTrack,
+    receptionist.observe(notification: .DidRemoveTrack,
                     from: sequence,
                 callback: weakMethod(self, MixerViewController.updateTracks))
   }
@@ -60,9 +60,9 @@ final class MixerViewController: UICollectionViewController, SecondaryController
   - parameter sequence: Sequence
   */
   private func stopObservingSequence(sequence: Sequence) {
-    receptionist.stopObserving(Sequence.Notification.DidChangeTrack, from: sequence)
-    receptionist.stopObserving(Sequence.Notification.DidAddTrack,    from: sequence)
-    receptionist.stopObserving(Sequence.Notification.DidRemoveTrack, from: sequence)
+    receptionist.stopObserving(notification: .DidChangeTrack, from: sequence)
+    receptionist.stopObserving(notification: .DidAddTrack,    from: sequence)
+    receptionist.stopObserving(notification: .DidRemoveTrack, from: sequence)
   }
 
   private var pendingTrackIndex: Int?
@@ -263,7 +263,7 @@ final class MixerViewController: UICollectionViewController, SecondaryController
   override func awakeFromNib() {
     super.awakeFromNib()
     guard !initialized else { return }
-    receptionist.observe(Sequencer.Notification.DidChangeSequence, from: Sequencer.self) {
+    receptionist.observe(notification: Sequencer.Notification.DidChangeSequence, from: Sequencer.self) {
       [weak self] _ in self?.sequence = Sequencer.sequence
     }
     initialized = true

@@ -16,17 +16,17 @@ final class TransportViewController: UIViewController {
       guard transport !== oldValue else { return }
 
       if let oldTransport = oldValue {
-        receptionist.stopObserving(Transport.Notification.DidPause,       from: oldTransport)
-        receptionist.stopObserving(Transport.Notification.DidStart,       from: oldTransport)
-        receptionist.stopObserving(Transport.Notification.DidStop,        from: oldTransport)
-        receptionist.stopObserving(Transport.Notification.DidChangeState, from: oldTransport)
+        receptionist.stopObserving(notification: .DidPause,       from: oldTransport)
+        receptionist.stopObserving(notification: .DidStart,       from: oldTransport)
+        receptionist.stopObserving(notification: .DidStop,        from: oldTransport)
+        receptionist.stopObserving(notification: .DidChangeState, from: oldTransport)
       }
 
       guard let transport = transport else { return }
 
       state = transport.state
 
-      receptionist.observe(.DidChangeState,
+      receptionist.observe(notification: .DidChangeState,
                       from: transport,
                   callback: weakMethod(self, TransportViewController.didChangeState))
     }

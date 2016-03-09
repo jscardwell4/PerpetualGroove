@@ -72,10 +72,10 @@ final class RemoveTool: ToolType {
       logDebug("oldValue: \(oldValue?.document?.localizedName ?? "nil")  sequence: \(sequence?.document?.localizedName ?? "nil")")
       guard oldValue !== sequence else { return }
       if let oldSequence = oldValue {
-        receptionist.stopObserving(Sequence.Notification.DidChangeTrack, from: oldSequence)
+        receptionist.stopObserving(notification: .DidChangeTrack, from: oldSequence)
       }
       if let sequence = sequence {
-        receptionist.observe(.DidChangeTrack, from: sequence) {
+        receptionist.observe(notification: .DidChangeTrack, from: sequence) {
           [weak self] _ in self?.track = self?.sequence?.currentTrack
         }
       }
@@ -167,10 +167,10 @@ final class RemoveTool: ToolType {
   init(playerNode: MIDIPlayerNode, delete: Bool = false) {
     deleteFromTrack = delete
     player = playerNode
-    receptionist.observe(Sequencer.Notification.DidChangeSequence,
+    receptionist.observe(notification: Sequencer.Notification.DidChangeSequence,
       from: Sequencer.self,
       callback: {[weak self] _ in self?.sequence = Sequencer.sequence})
-    receptionist.observe(MIDIPlayer.Notification.DidAddNode,
+    receptionist.observe(notification: MIDIPlayer.Notification.DidAddNode,
       from: MIDIPlayer.self,
       callback: {[weak self] notification in
         guard self?.active == true, let node = notification.addedNode, track = notification.addedNodeTrack else { return }

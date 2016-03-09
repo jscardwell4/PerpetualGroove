@@ -253,11 +253,11 @@ synchronized:fn:
 
 - returns: R
 */
-public func synchronized<R>(sync: AnyObject, f: () -> R) -> R {
-  objc_sync_enter(sync)
-  defer { objc_sync_exit(sync) }
-  return f()
-}
+//public func synchronized<R>(sync: AnyObject, f: () -> R) -> R {
+//  objc_sync_enter(sync)
+//  defer { objc_sync_exit(sync) }
+//  return f()
+//}
 
 
 extension Array {

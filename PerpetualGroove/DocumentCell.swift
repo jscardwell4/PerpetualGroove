@@ -20,7 +20,7 @@ final class DocumentCell: UICollectionViewCell {
   @IBAction func deleteItem() {
     guard let item = item else { return }
     if SettingsManager.confirmDeleteDocument { logWarning("delete confirmation not yet implemented") }
-    MIDIDocumentManager.deleteItem(item)
+    DocumentManager.deleteItem(item)
   }
 
   private(set) var showingDelete: Bool = false

@@ -58,10 +58,10 @@ final class Sequencer {
   private static let receptionist: NotificationReceptionist = {
     let receptionist = NotificationReceptionist()
     receptionist.logContext = LogManager.SequencerContext
-    receptionist.observe(MIDIDocumentManager.Notification.DidChangeDocument,
-                    from: MIDIDocumentManager.self,
+    receptionist.observe(notification: DocumentManager.Notification.DidChangeDocument,
+                    from: DocumentManager.self,
                    queue: NSOperationQueue.mainQueue(),
-                callback: {_ in Sequencer.sequence = MIDIDocumentManager.currentDocument?.sequence})
+                callback: {_ in Sequencer.sequence = DocumentManager.currentDocument?.sequence})
     return receptionist
     }()
 
@@ -99,7 +99,7 @@ final class Sequencer {
   static private var transportAssignment: TransportAssignment = Sequencer.primaryTransport {
     willSet {
       guard transportAssignment != newValue else { return }
-      receptionist.stopObservingObject(transportAssignment.transport)
+      receptionist.stopObserving(object: transportAssignment.transport)
       let transport = transportAssignment.transport
       if case .Primary(_) = transportAssignment {
         clockRunning = transport.clock.running
@@ -124,25 +124,25 @@ final class Sequencer {
   static var transport: Transport { return transportAssignment.transport }
 
   static private func observeTransport(transport: Transport) {
-    receptionist.observe(.DidStart, from: transport) {
+    receptionist.observe(notification: .DidStart, from: transport) {
       Notification.DidStart.post(object: self, userInfo: $0.userInfo)
     }
-    receptionist.observe(.DidPause, from: transport) {
+    receptionist.observe(notification: .DidPause, from: transport) {
       Notification.DidPause.post(object: self, userInfo: $0.userInfo)
     }
-    receptionist.observe(.DidStop, from: transport) {
+    receptionist.observe(notification: .DidStop, from: transport) {
       Notification.DidStop.post(object: self, userInfo: $0.userInfo)
     }
-    receptionist.observe(.DidJog, from: transport) {
+    receptionist.observe(notification: .DidJog, from: transport) {
       Notification.DidJog.post(object: self, userInfo: $0.userInfo)
     }
-    receptionist.observe(.DidBeginJogging, from: transport) {
+    receptionist.observe(notification: .DidBeginJogging, from: transport) {
       Notification.DidBeginJogging.post(object: self, userInfo: $0.userInfo)
     }
-    receptionist.observe(.DidEndJogging, from: transport) {
+    receptionist.observe(notification: .DidEndJogging, from: transport) {
       Notification.DidEndJogging.post(object: self, userInfo: $0.userInfo)
     }
-    receptionist.observe(.DidReset, from: transport) {
+    receptionist.observe(notification: .DidReset, from: transport) {
       Notification.DidReset.post(object: self, userInfo: $0.userInfo)
     }
   }

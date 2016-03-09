@@ -260,27 +260,27 @@ final class MIDINode: SKSpriteNode {
                color: dispatch.color.value,
                size: MIDINode.texture.size() * 0.75)
 
-    let object = Sequencer.transport
+    let transport = Sequencer.transport
     typealias Notification = Transport.Notification
 
-    receptionist.observe(.DidBeginJogging,
-                    from: object,
-                callback: weakMethod(self, MIDINode.didBeginJogging))
-    receptionist.observe(.DidJog,
-                    from: object,
-                callback: weakMethod(self, MIDINode.didJog))
-    receptionist.observe(.DidEndJogging,
-                    from: object,
+    receptionist.observe(notification: .DidBeginJogging,
+                         from: transport,
+                         callback: weakMethod(self, MIDINode.didBeginJogging))
+    receptionist.observe(notification: .DidJog,
+                         from: transport,
+                         callback: weakMethod(self, MIDINode.didJog))
+    receptionist.observe(notification: .DidEndJogging,
+                         from: transport,
                 callback: weakMethod(self, MIDINode.didEndJogging))
-    receptionist.observe(.DidStart,
-                    from: object,
-                callback: weakMethod(self, MIDINode.didStart))
-    receptionist.observe(.DidPause,
-                    from: object,
-                callback: weakMethod(self, MIDINode.didPause))
-    receptionist.observe(.DidReset,
-                    from: object,
-                callback: weakMethod(self, MIDINode.didReset))
+    receptionist.observe(notification: .DidStart,
+                         from: transport,
+                         callback: weakMethod(self, MIDINode.didStart))
+    receptionist.observe(notification: .DidPause,
+                         from: transport,
+                         callback: weakMethod(self, MIDINode.didPause))
+    receptionist.observe(notification: .DidReset,
+                         from: transport,
+                         callback: weakMethod(self, MIDINode.didReset))
 
     try MIDIClientCreateWithBlock(name, &client, nil) ➤ "Failed to create midi client"
     try MIDISourceCreate(client, "\(name)", &endPoint) ➤ "Failed to create end point for node \(name)"

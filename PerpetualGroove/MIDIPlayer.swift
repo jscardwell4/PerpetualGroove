@@ -22,24 +22,20 @@ final class MIDIPlayer {
   private static let receptionist: NotificationReceptionist = {
     let receptionist = NotificationReceptionist()
     receptionist.logContext = LogManager.SceneContext
-    receptionist.observe(.DidChangeSequence,
+    receptionist.observe(notification: .DidChangeSequence,
                     from: Sequencer.self,
                 callback: MIDIPlayer.didChangeSequence)
-      receptionist.observe(.DidEnterLoopMode,
+      receptionist.observe(notification: .DidEnterLoopMode,
                       from: Sequencer.self,
-                     queue: NSOperationQueue.mainQueue(),
                   callback: MIDIPlayer.didEnterLoopMode)
-      receptionist.observe(.DidExitLoopMode,
+      receptionist.observe(notification: .DidExitLoopMode,
                       from: Sequencer.self,
-                     queue: NSOperationQueue.mainQueue(),
                   callback: MIDIPlayer.didExitLoopMode)
-      receptionist.observe(.WillEnterLoopMode,
+      receptionist.observe(notification: .WillEnterLoopMode,
                       from: Sequencer.self,
-                     queue: NSOperationQueue.mainQueue(),
                   callback: MIDIPlayer.willEnterLoopMode)
-      receptionist.observe(.WillExitLoopMode,
+      receptionist.observe(notification: .WillExitLoopMode,
                       from: Sequencer.self,
-                     queue: NSOperationQueue.mainQueue(),
                   callback: MIDIPlayer.willExitLoopMode)
     return receptionist
   }()
@@ -71,10 +67,10 @@ final class MIDIPlayer {
   private static weak var sequence: Sequence? {
     didSet {
       guard sequence !== oldValue else { return }
-      if let oldSequence = oldValue { receptionist.stopObservingObject(oldSequence) }
+      if let oldSequence = oldValue { receptionist.stopObserving(object: oldSequence) }
       if let sequence = sequence {
-        receptionist.observe(.DidRemoveTrack, from: sequence, callback: MIDIPlayer.didRemoveTrack)
-        receptionist.observe(.DidChangeTrack, from: sequence, callback: MIDIPlayer.didChangeTrack)
+        receptionist.observe(notification: .DidRemoveTrack, from: sequence, callback: MIDIPlayer.didRemoveTrack)
+        receptionist.observe(notification: .DidChangeTrack, from: sequence, callback: MIDIPlayer.didChangeTrack)
       }
       updateCurrentDispatch()
     }

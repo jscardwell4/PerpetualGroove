@@ -19,8 +19,8 @@ final class BarBeatTimeLabel: UIView {
 
       if let oldTransport = oldValue {
         oldTransport.time.removeCallbackForKey(barBeatTimeCallbackKey)
-        receptionist.stopObserving(Transport.Notification.DidJog, from: oldValue)
-        receptionist.stopObserving(Transport.Notification.DidReset, from: oldValue)
+        receptionist.stopObserving(notification: .DidJog, from: oldValue)
+        receptionist.stopObserving(notification: .DidReset, from: oldValue)
       }
 
       guard let transport = transport else { return }
@@ -29,18 +29,18 @@ final class BarBeatTimeLabel: UIView {
       transport.time.registerCallback({ [weak self] in self?.currentTime = $0 },
                             predicate: {_ in true},
                                forKey: barBeatTimeCallbackKey)
-      receptionist.observe(.DidBeginJogging, from: transport) {
+      receptionist.observe(notification: .DidBeginJogging, from: transport) {
         [weak self] _ in self?.jogging = true
       }
-      receptionist.observe(.DidEndJogging, from: transport) {
+      receptionist.observe(notification: .DidEndJogging, from: transport) {
         [weak self] _ in self?.jogging = false
       }
-      receptionist.observe(.DidJog, from: transport) {
+      receptionist.observe(notification: .DidJog, from: transport) {
         [weak self] in
         guard self?.jogging == true, let time = $0.jogTime, _ = $0.jogDirection else { return }
         self?.currentTime = time
       }
-      receptionist.observe(.DidReset, from: transport) {
+      receptionist.observe(notification: .DidReset, from: transport) {
         [weak self] in guard let time = $0.time else { return }; self?.currentTime = time
       }
     }
@@ -194,7 +194,7 @@ final class BarBeatTimeLabel: UIView {
     calculateFrames()
 
     #if !TARGET_INTERFACE_BUILDER
-      receptionist.observe(Sequencer.Notification.DidChangeTransport, from: Sequencer.self) {
+      receptionist.observe(notification: Sequencer.Notification.DidChangeTransport, from: Sequencer.self) {
         [weak self] _ in self?.transport = Sequencer.transport
       }
       transport = Sequencer.transport

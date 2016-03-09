@@ -82,6 +82,30 @@ struct DocumentItem {
     isUbiquitous = false
   }
 
+  init(_ document: Document) {
+    let fileManager = NSFileManager.defaultManager()
+    guard let path = String(UTF8String: document.fileURL.fileSystemRepresentation) else {
+      fatalError("Unable to get the document's path representation")
+    }
+
+    guard let attributes = try? fileManager.attributesOfItemAtPath(path) else {
+      fatalError("Unable to get file attributes for document")
+    }
+
+    size = (attributes as NSDictionary).fileSize()
+    if let date = (attributes as NSDictionary).fileModificationDate() {
+      modificationDateString = DocumentItem.dateFormatter.stringFromDate(date)
+    } else { modificationDateString = nil }
+
+    if let date = (attributes as NSDictionary).fileCreationDate() {
+      creationDateString = DocumentItem.dateFormatter.stringFromDate(date)
+    } else { creationDateString = nil }
+
+    displayName = document.localizedName
+    filePath = document.fileURL.path!
+    isUbiquitous = fileManager.isUbiquitousItemAtURL(document.fileURL)
+  }
+
   /**
   init:
 

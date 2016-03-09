@@ -28,8 +28,6 @@ final class DocumentsViewController: UICollectionViewController {
     return receptionist
   }()
 
-  weak var documentsViewLayout: DocumentsViewLayout! { didSet { documentsViewLayout.controller = self } }
-
   private(set) var itemSize: CGSize = .zero {
     didSet {
       let (w, h) = itemSize.unpack
@@ -66,17 +64,11 @@ final class DocumentsViewController: UICollectionViewController {
 
     super.awakeFromNib()
 
-    (collectionViewLayout as? DocumentsViewLayout)?.controller = self
+    receptionist.observe(notification: .DidUpdateItems,
+                         from: DocumentManager.self,
+                         callback: weakMethod(self, DocumentsViewController.didUpdateItems))
 
-    receptionist.observe(.DidUpdateItems,
-                    from: MIDIDocumentManager.self,
-                callback: weakMethod(self, DocumentsViewController.didUpdateItems))
-
-    receptionist.observe(.DidCreateDocument, from: MIDIDocumentManager.self) {
-      [weak self] notification in self?.logDebug("\(notification)")
-    }
-
-    receptionist.observe(.DidChangeDocument, from: MIDIDocumentManager.self) {
+    receptionist.observe(notification: .DidChangeDocument, from: DocumentManager.self) {
       [weak self] _ in self?.refreshSelection()
     }
   }
@@ -86,7 +78,9 @@ final class DocumentsViewController: UICollectionViewController {
   private var selectedItem: NSIndexPath? {
     didSet {
       guard isViewLoaded() else { return }
-      if oldValue != selectedItem { logDebug("\(oldValue?.description ?? "nil") ➞ \(selectedItem?.description ?? "nil")") }
+      if oldValue != selectedItem {
+        logDebug("\(oldValue?.description ?? "nil") ➞ \(selectedItem?.description ?? "nil")")
+      }
       collectionView?.selectItemAtIndexPath(selectedItem, animated: true, scrollPosition: .CenteredVertically)
     }
   }
@@ -107,15 +101,35 @@ final class DocumentsViewController: UICollectionViewController {
     }
   }
 
+  /// Returns the index path for a document; returns nil if document is not represented in the collection
+  private func indexPathForDocument(document: Document) -> NSIndexPath? {
+    guard let idx = items.indexOf({$0.URL.isEqualToFileURL(document.fileURL)}) else {
+      return nil
+    }
+    return NSIndexPath(forItem: idx, inSection: 1)
+  }
+
   /** refreshSelection */
   private func refreshSelection() {
     guard isViewLoaded() else { return }
-    guard let document = MIDIDocumentManager.currentDocument else { selectedItem = nil; return }
+    guard let document = DocumentManager.currentDocument else { selectedItem = nil; return }
 
-    guard let idx = items.indexOf({$0.URL == document.fileURL}) else {
-        fatalError("document not found in items: \(document)")
+    switch indexPathForDocument(document) {
+      case let indexPath?:
+        selectedItem = indexPath
+      default:
+        let indexPath = NSIndexPath(forItem: items.count, inSection: 1)
+        let item = DocumentItem(document)
+        items.append(item)
+        collectionView?.performBatchUpdates({ 
+          [unowned self] in
+          self.collectionView?.insertItemsAtIndexPaths([indexPath])
+          }, completion: {
+            [unowned self] completed in
+            guard completed else { return }
+            self.selectedItem = indexPath
+          })
     }
-    selectedItem = NSIndexPath(forItem: idx, inSection: 1)
   }
 
   // MARK: - View lifecycle
@@ -134,12 +148,13 @@ final class DocumentsViewController: UICollectionViewController {
   - parameter animated: Bool
   */
   override func viewWillAppear(animated: Bool) {
-    guard !MIDIDocumentManager.gatheringMetadataItems else { return }
-    items = OrderedSet(MIDIDocumentManager.items)
+    (collectionViewLayout as? DocumentsViewLayout)?.controller = self
+    guard !DocumentManager.gatheringMetadataItems else { return }
+    items = OrderedSet(DocumentManager.items)
     refreshSelection()
   }
 
-  /** updateViewConstraints */
+  /// Adds constraints for `collectionView` when needed and updates content width and height constraints
   override func updateViewConstraints() {
     guard let collectionView = collectionView else { super.updateViewConstraints(); return }
 
@@ -160,91 +175,53 @@ final class DocumentsViewController: UICollectionViewController {
 
   // MARK: - Notifications
 
-  private func addItems(items: [DocumentItem]) -> [NSIndexPath] {
+  /// Adds `items` to the controller's `items` and adds cells to the collection view
+  private func addItems(items: [DocumentItem]) {
     let oldCount = self.items.count
     self.items ∪= items
     let newCount = self.items.count
-    return (oldCount ..< newCount).map { NSIndexPath(forItem: $0, inSection: 1) }
+    let added = (oldCount ..< newCount).map { NSIndexPath(forItem: $0, inSection: 1) }
+    logDebug("adding items at indices \(added)")
+    if !added.isEmpty { collectionView?.insertItemsAtIndexPaths(added) }
   }
 
-  private func removeItems(items: [DocumentItem]) -> [NSIndexPath] {
-    let indexPaths: [NSIndexPath] = items.flatMap {
+  /// Removes `items` from the controller's `items` and deletes the cells from the collection view
+  private func removeItems(items: [DocumentItem]) {
+    let removed: [NSIndexPath] = items.flatMap {
       guard let idx = self.items.indexOf($0) else { return nil }
       return NSIndexPath(forItem: idx, inSection: 1)
     }
     self.items ∖= items
-    return indexPaths
+    if !removed.isEmpty { collectionView?.deleteItemsAtIndexPaths(removed) }
   }
 
 
-  /**
-  didUpdateItems:
-
-  - parameter notification: NSNotification? = nil
-  */
+  /// Adds and/or removes items according to the contents of `notification`
   private func didUpdateItems(notification: NSNotification) {
     guard isViewLoaded() else { return }
 
     collectionView?.performBatchUpdates({
       [unowned self] in
         switch (notification.addedItems, notification.removedItems) {
-          case let (addedItems?, removedItems?) where !(addedItems.isEmpty && removedItems.isEmpty):
-            let added = self.addItems(addedItems)
-            self.logDebug("adding items at indices \(added)")
-            let removed = self.removeItems(removedItems)
-            self.logDebug("removing items at indices \(removed)")
-
-            if !removed.isEmpty { self.collectionView?.deleteItemsAtIndexPaths(removed) }
-            if !added.isEmpty { self.collectionView?.insertItemsAtIndexPaths(added) }
-
-          case let (nil, removedItems?) where !removedItems.isEmpty:
-            let removed = self.removeItems(removedItems)
-            guard !removed.isEmpty else { return }
-            self.logDebug("removing items at indices \(removed)")
-            self.collectionView?.deleteItemsAtIndexPaths(removed)
-
-          case let (addedItems?, nil) where !addedItems.isEmpty:
-            let added = self.addItems(addedItems)
-            guard !added.isEmpty else { break }
-            self.logDebug("adding items at indices \(added)")
-            self.collectionView?.insertItemsAtIndexPaths(added)
-
-          default: break
+          case let (addedItems?, removedItems?): self.addItems(addedItems); self.removeItems(removedItems)
+          case let (nil, removedItems?):         self.removeItems(removedItems)
+          case let (addedItems?, nil):           self.addItems(addedItems)
+          case (nil, nil):                       break
         }
       }, completion: {[unowned self] completed in guard completed else { return }; self.refreshSelection() })
   }
 
   // MARK: UICollectionViewDataSource
 
-  /**
-  numberOfSectionsInCollectionView:
-
-  - parameter collectionView: UICollectionView
-
-  - returns: Int
-  */
+  /// Returns two: one for the create item and one for the existing document items
   override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int { return 2 }
 
-  /**
-  collectionView:numberOfItemsInSection:
-
-  - parameter collectionView: UICollectionView
-  - parameter section: Int
-
-  - returns: Int
-  */
+  /// Returns the number of existing documents when section == 1 and one otherwise
   override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     return section == 1 ? items.count : 1
   }
 
-  /**
-  collectionView:cellForItemAtIndexPath:
-
-  - parameter collectionView: UICollectionView
-  - parameter indexPath: NSIndexPath
-
-  - returns: UICollectionViewCell
-  */
+  /// Returns an instance of `CreateDocumentCell` when section == 0 and an instance of `DocumentCell` otherwise
   override func collectionView(collectionView: UICollectionView,
         cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell
   {
@@ -266,14 +243,7 @@ final class DocumentsViewController: UICollectionViewController {
 
   // MARK: - UICollectionViewDelegate
 
-  /**
-  collectionView:shouldHighlightItemAtIndexPath:
-
-  - parameter collectionView: UICollectionView
-  - parameter indexPath: NSIndexPath
-
-  - returns: Bool
-  */
+  /// Returns `true` unless the cell is showing its delete button
   override func     collectionView(collectionView: UICollectionView,
     shouldHighlightItemAtIndexPath indexPath: NSIndexPath) -> Bool
   {
@@ -283,18 +253,13 @@ final class DocumentsViewController: UICollectionViewController {
     return false
   }
 
-  /**
-  collectionView:didSelectItemAtIndexPath:
-
-  - parameter collectionView: UICollectionView
-  - parameter indexPath: NSIndexPath
-  */
+  /// Creates a new document when section == 0; opens the document otherwise
   override func collectionView(collectionView: UICollectionView,
       didSelectItemAtIndexPath indexPath: NSIndexPath)
   {
     switch indexPath.section {
-      case 0:  MIDIDocumentManager.createNewDocument()
-      default: MIDIDocumentManager.openItem(items[indexPath.row])
+      case 0:  DocumentManager.createNewDocument()
+      default: DocumentManager.openItem(items[indexPath.row])
     }
     dismiss?()
   }

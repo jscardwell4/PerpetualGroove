@@ -1,5 +1,5 @@
 //
-//  MIDIDocument.swift
+//  Document.swift
 //  PerpetualGroove
 //
 //  Created by Jason Cardwell on 9/28/15.
@@ -9,7 +9,7 @@
 import UIKit
 import MoonKit
 
-final class MIDIDocument: UIDocument {
+final class Document: UIDocument {
 
   enum SourceType: String {
     case MIDI = "midi", Groove = "groove"
@@ -24,7 +24,7 @@ final class MIDIDocument: UIDocument {
 
   var sourceType: SourceType? { return SourceType(fileType) }
 
-  var storageLocation: MIDIDocumentManager.StorageLocation {
+  var storageLocation: DocumentManager.StorageLocation {
     var isUbiquitous: AnyObject?
     do { try fileURL.getResourceValue(&isUbiquitous, forKey: NSURLIsUbiquitousItemKey) } catch { logError(error) }
     return isUbiquitous != nil && (isUbiquitous as? NSNumber)?.boolValue == true ? .iCloud : .Local
@@ -35,18 +35,18 @@ final class MIDIDocument: UIDocument {
       guard oldValue !== sequence else { return }
 
       if let oldSequence = oldValue {
-        receptionist.stopObserving(Sequence.Notification.DidUpdate, from: oldSequence)
+        receptionist.stopObserving(notification: .DidUpdate, from: oldSequence)
       }
 
       if let sequence = sequence {
-        receptionist.observe(.DidUpdate, from: sequence, callback: weakMethod(self, MIDIDocument.didUpdate))
+        receptionist.observe(notification: .DidUpdate, from: sequence, callback: weakMethod(self, Document.didUpdate))
       }
     }
   }
 
   private var creating = false
 
-  override var presentedItemOperationQueue: NSOperationQueue { return MIDIDocumentManager.operationQueue }
+  override var presentedItemOperationQueue: NSOperationQueue { return DocumentManager.operationQueue }
 
   /**
    didUpdate:
@@ -78,13 +78,13 @@ final class MIDIDocument: UIDocument {
   override init(fileURL url: NSURL) {
     super.init(fileURL: url)
 
-    receptionist.observe(UIDocumentStateChangedNotification,
+    receptionist.observe(name: UIDocumentStateChangedNotification,
                     from: self,
-                callback: weakMethod(self, MIDIDocument.didChangeState))
+                callback: weakMethod(self, Document.didChangeState))
   }
 
   private let receptionist: NotificationReceptionist = {
-    let receptionist = NotificationReceptionist(callbackQueue: MIDIDocumentManager.operationQueue)
+    let receptionist = NotificationReceptionist(callbackQueue: DocumentManager.operationQueue)
     receptionist.logContext = LogManager.MIDIFileContext
     return receptionist
   }()
@@ -172,12 +172,12 @@ final class MIDIDocument: UIDocument {
 
 }
 
-extension MIDIDocument: Named {
+extension Document: Named {
   var name: String { return localizedName.isEmpty ? "unamed" : localizedName }
 }
 
 // MARK: - Error
-extension MIDIDocument {
+extension Document {
 
   enum Error: String, ErrorType { case InvalidContentType, InvalidContent, MissingSequence }
 

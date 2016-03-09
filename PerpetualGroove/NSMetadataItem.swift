@@ -38,23 +38,23 @@ extension NSMetadataItem {
 
   subscript(itemKey: ItemKey) -> AnyObject? { return valueForAttribute(itemKey.rawValue) }
 
-  var fileSystemName: String?       { return self[.FSName]                  as? String                            }
-  var displayName: String           { return self[.DisplayName]             as? String ?? "Unnamed Item"          }
-  var URL: NSURL                    { return self[.URL]                     as! NSURL                             }
-  var path: String?                 { return self[.Path]                    as? String                            }
-  var size: UInt64                  { return (self[.FSSize]                 as! NSNumber).unsignedLongLongValue   }
-  var creationDate: NSDate?         { return self[.FSCreationDate]          as? NSDate                            }
-  var modificationDate: NSDate?     { return self[.FSContentChangeDate]     as? NSDate                            }
-  var isUbiquitous: Bool?           { return (self[.IsUbiquitous]           as? NSNumber)?.boolValue              }
-  var hasUnresolvedConflicts: Bool? { return (self[.HasUnresolvedConflicts] as? NSNumber)?.boolValue              }
-  var downloading: Bool?            { return (self[.IsDownloading]          as? NSNumber)?.boolValue              }
-  var uploaded: Bool?               { return (self[.IsUploaded]             as? NSNumber)?.boolValue              }
-  var uploading: Bool?              { return (self[.IsUploading]            as? NSNumber)?.boolValue              }
-  var percentDownloaded: Double?    { return (self[.PercentDownloaded]      as? NSNumber)?.doubleValue            }
-  var percentUploaded: Double?      { return (self[.PercentUploaded]        as? NSNumber)?.doubleValue            }
-  var downloadingStatus: String?    { return self[.DownloadingStatus]       as? String                            }
-  var downloadingError: NSError?    { return self[.DownloadingError]        as? NSError                           }
-  var uploadingError: NSError?      { return self[.UploadingError]          as? NSError                           }
+  var fileSystemName: String? { return self[.FSName] as? String }
+  var displayName: String { return self[.DisplayName] as? String ?? "Unnamed Item" }
+  var URL: NSURL { return self[.URL] as! NSURL }
+  var path: String? { return self[.Path] as? String }
+  var size: UInt64 { return (self[.FSSize] as! NSNumber).unsignedLongLongValue }
+  var creationDate: NSDate? { return self[.FSCreationDate] as? NSDate }
+  var modificationDate: NSDate? { return self[.FSContentChangeDate] as? NSDate }
+  var isUbiquitous: Bool? { return (self[.IsUbiquitous] as? NSNumber)?.boolValue }
+  var hasUnresolvedConflicts: Bool? { return (self[.HasUnresolvedConflicts] as? NSNumber)?.boolValue }
+  var downloading: Bool? { return (self[.IsDownloading] as? NSNumber)?.boolValue }
+  var uploaded: Bool? { return (self[.IsUploaded] as? NSNumber)?.boolValue }
+  var uploading: Bool? { return (self[.IsUploading] as? NSNumber)?.boolValue }
+  var percentDownloaded: Double? { return (self[.PercentDownloaded] as? NSNumber)?.doubleValue }
+  var percentUploaded: Double? { return (self[.PercentUploaded] as? NSNumber)?.doubleValue }
+  var downloadingStatus: String? { return self[.DownloadingStatus] as? String }
+  var downloadingError: NSError? { return self[.DownloadingError] as? NSError }
+  var uploadingError: NSError? { return self[.UploadingError] as? NSError }
 
   var attributesDescription: String {
     var result = "NSMetadataItem {\n\t"

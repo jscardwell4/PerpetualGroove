@@ -148,30 +148,30 @@ final class Sequence {
    - parameter track: Track
   */
   private func observeTrack(track: Track) {
-    receptionist.observe(.DidUpdate,
+    receptionist.observe(notification: .DidUpdate,
                     from: track,
                 callback: weakMethod(self, Sequence.trackDidUpdate))
 
-    receptionist.observe(.SoloStatusDidChange,
+    receptionist.observe(notification: .SoloStatusDidChange,
                     from: track,
                 callback: weakMethod(self, Sequence.trackSoloStatusDidChange))
   }
 
-  private(set) weak var document: MIDIDocument!
+  private(set) weak var document: Document!
 
   // MARK: - Initializing
 
   /**
    initWithDocument:
 
-   - parameter document: MIDIDocument
+   - parameter document: Document
   */
-  init(document: MIDIDocument) {
+  init(document: Document) {
     self.document = document
-    receptionist.observe(Sequencer.Notification.DidToggleRecording,
+    receptionist.observe(notification: Sequencer.Notification.DidToggleRecording,
                     from: Sequencer.self,
                 callback: weakMethod(self, Sequence.toggleRecording))
-    receptionist.observe(Sequencer.Notification.DidReset,
+    receptionist.observe(notification: Sequencer.Notification.DidReset,
                     from: Sequencer.self,
                 callback: weakMethod(self, Sequence.sequencerDidReset))
     tempoTrack = TempoTrack(sequence: self)
@@ -181,9 +181,9 @@ final class Sequence {
    initWithFile:document:
 
    - parameter file: MIDIFile
-   - parameter document: MIDIDocument
+   - parameter document: Document
   */
-  convenience init(file: MIDIFile, document: MIDIDocument) {
+  convenience init(file: MIDIFile, document: Document) {
     self.init(document: document)
 
     var trackChunks = ArraySlice(file.tracks)
@@ -205,9 +205,9 @@ final class Sequence {
    initWithFile:document:
 
    - parameter file: GrooveFile
-   - parameter document: MIDIDocument
+   - parameter document: Document
   */
-  convenience init(file: GrooveFile, document: MIDIDocument) {
+  convenience init(file: GrooveFile, document: Document) {
     self.init(document: document)
     var tempoEvents: [MIDIEvent] = []
     for (_, rawTime, bpmValue) in file.tempoChanges.value {
@@ -224,9 +224,9 @@ final class Sequence {
    initWithData:document:
 
    - parameter data: SequenceDataProvider
-   - parameter document: MIDIDocument
+   - parameter document: Document
   */
-  convenience init(data: SequenceDataProvider, document: MIDIDocument) {
+  convenience init(data: SequenceDataProvider, document: Document) {
     switch data.storedData {
       case .MIDI(let file): self.init(file: file, document: document)
       case .Groove(let file): self.init(file: file, document: document)
@@ -287,7 +287,7 @@ final class Sequence {
   func removeTrackAtIndex(index: Int) {
     let track = instrumentTracks.removeAtIndex(index)
     track.nodeManager.stopNodes(remove: true)
-    receptionist.stopObserving(Track.Notification.DidUpdate, from: track)
+    receptionist.stopObserving(notification: .DidUpdate, from: track)
     logDebug("track removed: \(track.name)")
     Notification.DidRemoveTrack.post(
       object: self,
