@@ -25,9 +25,11 @@ final class Document: UIDocument {
   var sourceType: SourceType? { return SourceType(fileType) }
 
   var storageLocation: DocumentManager.StorageLocation {
-    var isUbiquitous: AnyObject?
-    do { try fileURL.getResourceValue(&isUbiquitous, forKey: NSURLIsUbiquitousItemKey) } catch { logError(error) }
-    return isUbiquitous != nil && (isUbiquitous as? NSNumber)?.boolValue == true ? .iCloud : .Local
+    return NSFileManager.withDefaultManager({$0.isUbiquitousItemAtURL(fileURL)}) ? .iCloud : .Local
+//    let fileManager = NSFileManager.defaultManager()
+//    var isUbiquitous: AnyObject?
+//    do { try fileURL.getResourceValue(&isUbiquitous, forKey: NSURLIsUbiquitousItemKey) } catch { logError(error) }
+//    return isUbiquitous != nil && (isUbiquitous as? NSNumber)?.boolValue == true ? .iCloud : .Local
   }
 
   private(set) var sequence: Sequence? {
@@ -56,6 +58,16 @@ final class Document: UIDocument {
   private func didUpdate(notification: NSNotification) {
     logDebug("")
     updateChangeCount(.Done)
+  }
+
+  override func disableEditing() {
+    logDebug("")
+    super.disableEditing()
+  }
+
+  override func enableEditing() {
+    logDebug("")
+    super.enableEditing()
   }
 
   /**
@@ -144,12 +156,43 @@ final class Document: UIDocument {
 
   - parameter name: String
   */
-  func renameTo(name: String) {
-    let (baseName, _) = name.baseNameExt
-    logDebug("renaming document '\(localizedName)' ⟹ '\(baseName)'")
-    guard name != localizedName, let url = fileURL.URLByDeletingLastPathComponent else { return }
-    saveToURL(url + "\(baseName).groove", forSaveOperation: .ForCreating, completionHandler: nil)
+  func renameTo(newName: String) {
+    DocumentManager.queue.async {
+      [weak self] in
 
+      guard let weakself = self else { return }
+
+      guard newName != weakself.localizedName,
+        let directoryURL = weakself.fileURL.URLByDeletingLastPathComponent else { return }
+
+      let oldName = weakself.localizedName
+      let oldURL = weakself.fileURL
+
+      let newURL = directoryURL + "\(newName).groove"
+
+      weakself.logDebug("renaming document '\(oldName)' ⟹ '\(newName)'")
+
+      let fileCoordinator = NSFileCoordinator(filePresenter: nil)
+      var error: NSError?
+      fileCoordinator.coordinateWritingItemAtURL(oldURL,
+                                                 options: .ForMoving,
+                                                 writingItemAtURL: newURL,
+                                                 options: .ForReplacing,
+                                                 error: &error)
+      {
+        [weak self] oldURL, newURL in
+
+        fileCoordinator.itemAtURL(oldURL, willMoveToURL: newURL)
+        do {
+          try NSFileManager.withDefaultManager { try $0.moveItemAtURL(oldURL, toURL: newURL) }
+          fileCoordinator.itemAtURL(oldURL, didMoveToURL: newURL)
+        } catch {
+          self?.logError(error)
+        }
+      }
+
+      if let error = error { weakself.logError(error) }
+    }
   }
 
   // MARK: - Saving
@@ -166,10 +209,31 @@ final class Document: UIDocument {
         completionHandler: ((Bool) -> Void)?)
   {
     creating = saveOperation == .ForCreating
-    logDebug("(\(creating ? "saving" : "overwriting"))  '\(String(CString:url.fileSystemRepresentation, encoding: NSUTF8StringEncoding)!)'")
+    logDebug("(\(creating ? "saving" : "overwriting"))  '\(url.path!)'")
     super.saveToURL(url, forSaveOperation: saveOperation, completionHandler: completionHandler)
   }
 
+  override func presentedItemDidMoveToURL(newURL: NSURL) {
+    super.presentedItemDidMoveToURL(newURL)
+    guard let newName = newURL.pathBaseName else {
+      fatalError("Failed to get base name from new url")
+    }
+    Notification.DidRenameDocument.post(object: self, userInfo: [.NewName: newName])
+  }
+}
+
+extension Document: NotificationDispatchType {
+  enum Notification: String, NotificationType, NotificationNameType {
+    case DidRenameDocument
+
+    enum Key: String, NotificationKeyType { case NewName }
+  }
+}
+
+extension NSNotification {
+  var newDocumentName: String? {
+    return userInfo?[Document.Notification.Key.NewName.key] as? String
+  }
 }
 
 extension Document: Named {

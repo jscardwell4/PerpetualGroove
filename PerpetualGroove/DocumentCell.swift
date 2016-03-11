@@ -17,11 +17,11 @@ final class DocumentCell: UICollectionViewCell {
   @IBOutlet var leadingConstraint: NSLayoutConstraint!
 
   /** deleteItem */
-  @IBAction func deleteItem() {
-    guard let item = item else { return }
-    if SettingsManager.confirmDeleteDocument { logWarning("delete confirmation not yet implemented") }
-    DocumentManager.deleteItem(item)
-  }
+//  @IBAction func deleteItem() {
+//    guard let item = item else { return }
+//    if SettingsManager.confirmDeleteDocument { logWarning("delete confirmation not yet implemented") }
+//    DocumentManager.deleteItem(item)
+//  }
 
   private(set) var showingDelete: Bool = false
 

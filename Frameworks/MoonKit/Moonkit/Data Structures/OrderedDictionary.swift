@@ -631,7 +631,8 @@ public struct OrderedDictionary<Key: Hashable, Value>: CollectionType, Dictionar
 
   public mutating func removeAll(keepCapacity keepCapacity: Bool = false) {
 
-    owner = Owner(minimumCapacity: keepCapacity ? capacity : 0)
+    let capacity = keepCapacity ? self.capacity : 0
+    owner = Owner(buffer: Buffer(storage: Storage.create(capacity)))
 //    logVerbose("buffer = \(buffer.debugDescription)")
 //    guard isUniquelyReferenced(&owner) else {
 //      return

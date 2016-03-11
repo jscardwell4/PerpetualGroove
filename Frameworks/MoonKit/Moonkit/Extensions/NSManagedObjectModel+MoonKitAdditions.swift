@@ -49,7 +49,7 @@ extension NSManagedObjectModel {
 
           if let attributeDescription = property as? NSAttributeDescription {
             let attributeTypeString = NSStringFromNSAttributeType(attributeDescription.attributeType)
-            var typeDescription = attributeTypeString[2..<attributeTypeString.length - 13].lowercaseString
+            var typeDescription = attributeTypeString[2..<attributeTypeString.characters.count - 13].lowercaseString
             if let attributeClassName = attributeDescription.attributeValueClassName { typeDescription += ",\(attributeClassName)" }
             if let defaultValue: AnyObject = attributeDescription.defaultValue { typeDescription += " (\(defaultValue))" }
             propertyNametagAttributes.append(typeDescription)
@@ -58,7 +58,7 @@ extension NSManagedObjectModel {
             propertyDescription["destination"] = relationshipDescription.destinationEntity?.name
             propertyDescription["inverse"]     = relationshipDescription.inverseRelationship?.name
             let deleteRuleString = NSStringFromNSDeleteRule(relationshipDescription.deleteRule)
-            propertyDescription["delete rule"] = deleteRuleString[2..<deleteRuleString.length - 10].lowercaseString
+            propertyDescription["delete rule"] = deleteRuleString[2..<deleteRuleString.characters.count - 10].lowercaseString
             propertyDescription["min/max"]   = "\(relationshipDescription.minCount)/\(relationshipDescription.maxCount)"
             if relationshipDescription.toMany { propertyNametagAttributes.append("toMany") }
             if relationshipDescription.ordered { propertyNametagAttributes.append("ordered") }

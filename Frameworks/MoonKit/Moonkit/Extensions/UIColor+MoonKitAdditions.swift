@@ -118,7 +118,7 @@ extension UIColor {
   public var rgbaHexString: String? {
     if let hex = rgbaHex {
       var hexString = String(hex, radix: 16, uppercase: true)
-      while hexString.count < 8 { hexString = "0" + hexString }
+      while hexString.characters.count < 8 { hexString = "0" + hexString }
       return "#\(hexString)"
     } else {
       return nil
@@ -128,7 +128,7 @@ extension UIColor {
   public var rgbHexString: String? {
     if let hex = rgbHex {
       var hexString = String(hex, radix: 16, uppercase: true)
-      while hexString.count < 6 { hexString = "0" + hexString }
+      while hexString.characters.count < 6 { hexString = "0" + hexString }
       return "#\(hexString)"
     } else {
       return nil

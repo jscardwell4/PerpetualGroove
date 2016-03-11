@@ -61,7 +61,7 @@ internal class JSONIncludeDirective {
   var description: String {
     var result = "\n".join(
       "location: \(location)",
-      "parameters: \(String(prettyNil: parameters))",
+      "parameters: \(parameters?.description ?? "nil")",
       "file: \((file.path as NSString).lastPathComponent)"
     )
     if subdirectives.count == 0 { result += "\nsubdirectives: []" }
@@ -70,7 +70,7 @@ internal class JSONIncludeDirective {
   }
 
   var content: String {
-    if let cachedContent = JSONIncludeDirective.cache["\(file.path),\(String(prettyNil: _parameters))"] {
+    if let cachedContent = JSONIncludeDirective.cache["\(file.path),\(_parameters ?? "nil")"] {
       return cachedContent
     }
     var result: String = ""
@@ -88,7 +88,7 @@ internal class JSONIncludeDirective {
     if let p = parameters {
       result = p.reduce(result, combine: {$0.stringByReplacingOccurrencesOfString("<#\($1.0)#>", withString: $1.1)})
     }
-    JSONIncludeDirective.cache["\(file.path),\(String(prettyNil: _parameters))"] = result
+    JSONIncludeDirective.cache["\(file.path),\(_parameters ?? "nil")"] = result
     return result
   }
 

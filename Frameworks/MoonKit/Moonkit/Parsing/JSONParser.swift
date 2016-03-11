@@ -178,7 +178,7 @@ public class JSONParser {
     print("scanner.atEnd? \(scanner.atEnd)\nidx: \(idx)")
     print("keyStack[\(keyStack.count)]: " + ", ".join(keyStack.map{"'\($0)'"}))
     print("contextStack[\(contextStack.count)]: " + ", ".join(contextStack.map{$0.rawValue}))
-    print("objectStack[\(objectStack.count)]:\n" + "\n".join(objectStack.map{String(prettyNil: $0)}))
+    print("objectStack[\(objectStack.count)]:\n" + "\n".join(objectStack.map{String($0)}))
     if error != nil {
       print("error: \(detailedDescriptionForError(error!, depth: 0))")
     }

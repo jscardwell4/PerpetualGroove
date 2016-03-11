@@ -95,8 +95,8 @@ final class LogManager: MoonKit.LogManager {
 
   /** setDefaultLogContexts */
   static private func setDefaultLogContexts() {
-    DocumentManager.defaultLogContext     = MIDIFileContext//  ∪ .Console
-    Document.defaultLogContext            = MIDIFileContext//  ∪ .Console
+    DocumentManager.defaultLogContext         = MIDIFileContext//  ∪ .Console
+    Document.defaultLogContext                = MIDIFileContext  ∪ .Console
     MIDIFile.defaultLogContext                = MIDIFileContext//  ∪ .Console
     GrooveFile.defaultLogContext              = MIDIFileContext//  ∪ .Console
     MIDIFileHeaderChunk.defaultLogContext     = MIDIFileContext//  ∪ .Console

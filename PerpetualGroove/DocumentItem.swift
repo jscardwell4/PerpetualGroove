@@ -12,7 +12,7 @@ import MoonKit
 struct DocumentItem {
 
   let displayName: String
-  let filePath: String
+  let fileBookmark: NSData
   private let modificationDateString: String?
   private let creationDateString: String?
   let size: UInt64
@@ -26,7 +26,12 @@ struct DocumentItem {
     return dateFormatter
   }()
 
-  var URL: NSURL { return NSURL(fileURLWithPath: filePath) }
+  var URL: NSURL? {
+    return try? NSURL(byResolvingBookmarkData: fileBookmark,
+                      options: .WithoutUI,
+                      relativeToURL: nil,
+                      bookmarkDataIsStale: nil)
+  }
 
   var modificationDate: NSDate? {
     guard let dateString = modificationDateString else { return nil }
@@ -45,7 +50,14 @@ struct DocumentItem {
   */
   init(_ item: NSMetadataItem) {
     displayName = item.displayName.baseNameExt.0
-    filePath = item.URL.path!
+    guard let bookmarkData = try? item.URL.bookmarkDataWithOptions(.SuitableForBookmarkFile,
+                                                                   includingResourceValuesForKeys: nil,
+                                                                   relativeToURL: nil) else
+    {
+      fatalError("unable to create bookmark data for url: \(item.URL)")
+    }
+
+    fileBookmark = bookmarkData
     if let date = item.modificationDate {
       modificationDateString = DocumentItem.dateFormatter.stringFromDate(date)
     } else {
@@ -67,7 +79,14 @@ struct DocumentItem {
   */
   init(_ item: LocalDocumentItem) {
     displayName = item.displayName.baseNameExt.0
-    filePath = item.URL.path!
+    guard let bookmarkData = try? item.URL.bookmarkDataWithOptions(.SuitableForBookmarkFile,
+                                                                   includingResourceValuesForKeys: nil,
+                                                                   relativeToURL: nil) else
+    {
+      fatalError("unable to create bookmark data for url: \(item.URL)")
+    }
+
+    fileBookmark = bookmarkData
     if let date = item.modificationDate {
       modificationDateString = DocumentItem.dateFormatter.stringFromDate(date)
     } else {
@@ -102,7 +121,14 @@ struct DocumentItem {
     } else { creationDateString = nil }
 
     displayName = document.localizedName
-    filePath = document.fileURL.path!
+    guard let bookmarkData = try? document.fileURL.bookmarkDataWithOptions(.SuitableForBookmarkFile,
+                                                                   includingResourceValuesForKeys: nil,
+                                                                   relativeToURL: nil) else
+    {
+      fatalError("unable to create bookmark data for url: \(document.fileURL)")
+    }
+
+    fileBookmark = bookmarkData
     isUbiquitous = fileManager.isUbiquitousItemAtURL(document.fileURL)
   }
 
@@ -140,9 +166,11 @@ extension DocumentItem: Coding {
    */
   init?(coder: NSCoder) {
     guard let displayName = coder.decodeObjectForKey("displayName") as? String,
-      filePath = coder.decodeObjectForKey("filePath") as? String else { return nil }
+              bookmarkData = coder.decodeObjectForKey("fileBookmark") as? NSData
+      else { return nil }
+
     self.displayName = displayName
-    self.filePath = filePath
+    fileBookmark = bookmarkData
     isUbiquitous = coder.decodeBoolForKey("isUbiquitous")
     size = UInt64(coder.decodeInt64ForKey("size"))
     modificationDateString = coder.decodeObjectForKey("modificationDateString") as? String
@@ -155,8 +183,8 @@ extension DocumentItem: Coding {
    - parameter coder: NSCoder
    */
   func encodeWithCoder(coder: NSCoder) {
+    coder.encodeObject(fileBookmark, forKey: "fileBookmark")
     coder.encodeObject(displayName, forKey: "displayName")
-    coder.encodeObject(filePath, forKey: "filePath")
     coder.encodeObject(modificationDateString, forKey: "modificationDateString")
     coder.encodeObject(creationDateString, forKey: "creationDateString")
     coder.encodeInt64(Int64(size), forKey: "size")
@@ -172,17 +200,13 @@ extension DocumentItem: Named {
 }
 
 extension DocumentItem: CustomStringConvertible {
-  var description: String {
-    let (baseName, ext) = filePath.baseNameExt
-    return "\(baseName).\(ext)"
-  }
+  var description: String { return "\(displayName)" }
 }
 
 extension DocumentItem: CustomDebugStringConvertible {
   var debugDescription: String {
     var dict: [String:Any] = [
       "displayName": displayName,
-      "filePath": filePath,
       "size": size,
       "isUbiquitous": isUbiquitous
     ]
@@ -193,7 +217,10 @@ extension DocumentItem: CustomDebugStringConvertible {
 }
 
 extension DocumentItem: Hashable {
-  var hashValue: Int { return URL.hashValue }
+  var hashValue: Int {
+    guard let url = URL else { return displayName.hashValue ^ size.hashValue ^ isUbiquitous.hashValue }
+    return url.hashValue
+  }
 }
 
 extension DocumentItem: Equatable {}
@@ -207,8 +234,10 @@ Equatable compliance
 - returns: Bool
 */
 func ==(lhs: DocumentItem, rhs: DocumentItem) -> Bool {
-  return lhs.filePath == rhs.filePath
-      && lhs.displayName == rhs.displayName
+  let lhsURL = try? NSURL(byResolvingBookmarkData: lhs.fileBookmark, options: .WithoutUI, relativeToURL: nil, bookmarkDataIsStale: nil)
+  let rhsURL = try? NSURL(byResolvingBookmarkData: rhs.fileBookmark, options: .WithoutUI, relativeToURL: nil, bookmarkDataIsStale: nil)
+  guard lhsURL != nil && rhsURL != nil && lhsURL!.isEqualToFileURL(rhsURL!) else { return false }
+  return lhs.displayName == rhs.displayName
       && lhs.creationDateString == rhs.creationDateString
       && lhs.modificationDateString == rhs.modificationDateString
       && lhs.size == rhs.size

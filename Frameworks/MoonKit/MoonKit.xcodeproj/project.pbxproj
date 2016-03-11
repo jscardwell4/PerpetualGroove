@@ -296,6 +296,7 @@
 		C2618A781B7A88A400122EBA /* InlinePickerViewImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2618A771B7A88A400122EBA /* InlinePickerViewImageCell.swift */; };
 		C26254261B744A2500E81068 /* ControlNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26254251B744A2500E81068 /* ControlNode.swift */; };
 		C26254281B744C3F00E81068 /* ButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26254271B744C3F00E81068 /* ButtonNode.swift */; };
+		C2649D701C922F8D001039DA /* NSFileManager+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2649D6F1C922F8D001039DA /* NSFileManager+MoonKitAdditions.swift */; };
 		C266A6F01B6523BB00EEA1C4 /* String+RegularExpression.swift in Sources */ = {isa = PBXBuildFile; fileRef = C266A6EF1B6523BB00EEA1C4 /* String+RegularExpression.swift */; };
 		C268340A1B10C24100A359A8 /* LabelButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26834091B10C24100A359A8 /* LabelButton.swift */; };
 		C268340C1B11159E00A359A8 /* Chameleon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C268340B1B11159E00A359A8 /* Chameleon.framework */; };
@@ -642,6 +643,7 @@
 		C26254271B744C3F00E81068 /* ButtonNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonNode.swift; sourceTree = "<group>"; };
 		C264338D18162E8A005E0105 /* NSPointerArray+MSKitAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSPointerArray+MSKitAdditions.h"; sourceTree = "<group>"; };
 		C264338E18162E8A005E0105 /* NSPointerArray+MSKitAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSPointerArray+MSKitAdditions.m"; sourceTree = "<group>"; };
+		C2649D6F1C922F8D001039DA /* NSFileManager+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSFileManager+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C266A6EF1B6523BB00EEA1C4 /* String+RegularExpression.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+RegularExpression.swift"; sourceTree = "<group>"; };
 		C26834091B10C24100A359A8 /* LabelButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = LabelButton.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		C268340B1B11159E00A359A8 /* Chameleon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Chameleon.framework; path = "../../../../Library/Developer/Xcode/DerivedData/Build/Products/Debug-iphoneos/Chameleon.framework"; sourceTree = "<group>"; };
@@ -1105,6 +1107,7 @@
 				C2FEB0261C0FCD5A000BD1B7 /* SKNode+MoonKitAdditions.swift */,
 				C20A10961C512E4A00522FD7 /* ErrorType.swift */,
 				C2022A611C77C9FC003C2C6E /* SetAlgebraType.swift */,
+				C2649D6F1C922F8D001039DA /* NSFileManager+MoonKitAdditions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -2303,6 +2306,7 @@
 				C2358F5A19C78E0C00920F8D /* MSColorInputButton.m in Sources */,
 				C29649901B00EBD0000C2D4A /* FieldView.swift in Sources */,
 				C2BE96E81A467E85007599B2 /* NSManagedObjectModel+MoonKitAdditions.swift in Sources */,
+				C2649D701C922F8D001039DA /* NSFileManager+MoonKitAdditions.swift in Sources */,
 				C2358F5B19C78E0C00920F8D /* MSPickerInputButton.m in Sources */,
 				C2618A6C1B7A438100122EBA /* FormPickerField.swift in Sources */,
 				C2358F5C19C78E0C00920F8D /* MSPopupBarButton.m in Sources */,

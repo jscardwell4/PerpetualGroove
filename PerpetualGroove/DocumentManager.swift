@@ -137,61 +137,11 @@ final class DocumentManager {
   static private let currentDocumentLock = NSObject()
 
   static private(set) var currentDocument: Document? {
-    get {
-      return synchronized(currentDocumentLock) { _currentDocument }
-//      objc_sync_enter(currentDocumentLock)
-//      defer { objc_sync_exit(currentDocumentLock) }
-//      return _currentDocument
-    }
-    set {
-      synchronized(currentDocumentLock) { _currentDocument = newValue }
-//      objc_sync_enter(currentDocumentLock)
-//      defer { objc_sync_exit(currentDocumentLock) }
-//      _currentDocument = newValue
-    }
+    get { return synchronized(currentDocumentLock) { _currentDocument } }
+    set { synchronized(currentDocumentLock) { _currentDocument = newValue } }
   }
 
   // MARK: - Items
-
-  /** updateStorageLocation */
-//  static private func updateStorageLocation() {
-//    let bookmarkData: NSData?
-//    switch (SettingsManager.iCloudStorage, storageLocation) {
-//      case (true, .Local), (true, .iCloud) where state ∌ .Initialized:
-//        storageLocation = .iCloud
-//        state ∪= [.GatheringMetadataItems]
-//        metadataQuery.startQuery()
-//        directoryMonitor.stopMonitoring()
-//        bookmarkData = SettingsManager.currentDocumentiCloud
-//      case (false, .iCloud), (false, .Local) where state ∌ .Initialized:
-//        storageLocation = .Local
-//        metadataQuery.stopQuery()
-//        refreshLocalItems()
-//        directoryMonitor.startMonitoring()
-//        bookmarkData = SettingsManager.currentDocumentLocal
-//      default:
-//        bookmarkData = nil
-//    }
-//
-//    switch (bookmarkData, Sequencer.initialized) {
-//      case (nil, _): return
-//      case (let data?, true):
-//        do { try openBookmarkedDocument(data) }
-//        catch { logError(error, message: "Failed to resolve bookmark data into a valid file url") }
-//      case (let data?, false):
-//        receptionist.observe(notification: .DidUpdateAvailableSoundSets, from: Sequencer.self) {
-//          _ in
-//          receptionist.stopObserving(notification: .DidUpdateAvailableSoundSets, from: Sequencer.self)
-//          queue.async {
-//            do {
-//              try openBookmarkedDocument(data)
-//            } catch {
-//              logError(error, message: "Failed to resolve bookmark data into a valid file url")
-//            }
-//          }
-//        }
-//    }
-//  }
 
   static private(set) var storageLocation: StorageLocation! {
     didSet {
@@ -349,10 +299,11 @@ final class DocumentManager {
   /** refreshLocalItems */
   static private func refreshLocalItems() {
     guard let fileWrappers = directoryMonitor.directoryWrapper.fileWrappers?.values else { return }
-    let localDocumentItems: [LocalDocumentItem] = fileWrappers.flatMap({[directory = directoryMonitor.directoryURL] in
+    let localDocumentItems: [LocalDocumentItem] = fileWrappers.flatMap {
+      [directory = directoryMonitor.directoryURL] in
       guard let name = $0.preferredFilename else { return nil }
       return try? LocalDocumentItem(directory + name)
-      })
+      }
     localItems = localDocumentItems.map(DocumentItem.init)
   }
 
@@ -470,7 +421,10 @@ final class DocumentManager {
     }
     if Sequencer.soundSets.count > 0 { queue.async(openBlock) }
     else {
-      receptionist.observe(notification: .DidUpdateAvailableSoundSets, from: Sequencer.self, queue: operationQueue) {
+      receptionist.observe(notification: .DidUpdateAvailableSoundSets,
+                           from: Sequencer.self,
+                           queue: operationQueue)
+      {
         _ in
         receptionist.stopObserving(notification: .DidUpdateAvailableSoundSets, from: Sequencer.self)
         openBlock()
@@ -505,7 +459,16 @@ final class DocumentManager {
 
   - parameter item: DocumentItemType
   */
-  static func openItem(item: DocumentItem) { openURL(item.URL) }
+  static func openItem(item: DocumentItem) {
+    guard let url = try? NSURL(byResolvingBookmarkData: item.fileBookmark,
+                               options: .WithoutUI,
+                               relativeToURL: nil, bookmarkDataIsStale: nil) else
+    {
+      logWarning("Unable to resolve URL for item: \(item)")
+      return
+    }
+    openURL(url)
+  }
 
   /**
   deleteItem:
@@ -516,13 +479,19 @@ final class DocumentManager {
 
     queue.async {
 
-      // Does this create race condition with closing of file?
-      if currentDocument?.fileURL == item.URL { currentDocument = nil }
+      guard let itemURL = item.URL else {
+        logWarning("Unable to resolve item bookmark into a valid URL")
+        return
+      }
 
-      logDebug("removing item '\(item.URL.path!)'")
+      // Does this create race condition with closing of file?
+      if currentDocument?.fileURL.isEqualToFileURL(itemURL) == true { currentDocument = nil }
+
+      logDebug("removing item '\(item.displayName)'")
       let coordinator = NSFileCoordinator(filePresenter: nil)
-      coordinator.coordinateWritingItemAtURL(item.URL, options: .ForDeleting, error: nil) {
-        do { try NSFileManager().removeItemAtURL($0) }
+      coordinator.coordinateWritingItemAtURL(itemURL, options: .ForDeleting, error: nil) {
+        url in
+        do { try NSFileManager.withDefaultManager { try $0.removeItemAtURL(url) } }
         catch { logError(error) }
       }
     }

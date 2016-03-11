@@ -450,7 +450,7 @@ extension  OldOrderedDictionary: CustomStringConvertible, CustomDebugStringConve
 
   public var description: String {
     var description = "{\n\t"
-    description += "\n\t".join(keyValuePairs.map({String(prettyNil: $0) + ": " + String(prettyNil: $1)}))
+    description += "\n\t".join(keyValuePairs.map({String($0) + ": " + String($1)}))
     description += "\n}"
     return description
   }

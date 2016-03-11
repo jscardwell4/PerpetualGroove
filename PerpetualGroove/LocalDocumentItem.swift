@@ -28,12 +28,12 @@ final class LocalDocumentItem: NSObject {
 
   - parameter URL: NSURL
   */
-  init(_ URL: NSURL) throws {
-    self.URL = URL
+  init(_ fileURL: NSURL) throws {
+    self.URL = fileURL
     var thrownError: ErrorType?
     let wrapper: NSFileWrapper
     do {
-      wrapper = try NSFileWrapper(URL: URL, options: .WithoutMapping)
+      wrapper = try NSFileWrapper(URL: fileURL, options: .WithoutMapping)
     } catch {
       wrapper = NSFileWrapper()
       thrownError = error
@@ -51,24 +51,18 @@ final class LocalDocumentItem: NSObject {
    */
   init?(_ wrapper: NSFileWrapper, _ base: NSURL) {
     var isDirectory = ObjCBool(false)
-    let fm = NSFileManager.defaultManager()
+    let fileManager = NSFileManager.defaultManager()
     guard let directoryPath = String(CString: base.fileSystemRepresentation, encoding: NSUTF8StringEncoding)
-      where fm.fileExistsAtPath(directoryPath, isDirectory: &isDirectory) && isDirectory,
+      where fileManager.fileExistsAtPath(directoryPath, isDirectory: &isDirectory) && isDirectory,
       let fileName = wrapper.preferredFilename else {
-        fileWrapper = NSFileWrapper()
-        URL = NSURL()
-        super.init()
         return nil
     }
     let fileURL = base + fileName
     guard let filePath = String(CString: fileURL.fileSystemRepresentation, encoding: NSUTF8StringEncoding)
-      where fm.fileExistsAtPath(filePath, isDirectory: &isDirectory) && !isDirectory else {
-        fileWrapper = NSFileWrapper()
-        URL = NSURL()
-        super.init()
+      where fileManager.fileExistsAtPath(filePath, isDirectory: &isDirectory) && !isDirectory else {
         return nil
     }
-    URL = fileURL
+    self.URL = fileURL
     fileWrapper = wrapper
     super.init()
   }

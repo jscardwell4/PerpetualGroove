@@ -66,7 +66,7 @@
                                                 <rect key="frame" x="250" y="6" width="92" height="20.5"/>
                                             </variation>
                                             <connections>
-                                                <action selector="deleteItem" destination="AUk-3s-KxI" eventType="touchUpInside" id="d6R-PR-av0"/>
+                                                <action selector="deleteItem:" destination="O6i-Zp-3qE" eventType="touchUpInside" id="zc1-sc-YwI"/>
                                             </connections>
                                         </view>
                                     </subviews>
@@ -93,7 +93,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="250" height="40"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" misplaced="YES" text="Create Document" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r0p-MA-Lux" userLabel="Label">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="Create Document" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r0p-MA-Lux" userLabel="Label">
                                             <rect key="frame" x="59" y="10" width="191" height="20.5"/>
                                             <color key="tintColor" red="0.76089900732040405" green="0.25649610161781311" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <accessibility key="accessibilityConfiguration" identifier="Label"/>
@@ -107,7 +107,7 @@
                                                 <rect key="frame" x="28" y="11" width="134" height="20"/>
                                             </variation>
                                         </label>
-                                        <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="add-selected" highlightedImage="add-selected" translatesAutoresizingMaskIntoConstraints="NO" id="l2e-0M-7I2" customClass="TemplateImageView" customModule="MoonKit">
+                                        <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="add-selected" highlightedImage="add-selected" translatesAutoresizingMaskIntoConstraints="NO" id="l2e-0M-7I2" customClass="TemplateImageView" customModule="MoonKit">
                                             <rect key="frame" x="0.0" y="0.0" width="51" height="40"/>
                                             <color key="tintColor" red="0.87450999021530151" green="0.8274499773979187" blue="0.7607799768447876" alpha="1" colorSpace="calibratedRGB"/>
                                             <constraints>

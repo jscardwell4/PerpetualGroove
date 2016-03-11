@@ -74,7 +74,7 @@ public class CoreDataStack {
     context.parentContext = rootContext
     mainContextCount += 1
     context.nametag = "\(nametag)<main\(mainContextCount)>"
-    logDebug("context created: \(String(prettyNil: context.nametag))")
+    logDebug("context created: \(context.nametag ?? "nil")")
     return context
   }
 
@@ -88,7 +88,7 @@ public class CoreDataStack {
     context.persistentStoreCoordinator = persistentStoreCoordinator
     isolatedContextCount += 1
     context.nametag = "\(nametag)<isolated\(isolatedContextCount)>"
-    logDebug("context created: \(String(prettyNil: context.nametag))")
+    logDebug("context created: \(context.nametag ?? "nil")")
     return context
   }
   /**
@@ -101,7 +101,7 @@ public class CoreDataStack {
     context.parentContext = rootContext
     privateContextCount += 1
     context.nametag = "\(nametag)<private\(privateContextCount)>"
-    logDebug("context created: \(String(prettyNil: context.nametag))")
+    logDebug("context created: \(context.nametag ?? "nil")")
     return context
   }
 
@@ -239,7 +239,7 @@ public class CoreDataStack {
       if let moc = context {
         moc.processPendingChanges()
         if moc.hasChanges == true {
-          logDebug("saving context '\(String(prettyNil: moc.nametag))'")
+          logDebug("saving context '\(moc.nametag ?? "nil")'")
           do {
             try moc.save()
             success = true
@@ -263,7 +263,7 @@ public class CoreDataStack {
     // Create a child context if flagged for background execution
     if backgroundExecution {
       let childContext = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
-      childContext.nametag = "child of \(String(prettyNil: context.nametag))"
+      childContext.nametag = "child of \(context.nametag ?? "nil")"
       childContext.parentContext = context
       childContext.undoManager = nil
       perform(childContext) {

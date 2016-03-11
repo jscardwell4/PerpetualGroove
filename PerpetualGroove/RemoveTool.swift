@@ -149,7 +149,7 @@ final class RemoveTool: ToolType {
 
   private weak var track: InstrumentTrack? {
     didSet {
-      logDebug("oldValue: \(String(subbingNil: oldValue?.name))  track: \(track?.name ?? "nil")")
+      logDebug("oldValue: \(oldValue?.name ?? "nil")  track: \(track?.name ?? "nil")")
       if touch != nil { touch = nil }
       guard active && oldValue !== track else { return }
       oldValue?.nodes.flatMap({$0.element2.reference}).forEach { lightNodeForBackground($0) }
