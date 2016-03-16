@@ -47,6 +47,11 @@
 			<key>orderHint</key>
 			<integer>16</integer>
 		</dict>
+		<key>OrderedSetTests.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>19</integer>
+		</dict>
 		<key>TransformTest.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -103,6 +108,11 @@
 			<true/>
 		</dict>
 		<key>C2C482D119C9F98A002E84A9</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C2C65BBB1C970F38000645ED</key>
 		<dict>
 			<key>primary</key>
 			<true/>

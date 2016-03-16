@@ -154,7 +154,7 @@ final class DocumentsViewController: UICollectionViewController {
 
   /// Returns the index path for a document; returns nil if document is not represented in the collection.
   private func indexPathForDocument(document: Document) -> NSIndexPath? {
-    guard let idx = items.indexOf({$0.URL?.isEqualToFileURL(document.fileURL) == true}) else {
+    guard let idx = items.indexOf({$0.URL.isEqualToFileURL(document.fileURL)}) else {
       return nil
     }
     return NSIndexPath(forItem: idx, inSection: 1)

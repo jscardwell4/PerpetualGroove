@@ -9,7 +9,7 @@
 import Foundation
 
 extension Array {
-  func compressedMap<U>(transform: (Element) -> U?) -> [U] {
+  public func compressedMap<U>(transform: (Element) -> U?) -> [U] {
       return MoonKit.compressedMap(self, transform)
   }
 }
@@ -21,6 +21,13 @@ extension Array: JSONValueConvertible {
       elements.append(element.jsonValue)
     }
     return JSONValue.Array(elements)
+  }
+}
+
+extension RangeReplaceableCollectionType {
+  public init(minimumCapacity: Int) {
+    self.init()
+    reserveCapacity(numericCast(minimumCapacity))
   }
 }
 

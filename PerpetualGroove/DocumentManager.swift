@@ -460,14 +460,7 @@ final class DocumentManager {
   - parameter item: DocumentItemType
   */
   static func openItem(item: DocumentItem) {
-    guard let url = try? NSURL(byResolvingBookmarkData: item.fileBookmark,
-                               options: .WithoutUI,
-                               relativeToURL: nil, bookmarkDataIsStale: nil) else
-    {
-      logWarning("Unable to resolve URL for item: \(item)")
-      return
-    }
-    openURL(url)
+    openURL(item.URL)
   }
 
   /**
@@ -479,10 +472,7 @@ final class DocumentManager {
 
     queue.async {
 
-      guard let itemURL = item.URL else {
-        logWarning("Unable to resolve item bookmark into a valid URL")
-        return
-      }
+      let itemURL = item.URL
 
       // Does this create race condition with closing of file?
       if currentDocument?.fileURL.isEqualToFileURL(itemURL) == true { currentDocument = nil }
@@ -547,11 +537,11 @@ extension DocumentManager: NotificationDispatchType {
 }
 
 extension NSNotification {
-  var addedItemsData: [NSData]? {
-    return userInfo?[DocumentManager.Notification.Key.Added.key] as? [NSData]
+  var addedItemsData: [AnyObject]? {
+    return userInfo?[DocumentManager.Notification.Key.Added.key] as? [AnyObject]
   }
-  var removedItemsData: [NSData]? {
-    return userInfo?[DocumentManager.Notification.Key.Removed.key] as? [NSData]
+  var removedItemsData: [AnyObject]? {
+    return userInfo?[DocumentManager.Notification.Key.Removed.key] as? [AnyObject]
   }
   var addedItems: [DocumentItem]?   { return addedItemsData?.flatMap(DocumentItem.init)   }
   var removedItems: [DocumentItem]? { return removedItemsData?.flatMap(DocumentItem.init) }
