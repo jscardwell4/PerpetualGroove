@@ -122,7 +122,7 @@ public struct Tree<Element: Comparable> {
   public mutating func replace<S1:SequenceType, S2:SequenceType
     where S1.Generator.Element == Element, S2.Generator.Element == Element>(elements1: S1, with elements2: S2)
   {
-    self = Tree(filter({elements1 ∌ $0}) + Array(elements2))
+    self = Tree(filter({!elements1.contains($0)}) + Array(elements2))
   }
 
   /**
@@ -144,7 +144,7 @@ public struct Tree<Element: Comparable> {
   - parameter elements: S
   */
   public mutating func remove<S:SequenceType where S.Generator.Element == Element>(elements: S) {
-    self = Tree(filter({elements ∌ $0}))
+    self = Tree(filter({!elements.contains($0)}))
   }
 
   /**

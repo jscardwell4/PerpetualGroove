@@ -14,6 +14,7 @@ public protocol SetType: CollectionType {
   init<S:SequenceType where S.Generator.Element == Self.Generator.Element>(_ elements: S)
   mutating func insert(member: Element)
   mutating func remove(member: Element) -> Element?
+  mutating func reserveCapacity(capacity: Int)
   func contains(member: Element) -> Bool
   func isSubsetOf<S:SequenceType where S.Generator.Element == Self.Generator.Element>(sequence: S) -> Bool
   func isStrictSubsetOf<S:SequenceType where S.Generator.Element == Self.Generator.Element>(sequence: S) -> Bool
@@ -95,7 +96,7 @@ public func ∪<S:SetType>(lhs: S, rhs: S.Element) -> S { var lhs = lhs; lhs ∪
 public func ∪=<S:SetType>(inout lhs: S, rhs: S.Element) { lhs.insert(rhs) }
 
 // minus
-public func ∖<S1:SetType, S2:SequenceType 
+public func ∖<S1:SetType, S2:SequenceType
                where S1.Generator.Element == S2.Generator.Element>(lhs: S1, rhs: S2) -> S1 
 { 
   return lhs.subtract(rhs)

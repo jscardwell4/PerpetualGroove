@@ -60,7 +60,7 @@ import Foundation
    */
   public func setEnabled(enabled: Bool, forSegmentAtIndex segment: Int) {
     let segments = self.segments
-    guard segments.indices ∋ segment else { fatalError("segment index \(segment) out of bounds") }
+    guard segments.indices.contains(segment) else { fatalError("segment index \(segment) out of bounds") }
     segments[segment].enabled = enabled
   }
 
@@ -73,7 +73,7 @@ import Foundation
    */
   public func isEnabledForSegmentAtIndex(segment: Int) -> Bool {
     let segments = self.segments
-    guard segments.indices ∋ segment else {
+    guard segments.indices.contains(segment) else {
       fatalError("segment index \(segment) out of bounds")
     }
     return segments[segment].enabled
@@ -91,7 +91,7 @@ import Foundation
      forSegmentAtIndex segment: Int)
   {
     let segments = self.segments
-    guard segments.indices ∋ segment else { fatalError("segment index \(segment) out of bounds") }
+    guard segments.indices.contains(segment) else { fatalError("segment index \(segment) out of bounds") }
     switch state {
       case .Default:     segments[segment].image = image
       case .Highlighted: segments[segment].highlightedImage = image
@@ -112,7 +112,7 @@ import Foundation
                             forState state: ImageButtonView.ImageState) -> UIImage?
   {
     let segments = self.segments
-    guard segments.indices ∋ segment else { fatalError("segment index \(segment) out of bounds") }
+    guard segments.indices.contains(segment) else { fatalError("segment index \(segment) out of bounds") }
     switch state {
       case .Default:     return segments[segment].image
       case .Highlighted: return segments[segment].highlightedImage
@@ -168,7 +168,7 @@ import Foundation
    */
   public func removeSegmentAtIndex(segment: Int) {
     let segments = self.segments
-    guard segments.indices ∋ segment else { fatalError("segment index \(segment) out of bounds") }
+    guard segments.indices.contains(segment) else { fatalError("segment index \(segment) out of bounds") }
     let imageButtonView = segments[segment]
     stack.removeArrangedSubview(imageButtonView)
     imageButtonView.removeFromSuperview()
@@ -213,11 +213,11 @@ import Foundation
       }
 
       switch (oldValue, selectedSegmentIndex) {
-        case let (ImageSegmentedControl.NoSegment, newIndex) where segments.indices ∋ newIndex:
+        case let (ImageSegmentedControl.NoSegment, newIndex) where segments.indices.contains(newIndex):
           segments[newIndex].selected = true
-        case let (newIndex, ImageSegmentedControl.NoSegment) where segments.indices ∋ newIndex:
+        case let (newIndex, ImageSegmentedControl.NoSegment) where segments.indices.contains(newIndex):
           segments[newIndex].selected = false
-        case let (oldIndex, newIndex) where segments.indices ∋ newIndex:
+        case let (oldIndex, newIndex) where segments.indices.contains(newIndex):
           segments[oldIndex].selected = false
           segments[newIndex].selected = true
         default:

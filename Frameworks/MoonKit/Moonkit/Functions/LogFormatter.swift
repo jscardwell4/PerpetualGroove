@@ -252,7 +252,7 @@ public class LogFormatter: NSObject, DDLogFormatter {
 
 
     if let m = msg.message where !m.isEmpty {
-      if m.characters ∋ "\n" && result.characters.last != "\n" { result += "\n" }
+      if m.characters.contains("\n") && result.characters.last != "\n" { result += "\n" }
       result += "\(options ∋ .IndentMessageBody ? m.indentedBy(4) : m)\(afterMessage)"
     }
     if options ∋ .CollapseTrailingReturns { result.subInPlace(~/"[\\n]+$", "") }

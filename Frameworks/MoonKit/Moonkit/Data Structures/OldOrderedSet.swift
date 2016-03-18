@@ -359,7 +359,7 @@ public struct OldOrderedSet<Element:Equatable> : MutableCollectionType {
   - parameter sequence: S
   */
   public mutating func intersectInPlace<S:SequenceType where S.Generator.Element == Element>(sequence: S) {
-    for (i, element) in enumerate() where element ∉ sequence { removeAtIndex(i) }
+    for (i, element) in enumerate() where !sequence.contains(element) { removeAtIndex(i) }
   }
 
   /**

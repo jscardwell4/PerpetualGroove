@@ -125,7 +125,10 @@ public func ⚭<S:SequenceType, Element:Hashable
 //  return Set(Array(source).filter(includeElement))
 //}
 
-extension Set: SetType {}
+extension Set: SetType {
+  // Can't actually do anything here without knowledge of the set's current capacity
+  public mutating func reserveCapacity(capacity: Int) { }
+}
 
 extension Set: NestingContainer {
   public var topLevelObjects: [Any] {
