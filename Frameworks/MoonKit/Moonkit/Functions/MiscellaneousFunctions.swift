@@ -28,6 +28,12 @@ nonce
 */
 public func nonce() -> String { return NSUUID().UUIDString }
 
+
+/// Returns the next power of 2 that is equal to or greater than `x`
+public func round2(x: Int) -> Int {
+  return Int(_exp2(_ceil(_log2(Double(max(0, x))))))
+}
+
 /**
  No-op function intended to be used as a more noticeable way to force instantiation of lazy properties
 

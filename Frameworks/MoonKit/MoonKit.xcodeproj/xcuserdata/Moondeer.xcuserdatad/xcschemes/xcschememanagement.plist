@@ -4,6 +4,11 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>BitMapTests.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>20</integer>
+		</dict>
 		<key>MoonKit Tests.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -113,6 +118,11 @@
 			<true/>
 		</dict>
 		<key>C2C65BBB1C970F38000645ED</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C2E55D0D1C9E4286004E7CB1</key>
 		<dict>
 			<key>primary</key>
 			<true/>

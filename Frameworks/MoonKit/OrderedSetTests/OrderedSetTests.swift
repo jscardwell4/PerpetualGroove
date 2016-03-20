@@ -44,6 +44,7 @@ final class OrderedSetTests: XCTestCase {
   }
 
   // MARK: - Baseline
+  //
 
   func testBaselinePerformanceWithCapacityReserved() {
     measureBlock(performanceWork { _ in Set<Int>() })
@@ -53,8 +54,8 @@ final class OrderedSetTests: XCTestCase {
     measureBlock(performanceWork { _ in Set<Int>() })
   }
 
-
   // MARK: - OrderedSetHashMap
+  //
 
   func testHashMapCreation() {
     var hashMap = OrderedSetHashMap()
@@ -74,6 +75,7 @@ final class OrderedSetTests: XCTestCase {
 
   func testHashMapInsertion() {
     var hashMap = OrderedSetHashMap(minimumCapacity: 8)
+
 
     hashMap.insert(1)
     XCTAssertEqual(hashMap.count, 1)
