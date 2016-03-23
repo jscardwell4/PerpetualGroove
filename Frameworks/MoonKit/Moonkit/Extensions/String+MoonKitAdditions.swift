@@ -62,16 +62,22 @@ public extension String {
 
   public init<T>(rawContentsOf x: T, radix: Int = 16) {
     var x = x
+    let length: Int
+    switch radix {
+    case 2: length = 8
+    case 8: length = 3
+    case 10: length = 3
+    default: length = 2
+    }
     self = withUnsafePointer(&x) {
-      UnsafeBufferPointer<UInt8>(start: UnsafePointer<UInt8>($0), count: sizeof(T) / sizeof(UInt8))
+      UnsafeBufferPointer<UInt8>(start: UnsafePointer<UInt8>($0), count: sizeof(T) / sizeof(UInt8)).reverse()
         .map {
-          [length = radix == 2 ? 4 : sizeof(UInt) * 2] word -> String in
-        let s = String(word, radix: radix)
-        let pad = length - s.characters.count
-        return s.characters.count < length
-                 ? "\(String(count: pad, repeatedValue: Character("0")))\(s)"
-                 : s
-      }.joinWithSeparator(" ")
+          [length = length /*radix == 2 ? 4 : sizeof(UInt) * 2*/] word -> String in
+
+          let string = String(word, radix: radix)
+          let segments = string.characters.segment(length, options: .PadFirstGroup(Character("0")))
+          return segments.map({String($0)}).joinWithSeparator(" ")
+        }.joinWithSeparator(" ")
     }
   }
 

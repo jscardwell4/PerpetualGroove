@@ -106,7 +106,7 @@ internal final class OrderedDictionaryStorage
 
     let storage = super.create(requiredCapacity) {
       $0.withUnsafeMutablePointerToElements {
-        BitMap(storage: UnsafeMutablePointer<UInt>($0), bitCount: capacity).initializeToZero()
+//        BitMap(storage: UnsafeMutablePointer<UInt>($0), bitCount: capacity).initializeToZero()
         let keyMap = UnsafeMutablePointer<Int>($0 + bitMapBytes)
         for i in 0 ..< capacity { (keyMap + i).initialize(-1) }
       }
@@ -167,7 +167,7 @@ internal final class OrderedDictionaryStorage
 extension OrderedDictionaryStorage {
   var description: String {
     defer { _fixLifetime(self) }
-    let bitMap = BitMap(storage: self.bitMap, bitCount: capacity)
+    let bitMap = BitMap(initializedStorage: self.bitMap, bitCount: capacity)
     var bitMapDescription = ""
     for i in 0 ..< capacity {
       let isInitialized = bitMap[i]
@@ -243,7 +243,7 @@ internal struct OrderedDictionaryBuffer<Key:Hashable, Value> {
 
   internal init(minimumCapacity: Int = 2) {
     storage = Storage.create(Buffer.minimumCapacityForCount(minimumCapacity, 1 / 0.75))
-    bitMap = BitMap(storage: storage.bitMap, bitCount: storage.capacity)
+    bitMap = BitMap(uninitializedStorage: storage.bitMap, bitCount: storage.capacity)
     keys = storage.keys
     values = storage.values
     keyMap = storage.keyMap
@@ -259,7 +259,7 @@ internal struct OrderedDictionaryBuffer<Key:Hashable, Value> {
 
   internal init(storage: Storage) {
     self.storage = storage
-    bitMap = BitMap(storage: storage.bitMap, bitCount: storage.capacity)
+    bitMap = BitMap(initializedStorage: storage.bitMap, bitCount: storage.capacity)
     keyMap = storage.keyMap
     keys = storage.keys
     values = storage.values

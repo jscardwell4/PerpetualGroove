@@ -88,7 +88,7 @@ internal final class _OrderedSetStorage<Member:Hashable>: ManagedBuffer<_Ordered
 
     let storage = super.create(requiredCapacity) {
       $0.withUnsafeMutablePointerToElements {
-        BitMap(storage: UnsafeMutablePointer<UInt>($0), bitCount: capacity).initializeToZero()
+//        BitMap(storage: UnsafeMutablePointer<UInt>($0), bitCount: capacity).initializeToZero()
         let bucketMap = UnsafeMutablePointer<Int>($0 + bitMapBytes)
         for i in 0 ..< capacity { (bucketMap + i).initialize(-1) }
       }
@@ -134,7 +134,7 @@ internal final class _OrderedSetStorage<Member:Hashable>: ManagedBuffer<_Ordered
 extension _OrderedSetStorage {
   var description: String {
     defer { _fixLifetime(self) }
-    let bitMap = BitMap(storage: self.bitMap, bitCount: capacity)
+    let bitMap = BitMap(initializedStorage: self.bitMap, bitCount: capacity)
     var bitMapDescription = ""
     for i in 0 ..< capacity {
       let isInitialized = bitMap[i]
@@ -207,7 +207,7 @@ internal struct _OrderedSetBuffer<Member:Hashable> {
 
   internal init(minimumCapacity: Int = 2) {
     storage = Storage.create(Buffer.minimumCapacityForCount(minimumCapacity, 1 / 0.75))
-    bitMap = BitMap(storage: storage.bitMap, bitCount: storage.capacity)
+    bitMap = BitMap(uninitializedStorage: storage.bitMap, bitCount: storage.capacity)
     members = storage.members
     bucketMap = storage.bucketMap
     _fixLifetime(storage)
@@ -222,7 +222,7 @@ internal struct _OrderedSetBuffer<Member:Hashable> {
 
   internal init(storage: Storage) {
     self.storage = storage
-    bitMap = BitMap(storage: storage.bitMap, bitCount: storage.capacity)
+    bitMap = BitMap(initializedStorage: storage.bitMap, bitCount: storage.capacity)
     bucketMap = storage.bucketMap
     members = storage.members
   }

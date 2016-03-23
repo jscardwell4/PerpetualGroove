@@ -7,6 +7,7 @@
 //
 
 import XCTest
+import Nimble
 @testable import MoonKit
 
 final class OrderedSetTests: XCTestCase {
@@ -58,133 +59,124 @@ final class OrderedSetTests: XCTestCase {
   //
 
   func testHashMapCreation() {
-    var hashMap = OrderedSetHashMap()
-    XCTAssertLessThanOrEqual(hashMap.capacity, 2)
-    XCTAssertEqual(hashMap.count, 0)
+    let hashMap1 = OrderedSetHashMap()
 
-    hashMap = OrderedSetHashMap(minimumCapacity: 24)
-    XCTAssertGreaterThanOrEqual(hashMap.capacity, 24)
-    XCTAssertEqual(hashMap.count, 0)
+    expect(hashMap1.capacity) <= 2
+    expect(hashMap1).to(haveCount(0))
 
-    let randoms = randomIntegers(100000, 1 ..< 1000)
-    hashMap = OrderedSetHashMap(randoms)
-    let set = Set(randoms)
-    XCTAssertEqual(hashMap.count, set.count)
-    XCTAssertTrue(hashMap.sort().elementsEqual(set.sort()))
+    let hashMap2 = OrderedSetHashMap(minimumCapacity: 24)
+    expect(hashMap2.capacity) >= 24
+    expect(hashMap2).to(haveCount(0))
+
+    let randoms = randomIntegers(10, 1 ..< 100)
+    let hashMap3 = OrderedSetHashMap(randoms)
+    let set3 = Set(randoms)
+    expect(hashMap3).to(haveCount(set3.count))
+    expect(hashMap3.sort()).to(equal(set3.sort()))
+
+    let hashMap4 = [1, 2, 3, 4]
+    let set4 = [1, 2, 3, 4]
+    expect(hashMap4).to(haveCount(set4.count))
+    expect(hashMap4.sort()).to(equal(set4.sort()))
   }
 
   func testHashMapInsertion() {
     var hashMap = OrderedSetHashMap(minimumCapacity: 8)
 
-
     hashMap.insert(1)
-    XCTAssertEqual(hashMap.count, 1)
-    XCTAssertTrue(hashMap.contains(1))
+    expect(hashMap.count) == 1
+    expect(hashMap).to(contain(1))
 
     hashMap.insert(2)
-    XCTAssertEqual(hashMap.count, 2)
-    XCTAssertTrue(hashMap.contains(2))
+    expect(hashMap.count) == 2
+    expect(hashMap).to(contain(2))
 
     hashMap.insert(3)
-    XCTAssertEqual(hashMap.count, 3)
-    XCTAssertTrue(hashMap.contains(3))
+    expect(hashMap.count) == 3
+    expect(hashMap).to(contain(3))
 
     hashMap.insert(4)
-    XCTAssertEqual(hashMap.count, 4)
-    XCTAssertTrue(hashMap.contains(4))
+    expect(hashMap.count) == 4
+    expect(hashMap).to(contain(4))
 
     hashMap.insert(5)
-    XCTAssertEqual(hashMap.count, 5)
-    XCTAssertTrue(hashMap.contains(5))
+    expect(hashMap.count) == 5
+    expect(hashMap).to(contain(5))
   }
 
   func testHashMapResize() {
     var hashMap = OrderedSetHashMap(minimumCapacity: 4)
-    XCTAssertLessThanOrEqual(hashMap.capacity, 8)
-    hashMap.insert(1)
-    hashMap.insert(2)
-    hashMap.insert(3)
-    hashMap.insert(4)
-    hashMap.insert(5)
-    hashMap.insert(6)
-    hashMap.insert(7)
-    hashMap.insert(8)
-    hashMap.insert(9)
-    XCTAssertGreaterThan(hashMap.capacity, 8)
+    expect(hashMap.capacity) <= 8
+    for i in 1 ... 9 { hashMap.insert(i) }
+    expect(hashMap.capacity) > 8
   }
 
   func testHashMapDeletion() {
     var hashMap: OrderedSetHashMap = [1, 2, 3]
-    XCTAssertEqual(hashMap.count, 3)
-    XCTAssertTrue(hashMap.contains(1))
-    XCTAssertTrue(hashMap.contains(2))
-    XCTAssertTrue(hashMap.contains(3))
+    expect(hashMap).to(haveCount(3))
+    expect(hashMap).to(contain(1, 2, 3))
     hashMap.remove(2)
-    XCTAssertEqual(hashMap.count, 2)
-    XCTAssertTrue(hashMap.contains(1))
-    XCTAssertFalse(hashMap.contains(2))
-    XCTAssertTrue(hashMap.contains(3))
+    expect(hashMap).to(haveCount(2))
+    expect(hashMap).to(contain(1, 3))
+    expect(hashMap.contains(2)).to(beFalse())
     hashMap.remove(1)
-    XCTAssertEqual(hashMap.count, 1)
-    XCTAssertFalse(hashMap.contains(1))
-    XCTAssertFalse(hashMap.contains(2))
-    XCTAssertTrue(hashMap.contains(3))
+    expect(hashMap).to(haveCount(1))
+    expect(hashMap).to(contain(3))
+    expect(hashMap.contains(1)).to(beFalse())
+    expect(hashMap.contains(2)).to(beFalse())
     hashMap.insert(2)
-    XCTAssertEqual(hashMap.count, 2)
-    XCTAssertFalse(hashMap.contains(1))
-    XCTAssertTrue(hashMap.contains(2))
-    XCTAssertTrue(hashMap.contains(3))
+    expect(hashMap).to(haveCount(2))
+    expect(hashMap).to(contain(3, 2))
+    expect(hashMap.contains(1)).to(beFalse())
     hashMap.insert(1)
-    XCTAssertEqual(hashMap.count, 3)
-    XCTAssertTrue(hashMap.contains(1))
-    XCTAssertTrue(hashMap.contains(1))
-    XCTAssertTrue(hashMap.contains(2))
+    expect(hashMap).to(haveCount(3))
+    expect(hashMap).to(contain(1, 2, 3))
   }
 
   func testHashMapCOW() {
     let hashMap1: OrderedSetHashMap = [1, 2, 3]
     var hashMap2 = hashMap1
-    XCTAssertEqual(hashMap1.count, 3)
-    XCTAssertEqual(hashMap2.count, 3)
+    expect(hashMap1).to(haveCount(3))
+    expect(hashMap2).to(haveCount(3))
 
     hashMap2.insert(4)
-    XCTAssertEqual(hashMap1.count, 3)
-    XCTAssertEqual(hashMap2.count, 4)
+    expect(hashMap1).to(haveCount(3))
+    expect(hashMap2).to(haveCount(4))
   }
 
   func testHashMapSubsetOf() {
     let hashMap: OrderedSetHashMap = [1, 2, 3]
-    XCTAssertTrue(hashMap.isSubsetOf([1, 2, 3]))
-    XCTAssertTrue(hashMap.isSubsetOf([1, 2, 3, 4]))
-    XCTAssertFalse(hashMap.isSubsetOf([1, 2, 4]))
+    expect(hashMap).to(beSubsetOf([1, 2, 3]))
+    expect(hashMap).to(beSubsetOf([1, 2, 3, 4]))
+    expect(hashMap).to(notBeSubsetOf([1, 2, 4]))
   }
 
   func testHashMapStrictSubsetOf() {
     let hashMap: OrderedSetHashMap = [1, 2, 3]
-    XCTAssertFalse(hashMap.isStrictSubsetOf([1, 2, 3]))
-    XCTAssertTrue(hashMap.isStrictSubsetOf([1, 2, 3, 4]))
-    XCTAssertFalse(hashMap.isStrictSubsetOf([1, 2, 4]))
+    expect(hashMap).to(notBeStrictSubsetOf([1, 2, 3]))
+    expect(hashMap).to(beStrictSubsetOf([1, 2, 3, 4]))
+    expect(hashMap).to(notBeStrictSubsetOf([1, 2, 4]))
   }
 
   func testHashMapSupersetOf() {
     let hashMap: OrderedSetHashMap = [1, 2, 3]
-    XCTAssertTrue(hashMap.isSupersetOf([1, 2, 3]))
-    XCTAssertTrue(hashMap.isSupersetOf([1, 2]))
-    XCTAssertFalse(hashMap.isSupersetOf([1, 2, 4]))
+    expect(hashMap).to(beSupersetOf([1, 2, 3]))
+    expect(hashMap).to(beSupersetOf([1, 2]))
+    expect(hashMap).to(notBeSupersetOf([1, 2, 4]))
   }
 
   func testHashMapStrictSupersetOf() {
     let hashMap: OrderedSetHashMap = [1, 2, 3]
-    XCTAssertFalse(hashMap.isStrictSupersetOf([1, 2, 3]))
-    XCTAssertTrue(hashMap.isStrictSupersetOf([1, 2]))
-    XCTAssertFalse(hashMap.isStrictSupersetOf([1, 2, 4]))
+    expect(hashMap).to(notBeStrictSupersetOf([1, 2, 3]))
+    expect(hashMap).to(beStrictSupersetOf([1, 2]))
+    expect(hashMap).to(notBeStrictSupersetOf([1, 2, 4]))
   }
 
   func testHashMapDisjointWith() {
     let hashMap: OrderedSetHashMap = [1, 2, 3]
-    XCTAssertFalse(hashMap.isDisjointWith([1, 4, 5]))
-    XCTAssertTrue(hashMap.isDisjointWith([4, 5]))
-    XCTAssertFalse(hashMap.isDisjointWith([1, 2, 3, 4, 5]))
+    expect(hashMap).to(notBeDisjointWith([1, 4, 5]))
+    expect(hashMap).to(beDisjointWith([4, 5]))
+    expect(hashMap).to(notBeDisjointWith([1, 2, 3, 4, 5]))
   }
 
   func testHashMapUnion() {
@@ -194,7 +186,8 @@ final class OrderedSetTests: XCTestCase {
     var set = Set(randoms1)
     hashMap.unionInPlace(randoms2)
     set.unionInPlace(randoms2)
-    XCTAssertEqual(hashMap.count, set.count)
+    expect(hashMap).to(haveCount(set.count))
+    expect(hashMap).to(beSubsetOf(set))
   }
 
   func testHashMapIntersection() {
@@ -204,7 +197,8 @@ final class OrderedSetTests: XCTestCase {
     var set = Set(randoms1)
     hashMap.intersectInPlace(randoms2)
     set.intersectInPlace(randoms2)
-    XCTAssertEqual(hashMap.count, set.count)
+    expect(hashMap).to(haveCount(set.count))
+    expect(hashMap).to(beSubsetOf(set))
   }
 
   func testHashMapSubtract() {
@@ -236,18 +230,36 @@ final class OrderedSetTests: XCTestCase {
 
     let expected: OrderedSetHashMap = [14, 12, 23, 164, 181, 87, 21, 56, 57, 110, 13, 86, 185, 161, 133]
 
-    let result = hashMap1.subtract(hashMap2)
-    XCTAssertTrue(result.sort().elementsEqual(expected.sort()), "\(result) does not equal \(expected)")
+    var set: Set<Int> = [
+       14,   30,  177,  182,    3,  198,   58,  167,  108,  103,   23,   90,    5,  195,   63,  116,  11,  107,  105,  164,
+      193,   71,  114,  145,    9,   44,  152,   35,  197,  135,   15,   97,  137,   22,  129,  183, 178,   57,   69,   91,
+      159,   41,   49,  132,   74,  120,  102,   42,  158,  130,   67,  190,  176,  142,  180,  156, 127,    7,   43,   16,
+       51,   26,   73,   66,   79,   65,  165,   24,   83,   72,   70,  109,   19,  170,  160,   86,  80,  113,  111,   10,
+      136,  121,   55,  147,  157,   48,   33,   94,  174,  199,    4,  162,  140,   17,  154,   77,  99,  196,   28,   84,
+        6,   50,  131,   12,  134,   25,  118,   78,   45,   37,    2,   98,  188,  101,  146,  123, 117,  141,   27,  181,
+       87,   76,  163,   21,  143,  184,  173,  171,  100,   85,   56,   89,  186,  155,   18,   53,  62,   93,   20,   38,
+      179,   59,   39,   46,   34,   95,   81,  168,  150,   96,  115,   64,  104,  110,   31,  175,   8,  151,  128,  172,
+       40,   82,   13,  192,  122,   60,    1,   75,  138,  185,  161,  149,  139,  133,   54,  112,  92,  126,  187,  119
+    ]
 
-    XCTAssertEqual(hashMap1.subtract(hashMap1).count, 0)
+    expect(hashMap1).to(haveCount(set.count))
+    expect(hashMap1).to(beSubsetOf(set))
+
+    let result = hashMap1.subtract(hashMap2)
+    let expectedResult = set.subtract(hashMap2)
+
+    expect(result).to(haveCount(expectedResult.count))
+    expect(result).to(beSubsetOf(expectedResult))
 
     let randoms1 = randomIntegers(100000, 1 ..< 1000)
     let randoms2 = randomIntegers(100000, 1 ..< 1000)
-    var hashMap = OrderedSetHashMap(randoms1)
-    var set = Set(randoms1)
-    hashMap.subtractInPlace(randoms2)
-    set.subtractInPlace(randoms2)
-    XCTAssertEqual(hashMap.count, set.count)
+    var hashMap3 = OrderedSetHashMap(randoms1)
+    var set3 = Set(randoms1)
+    measureBlock {
+      hashMap3.subtractInPlace(randoms2)
+    }
+    set3.subtractInPlace(randoms2)
+    expect(hashMap3).to(haveCount(set3.count))
   }
 
   func testHashMapXOR() {

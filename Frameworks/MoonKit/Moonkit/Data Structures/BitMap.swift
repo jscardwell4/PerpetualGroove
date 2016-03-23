@@ -11,19 +11,22 @@ import Foundation
 /// A wrapper around a bitmap storage with room for at least bitCount bits.
 /// This is a modified version of the `_BitMap` struct found in the swift stdlib source code
 public struct BitMap: CollectionType {
-  public let storage: UnsafeMutablePointer<UInt>
-  public let bitCount: Int
+  public let buffer: UnsafeMutableBufferPointer<UInt>
 
-  public static func wordIndex(i: UInt) -> UInt { return i / UInt._sizeInBits }
+  public static func wordIndex(i: Int) -> Int { return i / Int(UInt._sizeInBits) }
 
-  public static func bitIndex(i: UInt) -> UInt { return i % UInt._sizeInBits }
+  public static func bitIndex(i: Int) -> UInt { return UInt(i) % UInt._sizeInBits }
 
-  public static func wordsFor(bitCount: Int) -> Int { return (bitCount + sizeof(UInt) - 1) / sizeof(UInt) }
+  public static func wordsFor(bitCount: Int) -> Int {
+    let totalWords = (bitCount + Int._sizeInBits - 1) / Int._sizeInBits
+    return totalWords
+  }
 
-  public var count: Int {
+  public let count: Int
+
+  public var nonZeroCount: Int {
     var result = 0
-    let words = UnsafeBufferPointer(start: storage, count: numberOfWords)
-    for word in words where word > 0 {
+    for word in buffer where word > 0 {
       for bit in 0 ..< UInt._sizeInBits where word & (1 << bit) != 0 {
         result += 1
       }
@@ -31,112 +34,58 @@ public struct BitMap: CollectionType {
     return result
   }
 
-  public init(storage: UnsafeMutablePointer<UInt>, bitCount: Int) {
-    self.bitCount = bitCount
-    self.storage = storage
+  public init(initializedStorage storage: UnsafeMutablePointer<UInt>, bitCount: Int) {
+    count = bitCount
+    buffer = UnsafeMutableBufferPointer(start: storage, count: BitMap.wordsFor(bitCount))
   }
 
-  public var startIndex: Index { return Index(bitMap: self, offset: -1).successor() }
-  public var endIndex: Index { return Index(bitMap: self, offset: bitCount) }
-
-  public func generate() -> Generator {
-    return Generator(index: count > 0 ? startIndex : endIndex)
-  }
-  public var numberOfWords: Int { return BitMap.wordsFor(bitCount) }
-
-  public func initializeToZero() { for i in 0 ..< numberOfWords { (storage + i).initialize(0) } }
-
-  public subscript(index: Index) -> Bool {
-    get { return self[index.offset] }
-    set { self[index.offset] = newValue }
+  public init(uninitializedStorage storage: UnsafeMutablePointer<UInt>, bitCount: Int) {
+    count = bitCount
+    buffer = UnsafeMutableBufferPointer(start: storage, count: BitMap.wordsFor(bitCount))
+    initializeToZero()
   }
 
-  public var nonZeroBits: [Int] { return indices.map { $0.offset } }
+  public var startIndex: Int { return 0 }
+  public var endIndex: Int { return count }
 
-  public subscript(offset: Int) -> Bool {
-    @warn_unused_result
-    get {
-      precondition(offset < Int(bitCount) && offset >= 0, "invalid offset: \(offset)")
-      let idx = UInt(offset)
-      let word = storage[Int(BitMap.wordIndex(idx))]
-      let bit = word & (1 << BitMap.bitIndex(idx))
-      return bit != 0
-    }
-    nonmutating set {
-      precondition(offset < Int(bitCount) && offset >= 0, "invalid offset: \(offset)")
-      let idx = UInt(offset)
-      let wordIdx = BitMap.wordIndex(idx)
-      if newValue {
-        storage[Int(wordIdx)] =
-          storage[Int(wordIdx)] | (1 << BitMap.bitIndex(idx))
-      } else {
-        storage[Int(wordIdx)] =
-          storage[Int(wordIdx)] & ~(1 << BitMap.bitIndex(idx))
+  public var numberOfWords: Int { return buffer.count }
+
+  public func initializeToZero() { for i in 0 ..< numberOfWords { buffer[i] = 0 } }
+
+  public var nonZeroBits: [Int] {
+    var result: [Int] = []
+    let bitsPerWord = Int(UInt._sizeInBits)
+    for (wordIndex, word) in buffer.enumerate() where word > 0 {
+      for bitIndex in 0 ..< (bitsPerWord - countLeadingZeros(word)) where self[wordIndex * bitsPerWord + bitIndex] {
+        result.append(wordIndex * bitsPerWord + bitIndex)
       }
     }
+    return result
   }
-}
 
-extension BitMap {
-  public struct Generator: GeneratorType {
-    internal var index: BitMap.Index
-    public mutating func next() -> Bool? {
-      guard index.bitMap.bitCount > index.offset else { return nil }
-      let result = index.bitMap[index.offset]
-      let nextIndex = index.successor()
-      index = nextIndex > index ? nextIndex : Index(bitMap: index.bitMap, offset: index.bitMap.bitCount)
-      return result
+  public subscript(index: Int) -> Bool {
+    @warn_unused_result
+    get {
+      precondition(index < count && index >= 0, "invalid offset: \(index)")
+      return buffer[BitMap.wordIndex(index)] & (1 << BitMap.bitIndex(index)) != 0
+    }
+    nonmutating set {
+      precondition(index < count && index >= 0, "invalid offset: \(index)")
+      let wordIndex = BitMap.wordIndex(index)
+      let bitIndex = BitMap.bitIndex(index)
+      let word = buffer[numericCast(wordIndex)]
+      buffer[wordIndex] = newValue ? word | (1 << bitIndex) : word & ~(1 << bitIndex)
     }
   }
-}
-
-extension BitMap {
-  public struct Index: BidirectionalIndexType, Comparable {
-    internal let bitMap: BitMap
-    internal let offset: Int
-
-    public func predecessor() -> Index {
-      var previousOffset = offset
-      repeat { previousOffset -= 1 } while !bitMap[previousOffset] && previousOffset > 0
-      return Index(bitMap: bitMap, offset: previousOffset)
-    }
-    public func successor() -> Index {
-      var nextOffset = offset
-      repeat { nextOffset +=  1 } while !bitMap[nextOffset] && nextOffset < bitMap.bitCount
-      return Index(bitMap: bitMap, offset: nextOffset)
-    }
-  }
-}
-
-public func ==(lhs: BitMap.Index, rhs: BitMap.Index) -> Bool {
-  return lhs.offset == rhs.offset
-}
-
-public func <(lhs: BitMap.Index, rhs: BitMap.Index) -> Bool {
-  return lhs.offset < rhs.offset
 }
 
 extension BitMap: CustomStringConvertible {
   public var description: String {
-    var result = "(total words: \(numberOfWords); total bits: \(bitCount)) "
-    let buffer = UnsafeBufferPointer(start: storage, count: numberOfWords)
-
-    result += buffer.enumerate().map({"word \($0): \(String(rawContentsOf: $1, radix: 2))"}).joinWithSeparator("\n")
+    var result = "(total words: \(numberOfWords); total bits: \(count))\n"
+    result += buffer.enumerate().map({
+      "word \($0): \("0" * countLeadingZeros($1))\(String($1, radix: 2))"
+    }).joinWithSeparator("\n")
 
     return result
-  }
-}
-
-public struct BitMapIndexGenerator: GeneratorType {
-  let bitMap: BitMap
-  var index: Int
-  public mutating func next() -> Int? {
-    guard index < bitMap.bitCount else { return nil }
-    defer { index += 1 }
-    guard !bitMap[index] else { return index }
-    repeat {
-      index += 1
-    } while index < bitMap.bitCount && !bitMap[index]
-    return bitMap[index] ? index : nil
   }
 }

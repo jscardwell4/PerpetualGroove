@@ -29,6 +29,28 @@ nonce
 public func nonce() -> String { return NSUUID().UUIDString }
 
 
+public func countLeadingZeros(i: Int64) -> Int { return numericCast(_countLeadingZeros(i)) }
+
+public func countLeadingZeros(i: UInt) -> Int {
+  let totalBits = UInt._sizeInBits
+  for bit in (0 ..< totalBits).reverse() {
+    guard i & (1 << bit) == 0 else {
+      return numericCast(totalBits - (bit + 1))
+    }
+  }
+  return numericCast(totalBits)
+}
+
+public func countLeadingZeros(i: UInt64) -> Int {
+  // Split `i` into two so we don't overflow on conversion
+  let leading = i >> 32
+  var result = _countLeadingZeros(Int64(leading)) - 32
+  guard result == 32 else { return 0 }
+  let trailing = i & 0x00000000FFFFFFFF
+  result += _countLeadingZeros(Int64(trailing)) - 32
+  return numericCast(result)
+}
+
 /// Returns the next power of 2 that is equal to or greater than `x`
 public func round2(x: Int) -> Int {
   return Int(_exp2(_ceil(_log2(Double(max(0, x))))))

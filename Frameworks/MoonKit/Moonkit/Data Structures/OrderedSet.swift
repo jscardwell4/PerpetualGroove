@@ -15,19 +15,18 @@ extension SequenceType where Self.Generator.Element:Hashable {
 // MARK: -
 /// Structure for storing various pieces of information about an `OrderedSetHashMapStorage` instance.
 struct OrderedSetHashMapStorageHeader {
-  var count: Int
+  var count: Int = 0
   let capacity: Int
   let bytesAllocated: Int
-  let maxLoadFactorInverse: Double
-  var initializedBuckets: BitMap
+  let maxLoadFactorInverse = 1/0.75
+  let initializedBuckets: BitMap
 
-  init(count: Int = 0, capacity: Int, bytesAllocated: Int, maxLoadFactorInverse: Double = 1 / 0.75, initializedBuckets: BitMap) {
-    self.count = count
+  init(capacity: Int, bytesAllocated: Int, initializedBuckets: BitMap) {
     self.capacity = capacity
     self.bytesAllocated = bytesAllocated
-    self.maxLoadFactorInverse = maxLoadFactorInverse
     self.initializedBuckets = initializedBuckets
   }
+
 }
 
 // MARK: -
@@ -69,13 +68,13 @@ final class OrderedSetHashMapStorage: ManagedBuffer<OrderedSetHashMapStorageHead
   /// Inverse of the ratio specified as the 'max load' for this instance
   var maxLoadFactorInverse: Double { return value.maxLoadFactorInverse }
 
-  /// The bit map of initialized buckets
-  var initializedBuckets: BitMap { return value.initializedBuckets }
-
   // MARK: Accessors for raw data
 
   /// Pointer to the first byte in memory allocated for the bit map of initialized buckets
   var initializedBucketsAddress: UnsafeMutablePointer<UInt8> { return withUnsafeMutablePointerToElements {$0} }
+
+  /// Convenience for creating a `BitMap` over `initializedBuckets` that zeros out its memory only if `count == 0`
+  var initializedBuckets: BitMap { return value.initializedBuckets }
 
   /// Pointer to the first byte in memory allocated for the hash values
   var values: UnsafeMutablePointer<Int> {
@@ -90,13 +89,10 @@ final class OrderedSetHashMapStorage: ManagedBuffer<OrderedSetHashMapStorageHead
     let requiredCapacity = bitmapBytes + bytesForValues(capacity)
 
     let storage = super.create(requiredCapacity) {
-      let bitMapAddress = $0.withUnsafeMutablePointerToElements { $0 }
-      for offset in 0 ..< bitmapBytes { (bitMapAddress + offset).initialize(0) }
+      let initializedBucketsStorage = $0.withUnsafeMutablePointerToElements { UnsafeMutablePointer<UInt>($0) }
       return Header(capacity: capacity,
-                    bytesAllocated: $0.allocatedElementCount,
-                    maxLoadFactorInverse: 1 / 0.75,
-                    initializedBuckets: BitMap(storage: UnsafeMutablePointer<UInt>(bitMapAddress),
-                                               bitCount: capacity))
+             bytesAllocated: $0.allocatedElementCount,
+             initializedBuckets: BitMap(uninitializedStorage: initializedBucketsStorage, bitCount: capacity))
     }
 
     return storage as! Storage
@@ -120,7 +116,11 @@ struct Bucket: BidirectionalIndexType, Comparable {
   }
 }
 
-func ==(lhs: Bucket, rhs: Bucket) -> Bool { return lhs.offset == rhs.offset && lhs.capacity == rhs.capacity }
+extension Bucket: CustomStringConvertible {
+  var description: String { return "\(offset)" }
+}
+
+func ==(lhs: Bucket, rhs: Bucket) -> Bool { return lhs.offset == rhs.offset }
 func <(lhs: Bucket, rhs: Bucket) -> Bool { return lhs.offset < rhs.offset }
 
 
@@ -153,22 +153,28 @@ struct OrderedSetHashMapBuffer {
   typealias Storage = OrderedSetHashMapStorage
 
   /// Owns the backing data.
-  var _storage: Storage
+  var storage: Storage
 
   /// A bit map for which buckets have been initialized.
   var _initializedBuckets: BitMap
 
+  var initializedBuckets: [Bucket] {
+    return _initializedBuckets.nonZeroBits.map { [capacity = capacity] in Bucket(offset: $0, capacity: capacity) }
+  }
+
   /// A pointer to the first bucket.
-  var _values: UnsafeMutablePointer<Int>
+  var values: UnsafeMutablePointer<Int>
 
   /// Returns a pointer to the specified `bucket`
-  func _bucket(bucket: Bucket) -> UnsafeMutablePointer<Int> { return _values + bucket.offset }
+  func bucketPointer(bucket: Bucket) -> UnsafeMutablePointer<Int> { return values + bucket.offset }
 
-  var buckets: Range<Bucket> { return Bucket(offset: 0, capacity: capacity) ..< Bucket(offset: capacity, capacity: capacity) }
+//  var buckets: Range<Bucket> {
+//    return Bucket(offset: 0, capacity: capacity) ..< Bucket(offset: capacity, capacity: capacity)
+//  }
 
-  var capacity: Int { return _storage.capacity }
-  var count: Int { get { return _storage.count } nonmutating set { _storage.count = newValue } }
-  var maxLoadFactorInverse: Double { return _storage.maxLoadFactorInverse}
+  var capacity: Int { return storage.capacity }
+  var count: Int { get { return storage.count } nonmutating set { storage.count = newValue } }
+  var maxLoadFactorInverse: Double { return storage.maxLoadFactorInverse}
 
   /// Initialize the buffer by creating storage with at least `minimumCapacity` capacity.
   init(minimumCapacity: Int = 2) {
@@ -178,34 +184,32 @@ struct OrderedSetHashMapBuffer {
 
   /// Initialize the buffer with the specied `storage`.
   init(storage: Storage) {
-    self._storage = storage
+    self.storage = storage
     _initializedBuckets = storage.initializedBuckets
-    _values = storage.values
+    values = storage.values
   }
 
   /// Returns the ideal bucket for `value`.
   func idealBucketForValue(value: Int) -> Bucket { return suggestBucketForValue(value, capacity: capacity) }
 
-  /// Returns the next bucket after `bucket`.
-//  func nextBucket(bucket: Bucket) -> Bucket { return nextBucketForBucket(bucket, capacity: capacity) }
-
-  /// Returns the previous bucket before `bucket`.
-//  func previousBucket(bucket: Bucket) -> Bucket { return previousBucketForBucket(bucket, capacity: capacity) }
-
   /// Returns the bucket for `value` and whether the value is actually in the bucket.
   func find(value: Int, _ startBucket: Bucket? = nil) -> (bucket: Bucket, found: Bool) {
     var bucket = startBucket ?? idealBucketForValue(value)
+    var result: (Bucket, Bool) = (bucket, false)
 
     repeat {
-      guard isInitializedBucket(bucket) else { return (bucket, false) }
-      guard valueInBucket(bucket) != value  else { return (bucket, true) }
+      guard isInitializedBucket(bucket) else { result = (bucket, false); break }
+      guard valueInBucket(bucket) != value  else { result = (bucket, true); break }
       bucket._successorInPlace()
     } while true
+
+//    print("\(#function) value: \(value); startBucket: \(startBucket?.description ?? "nil"); bucket: \(result.0); found: \(result.1)\n\(debugDescription)")
+    return result
   }
 
   /// Returns the value in `bucket`.
   /// - requires: `bucket` is initialized
-  func valueInBucket(bucket: Bucket) -> Int { return _bucket(bucket).memory }
+  func valueInBucket(bucket: Bucket) -> Int { return bucketPointer(bucket).memory }
 
   /// Returns the value in `bucket` or `nil` if the bucket is uninitialized.
   func maybeValueInBucket(bucket: Bucket) -> Int? {
@@ -220,20 +224,20 @@ struct OrderedSetHashMapBuffer {
   /// - requires: `bucket` is initialized
   func destroyValueInBucket(bucket: Bucket) {
     assert(isInitializedBucket(bucket), "Cannot destroy the value in an uninitialized bucket")
-    _bucket(bucket).destroy()
+    bucketPointer(bucket).destroy()
     _initializedBuckets[bucket] = false
   }
 
   /// Initializes `bucket` with `value`
   func initializeValue(value: Int, bucket: Bucket) {
-    _bucket(bucket).initialize(value)
+    bucketPointer(bucket).initialize(value)
     _initializedBuckets[bucket] = true
   }
 
   /// Removes the value from `bucket1` and uses this value to initialize `bucket2`
   func moveValueInBucket(bucket1: Bucket, toBucket bucket2: Bucket) {
     assert(isInitializedBucket(bucket1), "Cannot move the value in an uninitialized bucket")
-    _bucket(bucket2).initialize(_bucket(bucket1).move())
+    bucketPointer(bucket2).initialize(bucketPointer(bucket1).move())
     _initializedBuckets[bucket1] = false
     _initializedBuckets[bucket2] = true
   }
@@ -245,9 +249,10 @@ extension OrderedSetHashMapBuffer : CustomStringConvertible, CustomDebugStringCo
   var elementsDescription: String {
     if count == 0 { return "[]" }
 
+//    print("buckets = \(buckets)")
     var result = "["
     var first = true
-    for bucket in buckets where isInitializedBucket(bucket) {
+    for bucket in initializedBuckets {
       if first { first = false } else { result += ", " }
       debugPrint(valueInBucket(bucket), terminator: "",   toStream: &result)
     }
@@ -261,13 +266,10 @@ extension OrderedSetHashMapBuffer : CustomStringConvertible, CustomDebugStringCo
     var result = elementsDescription + "\n"
     result += "count = \(count)\n"
     result += "capacity = \(capacity)\n"
-    for bucket in buckets {
-      if isInitializedBucket(bucket) {
-        let value = valueInBucket(bucket)
-        result += "bucket \(bucket), ideal bucket = \(idealBucketForValue(value)), value: \(value)\n"
-      } else {
-        result += "bucket \(bucket), empty\n"
-      }
+    for (i, bucket) in initializedBuckets.enumerate() {
+      let value = valueInBucket(bucket)
+      let idealBucket = idealBucketForValue(value)
+      result += "[\(i)] bucket \(bucket), ideal bucket = \(idealBucket), value: \(value)\n"
     }
     return result
   }
@@ -293,35 +295,18 @@ struct OrderedSetHashMapGenerator: GeneratorType {
   var index: Index
   var storage: Storage { return index.storage }
   init(storage: Storage) {
-    let capacity = storage.capacity
-    var bucket = Bucket(offset: capacity, capacity: capacity)
-    let initializedBuckets = storage.initializedBuckets
-    guard initializedBuckets.count > 0 else { index = Index(storage: storage, bucket: bucket); return }
-    repeat {
-      bucket._successorInPlace()
-    } while !initializedBuckets[bucket.offset]
-
-    index = Index(storage: storage, bucket: bucket)
+    index = Index(storage: storage, offset: -1).successor()
   }
 
   mutating func next() -> Int? {
     guard index.bucket.offset < index.bucket.capacity else { return nil }
-    defer {
-      switch (index.bucket.offset, index.bucket.capacity) {
-        case let (o, c) where o == c:
-          break
-        case let (o, c) where o < c && index.successor().bucket.offset > o:
-          index = Index(storage: index.storage, bucket: Bucket(offset: c, capacity: c))
-        default:
-          index._successorInPlace()
-      }
-    }
+    defer { index._successorInPlace() }
     return storage.values[index.bucket.offset]
   }
 }
 
 /// An index for a bucket in an instance of `OrderedSetHashMapStorage`
-struct OrderedSetHashMapIndex: BidirectionalIndexType, Comparable {
+struct OrderedSetHashMapIndex: ForwardIndexType, Comparable {
 
   typealias Index = OrderedSetHashMapIndex
   typealias Storage = OrderedSetHashMapStorage
@@ -331,13 +316,7 @@ struct OrderedSetHashMapIndex: BidirectionalIndexType, Comparable {
   let bucket: Bucket
 
   init(storage: Storage, offset: Int) {
-    self.storage = storage
-    let initializedBuckets = storage.initializedBuckets
-    let capacity = storage.capacity
-    var bucket = Bucket(offset: offset, capacity: capacity)
-    while bucket.offset < capacity && !initializedBuckets[bucket] { bucket._successorInPlace() }
-    self.bucket = bucket
-    self.initializedBuckets = initializedBuckets
+    self.init(storage: storage, bucket: Bucket(offset: offset, capacity: storage.capacity))
   }
 
   init(storage: Storage, bucket: Bucket) {
@@ -348,33 +327,22 @@ struct OrderedSetHashMapIndex: BidirectionalIndexType, Comparable {
 
   @warn_unused_result
   func successor() -> Index {
+    guard bucket.offset < bucket.capacity else { return self }
     var nextBucket = bucket
     repeat {
       nextBucket._successorInPlace()
       guard nextBucket.offset < nextBucket.capacity else { break }
     } while !initializedBuckets[nextBucket.offset]
+    guard nextBucket > bucket else { return Index(storage: storage, offset: storage.capacity) }
     return Index(storage: storage, bucket: nextBucket)
   }
-
-  @warn_unused_result
-  func predecessor() -> Index {
-    var previousBucket = bucket
-    repeat {
-      previousBucket._predecessorInPlace()
-      guard previousBucket.offset > 0 else { break }
-    } while !initializedBuckets[previousBucket.offset]
-    return Index(storage: storage, bucket: previousBucket)
-  }
-
 }
 
 func ==(lhs: OrderedSetHashMapIndex, rhs: OrderedSetHashMapIndex) -> Bool {
-  guard lhs.storage === rhs.storage else { return false }
   return lhs.bucket == rhs.bucket
 }
 
 func <(lhs: OrderedSetHashMapIndex, rhs: OrderedSetHashMapIndex) -> Bool {
-  guard lhs.storage === rhs.storage else { return false }
   return lhs.bucket < rhs.bucket
 }
 
@@ -391,61 +359,51 @@ struct OrderedSetHashMap {
   
   var buffer: Buffer { get { return owner.buffer } set { owner.buffer = newValue } }
 
-  var storage: Storage { return buffer._storage }
+  var storage: Storage { return buffer.storage }
 
   var owner: Owner
+
+  func cloneBuffer(newCapacity: Int) -> Buffer {
+
+    let clone = Buffer(minimumCapacity: newCapacity)
+
+    if clone.capacity == buffer.capacity {
+      for bucket in buffer.initializedBuckets {
+        clone.initializeValue(buffer.valueInBucket(bucket), bucket: bucket)
+      }
+    } else {
+      for bucket in buffer.initializedBuckets {
+        let value = buffer.valueInBucket(bucket)
+        let (bucket, found) = clone.find(value)
+        assert(!found, "Duplicate value introduced: \(value)")
+        clone.initializeValue(value, bucket: bucket)
+      }
+    }
+
+    clone.count = buffer.count
+
+    return clone
+  }
 
   /// Checks that `owner` has only the one strong reference and that it's `buffer` has at least `minimumCapacity` capacity
   mutating func ensureUniqueWithCapacity(minimumCapacity: Int)
     -> (reallocated: Bool, capacityChanged: Bool)
   {
-    let currentCapacity = capacity
-
-    //NOTE: Switched from function to closure because I think the function was forcing an additional strong reference on `owner`
-    let clonedBuffer = {
-      (capacity: Int) -> Buffer in
-
-      let clone = Buffer(storage: Storage.create(capacity))
-//      defer { print("\nclonedBuffer(capacity: \(capacity))\nbuffer:\n\(self.buffer.debugDescription)\nclone: \(clone.debugDescription)") }
-
-      let currentHeader = self.buffer._storage.withUnsafeMutablePointerToValue { $0 }
-      let currentValues = self.buffer._storage.withUnsafeMutablePointerToElements { UnsafeMutablePointer<Int>($0) }
-
-      let cloneHeader = clone._storage.withUnsafeMutablePointerToValue { $0 }
-      let cloneValues = clone._storage.withUnsafeMutablePointerToElements { UnsafeMutablePointer<Int>($0) }
-
-      let copyBucket = currentCapacity == cloneHeader.memory.capacity
-
-      for offset in 0 ..< currentCapacity where currentHeader.memory.initializedBuckets[offset] {
-        let value = (currentValues + offset).memory
-        let bucket = copyBucket
-                       ? Bucket(offset: offset, capacity: currentCapacity)
-                       : findBucketForValue(value,
-                                            capacity: cloneHeader.memory.capacity,
-                                            initializedBuckets: cloneHeader.memory.initializedBuckets)
-        (cloneValues + bucket.offset).initialize(value)
-        cloneHeader.memory.initializedBuckets[bucket] = true
-      }
-
-      cloneHeader.memory.count = currentHeader.memory.count
-      return clone
-    }
-
-    switch (isUnique: isUniquelyReferenced(&owner), hasCapacity: currentCapacity >= minimumCapacity) {
+    switch (isUnique: isUniquelyReferenced(&owner), hasCapacity: capacity >= minimumCapacity) {
 
       case (isUnique: true, hasCapacity: true):
         return (reallocated: false, capacityChanged: false)
 
       case (isUnique: true, hasCapacity: false):
-        owner.buffer = clonedBuffer(Int(Double(minimumCapacity) * buffer.maxLoadFactorInverse))
+        owner.buffer = cloneBuffer(Int(Double(minimumCapacity) * buffer.maxLoadFactorInverse))
         return (reallocated: true, capacityChanged: true)
 
       case (isUnique: false, hasCapacity: true):
-        owner = Owner(buffer: clonedBuffer(currentCapacity))
+        owner = Owner(buffer: cloneBuffer(capacity))
         return (reallocated: true, capacityChanged: false)
 
       case (isUnique: false, hasCapacity: false):
-        owner = Owner(buffer: clonedBuffer(Int(Double(minimumCapacity) * buffer.maxLoadFactorInverse)))
+        owner = Owner(buffer: cloneBuffer(Int(Double(minimumCapacity) * buffer.maxLoadFactorInverse)))
         return (reallocated: true, capacityChanged: true)
     }
 
@@ -456,9 +414,15 @@ struct OrderedSetHashMap {
   init(owner: Owner) { self.owner = owner }
   init(buffer: Buffer) { owner = Owner(buffer: buffer) }
 
-  var startIndex: Index { return Index(storage: storage, offset: 0)  }
+  var startIndex: Index {
+    let startIndex = Index(storage: storage, offset: -1).successor()
+    return startIndex
+  }
 
-  var endIndex: Index { return Index(storage: storage, offset: capacity) }
+  var endIndex: Index {
+    let endIndex = Index(storage: storage, offset: capacity)
+    return endIndex
+  }
 
   /// Caches the calculated `hashValue`
   private var _hashValue: UnsafeMutablePointer<Int> = nil
@@ -498,6 +462,7 @@ struct OrderedSetHashMap {
     buffer.destroyValueInBucket(bucket)
     buffer.count -= 1
     _hashValue = nil
+//    print("\(#function) value '\(value)' removed from bucket '\(bucket)'")
     _patchHole(bucket, idealBucket: buffer.idealBucketForValue(value))
   }
 
@@ -513,6 +478,8 @@ struct OrderedSetHashMap {
 
   /// Attempts to move the values of the buckets near `hole` into buckets nearer to their 'ideal' bucket
   func _patchHole(hole: Bucket, idealBucket: Bucket) {
+    assert(!buffer.isInitializedBucket(hole), "Hole to path is initialized: '\(hole)'")
+//    print("\(#function) before patching hole '\(hole)' with ideal bucket '\(idealBucket)': \(buffer.debugDescription)")
     var hole = hole
     var start = idealBucket
     while buffer.isInitializedBucket(start.predecessor()) { start._predecessorInPlace() }
@@ -521,9 +488,9 @@ struct OrderedSetHashMap {
     var last = lastInChain.successor()
     while buffer.isInitializedBucket(last) { lastInChain = last; last._successorInPlace() }
 
-    FillHole: while hole != lastInChain {
+    while hole != lastInChain {
       last = lastInChain
-      while last != hole {
+      FillHole: while last != hole {
         let value = buffer.valueInBucket(last)
         let bucket = buffer.idealBucketForValue(value)
 
@@ -540,11 +507,14 @@ struct OrderedSetHashMap {
       buffer.moveValueInBucket(last, toBucket: hole)
       hole = last
     }
+
+//    print("\(#function) after patching hole: \(buffer.debugDescription)")
   }
 
   /// Locates the bucket for `value` and removes that value, optionally initializing `oldValue` with th
   mutating func _removeValue(value: Int) {
     let (bucket, found) = buffer.find(value)
+//    print("\(#function) value = \(value); bucket = \(bucket), found = \(found)")
     guard found else { return }
     _removeValueInBucket(bucket)
   }
@@ -600,14 +570,21 @@ struct OrderedSetHashMap {
   var count: Int { return buffer.count }
   var capacity: Int { return buffer.capacity }
 
-  func generate() -> Generator { return Generator(storage: storage) }
+  func generate() -> Generator {
+//    var bucketGenerator = buffer.initializedBuckets.nonZeroBits.generate()
+//    let storage = buffer.storage
+//    return AnyGenerator {
+//      guard let bucket = bucketGenerator.next() else { return nil }
+//      return (storage.values + bucket).memory
+//    }
+
+    return Generator(storage: storage)
+  }
 
   var isEmpty: Bool { return count == 0 }
 
   var first: Int? {
-    guard let bucket = buffer.buckets.first({ buffer.isInitializedBucket($0) }) else {
-      return nil
-    }
+    guard let bucket = buffer.initializedBuckets.first else { return nil }
     return buffer.valueInBucket(bucket)
   }
 
@@ -638,7 +615,7 @@ extension OrderedSetHashMap: SetType {
   /// Returns true if the set is a subset of a finite sequence as a `Set`.
   @warn_unused_result
   func isSubsetOf<S:SequenceType where S.Generator.Element == Int>(sequence: S) -> Bool {
-    let hashMap = sequence as? OrderedSetHashMap ?? OrderedSetHashMap(sequence)
+    let hashMap = sequence as? Set<Int> ?? Set(sequence)
     for value in self where !hashMap.contains(value) { return false }
     return true
   }
@@ -646,7 +623,7 @@ extension OrderedSetHashMap: SetType {
   /// Returns true if the set is a subset of a finite sequence as a `Set` but not equal.
   @warn_unused_result
   func isStrictSubsetOf<S:SequenceType where S.Generator.Element == Int>(sequence: S) -> Bool {
-    let hashMap = sequence as? OrderedSetHashMap ?? OrderedSetHashMap(sequence)
+    let hashMap = sequence as? Set<Int> ?? Set(sequence)
     return isSubsetOf(hashMap) && hashMap.count > count
   }
 
@@ -660,7 +637,7 @@ extension OrderedSetHashMap: SetType {
   /// Returns true if the set is a superset of a finite sequence as a `Set` but not equal.
   @warn_unused_result
   func isStrictSupersetOf<S:SequenceType where S.Generator.Element == Int>(sequence: S) -> Bool {
-    let hashMap = sequence as? OrderedSetHashMap ?? OrderedSetHashMap(sequence)
+    let hashMap = sequence as? Set<Int> ?? Set(sequence)
     return isSupersetOf(hashMap) && count > hashMap.count
   }
 
@@ -706,22 +683,27 @@ extension OrderedSetHashMap: SetType {
 
   /// Remove all members in the set that occur in a finite sequence.
   mutating func subtractInPlace<S:SequenceType where S.Generator.Element == Int>(sequence: S) {
-    var checkedUnique = false
-    let hashMap = sequence as? OrderedSetHashMap ?? OrderedSetHashMap(sequence)
-    for value in self where hashMap.contains(value) {
 
-//    print("\n\(#function) - subtracting these values from other:\n\(hashMap)\n\n\(#function) - from these values from self:\n\(self)")
-      if !checkedUnique {
-        let (_, capacityChanged) = ensureUniqueWithCapacity(capacity)
-        assert(!capacityChanged, "The only reason to reallocate should be if we weren't unique")
-        checkedUnique = true
-      }
-      assert(isUniquelyReferenced(&owner), "We should have a unique owner at this point")
-      let (bucket, _) = buffer.find(value)
-      _unsafeRemoveValue(value, fromBucket: bucket)
+    for value in sequence {
+      remove(value)
     }
-    if checkedUnique { _hashValue = nil }
-//    print("\n\(#function) - resulting hash map:\n\(self)")
+//    var checkedUnique = false
+//    let hashMap = sequence as? Set<Int> ?? Set(sequence)
+//    for value in self where hashMap.contains(value) {
+//
+////    print("\n\(#function) - subtracting these values from other:\n\(hashMap)\n\n\(#function) - from these values from self:\n\(self)")
+//      if !checkedUnique {
+//        let (_, capacityChanged) = ensureUniqueWithCapacity(capacity)
+//        assert(!capacityChanged, "The only reason to reallocate should be if we weren't unique")
+//        checkedUnique = true
+//      }
+//      assert(isUniquelyReferenced(&owner), "We should have a unique owner at this point")
+//      let (bucket, found) = buffer.find(value)
+//      assert(found, "We seem to have misplaced value '\(value)'")
+//      _unsafeRemoveValue(value, fromBucket: bucket)
+//    }
+//    if checkedUnique { _hashValue = nil }
+////    print("\n\(#function) - resulting hash map:\n\(self)")
   }
 
   /// Return a new set with elements common to this set and a finite sequence.
@@ -734,7 +716,7 @@ extension OrderedSetHashMap: SetType {
 
   /// Remove any members of this set that aren't also in a finite sequence.
   mutating func intersectInPlace<S:SequenceType where S.Generator.Element == Int>(sequence: S) {
-    let hashMap = sequence as? OrderedSetHashMap ?? OrderedSetHashMap(sequence)
+    let hashMap = sequence as? Set<Int> ?? Set(sequence)
     var checkedUnique = false
     for value in self where !hashMap.contains(value) {
 
