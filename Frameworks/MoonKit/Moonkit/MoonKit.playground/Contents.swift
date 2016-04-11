@@ -1,55 +1,32 @@
 import Foundation
 import MoonKit
 
-let wtf = UInt64(93)
-_countLeadingZeros(Int64(wtf))
-UInt64.max
-UInt.max
+print(Array(zip([1, 2, 3], ["a", "b", "c", "d", "e"])))
 
-let maxUInt = UInt.max
-UInt._sizeInBits
-let leading = maxUInt & 0xFFFFFFFF00000000 >> 32
-let trailing = maxUInt & 0x00000000FFFFFFFF
-//let wtf = [true, false, true]
-//let wtfIndexes = wtf.lazy.enumerate().lazy.map({$0.0})
-_countLeadingZeros(Int64(leading))
-_countLeadingZeros(Int64(trailing))
-//print(Array(wtfIndexes.generate()))
-UInt8.max
-let i = Int64(2359829)
-_countLeadingZeros(i)
-countLeadingZeros(i)
-let u = UInt64(i)
-countLeadingZeros(u)
-countLeadingZeros(Int64.max)
-countLeadingZeros(UInt64.max)
-String(255, radix: 2)
-let storage = UnsafeMutablePointer<UInt>.alloc(4)
-var bitMap = BitMap(uninitializedStorage: storage, bitCount: 3 * Int(UInt._sizeInBits))
-//bitMap.initializeToZero()
-for i in 0.stride(to: 192, by: 3) {
-  bitMap[i] = true
-}
-let word = storage.memory
-print("String.init(word, radix:2): \(String(word, radix: 2))")
-print("String.init(word, radix:8): \(String(word, radix: 8))")
-print("String.init(word, radix:10): \(String(word, radix: 10))")
-print("String.init(word, radix:16): \(String(word, radix: 16))")
+var pointer1 = UnsafeMutablePointer<Int>.alloc(1)
+var pointer2 = UnsafeMutablePointer<Int>.alloc(1)
+pointer1.initialize(9)
+pointer2.initialize(34)
+pointer1.memory
+pointer2.memory
+swap(&pointer1, &pointer2)
+pointer1.memory
+pointer2.memory
 
-print("rawContentsOf word(radix:2): ", terminator: ""); print(String(rawContentsOf: word, radix: 2))
-print("rawContentsOf word(radix:8): ", terminator: ""); print(String(rawContentsOf: word, radix: 8))
-print("rawContentsOf word(radix:10): ", terminator: ""); print(String(rawContentsOf: word, radix: 10))
-print("rawContentsOf word(radix:16): ", terminator: ""); print(String(rawContentsOf: word, radix: 16))
+var bufferStorage = UnsafeMutablePointer<Int>.alloc(10)
+bufferStorage.initialize(1)
+(bufferStorage + 1).initialize(2)
+(bufferStorage + 2).initialize(3)
+(bufferStorage + 3).initialize(4)
+(bufferStorage + 4).initialize(5)
+(bufferStorage + 5).initialize(6)
+(bufferStorage + 6).initialize(7)
+(bufferStorage + 7).initialize(8)
+(bufferStorage + 8).initialize(9)
+(bufferStorage + 9).initialize(10)
 
-for (i, v) in [0, 1, 2, 3, 4, 5].enumerate() where v % 2 == 0 {
-  print(i, v)
-}
+var bufferPointer = UnsafeMutableBufferPointer<Int>(start: bufferStorage, count: 10)
 
-print(bitMap)
-print(bitMap.nonZeroBits)
-for index in bitMap.nonZeroBits { assert(bitMap[index]) }
-bitMap[3] = false
-print(bitMap)
-bitMap[0] = false
-print(bitMap)
+swap(&bufferPointer[3], &bufferPointer[4])
 
+Array(bufferPointer)

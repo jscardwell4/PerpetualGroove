@@ -6,6 +6,46 @@
 	<dict>
 		<key>OrderedSetTests</key>
 		<dict>
+			<key>testDeletePerformance()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.025305</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Apr 11, 2016, 11:22:58 AM</string>
+				</dict>
+			</dict>
+			<key>testDeletePerformance2()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>2.0422</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Apr 11, 2016, 11:22:58 AM</string>
+				</dict>
+			</dict>
+			<key>testDeletePerformance3()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>16.039</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Apr 11, 2016, 11:22:58 AM</string>
+				</dict>
+			</dict>
+			<key>testDeletePerformance4()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.35417</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Apr 11, 2016, 11:22:58 AM</string>
+				</dict>
+			</dict>
 			<key>testExistingPerformanceWithCapacityReserved()</key>
 			<dict>
 				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
@@ -34,6 +74,96 @@
 					<real>0.19917</real>
 					<key>baselineIntegrationDisplayName</key>
 					<string>Local Baseline</string>
+				</dict>
+			</dict>
+			<key>testInsertionPerformance()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.011847</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Apr 11, 2016, 11:22:58 AM</string>
+				</dict>
+			</dict>
+			<key>testInsertionPerformance2()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.012859</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Apr 11, 2016, 11:22:58 AM</string>
+				</dict>
+			</dict>
+			<key>testInsertionPerformance3()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.07288</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Apr 11, 2016, 11:22:58 AM</string>
+				</dict>
+			</dict>
+			<key>testInsertionPerformance4()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.055123</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Apr 11, 2016, 11:22:58 AM</string>
+				</dict>
+			</dict>
+			<key>testIntersection()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.0069449</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 23, 2016, 8:25:34 PM</string>
+				</dict>
+			</dict>
+			<key>testIntersectionPerformance()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.013276</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Apr 11, 2016, 11:22:58 AM</string>
+				</dict>
+			</dict>
+			<key>testIntersectionPerformance2()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.013124</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Apr 11, 2016, 11:22:58 AM</string>
+				</dict>
+			</dict>
+			<key>testIntersectionPerformance3()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.051952</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Apr 11, 2016, 11:22:58 AM</string>
+				</dict>
+			</dict>
+			<key>testIntersectionPerformance4()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.036687</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Apr 11, 2016, 11:22:58 AM</string>
 				</dict>
 			</dict>
 			<key>testOldPerformanceWithCapacityReserved()</key>
@@ -121,9 +251,9 @@
 				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
 				<dict>
 					<key>baselineAverage</key>
-					<real>0.0018519</real>
+					<real>0.357</real>
 					<key>baselineIntegrationDisplayName</key>
-					<string>Mar 15, 2016, 5:15:18 PM</string>
+					<string>Local Baseline</string>
 				</dict>
 			</dict>
 			<key>testOrderedSetPerformanceWithoutCapacityReserved()</key>
@@ -131,9 +261,9 @@
 				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
 				<dict>
 					<key>baselineAverage</key>
-					<real>0.0022465</real>
+					<real>0.357</real>
 					<key>baselineIntegrationDisplayName</key>
-					<string>Mar 15, 2016, 5:15:18 PM</string>
+					<string>Local Baseline</string>
 				</dict>
 			</dict>
 			<key>testOrderedSetResize()</key>
@@ -181,9 +311,39 @@
 				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
 				<dict>
 					<key>baselineAverage</key>
-					<real>0.005</real>
+					<real>0.21913</real>
 					<key>baselineIntegrationDisplayName</key>
-					<string>Local Baseline</string>
+					<string>Apr 11, 2016, 11:22:58 AM</string>
+				</dict>
+			</dict>
+			<key>testPerformanceWithCapacityReserved2()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>1.0543</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Apr 11, 2016, 11:22:58 AM</string>
+				</dict>
+			</dict>
+			<key>testPerformanceWithCapacityReserved3()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>21.216</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Apr 11, 2016, 11:22:58 AM</string>
+				</dict>
+			</dict>
+			<key>testPerformanceWithCapacityReserved4()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.32301</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Apr 11, 2016, 11:22:58 AM</string>
 				</dict>
 			</dict>
 			<key>testPerformanceWithoutCapacityReserved()</key>
@@ -191,9 +351,239 @@
 				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
 				<dict>
 					<key>baselineAverage</key>
-					<real>0.012</real>
+					<real>0.21924</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Apr 11, 2016, 11:22:58 AM</string>
+				</dict>
+			</dict>
+			<key>testPerformanceWithoutCapacityReserved2()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>1.0653</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Apr 11, 2016, 11:22:58 AM</string>
+				</dict>
+			</dict>
+			<key>testPerformanceWithoutCapacityReserved3()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>10.768</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Apr 11, 2016, 11:22:58 AM</string>
+				</dict>
+			</dict>
+			<key>testPerformanceWithoutCapacityReserved4()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.37553</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Apr 11, 2016, 11:22:58 AM</string>
+				</dict>
+			</dict>
+			<key>testReplaceRangePerformance()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>1.0243</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Apr 11, 2016, 11:22:58 AM</string>
+				</dict>
+			</dict>
+			<key>testReplaceRangePerformance2()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.084191</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Apr 11, 2016, 11:22:58 AM</string>
+				</dict>
+			</dict>
+			<key>testReplaceRangePerformance3()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>502.67</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Apr 11, 2016, 11:22:58 AM</string>
+				</dict>
+			</dict>
+			<key>testReplaceRangePerformance4()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.038</real>
 					<key>baselineIntegrationDisplayName</key>
 					<string>Local Baseline</string>
+				</dict>
+			</dict>
+			<key>testSetBaselinePerformance()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.05132</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 23, 2016, 8:25:34 PM</string>
+				</dict>
+			</dict>
+			<key>testSubtract()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.022069</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 23, 2016, 8:25:34 PM</string>
+				</dict>
+			</dict>
+			<key>testSubtractPerformance()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.010106</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Apr 11, 2016, 11:22:58 AM</string>
+				</dict>
+			</dict>
+			<key>testSubtractPerformance2()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.011118</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Apr 11, 2016, 11:22:58 AM</string>
+				</dict>
+			</dict>
+			<key>testSubtractPerformance3()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.034236</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Apr 11, 2016, 11:22:58 AM</string>
+				</dict>
+			</dict>
+			<key>testSubtractPerformance4()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.026653</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Apr 11, 2016, 11:22:58 AM</string>
+				</dict>
+			</dict>
+			<key>testUnion()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.0090601</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 23, 2016, 8:25:34 PM</string>
+				</dict>
+			</dict>
+			<key>testUnionPerformance()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.0099213</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Apr 11, 2016, 11:22:58 AM</string>
+				</dict>
+			</dict>
+			<key>testUnionPerformance2()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.0091564</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Apr 11, 2016, 11:22:58 AM</string>
+				</dict>
+			</dict>
+			<key>testUnionPerformance3()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.061055</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Apr 11, 2016, 11:22:58 AM</string>
+				</dict>
+			</dict>
+			<key>testUnionPerformance4()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.047052</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Apr 11, 2016, 11:22:58 AM</string>
+				</dict>
+			</dict>
+			<key>testXOR()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.040219</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Mar 23, 2016, 8:25:34 PM</string>
+				</dict>
+			</dict>
+			<key>testXORPerformance()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.017262</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Apr 11, 2016, 11:22:58 AM</string>
+				</dict>
+			</dict>
+			<key>testXORPerformance2()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.017232</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Apr 11, 2016, 11:22:58 AM</string>
+				</dict>
+			</dict>
+			<key>testXORPerformance3()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.03786</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Apr 11, 2016, 11:22:58 AM</string>
+				</dict>
+			</dict>
+			<key>testXORPerformance4()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.029651</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Apr 11, 2016, 11:22:58 AM</string>
 				</dict>
 			</dict>
 			<key>test_OrderedSetCOW()</key>

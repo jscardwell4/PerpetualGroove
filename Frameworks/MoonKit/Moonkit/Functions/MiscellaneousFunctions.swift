@@ -29,6 +29,14 @@ nonce
 public func nonce() -> String { return NSUUID().UUIDString }
 
 
+public func pointerCast<T, U>(pointer: UnsafeMutablePointer<T>) -> UnsafeMutablePointer<U> {
+  return UnsafeMutablePointer<U>(pointer._rawValue)
+}
+
+public func pointerCast<T, U>(pointer: UnsafePointer<T>) -> UnsafePointer<U> {
+  return UnsafePointer<U>(pointer._rawValue)
+}
+
 public func countLeadingZeros(i: Int64) -> Int { return numericCast(_countLeadingZeros(i)) }
 
 public func countLeadingZeros(i: UInt) -> Int {

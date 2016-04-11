@@ -264,6 +264,9 @@
 		C2421D181BEFE884009BA8B1 /* ByteArrayConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2421D171BEFE884009BA8B1 /* ByteArrayConvertible.swift */; };
 		C2421D1A1BEFE8DE009BA8B1 /* Bytes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2421D191BEFE8DE009BA8B1 /* Bytes.swift */; };
 		C24416331ACB16F8007EDEFE /* Set+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24416321ACB16F8007EDEFE /* Set+MoonKitAdditions.swift */; };
+		C24684201CA451F800CB61EE /* NativeSetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C246841F1CA451F800CB61EE /* NativeSetTests.swift */; };
+		C24684221CA451F800CB61EE /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2358F1619C78D6D00920F8D /* MoonKit.framework */; };
+		C246842B1CA4607400CB61EE /* OrderedSet2.swift in Sources */ = {isa = PBXBuildFile; fileRef = C246842A1CA4607400CB61EE /* OrderedSet2.swift */; };
 		C246961B1C6BD3E100120DAF /* SortedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = C246961A1C6BD3E100120DAF /* SortedArray.swift */; };
 		C24A22811ADAEC010065E7EA /* ArrayJSONValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24A22801ADAEC000065E7EA /* ArrayJSONValue.swift */; };
 		C24A22831ADAEC0F0065E7EA /* ObjectJSONValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24A22821ADAEC0F0065E7EA /* ObjectJSONValue.swift */; };
@@ -308,6 +311,7 @@
 		C26A27F31B94C30500BD1698 /* DirectoryMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A27F21B94C30500BD1698 /* DirectoryMonitor.swift */; };
 		C26A27F71B9532A900BD1698 /* Knob.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A27F61B9532A900BD1698 /* Knob.swift */; };
 		C2729AE11BEE9836004FA34F /* NSValue+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2729AE01BEE9836004FA34F /* NSValue+MoonKitAdditions.swift */; };
+		C2736FDC1CAC3D6700E861A2 /* OrderedSet4.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2736FDB1CAC3D6700E861A2 /* OrderedSet4.swift */; };
 		C27372851A1FC0750079624D /* UIColor+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27372841A1FC0750079624D /* UIColor+MoonKitAdditions.swift */; };
 		C27393DB1C0931DE004D694B /* ColorSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A6261E1A33598300152E97 /* ColorSlider.swift */; };
 		C274CB8A1B70FBBF00EC8E4A /* Form.swift in Sources */ = {isa = PBXBuildFile; fileRef = C274CB891B70FBBF00EC8E4A /* Form.swift */; };
@@ -417,7 +421,7 @@
 		C2C17D4A1B5813EB00D9E9A6 /* Identifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C17D491B5813EB00D9E9A6 /* Identifier.swift */; };
 		C2C482E519CA0225002E84A9 /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C482E419CA0225002E84A9 /* Stack.swift */; };
 		C2C4B72C1AA951D700912951 /* NSManagedObject+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C4B72B1AA951D700912951 /* NSManagedObject+MoonKitAdditions.swift */; };
-		C2C65BB71C9708D8000645ED /* _OrderedSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C65BB61C9708D8000645ED /* _OrderedSet.swift */; };
+		C2C65BB71C9708D8000645ED /* OrderedSet3.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C65BB61C9708D8000645ED /* OrderedSet3.swift */; };
 		C2C65BBF1C970F39000645ED /* OrderedSetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C65BBE1C970F39000645ED /* OrderedSetTests.swift */; };
 		C2C65BC11C970F39000645ED /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2358F1619C78D6D00920F8D /* MoonKit.framework */; };
 		C2C9EB701B65C5C70051BACF /* Range+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C9EB6F1B65C5C70051BACF /* Range+MoonKitAdditions.swift */; };
@@ -441,6 +445,7 @@
 		C2CEFF2C1A328B2000F3BE24 /* FloatInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CEFF2B1A328B2000F3BE24 /* FloatInputView.swift */; };
 		C2CF38CF1B7FAFE00085B3D5 /* VerticalSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CF38CE1B7FAFE00085B3D5 /* VerticalSlider.swift */; };
 		C2CF986A1B0FD12900E32E41 /* PopoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CF98691B0FD12900E32E41 /* PopoverView.swift */; };
+		C2D130431CA3246A0045751E /* OrderedSetHashMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D130421CA3246A0045751E /* OrderedSetHashMap.swift */; };
 		C2D406761BBA0F6700681DEF /* NSURL+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D406751BBA0F6700681DEF /* NSURL+MoonKitAdditions.swift */; };
 		C2D5F2421B97BC93005040EF /* Slider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D5F2411B97BC93005040EF /* Slider.swift */; };
 		C2D664F11B88CC6F00D70FFA /* Ratio.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D664F01B88CC6F00D70FFA /* Ratio.swift */; };
@@ -475,6 +480,13 @@
 
 /* Begin PBXContainerItemProxy section */
 		C2416E391C88B62E00734CA1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C2CE884618138C4900555D63 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C2358F1519C78D6D00920F8D;
+			remoteInfo = MoonKit;
+		};
+		C24684231CA451F800CB61EE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C2CE884618138C4900555D63 /* Project object */;
 			proxyType = 1;
@@ -620,6 +632,11 @@
 		C24416321ACB16F8007EDEFE /* Set+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Set+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C2456BE319C39C8A007162F3 /* NSIndexPath+MSKitAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSIndexPath+MSKitAdditions.h"; sourceTree = "<group>"; };
 		C2456BE419C39C8A007162F3 /* NSIndexPath+MSKitAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSIndexPath+MSKitAdditions.m"; sourceTree = "<group>"; };
+		C24684171CA42E9400CB61EE /* NativeHashedCollections.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NativeHashedCollections.swift; sourceTree = "<group>"; };
+		C246841D1CA451F800CB61EE /* NativeSetTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NativeSetTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C246841F1CA451F800CB61EE /* NativeSetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeSetTests.swift; sourceTree = "<group>"; };
+		C24684211CA451F800CB61EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C246842A1CA4607400CB61EE /* OrderedSet2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderedSet2.swift; sourceTree = "<group>"; };
 		C24696191C6A3CD800120DAF /* IntervalMap.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = IntervalMap.playground; path = Moonkit/IntervalMap.playground; sourceTree = "<group>"; };
 		C246961A1C6BD3E100120DAF /* SortedArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SortedArray.swift; sourceTree = "<group>"; };
 		C24A22801ADAEC000065E7EA /* ArrayJSONValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayJSONValue.swift; sourceTree = "<group>"; };
@@ -674,6 +691,7 @@
 		C26A27F21B94C30500BD1698 /* DirectoryMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DirectoryMonitor.swift; sourceTree = "<group>"; };
 		C26A27F61B9532A900BD1698 /* Knob.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Knob.swift; sourceTree = "<group>"; };
 		C2729AE01BEE9836004FA34F /* NSValue+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSValue+MoonKitAdditions.swift"; sourceTree = "<group>"; };
+		C2736FDB1CAC3D6700E861A2 /* OrderedSet4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderedSet4.swift; sourceTree = "<group>"; };
 		C27372841A1FC0750079624D /* UIColor+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C274832519D07942000CB422 /* UIBarButtonItem+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIBarButtonItem+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C274CB891B70FBBF00EC8E4A /* Form.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Form.swift; sourceTree = "<group>"; };
@@ -736,7 +754,7 @@
 		C2C482E619CA2985002E84A9 /* NSCharacterSet+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSCharacterSet+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C2C482E819CA2997002E84A9 /* NSScanner+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSScanner+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C2C4B72B1AA951D700912951 /* NSManagedObject+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSManagedObject+MoonKitAdditions.swift"; sourceTree = "<group>"; };
-		C2C65BB61C9708D8000645ED /* _OrderedSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _OrderedSet.swift; sourceTree = "<group>"; };
+		C2C65BB61C9708D8000645ED /* OrderedSet3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderedSet3.swift; sourceTree = "<group>"; };
 		C2C65BBC1C970F38000645ED /* OrderedSetTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OrderedSetTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2C65BBE1C970F39000645ED /* OrderedSetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderedSetTests.swift; sourceTree = "<group>"; };
 		C2C65BC01C970F39000645ED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -918,6 +936,7 @@
 		C2CEFF2B1A328B2000F3BE24 /* FloatInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FloatInputView.swift; sourceTree = "<group>"; };
 		C2CF38CE1B7FAFE00085B3D5 /* VerticalSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VerticalSlider.swift; sourceTree = "<group>"; };
 		C2CF98691B0FD12900E32E41 /* PopoverView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopoverView.swift; sourceTree = "<group>"; };
+		C2D130421CA3246A0045751E /* OrderedSetHashMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderedSetHashMap.swift; sourceTree = "<group>"; };
 		C2D406751BBA0F6700681DEF /* NSURL+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURL+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C2D5F2411B97BC93005040EF /* Slider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Slider.swift; sourceTree = "<group>"; };
 		C2D664F01B88CC6F00D70FFA /* Ratio.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Ratio.swift; sourceTree = "<group>"; };
@@ -987,6 +1006,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				C2416E381C88B62E00734CA1 /* MoonKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C246841A1CA451F800CB61EE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C24684221CA451F800CB61EE /* MoonKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1086,13 +1113,17 @@
 				C20835991C80D0F000D4A10E /* OldOrderedDictionary.swift */,
 				C2C482E419CA0225002E84A9 /* Stack.swift */,
 				C25E63E01A00427100F54626 /* OldOrderedSet.swift */,
-				C2C65BB61C9708D8000645ED /* _OrderedSet.swift */,
+				C2C65BB61C9708D8000645ED /* OrderedSet3.swift */,
+				C2736FDB1CAC3D6700E861A2 /* OrderedSet4.swift */,
 				C2CD95021C7772BA001FB80B /* OrderedSet.swift */,
+				C246842A1CA4607400CB61EE /* OrderedSet2.swift */,
+				C2D130421CA3246A0045751E /* OrderedSetHashMap.swift */,
 				C2B3B2EC1C592EC60001152F /* HashableTuple.swift */,
 				C2562D0B1C64F9150086789D /* WeakArray.swift */,
 				C246961A1C6BD3E100120DAF /* SortedArray.swift */,
 				C2CD95041C778C78001FB80B /* BitMap.swift */,
 				C24AF3DE1C7BFC2500C55223 /* BitArray.swift */,
+				C24684171CA42E9400CB61EE /* NativeHashedCollections.swift */,
 			);
 			path = "Data Structures";
 			sourceTree = "<group>";
@@ -1226,6 +1257,15 @@
 				C2416E371C88B62E00734CA1 /* Info.plist */,
 			);
 			path = WeakArrayTests;
+			sourceTree = "<group>";
+		};
+		C246841E1CA451F800CB61EE /* NativeSetTests */ = {
+			isa = PBXGroup;
+			children = (
+				C246841F1CA451F800CB61EE /* NativeSetTests.swift */,
+				C24684211CA451F800CB61EE /* Info.plist */,
+			);
+			path = NativeSetTests;
 			sourceTree = "<group>";
 		};
 		C256F07F1ABDFFE5005B7CB3 /* MoonKitOSX */ = {
@@ -1489,6 +1529,7 @@
 				C2416E341C88B62E00734CA1 /* WeakArrayTests */,
 				C2C65BBD1C970F39000645ED /* OrderedSetTests */,
 				C2E55D0F1C9E4287004E7CB1 /* BitMapTests */,
+				C246841E1CA451F800CB61EE /* NativeSetTests */,
 				C2CE885018138C4900555D63 /* Frameworks */,
 				C2CE884F18138C4900555D63 /* Products */,
 			);
@@ -1506,6 +1547,7 @@
 				C2416E331C88B62E00734CA1 /* WeakArrayTests.xctest */,
 				C2C65BBC1C970F38000645ED /* OrderedSetTests.xctest */,
 				C2E55D0E1C9E4286004E7CB1 /* BitMapTests.xctest */,
+				C246841D1CA451F800CB61EE /* NativeSetTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -2019,6 +2061,24 @@
 			productReference = C2416E331C88B62E00734CA1 /* WeakArrayTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		C246841C1CA451F800CB61EE /* NativeSetTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C24684251CA451F800CB61EE /* Build configuration list for PBXNativeTarget "NativeSetTests" */;
+			buildPhases = (
+				C24684191CA451F800CB61EE /* Sources */,
+				C246841A1CA451F800CB61EE /* Frameworks */,
+				C246841B1CA451F800CB61EE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C24684241CA451F800CB61EE /* PBXTargetDependency */,
+			);
+			name = NativeSetTests;
+			productName = NativeSetTests;
+			productReference = C246841D1CA451F800CB61EE /* NativeSetTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		C256F07D1ABDFFE5005B7CB3 /* MoonKitOSX */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C256F0951ABDFFE5005B7CB3 /* Build configuration list for PBXNativeTarget "MoonKitOSX" */;
@@ -2148,6 +2208,9 @@
 					C2416E321C88B62E00734CA1 = {
 						CreatedOnToolsVersion = 7.3;
 					};
+					C246841C1CA451F800CB61EE = {
+						CreatedOnToolsVersion = 7.3;
+					};
 					C256F07D1ABDFFE5005B7CB3 = {
 						CreatedOnToolsVersion = 6.3;
 					};
@@ -2187,6 +2250,7 @@
 				C2416E321C88B62E00734CA1 /* WeakArrayTests */,
 				C2C65BBB1C970F38000645ED /* OrderedSetTests */,
 				C2E55D0D1C9E4286004E7CB1 /* BitMapTests */,
+				C246841C1CA451F800CB61EE /* NativeSetTests */,
 			);
 		};
 /* End PBXProject section */
@@ -2212,6 +2276,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		C2416E311C88B62E00734CA1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C246841B1CA451F800CB61EE /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2387,6 +2458,7 @@
 				C2358F5119C78E0C00920F8D /* UITableView+MSKitAdditions.m in Sources */,
 				C2358F5219C78E0C00920F8D /* UIView+MSKitAdditions.m in Sources */,
 				C2358F5319C78E0C00920F8D /* UIViewController+MSKitAdditions.m in Sources */,
+				C2D130431CA3246A0045751E /* OrderedSetHashMap.swift in Sources */,
 				C2E7C8321A1AA3F0006BC80E /* Protocols.swift in Sources */,
 				C2CD95031C7772BA001FB80B /* OrderedSet.swift in Sources */,
 				C2CA852C1BC72EA00046AFC0 /* NSRange+MoonKitAdditions.swift in Sources */,
@@ -2405,6 +2477,7 @@
 				C2204D9C1AE1A0670079B731 /* JSONIncludeDirective.swift in Sources */,
 				C2874FBC1AE68D3800BD7634 /* NSShadow+MoonKitAdditions.swift in Sources */,
 				C29EECF81AFD010B00660EE6 /* MiscellaneousFunctions.swift in Sources */,
+				C246842B1CA4607400CB61EE /* OrderedSet2.swift in Sources */,
 				C201F73B1A2539E7004600BC /* PseudoConstraint.swift in Sources */,
 				C2358F5919C78E0C00920F8D /* MSBarButtonItem.m in Sources */,
 				C28E50931A13CA5000DF3206 /* MSButton.swift in Sources */,
@@ -2450,7 +2523,7 @@
 				C2358F6219C78E0C00920F8D /* MSLongPressGestureRecognizer.m in Sources */,
 				C219235D1C76132000E82437 /* MSDictionary+MoonKitAdditions.swift in Sources */,
 				C29073911BD7021F0090399E /* ColorLog.swift in Sources */,
-				C2C65BB71C9708D8000645ED /* _OrderedSet.swift in Sources */,
+				C2C65BB71C9708D8000645ED /* OrderedSet3.swift in Sources */,
 				C24A22811ADAEC010065E7EA /* ArrayJSONValue.swift in Sources */,
 				C2F094451A32A83A00681AB3 /* DrawingKit.swift in Sources */,
 				C2D664F11B88CC6F00D70FFA /* Ratio.swift in Sources */,
@@ -2507,6 +2580,7 @@
 				C274CB8A1B70FBBF00EC8E4A /* Form.swift in Sources */,
 				C28E35BE1A45DBF300438CCF /* Array+MoonKitAdditions.swift in Sources */,
 				C2A5B6F21B482F4700F34491 /* NSParagraphStyle+MoonKitAdditions.swift in Sources */,
+				C2736FDC1CAC3D6700E861A2 /* OrderedSet4.swift in Sources */,
 				C246961B1C6BD3E100120DAF /* SortedArray.swift in Sources */,
 				C269D1D51BD7E02D0084A7EE /* LogManager.swift in Sources */,
 				C22F5FE41B6FC753006D225A /* Dispatch.swift in Sources */,
@@ -2581,6 +2655,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				C2416E361C88B62E00734CA1 /* WeakArrayTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C24684191CA451F800CB61EE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C24684201CA451F800CB61EE /* NativeSetTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2693,6 +2775,11 @@
 			isa = PBXTargetDependency;
 			target = C2358F1519C78D6D00920F8D /* MoonKit */;
 			targetProxy = C2416E391C88B62E00734CA1 /* PBXContainerItemProxy */;
+		};
+		C24684241CA451F800CB61EE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C2358F1519C78D6D00920F8D /* MoonKit */;
+			targetProxy = C24684231CA451F800CB61EE /* PBXContainerItemProxy */;
 		};
 		C2A70E481ACD8EBA009C2CF7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -3115,6 +3202,180 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.WeakArrayTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		C24684261CA451F800CB61EE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = NativeSetTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.NativeSetTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		C24684271CA451F800CB61EE /* Debug-Verbose */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = NativeSetTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.NativeSetTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = "Debug-Verbose";
+		};
+		C24684281CA451F800CB61EE /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = NativeSetTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.NativeSetTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Profile;
+		};
+		C24684291CA451F800CB61EE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = NativeSetTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.NativeSetTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -4583,6 +4844,17 @@
 				C2416E3C1C88B62E00734CA1 /* Debug-Verbose */,
 				C2416E3D1C88B62E00734CA1 /* Profile */,
 				C2416E3E1C88B62E00734CA1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C24684251CA451F800CB61EE /* Build configuration list for PBXNativeTarget "NativeSetTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C24684261CA451F800CB61EE /* Debug */,
+				C24684271CA451F800CB61EE /* Debug-Verbose */,
+				C24684281CA451F800CB61EE /* Profile */,
+				C24684291CA451F800CB61EE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

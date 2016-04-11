@@ -80,6 +80,12 @@ public extension Range {
   }
 }
 
+public extension Range {
+  public func contains(subRange: Range<Element>) -> Bool {
+    return subRange.startIndex.distanceTo(startIndex) <= 0 && subRange.endIndex.distanceTo(endIndex) >= 0
+  }
+}
+
 public extension Range where Element: Comparable {
 
 

@@ -72,4 +72,42 @@ final class BitMapTests: XCTestCase {
     expect(actualNonZeroBits).to(equal(expectedNonZeroBits))
   }
 
+  func testNextSetBit() {
+    let capacity = 256
+    var bitMap = bitMapWithCapacity(capacity)
+    let expectedNonZeroCount = 100
+    setBitsInBitMap(bitMap, count: expectedNonZeroCount)
+    var expectedNonZeroBits: [Int] = []
+    for i in 0 ..< capacity where bitMap[i] { expectedNonZeroBits.append(i) }
+    expect(expectedNonZeroBits).to(haveCount(expectedNonZeroCount))
+    var currentBit = bitMap.firstSetBit
+    expect(currentBit) == expectedNonZeroBits[0]
+    for expected in expectedNonZeroBits[1..<] {
+      currentBit = bitMap.nextSetBit(currentBit!)
+      expect(currentBit) == expected
+    }
+    currentBit = bitMap.nextSetBit(currentBit!)
+    expect(currentBit).to(beNil())
+  }
+
+  func testPreviousSetBit() {
+    let capacity = 256
+    var bitMap = bitMapWithCapacity(capacity)
+    let expectedNonZeroCount = 100
+    setBitsInBitMap(bitMap, count: expectedNonZeroCount)
+    var expectedNonZeroBits: [Int] = []
+    for i in 0 ..< capacity where bitMap[i] { expectedNonZeroBits.append(i) }
+    expect(expectedNonZeroBits).to(haveCount(expectedNonZeroCount))
+
+    var currentBit = bitMap.lastSetBit
+    expect(currentBit) == expectedNonZeroBits.last!
+    for expected in expectedNonZeroBits[..<expectedNonZeroBits.endIndex.advancedBy(-1)].reverse() {
+      currentBit = bitMap.previousSetBit(currentBit!)
+      expect(currentBit) == expected
+    }
+    currentBit = bitMap.previousSetBit(currentBit!)
+    expect(currentBit).to(beNil())
+
+  }
+
 }
