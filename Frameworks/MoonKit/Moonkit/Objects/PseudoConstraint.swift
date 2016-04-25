@@ -104,7 +104,7 @@ public struct PseudoConstraint {
 
   /** Whether the `PseudoConstraint` is expansion compatible */
   public var expandable: Bool {
-    return firstAttribute == secondAttribute && ([.Center, .Size, .CenterWithinMargins] ∋ firstAttribute)
+    return firstAttribute == secondAttribute && ([.Center, .Size, .CenterWithinMargins].contains(firstAttribute))
   }
 
   /** init */

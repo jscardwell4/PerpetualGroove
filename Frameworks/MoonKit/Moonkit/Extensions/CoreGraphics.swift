@@ -12,7 +12,10 @@ import Foundation
 public enum VerticalAlignment: String { case Top, Center, Bottom }
 
 public func +<U1:Unpackable2, U2:Unpackable2
-  where U1:Packable2, U1.Element == U2.Element, U1.Element:ArithmeticType>(lhs: U1, rhs: U2) -> U1
+  where U1:Packable2,
+        U1.Packable2Element == U1.Unpackable2Element,
+        U1.Unpackable2Element == U2.Unpackable2Element,
+        U1.Unpackable2Element:ArithmeticType>(lhs: U1, rhs: U2) -> U1
 {
   var values1 = lhs.unpack
   let values2 = rhs.unpack
@@ -22,7 +25,10 @@ public func +<U1:Unpackable2, U2:Unpackable2
 }
 
 public func -<U1:Unpackable2, U2:Unpackable2
-  where U1:Packable2, U1.Element == U2.Element, U1.Element:ArithmeticType>(lhs: U1, rhs: U2) -> U1
+  where U1:Packable2,
+        U1.Packable2Element == U1.Unpackable2Element,
+        U1.Unpackable2Element == U2.Unpackable2Element,
+        U1.Unpackable2Element:ArithmeticType>(lhs: U1, rhs: U2) -> U1
 {
   var values1 = lhs.unpack
   let values2 = rhs.unpack
@@ -32,7 +38,10 @@ public func -<U1:Unpackable2, U2:Unpackable2
 }
 
 public func *<U1:Unpackable2, U2:Unpackable2
-  where U1:Packable2, U1.Element == U2.Element, U1.Element:ArithmeticType>(lhs: U1, rhs: U2) -> U1
+  where U1:Packable2,
+        U1.Packable2Element == U1.Unpackable2Element,
+        U1.Unpackable2Element == U2.Unpackable2Element,
+        U1.Unpackable2Element:ArithmeticType>(lhs: U1, rhs: U2) -> U1
 {
   var values1 = lhs.unpack
   let values2 = rhs.unpack
@@ -42,7 +51,10 @@ public func *<U1:Unpackable2, U2:Unpackable2
 }
 
 public func /<U1:Unpackable2, U2:Unpackable2
-  where U1:Packable2, U1.Element == U2.Element, U1.Element:ArithmeticType>(lhs: U1, rhs: U2) -> U1
+  where U1:Packable2,
+        U1.Packable2Element == U1.Unpackable2Element,
+        U1.Unpackable2Element == U2.Unpackable2Element,
+        U1.Unpackable2Element:ArithmeticType>(lhs: U1, rhs: U2) -> U1
 {
   var values1 = lhs.unpack
   let values2 = rhs.unpack
@@ -52,7 +64,10 @@ public func /<U1:Unpackable2, U2:Unpackable2
 }
 
 public func %<U1:Unpackable2, U2:Unpackable2
-  where U1:Packable2, U1.Element == U2.Element, U1.Element:ArithmeticType>(lhs: U1, rhs: U2) -> U1
+  where U1:Packable2,
+        U1.Packable2Element == U1.Unpackable2Element,
+        U1.Unpackable2Element == U2.Unpackable2Element,
+        U1.Unpackable2Element:ArithmeticType>(lhs: U1, rhs: U2) -> U1
 {
   var values1 = lhs.unpack
   let values2 = rhs.unpack
@@ -62,7 +77,10 @@ public func %<U1:Unpackable2, U2:Unpackable2
 }
 
 public func +=<U1:Unpackable2, U2:Unpackable2
-  where U1:Packable2, U1.Element == U2.Element, U1.Element:ArithmeticType>(inout lhs: U1, rhs: U2)
+  where U1:Packable2,
+        U1.Packable2Element == U1.Unpackable2Element,
+        U1.Unpackable2Element == U2.Unpackable2Element,
+        U1.Unpackable2Element:ArithmeticType>(inout lhs: U1, rhs: U2)
 {
   var values1 = lhs.unpack
   let values2 = rhs.unpack
@@ -72,7 +90,10 @@ public func +=<U1:Unpackable2, U2:Unpackable2
 }
 
 public func -=<U1:Unpackable2, U2:Unpackable2
-  where U1:Packable2, U1.Element == U2.Element, U1.Element:ArithmeticType>(inout lhs: U1, rhs: U2)
+  where U1:Packable2,
+        U1.Packable2Element == U1.Unpackable2Element,
+        U1.Unpackable2Element == U2.Unpackable2Element,
+        U1.Unpackable2Element:ArithmeticType>(inout lhs: U1, rhs: U2)
 {
   var values1 = lhs.unpack
   let values2 = rhs.unpack
@@ -82,7 +103,10 @@ public func -=<U1:Unpackable2, U2:Unpackable2
 }
 
 public func *=<U1:Unpackable2, U2:Unpackable2
-  where U1:Packable2, U1.Element == U2.Element, U1.Element:ArithmeticType>(inout lhs: U1, rhs: U2)
+  where U1:Packable2,
+        U1.Packable2Element == U1.Unpackable2Element,
+        U1.Unpackable2Element == U2.Unpackable2Element,
+        U1.Unpackable2Element:ArithmeticType>(inout lhs: U1, rhs: U2)
 {
   var values1 = lhs.unpack
   let values2 = rhs.unpack
@@ -92,7 +116,10 @@ public func *=<U1:Unpackable2, U2:Unpackable2
 }
 
 public func /=<U1:Unpackable2, U2:Unpackable2
-  where U1:Packable2, U1.Element == U2.Element, U1.Element:ArithmeticType>(inout lhs: U1, rhs: U2)
+  where U1:Packable2,
+        U1.Packable2Element == U1.Unpackable2Element,
+        U1.Unpackable2Element == U2.Unpackable2Element,
+        U1.Unpackable2Element:ArithmeticType>(inout lhs: U1, rhs: U2)
 {
   var values1 = lhs.unpack
   let values2 = rhs.unpack
@@ -102,7 +129,10 @@ public func /=<U1:Unpackable2, U2:Unpackable2
 }
 
 public func %=<U1:Unpackable2, U2:Unpackable2
-  where U1:Packable2, U1.Element == U2.Element, U1.Element:ArithmeticType>(inout lhs: U1, rhs: U2)
+  where U1:Packable2,
+        U1.Packable2Element == U1.Unpackable2Element,
+        U1.Unpackable2Element == U2.Unpackable2Element,
+        U1.Unpackable2Element:ArithmeticType>(inout lhs: U1, rhs: U2)
 {
   var values1 = lhs.unpack
   let values2 = rhs.unpack

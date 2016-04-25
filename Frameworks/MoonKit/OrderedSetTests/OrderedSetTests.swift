@@ -8,7 +8,8 @@
 
 import XCTest
 import Nimble
-@testable import MoonKit
+//import MoonKitTest
+@testable import MoonKitTest
 
 func randomIntegers(count: Int, _ range: Range<Int>) -> [Int] {
   func randomInt() -> Int { return Int(arc4random()) % range.count + range.startIndex }
@@ -60,7 +61,7 @@ final class OrderedSetTests: XCTestCase {
       set.intersectInPlace(randoms2)
     }
   }
-
+/*
   func testCreation() {
     var orderedSet = OrderedSet<Int>(minimumCapacity: 8)
     expect(orderedSet.capacity) >= 8
@@ -1058,7 +1059,6 @@ final class OrderedSetTests: XCTestCase {
   func testPerformanceWithoutCapacityReserved3() {
     measureBlock(performanceWork { _ in OrderedSet3<Int>() })
   }
-
   func testBucketPositionMap() {
     let capacity = 30
     let bucketPositionMapStorage = UnsafeMutablePointer<Int>.alloc(capacity * 2)
@@ -1110,6 +1110,7 @@ final class OrderedSetTests: XCTestCase {
     }
 
   }
+*/
   func testCreation4() {
     var orderedSet = OrderedSet4<Int>(minimumCapacity: 8)
     expect(orderedSet.capacity) >= 8

@@ -82,7 +82,7 @@ uniqued:
 */
 public func uniqued<T:Equatable, S:SequenceType where S.Generator.Element == T>(seq: S) -> [T] {
   var result: [T] = []
-  for element in seq { if element ∉ result { result.append(element) } }
+  for element in seq { if !result.contains(element) { result.append(element) } }
   return result
 }
 

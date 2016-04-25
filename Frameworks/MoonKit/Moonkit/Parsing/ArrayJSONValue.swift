@@ -39,12 +39,12 @@ public struct ArrayJSONValue: JSONValueConvertible, JSONValueInitializable {
     if array.count > count { return false }
     for object in array {
       switch object {
-      case .Null where object ∈ value: continue
-      case .String(_) where object ∈ value: continue
-      case .Number(_) where object ∈ value: continue
-      case .Boolean(_) where object ∈ value: continue
-      case .Object(_) where object ∈ value: continue
-      case .Array(_) where object ∈ value: continue
+      case .Null where value.contains(object): continue
+      case .String(_) where value.contains(object): continue
+      case .Number(_) where value.contains(object): continue
+      case .Boolean(_) where value.contains(object): continue
+      case .Object(_) where value.contains(object): continue
+      case .Array(_) where value.contains(object): continue
       default: return false
       }
     }

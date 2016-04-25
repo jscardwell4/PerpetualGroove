@@ -34,7 +34,7 @@ final class Sequence {
   - parameter idx2: Int
   */
   func exchangeInstrumentTrackAtIndex(idx1: Int, withTrackAtIndex idx2: Int) {
-    guard instrumentTracks.indices ⊇ [idx1, idx2] else { return }
+    guard instrumentTracks.indices.contains([idx1, idx2]) else { return }
     swap(&instrumentTracks[idx1], &instrumentTracks[idx2])
     logDebug("posting 'DidUpdate'")
     Notification.DidUpdate.post(object: self)
@@ -43,7 +43,7 @@ final class Sequence {
   var currentTrackIndex: Int? {
     get { return currentTrack?.index }
     set {
-      guard let newValue = newValue where instrumentTracks.indices ∋ newValue else {
+      guard let newValue = newValue where instrumentTracks.indices.contains(newValue) else {
         currentTrack = nil
         return
       }

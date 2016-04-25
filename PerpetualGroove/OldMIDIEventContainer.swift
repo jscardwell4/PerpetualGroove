@@ -35,7 +35,7 @@ struct OldMIDIEventContainer: CollectionType, Indexable, MutableIndexable {
 
   subscript(bounds: Range<BarBeatTime>) -> OldMIDIEventContainer {
     var result: [MIDIEvent] = []
-    for (time, bag) in events where bounds ∋ time {
+    for (time, bag) in events where bounds.contains(time) {
       result.appendContentsOf(bag.events)
     }
 

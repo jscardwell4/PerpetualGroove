@@ -35,9 +35,9 @@ public class TouchTrackingGesture: BlockActionGesture {
   */
   private func addLocations(locations: [CGPoint]) -> Bool {
     let locationCount = touchLocations.count
-    touchLocations ∪= locations
+    touchLocations.unionInPlace(locations)
     let viewCount = trackingViews.count
-    trackingViews ∪= touchedViewsForLocations(locations)
+    trackingViews.unionInPlace(touchedViewsForLocations(locations))
     switch trackingMode {
       case .Locations: return touchLocations.count > locationCount
       case .Views:     return trackingViews.count > viewCount
@@ -116,11 +116,11 @@ public class TouchTrackingGesture: BlockActionGesture {
   override public func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent) {
     let beginningTouches = (touches as NSSet).allObjects as! [UITouch]
     if !anchored {
-      if beginningTouches.count == numberOfAnchoringTouches { anchoringTouches ∪= beginningTouches }
+      if beginningTouches.count == numberOfAnchoringTouches { anchoringTouches.unionInPlace(beginningTouches) }
       else { state = .Failed}
     } else if !tracking {
       if beginningTouches.count == numberOfTrackingTouches {
-        trackingTouches ∪= beginningTouches
+        trackingTouches.unionInPlace(beginningTouches)
         state = .Began
         addLocations(beginningTouches.map{$0.locationInView(nil)})
       } else { state = .Failed }
@@ -135,9 +135,9 @@ public class TouchTrackingGesture: BlockActionGesture {
   */
   public override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent) {
     let movedTouches = (touches as NSSet).allObjects as! [UITouch]
-    if (anchoringTouches ∩ movedTouches).count != 0 {
+    if (anchoringTouches.intersect(movedTouches)).count != 0 {
       state = tracking ? .Ended : .Failed
-    } else if trackingTouches ⊃ movedTouches {
+    } else if trackingTouches.isSubsetOf(movedTouches) {
       if addLocations(movedTouches.map{$0.locationInView(nil)}) { state = .Changed }
     }
   }
@@ -149,7 +149,7 @@ public class TouchTrackingGesture: BlockActionGesture {
   - parameter event: UIEvent
   */
   public override func touchesCancelled(touches: Set<UITouch>, withEvent event: UIEvent) {
-    if (anchoringTouches ∪ trackingTouches) ⊃ (touches as NSSet).allObjects as! [UITouch] { state = .Cancelled }
+    if anchoringTouches.union(trackingTouches).isSubsetOf(touches) { state = .Cancelled }
   }
 
   /**
@@ -159,7 +159,7 @@ public class TouchTrackingGesture: BlockActionGesture {
   - parameter event: UIEvent
   */
   public override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent) {
-    if (anchoringTouches ∪ trackingTouches) ⊃ (touches as NSSet).allObjects as! [UITouch] { state = anchored && tracking ? .Ended : .Failed }
+    if anchoringTouches.union(trackingTouches).isSubsetOf(touches) { state = anchored && tracking ? .Ended : .Failed }
   }
 
 }

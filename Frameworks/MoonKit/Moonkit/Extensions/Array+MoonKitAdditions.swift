@@ -83,141 +83,141 @@ extension Array: KeySearchable {
 }
 
 // contains
-public func ∈<Element:Equatable>(lhs: Element, rhs: [Element]) -> Bool {return rhs.contains(lhs) }
-public func ∋<Element:Equatable>(lhs: [Element], rhs: Element) -> Bool {return lhs.contains(rhs) }
-public func ∉<Element:Equatable>(lhs: Element, rhs: [Element]) -> Bool { return !(lhs ∈ rhs) }
-public func ∌<Element:Equatable>(lhs: [Element], rhs: Element) -> Bool { return !(lhs ∋ rhs) }
-
-// subset/superset
-public func ⊂<
-  S:SequenceType, Element:Hashable where S.Generator.Element == Element
->(lhs: [Element], rhs: S) -> Bool 
-{ 
-  return Set(lhs) ⊂ Set(rhs)
-}
-
-public func ⊃<
-  S:SequenceType, Element:Hashable where S.Generator.Element == Element
->(lhs: [Element], rhs: S) -> Bool 
-{ 
-  return Set(lhs) ⊃ Set(rhs)
-}
-
-public func ⊆<
-  S:SequenceType, Element:Hashable where S.Generator.Element == Element
->(lhs: [Element], rhs: S) -> Bool 
-{ 
-  return Set(lhs) ⊆ Set(rhs)
-}
-
-public func ⊇<
-  S:SequenceType, Element:Hashable where S.Generator.Element == Element
->(lhs: [Element], rhs: S) -> Bool 
-{ 
-  return Set(lhs) ⊇ Set(rhs)
-}
-
-public func ⊄<
-  S:SequenceType, Element:Hashable where S.Generator.Element == Element
->(lhs: [Element], rhs: S) -> Bool 
-{ 
-  return !(lhs ⊂ rhs) 
-}
-
-public func ⊅<
-  S:SequenceType, Element:Hashable where S.Generator.Element == Element
->(lhs: [Element], rhs: S) -> Bool 
-{ 
-  return !(lhs ⊃ rhs) 
-}
-
-public func ⊈<
-  S:SequenceType, Element:Hashable where S.Generator.Element == Element
->(lhs: [Element], rhs: S) -> Bool 
-{ 
-  return !(lhs ⊆ rhs) 
-}
-
-public func ⊉<
-  S:SequenceType, Element:Hashable where S.Generator.Element == Element
->(lhs: [Element], rhs: S) -> Bool 
-{ 
-  return !(lhs ⊇ rhs) 
-}
-
-
-// union
-public func ∪<
-  S:SequenceType, Element:Hashable where S.Generator.Element == Element
->(lhs: [Element], rhs: S) -> [Element] 
-{ 
-  return Array(Set(lhs) ∪ Set(rhs))
-}
-
-public func ∪=<
-  S:SequenceType, Element:Hashable where S.Generator.Element == Element
->(inout lhs: [Element], rhs: S)
- {
-  lhs = lhs ∪ rhs
-}
-
-// minus
-public func ∖<
-  S:SequenceType, Element:Hashable where S.Generator.Element == Element
->(lhs: [Element], rhs: S) -> [Element] 
-{ 
-  return Array(Set(lhs) ∖ Set(rhs))
-}
-
-public func ∖=<
-  S:SequenceType, Element:Hashable where S.Generator.Element == Element
->(inout lhs: [Element], rhs: S)
- {
-  lhs = lhs ∖ rhs
-}
-
-// intersect
-public func ∩<
-  S:SequenceType, Element:Hashable where S.Generator.Element == Element
->(lhs: [Element], rhs: S) -> [Element] 
-{ 
-  return Array(Set(lhs) ∩ Set(rhs))
-}
-
-public func ∩=<
-  S:SequenceType, Element:Hashable where S.Generator.Element == Element
->(inout lhs: [Element], rhs: S)
- {
-  lhs = lhs ∩ rhs
-}
-
-// xor
-public func ⊻<
-  S:SequenceType, Element:Hashable where S.Generator.Element == Element
->(lhs: [Element], rhs: S) -> [Element] 
-{ 
-  return Array(Set(lhs) ⊻ Set(rhs))
-}
-
-public func ⊻=<
-  S:SequenceType, Element:Hashable where S.Generator.Element == Element
->(inout lhs: [Element], rhs: S)
- {
-  lhs = lhs ⊻ rhs
-}
-
-// disjoint
-public func !⚭<
-  S:SequenceType, Element:Hashable where S.Generator.Element == Element
->(lhs: [Element], rhs: S) -> Bool 
-{ 
-  return Set(lhs) !⚭ Set(rhs)
-}
-
-public func ⚭<
-  S:SequenceType, Element:Hashable where S.Generator.Element == Element
->(lhs: [Element], rhs: S) -> Bool 
-{ 
-  return Set(lhs) ⚭ Set(rhs)
-}
-
+//public func ∈<Element:Equatable>(lhs: Element, rhs: [Element]) -> Bool {return rhs.contains(lhs) }
+//public func ∋<Element:Equatable>(lhs: [Element], rhs: Element) -> Bool {return lhs.contains(rhs) }
+//public func ∉<Element:Equatable>(lhs: Element, rhs: [Element]) -> Bool { return !(lhs ∈ rhs) }
+//public func ∌<Element:Equatable>(lhs: [Element], rhs: Element) -> Bool { return !(lhs ∋ rhs) }
+//
+//// subset/superset
+//public func ⊂<
+//  S:SequenceType, Element:Hashable where S.Generator.Element == Element
+//>(lhs: [Element], rhs: S) -> Bool 
+//{ 
+//  return Set(lhs) ⊂ Set(rhs)
+//}
+//
+//public func ⊃<
+//  S:SequenceType, Element:Hashable where S.Generator.Element == Element
+//>(lhs: [Element], rhs: S) -> Bool 
+//{ 
+//  return Set(lhs) ⊃ Set(rhs)
+//}
+//
+//public func ⊆<
+//  S:SequenceType, Element:Hashable where S.Generator.Element == Element
+//>(lhs: [Element], rhs: S) -> Bool 
+//{ 
+//  return Set(lhs) ⊆ Set(rhs)
+//}
+//
+//public func ⊇<
+//  S:SequenceType, Element:Hashable where S.Generator.Element == Element
+//>(lhs: [Element], rhs: S) -> Bool 
+//{ 
+//  return Set(lhs) ⊇ Set(rhs)
+//}
+//
+//public func ⊄<
+//  S:SequenceType, Element:Hashable where S.Generator.Element == Element
+//>(lhs: [Element], rhs: S) -> Bool 
+//{ 
+//  return !(lhs ⊂ rhs) 
+//}
+//
+//public func ⊅<
+//  S:SequenceType, Element:Hashable where S.Generator.Element == Element
+//>(lhs: [Element], rhs: S) -> Bool 
+//{ 
+//  return !(lhs ⊃ rhs) 
+//}
+//
+//public func ⊈<
+//  S:SequenceType, Element:Hashable where S.Generator.Element == Element
+//>(lhs: [Element], rhs: S) -> Bool 
+//{ 
+//  return !(lhs ⊆ rhs) 
+//}
+//
+//public func ⊉<
+//  S:SequenceType, Element:Hashable where S.Generator.Element == Element
+//>(lhs: [Element], rhs: S) -> Bool 
+//{ 
+//  return !(lhs ⊇ rhs) 
+//}
+//
+//
+//// union
+//public func ∪<
+//  S:SequenceType, Element:Hashable where S.Generator.Element == Element
+//>(lhs: [Element], rhs: S) -> [Element] 
+//{ 
+//  return Array(Set(lhs) ∪ Set(rhs))
+//}
+//
+//public func ∪=<
+//  S:SequenceType, Element:Hashable where S.Generator.Element == Element
+//>(inout lhs: [Element], rhs: S)
+// {
+//  lhs = lhs ∪ rhs
+//}
+//
+//// minus
+//public func ∖<
+//  S:SequenceType, Element:Hashable where S.Generator.Element == Element
+//>(lhs: [Element], rhs: S) -> [Element] 
+//{ 
+//  return Array(Set(lhs) ∖ Set(rhs))
+//}
+//
+//public func ∖=<
+//  S:SequenceType, Element:Hashable where S.Generator.Element == Element
+//>(inout lhs: [Element], rhs: S)
+// {
+//  lhs = lhs ∖ rhs
+//}
+//
+//// intersect
+//public func ∩<
+//  S:SequenceType, Element:Hashable where S.Generator.Element == Element
+//>(lhs: [Element], rhs: S) -> [Element] 
+//{ 
+//  return Array(Set(lhs) ∩ Set(rhs))
+//}
+//
+//public func ∩=<
+//  S:SequenceType, Element:Hashable where S.Generator.Element == Element
+//>(inout lhs: [Element], rhs: S)
+// {
+//  lhs = lhs ∩ rhs
+//}
+//
+//// xor
+//public func ⊻<
+//  S:SequenceType, Element:Hashable where S.Generator.Element == Element
+//>(lhs: [Element], rhs: S) -> [Element] 
+//{ 
+//  return Array(Set(lhs) ⊻ Set(rhs))
+//}
+//
+//public func ⊻=<
+//  S:SequenceType, Element:Hashable where S.Generator.Element == Element
+//>(inout lhs: [Element], rhs: S)
+// {
+//  lhs = lhs ⊻ rhs
+//}
+//
+//// disjoint
+//public func !⚭<
+//  S:SequenceType, Element:Hashable where S.Generator.Element == Element
+//>(lhs: [Element], rhs: S) -> Bool 
+//{ 
+//  return Set(lhs) !⚭ Set(rhs)
+//}
+//
+//public func ⚭<
+//  S:SequenceType, Element:Hashable where S.Generator.Element == Element
+//>(lhs: [Element], rhs: S) -> Bool 
+//{ 
+//  return Set(lhs) ⚭ Set(rhs)
+//}
+//

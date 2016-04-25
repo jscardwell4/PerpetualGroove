@@ -84,6 +84,10 @@ public extension Range {
   public func contains(subRange: Range<Element>) -> Bool {
     return subRange.startIndex.distanceTo(startIndex) <= 0 && subRange.endIndex.distanceTo(endIndex) >= 0
   }
+  public func contains<S:SequenceType where S.Generator.Element == Element>(sequence: S) -> Bool {
+    for element in sequence where !contains(element) { return false }
+    return true
+  }
 }
 
 public extension Range where Element: Comparable {

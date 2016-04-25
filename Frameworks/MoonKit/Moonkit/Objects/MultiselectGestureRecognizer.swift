@@ -9,6 +9,9 @@
 import Foundation
 import UIKit
 
+// FIXME: Why do we need this to avoid compilation failure?
+//func ∪= (inout lhs: OrderedSet<UITouch>, rhs: OrderedSet<UITouch>) { lhs.unionInPlace(rhs) }
+
 public class MultiselectGestureRecognizer: UIGestureRecognizer {
 
   var firstTouchDate: NSDate?
@@ -79,7 +82,7 @@ public class MultiselectGestureRecognizer: UIGestureRecognizer {
     // ???: Why aren't we setting state to .Began?
 
     let beginningTouches = OrderedSet((touches as NSSet).allObjects as! [UITouch])
-    registeredTouches ∪= beginningTouches
+    registeredTouches.unionInPlace(beginningTouches)
 
     if registeredTouches.count > maximumNumberOfTouches + numberOfAnchorTouchesRequired { state = .Failed; return }
 
@@ -87,10 +90,10 @@ public class MultiselectGestureRecognizer: UIGestureRecognizer {
 
     if anchoringTouches.count < numberOfAnchorTouchesRequired {
       if beginningTouches.count != numberOfAnchorTouchesRequired { state = .Failed; return }
-      anchoringTouches ∪= beginningTouches
+      anchoringTouches.unionInPlace(beginningTouches)
     }
 
-    touchLocations ∪= (beginningTouches ∖ anchoringTouches).map{$0.locationInView(nil)}
+    touchLocations.unionInPlace((beginningTouches.subtract(anchoringTouches)).map{$0.locationInView(nil)})
 
   }
 
@@ -102,8 +105,8 @@ public class MultiselectGestureRecognizer: UIGestureRecognizer {
   */
   public override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent) {
     let movedTouches = OrderedSet((touches as NSSet).allObjects as! [UITouch])
-    registeredTouches ∪= movedTouches
-    let movedAnchors = anchoringTouches ∩ movedTouches
+    registeredTouches.unionInPlace(movedTouches)
+    let movedAnchors = anchoringTouches.intersect(movedTouches)
     if movedAnchors.count > 0 {
       let invalidAnchors = movedAnchors.filter {
         let delta = $0.previousLocationInView(nil) - $0.locationInView(nil)
@@ -112,7 +115,7 @@ public class MultiselectGestureRecognizer: UIGestureRecognizer {
       }
       if invalidAnchors.count > 0 { state = .Failed; return }
     }
-    touchLocations ∪= movedTouches.map{$0.locationInView(nil)}
+    touchLocations.unionInPlace(movedTouches.map{$0.locationInView(nil)})
     state = .Changed
   }
 
@@ -131,8 +134,8 @@ public class MultiselectGestureRecognizer: UIGestureRecognizer {
   - parameter event: UIEvent
   */
   public override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent) {
-    anchoringTouches ∖= (touches as NSSet).allObjects as! [UITouch]
-    registeredTouches ∖= (touches as NSSet).allObjects as! [UITouch]
+    anchoringTouches.subtractInPlace(touches)
+    registeredTouches.subtractInPlace(touches)
 
     if anchoringTouches.count == 0 {
       state = touchLocations.count > 0 && NSDate().timeIntervalSinceDate(firstTouchDate!) > tolerance ? .Ended : .Failed

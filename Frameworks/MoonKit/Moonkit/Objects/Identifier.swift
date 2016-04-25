@@ -176,5 +176,5 @@ extension Identifier: Comparable {}
 public func ==(lhs: Identifier, rhs: Identifier) -> Bool { return lhs.string == rhs.string }
 public func <(lhs: Identifier, rhs: Identifier) -> Bool { return lhs.string < rhs.string }
 
-public func ∋(lhs: Identifier, rhs: Identifier.Tag) -> Bool { return lhs.tags ∋ rhs }
+public func ∋(lhs: Identifier, rhs: Identifier.Tag) -> Bool { return lhs.tags.contains(rhs) }
 public func +( lhs: Identifier, rhs: Identifier.Tag) -> Identifier { var lhs = lhs; lhs.append(rhs); return lhs }

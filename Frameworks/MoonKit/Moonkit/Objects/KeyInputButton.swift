@@ -56,8 +56,8 @@ public class KeyInputButton: UIControl {
     let detailColor = UIColor.whiteColor()
     let disabledDetailColor = detailColor.colorWithBrightness(0.5)
     let foregroundColor = enabled ? detailColor : disabledDetailColor
-    let prominent = [Style.Prominent, Style.Done] ∋ style
-    let reverse = [Style.Reversed, Style.DeleteBackward] ∋ style
+    let prominent = [Style.Prominent, Style.Done].contains(style)
+    let reverse = [Style.Reversed, Style.DeleteBackward].contains(style)
     let normalStateColor = prominent
                              ? DrawingKit.prominentColor
                              : (reverse

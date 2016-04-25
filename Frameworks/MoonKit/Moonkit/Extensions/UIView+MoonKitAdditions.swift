@@ -797,7 +797,7 @@ public extension UIView {
   - returns: [NSLayoutConstraint]
   */
   public func stretchSubview(s1: UIView, toSubview s2: UIView, identifier id: String? = nil) -> [NSLayoutConstraint] {
-    if !((subviews as [UIView]) ⊃ [s1, s2]) { return [] }
+    if !(Set(subviews) ⊃ [s1, s2]) { return [] }
     return constrain(identifier: id, s1.left => s2.left, s1.right => s2.right, s1.top => s2.top, s1.bottom => s2.bottom)
   }
 
@@ -924,7 +924,7 @@ public extension UIView {
                     offset: Float,
                 identifier id: String? = nil) -> [NSLayoutConstraint]
   {
-    if !((subviews as [UIView]) ⊃ [s1, s2]) { return [] }
+    if !(Set(subviews) ⊃ [s1, s2]) { return [] }
     return constrain(identifier: id, s2.left => s1.right + offset)
   }
 
@@ -943,7 +943,7 @@ public extension UIView {
                     offset: Float,
                 identifier id: String? = nil) -> [NSLayoutConstraint]
   {
-    if !((subviews as [UIView]) ⊃ [s1, s2]) { return [] }
+    if !(Set(subviews) ⊃ [s1, s2]) { return [] }
     return constrain(identifier: id, s2.top => s1.bottom + offset)
   }
 

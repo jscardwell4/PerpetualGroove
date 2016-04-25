@@ -133,13 +133,29 @@ extension CGRect: NonHomogeneousUnpackable2 {
   public var unpack2: (CGPoint, CGSize) { return (origin, size) }
 }
 
+extension CGRect: SetAlgebraType {
+  public typealias Element = CGPoint
+  public func exclusiveOr(other: CGRect) -> CGRect {
+    return self
+  }
+  public mutating func exclusiveOrInPlace(other: CGRect) {
+
+  }
+  public mutating func insert(member: CGPoint) {
+
+  }
+  public mutating func remove(member: CGPoint) -> CGPoint? {
+    return nil
+  }
+}
+
 // MARK: - Set operators
 
-public func ∪(lhs: CGRect, rhs: CGRect) -> CGRect { return lhs.union(rhs) }
+//public func ∪(lhs: CGRect, rhs: CGRect) -> CGRect { return lhs.union(rhs) }
 
-public func ∩(lhs: CGRect, rhs: CGRect) -> CGRect { return lhs.intersect(rhs) }
+//public func ∩(lhs: CGRect, rhs: CGRect) -> CGRect { return lhs.intersect(rhs) }
 
-public func ∪=(inout lhs: CGRect, rhs: CGRect) { lhs.unionInPlace(rhs) }
+//public func ∪=(inout lhs: CGRect, rhs: CGRect) { lhs.unionInPlace(rhs) }
 
-public func ∩=(inout lhs: CGRect, rhs: CGRect) { lhs.intersectInPlace(rhs) }
+//public func ∩=(inout lhs: CGRect, rhs: CGRect) { lhs.intersectInPlace(rhs) }
 

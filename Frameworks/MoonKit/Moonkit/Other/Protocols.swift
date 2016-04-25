@@ -225,45 +225,45 @@ public protocol OptionalSubscriptingCollectionType: CollectionType {
 }
 
 public protocol Unpackable2 {
-  associatedtype Element
-  var unpack: (Element, Element) { get }
+  associatedtype Unpackable2Element
+  var unpack: (Unpackable2Element, Unpackable2Element) { get }
 }
 
 public protocol Packable2 {
-  associatedtype Element
-  init(_ elements: (Element, Element))
+  associatedtype Packable2Element
+  init(_ elements: (Packable2Element, Packable2Element))
 }
 
 public extension Unpackable2 {
-  var unpackArray: [Element] { let tuple = unpack; return [tuple.0, tuple.1] }
+  var unpackArray: [Unpackable2Element] { let tuple = unpack; return [tuple.0, tuple.1] }
 }
 
 public protocol Unpackable3 {
-  associatedtype Element
-  var unpack: (Element, Element, Element) { get }
+  associatedtype Unpackable3Element
+  var unpack: (Unpackable3Element, Unpackable3Element, Unpackable3Element) { get }
 }
 
 public protocol Packable3 {
-  associatedtype Element
-  init(_ elements: (Element, Element, Element))
+  associatedtype Packable3Element
+  init(_ elements: (Packable3Element, Packable3Element, Packable3Element))
 }
 
 public extension Unpackable3 {
-  var unpackArray: [Element] { let tuple = unpack; return [tuple.0, tuple.1, tuple.2] }
+  var unpackArray: [Unpackable3Element] { let tuple = unpack; return [tuple.0, tuple.1, tuple.2] }
 }
 
 public protocol Unpackable4 {
-  associatedtype Element
-  var unpack4: (Element, Element, Element, Element) { get }
+  associatedtype Unpackable4Element
+  var unpack4: (Unpackable4Element, Unpackable4Element, Unpackable4Element, Unpackable4Element) { get }
 }
 
 public extension Unpackable4 {
-  var unpackArray: [Element] { let tuple = unpack4; return [tuple.0, tuple.1, tuple.2, tuple.3] }
+  var unpackArray: [Unpackable4Element] { let tuple = unpack4; return [tuple.0, tuple.1, tuple.2, tuple.3] }
 }
 
 public protocol Packable4 {
-  associatedtype Element
-  init(_ elements: (Element, Element, Element, Element))
+  associatedtype Packable4Element
+  init(_ elements: (Packable4Element, Packable4Element, Packable4Element, Packable4Element))
 }
 
 public protocol NonHomogeneousUnpackable2 {
@@ -273,9 +273,9 @@ public protocol NonHomogeneousUnpackable2 {
 }
 
 
-public prefix func *<U:Unpackable2>(u: U) -> (U.Element, U.Element) { return u.unpack }
-public prefix func *<U:Unpackable3>(u: U) -> (U.Element, U.Element, U.Element) { return u.unpack }
-public prefix func *<U:Unpackable4>(u: U) -> (U.Element, U.Element, U.Element, U.Element) { return u.unpack4 }
+public prefix func *<U:Unpackable2>(u: U) -> (U.Unpackable2Element, U.Unpackable2Element) { return u.unpack }
+public prefix func *<U:Unpackable3>(u: U) -> (U.Unpackable3Element, U.Unpackable3Element, U.Unpackable3Element) { return u.unpack }
+public prefix func *<U:Unpackable4>(u: U) -> (U.Unpackable4Element, U.Unpackable4Element, U.Unpackable4Element, U.Unpackable4Element) { return u.unpack4 }
 
 /** Protocol for an object guaranteed to have a name */
 public protocol Named {

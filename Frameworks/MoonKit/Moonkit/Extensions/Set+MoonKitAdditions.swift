@@ -7,7 +7,7 @@
 //
 
 import Foundation
-
+/*
 // contains
 public func ∈<Element:Hashable>(lhs: Element, rhs: Set<Element>) -> Bool {
   return rhs.contains(lhs)
@@ -120,7 +120,7 @@ public func ⚭<S:SequenceType, Element:Hashable
 {
   return !lhs.isDisjointWith(rhs)
 }
-
+*/
 //public func filter<T>(source: Set<T>, includeElement: (T) -> Bool) -> Set<T> {
 //  return Set(Array(source).filter(includeElement))
 //}

@@ -62,7 +62,7 @@ extension UIFont /*: JSONValueInitializable */ {
     let regex = ~/"^([^@]*)@?([0-9]*\\.?[0-9]*)"
     let match = regex.firstMatch(string)
 
-    guard let name = match?.captures[1]?.string where UIFont.familyNames() ∋ name else {
+    guard let name = match?.captures[1]?.string where UIFont.familyNames().contains(name) else {
       self.init()
       return nil
     }
