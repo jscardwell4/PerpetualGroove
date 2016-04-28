@@ -213,7 +213,7 @@ private extension OldMIDIEventContainer {
 
     - returns: IndexingGenerator<[MIDIEvent]>
     */
-    func generate() -> AnyGenerator<MIDIEvent> { return events.generate() }
+    func generate() -> AnyGenerator<MIDIEvent> { return AnyGenerator(events.generate()) }
 
     /**
     Append a new event to the bag

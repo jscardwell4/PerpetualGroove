@@ -1240,6 +1240,8 @@ extension OrderedSet: CustomStringConvertible, CustomDebugStringConvertible {
   public var debugDescription: String { return elementsDescription }
 }
 
+extension OrderedSet: Equatable {}
+
 public func == <Element:Hashable>
   (lhs: OrderedSet<Element>, rhs: OrderedSet<Element>) -> Bool
 {

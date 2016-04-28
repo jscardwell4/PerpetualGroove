@@ -60,7 +60,7 @@ final class Sequence {
 
       switch (currentTrackStack.peek?.reference, newValue) {
 
-        case let (oldTrack, newTrack?) where instrumentTracks ∋ newTrack && oldTrack != newTrack:
+        case let (oldTrack, newTrack?) where instrumentTracks.contains(newTrack) && oldTrack != newTrack:
           userInfo = [Notification.Key.OldTrack: oldTrack, Notification.Key.Track: newTrack]
           currentTrackStack.push(Weak(newTrack))
 //          newTrack.recording = true
@@ -253,7 +253,7 @@ final class Sequence {
   - parameter track: InstrumentTrack
   */
   private func addTrack(track: InstrumentTrack) {
-    guard instrumentTracks ∌ track else { return }
+    guard !instrumentTracks.contains(track) else { return }
     instrumentTracks.append(track)
     observeTrack(track)
     logDebug("track added: \(track.name)")

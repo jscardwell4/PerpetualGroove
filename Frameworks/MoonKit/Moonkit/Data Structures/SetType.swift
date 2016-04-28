@@ -9,7 +9,7 @@
 import Foundation
 
 public protocol SetType: CollectionType {
-//  associatedtype Element = Self.Generator.Element //: Hashable
+  associatedtype Element = Self.Generator.Element //: Hashable
 
   init(minimumCapacity: Int)
   init<S:SequenceType where S.Generator.Element == Self.Generator.Element>(_ elements: S)

@@ -341,6 +341,7 @@
 		C28E50991A13CB1E00DF3206 /* IntegerInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C217E47D19E860DE00B36983 /* IntegerInputView.swift */; };
 		C28E509B1A143FDC00DF3206 /* MultiselectGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28E509A1A143FDC00DF3206 /* MultiselectGestureRecognizer.swift */; };
 		C28E98EE1AD196B800E78711 /* NSNumber+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28E98ED1AD196B800E78711 /* NSNumber+MoonKitAdditions.swift */; };
+		C28FCBDE1CD00DB0008D97C1 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C28FCBDD1CD00DB0008D97C1 /* Nimble.framework */; };
 		C29073911BD7021F0090399E /* ColorLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29073901BD7021F0090399E /* ColorLog.swift */; };
 		C29073971BD747D70090399E /* LogFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29073961BD747D70090399E /* LogFormatter.swift */; };
 		C296498E1B00EBBF000C2D4A /* FormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C296498D1B00EBBF000C2D4A /* FormView.swift */; };
@@ -721,6 +722,7 @@
 		C28E35BD1A45DBF300438CCF /* Array+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C28E509A1A143FDC00DF3206 /* MultiselectGestureRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiselectGestureRecognizer.swift; sourceTree = "<group>"; };
 		C28E98ED1AD196B800E78711 /* NSNumber+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSNumber+MoonKitAdditions.swift"; sourceTree = "<group>"; };
+		C28FCBDD1CD00DB0008D97C1 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = "../../../../GitHub/Nimble/build/Debug-iphoneos/Nimble.framework"; sourceTree = "<group>"; };
 		C29073901BD7021F0090399E /* ColorLog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorLog.swift; sourceTree = "<group>"; };
 		C29073961BD747D70090399E /* LogFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogFormatter.swift; sourceTree = "<group>"; };
 		C295E30319E2FBBB008309B8 /* ToggleImageSegmentedControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToggleImageSegmentedControl.swift; sourceTree = "<group>"; };
@@ -1031,6 +1033,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C28FCBDE1CD00DB0008D97C1 /* Nimble.framework in Frameworks */,
 				C2736FEF1CC1190A00E861A2 /* MoonKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1577,6 +1580,7 @@
 		C2CE885018138C4900555D63 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C28FCBDD1CD00DB0008D97C1 /* Nimble.framework */,
 				C2416E521C88BB5E00734CA1 /* XCTest.framework */,
 				C2BDBC361BD3F1E300E343F1 /* LumberjackOSX.framework */,
 				C225677F1BB05E7600E4842B /* Lumberjack.framework */,
@@ -5159,6 +5163,7 @@
 				C2736FEB1CC116AD00E861A2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
 		};
 		C285D8201AC44D3500C527F6 /* Build configuration list for PBXNativeTarget "MoonKitLite" */ = {
 			isa = XCConfigurationList;

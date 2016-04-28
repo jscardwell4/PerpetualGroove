@@ -40,7 +40,7 @@ final class Sequencer {
     guard var urls = bundle.URLsForResourcesWithExtension("sf2", subdirectory: nil) else { return }
     urls = urls.flatMap({$0.fileReferenceURL()})
     do {
-      try urls.filter({$0 ∉ exclude}).forEach { soundSets.append(try SoundSet(url: $0)) }
+      try urls.filter({!exclude.contains($0)}).forEach { soundSets.append(try SoundSet(url: $0)) }
       guard soundSets.count > 0 else {
         fatalError("failed to create any sound sets from bundled sf2 files")
       }

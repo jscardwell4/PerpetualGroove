@@ -84,7 +84,7 @@ enum TrackColor: UInt32, Equatable, Hashable, EnumerableType, CustomStringConver
   static var nextColor: TrackColor {
     let existingColors = Sequencer.sequence?.instrumentTracks.map({$0.color}) ?? []
     guard existingColors.count > 0 else { return allCases[0] }
-    return allCases.filter({existingColors ∌ $0}).first ?? allCases[0]
+    return allCases.filter({!existingColors.contains($0)}).first ?? allCases[0]
   }
 }
 

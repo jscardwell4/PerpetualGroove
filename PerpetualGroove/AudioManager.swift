@@ -34,7 +34,7 @@ final class AudioManager {
   */
   static func attachNode(node: AVAudioNode, forInstrument instrument: Instrument) {
     guard initialized else { fatalError("attempt to attach node before engine initialized") }
-    guard instruments ∌ instrument && node.engine == nil else { return }
+    guard !instruments.contains(instrument) && node.engine == nil else { return }
     engine.attachNode(node)
     engine.connect(node, to: engine.mainMixerNode, format: node.outputFormatForBus(0))
     instruments.append(instrument)

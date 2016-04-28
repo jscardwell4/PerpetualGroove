@@ -197,12 +197,12 @@ final class DocumentManager {
   }
 
   /// Accessor for the current collection of document items
-  static var items: [DocumentItem] {
+  static var items: OrderedSet<DocumentItem> {
     guard let storageLocation = storageLocation else { return [] }
     return storageLocation == .iCloud ? metadataItems : localItems
   }
 
-  static private var updateNotificationItems: [DocumentItem] = []
+  static private var updateNotificationItems: OrderedSet<DocumentItem> = []
 
   /// Monitor for observing changes to local files
   private static let directoryMonitor: DirectoryMonitor = {
@@ -232,7 +232,7 @@ final class DocumentManager {
     }
 
     metadataQuery.disableUpdates()
-    metadataItems = (metadataQuery.results as! [NSMetadataItem]).map(DocumentItem.init)
+    metadataItems = OrderedSet((metadataQuery.results as! [NSMetadataItem]).map(DocumentItem.init))
     metadataQuery.enableUpdates()
     state ⊻= .GatheringMetadataItems
   }
@@ -242,12 +242,12 @@ final class DocumentManager {
     logDebug("observed metadata query update notification")
     var items = metadataItems
     if let removed = notification.removedMetadataItems?.map(DocumentItem.init) { items ∖= removed }
-    if let added   = notification.addedMetadataItems?.map(DocumentItem.init)   { items += added   }
+    if let added   = notification.addedMetadataItems?.map(DocumentItem.init)   { items ∪= added   }
     metadataItems = items
   }
 
   /// Collection of `DocumentItem` instances for available iCloud documents
-  static private(set) var metadataItems: [DocumentItem] = [] {
+  static private(set) var metadataItems: OrderedSet<DocumentItem> = [] {
     didSet {
       guard storageLocation == .iCloud else { return }
       postItemUpdateNotification(metadataItems)
@@ -255,7 +255,7 @@ final class DocumentManager {
   }
 
   /// Collection of `DocumentItem` instances for available local documents
-  static private(set) var localItems: [DocumentItem] = [] {
+  static private(set) var localItems: OrderedSet<DocumentItem> = [] {
     didSet {
       guard storageLocation == .Local && localItems.elementsEqual(oldValue) else { return }
       postItemUpdateNotification(localItems)
@@ -268,7 +268,7 @@ final class DocumentManager {
   - parameter items: [DocumentItem]
   - parameter oldItems: [DocumentItem]
   */
-  static private func postItemUpdateNotification(items: [DocumentItem]) {
+  static private func postItemUpdateNotification(items: OrderedSet<DocumentItem>) {
     defer { updateNotificationItems = items }
 
     logDebug("items: \(items.map(({$0.displayName})))")
@@ -304,7 +304,7 @@ final class DocumentManager {
       guard let name = $0.preferredFilename else { return nil }
       return try? LocalDocumentItem(directory + name)
       }
-    localItems = localDocumentItems.map(DocumentItem.init)
+    localItems = OrderedSet(localDocumentItems.map(DocumentItem.init))
   }
 
   // MARK: - Receiving notifications

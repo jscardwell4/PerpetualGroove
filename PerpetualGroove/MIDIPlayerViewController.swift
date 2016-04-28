@@ -231,7 +231,7 @@ extension MIDIPlayerViewController: UITextFieldDelegate {
               fileName = DocumentManager.noncollidingFileName(text) else { return false }
 
     if let currentDocument = DocumentManager.currentDocument
-      where [fileName, currentDocument.localizedName] ∌ text { textField.text = fileName }
+      where ![fileName, currentDocument.localizedName].contains(text) { textField.text = fileName }
 
     return true
   }

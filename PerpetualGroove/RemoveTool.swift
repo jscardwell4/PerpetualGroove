@@ -132,7 +132,7 @@ final class RemoveTool: ToolType {
   private func refreshAllNodeLighting() {
     guard let track = track else { return }
     let trackNodes = track.nodes.flatMap({$0.element2.reference})
-    let (foregroundNodes, backgroundNodes) = player.midiNodes.flatMap({$0}).bisect { trackNodes ∋ $0 }
+    let (foregroundNodes, backgroundNodes) = player.midiNodes.flatMap({$0}).bisect { trackNodes.contains($0) }
     foregroundNodes.forEach { lightNodeForForeground($0) }
     backgroundNodes.forEach { lightNodeForBackground($0) }
   }

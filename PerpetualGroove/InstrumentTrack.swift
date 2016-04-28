@@ -20,7 +20,7 @@ extension Sequence {
    - parameter notification: NSNotification
   */
   func trackSoloStatusDidChange(notification: NSNotification) {
-    guard let track = notification.object as? InstrumentTrack where instrumentTracks ∋ track else { return }
+    guard let track = notification.object as? InstrumentTrack where instrumentTracks.contains(track) else { return }
     let soloTracks = self.soloTracks
     if soloTracks.count == 0 {
       instrumentTracks.forEach {
@@ -32,7 +32,7 @@ extension Sequence {
         logDebug("clearing forced mute for track '\($0.displayName)'")
         $0.forceMute = false
       }
-      (instrumentTracks ∖ soloTracks).forEach {
+      Set(instrumentTracks).subtract(soloTracks).forEach {
         logDebug("force muting track '\($0.displayName)'")
         $0.forceMute = true
       }
