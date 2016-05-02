@@ -8,7 +8,7 @@
 
 import XCTest
 import Nimble
-//import MoonKitTest
+@testable import MoonKit
 @testable import MoonKitTest
 
 func randomIntegers(count: Int, _ range: Range<Int>) -> [Int] {
@@ -299,34 +299,34 @@ final class OrderedSetTests: XCTestCase {
     expect(orderedSet[2]) == 3
   }
 
-//  func testSubsetOf() {
-//    let orderedSet: OrderedSet<Int> = [1, 2, 3]
-//    expect(orderedSet).to(beSubsetOf([1, 2, 3]))
-//    expect(orderedSet).to(beSubsetOf([1, 2, 3, 4]))
-//    expect(orderedSet).toNot(beSubsetOf([1, 2, 4]))
-//  }
-//
-//  func testStrictSubsetOf() {
-//    let orderedSet: OrderedSet<Int> = [1, 2, 3]
-//    expect(orderedSet).toNot(beStrictSubsetOf([1, 2, 3]))
-//    expect(orderedSet).to(beStrictSubsetOf([1, 2, 3, 4]))
-//    expect(orderedSet).toNot(beStrictSubsetOf([1, 2, 4]))
-//  }
-//
-//  func testSupersetOf() {
-//    let orderedSet: OrderedSet<Int> = [1, 2, 3]
-//    expect(orderedSet).to(beSupersetOf([1, 2, 3]))
-//    expect(orderedSet).to(beSupersetOf([1, 2]))
-//    expect(orderedSet).toNot(beSupersetOf([1, 2, 4]))
-//  }
-//
-//  func testStrictSupersetOf() {
-//    let orderedSet: OrderedSet<Int> = [1, 2, 3]
-//    expect(orderedSet).toNot(beStrictSupersetOf([1, 2, 3]))
-//    expect(orderedSet).to(beStrictSupersetOf([1, 2]))
-//    expect(orderedSet).toNot(beStrictSupersetOf([1, 2, 4]))
-//  }
-//
+  func testSubsetOf() {
+    let orderedSet: OrderedSet<Int> = [1, 2, 3]
+    expect(orderedSet).to(beSubsetOf([1, 2, 3]))
+    expect(orderedSet).to(beSubsetOf([1, 2, 3, 4]))
+    expect(orderedSet).toNot(beSubsetOf([1, 2, 4]))
+  }
+
+  func testStrictSubsetOf() {
+    let orderedSet: OrderedSet<Int> = [1, 2, 3]
+    expect(orderedSet).toNot(beStrictSubsetOf([1, 2, 3]))
+    expect(orderedSet).to(beStrictSubsetOf([1, 2, 3, 4]))
+    expect(orderedSet).toNot(beStrictSubsetOf([1, 2, 4]))
+  }
+
+  func testSupersetOf() {
+    let orderedSet: OrderedSet<Int> = [1, 2, 3]
+    expect(orderedSet).to(beSupersetOf([1, 2, 3]))
+    expect(orderedSet).to(beSupersetOf([1, 2]))
+    expect(orderedSet).toNot(beSupersetOf([1, 2, 4]))
+  }
+
+  func testStrictSupersetOf() {
+    let orderedSet: OrderedSet<Int> = [1, 2, 3]
+    expect(orderedSet).toNot(beStrictSupersetOf([1, 2, 3]))
+    expect(orderedSet).to(beStrictSupersetOf([1, 2]))
+    expect(orderedSet).toNot(beStrictSupersetOf([1, 2, 4]))
+  }
+
   func testDisjointWith() {
     let orderedSet: OrderedSet<Int> = [1, 2, 3]
     expect(orderedSet).toNot(beDisjointWith([1, 4, 5] as Array<Int>))

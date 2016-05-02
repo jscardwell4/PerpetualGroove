@@ -7,82 +7,84 @@
 //
 
 import XCTest
+import Nimble
 @testable import MoonKit
+@testable import MoonKitTest
 
 final class OrderedDictionaryTests: XCTestCase {
     
   func testCreation() {
     var orderedDictionary1 = OrderedDictionary<String, Int>(minimumCapacity: 8)
-    XCTAssertGreaterThanOrEqual(orderedDictionary1.capacity, 8)
-    XCTAssertEqual(orderedDictionary1.count, 0)
+    expect(orderedDictionary1.capacity) >= 8
+    expect(orderedDictionary1.count) == 0
 
     orderedDictionary1 = ["one": 1, "two": 2, "three": 3, "four": 4, "five": 5]
-    XCTAssertGreaterThanOrEqual(orderedDictionary1.capacity, 5)
-    XCTAssertEqual(orderedDictionary1.count, 5)
+    expect(orderedDictionary1.capacity) >= 5
+    expect(orderedDictionary1.count) == 5
 
     var orderedDictionary2 = OrderedDictionary<Int, String>(minimumCapacity: 8)
-    XCTAssertGreaterThanOrEqual(orderedDictionary2.capacity, 8)
-    XCTAssertEqual(orderedDictionary2.count, 0)
+    expect(orderedDictionary2.capacity) >= 8
+    expect(orderedDictionary2.count) == 0
 
     orderedDictionary2 = [1: "one", 2: "two", 3: "three", 4: "four", 5: "five"]
-    XCTAssertGreaterThanOrEqual(orderedDictionary2.capacity, 5)
-    XCTAssertEqual(orderedDictionary2.count, 5)
+    expect(orderedDictionary2.capacity) >= 5
+    expect(orderedDictionary2.count) == 5
   }
 
   func testInsertion() {
     var orderedDictionary1 = OrderedDictionary<String, Int>(minimumCapacity: 8)
 
     orderedDictionary1["one"] = 1
-    XCTAssertEqual(orderedDictionary1.count, 1)
-    XCTAssertEqual(orderedDictionary1["one"], 1)
-    XCTAssertTrue(orderedDictionary1.values.elementsEqual([1]))
+    expect(orderedDictionary1.count) == 1
+    expect(orderedDictionary1["one"]) == 1
+    expect(orderedDictionary1.values) == [1]
 
     orderedDictionary1["two"] = 2
-    XCTAssertEqual(orderedDictionary1.count, 2)
-    XCTAssertEqual(orderedDictionary1["two"], 2)
-    XCTAssertTrue(orderedDictionary1.values.elementsEqual([1, 2]))
+    expect(orderedDictionary1.count) == 2
+    expect(orderedDictionary1["two"]) == 2
+    expect(orderedDictionary1.values) == [1, 2]
 
     orderedDictionary1["three"] = 3
-    XCTAssertEqual(orderedDictionary1.count, 3)
-    XCTAssertEqual(orderedDictionary1["three"], 3)
-    XCTAssertTrue(orderedDictionary1.values.elementsEqual([1, 2, 3]))
+    expect(orderedDictionary1.count) == 3
+    expect(orderedDictionary1["three"]) == 3
+    expect(orderedDictionary1.values) == [1, 2, 3]
 
     orderedDictionary1["four"] = 4
-    XCTAssertEqual(orderedDictionary1.count, 4)
-    XCTAssertEqual(orderedDictionary1["four"], 4)
-    XCTAssertTrue(orderedDictionary1.values.elementsEqual([1, 2, 3, 4]))
+    expect(orderedDictionary1.count) == 4
+    expect(orderedDictionary1["four"]) == 4
+    expect(orderedDictionary1.values) == [1, 2, 3, 4]
 
     orderedDictionary1["five"] = 5
-    XCTAssertEqual(orderedDictionary1.count, 5)
-    XCTAssertEqual(orderedDictionary1["five"], 5)
-    XCTAssertTrue(orderedDictionary1.values.elementsEqual([1, 2, 3, 4, 5]))
+    expect(orderedDictionary1.count) == 5
+    expect(orderedDictionary1["five"]) == 5
+    expect(orderedDictionary1.values) == [1, 2, 3, 4, 5]
 
     var orderedDictionary2 = OrderedDictionary<Int, String>(minimumCapacity: 8)
 
     orderedDictionary2[1] = "one"
-    XCTAssertEqual(orderedDictionary2.count, 1)
-    XCTAssertEqual(orderedDictionary2[1], "one")
-    XCTAssertTrue(orderedDictionary2.values.elementsEqual(["one"]))
+    expect(orderedDictionary2.count) == 1
+    expect(orderedDictionary2[1]) == "one"
+    expect(orderedDictionary2.values) == ["one"]
 
     orderedDictionary2[2] = "two"
-    XCTAssertEqual(orderedDictionary2.count, 2)
-    XCTAssertEqual(orderedDictionary2[2], "two")
-    XCTAssertTrue(orderedDictionary2.values.elementsEqual(["one", "two"]))
+    expect(orderedDictionary2.count) == 2
+    expect(orderedDictionary2[2]) == "two"
+    expect(orderedDictionary2.values) == ["one", "two"]
 
     orderedDictionary2[3] = "three"
-    XCTAssertEqual(orderedDictionary2.count, 3)
-    XCTAssertEqual(orderedDictionary2[3], "three")
-    XCTAssertTrue(orderedDictionary2.values.elementsEqual(["one", "two", "three"]))
+    expect(orderedDictionary2.count) == 3
+    expect(orderedDictionary2[3]) == "three"
+    expect(orderedDictionary2.values) == ["one", "two", "three"]
 
     orderedDictionary2[4] = "four"
-    XCTAssertEqual(orderedDictionary2.count, 4)
-    XCTAssertEqual(orderedDictionary2[4], "four")
-    XCTAssertTrue(orderedDictionary2.values.elementsEqual(["one", "two", "three", "four"]))
+    expect(orderedDictionary2.count) == 4
+    expect(orderedDictionary2[4]) == "four"
+    expect(orderedDictionary2.values) == ["one", "two", "three", "four"]
 
     orderedDictionary2[5] = "five"
-    XCTAssertEqual(orderedDictionary2.count, 5)
-    XCTAssertEqual(orderedDictionary2[5], "five")
-    XCTAssertTrue(orderedDictionary2.values.elementsEqual(["one", "two", "three", "four", "five"]))
+    expect(orderedDictionary2.count) == 5
+    expect(orderedDictionary2[5]) == "five"
+    expect(orderedDictionary2.values) == ["one", "two", "three", "four", "five"]
   }
 
   func testResize() {
@@ -93,13 +95,13 @@ final class OrderedDictionaryTests: XCTestCase {
     orderedDictionary1["four"] = 4
     orderedDictionary1["five"] = 5
     orderedDictionary1["six"] = 6
-    XCTAssertTrue(orderedDictionary1.values.elementsEqual([1, 2, 3, 4, 5, 6]))
+    expect(orderedDictionary1.values) == [1, 2, 3, 4, 5, 6]
     orderedDictionary1["seven"] = 7
-    XCTAssertTrue(orderedDictionary1.values.elementsEqual([1, 2, 3, 4, 5, 6, 7]))
+    expect(orderedDictionary1.values) == [1, 2, 3, 4, 5, 6, 7]
     orderedDictionary1["eight"] = 8
     orderedDictionary1["nine"] = 9
     orderedDictionary1["ten"] = 10
-    XCTAssertTrue(orderedDictionary1.values.elementsEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
+    expect(orderedDictionary1.values) == [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
     var orderedDictionary2 = OrderedDictionary<Int, String>(minimumCapacity: 8)
     orderedDictionary2[1] = "one"
@@ -108,56 +110,56 @@ final class OrderedDictionaryTests: XCTestCase {
     orderedDictionary2[4] = "four"
     orderedDictionary2[5] = "five"
     orderedDictionary2[6] = "six"
-    XCTAssertTrue(orderedDictionary2.values.elementsEqual(["one", "two", "three", "four", "five", "six"]))
+    expect(orderedDictionary2.values) == ["one", "two", "three", "four", "five", "six"]
     orderedDictionary2[7] = "seven"
-    XCTAssertTrue(orderedDictionary2.values.elementsEqual(["one", "two", "three", "four", "five", "six", "seven"]))
+    expect(orderedDictionary2.values) == ["one", "two", "three", "four", "five", "six", "seven"]
     orderedDictionary2[8] = "eight"
     orderedDictionary2[9] = "nine"
     orderedDictionary2[10] = "ten"
-    XCTAssertTrue(orderedDictionary2.values.elementsEqual(["one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"]))
+    expect(orderedDictionary2.values) == ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"]
 
   }
 
   func testDeletion() {
     var orderedDictionary1: OrderedDictionary<String, Int> = ["one": 1, "two": 2, "three": 3]
-    XCTAssertTrue(orderedDictionary1.values.elementsEqual([1, 2, 3]))
+    expect(orderedDictionary1.values) == [1, 2, 3]
     orderedDictionary1["two"] = nil
-    XCTAssertTrue(orderedDictionary1.values.elementsEqual([1, 3]))
+    expect(orderedDictionary1.values) == [1, 3]
     orderedDictionary1["one"] = nil
-    XCTAssertTrue(orderedDictionary1.values.elementsEqual([3]))
+    expect(orderedDictionary1.values) == [3]
     orderedDictionary1["two"] = 2
     orderedDictionary1["one"] = 1
-    XCTAssertTrue(orderedDictionary1.values.elementsEqual([3, 2, 1]))
+    expect(orderedDictionary1.values) == [3, 2, 1]
 
     var orderedDictionary2: OrderedDictionary<Int, String> = [1: "one", 2: "two", 3: "three"]
-    XCTAssertTrue(orderedDictionary2.values.elementsEqual(["one", "two", "three"]))
+    expect(orderedDictionary2.values) == ["one", "two", "three"]
     orderedDictionary2[2] = nil
-    XCTAssertTrue(orderedDictionary2.values.elementsEqual(["one", "three"]))
+    expect(orderedDictionary2.values) == ["one", "three"]
     orderedDictionary2[1] = nil
-    XCTAssertTrue(orderedDictionary2.values.elementsEqual(["three"]))
+    expect(orderedDictionary2.values) == ["three"]
     orderedDictionary2[2] = "two"
     orderedDictionary2[1] = "one"
-    XCTAssertTrue(orderedDictionary2.values.elementsEqual(["three", "two", "one"]))
+    expect(orderedDictionary2.values) == ["three", "two", "one"]
 
   }
 
   func testCOW() {
     var orderedDictionary1: OrderedDictionary<String, Int> = ["one": 1, "two": 2, "three": 3]
     var orderedDictionary2 = orderedDictionary1
-    XCTAssertTrue(orderedDictionary1.owner === orderedDictionary2.owner)
-    XCTAssertTrue(orderedDictionary1.buffer.storage === orderedDictionary2.buffer.storage)
+    expect(orderedDictionary1.owner) === orderedDictionary2.owner
+    expect(orderedDictionary1.buffer.storage) === orderedDictionary2.buffer.storage
 
     orderedDictionary2["four"] = 4
-    XCTAssertFalse(orderedDictionary1.owner === orderedDictionary2.owner)
-    XCTAssertFalse(orderedDictionary1.buffer.storage === orderedDictionary2.buffer.storage)
+    expect(orderedDictionary1.owner) !== orderedDictionary2.owner
+    expect(orderedDictionary1.buffer.storage) !== orderedDictionary2.buffer.storage
   }
 
   func testSubscriptAccessors() {
     var orderedDictionary: OrderedDictionary<String, Int> = ["one": 1, "two": 2, "three": 3]
-    XCTAssertEqual(orderedDictionary["two"], 2)
+    expect(orderedDictionary["two"]) == 2
     let (k, v) = orderedDictionary[1]
-    XCTAssertEqual(k, "two")
-    XCTAssertEqual(v, 2)
+    expect(k) == "two"
+    expect(v) == 2
   }
 
   func testPerformanceWithCapacityReserved() {
@@ -184,14 +186,14 @@ final class OrderedDictionaryTests: XCTestCase {
     orderedDictionary["first"] = [1, 2, 3, 4]
     orderedDictionary["second"] = [5, 6, 7, 8]
     orderedDictionary["third"] = [9, 10]
-    XCTAssertEqual(orderedDictionary.count, 3)
-    XCTAssertTrue(orderedDictionary[0].1.elementsEqual([1, 2, 3, 4]))
-    XCTAssertTrue(orderedDictionary[1].1.elementsEqual([5, 6, 7, 8]))
-    XCTAssertTrue(orderedDictionary[2].1.elementsEqual([9, 10]))
+    expect(orderedDictionary.count) == 3
+    expect(orderedDictionary[0].1) == [1, 2, 3, 4]
+    expect(orderedDictionary[1].1) == [5, 6, 7, 8]
+    expect(orderedDictionary[2].1) == [9, 10]
     var array = orderedDictionary[1].1
     array.appendContentsOf([11, 12, 13, 14, 15, 16, 17, 18, 19, 20])
     orderedDictionary["second"] = array
-    XCTAssertTrue(orderedDictionary[1].1.elementsEqual([5, 6, 7, 8, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]))
+    expect(orderedDictionary[1].1) == [5, 6, 7, 8, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
   }
 
 }
