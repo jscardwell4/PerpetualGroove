@@ -106,7 +106,6 @@ internal final class OrderedDictionaryStorage
 
     let storage = super.create(requiredCapacity) {
       $0.withUnsafeMutablePointerToElements {
-//        BitMap(storage: UnsafeMutablePointer<UInt>($0), bitCount: capacity).initializeToZero()
         let keyMap = UnsafeMutablePointer<Int>($0 + bitMapBytes)
         for i in 0 ..< capacity { (keyMap + i).initialize(-1) }
       }
@@ -343,10 +342,10 @@ internal struct OrderedDictionaryBuffer<Key:Hashable, Value> {
   internal func destroyEntryAt(position: Index) {
     defer { _fixLifetime(self) }
     var bucket = bucketForPosition(position)
-//    print("\(debugDescription)")
+
     assert(bitMap[bucket], "bucket empty")
     var idealBucket = bucketForKey((keys + bucket).move())
-//    print("(values + bucket).memory = \((values + bucket).memory)")
+
     (values + bucket).destroy()
     keyMap[position] = -1
     bitMap[bucket] = false
@@ -356,8 +355,6 @@ internal struct OrderedDictionaryBuffer<Key:Hashable, Value> {
       let moveCount = count - position - 1
       (keyMap + position).moveInitializeFrom(from, count: moveCount)
     }
-
-    //TODO: rework to use position-based bucket checks
 
     // If we've put a hole in a chain of contiguous elements, some
     // element after the hole may belong where the new hole is.
@@ -429,8 +426,6 @@ internal struct OrderedDictionaryBuffer<Key:Hashable, Value> {
   }
 
   internal func setValue(value: Value, inBucket bucket: Bucket) {
-//    print("value = \(value)")
-//    print("values[bucket] = \(values[bucket])")
     (values + bucket).initialize(value)
   }
 
@@ -497,7 +492,7 @@ internal final class OrderedDictionaryStorageOwner<Key: Hashable, Value>: NonObj
 /// A hash-based mapping from `Key` to `Value` instances that preserves elment order.
 public struct OrderedDictionary<Key: Hashable, Value>: CollectionType, DictionaryLiteralConvertible {
 
-  public typealias Index = Int//OrderedDictionaryIndex<Key, Value>
+  public typealias Index = Int
   public typealias Generator = OrderedDictionaryGenerator<Key, Value>
   public typealias Element = (Key, Value)
   public typealias _Element = Element
@@ -633,16 +628,6 @@ public struct OrderedDictionary<Key: Hashable, Value>: CollectionType, Dictionar
 
     let capacity = keepCapacity ? self.capacity : 0
     owner = Owner(buffer: Buffer(storage: Storage.create(capacity)))
-//    logVerbose("buffer = \(buffer.debugDescription)")
-//    guard isUniquelyReferenced(&owner) else {
-//      return
-//    }
-
-//    guard keepCapacity else { owner.buffer = Buffer(minimumCapacity: 0); return }
-
-//    print("startIndex = \(startIndex); endIndex = \(endIndex); count = \(count); buffer.count = \(buffer.count); buffer.storage.count = \(buffer.storage.count)")
-//    for i in startIndex ..< endIndex { buffer.destroyEntryAt(i) }
-//    buffer.count = 0
   }
 
   public var count: Int { return buffer.count }
@@ -650,8 +635,19 @@ public struct OrderedDictionary<Key: Hashable, Value>: CollectionType, Dictionar
 
   public func generate() -> Generator { return Generator(buffer: buffer) }
 
+  public init(elements: [Element]) {
+    var keys: Set<Int> = []
+    var filteredElements: [Element] = []
+    for element in elements where !keys.contains(element.0.hashValue) {
+      keys.insert(element.0.hashValue)
+      filteredElements.append(element)
+    }
+    let buffer = Buffer(elements: filteredElements)
+    self.init(buffer: buffer)
+  }
+
   public init(dictionaryLiteral elements: Element...) {
-    self.init(buffer: Buffer(elements: elements))
+    self.init(elements: elements)
   }
 
   public var keys: LazyMapCollection<OrderedDictionary<Key, Value>, Key> {
@@ -691,6 +687,23 @@ extension OrderedDictionary: CustomStringConvertible, CustomDebugStringConvertib
   
   public var debugDescription: String { return elementsDescription }
 }
+
+extension OrderedDictionary: Equatable {}
+
+public func == <Key: Hashable, Value>
+  (lhs: OrderedDictionary<Key, Value>, rhs: OrderedDictionary<Key, Value>) -> Bool
+{
+
+  guard lhs.owner !== rhs.owner else { return true }
+  guard lhs.count == rhs.count else { return false }
+
+  for ((k1, _), (k2, _)) in zip(lhs, rhs) {
+    guard k1 == k2 else { return false }
+  }
+
+  return true
+}
+
 
 public func == <Key: Hashable, Value: Equatable>
   (lhs: OrderedDictionary<Key, Value>, rhs: OrderedDictionary<Key, Value>) -> Bool

@@ -9,41 +9,9 @@
 import XCTest
 import Nimble
 @testable import MoonKit
-@testable import MoonKitTest
-
-func randomIntegers(count: Int, _ range: Range<Int>) -> [Int] {
-  func randomInt() -> Int { return Int(arc4random()) % range.count + range.startIndex }
-  var result = Array<Int>(minimumCapacity: count)
-  for _ in 0 ..< count { result.append(randomInt()) }
-  return result
-}
-
-func randomRange(count: Int, coverage: Double) -> Range<Int> {
-  let length = Int(Double(count) * coverage)
-  let end = Int(arc4random()) % count
-  let start = max(0, end - length)
-  return start ..< end
-}
-
-let randoms1 = randomIntegers(10000, 0 ..< 2000)
-let randoms2 = randomIntegers(10000, 0 ..< 2000)
-let randoms3 = randomIntegers(50000, 0 ..< 10000)
-let randoms4 = randomIntegers(50000, 0 ..< 10000)
-let randoms5 = randomIntegers(500, 0 ..< 250)
-let randoms6 = randomIntegers(500, 0 ..< 250)
+import MoonKitTest
 
 final class OrderedSetTests: XCTestCase {
-
-  func perform<
-    S:SetType where S.Generator.Element == Int
-    >(@noescape createTarget: (values: [Int]) -> S, execute: (target: S, values: [Int]) -> Void) -> () -> Void
-  {
-    let target = createTarget(values: randoms1)
-    return {
-      autoreleasepool { execute(target: target, values: randoms2) }
-    }
-
-  }
 
   func performanceWork<
     S:SetType
@@ -53,12 +21,12 @@ final class OrderedSetTests: XCTestCase {
 
     return {
       var set = createSet(capacity: 2048)
-      for value in randoms1 { set.insert(value) }
-      for value in randoms2 { set.remove(value) }
-      set.unionInPlace(randoms2)
-      set.subtractInPlace(randoms1)
-      set.exclusiveOrInPlace(randoms1)
-      set.intersectInPlace(randoms2)
+      for value in randomIntegersLarge1 { set.insert(value) }
+      for value in randomIntegersLarge2 { set.remove(value) }
+      set.unionInPlace(randomIntegersLarge2)
+      set.subtractInPlace(randomIntegersLarge1)
+      set.exclusiveOrInPlace(randomIntegersLarge1)
+      set.intersectInPlace(randomIntegersLarge2)
     }
   }
 
@@ -71,10 +39,8 @@ final class OrderedSetTests: XCTestCase {
     expect(orderedSet.capacity) >= 5
     expect(orderedSet).to(haveCount(5))
 
-    let randoms = randomIntegers(100000, 1 ..< 1000)
-
-    orderedSet = OrderedSet(randoms)
-    let set = Set(randoms)
+    orderedSet = OrderedSet(randomIntegersLarge1)
+    let set = Set(randomIntegersLarge1)
     expect(orderedSet).to(haveCount(set.count))
   }
 
@@ -172,7 +138,7 @@ final class OrderedSetTests: XCTestCase {
   func testInsertionPerformance() {
     measureBlock {
       var orderedSet = OrderedSet<Int>()
-      for i in randoms1 { orderedSet.insert(i) }
+      for i in randomIntegersLarge1 { orderedSet.insert(i) }
     }
   }
 
@@ -260,8 +226,8 @@ final class OrderedSetTests: XCTestCase {
 
   func testDeletePerformance() {
     measureBlock {
-      var orderedSet = OrderedSet<Int>(randoms1)
-      for i in randoms1 { orderedSet.remove(i) }
+      var orderedSet = OrderedSet<Int>(randomIntegersLarge1)
+      for i in randomIntegersLarge1 { orderedSet.remove(i) }
     }
   }
 
@@ -275,10 +241,10 @@ final class OrderedSetTests: XCTestCase {
 
   func testReplaceRangePerformance() {
     measureBlock {
-      var orderedSet = OrderedSet<Int>(randoms1)
+      var orderedSet = OrderedSet<Int>(randomIntegersLarge1)
       for _ in 0 ..< 100 {
         let range = randomRange(orderedSet.count, coverage: 0.25)
-        orderedSet.replaceRange(range, with: randoms2[range])
+        orderedSet.replaceRange(range, with: randomIntegersLarge2[range])
       }
     }
   }
@@ -335,55 +301,55 @@ final class OrderedSetTests: XCTestCase {
   }
 
   func testUnion() {
-    var orderedSet = OrderedSet(randoms1)
-    orderedSet.unionInPlace(randoms2)
-    var set = Set(randoms1)
-    set.unionInPlace(randoms2)
+    var orderedSet = OrderedSet(randomIntegersLarge1)
+    orderedSet.unionInPlace(randomIntegersLarge2)
+    var set = Set(randomIntegersLarge1)
+    set.unionInPlace(randomIntegersLarge2)
     expect(orderedSet).to(haveCount(set.count))
   }
 
 
   func testUnionPerformance() {
-    let work = perform({OrderedSet<Int>($0)}, execute: {_ = $0.union($1)})
+    let work = performWithIntegers(target: {OrderedSet<Int>($0)}, execute: {_ = $0.union($1)})
     measureBlock(work)
   }
 
   func testIntersection() {
-    var orderedSet = OrderedSet(randoms1)
-    orderedSet.intersectInPlace(randoms2)
-    var set = Set(randoms1)
-    set.intersectInPlace(randoms2)
+    var orderedSet = OrderedSet(randomIntegersLarge1)
+    orderedSet.intersectInPlace(randomIntegersLarge2)
+    var set = Set(randomIntegersLarge1)
+    set.intersectInPlace(randomIntegersLarge2)
     expect(orderedSet).to(haveCount(set.count))
   }
 
   func testIntersectionPerformance() {
-    let work = perform({OrderedSet<Int>($0)}, execute: {_ = $0.intersect($1)})
+    let work = performWithIntegers(target: {OrderedSet<Int>($0)}, execute: {_ = $0.intersect($1)})
     measureBlock(work)
   }
 
   func testSubtract() {
-    var orderedSet = OrderedSet(randoms1)
-    orderedSet.subtractInPlace(randoms2)
-    var set = Set(randoms1)
-    set.subtractInPlace(randoms2)
+    var orderedSet = OrderedSet(randomIntegersLarge1)
+    orderedSet.subtractInPlace(randomIntegersLarge2)
+    var set = Set(randomIntegersLarge1)
+    set.subtractInPlace(randomIntegersLarge2)
     expect(orderedSet).to(haveCount(set.count))
   }
 
   func testSubtractPerformance() {
-    let work = perform({OrderedSet<Int>($0)}, execute: {_ = $0.subtract($1)})
+    let work = performWithIntegers(target: {OrderedSet<Int>($0)}, execute: {_ = $0.subtract($1)})
     measureBlock(work)
   }
 
   func testXOR() {
-    var orderedSet = OrderedSet(randoms1)
-    var set = Set(randoms1)
-    set.exclusiveOrInPlace(randoms2)
-    orderedSet.exclusiveOrInPlace(randoms2)
+    var orderedSet = OrderedSet(randomIntegersLarge1)
+    var set = Set(randomIntegersLarge1)
+    set.exclusiveOrInPlace(randomIntegersLarge2)
+    orderedSet.exclusiveOrInPlace(randomIntegersLarge2)
     expect(orderedSet).to(haveCount(set.count))
   }
 
   func testXORPerformance() {
-    let work = perform({OrderedSet<Int>($0)}, execute: {_ = $0.exclusiveOr($1)})
+    let work = performWithIntegers(target: {OrderedSet<Int>($0)}, execute: {_ = $0.exclusiveOr($1)})
     measureBlock(work)
   }
 

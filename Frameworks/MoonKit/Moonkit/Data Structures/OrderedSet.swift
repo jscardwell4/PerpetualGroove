@@ -7,6 +7,7 @@
 //
 
 import Foundation
+
 // MARK: - Storage
 // MARK: -
 
@@ -229,7 +230,6 @@ struct BucketPositionMap: CollectionType {
     C.SubSequence:CollectionType
     >(subRange: Range<Index>, with newElements: C)
   {
-//    assert(numericCast(newElements.count) == Set<Bucket>(newElements).count, "duplicate elements detected")
     let removeCount = subRange.count
     let insertCount = numericCast(newElements.count) as Int
 
@@ -268,13 +268,6 @@ struct BucketPositionMap: CollectionType {
       insertContentsOf(newElements.dropFirst(removeCount), at: subRange.endIndex)
 
     }
-//    for bucket in 0 ..< capacity where buckets[bucket] > -1 {
-//      assert(positions[buckets[bucket]] == bucket, "invalid bucket - position pairing")
-//    }
-//    for position in 0 ..< capacity where positions[position] > -1 {
-//      assert(buckets[positions[position]] == position, "invalid position - bucket pairing")
-//    }
-//    assert(count == Set(positions[startIndex ..< endIndex]).count, "duplicate elements introduced")
   }
   
 }

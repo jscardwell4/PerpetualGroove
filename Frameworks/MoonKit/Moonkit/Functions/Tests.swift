@@ -9,6 +9,53 @@
 import Foundation
 import Nimble
 
+// MARK: - Functions for measuring performance
+public func randomIntegers(count: Int, _ range: Range<Int>) -> [Int] {
+  func randomInt() -> Int { return Int(arc4random()) % range.count + range.startIndex }
+  var result = Array<Int>(minimumCapacity: count)
+  for _ in 0 ..< count { result.append(randomInt()) }
+  return result
+}
+
+public func randomRange(count: Int, coverage: Double) -> Range<Int> {
+  let length = Int(Double(count) * coverage)
+  let end = Int(arc4random()) % count
+  let start = max(0, end - length)
+  return start ..< end
+}
+
+public let randomIntegersLarge1 = randomIntegers(10000, 0 ..< 2000)
+public let randomIntegersLarge2 = randomIntegers(10000, 0 ..< 2000)
+
+public let randomIntegersMedium1 = randomIntegers(50000, 0 ..< 10000)
+public let randomIntegersMedium2 = randomIntegers(50000, 0 ..< 10000)
+
+public let randomIntegersSmall1 = randomIntegers(500, 0 ..< 250)
+public let randomIntegersSmall2 = randomIntegers(500, 0 ..< 250)
+
+
+public func performWithIntegers<Target>(@noescape target target: ([Int]) -> Target, execute: (Target, [Int]) -> Void) -> () -> Void
+{
+  return perform(dataSet1: {randomIntegersLarge1}, dataSet2: {randomIntegersLarge2}, target: target, execute: execute)
+}
+
+public func perform<Target, Data>(
+  @noescape dataSet1 dataSet1: () -> [Data],
+  @noescape dataSet2: () -> [Data],
+  @noescape target: ([Data]) -> Target,
+  execute: (Target, [Data]) -> Void
+  ) -> () -> Void
+{
+  let data1 = dataSet1()
+  let data2 = dataSet2()
+  let target = target(data1)
+  return {
+    autoreleasepool { execute(target, data2) }
+  }
+}
+
+// MARK: - Extending Nimble
+
 public func equal<
   S1: SequenceType,
   S2: SequenceType
