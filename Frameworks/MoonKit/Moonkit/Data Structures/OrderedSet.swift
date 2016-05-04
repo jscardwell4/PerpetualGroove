@@ -8,421 +8,6 @@
 
 import Foundation
 
-// MARK: - Storage
-// MARK: -
-
-private let maxLoadFactorInverse = 1/0.75
-
-struct OrderedSetStorageHeader: CustomStringConvertible {
-  var count: Int = 0
-  let capacity: Int
-  let bytesAllocated: Int
-  let initializedBuckets: BitMap
-  let bucketPositionMap: BucketPositionMap
-
-  init(capacity: Int,
-       bytesAllocated: Int,
-       initializedBuckets: BitMap,
-       bucketPositionMap: BucketPositionMap)
-  {
-    self.capacity = capacity
-    self.bytesAllocated = bytesAllocated
-    self.initializedBuckets = initializedBuckets
-    self.bucketPositionMap = bucketPositionMap
-  }
-
-  var description: String {
-    return "\n".join("count: \(count)",
-                     "capacity: \(capacity)",
-                     "bytesAllocated: \(bytesAllocated)",
-                     "initializedBuckets: \(initializedBuckets)",
-                     "bucketPositionMap: \(bucketPositionMap)")
-  }
-}
-
-struct Bucket: BidirectionalIndexType, Comparable, Hashable {
-  let offset: Int
-  let capacity: Int
-
-  func predecessor() -> Bucket {
-    return Bucket(offset: (offset &- 1) & (capacity &- 1), capacity: capacity)
-  }
-
-  func successor() -> Bucket {
-    return Bucket(offset: (offset &+ 1) & (capacity &- 1), capacity: capacity)
-  }
-
-  var hashValue: Int { return offset ^ capacity }
-}
-
-extension Bucket: CustomStringConvertible {
-  var description: String { return "\(offset)" }
-}
-
-func ==(lhs: Bucket, rhs: Bucket) -> Bool { return lhs.offset == rhs.offset }
-func <(lhs: Bucket, rhs: Bucket) -> Bool { return lhs.offset < rhs.offset }
-
-
-/// Returns the hash value of `value` squeezed into `capacity`
-func suggestBucketForValue<H:Hashable>(value: H, capacity: Int) -> Bucket {
-  return Bucket(offset: _squeezeHashValue(value.hashValue, 0 ..< capacity), capacity: capacity)
-}
-
-/// - requires: `initializedBuckets` has an empty bucket (to avoid an infinite loop)
-func findBucketForValue<H:Hashable>(value: H, capacity: Int, initializedBuckets: BitMap) -> Bucket {
-  var bucket = suggestBucketForValue(value, capacity: capacity)
-  repeat {
-    guard initializedBuckets[bucket.offset] else { return bucket }
-    bucket._successorInPlace()
-  } while true
-}
-
-extension BitMap {
-  subscript(bucket: Bucket) -> Bool {
-    get { return self[bucket.offset] }
-    nonmutating set { self[bucket.offset] = newValue }
-  }
-}
-
-struct BucketPositionMap: CollectionType {
-
-  typealias BucketOffset = Int
-  typealias PositionOffset = Int
-  typealias Index = Int
-  typealias _Element = Bucket
-
-  let capacity: Int
-  let buckets: UnsafeMutableBufferPointer<PositionOffset>
-  let positions: UnsafeMutableBufferPointer<BucketOffset>
-
-  let _endIndex = UnsafeMutablePointer<Index>.alloc(1)
-
-  let startIndex: Index = 0
-
-  var endIndex: Index {
-    get { return _endIndex.memory }
-    nonmutating set { _endIndex.memory = newValue }
-  }
-
-  var count: Int { return endIndex - startIndex }
-
-  /// Initialize with a pointer to the storage to use and its represented capacity as an element count.
-  init(storage: UnsafeMutablePointer<Int>, capacity: Int) {
-    self.capacity = capacity
-    positions = UnsafeMutableBufferPointer<BucketOffset>(start: storage, count: capacity)
-    buckets = UnsafeMutableBufferPointer<PositionOffset>(start: storage + capacity, count: capacity)
-    _endIndex.initialize(0)
-    initializeToNegativeOne()
-  }
-
-  /// Initializes `positions` and `buckets` with `-1` and all bits in `emptyPositions` with `1`
-  func initializeToNegativeOne() {
-    positions.baseAddress.initializeFrom(Repeat(count: capacity, repeatedValue: -1))
-    buckets.baseAddress.initializeFrom(Repeat(count: capacity, repeatedValue: -1))
-  }
-
-  /// Accessor for the index of a specified index.
-  subscript(bucket: Bucket) -> Index? {
-    let index = buckets[bucket.offset]
-    return index > -1 ? index : nil
-  }
-
-  /// Accessors for getting and setting the bucket at a specified index.
-  subscript(index: Index) -> Bucket {
-    get {
-      return Bucket(offset: positions[index], capacity: capacity)
-    }
-    nonmutating set {
-      if index == endIndex { appendBucket(newValue) }
-      else { updateBucket(newValue, at: index) }
-    }
-  }
-
-  /// Removes `bucket1` by inserting `bucket2` and giving it `bucket1`'s position
-  /// - requires: `bucket1` has been assigned a position
-  func replaceBucket(bucket1: Bucket, with bucket2: Bucket) {
-    let oldBucketOffset = bucket1.offset
-    let bucketOffset = bucket2.offset
-    let positionOffset = buckets[oldBucketOffset]
-    positions[positionOffset] = bucketOffset
-    buckets[oldBucketOffset] = -1
-    buckets[bucketOffset] = positionOffset
-  }
-
-
-  /// Assigns `bucket` to `index`, removing the previously assigned bucket.
-  /// - requires: `index ∋ startIndex..<endIndex`
-  func updateBucket(bucket: Bucket, at index: Index) {
-
-    let bucketOffset = bucket.offset
-    let oldBucketOffset = positions[index]
-    guard oldBucketOffset != bucketOffset else { return }
-
-    buckets[oldBucketOffset] = -1
-    positions[index] = bucketOffset
-    buckets[bucketOffset] = index
-
-  }
-
-  /// Assigns `bucket` to `endIndex`.
-  /// - requires: `endIndex < capacity`
-  /// - postcondition: `count = count + 1`
-  func appendBucket(bucket: Bucket) {
-    positions[endIndex] = bucket.offset
-    buckets[bucket.offset] = endIndex
-    endIndex += 1
-  }
-
-  /// Removes the bucket assigned to `index`.
-  /// - requires: `index ∋ startIndex..<endIndex`
-  /// - postcondition: count = count - 1
-  func removeBucketAt(index: Index) {
-    let bucketOffset = positions[index]
-    buckets[bucketOffset] = -1
-    for moveIndex in index.successor() ..< endIndex {
-      let previousIndex = moveIndex.predecessor()
-      buckets[positions[moveIndex]] = previousIndex
-      swap(&positions[moveIndex], &positions[previousIndex])
-    }
-    endIndex -= 1
-  }
-
-  subscript(bounds: Range<Index>) -> [Bucket] {
-    get { return positions[bounds].map {Bucket(offset: $0, capacity: capacity) } }
-    set { replaceRange(bounds, with: newValue) }
-  }
-
-  func insertContentsOf<
-    C:CollectionType where C.Generator.Element == Bucket
-    >(newElements: C, at index: Int)
-  {
-    let shiftAmount = numericCast(newElements.count) as Int
-    shiftPositionsFrom(index, by: shiftAmount)
-
-    (positions.baseAddress + index).initializeFrom(newElements.map { $0.offset })
-    for position in index ..< endIndex { buckets[positions[position]] = position }
-  }
-
-  func shiftPositionsFrom(from: Int, by amount: Int) {
-    let count = endIndex - from
-    let source = positions.baseAddress + from
-    let destination = source + amount
-    if amount < 0 {
-      destination.moveInitializeFrom(source, count: count)
-      (destination + count).initializeFrom(Repeat(count: abs(amount), repeatedValue: -1))
-    } else {
-      destination.moveInitializeBackwardFrom(source, count: count)
-      source.initializeFrom(Repeat(count: amount, repeatedValue: -1))
-    }
-    endIndex += amount
-    for position in (from + amount) ..< endIndex {
-      buckets[positions[position]] = position
-    }
-  }
-
-  /// Replaces buckets assigned to positions in `subRange` with `newElements`
-  /// - requires: `newElements` contains unique values.
-  func replaceRange<
-    C:CollectionType
-    where
-    C.Generator.Element == Bucket,
-    C.SubSequence.Generator.Element == Bucket,
-    C.SubSequence:CollectionType
-    >(subRange: Range<Index>, with newElements: C)
-  {
-    let removeCount = subRange.count
-    let insertCount = numericCast(newElements.count) as Int
-
-    // Replace n values where n = max(subRange.count, newElements.count)
-    for (index, bucket) in zip(subRange, newElements) {
-      let oldBucketOffset = positions[index]
-      if oldBucketOffset > -1 && buckets[oldBucketOffset] == index {
-        buckets[oldBucketOffset] = -1
-      }
-      let newBucketOffset = bucket.offset
-      positions[index] = newBucketOffset
-      buckets[newBucketOffset] = index
-    }
-
-    switch insertCount - removeCount {
-    case 0:
-      // Nothing more to do
-      break
-
-    case let delta where delta < 0:
-      // Empty remaining positions in `subRange`
-
-      for index in subRange.endIndex.advancedBy(delta) ..< subRange.endIndex {
-        let oldBucketOffset = positions[index]
-        positions[index] = -1
-        let oldPosition = buckets[oldBucketOffset]
-        guard oldPosition == index else { continue }
-        buckets[oldBucketOffset] = -1
-      }
-
-      shiftPositionsFrom(subRange.endIndex, by: delta)
-
-    default: /*case let delta where delta < 0*/
-      // Insert remaining values
-
-      insertContentsOf(newElements.dropFirst(removeCount), at: subRange.endIndex)
-
-    }
-  }
-  
-}
-
-extension BucketPositionMap: CustomStringConvertible, CustomDebugStringConvertible {
-  var description: String {
-    var result = "["
-
-    var first = true
-    for i in startIndex ..< endIndex {
-      if first { first = false } else { result += ", " }
-      result += String(positions[i])
-    }
-    result += "]"
-
-    return result
-  }
-
-  var debugDescription: String {
-    var result = "startIndex: \(startIndex); endIndex: \(endIndex)\n"
-    result += "positions: [\n"
-
-    var first = true
-    for position in 0 ..< capacity {
-      let bucketOffset = positions[position]
-      guard bucketOffset > -1 else { continue }
-      if first { first = false } else { result += ",\n" }
-      result += "\t\(position): \(bucketOffset)"
-    }
-    result += "]\nbuckets: [\n"
-    first = true
-    for bucket in 0 ..< capacity {
-      let position = buckets[bucket]
-      guard position > -1 else { continue }
-      if first { first = false } else { result += ",\n" }
-      result += "\t\(bucket): \(position)"
-    }
-    result += "]"
-    return result
-  }
-  
-}
-
-final class OrderedSetStorage<Element:Hashable>: ManagedBuffer<OrderedSetStorageHeader, UInt8> {
-
-  typealias Storage = OrderedSetStorage<Element>
-  typealias Header = OrderedSetStorageHeader
-
-  /// Returns the number of bytes required for the bit map of initialized buckets given `capacity`
-  static func bytesForInitializedBuckets(capacity: Int) -> Int {
-    return BitMap.wordsFor(capacity) * sizeof(UInt) + alignof(UInt)
-  }
-
-  /// The number of bytes used to store the bit map of initialized buckets for this instance
-  var initializedBucketsBytes: Int { return Storage.bytesForInitializedBuckets(capacity) }
-
-  /// Returns the number of bytes required for the map of buckets to positions given `capacity`
-  static func bytesForBucketPositionMap(capacity: Int) -> Int {
-    return strideof(Int) * (capacity * 2) + max(0, alignof(Int) - alignof(UInt))
-  }
-
-  var bucketPositionMapBytes: Int { return Storage.bytesForBucketPositionMap(capacity) }
-
-  static func bytesForElements(capacity: Int) -> Int {
-    let maxPrevAlignment = max(alignof(UInt), alignof(Int))
-    let padding = max(0, alignof(Element) - maxPrevAlignment)
-    return strideof(Element) * capacity + padding
-  }
-
-  /// The number of bytes used to store the hash values for this instance
-  var membersBytes: Int { return Storage.bytesForElements(capacity) }
-
-  /// The total number of buckets
-  var capacity: Int { return value.capacity }
-
-  /// The total number of initialized buckets
-  var count: Int { get { return value.count } set { value.count = newValue } }
-
-  /// The total number of bytes managed by this instance; equal to 
-  /// `initializedBucketsBytes + bucketMapBytes + membersBytes`
-  var bytesAllocated: Int { return value.bytesAllocated }
-
-  /// Pointer to the first byte in memory allocated for the bit map of initialized buckets
-  var initializedBucketsAddress: UnsafeMutablePointer<UInt8> {
-    return withUnsafeMutablePointerToElements {$0}
-  }
-
-  /// A bit map corresponding to which buckets have been initialized
-  var initializedBuckets: BitMap { return value.initializedBuckets }
-
-  /// Pointer to the first byte in memory allocated for the position map
-  var bucketPositionMapAddress: UnsafeMutablePointer<UInt8> {
-    return initializedBucketsAddress + initializedBucketsBytes
-  }
-
-  /// An index mapping buckets to positions and positions to buckets
-  var bucketPositionMap: BucketPositionMap { return value.bucketPositionMap }
-
-  /// Pointer to the first byte in memory allocated for the hash values
-  var members: UnsafeMutablePointer<Element> {
-    return UnsafeMutablePointer<Element>(bucketPositionMapAddress + bucketPositionMapBytes)
-  }
-
-  static func create(minimumCapacity: Int) -> OrderedSetStorage {
-    let capacity = round2(minimumCapacity)
-
-    let initializedBucketsBytes = bytesForInitializedBuckets(capacity)
-    let bucketPositionMapBytes = bytesForBucketPositionMap(capacity)
-    let membersBytes = bytesForElements(capacity)
-    let requiredCapacity = initializedBucketsBytes
-                         + bucketPositionMapBytes
-                         + membersBytes
-
-    let storage = super.create(requiredCapacity) {
-      let initializedBucketsStorage = $0.withUnsafeMutablePointerToElements {$0}
-      let initializedBuckets = BitMap(uninitializedStorage: pointerCast(initializedBucketsStorage), bitCount: capacity)
-      let bucketPositionMapStorage = initializedBucketsStorage + initializedBucketsBytes
-      let bucketPositionMap = BucketPositionMap(storage: pointerCast(bucketPositionMapStorage), capacity: capacity)
-      let bytesAllocated = $0.allocatedElementCount
-      let header =  Header(capacity: capacity,
-                    bytesAllocated: bytesAllocated,
-                    initializedBuckets: initializedBuckets,
-                    bucketPositionMap: bucketPositionMap)
-      return header
-    }
-
-    return storage as! Storage
-  }
-
-  deinit {
-    guard !_isPOD(Element) else { return }
-    defer { _fixLifetime(self) }
-    let members = self.members
-    for offset in initializedBuckets.nonZeroBits { (members + offset).destroy() }
-  }
-}
-
-extension OrderedSetStorage {
-  var description: String {
-    defer { _fixLifetime(self) }
-    var result = "OrderedSetStorage {\n"
-    result += "\ttotal bytes: \(allocatedElementCount)\n"
-    result += "\tinitializedBucketsBytes: \(initializedBucketsBytes)\n"
-    result += "\tbucketMapBytes: \(bucketPositionMapBytes)\n"
-    result += "\tmembersBytes: \(membersBytes)\n"
-    result += "\tcapacity: \(capacity)\n"
-    result += "\tcount: \(count)\n"
-    result += "\tinitializedBuckets: \(initializedBuckets)\n"
-    result += "\tbucketPositionMap: \(bucketPositionMap)\n"
-    result += "\tmembers: \(Array(UnsafeBufferPointer(start: members, count: count)))\n"
-    result += "\n}"
-    return result
-  }
-}
-
 // MARK: - Generator
 // MARK: -
 
@@ -451,7 +36,7 @@ struct OrderedSetBuffer<Element:Hashable> {
 
   let storage: Storage
   let initializedBuckets: BitMap
-  let bucketPositionMap: BucketPositionMap
+  let bucketMap: HashBucketMap
   let members: UnsafeMutablePointer<Element>
 
   // MARK: Accessors for the storage header properties
@@ -479,8 +64,8 @@ struct OrderedSetBuffer<Element:Hashable> {
   init(storage: Storage) {
     self.storage = storage
     initializedBuckets = storage.initializedBuckets
+    bucketMap = storage.bucketMap
     members = storage.members
-    bucketPositionMap = storage.bucketPositionMap
   }
 
   init<S:SequenceType where S.Generator.Element == Element>(elements: S, capacity: Int? = nil) {
@@ -510,29 +95,29 @@ struct OrderedSetBuffer<Element:Hashable> {
   // MARK: Queries
 
   /// Returns the bucket for `member` diregarding collisions
-  func idealBucketForElement(member: Element) -> Bucket {
+  func idealBucketForElement(member: Element) -> HashBucket {
     return suggestBucketForValue(member, capacity: capacity)
   }
 
   /// Returns the position assigned to `bucket` or `nil` if no position is assigned
-  func positionForBucket(bucket: Bucket) -> Index? {
-    return bucketPositionMap[bucket]
+  func positionForBucket(bucket: HashBucket) -> Index? {
+    return bucketMap[bucket]
   }
 
   /// Returns the bucket for the member assigned to `position`.
   /// - requires: A bucket has been assigned to `position`
-  func bucketForPosition(position: Index) -> Bucket {
-    return bucketPositionMap[position]
+  func bucketForPosition(position: Index) -> HashBucket {
+    return bucketMap[position]
   }
 
   /// Returns the bucket containing `member` or `nil` if no bucket contains `member`.
-  func currentBucketForElement(member: Element) -> Bucket? {
+  func currentBucketForElement(member: Element) -> HashBucket? {
     let (bucket, found) = find(member)
     return found ? bucket : nil
   }
 
   /// Returns an empty bucket suitable for holding `member` or `nil` if a bucket already contains `member`.
-  func emptyBucketForElement(member: Element) -> Bucket? {
+  func emptyBucketForElement(member: Element) -> HashBucket? {
     let (bucket, found) = find(member)
     return found ? nil : bucket
   }
@@ -540,7 +125,7 @@ struct OrderedSetBuffer<Element:Hashable> {
   /// Returns the current bucket for `member` and `true` when `member` is located; 
   /// returns an open bucket for `member` and `false` otherwise
   /// - requires: At least one empty bucket
-  func find(member: Element) -> (bucket: Bucket, found: Bool) {
+  func find(member: Element) -> (bucket: HashBucket, found: Bool) {
 
     let startBucket = idealBucketForElement(member)
     var bucket = startBucket
@@ -555,7 +140,7 @@ struct OrderedSetBuffer<Element:Hashable> {
   }
 
   /// Returns the value inserted into `bucket`
-  func memberInBucket(bucket: Bucket) -> Element { return members[bucket.offset] }
+  func memberInBucket(bucket: HashBucket) -> Element { return members[bucket.offset] }
 
   /// Returns the value assigned to `position`
   func memberAtPosition(position: Index) -> Element {
@@ -563,7 +148,7 @@ struct OrderedSetBuffer<Element:Hashable> {
   }
 
   /// Returns `false` when `bucket` is empty and `true` otherwise.
-  func isInitializedBucket(bucket: Bucket) -> Bool { return initializedBuckets[bucket] }
+  func isInitializedBucket(bucket: HashBucket) -> Bool { return initializedBuckets[bucket] }
 
   /// Returns the position for `member` or `nil` if `member` is not found.
   func positionForElement(member: Element) -> Index? {
@@ -574,7 +159,7 @@ struct OrderedSetBuffer<Element:Hashable> {
   // MARK: Removing data
 
   /// Attempts to move the values of the buckets near `hole` into buckets nearer to their 'ideal' bucket
-  func _patchHole(hole: Bucket, idealBucket: Bucket) {
+  func _patchHole(hole: HashBucket, idealBucket: HashBucket) {
 
     var hole = hole
     var start = idealBucket
@@ -606,7 +191,7 @@ struct OrderedSetBuffer<Element:Hashable> {
 
   }
 
-  func destroyBucket(bucket: Bucket) {
+  func destroyBucket(bucket: HashBucket) {
     initializedBuckets[bucket] = false
     (members + bucket.offset).destroy()
   }
@@ -617,7 +202,7 @@ struct OrderedSetBuffer<Element:Hashable> {
     let idealBucket = idealBucketForElement(memberInBucket(hole))
 
     destroyBucket(hole)
-    bucketPositionMap.removeBucketAt(position)
+    bucketMap.removeBucketAt(position)
 
     count -= 1
 
@@ -647,7 +232,7 @@ struct OrderedSetBuffer<Element:Hashable> {
 
 
     // Insert new elements, accumulating a list of their buckets
-    var newElementsBuckets = [Bucket](minimumCapacity: numericCast(newElements.count))
+    var newElementsBuckets = [HashBucket](minimumCapacity: numericCast(newElements.count))
 
     for value in newElements {
       let (bucket, found) = find(value)
@@ -657,25 +242,25 @@ struct OrderedSetBuffer<Element:Hashable> {
     }
 
     // Adjust positions
-    bucketPositionMap.replaceRange(subRange, with: newElementsBuckets)
+    bucketMap.replaceRange(subRange, with: newElementsBuckets)
 
     // Update count
-    storage.count = bucketPositionMap.count
+    storage.count = bucketMap.count
 
   }
 
 
   // MARK: Initializing with data
 
-  func initializeBucket(bucket: Bucket, with member: Element) {
+  func initializeBucket(bucket: HashBucket, with member: Element) {
     (members + bucket.offset).initialize(member)
     initializedBuckets[bucket] = true
   }
 
-  func initializeElement(member: Element, position: Int, bucket: Bucket) {
+  func initializeElement(member: Element, position: Int, bucket: HashBucket) {
     defer { _fixLifetime(self) }
     initializeBucket(bucket, with: member)
-    bucketPositionMap[position] = bucket
+    bucketMap[position] = bucket
   }
 
   func initializeElement(member: Element, position: Int) {
@@ -683,15 +268,15 @@ struct OrderedSetBuffer<Element:Hashable> {
     initializeElement(member, position: position, bucket: bucket)
   }
 
-  func initializeElement(member: Element, bucket: Bucket) {
+  func initializeElement(member: Element, bucket: HashBucket) {
     initializeElement(member, position: count, bucket: bucket)
   }
 
   /// Removes the value from `bucket1` and uses this value to initialize `bucket2`
-  func moveElementInBucket(bucket1: Bucket, toBucket bucket2: Bucket) {
+  func moveElementInBucket(bucket1: HashBucket, toBucket bucket2: HashBucket) {
     initializeBucket(bucket2, with: (members + bucket1.offset).move())
     initializedBuckets[bucket1] = false
-    bucketPositionMap.replaceBucket(bucket1, with: bucket2)
+    bucketMap.replaceBucket(bucket1, with: bucket2)
   }
 
 
@@ -706,7 +291,7 @@ extension OrderedSetBuffer : CustomStringConvertible, CustomDebugStringConvertib
 
     var result = "["
     var first = true
-    for bucket in bucketPositionMap {
+    for bucket in bucketMap {
       if first { first = false } else { result += ", " }
       debugPrint(members[bucket.offset], terminator: "",   toStream: &result)
     }
@@ -721,7 +306,7 @@ extension OrderedSetBuffer : CustomStringConvertible, CustomDebugStringConvertib
     result += "count = \(count)\n"
     result += "capacity = \(capacity)\n"
     for position in 0 ..< count {
-      result += "position \(position) ➞ bucket \(bucketPositionMap[position])\n"
+      result += "position \(position) ➞ bucket \(bucketMap[position])\n"
     }
     for position in count ..< capacity {
       result += "position \(position), empty\n"
@@ -753,18 +338,36 @@ final class OrderedSetStorageOwner<Element:Hashable>: NonObjectiveCBase {
 // MARK: -
 
 public struct OrderedSetSlice<Element:Hashable>: CollectionType {
-  public typealias Index = Int
+
   typealias Buffer = OrderedSetBuffer<Element>
-  public var startIndex: Int { return bounds.startIndex }
-  public var endIndex: Int  { return bounds.endIndex }
+
   let buffer: Buffer
   let bounds: Range<Int>
+
+  public typealias Index = Int
+  public typealias Generator = AnyGenerator<Element>
+  public typealias SubSequence = OrderedSetSlice<Element>
+
+  public var startIndex: Int { return bounds.startIndex }
+  public var endIndex: Int  { return bounds.endIndex }
+
   public subscript(position: Index) -> Element { return buffer.memberAtPosition(position) }
+
+  public subscript(bounds: Range<Index>) -> SubSequence {
+    precondition(self.bounds.contains(bounds))
+    return SubSequence(buffer: buffer, bounds: bounds)
+  }
+
   init(buffer: Buffer, bounds: Range<Int>) {
     precondition(bounds.startIndex >= 0, "Invalid start for bounds: \(bounds.startIndex)")
     precondition(bounds.endIndex <= buffer.count, "Invalid end for bounds: \(bounds.endIndex)")
     self.buffer = buffer
     self.bounds = bounds
+  }
+
+  public func generate() -> Generator {
+    let generator = IndexingGenerator<OrderedSetSlice<Element>>(self)
+    return AnyGenerator(generator)
   }
 }
 
@@ -787,7 +390,7 @@ extension OrderedSetSlice: CustomStringConvertible {
 
 /// A hash-based mapping from `Key` to `Element` instances that preserves elment order.
 public struct OrderedSet<Element:Hashable>: CollectionType {
-
+  public typealias Index = Int
   public typealias _Element = Element
   typealias Storage = OrderedSetStorage<Element>
   typealias Buffer = OrderedSetBuffer<Element>
@@ -806,11 +409,11 @@ public struct OrderedSet<Element:Hashable>: CollectionType {
     let clone = Buffer(minimumCapacity: newCapacity)
 
     if clone.capacity == buffer.capacity {
-      for (position, bucket) in buffer.bucketPositionMap.enumerate() {
+      for (position, bucket) in buffer.bucketMap.enumerate() {
         clone.initializeElement(buffer.memberInBucket(bucket), position: position, bucket: bucket)
       }
     } else {
-      for (position, bucket) in buffer.bucketPositionMap.enumerate() {
+      for (position, bucket) in buffer.bucketMap.enumerate() {
         clone.initializeElement(buffer.memberInBucket(bucket), position: position)
       }
     }
@@ -913,8 +516,6 @@ public struct OrderedSet<Element:Hashable>: CollectionType {
 }
 
 extension OrderedSet: MutableIndexable {
-
-  public typealias Index = Int
 
   public var startIndex: Index { return 0 }
 

@@ -30,3 +30,6 @@ var bufferPointer = UnsafeMutableBufferPointer<Int>(start: bufferStorage, count:
 swap(&bufferPointer[3], &bufferPointer[4])
 
 Array(bufferPointer)
+
+alignof(String)
+strideof(String)

@@ -453,6 +453,12 @@
 		C2E55D111C9E4287004E7CB1 /* BitMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E55D101C9E4287004E7CB1 /* BitMapTests.swift */; };
 		C2E55D131C9E4287004E7CB1 /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2358F1619C78D6D00920F8D /* MoonKit.framework */; };
 		C2E7C8321A1AA3F0006BC80E /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E7C8311A1AA3F0006BC80E /* Protocols.swift */; };
+		C2E8050F1CD8FE8700650504 /* HashBucket.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E8050E1CD8FE8700650504 /* HashBucket.swift */; };
+		C2E805111CD900F200650504 /* HashBucketMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E805101CD900F200650504 /* HashBucketMap.swift */; };
+		C2E805131CD901A500650504 /* HashedStorageHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E805121CD901A500650504 /* HashedStorageHeader.swift */; };
+		C2E805151CD9030800650504 /* OrderedSetStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E805141CD9030800650504 /* OrderedSetStorage.swift */; };
+		C2E805171CD908E500650504 /* OrderedDictionaryStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E805161CD908E500650504 /* OrderedDictionaryStorage.swift */; };
+		C2E805191CDA466D00650504 /* OrderedDictionaryBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E805181CDA466D00650504 /* OrderedDictionaryBuffer.swift */; };
 		C2E8C8B71AE7325300F8AC45 /* UITableViewCell+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E8C8B61AE7325300F8AC45 /* UITableViewCell+MoonKitAdditions.swift */; };
 		C2E937001ACE04D4003EB3E8 /* JSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E936FF1ACE04D4003EB3E8 /* JSONParser.swift */; };
 		C2E937041ACF0736003EB3E8 /* JSONSerialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E937031ACF0736003EB3E8 /* JSONSerialization.swift */; };
@@ -954,6 +960,12 @@
 		C2E55D101C9E4287004E7CB1 /* BitMapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitMapTests.swift; sourceTree = "<group>"; };
 		C2E55D121C9E4287004E7CB1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C2E7C8311A1AA3F0006BC80E /* Protocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
+		C2E8050E1CD8FE8700650504 /* HashBucket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HashBucket.swift; sourceTree = "<group>"; };
+		C2E805101CD900F200650504 /* HashBucketMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HashBucketMap.swift; sourceTree = "<group>"; };
+		C2E805121CD901A500650504 /* HashedStorageHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HashedStorageHeader.swift; sourceTree = "<group>"; };
+		C2E805141CD9030800650504 /* OrderedSetStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderedSetStorage.swift; sourceTree = "<group>"; };
+		C2E805161CD908E500650504 /* OrderedDictionaryStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderedDictionaryStorage.swift; sourceTree = "<group>"; };
+		C2E805181CDA466D00650504 /* OrderedDictionaryBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderedDictionaryBuffer.swift; sourceTree = "<group>"; };
 		C2E8C8B61AE7325300F8AC45 /* UITableViewCell+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UITableViewCell+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C2E936FF1ACE04D4003EB3E8 /* JSONParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = JSONParser.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		C2E937031ACF0736003EB3E8 /* JSONSerialization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONSerialization.swift; sourceTree = "<group>"; };
@@ -1137,6 +1149,12 @@
 				C2CD95041C778C78001FB80B /* BitMap.swift */,
 				C24AF3DE1C7BFC2500C55223 /* BitArray.swift */,
 				C24684171CA42E9400CB61EE /* NativeHashedCollections.swift */,
+				C2E8050E1CD8FE8700650504 /* HashBucket.swift */,
+				C2E805101CD900F200650504 /* HashBucketMap.swift */,
+				C2E805121CD901A500650504 /* HashedStorageHeader.swift */,
+				C2E805141CD9030800650504 /* OrderedSetStorage.swift */,
+				C2E805161CD908E500650504 /* OrderedDictionaryStorage.swift */,
+				C2E805181CDA466D00650504 /* OrderedDictionaryBuffer.swift */,
 			);
 			path = "Data Structures";
 			sourceTree = "<group>";
@@ -2547,11 +2565,13 @@
 				C2064FFF1A13C71D00342FDE /* NSLayoutConstraint+MoonKitAdditions.swift in Sources */,
 				C280ED3A1BF6678B0032447D /* LogFileManager.swift in Sources */,
 				C28E50971A13CA8F00DF3206 /* ToggleImageBarButtonItem.swift in Sources */,
+				C2E805131CD901A500650504 /* HashedStorageHeader.swift in Sources */,
 				C23592D719C8785D00920F8D /* NSMutableString+MSKitAdditions.m in Sources */,
 				C2F682BE1BDAEC45002FCA2B /* Character.swift in Sources */,
 				C20297FC1AF295A5003F647B /* KVOReceptionist.swift in Sources */,
 				C28E50961A13CA7E00DF3206 /* ToggleBarButtonItem.swift in Sources */,
 				C2404BC01B77ACDC00A68A64 /* ImageBarButtonItem.swift in Sources */,
+				C2E805111CD900F200650504 /* HashBucketMap.swift in Sources */,
 				C21D7AE41AA60E3F000DE8A3 /* NSError+MoonKitAdditions.swift in Sources */,
 				C29073971BD747D70090399E /* LogFormatter.swift in Sources */,
 				C2B6918A1AFBCADB0041CE11 /* NetworkReachability.swift in Sources */,
@@ -2562,6 +2582,7 @@
 				C2B3B2ED1C592EC60001152F /* HashableTuple.swift in Sources */,
 				C2358F5A19C78E0C00920F8D /* MSColorInputButton.m in Sources */,
 				C29649901B00EBD0000C2D4A /* FieldView.swift in Sources */,
+				C2E805151CD9030800650504 /* OrderedSetStorage.swift in Sources */,
 				C2BE96E81A467E85007599B2 /* NSManagedObjectModel+MoonKitAdditions.swift in Sources */,
 				C2649D701C922F8D001039DA /* NSFileManager+MoonKitAdditions.swift in Sources */,
 				C2358F5B19C78E0C00920F8D /* MSPickerInputButton.m in Sources */,
@@ -2583,6 +2604,7 @@
 				C2358F6119C78E0C00920F8D /* MSGestureManager.m in Sources */,
 				C2358F6219C78E0C00920F8D /* MSLongPressGestureRecognizer.m in Sources */,
 				C219235D1C76132000E82437 /* MSDictionary+MoonKitAdditions.swift in Sources */,
+				C2E8050F1CD8FE8700650504 /* HashBucket.swift in Sources */,
 				C29073911BD7021F0090399E /* ColorLog.swift in Sources */,
 				C24A22811ADAEC010065E7EA /* ArrayJSONValue.swift in Sources */,
 				C2F094451A32A83A00681AB3 /* DrawingKit.swift in Sources */,
@@ -2595,6 +2617,7 @@
 				C2358F6519C78E0C00920F8D /* MSSwipeGestureRecognizer.m in Sources */,
 				C2FE79E61B1E62590087F72C /* NSIndexPath+MoonKitAdditions.swift in Sources */,
 				C26A09781BC9F1B0002EFEE1 /* CATransform3D.swift in Sources */,
+				C2E805191CDA466D00650504 /* OrderedDictionaryBuffer.swift in Sources */,
 				C2CF38CF1B7FAFE00085B3D5 /* VerticalSlider.swift in Sources */,
 				C2358F6619C78E0C00920F8D /* MSResizingLayer.m in Sources */,
 				C2358F6719C78E0C00920F8D /* MSAssertionHandler.m in Sources */,
@@ -2693,6 +2716,7 @@
 				C2358F8819C78E0C00920F8D /* GCDAsyncUdpSocket.m in Sources */,
 				C2CA85281BC7263B0046AFC0 /* UIOffset+MoonKitAdditions.swift in Sources */,
 				C2F39D2F1A3A6D5A0024EE94 /* NSAttributedString+MoonKitAdditions.swift in Sources */,
+				C2E805171CD908E500650504 /* OrderedDictionaryStorage.swift in Sources */,
 				C274CB8C1B70FBCF00EC8E4A /* FormField.swift in Sources */,
 				C2AFC9081BD675F60057F055 /* MarqueeField.swift in Sources */,
 				C27978E41B17FF9E00B36BAD /* ZoomingCollectionViewLayout.swift in Sources */,
@@ -2997,7 +3021,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = NO;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";

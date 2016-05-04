@@ -8,6 +8,7 @@
 
 import Foundation
 import Nimble
+import MoonKit
 
 // MARK: - Functions for measuring performance
 public func randomIntegers(count: Int, _ range: Range<Int>) -> [Int] {
