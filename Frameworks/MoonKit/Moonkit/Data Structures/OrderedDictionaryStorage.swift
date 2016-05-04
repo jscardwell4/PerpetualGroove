@@ -82,7 +82,8 @@ final class OrderedDictionaryStorage <Key:Hashable, Value>: ManagedBuffer<Hashed
 
   /// Pointer to the first byte in memory allocated for the values
   var values: UnsafeMutablePointer<Value> {
-    return UnsafeMutablePointer<Value>(keys + keysBytes)
+    // Conversion back to UInt8 pointer necessary for `+` operator to advance by byte
+    return UnsafeMutablePointer<Value>(UnsafeMutablePointer<UInt8>(keys) + keysBytes)
   }
 
   /// Create a new storage instance.
@@ -117,34 +118,17 @@ final class OrderedDictionaryStorage <Key:Hashable, Value>: ManagedBuffer<Hashed
   }
 
   deinit {
-    let offsets = initializedBuckets.nonZeroBits
-    print("\(#function) \n \(description)\n - offsets = \(offsets)")
-    guard offsets.count > 0 else { return }
+    guard count > 0 else { return }
 
-    let firstKey = keys[offsets[0]]
-    let firstValue = values[offsets[0]]
-    print("firstKey = \(firstKey)")
-    print("firstValue = \(firstValue)")
-//    let values = self.values
-//    let keys = self.keys
-//    let initializedBuckets = self.initializedBuckets
-//    defer {
-//      _fixLifetime(self)
-//      _fixLifetime(values)
-//      _fixLifetime(keys)
-//      _fixLifetime(initializedBuckets)
-//    }
-//    print(self.description)
-//    switch (_isPOD(Key), _isPOD(Value)) {
-//      case (true, true): return
-//      case (true, false):
-//        let offsets = initializedBuckets.nonZeroBits
-//        for offset in offsets { (values + offset).destroy() }
-//      case (false, true):
-//        for offset in initializedBuckets.nonZeroBits { (keys + offset).destroy() }
-//      case (false, false):
-//        for offset in initializedBuckets.nonZeroBits { (keys + offset).destroy(); (values + offset).destroy() }
-//    }
+    switch (_isPOD(Key), _isPOD(Value)) {
+      case (true, true): return
+      case (true, false):
+        for offset in initializedBuckets.nonZeroBits { (values + offset).destroy() }
+      case (false, true):
+        for offset in initializedBuckets.nonZeroBits { (keys + offset).destroy() }
+      case (false, false):
+        for offset in initializedBuckets.nonZeroBits { (keys + offset).destroy(); (values + offset).destroy() }
+    }
   }
 }
 
