@@ -25,14 +25,14 @@ public func randomRange(count: Int, coverage: Double) -> Range<Int> {
   return start ..< end
 }
 
-public let randomIntegersLarge1 = randomIntegers(10000, 0 ..< 2000)
-public let randomIntegersLarge2 = randomIntegers(10000, 0 ..< 2000)
-
-public let randomIntegersMedium1 = randomIntegers(50000, 0 ..< 10000)
-public let randomIntegersMedium2 = randomIntegers(50000, 0 ..< 10000)
-
 public let randomIntegersSmall1 = randomIntegers(500, 0 ..< 250)
 public let randomIntegersSmall2 = randomIntegers(500, 0 ..< 250)
+
+public let randomIntegersMedium1 = randomIntegers(10000, 0 ..< 2000)
+public let randomIntegersMedium2 = randomIntegers(10000, 0 ..< 2000)
+
+public let randomIntegersLarge1 = randomIntegers(50000, 0 ..< 10000)
+public let randomIntegersLarge2 = randomIntegers(50000, 0 ..< 10000)
 
 
 public func performWithIntegers<Target>(@noescape target target: ([Int]) -> Target, execute: (Target, [Int]) -> Void) -> () -> Void
@@ -56,6 +56,171 @@ public func perform<Target, Data>(
 }
 
 // MARK: - Extending Nimble
+// MARK: -
+
+// MARK: Tuple equality
+
+public func equal<
+  A:Equatable, B:Equatable
+  >(expectedValue: (A, B)?) -> NonNilMatcherFunc<(A, B)>
+{
+  return NonNilMatcherFunc { actualExpression, failureMessage in
+    failureMessage.postfixMessage = "equal <\(stringify(expectedValue))>"
+    let actualValue = try actualExpression.evaluate()
+    let matches = actualValue != nil && expectedValue != nil && actualValue! == expectedValue!
+    if expectedValue == nil || actualValue == nil {
+      if expectedValue == nil {
+        failureMessage.postfixActual = " (use beNil() to match nils)"
+      }
+      return false
+    }
+    return matches
+  }
+}
+
+public func equal<
+  A:Equatable, B:Equatable, C:Equatable
+  >(expectedValue: (A, B, C)?) -> NonNilMatcherFunc<(A, B, C)>
+{
+  return NonNilMatcherFunc { actualExpression, failureMessage in
+    failureMessage.postfixMessage = "equal <\(stringify(expectedValue))>"
+    let actualValue = try actualExpression.evaluate()
+    let matches = actualValue != nil && expectedValue != nil && actualValue! == expectedValue!
+    if expectedValue == nil || actualValue == nil {
+      if expectedValue == nil {
+        failureMessage.postfixActual = " (use beNil() to match nils)"
+      }
+      return false
+    }
+    return matches
+  }
+}
+
+public func equal<
+  A:Equatable, B:Equatable, C:Equatable, D:Equatable
+  >(expectedValue: (A, B, C, D)?) -> NonNilMatcherFunc<(A, B, C, D)>
+{
+  return NonNilMatcherFunc { actualExpression, failureMessage in
+    failureMessage.postfixMessage = "equal <\(stringify(expectedValue))>"
+    let actualValue = try actualExpression.evaluate()
+    let matches = actualValue != nil && expectedValue != nil && actualValue! == expectedValue!
+    if expectedValue == nil || actualValue == nil {
+      if expectedValue == nil {
+        failureMessage.postfixActual = " (use beNil() to match nils)"
+      }
+      return false
+    }
+    return matches
+  }
+}
+
+public func equal<
+  A:Equatable, B:Equatable, C:Equatable, D:Equatable, E:Equatable
+  >(expectedValue: (A, B, C, D, E)?) -> NonNilMatcherFunc<(A, B, C, D, E)>
+{
+  return NonNilMatcherFunc { actualExpression, failureMessage in
+    failureMessage.postfixMessage = "equal <\(stringify(expectedValue))>"
+    let actualValue = try actualExpression.evaluate()
+    let matches = actualValue != nil && expectedValue != nil && actualValue! == expectedValue!
+    if expectedValue == nil || actualValue == nil {
+      if expectedValue == nil {
+        failureMessage.postfixActual = " (use beNil() to match nils)"
+      }
+      return false
+    }
+    return matches
+  }
+}
+
+public func equal<
+  A:Equatable, B:Equatable, C:Equatable, D:Equatable, E:Equatable, F:Equatable
+  >(expectedValue: (A, B, C, D, E, F)?) -> NonNilMatcherFunc<(A, B, C, D, E, F)>
+{
+  return NonNilMatcherFunc { actualExpression, failureMessage in
+    failureMessage.postfixMessage = "equal <\(stringify(expectedValue))>"
+    let actualValue = try actualExpression.evaluate()
+    let matches = actualValue != nil && expectedValue != nil && actualValue! == expectedValue!
+    if expectedValue == nil || actualValue == nil {
+      if expectedValue == nil {
+        failureMessage.postfixActual = " (use beNil() to match nils)"
+      }
+      return false
+    }
+    return matches
+  }
+}
+
+public func ==<
+  A:Equatable, B:Equatable
+  >(lhs: Expectation<(A, B)>, rhs: (A, B)?)
+{
+  lhs.to(equal(rhs))
+}
+
+public func ==<
+  A:Equatable, B:Equatable, C:Equatable
+  >(lhs: Expectation<(A, B, C)>, rhs: (A, B, C)?)
+{
+  lhs.to(equal(rhs))
+}
+
+public func ==<
+  A:Equatable, B:Equatable, C:Equatable, D:Equatable
+  >(lhs: Expectation<(A, B, C, D)>, rhs: (A, B, C, D)?)
+{
+  lhs.to(equal(rhs))
+}
+
+public func ==<
+  A:Equatable, B:Equatable, C:Equatable, D:Equatable, E:Equatable
+  >(lhs: Expectation<(A, B, C, D, E)>, rhs: (A, B, C, D, E)?)
+{
+  lhs.to(equal(rhs))
+}
+
+public func ==<
+  A:Equatable, B:Equatable, C:Equatable, D:Equatable, E:Equatable, F:Equatable
+  >(lhs: Expectation<(A, B, C, D, E, F)>, rhs: (A, B, C, D, E, F)?)
+{
+  lhs.to(equal(rhs))
+}
+
+public func !=<
+  A:Equatable, B:Equatable
+  >(lhs: Expectation<(A, B)>, rhs: (A, B)?)
+{
+  lhs.toNot(equal(rhs))
+}
+
+public func !=<
+  A:Equatable, B:Equatable, C:Equatable
+  >(lhs: Expectation<(A, B, C)>, rhs: (A, B, C)?)
+{
+  lhs.toNot(equal(rhs))
+}
+
+public func !=<
+  A:Equatable, B:Equatable, C:Equatable, D:Equatable
+  >(lhs: Expectation<(A, B, C, D)>, rhs: (A, B, C, D)?)
+{
+  lhs.toNot(equal(rhs))
+}
+
+public func !=<
+  A:Equatable, B:Equatable, C:Equatable, D:Equatable, E:Equatable
+  >(lhs: Expectation<(A, B, C, D, E)>, rhs: (A, B, C, D, E)?)
+{
+  lhs.toNot(equal(rhs))
+}
+
+public func !=<
+  A:Equatable, B:Equatable, C:Equatable, D:Equatable, E:Equatable, F:Equatable
+  >(lhs: Expectation<(A, B, C, D, E, F)>, rhs: (A, B, C, D, E, F)?)
+{
+  lhs.toNot(equal(rhs))
+}
+
+// MARK: SetType matchers
 
 public func equal<
   S1: SequenceType,

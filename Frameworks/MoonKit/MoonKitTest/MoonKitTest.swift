@@ -7,4 +7,5 @@
 //
 
 import Foundation
+@_exported import Nimble
 //@_exported import MoonKit

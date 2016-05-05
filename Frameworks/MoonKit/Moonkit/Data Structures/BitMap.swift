@@ -81,7 +81,6 @@ public struct BitMap: CollectionType {
       bitIndex = 0
     }
 
-//    for i in start.successor() ..< count where self[i] { return i }
     return nil
   }
 
@@ -112,10 +111,8 @@ public struct BitMap: CollectionType {
       bitIndex = bitsPerWord - 1
     }
 
-//    for i in (0 ..< start).reverse() where self[i] { return i }
     return nil
   }
-
 
   public var nonZeroBits: [Int] {
     var result: [Int] = []

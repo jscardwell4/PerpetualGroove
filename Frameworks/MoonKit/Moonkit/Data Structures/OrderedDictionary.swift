@@ -147,16 +147,27 @@ public struct OrderedDictionary<Key: Hashable, Value>: CollectionType, Dictionar
     }
   }
 
+  /// Removes the value associated with `key` and returns it. Returns `nil` if `key` is not present.
   public mutating func removeValueForKey(key: Key) -> Value? {
     let oldValue = UnsafeMutablePointer<Value?>.alloc(1)
     _removeValueForKey(key, oldValue: oldValue)
     return oldValue.memory
   }
 
+  /// Returns the index of `key` or `nil` if `key` is not present.
   public func indexForKey(key: Key) -> Index? { return buffer.positionForKey(key) }
 
-  public subscript(position: Index) -> (Key, Value) { return buffer.elementAtPosition(position) }
+  /// Returns the value associated with `key` or `nil` if `key` is not present.
+  public func valueForKey(key: Key) -> Value? {
+    return buffer.valueForKey(key)
+  }
 
+  /// Returns the key-value pair at the specified `index`
+  public subscript(index: Index) -> (Key, Value) { return buffer.elementAtPosition(index) }
+
+  /// Access the value associated with the given key.
+  /// Reading a key that is not present in self yields nil. Writing nil as the value for a given key erases that key from self.
+  /// - attention: Is there a conflict when `Key` = `Index` or do the differing return types resolve ambiguity?
   public subscript(key: Key) -> Value? {
     get { return buffer.valueForKey(key) }
     set {
