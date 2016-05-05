@@ -12,7 +12,18 @@ import MoonKitTest
 
 
 final class OrderedDictionaryTests: XCTestCase {
-    
+
+  func performanceWork(createDictionary: (capacity: Int) -> OrderedDictionary<String, Int>) -> () -> Void
+  {
+
+    return {
+      var dictionary = createDictionary(capacity: 2048)
+      for value in randomIntegersLarge1 { dictionary[String(value)] = value }
+      for value in randomIntegersLarge2 { dictionary[String(value)] = nil }
+      for value in randomIntegersMedium1 { dictionary[String(value)] = value }
+    }
+  }
+
   func testCreation() {
     var orderedDictionary1 = OrderedDictionary<String, Int>(minimumCapacity: 8)
     expect(orderedDictionary1.capacity) >= 8
@@ -82,108 +93,132 @@ final class OrderedDictionaryTests: XCTestCase {
     expect(orderedDictionary1) != orderedDictionary2
   }
 
-  func testSubscriptKeyInsertion() {
+  func testInsertValueForKey() {
     var orderedDictionary1 = OrderedDictionary<String, Int>(minimumCapacity: 8)
 
-    orderedDictionary1["one"] = 1
+    orderedDictionary1.insertValue(1, forKey: "one")
     expect(orderedDictionary1).to(haveCount(1))
     expect(orderedDictionary1["one"]) == 1
     expect(orderedDictionary1.values) == [1]
 
-    orderedDictionary1["two"] = 2
+    orderedDictionary1.insertValue(2, forKey: "two")
     expect(orderedDictionary1).to(haveCount(2))
     expect(orderedDictionary1["two"]) == 2
     expect(orderedDictionary1.values) == [1, 2]
 
-    orderedDictionary1["three"] = 3
+    orderedDictionary1.insertValue(3, forKey: "three")
     expect(orderedDictionary1).to(haveCount(3))
     expect(orderedDictionary1["three"]) == 3
     expect(orderedDictionary1.values) == [1, 2, 3]
 
-    orderedDictionary1["four"] = 4
+    orderedDictionary1.insertValue(4, forKey: "four")
     expect(orderedDictionary1).to(haveCount(4))
     expect(orderedDictionary1["four"]) == 4
     expect(orderedDictionary1.values) == [1, 2, 3, 4]
 
-    orderedDictionary1["five"] = 5
+    orderedDictionary1.insertValue(5, forKey: "five")
     expect(orderedDictionary1).to(haveCount(5))
     expect(orderedDictionary1["five"]) == 5
     expect(orderedDictionary1.values) == [1, 2, 3, 4, 5]
 
     var orderedDictionary2 = OrderedDictionary<Int, String>(minimumCapacity: 8)
 
-    orderedDictionary2[1] = "one"
+    orderedDictionary2.insertValue("one", forKey: 1)
     expect(orderedDictionary2).to(haveCount(1))
     expect(orderedDictionary2[1]) == "one"
     expect(orderedDictionary2.values) == ["one"]
 
-    orderedDictionary2[2] = "two"
+    orderedDictionary2.insertValue("two", forKey: 2)
     expect(orderedDictionary2).to(haveCount(2))
     expect(orderedDictionary2[2]) == "two"
     expect(orderedDictionary2.values) == ["one", "two"]
 
-    orderedDictionary2[3] = "three"
+    orderedDictionary2.insertValue("three", forKey: 3)
     expect(orderedDictionary2).to(haveCount(3))
     expect(orderedDictionary2[3]) == "three"
     expect(orderedDictionary2.values) == ["one", "two", "three"]
 
-    orderedDictionary2[4] = "four"
+    orderedDictionary2.insertValue("four", forKey: 4)
     expect(orderedDictionary2).to(haveCount(4))
     expect(orderedDictionary2[4]) == "four"
     expect(orderedDictionary2.values) == ["one", "two", "three", "four"]
 
-    orderedDictionary2[5] = "five"
+    orderedDictionary2.insertValue("five", forKey: 5)
     expect(orderedDictionary2).to(haveCount(5))
     expect(orderedDictionary2[5]) == "five"
     expect(orderedDictionary2.values) == ["one", "two", "three", "four", "five"]
   }
 
-  func testSubscriptKeyInsertionPerformance() {
+  func testInsertValueForKeyPerformance() {
     measureBlock {
       var orderedDictionary = OrderedDictionary<String, Int>()
-      for i in randomIntegersLarge1 { orderedDictionary[String(i)] = i }
+      for i in randomIntegersLarge1 { orderedDictionary.insertValue(i, forKey: String(i)) }
     }
   }
 
-  func testSubscriptKeyDeletion() {
+  func testRemoveAll() {
     var orderedDictionary1: OrderedDictionary<String, Int> = ["one": 1, "two": 2, "three": 3]
-    expect(orderedDictionary1.values) == [1, 2, 3]
-    orderedDictionary1["two"] = nil
-    expect(orderedDictionary1.values) == [1, 3]
-    orderedDictionary1["one"] = nil
-    expect(orderedDictionary1.values) == [3]
-    orderedDictionary1["two"] = 2
-    orderedDictionary1["one"] = 1
-    expect(orderedDictionary1.values) == [3, 2, 1]
+    expect(orderedDictionary1).toNot(beEmpty())
     orderedDictionary1.removeAll()
     expect(orderedDictionary1).to(beEmpty())
 
     var orderedDictionary2: OrderedDictionary<Int, String> = [1: "one", 2: "two", 3: "three"]
-    expect(orderedDictionary2.values) == ["one", "two", "three"]
-    orderedDictionary2[2] = nil
-    expect(orderedDictionary2.values) == ["one", "three"]
-    orderedDictionary2[1] = nil
-    expect(orderedDictionary2.values) == ["three"]
-    orderedDictionary2[2] = "two"
-    orderedDictionary2[1] = "one"
-    expect(orderedDictionary2.values) == ["three", "two", "one"]
+    expect(orderedDictionary2).toNot(beEmpty())
     orderedDictionary2.removeAll()
     expect(orderedDictionary2).to(beEmpty())
   }
 
-  func testSubscriptKeyDeletionPerformance() {
+  func testRemoveValueForKey() {
+    var orderedDictionary1: OrderedDictionary<String, Int> = ["one": 1, "two": 2, "three": 3]
+    expect(orderedDictionary1.values) == [1, 2, 3]
+    expect(orderedDictionary1.removeValueForKey("two")) == 2
+    expect(orderedDictionary1.values) == [1, 3]
+    expect(orderedDictionary1.removeValueForKey("two")).to(beNil())
+    expect(orderedDictionary1.removeValueForKey("one")) == 1
+    expect(orderedDictionary1.values) == [3]
+    orderedDictionary1["two"] = 2
+    orderedDictionary1["one"] = 1
+    expect(orderedDictionary1.values) == [3, 2, 1]
+
+    var orderedDictionary2: OrderedDictionary<Int, String> = [1: "one", 2: "two", 3: "three"]
+    expect(orderedDictionary2.values) == ["one", "two", "three"]
+    expect(orderedDictionary2.removeValueForKey(2)) == "two"
+    expect(orderedDictionary2.values) == ["one", "three"]
+    expect(orderedDictionary2.removeValueForKey(2)).to(beNil())
+    expect(orderedDictionary2.removeValueForKey(1)) == "one"
+    expect(orderedDictionary2.values) == ["three"]
+    orderedDictionary2[2] = "two"
+    orderedDictionary2[1] = "one"
+    expect(orderedDictionary2.values) == ["three", "two", "one"]
+  }
+
+  func testRemoveValueForKeyPerformance() {
     measureBlock {
       var orderedDictionary = OrderedDictionary<String, Int>(elements: randomIntegersLarge1.map {(String($0), $0)})
-      for i in randomIntegersLarge1 { orderedDictionary[String(i)] = nil }
+      for i in randomIntegersLarge1 { orderedDictionary.removeValueForKey(String(i)) }
     }
   }
 
-  func testSubscriptAccessors() {
+  func testSubscriptKeyAccessors() {
     var orderedDictionary: OrderedDictionary<String, Int> = ["one": 1, "two": 2, "three": 3]
     expect(orderedDictionary["two"]) == 2
-    let (k, v) = orderedDictionary[1]
-    expect(k) == "two"
-    expect(v) == 2
+    orderedDictionary["four"] = 4
+    expect(orderedDictionary["four"]) == 4
+    expect(orderedDictionary.keys) == ["one", "two", "three", "four"]
+    expect(orderedDictionary.values) == [1, 2, 3, 4]
+  }
+
+  func testSubscriptIndexAccessors() {
+    var orderedDictionary: OrderedDictionary<String, Int> = ["one": 1, "two": 2, "three": 3]
+    expect(orderedDictionary[1]) == ("two", 2)
+    orderedDictionary[2] = ("four", 4)
+    expect(orderedDictionary[2]) == ("four", 4)
+    expect(orderedDictionary.keys) == ["one", "two", "four"]
+    expect(orderedDictionary.values) == [1, 2, 4]
+  }
+
+  func testSubscriptRangeAccessors() {
+    fail("\(#function) not yet implemented")
   }
 
   func testRemoveAtIndex() {
@@ -196,16 +231,6 @@ final class OrderedDictionaryTests: XCTestCase {
     expect(orderedDictionary2.removeAtIndex(0)) == (1, "one")
     expect(orderedDictionary2.removeAtIndex(1)) == (3, "three")
     expect(orderedDictionary2.removeAtIndex(0)) == (2, "two")
-  }
-
-  func testRemoveValueForKey() {
-    var orderedDictionary1: OrderedDictionary<String, Int> = ["one": 1, "two": 2, "three": 3]
-    expect(orderedDictionary1.removeValueForKey("three")) == 3
-    expect(orderedDictionary1.removeValueForKey("three")).to(beNil())
-
-    var orderedDictionary2: OrderedDictionary<Int, String> = [1: "one", 2: "two", 3: "three"]
-    expect(orderedDictionary2.removeValueForKey(3)) == "three"
-    expect(orderedDictionary2.removeValueForKey(3)).to(beNil())
   }
 
   func testIndexForKey() {
@@ -232,31 +257,69 @@ final class OrderedDictionaryTests: XCTestCase {
     expect(orderedDictionary2.valueForKey(2)) == "four"
   }
 
+  func testReplaceRange() {
+    var orderedDictionary: OrderedDictionary<String, Int> = ["one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
+                                                             "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10]
+    orderedDictionary.replaceRange(0 ..< 5, with: [("five", 5), ("four", 4), ("three", 3), ("two", 2), ("one", 1)])
+    expect(orderedDictionary) == (["five": 5, "four": 4, "three": 3, "two": 2, "one": 1,
+                                  "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10] as OrderedDictionary<String, Int>)
+    orderedDictionary.replaceRange(5 ..< 10, with: [("zero", 0)])
+    expect(orderedDictionary) == (["five": 5, "four": 4, "three": 3, "two": 2, "one": 1, "zero": 0] as OrderedDictionary<String, Int>)
+  }
+
+  func testAppend() {
+    fail("\(#function) not yet implemented")
+  }
+
+  func testAppendContentsOf() {
+    fail("\(#function) not yet implemented")
+  }
+
+  func testInsertAtIndex() {
+    fail("\(#function) not yet implemented")
+  }
+
+  func testInsertContentsOfAtIndex() {
+    fail("\(#function) not yet implemented")
+  }
+
+  func testRemoveRange() {
+    fail("\(#function) not yet implemented")
+  }
+
+  func testPrefix() {
+    fail("\(#function) not yet implemented")
+  }
+
+  func testSuffix() {
+    fail("\(#function) not yet implemented")
+  }
+
   func testKeys() {
-    var orderedDictionary1: OrderedDictionary<String, Int> = ["one": 1, "two": 2, "three": 3]
+    let orderedDictionary1: OrderedDictionary<String, Int> = ["one": 1, "two": 2, "three": 3]
     expect(orderedDictionary1.keys) == ["one", "two", "three"]
 
-    var orderedDictionary2: OrderedDictionary<Int, String> = [1: "one", 2: "two", 3: "three"]
+    let orderedDictionary2: OrderedDictionary<Int, String> = [1: "one", 2: "two", 3: "three"]
     expect(orderedDictionary2.keys) == [1, 2, 3]
   }
 
   func testValues() {
-    var orderedDictionary1: OrderedDictionary<String, Int> = ["one": 1, "two": 2, "three": 3]
+    let orderedDictionary1: OrderedDictionary<String, Int> = ["one": 1, "two": 2, "three": 3]
     expect(orderedDictionary1.values) == [1, 2, 3]
 
-    var orderedDictionary2: OrderedDictionary<Int, String> = [1: "one", 2: "two", 3: "three"]
+    let orderedDictionary2: OrderedDictionary<Int, String> = [1: "one", 2: "two", 3: "three"]
     expect(orderedDictionary2.values) == ["one", "two", "three"]
   }
 
   func testEquatable() {
-    var orderedDictionary1: OrderedDictionary<String, Int> = ["one": 1, "two": 2, "three": 3]
+    let orderedDictionary1: OrderedDictionary<String, Int> = ["one": 1, "two": 2, "three": 3]
     expect(orderedDictionary1 == orderedDictionary1).to(beTrue())
     expect(orderedDictionary1 == (["one": 1, "two": 2, "three": 3] as OrderedDictionary<String, Int>)).to(beTrue())
     expect(orderedDictionary1 == (["one": 3, "two": 2, "three": 3] as OrderedDictionary<String, Int>)).to(beFalse())
     expect(orderedDictionary1 == (["two": 2, "three": 3] as OrderedDictionary<String, Int>)).to(beFalse())
     expect(orderedDictionary1 == (["one": 1, "two": 2, "three": 3, "four": 4] as OrderedDictionary<String, Int>)).to(beFalse())
 
-    var orderedDictionary2: OrderedDictionary<Int, String> = [1: "one", 2: "two", 3: "three"]
+    let orderedDictionary2: OrderedDictionary<Int, String> = [1: "one", 2: "two", 3: "three"]
     expect(orderedDictionary2 == orderedDictionary2).to(beTrue())
     expect(orderedDictionary2 == ([1: "one", 2: "two", 3: "three"] as OrderedDictionary<Int, String>)).to(beTrue())
     expect(orderedDictionary2 == ([1: "three", 2: "two", 3: "three"] as OrderedDictionary<Int, String>)).to(beFalse())
@@ -265,22 +328,11 @@ final class OrderedDictionaryTests: XCTestCase {
   }
 
   func testOverallPerformanceWithCapacityReserved() {
-    measureBlock {
-      var d = OrderedDictionary<Int, String>(minimumCapacity: 1500)
-      for i in 0 ..< 1000 { d[i] = String(i) }
-      for i in 0.stride(to: 1000, by: 3) { d[i] = nil }
-      for i in 1000 ..< 1200 { d[i] = String(i) }
-    }
+    measureBlock(performanceWork { OrderedDictionary<String, Int>(minimumCapacity: $0) })
   }
 
   func testOverallPerformanceWithoutCapacityReserved() {
-    measureBlock {
-      var d: OrderedDictionary<Int, String> = [:]
-      for i in 0 ..< 1000 { d[i] = String(i) }
-      for i in 0.stride(to: 1000, by: 3) { d[i] = nil }
-      for i in 1000 ..< 1200 { d[i] = String(i) }
-    }
-
+    measureBlock(performanceWork { _ in OrderedDictionary<String, Int>() })
   }
 
   func testContainerAsValue() {

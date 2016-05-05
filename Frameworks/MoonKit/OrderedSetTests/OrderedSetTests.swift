@@ -7,9 +7,8 @@
 //
 
 import XCTest
-import Nimble
-@testable import MoonKit
 import MoonKitTest
+@testable import MoonKit
 
 final class OrderedSetTests: XCTestCase {
 
@@ -353,11 +352,11 @@ final class OrderedSetTests: XCTestCase {
     measureBlock(work)
   }
 
-  func testPerformanceWithCapacityReserved() {
+  func testOverallPerformanceWithCapacityReserved() {
     measureBlock(performanceWork { OrderedSet<Int>(minimumCapacity: $0) })
   }
   
-  func testPerformanceWithoutCapacityReserved() {
+  func testOverallPerformanceWithoutCapacityReserved() {
     measureBlock(performanceWork { _ in OrderedSet<Int>() })
   }
 }

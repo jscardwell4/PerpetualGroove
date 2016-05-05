@@ -16,12 +16,17 @@ internal let maxLoadFactorInverse = 1/0.75
 public struct OrderedDictionaryGenerator<Key: Hashable, Value>: GeneratorType {
   typealias Buffer = OrderedDictionaryBuffer<Key, Value>
   let buffer: Buffer
-  var index: Int = 0
-  init(buffer: Buffer) { self.buffer = buffer }
+  var index: Int
+  let endIndex: Int
+  init(buffer: Buffer, bounds: Range<Int>) {
+    index = max(0, bounds.startIndex)
+    endIndex = bounds.endIndex
+    self.buffer = buffer
+  }
     
   public mutating func next() -> (Key, Value)? {
-    guard index < buffer.count else { return nil }
-    defer { index = index.successor() }
+    guard index < endIndex else { return nil }
+    defer { index._successorInPlace() }
     return buffer.elementAtPosition(index)
   }
 }
@@ -56,7 +61,6 @@ public struct OrderedDictionary<Key: Hashable, Value>: CollectionType, Dictionar
   typealias Owner = OrderedDictionaryStorageOwner<Key, Value>
 
   public typealias Index = Int
-  public typealias Generator = OrderedDictionaryGenerator<Key, Value>
   public typealias Element = (Key, Value)
   public typealias _Element = Element
 
@@ -110,16 +114,9 @@ public struct OrderedDictionary<Key: Hashable, Value>: CollectionType, Dictionar
 
   }
 
-
-  public init() { owner = Owner(minimumCapacity: 0) }
-
   public init(minimumCapacity: Int) { owner = Owner(minimumCapacity: minimumCapacity) }
 
   init(buffer: Buffer) { owner = Owner(buffer: buffer) }
-
-  public var startIndex: Index { return 0 }
-
-  public var endIndex: Index { return count }
 
   mutating func _removeAtIndex(index: Index, oldElement: UnsafeMutablePointer<Element>) {
     if oldElement != nil { oldElement.initialize(buffer.elementInBucket(buffer.bucketForPosition(index))) }
@@ -161,9 +158,6 @@ public struct OrderedDictionary<Key: Hashable, Value>: CollectionType, Dictionar
   public func valueForKey(key: Key) -> Value? {
     return buffer.valueForKey(key)
   }
-
-  /// Returns the key-value pair at the specified `index`
-  public subscript(index: Index) -> (Key, Value) { return buffer.elementAtPosition(index) }
 
   /// Access the value associated with the given key.
   /// Reading a key that is not present in self yields nil. Writing nil as the value for a given key erases that key from self.
@@ -209,22 +203,24 @@ public struct OrderedDictionary<Key: Hashable, Value>: CollectionType, Dictionar
     }
   }
 
+  public mutating func insertValue(value: Value, forKey key: Key) {
+    _updateValue(value, forKey: key, oldValue: nil, oldKey: nil)
+  }
+
   public mutating func updateValue(value: Value, forKey key: Key) -> Value? {
     let oldValue = UnsafeMutablePointer<Value?>.alloc(1)
     _updateValue(value, forKey: key, oldValue: oldValue, oldKey: nil)
     return oldValue.memory
   }
 
-  public mutating func removeAll(keepCapacity keepCapacity: Bool = false) {
+  public mutating func removeFirst() -> Element { return removeAtIndex(0) }
 
-    let capacity = keepCapacity ? self.capacity : 0
-    owner = Owner(buffer: Buffer(storage: Storage.create(capacity)))
-  }
+  public var first: Element? { guard count > 0 else { return nil }; return buffer.elementAtPosition(0) }
+
+  public mutating func popFirst() -> Element? { guard count > 0 else { return nil }; return removeAtIndex(0) }
 
   public var count: Int { return buffer.count }
   public var capacity: Int { return buffer.capacity }
-
-  public func generate() -> Generator { return Generator(buffer: buffer) }
 
   public init(elements: [Element]) {
     var keys: Set<Int> = []
@@ -251,6 +247,135 @@ public struct OrderedDictionary<Key: Hashable, Value>: CollectionType, Dictionar
 
   public var isEmpty: Bool { return count == 0 }
 
+}
+
+extension OrderedDictionary: MutableIndexable {
+
+  public var startIndex: Index { return 0 }
+
+  public var endIndex: Index { return count }
+
+  public subscript(index: Index) -> Element {
+    get { return buffer.elementAtPosition(index) }
+    set { buffer.replaceElementAtPosition(index, with: newValue) }
+  }
+  
+}
+
+extension OrderedDictionary: SequenceType {
+
+  public typealias Generator = OrderedDictionaryGenerator<Key, Value>
+  public typealias SubSequence = OrderedDictionarySlice<Key, Value>
+
+  public func generate() -> Generator { return Generator(buffer: buffer, bounds: indices) }
+
+  public func dropFirst(n: Int) -> SubSequence { return self[n..<] }
+
+  public func dropLast(n: Int) -> SubSequence { return self[..<endIndex.advancedBy(-n)] }
+
+  public func prefix(maxLength: Int) -> SubSequence { return self[..<min(count, maxLength)] }
+
+  public func suffix(maxLength: Int) -> SubSequence { return self[max(startIndex, endIndex.advancedBy(-maxLength))..<] }
+
+  public func split(maxSplit: Int,
+                    allowEmptySlices: Bool,
+                    @noescape isSeparator: (Element) throws -> Bool) rethrows -> [SubSequence]
+  {
+    var result: [SubSequence] = []
+    var subSequenceStart = startIndex
+
+    var currentIndex = startIndex
+
+    // Iterate through indices
+    while currentIndex < endIndex {
+
+      // Check whether element at `currentIndex` is a separator
+      if try isSeparator(buffer.elementAtPosition(currentIndex)) {
+
+        // Check for a non-empty range from previous split to current index
+        if subSequenceStart < currentIndex { result.append(self[subSequenceStart ..< currentIndex]) }
+
+
+        // Iterate through consecutive separator elements
+        repeat { currentIndex._successorInPlace() } while try (currentIndex < endIndex && isSeparator(buffer.elementAtPosition(currentIndex)))
+
+        // Append empty slice if two or more consecutive separators were consumed and `allowEmptySlices` is set to `true`
+        if currentIndex > subSequenceStart.successor() && allowEmptySlices {
+          result.append(OrderedDictionarySlice<Key, Value>(buffer: buffer, bounds: subSequenceStart ..< subSequenceStart))
+        }
+        subSequenceStart = currentIndex
+
+      } else {
+
+        currentIndex._successorInPlace()
+
+      }
+
+    }
+
+    // Check for a trailing subsequence
+    if subSequenceStart < currentIndex { result.append(self[subSequenceStart ..< currentIndex]) }
+    
+    return result
+  }
+}
+
+extension OrderedDictionary: MutableCollectionType {
+  public subscript(bounds: Range<Int>) -> SubSequence {
+    get {
+      return SubSequence(buffer: buffer, bounds: bounds)
+    }
+    set {
+      buffer.replaceRange(bounds, with: newValue)
+    }
+  }
+}
+
+extension OrderedDictionary: RangeReplaceableCollectionType {
+
+  public init() { owner = Owner(minimumCapacity: 0) }
+
+  public mutating func reserveCapacity(minimumCapacity: Int) { ensureUniqueWithCapacity(minimumCapacity) }
+
+  public mutating func replaceRange<C:CollectionType
+    where C.Generator.Element == Element>(subRange: Range<Int>, with newElements: C)
+  {
+
+    let requiredCapacity = count - subRange.count + numericCast(newElements.count)
+    ensureUniqueWithCapacity(requiredCapacity)
+
+    // Replace with uniqued collection
+    buffer.replaceRange(subRange, with: newElements)
+  }
+
+  public mutating func append(element: Element) { self[element.0] = element.1 }
+
+  public mutating func appendContentsOf<S:SequenceType where S.Generator.Element == Element>(newElements: S) {
+    for element in newElements { self[element.0] = element.1 }
+  }
+
+  public mutating func insert(newElement: Element, atIndex i: Int) {
+    replaceRange(i ..< i, with: CollectionOfOne(newElement))
+  }
+
+  public mutating func insertContentsOf<C:CollectionType
+    where C.Generator.Element == Element>(newElements: C, at i: Int)
+  {
+    replaceRange(i ..< i, with: newElements)
+  }
+
+  public mutating func removeFirst(n: Int) {
+    replaceRange(0 ..< n, with: EmptyCollection())
+  }
+
+  public mutating func removeRange(subRange: Range<Int>) {
+    replaceRange(subRange, with: EmptyCollection())
+  }
+
+  public mutating func removeAll(keepCapacity: Bool = false) {
+    owner = Owner(buffer: Buffer(storage: Storage.create(keepCapacity ? capacity : 0)))
+  }
+  
 }
 
 extension OrderedDictionary: CustomStringConvertible, CustomDebugStringConvertible {

@@ -296,6 +296,7 @@
 		C2618A781B7A88A400122EBA /* InlinePickerViewImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2618A771B7A88A400122EBA /* InlinePickerViewImageCell.swift */; };
 		C26254261B744A2500E81068 /* ControlNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26254251B744A2500E81068 /* ControlNode.swift */; };
 		C26254281B744C3F00E81068 /* ButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26254271B744C3F00E81068 /* ButtonNode.swift */; };
+		C26491EC1CDBFE5000E88890 /* OrderedDictionarySlice.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26491EB1CDBFE5000E88890 /* OrderedDictionarySlice.swift */; };
 		C2649D701C922F8D001039DA /* NSFileManager+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2649D6F1C922F8D001039DA /* NSFileManager+MoonKitAdditions.swift */; };
 		C266A6F01B6523BB00EEA1C4 /* String+RegularExpression.swift in Sources */ = {isa = PBXBuildFile; fileRef = C266A6EF1B6523BB00EEA1C4 /* String+RegularExpression.swift */; };
 		C268340A1B10C24100A359A8 /* LabelButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26834091B10C24100A359A8 /* LabelButton.swift */; };
@@ -682,6 +683,7 @@
 		C26254271B744C3F00E81068 /* ButtonNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonNode.swift; sourceTree = "<group>"; };
 		C264338D18162E8A005E0105 /* NSPointerArray+MSKitAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSPointerArray+MSKitAdditions.h"; sourceTree = "<group>"; };
 		C264338E18162E8A005E0105 /* NSPointerArray+MSKitAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSPointerArray+MSKitAdditions.m"; sourceTree = "<group>"; };
+		C26491EB1CDBFE5000E88890 /* OrderedDictionarySlice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderedDictionarySlice.swift; sourceTree = "<group>"; };
 		C2649D6F1C922F8D001039DA /* NSFileManager+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSFileManager+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C266A6EF1B6523BB00EEA1C4 /* String+RegularExpression.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+RegularExpression.swift"; sourceTree = "<group>"; };
 		C26834091B10C24100A359A8 /* LabelButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = LabelButton.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -1130,6 +1132,7 @@
 				C2AA2BCC1B8508AA00A0B08D /* Heap.swift */,
 				C26863711AF96E6E00D664E8 /* Queue.swift */,
 				C23592DF19C8E04200920F8D /* OrderedDictionary.swift */,
+				C26491EB1CDBFE5000E88890 /* OrderedDictionarySlice.swift */,
 				C20835991C80D0F000D4A10E /* OldOrderedDictionary.swift */,
 				C2C482E419CA0225002E84A9 /* Stack.swift */,
 				C2736FDB1CAC3D6700E861A2 /* OrderedSet.swift */,
@@ -2543,6 +2546,7 @@
 				C2358F5819C78E0C00920F8D /* MSPickerInputViewController.m in Sources */,
 				C27393DB1C0931DE004D694B /* ColorSlider.swift in Sources */,
 				C24A22951ADB45340065E7EA /* RawOptionSetFunctions.swift in Sources */,
+				C26491EC1CDBFE5000E88890 /* OrderedDictionarySlice.swift in Sources */,
 				C2C4B72C1AA951D700912951 /* NSManagedObject+MoonKitAdditions.swift in Sources */,
 				C2F84F431B14C4B700AF891D /* NSIndexSet+MoonKitAdditions.swift in Sources */,
 				C2204D9C1AE1A0670079B731 /* JSONIncludeDirective.swift in Sources */,
