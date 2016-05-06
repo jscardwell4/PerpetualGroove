@@ -40,6 +40,14 @@ public struct OrderedDictionarySlice<Key:Hashable, Value>: CollectionType {
   }
 
   public func generate() -> Generator { return Generator(buffer: buffer, bounds: bounds) }
+
+  public var keys: LazyMapCollection<OrderedDictionarySlice<Key, Value>, Key> {
+    return lazy.map { $0.0 }
+  }
+
+  public var values: LazyMapCollection<OrderedDictionarySlice<Key, Value>, Value> {
+    return lazy.map { $0.1 }
+  }
   
 }
 

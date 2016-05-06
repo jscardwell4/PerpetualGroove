@@ -268,31 +268,139 @@ final class OrderedDictionaryTests: XCTestCase {
   }
 
   func testAppend() {
-    fail("\(#function) not yet implemented")
+    var orderedDictionary1: OrderedDictionary<String, Int> = ["one": 1, "two": 2, "three": 3]
+    expect(orderedDictionary1.keys) == ["one", "two", "three"]
+    expect(orderedDictionary1.values) == [1, 2, 3]
+    orderedDictionary1.append(("four", 4))
+    expect(orderedDictionary1.keys) == ["one", "two", "three", "four"]
+    expect(orderedDictionary1.values) == [1, 2, 3, 4]
+
+    var orderedDictionary2: OrderedDictionary<Int, String> = [1: "one", 2: "two", 3: "three"]
+    expect(orderedDictionary2.values) == ["one", "two", "three"]
+    expect(orderedDictionary2.keys) == [1, 2, 3]
+    orderedDictionary2.append((4, "four"))
+    expect(orderedDictionary2.keys) == [1, 2, 3, 4]
+    expect(orderedDictionary2.values) == ["one", "two", "three", "four"]
   }
 
   func testAppendContentsOf() {
-    fail("\(#function) not yet implemented")
+    var orderedDictionary1: OrderedDictionary<String, Int> = ["one": 1, "two": 2, "three": 3]
+    expect(orderedDictionary1.keys) == ["one", "two", "three"]
+    expect(orderedDictionary1.values) == [1, 2, 3]
+    orderedDictionary1.appendContentsOf([("four", 4), ("five", 5)])
+    expect(orderedDictionary1.keys) == ["one", "two", "three", "four", "five"]
+    expect(orderedDictionary1.values) == [1, 2, 3, 4, 5]
+    orderedDictionary1.appendContentsOf([("four", 4)])
+    expect(orderedDictionary1.keys) == ["one", "two", "three", "four", "five"]
+    expect(orderedDictionary1.values) == [1, 2, 3, 4, 5]
+
+    var orderedDictionary2: OrderedDictionary<Int, String> = [1: "one", 2: "two", 3: "three"]
+    expect(orderedDictionary2.values) == ["one", "two", "three"]
+    expect(orderedDictionary2.keys) == [1, 2, 3]
+    orderedDictionary2.appendContentsOf([(4, "four"), (5, "five")])
+    expect(orderedDictionary2.keys) == [1, 2, 3, 4, 5]
+    expect(orderedDictionary2.values) == ["one", "two", "three", "four", "five"]
+    orderedDictionary2.appendContentsOf([(4, "four")])
+    expect(orderedDictionary2.keys) == [1, 2, 3, 4, 5]
+    expect(orderedDictionary2.values) == ["one", "two", "three", "four", "five"]
   }
 
   func testInsertAtIndex() {
-    fail("\(#function) not yet implemented")
+    var orderedDictionary1: OrderedDictionary<String, Int> = ["one": 1, "two": 2, "three": 3]
+    expect(orderedDictionary1.keys) == ["one", "two", "three"]
+    expect(orderedDictionary1.values) == [1, 2, 3]
+    orderedDictionary1.insert(("zero", 0), atIndex: 0)
+    expect(orderedDictionary1.keys) == ["zero", "one", "two", "three"]
+    expect(orderedDictionary1.values) == [0, 1, 2, 3]
+    orderedDictionary1.insert(("two", 2), atIndex: 1)
+    expect(orderedDictionary1.keys) == ["zero", "one", "two", "three"]
+    expect(orderedDictionary1.values) == [0, 1, 2, 3]
+
+    var orderedDictionary2: OrderedDictionary<Int, String> = [1: "one", 2: "two", 3: "three"]
+    expect(orderedDictionary2.values) == ["one", "two", "three"]
+    expect(orderedDictionary2.keys) == [1, 2, 3]
+    orderedDictionary2.insert((0, "zero"), atIndex: 0)
+    expect(orderedDictionary2.keys) == [0, 1, 2, 3]
+    expect(orderedDictionary2.values) == ["zero", "one", "two", "three"]
+    orderedDictionary2.insert((2, "two"), atIndex: 1)
+    expect(orderedDictionary2.keys) == [0, 1, 2, 3]
+    expect(orderedDictionary2.values) == ["zero", "one", "two", "three"]
   }
 
   func testInsertContentsOfAtIndex() {
-    fail("\(#function) not yet implemented")
+    var orderedDictionary1: OrderedDictionary<String, Int> = ["one": 1, "two": 2, "three": 3]
+    expect(orderedDictionary1.keys) == ["one", "two", "three"]
+    expect(orderedDictionary1.values) == [1, 2, 3]
+    orderedDictionary1.insertContentsOf([("negative one", -1), ("zero", 0)], at: 0)
+    expect(orderedDictionary1.keys) == ["negative one", "zero", "one", "two", "three"]
+    expect(orderedDictionary1.values) == [-1, 0, 1, 2, 3]
+    orderedDictionary1.insertContentsOf([("two", 2), ("three", 3)], at: 1)
+    expect(orderedDictionary1.keys) == ["negative one", "zero", "one", "two", "three"]
+    expect(orderedDictionary1.values) == [-1, 0, 1, 2, 3]
+    orderedDictionary1.insertContentsOf([("three", 3), ("four", 4)], at: 3)
+    expect(orderedDictionary1.keys) == ["negative one", "zero", "one", "four", "two", "three"]
+    expect(orderedDictionary1.values) == [-1, 0, 1, 4, 2, 3]
+
+    var orderedDictionary2: OrderedDictionary<Int, String> = [1: "one", 2: "two", 3: "three"]
+    expect(orderedDictionary2.values) == ["one", "two", "three"]
+    expect(orderedDictionary2.keys) == [1, 2, 3]
+    orderedDictionary2.insertContentsOf([(-1, "negative one"), (0, "zero")], at: 0)
+    expect(orderedDictionary2.keys) == [-1, 0, 1, 2, 3]
+    expect(orderedDictionary2.values) == ["negative one", "zero", "one", "two", "three"]
+    orderedDictionary2.insertContentsOf([(2, "two"), (3, "three")], at: 1)
+    expect(orderedDictionary2.keys) == [-1, 0, 1, 2, 3]
+    expect(orderedDictionary2.values) == ["negative one", "zero", "one", "two", "three"]
+    orderedDictionary2.insertContentsOf([(3, "three"), (4, "four")], at: 3)
+    expect(orderedDictionary2.keys) == [-1, 0, 1, 4, 2, 3]
+    expect(orderedDictionary2.values) == ["negative one", "zero", "one", "four", "two", "three"]
   }
 
   func testRemoveRange() {
-    fail("\(#function) not yet implemented")
+    var orderedDictionary1: OrderedDictionary<String, Int> = ["one": 1, "two": 2, "three": 3]
+    expect(orderedDictionary1.keys) == ["one", "two", "three"]
+    expect(orderedDictionary1.values) == [1, 2, 3]
+    orderedDictionary1.removeRange(1 ... 2)
+    expect(orderedDictionary1.keys) == ["one"]
+    expect(orderedDictionary1.values) == [1]
+
+    var orderedDictionary2: OrderedDictionary<Int, String> = [1: "one", 2: "two", 3: "three"]
+    expect(orderedDictionary2.keys) == [1, 2, 3]
+    expect(orderedDictionary2.values) == ["one", "two", "three"]
+    orderedDictionary2.removeRange(1 ... 2)
+    expect(orderedDictionary2.keys) == [1]
+    expect(orderedDictionary2.values) == ["one"]
   }
 
   func testPrefix() {
-    fail("\(#function) not yet implemented")
+    let orderedDictionary1: OrderedDictionary<String, Int> = ["one": 1, "two": 2, "three": 3]
+    expect(orderedDictionary1.keys) == ["one", "two", "three"]
+    expect(orderedDictionary1.values) == [1, 2, 3]
+    let result1 = orderedDictionary1.prefix(2)
+    expect(result1.keys) == ["one", "two"]
+    expect(result1.values) == [1, 2]
+
+    let orderedDictionary2: OrderedDictionary<Int, String> = [1: "one", 2: "two", 3: "three"]
+    expect(orderedDictionary2.keys) == [1, 2, 3]
+    expect(orderedDictionary2.values) == ["one", "two", "three"]
+    let result2 = orderedDictionary2.prefix(2)
+    expect(result2.keys) == [1, 2]
+    expect(result2.values) == ["one", "two"]
   }
 
   func testSuffix() {
-    fail("\(#function) not yet implemented")
+    let orderedDictionary1: OrderedDictionary<String, Int> = ["one": 1, "two": 2, "three": 3]
+    expect(orderedDictionary1.keys) == ["one", "two", "three"]
+    expect(orderedDictionary1.values) == [1, 2, 3]
+    let result1 = orderedDictionary1.suffix(2)
+    expect(result1.keys) == ["two", "three"]
+    expect(result1.values) == [2, 3]
+
+    let orderedDictionary2: OrderedDictionary<Int, String> = [1: "one", 2: "two", 3: "three"]
+    expect(orderedDictionary2.keys) == [1, 2, 3]
+    expect(orderedDictionary2.values) == ["one", "two", "three"]
+    let result2 = orderedDictionary2.suffix(2)
+    expect(result2.keys) == [2, 3]
+    expect(result2.values) == ["two", "three"]
   }
 
   func testKeys() {
