@@ -12,7 +12,7 @@ public struct OrderedDictionarySlice<Key:Hashable, Value>: CollectionType {
 
   typealias Buffer = OrderedDictionaryBuffer<Key, Value>
 
-  let buffer: Buffer
+  var buffer: Buffer
   let bounds: Range<Int>
 
   public typealias Index = Int

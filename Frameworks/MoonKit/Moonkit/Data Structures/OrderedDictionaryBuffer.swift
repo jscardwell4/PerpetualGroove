@@ -294,6 +294,7 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value> {
   }
 
   // MARK: Assigning into already initialized data
+
   func setValue(value: Value, at position: Index) {
     setValue(value, inBucket: bucketForPosition(position))
   }
@@ -301,7 +302,7 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value> {
   func setValue(value: Value, inBucket bucket: HashBucket) {
     (values + bucket.offset).initialize(value)
   }
-
+  
 }
 
 // MARK: CustomStringConvertible, CustomDebugStringConvertible

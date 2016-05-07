@@ -13,9 +13,7 @@ import MoonKitTest
 
 final class OrderedDictionaryTests: XCTestCase {
 
-  func performanceWork(createDictionary: (capacity: Int) -> OrderedDictionary<String, Int>) -> () -> Void
-  {
-
+  func performanceWork(createDictionary: (capacity: Int) -> OrderedDictionary<String, Int>) -> () -> Void {
     return {
       var dictionary = createDictionary(capacity: 2048)
       for value in randomIntegersLarge1 { dictionary[String(value)] = value }
@@ -218,7 +216,21 @@ final class OrderedDictionaryTests: XCTestCase {
   }
 
   func testSubscriptRangeAccessors() {
-    fail("\(#function) not yet implemented")
+    let orderedDictionary1: OrderedDictionary<String, Int> = ["one": 1, "two": 2, "three": 3]
+    var slice1 = orderedDictionary1[1 ... 2]
+    expect(slice1.keys) == ["two", "three"]
+    expect(slice1.values) == [2, 3]
+//    slice1["four"] = 4
+//    expect(slice1.keys) == ["two", "three", "four"]
+//    expect(slice1.values) == [2, 3, 4]
+
+    let orderedDictionary2: OrderedDictionary<Int, String> = [1: "one", 2: "two", 3: "three"]
+    var slice2 = orderedDictionary2[1 ... 2]
+    expect(slice2.keys) == [2, 3]
+    expect(slice2.values) == ["two", "three"]
+//    slice2[4] = "four"
+//    expect(slice2.keys) == [2, 3, 4]
+//    expect(slice2.values) == ["two", "three", "four"]
   }
 
   func testRemoveAtIndex() {
