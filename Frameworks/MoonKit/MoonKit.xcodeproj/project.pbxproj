@@ -30,6 +30,7 @@
 		C20650051A13C8FB00342FDE /* Generic.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23592EE19C8E04200920F8D /* Generic.swift */; };
 		C20650061A13C90A00342FDE /* FontAwesomeIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23592F019C8E04200920F8D /* FontAwesomeIcon.swift */; };
 		C20650071A13C99500342FDE /* GestureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25E63DD19FEC06A00F54626 /* GestureManager.swift */; };
+		C20751461CDE61CD0022E1E6 /* MoonKit.h in Headers */ = {isa = PBXBuildFile; fileRef = C2358F1A19C78D6D00920F8D /* MoonKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C208359A1C80D0F000D4A10E /* OldOrderedDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20835991C80D0F000D4A10E /* OldOrderedDictionary.swift */; };
 		C20A10971C512E4A00522FD7 /* ErrorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20A10961C512E4A00522FD7 /* ErrorType.swift */; };
 		C20CBBEC1B5FF7960008F538 /* PopoverListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20CBBEB1B5FF7960008F538 /* PopoverListController.swift */; };
@@ -76,7 +77,6 @@
 		C22F5FE41B6FC753006D225A /* Dispatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22F5FE31B6FC753006D225A /* Dispatch.swift */; };
 		C22F5FE61B6FCF73006D225A /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22F5FE51B6FCF73006D225A /* Timer.swift */; };
 		C2304E0A1AEECE1C0090D889 /* LayerProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2304E091AEECE1C0090D889 /* LayerProxy.swift */; };
-		C2358F1B19C78D6D00920F8D /* MoonKit.h in Headers */ = {isa = PBXBuildFile; fileRef = C2358F1A19C78D6D00920F8D /* MoonKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C2358F3219C78E0C00920F8D /* CALayer+MSKitAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CE887A18138CF700555D63 /* CALayer+MSKitAdditions.m */; };
 		C2358F3319C78E0C00920F8D /* NSArray+MSKitAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CE887E18138CF700555D63 /* NSArray+MSKitAdditions.m */; };
 		C2358F3519C78E0C00920F8D /* NSDictionary+MSKitAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CE888218138CF700555D63 /* NSDictionary+MSKitAdditions.m */; };
@@ -541,6 +541,7 @@
 		C205852A1A1BA22A00212759 /* LongPressGesture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LongPressGesture.swift; sourceTree = "<group>"; };
 		C205852C1A1BEC2000212759 /* BlockActionGesture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockActionGesture.swift; sourceTree = "<group>"; };
 		C2064FF91A13C05900342FDE /* Operators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Operators.swift; sourceTree = "<group>"; };
+		C20751451CDE4E430022E1E6 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = SOURCE_ROOT; };
 		C20835991C80D0F000D4A10E /* OldOrderedDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OldOrderedDictionary.swift; sourceTree = "<group>"; };
 		C208359B1C80E6FD00D4A10E /* WTF.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = WTF.playground; sourceTree = "<group>"; };
 		C208359C1C80E73600D4A10E /* WTFWTF.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = WTFWTF.playground; sourceTree = "<group>"; };
@@ -1111,6 +1112,7 @@
 			isa = PBXGroup;
 			children = (
 				C2358F1919C78D6D00920F8D /* Info.plist */,
+				C20751451CDE4E430022E1E6 /* module.modulemap */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -1936,7 +1938,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C2358F1B19C78D6D00920F8D /* MoonKit.h in Headers */,
 				C2358F8A19C78E3F00920F8D /* CALayer+MSKitAdditions.h in Headers */,
 				C2358F8B19C78E3F00920F8D /* NSArray+MSKitAdditions.h in Headers */,
 				C2358F8D19C78E3F00920F8D /* NSDictionary+MSKitAdditions.h in Headers */,
@@ -2009,6 +2010,7 @@
 				C2358FD419C78E4200920F8D /* MSValueTransformers.h in Headers */,
 				C2358FD819C78E4200920F8D /* MSNotificationReceptionist.h in Headers */,
 				C2358FD919C78E4300920F8D /* MSXMLParserDelegate.h in Headers */,
+				C20751461CDE61CD0022E1E6 /* MoonKit.h in Headers */,
 				C2358FDA19C78E4300920F8D /* MSKeyPath.h in Headers */,
 				C2358FDB19C78E4300920F8D /* MSKitProtocols.h in Headers */,
 				C2358FDC19C78E4300920F8D /* MSCheckboxView.h in Headers */,
@@ -2939,7 +2941,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_OPTIMIZATION_LEVEL = fast;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -3501,7 +3503,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_OPTIMIZATION_LEVEL = fast;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -4122,7 +4124,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_OPTIMIZATION_LEVEL = fast;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",

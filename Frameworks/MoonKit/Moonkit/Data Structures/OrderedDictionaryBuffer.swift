@@ -19,12 +19,14 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value> {
 
   // MARK: Pointers to the underlying memory
 
-  let storage: Storage
-  let initializedBuckets: BitMap
-  let bucketMap: HashBucketMap
+  var storage: Storage
+  private(set) var initializedBuckets: BitMap
+  private(set) var bucketMap: HashBucketMap
 
-  let keys: UnsafeMutablePointer<Key>
-  let values: UnsafeMutablePointer<Value>
+  private(set) var keys: UnsafeMutablePointer<Key>
+  private(set) var values: UnsafeMutablePointer<Value>
+
+  var identity: UnsafePointer<Void> { return UnsafePointer<Void>(initializedBuckets.buffer.baseAddress) }
 
   // MARK: Accessors for the storage header properties
 

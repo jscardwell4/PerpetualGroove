@@ -34,21 +34,21 @@ public struct OrderedDictionaryGenerator<Key: Hashable, Value>: GeneratorType {
 // MARK: - Owner
 // MARK: -
 
-final class OrderedDictionaryStorageOwner<Key: Hashable, Value>: NonObjectiveCBase {
-
-  typealias Buffer = OrderedDictionaryBuffer<Key, Value>
-
-  var buffer: Buffer
-
-  init(minimumCapacity: Int) {
-    buffer = Buffer(minimumCapacity: minimumCapacity)
-  }
-
-  init(buffer: Buffer) {
-    self.buffer = buffer
-  }
-
-}
+//final class OrderedDictionaryStorageOwner<Key: Hashable, Value>: NonObjectiveCBase {
+//
+//  typealias Buffer = OrderedDictionaryBuffer<Key, Value>
+//
+//  var buffer: Buffer
+//
+//  init(minimumCapacity: Int) {
+//    buffer = Buffer(minimumCapacity: minimumCapacity)
+//  }
+//
+//  init(buffer: Buffer) {
+//    self.buffer = buffer
+//  }
+//
+//}
 
 // MARK: - OrderedDictionary
 // MARK: -
@@ -58,18 +58,19 @@ public struct OrderedDictionary<Key: Hashable, Value>: CollectionType, Dictionar
 
   typealias Buffer = OrderedDictionaryBuffer<Key, Value>
   typealias Storage = OrderedDictionaryStorage<Key, Value>
-  typealias Owner = OrderedDictionaryStorageOwner<Key, Value>
+//  typealias Owner = OrderedDictionaryStorageOwner<Key, Value>
 
   public typealias Index = Int
   public typealias Element = (Key, Value)
   public typealias _Element = Element
 
-  var buffer: Buffer {
-    get { return owner.buffer }
-    set { owner.buffer = newValue }
-  }
+  var buffer: Buffer
+//    {
+//    get { return owner.buffer }
+//    set { owner.buffer = newValue }
+//  }
 
-  var owner: Owner
+//  var owner: Owner
 
   func cloneBuffer(newCapacity: Int) -> Buffer {
 
@@ -94,29 +95,29 @@ public struct OrderedDictionary<Key: Hashable, Value>: CollectionType, Dictionar
 
   /// Checks that `owner` has only the one strong reference and that it's `buffer` has at least `minimumCapacity` capacity
   mutating func ensureUniqueWithCapacity(minimumCapacity: Int) -> (reallocated: Bool, capacityChanged: Bool) {
-    switch (isUnique: isUniquelyReferenced(&owner), hasCapacity: capacity >= minimumCapacity) {
+    switch (isUnique: isUniquelyReferenced(&buffer.storage), hasCapacity: capacity >= minimumCapacity) {
 
       case (isUnique: true, hasCapacity: true):
         return (reallocated: false, capacityChanged: false)
 
       case (isUnique: true, hasCapacity: false):
-        owner.buffer = cloneBuffer(Int(Double(minimumCapacity) * maxLoadFactorInverse))
+        buffer = cloneBuffer(Int(Double(minimumCapacity) * maxLoadFactorInverse))
         return (reallocated: true, capacityChanged: true)
 
       case (isUnique: false, hasCapacity: true):
-        owner = Owner(buffer: cloneBuffer(capacity))
+        buffer = cloneBuffer(capacity)
         return (reallocated: true, capacityChanged: false)
 
       case (isUnique: false, hasCapacity: false):
-        owner = Owner(buffer: cloneBuffer(Int(Double(minimumCapacity) * maxLoadFactorInverse)))
+        buffer = cloneBuffer(Int(Double(minimumCapacity) * maxLoadFactorInverse))
         return (reallocated: true, capacityChanged: true)
     }
 
   }
 
-  public init(minimumCapacity: Int) { owner = Owner(minimumCapacity: minimumCapacity) }
+  public init(minimumCapacity: Int) { buffer = Buffer(minimumCapacity: minimumCapacity) }
 
-  init(buffer: Buffer) { owner = Owner(buffer: buffer) }
+  init(buffer: Buffer) { self.buffer = buffer }
 
   mutating func _removeAtIndex(index: Index, oldElement: UnsafeMutablePointer<Element>) {
     if oldElement != nil { oldElement.initialize(buffer.elementInBucket(buffer.bucketForPosition(index))) }
@@ -333,7 +334,7 @@ extension OrderedDictionary: MutableCollectionType {
 
 extension OrderedDictionary: RangeReplaceableCollectionType {
 
-  public init() { owner = Owner(minimumCapacity: 0) }
+  public init() { buffer = Buffer(minimumCapacity: 0) }
 
   public mutating func reserveCapacity(minimumCapacity: Int) { ensureUniqueWithCapacity(minimumCapacity) }
 
@@ -373,7 +374,7 @@ extension OrderedDictionary: RangeReplaceableCollectionType {
   }
 
   public mutating func removeAll(keepCapacity: Bool = false) {
-    owner = Owner(buffer: Buffer(storage: Storage.create(keepCapacity ? capacity : 0)))
+    buffer = Buffer(storage: Storage.create(keepCapacity ? capacity : 0))
   }
   
 }
@@ -406,14 +407,13 @@ public func == <Key: Hashable, Value>
   (lhs: OrderedDictionary<Key, Value>, rhs: OrderedDictionary<Key, Value>) -> Bool
 {
 
-  guard lhs.owner !== rhs.owner else { return true }
-  guard lhs.count == rhs.count else { return false }
+  guard !(lhs.buffer.identity == rhs.buffer.identity && lhs.count == rhs.count) else { return true }
 
   for ((k1, _), (k2, _)) in zip(lhs, rhs) {
     guard k1 == k2 else { return false }
   }
 
-  return true
+  return lhs.count == rhs.count
 }
 
 
@@ -421,12 +421,11 @@ public func == <Key: Hashable, Value: Equatable>
   (lhs: OrderedDictionary<Key, Value>, rhs: OrderedDictionary<Key, Value>) -> Bool
 {
     
-  guard lhs.owner !== rhs.owner else { return true }
-  guard lhs.count == rhs.count else { return false }
-  
+  guard !(lhs.buffer.identity == rhs.buffer.identity && lhs.count == rhs.count) else { return true }
+
   for ((k1, v1), (k2, v2)) in zip(lhs, rhs) {
     guard k1 == k2 && v1 == v2 else { return false }
   }
   
-  return true
+  return lhs.count == rhs.count
 }
