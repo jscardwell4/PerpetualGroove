@@ -10,67 +10,17 @@ import Foundation
 
 internal let maxLoadFactorInverse = 1/0.75
 
-// MARK: - Generator
-// MARK: -
-
-public struct OrderedDictionaryGenerator<Key: Hashable, Value>: GeneratorType {
-  typealias Buffer = OrderedDictionaryBuffer<Key, Value>
-  let buffer: Buffer
-  var index: Int
-  let endIndex: Int
-  init(buffer: Buffer, bounds: Range<Int>) {
-    index = max(0, bounds.startIndex)
-    endIndex = bounds.endIndex
-    self.buffer = buffer
-  }
-    
-  public mutating func next() -> (Key, Value)? {
-    guard index < endIndex else { return nil }
-    defer { index._successorInPlace() }
-    return buffer.elementAtPosition(index)
-  }
-}
-
-// MARK: - Owner
-// MARK: -
-
-//final class OrderedDictionaryStorageOwner<Key: Hashable, Value>: NonObjectiveCBase {
-//
-//  typealias Buffer = OrderedDictionaryBuffer<Key, Value>
-//
-//  var buffer: Buffer
-//
-//  init(minimumCapacity: Int) {
-//    buffer = Buffer(minimumCapacity: minimumCapacity)
-//  }
-//
-//  init(buffer: Buffer) {
-//    self.buffer = buffer
-//  }
-//
-//}
-
-// MARK: - OrderedDictionary
-// MARK: -
-
 /// A hash-based mapping from `Key` to `Value` instances that preserves elment order.
-public struct OrderedDictionary<Key: Hashable, Value>: CollectionType, DictionaryLiteralConvertible {
+public struct OrderedDictionary<Key: Hashable, Value>: CollectionType, DictionaryLiteralConvertible, _DestructorSafeContainer {
 
   typealias Buffer = OrderedDictionaryBuffer<Key, Value>
   typealias Storage = OrderedDictionaryStorage<Key, Value>
-//  typealias Owner = OrderedDictionaryStorageOwner<Key, Value>
 
   public typealias Index = Int
   public typealias Element = (Key, Value)
   public typealias _Element = Element
 
-  var buffer: Buffer
-//    {
-//    get { return owner.buffer }
-//    set { owner.buffer = newValue }
-//  }
-
-//  var owner: Owner
+  private(set) var buffer: Buffer
 
   func cloneBuffer(newCapacity: Int) -> Buffer {
 
@@ -95,7 +45,7 @@ public struct OrderedDictionary<Key: Hashable, Value>: CollectionType, Dictionar
 
   /// Checks that `owner` has only the one strong reference and that it's `buffer` has at least `minimumCapacity` capacity
   mutating func ensureUniqueWithCapacity(minimumCapacity: Int) -> (reallocated: Bool, capacityChanged: Bool) {
-    switch (isUnique: isUniquelyReferenced(&buffer.storage), hasCapacity: capacity >= minimumCapacity) {
+    switch (isUnique: buffer.isUniquelyReferenced(), hasCapacity: capacity >= minimumCapacity) {
 
       case (isUnique: true, hasCapacity: true):
         return (reallocated: false, capacityChanged: false)
@@ -265,10 +215,10 @@ extension OrderedDictionary: MutableIndexable {
 
 extension OrderedDictionary: SequenceType {
 
-  public typealias Generator = OrderedDictionaryGenerator<Key, Value>
+  public typealias Generator = IndexingGenerator<OrderedDictionary<Key, Value>> //OrderedDictionaryGenerator<Key, Value>
   public typealias SubSequence = OrderedDictionarySlice<Key, Value>
 
-  public func generate() -> Generator { return Generator(buffer: buffer, bounds: indices) }
+  public func generate() -> Generator { return Generator(self) } //buffer: buffer, bounds: indices) }
 
   public func dropFirst(n: Int) -> SubSequence { return self[n..<] }
 
@@ -302,7 +252,7 @@ extension OrderedDictionary: SequenceType {
 
         // Append empty slice if two or more consecutive separators were consumed and `allowEmptySlices` is set to `true`
         if currentIndex > subSequenceStart.successor() && allowEmptySlices {
-          result.append(OrderedDictionarySlice<Key, Value>(buffer: buffer, bounds: subSequenceStart ..< subSequenceStart))
+          result.append(OrderedDictionarySlice<Key, Value>(buffer: buffer[subSequenceStart ..< subSequenceStart]))
         }
         subSequenceStart = currentIndex
 
@@ -322,12 +272,12 @@ extension OrderedDictionary: SequenceType {
 }
 
 extension OrderedDictionary: MutableCollectionType {
-  public subscript(bounds: Range<Int>) -> SubSequence {
+  public subscript(subRange: Range<Int>) -> SubSequence {
     get {
-      return SubSequence(buffer: buffer, bounds: bounds)
+      return SubSequence(buffer: buffer[subRange])
     }
     set {
-      buffer.replaceRange(bounds, with: newValue)
+      buffer.replaceRange(subRange, with: newValue)
     }
   }
 }

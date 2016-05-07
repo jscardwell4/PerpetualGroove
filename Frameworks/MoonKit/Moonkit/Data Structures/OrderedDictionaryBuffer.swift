@@ -8,25 +8,27 @@
 
 import Foundation
 
-struct OrderedDictionaryBuffer<Key:Hashable, Value> {
+struct OrderedDictionaryBuffer<Key:Hashable, Value>: CollectionType {
 
   typealias Index = Int
   typealias Element = (Key, Value)
-  typealias Generator = OrderedDictionaryGenerator<Key, Value>
+  typealias Generator = IndexingGenerator<OrderedDictionaryBuffer<Key, Value>> //OrderedDictionaryGenerator<Key, Value>
 
   typealias Buffer = OrderedDictionaryBuffer<Key, Value>
   typealias Storage = OrderedDictionaryStorage<Key, Value>
+  typealias SubSequence = OrderedDictionarySliceBuffer<Key, Value>
 
   // MARK: Pointers to the underlying memory
 
-  var storage: Storage
+  private(set) var storage: Storage
   private(set) var initializedBuckets: BitMap
   private(set) var bucketMap: HashBucketMap
-
   private(set) var keys: UnsafeMutablePointer<Key>
   private(set) var values: UnsafeMutablePointer<Value>
 
   var identity: UnsafePointer<Void> { return UnsafePointer<Void>(initializedBuckets.buffer.baseAddress) }
+
+  mutating func isUniquelyReferenced() -> Bool { return Swift.isUniquelyReferenced(&storage) }
 
   // MARK: Accessors for the storage header properties
 
@@ -36,6 +38,9 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value> {
     get { return storage.count }
     nonmutating set { storage.count = newValue }
   }
+
+  var startIndex: Index { return 0 }
+  var endIndex: Index { return count }
 
   // MARK: Initializing by capacity
 
@@ -304,7 +309,19 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value> {
   func setValue(value: Value, inBucket bucket: HashBucket) {
     (values + bucket.offset).initialize(value)
   }
-  
+
+  // MARK: Subscripting
+
+  subscript(index: Index) -> Element {
+    get { return elementAtPosition(index) }
+    set { replaceElementAtPosition(index, with: newValue) }
+  }
+
+  subscript(subRange: Range<Index>) -> SubSequence {
+    get { return SubSequence(storage: storage, indices: subRange) }
+    set { fatalError("\(#function) not implemented") }
+  }
+
 }
 
 // MARK: CustomStringConvertible, CustomDebugStringConvertible

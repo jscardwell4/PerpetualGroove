@@ -31,6 +31,7 @@
 		C20650061A13C90A00342FDE /* FontAwesomeIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23592F019C8E04200920F8D /* FontAwesomeIcon.swift */; };
 		C20650071A13C99500342FDE /* GestureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25E63DD19FEC06A00F54626 /* GestureManager.swift */; };
 		C20751461CDE61CD0022E1E6 /* MoonKit.h in Headers */ = {isa = PBXBuildFile; fileRef = C2358F1A19C78D6D00920F8D /* MoonKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C20751481CDE69FF0022E1E6 /* OrderedDictionarySliceBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20751471CDE69FF0022E1E6 /* OrderedDictionarySliceBuffer.swift */; };
 		C208359A1C80D0F000D4A10E /* OldOrderedDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20835991C80D0F000D4A10E /* OldOrderedDictionary.swift */; };
 		C20A10971C512E4A00522FD7 /* ErrorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20A10961C512E4A00522FD7 /* ErrorType.swift */; };
 		C20CBBEC1B5FF7960008F538 /* PopoverListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20CBBEB1B5FF7960008F538 /* PopoverListController.swift */; };
@@ -542,6 +543,7 @@
 		C205852C1A1BEC2000212759 /* BlockActionGesture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockActionGesture.swift; sourceTree = "<group>"; };
 		C2064FF91A13C05900342FDE /* Operators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Operators.swift; sourceTree = "<group>"; };
 		C20751451CDE4E430022E1E6 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = SOURCE_ROOT; };
+		C20751471CDE69FF0022E1E6 /* OrderedDictionarySliceBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderedDictionarySliceBuffer.swift; sourceTree = "<group>"; };
 		C20835991C80D0F000D4A10E /* OldOrderedDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OldOrderedDictionary.swift; sourceTree = "<group>"; };
 		C208359B1C80E6FD00D4A10E /* WTF.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = WTF.playground; sourceTree = "<group>"; };
 		C208359C1C80E73600D4A10E /* WTFWTF.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = WTFWTF.playground; sourceTree = "<group>"; };
@@ -1135,6 +1137,7 @@
 				C26863711AF96E6E00D664E8 /* Queue.swift */,
 				C23592DF19C8E04200920F8D /* OrderedDictionary.swift */,
 				C26491EB1CDBFE5000E88890 /* OrderedDictionarySlice.swift */,
+				C20751471CDE69FF0022E1E6 /* OrderedDictionarySliceBuffer.swift */,
 				C20835991C80D0F000D4A10E /* OldOrderedDictionary.swift */,
 				C2C482E419CA0225002E84A9 /* Stack.swift */,
 				C2736FDB1CAC3D6700E861A2 /* OrderedSet.swift */,
@@ -2707,6 +2710,7 @@
 				C28E509B1A143FDC00DF3206 /* MultiselectGestureRecognizer.swift in Sources */,
 				C2F619E01BC599D00000891A /* Marquee.swift in Sources */,
 				C2358F8519C78E0C00920F8D /* MSTouchReporterView.m in Sources */,
+				C20751481CDE69FF0022E1E6 /* OrderedDictionarySliceBuffer.swift in Sources */,
 				C2358F8619C78E0C00920F8D /* MSView.m in Sources */,
 				C2421D1A1BEFE8DE009BA8B1 /* Bytes.swift in Sources */,
 				C2CA85261BC7261B0046AFC0 /* CGVector+MoonKitAdditions.swift in Sources */,

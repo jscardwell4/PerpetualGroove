@@ -8,38 +8,32 @@
 
 import Foundation
 
-public struct OrderedDictionarySlice<Key:Hashable, Value>: CollectionType {
+public struct OrderedDictionarySlice<Key:Hashable, Value>: CollectionType, _DestructorSafeContainer {
 
-  typealias Buffer = OrderedDictionaryBuffer<Key, Value>
+  typealias Buffer = OrderedDictionarySliceBuffer<Key, Value>
 
   var buffer: Buffer
-  let bounds: Range<Int>
 
   public typealias Index = Int
   public typealias Element = (Key, Value)
   public typealias _Element = Element
 
-  public typealias Generator = OrderedDictionaryGenerator<Key, Value>
+  public typealias Generator = IndexingGenerator<OrderedDictionarySlice<Key, Value>> // OrderedDictionaryGenerator<Key, Value>
   public typealias SubSequence = OrderedDictionarySlice<Key, Value>
 
-  public var startIndex: Int { return bounds.startIndex }
-  public var endIndex: Int  { return bounds.endIndex }
+  public var startIndex: Int { return buffer.startIndex }
+  public var endIndex: Int  { return buffer.endIndex }
 
-  public subscript(position: Index) -> Element { return buffer.elementAtPosition(position) }
+  public subscript(position: Index) -> Element { return buffer[position] }
 
-  public subscript(bounds: Range<Index>) -> SubSequence {
-    precondition(self.bounds.contains(bounds))
-    return SubSequence(buffer: buffer, bounds: bounds)
+  public subscript(subRange: Range<Index>) -> SubSequence {
+    precondition(indices.contains(subRange))
+    return SubSequence(buffer: buffer[subRange])
   }
 
-  init(buffer: Buffer, bounds: Range<Int>) {
-    precondition(bounds.startIndex >= 0, "Invalid start for bounds: \(bounds.startIndex)")
-    precondition(bounds.endIndex <= buffer.count, "Invalid end for bounds: \(bounds.endIndex)")
-    self.buffer = buffer
-    self.bounds = bounds
-  }
+  init(buffer: Buffer) { self.buffer = buffer }
 
-  public func generate() -> Generator { return Generator(buffer: buffer, bounds: bounds) }
+  public func generate() -> Generator { return Generator(self) } //buffer: buffer, bounds: bounds) }
 
   public var keys: LazyMapCollection<OrderedDictionarySlice<Key, Value>, Key> {
     return lazy.map { $0.0 }
