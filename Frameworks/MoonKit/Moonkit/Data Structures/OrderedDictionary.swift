@@ -8,17 +8,19 @@
 
 import Foundation
 
-internal let maxLoadFactorInverse = 1/0.75
-
 /// A hash-based mapping from `Key` to `Value` instances that preserves elment order.
-public struct OrderedDictionary<Key: Hashable, Value>: CollectionType, DictionaryLiteralConvertible, _DestructorSafeContainer {
+public struct OrderedDictionary<Key: Hashable, Value>: _OrderedDictionary, DictionaryLiteralConvertible, _DestructorSafeContainer {
 
   typealias Buffer = OrderedDictionaryBuffer<Key, Value>
   typealias Storage = OrderedDictionaryStorage<Key, Value>
 
+  typealias _Key = Key
+  typealias _Value = Value
+
   public typealias Index = Int
   public typealias Element = (Key, Value)
   public typealias _Element = Element
+  public typealias SubSequence = OrderedDictionarySlice<Key, Value>
 
   private(set) var buffer: Buffer
 
@@ -51,7 +53,7 @@ public struct OrderedDictionary<Key: Hashable, Value>: CollectionType, Dictionar
         return (reallocated: false, capacityChanged: false)
 
       case (isUnique: true, hasCapacity: false):
-        buffer = cloneBuffer(Int(Double(minimumCapacity) * maxLoadFactorInverse))
+        buffer = cloneBuffer(Buffer.minimumCapacityForCount(minimumCapacity))
         return (reallocated: true, capacityChanged: true)
 
       case (isUnique: false, hasCapacity: true):
@@ -59,7 +61,7 @@ public struct OrderedDictionary<Key: Hashable, Value>: CollectionType, Dictionar
         return (reallocated: true, capacityChanged: false)
 
       case (isUnique: false, hasCapacity: false):
-        buffer = cloneBuffer(Int(Double(minimumCapacity) * maxLoadFactorInverse))
+        buffer = cloneBuffer(Buffer.minimumCapacityForCount(minimumCapacity))
         return (reallocated: true, capacityChanged: true)
     }
 
@@ -164,12 +166,6 @@ public struct OrderedDictionary<Key: Hashable, Value>: CollectionType, Dictionar
     return oldValue.memory
   }
 
-  public mutating func removeFirst() -> Element { return removeAtIndex(0) }
-
-  public var first: Element? { guard count > 0 else { return nil }; return buffer.elementAtPosition(0) }
-
-  public mutating func popFirst() -> Element? { guard count > 0 else { return nil }; return removeAtIndex(0) }
-
   public var count: Int { return buffer.count }
   public var capacity: Int { return buffer.capacity }
 
@@ -196,11 +192,9 @@ public struct OrderedDictionary<Key: Hashable, Value>: CollectionType, Dictionar
     return lazy.map { $0.1 }
   }
 
-  public var isEmpty: Bool { return count == 0 }
-
 }
 
-extension OrderedDictionary: MutableIndexable {
+extension OrderedDictionary: MutableCollectionType {
 
   public var startIndex: Index { return 0 }
 
@@ -211,67 +205,6 @@ extension OrderedDictionary: MutableIndexable {
     set { buffer.replaceElementAtPosition(index, with: newValue) }
   }
   
-}
-
-extension OrderedDictionary: SequenceType {
-
-  public typealias Generator = IndexingGenerator<OrderedDictionary<Key, Value>> //OrderedDictionaryGenerator<Key, Value>
-  public typealias SubSequence = OrderedDictionarySlice<Key, Value>
-
-  public func generate() -> Generator { return Generator(self) } //buffer: buffer, bounds: indices) }
-
-  public func dropFirst(n: Int) -> SubSequence { return self[n..<] }
-
-  public func dropLast(n: Int) -> SubSequence { return self[..<endIndex.advancedBy(-n)] }
-
-  public func prefix(maxLength: Int) -> SubSequence { return self[..<min(count, maxLength)] }
-
-  public func suffix(maxLength: Int) -> SubSequence { return self[max(startIndex, endIndex.advancedBy(-maxLength))..<] }
-
-  public func split(maxSplit: Int,
-                    allowEmptySlices: Bool,
-                    @noescape isSeparator: (Element) throws -> Bool) rethrows -> [SubSequence]
-  {
-    var result: [SubSequence] = []
-    var subSequenceStart = startIndex
-
-    var currentIndex = startIndex
-
-    // Iterate through indices
-    while currentIndex < endIndex {
-
-      // Check whether element at `currentIndex` is a separator
-      if try isSeparator(buffer.elementAtPosition(currentIndex)) {
-
-        // Check for a non-empty range from previous split to current index
-        if subSequenceStart < currentIndex { result.append(self[subSequenceStart ..< currentIndex]) }
-
-
-        // Iterate through consecutive separator elements
-        repeat { currentIndex._successorInPlace() } while try (currentIndex < endIndex && isSeparator(buffer.elementAtPosition(currentIndex)))
-
-        // Append empty slice if two or more consecutive separators were consumed and `allowEmptySlices` is set to `true`
-        if currentIndex > subSequenceStart.successor() && allowEmptySlices {
-          result.append(OrderedDictionarySlice<Key, Value>(buffer: buffer[subSequenceStart ..< subSequenceStart]))
-        }
-        subSequenceStart = currentIndex
-
-      } else {
-
-        currentIndex._successorInPlace()
-
-      }
-
-    }
-
-    // Check for a trailing subsequence
-    if subSequenceStart < currentIndex { result.append(self[subSequenceStart ..< currentIndex]) }
-    
-    return result
-  }
-}
-
-extension OrderedDictionary: MutableCollectionType {
   public subscript(subRange: Range<Int>) -> SubSequence {
     get {
       return SubSequence(buffer: buffer[subRange])
@@ -280,6 +213,7 @@ extension OrderedDictionary: MutableCollectionType {
       buffer.replaceRange(subRange, with: newValue)
     }
   }
+  
 }
 
 extension OrderedDictionary: RangeReplaceableCollectionType {
@@ -299,34 +233,6 @@ extension OrderedDictionary: RangeReplaceableCollectionType {
     buffer.replaceRange(subRange, with: newElements)
   }
 
-  public mutating func append(element: Element) { self[element.0] = element.1 }
-
-  public mutating func appendContentsOf<S:SequenceType where S.Generator.Element == Element>(newElements: S) {
-    for element in newElements { self[element.0] = element.1 }
-  }
-
-  public mutating func insert(newElement: Element, atIndex i: Int) {
-    replaceRange(i ..< i, with: CollectionOfOne(newElement))
-  }
-
-  public mutating func insertContentsOf<C:CollectionType
-    where C.Generator.Element == Element>(newElements: C, at i: Int)
-  {
-    replaceRange(i ..< i, with: newElements)
-  }
-
-  public mutating func removeFirst(n: Int) {
-    replaceRange(0 ..< n, with: EmptyCollection())
-  }
-
-  public mutating func removeRange(subRange: Range<Int>) {
-    replaceRange(subRange, with: EmptyCollection())
-  }
-
-  public mutating func removeAll(keepCapacity: Bool = false) {
-    buffer = Buffer(storage: Storage.create(keepCapacity ? capacity : 0))
-  }
-  
 }
 
 extension OrderedDictionary: CustomStringConvertible, CustomDebugStringConvertible {

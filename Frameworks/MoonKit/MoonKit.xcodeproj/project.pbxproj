@@ -32,6 +32,7 @@
 		C20650071A13C99500342FDE /* GestureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25E63DD19FEC06A00F54626 /* GestureManager.swift */; };
 		C20751461CDE61CD0022E1E6 /* MoonKit.h in Headers */ = {isa = PBXBuildFile; fileRef = C2358F1A19C78D6D00920F8D /* MoonKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C20751481CDE69FF0022E1E6 /* OrderedDictionarySliceBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20751471CDE69FF0022E1E6 /* OrderedDictionarySliceBuffer.swift */; };
+		C207514A1CDEC88E0022E1E6 /* _OrderedDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20751491CDEC88E0022E1E6 /* _OrderedDictionary.swift */; };
 		C208359A1C80D0F000D4A10E /* OldOrderedDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20835991C80D0F000D4A10E /* OldOrderedDictionary.swift */; };
 		C20A10971C512E4A00522FD7 /* ErrorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20A10961C512E4A00522FD7 /* ErrorType.swift */; };
 		C20CBBEC1B5FF7960008F538 /* PopoverListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20CBBEB1B5FF7960008F538 /* PopoverListController.swift */; };
@@ -544,6 +545,7 @@
 		C2064FF91A13C05900342FDE /* Operators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Operators.swift; sourceTree = "<group>"; };
 		C20751451CDE4E430022E1E6 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = SOURCE_ROOT; };
 		C20751471CDE69FF0022E1E6 /* OrderedDictionarySliceBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderedDictionarySliceBuffer.swift; sourceTree = "<group>"; };
+		C20751491CDEC88E0022E1E6 /* _OrderedDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _OrderedDictionary.swift; sourceTree = "<group>"; };
 		C20835991C80D0F000D4A10E /* OldOrderedDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OldOrderedDictionary.swift; sourceTree = "<group>"; };
 		C208359B1C80E6FD00D4A10E /* WTF.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = WTF.playground; sourceTree = "<group>"; };
 		C208359C1C80E73600D4A10E /* WTFWTF.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = WTFWTF.playground; sourceTree = "<group>"; };
@@ -1130,6 +1132,7 @@
 		C23592DD19C8E04200920F8D /* Data Structures */ = {
 			isa = PBXGroup;
 			children = (
+				C20751491CDEC88E0022E1E6 /* _OrderedDictionary.swift */,
 				C2022A5F1C77C6DC003C2C6E /* SetType.swift */,
 				C2AA14711BB5857600D7C9E1 /* Tree.swift */,
 				C22E6B8E1B810860008D46A6 /* List.swift */,
@@ -2698,6 +2701,7 @@
 				C27372851A1FC0750079624D /* UIColor+MoonKitAdditions.swift in Sources */,
 				C2358F7F19C78E0C00920F8D /* MSMultiselectView.m in Sources */,
 				C26A27F31B94C30500BD1698 /* DirectoryMonitor.swift in Sources */,
+				C207514A1CDEC88E0022E1E6 /* _OrderedDictionary.swift in Sources */,
 				C2358F8019C78E0C00920F8D /* MSNumberPadView.m in Sources */,
 				C266A6F01B6523BB00EEA1C4 /* String+RegularExpression.swift in Sources */,
 				C2358F8119C78E0C00920F8D /* MSPickerInputView.m in Sources */,

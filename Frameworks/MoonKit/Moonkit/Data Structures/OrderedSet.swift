@@ -8,6 +8,8 @@
 
 import Foundation
 
+//private let maxLoadFactorInverse = 1/0.75
+
 // MARK: - Generator
 // MARK: -
 

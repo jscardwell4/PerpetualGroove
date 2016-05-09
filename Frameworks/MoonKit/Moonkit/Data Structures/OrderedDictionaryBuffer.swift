@@ -8,11 +8,13 @@
 
 import Foundation
 
-struct OrderedDictionaryBuffer<Key:Hashable, Value>: CollectionType {
+struct OrderedDictionaryBuffer<Key:Hashable, Value>: _OrderedDictionaryBuffer {
+
+  typealias _Key = Key
+  typealias _Value = Value
 
   typealias Index = Int
   typealias Element = (Key, Value)
-  typealias Generator = IndexingGenerator<OrderedDictionaryBuffer<Key, Value>> //OrderedDictionaryGenerator<Key, Value>
 
   typealias Buffer = OrderedDictionaryBuffer<Key, Value>
   typealias Storage = OrderedDictionaryStorage<Key, Value>
@@ -23,8 +25,8 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: CollectionType {
   private(set) var storage: Storage
   private(set) var initializedBuckets: BitMap
   private(set) var bucketMap: HashBucketMap
-  private(set) var keys: UnsafeMutablePointer<Key>
-  private(set) var values: UnsafeMutablePointer<Value>
+  private(set) var keysBaseAddress: UnsafeMutablePointer<Key>
+  private(set) var valuesBaseAddress: UnsafeMutablePointer<Value>
 
   var identity: UnsafePointer<Void> { return UnsafePointer<Void>(initializedBuckets.buffer.baseAddress) }
 
@@ -44,10 +46,15 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: CollectionType {
 
   // MARK: Initializing by capacity
 
+  init() {
+    self.init(minimumCapacity: 2)
+  }
+
   init(minimumCapacity: Int = 2) {
     self.init(storage: Storage.create(Buffer.minimumCapacityForCount(minimumCapacity)))
   }
 
+  @inline(__always)
   static func minimumCapacityForCount(count: Int) -> Int {
     // `requestedCount + 1` below ensures that we don't fill in the last hole
     return max(Int(Double(count) * maxLoadFactorInverse), count + 1)
@@ -59,8 +66,8 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: CollectionType {
     self.storage = storage
     initializedBuckets = storage.initializedBuckets
     bucketMap = storage.bucketMap
-    keys = storage.keys
-    values = storage.values
+    keysBaseAddress = storage.keys
+    valuesBaseAddress = storage.values
   }
 
   init<S:SequenceType where S.Generator.Element == Element>(elements: S, capacity: Int? = nil) {
@@ -134,7 +141,7 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: CollectionType {
   }
 
   /// Returns the key inserted into `bucket`
-  func keyInBucket(bucket: HashBucket) -> Key { return keys[bucket.offset] }
+  func keyInBucket(bucket: HashBucket) -> Key { return keysBaseAddress[bucket.offset] }
 
   /// Returns the key assigned to `position`
   func keyAtPosition(position: Index) -> Key {
@@ -151,7 +158,7 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: CollectionType {
   }
 
   /// Returns the value inserted into `bucket`
-  func valueInBucket(bucket: HashBucket) -> Value { return values[bucket.offset] }
+  func valueInBucket(bucket: HashBucket) -> Value { return valuesBaseAddress[bucket.offset] }
 
   /// Returns the value assigned to `position`
   func valueAtPosition(position: Index) -> Value {
@@ -212,8 +219,8 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: CollectionType {
 
   func destroyBucket(bucket: HashBucket) {
     initializedBuckets[bucket] = false
-    (keys + bucket.offset).destroy()
-    (values + bucket.offset).destroy()
+    (keysBaseAddress + bucket.offset).destroy()
+    (valuesBaseAddress + bucket.offset).destroy()
   }
 
   func destroyElementAt(position: Index) {
@@ -273,8 +280,8 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: CollectionType {
 
   func initializeBucket(bucket: HashBucket, with key: Key, forValue value: Value) {
     defer { _fixLifetime(self) }
-    (keys + bucket.offset).initialize(key)
-    (values + bucket.offset).initialize(value)
+    (keysBaseAddress + bucket.offset).initialize(key)
+    (valuesBaseAddress + bucket.offset).initialize(value)
     initializedBuckets[bucket] = true
   }
 
@@ -295,7 +302,7 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: CollectionType {
 
   /// Removes the value from `bucket1` and uses this value to initialize `bucket2`
   func moveElementInBucket(bucket1: HashBucket, toBucket bucket2: HashBucket) {
-    initializeBucket(bucket2, with: (keys + bucket1.offset).move(), forValue: (values + bucket1.offset).move())
+    initializeBucket(bucket2, with: (keysBaseAddress + bucket1.offset).move(), forValue: (valuesBaseAddress + bucket1.offset).move())
     initializedBuckets[bucket1] = false
     bucketMap.replaceBucket(bucket1, with: bucket2)
   }
@@ -307,7 +314,7 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: CollectionType {
   }
 
   func setValue(value: Value, inBucket bucket: HashBucket) {
-    (values + bucket.offset).initialize(value)
+    (valuesBaseAddress + bucket.offset).initialize(value)
   }
 
   // MARK: Subscripting
@@ -335,8 +342,8 @@ extension OrderedDictionaryBuffer : CustomStringConvertible, CustomDebugStringCo
     var first = true
     for bucket in bucketMap {
       if first { first = false } else { result += ", " }
-      debugPrint(keys[bucket.offset], terminator: ": ", toStream: &result)
-      debugPrint(values[bucket.offset], terminator: "",   toStream: &result)
+      debugPrint(keysBaseAddress[bucket.offset], terminator: ": ", toStream: &result)
+      debugPrint(valuesBaseAddress[bucket.offset], terminator: "",   toStream: &result)
     }
     result += "]"
     return result
@@ -356,7 +363,7 @@ extension OrderedDictionaryBuffer : CustomStringConvertible, CustomDebugStringCo
     }
     for bucket in 0 ..< capacity {
       if initializedBuckets[bucket] {
-        let key = keys[bucket]
+        let key = keysBaseAddress[bucket]
         result += "bucket \(bucket), ideal bucket = \(idealBucketForKey(key))\n"
       } else {
         result += "bucket \(bucket), empty\n"

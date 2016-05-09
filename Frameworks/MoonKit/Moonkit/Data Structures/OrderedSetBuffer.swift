@@ -8,6 +8,8 @@
 
 import Foundation
 
+//private let maxLoadFactorInverse = 1/0.75
+
 struct OrderedSetBuffer<Element:Hashable> {
 
   typealias Index = Int
