@@ -14,9 +14,6 @@ public struct OrderedDictionary<Key: Hashable, Value>: _OrderedDictionary, Dicti
   typealias Buffer = OrderedDictionaryBuffer<Key, Value>
   typealias Storage = OrderedDictionaryStorage<Key, Value>
 
-  typealias _Key = Key
-  typealias _Value = Value
-
   public typealias Index = Int
   public typealias Element = (Key, Value)
   public typealias _Element = Element
@@ -77,12 +74,6 @@ public struct OrderedDictionary<Key: Hashable, Value>: _OrderedDictionary, Dicti
     buffer.destroyElementAt(index)
   }
 
-  public mutating func removeAtIndex(index: Index) -> Element {
-    let oldElement = UnsafeMutablePointer<Element>.alloc(1)
-    _removeAtIndex(index, oldElement: oldElement)
-    return oldElement.memory
-  }
-
   mutating func _removeValueForKey(key: Key, oldValue: UnsafeMutablePointer<Value?>) {
     guard let index = buffer.positionForKey(key) else {
       if oldValue != nil { oldValue.initialize(nil) }
@@ -94,32 +85,6 @@ public struct OrderedDictionary<Key: Hashable, Value>: _OrderedDictionary, Dicti
       oldValue.initialize(oldElement.memory.1)
     } else {
       _removeAtIndex(index, oldElement: nil)
-    }
-  }
-
-  /// Removes the value associated with `key` and returns it. Returns `nil` if `key` is not present.
-  public mutating func removeValueForKey(key: Key) -> Value? {
-    let oldValue = UnsafeMutablePointer<Value?>.alloc(1)
-    _removeValueForKey(key, oldValue: oldValue)
-    return oldValue.memory
-  }
-
-  /// Returns the index of `key` or `nil` if `key` is not present.
-  public func indexForKey(key: Key) -> Index? { return buffer.positionForKey(key) }
-
-  /// Returns the value associated with `key` or `nil` if `key` is not present.
-  public func valueForKey(key: Key) -> Value? {
-    return buffer.valueForKey(key)
-  }
-
-  /// Access the value associated with the given key.
-  /// Reading a key that is not present in self yields nil. Writing nil as the value for a given key erases that key from self.
-  /// - attention: Is there a conflict when `Key` = `Index` or do the differing return types resolve ambiguity?
-  public subscript(key: Key) -> Value? {
-    get { return buffer.valueForKey(key) }
-    set {
-      if let value = newValue { _updateValue(value, forKey: key, oldValue: nil, oldKey: nil) }
-      else { _removeValueForKey(key, oldValue: nil) }
     }
   }
 
@@ -156,16 +121,6 @@ public struct OrderedDictionary<Key: Hashable, Value>: _OrderedDictionary, Dicti
     }
   }
 
-  public mutating func insertValue(value: Value, forKey key: Key) {
-    _updateValue(value, forKey: key, oldValue: nil, oldKey: nil)
-  }
-
-  public mutating func updateValue(value: Value, forKey key: Key) -> Value? {
-    let oldValue = UnsafeMutablePointer<Value?>.alloc(1)
-    _updateValue(value, forKey: key, oldValue: oldValue, oldKey: nil)
-    return oldValue.memory
-  }
-
   public var count: Int { return buffer.count }
   public var capacity: Int { return buffer.capacity }
 
@@ -184,16 +139,64 @@ public struct OrderedDictionary<Key: Hashable, Value>: _OrderedDictionary, Dicti
     self.init(elements: elements)
   }
 
-  public var keys: LazyMapCollection<OrderedDictionary<Key, Value>, Key> {
-    return lazy.map { $0.0 }
+}
+
+extension OrderedDictionary: MutableKeyValueCollection {
+
+//  public var keys: LazyMapCollection<OrderedDictionary<Key, Value>, Key> {
+//    return lazy.map { $0.0 }
+//  }
+//
+//  public var values: LazyMapCollection<OrderedDictionary<Key, Value>, Value> {
+//    return lazy.map { $0.1 }
+//  }
+
+  public mutating func insertValue(value: Value, forKey key: Key) {
+    _updateValue(value, forKey: key, oldValue: nil, oldKey: nil)
   }
 
-  public var values: LazyMapCollection<OrderedDictionary<Key, Value>, Value> {
-    return lazy.map { $0.1 }
+  public mutating func updateValue(value: Value, forKey key: Key) -> Value? {
+    let oldValue = UnsafeMutablePointer<Value?>.alloc(1)
+    _updateValue(value, forKey: key, oldValue: oldValue, oldKey: nil)
+    return oldValue.memory
   }
+
+  /// Removes the value associated with `key` and returns it. Returns `nil` if `key` is not present.
+  public mutating func removeValueForKey(key: Key) -> Value? {
+    let oldValue = UnsafeMutablePointer<Value?>.alloc(1)
+    _removeValueForKey(key, oldValue: oldValue)
+    return oldValue.memory
+  }
+
+  public mutating func removeAtIndex(index: Index) -> Element {
+    let oldElement = UnsafeMutablePointer<Element>.alloc(1)
+    _removeAtIndex(index, oldElement: oldElement)
+    return oldElement.memory
+  }
+
+  /// Returns the index of `key` or `nil` if `key` is not present.
+  public func indexForKey(key: Key) -> Index? { return buffer.positionForKey(key) }
+
+  /// Returns the value associated with `key` or `nil` if `key` is not present.
+  public func valueForKey(key: Key) -> Value? {
+    return buffer.valueForKey(key)
+  }
+
+  /// Access the value associated with the given key.
+  /// Reading a key that is not present in self yields nil. Writing nil as the value for a given key erases that key from self.
+  /// - attention: Is there a conflict when `Key` = `Index` or do the differing return types resolve ambiguity?
+  public subscript(key: Key) -> Value? {
+    get { return buffer.valueForKey(key) }
+    set {
+      if let value = newValue { _updateValue(value, forKey: key, oldValue: nil, oldKey: nil) }
+      else { _removeValueForKey(key, oldValue: nil) }
+    }
+  }
+
 
 }
 
+// MARK: MutableCollectionType
 extension OrderedDictionary: MutableCollectionType {
 
   public var startIndex: Index { return 0 }
@@ -216,6 +219,7 @@ extension OrderedDictionary: MutableCollectionType {
   
 }
 
+// MARK: RangeReplaceableCollectionType
 extension OrderedDictionary: RangeReplaceableCollectionType {
 
   public init() { buffer = Buffer(minimumCapacity: 0) }
@@ -235,6 +239,7 @@ extension OrderedDictionary: RangeReplaceableCollectionType {
 
 }
 
+// MARK: CustomStringConvertible, CustomDebugStringConvertible
 extension OrderedDictionary: CustomStringConvertible, CustomDebugStringConvertible {
 
   private var elementsDescription: String {
@@ -257,6 +262,7 @@ extension OrderedDictionary: CustomStringConvertible, CustomDebugStringConvertib
   public var debugDescription: String { return elementsDescription }
 }
 
+// MARK: Equatable
 extension OrderedDictionary: Equatable {}
 
 public func == <Key: Hashable, Value>

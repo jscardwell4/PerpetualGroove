@@ -10,9 +10,6 @@ import Foundation
 
 struct OrderedDictionaryBuffer<Key:Hashable, Value>: _OrderedDictionaryBuffer {
 
-  typealias _Key = Key
-  typealias _Value = Value
-
   typealias Index = Int
   typealias Element = (Key, Value)
 
@@ -70,10 +67,9 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: _OrderedDictionaryBuffer {
     valuesBaseAddress = storage.values
   }
 
-  init<S:SequenceType where S.Generator.Element == Element>(elements: S, capacity: Int? = nil) {
+  init<S:SequenceType where S.Generator.Element == Element>(elements: S) {
     let minimumCapacity = Buffer.minimumCapacityForCount(elements.underestimateCount())
-    let requiredCapacity = max(minimumCapacity, capacity ?? 0)
-    let buffer = Buffer(minimumCapacity: requiredCapacity)
+    let buffer = Buffer(minimumCapacity: minimumCapacity)
 
     var count = 0
     var duplicates = 0

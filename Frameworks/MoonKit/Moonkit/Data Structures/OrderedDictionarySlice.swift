@@ -8,42 +8,90 @@
 
 import Foundation
 
-public struct OrderedDictionarySlice<Key:Hashable, Value>: CollectionType, _DestructorSafeContainer {
+public struct OrderedDictionarySlice<Key:Hashable, Value>: _OrderedDictionary, _DestructorSafeContainer {
 
   typealias Buffer = OrderedDictionarySliceBuffer<Key, Value>
-
-  var buffer: Buffer
+  typealias Storage = OrderedDictionaryStorage<Key, Value>
 
   public typealias Index = Int
   public typealias Element = (Key, Value)
   public typealias _Element = Element
-
-  public typealias Generator = IndexingGenerator<OrderedDictionarySlice<Key, Value>> // OrderedDictionaryGenerator<Key, Value>
   public typealias SubSequence = OrderedDictionarySlice<Key, Value>
+
+  var buffer: Buffer
+
+  var capacity: Int { return buffer.capacity }
 
   public var startIndex: Int { return buffer.startIndex }
   public var endIndex: Int  { return buffer.endIndex }
 
-  public subscript(position: Index) -> Element { return buffer[position] }
+  func cloneBuffer(newCapacity: Int) -> Buffer {
+    fatalError("\(#function) not yet implemented")
+  }
+
+  func ensureUniqueWithCapacity(minimumCapacity: Int) -> (reallocated: Bool, capacityChanged: Bool) {
+    fatalError("\(#function) not yet implemented")
+  }
+
+  public subscript(key: Key) -> Value? {
+    get { return buffer.valueForKey(key) }
+    set { fatalError("\(#function) not yet implemented") }
+  }
+
+  public subscript(position: Index) -> Element {
+    get { return buffer[position] }
+    set { fatalError("\(#function) not yet implemented") }
+  }
 
   public subscript(subRange: Range<Index>) -> SubSequence {
-    precondition(indices.contains(subRange))
-    return SubSequence(buffer: buffer[subRange])
+    get {
+      precondition(indices.contains(subRange))
+      return SubSequence(buffer: buffer[subRange])
+    }
+    set {
+      fatalError("\(#function) not yet implemented")
+    }
   }
 
   init(buffer: Buffer) { self.buffer = buffer }
 
-  public func generate() -> Generator { return Generator(self) } //buffer: buffer, bounds: bounds) }
-
-  public var keys: LazyMapCollection<OrderedDictionarySlice<Key, Value>, Key> {
-    return lazy.map { $0.0 }
+  public func insertValue(value: Value, forKey key: Key) {
+    fatalError("\(#function) not yet implemented")
   }
 
-  public var values: LazyMapCollection<OrderedDictionarySlice<Key, Value>, Value> {
-    return lazy.map { $0.1 }
+  public func removeValueForKey(key: Key) -> Value? {
+    fatalError("\(#function) not yet implemented")
   }
-  
+
+  public func updateValue(value: Value, forKey key: Key) -> Value? {
+    fatalError("\(#function) not yet implemented")
+  }
+
+  public func indexForKey(key: Key) -> Index? {
+    fatalError("\(#function) not yet implemented")
+  }
+
+  public func valueForKey(key: Key) -> Value? {
+    fatalError("\(#function) not yet implemented")
+  }
+
 }
+
+extension OrderedDictionarySlice: RangeReplaceableCollectionType {
+
+  public init() {
+    fatalError("\(#function) not yet implemented")
+  }
+
+  public mutating func replaceRange<
+    C:CollectionType where C.Generator.Element == Element
+    >(subRange: Range<Index>, with newElements: C)
+  {
+    fatalError("\(#function) not yet implemented")
+  }
+
+}
+
 
 extension OrderedDictionarySlice: CustomStringConvertible {
   public var description: String {

@@ -79,6 +79,8 @@
 		C22F5FE41B6FC753006D225A /* Dispatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22F5FE31B6FC753006D225A /* Dispatch.swift */; };
 		C22F5FE61B6FCF73006D225A /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22F5FE51B6FCF73006D225A /* Timer.swift */; };
 		C2304E0A1AEECE1C0090D889 /* LayerProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2304E091AEECE1C0090D889 /* LayerProxy.swift */; };
+		C230A1C21CE0E6F200D8EF49 /* _OrderedDictionaryBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C230A1C11CE0E6F200D8EF49 /* _OrderedDictionaryBuffer.swift */; };
+		C230A1C41CE1017B00D8EF49 /* KeyValueCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C230A1C31CE1017B00D8EF49 /* KeyValueCollection.swift */; };
 		C2358F3219C78E0C00920F8D /* CALayer+MSKitAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CE887A18138CF700555D63 /* CALayer+MSKitAdditions.m */; };
 		C2358F3319C78E0C00920F8D /* NSArray+MSKitAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CE887E18138CF700555D63 /* NSArray+MSKitAdditions.m */; };
 		C2358F3519C78E0C00920F8D /* NSDictionary+MSKitAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = C2CE888218138CF700555D63 /* NSDictionary+MSKitAdditions.m */; };
@@ -606,6 +608,8 @@
 		C22F5FE31B6FC753006D225A /* Dispatch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dispatch.swift; sourceTree = "<group>"; };
 		C22F5FE51B6FCF73006D225A /* Timer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
 		C2304E091AEECE1C0090D889 /* LayerProxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LayerProxy.swift; sourceTree = "<group>"; };
+		C230A1C11CE0E6F200D8EF49 /* _OrderedDictionaryBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _OrderedDictionaryBuffer.swift; sourceTree = "<group>"; };
+		C230A1C31CE1017B00D8EF49 /* KeyValueCollection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyValueCollection.swift; sourceTree = "<group>"; };
 		C2358F1619C78D6D00920F8D /* MoonKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MoonKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2358F1919C78D6D00920F8D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C2358F1A19C78D6D00920F8D /* MoonKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MoonKit.h; sourceTree = "<group>"; };
@@ -1133,6 +1137,7 @@
 			isa = PBXGroup;
 			children = (
 				C20751491CDEC88E0022E1E6 /* _OrderedDictionary.swift */,
+				C230A1C11CE0E6F200D8EF49 /* _OrderedDictionaryBuffer.swift */,
 				C2022A5F1C77C6DC003C2C6E /* SetType.swift */,
 				C2AA14711BB5857600D7C9E1 /* Tree.swift */,
 				C22E6B8E1B810860008D46A6 /* List.swift */,
@@ -1157,6 +1162,7 @@
 				C2E805141CD9030800650504 /* OrderedSetStorage.swift */,
 				C2E805161CD908E500650504 /* OrderedDictionaryStorage.swift */,
 				C2E805181CDA466D00650504 /* OrderedDictionaryBuffer.swift */,
+				C230A1C31CE1017B00D8EF49 /* KeyValueCollection.swift */,
 			);
 			path = "Data Structures";
 			sourceTree = "<group>";
@@ -2459,6 +2465,7 @@
 				C20650011A13C72E00342FDE /* NSScanner+MoonKitAdditions.swift in Sources */,
 				C2358F3819C78E0C00920F8D /* NSHashTable+MSKitAdditions.m in Sources */,
 				C28E50941A13CA6400DF3206 /* BlockBarButtonItem.swift in Sources */,
+				C230A1C21CE0E6F200D8EF49 /* _OrderedDictionaryBuffer.swift in Sources */,
 				C28A61EB1B0CEA2100612469 /* LabeledStepper.swift in Sources */,
 				C208359A1C80D0F000D4A10E /* OldOrderedDictionary.swift in Sources */,
 				C2064FFA1A13C05900342FDE /* Operators.swift in Sources */,
@@ -2484,6 +2491,7 @@
 				C2D406761BBA0F6700681DEF /* NSURL+MoonKitAdditions.swift in Sources */,
 				C24A22851ADAEC290065E7EA /* JSONValueRelatedExtensions.swift in Sources */,
 				C24A22831ADAEC0F0065E7EA /* ObjectJSONValue.swift in Sources */,
+				C230A1C41CE1017B00D8EF49 /* KeyValueCollection.swift in Sources */,
 				C2358F4019C78E0C00920F8D /* NSOperationQueue+MSKitAdditions.m in Sources */,
 				C26863721AF96E6E00D664E8 /* Queue.swift in Sources */,
 				C20650021A13C73400342FDE /* NSCharacterSet+MoonKitAdditions.swift in Sources */,
