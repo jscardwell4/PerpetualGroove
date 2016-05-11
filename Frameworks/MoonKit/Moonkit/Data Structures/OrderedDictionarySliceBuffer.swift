@@ -31,15 +31,14 @@ struct OrderedDictionarySliceBuffer<Key:Hashable, Value>: _OrderedDictionaryBuff
 
   var identity: UnsafePointer<Void> { return UnsafePointer<Void>(initializedBuckets.buffer.baseAddress) }
 
-  static func minimumCapacityForCount(count: Int) -> Int {
-    fatalError("\(#function) not yet implemented")
-  }
+  static func minimumCapacityForCount(count: Int) -> Int { return Buffer.minimumCapacityForCount(count) }
 
   var buffer: Buffer { return Buffer(storage: storage) }
 
   mutating func isUniquelyReferenced() -> Bool { return Swift.isUniquelyReferenced(&storage) }
 
   func valueForKey(key: Key) -> Value? {
+    //TODO: Implement the function
     fatalError("\(#function) not yet implemented")
   }
 
@@ -55,6 +54,7 @@ struct OrderedDictionarySliceBuffer<Key:Hashable, Value>: _OrderedDictionaryBuff
   }
 
   init() {
+    //TODO: Implement the function
     fatalError("\(#function) not yet implemented")
   }
 
@@ -62,6 +62,7 @@ struct OrderedDictionarySliceBuffer<Key:Hashable, Value>: _OrderedDictionaryBuff
     C:CollectionType where C.Generator.Element == Element
     >(subRange: Range<Index>, with newElements: C)
   {
+    //TODO: Implement the function
     fatalError("\(#function) not yet implemented")
   }
   subscript(index: Index) -> Element {
@@ -70,6 +71,7 @@ struct OrderedDictionarySliceBuffer<Key:Hashable, Value>: _OrderedDictionaryBuff
       return (keysBaseAddress[offset], valuesBaseAddress[offset])
     }
     set {
+      //TODO: Implement the function
       fatalError("\(#function) not yet implemented")
     }
   }
@@ -79,7 +81,8 @@ struct OrderedDictionarySliceBuffer<Key:Hashable, Value>: _OrderedDictionaryBuff
       return SubSequence(storage: storage, indices: subRange)
     }
     set {
-      fatalError("\(#function) not implemented")
+      //TODO: Implement the function
+      fatalError("\(#function) not yet implemented")
     }
   }
 }

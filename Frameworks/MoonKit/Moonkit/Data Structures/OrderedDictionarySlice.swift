@@ -26,21 +26,29 @@ public struct OrderedDictionarySlice<Key:Hashable, Value>: _OrderedDictionary, _
   public var endIndex: Int  { return buffer.endIndex }
 
   func cloneBuffer(newCapacity: Int) -> Buffer {
+    //TODO: Implement the function
     fatalError("\(#function) not yet implemented")
   }
 
   func ensureUniqueWithCapacity(minimumCapacity: Int) -> (reallocated: Bool, capacityChanged: Bool) {
+    //TODO: Implement the function
     fatalError("\(#function) not yet implemented")
   }
 
   public subscript(key: Key) -> Value? {
     get { return buffer.valueForKey(key) }
-    set { fatalError("\(#function) not yet implemented") }
+    set {
+      //TODO: Implement the function
+      fatalError("\(#function) not yet implemented")
+    }
   }
 
   public subscript(position: Index) -> Element {
     get { return buffer[position] }
-    set { fatalError("\(#function) not yet implemented") }
+    set {
+      //TODO: Implement the function
+      fatalError("\(#function) not yet implemented")
+    }
   }
 
   public subscript(subRange: Range<Index>) -> SubSequence {
@@ -49,6 +57,7 @@ public struct OrderedDictionarySlice<Key:Hashable, Value>: _OrderedDictionary, _
       return SubSequence(buffer: buffer[subRange])
     }
     set {
+      //TODO: Implement the function
       fatalError("\(#function) not yet implemented")
     }
   }
@@ -56,22 +65,27 @@ public struct OrderedDictionarySlice<Key:Hashable, Value>: _OrderedDictionary, _
   init(buffer: Buffer) { self.buffer = buffer }
 
   public func insertValue(value: Value, forKey key: Key) {
+    //TODO: Implement the function
     fatalError("\(#function) not yet implemented")
   }
 
   public func removeValueForKey(key: Key) -> Value? {
+    //TODO: Implement the function
     fatalError("\(#function) not yet implemented")
   }
 
   public func updateValue(value: Value, forKey key: Key) -> Value? {
+    //TODO: Implement the function
     fatalError("\(#function) not yet implemented")
   }
 
   public func indexForKey(key: Key) -> Index? {
+    //TODO: Implement the function
     fatalError("\(#function) not yet implemented")
   }
 
   public func valueForKey(key: Key) -> Value? {
+    //TODO: Implement the function
     fatalError("\(#function) not yet implemented")
   }
 
@@ -80,6 +94,7 @@ public struct OrderedDictionarySlice<Key:Hashable, Value>: _OrderedDictionary, _
 extension OrderedDictionarySlice: RangeReplaceableCollectionType {
 
   public init() {
+    //TODO: Implement the function
     fatalError("\(#function) not yet implemented")
   }
 
@@ -87,6 +102,7 @@ extension OrderedDictionarySlice: RangeReplaceableCollectionType {
     C:CollectionType where C.Generator.Element == Element
     >(subRange: Range<Index>, with newElements: C)
   {
+    //TODO: Implement the function
     fatalError("\(#function) not yet implemented")
   }
 

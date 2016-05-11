@@ -20,10 +20,10 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: _OrderedDictionaryBuffer {
   // MARK: Pointers to the underlying memory
 
   private(set) var storage: Storage
-  private(set) var initializedBuckets: BitMap
-  private(set) var bucketMap: HashBucketMap
-  private(set) var keysBaseAddress: UnsafeMutablePointer<Key>
-  private(set) var valuesBaseAddress: UnsafeMutablePointer<Value>
+  let initializedBuckets: BitMap
+  let bucketMap: HashBucketMap
+  let keysBaseAddress: UnsafeMutablePointer<Key>
+  let valuesBaseAddress: UnsafeMutablePointer<Value>
 
   var identity: UnsafePointer<Void> { return UnsafePointer<Void>(initializedBuckets.buffer.baseAddress) }
 
@@ -51,7 +51,7 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: _OrderedDictionaryBuffer {
     self.init(storage: Storage.create(Buffer.minimumCapacityForCount(minimumCapacity)))
   }
 
-  @inline(__always)
+//  @inline(__always)
   static func minimumCapacityForCount(count: Int) -> Int {
     // `requestedCount + 1` below ensures that we don't fill in the last hole
     return max(Int(Double(count) * maxLoadFactorInverse), count + 1)

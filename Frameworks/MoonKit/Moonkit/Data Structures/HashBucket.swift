@@ -32,6 +32,7 @@ func <(lhs: HashBucket, rhs: HashBucket) -> Bool { return lhs.offset < rhs.offse
 
 
 /// Returns the hash value of `value` squeezed into `capacity`
+@inline(__always)
 func suggestBucketForValue<H:Hashable>(value: H, capacity: Int) -> HashBucket {
   return HashBucket(offset: _squeezeHashValue(value.hashValue, 0 ..< capacity), capacity: capacity)
 }
