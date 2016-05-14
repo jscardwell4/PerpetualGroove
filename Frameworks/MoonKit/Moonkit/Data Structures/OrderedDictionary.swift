@@ -143,14 +143,6 @@ public struct OrderedDictionary<Key: Hashable, Value>: _OrderedDictionary, Dicti
 
 extension OrderedDictionary: MutableKeyValueCollection {
 
-//  public var keys: LazyMapCollection<OrderedDictionary<Key, Value>, Key> {
-//    return lazy.map { $0.0 }
-//  }
-//
-//  public var values: LazyMapCollection<OrderedDictionary<Key, Value>, Value> {
-//    return lazy.map { $0.1 }
-//  }
-
   public mutating func insertValue(value: Value, forKey key: Key) {
     _updateValue(value, forKey: key, oldValue: nil, oldKey: nil)
   }
@@ -178,9 +170,7 @@ extension OrderedDictionary: MutableKeyValueCollection {
   public func indexForKey(key: Key) -> Index? { return buffer.positionForKey(key) }
 
   /// Returns the value associated with `key` or `nil` if `key` is not present.
-  public func valueForKey(key: Key) -> Value? {
-    return buffer.valueForKey(key)
-  }
+  public func valueForKey(key: Key) -> Value? { return buffer.valueForKey(key) }
 
   /// Access the value associated with the given key.
   /// Reading a key that is not present in self yields nil. Writing nil as the value for a given key erases that key from self.
@@ -205,7 +195,10 @@ extension OrderedDictionary: MutableCollectionType {
 
   public subscript(index: Index) -> Element {
     get { return buffer.elementAtPosition(index) }
-    set { buffer.replaceElementAtPosition(index, with: newValue) }
+    set {
+      ensureUniqueWithCapacity(count)
+      buffer.replaceElementAtPosition(index, with: newValue)
+    }
   }
   
   public subscript(subRange: Range<Int>) -> SubSequence {

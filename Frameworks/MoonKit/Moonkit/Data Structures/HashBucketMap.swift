@@ -15,11 +15,16 @@ struct HashBucketMap: CollectionType {
   typealias Index = Int
   typealias _Element = HashBucket
 
+  /// Returns the number of bytes required for a map of `capacity` elements.
+  /// This includes storage for `capacity` `Int` values for the buckets, 
+  /// `capacity` `Int` values for the positions, and an `Int` value for `_endIndex`
+  static func bytesFor(capacity: Int) -> Int { return strideof(Int) * (capacity * 2 + 1) }
+
   let capacity: Int
   let buckets: UnsafeMutableBufferPointer<PositionOffset>
   let positions: UnsafeMutableBufferPointer<BucketOffset>
 
-  let _endIndex = UnsafeMutablePointer<Index>.alloc(1)
+  let _endIndex: UnsafeMutablePointer<Index>
 
   let startIndex: Index = 0
 
@@ -33,9 +38,10 @@ struct HashBucketMap: CollectionType {
   /// Initialize with a pointer to the storage to use and its represented capacity as an element count.
   init(storage: UnsafeMutablePointer<Int>, capacity: Int) {
     self.capacity = capacity
-    positions = UnsafeMutableBufferPointer<BucketOffset>(start: storage, count: capacity)
-    buckets = UnsafeMutableBufferPointer<PositionOffset>(start: storage + capacity, count: capacity)
+    _endIndex = storage
     _endIndex.initialize(0)
+    positions = UnsafeMutableBufferPointer<BucketOffset>(start: storage + 1, count: capacity)
+    buckets = UnsafeMutableBufferPointer<PositionOffset>(start: storage + capacity + 1, count: capacity)
     initializeToNegativeOne()
   }
 

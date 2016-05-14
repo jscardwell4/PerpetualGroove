@@ -23,7 +23,7 @@ final class OrderedDictionaryStorage <Key:Hashable, Value>: ManagedBuffer<Hashed
   
   /// Returns the number of bytes required for the map of buckets to positions given `capacity`
   static func bytesForBucketMap(capacity: Int) -> Int {
-    return strideof(Int) * (capacity * 2) + max(0, alignof(Int) - alignof(UInt))
+    return HashBucketMap.bytesFor(capacity) + max(0, alignof(Int) - alignof(UInt))
   }
 
   /// The number of bytes used to store the bucket map for this instance.

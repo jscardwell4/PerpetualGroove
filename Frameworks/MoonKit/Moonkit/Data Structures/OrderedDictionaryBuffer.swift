@@ -140,9 +140,7 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: _OrderedDictionaryBuffer {
   func keyInBucket(bucket: HashBucket) -> Key { return keysBaseAddress[bucket.offset] }
 
   /// Returns the key assigned to `position`
-  func keyAtPosition(position: Index) -> Key {
-    return keyInBucket(bucketForPosition(position))
-  }
+  func keyAtPosition(position: Index) -> Key { return keyInBucket(bucketForPosition(position)) }
 
   /// Returns `false` when `bucket` is empty and `true` otherwise.
   func isInitializedBucket(bucket: HashBucket) -> Bool { return initializedBuckets[bucket] }
@@ -157,9 +155,7 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: _OrderedDictionaryBuffer {
   func valueInBucket(bucket: HashBucket) -> Value { return valuesBaseAddress[bucket.offset] }
 
   /// Returns the value assigned to `position`
-  func valueAtPosition(position: Index) -> Value {
-    return valueInBucket(bucketForPosition(position))
-  }
+  func valueAtPosition(position: Index) -> Value { return valueInBucket(bucketForPosition(position)) }
 
   /// Returns the value associated with `key` or `nil` if `key` is not present.
   func valueForKey(key: Key) -> Value? {
@@ -169,14 +165,10 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: _OrderedDictionaryBuffer {
   }
 
   /// Convenience for retrieving both the key and value for a bucket.
-  func elementInBucket(bucket: HashBucket) -> Element {
-    return (keyInBucket(bucket), valueInBucket(bucket))
-  }
+  func elementInBucket(bucket: HashBucket) -> Element { return (keyInBucket(bucket), valueInBucket(bucket)) }
 
   /// Convenience for retrieving both the key and value for a position.
-  func elementAtPosition(position: Index) -> Element {
-    return elementInBucket(bucketForPosition(position))
-  }
+  func elementAtPosition(position: Index) -> Element { return elementInBucket(bucketForPosition(position)) }
 
   // MARK: Removing data
 

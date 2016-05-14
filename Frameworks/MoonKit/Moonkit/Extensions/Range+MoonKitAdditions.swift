@@ -90,6 +90,10 @@ public extension Range {
   }
 }
 
+public func -<B:BidirectionalIndexType>(lhs: Range<B>, rhs: B.Distance) -> Range<B> {
+  return lhs.startIndex.advancedBy(-rhs) ..< lhs.endIndex.advancedBy(-rhs)
+}
+
 public extension Range where Element: Comparable {
 
 

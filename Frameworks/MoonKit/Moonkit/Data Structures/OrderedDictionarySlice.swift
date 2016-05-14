@@ -25,14 +25,52 @@ public struct OrderedDictionarySlice<Key:Hashable, Value>: _OrderedDictionary, _
   public var startIndex: Int { return buffer.startIndex }
   public var endIndex: Int  { return buffer.endIndex }
 
+  /// Returns a new buffer backed by storage cloned from the existing buffer.
+  /// Unreachable elements are not copied; however, `startIndex` and `endIndex` values are preserved.
   func cloneBuffer(newCapacity: Int) -> Buffer {
-    //TODO: Implement the function
-    fatalError("\(#function) not yet implemented")
+    let clone = Buffer(minimumCapacity: newCapacity)
+
+    // When storage capacity has not changed, simply copy elements into the clone
+    if clone.storage.capacity == buffer.storage.capacity {
+      for position in buffer.indices {
+        let bucket = buffer.bucketForPosition(position)
+        let (key, value) = buffer.elementInBucket(bucket)
+        clone.initializeKey(key, forValue: value, position: position, bucket: bucket)
+      }
+    }
+
+    // Otherwise let the clone determine which buckets are filled.
+    else {
+      for position in buffer.indices {
+        let bucket = buffer.bucketForPosition(position)
+        let (key, value) = buffer.elementInBucket(bucket)
+        clone.initializeKey(key, forValue: value, position: position)
+      }
+    }
+
+    return clone
   }
 
-  func ensureUniqueWithCapacity(minimumCapacity: Int) -> (reallocated: Bool, capacityChanged: Bool) {
-    //TODO: Implement the function
-    fatalError("\(#function) not yet implemented")
+  /// Checks that `owner` has only the one strong reference and that it's `buffer` has at least `minimumCapacity` capacity
+  mutating func ensureUniqueWithCapacity(minimumCapacity: Int) -> (reallocated: Bool, capacityChanged: Bool) {
+    switch (isUnique: buffer.isUniquelyReferenced(), hasCapacity: capacity >= minimumCapacity) {
+
+      case (isUnique: true, hasCapacity: true):
+        return (reallocated: false, capacityChanged: false)
+
+      case (isUnique: true, hasCapacity: false):
+        buffer = cloneBuffer(Buffer.minimumCapacityForCount(minimumCapacity))
+        return (reallocated: true, capacityChanged: true)
+
+      case (isUnique: false, hasCapacity: true):
+        buffer = cloneBuffer(capacity)
+        return (reallocated: true, capacityChanged: false)
+
+      case (isUnique: false, hasCapacity: false):
+        buffer = cloneBuffer(Buffer.minimumCapacityForCount(minimumCapacity))
+        return (reallocated: true, capacityChanged: true)
+    }
+
   }
 
   public subscript(key: Key) -> Value? {
@@ -79,10 +117,7 @@ public struct OrderedDictionarySlice<Key:Hashable, Value>: _OrderedDictionary, _
     fatalError("\(#function) not yet implemented")
   }
 
-  public func indexForKey(key: Key) -> Index? {
-    //TODO: Implement the function
-    fatalError("\(#function) not yet implemented")
-  }
+  public func indexForKey(key: Key) -> Index? { return buffer.positionForKey(key) }
 
   public func valueForKey(key: Key) -> Value? {
     //TODO: Implement the function
@@ -93,10 +128,7 @@ public struct OrderedDictionarySlice<Key:Hashable, Value>: _OrderedDictionary, _
 
 extension OrderedDictionarySlice: RangeReplaceableCollectionType {
 
-  public init() {
-    //TODO: Implement the function
-    fatalError("\(#function) not yet implemented")
-  }
+  public init() { buffer = Buffer() }
 
   public mutating func replaceRange<
     C:CollectionType where C.Generator.Element == Element
