@@ -206,7 +206,7 @@ extension OrderedDictionary: MutableCollectionType {
       return SubSequence(buffer: buffer[subRange])
     }
     set {
-      buffer.replaceRange(subRange, with: newValue)
+      replaceRange(subRange, with: newValue)
     }
   }
   
