@@ -30,7 +30,7 @@ struct OrderedDictionarySliceBuffer<Key:Hashable, Value>: _OrderedDictionaryBuff
   let indexOffset: Index
 
   var count: Int { return endIndex - startIndex }
-  var capacity: Int { return count + (storage.capacity - storage.count) }
+  var capacity: Int { return indexOffset == 0 ? storage.capacity - startIndex : storage.capacity } // count + (storage.capacity - storage.count) }
 
   var identity: UnsafePointer<Void> { return UnsafePointer<Void>(initializedBuckets.buffer.baseAddress) }
 
@@ -80,7 +80,7 @@ struct OrderedDictionarySliceBuffer<Key:Hashable, Value>: _OrderedDictionaryBuff
       bucket._successorInPlace()
     } while bucket != startBucket
 
-    fatalError("failed to locate hole")
+    fatalError("failed to locate hole:\n\(debugDescription)")
   }
 
   /// Returns the key inserted into `bucket`
@@ -127,6 +127,26 @@ struct OrderedDictionarySliceBuffer<Key:Hashable, Value>: _OrderedDictionaryBuff
     indexOffset = offset
     startIndex = indices.startIndex
     endIndex = indices.endIndex
+  }
+
+  init<S:SequenceType where S.Generator.Element == Element>(elements: S) {
+    let minimumCapacity = SliceBuffer.minimumCapacityForCount(elements.underestimateCount())
+    var buffer = SliceBuffer(minimumCapacity: minimumCapacity)
+
+    var duplicates = 0
+
+    for (position, (key, value)) in elements.enumerate() {
+      let (bucket, found) = buffer.find(key)
+      if found {
+        duplicates += 1
+        continue
+      } else {
+        buffer.initializeKey(key, forValue: value, position: position - duplicates, bucket: bucket)
+        buffer.endIndex += 1
+      }
+    }
+
+    self = buffer
   }
 
   init() { self.init(minimumCapacity: 2) }
@@ -227,8 +247,11 @@ struct OrderedDictionarySliceBuffer<Key:Hashable, Value>: _OrderedDictionaryBuff
     // Adjust positions
     bucketMap.replaceRange(subRange - indexOffset, with: newElementsBuckets)
 
-    // Update count
-    storage.count += newElementsBuckets.count - subRange.count
+    let 𝝙elements = newElementsBuckets.count - subRange.count
+
+    // Adjust count and endIndex
+    storage.count += 𝝙elements
+    endIndex += 𝝙elements
 
   }
 
@@ -296,8 +319,9 @@ extension OrderedDictionarySliceBuffer : CustomStringConvertible, CustomDebugStr
 
     var result = "["
     var first = true
-    for bucket in bucketMap {
+    for position in startIndex ..< endIndex {
       if first { first = false } else { result += ", " }
+      let bucket = bucketMap[position - indexOffset]
       debugPrint(keysBaseAddress[bucket.offset], terminator: ": ", toStream: &result)
       debugPrint(valuesBaseAddress[bucket.offset], terminator: "",   toStream: &result)
     }
@@ -309,15 +333,21 @@ extension OrderedDictionarySliceBuffer : CustomStringConvertible, CustomDebugStr
 
   var debugDescription: String {
     var result = elementsDescription + "\n"
+    result += "startIndex = \(startIndex)\n"
+    result += "endIndex = \(endIndex)\n"
+    result += "indexOffset = \(indexOffset)\n"
     result += "count = \(count)\n"
     result += "capacity = \(capacity)\n"
     for position in startIndex ..< endIndex {
-      result += "position \(position) ➞ bucket \(bucketMap[position - indexOffset])\n"
+      let bucket = bucketMap[position - indexOffset]
+      let key = keyInBucket(bucket)
+      let value = valueInBucket(bucket)
+      result += "position \(position) ➞ bucket \(bucket) [\(key): \(value)]\n"
     }
     for position in endIndex ..< capacity {
       result += "position \(position), empty\n"
     }
-    for bucket in 0 ..< capacity {
+    for bucket in 0 ..< bucketMap.capacity {
       if initializedBuckets[bucket] {
         let key = keysBaseAddress[bucket]
         result += "bucket \(bucket), ideal bucket = \(idealBucketForKey(key))\n"
