@@ -25,6 +25,12 @@ public func randomRange(count: Int, coverage: Double) -> Range<Int> {
   return start ..< end
 }
 
+public let randomIntegersXXSmall1 = randomIntegers(100, 0 ..< 50)
+public let randomIntegersXXSmall2 = randomIntegers(100, 0 ..< 50)
+
+public let randomIntegersXSmall1 = randomIntegers(250, 0 ..< 125)
+public let randomIntegersXSmall2 = randomIntegers(250, 0 ..< 125)
+
 public let randomIntegersSmall1 = randomIntegers(500, 0 ..< 250)
 public let randomIntegersSmall2 = randomIntegers(500, 0 ..< 250)
 

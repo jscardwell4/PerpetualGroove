@@ -9,7 +9,7 @@
 import Foundation
 
 /// A hash-based mapping from `Key` to `Value` instances that preserves elment order.
-public struct OrderedDictionary<Key: Hashable, Value>: _OrderedDictionary, DictionaryLiteralConvertible, _DestructorSafeContainer {
+public struct OrderedDictionary<Key: Hashable, Value>: _OrderedDictionary, _DestructorSafeContainer {
 
   typealias Buffer = OrderedDictionaryBuffer<Key, Value>
   typealias Storage = OrderedDictionaryStorage<Key, Value>
@@ -135,12 +135,18 @@ public struct OrderedDictionary<Key: Hashable, Value>: _OrderedDictionary, Dicti
     self.init(buffer: buffer)
   }
 
+}
+
+// MARK: DictionaryLiteralConvertible
+extension OrderedDictionary: DictionaryLiteralConvertible {
+
   public init(dictionaryLiteral elements: Element...) {
     self.init(elements: elements)
   }
 
 }
 
+// MARK: MutableKeyValueCollection
 extension OrderedDictionary: MutableKeyValueCollection {
 
   public mutating func insertValue(value: Value, forKey key: Key) {

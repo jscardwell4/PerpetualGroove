@@ -24,7 +24,14 @@ extension Array: JSONValueConvertible {
   }
 }
 
-extension RangeReplaceableCollectionType {
+extension Array {
+  public init(minimumCapacity: Int) {
+    self.init()
+    reserveCapacity(numericCast(minimumCapacity))
+  }
+}
+
+extension ContiguousArray {
   public init(minimumCapacity: Int) {
     self.init()
     reserveCapacity(numericCast(minimumCapacity))

@@ -716,6 +716,11 @@ extension CompositeOrderedSetSlice: ArrayLiteralConvertible {
 
 extension CompositeOrderedSetSlice: SetType {
 
+  public init(minimumCapacity: Int) {
+    self.init()
+    reserveCapacity(numericCast(minimumCapacity))
+  }
+
   public mutating func insert(member: Element) { append(member) }
 
   public mutating func remove(member: Element) -> Element? {

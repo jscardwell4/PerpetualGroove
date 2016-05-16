@@ -10,7 +10,7 @@ import Foundation
 
 internal let maxLoadFactorInverse = 1/0.75
 
-protocol _OrderedDictionary: MutableKeyValueCollection, RangeReplaceableCollectionType {
+protocol _OrderedDictionary: MutableKeyValueCollection, DictionaryLiteralConvertible, RangeReplaceableCollectionType {
 
   associatedtype Buffer:_OrderedDictionaryBuffer
 
