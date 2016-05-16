@@ -216,21 +216,31 @@ final class OrderedDictionaryTests: XCTestCase {
   }
 
   func testSubscriptRangeAccessors() {
-    let orderedDictionary1: OrderedDictionary<String, Int> = ["one": 1, "two": 2, "three": 3]
+    var orderedDictionary1: OrderedDictionary<String, Int> = ["one": 1, "two": 2, "three": 3]
     var slice1 = orderedDictionary1[1 ... 2]
     expect(slice1.keys) == ["two", "three"]
     expect(slice1.values) == [2, 3]
     slice1["four"] = 4
     expect(slice1.keys) == ["two", "three", "four"]
     expect(slice1.values) == [2, 3, 4]
+    expect(orderedDictionary1.keys) == ["one", "two", "three"]
+    expect(orderedDictionary1.values) == [1, 2, 3]
+    orderedDictionary1[1 ... 2] = slice1
+    expect(orderedDictionary1.keys) == ["one", "two", "three", "four"]
+    expect(orderedDictionary1.values) == [1, 2, 3, 4]
 
-    let orderedDictionary2: OrderedDictionary<Int, String> = [1: "one", 2: "two", 3: "three"]
+    var orderedDictionary2: OrderedDictionary<Int, String> = [1: "one", 2: "two", 3: "three"]
     var slice2 = orderedDictionary2[1 ... 2]
     expect(slice2.keys) == [2, 3]
     expect(slice2.values) == ["two", "three"]
     slice2[4] = "four"
     expect(slice2.keys) == [2, 3, 4]
     expect(slice2.values) == ["two", "three", "four"]
+    expect(orderedDictionary2.keys) == [1, 2, 3]
+    expect(orderedDictionary2.values) == ["one", "two", "three"]
+    orderedDictionary2[1 ... 2] = slice2
+    expect(orderedDictionary2.keys) == [1, 2, 3, 4]
+    expect(orderedDictionary2.values) == ["one", "two", "three", "four"]
   }
 
   func testRemoveAtIndex() {
