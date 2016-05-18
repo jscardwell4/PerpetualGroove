@@ -64,9 +64,9 @@ public class MultiselectGestureRecognizer: UIGestureRecognizer {
   /** reset */
   public override func reset() {
     super.reset()
-    touchLocations.removeAll(true)
-    anchoringTouches.removeAll(true)
-    registeredTouches.removeAll(true)
+    touchLocations.removeAll(keepCapacity: true)
+    anchoringTouches.removeAll(keepCapacity: true)
+    registeredTouches.removeAll(keepCapacity: true)
     firstTouchDate = nil
     state = .Possible
   }

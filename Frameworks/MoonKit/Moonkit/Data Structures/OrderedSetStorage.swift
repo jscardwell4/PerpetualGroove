@@ -23,19 +23,21 @@ final class OrderedSetStorage<Element:Hashable>: ManagedBuffer<HashedStorageHead
 
   /// Returns the number of bytes required for the map of buckets to positions given `capacity`
   static func bytesForBucketMap(capacity: Int) -> Int {
-    return strideof(Int) * (capacity * 2) + max(0, alignof(Int) - alignof(UInt))
+    return HashBucketMap.bytesFor(capacity) + max(0, alignof(Int) - alignof(UInt))
   }
 
+  /// The number of bytes used to store the bucket map for this instance.
   var bucketMapBytes: Int { return Storage.bytesForBucketMap(capacity) }
 
-  static func bytesForMembers(capacity: Int) -> Int {
+  /// Returns the number of bytes required to store the elements for a given `capacity`.
+  static func bytesForElements(capacity: Int) -> Int {
     let maxPrevAlignment = max(alignof(UInt), alignof(Int))
     let padding = max(0, alignof(Element) - maxPrevAlignment)
     return strideof(Element) * capacity + padding
   }
 
-  /// The number of bytes used to store the hash values for this instance
-  var membersBytes: Int { return Storage.bytesForMembers(capacity) }
+  /// The number of bytes used to store the elements for this instance
+  var elementsBytes: Int { return Storage.bytesForElements(capacity) }
 
   /// The total number of buckets
   var capacity: Int { return value.capacity }
@@ -64,19 +66,20 @@ final class OrderedSetStorage<Element:Hashable>: ManagedBuffer<HashedStorageHead
   var bucketMap: HashBucketMap { return value.bucketMap }
 
   /// Pointer to the first byte in memory allocated for the hash values
-  var members: UnsafeMutablePointer<Element> {
+  var elements: UnsafeMutablePointer<Element> {
     return UnsafeMutablePointer<Element>(bucketMapAddress + bucketMapBytes)
   }
 
+  /// Create a new storage instance.
   static func create(minimumCapacity: Int) -> OrderedSetStorage {
     let capacity = round2(minimumCapacity)
 
     let initializedBucketsBytes = bytesForInitializedBuckets(capacity)
     let bucketMapBytes = bytesForBucketMap(capacity)
-    let membersBytes = bytesForMembers(capacity)
+    let elementsBytes = bytesForElements(capacity)
     let requiredCapacity = initializedBucketsBytes
                          + bucketMapBytes
-                         + membersBytes
+                         + elementsBytes
 
     let storage = super.create(requiredCapacity) {
       let initializedBucketsStorage = $0.withUnsafeMutablePointerToElements {$0}
@@ -95,12 +98,12 @@ final class OrderedSetStorage<Element:Hashable>: ManagedBuffer<HashedStorageHead
     return storage as! Storage
   }
 
-  deinit {
-    guard !_isPOD(Element) else { return }
-    defer { _fixLifetime(self) }
-    let members = self.members
-    for offset in initializedBuckets.nonZeroBits { (members + offset).destroy() }
-  }
+//  deinit {
+//    guard count > 0 && !_isPOD(Element) else { return }
+//    defer { _fixLifetime(self) }
+//    let elements = self.elements
+//    for offset in initializedBuckets.nonZeroBits { (elements + offset).destroy() }
+//  }
 }
 
 extension OrderedSetStorage {
@@ -110,7 +113,7 @@ extension OrderedSetStorage {
     result += "\ttotal bytes: \(allocatedElementCount)\n"
     result += "\tinitializedBucketsBytes: \(initializedBucketsBytes)\n"
     result += "\tbucketMapBytes: \(bucketMapBytes)\n"
-    result += "\tmembersBytes: \(membersBytes)\n"
+    result += "\telementsBytes: \(elementsBytes)\n"
     result += "\tcapacity: \(capacity)\n"
     result += "\tcount: \(count)\n"
     result += "\tinitializedBuckets: \(initializedBuckets)\n"

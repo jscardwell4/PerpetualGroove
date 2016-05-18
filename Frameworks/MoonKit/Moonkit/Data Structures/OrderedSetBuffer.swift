@@ -13,17 +13,21 @@ import Foundation
 struct OrderedSetBuffer<Element:Hashable> {
 
   typealias Index = Int
-  typealias Generator = OrderedSetGenerator<Element>
+//  typealias Generator = OrderedSetGenerator<Element>
 
   typealias Buffer = OrderedSetBuffer<Element>
   typealias Storage = OrderedSetStorage<Element>
 
   // MARK: Pointers to the underlying memory
 
-  let storage: Storage
+  private(set) var storage: Storage
   let initializedBuckets: BitMap
   let bucketMap: HashBucketMap
-  let members: UnsafeMutablePointer<Element>
+  let elements: UnsafeMutablePointer<Element>
+
+  mutating func isUniquelyReferenced() -> Bool { return Swift.isUniquelyReferenced(&storage) }
+
+  var identity: UnsafePointer<Void> { return UnsafePointer<Void>(initializedBuckets.buffer.baseAddress) }
 
   // MARK: Accessors for the storage header properties
 
@@ -51,7 +55,7 @@ struct OrderedSetBuffer<Element:Hashable> {
     self.storage = storage
     initializedBuckets = storage.initializedBuckets
     bucketMap = storage.bucketMap
-    members = storage.members
+    elements = storage.elements
   }
 
   init<S:SequenceType where S.Generator.Element == Element>(elements: S, capacity: Int? = nil) {
@@ -126,7 +130,7 @@ struct OrderedSetBuffer<Element:Hashable> {
   }
 
   /// Returns the value inserted into `bucket`
-  func memberInBucket(bucket: HashBucket) -> Element { return members[bucket.offset] }
+  func memberInBucket(bucket: HashBucket) -> Element { return elements[bucket.offset] }
 
   /// Returns the value assigned to `position`
   func memberAtPosition(position: Index) -> Element {
@@ -179,7 +183,7 @@ struct OrderedSetBuffer<Element:Hashable> {
 
   func destroyBucket(bucket: HashBucket) {
     initializedBuckets[bucket] = false
-    (members + bucket.offset).destroy()
+    (elements + bucket.offset).destroy()
   }
 
   func destroyElementAt(position: Index) {
@@ -239,7 +243,7 @@ struct OrderedSetBuffer<Element:Hashable> {
   // MARK: Initializing with data
 
   func initializeBucket(bucket: HashBucket, with member: Element) {
-    (members + bucket.offset).initialize(member)
+    (elements + bucket.offset).initialize(member)
     initializedBuckets[bucket] = true
   }
 
@@ -260,7 +264,7 @@ struct OrderedSetBuffer<Element:Hashable> {
 
   /// Removes the value from `bucket1` and uses this value to initialize `bucket2`
   func moveElementInBucket(bucket1: HashBucket, toBucket bucket2: HashBucket) {
-    initializeBucket(bucket2, with: (members + bucket1.offset).move())
+    initializeBucket(bucket2, with: (elements + bucket1.offset).move())
     initializedBuckets[bucket1] = false
     bucketMap.replaceBucket(bucket1, with: bucket2)
   }
@@ -279,7 +283,7 @@ extension OrderedSetBuffer : CustomStringConvertible, CustomDebugStringConvertib
     var first = true
     for bucket in bucketMap {
       if first { first = false } else { result += ", " }
-      debugPrint(members[bucket.offset], terminator: "",   toStream: &result)
+      debugPrint(elements[bucket.offset], terminator: "",   toStream: &result)
     }
     result += "]"
     return result
@@ -299,7 +303,7 @@ extension OrderedSetBuffer : CustomStringConvertible, CustomDebugStringConvertib
     }
     for bucket in 0 ..< capacity {
       if initializedBuckets[bucket] {
-        let member = members[bucket]
+        let member = elements[bucket]
         result += "bucket \(bucket), ideal bucket = \(idealBucketForElement(member))\n"
       } else {
         result += "bucket \(bucket), empty\n"

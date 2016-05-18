@@ -83,7 +83,7 @@ final class OrderedDictionarySliceTests: XCTestCase {
   }
 
   func testCOW() {
-    var orderedDictionary1: OrderedDictionarySlice<String, Int> = ["one": 1, "two": 2, "three": 3]
+    let orderedDictionary1: OrderedDictionarySlice<String, Int> = ["one": 1, "two": 2, "three": 3]
     var orderedDictionary2 = orderedDictionary1
     expect(orderedDictionary1) == orderedDictionary2
 

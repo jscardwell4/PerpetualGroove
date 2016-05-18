@@ -56,6 +56,26 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "C2EE61801C7F8C760091C5AC"
+               BuildableName = "OrderedDictionaryTests.xctest"
+               BlueprintName = "OrderedDictionaryTests"
+               ReferencedContainer = "container:MoonKit.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "C2C65BBB1C970F38000645ED"
+               BuildableName = "OrderedSetTests.xctest"
+               BlueprintName = "OrderedSetTests"
+               ReferencedContainer = "container:MoonKit.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference

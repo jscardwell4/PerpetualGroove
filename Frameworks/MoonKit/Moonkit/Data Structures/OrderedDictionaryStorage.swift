@@ -120,6 +120,8 @@ final class OrderedDictionaryStorage <Key:Hashable, Value>: ManagedBuffer<Hashed
   deinit {
     guard count > 0 else { return }
 
+    let (keys, values) = (self.keys, self.values)
+
     switch (_isPOD(Key), _isPOD(Value)) {
       case (true, true): return
       case (true, false):

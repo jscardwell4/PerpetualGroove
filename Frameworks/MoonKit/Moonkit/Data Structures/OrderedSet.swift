@@ -8,52 +8,14 @@
 
 import Foundation
 
-//private let maxLoadFactorInverse = 1/0.75
-
-// MARK: - Generator
-// MARK: -
-
-public struct OrderedSetGenerator<Element:Hashable>: GeneratorType {
-  typealias Buffer = OrderedSetBuffer<Element>
-  let buffer: Buffer
-  var index: Int = 0
-  init(buffer: Buffer) { self.buffer = buffer }
-
-  public mutating func next() -> (Element)? {
-    guard index < buffer.count else { return nil }
-    defer { index = index.successor() }
-    return buffer.memberAtPosition(index)
-  }
-}
-
-// MARK: - Owner
-// MARK: -
-
-final class OrderedSetStorageOwner<Element:Hashable>: NonObjectiveCBase {
-
-  typealias Buffer = OrderedSetBuffer<Element>
-  var buffer: Buffer
-  init(minimumCapacity: Int) { buffer = Buffer(minimumCapacity: minimumCapacity) }
-  init(buffer: Buffer) { self.buffer = buffer }
-}
-
-// MARK: - OrderedSet
-// MARK: -
-
 /// A hash-based mapping from `Key` to `Element` instances that preserves elment order.
 public struct OrderedSet<Element:Hashable>: CollectionType {
   public typealias Index = Int
   public typealias _Element = Element
   typealias Storage = OrderedSetStorage<Element>
   typealias Buffer = OrderedSetBuffer<Element>
-  typealias Owner = OrderedSetStorageOwner<Element>
 
-  var buffer: Buffer {
-    get { return owner.buffer }
-    set { owner.buffer = newValue }
-  }
-
-  var owner: Owner
+  private(set) var buffer: Buffer
 
 
   func cloneBuffer(newCapacity: Int) -> Buffer {
@@ -79,29 +41,29 @@ public struct OrderedSet<Element:Hashable>: CollectionType {
   mutating func ensureUniqueWithCapacity(minimumCapacity: Int)
     -> (reallocated: Bool, capacityChanged: Bool)
   {
-    switch (isUnique: isUniquelyReferenced(&owner), hasCapacity: capacity >= minimumCapacity) {
+    switch (isUnique: buffer.isUniquelyReferenced(), hasCapacity: capacity >= minimumCapacity) {
 
       case (isUnique: true, hasCapacity: true):
         return (reallocated: false, capacityChanged: false)
 
       case (isUnique: true, hasCapacity: false):
-        owner.buffer = cloneBuffer(Int(Double(minimumCapacity) * maxLoadFactorInverse))
+        buffer = cloneBuffer(Buffer.minimumCapacityForCount(minimumCapacity))
         return (reallocated: true, capacityChanged: true)
 
       case (isUnique: false, hasCapacity: true):
-        owner = Owner(buffer: cloneBuffer(capacity))
+        buffer = cloneBuffer(capacity)
         return (reallocated: true, capacityChanged: false)
 
       case (isUnique: false, hasCapacity: false):
-        owner = Owner(buffer: cloneBuffer(Int(Double(minimumCapacity) * maxLoadFactorInverse)))
+        buffer = cloneBuffer(Buffer.minimumCapacityForCount(minimumCapacity))
         return (reallocated: true, capacityChanged: true)
     }
 
   }
 
-  public init(minimumCapacity: Int) { owner = Owner(minimumCapacity: minimumCapacity) }
+  public init(minimumCapacity: Int) { buffer = Buffer(minimumCapacity: minimumCapacity) }
 
-  init(buffer: Buffer) { owner = Owner(buffer: buffer) }
+  init(buffer: Buffer) { self.buffer = buffer }
 
   public var hashValue: Int {
     // FIXME: <rdar://problem/18915294> Cache Set<T> hashValue
@@ -128,30 +90,30 @@ public struct OrderedSet<Element:Hashable>: CollectionType {
   @warn_unused_result
   public func contains(member: Element) -> Bool { let (_, found) = buffer.find(member); return found }
 
-  mutating func _removeAtIndex(index: Index, oldElement: UnsafeMutablePointer<Element>) {
-    if oldElement != nil { oldElement.initialize(buffer.memberInBucket(buffer.bucketForPosition(index))) }
+  mutating func _removeAndReturn(index: Index) -> Element {
+    let result = buffer.memberInBucket(buffer.bucketForPosition(index))
+    ensureUniqueWithCapacity(capacity)
+    buffer.destroyElementAt(index)
+    return result
+  }
+
+  mutating func _remove(index: Index) {
     ensureUniqueWithCapacity(capacity)
     buffer.destroyElementAt(index)
   }
 
   public mutating func removeAtIndex(index: Index) -> Element {
-    let oldElement = UnsafeMutablePointer<Element>.alloc(1)
-    _removeAtIndex(index, oldElement: oldElement)
-    return oldElement.memory
+    return _removeAndReturn(index)
   }
 
-  mutating func _removeElement(member: Element, oldElement: UnsafeMutablePointer<Element?>) {
-    guard let index = buffer.positionForElement(member) else {
-      if oldElement != nil { oldElement.initialize(nil) }
-      return
-    }
-    if oldElement != nil {
-      let oldElement = UnsafeMutablePointer<Element>.alloc(1)
-      _removeAtIndex(index, oldElement: oldElement)
-      oldElement.initialize(oldElement.memory)
-    } else {
-      _removeAtIndex(index, oldElement: nil)
-    }
+  mutating func _removeAndReturn(member: Element) -> Element? {
+    guard let index = buffer.positionForElement(member) else { return nil }
+    return _removeAndReturn(index)
+  }
+
+  mutating func _remove(member: Element) {
+    guard let index = buffer.positionForElement(member) else { return }
+    _remove(index)
   }
 
   public mutating func removeFirst() -> Element { return removeAtIndex(0) }
@@ -182,60 +144,60 @@ extension OrderedSet: MutableIndexable {
 
 extension OrderedSet: SequenceType {
 
-  public typealias Generator = OrderedSetGenerator<Element>
+//  public typealias Generator = OrderedSetGenerator<Element>
   public typealias SubSequence = OrderedSetSlice<Element>
 
-  public func generate() -> Generator { return Generator(buffer: buffer) }
+//  public func generate() -> Generator { return Generator(buffer: buffer) }
 
-  public func dropFirst(n: Int) -> SubSequence { return self[n..<] }
+//  public func dropFirst(n: Int) -> SubSequence { return self[n..<] }
 
-  public func dropLast(n: Int) -> SubSequence { return self[..<endIndex.advancedBy(-n)] }
+//  public func dropLast(n: Int) -> SubSequence { return self[..<endIndex.advancedBy(-n)] }
 
-  public func prefix(maxLength: Int) -> SubSequence { return self[..<min(count, maxLength)] }
+//  public func prefix(maxLength: Int) -> SubSequence { return self[..<min(count, maxLength)] }
 
-  public func suffix(maxLength: Int) -> SubSequence { return self[max(startIndex, endIndex.advancedBy(-maxLength))..<] }
+//  public func suffix(maxLength: Int) -> SubSequence { return self[max(startIndex, endIndex.advancedBy(-maxLength))..<] }
 
-  public func split(maxSplit: Int,
-                    allowEmptySlices: Bool,
-                    @noescape isSeparator: (Element) throws -> Bool) rethrows -> [SubSequence]
-  {
-    var result: [SubSequence] = []
-    var subSequenceStart = startIndex
-
-    var currentIndex = startIndex
-
-    // Iterate through indices
-    while currentIndex < endIndex {
-
-      // Check whether element at `currentIndex` is a separator
-      if try isSeparator(self[currentIndex]) {
-
-        // Check for a non-empty range from previous split to current index
-        if subSequenceStart < currentIndex { result.append(self[subSequenceStart ..< currentIndex]) }
-
-
-        // Iterate through consecutive separator elements
-        repeat { currentIndex._successorInPlace() } while try (currentIndex < endIndex && isSeparator(self[currentIndex]))
-
-        // Append empty slice if two or more consecutive separators were consumed and `allowEmptySlices` is set to `true`
-        if currentIndex > subSequenceStart.successor() && allowEmptySlices {
-          result.append(OrderedSetSlice<Element>(buffer: buffer, bounds: subSequenceStart ..< subSequenceStart))
-        }
-        subSequenceStart = currentIndex
-
-      } else {
-
-        currentIndex._successorInPlace()
-
-      }
-
-    }
-
-    // Check for a trailing subsequence
-    if subSequenceStart < currentIndex { result.append(self[subSequenceStart ..< currentIndex]) }
-
-    return result
-  }
+//  public func split(maxSplit: Int,
+//                    allowEmptySlices: Bool,
+//                    @noescape isSeparator: (Element) throws -> Bool) rethrows -> [SubSequence]
+//  {
+//    var result: [SubSequence] = []
+//    var subSequenceStart = startIndex
+//
+//    var currentIndex = startIndex
+//
+//    // Iterate through indices
+//    while currentIndex < endIndex {
+//
+//      // Check whether element at `currentIndex` is a separator
+//      if try isSeparator(self[currentIndex]) {
+//
+//        // Check for a non-empty range from previous split to current index
+//        if subSequenceStart < currentIndex { result.append(self[subSequenceStart ..< currentIndex]) }
+//
+//
+//        // Iterate through consecutive separator elements
+//        repeat { currentIndex._successorInPlace() } while try (currentIndex < endIndex && isSeparator(self[currentIndex]))
+//
+//        // Append empty slice if two or more consecutive separators were consumed and `allowEmptySlices` is set to `true`
+//        if currentIndex > subSequenceStart.successor() && allowEmptySlices {
+//          result.append(OrderedSetSlice<Element>(buffer: buffer, bounds: subSequenceStart ..< subSequenceStart))
+//        }
+//        subSequenceStart = currentIndex
+//
+//      } else {
+//
+//        currentIndex._successorInPlace()
+//
+//      }
+//
+//    }
+//
+//    // Check for a trailing subsequence
+//    if subSequenceStart < currentIndex { result.append(self[subSequenceStart ..< currentIndex]) }
+//
+//    return result
+//  }
 }
 
 extension OrderedSet: SetType {
@@ -249,9 +211,7 @@ extension OrderedSet: SetType {
   }
 
   public mutating func remove(member: Element) -> Element? {
-    let oldElement = UnsafeMutablePointer<Element?>.alloc(1)
-    _removeElement(member, oldElement: oldElement)
-    return oldElement.memory
+    return _removeAndReturn(member)
   }
   
   public init<S : SequenceType where S.Generator.Element == Element>(_ elements: S) {
@@ -411,7 +371,7 @@ extension OrderedSet: MutableCollectionType {
 
 extension OrderedSet: RangeReplaceableCollectionType {
 
-  public init() { owner = Owner(minimumCapacity: 0) }
+  public init() { buffer = Buffer(minimumCapacity: 0) }
 
   public mutating func reserveCapacity(minimumCapacity: Int) { ensureUniqueWithCapacity(minimumCapacity) }
 
@@ -426,34 +386,34 @@ extension OrderedSet: RangeReplaceableCollectionType {
     buffer.replaceRange(subRange, with: newElements)
   }
 
-  public mutating func append(element: Element) { insert(element) }
+//  public mutating func append(element: Element) { insert(element) }
 
-  public mutating func appendContentsOf<S:SequenceType where S.Generator.Element == Element>(newElements: S) {
-    for element in newElements { insert(element) } // Membership check by `insert()`
-  }
+//  public mutating func appendContentsOf<S:SequenceType where S.Generator.Element == Element>(newElements: S) {
+//    for element in newElements { insert(element) } // Membership check by `insert()`
+//  }
 
-  public mutating func insert(newElement: Element, atIndex i: Int) {
-    replaceRange(i ..< i, with: CollectionOfOne(newElement))
-  }
+//  public mutating func insert(newElement: Element, atIndex i: Int) {
+//    replaceRange(i ..< i, with: CollectionOfOne(newElement))
+//  }
 
-  public mutating func insertContentsOf<C:CollectionType
-    where C.Generator.Element == Element>(newElements: C, at i: Int)
-  {
-    replaceRange(i ..< i, with: newElements)
-  }
+//  public mutating func insertContentsOf<C:CollectionType
+//    where C.Generator.Element == Element>(newElements: C, at i: Int)
+//  {
+//    replaceRange(i ..< i, with: newElements)
+//  }
 
-  public mutating func removeFirst(n: Int) {
-    replaceRange(0 ..< n, with: EmptyCollection())
-  }
+//  public mutating func removeFirst(n: Int) {
+//    replaceRange(0 ..< n, with: EmptyCollection())
+//  }
 
-  public mutating func removeRange(subRange: Range<Int>) {
-    replaceRange(subRange, with: EmptyCollection())
-  }
+//  public mutating func removeRange(subRange: Range<Int>) {
+//    replaceRange(subRange, with: EmptyCollection())
+//  }
 
-  public mutating func removeAll(keepCapacity: Bool = false) {
-    owner = Owner(buffer: Buffer(storage: Storage.create(keepCapacity ? capacity : 0)))
-  }
-  
+//  public mutating func removeAll(keepCapacity: Bool = false) {
+//    owner = Owner(buffer: Buffer(storage: Storage.create(keepCapacity ? capacity : 0)))
+//  }
+
 }
 
 extension OrderedSet: ArrayLiteralConvertible {
@@ -492,9 +452,8 @@ public func == <Element:Hashable>
   (lhs: OrderedSet<Element>, rhs: OrderedSet<Element>) -> Bool
 {
   
-  guard lhs.owner !== rhs.owner else { return true }
-  guard lhs.count == rhs.count else { return false }
-  
+  guard !(lhs.buffer.identity == rhs.buffer.identity && lhs.count == rhs.count) else { return true }
+
   for (v1, v2) in zip(lhs, rhs) { guard v1 == v2 else { return false } }
   
   return true
