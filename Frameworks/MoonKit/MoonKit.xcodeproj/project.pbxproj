@@ -31,7 +31,7 @@
 		C20650061A13C90A00342FDE /* FontAwesomeIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23592F019C8E04200920F8D /* FontAwesomeIcon.swift */; };
 		C20650071A13C99500342FDE /* GestureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25E63DD19FEC06A00F54626 /* GestureManager.swift */; };
 		C20751461CDE61CD0022E1E6 /* MoonKit.h in Headers */ = {isa = PBXBuildFile; fileRef = C2358F1A19C78D6D00920F8D /* MoonKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		C20751481CDE69FF0022E1E6 /* OrderedDictionarySliceBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20751471CDE69FF0022E1E6 /* OrderedDictionarySliceBuffer.swift */; };
+		C20751481CDE69FF0022E1E6 /* OrderedDictionaryBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20751471CDE69FF0022E1E6 /* OrderedDictionaryBuffer.swift */; };
 		C207514A1CDEC88E0022E1E6 /* _OrderedDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20751491CDEC88E0022E1E6 /* _OrderedDictionary.swift */; };
 		C208359A1C80D0F000D4A10E /* OldOrderedDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20835991C80D0F000D4A10E /* OldOrderedDictionary.swift */; };
 		C20A10971C512E4A00522FD7 /* ErrorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20A10961C512E4A00522FD7 /* ErrorType.swift */; };
@@ -363,6 +363,7 @@
 		C2A9634A1C691DAA009DB0F4 /* Playgrounds.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A963491C691DAA009DB0F4 /* Playgrounds.swift */; };
 		C2AA14721BB5857600D7C9E1 /* Tree.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AA14711BB5857600D7C9E1 /* Tree.swift */; };
 		C2AA2BCD1B8508AA00A0B08D /* Heap.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AA2BCC1B8508AA00A0B08D /* Heap.swift */; };
+		C2ADC6041CECD00E00420265 /* OrderedSetSliceBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2ADC6031CECD00E00420265 /* OrderedSetSliceBuffer.swift */; };
 		C2AFC9081BD675F60057F055 /* MarqueeField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AFC9071BD675F60057F055 /* MarqueeField.swift */; };
 		C2AFC90A1BD678C60057F055 /* TintColorControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AFC9091BD678C60057F055 /* TintColorControl.swift */; };
 		C2B3B2ED1C592EC60001152F /* HashableTuple.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B3B2EC1C592EC60001152F /* HashableTuple.swift */; };
@@ -465,7 +466,6 @@
 		C2E805131CD901A500650504 /* HashedStorageHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E805121CD901A500650504 /* HashedStorageHeader.swift */; };
 		C2E805151CD9030800650504 /* OrderedSetStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E805141CD9030800650504 /* OrderedSetStorage.swift */; };
 		C2E805171CD908E500650504 /* OrderedDictionaryStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E805161CD908E500650504 /* OrderedDictionaryStorage.swift */; };
-		C2E805191CDA466D00650504 /* OrderedDictionaryBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E805181CDA466D00650504 /* OrderedDictionaryBuffer.swift */; };
 		C2E8C8B71AE7325300F8AC45 /* UITableViewCell+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E8C8B61AE7325300F8AC45 /* UITableViewCell+MoonKitAdditions.swift */; };
 		C2E937001ACE04D4003EB3E8 /* JSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E936FF1ACE04D4003EB3E8 /* JSONParser.swift */; };
 		C2E937041ACF0736003EB3E8 /* JSONSerialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E937031ACF0736003EB3E8 /* JSONSerialization.swift */; };
@@ -547,7 +547,7 @@
 		C205852C1A1BEC2000212759 /* BlockActionGesture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockActionGesture.swift; sourceTree = "<group>"; };
 		C2064FF91A13C05900342FDE /* Operators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Operators.swift; sourceTree = "<group>"; };
 		C20751451CDE4E430022E1E6 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = SOURCE_ROOT; };
-		C20751471CDE69FF0022E1E6 /* OrderedDictionarySliceBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderedDictionarySliceBuffer.swift; sourceTree = "<group>"; };
+		C20751471CDE69FF0022E1E6 /* OrderedDictionaryBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderedDictionaryBuffer.swift; sourceTree = "<group>"; };
 		C20751491CDEC88E0022E1E6 /* _OrderedDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = _OrderedDictionary.swift; sourceTree = "<group>"; };
 		C20835991C80D0F000D4A10E /* OldOrderedDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OldOrderedDictionary.swift; sourceTree = "<group>"; };
 		C208359B1C80E6FD00D4A10E /* WTF.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = WTF.playground; sourceTree = "<group>"; };
@@ -760,6 +760,7 @@
 		C2A963491C691DAA009DB0F4 /* Playgrounds.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Playgrounds.swift; sourceTree = "<group>"; };
 		C2AA14711BB5857600D7C9E1 /* Tree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tree.swift; sourceTree = "<group>"; };
 		C2AA2BCC1B8508AA00A0B08D /* Heap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Heap.swift; sourceTree = "<group>"; };
+		C2ADC6031CECD00E00420265 /* OrderedSetSliceBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderedSetSliceBuffer.swift; sourceTree = "<group>"; };
 		C2AFC9071BD675F60057F055 /* MarqueeField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarqueeField.swift; sourceTree = "<group>"; };
 		C2AFC9091BD678C60057F055 /* TintColorControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TintColorControl.swift; sourceTree = "<group>"; };
 		C2B3B2EC1C592EC60001152F /* HashableTuple.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HashableTuple.swift; sourceTree = "<group>"; };
@@ -974,7 +975,7 @@
 		C2E805121CD901A500650504 /* HashedStorageHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HashedStorageHeader.swift; sourceTree = "<group>"; };
 		C2E805141CD9030800650504 /* OrderedSetStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderedSetStorage.swift; sourceTree = "<group>"; };
 		C2E805161CD908E500650504 /* OrderedDictionaryStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderedDictionaryStorage.swift; sourceTree = "<group>"; };
-		C2E805181CDA466D00650504 /* OrderedDictionaryBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderedDictionaryBuffer.swift; sourceTree = "<group>"; };
+		C2E805181CDA466D00650504 /* OldOrderedDictionaryBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OldOrderedDictionaryBuffer.swift; sourceTree = "<group>"; };
 		C2E8C8B61AE7325300F8AC45 /* UITableViewCell+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UITableViewCell+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C2E936FF1ACE04D4003EB3E8 /* JSONParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = JSONParser.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		C2E937031ACF0736003EB3E8 /* JSONSerialization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONSerialization.swift; sourceTree = "<group>"; };
@@ -1147,10 +1148,11 @@
 				C26863711AF96E6E00D664E8 /* Queue.swift */,
 				C23592DF19C8E04200920F8D /* OrderedDictionary.swift */,
 				C26491EB1CDBFE5000E88890 /* OrderedDictionarySlice.swift */,
-				C20751471CDE69FF0022E1E6 /* OrderedDictionarySliceBuffer.swift */,
+				C20751471CDE69FF0022E1E6 /* OrderedDictionaryBuffer.swift */,
 				C20835991C80D0F000D4A10E /* OldOrderedDictionary.swift */,
 				C2C482E419CA0225002E84A9 /* Stack.swift */,
 				C2736FDB1CAC3D6700E861A2 /* OrderedSet.swift */,
+				C2ADC6031CECD00E00420265 /* OrderedSetSliceBuffer.swift */,
 				C2250CE11CDBB9E400839292 /* OrderedSetBuffer.swift */,
 				C2250CE31CDBBA4D00839292 /* OrderedSetSlice.swift */,
 				C2CD95021C7772BA001FB80B /* CompositeOrderedSet.swift */,
@@ -1163,7 +1165,7 @@
 				C2E805121CD901A500650504 /* HashedStorageHeader.swift */,
 				C2E805141CD9030800650504 /* OrderedSetStorage.swift */,
 				C2E805161CD908E500650504 /* OrderedDictionaryStorage.swift */,
-				C2E805181CDA466D00650504 /* OrderedDictionaryBuffer.swift */,
+				C2E805181CDA466D00650504 /* OldOrderedDictionaryBuffer.swift */,
 				C230A1C31CE1017B00D8EF49 /* KeyValueCollection.swift */,
 			);
 			path = "Data Structures";
@@ -2632,7 +2634,6 @@
 				C2358F6519C78E0C00920F8D /* MSSwipeGestureRecognizer.m in Sources */,
 				C2FE79E61B1E62590087F72C /* NSIndexPath+MoonKitAdditions.swift in Sources */,
 				C26A09781BC9F1B0002EFEE1 /* CATransform3D.swift in Sources */,
-				C2E805191CDA466D00650504 /* OrderedDictionaryBuffer.swift in Sources */,
 				C2CF38CF1B7FAFE00085B3D5 /* VerticalSlider.swift in Sources */,
 				C2358F6619C78E0C00920F8D /* MSResizingLayer.m in Sources */,
 				C2358F6719C78E0C00920F8D /* MSAssertionHandler.m in Sources */,
@@ -2698,6 +2699,7 @@
 				C20650001A13C72600342FDE /* UIBarButtonItem+MoonKitAdditions.swift in Sources */,
 				C21493C11A35302200D274A2 /* ColorInputView.swift in Sources */,
 				C2358F7C19C78E0C00920F8D /* MSKeyPath.m in Sources */,
+				C2ADC6041CECD00E00420265 /* OrderedSetSliceBuffer.swift in Sources */,
 				C296498E1B00EBBF000C2D4A /* FormView.swift in Sources */,
 				C24416331ACB16F8007EDEFE /* Set+MoonKitAdditions.swift in Sources */,
 				C2E937001ACE04D4003EB3E8 /* JSONParser.swift in Sources */,
@@ -2725,7 +2727,7 @@
 				C28E509B1A143FDC00DF3206 /* MultiselectGestureRecognizer.swift in Sources */,
 				C2F619E01BC599D00000891A /* Marquee.swift in Sources */,
 				C2358F8519C78E0C00920F8D /* MSTouchReporterView.m in Sources */,
-				C20751481CDE69FF0022E1E6 /* OrderedDictionarySliceBuffer.swift in Sources */,
+				C20751481CDE69FF0022E1E6 /* OrderedDictionaryBuffer.swift in Sources */,
 				C2358F8619C78E0C00920F8D /* MSView.m in Sources */,
 				C2421D1A1BEFE8DE009BA8B1 /* Bytes.swift in Sources */,
 				C2CA85261BC7261B0046AFC0 /* CGVector+MoonKitAdditions.swift in Sources */,

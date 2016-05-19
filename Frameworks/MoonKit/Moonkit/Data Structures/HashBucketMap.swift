@@ -217,7 +217,7 @@ extension HashBucketMap: CustomStringConvertible, CustomDebugStringConvertible {
   }
 
   var debugDescription: String {
-    var result = "startIndex: \(startIndex); endIndex: \(endIndex)\n"
+    var result = "startIndex: \(startIndex); endIndex: \(endIndex); capacity: \(capacity)\n"
     result += "positions: [\n"
 
     var first = true

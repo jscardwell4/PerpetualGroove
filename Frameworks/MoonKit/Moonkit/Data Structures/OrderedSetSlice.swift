@@ -12,11 +12,10 @@ public struct OrderedSetSlice<Element:Hashable>: CollectionType {
 
   typealias Buffer = OrderedSetBuffer<Element>
 
-  let buffer: Buffer
+  private(set) var buffer: Buffer
   let bounds: Range<Int>
 
   public typealias Index = Int
-  public typealias Generator = AnyGenerator<Element>
   public typealias SubSequence = OrderedSetSlice<Element>
 
   public var startIndex: Int { return bounds.startIndex }
@@ -36,10 +35,6 @@ public struct OrderedSetSlice<Element:Hashable>: CollectionType {
     self.bounds = bounds
   }
 
-  public func generate() -> Generator {
-    let generator = IndexingGenerator<OrderedSetSlice<Element>>(self)
-    return AnyGenerator(generator)
-  }
 }
 
 extension OrderedSetSlice: CustomStringConvertible {

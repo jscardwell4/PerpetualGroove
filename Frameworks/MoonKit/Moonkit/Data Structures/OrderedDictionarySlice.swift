@@ -10,7 +10,7 @@ import Foundation
 
 public struct OrderedDictionarySlice<Key:Hashable, Value>: _OrderedDictionary, _DestructorSafeContainer {
 
-  typealias Buffer = OrderedDictionarySliceBuffer<Key, Value>
+  typealias Buffer = OrderedDictionaryBuffer<Key, Value>
   typealias Storage = OrderedDictionaryStorage<Key, Value>
 
   public typealias Index = Int
@@ -67,43 +67,29 @@ public struct OrderedDictionarySlice<Key:Hashable, Value>: _OrderedDictionary, _
     buffer = Buffer(minimumCapacity: minimumCapacity)
   }
 
-  mutating func _removeAtIndex(index: Index, oldElement: UnsafeMutablePointer<Element>) {
-    if oldElement != nil { oldElement.initialize(buffer.elementInBucket(buffer.bucketForPosition(index))) }
+  mutating func _remove(index: Index) {
     ensureUniqueWithCapacity(capacity)
     buffer.destroyElementAt(index)
   }
 
-  mutating func _removeValueForKey(key: Key, oldValue: UnsafeMutablePointer<Value?>) {
-    guard let index = buffer.positionForKey(key) else {
-      if oldValue != nil { oldValue.initialize(nil) }
-      return
-    }
-    if oldValue != nil {
-      let oldElement = UnsafeMutablePointer<Element>.alloc(1)
-      _removeAtIndex(index, oldElement: oldElement)
-      oldValue.initialize(oldElement.memory.1)
-    } else {
-      _removeAtIndex(index, oldElement: nil)
-    }
+  mutating func _removeAndReturn(index: Index) -> Element {
+    let result = buffer.elementInBucket(buffer.bucketForPosition(index))
+    _remove(index)
+    return result
   }
 
-  mutating func _updateValue(value: Value,
-                             forKey key: Key,
-                                    oldValue: UnsafeMutablePointer<Value?>,
-                                    oldKey: UnsafeMutablePointer<Key?>)
-  {
-    var (bucket, found) = buffer.find(key)
+  mutating func _removeValueForKey(key: Key) {
+    guard let index = buffer.positionForKey(key) else { return }
+    _remove(index)
+  }
 
-    if oldValue != nil || oldKey != nil {
-      if found {
-        let (key, value) = buffer.elementInBucket(bucket)
-        if oldKey != nil { oldKey.initialize(key) }
-        if oldValue != nil { oldValue.initialize(value) }
-      } else {
-        if oldKey != nil { oldKey.initialize(nil) }
-        if oldValue != nil { oldValue.initialize(nil) }
-      }
-    }
+  mutating func _removeAndReturnValueForKey(key: Key) -> Value? {
+    guard let index = buffer.positionForKey(key) else { return nil }
+    return _removeAndReturn(index).1
+  }
+
+  mutating func _updateValue(value: Value, forKey key: Key) {
+    var (bucket, found) = buffer.find(key)
 
     let minCapacity = found
       ? capacity
@@ -120,6 +106,28 @@ public struct OrderedDictionarySlice<Key:Hashable, Value>: _OrderedDictionary, _
     }
   }
 
+  mutating func _updateAndReturnValue(value: Value, forKey key: Key) -> Element? {
+    var (bucket, found) = buffer.find(key)
+
+    let result: Element? = found ? buffer.elementInBucket(bucket) : nil
+
+    let minCapacity = found
+      ? capacity
+      : Buffer.minimumCapacityForCount(buffer.count + 1)
+
+    let (_, capacityChanged) = ensureUniqueWithCapacity(minCapacity)
+    if capacityChanged { (bucket, found) = buffer.find(key) }
+
+    if found {
+      buffer.setValue(value, inBucket: bucket)
+    } else {
+      buffer.initializeKey(key, forValue: value, bucket: bucket)
+      buffer.endIndex += 1
+    }
+    
+    return result
+  }
+
   public init(elements: [Element]) {
     var keys: Set<Int> = []
     var filteredElements: [Element] = []
@@ -132,6 +140,20 @@ public struct OrderedDictionarySlice<Key:Hashable, Value>: _OrderedDictionary, _
   }
 
 }
+
+extension OrderedDictionarySlice where Value:Equatable {
+
+  public func _customContainsEquatableElement(element: Element) -> Bool? {
+    guard let value = self[element.0] else { return false }
+    return element.1 == value
+  }
+
+  public func _customIndexOfEquatableElement(element: Element) -> Index?? {
+    guard self[element.0] == element.1 else { return Optional(nil) }
+    return Optional(buffer.positionForKey(element.0))
+  }
+}
+
 
 // MARK: DictionaryLiteralConvertible
 extension OrderedDictionarySlice: DictionaryLiteralConvertible {
@@ -151,26 +173,22 @@ extension OrderedDictionarySlice: MutableKeyValueCollection {
   public subscript(key: Key) -> Value? {
     get { return buffer.valueForKey(key) }
     set {
-      if let value = newValue { _updateValue(value, forKey: key, oldValue: nil, oldKey: nil) }
-      else { _removeValueForKey(key, oldValue: nil) }
+      if let value = newValue { _updateValue(value, forKey: key) }
+      else { _removeValueForKey(key) }
     }
   }
 
   public mutating func insertValue(value: Value, forKey key: Key) {
-    _updateValue(value, forKey: key, oldValue: nil, oldKey: nil)
+    _updateValue(value, forKey: key)
   }
 
   /// Removes the value associated with `key` and returns it. Returns `nil` if `key` is not present.
   public mutating func removeValueForKey(key: Key) -> Value? {
-    let oldValue = UnsafeMutablePointer<Value?>.alloc(1)
-    _removeValueForKey(key, oldValue: oldValue)
-    return oldValue.memory
+    return _removeAndReturnValueForKey(key)
   }
 
   public mutating func updateValue(value: Value, forKey key: Key) -> Value? {
-    let oldValue = UnsafeMutablePointer<Value?>.alloc(1)
-    _updateValue(value, forKey: key, oldValue: oldValue, oldKey: nil)
-    return oldValue.memory
+    return _updateAndReturnValue(value, forKey: key)?.1
   }
 
   /// Returns the index of `key` or `nil` if `key` is not present.
@@ -180,9 +198,7 @@ extension OrderedDictionarySlice: MutableKeyValueCollection {
   public func valueForKey(key: Key) -> Value? { return buffer.valueForKey(key) }
 
   public mutating func removeAtIndex(index: Index) -> Element {
-    let oldElement = UnsafeMutablePointer<Element>.alloc(1)
-    _removeAtIndex(index, oldElement: oldElement)
-    return oldElement.memory
+    return _removeAndReturn(index)
   }
 
 }

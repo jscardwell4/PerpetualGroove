@@ -146,7 +146,7 @@ extension OrderedDictionaryStorage {
     result += "\tcapacity: \(capacity)\n"
     result += "\tcount: \(count)\n"
     result += "\tinitializedBuckets: \(initializedBuckets.description.indentedBy(24, preserveFirst: true, useTabs: false))\n"
-    result += "\tbucketPositionMap: \(bucketMap)\n"
+    result += "\tbucketMap: \(bucketMap.debugDescription)\n"
     result += "\n}"
     return result
   }

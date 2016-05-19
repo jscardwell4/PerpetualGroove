@@ -2,7 +2,7 @@
 //  OrderedDictionaryBuffer.swift
 //  MoonKit
 //
-//  Created by Jason Cardwell on 5/4/16.
+//  Created by Jason Cardwell on 5/7/16.
 //  Copyright © 2016 Jason Cardwell. All rights reserved.
 //
 
@@ -12,100 +12,47 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: _OrderedDictionaryBuffer {
 
   typealias Index = Int
   typealias Element = (Key, Value)
-
-  typealias Buffer = OrderedDictionaryBuffer<Key, Value>
+  typealias _Element = Element
   typealias Storage = OrderedDictionaryStorage<Key, Value>
-  typealias SubSequence = OrderedDictionarySliceBuffer<Key, Value>
-
-  // MARK: Pointers to the underlying memory
+  typealias SliceBuffer = OrderedDictionaryBuffer<Key, Value>
+  typealias SubSequence = SliceBuffer
 
   private(set) var storage: Storage
-  let initializedBuckets: BitMap
-  let bucketMap: HashBucketMap
-  let keysBaseAddress: UnsafeMutablePointer<Key>
-  let valuesBaseAddress: UnsafeMutablePointer<Value>
+  private(set) var initializedBuckets: BitMap
+  private(set) var bucketMap: HashBucketMap
+  private(set) var keysBaseAddress: UnsafeMutablePointer<Key>
+  private(set) var valuesBaseAddress: UnsafeMutablePointer<Value>
+
+  var startIndex: Index
+  var endIndex: Index
+
+  let indexOffset: Index
+
+  var count: Int { return endIndex - startIndex }
+  var capacity: Int { return indexOffset == 0 ? storage.capacity - startIndex : storage.capacity }
 
   var identity: UnsafePointer<Void> { return UnsafePointer<Void>(initializedBuckets.buffer.baseAddress) }
 
-  mutating func isUniquelyReferenced() -> Bool { return Swift.isUniquelyReferenced(&storage) }
-
-  // MARK: Accessors for the storage header properties
-
-  var capacity: Int { return storage.capacity }
-
-  var count: Int {
-    get { return storage.count }
-    nonmutating set { storage.count = newValue }
-  }
-
-  var startIndex: Index { return 0 }
-  var endIndex: Index { return count }
-
-  // MARK: Initializing by capacity
-
-  init() {
-    self.init(minimumCapacity: 2)
-  }
-
-  init(minimumCapacity: Int = 2) {
-    self.init(storage: Storage.create(Buffer.minimumCapacityForCount(minimumCapacity)))
-  }
-
-//  @inline(__always)
   static func minimumCapacityForCount(count: Int) -> Int {
     // `requestedCount + 1` below ensures that we don't fill in the last hole
     return max(Int(Double(count) * maxLoadFactorInverse), count + 1)
   }
 
-  // MARK: Initializing with data
+  mutating func isUniquelyReferenced() -> Bool { return Swift.isUniquelyReferenced(&storage) }
 
-  init(storage: Storage) {
-    self.storage = storage
-    initializedBuckets = storage.initializedBuckets
-    bucketMap = storage.bucketMap
-    keysBaseAddress = storage.keys
-    valuesBaseAddress = storage.values
-  }
-
-  init<S:SequenceType where S.Generator.Element == Element>(elements: S) {
-    let minimumCapacity = Buffer.minimumCapacityForCount(elements.underestimateCount())
-    let buffer = Buffer(minimumCapacity: minimumCapacity)
-
-    var count = 0
-    var duplicates = 0
-
-    for (position, (key, value)) in elements.enumerate() {
-      let (bucket, found) = buffer.find(key)
-      if found {
-        duplicates += 1
-        continue
-      } else {
-        buffer.initializeKey(key, forValue: value, position: position - duplicates, bucket: bucket)
-        count += 1
-      }
-    }
-    buffer.count = count
-
-    self = buffer
-  }
-
-  // MARK: Queries
 
   /// Returns the bucket for `key` diregarding collisions
-  func idealBucketForKey(key: Key) -> HashBucket {
-    return suggestBucketForValue(key, capacity: capacity)
-  }
+  func idealBucketForKey(key: Key) -> HashBucket { return suggestBucketForValue(key, capacity: storage.capacity) }
 
   /// Returns the position assigned to `bucket` or `nil` if no position is assigned
-  func positionForBucket(bucket: HashBucket) -> Index? {
-    return bucketMap[bucket]
+  func positionForBucket(bucket: HashBucket) -> Int? {
+    guard let position = bucketMap[bucket] else { return nil }
+    return position + indexOffset
   }
 
   /// Returns the bucket for the member assigned to `position`.
   /// - requires: A bucket has been assigned to `position`
-  func bucketForPosition(position: Index) -> HashBucket {
-    return bucketMap[position]
-  }
+  func bucketForPosition(position: Int) -> HashBucket { return bucketMap[position - indexOffset] }
 
   /// Returns the bucket containing `key` or `nil` if no bucket contains `member`.
   func currentBucketForKey(key: Key) -> HashBucket? {
@@ -133,14 +80,15 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: _OrderedDictionaryBuffer {
       bucket._successorInPlace()
     } while bucket != startBucket
 
-    fatalError("failed to locate hole")
+    print(storage.description)
+    fatalError("failed to locate hole:\n\(debugDescription)")
   }
 
   /// Returns the key inserted into `bucket`
   func keyInBucket(bucket: HashBucket) -> Key { return keysBaseAddress[bucket.offset] }
 
   /// Returns the key assigned to `position`
-  func keyAtPosition(position: Index) -> Key { return keyInBucket(bucketForPosition(position)) }
+  func keyAtPosition(position: Int) -> Key { return keyInBucket(bucketForPosition(position)) }
 
   /// Returns `false` when `bucket` is empty and `true` otherwise.
   func isInitializedBucket(bucket: HashBucket) -> Bool { return initializedBuckets[bucket] }
@@ -155,7 +103,7 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: _OrderedDictionaryBuffer {
   func valueInBucket(bucket: HashBucket) -> Value { return valuesBaseAddress[bucket.offset] }
 
   /// Returns the value assigned to `position`
-  func valueAtPosition(position: Index) -> Value { return valueInBucket(bucketForPosition(position)) }
+  func valueAtPosition(position: Int) -> Value { return valueInBucket(bucketForPosition(position)) }
 
   /// Returns the value associated with `key` or `nil` if `key` is not present.
   func valueForKey(key: Key) -> Value? {
@@ -165,12 +113,51 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: _OrderedDictionaryBuffer {
   }
 
   /// Convenience for retrieving both the key and value for a bucket.
-  func elementInBucket(bucket: HashBucket) -> Element { return (keyInBucket(bucket), valueInBucket(bucket)) }
+  func elementInBucket(bucket: HashBucket) -> (Key, Value) { return (keyInBucket(bucket), valueInBucket(bucket)) }
 
   /// Convenience for retrieving both the key and value for a position.
-  func elementAtPosition(position: Index) -> Element { return elementInBucket(bucketForPosition(position)) }
+  func elementAtPosition(position: Int) -> (Key, Value) { return elementInBucket(bucketForPosition(position)) }
 
-  // MARK: Removing data
+  init(storage: Storage, indices: Range<Index>, offset: Index = 0) {
+    self.storage = storage
+    initializedBuckets = storage.initializedBuckets
+    bucketMap = storage.bucketMap
+    keysBaseAddress = storage.keys
+    valuesBaseAddress = storage.values
+
+    indexOffset = offset
+    startIndex = indices.startIndex
+    endIndex = indices.endIndex
+  }
+
+  init<S:SequenceType where S.Generator.Element == Element>(elements: S) {
+    let minimumCapacity = SliceBuffer.minimumCapacityForCount(elements.underestimateCount())
+    var buffer = SliceBuffer(minimumCapacity: minimumCapacity)
+
+    var duplicates = 0
+
+    for (position, (key, value)) in elements.enumerate() {
+      let (bucket, found) = buffer.find(key)
+      if found {
+        duplicates += 1
+        continue
+      } else {
+        buffer.initializeKey(key, forValue: value, position: position - duplicates, bucket: bucket)
+        buffer.endIndex += 1
+      }
+    }
+
+    self = buffer
+  }
+
+  init() { self.init(minimumCapacity: 2) }
+
+  init(minimumCapacity: Int, offsetBy offset: Index = 0) {
+    let requiredCapacity = SliceBuffer.minimumCapacityForCount(minimumCapacity)
+    let storage = Storage.create(requiredCapacity)
+    let indices = offset ..< offset
+    self.init(storage: storage, indices: indices, offset: offset)
+  }
 
   /// Attempts to move the values of the buckets near `hole` into buckets nearer to their 'ideal' bucket
   func _patchHole(hole: HashBucket, idealBucket: HashBucket) {
@@ -211,15 +198,15 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: _OrderedDictionaryBuffer {
     (valuesBaseAddress + bucket.offset).destroy()
   }
 
-  func destroyElementAt(position: Index) {
+  mutating func destroyElementAt(position: Index) {
     defer { _fixLifetime(self) }
     let hole = bucketForPosition(position)
     let idealBucket = idealBucketForKey(keyInBucket(hole))
 
     destroyBucket(hole)
-    bucketMap.removeBucketAt(position)
+    bucketMap.removeBucketAt(position - indexOffset)
 
-    count -= 1
+    endIndex -= 1
 
     _patchHole(hole, idealBucket: idealBucket)
 
@@ -235,16 +222,18 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: _OrderedDictionaryBuffer {
     destroyBucket(bucket)
     initializeKey(element.0, forValue: element.1, position: position, bucket: emptyBucket)
   }
-
-  func replaceRange<C:CollectionType
-    where C.Generator.Element == Element>(subRange: Range<Int>, with newElements: C)
+  
+  mutating func replaceRange<
+    C:CollectionType where C.Generator.Element == Element
+    >(subRange: Range<Index>, with newElements: C)
   {
     defer { _fixLifetime(self) }
+
+    assert(indices.contains(subRange), "Invalid subrange '\(subRange)' for slice with indices '\(indices)'")
 
     // Remove values from buckets in `subRange`
 
     subRange.forEach { destroyBucket(bucketForPosition($0)) }
-
 
     // Insert new elements, accumulating a list of their buckets
     var newElementsBuckets = [HashBucket](minimumCapacity: numericCast(newElements.count))
@@ -257,10 +246,13 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: _OrderedDictionaryBuffer {
     }
 
     // Adjust positions
-    bucketMap.replaceRange(subRange, with: newElementsBuckets)
+    bucketMap.replaceRange(subRange - indexOffset, with: newElementsBuckets)
 
-    // Update count
-    storage.count = bucketMap.count
+    let 𝝙elements = newElementsBuckets.count - subRange.count
+
+    // Adjust count and endIndex
+    storage.count += 𝝙elements
+    endIndex += 𝝙elements
 
   }
 
@@ -276,7 +268,7 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: _OrderedDictionaryBuffer {
   func initializeKey(key: Key, forValue value: Value, position: Int, bucket: HashBucket) {
     defer { _fixLifetime(self) }
     initializeBucket(bucket, with: key, forValue: value)
-    bucketMap[position] = bucket
+    bucketMap[position - indexOffset] = bucket
   }
 
   func initializeKey(key: Key, forValue value: Value, position: Int) {
@@ -285,7 +277,7 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: _OrderedDictionaryBuffer {
   }
 
   func initializeKey(key: Key, forValue value: Value, bucket: HashBucket) {
-    initializeKey(key, forValue: value, position: count, bucket: bucket)
+    initializeKey(key, forValue: value, position: endIndex, bucket: bucket)
   }
 
   /// Removes the value from `bucket1` and uses this value to initialize `bucket2`
@@ -304,7 +296,7 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: _OrderedDictionaryBuffer {
   func setValue(value: Value, inBucket bucket: HashBucket) {
     (valuesBaseAddress + bucket.offset).initialize(value)
   }
-
+  
   // MARK: Subscripting
 
   subscript(index: Index) -> Element {
@@ -314,22 +306,23 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: _OrderedDictionaryBuffer {
 
   subscript(subRange: Range<Index>) -> SubSequence {
     get { return SubSequence(storage: storage, indices: subRange) }
-    set { fatalError("\(#function) not implemented") }
+    set { replaceRange(subRange, with: newValue) }
   }
-
+  
 }
 
 // MARK: CustomStringConvertible, CustomDebugStringConvertible
 
 extension OrderedDictionaryBuffer : CustomStringConvertible, CustomDebugStringConvertible {
-    
+
   private var elementsDescription: String {
     if count == 0 { return "[:]" }
 
     var result = "["
     var first = true
-    for bucket in bucketMap {
+    for position in startIndex ..< endIndex {
       if first { first = false } else { result += ", " }
+      let bucket = bucketMap[position - indexOffset]
       debugPrint(keysBaseAddress[bucket.offset], terminator: ": ", toStream: &result)
       debugPrint(valuesBaseAddress[bucket.offset], terminator: "",   toStream: &result)
     }
@@ -341,18 +334,24 @@ extension OrderedDictionaryBuffer : CustomStringConvertible, CustomDebugStringCo
 
   var debugDescription: String {
     var result = elementsDescription + "\n"
+    result += "startIndex = \(startIndex)\n"
+    result += "endIndex = \(endIndex)\n"
+    result += "indexOffset = \(indexOffset)\n"
     result += "count = \(count)\n"
     result += "capacity = \(capacity)\n"
-    for position in 0 ..< count {
-      result += "position \(position) ➞ bucket \(bucketMap[position])\n"
+    for position in startIndex ..< endIndex {
+      let bucket = bucketMap[position - indexOffset]
+      let key = keyInBucket(bucket)
+      let value = valueInBucket(bucket)
+      result += "position \(position) ➞ bucket \(bucket) [\(key): \(value)]\n"
     }
-    for position in count ..< capacity {
+    for position in endIndex ..< capacity {
       result += "position \(position), empty\n"
     }
-    for bucket in 0 ..< capacity {
+    for bucket in 0 ..< bucketMap.capacity {
       if initializedBuckets[bucket] {
         let key = keysBaseAddress[bucket]
-        result += "bucket \(bucket), ideal bucket = \(idealBucketForKey(key))\n"
+        result += "bucket \(bucket), key = \(key), ideal bucket = \(idealBucketForKey(key))\n"
       } else {
         result += "bucket \(bucket), empty\n"
       }

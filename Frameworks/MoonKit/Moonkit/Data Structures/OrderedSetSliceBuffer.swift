@@ -1,19 +1,18 @@
 //
-//  OrderedSetBuffer.swift
+//  OrderedSetSliceBuffer.swift
 //  MoonKit
 //
-//  Created by Jason Cardwell on 5/5/16.
+//  Created by Jason Cardwell on 5/18/16.
 //  Copyright © 2016 Jason Cardwell. All rights reserved.
 //
 
 import Foundation
 
-//private let maxLoadFactorInverse = 1/0.75
-
-struct OrderedSetBuffer<Element:Hashable> {
+struct OrderedSetSliceBuffer<Element:Hashable> {
 
   typealias Index = Int
 
+  typealias SliceBuffer = OrderedSetSliceBuffer<Element>
   typealias Buffer = OrderedSetBuffer<Element>
   typealias Storage = OrderedSetStorage<Element>
 
@@ -58,9 +57,9 @@ struct OrderedSetBuffer<Element:Hashable> {
   }
 
   init<S:SequenceType where S.Generator.Element == Element>(elements: S, capacity: Int? = nil) {
-    let minimumCapacity = Buffer.minimumCapacityForCount(elements.underestimateCount())
+    let minimumCapacity = SliceBuffer.minimumCapacityForCount(elements.underestimateCount())
     let requiredCapacity = max(minimumCapacity, capacity ?? 0)
-    let buffer = Buffer(minimumCapacity: requiredCapacity)
+    let buffer = SliceBuffer(minimumCapacity: requiredCapacity)
 
     var count = 0
     var duplicates = 0
@@ -111,7 +110,7 @@ struct OrderedSetBuffer<Element:Hashable> {
     return found ? nil : bucket
   }
 
-  /// Returns the current bucket for `member` and `true` when `member` is located; 
+  /// Returns the current bucket for `member` and `true` when `member` is located;
   /// returns an open bucket for `member` and `false` otherwise
   /// - requires: At least one empty bucket
   func find(member: Element) -> (bucket: HashBucket, found: Bool) {
@@ -267,47 +266,6 @@ struct OrderedSetBuffer<Element:Hashable> {
     initializedBuckets[bucket1] = false
     bucketMap.replaceBucket(bucket1, with: bucket2)
   }
+  
 
-
-}
-
-// MARK: CustomStringConvertible, CustomDebugStringConvertible
-
-extension OrderedSetBuffer : CustomStringConvertible, CustomDebugStringConvertible {
-
-  private var elementsDescription: String {
-    if count == 0 { return "[:]" }
-
-    var result = "["
-    var first = true
-    for bucket in bucketMap {
-      if first { first = false } else { result += ", " }
-      debugPrint(elements[bucket.offset], terminator: "",   toStream: &result)
-    }
-    result += "]"
-    return result
-  }
-
-  var description: String { return elementsDescription }
-
-  var debugDescription: String {
-    var result = elementsDescription + "\n"
-    result += "count = \(count)\n"
-    result += "capacity = \(capacity)\n"
-    for position in 0 ..< count {
-      result += "position \(position) ➞ bucket \(bucketMap[position])\n"
-    }
-    for position in count ..< capacity {
-      result += "position \(position), empty\n"
-    }
-    for bucket in 0 ..< capacity {
-      if initializedBuckets[bucket] {
-        let member = elements[bucket]
-        result += "bucket \(bucket), ideal bucket = \(idealBucketForElement(member))\n"
-      } else {
-        result += "bucket \(bucket), empty\n"
-      }
-    }
-    return result
-  }
 }

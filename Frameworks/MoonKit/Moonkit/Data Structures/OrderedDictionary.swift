@@ -23,21 +23,16 @@ public struct OrderedDictionary<Key: Hashable, Value>: _OrderedDictionary, _Dest
 
   func cloneBuffer(newCapacity: Int) -> Buffer {
 
-    let clone = Buffer(minimumCapacity: newCapacity)
+    var clone = Buffer(minimumCapacity: newCapacity, offsetBy: startIndex)
 
-    if clone.capacity == buffer.capacity {
-      for (position, bucket) in buffer.bucketMap.enumerate() {
-        let (key, value) = buffer.elementInBucket(bucket)
-        clone.initializeKey(key, forValue: value, position: position, bucket: bucket)
-      }
-    } else {
-      for (position, bucket) in buffer.bucketMap.enumerate() {
-        let (key, value) = buffer.elementInBucket(bucket)
-        clone.initializeKey(key, forValue: value, position: position)
-      }
+    for position in buffer.indices {
+      let bucket = buffer.bucketForPosition(position)
+      let (key, value) = buffer.elementInBucket(bucket)
+      clone.initializeKey(key, forValue: value, position: position)
+      clone.endIndex += 1
     }
 
-    clone.count = buffer.count
+    clone.storage.count = buffer.count
 
     return clone
   }
@@ -68,43 +63,29 @@ public struct OrderedDictionary<Key: Hashable, Value>: _OrderedDictionary, _Dest
 
   init(buffer: Buffer) { self.buffer = buffer }
 
-  mutating func _removeAtIndex(index: Index, oldElement: UnsafeMutablePointer<Element>) {
-    if oldElement != nil { oldElement.initialize(buffer.elementInBucket(buffer.bucketForPosition(index))) }
+  mutating func _remove(index: Index) {
     ensureUniqueWithCapacity(capacity)
     buffer.destroyElementAt(index)
   }
 
-  mutating func _removeValueForKey(key: Key, oldValue: UnsafeMutablePointer<Value?>) {
-    guard let index = buffer.positionForKey(key) else {
-      if oldValue != nil { oldValue.initialize(nil) }
-      return
-    }
-    if oldValue != nil {
-      let oldElement = UnsafeMutablePointer<Element>.alloc(1)
-      _removeAtIndex(index, oldElement: oldElement)
-      oldValue.initialize(oldElement.memory.1)
-    } else {
-      _removeAtIndex(index, oldElement: nil)
-    }
+  mutating func _removeAndReturn(index: Index) -> Element {
+    let result = buffer.elementInBucket(buffer.bucketForPosition(index))
+    _remove(index)
+    return result
   }
 
-  mutating func _updateValue(value: Value,
-                              forKey key: Key,
-                            oldValue: UnsafeMutablePointer<Value?>,
-                              oldKey: UnsafeMutablePointer<Key?>)
-  {
-    var (bucket, found) = buffer.find(key)
+  mutating func _removeValueForKey(key: Key) {
+    guard let index = buffer.positionForKey(key) else { return }
+    _remove(index)
+  }
 
-    if oldValue != nil || oldKey != nil {
-      if found {
-        let (key, value) = buffer.elementInBucket(bucket)
-        if oldKey != nil { oldKey.initialize(key) }
-        if oldValue != nil { oldValue.initialize(value) }
-      } else {
-        if oldKey != nil { oldKey.initialize(nil) }
-        if oldValue != nil { oldValue.initialize(nil) }
-      }
-    }
+  mutating func _removeAndReturnValueForKey(key: Key) -> Value? {
+    guard let index = buffer.positionForKey(key) else { return nil }
+    return _removeAndReturn(index).1
+  }
+
+  mutating func _updateValue(value: Value, forKey key: Key) {
+    var (bucket, found) = buffer.find(key)
 
     let minCapacity = found
       ? capacity
@@ -117,8 +98,32 @@ public struct OrderedDictionary<Key: Hashable, Value>: _OrderedDictionary, _Dest
       buffer.setValue(value, inBucket: bucket)
     } else {
       buffer.initializeKey(key, forValue: value, bucket: bucket)
-      buffer.count += 1
+      buffer.endIndex += 1
+      buffer.storage.count += 1
     }
+  }
+
+  mutating func _updateAndReturnValue(value: Value, forKey key: Key) -> Element? {
+    var (bucket, found) = buffer.find(key)
+
+    let result: Element? = found ? buffer.elementInBucket(bucket) : nil
+
+    let minCapacity = found
+      ? capacity
+      : Buffer.minimumCapacityForCount(buffer.count + 1)
+
+    let (_, capacityChanged) = ensureUniqueWithCapacity(minCapacity)
+    if capacityChanged { (bucket, found) = buffer.find(key) }
+
+    if found {
+      buffer.setValue(value, inBucket: bucket)
+    } else {
+      buffer.initializeKey(key, forValue: value, bucket: bucket)
+      buffer.endIndex += 1
+      buffer.storage.count += 1
+    }
+
+    return result
   }
 
   public var count: Int { return buffer.count }
@@ -137,6 +142,19 @@ public struct OrderedDictionary<Key: Hashable, Value>: _OrderedDictionary, _Dest
 
 }
 
+extension OrderedDictionary where Value:Equatable {
+
+  public func _customContainsEquatableElement(element: Element) -> Bool? {
+    guard let value = self[element.0] else { return false }
+    return element.1 == value
+  }
+
+  public func _customIndexOfEquatableElement(element: Element) -> Index?? {
+    guard self[element.0] == element.1 else { return Optional(nil) }
+    return Optional(buffer.positionForKey(element.0))
+  }
+}
+
 // MARK: DictionaryLiteralConvertible
 extension OrderedDictionary: DictionaryLiteralConvertible {
 
@@ -150,26 +168,20 @@ extension OrderedDictionary: DictionaryLiteralConvertible {
 extension OrderedDictionary: MutableKeyValueCollection {
 
   public mutating func insertValue(value: Value, forKey key: Key) {
-    _updateValue(value, forKey: key, oldValue: nil, oldKey: nil)
+    _updateValue(value, forKey: key)
   }
 
   public mutating func updateValue(value: Value, forKey key: Key) -> Value? {
-    let oldValue = UnsafeMutablePointer<Value?>.alloc(1)
-    _updateValue(value, forKey: key, oldValue: oldValue, oldKey: nil)
-    return oldValue.memory
+    return _updateAndReturnValue(value, forKey: key)?.1
   }
 
   /// Removes the value associated with `key` and returns it. Returns `nil` if `key` is not present.
   public mutating func removeValueForKey(key: Key) -> Value? {
-    let oldValue = UnsafeMutablePointer<Value?>.alloc(1)
-    _removeValueForKey(key, oldValue: oldValue)
-    return oldValue.memory
+    return _removeAndReturnValueForKey(key)
   }
 
   public mutating func removeAtIndex(index: Index) -> Element {
-    let oldElement = UnsafeMutablePointer<Element>.alloc(1)
-    _removeAtIndex(index, oldElement: oldElement)
-    return oldElement.memory
+    return _removeAndReturn(index)
   }
 
   /// Returns the index of `key` or `nil` if `key` is not present.
@@ -184,8 +196,8 @@ extension OrderedDictionary: MutableKeyValueCollection {
   public subscript(key: Key) -> Value? {
     get { return buffer.valueForKey(key) }
     set {
-      if let value = newValue { _updateValue(value, forKey: key, oldValue: nil, oldKey: nil) }
-      else { _removeValueForKey(key, oldValue: nil) }
+      if let value = newValue { _updateValue(value, forKey: key) }
+      else { _removeValueForKey(key) }
     }
   }
 
