@@ -9,7 +9,7 @@
 import Foundation
 
 /// A hash-based mapping from `Key` to `Value` instances that preserves elment order.
-public struct OrderedDictionary<Key: Hashable, Value>: _OrderedDictionary, _DestructorSafeContainer {
+public struct OrderedDictionary<Key: Hashable, Value>: _DestructorSafeContainer {
 
   typealias Buffer = OrderedDictionaryBuffer<Key, Value>
   typealias Storage = OrderedDictionaryStorage<Key, Value>
@@ -17,12 +17,13 @@ public struct OrderedDictionary<Key: Hashable, Value>: _OrderedDictionary, _Dest
   public typealias Index = Int
   public typealias Element = (Key, Value)
   public typealias _Element = Element
-  public typealias SubSequence = OrderedDictionarySlice<Key, Value>
+  public typealias SubSequence = OrderedDictionary<Key, Value>
 
   private(set) var buffer: Buffer
 
+  /// Returns a new buffer backed by storage cloned from the existing buffer.
+  /// Unreachable elements are not copied; however, `startIndex` and `endIndex` values are preserved.
   func cloneBuffer(newCapacity: Int) -> Buffer {
-
     var clone = Buffer(minimumCapacity: newCapacity, offsetBy: startIndex)
 
     for position in buffer.indices {
@@ -126,10 +127,15 @@ public struct OrderedDictionary<Key: Hashable, Value>: _OrderedDictionary, _Dest
     return result
   }
 
+  public mutating func insertValue(value: Value, forKey key: Key, atIndex index: Index) {
+    //TODO: Add testing
+    replaceRange(index ..< index, with: [(key, value)])
+  }
+
   public var count: Int { return buffer.count }
   public var capacity: Int { return buffer.capacity }
 
-  public init(elements: [Element]) {
+  public init<S:SequenceType where S.Generator.Element == Element>(_ elements: S) {
     var keys: Set<Int> = []
     var filteredElements: [Element] = []
     for element in elements where !keys.contains(element.0.hashValue) {
@@ -159,7 +165,7 @@ extension OrderedDictionary where Value:Equatable {
 extension OrderedDictionary: DictionaryLiteralConvertible {
 
   public init(dictionaryLiteral elements: Element...) {
-    self.init(elements: elements)
+    self.init(elements)
   }
 
 }
@@ -207,9 +213,8 @@ extension OrderedDictionary: MutableKeyValueCollection {
 // MARK: MutableCollectionType
 extension OrderedDictionary: MutableCollectionType {
 
-  public var startIndex: Index { return 0 }
-
-  public var endIndex: Index { return count }
+  public var startIndex: Int { return buffer.startIndex }
+  public var endIndex: Int  { return buffer.endIndex }
 
   public subscript(index: Index) -> Element {
     get { return buffer.elementAtPosition(index) }

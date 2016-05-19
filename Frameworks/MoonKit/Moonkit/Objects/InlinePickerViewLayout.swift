@@ -58,7 +58,7 @@ class InlinePickerViewLayout: UICollectionViewLayout {
   }
 
   // MARK: - Typealiases
-  private typealias AttributesIndex = OldOrderedDictionary<NSIndexPath, Attributes>
+  private typealias AttributesIndex = OrderedDictionary<NSIndexPath, Attributes>
 
   // MARK: - Exposed properties and methods
 

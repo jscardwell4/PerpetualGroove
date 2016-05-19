@@ -29,20 +29,17 @@ public struct OrderedSet<Element:Hashable>: CollectionType {
   /// Returns a copy of the current buffer with room for `newCapacity` elements
   func cloneBuffer(newCapacity: Int) -> Buffer {
 
-    let clone = Buffer(minimumCapacity: newCapacity)
+    var clone = Buffer(minimumCapacity: newCapacity)
 
-    if clone.capacity == buffer.capacity {
-      for (position, bucket) in buffer.bucketMap.enumerate() {
-        clone.initializeElement(buffer.memberInBucket(bucket), position: position, bucket: bucket)
-      }
-    } else {
-      for (position, bucket) in buffer.bucketMap.enumerate() {
-        clone.initializeElement(buffer.memberInBucket(bucket), position: position)
-      }
+    for position in buffer.indices {
+      let bucket = buffer.bucketForPosition(position)
+      let element = buffer.elementInBucket(bucket)
+      clone.initializeElement(element, position: position)
+      clone.endIndex += 1
     }
 
-    clone.count = buffer.count
-
+    clone.storage.count = buffer.count
+    
     return clone
   }
 
@@ -115,7 +112,7 @@ public struct OrderedSet<Element:Hashable>: CollectionType {
   }
 
   mutating func _removeAndReturn(index: Index) -> Element {
-    let result = buffer.memberInBucket(buffer.bucketForPosition(index))
+    let result = buffer.elementInBucket(buffer.bucketForPosition(index))
     _remove(index)
     return result
   }
@@ -136,7 +133,7 @@ public struct OrderedSet<Element:Hashable>: CollectionType {
     guard !found else { return }
     ensureUniqueWithCapacity(Buffer.minimumCapacityForCount(count + 1))
     buffer.initializeElement(member, bucket: bucket)
-    buffer.count += 1
+    buffer.endIndex += 1
   }
 
   // MARK: Replacing elements
@@ -156,7 +153,7 @@ extension OrderedSet: MutableIndexable {
   public var endIndex: Index { return count }
 
   public subscript(index: Index) -> Element {
-    get { return buffer.memberAtPosition(index) }
+    get { return buffer.elementAtPosition(index) }
     set { _replace(index, with: newValue) }
   }
 

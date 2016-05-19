@@ -15,26 +15,29 @@ public struct ObjectJSONValue: JSONValueConvertible, JSONValueInitializable {
   public var count: Int { return value.count }
   public init() { value = [:] }
   public init(_ value: JSONValue.ObjectValue) { self.value = value }
-  public init<J:JSONValueConvertible>(_ value: OldOrderedDictionary<String, J>) { self.value = value.map({$2.jsonValue}) }
-  public init(_ value: [String:JSONValue]) { self.value = OldOrderedDictionary(value) }
-  public init<J:JSONValueConvertible>(_ value: [String:J]) { self.value = OldOrderedDictionary(value).map({$2.jsonValue}) }
+  public init<J:JSONValueConvertible>(_ value: OrderedDictionary<String, J>) { self.value = OrderedDictionary(value.map({($0, $1.jsonValue)})) }
+  public init(_ value: [String:JSONValue]) { self.value = OrderedDictionary(value) }
+//  public init<J:JSONValueConvertible>(_ value: [String:J]) { self.value = OrderedDictionary(value).map({$1.jsonValue}) }
 
   public init?(_ jsonValue: JSONValue?) { switch jsonValue ?? .Null { case .Object(let o): value = o; default: return nil } }
   public subscript(key: String) -> JSONValue? { get { return value[key] } mutating set { value[key] = newValue } }
-  public var keys: LazyCollection<[String]> { return value.keys }
-  public var values: LazyMapCollection<[String], JSONValue> { return value.values }
+  public var keys: LazyMapCollection<JSONValue.ObjectValue, String> { return value.keys }
+  public var values: LazyMapCollection<JSONValue.ObjectValue, JSONValue> { return value.values }
   public func filter(includeElement: (Int, String, JSONValue) -> Bool) -> ObjectJSONValue {
-    return ObjectJSONValue(value.filter(includeElement))
+    return ObjectJSONValue(OrderedDictionary(value.enumerate().filter({includeElement($0, $1.0, $1.1)}).map({$1})))
   }
-  public func map<U>(transform: (Int, String, JSONValue) -> U) -> OldOrderedDictionary<String, U> {
-    return value.map(transform)
+  public func map<U>(transform: (Int, String, JSONValue) -> U) -> OrderedDictionary<String, U> {
+    return OrderedDictionary(value.enumerate().map({($1.0, transform($0, $1.0, $1.1))}))
   }
   public func map(transform: (Int, String, JSONValue) -> JSONValue) -> ObjectJSONValue {
-    return ObjectJSONValue(value.map(transform))
+    return ObjectJSONValue(OrderedDictionary(value.enumerate().map({($1.0, transform($0, $1.0, $1.1))})))
   }
 
-  public func compressedMap<U>(transform: (Int, String, JSONValue) -> U?) -> OldOrderedDictionary<String, U> {
-    return value.compressedMap(transform)
+  public func compressedMap<U>(transform: (Int, String, JSONValue) -> U?) -> OrderedDictionary<String, U> {
+    return OrderedDictionary(value.enumerate().flatMap({
+      guard let value = transform($0, $1.0, $1.1) else { return nil }
+      return ($1.0, value)
+    }))
   }
 
   public func contains(object: ObjectJSONValue) -> Bool {

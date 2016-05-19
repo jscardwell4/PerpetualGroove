@@ -21,7 +21,7 @@ public struct OrderedSetSlice<Element:Hashable>: CollectionType {
   public var startIndex: Int { return bounds.startIndex }
   public var endIndex: Int  { return bounds.endIndex }
 
-  public subscript(position: Index) -> Element { return buffer.memberAtPosition(position) }
+  public subscript(position: Index) -> Element { return buffer.elementAtPosition(position) }
 
   public subscript(bounds: Range<Index>) -> SubSequence {
     precondition(self.bounds.contains(bounds))

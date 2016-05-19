@@ -35,7 +35,7 @@ extension NSManagedObjectModel {
 
           var propertyNametagAttributes: [String] = []
 
-          var propertyDescription: OldOrderedDictionary<String, String> = [:]
+          var propertyDescription: OrderedDictionary<String, String> = [:]
           if !property.optional { propertyNametagAttributes.append("required") }
           if property.transient { propertyNametagAttributes.append("transient") }
           if !property.validationPredicates.isEmpty {
@@ -67,7 +67,7 @@ extension NSManagedObjectModel {
           description += "\t\(property.name)"
           if !propertyNametagAttributes.isEmpty { description += " (" + ",".join(propertyNametagAttributes) + ")" }
           if !propertyDescription.isEmpty {
-            description += " {\n\(propertyDescription.dictionary.formattedDescription(indent: 2))\n\t}"
+            description += " {\n\(propertyDescription.formattedDescription(indent: 2))\n\t}"
           }
           description += "\n"
         }

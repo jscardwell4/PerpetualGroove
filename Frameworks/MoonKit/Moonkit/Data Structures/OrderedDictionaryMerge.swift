@@ -1,14 +1,15 @@
 //
-//  OrderedDictionarySlice.swift
-//  MoonKit
+//  OrderedDictionary.swift
+//  HomeRemote
 //
-//  Created by Jason Cardwell on 5/5/16.
-//  Copyright © 2016 Jason Cardwell. All rights reserved.
+//  Created by Jason Cardwell on 8/7/14.
+//  Copyright (c) 2014 Moondeer Studios. All rights reserved.
 //
 
 import Foundation
 
-public struct OrderedDictionarySlice<Key:Hashable, Value>: _OrderedDictionary, _DestructorSafeContainer {
+/// A hash-based mapping from `Key` to `Value` instances that preserves elment order.
+public struct OrderedDictionary<Key: Hashable, Value>: _DestructorSafeContainer {
 
   typealias Buffer = OrderedDictionaryBuffer<Key, Value>
   typealias Storage = OrderedDictionaryStorage<Key, Value>
@@ -18,9 +19,7 @@ public struct OrderedDictionarySlice<Key:Hashable, Value>: _OrderedDictionary, _
   public typealias _Element = Element
   public typealias SubSequence = OrderedDictionarySlice<Key, Value>
 
-  var buffer: Buffer
-
-  var capacity: Int { return buffer.capacity }
+  private(set) var buffer: Buffer
 
   /// Returns a new buffer backed by storage cloned from the existing buffer.
   /// Unreachable elements are not copied; however, `startIndex` and `endIndex` values are preserved.
@@ -61,11 +60,9 @@ public struct OrderedDictionarySlice<Key:Hashable, Value>: _OrderedDictionary, _
 
   }
 
-  init(buffer: Buffer) { self.buffer = buffer }
+  public init(minimumCapacity: Int) { buffer = Buffer(minimumCapacity: minimumCapacity) }
 
-  init(minimumCapacity: Int) {
-    buffer = Buffer(minimumCapacity: minimumCapacity)
-  }
+  init(buffer: Buffer) { self.buffer = buffer }
 
   mutating func _remove(index: Index) {
     ensureUniqueWithCapacity(capacity)
@@ -103,6 +100,7 @@ public struct OrderedDictionarySlice<Key:Hashable, Value>: _OrderedDictionary, _
     } else {
       buffer.initializeKey(key, forValue: value, bucket: bucket)
       buffer.endIndex += 1
+      buffer.storage.count += 1
     }
   }
 
@@ -123,10 +121,14 @@ public struct OrderedDictionarySlice<Key:Hashable, Value>: _OrderedDictionary, _
     } else {
       buffer.initializeKey(key, forValue: value, bucket: bucket)
       buffer.endIndex += 1
+      buffer.storage.count += 1
     }
-    
+
     return result
   }
+
+  public var count: Int { return buffer.count }
+  public var capacity: Int { return buffer.capacity }
 
   public init(elements: [Element]) {
     var keys: Set<Int> = []
@@ -141,7 +143,7 @@ public struct OrderedDictionarySlice<Key:Hashable, Value>: _OrderedDictionary, _
 
 }
 
-extension OrderedDictionarySlice where Value:Equatable {
+extension OrderedDictionary where Value:Equatable {
 
   public func _customContainsEquatableElement(element: Element) -> Bool? {
     guard let value = self[element.0] else { return false }
@@ -154,9 +156,8 @@ extension OrderedDictionarySlice where Value:Equatable {
   }
 }
 
-
 // MARK: DictionaryLiteralConvertible
-extension OrderedDictionarySlice: DictionaryLiteralConvertible {
+extension OrderedDictionary: DictionaryLiteralConvertible {
 
   public init(dictionaryLiteral elements: Element...) {
     self.init(elements: elements)
@@ -165,7 +166,30 @@ extension OrderedDictionarySlice: DictionaryLiteralConvertible {
 }
 
 // MARK: MutableKeyValueCollection
-extension OrderedDictionarySlice: MutableKeyValueCollection {
+extension OrderedDictionary: MutableKeyValueCollection {
+
+  public mutating func insertValue(value: Value, forKey key: Key) {
+    _updateValue(value, forKey: key)
+  }
+
+  public mutating func updateValue(value: Value, forKey key: Key) -> Value? {
+    return _updateAndReturnValue(value, forKey: key)?.1
+  }
+
+  /// Removes the value associated with `key` and returns it. Returns `nil` if `key` is not present.
+  public mutating func removeValueForKey(key: Key) -> Value? {
+    return _removeAndReturnValueForKey(key)
+  }
+
+  public mutating func removeAtIndex(index: Index) -> Element {
+    return _removeAndReturn(index)
+  }
+
+  /// Returns the index of `key` or `nil` if `key` is not present.
+  public func indexForKey(key: Key) -> Index? { return buffer.positionForKey(key) }
+
+  /// Returns the value associated with `key` or `nil` if `key` is not present.
+  public func valueForKey(key: Key) -> Value? { return buffer.valueForKey(key) }
 
   /// Access the value associated with the given key.
   /// Reading a key that is not present in self yields nil. Writing nil as the value for a given key erases that key from self.
@@ -178,66 +202,45 @@ extension OrderedDictionarySlice: MutableKeyValueCollection {
     }
   }
 
-  public mutating func insertValue(value: Value, forKey key: Key) {
-    _updateValue(value, forKey: key)
-  }
-
-  /// Removes the value associated with `key` and returns it. Returns `nil` if `key` is not present.
-  public mutating func removeValueForKey(key: Key) -> Value? {
-    return _removeAndReturnValueForKey(key)
-  }
-
-  public mutating func updateValue(value: Value, forKey key: Key) -> Value? {
-    return _updateAndReturnValue(value, forKey: key)?.1
-  }
-
-  /// Returns the index of `key` or `nil` if `key` is not present.
-  public func indexForKey(key: Key) -> Index? { return buffer.positionForKey(key) }
-
-  /// Returns the value associated with `key` or `nil` if `key` is not present.
-  public func valueForKey(key: Key) -> Value? { return buffer.valueForKey(key) }
-
-  public mutating func removeAtIndex(index: Index) -> Element {
-    return _removeAndReturn(index)
-  }
 
 }
 
 // MARK: MutableCollectionType
-extension OrderedDictionarySlice: MutableCollectionType {
+extension OrderedDictionary: MutableCollectionType {
 
   public var startIndex: Int { return buffer.startIndex }
   public var endIndex: Int  { return buffer.endIndex }
 
   public subscript(index: Index) -> Element {
-    get { return buffer[index] }
+    get { return buffer.elementAtPosition(index) }
     set {
       ensureUniqueWithCapacity(count)
       buffer.replaceElementAtPosition(index, with: newValue)
     }
   }
-
-  public subscript(subRange: Range<Index>) -> SubSequence {
+  
+  public subscript(subRange: Range<Int>) -> SubSequence {
     get {
-      precondition(indices.contains(subRange))
       return SubSequence(buffer: buffer[subRange])
     }
     set {
       replaceRange(subRange, with: newValue)
     }
   }
-
+  
 }
 
 // MARK: RangeReplaceableCollectionType
-extension OrderedDictionarySlice: RangeReplaceableCollectionType {
+extension OrderedDictionary: RangeReplaceableCollectionType {
 
-  public init() { buffer = Buffer() }
+  public init() { buffer = Buffer(minimumCapacity: 0) }
 
-  public mutating func replaceRange<
-    C:CollectionType where C.Generator.Element == Element
-    >(subRange: Range<Index>, with newElements: C)
+  public mutating func reserveCapacity(minimumCapacity: Int) { ensureUniqueWithCapacity(minimumCapacity) }
+
+  public mutating func replaceRange<C:CollectionType
+    where C.Generator.Element == Element>(subRange: Range<Int>, with newElements: C)
   {
+
     let requiredCapacity = count - subRange.count + numericCast(newElements.count)
     ensureUniqueWithCapacity(requiredCapacity)
 
@@ -247,10 +250,10 @@ extension OrderedDictionarySlice: RangeReplaceableCollectionType {
 
 }
 
+// MARK: CustomStringConvertible, CustomDebugStringConvertible
+extension OrderedDictionary: CustomStringConvertible, CustomDebugStringConvertible {
 
-// MARK: CustomStringConvertible
-extension OrderedDictionarySlice: CustomStringConvertible {
-  public var description: String {
+  private var elementsDescription: String {
     guard count > 0 else { return "[:]" }
 
     var result = "["
@@ -264,16 +267,20 @@ extension OrderedDictionarySlice: CustomStringConvertible {
     result += "]"
     return result
   }
+
+  public var description: String { return elementsDescription }
+  
+  public var debugDescription: String { return elementsDescription }
 }
 
 // MARK: Equatable
-extension OrderedDictionarySlice: Equatable {}
+extension OrderedDictionary: Equatable {}
 
 public func == <Key: Hashable, Value>
-  (lhs: OrderedDictionarySlice<Key, Value>, rhs: OrderedDictionarySlice<Key, Value>) -> Bool
+  (lhs: OrderedDictionary<Key, Value>, rhs: OrderedDictionary<Key, Value>) -> Bool
 {
 
-  guard !(lhs.buffer.identity == rhs.buffer.identity && lhs.startIndex == rhs.startIndex && lhs.endIndex == rhs.endIndex) else { return true }
+  guard !(lhs.buffer.identity == rhs.buffer.identity && lhs.count == rhs.count) else { return true }
 
   for ((k1, _), (k2, _)) in zip(lhs, rhs) {
     guard k1 == k2 else { return false }
@@ -284,14 +291,14 @@ public func == <Key: Hashable, Value>
 
 
 public func == <Key: Hashable, Value: Equatable>
-  (lhs: OrderedDictionarySlice<Key, Value>, rhs: OrderedDictionarySlice<Key, Value>) -> Bool
+  (lhs: OrderedDictionary<Key, Value>, rhs: OrderedDictionary<Key, Value>) -> Bool
 {
-
-  guard !(lhs.buffer.identity == rhs.buffer.identity && lhs.startIndex == rhs.startIndex && lhs.endIndex == rhs.endIndex) else { return true }
+    
+  guard !(lhs.buffer.identity == rhs.buffer.identity && lhs.count == rhs.count) else { return true }
 
   for ((k1, v1), (k2, v2)) in zip(lhs, rhs) {
     guard k1 == k2 && v1 == v2 else { return false }
   }
-
+  
   return lhs.count == rhs.count
 }

@@ -33,7 +33,7 @@ final class OrderedDictionaryTests: XCTestCase {
     expect(orderedDictionary1).to(haveCount(5))
 
     let pairs1 = [("1", 1), ("2", 2), ("3", 3), ("4", 4), ("5", 5)]
-    orderedDictionary1 = OrderedDictionary<String, Int>(elements: pairs1)
+    orderedDictionary1 = OrderedDictionary<String, Int>(pairs1)
     expect(orderedDictionary1).to(haveCount(5))
 
     var orderedDictionary2 = OrderedDictionary<Int, String>(minimumCapacity: 8)
@@ -45,7 +45,7 @@ final class OrderedDictionaryTests: XCTestCase {
     expect(orderedDictionary2).to(haveCount(5))
 
     let pairs2 = [(1, "1"), (2, "2"), (3, "3"), (4, "4"), (5, "5")]
-    orderedDictionary2 = OrderedDictionary<Int, String>(elements: pairs2)
+    orderedDictionary2 = OrderedDictionary<Int, String>(pairs2)
     expect(orderedDictionary2).to(haveCount(5))
   }
 
@@ -192,7 +192,7 @@ final class OrderedDictionaryTests: XCTestCase {
 
   func testRemoveValueForKeyPerformance() {
     measureBlock {
-      var orderedDictionary = OrderedDictionary<String, Int>(elements: randomIntegersLarge1.map {(String($0), $0)})
+      var orderedDictionary = OrderedDictionary<String, Int>(randomIntegersLarge1.map {(String($0), $0)})
       for i in randomIntegersLarge1 { orderedDictionary.removeValueForKey(String(i)) }
     }
   }

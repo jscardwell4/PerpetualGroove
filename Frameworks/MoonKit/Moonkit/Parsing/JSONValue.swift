@@ -19,9 +19,9 @@ public protocol JSONValueInitializable {
 // MARK: - JSONValue
 /** Enumeration of discriminating union to represent a JSON value */
 public enum JSONValue {
-  public typealias ObjectValue = OldOrderedDictionary<Swift.String, JSONValue>
+  public typealias ObjectValue = OrderedDictionary<Swift.String, JSONValue>
   public typealias ArrayValue = Swift.Array<JSONValue>
-  public typealias AnyMappedObjectValue = OldOrderedDictionary<Swift.String, Any>
+  public typealias AnyMappedObjectValue = OrderedDictionary<Swift.String, Any>
   public typealias AnyMappedArrayValue = Swift.Array<Any>
 
   case Boolean (Bool)
@@ -64,11 +64,11 @@ public enum JSONValue {
 
   - parameter c: C
   */
-  public init<C:KeyValueCollectionType where C.KeysType.Generator.Element == Swift.String,
-                                             C.ValuesType.Generator.Element == JSONValue>(_ c: C)
-  {
-    self = Object(OldOrderedDictionary<Swift.String, JSONValue>(keys: c.keys, values: c.values))
-  }
+//  public init<C:KeyValueCollectionType where C.KeysType.Generator.Element == Swift.String,
+//                                             C.ValuesType.Generator.Element == JSONValue>(_ c: C)
+//  {
+//    self = Object(OrderedDictionary<Swift.String, JSONValue>(keys: c.keys, values: c.values))
+//  }
 
   /**
    Initialize to case `Object` using a dictionary literal
@@ -76,7 +76,7 @@ public enum JSONValue {
    - parameter dict: DictionaryLiteral<S, J>
    */
   public init(dict: DictionaryLiteral<StringValueConvertible,JSONValueConvertible>) {
-    var objectValue: OldOrderedDictionary<Swift.String, JSONValue> = [:]
+    var objectValue: OrderedDictionary<Swift.String, JSONValue> = [:]
     for (k, v) in dict { objectValue[k.stringValue] = v.jsonValue }
     self = Object(objectValue)
   }
@@ -88,10 +88,10 @@ public enum JSONValue {
 
   - parameter c: C
   */
-  public init<C:KeyValueCollectionType where C.KeysType.Generator.Element == Swift.String,
-    C.ValuesType.Generator.Element:JSONValueConvertible>(_ c: C)
+  public init<C:KeyValueCollection where C.Key == Swift.String,
+    C.Value:JSONValueConvertible>(_ c: C)
   {
-    self = Object(OldOrderedDictionary<Swift.String, JSONValue>(keys: c.keys, values: c.values.map({$0.jsonValue})))
+    self = Object(OrderedDictionary(zip(c.keys, c.values.map({$0.jsonValue}))))
   }
 
   public init?(_ v: Any) {
@@ -110,15 +110,18 @@ public enum JSONValue {
       if converted.count == x.count { self = Array(converted) }
       else { return nil }
     }
-    else if let x = v as? OldOrderedDictionary<Swift.String, Any> {
-      let converted = x.compressedMap({JSONValue($2)})
+    else if let x = v as? OrderedDictionary<Swift.String, Any> {
+      let converted = OrderedDictionary<Swift.String, JSONValue>(x.flatMap({
+        guard let value = JSONValue($1) else { return nil }
+        return ($0, value)
+      }))
       if converted.count == x.count { self = Object(converted) }
       else { return nil }
     }
     else if let x = v as? NSDictionary {
       let keys = x.allKeys.map({Swift.String($0)})
       let values = compressedMap(x.allValues, {JSONValue($0)})
-      if keys.count == values.count { self = Object(OldOrderedDictionary(Swift.Array(zip(keys, values)))) }
+      if keys.count == values.count { self = Object(OrderedDictionary(Swift.Array(zip(keys, values)))) }
       else { return nil }
     }
     else { return nil }
@@ -166,7 +169,7 @@ public enum JSONValue {
         let outerIndent = " " * (depth * 4)
         let innerIndent = outerIndent + " " * 4
         var string = "{"
-        let keyValuePairs = Swift.Array(o.map({"\"\($1)\": \($2.stringValueWithDepth(depth + 1))"}).values)
+        let keyValuePairs = o.map({"\"\($0)\": \($1.stringValueWithDepth(depth + 1))"})
         switch keyValuePairs.count {
           case 0: string += "]"
           case 1: string += "\n\(innerIndent)" + keyValuePairs[0] + "\n\(outerIndent)}"
@@ -187,7 +190,7 @@ public enum JSONValue {
       case .Number(let n):  return n
       case .String(let s):  return s
       case .Array(let a):   return a.map({$0.anyObjectValue})
-      case .Object(let o):  return o.map({$2.anyObjectValue}) as MSDictionary
+      case .Object(let o):  return o.map({$1.anyObjectValue})
     }
   }
 
@@ -229,7 +232,10 @@ public enum JSONValue {
 
   public var objectValue: ObjectValue? { switch self { case .Object(let o):  return o; default: return nil } }
   public var mappedObjectValue: AnyMappedObjectValue? {
-    return objectValue?.map({$2.mappedObjectValue ?? $2.mappedArrayValue ?? $2.value})
+    guard let keyValuePairs = objectValue?.map({($0, $1.mappedObjectValue ?? $1.mappedArrayValue ?? $1.value)}) else {
+      return nil
+    }
+    return OrderedDictionary(keyValuePairs)
   }
 
   public var arrayValue: ArrayValue? { switch self { case .Array(let a):  return a; default: return nil } }
@@ -241,14 +247,38 @@ public enum JSONValue {
   public var inflatedValue: JSONValue {
     switch self {
       case .Array(let a): return .Array(a.map({$0.inflatedValue}))
-      case .Object(let o):
+      case .Object(var o):
         let expand = {(keypath: Stack<Swift.String>, leaf: ObjectValue) -> JSONValue in
           var keypath = keypath
           var leaf = leaf
           while let k = keypath.pop() { leaf = [k:.Object(leaf)] }
           return .Object(leaf)
         }
-        return .Object(o.inflated(expand).map({$2.inflatedValue}))
+        // First gather a list of keys to inflate
+        let inflatableKeys = Swift.Array(o.keys.filter({$0 ~= "(?:\\w\\.)+\\w"}))
+
+        // Enumerate the list inflating each key
+        for key in inflatableKeys {
+
+          let keyComponents = ".".split(key)
+          let firstKey = keyComponents.first!
+          let lastKey = keyComponents.last!
+          let keypath = Stack(keyComponents.dropFirst().dropLast())
+          let value: Value
+
+          // If our value is an array, we embed each value in the array and keep our value as an array
+          if let valueArray = typeCast(o[key], Swift.Array<Value>.self) {
+            value = valueArray.map({expand(keypath, [lastKey:$0.jsonValue])})
+          }
+
+            // Otherwise we embed the value
+          else { value = expand(keypath, [lastKey: o[key]!]) }
+
+          o.insertValue(value.jsonValue, forKey: firstKey, atIndex: o.indexForKey(key)!)
+          o[key] = nil // Remove the compressed key-value entry
+        }
+
+        return .Object(o)
       default: return self
     }
   }
@@ -263,8 +293,8 @@ public enum JSONValue {
   public subscript(idx: Int) -> JSONValue? {
     switch self {
       case .Array(let a) where a.count > idx: return a[idx]
-      case .Object(let o) where o.count > idx: return o[idx].2
-    default: return nil
+      case .Object(let o) where o.count > idx: return o[idx].1
+      default: return nil
     }
   }
 
@@ -293,7 +323,7 @@ extension JSONValue: RawRepresentable {
       case .Number(let n):  return Swift.String(n)
       case .String(let s):  return "\"".wrap(s)
       case .Array(let a):   return "[" + ",".join(a.map({$0.rawValue})) + "]"
-      case .Object(let o):  return "{" + ",".join(o.keyValuePairs.map({"\"\($0)\":\($1.rawValue)"})) + "}"
+      case .Object(let o):  return "{" + ",".join(o.map({"\"\($0)\":\($1.rawValue)"})) + "}"
     }
   }
   public init?(rawValue: Swift.String) {
@@ -368,7 +398,7 @@ extension JSONValue: Streamable { public func writeTo<T:OutputStreamType>(inout 
 
 extension JSONValue: DictionaryLiteralConvertible {
   public init(dictionaryLiteral elements: (StringValueConvertible, JSONValueConvertible)...) {
-    var objectValue: OldOrderedDictionary<Swift.String, JSONValue> = [:]
+    var objectValue: OrderedDictionary<Swift.String, JSONValue> = [:]
     for (k, v) in elements {
       objectValue[k.stringValue] = v.jsonValue
     }
@@ -411,7 +441,7 @@ extension JSONValue: CustomDebugStringConvertible {
         } else {
           description += "JSONValue.Object(\(c) entries)"
           if c > 0 {
-            let entries = ",\n".join(o.keyValuePairs.map({"\t\($0): {\n\($1.debugDescription.indentedBy(8))\n\t}"}))
+            let entries = ",\n".join(o.map({"\t\($0): {\n\($1.debugDescription.indentedBy(8))\n\t}"}))
             description += "\nentries:\n\(entries)"
           }
         }

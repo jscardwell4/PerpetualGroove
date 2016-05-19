@@ -7,6 +7,7 @@
 //
 
 import Foundation
+let maxLoadFactorInverse = 1.0/0.75
 
 struct HashedStorageHeader: CustomStringConvertible {
   var count: Int = 0
