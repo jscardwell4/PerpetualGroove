@@ -98,7 +98,7 @@ struct OrderedSetBuffer<Element:Hashable>: CollectionType, MutableCollectionType
 
   /// Returns the bucket for `element` diregarding collisions
   func idealBucketForElement(element: Element) -> HashBucket {
-    return suggestBucketForValue(element, capacity: capacity)
+    return suggestBucketForValue(element, capacity: storage.capacity)
   }
 
   /// Returns the position assigned to `bucket` or `nil` if no position is assigned
