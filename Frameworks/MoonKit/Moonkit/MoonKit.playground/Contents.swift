@@ -1,8 +1,11 @@
 import Foundation
 import MoonKit
 
-var anArray: [Int] = [1, 2, 3, 4]
-var aSlice: ArraySlice<Int> = anArray[1 ... 3]
-aSlice.append(5)
-anArray[1 ... 3] = aSlice
-anArray
+
+class WTFClass: NonObjectiveCBase {}
+
+var wtf = WTFClass()
+isUniquelyReferenced(&wtf)
+
+weak var wtf2 = wtf
+isUniquelyReferenced(&wtf2!)

@@ -13,7 +13,7 @@ public struct OrderedSet<Element:Hashable>: CollectionType {
   public typealias Index = Int
   public typealias _Element = Element
   typealias Storage = OrderedSetStorage<Element>
-  typealias Buffer = OrderedSetBuffer<Element>
+  typealias Buffer = HashedStorageBuffer<Storage>
 
   public typealias SubSequence = OrderedSetSlice<Element>
 
@@ -29,12 +29,12 @@ public struct OrderedSet<Element:Hashable>: CollectionType {
   /// Returns a copy of the current buffer with room for `newCapacity` elements
   func cloneBuffer(newCapacity: Int) -> Buffer {
 
-    var clone = Buffer(minimumCapacity: newCapacity)
+    var clone = Buffer(minimumCapacity: newCapacity, offsetBy: startIndex)
 
     for position in buffer.indices {
       let bucket = buffer.bucketForPosition(position)
-      let element = buffer.elementInBucket(bucket)
-      clone.initializeElement(element, position: position)
+      let element = buffer.elementForBucket(bucket)
+      clone.initializeElement(element, at: position)
       clone.endIndex += 1
     }
 
@@ -74,7 +74,7 @@ public struct OrderedSet<Element:Hashable>: CollectionType {
 
   }
 
-  public init(minimumCapacity: Int) { buffer = Buffer(minimumCapacity: minimumCapacity) }
+  public init(minimumCapacity: Int) { buffer = Buffer(minimumCapacity: minimumCapacity, offsetBy: 0) }
 
   init(buffer: Buffer) { self.buffer = buffer }
 
@@ -108,11 +108,11 @@ public struct OrderedSet<Element:Hashable>: CollectionType {
 
   mutating func _remove(index: Index) {
     ensureUnique()
-    buffer.destroyElementAt(index)
+    buffer.destroyAt(index)
   }
 
   mutating func _removeAndReturn(index: Index) -> Element {
-    let result = buffer.elementInBucket(buffer.bucketForPosition(index))
+    let result = buffer.elementForBucket(buffer.bucketForPosition(index))
     _remove(index)
     return result
   }
@@ -132,7 +132,7 @@ public struct OrderedSet<Element:Hashable>: CollectionType {
     let (bucket, found) = buffer.find(member)
     guard !found else { return }
     ensureUniqueWithCapacity(Buffer.minimumCapacityForCount(count + 1))
-    buffer.initializeElement(member, bucket: bucket)
+    buffer.initializeBucket(bucket, with: member, at: buffer.endIndex)
     buffer.endIndex += 1
   }
 
@@ -140,7 +140,7 @@ public struct OrderedSet<Element:Hashable>: CollectionType {
 
   mutating func _replace(index: Index, with element: Element) {
     ensureUnique()
-    buffer.replaceElementAtPosition(index, with: element)
+    buffer.replaceElementAt(index, with: element)
   }
 
 }
@@ -153,7 +153,7 @@ extension OrderedSet: MutableIndexable {
   public var endIndex: Index { return count }
 
   public subscript(index: Index) -> Element {
-    get { return buffer.elementAtPosition(index) }
+    get { return buffer.elementForPosition(index) }
     set { _replace(index, with: newValue) }
   }
 
@@ -323,7 +323,7 @@ extension OrderedSet: MutableCollectionType {
 
 extension OrderedSet: RangeReplaceableCollectionType {
 
-  public init() { buffer = Buffer(minimumCapacity: 0) }
+  public init() { buffer = Buffer(minimumCapacity: 0, offsetBy: 0) }
 
   public mutating func reserveCapacity(minimumCapacity: Int) { ensureUniqueWithCapacity(minimumCapacity) }
 

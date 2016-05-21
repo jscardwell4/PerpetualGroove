@@ -14,6 +14,7 @@ struct OrderedSetBuffer<Element:Hashable>: CollectionType, MutableCollectionType
 
   typealias Index = Int
   typealias _Element = Element
+  typealias HashKey = Element
 
   typealias Buffer = OrderedSetBuffer<Element>
   typealias Storage = OrderedSetStorage<Element>
@@ -25,6 +26,8 @@ struct OrderedSetBuffer<Element:Hashable>: CollectionType, MutableCollectionType
   let initializedBuckets: BitMap
   let bucketMap: HashBucketMap
   let elements: UnsafeMutablePointer<Element>
+
+  var hashKeyBaseAddress: UnsafeMutablePointer<HashKey> { return elements }
 
   var startIndex: Index
   var endIndex: Index
@@ -65,7 +68,7 @@ struct OrderedSetBuffer<Element:Hashable>: CollectionType, MutableCollectionType
     self.storage = storage
     initializedBuckets = storage.initializedBuckets
     bucketMap = storage.bucketMap
-    elements = storage.elements
+    elements = storage.values
 
     indexOffset = offset
     startIndex = indices.startIndex
@@ -124,7 +127,7 @@ struct OrderedSetBuffer<Element:Hashable>: CollectionType, MutableCollectionType
     return found ? nil : bucket
   }
 
-  /// Returns the current bucket for `element` and `true` when `element` is located; 
+  /// Returns the current bucket for `element` and `true` when `element` is located;
   /// returns an open bucket for `element` and `false` otherwise
   /// - requires: At least one empty bucket
   func find(element: Element) -> (bucket: HashBucket, found: Bool) {

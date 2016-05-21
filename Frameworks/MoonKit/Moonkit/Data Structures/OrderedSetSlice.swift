@@ -10,7 +10,7 @@ import Foundation
 
 public struct OrderedSetSlice<Element:Hashable>: CollectionType {
 
-  typealias Buffer = OrderedSetBuffer<Element>
+  typealias Buffer = HashedStorageBuffer<OrderedSetStorage<Element>>
 
   private(set) var buffer: Buffer
   let bounds: Range<Int>
@@ -21,7 +21,7 @@ public struct OrderedSetSlice<Element:Hashable>: CollectionType {
   public var startIndex: Int { return bounds.startIndex }
   public var endIndex: Int  { return bounds.endIndex }
 
-  public subscript(position: Index) -> Element { return buffer.elementAtPosition(position) }
+  public subscript(position: Index) -> Element { return buffer.elementForPosition(position) }
 
   public subscript(bounds: Range<Index>) -> SubSequence {
     precondition(self.bounds.contains(bounds))
