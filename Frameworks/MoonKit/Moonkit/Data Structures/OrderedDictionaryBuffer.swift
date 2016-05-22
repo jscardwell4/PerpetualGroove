@@ -96,7 +96,7 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: CollectionType, MutableColl
   func keyAtPosition(position: Int) -> Key { return keyInBucket(bucketForPosition(position)) }
 
   /// Returns `false` when `bucket` is empty and `true` otherwise.
-  func isInitializedBucket(bucket: HashBucket) -> Bool { return initializedBuckets[bucket] }
+  func isInitializedBucket(bucket: HashBucket) -> Bool { return initializedBuckets[bucket.offset] }
 
   /// Returns the position for `key` or `nil` if `member` is not found.
   func positionForKey(key: Key) -> Index? {
@@ -199,7 +199,7 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: CollectionType, MutableColl
   }
 
   func destroyBucket(bucket: HashBucket) {
-    initializedBuckets[bucket] = false
+    initializedBuckets[bucket.offset] = false
     (keysBaseAddress + bucket.offset).destroy()
     (valuesBaseAddress + bucket.offset).destroy()
   }
@@ -268,7 +268,7 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: CollectionType, MutableColl
     defer { _fixLifetime(self) }
     (keysBaseAddress + bucket.offset).initialize(key)
     (valuesBaseAddress + bucket.offset).initialize(value)
-    initializedBuckets[bucket] = true
+    initializedBuckets[bucket.offset] = true
   }
 
   func initializeKey(key: Key, forValue value: Value, position: Int, bucket: HashBucket) {
@@ -289,7 +289,7 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: CollectionType, MutableColl
   /// Removes the value from `bucket1` and uses this value to initialize `bucket2`
   func moveElementInBucket(bucket1: HashBucket, toBucket bucket2: HashBucket) {
     initializeBucket(bucket2, with: (keysBaseAddress + bucket1.offset).move(), forValue: (valuesBaseAddress + bucket1.offset).move())
-    initializedBuckets[bucket1] = false
+    initializedBuckets[bucket1.offset] = false
     bucketMap.replaceBucket(bucket1, with: bucket2)
   }
 

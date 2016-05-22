@@ -46,10 +46,3 @@ func findBucketForValue<H:Hashable>(value: H, capacity: Int, initializedBuckets:
   } while true
 }
 
-extension BitMap {
-  subscript(bucket: HashBucket) -> Bool {
-    get { return self[bucket.offset] }
-    nonmutating set { self[bucket.offset] = newValue }
-  }
-}
-

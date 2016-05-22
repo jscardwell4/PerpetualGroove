@@ -38,6 +38,13 @@ public struct OrderedDictionary<Key: Hashable, Value>: _DestructorSafeContainer 
     return clone
   }
 
+  /// Checks that `owner` has only the one strong reference
+  mutating func ensureUnique() -> (reallocated: Bool, capacityChanged: Bool) {
+    guard !buffer.isUniquelyReferenced() else { return (false, false) }
+    buffer = cloneBuffer(capacity)
+    return (true, false)
+  }
+
   /// Checks that `owner` has only the one strong reference and that it's `buffer` has at least `minimumCapacity` capacity
   mutating func ensureUniqueWithCapacity(minimumCapacity: Int) -> (reallocated: Bool, capacityChanged: Bool) {
     switch (isUnique: buffer.isUniquelyReferenced(), hasCapacity: capacity >= minimumCapacity) {
@@ -128,7 +135,6 @@ public struct OrderedDictionary<Key: Hashable, Value>: _DestructorSafeContainer 
   }
 
   public mutating func insertValue(value: Value, forKey key: Key, atIndex index: Index) {
-    //TODO: Add testing
     replaceRange(index ..< index, with: [(key, value)])
   }
 
