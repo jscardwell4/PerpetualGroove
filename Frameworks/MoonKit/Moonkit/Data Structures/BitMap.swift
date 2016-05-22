@@ -25,6 +25,7 @@ public struct BitMap: CollectionType {
   public let count: Int
 
   public var nonZeroCount: Int {
+    defer { _fixLifetime(self) }
     var result = 0
     for word in buffer where word > 0 {
       for bit in 0 ..< UInt._sizeInBits where word & (1 << bit) != 0 {
@@ -56,6 +57,7 @@ public struct BitMap: CollectionType {
   public var firstSetBit: Int? { return nextSetBit(-1) }
 
   public func nextSetBit(start: Int) -> Int? {
+    defer { _fixLifetime(self) }
     let numberOfWords = self.numberOfWords
     let bitsPerWord = Int(UInt._sizeInBits)
     var bitIndex: Int, wordIndex: Int
@@ -87,6 +89,7 @@ public struct BitMap: CollectionType {
   public var lastSetBit: Int? { return previousSetBit(count) }
 
   public func previousSetBit(start: Int) -> Int? {
+    defer { _fixLifetime(self) }
     let bitsPerWord = Int(UInt._sizeInBits)
     var bitIndex: Int, wordIndex: Int
 
@@ -115,6 +118,7 @@ public struct BitMap: CollectionType {
   }
 
   public var nonZeroBits: [Int] {
+    defer { _fixLifetime(self) }
     var result: [Int] = []
     let bitsPerWord = Int(UInt._sizeInBits)
     for (wordIndex, word) in buffer.enumerate() where word > 0 {
@@ -129,10 +133,12 @@ public struct BitMap: CollectionType {
   public subscript(index: Int) -> Bool {
     @warn_unused_result
     get {
+      defer { _fixLifetime(self) }
       precondition(index < count && index >= 0, "invalid offset: \(index)")
       return buffer[BitMap.wordIndex(index)] & (1 << UInt(BitMap.bitIndex(index))) != 0
     }
     nonmutating set {
+      defer { _fixLifetime(self) }
       precondition(index < count && index >= 0, "invalid offset: \(index)")
       let wordIndex = BitMap.wordIndex(index)
       let bitIndex = UInt(BitMap.bitIndex(index))

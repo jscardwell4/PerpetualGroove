@@ -26,6 +26,12 @@ struct HashedStorageBuffer<Storage: HashedStorage where Storage:ConcreteHashedSt
   let hashedValues: UnsafeMutablePointer<HashedValue>
   let keyIsValue: Bool
 
+  let initializeAtOffset: (Int, Element) -> Void
+  let destroyAtOffset: (Int) -> Void
+  let moveAtOffset: (Int) -> Element
+  let elementAtOffset: (Int) -> Element
+
+  @inline(__always)
   mutating func isUniquelyReferenced() -> Bool {
     return Swift.isUniquelyReferenced(&storage)
   }
@@ -44,6 +50,7 @@ struct HashedStorageBuffer<Storage: HashedStorage where Storage:ConcreteHashedSt
   var capacity: Int { return indexOffset == 0 ? storage.capacity - startIndex : storage.capacity }
 
   /// Returns the minimum capacity for storing `count` elements.
+  @inline(__always)
   static func minimumCapacityForCount(count: Int) -> Int {
     // `requestedCount + 1` below ensures that we don't fill in the last hole
     return max(Int(Double(count) * maxLoadFactorInverse), count + 1)
@@ -58,6 +65,10 @@ struct HashedStorageBuffer<Storage: HashedStorage where Storage:ConcreteHashedSt
     hashedKeys = storage.hashedKeyBaseAddress
     hashedValues = storage.hashedValueBaseAddress
     keyIsValue = UnsafePointer<Void>(hashedKeys) == UnsafePointer<Void>(hashedValues)
+    initializeAtOffset = storage.initializeAtOffset()
+    destroyAtOffset = storage.destroyAtOffset()
+    moveAtOffset = storage.moveAtOffset()
+    elementAtOffset = storage.elementAtOffset()
 
     self.indexOffset = indexOffset
     startIndex = indices.startIndex
@@ -92,127 +103,112 @@ struct HashedStorageBuffer<Storage: HashedStorage where Storage:ConcreteHashedSt
   }
 
   /// Returns the bucket for `hashedKey` diregarding collisions
-  func idealBucketFor(hashedKey: HashedKey) -> HashBucket {
+  func idealBucketForKey(hashedKey: HashedKey) -> HashBucket {
     return suggestBucketForValue(hashedKey, capacity: storage.capacity)
   }
 
   /// Returns the bucket for `element` diregarding collisions
-  func idealBucketFor(element: Element) -> HashBucket {
-    if keyIsValue, let key = element as? HashedKey { return idealBucketFor(key) }
-    else if let (key, _) = (element as? (HashedKey, HashedValue)) {
-      return idealBucketFor(key)
-    } else {
-      fatalError("Unhandled element type '\(Element.self)'")
-    }
+  func idealBucketForElement(element: Element) -> HashBucket {
+    return idealBucketForKey(Storage.keyForElement(element))
   }
 
   /// Returns the position assigned to `bucket` or `nil` if no position is assigned
-  func positionForBucket(bucket: HashBucket) -> Int? { return bucketMap[bucket] }
+  func positionForBucket(bucket: HashBucket) -> Int? {
+    defer { _fixLifetime(self) }
+    return bucketMap[bucket]
+  }
 
   /// Returns the bucket for the element assigned to `position`.
   /// - requires: A bucket has been assigned to `position`
-  func bucketForPosition(position: Int) -> HashBucket { return bucketMap[offsetPosition(position)] }
+  func bucketForPosition(position: Int) -> HashBucket {
+    defer { _fixLifetime(self) }
+    return bucketMap[offsetPosition(position)]
+  }
 
   /// Returns `false` when `bucket` is empty and `true` otherwise.
-  func isInitializedBucket(bucket: HashBucket) -> Bool { return initializedBuckets[bucket] }
+  func isInitializedBucket(bucket: HashBucket) -> Bool {
+    defer { _fixLifetime(self) }
+    return initializedBuckets[bucket]
+  }
 
   /// Returns the hashed key for the specified bucket.
-  func hashedKeyInBucket(bucket: HashBucket) -> HashedKey { return hashedKeys[bucket.offset] }
+  func keyForBucket(bucket: HashBucket) -> HashedKey {
+    defer { _fixLifetime(self) }
+    return hashedKeys[bucket.offset]
+  }
 
   /// Returns the hashed value for the specified bucket.
-  func hashedValueInBucket(bucket: HashBucket) -> HashedValue { return hashedValues[bucket.offset] }
+  func valueForBucket(bucket: HashBucket) -> HashedValue {
+    defer { _fixLifetime(self) }
+    return hashedValues[bucket.offset]
+  }
 
   /// Returns the bucket containing `hashedKey` or `nil` if no bucket contains `member`.
-  func currentBucketFor(hashedKey: HashedKey) -> HashBucket? {
-    let (bucket, found) = find(hashedKey)
+  func currentBucketForKey(key: HashedKey) -> HashBucket? {
+    let (bucket, found) = find(key)
     return found ? bucket : nil
   }
 
   /// Returns the bucket containing `element` or `nil` if no bucket contains `element`.
-  func currentBucketFor(element: Element) -> HashBucket? {
-    if let (key, _) = (element as? (HashedKey, HashedValue)) {
-      return currentBucketFor(key)
-    } else if let key = element as? HashedKey where keyIsValue {
-      return currentBucketFor(key)
-    } else {
-      fatalError("Unhandled element type '\(Element.self)'")
-    }
+  func currentBucketForElement(element: Element) -> HashBucket? {
+      return currentBucketForKey(Storage.keyForElement(element))
   }
 
   /// Returns an empty bucket suitable for holding `hashedKey` or `nil` if a bucket already contains `key`.
-  func emptyBucketFor(hashedKey: HashedKey) -> HashBucket? {
-    let (bucket, found) = find(hashedKey)
+  func emptyBucketForKey(key: HashedKey) -> HashBucket? {
+    let (bucket, found) = find(key)
     return found ? nil : bucket
   }
 
   /// Returns an empty bucket suitable for holding `element` or `nil` if a bucket already contains `element`.
-  func emptyBucketFor(element: Element) -> HashBucket? {
-    if let (key, _) = (element as? (HashedKey, HashedValue)) {
-      return emptyBucketFor(key)
-    } else if let key = element as? HashedKey where keyIsValue {
-      return emptyBucketFor(key)
-    } else {
-      fatalError("Unhandled element type '\(Element.self)'")
-    }
+  func emptyBucketForElement(element: Element) -> HashBucket? {
+    return emptyBucketForKey(Storage.keyForElement(element))
   }
 
   /// Returns the hashed key for the specified position.
   /// - requires: A bucket has been assigned to `position`
-  func hashedKeyAtPosition(position: Int) -> HashedKey {
-    return hashedKeyInBucket(bucketForPosition(position))
+  func keyForPosition(position: Int) -> HashedKey {
+    return keyForBucket(bucketForPosition(position))
   }
 
   /// Returns the hashed value for the specified position.
   /// - requires: A bucket has been assigned to `position`
-  func hashedValueAtPosition(position: Int) -> HashedValue {
-    return hashedValueInBucket(bucketForPosition(position))
+  func valueForPosition(position: Int) -> HashedValue {
+    return valueForBucket(bucketForPosition(position))
   }
 
   /// Returns the position for `hashedKey` or `nil` if `hashedKey` is not found.
   func positionForKey(hashedKey: HashedKey) -> Int? {
-    guard count > 0, let bucket = currentBucketFor(hashedKey) else { return nil }
+    guard count > 0, let bucket = currentBucketForKey(hashedKey) else { return nil }
     return positionForBucket(bucket)
   }
 
   /// Returns the position for `element` or `nil` if `element` is not found.
   func positionForElement(element: Element) -> Int? {
-    guard count > 0, let bucket = currentBucketFor(element) else { return nil }
+    guard count > 0, let bucket = currentBucketForElement(element) else { return nil }
     return positionForBucket(bucket)
   }
 
   /// Returns the element in `bucket`.
   /// - requires: `bucket` contains an element.
   func elementForBucket(bucket: HashBucket) -> Element {
-    if keyIsValue {
-      let key = hashedKeyInBucket(bucket)
-      guard let element = key as? Element else {
-        fatalError("Unhandled element type '\(Element.self)'")
-      }
-      return element
-    } else {
-      let key = hashedKeyInBucket(bucket)
-      let value = hashedValueInBucket(bucket)
-      guard let element = (key, value) as? Element else {
-        fatalError("Unhandled element type '\(Element.self)'")
-      }
-      return element
-    }
+    return elementAtOffset(bucket.offset)
   }
 
   /// Returns the element at `position`.
   /// - requires: a bucket has been assigned to `position`.
   func elementForPosition(position: Int) -> Element { return elementForBucket(bucketForPosition(position)) }
 
-  /// Returns the current bucket for `hashedKey` and `true` when `hashedKey` is located;
-  /// returns an open bucket for `hashedKey` and `false` otherwise
+  /// Returns the current bucket for `key` and `true` when `key` is located;
+  /// returns an open bucket for `key` and `false` otherwise
   /// - requires: At least one empty bucket
-  func find(hashedKey: HashedKey) -> (bucket: HashBucket, found: Bool) {
-    let startBucket = idealBucketFor(hashedKey)
+  func find(key: HashedKey) -> (bucket: HashBucket, found: Bool) {
+    let startBucket = idealBucketForKey(key)
     var bucket = startBucket
 
     repeat {
       guard isInitializedBucket(bucket) else { return (bucket, false) }
-      guard hashedKeyInBucket(bucket) != hashedKey  else { return (bucket, true) }
+      guard keyForBucket(bucket) != key  else { return (bucket, true) }
       bucket._successorInPlace()
     } while bucket != startBucket
 
@@ -221,51 +217,37 @@ struct HashedStorageBuffer<Storage: HashedStorage where Storage:ConcreteHashedSt
 
   /// Initializes `bucket` with `element` without assigning a position.
   func initializeBucket(bucket: HashBucket, with element: Element) {
-    if let (key, value) = (element as? (HashedKey, HashedValue)) {
-      (hashedKeys + bucket.offset).initialize(key)
-      (hashedValues + bucket.offset).initialize(value)
-    } else if let key = element as? HashedKey where keyIsValue {
-      (hashedKeys + bucket.offset).initialize(key)
-    } else {
-      fatalError("Unhandled element type '\(Element.self)'")
-    }
+    defer { _fixLifetime(self) }
+    initializeAtOffset(bucket.offset, element)
     initializedBuckets[bucket] = true
   }
 
   /// Initializes `bucket` with `element` at `position`.
   func initializeBucket(bucket: HashBucket, with element: Element, at position: Int) {
+    defer { _fixLifetime(self) }
     initializeBucket(bucket, with: element)
     bucketMap[offsetPosition(position)] = bucket
   }
 
   /// Initializes a fresh bucket with `element` at `position` unless `element` is a duplicate. Returns the bucket or nil.
   func initializeElement(element: Element, at position: Int) -> HashBucket? {
-    guard let bucket = emptyBucketFor(element) else { return nil }
+    guard let bucket = emptyBucketForElement(element) else { return nil }
     initializeBucket(bucket, with: element, at: position)
     return bucket
   }
 
   /// Initializes a fresh bucket with `element` unless `element` is a duplicate. Returns the bucket or nil.
   func initializeElement(element: Element) -> HashBucket? {
-    guard let bucket = emptyBucketFor(element) else { return nil }
+    guard let bucket = emptyBucketForElement(element) else { return nil }
     initializeBucket(bucket, with: element)
     return bucket
   }
 
   /// Removes the element from `bucket1` and uses this element to initialize `bucket2`
   func moveBucket(bucket1: HashBucket, to bucket2: HashBucket) {
-    if keyIsValue,
-      let element = (hashedValues + bucket1.offset).move() as? Element
-    {
-      initializeBucket(bucket2, with: element)
-    } else if let element = ((hashedKeys + bucket1.offset).move(),
-                             (hashedValues + bucket1.offset).move()) as? Element
-    {
-      initializeBucket(bucket2, with: element)
-    } else {
-      fatalError("Unhandled element type '\(Element.self)'")
-    }
-
+    defer { _fixLifetime(self) }
+    let element = moveAtOffset(bucket1.offset)
+    initializeBucket(bucket2, with: element)
     initializedBuckets[bucket1] = false
     bucketMap.replaceBucket(bucket1, with: bucket2)
   }
@@ -315,8 +297,8 @@ struct HashedStorageBuffer<Storage: HashedStorage where Storage:ConcreteHashedSt
     while hole != lastInChain {
       last = lastInChain
       FillHole: while last != hole {
-        let key = hashedKeyInBucket(last)
-        let bucket = idealBucketFor(key)
+        let key = keyForBucket(last)
+        let bucket = idealBucketForKey(key)
 
         switch (bucket >= start, bucket <= hole) {
         case (true, true) where start <= hole,
@@ -337,15 +319,15 @@ struct HashedStorageBuffer<Storage: HashedStorage where Storage:ConcreteHashedSt
   /// Uninitializes `bucket`, destroys the element in `bucket`. Does not adjust positions.
   /// - requires: `bucket` contains an element.
   func destroyBucket(bucket: HashBucket) {
+    defer { _fixLifetime(self) }
     initializedBuckets[bucket] = false
-    (hashedKeys + bucket.offset).destroy()
-    if !keyIsValue { (hashedValues + bucket.offset).destroy() }
+    destroyAtOffset(bucket.offset)
   }
 
   /// Uninitializes the bucket for `position`, adjusts positions and `endIndex` and patches the hole.
   mutating func destroyAt(position: Index) {
     let hole = bucketForPosition(position)
-    let idealBucket = idealBucketFor(hashedKeyInBucket(hole))
+    let idealBucket = idealBucketForKey(keyForBucket(hole))
 
     destroyBucket(hole)
     bucketMap.removeBucketAt(offsetPosition(position))
@@ -407,8 +389,8 @@ extension HashedStorageBuffer: CustomStringConvertible, CustomDebugStringConvert
     }
     for bucket in 0 ..< bucketMap.capacity {
       if initializedBuckets[bucket] {
-        let key = hashedKeyInBucket(HashBucket(offset: bucket, capacity: bucketMap.capacity))
-        result += "bucket \(bucket), key = \(key), ideal bucket = \(idealBucketFor(key))\n"
+        let key = keyForBucket(HashBucket(offset: bucket, capacity: bucketMap.capacity))
+        result += "bucket \(bucket), key = \(key), ideal bucket = \(idealBucketForKey(key))\n"
       } else {
         result += "bucket \(bucket), empty\n"
       }

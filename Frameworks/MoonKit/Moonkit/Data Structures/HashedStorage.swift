@@ -77,6 +77,13 @@ protocol ConcreteHashedStorage {
   var hashedKeyBaseAddress: UnsafeMutablePointer<HashedKey> { get }
   var hashedValueBaseAddress: UnsafeMutablePointer<HashedValue> { get }
 
+  static func keyForElement(element: Element) -> HashedKey
+
+  func elementAtOffset() -> (Int) -> Element
+  func initializeAtOffset() -> (Int, Element) -> Void
+  func destroyAtOffset() -> (Int) -> Void
+  func moveAtOffset() -> (Int) -> Element
+
   static func create(minimumCapacity: Int) -> Self
 }
 
@@ -106,6 +113,42 @@ final class OrderedSetStorage<Value:Hashable>: HashedStorage, ConcreteHashedStor
   var hashedKeyBaseAddress: UnsafeMutablePointer<HashedKey> { return values }
 
   var hashedValueBaseAddress: UnsafeMutablePointer<HashedValue> { return values }
+
+  @inline(__always)
+  static func keyForElement(element: Element) -> HashedKey { return element }
+
+  @inline(__always)
+  func elementAtOffset() -> (Int) -> Element {
+    let values = self.values
+    return {
+      defer { _fixLifetime(values) }
+      return values[$0]
+    }
+  }
+
+  func initializeAtOffset() -> (Int, Element) -> Void {
+    let values = self.values
+    return {
+      defer { _fixLifetime(values) }
+      (values + $0).initialize($1)
+    }
+  }
+
+  func destroyAtOffset() -> (Int) -> Void {
+    let values = self.values
+    return {
+      defer { _fixLifetime(values) }
+      (values + $0).destroy()
+    }
+  }
+
+  func moveAtOffset() -> (Int) -> Element {
+    let values = self.values
+    return {
+      defer { _fixLifetime(values) }
+      return (values + $0).move()
+    }
+  }
 
   /// Create a new storage instance.
   static func create(minimumCapacity: Int) -> OrderedSetStorage {
@@ -188,6 +231,9 @@ final class OrderedDictionaryStorage<Key:Hashable, Value>: HashedStorage, Concre
 
   var hashedKeyBaseAddress: UnsafeMutablePointer<HashedKey> { return keys }
 
+  @inline(__always)
+  static func keyForElement(element: Element) -> HashedKey { return element.0 }
+
   /// Pointer to the first byte in memory allocated for the values
   var values: UnsafeMutablePointer<Value> {
     // Conversion back to UInt8 pointer necessary for `+` operator to advance by byte
@@ -195,6 +241,45 @@ final class OrderedDictionaryStorage<Key:Hashable, Value>: HashedStorage, Concre
   }
 
   var hashedValueBaseAddress: UnsafeMutablePointer<HashedValue> { return values }
+
+  @inline(__always)
+  func elementAtOffset() -> (Int) -> Element {
+    let keys = self.keys
+    let values = self.values
+    return {
+      defer { _fixLifetime(keys); _fixLifetime(values) }
+      return (keys[$0], values[$0])
+    }
+  }
+
+  func initializeAtOffset() -> (Int, Element) -> Void {
+    let keys = self.keys
+    let values = self.values
+    return {
+      defer { _fixLifetime(keys); _fixLifetime(values) }
+      (keys + $0).initialize($1.0)
+      (values + $0).initialize($1.1)
+    }
+  }
+
+  func destroyAtOffset() -> (Int) -> Void {
+    let keys = self.keys
+    let values = self.values
+    return {
+      defer { _fixLifetime(keys); _fixLifetime(values) }
+      (keys + $0).destroy()
+      (values + $0).destroy()
+    }
+  }
+
+  func moveAtOffset() -> (Int) -> Element {
+    let keys = self.keys
+    let values = self.values
+    return {
+      defer { _fixLifetime(keys); _fixLifetime(values) }
+      return ((keys + $0).move(), (values + $0).move())
+    }
+  }
 
   /// Create a new storage instance.
   static func create(minimumCapacity: Int) -> OrderedDictionaryStorage {
