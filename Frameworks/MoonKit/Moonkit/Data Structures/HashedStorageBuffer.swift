@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct HashedStorageBuffer<Storage: HashedStorage where Storage:ConcreteHashedStorage>: CollectionType, MutableCollectionType, RangeReplaceableCollectionType {
+struct HashedStorageBuffer<Storage: HashedStorage where Storage:ConcreteHashedStorage>: MutableCollectionType {
 
   typealias HashedKey = Storage.HashedKey
   typealias HashedValue = Storage.HashedValue
@@ -41,10 +41,10 @@ struct HashedStorageBuffer<Storage: HashedStorage where Storage:ConcreteHashedSt
   var startIndex: Int
   var endIndex: Int
 
-  @inline(__always) private func offsetPosition(position: Int) -> Int { return position - indexOffset }
-  @inline(__always) private func offsetPosition(position: Range<Int>) -> Range<Int> { return position - indexOffset }
-  @inline(__always) private func offsetIndex(index: Int) -> Int { return index + indexOffset }
-  @inline(__always) private func offsetIndex(index: Range<Int>) -> Range<Int> { return index + indexOffset }
+  @inline(__always) private func offsetPosition(position: Int) -> Int { return position &- indexOffset }
+  @inline(__always) private func offsetPosition(position: Range<Int>) -> Range<Int> { return position &- indexOffset }
+  @inline(__always) private func offsetIndex(index: Int) -> Int { return index &+ indexOffset }
+  @inline(__always) private func offsetIndex(index: Range<Int>) -> Range<Int> { return index &+ indexOffset }
 
   var count: Int { return endIndex - startIndex }
   var capacity: Int { return indexOffset == 0 ? storage.capacity - startIndex : storage.capacity }
@@ -58,10 +58,10 @@ struct HashedStorageBuffer<Storage: HashedStorage where Storage:ConcreteHashedSt
 
   var identity: UnsafePointer<Void> { return UnsafePointer<Void>(initializedBuckets.buffer.baseAddress) }
 
-  init(storage: Storage, indices: Range<Int>, indexOffset: Int) {
+  init(storage: Storage, bucketMap: HashBucketMap, indices: Range<Int>, indexOffset: Int) {
     self.storage = storage
     initializedBuckets = storage.initializedBuckets
-    bucketMap = storage.bucketMap
+    self.bucketMap = bucketMap
     hashedKeys = storage.hashedKeyBaseAddress
     hashedValues = storage.hashedValueBaseAddress
     keyIsValue = UnsafePointer<Void>(hashedKeys) == UnsafePointer<Void>(hashedValues)
@@ -79,27 +79,7 @@ struct HashedStorageBuffer<Storage: HashedStorage where Storage:ConcreteHashedSt
     let requiredCapacity = Buffer.minimumCapacityForCount(minimumCapacity)
     let storage = Storage.create(requiredCapacity)
     let indices = offset ..< offset
-    self.init(storage: storage, indices: indices, indexOffset: offset)
-  }
-
-  init() { self.init(minimumCapacity: 0, offsetBy: 0) }
-
-  init<S:SequenceType where S.Generator.Element == Element>(elements: S) {
-    let minimumCapacity = Buffer.minimumCapacityForCount(elements.underestimateCount())
-    var buffer = Buffer(minimumCapacity: minimumCapacity, offsetBy: 0)
-
-    var duplicates = 0
-
-    for (position, element) in elements.enumerate() {
-      if buffer.initializeElement(element, at: position - duplicates) {
-        buffer.endIndex = buffer.endIndex &+ 1
-      } else {
-        duplicates = duplicates &+ 1
-      }
-    }
-    buffer.storage.count = buffer.count
-
-    self = buffer
+    self.init(storage: storage, bucketMap: HashBucketMap(capacity: storage.capacity), indices: indices, indexOffset: offset)
   }
 
   /// Returns the bucket for `hashedKey` diregarding collisions
@@ -266,32 +246,6 @@ struct HashedStorageBuffer<Storage: HashedStorage where Storage:ConcreteHashedSt
     initializeElement(element, at: position)
   }
 
-  mutating func replaceRange<
-    C:CollectionType where C.Generator.Element == Element
-    >(subRange: Range<Int>, with newElements: C)
-  {
-    // Remove values from buckets in `subRange`
-    subRange.forEach { destroyBucket(bucketForPosition($0)) }
-
-    // Insert new elements, accumulating a list of their buckets
-    var newElementsBuckets = [HashBucket](minimumCapacity: numericCast(newElements.count))
-
-    for element in newElements {
-      guard let bucket = emptyBucketForElement(element) else { continue }
-      initializeBucket(bucket, with: element)
-      newElementsBuckets.append(bucket)
-    }
-
-    // Adjust positions
-    bucketMap.replaceRange(offsetPosition(subRange), with: newElementsBuckets)
-
-    let 𝝙elements = newElementsBuckets.count - subRange.count
-
-    // Adjust count and endIndex
-    storage.count += 𝝙elements
-    endIndex += 𝝙elements
-  }
-
   /// Attempts to move the values of the buckets near `hole` into buckets nearer to their 'ideal' bucket
   private func patchHole(hole: HashBucket, idealBucket: HashBucket) {
 
@@ -335,15 +289,15 @@ struct HashedStorageBuffer<Storage: HashedStorage where Storage:ConcreteHashedSt
 
   /// Uninitializes the bucket for `position`, adjusts positions and `endIndex` and patches the hole.
   mutating func destroyAt(position: Index) {
+
     let hole = bucketForPosition(position)
     let idealBucket = idealBucketForKey(keyForBucket(hole))
 
     destroyBucket(hole)
     bucketMap.removeBucketAt(offsetPosition(position))
-    endIndex -= 1
+    endIndex = endIndex &- 1
     patchHole(hole, idealBucket: idealBucket)
   }
-
 
   subscript(index: Int) -> Element {
     get { return elementForPosition(index) }
@@ -351,8 +305,197 @@ struct HashedStorageBuffer<Storage: HashedStorage where Storage:ConcreteHashedSt
   }
 
   subscript(subRange: Range<Int>) -> SubSequence {
-    get { return SubSequence(storage: storage, indices: subRange, indexOffset: indexOffset) }
+    get { return SubSequence(storage: storage, bucketMap: bucketMap[subRange], indices: subRange, indexOffset: indexOffset) }
     set { replaceRange(subRange, with: newValue) }
+  }
+
+}
+
+// MARK: RangeReplaceableCollectionType
+extension HashedStorageBuffer: RangeReplaceableCollectionType {
+
+  /// Create an empty instance.
+  init() { self.init(minimumCapacity: 0, offsetBy: 0) }
+
+  /// Replace the given `subRange` of elements with `newElements`.
+  ///
+  /// Invalidates all indices with respect to `self`.
+  ///
+  /// - Complexity: O(`subRange.count`) if
+  ///   `subRange.endIndex == self.endIndex` and `newElements.isEmpty`,
+  ///   O(`self.count` + `newElements.count`) otherwise.
+  mutating func replaceRange<
+    C:CollectionType where C.Generator.Element == Element
+    >(subRange: Range<Int>, with newElements: C)
+  {
+    // Remove values from buckets in `subRange`
+    subRange.forEach { destroyBucket(bucketForPosition($0)) }
+
+    // Insert new elements, accumulating a list of their buckets
+    var newElementsBuckets = [HashBucket](minimumCapacity: numericCast(newElements.count))
+
+    for element in newElements {
+      guard let bucket = emptyBucketForElement(element) else { continue }
+      initializeBucket(bucket, with: element)
+      newElementsBuckets.append(bucket)
+    }
+
+    // Adjust positions
+    bucketMap.replaceRange(offsetPosition(subRange), with: newElementsBuckets)
+
+    let 𝝙elements = newElementsBuckets.count - subRange.count
+
+    // Adjust count and endIndex
+    storage.count += 𝝙elements
+    endIndex += 𝝙elements
+  }
+
+  /// A non-binding request to ensure `n` elements of available storage.
+  ///
+  /// This works as an optimization to avoid multiple reallocations of
+  /// linear data structures like `Array`.  Conforming types may
+  /// reserve more than `n`, exactly `n`, less than `n` elements of
+  /// storage, or even ignore the request completely.
+  mutating func reserveCapacity(n: Int) {
+    guard capacity < n else { return }
+    var buffer = Buffer(minimumCapacity: n, offsetBy: startIndex) //FIXME: Should this be `startIndex - indexOffset`?
+    for element in self { buffer.initializeElement(element) }
+    buffer.startIndex = startIndex
+    buffer.endIndex = endIndex
+    buffer.storage.count = storage.count
+    self = buffer
+  }
+
+  /// Creates a collection instance that contains `elements`.
+  init<S:SequenceType where S.Generator.Element == Element>(elements: S) {
+    let minimumCapacity = Buffer.minimumCapacityForCount(elements.underestimateCount())
+
+    var buffer = Buffer(minimumCapacity: minimumCapacity, offsetBy: 0)
+    buffer.appendContentsOf(elements)
+
+    self = buffer
+  }
+
+  /// Append `x` to `self`.
+  ///
+  /// Applying `successor()` to the index of the new element yields
+  /// `self.endIndex`.
+  ///
+  /// - Complexity: Amortized O(1).
+  mutating func append(x: Element) {
+    guard initializeElement(x, at: endIndex) else { return }
+    endIndex = endIndex &+ 1
+    storage.count = storage.count &+ 1
+  }
+
+
+  /// Append the elements of `newElements` to `self`.
+  ///
+  /// - Complexity: O(*length of result*).
+  mutating func appendContentsOf<
+    S:SequenceType where S.Generator.Element == Element
+    >(newElements: S)
+  {
+    for element in newElements { append(element) }
+  }
+
+
+  /// Insert `newElement` at index `i`.
+  ///
+  /// Invalidates all indices with respect to `self`.
+  ///
+  /// - Complexity: O(`self.count`).
+  mutating func insert(newElement: Element, atIndex i: Index) {
+    guard let bucket = emptyBucketForElement(newElement) else { return }
+    initializeBucket(bucket, with: newElement)
+    let index = offsetPosition(i)
+    bucketMap.replaceRange(index ..< index, with: CollectionOfOne(bucket))
+    endIndex = endIndex &+ 1
+    storage.count = storage.count &+ 1
+  }
+
+
+  /// Insert `newElements` at index `i`.
+  ///
+  /// Invalidates all indices with respect to `self`.
+  ///
+  /// - Complexity: O(`self.count + newElements.count`).
+  mutating func insertContentsOf<
+    S:CollectionType where S.Generator.Element == Element
+    >(newElements: S, at i: Index)
+  {
+    // Insert new elements, accumulating a list of their buckets
+    var newElementsBuckets = [HashBucket](minimumCapacity: numericCast(newElements.count))
+
+    for element in newElements {
+      guard let bucket = emptyBucketForElement(element) else { continue }
+      initializeBucket(bucket, with: element)
+      newElementsBuckets.append(bucket)
+    }
+
+    // Adjust positions
+    let index = offsetPosition(i)
+    bucketMap.replaceRange(index ..< index, with: newElementsBuckets)
+
+    let 𝝙elements = newElementsBuckets.count
+
+    // Adjust count and endIndex
+    storage.count += 𝝙elements
+    endIndex += 𝝙elements
+
+  }
+
+
+  /// Remove the element at index `i`.
+  ///
+  /// Invalidates all indices with respect to `self`.
+  ///
+  /// - Complexity: O(`self.count`).
+  mutating func removeAtIndex(i: Index) -> Element {
+    let result = elementForPosition(i)
+    destroyAt(i)
+    return result
+  }
+
+
+  /// Remove the element at `startIndex` and return it.
+  ///
+  /// - Complexity: O(`self.count`)
+  /// - Requires: `!self.isEmpty`.
+  mutating func removeFirst() -> Element { return removeAtIndex(startIndex) }
+
+
+  /// Remove the first `n` elements.
+  ///
+  /// - Complexity: O(`self.count`)
+  /// - Requires: `n >= 0 && self.count >= n`.
+  mutating func removeFirst(n: Int) {
+    print(debugDescription)
+    removeRange(startIndex ..< startIndex.advancedBy(n))
+  }
+
+
+  /// Remove the indicated `subRange` of elements.
+  ///
+  /// Invalidates all indices with respect to `self`.
+  ///
+  /// - Complexity: O(`self.count`).
+  mutating func removeRange(subRange: Range<Index>) { for index in subRange { destroyAt(index) } }
+
+
+  /// Remove all elements.
+  ///
+  /// Invalidates all indices with respect to `self`.
+  ///
+  /// - parameter keepCapacity: If `true`, is a non-binding request to
+  ///    avoid releasing storage, which can be a useful optimization
+  ///    when `self` is going to be grown again.
+  ///
+  /// - Complexity: O(`self.count`).
+  mutating func removeAll(keepCapacity keepCapacity: Bool) {
+    guard keepCapacity else { self = Buffer.init(); return }
+    for bucket in bucketMap { destroyBucket(bucket) }
+    bucketMap.initializeToNegativeOne()
   }
 
 }

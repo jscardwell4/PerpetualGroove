@@ -21,12 +21,12 @@ class HashedStorage: ManagedBuffer<HashedStorageHeader, UInt8> {
   final var initializedBucketsBytes: Int { return HashedStorage.bytesForInitializedBuckets(capacity) }
 
   /// Returns the number of bytes required for the map of buckets to positions given `capacity`
-  static func bytesForBucketMap(capacity: Int) -> Int {
-    return HashBucketMap.bytesFor(capacity) + max(0, alignof(Int) - alignof(UInt))
-  }
+//  static func bytesForBucketMap(capacity: Int) -> Int {
+//    return HashBucketMap.bytesFor(capacity) + max(0, alignof(Int) - alignof(UInt))
+//  }
 
   /// The number of bytes used to store the bucket map for this instance.
-  final var bucketMapBytes: Int { return HashedStorage.bytesForBucketMap(capacity) }
+//  final var bucketMapBytes: Int { return HashedStorage.bytesForBucketMap(capacity) }
 
   /// The total number of buckets
   final var capacity: Int { return value.capacity }
@@ -47,12 +47,12 @@ class HashedStorage: ManagedBuffer<HashedStorageHeader, UInt8> {
   final var initializedBuckets: BitMap { return value.initializedBuckets }
 
   /// Pointer to the first byte in memory allocated for the position map
-  final var bucketMapAddress: UnsafeMutablePointer<UInt8> {
-    return initializedBucketsAddress + initializedBucketsBytes
-  }
+//  final var bucketMapAddress: UnsafeMutablePointer<UInt8> {
+//    return initializedBucketsAddress + initializedBucketsBytes
+//  }
 
   /// An index mapping buckets to positions and positions to buckets
-  final var bucketMap: HashBucketMap { return value.bucketMap }
+//  final var bucketMap: HashBucketMap { return value.bucketMap }
 
   var description: String {
     defer { _fixLifetime(self) }
@@ -60,10 +60,10 @@ class HashedStorage: ManagedBuffer<HashedStorageHeader, UInt8> {
     result += "\tcapacity: \(capacity)\n"
     result += "\tcount: \(count)\n"
     result += "\tinitializedBuckets: \(initializedBuckets.description.indentedBy(24, preserveFirst: true, useTabs: false))\n"
-    result += "\tbucketMap: \(bucketMap.debugDescription)\n"
+//    result += "\tbucketMap: \(bucketMap.debugDescription)\n"
     result += "\ttotal bytes: \(allocatedElementCount)\n"
     result += "\tinitializedBucketsBytes: \(initializedBucketsBytes)\n"
-    result += "\tbucketMapBytes: \(bucketMapBytes)\n"
+//    result += "\tbucketMapBytes: \(bucketMapBytes)\n"
     result += "\n}"
     return result
   }
@@ -107,7 +107,7 @@ final class OrderedSetStorage<Value:Hashable>: HashedStorage, ConcreteHashedStor
 
   /// Pointer to the first byte in memory allocated for the hash values
   var values: UnsafeMutablePointer<Value> {
-    return UnsafeMutablePointer<Value>(bucketMapAddress + bucketMapBytes)
+    return UnsafeMutablePointer<Value>(initializedBucketsAddress + initializedBucketsBytes)
   }
 
   var hashedKeyBaseAddress: UnsafeMutablePointer<HashedKey> { return values }
@@ -155,23 +155,23 @@ final class OrderedSetStorage<Value:Hashable>: HashedStorage, ConcreteHashedStor
     let capacity = round2(minimumCapacity)
 
     let initializedBucketsBytes = bytesForInitializedBuckets(capacity)
-    let bucketMapBytes = bytesForBucketMap(capacity)
+//    let bucketMapBytes = bytesForBucketMap(capacity)
     let elementsBytes = bytesForValues(capacity)
     let requiredCapacity = initializedBucketsBytes
-      + bucketMapBytes
+//      + bucketMapBytes
       + elementsBytes
 
     let storage = super.create(requiredCapacity) {
       let initializedBucketsStorage = $0.withUnsafeMutablePointerToElements {$0}
       let initializedBuckets = BitMap(uninitializedStorage: pointerCast(initializedBucketsStorage),
                                       bitCount: capacity)
-      let bucketMapStorage = initializedBucketsStorage + initializedBucketsBytes
-      let bucketMap = HashBucketMap(storage: pointerCast(bucketMapStorage), capacity: capacity)
+//      let bucketMapStorage = initializedBucketsStorage + initializedBucketsBytes
+//      let bucketMap = HashBucketMap(storage: pointerCast(bucketMapStorage), capacity: capacity)
       let bytesAllocated = $0.allocatedElementCount
       let header =  Header(capacity: capacity,
                            bytesAllocated: bytesAllocated,
-                           initializedBuckets: initializedBuckets,
-                           bucketMap: bucketMap)
+                           initializedBuckets: initializedBuckets/*,
+                           bucketMap: bucketMap*/)
       return header
     }
 
@@ -226,7 +226,7 @@ final class OrderedDictionaryStorage<Key:Hashable, Value>: HashedStorage, Concre
 
   /// Pointer to the first byte in memory allocated for the keys
   var keys: UnsafeMutablePointer<Key> {
-    return UnsafeMutablePointer<Key>(bucketMapAddress + bucketMapBytes)
+    return UnsafeMutablePointer<Key>(initializedBucketsAddress + initializedBucketsBytes)
   }
 
   var hashedKeyBaseAddress: UnsafeMutablePointer<HashedKey> { return keys }
@@ -286,11 +286,11 @@ final class OrderedDictionaryStorage<Key:Hashable, Value>: HashedStorage, Concre
     let capacity = round2(minimumCapacity)
 
     let initializedBucketsBytes = bytesForInitializedBuckets(capacity)
-    let bucketMapBytes = bytesForBucketMap(capacity)
+//    let bucketMapBytes = bytesForBucketMap(capacity)
     let keysBytes = bytesForKeys(capacity)
     let valuesBytes = bytesForValues(capacity)
     let requiredCapacity = initializedBucketsBytes
-      + bucketMapBytes
+//      + bucketMapBytes
       + keysBytes
       + valuesBytes
 
@@ -298,13 +298,13 @@ final class OrderedDictionaryStorage<Key:Hashable, Value>: HashedStorage, Concre
       let initializedBucketsStorage = $0.withUnsafeMutablePointerToElements {$0}
       let initializedBuckets = BitMap(uninitializedStorage: pointerCast(initializedBucketsStorage),
                                       bitCount: capacity)
-      let bucketMapStorage = initializedBucketsStorage + initializedBucketsBytes
-      let bucketMap = HashBucketMap(storage: pointerCast(bucketMapStorage), capacity: capacity)
+//      let bucketMapStorage = initializedBucketsStorage + initializedBucketsBytes
+//      let bucketMap = HashBucketMap(storage: pointerCast(bucketMapStorage), capacity: capacity)
       let bytesAllocated = $0.allocatedElementCount
       let header =  Header(capacity: capacity,
                            bytesAllocated: bytesAllocated,
-                           initializedBuckets: initializedBuckets,
-                           bucketMap: bucketMap)
+                           initializedBuckets: initializedBuckets/*,
+                           bucketMap: bucketMap*/)
       return header
     }
 

@@ -192,10 +192,6 @@ extension OrderedDictionary: MutableKeyValueCollection {
     return _removeAndReturnValueForKey(key)
   }
 
-  public mutating func removeAtIndex(index: Index) -> Element {
-    return _removeAndReturn(index)
-  }
-
   /// Returns the index of `key` or `nil` if `key` is not present.
   public func indexForKey(key: Key) -> Index? { return buffer.positionForKey(key) }
 
@@ -244,10 +240,24 @@ extension OrderedDictionary: MutableCollectionType {
 // MARK: RangeReplaceableCollectionType
 extension OrderedDictionary: RangeReplaceableCollectionType {
 
-  public init() { buffer = Buffer(minimumCapacity: 0) }
+  /// Create an empty instance.
+  public init() { buffer = Buffer(minimumCapacity: 0, offsetBy: 0) }
 
+  /// A non-binding request to ensure `n` elements of available storage.
+  ///
+  /// This works as an optimization to avoid multiple reallocations of
+  /// linear data structures like `Array`.  Conforming types may
+  /// reserve more than `n`, exactly `n`, less than `n` elements of
+  /// storage, or even ignore the request completely.
   public mutating func reserveCapacity(minimumCapacity: Int) { ensureUniqueWithCapacity(minimumCapacity) }
 
+  /// Replace the given `subRange` of elements with `newElements`.
+  ///
+  /// Invalidates all indices with respect to `self`.
+  ///
+  /// - Complexity: O(`subRange.count`) if
+  ///   `subRange.endIndex == self.endIndex` and `newElements.isEmpty`,
+  ///   O(`self.count` + `newElements.count`) otherwise.
   public mutating func replaceRange<C:CollectionType
     where C.Generator.Element == Element>(subRange: Range<Int>, with newElements: C)
   {
@@ -258,6 +268,97 @@ extension OrderedDictionary: RangeReplaceableCollectionType {
     // Replace with uniqued collection
     buffer.replaceRange(subRange, with: newElements)
   }
+
+  /// Append `x` to `self`.
+  ///
+  /// Applying `successor()` to the index of the new element yields
+  /// `self.endIndex`.
+  ///
+  /// - Complexity: Amortized O(1).
+  public mutating func append(x: Element) {
+    //TODO: Implement the  function
+    fatalError("\(#function) not yet implemented")
+  }
+
+  /// Append the elements of `newElements` to `self`.
+  ///
+  /// - Complexity: O(*length of result*).
+  public mutating func appendContentsOf<S : SequenceType where S.Generator.Element == Element>(newElements: S) {
+    //TODO: Implement the  function
+    fatalError("\(#function) not yet implemented")
+  }
+
+  /// Insert `newElement` at index `i`.
+  ///
+  /// Invalidates all indices with respect to `self`.
+  ///
+  /// - Complexity: O(`self.count`).
+  public mutating func insert(newElement: Element, atIndex i: Index) {
+    //TODO: Implement the  function
+    fatalError("\(#function) not yet implemented")
+  }
+
+  /// Insert `newElements` at index `i`.
+  ///
+  /// Invalidates all indices with respect to `self`.
+  ///
+  /// - Complexity: O(`self.count + newElements.count`).
+  public mutating func insertContentsOf<S : CollectionType where S.Generator.Element == Element>(newElements: S, at i: Index) {
+    //TODO: Implement the  function
+    fatalError("\(#function) not yet implemented")
+  }
+
+  /// Remove the element at index `i`.
+  ///
+  /// Invalidates all indices with respect to `self`.
+  ///
+  /// - Complexity: O(`self.count`).
+  public mutating func removeAtIndex(i: Index) -> Element {
+    return _removeAndReturn(i)
+  }
+
+  /// Remove the element at `startIndex` and return it.
+  ///
+  /// - Complexity: O(`self.count`)
+  /// - Requires: `!self.isEmpty`.
+  public mutating func removeFirst() -> Element {
+    //TODO: Implement the  function
+    fatalError("\(#function) not yet implemented")
+  }
+
+  /// Remove the first `n` elements.
+  ///
+  /// - Complexity: O(`self.count`)
+  /// - Requires: `n >= 0 && self.count >= n`.
+  public mutating func removeFirst(n: Int) {
+    //TODO: Implement the  function
+    fatalError("\(#function) not yet implemented")
+  }
+
+  /// Remove the indicated `subRange` of elements.
+  ///
+  /// Invalidates all indices with respect to `self`.
+  ///
+  /// - Complexity: O(`self.count`).
+  public mutating func removeRange(subRange: Range<Index>) {
+    //TODO: Implement the  function
+    fatalError("\(#function) not yet implemented")
+  }
+
+  /// Remove all elements.
+  ///
+  /// Invalidates all indices with respect to `self`.
+  ///
+  /// - parameter keepCapacity: If `true`, is a non-binding request to
+  ///    avoid releasing storage, which can be a useful optimization
+  ///    when `self` is going to be grown again.
+  ///
+  /// - Complexity: O(`self.count`).
+  public mutating func removeAll(keepCapacity keepCapacity: Bool = false) {
+    //TODO: Implement the  function
+    fatalError("\(#function) not yet implemented")
+  }
+  
 
 }
 

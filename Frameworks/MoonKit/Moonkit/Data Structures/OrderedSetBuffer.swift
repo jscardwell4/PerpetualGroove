@@ -54,7 +54,7 @@ struct OrderedSetBuffer<Element:Hashable>: CollectionType, MutableCollectionType
     let requiredCapacity = Buffer.minimumCapacityForCount(minimumCapacity)
     let storage = Storage.create(requiredCapacity)
     let indices = offset ..< offset
-    self.init(storage: storage, indices: indices, indexOffset: offset)
+    self.init(storage: storage, bucketMap: HashBucketMap(capacity: storage.capacity), indices: indices, indexOffset: offset)
   }
 
   static func minimumCapacityForCount(count: Int) -> Int {
@@ -64,10 +64,10 @@ struct OrderedSetBuffer<Element:Hashable>: CollectionType, MutableCollectionType
 
   // MARK: Initializing with data
 
-  init(storage: Storage, indices: Range<Index>, indexOffset: Index = 0) {
+  init(storage: Storage, bucketMap: HashBucketMap, indices: Range<Index>, indexOffset: Index = 0) {
     self.storage = storage
     initializedBuckets = storage.initializedBuckets
-    bucketMap = storage.bucketMap
+    self.bucketMap = bucketMap
     elements = storage.values
 
     self.indexOffset = indexOffset
@@ -291,7 +291,7 @@ struct OrderedSetBuffer<Element:Hashable>: CollectionType, MutableCollectionType
   }
 
   subscript(subRange: Range<Index>) -> SubSequence {
-    get { return SubSequence(storage: storage, indices: subRange) }
+    get { return SubSequence(storage: storage, bucketMap: bucketMap[subRange], indices: subRange) }
     set { replaceRange(subRange, with: newValue) }
   }
 

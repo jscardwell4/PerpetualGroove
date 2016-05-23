@@ -14,25 +14,25 @@ struct HashedStorageHeader: CustomStringConvertible {
   let capacity: Int
   let bytesAllocated: Int
   let initializedBuckets: BitMap
-  let bucketMap: HashBucketMap
+//  let bucketMap: HashBucketMap
 
   init(capacity: Int,
        bytesAllocated: Int,
-       initializedBuckets: BitMap,
-       bucketMap: HashBucketMap)
+       initializedBuckets: BitMap/*,
+       bucketMap: HashBucketMap*/)
   {
     self.capacity = capacity
     self.bytesAllocated = bytesAllocated
     self.initializedBuckets = initializedBuckets
-    self.bucketMap = bucketMap
+//    self.bucketMap = bucketMap
   }
 
   var description: String {
     return "\n".join("count: \(count)",
                      "capacity: \(capacity)",
                      "bytesAllocated: \(bytesAllocated)",
-                     "initializedBuckets: \(initializedBuckets)",
-                     "bucketMap: \(bucketMap)")
+                     "initializedBuckets: \(initializedBuckets)"/*,
+                     "bucketMap: \(bucketMap)"*/)
   }
 }
 

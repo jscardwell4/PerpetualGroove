@@ -32,11 +32,11 @@ final class OrderedSetTests: XCTestCase {
   func testCreation() {
     var orderedSet = OrderedSet<Int>(minimumCapacity: 8)
     expect(orderedSet.capacity) >= 8
-    expect(orderedSet).to(haveCount(0))
+    guard expect(orderedSet).to(haveCount(0)) else { return }
 
     orderedSet = [1, 2, 3, 4, 5]
     expect(orderedSet.capacity) >= 5
-    expect(orderedSet).to(haveCount(5))
+    guard expect(orderedSet).to(haveCount(5)) else { return }
 
     orderedSet = OrderedSet(randomIntegersLarge1)
     let set = Set(randomIntegersLarge1)
@@ -47,37 +47,37 @@ final class OrderedSetTests: XCTestCase {
     var orderedSet1 = OrderedSet<Int>(minimumCapacity: 8)
 
     orderedSet1.insert(1)
-    expect(orderedSet1).to(haveCount(1))
+    guard expect(orderedSet1).to(haveCount(1)) else { return }
     expect(orderedSet1[0]) == 1
     expect(orderedSet1) == [1]
 
     orderedSet1.insert(2)
-    expect(orderedSet1).to(haveCount(2))
+    guard expect(orderedSet1).to(haveCount(2)) else { return }
     expect(orderedSet1[1]) == 2
     expect(orderedSet1) == [1, 2]
 
     orderedSet1.insert(3)
-    expect(orderedSet1).to(haveCount(3))
+    guard expect(orderedSet1).to(haveCount(3)) else { return }
     expect(orderedSet1[2]) == 3
     expect(orderedSet1) == [1, 2, 3]
 
     orderedSet1.insert(4)
-    expect(orderedSet1).to(haveCount(4))
+    guard expect(orderedSet1).to(haveCount(4)) else { return }
     expect(orderedSet1[3]) == 4
     expect(orderedSet1) == [1, 2, 3, 4]
 
     orderedSet1.insert(5)
-    expect(orderedSet1).to(haveCount(5))
+    guard expect(orderedSet1).to(haveCount(5)) else { return }
     expect(orderedSet1[4]) == 5
     expect(orderedSet1) == [1, 2, 3, 4, 5]
 
     orderedSet1.insert(6, atIndex: 2)
-    expect(orderedSet1).to(haveCount(6))
+    guard expect(orderedSet1).to(haveCount(6)) else { return }
     expect(orderedSet1[2]) == 6
     expect(orderedSet1) == [1, 2, 6, 3, 4, 5]
 
     orderedSet1.appendContentsOf([5, 6, 7, 8])
-    expect(orderedSet1).to(haveCount(8))
+    guard expect(orderedSet1).to(haveCount(8)) else { return }
     expect(orderedSet1[6]) == 7
     expect(orderedSet1[7]) == 8
     expect(orderedSet1) == [1, 2, 6, 3, 4, 5, 7, 8]
@@ -91,37 +91,37 @@ final class OrderedSetTests: XCTestCase {
     var orderedSet2 = OrderedSet<String>(minimumCapacity: 8)
 
     orderedSet2.insert("one")
-    expect(orderedSet2).to(haveCount(1))
+    guard expect(orderedSet2).to(haveCount(1)) else { return }
     expect(orderedSet2[0]) == "one"
     expect(orderedSet2) == ["one"]
 
     orderedSet2.insert("two")
-    expect(orderedSet2).to(haveCount(2))
+    guard expect(orderedSet2).to(haveCount(2)) else { return }
     expect(orderedSet2[1]) == "two"
     expect(orderedSet2) == ["one", "two"]
 
     orderedSet2.insert("three")
-    expect(orderedSet2).to(haveCount(3))
+    guard expect(orderedSet2).to(haveCount(3)) else { return }
     expect(orderedSet2[2]) == "three"
     expect(orderedSet2) == ["one", "two", "three"]
 
     orderedSet2.insert("four")
-    expect(orderedSet2).to(haveCount(4))
+    guard expect(orderedSet2).to(haveCount(4)) else { return }
     expect(orderedSet2[3]) == "four"
     expect(orderedSet2) == ["one", "two", "three", "four"]
 
     orderedSet2.insert("five")
-    expect(orderedSet2).to(haveCount(5))
+    guard expect(orderedSet2).to(haveCount(5)) else { return }
     expect(orderedSet2[4]) == "five"
     expect(orderedSet2) == ["one", "two", "three", "four", "five"]
 
     orderedSet2.insert("six", atIndex: 2)
-    expect(orderedSet2).to(haveCount(6))
+    guard expect(orderedSet2).to(haveCount(6)) else { return }
     expect(orderedSet2[2]) == "six"
     expect(orderedSet2) == ["one", "two", "six", "three", "four", "five"]
 
     orderedSet2.appendContentsOf(["five", "six", "seven", "eight"])
-    expect(orderedSet2).to(haveCount(8))
+    guard expect(orderedSet2).to(haveCount(8)) else { return }
     expect(orderedSet2[6]) == "seven"
     expect(orderedSet2[7]) == "eight"
     expect(orderedSet2) == ["one", "two", "six", "three", "four", "five", "seven", "eight"]

@@ -228,8 +228,10 @@ toString:
 */
 public func toString<T>(x: T?) -> String { if let xx = x { return String(xx) } else { return "nil" } }
 
-
+public func -(lhs: Range<Int>, rhs: Int) -> Range<Int> { return lhs.startIndex - rhs ..< lhs.endIndex - rhs }
 public func +(lhs: Range<Int>, rhs: Int) -> Range<Int> { return lhs.startIndex + rhs ..< lhs.endIndex + rhs }
+public func &-(lhs: Range<Int>, rhs: Int) -> Range<Int> { return lhs.startIndex &- rhs ..< lhs.endIndex &- rhs }
+public func &+(lhs: Range<Int>, rhs: Int) -> Range<Int> { return lhs.startIndex &+ rhs ..< lhs.endIndex &+ rhs }
 
 
 /**

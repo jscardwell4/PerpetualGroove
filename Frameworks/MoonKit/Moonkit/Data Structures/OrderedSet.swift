@@ -147,9 +147,9 @@ public struct OrderedSet<Member:Hashable>: CollectionType {
 // MARK: MutableIndexable
 extension OrderedSet: MutableIndexable {
 
-  public var startIndex: Index { return 0 }
+  public var startIndex: Index { return buffer.startIndex }
 
-  public var endIndex: Index { return count }
+  public var endIndex: Index { return buffer.endIndex }
 
   public subscript(index: Index) -> Element {
     get { return buffer.elementForPosition(index) }
@@ -165,7 +165,7 @@ extension OrderedSet: SetType {
 
   public mutating func remove(member: Element) -> Element? { return _removeAndReturn(member) }
   
-  public init<S : SequenceType where S.Generator.Element == Element>(_ elements: S) {
+  public init<S:SequenceType where S.Generator.Element == Element>(_ elements: S) {
     self.init(buffer: Buffer(elements: elements)) // Uniqueness checked by `Buffer`
   }
 
@@ -226,7 +226,7 @@ extension OrderedSet: SetType {
 
   /// Insert elements of a finite sequence into this `Set`.
   public mutating func unionInPlace<S:SequenceType where S.Generator.Element == Element>(sequence: S) {
-    for element in sequence where !contains(element) { insert(element) }
+    for element in sequence /*where !contains(element)*/ { _append(element) }
   }
 
   /// Return a new set with elements in this set that do not occur in a finite sequence.
@@ -322,10 +322,24 @@ extension OrderedSet: MutableCollectionType {
 
 extension OrderedSet: RangeReplaceableCollectionType {
 
+  /// Create an empty instance.
   public init() { buffer = Buffer(minimumCapacity: 0, offsetBy: 0) }
 
+  /// A non-binding request to ensure `n` elements of available storage.
+  ///
+  /// This works as an optimization to avoid multiple reallocations of
+  /// linear data structures like `Array`.  Conforming types may
+  /// reserve more than `n`, exactly `n`, less than `n` elements of
+  /// storage, or even ignore the request completely.
   public mutating func reserveCapacity(minimumCapacity: Int) { ensureUniqueWithCapacity(minimumCapacity) }
 
+  /// Replace the given `subRange` of elements with `newElements`.
+  ///
+  /// Invalidates all indices with respect to `self`.
+  ///
+  /// - Complexity: O(`subRange.count`) if
+  ///   `subRange.endIndex == self.endIndex` and `newElements.isEmpty`,
+  ///   O(`self.count` + `newElements.count`) otherwise.
   public mutating func replaceRange<C:CollectionType
     where C.Generator.Element == Element>(subRange: Range<Int>, with newElements: C)
   {
@@ -335,6 +349,87 @@ extension OrderedSet: RangeReplaceableCollectionType {
 
     // Replace with uniqued collection
     buffer.replaceRange(subRange, with: newElements)
+  }
+
+  /// Append `x` to `self`.
+  ///
+  /// Applying `successor()` to the index of the new element yields
+  /// `self.endIndex`.
+  ///
+  /// - Complexity: Amortized O(1).
+  public mutating func append(x: Element) { _append(x) }
+
+  /// Append the elements of `newElements` to `self`.
+  ///
+  /// - Complexity: O(*length of result*).
+  public mutating func appendContentsOf<S:SequenceType where S.Generator.Element == Element>(newElements: S) {
+    unionInPlace(newElements)
+  }
+
+  /// Insert `newElement` at index `i`.
+  ///
+  /// Invalidates all indices with respect to `self`.
+  ///
+  /// - Complexity: O(`self.count`).
+  public mutating func insert(newElement: Element, atIndex i: Index) {
+    ensureUniqueWithCapacity(count + 1)
+    buffer.insert(newElement, atIndex: i)
+  }
+
+  /// Insert `newElements` at index `i`.
+  ///
+  /// Invalidates all indices with respect to `self`.
+  ///
+  /// - Complexity: O(`self.count + newElements.count`).
+  public mutating func insertContentsOf<
+    C:CollectionType where C.Generator.Element == Element
+    >(newElements: C, at i: Index)
+  {
+    ensureUniqueWithCapacity(count + numericCast(newElements.count))
+    buffer.insertContentsOf(newElements, at: i)
+  }
+
+  /// Remove the element at index `i`.
+  ///
+  /// Invalidates all indices with respect to `self`.
+  ///
+  /// - Complexity: O(`self.count`).
+  public mutating func removeAtIndex(i: Index) -> Element { return _removeAndReturn(i) }
+
+  /// Remove the element at `startIndex` and return it.
+  ///
+  /// - Complexity: O(`self.count`)
+  /// - Requires: `!self.isEmpty`.
+  public mutating func removeFirst() ->Element { return _removeAndReturn(startIndex) }
+
+  /// Remove the first `n` elements.
+  ///
+  /// - Complexity: O(`self.count`)
+  /// - Requires: `n >= 0 && self.count >= n`.
+  public mutating func removeFirst(n: Int) { ensureUnique(); buffer.removeFirst(n) }
+
+  /// Remove the indicated `subRange` of elements.
+  ///
+  /// Invalidates all indices with respect to `self`.
+  ///
+  /// - Complexity: O(`self.count`).
+  public mutating func removeRange(subRange: Range<Index>) {
+    ensureUnique()
+    buffer.removeRange(subRange)
+  }
+
+  /// Remove all elements.
+  ///
+  /// Invalidates all indices with respect to `self`.
+  ///
+  /// - parameter keepCapacity: If `true`, is a non-binding request to
+  ///    avoid releasing storage, which can be a useful optimization
+  ///    when `self` is going to be grown again.
+  ///
+  /// - Complexity: O(`self.count`).
+  public mutating func removeAll(keepCapacity keepCapacity: Bool = false) {
+    guard count > 0 else { return }
+    buffer.removeAll(keepCapacity: keepCapacity)
   }
 
 }
@@ -348,7 +443,7 @@ extension OrderedSet: ArrayLiteralConvertible {
 extension OrderedSet: CustomStringConvertible, CustomDebugStringConvertible {
 
   private var elementsDescription: String {
-    guard count > 0 else { return "[:]" }
+    guard count > 0 else { return "[]" }
 
     var result = "["
     var first = true

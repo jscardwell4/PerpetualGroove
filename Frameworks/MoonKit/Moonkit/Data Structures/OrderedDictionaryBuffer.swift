@@ -123,10 +123,10 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: CollectionType, MutableColl
   /// Convenience for retrieving both the key and value for a position.
   func elementAtPosition(position: Int) -> (Key, Value) { return elementInBucket(bucketForPosition(position)) }
 
-  init(storage: Storage, indices: Range<Index>, offset: Index = 0) {
+  init(storage: Storage, bucketMap: HashBucketMap, indices: Range<Index>, offset: Index = 0) {
     self.storage = storage
     initializedBuckets = storage.initializedBuckets
-    bucketMap = storage.bucketMap
+    self.bucketMap = bucketMap
     keysBaseAddress = storage.keys
     valuesBaseAddress = storage.values
 
@@ -162,7 +162,7 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: CollectionType, MutableColl
     let requiredCapacity = Buffer.minimumCapacityForCount(minimumCapacity)
     let storage = Storage.create(requiredCapacity)
     let indices = offset ..< offset
-    self.init(storage: storage, indices: indices, offset: offset)
+    self.init(storage: storage, bucketMap: HashBucketMap(capacity: storage.capacity), indices: indices, offset: offset)
   }
 
   /// Attempts to move the values of the buckets near `hole` into buckets nearer to their 'ideal' bucket
@@ -311,7 +311,7 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: CollectionType, MutableColl
   }
 
   subscript(subRange: Range<Index>) -> SubSequence {
-    get { return SubSequence(storage: storage, indices: subRange) }
+    get { return SubSequence(storage: storage, bucketMap: bucketMap[subRange], indices: subRange) }
     set { replaceRange(subRange, with: newValue) }
   }
   
