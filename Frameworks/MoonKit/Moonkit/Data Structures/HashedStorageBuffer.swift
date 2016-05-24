@@ -20,7 +20,6 @@ struct HashedStorageBuffer<Storage: HashedStorage where Storage:ConcreteHashedSt
 
   private(set) var storage: Storage
 
-//  let initializedBuckets: BitMap
   let bucketMap: HashBucketMap
   let hashedKeys: UnsafeMutablePointer<HashedKey>
   let hashedValues: UnsafeMutablePointer<HashedValue>
@@ -47,8 +46,8 @@ struct HashedStorageBuffer<Storage: HashedStorage where Storage:ConcreteHashedSt
   @inline(__always) private func offsetIndex(index: Int) -> Int { return index &+ indexOffset }
   @inline(__always) private func offsetIndex(index: Range<Int>) -> Range<Int> { return index &+ indexOffset }
 
-  var count: Int { return endIndex - startIndex }
-  var capacity: Int { return indexOffset == 0 ? storage.capacity - startIndex : storage.capacity }
+  var count: Int { return endIndex &- startIndex }
+  var capacity: Int { return indexOffset == 0 ? storage.capacity &- startIndex : storage.capacity }
 
   /// Returns the minimum capacity for storing `count` elements.
   @inline(__always)
@@ -61,7 +60,6 @@ struct HashedStorageBuffer<Storage: HashedStorage where Storage:ConcreteHashedSt
 
   init(storage: Storage, indices: Range<Int>, indexOffset: Int) {
     self.storage = storage
-//    initializedBuckets = storage.initializedBuckets
     bucketMap = storage.bucketMap
     hashedKeys = storage.hashedKeyBaseAddress
     hashedValues = storage.hashedValueBaseAddress
@@ -96,32 +94,27 @@ struct HashedStorageBuffer<Storage: HashedStorage where Storage:ConcreteHashedSt
 
   /// Returns the position assigned to `bucket` or `nil` if no position is assigned
   private func positionForBucket(bucket: HashBucket) -> Int? {
-    // defer { _fixLifetime(self) }
     return bucketMap[bucket]
   }
 
   /// Returns the bucket for the element assigned to `position`.
   /// - requires: A bucket has been assigned to `position`
   private func bucketForPosition(position: Int) -> HashBucket {
-    // defer { _fixLifetime(self) }
     return bucketMap[offsetPosition(position)]
   }
 
   /// Returns `false` when `bucket` is empty and `true` otherwise.
   private func isInitializedBucket(bucket: HashBucket) -> Bool {
-    // defer { _fixLifetime(self) }
-    return bucketMap[bucket] != nil //initializedBuckets[bucket.offset]
+    return bucketMap[bucket] != nil
   }
 
   /// Returns the hashed key for the specified bucket.
   private func keyForBucket(bucket: HashBucket) -> HashedKey {
-    // defer { _fixLifetime(self) }
     return hashedKeys[bucket.offset]
   }
 
   /// Returns the hashed value for the specified bucket.
   private func valueForBucket(bucket: HashBucket) -> HashedValue {
-    // defer { _fixLifetime(self) }
     return hashedValues[bucket.offset]
   }
 
@@ -203,17 +196,8 @@ struct HashedStorageBuffer<Storage: HashedStorage where Storage:ConcreteHashedSt
     fatalError("failed to locate hole")
   }
 
-  /// Initializes `bucket` with `element` without assigning a position.
-//  private func initializeBucket(bucket: HashBucket, with element: Element) {
-//    // defer { _fixLifetime(self) }
-//    initializeAtOffset(bucket.offset, element)
-//    initializedBuckets[bucket.offset] = true
-//  }
-
   /// Initializes `bucket` with `element` at `position`.
   private func initializeBucket(bucket: HashBucket, with element: Element, at position: Int) {
-    // defer { _fixLifetime(self) }
-//    initializeBucket(bucket, with: element)
     initializeAtOffset(bucket.offset, element)
     bucketMap[offsetPosition(position)] = bucket
   }
@@ -233,20 +217,10 @@ struct HashedStorageBuffer<Storage: HashedStorage where Storage:ConcreteHashedSt
     return updateAtOffset(currentBucket.offset, element)
   }
 
-  /// Initializes a fresh bucket with `element` unless `element` is a duplicate.
-  /// Returns `true` if a bucket was initialized and `false` otherwise.
-//  func initializeElement(element: Element) -> Bool {
-//    guard let bucket = emptyBucketForElement(element) else { return false }
-//    initializeBucket(bucket, with: element)
-//    return true
-//  }
-
   /// Removes the element from `bucket1` and uses this element to initialize `bucket2`
   private func moveBucket(bucket1: HashBucket, to bucket2: HashBucket) {
-    // defer { _fixLifetime(self) }
     let element = moveAtOffset(bucket1.offset)
-    initializeAtOffset(bucket2.offset, element)//initializeBucket(bucket2, with: element)
-//    initializedBuckets[bucket1.offset] = false
+    initializeAtOffset(bucket2.offset, element)
     bucketMap.replaceBucket(bucket1, with: bucket2)
   }
 
@@ -289,21 +263,13 @@ struct HashedStorageBuffer<Storage: HashedStorage where Storage:ConcreteHashedSt
 
   }
 
-  /// Uninitializes `bucket`, destroys the element in `bucket`. Does not adjust positions.
-  /// - requires: `bucket` contains an element.
-//  private func destroyBucket(bucket: HashBucket) {
-//    // defer { _fixLifetime(self) }
-////    initializedBuckets[bucket.offset] = false
-//    destroyAtOffset(bucket.offset)
-//  }
-
   /// Uninitializes the bucket for `position`, adjusts positions and `endIndex` and patches the hole.
   mutating func destroyAt(position: Index) {
 
     let hole = bucketForPosition(position)
     let idealBucket = idealBucketForKey(keyForBucket(hole))
 
-    destroyAtOffset(hole.offset)//destroyBucket(hole)
+    destroyAtOffset(hole.offset)
     bucketMap.removeBucketAt(offsetPosition(position))
     endIndex = endIndex &- 1
     patchHole(hole, idealBucket: idealBucket)
@@ -338,63 +304,8 @@ extension HashedStorageBuffer: RangeReplaceableCollectionType {
     C:CollectionType where C.Generator.Element == Element
     >(subRange: Range<Int>, with newElements: C)
   {
-
     removeRange(subRange)
     insertContentsOf(newElements, at: subRange.startIndex)
-//    let removeCount = subRange.count
-//    let insertCount = numericCast(newElements.count) as Int
-//
-//    for (index, element) in zip(subRange, newElements) {
-//      let position = offsetPosition(index)
-//      let oldBucket = bucketMap[position]
-//      destroyAtOffset(oldBucket.offset)
-//      bucketMap.buckets[oldBucket.offset] = -1
-//      bucketMap.positions[position] = -1
-//      guard let bucket = emptyBucketForElement(element) else { continue }
-//      initializeAtOffset(bucket.offset, element)
-//      bucketMap.buckets[bucket.offset] = position
-//      bucketMap.positions[position] = bucket.offset
-//    }
-//
-//    switch insertCount - removeCount {
-//
-//      case 0:
-//        // Nothing more to do
-//        break
-//
-//      case let delta where delta < 0:
-//        // Empty remaining positions in `subRange`
-//
-//        let subSubRange = subRange.endIndex.advancedBy(delta) ..< subRange.endIndex
-//        for index in subSubRange { destroyAtOffset(bucketForPosition(index).offset) }
-//        bucketMap.replaceRange(offsetPosition(subSubRange), with: EmptyCollection())
-//        storage.count = storage.count &+ delta
-//        endIndex = endIndex &+ delta
-//
-//      default: /* case let delta where delta > 0 */
-//
-//        let subSubRange = newElements.startIndex.advancedBy(numericCast(removeCount)) ..< newElements.endIndex
-//
-//        // Insert new elements, accumulating a list of their buckets
-//        var newElementsBuckets = [HashBucket](minimumCapacity: numericCast(subSubRange.count))
-//        for index in subSubRange {
-//          let element = newElements[index]
-//          guard let bucket = emptyBucketForElement(element) else { continue }
-//          initializeAtOffset(bucket.offset, element)
-//          newElementsBuckets.append(bucket)
-//        }
-//
-//        // Adjust positions
-//        bucketMap.replaceRange(offsetPosition(subRange), with: newElementsBuckets)
-//
-//        let 𝝙elements = newElementsBuckets.count - subRange.count
-//
-//        // Adjust count and endIndex
-//        storage.count = storage.count &+ 𝝙elements
-//        endIndex = endIndex &+ 𝝙elements
-//
-//    }
-
   }
 
   /// A non-binding request to ensure `n` elements of available storage.
@@ -404,6 +315,7 @@ extension HashedStorageBuffer: RangeReplaceableCollectionType {
   /// reserve more than `n`, exactly `n`, less than `n` elements of
   /// storage, or even ignore the request completely.
   mutating func reserveCapacity(n: Int) {
+    //TODO: Test reserveCapacity
     guard capacity < n else { return }
     var buffer = Buffer(minimumCapacity: n, offsetBy: startIndex) //FIXME: Should this be `startIndex - indexOffset`?
     for element in self { buffer.append(element) }
@@ -454,7 +366,7 @@ extension HashedStorageBuffer: RangeReplaceableCollectionType {
   /// - Complexity: O(`self.count`).
   mutating func insert(newElement: Element, atIndex i: Index) {
     guard let bucket = emptyBucketForElement(newElement) else { return }
-    initializeAtOffset(bucket.offset, newElement)//initializeBucket(bucket, with: newElement)
+    initializeAtOffset(bucket.offset, newElement)
     let index = offsetPosition(i)
     bucketMap.replaceRange(index ..< index, with: CollectionOfOne(bucket))
     endIndex = endIndex &+ 1
@@ -479,7 +391,7 @@ extension HashedStorageBuffer: RangeReplaceableCollectionType {
 
     for (i, element) in newElements.enumerate() {
       guard let bucket = emptyBucketForElement(element) else { continue }
-      initializeAtOffset(bucket.offset, element)//initializeBucket(bucket, with: element)
+      initializeAtOffset(bucket.offset, element)
       bucketMap.assign(index &+ i, to: bucket)
       newElementsBuckets.append(bucket)
     }
@@ -539,7 +451,6 @@ extension HashedStorageBuffer: RangeReplaceableCollectionType {
     buckets.forEach { destroyAtOffset($0.offset) }
     zip(buckets, idealBuckets).forEach { patchHole($0, idealBucket: $1) }
 
-//    for index in subRange { destroyAtOffset(bucketForPosition(index).offset) }
     bucketMap.replaceRange(offsetPosition(subRange), with: EmptyCollection())
     storage.count = storage.count &- delta
     endIndex = endIndex &- delta

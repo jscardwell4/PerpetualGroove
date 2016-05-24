@@ -12,14 +12,6 @@ class HashedStorage: ManagedBuffer<HashedStorageHeader, UInt8> {
 
   typealias Header = HashedStorageHeader
 
-  /// Returns the number of bytes required for the bit map of initialized buckets given `capacity`
-//  static func bytesForInitializedBuckets(capacity: Int) -> Int {
-//    return BitMap.wordsFor(capacity) * sizeof(UInt) + alignof(UInt)
-//  }
-
-  /// The number of bytes used to store the bit map of initialized buckets for this instance
-//  final var initializedBucketsBytes: Int { return HashedStorage.bytesForInitializedBuckets(capacity) }
-
   /// Returns the number of bytes required for the map of buckets to positions given `capacity`
   static func bytesForBucketMap(capacity: Int) -> Int {
     return HashBucketMap.wordsFor(capacity)// + max(0, alignof(Int) - alignof(UInt))
@@ -38,14 +30,6 @@ class HashedStorage: ManagedBuffer<HashedStorageHeader, UInt8> {
   /// `initializedBucketsBytes + bucketMapBytes + keysBytes + valuesBytes`
   final var bytesAllocated: Int { return value.bytesAllocated }
 
-  /// Pointer to the first byte in memory allocated for the bit map of initialized buckets
-//  final var initializedBucketsAddress: UnsafeMutablePointer<UInt8> {
-//    return withUnsafeMutablePointerToElements {$0}
-//  }
-
-  /// A bit map corresponding to which buckets have been initialized
-//  final var initializedBuckets: BitMap { return value.initializedBuckets }
-
   /// Pointer to the first byte in memory allocated for the position map
   final var bucketMapAddress: UnsafeMutablePointer<UInt8> {
     return withUnsafeMutablePointerToElements {$0} //initializedBucketsAddress + initializedBucketsBytes
@@ -59,10 +43,8 @@ class HashedStorage: ManagedBuffer<HashedStorageHeader, UInt8> {
     var result = "HashedStorage {\n"
     result += "\tcapacity: \(capacity)\n"
     result += "\tcount: \(count)\n"
-//    result += "\tinitializedBuckets: \(initializedBuckets.description.indentedBy(24, preserveFirst: true, useTabs: false))\n"
     result += "\tbucketMap: \(bucketMap.debugDescription)\n"
     result += "\ttotal bytes: \(allocatedElementCount)\n"
-//    result += "\tinitializedBucketsBytes: \(initializedBucketsBytes)\n"
     result += "\tbucketMapBytes: \(bucketMapBytes)\n"
     result += "\n}"
     return result
@@ -71,8 +53,8 @@ class HashedStorage: ManagedBuffer<HashedStorageHeader, UInt8> {
 
 protocol ConcreteHashedStorage {
   associatedtype HashedKey: Hashable
-  associatedtype Element
   associatedtype HashedValue
+  associatedtype Element
 
   var hashedKeyBaseAddress: UnsafeMutablePointer<HashedKey> { get }
   var hashedValueBaseAddress: UnsafeMutablePointer<HashedValue> { get }
@@ -88,6 +70,7 @@ protocol ConcreteHashedStorage {
   static func create(minimumCapacity: Int) -> Self
 }
 
+/// Specialization of `HashedStorage` for an ordered set
 final class OrderedSetStorage<Value:Hashable>: HashedStorage, ConcreteHashedStorage {
 
   typealias Storage = OrderedSetStorage<Value>
@@ -120,41 +103,41 @@ final class OrderedSetStorage<Value:Hashable>: HashedStorage, ConcreteHashedStor
 
   @inline(__always)
   func elementAtOffset() -> (Int) -> Element {
-    let values = self.values
-    return {
-      defer { _fixLifetime(values) }
+//    let values = self.values
+    return {[values = self.values] in
+//      defer { _fixLifetime(values) }
       return values[$0]
     }
   }
 
   func initializeAtOffset() -> (Int, Element) -> Void {
-    let values = self.values
-    return {
-      defer { _fixLifetime(values) }
+//    let values = self.values
+    return {[values = self.values] in
+//      defer { _fixLifetime(values) }
       (values + $0).initialize($1)
     }
   }
 
   func destroyAtOffset() -> (Int) -> Void {
-    let values = self.values
-    return {
-      defer { _fixLifetime(values) }
+//    let values = self.values
+    return {[values = self.values] in
+//      defer { _fixLifetime(values) }
       (values + $0).destroy()
     }
   }
 
   func moveAtOffset() -> (Int) -> Element {
-    let values = self.values
-    return {
-      defer { _fixLifetime(values) }
+//    let values = self.values
+    return {[values = self.values] in
+//      defer { _fixLifetime(values) }
       return (values + $0).move()
     }
   }
 
   func updateAtOffset() -> (Int, Element) -> Element {
-    let values = self.values
-    return {
-      defer { _fixLifetime(values) }
+//    let values = self.values
+    return {[values = self.values] in
+//      defer { _fixLifetime(values) }
       let oldValue = (values + $0).move()
       (values + $0).initialize($1)
       return oldValue
@@ -165,23 +148,16 @@ final class OrderedSetStorage<Value:Hashable>: HashedStorage, ConcreteHashedStor
   static func create(minimumCapacity: Int) -> OrderedSetStorage {
     let capacity = round2(minimumCapacity)
 
-//    let initializedBucketsBytes = bytesForInitializedBuckets(capacity)
     let bucketMapBytes = bytesForBucketMap(capacity)
     let elementsBytes = bytesForValues(capacity)
-    let requiredCapacity = //initializedBucketsBytes
-      /*+ */bucketMapBytes
-      + elementsBytes
+    let requiredCapacity = bucketMapBytes + elementsBytes
 
     let storage = super.create(requiredCapacity) {
-//      let initializedBucketsStorage = $0.withUnsafeMutablePointerToElements {$0}
-//      let initializedBuckets = BitMap(uninitializedStorage: pointerCast(initializedBucketsStorage),
-//                                      bitCount: capacity)
       let bucketMapStorage = $0.withUnsafeMutablePointerToElements {$0}//initializedBucketsStorage + initializedBucketsBytes
       let bucketMap = HashBucketMap(storage: pointerCast(bucketMapStorage), capacity: capacity)
       let bytesAllocated = $0.allocatedElementCount
       let header =  Header(capacity: capacity,
                            bytesAllocated: bytesAllocated,
-//                           initializedBuckets: initializedBuckets,
                            bucketMap: bucketMap)
       return header
     }
@@ -194,7 +170,6 @@ final class OrderedSetStorage<Value:Hashable>: HashedStorage, ConcreteHashedStor
     defer { _fixLifetime(self) }
     let elements = self.values
     for bucket in bucketMap { (elements + bucket.offset).destroy() }
-//    for offset in initializedBuckets.nonZeroBits { (elements + offset).destroy() }
   }
 
   override var description: String {
@@ -207,6 +182,8 @@ final class OrderedSetStorage<Value:Hashable>: HashedStorage, ConcreteHashedStor
     return result
   }
 }
+
+/// Specialization of `HashedStorage` for an ordered dictionary
 
 final class OrderedDictionaryStorage<Key:Hashable, Value>: HashedStorage, ConcreteHashedStorage {
 
@@ -256,48 +233,48 @@ final class OrderedDictionaryStorage<Key:Hashable, Value>: HashedStorage, Concre
 
   @inline(__always)
   func elementAtOffset() -> (Int) -> Element {
-    let keys = self.keys
-    let values = self.values
-    return {
-      defer { _fixLifetime(keys); _fixLifetime(values) }
+//    let keys = self.keys
+//    let values = self.values
+    return {[keys = self.keys, values = self.values] in
+//      defer { _fixLifetime(keys); _fixLifetime(values) }
       return (keys[$0], values[$0])
     }
   }
 
   func initializeAtOffset() -> (Int, Element) -> Void {
-    let keys = self.keys
-    let values = self.values
-    return {
-      defer { _fixLifetime(keys); _fixLifetime(values) }
+//    let keys = self.keys
+//    let values = self.values
+    return {[keys = self.keys, values = self.values] in
+//      defer { _fixLifetime(keys); _fixLifetime(values) }
       (keys + $0).initialize($1.0)
       (values + $0).initialize($1.1)
     }
   }
 
   func destroyAtOffset() -> (Int) -> Void {
-    let keys = self.keys
-    let values = self.values
-    return {
-      defer { _fixLifetime(keys); _fixLifetime(values) }
+//    let keys = self.keys
+//    let values = self.values
+    return {[keys = self.keys, values = self.values] in
+//      defer { _fixLifetime(keys); _fixLifetime(values) }
       (keys + $0).destroy()
       (values + $0).destroy()
     }
   }
 
   func moveAtOffset() -> (Int) -> Element {
-    let keys = self.keys
-    let values = self.values
-    return {
-      defer { _fixLifetime(keys); _fixLifetime(values) }
+//    let keys = self.keys
+//    let values = self.values
+    return {[keys = self.keys, values = self.values] in
+//      defer { _fixLifetime(keys); _fixLifetime(values) }
       return ((keys + $0).move(), (values + $0).move())
     }
   }
 
   func updateAtOffset() -> (Int, Element) -> Element {
-    let keys = self.keys
-    let values = self.values
-    return {
-      defer { _fixLifetime(keys); _fixLifetime(values) }
+//    let keys = self.keys
+//    let values = self.values
+    return {[keys = self.keys, values = self.values] in
+//      defer { _fixLifetime(keys); _fixLifetime(values) }
       assert(keys[$0] == $1.0, "keys do not match")
       let oldKey = (keys + $0).move()
       (keys + $0).initialize($1.0)
@@ -311,25 +288,17 @@ final class OrderedDictionaryStorage<Key:Hashable, Value>: HashedStorage, Concre
   static func create(minimumCapacity: Int) -> OrderedDictionaryStorage {
     let capacity = round2(minimumCapacity)
 
-//    let initializedBucketsBytes = bytesForInitializedBuckets(capacity)
     let bucketMapBytes = bytesForBucketMap(capacity)
     let keysBytes = bytesForKeys(capacity)
     let valuesBytes = bytesForValues(capacity)
-    let requiredCapacity = //initializedBucketsBytes
-      /*+ */bucketMapBytes
-      + keysBytes
-      + valuesBytes
+    let requiredCapacity = bucketMapBytes + keysBytes + valuesBytes
 
     let storage = super.create(requiredCapacity) {
-//      let initializedBucketsStorage = $0.withUnsafeMutablePointerToElements {$0}
-//      let initializedBuckets = BitMap(uninitializedStorage: pointerCast(initializedBucketsStorage),
-//                                      bitCount: capacity)
       let bucketMapStorage = $0.withUnsafeMutablePointerToElements {$0}//initializedBucketsStorage + initializedBucketsBytes
       let bucketMap = HashBucketMap(storage: pointerCast(bucketMapStorage), capacity: capacity)
       let bytesAllocated = $0.allocatedElementCount
       let header =  Header(capacity: capacity,
                            bytesAllocated: bytesAllocated,
-//                           initializedBuckets: initializedBuckets,
                            bucketMap: bucketMap)
       return header
     }
@@ -349,13 +318,10 @@ final class OrderedDictionaryStorage<Key:Hashable, Value>: HashedStorage, Concre
       case (true, true): return
       case (true, false):
         for bucket in bucketMap { (values + bucket.offset).destroy() }
-//        for offset in initializedBuckets.nonZeroBits { (values + offset).destroy() }
       case (false, true):
         for bucket in bucketMap { (keys + bucket.offset).destroy() }
-//        for offset in initializedBuckets.nonZeroBits { (keys + offset).destroy() }
       case (false, false):
         for bucket in bucketMap { (keys + bucket.offset).destroy(); (values + bucket.offset).destroy() }
-//        for offset in initializedBuckets.nonZeroBits { (keys + offset).destroy(); (values + offset).destroy() }
     }
   }
 

@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		C201F73B1A2539E7004600BC /* PseudoConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = C201F73A1A2539E7004600BC /* PseudoConstraint.swift */; };
-		C2022A5C1C77C1DB003C2C6E /* CompositeOrderedSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CD95021C7772BA001FB80B /* CompositeOrderedSet.swift */; };
 		C2022A601C77C6DC003C2C6E /* SetType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2022A5F1C77C6DC003C2C6E /* SetType.swift */; };
 		C2022A621C77C9FC003C2C6E /* SetAlgebraType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2022A611C77C9FC003C2C6E /* SetAlgebraType.swift */; };
 		C20297FC1AF295A5003F647B /* KVOReceptionist.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20297FB1AF295A5003F647B /* KVOReceptionist.swift */; };
@@ -31,7 +30,6 @@
 		C20650061A13C90A00342FDE /* FontAwesomeIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23592F019C8E04200920F8D /* FontAwesomeIcon.swift */; };
 		C20650071A13C99500342FDE /* GestureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25E63DD19FEC06A00F54626 /* GestureManager.swift */; };
 		C20751461CDE61CD0022E1E6 /* MoonKit.h in Headers */ = {isa = PBXBuildFile; fileRef = C2358F1A19C78D6D00920F8D /* MoonKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		C20751481CDE69FF0022E1E6 /* OrderedDictionaryBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20751471CDE69FF0022E1E6 /* OrderedDictionaryBuffer.swift */; };
 		C20A10971C512E4A00522FD7 /* ErrorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20A10961C512E4A00522FD7 /* ErrorType.swift */; };
 		C20CBBEC1B5FF7960008F538 /* PopoverListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20CBBEB1B5FF7960008F538 /* PopoverListController.swift */; };
 		C20E102C1BBF2DE600AAC01A /* TemplateImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20E102B1BBF2DE600AAC01A /* TemplateImageView.swift */; };
@@ -46,7 +44,6 @@
 		C219235D1C76132000E82437 /* MSDictionary+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A7CA9619CBB8FE00212F2D /* MSDictionary+MoonKitAdditions.swift */; };
 		C21D7AE41AA60E3F000DE8A3 /* NSError+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21D7AE31AA60E3F000DE8A3 /* NSError+MoonKitAdditions.swift */; };
 		C2204D9C1AE1A0670079B731 /* JSONIncludeDirective.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2204D9B1AE1A0670079B731 /* JSONIncludeDirective.swift */; };
-		C2250CE21CDBB9E400839292 /* OrderedSetBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2250CE11CDBB9E400839292 /* OrderedSetBuffer.swift */; };
 		C225677E1BB05E7600E4842B /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BDD1B797D4600A68A64 /* CoreImage.framework */; };
 		C22567801BB05E7600E4842B /* Lumberjack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C225677F1BB05E7600E4842B /* Lumberjack.framework */; };
 		C226BB5F1BA0DA7300E4FC98 /* Stepper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C226BB5E1BA0DA7300E4FC98 /* Stepper.swift */; };
@@ -439,7 +436,6 @@
 		C2CA852A1BC726760046AFC0 /* CGAffineTransform+MoonKitAddtions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CA85291BC726760046AFC0 /* CGAffineTransform+MoonKitAddtions.swift */; };
 		C2CA852C1BC72EA00046AFC0 /* NSRange+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CA852B1BC72EA00046AFC0 /* NSRange+MoonKitAdditions.swift */; };
 		C2CA852E1BC731FF0046AFC0 /* NSLayoutManager+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CA852D1BC731FF0046AFC0 /* NSLayoutManager+MoonKitAdditions.swift */; };
-		C2CD95031C7772BA001FB80B /* CompositeOrderedSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CD95021C7772BA001FB80B /* CompositeOrderedSet.swift */; };
 		C2CD95051C778C78001FB80B /* BitMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CD95041C778C78001FB80B /* BitMap.swift */; };
 		C2CDB8FA1AD77617006DF88C /* example6.json in Resources */ = {isa = PBXBuildFile; fileRef = C2CDB8F91AD77617006DF88C /* example6.json */; };
 		C2CE82751AD07D0400406CE7 /* example2.json in Resources */ = {isa = PBXBuildFile; fileRef = C2CE82741AD07D0400406CE7 /* example2.json */; };
@@ -461,8 +457,6 @@
 		C2E8050F1CD8FE8700650504 /* HashBucket.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E8050E1CD8FE8700650504 /* HashBucket.swift */; };
 		C2E805111CD900F200650504 /* HashBucketMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E805101CD900F200650504 /* HashBucketMap.swift */; };
 		C2E805131CD901A500650504 /* HashedStorageHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E805121CD901A500650504 /* HashedStorageHeader.swift */; };
-		C2E805151CD9030800650504 /* OrderedSetStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E805141CD9030800650504 /* OrderedSetStorage.swift */; };
-		C2E805171CD908E500650504 /* OrderedDictionaryStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E805161CD908E500650504 /* OrderedDictionaryStorage.swift */; };
 		C2E8C8B71AE7325300F8AC45 /* UITableViewCell+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E8C8B61AE7325300F8AC45 /* UITableViewCell+MoonKitAdditions.swift */; };
 		C2E937001ACE04D4003EB3E8 /* JSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E936FF1ACE04D4003EB3E8 /* JSONParser.swift */; };
 		C2E937041ACF0736003EB3E8 /* JSONSerialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E937031ACF0736003EB3E8 /* JSONSerialization.swift */; };
@@ -544,7 +538,6 @@
 		C205852C1A1BEC2000212759 /* BlockActionGesture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockActionGesture.swift; sourceTree = "<group>"; };
 		C2064FF91A13C05900342FDE /* Operators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Operators.swift; sourceTree = "<group>"; };
 		C20751451CDE4E430022E1E6 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = SOURCE_ROOT; };
-		C20751471CDE69FF0022E1E6 /* OrderedDictionaryBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderedDictionaryBuffer.swift; sourceTree = "<group>"; };
 		C208359B1C80E6FD00D4A10E /* WTF.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = WTF.playground; sourceTree = "<group>"; };
 		C208359C1C80E73600D4A10E /* WTFWTF.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = WTFWTF.playground; sourceTree = "<group>"; };
 		C20A10961C512E4A00522FD7 /* ErrorType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ErrorType.swift; sourceTree = "<group>"; };
@@ -571,7 +564,6 @@
 		C22087FE1BB053C00010DC7B /* CocoaLumberjackSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CocoaLumberjackSwift.framework; path = "../../../../Library/Developer/Xcode/DerivedData/Build/Products/Debug-iphoneos/CocoaLumberjackSwift.framework"; sourceTree = "<group>"; };
 		C222480619B781FD0093B07C /* MSXMLParserDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSXMLParserDelegate.h; sourceTree = "<group>"; };
 		C222480719B781FD0093B07C /* MSXMLParserDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSXMLParserDelegate.m; sourceTree = "<group>"; };
-		C2250CE11CDBB9E400839292 /* OrderedSetBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderedSetBuffer.swift; sourceTree = "<group>"; };
 		C225677F1BB05E7600E4842B /* Lumberjack.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lumberjack.framework; path = "../../../MSRemote/Remote/MoonKit/Lumberjack/build/Debug-iphoneos/Lumberjack.framework"; sourceTree = "<group>"; };
 		C225879919F9EF4C006D8B1D /* PanGesture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PanGesture.swift; sourceTree = "<group>"; };
 		C226BB5E1BA0DA7300E4FC98 /* Stepper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Stepper.swift; sourceTree = "<group>"; };
@@ -783,7 +775,6 @@
 		C2CA85291BC726760046AFC0 /* CGAffineTransform+MoonKitAddtions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGAffineTransform+MoonKitAddtions.swift"; sourceTree = "<group>"; };
 		C2CA852B1BC72EA00046AFC0 /* NSRange+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSRange+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C2CA852D1BC731FF0046AFC0 /* NSLayoutManager+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSLayoutManager+MoonKitAdditions.swift"; sourceTree = "<group>"; };
-		C2CD95021C7772BA001FB80B /* CompositeOrderedSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompositeOrderedSet.swift; sourceTree = "<group>"; };
 		C2CD95041C778C78001FB80B /* BitMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BitMap.swift; sourceTree = "<group>"; };
 		C2CDB8F91AD77617006DF88C /* example6.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = example6.json; sourceTree = "<group>"; };
 		C2CE82741AD07D0400406CE7 /* example2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = example2.json; sourceTree = "<group>"; };
@@ -967,8 +958,6 @@
 		C2E8050E1CD8FE8700650504 /* HashBucket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HashBucket.swift; sourceTree = "<group>"; };
 		C2E805101CD900F200650504 /* HashBucketMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HashBucketMap.swift; sourceTree = "<group>"; };
 		C2E805121CD901A500650504 /* HashedStorageHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HashedStorageHeader.swift; sourceTree = "<group>"; };
-		C2E805141CD9030800650504 /* OrderedSetStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderedSetStorage.swift; sourceTree = "<group>"; };
-		C2E805161CD908E500650504 /* OrderedDictionaryStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderedDictionaryStorage.swift; sourceTree = "<group>"; };
 		C2E8C8B61AE7325300F8AC45 /* UITableViewCell+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UITableViewCell+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C2E936FF1ACE04D4003EB3E8 /* JSONParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = JSONParser.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		C2E937031ACF0736003EB3E8 /* JSONSerialization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONSerialization.swift; sourceTree = "<group>"; };
@@ -1138,12 +1127,8 @@
 				C2AA2BCC1B8508AA00A0B08D /* Heap.swift */,
 				C26863711AF96E6E00D664E8 /* Queue.swift */,
 				C23592DF19C8E04200920F8D /* OrderedDictionary.swift */,
-				C20751471CDE69FF0022E1E6 /* OrderedDictionaryBuffer.swift */,
-				C2E805161CD908E500650504 /* OrderedDictionaryStorage.swift */,
 				C2C482E419CA0225002E84A9 /* Stack.swift */,
 				C2736FDB1CAC3D6700E861A2 /* OrderedSet.swift */,
-				C2250CE11CDBB9E400839292 /* OrderedSetBuffer.swift */,
-				C2CD95021C7772BA001FB80B /* CompositeOrderedSet.swift */,
 				C2B3B2EC1C592EC60001152F /* HashableTuple.swift */,
 				C2562D0B1C64F9150086789D /* WeakArray.swift */,
 				C246961A1C6BD3E100120DAF /* SortedArray.swift */,
@@ -1151,7 +1136,6 @@
 				C2E8050E1CD8FE8700650504 /* HashBucket.swift */,
 				C2E805101CD900F200650504 /* HashBucketMap.swift */,
 				C2E805121CD901A500650504 /* HashedStorageHeader.swift */,
-				C2E805141CD9030800650504 /* OrderedSetStorage.swift */,
 				C230A1C31CE1017B00D8EF49 /* KeyValueCollection.swift */,
 				C2457E7F1CEF77BD00B4B4B8 /* HashedStorage.swift */,
 				C2457E821CEFC06A00B4B4B8 /* HashedStorageBuffer.swift */,
@@ -2542,7 +2526,6 @@
 				C2358F5219C78E0C00920F8D /* UIView+MSKitAdditions.m in Sources */,
 				C2358F5319C78E0C00920F8D /* UIViewController+MSKitAdditions.m in Sources */,
 				C2E7C8321A1AA3F0006BC80E /* Protocols.swift in Sources */,
-				C2CD95031C7772BA001FB80B /* CompositeOrderedSet.swift in Sources */,
 				C2CA852C1BC72EA00046AFC0 /* NSRange+MoonKitAdditions.swift in Sources */,
 				C2358F5419C78E0C00920F8D /* NSPointerArray+MSKitAdditions.m in Sources */,
 				C2358F5519C78E0C00920F8D /* NSAssertionHandler+MSKitAdditions.m in Sources */,
@@ -2584,7 +2567,6 @@
 				C2B3B2ED1C592EC60001152F /* HashableTuple.swift in Sources */,
 				C2358F5A19C78E0C00920F8D /* MSColorInputButton.m in Sources */,
 				C29649901B00EBD0000C2D4A /* FieldView.swift in Sources */,
-				C2E805151CD9030800650504 /* OrderedSetStorage.swift in Sources */,
 				C2BE96E81A467E85007599B2 /* NSManagedObjectModel+MoonKitAdditions.swift in Sources */,
 				C2649D701C922F8D001039DA /* NSFileManager+MoonKitAdditions.swift in Sources */,
 				C2358F5B19C78E0C00920F8D /* MSPickerInputButton.m in Sources */,
@@ -2597,7 +2579,6 @@
 				C28E50991A13CB1E00DF3206 /* IntegerInputView.swift in Sources */,
 				C2358F5D19C78E0C00920F8D /* MSPopupBarButtonItem.m in Sources */,
 				C2358F5E19C78E0C00920F8D /* MSScrollWheel.m in Sources */,
-				C2250CE21CDBB9E400839292 /* OrderedSetBuffer.swift in Sources */,
 				C27953121AFED61200F72C80 /* FormViewController.swift in Sources */,
 				C2358F5F19C78E0C00920F8D /* MSKitLoggingFunctions.m in Sources */,
 				C28E35BC1A45DBAB00438CCF /* Dictionary+MoonKitAdditions.swift in Sources */,
@@ -2712,7 +2693,6 @@
 				C28E509B1A143FDC00DF3206 /* MultiselectGestureRecognizer.swift in Sources */,
 				C2F619E01BC599D00000891A /* Marquee.swift in Sources */,
 				C2358F8519C78E0C00920F8D /* MSTouchReporterView.m in Sources */,
-				C20751481CDE69FF0022E1E6 /* OrderedDictionaryBuffer.swift in Sources */,
 				C2358F8619C78E0C00920F8D /* MSView.m in Sources */,
 				C2421D1A1BEFE8DE009BA8B1 /* Bytes.swift in Sources */,
 				C2CA85261BC7261B0046AFC0 /* CGVector+MoonKitAdditions.swift in Sources */,
@@ -2720,7 +2700,6 @@
 				C2358F8819C78E0C00920F8D /* GCDAsyncUdpSocket.m in Sources */,
 				C2CA85281BC7263B0046AFC0 /* UIOffset+MoonKitAdditions.swift in Sources */,
 				C2F39D2F1A3A6D5A0024EE94 /* NSAttributedString+MoonKitAdditions.swift in Sources */,
-				C2E805171CD908E500650504 /* OrderedDictionaryStorage.swift in Sources */,
 				C274CB8C1B70FBCF00EC8E4A /* FormField.swift in Sources */,
 				C2AFC9081BD675F60057F055 /* MarqueeField.swift in Sources */,
 				C27978E41B17FF9E00B36BAD /* ZoomingCollectionViewLayout.swift in Sources */,
@@ -2792,7 +2771,6 @@
 				C2BDBBFE1BD3F07C00E343F1 /* Operators.swift in Sources */,
 				C2BDBBD91BD3F00E00E343F1 /* Tree.swift in Sources */,
 				C2BDBBE71BD3F07C00E343F1 /* Bool+MoonKitAdditions.swift in Sources */,
-				C2022A5C1C77C1DB003C2C6E /* CompositeOrderedSet.swift in Sources */,
 				C2BDBBF21BD3F07C00E343F1 /* NSParagraphStyle+MoonKitAdditions.swift in Sources */,
 				C2BDBBDA1BD3F00E00E343F1 /* List.swift in Sources */,
 				C2BDBBEA1BD3F07C00E343F1 /* NSScanner+MoonKitAdditions.swift in Sources */,
