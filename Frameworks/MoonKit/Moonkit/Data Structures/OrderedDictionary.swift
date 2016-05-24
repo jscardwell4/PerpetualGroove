@@ -11,8 +11,8 @@ import Foundation
 /// A hash-based mapping from `Key` to `Value` instances that preserves elment order.
 public struct OrderedDictionary<Key: Hashable, Value>: _DestructorSafeContainer {
 
-  typealias Buffer = OrderedDictionaryBuffer<Key, Value>
   typealias Storage = OrderedDictionaryStorage<Key, Value>
+  typealias Buffer = HashedStorageBuffer<Storage>//OrderedDictionaryBuffer<Key, Value>
 
   public typealias Index = Int
   public typealias Element = (Key, Value)
@@ -24,12 +24,11 @@ public struct OrderedDictionary<Key: Hashable, Value>: _DestructorSafeContainer 
   /// Returns a new buffer backed by storage cloned from the existing buffer.
   /// Unreachable elements are not copied; however, `startIndex` and `endIndex` values are preserved.
   func cloneBuffer(newCapacity: Int) -> Buffer {
+
     var clone = Buffer(minimumCapacity: newCapacity, offsetBy: startIndex)
 
     for position in buffer.indices {
-      let bucket = buffer.bucketForPosition(position)
-      let (key, value) = buffer.elementInBucket(bucket)
-      clone.initializeKey(key, forValue: value, position: position)
+      clone.initializeElement(buffer.elementForPosition(position), at: position)
       clone.endIndex += 1
     }
 
@@ -73,11 +72,11 @@ public struct OrderedDictionary<Key: Hashable, Value>: _DestructorSafeContainer 
 
   mutating func _remove(index: Index) {
     ensureUniqueWithCapacity(capacity)
-    buffer.destroyElementAt(index)
+    buffer.destroyAt(index)
   }
 
   mutating func _removeAndReturn(index: Index) -> Element {
-    let result = buffer.elementInBucket(buffer.bucketForPosition(index))
+    let result = buffer.elementForPosition(index)
     _remove(index)
     return result
   }
@@ -93,49 +92,33 @@ public struct OrderedDictionary<Key: Hashable, Value>: _DestructorSafeContainer 
   }
 
   mutating func _updateValue(value: Value, forKey key: Key) {
-    var (bucket, found) = buffer.find(key)
+    let found = buffer.containsKey(key)
 
     let minCapacity = found
       ? capacity
       : Buffer.minimumCapacityForCount(buffer.count + 1)
 
-    let (_, capacityChanged) = ensureUniqueWithCapacity(minCapacity)
-    if capacityChanged { (bucket, found) = buffer.find(key) }
+    ensureUniqueWithCapacity(minCapacity)
 
-    if found {
-      buffer.setValue(value, inBucket: bucket)
-    } else {
-      buffer.initializeKey(key, forValue: value, bucket: bucket)
-      buffer.endIndex += 1
-      buffer.storage.count += 1
-    }
+    if found { buffer.updateElement((key, value)) }
+    else { buffer.append((key, value)) }
   }
 
   mutating func _updateAndReturnValue(value: Value, forKey key: Key) -> Element? {
-    var (bucket, found) = buffer.find(key)
-
-    let result: Element? = found ? buffer.elementInBucket(bucket) : nil
+    let found = buffer.containsKey(key)
 
     let minCapacity = found
       ? capacity
       : Buffer.minimumCapacityForCount(buffer.count + 1)
 
-    let (_, capacityChanged) = ensureUniqueWithCapacity(minCapacity)
-    if capacityChanged { (bucket, found) = buffer.find(key) }
+    ensureUniqueWithCapacity(minCapacity)
 
-    if found {
-      buffer.setValue(value, inBucket: bucket)
-    } else {
-      buffer.initializeKey(key, forValue: value, bucket: bucket)
-      buffer.endIndex += 1
-      buffer.storage.count += 1
-    }
-
-    return result
+    if found { return buffer.updateElement((key, value)) }
+    else { buffer.append((key, value)); return nil }
   }
 
   public mutating func insertValue(value: Value, forKey key: Key, atIndex index: Index) {
-    replaceRange(index ..< index, with: [(key, value)])
+    replaceRange(index ..< index, with: CollectionOfOne((key, value)))
   }
 
   public var count: Int { return buffer.count }
@@ -196,13 +179,16 @@ extension OrderedDictionary: MutableKeyValueCollection {
   public func indexForKey(key: Key) -> Index? { return buffer.positionForKey(key) }
 
   /// Returns the value associated with `key` or `nil` if `key` is not present.
-  public func valueForKey(key: Key) -> Value? { return buffer.valueForKey(key) }
+  public func valueForKey(key: Key) -> Value? {
+    guard let position = buffer.positionForKey(key) else { return nil }
+    return buffer.valueForPosition(position)
+  }
 
   /// Access the value associated with the given key.
   /// Reading a key that is not present in self yields nil. Writing nil as the value for a given key erases that key from self.
   /// - attention: Is there a conflict when `Key` = `Index` or do the differing return types resolve ambiguity?
   public subscript(key: Key) -> Value? {
-    get { return buffer.valueForKey(key) }
+    get { return valueForKey(key) }
     set {
       if let value = newValue { _updateValue(value, forKey: key) }
       else { _removeValueForKey(key) }
@@ -219,10 +205,10 @@ extension OrderedDictionary: MutableCollectionType {
   public var endIndex: Int  { return buffer.endIndex }
 
   public subscript(index: Index) -> Element {
-    get { return buffer.elementAtPosition(index) }
+    get { return buffer.elementForPosition(index) }
     set {
       ensureUniqueWithCapacity(count)
-      buffer.replaceElementAtPosition(index, with: newValue)
+      buffer.replaceElementAt(index, with: newValue)
     }
   }
   
@@ -276,16 +262,14 @@ extension OrderedDictionary: RangeReplaceableCollectionType {
   ///
   /// - Complexity: Amortized O(1).
   public mutating func append(x: Element) {
-    //TODO: Implement the  function
-    fatalError("\(#function) not yet implemented")
+    _updateValue(x.1, forKey: x.0)
   }
 
   /// Append the elements of `newElements` to `self`.
   ///
   /// - Complexity: O(*length of result*).
   public mutating func appendContentsOf<S : SequenceType where S.Generator.Element == Element>(newElements: S) {
-    //TODO: Implement the  function
-    fatalError("\(#function) not yet implemented")
+    for (key, value) in newElements { _updateValue(value, forKey: key) }
   }
 
   /// Insert `newElement` at index `i`.
@@ -294,8 +278,7 @@ extension OrderedDictionary: RangeReplaceableCollectionType {
   ///
   /// - Complexity: O(`self.count`).
   public mutating func insert(newElement: Element, atIndex i: Index) {
-    //TODO: Implement the  function
-    fatalError("\(#function) not yet implemented")
+    replaceRange(i ..< i, with: CollectionOfOne(newElement))
   }
 
   /// Insert `newElements` at index `i`.
@@ -304,8 +287,7 @@ extension OrderedDictionary: RangeReplaceableCollectionType {
   ///
   /// - Complexity: O(`self.count + newElements.count`).
   public mutating func insertContentsOf<S : CollectionType where S.Generator.Element == Element>(newElements: S, at i: Index) {
-    //TODO: Implement the  function
-    fatalError("\(#function) not yet implemented")
+    replaceRange(i ..< i, with: newElements)
   }
 
   /// Remove the element at index `i`.
@@ -322,8 +304,7 @@ extension OrderedDictionary: RangeReplaceableCollectionType {
   /// - Complexity: O(`self.count`)
   /// - Requires: `!self.isEmpty`.
   public mutating func removeFirst() -> Element {
-    //TODO: Implement the  function
-    fatalError("\(#function) not yet implemented")
+    return removeAtIndex(startIndex)
   }
 
   /// Remove the first `n` elements.
@@ -331,8 +312,7 @@ extension OrderedDictionary: RangeReplaceableCollectionType {
   /// - Complexity: O(`self.count`)
   /// - Requires: `n >= 0 && self.count >= n`.
   public mutating func removeFirst(n: Int) {
-    //TODO: Implement the  function
-    fatalError("\(#function) not yet implemented")
+    replaceRange(startIndex ..< startIndex.advancedBy(n), with: EmptyCollection())
   }
 
   /// Remove the indicated `subRange` of elements.
@@ -341,8 +321,7 @@ extension OrderedDictionary: RangeReplaceableCollectionType {
   ///
   /// - Complexity: O(`self.count`).
   public mutating func removeRange(subRange: Range<Index>) {
-    //TODO: Implement the  function
-    fatalError("\(#function) not yet implemented")
+    replaceRange(subRange, with: EmptyCollection())
   }
 
   /// Remove all elements.
@@ -355,8 +334,9 @@ extension OrderedDictionary: RangeReplaceableCollectionType {
   ///
   /// - Complexity: O(`self.count`).
   public mutating func removeAll(keepCapacity keepCapacity: Bool = false) {
-    //TODO: Implement the  function
-    fatalError("\(#function) not yet implemented")
+    guard count > 0 else { return }
+    guard keepCapacity else { buffer = Buffer(); return }
+    buffer.replaceRange(indices, with: EmptyCollection())
   }
   
 

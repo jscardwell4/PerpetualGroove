@@ -2,10 +2,13 @@ import Foundation
 import MoonKit
 
 
-class WTFClass: NonObjectiveCBase {}
-
-var wtf = WTFClass()
-isUniquelyReferenced(&wtf)
-
-weak var wtf2 = wtf
-isUniquelyReferenced(&wtf2!)
+let wtf = UnsafeMutablePointer<Int?>.alloc(10)
+wtf.memory
+wtf.initialize(nil)
+wtf.memory
+wtf.initialize(20)
+wtf.memory
+strideof(Int)
+alignof(Int)
+strideof(Int?)
+alignof(Int?)

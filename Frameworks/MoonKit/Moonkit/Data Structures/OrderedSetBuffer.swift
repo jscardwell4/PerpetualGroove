@@ -23,7 +23,7 @@ struct OrderedSetBuffer<Element:Hashable>: CollectionType, MutableCollectionType
   // MARK: Pointers to the underlying memory
 
   private(set) var storage: Storage
-  let initializedBuckets: BitMap
+//  let initializedBuckets: BitMap
   let bucketMap: HashBucketMap
   let elements: UnsafeMutablePointer<Element>
 
@@ -44,7 +44,7 @@ struct OrderedSetBuffer<Element:Hashable>: CollectionType, MutableCollectionType
   
   mutating func isUniquelyReferenced() -> Bool { return Swift.isUniquelyReferenced(&storage) }
 
-  var identity: UnsafePointer<Void> { return UnsafePointer<Void>(initializedBuckets.buffer.baseAddress) }
+  var identity: UnsafePointer<Void> { return UnsafePointer<Void>(storage.withUnsafeMutablePointerToElements { $0 }) }
 
   // MARK: Initializing by capacity
 
@@ -54,7 +54,7 @@ struct OrderedSetBuffer<Element:Hashable>: CollectionType, MutableCollectionType
     let requiredCapacity = Buffer.minimumCapacityForCount(minimumCapacity)
     let storage = Storage.create(requiredCapacity)
     let indices = offset ..< offset
-    self.init(storage: storage, bucketMap: HashBucketMap(capacity: storage.capacity), indices: indices, indexOffset: offset)
+    self.init(storage: storage, indices: indices, indexOffset: offset)
   }
 
   static func minimumCapacityForCount(count: Int) -> Int {
@@ -64,10 +64,10 @@ struct OrderedSetBuffer<Element:Hashable>: CollectionType, MutableCollectionType
 
   // MARK: Initializing with data
 
-  init(storage: Storage, bucketMap: HashBucketMap, indices: Range<Index>, indexOffset: Index = 0) {
+  init(storage: Storage, indices: Range<Index>, indexOffset: Index = 0) {
     self.storage = storage
-    initializedBuckets = storage.initializedBuckets
-    self.bucketMap = bucketMap
+//    initializedBuckets = storage.initializedBuckets
+    bucketMap = storage.bucketMap
     elements = storage.values
 
     self.indexOffset = indexOffset
@@ -153,7 +153,7 @@ struct OrderedSetBuffer<Element:Hashable>: CollectionType, MutableCollectionType
   }
 
   /// Returns `false` when `bucket` is empty and `true` otherwise.
-  func isInitializedBucket(bucket: HashBucket) -> Bool { return initializedBuckets[bucket.offset] }
+  func isInitializedBucket(bucket: HashBucket) -> Bool { return bucketMap[bucket] != nil }
 
   /// Returns the position for `element` or `nil` if `element` is not found.
   func positionForElement(element: Element) -> Index? {
@@ -197,7 +197,7 @@ struct OrderedSetBuffer<Element:Hashable>: CollectionType, MutableCollectionType
   }
 
   func destroyBucket(bucket: HashBucket) {
-    initializedBuckets[bucket.offset] = false
+//    initializedBuckets[bucket.offset] = false
     (elements + bucket.offset).destroy()
   }
 
@@ -262,7 +262,7 @@ struct OrderedSetBuffer<Element:Hashable>: CollectionType, MutableCollectionType
 
   func initializeBucket(bucket: HashBucket, with element: Element) {
     (elements + bucket.offset).initialize(element)
-    initializedBuckets[bucket.offset] = true
+//    initializedBuckets[bucket.offset] = true
   }
 
   func initializeBucket(bucket: HashBucket, with element: Element, at position: Int ) {
@@ -279,7 +279,7 @@ struct OrderedSetBuffer<Element:Hashable>: CollectionType, MutableCollectionType
   /// Removes the value from `bucket1` and uses this value to initialize `bucket2`
   func moveBucket(bucket1: HashBucket, to bucket2: HashBucket) {
     initializeBucket(bucket2, with: (elements + bucket1.offset).move())
-    initializedBuckets[bucket1.offset] = false
+//    initializedBuckets[bucket1.offset] = false
     bucketMap.replaceBucket(bucket1, with: bucket2)
   }
 
@@ -291,7 +291,7 @@ struct OrderedSetBuffer<Element:Hashable>: CollectionType, MutableCollectionType
   }
 
   subscript(subRange: Range<Index>) -> SubSequence {
-    get { return SubSequence(storage: storage, bucketMap: bucketMap[subRange], indices: subRange) }
+    get { return SubSequence(storage: storage, indices: subRange) }
     set { replaceRange(subRange, with: newValue) }
   }
 
@@ -332,7 +332,7 @@ extension OrderedSetBuffer : CustomStringConvertible, CustomDebugStringConvertib
       result += "position \(position), empty\n"
     }
     for bucket in 0 ..< bucketMap.capacity {
-      if initializedBuckets[bucket] {
+      if isInitializedBucket(HashBucket(offset: bucket, capacity: bucketMap.capacity)) {
         let element = elements[bucket]
         result += "bucket \(bucket), ideal bucket = \(idealBucketForElement(element))\n"
       } else {

@@ -13,20 +13,20 @@ class HashedStorage: ManagedBuffer<HashedStorageHeader, UInt8> {
   typealias Header = HashedStorageHeader
 
   /// Returns the number of bytes required for the bit map of initialized buckets given `capacity`
-  static func bytesForInitializedBuckets(capacity: Int) -> Int {
-    return BitMap.wordsFor(capacity) * sizeof(UInt) + alignof(UInt)
-  }
-
-  /// The number of bytes used to store the bit map of initialized buckets for this instance
-  final var initializedBucketsBytes: Int { return HashedStorage.bytesForInitializedBuckets(capacity) }
-
-  /// Returns the number of bytes required for the map of buckets to positions given `capacity`
-//  static func bytesForBucketMap(capacity: Int) -> Int {
-//    return HashBucketMap.bytesFor(capacity) + max(0, alignof(Int) - alignof(UInt))
+//  static func bytesForInitializedBuckets(capacity: Int) -> Int {
+//    return BitMap.wordsFor(capacity) * sizeof(UInt) + alignof(UInt)
 //  }
 
+  /// The number of bytes used to store the bit map of initialized buckets for this instance
+//  final var initializedBucketsBytes: Int { return HashedStorage.bytesForInitializedBuckets(capacity) }
+
+  /// Returns the number of bytes required for the map of buckets to positions given `capacity`
+  static func bytesForBucketMap(capacity: Int) -> Int {
+    return HashBucketMap.wordsFor(capacity)// + max(0, alignof(Int) - alignof(UInt))
+  }
+
   /// The number of bytes used to store the bucket map for this instance.
-//  final var bucketMapBytes: Int { return HashedStorage.bytesForBucketMap(capacity) }
+  final var bucketMapBytes: Int { return HashedStorage.bytesForBucketMap(capacity) }
 
   /// The total number of buckets
   final var capacity: Int { return value.capacity }
@@ -39,31 +39,31 @@ class HashedStorage: ManagedBuffer<HashedStorageHeader, UInt8> {
   final var bytesAllocated: Int { return value.bytesAllocated }
 
   /// Pointer to the first byte in memory allocated for the bit map of initialized buckets
-  final var initializedBucketsAddress: UnsafeMutablePointer<UInt8> {
-    return withUnsafeMutablePointerToElements {$0}
-  }
-
-  /// A bit map corresponding to which buckets have been initialized
-  final var initializedBuckets: BitMap { return value.initializedBuckets }
-
-  /// Pointer to the first byte in memory allocated for the position map
-//  final var bucketMapAddress: UnsafeMutablePointer<UInt8> {
-//    return initializedBucketsAddress + initializedBucketsBytes
+//  final var initializedBucketsAddress: UnsafeMutablePointer<UInt8> {
+//    return withUnsafeMutablePointerToElements {$0}
 //  }
 
+  /// A bit map corresponding to which buckets have been initialized
+//  final var initializedBuckets: BitMap { return value.initializedBuckets }
+
+  /// Pointer to the first byte in memory allocated for the position map
+  final var bucketMapAddress: UnsafeMutablePointer<UInt8> {
+    return withUnsafeMutablePointerToElements {$0} //initializedBucketsAddress + initializedBucketsBytes
+  }
+
   /// An index mapping buckets to positions and positions to buckets
-//  final var bucketMap: HashBucketMap { return value.bucketMap }
+  final var bucketMap: HashBucketMap { return value.bucketMap }
 
   var description: String {
     defer { _fixLifetime(self) }
     var result = "HashedStorage {\n"
     result += "\tcapacity: \(capacity)\n"
     result += "\tcount: \(count)\n"
-    result += "\tinitializedBuckets: \(initializedBuckets.description.indentedBy(24, preserveFirst: true, useTabs: false))\n"
-//    result += "\tbucketMap: \(bucketMap.debugDescription)\n"
+//    result += "\tinitializedBuckets: \(initializedBuckets.description.indentedBy(24, preserveFirst: true, useTabs: false))\n"
+    result += "\tbucketMap: \(bucketMap.debugDescription)\n"
     result += "\ttotal bytes: \(allocatedElementCount)\n"
-    result += "\tinitializedBucketsBytes: \(initializedBucketsBytes)\n"
-//    result += "\tbucketMapBytes: \(bucketMapBytes)\n"
+//    result += "\tinitializedBucketsBytes: \(initializedBucketsBytes)\n"
+    result += "\tbucketMapBytes: \(bucketMapBytes)\n"
     result += "\n}"
     return result
   }
@@ -83,6 +83,7 @@ protocol ConcreteHashedStorage {
   func initializeAtOffset() -> (Int, Element) -> Void
   func destroyAtOffset() -> (Int) -> Void
   func moveAtOffset() -> (Int) -> Element
+  func updateAtOffset() -> (Int, Element) -> Element
 
   static func create(minimumCapacity: Int) -> Self
 }
@@ -107,7 +108,7 @@ final class OrderedSetStorage<Value:Hashable>: HashedStorage, ConcreteHashedStor
 
   /// Pointer to the first byte in memory allocated for the hash values
   var values: UnsafeMutablePointer<Value> {
-    return UnsafeMutablePointer<Value>(initializedBucketsAddress + initializedBucketsBytes)
+    return UnsafeMutablePointer<Value>(bucketMapAddress + bucketMapBytes)//initializedBucketsAddress + initializedBucketsBytes)
   }
 
   var hashedKeyBaseAddress: UnsafeMutablePointer<HashedKey> { return values }
@@ -150,28 +151,38 @@ final class OrderedSetStorage<Value:Hashable>: HashedStorage, ConcreteHashedStor
     }
   }
 
+  func updateAtOffset() -> (Int, Element) -> Element {
+    let values = self.values
+    return {
+      defer { _fixLifetime(values) }
+      let oldValue = (values + $0).move()
+      (values + $0).initialize($1)
+      return oldValue
+    }
+  }
+
   /// Create a new storage instance.
   static func create(minimumCapacity: Int) -> OrderedSetStorage {
     let capacity = round2(minimumCapacity)
 
-    let initializedBucketsBytes = bytesForInitializedBuckets(capacity)
-//    let bucketMapBytes = bytesForBucketMap(capacity)
+//    let initializedBucketsBytes = bytesForInitializedBuckets(capacity)
+    let bucketMapBytes = bytesForBucketMap(capacity)
     let elementsBytes = bytesForValues(capacity)
-    let requiredCapacity = initializedBucketsBytes
-//      + bucketMapBytes
+    let requiredCapacity = //initializedBucketsBytes
+      /*+ */bucketMapBytes
       + elementsBytes
 
     let storage = super.create(requiredCapacity) {
-      let initializedBucketsStorage = $0.withUnsafeMutablePointerToElements {$0}
-      let initializedBuckets = BitMap(uninitializedStorage: pointerCast(initializedBucketsStorage),
-                                      bitCount: capacity)
-//      let bucketMapStorage = initializedBucketsStorage + initializedBucketsBytes
-//      let bucketMap = HashBucketMap(storage: pointerCast(bucketMapStorage), capacity: capacity)
+//      let initializedBucketsStorage = $0.withUnsafeMutablePointerToElements {$0}
+//      let initializedBuckets = BitMap(uninitializedStorage: pointerCast(initializedBucketsStorage),
+//                                      bitCount: capacity)
+      let bucketMapStorage = $0.withUnsafeMutablePointerToElements {$0}//initializedBucketsStorage + initializedBucketsBytes
+      let bucketMap = HashBucketMap(storage: pointerCast(bucketMapStorage), capacity: capacity)
       let bytesAllocated = $0.allocatedElementCount
       let header =  Header(capacity: capacity,
                            bytesAllocated: bytesAllocated,
-                           initializedBuckets: initializedBuckets/*,
-                           bucketMap: bucketMap*/)
+//                           initializedBuckets: initializedBuckets,
+                           bucketMap: bucketMap)
       return header
     }
 
@@ -182,7 +193,8 @@ final class OrderedSetStorage<Value:Hashable>: HashedStorage, ConcreteHashedStor
     guard count > 0 && !_isPOD(Value) else { return }
     defer { _fixLifetime(self) }
     let elements = self.values
-    for offset in initializedBuckets.nonZeroBits { (elements + offset).destroy() }
+    for bucket in bucketMap { (elements + bucket.offset).destroy() }
+//    for offset in initializedBuckets.nonZeroBits { (elements + offset).destroy() }
   }
 
   override var description: String {
@@ -226,7 +238,7 @@ final class OrderedDictionaryStorage<Key:Hashable, Value>: HashedStorage, Concre
 
   /// Pointer to the first byte in memory allocated for the keys
   var keys: UnsafeMutablePointer<Key> {
-    return UnsafeMutablePointer<Key>(initializedBucketsAddress + initializedBucketsBytes)
+    return UnsafeMutablePointer<Key>(bucketMapAddress + bucketMapBytes)//initializedBucketsAddress + initializedBucketsBytes)
   }
 
   var hashedKeyBaseAddress: UnsafeMutablePointer<HashedKey> { return keys }
@@ -281,30 +293,44 @@ final class OrderedDictionaryStorage<Key:Hashable, Value>: HashedStorage, Concre
     }
   }
 
+  func updateAtOffset() -> (Int, Element) -> Element {
+    let keys = self.keys
+    let values = self.values
+    return {
+      defer { _fixLifetime(keys); _fixLifetime(values) }
+      assert(keys[$0] == $1.0, "keys do not match")
+      let oldKey = (keys + $0).move()
+      (keys + $0).initialize($1.0)
+      let oldValue = (values + $0).move()
+      (values + $0).initialize($1.1)
+      return (oldKey, oldValue)
+    }
+  }
+
   /// Create a new storage instance.
   static func create(minimumCapacity: Int) -> OrderedDictionaryStorage {
     let capacity = round2(minimumCapacity)
 
-    let initializedBucketsBytes = bytesForInitializedBuckets(capacity)
-//    let bucketMapBytes = bytesForBucketMap(capacity)
+//    let initializedBucketsBytes = bytesForInitializedBuckets(capacity)
+    let bucketMapBytes = bytesForBucketMap(capacity)
     let keysBytes = bytesForKeys(capacity)
     let valuesBytes = bytesForValues(capacity)
-    let requiredCapacity = initializedBucketsBytes
-//      + bucketMapBytes
+    let requiredCapacity = //initializedBucketsBytes
+      /*+ */bucketMapBytes
       + keysBytes
       + valuesBytes
 
     let storage = super.create(requiredCapacity) {
-      let initializedBucketsStorage = $0.withUnsafeMutablePointerToElements {$0}
-      let initializedBuckets = BitMap(uninitializedStorage: pointerCast(initializedBucketsStorage),
-                                      bitCount: capacity)
-//      let bucketMapStorage = initializedBucketsStorage + initializedBucketsBytes
-//      let bucketMap = HashBucketMap(storage: pointerCast(bucketMapStorage), capacity: capacity)
+//      let initializedBucketsStorage = $0.withUnsafeMutablePointerToElements {$0}
+//      let initializedBuckets = BitMap(uninitializedStorage: pointerCast(initializedBucketsStorage),
+//                                      bitCount: capacity)
+      let bucketMapStorage = $0.withUnsafeMutablePointerToElements {$0}//initializedBucketsStorage + initializedBucketsBytes
+      let bucketMap = HashBucketMap(storage: pointerCast(bucketMapStorage), capacity: capacity)
       let bytesAllocated = $0.allocatedElementCount
       let header =  Header(capacity: capacity,
                            bytesAllocated: bytesAllocated,
-                           initializedBuckets: initializedBuckets/*,
-                           bucketMap: bucketMap*/)
+//                           initializedBuckets: initializedBuckets,
+                           bucketMap: bucketMap)
       return header
     }
 
@@ -316,15 +342,20 @@ final class OrderedDictionaryStorage<Key:Hashable, Value>: HashedStorage, Concre
     guard count > 0 else { return }
 
     let (keys, values) = (self.keys, self.values)
+    let offsets = Array(bucketMap.generate())
+    print("offsets = \(offsets)")
 
     switch (_isPOD(Key), _isPOD(Value)) {
       case (true, true): return
       case (true, false):
-        for offset in initializedBuckets.nonZeroBits { (values + offset).destroy() }
+        for bucket in bucketMap { (values + bucket.offset).destroy() }
+//        for offset in initializedBuckets.nonZeroBits { (values + offset).destroy() }
       case (false, true):
-        for offset in initializedBuckets.nonZeroBits { (keys + offset).destroy() }
+        for bucket in bucketMap { (keys + bucket.offset).destroy() }
+//        for offset in initializedBuckets.nonZeroBits { (keys + offset).destroy() }
       case (false, false):
-        for offset in initializedBuckets.nonZeroBits { (keys + offset).destroy(); (values + offset).destroy() }
+        for bucket in bucketMap { (keys + bucket.offset).destroy(); (values + bucket.offset).destroy() }
+//        for offset in initializedBuckets.nonZeroBits { (keys + offset).destroy(); (values + offset).destroy() }
     }
   }
 

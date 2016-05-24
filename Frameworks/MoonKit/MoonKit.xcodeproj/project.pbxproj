@@ -349,6 +349,8 @@
 		C29073971BD747D70090399E /* LogFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29073961BD747D70090399E /* LogFormatter.swift */; };
 		C296498E1B00EBBF000C2D4A /* FormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C296498D1B00EBBF000C2D4A /* FormView.swift */; };
 		C29649901B00EBD0000C2D4A /* FieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C296498F1B00EBD0000C2D4A /* FieldView.swift */; };
+		C29775161CF4A98F0053AB70 /* OrderedDictionaryPerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29775151CF4A98F0053AB70 /* OrderedDictionaryPerformanceTests.swift */; };
+		C29775181CF4AA6D0053AB70 /* OrderedSetPerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29775171CF4AA6D0053AB70 /* OrderedSetPerformanceTests.swift */; };
 		C29EECF81AFD010B00660EE6 /* MiscellaneousFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29EECF71AFD010B00660EE6 /* MiscellaneousFunctions.swift */; };
 		C2A169D01B15386300E3A5A0 /* UIImage+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A169CF1B15386300E3A5A0 /* UIImage+MoonKitAdditions.swift */; };
 		C2A5B6F21B482F4700F34491 /* NSParagraphStyle+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A5B6F11B482F4700F34491 /* NSParagraphStyle+MoonKitAdditions.swift */; };
@@ -425,7 +427,7 @@
 		C2C17D4A1B5813EB00D9E9A6 /* Identifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C17D491B5813EB00D9E9A6 /* Identifier.swift */; };
 		C2C482E519CA0225002E84A9 /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C482E419CA0225002E84A9 /* Stack.swift */; };
 		C2C4B72C1AA951D700912951 /* NSManagedObject+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C4B72B1AA951D700912951 /* NSManagedObject+MoonKitAdditions.swift */; };
-		C2C65BBF1C970F39000645ED /* OrderedSetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C65BBE1C970F39000645ED /* OrderedSetTests.swift */; };
+		C2C65BBF1C970F39000645ED /* OrderedSetBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C65BBE1C970F39000645ED /* OrderedSetBehaviorTests.swift */; };
 		C2C65BC11C970F39000645ED /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2358F1619C78D6D00920F8D /* MoonKit.framework */; };
 		C2C9EB701B65C5C70051BACF /* Range+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C9EB6F1B65C5C70051BACF /* Range+MoonKitAdditions.swift */; };
 		C2CA851E1BC724FC0046AFC0 /* CGRect+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CA851D1BC724FC0046AFC0 /* CGRect+MoonKitAdditions.swift */; };
@@ -466,7 +468,7 @@
 		C2E937041ACF0736003EB3E8 /* JSONSerialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E937031ACF0736003EB3E8 /* JSONSerialization.swift */; };
 		C2E9A42F1B693CEB0006AFA8 /* InsettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E9A42D1B693CEB0006AFA8 /* InsettingViewController.swift */; };
 		C2EB15771A1D45C100B64D84 /* ConfiningBlockActionGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EB15761A1D45C100B64D84 /* ConfiningBlockActionGesture.swift */; };
-		C2EE61841C7F8C760091C5AC /* OrderedDictionaryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EE61831C7F8C760091C5AC /* OrderedDictionaryTests.swift */; };
+		C2EE61841C7F8C760091C5AC /* OrderedDictionaryBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EE61831C7F8C760091C5AC /* OrderedDictionaryBehaviorTests.swift */; };
 		C2EE61861C7F8C760091C5AC /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2358F1619C78D6D00920F8D /* MoonKit.framework */; };
 		C2EEBA091B06BFD10041B1B1 /* NotificationReceptionist.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EEBA081B06BFD10041B1B1 /* NotificationReceptionist.swift */; };
 		C2EF05B11B87FFA500AE68F1 /* Fraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EF05B01B87FFA500AE68F1 /* Fraction.swift */; };
@@ -736,6 +738,8 @@
 		C295E30319E2FBBB008309B8 /* ToggleImageSegmentedControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToggleImageSegmentedControl.swift; sourceTree = "<group>"; };
 		C296498D1B00EBBF000C2D4A /* FormView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FormView.swift; sourceTree = "<group>"; };
 		C296498F1B00EBD0000C2D4A /* FieldView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FieldView.swift; sourceTree = "<group>"; };
+		C29775151CF4A98F0053AB70 /* OrderedDictionaryPerformanceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderedDictionaryPerformanceTests.swift; sourceTree = "<group>"; };
+		C29775171CF4AA6D0053AB70 /* OrderedSetPerformanceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderedSetPerformanceTests.swift; sourceTree = "<group>"; };
 		C29C72761BAE38F20000EA00 /* CocoaLumberjackSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CocoaLumberjackSwift.framework; path = "../../../../GitHub/CocoaLumberjack/build/Debug-iphoneos/CocoaLumberjackSwift.framework"; sourceTree = "<group>"; };
 		C29EECF71AFD010B00660EE6 /* MiscellaneousFunctions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiscellaneousFunctions.swift; sourceTree = "<group>"; };
 		C2A169CF1B15386300E3A5A0 /* UIImage+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+MoonKitAdditions.swift"; sourceTree = "<group>"; };
@@ -767,7 +771,7 @@
 		C2C482E819CA2997002E84A9 /* NSScanner+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSScanner+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C2C4B72B1AA951D700912951 /* NSManagedObject+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSManagedObject+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C2C65BBC1C970F38000645ED /* OrderedSetTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OrderedSetTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		C2C65BBE1C970F39000645ED /* OrderedSetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderedSetTests.swift; sourceTree = "<group>"; };
+		C2C65BBE1C970F39000645ED /* OrderedSetBehaviorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderedSetBehaviorTests.swift; sourceTree = "<group>"; };
 		C2C65BC01C970F39000645ED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C2C9EB6F1B65C5C70051BACF /* Range+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Range+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C2CA851D1BC724FC0046AFC0 /* CGRect+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGRect+MoonKitAdditions.swift"; sourceTree = "<group>"; };
@@ -971,7 +975,7 @@
 		C2E9A42D1B693CEB0006AFA8 /* InsettingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = InsettingViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		C2EB15761A1D45C100B64D84 /* ConfiningBlockActionGesture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfiningBlockActionGesture.swift; sourceTree = "<group>"; };
 		C2EE61811C7F8C760091C5AC /* OrderedDictionaryTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OrderedDictionaryTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		C2EE61831C7F8C760091C5AC /* OrderedDictionaryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderedDictionaryTests.swift; sourceTree = "<group>"; };
+		C2EE61831C7F8C760091C5AC /* OrderedDictionaryBehaviorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderedDictionaryBehaviorTests.swift; sourceTree = "<group>"; };
 		C2EE61851C7F8C760091C5AC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C2EEBA081B06BFD10041B1B1 /* NotificationReceptionist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationReceptionist.swift; sourceTree = "<group>"; };
 		C2EEBA2B1B0961CE0041B1B1 /* Fields.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = Fields.playground; path = Moonkit/Fields.playground; sourceTree = "<group>"; };
@@ -1534,7 +1538,8 @@
 		C2C65BBD1C970F39000645ED /* OrderedSetTests */ = {
 			isa = PBXGroup;
 			children = (
-				C2C65BBE1C970F39000645ED /* OrderedSetTests.swift */,
+				C2C65BBE1C970F39000645ED /* OrderedSetBehaviorTests.swift */,
+				C29775171CF4AA6D0053AB70 /* OrderedSetPerformanceTests.swift */,
 				C2C65BC01C970F39000645ED /* Info.plist */,
 			);
 			path = OrderedSetTests;
@@ -1914,7 +1919,8 @@
 		C2EE61821C7F8C760091C5AC /* OrderedDictionaryTests */ = {
 			isa = PBXGroup;
 			children = (
-				C2EE61831C7F8C760091C5AC /* OrderedDictionaryTests.swift */,
+				C2EE61831C7F8C760091C5AC /* OrderedDictionaryBehaviorTests.swift */,
+				C29775151CF4A98F0053AB70 /* OrderedDictionaryPerformanceTests.swift */,
 				C2EE61851C7F8C760091C5AC /* Info.plist */,
 			);
 			path = OrderedDictionaryTests;
@@ -2836,7 +2842,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C2C65BBF1C970F39000645ED /* OrderedSetTests.swift in Sources */,
+				C29775181CF4AA6D0053AB70 /* OrderedSetPerformanceTests.swift in Sources */,
+				C2C65BBF1C970F39000645ED /* OrderedSetBehaviorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2852,7 +2859,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C2EE61841C7F8C760091C5AC /* OrderedDictionaryTests.swift in Sources */,
+				C29775161CF4A98F0053AB70 /* OrderedDictionaryPerformanceTests.swift in Sources */,
+				C2EE61841C7F8C760091C5AC /* OrderedDictionaryBehaviorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2964,7 +2972,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = NO;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -3019,7 +3027,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = NO;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -3526,7 +3534,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = NO;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -4147,7 +4155,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = NO;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -4707,6 +4715,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.OrderedSetTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Profile;
@@ -4748,6 +4757,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.OrderedSetTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -4986,7 +4996,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.OrderedDictionaryTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
@@ -5073,6 +5083,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.OrderedDictionaryTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Profile;
@@ -5114,6 +5125,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.OrderedDictionaryTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;

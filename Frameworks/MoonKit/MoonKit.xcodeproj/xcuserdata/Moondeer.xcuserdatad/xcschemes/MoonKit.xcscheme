@@ -65,6 +65,20 @@
                BlueprintName = "OrderedDictionaryTests"
                ReferencedContainer = "container:MoonKit.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "OrderedDictionaryTests/testInsertValueForKeyPerformance()">
+               </Test>
+               <Test
+                  Identifier = "OrderedDictionaryTests/testOverallPerformanceWithCapacityReserved()">
+               </Test>
+               <Test
+                  Identifier = "OrderedDictionaryTests/testOverallPerformanceWithoutCapacityReserved()">
+               </Test>
+               <Test
+                  Identifier = "OrderedDictionaryTests/testRemoveValueForKeyPerformance()">
+               </Test>
+            </SkippedTests>
          </TestableReference>
          <TestableReference
             skipped = "NO">
@@ -75,6 +89,35 @@
                BlueprintName = "OrderedSetTests"
                ReferencedContainer = "container:MoonKit.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "OrderedSetTests/testDeletePerformance()">
+               </Test>
+               <Test
+                  Identifier = "OrderedSetTests/testInsertionPerformance()">
+               </Test>
+               <Test
+                  Identifier = "OrderedSetTests/testIntersectionPerformance()">
+               </Test>
+               <Test
+                  Identifier = "OrderedSetTests/testOverallPerformanceWithCapacityReserved()">
+               </Test>
+               <Test
+                  Identifier = "OrderedSetTests/testOverallPerformanceWithoutCapacityReserved()">
+               </Test>
+               <Test
+                  Identifier = "OrderedSetTests/testReplaceRangePerformance()">
+               </Test>
+               <Test
+                  Identifier = "OrderedSetTests/testSubtractPerformance()">
+               </Test>
+               <Test
+                  Identifier = "OrderedSetTests/testUnionPerformance()">
+               </Test>
+               <Test
+                  Identifier = "OrderedSetTests/testXORPerformance()">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
       <MacroExpansion>

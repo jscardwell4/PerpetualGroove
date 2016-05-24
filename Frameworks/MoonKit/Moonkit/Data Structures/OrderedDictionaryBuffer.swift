@@ -18,7 +18,7 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: CollectionType, MutableColl
   typealias SubSequence = Buffer
 
   private(set) var storage: Storage
-  let initializedBuckets: BitMap
+//  let initializedBuckets: BitMap
   let bucketMap: HashBucketMap
   let keysBaseAddress: UnsafeMutablePointer<Key>
   let valuesBaseAddress: UnsafeMutablePointer<Value>
@@ -36,7 +36,7 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: CollectionType, MutableColl
   var count: Int { return endIndex - startIndex }
   var capacity: Int { return indexOffset == 0 ? storage.capacity - startIndex : storage.capacity }
 
-  var identity: UnsafePointer<Void> { return UnsafePointer<Void>(initializedBuckets.buffer.baseAddress) }
+  var identity: UnsafePointer<Void> { return UnsafePointer<Void>(storage.withUnsafeMutablePointerToElements { $0 }) }
 
   static func minimumCapacityForCount(count: Int) -> Int {
     // `requestedCount + 1` below ensures that we don't fill in the last hole
@@ -96,7 +96,7 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: CollectionType, MutableColl
   func keyAtPosition(position: Int) -> Key { return keyInBucket(bucketForPosition(position)) }
 
   /// Returns `false` when `bucket` is empty and `true` otherwise.
-  func isInitializedBucket(bucket: HashBucket) -> Bool { return initializedBuckets[bucket.offset] }
+  func isInitializedBucket(bucket: HashBucket) -> Bool { return bucketMap[bucket] != nil }
 
   /// Returns the position for `key` or `nil` if `member` is not found.
   func positionForKey(key: Key) -> Index? {
@@ -123,10 +123,10 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: CollectionType, MutableColl
   /// Convenience for retrieving both the key and value for a position.
   func elementAtPosition(position: Int) -> (Key, Value) { return elementInBucket(bucketForPosition(position)) }
 
-  init(storage: Storage, bucketMap: HashBucketMap, indices: Range<Index>, offset: Index = 0) {
+  init(storage: Storage, indices: Range<Index>, offset: Index = 0) {
     self.storage = storage
-    initializedBuckets = storage.initializedBuckets
-    self.bucketMap = bucketMap
+//    initializedBuckets = storage.initializedBuckets
+    bucketMap = storage.bucketMap
     keysBaseAddress = storage.keys
     valuesBaseAddress = storage.values
 
@@ -162,7 +162,7 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: CollectionType, MutableColl
     let requiredCapacity = Buffer.minimumCapacityForCount(minimumCapacity)
     let storage = Storage.create(requiredCapacity)
     let indices = offset ..< offset
-    self.init(storage: storage, bucketMap: HashBucketMap(capacity: storage.capacity), indices: indices, offset: offset)
+    self.init(storage: storage, indices: indices, offset: offset)
   }
 
   /// Attempts to move the values of the buckets near `hole` into buckets nearer to their 'ideal' bucket
@@ -198,10 +198,11 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: CollectionType, MutableColl
 
   }
 
-  func destroyBucket(bucket: HashBucket) {
-    initializedBuckets[bucket.offset] = false
+  func destroyBucket(bucket: HashBucket, position: Int) {
+//    initializedBuckets[bucket.offset] = false
     (keysBaseAddress + bucket.offset).destroy()
     (valuesBaseAddress + bucket.offset).destroy()
+    bucketMap.removeBucketAt(offsetPosition(position))
   }
 
   mutating func destroyElementAt(position: Index) {
@@ -209,8 +210,8 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: CollectionType, MutableColl
     let hole = bucketForPosition(position)
     let idealBucket = idealBucketForKey(keyInBucket(hole))
 
-    destroyBucket(hole)
-    bucketMap.removeBucketAt(offsetPosition(position))
+    destroyBucket(hole, position: position)
+
 
     endIndex -= 1
 
@@ -225,7 +226,7 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: CollectionType, MutableColl
     guard let emptyBucket = emptyBucketForKey(element.0) else {
       fatalError("failed to locate an empty bucket for key '\(element.0)'")
     }
-    destroyBucket(bucket)
+    destroyBucket(bucket, position: position)
     initializeKey(element.0, forValue: element.1, position: position, bucket: emptyBucket)
   }
   
@@ -239,7 +240,7 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: CollectionType, MutableColl
 
     // Remove values from buckets in `subRange`
 
-    subRange.forEach { destroyBucket(bucketForPosition($0)) }
+    subRange.forEach { destroyBucket(bucketForPosition($0), position: $0) }
 
     // Insert new elements, accumulating a list of their buckets
     var newElementsBuckets = [HashBucket](minimumCapacity: numericCast(newElements.count))
@@ -268,7 +269,7 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: CollectionType, MutableColl
     defer { _fixLifetime(self) }
     (keysBaseAddress + bucket.offset).initialize(key)
     (valuesBaseAddress + bucket.offset).initialize(value)
-    initializedBuckets[bucket.offset] = true
+//    initializedBuckets[bucket.offset] = true
   }
 
   func initializeKey(key: Key, forValue value: Value, position: Int, bucket: HashBucket) {
@@ -289,7 +290,7 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: CollectionType, MutableColl
   /// Removes the value from `bucket1` and uses this value to initialize `bucket2`
   func moveElementInBucket(bucket1: HashBucket, toBucket bucket2: HashBucket) {
     initializeBucket(bucket2, with: (keysBaseAddress + bucket1.offset).move(), forValue: (valuesBaseAddress + bucket1.offset).move())
-    initializedBuckets[bucket1.offset] = false
+//    initializedBuckets[bucket1.offset] = false
     bucketMap.replaceBucket(bucket1, with: bucket2)
   }
 
@@ -311,7 +312,7 @@ struct OrderedDictionaryBuffer<Key:Hashable, Value>: CollectionType, MutableColl
   }
 
   subscript(subRange: Range<Index>) -> SubSequence {
-    get { return SubSequence(storage: storage, bucketMap: bucketMap[subRange], indices: subRange) }
+    get { return SubSequence(storage: storage, indices: subRange) }
     set { replaceRange(subRange, with: newValue) }
   }
   
@@ -355,7 +356,7 @@ extension OrderedDictionaryBuffer : CustomStringConvertible, CustomDebugStringCo
       result += "position \(position), empty\n"
     }
     for bucket in 0 ..< bucketMap.capacity {
-      if initializedBuckets[bucket] {
+      if isInitializedBucket(HashBucket(offset: bucket, capacity: bucketMap.capacity)) {
         let key = keysBaseAddress[bucket]
         result += "bucket \(bucket), key = \(key), ideal bucket = \(idealBucketForKey(key))\n"
       } else {
