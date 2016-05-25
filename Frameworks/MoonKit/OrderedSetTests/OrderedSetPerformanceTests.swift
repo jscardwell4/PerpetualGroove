@@ -12,43 +12,51 @@ import MoonKitTest
 
 final class OrderedSetPerformanceTests: XCTestCase {
 
+  var elements1: [Int] = randomIntegersLarge1
+  var elements2: [Int] = randomIntegersLarge2
+
+  func setup() {
+    elements1 = randomIntegersLarge1
+    elements2 = randomIntegersLarge2
+  }
+
   func performanceWork<
     S:SetType
     where S.Generator.Element == Int
     >(createSet: (capacity: Int) -> S) -> () -> Void
   {
-
     return {
       var set = createSet(capacity: 2048)
-      for value in randomIntegersLarge1 { set.insert(value) }
-      for value in randomIntegersLarge2 { set.remove(value) }
-      set.unionInPlace(randomIntegersLarge2)
-      set.subtractInPlace(randomIntegersLarge1)
-      set.exclusiveOrInPlace(randomIntegersLarge1)
-      set.intersectInPlace(randomIntegersLarge2)
+      defer { _fixLifetime(set) }
+      for value in self.elements1 { set.insert(value) }
+      for value in self.elements2 { set.remove(value) }
+      set.unionInPlace(self.elements2)
+      set.subtractInPlace(self.elements1)
+      set.exclusiveOrInPlace(self.elements1)
+      set.intersectInPlace(self.elements2)
     }
   }
 
   func testInsertionPerformance() {
+    var orderedSet = OrderedSet<Int>()
     measureBlock {
-      var orderedSet = OrderedSet<Int>()
-      for i in randomIntegersLarge1 { orderedSet.insert(i) }
+      for i in self.elements1 { orderedSet.insert(i) }
     }
   }
 
   func testDeletePerformance() {
+    var orderedSet = OrderedSet<Int>(elements1)
     measureBlock {
-      var orderedSet = OrderedSet<Int>(randomIntegersLarge1)
-      for i in randomIntegersLarge1 { orderedSet.remove(i) }
+      for i in self.elements1 { orderedSet.remove(i) }
     }
   }
 
   func testReplaceRangePerformance() {
+    var orderedSet = OrderedSet<Int>(elements1)
     measureBlock {
-      var orderedSet = OrderedSet<Int>(randomIntegersLarge1)
       for _ in 0 ..< 100 {
         let range = randomRange(orderedSet.count, coverage: 0.25)
-        orderedSet.replaceRange(range, with: randomIntegersLarge2[range])
+        orderedSet.replaceRange(range, with: self.elements2[range])
       }
     }
   }

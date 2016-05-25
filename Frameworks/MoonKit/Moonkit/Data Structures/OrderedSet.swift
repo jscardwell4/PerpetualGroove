@@ -99,7 +99,7 @@ public struct OrderedSet<Member:Hashable>: CollectionType {
   }
   
 
-  public func indexOf(member: Element) -> Index? { return buffer.positionForElement(member) }
+  public func indexOf(member: Element) -> Index? { return buffer.indexForElement(member) }
 
   @warn_unused_result
   public func contains(member: Element) -> Bool { return buffer.containsKey(member) }
@@ -118,12 +118,12 @@ public struct OrderedSet<Member:Hashable>: CollectionType {
   }
 
   mutating func _removeAndReturn(member: Element) -> Element? {
-    guard let index = buffer.positionForElement(member) else { return nil }
+    guard let index = buffer.indexForElement(member) else { return nil }
     return _removeAndReturn(index)
   }
 
   mutating func _remove(member: Element) {
-    guard let index = buffer.positionForElement(member) else { return }
+    guard let index = buffer.indexForElement(member) else { return }
     _remove(index)
   }
 

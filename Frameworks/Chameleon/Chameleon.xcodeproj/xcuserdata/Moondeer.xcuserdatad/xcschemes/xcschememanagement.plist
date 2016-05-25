@@ -6,13 +6,15 @@
 	<dict>
 		<key>Chameleon.xcscheme</key>
 		<dict>
+			<key>isShown</key>
+			<false/>
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
 		<key>ChameleonApp.xcscheme</key>
 		<dict>
 			<key>isShown</key>
-			<true/>
+			<false/>
 			<key>orderHint</key>
 			<integer>10</integer>
 		</dict>

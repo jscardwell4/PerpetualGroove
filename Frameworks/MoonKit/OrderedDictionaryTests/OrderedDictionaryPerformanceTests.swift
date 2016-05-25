@@ -10,28 +10,39 @@ import XCTest
 import MoonKitTest
 @testable import MoonKit
 
+
 final class OrderedDictionaryPerformanceTests: XCTestCase {
 
+  var elements1: [(String, Int)] = Array(zip(randomStringsLarge1, randomIntegersLarge1))
+  var elements2: [(String, Int)] = Array(zip(randomStringsLarge2, randomIntegersLarge2))
+  var elements3: [(String, Int)] = Array(zip(randomStringsMedium1, randomIntegersMedium1))
+
+  func setup() {
+    elements1 = Array(zip(randomStringsLarge1, randomIntegersLarge1))
+    elements2 = Array(zip(randomStringsLarge2, randomIntegersLarge2))
+    elements3 = Array(zip(randomStringsMedium1, randomIntegersMedium1))
+  }
+
   func performanceWork(createDictionary: (capacity: Int) -> OrderedDictionary<String, Int>) -> () -> Void {
+    var dictionary = createDictionary(capacity: 2048)
     return {
-      var dictionary = createDictionary(capacity: 2048)
-      for value in randomIntegersLarge1 { dictionary[String(value)] = value }
-      for value in randomIntegersLarge2 { dictionary[String(value)] = nil }
-      for value in randomIntegersMedium1 { dictionary[String(value)] = value }
+      for (key, value) in self.elements1 { dictionary[key] = value }
+      for (key, _) in self.elements2 { dictionary[key] = nil }
+      for (key, value) in self.elements3 { dictionary[key] = value }
     }
   }
 
   func testInsertValueForKeyPerformance() {
+    var orderedDictionary = OrderedDictionary<String, Int>()
     measureBlock {
-      var orderedDictionary = OrderedDictionary<String, Int>()
-      for i in randomIntegersLarge1 { orderedDictionary.insertValue(i, forKey: String(i)) }
+      for (key, value) in self.elements1 { orderedDictionary.insertValue(value, forKey: key) }
     }
   }
 
   func testRemoveValueForKeyPerformance() {
+    var orderedDictionary = OrderedDictionary<String, Int>(elements1)
     measureBlock {
-      var orderedDictionary = OrderedDictionary<String, Int>(randomIntegersLarge1.map {(String($0), $0)})
-      for i in randomIntegersLarge1 { orderedDictionary.removeValueForKey(String(i)) }
+      for (key, _) in self.elements1 { orderedDictionary.removeValueForKey(key) }
     }
   }
 

@@ -6,6 +6,8 @@
 	<dict>
 		<key>BitMapTests.xcscheme</key>
 		<dict>
+			<key>isShown</key>
+			<false/>
 			<key>orderHint</key>
 			<integer>22</integer>
 		</dict>
@@ -31,12 +33,14 @@
 		<key>MoonKitOSX.xcscheme</key>
 		<dict>
 			<key>isShown</key>
-			<true/>
+			<false/>
 			<key>orderHint</key>
 			<integer>7</integer>
 		</dict>
 		<key>MoonKitTest.xcscheme</key>
 		<dict>
+			<key>isShown</key>
+			<true/>
 			<key>orderHint</key>
 			<integer>20</integer>
 		</dict>
@@ -49,16 +53,22 @@
 		</dict>
 		<key>NativeSetTests.xcscheme</key>
 		<dict>
+			<key>isShown</key>
+			<false/>
 			<key>orderHint</key>
 			<integer>24</integer>
 		</dict>
 		<key>OrderedDictionaryTests.xcscheme</key>
 		<dict>
+			<key>isShown</key>
+			<false/>
 			<key>orderHint</key>
 			<integer>18</integer>
 		</dict>
 		<key>OrderedSetTests.xcscheme</key>
 		<dict>
+			<key>isShown</key>
+			<false/>
 			<key>orderHint</key>
 			<integer>21</integer>
 		</dict>
@@ -71,6 +81,8 @@
 		</dict>
 		<key>WeakArrayTests.xcscheme</key>
 		<dict>
+			<key>isShown</key>
+			<false/>
 			<key>orderHint</key>
 			<integer>19</integer>
 		</dict>

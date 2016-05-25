@@ -40,6 +40,21 @@ public let randomIntegersMedium2 = randomIntegers(10000, 0 ..< 2000)
 public let randomIntegersLarge1 = randomIntegers(50000, 0 ..< 10000)
 public let randomIntegersLarge2 = randomIntegers(50000, 0 ..< 10000)
 
+public let randomStringsXXSmall1 = randomIntegersXXSmall1.map {String($0)}
+public let randomStringsXXSmall2 = randomIntegersXXSmall2.map {String($0)}
+
+public let randomStringsXSmall1 = randomIntegersXSmall1.map {String($0)}
+public let randomStringsXSmall2 = randomIntegersXSmall2.map {String($0)}
+
+public let randomStringsSmall1 = randomIntegersSmall1.map {String($0)}
+public let randomStringsSmall2 = randomIntegersSmall2.map {String($0)}
+
+public let randomStringsMedium1 = randomIntegersMedium1.map {String($0)}
+public let randomStringsMedium2 = randomIntegersMedium2.map {String($0)}
+
+public let randomStringsLarge1 = randomIntegersLarge1.map {String($0)}
+public let randomStringsLarge2 = randomIntegersLarge2.map {String($0)}
+
 
 public func performWithIntegers<Target>(@noescape target target: ([Int]) -> Target, execute: (Target, [Int]) -> Void) -> () -> Void
 {

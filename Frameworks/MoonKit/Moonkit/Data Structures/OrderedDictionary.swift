@@ -82,12 +82,12 @@ public struct OrderedDictionary<Key: Hashable, Value>: _DestructorSafeContainer 
   }
 
   mutating func _removeValueForKey(key: Key) {
-    guard let index = buffer.positionForKey(key) else { return }
+    guard let index = buffer.indexForKey(key) else { return }
     _remove(index)
   }
 
   mutating func _removeAndReturnValueForKey(key: Key) -> Value? {
-    guard let index = buffer.positionForKey(key) else { return nil }
+    guard let index = buffer.indexForKey(key) else { return nil }
     return _removeAndReturn(index).1
   }
 
@@ -146,7 +146,7 @@ extension OrderedDictionary where Value:Equatable {
 
   public func _customIndexOfEquatableElement(element: Element) -> Index?? {
     guard self[element.0] == element.1 else { return Optional(nil) }
-    return Optional(buffer.positionForKey(element.0))
+    return Optional(buffer.indexForKey(element.0))
   }
 }
 
@@ -176,11 +176,11 @@ extension OrderedDictionary: MutableKeyValueCollection {
   }
 
   /// Returns the index of `key` or `nil` if `key` is not present.
-  public func indexForKey(key: Key) -> Index? { return buffer.positionForKey(key) }
+  public func indexForKey(key: Key) -> Index? { return buffer.indexForKey(key) }
 
   /// Returns the value associated with `key` or `nil` if `key` is not present.
   public func valueForKey(key: Key) -> Value? {
-    guard let position = buffer.positionForKey(key) else { return nil }
+    guard let position = buffer.indexForKey(key) else { return nil }
     return buffer.valueForPosition(position)
   }
 
