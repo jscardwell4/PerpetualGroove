@@ -19,6 +19,7 @@ public func randomIntegers(count: Int, _ range: Range<Int>) -> [Int] {
 }
 
 public func randomRange(count: Int, coverage: Double) -> Range<Int> {
+  guard count > 0 else { return 0 ..< 0 }
   let length = Int(Double(count) * coverage)
   let end = Int(arc4random()) % count
   let start = max(0, end - length)
