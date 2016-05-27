@@ -262,7 +262,7 @@
 		C2421D181BEFE884009BA8B1 /* ByteArrayConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2421D171BEFE884009BA8B1 /* ByteArrayConvertible.swift */; };
 		C2421D1A1BEFE8DE009BA8B1 /* Bytes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2421D191BEFE8DE009BA8B1 /* Bytes.swift */; };
 		C24416331ACB16F8007EDEFE /* Set+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24416321ACB16F8007EDEFE /* Set+MoonKitAdditions.swift */; };
-		C2457E831CEFC06A00B4B4B8 /* HashedStorageBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2457E821CEFC06A00B4B4B8 /* HashedStorageBuffer.swift */; };
+		C2457E831CEFC06A00B4B4B8 /* HashedStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2457E821CEFC06A00B4B4B8 /* HashedStorage.swift */; };
 		C24684201CA451F800CB61EE /* NativeSetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C246841F1CA451F800CB61EE /* NativeSetTests.swift */; };
 		C24684221CA451F800CB61EE /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2358F1619C78D6D00920F8D /* MoonKit.framework */; };
 		C246961B1C6BD3E100120DAF /* SortedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = C246961A1C6BD3E100120DAF /* SortedArray.swift */; };
@@ -663,7 +663,7 @@
 		C24416321ACB16F8007EDEFE /* Set+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Set+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C2456BE319C39C8A007162F3 /* NSIndexPath+MSKitAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSIndexPath+MSKitAdditions.h"; sourceTree = "<group>"; };
 		C2456BE419C39C8A007162F3 /* NSIndexPath+MSKitAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSIndexPath+MSKitAdditions.m"; sourceTree = "<group>"; };
-		C2457E821CEFC06A00B4B4B8 /* HashedStorageBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HashedStorageBuffer.swift; sourceTree = "<group>"; };
+		C2457E821CEFC06A00B4B4B8 /* HashedStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HashedStorage.swift; sourceTree = "<group>"; };
 		C246841D1CA451F800CB61EE /* NativeSetTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NativeSetTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C246841F1CA451F800CB61EE /* NativeSetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeSetTests.swift; sourceTree = "<group>"; };
 		C24684211CA451F800CB61EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1185,7 +1185,7 @@
 				C246961A1C6BD3E100120DAF /* SortedArray.swift */,
 				C2CD95041C778C78001FB80B /* BitMap.swift */,
 				C230A1C31CE1017B00D8EF49 /* KeyValueCollection.swift */,
-				C2457E821CEFC06A00B4B4B8 /* HashedStorageBuffer.swift */,
+				C2457E821CEFC06A00B4B4B8 /* HashedStorage.swift */,
 				C2AA7F151CF6873400921CEE /* RangeMap.swift */,
 			);
 			path = "Data Structures";
@@ -2661,7 +2661,7 @@
 				C2358F5019C78E0C00920F8D /* UIStoryboard+MSKitAdditions.m in Sources */,
 				C28E50921A13CA2F00DF3206 /* PanGesture.swift in Sources */,
 				C2358F5119C78E0C00920F8D /* UITableView+MSKitAdditions.m in Sources */,
-				C2457E831CEFC06A00B4B4B8 /* HashedStorageBuffer.swift in Sources */,
+				C2457E831CEFC06A00B4B4B8 /* HashedStorage.swift in Sources */,
 				C2358F5219C78E0C00920F8D /* UIView+MSKitAdditions.m in Sources */,
 				C2358F5319C78E0C00920F8D /* UIViewController+MSKitAdditions.m in Sources */,
 				C2E7C8321A1AA3F0006BC80E /* Protocols.swift in Sources */,
