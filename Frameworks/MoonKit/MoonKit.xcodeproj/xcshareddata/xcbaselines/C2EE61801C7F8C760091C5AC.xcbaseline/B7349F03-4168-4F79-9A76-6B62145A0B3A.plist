@@ -4,6 +4,39 @@
 <dict>
 	<key>classNames</key>
 	<dict>
+		<key>OrderedDictionaryPerformanceTests</key>
+		<dict>
+			<key>testInsertValueForKeyPerformance()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.201</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>May 26, 2016, 9:06:41 AM</string>
+				</dict>
+			</dict>
+			<key>testOverallPerformance()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.793</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>May 26, 2016, 9:06:47 AM</string>
+				</dict>
+			</dict>
+			<key>testRemoveValueForKeyPerformance()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>1.9904</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>May 27, 2016, 8:10:39 AM</string>
+				</dict>
+			</dict>
+		</dict>
 		<key>OrderedDictionarySliceTests</key>
 		<dict>
 			<key>testInsertValueForKeyPerformance()</key>

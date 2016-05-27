@@ -35,7 +35,7 @@ extension KeyValueCollection where Self.Generator.Element == (Key, Value) {
     let maxKeyLength = keyDescriptions.reduce(0) { max($0, $1.characters.count) }
     let indentation = " " * (indent * 4)
     for (key, value) in zip(keyDescriptions, values) {
-      let keyString = "\(indentation)\(key): "//\(spacer)"
+      let keyString = "\(indentation)\(key): "
       var valueString: String
       var valueComponents = "\n".split("\(value)")
       if valueComponents.count > 0 {

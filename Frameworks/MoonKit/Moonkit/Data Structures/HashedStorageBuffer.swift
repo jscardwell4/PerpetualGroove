@@ -8,6 +8,8 @@
 
 import Foundation
 
+// MARK: - OrderedSet
+
 /// A hash-based mapping from `Key` to `Element` instances that preserves elment order.
 public struct OrderedSet<Member:Hashable>: CollectionType {
 
@@ -80,29 +82,24 @@ public struct OrderedSet<Member:Hashable>: CollectionType {
 
   /// - note: Copied source from stdlib `Set`
   public var hashValue: Int {
-    // FIXME: <rdar://problem/18915294> Cache Set<T> hashValue
     var result: Int = _mixInt(0)
-    for member in self {
-      result ^= _mixInt(member.hashValue)
-    }
+    for element in self { result ^= _mixInt(element.hashValue) }
     return result
   }
 
   @warn_unused_result
-  public func _customContainsEquatableElement(member: Element) -> Bool? {
-    return contains(member)
-  }
+  public func _customContainsEquatableElement(element: Element) -> Bool? { return contains(element) }
 
   @warn_unused_result
-  public func _customIndexOfEquatableElement(member: Element) -> Index?? {
-    return Optional(indexOf(member))
+  public func _customIndexOfEquatableElement(element: Element) -> Index?? {
+    return Optional(indexOf(element))
   }
   
 
-  public func indexOf(member: Element) -> Index? { return buffer.indexForElement(member) }
+  public func indexOf(element: Element) -> Index? { return buffer.indexForElement(element) }
 
   @warn_unused_result
-  public func contains(member: Element) -> Bool { return buffer.containsKey(member) }
+  public func contains(element: Element) -> Bool { return buffer.containsKey(element) }
 
   // MARK: Removing elements
 
@@ -117,22 +114,29 @@ public struct OrderedSet<Member:Hashable>: CollectionType {
     return result
   }
 
-  private mutating func _removeAndReturn(member: Element) -> Element? {
-    guard let index = buffer.indexForElement(member) else { return nil }
+  private mutating func _removeAndReturn(element: Element) -> Element? {
+    guard let index = buffer.indexForElement(element) else { return nil }
     return _removeAndReturn(index)
   }
 
-  private mutating func _remove(member: Element) {
-    guard let index = buffer.indexForElement(member) else { return }
-    _remove(index)
+//  private mutating func _remove(element: Element) {
+//    guard let index = buffer.indexForElement(element) else { return }
+//    _remove(index)
+//  }
+
+  private mutating func _remove<S:SequenceType where S.Generator.Element == Element>(elements: S) {
+    ensureUnique()
+    buffer.removeContentsOf(elements)
   }
 
   // MARK: Inserting elements
-  private mutating func _append(member: Element) {
-    guard !buffer.containsKey(member) else { return }
-    ensureUniqueWithCapacity(Buffer.minimumCapacityForCount(count + 1))
-    guard buffer.initializeElement(member, at: buffer.endIndex) else { return }
-    buffer.endIndex += 1
+  private mutating func _append(element: Element) {
+    _append([element])
+  }
+
+  private mutating func _append<S:SequenceType where S.Generator.Element == Element>(elements: S) {
+    ensureUniqueWithCapacity(Buffer.minimumCapacityForCount(count + elements.underestimateCount()))
+    buffer.appendContentsOf(elements)
   }
 
   // MARK: Replacing elements
@@ -161,15 +165,18 @@ extension OrderedSet: MutableIndexable {
 // MARK: SetType
 extension OrderedSet: SetType {
 
-  public mutating func insert(member: Element) { _append(member)  }
+  /// Inserts `element` into the collection.
+  public mutating func insert(element: Element) { _append(element)  }
 
-  public mutating func remove(member: Element) -> Element? { return _removeAndReturn(member) }
-  
+  /// Removes and returns `element` from the collection, returns `nil` if `element` was not contained.
+  public mutating func remove(element: Element) -> Element? { return _removeAndReturn(element) }
+
+  /// Initialize with the unique members of `elements`.
   public init<S:SequenceType where S.Generator.Element == Element>(_ elements: S) {
     self.init(buffer: Buffer(elements: elements)) // Uniqueness checked by `Buffer`
   }
 
-  /// Returns true if the set is a subset of a finite sequence as a `Set`.
+  /// Returns true if the set is a subset of a finite sequence as a set.
   @warn_unused_result
   public func isSubsetOf<S:SequenceType where S.Generator.Element == Element>(sequence: S) -> Bool {
     var hitCount = 0
@@ -179,7 +186,7 @@ extension OrderedSet: SetType {
     }
     return hitCount == count
   }
-  /// Returns true if the set is a subset of a finite sequence as a `Set` but not equal.
+  /// Returns true if the set is a subset of a finite sequence as a set but not equal.
   @warn_unused_result
   public func isStrictSubsetOf<S:SequenceType where S.Generator.Element == Element>(sequence: S) -> Bool {
     var hitCount = 0, totalCount = 0
@@ -191,14 +198,14 @@ extension OrderedSet: SetType {
     return hitCount == count && totalCount > count
   }
 
-  /// Returns true if the set is a superset of a finite sequence as a `Set`.
+  /// Returns true if the set is a superset of a finite sequence as a set.
   @warn_unused_result
   public func isSupersetOf<S:SequenceType where S.Generator.Element == Element>(sequence: S) -> Bool {
     for element in sequence { guard contains(element) else { return false } }
     return true
   }
 
-  /// Returns true if the set is a superset of a finite sequence as a `Set` but not equal.
+  /// Returns true if the set is a superset of a finite sequence as a set but not equal.
   @warn_unused_result
   public func isStrictSupersetOf<S:SequenceType where S.Generator.Element == Element>(sequence: S) -> Bool {
     var totalCount = 0
@@ -209,7 +216,7 @@ extension OrderedSet: SetType {
     return totalCount < count
   }
 
-  /// Returns true if no members in the set are in a finite sequence as a `Set`.
+  /// Returns true if no members in the set are in a finite sequence as a set.
   @warn_unused_result
   public func isDisjointWith<S:SequenceType where S.Generator.Element == Element>(sequence: S) -> Bool {
     for element in sequence { guard !contains(element) else { return false } }
@@ -224,102 +231,150 @@ extension OrderedSet: SetType {
     return result
   }
 
-  /// Insert elements of a finite sequence into this `Set`.
+  /// Insert elements of a finite sequence into this set.
   public mutating func unionInPlace<S:SequenceType where S.Generator.Element == Element>(sequence: S) {
-    for element in sequence /*where !contains(element)*/ { _append(element) }
+    _append(sequence)
   }
 
   /// Return a new set with elements in this set that do not occur in a finite sequence.
   @warn_unused_result
   public func subtract<S:SequenceType where S.Generator.Element == Element>(sequence: S) -> OrderedSet<Element> {
-    switch sequence {
-    case let other as OrderedSet<Element>:
-      var result = OrderedSet<Element>(minimumCapacity: capacity)
-      for element in self where other ∌ element { result.append(element) }
-      return result
-    case let other as Set<Element>:
-      var result = OrderedSet<Element>(minimumCapacity: capacity)
-      for element in self where other ∌ element { result.append(element) }
-      return result
-    default:
-      let other = Set(sequence)
-      var result = OrderedSet<Element>(minimumCapacity: capacity)
-      for element in self where other ∌ element { result.append(element) }
-      return result
-    }
+    var result = self
+    result.subtractInPlace(sequence)
+    return result
   }
 
   /// Remove all members in the set that occur in a finite sequence.
   public mutating func subtractInPlace<S:SequenceType where S.Generator.Element == Element>(sequence: S) {
-    self = subtract(sequence)
+    _remove(sequence)
   }
 
   /// Return a new set with elements common to this set and a finite sequence.
   @warn_unused_result
   public func intersect<S:SequenceType where S.Generator.Element == Element>(sequence: S) -> OrderedSet<Element> {
-    switch sequence {
-    case let other as OrderedSet<Element>:
-      var result = OrderedSet<Element>(minimumCapacity: capacity)
-      for element in self where other ∋ element { result.append(element) }
-      return result
-    case let other as Set<Element>:
-      var result = OrderedSet<Element>(minimumCapacity: capacity)
-      for element in self where other ∋ element { result.append(element) }
-      return result
-    default:
-      let other = Set(sequence)
-      var result = OrderedSet<Element>(minimumCapacity: capacity)
-      for element in self where other ∋ element { result.append(element) }
-      return result
+    var result = self
+    result.intersectInPlace(sequence)
+    return result
+  }
+
+  /// Remove any members of this set that aren't also in `set`.
+  public mutating func intersectInPlace<S:SetType where S.Generator.Element == Element>(set: S) {
+    var ranges = RangeMap<Int>()
+    if count < numericCast(set.count) {
+      for index in indices where !set.contains(self[index]) { ranges.insert(index) }
+    } else {
+      for index in set.flatMap({indexOf($0)}) { ranges.insert(index) }
+      ranges.invertInPlace(coverage: indices)
+    }
+    var removedCount = 0
+    for range in ranges {
+      let adjustedRange = range - removedCount
+      buffer.removeRange(adjustedRange)
+      removedCount = removedCount &+ adjustedRange.count
     }
   }
 
   /// Remove any members of this set that aren't also in a finite sequence.
   public mutating func intersectInPlace<S:SequenceType where S.Generator.Element == Element>(sequence: S) {
-    self = intersect(sequence)
+    switch sequence {
+      case let other as OrderedSet<Element>:
+        intersectInPlace(other)
+      case let other as Set<Element>:
+        intersectInPlace(other)
+      default:
+        let other = Set(sequence)
+        intersectInPlace(other)
+    }
   }
 
   /// Return a new set with elements that are either in the set or a finite sequence but do not occur in both.
   @warn_unused_result
   public func exclusiveOr<S:SequenceType where S.Generator.Element == Element>(sequence: S) -> OrderedSet<Element> {
-    switch sequence {
-    case let other as OrderedSet<Element>:
-      var result = OrderedSet<Element>(minimumCapacity: capacity + other.count)
-      for element in self where other ∌ element { result.append(element) }
-      for element in other where self ∌ element { result.append(element) }
-      return result
-    case let other as Set<Element>:
-      var result = OrderedSet<Element>(minimumCapacity: capacity + other.count)
-      for element in self where other ∌ element { result.append(element) }
-      for element in other where self ∌ element { result.append(element) }
-      return result
-    default:
-      let other = Set(sequence)
-      var result = OrderedSet<Element>(minimumCapacity: capacity + other.count)
-      for element in self where other ∌ element { result.append(element) }
-      for element in other where self ∌ element { result.append(element) }
-      return result
+    var result = self
+    result.exclusiveOrInPlace(sequence)
+    return result
+  }
+
+  /// Modify collection to contain elements that are either in this set or `set` but do not occur in both.
+  public mutating func exclusiveOrInPlace(set: Set<Element>)
+  {
+    var ranges = RangeMap<Int>()
+    var otherRanges = RangeMap<Set<Element>.Index>()
+    for otherIndex in set.indices {
+      guard let index = indexOf(set[otherIndex]) else { continue }
+      ranges.insert(index)
+      otherRanges.insert(otherIndex)
     }
+    otherRanges.invertInPlace(coverage: set.indices)
+    let removeCount = ranges.indexCount
+    let addCount = otherRanges.indexCount
+
+    guard removeCount > 0 || addCount > 0 else { return }
+
+    ensureUniqueWithCapacity(count + addCount - removeCount)
+
+    var removedCount = 0
+    for range in ranges {
+      let adjustedRange = range - removedCount
+      buffer.removeRange(adjustedRange)
+      removedCount = removedCount &+ adjustedRange.count
+    }
+
+    for range in otherRanges { buffer.appendContentsOf(set[range]) }
+  }
+
+  /// Modify collection to contain elements that are either in this set or `set` but do not occur in both.
+  public mutating func exclusiveOrInPlace(orderedSet: OrderedSet<Element>)
+  {
+    var ranges = RangeMap<Int>()
+    var otherRanges = RangeMap<Int>()
+    for otherIndex in orderedSet.indices {
+      guard let index = indexOf(orderedSet[otherIndex]) else { continue }
+      ranges.insert(index)
+      otherRanges.insert(otherIndex)
+    }
+    otherRanges.invertInPlace(coverage: orderedSet.indices)
+    let removeCount = ranges.indexCount
+    let addCount = otherRanges.indexCount
+
+    guard removeCount > 0 || addCount > 0 else { return }
+
+    ensureUniqueWithCapacity(count + addCount - removeCount)
+
+    var removedCount = 0
+    for range in ranges {
+      let adjustedRange = range - removedCount
+      buffer.removeRange(adjustedRange)
+      removedCount = removedCount &+ adjustedRange.count
+    }
+
+    for range in otherRanges { buffer.appendContentsOf(orderedSet[range]) }
   }
 
   /// For each element of a finite sequence, remove it from the set if it is a common element, otherwise add it
   /// to the set. Repeated elements of the sequence will be ignored.
   public mutating func exclusiveOrInPlace<S:SequenceType where S.Generator.Element == Element>(sequence: S) {
-    self = exclusiveOr(sequence)
+    switch sequence {
+      case let other as OrderedSet<Element>:
+        exclusiveOrInPlace(other)
+      case let other as Set<Element>:
+        exclusiveOrInPlace(other)
+      default:
+        let other = OrderedSet(sequence)
+        exclusiveOrInPlace(other)
+    }
   }
 }
 
+// MARK: MutableCollectionType
 extension OrderedSet: MutableCollectionType {
   public subscript(subRange: Range<Int>) -> SubSequence {
-    get {
-      return SubSequence(buffer: buffer[subRange])
-    }
-    set {
-      replaceRange(subRange, with: newValue)
-    }
+    get { return SubSequence(buffer: buffer[subRange]) }
+    set { replaceRange(subRange, with: newValue) }
   }
 }
 
+// MARK: RangeReplaceableCollectionType
 extension OrderedSet: RangeReplaceableCollectionType {
 
   /// Create an empty instance.
@@ -434,12 +489,14 @@ extension OrderedSet: RangeReplaceableCollectionType {
 
 }
 
+// MARK: ArrayLiteralConvertible
 extension OrderedSet: ArrayLiteralConvertible {
   public init(arrayLiteral elements: Element...) {
     self.init(buffer: Buffer(elements: elements))
   }
 }
 
+// MARK: CustomStringConvertible, CustomDebugStringConvertible
 extension OrderedSet: CustomStringConvertible, CustomDebugStringConvertible {
 
   private var elementsDescription: String {
@@ -447,13 +504,13 @@ extension OrderedSet: CustomStringConvertible, CustomDebugStringConvertible {
 
     var result = "["
     var first = true
-    for member in self {
+    for element in self {
       if first {
         first = false
       } else {
         result += ", "
       }
-      debugPrint(member, terminator: "", toStream: &result)
+      debugPrint(element, terminator: "", toStream: &result)
     }
     result += "]"
     return result
@@ -464,6 +521,7 @@ extension OrderedSet: CustomStringConvertible, CustomDebugStringConvertible {
   public var debugDescription: String { return elementsDescription }
 }
 
+// MARK: Equatable
 extension OrderedSet: Equatable {}
 
 public func == <Element:Hashable>
@@ -477,11 +535,12 @@ public func == <Element:Hashable>
   return true
 }
 
+// MARK: - OrderedDictionary
 /// A hash-based mapping from `Key` to `Value` instances that preserves elment order.
 public struct OrderedDictionary<Key: Hashable, Value>: _DestructorSafeContainer {
 
   private typealias Storage = OrderedDictionaryStorage<Key, Value>
-  private typealias Buffer = HashedStorageBuffer<Storage>//OrderedDictionaryBuffer<Key, Value>
+  private typealias Buffer = HashedStorageBuffer<Storage>
 
   public typealias Index = Int
   public typealias Element = (Key, Value)
@@ -606,6 +665,7 @@ public struct OrderedDictionary<Key: Hashable, Value>: _DestructorSafeContainer 
 
 }
 
+// MARK: OrderedDictionary where Value:Equatable
 extension OrderedDictionary where Value:Equatable {
 
   public func _customContainsEquatableElement(element: Element) -> Bool? {
@@ -864,7 +924,349 @@ public func == <Key: Hashable, Value: Equatable>
   return lhs.count == rhs.count
 }
 
+// MARK: - HashBucket
+private struct HashBucket: BidirectionalIndexType, Comparable, Hashable {
+  let offset: Int
+  let capacity: Int
 
+  func predecessor() -> HashBucket {
+    return HashBucket(offset: (offset &- 1) & (capacity &- 1), capacity: capacity)
+  }
+
+  func successor() -> HashBucket {
+    return HashBucket(offset: (offset &+ 1) & (capacity &- 1), capacity: capacity)
+  }
+
+  var hashValue: Int { return offset ^ capacity }
+}
+
+// MARK: CustomStringConvertible
+extension HashBucket: CustomStringConvertible {
+  var description: String { return "\(offset)" }
+}
+
+private func ==(lhs: HashBucket, rhs: HashBucket) -> Bool { return lhs.offset == rhs.offset }
+private func <(lhs: HashBucket, rhs: HashBucket) -> Bool { return lhs.offset < rhs.offset }
+
+
+/// Returns the hash value of `value` squeezed into `capacity`
+@inline(__always)
+private func suggestBucketForValue<H:Hashable>(value: H, capacity: Int) -> HashBucket {
+  return HashBucket(offset: _squeezeHashValue(value.hashValue, 0 ..< capacity), capacity: capacity)
+}
+
+/// - requires: `initializedBuckets` has an empty bucket (to avoid an infinite loop)
+private func findBucketForValue<H:Hashable>(value: H, capacity: Int, initializedBuckets: BitMap) -> HashBucket {
+  var bucket = suggestBucketForValue(value, capacity: capacity)
+  repeat {
+    guard initializedBuckets[bucket.offset] else { return bucket }
+    bucket._successorInPlace()
+  } while true
+}
+
+// MARK: - HashBucketMap
+private struct HashBucketMap: CollectionType {
+
+  typealias Index = Int
+  typealias _Element = HashBucket
+
+  /// Returns the number of bytes required for a map of `capacity` elements.
+  /// This includes storage for `capacity` `Int` values for the buckets,
+  /// `capacity` `Int` values for the positions, and an `Int` value for `_endIndex`
+  static func wordsFor(capacity: Int) -> Int { return strideof(Int) * (capacity * 2 + 1) }
+
+  /// The total number of 'bucket ⟷ position' mappings that can be managed.
+  let capacity: Int
+
+  /// Pointer to the memory allocated for tracking the position of each bucket.
+  let buckets: UnsafeMutableBufferPointer<Int>
+
+  /// Pointer to the memory allocated for tracking the bucket of each position
+  let positions: UnsafeMutableBufferPointer<Int>
+
+  /// Pointer to the memory allocated for tracking the `endIndex` value.
+  let _endIndex: UnsafeMutablePointer<Index>
+
+  /// Indexing always starts with `0`.
+  let startIndex: Index = 0
+
+  /// 'past the end' position for the 'position ➞ bucket' mappings.
+  var endIndex: Index {
+    get { return _endIndex.memory }
+    nonmutating set { _endIndex.memory = newValue }
+  }
+
+  /// The number of 'position ➞ bucket' mappings.
+  var count: Int { return endIndex - startIndex }
+
+  /// Initialize with a pointer to the storage to use and its represented capacity as an element count.
+  /// - warning: `storage` must have been properly allocated. Existing values in memory will be overwritten.
+  init(storage: UnsafeMutablePointer<Int>, capacity: Int) {
+    self.capacity = capacity
+    _endIndex = storage
+    positions = UnsafeMutableBufferPointer<Int>(start: storage + 1, count: capacity)
+    buckets = UnsafeMutableBufferPointer<Int>(start: storage + capacity + 1, count: capacity)
+    removeAll()
+  }
+
+  /// Initializes `positions` and `buckets` with `-1` and `endIndex` to `0`
+  func removeAll() {
+    _endIndex.initialize(0)
+    positions.baseAddress.initializeFrom(Repeat(count: capacity, repeatedValue: -1))
+    buckets.baseAddress.initializeFrom(Repeat(count: capacity, repeatedValue: -1))
+  }
+
+  /// Accessors for the position mapped to `bucket`. The setter will remove any existing mapping with the current
+  /// position for `bucket` when `newValue == nil` and replace any existing mapping with `newValue` otherwise.
+  subscript(bucket: HashBucket) -> Index? {
+    get {
+      assert((0 ..< capacity).contains(bucket.offset), "invalid bucket '\(bucket)'")
+      let index = buckets[bucket.offset]
+      return index > -1 ? index : nil
+    }
+    nonmutating set {
+      if let position = newValue {
+        replaceBucketAt(position, with: bucket)
+      } else if let oldPosition = self[bucket] {
+        removeBucketAt(oldPosition)
+      }
+    }
+  }
+
+  /// Accessors for getting and setting the bucket at a specified index. The setter will append `newValue`
+  /// when `index == endIndex` and replace the currently mapped bucket otherwise.
+  subscript(index: Index) -> HashBucket {
+    get {
+      assert((0 ..< capacity).contains(index), "index invalid '\(index)'")
+      return HashBucket(offset: positions[index], capacity: capacity)
+    }
+    nonmutating set {
+      assert((0 ..< capacity).contains(index), "index invalid '\(index)'")
+      if index == endIndex { appendBucket(newValue) }
+      else { replaceBucketAt(index, with: newValue) }
+    }
+  }
+
+  /// Removes `bucket1` by inserting `bucket2` and giving it `bucket1`'s position
+  /// - requires: `bucket1` has been assigned a position
+  func replaceBucket(bucket1: HashBucket, with bucket2: HashBucket) {
+    assert((0 ..< capacity).contains(bucket1.offset), "bucket1 invalid '\(bucket1)'")
+    assert((0 ..< capacity).contains(bucket2.offset), "bucket2 invalid '\(bucket2)'")
+
+    let position = buckets[bucket1.offset]
+
+    positions[position] = bucket2.offset
+    buckets[bucket1.offset] = -1
+    buckets[bucket2.offset] = position
+  }
+
+  /// Assigns `bucket` to `index`, removing the previously assigned bucket.
+  /// - requires: `index ∋ startIndex..<endIndex`
+  func replaceBucketAt(index: Index, with bucket: HashBucket) {
+    assert((0 ..< capacity).contains(index), "index invalid '\(index)'")
+    let currentBucketOffset = positions[index]
+    positions[index] = bucket.offset
+    buckets[bucket.offset] = index
+    if currentBucketOffset > 0 { buckets[currentBucketOffset] = -1 }
+  }
+
+  /// Maps `bucket` to `index` without updating the 'position ➞ bucket' mapping for `index`
+  func assign(index: Index, to bucket: HashBucket) {
+    assert((0 ..< capacity).contains(index), "index invalid '\(index)'")
+    assert((0 ..< capacity).contains(bucket.offset), "bucket invalid '\(bucket)'")
+    buckets[bucket.offset] = index
+  }
+
+  /// Assigns `bucket` to `endIndex`.
+  /// - requires: `endIndex < capacity`
+  /// - postcondition: `count = count + 1`
+  func appendBucket(bucket: HashBucket) {
+    assert((0 ..< capacity).contains(bucket.offset), "bucket invalid '\(bucket)'")
+    positions[endIndex] = bucket.offset
+    buckets[bucket.offset] = endIndex
+    endIndex = endIndex &+ 1
+  }
+
+  /// Removes the bucket assigned to `index`.
+  /// - requires: `index ∋ startIndex..<endIndex`
+  /// - postcondition: count = count - 1
+  func removeBucketAt(index: Index) {
+    replaceRange(index ... index, with: EmptyCollection())
+//    assert((0 ..< capacity).contains(index), "index invalid '\(index)'")
+//    let bucketOffset = positions[index]
+//    assert(bucketOffset > -1, "no bucket at index '\(index)'")
+//    buckets[bucketOffset] = -1
+//    endIndex = endIndex &- 1
+//    guard index != endIndex else { return }
+//    for moveIndex in index.successor() ..< endIndex.successor() {
+//      let previousIndex = moveIndex.predecessor()
+//      buckets[positions[moveIndex]] = previousIndex
+//      swap(&positions[moveIndex], &positions[previousIndex])
+//    }
+  }
+
+  subscript(bounds: Range<Index>) -> [HashBucket] {
+    get {
+      assert((0 ..< capacity).contains(bounds), "bounds invalid '\(bounds)'")
+      return positions[bounds].map {HashBucket(offset: $0, capacity: capacity) }
+    }
+    set {
+      assert((0 ..< capacity).contains(bounds), "bounds invalid '\(bounds)'")
+      replaceRange(bounds, with: newValue)
+    }
+  }
+
+  func insertContentsOf<
+    C:CollectionType where C.Generator.Element == HashBucket
+    >(newElements: C, at index: Int)
+  {
+    assert((0 ..< capacity).contains(index), "index invalid '\(index)'")
+
+    let shiftAmount = numericCast(newElements.count) as Int
+    shiftPositionsFrom(index, by: shiftAmount) // Adjusts `endIndex`
+
+    (positions.baseAddress + index).initializeFrom(newElements.map { $0.offset })
+    for position in index ..< endIndex { buckets[positions[position]] = position }
+
+  }
+
+  func shiftPositionsFrom(from: Int, by amount: Int) {
+    assert((0 ..< capacity).contains(from), "from invalid '\(from)'")
+    assert((0 ..< capacity).contains(from + amount), "amount invalid '\(amount)'")
+    let count = endIndex - from
+    let source = positions.baseAddress + from
+    let destination = source + amount
+    if amount < 0 {
+      destination.moveInitializeFrom(source, count: count)
+      (destination + count).initializeFrom(Repeat(count: abs(amount), repeatedValue: -1))
+    } else {
+      destination.moveInitializeBackwardFrom(source, count: count)
+      source.initializeFrom(Repeat(count: amount, repeatedValue: -1))
+    }
+    endIndex = endIndex &+ amount
+    for position in (from &+ amount) ..< endIndex {
+      buckets[positions[position]] = position
+    }
+  }
+
+  /// Replaces buckets assigned to positions in `subRange` with `newElements`
+  /// - requires: `newElements` contains unique values.
+  func replaceRange<
+    C:CollectionType
+    where
+    C.Generator.Element == HashBucket,
+    C.SubSequence.Generator.Element == HashBucket,
+    C.SubSequence:CollectionType
+    >(subRange: Range<Index>, with newElements: C)
+  {
+    assert((0 ..< capacity).contains(subRange), "subRange invalid '\(subRange)'")
+
+    let removeCount = subRange.count
+    let insertCount = numericCast(newElements.count) as Int
+
+    // Replace n values where n = max(subRange.count, newElements.count)
+    for (index, bucket) in zip(subRange, newElements) {
+      replaceBucketAt(index, with: bucket)
+    }
+
+    switch insertCount - removeCount {
+      case 0:
+        // Nothing more to do
+        break
+
+      case let delta where delta < 0:
+        // Empty remaining positions in `subRange`
+
+        let lastReplacedSuccessor = subRange.endIndex.advancedBy(delta)
+        for index in lastReplacedSuccessor ..< subRange.endIndex {
+          let oldBucketOffset = positions[index]
+          guard oldBucketOffset > -1 else { continue }
+          positions[index] = -1
+          let oldPosition = buckets[oldBucketOffset]
+          guard oldPosition == index else { continue }
+          buckets[oldBucketOffset] = -1
+        }
+
+        guard subRange.endIndex < endIndex else { endIndex = lastReplacedSuccessor; return }
+        shiftPositionsFrom(subRange.endIndex, by: delta)
+
+      default: /* case let delta where delta > 0 */
+        // Insert remaining values
+
+        insertContentsOf(newElements.dropFirst(removeCount), at: subRange.endIndex)
+
+    }
+  }
+
+}
+
+// MARK: CustomStringConvertible, CustomDebugStringConvertible
+extension HashBucketMap: CustomStringConvertible, CustomDebugStringConvertible {
+  var description: String {
+    var result = "["
+
+    var first = true
+    for i in startIndex ..< endIndex {
+      if first { first = false } else { result += ", " }
+      result += String(positions[i])
+    }
+    result += "]"
+
+    return result
+  }
+
+  var debugDescription: String {
+    var result = "startIndex: \(startIndex); endIndex: \(endIndex); capacity: \(capacity)\n"
+    result += "positions: [\n"
+
+    var first = true
+    for position in 0 ..< capacity {
+      let bucketOffset = positions[position]
+      guard bucketOffset > -1 else { continue }
+      if first { first = false } else { result += ",\n" }
+      result += "\t\(position): \(bucketOffset)"
+    }
+    result += "]\nbuckets: [\n"
+    first = true
+    for bucket in 0 ..< capacity {
+      let position = buckets[bucket]
+      guard position > -1 else { continue }
+      if first { first = false } else { result += ",\n" }
+      result += "\t\(bucket): \(position)"
+    }
+    result += "]"
+    return result
+  }
+  
+}
+
+// MARK: - HashedStorageHeader
+private struct HashedStorageHeader: CustomStringConvertible {
+  var count: Int = 0
+  let capacity: Int
+  let bytesAllocated: Int
+  let bucketMap: HashBucketMap
+
+  init(capacity: Int,
+       bytesAllocated: Int,
+       bucketMap: HashBucketMap)
+  {
+    self.capacity = capacity
+    self.bytesAllocated = bytesAllocated
+    self.bucketMap = bucketMap
+  }
+
+  var description: String {
+    return "\n".join("count: \(count)",
+                     "capacity: \(capacity)",
+                     "bytesAllocated: \(bytesAllocated)",
+                     "bucketMap: \(bucketMap)")
+  }
+}
+
+private let maxLoadFactorInverse = 1.0/0.75
+
+// MARK: - HashedStorage
 private class HashedStorage: ManagedBuffer<HashedStorageHeader, UInt8> {
 
   typealias Header = HashedStorageHeader
@@ -908,6 +1310,7 @@ private class HashedStorage: ManagedBuffer<HashedStorageHeader, UInt8> {
   }
 }
 
+// MARK: - ConcreteHashedStorage
 private protocol ConcreteHashedStorage {
   associatedtype HashedKey: Hashable
   associatedtype HashedValue
@@ -918,12 +1321,6 @@ private protocol ConcreteHashedStorage {
 
   static func keyForElement(element: Element) -> HashedKey
 
-//  func elementAtOffset() -> (Int) -> Element
-//  func initializeAtOffset() -> (Int, Element) -> Void
-//  func destroyAtOffset() -> (Int) -> Void
-//  func moveAtOffset() -> (Int) -> Element
-//  func updateAtOffset() -> (Int, Element) -> Element
-
   func elementAtOffset(offset: Int) -> Element
   func initializeAtOffset(offset: Int, element: Element) -> Void
   func destroyAtOffset(offset: Int) -> Void
@@ -933,6 +1330,7 @@ private protocol ConcreteHashedStorage {
   static func create(minimumCapacity: Int) -> Self
 }
 
+// MARK: - OrderedSetStorage
 /// Specialization of `HashedStorage` for an ordered set
 private final class OrderedSetStorage<Value:Hashable>: HashedStorage, ConcreteHashedStorage {
 
@@ -962,38 +1360,6 @@ private final class OrderedSetStorage<Value:Hashable>: HashedStorage, ConcreteHa
 
   @inline(__always)
   static func keyForElement(element: Element) -> HashedKey { return element }
-
-//  func elementAtOffset() -> (Int) -> Element {
-//    return {[values = self.values] in
-//      return values[$0]
-//    }
-//  }
-//
-//  func initializeAtOffset() -> (Int, Element) -> Void {
-//    return {[values = self.values] in
-//      (values + $0).initialize($1)
-//    }
-//  }
-//
-//  func destroyAtOffset() -> (Int) -> Void {
-//    return {[values = self.values] in
-//      (values + $0).destroy()
-//    }
-//  }
-//
-//  func moveAtOffset() -> (Int) -> Element {
-//    return {[values = self.values] in
-//      return (values + $0).move()
-//    }
-//  }
-//
-//  func updateAtOffset() -> (Int, Element) -> Element {
-//    return {[values = self.values] in
-//      let oldValue = (values + $0).move()
-//      (values + $0).initialize($1)
-//      return oldValue
-//    }
-//  }
 
   func elementAtOffset(offset: Int) -> Element {
     return values[offset]
@@ -1056,8 +1422,8 @@ private final class OrderedSetStorage<Value:Hashable>: HashedStorage, ConcreteHa
   }
 }
 
+// MARK: - OrderedDictionaryStorage
 /// Specialization of `HashedStorage` for an ordered dictionary
-
 private final class OrderedDictionaryStorage<Key:Hashable, Value>: HashedStorage, ConcreteHashedStorage {
 
   typealias Storage = OrderedDictionaryStorage<Key, Value>
@@ -1103,43 +1469,6 @@ private final class OrderedDictionaryStorage<Key:Hashable, Value>: HashedStorage
 
   var hashedValueBaseAddress: UnsafeMutablePointer<HashedValue> { return values }
 
-//  func elementAtOffset() -> (Int) -> Element {
-//    return {[keys = self.keys, values = self.values] in
-//      return (keys[$0], values[$0])
-//    }
-//  }
-//
-//  func initializeAtOffset() -> (Int, Element) -> Void {
-//    return {[keys = self.keys, values = self.values] in
-//      (keys + $0).initialize($1.0)
-//      (values + $0).initialize($1.1)
-//    }
-//  }
-//
-//  func destroyAtOffset() -> (Int) -> Void {
-//    return {[keys = self.keys, values = self.values] in
-//      (keys + $0).destroy()
-//      (values + $0).destroy()
-//    }
-//  }
-//
-//  func moveAtOffset() -> (Int) -> Element {
-//    return {[keys = self.keys, values = self.values] in
-//      return ((keys + $0).move(), (values + $0).move())
-//    }
-//  }
-//
-//  func updateAtOffset() -> (Int, Element) -> Element {
-//    return {[keys = self.keys, values = self.values] in
-//      assert(keys[$0] == $1.0, "keys do not match")
-//      let oldKey = (keys + $0).move()
-//      (keys + $0).initialize($1.0)
-//      let oldValue = (values + $0).move()
-//      (values + $0).initialize($1.1)
-//      return (oldKey, oldValue)
-//    }
-//  }
-
   func elementAtOffset(offset: Int) -> Element {
     return (keys[offset], values[offset])
   }
@@ -1166,7 +1495,6 @@ private final class OrderedDictionaryStorage<Key:Hashable, Value>: HashedStorage
     (values + offset).initialize(element.1)
     return (oldKey, oldValue)
   }
-
 
   /// Create a new storage instance.
   static func create(minimumCapacity: Int) -> OrderedDictionaryStorage {
@@ -1219,9 +1547,7 @@ private final class OrderedDictionaryStorage<Key:Hashable, Value>: HashedStorage
   }
 }
 
-
-
-
+// MARK: - HashedStorageBuffer
 private struct HashedStorageBuffer<Storage: HashedStorage where Storage:ConcreteHashedStorage>: MutableCollectionType {
 
   typealias HashedKey = Storage.HashedKey
@@ -1239,16 +1565,7 @@ private struct HashedStorageBuffer<Storage: HashedStorage where Storage:Concrete
   let hashedValues: UnsafeMutablePointer<HashedValue>
   let keyIsValue: Bool
 
-//  private let initializeAtOffset: (Int, Element) -> Void
-//  private let destroyAtOffset: (Int) -> Void
-//  private let moveAtOffset: (Int) -> Element
-//  private let elementAtOffset: (Int) -> Element
-//  private let updateAtOffset: (Int, Element) -> Element
-
-  @inline(__always)
-  mutating func isUniquelyReferenced() -> Bool {
-    return Swift.isUniquelyReferenced(&storage)
-  }
+  @inline(__always) mutating func isUniquelyReferenced() -> Bool { return Swift.isUniquelyReferenced(&storage) }
 
   let indexOffset: Int
 
@@ -1278,11 +1595,6 @@ private struct HashedStorageBuffer<Storage: HashedStorage where Storage:Concrete
     hashedKeys = storage.hashedKeyBaseAddress
     hashedValues = storage.hashedValueBaseAddress
     keyIsValue = UnsafePointer<Void>(hashedKeys) == UnsafePointer<Void>(hashedValues)
-//    initializeAtOffset = storage.initializeAtOffset()
-//    destroyAtOffset = storage.destroyAtOffset()
-//    moveAtOffset = storage.moveAtOffset()
-//    elementAtOffset = storage.elementAtOffset()
-//    updateAtOffset = storage.updateAtOffset()
 
     self.indexOffset = indexOffset
     startIndex = indices.startIndex
@@ -1332,7 +1644,7 @@ private struct HashedStorageBuffer<Storage: HashedStorage where Storage:Concrete
     return hashedValues[bucket.offset]
   }
 
-  /// Returns the bucket containing `hashedKey` or `nil` if no bucket contains `member`.
+  /// Returns the bucket containing `hashedKey` or `nil` if no bucket contains `element`.
   func currentBucketForKey(key: HashedKey) -> HashBucket? {
     let (bucket, found) = find(key)
     return found ? bucket : nil
@@ -1481,6 +1793,26 @@ private struct HashedStorageBuffer<Storage: HashedStorage where Storage:Concrete
       guard last != hole else { break }
       moveBucket(last, to: hole)
       hole = last
+    }
+
+  }
+
+  /// Removes elements common with `elements`.
+  mutating func removeContentsOf<S:SequenceType where S.Generator.Element == Element>(elements: S) {
+
+    var ranges = RangeMap<Int>()
+    for element in elements {
+      guard let index = indexForKey(Storage.keyForElement(element)) else { continue }
+      ranges.insert(index)
+    }
+
+    guard ranges.count > 0 else { return }
+
+    var removedCount = 0
+    for range in ranges {
+      let adjustedRange = range - removedCount
+      removeRange(adjustedRange)
+      removedCount = removedCount &+ adjustedRange.count
     }
 
   }
@@ -1665,20 +1997,21 @@ extension HashedStorageBuffer: RangeReplaceableCollectionType {
   /// - Complexity: O(`self.count`).
   mutating func removeRange(subRange: Range<Index>) {
 
-    let delta = subRange.count
-    guard delta > 0 else { return }
+    switch subRange.count {
+      case 0: return
+      case 1: destroyAt(subRange.startIndex)
+      case let delta:
+        let buckets = subRange.map { bucketMap[offsetPosition($0)] }
+        let idealBuckets = buckets.map { idealBucketForKey(hashedKeys[$0.offset]) }
+        buckets.forEach { storage.destroyAtOffset($0.offset) }
+        zip(buckets, idealBuckets).forEach { patchHole($0, idealBucket: $1) }
 
-    let buckets = subRange.map { bucketMap[offsetPosition($0)] }
-    let idealBuckets = buckets.map { idealBucketForKey(hashedKeys[$0.offset]) }
-    buckets.forEach { storage.destroyAtOffset($0.offset) }
-    zip(buckets, idealBuckets).forEach { patchHole($0, idealBucket: $1) }
-
-    bucketMap.replaceRange(offsetPosition(subRange), with: EmptyCollection())
-    storage.count = storage.count &- delta
-    endIndex = endIndex &- delta
-
+        bucketMap.replaceRange(offsetPosition(subRange), with: EmptyCollection())
+        storage.count = storage.count &- delta
+        endIndex = endIndex &- delta
+    }
+    
   }
-
 
   /// Remove all elements.
   ///

@@ -42,6 +42,7 @@
 		C21493C11A35302200D274A2 /* ColorInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21493C01A35302200D274A2 /* ColorInputView.swift */; };
 		C219235C1C76130D00E82437 /* HexIntegerInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CEFF271A32236B00F3BE24 /* HexIntegerInputView.swift */; };
 		C219235D1C76132000E82437 /* MSDictionary+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A7CA9619CBB8FE00212F2D /* MSDictionary+MoonKitAdditions.swift */; };
+		C21C3B751CF8B032000D537A /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21C3B741CF8B032000D537A /* main.swift */; };
 		C21D7AE41AA60E3F000DE8A3 /* NSError+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21D7AE31AA60E3F000DE8A3 /* NSError+MoonKitAdditions.swift */; };
 		C2204D9C1AE1A0670079B731 /* JSONIncludeDirective.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2204D9B1AE1A0670079B731 /* JSONIncludeDirective.swift */; };
 		C225677E1BB05E7600E4842B /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BDD1B797D4600A68A64 /* CoreImage.framework */; };
@@ -242,7 +243,6 @@
 		C2358FE619C78E4400920F8D /* GCDAsyncUdpSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = C2F9414319BE7D01007B5CC1 /* GCDAsyncUdpSocket.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C23592D719C8785D00920F8D /* NSMutableString+MSKitAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = C23592D519C8783E00920F8D /* NSMutableString+MSKitAdditions.m */; };
 		C23592D819C8786700920F8D /* NSMutableString+MSKitAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = C23592D419C8783E00920F8D /* NSMutableString+MSKitAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		C23592F519C8E04200920F8D /* OrderedDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23592DF19C8E04200920F8D /* OrderedDictionary.swift */; };
 		C23592FE19C8E04200920F8D /* String+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23592E919C8E04200920F8D /* String+MoonKitAdditions.swift */; };
 		C23693801B161ED600CBE460 /* PrintableExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C236937F1B161ED600CBE460 /* PrintableExtensions.swift */; };
 		C238A6541B04DC8B00898DB8 /* SortingFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C238A6531B04DC8B00898DB8 /* SortingFunctions.swift */; };
@@ -262,7 +262,6 @@
 		C2421D181BEFE884009BA8B1 /* ByteArrayConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2421D171BEFE884009BA8B1 /* ByteArrayConvertible.swift */; };
 		C2421D1A1BEFE8DE009BA8B1 /* Bytes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2421D191BEFE8DE009BA8B1 /* Bytes.swift */; };
 		C24416331ACB16F8007EDEFE /* Set+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24416321ACB16F8007EDEFE /* Set+MoonKitAdditions.swift */; };
-		C2457E801CEF77BD00B4B4B8 /* HashedStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2457E7F1CEF77BD00B4B4B8 /* HashedStorage.swift */; };
 		C2457E831CEFC06A00B4B4B8 /* HashedStorageBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2457E821CEFC06A00B4B4B8 /* HashedStorageBuffer.swift */; };
 		C24684201CA451F800CB61EE /* NativeSetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C246841F1CA451F800CB61EE /* NativeSetTests.swift */; };
 		C24684221CA451F800CB61EE /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2358F1619C78D6D00920F8D /* MoonKit.framework */; };
@@ -279,6 +278,20 @@
 		C24A22991ADB4C1E0065E7EA /* FunctionManipulation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24A22981ADB4C1E0065E7EA /* FunctionManipulation.swift */; };
 		C24D19EA19EDAE1500CC3CD9 /* InlinePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24D19E919EDAE1500CC3CD9 /* InlinePickerView.swift */; };
 		C24E0EB91AC6141B0044248E /* Bool+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24E0EB81AC6141B0044248E /* Bool+MoonKitAdditions.swift */; };
+		C24E8F321CF8CB480033AE64 /* TestDataLarge1.plist in Resources */ = {isa = PBXBuildFile; fileRef = C24E8F241CF8CB480033AE64 /* TestDataLarge1.plist */; };
+		C24E8F331CF8CB480033AE64 /* TestDataLarge2.plist in Resources */ = {isa = PBXBuildFile; fileRef = C24E8F251CF8CB480033AE64 /* TestDataLarge2.plist */; };
+		C24E8F341CF8CB480033AE64 /* TestDataMedium1.plist in Resources */ = {isa = PBXBuildFile; fileRef = C24E8F261CF8CB480033AE64 /* TestDataMedium1.plist */; };
+		C24E8F351CF8CB480033AE64 /* TestDataMedium2.plist in Resources */ = {isa = PBXBuildFile; fileRef = C24E8F271CF8CB480033AE64 /* TestDataMedium2.plist */; };
+		C24E8F361CF8CB480033AE64 /* TestDataSmall1.plist in Resources */ = {isa = PBXBuildFile; fileRef = C24E8F281CF8CB480033AE64 /* TestDataSmall1.plist */; };
+		C24E8F371CF8CB480033AE64 /* TestDataSmall2.plist in Resources */ = {isa = PBXBuildFile; fileRef = C24E8F291CF8CB480033AE64 /* TestDataSmall2.plist */; };
+		C24E8F381CF8CB480033AE64 /* TestDataXLarge1.plist in Resources */ = {isa = PBXBuildFile; fileRef = C24E8F2A1CF8CB480033AE64 /* TestDataXLarge1.plist */; };
+		C24E8F391CF8CB480033AE64 /* TestDataXLarge2.plist in Resources */ = {isa = PBXBuildFile; fileRef = C24E8F2B1CF8CB480033AE64 /* TestDataXLarge2.plist */; };
+		C24E8F3A1CF8CB480033AE64 /* TestDataXSmall1.plist in Resources */ = {isa = PBXBuildFile; fileRef = C24E8F2C1CF8CB480033AE64 /* TestDataXSmall1.plist */; };
+		C24E8F3B1CF8CB480033AE64 /* TestDataXSmall2.plist in Resources */ = {isa = PBXBuildFile; fileRef = C24E8F2D1CF8CB480033AE64 /* TestDataXSmall2.plist */; };
+		C24E8F3C1CF8CB480033AE64 /* TestDataXXLarge1.plist in Resources */ = {isa = PBXBuildFile; fileRef = C24E8F2E1CF8CB480033AE64 /* TestDataXXLarge1.plist */; };
+		C24E8F3D1CF8CB480033AE64 /* TestDataXXLarge2.plist in Resources */ = {isa = PBXBuildFile; fileRef = C24E8F2F1CF8CB480033AE64 /* TestDataXXLarge2.plist */; };
+		C24E8F3E1CF8CB480033AE64 /* TestDataXXSmall1.plist in Resources */ = {isa = PBXBuildFile; fileRef = C24E8F301CF8CB480033AE64 /* TestDataXXSmall1.plist */; };
+		C24E8F3F1CF8CB480033AE64 /* TestDataXXSmall2.plist in Resources */ = {isa = PBXBuildFile; fileRef = C24E8F311CF8CB480033AE64 /* TestDataXXSmall2.plist */; };
 		C2507BDB1C1601E900941C14 /* TapGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2507BDA1C1601E900941C14 /* TapGesture.swift */; };
 		C2562D0C1C64F9150086789D /* WeakArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2562D0B1C64F9150086789D /* WeakArray.swift */; };
 		C256F0831ABDFFE5005B7CB3 /* MoonKitOSX.h in Headers */ = {isa = PBXBuildFile; fileRef = C256F0821ABDFFE5005B7CB3 /* MoonKitOSX.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -307,9 +320,7 @@
 		C26A27F31B94C30500BD1698 /* DirectoryMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A27F21B94C30500BD1698 /* DirectoryMonitor.swift */; };
 		C26A27F71B9532A900BD1698 /* Knob.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A27F61B9532A900BD1698 /* Knob.swift */; };
 		C2729AE11BEE9836004FA34F /* NSValue+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2729AE01BEE9836004FA34F /* NSValue+MoonKitAdditions.swift */; };
-		C2736FDC1CAC3D6700E861A2 /* OrderedSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2736FDB1CAC3D6700E861A2 /* OrderedSet.swift */; };
 		C2736FE51CC116AD00E861A2 /* MoonKitTest.h in Headers */ = {isa = PBXBuildFile; fileRef = C2736FE41CC116AD00E861A2 /* MoonKitTest.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		C2736FEC1CC1177200E861A2 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2416E401C88B83000734CA1 /* Tests.swift */; };
 		C2736FEE1CC117B600E861A2 /* MoonKitTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2736FED1CC117B600E861A2 /* MoonKitTest.swift */; };
 		C2736FEF1CC1190A00E861A2 /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2358F1619C78D6D00920F8D /* MoonKit.framework */; };
 		C27372851A1FC0750079624D /* UIColor+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27372841A1FC0750079624D /* UIColor+MoonKitAdditions.swift */; };
@@ -358,6 +369,7 @@
 		C2A9634A1C691DAA009DB0F4 /* Playgrounds.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A963491C691DAA009DB0F4 /* Playgrounds.swift */; };
 		C2AA14721BB5857600D7C9E1 /* Tree.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AA14711BB5857600D7C9E1 /* Tree.swift */; };
 		C2AA2BCD1B8508AA00A0B08D /* Heap.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AA2BCC1B8508AA00A0B08D /* Heap.swift */; };
+		C2AA7F161CF6873400921CEE /* RangeMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AA7F151CF6873400921CEE /* RangeMap.swift */; };
 		C2AFC9081BD675F60057F055 /* MarqueeField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AFC9071BD675F60057F055 /* MarqueeField.swift */; };
 		C2AFC90A1BD678C60057F055 /* TintColorControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AFC9091BD678C60057F055 /* TintColorControl.swift */; };
 		C2B3B2ED1C592EC60001152F /* HashableTuple.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B3B2EC1C592EC60001152F /* HashableTuple.swift */; };
@@ -454,9 +466,6 @@
 		C2E55D111C9E4287004E7CB1 /* BitMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E55D101C9E4287004E7CB1 /* BitMapTests.swift */; };
 		C2E55D131C9E4287004E7CB1 /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2358F1619C78D6D00920F8D /* MoonKit.framework */; };
 		C2E7C8321A1AA3F0006BC80E /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E7C8311A1AA3F0006BC80E /* Protocols.swift */; };
-		C2E8050F1CD8FE8700650504 /* HashBucket.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E8050E1CD8FE8700650504 /* HashBucket.swift */; };
-		C2E805111CD900F200650504 /* HashBucketMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E805101CD900F200650504 /* HashBucketMap.swift */; };
-		C2E805131CD901A500650504 /* HashedStorageHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E805121CD901A500650504 /* HashedStorageHeader.swift */; };
 		C2E8C8B71AE7325300F8AC45 /* UITableViewCell+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E8C8B61AE7325300F8AC45 /* UITableViewCell+MoonKitAdditions.swift */; };
 		C2E937001ACE04D4003EB3E8 /* JSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E936FF1ACE04D4003EB3E8 /* JSONParser.swift */; };
 		C2E937041ACF0736003EB3E8 /* JSONSerialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E937031ACF0736003EB3E8 /* JSONSerialization.swift */; };
@@ -482,6 +491,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		C21C3B7B1CF8B69F000D537A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C2CE884618138C4900555D63 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C21C3B711CF8B032000D537A;
+			remoteInfo = GenerateTestData;
+		};
 		C2416E391C88B62E00734CA1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C2CE884618138C4900555D63 /* Project object */;
@@ -526,6 +542,18 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		C21C3B701CF8B032000D537A /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		C201F73A1A2539E7004600BC /* PseudoConstraint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PseudoConstraint.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		C2022A5F1C77C6DC003C2C6E /* SetType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetType.swift; sourceTree = "<group>"; };
@@ -557,6 +585,8 @@
 		C216E73F19CBAE0A0052E98A /* LoggingFunctions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoggingFunctions.swift; sourceTree = "<group>"; };
 		C217E47A19E83D8900B36983 /* MSButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MSButton.swift; sourceTree = "<group>"; };
 		C217E47D19E860DE00B36983 /* IntegerInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntegerInputView.swift; sourceTree = "<group>"; };
+		C21C3B721CF8B032000D537A /* GenerateTestData */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = GenerateTestData; sourceTree = BUILT_PRODUCTS_DIR; };
+		C21C3B741CF8B032000D537A /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		C21D7AE31AA60E3F000DE8A3 /* NSError+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSError+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C21D86051BDF089D00C79153 /* RedBlackTree.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = RedBlackTree.playground; sourceTree = "<group>"; };
 		C21F931A19E4AA4700E9FF2D /* NSLayoutConstraint+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSLayoutConstraint+MoonKitAdditions.swift"; sourceTree = "<group>"; };
@@ -602,7 +632,6 @@
 		C23592D419C8783E00920F8D /* NSMutableString+MSKitAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableString+MSKitAdditions.h"; sourceTree = "<group>"; };
 		C23592D519C8783E00920F8D /* NSMutableString+MSKitAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableString+MSKitAdditions.m"; sourceTree = "<group>"; };
 		C23592DC19C8E04200920F8D /* MoonFunctions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoonFunctions.swift; sourceTree = "<group>"; };
-		C23592DF19C8E04200920F8D /* OrderedDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = OrderedDictionary.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		C23592E919C8E04200920F8D /* String+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = "String+MoonKitAdditions.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		C23592EB19C8E04200920F8D /* UIFont+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIFont+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C23592EE19C8E04200920F8D /* Generic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Generic.swift; sourceTree = "<group>"; };
@@ -628,14 +657,12 @@
 		C2416E331C88B62E00734CA1 /* WeakArrayTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WeakArrayTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2416E351C88B62E00734CA1 /* WeakArrayTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakArrayTests.swift; sourceTree = "<group>"; };
 		C2416E371C88B62E00734CA1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C2416E401C88B83000734CA1 /* Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
 		C2416E521C88BB5E00734CA1 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		C2421D171BEFE884009BA8B1 /* ByteArrayConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ByteArrayConvertible.swift; sourceTree = "<group>"; };
 		C2421D191BEFE8DE009BA8B1 /* Bytes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bytes.swift; sourceTree = "<group>"; };
 		C24416321ACB16F8007EDEFE /* Set+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Set+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C2456BE319C39C8A007162F3 /* NSIndexPath+MSKitAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSIndexPath+MSKitAdditions.h"; sourceTree = "<group>"; };
 		C2456BE419C39C8A007162F3 /* NSIndexPath+MSKitAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSIndexPath+MSKitAdditions.m"; sourceTree = "<group>"; };
-		C2457E7F1CEF77BD00B4B4B8 /* HashedStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HashedStorage.swift; sourceTree = "<group>"; };
 		C2457E821CEFC06A00B4B4B8 /* HashedStorageBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HashedStorageBuffer.swift; sourceTree = "<group>"; };
 		C246841D1CA451F800CB61EE /* NativeSetTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NativeSetTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C246841F1CA451F800CB61EE /* NativeSetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeSetTests.swift; sourceTree = "<group>"; };
@@ -657,6 +684,20 @@
 		C24D19EC19EDB54400CC3CD9 /* UIView+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C24DD28A1AE4056D000306A0 /* Constraints.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = Constraints.playground; path = Moonkit/Constraints.playground; sourceTree = "<group>"; };
 		C24E0EB81AC6141B0044248E /* Bool+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Bool+MoonKitAdditions.swift"; sourceTree = "<group>"; };
+		C24E8F241CF8CB480033AE64 /* TestDataLarge1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = TestDataLarge1.plist; sourceTree = "<group>"; };
+		C24E8F251CF8CB480033AE64 /* TestDataLarge2.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = TestDataLarge2.plist; sourceTree = "<group>"; };
+		C24E8F261CF8CB480033AE64 /* TestDataMedium1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = TestDataMedium1.plist; sourceTree = "<group>"; };
+		C24E8F271CF8CB480033AE64 /* TestDataMedium2.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = TestDataMedium2.plist; sourceTree = "<group>"; };
+		C24E8F281CF8CB480033AE64 /* TestDataSmall1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = TestDataSmall1.plist; sourceTree = "<group>"; };
+		C24E8F291CF8CB480033AE64 /* TestDataSmall2.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = TestDataSmall2.plist; sourceTree = "<group>"; };
+		C24E8F2A1CF8CB480033AE64 /* TestDataXLarge1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = TestDataXLarge1.plist; sourceTree = "<group>"; };
+		C24E8F2B1CF8CB480033AE64 /* TestDataXLarge2.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = TestDataXLarge2.plist; sourceTree = "<group>"; };
+		C24E8F2C1CF8CB480033AE64 /* TestDataXSmall1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = TestDataXSmall1.plist; sourceTree = "<group>"; };
+		C24E8F2D1CF8CB480033AE64 /* TestDataXSmall2.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = TestDataXSmall2.plist; sourceTree = "<group>"; };
+		C24E8F2E1CF8CB480033AE64 /* TestDataXXLarge1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = TestDataXXLarge1.plist; sourceTree = "<group>"; };
+		C24E8F2F1CF8CB480033AE64 /* TestDataXXLarge2.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = TestDataXXLarge2.plist; sourceTree = "<group>"; };
+		C24E8F301CF8CB480033AE64 /* TestDataXXSmall1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = TestDataXXSmall1.plist; sourceTree = "<group>"; };
+		C24E8F311CF8CB480033AE64 /* TestDataXXSmall2.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = TestDataXXSmall2.plist; sourceTree = "<group>"; };
 		C24ECC8F19DE085D00C1870E /* BlockBarButtonItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockBarButtonItem.swift; sourceTree = "<group>"; };
 		C2507BDA1C1601E900941C14 /* TapGesture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TapGesture.swift; sourceTree = "<group>"; };
 		C2562D0B1C64F9150086789D /* WeakArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeakArray.swift; sourceTree = "<group>"; };
@@ -692,7 +733,6 @@
 		C26A27F21B94C30500BD1698 /* DirectoryMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DirectoryMonitor.swift; sourceTree = "<group>"; };
 		C26A27F61B9532A900BD1698 /* Knob.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Knob.swift; sourceTree = "<group>"; };
 		C2729AE01BEE9836004FA34F /* NSValue+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSValue+MoonKitAdditions.swift"; sourceTree = "<group>"; };
-		C2736FDB1CAC3D6700E861A2 /* OrderedSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderedSet.swift; sourceTree = "<group>"; };
 		C2736FE21CC116AD00E861A2 /* MoonKitTest.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MoonKitTest.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2736FE41CC116AD00E861A2 /* MoonKitTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MoonKitTest.h; sourceTree = "<group>"; };
 		C2736FE61CC116AD00E861A2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -747,6 +787,7 @@
 		C2A963491C691DAA009DB0F4 /* Playgrounds.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Playgrounds.swift; sourceTree = "<group>"; };
 		C2AA14711BB5857600D7C9E1 /* Tree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tree.swift; sourceTree = "<group>"; };
 		C2AA2BCC1B8508AA00A0B08D /* Heap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Heap.swift; sourceTree = "<group>"; };
+		C2AA7F151CF6873400921CEE /* RangeMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RangeMap.swift; sourceTree = "<group>"; };
 		C2AFC9071BD675F60057F055 /* MarqueeField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarqueeField.swift; sourceTree = "<group>"; };
 		C2AFC9091BD678C60057F055 /* TintColorControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TintColorControl.swift; sourceTree = "<group>"; };
 		C2B3B2EC1C592EC60001152F /* HashableTuple.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HashableTuple.swift; sourceTree = "<group>"; };
@@ -955,9 +996,6 @@
 		C2E55D101C9E4287004E7CB1 /* BitMapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitMapTests.swift; sourceTree = "<group>"; };
 		C2E55D121C9E4287004E7CB1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C2E7C8311A1AA3F0006BC80E /* Protocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
-		C2E8050E1CD8FE8700650504 /* HashBucket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HashBucket.swift; sourceTree = "<group>"; };
-		C2E805101CD900F200650504 /* HashBucketMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HashBucketMap.swift; sourceTree = "<group>"; };
-		C2E805121CD901A500650504 /* HashedStorageHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HashedStorageHeader.swift; sourceTree = "<group>"; };
 		C2E8C8B61AE7325300F8AC45 /* UITableViewCell+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UITableViewCell+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C2E936FF1ACE04D4003EB3E8 /* JSONParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = JSONParser.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		C2E937031ACF0736003EB3E8 /* JSONSerialization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONSerialization.swift; sourceTree = "<group>"; };
@@ -992,6 +1030,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		C21C3B6F1CF8B032000D537A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C2358F1219C78D6D00920F8D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1084,6 +1129,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C21C3B731CF8B032000D537A /* GenerateTestData */ = {
+			isa = PBXGroup;
+			children = (
+				C21C3B741CF8B032000D537A /* main.swift */,
+			);
+			path = GenerateTestData;
+			sourceTree = "<group>";
+		};
 		C2358F1719C78D6D00920F8D /* Moonkit */ = {
 			isa = PBXGroup;
 			children = (
@@ -1126,19 +1179,14 @@
 				C22E6B8E1B810860008D46A6 /* List.swift */,
 				C2AA2BCC1B8508AA00A0B08D /* Heap.swift */,
 				C26863711AF96E6E00D664E8 /* Queue.swift */,
-				C23592DF19C8E04200920F8D /* OrderedDictionary.swift */,
 				C2C482E419CA0225002E84A9 /* Stack.swift */,
-				C2736FDB1CAC3D6700E861A2 /* OrderedSet.swift */,
 				C2B3B2EC1C592EC60001152F /* HashableTuple.swift */,
 				C2562D0B1C64F9150086789D /* WeakArray.swift */,
 				C246961A1C6BD3E100120DAF /* SortedArray.swift */,
 				C2CD95041C778C78001FB80B /* BitMap.swift */,
-				C2E8050E1CD8FE8700650504 /* HashBucket.swift */,
-				C2E805101CD900F200650504 /* HashBucketMap.swift */,
-				C2E805121CD901A500650504 /* HashedStorageHeader.swift */,
 				C230A1C31CE1017B00D8EF49 /* KeyValueCollection.swift */,
-				C2457E7F1CEF77BD00B4B4B8 /* HashedStorage.swift */,
 				C2457E821CEFC06A00B4B4B8 /* HashedStorageBuffer.swift */,
+				C2AA7F151CF6873400921CEE /* RangeMap.swift */,
 			);
 			path = "Data Structures";
 			sourceTree = "<group>";
@@ -1217,7 +1265,6 @@
 				C238A6551B04DDA100898DB8 /* Numbers.swift */,
 				C22F5FE31B6FC753006D225A /* Dispatch.swift */,
 				C2A963491C691DAA009DB0F4 /* Playgrounds.swift */,
-				C2416E401C88B83000734CA1 /* Tests.swift */,
 			);
 			path = Functions;
 			sourceTree = "<group>";
@@ -1303,6 +1350,20 @@
 		C2736FE31CC116AD00E861A2 /* MoonKitTest */ = {
 			isa = PBXGroup;
 			children = (
+				C24E8F241CF8CB480033AE64 /* TestDataLarge1.plist */,
+				C24E8F251CF8CB480033AE64 /* TestDataLarge2.plist */,
+				C24E8F261CF8CB480033AE64 /* TestDataMedium1.plist */,
+				C24E8F271CF8CB480033AE64 /* TestDataMedium2.plist */,
+				C24E8F281CF8CB480033AE64 /* TestDataSmall1.plist */,
+				C24E8F291CF8CB480033AE64 /* TestDataSmall2.plist */,
+				C24E8F2A1CF8CB480033AE64 /* TestDataXLarge1.plist */,
+				C24E8F2B1CF8CB480033AE64 /* TestDataXLarge2.plist */,
+				C24E8F2C1CF8CB480033AE64 /* TestDataXSmall1.plist */,
+				C24E8F2D1CF8CB480033AE64 /* TestDataXSmall2.plist */,
+				C24E8F2E1CF8CB480033AE64 /* TestDataXXLarge1.plist */,
+				C24E8F2F1CF8CB480033AE64 /* TestDataXXLarge2.plist */,
+				C24E8F301CF8CB480033AE64 /* TestDataXXSmall1.plist */,
+				C24E8F311CF8CB480033AE64 /* TestDataXXSmall2.plist */,
 				C2736FE41CC116AD00E861A2 /* MoonKitTest.h */,
 				C2736FE61CC116AD00E861A2 /* Info.plist */,
 				C2736FED1CC117B600E861A2 /* MoonKitTest.swift */,
@@ -1557,6 +1618,7 @@
 				C2E55D0F1C9E4287004E7CB1 /* BitMapTests */,
 				C246841E1CA451F800CB61EE /* NativeSetTests */,
 				C2736FE31CC116AD00E861A2 /* MoonKitTest */,
+				C21C3B731CF8B032000D537A /* GenerateTestData */,
 				C2CE885018138C4900555D63 /* Frameworks */,
 				C2CE884F18138C4900555D63 /* Products */,
 			);
@@ -1576,6 +1638,7 @@
 				C2E55D0E1C9E4286004E7CB1 /* BitMapTests.xctest */,
 				C246841D1CA451F800CB61EE /* NativeSetTests.xctest */,
 				C2736FE21CC116AD00E861A2 /* MoonKitTest.framework */,
+				C21C3B721CF8B032000D537A /* GenerateTestData */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -2046,6 +2109,23 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		C21C3B711CF8B032000D537A /* GenerateTestData */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C21C3B761CF8B032000D537A /* Build configuration list for PBXNativeTarget "GenerateTestData" */;
+			buildPhases = (
+				C21C3B6E1CF8B032000D537A /* Sources */,
+				C21C3B6F1CF8B032000D537A /* Frameworks */,
+				C21C3B701CF8B032000D537A /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GenerateTestData;
+			productName = GenerateTestData;
+			productReference = C21C3B721CF8B032000D537A /* GenerateTestData */;
+			productType = "com.apple.product-type.tool";
+		};
 		C2358F1519C78D6D00920F8D /* MoonKit */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C2358F2A19C78D6D00920F8D /* Build configuration list for PBXNativeTarget "MoonKit" */;
@@ -2139,6 +2219,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C2736FE71CC116AD00E861A2 /* Build configuration list for PBXNativeTarget "MoonKitTest" */;
 			buildPhases = (
+				C21C3B6D1CF8ABC8000D537A /* ShellScript */,
 				C2736FDD1CC116AD00E861A2 /* Sources */,
 				C2736FDE1CC116AD00E861A2 /* Frameworks */,
 				C2736FDF1CC116AD00E861A2 /* Headers */,
@@ -2147,6 +2228,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				C21C3B7C1CF8B69F000D537A /* PBXTargetDependency */,
 			);
 			name = MoonKitTest;
 			productName = MoonKitTest;
@@ -2254,6 +2336,9 @@
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Jason Cardwell";
 				TargetAttributes = {
+					C21C3B711CF8B032000D537A = {
+						CreatedOnToolsVersion = 7.3.1;
+					};
 					C2358F1519C78D6D00920F8D = {
 						CreatedOnToolsVersion = 6.0;
 						DevelopmentTeam = JT6STF4SHA;
@@ -2311,6 +2396,7 @@
 				C2E55D0D1C9E4286004E7CB1 /* BitMapTests */,
 				C246841C1CA451F800CB61EE /* NativeSetTests */,
 				C2736FE11CC116AD00E861A2 /* MoonKitTest */,
+				C21C3B711CF8B032000D537A /* GenerateTestData */,
 			);
 		};
 /* End PBXProject section */
@@ -2360,6 +2446,20 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C24E8F3A1CF8CB480033AE64 /* TestDataXSmall1.plist in Resources */,
+				C24E8F3C1CF8CB480033AE64 /* TestDataXXLarge1.plist in Resources */,
+				C24E8F381CF8CB480033AE64 /* TestDataXLarge1.plist in Resources */,
+				C24E8F351CF8CB480033AE64 /* TestDataMedium2.plist in Resources */,
+				C24E8F371CF8CB480033AE64 /* TestDataSmall2.plist in Resources */,
+				C24E8F3F1CF8CB480033AE64 /* TestDataXXSmall2.plist in Resources */,
+				C24E8F3B1CF8CB480033AE64 /* TestDataXSmall2.plist in Resources */,
+				C24E8F321CF8CB480033AE64 /* TestDataLarge1.plist in Resources */,
+				C24E8F3D1CF8CB480033AE64 /* TestDataXXLarge2.plist in Resources */,
+				C24E8F331CF8CB480033AE64 /* TestDataLarge2.plist in Resources */,
+				C24E8F3E1CF8CB480033AE64 /* TestDataXXSmall1.plist in Resources */,
+				C24E8F341CF8CB480033AE64 /* TestDataMedium1.plist in Resources */,
+				C24E8F391CF8CB480033AE64 /* TestDataXLarge2.plist in Resources */,
+				C24E8F361CF8CB480033AE64 /* TestDataSmall1.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2427,7 +2527,46 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		C21C3B6D1CF8ABC8000D537A /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+				"$(SRCROOT)/MoonKitTest/TestDataXXSmall1.plist",
+				"$(SRCROOT)/MoonKitTest/TestDataXXSmall2.plist",
+				"$(SRCROOT)/MoonKitTest/TestDataXSmall1.plist",
+				"$(SRCROOT)/MoonKitTest/TestDataXSmall2.plist",
+				"$(SRCROOT)/MoonKitTest/TestDataSmall1.plist",
+				"$(SRCROOT)/MoonKitTest/TestDataSmall2.plist",
+				"$(SRCROOT)/MoonKitTest/TestDataMedium1.plist",
+				"$(SRCROOT)/MoonKitTest/TestDataMedium2.plist",
+				"$(SRCROOT)/MoonKitTest/TestDataLarge1.plist",
+				"$(SRCROOT)/MoonKitTest/TestDataLarge2.plist",
+				"$(SRCROOT)/MoonKitTest/TestDataXLarge1.plist",
+				"$(SRCROOT)/MoonKitTest/TestDataXLarge2.plist",
+				"$(SRCROOT)/MoonKitTest/TestDataXXLarge1.plist",
+				"$(SRCROOT)/MoonKitTest/TestDataXXLarge2.plist",
+				"$(SRCROOT)/MoonKitTest/TestDataGenerated.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "GENERATE=$(find \"${BUILD_ROOT}\" -name \"GenerateTestData\" -print0)\n$GENERATE 100 > \"${SCRIPT_OUTPUT_FILE_0}\"\n$GENERATE 100 > \"${SCRIPT_OUTPUT_FILE_1}\"\n$GENERATE 250 > \"${SCRIPT_OUTPUT_FILE_2}\"\n$GENERATE 250 > \"${SCRIPT_OUTPUT_FILE_3}\"\n$GENERATE 500 > \"${SCRIPT_OUTPUT_FILE_4}\"\n$GENERATE 500 > \"${SCRIPT_OUTPUT_FILE_5}\"\n$GENERATE 10000 > \"${SCRIPT_OUTPUT_FILE_6}\"\n$GENERATE 10000 > \"${SCRIPT_OUTPUT_FILE_7}\"\n$GENERATE 50000 > \"${SCRIPT_OUTPUT_FILE_8}\"\n$GENERATE 50000 > \"${SCRIPT_OUTPUT_FILE_9}\"\n$GENERATE 100000 > \"${SCRIPT_OUTPUT_FILE_10}\"\n$GENERATE 100000 > \"${SCRIPT_OUTPUT_FILE_11}\"\n$GENERATE 200000 > \"${SCRIPT_OUTPUT_FILE_12}\"\n$GENERATE 200000 > \"${SCRIPT_OUTPUT_FILE_13}\"\ndate > \"${SCRIPT_OUTPUT_FILE_14}\"";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
+		C21C3B6E1CF8B032000D537A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C21C3B751CF8B032000D537A /* main.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C2358F1119C78D6D00920F8D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2550,13 +2689,11 @@
 				C2064FFF1A13C71D00342FDE /* NSLayoutConstraint+MoonKitAdditions.swift in Sources */,
 				C280ED3A1BF6678B0032447D /* LogFileManager.swift in Sources */,
 				C28E50971A13CA8F00DF3206 /* ToggleImageBarButtonItem.swift in Sources */,
-				C2E805131CD901A500650504 /* HashedStorageHeader.swift in Sources */,
 				C23592D719C8785D00920F8D /* NSMutableString+MSKitAdditions.m in Sources */,
 				C2F682BE1BDAEC45002FCA2B /* Character.swift in Sources */,
 				C20297FC1AF295A5003F647B /* KVOReceptionist.swift in Sources */,
 				C28E50961A13CA7E00DF3206 /* ToggleBarButtonItem.swift in Sources */,
 				C2404BC01B77ACDC00A68A64 /* ImageBarButtonItem.swift in Sources */,
-				C2E805111CD900F200650504 /* HashBucketMap.swift in Sources */,
 				C21D7AE41AA60E3F000DE8A3 /* NSError+MoonKitAdditions.swift in Sources */,
 				C29073971BD747D70090399E /* LogFormatter.swift in Sources */,
 				C2B6918A1AFBCADB0041CE11 /* NetworkReachability.swift in Sources */,
@@ -2574,7 +2711,6 @@
 				C2358F5C19C78E0C00920F8D /* MSPopupBarButton.m in Sources */,
 				C20CBBEC1B5FF7960008F538 /* PopoverListController.swift in Sources */,
 				C2CF986A1B0FD12900E32E41 /* PopoverView.swift in Sources */,
-				C23592F519C8E04200920F8D /* OrderedDictionary.swift in Sources */,
 				C2CA85201BC7250A0046AFC0 /* CGPoint+MoonKitAdditions.swift in Sources */,
 				C28E50991A13CB1E00DF3206 /* IntegerInputView.swift in Sources */,
 				C2358F5D19C78E0C00920F8D /* MSPopupBarButtonItem.m in Sources */,
@@ -2588,7 +2724,6 @@
 				C2358F6119C78E0C00920F8D /* MSGestureManager.m in Sources */,
 				C2358F6219C78E0C00920F8D /* MSLongPressGestureRecognizer.m in Sources */,
 				C219235D1C76132000E82437 /* MSDictionary+MoonKitAdditions.swift in Sources */,
-				C2E8050F1CD8FE8700650504 /* HashBucket.swift in Sources */,
 				C29073911BD7021F0090399E /* ColorLog.swift in Sources */,
 				C24A22811ADAEC010065E7EA /* ArrayJSONValue.swift in Sources */,
 				C2F094451A32A83A00681AB3 /* DrawingKit.swift in Sources */,
@@ -2645,13 +2780,11 @@
 				C274CB8A1B70FBBF00EC8E4A /* Form.swift in Sources */,
 				C28E35BE1A45DBF300438CCF /* Array+MoonKitAdditions.swift in Sources */,
 				C2A5B6F21B482F4700F34491 /* NSParagraphStyle+MoonKitAdditions.swift in Sources */,
-				C2736FDC1CAC3D6700E861A2 /* OrderedSet.swift in Sources */,
 				C246961B1C6BD3E100120DAF /* SortedArray.swift in Sources */,
 				C269D1D51BD7E02D0084A7EE /* LogManager.swift in Sources */,
 				C22F5FE41B6FC753006D225A /* Dispatch.swift in Sources */,
 				C24E0EB91AC6141B0044248E /* Bool+MoonKitAdditions.swift in Sources */,
 				C21493BF1A35285A00D274A2 /* ColorSwatch.swift in Sources */,
-				C2457E801CEF77BD00B4B4B8 /* HashedStorage.swift in Sources */,
 				C28E50951A13CA7300DF3206 /* ToggleImageSegmentedControl.swift in Sources */,
 				C2C17D4A1B5813EB00D9E9A6 /* Identifier.swift in Sources */,
 				C2358F7519C78E0C00920F8D /* MSStack.m in Sources */,
@@ -2686,6 +2819,7 @@
 				C2358F8119C78E0C00920F8D /* MSPickerInputView.m in Sources */,
 				C2358F8219C78E0C00920F8D /* MSPopupBarButtonView.m in Sources */,
 				C2358F8319C78E0C00920F8D /* MSReflectingView.m in Sources */,
+				C2AA7F161CF6873400921CEE /* RangeMap.swift in Sources */,
 				C20650051A13C8FB00342FDE /* Generic.swift in Sources */,
 				C20E102C1BBF2DE600AAC01A /* TemplateImageView.swift in Sources */,
 				C2358F8419C78E0C00920F8D /* MSReplicatorView.m in Sources */,
@@ -2796,7 +2930,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C2736FEC1CC1177200E861A2 /* Tests.swift in Sources */,
 				C2736FEE1CC117B600E861A2 /* MoonKitTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2845,6 +2978,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		C21C3B7C1CF8B69F000D537A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C21C3B711CF8B032000D537A /* GenerateTestData */;
+			targetProxy = C21C3B7B1CF8B69F000D537A /* PBXContainerItemProxy */;
+		};
 		C2416E3A1C88B62E00734CA1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = C2358F1519C78D6D00920F8D /* MoonKit */;
@@ -2897,6 +3035,170 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		C21C3B771CF8B032000D537A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		C21C3B781CF8B032000D537A /* Debug-Verbose */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = "Debug-Verbose";
+		};
+		C21C3B791CF8B032000D537A /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Profile;
+		};
+		C21C3B7A1CF8B032000D537A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
 		C2358F2619C78D6D00920F8D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -5111,6 +5413,17 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		C21C3B761CF8B032000D537A /* Build configuration list for PBXNativeTarget "GenerateTestData" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C21C3B771CF8B032000D537A /* Debug */,
+				C21C3B781CF8B032000D537A /* Debug-Verbose */,
+				C21C3B791CF8B032000D537A /* Profile */,
+				C21C3B7A1CF8B032000D537A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		C2358F2A19C78D6D00920F8D /* Build configuration list for PBXNativeTarget "MoonKit" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -21,8 +21,8 @@ final class OrderedSetBehaviorTests: XCTestCase {
     expect(orderedSet.capacity) >= 5
     guard expect(orderedSet).to(haveCount(5)) else { return }
 
-    orderedSet = OrderedSet(randomIntegersSmall1)
-    let set = Set(randomIntegersSmall1)
+    orderedSet = OrderedSet(MoonKitTest.randomIntegersSmall1)
+    let set = Set(MoonKitTest.randomIntegersSmall1)
     expect(orderedSet).to(haveCount(set.count))
   }
 
@@ -270,34 +270,34 @@ final class OrderedSetBehaviorTests: XCTestCase {
   }
 
   func testUnion() {
-    var orderedSet = OrderedSet(randomIntegersSmall1)
-    orderedSet.unionInPlace(randomIntegersSmall2)
-    var set = Set(randomIntegersSmall1)
-    set.unionInPlace(randomIntegersSmall2)
+    var orderedSet = OrderedSet(MoonKitTest.randomIntegersSmall1)
+    orderedSet.unionInPlace(MoonKitTest.randomIntegersSmall2)
+    var set = Set(MoonKitTest.randomIntegersSmall1)
+    set.unionInPlace(MoonKitTest.randomIntegersSmall2)
     expect(orderedSet).to(haveCount(set.count))
   }
 
   func testIntersection() {
-    var orderedSet = OrderedSet(randomIntegersSmall1)
-    orderedSet.intersectInPlace(randomIntegersSmall2)
-    var set = Set(randomIntegersSmall1)
-    set.intersectInPlace(randomIntegersSmall2)
+    var orderedSet = OrderedSet(MoonKitTest.randomIntegersSmall1)
+    orderedSet.intersectInPlace(MoonKitTest.randomIntegersSmall2)
+    var set = Set(MoonKitTest.randomIntegersSmall1)
+    set.intersectInPlace(MoonKitTest.randomIntegersSmall2)
     expect(orderedSet).to(haveCount(set.count))
   }
 
   func testSubtract() {
-    var orderedSet = OrderedSet(randomIntegersSmall1)
-    orderedSet.subtractInPlace(randomIntegersSmall2)
-    var set = Set(randomIntegersSmall1)
-    set.subtractInPlace(randomIntegersSmall2)
+    var orderedSet = OrderedSet(MoonKitTest.randomIntegersSmall1)
+    orderedSet.subtractInPlace(MoonKitTest.randomIntegersSmall2)
+    var set = Set(MoonKitTest.randomIntegersSmall1)
+    set.subtractInPlace(MoonKitTest.randomIntegersSmall2)
     expect(orderedSet).to(haveCount(set.count))
   }
 
   func testXOR() {
-    var orderedSet = OrderedSet(randomIntegersSmall1)
-    var set = Set(randomIntegersSmall1)
-    set.exclusiveOrInPlace(randomIntegersSmall2)
-    orderedSet.exclusiveOrInPlace(randomIntegersSmall2)
+    var orderedSet = OrderedSet(MoonKitTest.randomIntegersSmall1)
+    var set = Set(MoonKitTest.randomIntegersSmall1)
+    set.exclusiveOrInPlace(MoonKitTest.randomIntegersSmall2)
+    orderedSet.exclusiveOrInPlace(MoonKitTest.randomIntegersSmall2)
     expect(orderedSet).to(haveCount(set.count))
   }
 }

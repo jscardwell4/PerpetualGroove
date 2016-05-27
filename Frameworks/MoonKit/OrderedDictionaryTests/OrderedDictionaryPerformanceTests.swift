@@ -13,16 +13,16 @@ import MoonKitTest
 
 final class OrderedDictionaryPerformanceTests: XCTestCase {
 
-  var elements1: [(String, Int)] = Array(zip(randomStringsLarge1, randomIntegersLarge1))
-  var elements2: [(String, Int)] = Array(zip(randomStringsLarge2, randomIntegersLarge2))
-  var elements3: [(String, Int)] = Array(zip(randomStringsMedium1, randomIntegersMedium1))
+  var elements1: [(String, Int)] = []
+  var elements2: [(String, Int)] = []
+  var elements3: [(String, Int)] = []
   var dictionary1: OrderedDictionary<String, Int> = [:]
   var dictionary2: OrderedDictionary<String, Int> = [:]
 
   override func setUp() {
-    elements1 = Array(zip(randomStringsLarge1, randomIntegersLarge1))
-    elements2 = Array(zip(randomStringsLarge2, randomIntegersLarge2))
-    elements3 = Array(zip(randomStringsMedium1, randomIntegersMedium1))
+    elements1 = Array(zip(MoonKitTest.randomStringsXLarge1, MoonKitTest.randomIntegersXLarge1))
+    elements2 = Array(zip(MoonKitTest.randomStringsXLarge2, MoonKitTest.randomIntegersXLarge2))
+    elements3 = Array(zip(MoonKitTest.randomStringsMedium1, MoonKitTest.randomIntegersMedium1))
     dictionary1 = [:]
     dictionary2 = OrderedDictionary<String, Int>(elements1)
   }
