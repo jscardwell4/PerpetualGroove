@@ -12,26 +12,26 @@ import MoonKit
 
 public final class MoonKitTest {
 
-  public static let integersXXSmall1 = srandomIntegers(0, 100, 0 ..< 50)
-  public static let integersXXSmall2 = srandomIntegers(0, 100, 0 ..< 50)
+  public static let integersXXSmall1 = srandomIntegers(seed: 0, count: 100, range: 0 ..< 50)
+  public static let integersXXSmall2 = srandomIntegers(seed: 0, count: 100, range: 0 ..< 50)
 
-  public static let integersXSmall1  = srandomIntegers(0, 250, 0 ..< 125)
-  public static let integersXSmall2  = srandomIntegers(0, 250, 0 ..< 125)
+  public static let integersXSmall1  = srandomIntegers(seed: 0, count: 250, range: 0 ..< 125)
+  public static let integersXSmall2  = srandomIntegers(seed: 0, count: 250, range: 0 ..< 125)
 
-  public static let integersSmall1   = srandomIntegers(0, 500, 0 ..< 250)
-  public static let integersSmall2   = srandomIntegers(0, 500, 0 ..< 250)
+  public static let integersSmall1   = srandomIntegers(seed: 0, count: 500, range: 0 ..< 250)
+  public static let integersSmall2   = srandomIntegers(seed: 0, count: 500, range: 0 ..< 250)
 
-  public static let integersMedium1  = srandomIntegers(0, 10000, 0 ..< 2000)
-  public static let integersMedium2  = srandomIntegers(0, 10000, 0 ..< 2000)
+  public static let integersMedium1  = srandomIntegers(seed: 0, count: 10000, range: 0 ..< 2000)
+  public static let integersMedium2  = srandomIntegers(seed: 0, count: 10000, range: 0 ..< 2000)
 
-  public static let integersLarge1   = srandomIntegers(0, 50000, 0 ..< 10000)
-  public static let integersLarge2   = srandomIntegers(0, 50000, 0 ..< 10000)
+  public static let integersLarge1   = srandomIntegers(seed: 0, count: 50000, range: 0 ..< 10000)
+  public static let integersLarge2   = srandomIntegers(seed: 0, count: 50000, range: 0 ..< 10000)
 
-  public static let integersXLarge1  = srandomIntegers(0, 100000, 0 ..< 20000)
-  public static let integersXLarge2  = srandomIntegers(0, 100000, 0 ..< 20000)
+  public static let integersXLarge1  = srandomIntegers(seed: 0, count: 100000, range: 0 ..< 20000)
+  public static let integersXLarge2  = srandomIntegers(seed: 0, count: 100000, range: 0 ..< 20000)
 
-  public static let integersXXLarge1 = srandomIntegers(0, 200000, 0 ..< 40000)
-  public static let integersXXLarge2 = srandomIntegers(0, 200000, 0 ..< 40000)
+  public static let integersXXLarge1 = srandomIntegers(seed: 0, count: 200000, range: 0 ..< 40000)
+  public static let integersXXLarge2 = srandomIntegers(seed: 0, count: 200000, range: 0 ..< 40000)
 
   public static let stringsXXSmall1  = randomIntegersXXSmall1.map {String($0)}
   public static let stringsXXSmall2  = randomIntegersXXSmall2.map {String($0)}
@@ -54,26 +54,26 @@ public final class MoonKitTest {
   public static let stringsXXLarge1  = randomIntegersXXLarge1.map {String($0)}
   public static let stringsXXLarge2  = randomIntegersXXLarge2.map {String($0)}
 
-  public static let randomIntegersXXSmall1 = randomIntegers(100, 0 ..< 50)
-  public static let randomIntegersXXSmall2 = randomIntegers(100, 0 ..< 50)
+  public static let randomIntegersXXSmall1 = randomIntegers(count: 100, range: 0 ..< 50)
+  public static let randomIntegersXXSmall2 = randomIntegers(count: 100, range: 0 ..< 50)
 
-  public static let randomIntegersXSmall1  = randomIntegers(250, 0 ..< 125)
-  public static let randomIntegersXSmall2  = randomIntegers(250, 0 ..< 125)
+  public static let randomIntegersXSmall1  = randomIntegers(count: 250, range: 0 ..< 125)
+  public static let randomIntegersXSmall2  = randomIntegers(count: 250, range: 0 ..< 125)
 
-  public static let randomIntegersSmall1   = randomIntegers(500, 0 ..< 250)
-  public static let randomIntegersSmall2   = randomIntegers(500, 0 ..< 250)
+  public static let randomIntegersSmall1   = randomIntegers(count: 500, range: 0 ..< 250)
+  public static let randomIntegersSmall2   = randomIntegers(count: 500, range: 0 ..< 250)
 
-  public static let randomIntegersMedium1  = randomIntegers(10000, 0 ..< 2000)
-  public static let randomIntegersMedium2  = randomIntegers(10000, 0 ..< 2000)
+  public static let randomIntegersMedium1  = randomIntegers(count: 10000, range: 0 ..< 2000)
+  public static let randomIntegersMedium2  = randomIntegers(count: 10000, range: 0 ..< 2000)
 
-  public static let randomIntegersLarge1   = randomIntegers(50000, 0 ..< 10000)
-  public static let randomIntegersLarge2   = randomIntegers(50000, 0 ..< 10000)
+  public static let randomIntegersLarge1   = randomIntegers(count: 50000, range: 0 ..< 10000)
+  public static let randomIntegersLarge2   = randomIntegers(count: 50000, range: 0 ..< 10000)
 
-  public static let randomIntegersXLarge1  = randomIntegers(100000, 0 ..< 20000)
-  public static let randomIntegersXLarge2  = randomIntegers(100000, 0 ..< 20000)
+  public static let randomIntegersXLarge1  = randomIntegers(count: 100000, range: 0 ..< 20000)
+  public static let randomIntegersXLarge2  = randomIntegers(count: 100000, range: 0 ..< 20000)
 
-  public static let randomIntegersXXLarge1 = randomIntegers(200000, 0 ..< 40000)
-  public static let randomIntegersXXLarge2 = randomIntegers(200000, 0 ..< 40000)
+  public static let randomIntegersXXLarge1 = randomIntegers(count: 200000, range: 0 ..< 40000)
+  public static let randomIntegersXXLarge2 = randomIntegers(count: 200000, range: 0 ..< 40000)
 
   public static let randomStringsXXSmall1  = randomIntegersXXSmall1.map {String($0)}
   public static let randomStringsXXSmall2  = randomIntegersXXSmall2.map {String($0)}
@@ -99,14 +99,14 @@ public final class MoonKitTest {
 }
 
 // MARK: - Functions for measuring performance
-public func randomIntegers(count: Int, _ range: Range<Int>) -> [Int] {
+public func randomIntegers(count count: Int, range: Range<Int>) -> [Int] {
   func randomInt() -> Int { return Int(arc4random()) % range.count + range.startIndex }
   var result = Array<Int>(minimumCapacity: count)
   for _ in 0 ..< count { result.append(randomInt()) }
   return result
 }
 
-public func srandomIntegers(seed: UInt32, _ count: Int, _ range: Range<Int>) -> [Int] {
+public func srandomIntegers(seed seed: UInt32, count: Int, range: Range<Int>) -> [Int] {
   srandom(seed)
   func randomInt() -> Int { return random() % range.count + range.startIndex }
   var result = Array<Int>(minimumCapacity: count)
@@ -114,12 +114,34 @@ public func srandomIntegers(seed: UInt32, _ count: Int, _ range: Range<Int>) -> 
   return result
 }
 
-public func randomRange(count: Int, coverage: Double) -> Range<Int> {
-  guard count > 0 else { return 0 ..< 0 }
-  let length = Int(Double(count) * coverage)
-  let end = Int(arc4random()) % count
-  let start = max(0, end - length)
+private func _randomRange(indices indices: Range<Int>, coverage: Double, @noescape random: () -> Int) -> Range<Int> {
+  let count = indices.count
+  guard count > 0 else { return indices }
+
+  let resultCount = Int(Double(count) * coverage)
+  let offset = indices.startIndex
+
+  let end = random() % count + offset
+  let start = max(offset, end - resultCount)
+
   return start ..< end
+}
+
+public func randomRange(count count: Int, coverage: Double) -> Range<Int> {
+  return randomRange(indices: 0 ..< count, coverage: coverage)
+}
+
+public func randomRange(indices indices: Range<Int>, coverage: Double) -> Range<Int> {
+  return _randomRange(indices: indices, coverage: coverage) { Int(arc4random()) }
+}
+
+public func srandomRange(seed seed: UInt32? = nil, count: Int, coverage: Double) -> Range<Int> {
+  return srandomRange(seed: seed, indices: 0 ..< count, coverage: coverage)
+}
+
+public func srandomRange(seed seed: UInt32? = nil, indices: Range<Int>, coverage: Double) -> Range<Int> {
+  if let seed = seed { srandom(seed) }
+  return _randomRange(indices: indices, coverage: coverage) { random() }
 }
 
 public func performWithIntegers<Target>(@noescape target target: ([Int]) -> Target, execute: (Target, [Int]) -> Void) -> () -> Void

@@ -9,6 +9,8 @@
 import XCTest
 import MoonKitTest
 @testable import MoonKit
+import Surge
+import Accelerate
 
 final class OrderedSetPerformanceTests: XCTestCase {
 
@@ -22,7 +24,6 @@ final class OrderedSetPerformanceTests: XCTestCase {
     elements2 = MoonKitTest.integersXXLarge2
     orderedSet1 = []
     orderedSet2 = OrderedSet<Int>(elements1)
-    print("elements1.count = \(elements1.count)\nelements2.count = \(elements2.count)\norderedSet2.count = \(orderedSet2.count)")
   }
 
   func testInsertionPerformance() {
@@ -44,12 +45,24 @@ final class OrderedSetPerformanceTests: XCTestCase {
   }
 
   func testReplaceRangePerformance() {
+    var count = orderedSet2.count
+    var ranges: [(remove: Range<Int>, insert: Range<Int>)] = []
+    ranges.reserveCapacity(1000)
+    let coverage = 0.00025
+    srandom(0)
+    for _ in 0 ..< 1000 {
+      let removeRange = srandomRange(count: count, coverage: coverage)
+      let insertRange = srandomRange(indices: elements2.indices, coverage: coverage)
+      ranges.append((removeRange, insertRange))
+      count = count - removeRange.count + insertRange.count
+      guard count > 0 else { break }
+    }
+
     measureBlock {
       autoreleasepool {
         var set = self.orderedSet2
-        for _ in 0 ..< 100 {
-          let range = randomRange(set.count, coverage: 0.25)
-          set.replaceRange(range, with: self.elements2[range])
+        for (removeRange, insertRange) in ranges {
+          set.replaceRange(removeRange, with: self.elements2[insertRange])
         }
       }
     }

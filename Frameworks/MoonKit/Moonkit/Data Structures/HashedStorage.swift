@@ -1092,17 +1092,6 @@ private struct HashBucketMap: CollectionType {
   /// - postcondition: count = count - 1
   func removeBucketAt(index: Index) {
     replaceRange(index ... index, with: EmptyCollection())
-//    assert((0 ..< capacity).contains(index), "index invalid '\(index)'")
-//    let bucketOffset = positions[index]
-//    assert(bucketOffset > -1, "no bucket at index '\(index)'")
-//    buckets[bucketOffset] = -1
-//    endIndex = endIndex &- 1
-//    guard index != endIndex else { return }
-//    for moveIndex in index.successor() ..< endIndex.successor() {
-//      let previousIndex = moveIndex.predecessor()
-//      buckets[positions[moveIndex]] = previousIndex
-//      swap(&positions[moveIndex], &positions[previousIndex])
-//    }
   }
 
   subscript(bounds: Range<Index>) -> [HashBucket] {

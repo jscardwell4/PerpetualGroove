@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Surge
 
 @inline(__always)
 private func <<F:ForwardIndexType>(lhs: F, rhs: F) -> Bool {
@@ -37,7 +38,9 @@ public struct RangeMap<RangeIndex:ForwardIndexType>: CollectionType, CustomStrin
   public var headIndex: RangeIndex? { return ranges.first?.startIndex }
   public var tailIndex: RangeIndex? { return ranges.last?.endIndex }
 
-  public var indexCount: Int { return ranges.reduce(0) { $0 + numericCast($1.count) } }
+  public var indexCount: Int {
+    return Int(Surge.sum(ranges.map({Double($0.count.toIntMax())})))
+  }
 
   public init() {}
 
