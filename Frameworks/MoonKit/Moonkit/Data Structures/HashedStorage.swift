@@ -8,6 +8,19 @@
 
 import Foundation
 
+// MARK: - Supporting functions
+
+/// Returns a copy of the `buffer` with room for `minimumCapacity` elements and offset by `buffer.startIndex`
+private func cloneBuffer<
+  S:ConcreteHashedStorage
+  >(buffer: HashedStorageBuffer<S>, minimumCapacity: Int? = nil) -> HashedStorageBuffer<S>
+{
+  var clone = HashedStorageBuffer<S>(minimumCapacity: minimumCapacity ?? buffer.capacity, offsetBy: buffer.startIndex)
+  clone.appendContentsOf(buffer)
+  return clone
+}
+
+
 // MARK: - OrderedSet
 
 /// A hash-based mapping from `Key` to `Element` instances that preserves elment order.
@@ -23,25 +36,10 @@ public struct OrderedSet<Member:Hashable>: CollectionType {
 
   private var buffer: Buffer
 
-  /// Returns a copy of the current buffer with room for `newCapacity` elements
-  private func cloneBuffer(newCapacity: Int) -> Buffer {
-
-    var clone = Buffer(minimumCapacity: newCapacity, offsetBy: startIndex)
-
-    for position in buffer.indices {
-      clone.initializeElement(buffer.elementForPosition(position), at: position)
-      clone.endIndex += 1
-    }
-
-    clone.storage.count = buffer.count
-    
-    return clone
-  }
-
   /// Checks that `owner` has only the one strong reference
   private mutating func ensureUnique() -> (reallocated: Bool, capacityChanged: Bool) {
     guard !buffer.isUniquelyReferenced() else { return (false, false) }
-    buffer = cloneBuffer(capacity)
+    buffer = cloneBuffer(buffer)
     return (true, false)
   }
 
@@ -55,15 +53,15 @@ public struct OrderedSet<Member:Hashable>: CollectionType {
         return (reallocated: false, capacityChanged: false)
 
       case (isUnique: true, hasCapacity: false):
-        buffer = cloneBuffer(Buffer.minimumCapacityForCount(minimumCapacity))
+        buffer = cloneBuffer(buffer, minimumCapacity: Buffer.minimumCapacityForCount(minimumCapacity))
         return (reallocated: true, capacityChanged: true)
 
       case (isUnique: false, hasCapacity: true):
-        buffer = cloneBuffer(capacity)
+        buffer = cloneBuffer(buffer)
         return (reallocated: true, capacityChanged: false)
 
       case (isUnique: false, hasCapacity: false):
-        buffer = cloneBuffer(Buffer.minimumCapacityForCount(minimumCapacity))
+        buffer = cloneBuffer(buffer, minimumCapacity: Buffer.minimumCapacityForCount(minimumCapacity))
         return (reallocated: true, capacityChanged: true)
     }
 
@@ -88,7 +86,7 @@ public struct OrderedSet<Member:Hashable>: CollectionType {
   }
 
   @warn_unused_result
-  public func _customContainsEquatableElement(element: Element) -> Bool? { return contains(element) }
+  public func _customContainsEquatableElement(element: Element) -> Bool? { return buffer.containsKey(element) }
 
   @warn_unused_result
   public func _customIndexOfEquatableElement(element: Element) -> Index?? {
@@ -96,55 +94,10 @@ public struct OrderedSet<Member:Hashable>: CollectionType {
   }
   
 
-  public func indexOf(element: Element) -> Index? { return buffer.indexForElement(element) }
+  public func indexOf(element: Element) -> Index? { return buffer.indexOf(element) }
 
   @warn_unused_result
   public func contains(element: Element) -> Bool { return buffer.containsKey(element) }
-
-  // MARK: Removing elements
-
-  private mutating func _remove(index: Index) {
-    ensureUnique()
-    buffer.destroyAt(index)
-  }
-
-  private mutating func _removeAndReturn(index: Index) -> Element {
-    let result = buffer.elementForPosition(index)
-    _remove(index)
-    return result
-  }
-
-  private mutating func _removeAndReturn(element: Element) -> Element? {
-    guard let index = buffer.indexForElement(element) else { return nil }
-    return _removeAndReturn(index)
-  }
-
-//  private mutating func _remove(element: Element) {
-//    guard let index = buffer.indexForElement(element) else { return }
-//    _remove(index)
-//  }
-
-  private mutating func _remove<S:SequenceType where S.Generator.Element == Element>(elements: S) {
-    ensureUnique()
-    buffer.removeContentsOf(elements)
-  }
-
-  // MARK: Inserting elements
-  private mutating func _append(element: Element) {
-    _append([element])
-  }
-
-  private mutating func _append<S:SequenceType where S.Generator.Element == Element>(elements: S) {
-    ensureUniqueWithCapacity(Buffer.minimumCapacityForCount(count + elements.underestimateCount()))
-    buffer.appendContentsOf(elements)
-  }
-
-  // MARK: Replacing elements
-
-  private mutating func _replace(index: Index, with element: Element) {
-    ensureUnique()
-    buffer.replaceElementAt(index, with: element)
-  }
 
 }
 
@@ -156,8 +109,11 @@ extension OrderedSet: MutableIndexable {
   public var endIndex: Index { return buffer.endIndex }
 
   public subscript(index: Index) -> Element {
-    get { return buffer.elementForPosition(index) }
-    set { _replace(index, with: newValue) }
+    get { return buffer[index] }
+    set {
+      ensureUnique()
+      buffer[index] = newValue
+    }
   }
 
 }
@@ -166,10 +122,16 @@ extension OrderedSet: MutableIndexable {
 extension OrderedSet: SetType {
 
   /// Inserts `element` into the collection.
-  public mutating func insert(element: Element) { _append(element)  }
+  public mutating func insert(element: Element) { append(element)  }
 
   /// Removes and returns `element` from the collection, returns `nil` if `element` was not contained.
-  public mutating func remove(element: Element) -> Element? { return _removeAndReturn(element) }
+  public mutating func remove(element: Element) -> Element? {
+    guard let index = buffer.indexOf(element) else { return nil }
+    let result = buffer[index]
+    ensureUnique()
+    buffer.destroyAt(index)
+    return result
+  }
 
   /// Initialize with the unique members of `elements`.
   public init<S:SequenceType where S.Generator.Element == Element>(_ elements: S) {
@@ -233,7 +195,12 @@ extension OrderedSet: SetType {
 
   /// Insert elements of a finite sequence into this set.
   public mutating func unionInPlace<S:SequenceType where S.Generator.Element == Element>(sequence: S) {
-    _append(sequence)
+    appendContentsOf(sequence)
+  }
+
+  /// Insert elements of a finite collection into this set.
+  public mutating func unionInPlace<C:CollectionType where C.Generator.Element == Element>(sequence: C) {
+    appendContentsOf(sequence)
   }
 
   /// Return a new set with elements in this set that do not occur in a finite sequence.
@@ -246,7 +213,8 @@ extension OrderedSet: SetType {
 
   /// Remove all members in the set that occur in a finite sequence.
   public mutating func subtractInPlace<S:SequenceType where S.Generator.Element == Element>(sequence: S) {
-    _remove(sequence)
+    ensureUnique()
+    buffer.removeContentsOf(sequence)
   }
 
   /// Return a new set with elements common to this set and a finite sequence.
@@ -412,13 +380,25 @@ extension OrderedSet: RangeReplaceableCollectionType {
   /// `self.endIndex`.
   ///
   /// - Complexity: Amortized O(1).
-  public mutating func append(x: Element) { _append(x) }
+  public mutating func append(x: Element) {
+    ensureUniqueWithCapacity(Buffer.minimumCapacityForCount(count &+ 1))
+    buffer.append(x)
+  }
 
   /// Append the elements of `newElements` to `self`.
   ///
   /// - Complexity: O(*length of result*).
   public mutating func appendContentsOf<S:SequenceType where S.Generator.Element == Element>(newElements: S) {
-    unionInPlace(newElements)
+    ensureUnique()
+    for element in newElements { append(element) }
+  }
+
+  /// Append the elements of `newElements` to `self`.
+  ///
+  /// - Complexity: O(*length of result*).
+  public mutating func appendContentsOf<C:CollectionType where C.Generator.Element == Element>(newElements: C) {
+    ensureUniqueWithCapacity(Buffer.minimumCapacityForCount(count + numericCast(newElements.count)))
+    buffer.appendContentsOf(newElements)
   }
 
   /// Insert `newElement` at index `i`.
@@ -449,13 +429,18 @@ extension OrderedSet: RangeReplaceableCollectionType {
   /// Invalidates all indices with respect to `self`.
   ///
   /// - Complexity: O(`self.count`).
-  public mutating func removeAtIndex(i: Index) -> Element { return _removeAndReturn(i) }
+  public mutating func removeAtIndex(i: Index) -> Element {
+    let result = buffer[i]
+    ensureUnique()
+    buffer.destroyAt(i)
+    return result
+  }
 
   /// Remove the element at `startIndex` and return it.
   ///
   /// - Complexity: O(`self.count`)
   /// - Requires: `!self.isEmpty`.
-  public mutating func removeFirst() ->Element { return _removeAndReturn(startIndex) }
+  public mutating func removeFirst() -> Element { return removeAtIndex(startIndex) }
 
   /// Remove the first `n` elements.
   ///
@@ -549,26 +534,10 @@ public struct OrderedDictionary<Key: Hashable, Value>: _DestructorSafeContainer 
 
   private var buffer: Buffer
 
-  /// Returns a new buffer backed by storage cloned from the existing buffer.
-  /// Unreachable elements are not copied; however, `startIndex` and `endIndex` values are preserved.
-  private func cloneBuffer(newCapacity: Int) -> Buffer {
-
-    var clone = Buffer(minimumCapacity: newCapacity, offsetBy: startIndex)
-
-    for position in buffer.indices {
-      clone.initializeElement(buffer.elementForPosition(position), at: position)
-      clone.endIndex += 1
-    }
-
-    clone.storage.count = buffer.count
-
-    return clone
-  }
-
   /// Checks that `owner` has only the one strong reference
   private mutating func ensureUnique() -> (reallocated: Bool, capacityChanged: Bool) {
     guard !buffer.isUniquelyReferenced() else { return (false, false) }
-    buffer = cloneBuffer(capacity)
+    buffer = cloneBuffer(buffer)
     return (true, false)
   }
 
@@ -580,15 +549,15 @@ public struct OrderedDictionary<Key: Hashable, Value>: _DestructorSafeContainer 
         return (reallocated: false, capacityChanged: false)
 
       case (isUnique: true, hasCapacity: false):
-        buffer = cloneBuffer(Buffer.minimumCapacityForCount(minimumCapacity))
+        buffer = cloneBuffer(buffer, minimumCapacity: Buffer.minimumCapacityForCount(minimumCapacity))
         return (reallocated: true, capacityChanged: true)
 
       case (isUnique: false, hasCapacity: true):
-        buffer = cloneBuffer(capacity)
+        buffer = cloneBuffer(buffer)
         return (reallocated: true, capacityChanged: false)
 
       case (isUnique: false, hasCapacity: false):
-        buffer = cloneBuffer(Buffer.minimumCapacityForCount(minimumCapacity))
+        buffer = cloneBuffer(buffer, minimumCapacity: Buffer.minimumCapacityForCount(minimumCapacity))
         return (reallocated: true, capacityChanged: true)
     }
 
@@ -604,7 +573,7 @@ public struct OrderedDictionary<Key: Hashable, Value>: _DestructorSafeContainer 
   }
 
   private mutating func _removeAndReturn(index: Index) -> Element {
-    let result = buffer.elementForPosition(index)
+    let result = buffer[index]
     _remove(index)
     return result
   }
@@ -734,10 +703,10 @@ extension OrderedDictionary: MutableCollectionType {
   public var endIndex: Int  { return buffer.endIndex }
 
   public subscript(index: Index) -> Element {
-    get { return buffer.elementForPosition(index) }
+    get { return buffer[index] }
     set {
       ensureUniqueWithCapacity(count)
-      buffer.replaceElementAt(index, with: newValue)
+      buffer[index] = newValue
     }
   }
   
@@ -889,9 +858,35 @@ extension OrderedDictionary: CustomStringConvertible, CustomDebugStringConvertib
     return result
   }
 
-  public var description: String { return elementsDescription }
+  public var description: String {
+    guard count > 0 else { return "[:]" }
+
+    var result = "["
+    var first = true
+    for (key, value) in self {
+      if first { first = false } else { result += ", " }
+      print(key, terminator: "", toStream: &result)
+      result += ": "
+      print(value, terminator: "", toStream: &result)
+    }
+    result += "]"
+    return result
+  }
   
-  public var debugDescription: String { return elementsDescription }
+  public var debugDescription: String {
+    guard count > 0 else { return "[:]" }
+
+    var result = "["
+    var first = true
+    for (key, value) in self {
+      if first { first = false } else { result += ", " }
+      debugPrint(key, terminator: "", toStream: &result)
+      result += ": "
+      debugPrint(value, terminator: "", toStream: &result)
+    }
+    result += "]"
+    return result
+  }
 }
 
 // MARK: Equatable
@@ -1686,21 +1681,9 @@ private struct HashedStorageBuffer<Storage: HashedStorage where Storage:Concrete
   }
 
   /// Returns the position for `element` or `nil` if `element` is not found.
-  func indexForElement(element: Element) -> Int? {
+  func indexOf(element: Element) -> Int? {
     guard count > 0, let bucket = currentBucketForElement(element) else { return nil }
     return indexForBucket(bucket)
-  }
-
-  /// Returns the element in `bucket`.
-  /// - requires: `bucket` contains an element.
-//  private func elementForBucket(bucket: HashBucket) -> Element {
-//    return elementAtOffset(bucket.offset)
-//  }
-
-  /// Returns the element at `position`.
-  /// - requires: a bucket has been assigned to `position`.
-  func elementForPosition(position: Int) -> Element {
-    return storage.elementAtOffset(bucketMap[offsetPosition(position)].offset)
   }
 
   /// Returns the current bucket for `key` and `true` when `key` is located;
@@ -1720,6 +1703,7 @@ private struct HashedStorageBuffer<Storage: HashedStorage where Storage:Concrete
   }
 
   /// Initializes `bucket` with `element` at `position`.
+  /// - requires: `bucket` is empty
   func initializeBucket(bucket: HashBucket, with element: Element, at position: Int) {
     storage.initializeAtOffset(bucket.offset, element: element)
     bucketMap[offsetPosition(position)] = bucket
@@ -1738,19 +1722,6 @@ private struct HashedStorageBuffer<Storage: HashedStorage where Storage:Concrete
       fatalError("element has no bucket: '\(element)'")
     }
     return storage.updateAtOffset(currentBucket.offset, element: element)
-  }
-
-  /// Removes the element from `bucket1` and uses this element to initialize `bucket2`
-  func moveBucket(bucket1: HashBucket, to bucket2: HashBucket) {
-    let element = storage.moveAtOffset(bucket1.offset)
-    storage.initializeAtOffset(bucket2.offset, element: element)
-    bucketMap.replaceBucket(bucket1, with: bucket2)
-  }
-
-  /// Replaces the element at `position` with `element`.
-  func replaceElementAt(position: Int, with element: Element) {
-    storage.destroyAtOffset(bucketMap[offsetPosition(position)].offset)
-    initializeElement(element, at: position)
   }
 
   /// Attempts to move the values of the buckets near `hole` into buckets nearer to their 'ideal' bucket
@@ -1780,7 +1751,8 @@ private struct HashedStorageBuffer<Storage: HashedStorage where Storage:Concrete
         }
       }
       guard last != hole else { break }
-      moveBucket(last, to: hole)
+      storage.initializeAtOffset(hole.offset, element: storage.moveAtOffset(last.offset))
+      bucketMap.replaceBucket(last, with: hole)
       hole = last
     }
 
@@ -1819,8 +1791,11 @@ private struct HashedStorageBuffer<Storage: HashedStorage where Storage:Concrete
   }
 
   subscript(index: Int) -> Element {
-    get { return elementForPosition(index) }
-    set { replaceElementAt(index, with: newValue) }
+    get { return storage.elementAtOffset(bucketMap[offsetPosition(index)].offset) }
+    set {
+      storage.destroyAtOffset(bucketMap[offsetPosition(index)].offset)
+      initializeElement(newValue, at: index)
+    }
   }
 
   subscript(subRange: Range<Int>) -> SubSequence {
@@ -1957,7 +1932,7 @@ extension HashedStorageBuffer: RangeReplaceableCollectionType {
   ///
   /// - Complexity: O(`self.count`).
   mutating func removeAtIndex(i: Index) -> Element {
-    let result = elementForPosition(i)
+    let result = self[i]
     destroyAt(i)
     return result
   }

@@ -478,6 +478,7 @@
 		C2F01E1B1A02E080007F6966 /* MSColorInputView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C2F01E1A1A02E080007F6966 /* MSColorInputView.xib */; };
 		C2F094451A32A83A00681AB3 /* DrawingKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F094441A32A83A00681AB3 /* DrawingKit.swift */; };
 		C2F094471A32AA8600681AB3 /* KeyInputButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F094461A32AA8600681AB3 /* KeyInputButton.swift */; };
+		C2F3194B1CF9298D0041B5AA /* Surge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2F3194A1CF9298D0041B5AA /* Surge.framework */; };
 		C2F39D2B1A3A51960024EE94 /* FontAwesome.otf in Resources */ = {isa = PBXBuildFile; fileRef = C2F39D2A1A3A51960024EE94 /* FontAwesome.otf */; };
 		C2F39D2F1A3A6D5A0024EE94 /* NSAttributedString+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F39D2E1A3A6D5A0024EE94 /* NSAttributedString+MoonKitAdditions.swift */; };
 		C2F619E01BC599D00000891A /* Marquee.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F619DF1BC599D00000891A /* Marquee.swift */; };
@@ -1011,6 +1012,7 @@
 		C2F01E331A03EDD9007F6966 /* ToggleImageBarButtonItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToggleImageBarButtonItem.swift; sourceTree = "<group>"; };
 		C2F094441A32A83A00681AB3 /* DrawingKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingKit.swift; sourceTree = "<group>"; };
 		C2F094461A32AA8600681AB3 /* KeyInputButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyInputButton.swift; sourceTree = "<group>"; };
+		C2F3194A1CF9298D0041B5AA /* Surge.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Surge.framework; path = "../../../../GitHub/Surge/build/Debug-iphoneos/Surge.framework"; sourceTree = "<group>"; };
 		C2F39D2A1A3A51960024EE94 /* FontAwesome.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome.otf; sourceTree = "<group>"; };
 		C2F39D2E1A3A6D5A0024EE94 /* NSAttributedString+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSAttributedString+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C2F4370219BB813F00B60FC3 /* MSKeyPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSKeyPath.h; sourceTree = "<group>"; };
@@ -1041,6 +1043,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C2F3194B1CF9298D0041B5AA /* Surge.framework in Frameworks */,
 				C22567801BB05E7600E4842B /* Lumberjack.framework in Frameworks */,
 				C225677E1BB05E7600E4842B /* CoreImage.framework in Frameworks */,
 				C268340C1B11159E00A359A8 /* Chameleon.framework in Frameworks */,
@@ -1646,6 +1649,7 @@
 		C2CE885018138C4900555D63 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C2F3194A1CF9298D0041B5AA /* Surge.framework */,
 				C28FCBDD1CD00DB0008D97C1 /* Nimble.framework */,
 				C2416E521C88BB5E00734CA1 /* XCTest.framework */,
 				C2BDBC361BD3F1E300E343F1 /* LumberjackOSX.framework */,

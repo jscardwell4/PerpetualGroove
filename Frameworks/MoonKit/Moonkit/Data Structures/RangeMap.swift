@@ -25,7 +25,41 @@ private func ==<F:ForwardIndexType>(lhs: F, rhs: F) -> Bool {
 }
 
 
+private func rangify<S:SequenceType, F:ForwardIndexType where S.Generator.Element == F>(indices: S) -> ContiguousArray<Range<F>> {
+  let sortedIndices = indices.sort { $0 < $1 }
+  guard sortedIndices.count > 0 else { return [] }
+  guard sortedIndices.count > 1 else { return [sortedIndices[0] ... sortedIndices[0]] }
+  var ranges = ContiguousArray<Range<F>>()
+  var range = sortedIndices[0] ..< sortedIndices[0].successor()
+  for index in sortedIndices.dropFirst() {
+    guard !range.contains(index) else { continue }
+    if range.endIndex == index { range.endIndex._successorInPlace() }
+    else {
+      ranges.append(range)
+      range = index ..< index.successor()
+    }
+  }
+  if ranges[ranges.endIndex.predecessor()] != range { ranges.append(range) }
+  return ranges
+}
 
+private func rangify<S:SequenceType, F:ForwardIndexType where S.Generator.Element == Range<F>>(ranges: S) -> ContiguousArray<Range<F>> {
+  let sortedRanges = ranges.sort { $0.startIndex < $1.startIndex }
+  guard sortedRanges.count > 0 else { return [] }
+  var result = ContiguousArray<Range<F>>()
+  var range = sortedRanges[0]
+  for r in sortedRanges.dropFirst() {
+    guard !range.contains(r) else { continue }
+    if r.startIndex > range.endIndex {
+      result.append(range)
+      range = r
+    } else {
+      range.endIndex = r.endIndex
+    }
+  }
+  if result[result.endIndex.predecessor()] != range { result.append(range) }
+  return result
+}
 
 public struct RangeMap<RangeIndex:ForwardIndexType>: CollectionType, CustomStringConvertible {
 
@@ -33,7 +67,7 @@ public struct RangeMap<RangeIndex:ForwardIndexType>: CollectionType, CustomStrin
   public typealias _Element = Element
   public typealias Index = Int
 
-  var ranges: ContiguousArray<Element> = []
+  var ranges: ContiguousArray<Element>
 
   public var headIndex: RangeIndex? { return ranges.first?.startIndex }
   public var tailIndex: RangeIndex? { return ranges.last?.endIndex }
@@ -42,43 +76,20 @@ public struct RangeMap<RangeIndex:ForwardIndexType>: CollectionType, CustomStrin
     return Int(Surge.sum(ranges.map({Double($0.count.toIntMax())})))
   }
 
-  public init() {}
+  public init() { ranges = [] }
+
+  public init<S:SequenceType where S.Generator.Element == RangeIndex>(sequence: S) { ranges = rangify(sequence) }
 
   public var coverage: Element? {
     guard let headIndex = headIndex, tailIndex = tailIndex else { return nil }
     return headIndex ..< tailIndex
   }
 
-  public mutating func insert(element: RangeIndex) {
-    // If empty, just append the element
-    guard let headIndex = headIndex, tailIndex = tailIndex else {
-      ranges.append(element ... element)
-      return
-    }
+  private func insertionPointFor(element: RangeIndex) -> Int {
 
-    // Handle case of element being the min element
-    guard headIndex < element else {
-      switch ranges[0] {
-        case let range where range.contains(element): break
-        case let range where range.startIndex == element.successor():
-          ranges[0] = element ..< range.endIndex
-        default:
-          ranges.insert(element ... element, atIndex: 0)
-      }
-      return
-    }
-
-    // Handle case of element being the max element
-    guard tailIndex > element else {
-      let index = ranges.endIndex.predecessor()
-      switch ranges[index] {
-        case let range where range.endIndex == element:
-          ranges[index] = range.startIndex ... element
-        default:
-          ranges.append(element ... element)
-      }
-      return
-    }
+    guard let headIndex = headIndex, tailIndex = tailIndex else { return ranges.startIndex }
+    guard headIndex < element else { return ranges.startIndex }
+    guard tailIndex > element else { return ranges.endIndex }
 
     // Recursively searches an array slice to return an insertion point for `element`.
     func searchSlice(slice: ArraySlice<Element>) -> Int {
@@ -98,8 +109,39 @@ public struct RangeMap<RangeIndex:ForwardIndexType>: CollectionType, CustomStrin
       }
     }
 
-    // Get the insertion point for `element`
-    let index = searchSlice(ranges[ranges.indices])
+    return searchSlice(ranges[ranges.indices])
+  }
+
+  public mutating func insert(element: RangeIndex) {
+
+    // If empty, just append the element
+    guard let headIndex = headIndex, tailIndex = tailIndex else { ranges.append(element ... element); return }
+
+    let index = insertionPointFor(element)
+
+    // Handle case of element being the min element
+    guard headIndex < element else {
+      switch ranges[0] {
+        case let range where range.contains(element): break
+        case let range where range.startIndex == element.successor():
+          ranges[0] = element ..< range.endIndex
+        default:
+          ranges.insert(element ... element, atIndex: ranges.startIndex)
+      }
+      return
+    }
+
+    // Handle case of element being the max element
+    guard tailIndex > element else {
+      let index = ranges.endIndex.predecessor()
+      switch ranges[index] {
+        case let range where range.endIndex == element:
+          ranges[index] = range.startIndex ... element
+        default:
+          ranges.append(element ... element)
+      }
+      return
+    }
 
     // Handle insertion
     switch ranges[index] {
@@ -111,6 +153,7 @@ public struct RangeMap<RangeIndex:ForwardIndexType>: CollectionType, CustomStrin
         && index.predecessor() >= ranges.startIndex
         && ranges[index.predecessor()].endIndex == element:
         // bridge ranges at `index.predecessor()` and `index` with `element`
+
         ranges.replaceRange(index.predecessor() ... index,
                             with: [ranges[index.predecessor()].startIndex ..< range.endIndex])
 
@@ -140,6 +183,14 @@ public struct RangeMap<RangeIndex:ForwardIndexType>: CollectionType, CustomStrin
       default:
         fatalError("one of the other cases should have matched")
     }
+  }
+
+  public mutating func insert<S:SequenceType where S.Generator.Element == RangeIndex>(elements: S) {
+    ranges = rangify(ranges + rangify(elements))
+  }
+
+  public mutating func appendContentsOf<S:SequenceType where S.Generator.Element == Element>(sequence: S) {
+    ranges = rangify(ranges + sequence)
   }
 
   @warn_unused_result
