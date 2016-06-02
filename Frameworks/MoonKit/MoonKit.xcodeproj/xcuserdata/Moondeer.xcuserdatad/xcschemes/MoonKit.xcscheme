@@ -119,6 +119,26 @@
                </Test>
             </SkippedTests>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "C2D137591CFE090A00EE3863"
+               BuildableName = "RangeMapTests.xctest"
+               BlueprintName = "RangeMapTests"
+               ReferencedContainer = "container:MoonKit.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "C2D1376A1CFE55A400EE3863"
+               BuildableName = "NativeSetPerformanceTests.xctest"
+               BlueprintName = "NativeSetPerformanceTests"
+               ReferencedContainer = "container:MoonKit.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference

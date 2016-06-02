@@ -56,6 +56,11 @@
 			<key>orderHint</key>
 			<integer>8</integer>
 		</dict>
+		<key>NativeSetPerformanceTests.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>28</integer>
+		</dict>
 		<key>NativeSetTests.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -76,6 +81,11 @@
 			<false/>
 			<key>orderHint</key>
 			<integer>21</integer>
+		</dict>
+		<key>RangeMapTests.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>27</integer>
 		</dict>
 		<key>TransformTest.xcscheme</key>
 		<dict>
@@ -155,6 +165,16 @@
 			<true/>
 		</dict>
 		<key>C2C65BBB1C970F38000645ED</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C2D137591CFE090A00EE3863</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C2D1376A1CFE55A400EE3863</key>
 		<dict>
 			<key>primary</key>
 			<true/>
