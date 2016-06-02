@@ -148,7 +148,7 @@ final class OrderedSetPerformanceTests: XCTestCase {
     }
   }
 
-  func DISABLEDtestSubsetOfPerformance() {
+  func testSubsetOfPerformance() {
     measureBlock {
         let set = self.orderedSet2
         for other in [self.elements0, self.elements1, self.elements2, self.elements3, self.elements4, self.elements5, self.elements6, self.elements7, self.elements8, self.elements9] {
@@ -157,7 +157,7 @@ final class OrderedSetPerformanceTests: XCTestCase {
     }
   }
 
-  func DISABLEDtestStrictSubsetOfPerformance() {
+  func testStrictSubsetOfPerformance() {
     measureBlock {
         let set = self.orderedSet2
         for other in [self.elements0, self.elements1, self.elements2, self.elements3, self.elements4, self.elements5, self.elements6, self.elements7, self.elements8, self.elements9] {

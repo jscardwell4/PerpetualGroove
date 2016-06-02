@@ -20,10 +20,30 @@ private func cloneBuffer<
   return clone
 }
 
+/// Replaces `buffer` with an appropriately sized clone if not unqiue
+private func ensureUnique<
+  S:ConcreteHashedStorage
+  >(inout buffer: HashedStorageBuffer<S>, withCapacity capacity: Int = 0)
+{
+    switch (isUnique: buffer.isUniquelyReferenced(), hasCapacity: buffer.capacity >= capacity) {
+
+      case (isUnique: true, hasCapacity: true):
+        return
+
+      case (isUnique: true, hasCapacity: false):
+        buffer = cloneBuffer(buffer, minimumCapacity: HashedStorageBuffer<S>.minimumCapacityForCount(capacity))
+
+      case (isUnique: false, hasCapacity: true):
+        buffer = cloneBuffer(buffer)
+
+      case (isUnique: false, hasCapacity: false):
+        buffer = cloneBuffer(buffer, minimumCapacity: HashedStorageBuffer<S>.minimumCapacityForCount(capacity))
+    }
+}
 
 // MARK: - OrderedSet
 
-/// A hash-based mapping from `Key` to `Element` instances that preserves elment order.
+/// A hash-based set of elements that preserves element order.
 public struct OrderedSet<Member:Hashable>: CollectionType {
 
   private typealias Buffer = HashedStorageBuffer<Storage>
@@ -35,37 +55,6 @@ public struct OrderedSet<Member:Hashable>: CollectionType {
   public typealias SubSequence = OrderedSet<Element>
 
   private var buffer: Buffer
-
-  /// Checks that `owner` has only the one strong reference
-  private mutating func ensureUnique() -> (reallocated: Bool, capacityChanged: Bool) {
-    guard !buffer.isUniquelyReferenced() else { return (false, false) }
-    buffer = cloneBuffer(buffer)
-    return (true, false)
-  }
-
-  /// Checks that `owner` has only the one strong reference and that it's `buffer` has at least `minimumCapacity` capacity
-  private mutating func ensureUniqueWithCapacity(minimumCapacity: Int)
-    -> (reallocated: Bool, capacityChanged: Bool)
-  {
-    switch (isUnique: buffer.isUniquelyReferenced(), hasCapacity: capacity >= minimumCapacity) {
-
-      case (isUnique: true, hasCapacity: true):
-        return (reallocated: false, capacityChanged: false)
-
-      case (isUnique: true, hasCapacity: false):
-        buffer = cloneBuffer(buffer, minimumCapacity: Buffer.minimumCapacityForCount(minimumCapacity))
-        return (reallocated: true, capacityChanged: true)
-
-      case (isUnique: false, hasCapacity: true):
-        buffer = cloneBuffer(buffer)
-        return (reallocated: true, capacityChanged: false)
-
-      case (isUnique: false, hasCapacity: false):
-        buffer = cloneBuffer(buffer, minimumCapacity: Buffer.minimumCapacityForCount(minimumCapacity))
-        return (reallocated: true, capacityChanged: true)
-    }
-
-  }
 
   /// The current number of elements
   public var count: Int { return buffer.count }
@@ -111,7 +100,7 @@ extension OrderedSet: MutableIndexable {
   public subscript(index: Index) -> Element {
     get { return buffer[index] }
     set {
-      ensureUnique()
+      ensureUnique(&buffer)
       buffer[index] = newValue
     }
   }
@@ -127,15 +116,13 @@ extension OrderedSet: SetType {
   /// Removes and returns `element` from the collection, returns `nil` if `element` was not contained.
   public mutating func remove(element: Element) -> Element? {
     guard let index = buffer.indexOf(element) else { return nil }
-    let result = buffer[index]
-    ensureUnique()
-    buffer.destroyAt(index)
-    return result
+    ensureUnique(&buffer)
+    return buffer.removeAtIndex(index)
   }
 
   /// Initialize with the unique members of `elements`.
   public init<S:SequenceType where S.Generator.Element == Element>(_ elements: S) {
-    self.init(buffer: Buffer(elements: elements)) // Uniqueness checked by `Buffer`
+    self.init(buffer: Buffer(elements: elements))
   }
 
   /// Returns true if the set is a subset of a finite sequence as a set.
@@ -199,8 +186,8 @@ extension OrderedSet: SetType {
   }
 
   /// Insert elements of a finite collection into this set.
-  public mutating func unionInPlace<C:CollectionType where C.Generator.Element == Element>(sequence: C) {
-    appendContentsOf(sequence)
+  public mutating func unionInPlace<C:CollectionType where C.Generator.Element == Element>(collection: C) {
+    appendContentsOf(collection)
   }
 
   /// Return a new set with elements in this set that do not occur in a finite sequence.
@@ -213,8 +200,11 @@ extension OrderedSet: SetType {
 
   /// Remove all members in the set that occur in a finite sequence.
   public mutating func subtractInPlace<S:SequenceType where S.Generator.Element == Element>(sequence: S) {
-    ensureUnique()
-    buffer.removeContentsOf(sequence)
+    let other = sequence as? OrderedSet<Element> ?? OrderedSet(sequence)
+    guard other.count > 0 else { return }
+    guard !isDisjointWith(other) else { return }
+    ensureUnique(&buffer)
+    buffer.removeContentsOf(other)
   }
 
   /// Return a new set with elements common to this set and a finite sequence.
@@ -279,7 +269,7 @@ extension OrderedSet: SetType {
 
     guard removeCount > 0 || addCount > 0 else { return }
 
-    ensureUniqueWithCapacity(count + addCount - removeCount)
+    ensureUnique(&buffer, withCapacity: count + addCount - removeCount)
 
     var removedCount = 0
     for range in ranges {
@@ -307,7 +297,7 @@ extension OrderedSet: SetType {
 
     guard removeCount > 0 || addCount > 0 else { return }
 
-    ensureUniqueWithCapacity(count + addCount - removeCount)
+    ensureUnique(&buffer, withCapacity: count + addCount - removeCount)
 
     var removedCount = 0
     for range in ranges {
@@ -354,7 +344,10 @@ extension OrderedSet: RangeReplaceableCollectionType {
   /// linear data structures like `Array`.  Conforming types may
   /// reserve more than `n`, exactly `n`, less than `n` elements of
   /// storage, or even ignore the request completely.
-  public mutating func reserveCapacity(minimumCapacity: Int) { ensureUniqueWithCapacity(minimumCapacity) }
+  public mutating func reserveCapacity(minimumCapacity: Int) {
+    guard capacity < minimumCapacity else { return }
+    ensureUnique(&buffer, withCapacity: minimumCapacity)
+  }
 
   /// Replace the given `subRange` of elements with `newElements`.
   ///
@@ -366,9 +359,9 @@ extension OrderedSet: RangeReplaceableCollectionType {
   public mutating func replaceRange<C:CollectionType
     where C.Generator.Element == Element>(subRange: Range<Int>, with newElements: C)
   {
+    guard subRange.count > 0 else { return }
 
-    let requiredCapacity = count - subRange.count + numericCast(newElements.count)
-    ensureUniqueWithCapacity(requiredCapacity)
+    ensureUnique(&buffer, withCapacity: count - subRange.count + numericCast(newElements.count))
 
     // Replace with uniqued collection
     buffer.replaceRange(subRange, with: newElements)
@@ -380,24 +373,26 @@ extension OrderedSet: RangeReplaceableCollectionType {
   /// `self.endIndex`.
   ///
   /// - Complexity: Amortized O(1).
-  public mutating func append(x: Element) {
-    ensureUniqueWithCapacity(Buffer.minimumCapacityForCount(count &+ 1))
-    buffer.append(x)
+  public mutating func append(element: Element) {
+    //???:Should we check containment here to avoid unique check when not adding an element?
+    ensureUnique(&buffer, withCapacity: Buffer.minimumCapacityForCount(count &+ 1))
+    buffer.append(element)
   }
 
   /// Append the elements of `newElements` to `self`.
   ///
   /// - Complexity: O(*length of result*).
   public mutating func appendContentsOf<S:SequenceType where S.Generator.Element == Element>(newElements: S) {
-    ensureUnique()
-    for element in newElements { append(element) }
+    appendContentsOf(Array(newElements))
   }
 
   /// Append the elements of `newElements` to `self`.
   ///
   /// - Complexity: O(*length of result*).
   public mutating func appendContentsOf<C:CollectionType where C.Generator.Element == Element>(newElements: C) {
-    ensureUniqueWithCapacity(Buffer.minimumCapacityForCount(count + numericCast(newElements.count)))
+    let newElementsCount: Int = numericCast(newElements.count)
+    guard newElementsCount > 0 else { return }
+    ensureUnique(&buffer, withCapacity: Buffer.minimumCapacityForCount(count + newElementsCount))
     buffer.appendContentsOf(newElements)
   }
 
@@ -406,9 +401,9 @@ extension OrderedSet: RangeReplaceableCollectionType {
   /// Invalidates all indices with respect to `self`.
   ///
   /// - Complexity: O(`self.count`).
-  public mutating func insert(newElement: Element, atIndex i: Index) {
-    ensureUniqueWithCapacity(count + 1)
-    buffer.insert(newElement, atIndex: i)
+  public mutating func insert(newElement: Element, atIndex index: Index) {
+    ensureUnique(&buffer, withCapacity: count + 1)
+    buffer.insert(newElement, atIndex: index)
   }
 
   /// Insert `newElements` at index `i`.
@@ -418,10 +413,10 @@ extension OrderedSet: RangeReplaceableCollectionType {
   /// - Complexity: O(`self.count + newElements.count`).
   public mutating func insertContentsOf<
     C:CollectionType where C.Generator.Element == Element
-    >(newElements: C, at i: Index)
+    >(newElements: C, at index: Index)
   {
-    ensureUniqueWithCapacity(count + numericCast(newElements.count))
-    buffer.insertContentsOf(newElements, at: i)
+    ensureUnique(&buffer, withCapacity: count + numericCast(newElements.count))
+    buffer.insertContentsOf(newElements, at: index)
   }
 
   /// Remove the element at index `i`.
@@ -429,11 +424,9 @@ extension OrderedSet: RangeReplaceableCollectionType {
   /// Invalidates all indices with respect to `self`.
   ///
   /// - Complexity: O(`self.count`).
-  public mutating func removeAtIndex(i: Index) -> Element {
-    let result = buffer[i]
-    ensureUnique()
-    buffer.destroyAt(i)
-    return result
+  public mutating func removeAtIndex(index: Index) -> Element {
+    ensureUnique(&buffer)
+    return buffer.removeAtIndex(index)
   }
 
   /// Remove the element at `startIndex` and return it.
@@ -446,7 +439,7 @@ extension OrderedSet: RangeReplaceableCollectionType {
   ///
   /// - Complexity: O(`self.count`)
   /// - Requires: `n >= 0 && self.count >= n`.
-  public mutating func removeFirst(n: Int) { ensureUnique(); buffer.removeFirst(n) }
+  public mutating func removeFirst(n: Int) { ensureUnique(&buffer); buffer.removeFirst(n) }
 
   /// Remove the indicated `subRange` of elements.
   ///
@@ -454,7 +447,7 @@ extension OrderedSet: RangeReplaceableCollectionType {
   ///
   /// - Complexity: O(`self.count`).
   public mutating func removeRange(subRange: Range<Index>) {
-    ensureUnique()
+    ensureUnique(&buffer)
     buffer.removeRange(subRange)
   }
 
@@ -484,39 +477,39 @@ extension OrderedSet: ArrayLiteralConvertible {
 // MARK: CustomStringConvertible, CustomDebugStringConvertible
 extension OrderedSet: CustomStringConvertible, CustomDebugStringConvertible {
 
-  private var elementsDescription: String {
+  public var description: String {
     guard count > 0 else { return "[]" }
 
     var result = "["
     var first = true
     for element in self {
-      if first {
-        first = false
-      } else {
-        result += ", "
-      }
-      debugPrint(element, terminator: "", toStream: &result)
+      if first { first = false } else { result += ", " }
+      print(element, terminator: "", toStream: &result)
     }
     result += "]"
     return result
   }
 
-  public var description: String { return elementsDescription }
+  public var debugDescription: String {
+    guard count > 0 else { return "[]" }
 
-  public var debugDescription: String { return elementsDescription }
+    var result = "["
+    var first = true
+    for element in self {
+      if first { first = false } else { result += ", " }
+      debugPrint(element, terminator: "", toStream: &result)
+    }
+    result += "]"
+    return result
+  }
 }
 
 // MARK: Equatable
 extension OrderedSet: Equatable {}
 
-public func == <Element:Hashable>
-  (lhs: OrderedSet<Element>, rhs: OrderedSet<Element>) -> Bool
-{
-  
+public func == <Element:Hashable> (lhs: OrderedSet<Element>, rhs: OrderedSet<Element>) -> Bool {
   guard !(lhs.buffer.identity == rhs.buffer.identity && lhs.count == rhs.count) else { return true }
-
   for (v1, v2) in zip(lhs, rhs) { guard v1 == v2 else { return false } }
-  
   return true
 }
 
@@ -534,85 +527,9 @@ public struct OrderedDictionary<Key: Hashable, Value>: _DestructorSafeContainer 
 
   private var buffer: Buffer
 
-  /// Checks that `owner` has only the one strong reference
-  private mutating func ensureUnique() -> (reallocated: Bool, capacityChanged: Bool) {
-    guard !buffer.isUniquelyReferenced() else { return (false, false) }
-    buffer = cloneBuffer(buffer)
-    return (true, false)
-  }
-
-  /// Checks that `owner` has only the one strong reference and that it's `buffer` has at least `minimumCapacity` capacity
-  private mutating func ensureUniqueWithCapacity(minimumCapacity: Int) -> (reallocated: Bool, capacityChanged: Bool) {
-    switch (isUnique: buffer.isUniquelyReferenced(), hasCapacity: capacity >= minimumCapacity) {
-
-      case (isUnique: true, hasCapacity: true):
-        return (reallocated: false, capacityChanged: false)
-
-      case (isUnique: true, hasCapacity: false):
-        buffer = cloneBuffer(buffer, minimumCapacity: Buffer.minimumCapacityForCount(minimumCapacity))
-        return (reallocated: true, capacityChanged: true)
-
-      case (isUnique: false, hasCapacity: true):
-        buffer = cloneBuffer(buffer)
-        return (reallocated: true, capacityChanged: false)
-
-      case (isUnique: false, hasCapacity: false):
-        buffer = cloneBuffer(buffer, minimumCapacity: Buffer.minimumCapacityForCount(minimumCapacity))
-        return (reallocated: true, capacityChanged: true)
-    }
-
-  }
-
   public init(minimumCapacity: Int) { buffer = Buffer(minimumCapacity: minimumCapacity) }
 
   private init(buffer: Buffer) { self.buffer = buffer }
-
-  private mutating func _remove(index: Index) {
-    ensureUniqueWithCapacity(capacity)
-    buffer.destroyAt(index)
-  }
-
-  private mutating func _removeAndReturn(index: Index) -> Element {
-    let result = buffer[index]
-    _remove(index)
-    return result
-  }
-
-  private mutating func _removeValueForKey(key: Key) {
-    guard let index = buffer.indexForKey(key) else { return }
-    _remove(index)
-  }
-
-  private mutating func _removeAndReturnValueForKey(key: Key) -> Value? {
-    guard let index = buffer.indexForKey(key) else { return nil }
-    return _removeAndReturn(index).1
-  }
-
-  private mutating func _updateValue(value: Value, forKey key: Key) {
-    let found = buffer.containsKey(key)
-
-    let minCapacity = found
-      ? capacity
-      : Buffer.minimumCapacityForCount(buffer.count + 1)
-
-    ensureUniqueWithCapacity(minCapacity)
-
-    if found { buffer.updateElement((key, value)) }
-    else { buffer.append((key, value)) }
-  }
-
-  private mutating func _updateAndReturnValue(value: Value, forKey key: Key) -> Element? {
-    let found = buffer.containsKey(key)
-
-    let minCapacity = found
-      ? capacity
-      : Buffer.minimumCapacityForCount(buffer.count + 1)
-
-    ensureUniqueWithCapacity(minCapacity)
-
-    if found { return buffer.updateElement((key, value)) }
-    else { buffer.append((key, value)); return nil }
-  }
 
   public mutating func insertValue(value: Value, forKey key: Key, atIndex index: Index) {
     replaceRange(index ..< index, with: CollectionOfOne((key, value)))
@@ -643,8 +560,7 @@ extension OrderedDictionary where Value:Equatable {
   }
 
   public func _customIndexOfEquatableElement(element: Element) -> Index?? {
-    guard self[element.0] == element.1 else { return Optional(nil) }
-    return Optional(buffer.indexForKey(element.0))
+    return Optional(buffer.indexOf(element))
   }
 }
 
@@ -661,25 +577,39 @@ extension OrderedDictionary: DictionaryLiteralConvertible {
 extension OrderedDictionary: MutableKeyValueCollection {
 
   public mutating func insertValue(value: Value, forKey key: Key) {
-    _updateValue(value, forKey: key)
+    self[key] = value
   }
 
   public mutating func updateValue(value: Value, forKey key: Key) -> Value? {
-    return _updateAndReturnValue(value, forKey: key)?.1
+    let found = buffer.containsKey(key)
+
+    let minCapacity = found
+      ? capacity
+      : Buffer.minimumCapacityForCount(buffer.count + 1)
+
+    ensureUnique(&buffer, withCapacity: minCapacity)
+
+    if found { return buffer.updateElement((key, value)).1 }
+    else { buffer.append((key, value)); return nil }
   }
 
   /// Removes the value associated with `key` and returns it. Returns `nil` if `key` is not present.
   public mutating func removeValueForKey(key: Key) -> Value? {
-    return _removeAndReturnValueForKey(key)
+    guard let index = indexForKey(key) else { return nil }
+    return removeAtIndex(index).1
   }
 
   /// Returns the index of `key` or `nil` if `key` is not present.
-  public func indexForKey(key: Key) -> Index? { return buffer.indexForKey(key) }
+  public func indexForKey(key: Key) -> Index? {
+    let (bucket, found) = buffer.find(key)
+    guard found, let index = buffer.bucketMap[bucket] else { return nil }
+    return buffer.offsetIndex(index)
+  }
 
   /// Returns the value associated with `key` or `nil` if `key` is not present.
   public func valueForKey(key: Key) -> Value? {
-    guard let position = buffer.indexForKey(key) else { return nil }
-    return buffer.valueForPosition(position)
+    guard let index = indexForKey(key) else { return nil }
+    return buffer[index].1
   }
 
   /// Access the value associated with the given key.
@@ -688,8 +618,24 @@ extension OrderedDictionary: MutableKeyValueCollection {
   public subscript(key: Key) -> Value? {
     get { return valueForKey(key) }
     set {
-      if let value = newValue { _updateValue(value, forKey: key) }
-      else { _removeValueForKey(key) }
+      switch newValue {
+      case let value?:
+        let found = buffer.containsKey(key)
+
+        let minCapacity = found
+          ? capacity
+          : Buffer.minimumCapacityForCount(buffer.count + 1)
+
+        ensureUnique(&buffer, withCapacity: minCapacity)
+
+        if found { buffer.updateElement((key, value)) }
+        else { buffer.append((key, value)) }
+
+      case nil:
+        guard let index = indexForKey(key) else { return }
+        ensureUnique(&buffer)
+        buffer.destroyAt(index)
+      }
     }
   }
 
@@ -705,7 +651,7 @@ extension OrderedDictionary: MutableCollectionType {
   public subscript(index: Index) -> Element {
     get { return buffer[index] }
     set {
-      ensureUniqueWithCapacity(count)
+      ensureUnique(&buffer)
       buffer[index] = newValue
     }
   }
@@ -733,7 +679,7 @@ extension OrderedDictionary: RangeReplaceableCollectionType {
   /// linear data structures like `Array`.  Conforming types may
   /// reserve more than `n`, exactly `n`, less than `n` elements of
   /// storage, or even ignore the request completely.
-  public mutating func reserveCapacity(minimumCapacity: Int) { ensureUniqueWithCapacity(minimumCapacity) }
+  public mutating func reserveCapacity(minimumCapacity: Int) { ensureUnique(&buffer, withCapacity: minimumCapacity) }
 
   /// Replace the given `subRange` of elements with `newElements`.
   ///
@@ -747,7 +693,7 @@ extension OrderedDictionary: RangeReplaceableCollectionType {
   {
 
     let requiredCapacity = count - subRange.count + numericCast(newElements.count)
-    ensureUniqueWithCapacity(requiredCapacity)
+    ensureUnique(&buffer, withCapacity: requiredCapacity)
 
     // Replace with uniqued collection
     buffer.replaceRange(subRange, with: newElements)
@@ -760,14 +706,14 @@ extension OrderedDictionary: RangeReplaceableCollectionType {
   ///
   /// - Complexity: Amortized O(1).
   public mutating func append(x: Element) {
-    _updateValue(x.1, forKey: x.0)
+    self[x.0] = x.1
   }
 
   /// Append the elements of `newElements` to `self`.
   ///
   /// - Complexity: O(*length of result*).
   public mutating func appendContentsOf<S : SequenceType where S.Generator.Element == Element>(newElements: S) {
-    for (key, value) in newElements { _updateValue(value, forKey: key) }
+    for (key, value) in newElements { self[key] = value }
   }
 
   /// Insert `newElement` at index `i`.
@@ -788,13 +734,16 @@ extension OrderedDictionary: RangeReplaceableCollectionType {
     replaceRange(i ..< i, with: newElements)
   }
 
-  /// Remove the element at index `i`.
+  /// Remove the element at index `index`.
   ///
   /// Invalidates all indices with respect to `self`.
   ///
   /// - Complexity: O(`self.count`).
-  public mutating func removeAtIndex(i: Index) -> Element {
-    return _removeAndReturn(i)
+  public mutating func removeAtIndex(index: Index) -> Element {
+    let result = buffer[index]
+    ensureUnique(&buffer)
+    buffer.destroyAt(index)
+    return result
   }
 
   /// Remove the element at `startIndex` and return it.
@@ -1368,7 +1317,7 @@ private final class OrderedSetStorage<Value:Hashable>: HashedStorage, ConcreteHa
   }
 
   /// Create a new storage instance.
-  static func create(minimumCapacity: Int) -> OrderedSetStorage {
+  static func create(minimumCapacity: Int) -> OrderedSetStorage{
     let capacity = round2(minimumCapacity)
 
     let bucketMapBytes = bytesForBucketMap(capacity)
@@ -1399,7 +1348,7 @@ private final class OrderedSetStorage<Value:Hashable>: HashedStorage, ConcreteHa
     defer { _fixLifetime(self) }
     var components = "\n".split(super.description)[1..<8]
     components.append("\tvaluesBytes: \(valuesBytes)")
-    var result = "OrderedSetStorage {\n"
+    var result = "OrderedSetStorage{\n"
     result += components.joinWithSeparator("\n")
     result += "\n}"
     return result
@@ -1481,7 +1430,7 @@ private final class OrderedDictionaryStorage<Key:Hashable, Value>: HashedStorage
   }
 
   /// Create a new storage instance.
-  static func create(minimumCapacity: Int) -> OrderedDictionaryStorage {
+  static func create(minimumCapacity: Int) -> OrderedDictionaryStorage{
     let capacity = round2(minimumCapacity)
 
     let bucketMapBytes = bytesForBucketMap(capacity)
@@ -1524,7 +1473,7 @@ private final class OrderedDictionaryStorage<Key:Hashable, Value>: HashedStorage
     var components = "\n".split(super.description)[1..<8]
     components.append("\tkeysBytes: \(keysBytes)")
     components.append("\tvaluesBytes: \(valuesBytes)")
-    var result = "OrderedDictionaryStorage {\n"
+    var result = "OrderedDictionaryStorage{\n"
     result += components.joinWithSeparator("\n")
     result += "\n}"
     return result
@@ -1592,48 +1541,6 @@ private struct HashedStorageBuffer<Storage: HashedStorage where Storage:Concrete
     self.init(storage: storage, indices: indices, indexOffset: offset)
   }
 
-  /// Returns the bucket for `hashedKey` diregarding collisions
-  func idealBucketForKey(hashedKey: HashedKey) -> HashBucket {
-    return suggestBucketForValue(hashedKey, capacity: storage.capacity)
-  }
-
-  /// Returns the bucket for `element` diregarding collisions
-//  private func idealBucketForElement(element: Element) -> HashBucket {
-//    return idealBucketForKey(Storage.keyForElement(element))
-//  }
-
-  /// Returns the position assigned to `bucket` or `nil` if no position is assigned
-//  private func positionForBucket(bucket: HashBucket) -> Int? {
-//    return bucketMap[bucket]
-//  }
-
-  /// Returns the bucket for the element assigned to `position`.
-  /// - requires: A bucket has been assigned to `position`
-//  private func bucketForPosition(position: Int) -> HashBucket {
-//    return bucketMap[offsetPosition(position)]
-//  }
-
-  /// Returns `false` when `bucket` is empty and `true` otherwise.
-//  private func isInitializedBucket(bucket: HashBucket) -> Bool {
-//    return bucketMap[bucket] != nil
-//  }
-
-  /// Returns the hashed key for the specified bucket.
-//  private func keyForBucket(bucket: HashBucket) -> HashedKey {
-//    return hashedKeys[bucket.offset]
-//  }
-
-  /// Returns the hashed value for the specified bucket.
-  func valueForBucket(bucket: HashBucket) -> HashedValue {
-    return hashedValues[bucket.offset]
-  }
-
-  /// Returns the bucket containing `hashedKey` or `nil` if no bucket contains `element`.
-  func currentBucketForKey(key: HashedKey) -> HashBucket? {
-    let (bucket, found) = find(key)
-    return found ? bucket : nil
-  }
-
   /// Returns whether `key` is present in the buffer.
   func containsKey(key: HashedKey) -> Bool {
     let (_, found) = find(key)
@@ -1642,14 +1549,9 @@ private struct HashedStorageBuffer<Storage: HashedStorage where Storage:Concrete
 
   /// Returns the bucket containing `element` or `nil` if no bucket contains `element`.
   func currentBucketForElement(element: Element) -> HashBucket? {
-      return currentBucketForKey(Storage.keyForElement(element))
+    let (bucket, found) = find(Storage.keyForElement(element))
+    return found ? bucket : nil
   }
-
-  /// Returns an empty bucket suitable for holding `hashedKey` or `nil` if a bucket already contains `key`.
-//  private func emptyBucketForKey(key: HashedKey) -> HashBucket? {
-//    let (bucket, found) = find(key)
-//    return found ? nil : bucket
-//  }
 
   /// Returns an empty bucket suitable for holding `element` or `nil` if a bucket already contains `element`.
   func emptyBucketForElement(element: Element) -> HashBucket? {
@@ -1657,40 +1559,19 @@ private struct HashedStorageBuffer<Storage: HashedStorage where Storage:Concrete
     return found ? nil : bucket
   }
 
-  /// Returns the hashed key for the specified position.
-  /// - requires: A bucket has been assigned to `position`
-//  func keyForPosition(position: Int) -> HashedKey {
-//    return hashedKeys[bucketMap[offsetPosition(position)].offset]
-//  }
-
-  /// Returns the hashed value for the specified position.
-  /// - requires: A bucket has been assigned to `position`
-  func valueForPosition(position: Int) -> HashedValue {
-    return valueForBucket(bucketMap[offsetPosition(position)])
-  }
-
-  func indexForBucket(bucket: HashBucket) -> Int? {
-    guard let index = bucketMap[bucket] else { return nil }
-    return offsetIndex(index)
-  }
-
-  /// Returns the position for `hashedKey` or `nil` if `hashedKey` is not found.
-  func indexForKey(hashedKey: HashedKey) -> Int? {
-    guard count > 0, let bucket = currentBucketForKey(hashedKey) else { return nil }
-    return indexForBucket(bucket)
-  }
-
   /// Returns the position for `element` or `nil` if `element` is not found.
   func indexOf(element: Element) -> Int? {
-    guard count > 0, let bucket = currentBucketForElement(element) else { return nil }
-    return indexForBucket(bucket)
+    guard count > 0 else { return nil }
+    let (bucket, found) = find(Storage.keyForElement(element))
+    guard found, let index = bucketMap[bucket] else { return nil }
+    return offsetIndex(index)
   }
 
   /// Returns the current bucket for `key` and `true` when `key` is located;
   /// returns an open bucket for `key` and `false` otherwise
   /// - requires: At least one empty bucket
   func find(key: HashedKey) -> (bucket: HashBucket, found: Bool) {
-    let startBucket = idealBucketForKey(key)
+    let startBucket = suggestBucketForValue(key, capacity: storage.capacity)
     var bucket = startBucket
 
     repeat {
@@ -1702,26 +1583,38 @@ private struct HashedStorageBuffer<Storage: HashedStorage where Storage:Concrete
     fatalError("failed to locate hole")
   }
 
-  /// Initializes `bucket` with `element` at `position`.
-  /// - requires: `bucket` is empty
-  func initializeBucket(bucket: HashBucket, with element: Element, at position: Int) {
-    storage.initializeAtOffset(bucket.offset, element: element)
-    bucketMap[offsetPosition(position)] = bucket
-  }
+//  func destroyAtOffset(offset: Int) {
+//    (hashedKeys + offset).destroy()
+//    if !keyIsValue { (hashedValues + offset).destroy() }
+//  }
 
-  /// Initializes a fresh bucket with `element` at `position` unless `element` is a duplicate. 
+  /// Initializes a fresh bucket with `element` at `position` unless `element` is a duplicate.
   /// Returns `true` if a bucket was initialized and `false` otherwise.
   func initializeElement(element: Element, at position: Int) -> Bool {
     guard let bucket = emptyBucketForElement(element) else { return false }
-    initializeBucket(bucket, with: element, at: position)
+    storage.initializeAtOffset(bucket.offset, element: element)
+    bucketMap[offsetPosition(position)] = bucket
     return true
   }
 
   func updateElement(element: Element) -> Element {
-    guard let currentBucket = currentBucketForElement(element) else {
+    guard let offset = currentBucketForElement(element)?.offset else {
       fatalError("element has no bucket: '\(element)'")
     }
-    return storage.updateAtOffset(currentBucket.offset, element: element)
+    switch element {
+      case let element as HashedKey:
+        let oldElement = (hashedKeys + offset).move()
+        (hashedKeys + offset).initialize(element)
+        return oldElement as! Element
+      case let element as (HashedKey, HashedValue):
+        let oldKey = (hashedKeys + offset).move()
+        let oldValue = (hashedValues + offset).move()
+        assert(oldKey == element.0, "keys do not match")
+        (hashedKeys + offset).initialize(element.0)
+        (hashedValues + offset).initialize(element.1)
+        return (oldKey, oldValue) as! Element
+      default: fatalError("unhandled element type '\(Element.self)'")
+    }
   }
 
   /// Attempts to move the values of the buckets near `hole` into buckets nearer to their 'ideal' bucket
@@ -1735,11 +1628,12 @@ private struct HashedStorageBuffer<Storage: HashedStorage where Storage:Concrete
     var last = lastInChain.successor()
     while bucketMap[last] != nil { lastInChain = last; last._successorInPlace() }
 
+    let capacity = storage.capacity
     while hole != lastInChain {
       last = lastInChain
       FillHole: while last != hole {
         let key = hashedKeys[last.offset]
-        let bucket = idealBucketForKey(key)
+        let bucket = suggestBucketForValue(key, capacity: capacity)
 
         switch (bucket >= start, bucket <= hole) {
         case (true, true) where start <= hole,
@@ -1763,7 +1657,7 @@ private struct HashedStorageBuffer<Storage: HashedStorage where Storage:Concrete
 
     var ranges = RangeMap<Int>()
     for element in elements {
-      guard let index = indexForKey(Storage.keyForElement(element)) else { continue }
+      guard let index = indexOf(element) else { continue }
       ranges.insert(index)
     }
 
@@ -1778,11 +1672,20 @@ private struct HashedStorageBuffer<Storage: HashedStorage where Storage:Concrete
 
   }
 
+  mutating func removeRanges<S:SequenceType where S.Generator.Element == Range<Int>>(ranges: S) {
+    var countRemoved = 0
+    for range in ranges {
+      let adjustedRange = range - countRemoved
+      removeRange(adjustedRange)
+      countRemoved = countRemoved &+ adjustedRange.count
+    }
+  }
+
   /// Uninitializes the bucket for `position`, adjusts positions and `endIndex` and patches the hole.
   mutating func destroyAt(position: Index) {
 
     let hole = bucketMap[offsetPosition(position)]
-    let idealBucket = idealBucketForKey(hashedKeys[hole.offset])
+    let idealBucket = suggestBucketForValue(hashedKeys[hole.offset], capacity: storage.capacity)
 
     storage.destroyAtOffset(hole.offset)
     bucketMap.removeBucketAt(offsetPosition(position))
@@ -1843,14 +1746,25 @@ extension HashedStorageBuffer: RangeReplaceableCollectionType {
     self = buffer
   }
 
+//  init<C:CollectionType where C.Generator.Element == Element>(elements: C) {
+//    let minimumCapacity = Buffer.minimumCapacityForCount(numericCast(elements.count))
+//    self.init(minimumCapacity: minimumCapacity, offsetBy: 0)
+//    appendContentsOf(elements)
+
+    //    var buffer = Buffer(minimumCapacity: minimumCapacity, offsetBy: 0)
+//    buffer.appendContentsOf(elements)
+//    self = buffer
+//  }
+
   /// Creates a collection instance that contains `elements`.
   init<S:SequenceType where S.Generator.Element == Element>(elements: S) {
     let minimumCapacity = Buffer.minimumCapacityForCount(elements.underestimateCount())
+    self.init(minimumCapacity: minimumCapacity, offsetBy: 0)
+    appendContentsOf(elements)
 
-    var buffer = Buffer(minimumCapacity: minimumCapacity, offsetBy: 0)
-    buffer.appendContentsOf(elements)
-
-    self = buffer
+//    var buffer = Buffer(minimumCapacity: minimumCapacity, offsetBy: 0)
+//    buffer.appendContentsOf(elements)
+//    self = buffer
   }
 
   /// Append `x` to `self`.
@@ -1907,10 +1821,15 @@ extension HashedStorageBuffer: RangeReplaceableCollectionType {
     // Insert new elements, accumulating a list of their buckets
     var newElementsBuckets = [HashBucket](minimumCapacity: numericCast(newElements.count))
 
+    var dropCount = 0
+
     for (i, element) in newElements.enumerate() {
-      guard let bucket = emptyBucketForElement(element) else { continue }
+      guard let bucket = emptyBucketForElement(element) else {
+        dropCount = dropCount &+ 1
+        continue
+      }
       storage.initializeAtOffset(bucket.offset, element: element)
-      bucketMap.assign(index &+ i, to: bucket)
+      bucketMap.assign(index &+ i &- dropCount, to: bucket)
       newElementsBuckets.append(bucket)
     }
 
@@ -1966,7 +1885,7 @@ extension HashedStorageBuffer: RangeReplaceableCollectionType {
       case 1: destroyAt(subRange.startIndex)
       case let delta:
         let buckets = subRange.map { bucketMap[offsetPosition($0)] }
-        let idealBuckets = buckets.map { idealBucketForKey(hashedKeys[$0.offset]) }
+        let idealBuckets = buckets.map {[capacity = storage.capacity] in suggestBucketForValue(self.hashedKeys[$0.offset], capacity: capacity) }
         buckets.forEach { storage.destroyAtOffset($0.offset) }
         zip(buckets, idealBuckets).forEach { patchHole($0, idealBucket: $1) }
 
@@ -2037,7 +1956,7 @@ extension HashedStorageBuffer: CustomStringConvertible, CustomDebugStringConvert
       let bucket = HashBucket(offset: bucketOffset, capacity: bucketMap.capacity)
       if let position = bucketMap[bucket] {
         let key = hashedKeys[bucket.offset]
-        result += "bucket \(bucket), key = \(key), ideal bucket = \(idealBucketForKey(key)), position = \(position)\n"
+        result += "bucket \(bucket), key = \(key), ideal bucket = \(suggestBucketForValue(key, capacity: storage.capacity)), position = \(position)\n"
       } else {
         result += "bucket \(bucket), empty\n"
       }
