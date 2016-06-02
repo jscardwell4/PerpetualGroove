@@ -9,6 +9,8 @@
 import Foundation
 import Surge
 
+// MARK: - Helpers to simplify treating ForwardIndexType as Comparable
+
 @inline(__always)
 private func <<F:ForwardIndexType>(lhs: F, rhs: F) -> Bool {
   return lhs.distanceTo(rhs) > 0
@@ -19,11 +21,23 @@ private func ><F:ForwardIndexType>(lhs: F, rhs: F) -> Bool {
   return lhs.distanceTo(rhs) < 0
 }
 
+
+@inline(__always)
+private func <=<F:ForwardIndexType>(lhs: F, rhs: F) -> Bool {
+  return lhs.distanceTo(rhs) > 0 || lhs == rhs
+}
+
+@inline(__always)
+private func >=<F:ForwardIndexType>(lhs: F, rhs: F) -> Bool {
+  return lhs.distanceTo(rhs) < 0 || lhs == rhs
+}
+
 @inline(__always)
 private func ==<F:ForwardIndexType>(lhs: F, rhs: F) -> Bool {
   return lhs.distanceTo(rhs) == 0
 }
 
+// MARK: - Helpers to convert to an array of non-overlapping ranges
 
 private func rangify<S:SequenceType, F:ForwardIndexType where S.Generator.Element == F>(indices: S) -> ContiguousArray<Range<F>> {
   let sortedIndices = indices.sort { $0 < $1 }
@@ -61,7 +75,10 @@ private func rangify<S:SequenceType, F:ForwardIndexType where S.Generator.Elemen
   return result
 }
 
-public struct RangeMap<RangeIndex:ForwardIndexType>: CollectionType, CustomStringConvertible {
+// MARK: - RangeMap
+
+/// A collection of non-overlapping ranges
+public struct RangeMap<RangeIndex:ForwardIndexType>: CollectionType {
 
   public typealias Element = Range<RangeIndex>
   public typealias _Element = Element
@@ -78,18 +95,35 @@ public struct RangeMap<RangeIndex:ForwardIndexType>: CollectionType, CustomStrin
 
   public init() { ranges = [] }
 
-  public init<S:SequenceType where S.Generator.Element == RangeIndex>(sequence: S) { ranges = rangify(sequence) }
+  public init<S:SequenceType where S.Generator.Element == RangeIndex>(_ sequence: S) { ranges = rangify(sequence) }
 
+  public init<S:SequenceType where S.Generator.Element == Range<RangeIndex>>(_ sequence: S) { ranges = rangify(sequence) }
+  
+  /// The range containing the min `RangeIndex` and the max `RangeIndex` or nil if the collection is empty.
   public var coverage: Element? {
     guard let headIndex = headIndex, tailIndex = tailIndex else { return nil }
     return headIndex ..< tailIndex
   }
 
+  /// Returns the significant index into `ranges` when inserting `element`.
+  /// The returned index is determined via the following:
+  /// 
+  /// `∃ r: ranges[ranges.startIndex] == r, r.startIndex ≥ element ➞ ranges.startIndex`
+  ///
+  /// `∃ r: ranges[ranges.endIndex.predecessor()] == r, r.endIndex < element ➞ ranges.endIndex`
+  ///
+  /// `∃ r: r.contains(element) ➞ ranges.indexOf(r)`
+  ///
+  /// `∃ r: r.startIndex = element.successor() ➞ ranges.indexOf(r)`
+  ///
+  /// `∃ r: r.endIndex == element ➞ ranges.indexOf(r)`
   private func insertionPointFor(element: RangeIndex) -> Int {
 
     guard let headIndex = headIndex, tailIndex = tailIndex else { return ranges.startIndex }
     guard headIndex < element else { return ranges.startIndex }
-    guard tailIndex > element else { return ranges.endIndex }
+    guard tailIndex > element else {
+      return tailIndex == element ? ranges.endIndex.predecessor() : ranges.endIndex
+    }
 
     // Recursively searches an array slice to return an insertion point for `element`.
     func searchSlice(slice: ArraySlice<Element>) -> Int {
@@ -112,36 +146,17 @@ public struct RangeMap<RangeIndex:ForwardIndexType>: CollectionType, CustomStrin
     return searchSlice(ranges[ranges.indices])
   }
 
+
+  /// Insert `element` into the collection. If an existing element contains `element`, no action is taken.
+  /// If `element` prepends or extends an existing element, the existing element is updated.
+  /// Otherwise, a new element is inserted for `element`.
   public mutating func insert(element: RangeIndex) {
 
     // If empty, just append the element
-    guard let headIndex = headIndex, tailIndex = tailIndex else { ranges.append(element ... element); return }
+    guard !ranges.isEmpty else { ranges.append(element ... element); return }
 
     let index = insertionPointFor(element)
-
-    // Handle case of element being the min element
-    guard headIndex < element else {
-      switch ranges[0] {
-        case let range where range.contains(element): break
-        case let range where range.startIndex == element.successor():
-          ranges[0] = element ..< range.endIndex
-        default:
-          ranges.insert(element ... element, atIndex: ranges.startIndex)
-      }
-      return
-    }
-
-    // Handle case of element being the max element
-    guard tailIndex > element else {
-      let index = ranges.endIndex.predecessor()
-      switch ranges[index] {
-        case let range where range.endIndex == element:
-          ranges[index] = range.startIndex ... element
-        default:
-          ranges.append(element ... element)
-      }
-      return
-    }
+    guard index < ranges.endIndex else { ranges.append(element ... element); return }
 
     // Handle insertion
     switch ranges[index] {
@@ -153,7 +168,6 @@ public struct RangeMap<RangeIndex:ForwardIndexType>: CollectionType, CustomStrin
         && index.predecessor() >= ranges.startIndex
         && ranges[index.predecessor()].endIndex == element:
         // bridge ranges at `index.predecessor()` and `index` with `element`
-
         ranges.replaceRange(index.predecessor() ... index,
                             with: [ranges[index.predecessor()].startIndex ..< range.endIndex])
 
@@ -185,14 +199,17 @@ public struct RangeMap<RangeIndex:ForwardIndexType>: CollectionType, CustomStrin
     }
   }
 
-  public mutating func insert<S:SequenceType where S.Generator.Element == RangeIndex>(elements: S) {
-    ranges = rangify(ranges + rangify(elements))
+  /// Merges `ranges` with the ranges expressed by `indices`.
+  public mutating func insert<S:SequenceType where S.Generator.Element == RangeIndex>(indices: S) {
+    ranges = rangify(ranges + rangify(indices))
   }
 
+  /// Merges `ranges` with `sequence`.
   public mutating func appendContentsOf<S:SequenceType where S.Generator.Element == Element>(sequence: S) {
     ranges = rangify(ranges + sequence)
   }
 
+  /// Returns a `RangeMap` whose elements consist of the gaps between `ranges` over `coverage`.
   @warn_unused_result
   public func invert(coverage coverage: Element) -> RangeMap<RangeIndex> {
     var result = self
@@ -200,6 +217,7 @@ public struct RangeMap<RangeIndex:ForwardIndexType>: CollectionType, CustomStrin
     return result
   }
 
+  /// Replaces `ranges` the gaps between `ranges` over `coverage`.
   public mutating func invertInPlace(coverage coverage: Element) {
 
     guard let headIndex = headIndex, tailIndex = tailIndex else { ranges = [coverage]; return }
@@ -227,15 +245,28 @@ public struct RangeMap<RangeIndex:ForwardIndexType>: CollectionType, CustomStrin
 
   public subscript(index: Index) -> Element { return ranges[index] }
 
+}
+
+extension RangeMap: Equatable {}
+
+public func ==<R:ForwardIndexType>(lhs: RangeMap<R>, rhs: RangeMap<R>) -> Bool {
+  guard lhs.count == rhs.count else { return false }
+  for (range1, range2) in zip(lhs, rhs) { guard range1 == range2 else { return false } }
+  return true
+}
+
+extension RangeMap: CustomStringConvertible {
+
   public var description: String {
     var result = "["
     var isFirst = true
     for range in ranges {
       if isFirst { isFirst = false } else { result += ", " }
       if range.count == 1 { result += "\(range.startIndex)" }
-      else { result += "\(range.startIndex)...\(range.endIndex.advancedBy(-1))" }
+      else { result += "\(range.startIndex)..<\(range.endIndex)" }
     }
     result += "]"
     return result
   }
+
 }
