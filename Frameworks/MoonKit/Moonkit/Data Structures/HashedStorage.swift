@@ -83,7 +83,7 @@ public struct OrderedSet<Member:Hashable>: CollectionType {
   }
 
   @warn_unused_result
-  public func _customContainsEquatableElement(element: Element) -> Bool? { return buffer.containsKey(element) }
+  public func _customContainsEquatableElement(element: Element) -> Bool? { return contains(element) }
 
   @warn_unused_result
   public func _customIndexOfEquatableElement(element: Element) -> Index?? {
@@ -124,6 +124,7 @@ extension OrderedSet: SetType {
   /// Removes and returns `element` from the collection, returns `nil` if `element` was not contained.
   public mutating func remove(element: Element) -> Element? {
     guard let index = buffer.indexOf(element) else { return nil }
+    ensureUnique(&buffer)
     return buffer.removeAtIndex(index)
   }
 
@@ -208,8 +209,8 @@ extension OrderedSet: SetType {
   /// Remove all members in the set that occur in a finite sequence.
   public mutating func subtractInPlace<S:SequenceType where S.Generator.Element == Element>(sequence: S) {
     let other = sequence as? OrderedSet<Element> ?? OrderedSet(sequence)
-    guard other.count > 0 else { return }
-    guard !isDisjointWith(other) else { return }
+    guard other.count > 0  && count > 0 else { return }
+//    guard !isDisjointWith(other) else { return }
     ensureUnique(&buffer)
     buffer.removeContentsOf(other)
   }
@@ -235,6 +236,10 @@ extension OrderedSet: SetType {
 //      }
 //      ranges.invertInPlace(coverage: indices)
 //    }
+
+    guard ranges.count > 0 else { return }
+
+    ensureUnique(&buffer)
 
     ranges.reverseInPlace()
 //    var removedCount = 0
@@ -278,12 +283,8 @@ extension OrderedSet: SetType {
 
     ensureUnique(&buffer, withCapacity: count + addCount - removeCount)
 
-    var removedCount = 0
-    for range in ranges {
-      let adjustedRange = range - removedCount
-      buffer.removeRange(adjustedRange)
-      removedCount = removedCount &+ adjustedRange.count
-    }
+    ranges.reverseInPlace()
+    for range in ranges { buffer.removeRange(range) }
 
     for range in otherRanges { buffer.appendContentsOf(orderedSet[range]) }
   }
@@ -330,7 +331,6 @@ extension OrderedSet: RangeReplaceableCollectionType {
   public mutating func replaceRange<C:CollectionType
     where C.Generator.Element == Element>(subRange: Range<Int>, with newElements: C)
   {
-    guard indices.contains(subRange) else { fatalError("invalid subRange '\(subRange)'") }
     guard subRange.count > 0 else { return }
 
     ensureUnique(&buffer, withCapacity: count - subRange.count + numericCast(newElements.count))
@@ -346,7 +346,7 @@ extension OrderedSet: RangeReplaceableCollectionType {
   ///
   /// - Complexity: Amortized O(1).
   public mutating func append(element: Element) {
-    //???:Should we check containment here to avoid unique check when not adding an element?
+    guard !contains(element) else { return }
     ensureUnique(&buffer, withCapacity: Buffer.minimumCapacityForCount(count &+ 1))
     buffer.append(element)
   }
@@ -374,6 +374,7 @@ extension OrderedSet: RangeReplaceableCollectionType {
   ///
   /// - Complexity: O(`self.count`).
   public mutating func insert(newElement: Element, atIndex index: Index) {
+    guard !contains(newElement) else { return }
     ensureUnique(&buffer, withCapacity: count + 1)
     buffer.insert(newElement, atIndex: index)
   }
@@ -419,6 +420,7 @@ extension OrderedSet: RangeReplaceableCollectionType {
   ///
   /// - Complexity: O(`self.count`).
   public mutating func removeRange(subRange: Range<Index>) {
+    guard subRange.count > 0 else { return }
     ensureUnique(&buffer)
     buffer.removeRange(subRange)
   }
@@ -504,7 +506,10 @@ public struct OrderedDictionary<Key: Hashable, Value>: _DestructorSafeContainer 
   private init(buffer: Buffer) { self.buffer = buffer }
 
   public mutating func insertValue(value: Value, forKey key: Key, atIndex index: Index) {
-    replaceRange(index ..< index, with: CollectionOfOne((key, value)))
+    guard !buffer.containsKey(key) else { return }
+    ensureUnique(&buffer, withCapacity: Buffer.minimumCapacityForCount(count + 1))
+    buffer.insert((key, value), atIndex: index)
+//    replaceRange(index ..< index, with: CollectionOfOne((key, value)))
   }
 
   public var count: Int { return buffer.count }
@@ -651,7 +656,10 @@ extension OrderedDictionary: RangeReplaceableCollectionType {
   /// linear data structures like `Array`.  Conforming types may
   /// reserve more than `n`, exactly `n`, less than `n` elements of
   /// storage, or even ignore the request completely.
-  public mutating func reserveCapacity(minimumCapacity: Int) { ensureUnique(&buffer, withCapacity: minimumCapacity) }
+  public mutating func reserveCapacity(minimumCapacity: Int) {
+    guard capacity < minimumCapacity else { return }
+    ensureUnique(&buffer, withCapacity: minimumCapacity)
+  }
 
   /// Replace the given `subRange` of elements with `newElements`.
   ///
@@ -663,7 +671,7 @@ extension OrderedDictionary: RangeReplaceableCollectionType {
   public mutating func replaceRange<C:CollectionType
     where C.Generator.Element == Element>(subRange: Range<Int>, with newElements: C)
   {
-
+    guard !(subRange.isEmpty && newElements.isEmpty) else { return }
     let requiredCapacity = count - subRange.count + numericCast(newElements.count)
     ensureUnique(&buffer, withCapacity: requiredCapacity)
 
@@ -685,7 +693,19 @@ extension OrderedDictionary: RangeReplaceableCollectionType {
   ///
   /// - Complexity: O(*length of result*).
   public mutating func appendContentsOf<S : SequenceType where S.Generator.Element == Element>(newElements: S) {
-    for (key, value) in newElements { self[key] = value }
+    appendContentsOf(Array(newElements))
+  }
+
+  /// Append the elements of `newElements` to `self`.
+  ///
+  /// - Complexity: O(*length of result*).
+  public mutating func appendContentsOf<C:CollectionType where C.Generator.Element == Element>(newElements: C) {
+    let newElementsCount: Int = numericCast(newElements.count)
+    guard newElementsCount > 0 else { return }
+    ensureUnique(&buffer, withCapacity: Buffer.minimumCapacityForCount(count + newElementsCount))
+    buffer.appendContentsOf(newElements)
+
+//    for (key, value) in newElements { self[key] = value }
   }
 
   /// Insert `newElement` at index `i`.
@@ -694,7 +714,11 @@ extension OrderedDictionary: RangeReplaceableCollectionType {
   ///
   /// - Complexity: O(`self.count`).
   public mutating func insert(newElement: Element, atIndex i: Index) {
-    replaceRange(i ..< i, with: CollectionOfOne(newElement))
+    guard !buffer.containsKey(newElement.0) else { return }
+    ensureUnique(&buffer, withCapacity: Buffer.minimumCapacityForCount(count + 1))
+    buffer.insert(newElement, atIndex: index)
+
+//    replaceRange(i ..< i, with: CollectionOfOne(newElement))
   }
 
   /// Insert `newElements` at index `i`.
@@ -702,8 +726,10 @@ extension OrderedDictionary: RangeReplaceableCollectionType {
   /// Invalidates all indices with respect to `self`.
   ///
   /// - Complexity: O(`self.count + newElements.count`).
-  public mutating func insertContentsOf<S : CollectionType where S.Generator.Element == Element>(newElements: S, at i: Index) {
-    replaceRange(i ..< i, with: newElements)
+  public mutating func insertContentsOf<C:CollectionType where C.Generator.Element == Element>(newElements: C, at i: Index) {
+    ensureUnique(&buffer, withCapacity: count + numericCast(newElements.count))
+    buffer.insertContentsOf(newElements, at: index)
+//    replaceRange(i ..< i, with: newElements)
   }
 
   /// Remove the element at index `index`.
@@ -712,10 +738,12 @@ extension OrderedDictionary: RangeReplaceableCollectionType {
   ///
   /// - Complexity: O(`self.count`).
   public mutating func removeAtIndex(index: Index) -> Element {
-    let result = buffer[index]
     ensureUnique(&buffer)
-    buffer.destroyAt(index)
-    return result
+    return buffer.removeAtIndex(index)
+//    let result = buffer[index]
+//    ensureUnique(&buffer)
+//    buffer.destroyAt(index)
+//    return result
   }
 
   /// Remove the element at `startIndex` and return it.
@@ -731,7 +759,9 @@ extension OrderedDictionary: RangeReplaceableCollectionType {
   /// - Complexity: O(`self.count`)
   /// - Requires: `n >= 0 && self.count >= n`.
   public mutating func removeFirst(n: Int) {
-    replaceRange(startIndex ..< startIndex.advancedBy(n), with: EmptyCollection())
+     ensureUnique(&buffer)
+    buffer.removeFirst(n)
+//    replaceRange(startIndex ..< startIndex.advancedBy(n), with: EmptyCollection())
   }
 
   /// Remove the indicated `subRange` of elements.
@@ -740,7 +770,11 @@ extension OrderedDictionary: RangeReplaceableCollectionType {
   ///
   /// - Complexity: O(`self.count`).
   public mutating func removeRange(subRange: Range<Index>) {
-    replaceRange(subRange, with: EmptyCollection())
+    guard subRange.count > 0 else { return }
+    ensureUnique(&buffer)
+    buffer.removeRange(subRange)
+
+//    replaceRange(subRange, with: EmptyCollection())
   }
 
   /// Remove all elements.
@@ -754,8 +788,11 @@ extension OrderedDictionary: RangeReplaceableCollectionType {
   /// - Complexity: O(`self.count`).
   public mutating func removeAll(keepCapacity keepCapacity: Bool = false) {
     guard count > 0 else { return }
-    guard keepCapacity else { buffer = Buffer(); return }
-    buffer.replaceRange(indices, with: EmptyCollection())
+    buffer.removeAll(keepCapacity: keepCapacity)
+
+//    guard count > 0 else { return }
+//    guard keepCapacity else { buffer = Buffer(); return }
+//    buffer.replaceRange(indices, with: EmptyCollection())
   }
   
 
@@ -871,14 +908,14 @@ private func suggestBucketForValue<H:Hashable>(value: H, capacity: Int) -> HashB
   return HashBucket(offset: _squeezeHashValue(value.hashValue, 0 ..< capacity), capacity: capacity)
 }
 
-/// - requires: `initializedBuckets` has an empty bucket (to avoid an infinite loop)
-private func findBucketForValue<H:Hashable>(value: H, capacity: Int, initializedBuckets: BitMap) -> HashBucket {
-  var bucket = suggestBucketForValue(value, capacity: capacity)
-  repeat {
-    guard initializedBuckets[bucket.offset] else { return bucket }
-    bucket._successorInPlace()
-  } while true
-}
+///// - requires: `initializedBuckets` has an empty bucket (to avoid an infinite loop)
+//private func findBucketForValue<H:Hashable>(value: H, capacity: Int, initializedBuckets: BitMap) -> HashBucket {
+//  var bucket = suggestBucketForValue(value, capacity: capacity)
+//  repeat {
+//    guard initializedBuckets[bucket.offset] else { return bucket }
+//    bucket._successorInPlace()
+//  } while true
+//}
 
 // MARK: - HashBucketMap
 private struct HashBucketMap: CollectionType {
@@ -913,7 +950,7 @@ private struct HashBucketMap: CollectionType {
   }
 
   /// The number of 'position ➞ bucket' mappings.
-  var count: Int { return endIndex - startIndex }
+  var count: Int { return endIndex }
 
   /// Initialize with a pointer to the storage to use and its represented capacity as an element count.
   /// - warning: `storage` must have been properly allocated. Existing values in memory will be overwritten.
