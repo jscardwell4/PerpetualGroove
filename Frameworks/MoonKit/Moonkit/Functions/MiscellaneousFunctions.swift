@@ -69,6 +69,7 @@ public func round2(x: Int) -> Int {
 
  - parameter t: T
 */
+@inline(never)
 public func touch<T>(t: T) {}
 
 public func gcd<T:ArithmeticType>(a: T, _ b: T) -> T {

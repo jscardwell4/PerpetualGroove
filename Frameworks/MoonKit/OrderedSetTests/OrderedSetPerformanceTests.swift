@@ -10,56 +10,79 @@ import XCTest
 import MoonKitTest
 @testable import MoonKit
 
+let elements0 = MoonKitTest.integersXXLarge0
+let elements1 = MoonKitTest.integersXXLarge1
+let elements2 = MoonKitTest.integersXXLarge2
+let elements3 = MoonKitTest.integersXXLarge3
+let elements4 = MoonKitTest.integersXXLarge4
+let elements5 = MoonKitTest.integersXXLarge5
+let elements6 = MoonKitTest.integersXXLarge6
+let elements7 = MoonKitTest.integersXXLarge7
+let elements8 = MoonKitTest.integersXXLarge8
+let elements9 = MoonKitTest.integersXXLarge9
+let ranges: [Range<Int>] = srandomRanges(seed: 0, count: 10, indices: MoonKitTest.integersXXLarge0.indices, coverage: 0.00025, limit: 5000)
+
 final class OrderedSetPerformanceTests: XCTestCase {
 
-  let elements0: [Int] = MoonKitTest.integersXXLarge0
-  let elements1: [Int] = MoonKitTest.integersXXLarge1
-  let elements2: [Int] = MoonKitTest.integersXXLarge2
-  let elements3: [Int] = MoonKitTest.integersXXLarge3
-  let elements4: [Int] = MoonKitTest.integersXXLarge4
-  let elements5: [Int] = MoonKitTest.integersXXLarge5
-  let elements6: [Int] = MoonKitTest.integersXXLarge6
-  let elements7: [Int] = MoonKitTest.integersXXLarge7
-  let elements8: [Int] = MoonKitTest.integersXXLarge8
-  let elements9: [Int] = MoonKitTest.integersXXLarge9
-  let ranges: [Range<Int>] = srandomRanges(seed: 0, count: 10, indices: MoonKitTest.integersXXLarge0.indices, coverage: 0.00025, limit: 5000)
 
   var orderedSet1: OrderedSet<Int> = []
   var orderedSet2: OrderedSet<Int> = []
 
+  var nativeSet: Set<Int> = []
+  var nativeSet2: Set<Int> = []
+
   override func setUp() {
-    _ = ranges
+    touch(ranges)
+    touch(elements0)
+    touch(elements1)
+    touch(elements2)
+    touch(elements3)
+    touch(elements4)
+    touch(elements5)
+    touch(elements6)
+    touch(elements7)
+    touch(elements8)
+    touch(elements9)
+
     orderedSet1 = []
     orderedSet2 = OrderedSet<Int>(elements0)
+    nativeSet = []
+    nativeSet2 = Set<Int>(elements0)
   }
 
 
   func testCreationPerformance() {
     measureBlock { 
-      _ = OrderedSet(self.elements0)
-      _ = OrderedSet(self.elements1)
-      _ = OrderedSet(self.elements2)
-      _ = OrderedSet(self.elements3)
-      _ = OrderedSet(self.elements4)
-      _ = OrderedSet(self.elements5)
-      _ = OrderedSet(self.elements6)
-      _ = OrderedSet(self.elements7)
-      _ = OrderedSet(self.elements8)
-      _ = OrderedSet(self.elements9)
+      autoreleasepool {
+      _ = OrderedSet(elements0)
+      _ = OrderedSet(elements1)
+      _ = OrderedSet(elements2)
+      _ = OrderedSet(elements3)
+      _ = OrderedSet(elements4)
+      _ = OrderedSet(elements5)
+      _ = OrderedSet(elements6)
+      _ = OrderedSet(elements7)
+      _ = OrderedSet(elements8)
+      _ = OrderedSet(elements9)
+      }
     }
   }
 
   func testInsertionPerformance() {
     measureBlock {
+      autoreleasepool {
         var set = self.orderedSet1
-        for i in self.elements0 { set.insert(i) }
+        for i in elements0 { set.insert(i) }
+      }
     }
   }
 
   func testDeletePerformance() {
     measureBlock {
+      autoreleasepool {
         var set = self.orderedSet2
-        for i in self.elements0 { set.remove(i) }
+        for i in elements0 { set.remove(i) }
+      }
     }
   }
 
@@ -78,123 +101,327 @@ final class OrderedSetPerformanceTests: XCTestCase {
     }
 
     measureBlock {
+      autoreleasepool {
         var set = self.orderedSet2
         for (removeRange, insertRange) in ranges {
-          set.replaceRange(removeRange, with: self.elements1[insertRange])
+          guard set.indices.contains(removeRange) else { continue }
+          set.replaceRange(removeRange, with: elements1[insertRange])
         }
+      }
     }
   }
 
   func testUnionPerformance() {
     measureBlock {
-        _ = self.orderedSet2.union(self.elements1)
+      autoreleasepool {
+        _ = self.orderedSet2.union(elements1)
+      }
     }
   }
   
   func testIntersectionPerformance() {
     measureBlock {
-        _ = self.orderedSet2.intersect(self.elements1)
+      autoreleasepool {
+        _ = self.orderedSet2.intersect(elements1)
+      }
     }
   }
 
   func testSubtractPerformance() {
     measureBlock {
-        _ = self.orderedSet2.subtract(self.elements1)
+      autoreleasepool {
+        _ = self.orderedSet2.subtract(elements1)
+      }
     }
   }
 
   func testXORPerformance() {
     measureBlock {
-        _ = self.orderedSet2.exclusiveOr(self.elements1)
+      autoreleasepool {
+        _ = self.orderedSet2.exclusiveOr(elements1)
+      }
     }
   }
 
   func testUnionInPlacePerformance() {
     measureBlock {
-        self.orderedSet2.unionInPlace(self.elements1)
+      autoreleasepool {
+        self.orderedSet2.unionInPlace(elements1)
+      }
     }
   }
   
   func testIntersectionInPlacePerformance() {
     measureBlock {
+      autoreleasepool {
         var orderedSet = self.orderedSet2
-        orderedSet.intersectInPlace(self.elements1)
+        orderedSet.intersectInPlace(elements1)
+      }
     }
   }
 
   func testSubtractInPlacePerformance() {
     measureBlock {
+      autoreleasepool {
         var orderedSet = self.orderedSet2
-        orderedSet.subtractInPlace(self.elements1)
+        orderedSet.subtractInPlace(elements1)
+      }
     }
   }
 
   func testXORInPlacePerformance() {
     measureBlock {
+      autoreleasepool {
         var orderedSet = self.orderedSet2
-       orderedSet.exclusiveOrInPlace(self.elements1)
+       orderedSet.exclusiveOrInPlace(elements1)
+      }
     }
   }
 
   func testOverallPerformance() {
     measureBlock {
+      autoreleasepool {
         var set = self.orderedSet1
-        for value in self.elements0 { set.insert(value) }
-        for value in self.elements1 { set.remove(value) }
-        set.unionInPlace(self.elements1)
-        set.subtractInPlace(self.elements0)
-        set.exclusiveOrInPlace(self.elements0)
-        set.intersectInPlace(self.elements1)
+        for value in elements0 { set.insert(value) }
+        for value in elements1 { set.remove(value) }
+        set.unionInPlace(elements1)
+        set.subtractInPlace(elements0)
+        set.exclusiveOrInPlace(elements0)
+        set.intersectInPlace(elements1)
+      }
     }
   }
 
   func testSubsetOfPerformance() {
     measureBlock {
+      autoreleasepool {
         let set = self.orderedSet2
-        for other in [self.elements0, self.elements1, self.elements2, self.elements3, self.elements4, self.elements5, self.elements6, self.elements7, self.elements8, self.elements9] {
+        for other in [elements0, elements1, elements2, elements3, elements4, elements5, elements6, elements7, elements8, elements9] {
           _ = set.isSubsetOf(other)
         }
+      }
     }
   }
 
   func testStrictSubsetOfPerformance() {
     measureBlock {
+      autoreleasepool {
         let set = self.orderedSet2
-        for other in [self.elements0, self.elements1, self.elements2, self.elements3, self.elements4, self.elements5, self.elements6, self.elements7, self.elements8, self.elements9] {
+        for other in [elements0, elements1, elements2, elements3, elements4, elements5, elements6, elements7, elements8, elements9] {
           _ = set.isStrictSubsetOf(other)
         }
+      }
     }
   }
 
   func testSupersetOfPerformance() {
     measureBlock {
+      autoreleasepool {
         let set = self.orderedSet2
-        let other = self.elements3
-        for range in self.ranges {
+        let other = elements3
+        for range in ranges {
           _ = set.isSupersetOf(other[range])
         }
+      }
     }
   }
 
   func testStrictSupersetOfPerformance() {
     measureBlock {
+      autoreleasepool {
         let set = self.orderedSet2
-        let other = self.elements3
-        for range in self.ranges {
+        let other = elements3
+        for range in ranges {
           _ = set.isStrictSupersetOf(other[range])
         }
+      }
     }
   }
 
   func testDisjointWithPerformance() {
     measureBlock {
+      autoreleasepool {
         let set = self.orderedSet2
-        let other = self.elements3
-        for range in self.ranges {
+        let other = elements3
+        for range in ranges {
           _ = set.isDisjointWith(other[range])
         }
+      }
     }
   }
 
+  func testNativeCreationPerformance() {
+    measureBlock {
+      autoreleasepool {
+      _ = Set(elements0)
+      _ = Set(elements1)
+      _ = Set(elements2)
+      _ = Set(elements3)
+      _ = Set(elements4)
+      _ = Set(elements5)
+      _ = Set(elements6)
+      _ = Set(elements7)
+      _ = Set(elements8)
+      _ = Set(elements9)
+      }
+    }
+  }
+
+  func testNativeInsertionPerformance() {
+    measureBlock {
+      autoreleasepool {
+      var set = self.nativeSet
+      for i in elements0 { set.insert(i) }
+      }
+    }
+  }
+
+  func testNativeDeletePerformance() {
+    measureBlock {
+      autoreleasepool {
+      var set = self.nativeSet2
+      for i in elements0 { set.remove(i) }
+      }
+    }
+  }
+
+  func testNativeUnionPerformance() {
+    measureBlock {
+      autoreleasepool {
+      _ = self.nativeSet2.union(elements1)
+      }
+    }
+  }
+
+  func testNativeIntersectionPerformance() {
+    measureBlock {
+      autoreleasepool {
+      _ = self.nativeSet2.intersect(elements1)
+      }
+    }
+  }
+
+  func testNativeSubtractPerformance() {
+    measureBlock {
+      autoreleasepool {
+      _ = self.nativeSet2.subtract(elements1)
+      }
+    }
+  }
+
+  func testNativeXORPerformance() {
+    measureBlock {
+      autoreleasepool {
+      _ = self.nativeSet2.exclusiveOr(elements1)
+      }
+    }
+  }
+
+  func testNativeUnionInPlacePerformance() {
+    measureBlock {
+      autoreleasepool {
+      self.nativeSet2.unionInPlace(elements1)
+      }
+    }
+  }
+
+  func testNativeIntersectionInPlacePerformance() {
+    measureBlock {
+      autoreleasepool {
+      var nativeSet = self.nativeSet2
+      nativeSet.intersectInPlace(elements1)
+      }
+    }
+  }
+
+  func testNativeSubtractInPlacePerformance() {
+    measureBlock {
+      autoreleasepool {
+      var nativeSet = self.nativeSet2
+      nativeSet.subtractInPlace(elements1)
+      }
+    }
+  }
+
+  func testNativeXORInPlacePerformance() {
+    measureBlock {
+      autoreleasepool {
+      var nativeSet = self.nativeSet2
+      nativeSet.exclusiveOrInPlace(elements1)
+      }
+    }
+  }
+
+  func testNativeOverallPerformance() {
+    measureBlock {
+      autoreleasepool {
+      var set = self.nativeSet
+      for value in elements0 { set.insert(value) }
+      for value in elements1 { set.remove(value) }
+      set.unionInPlace(elements1)
+      set.subtractInPlace(elements0)
+      set.exclusiveOrInPlace(elements0)
+      set.intersectInPlace(elements1)
+      }
+    }
+  }
+
+  func testNativeSubsetOfPerformance() {
+    measureBlock {
+      autoreleasepool {
+      let set = self.nativeSet2
+      for other in [elements0, elements1, elements2, elements3, elements4, elements5, elements6, elements7, elements8, elements9] {
+        _ = set.isSubsetOf(other)
+      }
+      }
+    }
+  }
+
+  func testNativeStrictSubsetOfPerformance() {
+    measureBlock {
+      autoreleasepool {
+      let set = self.nativeSet2
+      for other in [elements0, elements1, elements2, elements3, elements4, elements5, elements6, elements7, elements8, elements9] {
+        _ = set.isStrictSubsetOf(other)
+      }
+      }
+    }
+  }
+
+  func testNativeSupersetOfPerformance() {
+    measureBlock {
+      autoreleasepool {
+      let set = self.nativeSet2
+      let other = elements3
+      for range in ranges {
+        _ = set.isSupersetOf(other[range])
+      }
+      }
+    }
+  }
+
+  func testNativeStrictSupersetOfPerformance() {
+    measureBlock {
+      autoreleasepool {
+      let set = self.nativeSet2
+      let other = elements3
+      for range in ranges {
+        _ = set.isStrictSupersetOf(other[range])
+      }
+      }
+    }
+  }
+
+  func testNativeDisjointWithPerformance() {
+    measureBlock {
+      autoreleasepool {
+      let set = self.nativeSet2
+      let other = elements3
+      for range in ranges {
+        _ = set.isDisjointWith(other[range])
+      }
+      }
+    }
+  }
 
 }

@@ -10,6 +10,14 @@ import Foundation
 
 // MARK: - Supporting functions
 
+private func checkIndex<C:CollectionType>(collection: C, index: C.Index) {
+  precondition(collection.indices.contains(index), "index out of bounds '\(index)'")
+}
+
+private func checkRange<C:CollectionType>(collection: C, range: Range<C.Index>) {
+  precondition(collection.indices.contains(range), "range out of bounds '\(range)'")
+}
+
 /// Returns a copy of the `buffer` with room for `minimumCapacity` elements and offset by `buffer.startIndex`
 private func cloneBuffer<
   S:ConcreteHashedStorage
@@ -116,7 +124,6 @@ extension OrderedSet: SetType {
   /// Removes and returns `element` from the collection, returns `nil` if `element` was not contained.
   public mutating func remove(element: Element) -> Element? {
     guard let index = buffer.indexOf(element) else { return nil }
-    ensureUnique(&buffer)
     return buffer.removeAtIndex(index)
   }
 
@@ -216,33 +223,33 @@ extension OrderedSet: SetType {
   }
 
   /// Remove any members of this set that aren't also in `set`.
-  public mutating func intersectInPlace<S:SetType where S.Generator.Element == Element>(set: S) {
+  public mutating func intersectInPlace(set: OrderedSet<Element>) {
     var ranges = RangeMap<Int>()
-    if count < numericCast(set.count) {
+//    if count < numericCast(set.count) {
       for index in indices where !set.contains(self[index]) { ranges.insert(index) }
-    } else {
-      for index in set.flatMap({indexOf($0)}) { ranges.insert(index) }
-      ranges.invertInPlace(coverage: indices)
-    }
-    var removedCount = 0
+//    } else {
+//      for index in set.flatMap({indexOf($0)}) { ranges.insert(index) }
+//      guard !ranges.isEmpty else {
+//        print("ranges empty")
+//        return
+//      }
+//      ranges.invertInPlace(coverage: indices)
+//    }
+
+    ranges.reverseInPlace()
+//    var removedCount = 0
     for range in ranges {
-      let adjustedRange = range - removedCount
-      buffer.removeRange(adjustedRange)
-      removedCount = removedCount &+ adjustedRange.count
+//      let adjustedRange = range - removedCount
+//      guard indices.contains(adjustedRange) else { fatalError("wtf? adjustedRange = \(adjustedRange) and indices = \(indices)") }
+//      guard buffer.endIndex >= range.endIndex else { print("generated invalid range '\(range)'"); continue }
+      buffer.removeRange(range)
+//      removedCount = removedCount &+ adjustedRange.count
     }
   }
 
   /// Remove any members of this set that aren't also in a finite sequence.
   public mutating func intersectInPlace<S:SequenceType where S.Generator.Element == Element>(sequence: S) {
-    switch sequence {
-      case let other as OrderedSet<Element>:
-        intersectInPlace(other)
-      case let other as Set<Element>:
-        intersectInPlace(other)
-      default:
-        let other = Set(sequence)
-        intersectInPlace(other)
-    }
+    intersectInPlace(sequence as? OrderedSet<Element> ?? OrderedSet<Element>(sequence))
   }
 
   /// Return a new set with elements that are either in the set or a finite sequence but do not occur in both.
@@ -251,34 +258,6 @@ extension OrderedSet: SetType {
     var result = self
     result.exclusiveOrInPlace(sequence)
     return result
-  }
-
-  /// Modify collection to contain elements that are either in this set or `set` but do not occur in both.
-  public mutating func exclusiveOrInPlace(set: Set<Element>)
-  {
-    var ranges = RangeMap<Int>()
-    var otherRanges = RangeMap<Set<Element>.Index>()
-    for otherIndex in set.indices {
-      guard let index = indexOf(set[otherIndex]) else { continue }
-      ranges.insert(index)
-      otherRanges.insert(otherIndex)
-    }
-    otherRanges.invertInPlace(coverage: set.indices)
-    let removeCount = ranges.indexCount
-    let addCount = otherRanges.indexCount
-
-    guard removeCount > 0 || addCount > 0 else { return }
-
-    ensureUnique(&buffer, withCapacity: count + addCount - removeCount)
-
-    var removedCount = 0
-    for range in ranges {
-      let adjustedRange = range - removedCount
-      buffer.removeRange(adjustedRange)
-      removedCount = removedCount &+ adjustedRange.count
-    }
-
-    for range in otherRanges { buffer.appendContentsOf(set[range]) }
   }
 
   /// Modify collection to contain elements that are either in this set or `set` but do not occur in both.
@@ -312,15 +291,7 @@ extension OrderedSet: SetType {
   /// For each element of a finite sequence, remove it from the set if it is a common element, otherwise add it
   /// to the set. Repeated elements of the sequence will be ignored.
   public mutating func exclusiveOrInPlace<S:SequenceType where S.Generator.Element == Element>(sequence: S) {
-    switch sequence {
-      case let other as OrderedSet<Element>:
-        exclusiveOrInPlace(other)
-      case let other as Set<Element>:
-        exclusiveOrInPlace(other)
-      default:
-        let other = OrderedSet(sequence)
-        exclusiveOrInPlace(other)
-    }
+    exclusiveOrInPlace(sequence as? OrderedSet<Element> ?? OrderedSet<Element>(sequence))
   }
 }
 
@@ -359,6 +330,7 @@ extension OrderedSet: RangeReplaceableCollectionType {
   public mutating func replaceRange<C:CollectionType
     where C.Generator.Element == Element>(subRange: Range<Int>, with newElements: C)
   {
+    guard indices.contains(subRange) else { fatalError("invalid subRange '\(subRange)'") }
     guard subRange.count > 0 else { return }
 
     ensureUnique(&buffer, withCapacity: count - subRange.count + numericCast(newElements.count))
@@ -1035,7 +1007,7 @@ private struct HashBucketMap: CollectionType {
   /// - requires: `index ∋ startIndex..<endIndex`
   /// - postcondition: count = count - 1
   func removeBucketAt(index: Index) {
-    replaceRange(index ... index, with: EmptyCollection())
+    shiftPositionsFrom(index.successor(), by: -1)
   }
 
   subscript(bounds: Range<Index>) -> [HashBucket] {
@@ -1049,6 +1021,7 @@ private struct HashBucketMap: CollectionType {
     }
   }
 
+  /// Inserts `newElements` at `index`
   func insertContentsOf<
     C:CollectionType where C.Generator.Element == HashBucket
     >(newElements: C, at index: Int)
@@ -1059,27 +1032,93 @@ private struct HashBucketMap: CollectionType {
     shiftPositionsFrom(index, by: shiftAmount) // Adjusts `endIndex`
 
     (positions.baseAddress + index).initializeFrom(newElements.map { $0.offset })
-    for position in index ..< endIndex { buckets[positions[position]] = position }
+    for position in index ..< index + shiftAmount { buckets[positions[position]] = position }
 
   }
 
+  /// Moves bucket assignments for positions `from` to `endIndex` by `amount` and updates `endIndex`.
   func shiftPositionsFrom(from: Int, by amount: Int) {
     assert((0 ..< capacity).contains(from), "from invalid '\(from)'")
     assert((0 ..< capacity).contains(from + amount), "amount invalid '\(amount)'")
+
     let count = endIndex - from
-    let source = positions.baseAddress + from
-    let destination = source + amount
-    if amount < 0 {
-      destination.moveInitializeFrom(source, count: count)
-      (destination + count).initializeFrom(Repeat(count: abs(amount), repeatedValue: -1))
-    } else {
-      destination.moveInitializeBackwardFrom(source, count: count)
-      source.initializeFrom(Repeat(count: amount, repeatedValue: -1))
+
+    switch amount {
+      case -1 where count == 0:
+        let index = endIndex.predecessor()
+        let bucket = positions[index]
+        positions[index] = -1
+        buckets[bucket] = -1
+      case ..<0 /* where count > 0*/:
+        let source = positions.baseAddress + from
+        let destination = source + amount
+        for i in 0 ..< abs(amount) {
+          let bucket = (destination + i).memory
+          guard bucket > -1 else { continue }
+          buckets[bucket] = -1
+        }
+        destination.moveInitializeFrom(source, count: count)
+        (destination + count).initializeFrom(Repeat(count: abs(amount), repeatedValue: -1))
+        for i in 0 ..< count {
+          let bucket = (destination + i).memory
+          assert(bucket > -1)
+          let position = from &+ amount &+ i
+          buckets[bucket] = position
+        }
+      case 1..<:
+        let source = positions.baseAddress + from
+        let destination = source + amount
+        destination.moveInitializeBackwardFrom(source, count: count)
+        source.initializeFrom(Repeat(count: amount, repeatedValue: -1))
+        for i in 0 ..< count {
+          let bucket = (destination + i).memory
+          assert(bucket > -1)
+          let position = from &+ amount &+ i
+          buckets[bucket] = position
+        }
+
+      default: // 0
+        break // Nothing to do.
     }
+
     endIndex = endIndex &+ amount
-    for position in (from &+ amount) ..< endIndex {
-      buckets[positions[position]] = position
-    }
+
+//    if amount.isNegative {
+//      for i in 0 ..< abs(amount) {
+//        let bucket = (destination + i).memory
+//        guard bucket > -1 else { continue }
+//        buckets[bucket] = -1
+//      }
+//      destination.moveInitializeFrom(source, count: count)
+//      (destination + count).initializeFrom(Repeat(count: abs(amount), repeatedValue: -1))
+//      for i in 0 ..< count {
+//        let bucket = (destination + i).memory
+//        assert(bucket > -1)
+//        let position = from &+ amount &+ i
+//        buckets[bucket] = position
+//      }
+//    } else {
+//      destination.moveInitializeBackwardFrom(source, count: count)
+//      source.initializeFrom(Repeat(count: amount, repeatedValue: -1))
+//      for i in 0 ..< count {
+//        let bucket = (destination + i).memory
+//        assert(bucket > -1)
+//        let position = from &+ amount &+ i
+//        buckets[bucket] = position
+//      }
+//    }
+  }
+
+  /// Removes buckets assigned to positions in `subRange`
+  func removeRange(subRange: Range<Int>) {
+    assert((0 ..< endIndex).contains(subRange), "subRange invalid '\(subRange)'")
+    guard indices.contains(subRange) else { fatalError("subRange invalid '\(subRange)'") }
+
+//    print("subRange = \(subRange), capacity = \(capacity), endIndex = \(endIndex)")
+    guard subRange != indices else { removeAll(); return }
+    let amount = -subRange.count
+    let from = subRange.endIndex
+    shiftPositionsFrom(from, by: amount)
   }
 
   /// Replaces buckets assigned to positions in `subRange` with `newElements`
@@ -1094,41 +1133,20 @@ private struct HashBucketMap: CollectionType {
   {
     assert((0 ..< capacity).contains(subRange), "subRange invalid '\(subRange)'")
 
-    let removeCount = subRange.count
-    let insertCount = numericCast(newElements.count) as Int
-
+    let 𝝙count = numericCast(newElements.count) - subRange.count
     // Replace n values where n = max(subRange.count, newElements.count)
     for (index, bucket) in zip(subRange, newElements) {
       replaceBucketAt(index, with: bucket)
     }
 
-    switch insertCount - removeCount {
-      case 0:
-        // Nothing more to do
-        break
+    guard 𝝙count != 0 else { return }
 
-      case let delta where delta < 0:
-        // Empty remaining positions in `subRange`
-
-        let lastReplacedSuccessor = subRange.endIndex.advancedBy(delta)
-        for index in lastReplacedSuccessor ..< subRange.endIndex {
-          let oldBucketOffset = positions[index]
-          guard oldBucketOffset > -1 else { continue }
-          positions[index] = -1
-          let oldPosition = buckets[oldBucketOffset]
-          guard oldPosition == index else { continue }
-          buckets[oldBucketOffset] = -1
-        }
-
-        guard subRange.endIndex < endIndex else { endIndex = lastReplacedSuccessor; return }
-        shiftPositionsFrom(subRange.endIndex, by: delta)
-
-      default: /* case let delta where delta > 0 */
-        // Insert remaining values
-
-        insertContentsOf(newElements.dropFirst(removeCount), at: subRange.endIndex)
-
+    if 𝝙count < 0 {
+      removeRange(subRange.endIndex.advancedBy(𝝙count) ..< subRange.endIndex)
+    } else {
+      insertContentsOf(newElements.dropFirst(subRange.count), at: subRange.endIndex)
     }
+
   }
 
 }
@@ -1583,11 +1601,6 @@ private struct HashedStorageBuffer<Storage: HashedStorage where Storage:Concrete
     fatalError("failed to locate hole")
   }
 
-//  func destroyAtOffset(offset: Int) {
-//    (hashedKeys + offset).destroy()
-//    if !keyIsValue { (hashedValues + offset).destroy() }
-//  }
-
   /// Initializes a fresh bucket with `element` at `position` unless `element` is a duplicate.
   /// Returns `true` if a bucket was initialized and `false` otherwise.
   func initializeElement(element: Element, at position: Int) -> Bool {
@@ -1746,25 +1759,11 @@ extension HashedStorageBuffer: RangeReplaceableCollectionType {
     self = buffer
   }
 
-//  init<C:CollectionType where C.Generator.Element == Element>(elements: C) {
-//    let minimumCapacity = Buffer.minimumCapacityForCount(numericCast(elements.count))
-//    self.init(minimumCapacity: minimumCapacity, offsetBy: 0)
-//    appendContentsOf(elements)
-
-    //    var buffer = Buffer(minimumCapacity: minimumCapacity, offsetBy: 0)
-//    buffer.appendContentsOf(elements)
-//    self = buffer
-//  }
-
   /// Creates a collection instance that contains `elements`.
   init<S:SequenceType where S.Generator.Element == Element>(elements: S) {
     let minimumCapacity = Buffer.minimumCapacityForCount(elements.underestimateCount())
     self.init(minimumCapacity: minimumCapacity, offsetBy: 0)
     appendContentsOf(elements)
-
-//    var buffer = Buffer(minimumCapacity: minimumCapacity, offsetBy: 0)
-//    buffer.appendContentsOf(elements)
-//    self = buffer
   }
 
   /// Append `x` to `self`.
@@ -1889,7 +1888,8 @@ extension HashedStorageBuffer: RangeReplaceableCollectionType {
         buckets.forEach { storage.destroyAtOffset($0.offset) }
         zip(buckets, idealBuckets).forEach { patchHole($0, idealBucket: $1) }
 
-        bucketMap.replaceRange(offsetPosition(subRange), with: EmptyCollection())
+        bucketMap.removeRange(offsetPosition(subRange))
+//        bucketMap.replaceRange(offsetPosition(subRange), with: EmptyCollection())
         storage.count = storage.count &- delta
         endIndex = endIndex &- delta
     }

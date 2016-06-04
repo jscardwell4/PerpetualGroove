@@ -263,8 +263,6 @@
 		C2421D1A1BEFE8DE009BA8B1 /* Bytes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2421D191BEFE8DE009BA8B1 /* Bytes.swift */; };
 		C24416331ACB16F8007EDEFE /* Set+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24416321ACB16F8007EDEFE /* Set+MoonKitAdditions.swift */; };
 		C2457E831CEFC06A00B4B4B8 /* HashedStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2457E821CEFC06A00B4B4B8 /* HashedStorage.swift */; };
-		C24684201CA451F800CB61EE /* NativeSetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C246841F1CA451F800CB61EE /* NativeSetTests.swift */; };
-		C24684221CA451F800CB61EE /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2358F1619C78D6D00920F8D /* MoonKit.framework */; };
 		C246961B1C6BD3E100120DAF /* SortedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = C246961A1C6BD3E100120DAF /* SortedArray.swift */; };
 		C24A22811ADAEC010065E7EA /* ArrayJSONValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24A22801ADAEC000065E7EA /* ArrayJSONValue.swift */; };
 		C24A22831ADAEC0F0065E7EA /* ObjectJSONValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24A22821ADAEC0F0065E7EA /* ObjectJSONValue.swift */; };
@@ -460,8 +458,6 @@
 		C2CF986A1B0FD12900E32E41 /* PopoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CF98691B0FD12900E32E41 /* PopoverView.swift */; };
 		C2D1375D1CFE090B00EE3863 /* RangeMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D1375C1CFE090B00EE3863 /* RangeMapTests.swift */; };
 		C2D1375F1CFE090B00EE3863 /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2358F1619C78D6D00920F8D /* MoonKit.framework */; };
-		C2D1376E1CFE55A500EE3863 /* NativeSetPerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D1376D1CFE55A500EE3863 /* NativeSetPerformanceTests.swift */; };
-		C2D137701CFE55A500EE3863 /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2358F1619C78D6D00920F8D /* MoonKit.framework */; };
 		C2D406761BBA0F6700681DEF /* NSURL+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D406751BBA0F6700681DEF /* NSURL+MoonKitAdditions.swift */; };
 		C2D5F2421B97BC93005040EF /* Slider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D5F2411B97BC93005040EF /* Slider.swift */; };
 		C2D664F11B88CC6F00D70FFA /* Ratio.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D664F01B88CC6F00D70FFA /* Ratio.swift */; };
@@ -510,13 +506,6 @@
 			remoteGlobalIDString = C2358F1519C78D6D00920F8D;
 			remoteInfo = MoonKit;
 		};
-		C24684231CA451F800CB61EE /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C2CE884618138C4900555D63 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = C2358F1519C78D6D00920F8D;
-			remoteInfo = MoonKit;
-		};
 		C2A70E471ACD8EBA009C2CF7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C2CE884618138C4900555D63 /* Project object */;
@@ -532,13 +521,6 @@
 			remoteInfo = MoonKit;
 		};
 		C2D137601CFE090B00EE3863 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C2CE884618138C4900555D63 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = C2358F1519C78D6D00920F8D;
-			remoteInfo = MoonKit;
-		};
-		C2D137711CFE55A500EE3863 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C2CE884618138C4900555D63 /* Project object */;
 			proxyType = 1;
@@ -683,9 +665,6 @@
 		C2456BE319C39C8A007162F3 /* NSIndexPath+MSKitAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSIndexPath+MSKitAdditions.h"; sourceTree = "<group>"; };
 		C2456BE419C39C8A007162F3 /* NSIndexPath+MSKitAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSIndexPath+MSKitAdditions.m"; sourceTree = "<group>"; };
 		C2457E821CEFC06A00B4B4B8 /* HashedStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HashedStorage.swift; sourceTree = "<group>"; };
-		C246841D1CA451F800CB61EE /* NativeSetTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NativeSetTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		C246841F1CA451F800CB61EE /* NativeSetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeSetTests.swift; sourceTree = "<group>"; };
-		C24684211CA451F800CB61EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C24696191C6A3CD800120DAF /* IntervalMap.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = IntervalMap.playground; path = Moonkit/IntervalMap.playground; sourceTree = "<group>"; };
 		C246961A1C6BD3E100120DAF /* SortedArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SortedArray.swift; sourceTree = "<group>"; };
 		C24A22801ADAEC000065E7EA /* ArrayJSONValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayJSONValue.swift; sourceTree = "<group>"; };
@@ -1005,9 +984,6 @@
 		C2D1375A1CFE090A00EE3863 /* RangeMapTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RangeMapTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2D1375C1CFE090B00EE3863 /* RangeMapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RangeMapTests.swift; sourceTree = "<group>"; };
 		C2D1375E1CFE090B00EE3863 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C2D1376B1CFE55A400EE3863 /* NativeSetPerformanceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NativeSetPerformanceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		C2D1376D1CFE55A500EE3863 /* NativeSetPerformanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeSetPerformanceTests.swift; sourceTree = "<group>"; };
-		C2D1376F1CFE55A500EE3863 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C2D406751BBA0F6700681DEF /* NSURL+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURL+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C2D5F2411B97BC93005040EF /* Slider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Slider.swift; sourceTree = "<group>"; };
 		C2D664F01B88CC6F00D70FFA /* Ratio.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Ratio.swift; sourceTree = "<group>"; };
@@ -1089,14 +1065,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C246841A1CA451F800CB61EE /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				C24684221CA451F800CB61EE /* MoonKit.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		C256F07A1ABDFFE5005B7CB3 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1142,14 +1110,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				C2D1375F1CFE090B00EE3863 /* MoonKit.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C2D137681CFE55A400EE3863 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				C2D137701CFE55A500EE3863 /* MoonKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1362,15 +1322,6 @@
 				C2416E371C88B62E00734CA1 /* Info.plist */,
 			);
 			path = WeakArrayTests;
-			sourceTree = "<group>";
-		};
-		C246841E1CA451F800CB61EE /* NativeSetTests */ = {
-			isa = PBXGroup;
-			children = (
-				C246841F1CA451F800CB61EE /* NativeSetTests.swift */,
-				C24684211CA451F800CB61EE /* Info.plist */,
-			);
-			path = NativeSetTests;
 			sourceTree = "<group>";
 		};
 		C256F07F1ABDFFE5005B7CB3 /* MoonKitOSX */ = {
@@ -1659,11 +1610,9 @@
 				C2416E341C88B62E00734CA1 /* WeakArrayTests */,
 				C2C65BBD1C970F39000645ED /* OrderedSetTests */,
 				C2E55D0F1C9E4287004E7CB1 /* BitMapTests */,
-				C246841E1CA451F800CB61EE /* NativeSetTests */,
 				C2736FE31CC116AD00E861A2 /* MoonKitTest */,
 				C21C3B731CF8B032000D537A /* GenerateTestData */,
 				C2D1375B1CFE090B00EE3863 /* RangeMapTests */,
-				C2D1376C1CFE55A500EE3863 /* NativeSetPerformanceTests */,
 				C2CE885018138C4900555D63 /* Frameworks */,
 				C2CE884F18138C4900555D63 /* Products */,
 			);
@@ -1681,11 +1630,9 @@
 				C2416E331C88B62E00734CA1 /* WeakArrayTests.xctest */,
 				C2C65BBC1C970F38000645ED /* OrderedSetTests.xctest */,
 				C2E55D0E1C9E4286004E7CB1 /* BitMapTests.xctest */,
-				C246841D1CA451F800CB61EE /* NativeSetTests.xctest */,
 				C2736FE21CC116AD00E861A2 /* MoonKitTest.framework */,
 				C21C3B721CF8B032000D537A /* GenerateTestData */,
 				C2D1375A1CFE090A00EE3863 /* RangeMapTests.xctest */,
-				C2D1376B1CFE55A400EE3863 /* NativeSetPerformanceTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1997,15 +1944,6 @@
 			path = RangeMapTests;
 			sourceTree = "<group>";
 		};
-		C2D1376C1CFE55A500EE3863 /* NativeSetPerformanceTests */ = {
-			isa = PBXGroup;
-			children = (
-				C2D1376D1CFE55A500EE3863 /* NativeSetPerformanceTests.swift */,
-				C2D1376F1CFE55A500EE3863 /* Info.plist */,
-			);
-			path = NativeSetPerformanceTests;
-			sourceTree = "<group>";
-		};
 		C2E55D0F1C9E4287004E7CB1 /* BitMapTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -2245,24 +2183,6 @@
 			productReference = C2416E331C88B62E00734CA1 /* WeakArrayTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		C246841C1CA451F800CB61EE /* NativeSetTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = C24684251CA451F800CB61EE /* Build configuration list for PBXNativeTarget "NativeSetTests" */;
-			buildPhases = (
-				C24684191CA451F800CB61EE /* Sources */,
-				C246841A1CA451F800CB61EE /* Frameworks */,
-				C246841B1CA451F800CB61EE /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				C24684241CA451F800CB61EE /* PBXTargetDependency */,
-			);
-			name = NativeSetTests;
-			productName = NativeSetTests;
-			productReference = C246841D1CA451F800CB61EE /* NativeSetTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 		C256F07D1ABDFFE5005B7CB3 /* MoonKitOSX */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C256F0951ABDFFE5005B7CB3 /* Build configuration list for PBXNativeTarget "MoonKitOSX" */;
@@ -2373,24 +2293,6 @@
 			productReference = C2D1375A1CFE090A00EE3863 /* RangeMapTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		C2D1376A1CFE55A400EE3863 /* NativeSetPerformanceTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = C2D137731CFE55A500EE3863 /* Build configuration list for PBXNativeTarget "NativeSetPerformanceTests" */;
-			buildPhases = (
-				C2D137671CFE55A400EE3863 /* Sources */,
-				C2D137681CFE55A400EE3863 /* Frameworks */,
-				C2D137691CFE55A400EE3863 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				C2D137721CFE55A500EE3863 /* PBXTargetDependency */,
-			);
-			name = NativeSetPerformanceTests;
-			productName = NativeSetPerformanceTests;
-			productReference = C2D1376B1CFE55A400EE3863 /* NativeSetPerformanceTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 		C2E55D0D1C9E4286004E7CB1 /* BitMapTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C2E55D1A1C9E4287004E7CB1 /* Build configuration list for PBXNativeTarget "BitMapTests" */;
@@ -2451,9 +2353,6 @@
 					C2416E321C88B62E00734CA1 = {
 						CreatedOnToolsVersion = 7.3;
 					};
-					C246841C1CA451F800CB61EE = {
-						CreatedOnToolsVersion = 7.3;
-					};
 					C256F07D1ABDFFE5005B7CB3 = {
 						CreatedOnToolsVersion = 6.3;
 					};
@@ -2467,9 +2366,6 @@
 						CreatedOnToolsVersion = 7.3;
 					};
 					C2D137591CFE090A00EE3863 = {
-						CreatedOnToolsVersion = 7.3.1;
-					};
-					C2D1376A1CFE55A400EE3863 = {
 						CreatedOnToolsVersion = 7.3.1;
 					};
 					C2E55D0D1C9E4286004E7CB1 = {
@@ -2502,11 +2398,9 @@
 				C2416E321C88B62E00734CA1 /* WeakArrayTests */,
 				C2C65BBB1C970F38000645ED /* OrderedSetTests */,
 				C2E55D0D1C9E4286004E7CB1 /* BitMapTests */,
-				C246841C1CA451F800CB61EE /* NativeSetTests */,
 				C2736FE11CC116AD00E861A2 /* MoonKitTest */,
 				C21C3B711CF8B032000D537A /* GenerateTestData */,
 				C2D137591CFE090A00EE3863 /* RangeMapTests */,
-				C2D1376A1CFE55A400EE3863 /* NativeSetPerformanceTests */,
 			);
 		};
 /* End PBXProject section */
@@ -2532,13 +2426,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		C2416E311C88B62E00734CA1 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C246841B1CA451F800CB61EE /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2622,13 +2509,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		C2D137581CFE090A00EE3863 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C2D137691CFE55A400EE3863 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2981,14 +2861,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C24684191CA451F800CB61EE /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				C24684201CA451F800CB61EE /* NativeSetTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		C256F0791ABDFFE5005B7CB3 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -3090,14 +2962,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C2D137671CFE55A400EE3863 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				C2D1376E1CFE55A500EE3863 /* NativeSetPerformanceTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		C2E55D0A1C9E4286004E7CB1 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -3128,11 +2992,6 @@
 			target = C2358F1519C78D6D00920F8D /* MoonKit */;
 			targetProxy = C2416E391C88B62E00734CA1 /* PBXContainerItemProxy */;
 		};
-		C24684241CA451F800CB61EE /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = C2358F1519C78D6D00920F8D /* MoonKit */;
-			targetProxy = C24684231CA451F800CB61EE /* PBXContainerItemProxy */;
-		};
 		C2A70E481ACD8EBA009C2CF7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = C2358F1519C78D6D00920F8D /* MoonKit */;
@@ -3147,11 +3006,6 @@
 			isa = PBXTargetDependency;
 			target = C2358F1519C78D6D00920F8D /* MoonKit */;
 			targetProxy = C2D137601CFE090B00EE3863 /* PBXContainerItemProxy */;
-		};
-		C2D137721CFE55A500EE3863 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = C2358F1519C78D6D00920F8D /* MoonKit */;
-			targetProxy = C2D137711CFE55A500EE3863 /* PBXContainerItemProxy */;
 		};
 		C2E55D151C9E4287004E7CB1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -3724,180 +3578,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.WeakArrayTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
-		C24684261CA451F800CB61EE /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = NativeSetTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MTL_ENABLE_DEBUG_INFO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.NativeSetTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-			};
-			name = Debug;
-		};
-		C24684271CA451F800CB61EE /* Debug-Verbose */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = NativeSetTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MTL_ENABLE_DEBUG_INFO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.NativeSetTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-			};
-			name = "Debug-Verbose";
-		};
-		C24684281CA451F800CB61EE /* Profile */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = NativeSetTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.NativeSetTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Profile;
-		};
-		C24684291CA451F800CB61EE /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = NativeSetTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.NativeSetTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -5390,180 +5070,6 @@
 			};
 			name = Release;
 		};
-		C2D137741CFE55A500EE3863 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = NativeSetPerformanceTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MTL_ENABLE_DEBUG_INFO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.NativeSetPerformanceTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-			};
-			name = Debug;
-		};
-		C2D137751CFE55A500EE3863 /* Debug-Verbose */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = NativeSetPerformanceTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MTL_ENABLE_DEBUG_INFO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.NativeSetPerformanceTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-			};
-			name = "Debug-Verbose";
-		};
-		C2D137761CFE55A500EE3863 /* Profile */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = NativeSetPerformanceTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.NativeSetPerformanceTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Profile;
-		};
-		C2D137771CFE55A500EE3863 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = NativeSetPerformanceTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.NativeSetPerformanceTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
 		C2E55D161C9E4287004E7CB1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -5961,17 +5467,6 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		C24684251CA451F800CB61EE /* Build configuration list for PBXNativeTarget "NativeSetTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				C24684261CA451F800CB61EE /* Debug */,
-				C24684271CA451F800CB61EE /* Debug-Verbose */,
-				C24684281CA451F800CB61EE /* Profile */,
-				C24684291CA451F800CB61EE /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
-		};
 		C256F0951ABDFFE5005B7CB3 /* Build configuration list for PBXNativeTarget "MoonKitOSX" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -6045,17 +5540,6 @@
 				C2D137641CFE090B00EE3863 /* Debug-Verbose */,
 				C2D137651CFE090B00EE3863 /* Profile */,
 				C2D137661CFE090B00EE3863 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
-		};
-		C2D137731CFE55A500EE3863 /* Build configuration list for PBXNativeTarget "NativeSetPerformanceTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				C2D137741CFE55A500EE3863 /* Debug */,
-				C2D137751CFE55A500EE3863 /* Debug-Verbose */,
-				C2D137761CFE55A500EE3863 /* Profile */,
-				C2D137771CFE55A500EE3863 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

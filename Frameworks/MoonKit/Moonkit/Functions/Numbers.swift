@@ -8,6 +8,10 @@
 
 import Foundation
 
+public extension SignedIntegerType {
+  public var isNegative: Bool { return self < 0 }
+}
+
 public protocol NumberType {}
 
 public let π = CGFloat(M_PI)

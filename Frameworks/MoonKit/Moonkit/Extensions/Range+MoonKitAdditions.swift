@@ -49,7 +49,7 @@ public prefix func ..<<I:Comparable>(rhs: I) -> OpenIntervalEnd<I>
 { return OpenIntervalEnd(end: rhs) }
 
 public func ~=<I:Comparable>(lhs: OpenIntervalStart<I>, rhs: I) -> Bool {
-  return rhs > lhs.start
+  return rhs >= lhs.start
 }
 
 public func ~=<I:Comparable>(lhs: OpenIntervalEnd<I>, rhs: I) -> Bool {

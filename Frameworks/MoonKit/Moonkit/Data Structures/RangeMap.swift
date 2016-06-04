@@ -240,6 +240,16 @@ public struct RangeMap<RangeIndex:ForwardIndexType>: CollectionType {
 
   }
 
+  public func reverse() -> RangeMap<RangeIndex> {
+    var result = self
+    result.reverseInPlace()
+    return result
+  }
+
+  public mutating func reverseInPlace() {
+    ranges = ContiguousArray(ranges.reverse())
+  }
+
   public var startIndex: Int { return ranges.startIndex }
   public var endIndex: Int { return ranges.endIndex }
 
