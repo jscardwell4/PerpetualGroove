@@ -276,20 +276,6 @@
 		C24A22991ADB4C1E0065E7EA /* FunctionManipulation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24A22981ADB4C1E0065E7EA /* FunctionManipulation.swift */; };
 		C24D19EA19EDAE1500CC3CD9 /* InlinePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24D19E919EDAE1500CC3CD9 /* InlinePickerView.swift */; };
 		C24E0EB91AC6141B0044248E /* Bool+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24E0EB81AC6141B0044248E /* Bool+MoonKitAdditions.swift */; };
-		C24E8F321CF8CB480033AE64 /* TestDataLarge1.plist in Resources */ = {isa = PBXBuildFile; fileRef = C24E8F241CF8CB480033AE64 /* TestDataLarge1.plist */; };
-		C24E8F331CF8CB480033AE64 /* TestDataLarge2.plist in Resources */ = {isa = PBXBuildFile; fileRef = C24E8F251CF8CB480033AE64 /* TestDataLarge2.plist */; };
-		C24E8F341CF8CB480033AE64 /* TestDataMedium1.plist in Resources */ = {isa = PBXBuildFile; fileRef = C24E8F261CF8CB480033AE64 /* TestDataMedium1.plist */; };
-		C24E8F351CF8CB480033AE64 /* TestDataMedium2.plist in Resources */ = {isa = PBXBuildFile; fileRef = C24E8F271CF8CB480033AE64 /* TestDataMedium2.plist */; };
-		C24E8F361CF8CB480033AE64 /* TestDataSmall1.plist in Resources */ = {isa = PBXBuildFile; fileRef = C24E8F281CF8CB480033AE64 /* TestDataSmall1.plist */; };
-		C24E8F371CF8CB480033AE64 /* TestDataSmall2.plist in Resources */ = {isa = PBXBuildFile; fileRef = C24E8F291CF8CB480033AE64 /* TestDataSmall2.plist */; };
-		C24E8F381CF8CB480033AE64 /* TestDataXLarge1.plist in Resources */ = {isa = PBXBuildFile; fileRef = C24E8F2A1CF8CB480033AE64 /* TestDataXLarge1.plist */; };
-		C24E8F391CF8CB480033AE64 /* TestDataXLarge2.plist in Resources */ = {isa = PBXBuildFile; fileRef = C24E8F2B1CF8CB480033AE64 /* TestDataXLarge2.plist */; };
-		C24E8F3A1CF8CB480033AE64 /* TestDataXSmall1.plist in Resources */ = {isa = PBXBuildFile; fileRef = C24E8F2C1CF8CB480033AE64 /* TestDataXSmall1.plist */; };
-		C24E8F3B1CF8CB480033AE64 /* TestDataXSmall2.plist in Resources */ = {isa = PBXBuildFile; fileRef = C24E8F2D1CF8CB480033AE64 /* TestDataXSmall2.plist */; };
-		C24E8F3C1CF8CB480033AE64 /* TestDataXXLarge1.plist in Resources */ = {isa = PBXBuildFile; fileRef = C24E8F2E1CF8CB480033AE64 /* TestDataXXLarge1.plist */; };
-		C24E8F3D1CF8CB480033AE64 /* TestDataXXLarge2.plist in Resources */ = {isa = PBXBuildFile; fileRef = C24E8F2F1CF8CB480033AE64 /* TestDataXXLarge2.plist */; };
-		C24E8F3E1CF8CB480033AE64 /* TestDataXXSmall1.plist in Resources */ = {isa = PBXBuildFile; fileRef = C24E8F301CF8CB480033AE64 /* TestDataXXSmall1.plist */; };
-		C24E8F3F1CF8CB480033AE64 /* TestDataXXSmall2.plist in Resources */ = {isa = PBXBuildFile; fileRef = C24E8F311CF8CB480033AE64 /* TestDataXXSmall2.plist */; };
 		C2507BDB1C1601E900941C14 /* TapGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2507BDA1C1601E900941C14 /* TapGesture.swift */; };
 		C2562D0C1C64F9150086789D /* WeakArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2562D0B1C64F9150086789D /* WeakArray.swift */; };
 		C256F0831ABDFFE5005B7CB3 /* MoonKitOSX.h in Headers */ = {isa = PBXBuildFile; fileRef = C256F0821ABDFFE5005B7CB3 /* MoonKitOSX.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -492,13 +478,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		C21C3B7B1CF8B69F000D537A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C2CE884618138C4900555D63 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = C21C3B711CF8B032000D537A;
-			remoteInfo = GenerateTestData;
-		};
 		C2416E391C88B62E00734CA1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C2CE884618138C4900555D63 /* Project object */;
@@ -2205,16 +2184,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C2736FE71CC116AD00E861A2 /* Build configuration list for PBXNativeTarget "MoonKitTest" */;
 			buildPhases = (
-				C21C3B6D1CF8ABC8000D537A /* ShellScript */,
 				C2736FDD1CC116AD00E861A2 /* Sources */,
 				C2736FDE1CC116AD00E861A2 /* Frameworks */,
 				C2736FDF1CC116AD00E861A2 /* Headers */,
-				C2736FE01CC116AD00E861A2 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				C21C3B7C1CF8B69F000D537A /* PBXTargetDependency */,
 			);
 			name = MoonKitTest;
 			productName = MoonKitTest;
@@ -2439,27 +2415,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C2736FE01CC116AD00E861A2 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				C24E8F3A1CF8CB480033AE64 /* TestDataXSmall1.plist in Resources */,
-				C24E8F3C1CF8CB480033AE64 /* TestDataXXLarge1.plist in Resources */,
-				C24E8F381CF8CB480033AE64 /* TestDataXLarge1.plist in Resources */,
-				C24E8F351CF8CB480033AE64 /* TestDataMedium2.plist in Resources */,
-				C24E8F371CF8CB480033AE64 /* TestDataSmall2.plist in Resources */,
-				C24E8F3F1CF8CB480033AE64 /* TestDataXXSmall2.plist in Resources */,
-				C24E8F3B1CF8CB480033AE64 /* TestDataXSmall2.plist in Resources */,
-				C24E8F321CF8CB480033AE64 /* TestDataLarge1.plist in Resources */,
-				C24E8F3D1CF8CB480033AE64 /* TestDataXXLarge2.plist in Resources */,
-				C24E8F331CF8CB480033AE64 /* TestDataLarge2.plist in Resources */,
-				C24E8F3E1CF8CB480033AE64 /* TestDataXXSmall1.plist in Resources */,
-				C24E8F341CF8CB480033AE64 /* TestDataMedium1.plist in Resources */,
-				C24E8F391CF8CB480033AE64 /* TestDataXLarge2.plist in Resources */,
-				C24E8F361CF8CB480033AE64 /* TestDataSmall1.plist in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		C285D81D1AC44D3500C527F6 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2530,37 +2485,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		C21C3B6D1CF8ABC8000D537A /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-				"$(SRCROOT)/MoonKitTest/TestDataXXSmall1.plist",
-				"$(SRCROOT)/MoonKitTest/TestDataXXSmall2.plist",
-				"$(SRCROOT)/MoonKitTest/TestDataXSmall1.plist",
-				"$(SRCROOT)/MoonKitTest/TestDataXSmall2.plist",
-				"$(SRCROOT)/MoonKitTest/TestDataSmall1.plist",
-				"$(SRCROOT)/MoonKitTest/TestDataSmall2.plist",
-				"$(SRCROOT)/MoonKitTest/TestDataMedium1.plist",
-				"$(SRCROOT)/MoonKitTest/TestDataMedium2.plist",
-				"$(SRCROOT)/MoonKitTest/TestDataLarge1.plist",
-				"$(SRCROOT)/MoonKitTest/TestDataLarge2.plist",
-				"$(SRCROOT)/MoonKitTest/TestDataXLarge1.plist",
-				"$(SRCROOT)/MoonKitTest/TestDataXLarge2.plist",
-				"$(SRCROOT)/MoonKitTest/TestDataXXLarge1.plist",
-				"$(SRCROOT)/MoonKitTest/TestDataXXLarge2.plist",
-				"$(SRCROOT)/MoonKitTest/TestDataGenerated.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "GENERATE=$(find \"${BUILD_ROOT}\" -name \"GenerateTestData\" -print0)\n$GENERATE 100 > \"${SCRIPT_OUTPUT_FILE_0}\"\n$GENERATE 100 > \"${SCRIPT_OUTPUT_FILE_1}\"\n$GENERATE 250 > \"${SCRIPT_OUTPUT_FILE_2}\"\n$GENERATE 250 > \"${SCRIPT_OUTPUT_FILE_3}\"\n$GENERATE 500 > \"${SCRIPT_OUTPUT_FILE_4}\"\n$GENERATE 500 > \"${SCRIPT_OUTPUT_FILE_5}\"\n$GENERATE 10000 > \"${SCRIPT_OUTPUT_FILE_6}\"\n$GENERATE 10000 > \"${SCRIPT_OUTPUT_FILE_7}\"\n$GENERATE 50000 > \"${SCRIPT_OUTPUT_FILE_8}\"\n$GENERATE 50000 > \"${SCRIPT_OUTPUT_FILE_9}\"\n$GENERATE 100000 > \"${SCRIPT_OUTPUT_FILE_10}\"\n$GENERATE 100000 > \"${SCRIPT_OUTPUT_FILE_11}\"\n$GENERATE 200000 > \"${SCRIPT_OUTPUT_FILE_12}\"\n$GENERATE 200000 > \"${SCRIPT_OUTPUT_FILE_13}\"\ndate > \"${SCRIPT_OUTPUT_FILE_14}\"";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		C21C3B6E1CF8B032000D537A /* Sources */ = {
@@ -2982,11 +2906,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		C21C3B7C1CF8B69F000D537A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = C21C3B711CF8B032000D537A /* GenerateTestData */;
-			targetProxy = C21C3B7B1CF8B69F000D537A /* PBXContainerItemProxy */;
-		};
 		C2416E3A1C88B62E00734CA1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = C2358F1519C78D6D00920F8D /* MoonKit */;
@@ -4026,10 +3945,15 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
+				OTHER_LDFLAGS = (
+					"-weak_framework",
+					XCTest,
+					"-weak-lswiftXCTest",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.MoonKitTest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -4086,10 +4010,15 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
+				OTHER_LDFLAGS = (
+					"-weak_framework",
+					XCTest,
+					"-weak-lswiftXCTest",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.MoonKitTest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -4141,9 +4070,15 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = (
+					"-weak_framework",
+					XCTest,
+					"-weak-lswiftXCTest",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.MoonKitTest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -4196,9 +4131,15 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = (
+					"-weak_framework",
+					XCTest,
+					"-weak-lswiftXCTest",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.MoonKitTest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";

@@ -91,6 +91,12 @@
             </BuildableReference>
             <SkippedTests>
                <Test
+                  Identifier = "NativeSetPerformanceTests">
+               </Test>
+               <Test
+                  Identifier = "OrderedSetPerformanceTests">
+               </Test>
+               <Test
                   Identifier = "OrderedSetTests/testDeletePerformance()">
                </Test>
                <Test

@@ -165,9 +165,11 @@ final class OrderedSetBehaviorTests: XCTestCase {
     guard expect(orderedSet1).to(equal([3, 1])) else { return }
     orderedSet1.removeFirst()
     guard expect(orderedSet1).to(equal([1])) else { return }
-    orderedSet1.appendContentsOf([2, 3, 4, 5, 6])
-    guard expect(orderedSet1).to(equal([1, 2, 3, 4, 5, 6])) else { return }
+    orderedSet1.appendContentsOf([2, 3, 4, 5, 6, 7, 8, 9, 10])
+    guard expect(orderedSet1).to(equal([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])) else { return }
     orderedSet1.removeFirst(2)
+    guard expect(orderedSet1).to(equal([3, 4, 5, 6, 7, 8, 9, 10])) else { return }
+    orderedSet1.removeLast(4)
     guard expect(orderedSet1).to(equal([3, 4, 5, 6])) else { return }
     orderedSet1.removeRange(1 ..< 3)
     guard expect(orderedSet1).to(equal([3, 6])) else { return }
@@ -189,9 +191,11 @@ final class OrderedSetBehaviorTests: XCTestCase {
     guard expect(orderedSet2).to(equal(["three", "one"])) else { return }
     orderedSet2.removeFirst()
     guard expect(orderedSet2).to(equal(["one"])) else { return }
-    orderedSet2.appendContentsOf(["two", "three", "four", "five", "six"])
-    guard expect(orderedSet2).to(equal(["one", "two", "three", "four", "five", "six"])) else { return }
+    orderedSet2.appendContentsOf(["two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"])
+    guard expect(orderedSet2).to(equal(["one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"])) else { return }
     orderedSet2.removeFirst(2)
+    guard expect(orderedSet2).to(equal(["three", "four", "five", "six", "seven", "eight", "nine", "ten"])) else { return }
+    orderedSet2.removeLast(4)
     guard expect(orderedSet2).to(equal(["three", "four", "five", "six"])) else { return }
     orderedSet2.removeRange(1 ..< 3)
     guard expect(orderedSet2).to(equal(["three", "six"])) else { return }
@@ -263,10 +267,16 @@ final class OrderedSetBehaviorTests: XCTestCase {
   }
 
   func testDisjointWith() {
-    let orderedSet: OrderedSet<Int> = [1, 2, 3]
-    expect(orderedSet).toNot(beDisjointWith([1, 4, 5] as Array<Int>))
-    expect(orderedSet).to(beDisjointWith([4, 5] as Array<Int>))
-    expect(orderedSet).toNot(beDisjointWith([1, 2, 3, 4, 5] as Array<Int>))
+    let orderedSet1: OrderedSet<Int> = [1, 2, 3]
+    expect(orderedSet1).toNot(beDisjointWith([1, 4, 5] as Array<Int>))
+    expect(orderedSet1).to(beDisjointWith([4, 5] as Array<Int>))
+    expect(orderedSet1).toNot(beDisjointWith([1, 2, 3, 4, 5] as Array<Int>))
+
+    let evens = evenNumbers(range: 0 ..< 500)
+    let odds = oddNumbers(range: 0 ..< 500)
+    let orderedSet2 = OrderedSet(evens)
+    expect(orderedSet2).to(beDisjointWith(odds))
+    expect(orderedSet2).toNot(beDisjointWith(evens))
   }
 
   func testUnion() {

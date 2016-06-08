@@ -40,48 +40,71 @@ public extension CollectionType {
   public subscript(i: SubSequenceIndex<Index>) -> SubSequence { return self[i.start ..< i.start.advancedBy(i.length)] }
 
   /**
-  first:
+   first:
 
-  - parameter predicate: (Self.Generator.Element) throws -> Bool
-  */
+   - parameter predicate: (Self.Generator.Element) throws -> Bool
+   */
   public func first(@noescape predicate: (Self.Generator.Element) throws -> Bool) rethrows -> Self.Generator.Element? {
-    guard let idx = try indexOf(predicate) else { return nil }
-    return self[idx]
+    for element in self {
+      guard !(try predicate(element)) else { return element }
+    }
+    return nil
+  }
+
+  public func randomElements(count: Int) -> [Self.Generator.Element] {
+
+    var result: [Self.Generator.Element] = []
+    var indexes = Array(indices)
+
+    for _ in 0 ..< min(numericCast(self.count), count) {
+      let index = Int(arc4random_uniform(numericCast(indexes.count)))
+      let lastIndex = indexes.endIndex.predecessor()
+
+      result.append(self[indexes[index]])
+
+      if index != lastIndex { swap(&indexes[index], &indexes[lastIndex]) }
+
+      indexes.removeLast()
+    }
+
+    return result
   }
 
 }
 
 
-/**
-spliced:newElements:atIndex:
 
-- parameter x: C
-- parameter newElements: S
-- parameter i: C.Index
-
-- returns: C
-*/
-public func spliced<C : RangeReplaceableCollectionType, S : CollectionType
-  where C.Generator.Element == S.Generator.Element>(x: C, newElements: S, atIndex i: C.Index) -> C
-{
-  var xPrime = x
-  xPrime.insertContentsOf(newElements, at: i)
-  return xPrime
-}
 
 /**
-removedAtIndex:index:
+ spliced:newElements:atIndex:
 
-- parameter x: C
-- parameter index: C.Index
+ - parameter x: C
+ - parameter newElements: S
+ - parameter i: C.Index
 
-- returns: C
-*/
-public func removedAtIndex<C : RangeReplaceableCollectionType>(x: C, index: C.Index) -> C {
-  var xPrime = x
-  xPrime.removeAtIndex(index)
-  return xPrime
-}
+ - returns: C
+ */
+//public func spliced<C:RangeReplaceableCollectionType, S:CollectionType
+//  where C.Generator.Element == S.Generator.Element>(x: C, newElements: S, atIndex i: C.Index) -> C
+//{
+//  var xPrime = x
+//  xPrime.insertContentsOf(newElements, at: i)
+//  return xPrime
+//}
+
+/**
+ removedAtIndex:index:
+
+ - parameter x: C
+ - parameter index: C.Index
+
+ - returns: C
+ */
+//public func removedAtIndex<C : RangeReplaceableCollectionType>(x: C, index: C.Index) -> C {
+//  var xPrime = x
+//  xPrime.removeAtIndex(index)
+//  return xPrime
+//}
 
 public func valuesForKey<C: KeyValueCollectionType, K:Hashable, V where C.Key == K>(key: K, container: C) -> [V] {
   let containers: [C] = flattened(container)
@@ -98,7 +121,7 @@ public func valuesForKey<C: KeyValueCollectionType, K:Hashable, V where C.Key ==
  - returns: C.Index?
 
  - requires: The collection to search is already sorted
-*/
+ */
 public func binarySearch<C:CollectionType
   where C.Generator.Element: Comparable,
   C.Index:BidirectionalIndexType,
@@ -133,7 +156,7 @@ public func binarySearch<C:CollectionType
  - parameter isOrderedBefore: (Element) -> Bool
  - parameter predicate: (Element) -> Bool
 
-  - returns: C.Index?
+ - returns: C.Index?
 
  - requires: The collection to search is already sorted
  */
@@ -195,6 +218,6 @@ public func binaryInsertion<C:CollectionType
     }
     return collection.endIndex
   }
-
+  
   return searchSlice(collection[collection.indices])
 }
