@@ -987,6 +987,7 @@
 		C2EEBA081B06BFD10041B1B1 /* NotificationReceptionist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationReceptionist.swift; sourceTree = "<group>"; };
 		C2EEBA2B1B0961CE0041B1B1 /* Fields.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = Fields.playground; path = Moonkit/Fields.playground; sourceTree = "<group>"; };
 		C2EF05B01B87FFA500AE68F1 /* Fraction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fraction.swift; sourceTree = "<group>"; };
+		C2EF5B1C1D09A6C500FF51F6 /* PropertyList.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = PropertyList.playground; sourceTree = "<group>"; };
 		C2F01E1A1A02E080007F6966 /* MSColorInputView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MSColorInputView.xib; sourceTree = "<group>"; };
 		C2F01E331A03EDD9007F6966 /* ToggleImageBarButtonItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToggleImageBarButtonItem.swift; sourceTree = "<group>"; };
 		C2F094441A32A83A00681AB3 /* DrawingKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingKit.swift; sourceTree = "<group>"; };
@@ -1566,6 +1567,7 @@
 		C2CE884518138C4900555D63 = {
 			isa = PBXGroup;
 			children = (
+				C2EF5B1C1D09A6C500FF51F6 /* PropertyList.playground */,
 				C208359C1C80E73600D4A10E /* WTFWTF.playground */,
 				C208359B1C80E6FD00D4A10E /* WTF.playground */,
 				C24AF3DD1C7B644F00C55223 /* OrderedDictionary.playground */,
