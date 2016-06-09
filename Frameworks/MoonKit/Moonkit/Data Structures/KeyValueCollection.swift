@@ -21,6 +21,8 @@ public protocol KeyValueCollection: CollectionType {
 
   var keys: LazyMapCollection<Self, Key> { get }
   var values: LazyMapCollection<Self, Value> { get }
+
+  init<S:SequenceType where S.Generator.Element == Self.Generator.Element>(_ elements: S)
 }
 
 extension KeyValueCollection where Self.Generator.Element == (Key, Value) {
@@ -53,7 +55,7 @@ extension KeyValueCollection where Self.Generator.Element == (Key, Value) {
 
 }
 
-public protocol MutableKeyValueCollection: KeyValueCollection, MutableCollectionType {
+public protocol MutableKeyValueCollection: KeyValueCollection {
   subscript(key: Key) -> Value? { get set }
 
   mutating func insertValue(value: Value, forKey key: Key)
@@ -64,3 +66,11 @@ public protocol MutableKeyValueCollection: KeyValueCollection, MutableCollection
   mutating func updateValue(value: Value, forKey key: Key) -> Value?
 }
 
+extension Dictionary: MutableKeyValueCollection {
+  public mutating func insertValue(value: Value, forKey key: Key) {
+    self[key] = value
+  }
+  public func valueForKey(key: Key) -> Value? {
+    return self[key]
+  }
+}

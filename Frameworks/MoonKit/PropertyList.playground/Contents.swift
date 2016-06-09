@@ -34,23 +34,23 @@ enum PropertyListTag: String {
     case .plist:
       return ~/"\\s*<plist\\s+version\\s*=\\s*\"[0-9.]+\"\\s*>((?:.|\\s)*)</plist>\\s*$"
     case .dict:
-      return ~/"\\s*<dict>((?:.|\\s)*)</dict>"
+      return ~/"\\s*<dict>((?:.|\\s)*)</dict>\\s*"
     case .key:
-      return ~/"\\s*<key>((?:.|\\s)*)</key>"
+      return ~/"\\s*<key>((?:.|\\s)*)</key>\\s*"
     case .integer:
-      return ~/"\\s*<integer>((?:.|\\s)*)</integer>"
+      return ~/"\\s*<integer>((?:.|\\s)*)</integer>\\s*"
     case .string:
-      return ~/"\\s*<string>((?:.|\\s)*)</string>"
+      return ~/"\\s*<string>((?:.|\\s)*)</string>\\s*"
     case .array:
-      return ~/"\\s*<array>((?:.|\\s)*)</array>"
+      return ~/"\\s*<array>((?:.|\\s)*)</array>\\s*"
     case .real:
-      return ~/"\\s*<real>((?:.|\\s)*)</real>"
+      return ~/"\\s*<real>((?:.|\\s)*)</real>\\s*"
     case .`true`:
-      return ~/"\\s*<true\\s*/>"
+      return ~/"\\s*<true\\s*/>\\s*"
     case .`false`:
-      return ~/"\\s*<false\\s*/>"
+      return ~/"\\s*<false\\s*/>\\s*"
     case .null:
-      return ~/"\\s*<null\\s*/>"
+      return ~/"\\s*<null\\s*/>\\s*"
     }
   }
 
@@ -68,22 +68,150 @@ enum PropertyListValue {
 
 func parseTag(tag: PropertyListTag, input: String) -> (match: Bool, tagContent: String?, remainingInput: String?) {
   guard let match = tag.regex.match(input).first else { return (false, nil, input) }
-  let tagContent = match[1]?.string
-  let remainingInput = String(input.utf16[match.range.endIndex..<])
-  print("tagContent: \(tagContent)\nremainingInput: \(remainingInput)")
-  return (true, tagContent, remainingInput)
+  return (true, match[1]?.string, String(input.utf16[match.range.endIndex..<]))
 }
 
+enum PropertyListPrimitive {
+  case String (Swift.String)
+  case Int (Swift.Int)
+  case Double (Swift.Double)
+  case Bool (Swift.Bool)
+  case None
+}
+
+func parsePrimitive(input: String) -> (match: Bool, primitive: PropertyListPrimitive, remainingInput: String?) {
+  print("\n\n\(#function)  input = '\(input)'")
+
+  var (match, tagContent, remainingInput) = parseTag(.string, input: input)
+  guard !match else {
+    guard let stringContent = tagContent else {
+      // Throw error
+      fatalError("invalid string tag")
+    }
+    return (true, PropertyListPrimitive.String(stringContent), remainingInput)
+  }
+  (match, tagContent, remainingInput) = parseTag(.integer, input: input)
+  guard !match else {
+    guard let integerContent = tagContent, integer = Int(integerContent) else {
+      // Throw error
+      fatalError("invalid integer tag")
+    }
+    return (true, PropertyListPrimitive.Int(integer), remainingInput)
+  }
+  (match, tagContent, remainingInput) = parseTag(.real, input: input)
+  guard !match else {
+    guard let realContent = tagContent, real = Double(realContent) else {
+      // Throw error
+      fatalError("invalid integer tag")
+    }
+    return (true, PropertyListPrimitive.Double(real), remainingInput)
+  }
+
+  (match, tagContent, remainingInput) = parseTag(.`true`, input: input)
+  guard !match else {
+    return (true, PropertyListPrimitive.Bool(true), remainingInput)
+  }
+
+  (match, tagContent, remainingInput) = parseTag(.`false`, input: input)
+  guard !match else {
+    return (true, PropertyListPrimitive.Bool(false), remainingInput)
+  }
+
+  return (false, PropertyListPrimitive.None, input)
+}
+
+func parseValue(input: String) -> (match: Bool, value: PropertyListValue, remainingInput: String?) {
+  print("\n\n\(#function)  input = '\(input)'")
+
+  let primitiveParse = parsePrimitive(input)
+  guard !primitiveParse.match else {
+    switch primitiveParse.primitive {
+      case .String(let s): return (true, .String(s),  primitiveParse.remainingInput)
+      case .Int(let i):    return (true, .Integer(i), primitiveParse.remainingInput)
+      case .Double(let d): return (true, .Real(d),    primitiveParse.remainingInput)
+      case .Bool(let b):   return (true, .Boolean(b), primitiveParse.remainingInput)
+      case .None:          return (true, .Null,       primitiveParse.remainingInput)
+    }
+  }
+
+  let arrayParse = parseTag(.array, input: input)
+  guard !arrayParse.match else {
+    guard let arrayContent = arrayParse.tagContent else {
+      // Throw error
+      fatalError("invalid array tag")
+    }
+    let array = parseArrayContent(arrayContent)
+    return (true, .Array(array), arrayParse.remainingInput)
+  }
+
+  let dictParse = parseTag(.dict, input: input)
+  guard dictParse.match else {
+    // Throw error
+    fatalError("failed to match primitive, array or dict inside array content")
+  }
+  guard let dictContent = dictParse.tagContent else {
+    // Throw error
+    fatalError("invalid dict tag")
+  }
+  let dict = parseDictContent(dictContent)
+  return (true, .Dictionary(dict), dictParse.remainingInput)
+}
+
+func parseArrayContent(input: String) -> [PropertyListValue] {
+  print("\n\n\(#function)  input = '\(input)'")
+
+  var result: [PropertyListValue] = []
+
+  var remainingInput: String? = input
+  while let currentInput = remainingInput {
+    let (match, value, remainingInputʹ) = parseValue(currentInput)
+    guard match else {
+      // Throw error
+      fatalError("failed to parse value where a value is expected")
+    }
+
+    result.append(value)
+    remainingInput = remainingInputʹ
+  }
+
+  return result
+}
+
+func parseDictContent(input: String) -> [String:PropertyListValue] {
+  print("\n\n\(#function)  input = '\(input)'")
+
+  var result: [String:PropertyListValue] = [:]
+
+  var remainingInput: String? = input
+  while let currentInput = remainingInput {
+    print("\n\ncurrentInput = '\(currentInput)'")
+    let keyParse = parseTag(.key, input: currentInput)
+    guard keyParse.match, let key = keyParse.tagContent, remainingInputʹ = keyParse.remainingInput else {
+      // Throw error
+      fatalError("invalid key tag or key tag without a matching value")
+    }
+    let (match, value, remainingInputʺ) = parseValue(remainingInputʹ)
+    guard match else {
+      // Throw error 
+      fatalError("failed to parse value where value is expected")
+    }
+    result[key] = value
+    remainingInput = remainingInputʺ
+  }
+
+  return result
+}
 
 func parsePropertyList(list: String) -> PropertyListValue {
+  print("\n\n\(#function)  list = '\(list)'")
+
   var (match, tagContent, remainingInput) = parseTag(.xml, input: list)
-  return .Null
+
   guard match && remainingInput != nil else {
     // Throw error
     return .Null
   }
-  print(remainingInput)
-  return .Null
+
   (match, tagContent, remainingInput) = parseTag(.DOCTYPE, input: remainingInput!)
   guard match && remainingInput != nil else {
     // Throw error
@@ -96,12 +224,28 @@ func parsePropertyList(list: String) -> PropertyListValue {
     return .Null
   }
 
-  print(plistContent)
+  (match, tagContent, remainingInput) = parseTag(.dict, input: plistContent)
+  guard match, let dictContent = tagContent else {
+    (match, tagContent, remainingInput) = parseTag(.array, input: plistContent)
+    guard match, let arrayContent = tagContent else {
+      // Throw error
+      return .Null
+    }
 
-  return .Null
+//    print("arrayContent: \(arrayContent)")
+
+    let array = parseArrayContent(arrayContent)
+    return .Array(array)
+  }
+
+//  print(dictContent)
+  let dict = parseDictContent(dictContent)
+  return .Dictionary(dict)
 }
 
-parsePropertyList(rawPropertyList)
+let parsedObject = parsePropertyList(rawPropertyList)
+print("parsedObject = \(parsedObject)")
+
 /*
  
 <?xml version="1.0" encoding="UTF-8"?>

@@ -11,6 +11,8 @@ import Foundation
 //import SpriteKit
 import Swift
 
+public protocol PrettyPrint { var prettyDescription: String { get } }
+
 public protocol Valued {
   associatedtype ValueType
   var value: ValueType { get }

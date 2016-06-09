@@ -210,14 +210,31 @@ public final class MoonKitTest {
 
 }
 
-// MARK: - Functions for measuring performance
-public func randomIntegers(count count: Int, range: Range<Int>) -> [Int] {
+public func evenNumbers(range range: Range<Int>) -> [Int] {
+  return range.startIndex % 2 == 0
+    ? Array(range.startIndex.stride(to: range.endIndex, by: 2))
+    : Array(range.startIndex.successor().stride(to: range.endIndex, by: 2))
+}
+
+public func oddNumbers(range range: Range<Int>) -> [Int] {
+  return range.startIndex % 2 == 1
+    ? Array(range.startIndex.stride(to: range.endIndex, by: 2))
+    : Array(range.startIndex.successor().stride(to: range.endIndex, by: 2))
+}
+
+private func _randomIntegers(count count: Int, range: Range<Int>) -> [Int] {
   func randomInt() -> Int { return Int(arc4random()) % range.count + range.startIndex }
   var result = Array<Int>(minimumCapacity: count)
   for _ in 0 ..< count { result.append(randomInt()) }
   return result
 }
 
+/// Returns an array of `count` randomly generated integers within `range`. Integers generated with `arc4random`.
+public func randomIntegers(count count: Int, range: Range<Int>) -> [Int] {
+  return _randomIntegers(count: count, range: range)
+}
+
+/// Returns an array of `count` randomly generated integers within `range`. Integers generated with `random` after seeding with `seed`.
 public func srandomIntegers(seed seed: UInt32, count: Int, range: Range<Int>) -> [Int] {
   srandom(seed)
   func randomInt() -> Int { return random() % range.count + range.startIndex }
@@ -226,7 +243,11 @@ public func srandomIntegers(seed seed: UInt32, count: Int, range: Range<Int>) ->
   return result
 }
 
-private func _randomRange(indices indices: Range<Int>, limit: Int, coverage: Double, @noescape random: () -> Int) -> Range<Int> {
+private func _randomRange(indices indices: Range<Int>,
+                                  limit: Int,
+                                  coverage: Double,
+                                  @noescape random: () -> Int) -> Range<Int>
+{
   let count = indices.count
   guard count > 0 else { return indices }
 
@@ -240,24 +261,24 @@ private func _randomRange(indices indices: Range<Int>, limit: Int, coverage: Dou
   return start ..< end
 }
 
-public func randomRange(count count: Int, coverage: Double, limit: Int = 0) -> Range<Int> {
-  return randomRange(indices: 0 ..< count, coverage: coverage, limit: limit)
-}
-
 public func randomRange(indices indices: Range<Int>, coverage: Double, limit: Int = 0) -> Range<Int> {
   return _randomRange(indices: indices, limit: limit, coverage: coverage) { Int(arc4random()) }
 }
 
-public func srandomRange(seed seed: UInt32? = nil, count: Int, coverage: Double, limit: Int = 0) -> Range<Int> {
-  return srandomRange(seed: seed, indices: 0 ..< count, coverage: coverage, limit: limit)
-}
-
-public func srandomRange(seed seed: UInt32? = nil, indices: Range<Int>, coverage: Double, limit: Int = 0) -> Range<Int> {
+public func srandomRange(seed seed: UInt32? = nil,
+                              indices: Range<Int>,
+                              coverage: Double,
+                              limit: Int = 0) -> Range<Int>
+{
   if let seed = seed { srandom(seed) }
   return _randomRange(indices: indices, limit: limit, coverage: coverage) { random() }
 }
 
-public func randomRanges(count count: Int, indices: Range<Int>, coverage: Double, limit: Int = 0) -> [Range<Int>] {
+public func randomRanges(count count: Int,
+                               indices: Range<Int>,
+                               coverage: Double,
+                               limit: Int = 0) -> [Range<Int>]
+{
   var result: [Range<Int>] = []
   for _ in 0 ..< count { 
     result.append(randomRange(indices: indices, coverage: coverage, limit: limit))
@@ -265,33 +286,17 @@ public func randomRanges(count count: Int, indices: Range<Int>, coverage: Double
   return result
 }
 
-public func srandomRanges(seed seed: UInt32?, count: Int, indices: Range<Int>, coverage: Double, limit: Int = 0) -> [Range<Int>] {
+public func srandomRanges(seed seed: UInt32?,
+                               count: Int,
+                               indices: Range<Int>,
+                               coverage: Double, limit: Int = 0) -> [Range<Int>]
+{
   var result: [Range<Int>] = []
   if let seed = seed { srandom(seed) }
   for _ in 0 ..< count { 
     result.append(srandomRange(indices: indices, coverage: coverage, limit: limit))
   }
   return result
-}
-
-public func performWithIntegers<Target>(@noescape target target: ([Int]) -> Target, execute: (Target, [Int]) -> Void) -> () -> Void
-{
-  return perform(dataSet1: {MoonKitTest.randomIntegersLarge1}, dataSet2: {MoonKitTest.randomIntegersLarge2}, target: target, execute: execute)
-}
-
-public func perform<Target, Data>(
-  @noescape dataSet1 dataSet1: () -> [Data],
-  @noescape dataSet2: () -> [Data],
-  @noescape target: ([Data]) -> Target,
-  execute: (Target, [Data]) -> Void
-  ) -> () -> Void
-{
-  let data1 = dataSet1()
-  let data2 = dataSet2()
-  let target = target(data1)
-  return {
-    autoreleasepool { execute(target, data2) }
-  }
 }
 
 // MARK: - Extending Nimble

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>FormatVersion</key>
+	<string>1.2</string>
+	<key>RunDestination</key>
+	<dict>
+		<key>LocalComputer</key>
+		<dict>
+			<key>BusSpeedInMHz</key>
+			<integer>100</integer>
+			<key>CPUCount</key>
+			<integer>1</integer>
+			<key>CPUKind</key>
+			<string>6-Core Intel Xeon E5</string>
+			<key>CPUSpeedInMHz</key>
+			<integer>3500</integer>
+			<key>Identifier</key>
+			<string>974468EE-4797-5E93-A3F1-44A8AB8160C6</string>
+			<key>IsConcreteDevice</key>
+			<true/>
+			<key>LogicalCPUCoresPerPackage</key>
+			<integer>12</integer>
+			<key>ModelCode</key>
+			<string>MacPro6,1</string>
+			<key>ModelName</key>
+			<string>Mac Pro</string>
+			<key>ModelUTI</key>
+			<string>com.apple.macpro-cylinder</string>
+			<key>Name</key>
+			<string>My Mac</string>
+			<key>NativeArchitecture</key>
+			<string>x86_64</string>
+			<key>OperatingSystemVersion</key>
+			<string>10.11.5</string>
+			<key>OperatingSystemVersionWithBuildNumber</key>
+			<string>10.11.5 (15F34)</string>
+			<key>PhysicalCPUCoresPerPackage</key>
+			<integer>6</integer>
+			<key>Platform</key>
+			<dict>
+				<key>Identifier</key>
+				<string>com.apple.platform.macosx</string>
+				<key>Name</key>
+				<string>OS X</string>
+			</dict>
+			<key>RAMSizeInMegabytes</key>
+			<integer>65536</integer>
+		</dict>
+		<key>Name</key>
+		<string>iPad Pro</string>
+		<key>TargetArchitecture</key>
+		<string>x86_64</string>
+		<key>TargetDevice</key>
+		<dict>
+			<key>Identifier</key>
+			<string>5B6A7BC2-F668-48F5-89D1-34AA8AB8B273</string>
+			<key>IsConcreteDevice</key>
+			<true/>
+			<key>ModelCode</key>
+			<string>iPad6,8</string>
+			<key>ModelName</key>
+			<string>iPad Pro</string>
+			<key>ModelUTI</key>
+			<string>com.apple.ipad-pro-a1652-b4b5b9</string>
+			<key>Name</key>
+			<string>iPad Pro</string>
+			<key>NativeArchitecture</key>
+			<string>x86_64</string>
+			<key>OperatingSystemVersion</key>
+			<string>9.3</string>
+			<key>OperatingSystemVersionWithBuildNumber</key>
+			<string>9.3 (13E230)</string>
+			<key>Platform</key>
+			<dict>
+				<key>Identifier</key>
+				<string>com.apple.platform.iphonesimulator</string>
+				<key>Name</key>
+				<string>iOS Simulator</string>
+			</dict>
+		</dict>
+		<key>TargetSDK</key>
+		<dict>
+			<key>Identifier</key>
+			<string>iphonesimulator9.3</string>
+			<key>IsInternal</key>
+			<false/>
+			<key>Name</key>
+			<string>Simulator - iOS 9.3</string>
+			<key>OperatingSystemVersion</key>
+			<string>9.3</string>
+		</dict>
+	</dict>
+	<key>TestableSummaries</key>
+	<array>
+		<dict>
+			<key>ProjectPath</key>
+			<string>PerpetualGroove/Frameworks/MoonKit/MoonKit.xcodeproj</string>
+			<key>TargetName</key>
+			<string>OrderedSetTests</string>
+			<key>TestName</key>
+			<string>OrderedSetTests</string>
+			<key>TestObjectClass</key>
+			<string>IDESchemeActionTestableSummary</string>
+			<key>Tests</key>
+			<array>
+				<dict>
+					<key>Subtests</key>
+					<array>
+						<dict>
+							<key>Subtests</key>
+							<array>
+								<dict>
+									<key>PerformanceMetrics</key>
+									<array>
+										<dict>
+											<key>Identifier</key>
+											<string>com.apple.XCTPerformanceMetric_WallClockTime</string>
+											<key>MaxPercentRegression</key>
+											<integer>10</integer>
+											<key>MaxPercentRelativeStandardDeviation</key>
+											<integer>10</integer>
+											<key>MaxRegression</key>
+											<real>0.10000000000000001</real>
+											<key>MaxStandardDeviation</key>
+											<real>0.10000000000000001</real>
+											<key>Measurements</key>
+											<array>
+												<real>0.02954704</real>
+												<real>0.025137389</real>
+												<real>0.024262669000000001</real>
+												<real>0.025354077999999999</real>
+												<real>0.024655447</real>
+												<real>0.023999907000000001</real>
+												<real>0.023915647000000002</real>
+												<real>0.023807793000000001</real>
+												<real>0.023515736999999998</real>
+												<real>0.022941776000000001</real>
+											</array>
+											<key>Name</key>
+											<string>Time</string>
+											<key>UnitOfMeasurement</key>
+											<string>seconds</string>
+										</dict>
+									</array>
+									<key>TestIdentifier</key>
+									<string>OrderedSetPerformanceTests/testReplaceRangePerformance()</string>
+									<key>TestName</key>
+									<string>testReplaceRangePerformance()</string>
+									<key>TestObjectClass</key>
+									<string>IDESchemeActionTestSummary</string>
+									<key>TestStatus</key>
+									<string>Success</string>
+									<key>TestSummaryGUID</key>
+									<string>54DF2F94-C54E-4D54-87E6-315540AC38F7</string>
+								</dict>
+							</array>
+							<key>TestIdentifier</key>
+							<string>OrderedSetPerformanceTests</string>
+							<key>TestName</key>
+							<string>OrderedSetPerformanceTests</string>
+							<key>TestObjectClass</key>
+							<string>IDESchemeActionTestSummaryGroup</string>
+						</dict>
+					</array>
+					<key>TestIdentifier</key>
+					<string>Selected tests</string>
+					<key>TestName</key>
+					<string>Selected tests</string>
+					<key>TestObjectClass</key>
+					<string>IDESchemeActionTestSummaryGroup</string>
+				</dict>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>

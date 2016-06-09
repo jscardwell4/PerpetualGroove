@@ -8,6 +8,21 @@
 
 import Foundation
 
+extension UInt8: PrettyPrint { public var prettyDescription: String { return description } }
+extension Int8: PrettyPrint { public var prettyDescription: String { return description } }
+extension UInt16: PrettyPrint { public var prettyDescription: String { return description } }
+extension Int16: PrettyPrint { public var prettyDescription: String { return description } }
+extension UInt32: PrettyPrint { public var prettyDescription: String { return description } }
+extension Int32: PrettyPrint { public var prettyDescription: String { return description } }
+extension UInt64: PrettyPrint { public var prettyDescription: String { return description } }
+extension Int64: PrettyPrint { public var prettyDescription: String { return description } }
+extension UInt: PrettyPrint { public var prettyDescription: String { return description } }
+extension Int: PrettyPrint { public var prettyDescription: String { return description } }
+extension Float: PrettyPrint { public var prettyDescription: String { return description } }
+extension Double: PrettyPrint { public var prettyDescription: String { return description } }
+extension CGFloat: PrettyPrint { public var prettyDescription: String { return description } }
+
+
 public extension SignedIntegerType {
   public var isNegative: Bool { return self < 0 }
 }

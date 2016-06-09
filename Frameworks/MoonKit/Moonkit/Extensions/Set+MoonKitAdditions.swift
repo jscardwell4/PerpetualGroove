@@ -125,6 +125,12 @@ public func ⚭<S:SequenceType, Element:Hashable
 //  return Set(Array(source).filter(includeElement))
 //}
 
+extension Set: PrettyPrint {
+  public var prettyDescription: String {
+    return Array(self).prettyDescription
+  }
+}
+
 extension Set: SetType {
   // Can't actually do anything here without knowledge of the set's current capacity
   public mutating func reserveCapacity(capacity: Int) { }

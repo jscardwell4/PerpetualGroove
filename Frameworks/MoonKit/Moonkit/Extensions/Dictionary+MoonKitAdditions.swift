@@ -52,28 +52,28 @@ values:
 //  return values
 //}
 
+extension NSDictionary: PrettyPrint {
+
+  public var prettyDescription: String { return (self as Dictionary<NSObject, AnyObject>).prettyDescription }
+
+}
+
+extension Dictionary: PrettyPrint {
+
+  public var prettyDescription: String {
+    guard count > 0 else { return "[:]" }
 
 
-public extension Dictionary {
-
-  /**
-  formattedDescription:
-
-  - parameter indent: Int = 0
-
-  - returns: String
-  */
-  public func formattedDescription(indent indent: Int = 0) -> String {
 
     var components: [String] = []
 
-    let keyDescriptions = keys.map { "\($0)" }
+    let keyDescriptions = keys.map { ($0 as? PrettyPrint)?.prettyDescription ?? "\($0)" }
     let maxKeyLength = keyDescriptions.reduce(0) { max($0, $1.characters.count) }
-    let indentation = " " * (indent * 4)
+    let indentation = " "
     for (key, value) in zip(keyDescriptions, values) {
       let keyString = "\(indentation)\(key): "//\(spacer)"
       var valueString: String
-      var valueComponents = "\n".split("\(value)")
+      var valueComponents = "\n".split((value as? PrettyPrint)?.prettyDescription ?? "\(value)")
       if valueComponents.count > 0 {
         valueString = valueComponents.removeAtIndex(0)
         if valueComponents.count > 0 {
@@ -84,15 +84,51 @@ public extension Dictionary {
       } else { valueString = "nil" }
       components += ["\(keyString)\(valueString)"]
     }
-    return "\n".join(components)
+    return "[\n\t" + "\n\t".join(components) + "\n]"
+
   }
+
+}
+
+public extension Dictionary {
+
+  /**
+  formattedDescription:
+
+  - parameter indent: Int = 0
+
+  - returns: String
+  */
+//  public func formattedDescription(indent indent: Int = 0) -> String {
+//
+//    var components: [String] = []
+//
+//    let keyDescriptions = keys.map { "\($0)" }
+//    let maxKeyLength = keyDescriptions.reduce(0) { max($0, $1.characters.count) }
+//    let indentation = " " * (indent * 4)
+//    for (key, value) in zip(keyDescriptions, values) {
+//      let keyString = "\(indentation)\(key): "//\(spacer)"
+//      var valueString: String
+//      var valueComponents = "\n".split("\(value)")
+//      if valueComponents.count > 0 {
+//        valueString = valueComponents.removeAtIndex(0)
+//        if valueComponents.count > 0 {
+//          let spacer = "\t" * (Int(floor(Double((maxKeyLength+1))/4.0)) - 1)
+//          let subIndentString = "\n\(indentation)\(spacer)"
+//          valueString += subIndentString + subIndentString.join(valueComponents)
+//        }
+//      } else { valueString = "nil" }
+//      components += ["\(keyString)\(valueString)"]
+//    }
+//    return "\n".join(components)
+//  }
 
   /**
   init:
 
   - parameter elements: [(Key, Value)]
   */
-  public init(_ elements: [(Key,Value)]) {
+  public init<S:SequenceType where S.Generator.Element == Generator.Element>(_ elements: S) {
     self = [Key:Value]()
     for (k, v) in elements { self[k] = v }
   }

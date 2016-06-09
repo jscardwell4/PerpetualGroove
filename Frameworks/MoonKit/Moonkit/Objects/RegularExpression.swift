@@ -47,7 +47,7 @@ public struct RegularExpression {
       return capture
     }
 
-    public subscript(idx: Int) -> Capture? { return captures[idx] }
+    public subscript(idx: Int) -> Capture? { return captures.indices.contains(idx) ? captures[idx] : nil }
 
     public var description: String { return "{\n\t" + "\n\t".join(compressed(captures).map { $0.description }) + "\n}" }
 

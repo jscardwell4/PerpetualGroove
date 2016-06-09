@@ -8,6 +8,10 @@
 
 import Foundation
 
+extension Bool: PrettyPrint {
+  public var prettyDescription: String { return self ? "True" : "False" }
+}
+
 extension Bool {
   public init(_ string: String?) {
     if string != nil {

@@ -8,6 +8,10 @@
 
 import Foundation
 
+extension String: PrettyPrint {
+  public var prettyDescription: String { return self }
+}
+
 // MARK: - StringValueConvertible
 extension String: StringValueConvertible {
   public var stringValue: String { return self }

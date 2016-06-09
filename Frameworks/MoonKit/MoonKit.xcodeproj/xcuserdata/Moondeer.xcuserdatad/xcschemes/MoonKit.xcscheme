@@ -67,6 +67,12 @@
             </BuildableReference>
             <SkippedTests>
                <Test
+                  Identifier = "NativeDictionaryPerformanceTests">
+               </Test>
+               <Test
+                  Identifier = "OrderedDictionaryPerformanceTests">
+               </Test>
+               <Test
                   Identifier = "OrderedDictionaryTests/testInsertValueForKeyPerformance()">
                </Test>
                <Test

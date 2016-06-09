@@ -8,6 +8,31 @@
 
 import Foundation
 
+extension Array: PrettyPrint {
+
+  public var prettyDescription: String {
+    guard count > 0 else { return "[]" }
+
+    var result = "["
+
+    var first = true
+
+    for element in self {
+      if first { first = false } else { print(", ", toStream: &result) }
+      if let prettyElement = element as? PrettyPrint { print(prettyElement.prettyDescription, toStream: &result) }
+      else { print(element, toStream: &result) }
+    }
+
+
+    return result
+  }
+
+}
+
+extension NSArray: PrettyPrint {
+  public var prettyDescription: String { return (self as Array<AnyObject>).prettyDescription }
+}
+
 extension Array {
   public func compressedMap<U>(transform: (Element) -> U?) -> [U] {
       return MoonKit.compressedMap(self, transform)
