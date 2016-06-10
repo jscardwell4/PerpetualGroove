@@ -447,6 +447,7 @@
 		C2D406761BBA0F6700681DEF /* NSURL+MoonKitAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D406751BBA0F6700681DEF /* NSURL+MoonKitAdditions.swift */; };
 		C2D5F2421B97BC93005040EF /* Slider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D5F2411B97BC93005040EF /* Slider.swift */; };
 		C2D664F11B88CC6F00D70FFA /* Ratio.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D664F01B88CC6F00D70FFA /* Ratio.swift */; };
+		C2D92A451D0AF73700662BE3 /* PropertyListParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D92A441D0AF73700662BE3 /* PropertyListParser.swift */; };
 		C2DDA2331C39A07B005F0965 /* UUID.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DDA2321C39A07B005F0965 /* UUID.swift */; };
 		C2E043251B727547005F0675 /* XMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E043241B727547005F0675 /* XMLParser.swift */; };
 		C2E55D111C9E4287004E7CB1 /* BitMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E55D101C9E4287004E7CB1 /* BitMapTests.swift */; };
@@ -966,6 +967,8 @@
 		C2D406751BBA0F6700681DEF /* NSURL+MoonKitAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURL+MoonKitAdditions.swift"; sourceTree = "<group>"; };
 		C2D5F2411B97BC93005040EF /* Slider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Slider.swift; sourceTree = "<group>"; };
 		C2D664F01B88CC6F00D70FFA /* Ratio.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Ratio.swift; sourceTree = "<group>"; };
+		C2D92A431D0AF37E00662BE3 /* Tokenizer.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Tokenizer.playground; sourceTree = "<group>"; };
+		C2D92A441D0AF73700662BE3 /* PropertyListParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyListParser.swift; sourceTree = "<group>"; };
 		C2DDA2321C39A07B005F0965 /* UUID.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UUID.swift; sourceTree = "<group>"; };
 		C2E043241B727547005F0675 /* XMLParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XMLParser.swift; sourceTree = "<group>"; };
 		C2E076A31B4EF7420063D057 /* WTF.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = WTF.playground; path = Moonkit/WTF.playground; sourceTree = "<group>"; };
@@ -1271,6 +1274,7 @@
 				C2B6914B1AFAC8EF0041CE11 /* XMLParserDelegate.swift */,
 				C2A70E3A1ACC53D0009C2CF7 /* JSONValue.swift */,
 				C2E936FF1ACE04D4003EB3E8 /* JSONParser.swift */,
+				C2D92A441D0AF73700662BE3 /* PropertyListParser.swift */,
 				C2E937031ACF0736003EB3E8 /* JSONSerialization.swift */,
 				C24A22801ADAEC000065E7EA /* ArrayJSONValue.swift */,
 				C24A22821ADAEC0F0065E7EA /* ObjectJSONValue.swift */,
@@ -1567,6 +1571,7 @@
 		C2CE884518138C4900555D63 = {
 			isa = PBXGroup;
 			children = (
+				C2D92A431D0AF37E00662BE3 /* Tokenizer.playground */,
 				C2EF5B1C1D09A6C500FF51F6 /* PropertyList.playground */,
 				C208359C1C80E73600D4A10E /* WTFWTF.playground */,
 				C208359B1C80E6FD00D4A10E /* WTF.playground */,
@@ -2572,6 +2577,7 @@
 				C2358F4919C78E0C00920F8D /* UICollectionViewFlowLayout+MSKitAdditions.m in Sources */,
 				C2B4EB721BD8291D00DD1486 /* Loggable.swift in Sources */,
 				C24A22931ADB43620065E7EA /* SetOperations.swift in Sources */,
+				C2D92A451D0AF73700662BE3 /* PropertyListParser.swift in Sources */,
 				C2EB15771A1D45C100B64D84 /* ConfiningBlockActionGesture.swift in Sources */,
 				C2683F7B1AF142E60081C74B /* UIBezierPath+MoonKitAdditions.swift in Sources */,
 				C2D5F2421B97BC93005040EF /* Slider.swift in Sources */,

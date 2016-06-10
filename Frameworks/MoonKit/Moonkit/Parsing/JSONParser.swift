@@ -73,12 +73,12 @@ right-square-bracket → comment? ']' comment?
 
 
 */
-public class JSONParser {
+public final class JSONParser {
 
   public var string: String { return scanner.string }
   public let allowFragment: Bool
   public let ignoreExcess: Bool
-  public var idx:    Int    { get { return scanner.scanLocation } set { scanner.scanLocation = newValue } }
+  public var idx: Int { get { return scanner.scanLocation } set { scanner.scanLocation = newValue } }
 
   private var contextStack: Stack<Context>   = []
   private var objectStack:  Stack<JSONValue> = []
