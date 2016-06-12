@@ -42,7 +42,7 @@ final class BitMapTests: XCTestCase {
   }
 
   func testSubscriptByOffset() {
-    var bitMap = bitMapWithCapacity(256)
+    let bitMap = bitMapWithCapacity(256)
     bitMap[10] = true
     expect(bitMap[10]).to(beTrue())
     bitMap[20] = true
@@ -59,14 +59,13 @@ final class BitMapTests: XCTestCase {
 
   func testNonZeroBits() {
     let capacity = 256
-    var bitMap = bitMapWithCapacity(capacity)
+    let bitMap = bitMapWithCapacity(capacity)
     let expectedNonZeroCount = 100
     setBitsInBitMap(bitMap, count: expectedNonZeroCount)
     var expectedNonZeroBits: [Int] = []
     for i in 0 ..< capacity where bitMap[i] { expectedNonZeroBits.append(i) }
     expect(expectedNonZeroBits).to(haveCount(expectedNonZeroCount))
     expect(bitMap.nonZeroCount).to(be(expectedNonZeroCount))
-    let actualNonZeroCount = bitMap.nonZeroCount
     let actualNonZeroBits = bitMap.nonZeroBits
     expect(actualNonZeroBits).to(haveCount(expectedNonZeroCount))
     expect(actualNonZeroBits).to(equal(expectedNonZeroBits))
@@ -74,7 +73,7 @@ final class BitMapTests: XCTestCase {
 
   func testNextSetBit() {
     let capacity = 256
-    var bitMap = bitMapWithCapacity(capacity)
+    let bitMap = bitMapWithCapacity(capacity)
     let expectedNonZeroCount = 100
     setBitsInBitMap(bitMap, count: expectedNonZeroCount)
     var expectedNonZeroBits: [Int] = []
@@ -92,7 +91,7 @@ final class BitMapTests: XCTestCase {
 
   func testPreviousSetBit() {
     let capacity = 256
-    var bitMap = bitMapWithCapacity(capacity)
+    let bitMap = bitMapWithCapacity(capacity)
     let expectedNonZeroCount = 100
     setBitsInBitMap(bitMap, count: expectedNonZeroCount)
     var expectedNonZeroBits: [Int] = []

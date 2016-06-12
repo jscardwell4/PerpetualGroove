@@ -1,0 +1,48 @@
+
+[
+  {
+    "name": "Remote"
+  },
+  {
+    "name": "Button Group",
+    "presets": [
+      <@include Preset_ButtonGroup_Toolbar.json>,
+      <@include Preset_ButtonGroup_Numberpad.json>,
+      <@include Preset_ButtonGroup_Dpad.json>,
+      <@include Preset_ButtonGroup_Transport.json>,
+      <@include Preset_ButtonGroup_1x3.json>,
+      <@include Preset_ButtonGroup_ModeSelectionPanel.json>,
+      <@include Preset_ButtonGroup_Rocker.json>,
+      <@include Preset_ButtonGroup_OverlayPanel.json>
+    ]
+  },
+  {
+    "name": "Button",
+    "subcategories": [
+      {
+        "name": "Roundish",
+        "presets": [
+          <@include Preset_Button_Roundish.json>
+        ]
+      },
+      {
+        "name": "Rectangular",
+        "presets": [
+          <@include Preset_Button_Rectangular.json>
+        ]
+      },
+      {
+        "name": "Round",
+        "presets": [
+          <@include Preset_Button_Round.json>
+        ]
+      },
+      {
+        "name": "Toolbar",
+        "presets": [
+          <@include Preset_Button_Toolbar.json>
+        ]
+      }
+    ]
+  }
+]

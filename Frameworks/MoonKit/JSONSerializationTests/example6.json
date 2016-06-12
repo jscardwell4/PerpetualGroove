@@ -1,0 +1,41 @@
+{
+  "name": "Guide / Tools",
+  "shape": "rounded-rectangle",
+  "style": "gloss2",
+  "commands": {
+    "default": {
+      "class": "sendir",
+      "code.index": "Dish/Dish/Guide"
+    },
+    "tv": {
+      "class": "sendir",
+      "code.index": "Samsung/Samsung%20TV/Tools"
+    }
+  },
+  "titles": {
+    "default": {
+      "normal": {
+        "font": "Helvetica Neue@20",
+        "foreground-color": "white",
+        "stroke-color": "white@50%",
+        "stroke-width": -2,
+        "alignment": "center",
+        "text": "Guide"
+      },
+      "highlighted.foreground-color": "#00AFFFFF"
+    },
+    "tv": {
+      "normal": {
+        "font": "Helvetica Neue@20",
+        "foreground-color": "white",
+        "stroke-color": "white@50%",
+        "stroke-width": -2,
+        "alignment": "center",
+        "text": "Tools"
+      },
+      "highlighted.foreground-color": "#00AFFFFF"
+    }
+  },
+  "background-colors.default.normal": "#060606FF",
+  "title-edge-insets": "{20, 20, 20, 20}"
+}

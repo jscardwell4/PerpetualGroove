@@ -1,0 +1,100 @@
+{
+  "name": "Dpad",
+  "baseType": "button-group",
+  "role": "dpad",
+  "shape": "oval",
+  "style": "gloss2",
+  "constraints": [
+    "$0.height = 280 :: $0.width = $0.height",
+    "$1.centerX = $0.centerX :: $1.centerY = $0.centerY :: $1.width = $0.width * 0.3",
+    "$2.bottom = $1.top :: $2.left = $4.right :: $2.right = $5.left :: $2.top = $0.top",
+    "$3.bottom = $0.bottom :: $3.left = $4.right :: $3.right = $5.left :: $3.top = $1.bottom",
+    "$4.bottom = $3.top :: $4.left = $0.left :: $4.right = $1.left :: $4.top = $2.bottom",
+    "$5.bottom = $3.top :: $5.left = $1.right :: $5.right = $0.right :: $5.top = $2.bottom"
+  ],
+  "backgroundColor": <@include BackgroundColor_Default.json>,
+  "subelements": [
+    {
+      "baseType": "button",
+      "role": "center",
+      "constraints": "$0.width = $0.height",
+      "titles": {
+        "normal": <@include TitleAttributes_Default_Text.json,TEXT=OK,SIZE=28>,
+        "highlighted.foregroundColor": <@include ForegroundColor_Highlighted.json>
+      },
+      "titleEdgeInsets": <@include TitleEdgeInsets_Default.json>
+    },
+    {
+      "baseType": "button",
+      "role": "up",
+      "icons": {
+        "normal": {
+          "image": "Icons/Glyphish%206/Large/Normal/Arrow%20Up",
+          "color": <@include ForegroundColor_Normal.json>
+        },
+        "highlighted": {
+          "image": "Icons/Glyphish%206/Large/Normal/Arrow%20Up",
+          "color": <@include ForegroundColor_Highlighted.json>
+        },
+        "disabled": {
+          "image": "Icons/Glyphish%206/Large/Normal/Arrow%20Up",
+          "color": <@include ForegroundColor_Disabled.json>
+        }
+      }
+    },
+    {
+      "baseType": "button",
+      "role": "down",
+      "icons": {
+        "normal": {
+          "image": "Icons/Glyphish%206/Large/Normal/Arrow%20Down",
+          "color": <@include ForegroundColor_Normal.json>
+        },
+        "highlighted": {
+          "image": "Icons/Glyphish%206/Large/Normal/Arrow%20Down",
+          "color": <@include ForegroundColor_Highlighted.json>
+        },
+        "disabled": {
+          "image": "Icons/Glyphish%206/Large/Normal/Arrow%20Down",
+          "color": <@include ForegroundColor_Disabled.json>
+        }
+      }
+    },
+    {
+      "baseType": "button",
+      "role": "left",
+      "icons": {
+        "normal": {
+          "image": "Icons/Glyphish%206/Large/Normal/Arrow%20Left",
+          "color": <@include ForegroundColor_Normal.json>
+        },
+        "highlighted": {
+          "image": "Icons/Glyphish%206/Large/Normal/Arrow%20Left",
+          "color": <@include ForegroundColor_Highlighted.json>
+        },
+        "disabled": {
+          "image": "Icons/Glyphish%206/Large/Normal/Arrow%20Left",
+          "color": <@include ForegroundColor_Disabled.json>
+        }
+      }
+    },
+    {
+      "baseType": "button",
+      "role": "right",
+      "icons": {
+        "normal": {
+          "image": "Icons/Glyphish%206/Large/Normal/Arrow%20Right",
+          "color": <@include ForegroundColor_Normal.json>
+        },
+        "highlighted": {
+          "image": "Icons/Glyphish%206/Large/Normal/Arrow%20Right",
+          "color": <@include ForegroundColor_Highlighted.json>
+        },
+        "disabled": {
+          "image": "Icons/Glyphish%206/Large/Normal/Arrow%20Right",
+          "color": <@include ForegroundColor_Disabled.json>
+        }
+      }
+    }
+  ]
+}

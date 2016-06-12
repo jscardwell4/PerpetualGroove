@@ -64,6 +64,7 @@ public final class PropertyListParser {
 
   private func dumpState(error: NSError? = nil) {
     print("scanner.atEnd? \(scanner.atEnd)\nidx: \(idx)")
+    if !scanner.atEnd { print("scanner.string[idx..<]: \(scanner.string[scanner.string.startIndex.advancedBy(idx)..<])") }
     print("keyStack[\(keyStack.count)]: " + ", ".join(keyStack.map{"'\($0)'"}))
     print("contextStack[\(contextStack.count)]: " + ", ".join(contextStack.map{$0.rawValue}))
     print("objectStack[\(objectStack.count)]:\n" + "\n".join(objectStack.map{String($0)}))
@@ -73,39 +74,47 @@ public final class PropertyListParser {
   }
 
   private func internalError(reason: String?, underlyingError: NSError? = nil) -> NSError {
-    return errorWithCode(.Internal, reason, underlyingError: underlyingError)
+    let error = errorWithCode(.Internal, reason, underlyingError: underlyingError)
+    dumpState(error)
+    return error
   }
 
   private func syntaxError(reason: String?, underlyingError: NSError? = nil) -> NSError {
-    return errorWithCode(.InvalidSyntax, reason, underlyingError: underlyingError)
+    let error = errorWithCode(.InvalidSyntax, reason, underlyingError: underlyingError)
+    dumpState(error)
+    return error
   }
 
   public init(string: String) {
-    scanner = NSScanner(string: string)
+    scanner = NSScanner.localizedScannerWithString(string) as! NSScanner
   }
 
   private func addValueToTopObject(value: PropertyListValue) throws {
+
+    print("\(#function) value = \(value)")
+    dumpState()
 
     if let context = contextStack.peek, object = objectStack.pop() {
 
       switch (context, object) {
       case (.Dictionary, .Dictionary(var d)):
-        if let k = keyStack.pop() {
-          d[k] = value
-          objectStack.push(.Dictionary(d))
-        } else {
+        // Dictionary context with a dictionary on top of the stack
+        guard let k = keyStack.pop() else {
           throw internalError("empty key stack")
         }
+        d[k] = value
+        objectStack.push(.Dictionary(d))
 
       case (.Array, .Array(let a)):
+        // Array context with an array on top of the stack
         objectStack.push(.Array(a + [value]))
 
-      case (_, .Dictionary(_)),
-           (_, .Array(_)):
+      case (_, .Dictionary(_)), // Some other context with a dictionary on top of the stack
+           (_, .Array(_)):      // Some other context with an array on top of the stack
         throw internalError("invalid context-object pairing: \(context)-\(object)")
 
-      case (.Dictionary, _),
-           (.Array, _):
+      case (.Dictionary, _), // Dictionary context without a dictionary on top of the stack
+           (.Array, _):      // Array context without an array on top of the stack
         throw internalError("missing object in stack to receive new value")
 
       default:
@@ -121,59 +130,6 @@ public final class PropertyListParser {
     } else {
       throw internalError("an unknown internal error has occurred")
     }
-  }
-
-  /**
-  scanFor:into:discardingComments:skipping:error:
-
-  - parameter type: ScanType
-  - parameter object: AnyObject?
-  - parameter discardingComments: Bool = true
-  - parameter skipCharacters: NSCharacterSet = NSCharacterSet.whitespaceAndNewlineCharacterSet()
-
-  - returns: Bool
-  */
-  private func scanFor(type: ScanType,
-            inout into object: AnyObject?,
-    discardingComments: Bool = true,
-              skipping skipCharacters: NSCharacterSet = NSCharacterSet.whitespaceAndNewlineCharacterSet()) -> Bool
-  {
-    var success = false
-
-    let currentSkipCharacters = scanner.charactersToBeSkipped
-    scanner.charactersToBeSkipped = skipCharacters
-    defer { scanner.charactersToBeSkipped = currentSkipCharacters }
-
-    switch type {
-
-    case .CharactersFromSet(let set):
-      var scannedString: NSString?
-      success = scanner.scanCharactersFromSet(set, intoString: &scannedString)
-      if success { object = scannedString }
-
-    case .UpToCharactersFromSet(let set):
-      var scannedString: NSString?
-      success = scanner.scanUpToCharactersFromSet(set, intoString: &scannedString)
-      if success { object = scannedString }
-
-    case .Text (let text):
-      var scannedString: NSString?
-      success = scanner.scanString(text, intoString: &scannedString)
-      if success { object = scannedString }
-
-    case .UpToText(let text):
-      var scannedString: NSString?
-      success = scanner.scanUpToString(text, intoString: &scannedString)
-      if success { object = scannedString }
-
-    case .Number:
-      var scannedNumber: Double = 0
-      success = scanner.scanDouble(&scannedNumber)
-      if success { object = scannedNumber }
-
-    }
-
-    return success
   }
 
   private func scanXMLTag() throws {
@@ -194,17 +150,108 @@ public final class PropertyListParser {
     scanner.scanLocation += 1
   }
 
+  private func scanKey() throws -> String? {
+    guard scanner.scanString("<key>", intoString: nil) else { return nil }
+    var result: NSString?
+    guard scanner.scanUpToString("</key>", intoString: &result) else { throw syntaxError("open key tag") }
+    scanner.scanLocation += 6
+    return result as? String
+  }
+
+  private func scanString() throws -> String? {
+    guard scanner.scanString("<string>", intoString: nil) else { return nil }
+    var result: NSString?
+    guard scanner.scanUpToString("</string>", intoString: &result) else { throw syntaxError("open string tag") }
+    scanner.scanLocation += 6
+    return result as? String
+  }
+
+  private func scanInteger() throws -> Int? {
+    guard scanner.scanString("<integer>", intoString: nil) else { return nil }
+    var result: Int = 0
+    guard scanner.scanInteger(&result) else { throw syntaxError("unable to scan an integer inside 'integer' tag") }
+    guard scanner.scanString("</integer>", intoString: nil) else { throw syntaxError("open integer tag") }
+    return result
+  }
+
+  private func scanReal() throws -> Double? {
+    guard scanner.scanString("<real>", intoString: nil) else { return nil }
+    var result: Double = 0
+    guard scanner.scanDouble(&result) else { throw syntaxError("unable to scan a double inside 'real' tag") }
+    guard scanner.scanString("</real>", intoString: nil) else { throw syntaxError("open real tag") }
+    scanner.scanLocation += 6
+    return result
+  }
+
+  private func scanBoolean() -> Bool? {
+    if scanner.scanString("<true/>", intoString: nil) { return true }
+    else if scanner.scanString("<false/>", intoString: nil) { return false }
+    else { return nil }
+  }
+
   private func parseDictionary() throws -> Bool {
-    return false
+
+    var success = false
+
+    // Try to scan the opening punctuation for an object
+    if scanner.scanString("<dict>", intoString: nil) {
+
+      success = true
+      objectStack.push(.Dictionary([:])) // Push a new dictionary onto the object stack
+      contextStack.push(.Dictionary)     // Push dictionary context
+      contextStack.push(.Key)            // Push key context
+
+    }
+
+    // Try to scan the closing punctuation for an object
+    else if scanner.scanString("</dict>", intoString: nil) {
+
+      // Pop context and object stacks
+      guard let context = contextStack.pop(), object = objectStack.pop() else {
+        throw internalError("one or both of context and object stacks is empty")
+      }
+
+
+      switch (context, object) {
+
+        case (_, _) where contextStack.peek == .Start:
+          // Replace start context with end context if we have completed the root object
+          contextStack.pop()
+          contextStack.push(.End)
+          objectStack.push(object)
+          success = true
+
+        case (.Dictionary, .Dictionary(_)):
+          do { try addValueToTopObject(object); success = true } catch { throw error }
+
+        case (_, .Dictionary(_)):
+
+          throw internalError("incorrect context popped off of stack")
+
+        case (.Dictionary, _):
+          throw internalError("dictionary absent from object stack")
+
+        default:
+          assert(false, "shouldn't this be unreachable?")
+      }
+
+    }
+
+    // Otherwise assume we are in an open dictionary looking for more key-value pairs.
+//    else if contextStack.peek == .Dictionary {
+//      success = true
+//      contextStack.push(.Key)
+//    }
+
+    return success
   }
 
   private func parseArray() throws -> Bool {
 
     var success = false
-    var scannedObject: AnyObject?
 
     // Try to scan the opening punctuation for an object
-    if scanFor(.Text("<array>"), into: &scannedObject) {
+    if scanner.scanString("<array>", intoString: nil) {
 
       success = true
       objectStack.push(.Array([])) // Push a new array onto the object stack
@@ -213,75 +260,113 @@ public final class PropertyListParser {
 
     }
 
-      // Then try to scan a comma separating another object key value pair
-    else if scanFor(.Text(","), into: &scannedObject) {
-        success = true
-        contextStack.push(.Value)
-    }
+    // Try to scan the closing tag for an array
+    else if scanner.scanString("</array>", intoString: nil) {
 
-      // Lastly, try to scan the closing punctuation for an object
-    else if scanFor(.Text("</array>"), into: &scannedObject) {
+      // Pop context and object stacks
+      guard let context = contextStack.pop(), object = objectStack.pop() else {
+        throw internalError("one or both of context and object stacks is empty")
+      }
 
-          // Pop context and object stacks
-          if let context = contextStack.pop(), object = objectStack.pop() {
+      switch (context, object) {
+        case (_, _) where contextStack.peek == .Start:
+          // Replace start context with end context if we have completed the root object
+          contextStack.pop()
+          contextStack.push(.End)
+          objectStack.push(object)
+          success = true
 
-            switch (context, object) {
-            case (_, _) where contextStack.peek == .Start:
-              // Replace start context with end context if we have completed the root object
-              contextStack.pop()
-              contextStack.push(.End)
-              objectStack.push(object)
-              success = true
-
-            case (.Array, .Array(_)):
-              do {
-                try addValueToTopObject(object)
-                success = true
-              } catch {
-                throw error
-              }
-
-            case (_, .Array(_)):
-              throw internalError("incorrect context popped off of stack")
-
-            case (.Array, _):
-              throw internalError("array absent from object stack")
-
-            default:
-              assert(false, "shouldn't this be unreachable?")
-            }
+        case (.Array, .Array(_)):
+          do {
+            try addValueToTopObject(object)
+            success = true
+          } catch {
+            throw error
           }
 
-          else {
-            throw internalError("one or both of context and object stacks is empty")
+        case (_, .Array(_)):
+          throw internalError("incorrect context popped off of stack")
+
+        case (.Array, _):
+          throw internalError("array absent from object stack")
+
+        default:
+          assert(false, "shouldn't this be unreachable?")
       }
 
     }
+
+    // Otherwise assume we are in an open array and looking for more values
+//    else if contextStack.peek == .Array {
+//      success = true
+//      contextStack.push(.Value)
+//    }
+
+
     return success
   }
 
+  private func parseDate() throws -> Bool {
+    return false
+  }
+
+  private func parseData() throws -> Bool {
+    return false
+  }
+
   private func parseValue() throws -> Bool {
-    return false
-  }
+    var success = false
+    var value: PropertyListValue?
 
-  private func parseInteger() throws -> Bool {
-    return false
-  }
+    guard contextStack.pop() == Context.Value else  {
+      throw internalError("incorrect context popped off of stack")
+    }
 
-  private func parseReal() throws -> Bool {
-    return false
-  }
+    // Try scanning a boolean
+    if let boolean = scanBoolean() { value = .Boolean(boolean); success = true }
 
-  private func parseBoolean() throws -> Bool {
-    return false
-  }
+    // Try scanning an integer
+    else if let integer = try scanInteger() { value = .Integer(integer); success = true }
 
-  private func parseString() throws -> Bool {
-    return false
+    // Try scanning a real
+    else if let real = try scanReal() { value = .Real(real); success = true }
+
+    // Try scanning a string
+    else if let string = try scanString() { value = .String(string); success = true }
+
+    // Try scanning a dictionary
+    else if try parseDictionary() { success = true }
+
+    // Try scanning an array
+    else if try parseArray() { success = true }
+
+    // Otherwise we have failed to scan anything
+    else { throw syntaxError("failed to parse value") }
+
+    // If we have a value, add it to the top object in our stack
+    if let v = value where success { try addValueToTopObject(v) }
+
+    return success
   }
 
   private func parseKey() throws -> Bool {
-    return false
+
+    guard contextStack.pop() == .Key else {
+      throw internalError("incorrect context popped off of stack")
+    }
+
+    guard contextStack.peek == .Dictionary else {
+      throw internalError("context beneath 'key' should be 'dictionary'")
+    }
+
+    guard let key = try scanKey() else { return false }
+
+
+    keyStack.push(key)
+    contextStack.push(.Value)
+
+    return true
+
   }
 
   public func parse() throws -> PropertyListValue {
@@ -292,73 +377,57 @@ public final class PropertyListParser {
     // Scan while we have input, completing the root object will exit the loop even if text remains
     scanLoop: while !scanner.atEnd {
 
-      // We must have a context on top of the context stack
-      if let context = contextStack.peek {
-
-        // Perform a context-appropriate action
-        switch context {
-
-          // To be valid, we must be able to scan an opening bracked of some kind
-          case .Start:
-
-            var didParse = false
-            do {
-              try scanXMLTag()
-              try scanDOCTYPETag()
-              try scanPlistOpenTag()
-
-              didParse = try parseDictionary()
-              if !didParse { didParse = try parseArray() }
-            } catch { throw error }
-            if !didParse { throw syntaxError("root tag must be a dict/array") }
-
-          // Try to scan a number, a boolean, null, the start of an object, or the start of an array
-          case .Value: do { if !(try parseValue()) { break scanLoop } } catch { throw error }
-
-          // Try to scan a comma or curly bracket
-          case .Dictionary: do { if !(try parseDictionary()) { break scanLoop } } catch { throw error }
-
-          // Try to scan a comma or square bracket
-          case .Array: do { if !(try parseArray()) { break scanLoop } } catch { throw error }
-
-          // Try to scan a quoted string for use as a dictionary key
-          case .Key: do { if !(try parseKey()) { break scanLoop } } catch { throw error }
-
-          // Just break out of scan loop
-          case .End:
-            if !(scanner.atEnd) { throw syntaxError("parse completed but scanner is not at end") }
-            break scanLoop
-        }
-
+      guard let context = contextStack.peek else {
+        throw internalError("missing context on top of the stack")
       }
 
+      print("scanLoop: context = \(context)")
+
+      // Perform a context-appropriate action
+      switch context {
+
+        // To be valid, we must be able to scan an opening bracked of some kind
+        case .Start:
+          try scanXMLTag()
+          try scanDOCTYPETag()
+          try scanPlistOpenTag()
+
+          guard try (parseDictionary() || parseArray()) else {
+            throw syntaxError("root tag must be a dict/array")
+          }
+
+        // Try to scan a number, a boolean, null, the start of an object, or the start of an array
+        case .Value: guard try parseValue() else { throw syntaxError("failed to scan value in 'Value' context") }
+
+        // Try to scan a comma or curly bracket
+        case .Dictionary: guard try parseDictionary() else { throw syntaxError("failed to scan dictionary in 'Dictionary' context") }
+
+        // Try to scan a comma or square bracket
+        case .Array: guard try parseArray() else { throw syntaxError("failed to scan array in 'Array' context") }
+
+        // Try to scan a quoted string for use as a dictionary key
+        case .Key: guard try parseKey() else { throw syntaxError("failed to scan key in 'Key' context") }
+
+        // Just break out of scan loop
+        case .End:
+          guard scanner.scanString("</plist>", intoString: nil) else { throw syntaxError("open plist tag") }
+          guard scanner.atEnd else { throw syntaxError("parse completed but scanner is not at end") }
+          break scanLoop
+      }
 
     }
 
     // If the root object ends the text we won't hit the `.End` case in our switch statement
-    if !objectStack.isEmpty {
+    guard !objectStack.isEmpty else { throw syntaxError("failed to parse anything") }
 
-      // Make sure we don't have more than one object left in the stack
-      if objectStack.count > 1 { throw internalError("objects left in stack") }
+    // Make sure we don't have more than one object left in the stack
+    guard objectStack.count == 1 else { throw internalError("objects left in stack") }
 
-      // Otherwise pop the root object from the stack
-      else { return objectStack.pop()! }
-
-    } else { throw syntaxError("failed to parse anything") }
+    // Otherwise pop the root object from the stack
+    return objectStack.pop()!
 
   }
 
-}
-
-extension PropertyListParser {
-  /** Enumeration for specifying a type of scan to perform */
-  private enum ScanType {
-    case CharactersFromSet     (NSCharacterSet)
-    case UpToCharactersFromSet (NSCharacterSet)
-    case Text                  (String)
-    case UpToText              (String)
-    case Number
-  }
 }
 
 extension PropertyListParser {
@@ -373,52 +442,6 @@ extension PropertyListParser {
   }
 }
 
-enum PropertyListTag: String {
-
-  case xml
-  case DOCTYPE
-  case plist
-  case dict
-  case key
-  case integer
-  case string
-  case array
-  case real
-  case `true`
-  case `false`
-  case null
-
-  var regex: RegularExpression {
-    switch self {
-    case .xml:
-      return ~/"^\\s*<\\?xml\\s+version\\s*=\\s*\"[0-9.]+\"\\s+encoding\\s*=\\s*\"[^\"]+\"\\s*\\?>\\s*"
-    case .DOCTYPE:
-      return ~/"^\\s*<!DOCTYPE\\s+plist\\s+PUBLIC\\s+\"-//Apple//DTD PLIST 1.0//EN\"\\s+\"http://www.apple.com/DTDs/PropertyList-1.0.dtd\"\\s*>\\s*"
-    case .plist:
-      return ~/"^\\s*<plist\\s+version\\s*=\\s*\"[0-9.]+\"\\s*>((?:.|\\s)*)</plist>\\s*$"
-    case .dict:
-      return ~/"^\\s*<dict>((?:(?:.|\\s)(?!=<dict>))*)</dict>\\s*"
-    case .key:
-      return ~/"^\\s*<key>((?:.|\\s)*?)</key>\\s*"
-    case .integer:
-      return ~/"^\\s*<integer>((?:.|\\s)*)</integer>\\s*"
-    case .string:
-      return ~/"^\\s*<string>((?:.|\\s)*?)</string>\\s*"
-    case .array:
-      return ~/"^\\s*<array>((?:.|\\s)*)</array>\\s*"
-    case .real:
-      return ~/"^\\s*<real>((?:.|\\s)*?)</real>\\s*"
-    case .`true`:
-      return ~/"^\\s*<true\\s*/>\\s*"
-    case .`false`:
-      return ~/"^\\s*<false\\s*/>\\s*"
-    case .null:
-      return ~/"^\\s*<null\\s*/>\\s*"
-    }
-  }
-
-}
-
 public enum PropertyListValue {
   case Boolean(Bool)
   case String(Swift.String)
@@ -426,214 +449,8 @@ public enum PropertyListValue {
   case Dictionary(Swift.Dictionary<Swift.String, PropertyListValue>)
   case Integer(Int)
   case Real(Double)
-  case Null
-}
-
-func parseTag(tag: PropertyListTag, input: String) -> (match: Bool, tagContent: String?, remainingInput: String?) {
-  guard let match = tag.regex.match(input).first else { return (false, nil, input) }
-  let tagContent = match[1]?.string
-  let remainingInput = input[match.range.endIndex.samePositionIn(input)!..<]
-  return (true, tagContent, remainingInput.isEmpty ? nil : remainingInput)
-}
-
-enum PropertyListPrimitive {
-  case String (Swift.String)
-  case Int (Swift.Int)
-  case Double (Swift.Double)
-  case Bool (Swift.Bool)
-  case None
-}
-
-func parsePrimitive(input: String) -> (match: Bool, primitive: PropertyListPrimitive, remainingInput: String?) {
-//  print("\n\n\(#function)  input = '\(input)'")
-
-  let result: (Bool, PropertyListPrimitive, String?)
-//  defer {
-//    print("\(#function)  result: \(result)")
-//  }
-
-  var (match, tagContent, remainingInput) = parseTag(.string, input: input)
-  guard !match else {
-    guard let stringContent = tagContent else {
-      // Throw error
-      fatalError("invalid string tag")
-    }
-    result = (true, PropertyListPrimitive.String(stringContent), remainingInput)
-    return result
-  }
-  (match, tagContent, remainingInput) = parseTag(.integer, input: input)
-  guard !match else {
-    guard let integerContent = tagContent, integer = Int(integerContent) else {
-      // Throw error
-      fatalError("invalid integer tag")
-    }
-    result = (true, PropertyListPrimitive.Int(integer), remainingInput)
-    return result
-  }
-  (match, tagContent, remainingInput) = parseTag(.real, input: input)
-  guard !match else {
-    guard let realContent = tagContent, real = Double(realContent) else {
-      // Throw error
-      fatalError("invalid integer tag")
-    }
-    result = (true, PropertyListPrimitive.Double(real), remainingInput)
-    return result
-  }
-
-  (match, tagContent, remainingInput) = parseTag(.`true`, input: input)
-  guard !match else {
-    result = (true, PropertyListPrimitive.Bool(true), remainingInput)
-    return result
-  }
-
-  (match, tagContent, remainingInput) = parseTag(.`false`, input: input)
-  guard !match else {
-    result = (true, PropertyListPrimitive.Bool(false), remainingInput)
-    return result
-  }
-
-  result = (false, PropertyListPrimitive.None, input)
-  return result
-}
-
-func parseValue(input: String) -> (match: Bool, value: PropertyListValue, remainingInput: String?) {
-//  print("\n\n\(#function)  input = '\(input)'")
-
-  let result: (Bool, PropertyListValue, String?)
-//  defer {
-//    print("\(#function)  result: \(result)")
-//  }
-
-  let primitiveParse = parsePrimitive(input)
-  guard !primitiveParse.match else {
-    let remainingInput = primitiveParse.remainingInput != nil && primitiveParse.remainingInput!.isEmpty ? nil : primitiveParse.remainingInput
-    switch primitiveParse.primitive {
-      case .String(let s): result = (true, .String(s),  remainingInput)
-      case .Int(let i):    result = (true, .Integer(i), remainingInput)
-      case .Double(let d): result = (true, .Real(d),    remainingInput)
-      case .Bool(let b):   result = (true, .Boolean(b), remainingInput)
-      case .None:          result = (true, .Null,       remainingInput)
-    }
-    return result
-  }
-
-  let arrayParse = parseTag(.array, input: input)
-  guard !arrayParse.match else {
-    guard let arrayContent = arrayParse.tagContent else {
-      // Throw error
-      fatalError("invalid array tag")
-    }
-    let array = parseArrayContent(arrayContent)
-    let remainingInput = arrayParse.remainingInput != nil && arrayParse.remainingInput!.isEmpty ? nil : arrayParse.remainingInput
-    result = (true, .Array(array), remainingInput)
-    return result
-  }
-
-  let dictParse = parseTag(.dict, input: input)
-  guard dictParse.match else {
-    // Throw error
-    fatalError("failed to match primitive, array or dict inside array content")
-  }
-  guard let dictContent = dictParse.tagContent else {
-    // Throw error
-    fatalError("invalid dict tag")
-  }
-  let dict = parseDictContent(dictContent)
-  let remainingInput = dictParse.remainingInput != nil && dictParse.remainingInput!.isEmpty ? nil : dictParse.remainingInput
-  result = (true, .Dictionary(dict), remainingInput)
-  return result
-}
-
-func parseArrayContent(input: String) -> [PropertyListValue] {
-//  print("\n\n\(#function)  input = '\(input)'")
-
-  var result: [PropertyListValue] = []
-
-  var remainingInput: String? = input
-  while let currentInput = remainingInput {
-    let (match, value, remainingInputʹ) = parseValue(currentInput)
-    guard match else {
-      // Throw error
-      fatalError("failed to parse value where a value is expected")
-    }
-
-    result.append(value)
-    remainingInput = remainingInputʹ
-    if remainingInput != nil && remainingInput!.isEmpty { remainingInput = nil }
-  }
-
-//  print("\(#function)  result = \(result)")
-  return result
-}
-
-func parseDictContent(input: String) -> [String:PropertyListValue] {
-//  print("\n\n\(#function)  input = '\(input)'")
-
-  var result: [String:PropertyListValue] = [:]
-
-  var remainingInput: String? = input
-  while let currentInput = remainingInput {
-//    print("\n\ncurrentInput = '\(currentInput)'")
-    let keyParse = parseTag(.key, input: currentInput)
-    guard keyParse.match, let key = keyParse.tagContent, remainingInputʹ = keyParse.remainingInput else {
-      // Throw error
-      fatalError("invalid key tag or key tag without a matching value")
-    }
-    let (match, value, remainingInputʺ) = parseValue(remainingInputʹ)
-    guard match else {
-      // Throw error 
-      fatalError("failed to parse value where value is expected")
-    }
-    result[key] = value
-    remainingInput = remainingInputʺ
-    if remainingInput != nil && remainingInput!.isEmpty { remainingInput = nil }
-  }
-
-//  print("\(#function)  result = \(result)")
-
-  return result
-}
-
-func parsePropertyList(list: String) -> PropertyListValue {
-//  print("\n\n\(#function)  list = '\(list)'")
-
-  var (match, tagContent, remainingInput) = parseTag(.xml, input: list)
-
-  guard match && remainingInput != nil else {
-    // Throw error
-    return .Null
-  }
-
-  (match, tagContent, remainingInput) = parseTag(.DOCTYPE, input: remainingInput!)
-  guard match && remainingInput != nil else {
-    // Throw error
-    return .Null
-  }
-
-  (match, tagContent, remainingInput) = parseTag(.plist, input: remainingInput!)
-  guard match, let plistContent = tagContent else {
-    // Throw error
-    return .Null
-  }
-
-  (match, tagContent, remainingInput) = parseTag(.dict, input: plistContent)
-
-  guard match, let dictContent = tagContent else {
-    (match, tagContent, remainingInput) = parseTag(.array, input: plistContent)
-    guard match, let arrayContent = tagContent else {
-      // Throw error
-      return .Null
-    }
-
-//    print("arrayContent: \(arrayContent)")
-
-    let array = parseArrayContent(arrayContent)
-    return .Array(array)
-  }
-
-//  print(dictContent)
-  let dict = parseDictContent(dictContent)
-  return .Dictionary(dict)
+  case Date(NSDate)
+  case Data(NSData)
 }
 
 /*

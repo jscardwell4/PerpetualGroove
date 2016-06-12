@@ -1,0 +1,111 @@
+{
+  "name": "Home",
+  "baseType": "button",
+  "role": "toolbar",
+  "command": {
+    "class": "system",
+    "type": "return-to-launch-screen"
+  },
+  "icons": {
+    "normal": {
+      "imagePath": "Icons/Glyphish%206/Large/Normal/Home",
+      "color": <@include ForegroundColor_Normal.json>
+    },
+    "highlighted": {
+      "imagePath": "Icons/Glyphish%206/Large/Normal/Home",
+      "color": <@include ForegroundColor_Highlighted.json>
+    },
+    "disabled": {
+      "imagePath": "Icons/Glyphish%206/Large/Normal/Home",
+      "color": <@include ForegroundColor_Disabled.json>
+    }
+  }
+},
+{
+  "name": "Settings",
+  "baseType": "button",
+  "role": "toolbar",
+  "command": {
+    "class": "system",
+    "type": "open-settings"
+  },
+  "icons": {
+    "normal": {
+      "imagePath": "Icons/Glyphish%206/Large/Normal/Gear",
+      "color": <@include ForegroundColor_Normal.json>
+    },
+    "highlighted": {
+      "imagePath": "Icons/Glyphish%206/Large/Normal/Gear",
+      "color": <@include ForegroundColor_Highlighted.json>
+    },
+    "disabled": {
+      "imagePath": "Icons/Glyphish%206/Large/Normal/Gear",
+      "color": <@include ForegroundColor_Disabled.json>
+    }
+  }
+},
+{
+  "name": "Edit",
+  "baseType": "button",
+  "role": "toolbar",
+  "command": {
+    "class": "system",
+    "type": "open-editor"
+  },
+  "icons": {
+    "normal": {
+      "imagePath": "Icons/Glyphish%206/Large/Normal/Pencil",
+      "color": <@include ForegroundColor_Normal.json>
+    },
+    "highlighted": {
+      "imagePath": "Icons/Glyphish%206/Large/Normal/Pencil",
+      "color": <@include ForegroundColor_Highlighted.json>
+    },
+    "disabled": {
+      "imagePath": "Icons/Glyphish%206/Large/Normal/Pencil",
+      "color": <@include ForegroundColor_Disabled.json>
+    }
+  }
+},
+{
+  "name": "Battery Status",
+  "baseType": "button",
+  "role": "battery-status",
+  "icons": {
+    "normal": {
+      "image": "Icons/Glyphish%297/Large/Normal/Battery",
+      "color": <@include ForegroundColor_Normal.json>
+    },
+    "highlighted": {
+      "image": "Icons/Glyphish%297/Large/Normal/Battery",
+      "color": <@include ForegroundColor_Highlighted.json>
+    },
+    "disabled": {
+      "imagePath": "Icons/Glyphish%206/Large/Normal/Lightning%20Bolt",
+      "color": <@include ForegroundColor_Disabled.json>
+    },
+    "selected": {
+      "image": "Icons/Glyphish%204/Power%20Plug",
+      "color": <@include ForegroundColor_Normal.json>
+    }
+  }
+},
+{
+  "name": "Connection Status",
+  "baseType": "button",
+  "role": "connection-status",
+  "icons": {
+    "normal": {
+      "image": "Icons/Glyphish%297/Large/Normal/Wifi%20Signal",
+      "color": <@include ForegroundColor_Normal.json>
+    },
+    "highlighted": {
+      "image": "Icons/Glyphish%297/Large/Normal/Wifi%20Signal",
+      "color": <@include ForegroundColor_Highlighted.json>
+    },
+    "disabled": {
+      "image": "Icons/Glyphish%297/Large/Normal/Wifi%20Signal",
+      "color": <@include ForegroundColor_Disabled.json>
+    }
+  }
+}

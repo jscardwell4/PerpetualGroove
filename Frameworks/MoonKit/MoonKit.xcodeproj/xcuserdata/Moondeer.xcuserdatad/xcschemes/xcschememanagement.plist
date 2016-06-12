@@ -16,6 +16,11 @@
 			<key>orderHint</key>
 			<integer>25</integer>
 		</dict>
+		<key>JSONSerializationTests.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>30</integer>
+		</dict>
 		<key>MoonKit Tests.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -82,6 +87,11 @@
 			<key>orderHint</key>
 			<integer>21</integer>
 		</dict>
+		<key>PropertyListParserTests.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>29</integer>
+		</dict>
 		<key>RangeMapTests.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -104,6 +114,11 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>C20DF9731D0B6873000665E6</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>C21C3B711CF8B032000D537A</key>
 		<dict>
 			<key>primary</key>
@@ -185,6 +200,11 @@
 			<true/>
 		</dict>
 		<key>C2EE61801C7F8C760091C5AC</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C2FB2C5B1D0DA9D400982CBA</key>
 		<dict>
 			<key>primary</key>
 			<true/>

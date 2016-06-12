@@ -141,6 +141,26 @@
                ReferencedContainer = "container:MoonKit.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "C2E55D0D1C9E4286004E7CB1"
+               BuildableName = "BitMapTests.xctest"
+               BlueprintName = "BitMapTests"
+               ReferencedContainer = "container:MoonKit.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "C2FB2C5B1D0DA9D400982CBA"
+               BuildableName = "JSONSerializationTests.xctest"
+               BlueprintName = "JSONSerializationTests"
+               ReferencedContainer = "container:MoonKit.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
