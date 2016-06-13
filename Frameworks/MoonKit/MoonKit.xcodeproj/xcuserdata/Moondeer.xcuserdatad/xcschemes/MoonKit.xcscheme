@@ -161,6 +161,16 @@
                ReferencedContainer = "container:MoonKit.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "C25ACFA41D0F1CBF00C9C7A4"
+               BuildableName = "StackTests.xctest"
+               BlueprintName = "StackTests"
+               ReferencedContainer = "container:MoonKit.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference

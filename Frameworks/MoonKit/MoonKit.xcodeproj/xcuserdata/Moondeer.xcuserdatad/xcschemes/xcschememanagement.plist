@@ -97,6 +97,11 @@
 			<key>orderHint</key>
 			<integer>27</integer>
 		</dict>
+		<key>StackTests.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>31</integer>
+		</dict>
 		<key>TransformTest.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -155,6 +160,11 @@
 			<true/>
 		</dict>
 		<key>C256F0871ABDFFE5005B7CB3</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C25ACFA41D0F1CBF00C9C7A4</key>
 		<dict>
 			<key>primary</key>
 			<true/>
