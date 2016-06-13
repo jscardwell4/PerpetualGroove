@@ -32,22 +32,30 @@ public enum JSONValue {
   case Null
 
   /** Initialize to `Null` */
-  public init() { self = Null }
+  public init() {
+    self = Null
+  }
 
   /**
   Initialize from a convertible type
 
   - parameter v: T:JSONValueConvertible
   */
-  public init<T:JSONValueConvertible>(_ v: T) { self = v.jsonValue }
+//  public init<T:JSONValueConvertible>(_ v: T) {
+//    self = v.jsonValue
+//  }
 
   /**
   Initialize to case `Array` using a `JSONValue` sequence
 
   - parameter s: S
   */
-  public init<S:SequenceType where S.Generator.Element == JSONValue>(_ s: S) {
-    self = Array(Swift.Array(s))
+//  public init<S:SequenceType where S.Generator.Element == JSONValue>(_ sequence: S) {
+//    self = Array(Swift.Array(sequence))
+//  }
+
+  public init(_ dictionary: NSDictionary) {
+    self = dictionary.jsonValue
   }
 
   /**
@@ -55,8 +63,12 @@ public enum JSONValue {
 
   - parameter s: S
   */
-  public init<S:SequenceType where S.Generator.Element:JSONValueConvertible>(_ s: S) {
-    self = Array(Swift.Array(s).map({$0.jsonValue}))
+  public init<S:SequenceType where S.Generator.Element:JSONValueConvertible>(_ sequence: S) {
+    self = Array(Swift.Array(sequence).map({$0.jsonValue}))
+  }
+
+  public init(_ array: NSArray) {
+    self = array.jsonValue
   }
 
   /**
@@ -64,10 +76,44 @@ public enum JSONValue {
 
   - parameter c: C
   */
-//  public init<C:KeyValueCollectionType where C.KeysType.Generator.Element == Swift.String,
-//                                             C.ValuesType.Generator.Element == JSONValue>(_ c: C)
+  public init<
+    C:KeyValueCollection
+    where C.Generator.Element == (C.Key, C.Value)
+//    where
+//    C.Key:StringValueConvertible,
+//    C.Value:JSONValueConvertible
+    >(_ collection: C)
+  {
+
+    if let orderedDictionary = collection as? OrderedDictionary<Swift.String, JSONValue> {
+      self = Object(orderedDictionary)
+      return
+    }
+
+    var orderedDictionary: OrderedDictionary<Swift.String, JSONValue> = [:]
+
+    for (key, value) in collection {
+      guard let k = key as? StringValueConvertible else { continue }
+      guard let v = value as? JSONValueConvertible else { continue }
+      orderedDictionary[k.stringValue] = v.jsonValue
+    }
+
+    self = Object(orderedDictionary)
+  }
+
+//  public init<
+//    C:KeyValueCollection
+//    where
+//    C.Key == Swift.String,
+//    C.Value:JSONValueConvertible>(_ collection: C)
 //  {
-//    self = Object(OrderedDictionary<Swift.String, JSONValue>(keys: c.keys, values: c.values))
+//
+//    if let orderedDictionary = collection as? OrderedDictionary<Swift.String, JSONValue> {
+//      self = Object(orderedDictionary)
+//      return
+//    }
+//
+//    self = Object(OrderedDictionary(zip(collection.keys, collection.values.map({$0.jsonValue}))))
 //  }
 
   /**
@@ -75,68 +121,118 @@ public enum JSONValue {
 
    - parameter dict: DictionaryLiteral<S, J>
    */
-  public init(dict: DictionaryLiteral<StringValueConvertible,JSONValueConvertible>) {
+  public init(dictionary: DictionaryLiteral<StringValueConvertible,JSONValueConvertible>) {
     var objectValue: OrderedDictionary<Swift.String, JSONValue> = [:]
-    for (k, v) in dict { objectValue[k.stringValue] = v.jsonValue }
+    for (k, v) in dictionary { objectValue[k.stringValue] = v.jsonValue }
     self = Object(objectValue)
   }
 
-//  public init<J:JSONValueConvertible>(
+//  public init(_ dictionary: [Swift.String:JSONValueConvertible]) { //testJSONValueTypeSimple
+//    self = Object(OrderedDictionary(zip(dictionary.keys, dictionary.values.map({$0.jsonValue}))))
+//  }
+
+//  public init(_ orderedDictionary: OrderedDictionary<Swift.String, JSONValueConvertible>) { //testJSONValueTypeComplex
+//    let keys = orderedDictionary.keys
+//    let values = orderedDictionary.values.map({$0.jsonValue})
+//    let elements = zip(keys, values)
+//    self = Object(OrderedDictionary(elements))
+//  }
+
+//  public init(_ dictionary: [Swift.String:JSONValue]) {
+//    self = Object(OrderedDictionary(dictionary))
+//  }
+
+//  public init(_ orderedDictionary: OrderedDictionary<Swift.String, JSONValue>) {
+//    self = Object(orderedDictionary)
+//  }
 
   /**
   Initialize to case `Object` using a key-value collection
 
   - parameter c: C
   */
-  public init<C:KeyValueCollection where C.Key == Swift.String,
-    C.Value:JSONValueConvertible>(_ c: C)
-  {
-    self = Object(OrderedDictionary(zip(c.keys, c.values.map({$0.jsonValue}))))
+//  public init<C:KeyValueCollection where C.Key:StringValueConvertible,
+//    C.Value:JSONValueConvertible>(_ c: C)
+//  {
+//    self = Object(OrderedDictionary(zip(c.keys.map({$0.stringValue}), c.values.map({$0.jsonValue}))))
+//  }
+
+  public init(_ number: NSNumber) {
+    self = Number(number)
   }
 
-  public init?(_ v: Any) {
-    if let x = v as? JSONValueConvertible { self = x.jsonValue }
-    else if let x = v as? NSNumber { self = Number(x) }
-    else if let x = v as? Swift.String { self = String(x) }
-    else if let x = v as? BooleanType { self = Boolean(x.boolValue) }
-    else if v is NSNull { self = Null }
-    else if let x = v as? NSArray {
-      let converted = compressedMap(x, {JSONValue($0)})
-      if converted.count == x.count { self = Array(converted) }
-      else { return nil }
-    }
-    else if let x = v as? [Any] {
-      let converted = compressedMap(x, {JSONValue($0)})
-      if converted.count == x.count { self = Array(converted) }
-      else { return nil }
-    }
-    else if let x = v as? OrderedDictionary<Swift.String, Any> {
-      let converted = OrderedDictionary<Swift.String, JSONValue>(x.flatMap({
-        guard let value = JSONValue($1) else { return nil }
-        return ($0, value)
-      }))
-      if converted.count == x.count { self = Object(converted) }
-      else { return nil }
-    }
-    else if let x = v as? NSDictionary {
-      let keys = x.allKeys.map({Swift.String($0)})
-      let values = compressedMap(x.allValues, {JSONValue($0)})
-      if keys.count == values.count { self = Object(OrderedDictionary(Swift.Array(zip(keys, values)))) }
-      else { return nil }
-    }
-    else { return nil }
+  public init(_ string: Swift.String) {
+    self = String(string)
   }
+
+  public init(_ string: NSString) {
+    self = String(string as Swift.String)
+  }
+
+  public init(_ bool: BooleanType) {
+    self = Boolean(bool.boolValue)
+  }
+
+  public init(_ null: NSNull) {
+    self = Null
+  }
+
+  public init(_ array: [JSONValue]) {
+    self = Array(array)
+  }
+
+//  public init<J:JSONValueConvertible>(_ array: [J]) { //testJSONValueTypeSimple
+//    self = Array(array.map({$0.jsonValue}))
+//  }
+
+  public init(_ array: [JSONValueConvertible]) { //testJSONValueTypeComplex
+    self = Array(array.map({$0.jsonValue}))
+  }
+
+
+//  public init?(_ v: Any) {
+//    if let x = v as? JSONValueConvertible { self = x.jsonValue }
+//    else if let x = v as? NSNumber { self = Number(x) }
+//    else if let x = v as? Swift.String { self = String(x) }
+//    else if let x = v as? BooleanType { self = Boolean(x.boolValue) }
+//    else if v is NSNull { self = Null }
+//    else if let x = v as? NSArray {
+//      let converted = compressedMap(x, {JSONValue($0)})
+//      if converted.count == x.count { self = Array(converted) }
+//      else { return nil }
+//    }
+//    else if let x = v as? [Any] {
+//      let converted = compressedMap(x, {JSONValue($0)})
+//      if converted.count == x.count { self = Array(converted) }
+//      else { return nil }
+//    }
+//    else if let x = v as? OrderedDictionary<Swift.String, Any> {
+//      let converted = OrderedDictionary<Swift.String, JSONValue>(x.flatMap({
+//        guard let value = JSONValue($1) else { return nil }
+//        return ($0, value)
+//      }))
+//      if converted.count == x.count { self = Object(converted) }
+//      else { return nil }
+//    }
+//    else if let x = v as? NSDictionary {
+//      let keys = x.allKeys.map({Swift.String($0)})
+//      let values = compressedMap(x.allValues, {JSONValue($0)})
+//      if keys.count == values.count { self = Object(OrderedDictionary(Swift.Array(zip(keys, values)))) }
+//      else { return nil }
+//    }
+//    else { return nil }
+//  }
 
   /**
   Initialize with any object or return nil upon conversion failure
 
   - parameter v: AnyObject
   */
-  public init?(_ value: Any?) {
-    if let v = value {
-      self.init(v)
-    } else { return nil }
-  }
+//  public init?(_ value: Any?) {
+//    if let v = value {
+//      self.init(v)
+//    } else { return nil }
+//  }
 
   /**
   stringValueWithDepth:

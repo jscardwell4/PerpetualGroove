@@ -17,6 +17,10 @@ extension String: StringValueConvertible {
   public var stringValue: String { return self }
 }
 
+extension NSString: StringValueConvertible {
+  public var stringValue: String { return self as String }
+}
+
 // MARK: - ByteArrayConvertible
 extension String: ByteArrayConvertible {
   public var bytes: [Byte] { return Array(utf8) }

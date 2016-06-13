@@ -52,6 +52,37 @@ values:
 //  return values
 //}
 
+extension Dictionary: JSONValueConvertible {
+  public var jsonValue: JSONValue {
+    var orderedDictionary: OrderedDictionary<String, JSONValue> = [:]
+    for (key, value) in self {
+      guard let k = key as? StringValueConvertible else { continue }
+      guard let v = value as? JSONValueConvertible else { continue }
+      orderedDictionary[k.stringValue] = v.jsonValue
+    }
+    return .Object(orderedDictionary)
+  }
+}
+
+//extension Dictionary where Key:StringValueConvertible, Value:JSONValueConvertible {
+//  public var jsonValue: JSONValue {
+//    let orderedDictionary = OrderedDictionary<String, JSONValue>(zip(keys.map({$0.stringValue}), values.map({$0.jsonValue})))
+//    return .Object(orderedDictionary)
+//  }
+//}
+
+extension NSDictionary: JSONValueConvertible {
+  public var jsonValue: JSONValue {
+    var orderedDictionary = OrderedDictionary<String, JSONValue>()
+    for (key, value) in self {
+      guard let k = (key as? StringValueConvertible)?.stringValue else { continue }
+      guard let v = (value as? JSONValueConvertible)?.jsonValue else { continue }
+      orderedDictionary[k] = v
+    }
+    return .Object(orderedDictionary)
+  }
+}
+
 extension NSDictionary: PrettyPrint {
 
   public var prettyDescription: String { return (self as Dictionary<NSObject, AnyObject>).prettyDescription }

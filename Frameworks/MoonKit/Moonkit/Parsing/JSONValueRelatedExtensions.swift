@@ -16,6 +16,10 @@ extension Bool/*: JSONValueInitializable*/ {
   public init?(_ jsonValue: JSONValue?) { if let b = jsonValue?.boolValue { self = b } else { return nil } }
 }
 
+extension NSString: JSONValueConvertible {
+  public var jsonValue: JSONValue { return .String(self as String) }
+}
+
 extension String: JSONValueConvertible {
   public var jsonValue: JSONValue { return .String(self) }
 }

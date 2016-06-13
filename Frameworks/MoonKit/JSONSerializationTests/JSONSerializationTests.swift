@@ -12,6 +12,11 @@ import MoonKitTest
 
 final class JSONSerializationTests: XCTestCase {
 
+  override class func setUp() {
+    LogManager.addTaggingASLLogger()
+    LogManager.addTaggingTTYLogger()
+  }
+
   static let filePaths: [String] = {
     var filePaths: [String] = []
     let allBundles = NSBundle.allBundles()
@@ -30,7 +35,7 @@ final class JSONSerializationTests: XCTestCase {
     let bool = true
     let number: NSNumber = 1
     let array = ["item1", "item2"]
-    let object: [String:Any] = ["key1": "value1", "key2": "value2"]
+    let object = ["key1": "value1", "key2": "value2"]
 
     let stringJSON = string.jsonValue
     switch stringJSON {
@@ -55,98 +60,90 @@ final class JSONSerializationTests: XCTestCase {
 
     let arrayJSON = JSONValue(array)
     switch arrayJSON {
-      case .Array?: break
+      case .Array: break
       default: XCTFail("unexpected nil value when converting to `JSONValue` type")
     }
-    expect(arrayJSON?.rawValue) === "[\"item1\",\"item2\"]"
+    expect(arrayJSON.rawValue) == "[\"item1\",\"item2\"]"
 
     let objectJSON = JSONValue(object)
 
     switch objectJSON {
-      case .Object?: break
+      case .Object: break
       default: XCTFail("unexpected enumeration value, expected 'JSON.Object'")
     }
-    expect(objectJSON?.rawValue) == "{\"key1\":\"value1\",\"key2\":\"value2\"}"
+    expect(objectJSON.rawValue) == "{\"key1\":\"value1\",\"key2\":\"value2\"}"
 
 
   }
 
   func testJSONValueTypeComplex() {
-    let array1: [Any] = ["item1", 2]
-    let array1String = "[\"item1\",2]"
+    let array1 = ["item1", 2]
     let array2 = ["item1", "item2", "item3"]
-    let array2String = "[\"item1\",\"item2\",\"item3\"]"
-    let array: [Any] = [array1, array2, "item3", 4]
-    let arrayString = "[\(array1String),\(array2String),\"item3\",4]"
-    let dict1: [String:JSONValueConvertible] = ["key1": "value1", "key2": 2]
-    let dict1String = "{\"key1\":\"value1\",\"key2\":2}"
-    let dict2: [String:JSONValueConvertible] = ["key1": "value1", "key2": "value2"]
-    let dict2String = "{\"key1\":\"value1\",\"key2\":\"value2\"}"
-    let dict: OrderedDictionary<String, Any> = ["key1": dict1, "key2": dict2, "key3": "value3"]
-    let dictString = "{\"key1\":\(dict1String),\"key2\":\(dict2String),\"key3\":\"value3\"}"
-    let composite1: [Any] = [1, "two", array, dict]
-    let composite1String = "[1,\"two\",\(arrayString),\(dictString)]"
-    let composite2: OrderedDictionary<String, Any> = ["key1": 1, "key2": array, "key3": dict, "key4": "value4"]
-    let composite2String = "{\"key1\":1,\"key2\":\(arrayString),\"key3\":\(dictString),\"key4\":\"value4\"}"
+    let array = [array1, array2, "item3", 4]
+    let dict1 = ["key1": "value1", "key2": 2]
+    let dict2 = ["key1": "value1", "key2": "value2"]
+    let dict: OrderedDictionary<String, JSONValueConvertible> = ["key1": dict1, "key2": dict2, "key3": "value3"]
+    let composite1: [JSONValueConvertible] = [1, "two", array, dict]
+    let composite2: OrderedDictionary<String, JSONValueConvertible> = ["key1": 1, "key2": array, "key3": dict, "key4": "value4"]
 
     let array1JSON = JSONValue(array1)
     switch array1JSON {
-      case .Array?: break
+      case .Array: break
       default: XCTFail("unexpected enumeration value, expected 'JSON.Array")
     }
-    expect(array1JSON?.rawValue) == array1String
+    expect(array1JSON.rawValue) == "[\"item1\",2]"
 
 
     let array2JSON = JSONValue(array2)
     switch array2JSON {
-      case .Array?: break
+      case .Array: break
       default: XCTFail("unexpected enumeration value, expected 'JSON.Array")
     }
-    expect(array2JSON?.rawValue) == array2String
+    expect(array2JSON.rawValue) == "[\"item1\",\"item2\",\"item3\"]"
 
     let arrayJSON = JSONValue(array)
     switch arrayJSON {
-      case .Array?: break
+      case .Array: break
       default: XCTFail("unexpected enumeration value, expected 'JSON.Array")
     }
-    expect(arrayJSON?.rawValue) == arrayString
+    expect(arrayJSON.rawValue) == "[[\"item1\",2],[\"item1\",\"item2\",\"item3\"],\"item3\",4]"
 
     let dict1JSON = JSONValue(dict1)
     switch dict1JSON {
-      case .Object?: break
+      case .Object: break
       default: XCTFail("unexpected enumeration value, expected 'JSON.Object")
     }
-    expect(dict1JSON?.rawValue) == dict1String
+    expect(dict1JSON.rawValue) == "{\"key1\":\"value1\",\"key2\":2}"
 
 
     let dict2JSON = JSONValue(dict2)
     switch dict2JSON {
-      case .Object?: break
+      case .Object: break
       default: XCTFail("unexpected enumeration value, expected 'JSON.Object")
     }
-    expect(dict2JSON?.rawValue) == dict2String
+    expect(dict2JSON.rawValue) == "{\"key1\":\"value1\",\"key2\":\"value2\"}"
 
     let dictJSON = JSONValue(dict)
     switch dictJSON {
-      case .Object?: break
+      case .Object: break
       default: XCTFail("unexpected enumeration value, expected 'JSON.Object")
     }
-    expect(dictJSON?.rawValue) == dictString
+    expect(dictJSON.rawValue) == "{\"key1\":{\"key1\":\"value1\",\"key2\":2},\"key2\":{\"key1\":\"value1\",\"key2\":\"value2\"},\"key3\":\"value3\"}"
 
     let composite1JSON = JSONValue(composite1)
     switch composite1JSON {
-      case .Array?: break
+      case .Array: break
       default: XCTFail("unexpected enumeration value, expected 'JSON.Array")
     }
-    expect(composite1JSON?.rawValue) == composite1String
+    expect(composite1JSON.rawValue) == "[1,\"two\",[[\"item1\",2],[\"item1\",\"item2\",\"item3\"],\"item3\",4],{\"key1\":{\"key1\":\"value1\",\"key2\":2},\"key2\":{\"key1\":\"value1\",\"key2\":\"value2\"},\"key3\":\"value3\"}]"
 
 
     let composite2JSON = JSONValue(composite2)
     switch composite2JSON {
-      case .Array?: break
-      default: XCTFail("unexpected enumeration value, expected 'JSON.Array")
+      case .Object: break
+      default: XCTFail("unexpected enumeration value, expected 'JSON.Object")
     }
-    expect(composite2JSON?.rawValue) == composite2String
+    expect(composite2JSON.rawValue) == "{\"key1\":1,\"key2\":[[\"item1\",2],[\"item1\",\"item2\",\"item3\"],\"item3\",4],\"key3\":{\"key1\":{\"key1\":\"value1\",\"key2\":2},\"key2\":{\"key1\":\"value1\",\"key2\":\"value2\"},\"key3\":\"value3\"},\"key4\":\"value4\"}"
 
   }
 
@@ -173,12 +170,11 @@ final class JSONSerializationTests: XCTestCase {
   }
 
   func testJSONValueInflateKeyPaths() {
-    guard let object = JSONValue(["key1": "value1", "key.two.has.paths": "value2"]) else {
-      XCTFail("Failed to create JSONValue")
-      return
-    }
-    expect(String(object)) == "{\"key1\":\"value1\",\"key.two.has.paths\":\"value2\"}"
-    expect(String(object.inflatedValue)) == "{\"key1\":\"value1\",\"key\":{\"two\":{\"has\":{\"paths\":\"value2\"}}}}"
+    let object = JSONValue(["key1": "value1", "key.two.has.paths": "value2"])
+    let objectString = String(object)
+    expect(objectString) == "{\"key1\":\"value1\",\"key.two.has.paths\":\"value2\"}"
+    let inflatedObjectString = String(object.inflatedValue)
+    expect(inflatedObjectString) == "{\"key1\":\"value1\",\"key\":{\"two\":{\"has\":{\"paths\":\"value2\"}}}}"
   }
 
   func testJSONSerialization() {
@@ -238,10 +234,8 @@ final class JSONSerializationTests: XCTestCase {
   }
 
   func testJSONSerialization_DirectiveParsingPerformance() {
-    guard let bundlePath = NSUserDefaults.standardUserDefaults().stringForKey("XCTestedBundlePath"),
-      bundle = NSBundle(path: bundlePath),
-      filePath = bundle.pathForResource("Preset", ofType: "json")
-    else {
+    let bundle = NSBundle(forClass: JSONSerializationTests.self)
+    guard let filePath = bundle.pathForResource("Preset", ofType: "json") else {
       XCTFail("Failed to get resources for test")
       return
     }

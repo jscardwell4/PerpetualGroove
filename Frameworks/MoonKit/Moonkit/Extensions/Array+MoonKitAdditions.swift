@@ -39,6 +39,16 @@ extension Array {
   }
 }
 
+extension NSArray: JSONValueConvertible {
+  public var jsonValue: JSONValue {
+    var elements: [JSONValue] = []
+    for element in flatMap({$0 as? JSONValueConvertible}) {
+      elements.append(element.jsonValue)
+    }
+    return JSONValue.Array(elements)
+  }
+}
+
 extension Array: JSONValueConvertible {
   public var jsonValue: JSONValue {
     var elements: [JSONValue] = []

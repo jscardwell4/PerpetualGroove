@@ -66,6 +66,8 @@ public protocol MutableKeyValueCollection: KeyValueCollection {
   mutating func updateValue(value: Value, forKey key: Key) -> Value?
 }
 
+extension Dictionary: KeyValueCollection {}
+
 extension Dictionary: MutableKeyValueCollection {
   public mutating func insertValue(value: Value, forKey key: Key) {
     self[key] = value

@@ -568,10 +568,7 @@ public struct OrderedDictionary<Key: Hashable, Value>: _DestructorSafeContainer 
   public var capacity: Int { return buffer.capacity }
 
   public init<S:SequenceType where S.Generator.Element == Element>(_ elements: S) {
-    self.init(minimumCapacity: elements.underestimateCount())
-    for element in elements {
-      buffer.append(element)
-    }
+    self.init(buffer: Buffer(elements: elements))
   }
 
 }
@@ -869,6 +866,19 @@ extension OrderedDictionary: CustomStringConvertible, CustomDebugStringConvertib
     }
     result += "]"
     return result
+  }
+}
+
+// MARK: JSONValueConvertible
+extension OrderedDictionary: JSONValueConvertible {
+  public var jsonValue: JSONValue {
+    var orderedDictionary: OrderedDictionary<String, JSONValue> = [:]
+    for (key, value) in self {
+      guard let k = key as? StringValueConvertible else { continue }
+      guard let v = value as? JSONValueConvertible else { continue }
+      orderedDictionary[k.stringValue] = v.jsonValue
+    }
+    return .Object(orderedDictionary)
   }
 }
 
@@ -1814,7 +1824,8 @@ extension HashedStorageBuffer: RangeReplaceableCollectionType {
 
   /// Creates a collection instance that contains `elements`.
   init<S:SequenceType where S.Generator.Element == Element>(elements: S) {
-    let minimumCapacity = Buffer.minimumCapacityForCount(elements.underestimateCount())
+    let elementsArray = Array(elements)
+    let minimumCapacity = Buffer.minimumCapacityForCount(elementsArray.count)
     self.init(minimumCapacity: minimumCapacity, offsetBy: 0)
     appendContentsOf(elements)
   }
