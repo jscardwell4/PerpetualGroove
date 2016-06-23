@@ -28,6 +28,121 @@ nonce
 */
 public func nonce() -> String { return NSUUID().UUIDString }
 
+public func dumpObjectIntrospection(obj: AnyObject, includeInheritance: Bool = false) {
+  func descriptionForObject(objClass: AnyClass, inherited: Bool) -> String {
+    var string = ""
+
+    guard let objClassName = String(CString: class_getName(objClass), encoding: NSUTF8StringEncoding) else {
+      return ""
+    }
+
+    string += inherited ? "inherited from \(objClassName):\n" : "Class: \(objClassName)\n"
+
+    if !inherited {
+      string += "size: \(class_getInstanceSize(objClass))\n"
+      //      if let ivarLayout = String(UTF8String: UnsafePointer(class_getIvarLayout(objClass)))
+      //        where !ivarLayout.isEmpty {
+      //        string += "ivar layout: \(ivarLayout)\n"
+      //      }
+      //      if let weakIvarLayout = String(UTF8String: UnsafePointer(class_getWeakIvarLayout(objClass)))
+      //        where !weakIvarLayout.isEmpty {
+      //        string += "weak ivar layout: \(weakIvarLayout)\n"
+      //      }
+    }
+
+    var outCount: UInt32 = 0
+    let objClassIvars = class_copyIvarList(object_getClass(objClass), &outCount)
+    if outCount > 0 {
+      string += "class variables:\n"
+      for ivar in UnsafeMutableBufferPointer(start: objClassIvars, count: numericCast(outCount)) {
+        guard let ivarName = String(CString: ivar_getName(ivar), encoding: NSUTF8StringEncoding) else { continue }
+        guard let ivarTypeEncoding = String(CString: ivar_getTypeEncoding(ivar),
+                                            encoding: NSUTF8StringEncoding) else { continue }
+        string += "\t\(ivarName) : \(ivarTypeEncoding)\n"
+      }
+    }
+    outCount = 0
+    let objClassInstanceIvars = class_copyIvarList(objClass, &outCount)
+    if outCount > 0 {
+      string += "instance variables:\n"
+      for ivar in UnsafeMutableBufferPointer(start: objClassInstanceIvars, count: numericCast(outCount)) {
+        guard let ivarName = String(CString: ivar_getName(ivar), encoding: NSUTF8StringEncoding) else { continue }
+        guard let ivarTypeEncoding = String(CString: ivar_getTypeEncoding(ivar),
+                                            encoding: NSUTF8StringEncoding) else { continue }
+        string += "\t\(ivarName) : \(ivarTypeEncoding)\n"
+      }
+    }
+
+    outCount = 0
+    let objClassProperties = class_copyPropertyList(objClass, &outCount)
+    if outCount > 0 {
+      string += "properties:\n"
+      for property in UnsafeMutableBufferPointer(start: objClassProperties, count: numericCast(outCount)) {
+        guard let propertyName = String(CString: property_getName(property),
+                                        encoding: NSUTF8StringEncoding) else { continue }
+        guard let propertyAttributes = String(CString:  property_getAttributes(property),
+                                              encoding: NSUTF8StringEncoding) else { continue }
+        string += "\t\(propertyName) : \(propertyAttributes)\n"
+      }
+    }
+
+    outCount = 0
+    let objClassMethods = class_copyMethodList(object_getClass(objClass), &outCount)
+    if outCount > 0 {
+      string += "class methods:\n"
+      for method in UnsafeMutableBufferPointer(start: objClassMethods, count: numericCast(outCount)) {
+        let methodDescription = method_getDescription(method).memory
+        let returnType = String(UTF8String: method_copyReturnType(method))!
+        let allTypes = String(UTF8String: methodDescription.types)!
+        let argumentTypes = allTypes[allTypes.startIndex.advancedBy(returnType.characters.count) ..< allTypes.endIndex]
+        string += "\t\(methodDescription.name)  -> \(returnType)  arguments (\(method_getNumberOfArguments(method))): \(argumentTypes)\n"
+      }
+    }
+
+    outCount = 0
+    let objClassInstanceMethods = class_copyMethodList(objClass, &outCount)
+    if outCount > 0 {
+      string += "instance methods:\n"
+      for method in UnsafeMutableBufferPointer(start: objClassInstanceMethods, count: numericCast(outCount)) {
+        let methodDescription = method_getDescription(method).memory
+        let returnType = String(UTF8String: method_copyReturnType(method))!
+        let allTypes = String(UTF8String: methodDescription.types)!
+        let argumentTypes = allTypes[allTypes.startIndex.advancedBy(returnType.characters.count) ..< allTypes.endIndex]
+        string += "\t\(methodDescription.name)  -> \(returnType)  arguments (\(method_getNumberOfArguments(method))): \(argumentTypes)\n"
+      }
+    }
+
+    outCount = 0
+    let objClassProtocols = class_copyPropertyList(objClass, &outCount)
+    if outCount > 0 {
+      string += "conforms to:\n"
+      for `protocol` in UnsafeMutableBufferPointer(start: objClassProtocols, count: numericCast(outCount)) {
+        guard let protocolName = String(CString: property_getName(`protocol`),
+                                        encoding: NSUTF8StringEncoding) else {
+                                          continue
+        }
+        guard let protocolAttributes = String(CString:  property_getAttributes(`protocol`),
+                                              encoding: NSUTF8StringEncoding) else { continue }
+        string += "\t\(protocolName) : \(protocolAttributes)\n"
+      }
+    }
+
+    return string
+  }
+
+  var currentClass: AnyClass = obj.dynamicType.self
+
+  // dump the object's class
+  print(descriptionForObject(currentClass, inherited: false))
+
+  guard includeInheritance else { return }
+
+  while let superclass = class_getSuperclass(currentClass) {
+    print(descriptionForObject(superclass, inherited: true))
+    currentClass = superclass
+  }
+  
+}
 
 public func pointerCast<T, U>(pointer: UnsafeMutablePointer<T>) -> UnsafeMutablePointer<U> {
   return UnsafeMutablePointer<U>(pointer._rawValue)
