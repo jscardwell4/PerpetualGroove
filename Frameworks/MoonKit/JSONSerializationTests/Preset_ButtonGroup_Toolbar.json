@@ -1,7 +1,0 @@
-{
-  "name": "Toolbar",
-  "baseType": "button-group",
-  "role": "toolbar",
-  "shape": "rectangle",
-  "backgroundColor": "gray@50%"
-}
