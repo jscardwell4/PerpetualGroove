@@ -1,0 +1,3 @@
+[submodule "Frameworks/MoonKit"]
+	path = Frameworks/MoonKit
+	url = https://jscardwell4@github.com/jscardwell4/MoonKit.git
