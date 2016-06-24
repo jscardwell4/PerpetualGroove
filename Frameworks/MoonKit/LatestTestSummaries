@@ -1,0 +1,24 @@
+#!/usr/bin/swift
+
+import Foundation
+
+do {
+  let fileManager = NSFileManager.defaultManager()
+  let derivedDataDirectory = "/Users/Moondeer/Library/Developer/Xcode/DerivedData"
+  let derivedDataContents = try fileManager.contentsOfDirectoryAtPath(derivedDataDirectory)
+  guard let workspaceDirectory = derivedDataContents.filter({$0.hasPrefix("PerpetualGroove")}).first else {
+    exit(1)
+  }
+  let testDirectoryPath = "\(derivedDataDirectory)/\(workspaceDirectory)/Logs/Test"
+  let testDirectoryContents = try fileManager.contentsOfDirectoryAtPath(testDirectoryPath)
+  let summaries: [(String, NSDate)] = try testDirectoryContents.filter({$0.hasSuffix("TestSummaries.plist")}).map {
+    let attributes = try fileManager.attributesOfItemAtPath("\(testDirectoryPath)/\($0)")
+    let creationDate = attributes[NSFileCreationDate] as! NSDate
+    return ($0, creationDate)
+  }
+  guard let latestSummary = summaries.maxElement({$0.1.compare($1.1) == .OrderedAscending}) else { exit(0) }
+  let summaryPath = "\(testDirectoryPath)/\(latestSummary.0)"
+  print(summaryPath)
+} catch {
+  fputs("error: \(error)", Darwin.stderr)
+}

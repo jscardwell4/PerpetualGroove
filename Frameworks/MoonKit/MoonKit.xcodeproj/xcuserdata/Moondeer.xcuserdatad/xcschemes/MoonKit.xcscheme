@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
    LastUpgradeVersion = "0730"
-   version = "1.3">
+   version = "1.7">
    <BuildAction
       parallelizeBuildables = "NO"
       buildImplicitDependencies = "YES">
@@ -55,6 +55,24 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
+      <PostActions>
+         <ExecutionAction
+            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
+            <ActionContent
+               title = "Run Script"
+               scriptText = "latest_summary=`${SRCROOT}/LatestTestSummaries`&#10;/usr/local/bin/xctest2numbers &quot;$latest_summary&quot; --outputDirectory --compareOnly &quot;${SRCROOT}/GeneratedTestReports&quot; --compare &quot;OrderedSetPerformanceXXSmallTests&quot; &quot;NativeSetPerformanceXXSmallTests&quot; --compare &quot;OrderedSetPerformanceXSmallTests&quot; &quot;NativeSetPerformanceXSmallTests&quot; --compare &quot;OrderedSetPerformanceSmallTests&quot; &quot;NativeSetPerformanceSmallTests&quot; --compare &quot;OrderedSetPerformanceMediumTests&quot; &quot;NativeSetPerformanceMediumTests&quot; --compare &quot;OrderedSetPerformanceLargeTests&quot; &quot;NativeSetPerformanceLargeTests&quot; --compare &quot;OrderedSetPerformanceXLargeTests&quot; &quot;NativeSetPerformanceXLargeTests&quot; --compare &quot;OrderedSetPerformanceXXLargeTests&quot; &quot;NativeSetPerformanceXXLargeTests&quot; --compare &quot;OrderedDictionaryPerformanceXXSmallTests&quot; &quot;NativeDictionaryPerformanceXXSmallTests&quot; --compare &quot;OrderedDictionaryPerformanceXSmallTests&quot; &quot;NativeDictionaryPerformanceXSmallTests&quot; --compare &quot;OrderedDictionaryPerformanceSmallTests&quot; &quot;NativeDictionaryPerformanceSmallTests&quot; --compare &quot;OrderedDictionaryPerformanceMediumTests&quot; &quot;NativeDictionaryPerformanceMediumTests&quot; --compare &quot;OrderedDictionaryPerformanceLargeTests&quot; &quot;NativeDictionaryPerformanceLargeTests&quot; --compare &quot;OrderedDictionaryPerformanceXLargeTests&quot; &quot;NativeDictionaryPerformanceXLargeTests&quot; --compare &quot;OrderedDictionaryPerformanceXXLargeTests&quot; &quot;NativeDictionaryPerformanceXXLargeTests&quot;">
+               <EnvironmentBuildable>
+                  <BuildableReference
+                     BuildableIdentifier = "primary"
+                     BlueprintIdentifier = "C2358F1519C78D6D00920F8D"
+                     BuildableName = "MoonKit.framework"
+                     BlueprintName = "MoonKit"
+                     ReferencedContainer = "container:MoonKit.xcodeproj">
+                  </BuildableReference>
+               </EnvironmentBuildable>
+            </ActionContent>
+         </ExecutionAction>
+      </PostActions>
       <Testables>
          <TestableReference
             skipped = "NO">

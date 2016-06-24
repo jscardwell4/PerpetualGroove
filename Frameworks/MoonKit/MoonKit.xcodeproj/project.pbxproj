@@ -492,6 +492,13 @@
 			remoteGlobalIDString = C2358F1519C78D6D00920F8D;
 			remoteInfo = MoonKit;
 		};
+		C2AF813B1D1C7C830044A984 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C2AF81371D1C7C830044A984 /* xctest2numbers.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = C2FB25D41D108A4E00425A7F;
+			remoteInfo = xctest2numbers;
+		};
 		C2C65BC21C970F39000645ED /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C2CE884618138C4900555D63 /* Project object */;
@@ -709,6 +716,8 @@
 		C2AA14711BB5857600D7C9E1 /* Tree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tree.swift; sourceTree = "<group>"; };
 		C2AA2BCC1B8508AA00A0B08D /* Heap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Heap.swift; sourceTree = "<group>"; };
 		C2AA7F151CF6873400921CEE /* RangeMap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RangeMap.swift; sourceTree = "<group>"; };
+		C2AF81371D1C7C830044A984 /* xctest2numbers.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = xctest2numbers.xcodeproj; path = xctest2numbers/xctest2numbers.xcodeproj; sourceTree = "<group>"; };
+		C2AF813D1D1C89310044A984 /* LatestTestSummaries */ = {isa = PBXFileReference; lastKnownFileType = text; path = LatestTestSummaries; sourceTree = "<group>"; };
 		C2AFC9071BD675F60057F055 /* MarqueeField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarqueeField.swift; sourceTree = "<group>"; };
 		C2AFC9091BD678C60057F055 /* TintColorControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TintColorControl.swift; sourceTree = "<group>"; };
 		C2B3B2EC1C592EC60001152F /* HashableTuple.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HashableTuple.swift; sourceTree = "<group>"; };
@@ -1374,6 +1383,14 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
+		C2AF81381D1C7C830044A984 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C2AF813C1D1C7C830044A984 /* xctest2numbers */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		C2B328431BD287D3003363BD /* Forms */ = {
 			isa = PBXGroup;
 			children = (
@@ -1492,6 +1509,8 @@
 		C2CE884518138C4900555D63 = {
 			isa = PBXGroup;
 			children = (
+				C2AF813D1D1C89310044A984 /* LatestTestSummaries */,
+				C2AF81371D1C7C830044A984 /* xctest2numbers.xcodeproj */,
 				C25ACFA01D0EFA8900C9C7A4 /* Playgrounds */,
 				C29C22E51A3A4CBF00B0101F /* Resources */,
 				C2CE885318138C4900555D63 /* MSKit */,
@@ -2281,6 +2300,12 @@
 			mainGroup = C2CE884518138C4900555D63;
 			productRefGroup = C2CE884F18138C4900555D63 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = C2AF81381D1C7C830044A984 /* Products */;
+					ProjectRef = C2AF81371D1C7C830044A984 /* xctest2numbers.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				C2358F1519C78D6D00920F8D /* MoonKit */,
@@ -2297,6 +2322,16 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		C2AF813C1D1C7C830044A984 /* xctest2numbers */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = xctest2numbers;
+			remoteRef = C2AF813B1D1C7C830044A984 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		C2358F1419C78D6D00920F8D /* Resources */ = {
