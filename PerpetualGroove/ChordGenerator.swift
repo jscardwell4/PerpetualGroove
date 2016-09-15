@@ -12,8 +12,8 @@ import MoonKit
 
 struct ChordGenerator {
   var chord = Chord()
-  var octave = Octave.Four
-  var duration = Duration.Eighth
+  var octave = Octave.four
+  var duration = Duration.eighth
   var velocity = Velocity.𝑚𝑓
 
   var root: Note { get { return chord.root } set { chord.root = newValue } }
@@ -21,7 +21,7 @@ struct ChordGenerator {
   var midiNotes: [NoteGenerator] {
     var result: [NoteGenerator] = []
     let notes = chord.notes
-    guard let rootIndex = notes.indexOf(chord.root) else { return result }
+    guard let rootIndex = notes.index(of: chord.root) else { return result }
 
     if rootIndex > 0 {
       for note in notes[0 ..< rootIndex] {
@@ -95,10 +95,10 @@ extension ChordGenerator: JSONValueConvertible {
 extension ChordGenerator: JSONValueInitializable {
   init?(_ jsonValue: JSONValue?) {
     guard let dict = ObjectJSONValue(jsonValue),
-              chord = Chord(dict["chord"]),
-              octave = Octave(dict["octave"]),
-              duration = Duration(dict["duration"]),
-              velocity = Velocity(dict["velocity"]) else { return nil }
+              let chord = Chord(dict["chord"]),
+              let octave = Octave(dict["octave"]),
+              let duration = Duration(dict["duration"]),
+              let velocity = Velocity(dict["velocity"]) else { return nil }
     self.chord = chord
     self.octave = octave
     self.duration = duration
@@ -113,7 +113,7 @@ extension ChordGenerator: MIDIGeneratorType {
 
    - parameter endPoint: MIDIEndpointRef
    */
-  func receiveNoteOn(endPoint: MIDIEndpointRef, _ identifier: UInt64) throws {
+  func receiveNoteOn(_ endPoint: MIDIEndpointRef, _ identifier: UInt64) throws {
     for note in midiNotes { try note.receiveNoteOn(endPoint, identifier) }
   }
 
@@ -122,7 +122,7 @@ extension ChordGenerator: MIDIGeneratorType {
 
    - parameter endPoint: MIDIEndpointRef
    */
-  func receiveNoteOff(endPoint: MIDIEndpointRef, _ identifier: UInt64) throws {
+  func receiveNoteOff(_ endPoint: MIDIEndpointRef, _ identifier: UInt64) throws {
     for note in midiNotes { try note.receiveNoteOff(endPoint, identifier) }
   }
 
@@ -131,7 +131,7 @@ extension ChordGenerator: MIDIGeneratorType {
 
    - parameter endPoint: MIDIEndpointRef
    */
-  func sendNoteOn(outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws {
+  func sendNoteOn(_ outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws {
     for note in midiNotes { try note.sendNoteOn(outPort, endPoint) }
   }
 
@@ -140,7 +140,7 @@ extension ChordGenerator: MIDIGeneratorType {
 
    - parameter endPoint: MIDIEndpointRef
    */
-  func sendNoteOff(outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws {
+  func sendNoteOff(_ outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws {
     for note in midiNotes { try note.sendNoteOff(outPort, endPoint) }
   }
 

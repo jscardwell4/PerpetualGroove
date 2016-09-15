@@ -16,14 +16,14 @@ protocol MIDINodeDispatch: class, MIDIEventDispatch, Loggable, Named {
   var nextNodeName: String { get }
   var color: TrackColor { get }
   var nodeManager: MIDINodeManager! { get }
-  func connectNode(node: MIDINode) throws
-  func disconnectNode(node: MIDINode) throws
+  func connectNode(_ node: MIDINode) throws
+  func disconnectNode(_ node: MIDINode) throws
 
   var recording: Bool { get }
 }
 
 // MARK: - MIDINodeDispatchError
-enum MIDINodeDispatchError: String, ErrorType, CustomStringConvertible {
+enum MIDINodeDispatchError: String, Swift.Error, CustomStringConvertible {
   case NodeNotFound = "The specified node was not found among the track's nodes"
   case NodeAlreadyConnected = "The specified node has already been connected"
 }

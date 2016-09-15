@@ -16,31 +16,31 @@ import Foundation
 /** Parses the data from a SoundFont file, which consists of three chunks: info, sdta, and pdta */
 struct SF2File {
 
-  let url: NSURL
+  let url: URL
 
-  private let info: INFOChunk
-  private let sdta: SDTAChunk
-  private let pdta: PDTAChunk
+  fileprivate let info: INFOChunk
+  fileprivate let sdta: SDTAChunk
+  fileprivate let pdta: PDTAChunk
 
   /**
   Initializer that takes a file url
 
   - parameter file: NSURL
   */
-  init(file: NSURL) throws {
+  init(file: URL) throws {
 
     // Grab the url and data
     url = file
-    guard let fileData = NSData(contentsOfURL: file) else { throw Error.ReadFailure }
+    guard let fileData = try? Data(contentsOf: file) else { throw Error.ReadFailure }
 
     // Check the data length
-    let totalBytes = fileData.length
+    let totalBytes = fileData.count
     guard totalBytes > 8 else { throw Error.FileStructurallyUnsound }
 
     // Get a pointer to the underlying memory buffer
-    let bytes = UnsafeBufferPointer<Byte>(start: UnsafePointer<Byte>(fileData.bytes), count: totalBytes)
+    let bytes = UnsafeBufferPointer<Byte>(start: (fileData as NSData).bytes.bindMemory(to: UInt8.self, capacity: fileData.count), count: totalBytes)
 
-    guard String(bytes[bytes.startIndex ..< bytes.startIndex + 4]).lowercaseString == "riff" else {
+    guard String(bytes[bytes.startIndex ..< bytes.startIndex + 4]).lowercased() == "riff" else {
       throw Error.FileHeaderInvalid
     }
 
@@ -134,7 +134,7 @@ struct SF2File {
 
 extension SF2File {
 
-  enum Error: String, ErrorType, CustomStringConvertible {
+  enum Error: String, Swift.Error, CustomStringConvertible {
     case ReadFailure             = "Failed to obtain data from the file specified"
     case FileStructurallyUnsound = "The specified file is not structurally sound"
     case FileHeaderInvalid       = "The specified file does not contain a valid RIFF header"
@@ -160,9 +160,9 @@ extension SF2File {
     init(name: String, program: Byte, bank: Byte) { self.name = name; self.program = program; self.bank = bank }
     init?(_ jsonValue: JSONValue?) {
       guard let dict = ObjectJSONValue(jsonValue),
-        name = String(dict["name"]),
-                program = Byte(dict["program"]),
-                bank = Byte(dict["bank"]) else { return nil }
+        let name = String(dict["name"]),
+                let program = Byte(dict["program"]),
+                let bank = Byte(dict["bank"]) else { return nil }
       self.name = name
       self.program = program
       self.bank = bank
@@ -170,7 +170,7 @@ extension SF2File {
   }
 
   var presets: [Preset] {
-    guard case let .Presets(_, chunk) = pdta.phdr else { return [] }
+    guard case let .presets(_, chunk) = pdta.phdr else { return [] }
     return chunk.headers.map { Preset(name: $0.name, program: Byte($0.preset), bank: Byte($0.bank))}
   }
 
@@ -181,16 +181,16 @@ extension SF2File: CustomStringConvertible {
   var description: String {
     return "\n".join(
       "url: '\(url.path!)'",
-      "info:\n\(info.description.indentedBy(1, useTabs: true))",
-      "sdta:\n\(sdta.description.indentedBy(1, useTabs: true))",
-      "pdta:\n\(pdta.description.indentedBy(1, useTabs: true))"
+      "info:\n\(info.description.indentedBy(1, preserveFirst: false, useTabs: true))",
+      "sdta:\n\(sdta.description.indentedBy(1, preserveFirst: false, useTabs: true))",
+      "pdta:\n\(pdta.description.indentedBy(1, preserveFirst: false, useTabs: true))"
     )
   }
 
 }
 
 extension SF2File: CustomDebugStringConvertible {
-  var debugDescription: String { var result = ""; dump(self, &result); return result }
+  var debugDescription: String { var result = ""; dump(self, to: &result); return result }
 }
 
 func ==(lhs: SF2File.Preset, rhs: SF2File.Preset) -> Bool {

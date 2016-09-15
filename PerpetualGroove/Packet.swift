@@ -10,15 +10,15 @@ import Foundation
 import CoreMIDI
 import MoonKit
 
-extension MIDIPacketList: SequenceType {
-  public func generate() -> AnyGenerator<MIDIPacket> {
+extension MIDIPacketList: Swift.Sequence {
+  public func makeIterator() -> AnyIterator<MIDIPacket> {
     var iterator: MIDIPacket?
     var nextIndex: UInt32 = 0
 
-    return AnyGenerator {
+    return AnyIterator {
       if ({let i = nextIndex; nextIndex += 1; return i}()) >= self.numPackets { return nil }
       if iterator == nil { iterator = self.packet }
-      else { iterator = withUnsafePointer(&iterator!) { MIDIPacketNext($0).memory } }
+      else { iterator = withUnsafePointer(to: &iterator!) { MIDIPacketNext($0).pointee } }
       return iterator
     }
   }
@@ -34,7 +34,7 @@ struct Packet: CustomStringConvertible {
   var packetList: MIDIPacketList {
     var packetList = MIDIPacketList()
     let packet = MIDIPacketListInit(&packetList)
-    let size = sizeof(UInt32.self) + sizeof(MIDIPacket.self)
+    let size = MemoryLayout<UInt32>.size + MemoryLayout<MIDIPacket>.size
     let data: [Byte] = [status | channel, note, velocity] + identifier.bytes
     let timeStamp = Sequencer.time.ticks
     MIDIPacketListAdd(&packetList, size, packet, timeStamp, data.count, data)
@@ -64,14 +64,14 @@ struct Packet: CustomStringConvertible {
   - parameter packetList: UnsafePointer<MIDIPacketList>
   */
   init?(packetList: UnsafePointer<MIDIPacketList>) {
-    let packet = packetList.memory.packet
-    guard packet.length == UInt16(sizeof(Identifier.self) + 3) else { return nil }
+    let packet = packetList.pointee.packet
+    guard packet.length == UInt16(MemoryLayout<Identifier>.size + 3) else { return nil }
     var data = packet.data
     status = data.0 >> 4
     channel = data.0 & 0xF
     note = data.1
     velocity = data.2
-    identifier = UInt64(withUnsafePointer(&data) {
+    identifier = UInt64(withUnsafePointer(to: &data) {
       UnsafeBufferPointer<Byte>(start: UnsafePointer<Byte>($0).advancedBy(3), count: sizeof(Identifier.self))
       })
   }

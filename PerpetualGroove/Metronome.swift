@@ -14,7 +14,7 @@ import MoonKit
 
 final class Metronome {
 
-  private let sampler: AVAudioUnitSampler
+  fileprivate let sampler: AVAudioUnitSampler
 
   var channel: Byte = 0
   var on = false {
@@ -29,20 +29,20 @@ final class Metronome {
   /** initialize */
   init(node: AVAudioUnitSampler) throws {
     sampler = node
-    guard let url = NSBundle.mainBundle().URLForResource("Woodblock", withExtension: "wav") else {
+    guard let url = Bundle.main.url(forResource: "Woodblock", withExtension: "wav") else {
       fatalError("Failed to get url for 'Woodblock.wav'")
     }
-    try sampler.loadAudioFilesAtURLs([url])
+    try sampler.loadAudioFiles(at: [url])
   }
 
-  private let callbackKey = "click"
+  fileprivate let callbackKey = "click"
 
   /**
   click:
 
   - parameter time: BarBeatTime
   */
-  private func click(time: BarBeatTime) {
+  fileprivate func click(_ time: BarBeatTime) {
     guard Sequencer.playing else { return }
     sampler.startNote(time.beat == 1 ? 0x3C : 0x37, withVelocity: 64, onChannel: 0)
   }
@@ -55,6 +55,6 @@ final class Metronome {
 
   - returns: Bool
   */
-  private func isAudibleTick(time: BarBeatTime) -> Bool { return time.subbeat  == 1 }
+  fileprivate func isAudibleTick(_ time: BarBeatTime) -> Bool { return time.subbeat  == 1 }
 
 }

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 47;
+	objectVersion = 48;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -13,13 +13,7 @@
 		C219235F1C76371D00E82437 /* SecondaryContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C219235E1C76371D00E82437 /* SecondaryContent.swift */; };
 		C21E44C11B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C21E44C01B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 */; };
 		C21E44C51B76546C00574BD2 /* AudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21E44C41B76546C00574BD2 /* AudioManager.swift */; };
-		C222E6C81BD2B78600DBBBDA /* FestivoLC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C222E6C71BD2B78600DBBBDA /* FestivoLC.framework */; };
-		C222E6C91BD2B78600DBBBDA /* FestivoLC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C222E6C71BD2B78600DBBBDA /* FestivoLC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		C222E6CB1BD2B78600DBBBDA /* Triump.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C222E6CA1BD2B78600DBBBDA /* Triump.framework */; };
-		C222E6CC1BD2B78600DBBBDA /* Triump.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C222E6CA1BD2B78600DBBBDA /* Triump.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C223B1A21C8364ED006CF6B5 /* MIDIEventContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C223B1A11C8364ED006CF6B5 /* MIDIEventContainer.swift */; };
-		C22567821BB05ED100E4842B /* Lumberjack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C22567811BB05ED100E4842B /* Lumberjack.framework */; };
-		C22567831BB05ED100E4842B /* Lumberjack.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C22567811BB05ED100E4842B /* Lumberjack.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C22D93F11BADA24A00B04A2B /* MIDINodeHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22D93F01BADA24A00B04A2B /* MIDINodeHistory.swift */; };
 		C22FA58D1BC830D600162DB4 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22FA58C1BC830D600162DB4 /* SettingsManager.swift */; };
 		C23B05831C01251D0081AC6E /* Duration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23B05821C01251D0081AC6E /* Duration.swift */; };
@@ -73,12 +67,6 @@
 		C2776C2A1B9DF50D002FE5A8 /* Emax Volume 6.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2776C1F1B9DF50D002FE5A8 /* Emax Volume 6.sf2 */; };
 		C2776C301B9E8E72002FE5A8 /* SF2File.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2207B901B9DC63300E4D65D /* SF2File.swift */; };
 		C27AC89B1C0E8ACC00762AAF /* RemoveTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27AC89A1C0E8ACC00762AAF /* RemoveTool.swift */; };
-		C27E18AD1B965F8500626314 /* Eveleth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BCD1B78EDEB00A68A64 /* Eveleth.framework */; };
-		C27E18AE1B965F8500626314 /* Eveleth.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BCD1B78EDEB00A68A64 /* Eveleth.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		C27E18B21B965F8500626314 /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BD41B78EEC500A68A64 /* MoonKit.framework */; };
-		C27E18B31B965F8500626314 /* MoonKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BD41B78EEC500A68A64 /* MoonKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		C27E18B41B965F8500626314 /* Chameleon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BD11B78EE3800A68A64 /* Chameleon.framework */; };
-		C27E18B51B965F8500626314 /* Chameleon.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2404BD11B78EE3800A68A64 /* Chameleon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C2807DDA1C74C5FF0061A001 /* NodeAdjustmentTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2807DD91C74C5FF0061A001 /* NodeAdjustmentTool.swift */; };
 		C2807DDC1C74C60F0061A001 /* NudgeTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2807DDB1C74C60F0061A001 /* NudgeTool.swift */; };
 		C2807DDE1C74C61D0061A001 /* ThrottleTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2807DDD1C74C61D0061A001 /* ThrottleTool.swift */; };
@@ -102,11 +90,9 @@
 		C2AA2BC81B84B04200A0B08D /* InstrumentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AA2BC71B84B04200A0B08D /* InstrumentViewController.swift */; };
 		C2AA2BCB1B84FB2100A0B08D /* Sequencer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AA2BCA1B84FB2100A0B08D /* Sequencer.swift */; };
 		C2AC3A971BA9D4CD00692EBB /* TempoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AC3A961BA9D4CD00692EBB /* TempoViewController.swift */; };
-		C2AF09D51BB9DB410021A37E /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2AF09D41BB9DB410021A37E /* AudioToolbox.framework */; };
 		C2B123BF1B864DCC008FED5E /* MIDIClock.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B123BE1B864DCC008FED5E /* MIDIClock.swift */; };
 		C2B12D971BDC531500A6C719 /* Track.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B12D961BDC531500A6C719 /* Track.swift */; };
 		C2B2B03F1BCDCE5F007AF9DC /* TrackColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B2B03E1BCDCE5F007AF9DC /* TrackColor.swift */; };
-		C2B2B0431BCEA55D007AF9DC /* OldMIDIEventContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B2B0421BCEA55D007AF9DC /* OldMIDIEventContainer.swift */; };
 		C2B3B2EB1C55A9110001152F /* NodeSelectionTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B3B2EA1C55A9110001152F /* NodeSelectionTool.swift */; };
 		C2BC7AD51B76C85E001729BA /* Instrument.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BC7AD41B76C85E001729BA /* Instrument.swift */; };
 		C2BDBBC01BD3E12C00E343F1 /* INFOChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BDBBBF1BD3E12C00E343F1 /* INFOChunk.swift */; };
@@ -119,6 +105,14 @@
 		C2D406741BB9FDC700681DEF /* DocumentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D406731BB9FDC700681DEF /* DocumentManager.swift */; };
 		C2DDA22F1C38A6CF005F0965 /* GrooveNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DDA22E1C38A6CF005F0965 /* GrooveNode.swift */; };
 		C2DDA2311C38A8B5005F0965 /* GrooveLoop.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DDA2301C38A8B5005F0965 /* GrooveLoop.swift */; };
+		C2DE50471D89A6BE00244DB1 /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2DE50461D89A6BE00244DB1 /* MoonKit.framework */; };
+		C2DE50481D89A6BE00244DB1 /* MoonKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2DE50461D89A6BE00244DB1 /* MoonKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C2DE504A1D89A6FE00244DB1 /* FestivoLC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2DE50491D89A6FE00244DB1 /* FestivoLC.framework */; };
+		C2DE504B1D89A6FE00244DB1 /* FestivoLC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2DE50491D89A6FE00244DB1 /* FestivoLC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C2DE504D1D89A6FE00244DB1 /* Triump.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2DE504C1D89A6FE00244DB1 /* Triump.framework */; };
+		C2DE504E1D89A6FE00244DB1 /* Triump.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2DE504C1D89A6FE00244DB1 /* Triump.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C2DE50501D89A6FE00244DB1 /* Eveleth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2DE504F1D89A6FE00244DB1 /* Eveleth.framework */; };
+		C2DE50511D89A6FE00244DB1 /* Eveleth.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2DE504F1D89A6FE00244DB1 /* Eveleth.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C2DFBE7A1B8AA5AB00898C2A /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DFBE791B8AA5AB00898C2A /* Sequence.swift */; };
 		C2E043351B72F4DC005F0675 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E043341B72F4DC005F0675 /* AppDelegate.swift */; };
 		C2E043391B72F4DC005F0675 /* MIDIPlayerScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E043381B72F4DC005F0675 /* MIDIPlayerScene.swift */; };
@@ -174,18 +168,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		C27E18B61B965F8600626314 /* Embed Frameworks */ = {
+		C200B2A61D8705FF00346F88 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				C22567831BB05ED100E4842B /* Lumberjack.framework in Embed Frameworks */,
-				C27E18B31B965F8500626314 /* MoonKit.framework in Embed Frameworks */,
-				C27E18AE1B965F8500626314 /* Eveleth.framework in Embed Frameworks */,
-				C222E6C91BD2B78600DBBBDA /* FestivoLC.framework in Embed Frameworks */,
-				C27E18B51B965F8500626314 /* Chameleon.framework in Embed Frameworks */,
-				C222E6CC1BD2B78600DBBBDA /* Triump.framework in Embed Frameworks */,
+				C2DE504B1D89A6FE00244DB1 /* FestivoLC.framework in Embed Frameworks */,
+				C2DE50481D89A6BE00244DB1 /* MoonKit.framework in Embed Frameworks */,
+				C2DE50511D89A6FE00244DB1 /* Eveleth.framework in Embed Frameworks */,
+				C2DE504E1D89A6FE00244DB1 /* Triump.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -205,10 +197,7 @@
 		C21E44C41B76546C00574BD2 /* AudioManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioManager.swift; sourceTree = "<group>"; };
 		C21E44C81B76739C00574BD2 /* sf2.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = sf2.playground; path = PerpetualGroove/sf2.playground; sourceTree = "<group>"; };
 		C2207B901B9DC63300E4D65D /* SF2File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SF2File.swift; sourceTree = "<group>"; };
-		C222E6C71BD2B78600DBBBDA /* FestivoLC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FestivoLC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C222E6CA1BD2B78600DBBBDA /* Triump.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Triump.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C223B1A11C8364ED006CF6B5 /* MIDIEventContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIEventContainer.swift; sourceTree = "<group>"; };
-		C22567811BB05ED100E4842B /* Lumberjack.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Lumberjack.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C22D93F01BADA24A00B04A2B /* MIDINodeHistory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINodeHistory.swift; sourceTree = "<group>"; };
 		C22FA58A1BC7F3D300162DB4 /* TrackLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackLabel.swift; sourceTree = "<group>"; };
 		C22FA58C1BC830D600162DB4 /* SettingsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
@@ -222,9 +211,6 @@
 		C23B05941C0219560081AC6E /* NoteChordTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteChordTests.swift; sourceTree = "<group>"; };
 		C23B05961C0219560081AC6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C23B059C1C026F4C0081AC6E /* ChordGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChordGenerator.swift; sourceTree = "<group>"; };
-		C2404BCD1B78EDEB00A68A64 /* Eveleth.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Eveleth.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C2404BD11B78EE3800A68A64 /* Chameleon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Chameleon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C2404BD41B78EEC500A68A64 /* MoonKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MoonKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C24DCE371C3438A800AD98BE /* GrooveFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GrooveFile.swift; sourceTree = "<group>"; };
 		C24DCE391C343C0C00AD98BE /* GrooveTrack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GrooveTrack.swift; sourceTree = "<group>"; };
 		C24E83951C3EDFD800B4A16A /* SecondaryControllerContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecondaryControllerContainer.swift; sourceTree = "<group>"; };
@@ -298,7 +284,6 @@
 		C2AA2BCA1B84FB2100A0B08D /* Sequencer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sequencer.swift; sourceTree = "<group>"; };
 		C2AC3A961BA9D4CD00692EBB /* TempoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TempoViewController.swift; sourceTree = "<group>"; };
 		C2AD8E881B7D99C60003579E /* Groove.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Groove.entitlements; sourceTree = "<group>"; };
-		C2AF09D41BB9DB410021A37E /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		C2B123BE1B864DCC008FED5E /* MIDIClock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIClock.swift; sourceTree = "<group>"; };
 		C2B12D961BDC531500A6C719 /* Track.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Track.swift; sourceTree = "<group>"; };
 		C2B2B03E1BCDCE5F007AF9DC /* TrackColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackColor.swift; sourceTree = "<group>"; };
@@ -316,6 +301,10 @@
 		C2D406731BB9FDC700681DEF /* DocumentManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentManager.swift; sourceTree = "<group>"; };
 		C2DDA22E1C38A6CF005F0965 /* GrooveNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GrooveNode.swift; sourceTree = "<group>"; };
 		C2DDA2301C38A8B5005F0965 /* GrooveLoop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GrooveLoop.swift; sourceTree = "<group>"; };
+		C2DE50461D89A6BE00244DB1 /* MoonKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MoonKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C2DE50491D89A6FE00244DB1 /* FestivoLC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FestivoLC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C2DE504C1D89A6FE00244DB1 /* Triump.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Triump.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C2DE504F1D89A6FE00244DB1 /* Eveleth.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Eveleth.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2DFBE791B8AA5AB00898C2A /* Sequence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sequence.swift; sourceTree = "<group>"; };
 		C2E043311B72F4DC005F0675 /* Groove.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Groove.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2E043341B72F4DC005F0675 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -375,13 +364,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C222E6C81BD2B78600DBBBDA /* FestivoLC.framework in Frameworks */,
-				C22567821BB05ED100E4842B /* Lumberjack.framework in Frameworks */,
-				C27E18AD1B965F8500626314 /* Eveleth.framework in Frameworks */,
-				C27E18B41B965F8500626314 /* Chameleon.framework in Frameworks */,
-				C27E18B21B965F8500626314 /* MoonKit.framework in Frameworks */,
-				C2AF09D51BB9DB410021A37E /* AudioToolbox.framework in Frameworks */,
-				C222E6CB1BD2B78600DBBBDA /* Triump.framework in Frameworks */,
+				C2DE504A1D89A6FE00244DB1 /* FestivoLC.framework in Frameworks */,
+				C2DE50471D89A6BE00244DB1 /* MoonKit.framework in Frameworks */,
+				C2DE50501D89A6FE00244DB1 /* Eveleth.framework in Frameworks */,
+				C2DE504D1D89A6FE00244DB1 /* Triump.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -404,20 +390,6 @@
 				C23B05961C0219560081AC6E /* Info.plist */,
 			);
 			path = NoteChordTests;
-			sourceTree = "<group>";
-		};
-		C2404BD71B78EF8200A68A64 /* Embedded Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				C2AF09D41BB9DB410021A37E /* AudioToolbox.framework */,
-				C22567811BB05ED100E4842B /* Lumberjack.framework */,
-				C222E6C71BD2B78600DBBBDA /* FestivoLC.framework */,
-				C222E6CA1BD2B78600DBBBDA /* Triump.framework */,
-				C2404BD41B78EEC500A68A64 /* MoonKit.framework */,
-				C2404BD11B78EE3800A68A64 /* Chameleon.framework */,
-				C2404BCD1B78EDEB00A68A64 /* Eveleth.framework */,
-			);
-			name = "Embedded Frameworks";
 			sourceTree = "<group>";
 		};
 		C2404BD81B78EFA800A68A64 /* Sound Sets */ = {
@@ -655,17 +627,28 @@
 			path = MIDIEventContainerTests;
 			sourceTree = "<group>";
 		};
+		C2DE50451D89A52000244DB1 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				C284F7C91C49C8A8009C72A0 /* MIDINodePathTests */,
+				C28831931C78E8AD00F6865D /* MIDIEventContainerTests */,
+				C20A109F1C51552B00522FD7 /* BarBeatTimeTests */,
+				C23B05931C0219560081AC6E /* NoteChordTests */,
+			);
+			name = Tests;
+			sourceTree = "<group>";
+		};
 		C2E043281B72F4DC005F0675 = {
 			isa = PBXGroup;
 			children = (
+				C2DE504F1D89A6FE00244DB1 /* Eveleth.framework */,
+				C2DE504C1D89A6FE00244DB1 /* Triump.framework */,
+				C2DE50491D89A6FE00244DB1 /* FestivoLC.framework */,
+				C2DE50461D89A6BE00244DB1 /* MoonKit.framework */,
+				C2DE50451D89A52000244DB1 /* Tests */,
 				C2404BD91B78EFD700A68A64 /* Playgrounds */,
-				C2404BD71B78EF8200A68A64 /* Embedded Frameworks */,
 				C2404BD81B78EFA800A68A64 /* Sound Sets */,
 				C2E043331B72F4DC005F0675 /* PerpetualGroove */,
-				C23B05931C0219560081AC6E /* NoteChordTests */,
-				C284F7C91C49C8A8009C72A0 /* MIDINodePathTests */,
-				C20A109F1C51552B00522FD7 /* BarBeatTimeTests */,
-				C28831931C78E8AD00F6865D /* MIDIEventContainerTests */,
 				C2E043321B72F4DC005F0675 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -776,7 +759,7 @@
 				C2E0432D1B72F4DC005F0675 /* Sources */,
 				C2E0432E1B72F4DC005F0675 /* Frameworks */,
 				C2E0432F1B72F4DC005F0675 /* Resources */,
-				C27E18B61B965F8600626314 /* Embed Frameworks */,
+				C200B2A61D8705FF00346F88 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -795,28 +778,33 @@
 			attributes = {
 				LastSwiftMigration = 0730;
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0710;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = "Moondeer Studios";
 				TargetAttributes = {
 					C20A109D1C51552B00522FD7 = {
 						CreatedOnToolsVersion = 7.2;
+						LastSwiftMigration = 0800;
 						TestTargetID = C2E043301B72F4DC005F0675;
 					};
 					C23B05911C0219560081AC6E = {
 						CreatedOnToolsVersion = 7.1.1;
+						LastSwiftMigration = 0800;
 						TestTargetID = C2E043301B72F4DC005F0675;
 					};
 					C284F7C71C49C8A8009C72A0 = {
 						CreatedOnToolsVersion = 7.2;
+						LastSwiftMigration = 0800;
 						TestTargetID = C2E043301B72F4DC005F0675;
 					};
 					C28831911C78E8AC00F6865D = {
 						CreatedOnToolsVersion = 7.3;
+						LastSwiftMigration = 0800;
 						TestTargetID = C2E043301B72F4DC005F0675;
 					};
 					C2E043301B72F4DC005F0675 = {
 						CreatedOnToolsVersion = 7.0;
 						DevelopmentTeam = JT6STF4SHA;
+						LastSwiftMigration = 0800;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -832,7 +820,7 @@
 				};
 			};
 			buildConfigurationList = C2E0432C1B72F4DC005F0675 /* Build configuration list for PBXProject "PerpetualGroove" */;
-			compatibilityVersion = "Xcode 6.3";
+			compatibilityVersion = "Xcode 8.0";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -1002,7 +990,6 @@
 				C2AA2BC81B84B04200A0B08D /* InstrumentViewController.swift in Sources */,
 				C291C3ED1B91EDB700702AEA /* MIDIFileHeaderChunk.swift in Sources */,
 				C26A09761BC96B97002EFEE1 /* MixerLayout.swift in Sources */,
-				C2B2B0431BCEA55D007AF9DC /* OldMIDIEventContainer.swift in Sources */,
 				C2729ADD1BEE6B3D004FA34F /* LocalDocumentItem.swift in Sources */,
 				C2DDA2311C38A8B5005F0965 /* GrooveLoop.swift in Sources */,
 				C2E0433B1B72F4DC005F0675 /* MIDIPlayerViewController.swift in Sources */,
@@ -1133,6 +1120,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.BarBeatTimeTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
 			};
 			name = Debug;
@@ -1146,6 +1134,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.BarBeatTimeTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
 			};
 			name = Release;
@@ -1159,6 +1148,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.NoteChordTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
 			};
 			name = Debug;
@@ -1172,6 +1162,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.NoteChordTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
 			};
 			name = Release;
@@ -1189,8 +1180,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -1224,13 +1217,13 @@
 		C2562CED1C63A3C30086789D /* Debug-Verbose */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "Brand Assets";
 				CODE_SIGN_ENTITLEMENTS = PerpetualGroove/Groove.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = YES;
 				GENERATE_PROFILING_CODE = YES;
 				INFOPLIST_FILE = PerpetualGroove/Info.plist;
@@ -1242,6 +1235,7 @@
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
 				STRIP_STYLE = debugging;
+				SWIFT_VERSION = 3.0;
 				VALID_ARCHS = "arm64 armv7s armv7";
 			};
 			name = "Debug-Verbose";
@@ -1255,6 +1249,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.NoteChordTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
 			};
 			name = "Debug-Verbose";
@@ -1268,6 +1263,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.MIDINodePathTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
 			};
 			name = "Debug-Verbose";
@@ -1281,6 +1277,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.BarBeatTimeTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
 			};
 			name = "Debug-Verbose";
@@ -1298,8 +1295,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -1333,13 +1332,13 @@
 		C274C7D81C5A869800A5FC23 /* Profile */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "Brand Assets";
 				CODE_SIGN_ENTITLEMENTS = PerpetualGroove/Groove.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = YES;
 				GENERATE_PROFILING_CODE = YES;
 				INFOPLIST_FILE = PerpetualGroove/Info.plist;
@@ -1351,6 +1350,7 @@
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
 				STRIP_STYLE = debugging;
+				SWIFT_VERSION = 3.0;
 				VALID_ARCHS = "arm64 armv7s armv7";
 			};
 			name = Profile;
@@ -1364,6 +1364,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.NoteChordTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
 			};
 			name = Profile;
@@ -1377,6 +1378,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.MIDINodePathTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
 			};
 			name = Profile;
@@ -1390,6 +1392,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.BarBeatTimeTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
 			};
 			name = Profile;
@@ -1403,6 +1406,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.MIDINodePathTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
 			};
 			name = Debug;
@@ -1416,6 +1420,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.MIDINodePathTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
 			};
 			name = Release;
@@ -1430,6 +1435,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.MIDIEventContainerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
 			};
 			name = Debug;
@@ -1444,6 +1450,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.MIDIEventContainerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
 			};
 			name = "Debug-Verbose";
@@ -1458,6 +1465,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.MIDIEventContainerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
 			};
 			name = Profile;
@@ -1472,6 +1480,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.MIDIEventContainerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
 			};
 			name = Release;
@@ -1489,8 +1498,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -1534,8 +1545,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -1554,6 +1567,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1562,13 +1576,13 @@
 		C2E043481B72F4DC005F0675 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "Brand Assets";
 				CODE_SIGN_ENTITLEMENTS = PerpetualGroove/Groove.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = YES;
 				GENERATE_PROFILING_CODE = YES;
 				INFOPLIST_FILE = PerpetualGroove/Info.plist;
@@ -1580,6 +1594,7 @@
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
 				STRIP_STYLE = debugging;
+				SWIFT_VERSION = 3.0;
 				VALID_ARCHS = "arm64 armv7s armv7";
 			};
 			name = Debug;
@@ -1587,12 +1602,12 @@
 		C2E043491B72F4DC005F0675 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "Brand Assets";
 				CODE_SIGN_ENTITLEMENTS = PerpetualGroove/Groove.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = YES;
 				GENERATE_PROFILING_CODE = YES;
 				INFOPLIST_FILE = PerpetualGroove/Info.plist;
@@ -1605,6 +1620,7 @@
 				SKIP_INSTALL = YES;
 				STRIP_STYLE = debugging;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
 				VALID_ARCHS = "arm64 armv7s armv7";
 			};
 			name = Release;

@@ -11,7 +11,7 @@ import MoonKit
 
 /** Struct that holds data for a 'Groove' sequence */
 struct GrooveFile {
-  var source: NSURL?
+  var source: URL?
   var tracks: [GrooveTrack] = []
   var tempoChanges = ObjectJSONValue([BarBeatTime.start1.rawValue: 120.0.jsonValue])
   var endOfFile: BarBeatTime = .start1
@@ -20,21 +20,21 @@ struct GrooveFile {
     source = sequence.document.fileURL
     tracks = sequence.instrumentTracks.map({GrooveTrack(track: $0)})
     for event in sequence.tempoTrack.metaEvents.filter({
-      switch $0.data { case .Tempo: return true; default: return false }
+      switch $0.data { case .tempo: return true; default: return false }
       })
     {
-      if case .Tempo(let bpm) = event.data { tempoChanges[event.time.rawValue] = bpm.jsonValue }
+      if case .tempo(let bpm) = event.data { tempoChanges[event.time.rawValue] = bpm.jsonValue }
     }
     endOfFile = sequence.sequenceEnd
   }
 
 }
 
-extension GrooveFile: SequenceDataProvider { var storedData: Sequence.Data { return .Groove(self) } }
+extension GrooveFile: SequenceDataProvider { var storedData: Sequence.Data { return .groove(self) } }
 
 extension GrooveFile: DataConvertible {
-  var data: NSData { return jsonValue.prettyData }
-  init?(data: NSData) { self.init(JSONValue(data: data)) }
+  var data: Data { return jsonValue.prettyData }
+  init?(data: Data) { self.init(JSONValue(data: data)) }
 }
 
 extension GrooveFile: JSONValueConvertible {
@@ -51,13 +51,13 @@ extension GrooveFile: JSONValueConvertible {
 extension GrooveFile: JSONValueInitializable {
   init?(_ jsonValue: JSONValue?) {
     guard let dict = ObjectJSONValue(jsonValue),
-              tracks = ArrayJSONValue(dict["tracks"]),
-              tempoChanges = ObjectJSONValue(dict["tempoChanges"]),
-              endOfFile = BarBeatTime(dict["endOfFile"]) else { return nil }
+              let tracks = ArrayJSONValue(dict["tracks"]),
+              let tempoChanges = ObjectJSONValue(dict["tempoChanges"]),
+              let endOfFile = BarBeatTime(dict["endOfFile"]) else { return nil }
     self.tracks = tracks.flatMap({GrooveTrack($0)})
     self.tempoChanges = tempoChanges
     self.endOfFile = endOfFile
-    if let sourceString = String(dict["source"]) { source = NSURL(string: sourceString) }
+    if let sourceString = String(dict["source"]) { source = NSURL(string: sourceString) as URL? }
   }
 }
 

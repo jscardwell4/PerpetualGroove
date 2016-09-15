@@ -13,13 +13,13 @@ import MoonKit
 
 final class MIDIPlayer {
 
-  static let undoManager: NSUndoManager = {
-    let undoManager = NSUndoManager()
+  static let undoManager: UndoManager = {
+    let undoManager = UndoManager()
     undoManager.groupsByEvent = false
     return undoManager
   }()
 
-  private static let receptionist: NotificationReceptionist = {
+  fileprivate static let receptionist: NotificationReceptionist = {
     let receptionist = NotificationReceptionist()
     receptionist.logContext = LogManager.SceneContext
     receptionist.observe(notification: .DidChangeSequence,
@@ -48,7 +48,7 @@ final class MIDIPlayer {
   }
 
   /** updateCurrentDispatch */
-  static private func updateCurrentDispatch() {
+  static fileprivate func updateCurrentDispatch() {
     guard let track = Sequencer.sequence?.currentTrack else { currentDispatch = nil; return }
     switch Sequencer.mode {
       case .Default: currentDispatch = track
@@ -62,9 +62,9 @@ final class MIDIPlayer {
     }
   }
 
-  private(set) static var initialized = false
+  fileprivate(set) static var initialized = false
 
-  private static weak var sequence: Sequence? {
+  fileprivate static weak var sequence: Sequence? {
     didSet {
       guard sequence !== oldValue else { return }
       if let oldSequence = oldValue { receptionist.stopObserving(object: oldSequence) }
@@ -87,14 +87,14 @@ final class MIDIPlayer {
 
    - parameter notification: NSNotification
   */
-  static private func didChangeSequence(notification: NSNotification) { sequence = Sequencer.sequence }
+  static fileprivate func didChangeSequence(_ notification: Foundation.Notification) { sequence = Sequencer.sequence }
 
   /**
    didRemoveTrack:
 
    - parameter notification: NSNotification
   */
-  static private func didRemoveTrack(notification: NSNotification) {
+  static fileprivate func didRemoveTrack(_ notification: Foundation.Notification) {
     guard let track = notification.removedTrack else { return }
     loops[ObjectIdentifier(track)] = nil
     updateCurrentDispatch()
@@ -105,14 +105,14 @@ final class MIDIPlayer {
 
    - parameter notification: NSNotification
    */
-  static private func didChangeTrack(notification: NSNotification) { updateCurrentDispatch() }
+  static fileprivate func didChangeTrack(_ notification: Foundation.Notification) { updateCurrentDispatch() }
   
   /**
    willEnterLoopMode:
 
    - parameter notification: NSNotification
    */
-  static private func willEnterLoopMode(notification: NSNotification) {
+  static fileprivate func willEnterLoopMode(_ notification: Foundation.Notification) {
     playerNode?.defaultNodes.forEach { $0.fadeOut() }
   }
 
@@ -121,7 +121,7 @@ final class MIDIPlayer {
 
    - parameter notification: NSNotification
    */
-  static private func didEnterLoopMode(notification: NSNotification) {
+  static fileprivate func didEnterLoopMode(_ notification: Foundation.Notification) {
     loops.removeAll()
     updateCurrentDispatch()
   }
@@ -131,7 +131,7 @@ final class MIDIPlayer {
 
    - parameter notification: NSNotification
    */
-  static private func willExitLoopMode(notification: NSNotification) {
+  static fileprivate func willExitLoopMode(_ notification: Foundation.Notification) {
     playerNode?.loopNodes.forEach { $0.fadeOut(remove: true) }
   }
 
@@ -140,7 +140,7 @@ final class MIDIPlayer {
 
    - parameter notification: NSNotification
   */
-  static private func didExitLoopMode(notification: NSNotification) {
+  static fileprivate func didExitLoopMode(_ notification: Foundation.Notification) {
     playerNode?.defaultNodes.forEach { $0.fadeIn() }
     insertLoops()
     resetLoops()
@@ -149,7 +149,7 @@ final class MIDIPlayer {
 
   static var shouldInsertLoops = false
 
-  static private func insertLoops() {
+  static fileprivate func insertLoops() {
     logDebug("inserting loops: \(loops)")
     let startTime = Sequencer.time.barBeatTime + loopStart
     let endTime = Sequencer.time.barBeatTime + loopEnd
@@ -161,7 +161,7 @@ final class MIDIPlayer {
   }
 
   /** resetLoops */
-  static private func resetLoops() {
+  static fileprivate func resetLoops() {
     loops.removeAll()
     loopStart = .start1
     loopEnd = .start1
@@ -176,21 +176,21 @@ final class MIDIPlayer {
       addTool = AddTool(playerNode: node)
       removeTool = RemoveTool(playerNode: node, delete: false)
       deleteTool = RemoveTool(playerNode: node, delete: true)
-      existingGeneratorTool = GeneratorTool(playerNode: node, mode: .Existing)
-      newGeneratorTool = GeneratorTool(playerNode: node, mode: .New)
+      existingGeneratorTool = GeneratorTool(playerNode: node, mode: .existing)
+      newGeneratorTool = GeneratorTool(playerNode: node, mode: .new)
       rotateTool = RotateTool(playerNode: node)
-      currentTool = .None
+      currentTool = .none
     }
   }
 
-  static private(set) var addTool: AddTool?
-  static private(set) var removeTool: RemoveTool?
-  static private(set) var deleteTool: RemoveTool?
-  static private(set) var existingGeneratorTool: GeneratorTool?
-  static private(set) var newGeneratorTool: GeneratorTool?
-  static private(set) var rotateTool: RotateTool?
+  static fileprivate(set) var addTool: AddTool?
+  static fileprivate(set) var removeTool: RemoveTool?
+  static fileprivate(set) var deleteTool: RemoveTool?
+  static fileprivate(set) var existingGeneratorTool: GeneratorTool?
+  static fileprivate(set) var newGeneratorTool: GeneratorTool?
+  static fileprivate(set) var rotateTool: RotateTool?
 
-  static var currentTool: Tool = .None {
+  static var currentTool: Tool = .none {
     willSet {
       logDebug("willSet: \(currentTool) ➞ \(newValue)")
       guard currentTool != newValue else { return }
@@ -201,15 +201,15 @@ final class MIDIPlayer {
     didSet {
       logDebug("didSet: \(oldValue) ➞ \(currentTool)")
       guard currentTool != oldValue else { return }
-      if currentTool != .None { undoManager.beginUndoGrouping() }
+      if currentTool != .none { undoManager.beginUndoGrouping() }
       oldValue.toolType?.active = false
       currentTool.toolType?.active = true
       playerNode?.touchReceiver = currentTool.toolType
-      Notification.DidSelectTool.post(userInfo: [.SelectedTool: currentTool.rawValue])
+      Notification.DidSelectTool.post(userInfo: [.SelectedTool: currentTool.rawValue as Optional<AnyObject>])
     }
   }
 
-  static private var loops: [ObjectIdentifier:Loop] = [:]
+  static fileprivate var loops: [ObjectIdentifier:Loop] = [:]
 
   static var loopStart: BarBeatTime = .start1
   static var loopEnd: BarBeatTime = .start1
@@ -221,7 +221,7 @@ final class MIDIPlayer {
    - parameter targetTrack: InstrumentTrack? = nil
    - parameter generator: MIDIGenerator
   */
-  static func placeNew(trajectory: Trajectory,
+  static func placeNew(_ trajectory: Trajectory,
                 target: MIDINodeDispatch,
              generator: MIDIGenerator,
             identifier: MIDINode.Identifier = UUID())
@@ -259,7 +259,7 @@ final class MIDIPlayer {
 
    - parameter node: MIDINode
   */
-  static func removeNode(node: MIDINode) {
+  static func removeNode(_ node: MIDINode) {
     dispatchToMain {
       guard node.parent === playerNode else { return }
       node.fadeOut(remove: true)
@@ -281,7 +281,7 @@ extension MIDIPlayer: NotificationDispatchType {
 
 }
 
-extension NSNotification {
+extension Notification {
   var addedNode: MIDINode? {
     return userInfo?[MIDIPlayer.Notification.Key.AddedNode.key] as? MIDINode
   }

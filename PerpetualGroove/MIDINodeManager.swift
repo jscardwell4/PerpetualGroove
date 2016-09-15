@@ -21,12 +21,12 @@ final class MIDINodeManager {
   init(owner: MIDINodeDispatch) { self.owner = owner }
 
   /// The nodes currently being managed
-  private(set) var nodes: OrderedSet<HashableTuple<BarBeatTime,MIDINodeRef>> = []
+  fileprivate(set) var nodes: OrderedSet<HashableTuple<BarBeatTime,MIDINodeRef>> = []
 
   var nodeIdentifiers: Set<MIDINode.Identifier> { return Set(nodes.flatMap({$0.element2.reference?.identifier})) }
 
 
-  private var pendingNodes: Set<MIDINode.Identifier> = []
+  fileprivate var pendingNodes: Set<MIDINode.Identifier> = []
 
   /**
    addNodeWithIdentifier:trajectory:generator:
@@ -35,7 +35,7 @@ final class MIDINodeManager {
    - parameter trajectory: Trajectory
    - parameter generator: MIDIGenerator
   */
-  func addNodeWithIdentifier(identifier: MIDINode.Identifier,
+  func addNodeWithIdentifier(_ identifier: MIDINode.Identifier,
                   trajectory: Trajectory,
                    generator: MIDIGenerator)
   {
@@ -58,10 +58,10 @@ final class MIDINodeManager {
    - parameter identifier: NodeIdentifier
    - parameter delete: Bool = false
   */
-  func removeNodeWithIdentifier(identifier: MIDINode.Identifier, delete: Bool = false) throws {
+  func removeNodeWithIdentifier(_ identifier: MIDINode.Identifier, delete: Bool = false) throws {
     logDebug("removing node with identifier \(identifier)")
     guard let idx = nodes.indexOf({$0.element2.reference?.identifier == identifier}),
-              node = nodes[idx].element2.reference else
+              let node = nodes[idx].element2.reference else
     {
       fatalError("failed to find node with mapped identifier \(identifier)")
     }
@@ -71,7 +71,7 @@ final class MIDINodeManager {
   }
 
   /** stopNodes */
-  func stopNodes(remove remove: Bool = false) {
+  func stopNodes(remove: Bool = false) {
     nodes.forEach {$0.element2.reference?.fadeOut(remove: remove)}
     owner.logDebug("nodes stopped\(remove ? " and removed" : "")")
   }
@@ -84,14 +84,14 @@ final class MIDINodeManager {
 
    - parameter node: MIDINode
   */
-  func removeNode(node: MIDINode) throws { try removeNode(node, delete: false) }
+  func removeNode(_ node: MIDINode) throws { try removeNode(node, delete: false) }
 
   /**
    deleteNode:
 
    - parameter node: MIDINode
   */
-  func deleteNode(node: MIDINode) throws { try removeNode(node, delete: true) }
+  func deleteNode(_ node: MIDINode) throws { try removeNode(node, delete: true) }
 
 
   /**
@@ -99,7 +99,7 @@ final class MIDINodeManager {
 
    - parameter node: MIDINode
   */
-  func addNode(node: MIDINode) throws {
+  func addNode(_ node: MIDINode) throws {
     try owner.connectNode(node)
 
 //    guard owner.recording else { owner.logDebug("not recording…skipping event creation"); return }
@@ -129,9 +129,9 @@ final class MIDINodeManager {
    - parameter node: MIDINode
    - parameter delete: Bool
   */
-  func removeNode(node: MIDINode, delete: Bool) throws {
+  func removeNode(_ node: MIDINode, delete: Bool) throws {
     guard let idx = nodes.indexOf({$0.element2.reference === node}),
-              node = nodes.removeAtIndex(idx).element2.reference else
+              let node = nodes.removeAtIndex(idx).element2.reference else
     {
         throw MIDINodeDispatchError.NodeNotFound
     }
@@ -146,7 +146,7 @@ final class MIDINodeManager {
     switch delete {
       case true:
         owner.events.removeEventsMatching {
-          if case .Node(let event) = $0 where event.identifier.nodeIdentifier == id { return true }
+          if case .node(let event) = $0 , event.identifier.nodeIdentifier == id { return true }
           else { return false }
         }
       case false:

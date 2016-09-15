@@ -72,9 +72,9 @@ final class RootViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    contentStack.bringSubviewToFront(middleStack)
+    contentStack.bringSubview(toFront: middleStack)
     tempoSlider.value = Float(Sequencer.tempo)
-    metronomeButton.selected = AudioManager.metronome?.on ?? false
+    metronomeButton.isSelected = AudioManager.metronome?.on ?? false
 
 //    layoutForSize(view.bounds.size)
   }
@@ -84,11 +84,11 @@ final class RootViewController: UIViewController {
 
   - parameter animated: Bool
   */
-  override func viewDidAppear(animated: Bool) {
+  override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
 
-    guard !SettingsManager.initialized || !SettingsManager.iCloudStorage || NSFileManager.defaultManager().ubiquityIdentityToken != nil else {
-      performSegueWithIdentifier("Purgatory", sender: self)
+    guard !SettingsManager.initialized || !SettingsManager.iCloudStorage || FileManager.default.ubiquityIdentityToken != nil else {
+      performSegue(withIdentifier: "Purgatory", sender: self)
       return
     }
   }
@@ -104,10 +104,10 @@ final class RootViewController: UIViewController {
     - parameter popoverView: PopoverView
     - parameter presentingView: UIView
     */
-    func adjustPopover(popoverView: PopoverView?, _ presentingView: UIView?) {
-      guard let popoverView = popoverView, presentingView = presentingView else { return }
-      let popoverCenter = view.convertPoint(popoverView.center, fromView: popoverView.superview)
-      let presentingCenter = view.convertPoint(presentingView.center, fromView: presentingView.superview)
+    func adjustPopover(_ popoverView: PopoverView?, _ presentingView: UIView?) {
+      guard let popoverView = popoverView, let presentingView = presentingView else { return }
+      let popoverCenter = view.convert(popoverView.center, from: popoverView.superview)
+      let presentingCenter = view.convert(presentingView.center, from: presentingView.superview)
       popoverView.xOffset = presentingCenter.x - popoverCenter.x
     }
 
@@ -125,7 +125,7 @@ final class RootViewController: UIViewController {
 
   - returns: Bool
   */
-  override func prefersStatusBarHidden() -> Bool { return true }
+  override var prefersStatusBarHidden : Bool { return true }
 
   // MARK: - Popovers
 
@@ -135,9 +135,9 @@ final class RootViewController: UIViewController {
   - parameter segue: UIStoryboardSegue
   - parameter sender: AnyObject?
   */
-  override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-    super.prepareForSegue(segue, sender: sender)
-    switch segue.destinationViewController {
+  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    super.prepare(for: segue, sender: sender)
+    switch segue.destination {
       case let controller as MixerViewController:      mixerViewController      = controller
       case let controller as InstrumentViewController: instrumentViewController = controller
       case let controller as GeneratorViewController:  generatorViewController  = controller
@@ -152,42 +152,42 @@ final class RootViewController: UIViewController {
   @IBOutlet weak var popoverBlur: UIVisualEffectView!
 
   /** dismissPopover */
-  @IBAction private func dismissPopover() { popover = .None }
+  @IBAction fileprivate func dismissPopover() { popover = .none }
 
   // MARK: Popover enumeration
-  private enum Popover {
-    case None, Files, Note, Instrument, Mixer, Tempo
+  fileprivate enum Popover {
+    case none, files, note, instrument, mixer, tempo
     var view: PopoverView? {
       switch self {
-        case .Files:      return RootViewController.currentInstance.documentsPopoverView
-        case .Note:       return RootViewController.currentInstance.generatorPopoverView
-        case .Instrument: return RootViewController.currentInstance.instrumentPopoverView
-        case .Mixer:      return RootViewController.currentInstance.mixerPopoverView
-        case .Tempo:      return RootViewController.currentInstance.tempoPopoverView
-        case .None:       return nil
+        case .files:      return RootViewController.currentInstance.documentsPopoverView
+        case .note:       return RootViewController.currentInstance.generatorPopoverView
+        case .instrument: return RootViewController.currentInstance.instrumentPopoverView
+        case .mixer:      return RootViewController.currentInstance.mixerPopoverView
+        case .tempo:      return RootViewController.currentInstance.tempoPopoverView
+        case .none:       return nil
       }
     }
     var button: ImageButtonView? {
       switch self {
-        case .Files:      return RootViewController.currentInstance.documentsButton
-        case .Note:       return RootViewController.currentInstance.generatorButton
-        case .Instrument: return RootViewController.currentInstance.instrumentButton
-        case .Mixer:      return RootViewController.currentInstance.mixerButton
-        case .Tempo:      return RootViewController.currentInstance.tempoButton
-        case .None:       return nil
+        case .files:      return RootViewController.currentInstance.documentsButton
+        case .note:       return RootViewController.currentInstance.generatorButton
+        case .instrument: return RootViewController.currentInstance.instrumentButton
+        case .mixer:      return RootViewController.currentInstance.mixerButton
+        case .tempo:      return RootViewController.currentInstance.tempoButton
+        case .none:       return nil
       }
     }
   }
 
-  private func updatePopover(newValue: Popover) { popover = popover == newValue ? .None : newValue }
+  fileprivate func updatePopover(_ newValue: Popover) { popover = popover == newValue ? .none : newValue }
 
-  private var popover = Popover.None {
+  fileprivate var popover = Popover.none {
     didSet {
       guard oldValue != popover else { return }
-      oldValue.view?.hidden = true
-      oldValue.button?.selected = false
-      popover.view?.hidden = false
-      popoverBlur?.hidden = popover == .None
+      oldValue.view?.isHidden = true
+      oldValue.button?.isSelected = false
+      popover.view?.isHidden = false
+      popoverBlur?.isHidden = popover == .none
     }
   }
 
@@ -196,45 +196,45 @@ final class RootViewController: UIViewController {
   @IBOutlet weak var documentsButton: ImageButtonView?
 
   /** documents */
-  @IBAction private func documents() {
-    if case .Files = popover { popover = .None } else { popover = .Files }
+  @IBAction fileprivate func documents() {
+    if case .files = popover { popover = .none } else { popover = .files }
   }
 
-  private(set) weak var documentsViewController: DocumentsViewController! {
+  fileprivate(set) weak var documentsViewController: DocumentsViewController! {
     didSet {
-      documentsViewController?.dismiss = {[unowned self] in self.popover = .None}
+      documentsViewController?.dismiss = {[unowned self] in self.popover = .none}
     }
   }
 
-  @IBOutlet private weak var documentsPopoverView: PopoverView!
+  @IBOutlet fileprivate weak var documentsPopoverView: PopoverView!
 
  // MARK: - Mixer
 
   @IBOutlet weak var mixerButton: ImageButtonView?
-  @IBAction private func mixer() { updatePopover(.Mixer) }
-  private(set) var mixerViewController: MixerViewController!
-  @IBOutlet private weak var mixerPopoverView: PopoverView?
+  @IBAction fileprivate func mixer() { updatePopover(.mixer) }
+  fileprivate(set) var mixerViewController: MixerViewController!
+  @IBOutlet fileprivate weak var mixerPopoverView: PopoverView?
 
   // MARK: - Instrument
 
   @IBOutlet weak var instrumentButton: ImageButtonView?
-  @IBAction private func instrument() { updatePopover(.Instrument) }
-  private(set) weak var instrumentViewController: InstrumentViewController!
-  @IBOutlet private weak var instrumentPopoverView: PopoverView?
+  @IBAction fileprivate func instrument() { updatePopover(.instrument) }
+  fileprivate(set) weak var instrumentViewController: InstrumentViewController!
+  @IBOutlet fileprivate weak var instrumentPopoverView: PopoverView?
 
   // MARK: - Note
 
   @IBOutlet weak var generatorButton: ImageButtonView?
-  private(set) weak var generatorViewController: GeneratorViewController!
-  @IBAction private func generator() { updatePopover(.Note) }
-  @IBOutlet private weak var generatorPopoverView: PopoverView?
+  fileprivate(set) weak var generatorViewController: GeneratorViewController!
+  @IBAction fileprivate func generator() { updatePopover(.note) }
+  @IBOutlet fileprivate weak var generatorPopoverView: PopoverView?
 
   // MARK: - Tempo
 
   @IBOutlet weak var tempoButton: ImageButtonView?
-  private(set) weak var tempoViewController: TempoViewController?
-  @IBAction private func tempo() { updatePopover(.Tempo) }
-  @IBOutlet private weak var tempoPopoverView: PopoverView?
+  fileprivate(set) weak var tempoViewController: TempoViewController?
+  @IBAction fileprivate func tempo() { updatePopover(.tempo) }
+  @IBOutlet fileprivate weak var tempoPopoverView: PopoverView?
 
   // MARK: - Tempo
 
@@ -242,10 +242,10 @@ final class RootViewController: UIViewController {
   @IBOutlet weak var metronomeButton: ImageButtonView!
 
   /** tempoSliderValueDidChange */
-  @IBAction private func tempoSliderValueDidChange() { Sequencer.tempo = Double(tempoSlider.value) }
+  @IBAction fileprivate func tempoSliderValueDidChange() { Sequencer.tempo = Double(tempoSlider.value) }
 
   /** toggleMetronome */
-  @IBAction private func toggleMetronome() { AudioManager.metronome.on = !AudioManager.metronome.on }
+  @IBAction fileprivate func toggleMetronome() { AudioManager.metronome.on = !AudioManager.metronome.on }
 
   // MARK: - Transport
 
@@ -254,10 +254,10 @@ final class RootViewController: UIViewController {
 
   // MARK: - Player
 
-  private(set) weak var playerViewController: MIDIPlayerViewController!
+  fileprivate(set) weak var playerViewController: MIDIPlayerViewController!
 
   // MARK: - Transport
-  private(set) weak var transportViewController: TransportViewController!
+  fileprivate(set) weak var transportViewController: TransportViewController!
 
 }
 

@@ -15,7 +15,7 @@ import CoreText
 
 public final class Triump: NSObject {
 
-  private static var fontsRegistered = false
+  fileprivate static var fontsRegistered = false
 
   /** initialize */
   public override class func initialize() { if self === Triump.self && !fontsRegistered { registerFonts() } }
@@ -32,11 +32,11 @@ public final class Triump: NSObject {
         "Rock-07", "Rock-08", "Rock-09", "Rock-10", "Rock-11", "Rock-12"
       ]
       let fontNames = styles.map { "Latinotype - Triump-Rg-\($0)" }
-      let bundle = NSBundle(forClass: self)
-      let fontURLs = fontNames.flatMap { bundle.URLForResource($0, withExtension: "otf") }
+      let bundle = Bundle(for: self)
+      let fontURLs = fontNames.flatMap { bundle.url(forResource: $0, withExtension: "otf") }
       var errors: Unmanaged<CFArray>?
-      CTFontManagerRegisterFontsForURLs(fontURLs, CTFontManagerScope.None, &errors)
-      if let errorsArray = errors?.takeRetainedValue() as? NSArray, errors = errorsArray as? [NSError] {
+      CTFontManagerRegisterFontsForURLs(fontURLs as CFArray, CTFontManagerScope.none, &errors)
+      if let errorsArray = errors?.takeRetainedValue() as? NSArray, let errors = errorsArray as? [NSError] {
         let error = NSError(domain: "CTFontManagerErrorDomain",
                             code: 1,
                         userInfo: [NSUnderlyingErrorKey: errors,
@@ -48,10 +48,10 @@ public final class Triump: NSObject {
 
   public enum Font {
 
-    case Blur (BlurFace)
-    case Rock (RockFace)
-    case Ornaments
-    case Extras
+    case blur (BlurFace)
+    case rock (RockFace)
+    case ornaments
+    case extras
 
     public enum BlurFace: String {
       case One    = "01"
@@ -85,10 +85,10 @@ public final class Triump: NSObject {
 
     var name: (family: String, face: String) {
       switch self {
-        case .Blur(let face): return ("Triump Rg Blur", face.rawValue)
-        case .Rock(let face): return ("Triump Rg Rock", face.rawValue)
-        case .Ornaments:      return ("Triump Rg Ornaments", "Ornaments")
-        case .Extras:         return ("Triump Rg Extras", "Extras")
+        case .blur(let face): return ("Triump Rg Blur", face.rawValue)
+        case .rock(let face): return ("Triump Rg Rock", face.rawValue)
+        case .ornaments:      return ("Triump Rg Ornaments", "Ornaments")
+        case .extras:         return ("Triump Rg Extras", "Extras")
       }
     }
   }
@@ -101,7 +101,7 @@ public final class Triump: NSObject {
 
   - returns: UIFont
   */
-  private class func fontFor(font: Font, withSize size: CGFloat) -> UIFont {
+  fileprivate class func fontFor(_ font: Font, withSize size: CGFloat) -> UIFont {
     if !fontsRegistered { registerFonts() }
     assert(fontsRegistered)
     let (family, face) = font.name
@@ -119,7 +119,7 @@ public final class Triump: NSObject {
 
   - returns: UIFont
   */
-  public class func blur1FontWithSize(size: CGFloat) -> UIFont { return fontFor(.Blur(.One), withSize: size) }
+  public class func blur1FontWithSize(_ size: CGFloat) -> UIFont { return fontFor(.blur(.One), withSize: size) }
 
   /**
   blur2FontWithSize:
@@ -128,7 +128,7 @@ public final class Triump: NSObject {
 
   - returns: UIFont
   */
-  public class func blur2FontWithSize(size: CGFloat) -> UIFont { return fontFor(.Blur(.Two), withSize: size) }
+  public class func blur2FontWithSize(_ size: CGFloat) -> UIFont { return fontFor(.blur(.Two), withSize: size) }
 
   /**
   blur3FontWithSize:
@@ -137,7 +137,7 @@ public final class Triump: NSObject {
 
   - returns: UIFont
   */
-  public class func blur3FontWithSize(size: CGFloat) -> UIFont { return fontFor(.Blur(.Three), withSize: size) }
+  public class func blur3FontWithSize(_ size: CGFloat) -> UIFont { return fontFor(.blur(.Three), withSize: size) }
 
   /**
   blur4FontWithSize:
@@ -146,7 +146,7 @@ public final class Triump: NSObject {
 
   - returns: UIFont
   */
-  public class func blur4FontWithSize(size: CGFloat) -> UIFont { return fontFor(.Blur(.Four), withSize: size) }
+  public class func blur4FontWithSize(_ size: CGFloat) -> UIFont { return fontFor(.blur(.Four), withSize: size) }
 
   /**
   blur5FontWithSize:
@@ -155,7 +155,7 @@ public final class Triump: NSObject {
 
   - returns: UIFont
   */
-  public class func blur5FontWithSize(size: CGFloat) -> UIFont { return fontFor(.Blur(.Five), withSize: size) }
+  public class func blur5FontWithSize(_ size: CGFloat) -> UIFont { return fontFor(.blur(.Five), withSize: size) }
 
   /**
   blur6FontWithSize:
@@ -164,7 +164,7 @@ public final class Triump: NSObject {
 
   - returns: UIFont
   */
-  public class func blur6FontWithSize(size: CGFloat) -> UIFont { return fontFor(.Blur(.Six), withSize: size) }
+  public class func blur6FontWithSize(_ size: CGFloat) -> UIFont { return fontFor(.blur(.Six), withSize: size) }
 
   /**
   blur7FontWithSize:
@@ -173,7 +173,7 @@ public final class Triump: NSObject {
 
   - returns: UIFont
   */
-  public class func blur7FontWithSize(size: CGFloat) -> UIFont { return fontFor(.Blur(.Seven), withSize: size) }
+  public class func blur7FontWithSize(_ size: CGFloat) -> UIFont { return fontFor(.blur(.Seven), withSize: size) }
 
   /**
   blur8FontWithSize:
@@ -182,7 +182,7 @@ public final class Triump: NSObject {
 
   - returns: UIFont
   */
-  public class func blur8FontWithSize(size: CGFloat) -> UIFont { return fontFor(.Blur(.Eight), withSize: size) }
+  public class func blur8FontWithSize(_ size: CGFloat) -> UIFont { return fontFor(.blur(.Eight), withSize: size) }
 
   /**
   blur9FontWithSize:
@@ -191,7 +191,7 @@ public final class Triump: NSObject {
 
   - returns: UIFont
   */
-  public class func blur9FontWithSize(size: CGFloat) -> UIFont { return fontFor(.Blur(.Nine), withSize: size) }
+  public class func blur9FontWithSize(_ size: CGFloat) -> UIFont { return fontFor(.blur(.Nine), withSize: size) }
 
   /**
   blur10FontWithSize:
@@ -200,7 +200,7 @@ public final class Triump: NSObject {
 
   - returns: UIFont
   */
-  public class func blur10FontWithSize(size: CGFloat) -> UIFont { return fontFor(.Blur(.Ten), withSize: size) }
+  public class func blur10FontWithSize(_ size: CGFloat) -> UIFont { return fontFor(.blur(.Ten), withSize: size) }
 
   /**
   blur11FontWithSize:
@@ -209,7 +209,7 @@ public final class Triump: NSObject {
 
   - returns: UIFont
   */
-  public class func blur11FontWithSize(size: CGFloat) -> UIFont { return fontFor(.Blur(.Eleven), withSize: size) }
+  public class func blur11FontWithSize(_ size: CGFloat) -> UIFont { return fontFor(.blur(.Eleven), withSize: size) }
 
   /**
   blur12FontWithSize:
@@ -218,7 +218,7 @@ public final class Triump: NSObject {
 
   - returns: UIFont
   */
-  public class func blur12FontWithSize(size: CGFloat) -> UIFont { return fontFor(.Blur(.Twelve), withSize: size) }
+  public class func blur12FontWithSize(_ size: CGFloat) -> UIFont { return fontFor(.blur(.Twelve), withSize: size) }
 
   /**
   rock1FontWithSize:
@@ -227,7 +227,7 @@ public final class Triump: NSObject {
 
   - returns: UIFont
   */
-  public class func rock1FontWithSize(size: CGFloat) -> UIFont { return fontFor(.Rock(.One), withSize: size) }
+  public class func rock1FontWithSize(_ size: CGFloat) -> UIFont { return fontFor(.rock(.One), withSize: size) }
 
   /**
   rock2FontWithSize:
@@ -236,7 +236,7 @@ public final class Triump: NSObject {
 
   - returns: UIFont
   */
-  public class func rock2FontWithSize(size: CGFloat) -> UIFont { return fontFor(.Rock(.Two), withSize: size) }
+  public class func rock2FontWithSize(_ size: CGFloat) -> UIFont { return fontFor(.rock(.Two), withSize: size) }
 
   /**
   rock3FontWithSize:
@@ -245,7 +245,7 @@ public final class Triump: NSObject {
 
   - returns: UIFont
   */
-  public class func rock3FontWithSize(size: CGFloat) -> UIFont { return fontFor(.Rock(.Three), withSize: size) }
+  public class func rock3FontWithSize(_ size: CGFloat) -> UIFont { return fontFor(.rock(.Three), withSize: size) }
 
   /**
   rock4FontWithSize:
@@ -254,7 +254,7 @@ public final class Triump: NSObject {
 
   - returns: UIFont
   */
-  public class func rock4FontWithSize(size: CGFloat) -> UIFont { return fontFor(.Rock(.Four), withSize: size) }
+  public class func rock4FontWithSize(_ size: CGFloat) -> UIFont { return fontFor(.rock(.Four), withSize: size) }
 
   /**
   rock5FontWithSize:
@@ -263,7 +263,7 @@ public final class Triump: NSObject {
 
   - returns: UIFont
   */
-  public class func rock5FontWithSize(size: CGFloat) -> UIFont { return fontFor(.Rock(.Five), withSize: size) }
+  public class func rock5FontWithSize(_ size: CGFloat) -> UIFont { return fontFor(.rock(.Five), withSize: size) }
 
   /**
   rock6FontWithSize:
@@ -272,7 +272,7 @@ public final class Triump: NSObject {
 
   - returns: UIFont
   */
-  public class func rock6FontWithSize(size: CGFloat) -> UIFont { return fontFor(.Rock(.Six), withSize: size) }
+  public class func rock6FontWithSize(_ size: CGFloat) -> UIFont { return fontFor(.rock(.Six), withSize: size) }
 
   /**
   rock7FontWithSize:
@@ -281,7 +281,7 @@ public final class Triump: NSObject {
 
   - returns: UIFont
   */
-  public class func rock7FontWithSize(size: CGFloat) -> UIFont { return fontFor(.Rock(.Seven), withSize: size) }
+  public class func rock7FontWithSize(_ size: CGFloat) -> UIFont { return fontFor(.rock(.Seven), withSize: size) }
 
   /**
   rock8FontWithSize:
@@ -290,7 +290,7 @@ public final class Triump: NSObject {
 
   - returns: UIFont
   */
-  public class func rock8FontWithSize(size: CGFloat) -> UIFont { return fontFor(.Rock(.Eight), withSize: size) }
+  public class func rock8FontWithSize(_ size: CGFloat) -> UIFont { return fontFor(.rock(.Eight), withSize: size) }
 
   /**
   rock9FontWithSize:
@@ -299,7 +299,7 @@ public final class Triump: NSObject {
 
   - returns: UIFont
   */
-  public class func rock9FontWithSize(size: CGFloat) -> UIFont { return fontFor(.Rock(.Nine), withSize: size) }
+  public class func rock9FontWithSize(_ size: CGFloat) -> UIFont { return fontFor(.rock(.Nine), withSize: size) }
 
   /**
   rock10FontWithSize:
@@ -308,7 +308,7 @@ public final class Triump: NSObject {
 
   - returns: UIFont
   */
-  public class func rock10FontWithSize(size: CGFloat) -> UIFont { return fontFor(.Rock(.Ten), withSize: size) }
+  public class func rock10FontWithSize(_ size: CGFloat) -> UIFont { return fontFor(.rock(.Ten), withSize: size) }
 
   /**
   rock11FontWithSize:
@@ -317,7 +317,7 @@ public final class Triump: NSObject {
 
   - returns: UIFont
   */
-  public class func rock11FontWithSize(size: CGFloat) -> UIFont { return fontFor(.Rock(.Eleven), withSize: size) }
+  public class func rock11FontWithSize(_ size: CGFloat) -> UIFont { return fontFor(.rock(.Eleven), withSize: size) }
 
   /**
   rock12FontWithSize:
@@ -326,7 +326,7 @@ public final class Triump: NSObject {
 
   - returns: UIFont
   */
-  public class func rock12FontWithSize(size: CGFloat) -> UIFont { return fontFor(.Rock(.Twelve), withSize: size) }
+  public class func rock12FontWithSize(_ size: CGFloat) -> UIFont { return fontFor(.rock(.Twelve), withSize: size) }
 
   /**
   ornamentsFontWithSize:
@@ -335,7 +335,7 @@ public final class Triump: NSObject {
 
   - returns: UIFont
   */
-  public class func ornamentsFontWithSize(size: CGFloat) -> UIFont { return fontFor(.Ornaments, withSize: size) }
+  public class func ornamentsFontWithSize(_ size: CGFloat) -> UIFont { return fontFor(.ornaments, withSize: size) }
 
   /**
   extrasFontWithSize:
@@ -344,6 +344,6 @@ public final class Triump: NSObject {
 
   - returns: UIFont
   */
-  public class func extrasFontWithSize(size: CGFloat) -> UIFont { return fontFor(.Extras, withSize: size) }
+  public class func extrasFontWithSize(_ size: CGFloat) -> UIFont { return fontFor(.extras, withSize: size) }
 
 }

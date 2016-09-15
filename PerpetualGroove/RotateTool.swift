@@ -8,6 +8,7 @@
 
 import Foundation
 import MoonKit
+import UIKit
 
 final class RotateTool: NodeAdjustmentTool, SecondaryControllerContentDelegate {//, ConfigurableToolType {
 
@@ -20,14 +21,14 @@ final class RotateTool: NodeAdjustmentTool, SecondaryControllerContentDelegate {
     return viewController
   }
 
-  private func didRotate(rotation: CGFloat) {
-    guard let node = node where node.initialTrajectory.angle != rotation else { return }
+  fileprivate func didRotate(_ rotation: CGFloat) {
+    guard let node = node , node.initialTrajectory.angle != rotation else { return }
     let oldTrajectory = node.initialTrajectory
     let newTrajectory = node.initialTrajectory.rotateTo(rotation)
-    MIDIPlayer.undoManager.registerUndoWithTarget(node) {
+    MIDIPlayer.undoManager.registerUndo(withTarget: node) {
       node in
       node.initialTrajectory = oldTrajectory
-      MIDIPlayer.undoManager.registerUndoWithTarget(node) { $0.initialTrajectory = newTrajectory }
+      MIDIPlayer.undoManager.registerUndo(withTarget: node) { $0.initialTrajectory = newTrajectory }
     }
     adjustNode{ node.initialTrajectory.rotateToInPlace(rotation) }
   }
@@ -44,19 +45,19 @@ final class RotateViewController: SecondaryContent {
 
   weak var node: MIDINode?
 
-  override func viewWillAppear(animated: Bool) {
+  override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     guard let node = node else { return }
     ball.tintColor = node.dispatch?.color.value
     arrow.tintColor = .quaternaryColor
     let angle = node.initialTrajectory.v.angle
-    arrow.transform = CGAffineTransform(angle: angle)
+    arrow.transform = CGAffineTransform(rotationAngle: angle)
     rotationGesture.rotation = angle
   }
 
-  @IBOutlet private weak var ball:  TemplateImageView!
-  @IBOutlet private weak var arrow: TemplateImageView!
-  @IBOutlet private weak var rotationGesture: UIRotationGestureRecognizer!
+  @IBOutlet fileprivate weak var ball:  TemplateImageView!
+  @IBOutlet fileprivate weak var arrow: TemplateImageView!
+  @IBOutlet fileprivate weak var rotationGesture: UIRotationGestureRecognizer!
 
   var didRotate: ((CGFloat) -> Void)?
 
@@ -65,18 +66,18 @@ final class RotateViewController: SecondaryContent {
 
    - parameter sender: UIRotationGestureRecognizer
   */
-  @IBAction private func handleRotation(sender: UIRotationGestureRecognizer) {
+  @IBAction fileprivate func handleRotation(_ sender: UIRotationGestureRecognizer) {
 
     switch sender.state {
-      case .Began:
+      case .began:
         arrow.transform.rotation = sender.rotation
-      case .Changed:
+      case .changed:
         arrow.transform.rotation = sender.rotation
         didRotate?(sender.rotation)
 
-      case .Cancelled, .Failed: break
-      case .Possible: break
-      case .Ended: break
+      case .cancelled, .failed: break
+      case .possible: break
+      case .ended: break
     }
   }
 

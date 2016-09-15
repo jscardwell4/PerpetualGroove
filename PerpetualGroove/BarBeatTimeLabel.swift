@@ -8,11 +8,12 @@
 
 import Foundation
 import MoonKit
+import UIKit
 
 @IBDesignable
 final class BarBeatTimeLabel: UIView {
 
-  private weak var transport: Transport! {
+  fileprivate weak var transport: Transport! {
     didSet {
       guard transport !== oldValue else { return }
       currentTime = transport.time.barBeatTime
@@ -37,7 +38,7 @@ final class BarBeatTimeLabel: UIView {
       }
       receptionist.observe(notification: .DidJog, from: transport) {
         [weak self] in
-        guard self?.jogging == true, let time = $0.jogTime, _ = $0.jogDirection else { return }
+        guard self?.jogging == true, let time = $0.jogTime, let _ = $0.jogDirection else { return }
         self?.currentTime = time
       }
       receptionist.observe(notification: .DidReset, from: transport) {
@@ -46,10 +47,10 @@ final class BarBeatTimeLabel: UIView {
     }
   }
 
-  private var jogging = false
+  fileprivate var jogging = false
 
   @IBInspectable var font: UIFont = .largeDisplayFont { didSet { updateFont() } }
-  private var _font: UIFont = .largeDisplayFont { didSet { setNeedsDisplay() } }
+  fileprivate var _font: UIFont = .largeDisplayFont { didSet { setNeedsDisplay() } }
 
   @IBInspectable var fontColor: UIColor = .primaryColor
 
@@ -74,22 +75,22 @@ final class BarBeatTimeLabel: UIView {
     }
   }
 
-  private var barString: NSString = "001" { didSet { setNeedsDisplayInRect(barFrame) } }
-  private var beatString: NSString = "1" { didSet { setNeedsDisplayInRect(beatFrame) } }
-  private var subbeatString: NSString = "001" { didSet { setNeedsDisplayInRect(subbeatFrame) } }
-  private let barBeatDividerString: NSString = ":"
-  private let beatSubbeatDividerString: NSString = "."
+  fileprivate var barString: String = "001" { didSet { setNeedsDisplay(barFrame) } }
+  fileprivate var beatString: String = "1" { didSet { setNeedsDisplay(beatFrame) } }
+  fileprivate var subbeatString: String = "001" { didSet { setNeedsDisplay(subbeatFrame) } }
+  fileprivate let barBeatDividerString: String = ":"
+  fileprivate let beatSubbeatDividerString: String = "."
 
-  private var barFrame: CGRect = .zero
-  private var barBeatDividerFrame: CGRect = .zero
-  private var beatFrame: CGRect = .zero
-  private var beatSubbeatDividerFrame: CGRect = .zero
-  private var subbeatFrame: CGRect = .zero
+  fileprivate var barFrame: CGRect = .zero
+  fileprivate var barBeatDividerFrame: CGRect = .zero
+  fileprivate var beatFrame: CGRect = .zero
+  fileprivate var beatSubbeatDividerFrame: CGRect = .zero
+  fileprivate var subbeatFrame: CGRect = .zero
 
   override var bounds: CGRect { didSet { calculateFrames() } }
 
   /** calculateFrames */
-  private func calculateFrames() {
+  fileprivate func calculateFrames() {
     guard !bounds.isEmpty else {
       barFrame = .zero
       barBeatDividerFrame = .zero
@@ -113,27 +114,27 @@ final class BarBeatTimeLabel: UIView {
 
   - parameter rect: CGRect
   */
-  override func drawRect(rect: CGRect) {
+  override func draw(_ rect: CGRect) {
     let attributes: [String:AnyObject] = [
       NSFontAttributeName: _font,
       NSForegroundColorAttributeName: fontColor
     ]
     switch rect {
-    case barFrame:                  barString.drawInRect(rect, withAttributes: attributes)
-      case barBeatDividerFrame:     barBeatDividerString.drawInRect(rect, withAttributes: attributes)
-      case beatFrame:               beatString.drawInRect(rect, withAttributes: attributes)
-      case beatSubbeatDividerFrame: beatSubbeatDividerString.drawInRect(rect, withAttributes: attributes)
-      case subbeatFrame:            subbeatString.drawInRect(rect, withAttributes: attributes)
+    case barFrame:                  barString.draw(in: rect, withAttributes: attributes)
+      case barBeatDividerFrame:     barBeatDividerString.draw(in: rect, withAttributes: attributes)
+      case beatFrame:               beatString.draw(in: rect, withAttributes: attributes)
+      case beatSubbeatDividerFrame: beatSubbeatDividerString.draw(in: rect, withAttributes: attributes)
+      case subbeatFrame:            subbeatString.draw(in: rect, withAttributes: attributes)
       default: 
-        barString.drawInRect(barFrame, withAttributes: attributes)
-        barBeatDividerString.drawInRect(barBeatDividerFrame, withAttributes: attributes)
-        beatString.drawInRect(beatFrame, withAttributes: attributes)
-        beatSubbeatDividerString.drawInRect(beatSubbeatDividerFrame, withAttributes: attributes)
-        subbeatString.drawInRect(subbeatFrame, withAttributes: attributes)      
+        barString.draw(in: barFrame, withAttributes: attributes)
+        barBeatDividerString.draw(in: barBeatDividerFrame, withAttributes: attributes)
+        beatString.draw(in: beatFrame, withAttributes: attributes)
+        beatSubbeatDividerString.draw(in: beatSubbeatDividerFrame, withAttributes: attributes)
+        subbeatString.draw(in: subbeatFrame, withAttributes: attributes)      
     }
   }
 
-  private var currentTime: BarBeatTime = .start1 {
+  fileprivate var currentTime: BarBeatTime = .start1 {
     didSet {
       guard currentTime != oldValue else { return }
 //      logSyncDebug("currentTime = \(currentTime.debugDescription)")
@@ -146,24 +147,24 @@ final class BarBeatTimeLabel: UIView {
       }
     }
   }
-  private var barBeatTimeCallbackKey: String { return String(ObjectIdentifier(self).uintValue) }
+  fileprivate var barBeatTimeCallbackKey: String { return String(UInt(bitPattern: ObjectIdentifier(self))) }
 
-  private let receptionist: NotificationReceptionist = {
-    let receptionist = NotificationReceptionist(callbackQueue: NSOperationQueue.mainQueue())
+  fileprivate let receptionist: NotificationReceptionist = {
+    let receptionist = NotificationReceptionist(callbackQueue: OperationQueue.main)
     receptionist.logContext = LogManager.UIContext
     return receptionist
   }()
 
-  private var characterSize: CGSize {
+  fileprivate var characterSize: CGSize {
     return "0123456789:.".characters.reduce(.zero) {[attributes = [NSFontAttributeName: font]] in
-      let s = (String($1) as NSString).sizeWithAttributes(attributes)
+      let s = (String($1) as NSString).size(attributes: attributes)
       return CGSize(width: max($0.width, s.width), height: max($0.height, s.height))
     }
   }
 
   /** updateFont */
-  private func updateFont() {
-    _font = font.fontWithSize((characterSize.width / (bounds.width / 9)) * font.pointSize)
+  fileprivate func updateFont() {
+    _font = font.withSize((characterSize.width / (bounds.width / 9)) * font.pointSize)
   }
 
   /**
@@ -171,7 +172,7 @@ final class BarBeatTimeLabel: UIView {
 
   - returns: CGSize
   */
-  override func intrinsicContentSize() -> CGSize {
+  override var intrinsicContentSize: CGSize {
     return CGSize(width: characterSize.width * 9, height: characterSize.height).integralSize
   }
 
@@ -180,7 +181,7 @@ final class BarBeatTimeLabel: UIView {
 
    - parameter notification: NSNotification
   */
-  private func didChangeTransport(notification: NSNotification) {
+  fileprivate func didChangeTransport(_ notification: Notification) {
     guard Sequencer.time.callbackRegisteredForKey(barBeatTimeCallbackKey) == false else { return }
     Sequencer.time.registerCallback({ [weak self] in self?.currentTime = $0 },
                              predicate: {_ in true},
@@ -189,7 +190,7 @@ final class BarBeatTimeLabel: UIView {
   }
 
   /** setup */
-  private func setup() {
+  fileprivate func setup() {
 
     calculateFrames()
 

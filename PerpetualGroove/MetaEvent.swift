@@ -32,26 +32,28 @@ struct MetaEvent: MIDIEventType {
   - parameter d: VariableLengthQuantity
   - parameter bytes: C
   */
-  init<C:CollectionType
-    where C.Generator.Element == Byte,
-          C.Index.Distance == Int,
-          C.SubSequence.Generator.Element == Byte,
-          C.SubSequence:CollectionType,
-          C.SubSequence.Index.Distance == Int,
-          C.SubSequence.SubSequence == C.SubSequence>(delta d: VariableLengthQuantity, bytes: C) throws
+  init<C:Collection>(delta d: VariableLengthQuantity, bytes: C) throws
+    where C.Iterator.Element == Byte,
+          C.IndexDistance == Int,
+          C.SubSequence.Iterator.Element == Byte,
+          C.SubSequence:Collection,
+          C.SubSequence.IndexDistance == Int,
+          C.SubSequence.SubSequence == C.SubSequence
   {
     delta = d
     guard bytes.count >= 3 else { throw MIDIFileError(type: .InvalidLength, reason: "Not enough bytes in event") }
     guard bytes[bytes.startIndex] == 0xFF else {
       throw MIDIFileError(type: .InvalidHeader, reason: "First byte must be 0xFF")
     }
-    var currentIndex = bytes.startIndex + 1
-    let typeByte = bytes[currentIndex++]
+    var currentIndex = bytes.index(after: bytes.startIndex)
+    let typeByte = bytes[currentIndex]
+    bytes.formIndex(after: &currentIndex)
     var i = currentIndex
-    while bytes[i] & 0x80 != 0 { i++ }
-    let dataLength = VariableLengthQuantity(bytes: bytes[currentIndex ... i++])
+    while bytes[i] & 0x80 != 0 { bytes.formIndex(after: &i) }
+    let dataLength = VariableLengthQuantity(bytes: bytes[currentIndex ... i])
+    bytes.formIndex(after: &i)
     currentIndex = i
-    i += dataLength.intValue
+    bytes.formIndex(&i, offsetBy: dataLength.intValue)
     guard bytes.endIndex == i else { throw MIDIFileError(type: .InvalidLength, reason: "Specified length does not match actual") }
 
     data = try Data(type: typeByte, data: bytes[currentIndex ..< i])
@@ -67,44 +69,44 @@ struct MetaEvent: MIDIEventType {
 
   /** Enumeration for encapsulating a type of meta event */
   enum Data {
-    case Text (text: String)
-    case CopyrightNotice (notice: String)
-    case SequenceTrackName (name: String)
-    case InstrumentName (name: String)
-    case Marker (name: String)
-    case DeviceName (name: String)
-    case ProgramName (name: String)
-    case EndOfTrack
-    case Tempo (bpm: Double)
-    case TimeSignature (signature: Groove.TimeSignature, clocks: Byte, notes: Byte)
+    case text (text: String)
+    case copyrightNotice (notice: String)
+    case sequenceTrackName (name: String)
+    case instrumentName (name: String)
+    case marker (name: String)
+    case deviceName (name: String)
+    case programName (name: String)
+    case endOfTrack
+    case tempo (bpm: Double)
+    case timeSignature (signature: Groove.TimeSignature, clocks: Byte, notes: Byte)
 
     var type: Byte {
       switch self {
-        case .Text:              return 0x01
-        case .CopyrightNotice:   return 0x02
-        case .SequenceTrackName: return 0x03
-        case .InstrumentName:    return 0x04
-        case .Marker:            return 0x06
-        case .ProgramName:       return 0x08
-        case .DeviceName:        return 0x09
-        case .EndOfTrack:        return 0x2F
-        case .Tempo:             return 0x51
-        case .TimeSignature:     return 0x58
+        case .text:              return 0x01
+        case .copyrightNotice:   return 0x02
+        case .sequenceTrackName: return 0x03
+        case .instrumentName:    return 0x04
+        case .marker:            return 0x06
+        case .programName:       return 0x08
+        case .deviceName:        return 0x09
+        case .endOfTrack:        return 0x2F
+        case .tempo:             return 0x51
+        case .timeSignature:     return 0x58
       }
     }
 
     var bytes: [Byte] {
       switch self {
-        case let .Text(text):               return text.bytes
-        case let .CopyrightNotice(text):    return text.bytes
-        case let .SequenceTrackName(text):  return text.bytes
-        case let .InstrumentName(text):     return text.bytes
-        case let .Marker(text):             return text.bytes
-        case let .ProgramName(text):        return text.bytes
-        case let .DeviceName(text):         return text.bytes
-        case .EndOfTrack:                   return []
-        case let .Tempo(tempo):             return Array(Byte4(60_000_000 / tempo).bytes.dropFirst())
-        case let .TimeSignature(s, n, m):   return s.bytes + [n, m]
+        case let .text(text):               return text.bytes
+        case let .copyrightNotice(text):    return text.bytes
+        case let .sequenceTrackName(text):  return text.bytes
+        case let .instrumentName(text):     return text.bytes
+        case let .marker(text):             return text.bytes
+        case let .programName(text):        return text.bytes
+        case let .deviceName(text):         return text.bytes
+        case .endOfTrack:                   return []
+        case let .tempo(tempo):             return Array(Byte4(60_000_000 / tempo).bytes.dropFirst())
+        case let .timeSignature(s, n, m):   return s.bytes + [n, m]
       }
     }
 
@@ -114,34 +116,34 @@ struct MetaEvent: MIDIEventType {
     - parameter type: Byte
     - parameter data: C
     */
-    init<C:CollectionType
-      where C.Generator.Element == Byte, C.SubSequence.Generator.Element == Byte>(type: Byte, data: C) throws
+    init<C:Collection>(type: Byte, data: C) throws
+      where C.Iterator.Element == Byte, C.SubSequence.Iterator.Element == Byte
     {
       switch type {
-        case 0x01: self = .Text(text: String(data))
-        case 0x02: self = .CopyrightNotice(notice: String(data))
-        case 0x03: self = .SequenceTrackName(name: String(data))
-        case 0x04: self = .InstrumentName(name: String(data))
-        case 0x06: self = .Marker(name: String(data))
-        case 0x08: self = .ProgramName(name: String(data))
-        case 0x09: self = .DeviceName(name: String(data))
+        case 0x01: self = .text(text: String(data))
+        case 0x02: self = .copyrightNotice(notice: String(data))
+        case 0x03: self = .sequenceTrackName(name: String(data))
+        case 0x04: self = .instrumentName(name: String(data))
+        case 0x06: self = .marker(name: String(data))
+        case 0x08: self = .programName(name: String(data))
+        case 0x09: self = .deviceName(name: String(data))
         case 0x2F:
           guard data.count == 0 else {
             throw MIDIFileError(type: .InvalidLength, reason: "EndOfTrack event has no data")
           }
-          self = .EndOfTrack
+          self = .endOfTrack
         case 0x51:
           guard data.count == 3 else {
             throw MIDIFileError(type: .InvalidLength, reason: "Tempo event data should have a 4 byte length")
           }
-          self = .Tempo(bpm: Double(60_000_000 / Byte4(data)))
+          self = .tempo(bpm: Double(60_000_000 / Byte4(data)))
         case 0x58:
           guard data.count == 4 else {
             throw MIDIFileError(type: .InvalidLength, reason: "TimeSignature event data should have a 4 byte length")
           }
-          self = .TimeSignature(signature: Groove.TimeSignature(data[..<(data.startIndex + 2)]),
-                                clocks: data[data.startIndex + 2],
-                                notes: data[data.startIndex + 3])
+          self = .timeSignature(signature: Groove.TimeSignature(data[<--(data.index(data.startIndex, offsetBy: 2))]),
+                                clocks: data[data.index(data.startIndex, offsetBy: 2)],
+                                notes: data[data.index(data.startIndex, offsetBy: 3)])
         default:
           throw MIDIFileError(type: .UnsupportedEvent,
                               reason: "\(String(hexBytes: [type])) is not a supported meta event type")
@@ -155,7 +157,7 @@ struct MetaEvent: MIDIEventType {
 
     - parameter block: (UnsafePointer<MIDIMetaEvent>) throws -> Void
     */
-    func withEventPointer(@noescape block: (UnsafePointer<MIDIMetaEvent>) throws -> Void) rethrows {
+    func withEventPointer(_ block: @escaping (UnsafePointer<MIDIMetaEvent>) throws -> Void) rethrows {
       // Get the bytes to put into the struct
       var bytes = self.bytes
 
@@ -163,35 +165,33 @@ struct MetaEvent: MIDIEventType {
       let dataLength = bytes.count
 
       // Subtract one from size of struct because the last byte is for the data
-      let structSize = sizeof(MIDIMetaEvent.self) - 1
+      let structSize = MemoryLayout<MIDIMetaEvent>.size - 1
 
       // Calculate the total size needed in memory
       let totalSize = structSize + dataLength
 
       // Create a region of bytes in memory and make sure they are all zero
-      var eventBytesPointer = UnsafeMutablePointer<Byte>.alloc(totalSize)
-      eventBytesPointer.initializeFrom([Byte](count: totalSize, repeatedValue: 0))
+      var eventBytesPointer = UnsafeMutablePointer<Byte>.allocate(capacity: totalSize)
+      eventBytesPointer.initialize(from: [Byte](repeating: 0, count: totalSize))
 
       // Set the `metaEventType` property using `type`
-      eventBytesPointer.memory = type
+      eventBytesPointer.pointee = type
 
       // Advance to the `dataLength` property and set it
-      eventBytesPointer = eventBytesPointer.advancedBy(4)
-      UnsafeMutablePointer<UInt32>(eventBytesPointer).memory = UInt32(dataLength)
+      eventBytesPointer = eventBytesPointer.advanced(by: 4)
+      eventBytesPointer.withMemoryRebound(to: UInt32.self, capacity: 1) { $0.pointee = UInt32(dataLength) }
 
       // Advance to the first byte of data and copy into memory
-      eventBytesPointer = eventBytesPointer.advancedBy(4)
-      eventBytesPointer.assignFrom(&bytes, count: bytes.count)
+      eventBytesPointer = eventBytesPointer.advanced(by: 4)
+      eventBytesPointer.assign(from: &bytes, count: bytes.count)
 
       // Move pointer back to the start of the struct
-      eventBytesPointer = eventBytesPointer.advancedBy(-8)
+      eventBytesPointer = eventBytesPointer.advanced(by: -8)
 
-      let eventPointer = UnsafePointer<MIDIMetaEvent>(eventBytesPointer)
+      try eventBytesPointer.withMemoryRebound(to: MIDIMetaEvent.self, capacity: 1) { try block($0) }
 
-      try block(eventPointer)
-
-      eventBytesPointer.destroy()
-      eventBytesPointer.dealloc(totalSize)
+      eventBytesPointer.deinitialize()
+      eventBytesPointer.deallocate(capacity: totalSize)
     }
   }
 
@@ -209,22 +209,22 @@ extension MetaEvent: Hashable {
 extension MetaEvent.Data: CustomStringConvertible {
   var description: String {
     switch self {
-      case .Text(let text):              return "text '\(text)'"
-      case .CopyrightNotice(let text):   return "copyright '\(text)'"
-      case .SequenceTrackName(let text): return "sequence/track name '\(text)'"
-      case .InstrumentName(let text):    return "instrument name '\(text)'"
-      case .Marker(let text):            return "marker '\(text)'"
-      case .ProgramName(let text):       return "program name '\(text)'"
-      case .DeviceName(let text):        return "device name '\(text)'"
-      case .EndOfTrack:                  return "end of track"
-      case .Tempo(let bpm):              return "tempo \(bpm)"
-      case .TimeSignature(let s, _ , _): return "time signature \(s.beatsPerBar)╱\(s.beatUnit)"
+      case .text(let text):              return "text '\(text)'"
+      case .copyrightNotice(let text):   return "copyright '\(text)'"
+      case .sequenceTrackName(let text): return "sequence/track name '\(text)'"
+      case .instrumentName(let text):    return "instrument name '\(text)'"
+      case .marker(let text):            return "marker '\(text)'"
+      case .programName(let text):       return "program name '\(text)'"
+      case .deviceName(let text):        return "device name '\(text)'"
+      case .endOfTrack:                  return "end of track"
+      case .tempo(let bpm):              return "tempo \(bpm)"
+      case .timeSignature(let s, _ , _): return "time signature \(s.beatsPerBar)╱\(s.beatUnit)"
     }
   }
 }
 
 extension MetaEvent.Data: CustomDebugStringConvertible {
-  var debugDescription: String { var result = ""; dump(self, &result); return result }
+  var debugDescription: String { var result = ""; dump(self, to: &result); return result }
 }
 
 extension MetaEvent: CustomStringConvertible { var description: String { return "\(time) \(data)" } }
@@ -237,13 +237,13 @@ extension MetaEvent.Data: Equatable {}
 
 func ==(lhs: MetaEvent.Data, rhs: MetaEvent.Data) -> Bool {
   switch (lhs, rhs) {
-    case let (.Text(text1), .Text(text2)) where text1 == text2: return true
-    case let (.CopyrightNotice(notice1), .CopyrightNotice(notice2)) where notice1 == notice2: return true
-    case let (.SequenceTrackName(name1), .SequenceTrackName(name2)) where name1 == name2: return true
-    case let (.InstrumentName(name1), .InstrumentName(name2)) where name1 == name2: return true
-    case (.EndOfTrack, .EndOfTrack): return true
-    case let (.Tempo(microseconds1), .Tempo(microseconds2)) where microseconds1 == microseconds2: return true
-    case let (.TimeSignature(signature1, clocks1, notes1), .TimeSignature(signature2, clocks2, notes2))
+    case let (.text(text1), .text(text2)) where text1 == text2: return true
+    case let (.copyrightNotice(notice1), .copyrightNotice(notice2)) where notice1 == notice2: return true
+    case let (.sequenceTrackName(name1), .sequenceTrackName(name2)) where name1 == name2: return true
+    case let (.instrumentName(name1), .instrumentName(name2)) where name1 == name2: return true
+    case (.endOfTrack, .endOfTrack): return true
+    case let (.tempo(microseconds1), .tempo(microseconds2)) where microseconds1 == microseconds2: return true
+    case let (.timeSignature(signature1, clocks1, notes1), .timeSignature(signature2, clocks2, notes2))
       where signature1.beatsPerBar == signature2.beatsPerBar
          && signature1.beatUnit == signature2.beatUnit
          && clocks1 == clocks2

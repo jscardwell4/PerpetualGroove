@@ -23,7 +23,7 @@ final class DocumentCell: UICollectionViewCell {
 //    DocumentManager.deleteItem(item)
 //  }
 
-  private(set) var showingDelete: Bool = false
+  fileprivate(set) var showingDelete: Bool = false
 
   var item: DocumentItem? { didSet { refresh() } }
 
@@ -37,9 +37,9 @@ final class DocumentCell: UICollectionViewCell {
 
   - returns: NSTimeInterval
   */
-  private func animationDurationForDistance(distance: CGFloat?) -> NSTimeInterval {
+  fileprivate func animationDurationForDistance(_ distance: CGFloat?) -> TimeInterval {
     guard let distance = distance else { return 0.25 }
-    return NSTimeInterval(CGFloat(0.25) * distance / deleteButton.bounds.width)
+    return TimeInterval(CGFloat(0.25) * distance / deleteButton.bounds.width)
   }
 
   /**
@@ -47,8 +47,8 @@ final class DocumentCell: UICollectionViewCell {
 
   - parameter distance: CGFloat
   */
-  func revealDelete(distance: CGFloat? = nil) {
-    UIView.animateWithDuration(animationDurationForDistance(distance),
+  func revealDelete(_ distance: CGFloat? = nil) {
+    UIView.animate(withDuration: animationDurationForDistance(distance),
                     animations: { self.leadingConstraint.constant = -self.deleteButton.bounds.width },
                     completion: {self.showingDelete = $0})
   }
@@ -58,8 +58,8 @@ final class DocumentCell: UICollectionViewCell {
 
   - parameter distance: CGFloat
   */
-  func hideDelete(distance: CGFloat? = nil) {
-    UIView.animateWithDuration(animationDurationForDistance(distance),
+  func hideDelete(_ distance: CGFloat? = nil) {
+    UIView.animate(withDuration: animationDurationForDistance(distance),
                     animations: { self.leadingConstraint.constant = 0 },
                     completion: {self.showingDelete = !$0})
   }
@@ -69,23 +69,23 @@ final class DocumentCell: UICollectionViewCell {
 
   - parameter gesture: PanGesture
   */
-  private func handlePan(gesture: BlockActionGesture) {
+  fileprivate func handlePan(_ gesture: BlockActionGesture) {
     guard let pan = gesture as? PanGesture else { return }
 
     let x = pan.translationInView(self).x
 
     switch (pan.state, showingDelete) {
 
-      case (.Began, false) where x < 0, (.Changed, false) where x < 0:
+      case (.began, false) where x < 0, (.changed, false) where x < 0:
         leadingConstraint.constant = x
 
-      case (.Began, true) where x > 0, (.Changed, true) where x > 0:
+      case (.began, true) where x > 0, (.changed, true) where x > 0:
         leadingConstraint.constant = -deleteButton.bounds.width + x
 
-      case (.Ended, false) where x <= -deleteButton.bounds.width:
+      case (.ended, false) where x <= -deleteButton.bounds.width:
         revealDelete(abs(x))
 
-      case (.Ended, _), (.Cancelled, _), (.Failed, _):
+      case (.ended, _), (.cancelled, _), (.failed, _):
         hideDelete(abs(x))
 
       default: break
@@ -95,7 +95,7 @@ final class DocumentCell: UICollectionViewCell {
   }
 
   /** setup */
-  private func setup() {
+  fileprivate func setup() {
     let gesture = PanGesture(handler: unownedMethod(self, DocumentCell.handlePan))
     gesture.confineToView = true
     gesture.delaysTouchesBegan = true

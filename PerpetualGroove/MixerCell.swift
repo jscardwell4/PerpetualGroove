@@ -21,8 +21,8 @@ final class AddTrackCell: UICollectionViewCell {
   /** prepareForReuse */
   override func prepareForReuse() {
     super.prepareForReuse()
-    addTrackButton.selected = false
-    addTrackButton.highlighted = false
+    addTrackButton.isSelected = false
+    addTrackButton.isHighlighted = false
   }
 
 }
@@ -75,13 +75,13 @@ final class TrackCell: MixerCell {
   @IBOutlet var trackLabel: MarqueeField!
   @IBOutlet var trackColor: ImageButtonView!
 
-  private var startLocation: CGPoint?
+  fileprivate var startLocation: CGPoint?
 
   @IBOutlet var removalDisplay: UIVisualEffectView!
 
-  override var selected: Bool {
-    get { return super.selected }
-    set { trackColor.selected = newValue; super.selected = newValue }
+  override var isSelected: Bool {
+    get { return super.isSelected }
+    set { trackColor.isSelected = newValue; super.isSelected = newValue }
   }
 
   /** instrument */
@@ -90,7 +90,7 @@ final class TrackCell: MixerCell {
   /** solo */
   @IBAction func solo() { track?.solo.toggle() }
 
-  private var muteDisengaged = false { didSet { muteButton.enabled = !muteDisengaged } }
+  fileprivate var muteDisengaged = false { didSet { muteButton.isEnabled = !muteDisengaged } }
 
   /** mute */
   @IBAction func mute() { track?.mute.toggle() }
@@ -109,13 +109,13 @@ final class TrackCell: MixerCell {
       soundSetImage.image = track?.instrument.soundSet.image
       trackLabel.text = track?.displayName ?? ""
       trackColor.normalTintColor = track?.color.value
-      muteButton.selected = track?.isMuted ?? false
-      soloButton.selected = track?.solo ?? false
+      muteButton.isSelected = track?.isMuted ?? false
+      soloButton.isSelected = track?.solo ?? false
       receptionist = receptionistForTrack(track)
     }
   }
 
-  private var receptionist: NotificationReceptionist?
+  fileprivate var receptionist: NotificationReceptionist?
 
   /**
   receptionistForTrack:
@@ -124,43 +124,43 @@ final class TrackCell: MixerCell {
 
   - returns: NotificationReceptionist
   */
-  private func receptionistForTrack(track: InstrumentTrack?) -> NotificationReceptionist? {
+  fileprivate func receptionistForTrack(_ track: InstrumentTrack?) -> NotificationReceptionist? {
 
     
     guard let track = track else { return nil }
-    let receptionist = NotificationReceptionist(callbackQueue: NSOperationQueue.mainQueue())
+    let receptionist = NotificationReceptionist(callbackQueue: OperationQueue.main)
     receptionist.logContext = LogManager.SequencerContext
     
     receptionist.observe(notification: .MuteStatusDidChange, from: track) {
       [weak self] _ in
-      guard let weakself = self, track = weakself.track else { return }
-      weakself.muteButton.selected = track.isMuted
+      guard let weakself = self, let track = weakself.track else { return }
+      weakself.muteButton.isSelected = track.isMuted
     }
     receptionist.observe(notification: .ForceMuteStatusDidChange, from: track) {
       [weak self] _ in
-      guard let weakself = self, track = weakself.track else { return }
+      guard let weakself = self, let track = weakself.track else { return }
       weakself.muteDisengaged = track.forceMute || track.solo
     }
     receptionist.observe(notification: .SoloStatusDidChange, from: track) {
       [weak self] _ in
-      guard let weakself = self, track = weakself.track else { return }
-      weakself.soloButton.selected = track.solo
+      guard let weakself = self, let track = weakself.track else { return }
+      weakself.soloButton.isSelected = track.solo
       weakself.muteDisengaged = track.forceMute || track.solo
     }
     receptionist.observe(notification: .DidChangeName, from: track) {
       [weak self] _ in
-      guard let weakself = self, track = weakself.track else { return }
+      guard let weakself = self, let track = weakself.track else { return }
       weakself.trackLabel.text = track.displayName
     }
     receptionist.observe(notification: .SoundSetDidChange, from: track.instrument) {
       [weak self] _ in
-      guard let weakself = self, track = weakself.track else { return }
+      guard let weakself = self, let track = weakself.track else { return }
       weakself.soundSetImage.image = track.instrument.soundSet.image
       weakself.trackLabel.text = track.displayName
     }
     receptionist.observe(notification: .PresetDidChange, from: track.instrument) {
       [weak self] _ in
-      guard let weakself = self, track = weakself.track else { return }
+      guard let weakself = self, let track = weakself.track else { return }
       weakself.trackLabel.text = track.displayName
     }
     return receptionist
@@ -175,6 +175,6 @@ extension TrackCell: UITextFieldDelegate {
 
   - parameter textField: UITextField
   */
-  func textFieldDidEndEditing(textField: UITextField) { if let text = textField.text { track?.name = text } }
+  func textFieldDidEndEditing(_ textField: UITextField) { if let text = textField.text { track?.name = text } }
 
 }

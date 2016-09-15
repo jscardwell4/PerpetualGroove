@@ -8,6 +8,7 @@
 
 import Foundation
 import MoonKit
+import UIKit
 
 class SecondaryContent: UIViewController, SecondaryControllerContent {
 

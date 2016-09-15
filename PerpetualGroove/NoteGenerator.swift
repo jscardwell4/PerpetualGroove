@@ -19,7 +19,7 @@ struct NoteGenerator {
   var tone: Tone = Tone(midi: 60)
 
   /// The duration of the played note
-  var duration: Duration = .Eighth
+  var duration: Duration = .eighth
 
   /// The dynmamics for the note
   var velocity: Velocity = .𝑚𝑓
@@ -65,11 +65,11 @@ extension NoteGenerator: JSONValueConvertible {
 extension NoteGenerator: JSONValueInitializable {
   init?(_ jsonValue: JSONValue?) {
     guard let dict = ObjectJSONValue(jsonValue),
-              tone = Tone(dict["tone"]),
-              duration = Duration(dict["duration"]),
-              velocity = Velocity(dict["velocity"]),
-              octave = Octave(dict["octave"]),
-              root = Note(dict["root"]) else { return nil }
+              let tone = Tone(dict["tone"]),
+              let duration = Duration(dict["duration"]),
+              let velocity = Velocity(dict["velocity"]),
+              let octave = Octave(dict["octave"]),
+              let root = Note(dict["root"]) else { return nil }
     self.tone = tone
     self.duration = duration
     self.velocity = velocity
@@ -88,37 +88,37 @@ extension NoteGenerator {
     var note: Note
     var octave: Octave
 
-    static func indexForNote(note: Note) -> Int {
+    static func indexForNote(_ note: Note) -> Int {
       switch note {
-        case .Default(.C), .Modified(.B, .Sharp), .Modified(.D, .DoubleFlat):         return 0
-        case .Modified(.C, .Sharp), .Modified(.D, .Flat):                             return 1
-        case .Default(.D), .Modified(.E, .DoubleFlat):                                return 2
-        case .Modified(.D, .Sharp), .Modified(.E, .Flat), .Modified(.F, .DoubleFlat): return 3
-        case .Default(.E), .Modified(.F, .Flat):                                      return 4
-        case .Default(.F), .Modified(.E, .Sharp), .Modified(.G, .DoubleFlat):         return 5
-        case .Modified(.F, .Sharp), .Modified(.G, .Flat):                             return 6
-        case .Default(.G), .Modified(.A, .DoubleFlat):                                return 7
-        case .Modified(.G, .Sharp),.Modified(.A, .Flat):                              return 8
-        case .Default(.A), .Modified(.B, .DoubleFlat):                                return 9
-        case .Modified(.A, .Sharp),.Modified(.B, .Flat), .Modified(.C, .DoubleFlat):  return 10
-        case .Default(.B), .Modified(.C, .Flat):                                      return 11
+        case .default(.C), .modified(.B, .Sharp), .modified(.D, .DoubleFlat):         return 0
+        case .modified(.C, .Sharp), .modified(.D, .Flat):                             return 1
+        case .default(.D), .modified(.E, .DoubleFlat):                                return 2
+        case .modified(.D, .Sharp), .modified(.E, .Flat), .modified(.F, .DoubleFlat): return 3
+        case .default(.E), .modified(.F, .Flat):                                      return 4
+        case .default(.F), .modified(.E, .Sharp), .modified(.G, .DoubleFlat):         return 5
+        case .modified(.F, .Sharp), .modified(.G, .Flat):                             return 6
+        case .default(.G), .modified(.A, .DoubleFlat):                                return 7
+        case .modified(.G, .Sharp),.modified(.A, .Flat):                              return 8
+        case .default(.A), .modified(.B, .DoubleFlat):                                return 9
+        case .modified(.A, .Sharp),.modified(.B, .Flat), .modified(.C, .DoubleFlat):  return 10
+        case .default(.B), .modified(.C, .Flat):                                      return 11
       }
     }
 
-    static func noteForIndex(index: Int) -> Note? {
+    static func noteForIndex(_ index: Int) -> Note? {
       switch index {
-        case 0:  return .Default(.C)
-        case 1:  return .Modified(.C, .Sharp)
-        case 2:  return .Default(.D)
-        case 3:  return .Modified(.D, .Sharp)
-        case 4:  return .Default(.E)
-        case 5:  return .Default(.F)
-        case 6:  return .Modified(.F, .Sharp)
-        case 7:  return .Default(.G)
-        case 8:  return .Modified(.G, .Sharp)
-        case 9:  return .Default(.A)
-        case 10: return .Modified(.A, .Sharp)
-        case 11: return .Default(.B)
+        case 0:  return .default(.C)
+        case 1:  return .modified(.C, .Sharp)
+        case 2:  return .default(.D)
+        case 3:  return .modified(.D, .Sharp)
+        case 4:  return .default(.E)
+        case 5:  return .default(.F)
+        case 6:  return .modified(.F, .Sharp)
+        case 7:  return .default(.G)
+        case 8:  return .modified(.G, .Sharp)
+        case 9:  return .default(.A)
+        case 10: return .modified(.A, .Sharp)
+        case 11: return .default(.B)
         default: return nil
       }
     }
@@ -141,7 +141,7 @@ extension NoteGenerator {
     */
     init(midi value: Byte) {
       note = Tone.noteForIndex(Int(value) % 12)!
-      octave = Octave(rawValue: Int(value / 12 - 1)) ?? .Four
+      octave = Octave(rawValue: Int(value / 12 - 1)) ?? .four
     }
 
     /**
@@ -151,11 +151,11 @@ extension NoteGenerator {
     */
     init?(rawValue: String) {
       guard let match = (~/"^([A-G]♯?) ?((?:-1)|[0-9])$").firstMatch(rawValue),
-        rawNote = match.captures[1]?.string,
-        pitch = Note(rawValue: rawNote),
-        rawOctaveString = match.captures[2]?.string,
-        rawOctave = Int(rawOctaveString),
-        octave = Octave(rawValue: rawOctave) else { return nil }
+        let rawNote = match.captures[1]?.string,
+        let pitch = Note(rawValue: rawNote),
+        let rawOctaveString = match.captures[2]?.string,
+        let rawOctave = Int(rawOctaveString),
+        let octave = Octave(rawValue: rawOctave) else { return nil }
 
       self.note = pitch; self.octave = octave
     }
@@ -181,7 +181,7 @@ extension NoteGenerator: MIDIGeneratorType {
 
    - parameter endPoint: MIDIEndpointRef
    */
-  func receiveNoteOn(endPoint: MIDIEndpointRef, _ identifier: UInt64) throws {
+  func receiveNoteOn(_ endPoint: MIDIEndpointRef, _ identifier: UInt64) throws {
     let packet = Packet(status: 0x90,
                         channel: channel,
                         note: tone.midi,
@@ -196,7 +196,7 @@ extension NoteGenerator: MIDIGeneratorType {
 
    - parameter endPoint: MIDIEndpointRef
    */
-  func receiveNoteOff(endPoint: MIDIEndpointRef, _ identifier: UInt64) throws {
+  func receiveNoteOff(_ endPoint: MIDIEndpointRef, _ identifier: UInt64) throws {
     let packet = Packet(status: 0x80,
                         channel: channel,
                         note: tone.midi,
@@ -211,7 +211,7 @@ extension NoteGenerator: MIDIGeneratorType {
 
    - parameter endPoint: MIDIEndpointRef
    */
-  func sendNoteOn(outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws {
+  func sendNoteOn(_ outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws {
     let packet = Packet(status: 0x90,
       channel: channel,
       note: tone.midi,
@@ -226,7 +226,7 @@ extension NoteGenerator: MIDIGeneratorType {
 
    - parameter endPoint: MIDIEndpointRef
    */
-  func sendNoteOff(outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws {
+  func sendNoteOff(_ outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws {
     let packet = Packet(status: 0x80,
       channel: channel,
       note: tone.midi,
@@ -253,7 +253,7 @@ extension NoteGenerator: ByteArrayConvertible {
     channel  = bytes[0]
     tone     = Tone(midi: bytes[1])
     velocity = Velocity(midi: bytes[2])
-    duration = Duration(rawValue: String(bytes[3..<])) ?? .Eighth
+    duration = Duration(rawValue: String(bytes[3|->])) ?? .eighth
   }
 }
 

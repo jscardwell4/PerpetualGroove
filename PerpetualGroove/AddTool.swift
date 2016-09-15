@@ -31,16 +31,16 @@ final class AddTool: ToolType {
 
   // MARK: - Touch handling
 
-  private var timestamp = 0.0
-  private var location = CGPoint.null
-  private var velocities: [CGVector] = []
+  fileprivate var timestamp = 0.0
+  fileprivate var location = CGPoint.null
+  fileprivate var velocities: [CGVector] = []
 
-  private var touch: UITouch? {
+  fileprivate var touch: UITouch? {
     didSet {
       velocities = []
       if let touch = touch {
         timestamp = touch.timestamp
-        location = touch.locationInNode(player)
+        location = touch.location(in: player)
         let image = UIImage(named: "ball")!
         let color = (Sequencer.sequence?.currentTrack?.color ?? TrackColor.nextColor).value
         let size = image.size * 0.75
@@ -58,12 +58,12 @@ final class AddTool: ToolType {
     }
   }
 
-  private var touchNode: SKSpriteNode?
+  fileprivate var touchNode: SKSpriteNode?
 
   /** updateData */
-  private func updateData() {
-    guard let timestamp = touch?.timestamp, location = touch?.locationInNode(player)
-      where timestamp != self.timestamp && location != self.location else { return }
+  fileprivate func updateData() {
+    guard let timestamp = touch?.timestamp, let location = touch?.location(in: player)
+      , timestamp != self.timestamp && location != self.location else { return }
 
     velocities.append(CGVector((location - self.location) / (timestamp - self.timestamp)))
     self.timestamp = timestamp
@@ -76,7 +76,7 @@ final class AddTool: ToolType {
   - parameter touches: Set<UITouch>
   - parameter event: UIEvent?
   */
-  @objc func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+  @objc func touchesBegan(_ touches: Set<UITouch>, withEvent event: UIEvent?) {
     if active && touch == nil { touch = touches.first }
   }
 
@@ -86,7 +86,7 @@ final class AddTool: ToolType {
   - parameter touches: Set<UITouch>?
   - parameter event: UIEvent?
   */
-  @objc func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) { touch = nil }
+  @objc func touchesCancelled(_ touches: Set<UITouch>?, withEvent event: UIEvent?) { touch = nil }
 
   /**
   touchesEnded:withEvent:
@@ -94,7 +94,7 @@ final class AddTool: ToolType {
   - parameter touches: Set<UITouch>
   - parameter event: UIEvent?
   */
-  @objc func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+  @objc func touchesEnded(_ touches: Set<UITouch>, withEvent event: UIEvent?) {
     guard touch != nil && touches.contains(touch!) else { return }
     updateData()
     generate()
@@ -107,9 +107,9 @@ final class AddTool: ToolType {
   - parameter touches: Set<UITouch>
   - parameter event: UIEvent?
   */
-  @objc func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+  @objc func touchesMoved(_ touches: Set<UITouch>, withEvent event: UIEvent?) {
     guard touch != nil && touches.contains(touch!) else { return }
-    guard let p = touch?.locationInNode(player) where player.containsPoint(p) else {
+    guard let p = touch?.location(in: player) , player.contains(p) else {
       touch = nil
       return
     }
@@ -120,10 +120,10 @@ final class AddTool: ToolType {
   // MARK: - MIDINode generation
 
   /** generate */
-  private func generate() {
+  fileprivate func generate() {
     guard velocities.count > 0 && !location.isNull else { return }
     guard let track = Sequencer.sequence?.currentTrack else { return }
-    let trajectory = Trajectory(vector: sum(velocities) / CGFloat(velocities.count), point: location )
+    let trajectory = Trajectory(vector: velocities.reduce(CGVector(), +) / CGFloat(velocities.count), point: location )
     MIDIPlayer.placeNew(trajectory, target: track, generator: generator)
   }
 }

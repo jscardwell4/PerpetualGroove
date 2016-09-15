@@ -12,17 +12,17 @@ import MoonKit
 
 final class MixerContainerViewController: SecondaryControllerContainer {
   
-  private(set) weak var mixerViewController: MixerViewController!
+  fileprivate(set) weak var mixerViewController: MixerViewController!
 
-  override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-    super.prepareForSegue(segue, sender: sender)
-    switch segue.destinationViewController {
+  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    super.prepare(for: segue, sender: sender)
+    switch segue.destination {
       case let controller as MixerViewController: mixerViewController = controller
       default: break
     }
   }
 
-  override func completionForDismissalAction(dismissalAction: DismissalAction) -> (Bool) -> Void {
+  override func completionForDismissalAction(_ dismissalAction: DismissalAction) -> (Bool) -> Void {
     let completion = super.completionForDismissalAction(dismissalAction)
     return {
       [weak mixer = mixerViewController] completed in

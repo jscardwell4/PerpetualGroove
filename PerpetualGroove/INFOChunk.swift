@@ -34,14 +34,14 @@ struct INFOChunk {
 
   - parameter bytes: C
   */
-  init<C:CollectionType where C.Generator.Element == Byte,
-                              C.Index == Int, C.SubSequence.Generator.Element == Byte,
-                              C.SubSequence:CollectionType, C.SubSequence.Index == Int,
-                              C.SubSequence.SubSequence == C.SubSequence>(bytes: C) throws
+  init<C:Collection>(bytes: C) throws where C.Iterator.Element == Byte,
+                              C.Index == Int, C.SubSequence.Iterator.Element == Byte,
+                              C.SubSequence:Collection, C.SubSequence.Index == Int,
+                              C.SubSequence.SubSequence == C.SubSequence
   {
     let byteCount = bytes.count
     guard byteCount > 4 else { throw Error.StructurallyUnsound }
-    guard String(bytes[bytes.startIndex ..< bytes.startIndex + 4]).lowercaseString == "info" else {
+    guard String(bytes[bytes.startIndex ..< bytes.startIndex + 4]).lowercased() == "info" else {
       throw Error.StructurallyUnsound
     }
 
@@ -66,17 +66,17 @@ struct INFOChunk {
 
       guard let chunk = SubChunk(bytes: chunkData) else { throw Error.StructurallyUnsound }
       switch chunk {
-        case .Version(.IFIL, _): guard ifil == nil else { throw Error.StructurallyUnsound }; ifil = chunk
-        case .Text(.ISNG, _):    guard isng == nil else { throw Error.StructurallyUnsound }; isng = chunk
-        case .Text(.INAM, _):    guard inam == nil else { throw Error.StructurallyUnsound }; inam = chunk
-        case .Text(.IROM, _):    guard irom == nil else { throw Error.StructurallyUnsound }; irom = chunk
-        case .Version(.IVER, _): guard iver == nil else { throw Error.StructurallyUnsound }; iver = chunk
-        case .Text(.ICRD, _):    guard icrd == nil else { throw Error.StructurallyUnsound }; icrd = chunk
-        case .Text(.IENG, _):    guard ieng == nil else { throw Error.StructurallyUnsound }; ieng = chunk
-        case .Text(.IPRD, _):    guard iprd == nil else { throw Error.StructurallyUnsound }; iprd = chunk
-        case .Text(.ICOP, _):    guard icop == nil else { throw Error.StructurallyUnsound }; icop = chunk
-        case .Text(.ICMT, _):    guard icmt == nil else { throw Error.StructurallyUnsound }; icmt = chunk
-        case .Text(.ISFT, _):    guard isft == nil else { throw Error.StructurallyUnsound }; isft = chunk
+        case .version(.IFIL, _): guard ifil == nil else { throw Error.StructurallyUnsound }; ifil = chunk
+        case .text(.ISNG, _):    guard isng == nil else { throw Error.StructurallyUnsound }; isng = chunk
+        case .text(.INAM, _):    guard inam == nil else { throw Error.StructurallyUnsound }; inam = chunk
+        case .text(.IROM, _):    guard irom == nil else { throw Error.StructurallyUnsound }; irom = chunk
+        case .version(.IVER, _): guard iver == nil else { throw Error.StructurallyUnsound }; iver = chunk
+        case .text(.ICRD, _):    guard icrd == nil else { throw Error.StructurallyUnsound }; icrd = chunk
+        case .text(.IENG, _):    guard ieng == nil else { throw Error.StructurallyUnsound }; ieng = chunk
+        case .text(.IPRD, _):    guard iprd == nil else { throw Error.StructurallyUnsound }; iprd = chunk
+        case .text(.ICOP, _):    guard icop == nil else { throw Error.StructurallyUnsound }; icop = chunk
+        case .text(.ICMT, _):    guard icmt == nil else { throw Error.StructurallyUnsound }; icmt = chunk
+        case .text(.ISFT, _):    guard isft == nil else { throw Error.StructurallyUnsound }; isft = chunk
         default:                 throw Error.StructurallyUnsound
       }
       i += 8 + chunkSize
@@ -116,44 +116,44 @@ struct INFOChunk {
 
 extension INFOChunk {
   enum SubChunk: CustomStringConvertible {
-    case Version (ChunkType, VersionChunk)
-    case Text (ChunkType, TextChunk)
+    case version (ChunkType, VersionChunk)
+    case text (ChunkType, TextChunk)
 
     var bytes: [Byte] {
       let type: ChunkType
       let chunkBytes: [Byte]
       switch self {
-        case let .Version(t, chunk): type = t; chunkBytes = chunk.bytes
-        case let .Text(t, chunk):    type = t; chunkBytes = chunk.bytes
+        case let .version(t, chunk): type = t; chunkBytes = chunk.bytes
+        case let .text(t, chunk):    type = t; chunkBytes = chunk.bytes
       }
       let sizeBytes = Byte4(chunkBytes.count).bytes
       return type.bytes + sizeBytes + chunkBytes
     }
 
-    init?<C:CollectionType
-      where C.Generator.Element == Byte,
+    init?<C:Collection>(bytes: C)
+      where C.Iterator.Element == Byte,
             C.Index == Int,
-            C.SubSequence.Generator.Element == Byte,
-            C.SubSequence:CollectionType,
+            C.SubSequence.Iterator.Element == Byte,
+            C.SubSequence:Collection,
             C.SubSequence.Index == Int,
-            C.SubSequence.SubSequence == C.SubSequence>(bytes: C)
+            C.SubSequence.SubSequence == C.SubSequence
     {
       guard bytes.count > 4 else { return nil }
       let idx = bytes.startIndex
       switch ChunkType(bytes: bytes[idx ... idx + 3]) {
-        case .Some(.IFIL), .Some(.IVER):
+        case .some(.IFIL), .some(.IVER):
           guard let versionChunk = VersionChunk(bytes: bytes) else { return nil }
-          self = .Version(versionChunk.type, versionChunk)
+          self = .version(versionChunk.type, versionChunk)
         default:
           guard let textChunk = TextChunk(bytes: bytes) else { return nil }
-          self = .Text(textChunk.type, textChunk)
+          self = .text(textChunk.type, textChunk)
       }
     }
 
     var description: String {
       switch self {
-      case .Version(_, let versionChunk): return "\(versionChunk.major).\(versionChunk.minor)"
-      case .Text(_, let textChunk):       return textChunk.text
+      case .version(_, let versionChunk): return "\(versionChunk.major).\(versionChunk.minor)"
+      case .text(_, let textChunk):       return textChunk.text
       }
     }
   }
@@ -175,23 +175,23 @@ extension INFOChunk: CustomStringConvertible {
 }
 
 extension INFOChunk: CustomDebugStringConvertible {
-  var debugDescription: String { var result = ""; dump(self, &result); return result }
+  var debugDescription: String { var result = ""; dump(self, to: &result); return result }
 }
 
 // MARK: - ChunkType
 extension INFOChunk {
   enum ChunkType: String {
     case IFIL, ISNG, INAM, IROM, IVER, ICRD, IENG, IPRD, ICOP, ICMT, ISFT
-    var bytes: [Byte] { return rawValue.lowercaseString.bytes }
-    init?<C:CollectionType
-      where C.Generator.Element == Byte,
+    var bytes: [Byte] { return rawValue.lowercased().bytes }
+    init?<C:Collection>(bytes: C)
+      where C.Iterator.Element == Byte,
             C.Index == Int,
-            C.SubSequence.Generator.Element == Byte,
-            C.SubSequence:CollectionType,
+            C.SubSequence.Iterator.Element == Byte,
+            C.SubSequence:Collection,
             C.SubSequence.Index == Int,
-            C.SubSequence.SubSequence == C.SubSequence>(bytes: C)
+            C.SubSequence.SubSequence == C.SubSequence
     {
-      let raw = String(bytes).uppercaseString
+      let raw = String(bytes).uppercased()
       self.init(rawValue: raw)
     }
   }
@@ -203,13 +203,13 @@ extension INFOChunk {
     let major: Byte2, minor: Byte2
     let type: ChunkType
 
-    init?<C:CollectionType
-      where C.Generator.Element == Byte,
+    init?<C:Collection>(bytes: C)
+      where C.Iterator.Element == Byte,
             C.Index == Int,
-            C.SubSequence.Generator.Element == Byte,
-            C.SubSequence:CollectionType,
+            C.SubSequence.Iterator.Element == Byte,
+            C.SubSequence:Collection,
             C.SubSequence.Index == Int,
-            C.SubSequence.SubSequence == C.SubSequence>(bytes: C)
+            C.SubSequence.SubSequence == C.SubSequence
     {
       guard bytes.count == 12 else { return nil }
       let idx = bytes.startIndex
@@ -232,19 +232,19 @@ extension INFOChunk {
     let type: ChunkType
     let text: String
 
-    init?<C:CollectionType
-      where C.Generator.Element == Byte,
+    init?<C:Collection>(bytes: C)
+      where C.Iterator.Element == Byte,
             C.Index == Int,
-            C.SubSequence.Generator.Element == Byte,
-            C.SubSequence:CollectionType,
+            C.SubSequence.Iterator.Element == Byte,
+            C.SubSequence:Collection,
             C.SubSequence.Index == Int,
-            C.SubSequence.SubSequence == C.SubSequence>(bytes: C)
+            C.SubSequence.SubSequence == C.SubSequence
     {
       guard bytes.count > 8 else { return nil }
       let idx = bytes.startIndex
       guard let t = ChunkType(bytes: bytes[idx ... idx + 3]) else { return nil }
       type = t
-      text = String(bytes[(idx + 4)..<])
+      text = String(bytes[(idx + 4)|->])
     }
 
     var bytes: [Byte] { return text.bytes }

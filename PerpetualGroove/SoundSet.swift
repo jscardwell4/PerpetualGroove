@@ -8,13 +8,13 @@
 
 import Foundation
 import MoonKit
-import AudioUnit.AudioUnitProperties
+import UIKit.UIImage
 
 /** Wrapper for a sound font file */
 struct SoundSet: SoundSetType {
   
-  let url: NSURL
-  var fileName: String { return (url.lastPathComponent?.baseNameExt.0)! }
+  let url: URL
+  var fileName: String { return (url.lastPathComponent.baseNameExt.0) }
 
   let presets: [SF2File.Preset]
 
@@ -25,10 +25,10 @@ struct SoundSet: SoundSetType {
 
   - parameter u: NSURL
   */
-  init(url u: NSURL) throws {
+  init(url u: URL) throws {
     var error: NSError?
-    guard u.checkResourceIsReachableAndReturnError(&error) else { throw error! }
-    presets = try SF2File(file: u).presets.sort()
+    guard (u as NSURL).checkResourceIsReachableAndReturnError(&error) else { throw error! }
+    presets = try SF2File(file: u).presets.sorted()
     url = u
   }
 

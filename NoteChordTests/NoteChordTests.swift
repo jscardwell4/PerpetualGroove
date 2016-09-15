@@ -9,9 +9,9 @@
 import XCTest
 @testable import Groove
 
-func AssertEqualElements<S1:SequenceType, S2:SequenceType
-  where S1.Generator.Element:Equatable,
-        S1.Generator.Element == S2.Generator.Element>(s1: S1, _ s2: S2, file: StaticString = #file, line: UInt = #line)
+func AssertEqualElements<S1:Sequence, S2:Sequence>(_ s1: S1, _ s2: S2, file: StaticString = #file, line: UInt = #line)
+  where S1.Iterator.Element:Equatable,
+        S1.Iterator.Element == S2.Iterator.Element
 {
   XCTAssert(s1.elementsEqual(s2), "the elements in \(s1) are not equal to the elements in \(s2)", file: file, line: line)
 }

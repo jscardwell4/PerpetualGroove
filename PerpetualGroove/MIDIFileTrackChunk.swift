@@ -36,13 +36,13 @@ struct MIDIFileTrackChunk {
 
   - parameter bytes: C
   */
-  init<C:CollectionType where C.Generator.Element == Byte,
-    C.Index == Int, C.SubSequence.Generator.Element == Byte,
-    C.SubSequence:CollectionType, C.SubSequence.Index == Int,
-    C.SubSequence.SubSequence == C.SubSequence>(bytes: C) throws
+  init<C:Collection>(bytes: C) throws where C.Iterator.Element == Byte,
+    C.Index == Int, C.SubSequence.Iterator.Element == Byte,
+    C.SubSequence:Collection, C.SubSequence.Index == Int,
+    C.SubSequence.SubSequence == C.SubSequence
   {
     guard bytes.count > 8 else { throw MIDIFileError(type: .InvalidLength, reason: "Not enough bytes in chunk") }
-    guard bytes[bytes.startIndex ..< bytes.startIndex.advancedBy(4)].elementsEqual("MTrk".utf8) else {
+    guard bytes[bytes.startIndex ..< bytes.startIndex.advanced(by: 4)].elementsEqual("MTrk".utf8) else {
       throw MIDIFileError(type: .InvalidHeader, reason: "Track chunk header must be of type 'MTrk'")
     }
 
@@ -52,7 +52,7 @@ struct MIDIFileTrackChunk {
                           reason: "Length specified in bytes and the length of the bytes do not match")
     }
 
-    var currentIndex = bytes.startIndex.advancedBy(8)
+    var currentIndex = bytes.startIndex.advanced(by: 8)
     var events: [MIDIEvent] = []
 
     while currentIndex < bytes.endIndex {
@@ -65,7 +65,7 @@ struct MIDIFileTrackChunk {
       let eventStart = currentIndex
       switch bytes[currentIndex] {
         case 0xFF:
-          i = currentIndex.advancedBy(1)
+          i = currentIndex.advanced(by: 1)
           let type = bytes[i]
           i.increment()
           currentIndex = i
@@ -76,9 +76,9 @@ struct MIDIFileTrackChunk {
 
           let eventBytes = bytes[eventStart ..< i]
           if type == 0x07 {
-            events.append(.Node(try MIDINodeEvent(delta: delta, bytes: eventBytes)))
+            events.append(.node(try MIDINodeEvent(delta: delta, bytes: eventBytes)))
           } else {
-            events.append(.Meta(try MetaEvent(delta: delta, bytes: eventBytes)))
+            events.append(.meta(try MetaEvent(delta: delta, bytes: eventBytes)))
           }
           currentIndex = i
 
@@ -86,8 +86,8 @@ struct MIDIFileTrackChunk {
           guard let type = ChannelEvent.EventType(rawValue: bytes[currentIndex] >> 4) else {
             throw MIDIFileError(type: .UnsupportedEvent, reason: "\(bytes[currentIndex] >> 4) is not a supported ChannelEvent")
           }
-          i = currentIndex.advancedBy(type.byteCount)
-          events.append(.Channel(try ChannelEvent(delta: delta, bytes: bytes[currentIndex ..< i])))
+          i = currentIndex.advanced(by: type.byteCount)
+          events.append(.channel(try ChannelEvent(delta: delta, bytes: bytes[currentIndex ..< i])))
           currentIndex = i
       }
     }
@@ -101,5 +101,5 @@ extension MIDIFileTrackChunk: CustomStringConvertible {
 }
 
 extension MIDIFileTrackChunk: CustomDebugStringConvertible {
-  var debugDescription: String { var result = ""; dump(self, &result); return result }
+  var debugDescription: String { var result = ""; dump(self, to: &result); return result }
 }

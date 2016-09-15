@@ -13,14 +13,14 @@ protocol SequenceDataProvider { var storedData: Sequence.Data { get } }
 
 final class Sequence {
 
-  enum Data { case MIDI (MIDIFile), Groove (GrooveFile) }
+  enum Data { case midi (MIDIFile), groove (GrooveFile) }
 
 
   // MARK: - Managing tracks
   
-  var sequenceEnd: BarBeatTime { return tracks.map({$0.endOfTrack}).maxElement() ?? .start1 }
+  var sequenceEnd: BarBeatTime { return tracks.map({$0.endOfTrack}).max() ?? .start1 }
 
-  private(set) var instrumentTracks: [InstrumentTrack] = []
+  fileprivate(set) var instrumentTracks: [InstrumentTrack] = []
 
   var soloTracks: LazyFilterCollection<[InstrumentTrack]> {
     return instrumentTracks.lazy.filter { $0.solo }
@@ -33,7 +33,7 @@ final class Sequence {
   - parameter idx1: Int
   - parameter idx2: Int
   */
-  func exchangeInstrumentTrackAtIndex(idx1: Int, withTrackAtIndex idx2: Int) {
+  func exchangeInstrumentTrackAtIndex(_ idx1: Int, withTrackAtIndex idx2: Int) {
     guard instrumentTracks.indices.contains([idx1, idx2]) else { return }
     swap(&instrumentTracks[idx1], &instrumentTracks[idx2])
     logDebug("posting 'DidUpdate'")
@@ -43,7 +43,7 @@ final class Sequence {
   var currentTrackIndex: Int? {
     get { return currentTrack?.index }
     set {
-      guard let newValue = newValue where instrumentTracks.indices.contains(newValue) else {
+      guard let newValue = newValue , instrumentTracks.indices.contains(newValue) else {
         currentTrack = nil
         return
       }
@@ -51,7 +51,7 @@ final class Sequence {
     }
   }
 
-  private var currentTrackStack: Stack<Weak<InstrumentTrack>> = []
+  fileprivate var currentTrackStack: Stack<Weak<InstrumentTrack>> = []
 
   weak var currentTrack: InstrumentTrack? {
     get { return currentTrackStack.peek?.reference }
@@ -82,7 +82,7 @@ final class Sequence {
   }
 
   /** The tempo track for the sequence is the first element in the `tracks` array */
-  private(set) var tempoTrack: TempoTrack!
+  fileprivate(set) var tempoTrack: TempoTrack!
 
   var tempo: Double { get { return tempoTrack.tempo } set { tempoTrack.tempo = newValue } }
 
@@ -99,20 +99,20 @@ final class Sequence {
 
   // MARK: - Receiving track and sequencer notifications
 
-  private let receptionist: NotificationReceptionist = {
-    let receptionist = NotificationReceptionist(callbackQueue: NSOperationQueue.mainQueue())
+  fileprivate let receptionist: NotificationReceptionist = {
+    let receptionist = NotificationReceptionist(callbackQueue: OperationQueue.main)
     receptionist.logContext = LogManager.MIDIFileContext
     return receptionist
   }()
 
-  private var hasChanges = false
+  fileprivate var hasChanges = false
 
   /**
   trackDidUpdate:
 
   - parameter notification: NSNotification
   */
-  private func trackDidUpdate(notification: NSNotification) {
+  fileprivate func trackDidUpdate(_ notification: Foundation.Notification) {
     if Sequencer.playing { hasChanges = true }
     else {
       hasChanges = false
@@ -126,7 +126,7 @@ final class Sequence {
 
   - parameter notification: NSNotification
   */
-  private func toggleRecording(notification: NSNotification) {
+  fileprivate func toggleRecording(_ notification: Foundation.Notification) {
     tempoTrack.recording = Sequencer.recording
   }
 
@@ -135,7 +135,7 @@ final class Sequence {
 
   - parameter notification: NSNotification
   */
-  private func sequencerDidReset(notification: NSNotification) {
+  fileprivate func sequencerDidReset(_ notification: Foundation.Notification) {
     guard hasChanges else { return }
     hasChanges = false
     logDebug("posting 'DidUpdate'")
@@ -147,7 +147,7 @@ final class Sequence {
 
    - parameter track: Track
   */
-  private func observeTrack(track: Track) {
+  fileprivate func observeTrack(_ track: Track) {
     receptionist.observe(notification: .DidUpdate,
                     from: track,
                 callback: weakMethod(self, Sequence.trackDidUpdate))
@@ -157,7 +157,7 @@ final class Sequence {
                 callback: weakMethod(self, Sequence.trackSoloStatusDidChange))
   }
 
-  private(set) weak var document: Document!
+  fileprivate(set) weak var document: Document!
 
   // MARK: - Initializing
 
@@ -188,7 +188,7 @@ final class Sequence {
 
     var trackChunks = ArraySlice(file.tracks)
     if let trackChunk = trackChunks.first
-      where trackChunk.events.count == trackChunk.events.filter({ TempoTrack.isTempoTrackEvent($0) }).count
+      , trackChunk.events.count == trackChunk.events.filter({ TempoTrack.isTempoTrackEvent($0) }).count
     {
       tempoTrack = TempoTrack(sequence: self, trackChunk: trackChunk)
       trackChunks = trackChunks.dropFirst()
@@ -210,9 +210,9 @@ final class Sequence {
   convenience init(file: GrooveFile, document: Document) {
     self.init(document: document)
     var tempoEvents: [MIDIEvent] = []
-    for (_, rawTime, bpmValue) in file.tempoChanges.value {
-      guard let time = BarBeatTime(rawValue: rawTime), bpm = Double(bpmValue) else { continue }
-      tempoEvents.append(.Meta(MetaEvent(.Tempo(bpm: bpm), time)))
+    for (key: rawTime, value: bpmValue) in file.tempoChanges.value {
+      guard let time = BarBeatTime(rawValue: rawTime), let bpm = Double(bpmValue) else { continue }
+      tempoEvents.append(.meta(MetaEvent(.tempo(bpm: bpm), time)))
     }
     tempoTrack.addEvents(tempoEvents)
     for track in file.tracks.flatMap({try? InstrumentTrack(sequence: self, grooveTrack: $0)}) {
@@ -228,8 +228,8 @@ final class Sequence {
   */
   convenience init(data: SequenceDataProvider, document: Document) {
     switch data.storedData {
-      case .MIDI(let file): self.init(file: file, document: document)
-      case .Groove(let file): self.init(file: file, document: document)
+      case .midi(let file): self.init(file: file, document: document)
+      case .groove(let file): self.init(file: file, document: document)
     }
   }
 
@@ -241,7 +241,7 @@ final class Sequence {
   - parameter instrument: Instrument
   */
 
-  func insertTrackWithInstrument(instrument: Instrument) throws {
+  func insertTrackWithInstrument(_ instrument: Instrument) throws {
     addTrack(try InstrumentTrack(sequence: self, instrument: instrument))
     logDebug("posting 'DidUpdate'")
     Notification.DidUpdate.post(object: self)
@@ -252,13 +252,13 @@ final class Sequence {
 
   - parameter track: InstrumentTrack
   */
-  private func addTrack(track: InstrumentTrack) {
+  fileprivate func addTrack(_ track: InstrumentTrack) {
     guard !instrumentTracks.contains(track) else { return }
     instrumentTracks.append(track)
     observeTrack(track)
     logDebug("track added: \(track.name)")
     Notification.DidAddTrack.post(
-      object: self,
+      object: self as AnyObject,
       userInfo: [
         Notification.Key.AddedIndex: instrumentTracks.count - 1,
         Notification.Key.AddedTrack: track
@@ -274,8 +274,8 @@ final class Sequence {
 
   - parameter track: InstrumentTrack
   */
-  func removeTrack(track: InstrumentTrack) {
-    guard let idx = track.index where track.sequence === self else { return }
+  func removeTrack(_ track: InstrumentTrack) {
+    guard let idx = track.index , track.sequence === self else { return }
     removeTrackAtIndex(idx)
   }
 
@@ -284,13 +284,13 @@ final class Sequence {
 
    - parameter index: Int
   */
-  func removeTrackAtIndex(index: Int) {
-    let track = instrumentTracks.removeAtIndex(index)
+  func removeTrackAtIndex(_ index: Int) {
+    let track = instrumentTracks.remove(at: index)
     track.nodeManager.stopNodes(remove: true)
     receptionist.stopObserving(notification: .DidUpdate, from: track)
     logDebug("track removed: \(track.name)")
     Notification.DidRemoveTrack.post(
-      object: self,
+      object: self as AnyObject,
       userInfo: [
         Notification.Key.RemovedIndex: index,
         Notification.Key.RemovedTrack: track
@@ -315,7 +315,7 @@ extension Sequence: CustomStringConvertible {
 
 // MARK: - CustomDebugStringConvertible
 extension Sequence: CustomDebugStringConvertible {
-  var debugDescription: String { var result = ""; dump(self, &result); return result }
+  var debugDescription: String { var result = ""; dump(self, to: &result); return result }
 }
 
 // MARK: - Notification
@@ -330,19 +330,19 @@ extension Sequence: NotificationDispatchType {
   }
 }
 
-extension NSNotification {
+extension Notification {
 
   var track: InstrumentTrack?    { return userInfo?[Sequence.Notification.Key.Track.key] as? InstrumentTrack }
   var oldTrack: InstrumentTrack? { return userInfo?[Sequence.Notification.Key.OldTrack.key] as? InstrumentTrack }
 
-  var oldCount: Int? { return (userInfo?[Sequence.Notification.Key.OldCount.key] as? NSNumber)?.integerValue }
-  var newCount: Int? { return (userInfo?[Sequence.Notification.Key.NewCount.key] as? NSNumber)?.integerValue }
+  var oldCount: Int? { return (userInfo?[Sequence.Notification.Key.OldCount.key] as? NSNumber)?.intValue }
+  var newCount: Int? { return (userInfo?[Sequence.Notification.Key.NewCount.key] as? NSNumber)?.intValue }
 
   var removedIndex: Int? {
-    return (userInfo?[Sequence.Notification.Key.RemovedIndex.key] as? NSNumber)?.integerValue
+    return (userInfo?[Sequence.Notification.Key.RemovedIndex.key] as? NSNumber)?.intValue
   }
   var addedIndex: Int? {
-    return (userInfo?[Sequence.Notification.Key.AddedIndex.key] as? NSNumber)?.integerValue
+    return (userInfo?[Sequence.Notification.Key.AddedIndex.key] as? NSNumber)?.intValue
   }
 
   var addedTrack: InstrumentTrack? {

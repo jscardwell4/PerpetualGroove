@@ -14,7 +14,7 @@ final class Document: UIDocument {
   enum SourceType: String {
     case MIDI = "midi", Groove = "groove"
     init?(_ string: String?) {
-      switch string?.lowercaseString {
+      switch string?.lowercased() {
         case "midi", "mid", "public.midi-audio": self = .MIDI
         case "groove", "com.moondeerstudios.groove-document": self = .Groove
         default: return nil
@@ -25,14 +25,14 @@ final class Document: UIDocument {
   var sourceType: SourceType? { return SourceType(fileType) }
 
   var storageLocation: DocumentManager.StorageLocation {
-    return NSFileManager.withDefaultManager({$0.isUbiquitousItemAtURL(fileURL)}) ? .iCloud : .Local
+    return FileManager.withDefaultManager({$0.isUbiquitousItem(at: fileURL)}) ? .iCloud : .local
 //    let fileManager = NSFileManager.defaultManager()
 //    var isUbiquitous: AnyObject?
 //    do { try fileURL.getResourceValue(&isUbiquitous, forKey: NSURLIsUbiquitousItemKey) } catch { logError(error) }
 //    return isUbiquitous != nil && (isUbiquitous as? NSNumber)?.boolValue == true ? .iCloud : .Local
   }
 
-  private(set) var sequence: Sequence? {
+  fileprivate(set) var sequence: Sequence? {
     didSet {
       guard oldValue !== sequence else { return }
 
@@ -46,18 +46,18 @@ final class Document: UIDocument {
     }
   }
 
-  private var creating = false
+  fileprivate var creating = false
 
-  override var presentedItemOperationQueue: NSOperationQueue { return DocumentManager.operationQueue }
+  override var presentedItemOperationQueue: OperationQueue { return DocumentManager.operationQueue }
 
   /**
    didUpdate:
 
    - parameter notification: NSNotification
   */
-  private func didUpdate(notification: NSNotification) {
+  fileprivate func didUpdate(_ notification: Foundation.Notification) {
     logDebug("")
-    updateChangeCount(.Done)
+    updateChangeCount(.done)
   }
 
   override func disableEditing() {
@@ -75,9 +75,9 @@ final class Document: UIDocument {
 
   - parameter notification: NSNotification
   */
-  private func didChangeState(notification: NSNotification) {
+  fileprivate func didChangeState(_ notification: Foundation.Notification) {
     
-    guard documentState ∋ .InConflict, let versions = NSFileVersion.unresolvedConflictVersionsOfItemAtURL(fileURL) else { return }
+    guard documentState ∋ .inConflict, let versions = NSFileVersion.unresolvedConflictVersionsOfItem(at: fileURL) else { return }
     logDebug("versions: \(versions)")
     // TODO: resolve conflict
   }
@@ -87,15 +87,15 @@ final class Document: UIDocument {
 
   - parameter url: NSURL
   */
-  override init(fileURL url: NSURL) {
+  override init(fileURL url: URL) {
     super.init(fileURL: url)
 
-    receptionist.observe(name: UIDocumentStateChangedNotification,
+    receptionist.observe(name: NSNotification.Name.UIDocumentStateChanged.rawValue,
                     from: self,
                 callback: weakMethod(self, Document.didChangeState))
   }
 
-  private let receptionist: NotificationReceptionist = {
+  fileprivate let receptionist: NotificationReceptionist = {
     let receptionist = NotificationReceptionist(callbackQueue: DocumentManager.operationQueue)
     receptionist.logContext = LogManager.MIDIFileContext
     return receptionist
@@ -107,9 +107,9 @@ final class Document: UIDocument {
   - parameter contents: AnyObject
   - parameter typeName: String?
   */
-  override func loadFromContents(contents: AnyObject, ofType typeName: String?) throws {
-    guard let data = contents as? NSData, type = SourceType(typeName) else { throw Error.InvalidContentType }
-    guard data.length > 0 else { sequence = Sequence(document: self); return }
+  override func load(fromContents contents: Any, ofType typeName: String?) throws {
+    guard let data = contents as? Data, let type = SourceType(typeName) else { throw Error.InvalidContentType }
+    guard data.count > 0 else { sequence = Sequence(document: self); return }
     let file: SequenceDataProvider
     switch type {
       case .MIDI: file = try MIDIFile(data: data)
@@ -124,12 +124,12 @@ final class Document: UIDocument {
 
   - parameter typeName: String
   */
-  override func contentsForType(typeName: String) throws -> AnyObject {
+  override func contents(forType typeName: String) throws -> Any {
     if sequence == nil && creating {
       sequence = Sequence(document: self)
       creating = false
     }
-    guard let sequence = sequence, type = SourceType(typeName) else { throw Error.MissingSequence }
+    guard let sequence = sequence, let type = SourceType(typeName) else { throw Error.MissingSequence }
 
     let file: DataConvertible
     switch type {
@@ -146,7 +146,7 @@ final class Document: UIDocument {
   - parameter error: NSError
   - parameter userInteractionPermitted: Bool
   */
-  override func handleError(error: NSError, userInteractionPermitted: Bool) {
+  override func handleError(_ error: Swift.Error, userInteractionPermitted: Bool) {
     logError(error)
     super.handleError(error, userInteractionPermitted: userInteractionPermitted)
   }
@@ -156,14 +156,15 @@ final class Document: UIDocument {
 
   - parameter name: String
   */
-  func renameTo(newName: String) {
+  func renameTo(_ newName: String) {
     DocumentManager.queue.async {
       [weak self] in
 
       guard let weakself = self else { return }
 
-      guard newName != weakself.localizedName,
-        let directoryURL = weakself.fileURL.URLByDeletingLastPathComponent else { return }
+      guard newName != weakself.localizedName else { return }
+
+      let directoryURL = weakself.fileURL.deletingLastPathComponent()
 
       let oldName = weakself.localizedName
       let oldURL = weakself.fileURL
@@ -174,18 +175,18 @@ final class Document: UIDocument {
 
       let fileCoordinator = NSFileCoordinator(filePresenter: nil)
       var error: NSError?
-      fileCoordinator.coordinateWritingItemAtURL(oldURL,
-                                                 options: .ForMoving,
-                                                 writingItemAtURL: newURL,
-                                                 options: .ForReplacing,
+      fileCoordinator.coordinate(writingItemAt: oldURL,
+                                 options: .forMoving,
+                                 writingItemAt: newURL,
+                                                 options: .forReplacing,
                                                  error: &error)
       {
         [weak self] oldURL, newURL in
 
-        fileCoordinator.itemAtURL(oldURL, willMoveToURL: newURL)
+        fileCoordinator.item(at: oldURL, willMoveTo: newURL)
         do {
-          try NSFileManager.withDefaultManager { try $0.moveItemAtURL(oldURL, toURL: newURL) }
-          fileCoordinator.itemAtURL(oldURL, didMoveToURL: newURL)
+          try FileManager.withDefaultManager { try $0.moveItem(at: oldURL, to: newURL) }
+          fileCoordinator.item(at: oldURL, didMoveTo: newURL)
         } catch {
           self?.logError(error)
         }
@@ -204,17 +205,17 @@ final class Document: UIDocument {
   - parameter saveOperation: UIDocumentSaveOperation
   - parameter completionHandler: ((Bool) -> Void
   */
-  override func saveToURL(url: NSURL,
-         forSaveOperation saveOperation: UIDocumentSaveOperation,
+  override func save(to url: URL,
+         for saveOperation: UIDocumentSaveOperation,
         completionHandler: ((Bool) -> Void)?)
   {
-    creating = saveOperation == .ForCreating
-    logDebug("(\(creating ? "saving" : "overwriting"))  '\(url.path!)'")
-    super.saveToURL(url, forSaveOperation: saveOperation, completionHandler: completionHandler)
+    creating = saveOperation == .forCreating
+    logDebug("(\(creating ? "saving" : "overwriting"))  '\(url.path)'")
+    super.save(to: url, for: saveOperation, completionHandler: completionHandler)
   }
 
-  override func presentedItemDidMoveToURL(newURL: NSURL) {
-    super.presentedItemDidMoveToURL(newURL)
+  override func presentedItemDidMove(to newURL: URL) {
+    super.presentedItemDidMove(to: newURL)
     guard let newName = newURL.pathBaseName else {
       fatalError("Failed to get base name from new url")
     }
@@ -230,7 +231,7 @@ extension Document: NotificationDispatchType {
   }
 }
 
-extension NSNotification {
+extension Notification {
   var newDocumentName: String? {
     return userInfo?[Document.Notification.Key.NewName.key] as? String
   }
@@ -243,6 +244,6 @@ extension Document: Named {
 // MARK: - Error
 extension Document {
 
-  enum Error: String, ErrorType { case InvalidContentType, InvalidContent, MissingSequence }
+  enum Error: String, Swift.Error { case InvalidContentType, InvalidContent, MissingSequence }
 
 }

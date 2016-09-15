@@ -17,46 +17,46 @@ import Eveleth
 final class MIDIPlayerViewController: UIViewController {
 
   /** startLoopAction */
-  @IBAction private func startLoopAction() { MIDIPlayer.loopStart = Sequencer.transport.time.barBeatTime }
+  @IBAction fileprivate func startLoopAction() { MIDIPlayer.loopStart = Sequencer.transport.time.barBeatTime }
 
-  private let buttonWidth: CGFloat = 42
-  private let buttonPadding: CGFloat = 10
+  fileprivate let buttonWidth: CGFloat = 42
+  fileprivate let buttonPadding: CGFloat = 10
 
   /** stopLoopAction */
-  @IBAction private func stopLoopAction() { MIDIPlayer.loopEnd = Sequencer.transport.time.barBeatTime }
+  @IBAction fileprivate func stopLoopAction() { MIDIPlayer.loopEnd = Sequencer.transport.time.barBeatTime }
 
   /** toggleLoopAction */
-  @IBAction private func toggleLoopAction() { Sequencer.mode = .Loop }
+  @IBAction fileprivate func toggleLoopAction() { Sequencer.mode = .Loop }
 
   /** cancelLoopAction */
-  @IBAction private func cancelLoopAction() { Sequencer.mode = .Default }
+  @IBAction fileprivate func cancelLoopAction() { Sequencer.mode = .Default }
 
   /** confirmLoopAction */
-  @IBAction private func confirmLoopAction() { MIDIPlayer.shouldInsertLoops = true;  Sequencer.mode = .Default }
+  @IBAction fileprivate func confirmLoopAction() { MIDIPlayer.shouldInsertLoops = true;  Sequencer.mode = .Default }
 
   // MARK: - Tools
 
-  @IBOutlet private(set) weak var primaryTools: ImageSegmentedControl!
+  @IBOutlet fileprivate(set) weak var primaryTools: ImageSegmentedControl!
 
-  @IBOutlet private weak var loopTools: UIStackView!
+  @IBOutlet fileprivate weak var loopTools: UIStackView!
 
-  @IBAction private func didSelectTool(sender: ImageSegmentedControl) {
+  @IBAction fileprivate func didSelectTool(_ sender: ImageSegmentedControl) {
     MIDIPlayer.currentTool = Tool(sender.selectedSegmentIndex)
   }
 
-  @IBOutlet private weak var loopToggleButton: ImageButtonView!
+  @IBOutlet fileprivate weak var loopToggleButton: ImageButtonView!
 
-  @IBOutlet private weak var loopStartButton: ImageButtonView!
-  @IBOutlet private weak var loopEndButton: ImageButtonView!
-  @IBOutlet private weak var loopCancelButton: ImageButtonView!
-  @IBOutlet private weak var loopConfirmButton: ImageButtonView!
+  @IBOutlet fileprivate weak var loopStartButton: ImageButtonView!
+  @IBOutlet fileprivate weak var loopEndButton: ImageButtonView!
+  @IBOutlet fileprivate weak var loopCancelButton: ImageButtonView!
+  @IBOutlet fileprivate weak var loopConfirmButton: ImageButtonView!
 
-  private var loopToolButtons: [ImageButtonView] { return [loopStartButton, loopEndButton, loopCancelButton, loopConfirmButton] }
+  fileprivate var loopToolButtons: [ImageButtonView] { return [loopStartButton, loopEndButton, loopCancelButton, loopConfirmButton] }
 
-  @IBOutlet private weak var loopToolsWidthConstraint: NSLayoutConstraint!
+  @IBOutlet fileprivate weak var loopToolsWidthConstraint: NSLayoutConstraint!
 
   /** setup */
-  private func setup() { initializeReceptionist() }
+  fileprivate func setup() { initializeReceptionist() }
 
   /**
    init:bundle:
@@ -64,7 +64,7 @@ final class MIDIPlayerViewController: UIViewController {
    - parameter nibNameOrNil: String?
    - parameter nibBundleOrNil: NSBundle?
   */
-  override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+  override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
     super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     setup()
   }
@@ -89,7 +89,7 @@ final class MIDIPlayerViewController: UIViewController {
         UIImage(named: "spinner\($0)")?.imageWithColor(.whiteColor())
       }
       spinner?.animationDuration = 0.8
-      spinner?.hidden = true
+      spinner?.isHidden = true
     }
   }
 
@@ -98,9 +98,9 @@ final class MIDIPlayerViewController: UIViewController {
 
   - parameter notification: NSNotification
   */
-  private func willOpenDocument(notification: NSNotification) {
+  fileprivate func willOpenDocument(_ notification: Notification) {
     spinner.startAnimating()
-    spinner.hidden = false
+    spinner.isHidden = false
   }
 
 
@@ -110,8 +110,8 @@ final class MIDIPlayerViewController: UIViewController {
 
   // MARK: - Managing state
 
-  private let receptionist: NotificationReceptionist = {
-    let receptionist = NotificationReceptionist(callbackQueue: NSOperationQueue.mainQueue())
+  fileprivate let receptionist: NotificationReceptionist = {
+    let receptionist = NotificationReceptionist(callbackQueue: OperationQueue.main)
     receptionist.logContext = LogManager.UIContext
     return receptionist
   }()
@@ -121,15 +121,15 @@ final class MIDIPlayerViewController: UIViewController {
 
   - parameter notification: NSNotification
   */
-  private func didChangeDocument(notification: NSNotification) {
+  fileprivate func didChangeDocument(_ notification: Notification) {
     documentName.text = DocumentManager.currentDocument?.localizedName
-    if spinner.hidden == false {
+    if spinner.isHidden == false {
       spinner.stopAnimating()
-      spinner.hidden = true
+      spinner.isHidden = true
     }
   }
 
-  private func didSelectTool(notification: NSNotification) {
+  fileprivate func didSelectTool(_ notification: Notification) {
     guard let tool = notification.selectedTool else { return }
     if primaryTools.selectedSegmentIndex != tool.rawValue {
       primaryTools.selectedSegmentIndex = tool.rawValue
@@ -141,14 +141,14 @@ final class MIDIPlayerViewController: UIViewController {
 
    - parameter notification: NSNotification
   */
-  private func didEnterLoopMode(notification: NSNotification) {
-    UIView.animateWithDuration(0.25) {
+  fileprivate func didEnterLoopMode(_ notification: Notification) {
+    UIView.animate(withDuration: 0.25, animations: {
       [unowned self] in
 
-      self.loopToggleButton.hidden = true
-      self.loopToolButtons.forEach { $0.hidden = false; $0.setNeedsDisplay() }
+      self.loopToggleButton.isHidden = true
+      self.loopToolButtons.forEach { $0.isHidden = false; $0.setNeedsDisplay() }
       self.loopToolsWidthConstraint.constant = 4 * self.buttonWidth + 3 * self.buttonPadding
-    }
+    }) 
   }
 
   /**
@@ -156,20 +156,20 @@ final class MIDIPlayerViewController: UIViewController {
 
    - parameter notification: NSNotification
   */
-  private func didExitLoopMode(notification: NSNotification) {
-    UIView.animateWithDuration(0.25) {
+  fileprivate func didExitLoopMode(_ notification: Notification) {
+    UIView.animate(withDuration: 0.25, animations: {
       [unowned self] in
 
-      self.loopToggleButton.hidden = false
+      self.loopToggleButton.isHidden = false
       self.loopToggleButton.setNeedsDisplay()
-      self.loopToolButtons.forEach { $0.hidden = true }
+      self.loopToolButtons.forEach { $0.isHidden = true }
       self.loopToolsWidthConstraint.constant = self.buttonWidth
-    }
+    }) 
   }
 
 
   /** initializeReceptionist */
-  private func initializeReceptionist() {
+  fileprivate func initializeReceptionist() {
 
     guard receptionist.count == 0 else { return }
 
@@ -202,7 +202,7 @@ extension MIDIPlayerViewController: UITextFieldDelegate {
 
   - returns: Bool
   */
-  func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
+  func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
     return DocumentManager.currentDocument != nil
   }
 
@@ -213,7 +213,7 @@ extension MIDIPlayerViewController: UITextFieldDelegate {
 
   - returns: Bool
   */
-  func textFieldShouldReturn(textField: UITextField) -> Bool {
+  func textFieldShouldReturn(_ textField: UITextField) -> Bool {
     textField.resignFirstResponder()
     return false
   }
@@ -225,13 +225,13 @@ extension MIDIPlayerViewController: UITextFieldDelegate {
 
   - returns: Bool
   */
-  func textFieldShouldEndEditing(textField: UITextField) -> Bool {
+  func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
 
     guard let text = textField.text,
-              fileName = DocumentManager.noncollidingFileName(text) else { return false }
+              let fileName = DocumentManager.noncollidingFileName(text) else { return false }
 
     if let currentDocument = DocumentManager.currentDocument
-      where ![fileName, currentDocument.localizedName].contains(text) { textField.text = fileName }
+      , ![fileName, currentDocument.localizedName].contains(text) { textField.text = fileName }
 
     return true
   }
@@ -241,9 +241,9 @@ extension MIDIPlayerViewController: UITextFieldDelegate {
 
   - parameter textField: UITextField
   */
-  func textFieldDidEndEditing(textField: UITextField) {
+  func textFieldDidEndEditing(_ textField: UITextField) {
     guard let text = textField.text
-      where DocumentManager.currentDocument?.localizedName != text else { return }
+      , DocumentManager.currentDocument?.localizedName != text else { return }
     DocumentManager.currentDocument?.renameTo(text)
   }
 }

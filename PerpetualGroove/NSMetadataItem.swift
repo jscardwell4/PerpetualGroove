@@ -36,15 +36,15 @@ extension NSMetadataItem {
     }
   }
 
-  subscript(itemKey: ItemKey) -> AnyObject? { return valueForAttribute(itemKey.rawValue) }
+  subscript(itemKey: ItemKey) -> AnyObject? { return value(forAttribute: itemKey.rawValue) as AnyObject? }
 
   var fileSystemName: String? { return self[.FSName] as? String }
   var displayName: String { return self[.DisplayName] as? String ?? "Unnamed Item" }
-  var URL: NSURL { return self[.URL] as! NSURL }
+  var URL: Foundation.URL { return self[.URL] as! Foundation.URL }
   var path: String? { return self[.Path] as? String }
-  var size: UInt64 { return (self[.FSSize] as! NSNumber).unsignedLongLongValue }
-  var creationDate: NSDate? { return self[.FSCreationDate] as? NSDate }
-  var modificationDate: NSDate? { return self[.FSContentChangeDate] as? NSDate }
+  var size: UInt64 { return (self[.FSSize] as! NSNumber).uint64Value }
+  var creationDate: Date? { return self[.FSCreationDate] as? Date }
+  var modificationDate: Date? { return self[.FSContentChangeDate] as? Date }
   var isUbiquitous: Bool? { return (self[.IsUbiquitous] as? NSNumber)?.boolValue }
   var hasUnresolvedConflicts: Bool? { return (self[.HasUnresolvedConflicts] as? NSNumber)?.boolValue }
   var downloading: Bool? { return (self[.IsDownloading] as? NSNumber)?.boolValue }
@@ -66,9 +66,9 @@ extension NSMetadataItem {
         case ~/"^kMDItem[a-zA-Z]+$":
           name = $0.rawValue[key.startIndex.advancedBy(7)..<]
         case ~/"^NSMetadataItem[a-zA-Z]+Key$":
-          name = $0.rawValue[key.startIndex.advancedBy(14) ..< key.endIndex.advancedBy(-3)]
+          name = $0.rawValue[key.characters.index(key.startIndex, offsetBy: 14) ..< key.characters.index(key.endIndex, offsetBy: -3)]
         case ~/"^NSMetadataUbiquitousItem[a-zA-Z]+Key$":
-          name = $0.rawValue[key.startIndex.advancedBy(24) ..< key.endIndex.advancedBy(-3)]
+          name = $0.rawValue[key.characters.index(key.startIndex, offsetBy: 24) ..< key.characters.index(key.endIndex, offsetBy: -3)]
         default:
           name = nil
       }
@@ -81,7 +81,7 @@ extension NSMetadataItem {
 
 }
 
-extension NSNotification {
+extension Notification {
 
   var removedMetadataItems: [NSMetadataItem]? {
     return userInfo?[NSMetadataQueryUpdateRemovedItemsKey] as? [NSMetadataItem]

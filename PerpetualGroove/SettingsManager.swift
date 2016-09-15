@@ -12,10 +12,10 @@ import MoonKit
 
 final class SettingsManager {
 
-  private static let defaults = NSUserDefaults.standardUserDefaults()
+  fileprivate static let defaults = UserDefaults.standard
 
-  private static var settingsCache: [Setting:Any] = [:]
-  private(set) static var initialized = false {
+  fileprivate static var settingsCache: [Setting:Any] = [:]
+  fileprivate(set) static var initialized = false {
     didSet {
       guard initialized else { return }
       Notification(nil).post()
@@ -23,13 +23,13 @@ final class SettingsManager {
   }
 
   /** updateCache */
-  static private func updateCache() {
+  static fileprivate func updateCache() {
     logDebug("")
     let changedSettings: [Setting] = Setting.allCases.filter {
       switch ($0.currentValue, $0.cachedValue) {
         case let (current as NSNumber, previous as NSNumber) where current != previous: return true
-        case let (current as NSData, previous as NSData)     where current != previous: return true
-        case (.Some, .None), (.None, .Some):                                            return true
+        case let (current as Data, previous as Data)     where current != previous: return true
+        case (.some, .none), (.none, .some):                                            return true
         default:                                                                        return false
       }
     }
@@ -58,7 +58,7 @@ final class SettingsManager {
         return defaultValue
       }
     }
-    set { logDebug(""); defaults.setBool(newValue, forKey: Setting.iCloudStorage.key) }
+    set { logDebug(""); defaults.set(newValue, forKey: Setting.iCloudStorage.key) }
   }
 
   static var confirmDeleteDocument: Bool {
@@ -74,7 +74,7 @@ final class SettingsManager {
         return defaultValue
       }
     }
-    set { logDebug(""); defaults.setBool(newValue, forKey: Setting.ConfirmDeleteDocument.key) }
+    set { logDebug(""); defaults.set(newValue, forKey: Setting.ConfirmDeleteDocument.key) }
   }
 
   static var confirmDeleteTrack: Bool {
@@ -90,7 +90,7 @@ final class SettingsManager {
         return defaultValue
       }
     }
-    set { logDebug(""); defaults.setBool(newValue, forKey: Setting.ConfirmDeleteTrack.key) }
+    set { logDebug(""); defaults.set(newValue, forKey: Setting.ConfirmDeleteTrack.key) }
   }
 
   static var scrollTrackLabels: Bool {
@@ -106,37 +106,37 @@ final class SettingsManager {
         return defaultValue
       }
     }
-    set { logDebug(""); defaults.setBool(newValue, forKey: Setting.ScrollTrackLabels.key) }
+    set { logDebug(""); defaults.set(newValue, forKey: Setting.ScrollTrackLabels.key) }
   }
 
-  static var currentDocumentLocal: NSData? {
+  static var currentDocumentLocal: Data? {
     get { 
-      if let cachedValue = Setting.CurrentDocumentLocal.cachedValue as? NSData {
-         assert(Setting.CurrentDocumentLocal.currentValue as? NSData == cachedValue,
+      if let cachedValue = Setting.CurrentDocumentLocal.cachedValue as? Data {
+         assert(Setting.CurrentDocumentLocal.currentValue as? Data == cachedValue,
                "cached value is not up to date")
          return cachedValue
       } else {
-        guard let defaultValue = Setting.CurrentDocumentLocal.defaultValue as? NSData else { return nil }
+        guard let defaultValue = Setting.CurrentDocumentLocal.defaultValue as? Data else { return nil }
         return defaultValue
       }
     }
-    set { logDebug(""); defaults.setObject(newValue, forKey: Setting.CurrentDocumentLocal.key) }
+    set { logDebug(""); defaults.set(newValue, forKey: Setting.CurrentDocumentLocal.key) }
   }
 
-  static var currentDocumentiCloud: NSData? {
+  static var currentDocumentiCloud: Data? {
     get {
-      if let cachedValue = Setting.CurrentDocumentiCloud.cachedValue as? NSData {
-        assert(Setting.CurrentDocumentiCloud.currentValue as? NSData == cachedValue,
+      if let cachedValue = Setting.CurrentDocumentiCloud.cachedValue as? Data {
+        assert(Setting.CurrentDocumentiCloud.currentValue as? Data == cachedValue,
               "cached value is not up to date")
         return cachedValue
       } else {
-        guard let defaultValue = Setting.CurrentDocumentiCloud.defaultValue as? NSData else {
+        guard let defaultValue = Setting.CurrentDocumentiCloud.defaultValue as? Data else {
           return nil
         }
         return defaultValue
       }
     }
-    set { logDebug(""); defaults.setObject(newValue, forKey: Setting.CurrentDocumentiCloud.key) }
+    set { logDebug(""); defaults.set(newValue, forKey: Setting.CurrentDocumentiCloud.key) }
   }
 
   static var makeNewTrackCurrent: Bool {
@@ -152,15 +152,15 @@ final class SettingsManager {
         return defaultValue
       }
     }
-    set { logDebug(""); defaults.setBool(newValue, forKey: Setting.MakeNewTrackCurrent.key) }
+    set { logDebug(""); defaults.set(newValue, forKey: Setting.MakeNewTrackCurrent.key) }
   }
 
-  private static let receptionist: NotificationReceptionist = {
+  fileprivate static let receptionist: NotificationReceptionist = {
     let receptionist = NotificationReceptionist()
 
-    receptionist.observe(name: NSUserDefaultsDidChangeNotification,
+    receptionist.observe(name: UserDefaults.didChangeNotification.rawValue,
                     from: defaults,
-                   queue: NSOperationQueue.mainQueue())
+                   queue: OperationQueue.main)
     {
       _ in
 
@@ -175,7 +175,7 @@ final class SettingsManager {
   static func initialize() {
     guard !initialized else { return }
 
-    defaults.registerDefaults(Setting.boolSettings.reduce([String:AnyObject]()) {
+    defaults.register(defaults: Setting.boolSettings.reduce([String:AnyObject]()) {
       (dict: [String:AnyObject], setting: Setting) in
       var dict = dict
       dict[setting.key] = setting.defaultValue as? AnyObject
@@ -236,14 +236,14 @@ extension SettingsManager: NotificationDispatchType {
       return [.SettingValue: SettingsManager.settingsCache[setting] as? AnyObject]
     }
 
-    private init(name: Name) { self.name = name }
+    fileprivate init(name: Name) { self.name = name }
 
     /**
     init:
 
     - parameter setting: Setting
     */
-    private init(_ setting: Setting?) {
+    fileprivate init(_ setting: Setting?) {
       guard let setting = setting  else { self = Notification.DidInitializeSettings; return }
       switch setting {
         case .iCloudStorage:         self = Notification.iCloudStorageChanged
@@ -260,7 +260,7 @@ extension SettingsManager: NotificationDispatchType {
 
 }
 
-extension NSNotification {
+extension Notification {
   typealias  Key = SettingsManager.Notification.Key
   var iCloudStorageSetting: Bool? {
     return (userInfo?[Key.SettingValue.key] as? NSNumber)?.boolValue
@@ -277,8 +277,8 @@ extension NSNotification {
   var makeNewTrackCurrentSetting: Bool? {
     return (userInfo?[Key.SettingValue.key] as? NSNumber)?.boolValue
   }
-  var currentDocumentSetting: NSData? {
-    return  userInfo?[Key.SettingValue.key] as? NSData
+  var currentDocumentSetting: Data? {
+    return  userInfo?[Key.SettingValue.key] as? Data
   }
 }
 
@@ -295,10 +295,10 @@ extension SettingsManager {
     case MakeNewTrackCurrent   = "makeNewTrackCurrent"
 
     var currentValue: Any? {
-      guard let value = defaults.objectForKey(rawValue) else { return nil }
+      guard let value = defaults.object(forKey: rawValue) else { return nil }
 
            if let number = value as? NSNumber { return number }
-      else if let data   = value as? NSData   { return data   }
+      else if let data   = value as? Data   { return data   }
       else                                    { return nil    }
     }
 

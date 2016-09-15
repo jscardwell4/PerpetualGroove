@@ -15,8 +15,8 @@ final class InstrumentViewController: UIViewController, SecondaryControllerConte
   @IBOutlet weak var programPicker:  InlinePickerView!
   @IBOutlet weak var channelStepper: LabeledStepper!
 
-  private let receptionist: NotificationReceptionist = {
-    let receptionist = NotificationReceptionist(callbackQueue: NSOperationQueue.mainQueue())
+  fileprivate let receptionist: NotificationReceptionist = {
+    let receptionist = NotificationReceptionist(callbackQueue: OperationQueue.main)
     receptionist.logContext = LogManager.UIContext
     return receptionist
   }()
@@ -37,10 +37,10 @@ final class InstrumentViewController: UIViewController, SecondaryControllerConte
 
   - parameter notification: NSNotification
   */
-  private func updateSoundSets(notification: NSNotification) { updateSoundSets() }
+  fileprivate func updateSoundSets(_ notification: Notification) { updateSoundSets() }
 
   /** updateSoundSets */
-  private func updateSoundSets() {
+  fileprivate func updateSoundSets() {
     soundSetPicker.labels = Sequencer.soundSets.map { $0.displayName }
     instrument = Sequencer.soundSetSelectionTarget
   }
@@ -76,20 +76,20 @@ final class InstrumentViewController: UIViewController, SecondaryControllerConte
 
 
   func rollBackInstrument() {
-    guard let instrument = instrument, initialSoundSet = initialSoundSet, initialPreset = initialPreset else {
+    guard let instrument = instrument, let initialSoundSet = initialSoundSet, let initialPreset = initialPreset else {
       return
     }
     do { try instrument.loadSoundSet(initialSoundSet, preset: initialPreset) } catch { logError(error) }
   }
 
-  private(set) var initialSoundSet: SoundSetType?
-  private(set) var initialPreset: Instrument.Preset?
+  fileprivate(set) var initialSoundSet: SoundSetType?
+  fileprivate(set) var initialPreset: Instrument.Preset?
 
-  private weak var instrument: Instrument? {
+  fileprivate weak var instrument: Instrument? {
     didSet {
       guard let instrument = instrument,
-             soundSetIndex = instrument.soundSet.index,
-               presetIndex = instrument.soundSet.presets.indexOf(instrument.preset) where isViewLoaded()
+             let soundSetIndex = instrument.soundSet.index,
+               let presetIndex = instrument.soundSet.presets.index(of: instrument.preset) , isViewLoaded
       else { return }
       initialSoundSet = instrument.soundSet
       initialPreset = instrument.preset
@@ -101,7 +101,7 @@ final class InstrumentViewController: UIViewController, SecondaryControllerConte
   }
 
   /** audition */
-  private func audition() {
+  fileprivate func audition() {
     guard let instrument = instrument else { return }
     instrument.playNote(MIDIGenerator(NoteGenerator()))
   }

@@ -9,43 +9,44 @@
 import Foundation
 import MoonKit
 
-struct MIDIEventContainer: CollectionType {
+struct MIDIEventContainer: Collection {
 
-  private final class Bag: _CollectionWrapperType, CollectionType, CustomStringConvertible {
-    var _base: OrderedSet<MIDIEvent> = []
-    func append(event: MIDIEvent) { _base.append(event) }
-    init() {}
-    subscript(position: Int) -> MIDIEvent {
-      get { return _base[position] }
-      set { _base[position] = newValue }
-    }
-    var description: String { return _base.description }
-  }
+  typealias Bag = OrderedSet<MIDIEvent>
+//  fileprivate final class Bag: _CollectionWrapperType, Collection, CustomStringConvertible {
+//    var _base: OrderedSet<MIDIEvent> = []
+//    func append(_ event: MIDIEvent) { _base.append(event) }
+//    init() {}
+//    subscript(position: Int) -> MIDIEvent {
+//      get { return _base[position] }
+//      set { _base[position] = newValue }
+//    }
+//    var description: String { return _base.description }
+//  }
 
-  private typealias Buffer = OrderedDictionary<BarBeatTime, Bag>
+  fileprivate typealias Buffer = OrderedDictionary<BarBeatTime, Bag>
 
   typealias _Element = MIDIEvent
 
-  private final class Owner: NonObjectiveCBase {
-    var buffer: Buffer
-    override init() { buffer = Buffer(minimumCapacity: 1000) }
-    init(buffer: Buffer) { self.buffer = buffer }
-  }
+//  fileprivate final class Owner: NonObjectiveCBase {
+//    var buffer: Buffer
+//    override init() { buffer = Buffer(minimumCapacity: 1000) }
+//    init(buffer: Buffer) { self.buffer = buffer }
+//  }
 
-  struct Index: BidirectionalIndexType, Comparable {
+  struct Index: Comparable {
     let bag: Int
     let position: Int
-    private let buffer: Buffer
+    fileprivate let buffer: Buffer
 
     func predecessor() -> Index {
       if position > 0 { return Index(bag: bag, position: position - 1, buffer: buffer) }
       else if bag > 0 {
         var previousBag = bag - 1
-        var previousPosition = buffer[previousBag].1.count - 1
+        var previousPosition = buffer[buffer.index(buffer.startIndex, offsetBy: previousBag)].value.count - 1
         while previousPosition < 0 {
           guard previousBag > 0 else { fatalError("Unable to provide predecessor for index \(self)") }
           previousBag -= 1
-          previousPosition = buffer[previousBag].1.count - 1
+          previousPosition = buffer[buffer.index(buffer.startIndex, offsetBy: previousBag)].value.count - 1
         }
         return Index(bag: previousBag, position: previousPosition, buffer: buffer)
       } else {
@@ -54,19 +55,21 @@ struct MIDIEventContainer: CollectionType {
     }
 
     func successor() -> Index {
-      if position.successor() < buffer[bag].1.endIndex || bag.successor() == buffer.endIndex {
-        return Index(bag: bag, position: position.successor(), buffer: buffer)
+      if (position + 1) < buffer[buffer.index(buffer.startIndex, offsetBy: bag)].value.endIndex
+        || buffer.index(buffer.startIndex, offsetBy: bag + 1) == buffer.endIndex
+      {
+        return Index(bag: bag, position: (position + 1), buffer: buffer)
       } else {
-        return Index(bag: bag.successor(), position: buffer[bag.successor()].1.startIndex, buffer: buffer)
+        return Index(bag: (bag + 1), position: buffer[bag + 1].1.startIndex, buffer: buffer)
       }
     }
   }
 
-  private var buffer: Buffer
+  fileprivate var buffer: Buffer
 
   init() { buffer = Buffer() }
 
-  init<S:SequenceType where S.Generator.Element == MIDIEvent>(events sequence: S) {
+  init<S:Swift.Sequence>(events sequence: S) where S.Iterator.Element == MIDIEvent {
     var buffer: Buffer = [:]
     for event in sequence {
       var bag = buffer[event.time]
@@ -82,34 +85,34 @@ struct MIDIEventContainer: CollectionType {
 //  }
 
   var minTime: BarBeatTime? { return buffer.keys.first }
-  var maxTime: BarBeatTime? { return buffer.keys.last }
+  var maxTime: BarBeatTime? { return Array(buffer.keys).last }
 
   var count: Int { return buffer.reduce(0) {$0 + $1.1.count} }
   var startIndex: Index { return Index(bag: 0, position: 0, buffer: buffer) }
   var endIndex: Index {
     guard buffer.count > 0 else { return startIndex }
-    assert(buffer[buffer.count - 1].1.count > 0, "buffer contains empty bag")
-    let bag = buffer.count - 1
-    let position = buffer[bag].1.endIndex
-    return Index(bag: bag, position: position, buffer: buffer)
+    assert(buffer[buffer.index(before: buffer.endIndex)].value.count > 0, "buffer contains empty bag")
+    let bag = buffer.index(before: buffer.endIndex)
+    let position = buffer[bag].value.endIndex
+    return Index(bag: buffer.count - 1, position: position, buffer: buffer)
   }
 
-  mutating func append(event: MIDIEvent) {
+  mutating func append(_ event: MIDIEvent) {
 //    ensureUnique()
     var bag = buffer[event.time]
     if bag == nil { bag = Bag(); buffer[event.time] = bag }
     bag!.append(event)
   }
 
-  mutating func appendEvents<S: SequenceType where S.Generator.Element == MIDIEvent>(events: S) {
+  mutating func appendEvents<S: Swift.Sequence>(_ events: S) where S.Iterator.Element == MIDIEvent {
     events.forEach { append($0) }
   }
 
-  mutating func removeEventsMatching(predicate: (MIDIEvent) -> Bool) {
+  mutating func removeEventsMatching(_ predicate: (MIDIEvent) -> Bool) {
     var result: Buffer = [:]
     var countDidChange = false
     for (time, bag) in buffer {
-      let resultBag = Bag()
+      var resultBag = Bag()
       for event in bag where !predicate(event) { resultBag.append(event) }
       if resultBag.count > 0 { result[time] = resultBag }
       if !countDidChange && resultBag.count < bag.count { countDidChange = true }
@@ -120,47 +123,52 @@ struct MIDIEventContainer: CollectionType {
     buffer = result
   }
 
-  subscript(time: BarBeatTime) -> OrderedSet<MIDIEvent>? { return buffer[time]?._base }
+  subscript(time: BarBeatTime) -> OrderedSet<MIDIEvent>? { return buffer[time] }
 
   subscript(index: Index) -> MIDIEvent {
     get {
-      assert(buffer.count > index.bag && buffer[index.bag].1.count > index.position, "Invalid index")
-      return buffer[index.bag].1[index.position]
+      assert(buffer.count > index.bag && buffer[buffer.index(buffer.startIndex, offsetBy: index.bag)].value.count > index.position, "Invalid index")
+      return buffer[buffer.index(buffer.startIndex, offsetBy: index.bag)].value[index.position]
     }
     set {
-      assert(buffer.count > index.bag && buffer[index.bag].1.count > index.position, "Invalid index")
+      assert(buffer.count > index.bag && buffer[buffer.index(buffer.startIndex, offsetBy: index.bag)].value.count > index.position, "Invalid index")
 //      ensureUnique()
-      let (_, bag) = buffer[index.bag]
+      let i = buffer.index(buffer.startIndex, offsetBy: index.bag)
+      var (time, bag) = buffer[i]
       bag[index.position] = newValue
+      buffer[i] = (key: time, value: bag)
     }
   }
 
   var metaEvents: LazyMapCollection<LazyFilterCollection<MIDIEventContainer>, MetaEvent> {
-    return lazy.filter({if case .Meta = $0 { return true } else { return false }})
+    return lazy.filter({if case .meta = $0 { return true } else { return false }})
                .map({$0.event as! MetaEvent})
   }
 
   var channelEvents: LazyMapCollection<LazyFilterCollection<MIDIEventContainer>, ChannelEvent> {
-    return lazy.filter({if case .Channel = $0 { return true } else { return false }})
+    return lazy.filter({if case .channel = $0 { return true } else { return false }})
                .map({$0.event as! ChannelEvent})
   }
 
   var nodeEvents: LazyMapCollection<LazyFilterCollection<MIDIEventContainer>, MIDINodeEvent> {
-    return lazy.filter({if case .Node = $0 { return true } else { return false }})
+    return lazy.filter({if case .node = $0 { return true } else { return false }})
                .map({$0.event as! MIDINodeEvent})
   }
 
   var timeEvents: LazyMapCollection<LazyFilterCollection<MIDIEventContainer>, MetaEvent> {
     return lazy.filter({
-                        if case .Meta(let event) = $0 {
+                        if case .meta(let event) = $0 {
                           switch event.data {
-                            case .TimeSignature, .Tempo: return true
+                            case .timeSignature, .tempo: return true
                             default: return false
                           }
                         } else { return false }})
                .map({$0.event as! MetaEvent})
   }
 
+  func index(after i: MIDIEventContainer.Index) -> MIDIEventContainer.Index {
+    return i.successor()
+  }
 }
 
 func ==(lhs: MIDIEventContainer.Index, rhs: MIDIEventContainer.Index) -> Bool {
@@ -172,7 +180,7 @@ func <(lhs: MIDIEventContainer.Index, rhs: MIDIEventContainer.Index) -> Bool {
   return lhs.position < rhs.position
 }
 
-extension MIDIEventContainer: ArrayLiteralConvertible {
+extension MIDIEventContainer: ExpressibleByArrayLiteral {
   init(arrayLiteral elements: MIDIEvent...) { self.init(events: elements) }
 }
 extension MIDIEventContainer: CustomStringConvertible {

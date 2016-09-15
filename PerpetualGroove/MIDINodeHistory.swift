@@ -8,13 +8,16 @@
 
 import Foundation
 import MoonKit
+import struct CoreGraphics.CGPoint
+import struct CoreGraphics.CGVector
+import struct CoreGraphics.CGFloat
 import typealias AudioToolbox.MIDITimeStamp
 
-struct MIDINodeHistory: SequenceType {
+struct MIDINodeHistory: Swift.Sequence {
 
   let initialSnapshot: Snapshot
 
-  private var breadcrumbs = Tree<Breadcrumb>()
+  fileprivate var breadcrumbs = Tree<Breadcrumb>()
 
   var isEmpty: Bool { return breadcrumbs.isEmpty }
 
@@ -23,7 +26,7 @@ struct MIDINodeHistory: SequenceType {
 
   - returns: IndexingGenerator<[Breadcrumb]>
   */
-  func generate() -> AnyGenerator<Breadcrumb> { return breadcrumbs.generate() }
+  func makeIterator() -> AnyIterator<Breadcrumb> { return breadcrumbs.makeIterator() }
 
   /**
   append:to:velocity:ticks:
@@ -33,7 +36,7 @@ struct MIDINodeHistory: SequenceType {
   - parameter velocity: CGVector
   - parameter ticks: MIDITimeStamp
   */
-  mutating func append(from from: Snapshot, to: Snapshot) {
+  mutating func append(from: Snapshot, to: Snapshot) {
     guard !breadcrumbs.isEmpty || from == initialSnapshot else {
       fatalError("history must begin from initial snapshot")
     }
@@ -45,16 +48,16 @@ struct MIDINodeHistory: SequenceType {
 
   - parameter breadcrumb: Breadcrumb
   */
-  mutating func pruneAfter(snapshot: Snapshot) {
+  mutating func pruneAfter(_ snapshot: Snapshot) {
 
-    guard let breadcrumb = breadcrumbs.find({$0.tickInterval.end < snapshot.ticks},
-                                            {$0.tickInterval ∋ snapshot.ticks}) else
+    guard let breadcrumb = breadcrumbs.find({$0.tickInterval.upperBound < snapshot.ticks},
+                                            {$0.tickInterval.contains(snapshot.ticks)}) else
     {
       fatalError("failed to location existing breadcrumb for snapshot: \(snapshot)")
     }
 
-    guard let predecessor = breadcrumbs.find({$0.tickInterval.end < breadcrumb.tickInterval.start},
-                                             {$0.tickInterval.end == breadcrumb.tickInterval.start}) else
+    guard let predecessor = breadcrumbs.find({$0.tickInterval.upperBound < breadcrumb.tickInterval.lowerBound},
+                                             {$0.tickInterval.upperBound == breadcrumb.tickInterval.lowerBound}) else
     {
       breadcrumbs = [breadcrumb]
       return
@@ -71,8 +74,8 @@ struct MIDINodeHistory: SequenceType {
 
   - returns: Snapshot
   */
-  func snapshotForTicks(ticks: MIDITimeStamp) -> Snapshot? {
-    guard let breadcrumb = breadcrumbs.find({$0.tickInterval.end < ticks}, {$0.tickInterval ∋ ticks}) else {
+  func snapshotForTicks(_ ticks: MIDITimeStamp) -> Snapshot? {
+    guard let breadcrumb = breadcrumbs.find({$0.tickInterval.upperBound < ticks}, {$0.tickInterval.contains(ticks)}) else {
       logSyncWarning("failed to locate breadcrumb for ticks '\(ticks)' in breadcrumbs \(breadcrumbs)")
       return nil
     }
@@ -119,7 +122,7 @@ extension MIDINodeHistory {
     let 𝝙seconds: CGFloat
     let 𝝙meters: CGVector
     let 𝝙position: CGPoint
-    let tickInterval: ClosedInterval<MIDITimeStamp>
+    let tickInterval: ClosedRange<MIDITimeStamp>
 
     /**
     positionForTicks:
@@ -128,13 +131,13 @@ extension MIDINodeHistory {
 
     - returns: CGPoint
     */
-    func positionForTicks(ticks: MIDITimeStamp) -> CGPoint {
-      guard tickInterval ∋ ticks else { fatalError("\(tickInterval) ∌ \(ticks)") }
+    func positionForTicks(_ ticks: MIDITimeStamp) -> CGPoint {
+      guard tickInterval.contains(ticks) else { fatalError("\(tickInterval) ∌ \(ticks)") }
       let 𝝙ticksʹ = ticks - from.ticks
       let 𝝙metersʹ = 𝝙meters * CGFloat(Double(𝝙ticksʹ) / Double(𝝙ticks))
       var position = from.trajectory.p + (𝝙metersʹ * (𝝙position / 𝝙meters))
-      if isnan(position.x) { position.x = from.trajectory.p.x }
-      if isnan(position.y) { position.y = from.trajectory.p.y }
+      if position.x.isNaN { position.x = from.trajectory.p.x }
+      if position.y.isNaN { position.y = from.trajectory.p.y }
       return position
     }
   }
@@ -172,10 +175,10 @@ extension MIDINodeHistory {
 
 // MARK: - Internal type protocol conformances
 extension MIDINodeHistory.Breadcrumb: CustomStringConvertible {
-  var description: String { return String(tickInterval) }
+  var description: String { return String(describing: tickInterval) }
 }
 extension MIDINodeHistory.Breadcrumb: CustomDebugStringConvertible {
-  var debugDescription: String { var result = ""; dump(self, &result); return result }
+  var debugDescription: String { var result = ""; dump(self, to: &result); return result }
 }
 
 extension MIDINodeHistory.Breadcrumb: Comparable {}
@@ -201,7 +204,7 @@ extension MIDINodeHistory: CustomStringConvertible {
 }
 
 extension MIDINodeHistory: CustomDebugStringConvertible {
-  var debugDescription: String { var result = ""; dump(self, &result); return result }
+  var debugDescription: String { var result = ""; dump(self, to: &result); return result }
 }
 
 extension MIDINodeHistory.Snapshot: Comparable {}
@@ -228,5 +231,5 @@ extension MIDINodeHistory.Snapshot: CustomStringConvertible {
 }
 
 extension MIDINodeHistory.Snapshot: CustomDebugStringConvertible {
-  var debugDescription: String { var result = ""; dump(self, &result); return result }
+  var debugDescription: String { var result = ""; dump(self, to: &result); return result }
 }

@@ -15,7 +15,7 @@ final class MIDIPlayerView: SKView {
   var playerScene: MIDIPlayerScene? { return scene as? MIDIPlayerScene }
 
   /** setup */
-  private func setup() {
+  fileprivate func setup() {
     ignoresSiblingOrder = true
     shouldCullNonVisibleNodes = false
     showsFPS = true

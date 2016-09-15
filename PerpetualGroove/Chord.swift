@@ -12,7 +12,7 @@ import CoreMIDI
 
 
 struct Chord: RawRepresentable {
-  var root = Note.Default(.C)
+  var root = Note.`default`(.C)
   var pattern = ChordPattern(.Major)
 
   var rawValue: String { return "\(root.rawValue):\(pattern.rawValue)" }
@@ -21,7 +21,7 @@ struct Chord: RawRepresentable {
     let components = ":".split(rawValue)
     guard components.count == 2,
       let root = Note(rawValue: components[0]),
-      pattern = ChordPattern(rawValue: components[1]) else { return nil }
+      let pattern = ChordPattern(rawValue: components[1]) else { return nil }
 
     self.root = root
     self.pattern = pattern
@@ -62,7 +62,7 @@ extension Chord {
 
     var rawValue: String {
       var result = "(\(",".join(components.map({$0.rawValue}))))"
-      if bass != .Default(.One) { result += "/\(bass.rawValue)" }
+      if bass != .`default`(.one) { result += "/\(bass.rawValue)" }
       return result
     }
 
@@ -74,10 +74,10 @@ extension Chord {
     */
     init?(rawValue: String) {
       guard let match = (~/"^\\(([^)]+)\\)(?:/(.+))?").firstMatch(rawValue),
-        componentsList = match.captures[1]?.string else { return nil }
+        let componentsList = match.captures[1]?.string else { return nil }
 
       components = ",".split(componentsList).flatMap({Degree(rawValue: $0)})
-      bass = Degree(rawValue: match.captures[2]?.string ?? "") ?? .Default(.One)
+      bass = Degree(rawValue: match.captures[2]?.string ?? "") ?? .`default`(.one)
     }
 
     /**
@@ -94,7 +94,7 @@ extension Chord {
     - parameter components: [Degree]
     */
     init(bass: Degree? = nil, components: [Degree]) {
-      self.bass = bass ?? .Default(.One)
+      self.bass = bass ?? .`default`(.one)
       self.components = components
     }
 
@@ -105,27 +105,27 @@ extension Chord {
 
     - returns: [Note]
     */
-    func notesWithRoot(root: Note) -> [Note] {
+    func notesWithRoot(_ root: Note) -> [Note] {
       var result: [Note] = []
       let natural = root.natural
       let modifier = root.modifier
 
-      var degrees: [Degree] = [Degree.Default(.One)] + components
+      var degrees: [Degree] = [Degree.`default`(.one)] + components
       if degrees.contains(bass) {
-        while degrees.first != bass { let degree = degrees.removeAtIndex(0); degrees.append(degree) }
+        while degrees.first != bass { let degree = degrees.remove(at: 0); degrees.append(degree) }
       }
 
       for degree in degrees {
         let note: Note
         switch degree {
-          case let .Default(i):
-            note = Note.Default(natural.advancedBy(i.rawValue - 1))
-          case let .Modified(i, .Flat):
-            note = Note.Default(natural.advancedBy(i.rawValue - 1)).flattened()
-          case let .Modified(i, .Sharp):
-            note = Note.Default(natural.advancedBy(i.rawValue - 1)).sharpened()
-          case let .Modified(i, .DoubleFlat):
-            note = Note.Default(natural.advancedBy(i.rawValue - 1)).flattened().flattened()
+          case let .`default`(i):
+            note = Note.`default`(natural.advanced(by: i.rawValue - 1))
+          case let .modified(i, .Flat):
+            note = Note.`default`(natural.advanced(by: i.rawValue - 1)).flattened()
+          case let .modified(i, .Sharp):
+            note = Note.`default`(natural.advanced(by: i.rawValue - 1)).sharpened()
+          case let .modified(i, .DoubleFlat):
+            note = Note.`default`(natural.advanced(by: i.rawValue - 1)).flattened().flattened()
         }
         switch modifier {
           case .Flat?:       result.append(note.flattened())
@@ -145,7 +145,7 @@ extension Chord.ChordPattern {
 
   /** Specifies the distance from an abstract 'root' note. These correspond to the major diatonic intervals */
   enum Interval: Int {
-    case One = 1, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Eleven, Twelve, Thirteen
+    case one = 1, two, three, four, five, six, seven, eight, nine, ten, eleven, twelve, thirteen
   }
 
 }
@@ -154,12 +154,12 @@ extension Chord.ChordPattern {
 
   /** Identifies a note relative to an abstract 'root' note */
   enum Degree: RawRepresentable, Equatable {
-    case Default (Interval)
-    case Modified (Interval, PitchModifier)
+    case `default` (Interval)
+    case modified (Interval, PitchModifier)
     var rawValue: String {
       switch self {
-        case let .Default(interval): return String(interval.rawValue)
-        case let .Modified(interval, modifier): return modifier.rawValue + String(interval.rawValue)
+        case let .`default`(interval): return String(interval.rawValue)
+        case let .modified(interval, modifier): return modifier.rawValue + String(interval.rawValue)
       }
     }
     /**
@@ -169,14 +169,14 @@ extension Chord.ChordPattern {
     */
     init?(rawValue: String) {
        guard let match = (~/"^([♭♯𝄫])?(1?[0-9])").firstMatch(rawValue),
-         rawIntervalString = match.captures[2]?.string,
-         rawInterval = Int(rawIntervalString),
-         interval = Interval(rawValue: rawInterval) else { return nil }
-       if let rawModifier = match.captures[1]?.string where !rawModifier.isEmpty {
+         let rawIntervalString = match.captures[2]?.string,
+         let rawInterval = Int(rawIntervalString),
+         let interval = Interval(rawValue: rawInterval) else { return nil }
+       if let rawModifier = match.captures[1]?.string , !rawModifier.isEmpty {
          guard let modifier = PitchModifier(rawValue: rawModifier) else { return nil }
-         self = .Modified(interval, modifier)
+         self = .modified(interval, modifier)
        } else {
-         self = .Default(interval)
+         self = .`default`(interval)
        }
     }
   }

@@ -19,9 +19,9 @@ struct MIDIFileHeaderChunk {
 
   var bytes: [Byte] {
     var result = type.bytes
-    result.appendContentsOf(format.bytes)
-    result.appendContentsOf(numberOfTracks.bytes)
-    result.appendContentsOf(division.bytes)
+    result.append(contentsOf: format.bytes)
+    result.append(contentsOf: numberOfTracks.bytes)
+    result.append(contentsOf: division.bytes)
     return result
   }
 
@@ -39,15 +39,15 @@ struct MIDIFileHeaderChunk {
 
   - parameter bytes: C
   */
-  init<C:CollectionType where C.Generator.Element == Byte,
-                              C.Index == Int, C.SubSequence.Generator.Element == Byte,
-                              C.SubSequence:CollectionType, C.SubSequence.Index == Int,
-                              C.SubSequence.SubSequence == C.SubSequence>(bytes: C) throws
+  init<C:Collection>(bytes: C) throws where C.Iterator.Element == Byte,
+                              C.Index == Int, C.SubSequence.Iterator.Element == Byte,
+                              C.SubSequence:Collection, C.SubSequence.Index == Int,
+                              C.SubSequence.SubSequence == C.SubSequence
   {
     guard bytes.count == 14 else {
       throw MIDIFileError(type: .InvalidLength, reason: "Header chunk must be 14 bytes")
     }
-    guard bytes[bytes.startIndex ..< bytes.startIndex.advancedBy(4)].elementsEqual("MThd".utf8) else {
+    guard bytes[bytes.startIndex ..< bytes.startIndex.advanced(by: 4)].elementsEqual("MThd".utf8) else {
       throw MIDIFileError(type: .InvalidHeader, reason: "Expected chunk header with type 'MThd'")
     }
     guard Byte4(6) == Byte4(bytes[bytes.startIndex.advancedBy(4) ..< bytes.startIndex.advancedBy(8)]) else {
@@ -67,5 +67,5 @@ extension MIDIFileHeaderChunk: CustomStringConvertible {
 }
 
 extension MIDIFileHeaderChunk: CustomDebugStringConvertible {
-  var debugDescription: String { var result = ""; dump(self, &result); return result }
+  var debugDescription: String { var result = ""; dump(self, to: &result); return result }
 }

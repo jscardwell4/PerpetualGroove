@@ -8,42 +8,43 @@
 
 import Foundation
 import MoonKit
+import class UIKit.UIImage
 
 struct EmaxSoundSet: SoundSetType {
   enum Volume: Int {
-    case BrassAndWoodwinds  = 1
-    case KeyboardsAndSynths = 2
-    case GuitarsAndBasses   = 3
-    case WorldInstruments   = 4
-    case DrumsAndPercussion = 5
-    case Orchestral         = 6
+    case brassAndWoodwinds  = 1
+    case keyboardsAndSynths = 2
+    case guitarsAndBasses   = 3
+    case worldInstruments   = 4
+    case drumsAndPercussion = 5
+    case orchestral         = 6
 
     var fileName: String { return "Emax Volume \(rawValue)" }
 
-    var url: NSURL {
+    var url: URL {
       // ???: Why did we need to us the reference URL?
-      return NSBundle.mainBundle().URLForResource(fileName, withExtension: "sf2")!
+      return Bundle.main.url(forResource: fileName, withExtension: "sf2")!
     }
 
     var image: UIImage {
       switch self {
-        case .BrassAndWoodwinds:  return UIImage(named: "brass")!
-        case .KeyboardsAndSynths: return UIImage(named: "piano_keyboard")!
-        case .GuitarsAndBasses:   return UIImage(named: "guitar_bass")!
-        case .WorldInstruments:   return UIImage(named: "world")!
-        case .DrumsAndPercussion: return UIImage(named: "percussion")!
-        case .Orchestral:         return UIImage(named: "orchestral")!
+        case .brassAndWoodwinds:  return UIImage(named: "brass")!
+        case .keyboardsAndSynths: return UIImage(named: "piano_keyboard")!
+        case .guitarsAndBasses:   return UIImage(named: "guitar_bass")!
+        case .worldInstruments:   return UIImage(named: "world")!
+        case .drumsAndPercussion: return UIImage(named: "percussion")!
+        case .orchestral:         return UIImage(named: "orchestral")!
       }
     }
 
     var displayName: String {
       switch self {
-        case .BrassAndWoodwinds:  return "Brass & Woodwinds"
-        case .KeyboardsAndSynths: return "Keyboards & Synths"
-        case .GuitarsAndBasses:   return "Guitars & Basses"
-        case .WorldInstruments:   return "World Instruments"
-        case .DrumsAndPercussion: return "Drums & Percussion"
-        case .Orchestral:         return "Orchestral"
+        case .brassAndWoodwinds:  return "Brass & Woodwinds"
+        case .keyboardsAndSynths: return "Keyboards & Synths"
+        case .guitarsAndBasses:   return "Guitars & Basses"
+        case .worldInstruments:   return "World Instruments"
+        case .drumsAndPercussion: return "Drums & Percussion"
+        case .orchestral:         return "Orchestral"
       }
     }
 
@@ -52,21 +53,21 @@ struct EmaxSoundSet: SoundSetType {
 
     - parameter url: NSURL
     */
-    init?(url: NSURL) {
-      guard let name = url.filePathURL?.URLByDeletingPathExtension?.lastPathComponent else { return nil }
+    init?(url: URL) {
+      guard let name = (url as NSURL).filePathURL?.deletingPathExtension().lastPathComponent else { return nil }
       switch name {
-        case Volume.BrassAndWoodwinds.fileName:  self = .BrassAndWoodwinds
-        case Volume.KeyboardsAndSynths.fileName: self = .KeyboardsAndSynths
-        case Volume.GuitarsAndBasses.fileName:   self = .GuitarsAndBasses
-        case Volume.WorldInstruments.fileName:   self = .WorldInstruments
-        case Volume.DrumsAndPercussion.fileName: self = .DrumsAndPercussion
-        case Volume.Orchestral.fileName:         self = .Orchestral
+        case Volume.brassAndWoodwinds.fileName:  self = .brassAndWoodwinds
+        case Volume.keyboardsAndSynths.fileName: self = .keyboardsAndSynths
+        case Volume.guitarsAndBasses.fileName:   self = .guitarsAndBasses
+        case Volume.worldInstruments.fileName:   self = .worldInstruments
+        case Volume.drumsAndPercussion.fileName: self = .drumsAndPercussion
+        case Volume.orchestral.fileName:         self = .orchestral
         default:                                 return nil
       }
     }
   }
 
-  var url: NSURL { return volume.url }
+  var url: URL { return volume.url }
   let volume: Volume
   let presets: [SF2File.Preset]
   var displayName: String { return volume.displayName }
@@ -80,7 +81,7 @@ struct EmaxSoundSet: SoundSetType {
   */
   init(_ vol: Volume) {
     volume = vol
-    presets = try! SF2File(file: vol.url).presets.sort()
+    presets = try! SF2File(file: vol.url).presets.sorted()
   }
 
   /**
@@ -88,7 +89,7 @@ struct EmaxSoundSet: SoundSetType {
 
   - parameter u: NSURL
   */
-  init(url u: NSURL) throws {
+  init(url u: URL) throws {
     guard let vol = Volume(url: u) else { throw Error.InvalidURL }
     self.init(vol)
   }
@@ -96,5 +97,5 @@ struct EmaxSoundSet: SoundSetType {
 }
 
 extension EmaxSoundSet {
-  enum Error: String, ErrorType { case InvalidURL }
+  enum Error: String, Swift.Error { case InvalidURL }
 }

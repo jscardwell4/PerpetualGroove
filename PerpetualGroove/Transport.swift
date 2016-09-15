@@ -52,8 +52,8 @@ final class Transport {
     Notification.DidStart.post(object: self, userInfo:[
       .Time: time.barBeatTime.rawValue
       ])
-    if paused { clock.resume(); state ⊻= [.Paused, .Playing] }
-    else { clock.start(); state ⊻= [.Playing] }
+    if paused { clock.resume(); state.formSymmetricDifference([.Paused, .Playing]) }
+    else { clock.start(); state.formSymmetricDifference([.Playing]) }
   }
 
   /** toggleRecord */
@@ -63,7 +63,7 @@ final class Transport {
   func pause() {
     guard playing else { return }
     clock.stop()
-    state ⊻= [.Paused, .Playing]
+    state.formSymmetricDifference([.Paused, .Playing])
     Notification.DidPause.post(object: self, userInfo:[
       .Time: time.barBeatTime.rawValue
       ])
@@ -90,18 +90,18 @@ final class Transport {
       ])
   }
 
-  private var jogTime: BarBeatTime = nil
+  fileprivate var jogTime: BarBeatTime = nil
 
   /**
    beginJog:
 
    - parameter wheel: ScrollWheel
   */
-  func beginJog(wheel: ScrollWheel) {
+  func beginJog(_ wheel: ScrollWheel) {
     guard !jogging else { return }
     if clock.running { clock.stop() }
     jogTime = time.barBeatTime
-    state ⊻= [.Jogging]
+    state.formSymmetricDifference([.Jogging])
     Notification.DidBeginJogging.post(object: self, userInfo:[
       .Time: time.barBeatTime.rawValue
       ])
@@ -112,7 +112,7 @@ final class Transport {
 
    - parameter wheel: ScrollWheel
   */
-  func jog(wheel: ScrollWheel) {
+  func jog(_ wheel: ScrollWheel) {
     guard jogging && jogTime != nil else { logWarning("not jogging"); return }
     let 𝝙time = BarBeatTime(totalBeats: Double(Sequencer.beatsPerBar) * wheel.𝝙revolutions)
     do { try jogToTime(max(jogTime + 𝝙time, .start1), direction: wheel.direction) }
@@ -124,9 +124,9 @@ final class Transport {
 
    - parameter wheel: ScrollWheel
   */
-  func endJog(wheel: ScrollWheel) {
+  func endJog(_ wheel: ScrollWheel) {
     guard jogging /*&& clock.paused*/ else { logWarning("not jogging"); return }
-    state ⊻= [.Jogging]
+    state.formSymmetricDifference([.Jogging])
     time.barBeatTime = jogTime
     jogTime = nil
     Notification.DidEndJogging.post(object: self, userInfo:[
@@ -141,10 +141,10 @@ final class Transport {
 
   - parameter time: BarBeatTime
   */
-  func jogToTime(t: BarBeatTime, direction: ScrollWheel.Direction) throws {
-    guard jogging else { throw Error.NotPermitted("state ∌ jogging") }
+  func jogToTime(_ t: BarBeatTime, direction: ScrollWheel.Direction) throws {
+    guard jogging else { throw Error.notPermitted("state ∌ jogging") }
     guard jogTime != t else { return }
-    guard t.isNormal else { throw Error.InvalidBarBeatTime("\(t)") }
+    guard t.isNormal else { throw Error.invalidBarBeatTime("\(t)") }
     jogTime = t
     Notification.DidJog.post(object: self, userInfo:[
       .Time: time.barBeatTime.rawValue,
@@ -158,10 +158,10 @@ final class Transport {
 
    - parameter tʹ: BarBeatTime
   */
-  func automateJogToTime(tʹ: BarBeatTime) throws {
+  func automateJogToTime(_ tʹ: BarBeatTime) throws {
     let t = time.barBeatTime
     guard t != tʹ else { return }
-    guard tʹ.isNormal else { throw Error.InvalidBarBeatTime("\(tʹ)") }
+    guard tʹ.isNormal else { throw Error.invalidBarBeatTime("\(tʹ)") }
     let direction: ScrollWheel.Direction = tʹ < time.barBeatTime ? .CounterClockwise : .Clockwise
     if clock.running { clock.stop() }
     time.barBeatTime = tʹ
@@ -177,7 +177,7 @@ final class Transport {
 }
 
 extension Transport {
-  struct State: OptionSetType, CustomStringConvertible {
+  struct State: OptionSet, CustomStringConvertible {
     let rawValue: Int
 
     static let Playing   = State(rawValue: 0b0001)
@@ -201,20 +201,20 @@ extension Transport {
 
 extension Transport {
   enum Error: ErrorMessageType {
-    case InvalidBarBeatTime (String)
-    case NotPermitted (String)
+    case invalidBarBeatTime (String)
+    case notPermitted (String)
 
     var name: String {
       switch self {
-        case .InvalidBarBeatTime: return "InvalidBarBeatTime"
-        case .NotPermitted:       return "NotPermitted"
+        case .invalidBarBeatTime: return "InvalidBarBeatTime"
+        case .notPermitted:       return "NotPermitted"
       }
     }
 
     var reason: String {
       switch self {
-        case .InvalidBarBeatTime(let reason): return reason
-        case .NotPermitted(let reason):       return reason
+        case .invalidBarBeatTime(let reason): return reason
+        case .notPermitted(let reason):       return reason
       }
     }
   }
@@ -236,7 +236,7 @@ extension Transport: NotificationDispatchType {
 
 }
 
-extension NSNotification {
+extension Notification {
 
   var jogTime: BarBeatTime? {
     guard let string = userInfo?[Transport.Notification.Key.JogTime.key] as? String else { return nil }
@@ -259,13 +259,13 @@ extension NSNotification {
     guard let rawState = userInfo?[Transport.Notification.Key.TransportState.key] as? NSNumber else {
       return nil
     }
-    return Transport.State(rawValue: rawState.integerValue)
+    return Transport.State(rawValue: rawState.intValue)
   }
 
   var previousTransportState: Transport.State? {
     guard let rawState = userInfo?[Transport.Notification.Key.PreviousTransportState.key] as? NSNumber else {
       return nil
     }
-    return Transport.State(rawValue: rawState.integerValue)
+    return Transport.State(rawValue: rawState.intValue)
   }
 }

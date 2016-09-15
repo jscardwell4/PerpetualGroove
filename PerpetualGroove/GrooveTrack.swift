@@ -29,9 +29,9 @@ struct GrooveTrack {
     for event in track.events {
       switch event {
 
-        case .Meta(let event):
+        case .meta(let event):
           switch event.data {
-            case .Marker(let text):
+            case .marker(let text):
               switch text {
                 case ~/"^start.*":
                   guard let loop = GrooveLoop(event: event) else { continue }
@@ -39,8 +39,8 @@ struct GrooveTrack {
 
                 case ~/"^end.*":
                   guard let match = (~/"^end\\(([^)]+)\\)$").firstMatch(text),
-                  identifierString = match.captures[1]?.string,
-                  identifier = GrooveLoop.Identifier(identifierString) else { continue }
+                  let identifierString = match.captures[1]?.string,
+                  let identifier = GrooveLoop.Identifier(identifierString) else { continue }
                   loops[identifier]?.end = event.time
 
                 default: break
@@ -48,16 +48,16 @@ struct GrooveTrack {
             default: break
           }
 
-        case .Node(let event):
+        case .node(let event):
           switch event.data {
-            case .Add:
+            case .add:
               guard let node = GrooveNode(event: event) else { continue }
               if let loopIdentifier = event.loopIdentifier {
                 loops[loopIdentifier]?.nodes[event.identifier] = node
               } else {
                 nodes[event.identifier] = node
               }
-            case .Remove:
+            case .remove:
               if let loopIdentifier = event.loopIdentifier {
                 loops[loopIdentifier]?.nodes[event.identifier]?.removeTime = event.time
               } else {
@@ -85,10 +85,10 @@ extension GrooveTrack: JSONValueConvertible {
 extension GrooveTrack: JSONValueInitializable {
   init?(_ jsonValue: JSONValue?) {
     guard let dict = ObjectJSONValue(jsonValue),
-              name = String(dict["name"]),
-              color = TrackColor(dict["color"]),
-              instrument = ObjectJSONValue(dict["instrument"]),
-              nodes = ArrayJSONValue(dict["nodes"]) else { return nil }
+              let name = String(dict["name"]),
+              let color = TrackColor(dict["color"]),
+              let instrument = ObjectJSONValue(dict["instrument"]),
+              let nodes = ArrayJSONValue(dict["nodes"]) else { return nil }
     self.name = name
     self.instrument = instrument
     self.color = color

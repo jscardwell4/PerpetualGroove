@@ -12,10 +12,10 @@ import MoonKit
 import typealias AudioToolbox.MusicDeviceGroupID
 
 @objc protocol TouchReceiver {
-  func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?)
-  func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?)
-  func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?)
-  func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?)
+  func touchesBegan(_ touches: Set<UITouch>, withEvent event: UIEvent?)
+  func touchesCancelled(_ touches: Set<UITouch>?, withEvent event: UIEvent?)
+  func touchesEnded(_ touches: Set<UITouch>, withEvent event: UIEvent?)
+  func touchesMoved(_ touches: Set<UITouch>, withEvent event: UIEvent?)
 }
 
 final class MIDIPlayerNode: SKShapeNode {
@@ -31,9 +31,9 @@ final class MIDIPlayerNode: SKShapeNode {
     size = bezierPath.bounds.size
     super.init()
     name = "player"
-    path = bezierPath.CGPath
+    path = bezierPath.cgPath
     strokeColor = .primaryColor
-    userInteractionEnabled = true
+    isUserInteractionEnabled = true
 
     MIDIPlayer.playerNode = self
   }
@@ -50,14 +50,14 @@ final class MIDIPlayerNode: SKShapeNode {
 
    - parameter node: SKNode
   */
-  override func addChild(node: SKNode) {
+  override func addChild(_ node: SKNode) {
     super.addChild(node)
     guard let midiNode = node as? MIDINode else { return }
     midiNodes.append(midiNode)
   }
 
 
-  private(set) var midiNodes: WeakArray<MIDINode> = []
+  fileprivate(set) var midiNodes: WeakArray<MIDINode> = []
 
   var defaultNodes: [MIDINode] { return midiNodesForMode(.Default) }
 
@@ -74,7 +74,7 @@ final class MIDIPlayerNode: SKShapeNode {
 
     - returns: [MIDINode]
   */
-  private func midiNodesForMode(mode: Sequencer.Mode) -> [MIDINode] {
+  fileprivate func midiNodesForMode(_ mode: Sequencer.Mode) -> [MIDINode] {
     return self["<\(mode.rawValue)>*"].flatMap({$0 as? MIDINode}) ?? []
   }
 
@@ -84,7 +84,7 @@ final class MIDIPlayerNode: SKShapeNode {
    - parameter touches: Set<UITouch>
    - parameter event: UIEvent?
    */
-  override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+  override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
     touchReceiver?.touchesBegan(touches, withEvent: event)
   }
 
@@ -94,7 +94,7 @@ final class MIDIPlayerNode: SKShapeNode {
    - parameter touches: Set<UITouch>?
    - parameter event: UIEvent?
    */
-  override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) {
+  override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
     touchReceiver?.touchesCancelled(touches, withEvent: event)
   }
 
@@ -104,7 +104,7 @@ final class MIDIPlayerNode: SKShapeNode {
    - parameter touches: Set<UITouch>
    - parameter event: UIEvent?
    */
-  override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+  override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
     touchReceiver?.touchesEnded(touches, withEvent: event)
   }
 
@@ -114,7 +114,7 @@ final class MIDIPlayerNode: SKShapeNode {
    - parameter touches: Set<UITouch>
    - parameter event: UIEvent?
    */
-  override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+  override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
     touchReceiver?.touchesMoved(touches, withEvent: event)
   }
 

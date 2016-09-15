@@ -15,16 +15,16 @@ import AudioToolbox
 
 final class AudioManager {
 
-  static let queue = dispatch_queue_create("midi", DISPATCH_QUEUE_SERIAL)
+  static let queue = DispatchQueue(label: "midi", attributes: [])
 
-  private(set) static var initialized = false
+  fileprivate(set) static var initialized = false
 
-  static private let engine = AVAudioEngine()
+  static fileprivate let engine = AVAudioEngine()
   static var mixer: AVAudioMixerNode { return engine.mainMixerNode }
 
-  static private(set) var instruments: [Instrument] = []
+  static fileprivate(set) var instruments: [Instrument] = []
 
-  static private(set) var metronome: Metronome!
+  static fileprivate(set) var metronome: Metronome!
 
   /**
   attachNode:forInstrument:
@@ -32,25 +32,25 @@ final class AudioManager {
   - parameter node: AVAudioNode
   - parameter instrument: Instrument
   */
-  static func attachNode(node: AVAudioNode, forInstrument instrument: Instrument) {
+  static func attachNode(_ node: AVAudioNode, forInstrument instrument: Instrument) {
     guard initialized else { fatalError("attempt to attach node before engine initialized") }
     guard !instruments.contains(instrument) && node.engine == nil else { return }
-    engine.attachNode(node)
-    engine.connect(node, to: engine.mainMixerNode, format: node.outputFormatForBus(0))
+    engine.attach(node)
+    engine.connect(node, to: engine.mainMixerNode, format: node.outputFormat(forBus: 0))
     instruments.append(instrument)
   }
 
   /** initialize */
   static func initialize() {
     guard !initialized else { return }
-    let outputFormat = engine.outputNode.outputFormatForBus(0)
+    let outputFormat = engine.outputNode.outputFormat(forBus: 0)
     guard outputFormat.sampleRate != 0 else { fatalError("output disabled (sample rate = 0)") }
 
     do {
       try configureAudioSession()
       let node = AVAudioUnitSampler()
-      engine.attachNode(node)
-      engine.connect(node, to: engine.mainMixerNode, format: node.outputFormatForBus(0))
+      engine.attach(node)
+      engine.connect(node, to: engine.mainMixerNode, format: node.outputFormat(forBus: 0))
       metronome = try Metronome.init(node: node)
       initialized = true
       logDebug("AudioManager initialized")
@@ -61,7 +61,7 @@ final class AudioManager {
   }
 
   /** configureAudioSession */
-  private static func configureAudioSession() throws {
+  fileprivate static func configureAudioSession() throws {
     let audioSession = AVAudioSession.sharedInstance()
     try audioSession.setCategory(AVAudioSessionCategoryPlayback)
     try audioSession.setActive(true)
@@ -75,7 +75,7 @@ final class AudioManager {
   /** stop */
   static func stop() throws { logDebug("stopping audio…"); engine.stop() }
 
-  static var running: Bool { return engine.running }
+  static var running: Bool { return engine.isRunning }
 
   /** reset */
   static func reset() { logDebug("resetting audio…"); engine.reset() }

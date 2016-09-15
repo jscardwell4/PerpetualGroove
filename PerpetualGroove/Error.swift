@@ -10,40 +10,40 @@ import Foundation
 import MoonKit
 
 // MARK: - An enumeration for `OSStatus` codes returned by `CoreMIDI`
-enum MIDIError: OSStatus, ErrorType, CustomStringConvertible {
-  case InvalidClient      = -10830
-  case InvalidPort        = -10831
-  case WrongEndpointType  = -10832
-  case NoConnection       = -10833
-  case UnknownEndpoint    = -10834
-  case UnknownProperty    = -10835
-  case WrongPropertyType  = -10836
-  case NoCurrentSetup     = -10837
-  case MessageSendErr     = -10838
-  case ServerStartErr     = -10839
-  case SetupFormatErr     = -10840
-  case WrongThread        = -10841
-  case ObjectNotFound     = -10842
-  case IDNotUnique        = -10843
-  case NotPermitted       = -10844
+enum MIDIError: OSStatus, Swift.Error, CustomStringConvertible {
+  case invalidClient      = -10830
+  case invalidPort        = -10831
+  case wrongEndpointType  = -10832
+  case noConnection       = -10833
+  case unknownEndpoint    = -10834
+  case unknownProperty    = -10835
+  case wrongPropertyType  = -10836
+  case noCurrentSetup     = -10837
+  case messageSendErr     = -10838
+  case serverStartErr     = -10839
+  case setupFormatErr     = -10840
+  case wrongThread        = -10841
+  case objectNotFound     = -10842
+  case idNotUnique        = -10843
+  case notPermitted       = -10844
 
   var description: String {
     switch self {
-      case .InvalidClient:     return "Invalid Client"
-      case .InvalidPort:       return "Invalid Port"
-      case .WrongEndpointType: return "Wrong Endpoint Type"
-      case .NoConnection:      return "No Connection"
-      case .UnknownEndpoint:   return "Unknown Endpoint"
-      case .UnknownProperty:   return "Unknown Property"
-      case .WrongPropertyType: return "Wrong Property Type"
-      case .NoCurrentSetup:    return "No Current Setup"
-      case .MessageSendErr:    return "Message Send Err"
-      case .ServerStartErr:    return "Server Start Err"
-      case .SetupFormatErr:    return "Setup Format Err"
-      case .WrongThread:       return "Wrong Thread"
-      case .ObjectNotFound:    return "Object Not Found"
-      case .IDNotUnique:       return "ID Not Unique"
-      case .NotPermitted:      return "Not Permitted"
+      case .invalidClient:     return "Invalid Client"
+      case .invalidPort:       return "Invalid Port"
+      case .wrongEndpointType: return "Wrong Endpoint Type"
+      case .noConnection:      return "No Connection"
+      case .unknownEndpoint:   return "Unknown Endpoint"
+      case .unknownProperty:   return "Unknown Property"
+      case .wrongPropertyType: return "Wrong Property Type"
+      case .noCurrentSetup:    return "No Current Setup"
+      case .messageSendErr:    return "Message Send Err"
+      case .serverStartErr:    return "Server Start Err"
+      case .setupFormatErr:    return "Setup Format Err"
+      case .wrongThread:       return "Wrong Thread"
+      case .objectNotFound:    return "Object Not Found"
+      case .idNotUnique:       return "ID Not Unique"
+      case .notPermitted:      return "Not Permitted"
     }
   }
 }
@@ -57,16 +57,16 @@ struct MIDIFileError: ExtendedErrorType {
     get { return _reason.isEmpty ? type.rawValue : "\(type.rawValue): \(_reason)" }
     set { _reason = newValue }
   }
-  var type: Type = .Unspecified
+  var type: `Type` = .Unspecified
   var name: String { return type.rawValue }
   init() {}
 
-  init(type: Type,  line: UInt = #line, function: String = #function, file: String = #file, reason: String) {
+  init(type: `Type`,  line: UInt = #line, function: String = #function, file: String = #file, reason: String) {
     self.init(line: line, function: function, file: file, reason: reason)
     self.type = type
   }
 
-  enum Type: String {
+  enum `Type`: String {
     case Unspecified
     case ReadFailure
     case FileStructurallyUnsound
@@ -202,28 +202,28 @@ struct MIDIFileError: ExtendedErrorType {
 //}
 
 // MARK: - An catchall enumeration for `OSStatus` codes not handled by the other enumerations
-enum OSStatusError: ErrorType, CustomStringConvertible {
-  case OSStatusCode (OSStatus)
-  var description: String { switch self { case .OSStatusCode(let code): return "error code: \(code)" } }
+enum OSStatusError: Swift.Error, CustomStringConvertible {
+  case osStatusCode (OSStatus)
+  var description: String { switch self { case .osStatusCode(let code): return "error code: \(code)" } }
 }
 
 // MARK: - An enumeration to package one of the other enumeration cases along with a string to provide some context
-enum Error: ErrorType, CustomStringConvertible {
-  case MIDI (MIDIError, String)
+enum Error: Swift.Error, CustomStringConvertible {
+  case midi (MIDIError, String)
 //  case AudioUnit (AudioUnitError, String)
 //  case AudioComponent (AudioComponentError, String)
 //  case Graph (GraphError, String)
 //  case Player (MusicPlayerError, String)
-  case OSStatusCode (OSStatusError, String)
+  case osStatusCode (OSStatusError, String)
 
   var description: String {
     switch self {
-      case let .MIDI(error, message):           return "<MIDI>\(message) - \(error)"
+      case let .midi(error, message):           return "<MIDI>\(message) - \(error)"
 //      case let .AudioUnit(error, message):      return "<AudioUnit>\(message) - \(error)"
 //      case let .AudioComponent(error, message): return "<AudioComponent>\(message) - \(error)"
 //      case let .Graph(error, message):          return "<Graph>\(message) - \(error)"
 //      case let .Player(error, message):         return "<Player>\(message) - \(error)"
-      case let .OSStatusCode(error, message):   return "\(message) - \(error)"
+      case let .osStatusCode(error, message):   return "\(message) - \(error)"
     }
   }
 }
@@ -238,7 +238,7 @@ Function of convenience for capturing function and line information to include i
 
 - returns: String
 */
-func location(function: String = #function, line: Int32 = #line) -> String {
+func location(_ function: String = #function, line: Int32 = #line) -> String {
   return "[\(function):\(line)]"
 }
 
@@ -249,14 +249,14 @@ Compares the specified `OSStatus` code against `noErr` and throws an error when 
 - parameter message: () -> String
 - throws: An error describing the provided `status`
 */
-func checkStatus(status: OSStatus, @autoclosure _ message: () -> String) throws {
+func checkStatus(_ status: OSStatus, _ message: @autoclosure () -> String) throws {
   guard status == noErr else { throw error(status, message()) }
 }
 
 
 /** An infix operator for `checkStatus:_:` to make code more legible */
-infix operator ➤ {}
-func ➤(@autoclosure lhs: () -> OSStatus, @autoclosure rhs: () -> String) throws { try checkStatus(lhs(), rhs()) }
+infix operator ➤
+func ➤(lhs: @autoclosure () -> OSStatus, rhs: @autoclosure () -> String) throws { try checkStatus(lhs(), rhs()) }
 
 /**
 Generates an `ErrorType` for the specified `OSStatus`
@@ -265,22 +265,22 @@ Generates an `ErrorType` for the specified `OSStatus`
 
 - returns: ErrorType
 */
-func error(code: OSStatus, @autoclosure _ message: () -> String) -> ErrorType {
+func error(_ code: OSStatus, _ message: @autoclosure () -> String) -> Swift.Error {
   guard code != noErr else { fatalError("The irony, fatal error caused by a 'noErr' status code") }
-  let error: ErrorType = MIDIError(rawValue: code)
+  let error: Swift.Error = MIDIError(rawValue: code)
 //           ?? AudioUnitError(rawValue: code)
 //           ?? AudioComponentError(rawValue: code)
 //           ?? GraphError(rawValue: code)
 //           ?? MusicPlayerError(rawValue: code)
-           ?? OSStatusError.OSStatusCode(code)
+           ?? OSStatusError.osStatusCode(code)
 
   switch error {
-    case let e as MIDIError:           return Error.MIDI(e, message())
+    case let e as MIDIError:           return Error.midi(e, message())
 //    case let e as AudioUnitError:      return Error.AudioUnit(e, message())
 //    case let e as AudioComponentError: return Error.AudioComponent(e, message())
 //    case let e as GraphError:          return Error.Graph(e, message())
 //    case let e as MusicPlayerError:    return Error.Player(e, message())
-    case let e as OSStatusError:       return Error.OSStatusCode(e, message())
+    case let e as OSStatusError:       return Error.osStatusCode(e, message())
     default:                           fatalError("this should be unreachable")
   }
 }
@@ -290,4 +290,4 @@ Convenience function for `try`ing something that `throws` and just logging the e
 
 - parameter throwingBlock: () throws -> Void
 */
-func handle(@autoclosure throwingBlock: () throws -> Void) { do { try throwingBlock() } catch { logError(error) } }
+func handle(_ throwingBlock: @autoclosure () throws -> Void) { do { try throwingBlock() } catch { logError(error) } }

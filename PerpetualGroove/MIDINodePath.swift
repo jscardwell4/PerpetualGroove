@@ -8,11 +8,15 @@
 
 import Foundation
 import MoonKit
+import struct CoreGraphics.CGPoint
+import struct CoreGraphics.CGSize
+import struct CoreGraphics.CGVector
+import struct CoreGraphics.CGFloat
 import typealias AudioToolbox.MIDITimeStamp
 
 final class MIDINodePath {
 
-  private var segments: SortedArray<_Segment> = []
+  fileprivate var segments: SortedArray<_Segment> = []
 
   let min: CGPoint
   let max: CGPoint
@@ -49,7 +53,7 @@ final class MIDINodePath {
 
     - returns: CGPoint?
   */
-  func locationForTime(time: BarBeatTime) -> CGPoint? { return _segmentForTime(time)?.locationForTime(time) }
+  func locationForTime(_ time: BarBeatTime) -> CGPoint? { return _segmentForTime(time)?.locationForTime(time) }
 
 
   /**
@@ -59,7 +63,7 @@ final class MIDINodePath {
 
     - returns: Segment
   */
-  private func advanceSegment(segment: _Segment) -> _Segment {
+  fileprivate func advanceSegment(_ segment: _Segment) -> _Segment {
     // Redirect trajectory according to which boundary edge the new location touches
     let v: CGVector
     switch segment.endLocation.unpack {
@@ -85,26 +89,25 @@ final class MIDINodePath {
 
     - returns: _Segment?
   */
-  private func _segmentForTime(time: BarBeatTime) -> _Segment? {
+  fileprivate func _segmentForTime(_ time: BarBeatTime) -> _Segment? {
     guard time >= startTime else { return nil }
 
-    if let segmentIndex = segments.indexOf(isOrderedBefore: {$0.endTime <= time},
-                                           predicate: {$0.timeInterval ∋ time})
+    if let segmentIndex = segments.index(where: {$0.timeInterval.lowerBound <= time && $0.timeInterval.upperBound >= time})
     {
       return segments[segmentIndex]
     }
 
-    var segment = segments[segments.endIndex.predecessor()]
+    var segment = segments[segments.index(before: segments.endIndex)]
     guard segment.endTime <= time else {
       fatalError("segment's end time '\(segment.endTime)' is not less than or equal to time '\(time)', "
                + "a matching segment should have been found")
     }
 
-    while segment.timeInterval ∌ time { segment = advanceSegment(segment); segments.append(segment) }
+    while !segment.timeInterval.contains(time) { segment = advanceSegment(segment); segments.append(segment) }
 
 //    logDebug("time = \(time)\nresult = \(currentSegment)")
     
-    guard segment.timeInterval ∋ time else {
+    guard segment.timeInterval.contains(time) else {
       fatalError("segment to return does not contain time specified")
     }
     return segment
@@ -117,14 +120,14 @@ final class MIDINodePath {
 
     - returns: Segment?
   */
-  func segmentForTime(time: BarBeatTime) -> Segment?  {
+  func segmentForTime(_ time: BarBeatTime) -> Segment?  {
     guard let segment = _segmentForTime(time) else { return nil }
     return Segment(owner: segment)
   }
 }
 
 extension MIDINodePath: CustomStringConvertible, CustomDebugStringConvertible {
-  private func makeDescription(debug debug: Bool = false) -> String {
+  fileprivate func makeDescription(debug: Bool = false) -> String {
     var result = "MIDINodePath {"
     if debug {
       result += "\n\t" + "\n\t".join(
@@ -146,11 +149,11 @@ extension MIDINodePath: CustomStringConvertible, CustomDebugStringConvertible {
 }
 
 struct Segment: Equatable, Comparable, CustomStringConvertible {
-  private let owner: _Segment
+  fileprivate let owner: _Segment
   var trajectory: Trajectory { return owner.trajectory }
 
-  var timeInterval: HalfOpenInterval<BarBeatTime> { return owner.timeInterval }
-  var tickInterval: HalfOpenInterval<MIDITimeStamp> { return owner.tickInterval }
+  var timeInterval: CountableRange<BarBeatTime> { return owner.timeInterval }
+  var tickInterval: CountableRange<MIDITimeStamp> { return owner.tickInterval }
 
   var startTime: BarBeatTime { return owner.startTime }
   var endTime: BarBeatTime { return owner.endTime }
@@ -166,11 +169,11 @@ struct Segment: Equatable, Comparable, CustomStringConvertible {
 
   var description: String { return owner.description }
 
-  func locationForTime(time: BarBeatTime) -> CGPoint? {
+  func locationForTime(_ time: BarBeatTime) -> CGPoint? {
     return owner.locationForTime(time)
   }
 
-  func timeToEndLocationFromPoint(point: CGPoint) -> NSTimeInterval {
+  func timeToEndLocationFromPoint(_ point: CGPoint) -> TimeInterval {
     return owner.timeToEndLocationFromPoint(point)
   }
 
@@ -192,15 +195,15 @@ private final class _Segment: Equatable, Comparable, CustomStringConvertible {
 
   let trajectory: Trajectory
 
-  let timeInterval: HalfOpenInterval<BarBeatTime>
-  let tickInterval: HalfOpenInterval<MIDITimeStamp>
+  let timeInterval: CountableRange<BarBeatTime>
+  let tickInterval: CountableRange<MIDITimeStamp>
 
-  var startTime: BarBeatTime { return timeInterval.start }
-  var endTime: BarBeatTime { return timeInterval.end }
-  var totalTime: BarBeatTime { return timeInterval.end - timeInterval.start }
+  var startTime: BarBeatTime { return timeInterval.lowerBound }
+  var endTime: BarBeatTime { return timeInterval.upperBound }
+  var totalTime: BarBeatTime { return timeInterval.upperBound - timeInterval.lowerBound }
 
-  var startTicks: MIDITimeStamp { return tickInterval.start }
-  var endTicks: MIDITimeStamp { return tickInterval.end }
+  var startTicks: MIDITimeStamp { return tickInterval.lowerBound }
+  var endTicks: MIDITimeStamp { return tickInterval.upperBound }
   var totalTicks: MIDITimeStamp { return endTicks > startTicks ? endTicks - startTicks : 0 }
 
   var startLocation: CGPoint { return trajectory.p }
@@ -223,10 +226,10 @@ private final class _Segment: Equatable, Comparable, CustomStringConvertible {
 
    - returns: CGPoint?
    */
-  func locationForTime(time: BarBeatTime) -> CGPoint? {
-    guard timeInterval ∋ time else { return nil }
+  func locationForTime(_ time: BarBeatTime) -> CGPoint? {
+    guard timeInterval.lowerBound <= time && timeInterval.upperBound >= time else { return nil }
     let 𝝙ticks = CGFloat(time.ticks - startTime.ticks)
-    let ratio = 𝝙ticks / CGFloat(tickInterval.length)
+    let ratio = 𝝙ticks / CGFloat(tickInterval.count)
     var result = trajectory.p
     result.x += ratio * (endLocation.x - result.x)
     result.y += ratio * (endLocation.y - result.y)
@@ -240,7 +243,7 @@ private final class _Segment: Equatable, Comparable, CustomStringConvertible {
 
    - returns: NSTimeInterval
    */
-  func timeToEndLocationFromPoint(point: CGPoint) -> NSTimeInterval {
+  func timeToEndLocationFromPoint(_ point: CGPoint) -> TimeInterval {
     return trajectory.timeFromPoint(point, toPoint: endLocation)
   }
 
@@ -258,7 +261,7 @@ private final class _Segment: Equatable, Comparable, CustomStringConvertible {
     let endY: CGFloat
 
     switch trajectory.direction.vertical {
-      case .None: endY = trajectory.p.y
+      case .none: endY = trajectory.p.y
       case .Up:   endY = path.max.y
       case .Down: endY = path.min.y
     }
@@ -272,7 +275,7 @@ private final class _Segment: Equatable, Comparable, CustomStringConvertible {
     let endX: CGFloat
 
     switch trajectory.direction.horizontal {
-      case .None:  endX = trajectory.p.x
+      case .none:  endX = trajectory.p.x
       case .Left:  endX = path.min.x
       case .Right: endX = path.max.x
     }
@@ -294,10 +297,10 @@ private final class _Segment: Equatable, Comparable, CustomStringConvertible {
     length = trajectory.p.distanceTo(endLocation)
 
     let 𝝙t = trajectory.timeFromPoint(trajectory.p, toPoint: endLocation)
-    let endTime = BarBeatTime(seconds: time.seconds + 𝝙t, base: .One)
+    let endTime = BarBeatTime(seconds: time.seconds + 𝝙t, base: .one)
 
     timeInterval = time ..< endTime
-    tickInterval = timeInterval.start.ticks ..< timeInterval.end.ticks
+    tickInterval = timeInterval.lowerBound.ticks ..< timeInterval.upperBound.ticks
   }
 
   var description: String {

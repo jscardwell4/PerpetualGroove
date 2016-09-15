@@ -19,7 +19,7 @@ final class DocumentsViewController: UICollectionViewController {
   var dismiss: (() -> Void)?
 
   /// Removes an item from the collection, deleting the corresponding document 
-  @IBAction func deleteItem(sender: LabelButton) {
+  @IBAction func deleteItem(_ sender: LabelButton) {
     guard let item = (sender.superview?.superview as? DocumentCell)?.item else {
       logWarning("sender superview is not an item containing document cell")
       return
@@ -33,7 +33,7 @@ final class DocumentsViewController: UICollectionViewController {
     items.remove(item)
     collectionView?.performBatchUpdates({
       [unowned self] in
-      self.collectionView?.deleteItemsAtIndexPaths([indexPath])
+      self.collectionView?.deleteItems(at: [indexPath])
       }, completion: {
         [unowned self] completed in
         guard completed else {
@@ -45,23 +45,23 @@ final class DocumentsViewController: UICollectionViewController {
   }
 
   /// Identifier used with constraints binding the edges of the collection view
-  private let constraintID = Identifier("DocumentsViewController", "CollectionView")
+  fileprivate let constraintID = Identifier("DocumentsViewController", "CollectionView")
 
   /// Constraint for the collection view's width
-  private var widthConstraint: NSLayoutConstraint?
+  fileprivate var widthConstraint: NSLayoutConstraint?
 
   /// Constraint for the collection view's height
-  private var heightConstraint: NSLayoutConstraint?
+  fileprivate var heightConstraint: NSLayoutConstraint?
 
   /// Receptionist for observing notifications from `DocumentManager`
-  private let receptionist: NotificationReceptionist = {
-    let receptionist = NotificationReceptionist(callbackQueue: NSOperationQueue.mainQueue())
+  fileprivate let receptionist: NotificationReceptionist = {
+    let receptionist = NotificationReceptionist(callbackQueue: OperationQueue.main)
     receptionist.logContext = LogManager.UIContext
     return receptionist
   }()
 
   /// Necssary size for displaying an item in the collection
-  private(set) var itemSize: CGSize = .zero {
+  fileprivate(set) var itemSize: CGSize = .zero {
     didSet {
       let (w, h) = itemSize.unpack
       collectionViewSize = CGSize(width: w, height: h * CGFloat(items.count + 1))
@@ -69,7 +69,7 @@ final class DocumentsViewController: UICollectionViewController {
   }
 
   /// Necessary size for displaying the current collection of items
-  private var collectionViewSize: CGSize = .zero {
+  fileprivate var collectionViewSize: CGSize = .zero {
     didSet {
       guard collectionViewSize != oldValue else { return }
       switch (widthConstraint, heightConstraint) {
@@ -84,7 +84,7 @@ final class DocumentsViewController: UICollectionViewController {
    }
   }
 
-  override func prefersStatusBarHidden() -> Bool { return true }
+  override var prefersStatusBarHidden : Bool { return true }
 
   // MARK: - Initialization
 
@@ -110,18 +110,18 @@ final class DocumentsViewController: UICollectionViewController {
   // MARK: - Document items
 
   /// The currently selected document item; should always represent `DocumentManager.currentDocument`
-  private var selectedItem: NSIndexPath? {
+  fileprivate var selectedItem: IndexPath? {
     didSet {
-      guard isViewLoaded() else { return }
+      guard isViewLoaded else { return }
       if oldValue != selectedItem {
         logDebug("\(oldValue?.description ?? "nil") ➞ \(selectedItem?.description ?? "nil")")
       }
-      collectionView?.selectItemAtIndexPath(selectedItem, animated: true, scrollPosition: .CenteredVertically)
+      collectionView?.selectItem(at: selectedItem, animated: true, scrollPosition: .centeredVertically)
     }
   }
 
   /// Reloads `collectionView` and refreshes selection
-  private func reloadData() {
+  fileprivate func reloadData() {
     mainQueue.async {
       [weak self] in
       self?.collectionView?.reloadData()
@@ -130,16 +130,16 @@ final class DocumentsViewController: UICollectionViewController {
   }
 
   /// Returns the minimum width for a cell displaying `item`
-  private func cellWidthForItem(item: DocumentItem) -> CGFloat {
+  fileprivate func cellWidthForItem(_ item: DocumentItem) -> CGFloat {
     let characterCount = CGFloat(max(item.displayName.characters.count, 15))
     let characterWidth = UIFont.controlFont.characterWidth
     return characterCount * characterWidth
   }
 
   /// Set of document items used to populate the collection
-  private var items: OrderedSet<DocumentItem> = [] {
+  fileprivate var items: OrderedSet<DocumentItem> = [] {
     didSet {
-      let width = items.map({cellWidthForItem($0)}).maxElement() ?? 0
+      let width = items.map({cellWidthForItem($0)}).max() ?? 0
       let height = UIFont.controlFont.pointSize * 2
       let size = CGSize(width: width, height: height)
       itemSize = size.integralSize
@@ -147,31 +147,31 @@ final class DocumentsViewController: UICollectionViewController {
   }
 
   /// Returns the index path for a document item or nil if `items` does not contain `item`.
-  private func indexPathForItem(item: DocumentItem) -> NSIndexPath? {
-    guard let idx = items.indexOf(item) else { return nil }
-    return NSIndexPath(forItem: idx, inSection: 1)
+  fileprivate func indexPathForItem(_ item: DocumentItem) -> IndexPath? {
+    guard let idx = items.index(of: item) else { return nil }
+    return IndexPath(item: idx, section: 1)
   }
 
   /// Returns the index path for a document; returns nil if document is not represented in the collection.
-  private func indexPathForDocument(document: Document) -> NSIndexPath? {
-    guard let idx = items.indexOf({$0.URL.isEqualToFileURL(document.fileURL)}) else {
+  fileprivate func indexPathForDocument(_ document: Document) -> IndexPath? {
+    guard let idx = items.index(of: {$0.URL.isEqualToFileURL(document.fileURL)}) else {
       return nil
     }
-    return NSIndexPath(forItem: idx, inSection: 1)
+    return IndexPath(item: idx, section: 1)
   }
 
   /// Uses the value in `DocumentManager.currentDocument` to locate the corresponding element in `items`,
   /// setting `selectedItem` to its equivalent index path. If the collection does not contain such an item,
   /// It is created, a new cell is added to the collection view, and then `selectedItem` updated.
-  private func refreshSelection() {
-    guard isViewLoaded() else { return }
+  fileprivate func refreshSelection() {
+    guard isViewLoaded else { return }
     guard let document = DocumentManager.currentDocument else { selectedItem = nil; return }
 
     switch indexPathForDocument(document) {
       case let indexPath?:
         selectedItem = indexPath
       default:
-        let indexPath = NSIndexPath(forItem: items.count, inSection: 1)
+        let indexPath = IndexPath(forItem: items.count, inSection: 1)
         let item = DocumentItem(document)
         items.append(item)
         collectionView?.performBatchUpdates({ 
@@ -196,7 +196,7 @@ final class DocumentsViewController: UICollectionViewController {
   }
 
   /// Updates the contents of `items` and refreshes the current selection
-  override func viewWillAppear(animated: Bool) {
+  override func viewWillAppear(_ animated: Bool) {
     (collectionViewLayout as? DocumentsViewLayout)?.controller = self
     guard !DocumentManager.gatheringMetadataItems else { return }
     items = OrderedSet(DocumentManager.items)
@@ -211,13 +211,13 @@ final class DocumentsViewController: UICollectionViewController {
       view.constrain([𝗩|--collectionView--|𝗩, 𝗛|--collectionView--|𝗛] --> constraintID)
     }
 
-    guard case (.None, .None) = (widthConstraint, heightConstraint) else { super.updateViewConstraints(); return }
+    guard case (.none, .none) = (widthConstraint, heightConstraint) else { super.updateViewConstraints(); return }
 
     let (w, h) = collectionViewSize.unpack
     widthConstraint = (collectionView.width => w --> Identifier(self, "Content", "Width")).constraint
-    widthConstraint?.active = true
+    widthConstraint?.isActive = true
     heightConstraint = (collectionView.height => h --> Identifier(self, "Content", "Height")).constraint
-    heightConstraint?.active = true
+    heightConstraint?.isActive = true
 
     super.updateViewConstraints()
   }
@@ -225,34 +225,34 @@ final class DocumentsViewController: UICollectionViewController {
   // MARK: - Notifications
 
   /// Adds `items` to the controller's `items` and adds cells to the collection view
-  private func addItems(newItems: [DocumentItem]) {
+  fileprivate func addItems(_ newItems: [DocumentItem]) {
     let oldCount = items.count
     items ∪= newItems
     let newCount = items.count
-    let added = (oldCount ..< newCount).map { NSIndexPath(forItem: $0, inSection: 1) }
+    let added = (oldCount ..< newCount).map { IndexPath(forItem: $0, inSection: 1) }
     logDebug("adding items at indices \(added)")
     if !added.isEmpty { collectionView?.insertItemsAtIndexPaths(added) }
   }
 
   /// Removes `items` from the controller's `items` and deletes the cells from the collection view
-  private func removeItems(items: [DocumentItem]) {
-    let removed: [NSIndexPath] = items.flatMap {
-      guard let idx = self.items.indexOf($0) else { return nil }
-      return NSIndexPath(forItem: idx, inSection: 1)
+  fileprivate func removeItems(_ items: [DocumentItem]) {
+    let removed: [IndexPath] = items.flatMap {
+      guard let idx = self.items.index(of: $0) else { return nil }
+      return IndexPath(forItem: idx, inSection: 1)
     }
     logDebug("removing items at indices \(removed)")
     self.items ∖= items
-    if !removed.isEmpty { collectionView?.deleteItemsAtIndexPaths(removed) }
+    if !removed.isEmpty { collectionView?.deleteItems(at: removed) }
   }
 
   /// Unregisters for name-change observations from the current document
-  private func willChangeDocument(notification: NSNotification) {
+  fileprivate func willChangeDocument(_ notification: Notification) {
     guard let document = DocumentManager.currentDocument else { return }
     receptionist.stopObserving(notification: .DidRenameDocument, from: document)
   }
 
   /// Refreshes selection and updates name-change observations
-  private func didChangeDocument(notification: NSNotification) {
+  fileprivate func didChangeDocument(_ notification: Notification) {
     refreshSelection()
     guard let document = DocumentManager.currentDocument else { return }
     receptionist.observe(notification: .DidRenameDocument, from: document,
@@ -260,7 +260,7 @@ final class DocumentsViewController: UICollectionViewController {
   }
 
   /// Updates the corresponding cell with the document's new name
-  private func documentDidChangeName(notification: NSNotification) {
+  fileprivate func documentDidChangeName(_ notification: Notification) {
     logDebug("userInfo: \(notification.userInfo)")
     guard let newName = notification.newDocumentName else {
       logWarning("name change notification without new name value in user info")
@@ -276,7 +276,7 @@ final class DocumentsViewController: UICollectionViewController {
       fatalError("Unable to resolve indexPath for document: \(document)")
     }
 
-    guard let cell = collectionView?.cellForItemAtIndexPath(indexPath) as? DocumentCell else {
+    guard let cell = collectionView?.cellForItem(at: indexPath) as? DocumentCell else {
       fatalError("Unable to retrieve cell for indexPath: \(indexPath)")
     }
 
@@ -287,8 +287,8 @@ final class DocumentsViewController: UICollectionViewController {
   }
 
   /// Adds and/or removes items according to the contents of `notification`
-  private func didUpdateItems(notification: NSNotification) {
-    guard isViewLoaded() else { return }
+  fileprivate func didUpdateItems(_ notification: Notification) {
+    guard isViewLoaded else { return }
 
     collectionView?.performBatchUpdates({
       [unowned self] in
@@ -304,25 +304,25 @@ final class DocumentsViewController: UICollectionViewController {
   // MARK: UICollectionViewDataSource
 
   /// Returns two: one for the create item and one for the existing document items
-  override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int { return 2 }
+  override func numberOfSections(in collectionView: UICollectionView) -> Int { return 2 }
 
   /// Returns the number of existing documents when section == 1 and one otherwise
-  override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+  override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     return section == 1 ? items.count : 1
   }
 
   /// Returns an instance of `CreateDocumentCell` when section == 0 and an instance of `DocumentCell` otherwise
-  override func collectionView(collectionView: UICollectionView,
-        cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell
+  override func collectionView(_ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
   {
     let cell: UICollectionViewCell
-    switch indexPath.section {
+    switch (indexPath as NSIndexPath).section {
       case 0:
-        cell = collectionView.dequeueReusableCellWithReuseIdentifier(CreateDocumentCell.Identifier,
-                                                        forIndexPath: indexPath)
+        cell = collectionView.dequeueReusableCell(withReuseIdentifier: CreateDocumentCell.Identifier,
+                                                        for: indexPath)
       case 1:
-        cell = collectionView.dequeueReusableCellWithReuseIdentifier(DocumentCell.Identifier,
-                                                        forIndexPath: indexPath)
+        cell = collectionView.dequeueReusableCell(withReuseIdentifier: DocumentCell.Identifier,
+                                                        for: indexPath)
         (cell as! DocumentCell).item = items[indexPath.item]
       default:
         fatalError("Invalid section")
@@ -334,20 +334,20 @@ final class DocumentsViewController: UICollectionViewController {
   // MARK: - UICollectionViewDelegate
 
   /// Returns `true` unless the cell is showing its delete button
-  override func     collectionView(collectionView: UICollectionView,
-    shouldHighlightItemAtIndexPath indexPath: NSIndexPath) -> Bool
+  override func     collectionView(_ collectionView: UICollectionView,
+    shouldHighlightItemAt indexPath: IndexPath) -> Bool
   {
-    guard let cell = collectionView.cellForItemAtIndexPath(indexPath) as? DocumentCell
-      where cell.showingDelete else { return true }
+    guard let cell = collectionView.cellForItem(at: indexPath) as? DocumentCell
+      , cell.showingDelete else { return true }
     cell.hideDelete()
     return false
   }
 
   /// Creates a new document when section == 0; opens the document otherwise
-  override func collectionView(collectionView: UICollectionView,
-      didSelectItemAtIndexPath indexPath: NSIndexPath)
+  override func collectionView(_ collectionView: UICollectionView,
+      didSelectItemAt indexPath: IndexPath)
   {
-    switch indexPath.section {
+    switch (indexPath as NSIndexPath).section {
       case 0:  DocumentManager.createNewDocument()
       default: DocumentManager.openItem(items[indexPath.row])
     }

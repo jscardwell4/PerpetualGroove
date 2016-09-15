@@ -11,13 +11,13 @@ import MoonKit
 
 final class MIDIPlayerScene: SKScene {
 
-  private(set) var player: MIDIPlayerNode!
+  fileprivate(set) var player: MIDIPlayerNode!
 
-  private var contentCreated = false
+  fileprivate var contentCreated = false
 
   /** createContent */
-  private func createContent() {
-    scaleMode = .AspectFit
+  fileprivate func createContent() {
+    scaleMode = .aspectFit
 
     player = MIDIPlayerNode(bezierPath: UIBezierPath(rect: frame))
     addChild(player)
@@ -33,14 +33,14 @@ final class MIDIPlayerScene: SKScene {
 
   - parameter view: SKView
   */
-  override func didMoveToView(view: SKView) { guard !contentCreated else { return }; createContent() }
+  override func didMove(to view: SKView) { guard !contentCreated else { return }; createContent() }
 
   /**
    update:
 
    - parameter currentTime: NSTimeInterval
   */
-  override func update(currentTime: NSTimeInterval) {
-    player.midiNodes.generate().forEach({$0?.updatePosition()})
+  override func update(_ currentTime: TimeInterval) {
+    player.midiNodes.makeIterator().forEach({$0?.updatePosition()})
   }
 }

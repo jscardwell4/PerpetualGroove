@@ -10,12 +10,12 @@ import Foundation
 import MoonKit
 
 enum Octave: Int, EnumerableType {
-  case NegativeOne = -1, Zero, One, Two, Three, Four, Five, Six, Seven, Eight, Nine
+  case negativeOne = -1, zero, one, two, three, four, five, six, seven, eight, nine
   static let allCases: [Octave] = [
-    .NegativeOne, .Zero, .One, .Two, .Three, .Four, .Five, .Six, .Seven, .Eight, .Nine
+    .negativeOne, .zero, .one, .two, .three, .four, .five, .six, .seven, .eight, .nine
   ]
-  static var minOctave: Octave { return .NegativeOne }
-  static var maxOctave: Octave { return .Nine }
+  static var minOctave: Octave { return .negativeOne }
+  static var maxOctave: Octave { return .nine }
 }
 
 extension Octave: JSONValueConvertible {

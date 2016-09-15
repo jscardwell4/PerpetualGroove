@@ -15,7 +15,7 @@ import AudioToolbox
 final class MIDIClock: CustomStringConvertible, Named {
 
   var description: String {
-    return "\(self.dynamicType.self) {\n\t" + "\n\t".join(
+    return "\(type(of: self).self) {\n\t" + "\n\t".join(
       "name: \(name)",
       "beatsPerMinute: \(beatsPerMinute)",
       "resolution: \(resolution)",
@@ -31,32 +31,32 @@ final class MIDIClock: CustomStringConvertible, Named {
 
   let name: String
 
-  private let dispatchQueue = serialInteractiveQueue("MIDI Clock (Dispatch)")
+  fileprivate let dispatchQueue = DispatchQueue(label: "MIDI Clock (Dispatch)", qos: .userInteractive)
 
   let resolution: UInt64 = 480
 
   var beatsPerMinute: UInt16 = 120 { didSet { recalculate() } }
 
-  private(set) var tickInterval:        UInt64 = 0
-  private(set) var nanosecondsPerBeat:  UInt64 = 0
-  private(set) var microsecondsPerBeat: UInt64 = 0
-  private(set) var secondsPerBeat:      Double = 0
-  private(set) var secondsPerTick:      Double = 0
+  fileprivate(set) var tickInterval:        UInt64 = 0
+  fileprivate(set) var nanosecondsPerBeat:  UInt64 = 0
+  fileprivate(set) var microsecondsPerBeat: UInt64 = 0
+  fileprivate(set) var secondsPerBeat:      Double = 0
+  fileprivate(set) var secondsPerTick:      Double = 0
 
   /** recalculate */
-  private func recalculate() {
+  fileprivate func recalculate() {
     nanosecondsPerBeat = UInt64(60.0e9) / UInt64(beatsPerMinute)
     microsecondsPerBeat = UInt64(60.0e6) / UInt64(beatsPerMinute)
     secondsPerBeat = 60 / Double(beatsPerMinute)
     secondsPerTick = secondsPerBeat / Double(resolution)
     tickInterval = nanosecondsPerBeat / UInt64(resolution)
-    timer.interval = tickInterval
+    timer.interval = .nanoseconds(Int(tickInterval))
   }
 
   /** start */
-  func start() { dispatchQueue.async(_start) }
+  func start() { dispatchQueue.async(execute: _start) }
 
-  private func _start() {
+  fileprivate func _start() {
     guard !timer.running else { return }
     logDebug("setting ticks to 0, sending start message and starting timer…")
     ticks = 0
@@ -67,9 +67,9 @@ final class MIDIClock: CustomStringConvertible, Named {
   var paused: Bool { return !running && ticks > 0 }
 
   /** resume */
-  func resume() { dispatchQueue.async(_resume) }
+  func resume() { dispatchQueue.async(execute: _resume) }
 
-  private func _resume() {
+  fileprivate func _resume() {
     guard !timer.running else { return }
     logDebug("sending continue message and starting timer…")
     sendContinue()
@@ -77,40 +77,40 @@ final class MIDIClock: CustomStringConvertible, Named {
   }
 
   /** reset */
-  func reset() { dispatchQueue.async(_reset) }
+  func reset() { dispatchQueue.async(execute: _reset) }
 
-  private func _reset() {
+  fileprivate func _reset() {
     guard !timer.running else { return }
     logDebug("setting ticks to 0…")
     ticks = 0
   }
 
   /** stop */
-  func stop() { dispatchQueue.async(_stop) }
+  func stop() { dispatchQueue.async(execute: _stop) }
 
-  private func _stop() {
+  fileprivate func _stop() {
     guard timer.running else { return }
     logDebug("stopping timer and sending stop message…")
     timer.stop()
     sendStop()
   }
 
-  private var hostInfo: String {
+  fileprivate var hostInfo: String {
     let currentHostTicks = hostTicks
     let nsPerTick = nanosecondsPerHostTick
-    let currentHostTime = currentHostTicks * UInt64(nsPerTick.value)
+    let currentHostTime = currentHostTicks * UInt64(nsPerTick.fraction.numerator/nsPerTick.fraction.denominator)
     return "{ ; }".wrap("; ".join("hostTicks: \(currentHostTicks)",
                                   "nanosecondsPerTick: \(nsPerTick)",
                                   "hostTime: \(currentHostTime)"),
               separator: ";")
   }
 
-  private let timer = Timer(queue: serialInteractiveQueue("MIDI Clock (Timer)"))
+  fileprivate let timer = Timer(queue: DispatchQueue(label: "MIDI Clock (Timer)", qos: .userInteractive))
 
   var running: Bool { return timer.running }
 
   /// The running number of MIDI clocks that have elapsed
-  private(set) var ticks: MIDITimeStamp = 0
+  fileprivate(set) var ticks: MIDITimeStamp = 0
 
   /** init */
   init(name: String) {
@@ -118,9 +118,9 @@ final class MIDIClock: CustomStringConvertible, Named {
     recalculate()
     timer.handler = sendClock
     do {
-      try MIDIClientCreateWithBlock("Clock", &client, nil) ➤ "Failed to create midi client for clock"
-      try MIDISourceCreate(client, "Clock", &endPoint) ➤ "Failed to create end point for clock"
-      MIDIObjectSetStringProperty(endPoint, kMIDIPropertyName, "\(name) clock")
+      try MIDIClientCreateWithBlock("Clock" as CFString, &client, nil) ➤ "Failed to create midi client for clock"
+      try MIDISourceCreate(client, "Clock" as CFString, &endPoint) ➤ "Failed to create end point for clock"
+      MIDIObjectSetStringProperty(endPoint, kMIDIPropertyName, "\(name) clock" as CFString)
     } catch {
       logError(error)
       #if !TARGET_INTERFACE_BUILDER
@@ -129,29 +129,29 @@ final class MIDIClock: CustomStringConvertible, Named {
     }
   }
 
-  private var client = MIDIClientRef()
-  private(set) var endPoint = MIDIEndpointRef()
+  fileprivate var client = MIDIClientRef()
+  fileprivate(set) var endPoint = MIDIEndpointRef()
 
   /**
   sendEvent:
 
   - parameter event: Byte
   */
-  private func sendEvent(event: Byte) throws {
+  fileprivate func sendEvent(_ event: Byte) throws {
     var packetList = MIDIPacketList()
     MIDIPacketListAdd(&packetList,
-                      sizeof(UInt32.self) + sizeof(MIDIPacket.self),
+                      MemoryLayout<UInt32>.size + MemoryLayout<MIDIPacket>.size,
                       MIDIPacketListInit(&packetList),
                       ticks,
                       1,
                       [event])
-    try withUnsafePointer(&packetList) { MIDIReceived(endPoint, $0) } ➤ "Failed to send packets"
+    try withUnsafePointer(to: &packetList) { MIDIReceived(endPoint, $0) } ➤ "Failed to send packets"
   }
 
-  private func sendClock() { dispatchQueue.async(_sendClock) }
+  fileprivate func sendClock() { dispatchQueue.async(execute: _sendClock) }
 
   /** sendClock */
-  private func _sendClock() {
+  fileprivate func _sendClock() {
 
     guard timer.running else { return }
     ticks += 1
@@ -159,12 +159,12 @@ final class MIDIClock: CustomStringConvertible, Named {
   }
 
   /** sendStart */
-  private func sendStart() { do { try sendEvent(0b1111_1010) } catch { logError(error) } }
+  fileprivate func sendStart() { do { try sendEvent(0b1111_1010) } catch { logError(error) } }
 
   /** sendContinue */
-  private func sendContinue() { do { try sendEvent(0b1111_1011) } catch { logError(error) } }
+  fileprivate func sendContinue() { do { try sendEvent(0b1111_1011) } catch { logError(error) } }
 
   /** sendStop */
-  private func sendStop() { do { try sendEvent(0b1111_1100) } catch { logError(error) } }
+  fileprivate func sendStop() { do { try sendEvent(0b1111_1100) } catch { logError(error) } }
 
 }

@@ -10,40 +10,40 @@ import Foundation
 import MoonKit
 
 enum DocumentItem {
-  case MetaData(NSMetadataItem)
-  case Local(LocalDocumentItem)
-  case Document(Groove.Document)
+  case metaData(NSMetadataItem)
+  case local(LocalDocumentItem)
+  case document(Groove.Document)
 
   var displayName: String {
     switch self {
-      case .MetaData(let item): return item.displayName
-      case .Local(let item): return item.displayName
-      case .Document(let document): return document.localizedName
+      case .metaData(let item): return item.displayName
+      case .local(let item): return item.displayName
+      case .document(let document): return document.localizedName
     }
   }
 
-  var modificationDate: NSDate? {
+  var modificationDate: Date? {
     switch self {
-      case .MetaData(let item):
-        return item.modificationDate
-      case .Local(let item):
-        return item.modificationDate
-      case .Document(let document):
-        return NSFileManager.withDefaultManager {
+      case .metaData(let item):
+        return item.modificationDate as Date?
+      case .local(let item):
+        return item.modificationDate as Date?
+      case .document(let document):
+        return FileManager.withDefaultManager {
           guard let path = document.fileURL.path else { return nil }
           return (try? $0.attributesOfItemAtPath(path) as NSDictionary)?.fileModificationDate()
       }
     }
   }
 
-    var creationDate: NSDate? {
+    var creationDate: Date? {
     switch self {
-      case .MetaData(let item):
-        return item.creationDate
-      case .Local(let item):
-        return item.creationDate
-      case .Document(let document):
-        return NSFileManager.withDefaultManager {
+      case .metaData(let item):
+        return item.creationDate as Date?
+      case .local(let item):
+        return item.creationDate as Date?
+      case .document(let document):
+        return FileManager.withDefaultManager {
           guard let path = document.fileURL.path else { return nil }
           return (try? $0.attributesOfItemAtPath(path) as NSDictionary)?.fileCreationDate()
       }
@@ -52,10 +52,10 @@ enum DocumentItem {
 
   var size: UInt64 {
     switch self {
-      case .MetaData(let item): return item.size
-      case .Local(let item): return item.size
-      case .Document(let document):
-        return NSFileManager.withDefaultManager {
+      case .metaData(let item): return item.size
+      case .local(let item): return item.size
+      case .document(let document):
+        return FileManager.withDefaultManager {
           guard let path = document.fileURL.path else { return 0 }
           return (try? $0.attributesOfItemAtPath(path) as NSDictionary)?.fileSize() ?? 0
         }
@@ -64,37 +64,37 @@ enum DocumentItem {
 
   var isUbiquitous: Bool {
     switch self {
-    case .MetaData: return true
-    case .Local: return false
-    case .Document(let document):
-      return NSFileManager.withDefaultManager { $0.isUbiquitousItemAtURL(document.fileURL) }
+    case .metaData: return true
+    case .local: return false
+    case .document(let document):
+      return FileManager.withDefaultManager { $0.isUbiquitousItem(at: document.fileURL) }
     }
   }
 
-  var URL: NSURL {
+  var URL: Foundation.URL {
     switch self {
-      case .MetaData(let item): return item.URL
-      case .Local(let item): return item.URL
-      case .Document(let document): return document.fileURL
+      case .metaData(let item): return item.URL as URL
+      case .local(let item): return item.URL as URL
+      case .document(let document): return document.fileURL
     }
   }
 
   var data: AnyObject {
     switch self {
-      case .MetaData(let item): return item
-      case .Local(let item): return item
-      case .Document(let document): return document
+      case .metaData(let item): return item
+      case .local(let item): return item
+      case .document(let document): return document
     }
   }
 
-  init(_ metadataItem: NSMetadataItem) { self = .MetaData(metadataItem) }
-  init(_ localItem: LocalDocumentItem) { self = .Local(localItem) }
-  init(_ document: Groove.Document) { self = .Document(document) }
+  init(_ metadataItem: NSMetadataItem) { self = .metaData(metadataItem) }
+  init(_ localItem: LocalDocumentItem) { self = .local(localItem) }
+  init(_ document: Groove.Document) { self = .document(document) }
   init?(_ data: AnyObject) {
     switch data {
-      case let item as NSMetadataItem: self = .MetaData(item)
-      case let item as LocalDocumentItem: self = .Local(item)
-      case let document as Groove.Document: self = .Document(document)
+      case let item as NSMetadataItem: self = .metaData(item)
+      case let item as LocalDocumentItem: self = .local(item)
+      case let document as Groove.Document: self = .document(document)
       default: return nil
     }
   }

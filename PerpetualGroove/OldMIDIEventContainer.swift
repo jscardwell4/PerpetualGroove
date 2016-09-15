@@ -9,11 +9,11 @@
 import Foundation
 import MoonKit
 
-struct OldMIDIEventContainer: CollectionType, Indexable, MutableIndexable {
+struct OldMIDIEventContainer: Collection, Indexable, MutableIndexable {
 
-  private(set) var startIndex: Index = .EndIndex
+  fileprivate(set) var startIndex: Index = .endIndex
 
-  var endIndex: Index { return .EndIndex }
+  var endIndex: Index { return .endIndex }
 
   var isEmpty: Bool {
     return events.isEmpty || events.values.flatMap({$0.events.isEmpty ? $0 : nil}).count > 0
@@ -36,7 +36,7 @@ struct OldMIDIEventContainer: CollectionType, Indexable, MutableIndexable {
   subscript(bounds: Range<BarBeatTime>) -> OldMIDIEventContainer {
     var result: [MIDIEvent] = []
     for (time, bag) in events where bounds.contains(time) {
-      result.appendContentsOf(bag.events)
+      result.append(contentsOf: bag.events)
     }
 
     return OldMIDIEventContainer(events: result)
@@ -44,17 +44,17 @@ struct OldMIDIEventContainer: CollectionType, Indexable, MutableIndexable {
 
   var count: Int { return events.reduce(0) { $0 + $1.1.count } }
 
-  private(set) var eventTimes: [BarBeatTime] = []
+  fileprivate(set) var eventTimes: [BarBeatTime] = []
 
-  private var _indices: Range<Index> = .EndIndex ..< .EndIndex
+  fileprivate var _indices: Range<Index> = .endIndex ..< .endIndex
 
-  private mutating func rebuildIndices() {
-    var currentIndex: Index = .EndIndex
+  fileprivate mutating func rebuildIndices() {
+    var currentIndex: Index = .endIndex
     var indices: [Index] = [currentIndex]
-    for time in eventTimes.reverse() {
-      let bagIndices = Array(events[time]!.indices).reverse()
+    for time in eventTimes.reversed() {
+      let bagIndices = Array(events[time]!.indices).reversed()
       for bagIndex in bagIndices {
-        let index: Index = .ValueIndex(time, bagIndex, currentIndex)
+        let index: Index = .valueIndex(time, bagIndex, currentIndex)
         indices.append(index)
         currentIndex = index
       }
@@ -77,13 +77,13 @@ struct OldMIDIEventContainer: CollectionType, Indexable, MutableIndexable {
 
   - returns: Generator
   */
-  func generate() -> AnyGenerator<MIDIEvent> {
+  func makeIterator() -> AnyIterator<MIDIEvent> {
     var index = startIndex
     let container = self
-    return AnyGenerator {
+    return AnyIterator {
       switch index {
-      case .EndIndex: return nil
-      case .ValueIndex(_, _, let successor):
+      case .endIndex: return nil
+      case .valueIndex(_, _, let successor):
         let event = container[index]
         index = successor
         return event
@@ -91,11 +91,11 @@ struct OldMIDIEventContainer: CollectionType, Indexable, MutableIndexable {
     }
   }
 
-  var minTime: BarBeatTime { return events.keys.minElement() ?? .start1              }
-  var maxTime: BarBeatTime { return events.keys.maxElement() ?? Sequencer.time.barBeatTime }
+  var minTime: BarBeatTime { return events.keys.min() ?? .start1              }
+  var maxTime: BarBeatTime { return events.keys.max() ?? Sequencer.time.barBeatTime }
 
-  private var events: [BarBeatTime:EventBag] = [:] {
-    didSet { eventTimes = events.keys.sort(); rebuildIndices() }
+  fileprivate var events: [BarBeatTime:EventBag] = [:] {
+    didSet { eventTimes = events.keys.sorted(); rebuildIndices() }
   }
 
   /**
@@ -103,7 +103,7 @@ struct OldMIDIEventContainer: CollectionType, Indexable, MutableIndexable {
 
   - parameter event: MIDIEvent
   */
-  mutating func append(event: MIDIEvent) {
+  mutating func append(_ event: MIDIEvent) {
 //    switch event {
 //      case .Meta(let metaEvent):
 //        if case .SequenceTrackName = metaEvent.data { return }
@@ -121,7 +121,7 @@ struct OldMIDIEventContainer: CollectionType, Indexable, MutableIndexable {
 
    - parameter transform: (MIDIEvent) throws -> T
   */
-  func map<T>(@noescape transform: (MIDIEvent) throws -> T) rethrows -> [T] {
+  func map<T>(_ transform: @escaping (MIDIEvent) throws -> T) rethrows -> [T] {
     var result: [T] = []
     for event in self {
       result.append(try transform(event))
@@ -134,25 +134,25 @@ struct OldMIDIEventContainer: CollectionType, Indexable, MutableIndexable {
 
   - parameter events: S
   */
-  mutating func appendEvents<S: SequenceType where S.Generator.Element == MIDIEvent>(events: S) {
+  mutating func appendEvents<S: Swift.Sequence>(_ events: S) where S.Iterator.Element == MIDIEvent {
     for event in events { append(event) }
   }
 
   var metaEvents: [MetaEvent] {
     var result: [MetaEvent] = []
-    for event in self { if case .Meta(let event) = event { result.append(event) } }
+    for event in self { if case .meta(let event) = event { result.append(event) } }
     return result
   }
 
   var channelEvents: [ChannelEvent] {
     var result: [ChannelEvent] = []
-    for event in self { if case .Channel(let event) = event { result.append(event) } }
+    for event in self { if case .channel(let event) = event { result.append(event) } }
     return result
   }
   
   var nodeEvents: [MIDINodeEvent] {
     var result: [MIDINodeEvent] = []
-    for event in self { if case .Node(let event) = event { result .append(event) } }
+    for event in self { if case .node(let event) = event { result .append(event) } }
     return result
   }
 
@@ -160,7 +160,7 @@ struct OldMIDIEventContainer: CollectionType, Indexable, MutableIndexable {
     var result: [MetaEvent] = []
     for event in metaEvents {
       switch event.data {
-        case .TimeSignature, .Tempo: result.append(event)
+        case .timeSignature, .tempo: result.append(event)
         default:                      break
       }
     }
@@ -174,14 +174,14 @@ struct OldMIDIEventContainer: CollectionType, Indexable, MutableIndexable {
 
     - returns: [MIDIEvent]?
   */
-  func eventsForTime(time: BarBeatTime) -> OrderedSet<MIDIEvent>? { return events[time]?.events }
+  func eventsForTime(_ time: BarBeatTime) -> OrderedSet<MIDIEvent>? { return events[time]?.events }
 
   /**
    removeEventsMatching:
 
    - parameter predicate: (MIDIEvent) -> Bool
   */
-  mutating func removeEventsMatching(predicate: (MIDIEvent) -> Bool) {
+  mutating func removeEventsMatching(_ predicate: (MIDIEvent) -> Bool) {
     var result: [BarBeatTime:EventBag] = [:]
     for (time, bag) in events {
       var resultBag = EventBag(time)
@@ -194,7 +194,7 @@ struct OldMIDIEventContainer: CollectionType, Indexable, MutableIndexable {
 
 private extension OldMIDIEventContainer {
 
-  struct EventBag: Comparable, CollectionType, MutableCollectionType {
+  struct EventBag: Comparable, Collection, MutableCollection {
     let time: BarBeatTime
     var events: OrderedSet<MIDIEvent> = []
 
@@ -213,14 +213,14 @@ private extension OldMIDIEventContainer {
 
     - returns: IndexingGenerator<[MIDIEvent]>
     */
-    func generate() -> AnyGenerator<MIDIEvent> { return AnyGenerator(events.generate()) }
+    func makeIterator() -> AnyIterator<MIDIEvent> { return AnyIterator(events.makeIterator()) }
 
     /**
     Append a new event to the bag
 
     - parameter event: MIDIEvent
     */
-    mutating func append(event: MIDIEvent) { events.append(event) }
+    mutating func append(_ event: MIDIEvent) { events.append(event) }
 
     /**
     Get or set the event at the specified position
@@ -249,35 +249,35 @@ private extension OldMIDIEventContainer {
 
 }
 
-extension OldMIDIEventContainer: ArrayLiteralConvertible {
+extension OldMIDIEventContainer: ExpressibleByArrayLiteral {
   init(arrayLiteral elements: MIDIEvent...) {
     self.init(events: elements)
   }
 }
 
 extension OldMIDIEventContainer {
-  enum Index: ForwardIndexType {
-    indirect case ValueIndex (BarBeatTime, Int, Index)
-    case EndIndex
+  enum Index: Comparable {
+    indirect case valueIndex (BarBeatTime, Int, Index)
+    case endIndex
 
     func successor() -> Index {
       switch self {
-        case .ValueIndex(_, _, let index): return index
-        case .EndIndex: return .EndIndex
+        case .valueIndex(_, _, let index): return index
+        case .endIndex: return .endIndex
       }
     }
 
     var time: BarBeatTime {
       switch self {
-        case .ValueIndex(let time, _, _): return time
-        case .EndIndex: return .null
+        case .valueIndex(let time, _, _): return time
+        case .endIndex: return .null
       }
     }
 
     var position: Int {
       switch self {
-        case .ValueIndex(_, let position, _): return position
-        case .EndIndex: return -1
+        case .valueIndex(_, let position, _): return position
+        case .endIndex: return -1
       }
     }
 
@@ -302,6 +302,6 @@ extension OldMIDIEventContainer: CustomStringConvertible {
 }
 
 extension OldMIDIEventContainer: CustomDebugStringConvertible {
-  var debugDescription: String { var result = ""; dump(self, &result); return result }
+  var debugDescription: String { var result = ""; dump(self, to: &result); return result }
 }
 

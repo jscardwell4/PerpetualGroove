@@ -38,7 +38,7 @@ struct VariableLengthQuantity {
       resolvedGroups.append(groupValue)
     }
     var resolvedBytes = resolvedGroups.flatMap { $0.bytes }
-    while let firstByte = resolvedBytes.first where resolvedBytes.count > 1 && firstByte == 0 { resolvedBytes.removeAtIndex(0) }
+    while let firstByte = resolvedBytes.first , resolvedBytes.count > 1 && firstByte == 0 { resolvedBytes.remove(at: 0) }
     return resolvedBytes
   }
 
@@ -49,7 +49,7 @@ struct VariableLengthQuantity {
 
   - parameter b: S
   */
-  init<S:SequenceType where S.Generator.Element == Byte>(bytes b: S) { bytes = Array(b) }
+  init<S:Swift.Sequence>(bytes b: S) where S.Iterator.Element == Byte { bytes = Array(b) }
 
   /**
   Initialize from any `ByteArrayConvertible` type holding the represented value
@@ -71,7 +71,7 @@ struct VariableLengthQuantity {
       guard buffer & 0x80 != 0 else { break }
       buffer = buffer >> 8
     } while true
-    while let firstByte = result.first where result.count > 1 && firstByte == 0 { result.removeAtIndex(0) }
+    while let firstByte = result.first , result.count > 1 && firstByte == 0 { result.remove(at: 0) }
     bytes = result
   }
 }
@@ -84,7 +84,7 @@ extension VariableLengthQuantity: CustomStringConvertible {
 extension VariableLengthQuantity: CustomDebugStringConvertible {
   var debugDescription: String {
     let representedValue = self.representedValue
-    return "\(self.dynamicType.self) {" + "; ".join(
+    return "\(type(of: self).self) {" + "; ".join(
       "bytes (hex, decimal): (\(String(hexBytes: bytes)), \(UInt64(bytes)))",
       "representedValue (hex, decimal): (\(String(hexBytes: representedValue)), \(UInt64(representedValue)))"
       ) + "}"

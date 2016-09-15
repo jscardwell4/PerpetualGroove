@@ -8,19 +8,20 @@
 
 import Foundation
 import MoonKit
+import UIKit
 
 final class MixerLayout: UICollectionViewLayout {
 
   static let itemSize = CGSize(width: 100, height: 575)
   static let magnifiedItemSize = CGSize(width: 104.347826086957, height: 600)
 
-  static private let SecondaryControllerKind = "SecondaryController"
-  static private let secondaryControllerIndexPath = NSIndexPath(forItem: 0, inSection: 3)
+  static fileprivate let SecondaryControllerKind = "SecondaryController"
+  static fileprivate let secondaryControllerIndexPath = IndexPath(item: 0, section: 3)
 
   @IBOutlet weak var delegate: MixerViewController!
 
-  private var previouslyMagnifiedItem: NSIndexPath?
-  var magnifiedItem: NSIndexPath? {
+  fileprivate var previouslyMagnifiedItem: IndexPath?
+  var magnifiedItem: IndexPath? {
     didSet {
       guard magnifiedItem != oldValue else { return }
 //      if magnifiedItem == nil { magnifiedItemOffset = 0 }
@@ -37,20 +38,20 @@ final class MixerLayout: UICollectionViewLayout {
     }
   }
 
-  private typealias AttributesIndex = OrderedDictionary<NSIndexPath, UICollectionViewLayoutAttributes>
-  private var storedAttributes: AttributesIndex = [:]
+  fileprivate typealias AttributesIndex = OrderedDictionary<IndexPath, UICollectionViewLayoutAttributes>
+  fileprivate var storedAttributes: AttributesIndex = [:]
 
   /** prepareLayout */
-  override func prepareLayout() {
-    super.prepareLayout()
+  override func prepare() {
+    super.prepare()
 
     guard let collectionView = collectionView else { storedAttributes = [:]; return }
 
-    storedAttributes.removeAll(keepCapacity: true)
-    for section in 0 ..< collectionView.numberOfSections() {
-      for item in 0 ..< collectionView.numberOfItemsInSection(section) {
-        let indexPath = NSIndexPath(forItem: item, inSection: section)
-        let layoutAttributes = layoutAttributesForItemAtIndexPath(indexPath)
+    storedAttributes.removeAll(keepingCapacity: true)
+    for section in 0 ..< collectionView.numberOfSections {
+      for item in 0 ..< collectionView.numberOfItems(inSection: section) {
+        let indexPath = IndexPath(item: item, section: section)
+        let layoutAttributes = layoutAttributesForItem(at: indexPath)
         storedAttributes[indexPath] = layoutAttributes
       }
     }
@@ -69,11 +70,11 @@ final class MixerLayout: UICollectionViewLayout {
 
   - returns: [UICollectionViewLayoutAttributes]?
   */
-  override func layoutAttributesForElementsInRect(rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
+  override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
     var result = Array(storedAttributes.values.filter({ $0.frame.intersects(rect) }))
     if presentingSecondaryController,
-      let attributes = layoutAttributesForSupplementaryViewOfKind(MixerLayout.SecondaryControllerKind,
-                                                      atIndexPath: MixerLayout.secondaryControllerIndexPath)
+      let attributes = layoutAttributesForSupplementaryView(ofKind: MixerLayout.SecondaryControllerKind,
+                                                            at: (MixerLayout.secondaryControllerIndexPath as NSIndexPath) as IndexPath)
     {
       result.append(attributes)
     }
@@ -87,9 +88,9 @@ final class MixerLayout: UICollectionViewLayout {
 
   - returns: UICollectionViewLayoutAttributes!
   */
-  override func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
+  override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
     guard collectionView != nil else { return nil }
-    return attributesForItem(indexPath, magnified: magnifiedItem == indexPath)
+    return attributesForItem(indexPath as NSIndexPath, magnified: magnifiedItem == indexPath as IndexPath)
   }
 
   /**
@@ -99,9 +100,9 @@ final class MixerLayout: UICollectionViewLayout {
 
     - returns: UICollectionViewLayoutAttributes
   */
-  private func attributesForItem(indexPath: NSIndexPath, magnified: Bool = false) -> UICollectionViewLayoutAttributes {
-    let attributesClass = self.dynamicType.layoutAttributesClass() as! UICollectionViewLayoutAttributes.Type
-    let attributes = attributesClass.init(forCellWithIndexPath: indexPath)
+  fileprivate func attributesForItem(_ indexPath: NSIndexPath, magnified: Bool = false) -> UICollectionViewLayoutAttributes {
+    let attributesClass = type(of: self).layoutAttributesClass as! UICollectionViewLayoutAttributes.Type
+    let attributes = attributesClass.init(forCellWith: indexPath as IndexPath)
 
     let origin: CGPoint
     switch indexPath.section {
@@ -111,14 +112,11 @@ final class MixerLayout: UICollectionViewLayout {
         origin = CGPoint(x: MixerLayout.itemSize.width * CGFloat(indexPath.item + 1), y: 0)
       case 2: fallthrough
       default:
-        origin = CGPoint(x: MixerLayout.itemSize.width * CGFloat((collectionView?.numberOfItemsInSection(1) ?? 0 ) + 1), y: 0)
+        origin = CGPoint(x: MixerLayout.itemSize.width * CGFloat((collectionView?.numberOfItems(inSection: 1) ?? 0 ) + 1), y: 0)
     }
     attributes.frame = CGRect(origin: origin, size: MixerLayout.itemSize)
     if magnified {
-      var transform = CGAffineTransform(sx: 1.1, sy: 1.1)
-      transform.translate(0, half(MixerLayout.itemSize.height * 1.1 - MixerLayout.itemSize.height))
-      attributes.transform = transform
-//      magnifyAttributes(attributes)
+      attributes.transform = CGAffineTransform(scaleX: 1.1, y: 1.1).translatedBy(x: 0, y: half(MixerLayout.itemSize.height * 1.1 - MixerLayout.itemSize.height))
     }
     return attributes
   }
@@ -141,11 +139,11 @@ final class MixerLayout: UICollectionViewLayout {
 
    - parameter updateItems: [UICollectionViewUpdateItem]
   */
-  override func prepareForCollectionViewUpdates(updateItems: [UICollectionViewUpdateItem]) {
-    defer { super.prepareForCollectionViewUpdates(updateItems) }
+  override func prepare(forCollectionViewUpdates updateItems: [UICollectionViewUpdateItem]) {
+    defer { super.prepare(forCollectionViewUpdates: updateItems) }
     guard updateItems.count == 1,
       let updateItem = updateItems.first,
-          beforePath = updateItem.indexPathBeforeUpdate where magnifiedItem == beforePath,
+          let beforePath = updateItem.indexPathBeforeUpdate , magnifiedItem == beforePath,
       let afterPath = updateItem.indexPathAfterUpdate else { return }
     previouslyMagnifiedItem = beforePath
     magnifiedItem = afterPath
@@ -177,13 +175,13 @@ final class MixerLayout: UICollectionViewLayout {
 
     - returns: UICollectionViewLayoutAttributes?
   */
-  override func layoutAttributesForSupplementaryViewOfKind(elementKind: String,
-    atIndexPath indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes?
+  override func layoutAttributesForSupplementaryView(ofKind elementKind: String,
+                                                     at indexPath: IndexPath) -> UICollectionViewLayoutAttributes?
   {
     guard let collectionView = collectionView else { return nil }
 
-    let attributesClass = self.dynamicType.layoutAttributesClass() as! UICollectionViewLayoutAttributes.Type
-    let attributes = attributesClass.init(forSupplementaryViewOfKind: elementKind, withIndexPath: indexPath)
+    let attributesClass = type(of: self).layoutAttributesClass as! UICollectionViewLayoutAttributes.Type
+    let attributes = attributesClass.init(forSupplementaryViewOfKind: elementKind, with: indexPath)
     attributes.frame = collectionView.bounds
     attributes.zIndex = 100
     return attributes
@@ -194,9 +192,9 @@ final class MixerLayout: UICollectionViewLayout {
 
   - returns: CGSize
   */
-  override func collectionViewContentSize() -> CGSize {
-    let w = storedAttributes.values.reduce(0, combine: {max($0, $1.frame.maxX)})
-    let h = storedAttributes.values.reduce(0, combine: {max($0, $1.frame.maxY)})
+  override var collectionViewContentSize: CGSize {
+    let w = storedAttributes.values.reduce(0, {max($0, $1.frame.maxX)})
+    let h = storedAttributes.values.reduce(0, {max($0, $1.frame.maxY)})
     return CGSize(width: w, height: h)
   }
 

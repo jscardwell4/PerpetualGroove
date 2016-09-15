@@ -12,7 +12,7 @@ import struct MoonKit.UUID
 
 final class MIDIEventContainerTests: XCTestCase {
 
-  static func eventsAdvancedBy(amount: Double) -> [MIDIEvent] {
+  static func eventsAdvancedBy(_ amount: Double) -> [MIDIEvent] {
     let events = self.events
     var result: [MIDIEvent] = []
     for event in events {
@@ -23,7 +23,7 @@ final class MIDIEventContainerTests: XCTestCase {
     return result
   }
 
-  static func generateEvents(count: Int) -> [MIDIEvent] {
+  static func generateEvents(_ count: Int) -> [MIDIEvent] {
     var result: [MIDIEvent] = events
     for i in 0 ..< max(count, 1) {
       result.appendContentsOf(eventsAdvancedBy(Double(i) * 26))
@@ -133,7 +133,7 @@ final class MIDIEventContainerTests: XCTestCase {
 
   func testOldContainerPerformance() {
     let events = MIDIEventContainerTests.generateEvents(10)
-    measureBlock { 
+    measure { 
       var container = OldMIDIEventContainer()
       for event in events { container.append(event) }
     }
@@ -141,7 +141,7 @@ final class MIDIEventContainerTests: XCTestCase {
 
   func testContainerPerformance() {
     let events = MIDIEventContainerTests.generateEvents(10)
-    measureBlock {
+    measure {
       var container = MIDIEventContainer()
       for event in events { container.append(event) }
     }

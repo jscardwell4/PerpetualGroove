@@ -14,7 +14,7 @@ import CoreText
 
 public final class Eveleth: NSObject {
 
-  private static var fontsRegistered = false
+  fileprivate static var fontsRegistered = false
 
   /** initialize */
   public override class func initialize() { if self === Eveleth.self && !fontsRegistered { registerFonts() } }
@@ -28,11 +28,11 @@ public final class Eveleth: NSObject {
         "Light", "Regular Bold", "Regular", "Shadow", "Shapes", "Slant Light", "Slant Regular Bold", "Slant Regular", "Thin"
       ]
       let fontNames = styles.map { "Yellow Design Studio - Eveleth \($0)" }
-      let bundle = NSBundle(forClass: self)
-      let fontURLs = fontNames.flatMap { bundle.URLForResource($0, withExtension: "otf") }
+      let bundle = Bundle(for: self)
+      let fontURLs = fontNames.flatMap { bundle.url(forResource: $0, withExtension: "otf") }
       var errors: Unmanaged<CFArray>?
-      CTFontManagerRegisterFontsForURLs(fontURLs, CTFontManagerScope.None, &errors)
-      if let errorsArray = errors?.takeRetainedValue() as? NSArray, errors = errorsArray as? [NSError] {
+      CTFontManagerRegisterFontsForURLs(fontURLs as CFArray, CTFontManagerScope.none, &errors)
+      if let errorsArray = errors?.takeRetainedValue() as? NSArray, let errors = errorsArray as? [NSError] {
         let error = NSError(domain: "CTFontManagerErrorDomain",
                             code: 1,
                         userInfo: [NSUnderlyingErrorKey: errors,
@@ -49,7 +49,7 @@ public final class Eveleth: NSObject {
 
   - returns: UIFont
   */
-  public class func cleanRegularFontWithSize(size: CGFloat) -> UIFont {
+  public class func cleanRegularFontWithSize(_ size: CGFloat) -> UIFont {
     if !fontsRegistered { registerFonts() }
     assert(fontsRegistered)
     let font = UIFont(name: "EvelethCleanRegular", size: size)
@@ -64,7 +64,7 @@ public final class Eveleth: NSObject {
 
   - returns: UIFont
   */
-  public class func cleanShadowFontWithSize(size: CGFloat) -> UIFont {
+  public class func cleanShadowFontWithSize(_ size: CGFloat) -> UIFont {
     if !fontsRegistered { registerFonts() }
     assert(fontsRegistered)
     let font = UIFont(name: "EvelethCleanShadow", size: size)
@@ -79,7 +79,7 @@ public final class Eveleth: NSObject {
 
   - returns: UIFont
   */
-  public class func cleanThinFontWithSize(size: CGFloat) -> UIFont {
+  public class func cleanThinFontWithSize(_ size: CGFloat) -> UIFont {
     if !fontsRegistered { registerFonts() }
     assert(fontsRegistered)
     let font = UIFont(name: "EvelethCleanThin", size: size)
@@ -94,7 +94,7 @@ public final class Eveleth: NSObject {
 
   - returns: UIFont
   */
-  public class func dotLightFontWithSize(size: CGFloat) -> UIFont {
+  public class func dotLightFontWithSize(_ size: CGFloat) -> UIFont {
     if !fontsRegistered { registerFonts() }
     assert(fontsRegistered)
     let font = UIFont(name: "EvelethDotLight", size: size)
@@ -109,7 +109,7 @@ public final class Eveleth: NSObject {
 
   - returns: UIFont
   */
-  public class func dotRegularBoldFontWithSize(size: CGFloat) -> UIFont {
+  public class func dotRegularBoldFontWithSize(_ size: CGFloat) -> UIFont {
     if !fontsRegistered { registerFonts() }
     assert(fontsRegistered)
     let font = UIFont(name: "EvelethDotRegular-Bold", size: size)
@@ -124,7 +124,7 @@ public final class Eveleth: NSObject {
 
   - returns: UIFont
   */
-  public class func dotRegularFontWithSize(size: CGFloat) -> UIFont {
+  public class func dotRegularFontWithSize(_ size: CGFloat) -> UIFont {
     if !fontsRegistered { registerFonts() }
     assert(fontsRegistered)
     let font = UIFont(name: "EvelethDotRegular", size: size)
@@ -139,7 +139,7 @@ public final class Eveleth: NSObject {
 
   - returns: UIFont
   */
-  public class func iconsFontWithSize(size: CGFloat) -> UIFont {
+  public class func iconsFontWithSize(_ size: CGFloat) -> UIFont {
     if !fontsRegistered { registerFonts() }
     assert(fontsRegistered)
     let font = UIFont(name: "EvelethIcons", size: size)
@@ -154,7 +154,7 @@ public final class Eveleth: NSObject {
 
   - returns: UIFont
   */
-  public class func lightFontWithSize(size: CGFloat) -> UIFont {
+  public class func lightFontWithSize(_ size: CGFloat) -> UIFont {
     if !fontsRegistered { registerFonts() }
     assert(fontsRegistered)
     let font = UIFont(name: "EvelethLight", size: size)
@@ -169,7 +169,7 @@ public final class Eveleth: NSObject {
 
   - returns: UIFont
   */
-  public class func regularBoldFontWithSize(size: CGFloat) -> UIFont {
+  public class func regularBoldFontWithSize(_ size: CGFloat) -> UIFont {
     if !fontsRegistered { registerFonts() }
     assert(fontsRegistered)
     let font = UIFont(name: "EvelethRegular-Bold", size: size)
@@ -184,7 +184,7 @@ public final class Eveleth: NSObject {
 
   - returns: UIFont
   */
-  public class func regularFontWithSize(size: CGFloat) -> UIFont {
+  public class func regularFontWithSize(_ size: CGFloat) -> UIFont {
     if !fontsRegistered { registerFonts() }
     assert(fontsRegistered)
     let font = UIFont(name: "EvelethRegular", size: size)
@@ -199,7 +199,7 @@ public final class Eveleth: NSObject {
 
   - returns: UIFont
   */
-  public class func shadowFontWithSize(size: CGFloat) -> UIFont {
+  public class func shadowFontWithSize(_ size: CGFloat) -> UIFont {
     if !fontsRegistered { registerFonts() }
     assert(fontsRegistered)
     let font = UIFont(name: "EvelethShadow", size: size)
@@ -214,7 +214,7 @@ public final class Eveleth: NSObject {
 
   - returns: UIFont
   */
-  public class func shapesFontWithSize(size: CGFloat) -> UIFont {
+  public class func shapesFontWithSize(_ size: CGFloat) -> UIFont {
     if !fontsRegistered { registerFonts() }
     assert(fontsRegistered)
     let font = UIFont(name: "EvelethShapes", size: size)
@@ -229,7 +229,7 @@ public final class Eveleth: NSObject {
 
   - returns: UIFont
   */
-  public class func slantLightFontWithSize(size: CGFloat) -> UIFont {
+  public class func slantLightFontWithSize(_ size: CGFloat) -> UIFont {
     if !fontsRegistered { registerFonts() }
     assert(fontsRegistered)
     let font = UIFont(name: "EvelethSlantLight", size: size)
@@ -244,7 +244,7 @@ public final class Eveleth: NSObject {
 
   - returns: UIFont
   */
-  public class func slantRegularBoldFontWithSize(size: CGFloat) -> UIFont {
+  public class func slantRegularBoldFontWithSize(_ size: CGFloat) -> UIFont {
     if !fontsRegistered { registerFonts() }
     assert(fontsRegistered)
     let font = UIFont(name: "EvelethSlantRegular-Bold", size: size)
@@ -259,7 +259,7 @@ public final class Eveleth: NSObject {
 
   - returns: UIFont
   */
-  public class func slantRegularFontWithSize(size: CGFloat) -> UIFont {
+  public class func slantRegularFontWithSize(_ size: CGFloat) -> UIFont {
     if !fontsRegistered { registerFonts() }
     assert(fontsRegistered)
     let font = UIFont(name: "EvelethSlantRegular", size: size)
@@ -274,7 +274,7 @@ public final class Eveleth: NSObject {
 
   - returns: UIFont
   */
-  public class func thinFontWithSize(size: CGFloat) -> UIFont {
+  public class func thinFontWithSize(_ size: CGFloat) -> UIFont {
     if !fontsRegistered { registerFonts() }
     assert(fontsRegistered)
     let font = UIFont(name: "EvelethThin", size: size)

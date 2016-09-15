@@ -38,14 +38,14 @@ extension SecondaryControllerContent where Self:UIViewController {
 
 protocol SecondaryControllerContentDelegate {
   var secondaryContent: SecondaryControllerContent { get }
-  func didShowContent(content: SecondaryControllerContent)
-  func didHideContent(content: SecondaryControllerContent,
+  func didShowContent(_ content: SecondaryControllerContent)
+  func didHideContent(_ content: SecondaryControllerContent,
                       dismissalAction: SecondaryControllerContainer.DismissalAction)
 }
 
 extension SecondaryControllerContentDelegate {
-  func didShowContent(content: SecondaryControllerContent) {}
-  func didHideContent(content: SecondaryControllerContent,
+  func didShowContent(_ content: SecondaryControllerContent) {}
+  func didHideContent(_ content: SecondaryControllerContent,
                       dismissalAction: SecondaryControllerContainer.DismissalAction) {}
 }
 
@@ -56,46 +56,46 @@ class SecondaryControllerContainer: UIViewController {
 
   var primaryController: UIViewController? { return childViewControllers.first }
 
-  private(set) var secondaryContentDelegate: ContentDelegate?
-  private(set) var secondaryContent: Content?
+  fileprivate(set) var secondaryContentDelegate: ContentDelegate?
+  fileprivate(set) var secondaryContent: Content?
 
-  private(set) weak var secondaryController: SecondaryContent? {
+  fileprivate(set) weak var secondaryController: SecondaryContent? {
     didSet {
       guard let controller = secondaryController else { return }
 
       // Hide or reveal the buttons according to the controller's settings
-      cancelButton?.hidden = controller.supportedActions ∌ .Cancel
-      confirmButton?.hidden = controller.supportedActions ∌ .Confirm
+      cancelButton?.isHidden = controller.supportedActions ∌ .Cancel
+      confirmButton?.isHidden = controller.supportedActions ∌ .Confirm
 
-      leftArrow?.hidden = controller.supportedActions ∌ .Previous
-      rightArrow?.hidden = controller.supportedActions ∌ .Next
+      leftArrow?.isHidden = controller.supportedActions ∌ .Previous
+      rightArrow?.isHidden = controller.supportedActions ∌ .Next
 
-      cancelButton?.enabled = controller.disabledActions ∌ .Cancel
-      confirmButton?.enabled = controller.disabledActions ∌ .Confirm
+      cancelButton?.isEnabled = controller.disabledActions ∌ .Cancel
+      confirmButton?.isEnabled = controller.disabledActions ∌ .Confirm
 
-      leftArrow?.enabled = controller.disabledActions ∌ .Previous
-      rightArrow?.enabled = controller.disabledActions ∌ .Next
+      leftArrow?.isEnabled = controller.disabledActions ∌ .Previous
+      rightArrow?.isEnabled = controller.disabledActions ∌ .Next
 
       // Add the controller's view to the blur view content
-      let controllerView = controller.view
+      let controllerView = controller.view!
       controllerView.frame = view.bounds.insetBy(dx: 20, dy: 20)
       controllerView.translatesAutoresizingMaskIntoConstraints = false
       controllerView.backgroundColor = nil
 
-      blurView.contentView.insertSubview(controllerView, atIndex: 0)
+      blurView.contentView.insertSubview(controllerView, at: 0)
       blurView.contentView.constrain(𝗩|--20--controllerView--20--|𝗩, 𝗛|--20--controllerView--20--|𝗛)
       blurView.frame = blurFrame
     }
 
   }
 
-  @IBOutlet private weak var containerView: UIView!
+  @IBOutlet fileprivate weak var containerView: UIView!
 
-  var blurFrame: CGRect { guard isViewLoaded() else { return .zero }; return view.bounds }
+  var blurFrame: CGRect { guard isViewLoaded else { return .zero }; return view.bounds }
 
-  private lazy var blurView: UIVisualEffectView = {
-    let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .Dark))
-    blurView.userInteractionEnabled = true
+  fileprivate lazy var blurView: UIVisualEffectView = {
+    let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
+    blurView.isUserInteractionEnabled = true
 
     let cancelButton = ImageButtonView(autolayout: true)
     cancelButton.image = UIImage(named: "cancel")
@@ -105,7 +105,7 @@ class SecondaryControllerContainer: UIViewController {
     cancelButton.accessibilityIdentifier = cancelButton.identifier
     cancelButton.addTarget(self,
                            action: #selector(SecondaryControllerContainer.cancel),
-                           forControlEvents: .TouchUpInside)
+                           for: .touchUpInside)
     blurView.contentView.addSubview(cancelButton)
     blurView.contentView.constrain(𝗩|--cancelButton, 𝗛|--cancelButton)
     self.cancelButton = cancelButton
@@ -118,7 +118,7 @@ class SecondaryControllerContainer: UIViewController {
     confirmButton.accessibilityIdentifier = confirmButton.identifier
     confirmButton.addTarget(self,
                             action: #selector(SecondaryControllerContainer.confirm),
-                            forControlEvents: .TouchUpInside)
+                            for: .touchUpInside)
     blurView.contentView.addSubview(confirmButton)
     blurView.contentView.constrain(𝗩|--confirmButton, confirmButton--|𝗛)
     self.confirmButton = confirmButton
@@ -131,7 +131,7 @@ class SecondaryControllerContainer: UIViewController {
     leftArrow.accessibilityIdentifier = leftArrow.identifier
     leftArrow.addTarget(self,
                         action: #selector(SecondaryControllerContainer.previous),
-                        forControlEvents: .TouchUpInside)
+                        for: .touchUpInside)
     blurView.contentView.addSubview(leftArrow)
     blurView.contentView.constrain(leftArrow--|𝗩, 𝗛|--leftArrow)
     self.leftArrow = leftArrow
@@ -143,8 +143,8 @@ class SecondaryControllerContainer: UIViewController {
     rightArrow.identifier = "NextButton"
     rightArrow.accessibilityIdentifier = rightArrow.identifier
     rightArrow.addTarget(self,
-                         action: #selector(SecondaryControllerContainer.next),
-                         forControlEvents: .TouchUpInside)
+                         action: #selector(getter: SecondaryControllerContainer.next),
+                         for: .touchUpInside)
     blurView.contentView.addSubview(rightArrow)
     blurView.contentView.constrain(rightArrow--|𝗩, rightArrow--|𝗛)
     self.rightArrow = rightArrow
@@ -152,23 +152,23 @@ class SecondaryControllerContainer: UIViewController {
     return blurView
   }()
 
-  private weak var confirmButton: ImageButtonView?
-  private weak var cancelButton: ImageButtonView?
+  fileprivate weak var confirmButton: ImageButtonView?
+  fileprivate weak var cancelButton: ImageButtonView?
 
   weak var leftArrow: ImageButtonView?
   weak var rightArrow: ImageButtonView?
 
   /** confirm */
-  @objc private func confirm() { dismissSecondaryController(.Confirm) }
+  @objc fileprivate func confirm() { dismissSecondaryController(.confirm) }
 
   /** cancel */
-  @objc private func cancel() { dismissSecondaryController(.Cancel) }
+  @objc fileprivate func cancel() { dismissSecondaryController(.cancel) }
 
   /** next */
-  @objc private func next() { nextAction?() }
+  @objc fileprivate func next() { nextAction?() }
 
   /** previous */
-  @objc private func previous() { previousAction?() }
+  @objc fileprivate func previous() { previousAction?() }
 
 //  var anyAction: (() -> Void)?      { return secondaryController?.anyAction      }
 //  var cancelAction: (() -> Void)?   { return secondaryController?.cancelAction   }
@@ -181,9 +181,9 @@ class SecondaryControllerContainer: UIViewController {
 
   }
 
-  @objc enum DismissalAction: Int { case None, Cancel, Confirm }
+  @objc enum DismissalAction: Int { case none, cancel, confirm }
 
-  func presentContentForDelegate(delegate: SecondaryControllerContentDelegate,
+  func presentContentForDelegate(_ delegate: SecondaryControllerContentDelegate,
                        completion: ((Bool) -> Void)? = nil)
   {
 //    guard secondaryController == nil else { return }
@@ -195,20 +195,20 @@ class SecondaryControllerContainer: UIViewController {
 //    secondaryController = controller
 
 
-    let options: UIViewAnimationOptions = [.AllowAnimatedContent]
+    let options: UIViewAnimationOptions = [.allowAnimatedContent]
 
     let animations = {
       [view = view, blurView = blurView] in
-      view.addSubview(blurView)
-      view.constrain(
-        𝗩|--blurView.frame.y--blurView--(view.bounds.maxY - blurView.frame.maxY)--|𝗩,
-        𝗛|--blurView.frame.x--blurView--(view.bounds.maxX - blurView.frame.maxX)--|𝗛
+      view?.addSubview(blurView)
+      view?.constrain(
+        𝗩|--blurView.frame.y--blurView--((view?.bounds.maxY)! - blurView.frame.maxY)--|𝗩,
+        𝗛|--blurView.frame.x--blurView--((view?.bounds.maxX)! - blurView.frame.maxX)--|𝗛
       )
     }
 
-    UIView.transitionWithView(view, duration: 0.25, options: options, animations: animations) {
+    UIView.transition(with: view, duration: 0.25, options: options, animations: animations) {
       [unowned self] completed in
-      controller.didMoveToParentViewController(self)
+      controller.didMove(toParentViewController: self)
       completion?(completed)
     }
 
@@ -248,11 +248,11 @@ class SecondaryControllerContainer: UIViewController {
 //
 //  }
 
-  func completionForDismissalAction(dismissalAction: DismissalAction) -> (Bool) -> Void {
+  func completionForDismissalAction(_ dismissalAction: DismissalAction) -> (Bool) -> Void {
     return {
       [weak self] completed in
       guard completed,
-        let delegate = self?.secondaryContentDelegate, content = self?.secondaryContent else { return }
+        let delegate = self?.secondaryContentDelegate, let content = self?.secondaryContent else { return }
 
       delegate.didHideContent(content, dismissalAction: dismissalAction)
 //      switch dismissalAction {
@@ -264,13 +264,13 @@ class SecondaryControllerContainer: UIViewController {
   }
 
   /** dismissSecondaryController */
-  func dismissSecondaryController(dismissalAction: DismissalAction = .None) {
+  func dismissSecondaryController(_ dismissalAction: DismissalAction = .none) {
     guard let controller = secondaryController else { return }
 
-    controller.willMoveToParentViewController(nil)
+    controller.willMove(toParentViewController: nil)
     controller.removeFromParentViewController()
 
-    let options: UIViewAnimationOptions = [.AllowAnimatedContent]
+    let options: UIViewAnimationOptions = [.allowAnimatedContent]
 
     let animations = {
       [weak blurView = blurView, weak controllerView = controller.view] in
@@ -279,7 +279,7 @@ class SecondaryControllerContainer: UIViewController {
     }
     let completion = completionForDismissalAction(dismissalAction)
 
-    UIView.transitionWithView(view,
+    UIView.transition(with: view,
                               duration: 0.25,
                               options: options,
                               animations: animations,
@@ -289,7 +289,7 @@ class SecondaryControllerContainer: UIViewController {
 }
 
 extension SecondaryControllerContainer {
-  struct SupportedActions: OptionSetType {
+  struct SupportedActions: OptionSet {
     let rawValue: Int
     static let None     = SupportedActions(rawValue: 0b0000)
     static let Cancel   = SupportedActions(rawValue: 0b0001)

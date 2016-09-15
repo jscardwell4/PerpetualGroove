@@ -15,8 +15,8 @@ final class Time {
 
   // MARK: - Receiving MIDI clocks
 
-  private var client = MIDIClientRef()  /// Client for receiving MIDI clock
-  private var inPort = MIDIPortRef()    /// Port for receiving MIDI clock
+  fileprivate var client = MIDIClientRef()  /// Client for receiving MIDI clock
+  fileprivate var inPort = MIDIPortRef()    /// Port for receiving MIDI clock
 
   /**
   read:context:
@@ -24,10 +24,10 @@ final class Time {
   - parameter packetList: UnsafePointer<MIDIPacketList>
   - parameter context: UnsafePointer<Void>
   */
-  private func read(packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutablePointer<Void>) {
+  fileprivate func read(_ packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutableRawPointer?) {
     // Runs on MIDI Services thread
-    switch packetList.memory.packet.data.0 {
-      case 0b1111_1000: queue.async(incrementClock)
+    switch packetList.pointee.packet.data.0 {
+      case 0b1111_1000: queue.async(execute: incrementClock)
       case 0b1111_1010: queue.async { [unowned self] in self._reset()
                                                         self.invokeCallbacksForTime(self.barBeatTime) }
       default: break
@@ -36,10 +36,10 @@ final class Time {
 
   // MARK: - Keeping the time
 
-  private let queue: dispatch_queue_t
+  fileprivate let queue: DispatchQueue
 
   /// The musical representation of the current time
-  private var _barBeatTime: BarBeatTime = .start1 {
+  fileprivate var _barBeatTime: BarBeatTime = .start1 {
     didSet { if Sequencer.playing { invokeCallbacksForTime(barBeatTime) } }
   }
 
@@ -50,7 +50,7 @@ final class Time {
   }
 
   /** incrementClock */
-  private func incrementClock() {
+  fileprivate func incrementClock() {
 //    objc_sync_enter(self)
 //    defer { objc_sync_exit(self) }
 
@@ -62,10 +62,10 @@ final class Time {
   typealias Callback  = (BarBeatTime) -> Void
   typealias Predicate = (BarBeatTime) -> Bool
 
-  private var callbacks: [BarBeatTime:[(Callback, ObjectIdentifier?)]] = [:] {
+  fileprivate var callbacks: [BarBeatTime:[(Callback, ObjectIdentifier?)]] = [:] {
     didSet { haveCallbacks = callbacks.count > 0 || predicatedCallbacks.count > 0 }
   }
-  private var predicatedCallbacks: [String:(predicate: Predicate, callback: Callback)] = [:] {
+  fileprivate var predicatedCallbacks: [String:(predicate: Predicate, callback: Callback)] = [:] {
     didSet { haveCallbacks = callbacks.count > 0 || predicatedCallbacks.count > 0 }
   }
 
@@ -76,19 +76,19 @@ final class Time {
 
     - returns: Bool
   */
-  func callbackRegisteredForKey(key: String) -> Bool {
+  func callbackRegisteredForKey(_ key: String) -> Bool {
     return predicatedCallbacks[key] != nil
   }
 
   var suppressCallbacks = false
-  private var haveCallbacks = false
-  private var checkCallbacks: Bool { return haveCallbacks && !suppressCallbacks }
+  fileprivate var haveCallbacks = false
+  fileprivate var checkCallbacks: Bool { return haveCallbacks && !suppressCallbacks }
 
   /** clearCallbacks */
   func clearCallbacks() {
     logDebug("clearing all registered callbacks…")
-    callbacks.removeAll(keepCapacity: true)
-    predicatedCallbacks.removeAll(keepCapacity: true)
+    callbacks.removeAll(keepingCapacity: true)
+    predicatedCallbacks.removeAll(keepingCapacity: true)
   }
 
   /**
@@ -97,7 +97,7 @@ final class Time {
 
    - parameter t: BarBeatTime
   */
-  private func invokeCallbacksForTime(t: BarBeatTime) {
+  fileprivate func invokeCallbacksForTime(_ t: BarBeatTime) {
     guard checkCallbacks else { return }
     callbacks[t]?.forEach({$0.0(t)})
     predicatedCallbacks.values.filter({$0.predicate(t)}).forEach({$0.callback(t)})
@@ -109,7 +109,7 @@ final class Time {
   - parameter callback: (BarBeatTime) -> Void
   - parameter time: BarBeatTime
   */
-  func registerCallback(callback: Callback, forTime time: BarBeatTime, forObject obj: AnyObject? = nil) {
+  func registerCallback(_ callback: @escaping Callback, forTime time: BarBeatTime, forObject obj: AnyObject? = nil) {
     registerCallback(callback, forTimes: [time], forObject: obj)
   }
 
@@ -120,14 +120,12 @@ final class Time {
   - parameter times: S
   - parameter obj: AnyObject? = nil
   */
-  func registerCallback<S:SequenceType
-    where S.Generator.Element == BarBeatTime>(callback: Callback,
+  func registerCallback<S:Swift.Sequence>(_ callback: @escaping Callback,
                                      forTimes times: S,
                                     forObject obj: AnyObject? = nil)
+    where S.Iterator.Element == BarBeatTime
   {
-    let value: (Callback, ObjectIdentifier?) = obj != nil
-                                                 ? (callback, ObjectIdentifier(obj!))
-                                                 : (callback, nil)
+    let value: (Callback, ObjectIdentifier?) = (callback, obj != nil ? ObjectIdentifier(obj!) : nil)
     times.forEach { var bag = callbacks[$0] ?? []; bag.append(value); callbacks[$0] = bag }
   }
 
@@ -136,7 +134,7 @@ final class Time {
 
   - parameter time: BarBeatTime
   */
-  func removeCallbackForTime(time: BarBeatTime, forObject obj: AnyObject? = nil) {
+  func removeCallbackForTime(_ time: BarBeatTime, forObject obj: AnyObject? = nil) {
     if let obj = obj {
       callbacks[time] = callbacks[time]?.filter {
         [identifier = ObjectIdentifier(obj)] in $1 != identifier
@@ -149,7 +147,7 @@ final class Time {
 
   - parameter key: String
   */
-  func removeCallbackForKey(key: String) { predicatedCallbacks[key] = nil }
+  func removeCallbackForKey(_ key: String) { predicatedCallbacks[key] = nil }
 
 
   /**
@@ -158,7 +156,7 @@ final class Time {
   - parameter callback: (BarBeatTime) -> Void
   - parameter predicate: (BarBeatTime) -> Bool
   */
-  func registerCallback(callback: Callback, predicate: Predicate, forKey key: String) {
+  func registerCallback(_ callback: @escaping Callback, predicate: @escaping Predicate, forKey key: String) {
     predicatedCallbacks[key] = (predicate: predicate, callback: callback)
   }
 
@@ -166,7 +164,7 @@ final class Time {
   var beat:    UInt           { return barBeatTime.beat    }  /// Accessor for `time.beat`
   var subbeat: UInt           { return barBeatTime.subbeat }  /// Accessor for `time.subbeat`
   var ticks:   MIDITimeStamp  { return barBeatTime.ticks   }  /// Accessor for `time.ticks`
-  var seconds: NSTimeInterval { return barBeatTime.seconds }  /// Accessor for `time.doubleValue`
+  var seconds: TimeInterval   { return barBeatTime.seconds }  /// Accessor for `time.doubleValue`
 
   let clockName: String
 
@@ -183,11 +181,11 @@ final class Time {
     guard unmanagedName != nil else { fatalError("Endpoint should have been given a name") }
     let name = unmanagedName!.takeUnretainedValue() as String
     clockName = name
-    queue = serialInteractiveQueue(name)
+    queue = DispatchQueue(label: name, qos: .userInteractive)
     do {
-      try MIDIClientCreateWithBlock(name, &client, nil)
+      try MIDIClientCreateWithBlock(name as CFString, &client, nil)
         ➤ "Failed to create midi client for bar beat time"
-      try MIDIInputPortCreateWithBlock(client, "Input", &inPort, weakMethod(self, Time.read))
+      try MIDIInputPortCreateWithBlock(client, "Input" as CFString, &inPort, weakMethod(self, Time.read))
         ➤ "Failed to create in port for bar beat time"
       try MIDIPortConnectSource(inPort, clockSource, nil) ➤ "Failed to connect bar beat time to clock"
     } catch {
@@ -200,14 +198,14 @@ final class Time {
 
    - parameter completion: (() -> Void)? = nil
    */
-  func reset(completion: (() -> Void)? = nil) { queue.async { [unowned self] in self._reset(completion) } }
+  func reset(_ completion: (() -> Void)? = nil) { queue.async { [unowned self] in self._reset(completion) } }
 
   /**
   _reset:
 
   - parameter completion: (() -> Void)? = nil
   */
-  private func _reset(completion: (() -> Void)? = nil) {
+  fileprivate func _reset(_ completion: (() -> Void)? = nil) {
     _barBeatTime = .start1
 //    objc_sync_enter(self)
     /*defer { objc_sync_exit(self); */completion?()// }
@@ -218,7 +216,7 @@ final class Time {
 
    - parameter completion: (() -> Void
   */
-  func hardReset(completion: (() -> Void)? = nil) {
+  func hardReset(_ completion: (() -> Void)? = nil) {
     clearCallbacks()
     reset(completion)
   }
@@ -241,7 +239,7 @@ extension Time: CustomStringConvertible { var description: String { return barBe
 
 // MARK: - CustomDebugStringConvertible
 extension Time: CustomDebugStringConvertible {
-  var debugDescription: String { var result = ""; dump(self, &result); return result }
+  var debugDescription: String { var result = ""; dump(self, to: &result); return result }
 }
 
 // MARK: - Hashable

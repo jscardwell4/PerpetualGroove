@@ -14,20 +14,20 @@ final class MIDIPlayerContainerViewController: SecondaryControllerContainer {
 
 //  private weak var controllerTool: ToolType?
 
-  private(set) weak var playerViewController: MIDIPlayerViewController! {
+  fileprivate(set) weak var playerViewController: MIDIPlayerViewController! {
     didSet { MIDIPlayer.playerContainer = self }
   }
 
-  override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-    super.prepareForSegue(segue, sender: sender)
-    switch segue.destinationViewController {
+  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    super.prepare(for: segue, sender: sender)
+    switch segue.destination {
     case let controller as MIDIPlayerViewController: playerViewController = controller
     default: break
     }
   }
 
   override var blurFrame: CGRect {
-    guard playerViewController?.isViewLoaded() == true else { return super.blurFrame }
+    guard playerViewController?.isViewLoaded == true else { return super.blurFrame }
     return playerViewController!.playerView.frame
   }
 

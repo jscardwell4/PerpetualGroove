@@ -16,7 +16,7 @@ struct GrooveNode: JSONValueConvertible, JSONValueInitializable {
   var generator: MIDIGenerator
   var addTime: BarBeatTime
   var removeTime: BarBeatTime? {
-    didSet { if let time = removeTime where time < addTime { removeTime = nil } }
+    didSet { if let time = removeTime , time < addTime { removeTime = nil } }
   }
 
   var jsonValue: JSONValue {
@@ -30,16 +30,16 @@ struct GrooveNode: JSONValueConvertible, JSONValueInitializable {
   }
 
   var addEvent: MIDINodeEvent {
-    return MIDINodeEvent(.Add(identifier: identifier, trajectory: trajectory, generator: generator), addTime)
+    return MIDINodeEvent(.add(identifier: identifier, trajectory: trajectory, generator: generator), addTime)
   }
 
   var removeEvent: MIDINodeEvent? {
     guard let removeTime = removeTime else { return nil }
-    return MIDINodeEvent(.Remove(identifier: identifier), removeTime)
+    return MIDINodeEvent(.remove(identifier: identifier), removeTime)
   }
 
   init?(event: MIDINodeEvent) {
-    guard case let .Add(identifier, trajectory, generator) = event.data else { return nil }
+    guard case let .add(identifier, trajectory, generator) = event.data else { return nil }
     addTime = event.time
     self.identifier = identifier
     self.trajectory = trajectory
@@ -48,18 +48,18 @@ struct GrooveNode: JSONValueConvertible, JSONValueInitializable {
 
   init?(_ jsonValue: JSONValue?) {
     guard let dict = ObjectJSONValue(jsonValue),
-      identifier = MIDINodeEvent.Identifier(dict["identifier"]),
-      trajectory = Trajectory(dict["trajectory"]),
-      generator = MIDIGenerator(dict["generator"]),
-      addTime = BarBeatTime(dict["addTime"])
+      let identifier = MIDINodeEvent.Identifier(dict["identifier"]),
+      let trajectory = Trajectory(dict["trajectory"]),
+      let generator = MIDIGenerator(dict["generator"]),
+      let addTime = BarBeatTime(dict["addTime"])
       else { return nil }
     self.identifier = identifier
     self.generator = generator
     self.trajectory = trajectory
     self.addTime = addTime
     switch dict["removeTime"] {
-    case .String(let s)?: removeTime = BarBeatTime(rawValue: s)
-    case .Null?: fallthrough
+    case .string(let s)?: removeTime = BarBeatTime(rawValue: s)
+    case .null?: fallthrough
     default: removeTime = nil
     }
   }

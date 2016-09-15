@@ -10,18 +10,18 @@ import Foundation
 import MoonKit
 
 enum TimeSignature: ByteArrayConvertible {
-  case FourFour
-  case ThreeFour
-  case TwoFour
-  case Other (UInt8, UInt8)
+  case fourFour
+  case threeFour
+  case twoFour
+  case other (UInt8, UInt8)
 
-  var beatUnit: UInt8 { if case .Other(_, let u) = self { return u } else { return 4 } }
+  var beatUnit: UInt8 { if case .other(_, let u) = self { return u } else { return 4 } }
   var beatsPerBar: Int {
     switch self {
-    case .FourFour:        return 4
-    case .ThreeFour:       return 3
-    case .TwoFour:         return 2
-    case .Other(let b, _): return Int(b)
+    case .fourFour:        return 4
+    case .threeFour:       return 3
+    case .twoFour:         return 2
+    case .other(let b, _): return Int(b)
     }
   }
 
@@ -33,10 +33,10 @@ enum TimeSignature: ByteArrayConvertible {
   */
   init(_ upper: UInt8, _ lower: UInt8) {
     switch (upper, lower) {
-    case (4, 4): self = .FourFour
-    case (3, 4): self = .ThreeFour
-    case (2, 4): self = .TwoFour
-    default: self = .Other(upper, lower)
+    case (4, 4): self = .fourFour
+    case (3, 4): self = .threeFour
+    case (2, 4): self = .twoFour
+    default: self = .other(upper, lower)
     }
   }
 

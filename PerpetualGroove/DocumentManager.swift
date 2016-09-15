@@ -26,11 +26,11 @@ final class DocumentManager {
                            from: SettingsManager.self,
                            callback: DocumentManager.didChangeStorage)
 
-      receptionist.observe(name: NSMetadataQueryDidFinishGatheringNotification,
+      receptionist.observe(name: NSNotification.Name.NSMetadataQueryDidFinishGathering.rawValue,
                            from: metadataQuery,
                            callback: DocumentManager.didGatherMetadataItems)
 
-      receptionist.observe(name: NSMetadataQueryDidUpdateNotification,
+      receptionist.observe(name: NSNotification.Name.NSMetadataQueryDidUpdate.rawValue,
                            from: metadataQuery,
                            callback: DocumentManager.didUpdateMetadataItems)
 
@@ -43,25 +43,25 @@ final class DocumentManager {
   // MARK: - Queues
 
   /// Queue for document manipulations
-  static let queue: dispatch_queue_t = concurrentQueueWithLabel("DocumentManager")
+  static let queue: DispatchQueue = concurrentQueueWithLabel("DocumentManager")
 
   /// Operation queue that dispatches to `queue`
-  static let operationQueue: NSOperationQueue = {
-    let operationQueue = NSOperationQueue(name: "DocumentManager")
+  static let operationQueue: OperationQueue = {
+    let operationQueue = OperationQueue(name: "DocumentManager")
     operationQueue.underlyingQueue = queue
     return operationQueue
   }()
 
   /// Operation queue for metadata queries
-  private static let queryQueue: NSOperationQueue = {
-    let queryQueue = NSOperationQueue(name: "DocumentManager.MetadataQuery")
+  fileprivate static let queryQueue: OperationQueue = {
+    let queryQueue = OperationQueue(name: "DocumentManager.MetadataQuery")
     queryQueue.maxConcurrentOperationCount = 1
     return queryQueue
   }()
 
 
   // MARK: - Tracking state
-  private static var state: State = [] {
+  fileprivate static var state: State = [] {
     didSet {
       logDebug("\(oldValue) ➞ \(state)")
 
@@ -81,7 +81,7 @@ final class DocumentManager {
   // MARK: - The currently open document
 
   /// Updates contents of bookmark data for storage relevant setting
-  static private func refreshBookmark() {
+  static fileprivate func refreshBookmark() {
     queue.async {
       guard let currentDocument = currentDocument else { return }
         do {
@@ -100,9 +100,9 @@ final class DocumentManager {
   }
 
   /// Receptionist for KVO of the current document
-  private static let observer = KVOReceptionist()
+  fileprivate static let observer = KVOReceptionist()
 
-  static private var _currentDocument: Document? {
+  static fileprivate var _currentDocument: Document? {
     willSet {
       guard _currentDocument != newValue else { return }
       dispatchToMain { Notification.WillChangeDocument.post() }
@@ -116,7 +116,7 @@ final class DocumentManager {
         if let oldValue = oldValue {
           logDebug("closing document '\(oldValue.localizedName)'")
           observer.stopObserving(oldValue, forChangesTo: "fileURL")
-          oldValue.closeWithCompletionHandler(nil)
+          oldValue.close(completionHandler: nil)
         }
 
         if let currentDocument = _currentDocument {
@@ -134,38 +134,38 @@ final class DocumentManager {
   }
 
   /// Used as lock for synchronized access to `_currentDocument`
-  static private let currentDocumentLock = NSObject()
+  static fileprivate let currentDocumentLock = NSObject()
 
-  static private(set) var currentDocument: Document? {
+  static fileprivate(set) var currentDocument: Document? {
     get { return synchronized(currentDocumentLock) { _currentDocument } }
     set { synchronized(currentDocumentLock) { _currentDocument = newValue } }
   }
 
   // MARK: - Items
 
-  static private(set) var storageLocation: StorageLocation! {
+  static fileprivate(set) var storageLocation: StorageLocation! {
     didSet {
-      guard let storageLocation = storageLocation where storageLocation != oldValue else { return }
+      guard let storageLocation = storageLocation , storageLocation != oldValue else { return }
 
-      let bookmarkData: NSData?
+      let bookmarkData: Data?
 
       switch storageLocation {
         case .iCloud:
           state ∪= [.GatheringMetadataItems]
-          metadataQuery.startQuery()
+          metadataQuery.start()
           directoryMonitor.stopMonitoring()
-          bookmarkData = SettingsManager.currentDocumentiCloud
+          bookmarkData = SettingsManager.currentDocumentiCloud as Data?
 
-        case .Local:
-          metadataQuery.stopQuery()
+        case .local:
+          metadataQuery.stop()
           refreshLocalItems()
           directoryMonitor.startMonitoring()
-          bookmarkData = SettingsManager.currentDocumentLocal
+          bookmarkData = SettingsManager.currentDocumentLocal as Data?
 
       }
 
       let openData = {
-        (data: NSData) -> Void in
+        (data: Data) -> Void in
           queue.async {
             do {
               try openBookmarkedDocument(data)
@@ -191,9 +191,9 @@ final class DocumentManager {
     }
   }
 
-  private static func didChangeStorage(notification: NSNotification) {
+  fileprivate static func didChangeStorage(_ notification: Foundation.Notification) {
     logDebug("observed notification of iCloud storage setting change")
-    storageLocation = SettingsManager.iCloudStorage ? .iCloud : .Local
+    storageLocation = SettingsManager.iCloudStorage ? .iCloud : .local
   }
 
   /// Accessor for the current collection of document items
@@ -202,10 +202,10 @@ final class DocumentManager {
     return storageLocation == .iCloud ? metadataItems : localItems
   }
 
-  static private var updateNotificationItems: OrderedSet<DocumentItem> = []
+  static fileprivate var updateNotificationItems: OrderedSet<DocumentItem> = []
 
   /// Monitor for observing changes to local files
-  private static let directoryMonitor: DirectoryMonitor = {
+  fileprivate static let directoryMonitor: DirectoryMonitor = {
     let monitor = try! DirectoryMonitor(directoryURL: documentsURL) {
       _, _ in DocumentManager.refreshLocalItems()
     }
@@ -214,7 +214,7 @@ final class DocumentManager {
   }()
 
   /// Query for iCloud file discovery
-  private static let metadataQuery: NSMetadataQuery = {
+  fileprivate static let metadataQuery: NSMetadataQuery = {
     let query = NSMetadataQuery()
     query.notificationBatchingInterval = 1
     query.searchScopes = [NSMetadataQueryUbiquitousDocumentsScope,
@@ -224,7 +224,7 @@ final class DocumentManager {
   }()
 
   /// Callback for `NSMetadataQueryDidFinishGatheringNotification`
-  private static func didGatherMetadataItems(notification: NSNotification) {
+  fileprivate static func didGatherMetadataItems(_ notification: Foundation.Notification) {
     logDebug("observed notification metadata query has finished gathering")
     guard state ∋ .GatheringMetadataItems else {
       logWarning("received gathering notification but state does not contain gathering flag")
@@ -238,7 +238,7 @@ final class DocumentManager {
   }
 
   /// Callback for `NSMetadataQueryDidUpdateNotification`
-  private static func didUpdateMetadataItems(notification: NSNotification) {
+  fileprivate static func didUpdateMetadataItems(_ notification: Foundation.Notification) {
     logDebug("observed metadata query update notification")
     var items = metadataItems
     if let removed = notification.removedMetadataItems?.map(DocumentItem.init) { items ∖= removed }
@@ -247,7 +247,7 @@ final class DocumentManager {
   }
 
   /// Collection of `DocumentItem` instances for available iCloud documents
-  static private(set) var metadataItems: OrderedSet<DocumentItem> = [] {
+  static fileprivate(set) var metadataItems: OrderedSet<DocumentItem> = [] {
     didSet {
       guard storageLocation == .iCloud else { return }
       postItemUpdateNotification(metadataItems)
@@ -255,7 +255,7 @@ final class DocumentManager {
   }
 
   /// Collection of `DocumentItem` instances for available local documents
-  static private(set) var localItems: OrderedSet<DocumentItem> = [] {
+  static fileprivate(set) var localItems: OrderedSet<DocumentItem> = [] {
     didSet {
       guard storageLocation == .Local && localItems.elementsEqual(oldValue) else { return }
       postItemUpdateNotification(localItems)
@@ -268,7 +268,7 @@ final class DocumentManager {
   - parameter items: [DocumentItem]
   - parameter oldItems: [DocumentItem]
   */
-  static private func postItemUpdateNotification(items: OrderedSet<DocumentItem>) {
+  static fileprivate func postItemUpdateNotification(_ items: OrderedSet<DocumentItem>) {
     defer { updateNotificationItems = items }
 
     logDebug("items: \(items.map(({$0.displayName})))")
@@ -297,7 +297,7 @@ final class DocumentManager {
   }
 
   /** refreshLocalItems */
-  static private func refreshLocalItems() {
+  static fileprivate func refreshLocalItems() {
     guard let fileWrappers = directoryMonitor.directoryWrapper.fileWrappers?.values else { return }
     let localDocumentItems: [LocalDocumentItem] = fileWrappers.flatMap {
       [directory = directoryMonitor.directoryURL] in
@@ -309,14 +309,14 @@ final class DocumentManager {
 
   // MARK: - Receiving notifications
 
-  private static let receptionist = NotificationReceptionist(callbackQueue: DocumentManager.operationQueue)
+  fileprivate static let receptionist = NotificationReceptionist(callbackQueue: DocumentManager.operationQueue)
 
   // MARK: - Creating new documents
 
-  private static let DefaultDocumentName = "AwesomeSauce"
+  fileprivate static let DefaultDocumentName = "AwesomeSauce"
 
   /** createNewFile */
-  static func createNewDocument(name: String? = nil) {
+  static func createNewDocument(_ name: String? = nil) {
     guard let storageLocation = storageLocation else {
       logWarning("Cannot create a new document without a valid storage location")
       return
@@ -329,7 +329,7 @@ final class DocumentManager {
       switch storageLocation {
 
         case .iCloud:
-          guard let baseURL = NSFileManager().URLForUbiquityContainerIdentifier(nil) else {
+          guard let baseURL = FileManager().url(forUbiquityContainerIdentifier: nil) else {
             fatalError("\(#function) requires that the iCloud drive is available to use iCloud storage")
           }
           url = baseURL + "Documents"
@@ -340,8 +340,8 @@ final class DocumentManager {
       }
 
       guard let fileName = noncollidingFileName(name ?? DefaultDocumentName) else { return }
-      let fileURL = url + ["\(fileName).groove"]
-      logDebug("creating a new document at path '\(fileURL.path!)'")
+      let fileURL = (url as URL) + ["\(fileName).groove"]
+      logDebug("creating a new document at path '\(fileURL.path)'")
       let document = Document(fileURL: fileURL)
       document.saveToURL(fileURL, forSaveOperation: .ForCreating, completionHandler: {
         guard $0 else { return }
@@ -361,19 +361,19 @@ final class DocumentManager {
 
   - returns: String
   */
-  static func noncollidingFileName(fileName: String?) -> String? {
+  static func noncollidingFileName(_ fileName: String?) -> String? {
     guard let (baseName, ext) = fileName?.baseNameExt else { return nil }
 
     var extʹ = ext
     if extʹ.isEmpty { extʹ = "groove" }
 
 
-    let url: NSURL
+    let url: URL
 
     switch SettingsManager.iCloudStorage {
 
       case true:
-        guard let baseURL = NSFileManager().URLForUbiquityContainerIdentifier(nil) else {
+        guard let baseURL = FileManager().url(forUbiquityContainerIdentifier: nil) else {
           logError("Use iCloud setting is true but failed to get ubiquity container")
           return nil
         }
@@ -401,12 +401,12 @@ final class DocumentManager {
 
   - parameter document: Document
   */
-  static func openDocument(document: Document) {
+  static func openDocument(_ document: Document) {
     let openBlock = {
       guard state ∌ .OpeningDocument else { logWarning("already opening a document"); return }
       logDebug("opening document '\(document.fileURL.path ?? "???")'")
       state ⊻= .OpeningDocument
-      document.openWithCompletionHandler {
+      document.open {
         guard $0  else {
           logError("failed to open document: \(document)")
           return
@@ -437,19 +437,19 @@ final class DocumentManager {
 
   - parameter url: NSURL
   */
-  static func openURL(url: NSURL) { openDocument(Document(fileURL: url)) }
+  static func openURL(_ url: URL) { openDocument(Document(fileURL: url)) }
 
   /**
   openBookmarkedDocument:
 
   - parameter data: NSData?
   */
-  static private func openBookmarkedDocument(data: NSData) throws {
-    let url = try NSURL(byResolvingBookmarkData: data,
-                        options: .WithoutUI,
-                        relativeToURL: nil,
-                        bookmarkDataIsStale: nil)
-    logDebug("opening bookmarked file at path '\(url.path!)'")
+  static fileprivate func openBookmarkedDocument(_ data: Data) throws {
+    let url = try (NSURL(resolvingBookmarkData: data,
+                        options: .withoutUI,
+                        relativeTo: nil,
+                        bookmarkDataIsStale: nil) as URL)
+    logDebug("opening bookmarked file at path '\(url.path)'")
     openURL(url)
 
   }
@@ -459,8 +459,8 @@ final class DocumentManager {
 
   - parameter item: DocumentItemType
   */
-  static func openItem(item: DocumentItem) {
-    openURL(item.URL)
+  static func openItem(_ item: DocumentItem) {
+    openURL(item.URL as URL)
   }
 
   /**
@@ -468,20 +468,20 @@ final class DocumentManager {
 
   - parameter item: DocumentItemType
   */
-  static func deleteItem(item: DocumentItem) {
+  static func deleteItem(_ item: DocumentItem) {
 
     queue.async {
 
       let itemURL = item.URL
 
       // Does this create race condition with closing of file?
-      if currentDocument?.fileURL.isEqualToFileURL(itemURL) == true { currentDocument = nil }
+      if currentDocument?.fileURL.isEqualToFileURL(itemURL as URL) == true { currentDocument = nil }
 
       logDebug("removing item '\(item.displayName)'")
       let coordinator = NSFileCoordinator(filePresenter: nil)
-      coordinator.coordinateWritingItemAtURL(itemURL, options: .ForDeleting, error: nil) {
+      coordinator.coordinate(writingItemAt: itemURL as URL, options: .forDeleting, error: nil) {
         url in
-        do { try NSFileManager.withDefaultManager { try $0.removeItemAtURL(url) } }
+        do { try FileManager.withDefaultManager { try $0.removeItem(at: url) } }
         catch { logError(error) }
       }
     }
@@ -490,7 +490,7 @@ final class DocumentManager {
 }
 
 extension DocumentManager {
-  private struct State: OptionSetType, CustomStringConvertible {
+  fileprivate struct State: OptionSet, CustomStringConvertible {
     let rawValue: Int
     static let Initialized            = State(rawValue: 0b0001)
     static let OpeningDocument        = State(rawValue: 0b0010)
@@ -512,13 +512,13 @@ extension DocumentManager {
 // MARK: - StorageLocation
 
 extension DocumentManager {
-  enum StorageLocation { case iCloud, Local }
+  enum StorageLocation { case iCloud, local }
 }
 
 // MARK: - Error
 extension DocumentManager {
 
-  enum Error: String, ErrorType {
+  enum Error: String, Error {
     case iCloudUnavailable
   }
 
@@ -536,7 +536,7 @@ extension DocumentManager: NotificationDispatchType {
   
 }
 
-extension NSNotification {
+extension Notification {
   var addedItemsData: [AnyObject]? {
     return userInfo?[DocumentManager.Notification.Key.Added.key] as? [AnyObject]
   }

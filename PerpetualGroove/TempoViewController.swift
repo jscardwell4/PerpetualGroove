@@ -15,16 +15,16 @@ final class TempoViewController: UIViewController {
   @IBOutlet weak var metronomeButton: ImageButtonView!
 
   /** tempoSliderValueDidChange */
-  @IBAction private func tempoSliderValueDidChange() { Sequencer.tempo = Double(tempoSlider.value) }
+  @IBAction fileprivate func tempoSliderValueDidChange() { Sequencer.tempo = Double(tempoSlider.value) }
 
   /** toggleMetronome */
-  @IBAction private func toggleMetronome() { AudioManager.metronome.on = !AudioManager.metronome.on }
+  @IBAction fileprivate func toggleMetronome() { AudioManager.metronome.on = !AudioManager.metronome.on }
 
   /** viewDidLoad */
   override func viewDidLoad() {
     super.viewDidLoad()
     tempoSlider.value = Float(Sequencer.tempo)
-    metronomeButton.selected = AudioManager.metronome?.on ?? false
+    metronomeButton.isSelected = AudioManager.metronome?.on ?? false
   }
 
 }

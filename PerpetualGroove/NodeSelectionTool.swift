@@ -14,15 +14,15 @@ class NodeSelectionTool: ToolType {
 
   unowned let player: MIDIPlayerNode
 
-  private(set) weak var _secondaryContent: SecondaryContent?
+  fileprivate(set) weak var _secondaryContent: SecondaryContent?
 
   @objc var isShowingContent: Bool { return _secondaryContent != nil }
 
-  @objc func didShowContent(content: SecondaryContent) { _secondaryContent = content }
+  @objc func didShowContent(_ content: SecondaryContent) { _secondaryContent = content }
 
-  @objc func didHideContent(dismissalAction: SecondaryControllerContainer.DismissalAction) {
+  @objc func didHideContent(_ dismissalAction: SecondaryControllerContainer.DismissalAction) {
     assert(active && _secondaryContent != nil, "expected active and valid _secondaryContent")
-    if dismissalAction == .Cancel && MIDIPlayer.undoManager.canUndo {
+    if dismissalAction == .cancel && MIDIPlayer.undoManager.canUndo {
       if MIDIPlayer.undoManager.groupingLevel > 0 { MIDIPlayer.undoManager.endUndoGrouping() }
       MIDIPlayer.undoManager.undo()
     }
@@ -41,29 +41,29 @@ class NodeSelectionTool: ToolType {
     }
   }
 
-  private static let nodeLightingName = "nodeSelectionToolLighting"
+  fileprivate static let nodeLightingName = "nodeSelectionToolLighting"
 
-  private func addLightingToNode(node: MIDINode) {
-    guard node.childNodeWithName(NodeSelectionTool.nodeLightingName) == nil else { return }
+  fileprivate func addLightingToNode(_ node: MIDINode) {
+    guard node.childNode(withName: NodeSelectionTool.nodeLightingName) == nil else { return }
     let light = SKLightNode()
     light.name = NodeSelectionTool.nodeLightingName
     light.categoryBitMask = 1
     node.addChild(light)
     node.lightingBitMask = 1
-    node.runAction(SKAction.colorizeWithColor(.whiteColor(), colorBlendFactor: 1, duration: 0.25))
+    node.run(SKAction.colorize(with: .white(), colorBlendFactor: 1, duration: 0.25))
 
   }
 
-  private func removeLightingFromNode(node: MIDINode) {
-    guard let light = node.childNodeWithName(NodeSelectionTool.nodeLightingName) else { return }
+  fileprivate func removeLightingFromNode(_ node: MIDINode) {
+    guard let light = node.childNode(withName: NodeSelectionTool.nodeLightingName) else { return }
     light.removeFromParent()
     node.lightingBitMask = 0
     guard let color = node.dispatch?.color.value else { return }
-    node.runAction(SKAction.colorizeWithColor(color, colorBlendFactor: 1, duration: 0.25))
+    node.run(SKAction.colorize(with: color, colorBlendFactor: 1, duration: 0.25))
   }
 
-  private let receptionist: NotificationReceptionist = {
-    let receptionist = NotificationReceptionist(callbackQueue: NSOperationQueue.mainQueue())
+  fileprivate let receptionist: NotificationReceptionist = {
+    let receptionist = NotificationReceptionist(callbackQueue: OperationQueue.main)
     receptionist.logContext = LogManager.UIContext
     return receptionist
   }()
@@ -80,38 +80,38 @@ class NodeSelectionTool: ToolType {
 
   func didSelectNode() {}
 
-  func didAddNode(notification: NSNotification) {
+  func didAddNode(_ notification: Notification) {
     guard active && player.midiNodes.count == 2,
       let secondaryContent = _secondaryContent
-      where secondaryContent.disabledActions ⚭ [.Previous, .Next] else { return }
+      , !secondaryContent.disabledActions.intersection([.Previous, .Next]).isEmpty else { return }
     secondaryContent.disabledActions = .None
   }
 
-  func didRemoveNode(notification: NSNotification) {
+  func didRemoveNode(_ notification: Notification) {
     guard active && player.midiNodes.count < 2,
       let secondaryContent = _secondaryContent
-      where secondaryContent.disabledActions !⚭ [.Previous, .Next] else { return }
+      , secondaryContent.disabledActions.intersection([.Previous, .Next]).isEmpty else { return }
     secondaryContent.disabledActions ∪= [.Previous, .Next]
   }
 
-  private func grabNodeForTouch(touch: UITouch?) {
-    guard let point = touch?.locationInNode(player) where player.containsPoint(point) else { return }
-    node = player.nodesAtPoint(point).flatMap({$0 as? MIDINode}).first
+  fileprivate func grabNodeForTouch(_ touch: UITouch?) {
+    guard let point = touch?.location(in: player) , player.contains(point) else { return }
+    node = player.nodes(at: point).flatMap({$0 as? MIDINode}).first
   }
 
-  @objc func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+  @objc func touchesBegan(_ touches: Set<UITouch>, withEvent event: UIEvent?) {
     guard active && node == nil else { return }
     grabNodeForTouch(touches.first)
   }
 
-  @objc func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+  @objc func touchesMoved(_ touches: Set<UITouch>, withEvent event: UIEvent?) {
     guard active && node == nil else { return }
     grabNodeForTouch(touches.first)
   }
 
-  @objc func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) { node = nil }
+  @objc func touchesCancelled(_ touches: Set<UITouch>?, withEvent event: UIEvent?) { node = nil }
 
-  @objc func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+  @objc func touchesEnded(_ touches: Set<UITouch>, withEvent event: UIEvent?) {
     guard active && node != nil else { return }
     didSelectNode()
   }

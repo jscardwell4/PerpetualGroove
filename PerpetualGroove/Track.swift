@@ -14,7 +14,7 @@ class Track: CustomStringConvertible, Named, MIDIEventDispatch {
   unowned let sequence: Sequence
 
   /// Queue used generating `MIDIFile` track events
-  let eventQueue: dispatch_queue_t
+  let eventQueue: DispatchQueue
 
   var events = MIDIEventContainer()
 
@@ -22,15 +22,15 @@ class Track: CustomStringConvertible, Named, MIDIEventDispatch {
     return events.maxTime ?? Sequencer.time.barBeatTime
   }
 
-  private var trackNameEvent: MIDIEvent = .Meta(MetaEvent(.SequenceTrackName(name: "")))
-  private var endOfTrackEvent: MIDIEvent = .Meta(MetaEvent(.EndOfTrack))
+  fileprivate var trackNameEvent: MIDIEvent = .meta(MetaEvent(.sequenceTrackName(name: "")))
+  fileprivate var endOfTrackEvent: MIDIEvent = .meta(MetaEvent(.endOfTrack))
 
   var name: String {
     get {
       switch trackNameEvent {
-        case .Meta(let event):
+        case .meta(let event):
           switch event.data {
-            case .SequenceTrackName(let name): return name
+            case .sequenceTrackName(let name): return name
             default: return ""
           }
       default: return ""
@@ -39,7 +39,7 @@ class Track: CustomStringConvertible, Named, MIDIEventDispatch {
     set {
       guard name != newValue else { return }
       logDebug("'\(name)' ➞ '\(newValue)'")
-      trackNameEvent = .Meta(MetaEvent(.SequenceTrackName(name: newValue)))
+      trackNameEvent = .meta(MetaEvent(.sequenceTrackName(name: newValue)))
       Notification.DidUpdate.post(object: self)
       Notification.DidChangeName.post(object: self)
     }
@@ -48,7 +48,7 @@ class Track: CustomStringConvertible, Named, MIDIEventDispatch {
   var displayName: String { return name }
 
   /** validateEvents */
-  func validateEvents(inout container: MIDIEventContainer) {
+  func validateEvents(_ container: inout MIDIEventContainer) {
     endOfTrackEvent.time = endOfTrack
   }
 
@@ -85,8 +85,8 @@ class Track: CustomStringConvertible, Named, MIDIEventDispatch {
 
   - returns: [BarBeatTime]
   */
-  func registrationTimesForAddedEvents<S:SequenceType where S.Generator.Element == MIDIEvent>(events: S) -> [BarBeatTime] {
-    guard let eot = events.filter({($0.event as? MetaEvent)?.data == .EndOfTrack}).first else { return [] }
+  func registrationTimesForAddedEvents<S:Swift.Sequence>(_ events: S) -> [BarBeatTime] where S.Iterator.Element == MIDIEvent {
+    guard let eot = events.filter({($0.event as? MetaEvent)?.data == .endOfTrack}).first else { return [] }
     return [eot.time]
   }
 
@@ -95,7 +95,7 @@ class Track: CustomStringConvertible, Named, MIDIEventDispatch {
 
   - parameter event: MIDIEvent
   */
-  func dispatchEvent(event: MIDIEvent) { }
+  func dispatchEvent(_ event: MIDIEvent) { }
 
   var description: String {
     return "\n".join(

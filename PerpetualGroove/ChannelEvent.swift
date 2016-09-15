@@ -13,14 +13,14 @@ import AudioToolbox
 /** Struct to hold data for a channel event where event = \<delta time\> \<status\> \<data1\> \<data2\> */
 struct ChannelEvent: MIDIEventType {
 
-  enum EventType: Byte, IntegerLiteralConvertible {
-    case NoteOff               = 0x8
-    case NoteOn                = 0x9
-    case PolyphonicKeyPressure = 0xA
-    case ControlChange         = 0xB
-    case ProgramChange         = 0xC
-    case ChannelPressure       = 0xD
-    case PitchBendChange       = 0xE
+  enum EventType: Byte, ExpressibleByIntegerLiteral {
+    case noteOff               = 0x8
+    case noteOn                = 0x9
+    case polyphonicKeyPressure = 0xA
+    case controlChange         = 0xB
+    case programChange         = 0xC
+    case channelPressure       = 0xD
+    case pitchBendChange       = 0xE
 
     /**
     init:
@@ -34,18 +34,18 @@ struct ChannelEvent: MIDIEventType {
 
     - parameter v: Byte
     */
-    init(_ v: Byte) { self = EventType(rawValue: ClosedInterval<Byte>(0x8, 0xE).clampValue(v))! }
+    init(_ v: Byte) { self = EventType(rawValue: (0x8 ... 0xE).clampValue(v))! }
 
     var byteCount: Int {
       switch self {
-        case .ControlChange, .ProgramChange, .ChannelPressure: return 2
+        case .controlChange, .programChange, .channelPressure: return 2
         default:                                               return 3
       }
     }
 
   }
 
-  struct Status: IntegerLiteralConvertible {
+  struct Status: ExpressibleByIntegerLiteral {
     var type: EventType
     var channel: Byte
 
@@ -88,8 +88,8 @@ struct ChannelEvent: MIDIEventType {
   - parameter delta: VariableLengthQuantity
   - parameter bytes: C
   */
-  init<C:CollectionType
-    where C.Generator.Element == Byte, C.Index.Distance == Int>(delta: VariableLengthQuantity, bytes: C) throws
+  init<C:Collection>(delta: VariableLengthQuantity, bytes: C) throws
+    where C.Iterator.Element == Byte, C.IndexDistance == Int
   {
     self.delta = delta
     guard let t = EventType(rawValue: bytes[bytes.startIndex] >> 4) else {
@@ -101,8 +101,8 @@ struct ChannelEvent: MIDIEventType {
     }
     status = Status(bytes[bytes.startIndex])
 
-    data1 = bytes[bytes.startIndex + 1]
-    data2 =  t.byteCount == 3 ? bytes[bytes.startIndex + 2] : nil
+    data1 = bytes[bytes.index(after: bytes.startIndex)]
+    data2 =  t.byteCount == 3 ? bytes[bytes.index(bytes.startIndex, offsetBy: 2)] : nil
   }
 
   /**
@@ -129,13 +129,13 @@ struct ChannelEvent: MIDIEventType {
 extension ChannelEvent.EventType: CustomStringConvertible {
   var description: String {
     switch self {
-      case .NoteOff:               return "note off"
-      case .NoteOn:                return "note on"
-      case .PolyphonicKeyPressure: return "polyphonic key pressure"
-      case .ControlChange:         return "control change"
-      case .ProgramChange:         return "program change"
-      case .ChannelPressure:       return "channel pressure"
-      case .PitchBendChange:       return "pitch bend change"
+      case .noteOff:               return "note off"
+      case .noteOn:                return "note on"
+      case .polyphonicKeyPressure: return "polyphonic key pressure"
+      case .controlChange:         return "control change"
+      case .programChange:         return "program change"
+      case .channelPressure:       return "channel pressure"
+      case .pitchBendChange:       return "pitch bend change"
     }
   }
 }
@@ -146,7 +146,7 @@ extension ChannelEvent: CustomStringConvertible {
   var description: String {
     var result = "\(time) \(status) "
     switch status.type {
-      case .NoteOn, .NoteOff:
+      case .noteOn, .noteOff:
         result += "\(NoteGenerator.Tone(midi: data1)) \(Velocity(midi: data2!))"
       default:
         result += "\(data1)"

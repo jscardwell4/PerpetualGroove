@@ -16,29 +16,29 @@ protocol MIDIGeneratorType: JSONValueConvertible, JSONValueInitializable {
   var velocity: Velocity { get set }
   var octave: Octave     { get set }
   var root: Note { get set }
-  func sendNoteOn(outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws
-  func sendNoteOff(outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws
-  func receiveNoteOn(endPoint: MIDIEndpointRef, _ identifier: UInt64) throws
-  func receiveNoteOff(endPoint: MIDIEndpointRef, _ identifier: UInt64) throws
+  func sendNoteOn(_ outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws
+  func sendNoteOff(_ outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws
+  func receiveNoteOn(_ endPoint: MIDIEndpointRef, _ identifier: UInt64) throws
+  func receiveNoteOff(_ endPoint: MIDIEndpointRef, _ identifier: UInt64) throws
 }
 
 enum MIDIGenerator {
-  case Note (NoteGenerator)
-  case Chord (ChordGenerator)
+  case note (NoteGenerator)
+  case chord (ChordGenerator)
 
   /**
    init:
 
    - parameter note: NoteGenerator
   */
-  init(_ note: NoteGenerator) { self = .Note(note) }
+  init(_ note: NoteGenerator) { self = .note(note) }
 
   /**
    init:
 
    - parameter chord: ChordGenerator
   */
-  init(_ chord: ChordGenerator) { self = .Chord(chord) }
+  init(_ chord: ChordGenerator) { self = .chord(chord) }
 
   /**
    init:
@@ -47,17 +47,17 @@ enum MIDIGenerator {
   */
   init<M:MIDIGeneratorType>(_ generator: M) {
     switch generator {
-      case let generator as NoteGenerator:  self = .Note(generator)
-      case let generator as ChordGenerator: self = .Chord(generator)
+      case let generator as NoteGenerator:  self = .note(generator)
+      case let generator as ChordGenerator: self = .chord(generator)
       case let generator as MIDIGenerator:  self = generator
       default:                              fatalError("Unknown generator type provided")
     }
   }
 
-  private var generator: MIDIGeneratorType {
+  fileprivate var generator: MIDIGeneratorType {
     switch self {
-      case .Note(let generator): return generator
-      case .Chord(let generator): return generator
+      case .note(let generator): return generator
+      case .chord(let generator): return generator
     }
   }
 }
@@ -68,8 +68,8 @@ extension MIDIGenerator: MIDIGeneratorType {
     get { return generator.duration }
     set {
       switch generator {
-        case var generator as NoteGenerator: generator.duration = newValue; self = .Note(generator)
-        case var generator as ChordGenerator: generator.duration = newValue; self = .Chord(generator)
+        case var generator as NoteGenerator: generator.duration = newValue; self = .note(generator)
+        case var generator as ChordGenerator: generator.duration = newValue; self = .chord(generator)
         default: break
       }
     }
@@ -79,8 +79,8 @@ extension MIDIGenerator: MIDIGeneratorType {
     get { return generator.velocity }
     set {
       switch generator {
-        case var generator as NoteGenerator: generator.velocity = newValue; self = .Note(generator)
-        case var generator as ChordGenerator: generator.velocity = newValue; self = .Chord(generator)
+        case var generator as NoteGenerator: generator.velocity = newValue; self = .note(generator)
+        case var generator as ChordGenerator: generator.velocity = newValue; self = .chord(generator)
         default: break
       }
     }
@@ -90,8 +90,8 @@ extension MIDIGenerator: MIDIGeneratorType {
     get { return generator.octave }
     set {
       switch generator {
-        case var generator as NoteGenerator: generator.octave = newValue; self = .Note(generator)
-        case var generator as ChordGenerator: generator.octave = newValue; self = .Chord(generator)
+        case var generator as NoteGenerator: generator.octave = newValue; self = .note(generator)
+        case var generator as ChordGenerator: generator.octave = newValue; self = .chord(generator)
         default: break
       }
     }
@@ -101,8 +101,8 @@ extension MIDIGenerator: MIDIGeneratorType {
     get { return generator.root }
     set {
       switch generator {
-        case var generator as NoteGenerator: generator.root = newValue; self = .Note(generator)
-        case var generator as ChordGenerator: generator.root = newValue; self = .Chord(generator)
+        case var generator as NoteGenerator: generator.root = newValue; self = .note(generator)
+        case var generator as ChordGenerator: generator.root = newValue; self = .chord(generator)
         default: break
       }
     }
@@ -114,7 +114,7 @@ extension MIDIGenerator: MIDIGeneratorType {
    - parameter endPoint: MIDIEndpointRef
    - parameter identifier: UInt64
   */
-  func receiveNoteOn(endPoint: MIDIEndpointRef, _ identifier: UInt64) throws {
+  func receiveNoteOn(_ endPoint: MIDIEndpointRef, _ identifier: UInt64) throws {
     try generator.receiveNoteOn(endPoint, identifier)
   }
 
@@ -125,7 +125,7 @@ extension MIDIGenerator: MIDIGeneratorType {
    - parameter endPoint: MIDIEndpointRef
    - parameter identifier: UInt64
   */
-  func receiveNoteOff(endPoint: MIDIEndpointRef, _ identifier: UInt64) throws {
+  func receiveNoteOff(_ endPoint: MIDIEndpointRef, _ identifier: UInt64) throws {
     try generator.receiveNoteOff(endPoint, identifier)
   }
 
@@ -135,7 +135,7 @@ extension MIDIGenerator: MIDIGeneratorType {
    - parameter outPort: MIDIPortRef
    - parameter endPoint: MIDIEndpointRef
   */
-  func sendNoteOn(outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws {
+  func sendNoteOn(_ outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws {
     try generator.sendNoteOn(outPort, endPoint)
   }
 
@@ -145,7 +145,7 @@ extension MIDIGenerator: MIDIGeneratorType {
    - parameter outPort: MIDIPortRef
    - parameter endPoint: MIDIEndpointRef
   */
-  func sendNoteOff(outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws {
+  func sendNoteOff(_ outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws {
     try generator.sendNoteOff(outPort, endPoint)
   }
 
@@ -155,8 +155,8 @@ extension MIDIGenerator: Equatable {}
 
 func ==(lhs: MIDIGenerator, rhs: MIDIGenerator) -> Bool {
   switch (lhs, rhs) {
-    case let (.Note(generator1), .Note(generator2)) where generator1 == generator2:   return true
-    case let (.Chord(generator1), .Chord(generator2)) where generator1 == generator2: return true
+    case let (.note(generator1), .note(generator2)) where generator1 == generator2:   return true
+    case let (.chord(generator1), .chord(generator2)) where generator1 == generator2: return true
     default:                                                                          return false
   }
 }

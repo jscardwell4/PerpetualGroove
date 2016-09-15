@@ -18,7 +18,7 @@ protocol MIDIEventType: CustomStringConvertible, CustomDebugStringConvertible {
 
 extension MIDIEventType {
   var hashValue: Int {
-    let bytesHash = bytes.segment(8).map({UInt64($0)}).reduce(UInt64(0), combine: { $0 ^ $1 }).hashValue
+    let bytesHash = bytes.segment(8).map({UInt64($0)}).reduce(UInt64(0), { $0 ^ $1 }).hashValue
     let deltaHash = _mixInt(delta?.intValue ?? 0)
     let timeHash = time.totalBeats.hashValue
     return bytesHash ^ deltaHash ^ timeHash
@@ -26,36 +26,36 @@ extension MIDIEventType {
 }
 
 extension MIDIEventType {
-  var debugDescription: String { var result = ""; dump(self, &result); return result }
+  var debugDescription: String { var result = ""; dump(self, to: &result); return result }
 }
 
 protocol MIDIEventDispatch: class, Loggable {
-  func addEvent(event: MIDIEvent)
-  func addEvents<S:SequenceType where S.Generator.Element == MIDIEvent>(events: S)
-  func eventsForTime(time: BarBeatTime) -> OrderedSet<MIDIEvent>?
-  func filterEvents(includeElement: (MIDIEvent) -> Bool) -> [MIDIEvent]
-  func dispatchEventsForTime(time: BarBeatTime)
-  func dispatchEvent(event: MIDIEvent)
-  func registrationTimesForAddedEvents<S:SequenceType where S.Generator.Element == MIDIEvent>(events: S) -> [BarBeatTime]
+  func addEvent(_ event: MIDIEvent)
+  func addEvents<S:Swift.Sequence>(_ events: S) where S.Iterator.Element == MIDIEvent
+  func eventsForTime(_ time: BarBeatTime) -> OrderedSet<MIDIEvent>?
+  func filterEvents(_ includeElement: (MIDIEvent) -> Bool) -> [MIDIEvent]
+  func dispatchEventsForTime(_ time: BarBeatTime)
+  func dispatchEvent(_ event: MIDIEvent)
+  func registrationTimesForAddedEvents<S:Swift.Sequence>(_ events: S) -> [BarBeatTime] where S.Iterator.Element == MIDIEvent
   var events: MIDIEventContainer { get set }
   var metaEvents: LazyMapCollection<LazyFilterCollection<MIDIEventContainer>, MetaEvent> { get }
   var channelEvents: LazyMapCollection<LazyFilterCollection<MIDIEventContainer>, ChannelEvent> { get }
   var nodeEvents: LazyMapCollection<LazyFilterCollection<MIDIEventContainer>, MIDINodeEvent> { get }
   var timeEvents: LazyMapCollection<LazyFilterCollection<MIDIEventContainer>, MetaEvent> { get }
-  var eventQueue: dispatch_queue_t { get }
+  var eventQueue: DispatchQueue { get }
 }
 
 extension MIDIEventDispatch {
-  func addEvent(event: MIDIEvent) { addEvents([event]) }
-  func addEvents<S:SequenceType where S.Generator.Element == MIDIEvent>(events: S) {
+  func addEvent(_ event: MIDIEvent) { addEvents([event]) }
+  func addEvents<S:Swift.Sequence>(_ events: S) where S.Iterator.Element == MIDIEvent {
     self.events.appendEvents(events)
-    Sequencer.time.registerCallback(weakMethod(self, self.dynamicType.dispatchEventsForTime),
+    Sequencer.time.registerCallback(weakMethod(self, type(of: self).dispatchEventsForTime),
       forTimes: registrationTimesForAddedEvents(events),
       forObject: self)
   }
-  func eventsForTime(time: BarBeatTime) -> OrderedSet<MIDIEvent>? { return events[time] }
-  func filterEvents(includeElement: (MIDIEvent) -> Bool) -> [MIDIEvent] { return events.filter(includeElement) }
-  func dispatchEventsForTime(time: BarBeatTime) { eventsForTime(time)?.forEach(dispatchEvent) }
+  func eventsForTime(_ time: BarBeatTime) -> OrderedSet<MIDIEvent>? { return events[time] }
+  func filterEvents(_ includeElement: (MIDIEvent) -> Bool) -> [MIDIEvent] { return events.filter(includeElement) }
+  func dispatchEventsForTime(_ time: BarBeatTime) { eventsForTime(time)?.forEach(dispatchEvent) }
   var metaEvents: LazyMapCollection<LazyFilterCollection<MIDIEventContainer>, MetaEvent> { return events.metaEvents }
   var channelEvents: LazyMapCollection<LazyFilterCollection<MIDIEventContainer>, ChannelEvent> { return events.channelEvents }
   var nodeEvents: LazyMapCollection<LazyFilterCollection<MIDIEventContainer>, MIDINodeEvent> { return events.nodeEvents }
@@ -63,15 +63,15 @@ extension MIDIEventDispatch {
 }
 
 enum MIDIEvent: MIDIEventType, Hashable {
-  case Meta (MetaEvent)
-  case Channel (ChannelEvent)
-  case Node (MIDINodeEvent)
+  case meta (MetaEvent)
+  case channel (ChannelEvent)
+  case node (MIDINodeEvent)
 
   var event: MIDIEventType {
     switch self {
-      case .Meta(let event): return event
-      case .Channel(let event): return event
-      case .Node(let event): return event
+      case .meta(let event): return event
+      case .channel(let event): return event
+      case .node(let event): return event
     }
   }
 
@@ -81,9 +81,9 @@ enum MIDIEvent: MIDIEventType, Hashable {
     }
     set {
       switch self {
-        case .Meta(var event):    event.time = newValue; self = .Meta(event)
-        case .Channel(var event): event.time = newValue; self = .Channel(event)
-        case .Node(var event):    event.time = newValue; self = .Node(event)
+        case .meta(var event):    event.time = newValue; self = .meta(event)
+        case .channel(var event): event.time = newValue; self = .channel(event)
+        case .node(var event):    event.time = newValue; self = .node(event)
       }
     }
   }
@@ -94,9 +94,9 @@ enum MIDIEvent: MIDIEventType, Hashable {
     }
     set {
       switch self {
-        case .Meta(var event):    event.delta = newValue; self = .Meta(event)
-        case .Channel(var event): event.delta = newValue; self = .Channel(event)
-        case .Node(var event):    event.delta = newValue; self = .Node(event)
+        case .meta(var event):    event.delta = newValue; self = .meta(event)
+        case .channel(var event): event.delta = newValue; self = .channel(event)
+        case .node(var event):    event.delta = newValue; self = .node(event)
       }
     }
   }
@@ -112,9 +112,9 @@ extension MIDIEvent: Equatable {}
 
 func ==(lhs: MIDIEvent, rhs: MIDIEvent) -> Bool {
   switch (lhs, rhs) {
-    case let (.Meta(meta1), .Meta(meta2)) where meta1 == meta2:                   return true
-    case let (.Channel(channel1), .Channel(channel2)) where channel1 == channel2: return true
-    case let (.Node(node1), .Node(node2)) where node1 == node2:                   return true
+    case let (.meta(meta1), .meta(meta2)) where meta1 == meta2:                   return true
+    case let (.channel(channel1), .channel(channel2)) where channel1 == channel2: return true
+    case let (.node(node1), .node(node2)) where node1 == node2:                   return true
     default:                                                                      return false
   }
 }

@@ -15,7 +15,7 @@ final class Sequencer {
 
   // MARK: - Initialization
 
-  private(set) static var initialized = false
+  fileprivate(set) static var initialized = false
 
   /** 
    Initializes `soundSets` using the bundled sound font files and creates `auditionInstrument` with the
@@ -35,10 +35,10 @@ final class Sequencer {
       EmaxSoundSet(.Orchestral)
     ]
 
-    let bundle = NSBundle.mainBundle()
+    let bundle = Bundle.main
     let exclude = soundSets.map({$0.url})
-    guard var urls = bundle.URLsForResourcesWithExtension("sf2", subdirectory: nil) else { return }
-    urls = urls.flatMap({$0.fileReferenceURL()})
+    guard var urls = bundle.urls(forResourcesWithExtension: "sf2", subdirectory: nil) else { return }
+    urls = urls.flatMap({($0 as NSURL).fileReferenceURL()})
     do {
       try urls.filter({!exclude.contains($0)}).forEach { soundSets.append(try SoundSet(url: $0)) }
       guard soundSets.count > 0 else {
@@ -55,19 +55,19 @@ final class Sequencer {
     logDebug("Sequencer initialized")
   }
 
-  private static let receptionist: NotificationReceptionist = {
+  fileprivate static let receptionist: NotificationReceptionist = {
     let receptionist = NotificationReceptionist()
     receptionist.logContext = LogManager.SequencerContext
     receptionist.observe(notification: DocumentManager.Notification.DidChangeDocument,
                     from: DocumentManager.self,
-                   queue: NSOperationQueue.mainQueue(),
+                   queue: OperationQueue.main,
                 callback: {_ in Sequencer.sequence = DocumentManager.currentDocument?.sequence})
     return receptionist
     }()
 
   // MARK: - Sequence
 
-  static private(set) weak var sequence: Sequence? {
+  static fileprivate(set) weak var sequence: Sequence? {
     willSet {
       guard sequence !== newValue else { return }
       Notification.WillChangeSequence.post()
@@ -85,23 +85,23 @@ final class Sequencer {
   static var beatsPerBar: UInt { return UInt(timeSignature.beatsPerBar) }
 
   enum TransportAssignment: Equatable {
-    case Primary(Transport)
-    case Auxiliary(Transport)
+    case primary(Transport)
+    case auxiliary(Transport)
 
     var transport: Transport {
-      switch self { case .Primary(let t): return t; case .Auxiliary(let t): return t }
+      switch self { case .primary(let t): return t; case .auxiliary(let t): return t }
     }
   }
 
-  static let primaryTransport: TransportAssignment = .Primary(Transport(name: "primary"))
-  static let auxiliaryTransport: TransportAssignment = .Auxiliary(Transport(name: "auxiliary"))
+  static let primaryTransport: TransportAssignment = .primary(Transport(name: "primary"))
+  static let auxiliaryTransport: TransportAssignment = .auxiliary(Transport(name: "auxiliary"))
 
-  static private var transportAssignment: TransportAssignment = Sequencer.primaryTransport {
+  static fileprivate var transportAssignment: TransportAssignment = Sequencer.primaryTransport {
     willSet {
       guard transportAssignment != newValue else { return }
       receptionist.stopObserving(object: transportAssignment.transport)
       let transport = transportAssignment.transport
-      if case .Primary(_) = transportAssignment {
+      if case .primary(_) = transportAssignment {
         clockRunning = transport.clock.running
         transport.clock.stop()
       } else {
@@ -113,7 +113,7 @@ final class Sequencer {
     didSet {
       guard transportAssignment != oldValue else { return }
       observeTransport(transportAssignment.transport)
-      if case .Primary(let transport) = transportAssignment where clockRunning {
+      if case .primary(let transport) = transportAssignment , clockRunning {
         transport.clock.resume()
         clockRunning = false
       }
@@ -123,7 +123,7 @@ final class Sequencer {
 
   static var transport: Transport { return transportAssignment.transport }
 
-  static private func observeTransport(transport: Transport) {
+  static fileprivate func observeTransport(_ transport: Transport) {
     receptionist.observe(notification: .DidStart, from: transport) {
       Notification.DidStart.post(object: self, userInfo: $0.userInfo)
     }
@@ -168,13 +168,13 @@ final class Sequencer {
   - parameter tempo: Double
   - parameter automated: Bool = false
   */
-  static func setTempo(tempo: Double, automated: Bool = false) {
+  static func setTempo(_ tempo: Double, automated: Bool = false) {
     primaryTransport.transport.clock.beatsPerMinute = UInt16(tempo)
     auxiliaryTransport.transport.clock.beatsPerMinute = UInt16(tempo)
     if recording && !automated { sequence?.tempo = tempo }
   }
 
-  static var timeSignature: TimeSignature = .FourFour {
+  static var timeSignature: TimeSignature = .fourFour {
     didSet {
       guard timeSignature != oldValue else { return }
       sequence?.timeSignature = timeSignature
@@ -188,13 +188,13 @@ final class Sequencer {
   - parameter signature: TimeSignature
   - parameter automated: Bool = false
   */
-  static func setTimeSignature(signature: TimeSignature, automated: Bool = false) {
+  static func setTimeSignature(_ signature: TimeSignature, automated: Bool = false) {
     if recording && !automated { sequence?.timeSignature = signature }
   }
 
   // MARK: - Tracking modes and states
 
-  static private var clockRunning = false
+  static fileprivate var clockRunning = false
 
   static var mode: Mode = .Default {
     willSet {
@@ -222,17 +222,17 @@ final class Sequencer {
 
   // MARK: - Tracks
 
-  static private(set) var soundSets: [SoundSetType] = []
+  static fileprivate(set) var soundSets: [SoundSetType] = []
 
-  static func soundSetWithURL(url: NSURL) -> SoundSetType? {
+  static func soundSetWithURL(_ url: URL) -> SoundSetType? {
     return soundSets.first({$0.url == url})
   }
 
-  static func soundSetWithName(name: String) -> SoundSetType? {
+  static func soundSetWithName(_ name: String) -> SoundSetType? {
     return soundSets.first({$0.fileName == name})
   }
 
-  static private(set) var auditionInstrument: Instrument!
+  static fileprivate(set) var auditionInstrument: Instrument!
 
   /** instrumentWithCurrentSettings */
   static func instrumentWithCurrentSettings() -> Instrument {
@@ -321,8 +321,8 @@ extension Sequencer: NotificationDispatchType {
 
 func == (lhs: Sequencer.TransportAssignment, rhs: Sequencer.TransportAssignment) -> Bool {
   switch (lhs, rhs) {
-    case let (.Primary(t1),   .Primary(t2))   where t1 === t2: return true
-    case let (.Auxiliary(t1), .Auxiliary(t2)) where t1 === t2: return true
+    case let (.primary(t1),   .primary(t2))   where t1 === t2: return true
+    case let (.auxiliary(t1), .auxiliary(t2)) where t1 === t2: return true
     default:                                                   return false
   }
 }
@@ -332,13 +332,13 @@ extension Sequencer {
 
 // MARK: - Error
 extension Sequencer {
-  enum Error: String, ErrorType {
+  enum Error: String, Error {
     case InvalidBarBeatTime
     case NotPermitted
   }
 }
 
-extension NSNotification {
+extension Notification {
   var oldSoundSetSelectionTarget: Instrument? {
     return userInfo?[Sequencer.Notification.Key.OldSoundSetSelectionTarget.key] as? Instrument
   }

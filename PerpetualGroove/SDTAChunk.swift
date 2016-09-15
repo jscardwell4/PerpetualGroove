@@ -16,10 +16,10 @@ import Foundation
 /** Parses the sdta chunk of the file */
 struct SDTAChunk {
 
-  let url: NSURL
-  let smpl: Range<Int>?
+  let url: URL
+  let smpl: CountableRange<Int>?
 
-  private var lastModified: NSDate?
+  fileprivate var lastModified: Date?
 
   typealias Error = SF2File.Error
 
@@ -28,32 +28,32 @@ struct SDTAChunk {
 
   - parameter bytes: C
   */
-  init<C:CollectionType 
-    where C.Generator.Element == Byte,
+  init<C:Collection>(bytes: C, url: URL) throws 
+    where C.Iterator.Element == Byte,
           C.Index == Int, 
-          C.SubSequence.Generator.Element == Byte,
-          C.SubSequence:CollectionType, 
+          C.SubSequence.Iterator.Element == Byte,
+          C.SubSequence:Collection, 
           C.SubSequence.Index == Int,
-          C.SubSequence.SubSequence == C.SubSequence>(bytes: C, url: NSURL) throws
+          C.SubSequence.SubSequence == C.SubSequence
   {
     self.url = url
     do {
       var date: AnyObject?
-      try url.getResourceValue(&date, forKey: NSURLContentModificationDateKey)
-      lastModified = date as? NSDate
+      try (url as NSURL).getResourceValue(&date, forKey: URLResourceKey.contentModificationDateKey)
+      lastModified = date as? Date
     } catch {
       SDTAChunk.logError(error)
     }
 
     let byteCount = bytes.count
     guard byteCount >= 4
-       && String(bytes[bytes.startIndex ..< bytes.startIndex + 4]).lowercaseString == "sdta" else
+       && String(bytes[bytes.startIndex ..< bytes.startIndex + 4]).lowercased() == "sdta" else
     {
       throw Error.StructurallyUnsound
     }
 
     if byteCount > 8 {
-      guard String(bytes[bytes.startIndex + 4 ..< bytes.startIndex + 8]).lowercaseString == "smpl" else {
+      guard String(bytes[bytes.startIndex + 4 ..< bytes.startIndex + 8]).lowercased() == "smpl" else {
         throw Error.StructurallyUnsound
       }
       let smplSize = Int(Byte4(bytes[bytes.startIndex + 8 ..< bytes.startIndex + 12]).bigEndian)
@@ -72,11 +72,11 @@ struct SDTAChunk {
     let smplBytes: [Byte]
     do {
       var date: AnyObject?
-      try url.getResourceValue(&date, forKey: NSURLContentModificationDateKey)
-      guard lastModified == nil || date as? NSDate == lastModified else { throw Error.FileOnDiskModified }
-      guard let data = NSData(contentsOfURL: url) else { throw Error.ReadFailure }
+      try (url as NSURL).getResourceValue(&date, forKey: URLResourceKey.contentModificationDateKey)
+      guard lastModified == nil || date as? Date == lastModified else { throw Error.FileOnDiskModified }
+      guard let data = try? Data(contentsOf: url) else { throw Error.ReadFailure }
       // Get a pointer to the underlying memory buffer
-      let bytes = UnsafeBufferPointer<Byte>(start: UnsafePointer<Byte>(data.bytes), count: data.length)
+      let bytes = UnsafeBufferPointer<Byte>(start: (data as NSData).bytes.bindMemory(to: UInt8.self, capacity: data.count), count: data.count)
       guard bytes.count > smpl.count else { throw Error.ReadFailure }
       smplBytes = Array(bytes[smpl])
     } catch {
@@ -97,5 +97,5 @@ extension SDTAChunk: CustomStringConvertible {
 }
 
 extension SDTAChunk: CustomDebugStringConvertible {
-  var debugDescription: String { var result = ""; dump(self, &result); return result }
+  var debugDescription: String { var result = ""; dump(self, to: &result); return result }
 }

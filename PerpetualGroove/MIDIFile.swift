@@ -25,8 +25,8 @@ struct MIDIFile: ByteArrayConvertible {
 
   - parameter file: NSURL
   */
-  init(file: NSURL) throws {
-    guard let fileData = NSData(contentsOfURL: file) else {
+  init(file: URL) throws {
+    guard let fileData = try? Data(contentsOf: file) else {
       throw MIDIFileError(type: .ReadFailure, reason: "Failed to get data from '\(file)'")
     }
     try self.init(data: fileData)
@@ -37,15 +37,15 @@ struct MIDIFile: ByteArrayConvertible {
 
   - parameter data: NSData
   */
-  init(data: NSData) throws {
+  init(data: Data) throws {
 
-    let totalBytes = data.length
+    let totalBytes = data.count
     guard totalBytes > 13 else {
       throw MIDIFileError(type:.FileStructurallyUnsound, reason: "Not enough bytes in file")
     }
 
     // Get a pointer to the underlying memory buffer
-    let bytes = UnsafeBufferPointer<Byte>(start: UnsafePointer<Byte>(data.bytes), count: totalBytes)
+    let bytes = UnsafeBufferPointer<Byte>(start: (data as NSData).bytes.bindMemory(to: UInt8.self, capacity: data.count), count: totalBytes)
 
     let headerBytes = bytes[bytes.startIndex ➞ 14]
 //    let headerBytes = bytes[bytes.startIndex ..< bytes.startIndex.advancedBy(14)]
@@ -54,10 +54,10 @@ struct MIDIFile: ByteArrayConvertible {
     var tracksRemaining = h.numberOfTracks
     var t: [MIDIFileTrackChunk] = []
 
-    var currentIndex = bytes.startIndex.advancedBy(14)
+    var currentIndex = bytes.startIndex.advanced(by: 14)
 
     while tracksRemaining > 0 {
-      guard currentIndex.distanceTo(bytes.endIndex) > 8 else {
+      guard currentIndex.distance(to: bytes.endIndex) > 8 else {
         throw MIDIFileError(type: .FileStructurallyUnsound,
                             reason: "Not enough bytes for remaining track chunks (\(tracksRemaining))")
       }
@@ -120,28 +120,28 @@ struct MIDIFile: ByteArrayConvertible {
         previousTime = eventTime
         let deltaTime = VariableLengthQuantity(delta)
         let eventBytes = deltaTime.bytes + event.bytes
-        trackBytes.appendContentsOf(eventBytes)
+        trackBytes.append(contentsOf: eventBytes)
       }
       trackData.append(trackBytes)
     }
 
     for trackBytes in trackData {
-      bytes.appendContentsOf(Array("MTrk".utf8))
-      bytes.appendContentsOf(Byte4(trackBytes.count).bytes)
-      bytes.appendContentsOf(trackBytes)
+      bytes.append(contentsOf: Array("MTrk".utf8))
+      bytes.append(contentsOf: Byte4(trackBytes.count).bytes)
+      bytes.append(contentsOf: trackBytes)
     }
 
     return bytes
   }
 }
 
-extension MIDIFile: SequenceDataProvider { var storedData: Sequence.Data { return .MIDI(self) } }
+extension MIDIFile: SequenceDataProvider { var storedData: Sequence.Data { return .midi(self) } }
 
 extension MIDIFile: CustomStringConvertible {
   var description: String { return "\(header)\n\("\n".join(tracks.map({$0.description})))" }
 }
 
 extension MIDIFile: CustomDebugStringConvertible {
-  var debugDescription: String { var result = ""; dump(self, &result); return result }
+  var debugDescription: String { var result = ""; dump(self, to: &result); return result }
 }
 

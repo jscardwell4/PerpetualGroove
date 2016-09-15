@@ -10,8 +10,10 @@ import Foundation
 import MoonKit
 
 /** The seven 'natural' note names in western tonal music */
-enum Natural: String, BidirectionalIndexType, Equatable, Hashable, EnumerableType, Comparable {
+enum Natural: String, Hashable, EnumerableType {
   case A, B, C, D, E, F, G
+
+  var scalar: UnicodeScalar { return rawValue.unicodeScalars.first! }
 
   static let allCases: [Natural] = [.A, .B, .C, .D, .E, .F, .G]
 
@@ -41,5 +43,24 @@ enum Natural: String, BidirectionalIndexType, Equatable, Hashable, EnumerableTyp
 
 }
 
-func ==(lhs: Natural, rhs: Natural) -> Bool { return lhs.rawValue == rhs.rawValue }
-func <(lhs: Natural, rhs: Natural) -> Bool { return lhs.rawValue < rhs.rawValue }
+extension Natural: Equatable {
+  static func ==(lhs: Natural, rhs: Natural) -> Bool { return lhs.rawValue == rhs.rawValue }
+}
+
+extension Natural: Comparable {
+  static func <(lhs: Natural, rhs: Natural) -> Bool { return lhs.rawValue < rhs.rawValue }
+}
+
+extension Natural: Strideable {
+  func advanced(by: Int) -> Natural {
+    let value = scalar.value
+    let offset = by < 0 ? 7 + by % 7 : by % 7
+    let advancedValue = (value.advanced(by: offset) - 65) % 7 + 65
+    let advancedScalar = UnicodeScalar(advancedValue)!
+    return Natural(rawValue: String(advancedScalar))!
+  }
+
+  func distance(to: Natural) -> Int {
+    return Int(to.scalar.value) - Int(scalar.value)
+  }
+}

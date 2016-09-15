@@ -16,7 +16,7 @@ class NodeAdjustmentTool: NodeSelectionTool {
 
    - parameter body: () -> Void
   */
-  final func adjustNode(@noescape body: () -> Void) {
+  final func adjustNode(_ body: () -> Void) {
     // Ensure we have a node to adjust
     guard let node = node else { return }
 

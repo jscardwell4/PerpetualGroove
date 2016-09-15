@@ -14,7 +14,7 @@ import AVFoundation
 
 final class Instrument: Equatable {
 
-  enum Error: String, ErrorType { case AttachNodeFailed = "Failed to attach sampler node to audio engine" }
+  enum Error: String, Swift.Error { case AttachNodeFailed = "Failed to attach sampler node to audio engine" }
 
   typealias Bank    = Byte
   typealias Program = Byte
@@ -33,12 +33,12 @@ final class Instrument: Equatable {
   var program: Program = 0
   var preset: Preset { return soundSet[program, bank] }
   weak var track: InstrumentTrack?
-  private let node = AVAudioUnitSampler()
+  fileprivate let node = AVAudioUnitSampler()
 
-  private var soundLoaded = false
+  fileprivate var soundLoaded = false
 
   var bus: AVAudioNodeBus {
-    return node.destinationForMixer(AudioManager.mixer, bus: 0)?.connectionPoint.bus ?? -1
+    return node.destination(forMixer: AudioManager.mixer, bus: 0)?.connectionPoint.bus ?? -1
   }
 
   /**
@@ -47,7 +47,7 @@ final class Instrument: Equatable {
   - parameter soundSet: SoundSetType
   - parameter preset: Preset
   */
-  func loadSoundSet(soundSet: SoundSetType, preset: Preset) throws {
+  func loadSoundSet(_ soundSet: SoundSetType, preset: Preset) throws {
     try loadSoundSet(soundSet, program: preset.program, bank: preset.bank)
   }
 
@@ -56,7 +56,7 @@ final class Instrument: Equatable {
 
   - parameter preset: Preset
   */
-  func loadPreset(preset: Preset) throws {
+  func loadPreset(_ preset: Preset) throws {
     try loadSoundSet(soundSet, program: preset.program, bank: preset.bank)
   }
 
@@ -69,19 +69,19 @@ final class Instrument: Equatable {
   /// Adjusts the stereo panning for all the notes played.
   var stereoPan: Float { get { return node.stereoPan } set { node.stereoPan = newValue } }
 
-  private      var client   = MIDIClientRef()
-  private(set) var outPort  = MIDIPortRef()
-  private(set) var endPoint = MIDIEndpointRef()
+  fileprivate      var client   = MIDIClientRef()
+  fileprivate(set) var outPort  = MIDIPortRef()
+  fileprivate(set) var endPoint = MIDIEndpointRef()
 
   /**
   playNote:
 
   - parameter generator: MIDIGenerator
   */
-  func playNote(generator: MIDIGenerator) {
+  func playNote(_ generator: MIDIGenerator) {
     do {
       try generator.sendNoteOn(outPort, endPoint)
-      delayedDispatchToMain(generator.duration.seconds) {
+      DispatchQueue.main.asyncAfter(deadline: DispatchTime(uptimeNanoseconds: secondsToNanoseconds(generator.duration.seconds))) {
         [weak self] in
         guard let weakself = self else { return }
         do { try generator.sendNoteOff(weakself.outPort, weakself.endPoint) }
@@ -98,8 +98,8 @@ final class Instrument: Equatable {
   - parameter packetList: UnsafePointer<MIDIPacketList>
   - parameter context: UnsafeMutablePointer<Void>
   */
-  private func read(packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutablePointer<Void>) {
-    for packet in packetList.memory {
+  fileprivate func read(_ packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutableRawPointer) {
+    for packet in packetList.pointee {
       node.sendMIDIEvent(packet.data.0, data1: packet.data.1, data2: packet.data.2)
     }
   }
@@ -109,13 +109,13 @@ final class Instrument: Equatable {
 
   - parameter soundSet: SoundSetType
   */
-  func loadSoundSet(soundSet: SoundSetType, program: Program = 0, bank: Bank = 0) throws {
+  func loadSoundSet(_ soundSet: SoundSetType, program: Program = 0, bank: Bank = 0) throws {
     guard !soundLoaded || !(self.soundSet.isEqualTo(soundSet) && preset == soundSet[program, bank]) else { return }
     let oldPresetName = preset.name
     let program = (0 ... 127).clampValue(program)
     let bank    = (0 ... 127).clampValue(bank)
     do {
-      try node.loadSoundBankInstrumentAtURL(soundSet.url,
+      try node.loadSoundBankInstrument(at: soundSet.url as URL,
                                     program: program,
                                     bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB),
                                     bankLSB: bank)
@@ -137,7 +137,7 @@ final class Instrument: Equatable {
 
   - returns: Bool
   */
-  func settingsEqualTo(instrument: Instrument) -> Bool {
+  func settingsEqualTo(_ instrument: Instrument) -> Bool {
     return soundSet.url == instrument.soundSet.url
         && program      == instrument.program
         && bank         == instrument.bank
@@ -167,10 +167,10 @@ final class Instrument: Equatable {
 
     try loadSoundSet(soundSet, program: program, bank: bank)
 
-    let name = "Instrument \(ObjectIdentifier(self).uintValue)"
-    try MIDIClientCreateWithBlock(name, &client, nil) ➤ "Failed to create midi client"
-    try MIDIOutputPortCreate(client, "Output", &outPort) ➤ "Failed to create out port"
-    try MIDIDestinationCreateWithBlock(client, name, &endPoint, read) ➤ "Failed to create end point for instrument"
+    let name = "Instrument \(UInt(bitPattern: ObjectIdentifier(self)))"
+    try MIDIClientCreateWithBlock(name as CFString, &client, nil) ➤ "Failed to create midi client"
+    try MIDIOutputPortCreate(client, "Output" as CFString, &outPort) ➤ "Failed to create out port"
+    try MIDIDestinationCreateWithBlock(client, name as CFString, &endPoint, read as! MIDIReadBlock) ➤ "Failed to create end point for instrument"
   }
 
   /**
@@ -197,7 +197,7 @@ extension Instrument: CustomStringConvertible {
 }
 
 extension Instrument: CustomDebugStringConvertible {
-  var debugDescription: String { var result = ""; dump(self, &result); return result }
+  var debugDescription: String { var result = ""; dump(self, to: &result); return result }
 }
 
 extension Instrument: JSONValueConvertible {
@@ -207,9 +207,9 @@ extension Instrument: JSONValueConvertible {
 extension Instrument: JSONValueInitializable {
   convenience init?(_ jsonValue: JSONValue?) {
     guard let dict = ObjectJSONValue(jsonValue),
-      soundSet: SoundSetType = EmaxSoundSet(dict["soundset"]) ?? SoundSet(dict["soundset"]),
-      preset = Preset(dict["preset"]),
-      channel = Channel(dict["channel"])
+      let soundSet: SoundSetType = EmaxSoundSet(dict["soundset"]) ?? SoundSet(dict["soundset"]),
+      let preset = Preset(dict["preset"]),
+      let channel = Channel(dict["channel"])
     else { return nil }
     do {
       try self.init(track: nil, soundSet: soundSet, program: preset.program, bank: preset.bank, channel: channel)
@@ -227,7 +227,7 @@ extension Instrument: NotificationDispatchType {
   }
 }
 
-extension NSNotification {
+extension Notification {
   var oldPresetName: String? {
     return userInfo?[Instrument.Notification.Key.OldValue.key] as? String
   }

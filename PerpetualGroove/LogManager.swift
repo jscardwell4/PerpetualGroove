@@ -8,41 +8,42 @@
 
 import Foundation
 import MoonKit
+import CocoaLumberjack
 import class SpriteKit.SKNode
 
 final class LogManager: MoonKit.LogManager {
 
-  private(set) static var initialized = false
+  fileprivate(set) static var initialized = false
 
-  static let MIDIFileContext  = LogContext(rawValue: 0b0000_0010_0000) ∪ .File
-  static let SF2FileContext   = LogContext(rawValue: 0b0000_0100_0000) ∪ .File
-  static let SequencerContext = LogContext(rawValue: 0b0000_1000_0000) ∪ .File
-  static let SceneContext     = LogContext(rawValue: 0b0001_0000_0000) ∪ .File
-  static let UIContext        = LogContext(rawValue: 0b0010_0000_0000) ∪ .File
+  static let MIDIFileContext  = LogContext(rawValue: 0b0000_0010_0000) ∪ .file
+  static let SF2FileContext   = LogContext(rawValue: 0b0000_0100_0000) ∪ .file
+  static let SequencerContext = LogContext(rawValue: 0b0000_1000_0000) ∪ .file
+  static let SceneContext     = LogContext(rawValue: 0b0001_0000_0000) ∪ .file
+  static let UIContext        = LogContext(rawValue: 0b0010_0000_0000) ∪ .file
 
   /** initialize */
   static func initialize() {
     guard !initialized else { return }
 
     #if LogLevelVerbose
-      logLevel = .Verbose
+      logLevel = .verbose
     #elseif LogLevelDebug
-      logLevel = .Debug
+      logLevel = .debug
     #elseif LogLevelInfo
-      logLevel = .Info
+      logLevel = .info
     #elseif LogLevelWarning
-      logLevel = .Warning
+      logLevel = .warning
     #elseif LogLevelError
-      logLevel = .Error
+      logLevel = .error
     #elseif LogLevelOff
-      logLevel = .Off
+      logLevel = .off
     #endif
 
-    setLogLevel(.Verbose, forType: NotificationReceptionist.self)
+    setLogLevel(.verbose, forType: NotificationReceptionist.self)
 
     registerLogContextNames()
 
-    logContext = .Console
+    logContext = .console
     setDefaultLogContexts()
 
     addConsoleLoggers()
@@ -59,44 +60,46 @@ final class LogManager: MoonKit.LogManager {
 
   - returns: DDFileLogger
   */
-  static override func defaultFileLoggerForContext(context: LogContext, subdirectory: String?) -> DDFileLogger {
+  static override func defaultFileLoggerForContext(_ context: LogContext, subdirectory: String?) -> DDFileLogger {
     let logger = super.defaultFileLoggerForContext(context, subdirectory: subdirectory)
     logger.doNotReuseLogFiles = true
     return logger
   }
 
   /** registerLogContextNames */
-  static private func registerLogContextNames() {
+  static fileprivate func registerLogContextNames() {
     logContextNames[MIDIFileContext] = "MIDI"
     logContextNames[SF2FileContext] = "SoundFont"
     logContextNames[SequencerContext] = "Sequencer"
     logContextNames[SceneContext] = "Scene"
     logContextNames[UIContext] = "UI"
-    logContextNames[MIDIFileContext ∪ .Console] = "MIDI"
-    logContextNames[SF2FileContext ∪ .Console] = "SoundFont"
-    logContextNames[SequencerContext ∪ .Console] = "Sequencer"
-    logContextNames[SceneContext ∪ .Console] = "Scene"
-    logContextNames[UIContext ∪ .Console] = "UI"
+    logContextNames[MIDIFileContext ∪ .console] = "MIDI"
+    logContextNames[SF2FileContext ∪ .console] = "SoundFont"
+    logContextNames[SequencerContext ∪ .console] = "Sequencer"
+    logContextNames[SceneContext ∪ .console] = "Scene"
+    logContextNames[UIContext ∪ .console] = "UI"
   }
 
   /** addFileLoggers */
-  static private func addFileLoggers() {
+  static fileprivate func addFileLoggers() {
     let logsDirectory = self.logsDirectory
-    addDefaultFileLoggerForContext(.Any, subdirectory: "Default")
+    addDefaultFileLoggerForContext(.any, subdirectory: "Default")
     addDefaultFileLoggerForContext(MIDIFileContext,   subdirectory: "MIDI")
     addDefaultFileLoggerForContext(SF2FileContext,    subdirectory: "SoundFont")
     addDefaultFileLoggerForContext(SequencerContext,  subdirectory: "Sequencer")
     addDefaultFileLoggerForContext(SceneContext,      subdirectory: "Scene")
     addDefaultFileLoggerForContext(UIContext,         subdirectory: "UI")
-    print("\n".join("main bundle: '\(NSBundle.mainBundle().bundlePath)'",
-                     "default log directory: '\(logsDirectory.path!)'",
-                     "log level: \(logLevel)"))
+    print([
+      "main bundle: '\(Bundle.main.bundlePath)'",
+      "default log directory: '\(logsDirectory.path)'",
+      "log level: \(logLevel)"
+      ].joined(separator: "\n"))
   }
 
   /** setDefaultLogContexts */
-  static private func setDefaultLogContexts() {
+  static fileprivate func setDefaultLogContexts() {
     DocumentManager.defaultLogContext         = MIDIFileContext//  ∪ .Console
-    Document.defaultLogContext                = MIDIFileContext  ∪ .Console
+    Document.defaultLogContext                = MIDIFileContext  ∪ .console
     MIDIFile.defaultLogContext                = MIDIFileContext//  ∪ .Console
     GrooveFile.defaultLogContext              = MIDIFileContext//  ∪ .Console
     MIDIFileHeaderChunk.defaultLogContext     = MIDIFileContext//  ∪ .Console
@@ -140,20 +143,20 @@ final class LogManager: MoonKit.LogManager {
 
     MIDIPlayerViewController.defaultLogContext     = UIContext//  ∪ .Console
     PurgatoryViewController.defaultLogContext      = UIContext//  ∪ .Console
-    DocumentsViewController.defaultLogContext      = UIContext  ∪ .Console
+    DocumentsViewController.defaultLogContext      = UIContext  ∪ .console
     InstrumentViewController.defaultLogContext     = UIContext//  ∪ .Console
     GeneratorViewController.defaultLogContext      = UIContext//  ∪ .Console
     DocumentsViewLayout.defaultLogContext          = UIContext//  ∪ .Console
     MixerLayout.defaultLogContext                  = UIContext//  ∪ .Console
     BarBeatTimeLabel.defaultLogContext             = UIContext//  ∪ .Console
-    DocumentCell.defaultLogContext                 = UIContext  ∪ .Console
-    DocumentItem.defaultLogContext                 = UIContext  ∪ .Console
+    DocumentCell.defaultLogContext                 = UIContext  ∪ .console
+    DocumentItem.defaultLogContext                 = UIContext  ∪ .console
     MixerCell.defaultLogContext                    = UIContext//  ∪ .Console
     MixerViewController.defaultLogContext          = UIContext//  ∪ .Console
     RootViewController.defaultLogContext           = UIContext//  ∪ .Console
     TransportViewController.defaultLogContext      = UIContext//  ∪ .Console
 
-    SettingsManager.defaultLogContext = .File
+    SettingsManager.defaultLogContext = .file
   }
 
 }

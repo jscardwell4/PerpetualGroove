@@ -19,7 +19,7 @@ final class TempoTrack: Track {
     didSet {
       guard tempo != oldValue && recording else { return }
       logDebug("inserting event for tempo \(tempo)")
-      addEvent(.Meta(tempoEvent))
+      addEvent(.meta(tempoEvent))
       Notification.DidUpdate.post(object: self)
     }
   }
@@ -28,17 +28,17 @@ final class TempoTrack: Track {
     didSet {
       guard timeSignature != oldValue && recording else { return }
       logDebug("inserting event for signature \(timeSignature)")
-      addEvent(.Meta(timeSignatureEvent))
+      addEvent(.meta(timeSignatureEvent))
       Notification.DidUpdate.post(object: self)
     }
   }
 
-  private var timeSignatureEvent: MetaEvent {
-    return MetaEvent(Sequencer.time.barBeatTime, .TimeSignature(signature: timeSignature, clocks: 36, notes: 8))
+  fileprivate var timeSignatureEvent: MetaEvent {
+    return MetaEvent(Sequencer.time.barBeatTime, .timeSignature(signature: timeSignature, clocks: 36, notes: 8))
   }
 
-  private var tempoEvent: MetaEvent {
-    return MetaEvent(Sequencer.time.barBeatTime, .Tempo(bpm: tempo))
+  fileprivate var tempoEvent: MetaEvent {
+    return MetaEvent(Sequencer.time.barBeatTime, .tempo(bpm: tempo))
   }
 
   /**
@@ -48,11 +48,11 @@ final class TempoTrack: Track {
 
   - returns: Bool
   */
-  static func isTempoTrackEvent(trackEvent: MIDIEvent) -> Bool {
-    guard case .Meta(let metaEvent) = trackEvent else { return false }
+  static func isTempoTrackEvent(_ trackEvent: MIDIEvent) -> Bool {
+    guard case .meta(let metaEvent) = trackEvent else { return false }
     switch metaEvent.data {
-      case .Tempo, .TimeSignature, .EndOfTrack: return true
-      case .SequenceTrackName(let name) where name.lowercaseString == "tempo": return true
+      case .tempo, .timeSignature, .endOfTrack: return true
+      case .sequenceTrackName(let name) where name.lowercased() == "tempo": return true
       default: return false
     }
   }
@@ -62,11 +62,11 @@ final class TempoTrack: Track {
 
   - parameter event: MIDIEvent
   */
-  override func dispatchEvent(event: MIDIEvent) {
-    guard case .Meta(let metaEvent) = event else { return }
+  override func dispatchEvent(_ event: MIDIEvent) {
+    guard case .meta(let metaEvent) = event else { return }
     switch metaEvent.data {
-      case let .Tempo(bpm): tempo = bpm; Sequencer.setTempo(bpm, automated: true)
-      case let .TimeSignature(signature, _, _): timeSignature = signature
+      case let .tempo(bpm): tempo = bpm; Sequencer.setTempo(bpm, automated: true)
+      case let .timeSignature(signature, _, _): timeSignature = signature
       default: break
     }
   }
@@ -78,8 +78,8 @@ final class TempoTrack: Track {
   */
   override init(sequence: Sequence) {
     super.init(sequence: sequence)
-    addEvent(.Meta(timeSignatureEvent))
-    addEvent(.Meta(tempoEvent))
+    addEvent(.meta(timeSignatureEvent))
+    addEvent(.meta(tempoEvent))
   }
 
   /**
@@ -93,17 +93,17 @@ final class TempoTrack: Track {
     addEvents(trackChunk.events.filter(TempoTrack.isTempoTrackEvent))
 
     if filterEvents({
-      if case .Meta(let event) = $0, case .TimeSignature = event.data { return true } else { return false }
+      if case .meta(let event) = $0, case .timeSignature = event.data { return true } else { return false }
     }).count == 0
     {
-      addEvent(.Meta(timeSignatureEvent))
+      addEvent(.meta(timeSignatureEvent))
     }
 
     if filterEvents({
-      if case .Meta(let event) = $0, case .Tempo = event.data { return true } else { return false }
+      if case .meta(let event) = $0, case .tempo = event.data { return true } else { return false }
     }).count == 0
     {
-      addEvent(.Meta(tempoEvent))
+      addEvent(.meta(tempoEvent))
     }
   }
 

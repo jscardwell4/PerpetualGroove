@@ -19,8 +19,8 @@ extension Sequence {
 
    - parameter notification: NSNotification
   */
-  func trackSoloStatusDidChange(notification: NSNotification) {
-    guard let track = notification.object as? InstrumentTrack where instrumentTracks.contains(track) else { return }
+  func trackSoloStatusDidChange(_ notification: Foundation.Notification) {
+    guard let track = notification.object as? InstrumentTrack , instrumentTracks.contains(track) else { return }
     let soloTracks = self.soloTracks
     if soloTracks.count == 0 {
       instrumentTracks.forEach {
@@ -32,7 +32,7 @@ extension Sequence {
         logDebug("clearing forced mute for track '\($0.displayName)'")
         $0.forceMute = false
       }
-      Set(instrumentTracks).subtract(soloTracks).forEach {
+      Set(instrumentTracks).subtracting(soloTracks).forEach {
         logDebug("force muting track '\($0.displayName)'")
         $0.forceMute = true
       }
@@ -42,18 +42,18 @@ extension Sequence {
 
 final class InstrumentTrack: Track, MIDINodeDispatch {
 
-  private(set) var nodeManager: MIDINodeManager!
+  fileprivate(set) var nodeManager: MIDINodeManager!
 
   // MARK: - Listening for Sequencer and sequence notifications
 
-  private let receptionist: NotificationReceptionist = {
-    let receptionist = NotificationReceptionist(callbackQueue: NSOperationQueue.mainQueue())
+  fileprivate let receptionist: NotificationReceptionist = {
+    let receptionist = NotificationReceptionist(callbackQueue: OperationQueue.main)
     receptionist.logContext = LogManager.SequencerContext
     return receptionist
   }()
 
   /** initializeNotificationReceptionist */
-  private func initializeNotificationReceptionist() {
+  fileprivate func initializeNotificationReceptionist() {
     guard receptionist.count == 0 else { return }
 
     receptionist.observe(notification: .DidReset,
@@ -87,7 +87,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 
    - parameter notification: NSNotification
   */
-  private func didChangePreset(notification: NSNotification) {
+  fileprivate func didChangePreset(_ notification: Foundation.Notification) {
     Track.Notification.DidUpdate.post(object: self)
   }
 
@@ -96,14 +96,14 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 
   - parameter notification: NSNotification
   */
-  private func didReset(notification: NSNotification) { resetNodes() }
+  fileprivate func didReset(_ notification: Foundation.Notification) { resetNodes() }
 
   /**
   soloCountDidChange:
 
   - parameter notification: NSNotification
   */
-  private func soloCountDidChange(notification: NSNotification) {
+  fileprivate func soloCountDidChange(_ notification: Foundation.Notification) {
     guard let newCount = notification.newCount else { return }
     forceMute = newCount > 0 && !solo
   }
@@ -113,9 +113,9 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 
   - parameter notification: NSNotification
   */
-  private func didJog(notification: NSNotification) {
+  fileprivate func didJog(_ notification: Foundation.Notification) {
     // Toggle track ended flag if we jogged back before the end of the track
-    if trackEnded, let jogTime = notification.jogTime where jogTime < endOfTrack {
+    if trackEnded, let jogTime = notification.jogTime , jogTime < endOfTrack {
       trackEnded = false
     }
 
@@ -127,7 +127,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 
    - parameter notification: NSNotification
   */
-  private func didBeginJogging(notification: NSNotification) {
+  fileprivate func didBeginJogging(_ notification: Foundation.Notification) {
 
   }
 
@@ -136,16 +136,16 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 
    - parameter notification: NSNotification
   */
-  private func didEndJogging(notification: NSNotification) {
+  fileprivate func didEndJogging(_ notification: Foundation.Notification) {
 
   }
 
   // MARK: - MIDI file related properties and methods
 
   /** validateEvents */
-  override func validateEvents(inout container: MIDIEventContainer) {
-    instrumentEvent = MetaEvent(.Text(text: "instrument:\(instrument.soundSet.url.lastPathComponent!)"))
-    programEvent = ChannelEvent(.ProgramChange, instrument.channel, instrument.program)
+  override func validateEvents(_ container: inout MIDIEventContainer) {
+    instrumentEvent = MetaEvent(.text(text: "instrument:\(instrument.soundSet.url.lastPathComponent!)"))
+    programEvent = ChannelEvent(.programChange, instrument.channel, instrument.program)
     super.validateEvents(&container)
   }
 
@@ -154,16 +154,16 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 
    - parameter events: [MIDIEvent]
   */
-  func addEvents<S:SequenceType where S.Generator.Element == MIDIEvent>(events: S) {
+  func addEvents<S:Swift.Sequence>(_ events: S) where S.Iterator.Element == MIDIEvent {
     var filteredEvents: [MIDIEvent] = []
     for event in events {
       switch event {
-        case .Meta(let metaEvent):
+        case .meta(let metaEvent):
           switch metaEvent.data {
-            case .Text(let text) where text.hasPrefix("instrument:"): instrumentEvent = metaEvent
+            case .text(let text) where text.hasPrefix("instrument:"): instrumentEvent = metaEvent
             default: filteredEvents.append(event)
           }
-        case .Channel(let channelEvent) where channelEvent.status.type == .ProgramChange:
+        case .channel(let channelEvent) where channelEvent.status.type == .programChange:
           programEvent = channelEvent
         default: filteredEvents.append(event)
       }
@@ -172,18 +172,18 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     super.addEvents(filteredEvents)
   }
 
-  private var instrumentEvent: MetaEvent!
-  private var programEvent: ChannelEvent!
+  fileprivate var instrumentEvent: MetaEvent!
+  fileprivate var programEvent: ChannelEvent!
 
   typealias Identifier = MIDINodeEvent.Identifier
   typealias NodeIdentifier = MIDINode.Identifier
   typealias EventData = MIDINodeEvent.Data
 
   override var headEvents: [MIDIEvent] {
-    return super.headEvents + [.Meta(instrumentEvent), .Channel(programEvent)]
+    return super.headEvents + [.meta(instrumentEvent), .channel(programEvent)]
   }
 
-  private(set) var trackEnded = false {
+  fileprivate(set) var trackEnded = false {
     didSet {
       guard trackEnded != oldValue else { return }
       if trackEnded { nodeManager.stopNodes() } else { nodeManager.startNodes() }
@@ -192,8 +192,8 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 
   // MARK: - Track properties
 
-  private(set) var instrument: Instrument!
-  var color: TrackColor = .MuddyWaters
+  fileprivate(set) var instrument: Instrument!
+  var color: TrackColor = .muddyWaters
 
   var recording: Bool { return Sequencer.mode == .Default && MIDIPlayer.currentDispatch === self }
 
@@ -204,7 +204,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     return instrument?.preset.name ?? ""
   }
 
-  private(set) var isMuted = false {
+  fileprivate(set) var isMuted = false {
     didSet {
       guard isMuted != oldValue else { return }
       swap(&volume, &_volume)
@@ -213,7 +213,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
   }
 
   /** updateIsMuted */
-  private func updateIsMuted() {
+  fileprivate func updateIsMuted() {
     switch (forceMute, mute, solo) {
       case (true,   true,  true): fallthrough
       case (true,  false,  true): fallthrough
@@ -226,7 +226,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     }
   }
 
-  private(set) var forceMute = false {
+  fileprivate(set) var forceMute = false {
     didSet {
       guard forceMute != oldValue else { return }
       Notification.ForceMuteStatusDidChange.post(object: self, userInfo: [.OldValue: oldValue, .NewValue: forceMute])
@@ -244,7 +244,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     }
   }
 
-  private var _volume: Float = 0
+  fileprivate var _volume: Float = 0
   var volume: Float { get { return instrument.volume } set { instrument.volume = newValue } }
 
   var pan: Float { get { return instrument.pan } set { instrument.pan = newValue } }
@@ -252,13 +252,13 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
   // MARK: - Managing MIDI nodes
 
   /// Whether new events have been created and addd to the track
-  private var modified = false
+  fileprivate var modified = false
 
   /// The set of `MIDINode` objects that have been added to the track
   var nodes: OrderedSet<HashableTuple<BarBeatTime, MIDINodeRef>> = []
 
   /** Empties all node-referencing properties */
-  private func resetNodes() {
+  fileprivate func resetNodes() {
     nodes.removeAll()
     logDebug("nodes reset")
     if modified {
@@ -268,14 +268,14 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     }
   }
 
-  private var connectedEndPoints: Set<MIDIEndpointRef> = []
+  fileprivate var connectedEndPoints: Set<MIDIEndpointRef> = []
 
   /**
    connectNode:
 
    - parameter node: MIDINode
   */
-  func connectNode(node: MIDINode) throws {
+  func connectNode(_ node: MIDINode) throws {
     guard connectedEndPoints ∌ node.endPoint else { throw MIDINodeDispatchError.NodeAlreadyConnected }
     try MIDIPortConnectSource(inPort, node.endPoint, nil) ➤ "Failed to connect to node \(node.name!)"
     connectedEndPoints.insert(node.endPoint)
@@ -286,7 +286,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 
    - parameter node: MIDINode
   */
-  func disconnectNode(node: MIDINode) throws {
+  func disconnectNode(_ node: MIDINode) throws {
     guard connectedEndPoints ∋ node.endPoint else { throw MIDINodeDispatchError.NodeNotFound }
     try MIDIPortDisconnectSource(inPort, node.endPoint) ➤ "Failed to disconnect to node \(node.name!)"
     connectedEndPoints.remove(node.endPoint)
@@ -299,20 +299,20 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 
    - parameter loop: Loop
   */
-  func addLoop(loop: Loop) {
+  func addLoop(_ loop: Loop) {
     guard loops[loop.identifier] == nil else { return }
     logDebug("adding loop: \(loop)")
     loops[loop.identifier] = loop
     addEvents(loop)
   }
 
-  private var loops: [Loop.Identifier:Loop] = [:]
+  fileprivate var loops: [Loop.Identifier:Loop] = [:]
 
   // MARK: - MIDI events
 
-  private var client  = MIDIClientRef()
-  private var inPort  = MIDIPortRef()
-  private var outPort = MIDIPortRef()
+  fileprivate var client  = MIDIClientRef()
+  fileprivate var inPort  = MIDIPortRef()
+  fileprivate var outPort = MIDIPortRef()
 
   /**
   read:context:
@@ -320,7 +320,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
   - parameter packetList: UnsafePointer<MIDIPacketList>
   - parameter context: UnsafeMutablePointer<Void>
   */
-  private func read(packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutablePointer<Void>) {
+  fileprivate func read(_ packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutableRawPointer) {
 
     // Forward the packets to the instrument
     do {
@@ -354,18 +354,18 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 
   - parameter event: MIDIEvent
   */
-  override func dispatchEvent(event: MIDIEvent) {
+  override func dispatchEvent(_ event: MIDIEvent) {
       switch event {
-        case .Node(let nodeEvent):
+        case .node(let nodeEvent):
           switch nodeEvent.data {
-            case let .Add(identifier, trajectory, generator):
+            case let .add(identifier, trajectory, generator):
               nodeManager.addNodeWithIdentifier(identifier.nodeIdentifier,
                                      trajectory: trajectory,
                                       generator: generator)
-            case let .Remove(identifier):
+            case let .remove(identifier):
               do { try nodeManager.removeNodeWithIdentifier(identifier.nodeIdentifier) } catch { logError(error) }
           }
-        case .Meta(let metaEvent) where metaEvent.data == .EndOfTrack:
+        case .meta(let metaEvent) where metaEvent.data == .endOfTrack:
           guard !recording && endOfTrack == metaEvent.time else { break }
           trackEnded = true
         default: break
@@ -380,25 +380,25 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 
   - returns: [BarBeatTime]
   */
-  override func registrationTimesForAddedEvents<S:SequenceType
-    where S.Generator.Element == MIDIEvent>(events: S) -> [BarBeatTime]
+  override func registrationTimesForAddedEvents<S:Swift.Sequence>(_ events: S) -> [BarBeatTime]
+    where S.Iterator.Element == MIDIEvent
   {
-    return events.filter({ if case .Node(_) = $0 { return true } else { return false } }).map({$0.time})
+    return events.filter({ if case .node(_) = $0 { return true } else { return false } }).map({$0.time})
       + super.registrationTimesForAddedEvents(events)
   }
 
   /// The index for the track in the sequence's array of instrument tracks, or nil
-  var index: Int? { return sequence.instrumentTracks.indexOf(self) }
+  var index: Int? { return sequence.instrumentTracks.index(of: self) }
 
   // MARK: - Initialization
 
   /** initializeMIDIClient */
-  private func initializeMIDIClient() throws {
-    try MIDIClientCreateWithBlock("track \(instrument.bus)", &client, nil)
+  fileprivate func initializeMIDIClient() throws {
+    try MIDIClientCreateWithBlock("track \(instrument.bus)" as CFString, &client, nil)
       ➤ "Failed to create midi client"
-    try MIDIOutputPortCreate(client, "Output", &outPort)
+    try MIDIOutputPortCreate(client, "Output" as CFString, &outPort)
       ➤ "Failed to create out port"
-    try MIDIInputPortCreateWithBlock(client, name, &inPort, weakMethod(self, InstrumentTrack.read))
+    try MIDIInputPortCreateWithBlock(client, name as CFString, &inPort, weakMethod(self, InstrumentTrack.read))
       ➤ "Failed to create in port"
   }
 
@@ -413,8 +413,8 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     nodeManager = MIDINodeManager(owner: self)
     self.instrument = instrument
     instrument.track = self
-    instrumentEvent = MetaEvent(.Text(text: "instrument:\(instrument.soundSet.url.lastPathComponent!)"))
-    programEvent = ChannelEvent(.ProgramChange, instrument.channel, instrument.program)
+    instrumentEvent = MetaEvent(.text(text: "instrument:\(instrument.soundSet.url.lastPathComponent!)"))
+    programEvent = ChannelEvent(.programChange, instrument.channel, instrument.program)
     color = TrackColor.nextColor
 
     initializeNotificationReceptionist()
@@ -441,11 +441,11 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     name = grooveTrack.name
     var events: [MIDIEvent] = []
     for (_, node) in grooveTrack.nodes {
-      events.append(.Node(MIDINodeEvent(.Add(identifier: node.identifier,
+      events.append(.node(MIDINodeEvent(.add(identifier: node.identifier,
                                              trajectory: node.trajectory,
                                              generator: node.generator), node.addTime)))
       if let time = node.removeTime {
-        events.append(.Node(MIDINodeEvent(.Remove(identifier: node.identifier), time)))
+        events.append(.node(MIDINodeEvent(.remove(identifier: node.identifier), time)))
       }
     }
     addEvents(events)
@@ -471,7 +471,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     // Find the instrument event
 
     guard let instrumentEvent = instrumentEvent,
-      case .Text(var instrumentName) = instrumentEvent.data else
+      case .text(var instrumentName) = instrumentEvent.data else
     {
       throw MIDIFileError(type: .FileStructurallyUnsound,
                           reason: "Instrument event must be a text event")
@@ -479,7 +479,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 
     instrumentName = instrumentName[instrumentName.startIndex.advancedBy(11)..<]
 
-    guard let url = NSBundle.mainBundle().URLForResource(instrumentName, withExtension: nil) else {
+    guard let url = Bundle.main.url(forResource: instrumentName, withExtension: nil) else {
       throw Error.InvalidSoundSetURL
     }
 
@@ -524,7 +524,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 
 // MARK: - Errors
 extension InstrumentTrack {
-  enum Error: String, ErrorType, CustomStringConvertible {
+  enum Error: String, Error, CustomStringConvertible {
     case SoundSetInitializeFailure = "Failed to create sound set"
     case InvalidSoundSetURL = "Failed to resolve sound set url"
     case InstrumentInitializeFailure = "Failed to create instrument"

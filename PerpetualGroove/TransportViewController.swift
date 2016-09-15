@@ -11,7 +11,7 @@ import MoonKit
 
 final class TransportViewController: UIViewController {
 
-  private weak var transport: Transport! {
+  fileprivate weak var transport: Transport! {
     didSet {
       guard transport !== oldValue else { return }
 
@@ -61,30 +61,30 @@ final class TransportViewController: UIViewController {
   @IBAction func stop() { transport.reset() }
 
   /** beginJog */
-  @IBAction private func beginJog(){ transport.beginJog(jogWheel) }
+  @IBAction fileprivate func beginJog(){ transport.beginJog(jogWheel) }
 
   /** jog */
-  @IBAction private func jog() { transport.jog(jogWheel) }
+  @IBAction fileprivate func jog() { transport.jog(jogWheel) }
 
   /** endJog */
-  @IBAction private func endJog() { transport.endJog(jogWheel) }
+  @IBAction fileprivate func endJog() { transport.endJog(jogWheel) }
 
-  private enum ControlImage {
-    case Pause, Play
-    func decorateButton(item: ImageButtonView) {
+  fileprivate enum ControlImage {
+    case pause, play
+    func decorateButton(_ item: ImageButtonView) {
       item.image = image
       item.highlightedImage = selectedImage
     }
     var image: UIImage {
       switch self {
-        case .Pause: return UIImage(named: "pause")!
-        case .Play: return UIImage(named: "play")!
+        case .pause: return UIImage(named: "pause")!
+        case .play: return UIImage(named: "play")!
       }
     }
     var selectedImage: UIImage {
       switch self {
-        case .Pause: return UIImage(named: "pause-selected")!
-        case .Play: return UIImage(named: "play-selected")!
+        case .pause: return UIImage(named: "pause-selected")!
+        case .play: return UIImage(named: "play-selected")!
       }
     }
   }
@@ -96,9 +96,9 @@ final class TransportViewController: UIViewController {
   var recording:      Bool { return state ∋ .Recording      }
   var jogging:        Bool { return state ∋ .Jogging        }
 
-  private var state: Transport.State = [] {
+  fileprivate var state: Transport.State = [] {
     didSet {
-      guard isViewLoaded() && state != oldValue else { return }
+      guard isViewLoaded && state != oldValue else { return }
       guard state ∌ [.Playing, .Paused] else {
         fatalError("State invalid: cannot be both playing and paused")
       }
@@ -108,21 +108,21 @@ final class TransportViewController: UIViewController {
       let modifiedState = state ⊻ oldValue
 
       // Check if jog status changed
-      if modifiedState ∋ .Jogging { transportStack.userInteractionEnabled = !jogging }
+      if modifiedState ∋ .Jogging { transportStack.isUserInteractionEnabled = !jogging }
 
       // Check for recording status change
-      if modifiedState ∋ .Recording { recordButton.selected = recording }
+      if modifiedState ∋ .Recording { recordButton.isSelected = recording }
 
       // Check if play/pause status changed
       if modifiedState ⚭ [.Playing, .Paused] {
-        stopButton.enabled = playing || paused
-        (playing ? ControlImage.Pause : ControlImage.Play).decorateButton(playPauseButton)
+        stopButton.isEnabled = playing || paused
+        (playing ? ControlImage.pause : ControlImage.play).decorateButton(playPauseButton)
       }
     }
   }
 
-  private let receptionist: NotificationReceptionist = {
-    let receptionist = NotificationReceptionist(callbackQueue: NSOperationQueue.mainQueue())
+  fileprivate let receptionist: NotificationReceptionist = {
+    let receptionist = NotificationReceptionist(callbackQueue: OperationQueue.main)
     receptionist.logContext = LogManager.UIContext
     return receptionist
   }()
@@ -132,8 +132,8 @@ final class TransportViewController: UIViewController {
 
    - parameter notification: NSNotification
   */
-  private func didChangeState(notification: NSNotification) {
-    guard let oldState = notification.previousTransportState, newState = notification.transportState else { return }
+  fileprivate func didChangeState(_ notification: Notification) {
+    guard let oldState = notification.previousTransportState, let newState = notification.transportState else { return }
     logDebug("\(oldState) ➞ \(newState)")
     state = newState
   }
