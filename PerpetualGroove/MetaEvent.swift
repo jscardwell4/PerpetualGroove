@@ -41,9 +41,9 @@ struct MetaEvent: MIDIEventType {
           C.SubSequence.SubSequence == C.SubSequence
   {
     delta = d
-    guard bytes.count >= 3 else { throw MIDIFileError(type: .InvalidLength, reason: "Not enough bytes in event") }
+    guard bytes.count >= 3 else { throw MIDIFileError(type: .invalidLength, reason: "Not enough bytes in event") }
     guard bytes[bytes.startIndex] == 0xFF else {
-      throw MIDIFileError(type: .InvalidHeader, reason: "First byte must be 0xFF")
+      throw MIDIFileError(type: .invalidHeader, reason: "First byte must be 0xFF")
     }
     var currentIndex = bytes.index(after: bytes.startIndex)
     let typeByte = bytes[currentIndex]
@@ -54,7 +54,7 @@ struct MetaEvent: MIDIEventType {
     bytes.formIndex(after: &i)
     currentIndex = i
     bytes.formIndex(&i, offsetBy: dataLength.intValue)
-    guard bytes.endIndex == i else { throw MIDIFileError(type: .InvalidLength, reason: "Specified length does not match actual") }
+    guard bytes.endIndex == i else { throw MIDIFileError(type: .invalidLength, reason: "Specified length does not match actual") }
 
     data = try Data(type: typeByte, data: bytes[currentIndex ..< i])
   }
@@ -129,23 +129,23 @@ struct MetaEvent: MIDIEventType {
         case 0x09: self = .deviceName(name: String(data))
         case 0x2F:
           guard data.count == 0 else {
-            throw MIDIFileError(type: .InvalidLength, reason: "EndOfTrack event has no data")
+            throw MIDIFileError(type: .invalidLength, reason: "EndOfTrack event has no data")
           }
           self = .endOfTrack
         case 0x51:
           guard data.count == 3 else {
-            throw MIDIFileError(type: .InvalidLength, reason: "Tempo event data should have a 4 byte length")
+            throw MIDIFileError(type: .invalidLength, reason: "Tempo event data should have a 4 byte length")
           }
           self = .tempo(bpm: Double(60_000_000 / Byte4(data)))
         case 0x58:
           guard data.count == 4 else {
-            throw MIDIFileError(type: .InvalidLength, reason: "TimeSignature event data should have a 4 byte length")
+            throw MIDIFileError(type: .invalidLength, reason: "TimeSignature event data should have a 4 byte length")
           }
           self = .timeSignature(signature: Groove.TimeSignature(data[<--(data.index(data.startIndex, offsetBy: 2))]),
                                 clocks: data[data.index(data.startIndex, offsetBy: 2)],
                                 notes: data[data.index(data.startIndex, offsetBy: 3)])
         default:
-          throw MIDIFileError(type: .UnsupportedEvent,
+          throw MIDIFileError(type: .unsupportedEvent,
                               reason: "\(String(hexBytes: [type])) is not a supported meta event type")
       }
     }

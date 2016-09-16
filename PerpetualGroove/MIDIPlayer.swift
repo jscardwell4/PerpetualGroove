@@ -270,28 +270,19 @@ final class MIDIPlayer {
 }
 
 // MARK: - Notification
-extension MIDIPlayer: NotificationDispatchType {
+extension MIDIPlayer: NotificationDispatching {
 
-  /** An enumeration to wrap up notifications */
-  enum Notification: String, NotificationType, NotificationNameType {
-    case DidAddNode, DidRemoveNode, DidSelectTool
-    var object: AnyObject? { return MIDIPlayer.self }
-    enum Key: String, NotificationKeyType { case AddedNode, AddedNodeTrack, SelectedTool }
+  enum NotificationName: String, LosslessStringConvertible {
+    case didAddNode, didRemoveNode, didSelectTool
   }
 
 }
 
 extension Notification {
-  var addedNode: MIDINode? {
-    return userInfo?[MIDIPlayer.Notification.Key.AddedNode.key] as? MIDINode
-  }
-  var addedNodeTrack: InstrumentTrack? {
-    return userInfo?[MIDIPlayer.Notification.Key.AddedNodeTrack.key] as? InstrumentTrack
-  }
+  var addedNode: MIDINode? { return userInfo?["addedNode"] as? MIDINode }
+  var addedNodeTrack: InstrumentTrack? { return userInfo?["addedNodeTrack"] as? InstrumentTrack }
   var selectedTool: Tool? {
-    guard let rawValue = userInfo?[MIDIPlayer.Notification.Key.SelectedTool.key] as? Int else {
-      return nil
-    }
+    guard let rawValue = userInfo?["selectedTool"] as? Int else { return nil }
     return Tool(rawValue)
   }
 }

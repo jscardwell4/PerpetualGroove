@@ -11,33 +11,33 @@ import MoonKit
 
 /** The seven 'natural' note names in western tonal music */
 enum Natural: String, Hashable, EnumerableType {
-  case A, B, C, D, E, F, G
+  case a, b, c, d, e, f, g
 
   var scalar: UnicodeScalar { return rawValue.unicodeScalars.first! }
 
-  static let allCases: [Natural] = [.A, .B, .C, .D, .E, .F, .G]
+  static let allCases: [Natural] = [.a, .b, .c, .d, .e, .f, .g]
 
   func successor() -> Natural {
     switch self {
-      case .A: return .B
-      case .B: return .C
-      case .C: return .D
-      case .D: return .E
-      case .E: return .F
-      case .F: return .G
-      case .G: return .A
+      case .a: return .b
+      case .b: return .c
+      case .c: return .d
+      case .d: return .e
+      case .e: return .f
+      case .f: return .g
+      case .g: return .a
     }
   }
 
   func predecessor() -> Natural {
     switch self {
-      case .A: return .G
-      case .B: return .A
-      case .C: return .B
-      case .D: return .C
-      case .E: return .D
-      case .F: return .E
-      case .G: return .F
+      case .a: return .g
+      case .b: return .a
+      case .c: return .b
+      case .d: return .c
+      case .e: return .d
+      case .f: return .e
+      case .g: return .f
     }
   }
 

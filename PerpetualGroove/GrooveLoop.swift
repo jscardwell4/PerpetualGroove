@@ -45,7 +45,7 @@ struct GrooveLoop {
     guard case .marker(let text) = event.data,
       let match = (~/"^start\\(([^)]+)\\):([0-9]+):([0-9]+)$").firstMatch(text),
           let identifierString = match.captures[1]?.string,
-          let identifier = Identifier(identifierString),
+          let identifier = Identifier(uuidString: identifierString),
           let repetitionsString = match.captures[2]?.string,
           let repetitions = Int(repetitionsString),
           let repeatDelayString = match.captures[3]?.string,

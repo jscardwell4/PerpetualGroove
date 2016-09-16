@@ -57,7 +57,7 @@ final class Transport {
   }
 
   /** toggleRecord */
-  func toggleRecord() { state ⊻= .Recording; Notification.DidToggleRecording.post() }
+  func toggleRecord() { state.formSymmetricDifference(.Recording); Notification.DidToggleRecording.post() }
 
   /** pause */
   func pause() {
@@ -162,7 +162,7 @@ final class Transport {
     let t = time.barBeatTime
     guard t != tʹ else { return }
     guard tʹ.isNormal else { throw Error.invalidBarBeatTime("\(tʹ)") }
-    let direction: ScrollWheel.Direction = tʹ < time.barBeatTime ? .CounterClockwise : .Clockwise
+    let direction: ScrollWheel.Direction = tʹ < time.barBeatTime ? .counterClockwise : .clockwise
     if clock.running { clock.stop() }
     time.barBeatTime = tʹ
     Notification.DidJog.post(object: self, userInfo:[
@@ -220,18 +220,14 @@ extension Transport {
   }
 }
 
-extension Transport: NotificationDispatchType {
-  // MARK: - Notifications
-  enum Notification: String, NotificationType, NotificationNameType {
-    case DidStart, DidPause, DidStop, DidReset
-    case DidToggleRecording
-    case DidBeginJogging, DidEndJogging
-    case DidJog
-    case DidChangeState
+extension Transport: NotificationDispatching {
 
-    enum Key: String, NotificationKeyType {
-      case Time, JogTime, JogDirection, TransportState, PreviousTransportState
-    }
+  enum NotificationName: String, LosslessStringConvertible {
+    case didStart, didPause, didStop, didReset
+    case didToggleRecording
+    case didBeginJogging, didEndJogging
+    case didJog
+    case didChangeState
   }
 
 }
@@ -239,31 +235,31 @@ extension Transport: NotificationDispatchType {
 extension Notification {
 
   var jogTime: BarBeatTime? {
-    guard let string = userInfo?[Transport.Notification.Key.JogTime.key] as? String else { return nil }
+    guard let string = userInfo?["jogTime"] as? String else { return nil }
     return BarBeatTime(rawValue: string)
   }
 
   var jogDirection: ScrollWheel.Direction? {
-    guard let raw = userInfo?[Transport.Notification.Key.JogDirection.key] as? Int else {
+    guard let raw = userInfo?["jogDirection"] as? Int else {
       return nil
     }
     return ScrollWheel.Direction(rawValue: raw)
   }
 
   var time: BarBeatTime? {
-    guard let string = userInfo?[Transport.Notification.Key.Time.key] as? String else { return nil }
+    guard let string = userInfo?["time"] as? String else { return nil }
     return BarBeatTime(rawValue: string)
   }
 
   var transportState: Transport.State? {
-    guard let rawState = userInfo?[Transport.Notification.Key.TransportState.key] as? NSNumber else {
+    guard let rawState = userInfo?["transportState"] as? NSNumber else {
       return nil
     }
     return Transport.State(rawValue: rawState.intValue)
   }
 
   var previousTransportState: Transport.State? {
-    guard let rawState = userInfo?[Transport.Notification.Key.PreviousTransportState.key] as? NSNumber else {
+    guard let rawState = userInfo?["previousTransportState"] as? NSNumber else {
       return nil
     }
     return Transport.State(rawValue: rawState.intValue)

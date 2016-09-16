@@ -39,7 +39,7 @@ struct ChordGenerator {
 
     var currentOctave = octave
     var previousNote = chord.root
-    for note in notes[rootIndex..<] {
+    for note in notes[rootIndex|->] {
       if note < previousNote {
         guard let nextOctave = Octave(rawValue: currentOctave.rawValue + 1) else { return result }
         currentOctave = nextOctave

@@ -40,8 +40,8 @@ class Track: CustomStringConvertible, Named, MIDIEventDispatch {
       guard name != newValue else { return }
       logDebug("'\(name)' ➞ '\(newValue)'")
       trackNameEvent = .meta(MetaEvent(.sequenceTrackName(name: newValue)))
-      Notification.DidUpdate.post(object: self)
-      Notification.DidChangeName.post(object: self)
+      postNotification(name: .didUpdate, object: self, userInfo: nil)
+      postNotification(name: .didChangeName, object: self, userInfo: nil)
     }
   }
 
@@ -75,7 +75,7 @@ class Track: CustomStringConvertible, Named, MIDIEventDispatch {
   /** init */
   init(sequence: Sequence) {
     self.sequence = sequence
-    eventQueue = serialQueueWithLabel("Track\(sequence.tracks.count)")
+    eventQueue = DispatchQueue(label: "Track\(sequence.tracks.count)")
   }
 
   /**
@@ -106,12 +106,10 @@ class Track: CustomStringConvertible, Named, MIDIEventDispatch {
 }
 
 // MARK: - Notifications
-extension Track: NotificationDispatchType {
+extension Track: NotificationDispatching {
 
-  enum Notification: String, NotificationType, NotificationNameType {
-    enum Key: String, KeyType { case OldValue, NewValue }
-    case DidUpdate, DidChangeName
-    case ForceMuteStatusDidChange, MuteStatusDidChange, SoloStatusDidChange
+  enum NotificationName: String, LosslessStringConvertible {
+    case didUpdate, didChangeName, forceMuteStatusDidChange, muteStatusDidChange, soloStatusDidChange
   }
 
 }

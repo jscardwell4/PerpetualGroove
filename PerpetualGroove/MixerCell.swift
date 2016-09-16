@@ -131,34 +131,34 @@ final class TrackCell: MixerCell {
     let receptionist = NotificationReceptionist(callbackQueue: OperationQueue.main)
     receptionist.logContext = LogManager.SequencerContext
     
-    receptionist.observe(notification: .MuteStatusDidChange, from: track) {
+    receptionist.observe(name: Track.NotificationName.muteStatusDidChange.rawValue, from: track) {
       [weak self] _ in
       guard let weakself = self, let track = weakself.track else { return }
       weakself.muteButton.isSelected = track.isMuted
     }
-    receptionist.observe(notification: .ForceMuteStatusDidChange, from: track) {
+    receptionist.observe(name: Track.NotificationName.forceMuteStatusDidChange.rawValue, from: track) {
       [weak self] _ in
       guard let weakself = self, let track = weakself.track else { return }
       weakself.muteDisengaged = track.forceMute || track.solo
     }
-    receptionist.observe(notification: .SoloStatusDidChange, from: track) {
+    receptionist.observe(name: Track.NotificationName.soloStatusDidChange.rawValue, from: track) {
       [weak self] _ in
       guard let weakself = self, let track = weakself.track else { return }
       weakself.soloButton.isSelected = track.solo
       weakself.muteDisengaged = track.forceMute || track.solo
     }
-    receptionist.observe(notification: .DidChangeName, from: track) {
+    receptionist.observe(name: Track.NotificationName.didChangeName.rawValue, from: track) {
       [weak self] _ in
       guard let weakself = self, let track = weakself.track else { return }
       weakself.trackLabel.text = track.displayName
     }
-    receptionist.observe(notification: .SoundSetDidChange, from: track.instrument) {
+    receptionist.observe(name: Instrument.NotificationName.soundSetDidChange.rawValue, from: track.instrument) {
       [weak self] _ in
       guard let weakself = self, let track = weakself.track else { return }
       weakself.soundSetImage.image = track.instrument.soundSet.image
       weakself.trackLabel.text = track.displayName
     }
-    receptionist.observe(notification: .PresetDidChange, from: track.instrument) {
+    receptionist.observe(name: Instrument.NotificationName.presetDidChange.rawValue, from: track.instrument) {
       [weak self] _ in
       guard let weakself = self, let track = weakself.track else { return }
       weakself.trackLabel.text = track.displayName

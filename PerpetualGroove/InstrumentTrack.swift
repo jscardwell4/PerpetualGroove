@@ -56,28 +56,28 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
   fileprivate func initializeNotificationReceptionist() {
     guard receptionist.count == 0 else { return }
 
-    receptionist.observe(notification: .DidReset,
+    receptionist.observe(name: Sequencer.NotificationName.didReset.rawValue,
                          from: Sequencer.self,
                          callback: weakMethod(self, InstrumentTrack.didReset))
 
-    receptionist.observe(notification: .SoloCountDidChange,
+    receptionist.observe(name: Sequence.NotificationName.soloCountDidChange.rawValue,
                          from: sequence,
                          callback: weakMethod(self, InstrumentTrack.soloCountDidChange))
 
-    receptionist.observe(notification: .DidBeginJogging,
+    receptionist.observe(name: Sequencer.NotificationName.didBeginJogging.rawValue,
                          from: Sequencer.self,
                          callback: weakMethod(self, InstrumentTrack.didBeginJogging))
-    receptionist.observe(notification: .DidEndJogging,
+    receptionist.observe(name: Sequencer.NotificationName.didEndJogging.rawValue,
                          from: Sequencer.self,
                          callback: weakMethod(self, InstrumentTrack.didEndJogging))
-    receptionist.observe(notification: .DidJog,
+    receptionist.observe(name: Sequencer.NotificationName.didJog.rawValue,
                          from: Sequencer.self,
                          callback: weakMethod(self, InstrumentTrack.didJog))
 
-    receptionist.observe(notification: .PresetDidChange,
+    receptionist.observe(name: Instrument.NotificationName.presetDidChange.rawValue,
                          from: instrument,
                          callback: weakMethod(self, InstrumentTrack.didChangePreset))
-    receptionist.observe(notification: .SoundSetDidChange,
+    receptionist.observe(name: Instrument.NotificationName.soundSetDidChange.rawValue,
                          from: instrument,
                          callback: weakMethod(self, InstrumentTrack.didChangePreset))
 }
@@ -88,7 +88,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
    - parameter notification: NSNotification
   */
   fileprivate func didChangePreset(_ notification: Foundation.Notification) {
-    Track.Notification.DidUpdate.post(object: self)
+    postNotification(name: .didUpdate, object: self, userInfo: nil)
   }
 
   /**
@@ -524,7 +524,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 
 // MARK: - Errors
 extension InstrumentTrack {
-  enum Error: String, Error, CustomStringConvertible {
+  enum Error: String, Swift.Error, CustomStringConvertible {
     case SoundSetInitializeFailure = "Failed to create sound set"
     case InvalidSoundSetURL = "Failed to resolve sound set url"
     case InstrumentInitializeFailure = "Failed to create instrument"

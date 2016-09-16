@@ -220,20 +220,15 @@ extension Instrument: JSONValueInitializable {
 }
 
 // MARK: - Notifications
-extension Instrument: NotificationDispatchType {
-  enum Notification: String, NotificationType, NotificationNameType {
-    enum Key: String, KeyType { case OldValue, NewValue }
-    case PresetDidChange, SoundSetDidChange
+extension Instrument: NotificationDispatching {
+  enum NotificationName: String, LosslessStringConvertible {
+    case presetDidChange, soundSetDidChange
   }
 }
 
 extension Notification {
-  var oldPresetName: String? {
-    return userInfo?[Instrument.Notification.Key.OldValue.key] as? String
-  }
-  var newPresetName: String? {
-    return userInfo?[Instrument.Notification.Key.NewValue.key] as? String
-  }
+  var oldPresetName: String? { return userInfo?["oldValue"] as? String }
+  var newPresetName: String? { return userInfo?["newValue"] as? String }
 }
 
 /**

@@ -320,36 +320,33 @@ extension Sequence: CustomDebugStringConvertible {
 
 // MARK: - Notification
 
-extension Sequence: NotificationDispatchType {
-  /** An enumeration to wrap up notifications */
-  enum Notification: String, NotificationType, NotificationNameType {
-    case DidAddTrack, DidRemoveTrack, DidChangeTrack, SoloCountDidChange, DidUpdate
-    enum Key: String, NotificationKeyType {
-      case Track, OldTrack, OldCount, RemovedIndex, AddedIndex, NewCount, AddedTrack, RemovedTrack
-    }
+extension Sequence: NotificationDispatching {
+
+  enum NotificationName: String, LosslessStringConvertible {
+    case didAddTrack, didRemoveTrack, didChangeTrack, soloCountDidChange, didUpdate
   }
 }
 
 extension Notification {
 
-  var track: InstrumentTrack?    { return userInfo?[Sequence.Notification.Key.Track.key] as? InstrumentTrack }
-  var oldTrack: InstrumentTrack? { return userInfo?[Sequence.Notification.Key.OldTrack.key] as? InstrumentTrack }
+  var track: InstrumentTrack?    { return userInfo?["track"] as? InstrumentTrack }
+  var oldTrack: InstrumentTrack? { return userInfo?["oldTrack"] as? InstrumentTrack }
 
-  var oldCount: Int? { return (userInfo?[Sequence.Notification.Key.OldCount.key] as? NSNumber)?.intValue }
-  var newCount: Int? { return (userInfo?[Sequence.Notification.Key.NewCount.key] as? NSNumber)?.intValue }
+  var oldCount: Int? { return (userInfo?["oldCount"] as? NSNumber)?.intValue }
+  var newCount: Int? { return (userInfo?["newCount"] as? NSNumber)?.intValue }
 
   var removedIndex: Int? {
-    return (userInfo?[Sequence.Notification.Key.RemovedIndex.key] as? NSNumber)?.intValue
+    return (userInfo?["removedIndex"] as? NSNumber)?.intValue
   }
   var addedIndex: Int? {
-    return (userInfo?[Sequence.Notification.Key.AddedIndex.key] as? NSNumber)?.intValue
+    return (userInfo?["addedIndex"] as? NSNumber)?.intValue
   }
 
   var addedTrack: InstrumentTrack? {
-    return userInfo?[Sequence.Notification.Key.AddedTrack.key] as? InstrumentTrack
+    return userInfo?["addedTrack"] as? InstrumentTrack
   }
   var removedTrack: InstrumentTrack? {
-    return userInfo?[Sequence.Notification.Key.RemovedTrack.key] as? InstrumentTrack
+    return userInfo?["removedTrack"] as? InstrumentTrack
   }
 
 }

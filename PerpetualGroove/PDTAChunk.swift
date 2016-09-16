@@ -39,10 +39,12 @@ struct PDTAChunk {
   */
   init<C:Collection>(bytes: C, url: URL) throws 
     where C.Iterator.Element == Byte,
-          C.Index == Int, 
+          C.Index == Int,
+          C.IndexDistance == Int,
           C.SubSequence.Iterator.Element == Byte,
           C.SubSequence:Collection, 
           C.SubSequence.Index == Int,
+          C.SubSequence.IndexDistance == Int,
           C.SubSequence.SubSequence == C.SubSequence
   {
     self.url = url
@@ -165,7 +167,8 @@ extension PDTAChunk {
 
     init?<C:Collection>(bytes: C, url: URL) 
       where C.Iterator.Element == Byte,
-            C.Index == Int, 
+            C.Index == Int,
+            C.IndexDistance == Int,
             C.SubSequence.Iterator.Element == Byte,
             C.SubSequence:Collection, 
             C.SubSequence.Index == Int,
@@ -197,7 +200,7 @@ extension PDTAChunk {
 extension PDTAChunk {
   enum ChunkType: String {
     case PHDR, PBAG, PMOD, PGEN, INST, IBAG, IMOD, IGEN, SHDR
-    var bytes: [Byte] { return rawValue.lowercased.bytes }
+    var bytes: [Byte] { return rawValue.lowercased().bytes }
     init?<C:Collection>(bytes: C)
       where C.Iterator.Element == Byte,
             C.Index == Int,
@@ -221,6 +224,7 @@ extension PDTAChunk {
     init?<C:Collection>(_ bytes: C, _ url: URL)
       where C.Iterator.Element == Byte,
             C.Index == Int,
+            C.IndexDistance == Int,
             C.SubSequence.Iterator.Element == Byte,
             C.SubSequence:Collection,
             C.SubSequence.Index == Int,
@@ -264,6 +268,7 @@ extension PDTAChunk {
     init?<C:Collection>(bytes: C)
       where C.Iterator.Element == Byte,
             C.Index == Int,
+            C.IndexDistance == Int,
             C.SubSequence.Iterator.Element == Byte,
             C.SubSequence:Collection,
             C.SubSequence.Index == Int,

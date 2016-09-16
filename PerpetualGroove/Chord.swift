@@ -12,8 +12,8 @@ import CoreMIDI
 
 
 struct Chord: RawRepresentable {
-  var root = Note.`default`(.C)
-  var pattern = ChordPattern(.Major)
+  var root = Note.`default`(.c)
+  var pattern = ChordPattern(.major)
 
   var rawValue: String { return "\(root.rawValue):\(pattern.rawValue)" }
 
@@ -120,17 +120,17 @@ extension Chord {
         switch degree {
           case let .`default`(i):
             note = Note.`default`(natural.advanced(by: i.rawValue - 1))
-          case let .modified(i, .Flat):
+          case let .modified(i, .flat):
             note = Note.`default`(natural.advanced(by: i.rawValue - 1)).flattened()
-          case let .modified(i, .Sharp):
+          case let .modified(i, .sharp):
             note = Note.`default`(natural.advanced(by: i.rawValue - 1)).sharpened()
-          case let .modified(i, .DoubleFlat):
+          case let .modified(i, .doubleFlat):
             note = Note.`default`(natural.advanced(by: i.rawValue - 1)).flattened().flattened()
         }
         switch modifier {
-          case .Flat?:       result.append(note.flattened())
-          case .Sharp?:      result.append(note.sharpened())
-          case .DoubleFlat?: result.append(note.flattened().flattened())
+          case .flat?:       result.append(note.flattened())
+          case .sharp?:      result.append(note.sharpened())
+          case .doubleFlat?: result.append(note.flattened().flattened())
           case nil:          result.append(note)
         }
       }

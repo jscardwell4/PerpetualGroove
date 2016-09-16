@@ -223,17 +223,15 @@ final class Document: UIDocument {
   }
 }
 
-extension Document: NotificationDispatchType {
-  enum Notification: String, NotificationType, NotificationNameType {
-    case DidRenameDocument
-
-    enum Key: String, NotificationKeyType { case NewName }
+extension Document: NotificationDispatching {
+  enum NotificationName: String, LosslessStringConvertible {
+    case didRenameDocument
   }
 }
 
 extension Notification {
   var newDocumentName: String? {
-    return userInfo?[Document.Notification.Key.NewName.key] as? String
+    return userInfo?["newName"] as? String
   }
 }
 

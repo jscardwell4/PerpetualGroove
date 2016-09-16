@@ -64,7 +64,7 @@ extension NSMetadataItem {
       let name: String?
       switch key {
         case ~/"^kMDItem[a-zA-Z]+$":
-          name = $0.rawValue[key.startIndex.advancedBy(7)..<]
+          name = $0.rawValue[key.index(key.startIndex, offsetBy: 7)|->]
         case ~/"^NSMetadataItem[a-zA-Z]+Key$":
           name = $0.rawValue[key.characters.index(key.startIndex, offsetBy: 14) ..< key.characters.index(key.endIndex, offsetBy: -3)]
         case ~/"^NSMetadataUbiquitousItem[a-zA-Z]+Key$":

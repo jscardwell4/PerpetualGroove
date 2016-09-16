@@ -23,7 +23,7 @@ final class MIDINodeManager {
   /// The nodes currently being managed
   fileprivate(set) var nodes: OrderedSet<HashableTuple<BarBeatTime,MIDINodeRef>> = []
 
-  var nodeIdentifiers: Set<MIDINode.Identifier> { return Set(nodes.flatMap({$0.element2.reference?.identifier})) }
+  var nodeIdentifiers: Set<MIDINode.Identifier> { return Set(nodes.flatMap({$0.elements.1.reference?.identifier})) }
 
 
   fileprivate var pendingNodes: Set<MIDINode.Identifier> = []
@@ -60,8 +60,8 @@ final class MIDINodeManager {
   */
   func removeNodeWithIdentifier(_ identifier: MIDINode.Identifier, delete: Bool = false) throws {
     logDebug("removing node with identifier \(identifier)")
-    guard let idx = nodes.indexOf({$0.element2.reference?.identifier == identifier}),
-              let node = nodes[idx].element2.reference else
+    guard let idx = nodes.index(where: {$0.elements.1.reference?.identifier == identifier}),
+              let node = nodes[idx].elements.1.reference else
     {
       fatalError("failed to find node with mapped identifier \(identifier)")
     }
@@ -72,12 +72,12 @@ final class MIDINodeManager {
 
   /** stopNodes */
   func stopNodes(remove: Bool = false) {
-    nodes.forEach {$0.element2.reference?.fadeOut(remove: remove)}
+    nodes.forEach {$0.elements.1.reference?.fadeOut(remove: remove)}
     owner.logDebug("nodes stopped\(remove ? " and removed" : "")")
   }
 
   /** startNodes */
-  func startNodes() { nodes.forEach {$0.element2.reference?.fadeIn()}; owner.logDebug("nodes started") }
+  func startNodes() { nodes.forEach {$0.elements.1.reference?.fadeIn()}; owner.logDebug("nodes started") }
 
   /**
    removeNode:
@@ -107,15 +107,15 @@ final class MIDINodeManager {
     owner.eventQueue.async {
       [time = Sequencer.time.barBeatTime, unowned node, weak self] in
       let identifier = MIDINodeEvent.Identifier(nodeIdentifier: node.identifier)
-      let data = MIDINodeEvent.Data.Add(identifier: identifier,
+      let data = MIDINodeEvent.Data.add(identifier: identifier,
                                         trajectory: node.path.initialTrajectory,
                                         generator: node.generator)
       let event = MIDINodeEvent(data, time)
-      self?.owner.addEvent(.Node(event))
+      self?.owner.addEvent(.node(event))
     }
 
     // Insert the node into our set
-    nodes.append(HashableTuple(Sequencer.time.barBeatTime, Weak(node)))
+    nodes.append(HashableTuple((Sequencer.time.barBeatTime, Weak(node))))
     pendingNodes.remove(node.identifier)
     owner.logDebug("adding node \(node.name!) (\(node.identifier))")
 
@@ -130,8 +130,8 @@ final class MIDINodeManager {
    - parameter delete: Bool
   */
   func removeNode(_ node: MIDINode, delete: Bool) throws {
-    guard let idx = nodes.indexOf({$0.element2.reference === node}),
-              let node = nodes.removeAtIndex(idx).element2.reference else
+    guard let idx = nodes.index(where: {$0.elements.1.reference === node}),
+          let node = nodes.remove(at: idx).elements.1.reference else
     {
         throw MIDINodeDispatchError.NodeNotFound
     }
@@ -153,8 +153,8 @@ final class MIDINodeManager {
 //        guard owner.recording else { owner.logDebug("not recording…skipping event creation"); return }
         owner.eventQueue.async {
           [time = Sequencer.time.barBeatTime, weak self] in
-          let event = MIDINodeEvent(.Remove(identifier: MIDINodeEvent.Identifier(nodeIdentifier: id)), time)
-          self?.owner.addEvent(.Node(event))
+          let event = MIDINodeEvent(.remove(identifier: MIDINodeEvent.Identifier(nodeIdentifier: id)), time)
+          self?.owner.addEvent(.node(event))
         }
     }
   }

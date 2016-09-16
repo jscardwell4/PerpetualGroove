@@ -178,7 +178,7 @@ final class SettingsManager {
     defaults.register(defaults: Setting.boolSettings.reduce([String:AnyObject]()) {
       (dict: [String:AnyObject], setting: Setting) in
       var dict = dict
-      dict[setting.key] = setting.defaultValue as? AnyObject
+      dict[setting.key] = setting.defaultValue// as? AnyObject
       return dict
 
       })
@@ -193,66 +193,40 @@ final class SettingsManager {
 }
 
 // MARK: - Notification
-extension SettingsManager: NotificationDispatchType {
+extension SettingsManager: NotificationDispatching {
 
-  struct Notification: NotificationType {
+  enum NotificationName: String, LosslessStringConvertible {
 
-    enum Name: String, NotificationNameType {
       case iCloudStorageChanged
-      case ConfirmDeleteDocumentChanged, ConfirmDeleteTrackChanged
-      case ScrollTrackLabelsChanged
-      case CurrentDocumentLocalChanged, CurrentDocumentiCloudChanged
-      case MakeNewTrackCurrentChanged
-      case DidInitializeSettings
-    }
+      case confirmDeleteDocumentChanged, confirmDeleteTrackChanged
+      case scrollTrackLabelsChanged
+      case currentDocumentLocalChanged, currentDocumentiCloudChanged
+      case makeNewTrackCurrentChanged
+      case didInitializeSettings
 
-    enum Key: String, KeyType { case SettingValue }
-
-    static let iCloudStorageChanged         = Notification(name: .iCloudStorageChanged)
-    static let ConfirmDeleteDocumentChanged = Notification(name: .ConfirmDeleteDocumentChanged)
-    static let ConfirmDeleteTrackChanged    = Notification(name: .ConfirmDeleteTrackChanged)
-    static let ScrollTrackLabelsChanged     = Notification(name: .ScrollTrackLabelsChanged)
-    static let CurrentDocumentLocalChanged  = Notification(name: .CurrentDocumentLocalChanged)
-    static let CurrentDocumentiCloudChanged = Notification(name: .CurrentDocumentiCloudChanged)
-    static let MakeNewTrackCurrentChanged   = Notification(name: .MakeNewTrackCurrentChanged)
-    static let DidInitializeSettings        = Notification(name: .DidInitializeSettings)
-
-    var object: AnyObject? { return SettingsManager.self }
-    let name: Name
     var setting: Setting? {
-      switch name {
+      switch self {
         case .iCloudStorageChanged:         return .iCloudStorage
-        case .ConfirmDeleteDocumentChanged: return .ConfirmDeleteDocument
-        case .ConfirmDeleteTrackChanged:    return .ConfirmDeleteTrack
-        case .ScrollTrackLabelsChanged:     return .ScrollTrackLabels
-        case .CurrentDocumentLocalChanged:  return .CurrentDocumentLocal
-        case .CurrentDocumentiCloudChanged: return .CurrentDocumentiCloud
-        case .MakeNewTrackCurrentChanged:   return .MakeNewTrackCurrent
-        case .DidInitializeSettings:        return nil
+        case .confirmDeleteDocumentChanged: return .ConfirmDeleteDocument
+        case .confirmDeleteTrackChanged:    return .ConfirmDeleteTrack
+        case .scrollTrackLabelsChanged:     return .ScrollTrackLabels
+        case .currentDocumentLocalChanged:  return .CurrentDocumentLocal
+        case .currentDocumentiCloudChanged: return .CurrentDocumentiCloud
+        case .makeNewTrackCurrentChanged:   return .MakeNewTrackCurrent
+        case .didInitializeSettings:        return nil
       }
     }
-    var userInfo: [Key:AnyObject?]? {
-      guard let setting = setting else { return nil }
-      return [.SettingValue: SettingsManager.settingsCache[setting] as? AnyObject]
-    }
 
-    fileprivate init(name: Name) { self.name = name }
-
-    /**
-    init:
-
-    - parameter setting: Setting
-    */
     fileprivate init(_ setting: Setting?) {
-      guard let setting = setting  else { self = Notification.DidInitializeSettings; return }
+      guard let setting = setting  else { self = .didInitializeSettings; return }
       switch setting {
-        case .iCloudStorage:         self = Notification.iCloudStorageChanged
-        case .ConfirmDeleteDocument: self = Notification.ConfirmDeleteDocumentChanged
-        case .ConfirmDeleteTrack:    self = Notification.ConfirmDeleteTrackChanged
-        case .ScrollTrackLabels:     self = Notification.ScrollTrackLabelsChanged
-        case .CurrentDocumentLocal:  self = Notification.CurrentDocumentLocalChanged
-        case .CurrentDocumentiCloud: self = Notification.CurrentDocumentiCloudChanged
-        case .MakeNewTrackCurrent:   self = Notification.MakeNewTrackCurrentChanged
+        case .iCloudStorage:         self = .iCloudStorageChanged
+        case .ConfirmDeleteDocument: self = .confirmDeleteDocumentChanged
+        case .ConfirmDeleteTrack:    self = .confirmDeleteTrackChanged
+        case .ScrollTrackLabels:     self = .scrollTrackLabelsChanged
+        case .CurrentDocumentLocal:  self = .currentDocumentLocalChanged
+        case .CurrentDocumentiCloud: self = .currentDocumentiCloudChanged
+        case .MakeNewTrackCurrent:   self = .makeNewTrackCurrentChanged
       }
     }
 
@@ -261,24 +235,23 @@ extension SettingsManager: NotificationDispatchType {
 }
 
 extension Notification {
-  typealias  Key = SettingsManager.Notification.Key
   var iCloudStorageSetting: Bool? {
-    return (userInfo?[Key.SettingValue.key] as? NSNumber)?.boolValue
+    return (userInfo?["settingValue"] as? NSNumber)?.boolValue
   }
   var confirmDeleteDocumentSetting: Bool? {
-    return (userInfo?[Key.SettingValue.key] as? NSNumber)?.boolValue
+    return (userInfo?["settingValue"] as? NSNumber)?.boolValue
   }
   var confirmDeleteTrackSetting: Bool? {
-    return (userInfo?[Key.SettingValue.key] as? NSNumber)?.boolValue
+    return (userInfo?["settingValue"] as? NSNumber)?.boolValue
   }
   var scrollTrackLabelsSetting: Bool? {
-    return (userInfo?[Key.SettingValue.key] as? NSNumber)?.boolValue
+    return (userInfo?["settingValue"] as? NSNumber)?.boolValue
   }
   var makeNewTrackCurrentSetting: Bool? {
-    return (userInfo?[Key.SettingValue.key] as? NSNumber)?.boolValue
+    return (userInfo?["settingValue"] as? NSNumber)?.boolValue
   }
   var currentDocumentSetting: Data? {
-    return  userInfo?[Key.SettingValue.key] as? Data
+    return  userInfo?["settingValue"] as? Data
   }
 }
 
@@ -286,19 +259,17 @@ extension Notification {
 extension SettingsManager {
 
   enum Setting: String, KeyType, EnumerableType {
-    case iCloudStorage         = "iCloudStorage"
-    case ConfirmDeleteDocument = "confirmDeleteDocument"
-    case ConfirmDeleteTrack    = "confirmDeleteTrack"
-    case ScrollTrackLabels     = "scrollTrackLabels"
-    case CurrentDocumentLocal  = "currentDocumentLocal"
-    case CurrentDocumentiCloud = "currentDocumentiCloud"
-    case MakeNewTrackCurrent   = "makeNewTrackCurrent"
+    case iCloudStorage
+    case confirmDeleteDocument, confirmDeleteTrack
+    case scrollTrackLabels
+    case currentDocumentLocal, currentDocumentiCloud
+    case makeNewTrackCurrent
 
     var currentValue: Any? {
       guard let value = defaults.object(forKey: rawValue) else { return nil }
 
            if let number = value as? NSNumber { return number }
-      else if let data   = value as? Data   { return data   }
+      else if let data   = value as? Data     { return data   }
       else                                    { return nil    }
     }
 
@@ -306,18 +277,18 @@ extension SettingsManager {
 
     var defaultValue: Any? {
       switch self {
-        case .CurrentDocumentLocal, .CurrentDocumentiCloud: return nil
-        case .iCloudStorage, .ConfirmDeleteDocument, .ConfirmDeleteTrack,
-             .ScrollTrackLabels, .MakeNewTrackCurrent: return true
+        case .currentDocumentLocal, .currentDocumentiCloud: return nil
+        case .iCloudStorage, .confirmDeleteDocument, .confirmDeleteTrack,
+             .scrollTrackLabels, .makeNewTrackCurrent: return true
       }
     }
 
     static var boolSettings: [Setting] {
-      return [.iCloudStorage, .ConfirmDeleteDocument, .ConfirmDeleteTrack,
-              .ScrollTrackLabels, .MakeNewTrackCurrent]
+      return [.iCloudStorage, .confirmDeleteDocument, .confirmDeleteTrack,
+              .scrollTrackLabels, .makeNewTrackCurrent]
     }
     static var allCases: [Setting] {
-      return boolSettings + [.CurrentDocumentLocal, .CurrentDocumentiCloud]
+      return boolSettings + [.currentDocumentLocal, .currentDocumentiCloud]
     }
   }
 

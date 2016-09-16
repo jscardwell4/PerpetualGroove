@@ -20,8 +20,8 @@ final class BarBeatTimeLabel: UIView {
 
       if let oldTransport = oldValue {
         oldTransport.time.removeCallbackForKey(barBeatTimeCallbackKey)
-        receptionist.stopObserving(notification: .DidJog, from: oldValue)
-        receptionist.stopObserving(notification: .DidReset, from: oldValue)
+        receptionist.stopObserving(name: Transport.NotificationName.didJog.rawValue, from: oldValue)
+        receptionist.stopObserving(name: Transport.NotificationName.didReset.rawValue, from: oldValue)
       }
 
       guard let transport = transport else { return }
@@ -30,18 +30,18 @@ final class BarBeatTimeLabel: UIView {
       transport.time.registerCallback({ [weak self] in self?.currentTime = $0 },
                             predicate: {_ in true},
                                forKey: barBeatTimeCallbackKey)
-      receptionist.observe(notification: .DidBeginJogging, from: transport) {
+      receptionist.observe(name: Transport.NotificationName.didBeginJogging.rawValue, from: transport) {
         [weak self] _ in self?.jogging = true
       }
-      receptionist.observe(notification: .DidEndJogging, from: transport) {
+      receptionist.observe(name: Transport.NotificationName.didEndJogging.rawValue, from: transport) {
         [weak self] _ in self?.jogging = false
       }
-      receptionist.observe(notification: .DidJog, from: transport) {
+      receptionist.observe(name: Transport.NotificationName.didJog.rawValue, from: transport) {
         [weak self] in
         guard self?.jogging == true, let time = $0.jogTime, let _ = $0.jogDirection else { return }
         self?.currentTime = time
       }
-      receptionist.observe(notification: .DidReset, from: transport) {
+      receptionist.observe(name: Transport.NotificationName.didReset.rawValue, from: transport) {
         [weak self] in guard let time = $0.time else { return }; self?.currentTime = time
       }
     }
@@ -195,7 +195,7 @@ final class BarBeatTimeLabel: UIView {
     calculateFrames()
 
     #if !TARGET_INTERFACE_BUILDER
-      receptionist.observe(notification: Sequencer.Notification.DidChangeTransport, from: Sequencer.self) {
+      receptionist.observe(name: Sequencer.NotificationName.didChangeTransport.rawValue, from: Sequencer.self) {
         [weak self] _ in self?.transport = Sequencer.transport
       }
       transport = Sequencer.transport

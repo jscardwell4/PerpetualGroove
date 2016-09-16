@@ -41,8 +41,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
   func                application(_ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool
   {
-    delayedDispatchToMain(1.0) {
-      globalBackgroundQueue.async {
+    DispatchQueue.main.asyncAfter(deadline: DispatchTime(uptimeNanoseconds: NSEC_PER_SEC)) {
+      DispatchQueue.global().async {
         SettingsManager.initialize()
         AudioManager.initialize()
         Sequencer.initialize()

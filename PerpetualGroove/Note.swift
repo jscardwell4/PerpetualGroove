@@ -9,7 +9,7 @@
 import Foundation
 import MoonKit
 
-enum PitchModifier: String { case Flat = "♭", Sharp = "♯", DoubleFlat = "𝄫" }
+enum PitchModifier: String { case flat = "♭", sharp = "♯", doubleFlat = "𝄫" }
 
 
 /** Specifies an absolute pitch class value */
@@ -61,9 +61,9 @@ enum Note: RawRepresentable {
       let rawNatural = match.captures[1]?.string,
       let natural = Natural(rawValue: rawNatural) else { return nil }
     if let rawModifier = match.captures[2]?.string, let modifier = PitchModifier(rawValue: rawModifier) {
-      self = .Modified(natural, modifier)
+      self = .modified(natural, modifier)
     } else {
-      self = .Default(natural)
+      self = .`default`(natural)
     }
   }
 
@@ -76,13 +76,13 @@ enum Note: RawRepresentable {
     switch self {
       case let .`default`(n):
         switch n {
-          case .C: return .`default`(.B)
-          case .F: return .`default`(.E)
-          default: return .modified(n, .Flat)
+          case .c: return .`default`(.b)
+          case .f: return .`default`(.e)
+          default: return .modified(n, .flat)
         }
-      case let .modified(n, .Sharp): return .`default`(n)
-      case let .modified(n, .Flat): return .`default`(n.predecessor())
-      case let .modified(n, .DoubleFlat): return .modified(n.predecessor(), .Flat)
+      case let .modified(n, .sharp): return .`default`(n)
+      case let .modified(n, .flat): return .`default`(n.predecessor())
+      case let .modified(n, .doubleFlat): return .modified(n.predecessor(), .flat)
     }
   }
 
@@ -95,13 +95,13 @@ enum Note: RawRepresentable {
     switch self {
       case let .`default`(n):
         switch n {
-          case .B: return .`default`(.C)
-          case .E: return .`default`(.F)
-          default: return .modified(n, .Sharp)
+          case .b: return .`default`(.c)
+          case .e: return .`default`(.f)
+          default: return .modified(n, .sharp)
         }
-      case let .modified(n, .Sharp): return .`default`(n.successor())
-      case let .modified(n, .Flat): return .`default`(n)
-      case let .modified(n, .DoubleFlat): return .modified(n, .Flat)
+      case let .modified(n, .sharp): return .`default`(n.successor())
+      case let .modified(n, .flat): return .`default`(n)
+      case let .modified(n, .doubleFlat): return .modified(n, .flat)
     }
   }
 
@@ -113,24 +113,24 @@ func ==(lhs: Note, rhs: Note) -> Bool {
   switch (lhs, rhs) {
     case let (.`default`(n1), .`default`(n2)) where n1 == n2: return true
     case let (.modified(n1, m1), .modified(n2, m2)) where n1 == n2 && m1 == m2: return true
-    case let (.`default`(n1), .modified(n2, .Flat)):
+    case let (.`default`(n1), .modified(n2, .flat)):
       switch (n1, n2) {
-        case (.E, .F), (.B, .C): return true
+        case (.e, .f), (.b, .c): return true
         default:                 return false
       }
-    case let (.`default`(n1), .modified(n2, .Sharp)):
+    case let (.`default`(n1), .modified(n2, .sharp)):
       switch (n1, n2) {
-        case (.F, .E), (.C, .B): return true
+        case (.f, .e), (.c, .b): return true
         default:                 return false
       }
-    case let (.modified(n1, .Flat), .`default`(n2)):
+    case let (.modified(n1, .flat), .`default`(n2)):
       switch (n1, n2) {
-        case (.F, .E), (.C, .B): return true
+        case (.f, .e), (.c, .b): return true
         default:                 return false
       }
-    case let (.modified(n1, .Sharp), .`default`(n2)):
+    case let (.modified(n1, .sharp), .`default`(n2)):
       switch (n1, n2) {
-        case (.E, .F), (.B, .C): return true
+        case (.e, .f), (.b, .c): return true
         default:                 return false
       }
     default: return false
@@ -143,20 +143,20 @@ func <(lhs: Note, rhs: Note) -> Bool {
   guard lhs != rhs else { return false }
   switch (lhs, rhs) {
     case let (.`default`(n1),          .`default`(n2))          where n1 < n2:  return true
-    case let (.modified(n1, .Flat),  .modified(n2, .Flat))  where n1 < n2:  return true
-    case let (.modified(n1, .Sharp), .modified(n2, .Sharp)) where n1 < n2:  return true
-    case let (.modified(n1, .Flat),  .modified(n2, .Sharp)) where n1 <= n2: return true
-    case let (.modified(n1, .Sharp), .modified(n2, .Flat))  where n1 < n2:  return true
-    case let (.`default`(n1), .modified(n2, .Flat)) where n1 < n2:
+    case let (.modified(n1, .flat),  .modified(n2, .flat))  where n1 < n2:  return true
+    case let (.modified(n1, .sharp), .modified(n2, .sharp)) where n1 < n2:  return true
+    case let (.modified(n1, .flat),  .modified(n2, .sharp)) where n1 <= n2: return true
+    case let (.modified(n1, .sharp), .modified(n2, .flat))  where n1 < n2:  return true
+    case let (.`default`(n1), .modified(n2, .flat)) where n1 < n2:
       switch (n1, n2) {
-        case (.B, .C), (.E, .F): return false
+        case (.b, .c), (.e, .f): return false
         default:                 return true
       }
-    case let (.`default`(n1), .modified(n2, .Sharp)) where n1 <= n2: return true
-    case let (.modified(n1, .Flat), .`default`(n2))  where n1 <= n2: return true
-    case let (.modified(n1, .Sharp), .`default`(n2)) where n1 < n2:
+    case let (.`default`(n1), .modified(n2, .sharp)) where n1 <= n2: return true
+    case let (.modified(n1, .flat), .`default`(n2))  where n1 <= n2: return true
+    case let (.modified(n1, .sharp), .`default`(n2)) where n1 < n2:
       switch (n1, n2) {
-        case (.B, .C), (.E, .F): return false
+        case (.b, .c), (.e, .f): return false
         default:                 return true
       }
     default: return false

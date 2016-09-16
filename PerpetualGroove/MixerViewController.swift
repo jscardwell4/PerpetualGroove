@@ -41,15 +41,15 @@ final class MixerViewController: UICollectionViewController, SecondaryController
   - parameter sequence: Sequence
   */
   fileprivate func observeSequence(_ sequence: Sequence) {
-    receptionist.observe(notification: .DidChangeTrack, from: sequence) {
+    receptionist.observe(name: Sequence.NotificationName.didChangeTrack.rawValue, from: sequence) {
       [weak self] _ in
         guard let idx = self?.sequence?.currentTrack?.index else { return }
         self?.selectTrackAtIndex(idx)
     }
-    receptionist.observe(notification: .DidAddTrack,
+    receptionist.observe(name: Sequence.NotificationName.didAddTrack.rawValue,
                     from: sequence,
                 callback: weakMethod(self, MixerViewController.updateTracks))
-    receptionist.observe(notification: .DidRemoveTrack,
+    receptionist.observe(name: Sequence.NotificationName.didRemoveTrack.rawValue,
                     from: sequence,
                 callback: weakMethod(self, MixerViewController.updateTracks))
   }
@@ -60,9 +60,9 @@ final class MixerViewController: UICollectionViewController, SecondaryController
   - parameter sequence: Sequence
   */
   fileprivate func stopObservingSequence(_ sequence: Sequence) {
-    receptionist.stopObserving(notification: .DidChangeTrack, from: sequence)
-    receptionist.stopObserving(notification: .DidAddTrack,    from: sequence)
-    receptionist.stopObserving(notification: .DidRemoveTrack, from: sequence)
+    receptionist.stopObserving(name: Sequence.NotificationName.didChangeTrack.rawValue, from: sequence)
+    receptionist.stopObserving(name: Sequence.NotificationName.didAddTrack.rawValue,    from: sequence)
+    receptionist.stopObserving(name: Sequence.NotificationName.didRemoveTrack.rawValue, from: sequence)
   }
 
   fileprivate var pendingTrackIndex: Int?
@@ -263,7 +263,7 @@ final class MixerViewController: UICollectionViewController, SecondaryController
   override func awakeFromNib() {
     super.awakeFromNib()
     guard !initialized else { return }
-    receptionist.observe(notification: Sequencer.Notification.DidChangeSequence, from: Sequencer.self) {
+    receptionist.observe(name: Sequencer.NotificationName.didChangeSequence.rawValue, from: Sequencer.self) {
       [weak self] _ in self?.sequence = Sequencer.sequence
     }
     initialized = true

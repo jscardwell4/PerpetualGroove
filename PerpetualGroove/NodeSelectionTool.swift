@@ -50,7 +50,7 @@ class NodeSelectionTool: ToolType {
     light.categoryBitMask = 1
     node.addChild(light)
     node.lightingBitMask = 1
-    node.run(SKAction.colorize(with: .white(), colorBlendFactor: 1, duration: 0.25))
+    node.run(SKAction.colorize(with: UIColor.white, colorBlendFactor: 1, duration: 0.25))
 
   }
 
@@ -70,10 +70,10 @@ class NodeSelectionTool: ToolType {
 
   init(playerNode: MIDIPlayerNode) {
     player = playerNode
-    receptionist.observe(notification: .DidAddNode,
+    receptionist.observe(name: MIDIPlayer.NotificationName.didAddNode.rawValue,
                     from: MIDIPlayer.self,
                 callback: weakMethod(self, NodeSelectionTool.didAddNode))
-    receptionist.observe(notification: .DidRemoveNode,
+    receptionist.observe(name: MIDIPlayer.NotificationName.didRemoveNode.rawValue,
                     from: MIDIPlayer.self,
                 callback: weakMethod(self, NodeSelectionTool.didRemoveNode))
   }
@@ -118,13 +118,13 @@ class NodeSelectionTool: ToolType {
 
   func previousNode() {
     let nodes = player.midiNodes
-    guard let node = node, let idx = nodes.indexOf(node) else { return }
+    guard let node = node, let idx = nodes.index(where: {$0 === node}) else { return }
     self.node = idx + 1 < nodes.endIndex ? nodes[idx + 1] : nodes[nodes.startIndex]
   }
 
   func nextNode() {
     let nodes = player.midiNodes
-    guard let node = node, let idx = nodes.indexOf(node) else { return }
+    guard let node = node, let idx = nodes.index(where: {$0 === node}) else { return }
     self.node = idx - 1 >= nodes.startIndex ? nodes[idx - 1] : nodes[nodes.endIndex - 1]
   }
   

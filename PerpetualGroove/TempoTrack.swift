@@ -20,7 +20,7 @@ final class TempoTrack: Track {
       guard tempo != oldValue && recording else { return }
       logDebug("inserting event for tempo \(tempo)")
       addEvent(.meta(tempoEvent))
-      Notification.DidUpdate.post(object: self)
+      postNotification(name: .didUpdate, object: self, userInfo: nil)
     }
   }
 
@@ -29,7 +29,7 @@ final class TempoTrack: Track {
       guard timeSignature != oldValue && recording else { return }
       logDebug("inserting event for signature \(timeSignature)")
       addEvent(.meta(timeSignatureEvent))
-      Notification.DidUpdate.post(object: self)
+      postNotification(name: .didUpdate, object: self, userInfo: nil)
     }
   }
 

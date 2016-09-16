@@ -45,18 +45,18 @@ struct MIDIFileHeaderChunk {
                               C.SubSequence.SubSequence == C.SubSequence
   {
     guard bytes.count == 14 else {
-      throw MIDIFileError(type: .InvalidLength, reason: "Header chunk must be 14 bytes")
+      throw MIDIFileError(type: .invalidLength, reason: "Header chunk must be 14 bytes")
     }
     guard bytes[bytes.startIndex ..< bytes.startIndex.advanced(by: 4)].elementsEqual("MThd".utf8) else {
-      throw MIDIFileError(type: .InvalidHeader, reason: "Expected chunk header with type 'MThd'")
+      throw MIDIFileError(type: .invalidHeader, reason: "Expected chunk header with type 'MThd'")
     }
-    guard Byte4(6) == Byte4(bytes[bytes.startIndex.advancedBy(4) ..< bytes.startIndex.advancedBy(8)]) else {
-      throw MIDIFileError(type: .InvalidLength, reason: "Header must specify length of 6")
+    guard Byte4(6) == Byte4(bytes[bytes.startIndex + 4 ..< bytes.startIndex + 8]) else {
+      throw MIDIFileError(type: .invalidLength, reason: "Header must specify length of 6")
     }
-    guard 1 == Byte2(bytes[bytes.startIndex.advancedBy(8) ..< bytes.startIndex.advancedBy(10)]) else {
-      throw MIDIFileError(type: .FileStructurallyUnsound, reason: "Format must be 00 00 00 00, 00 00 00 01, 00 00 00 02")
+    guard 1 == Byte2(bytes[bytes.startIndex + 8 ..< bytes.startIndex + 10]) else {
+      throw MIDIFileError(type: .fileStructurallyUnsound, reason: "Format must be 00 00 00 00, 00 00 00 01, 00 00 00 02")
     }
-    numberOfTracks = Byte2(bytes[bytes.startIndex.advancedBy(10) ..< bytes.startIndex.advancedBy(12)])
+    numberOfTracks = Byte2(bytes[bytes.startIndex + 10 ..< bytes.startIndex + 12])
   }
 }
 

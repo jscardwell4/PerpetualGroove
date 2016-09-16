@@ -57,7 +57,7 @@ struct MIDIFileError: ExtendedErrorType {
     get { return _reason.isEmpty ? type.rawValue : "\(type.rawValue): \(_reason)" }
     set { _reason = newValue }
   }
-  var type: `Type` = .Unspecified
+  var type: `Type` = .unspecified
   var name: String { return type.rawValue }
   init() {}
 
@@ -67,13 +67,13 @@ struct MIDIFileError: ExtendedErrorType {
   }
 
   enum `Type`: String {
-    case Unspecified
-    case ReadFailure
-    case FileStructurallyUnsound
-    case InvalidHeader
-    case InvalidLength
-    case UnsupportedEvent
-    case MissingEvent
+    case unspecified
+    case readFailure
+    case fileStructurallyUnsound
+    case invalidHeader
+    case invalidLength
+    case unsupportedEvent
+    case missingEvent
   }
 }
 

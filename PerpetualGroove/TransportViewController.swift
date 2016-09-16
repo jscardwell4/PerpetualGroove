@@ -16,17 +16,17 @@ final class TransportViewController: UIViewController {
       guard transport !== oldValue else { return }
 
       if let oldTransport = oldValue {
-        receptionist.stopObserving(notification: .DidPause,       from: oldTransport)
-        receptionist.stopObserving(notification: .DidStart,       from: oldTransport)
-        receptionist.stopObserving(notification: .DidStop,        from: oldTransport)
-        receptionist.stopObserving(notification: .DidChangeState, from: oldTransport)
+        receptionist.stopObserving(name: Transport.NotificationName.didPause.rawValue,       from: oldTransport)
+        receptionist.stopObserving(name: Transport.NotificationName.didStart.rawValue,       from: oldTransport)
+        receptionist.stopObserving(name: Transport.NotificationName.didStop.rawValue,        from: oldTransport)
+        receptionist.stopObserving(name: Transport.NotificationName.didChangeState.rawValue, from: oldTransport)
       }
 
       guard let transport = transport else { return }
 
       state = transport.state
 
-      receptionist.observe(notification: .DidChangeState,
+      receptionist.observe(name: Transport.NotificationName.didChangeState.rawValue,
                       from: transport,
                   callback: weakMethod(self, TransportViewController.didChangeState))
     }
@@ -105,7 +105,7 @@ final class TransportViewController: UIViewController {
 
       logDebug("\(oldValue) ➞ \(state)")
 
-      let modifiedState = state ⊻ oldValue
+      let modifiedState = state.symmetricDifference(oldValue)
 
       // Check if jog status changed
       if modifiedState ∋ .Jogging { transportStack.isUserInteractionEnabled = !jogging }
@@ -114,7 +114,7 @@ final class TransportViewController: UIViewController {
       if modifiedState ∋ .Recording { recordButton.isSelected = recording }
 
       // Check if play/pause status changed
-      if modifiedState ⚭ [.Playing, .Paused] {
+      if !modifiedState.isDisjoint(with: [.Playing, .Paused]) {
         stopButton.isEnabled = playing || paused
         (playing ? ControlImage.pause : ControlImage.play).decorateButton(playPauseButton)
       }

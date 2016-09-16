@@ -93,11 +93,11 @@ struct ChannelEvent: MIDIEventType {
   {
     self.delta = delta
     guard let t = EventType(rawValue: bytes[bytes.startIndex] >> 4) else {
-      throw MIDIFileError(type: .UnsupportedEvent,
+      throw MIDIFileError(type: .unsupportedEvent,
                           reason: "\(bytes[bytes.startIndex] >> 4) is not a supported channel event")
     }
     guard bytes.count == t.byteCount else {
-      throw MIDIFileError(type: .InvalidLength, reason: "\(t) events expect a total byte count of \(t.byteCount)")
+      throw MIDIFileError(type: .invalidLength, reason: "\(t) events expect a total byte count of \(t.byteCount)")
     }
     status = Status(bytes[bytes.startIndex])
 

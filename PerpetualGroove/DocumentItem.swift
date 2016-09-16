@@ -30,8 +30,8 @@ enum DocumentItem {
         return item.modificationDate as Date?
       case .document(let document):
         return FileManager.withDefaultManager {
-          guard let path = document.fileURL.path else { return nil }
-          return (try? $0.attributesOfItemAtPath(path) as NSDictionary)?.fileModificationDate()
+          let path = document.fileURL.path
+          return (try? $0.attributesOfItem(atPath: path) as NSDictionary)?.fileModificationDate()
       }
     }
   }
@@ -44,8 +44,8 @@ enum DocumentItem {
         return item.creationDate as Date?
       case .document(let document):
         return FileManager.withDefaultManager {
-          guard let path = document.fileURL.path else { return nil }
-          return (try? $0.attributesOfItemAtPath(path) as NSDictionary)?.fileCreationDate()
+          let path = document.fileURL.path
+          return (try? $0.attributesOfItem(atPath: path) as NSDictionary)?.fileCreationDate()
       }
     }
   }
@@ -56,8 +56,8 @@ enum DocumentItem {
       case .local(let item): return item.size
       case .document(let document):
         return FileManager.withDefaultManager {
-          guard let path = document.fileURL.path else { return 0 }
-          return (try? $0.attributesOfItemAtPath(path) as NSDictionary)?.fileSize() ?? 0
+          let path = document.fileURL.path
+          return (try? $0.attributesOfItem(atPath: path) as NSDictionary)?.fileSize() ?? 0
         }
     }
   }

@@ -47,7 +47,7 @@ struct MIDINodeEvent: MIDIEventType {
   {
     self.delta = delta
     guard bytes[bytes.startIndex ... bytes.index(after: bytes.startIndex)].elementsEqual([0xFF, 0x07]) else {
-      throw MIDIFileError(type: .InvalidHeader, reason: "Event must begin with `FF 07`")
+      throw MIDIFileError(type: .invalidHeader, reason: "Event must begin with `FF 07`")
     }
     var currentIndex = bytes.index(bytes.startIndex, offsetBy: 2)
     var i = currentIndex
@@ -57,7 +57,7 @@ struct MIDINodeEvent: MIDIEventType {
     currentIndex = i
     bytes.formIndex(&i, offsetBy: dataLength.intValue)
     guard bytes.endIndex == i else {
-      throw MIDIFileError(type: .InvalidLength, reason: "Specified length does not match actual")
+      throw MIDIFileError(type: .invalidLength, reason: "Specified length does not match actual")
     }
 
     data = try Data(data: bytes[currentIndex ..< i])
@@ -111,13 +111,13 @@ extension MIDINodeEvent {
     {
       var currentIndex = data.startIndex
       guard data.count >= 4 else {
-        throw MIDIFileError(type: .InvalidLength, reason: "Not enough bytes for node event identifier")
+        throw MIDIFileError(type: .invalidLength, reason: "Not enough bytes for node event identifier")
       }
       let loopIDByteCount = Int(Byte4(data[currentIndex..<data.index(currentIndex, offsetBy: 4)]))
       currentIndex = data.index(currentIndex, offsetBy: 4)
 
       guard data.distance(from: currentIndex, to: data.endIndex) >= loopIDByteCount else {
-        throw MIDIFileError(type: .InvalidLength, reason: "Not enough bytes for node event identifier")
+        throw MIDIFileError(type: .invalidLength, reason: "Not enough bytes for node event identifier")
       }
 
       if loopIDByteCount > 0 {
@@ -129,7 +129,7 @@ extension MIDINodeEvent {
       data.formIndex(&currentIndex, offsetBy: loopIDByteCount)
 
       guard String(data[currentIndex]) == ":" else {
-        throw MIDIFileError(type: .FileStructurallyUnsound, reason: "Missing separator in node event identifier")
+        throw MIDIFileError(type: .fileStructurallyUnsound, reason: "Missing separator in node event identifier")
       }
 
       data.formIndex(&currentIndex, offsetBy: 1)
@@ -137,7 +137,7 @@ extension MIDINodeEvent {
       let nodeIdentifierByteCount = MemoryLayout<NodeIdentifier>.size
 
       guard data.distance(from: currentIndex, to: data.endIndex) >= nodeIdentifierByteCount else {
-        throw MIDIFileError(type: .InvalidLength, reason: "Not enough bytes for node event identifier")
+        throw MIDIFileError(type: .invalidLength, reason: "Not enough bytes for node event identifier")
       }
 
       let nodeIdentifierBytes = Array(data[currentIndex..<data.index(currentIndex, offsetBy: nodeIdentifierByteCount)])
@@ -170,7 +170,7 @@ extension MIDINodeEvent.Identifier: JSONValueInitializable {
       let loopIdentifier = LoopIdentifier(uuidString: loopIdentifierString)
     {
       self.loopIdentifier = loopIdentifier
-    }
+    }  else { loopIdentifier = nil }
   }
 }
 
@@ -209,7 +209,7 @@ extension MIDINodeEvent {
       let identifierByteCount = Int(Byte4(data[currentIndex..<data.index(currentIndex, offsetBy: 4)]))
       data.formIndex(&currentIndex, offsetBy: 4)
       guard data.count >= identifierByteCount else {
-        throw MIDIFileError(type: .InvalidLength,
+        throw MIDIFileError(type: .invalidLength,
                             reason: "Data length must be at least as large as the bytes required for identifier")
       }
 
@@ -222,16 +222,16 @@ extension MIDINodeEvent {
 
       data.formIndex(&currentIndex, offsetBy: 1)
 
-      guard data.distance(from: i, to: data.endIndex) > 0 else { throw MIDIFileError(type: .InvalidLength, reason: "Not enough bytes for event") }
+      guard data.distance(from: i, to: data.endIndex) > 0 else { throw MIDIFileError(type: .invalidLength, reason: "Not enough bytes for event") }
 
       let trajectory = Trajectory(data[currentIndex ..< i])
-      guard trajectory != .null else { throw MIDIFileError(type: .ReadFailure, reason: "Null trajectory produced") }
+      guard trajectory != .null else { throw MIDIFileError(type: .readFailure, reason: "Null trajectory produced") }
 
       currentIndex = i
       data.formIndex(&i, offsetBy: Int(data[currentIndex]) + 1)
       data.formIndex(&currentIndex, offsetBy: 1)
 
-      guard data.distance(from: i, to: data.endIndex) == 0 else { throw MIDIFileError(type: .InvalidLength, reason: "Incorrect number of bytes") }
+      guard data.distance(from: i, to: data.endIndex) == 0 else { throw MIDIFileError(type: .invalidLength, reason: "Incorrect number of bytes") }
 
       let generator = MIDIGenerator(NoteGenerator(data[currentIndex ..< i]))
       self = .add(identifier: identifier, trajectory: trajectory, generator: generator)

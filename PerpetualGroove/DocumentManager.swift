@@ -518,20 +518,18 @@ extension DocumentManager {
 // MARK: - Error
 extension DocumentManager {
 
-  enum Error: String, Error {
+  enum Error: String, Swift.Error {
     case iCloudUnavailable
   }
 
 }
 
 // MARK: - Notification
-extension DocumentManager: NotificationDispatchType {
+extension DocumentManager: NotificationDispatching {
 
-  enum Notification: String, NotificationType, NotificationNameType {
-    case DidUpdateItems, WillChangeDocument, DidChangeDocument, DidCreateDocument
-    case WillOpenDocument, DidOpenDocument
-    enum Key: String, NotificationKeyType { case Changed, Added, Removed, FilePath }
-    var object: AnyObject? { return DocumentManager.self }
+  enum NotificationName: String, LosslessStringConvertible {
+    case didUpdateItems, willChangeDocument, didChangeDocument, didCreateDocument
+    case willOpenDocument, didOpenDocument
   }
   
 }

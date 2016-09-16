@@ -27,12 +27,12 @@ final class Sequencer {
     observeTransport(transport)
 
     soundSets = [
-      EmaxSoundSet(.BrassAndWoodwinds),
-      EmaxSoundSet(.KeyboardsAndSynths),
-      EmaxSoundSet(.GuitarsAndBasses),
-      EmaxSoundSet(.WorldInstruments),
-      EmaxSoundSet(.DrumsAndPercussion),
-      EmaxSoundSet(.Orchestral)
+      EmaxSoundSet(.brassAndWoodwinds),
+      EmaxSoundSet(.keyboardsAndSynths),
+      EmaxSoundSet(.guitarsAndBasses),
+      EmaxSoundSet(.worldInstruments),
+      EmaxSoundSet(.drumsAndPercussion),
+      EmaxSoundSet(.orchestral)
     ]
 
     let bundle = Bundle.main
@@ -47,7 +47,7 @@ final class Sequencer {
       let soundSet = soundSets[0]
       let program = UInt8(soundSet.presets[0].program)
       auditionInstrument = try Instrument(track: nil, soundSet: soundSet, program: program, channel: 0)
-      Notification.DidUpdateAvailableSoundSets.post()
+      Notification.didUpdateAvailableSoundSets.post()
     } catch {
       logError(error)
     }
@@ -70,11 +70,11 @@ final class Sequencer {
   static fileprivate(set) weak var sequence: Sequence? {
     willSet {
       guard sequence !== newValue else { return }
-      Notification.WillChangeSequence.post()
+      Notification.willChangeSequence.post()
     }
     didSet {
       guard sequence !== oldValue else { return }
-      Notification.DidChangeSequence.post()
+      Notification.didChangeSequence.post()
       reset()
     }
   }
@@ -117,33 +117,33 @@ final class Sequencer {
         transport.clock.resume()
         clockRunning = false
       }
-      Notification.DidChangeTransport.post()
+      Notification.didChangeTransport.post()
     }
   }
 
   static var transport: Transport { return transportAssignment.transport }
 
   static fileprivate func observeTransport(_ transport: Transport) {
-    receptionist.observe(notification: .DidStart, from: transport) {
-      Notification.DidStart.post(object: self, userInfo: $0.userInfo)
+    receptionist.observe(notification: .didStart, from: transport) {
+      Notification.didStart.post(object: self, userInfo: $0.userInfo)
     }
-    receptionist.observe(notification: .DidPause, from: transport) {
-      Notification.DidPause.post(object: self, userInfo: $0.userInfo)
+    receptionist.observe(notification: .didPause, from: transport) {
+      Notification.didPause.post(object: self, userInfo: $0.userInfo)
     }
-    receptionist.observe(notification: .DidStop, from: transport) {
-      Notification.DidStop.post(object: self, userInfo: $0.userInfo)
+    receptionist.observe(notification: .didStop, from: transport) {
+      Notification.didStop.post(object: self, userInfo: $0.userInfo)
     }
-    receptionist.observe(notification: .DidJog, from: transport) {
-      Notification.DidJog.post(object: self, userInfo: $0.userInfo)
+    receptionist.observe(notification: .didJog, from: transport) {
+      Notification.didJog.post(object: self, userInfo: $0.userInfo)
     }
-    receptionist.observe(notification: .DidBeginJogging, from: transport) {
-      Notification.DidBeginJogging.post(object: self, userInfo: $0.userInfo)
+    receptionist.observe(notification: .didBeginJogging, from: transport) {
+      Notification.didBeginJogging.post(object: self, userInfo: $0.userInfo)
     }
-    receptionist.observe(notification: .DidEndJogging, from: transport) {
-      Notification.DidEndJogging.post(object: self, userInfo: $0.userInfo)
+    receptionist.observe(notification: .didEndJogging, from: transport) {
+      Notification.didEndJogging.post(object: self, userInfo: $0.userInfo)
     }
-    receptionist.observe(notification: .DidReset, from: transport) {
-      Notification.DidReset.post(object: self, userInfo: $0.userInfo)
+    receptionist.observe(notification: .didReset, from: transport) {
+      Notification.didReset.post(object: self, userInfo: $0.userInfo)
     }
   }
 
@@ -178,7 +178,7 @@ final class Sequencer {
     didSet {
       guard timeSignature != oldValue else { return }
       sequence?.timeSignature = timeSignature
-      Notification.TimeSignatureDidChange.post()
+      Notification.timeSignatureDidChange.post()
     }
   }
 
@@ -201,8 +201,8 @@ final class Sequencer {
       guard mode != newValue else { return }
       logDebug("willSet: \(mode.rawValue) ➞ \(newValue.rawValue)")
       switch newValue {
-        case .Default: Notification.WillExitLoopMode.post()
-        case .Loop:    Notification.WillEnterLoopMode.post()
+        case .Default: Notification.willExitLoopMode.post()
+        case .Loop:    Notification.willEnterLoopMode.post()
       }
     }
     didSet {
@@ -211,12 +211,12 @@ final class Sequencer {
       switch mode {
         case .Default:
           transportAssignment = primaryTransport
-          Notification.DidExitLoopMode.post()
+          Notification.didExitLoopMode.post()
         case .Loop:
           transportAssignment = auxiliaryTransport
-          Notification.DidEnterLoopMode.post()
+          Notification.didEnterLoopMode.post()
       }
-      Notification.DidChangeTransport.post()
+      Notification.didChangeTransport.post()
     }
   }
 
@@ -225,11 +225,11 @@ final class Sequencer {
   static fileprivate(set) var soundSets: [SoundSetType] = []
 
   static func soundSetWithURL(_ url: URL) -> SoundSetType? {
-    return soundSets.first({$0.url == url})
+    return soundSets.first(where: {$0.url == url})
   }
 
   static func soundSetWithName(_ name: String) -> SoundSetType? {
-    return soundSets.first({$0.fileName == name})
+    return soundSets.first(where: {$0.fileName == name})
   }
 
   static fileprivate(set) var auditionInstrument: Instrument!
@@ -242,9 +242,9 @@ final class Sequencer {
   static weak var soundSetSelectionTarget: Instrument! = Sequencer.auditionInstrument {
     didSet {
       guard oldValue !== soundSetSelectionTarget else { return }
-      Notification.SoundSetSelectionTargetDidChange.post(object: self, userInfo: [
-        .OldSoundSetSelectionTarget: oldValue,
-        .NewSoundSetSelectionTarget: soundSetSelectionTarget
+      Notification.soundSetSelectionTargetDidChange.post(object: self, userInfo: [
+        .oldSoundSetSelectionTarget: oldValue,
+        .newSoundSetSelectionTarget: soundSetSelectionTarget
       ])
     }
   }
@@ -294,27 +294,20 @@ final class Sequencer {
 }
 
 // MARK: - Notification
-extension Sequencer: NotificationDispatchType {
+extension Sequencer: NotificationDispatching {
 
-  // MARK: - Notifications
-  enum Notification: String, NotificationType, NotificationNameType {
-    case DidStart, DidPause, DidStop, DidReset
-    case DidToggleRecording
-    case DidBeginJogging, DidEndJogging
-    case DidJog
-    case WillEnterLoopMode, WillExitLoopMode
-    case DidEnterLoopMode, DidExitLoopMode
-    case DidChangeTransport
-    case WillChangeSequence, DidChangeSequence
-    case SoundSetSelectionTargetDidChange
-    case DidUpdateAvailableSoundSets
-    case TimeSignatureDidChange
-
-    var object: AnyObject? { return Sequencer.self }
-
-    enum Key: String, NotificationKeyType {
-      case OldSoundSetSelectionTarget, NewSoundSetSelectionTarget
-    }
+  enum NotificationName: String, LosslessStringConvertible {
+    case didStart, didPause, didStop, didReset
+    case didToggleRecording
+    case didBeginJogging, didEndJogging
+    case didJog
+    case willEnterLoopMode, willExitLoopMode
+    case didEnterLoopMode, didExitLoopMode
+    case didChangeTransport
+    case willChangeSequence, didChangeSequence
+    case soundSetSelectionTargetDidChange
+    case didUpdateAvailableSoundSets
+    case timeSignatureDidChange
   }
 
 }
@@ -332,7 +325,7 @@ extension Sequencer {
 
 // MARK: - Error
 extension Sequencer {
-  enum Error: String, Error {
+  enum Error: String, Swift.Error {
     case InvalidBarBeatTime
     case NotPermitted
   }
@@ -340,9 +333,9 @@ extension Sequencer {
 
 extension Notification {
   var oldSoundSetSelectionTarget: Instrument? {
-    return userInfo?[Sequencer.Notification.Key.OldSoundSetSelectionTarget.key] as? Instrument
+    return userInfo?["oldSoundSetSelectionTarget"] as? Instrument
   }
   var newSoundSetSelectionTarget: Instrument? {
-    return userInfo?[Sequencer.Notification.Key.NewSoundSetSelectionTarget.key] as? Instrument
+    return userInfo?["newSoundSetSelectionTarget"] as? Instrument
   }
 }

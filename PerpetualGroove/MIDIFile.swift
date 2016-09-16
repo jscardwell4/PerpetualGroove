@@ -27,7 +27,7 @@ struct MIDIFile: ByteArrayConvertible {
   */
   init(file: URL) throws {
     guard let fileData = try? Data(contentsOf: file) else {
-      throw MIDIFileError(type: .ReadFailure, reason: "Failed to get data from '\(file)'")
+      throw MIDIFileError(type: .readFailure, reason: "Failed to get data from '\(file)'")
     }
     try self.init(data: fileData)
   }
@@ -41,37 +41,37 @@ struct MIDIFile: ByteArrayConvertible {
 
     let totalBytes = data.count
     guard totalBytes > 13 else {
-      throw MIDIFileError(type:.FileStructurallyUnsound, reason: "Not enough bytes in file")
+      throw MIDIFileError(type: .fileStructurallyUnsound, reason: "Not enough bytes in file")
     }
 
     // Get a pointer to the underlying memory buffer
     let bytes = UnsafeBufferPointer<Byte>(start: (data as NSData).bytes.bindMemory(to: UInt8.self, capacity: data.count), count: totalBytes)
 
-    let headerBytes = bytes[bytes.startIndex ➞ 14]
+    let headerBytes = bytes[bytes.startIndex..<bytes.startIndex + 14]
 //    let headerBytes = bytes[bytes.startIndex ..< bytes.startIndex.advancedBy(14)]
     let h = try MIDIFileHeaderChunk(bytes: headerBytes)
 
     var tracksRemaining = h.numberOfTracks
     var t: [MIDIFileTrackChunk] = []
 
-    var currentIndex = bytes.startIndex.advanced(by: 14)
+    var currentIndex = bytes.startIndex + 14
 
     while tracksRemaining > 0 {
       guard currentIndex.distance(to: bytes.endIndex) > 8 else {
-        throw MIDIFileError(type: .FileStructurallyUnsound,
+        throw MIDIFileError(type: .fileStructurallyUnsound,
                             reason: "Not enough bytes for remaining track chunks (\(tracksRemaining))")
       }
-      guard bytes[currentIndex ➞ 4].elementsEqual("MTrk".utf8) else {
-        throw MIDIFileError(type: .InvalidHeader, reason: "Expected chunk header with type 'MTrk'")
+      guard bytes[currentIndex..<currentIndex + 4].elementsEqual("MTrk".utf8) else {
+        throw MIDIFileError(type: .invalidHeader, reason: "Expected chunk header with type 'MTrk'")
       }
       currentIndex += 4
-      let chunkLength = Int(Byte4(bytes[currentIndex ➞ 4]))
+      let chunkLength = Int(Byte4(bytes[currentIndex..<currentIndex + 4]))
       currentIndex += 4
       guard currentIndex + chunkLength <= bytes.endIndex else {
-        throw MIDIFileError(type:.FileStructurallyUnsound, reason: "Not enough bytes in track chunk \(t.count)")
+        throw MIDIFileError(type:.fileStructurallyUnsound, reason: "Not enough bytes in track chunk \(t.count)")
       }
 
-      let trackBytes = bytes[currentIndex ➞ chunkLength]
+      let trackBytes = bytes[currentIndex..<currentIndex + chunkLength]
 
       t.append(try MIDIFileTrackChunk(bytes: trackBytes))
       currentIndex += chunkLength
@@ -87,7 +87,7 @@ struct MIDIFile: ByteArrayConvertible {
       var processedEvents: [MIDIEvent] = []
       for var trackEvent in trackChunk.events {
         guard let delta = trackEvent.delta else {
-          throw MIDIFileError(type: .FileStructurallyUnsound, reason: "Track event missing delta value")
+          throw MIDIFileError(type: .fileStructurallyUnsound, reason: "Track event missing delta value")
         }
         let deltaTicks = UInt64(delta.intValue)
         ticks += deltaTicks

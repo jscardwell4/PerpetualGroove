@@ -63,6 +63,17 @@ struct MIDIEventContainer: Collection {
         return Index(bag: (bag + 1), position: buffer[bag + 1].1.startIndex, buffer: buffer)
       }
     }
+
+    static func ==(lhs: Index, rhs: Index) -> Bool {
+      return lhs.bag == rhs.bag && lhs.position == rhs.position
+    }
+
+    static func <(lhs: Index, rhs: Index) -> Bool {
+      guard lhs.bag == rhs.bag else { return lhs.bag < rhs.bag }
+      return lhs.position < rhs.position
+    }
+    
+
   }
 
   fileprivate var buffer: Buffer
@@ -77,6 +88,11 @@ struct MIDIEventContainer: Collection {
       bag!.append(event)
     }
     self.buffer = buffer
+  }
+
+  typealias Iterator = AnyIterator<MIDIEvent>
+  func makeIterator() -> AnyIterator<MIDIEvent> {
+    return AnyIterator(FlattenCollection(buffer.values).makeIterator())
   }
 
 //  private mutating func ensureUnique() {
@@ -169,15 +185,6 @@ struct MIDIEventContainer: Collection {
   func index(after i: MIDIEventContainer.Index) -> MIDIEventContainer.Index {
     return i.successor()
   }
-}
-
-func ==(lhs: MIDIEventContainer.Index, rhs: MIDIEventContainer.Index) -> Bool {
-  return lhs.bag == rhs.bag && lhs.position == rhs.position
-}
-
-func <(lhs: MIDIEventContainer.Index, rhs: MIDIEventContainer.Index) -> Bool {
-  guard lhs.bag == rhs.bag else { return lhs.bag < rhs.bag }
-  return lhs.position < rhs.position
 }
 
 extension MIDIEventContainer: ExpressibleByArrayLiteral {

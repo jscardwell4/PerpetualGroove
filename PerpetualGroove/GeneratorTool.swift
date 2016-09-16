@@ -147,16 +147,16 @@ final class GeneratorViewController: UIViewController, SecondaryControllerConten
     guard isViewLoaded else { return }
     pitchPicker.selection = generator.root.natural.index
     switch generator.root.modifier {
-      case .Flat?:  modifierPicker.selection = 0
-      case .Sharp?: modifierPicker.selection = 2
+      case .flat?:  modifierPicker.selection = 0
+      case .sharp?: modifierPicker.selection = 2
       default:      modifierPicker.selection = 1
     }
     octavePicker.selection   = generator.octave.index
     durationPicker.selection = generator.duration.index
     velocityPicker.selection = generator.velocity.index
     switch generator {
-      case .Note: chordPicker.selection = 0
-      case .Chord(let generator):
+      case .note: chordPicker.selection = 0
+      case .chord(let generator):
         if let pattern = Chord.ChordPattern.StandardChordPattern(rawValue: generator.chord.pattern.rawValue) {
           chordPicker.selection = pattern.index
         } else {
@@ -192,8 +192,8 @@ final class GeneratorViewController: UIViewController, SecondaryControllerConten
   /** didPickModifier */
   @IBAction func didPickModifier() {
     switch modifierPicker.selection {
-      case 0: generator.root.modifier = .Flat
-      case 2: generator.root.modifier = .Sharp
+      case 0: generator.root.modifier = .flat
+      case 2: generator.root.modifier = .sharp
       default: generator.root.modifier = nil
     }
   }
@@ -206,11 +206,11 @@ final class GeneratorViewController: UIViewController, SecondaryControllerConten
       case let idx: newValue = Chord.ChordPattern.StandardChordPattern.allCases[idx - 1]
     }
     switch (generator, newValue) {
-      case let (.Note(generator), newValue?):
+      case let (.note(generator), newValue?):
         self.generator = MIDIGenerator(ChordGenerator(pattern: newValue.pattern, generator: generator))
-      case (.Chord(var generator), let newValue?):
+      case (.chord(var generator), let newValue?):
         generator.chord.pattern = newValue.pattern; self.generator = MIDIGenerator(generator)
-      case (.Chord(let generator), nil):
+      case (.chord(let generator), nil):
         self.generator = MIDIGenerator(NoteGenerator(generator: generator))
       default:
         break

@@ -90,36 +90,36 @@ extension NoteGenerator {
 
     static func indexForNote(_ note: Note) -> Int {
       switch note {
-        case .default(.C), .modified(.B, .Sharp), .modified(.D, .DoubleFlat):         return 0
-        case .modified(.C, .Sharp), .modified(.D, .Flat):                             return 1
-        case .default(.D), .modified(.E, .DoubleFlat):                                return 2
-        case .modified(.D, .Sharp), .modified(.E, .Flat), .modified(.F, .DoubleFlat): return 3
-        case .default(.E), .modified(.F, .Flat):                                      return 4
-        case .default(.F), .modified(.E, .Sharp), .modified(.G, .DoubleFlat):         return 5
-        case .modified(.F, .Sharp), .modified(.G, .Flat):                             return 6
-        case .default(.G), .modified(.A, .DoubleFlat):                                return 7
-        case .modified(.G, .Sharp),.modified(.A, .Flat):                              return 8
-        case .default(.A), .modified(.B, .DoubleFlat):                                return 9
-        case .modified(.A, .Sharp),.modified(.B, .Flat), .modified(.C, .DoubleFlat):  return 10
-        case .default(.B), .modified(.C, .Flat):                                      return 11
+        case .`default`(.c), .modified(.b, .sharp), .modified(.d, .doubleFlat):       return 0
+        case .modified(.c, .sharp), .modified(.d, .flat):                             return 1
+        case .`default`(.d), .modified(.e, .doubleFlat):                              return 2
+        case .modified(.d, .sharp), .modified(.e, .flat), .modified(.f, .doubleFlat): return 3
+        case .`default`(.e), .modified(.f, .flat):                                    return 4
+        case .`default`(.f), .modified(.e, .sharp), .modified(.g, .doubleFlat):       return 5
+        case .modified(.f, .sharp), .modified(.g, .flat):                             return 6
+        case .`default`(.g), .modified(.a, .doubleFlat):                              return 7
+        case .modified(.g, .sharp),.modified(.a, .flat):                              return 8
+        case .`default`(.a), .modified(.b, .doubleFlat):                              return 9
+        case .modified(.a, .sharp),.modified(.b, .flat), .modified(.c, .doubleFlat):  return 10
+        case .`default`(.b), .modified(.c, .flat):                                    return 11
       }
     }
 
     static func noteForIndex(_ index: Int) -> Note? {
       switch index {
-        case 0:  return .default(.C)
-        case 1:  return .modified(.C, .Sharp)
-        case 2:  return .default(.D)
-        case 3:  return .modified(.D, .Sharp)
-        case 4:  return .default(.E)
-        case 5:  return .default(.F)
-        case 6:  return .modified(.F, .Sharp)
-        case 7:  return .default(.G)
-        case 8:  return .modified(.G, .Sharp)
-        case 9:  return .default(.A)
-        case 10: return .modified(.A, .Sharp)
-        case 11: return .default(.B)
-        default: return nil
+        case 0:  return .`default`(.c)
+        case 1:  return .modified(.c, .sharp)
+        case 2:  return .`default`(.d)
+        case 3:  return .modified(.d, .sharp)
+        case 4:  return .`default`(.e)
+        case 5:  return .`default`(.f)
+        case 6:  return .modified(.f, .sharp)
+        case 7:  return .`default`(.g)
+        case 8:  return .modified(.g, .sharp)
+        case 9:  return .`default`(.a)
+        case 10: return .modified(.a, .sharp)
+        case 11: return .`default`(.b)
+       default: return nil
       }
     }
 

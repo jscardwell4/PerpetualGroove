@@ -75,7 +75,7 @@ final class MIDIPlayerNode: SKShapeNode {
     - returns: [MIDINode]
   */
   fileprivate func midiNodesForMode(_ mode: Sequencer.Mode) -> [MIDINode] {
-    return self["<\(mode.rawValue)>*"].flatMap({$0 as? MIDINode}) ?? []
+    return self["<\(mode.rawValue)>*"].flatMap({$0 as? MIDINode})
   }
 
   /**

@@ -30,7 +30,8 @@ struct SDTAChunk {
   */
   init<C:Collection>(bytes: C, url: URL) throws 
     where C.Iterator.Element == Byte,
-          C.Index == Int, 
+          C.Index == Int,
+          C.IndexDistance == Int,
           C.SubSequence.Iterator.Element == Byte,
           C.SubSequence:Collection, 
           C.SubSequence.Index == Int,

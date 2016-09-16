@@ -37,7 +37,7 @@ final class DocumentsViewController: UICollectionViewController {
       }, completion: {
         [unowned self] completed in
         guard completed else {
-          self.items.insert(item, atIndex: indexPath.item)
+          self.items.insert(item, at: indexPath.item)
           return
         }
         DocumentManager.deleteItem(item)
@@ -93,17 +93,17 @@ final class DocumentsViewController: UICollectionViewController {
 
     super.awakeFromNib()
 
-    receptionist.observe(notification: .DidUpdateItems, from: DocumentManager.self,
+    receptionist.observe(name: DocumentManager.NotificationName.didUpdateItems.rawValue, from: DocumentManager.self,
                          callback: weakMethod(self, DocumentsViewController.didUpdateItems))
 
-    receptionist.observe(notification: .WillChangeDocument, from: DocumentManager.self,
+    receptionist.observe(name: DocumentManager.NotificationName.willChangeDocument.rawValue, from: DocumentManager.self,
                          callback: weakMethod(self, DocumentsViewController.willChangeDocument))
 
-    receptionist.observe(notification: .DidChangeDocument, from: DocumentManager.self,
+    receptionist.observe(name: DocumentManager.NotificationName.didChangeDocument.rawValue, from: DocumentManager.self,
                          callback: weakMethod(self, DocumentsViewController.didChangeDocument))
 
     guard let currentDocument = DocumentManager.currentDocument else { return }
-    receptionist.observe(notification: .DidRenameDocument, from: currentDocument,
+    receptionist.observe(name: Document.NotificationName.didRenameDocument.rawValue, from: currentDocument,
                          callback: weakMethod(self, DocumentsViewController.documentDidChangeName))
   }
 
@@ -122,7 +122,7 @@ final class DocumentsViewController: UICollectionViewController {
 
   /// Reloads `collectionView` and refreshes selection
   fileprivate func reloadData() {
-    mainQueue.async {
+    DispatchQueue.main.async {
       [weak self] in
       self?.collectionView?.reloadData()
       self?.refreshSelection()
@@ -154,7 +154,7 @@ final class DocumentsViewController: UICollectionViewController {
 
   /// Returns the index path for a document; returns nil if document is not represented in the collection.
   fileprivate func indexPathForDocument(_ document: Document) -> IndexPath? {
-    guard let idx = items.index(of: {$0.URL.isEqualToFileURL(document.fileURL)}) else {
+    guard let idx = items.index(where: {$0.URL.isEqualToFileURL(document.fileURL)}) else {
       return nil
     }
     return IndexPath(item: idx, section: 1)
@@ -171,12 +171,12 @@ final class DocumentsViewController: UICollectionViewController {
       case let indexPath?:
         selectedItem = indexPath
       default:
-        let indexPath = IndexPath(forItem: items.count, inSection: 1)
+        let indexPath = IndexPath(item: items.count, section: 1)
         let item = DocumentItem(document)
         items.append(item)
         collectionView?.performBatchUpdates({ 
           [unowned self] in
-          self.collectionView?.insertItemsAtIndexPaths([indexPath])
+          self.collectionView?.insertItems(at: [indexPath])
           }, completion: {
             [unowned self] completed in
             guard completed else { return }
@@ -229,16 +229,16 @@ final class DocumentsViewController: UICollectionViewController {
     let oldCount = items.count
     items ∪= newItems
     let newCount = items.count
-    let added = (oldCount ..< newCount).map { IndexPath(forItem: $0, inSection: 1) }
+    let added = (oldCount ..< newCount).map { IndexPath(item: $0, section: 1) }
     logDebug("adding items at indices \(added)")
-    if !added.isEmpty { collectionView?.insertItemsAtIndexPaths(added) }
+    if !added.isEmpty { collectionView?.insertItems(at: added) }
   }
 
   /// Removes `items` from the controller's `items` and deletes the cells from the collection view
   fileprivate func removeItems(_ items: [DocumentItem]) {
     let removed: [IndexPath] = items.flatMap {
       guard let idx = self.items.index(of: $0) else { return nil }
-      return IndexPath(forItem: idx, inSection: 1)
+      return IndexPath(item: idx, section: 1)
     }
     logDebug("removing items at indices \(removed)")
     self.items ∖= items
@@ -248,14 +248,14 @@ final class DocumentsViewController: UICollectionViewController {
   /// Unregisters for name-change observations from the current document
   fileprivate func willChangeDocument(_ notification: Notification) {
     guard let document = DocumentManager.currentDocument else { return }
-    receptionist.stopObserving(notification: .DidRenameDocument, from: document)
+    receptionist.stopObserving(name: Document.NotificationName.didRenameDocument.rawValue, from: document)
   }
 
   /// Refreshes selection and updates name-change observations
   fileprivate func didChangeDocument(_ notification: Notification) {
     refreshSelection()
     guard let document = DocumentManager.currentDocument else { return }
-    receptionist.observe(notification: .DidRenameDocument, from: document,
+    receptionist.observe(name: Document.NotificationName.didRenameDocument.rawValue, from: document,
                          callback: weakMethod(self, DocumentsViewController.documentDidChangeName))
   }
 

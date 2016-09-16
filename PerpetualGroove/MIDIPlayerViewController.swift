@@ -86,7 +86,7 @@ final class MIDIPlayerViewController: UIViewController {
   @IBOutlet weak var spinner: UIImageView! {
     didSet {
       spinner?.animationImages = (1...8).flatMap{
-        UIImage(named: "spinner\($0)")?.imageWithColor(.whiteColor())
+        UIImage(named: "spinner\($0)")?.imageWithColor(UIColor.white)
       }
       spinner?.animationDuration = 0.8
       spinner?.isHidden = true
@@ -173,19 +173,19 @@ final class MIDIPlayerViewController: UIViewController {
 
     guard receptionist.count == 0 else { return }
 
-    receptionist.observe(notification: DocumentManager.Notification.DidChangeDocument,
+    receptionist.observe(name: DocumentManager.NotificationName.didChangeDocument.rawValue,
                     from: DocumentManager.self,
                 callback: weakMethod(self, MIDIPlayerViewController.didChangeDocument))
-    receptionist.observe(notification: DocumentManager.Notification.WillOpenDocument,
+    receptionist.observe(name: DocumentManager.NotificationName.willOpenDocument.rawValue,
                     from: DocumentManager.self,
                 callback: weakMethod(self, MIDIPlayerViewController.willOpenDocument))
-    receptionist.observe(notification: MIDIPlayer.Notification.DidSelectTool,
+    receptionist.observe(name: MIDIPlayer.NotificationName.didSelectTool.rawValue,
                     from: MIDIPlayer.self,
                 callback: weakMethod(self, MIDIPlayerViewController.didSelectTool))
-    receptionist.observe(notification: Sequencer.Notification.DidEnterLoopMode,
+    receptionist.observe(name: Sequencer.NotificationName.didEnterLoopMode.rawValue,
                     from: Sequencer.self,
                 callback: weakMethod(self, MIDIPlayerViewController.didEnterLoopMode))
-    receptionist.observe(notification: Sequencer.Notification.DidExitLoopMode,
+    receptionist.observe(name: Sequencer.NotificationName.didExitLoopMode.rawValue,
                     from: Sequencer.self,
                 callback: weakMethod(self, MIDIPlayerViewController.didExitLoopMode))
 

@@ -173,8 +173,8 @@ extension MIDIGenerator: JSONValueInitializable {
    - parameter jsonValue: JSONValue?
   */
   init?(_ jsonValue: JSONValue?) {
-    if let generator = NoteGenerator(jsonValue) { self = .Note(generator) }
-    else if let generator = ChordGenerator(jsonValue) { self = .Chord(generator) }
+    if let generator = NoteGenerator(jsonValue) { self = .note(generator) }
+    else if let generator = ChordGenerator(jsonValue) { self = .chord(generator) }
     else { return nil }
   }
 }

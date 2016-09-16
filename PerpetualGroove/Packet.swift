@@ -72,8 +72,10 @@ struct Packet: CustomStringConvertible {
     note = data.1
     velocity = data.2
     identifier = UInt64(withUnsafePointer(to: &data) {
-      UnsafeBufferPointer<Byte>(start: UnsafePointer<Byte>($0).advancedBy(3), count: sizeof(Identifier.self))
-      })
+      $0.withMemoryRebound(to: Byte.self, capacity: MemoryLayout<Identifier>.size) {
+        UnsafeBufferPointer<Byte>(start: $0.advanced(by: 3), count: MemoryLayout<Identifier>.size)
+      }
+    })
   }
 
   var description: String { 

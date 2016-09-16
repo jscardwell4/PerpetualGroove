@@ -30,7 +30,7 @@ final class LocalDocumentItem: NSObject {
   */
   init(_ fileURL: Foundation.URL) throws {
     self.URL = fileURL
-    var thrownError: Error?
+    var thrownError: Swift.Error?
     let wrapper: FileWrapper
     do {
       wrapper = try FileWrapper(url: fileURL, options: .withoutMapping)
@@ -52,14 +52,16 @@ final class LocalDocumentItem: NSObject {
   init?(_ wrapper: FileWrapper, _ base: Foundation.URL) {
     var isDirectory = ObjCBool(false)
     let fileManager = FileManager.default
-    guard let directoryPath = String(CString: (base as NSURL).fileSystemRepresentation, encoding: String.Encoding.utf8)
-      , fileManager.fileExists(atPath: directoryPath, isDirectory: &isDirectory) && isDirectory,
-      let fileName = wrapper.preferredFilename else {
+    guard let directoryPath = String(cString: (base as NSURL).fileSystemRepresentation, encoding: String.Encoding.utf8),
+      fileManager.fileExists(atPath: directoryPath, isDirectory: &isDirectory) && isDirectory.boolValue,
+      let fileName = wrapper.preferredFilename else
+    {
         return nil
     }
     let fileURL = base + fileName
-    guard let filePath = String(CString: fileURL.fileSystemRepresentation, encoding: String.Encoding.utf8)
-      , fileManager.fileExistsAtPath(filePath, isDirectory: &isDirectory) && !isDirectory else {
+    guard let filePath = String(cString: (fileURL as NSURL).fileSystemRepresentation, encoding: String.Encoding.utf8),
+      fileManager.fileExists(atPath: filePath, isDirectory: &isDirectory) && !isDirectory.boolValue else
+    {
         return nil
     }
     self.URL = fileURL

@@ -36,7 +36,7 @@ final class RemoveTool: ToolType {
       nodesToRemove.flatMap({$0.reference}).forEach {
         guard let light = $0.childNode(withName: "removeToolLighting") as? SKLightNode
                 , light.categoryBitMask != 1 else { return }
-        light.lightColor = .blackColor()
+        light.lightColor = UIColor.black
       }
     }
   }
@@ -72,10 +72,10 @@ final class RemoveTool: ToolType {
       logDebug("oldValue: \(oldValue?.document?.localizedName ?? "nil")  sequence: \(sequence?.document?.localizedName ?? "nil")")
       guard oldValue !== sequence else { return }
       if let oldSequence = oldValue {
-        receptionist.stopObserving(notification: .DidChangeTrack, from: oldSequence)
+        receptionist.stopObserving(name: Sequence.NotificationName.didChangeTrack.rawValue, from: oldSequence)
       }
       if let sequence = sequence {
-        receptionist.observe(notification: .DidChangeTrack, from: sequence) {
+        receptionist.observe(name: Sequence.NotificationName.didChangeTrack.rawValue, from: sequence) {
           [weak self] _ in self?.track = self?.sequence?.currentTrack
         }
       }
@@ -131,7 +131,7 @@ final class RemoveTool: ToolType {
   /** refreshAllNodeLighting */
   fileprivate func refreshAllNodeLighting() {
     guard let track = track else { return }
-    let trackNodes = track.nodes.flatMap({$0.element2.reference})
+    let trackNodes = track.nodes.flatMap({$0.elements.1.reference})
     let (foregroundNodes, backgroundNodes) = player.midiNodes.flatMap({$0}).bisect { trackNodes.contains($0) }
     foregroundNodes.forEach { lightNodeForForeground($0) }
     backgroundNodes.forEach { lightNodeForBackground($0) }
@@ -152,8 +152,8 @@ final class RemoveTool: ToolType {
       logDebug("oldValue: \(oldValue?.name ?? "nil")  track: \(track?.name ?? "nil")")
       if touch != nil { touch = nil }
       guard active && oldValue !== track else { return }
-      oldValue?.nodes.flatMap({$0.element2.reference}).forEach { lightNodeForBackground($0) }
-      track?.nodes.flatMap({$0.element2.reference}).forEach { lightNodeForForeground($0) }
+      oldValue?.nodes.flatMap({$0.elements.1.reference}).forEach { lightNodeForBackground($0) }
+      track?.nodes.flatMap({$0.elements.1.reference}).forEach { lightNodeForForeground($0) }
     }
   }
 
@@ -167,10 +167,10 @@ final class RemoveTool: ToolType {
   init(playerNode: MIDIPlayerNode, delete: Bool = false) {
     deleteFromTrack = delete
     player = playerNode
-    receptionist.observe(notification: Sequencer.Notification.DidChangeSequence,
+    receptionist.observe(name: Sequencer.NotificationName.didChangeSequence.rawValue,
       from: Sequencer.self,
       callback: {[weak self] _ in self?.sequence = Sequencer.sequence})
-    receptionist.observe(notification: MIDIPlayer.Notification.DidAddNode,
+    receptionist.observe(name: MIDIPlayer.NotificationName.didAddNode.rawValue,
       from: MIDIPlayer.self,
       callback: {[weak self] notification in
         guard self?.active == true, let node = notification.addedNode, let track = notification.addedNodeTrack else { return }

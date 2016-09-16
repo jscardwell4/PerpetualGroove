@@ -179,12 +179,12 @@ extension SF2File {
 extension SF2File: CustomStringConvertible {
 
   var description: String {
-    return "\n".join(
-      "url: '\(url.path!)'",
+    return [
+      "url: '\(url.path)'",
       "info:\n\(info.description.indentedBy(1, preserveFirst: false, useTabs: true))",
       "sdta:\n\(sdta.description.indentedBy(1, preserveFirst: false, useTabs: true))",
       "pdta:\n\(pdta.description.indentedBy(1, preserveFirst: false, useTabs: true))"
-    )
+      ].joined(separator: "\n")
   }
 
 }

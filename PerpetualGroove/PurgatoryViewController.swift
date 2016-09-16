@@ -41,7 +41,7 @@ final class PurgatoryViewController: UIViewController {
     receptionist.observe(name: NSNotification.Name.NSUbiquityIdentityDidChange.rawValue,
                 callback: weakMethod(self, PurgatoryViewController.ubiquityIdentityDidChange))
 
-    receptionist.observe(notification: .iCloudStorageChanged,
+    receptionist.observe(name: SettingsManager.NotificationName.iCloudStorageChanged.rawValue,
                     from: SettingsManager.self,
                 callback: weakMethod(self, PurgatoryViewController.iCloudStorageChanged))
 
