@@ -59,9 +59,9 @@ final class MIDIPlayerNode: SKShapeNode {
 
   fileprivate(set) var midiNodes: WeakArray<MIDINode> = []
 
-  var defaultNodes: [MIDINode] { return midiNodesForMode(.Default) }
+  var defaultNodes: [MIDINode] { return midiNodesForMode(.default) }
 
-  var loopNodes: [MIDINode] { return midiNodesForMode(.Loop) }
+  var loopNodes: [MIDINode] { return midiNodesForMode(.loop) }
 
   weak var touchReceiver: TouchReceiver?
 

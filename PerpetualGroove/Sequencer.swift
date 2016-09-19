@@ -47,7 +47,7 @@ final class Sequencer {
       let soundSet = soundSets[0]
       let program = UInt8(soundSet.presets[0].program)
       auditionInstrument = try Instrument(track: nil, soundSet: soundSet, program: program, channel: 0)
-      Notification.didUpdateAvailableSoundSets.post()
+      postNotification(name: .didUpdateAvailableSoundSets, object: self, userInfo: nil)
     } catch {
       logError(error)
     }
@@ -58,7 +58,7 @@ final class Sequencer {
   fileprivate static let receptionist: NotificationReceptionist = {
     let receptionist = NotificationReceptionist()
     receptionist.logContext = LogManager.SequencerContext
-    receptionist.observe(notification: DocumentManager.Notification.DidChangeDocument,
+    receptionist.observe(name: DocumentManager.NotificationName.didChangeDocument.rawValue,
                     from: DocumentManager.self,
                    queue: OperationQueue.main,
                 callback: {_ in Sequencer.sequence = DocumentManager.currentDocument?.sequence})
@@ -70,11 +70,11 @@ final class Sequencer {
   static fileprivate(set) weak var sequence: Sequence? {
     willSet {
       guard sequence !== newValue else { return }
-      Notification.willChangeSequence.post()
+      postNotification(name: .willChangeSequence, object: self, userInfo: nil)
     }
     didSet {
       guard sequence !== oldValue else { return }
-      Notification.didChangeSequence.post()
+      postNotification(name: .didChangeSequence, object: self, userInfo: nil)
       reset()
     }
   }
@@ -117,33 +117,33 @@ final class Sequencer {
         transport.clock.resume()
         clockRunning = false
       }
-      Notification.didChangeTransport.post()
+      postNotification(name: .didChangeTransport, object: self, userInfo: nil)
     }
   }
 
   static var transport: Transport { return transportAssignment.transport }
 
   static fileprivate func observeTransport(_ transport: Transport) {
-    receptionist.observe(notification: .didStart, from: transport) {
-      Notification.didStart.post(object: self, userInfo: $0.userInfo)
+    receptionist.observe(name: Transport.NotificationName.didStart.rawValue, from: transport) {
+      postNotification(name: .didStart, object: self, userInfo: $0.userInfo)
     }
-    receptionist.observe(notification: .didPause, from: transport) {
-      Notification.didPause.post(object: self, userInfo: $0.userInfo)
+    receptionist.observe(name: Transport.NotificationName.didPause.rawValue, from: transport) {
+      postNotification(name: .didPause, object: self, userInfo: $0.userInfo)
     }
-    receptionist.observe(notification: .didStop, from: transport) {
-      Notification.didStop.post(object: self, userInfo: $0.userInfo)
+    receptionist.observe(name: Transport.NotificationName.didStop.rawValue, from: transport) {
+      postNotification(name: .didStop, object: self, userInfo: $0.userInfo)
     }
-    receptionist.observe(notification: .didJog, from: transport) {
-      Notification.didJog.post(object: self, userInfo: $0.userInfo)
+    receptionist.observe(name: Transport.NotificationName.didJog.rawValue, from: transport) {
+      postNotification(name: .didJog, object: self, userInfo: $0.userInfo)
     }
-    receptionist.observe(notification: .didBeginJogging, from: transport) {
-      Notification.didBeginJogging.post(object: self, userInfo: $0.userInfo)
+    receptionist.observe(name: Transport.NotificationName.didBeginJogging.rawValue, from: transport) {
+      postNotification(name: .didBeginJogging, object: self, userInfo: $0.userInfo)
     }
-    receptionist.observe(notification: .didEndJogging, from: transport) {
-      Notification.didEndJogging.post(object: self, userInfo: $0.userInfo)
+    receptionist.observe(name: Transport.NotificationName.didEndJogging.rawValue, from: transport) {
+      postNotification(name: .didEndJogging, object: self, userInfo: $0.userInfo)
     }
-    receptionist.observe(notification: .didReset, from: transport) {
-      Notification.didReset.post(object: self, userInfo: $0.userInfo)
+    receptionist.observe(name: Transport.NotificationName.didReset.rawValue, from: transport) {
+      postNotification(name: .didReset, object: self, userInfo: $0.userInfo)
     }
   }
 
@@ -178,7 +178,7 @@ final class Sequencer {
     didSet {
       guard timeSignature != oldValue else { return }
       sequence?.timeSignature = timeSignature
-      Notification.timeSignatureDidChange.post()
+      postNotification(name: .timeSignatureDidChange, object: self, userInfo: nil)
     }
   }
 
@@ -196,27 +196,27 @@ final class Sequencer {
 
   static fileprivate var clockRunning = false
 
-  static var mode: Mode = .Default {
+  static var mode: Mode = .default {
     willSet {
       guard mode != newValue else { return }
       logDebug("willSet: \(mode.rawValue) ➞ \(newValue.rawValue)")
       switch newValue {
-        case .Default: Notification.willExitLoopMode.post()
-        case .Loop:    Notification.willEnterLoopMode.post()
+        case .default: postNotification(name: .willExitLoopMode, object: self, userInfo: nil)
+        case .loop:    postNotification(name: .willEnterLoopMode, object: self, userInfo: nil)
       }
     }
     didSet {
       guard mode != oldValue else { return }
       logDebug("didSet: \(oldValue.rawValue) ➞ \(mode.rawValue)")
       switch mode {
-        case .Default:
+        case .default:
           transportAssignment = primaryTransport
-          Notification.didExitLoopMode.post()
-        case .Loop:
+          postNotification(name: .didExitLoopMode, object: self, userInfo: nil)
+        case .loop:
           transportAssignment = auxiliaryTransport
-          Notification.didEnterLoopMode.post()
+          postNotification(name: .didEnterLoopMode, object: self, userInfo: nil)
       }
-      Notification.didChangeTransport.post()
+      postNotification(name: .didChangeTransport, object: self, userInfo: nil)
     }
   }
 
@@ -242,9 +242,9 @@ final class Sequencer {
   static weak var soundSetSelectionTarget: Instrument! = Sequencer.auditionInstrument {
     didSet {
       guard oldValue !== soundSetSelectionTarget else { return }
-      Notification.soundSetSelectionTargetDidChange.post(object: self, userInfo: [
-        .oldSoundSetSelectionTarget: oldValue,
-        .newSoundSetSelectionTarget: soundSetSelectionTarget
+      postNotification(name: .soundSetSelectionTargetDidChange, object: self, userInfo: [
+        "oldSoundSetSelectionTarget": oldValue,
+        "newSoundSetSelectionTarget": soundSetSelectionTarget
       ])
     }
   }
@@ -308,6 +308,8 @@ extension Sequencer: NotificationDispatching {
     case soundSetSelectionTargetDidChange
     case didUpdateAvailableSoundSets
     case timeSignatureDidChange
+    var description: String { return rawValue }
+    init?(_ description: String) { self.init(rawValue: description) }
   }
 
 }
@@ -320,7 +322,7 @@ func == (lhs: Sequencer.TransportAssignment, rhs: Sequencer.TransportAssignment)
   }
 }
 extension Sequencer {
-  enum Mode: String { case Default, Loop }
+  enum Mode: String { case `default`, loop }
 }
 
 // MARK: - Error

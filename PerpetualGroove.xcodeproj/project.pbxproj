@@ -103,6 +103,7 @@
 		C2CF38CD1B7EBED30085B3D5 /* InstrumentTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CF38CC1B7EBED30085B3D5 /* InstrumentTrack.swift */; };
 		C2CFB7FF1BBF486300983664 /* DocumentsViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CFB7FE1BBF486300983664 /* DocumentsViewLayout.swift */; };
 		C2D406741BB9FDC700681DEF /* DocumentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D406731BB9FDC700681DEF /* DocumentManager.swift */; };
+		C2D688EF1D9039E400ED1306 /* OldMIDIEventContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B2B0421BCEA55D007AF9DC /* OldMIDIEventContainer.swift */; };
 		C2DDA22F1C38A6CF005F0965 /* GrooveNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DDA22E1C38A6CF005F0965 /* GrooveNode.swift */; };
 		C2DDA2311C38A8B5005F0965 /* GrooveLoop.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DDA2301C38A8B5005F0965 /* GrooveLoop.swift */; };
 		C2DE50471D89A6BE00244DB1 /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2DE50461D89A6BE00244DB1 /* MoonKit.framework */; };
@@ -1020,6 +1021,7 @@
 				C2FEB0251C0F6183000BD1B7 /* GeneratorTool.swift in Sources */,
 				C24E83981C3EE0A300B4A16A /* MixerContainerViewController.swift in Sources */,
 				C2CF38CD1B7EBED30085B3D5 /* InstrumentTrack.swift in Sources */,
+				C2D688EF1D9039E400ED1306 /* OldMIDIEventContainer.swift in Sources */,
 				C23B059D1C026F4C0081AC6E /* ChordGenerator.swift in Sources */,
 				C23B05831C01251D0081AC6E /* Duration.swift in Sources */,
 				C2EFA0EE1B824A2F002EBA3D /* AssetManager.swift in Sources */,

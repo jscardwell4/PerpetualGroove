@@ -19,7 +19,7 @@ class Track: CustomStringConvertible, Named, MIDIEventDispatch {
   var events = MIDIEventContainer()
 
   var endOfTrack: BarBeatTime {
-    return events.maxTime ?? Sequencer.time.barBeatTime
+    return events.maxTime
   }
 
   fileprivate var trackNameEvent: MIDIEvent = .meta(MetaEvent(.sequenceTrackName(name: "")))
@@ -110,6 +110,8 @@ extension Track: NotificationDispatching {
 
   enum NotificationName: String, LosslessStringConvertible {
     case didUpdate, didChangeName, forceMuteStatusDidChange, muteStatusDidChange, soloStatusDidChange
+    var description: String { return rawValue }
+    init?(_ description: String) { self.init(rawValue: description) }
   }
 
 }

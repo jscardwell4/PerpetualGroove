@@ -25,7 +25,7 @@ final class Instrument: Equatable {
   var soundSet: SoundSetType {
     didSet {
       guard !soundSet.isEqualTo(oldValue) else { return }
-      Notification.SoundSetDidChange.post(object: self)
+      postNotification(name: .soundSetDidChange, object: self, userInfo: nil)
     }
   }
   var channel: Channel = 0
@@ -127,7 +127,7 @@ final class Instrument: Equatable {
     self.program  = program
     self.bank     = bank
     let newPresetName = preset.name
-    Notification.PresetDidChange.post(object: self, userInfo: [.OldValue: oldPresetName, .NewValue: newPresetName])
+    postNotification(name: .presetDidChange, object: self, userInfo: ["oldValue": oldPresetName, "newValue": newPresetName])
   }
 
   /**
@@ -223,6 +223,8 @@ extension Instrument: JSONValueInitializable {
 extension Instrument: NotificationDispatching {
   enum NotificationName: String, LosslessStringConvertible {
     case presetDidChange, soundSetDidChange
+    var description: String { return rawValue }
+    init?(_ description: String) { self.init(rawValue: description) }
   }
 }
 

@@ -38,10 +38,10 @@ protocol MIDIEventDispatch: class, Loggable {
   func dispatchEvent(_ event: MIDIEvent)
   func registrationTimesForAddedEvents<S:Swift.Sequence>(_ events: S) -> [BarBeatTime] where S.Iterator.Element == MIDIEvent
   var events: MIDIEventContainer { get set }
-  var metaEvents: LazyMapCollection<LazyFilterCollection<MIDIEventContainer>, MetaEvent> { get }
-  var channelEvents: LazyMapCollection<LazyFilterCollection<MIDIEventContainer>, ChannelEvent> { get }
-  var nodeEvents: LazyMapCollection<LazyFilterCollection<MIDIEventContainer>, MIDINodeEvent> { get }
-  var timeEvents: LazyMapCollection<LazyFilterCollection<MIDIEventContainer>, MetaEvent> { get }
+  var metaEvents: [MetaEvent] { get }
+  var channelEvents: [ChannelEvent] { get }
+  var nodeEvents: [MIDINodeEvent] { get }
+  var timeEvents: [MetaEvent] { get }
   var eventQueue: DispatchQueue { get }
 }
 
@@ -56,10 +56,10 @@ extension MIDIEventDispatch {
   func eventsForTime(_ time: BarBeatTime) -> OrderedSet<MIDIEvent>? { return events[time] }
   func filterEvents(_ includeElement: (MIDIEvent) -> Bool) -> [MIDIEvent] { return events.filter(includeElement) }
   func dispatchEventsForTime(_ time: BarBeatTime) { eventsForTime(time)?.forEach(dispatchEvent) }
-  var metaEvents: LazyMapCollection<LazyFilterCollection<MIDIEventContainer>, MetaEvent> { return events.metaEvents }
-  var channelEvents: LazyMapCollection<LazyFilterCollection<MIDIEventContainer>, ChannelEvent> { return events.channelEvents }
-  var nodeEvents: LazyMapCollection<LazyFilterCollection<MIDIEventContainer>, MIDINodeEvent> { return events.nodeEvents }
-  var timeEvents: LazyMapCollection<LazyFilterCollection<MIDIEventContainer>, MetaEvent> { return events.timeEvents }
+  var metaEvents: [MetaEvent] { return events.metaEvents }
+  var channelEvents: [ChannelEvent] { return events.channelEvents }
+  var nodeEvents: [MIDINodeEvent] { return events.nodeEvents }
+  var timeEvents: [MetaEvent] { return events.timeEvents }
 }
 
 enum MIDIEvent: MIDIEventType, Hashable {

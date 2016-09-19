@@ -37,7 +37,7 @@ final class Sequence {
     guard instrumentTracks.indices.contains([idx1, idx2]) else { return }
     swap(&instrumentTracks[idx1], &instrumentTracks[idx2])
     logDebug("posting 'DidUpdate'")
-    Notification.DidUpdate.post(object: self)
+    postNotification(name: .didUpdate, object: self, userInfo: nil)
   }
 
   var currentTrackIndex: Int? {
@@ -56,17 +56,17 @@ final class Sequence {
   weak var currentTrack: InstrumentTrack? {
     get { return currentTrackStack.peek?.reference }
     set {
-      let userInfo: [Notification.Key:AnyObject?]?
+      let userInfo: [AnyHashable:Any]?
 
       switch (currentTrackStack.peek?.reference, newValue) {
 
         case let (oldTrack, newTrack?) where instrumentTracks.contains(newTrack) && oldTrack != newTrack:
-          userInfo = [Notification.Key.OldTrack: oldTrack, Notification.Key.Track: newTrack]
+          userInfo = ["oldTrack": oldTrack, "newTrack": newTrack]
           currentTrackStack.push(Weak(newTrack))
 //          newTrack.recording = true
 
         case let (oldTrack?, nil):
-          userInfo = [Notification.Key.OldTrack: oldTrack, Notification.Key.Track: nil]
+          userInfo = ["oldTrack": oldTrack, "newTrack": NSNull()]
           currentTrackStack.pop()
 
         case (nil, nil):
@@ -77,7 +77,7 @@ final class Sequence {
 
       }
       guard userInfo != nil else { return }
-      Notification.DidChangeTrack.post(object: self, userInfo: userInfo)
+      postNotification(name: .didChangeTrack, object: self, userInfo: userInfo)
     }
   }
 
@@ -117,7 +117,7 @@ final class Sequence {
     else {
       hasChanges = false
       logDebug("posting 'DidUpdate'")
-      Notification.DidUpdate.post(object: self)
+      postNotification(name: .didUpdate, object: self, userInfo: nil)
     }
   }
 
@@ -139,7 +139,7 @@ final class Sequence {
     guard hasChanges else { return }
     hasChanges = false
     logDebug("posting 'DidUpdate'")
-    Notification.DidUpdate.post(object: self)
+    postNotification(name: .didUpdate, object: self, userInfo: nil)
   }
 
   /**
@@ -148,11 +148,11 @@ final class Sequence {
    - parameter track: Track
   */
   fileprivate func observeTrack(_ track: Track) {
-    receptionist.observe(notification: .DidUpdate,
+    receptionist.observe(name: Track.NotificationName.didUpdate.rawValue,
                     from: track,
                 callback: weakMethod(self, Sequence.trackDidUpdate))
 
-    receptionist.observe(notification: .SoloStatusDidChange,
+    receptionist.observe(name: Track.NotificationName.soloStatusDidChange.rawValue,
                     from: track,
                 callback: weakMethod(self, Sequence.trackSoloStatusDidChange))
   }
@@ -168,10 +168,10 @@ final class Sequence {
   */
   init(document: Document) {
     self.document = document
-    receptionist.observe(notification: Sequencer.Notification.DidToggleRecording,
+    receptionist.observe(name: Sequencer.NotificationName.didToggleRecording.rawValue,
                     from: Sequencer.self,
                 callback: weakMethod(self, Sequence.toggleRecording))
-    receptionist.observe(notification: Sequencer.Notification.DidReset,
+    receptionist.observe(name: Sequencer.NotificationName.didReset.rawValue,
                     from: Sequencer.self,
                 callback: weakMethod(self, Sequence.sequencerDidReset))
     tempoTrack = TempoTrack(sequence: self)
@@ -244,7 +244,7 @@ final class Sequence {
   func insertTrackWithInstrument(_ instrument: Instrument) throws {
     addTrack(try InstrumentTrack(sequence: self, instrument: instrument))
     logDebug("posting 'DidUpdate'")
-    Notification.DidUpdate.post(object: self)
+    postNotification(name: .didUpdate, object: self, userInfo: nil)
   }
 
   /**
@@ -257,13 +257,7 @@ final class Sequence {
     instrumentTracks.append(track)
     observeTrack(track)
     logDebug("track added: \(track.name)")
-    Notification.DidAddTrack.post(
-      object: self as AnyObject,
-      userInfo: [
-        Notification.Key.AddedIndex: instrumentTracks.count - 1,
-        Notification.Key.AddedTrack: track
-      ]
-    )
+    postNotification(name: .didAddTrack, object: self, userInfo: ["addedIndex": instrumentTracks.count - 1, "addedTrack": track])
     if currentTrack == nil { currentTrack = track }
   }
 
@@ -287,18 +281,12 @@ final class Sequence {
   func removeTrackAtIndex(_ index: Int) {
     let track = instrumentTracks.remove(at: index)
     track.nodeManager.stopNodes(remove: true)
-    receptionist.stopObserving(notification: .DidUpdate, from: track)
+    receptionist.stopObserving(name: NotificationName.didUpdate.rawValue, from: track)
     logDebug("track removed: \(track.name)")
-    Notification.DidRemoveTrack.post(
-      object: self as AnyObject,
-      userInfo: [
-        Notification.Key.RemovedIndex: index,
-        Notification.Key.RemovedTrack: track
-      ]
-    )
+    postNotification(name: .didRemoveTrack, object: self, userInfo: ["removedIndex": index, "removedTrack": track])
     if currentTrack == track { currentTrackStack.pop() }
     logDebug("posting 'DidUpdate'")
-    Notification.DidUpdate.post(object: self)
+    postNotification(name: .didUpdate, object: self, userInfo: nil)
   }
 
 }
@@ -321,9 +309,10 @@ extension Sequence: CustomDebugStringConvertible {
 // MARK: - Notification
 
 extension Sequence: NotificationDispatching {
-
   enum NotificationName: String, LosslessStringConvertible {
     case didAddTrack, didRemoveTrack, didChangeTrack, soloCountDidChange, didUpdate
+    var description: String { return rawValue }
+    init?(_ description: String) { self.init(rawValue: description) }
   }
 }
 

@@ -18,7 +18,7 @@ final class SettingsManager {
   fileprivate(set) static var initialized = false {
     didSet {
       guard initialized else { return }
-      Notification(nil).post()
+      postNotification(name: NotificationName(nil), object: self, userInfo: nil)
     }
   }
 
@@ -39,9 +39,10 @@ final class SettingsManager {
     logDebug("changed settings: \(changedSettings.map({$0.rawValue}))")
 
     for setting in changedSettings {
-      settingsCache[setting] = setting.currentValue
+      let settingValue = setting.currentValue
+      settingsCache[setting] = settingValue
       logDebug("posting notification for setting '\(setting.rawValue)'")
-      Notification(setting).post()
+      postNotification(name: NotificationName(setting), object: self, userInfo: ["settingValue": settingValue ?? NSNull()])
     }
   }
 
@@ -63,96 +64,96 @@ final class SettingsManager {
 
   static var confirmDeleteDocument: Bool {
     get { 
-      if let cachedValue = Setting.ConfirmDeleteDocument.cachedValue as? Bool {
-         assert(Setting.ConfirmDeleteDocument.currentValue as? Bool == cachedValue,
+      if let cachedValue = Setting.confirmDeleteDocument.cachedValue as? Bool {
+         assert(Setting.confirmDeleteDocument.currentValue as? Bool == cachedValue,
                 "cached value is not up to date")
          return cachedValue
       } else {
-        guard let defaultValue = Setting.ConfirmDeleteDocument.defaultValue as? Bool else {
+        guard let defaultValue = Setting.confirmDeleteDocument.defaultValue as? Bool else {
           fatalError("unable to retrieve default value for 'ConfirmDeleteDocument'")
         }
         return defaultValue
       }
     }
-    set { logDebug(""); defaults.set(newValue, forKey: Setting.ConfirmDeleteDocument.key) }
+    set { logDebug(""); defaults.set(newValue, forKey: Setting.confirmDeleteDocument.key) }
   }
 
   static var confirmDeleteTrack: Bool {
     get { 
-      if let cachedValue = Setting.ConfirmDeleteTrack.cachedValue as? Bool {
-         assert(Setting.ConfirmDeleteTrack.currentValue as? Bool == cachedValue,
+      if let cachedValue = Setting.confirmDeleteTrack.cachedValue as? Bool {
+         assert(Setting.confirmDeleteTrack.currentValue as? Bool == cachedValue,
                 "cached value is not up to date")
          return cachedValue
       } else {
-        guard let defaultValue = Setting.ConfirmDeleteTrack.defaultValue as? Bool else {
+        guard let defaultValue = Setting.confirmDeleteTrack.defaultValue as? Bool else {
           fatalError("unable to retrieve default value for 'ConfirmDeleteTrack'")
         }
         return defaultValue
       }
     }
-    set { logDebug(""); defaults.set(newValue, forKey: Setting.ConfirmDeleteTrack.key) }
+    set { logDebug(""); defaults.set(newValue, forKey: Setting.confirmDeleteTrack.key) }
   }
 
   static var scrollTrackLabels: Bool {
     get { 
-      if let cachedValue = Setting.ScrollTrackLabels.cachedValue as? Bool {
-         assert(Setting.ScrollTrackLabels.currentValue as? Bool == cachedValue,
+      if let cachedValue = Setting.scrollTrackLabels.cachedValue as? Bool {
+         assert(Setting.scrollTrackLabels.currentValue as? Bool == cachedValue,
                 "cached value is not up to date")
          return cachedValue
       } else {
-        guard let defaultValue = Setting.ScrollTrackLabels.defaultValue as? Bool else {
+        guard let defaultValue = Setting.scrollTrackLabels.defaultValue as? Bool else {
           fatalError("unable to retrieve default value for 'ScrollTrackLabels'")
         }
         return defaultValue
       }
     }
-    set { logDebug(""); defaults.set(newValue, forKey: Setting.ScrollTrackLabels.key) }
+    set { logDebug(""); defaults.set(newValue, forKey: Setting.scrollTrackLabels.key) }
   }
 
   static var currentDocumentLocal: Data? {
     get { 
-      if let cachedValue = Setting.CurrentDocumentLocal.cachedValue as? Data {
-         assert(Setting.CurrentDocumentLocal.currentValue as? Data == cachedValue,
+      if let cachedValue = Setting.currentDocumentLocal.cachedValue as? Data {
+         assert(Setting.currentDocumentLocal.currentValue as? Data == cachedValue,
                "cached value is not up to date")
          return cachedValue
       } else {
-        guard let defaultValue = Setting.CurrentDocumentLocal.defaultValue as? Data else { return nil }
+        guard let defaultValue = Setting.currentDocumentLocal.defaultValue as? Data else { return nil }
         return defaultValue
       }
     }
-    set { logDebug(""); defaults.set(newValue, forKey: Setting.CurrentDocumentLocal.key) }
+    set { logDebug(""); defaults.set(newValue, forKey: Setting.currentDocumentLocal.key) }
   }
 
   static var currentDocumentiCloud: Data? {
     get {
-      if let cachedValue = Setting.CurrentDocumentiCloud.cachedValue as? Data {
-        assert(Setting.CurrentDocumentiCloud.currentValue as? Data == cachedValue,
+      if let cachedValue = Setting.currentDocumentiCloud.cachedValue as? Data {
+        assert(Setting.currentDocumentiCloud.currentValue as? Data == cachedValue,
               "cached value is not up to date")
         return cachedValue
       } else {
-        guard let defaultValue = Setting.CurrentDocumentiCloud.defaultValue as? Data else {
+        guard let defaultValue = Setting.currentDocumentiCloud.defaultValue as? Data else {
           return nil
         }
         return defaultValue
       }
     }
-    set { logDebug(""); defaults.set(newValue, forKey: Setting.CurrentDocumentiCloud.key) }
+    set { logDebug(""); defaults.set(newValue, forKey: Setting.currentDocumentiCloud.key) }
   }
 
   static var makeNewTrackCurrent: Bool {
     get { 
-      if let cachedValue = Setting.MakeNewTrackCurrent.cachedValue as? Bool {
-         assert(Setting.MakeNewTrackCurrent.currentValue as? Bool == cachedValue,
+      if let cachedValue = Setting.makeNewTrackCurrent.cachedValue as? Bool {
+         assert(Setting.makeNewTrackCurrent.currentValue as? Bool == cachedValue,
                 "cached value is not up to date")
          return cachedValue
       } else {
-        guard let defaultValue = Setting.MakeNewTrackCurrent.defaultValue as? Bool else {
+        guard let defaultValue = Setting.makeNewTrackCurrent.defaultValue as? Bool else {
           fatalError("unable to retrieve default value for 'MakeNewTrackCurrent'")
         }
         return defaultValue
       }
     }
-    set { logDebug(""); defaults.set(newValue, forKey: Setting.MakeNewTrackCurrent.key) }
+    set { logDebug(""); defaults.set(newValue, forKey: Setting.makeNewTrackCurrent.key) }
   }
 
   fileprivate static let receptionist: NotificationReceptionist = {
@@ -175,8 +176,8 @@ final class SettingsManager {
   static func initialize() {
     guard !initialized else { return }
 
-    defaults.register(defaults: Setting.boolSettings.reduce([String:AnyObject]()) {
-      (dict: [String:AnyObject], setting: Setting) in
+    defaults.register(defaults: Setting.boolSettings.reduce([String:Any]()) {
+      (dict: [String:Any], setting: Setting) in
       var dict = dict
       dict[setting.key] = setting.defaultValue// as? AnyObject
       return dict
@@ -185,7 +186,7 @@ final class SettingsManager {
 
     Setting.allCases.forEach { SettingsManager.settingsCache[$0] = $0.currentValue }
 
-    let _ = receptionist
+    _ = receptionist
 
     initialized = true
   }
@@ -197,22 +198,25 @@ extension SettingsManager: NotificationDispatching {
 
   enum NotificationName: String, LosslessStringConvertible {
 
-      case iCloudStorageChanged
-      case confirmDeleteDocumentChanged, confirmDeleteTrackChanged
-      case scrollTrackLabelsChanged
-      case currentDocumentLocalChanged, currentDocumentiCloudChanged
-      case makeNewTrackCurrentChanged
-      case didInitializeSettings
+    case iCloudStorageChanged
+    case confirmDeleteDocumentChanged, confirmDeleteTrackChanged
+    case scrollTrackLabelsChanged
+    case currentDocumentLocalChanged, currentDocumentiCloudChanged
+    case makeNewTrackCurrentChanged
+    case didInitializeSettings
+
+    var description: String { return rawValue }
+    init?(_ description: String) { self.init(rawValue: description) }
 
     var setting: Setting? {
       switch self {
         case .iCloudStorageChanged:         return .iCloudStorage
-        case .confirmDeleteDocumentChanged: return .ConfirmDeleteDocument
-        case .confirmDeleteTrackChanged:    return .ConfirmDeleteTrack
-        case .scrollTrackLabelsChanged:     return .ScrollTrackLabels
-        case .currentDocumentLocalChanged:  return .CurrentDocumentLocal
-        case .currentDocumentiCloudChanged: return .CurrentDocumentiCloud
-        case .makeNewTrackCurrentChanged:   return .MakeNewTrackCurrent
+        case .confirmDeleteDocumentChanged: return .confirmDeleteDocument
+        case .confirmDeleteTrackChanged:    return .confirmDeleteTrack
+        case .scrollTrackLabelsChanged:     return .scrollTrackLabels
+        case .currentDocumentLocalChanged:  return .currentDocumentLocal
+        case .currentDocumentiCloudChanged: return .currentDocumentiCloud
+        case .makeNewTrackCurrentChanged:   return .makeNewTrackCurrent
         case .didInitializeSettings:        return nil
       }
     }
@@ -221,12 +225,12 @@ extension SettingsManager: NotificationDispatching {
       guard let setting = setting  else { self = .didInitializeSettings; return }
       switch setting {
         case .iCloudStorage:         self = .iCloudStorageChanged
-        case .ConfirmDeleteDocument: self = .confirmDeleteDocumentChanged
-        case .ConfirmDeleteTrack:    self = .confirmDeleteTrackChanged
-        case .ScrollTrackLabels:     self = .scrollTrackLabelsChanged
-        case .CurrentDocumentLocal:  self = .currentDocumentLocalChanged
-        case .CurrentDocumentiCloud: self = .currentDocumentiCloudChanged
-        case .MakeNewTrackCurrent:   self = .makeNewTrackCurrentChanged
+        case .confirmDeleteDocument: self = .confirmDeleteDocumentChanged
+        case .confirmDeleteTrack:    self = .confirmDeleteTrackChanged
+        case .scrollTrackLabels:     self = .scrollTrackLabelsChanged
+        case .currentDocumentLocal:  self = .currentDocumentLocalChanged
+        case .currentDocumentiCloud: self = .currentDocumentiCloudChanged
+        case .makeNewTrackCurrent:   self = .makeNewTrackCurrentChanged
       }
     }
 

@@ -26,13 +26,13 @@ final class MIDIPlayerViewController: UIViewController {
   @IBAction fileprivate func stopLoopAction() { MIDIPlayer.loopEnd = Sequencer.transport.time.barBeatTime }
 
   /** toggleLoopAction */
-  @IBAction fileprivate func toggleLoopAction() { Sequencer.mode = .Loop }
+  @IBAction fileprivate func toggleLoopAction() { Sequencer.mode = .loop }
 
   /** cancelLoopAction */
-  @IBAction fileprivate func cancelLoopAction() { Sequencer.mode = .Default }
+  @IBAction fileprivate func cancelLoopAction() { Sequencer.mode = .default }
 
   /** confirmLoopAction */
-  @IBAction fileprivate func confirmLoopAction() { MIDIPlayer.shouldInsertLoops = true;  Sequencer.mode = .Default }
+  @IBAction fileprivate func confirmLoopAction() { MIDIPlayer.shouldInsertLoops = true;  Sequencer.mode = .default }
 
   // MARK: - Tools
 

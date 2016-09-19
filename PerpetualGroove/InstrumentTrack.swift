@@ -144,7 +144,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 
   /** validateEvents */
   override func validateEvents(_ container: inout MIDIEventContainer) {
-    instrumentEvent = MetaEvent(.text(text: "instrument:\(instrument.soundSet.url.lastPathComponent!)"))
+    instrumentEvent = MetaEvent(.text(text: "instrument:\(instrument.soundSet.url.lastPathComponent)"))
     programEvent = ChannelEvent(.programChange, instrument.channel, instrument.program)
     super.validateEvents(&container)
   }
@@ -195,7 +195,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
   fileprivate(set) var instrument: Instrument!
   var color: TrackColor = .muddyWaters
 
-  var recording: Bool { return Sequencer.mode == .Default && MIDIPlayer.currentDispatch === self }
+  var recording: Bool { return Sequencer.mode == .default && MIDIPlayer.currentDispatch === self }
 
   var nextNodeName: String { return "\(displayName) \(nodes.count + 1)" }
 
@@ -208,7 +208,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     didSet {
       guard isMuted != oldValue else { return }
       swap(&volume, &_volume)
-      Notification.MuteStatusDidChange.post(object: self, userInfo: [.OldValue: oldValue, .NewValue: isMuted])
+      postNotification(name: .muteStatusDidChange, object: self, userInfo: ["oldValue": oldValue, "newValue": isMuted])
     }
   }
 
@@ -229,7 +229,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
   fileprivate(set) var forceMute = false {
     didSet {
       guard forceMute != oldValue else { return }
-      Notification.ForceMuteStatusDidChange.post(object: self, userInfo: [.OldValue: oldValue, .NewValue: forceMute])
+      postNotification(name: .forceMuteStatusDidChange, object: self, userInfo: ["oldValue": oldValue, "newValue": forceMute])
       updateIsMuted()
     }
   }
@@ -239,7 +239,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
   var solo = false {
     didSet {
       guard solo != oldValue else { return }
-      Notification.SoloStatusDidChange.post(object: self, userInfo: [.OldValue: !solo, .NewValue: solo])
+      postNotification(name: .soloStatusDidChange, object: self, userInfo: ["oldValue": !solo, "newValue": solo])
       updateIsMuted()
     }
   }
@@ -263,7 +263,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     logDebug("nodes reset")
     if modified {
       logDebug("posting 'DidUpdate'")
-      Track.Notification.DidUpdate.post(object: self)
+      postNotification(name: .didUpdate, object: self, userInfo: nil)
       modified = false
     }
   }
@@ -320,7 +320,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
   - parameter packetList: UnsafePointer<MIDIPacketList>
   - parameter context: UnsafeMutablePointer<Void>
   */
-  fileprivate func read(_ packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutableRawPointer) {
+  fileprivate func read(_ packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutableRawPointer?) {
 
     // Forward the packets to the instrument
     do {
@@ -339,9 +339,9 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
       let event: MIDIEvent?
       switch packet.status {
         case 9:
-          event = .Channel(ChannelEvent(.NoteOn, packet.channel, packet.note, packet.velocity, time))
+          event = .channel(ChannelEvent(.noteOn, packet.channel, packet.note, packet.velocity, time))
         case 8:
-          event = .Channel(ChannelEvent(.NoteOff, packet.channel, packet.note, packet.velocity, time))
+          event = .channel(ChannelEvent(.noteOff, packet.channel, packet.note, packet.velocity, time))
         default:
           event = nil
       }
@@ -413,7 +413,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     nodeManager = MIDINodeManager(owner: self)
     self.instrument = instrument
     instrument.track = self
-    instrumentEvent = MetaEvent(.text(text: "instrument:\(instrument.soundSet.url.lastPathComponent!)"))
+    instrumentEvent = MetaEvent(.text(text: "instrument:\(instrument.soundSet.url.lastPathComponent)"))
     programEvent = ChannelEvent(.programChange, instrument.channel, instrument.program)
     color = TrackColor.nextColor
 
@@ -473,11 +473,11 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     guard let instrumentEvent = instrumentEvent,
       case .text(var instrumentName) = instrumentEvent.data else
     {
-      throw MIDIFileError(type: .FileStructurallyUnsound,
+      throw MIDIFileError(type: .fileStructurallyUnsound,
                           reason: "Instrument event must be a text event")
     }
 
-    instrumentName = instrumentName[instrumentName.startIndex.advancedBy(11)..<]
+    instrumentName = instrumentName[instrumentName.index(instrumentName.startIndex, offsetBy:11)|->]
 
     guard let url = Bundle.main.url(forResource: instrumentName, withExtension: nil) else {
       throw Error.InvalidSoundSetURL
@@ -497,7 +497,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 
     // Find the program change event
     guard let programEvent = programEvent else {
-      throw MIDIFileError(type: .MissingEvent, reason: "Missing program change event")
+      throw MIDIFileError(type: .missingEvent, reason: "Missing program change event")
     }
 
     let channel = programEvent.status.channel, program = programEvent.data1

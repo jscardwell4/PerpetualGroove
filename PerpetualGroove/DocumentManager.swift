@@ -22,7 +22,7 @@ final class DocumentManager {
 
       receptionist.logContext = LogManager.MIDIFileContext
 
-      receptionist.observe(notification: .iCloudStorageChanged,
+      receptionist.observe(name: SettingsManager.NotificationName.iCloudStorageChanged.rawValue,
                            from: SettingsManager.self,
                            callback: DocumentManager.didChangeStorage)
 
@@ -34,7 +34,7 @@ final class DocumentManager {
                            from: metadataQuery,
                            callback: DocumentManager.didUpdateMetadataItems)
 
-      storageLocation = SettingsManager.iCloudStorage ? .iCloud : .Local
+      storageLocation = SettingsManager.iCloudStorage ? .iCloud : .local
 
       state ∪= [.Initialized]
     }
@@ -43,18 +43,20 @@ final class DocumentManager {
   // MARK: - Queues
 
   /// Queue for document manipulations
-  static let queue: DispatchQueue = concurrentQueueWithLabel("DocumentManager")
+  static let queue = DispatchQueue(label: "DocumentManager", attributes: .concurrent)
 
   /// Operation queue that dispatches to `queue`
   static let operationQueue: OperationQueue = {
-    let operationQueue = OperationQueue(name: "DocumentManager")
+    let operationQueue = OperationQueue()
+    operationQueue.name = "DocumentManager"
     operationQueue.underlyingQueue = queue
     return operationQueue
   }()
 
   /// Operation queue for metadata queries
   fileprivate static let queryQueue: OperationQueue = {
-    let queryQueue = OperationQueue(name: "DocumentManager.MetadataQuery")
+    let queryQueue = OperationQueue()
+    queryQueue.name = "DocumentManager.MetadataQuery"
     queryQueue.maxConcurrentOperationCount = 1
     return queryQueue
   }()
@@ -65,12 +67,9 @@ final class DocumentManager {
     didSet {
       logDebug("\(oldValue) ➞ \(state)")
 
-      let modifiedState = state ⊻ oldValue
-
-      if modifiedState ∋ .OpeningDocument {
-        dispatchToMain {
-          (openingDocument ? Notification.WillOpenDocument : Notification.DidOpenDocument).post(object: self)
-        }
+      guard state.symmetricDifference(oldValue) ∋ .OpeningDocument else { return }
+      dispatchToMain {
+        postNotification(name: openingDocument ? .willOpenDocument : .didOpenDocument, object: self, userInfo: nil)
       }
     }
   }
@@ -85,12 +84,12 @@ final class DocumentManager {
     queue.async {
       guard let currentDocument = currentDocument else { return }
         do {
-          let bookmark = try currentDocument.fileURL.bookmarkDataWithOptions(.SuitableForBookmarkFile,
-                                              includingResourceValuesForKeys: nil,
-                                                               relativeToURL: nil)
+          let bookmark = try currentDocument.fileURL.bookmarkData(options: .suitableForBookmarkFile,
+                                                                  includingResourceValuesForKeys: nil,
+                                                                  relativeTo: nil)
           switch currentDocument.storageLocation {
             case .iCloud: SettingsManager.currentDocumentiCloud = bookmark
-            case .Local: SettingsManager.currentDocumentLocal = bookmark
+            case .local: SettingsManager.currentDocumentLocal = bookmark
           }
           logDebug("bookmark refreshed for '\(currentDocument.localizedName)'")
         } catch {
@@ -105,7 +104,7 @@ final class DocumentManager {
   static fileprivate var _currentDocument: Document? {
     willSet {
       guard _currentDocument != newValue else { return }
-      dispatchToMain { Notification.WillChangeDocument.post() }
+      dispatchToMain { postNotification(name: .willChangeDocument, object: self, userInfo: nil) }
     }
     didSet {
       queue.async {
@@ -128,7 +127,7 @@ final class DocumentManager {
         }
 
         refreshBookmark()
-        dispatchToMain { Notification.DidChangeDocument.post() }
+        dispatchToMain { postNotification(name: .didChangeDocument, object: self, userInfo: nil) }
       }
     }
   }
@@ -173,7 +172,7 @@ final class DocumentManager {
               logError(error, message: "Failed to resolve bookmark data into a valid file url")
               switch storageLocation {
                 case .iCloud: SettingsManager.currentDocumentiCloud = nil
-                case .Local: SettingsManager.currentDocumentLocal = nil
+                case .local: SettingsManager.currentDocumentLocal = nil
               }
             }
           }
@@ -184,7 +183,7 @@ final class DocumentManager {
         case (let data?, true):
           openData(data)
         case (let data?, false):
-          receptionist.observeOnce(notification: .DidUpdateAvailableSoundSets, from: Sequencer.self) {
+          receptionist.observeOnce(name: Sequencer.NotificationName.didUpdateAvailableSoundSets.rawValue, from: Sequencer.self) {
             _ in openData(data)
           }
       }
@@ -224,7 +223,7 @@ final class DocumentManager {
   }()
 
   /// Callback for `NSMetadataQueryDidFinishGatheringNotification`
-  fileprivate static func didGatherMetadataItems(_ notification: Foundation.Notification) {
+  fileprivate static func didGatherMetadataItems(_ notification: Notification) {
     logDebug("observed notification metadata query has finished gathering")
     guard state ∋ .GatheringMetadataItems else {
       logWarning("received gathering notification but state does not contain gathering flag")
@@ -234,11 +233,11 @@ final class DocumentManager {
     metadataQuery.disableUpdates()
     metadataItems = OrderedSet((metadataQuery.results as! [NSMetadataItem]).map(DocumentItem.init))
     metadataQuery.enableUpdates()
-    state ⊻= .GatheringMetadataItems
+    state.formSymmetricDifference(.GatheringMetadataItems)
   }
 
   /// Callback for `NSMetadataQueryDidUpdateNotification`
-  fileprivate static func didUpdateMetadataItems(_ notification: Foundation.Notification) {
+  fileprivate static func didUpdateMetadataItems(_ notification: Notification) {
     logDebug("observed metadata query update notification")
     var items = metadataItems
     if let removed = notification.removedMetadataItems?.map(DocumentItem.init) { items ∖= removed }
@@ -257,7 +256,7 @@ final class DocumentManager {
   /// Collection of `DocumentItem` instances for available local documents
   static fileprivate(set) var localItems: OrderedSet<DocumentItem> = [] {
     didSet {
-      guard storageLocation == .Local && localItems.elementsEqual(oldValue) else { return }
+      guard storageLocation == .local && localItems.elementsEqual(oldValue) else { return }
       postItemUpdateNotification(localItems)
     }
   }
@@ -285,14 +284,14 @@ final class DocumentManager {
       return string
       }())
 
-    var userInfo: [Notification.Key:AnyObject?] = [:]
-    if removed.count > 0 { userInfo[Notification.Key.Removed] = removed.map({$0.data}) }
-    if added.count > 0 { userInfo[Notification.Key.Added] = added.map({$0.data}) }
+    var userInfo: [String:Any] = [:]
+    if removed.count > 0 { userInfo["removed"] = removed.map({$0.data}) }
+    if added.count > 0 { userInfo["added"] = added.map({$0.data}) }
 
     guard userInfo.count > 0 else { return }
 
     logDebug("posting 'DidUpdateItems'")
-    dispatchToMain { Notification.DidUpdateItems.post(object: self, userInfo: userInfo) }
+    dispatchToMain { postNotification(name: .didUpdateItems, object: self, userInfo: userInfo) }
 
   }
 
@@ -324,7 +323,7 @@ final class DocumentManager {
 
     queue.async {
 
-      let url: NSURL
+      let url: URL
 
       switch storageLocation {
 
@@ -334,22 +333,22 @@ final class DocumentManager {
           }
           url = baseURL + "Documents"
 
-        case .Local:
+        case .local:
           url = documentsURL
 
       }
 
       guard let fileName = noncollidingFileName(name ?? DefaultDocumentName) else { return }
-      let fileURL = (url as URL) + ["\(fileName).groove"]
+      let fileURL = url + ["\(fileName).groove"]
       logDebug("creating a new document at path '\(fileURL.path)'")
       let document = Document(fileURL: fileURL)
-      document.saveToURL(fileURL, forSaveOperation: .ForCreating, completionHandler: {
+      document.save(to: fileURL, for: .forCreating) {
         guard $0 else { return }
         dispatchToMain {
-          Notification.DidCreateDocument.post(userInfo: [Notification.Key.FilePath: fileURL.path!])
+          postNotification(name: .didCreateDocument, object: self, userInfo: ["filePath": fileURL.path])
           DocumentManager.openDocument(document)
         }
-      })
+      }
     }
 
   }
@@ -386,7 +385,7 @@ final class DocumentManager {
 
     var baseNameʹ = baseName
     var i = 2
-    while (url + "\(baseNameʹ).\(extʹ)").checkPromisedItemIsReachableAndReturnError(nil) {
+    while (try? (url + "\(baseNameʹ).\(extʹ)").checkPromisedItemIsReachable()) == true {
       baseNameʹ = "\(baseName)\(i)"
       i += 1
     }
@@ -404,8 +403,8 @@ final class DocumentManager {
   static func openDocument(_ document: Document) {
     let openBlock = {
       guard state ∌ .OpeningDocument else { logWarning("already opening a document"); return }
-      logDebug("opening document '\(document.fileURL.path ?? "???")'")
-      state ⊻= .OpeningDocument
+      logDebug("opening document '\(document.fileURL.path)'")
+      state.formSymmetricDifference(.OpeningDocument)
       document.open {
         guard $0  else {
           logError("failed to open document: \(document)")
@@ -416,17 +415,17 @@ final class DocumentManager {
           return
         }
         currentDocument = document
-        state ⊻= .OpeningDocument
+        state.formSymmetricDifference(.OpeningDocument)
       }
     }
-    if Sequencer.soundSets.count > 0 { queue.async(openBlock) }
+    if Sequencer.soundSets.count > 0 { queue.async(execute: openBlock) }
     else {
-      receptionist.observe(notification: .DidUpdateAvailableSoundSets,
+      receptionist.observe(name: Sequencer.NotificationName.didUpdateAvailableSoundSets.rawValue,
                            from: Sequencer.self,
                            queue: operationQueue)
       {
         _ in
-        receptionist.stopObserving(notification: .DidUpdateAvailableSoundSets, from: Sequencer.self)
+        receptionist.stopObserving(name: Sequencer.NotificationName.didUpdateAvailableSoundSets.rawValue, from: Sequencer.self)
         openBlock()
       }
     }
@@ -530,16 +529,18 @@ extension DocumentManager: NotificationDispatching {
   enum NotificationName: String, LosslessStringConvertible {
     case didUpdateItems, willChangeDocument, didChangeDocument, didCreateDocument
     case willOpenDocument, didOpenDocument
+    var description: String { return rawValue }
+    init?(_ description: String) { self.init(rawValue: description) }
   }
   
 }
 
 extension Notification {
   var addedItemsData: [AnyObject]? {
-    return userInfo?[DocumentManager.Notification.Key.Added.key] as? [AnyObject]
+    return userInfo?["added"] as? [AnyObject]
   }
   var removedItemsData: [AnyObject]? {
-    return userInfo?[DocumentManager.Notification.Key.Removed.key] as? [AnyObject]
+    return userInfo?["removed"] as? [AnyObject]
   }
   var addedItems: [DocumentItem]?   { return addedItemsData?.flatMap(DocumentItem.init)   }
   var removedItems: [DocumentItem]? { return removedItemsData?.flatMap(DocumentItem.init) }

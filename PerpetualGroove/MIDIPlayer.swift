@@ -22,19 +22,19 @@ final class MIDIPlayer {
   fileprivate static let receptionist: NotificationReceptionist = {
     let receptionist = NotificationReceptionist()
     receptionist.logContext = LogManager.SceneContext
-    receptionist.observe(notification: .DidChangeSequence,
+    receptionist.observe(name: Sequencer.NotificationName.didChangeSequence.rawValue,
                     from: Sequencer.self,
                 callback: MIDIPlayer.didChangeSequence)
-      receptionist.observe(notification: .DidEnterLoopMode,
+      receptionist.observe(name: Sequencer.NotificationName.didEnterLoopMode.rawValue,
                       from: Sequencer.self,
                   callback: MIDIPlayer.didEnterLoopMode)
-      receptionist.observe(notification: .DidExitLoopMode,
+      receptionist.observe(name: Sequencer.NotificationName.didExitLoopMode.rawValue,
                       from: Sequencer.self,
                   callback: MIDIPlayer.didExitLoopMode)
-      receptionist.observe(notification: .WillEnterLoopMode,
+      receptionist.observe(name: Sequencer.NotificationName.willEnterLoopMode.rawValue,
                       from: Sequencer.self,
                   callback: MIDIPlayer.willEnterLoopMode)
-      receptionist.observe(notification: .WillExitLoopMode,
+      receptionist.observe(name: Sequencer.NotificationName.willExitLoopMode.rawValue,
                       from: Sequencer.self,
                   callback: MIDIPlayer.willExitLoopMode)
     return receptionist
@@ -51,8 +51,8 @@ final class MIDIPlayer {
   static fileprivate func updateCurrentDispatch() {
     guard let track = Sequencer.sequence?.currentTrack else { currentDispatch = nil; return }
     switch Sequencer.mode {
-      case .Default: currentDispatch = track
-      case .Loop:
+      case .default: currentDispatch = track
+      case .loop:
         if let loop = loops[ObjectIdentifier(track)] { currentDispatch = loop }
         else {
           let loop = Loop(track: track)
@@ -69,8 +69,8 @@ final class MIDIPlayer {
       guard sequence !== oldValue else { return }
       if let oldSequence = oldValue { receptionist.stopObserving(object: oldSequence) }
       if let sequence = sequence {
-        receptionist.observe(notification: .DidRemoveTrack, from: sequence, callback: MIDIPlayer.didRemoveTrack)
-        receptionist.observe(notification: .DidChangeTrack, from: sequence, callback: MIDIPlayer.didChangeTrack)
+        receptionist.observe(name: Sequence.NotificationName.didRemoveTrack.rawValue, from: sequence, callback: MIDIPlayer.didRemoveTrack)
+        receptionist.observe(name: Sequence.NotificationName.didChangeTrack.rawValue, from: sequence, callback: MIDIPlayer.didChangeTrack)
       }
       updateCurrentDispatch()
     }
@@ -205,7 +205,7 @@ final class MIDIPlayer {
       oldValue.toolType?.active = false
       currentTool.toolType?.active = true
       playerNode?.touchReceiver = currentTool.toolType
-      Notification.DidSelectTool.post(userInfo: [.SelectedTool: currentTool.rawValue as Optional<AnyObject>])
+      postNotification(name: .didSelectTool, object: self, userInfo: ["selectedTool": currentTool.rawValue])
     }
   }
 
@@ -245,7 +245,7 @@ final class MIDIPlayer {
 
 
         if !Sequencer.playing { Sequencer.play() }
-        Notification.DidAddNode.post(userInfo: [.AddedNode: node, .AddedNodeTrack: target])
+        postNotification(name: .didAddNode, object: self, userInfo: ["addedNode": node, "addedNodeTrack": target])
         logDebug("added node \(name)")
 
       } catch {
@@ -263,7 +263,7 @@ final class MIDIPlayer {
     dispatchToMain {
       guard node.parent === playerNode else { return }
       node.fadeOut(remove: true)
-      Notification.DidRemoveNode.post()
+      postNotification(name: .didRemoveNode, object: self, userInfo: nil)
     }
   }
 
@@ -274,6 +274,8 @@ extension MIDIPlayer: NotificationDispatching {
 
   enum NotificationName: String, LosslessStringConvertible {
     case didAddNode, didRemoveNode, didSelectTool
+    var description: String { return rawValue }
+    init?(_ description: String) { self.init(rawValue: description) }
   }
 
 }

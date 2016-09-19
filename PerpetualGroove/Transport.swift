@@ -14,10 +14,9 @@ final class Transport {
   var state: State = [] {
     didSet {
       guard state != oldValue else { return }
-      Notification.DidChangeState.post(object: self, userInfo: [
-        .TransportState: state.rawValue,
-        .PreviousTransportState: oldValue.rawValue
-        ])
+      postNotification(name: .didChangeState,
+                       object: self,
+                       userInfo: ["transportState": state.rawValue, "previousTransportState": oldValue.rawValue])
     }
   }
   let name: String
@@ -49,24 +48,23 @@ final class Transport {
   /** Starts the MIDI clock */
   func play() {
     guard !playing else { logWarning("already playing"); return }
-    Notification.DidStart.post(object: self, userInfo:[
-      .Time: time.barBeatTime.rawValue
-      ])
+    postNotification(name: .didStart, object: self, userInfo: ["time": time.barBeatTime.rawValue])
     if paused { clock.resume(); state.formSymmetricDifference([.Paused, .Playing]) }
     else { clock.start(); state.formSymmetricDifference([.Playing]) }
   }
 
   /** toggleRecord */
-  func toggleRecord() { state.formSymmetricDifference(.Recording); Notification.DidToggleRecording.post() }
+  func toggleRecord() {
+    state.formSymmetricDifference(.Recording)
+    postNotification(name: .didToggleRecording, object: self, userInfo: nil)
+  }
 
   /** pause */
   func pause() {
     guard playing else { return }
     clock.stop()
     state.formSymmetricDifference([.Paused, .Playing])
-    Notification.DidPause.post(object: self, userInfo:[
-      .Time: time.barBeatTime.rawValue
-      ])
+    postNotification(name: .didPause, object: self, userInfo: ["time": time.barBeatTime.rawValue])
   }
 
   /** Moves the time back to 0 */
@@ -75,9 +73,10 @@ final class Transport {
     clock.reset()
     time.reset {[weak self] in
       guard let weakself = self else { return }
-      Notification.DidReset.post(object: weakself, userInfo:[
-        .Time: weakself.time.barBeatTime.rawValue
-        ])}
+      weakself.postNotification(name: .didReset,
+                                object: weakself,
+                                userInfo: ["time": weakself.time.barBeatTime.rawValue])
+    }
   }
 
   /** Stops the MIDI clock */
@@ -85,9 +84,7 @@ final class Transport {
     guard playing || paused else { logWarning("not playing or paused"); return }
     clock.stop()
     state ∖= [.Playing, .Paused]
-    Notification.DidStop.post(object: self, userInfo:[
-      .Time: time.barBeatTime.rawValue
-      ])
+    postNotification(name: .didStop, object: self, userInfo: ["time": time.barBeatTime.rawValue])
   }
 
   fileprivate var jogTime: BarBeatTime = nil
@@ -102,9 +99,7 @@ final class Transport {
     if clock.running { clock.stop() }
     jogTime = time.barBeatTime
     state.formSymmetricDifference([.Jogging])
-    Notification.DidBeginJogging.post(object: self, userInfo:[
-      .Time: time.barBeatTime.rawValue
-      ])
+    postNotification(name: .didBeginJogging, object: self, userInfo: ["time": time.barBeatTime.rawValue])
   }
 
   /**
@@ -129,9 +124,7 @@ final class Transport {
     state.formSymmetricDifference([.Jogging])
     time.barBeatTime = jogTime
     jogTime = nil
-    Notification.DidEndJogging.post(object: self, userInfo:[
-      .Time: time.barBeatTime.rawValue
-      ])
+    postNotification(name: .didEndJogging, object: self, userInfo: ["time": time.barBeatTime.rawValue])
     guard !paused && clock.paused else { return }
     clock.resume()
   }
@@ -146,10 +139,10 @@ final class Transport {
     guard jogTime != t else { return }
     guard t.isNormal else { throw Error.invalidBarBeatTime("\(t)") }
     jogTime = t
-    Notification.DidJog.post(object: self, userInfo:[
-      .Time: time.barBeatTime.rawValue,
-      .JogTime: jogTime.rawValue,
-      .JogDirection: direction.rawValue
+    postNotification(name: .didJog, object: self, userInfo: [
+      "time": time.barBeatTime.rawValue,
+      "jogTime": jogTime.rawValue,
+      "jogDirection": direction.rawValue
       ])
   }
 
@@ -165,10 +158,10 @@ final class Transport {
     let direction: ScrollWheel.Direction = tʹ < time.barBeatTime ? .counterClockwise : .clockwise
     if clock.running { clock.stop() }
     time.barBeatTime = tʹ
-    Notification.DidJog.post(object: self, userInfo:[
-      .Time: t.rawValue,
-      .JogTime: tʹ.rawValue,
-      .JogDirection: direction.rawValue
+    postNotification(name: .didJog, object: self, userInfo: [
+      "time": t.rawValue,
+      "jogTime": tʹ.rawValue,
+      "jogDirection": direction.rawValue
       ])
     guard !paused && clock.paused else { return }
     clock.resume()
@@ -228,6 +221,8 @@ extension Transport: NotificationDispatching {
     case didBeginJogging, didEndJogging
     case didJog
     case didChangeState
+    var description: String { return rawValue }
+    init?(_ description: String) { self.init(rawValue: description) }
   }
 
 }

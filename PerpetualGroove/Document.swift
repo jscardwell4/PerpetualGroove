@@ -37,11 +37,11 @@ final class Document: UIDocument {
       guard oldValue !== sequence else { return }
 
       if let oldSequence = oldValue {
-        receptionist.stopObserving(notification: .DidUpdate, from: oldSequence)
+        receptionist.stopObserving(name: Sequence.NotificationName.didUpdate.rawValue, from: oldSequence)
       }
 
       if let sequence = sequence {
-        receptionist.observe(notification: .DidUpdate, from: sequence, callback: weakMethod(self, Document.didUpdate))
+        receptionist.observe(name: Sequence.NotificationName.didUpdate.rawValue, from: sequence, callback: weakMethod(self, Document.didUpdate))
       }
     }
   }
@@ -219,13 +219,15 @@ final class Document: UIDocument {
     guard let newName = newURL.pathBaseName else {
       fatalError("Failed to get base name from new url")
     }
-    Notification.DidRenameDocument.post(object: self, userInfo: [.NewName: newName])
+    postNotification(name: .didRenameDocument, object: self, userInfo: ["newName": newName])
   }
 }
 
 extension Document: NotificationDispatching {
   enum NotificationName: String, LosslessStringConvertible {
     case didRenameDocument
+    var description: String { return rawValue }
+    init?(_ description: String) { self.init(rawValue: description) }
   }
 }
 

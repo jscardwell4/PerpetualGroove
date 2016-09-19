@@ -30,7 +30,7 @@ final class Loop: Swift.Sequence, MIDINodeDispatch {
 
   var color: TrackColor { return track.color }
 
-  var recording: Bool { return Sequencer.mode == .Loop && MIDIPlayer.currentDispatch === self }
+  var recording: Bool { return Sequencer.mode == .loop && MIDIPlayer.currentDispatch === self }
 
   var nextNodeName: String { return "\(name) \(nodes.count + 1)" }
 
