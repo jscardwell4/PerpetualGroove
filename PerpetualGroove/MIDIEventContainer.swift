@@ -11,7 +11,112 @@ import MoonKit
 
 typealias MIDIEventContainer = OldMIDIEventContainer
 
-/*struct MIDIEventContainer: RandomAccessCollection {
+struct AltMIDIEventContainer {
+
+  fileprivate var events: OrderedDictionary<BarBeatTime, OrderedSet<MIDIEvent>> = [:]
+
+  subscript(index: Index) -> MIDIEvent {
+    get {
+      //TODO: Implement the  function
+      fatalError("\(#function) not yet implemented")
+    }
+    set {
+      //TODO: Implement the  function
+      fatalError("\(#function) not yet implemented")
+    }
+  }
+
+  subscript(time: BarBeatTime) -> LazyCollection<AnyCollection<MIDIEvent>> {
+    //TODO: Implement the  function
+    fatalError("\(#function) not yet implemented")
+  }
+
+  subscript(subRange: Range<Index>) -> SubSequence {
+    //TODO: Implement the  function
+    fatalError("\(#function) not yet implemented")
+  }
+
+  init<Source:Swift.Sequence>(events: Source) where Source.Iterator.Element == MIDIEvent {
+    //TODO: Implement the  function
+    fatalError("\(#function) not yet implemented")
+  }
+
+  mutating func append(_ event: MIDIEvent) {
+    //TODO: Implement the  function
+    fatalError("\(#function) not yet implemented")
+  }
+
+  mutating func append<Source:Swift.Sequence>(contentsOf source: Source) where Source.Iterator.Element == MIDIEvent {
+    //TODO: Implement the  function
+    fatalError("\(#function) not yet implemented")
+  }
+
+  var minTime: BarBeatTime? {
+    //TODO: Implement the  function
+    fatalError("\(#function) not yet implemented")
+  }
+
+  var maxTime: BarBeatTime? {
+    //TODO: Implement the  function
+    fatalError("\(#function) not yet implemented")
+  }
+
+  mutating func removeEvents(matching predicate: (MIDIEvent) -> Bool) {
+    //TODO: Implement the  function
+    fatalError("\(#function) not yet implemented")
+  }
+
+  var metaEvents: AnyCollection<MetaEvent> {
+    //TODO: Implement the  function
+    fatalError("\(#function) not yet implemented")
+  }
+
+  var channelEvents: AnyCollection<ChannelEvent> {
+    //TODO: Implement the  function
+    fatalError("\(#function) not yet implemented")
+  }
+
+  var nodeEvents: AnyCollection<MIDINodeEvent> {
+    //TODO: Implement the  function
+    fatalError("\(#function) not yet implemented")
+  }
+
+  var timeEvents: AnyCollection<MetaEvent> {
+    //TODO: Implement the  function
+    fatalError("\(#function) not yet implemented")
+  }
+
+}
+
+
+extension AltMIDIEventContainer {
+
+  struct Index: Comparable {
+
+    static func ==(lhs: Index, rhs: Index) -> Bool {
+      //TODO: Implement the  function
+      fatalError("\(#function) not yet implemented")
+    }
+
+    static func <(lhs: Index, rhs: Index) -> Bool {
+      //TODO: Implement the  function
+      fatalError("\(#function) not yet implemented")
+    }
+
+  }
+
+}
+
+extension AltMIDIEventContainer {
+
+  struct SubSequence {
+
+  }
+
+}
+
+
+/*struct AltMIDIEventContainer: RandomAccessCollection {
 
   typealias Bag = OrderedSet<MIDIEvent>
 
@@ -106,22 +211,22 @@ typealias MIDIEventContainer = OldMIDIEventContainer
     return result
   }
 
-  var metaEvents: LazyMapCollection<LazyFilterCollection<MIDIEventContainer>, MetaEvent> {
+  var metaEvents: LazyMapCollection<LazyFilterCollection<AltMIDIEventContainer>, MetaEvent> {
     return lazy.filter({if case .meta = $0 { return true } else { return false }})
                .map({$0.event as! MetaEvent})
   }
 
-  var channelEvents: LazyMapCollection<LazyFilterCollection<MIDIEventContainer>, ChannelEvent> {
+  var channelEvents: LazyMapCollection<LazyFilterCollection<AltMIDIEventContainer>, ChannelEvent> {
     return lazy.filter({if case .channel = $0 { return true } else { return false }})
                .map({$0.event as! ChannelEvent})
   }
 
-  var nodeEvents: LazyMapCollection<LazyFilterCollection<MIDIEventContainer>, MIDINodeEvent> {
+  var nodeEvents: LazyMapCollection<LazyFilterCollection<AltMIDIEventContainer>, MIDINodeEvent> {
     return lazy.filter({if case .node = $0 { return true } else { return false }})
                .map({$0.event as! MIDINodeEvent})
   }
 
-  var timeEvents: LazyMapCollection<LazyFilterCollection<MIDIEventContainer>, MetaEvent> {
+  var timeEvents: LazyMapCollection<LazyFilterCollection<AltMIDIEventContainer>, MetaEvent> {
     return lazy.filter({
                         if case .meta(let event) = $0 {
                           switch event.data {
@@ -196,8 +301,9 @@ typealias MIDIEventContainer = OldMIDIEventContainer
   }
 
 }
+*/
 
-extension MIDIEventContainer {
+/*extension AltMIDIEventContainer {
   struct Index: Comparable {
     let bagOffset: Int
     let positionOffset: Int
@@ -215,14 +321,14 @@ extension MIDIEventContainer {
 
   }
 
-}
+}*/
 
-extension MIDIEventContainer: ExpressibleByArrayLiteral {
+/*extension AltMIDIEventContainer: ExpressibleByArrayLiteral {
   init(arrayLiteral elements: MIDIEvent...) { self.init(events: elements) }
-}
+}*/
 
-extension MIDIEventContainer: CustomStringConvertible {
+/*extension AltMIDIEventContainer: CustomStringConvertible {
   var description: String { return map({$0.description}).joined(separator: "\n") }
-}
+}*/
 
-*/
+
