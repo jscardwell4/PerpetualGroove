@@ -7,7 +7,7 @@
 //
 
 import XCTest
-import struct MoonKit.UUID
+import MoonKitTest
 @testable import Groove
 
 final class MIDIEventContainerTests: XCTestCase {
@@ -26,7 +26,7 @@ final class MIDIEventContainerTests: XCTestCase {
   static func generateEvents(_ count: Int) -> [MIDIEvent] {
     var result: [MIDIEvent] = events
     for i in 0 ..< max(count, 1) {
-      result.appendContentsOf(eventsAdvancedBy(Double(i) * 26))
+      result.append(contentsOf: eventsAdvancedBy(Double(i) * 26))
     }
     return result
   }
@@ -44,53 +44,53 @@ final class MIDIEventContainerTests: XCTestCase {
    */
   static let events: [MIDIEvent] = {
     var events: [MIDIEvent] = []
-    events.append(.Meta(MetaEvent(.start1, .SequenceTrackName(name: "Track1"))))
-    events.append(.Meta(MetaEvent(.start1, .TimeSignature(signature: .FourFour, clocks: 36, notes: 8))))
-    events.append(.Meta(MetaEvent(.start1, .Tempo(bpm: 120))))
-    events.append(.Channel(ChannelEvent(.NoteOn, 0, 60, 126, .start1)))
-    events.append(.Channel(ChannelEvent(.NoteOff, 0, 60, 126, BarBeatTime.start1.advancedBy(3.4))))
+    events.append(.meta(MetaEvent(.start1, .sequenceTrackName(name: "Track1"))))
+    events.append(.meta(MetaEvent(.start1, .timeSignature(signature: .fourFour, clocks: 36, notes: 8))))
+    events.append(.meta(MetaEvent(.start1, .tempo(bpm: 120))))
+    events.append(.channel(ChannelEvent(.noteOn, 0, 60, 126, .start1)))
+    events.append(.channel(ChannelEvent(.noteOff, 0, 60, 126, BarBeatTime.start1 + 3.4)))
     let identifier = MIDINodeEvent.Identifier(nodeIdentifier: MIDINode.Identifier())
     events.append(
-      MIDIEvent.Node(
+      MIDIEvent.node(
         MIDINodeEvent(
-          .Add(
+          .add(
             identifier: identifier,
             trajectory: Trajectory(vector: CGVector(dx: 240, dy: 111), point: CGPoint(x: 24, y: 300)),
-            generator: MIDIGenerator.Note(NoteGenerator())
+            generator: MIDIGenerator.note(NoteGenerator())
           ),
-          BarBeatTime.start1.advancedBy(6.2)
+          BarBeatTime.start1 + 6.2
         )
       )
     )
     events.append(
-      MIDIEvent.Node(
+      MIDIEvent.node(
         MIDINodeEvent(
-          .Remove(identifier: identifier),
-          BarBeatTime.start1.advancedBy(24.35)
+          .remove(identifier: identifier),
+          BarBeatTime.start1 + 24.35
         )
       )
     )
-    events.append(.Meta(MetaEvent(.EndOfTrack, BarBeatTime.start1.advancedBy(25.3))))
+    events.append(.meta(MetaEvent(.endOfTrack, BarBeatTime.start1 + 25.3)))
     return events
   }()
 
   static let metaEventCount: Int = {
-    events.reduce(0) { if case .Meta = $1 { return $0 + 1 } else { return $0 } }
+    events.reduce(0) { if case .meta = $1 { return $0 + 1 } else { return $0 } }
   }()
 
   static let channelEventCount: Int = {
-    events.reduce(0) { if case .Channel = $1 { return $0 + 1 } else { return $0 } }
+    events.reduce(0) { if case .channel = $1 { return $0 + 1 } else { return $0 } }
   }()
 
   static let nodeEventCount: Int = {
-    events.reduce(0) { if case .Node = $1 { return $0 + 1 } else { return $0 } }
+    events.reduce(0) { if case .node = $1 { return $0 + 1 } else { return $0 } }
   }()
 
   static let timeEventCount: Int = {
     events.reduce(0) {
-      if case .Meta(let event) = $1 {
+      if case .meta(let event) = $1 {
         switch event.data {
-          case .TimeSignature, .Tempo: return $0 + 1
+          case .timeSignature, .tempo: return $0 + 1
           default: return $0
         }
       } else { return $0 }
@@ -129,14 +129,6 @@ final class MIDIEventContainerTests: XCTestCase {
     let container = MIDIEventContainer(events: events)
     let timeEvents = container.timeEvents
     XCTAssertEqual(timeEvents.count, MIDIEventContainerTests.timeEventCount * 10)
-  }
-
-  func testOldContainerPerformance() {
-    let events = MIDIEventContainerTests.generateEvents(10)
-    measure { 
-      var container = OldMIDIEventContainer()
-      for event in events { container.append(event) }
-    }
   }
 
   func testContainerPerformance() {

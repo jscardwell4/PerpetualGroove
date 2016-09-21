@@ -7,7 +7,7 @@
 //
 
 import XCTest
-import MoonKit
+import MoonKitTest
 @testable import Groove
 
 final class BarBeatTimeTests: XCTestCase {
@@ -20,45 +20,45 @@ final class BarBeatTimeTests: XCTestCase {
     XCTAssertEqual(time?.subbeatDivisor, 480)
     XCTAssertEqual(time?.beatsPerBar, 4)
     XCTAssertEqual(time?.beatsPerMinute, 120)
-    XCTAssertEqual(time?.base, BarBeatTime.Base.One)
+    XCTAssertEqual(time?.base, BarBeatTime.Base.one)
   }
 
   func testEquality() {
     XCTAssertEqual(
-      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.One),
-      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.One)
+      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.one),
+      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.one)
     )
     XCTAssertEqual(
-      BarBeatTime(bar: 3, beat: 2, subbeat: 1, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.Zero),
-      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.One)
+      BarBeatTime(bar: 3, beat: 2, subbeat: 1, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.zero),
+      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.one)
     )
     XCTAssertEqual(
-      BarBeatTime(bar: 3, beat: 7, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.One),
-      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.One)
+      BarBeatTime(bar: 3, beat: 7, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.one),
+      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.one)
     )
     XCTAssertNotEqual(
-      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.One),
-      BarBeatTime(bar: 3, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.One)
+      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.one),
+      BarBeatTime(bar: 3, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.one)
     )
     XCTAssertNotEqual(
-      BarBeatTime(bar: 4, beat: 2, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.One),
-      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.One)
+      BarBeatTime(bar: 4, beat: 2, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.one),
+      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.one)
     )
     XCTAssertNotEqual(
-      BarBeatTime(bar: 4, beat: 3, subbeat: 1, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.One),
-      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.One)
+      BarBeatTime(bar: 4, beat: 3, subbeat: 1, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.one),
+      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.one)
     )
     XCTAssertNotEqual(
-      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 960, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.One),
-      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.One)
+      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 960, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.one),
+      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.one)
     )
     XCTAssertNotEqual(
-      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 2, beatsPerMinute: 120, base: BarBeatTime.Base.One),
-      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.One)
+      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 2, beatsPerMinute: 120, base: BarBeatTime.Base.one),
+      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.one)
     )
     XCTAssertNotEqual(
-      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.Zero),
-      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.One)
+      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.zero),
+      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.one)
     )
 
   }
@@ -76,7 +76,7 @@ final class BarBeatTimeTests: XCTestCase {
     XCTAssertEqual(time0.subbeatDivisor, 480)
     XCTAssertEqual(time0.beatsPerBar, 4)
     XCTAssertEqual(time0.beatsPerMinute, 120)
-    XCTAssertEqual(time0.base, BarBeatTime.Base.Zero)
+    XCTAssertEqual(time0.base, BarBeatTime.Base.zero)
   }
 
   func testTotalBeats() {
@@ -140,32 +140,32 @@ final class BarBeatTimeTests: XCTestCase {
   }
 
   func testSeconds() {
-    let time1 = BarBeatTime(seconds: 0.5, beatsPerBar: 4, subbeatDivisor: 480, beatsPerMinute: 120, base: .Zero)
+    let time1 = BarBeatTime(seconds: 0.5, beatsPerBar: 4, subbeatDivisor: 480, beatsPerMinute: 120, base: .zero)
     XCTAssertEqual(time1.bar, 0)
     XCTAssertEqual(time1.beat, 1)
     XCTAssertEqual(time1.subbeat, 0)
     XCTAssertEqual(time1.seconds, 0.5)
-    let time2 = BarBeatTime(seconds: 0.5, beatsPerBar: 4, subbeatDivisor: 480, beatsPerMinute: 120, base: .One)
+    let time2 = BarBeatTime(seconds: 0.5, beatsPerBar: 4, subbeatDivisor: 480, beatsPerMinute: 120, base: .one)
     XCTAssertEqual(time2.bar, 1)
     XCTAssertEqual(time2.beat, 2)
     XCTAssertEqual(time2.subbeat, 1)
     XCTAssertEqual(time2.seconds, 0.5)
-    let time3 = BarBeatTime(seconds: 3.5, beatsPerBar: 4, subbeatDivisor: 480, beatsPerMinute: 120, base: .Zero)
+    let time3 = BarBeatTime(seconds: 3.5, beatsPerBar: 4, subbeatDivisor: 480, beatsPerMinute: 120, base: .zero)
     XCTAssertEqual(time3.bar, 1)
     XCTAssertEqual(time3.beat, 3)
     XCTAssertEqual(time3.subbeat, 0)
     XCTAssertEqual(time3.seconds, 3.5)
-    let time4 = BarBeatTime(seconds: 3.5, beatsPerBar: 4, subbeatDivisor: 480, beatsPerMinute: 120, base: .One)
+    let time4 = BarBeatTime(seconds: 3.5, beatsPerBar: 4, subbeatDivisor: 480, beatsPerMinute: 120, base: .one)
     XCTAssertEqual(time4.bar, 2)
     XCTAssertEqual(time4.beat, 4)
     XCTAssertEqual(time4.subbeat, 1)
     XCTAssertEqual(time4.seconds, 3.5)
-    let time5 = BarBeatTime(seconds: 3.34, beatsPerBar: 4, subbeatDivisor: 480, beatsPerMinute: 120, base: .Zero)
+    let time5 = BarBeatTime(seconds: 3.34, beatsPerBar: 4, subbeatDivisor: 480, beatsPerMinute: 120, base: .zero)
     XCTAssertEqual(time5.bar, 1)
     XCTAssertEqual(time5.beat, 2)
     XCTAssertEqual(time5.subbeat, 326)
     XCTAssertEqualWithAccuracy(time5.seconds, 3.34, accuracy: 0.001)
-    let time6 = BarBeatTime(seconds: 3.34, beatsPerBar: 4, subbeatDivisor: 480, beatsPerMinute: 120, base: .One)
+    let time6 = BarBeatTime(seconds: 3.34, beatsPerBar: 4, subbeatDivisor: 480, beatsPerMinute: 120, base: .one)
     XCTAssertEqual(time6.bar, 2)
     XCTAssertEqual(time6.beat, 3)
     XCTAssertEqual(time6.subbeat, 327)
@@ -177,17 +177,17 @@ final class BarBeatTimeTests: XCTestCase {
     XCTAssertEqual(time1.ticks, 3790)
     let time2: BarBeatTime = "2:4/4.431/480@120₁"
     XCTAssertEqual(time2.ticks, 3790)
-    let time3 = BarBeatTime(tickValue: 3790, beatsPerBar: 4, subbeatDivisor: 480, beatsPerMinute: 120, base: .Zero)
+    let time3 = BarBeatTime(tickValue: 3790, beatsPerBar: 4, subbeatDivisor: 480, beatsPerMinute: 120, base: .zero)
     XCTAssertEqual(time3, time1)
     XCTAssertEqual(time3, time2)
-    let time4 = BarBeatTime(tickValue: 3790, beatsPerBar: 4, subbeatDivisor: 480, beatsPerMinute: 120, base: .One)
+    let time4 = BarBeatTime(tickValue: 3790, beatsPerBar: 4, subbeatDivisor: 480, beatsPerMinute: 120, base: .one)
     XCTAssertEqual(time4, time1)
     XCTAssertEqual(time4, time2)
   }
 
   func testIntervals() {
     let time: BarBeatTime = "8:3/4.478/480@120₀"
-    let interval: HalfOpenInterval<BarBeatTime> = "9:3/4.310@120₀" ..< "10:2/4.30/480@120₀"
-    XCTAssert(interval ∌ time)
+    let interval: CountableRange<BarBeatTime> = "9:3/4.310@120₀" ..< "10:2/4.30/480@120₀"
+    XCTAssert(!interval.contains(time))
   }
 }

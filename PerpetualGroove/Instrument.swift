@@ -98,7 +98,7 @@ final class Instrument: Equatable {
   - parameter packetList: UnsafePointer<MIDIPacketList>
   - parameter context: UnsafeMutablePointer<Void>
   */
-  fileprivate func read(_ packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutableRawPointer) {
+  fileprivate func read(_ packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutableRawPointer?) {
     for packet in packetList.pointee {
       node.sendMIDIEvent(packet.data.0, data1: packet.data.1, data2: packet.data.2)
     }
@@ -170,7 +170,7 @@ final class Instrument: Equatable {
     let name = "Instrument \(UInt(bitPattern: ObjectIdentifier(self)))"
     try MIDIClientCreateWithBlock(name as CFString, &client, nil) ➤ "Failed to create midi client"
     try MIDIOutputPortCreate(client, "Output" as CFString, &outPort) ➤ "Failed to create out port"
-    try MIDIDestinationCreateWithBlock(client, name as CFString, &endPoint, read as! MIDIReadBlock) ➤ "Failed to create end point for instrument"
+    try MIDIDestinationCreateWithBlock(client, name as CFString, &endPoint, read) ➤ "Failed to create end point for instrument"
   }
 
   /**

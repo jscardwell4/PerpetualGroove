@@ -543,32 +543,32 @@ extension BarBeatTime: SignedNumber, SignedInteger, BitwiseOperations {
                        base: value.base)
   }
 
-  static func *<T:DoubleConvertible>(lhs: BarBeatTime, rhs: T) -> BarBeatTime {
-    return BarBeatTime(totalBeats: lhs.totalBeats * rhs.DoubleValue,
+  static func *(lhs: BarBeatTime, rhs: Double) -> BarBeatTime {
+    return BarBeatTime(totalBeats: lhs.totalBeats * rhs,
                        beatsPerBar: lhs.beatsPerBar,
                        subbeatDivisor: lhs.subbeatDivisor,
                        beatsPerMinute: lhs.beatsPerMinute,
                        base: lhs.base)
   }
 
-  static func /<T:DoubleConvertible>(lhs: BarBeatTime, rhs: T) -> BarBeatTime {
-    return BarBeatTime(totalBeats: lhs.totalBeats / rhs.DoubleValue,
+  static func /(lhs: BarBeatTime, rhs: Double) -> BarBeatTime {
+    return BarBeatTime(totalBeats: lhs.totalBeats / rhs,
                        beatsPerBar: lhs.beatsPerBar,
                        subbeatDivisor: lhs.subbeatDivisor,
                        beatsPerMinute: lhs.beatsPerMinute,
                        base: lhs.base)
   }
 
-  static func +<T:DoubleConvertible>(lhs: BarBeatTime, rhs: T) -> BarBeatTime {
-    return BarBeatTime(totalBeats: lhs.totalBeats + rhs.DoubleValue,
+  static func +(lhs: BarBeatTime, rhs: Double) -> BarBeatTime {
+    return BarBeatTime(totalBeats: lhs.totalBeats + rhs,
                        beatsPerBar: lhs.beatsPerBar,
                        subbeatDivisor: lhs.subbeatDivisor,
                        beatsPerMinute: lhs.beatsPerMinute,
                        base: lhs.base)
   }
 
-  static func -<T:DoubleConvertible>(lhs: BarBeatTime, rhs: T) -> BarBeatTime {
-    return BarBeatTime(totalBeats: lhs.totalBeats - rhs.DoubleValue,
+  static func -(lhs: BarBeatTime, rhs: Double) -> BarBeatTime {
+    return BarBeatTime(totalBeats: lhs.totalBeats - rhs,
                        beatsPerBar: lhs.beatsPerBar,
                        subbeatDivisor: lhs.subbeatDivisor,
                        beatsPerMinute: lhs.beatsPerMinute,
