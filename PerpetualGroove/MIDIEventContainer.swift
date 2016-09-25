@@ -15,6 +15,8 @@ struct AltMIDIEventContainer: Collection {
 
   fileprivate var events: SortedDictionary<BarBeatTime, Bag> = [:]
 
+  init() {}
+
   private mutating func bag(forTime time: BarBeatTime) -> Bag {
     guard let bag = existingBag(forTime: time) else {
       let bag = Bag(); events[time] = bag; return bag

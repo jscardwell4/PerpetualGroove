@@ -163,8 +163,8 @@ final class MIDIPlayer {
   /** resetLoops */
   static fileprivate func resetLoops() {
     loops.removeAll()
-    loopStart = .start1
-    loopEnd = .start1
+    loopStart = BarBeatTime()
+    loopEnd = BarBeatTime()
     shouldInsertLoops = false
   }
 
@@ -211,8 +211,8 @@ final class MIDIPlayer {
 
   static fileprivate var loops: [ObjectIdentifier:Loop] = [:]
 
-  static var loopStart: BarBeatTime = .start1
-  static var loopEnd: BarBeatTime = .start1
+  static var loopStart: BarBeatTime = BarBeatTime()
+  static var loopEnd: BarBeatTime = BarBeatTime()
 
   /**
    placeNew:targetTrack:generator:

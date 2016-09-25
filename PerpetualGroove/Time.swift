@@ -39,7 +39,7 @@ final class Time {
   fileprivate let queue: DispatchQueue
 
   /// The musical representation of the current time
-  fileprivate var _barBeatTime: BarBeatTime = .start1 {
+  fileprivate var _barBeatTime: BarBeatTime = BarBeatTime.zero {
     didSet { if Sequencer.playing { invokeCallbacksForTime(barBeatTime) } }
   }
 
@@ -54,7 +54,7 @@ final class Time {
 //    objc_sync_enter(self)
 //    defer { objc_sync_exit(self) }
 
-    barBeatTime = barBeatTime.successor()
+    barBeatTime = barBeatTime.advanced(by: barBeatTime.subbeatUnitTime) //successor()
   }
 
   // MARK: - Time-triggered callbacks
@@ -206,7 +206,7 @@ final class Time {
   - parameter completion: (() -> Void)? = nil
   */
   fileprivate func _reset(_ completion: (() -> Void)? = nil) {
-    _barBeatTime = .start1
+    _barBeatTime = BarBeatTime()
 //    objc_sync_enter(self)
     /*defer { objc_sync_exit(self); */completion?()// }
   }

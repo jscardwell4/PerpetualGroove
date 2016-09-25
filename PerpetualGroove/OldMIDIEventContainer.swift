@@ -94,7 +94,7 @@ struct OldMIDIEventContainer: Collection {
     }
   }
 
-  var minTime: BarBeatTime { return events.keys.min() ?? .start1 }
+  var minTime: BarBeatTime { return events.keys.min() ?? BarBeatTime.zero }
   var maxTime: BarBeatTime { return events.keys.max() ?? Sequencer.time.barBeatTime }
 
   fileprivate var events: [BarBeatTime:EventBag] = [:] {
@@ -337,9 +337,5 @@ extension OldMIDIEventContainer {
 
 extension OldMIDIEventContainer: CustomStringConvertible {
   var description: String { return "\n".join(map({$0.description})) }
-}
-
-extension OldMIDIEventContainer: CustomDebugStringConvertible {
-  var debugDescription: String { var result = ""; dump(self, to: &result); return result }
 }
 

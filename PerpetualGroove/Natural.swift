@@ -11,7 +11,7 @@ import MoonKit
 
 /** The seven 'natural' note names in western tonal music */
 enum Natural: String, Hashable, EnumerableType {
-  case a, b, c, d, e, f, g
+  case a = "A", b = "B", c = "C", d = "D", e = "E", f = "F", g = "G"
 
   var scalar: UnicodeScalar { return rawValue.unicodeScalars.first! }
 

@@ -11,13 +11,13 @@ import MoonKit
 
 final class Loop: Swift.Sequence, MIDINodeDispatch {
 
-  var time: BarBeatTime { return Swift.min(end - start, .start1) }
+  var time: BarBeatTime { return Swift.min(end - start, BarBeatTime()) }
 
   var repetitions: Int = 0
   var repeatDelay: UInt64 = 0
   var events: MIDIEventContainer
-  var start: BarBeatTime = .start1
-  var end: BarBeatTime = .start1
+  var start: BarBeatTime = BarBeatTime()
+  var end: BarBeatTime = BarBeatTime()
 
   let identifier: Identifier
   var eventQueue: DispatchQueue { return track.eventQueue }

@@ -7,187 +7,270 @@
 //
 
 import XCTest
+import MoonKit
 import MoonKitTest
 @testable import Groove
 
 final class BarBeatTimeTests: XCTestCase {
 
-  func testRawValue() {
-    let time = BarBeatTime(rawValue: "4:3/4.2/480@120₁")
-    XCTAssertEqual(time?.bar, 4)
-    XCTAssertEqual(time?.beat, 3)
-    XCTAssertEqual(time?.subbeat, 2)
-    XCTAssertEqual(time?.subbeatDivisor, 480)
-    XCTAssertEqual(time?.beatsPerBar, 4)
-    XCTAssertEqual(time?.beatsPerMinute, 120)
-    XCTAssertEqual(time?.base, BarBeatTime.Base.one)
-  }
-
-  func testEquality() {
-    XCTAssertEqual(
-      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.one),
-      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.one)
-    )
-    XCTAssertEqual(
-      BarBeatTime(bar: 3, beat: 2, subbeat: 1, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.zero),
-      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.one)
-    )
-    XCTAssertEqual(
-      BarBeatTime(bar: 3, beat: 7, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.one),
-      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.one)
-    )
-    XCTAssertNotEqual(
-      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.one),
-      BarBeatTime(bar: 3, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.one)
-    )
-    XCTAssertNotEqual(
-      BarBeatTime(bar: 4, beat: 2, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.one),
-      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.one)
-    )
-    XCTAssertNotEqual(
-      BarBeatTime(bar: 4, beat: 3, subbeat: 1, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.one),
-      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.one)
-    )
-    XCTAssertNotEqual(
-      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 960, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.one),
-      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.one)
-    )
-    XCTAssertNotEqual(
-      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 2, beatsPerMinute: 120, base: BarBeatTime.Base.one),
-      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.one)
-    )
-    XCTAssertNotEqual(
-      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.zero),
-      BarBeatTime(bar: 4, beat: 3, subbeat: 2, subbeatDivisor: 480, beatsPerBar: 4, beatsPerMinute: 120, base: BarBeatTime.Base.one)
-    )
-
-  }
-
-  func testStringLiteral() {
-    XCTAssertEqual(BarBeatTime(rawValue: "4:3/4.2/480@120₁"), ("4:3/4.2/480@120₁" as BarBeatTime))
-  }
-
-  func testBaseConversion() {
-    let time1: BarBeatTime = "10:4/4.298/480@120₁"
-    let time0 = time1.zeroBased
-    XCTAssertEqual(time0.bar, 9)
-    XCTAssertEqual(time0.beat, 3)
-    XCTAssertEqual(time0.subbeat, 297)
-    XCTAssertEqual(time0.subbeatDivisor, 480)
-    XCTAssertEqual(time0.beatsPerBar, 4)
-    XCTAssertEqual(time0.beatsPerMinute, 120)
-    XCTAssertEqual(time0.base, BarBeatTime.Base.zero)
+  func testEquatable() {
+    expect(BarBeatTime(bar: 4, beat: 3, subbeat: 2)) == BarBeatTime(bar: 4, beat: 3, subbeat: 2)
+    expect(BarBeatTime(bar: 4, beat: 3, subbeat: 2)) != BarBeatTime(bar: 4, beat: 3, subbeat: 2, negative: true)
+    expect(BarBeatTime(bar: 3, beat: 7, subbeat: 2)) == BarBeatTime(bar: 4, beat: 3, subbeat: 2)
+    expect(BarBeatTime(bar: 4, beat: 3, subbeat: 2)) != BarBeatTime(bar: 3, beat: 3, subbeat: 2)
+    expect(BarBeatTime(bar: 4, beat: 2, subbeat: 2)) != BarBeatTime(bar: 4, beat: 3, subbeat: 2)
+    expect(BarBeatTime(bar: 4, beat: 3, subbeat: 1)) != BarBeatTime(bar: 4, beat: 3, subbeat: 2)
+    expect(BarBeatTime(bar: 4, beat: 3, subbeat: 2, units: BarBeatTime.Units(beatsPerBar: 1, beatsPerMinute: 120, subbeatDivisor: 480))) != BarBeatTime(bar: 4, beat: 3, subbeat: 2)
   }
 
   func testTotalBeats() {
-    let time1₀: BarBeatTime = "0:2/4.209/480@120₀"
-    XCTAssertEqual(time1₀.totalBeats, 2 + 209/480)
-    let time2₀: BarBeatTime = "2:0/4.111/480@120₀"
-    XCTAssertEqual(time2₀.totalBeats, 8 + 111/480)
-    let time3₀: BarBeatTime = "0:2/4.400/480@120₀"
-    XCTAssertEqual(time3₀.totalBeats, 2 + 400/480)
-    let time4₀: BarBeatTime = "0:0/4.90/480@120₀"
-    XCTAssertEqual(time4₀.totalBeats, 90/480)
-
-    let time1₁: BarBeatTime = "1:3/4.210/480@120₁"
-    XCTAssertEqual(time1₁.totalBeats, 2 + 209/480)
-    let time2₁: BarBeatTime = "3:1/4.112/480@120₁"
-    XCTAssertEqual(time2₁.totalBeats, 8 + 111/480)
-    let time3₁: BarBeatTime = "1:3/4.401/480@120₁"
-    XCTAssertEqual(time3₁.totalBeats, 2 + 400/480)
-    let time4₁: BarBeatTime = "1:1/4.91/480@120₁"
-    XCTAssertEqual(time4₁.totalBeats, 90/480)
+    let time1: BarBeatTime = BarBeatTime(bar: 0, beat: 2, subbeat: 209)
+    expect(time1.totalBeats) ==  2 + 209/480
+    expect((-time1).totalBeats) ==  (2 + 209/480).negated()
+    
+    let time2: BarBeatTime = BarBeatTime(bar: 2, beat: 0, subbeat: 111)
+    expect(time2.totalBeats) ==  8 + 111/480
+    expect((-time2).totalBeats) ==  (8 + 111/480).negated()
+    
+    let time3: BarBeatTime = BarBeatTime(bar: 0, beat: 2, subbeat: 400)
+    expect(time3.totalBeats) ==  2 + 400/480
+    expect((-time3).totalBeats) ==  (2 + 400/480).negated()
+    
+    let time4: BarBeatTime = BarBeatTime(bar: 0, beat: 0, subbeat: 90)
+    expect(time4.totalBeats) ==  90/480
+    expect((-time4).totalBeats) ==  -90/480
   }
 
-  func testZeroBaseAddition() {
-    let time1: BarBeatTime = "0:2/4.209/480@120₀"
-    let time2: BarBeatTime = "2:0/4.111/480@120₀"
-    XCTAssertEqual(time1 + time2, "2:2/4.320/480@120₀")
-    let time3: BarBeatTime = "0:2/4.400/480@120₀"
-    let time4: BarBeatTime = "0:0/4.90/480@120₀"
-    XCTAssertEqual(time3 + time4, "0:3/4.10/480@120₀")
+  func testAddition() {
+    let time1: BarBeatTime = BarBeatTime(bar: 0, beat: 2, subbeat: 209)
+    let time2: BarBeatTime = BarBeatTime(bar: 2, beat: 0, subbeat: 111)
+    expect(time1 + time2) ==  BarBeatTime(bar: 2, beat: 2, subbeat: 320)
+
+    let time3: BarBeatTime = BarBeatTime(bar: 0, beat: 2, subbeat: 400)
+    let time4: BarBeatTime = BarBeatTime(bar: 0, beat: 0, subbeat: 90)
+    expect(time3 + time4) ==  BarBeatTime(bar: 0, beat: 3, subbeat: 10)
   }
 
-  func testOneBaseAddition() {
-    let time1: BarBeatTime = "1:3/4.210/480@120₁"
-    let time2: BarBeatTime = "3:1/4.112/480@120₁"
-    XCTAssertEqual(time1 + time2, "3:3/4.321/480@120₁")
-    let time3: BarBeatTime = "1:3/4.401/480@120₁"
-    let time4: BarBeatTime = "1:1/4.91/480@120₁"
-    XCTAssertEqual(time3 + time4, "1:4/4.11/480@120₁")
-  }
+  func testSubtraction() {
+    let time1: BarBeatTime = BarBeatTime(bar: 0, beat: 2, subbeat: 209)
+    let time2: BarBeatTime = BarBeatTime(bar: 2, beat: 0, subbeat: 111)
+    expect(time2 - time1) ==  BarBeatTime(bar: 1, beat: 1, subbeat: 382)
 
-  func testZeroBasSubtraction() {
-    let time1: BarBeatTime = "0:2/4.209/480@120₀"
-    let time2: BarBeatTime = "2:0/4.111/480@120₀"
-    XCTAssertEqual(time2 - time1, "1:1/4.382/480@120₀")
-    let time3: BarBeatTime = "3:1/4.112/480@120₀"
-    XCTAssertEqual(time3 - time1, "2:2/4.383/480@120₀")
-    let time4: BarBeatTime = "0:2/4.400/480@120₀"
-    let time5: BarBeatTime = "0:0/4.90/480@120₀"
-    XCTAssertEqual(time5 - time4, "-0:2/4.310/480@120₀")
-  }
+    let time3: BarBeatTime = BarBeatTime(bar: 3, beat: 1, subbeat: 112)
+    expect(time3 - time1) ==  BarBeatTime(bar: 2, beat: 2, subbeat: 383)
 
-  func testOneBaseSubtraction() {
-    let time1: BarBeatTime = "1:3/4.210/480@120₁"
-    let time2: BarBeatTime = "3:1/4.112/480@120₁"
-    XCTAssertEqual(time2 - time1, "2:2/4.383/480@120₁")
-    let time3: BarBeatTime = "4:2/4.113/480@120₁"
-    XCTAssertEqual(time3 - time1, "3:3/4.384/480@120₁")
-    let time4: BarBeatTime = "1:3/4.401/480@120₁"
-    let time5: BarBeatTime = "1:1/4.91/480@120₁"
-    XCTAssertEqual(time5 - time4, "-1:3/4.311/480@120₁")
+    let time4: BarBeatTime = BarBeatTime(bar: 0, beat: 2, subbeat: 400)
+    let time5: BarBeatTime = BarBeatTime(bar: 0, beat: 0, subbeat: 90)
+    expect(time5 - time4) ==  BarBeatTime(bar: 0, beat: 2, subbeat: 310, negative: true)
   }
 
   func testSeconds() {
-    let time1 = BarBeatTime(seconds: 0.5, beatsPerBar: 4, subbeatDivisor: 480, beatsPerMinute: 120, base: .zero)
-    XCTAssertEqual(time1.bar, 0)
-    XCTAssertEqual(time1.beat, 1)
-    XCTAssertEqual(time1.subbeat, 0)
-    XCTAssertEqual(time1.seconds, 0.5)
-    let time2 = BarBeatTime(seconds: 0.5, beatsPerBar: 4, subbeatDivisor: 480, beatsPerMinute: 120, base: .one)
-    XCTAssertEqual(time2.bar, 1)
-    XCTAssertEqual(time2.beat, 2)
-    XCTAssertEqual(time2.subbeat, 1)
-    XCTAssertEqual(time2.seconds, 0.5)
-    let time3 = BarBeatTime(seconds: 3.5, beatsPerBar: 4, subbeatDivisor: 480, beatsPerMinute: 120, base: .zero)
-    XCTAssertEqual(time3.bar, 1)
-    XCTAssertEqual(time3.beat, 3)
-    XCTAssertEqual(time3.subbeat, 0)
-    XCTAssertEqual(time3.seconds, 3.5)
-    let time4 = BarBeatTime(seconds: 3.5, beatsPerBar: 4, subbeatDivisor: 480, beatsPerMinute: 120, base: .one)
-    XCTAssertEqual(time4.bar, 2)
-    XCTAssertEqual(time4.beat, 4)
-    XCTAssertEqual(time4.subbeat, 1)
-    XCTAssertEqual(time4.seconds, 3.5)
-    let time5 = BarBeatTime(seconds: 3.34, beatsPerBar: 4, subbeatDivisor: 480, beatsPerMinute: 120, base: .zero)
-    XCTAssertEqual(time5.bar, 1)
-    XCTAssertEqual(time5.beat, 2)
-    XCTAssertEqual(time5.subbeat, 326)
-    XCTAssertEqualWithAccuracy(time5.seconds, 3.34, accuracy: 0.001)
-    let time6 = BarBeatTime(seconds: 3.34, beatsPerBar: 4, subbeatDivisor: 480, beatsPerMinute: 120, base: .one)
-    XCTAssertEqual(time6.bar, 2)
-    XCTAssertEqual(time6.beat, 3)
-    XCTAssertEqual(time6.subbeat, 327)
-    XCTAssertEqualWithAccuracy(time6.seconds, 3.34, accuracy: 0.001)
+    let time1 = BarBeatTime(seconds: 0.5)
+    expect(time1.bar) == 0
+    expect(time1.beat) == 1
+    expect(time1.subbeat) == 0
+    expect(time1.seconds) == 0.5
+
+    let time2 = BarBeatTime(seconds: 0.5)
+    expect(time2.bar) == 0
+    expect(time2.beat) == 1
+    expect(time2.subbeat) == 0
+    expect(time2.seconds) == 0.5
+    
+    let time3 = BarBeatTime(seconds: 3.5)
+    expect(time3.bar) == 1
+    expect(time3.beat) == 3
+    expect(time3.subbeat) == 0
+    expect(time3.seconds) == 3.5
+    
+    let time4 = BarBeatTime(seconds: 3.5)
+    expect(time4.bar) == 1
+    expect(time4.beat) == 3
+    expect(time4.subbeat) == 0
+    expect(time4.seconds) == 3.5
+    
+    let time5 = BarBeatTime(seconds: 3.34)
+    expect(time5.bar) == 1
+    expect(time5.beat) == 2
+    expect(time5.subbeat) == 326
+    expect(time5.seconds).to(equalWithAccuracy(3.34, 0.001))
+    
+    let time6 = BarBeatTime(seconds: 3.34)
+    expect(time6.bar) == 1
+    expect(time6.beat) == 2
+    expect(time6.subbeat) == 326
+    expect(time6.seconds).to(equalWithAccuracy(3.34, 0.001))
   }
 
   func testTicks() {
-    let time1: BarBeatTime = "1:3/4.430/480@120₀"
-    XCTAssertEqual(time1.ticks, 3790)
-    let time2: BarBeatTime = "2:4/4.431/480@120₁"
-    XCTAssertEqual(time2.ticks, 3790)
-    let time3 = BarBeatTime(tickValue: 3790, beatsPerBar: 4, subbeatDivisor: 480, beatsPerMinute: 120, base: .zero)
-    XCTAssertEqual(time3, time1)
-    XCTAssertEqual(time3, time2)
-    let time4 = BarBeatTime(tickValue: 3790, beatsPerBar: 4, subbeatDivisor: 480, beatsPerMinute: 120, base: .one)
-    XCTAssertEqual(time4, time1)
-    XCTAssertEqual(time4, time2)
+    expect(BarBeatTime(bar: 1, beat: 3, subbeat: 430).ticks) == 3790
+    expect(BarBeatTime(tickValue: 3790)) == BarBeatTime(bar: 1, beat: 3, subbeat: 430)
   }
 
   func testIntervals() {
-    let time: BarBeatTime = "8:3/4.478/480@120₀"
-    let interval: CountableRange<BarBeatTime> = "9:3/4.310@120₀" ..< "10:2/4.30/480@120₀"
-    XCTAssert(!interval.contains(time))
+    let interval: CountableRange<BarBeatTime> = BarBeatTime(bar: 9, beat: 3, subbeat: 310) ..< BarBeatTime(bar: 10, beat: 2, subbeat: 30)
+    expect(interval.contains(BarBeatTime(bar: 8, beat: 3, subbeat: 478))) == false
+    expect(interval.contains(BarBeatTime(bar: 10, beat: 0, subbeat: 19))) == true
   }
+
+  func testNegation() {
+    let time = -BarBeatTime(bar: 2, beat: 1, subbeat: 342)
+    expect(time.bar) == 2
+    expect(time.beat) == 1
+    expect(time.subbeat) == 342
+    expect(time.isNegative) == true
+  }
+
+  func testBeat() {
+    var time = BarBeatTime(bar: 5, beat: 2, subbeat: 19)
+    expect(time.bar) == 5
+    expect(time.beat) == 2
+    expect(time.subbeat) == 19
+
+    time.beat = 0
+    expect(time.bar) == 5
+    expect(time.beat) == 0
+    expect(time.subbeat) == 19
+
+    time.beat = 10
+    expect(time.bar) == 7
+    expect(time.beat) == 2
+    expect(time.subbeat) == 19
+  }
+
+  func testSubbeat() {
+    var time = BarBeatTime(bar: 5, beat: 2, subbeat: 19)
+    expect(time.bar) == 5
+    expect(time.beat) == 2
+    expect(time.subbeat) == 19
+
+    time.subbeat = 201
+    expect(time.bar) == 5
+    expect(time.beat) == 2
+    expect(time.subbeat) == 201
+
+    time.subbeat = 492
+    expect(time.bar) == 5
+    expect(time.beat) == 3
+    expect(time.subbeat) == 12
+  }
+
+  func testSubbeatDivisor() {
+    var time = BarBeatTime(bar: 4, beat: 3, subbeat: 193)
+    expect(time.subbeatDivisor) == 480
+
+    time.subbeatDivisor = 480
+    expect(time.subbeatDivisor) == 480
+    expect(time.subbeat) == 193
+    expect(time.beat) == 3
+    expect(time.bar) == 4
+
+    time.subbeatDivisor = 240
+    expect(time.subbeatDivisor) == 240
+    expect(time.subbeat) == 193
+    expect(time.beat) == 2
+    expect(time.bar) == 9
+
+  }
+
+  func testStringConversion() {
+    guard let time1 = BarBeatTime(rawValue: "4:3.2") else {
+      XCTFail("unexpected nil value return from `BarBeatTime(rawValue:)`")
+      return
+    }
+
+    expect(time1.bar) == 4
+    expect(time1.beat) == 3
+    expect(time1.subbeat) == 2
+    expect(time1.subbeatDivisor) == 480
+    expect(time1.beatsPerBar) == 4
+    expect(time1.beatsPerMinute) == 120
+    expect(time1.description) == "4:3/4.2/480@120"
+    expect(BarBeatTime(time1.description)) == time1
+
+    guard let time2 = BarBeatTime(rawValue: "-4:3.2") else {
+      XCTFail("unexpected nil value return from `BarBeatTime(rawValue:)`")
+      return
+    }
+
+    expect(time2.bar) ==  4
+    expect(time2.beat) ==  3
+    expect(time2.subbeat) ==  2
+    expect(time2.subbeatDivisor) ==  480
+    expect(time2.beatsPerBar) ==  4
+    expect(time2.beatsPerMinute) ==  120
+    expect(time2.isNegative) ==  true
+    expect(time2.description) == "-4:3/4.2/480@120"
+    expect(BarBeatTime(time2.description)) == time2
+
+    expect(BarBeatTime(rawValue: "blah")).to(beNil())
+  }
+
+  func testComparable() {
+    expect(BarBeatTime(bar: 9, beat: 2, subbeat: 123)) < BarBeatTime(bar: 9, beat: 2, subbeat: 124)
+    expect(BarBeatTime(bar: 0, beat: 3, subbeat: 479)) < BarBeatTime(bar: 1, beat: 0, subbeat: 0)
+  }
+
+  func testStrideable() {
+    expect(BarBeatTime(bar: 3, beat: 2, subbeat: 15).advanced(by: BarBeatTime(bar: 3, beat: 0, subbeat: 12))) == BarBeatTime(bar: 6, beat: 2, subbeat: 27)
+    expect(BarBeatTime(bar: 3, beat: 2, subbeat: 15).advanced(by: BarBeatTime(bar: 3, beat: 0, subbeat: 12, negative: true))) == BarBeatTime(bar: 0, beat: 2, subbeat: 3)
+    expect(BarBeatTime(bar: 3, beat: 2, subbeat: 15).distance(to: BarBeatTime(bar: 6, beat: 2, subbeat: 27))) == BarBeatTime(bar: 3, beat: 0, subbeat: 12)
+    expect(BarBeatTime(bar: 3, beat: 2, subbeat: 15).distance(to: BarBeatTime(bar: 0, beat: 2, subbeat: 3))) == BarBeatTime(bar: 3, beat: 0, subbeat: 12, negative: true)
+  }
+
+  func testDisplay() {
+    expect(BarBeatTime(bar: 0, beat: 2, subbeat: 45).display) == "001:3.046"
+    expect(BarBeatTime(bar: 4, beat: 0, subbeat: 0).display) == "005:1.001"
+  }
+
+  func testBeatUnit() {
+    var units = BarBeatTime.Units(beatsPerBar: 4, beatsPerMinute: 120, subbeatDivisor: 480)
+    var time = BarBeatTime(bar: 26, beat: 2, subbeat: 119, units: units)
+    expect(time.beatUnit) == 1╱4
+    expect(time.beatUnitTime) == BarBeatTime(bar: 0, beat: 1, subbeat: 0, units: units)
+
+    units.beatsPerBar = 6
+    time.beatsPerBar = 6
+    expect(time.beatUnit) == 1╱6
+    expect(time.beatUnitTime) == BarBeatTime(bar: 0, beat: 1, subbeat: 0, units: units)
+  }
+
+  func testSubbeatUnit() {
+    var units = BarBeatTime.Units(beatsPerBar: 4, beatsPerMinute: 120, subbeatDivisor: 480)
+    var time = BarBeatTime(bar: 26, beat: 2, subbeat: 119, units: units)
+    expect(time.subbeatUnit) == 1╱480
+    expect(time.subbeatUnitTime) == BarBeatTime(bar: 0, beat: 0, subbeat: 1, units: units)
+
+    units.subbeatDivisor = 240
+    time.subbeatDivisor = 240
+    expect(time.subbeatUnit) == 1╱240
+    expect(time.subbeatUnitTime) == BarBeatTime(bar: 0, beat: 0, subbeat: 1, units: units)
+  }
+
+  func testBeatsPerBar() {
+    var time = BarBeatTime(bar: 4, beat: 3, subbeat: 193)
+    expect(time.beatsPerBar) == 4
+
+    time.beatsPerBar = 4
+    expect(time.beatsPerBar) == 4
+    expect(time.subbeat) == 193
+    expect(time.beat) == 3
+    expect(time.bar) == 4
+
+    time.beatsPerBar = 2
+    expect(time.beatsPerBar) == 2
+    expect(time.subbeat) == 193
+    expect(time.beat) == 1
+    expect(time.bar) == 9
+  }
+
+  func testRatioOperatorInitializer() {
+    expect(3∶2.312) == BarBeatTime(bar: 3, beat: 2, subbeat: 312)
+    expect(3∶0.0) == BarBeatTime(bar: 3, beat: 0, subbeat: 0)
+    expect(0∶0.0) == BarBeatTime(bar: 0, beat: 0, subbeat: 0)
+    expect(0∶0.24) == BarBeatTime(bar: 0, beat: 0, subbeat: 24)
+    expect(2∶5.0) == BarBeatTime(bar: 3, beat: 1, subbeat: 0)
+    expect(0∶0.9339) == BarBeatTime(bar: 4, beat: 3, subbeat: 219)
+  }
+
 }

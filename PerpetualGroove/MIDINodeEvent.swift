@@ -11,7 +11,7 @@ import MoonKit
 
 /** A MIDI meta event that uses the 'Cue Point' message to embed `MIDINode` trajectory and removal events for a track */
 struct MIDINodeEvent: MIDIEventType {
-  var time: BarBeatTime = .start1
+  var time: BarBeatTime = BarBeatTime()
   let data: Data
   var delta: VariableLengthQuantity?
   var bytes: [Byte] { return [0xFF, 0x07] + data.length.bytes + data.bytes }

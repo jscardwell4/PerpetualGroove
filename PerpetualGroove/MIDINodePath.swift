@@ -36,7 +36,7 @@ final class MIDINodePath {
    - parameter playerSize: CGSize
    - parameter time: BarBeatTime = .start
   */
-  init(trajectory: Trajectory, playerSize: CGSize, time: BarBeatTime = .start1) {
+  init(trajectory: Trajectory, playerSize: CGSize, time: BarBeatTime = BarBeatTime()) {
 
     let offset = MIDINode.texture.size() * 0.375
     max = CGPoint((playerSize - offset).unpack)
@@ -297,7 +297,7 @@ private final class _Segment: Equatable, Comparable, CustomStringConvertible {
     length = trajectory.p.distanceTo(endLocation)
 
     let 𝝙t = trajectory.timeFromPoint(trajectory.p, toPoint: endLocation)
-    let endTime = BarBeatTime(seconds: time.seconds + 𝝙t, base: .one)
+    let endTime = BarBeatTime(seconds: time.seconds + 𝝙t)
 
     timeInterval = time ..< endTime
     tickInterval = timeInterval.lowerBound.ticks ..< timeInterval.upperBound.ticks
@@ -308,7 +308,7 @@ private final class _Segment: Equatable, Comparable, CustomStringConvertible {
       "trajectory: \(trajectory)",
       "endLocation: \(endLocation)",
       "timeInterval: \(timeInterval)",
-      "totalTime: \(endTime.zeroBased - startTime.zeroBased)",
+      "totalTime: \(endTime - startTime)",
       "tickInterval: \(tickInterval)",
       "totalTicks: \(totalTicks)",
       "length: \(length)"

@@ -13,7 +13,7 @@ import struct AudioToolbox.MIDIMetaEvent
 /** Struct to hold data for a meta event where event = \<delta time\> **FF** \<meta type\> \<length of meta\> \<meta\> */
 struct MetaEvent: MIDIEventType {
 
-  var time: BarBeatTime = .start1
+  var time: BarBeatTime = BarBeatTime()
   var data: Data
   var delta: VariableLengthQuantity?
   var bytes: [Byte] { return [0xFF, data.type] + data.length.bytes + data.bytes }

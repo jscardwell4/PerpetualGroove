@@ -91,7 +91,9 @@ struct MIDIFile: ByteArrayConvertible {
         }
         let deltaTicks = UInt64(delta.intValue)
         ticks += deltaTicks
-        trackEvent.time = BarBeatTime(tickValue: ticks, beatsPerBar: UInt(beatsPerBar), subbeatDivisor: UInt(subbeatDivisor))
+        trackEvent.time = BarBeatTime(tickValue: ticks, units: BarBeatTime.Units(beatsPerBar: UInt(beatsPerBar),
+                                                                                 beatsPerMinute: Sequencer.beatsPerMinute,
+                                                                                 subbeatDivisor: UInt(subbeatDivisor)))
         processedEvents.append(trackEvent)
       }
       processedTracks.append(MIDIFileTrackChunk(events: processedEvents))
@@ -110,7 +112,7 @@ struct MIDIFile: ByteArrayConvertible {
     var bytes = header.bytes
     var trackData: [[Byte]] = []
     for track in tracks {
-      var previousTime: BarBeatTime = .start1
+      var previousTime: BarBeatTime = BarBeatTime()
       var trackBytes: [Byte] = []
       for event in track.events {
         let eventTime = event.time

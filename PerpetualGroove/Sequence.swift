@@ -18,7 +18,7 @@ final class Sequence {
 
   // MARK: - Managing tracks
   
-  var sequenceEnd: BarBeatTime { return tracks.map({$0.endOfTrack}).max() ?? .start1 }
+  var sequenceEnd: BarBeatTime { return tracks.map({$0.endOfTrack}).max() ?? BarBeatTime.zero }
 
   fileprivate(set) var instrumentTracks: [InstrumentTrack] = []
 

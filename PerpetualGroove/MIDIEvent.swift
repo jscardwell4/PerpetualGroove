@@ -10,7 +10,7 @@ import Foundation
 import MoonKit
 
 /**  Protocol for types that produce data for a track event in a track chunk */
-protocol MIDIEventType: CustomStringConvertible, CustomDebugStringConvertible {
+protocol MIDIEventType: CustomStringConvertible {
   var time: BarBeatTime { get set }
   var delta: VariableLengthQuantity? { get set }
   var bytes: [Byte] { get }
@@ -23,10 +23,6 @@ extension MIDIEventType {
     let timeHash = time.totalBeats.hashValue
     return bytesHash ^ deltaHash ^ timeHash
   }
-}
-
-extension MIDIEventType {
-  var debugDescription: String { var result = ""; dump(self, to: &result); return result }
 }
 
 protocol MIDIEventDispatch: class, Loggable {
@@ -104,8 +100,6 @@ enum MIDIEvent: MIDIEventType, Hashable {
   var bytes: [Byte] { return event.bytes }
 
   var description: String { return event.description }
-
-  var debugDescription: String { return event.debugDescription }
 }
 
 extension MIDIEvent: Equatable {}

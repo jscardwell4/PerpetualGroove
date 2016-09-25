@@ -31,6 +31,11 @@ final class MIDIEventContainerTests: XCTestCase {
     return result
   }
 
+  static let metaEvents: [MetaEvent] = events.filter({if case .meta = $0 { return true } else { return false }}).map({$0.event as! MetaEvent})
+  static let channelEvents: [ChannelEvent] = events.filter({if case .channel = $0 { return true } else { return false }}).map({$0.event as! ChannelEvent})
+  static let nodeEvents: [MIDINodeEvent] = events.filter({if case .node = $0 { return true } else { return false }}).map({$0.event as! MIDINodeEvent})
+  static let timeEvents: [MetaEvent] = metaEvents.filter({switch $0.data { case .timeSignature, .tempo: return true; default: return false }})
+
   /*
    event types:
    Meta
@@ -44,11 +49,11 @@ final class MIDIEventContainerTests: XCTestCase {
    */
   static let events: [MIDIEvent] = {
     var events: [MIDIEvent] = []
-    events.append(.meta(MetaEvent(.start1, .sequenceTrackName(name: "Track1"))))
-    events.append(.meta(MetaEvent(.start1, .timeSignature(signature: .fourFour, clocks: 36, notes: 8))))
-    events.append(.meta(MetaEvent(.start1, .tempo(bpm: 120))))
-    events.append(.channel(ChannelEvent(.noteOn, 0, 60, 126, .start1)))
-    events.append(.channel(ChannelEvent(.noteOff, 0, 60, 126, BarBeatTime.start1 + 3.4)))
+    events.append(.meta(MetaEvent("1:1.1₁", .sequenceTrackName(name: "Track1"))))
+    events.append(.meta(MetaEvent("1:1.1₁", .timeSignature(signature: .fourFour, clocks: 36, notes: 8))))
+    events.append(.meta(MetaEvent("1:1.1₁", .tempo(bpm: 120))))
+    events.append(.channel(ChannelEvent(.noteOn, 0, 60, 126, "1:1.1₁")))
+    events.append(.channel(ChannelEvent(.noteOff, 0, 60, 126, /*BarBeatTime.start1 + 3.4*/"2:3.385₁")))
     let identifier = MIDINodeEvent.Identifier(nodeIdentifier: MIDINode.Identifier())
     events.append(
       MIDIEvent.node(
@@ -58,7 +63,8 @@ final class MIDIEventContainerTests: XCTestCase {
             trajectory: Trajectory(vector: CGVector(dx: 240, dy: 111), point: CGPoint(x: 24, y: 300)),
             generator: MIDIGenerator.note(NoteGenerator())
           ),
-          BarBeatTime.start1 + 6.2
+          /*BarBeatTime.start1 + 6.2*/"3:3.193₁"
+
         )
       )
     )
@@ -66,75 +72,111 @@ final class MIDIEventContainerTests: XCTestCase {
       MIDIEvent.node(
         MIDINodeEvent(
           .remove(identifier: identifier),
-          BarBeatTime.start1 + 24.35
+          /*BarBeatTime.start1 + 24.35*/"12:1.387₁"
+
         )
       )
     )
-    events.append(.meta(MetaEvent(.endOfTrack, BarBeatTime.start1 + 25.3)))
+    events.append(.meta(MetaEvent(.endOfTrack, /*BarBeatTime.start1 + 25.3*/"12:3.289₁")))
     return events
   }()
 
-  static let metaEventCount: Int = {
-    events.reduce(0) { if case .meta = $1 { return $0 + 1 } else { return $0 } }
-  }()
-
-  static let channelEventCount: Int = {
-    events.reduce(0) { if case .channel = $1 { return $0 + 1 } else { return $0 } }
-  }()
-
-  static let nodeEventCount: Int = {
-    events.reduce(0) { if case .node = $1 { return $0 + 1 } else { return $0 } }
-  }()
-
-  static let timeEventCount: Int = {
-    events.reduce(0) {
-      if case .meta(let event) = $1 {
-        switch event.data {
-          case .timeSignature, .tempo: return $0 + 1
-          default: return $0
-        }
-      } else { return $0 }
-    }
-  }()
+  static let metaEventCount: Int = metaEvents.count
+  static let channelEventCount: Int = channelEvents.count
+  static let nodeEventCount: Int = nodeEvents.count
+  static let timeEventCount: Int = timeEvents.count
 
   func testCreation() {
     let events = MIDIEventContainerTests.events
     let container = MIDIEventContainer(events: events)
-    XCTAssertEqual(events.count, container.count)
+    guard expect(container).to(haveCount(events.count)) else { return }
+    expect(container) == events
   }
 
   func testLazyMetaEvents() {
     let events = MIDIEventContainerTests.generateEvents(10)
     let container = MIDIEventContainer(events: events)
     let metaEvents = container.metaEvents
-    XCTAssertEqual(metaEvents.count, MIDIEventContainerTests.metaEventCount * 10)
+    guard expect(metaEvents).to(haveCount(MIDIEventContainerTests.metaEventCount * 10)) else { return }
+    expect(metaEvents) == repeatElement(MIDIEventContainerTests.metaEvents, count: 10).joined()
   }
 
   func testLazyChannelEvents() {
     let events = MIDIEventContainerTests.generateEvents(10)
     let container = MIDIEventContainer(events: events)
     let channelEvents = container.channelEvents
-    XCTAssertEqual(channelEvents.count, MIDIEventContainerTests.channelEventCount * 10)
+    guard expect(channelEvents).to(haveCount(MIDIEventContainerTests.channelEventCount * 10)) else { return }
+    expect(channelEvents) == repeatElement(MIDIEventContainerTests.channelEvents, count: 10).joined()
   }
 
   func testLazyNodeEvents() {
     let events = MIDIEventContainerTests.generateEvents(10)
     let container = MIDIEventContainer(events: events)
     let nodeEvents = container.nodeEvents
-    XCTAssertEqual(nodeEvents.count, MIDIEventContainerTests.nodeEventCount * 10)
+    guard expect(nodeEvents).to(haveCount(MIDIEventContainerTests.nodeEventCount * 10)) else { return }
+    expect(nodeEvents) == repeatElement(MIDIEventContainerTests.nodeEvents, count: 10).joined()
   }
 
   func testLazyTimeEvents() {
     let events = MIDIEventContainerTests.generateEvents(10)
     let container = MIDIEventContainer(events: events)
     let timeEvents = container.timeEvents
-    XCTAssertEqual(timeEvents.count, MIDIEventContainerTests.timeEventCount * 10)
+    guard expect(timeEvents).to(haveCount(MIDIEventContainerTests.timeEventCount * 10)) else { return }
+    expect(timeEvents) == repeatElement(MIDIEventContainerTests.timeEvents, count: 10).joined()
   }
 
   func testContainerPerformance() {
     let events = MIDIEventContainerTests.generateEvents(10)
     measure {
       var container = MIDIEventContainer()
+      for event in events { container.append(event) }
+    }
+  }
+
+  func testCreationAlt() {
+    let events = MIDIEventContainerTests.events
+    let container = AltMIDIEventContainer(events: events)
+    expect(container.startIndex) == AltMIDIEventContainer.Index(timeOffset: 0, eventOffset: 0)
+    guard expect(events).to(haveCount(container.count)) else { return }
+    expect(container) == events
+  }
+
+  func testLazyMetaEventsAlt() {
+    let events = MIDIEventContainerTests.generateEvents(10)
+    let container = AltMIDIEventContainer(events: events)
+    let metaEvents = container.metaEvents
+    guard expect(metaEvents).to(haveCount(numericCast(MIDIEventContainerTests.metaEventCount * 10))) else { return }
+    expect(metaEvents) == repeatElement(MIDIEventContainerTests.metaEvents, count: 10).joined()
+  }
+
+  func testLazyChannelEventsAlt() {
+    let events = MIDIEventContainerTests.generateEvents(10)
+    let container = AltMIDIEventContainer(events: events)
+    let channelEvents = container.channelEvents
+    guard expect(channelEvents).to(haveCount(numericCast(MIDIEventContainerTests.channelEventCount * 10))) else { return }
+    expect(channelEvents) == repeatElement(MIDIEventContainerTests.channelEvents, count: 10).joined()
+  }
+
+  func testLazyNodeEventsAlt() {
+    let events = MIDIEventContainerTests.generateEvents(10)
+    let container = AltMIDIEventContainer(events: events)
+    let nodeEvents = container.nodeEvents
+    guard expect(nodeEvents).to(haveCount(numericCast(MIDIEventContainerTests.nodeEventCount * 10))) else { return }
+    expect(nodeEvents) == repeatElement(MIDIEventContainerTests.nodeEvents, count: 10).joined()
+  }
+
+  func testLazyTimeEventsAlt() {
+    let events = MIDIEventContainerTests.generateEvents(10)
+    let container = AltMIDIEventContainer(events: events)
+    let timeEvents = container.timeEvents
+    guard expect(timeEvents).to(haveCount(numericCast(MIDIEventContainerTests.timeEventCount * 10))) else { return }
+    expect(timeEvents) == repeatElement(MIDIEventContainerTests.timeEvents, count: 10).joined()
+  }
+
+  func testContainerPerformanceAlt() {
+    let events = MIDIEventContainerTests.generateEvents(10)
+    measure {
+      var container = AltMIDIEventContainer()
       for event in events { container.append(event) }
     }
   }

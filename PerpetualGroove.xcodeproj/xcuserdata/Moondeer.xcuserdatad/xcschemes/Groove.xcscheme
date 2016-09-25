@@ -156,6 +156,9 @@
                <Test
                   Identifier = "MIDIEventContainerTests/testContainerPerformance()">
                </Test>
+               <Test
+                  Identifier = "MIDIEventContainerTests/testContainerPerformanceAlt()">
+               </Test>
             </SkippedTests>
          </TestableReference>
          <TestableReference

@@ -110,7 +110,7 @@ final class Transport {
   func jog(_ wheel: ScrollWheel) {
     guard jogging && jogTime != nil else { logWarning("not jogging"); return }
     let 𝝙time = BarBeatTime(totalBeats: Double(Sequencer.beatsPerBar) * wheel.𝝙revolutions)
-    do { try jogToTime(max(jogTime + 𝝙time, .start1), direction: wheel.direction) }
+    do { try jogToTime(max(jogTime + 𝝙time, BarBeatTime()), direction: wheel.direction) }
     catch { logError(error) }
   }
 
@@ -137,7 +137,7 @@ final class Transport {
   func jogToTime(_ t: BarBeatTime, direction: ScrollWheel.Direction) throws {
     guard jogging else { throw Error.notPermitted("state ∌ jogging") }
     guard jogTime != t else { return }
-    guard t.isNormal else { throw Error.invalidBarBeatTime("\(t)") }
+//    guard t.isNormal else { throw Error.invalidBarBeatTime("\(t)") }
     jogTime = t
     postNotification(name: .didJog, object: self, userInfo: [
       "time": time.barBeatTime.rawValue,
@@ -154,7 +154,7 @@ final class Transport {
   func automateJogToTime(_ tʹ: BarBeatTime) throws {
     let t = time.barBeatTime
     guard t != tʹ else { return }
-    guard tʹ.isNormal else { throw Error.invalidBarBeatTime("\(tʹ)") }
+//    guard tʹ.isNormal else { throw Error.invalidBarBeatTime("\(tʹ)") }
     let direction: ScrollWheel.Direction = tʹ < time.barBeatTime ? .counterClockwise : .clockwise
     if clock.running { clock.stop() }
     time.barBeatTime = tʹ
