@@ -82,7 +82,7 @@ final class InstrumentViewController: UIViewController, SecondaryControllerConte
     do { try instrument.loadSoundSet(initialSoundSet, preset: initialPreset) } catch { logError(error) }
   }
 
-  fileprivate(set) var initialSoundSet: SoundSetType?
+  fileprivate(set) var initialSoundSet: SoundFont?
   fileprivate(set) var initialPreset: Instrument.Preset?
 
   fileprivate weak var instrument: Instrument? {

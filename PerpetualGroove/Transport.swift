@@ -110,7 +110,7 @@ final class Transport {
   func jog(_ wheel: ScrollWheel) {
     guard jogging && jogTime != nil else { logWarning("not jogging"); return }
     let 𝝙time = BarBeatTime(totalBeats: Double(Sequencer.beatsPerBar) * wheel.𝝙revolutions)
-    do { try jogToTime(max(jogTime + 𝝙time, BarBeatTime()), direction: wheel.direction) }
+    do { try jogToTime(max(jogTime + 𝝙time, BarBeatTime.zero), direction: wheel.direction) }
     catch { logError(error) }
   }
 

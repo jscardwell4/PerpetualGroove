@@ -206,7 +206,7 @@ final class Time {
   - parameter completion: (() -> Void)? = nil
   */
   fileprivate func _reset(_ completion: (() -> Void)? = nil) {
-    _barBeatTime = BarBeatTime()
+    _barBeatTime = BarBeatTime.zero
 //    objc_sync_enter(self)
     /*defer { objc_sync_exit(self); */completion?()// }
   }

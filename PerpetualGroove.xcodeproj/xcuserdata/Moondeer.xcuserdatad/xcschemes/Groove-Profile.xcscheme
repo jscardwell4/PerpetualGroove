@@ -162,6 +162,26 @@
                ReferencedContainer = "container:PerpetualGroove.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "C2FAAC7A1D99C7620089D1B0"
+               BuildableName = "SoundFontFileTests.xctest"
+               BlueprintName = "SoundFontFileTests"
+               ReferencedContainer = "container:PerpetualGroove.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "C2FAAC8A1D99C79D0089D1B0"
+               BuildableName = "MIDIFileTests.xctest"
+               BlueprintName = "MIDIFileTests"
+               ReferencedContainer = "container:PerpetualGroove.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference

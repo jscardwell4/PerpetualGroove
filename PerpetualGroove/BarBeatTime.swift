@@ -146,6 +146,8 @@ struct BarBeatTime {
     }
   }
 
+  var isZero: Bool { return bar == 0 && beatFraction == 0 && subbeatFraction == 0 }
+
   /// A bar-beat time for representing a null value
   static var null: BarBeatTime { return BarBeatTime(units: Units(beatsPerBar: 0, beatsPerMinute: 0, subbeatDivisor: 0)) }
 
@@ -426,29 +428,43 @@ extension BarBeatTime: BitwiseOperations {
 
 // MARK: - Comparable
 extension BarBeatTime: Comparable {
+  
   static func ==(lhs: BarBeatTime, rhs: BarBeatTime) -> Bool {
-    guard lhs.isNegative == rhs.isNegative else { return false }
-    guard lhs.bar == rhs.bar else { return false }
-    guard lhs.beatFraction == rhs.beatFraction else { return false }
-    return lhs.subbeatFraction == rhs.subbeatFraction
+    return lhs.isNegative == rhs.isNegative
+        && lhs.bar == rhs.bar
+        && lhs.beatFraction == rhs.beatFraction
+        && lhs.subbeatFraction == rhs.subbeatFraction
   }
+
   static func <(lhs: BarBeatTime, rhs: BarBeatTime) -> Bool {
-    guard lhs.isNegative == rhs.isNegative else {
-      return lhs.isNegative
+    switch (lhs.isNegative, rhs.isNegative) {
+      case (true, false) where lhs.isZero && rhs.isZero: return false
+      case (true, false): return true
+      case (false, true): return false
+      case (true, true):
+        switch (lhs.bar, rhs.bar) {
+          case let (bar1, bar2) where bar1 > bar2: return true
+          case let (bar1, bar2) where bar1 < bar2: return false
+          default:
+            switch (lhs.beatFraction, rhs.beatFraction) {
+              case let (beat1, beat2) where beat1 > beat2: return true
+              case let (beat1, beat2) where beat1 < beat2: return false
+              default: return lhs.subbeatFraction > rhs.subbeatFraction
+            }
+        }
+      case (false, false):
+        switch (lhs.bar, rhs.bar) {
+          case let (bar1, bar2) where bar1 < bar2: return true
+          case let (bar1, bar2) where bar1 > bar2: return false
+          default:
+            switch (lhs.beatFraction, rhs.beatFraction) {
+              case let (beat1, beat2) where beat1 < beat2: return true
+              case let (beat1, beat2) where beat1 > beat2: return false
+              default: return lhs.subbeatFraction < rhs.subbeatFraction
+            }
+        }
+
     }
-    guard lhs.bar == rhs.bar else {
-      return lhs.isNegative
-        ? lhs.bar > rhs.bar
-        : lhs.bar < rhs.bar
-    }
-    guard lhs.beatFraction == rhs.beatFraction else {
-      return lhs.isNegative
-        ? lhs.beatFraction > rhs.beatFraction
-        : lhs.beatFraction < rhs.beatFraction
-    }
-    return lhs.isNegative
-      ? lhs.subbeatFraction > rhs.subbeatFraction
-      : lhs.subbeatFraction < rhs.subbeatFraction
   }
 }
 

@@ -7,6 +7,7 @@
 //
 
 import XCTest
+import MoonKit
 import MoonKitTest
 @testable import Groove
 
@@ -17,7 +18,7 @@ final class MIDIEventContainerTests: XCTestCase {
     var result: [MIDIEvent] = []
     for event in events {
       var event = event
-      event.time = event.time + amount
+      event.time = event.time + BarBeatTime(seconds: amount)
       result.append(event)
     }
     return result
@@ -49,11 +50,11 @@ final class MIDIEventContainerTests: XCTestCase {
    */
   static let events: [MIDIEvent] = {
     var events: [MIDIEvent] = []
-    events.append(.meta(MetaEvent("1:1.1₁", .sequenceTrackName(name: "Track1"))))
-    events.append(.meta(MetaEvent("1:1.1₁", .timeSignature(signature: .fourFour, clocks: 36, notes: 8))))
-    events.append(.meta(MetaEvent("1:1.1₁", .tempo(bpm: 120))))
-    events.append(.channel(ChannelEvent(.noteOn, 0, 60, 126, "1:1.1₁")))
-    events.append(.channel(ChannelEvent(.noteOff, 0, 60, 126, /*BarBeatTime.start1 + 3.4*/"2:3.385₁")))
+    events.append(.meta(MetaEvent(.zero, .sequenceTrackName(name: "Track1"))))
+    events.append(.meta(MetaEvent(.zero, .timeSignature(signature: .fourFour, clocks: 36, notes: 8))))
+    events.append(.meta(MetaEvent(.zero, .tempo(bpm: 120))))
+    events.append(.channel(ChannelEvent(.noteOn, 0, 60, 126, .zero)))
+    events.append(.channel(ChannelEvent(.noteOff, 0, 60, 126, /*BarBeatTime.start1 + 3.4*/2∶3.385)))
     let identifier = MIDINodeEvent.Identifier(nodeIdentifier: MIDINode.Identifier())
     events.append(
       MIDIEvent.node(
@@ -63,7 +64,7 @@ final class MIDIEventContainerTests: XCTestCase {
             trajectory: Trajectory(vector: CGVector(dx: 240, dy: 111), point: CGPoint(x: 24, y: 300)),
             generator: MIDIGenerator.note(NoteGenerator())
           ),
-          /*BarBeatTime.start1 + 6.2*/"3:3.193₁"
+          /*BarBeatTime.start1 + 6.2*/3∶3.193
 
         )
       )
@@ -72,12 +73,12 @@ final class MIDIEventContainerTests: XCTestCase {
       MIDIEvent.node(
         MIDINodeEvent(
           .remove(identifier: identifier),
-          /*BarBeatTime.start1 + 24.35*/"12:1.387₁"
+          /*BarBeatTime.start1 + 24.35*/12∶1.387
 
         )
       )
     )
-    events.append(.meta(MetaEvent(.endOfTrack, /*BarBeatTime.start1 + 25.3*/"12:3.289₁")))
+    events.append(.meta(MetaEvent(.endOfTrack, /*BarBeatTime.start1 + 25.3*/12∶3.289)))
     return events
   }()
 

@@ -22,7 +22,9 @@ final class Instrument: Equatable {
 
   typealias Preset = SF2File.Preset
 
-  var soundSet: SoundSetType {
+  static func ==(lhs: Instrument, rhs: Instrument) -> Bool { return lhs.node === rhs.node }
+
+  var soundSet: SoundFont {
     didSet {
       guard !soundSet.isEqualTo(oldValue) else { return }
       postNotification(name: .soundSetDidChange, object: self, userInfo: nil)
@@ -41,21 +43,10 @@ final class Instrument: Equatable {
     return node.destination(forMixer: AudioManager.mixer, bus: 0)?.connectionPoint.bus ?? -1
   }
 
-  /**
-  loadSoundSet:preset:
-
-  - parameter soundSet: SoundSetType
-  - parameter preset: Preset
-  */
-  func loadSoundSet(_ soundSet: SoundSetType, preset: Preset) throws {
+  func loadSoundSet(_ soundSet: SoundFont, preset: Preset) throws {
     try loadSoundSet(soundSet, program: preset.program, bank: preset.bank)
   }
 
-  /**
-  loadPreset:
-
-  - parameter preset: Preset
-  */
   func loadPreset(_ preset: Preset) throws {
     try loadSoundSet(soundSet, program: preset.program, bank: preset.bank)
   }
@@ -73,15 +64,11 @@ final class Instrument: Equatable {
   fileprivate(set) var outPort  = MIDIPortRef()
   fileprivate(set) var endPoint = MIDIEndpointRef()
 
-  /**
-  playNote:
-
-  - parameter generator: MIDIGenerator
-  */
   func playNote(_ generator: MIDIGenerator) {
     do {
       try generator.sendNoteOn(outPort, endPoint)
-      DispatchQueue.main.asyncAfter(deadline: DispatchTime(uptimeNanoseconds: secondsToNanoseconds(generator.duration.seconds))) {
+      let nanoseconds = secondsToNanoseconds(generator.duration.seconds)
+      DispatchQueue.main.asyncAfter(deadline: DispatchTime(uptimeNanoseconds: nanoseconds)) {
         [weak self] in
         guard let weakself = self else { return }
         do { try generator.sendNoteOff(weakself.outPort, weakself.endPoint) }
@@ -92,25 +79,17 @@ final class Instrument: Equatable {
     }
   }
 
-  /**
-  read:context:
-
-  - parameter packetList: UnsafePointer<MIDIPacketList>
-  - parameter context: UnsafeMutablePointer<Void>
-  */
   fileprivate func read(_ packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutableRawPointer?) {
     for packet in packetList.pointee {
       node.sendMIDIEvent(packet.data.0, data1: packet.data.1, data2: packet.data.2)
     }
   }
 
-  /**
-  All program changes run through this method
+  /// All program changes run through this method
+  func loadSoundSet(_ soundSet: SoundFont, program: Program = 0, bank: Bank = 0) throws {
+    guard !soundLoaded
+       || !(self.soundSet.isEqualTo(soundSet) && preset == soundSet[program, bank]) else { return }
 
-  - parameter soundSet: SoundSetType
-  */
-  func loadSoundSet(_ soundSet: SoundSetType, program: Program = 0, bank: Bank = 0) throws {
-    guard !soundLoaded || !(self.soundSet.isEqualTo(soundSet) && preset == soundSet[program, bank]) else { return }
     let oldPresetName = preset.name
     let program = (0 ... 127).clampValue(program)
     let bank    = (0 ... 127).clampValue(bank)
@@ -127,31 +106,21 @@ final class Instrument: Equatable {
     self.program  = program
     self.bank     = bank
     let newPresetName = preset.name
-    postNotification(name: .presetDidChange, object: self, userInfo: ["oldValue": oldPresetName, "newValue": newPresetName])
+    postNotification(name: .presetDidChange,
+                     object: self,
+                     userInfo: ["oldValue": oldPresetName, "newValue": newPresetName])
   }
 
-  /**
-  Whether the specified `Intrument` has the same settings as this `Instrument`
-
-  - parameter instrument: Instrument
-
-  - returns: Bool
-  */
-  func settingsEqualTo(_ instrument: Instrument) -> Bool {
+  /// Whether the specified `Intrument` has the same settings as this `Instrument`
+  func settings(equalTo instrument: Instrument) -> Bool {
     return soundSet.url == instrument.soundSet.url
         && program      == instrument.program
         && bank         == instrument.bank
         && channel      == instrument.channel
   }
 
-  /**
-  init:
-
-  - parameter set: SoundSetType
-  - parameter program: Program
-  */
   init(track: InstrumentTrack?,
-       soundSet: SoundSetType,
+       soundSet: SoundFont,
        program: Program = 0,
        bank: Bank = 0,
        channel: Channel = 0) throws
@@ -173,11 +142,6 @@ final class Instrument: Equatable {
     try MIDIDestinationCreateWithBlock(client, name as CFString, &endPoint, read) ➤ "Failed to create end point for instrument"
   }
 
-  /**
-  initWithInstrument:
-
-  - parameter instrument: Instrument
-  */
   convenience init(track: InstrumentTrack?, instrument: Instrument) {
     try! self.init(track: track,
                    soundSet: instrument.soundSet,
@@ -196,49 +160,43 @@ extension Instrument: CustomStringConvertible {
 
 }
 
-extension Instrument: CustomDebugStringConvertible {
-  var debugDescription: String { var result = ""; dump(self, to: &result); return result }
-}
-
 extension Instrument: JSONValueConvertible {
   var jsonValue: JSONValue { return ["soundset":soundSet, "preset": preset, "channel": channel] }
 }
 
 extension Instrument: JSONValueInitializable {
+
   convenience init?(_ jsonValue: JSONValue?) {
     guard let dict = ObjectJSONValue(jsonValue),
-      let soundSet: SoundSetType = EmaxSoundSet(dict["soundset"]) ?? SoundSet(dict["soundset"]),
-      let preset = Preset(dict["preset"]),
-      let channel = Channel(dict["channel"])
+          let soundSet: SoundFont = EmaxSoundSet(dict["soundset"]) ?? SoundSet(dict["soundset"]),
+          let preset = Preset(dict["preset"]),
+          let channel = Channel(dict["channel"])
     else { return nil }
     do {
-      try self.init(track: nil, soundSet: soundSet, program: preset.program, bank: preset.bank, channel: channel)
+      try self.init(track: nil,
+                    soundSet: soundSet,
+                    program: preset.program,
+                    bank: preset.bank,
+                    channel: channel)
     } catch {
       return nil
     }
   }
+
 }
 
 // MARK: - Notifications
 extension Instrument: NotificationDispatching {
+
   enum NotificationName: String, LosslessStringConvertible {
     case presetDidChange, soundSetDidChange
     var description: String { return rawValue }
     init?(_ description: String) { self.init(rawValue: description) }
   }
+
 }
 
 extension Notification {
   var oldPresetName: String? { return userInfo?["oldValue"] as? String }
   var newPresetName: String? { return userInfo?["newValue"] as? String }
 }
-
-/**
-Equatable compliance
-
-- parameter lhs: Instrument
-- parameter rhs: Instrument
-
-- returns: Bool
-*/
-func ==(lhs: Instrument, rhs: Instrument) -> Bool { return lhs.node === rhs.node }

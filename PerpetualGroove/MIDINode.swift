@@ -165,7 +165,7 @@ final class MIDINode: SKSpriteNode {
       isHidden = true
     } else if time >= initTime {
       if  state ∋ .PendingRemoval { state.remove(.PendingRemoval); isHidden = false }
-      pendingPosition = path.locationForTime(time)
+      pendingPosition = path.location(for: time)
     }
   }
 
@@ -181,7 +181,7 @@ final class MIDINode: SKSpriteNode {
     state.formSymmetricDifference(.Jogging)
     guard state ∌ .PendingRemoval else { removeFromParent(); return }
     guard state ∌ .Paused else { return }
-    currentSegment = path.segmentForTime(Sequencer.time.barBeatTime) ?? path.initialSegment
+    currentSegment = path.segment(for: Sequencer.time.barBeatTime) ?? path.initialSegment
     moveAction.run()
   }
 
@@ -360,7 +360,7 @@ extension MIDINode {
           let segment = node.currentSegment
           let location = segment.endLocation
           let position = node.position
-          let duration = segment.timeToEndLocationFromPoint(position)
+          let duration = segment.timeToEndLocation(from: position)
           let move = SKAction.move(to: location, duration: duration)
           let callback = SKAction.run({[weak node] in node?.didMove()})
           return SKAction.sequence([move, callback])

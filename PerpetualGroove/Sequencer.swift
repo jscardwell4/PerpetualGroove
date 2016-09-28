@@ -10,17 +10,15 @@ import Foundation
 import AudioToolbox
 import MoonKit
 
-/** Manager for MIDI-related aspects of the application */
+/// Manager for MIDI-related aspects of the application
 final class Sequencer {
 
   // MARK: - Initialization
 
   fileprivate(set) static var initialized = false
 
-  /** 
-   Initializes `soundSets` using the bundled sound font files and creates `auditionInstrument` with the
-   first found
-  */
+  /// Initializes `soundSets` using the bundled sound font files and creates `auditionInstrument` with the
+  /// first found
   static func initialize() {
     guard !initialized else { return }
 
@@ -91,6 +89,15 @@ final class Sequencer {
     var transport: Transport {
       switch self { case .primary(let t): return t; case .auxiliary(let t): return t }
     }
+
+    static func == (lhs: TransportAssignment, rhs: TransportAssignment) -> Bool {
+      switch (lhs, rhs) {
+        case let (.primary(t1),   .primary(t2))   where t1 === t2: return true
+        case let (.auxiliary(t1), .auxiliary(t2)) where t1 === t2: return true
+        default:                                                   return false
+      }
+    }
+
   }
 
   static let primaryTransport: TransportAssignment = .primary(Transport(name: "primary"))
@@ -157,17 +164,11 @@ final class Sequencer {
   static var secondsPerBeat: Double { return transport.clock.secondsPerBeat }
   static var secondsPerTick: Double { return transport.clock.secondsPerTick }
 
-  /** The tempo used by the MIDI clock in beats per minute */
+  /// The tempo used by the MIDI clock in beats per minute
   // TODO: Need to make sure the current tempo is set at the beginning of a new sequence
   static var tempo: Double { get { return transport.tempo } set { setTempo(newValue) } }
   static var beatsPerMinute: UInt = 120 { didSet { tempo = Double(beatsPerMinute) } }
 
-  /**
-  setTempo:automated:
-
-  - parameter tempo: Double
-  - parameter automated: Bool = false
-  */
   static func setTempo(_ tempo: Double, automated: Bool = false) {
     primaryTransport.transport.clock.beatsPerMinute = UInt16(tempo)
     auxiliaryTransport.transport.clock.beatsPerMinute = UInt16(tempo)
@@ -182,12 +183,6 @@ final class Sequencer {
     }
   }
 
-  /**
-  setTimeSignature:automated:
-
-  - parameter signature: TimeSignature
-  - parameter automated: Bool = false
-  */
   static func setTimeSignature(_ signature: TimeSignature, automated: Bool = false) {
     if recording && !automated { sequence?.timeSignature = signature }
   }
@@ -222,19 +217,18 @@ final class Sequencer {
 
   // MARK: - Tracks
 
-  static fileprivate(set) var soundSets: [SoundSetType] = []
+  static fileprivate(set) var soundSets: [SoundFont] = []
 
-  static func soundSetWithURL(_ url: URL) -> SoundSetType? {
+  static func soundSet(withURL url: URL) -> SoundFont? {
     return soundSets.first(where: {$0.url == url})
   }
 
-  static func soundSetWithName(_ name: String) -> SoundSetType? {
+  static func soundSet(withName name: String) -> SoundFont? {
     return soundSets.first(where: {$0.fileName == name})
   }
 
   static fileprivate(set) var auditionInstrument: Instrument!
 
-  /** instrumentWithCurrentSettings */
   static func instrumentWithCurrentSettings() -> Instrument {
     return Instrument(track: nil, instrument: auditionInstrument)
   }
@@ -251,44 +245,22 @@ final class Sequencer {
 
   // MARK: - Transport
 
-  static var playing:          Bool { return transport.playing   }
-  static var paused:           Bool { return transport.paused    }
-  static var jogging:          Bool { return transport.jogging   }
-  static var recording:        Bool { return transport.recording }
+  static var playing:   Bool { return transport.playing   }
+  static var paused:    Bool { return transport.paused    }
+  static var jogging:   Bool { return transport.jogging   }
+  static var recording: Bool { return transport.recording }
 
-  /** beginJog */
-//  static func beginJog() { transport.beginJog() }
-
-  /**
-  jog:
-
-  - parameter revolutions: Float
-  */
-//  static func jog(revolutions: Float) { transport.jog(revolutions) }
-
-  /** endJog */
-//  static func endJog() { transport.endJog() }
-
-  /**
-  jogToTime:
-
-  - parameter time: BarBeatTime
-  */
-//  static func jogToTime(t: BarBeatTime) throws { try transport.jogToTime(t) }
-
-  /** Starts the MIDI clock */
+  /// Starts the MIDI clock
   static func play() { transport.play() }
 
-  /** toggleRecord */
   static func toggleRecord() { transport.toggleRecord() }
 
-  /** pause */
   static func pause() { transport.pause() }
 
-  /** Moves the time back to 0 */
+  /// Moves the time back to 0
   static func reset() { transport.reset() }
 
-  /** Stops the MIDI clock */
+  /// Stops the MIDI clock
   static func stop() { transport.stop() }
 
 }
@@ -314,13 +286,6 @@ extension Sequencer: NotificationDispatching {
 
 }
 
-func == (lhs: Sequencer.TransportAssignment, rhs: Sequencer.TransportAssignment) -> Bool {
-  switch (lhs, rhs) {
-    case let (.primary(t1),   .primary(t2))   where t1 === t2: return true
-    case let (.auxiliary(t1), .auxiliary(t2)) where t1 === t2: return true
-    default:                                                   return false
-  }
-}
 extension Sequencer {
   enum Mode: String { case `default`, loop }
 }

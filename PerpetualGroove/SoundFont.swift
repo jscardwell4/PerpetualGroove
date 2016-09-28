@@ -1,5 +1,5 @@
 //
-//  SoundSetType.swift
+//  SoundFont.swift
 //  PerpetualGroove
 //
 //  Created by Jason Cardwell on 10/19/15.
@@ -10,7 +10,7 @@ import Foundation
 import MoonKit
 import class UIKit.UIImage
 
-protocol SoundSetType: CustomStringConvertible, CustomDebugStringConvertible, JSONValueConvertible, JSONValueInitializable {
+protocol SoundFont: CustomStringConvertible, JSONValueConvertible, JSONValueInitializable {
   var url: URL { get }
   var presets: [SF2File.Preset] { get }
   var displayName: String { get }
@@ -19,10 +19,10 @@ protocol SoundSetType: CustomStringConvertible, CustomDebugStringConvertible, JS
   subscript(idx: Int) -> SF2File.Preset { get }
   subscript(program: Byte, bank: Byte) -> SF2File.Preset { get }
   init(url u: URL) throws
-  func isEqualTo(_ soundSet: SoundSetType) -> Bool
+  func isEqualTo(_ soundSet: SoundFont) -> Bool
 }
 
-extension SoundSetType {
+extension SoundFont {
 
   var jsonValue: JSONValue { return ["url": url.absoluteString, "fileName": fileName] }
 
@@ -45,7 +45,7 @@ extension SoundSetType {
     return self[idx]
   }
 
-  func isEqualTo(_ soundSet: SoundSetType) -> Bool {
+  func isEqualTo(_ soundSet: SoundFont) -> Bool {
     switch ((soundSet.url as NSURL).fileReferenceURL(), (url as NSURL).fileReferenceURL()) {
       case let (url1?, url2?) where url1 == url2: return true
       case (nil, nil): return true
@@ -58,14 +58,7 @@ extension SoundSetType {
   var description: String { return "\(displayName) - \(fileName)" }
 
   var debugDescription: String { var result = ""; dump(self, to: &result); return result }
+
+  static func ==(lhs: Self, rhs: Self) -> Bool { return lhs.url == rhs.url }
 }
 
-/**
-Equatable compliance
-
-- parameter lhs: Instrument.SoundSet
-- parameter rhs: Instrument.SoundSet
-
-- returns: Bool
-*/
-func ==<S:SoundSetType>(lhs: S, rhs: S) -> Bool { return lhs.url == rhs.url }

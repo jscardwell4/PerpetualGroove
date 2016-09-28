@@ -16,11 +16,9 @@ import typealias AudioToolbox.MIDITimeStamp
 
 final class MIDINodePath {
 
-  fileprivate var segments: SortedArray<_Segment> = []
+  fileprivate var segments: SortedArray<BoxedSegment> = []
 
-  let min: CGPoint
-  let max: CGPoint
-
+  let min: CGPoint, max: CGPoint
 
   let startTime: BarBeatTime
   let initialTrajectory: Trajectory
@@ -29,67 +27,38 @@ final class MIDINodePath {
     return Segment(owner: segments[0])
   }
 
-  /**
-   initWithTrajectory:playerSize:time:
-
-   - parameter trajectory: Trajectory
-   - parameter playerSize: CGSize
-   - parameter time: BarBeatTime = .start
-  */
-  init(trajectory: Trajectory, playerSize: CGSize, time: BarBeatTime = BarBeatTime()) {
-
+  init(trajectory: Trajectory, playerSize: CGSize, time: BarBeatTime = BarBeatTime.zero) {
     let offset = MIDINode.texture.size() * 0.375
     max = CGPoint((playerSize - offset).unpack)
     min = CGPoint(offset.unpack)
     startTime = time
     initialTrajectory = trajectory
-    segments.append(_Segment(trajectory: trajectory, time: time, path: self))
+    segments.append(BoxedSegment(trajectory: trajectory, time: time, path: self))
   }
 
-  /**
-   locationForTime:
-
-   - parameter time: NSTimeInterval
-
-    - returns: CGPoint?
-  */
-  func locationForTime(_ time: BarBeatTime) -> CGPoint? { return _segmentForTime(time)?.locationForTime(time) }
+  func location(for time: BarBeatTime) -> CGPoint? { return boxedSegment(for: time)?.location(for: time) }
 
 
-  /**
-   advanceSegment:
-
-   - parameter segment: Segment
-
-    - returns: Segment
-  */
-  fileprivate func advanceSegment(_ segment: _Segment) -> _Segment {
+  fileprivate func advance(segment: BoxedSegment) -> BoxedSegment {
     // Redirect trajectory according to which boundary edge the new location touches
     let v: CGVector
     switch segment.endLocation.unpack {
-    case (min.x, _), (max.x, _):
-      v = CGVector(dx: segment.trajectory.dx * -1, dy: segment.trajectory.dy)
-    case (_, min.y), (_, max.y):
-      v = CGVector(dx: segment.trajectory.dx, dy: segment.trajectory.dy * -1)
-    default:
-      fatalError("next location should contact an edge of the player")
+      case (min.x, _), (max.x, _):
+        v = CGVector(dx: segment.trajectory.dx * -1, dy: segment.trajectory.dy)
+      case (_, min.y), (_, max.y):
+        v = CGVector(dx: segment.trajectory.dx, dy: segment.trajectory.dy * -1)
+      default:
+        fatalError("next location should contact an edge of the player")
     }
 
     let nextTrajectory = Trajectory(vector: v, point: segment.endLocation)
-    let nextSegment = _Segment(trajectory: nextTrajectory, time: segment.endTime, path: self)
+    let nextSegment = BoxedSegment(trajectory: nextTrajectory, time: segment.endTime, path: self)
     segment._successor = nextSegment
     nextSegment._predecessor = segment
     return nextSegment
   }
 
-  /**
-   _segmentForTime:
-
-   - parameter time: BarBeatTime
-
-    - returns: _Segment?
-  */
-  fileprivate func _segmentForTime(_ time: BarBeatTime) -> _Segment? {
+  fileprivate func boxedSegment(for time: BarBeatTime) -> BoxedSegment? {
     guard time >= startTime else { return nil }
 
     if let segmentIndex = segments.index(where: {$0.timeInterval.lowerBound <= time && $0.timeInterval.upperBound >= time})
@@ -103,25 +72,16 @@ final class MIDINodePath {
                + "a matching segment should have been found")
     }
 
-    while !segment.timeInterval.contains(time) { segment = advanceSegment(segment); segments.append(segment) }
+    while !segment.timeInterval.contains(time) { segment = advance(segment: segment); segments.append(segment) }
 
-//    logDebug("time = \(time)\nresult = \(currentSegment)")
-    
     guard segment.timeInterval.contains(time) else {
       fatalError("segment to return does not contain time specified")
     }
     return segment
   }
 
-  /**
-   segmentForTime:
-
-   - parameter time: BarBeatTime
-
-    - returns: Segment?
-  */
-  func segmentForTime(_ time: BarBeatTime) -> Segment?  {
-    guard let segment = _segmentForTime(time) else { return nil }
+  func segment(for time: BarBeatTime) -> Segment?  {
+    guard let segment = boxedSegment(for: time) else { return nil }
     return Segment(owner: segment)
   }
 }
@@ -149,7 +109,8 @@ extension MIDINodePath: CustomStringConvertible, CustomDebugStringConvertible {
 }
 
 struct Segment: Equatable, Comparable, CustomStringConvertible {
-  fileprivate let owner: _Segment
+
+  fileprivate let owner: BoxedSegment
   var trajectory: Trajectory { return owner.trajectory }
 
   var timeInterval: CountableRange<BarBeatTime> { return owner.timeInterval }
@@ -169,12 +130,10 @@ struct Segment: Equatable, Comparable, CustomStringConvertible {
 
   var description: String { return owner.description }
 
-  func locationForTime(_ time: BarBeatTime) -> CGPoint? {
-    return owner.locationForTime(time)
-  }
+  func location(for time: BarBeatTime) -> CGPoint? { return owner.location(for: time) }
 
-  func timeToEndLocationFromPoint(_ point: CGPoint) -> TimeInterval {
-    return owner.timeToEndLocationFromPoint(point)
+  func timeToEndLocation(from point: CGPoint) -> TimeInterval {
+    return owner.timeToEndLocation(from: point)
   }
 
   var predecessor: Segment? {
@@ -184,13 +143,12 @@ struct Segment: Equatable, Comparable, CustomStringConvertible {
 
   var successor: Segment { return Segment(owner: owner.successor()) }
 
+  static func ==(lhs: Segment, rhs: Segment) -> Bool { return lhs.owner == rhs.owner }
+  static func <(lhs: Segment, rhs: Segment) -> Bool { return lhs.owner < rhs.owner }
 }
 
-func ==(lhs: Segment, rhs: Segment) -> Bool { return lhs.owner == rhs.owner }
 
-func <(lhs: Segment, rhs: Segment) -> Bool { return lhs.owner < rhs.owner }
-
-private final class _Segment: Equatable, Comparable, CustomStringConvertible {
+private final class BoxedSegment: Equatable, Comparable, CustomStringConvertible {
   unowned let path: MIDINodePath
 
   let trajectory: Trajectory
@@ -210,23 +168,16 @@ private final class _Segment: Equatable, Comparable, CustomStringConvertible {
   let endLocation: CGPoint
   let length: CGFloat
 
-  weak var _predecessor: _Segment?
-  weak var _successor: _Segment?
+  weak var _predecessor: BoxedSegment?
+  weak var _successor: BoxedSegment?
 
-  func predecessor() -> _Segment? { return _predecessor }
-  func successor() -> _Segment {
+  func predecessor() -> BoxedSegment? { return _predecessor }
+  func successor() -> BoxedSegment {
     guard _successor == nil else { return _successor! }
-    return path.advanceSegment(self)
+    return path.advance(segment: self)
   }
 
-  /**
-   locationForTime:
-
-   - parameter time: NSTimeInterval
-
-   - returns: CGPoint?
-   */
-  func locationForTime(_ time: BarBeatTime) -> CGPoint? {
+  func location(for time: BarBeatTime) -> CGPoint? {
     guard timeInterval.lowerBound <= time && timeInterval.upperBound >= time else { return nil }
     let 𝝙ticks = CGFloat(time.ticks - startTime.ticks)
     let ratio = 𝝙ticks / CGFloat(tickInterval.count)
@@ -236,25 +187,10 @@ private final class _Segment: Equatable, Comparable, CustomStringConvertible {
     return result
   }
 
-  /**
-   timeToEndLocationFromPoint:
-
-   - parameter point: CGPoint
-
-   - returns: NSTimeInterval
-   */
-  func timeToEndLocationFromPoint(_ point: CGPoint) -> TimeInterval {
-    return trajectory.timeFromPoint(point, toPoint: endLocation)
+  func timeToEndLocation(from point: CGPoint) -> TimeInterval {
+    return trajectory.time(fromPoint: point, toPoint: endLocation)
   }
 
-  /**
-   initWithTrajectory:time:path:
-
-   - parameter trajectory: Trajectory
-   - parameter time: BarBeatTime
-   - parameter min: CGPoint
-   - parameter max: CGPoint
-   */
   init(trajectory: Trajectory, time: BarBeatTime, path: MIDINodePath) {
     self.trajectory = trajectory
     self.path = path
@@ -262,12 +198,12 @@ private final class _Segment: Equatable, Comparable, CustomStringConvertible {
 
     switch trajectory.direction.vertical {
       case .none: endY = trajectory.p.y
-      case .Up:   endY = path.max.y
-      case .Down: endY = path.min.y
+      case .up:   endY = path.max.y
+      case .down: endY = path.min.y
     }
 
     let pY: CGPoint? = {
-      let p = trajectory.pointAtY(endY)
+      let p = trajectory.point(atY: endY)
       guard (path.min.x ... path.max.x).contains(p.x) else { return nil }
       return p
     }()
@@ -276,12 +212,12 @@ private final class _Segment: Equatable, Comparable, CustomStringConvertible {
 
     switch trajectory.direction.horizontal {
       case .none:  endX = trajectory.p.x
-      case .Left:  endX = path.min.x
-      case .Right: endX = path.max.x
+      case .left:  endX = path.min.x
+      case .right: endX = path.max.x
     }
 
     let pX: CGPoint? = {
-      let p = trajectory.pointAtX(endX)
+      let p = trajectory.point(atX: endX)
       guard (path.min.y ... path.max.y).contains(p.y) else { return nil }
       return p
     }()
@@ -296,7 +232,7 @@ private final class _Segment: Equatable, Comparable, CustomStringConvertible {
 
     length = trajectory.p.distanceTo(endLocation)
 
-    let 𝝙t = trajectory.timeFromPoint(trajectory.p, toPoint: endLocation)
+    let 𝝙t = trajectory.time(fromPoint: trajectory.p, toPoint: endLocation)
     let endTime = BarBeatTime(seconds: time.seconds + 𝝙t)
 
     timeInterval = time ..< endTime
@@ -315,13 +251,8 @@ private final class _Segment: Equatable, Comparable, CustomStringConvertible {
       ) + "\n}"
   }
 
+  static func ==(lhs: BoxedSegment, rhs: BoxedSegment) -> Bool { return lhs.startTime == rhs.startTime }
+  static func <(lhs: BoxedSegment, rhs: BoxedSegment) -> Bool { return lhs.startTime < rhs.startTime }
 }
 
 
-private func ==(lhs: _Segment, rhs: _Segment) -> Bool {
-  return lhs.startTime == rhs.startTime
-}
-
-private func <(lhs: _Segment, rhs: _Segment) -> Bool {
-  return lhs.startTime < rhs.startTime
-}

@@ -24,13 +24,13 @@ final class RotateTool: NodeAdjustmentTool, SecondaryControllerContentDelegate {
   fileprivate func didRotate(_ rotation: CGFloat) {
     guard let node = node , node.initialTrajectory.angle != rotation else { return }
     let oldTrajectory = node.initialTrajectory
-    let newTrajectory = node.initialTrajectory.rotateTo(rotation)
+    let newTrajectory = node.initialTrajectory.rotatedTo(angle: rotation)
     MIDIPlayer.undoManager.registerUndo(withTarget: node) {
       node in
       node.initialTrajectory = oldTrajectory
       MIDIPlayer.undoManager.registerUndo(withTarget: node) { $0.initialTrajectory = newTrajectory }
     }
-    adjustNode{ node.initialTrajectory.rotateToInPlace(rotation) }
+    adjustNode{ node.initialTrajectory.formRotatedTo(angle: rotation) }
   }
 
   /** didSelectNode */

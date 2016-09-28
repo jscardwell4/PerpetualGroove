@@ -134,7 +134,7 @@ final class BarBeatTimeLabel: UIView {
     }
   }
 
-  fileprivate var currentTime: BarBeatTime = BarBeatTime() {
+  fileprivate var currentTime: BarBeatTime = BarBeatTime.zero {
     didSet {
       guard currentTime != oldValue else { return }
 //      logSyncDebug("currentTime = \(currentTime.debugDescription)")

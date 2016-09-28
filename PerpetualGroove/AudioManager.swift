@@ -26,12 +26,6 @@ final class AudioManager {
 
   static fileprivate(set) var metronome: Metronome!
 
-  /**
-  attachNode:forInstrument:
-
-  - parameter node: AVAudioNode
-  - parameter instrument: Instrument
-  */
   static func attachNode(_ node: AVAudioNode, forInstrument instrument: Instrument) {
     guard initialized else { fatalError("attempt to attach node before engine initialized") }
     guard !instruments.contains(instrument) && node.engine == nil else { return }
@@ -40,7 +34,6 @@ final class AudioManager {
     instruments.append(instrument)
   }
 
-  /** initialize */
   static func initialize() {
     guard !initialized else { return }
     let outputFormat = engine.outputNode.outputFormat(forBus: 0)
@@ -60,7 +53,6 @@ final class AudioManager {
     }
   }
 
-  /** configureAudioSession */
   fileprivate static func configureAudioSession() throws {
     let audioSession = AVAudioSession.sharedInstance()
     try audioSession.setCategory(AVAudioSessionCategoryPlayback)
@@ -69,17 +61,13 @@ final class AudioManager {
 
 
 
-  /** start */
   static func start() throws { logDebug("starting audio…"); try engine.start() }
 
-  /** stop */
   static func stop() throws { logDebug("stopping audio…"); engine.stop() }
 
   static var running: Bool { return engine.isRunning }
 
-  /** reset */
   static func reset() { logDebug("resetting audio…"); engine.reset() }
 
-  /** pause */
   static func pause() { logDebug("pausing audio…"); engine.pause() }
 }

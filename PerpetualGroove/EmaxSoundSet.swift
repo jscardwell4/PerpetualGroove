@@ -10,7 +10,7 @@ import Foundation
 import MoonKit
 import class UIKit.UIImage
 
-struct EmaxSoundSet: SoundSetType {
+struct EmaxSoundSet: SoundFont {
   enum Volume: Int {
     case brassAndWoodwinds  = 1
     case keyboardsAndSynths = 2
@@ -22,7 +22,7 @@ struct EmaxSoundSet: SoundSetType {
     var fileName: String { return "Emax Volume \(rawValue)" }
 
     var url: URL {
-      // ???: Why did we need to us the reference URL?
+      // ???: Why did we need to use the reference URL?
       return Bundle.main.url(forResource: fileName, withExtension: "sf2")!
     }
 
@@ -48,11 +48,6 @@ struct EmaxSoundSet: SoundSetType {
       }
     }
 
-    /**
-    initWithUrl:
-
-    - parameter url: NSURL
-    */
     init?(url: URL) {
       guard let name = (url as NSURL).filePathURL?.deletingPathExtension().lastPathComponent else { return nil }
       switch name {
@@ -74,21 +69,11 @@ struct EmaxSoundSet: SoundSetType {
   var fileName: String { return volume.fileName }
   var image: UIImage { return volume.image }
 
-  /**
-  init:
-
-  - parameter vol: Volume
-  */
   init(_ vol: Volume) {
     volume = vol
-    presets = try! SF2File(file: vol.url).presets.sorted()
+    presets = try! SF2File(fileURL: vol.url).presets.sorted()
   }
 
-  /**
-  init:
-
-  - parameter u: NSURL
-  */
   init(url u: URL) throws {
     guard let vol = Volume(url: u) else { throw Error.InvalidURL }
     self.init(vol)

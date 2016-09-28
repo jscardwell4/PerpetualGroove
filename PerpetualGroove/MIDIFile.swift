@@ -112,7 +112,7 @@ struct MIDIFile: ByteArrayConvertible {
     var bytes = header.bytes
     var trackData: [[Byte]] = []
     for track in tracks {
-      var previousTime: BarBeatTime = BarBeatTime()
+      var previousTime: BarBeatTime = BarBeatTime.zero
       var trackBytes: [Byte] = []
       for event in track.events {
         let eventTime = event.time

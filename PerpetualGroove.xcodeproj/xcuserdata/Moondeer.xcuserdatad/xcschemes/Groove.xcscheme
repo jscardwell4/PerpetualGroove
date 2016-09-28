@@ -14,34 +14,6 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "C2358FEB19C795AA00920F8D"
-               BuildableName = "Lumberjack.framework"
-               BlueprintName = "Lumberjack"
-               ReferencedContainer = "container:../MSRemote/Remote/MoonKit/Lumberjack/Lumberjack.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "C296499A1B010E39000C2D4A"
-               BuildableName = "Chameleon.framework"
-               BlueprintName = "Chameleon"
-               ReferencedContainer = "container:Frameworks/Chameleon/Chameleon.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "C2358F1519C78D6D00920F8D"
                BuildableName = "MoonKit.framework"
                BlueprintName = "MoonKit"
@@ -132,6 +104,11 @@
                BlueprintName = "MIDINodePathTests"
                ReferencedContainer = "container:PerpetualGroove.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "MIDINodePathTests/testSegmentGenerationPerformance()">
+               </Test>
+            </SkippedTests>
          </TestableReference>
          <TestableReference
             skipped = "NO">
@@ -165,9 +142,19 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "C25BF5B11C8CA74700F6BF5D"
-               BuildableName = "MIDIPlayerUndoTests.xctest"
-               BlueprintName = "MIDIPlayerUndoTests"
+               BlueprintIdentifier = "C2FAAC7A1D99C7620089D1B0"
+               BuildableName = "SoundFontFileTests.xctest"
+               BlueprintName = "SoundFontFileTests"
+               ReferencedContainer = "container:PerpetualGroove.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "C2FAAC8A1D99C79D0089D1B0"
+               BuildableName = "MIDIFileTests.xctest"
+               BlueprintName = "MIDIFileTests"
                ReferencedContainer = "container:PerpetualGroove.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -181,6 +168,23 @@
             ReferencedContainer = "container:PerpetualGroove.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
+      <EnvironmentVariables>
+         <EnvironmentVariable
+            key = "XCODE_COLORS"
+            value = "YES"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "MOONKIT_LOG_DIR"
+            value = "/Users/Moondeer/Projects/PerpetualGroove/Logs"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "GROOVE_TEST"
+            value = "YES"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+      </EnvironmentVariables>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>

@@ -483,7 +483,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
       throw Error.InvalidSoundSetURL
     }
 
-    let soundSet: SoundSetType
+    let soundSet: SoundFont
     do {
       soundSet = try EmaxSoundSet(url: url)
     } catch {
