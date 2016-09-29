@@ -71,7 +71,7 @@ struct EmaxSoundSet: SoundFont {
 
   init(_ vol: Volume) {
     volume = vol
-    presets = try! SF2File(fileURL: vol.url).presets.sorted()
+    presets = (try? SF2File(fileURL: vol.url).presets.sorted()) ?? []
   }
 
   init(url u: URL) throws {

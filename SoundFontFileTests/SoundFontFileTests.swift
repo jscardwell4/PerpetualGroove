@@ -46,68 +46,68 @@ final class SoundFontFileTests: XCTestCase {
       return
     }
 
-    guard case .version(.ifil, let ifilChunk) = chunk.ifil else {
+    guard case .version(let major, let minor) = chunk.ifil.data else {
       XCTFail("Unexpected value for 'chunk.ifil'")
       return
     }
 
-    expect(ifilChunk.major) == 512
-    expect(ifilChunk.minor) == 256
+    expect(major) == 512
+    expect(minor) == 256
 
-    guard case .text(.isng, let isngChunk) = chunk.isng else {
+    guard case .text(let isngChunk) = chunk.isng.data else {
       XCTFail("Unexpected value for 'chunk.isng'")
       return
     }
 
-    expect(isngChunk.text) == "SF SW Engine"
+    expect(isngChunk) == "SF SW Engine"
 
-    guard case .text(.inam, let inamChunk) = chunk.inam else {
+    guard case .text(let inamChunk) = chunk.inam.data else {
       XCTFail("Unexpected value for 'chunk.inam'")
       return
     }
 
-    expect(inamChunk.text) == "Emax Volume 1 Brass & Woodwinds"
+    expect(inamChunk) == "Emax Volume 1 Brass & Woodwinds"
 
-    guard chunk.icrd != nil, case .text(.icrd, let icrdChunk) = chunk.icrd! else {
+    guard case .text(let icrdChunk)? = chunk.icrd?.data else {
       XCTFail("Unexpected value for 'chunk.icrd'")
       return
     }
 
-    expect(icrdChunk.text).to(beEmpty())
+    expect(icrdChunk).to(beEmpty())
 
-    guard chunk.ieng != nil, case .text(.ieng, let iengChunk) = chunk.ieng! else {
+    guard case .text(let iengChunk)? = chunk.ieng?.data else {
       XCTFail("Unexpected value for 'chunk.ieng'")
       return
     }
 
-    expect(iengChunk.text) == "www.DigitalSound Factory.com"
+    expect(iengChunk) == "www.DigitalSound Factory.com"
 
-    guard chunk.iprd != nil, case .text(.iprd, let iprdChunk) = chunk.iprd! else {
+    guard case .text(let iprdChunk)? = chunk.iprd?.data else {
       XCTFail("Unexpected value for 'chunk.iprd'")
       return
     }
 
-    expect(iprdChunk.text).to(beEmpty())
+    expect(iprdChunk).to(beEmpty())
 
-    guard chunk.icop != nil, case .text(.icop, let icopChunk) = chunk.icop! else {
+    guard case .text(let icopChunk)? = chunk.icop?.data else {
       XCTFail("Unexpected value for 'chunk.icop'")
       return
     }
 
-    expect(icopChunk.text) == "DigitalSoundFactory/E-mu Systems 2007"
+    expect(icopChunk) == "DigitalSoundFactory/E-mu Systems 2007"
 
-    guard chunk.icmt != nil, case .text(.icmt, let icmtChunk) = chunk.icmt! else {
+    guard case .text(let icmtChunk)? = chunk.icmt?.data else {
       XCTFail("Unexpected value for 'chunk.icmt'")
       return
     }
 
-    expect(icmtChunk.text).to(beEmpty())
+    expect(icmtChunk).to(beEmpty())
 
-    guard chunk.isft != nil, case .text(.isft, let isftChunk) = chunk.isft! else {
+    guard case .text(let isftChunk)? = chunk.isft?.data else {
       XCTFail("Unexpected value for 'chunk.isft'")
       return
     }
-    expect(isftChunk.text) == "SFEDT v1.29:SFEDT v1.29:"
+    expect(isftChunk) == "SFEDT v1.29:SFEDT v1.29:"
 
   }
 
@@ -116,15 +116,81 @@ final class SoundFontFileTests: XCTestCase {
       XCTFail("Failed to initialize chunk using test data")
       return
     }
-    expect(chunk.smpl).to(haveCount(13609232))
+
+    guard case .data(let smplChunk)? = chunk.smpl?.data else {
+      XCTFail("Unexpected value for 'chunk.pmod'")
+      return
+    }
+    expect(smplChunk).to(haveCount(13609232))
   }
 
   func testPDTAChunk() {
-    XCTFail("\(#function) not yet implemented")
+    guard let chunk = try? SF2File.PDTAChunk(data: SoundFontFileTests.testPDTAData) else {
+      XCTFail("Failed to initialize chunk using test data")
+      return
+    }
+
+    guard case .presets(let phdrChunk) = chunk.phdr.data else {
+      XCTFail("Unexpected value for 'chunk.phdr'")
+      return
+    }
+    expect(phdrChunk).to(haveCount(171))
+
+    guard case .data(let pbagChunk) = chunk.pbag.data else {
+      XCTFail("Unexpected value for 'chunk.pbag'")
+      return
+    }
+    expect(pbagChunk).to(haveCount(1364))
+
+    guard case .data(let pmodChunk) = chunk.pmod.data else {
+      XCTFail("Unexpected value for 'chunk.pmod'")
+      return
+    }
+    expect(pmodChunk).to(haveCount(15220))
+
+    guard case .data(let pgenChunk) = chunk.pgen.data else {
+      XCTFail("Unexpected value for 'chunk.pgen'")
+      return
+    }
+    expect(pgenChunk).to(haveCount(2720))
+
+    guard case .data(let instChunk) = chunk.inst.data else {
+      XCTFail("Unexpected value for 'chunk.inst'")
+      return
+    }
+    expect(instChunk).to(haveCount(3784))
+
+    guard case .data(let ibagChunk) = chunk.ibag.data else {
+      XCTFail("Unexpected value for 'chunk.ibag'")
+      return
+    }
+    expect(ibagChunk).to(haveCount(8220))
+
+    guard case .data(let imodChunk) = chunk.imod.data else {
+      XCTFail("Unexpected value for 'chunk.imod'")
+      return
+    }
+    expect(imodChunk).to(haveCount(10))
+
+    guard case .data(let igenChunk) = chunk.igen.data else {
+      XCTFail("Unexpected value for 'chunk.igen'")
+      return
+    }
+    expect(igenChunk).to(haveCount(81568))
+
+    guard case .data(let shdrChunk) = chunk.shdr.data else {
+      XCTFail("Unexpected value for 'chunk.shdr'")
+      return
+    }
+    expect(shdrChunk).to(haveCount(11178))
+
   }
 
   func testSF2File() {
-    XCTFail("\(#function) not yet implemented")
+    guard (try? SF2File(fileURL: SoundFontFileTests.testURL)) != nil else {
+      XCTFail("Failed to initialize file structure from test url")
+      return
+    }
   }
   
 }
