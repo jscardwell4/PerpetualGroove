@@ -124,6 +124,26 @@ final class SoundFontFileTests: XCTestCase {
     expect(smplChunk).to(haveCount(13609232))
   }
 
+  func testLazyPDTAChunk() {
+    guard let chunk = try? SF2File.LazyPDTAChunk(data: SoundFontFileTests.testPDTAData,
+                                                 url: SoundFontFileTests.testURL)
+      else
+    {
+      XCTFail("Failed to initialize chunk using test data")
+      return
+    }
+    expect(chunk.phdr.range.count) == 6536
+    expect(chunk.pbag.range.count) == 1364
+    expect(chunk.pmod.range.count) == 15220
+    expect(chunk.pgen.range.count) == 2720
+    expect(chunk.inst.range.count) == 3784
+    expect(chunk.ibag.range.count) == 8220
+    expect(chunk.imod.range.count) == 10
+    expect(chunk.igen.range.count) == 81568
+    expect(chunk.shdr.range.count) == 11178
+    
+  }
+
   func testPDTAChunk() {
     guard let chunk = try? SF2File.PDTAChunk(data: SoundFontFileTests.testPDTAData) else {
       XCTFail("Failed to initialize chunk using test data")
@@ -184,6 +204,14 @@ final class SoundFontFileTests: XCTestCase {
     }
     expect(shdrChunk).to(haveCount(11178))
 
+  }
+
+  func testPresets() {
+    guard let presets = try? SF2File.presets(from: SoundFontFileTests.testURL) else {
+      XCTFail("Failed to get presets from url")
+      return
+    }
+    print(presets)
   }
 
   func testSF2File() {

@@ -11,6 +11,9 @@ import MoonKit
 import class UIKit.UIImage
 
 struct EmaxSoundSet: SoundFont {
+
+  enum Error: String, Swift.Error { case InvalidURL }
+
   enum Volume: Int {
     case brassAndWoodwinds  = 1
     case keyboardsAndSynths = 2
@@ -18,69 +21,47 @@ struct EmaxSoundSet: SoundFont {
     case worldInstruments   = 4
     case drumsAndPercussion = 5
     case orchestral         = 6
-
-    var fileName: String { return "Emax Volume \(rawValue)" }
-
-    var url: URL {
-      // ???: Why did we need to use the reference URL?
-      return Bundle.main.url(forResource: fileName, withExtension: "sf2")!
-    }
-
-    var image: UIImage {
-      switch self {
-        case .brassAndWoodwinds:  return UIImage(named: "brass")!
-        case .keyboardsAndSynths: return UIImage(named: "piano_keyboard")!
-        case .guitarsAndBasses:   return UIImage(named: "guitar_bass")!
-        case .worldInstruments:   return UIImage(named: "world")!
-        case .drumsAndPercussion: return UIImage(named: "percussion")!
-        case .orchestral:         return UIImage(named: "orchestral")!
-      }
-    }
-
-    var displayName: String {
-      switch self {
-        case .brassAndWoodwinds:  return "Brass & Woodwinds"
-        case .keyboardsAndSynths: return "Keyboards & Synths"
-        case .guitarsAndBasses:   return "Guitars & Basses"
-        case .worldInstruments:   return "World Instruments"
-        case .drumsAndPercussion: return "Drums & Percussion"
-        case .orchestral:         return "Orchestral"
-      }
-    }
-
-    init?(url: URL) {
-      guard let name = (url as NSURL).filePathURL?.deletingPathExtension().lastPathComponent else { return nil }
-      switch name {
-        case Volume.brassAndWoodwinds.fileName:  self = .brassAndWoodwinds
-        case Volume.keyboardsAndSynths.fileName: self = .keyboardsAndSynths
-        case Volume.guitarsAndBasses.fileName:   self = .guitarsAndBasses
-        case Volume.worldInstruments.fileName:   self = .worldInstruments
-        case Volume.drumsAndPercussion.fileName: self = .drumsAndPercussion
-        case Volume.orchestral.fileName:         self = .orchestral
-        default:                                 return nil
-      }
-    }
   }
 
-  var url: URL { return volume.url }
+  var url: URL { return Bundle.main.url(forResource: fileName, withExtension: "sf2")! }
+
   let volume: Volume
-  let presets: [SF2File.Preset]
-  var displayName: String { return volume.displayName }
-  var fileName: String { return volume.fileName }
-  var image: UIImage { return volume.image }
 
-  init(_ vol: Volume) {
-    volume = vol
-    presets = (try? SF2File(fileURL: vol.url).presets.sorted()) ?? []
+  var presets: [SF2File.Preset] { return (try? SF2File.presets(from: url)) ?? [] }
+
+  var displayName: String {
+    switch volume {
+      case .brassAndWoodwinds:  return "Brass & Woodwinds"
+      case .keyboardsAndSynths: return "Keyboards & Synths"
+      case .guitarsAndBasses:   return "Guitars & Basses"
+      case .worldInstruments:   return "World Instruments"
+      case .drumsAndPercussion: return "Drums & Percussion"
+      case .orchestral:         return "Orchestral"
+    }
   }
 
-  init(url u: URL) throws {
-    guard let vol = Volume(url: u) else { throw Error.InvalidURL }
-    self.init(vol)
+  var fileName: String { return "Emax Volume \(volume.rawValue)" }
+
+  var image: UIImage {
+    switch volume {
+      case .brassAndWoodwinds:  return #imageLiteral(resourceName: "brass")
+      case .keyboardsAndSynths: return #imageLiteral(resourceName: "piano_keyboard")
+      case .guitarsAndBasses:   return #imageLiteral(resourceName: "guitar_bass")
+      case .worldInstruments:   return #imageLiteral(resourceName: "world")
+      case .drumsAndPercussion: return #imageLiteral(resourceName: "percussion")
+      case .orchestral:         return #imageLiteral(resourceName: "orchestral")
+    }
   }
 
-}
+  init(_ volume: Volume) { self.volume = volume }
 
-extension EmaxSoundSet {
-  enum Error: String, Swift.Error { case InvalidURL }
+  init(url: URL) throws {
+    guard
+      let volumeNumber = (url.path ~=> ~/"Emax Volume ([1-6])")?.1,
+      let rawVolume = Int(volumeNumber),
+      let volume = Volume(rawValue: rawVolume)
+      else { throw Error.InvalidURL }
+    self.volume = volume
+  }
+
 }

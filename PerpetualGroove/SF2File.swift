@@ -24,27 +24,51 @@ fileprivate func _remainingCount(_ data: Data.SubSequence) -> (Int) -> Int {
 }
 
 /// Parses the data from a SoundFont file, which consists of three chunks: info, sdta, and pdta
-struct SF2File {
+struct SF2File: CustomStringConvertible {
 
   let url: URL
 
-  fileprivate let info: INFOChunk
-  fileprivate let sdta: SDTAChunk
-  fileprivate let pdta: PDTAChunk
+  let infoRange: Range<Int>
+  let sdtaRange: Range<Int>
+  let pdtaRange: Range<Int>
+
+
+  var description: String { return "\(url.path)" }
+
+  var presets: [Preset] {
+    guard let phdr = try? lazyPDTA.phdr.dataChunk(), case let .presets(headers) = phdr.data else { return [] }
+    return headers
+  }
+
+  let info: INFOChunk
+
+  private let lazySDTA: LazySDTAChunk
+  private let lazyPDTA: LazyPDTAChunk
+
+
+  func sdta() throws -> SDTAChunk {
+    let data = try Data(contentsOf: url, options: [.uncached, .alwaysMapped])
+    return try SDTAChunk(data: data[sdtaRange])
+  }
+
+  func pdta() throws -> PDTAChunk {
+    let data = try Data(contentsOf: url, options: [.uncached, .alwaysMapped])
+    return try PDTAChunk(data: data[pdtaRange])
+  }
 
   /// Initializer that takes a file url
   init(fileURL url: URL) throws {
 
     // Grab the url and data
-    guard let data = try? Data(contentsOf: url) else { throw Error.ReadFailure }
+    let data = try Data(contentsOf: url, options: [.uncached, .alwaysMapped])
     self.url = url
 
     let remainingCount = _remainingCount(data[data.startIndex ..< data.endIndex])
 
     // Check the riff header
     try _assert(   data.count > 8
-                && String(data[0..<4]).lowercased() == "riff"
-                && remainingCount(_chunkSize(data[4..<8]) + 8) == 0)
+      && String(data[0..<4]).lowercased() == "riff"
+      && remainingCount(_chunkSize(data[4..<8]) + 8) == 0)
 
     // Check the bytes up to info size and get the info size
     try _assert(String(data[8..<16]) == "sfbkLIST")
@@ -55,7 +79,7 @@ struct SF2File {
     try _assert(remainingCount(infoSize + 20) >= 0)
 
     // Note info chunk's range
-    let infoRange = 20 +--> infoSize
+    infoRange = 20 +--> infoSize
 
     var i = infoRange.upperBound
 
@@ -74,7 +98,7 @@ struct SF2File {
 
 
     // Note sdta chunk's range
-    let sdtaRange = i +--> sdtaSize
+    sdtaRange = i +--> sdtaSize
 
     i = sdtaRange.upperBound // Move i passed th sdta chunk
 
@@ -92,36 +116,22 @@ struct SF2File {
     try _assert(remainingCount(i + pdtaSize) >= 0)
 
     // Note pdata chunk's range
-    let pdtaRange = i +--> pdtaSize
+    pdtaRange = i +--> pdtaSize
 
-    // Parse the chunks
     info = try INFOChunk(data: data[infoRange])
-    sdta = try SDTAChunk(data: data[sdtaRange])
-    pdta = try PDTAChunk(data: data[pdtaRange])
-    logVerbose(description)
+
+    lazySDTA = try LazySDTAChunk(data: data[sdtaRange], url: url)
+    lazyPDTA = try LazyPDTAChunk(data: data[pdtaRange], url: url)
   }
 
-  var bytes: [Byte] {
-    var result: [Byte] = "RIFF".bytes
-
-    let listBytes = "LIST".bytes
-
-    let infoBytes = info.bytes
-    result += listBytes
-    result += Byte4(infoBytes.count).bytes
-    result += infoBytes
-
-    let sdtaBytes = sdta.bytes
-    result += listBytes
-    result += Byte4(sdtaBytes.count).bytes
-    result += sdtaBytes
-
-    let pdtaBytes = pdta.bytes
-    result += listBytes
-    result += Byte4(pdtaBytes.count).bytes
-    result += pdtaBytes
-
-    return result
+  static func presets(from url: URL) throws -> [Preset] {
+    let data = try Data(contentsOf: url, options: [.uncached, .alwaysMapped])
+    guard let r = data.range(of: Data("pdtaphdr".bytes)) else { return [] }
+    let s = _chunkSize(data[r.upperBound +--> 4])
+    try _assert(s % 38 == 0)
+    let dataʹ = data[(r.upperBound + 4) +--> s]
+    return try stride(from: dataʹ.startIndex,
+                      to: dataʹ.endIndex, by: 38).flatMap({try Preset(data: dataʹ[$0 +--> 38])}).sorted()
   }
 
 }
@@ -131,14 +141,33 @@ struct SF2File {
 extension SF2File {
 
   enum Error: String, Swift.Error, CustomStringConvertible {
-    case ReadFailure             = "Failed to obtain data from the file specified"
-    case StructurallyUnsound     = "Invalid chunk detected"
-    case PresetHeaderInvalid     = "Invalid preset header detected in PDTA chunk"
-    case ParseError              = "Failed to parse chunk"
+    case StructurallyUnsound = "Invalid chunk detected"
   }
 
 }
 
+extension SF2File {
+
+  fileprivate struct Index {
+    let url: URL
+    let range: Range<Int>
+    let subchunks: OrderedDictionary<ChunkIdentifier, Range<Int>>
+
+    func data() throws -> Data {
+      let data = try Data(contentsOf: url, options: [.uncached, .alwaysMapped])
+      return data.subdata(in: range)
+    }
+
+    func subchunkData(identifier: ChunkIdentifier) throws -> Data? {
+      guard let range = subchunks[identifier] else { return nil }
+      let data = try Data(contentsOf: url, options: [.uncached, .alwaysMapped])
+      return data.subdata(in: range)
+    }
+
+  }
+
+
+}
 
 // MARK: -
 
@@ -161,10 +190,22 @@ extension SF2File {
             let name = String(dict["name"]),
             let program = Byte(dict["program"]),
             let bank = Byte(dict["bank"]) else { return nil }
-      self.name = name
-      self.program = program
-      self.bank = bank
+      self = Preset(name: name, program: program, bank: bank)
     }
+
+    /// Initialize from a preset header subchunk from a pdta's phdr subchunk.
+    init?(data: Data.SubSequence) throws {
+      try _assert(data.count == 38)
+
+      let name = String(data[data.startIndex ..< (data.index(of: Byte(0)) ?? data.startIndex + 20)])
+      guard !(name == "EOP" || name.isEmpty) else { return nil }
+
+      self.name = name
+
+      program = Byte(Byte2(data[data.startIndex + 20 ... data.startIndex + 21]).bigEndian)
+      bank = Byte(Byte2(data[data.startIndex + 22 ... data.startIndex + 23]).bigEndian)
+    }
+
 
     static func ==(lhs: Preset, rhs: Preset) -> Bool {
       return lhs.bank == rhs.bank && lhs.program == rhs.program
@@ -176,26 +217,6 @@ extension SF2File {
 
   }
 
-  var presets: [Preset] {
-    guard case let .presets(headers) = pdta.phdr.data else { return [] }
-    return headers.map { Preset(name: $0.name, program: Byte($0.preset), bank: Byte($0.bank))}
-  }
-
-}
-
-// MARK: - 
-
-extension SF2File: CustomStringConvertible {
-
-  var description: String {
-    return [
-      "url: '\(url.path)'",
-      "info:\n\(info.description.indentedBy(1, preserveFirst: false, useTabs: true))",
-      "sdta:\n\(sdta.description.indentedBy(1, preserveFirst: false, useTabs: true))",
-      "pdta:\n\(pdta.description.indentedBy(1, preserveFirst: false, useTabs: true))"
-      ].joined(separator: "\n")
-  }
-
 }
 
 // MARK: -
@@ -204,17 +225,17 @@ extension SF2File {
 
   /// Parses the info chunk of the file
   struct INFOChunk: CustomStringConvertible {
-    let ifil: SubChunk  // file version
-    let isng: SubChunk  // sound engine, less than 257 bytes, missing assume 'EMU8000'
-    let inam: SubChunk  // bank name, less than 257 bytes, ignore if missing
-    let irom: SubChunk? // ROM, less than 257 bytes, ignore if missing
-    let iver: SubChunk? // ROM version
-    let icrd: SubChunk? // creation date, less than 257 bytes, ignore if missing
-    let ieng: SubChunk? // sound designers, less than 257 bytes, ignore if missing
-    let iprd: SubChunk? // intended product, less than 257 bytes, ignore if missing
-    let icop: SubChunk? // copywrite, less than 257 bytes, ignore if missing
-    let icmt: SubChunk? // comment, less than 65,537 bytes, ignore if missing
-    let isft: SubChunk? // creation tools, less than 257 bytes, ignore if missing
+    let ifil: SubChunk  /// File version
+    let isng: SubChunk  /// Sound engine, less than 257 bytes, missing assume 'EMU8000'
+    let inam: SubChunk  /// Bank name, less than 257 bytes, ignore if missing
+    let irom: SubChunk? /// ROM, less than 257 bytes, ignore if missing
+    let iver: SubChunk? /// ROM version
+    let icrd: SubChunk? /// Creation date, less than 257 bytes, ignore if missing
+    let ieng: SubChunk? /// Sound designers, less than 257 bytes, ignore if missing
+    let iprd: SubChunk? /// Intended product, less than 257 bytes, ignore if missing
+    let icop: SubChunk? /// Copywrite, less than 257 bytes, ignore if missing
+    let icmt: SubChunk? /// Comment, less than 65,537 bytes, ignore if missing
+    let isft: SubChunk? /// Creation tools, less than 257 bytes, ignore if missing
 
     init(data: Data.SubSequence) throws {
 
@@ -285,22 +306,6 @@ extension SF2File {
       self.isft = isft
     }
 
-    var bytes: [Byte] {
-      var result: [Byte] = "INFO".bytes
-      result += ifil.bytes
-      result += isng.bytes
-      result += inam.bytes
-      if let irom = irom { result += irom.bytes }
-      if let iver = iver { result += iver.bytes }
-      if let icrd = icrd { result += icrd.bytes }
-      if let ieng = ieng { result += ieng.bytes }
-      if let iprd = iprd { result += iprd.bytes }
-      if let icop = icop { result += icop.bytes }
-      if let icmt = icmt { result += icmt.bytes }
-      if let isft = isft { result += isft.bytes }
-      return result
-    }
-
     var description: String {
       var result = "\n".join( "ifil: \(ifil)", "isng: \(isng)", "inam: \(inam)" )
       if let irom = irom { result += "irom: \(irom)\n" }
@@ -318,7 +323,35 @@ extension SF2File {
 
 }
 
-// MARK: - 
+// MARK: -
+
+extension SF2File {
+
+  struct LazySubChunk: CustomStringConvertible {
+    let identifier: ChunkIdentifier
+    let url: URL
+    let range: Range<Int>
+
+    init(identifier: ChunkIdentifier, url: URL, range: Range<Int>) throws {
+      switch identifier {
+        case .ifil, .iver: try _assert(range.count == 4)
+        case .phdr:        try _assert(range.count % 38 == 0)
+        default:           break
+      }
+      self.identifier = identifier
+      self.url = url
+      self.range = range
+    }
+
+    func dataChunk() throws -> SubChunk { return try SubChunk(chunk: self) }
+
+    var description: String { return "\(identifier): \(range) '\(url)'" }
+
+  }
+  
+}
+
+// MARK: -
 
 extension SF2File {
 
@@ -326,11 +359,9 @@ extension SF2File {
     let identifier: ChunkIdentifier
     let data: ChunkData
 
-
-    var bytes: [Byte] {
-      let chunkBytes = data.bytes
-      let sizeBytes = Byte4(chunkBytes.count).bytes
-      return identifier.bytes + sizeBytes + chunkBytes
+    fileprivate init(chunk: LazySubChunk) throws {
+      let data = try Data(contentsOf: chunk.url, options: [.uncached, .alwaysMapped])
+      self = try SubChunk(identifier: chunk.identifier, data: data[chunk.range])
     }
 
     fileprivate init(identifier: ChunkIdentifier, data: Data.SubSequence) throws {
@@ -344,11 +375,9 @@ extension SF2File {
           self.data = .text(String(data))
         case .phdr:
           try _assert(data.count % 38 == 0)
-//          let chunkSize = _chunkSize(data[data.startIndex +--> 4])
-//          try _assert(chunkSize + 4 <= data.count && chunkSize % 38 == 0)
-          var headers: [PresetHeader] = []
+          var headers: [Preset] = []
           var i = data.startIndex // Index after chunk size
-          while i < data.endIndex, let header = try PresetHeader(data: data[i +--> 38]) {
+          while i < data.endIndex, let header = try Preset(data: data[i +--> 38]) {
             headers.append(header)
             i += 38
           }
@@ -381,8 +410,6 @@ extension SF2File {
 
     /// PDTA chunk identifiers
     case phdr, pbag, pmod, pgen, inst, ibag, imod, igen, shdr
-
-    var bytes: [Byte] { return rawValue.lowercased().bytes }
   }
 
 
@@ -396,16 +423,7 @@ extension SF2File {
     case version (major: Byte2, minor: Byte2)
     case text (String)
     case data (Data)
-    case presets ([PresetHeader])
-
-    var bytes: [Byte] {
-      switch self {
-        case let .version(major, minor): return major.bytes + minor.bytes
-        case let .text(string):          return string.bytes
-        case let .data(data):            return Array(data)
-        case let .presets(headers):      return headers.flatMap({$0.bytes}) + PresetHeader.EOP.bytes
-      }
-    }
+    case presets ([Preset])
 
     var description: String {
       switch self {
@@ -425,9 +443,34 @@ extension SF2File {
 extension SF2File {
 
   /// Parses the sdta chunk of the file
+  struct LazySDTAChunk: CustomStringConvertible {
+
+    let smpl: LazySubChunk?
+
+    init(data: Data.SubSequence, url: URL) throws {
+      try _assert(data.count >= 4 && String(data[data.startIndex +--> 4]).lowercased() == "sdta")
+
+      guard data.count > 4 else { smpl = nil; return }
+
+      try _assert(String(data[(data.startIndex + 4) +--> 4]).lowercased() == "smpl")
+
+      let smplSize = _chunkSize(data[(data.startIndex + 8) +--> 4])
+
+      try _assert(data.count >= smplSize + 12)
+
+      smpl = try LazySubChunk(identifier: .smpl, url: url, range: (data.startIndex + 12) +--> smplSize)
+    }
+
+    var description: String { return "\(smpl?.description ?? "")" }
+    
+  }
+
+  /// Parses the sdta chunk of the file
   struct SDTAChunk: CustomStringConvertible {
 
     let smpl: SubChunk?
+
+    init(chunk: LazySDTAChunk) throws { smpl = try chunk.smpl?.dataChunk() }
 
     init(data: Data.SubSequence) throws {
       try _assert(data.count >= 4 && String(data[data.startIndex +--> 4]).lowercased() == "sdta")
@@ -439,13 +482,8 @@ extension SF2File {
       let smplSize = _chunkSize(data[(data.startIndex + 8) +--> 4])
 
       try _assert(data.count >= smplSize + 12)
-      
-      smpl = try SubChunk(identifier: .smpl, data: data[(data.startIndex + 12) +--> smplSize])
-    }
 
-    var bytes: [Byte] {
-      guard let smpl = smpl else { return "sdta".bytes }
-      return "sdta".bytes + smpl.bytes
+      smpl = try SubChunk(identifier: .smpl, data: data[(data.startIndex + 12) +--> smplSize])
     }
 
     var description: String { return "\(smpl?.description ?? "")" }
@@ -456,6 +494,102 @@ extension SF2File {
 // MARK: -
 
 extension SF2File {
+
+  /// Parses the pdta chunk of the file
+  struct LazyPDTAChunk: CustomStringConvertible {
+
+    let phdr: LazySubChunk /// Names the Presets, and points to each of a Preset's Zones (which
+                           /// sub-divide each Preset) in the "pbag" sub-chunk.
+    let pbag: LazySubChunk /// Points each Preset Zone to data pointers and values in "pmod" and "pgen".
+    let pmod: LazySubChunk /// Points to preset Modulators
+    let pgen: LazySubChunk /// Points to preset Generators
+    let inst: LazySubChunk /// Contains an Instrument, which names the virtual sub-
+                           /// instrument and points to Instrument Zones (like Preset Zones) in "ibag".
+    let ibag: LazySubChunk /// Points each Instrument Zone to data pointers and values in "imod" and "igen"
+    let imod: LazySubChunk /// Points to instrument Modulators
+    let igen: LazySubChunk /// Points to instrument Generators
+    let shdr: LazySubChunk /// Contains a sound sample's information and a pointer to the sound sample in "sdta".
+
+    init(data: Data.SubSequence, url: URL) throws {
+
+      let remainingCount = _remainingCount(data)
+
+      try _assert(   remainingCount(data.startIndex) > 4
+                  && String(data[data.startIndex +--> 4]).lowercased() == "pdta")
+
+      var i = data.startIndex + 4 // The index after 'PDTA'
+
+      var phdr: LazySubChunk?, pbag: LazySubChunk?, pmod: LazySubChunk?, pgen: LazySubChunk?,
+          inst: LazySubChunk?, ibag: LazySubChunk?, imod: LazySubChunk?, igen: LazySubChunk?,
+          shdr: LazySubChunk?
+
+      // Each subchunk begins with an 8-byte preamble containing the type and length
+      let preambleSize = 8
+
+      while i + preambleSize < data.endIndex {
+
+        guard let chunkIdentifier = ChunkIdentifier(rawValue: String(data[i +--> 4]).lowercased()) else {
+          throw SF2File.Error.StructurallyUnsound
+        }
+
+        i += 4 // Move i passed chunk type
+
+        let chunkSize = _chunkSize(data[i +--> 4])
+
+        i += 4 // Move i passed chunk size
+
+        // Make sure there are enough remaining bytes for the chunk size
+        try _assert(remainingCount(i) >= chunkSize)
+
+        let chunk = try LazySubChunk(identifier: chunkIdentifier, url: url, range: i +--> chunkSize)
+
+        i += chunkSize // Move i passed chunk data
+
+        switch chunk.identifier {
+          case .phdr: try _assert(phdr == nil); phdr = chunk
+          case .pbag: try _assert(pbag == nil); pbag = chunk
+          case .pmod: try _assert(pmod == nil); pmod = chunk
+          case .pgen: try _assert(pgen == nil); pgen = chunk
+          case .inst: try _assert(inst == nil); inst = chunk
+          case .ibag: try _assert(ibag == nil); ibag = chunk
+          case .imod: try _assert(imod == nil); imod = chunk
+          case .igen: try _assert(igen == nil); igen = chunk
+          case .shdr: try _assert(shdr == nil); shdr = chunk
+          default:    throw SF2File.Error.StructurallyUnsound
+        }
+
+      }
+
+      try _assert(   phdr != nil && pbag != nil && pmod != nil && pgen != nil 
+                  && inst != nil && ibag != nil && imod != nil && igen != nil 
+                  && shdr != nil)
+
+      self.phdr = phdr!
+      self.pbag = pbag!
+      self.pmod = pmod!
+      self.pgen = pgen!
+      self.inst = inst!
+      self.ibag = ibag!
+      self.imod = imod!
+      self.igen = igen!
+      self.shdr = shdr!
+    }
+
+    var description: String {
+      return "\n".join(
+        "phdr:\n\(phdr.description.indentedBy(1, useTabs: true))",
+        "pbag: \(pbag)",
+        "pmod: \(pmod)",
+        "pgen: \(pgen)",
+        "inst: \(inst)",
+        "ibag: \(ibag)",
+        "imod: \(imod)",
+        "igen: \(igen)",
+        "shdr: \(shdr)"
+      )
+    }
+
+  }
 
   /// Parses the pdta chunk of the file
   struct PDTAChunk: CustomStringConvertible {
@@ -471,6 +605,18 @@ extension SF2File {
     let imod: SubChunk /// Points to instrument Modulators
     let igen: SubChunk /// Points to instrument Generators
     let shdr: SubChunk /// Contains a sound sample's information and a pointer to the sound sample in "sdta".
+
+    init(chunk: LazyPDTAChunk) throws {
+      phdr = try chunk.phdr.dataChunk()
+      pbag = try chunk.pbag.dataChunk()
+      pmod = try chunk.pmod.dataChunk()
+      pgen = try chunk.pgen.dataChunk()
+      inst = try chunk.inst.dataChunk()
+      ibag = try chunk.ibag.dataChunk()
+      imod = try chunk.imod.dataChunk()
+      igen = try chunk.igen.dataChunk()
+      shdr = try chunk.shdr.dataChunk()
+    }
 
     init(data: Data.SubSequence) throws {
 
@@ -538,20 +684,6 @@ extension SF2File {
       self.shdr = shdr!
     }
 
-    var bytes: [Byte] {
-      var result: [Byte] = "pdta".bytes
-      result += phdr.bytes
-      result += pbag.bytes
-      result += pmod.bytes
-      result += pgen.bytes
-      result += inst.bytes
-      result += ibag.bytes
-      result += imod.bytes
-      result += igen.bytes
-      result += shdr.bytes
-      return result
-    }
-
     var description: String {
       return "\n".join(
         "phdr:\n\(phdr.description.indentedBy(1, useTabs: true))",
@@ -569,78 +701,3 @@ extension SF2File {
   }
 
 }
-
-// MARK: -
-extension SF2File {
-
-  struct PresetHeader: CustomStringConvertible {
-
-    let name: String
-    let preset: Byte2
-    let bank: Byte2
-    let bagIndex: Byte2
-    let library: Byte4
-    let genre: Byte4
-    let morphology: Byte4
-
-    static var EOP: PresetHeader { return PresetHeader(name: "EOP") }
-
-    init(name: String,
-         preset: Byte2 = 0,
-         bank: Byte2 = 0,
-         bagIndex: Byte2 = 0,
-         library: Byte4 = 0,
-         genre: Byte4 = 0,
-         morphology: Byte4 = 0)
-    {
-      self.name = name
-      self.preset = preset
-      self.bank = bank
-      self.bagIndex = bagIndex
-      self.library = library
-      self.genre = genre
-      self.morphology = morphology
-    }
-
-    init?(data: Data.SubSequence) throws {
-      try _assert(data.count == 38)
-
-      let name = String(data[data.startIndex ..< (data.index(of: Byte(0)) ?? data.startIndex + 20)])
-      guard !(name == "EOP" || name.isEmpty) else { return nil }
-
-      self.name = name
-      
-      preset     = Byte2(data[data.startIndex + 20 ... data.startIndex + 21]).bigEndian
-      bank       = Byte2(data[data.startIndex + 22 ... data.startIndex + 23]).bigEndian
-      bagIndex   = Byte2(data[data.startIndex + 24 ... data.startIndex + 25]).bigEndian
-      library    = Byte4(data[data.startIndex + 26 ... data.startIndex + 29]).bigEndian
-      genre      = Byte4(data[data.startIndex + 30 ... data.startIndex + 33]).bigEndian
-      morphology = Byte4(data[data.startIndex + 34 ... data.startIndex + 37]).bigEndian
-    }
-
-    var bytes: [Byte] {
-      var result = name.bytes
-      while result.count < 20 { result.append(Byte(0)) }
-
-      result += preset.bytes
-      result += bank.bytes
-      result += bagIndex.bytes
-      result += library.bytes
-      result += genre.bytes
-      result += morphology.bytes
-      return result
-    }
-
-    var description: String {
-      return "  ".join(
-        "\(name.pad(" ", count: 20))",
-        "preset: \("\(preset)".pad(" ", count: 3))",
-        "bank: \("\(bank)".pad(" ", count: 3))",
-        "bagIndex: \(bagIndex)"
-      )
-    }
-
-  }
-
-}
-

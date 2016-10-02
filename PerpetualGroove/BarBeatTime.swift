@@ -259,7 +259,7 @@ extension BarBeatTime: RawRepresentable {
       "$"
     )
     let re = ~/pattern
-    guard let match = re.firstMatch(rawValue),
+    guard let match = re.firstMatch(in: rawValue),
               let barString = match["bar"]?.string,
               let beatString = match["beat"]?.string,
               let subbeatString = match["subbeat"]?.string,

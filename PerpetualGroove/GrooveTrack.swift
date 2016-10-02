@@ -38,7 +38,7 @@ struct GrooveTrack {
                   loops[loop.identifier] = loop
 
                 case ~/"^end.*":
-                  guard let match = (~/"^end\\(([^)]+)\\)$").firstMatch(text),
+                  guard let match = (~/"^end\\(([^)]+)\\)$").firstMatch(in: text),
                   let identifierString = match.captures[1]?.string,
                   let identifier = GrooveLoop.Identifier(uuidString: identifierString) else { continue }
                   loops[identifier]?.end = event.time

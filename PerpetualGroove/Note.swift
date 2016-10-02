@@ -57,7 +57,7 @@ enum Note: RawRepresentable {
   - parameter rawValue: String
   */
   init?(rawValue: String) {
-    guard let match = (~/"^([A-G])([♭♯])?$").firstMatch(rawValue),
+    guard let match = (~/"^([A-G])([♭♯])?$").firstMatch(in: rawValue),
       let rawNatural = match.captures[1]?.string,
       let natural = Natural(rawValue: rawNatural) else { return nil }
     if let rawModifier = match.captures[2]?.string, let modifier = PitchModifier(rawValue: rawModifier) {

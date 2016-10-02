@@ -57,7 +57,7 @@ extension GrooveFile: JSONValueInitializable {
     self.tracks = tracks.flatMap({GrooveTrack($0)})
     self.tempoChanges = tempoChanges
     self.endOfFile = endOfFile
-    if let sourceString = String(dict["source"]) { source = NSURL(string: sourceString) as URL? }
+    if let sourceString = String(dict["source"]) { source = URL(string: sourceString) }
   }
 }
 

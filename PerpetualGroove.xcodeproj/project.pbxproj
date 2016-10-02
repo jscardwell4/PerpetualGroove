@@ -11,6 +11,13 @@
 		C20827541C03B2A2004D68FC /* StandardChordPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20827531C03B2A2004D68FC /* StandardChordPattern.swift */; };
 		C20A10A11C51552B00522FD7 /* BarBeatTimeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20A10A01C51552B00522FD7 /* BarBeatTimeTests.swift */; };
 		C219235F1C76371D00E82437 /* SecondaryContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C219235E1C76371D00E82437 /* SecondaryContent.swift */; };
+		C21DBAF51DA06CA000E50C23 /* Emax Volume 1.json in Resources */ = {isa = PBXBuildFile; fileRef = C21DBAEF1DA06CA000E50C23 /* Emax Volume 1.json */; };
+		C21DBAF61DA06CA000E50C23 /* Emax Volume 2.json in Resources */ = {isa = PBXBuildFile; fileRef = C21DBAF01DA06CA000E50C23 /* Emax Volume 2.json */; };
+		C21DBAF71DA06CA000E50C23 /* Emax Volume 3.json in Resources */ = {isa = PBXBuildFile; fileRef = C21DBAF11DA06CA000E50C23 /* Emax Volume 3.json */; };
+		C21DBAF81DA06CA000E50C23 /* Emax Volume 4.json in Resources */ = {isa = PBXBuildFile; fileRef = C21DBAF21DA06CA000E50C23 /* Emax Volume 4.json */; };
+		C21DBAF91DA06CA000E50C23 /* Emax Volume 5.json in Resources */ = {isa = PBXBuildFile; fileRef = C21DBAF31DA06CA000E50C23 /* Emax Volume 5.json */; };
+		C21DBAFA1DA06CA000E50C23 /* Emax Volume 6.json in Resources */ = {isa = PBXBuildFile; fileRef = C21DBAF41DA06CA000E50C23 /* Emax Volume 6.json */; };
+		C21DBAFC1DA06CB900E50C23 /* SPYRO's Pure Oscillators.json in Resources */ = {isa = PBXBuildFile; fileRef = C21DBAFB1DA06CB900E50C23 /* SPYRO's Pure Oscillators.json */; };
 		C21E44C11B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C21E44C01B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 */; };
 		C21E44C51B76546C00574BD2 /* AudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21E44C41B76546C00574BD2 /* AudioManager.swift */; };
 		C223B1A21C8364ED006CF6B5 /* MIDIEventContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C223B1A11C8364ED006CF6B5 /* MIDIEventContainer.swift */; };
@@ -119,6 +126,7 @@
 		C2E542391BD56E00005B452F /* SoundFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E542381BD56E00005B452F /* SoundFont.swift */; };
 		C2E5423D1BD57252005B452F /* EmaxSoundSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E5423C1BD57252005B452F /* EmaxSoundSet.swift */; };
 		C2E705C51BBB17AE00636EF3 /* PurgatoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E705C41BBB17AE00636EF3 /* PurgatoryViewController.swift */; };
+		C2E96D291DA00F2F0030A8BB /* SoundFontTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E96D281DA00F2F0030A8BB /* SoundFontTests.swift */; };
 		C2EA30531BB9DF3300020958 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EA30521BB9DF3300020958 /* Document.swift */; };
 		C2ECC5E31B9C7FFA0010E76E /* MIDINodeEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2ECC5E21B9C7FFA0010E76E /* MIDINodeEvent.swift */; };
 		C2EFA0EE1B824A2F002EBA3D /* AssetManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EFA0ED1B824A2F002EBA3D /* AssetManager.swift */; };
@@ -213,6 +221,13 @@
 		C20A10A01C51552B00522FD7 /* BarBeatTimeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarBeatTimeTests.swift; sourceTree = "<group>"; };
 		C20A10A21C51552B00522FD7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C219235E1C76371D00E82437 /* SecondaryContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecondaryContent.swift; sourceTree = "<group>"; };
+		C21DBAEF1DA06CA000E50C23 /* Emax Volume 1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "Emax Volume 1.json"; path = "PerpetualGroove/Emax Volume 1.json"; sourceTree = SOURCE_ROOT; };
+		C21DBAF01DA06CA000E50C23 /* Emax Volume 2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "Emax Volume 2.json"; path = "PerpetualGroove/Emax Volume 2.json"; sourceTree = SOURCE_ROOT; };
+		C21DBAF11DA06CA000E50C23 /* Emax Volume 3.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "Emax Volume 3.json"; path = "PerpetualGroove/Emax Volume 3.json"; sourceTree = SOURCE_ROOT; };
+		C21DBAF21DA06CA000E50C23 /* Emax Volume 4.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "Emax Volume 4.json"; path = "PerpetualGroove/Emax Volume 4.json"; sourceTree = SOURCE_ROOT; };
+		C21DBAF31DA06CA000E50C23 /* Emax Volume 5.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "Emax Volume 5.json"; path = "PerpetualGroove/Emax Volume 5.json"; sourceTree = SOURCE_ROOT; };
+		C21DBAF41DA06CA000E50C23 /* Emax Volume 6.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "Emax Volume 6.json"; path = "PerpetualGroove/Emax Volume 6.json"; sourceTree = SOURCE_ROOT; };
+		C21DBAFB1DA06CB900E50C23 /* SPYRO's Pure Oscillators.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "SPYRO's Pure Oscillators.json"; path = "PerpetualGroove/SPYRO's Pure Oscillators.json"; sourceTree = "<group>"; };
 		C21E44C01B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SPYRO's Pure Oscillators.sf2"; path = "PerpetualGroove/SPYRO's Pure Oscillators.sf2"; sourceTree = "<group>"; };
 		C21E44C41B76546C00574BD2 /* AudioManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioManager.swift; sourceTree = "<group>"; };
 		C21E44C81B76739C00574BD2 /* sf2.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = sf2.playground; path = PerpetualGroove/sf2.playground; sourceTree = "<group>"; };
@@ -333,6 +348,7 @@
 		C2E5423A1BD5721C005B452F /* sf2Info.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sf2Info.txt; sourceTree = "<group>"; };
 		C2E5423C1BD57252005B452F /* EmaxSoundSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmaxSoundSet.swift; sourceTree = "<group>"; };
 		C2E705C41BBB17AE00636EF3 /* PurgatoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PurgatoryViewController.swift; sourceTree = "<group>"; };
+		C2E96D281DA00F2F0030A8BB /* SoundFontTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundFontTests.swift; sourceTree = "<group>"; };
 		C2EA30521BB9DF3300020958 /* Document.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
 		C2ECC5E21B9C7FFA0010E76E /* MIDINodeEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINodeEvent.swift; sourceTree = "<group>"; };
 		C2EFA0ED1B824A2F002EBA3D /* AssetManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssetManager.swift; sourceTree = "<group>"; };
@@ -345,7 +361,7 @@
 		C2FAAC571D99AA2A0089D1B0 /* Triump.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Triump.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2FAAC5A1D99AA2A0089D1B0 /* Eveleth.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Eveleth.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2FAAC5D1D99AA630089D1B0 /* MoonKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MoonKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C2FAAC7B1D99C7620089D1B0 /* SoundFontFileTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SoundFontFileTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C2FAAC7B1D99C7620089D1B0 /* SoundSetTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SoundSetTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2FAAC7D1D99C7620089D1B0 /* SoundFontFileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundFontFileTests.swift; sourceTree = "<group>"; };
 		C2FAAC7F1D99C7620089D1B0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C2FAAC8B1D99C79D0089D1B0 /* MIDIFileTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MIDIFileTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -442,6 +458,7 @@
 			children = (
 				C2776C191B9DF50D002FE5A8 /* Emax_Collections_Bundle */,
 				C2F2ADC11B90EBD300FF4836 /* Woodblock.wav */,
+				C21DBAFB1DA06CB900E50C23 /* SPYRO's Pure Oscillators.json */,
 				C21E44C01B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 */,
 			);
 			name = "Sound Sets";
@@ -640,6 +657,12 @@
 		C2776C191B9DF50D002FE5A8 /* Emax_Collections_Bundle */ = {
 			isa = PBXGroup;
 			children = (
+				C21DBAEF1DA06CA000E50C23 /* Emax Volume 1.json */,
+				C21DBAF01DA06CA000E50C23 /* Emax Volume 2.json */,
+				C21DBAF11DA06CA000E50C23 /* Emax Volume 3.json */,
+				C21DBAF21DA06CA000E50C23 /* Emax Volume 4.json */,
+				C21DBAF31DA06CA000E50C23 /* Emax Volume 5.json */,
+				C21DBAF41DA06CA000E50C23 /* Emax Volume 6.json */,
 				C2776C1A1B9DF50D002FE5A8 /* Emax Volume 1.sf2 */,
 				C2776C1B1B9DF50D002FE5A8 /* Emax Volume 2.sf2 */,
 				C2776C1C1B9DF50D002FE5A8 /* Emax Volume 3.sf2 */,
@@ -711,7 +734,7 @@
 				C284F7C81C49C8A8009C72A0 /* MIDINodePathTests.xctest */,
 				C20A109E1C51552B00522FD7 /* BarBeatTimeTests.xctest */,
 				C28831921C78E8AC00F6865D /* MIDIEventContainerTests.xctest */,
-				C2FAAC7B1D99C7620089D1B0 /* SoundFontFileTests.xctest */,
+				C2FAAC7B1D99C7620089D1B0 /* SoundSetTests.xctest */,
 				C2FAAC8B1D99C79D0089D1B0 /* MIDIFileTests.xctest */,
 			);
 			name = Products;
@@ -746,6 +769,7 @@
 			children = (
 				C2FAAC7D1D99C7620089D1B0 /* SoundFontFileTests.swift */,
 				C2FAAC7F1D99C7620089D1B0 /* Info.plist */,
+				C2E96D281DA00F2F0030A8BB /* SoundFontTests.swift */,
 			);
 			path = SoundFontFileTests;
 			sourceTree = "<group>";
@@ -852,9 +876,9 @@
 			productReference = C2E043311B72F4DC005F0675 /* Groove.app */;
 			productType = "com.apple.product-type.application";
 		};
-		C2FAAC7A1D99C7620089D1B0 /* SoundFontFileTests */ = {
+		C2FAAC7A1D99C7620089D1B0 /* SoundSetTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C2FAAC821D99C7620089D1B0 /* Build configuration list for PBXNativeTarget "SoundFontFileTests" */;
+			buildConfigurationList = C2FAAC821D99C7620089D1B0 /* Build configuration list for PBXNativeTarget "SoundSetTests" */;
 			buildPhases = (
 				C2FAAC771D99C7620089D1B0 /* Sources */,
 				C2FAAC781D99C7620089D1B0 /* Frameworks */,
@@ -865,9 +889,9 @@
 			dependencies = (
 				C2FAAC811D99C7620089D1B0 /* PBXTargetDependency */,
 			);
-			name = SoundFontFileTests;
+			name = SoundSetTests;
 			productName = SoundFontFileTests;
-			productReference = C2FAAC7B1D99C7620089D1B0 /* SoundFontFileTests.xctest */;
+			productReference = C2FAAC7B1D99C7620089D1B0 /* SoundSetTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		C2FAAC8A1D99C79D0089D1B0 /* MIDIFileTests */ = {
@@ -965,7 +989,7 @@
 				C284F7C71C49C8A8009C72A0 /* MIDINodePathTests */,
 				C20A109D1C51552B00522FD7 /* BarBeatTimeTests */,
 				C28831911C78E8AC00F6865D /* MIDIEventContainerTests */,
-				C2FAAC7A1D99C7620089D1B0 /* SoundFontFileTests */,
+				C2FAAC7A1D99C7620089D1B0 /* SoundSetTests */,
 				C2FAAC8A1D99C79D0089D1B0 /* MIDIFileTests */,
 			);
 		};
@@ -1011,11 +1035,14 @@
 				C2776C201B9DF50D002FE5A8 /* Emax Volume 1.sf2 in Resources */,
 				C2E043431B72F4DC005F0675 /* LaunchScreen.storyboard in Resources */,
 				C24E839E1C3EEE1300B4A16A /* MIDIPlayerContainer.storyboard in Resources */,
+				C21DBAFC1DA06CB900E50C23 /* SPYRO's Pure Oscillators.json in Resources */,
+				C21DBAF81DA06CA000E50C23 /* Emax Volume 4.json in Resources */,
 				C255C43C1BD6651100CAEE9C /* Tempo.storyboard in Resources */,
 				C24E839C1C3EE17900B4A16A /* MixerContainer.storyboard in Resources */,
 				C255C4351BD664CD00CAEE9C /* Instrument.storyboard in Resources */,
 				C2516B301C08F47C0060710B /* Transport.storyboard in Resources */,
 				C2E043401B72F4DC005F0675 /* Assets.xcassets in Resources */,
+				C21DBAF61DA06CA000E50C23 /* Emax Volume 2.json in Resources */,
 				C2516B331C08F77F0060710B /* MIDIPlayer.storyboard in Resources */,
 				C255C4371BD664E400CAEE9C /* Generator.storyboard in Resources */,
 				C283B69C1BC02E3B007A4A36 /* Settings.bundle in Resources */,
@@ -1024,8 +1051,12 @@
 				C2776C261B9DF50D002FE5A8 /* Emax Volume 4.sf2 in Resources */,
 				C21E44C11B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 in Resources */,
 				C2807DE21C74F34B0061A001 /* Rotate.storyboard in Resources */,
+				C21DBAF91DA06CA000E50C23 /* Emax Volume 5.json in Resources */,
 				C272B2A21B7D714B00134E5F /* PureOscillators.programlist in Resources */,
 				C2776C241B9DF50D002FE5A8 /* Emax Volume 3.sf2 in Resources */,
+				C21DBAFA1DA06CA000E50C23 /* Emax Volume 6.json in Resources */,
+				C21DBAF51DA06CA000E50C23 /* Emax Volume 1.json in Resources */,
+				C21DBAF71DA06CA000E50C23 /* Emax Volume 3.json in Resources */,
 				C2776C221B9DF50D002FE5A8 /* Emax Volume 2.sf2 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1180,6 +1211,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C2E96D291DA00F2F0030A8BB /* SoundFontTests.swift in Sources */,
 				C2FAAC7E1D99C7620089D1B0 /* SoundFontFileTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2014,7 +2046,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C2FAAC821D99C7620089D1B0 /* Build configuration list for PBXNativeTarget "SoundFontFileTests" */ = {
+		C2FAAC821D99C7620089D1B0 /* Build configuration list for PBXNativeTarget "SoundSetTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C2FAAC831D99C7620089D1B0 /* Debug */,

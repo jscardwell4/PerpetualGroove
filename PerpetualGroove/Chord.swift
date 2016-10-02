@@ -73,7 +73,7 @@ extension Chord {
     - parameter rawValue: String
     */
     init?(rawValue: String) {
-      guard let match = (~/"^\\(([^)]+)\\)(?:/(.+))?").firstMatch(rawValue),
+      guard let match = (~/"^\\(([^)]+)\\)(?:/(.+))?").firstMatch(in: rawValue),
         let componentsList = match.captures[1]?.string else { return nil }
 
       components = ",".split(componentsList).flatMap({Degree(rawValue: $0)})
@@ -168,7 +168,7 @@ extension Chord.ChordPattern {
     - parameter rawValue: String
     */
     init?(rawValue: String) {
-       guard let match = (~/"^([♭♯𝄫])?(1?[0-9])").firstMatch(rawValue),
+       guard let match = (~/"^([♭♯𝄫])?(1?[0-9])").firstMatch(in: rawValue),
          let rawIntervalString = match.captures[2]?.string,
          let rawInterval = Int(rawIntervalString),
          let interval = Interval(rawValue: rawInterval) else { return nil }

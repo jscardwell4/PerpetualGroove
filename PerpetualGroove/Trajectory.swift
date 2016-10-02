@@ -244,7 +244,7 @@ extension Trajectory: ByteArrayConvertible {
     let string = String(bytes)
     let float = "-?[0-9]+(?:\\.[0-9]+)?"
     let value = "\\{\(float), \(float)\\}"
-    guard let match = (~/"\\{(\(value)), (\(value))\\}").firstMatch(string, anchored: true),
+    guard let match = (~/"\\{(\(value)), (\(value))\\}").firstMatch(in: string, anchored: true),
       let positionCapture = match.captures[1],
       let vectorCapture = match.captures[2] else { self = .null; return }
     guard let point = CGPoint(positionCapture.string), let vector = CGVector(vectorCapture.string) else {

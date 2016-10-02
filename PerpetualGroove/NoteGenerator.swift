@@ -150,7 +150,7 @@ extension NoteGenerator {
     - parameter rawValue: String
     */
     init?(rawValue: String) {
-      guard let match = (~/"^([A-G]♯?) ?((?:-1)|[0-9])$").firstMatch(rawValue),
+      guard let match = (~/"^([A-G]♯?) ?((?:-1)|[0-9])$").firstMatch(in: rawValue),
         let rawNote = match.captures[1]?.string,
         let pitch = Note(rawValue: rawNote),
         let rawOctaveString = match.captures[2]?.string,

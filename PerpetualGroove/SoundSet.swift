@@ -14,18 +14,15 @@ import UIKit.UIImage
 struct SoundSet: SoundFont {
   
   let url: URL
-  var fileName: String { return (url.lastPathComponent.baseNameExt.0) }
 
   let presets: [SF2File.Preset]
 
-  var image: UIImage { return UIImage(named: "oscillator")! }
+  var image: UIImage { return #imageLiteral(resourceName: "oscillator") }
 
   /// Initialize a sound set using the file located by the specified url.
-  init(url u: URL) throws {
-    var error: NSError?
-    guard (u as NSURL).checkResourceIsReachableAndReturnError(&error) else { throw error! }
-    presets = try SF2File(fileURL: u).presets.sorted()
-    url = u
+  init(url: URL) throws {
+    presets = try SF2File.presets(from: url)
+    self.url = url
   }
 
 }

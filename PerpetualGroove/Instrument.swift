@@ -33,7 +33,7 @@ final class Instrument: Equatable {
   var channel: Channel = 0
   var bank: Bank = 0
   var program: Program = 0
-  var preset: Preset { return soundSet[program, bank] }
+  var preset: Preset { return soundSet[program: program, bank: bank] }
   weak var track: InstrumentTrack?
   fileprivate let node = AVAudioUnitSampler()
 
@@ -88,7 +88,7 @@ final class Instrument: Equatable {
   /// All program changes run through this method
   func loadSoundSet(_ soundSet: SoundFont, program: Program = 0, bank: Bank = 0) throws {
     guard !soundLoaded
-       || !(self.soundSet.isEqualTo(soundSet) && preset == soundSet[program, bank]) else { return }
+       || !(self.soundSet.isEqualTo(soundSet) && preset == soundSet[program: program, bank: bank]) else { return }
 
     let oldPresetName = preset.name
     let program = (0 ... 127).clampValue(program)
