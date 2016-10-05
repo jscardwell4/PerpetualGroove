@@ -174,7 +174,7 @@ extension NoteGenerator {
 }
 
 // MARK: - MIDIGeneratorType
-extension NoteGenerator: MIDIGeneratorType {
+extension NoteGenerator: MIDIGenerator {
 
   /**
    receiveNoteOn:

@@ -135,6 +135,8 @@
 		C2F2ADC61B91203700FF4836 /* Metronome.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F2ADC51B91203700FF4836 /* Metronome.swift */; };
 		C2F35DB91BB4507800ECB045 /* MIDIPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F35DB81BB4507800ECB045 /* MIDIPlayerView.swift */; };
 		C2F589F91BAC688F009166D5 /* BarBeatTimeLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F589F81BAC688F009166D5 /* BarBeatTimeLabel.swift */; };
+		C2F778BF1DA3F78900AC7B2F /* SequenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F778BE1DA3F78900AC7B2F /* SequenceTests.swift */; };
+		C2F778C91DA3F7C400AC7B2F /* TrackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F778C81DA3F7C400AC7B2F /* TrackTests.swift */; };
 		C2FAAC551D99AA2A0089D1B0 /* FestivoLC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FAAC541D99AA2A0089D1B0 /* FestivoLC.framework */; };
 		C2FAAC561D99AA2A0089D1B0 /* FestivoLC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2FAAC541D99AA2A0089D1B0 /* FestivoLC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C2FAAC581D99AA2A0089D1B0 /* Triump.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FAAC571D99AA2A0089D1B0 /* Triump.framework */; };
@@ -173,6 +175,13 @@
 			remoteInfo = PerpetualGroove;
 		};
 		C28831971C78E8AD00F6865D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C2E043291B72F4DC005F0675 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C2E043301B72F4DC005F0675;
+			remoteInfo = PerpetualGroove;
+		};
+		C2F778C11DA3F78900AC7B2F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C2E043291B72F4DC005F0675 /* Project object */;
 			proxyType = 1;
@@ -357,6 +366,10 @@
 		C2F2ADC51B91203700FF4836 /* Metronome.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Metronome.swift; sourceTree = "<group>"; };
 		C2F35DB81BB4507800ECB045 /* MIDIPlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIPlayerView.swift; sourceTree = "<group>"; };
 		C2F589F81BAC688F009166D5 /* BarBeatTimeLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BarBeatTimeLabel.swift; sourceTree = "<group>"; };
+		C2F778BC1DA3F78900AC7B2F /* SequenceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SequenceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C2F778BE1DA3F78900AC7B2F /* SequenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SequenceTests.swift; sourceTree = "<group>"; };
+		C2F778C01DA3F78900AC7B2F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C2F778C81DA3F7C400AC7B2F /* TrackTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackTests.swift; sourceTree = "<group>"; };
 		C2FAAC541D99AA2A0089D1B0 /* FestivoLC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FestivoLC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2FAAC571D99AA2A0089D1B0 /* Triump.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Triump.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2FAAC5A1D99AA2A0089D1B0 /* Eveleth.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Eveleth.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -413,6 +426,13 @@
 				C2FAAC5B1D99AA2A0089D1B0 /* Eveleth.framework in Frameworks */,
 				C2FAAC5E1D99AA630089D1B0 /* MoonKit.framework in Frameworks */,
 				C2FAAC581D99AA2A0089D1B0 /* Triump.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C2F778B91DA3F78900AC7B2F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -703,6 +723,7 @@
 		C2DE50451D89A52000244DB1 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				C2F778BD1DA3F78900AC7B2F /* SequenceTests */,
 				C2FAAC8C1D99C79D0089D1B0 /* MIDIFileTests */,
 				C2FAAC7C1D99C7620089D1B0 /* SoundFontFileTests */,
 				C284F7C91C49C8A8009C72A0 /* MIDINodePathTests */,
@@ -736,6 +757,7 @@
 				C28831921C78E8AC00F6865D /* MIDIEventContainerTests.xctest */,
 				C2FAAC7B1D99C7620089D1B0 /* SoundSetTests.xctest */,
 				C2FAAC8B1D99C79D0089D1B0 /* MIDIFileTests.xctest */,
+				C2F778BC1DA3F78900AC7B2F /* SequenceTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -751,6 +773,16 @@
 				C2BD771A1D996E58008A250C /* lldb.py */,
 			);
 			path = PerpetualGroove;
+			sourceTree = "<group>";
+		};
+		C2F778BD1DA3F78900AC7B2F /* SequenceTests */ = {
+			isa = PBXGroup;
+			children = (
+				C2F778BE1DA3F78900AC7B2F /* SequenceTests.swift */,
+				C2F778C01DA3F78900AC7B2F /* Info.plist */,
+				C2F778C81DA3F7C400AC7B2F /* TrackTests.swift */,
+			);
+			path = SequenceTests;
 			sourceTree = "<group>";
 		};
 		C2FAAC761D99C7160089D1B0 /* Embedded Frameworks */ = {
@@ -876,6 +908,24 @@
 			productReference = C2E043311B72F4DC005F0675 /* Groove.app */;
 			productType = "com.apple.product-type.application";
 		};
+		C2F778BB1DA3F78900AC7B2F /* SequenceTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C2F778C71DA3F78900AC7B2F /* Build configuration list for PBXNativeTarget "SequenceTests" */;
+			buildPhases = (
+				C2F778B81DA3F78900AC7B2F /* Sources */,
+				C2F778B91DA3F78900AC7B2F /* Frameworks */,
+				C2F778BA1DA3F78900AC7B2F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C2F778C21DA3F78900AC7B2F /* PBXTargetDependency */,
+			);
+			name = SequenceTests;
+			productName = SequenceTests;
+			productReference = C2F778BC1DA3F78900AC7B2F /* SequenceTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		C2FAAC7A1D99C7620089D1B0 /* SoundSetTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C2FAAC821D99C7620089D1B0 /* Build configuration list for PBXNativeTarget "SoundSetTests" */;
@@ -959,6 +1009,11 @@
 							};
 						};
 					};
+					C2F778BB1DA3F78900AC7B2F = {
+						CreatedOnToolsVersion = 8.0;
+						ProvisioningStyle = Automatic;
+						TestTargetID = C2E043301B72F4DC005F0675;
+					};
 					C2FAAC7A1D99C7620089D1B0 = {
 						CreatedOnToolsVersion = 8.0;
 						ProvisioningStyle = Automatic;
@@ -991,6 +1046,7 @@
 				C28831911C78E8AC00F6865D /* MIDIEventContainerTests */,
 				C2FAAC7A1D99C7620089D1B0 /* SoundSetTests */,
 				C2FAAC8A1D99C79D0089D1B0 /* MIDIFileTests */,
+				C2F778BB1DA3F78900AC7B2F /* SequenceTests */,
 			);
 		};
 /* End PBXProject section */
@@ -1058,6 +1114,13 @@
 				C21DBAF51DA06CA000E50C23 /* Emax Volume 1.json in Resources */,
 				C21DBAF71DA06CA000E50C23 /* Emax Volume 3.json in Resources */,
 				C2776C221B9DF50D002FE5A8 /* Emax Volume 2.sf2 in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C2F778BA1DA3F78900AC7B2F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1207,6 +1270,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C2F778B81DA3F78900AC7B2F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C2F778BF1DA3F78900AC7B2F /* SequenceTests.swift in Sources */,
+				C2F778C91DA3F7C400AC7B2F /* TrackTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C2FAAC771D99C7620089D1B0 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1246,6 +1318,11 @@
 			isa = PBXTargetDependency;
 			target = C2E043301B72F4DC005F0675 /* PerpetualGroove */;
 			targetProxy = C28831971C78E8AD00F6865D /* PBXContainerItemProxy */;
+		};
+		C2F778C21DA3F78900AC7B2F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C2E043301B72F4DC005F0675 /* PerpetualGroove */;
+			targetProxy = C2F778C11DA3F78900AC7B2F /* PBXContainerItemProxy */;
 		};
 		C2FAAC811D99C7620089D1B0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1829,6 +1906,80 @@
 			};
 			name = Release;
 		};
+		C2F778C31DA3F78900AC7B2F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				INFOPLIST_FILE = SequenceTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.SequenceTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
+			};
+			name = Debug;
+		};
+		C2F778C41DA3F78900AC7B2F /* Debug-Verbose */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				INFOPLIST_FILE = SequenceTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.SequenceTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
+			};
+			name = "Debug-Verbose";
+		};
+		C2F778C51DA3F78900AC7B2F /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				INFOPLIST_FILE = SequenceTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.SequenceTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
+			};
+			name = Profile;
+		};
+		C2F778C61DA3F78900AC7B2F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				INFOPLIST_FILE = SequenceTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.SequenceTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
+			};
+			name = Release;
+		};
 		C2FAAC831D99C7620089D1B0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2045,6 +2196,16 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		C2F778C71DA3F78900AC7B2F /* Build configuration list for PBXNativeTarget "SequenceTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C2F778C31DA3F78900AC7B2F /* Debug */,
+				C2F778C41DA3F78900AC7B2F /* Debug-Verbose */,
+				C2F778C51DA3F78900AC7B2F /* Profile */,
+				C2F778C61DA3F78900AC7B2F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 		C2FAAC821D99C7620089D1B0 /* Build configuration list for PBXNativeTarget "SoundSetTests" */ = {
 			isa = XCConfigurationList;

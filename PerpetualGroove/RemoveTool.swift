@@ -83,11 +83,6 @@ final class RemoveTool: ToolType {
     }
   }
 
-  /**
-   lightNodeForBackground:
-
-   - parameter node: MIDINode
-  */
   fileprivate func lightNodeForBackground(_ node: MIDINode) {
     let lightNode: SKLightNode
     switch node.childNode(withName: "removeToolLighting") as? SKLightNode {
@@ -105,11 +100,6 @@ final class RemoveTool: ToolType {
     node.lightingBitMask = lightNode.categoryBitMask
   }
 
-  /**
-   lightNodeForForeground:
-
-   - parameter node: MIDINode
-  */
   fileprivate func lightNodeForForeground(_ node: MIDINode) {
     let lightNode: SKLightNode
     switch node.childNode(withName: "removeToolLighting") as? SKLightNode {
@@ -128,7 +118,6 @@ final class RemoveTool: ToolType {
     node.lightingBitMask = lightNode.categoryBitMask
   }
 
-  /** refreshAllNodeLighting */
   fileprivate func refreshAllNodeLighting() {
     guard let track = track else { return }
     let trackNodes = track.nodes.flatMap({$0.elements.1.reference})
@@ -137,11 +126,6 @@ final class RemoveTool: ToolType {
     backgroundNodes.forEach { lightNodeForBackground($0) }
   }
 
-  /**
-   removeLightingFromNode:
-
-   - parameter node: MIDINode
-  */
   fileprivate func removeLightingFromNode(_ node: MIDINode) {
     node.childNode(withName: "removeToolLighting")?.removeFromParent()
     node.lightingBitMask = 0
@@ -159,11 +143,6 @@ final class RemoveTool: ToolType {
 
   let deleteFromTrack: Bool
 
-  /**
-   initWithPlayerNode:
-
-   - parameter playerNode: MIDIPlayerNode
-   */
   init(playerNode: MIDIPlayerNode, delete: Bool = false) {
     deleteFromTrack = delete
     player = playerNode
@@ -179,7 +158,6 @@ final class RemoveTool: ToolType {
       })
   }
 
-  /** removeMarkedNodes */
   fileprivate func removeMarkedNodes() {
     do {
       guard let manager = track?.nodeManager else { return }
@@ -199,13 +177,6 @@ final class RemoveTool: ToolType {
     return receptionist
   }()
 
-  /**
-  trackNodesAtPoint:
-
-  - parameter point: CGPoint
-
-  - returns: [Weak<MIDINode>]
-  */
   fileprivate func trackNodesAtPoint(_ point: CGPoint) -> [MIDINodeRef] {
     let midiNodes = player.nodes(at: point).flatMap({$0 as? MIDINode}).map({MIDINodeRef($0)})
     return midiNodes.filter({
@@ -215,46 +186,22 @@ final class RemoveTool: ToolType {
     )
   }
 
-  /**
-  touchesBegan:withEvent:
-
-  - parameter touches: Set<UITouch>
-  - parameter event: UIEvent?
-  */
-  @objc func touchesBegan(_ touches: Set<UITouch>, withEvent event: UIEvent?) {
+  @objc func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
     guard active && self.touch == nil else { return }
     touch = touches.first
     guard let point = touch?.location(in: player) , player.contains(point) else { return }
     nodesToRemove ∪= trackNodesAtPoint(point)
   }
 
-  /**
-  touchesCancelled:withEvent:
+  @objc func touchesCancelled(_ touches: Set<UITouch>?, with event: UIEvent?) { touch = nil }
 
-  - parameter touches: Set<UITouch>?
-  - parameter event: UIEvent?
-  */
-  @objc func touchesCancelled(_ touches: Set<UITouch>?, withEvent event: UIEvent?) { touch = nil }
-
-  /**
-  touchesEnded:withEvent:
-
-  - parameter touches: Set<UITouch>
-  - parameter event: UIEvent?
-  */
-  @objc func touchesEnded(_ touches: Set<UITouch>, withEvent event: UIEvent?) {
+  @objc func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
     guard touch != nil && touches.contains(touch!) else { return }
     removeMarkedNodes()
     touch = nil
   }
 
-  /**
-  touchesMoved:withEvent:
-
-  - parameter touches: Set<UITouch>
-  - parameter event: UIEvent?
-  */
-  @objc func touchesMoved(_ touches: Set<UITouch>, withEvent event: UIEvent?) {
+  @objc func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
     guard touch != nil && touches.contains(touch!) else { return }
     guard let point = touch?.location(in: player) , player.contains(point) else {
       touch = nil

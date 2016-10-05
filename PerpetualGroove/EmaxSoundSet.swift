@@ -27,7 +27,7 @@ struct EmaxSoundSet: SoundFont {
 
   let volume: Volume
 
-  var presets: [SF2File.Preset] { return (try? SF2File.presets(from: url)) ?? [] }
+//  var presets: [SoundFont.Preset] { return (try? SF2File.presets(from: url)) ?? [] }
 
   var displayName: String {
     switch volume {
@@ -55,7 +55,7 @@ struct EmaxSoundSet: SoundFont {
 
   init(_ volume: Volume) { self.volume = volume }
 
-  init(url: URL) throws {
+  init?(url: URL) throws {
     guard
       let volumeNumber = (url.path ~=> ~/"Emax Volume ([1-6])")?.1,
       let rawVolume = Int(volumeNumber),

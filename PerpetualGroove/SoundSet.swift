@@ -15,15 +15,10 @@ struct SoundSet: SoundFont {
   
   let url: URL
 
-  let presets: [SF2File.Preset]
-
-  var image: UIImage { return #imageLiteral(resourceName: "oscillator") }
-
   /// Initialize a sound set using the file located by the specified url.
-  init(url: URL) throws {
-    presets = try SF2File.presets(from: url)
-    self.url = url
-  }
+  init?(url: URL) throws { guard try url.checkResourceIsReachable() else { return nil }; self.url = url }
 
+  static let spyro = try! SoundSet(url: Bundle.main.url(forResource: "SPYRO's Pure Oscillators",
+                                                        withExtension: "sf2")!)!
 }
 

@@ -21,7 +21,7 @@ struct GrooveTrack {
 
   init(track: InstrumentTrack) {
     name = track.name
-    instrument = ObjectJSONValue(track.instrument.jsonValue)!
+    instrument = ObjectJSONValue(track.instrument.preset.jsonValue)!
     color = track.color
 
     var loops: [GrooveLoop.Identifier:GrooveLoop] = [:]

@@ -14,21 +14,6 @@ class NodeSelectionTool: ToolType {
 
   unowned let player: MIDIPlayerNode
 
-  fileprivate(set) weak var _secondaryContent: SecondaryContent?
-
-  @objc var isShowingContent: Bool { return _secondaryContent != nil }
-
-  @objc func didShowContent(_ content: SecondaryContent) { _secondaryContent = content }
-
-  @objc func didHideContent(_ dismissalAction: SecondaryControllerContainer.DismissalAction) {
-    assert(active && _secondaryContent != nil, "expected active and valid _secondaryContent")
-    if dismissalAction == .cancel && MIDIPlayer.undoManager.canUndo {
-      if MIDIPlayer.undoManager.groupingLevel > 0 { MIDIPlayer.undoManager.endUndoGrouping() }
-      MIDIPlayer.undoManager.undo()
-    }
-    node = nil
-  }
-
   @objc var active = false {
     didSet { guard active != oldValue && active == false else { return }; node = nil }
   }
@@ -80,40 +65,13 @@ class NodeSelectionTool: ToolType {
 
   func didSelectNode() {}
 
-  func didAddNode(_ notification: Notification) {
-    guard active && player.midiNodes.count == 2,
-      let secondaryContent = _secondaryContent
-      , !secondaryContent.disabledActions.intersection([.Previous, .Next]).isEmpty else { return }
-    secondaryContent.disabledActions = .None
-  }
+  func didAddNode(_ notification: Notification) {}
 
-  func didRemoveNode(_ notification: Notification) {
-    guard active && player.midiNodes.count < 2,
-      let secondaryContent = _secondaryContent
-      , secondaryContent.disabledActions.intersection([.Previous, .Next]).isEmpty else { return }
-    secondaryContent.disabledActions ∪= [.Previous, .Next]
-  }
+  func didRemoveNode(_ notification: Notification) {}
 
   fileprivate func grabNodeForTouch(_ touch: UITouch?) {
     guard let point = touch?.location(in: player) , player.contains(point) else { return }
     node = player.nodes(at: point).flatMap({$0 as? MIDINode}).first
-  }
-
-  @objc func touchesBegan(_ touches: Set<UITouch>, withEvent event: UIEvent?) {
-    guard active && node == nil else { return }
-    grabNodeForTouch(touches.first)
-  }
-
-  @objc func touchesMoved(_ touches: Set<UITouch>, withEvent event: UIEvent?) {
-    guard active && node == nil else { return }
-    grabNodeForTouch(touches.first)
-  }
-
-  @objc func touchesCancelled(_ touches: Set<UITouch>?, withEvent event: UIEvent?) { node = nil }
-
-  @objc func touchesEnded(_ touches: Set<UITouch>, withEvent event: UIEvent?) {
-    guard active && node != nil else { return }
-    didSelectNode()
   }
 
   func previousNode() {
@@ -127,6 +85,71 @@ class NodeSelectionTool: ToolType {
     guard let node = node, let idx = nodes.index(where: {$0 === node}) else { return }
     self.node = idx - 1 >= nodes.startIndex ? nodes[idx - 1] : nodes[nodes.endIndex - 1]
   }
+
+}
+
+extension NodeSelectionTool: TouchReceiver {
+
+  @objc func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+    guard active && node == nil else { return }
+    grabNodeForTouch(touches.first)
+  }
+
+  @objc func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+    guard active && node == nil else { return }
+    grabNodeForTouch(touches.first)
+  }
+
+  @objc func touchesCancelled(_ touches: Set<UITouch>?, with event: UIEvent?) {
+    node = nil
+  }
+
+  @objc func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+    guard active && node != nil else { return }
+    didSelectNode()
+  }
   
+}
+
+class PresentingNodeSelectionTool: NodeSelectionTool, PresentingToolType {
+
+  fileprivate(set) weak var _secondaryContent: SecondaryControllerContent?
+
+  var secondaryContent: SecondaryControllerContent { fatalError("\(#function) must be overridden by subclass") }
+
+  var isShowingContent: Bool { return _secondaryContent != nil }
+
+  func didShow(content: SecondaryControllerContent) { _secondaryContent = content }
+
+  func didHide(content: SecondaryControllerContent, dismissalAction: SecondaryControllerContainer.DismissalAction) {
+    assert(active && _secondaryContent != nil, "expected active and valid _secondaryContent")
+    if dismissalAction == .cancel && MIDIPlayer.undoManager.canUndo {
+      if MIDIPlayer.undoManager.groupingLevel > 0 { MIDIPlayer.undoManager.endUndoGrouping() }
+      MIDIPlayer.undoManager.undo()
+    }
+    node = nil
+  }
+  
+  override func didAddNode(_ notification: Notification) {
+    guard active && player.midiNodes.count == 2,
+      let secondaryContent = _secondaryContent ,
+      !secondaryContent.disabledActions.intersection([.Previous, .Next]).isEmpty
+      else
+    {
+      return
+    }
+    secondaryContent.disabledActions = .None
+  }
+
+  override func didRemoveNode(_ notification: Notification) {
+    guard active && player.midiNodes.count < 2,
+      let secondaryContent = _secondaryContent,
+      secondaryContent.disabledActions.intersection([.Previous, .Next]).isEmpty
+      else
+    {
+      return
+    }
+    secondaryContent.disabledActions ∪= [.Previous, .Next]
+  }
 
 }

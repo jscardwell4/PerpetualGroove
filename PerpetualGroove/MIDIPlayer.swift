@@ -47,7 +47,6 @@ final class MIDIPlayer {
     }
   }
 
-  /** updateCurrentDispatch */
   static fileprivate func updateCurrentDispatch() {
     guard let track = Sequencer.sequence?.currentTrack else { currentDispatch = nil; return }
     switch Sequencer.mode {
@@ -76,70 +75,34 @@ final class MIDIPlayer {
     }
   }
 
-  /** initialize */
   static func initialize() {
     guard !initialized else { return }
     touch(receptionist); initialized = true
   }
 
-  /**
-   didChangeSequence:
-
-   - parameter notification: NSNotification
-  */
   static fileprivate func didChangeSequence(_ notification: Foundation.Notification) { sequence = Sequencer.sequence }
 
-  /**
-   didRemoveTrack:
-
-   - parameter notification: NSNotification
-  */
   static fileprivate func didRemoveTrack(_ notification: Foundation.Notification) {
     guard let track = notification.removedTrack else { return }
     loops[ObjectIdentifier(track)] = nil
     updateCurrentDispatch()
   }
 
-  /**
-   didChangeTrack:
-
-   - parameter notification: NSNotification
-   */
   static fileprivate func didChangeTrack(_ notification: Foundation.Notification) { updateCurrentDispatch() }
   
-  /**
-   willEnterLoopMode:
-
-   - parameter notification: NSNotification
-   */
   static fileprivate func willEnterLoopMode(_ notification: Foundation.Notification) {
     playerNode?.defaultNodes.forEach { $0.fadeOut() }
   }
 
-  /**
-   didEnterLoopMode:
-
-   - parameter notification: NSNotification
-   */
   static fileprivate func didEnterLoopMode(_ notification: Foundation.Notification) {
     loops.removeAll()
     updateCurrentDispatch()
   }
 
-  /**
-   willExitLoopMode:
-
-   - parameter notification: NSNotification
-   */
   static fileprivate func willExitLoopMode(_ notification: Foundation.Notification) {
     playerNode?.loopNodes.forEach { $0.fadeOut(remove: true) }
   }
 
-  /**
-   didExitLoopMode:
-
-   - parameter notification: NSNotification
-  */
   static fileprivate func didExitLoopMode(_ notification: Foundation.Notification) {
     playerNode?.defaultNodes.forEach { $0.fadeIn() }
     insertLoops()
@@ -160,7 +123,6 @@ final class MIDIPlayer {
     }
   }
 
-  /** resetLoops */
   static fileprivate func resetLoops() {
     loops.removeAll()
     loopStart = BarBeatTime.zero
@@ -195,8 +157,8 @@ final class MIDIPlayer {
       logDebug("willSet: \(currentTool) ➞ \(newValue)")
       guard currentTool != newValue else { return }
       if undoManager.groupingLevel > 0 { undoManager.endUndoGrouping() }
-      guard currentTool.toolType?.isShowingContent == true else { return }
-      playerContainer?.dismissSecondaryController()
+      guard (currentTool.toolType as? PresentingToolType)?.isShowingContent == true else { return }
+      playerContainer?.dismiss(completion: {_ in })
     }
     didSet {
       logDebug("didSet: \(oldValue) ➞ \(currentTool)")
@@ -214,16 +176,9 @@ final class MIDIPlayer {
   static var loopStart: BarBeatTime = BarBeatTime.zero
   static var loopEnd: BarBeatTime = BarBeatTime.zero
 
-  /**
-   placeNew:targetTrack:generator:
-
-   - parameter trajectory: Trajectory
-   - parameter targetTrack: InstrumentTrack? = nil
-   - parameter generator: MIDIGenerator
-  */
   static func placeNew(_ trajectory: Trajectory,
                 target: MIDINodeDispatch,
-             generator: MIDIGenerator,
+             generator: AnyMIDIGenerator,
             identifier: MIDINode.Identifier = UUID())
   {
     dispatchToMain {
@@ -254,11 +209,6 @@ final class MIDIPlayer {
     }
   }
 
-  /**
-   removeNode:
-
-   - parameter node: MIDINode
-  */
   static func removeNode(_ node: MIDINode) {
     dispatchToMain {
       guard node.parent === playerNode else { return }

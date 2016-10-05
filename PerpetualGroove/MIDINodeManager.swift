@@ -37,7 +37,7 @@ final class MIDINodeManager {
   */
   func addNodeWithIdentifier(_ identifier: MIDINode.Identifier,
                   trajectory: Trajectory,
-                   generator: MIDIGenerator)
+                   generator: AnyMIDIGenerator)
   {
     owner.logDebug(", ".join("placing node with identifier \(identifier)",
                              "trajectory \(trajectory)",

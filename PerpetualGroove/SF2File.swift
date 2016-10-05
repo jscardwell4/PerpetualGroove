@@ -35,7 +35,7 @@ struct SF2File: CustomStringConvertible {
 
   var description: String { return "\(url.path)" }
 
-  var presets: [Preset] {
+  var presets: [PresetHeader] {
     guard let phdr = try? lazyPDTA.phdr.dataChunk(), case let .presets(headers) = phdr.data else { return [] }
     return headers
   }
@@ -124,14 +124,14 @@ struct SF2File: CustomStringConvertible {
     lazyPDTA = try LazyPDTAChunk(data: data[pdtaRange], url: url)
   }
 
-  static func presets(from url: URL) throws -> [Preset] {
+  static func presetHeaders(from url: URL) throws -> [PresetHeader] {
     let data = try Data(contentsOf: url, options: [.uncached, .alwaysMapped])
     guard let r = data.range(of: Data("pdtaphdr".bytes)) else { return [] }
     let s = _chunkSize(data[r.upperBound +--> 4])
     try _assert(s % 38 == 0)
     let dataʹ = data[(r.upperBound + 4) +--> s]
     return try stride(from: dataʹ.startIndex,
-                      to: dataʹ.endIndex, by: 38).flatMap({try Preset(data: dataʹ[$0 +--> 38])}).sorted()
+                      to: dataʹ.endIndex, by: 38).flatMap({try PresetHeader(data: dataʹ[$0 +--> 38])}).sorted()
   }
 
 }
@@ -173,13 +173,13 @@ extension SF2File {
 
 extension SF2File {
 
-  struct Preset: Comparable, CustomStringConvertible, JSONValueConvertible {
+  struct PresetHeader: Comparable, CustomStringConvertible, JSONValueConvertible, JSONValueInitializable {
 
     let name: String
     let program: Byte
     let bank: Byte
 
-    var description: String { return "Preset {name: \(name); program: \(program); bank: \(bank)}" }
+    var description: String { return "PresetHeader {name: \(name); program: \(program); bank: \(bank)}" }
 
     var jsonValue: JSONValue { return ["name": name, "program": program, "bank": bank] }
 
@@ -190,7 +190,7 @@ extension SF2File {
             let name = String(dict["name"]),
             let program = Byte(dict["program"]),
             let bank = Byte(dict["bank"]) else { return nil }
-      self = Preset(name: name, program: program, bank: bank)
+      self = PresetHeader(name: name, program: program, bank: bank)
     }
 
     /// Initialize from a preset header subchunk from a pdta's phdr subchunk.
@@ -207,11 +207,11 @@ extension SF2File {
     }
 
 
-    static func ==(lhs: Preset, rhs: Preset) -> Bool {
+    static func ==(lhs: PresetHeader, rhs: PresetHeader) -> Bool {
       return lhs.bank == rhs.bank && lhs.program == rhs.program
     }
 
-    static func <(lhs: Preset, rhs: Preset) -> Bool {
+    static func <(lhs: PresetHeader, rhs: PresetHeader) -> Bool {
       return lhs.bank < rhs.bank || (lhs.bank == rhs.bank && lhs.program < rhs.program)
     }
 
@@ -375,9 +375,9 @@ extension SF2File {
           self.data = .text(String(data))
         case .phdr:
           try _assert(data.count % 38 == 0)
-          var headers: [Preset] = []
+          var headers: [PresetHeader] = []
           var i = data.startIndex // Index after chunk size
-          while i < data.endIndex, let header = try Preset(data: data[i +--> 38]) {
+          while i < data.endIndex, let header = try PresetHeader(data: data[i +--> 38]) {
             headers.append(header)
             i += 38
           }
@@ -423,7 +423,7 @@ extension SF2File {
     case version (major: Byte2, minor: Byte2)
     case text (String)
     case data (Data)
-    case presets ([Preset])
+    case presets ([PresetHeader])
 
     var description: String {
       switch self {

@@ -13,7 +13,7 @@ struct GrooveNode: JSONValueConvertible, JSONValueInitializable {
   typealias Identifier = MIDINodeEvent.Identifier
   let identifier: Identifier
   var trajectory: Trajectory
-  var generator: MIDIGenerator
+  var generator: AnyMIDIGenerator
   var addTime: BarBeatTime
   var removeTime: BarBeatTime? {
     didSet { if let time = removeTime , time < addTime { removeTime = nil } }
@@ -50,7 +50,7 @@ struct GrooveNode: JSONValueConvertible, JSONValueInitializable {
     guard let dict = ObjectJSONValue(jsonValue),
       let identifier = MIDINodeEvent.Identifier(dict["identifier"]),
       let trajectory = Trajectory(dict["trajectory"]),
-      let generator = MIDIGenerator(dict["generator"]),
+      let generator = AnyMIDIGenerator(dict["generator"]),
       let addTime = BarBeatTime(dict["addTime"])
       else { return nil }
     self.identifier = identifier

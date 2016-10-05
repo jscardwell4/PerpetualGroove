@@ -207,11 +207,11 @@ final class SoundFontFileTests: XCTestCase {
   }
 
   func testPresets() {
-    guard let presets = try? SF2File.presets(from: SoundFontFileTests.testURL) else {
+    guard let presets = try? SF2File.presetHeaders(from: SoundFontFileTests.testURL) else {
       XCTFail("Failed to get presets from url")
       return
     }
-    print(presets)
+    expect(presets.count).to(beGreaterThan(0))
   }
 
   func testSF2File() {

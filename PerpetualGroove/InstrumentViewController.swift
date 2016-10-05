@@ -21,7 +21,6 @@ final class InstrumentViewController: UIViewController, SecondaryControllerConte
     return receptionist
   }()
 
-  /** awakeFromNib */
   override func awakeFromNib() {
     super.awakeFromNib()
     receptionist.observe(name: Sequencer.NotificationName.soundSetSelectionTargetDidChange.rawValue, from: Sequencer.self) {
@@ -32,81 +31,75 @@ final class InstrumentViewController: UIViewController, SecondaryControllerConte
                          callback: weakMethod(self, InstrumentViewController.updateSoundSets))
   }
 
-  /**
-  updateSoundSets:
-
-  - parameter notification: NSNotification
-  */
   fileprivate func updateSoundSets(_ notification: Notification) { updateSoundSets() }
 
-  /** updateSoundSets */
   fileprivate func updateSoundSets() {
     soundSetPicker.labels = Sequencer.soundSets.map { $0.displayName }
-    instrument = Sequencer.soundSetSelectionTarget
+//    instrument = Sequencer.soundSetSelectionTarget
   }
 
 
-  /** didPickSoundSet */
   @IBAction func didPickSoundSet() {
-    let soundSet = Sequencer.soundSets[soundSetPicker.selection]
     guard let instrument = instrument else { return }
+    let soundSet = Sequencer.soundSets[soundSetPicker.selection]
+    let preset = Instrument.Preset(soundFont: soundSet, presetHeader: soundSet[0], channel: 0)
+
     do {
-      try instrument.loadSoundSet(soundSet, preset: soundSet.presets[0])
+      try instrument.loadPreset(preset)
       programPicker.selection = 0
-      programPicker.labels = soundSet.presets.map({$0.name})
+      programPicker.labels = soundSet.presetHeaders.map({$0.name})
       audition()
     } catch {
       logError(error)
     }
   }
 
-  /** didPickProgram */
   @IBAction func didPickProgram() {
     guard let instrument = instrument else { return }
+    let soundSet = instrument.soundFont
+    let presetHeader = soundSet.presetHeaders[programPicker.selection]
+    let preset = Instrument.Preset(soundFont: soundSet, presetHeader: presetHeader, channel: 0)
     do {
-      try instrument.loadPreset(instrument.soundSet.presets[programPicker.selection])
+      try instrument.loadPreset(preset)
       audition()
     } catch {
       logError(error)
     }
   }
 
-  /** didChangeChannel */
   @IBAction func didChangeChannel() { instrument?.channel = UInt8(channelStepper.value) }
 
 
   func rollBackInstrument() {
-    guard let instrument = instrument, let initialSoundSet = initialSoundSet, let initialPreset = initialPreset else {
+    guard let instrument = instrument, let initialPreset = initialPreset else {
       return
     }
-    do { try instrument.loadSoundSet(initialSoundSet, preset: initialPreset) } catch { logError(error) }
+    do { try instrument.loadPreset(initialPreset) } catch { logError(error) }
   }
 
-  fileprivate(set) var initialSoundSet: SoundFont?
   fileprivate(set) var initialPreset: Instrument.Preset?
 
-  fileprivate weak var instrument: Instrument? {
+  weak var instrument: Instrument? {
     didSet {
       guard let instrument = instrument,
-             let soundSetIndex = instrument.soundSet.index,
-               let presetIndex = instrument.soundSet.presets.index(of: instrument.preset) , isViewLoaded
+        let soundSetIndex = instrument.soundFont.index,
+        let presetIndex = instrument.soundFont.presetHeaders.index(of: instrument.preset.presetHeader) ,
+        isViewLoaded
       else { return }
-      initialSoundSet = instrument.soundSet
+
       initialPreset = instrument.preset
       soundSetPicker.selectItem(soundSetIndex, animated: true)
-      programPicker.labels = instrument.soundSet.presets.map({$0.name})
+      programPicker.labels = instrument.soundFont.presetHeaders.map({$0.name})
       programPicker.selectItem(presetIndex, animated: true)
       channelStepper.value = Double(instrument.channel)
     }
   }
 
-  /** audition */
   fileprivate func audition() {
     guard let instrument = instrument else { return }
-    instrument.playNote(MIDIGenerator(NoteGenerator()))
+    instrument.playNote(AnyMIDIGenerator(NoteGenerator()))
   }
 
-  /** viewDidLoad */
   override func viewDidLoad() {
     super.viewDidLoad()
     guard Sequencer.initialized else { return }

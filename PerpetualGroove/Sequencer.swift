@@ -19,7 +19,7 @@ final class Sequencer {
 
   /// Initializes `soundSets` using the bundled sound font files and creates `auditionInstrument` with the
   /// first found
-  static func initialize() {
+  static func initialize() throws {
     guard !initialized else { return }
 
     observeTransport(transport)
@@ -30,25 +30,16 @@ final class Sequencer {
       EmaxSoundSet(.guitarsAndBasses),
       EmaxSoundSet(.worldInstruments),
       EmaxSoundSet(.drumsAndPercussion),
-      EmaxSoundSet(.orchestral)
+      EmaxSoundSet(.orchestral),
+      SoundSet.spyro
     ]
 
-    let bundle = Bundle.main
-    let exclude = soundSets.map({$0.url})
-    guard var urls = bundle.urls(forResourcesWithExtension: "sf2", subdirectory: nil) else { return }
-    urls = urls.flatMap({($0 as NSURL).fileReferenceURL()})
-    do {
-      try urls.filter({!exclude.contains($0)}).forEach { soundSets.append(try SoundSet(url: $0)) }
-      guard soundSets.count > 0 else {
-        fatalError("failed to create any sound sets from bundled sf2 files")
-      }
-      let soundSet = soundSets[0]
-      let program = UInt8(soundSet.presets[0].program)
-      auditionInstrument = try Instrument(track: nil, soundSet: soundSet, program: program, channel: 0)
-      postNotification(name: .didUpdateAvailableSoundSets, object: self, userInfo: nil)
-    } catch {
-      logError(error)
-    }
+    let soundSet = soundSets[0]
+    let presetHeader = soundSet.presetHeaders[0]
+    let preset = Instrument.Preset(soundFont: soundSet, presetHeader: presetHeader, channel: UInt8(0))
+    auditionInstrument = try Instrument(track: nil, preset: preset)
+    postNotification(name: .didUpdateAvailableSoundSets, object: self, userInfo: nil)
+
     initialized = true
     logDebug("Sequencer initialized")
   }
@@ -229,19 +220,15 @@ final class Sequencer {
 
   static fileprivate(set) var auditionInstrument: Instrument!
 
-  static func instrumentWithCurrentSettings() -> Instrument {
-    return Instrument(track: nil, instrument: auditionInstrument)
-  }
-
-  static weak var soundSetSelectionTarget: Instrument! = Sequencer.auditionInstrument {
-    didSet {
-      guard oldValue !== soundSetSelectionTarget else { return }
-      postNotification(name: .soundSetSelectionTargetDidChange, object: self, userInfo: [
-        "oldSoundSetSelectionTarget": oldValue,
-        "newSoundSetSelectionTarget": soundSetSelectionTarget
-      ])
-    }
-  }
+//  static weak var soundSetSelectionTarget: Instrument! = Sequencer.auditionInstrument {
+//    didSet {
+//      guard oldValue !== soundSetSelectionTarget else { return }
+//      postNotification(name: .soundSetSelectionTargetDidChange, object: self, userInfo: [
+//        "oldSoundSetSelectionTarget": oldValue,
+//        "newSoundSetSelectionTarget": soundSetSelectionTarget
+//      ])
+//    }
+//  }
 
   // MARK: - Transport
 

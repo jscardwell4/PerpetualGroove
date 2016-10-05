@@ -74,10 +74,10 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
                          from: Sequencer.self,
                          callback: weakMethod(self, InstrumentTrack.didJog))
 
-    receptionist.observe(name: Instrument.NotificationName.presetDidChange.rawValue,
+    receptionist.observe(name: Instrument.NotificationName.programDidChange.rawValue,
                          from: instrument,
                          callback: weakMethod(self, InstrumentTrack.didChangePreset))
-    receptionist.observe(name: Instrument.NotificationName.soundSetDidChange.rawValue,
+    receptionist.observe(name: Instrument.NotificationName.soundFontDidChange.rawValue,
                          from: instrument,
                          callback: weakMethod(self, InstrumentTrack.didChangePreset))
 }
@@ -144,7 +144,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 
   /** validateEvents */
   override func validateEvents(_ container: inout MIDIEventContainer) {
-    instrumentEvent = MetaEvent(.text(text: "instrument:\(instrument.soundSet.url.lastPathComponent)"))
+    instrumentEvent = MetaEvent(.text(text: "instrument:\(instrument.soundFont.url.lastPathComponent)"))
     programEvent = ChannelEvent(.programChange, instrument.channel, instrument.program)
     super.validateEvents(&container)
   }
@@ -201,7 +201,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 
   override var displayName: String {
     guard name.isEmpty else { return name }
-    return instrument?.preset.name ?? ""
+    return instrument?.preset.programName ?? ""
   }
 
   fileprivate(set) var isMuted = false {
@@ -413,7 +413,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     nodeManager = MIDINodeManager(owner: self)
     self.instrument = instrument
     instrument.track = self
-    instrumentEvent = MetaEvent(.text(text: "instrument:\(instrument.soundSet.url.lastPathComponent)"))
+    instrumentEvent = MetaEvent(.text(text: "instrument:\(instrument.soundFont.url.lastPathComponent)"))
     programEvent = ChannelEvent(.programChange, instrument.channel, instrument.program)
     color = TrackColor.nextColor
 
@@ -431,11 +431,11 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
   init(sequence: Sequence, grooveTrack: GrooveTrack) throws {
     super.init(sequence: sequence)
     nodeManager = MIDINodeManager(owner: self)
-    guard let instrument = Instrument(grooveTrack.instrument.jsonValue) else {
+    guard let preset = Instrument.Preset(grooveTrack.instrument.jsonValue) else {
       throw Error.InstrumentInitializeFailure
     }
+    instrument = try Instrument(track: self, preset: preset)
     instrument.track = self
-    self.instrument = instrument
     color = grooveTrack.color
 
     name = grooveTrack.name
@@ -483,16 +483,11 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
       throw Error.InvalidSoundSetURL
     }
 
-    let soundSet: SoundFont
-    do {
-      soundSet = try EmaxSoundSet(url: url)
-    } catch {
-      do {
-        soundSet = try SoundSet(url: url)
-      } catch {
-        logError(error)
-        throw Error.SoundSetInitializeFailure
-      }
+    guard case .some(.some(let soundSet)) = try? EmaxSoundSet(url: url) as? SoundFont
+                                     ?? (try? SoundSet(url: url)) as? SoundFont
+      else
+    {
+      throw Error.SoundSetInitializeFailure
     }
 
     // Find the program change event
@@ -502,11 +497,13 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 
     let channel = programEvent.status.channel, program = programEvent.data1
 
-    guard let instrument = try? Instrument(track: self,
-                                           soundSet: soundSet,
-                                           program: program,
-                                           channel: channel) else
-    {
+    guard let presetHeader = soundSet[program: program, bank: 0] else {
+      throw Error.InvalidProgram
+    }
+
+    let preset = Instrument.Preset(soundFont: soundSet, presetHeader: presetHeader, channel: channel)
+
+    guard let instrument = try? Instrument(track: self, preset: preset) else {
       throw Error.InstrumentInitializeFailure
     }
 
@@ -515,6 +512,8 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 
     initializeNotificationReceptionist()
     try initializeMIDIClient()
+
+    fatalError("need to also extract bank")
   }
 
   override var description: String {
@@ -527,6 +526,7 @@ extension InstrumentTrack {
   enum Error: String, Swift.Error, CustomStringConvertible {
     case SoundSetInitializeFailure = "Failed to create sound set"
     case InvalidSoundSetURL = "Failed to resolve sound set url"
+    case InvalidProgram = "Specified sound set does not have the specified program"
     case InstrumentInitializeFailure = "Failed to create instrument"
   }
 }

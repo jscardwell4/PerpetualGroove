@@ -10,9 +10,9 @@ import Foundation
 import MoonKit
 import UIKit
 
-final class RotateTool: NodeAdjustmentTool, SecondaryControllerContentDelegate {//, ConfigurableToolType {
+final class RotateTool: PresentingNodeAdjustmentTool {
 
-  var secondaryContent: SecondaryControllerContent {
+  override var secondaryContent: SecondaryControllerContent {
     guard _secondaryContent == nil else { return _secondaryContent! }
     let storyboard = UIStoryboard(name: "Rotate", bundle: nil)
     let viewController = storyboard.instantiateInitialViewController() as! RotateViewController
@@ -33,17 +33,18 @@ final class RotateTool: NodeAdjustmentTool, SecondaryControllerContentDelegate {
     adjustNode{ node.initialTrajectory.formRotatedTo(angle: rotation) }
   }
 
-  /** didSelectNode */
   override func didSelectNode() {
     guard active else { return }
-    MIDIPlayer.playerContainer?.presentContentForDelegate(self)
+    MIDIPlayer.playerContainer?.presentContent(for: self)
   }
 
 }
 
-final class RotateViewController: SecondaryContent {
+final class RotateViewController: UIViewController, SecondaryControllerContent {
 
   weak var node: MIDINode?
+
+  var supportedActions: SecondaryControllerContainer.SupportedActions = [.Cancel, .Confirm]
 
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)

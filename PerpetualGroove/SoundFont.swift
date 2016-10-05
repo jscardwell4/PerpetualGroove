@@ -11,11 +11,12 @@ import MoonKit
 import class UIKit.UIImage
 
 protocol SoundFont: CustomStringConvertible, JSONValueConvertible, JSONValueInitializable {
+
   /// The sound font file's location.
   var url: URL { get }
 
   /// The presets present in the sound font file.
-  var presets: [SF2File.Preset] { get }
+  var presetHeaders: [SF2File.PresetHeader] { get }
 
   /// The name to display in the user interface for the sound font.
   var displayName: String { get }
@@ -27,13 +28,13 @@ protocol SoundFont: CustomStringConvertible, JSONValueConvertible, JSONValueInit
   var image: UIImage { get }
 
   /// Accessor for retrieving a preset via the totally ordered array of presets.
-  subscript(idx: Int) -> SF2File.Preset { get }
+  subscript(idx: Int) -> SF2File.PresetHeader { get }
 
   /// Accessor for retrieving a preset by its program and bank numbers.
-  subscript(program program: Byte, bank bank: Byte) -> SF2File.Preset { get }
+  subscript(program program: UInt8, bank bank: UInt8) -> SF2File.PresetHeader? { get }
 
   /// Initialize a sound font using it's file location.
-  init(url u: URL) throws
+  init?(url u: URL) throws
 
   /// Compare this sound font to another for equality. Two sound font's are equal if they point to
   /// the same resource.
@@ -70,11 +71,11 @@ extension SoundFont {
 
 extension SoundFont {
 
-  subscript(idx: Int) -> SF2File.Preset { return presets[idx] }
+  subscript(idx: Int) -> SF2File.PresetHeader { return presetHeaders[idx] }
 
-  subscript(program program: Byte, bank bank: Byte) -> SF2File.Preset {
-    guard let idx = presets.index(where: {$0.program == program && $0.bank == bank}) else {
-      fatalError("invalid program-bank combination: \(program)-\(bank)")
+  subscript(program program: UInt8, bank bank: UInt8) -> SF2File.PresetHeader? {
+    guard let idx = presetHeaders.index(where: {$0.program == program && $0.bank == bank}) else {
+      return nil
     }
     return self[idx]
   }
@@ -86,6 +87,10 @@ extension SoundFont {
       default: return false
     }
   }
+
+  var presetHeaders: [SF2File.PresetHeader] { return (try? SF2File.presetHeaders(from: url)) ?? [] }
+
+  var image: UIImage { return #imageLiteral(resourceName: "oscillator") }
 
   var fileName: String { return url.path.baseNameExt.baseName }
 

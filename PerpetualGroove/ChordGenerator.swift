@@ -52,14 +52,6 @@ struct ChordGenerator {
     return result
   }
 
-  /**
-  initWithChord:octave:duration:velocity:
-
-  - parameter chord: Chord
-  - parameter octave: Octave
-  - parameter duration: Duration
-  - parameter velocity: Velocity
-  */
   init(chord: Chord, octave: Octave, duration: Duration, velocity: Velocity) {
     self.chord = chord
     self.octave = octave
@@ -67,12 +59,6 @@ struct ChordGenerator {
     self.velocity = velocity
   }
 
-  /**
-  initWithPattern:generator:
-
-  - parameter pattern: Chord.ChordPattern
-  - parameter generator: NoteGenerator
-  */
   init(pattern: Chord.ChordPattern, generator: NoteGenerator) {
     chord = Chord(generator.tone.note, pattern)
     octave = generator.octave
@@ -81,7 +67,8 @@ struct ChordGenerator {
   }
 }
 
-extension ChordGenerator: JSONValueConvertible {
+extension ChordGenerator: JSONValueConvertible, JSONValueInitializable {
+  
   var jsonValue: JSONValue {
     return ObjectJSONValue([
       "chord": chord.jsonValue,
@@ -90,69 +77,48 @@ extension ChordGenerator: JSONValueConvertible {
       "velocity": velocity.jsonValue
       ]).jsonValue
   }
-}
 
-extension ChordGenerator: JSONValueInitializable {
   init?(_ jsonValue: JSONValue?) {
     guard let dict = ObjectJSONValue(jsonValue),
-              let chord = Chord(dict["chord"]),
-              let octave = Octave(dict["octave"]),
-              let duration = Duration(dict["duration"]),
-              let velocity = Velocity(dict["velocity"]) else { return nil }
+          let chord = Chord(dict["chord"]),
+          let octave = Octave(dict["octave"]),
+          let duration = Duration(dict["duration"]),
+          let velocity = Velocity(dict["velocity"]) else { return nil }
     self.chord = chord
     self.octave = octave
     self.duration = duration
     self.velocity = velocity
   }
+
 }
 
-extension ChordGenerator: MIDIGeneratorType {
+extension ChordGenerator: MIDIGenerator {
 
-  /**
-   receiveNoteOn:
-
-   - parameter endPoint: MIDIEndpointRef
-   */
   func receiveNoteOn(_ endPoint: MIDIEndpointRef, _ identifier: UInt64) throws {
     for note in midiNotes { try note.receiveNoteOn(endPoint, identifier) }
   }
 
-  /**
-   receiveNoteOff:
-
-   - parameter endPoint: MIDIEndpointRef
-   */
   func receiveNoteOff(_ endPoint: MIDIEndpointRef, _ identifier: UInt64) throws {
     for note in midiNotes { try note.receiveNoteOff(endPoint, identifier) }
   }
 
-  /**
-   sendNoteOn:endPoint:
-
-   - parameter endPoint: MIDIEndpointRef
-   */
   func sendNoteOn(_ outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws {
     for note in midiNotes { try note.sendNoteOn(outPort, endPoint) }
   }
 
-  /**
-   sendNoteOff:endPoint:
-
-   - parameter endPoint: MIDIEndpointRef
-   */
   func sendNoteOff(_ outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws {
     for note in midiNotes { try note.sendNoteOff(outPort, endPoint) }
   }
 
 }
 
-extension ChordGenerator: Equatable {}
+extension ChordGenerator: Equatable {
 
-func ==(lhs: ChordGenerator, rhs: ChordGenerator) -> Bool {
-  return lhs.chord == rhs.chord
-      && lhs.octave == rhs.octave
-      && lhs.duration == rhs.duration
-      && lhs.velocity == rhs.velocity
+  static func ==(lhs: ChordGenerator, rhs: ChordGenerator) -> Bool {
+    return lhs.chord == rhs.chord
+        && lhs.octave == rhs.octave
+        && lhs.duration == rhs.duration
+        && lhs.velocity == rhs.velocity
+  }
+
 }
-
-

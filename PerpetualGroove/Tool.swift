@@ -12,14 +12,12 @@ import MoonKit
 
 // TODO: Nudge, Throttle, Rotate tools
 
-@objc protocol ToolType: TouchReceiver {
+protocol ToolType: TouchReceiver {
   var active: Bool { get set }
 
-  @objc optional func didShowContent(_ content: SecondaryContent)
-  @objc optional func didHideContent(_ dismissalAction: SecondaryControllerContainer.DismissalAction)
-  @objc optional var secondaryContent: SecondaryContent { get }
-  @objc optional var isShowingContent: Bool { get }
 }
+
+protocol PresentingToolType: ToolType, SecondaryControllerContentProvider {}
 
 enum Tool: Int {
   case none = -1

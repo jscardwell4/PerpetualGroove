@@ -29,7 +29,7 @@ final class MIDINode: SKSpriteNode {
 
   fileprivate(set) var pendingPosition: CGPoint?
 
-  var generator: MIDIGenerator {
+  var generator: AnyMIDIGenerator {
     didSet {
       guard generator != oldValue else { return }
       playAction = Action(key: .Play, node: self)
@@ -238,7 +238,7 @@ final class MIDINode: SKSpriteNode {
   init(trajectory: Trajectory,
        name: String,
        dispatch: MIDINodeDispatch,
-       generator: MIDIGenerator,
+       generator: AnyMIDIGenerator,
        identifier: Identifier = UUID()) throws
   {
     initTime = Sequencer.time.barBeatTime

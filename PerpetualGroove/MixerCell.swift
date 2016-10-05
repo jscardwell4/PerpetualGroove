@@ -18,7 +18,6 @@ final class AddTrackCell: UICollectionViewCell {
   @IBOutlet weak var mockTrackBackground: UIImageView!
   @IBOutlet weak var addTrackButton: ImageButtonView!
 
-  /** prepareForReuse */
   override func prepareForReuse() {
     super.prepareForReuse()
     addTrackButton.isSelected = false
@@ -49,10 +48,8 @@ final class MasterCell: MixerCell {
 
   static let Identifier = "MasterCell"
   
-  /** refresh */
   func refresh() { volume = AudioManager.mixer.volume; pan = AudioManager.mixer.pan }
 
-  /** volumeDidChange */
   @IBAction func volumeDidChange() { AudioManager.mixer.volume = volume }
   @IBAction func panDidChange() { AudioManager.mixer.pan = pan }
 
@@ -75,7 +72,7 @@ final class TrackCell: MixerCell {
   @IBOutlet var trackLabel: MarqueeField!
   @IBOutlet var trackColor: ImageButtonView!
 
-  fileprivate var startLocation: CGPoint?
+  private var startLocation: CGPoint?
 
   @IBOutlet var removalDisplay: UIVisualEffectView!
 
@@ -84,21 +81,23 @@ final class TrackCell: MixerCell {
     set { trackColor.isSelected = newValue; super.isSelected = newValue }
   }
 
-  /** instrument */
-  @IBAction func instrument() { controller?.registerCellForSoundSetSelection(self) }
+  @IBAction func instrument() {
+    if controller?.soundFontTarget === self {
+      controller?.soundFontTarget = nil
+    } else {
+      controller?.soundFontTarget = self
+    }
+//    controller?.registerCellForSoundSetSelection(self)
+  }
 
-  /** solo */
   @IBAction func solo() { track?.solo.toggle() }
 
-  fileprivate var muteDisengaged = false { didSet { muteButton.isEnabled = !muteDisengaged } }
+  private var muteDisengaged = false { didSet { muteButton.isEnabled = !muteDisengaged } }
 
-  /** mute */
   @IBAction func mute() { track?.mute.toggle() }
 
-  /** volumeDidChange */
   @IBAction func volumeDidChange() { track?.volume = volume }
 
-  /** panDidChange */
   @IBAction func panDidChange() { track?.pan = pan }
 
   weak var track: InstrumentTrack? {
@@ -106,7 +105,7 @@ final class TrackCell: MixerCell {
       guard track != oldValue else { return }
       volume = track?.volume ?? 0
       pan = track?.pan ?? 0
-      soundSetImage.image = track?.instrument.soundSet.image
+      soundSetImage.image = track?.instrument.soundFont.image
       trackLabel.text = track?.displayName ?? ""
       trackColor.normalTintColor = track?.color.value
       muteButton.isSelected = track?.isMuted ?? false
@@ -115,16 +114,9 @@ final class TrackCell: MixerCell {
     }
   }
 
-  fileprivate var receptionist: NotificationReceptionist?
+  private var receptionist: NotificationReceptionist?
 
-  /**
-  receptionistForTrack:
-
-  - parameter track: InstrumentTrack
-
-  - returns: NotificationReceptionist
-  */
-  fileprivate func receptionistForTrack(_ track: InstrumentTrack?) -> NotificationReceptionist? {
+  private func receptionistForTrack(_ track: InstrumentTrack?) -> NotificationReceptionist? {
 
     
     guard let track = track else { return nil }
@@ -152,13 +144,13 @@ final class TrackCell: MixerCell {
       guard let weakself = self, let track = weakself.track else { return }
       weakself.trackLabel.text = track.displayName
     }
-    receptionist.observe(name: Instrument.NotificationName.soundSetDidChange.rawValue, from: track.instrument) {
+    receptionist.observe(name: Instrument.NotificationName.soundFontDidChange.rawValue, from: track.instrument) {
       [weak self] _ in
       guard let weakself = self, let track = weakself.track else { return }
-      weakself.soundSetImage.image = track.instrument.soundSet.image
+      weakself.soundSetImage.image = track.instrument.soundFont.image
       weakself.trackLabel.text = track.displayName
     }
-    receptionist.observe(name: Instrument.NotificationName.presetDidChange.rawValue, from: track.instrument) {
+    receptionist.observe(name: Instrument.NotificationName.programDidChange.rawValue, from: track.instrument) {
       [weak self] _ in
       guard let weakself = self, let track = weakself.track else { return }
       weakself.trackLabel.text = track.displayName
@@ -170,11 +162,6 @@ final class TrackCell: MixerCell {
 
 extension TrackCell: UITextFieldDelegate {
 
-  /**
-  textFieldDidEndEditing:
-
-  - parameter textField: UITextField
-  */
   func textFieldDidEndEditing(_ textField: UITextField) { if let text = textField.text { track?.name = text } }
 
 }

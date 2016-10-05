@@ -20,13 +20,8 @@ final class AddTool: ToolType {
     }
   }
 
-  var generator = MIDIGenerator(NoteGenerator())
+  var generator = AnyMIDIGenerator(NoteGenerator())
 
-  /**
-  initWithBezierPath:
-
-  - parameter bezierPath: UIBezierPath
-  */
   init(playerNode: MIDIPlayerNode) { player = playerNode }
 
   // MARK: - Touch handling
@@ -60,54 +55,34 @@ final class AddTool: ToolType {
 
   fileprivate var touchNode: SKSpriteNode?
 
-  /** updateData */
   fileprivate func updateData() {
-    guard let timestamp = touch?.timestamp, let location = touch?.location(in: player)
-      , timestamp != self.timestamp && location != self.location else { return }
+    guard let timestamp = touch?.timestamp,
+          let location = touch?.location(in: player),
+          timestamp != self.timestamp && location != self.location
+      else
+    {
+      return
+    }
 
     velocities.append(CGVector((location - self.location) / (timestamp - self.timestamp)))
     self.timestamp = timestamp
     self.location = location
   }
 
-  /**
-  touchesBegan:withEvent:
-
-  - parameter touches: Set<UITouch>
-  - parameter event: UIEvent?
-  */
-  @objc func touchesBegan(_ touches: Set<UITouch>, withEvent event: UIEvent?) {
+  @objc func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
     if active && touch == nil { touch = touches.first }
   }
 
-  /**
-  touchesCancelled:withEvent:
+  @objc func touchesCancelled(_ touches: Set<UITouch>?, with event: UIEvent?) { touch = nil }
 
-  - parameter touches: Set<UITouch>?
-  - parameter event: UIEvent?
-  */
-  @objc func touchesCancelled(_ touches: Set<UITouch>?, withEvent event: UIEvent?) { touch = nil }
-
-  /**
-  touchesEnded:withEvent:
-
-  - parameter touches: Set<UITouch>
-  - parameter event: UIEvent?
-  */
-  @objc func touchesEnded(_ touches: Set<UITouch>, withEvent event: UIEvent?) {
+  @objc func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
     guard touch != nil && touches.contains(touch!) else { return }
     updateData()
     generate()
     touch = nil
   }
 
-  /**
-  touchesMoved:withEvent:
-
-  - parameter touches: Set<UITouch>
-  - parameter event: UIEvent?
-  */
-  @objc func touchesMoved(_ touches: Set<UITouch>, withEvent event: UIEvent?) {
+  @objc func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
     guard touch != nil && touches.contains(touch!) else { return }
     guard let p = touch?.location(in: player) , player.contains(p) else {
       touch = nil
@@ -119,7 +94,6 @@ final class AddTool: ToolType {
 
   // MARK: - MIDINode generation
 
-  /** generate */
   fileprivate func generate() {
     guard velocities.count > 0 && !location.isNull else { return }
     guard let track = Sequencer.sequence?.currentTrack else { return }

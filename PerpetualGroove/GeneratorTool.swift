@@ -10,36 +10,25 @@ import UIKit
 import SpriteKit
 import MoonKit
 
-final class GeneratorTool: NodeSelectionTool, SecondaryControllerContentDelegate {//, ConfigurableToolType {
+final class GeneratorTool: PresentingNodeSelectionTool {
 
   override var active: Bool  {
     didSet {
       logDebug("[\(mode)] oldValue = \(oldValue)  active = \(active)")
       guard active != oldValue && active && mode == .new else { return }
-      MIDIPlayer.playerContainer?.presentContentForDelegate(self)
+      MIDIPlayer.playerContainer?.presentContent(for: self)
     }
   }
 
   enum Mode { case new, existing }
   let mode: Mode
 
-  /**
-   initWithPlayerNode:mode:
-
-   - parameter playerNode: MIDIPlayerNode
-   - parameter mode: Mode
-  */
   init(playerNode: MIDIPlayerNode, mode: Mode) {
     self.mode = mode
     super.init(playerNode: playerNode)
   }
 
-  /**
-   didChangeGenerator:
-
-   - parameter generator: MIDIGenerator
-  */
-  fileprivate func didChangeGenerator(_ generator: MIDIGenerator) {
+  fileprivate func didChangeGenerator(_ generator: AnyMIDIGenerator) {
     guard let node = node else { return }
     MIDIPlayer.undoManager.registerUndo(withTarget: node) {
       [initialGenerator = node.generator] node in
@@ -51,7 +40,7 @@ final class GeneratorTool: NodeSelectionTool, SecondaryControllerContentDelegate
     node.generator = generator
   }
 
-  var secondaryContent: SecondaryControllerContent {
+  override var secondaryContent: SecondaryControllerContent {
     guard _secondaryContent == nil else { return _secondaryContent! }
 
     let storyboard = UIStoryboard(name: "Generator", bundle: nil)
@@ -83,41 +72,38 @@ final class GeneratorTool: NodeSelectionTool, SecondaryControllerContentDelegate
 
     }
 
-
     return secondaryContent
   }
 
-  /** didHideContent */
-  override func didHideContent(_ dismissalAction: SecondaryControllerContainer.DismissalAction) {
-    super.didHideContent(dismissalAction)
+  override func didHide(content: SecondaryControllerContent, dismissalAction: SecondaryControllerContainer.DismissalAction) {
+    super.didHide(content: content, dismissalAction: dismissalAction)
     guard MIDIPlayer.currentTool.toolType === self && mode == .new else { return }
     MIDIPlayer.currentTool = .none
   }
 
-  override func touchesBegan(_ touches: Set<UITouch>, withEvent event: UIEvent?) {
+  override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
     guard mode == .existing else { return }
-    super.touchesBegan(touches, withEvent: event)
+    super.touchesBegan(touches, with: event)
   }
 
-  override func touchesEnded(_ touches: Set<UITouch>, withEvent event: UIEvent?) {
+  override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
     guard mode == .existing else { return }
-    super.touchesBegan(touches, withEvent: event)
+    super.touchesBegan(touches, with: event)
   }
 
-  override func touchesMoved(_ touches: Set<UITouch>, withEvent event: UIEvent?) {
+  override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
     guard mode == .existing else { return }
-    super.touchesMoved(touches, withEvent: event)
+    super.touchesMoved(touches, with: event)
   }
 
-  override func touchesCancelled(_ touches: Set<UITouch>?, withEvent event: UIEvent?) {
+  override func touchesCancelled(_ touches: Set<UITouch>?, with event: UIEvent?) {
     guard mode == .existing else { return }
-    super.touchesCancelled(touches, withEvent: event)
+    super.touchesCancelled(touches, with: event)
   }
 
-  /** didSelectNode */
   override func didSelectNode() {
     guard active && mode == .existing && node != nil else { return }
-    MIDIPlayer.playerContainer?.presentContentForDelegate(self)
+    MIDIPlayer.playerContainer?.presentContent(for: self)
   }
 }
 
@@ -140,9 +126,8 @@ final class GeneratorViewController: UIViewController, SecondaryControllerConten
     }
   }
 
-  var didChangeGenerator: ((MIDIGenerator) -> Void)?
+  var didChangeGenerator: ((AnyMIDIGenerator) -> Void)?
 
-  /** refresh */
   fileprivate func refresh() {
     guard isViewLoaded else { return }
     pitchPicker.selection = generator.root.natural.index
@@ -166,30 +151,27 @@ final class GeneratorViewController: UIViewController, SecondaryControllerConten
   }
 
   fileprivate var loading = false
-  func loadGenerator(_ generator: MIDIGenerator) {
+  func loadGenerator(_ generator: AnyMIDIGenerator) {
     loading = true
     self.generator = generator
     loading = false
   }
 
-  fileprivate(set) var generator = MIDIGenerator(NoteGenerator()) {
+  fileprivate(set) var generator = AnyMIDIGenerator(NoteGenerator()) {
     didSet {
       guard !loading else { return }
       didChangeGenerator?(generator)
     }
   }
 
-  /** didPickPitch */
   @IBAction func didPickPitch() {
     generator.root.natural = Natural.allCases[pitchPicker.selection]
   }
 
-  /** didPickOctave */
   @IBAction func didPickOctave() {
     generator.octave = Octave.allCases[octavePicker.selection]
   }
 
-  /** didPickModifier */
   @IBAction func didPickModifier() {
     switch modifierPicker.selection {
       case 0: generator.root.modifier = .flat
@@ -198,7 +180,6 @@ final class GeneratorViewController: UIViewController, SecondaryControllerConten
     }
   }
 
-  /** didPickChord */
   @IBAction func didPickChord() {
     let newValue: Chord.ChordPattern.StandardChordPattern?
     switch chordPicker.selection {
@@ -207,27 +188,24 @@ final class GeneratorViewController: UIViewController, SecondaryControllerConten
     }
     switch (generator, newValue) {
       case let (.note(generator), newValue?):
-        self.generator = MIDIGenerator(ChordGenerator(pattern: newValue.pattern, generator: generator))
+        self.generator = AnyMIDIGenerator(ChordGenerator(pattern: newValue.pattern, generator: generator))
       case (.chord(var generator), let newValue?):
-        generator.chord.pattern = newValue.pattern; self.generator = MIDIGenerator(generator)
+        generator.chord.pattern = newValue.pattern; self.generator = AnyMIDIGenerator(generator)
       case (.chord(let generator), nil):
-        self.generator = MIDIGenerator(NoteGenerator(generator: generator))
+        self.generator = AnyMIDIGenerator(NoteGenerator(generator: generator))
       default:
         break
     }
   }
 
-  /** didPickDuration */
   @IBAction func didPickDuration() {
     generator.duration = Duration.allCases[durationPicker.selection]
   }
 
-  /** didPickVelocity */
   @IBAction func didPickVelocity() {
     generator.velocity = Velocity.allCases[velocityPicker.selection]
   }
 
-  /** viewDidLoad */
   override func viewDidAppear(_ animated: Bool) { super.viewDidAppear(animated); refresh() }
   
  }

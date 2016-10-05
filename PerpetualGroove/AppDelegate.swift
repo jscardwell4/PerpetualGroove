@@ -43,11 +43,15 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
   {
     DispatchQueue.main.asyncAfter(deadline: DispatchTime(uptimeNanoseconds: NSEC_PER_SEC)) {
       DispatchQueue.global().async {
-        SettingsManager.initialize()
-        AudioManager.initialize()
-        Sequencer.initialize()
-        MIDIPlayer.initialize()
-        DocumentManager.initialize()
+        do {
+          SettingsManager.initialize()
+          AudioManager.initialize()
+          try Sequencer.initialize()
+          MIDIPlayer.initialize()
+          DocumentManager.initialize()
+        } catch {
+          logError(error)
+        }
       }
     }
     viewController = window?.rootViewController as? RootViewController

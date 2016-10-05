@@ -189,7 +189,7 @@ func ==(lhs: MIDINodeEvent.Identifier, rhs: MIDINodeEvent.Identifier) -> Bool {
 extension MIDINodeEvent {
 
   enum Data: Equatable {
-    case add(identifier: Identifier, trajectory: Trajectory, generator: MIDIGenerator)
+    case add(identifier: Identifier, trajectory: Trajectory, generator: AnyMIDIGenerator)
     case remove(identifier: Identifier)
 
     /**
@@ -233,7 +233,7 @@ extension MIDINodeEvent {
 
       guard data.distance(from: i, to: data.endIndex) == 0 else { throw MIDIFileError(type: .invalidLength, reason: "Incorrect number of bytes") }
 
-      let generator = MIDIGenerator(NoteGenerator(data[currentIndex ..< i]))
+      let generator = AnyMIDIGenerator(NoteGenerator(data[currentIndex ..< i]))
       self = .add(identifier: identifier, trajectory: trajectory, generator: generator)
     }
 

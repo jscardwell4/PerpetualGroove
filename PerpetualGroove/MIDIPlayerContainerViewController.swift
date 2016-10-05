@@ -36,7 +36,7 @@ final class MIDIPlayerContainerViewController: SecondaryControllerContainer {
 
    - parameter tool: ConfigurableToolType
    */
-//  func presentContentForTool<T:ToolType where T:SecondaryControllerContentDelegate>(tool: T) {
+//  func presentContentForTool<T:ToolType where T:SecondaryControllerContentProvider>(tool: T) {
 //    presentContentForDelegate(tool) {
 //      [unowned self] in
 //        guard $0 else { return }

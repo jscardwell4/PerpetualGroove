@@ -12,9 +12,6 @@ import UIKit
 
 class SecondaryContent: UIViewController, SecondaryControllerContent {
 
-  var anyAction: (() -> Void)? = nil
-  var cancelAction: (() -> Void)? = nil
-  var confirmAction: (() -> Void)? = nil
   var nextAction: (() -> Void)? = nil
   var previousAction: (() -> Void)? = nil
 
