@@ -10,19 +10,19 @@ import Foundation
 import MoonKit
 import CoreMIDI
 
-/** Structure that encapsulates MIDI information necessary for playing a note */
+/// Structure that encapsulates MIDI information necessary for playing a note
 struct NoteGenerator {
 
   var channel: UInt8 = 0
 
   /// The pitch and octave
-  var tone: Tone = Tone(midi: 60)
+  var tone: Tone
 
   /// The duration of the played note
-  var duration: Duration = .eighth
+  var duration: Duration
 
   /// The dynmamics for the note
-  var velocity: Velocity = .𝑚𝑓
+  var velocity: Velocity
 
   /// The octave held by `tone`
   var octave: Octave { get { return tone.octave } set { tone.octave = newValue } }
@@ -30,18 +30,12 @@ struct NoteGenerator {
   /// The pitch held by `tone`
   var root: Note { get { return tone.note } set { tone.note = newValue } }
 
-  init() {}
-  init(tone: Tone, duration: Duration, velocity: Velocity) {
+  init(tone: Tone = Tone(midi: 60), duration: Duration = .eighth, velocity: Velocity = .𝑚𝑓) {
     self.tone = tone
     self.duration = duration
     self.velocity = velocity
   }
 
-  /**
-  initWithGenerator:
-
-  - parameter generator: ChordGenerator
-  */
   init(generator: ChordGenerator) {
     self.init(tone: Tone(generator.chord.root, generator.octave),
               duration: generator.duration,
@@ -50,7 +44,8 @@ struct NoteGenerator {
 
 }
 
-extension NoteGenerator: JSONValueConvertible {
+extension NoteGenerator: LosslessJSONValueConvertible {
+
   var jsonValue: JSONValue {
     return ObjectJSONValue([
       "tone": tone.jsonValue,
@@ -60,9 +55,7 @@ extension NoteGenerator: JSONValueConvertible {
       "root": root.jsonValue
       ]).jsonValue
   }
-}
 
-extension NoteGenerator: JSONValueInitializable {
   init?(_ jsonValue: JSONValue?) {
     guard let dict = ObjectJSONValue(jsonValue),
               let tone = Tone(dict["tone"]),
@@ -76,19 +69,90 @@ extension NoteGenerator: JSONValueInitializable {
     self.octave = octave
     self.root = root
   }
+
 }
 
-// MARK: - Tone
+extension NoteGenerator: MIDIGenerator {
+
+  func receiveNoteOn(_ endPoint: MIDIEndpointRef, _ identifier: UInt64) throws {
+    let packet = Packet(status: 0x90,
+                        channel: channel,
+                        note: tone.midi,
+                        velocity: velocity.midi,
+                        identifier: identifier)
+    var packetList = packet.packetList
+    try MIDIReceived(endPoint, &packetList) ➤ "Unable to send note on event"
+  }
+
+  func receiveNoteOff(_ endPoint: MIDIEndpointRef, _ identifier: UInt64) throws {
+    let packet = Packet(status: 0x80,
+                        channel: channel,
+                        note: tone.midi,
+                        velocity: velocity.midi,
+                        identifier: identifier)
+    var packetList = packet.packetList
+    try MIDIReceived(endPoint, &packetList) ➤ "Unable to send note off event"
+  }
+
+  func sendNoteOn(_ outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws {
+    let packet = Packet(status: 0x90,
+                        channel: channel,
+                        note: tone.midi,
+                        velocity: velocity.midi,
+                        identifier: 0)
+    var packetList = packet.packetList
+    try MIDISend(outPort, endPoint, &packetList) ➤ "Unable to send note on event"
+  }
+
+  func sendNoteOff(_ outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws {
+    let packet = Packet(status: 0x80,
+                        channel: channel,
+                        note: tone.midi,
+                        velocity: velocity.midi,
+                        identifier: 0)
+    var packetList = packet.packetList
+    try MIDISend(outPort, endPoint, &packetList) ➤ "Unable to send note off event"
+  }
+
+}
+
+extension NoteGenerator: ByteArrayConvertible {
+
+  var bytes: [Byte] { return [channel, tone.midi, velocity.midi] + duration.rawValue.bytes }
+
+  init(_ bytes: [Byte]) {
+    guard bytes.count >= 7 else { self = NoteGenerator(); return }
+    channel  = bytes[0]
+    tone     = Tone(midi: bytes[1])
+    velocity = Velocity(midi: bytes[2])
+    duration = Duration(rawValue: String(bytes[3|->])) ?? .eighth
+  }
+}
+
+extension NoteGenerator: CustomStringConvertible {
+  var description: String { return "{\(channel), \(tone), \(duration), \(velocity)}" }
+}
+
+extension NoteGenerator: Equatable {
+
+  static func ==(lhs: NoteGenerator, rhs: NoteGenerator) -> Bool {
+    return lhs.channel == rhs.channel
+      && lhs.duration == rhs.duration
+      && lhs.velocity == rhs.velocity
+      && lhs.tone == rhs.tone
+  }
+  
+}
+
 extension NoteGenerator {
-  /** An enumeration for specifying a note's pitch and octave */
-  struct Tone: RawRepresentable, Equatable, CustomStringConvertible,
-               JSONValueConvertible, JSONValueInitializable
-  {
+
+  /// An enumeration for specifying a note's pitch and octave
+  struct Tone {
 
     var note: Note
     var octave: Octave
 
-    static func indexForNote(_ note: Note) -> Int {
+    static func index(for note: Note) -> Int {
       switch note {
         case .`default`(.c), .modified(.b, .sharp), .modified(.d, .doubleFlat):       return 0
         case .modified(.c, .sharp), .modified(.d, .flat):                             return 1
@@ -105,7 +169,7 @@ extension NoteGenerator {
       }
     }
 
-    static func noteForIndex(_ index: Int) -> Note? {
+    static func note(for index: Int) -> Note? {
       switch index {
         case 0:  return .`default`(.c)
         case 1:  return .modified(.c, .sharp)
@@ -123,153 +187,45 @@ extension NoteGenerator {
       }
     }
 
-    /**
-    init:octave:
-
-    - parameter note: Note
-    - parameter octave: Octave
-    */
     init(_ note: Note, _ octave: Octave) {
       self.note = note
       self.octave = octave
     }
 
-    /**
-    Initialize from MIDI value from 0 ... 127
-
-    - parameter value: Int
-    */
+    /// Initialize from MIDI value from 0 ... 127
     init(midi value: Byte) {
-      note = Tone.noteForIndex(Int(value) % 12)!
+      note = Tone.note(for: Int(value) % 12)!
       octave = Octave(rawValue: Int(value / 12 - 1)) ?? .four
     }
 
-    /**
-    Initialize with string representation
+    var midi: Byte { return UInt8((octave.rawValue + 1) * 12 + Tone.index(for: note)) }
 
-    - parameter rawValue: String
-    */
-    init?(rawValue: String) {
-      guard let match = (~/"^([A-G]♯?) ?((?:-1)|[0-9])$").firstMatch(in: rawValue),
-        let rawNote = match.captures[1]?.string,
-        let pitch = Note(rawValue: rawNote),
-        let rawOctaveString = match.captures[2]?.string,
-        let rawOctave = Int(rawOctaveString),
-        let octave = Octave(rawValue: rawOctave) else { return nil }
-
-      self.note = pitch; self.octave = octave
-    }
-
-    var rawValue: String { return "\(note.rawValue)\(octave.rawValue)" }
-
-    var midi: Byte { return UInt8((octave.rawValue + 1) * 12 + Tone.indexForNote(note)) }
-
-    var description: String { return rawValue }
-    var jsonValue: JSONValue { return rawValue.jsonValue }
-    init?(_ jsonValue: JSONValue?) {
-      guard let rawValue = String(jsonValue) else { return nil }
-      self.init(rawValue: rawValue)
-    }
-  }
-}
-
-// MARK: - MIDIGeneratorType
-extension NoteGenerator: MIDIGenerator {
-
-  /**
-   receiveNoteOn:
-
-   - parameter endPoint: MIDIEndpointRef
-   */
-  func receiveNoteOn(_ endPoint: MIDIEndpointRef, _ identifier: UInt64) throws {
-    let packet = Packet(status: 0x90,
-                        channel: channel,
-                        note: tone.midi,
-                        velocity: velocity.midi,
-                        identifier: identifier)
-    var packetList = packet.packetList
-    try MIDIReceived(endPoint, &packetList) ➤ "Unable to send note on event"
-  }
-
-  /**
-   receiveNoteOff:
-
-   - parameter endPoint: MIDIEndpointRef
-   */
-  func receiveNoteOff(_ endPoint: MIDIEndpointRef, _ identifier: UInt64) throws {
-    let packet = Packet(status: 0x80,
-                        channel: channel,
-                        note: tone.midi,
-                        velocity: velocity.midi,
-                        identifier: identifier)
-    var packetList = packet.packetList
-    try MIDIReceived(endPoint, &packetList) ➤ "Unable to send note off event"
-  }
-
-  /**
-   sendNoteOn:endPoint:
-
-   - parameter endPoint: MIDIEndpointRef
-   */
-  func sendNoteOn(_ outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws {
-    let packet = Packet(status: 0x90,
-      channel: channel,
-      note: tone.midi,
-      velocity: velocity.midi,
-      identifier: 0)
-    var packetList = packet.packetList
-    try MIDISend(outPort, endPoint, &packetList) ➤ "Unable to send note on event"
-  }
-
-  /**
-   sendNoteOff:endPoint:
-
-   - parameter endPoint: MIDIEndpointRef
-   */
-  func sendNoteOff(_ outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws {
-    let packet = Packet(status: 0x80,
-      channel: channel,
-      note: tone.midi,
-      velocity: velocity.midi,
-      identifier: 0)
-    var packetList = packet.packetList
-    try MIDISend(outPort, endPoint, &packetList) ➤ "Unable to send note off event"
   }
 
 }
 
-// MARK: - ByteArrayConvertible
-extension NoteGenerator: ByteArrayConvertible {
+extension NoteGenerator.Tone: RawRepresentable, LosslessJSONValueConvertible {
 
-  var bytes: [Byte] { return [channel, tone.midi, velocity.midi] + duration.rawValue.bytes }
+  /// Initialize with string representation
+  init?(rawValue: String) {
+    guard let captures = (rawValue ~=> ~/"^([A-G]♯?) ?((?:-1)|[0-9])$"),
+      let pitch = Note(rawValue: captures.1 ?? ""),
+      let rawOctave = Int(captures.2 ?? ""),
+      let octave = Octave(rawValue: rawOctave) else { return nil }
 
-  /**
-  init:
-
-  - parameter bytes: [Byte]
-  */
-  init(_ bytes: [Byte]) {
-    guard bytes.count >= 7 else { return }
-    channel  = bytes[0]
-    tone     = Tone(midi: bytes[1])
-    velocity = Velocity(midi: bytes[2])
-    duration = Duration(rawValue: String(bytes[3|->])) ?? .eighth
+    self.note = pitch
+    self.octave = octave
   }
+
+  var rawValue: String { return "\(note.rawValue)\(octave.rawValue)" }
+
 }
 
-// MARK: - CustomStringConvertible
-extension NoteGenerator: CustomStringConvertible {
-  var description: String { return "{\(channel), \(tone), \(duration), \(velocity)}" }
+extension NoteGenerator.Tone: Equatable {
+
+  static func ==(lhs: NoteGenerator.Tone, rhs: NoteGenerator.Tone) -> Bool {
+    return lhs.midi == rhs.midi
+  }
+
 }
 
-// MARK: - Equatable
-extension NoteGenerator: Equatable {}
-
-func ==(lhs: NoteGenerator.Tone, rhs: NoteGenerator.Tone) -> Bool { return lhs.midi == rhs.midi }
-
-func ==(lhs: NoteGenerator, rhs: NoteGenerator) -> Bool {
-  return lhs.channel == rhs.channel
-      && lhs.duration == rhs.duration
-      && lhs.velocity == rhs.velocity
-      && lhs.tone == rhs.tone
-}

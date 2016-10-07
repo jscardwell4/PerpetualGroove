@@ -11,10 +11,11 @@ import CoreMIDI
 import MoonKit
 
 struct ChordGenerator {
-  var chord = Chord()
-  var octave = Octave.four
-  var duration = Duration.eighth
-  var velocity = Velocity.𝑚𝑓
+
+  var chord: Chord
+  var octave: Octave
+  var duration: Duration
+  var velocity: Velocity
 
   var root: Note { get { return chord.root } set { chord.root = newValue } }
 
@@ -52,22 +53,27 @@ struct ChordGenerator {
     return result
   }
 
-  init(chord: Chord, octave: Octave, duration: Duration, velocity: Velocity) {
+  init(chord: Chord = Chord(),
+       octave: Octave = Octave.four,
+       duration: Duration = Duration.eighth,
+       velocity: Velocity = Velocity.𝑚𝑓)
+  {
     self.chord = chord
     self.octave = octave
     self.duration = duration
     self.velocity = velocity
   }
 
-  init(pattern: Chord.ChordPattern, generator: NoteGenerator) {
-    chord = Chord(generator.tone.note, pattern)
+  init(pattern: Chord.Pattern, generator: NoteGenerator) {
+    chord = Chord(root: generator.tone.note, pattern: pattern)
     octave = generator.octave
     duration = generator.duration
     velocity = generator.velocity
   }
+  
 }
 
-extension ChordGenerator: JSONValueConvertible, JSONValueInitializable {
+extension ChordGenerator: LosslessJSONValueConvertible {
   
   var jsonValue: JSONValue {
     return ObjectJSONValue([

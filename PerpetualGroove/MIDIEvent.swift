@@ -9,7 +9,7 @@
 import Foundation
 import MoonKit
 
-/**  Protocol for types that produce data for a track event in a track chunk */
+///  Protocol for types that produce data for a track event in a track chunk
 protocol MIDIEventType: CustomStringConvertible {
   var time: BarBeatTime { get set }
   var delta: VariableLengthQuantity? { get set }
@@ -32,7 +32,8 @@ protocol MIDIEventDispatch: class, Loggable {
   func filterEvents(_ includeElement: (MIDIEvent) -> Bool) -> [MIDIEvent]
   func dispatchEventsForTime(_ time: BarBeatTime)
   func dispatchEvent(_ event: MIDIEvent)
-  func registrationTimesForAddedEvents<S:Swift.Sequence>(_ events: S) -> [BarBeatTime] where S.Iterator.Element == MIDIEvent
+  func registrationTimes<S:Swift.Sequence>(forAdding events: S) -> [BarBeatTime]
+    where S.Iterator.Element == MIDIEvent
   var events: MIDIEventContainer { get set }
   var metaEvents: [MetaEvent] { get }
   var channelEvents: [ChannelEvent] { get }
@@ -45,9 +46,9 @@ extension MIDIEventDispatch {
   func addEvent(_ event: MIDIEvent) { addEvents([event]) }
   func addEvents<S:Swift.Sequence>(_ events: S) where S.Iterator.Element == MIDIEvent {
     self.events.appendEvents(events)
-    Sequencer.time.registerCallback(weakMethod(self, type(of: self).dispatchEventsForTime),
-      forTimes: registrationTimesForAddedEvents(events),
-      forObject: self)
+    Sequencer.time.register(callback: weakMethod(self, type(of: self).dispatchEventsForTime),
+                            times: registrationTimes(forAdding: events),
+                            object: self)
   }
   func eventsForTime(_ time: BarBeatTime) -> OrderedSet<MIDIEvent>? { return events[time] }
   func filterEvents(_ includeElement: (MIDIEvent) -> Bool) -> [MIDIEvent] { return events.filter(includeElement) }
@@ -72,9 +73,7 @@ enum MIDIEvent: MIDIEventType, Hashable {
   }
 
   var time: BarBeatTime {
-    get {
-      return event.time
-    }
+    get { return event.time }
     set {
       switch self {
         case .meta(var event):    event.time = newValue; self = .meta(event)
@@ -85,9 +84,7 @@ enum MIDIEvent: MIDIEventType, Hashable {
   }
 
   var delta: VariableLengthQuantity? {
-    get {
-      return event.delta
-    }
+    get { return event.delta }
     set {
       switch self {
         case .meta(var event):    event.delta = newValue; self = .meta(event)
@@ -102,13 +99,15 @@ enum MIDIEvent: MIDIEventType, Hashable {
   var description: String { return event.description }
 }
 
-extension MIDIEvent: Equatable {}
+extension MIDIEvent: Equatable {
 
-func ==(lhs: MIDIEvent, rhs: MIDIEvent) -> Bool {
-  switch (lhs, rhs) {
-    case let (.meta(meta1), .meta(meta2)) where meta1 == meta2:                   return true
-    case let (.channel(channel1), .channel(channel2)) where channel1 == channel2: return true
-    case let (.node(node1), .node(node2)) where node1 == node2:                   return true
-    default:                                                                      return false
+  static func ==(lhs: MIDIEvent, rhs: MIDIEvent) -> Bool {
+    switch (lhs, rhs) {
+      case let (.meta(meta1), .meta(meta2)) where meta1 == meta2:                   return true
+      case let (.channel(channel1), .channel(channel2)) where channel1 == channel2: return true
+      case let (.node(node1), .node(node2)) where node1 == node2:                   return true
+      default:                                                                      return false
+    }
   }
+
 }

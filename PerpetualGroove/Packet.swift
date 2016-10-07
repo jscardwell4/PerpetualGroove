@@ -11,6 +11,7 @@ import CoreMIDI
 import MoonKit
 
 extension MIDIPacketList: Swift.Sequence {
+
   public func makeIterator() -> AnyIterator<MIDIPacket> {
     var iterator: MIDIPacket?
     var nextIndex: UInt32 = 0
@@ -22,9 +23,11 @@ extension MIDIPacketList: Swift.Sequence {
       return iterator
     }
   }
+
 }
 
-struct Packet: CustomStringConvertible {
+struct Packet {
+
   let status: Byte
   let channel: Byte
   let note: Byte
@@ -41,15 +44,6 @@ struct Packet: CustomStringConvertible {
     return packetList
   }
 
-  /**
-  initWithStatus:channel:note:velocity:identifier:
-
-  - parameter status: Byte
-  - parameter channel: Byte
-  - parameter note: Byte
-  - parameter velocity: Byte
-  - parameter identifier: Identifier
-  */
   init(status: Byte, channel: Byte, note: Byte, velocity: Byte, identifier: UInt64) {
     self.status = status
     self.channel = channel
@@ -58,11 +52,6 @@ struct Packet: CustomStringConvertible {
     self.identifier = identifier
   }
 
-  /**
-  initWithPacketList:
-
-  - parameter packetList: UnsafePointer<MIDIPacketList>
-  */
   init?(packetList: UnsafePointer<MIDIPacketList>) {
     let packet = packetList.pointee.packet
     guard packet.length == UInt16(MemoryLayout<Identifier>.size + 3) else { return nil }
@@ -77,6 +66,10 @@ struct Packet: CustomStringConvertible {
       }
     })
   }
+
+}
+
+extension Packet: CustomStringConvertible {
 
   var description: String { 
     return "; ".join(

@@ -36,18 +36,8 @@ final class Loop: Swift.Sequence, MIDINodeDispatch {
 
   var name: String { return "\(track.displayName) (\(identifier.uuidString))" }
   
-  /**
-   connectNode:
-
-   - parameter node: MIDINode
-  */
   func connectNode(_ node: MIDINode) throws { try track.connectNode(node) }
 
-  /**
-   disconnectNode:
-
-   - parameter node: MIDINode
-  */
   func disconnectNode(_ node: MIDINode) throws { try track.disconnectNode(node) }
 
   typealias Identifier = UUID
@@ -64,22 +54,12 @@ final class Loop: Swift.Sequence, MIDINodeDispatch {
     return .meta(MetaEvent(.marker(name: "end(\(identifier.uuidString))")))
   }
 
-  /**
-   initWithTrack:
-
-   - parameter track: InstrumentTrack
-  */
   init(track: InstrumentTrack) {
     self.track = track
     identifier = UUID()
     events = []
   }
 
-  /**
-   initWithGrooveLoop:
-
-   - parameter grooveLoop: GrooveTrack.Loop
-  */
   init(grooveLoop: GrooveLoop, track: InstrumentTrack) {
     self.track = track
     identifier = grooveLoop.identifier
@@ -89,29 +69,21 @@ final class Loop: Swift.Sequence, MIDINodeDispatch {
     var events: [MIDIEvent] = []
     for node in grooveLoop.nodes.values {
       events.append(.node(node.addEvent))
-      if let removeEvent = node.removeEvent { events.append(.node(removeEvent)) }
+      if let removeEvent = node.removeEvent {
+        events.append(.node(removeEvent))
+      }
     }
 
     self.events = MIDIEventContainer(events: events)
     nodeManager = MIDINodeManager(owner: self)
   }
 
-  /**
-   registrationTimesForAddedEvents:
-
-   - parameter events: [MIDIEvent]
-
-    - returns: [BarBeatTime]
-  */
-  func registrationTimesForAddedEvents<S:Swift.Sequence>(_ events: S) -> [BarBeatTime] where S.Iterator.Element == MIDIEvent {
+  func registrationTimes<S:Swift.Sequence>(forAdding events: S) -> [BarBeatTime]
+    where S.Iterator.Element == MIDIEvent
+  {
     return events.filter({ if case .node(_) = $0 { return true } else { return false } }).map({$0.time})
   }
 
-  /**
-   dispatchEvent:
-
-   - parameter event: MIDIEvent
-  */
   func dispatchEvent(_ event: MIDIEvent) {
     guard case .node(let nodeEvent) = event else { return }
       switch nodeEvent.data {
@@ -122,11 +94,6 @@ final class Loop: Swift.Sequence, MIDINodeDispatch {
       }
   }
 
-  /**
-   generate
-
-    - returns: AnyGenerator<MIDIEventType>
-  */
   func makeIterator() -> AnyIterator<MIDIEvent> {
     var startEventInserted = false
     var endEventInserted = false

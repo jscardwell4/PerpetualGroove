@@ -18,9 +18,7 @@ class Track: CustomStringConvertible, Named, MIDIEventDispatch {
 
   var events = MIDIEventContainer()
 
-  var endOfTrack: BarBeatTime {
-    return events.maxTime
-  }
+  var endOfTrack: BarBeatTime { return events.maxTime }
 
   fileprivate var trackNameEvent: MIDIEvent = .meta(MetaEvent(.sequenceTrackName(name: "")))
   fileprivate var endOfTrackEvent: MIDIEvent = .meta(MetaEvent(.endOfTrack))
@@ -47,10 +45,7 @@ class Track: CustomStringConvertible, Named, MIDIEventDispatch {
 
   var displayName: String { return name }
 
-  /** validateEvents */
-  func validateEvents(_ container: inout MIDIEventContainer) {
-    endOfTrackEvent.time = endOfTrack
-  }
+  func validateEvents(_ container: inout MIDIEventContainer) { endOfTrackEvent.time = endOfTrack }
 
   var chunk: MIDIFileTrackChunk {
     validateEvents(&self.events)
@@ -58,43 +53,23 @@ class Track: CustomStringConvertible, Named, MIDIEventDispatch {
     return MIDIFileTrackChunk(events: events)
   }
 
-  var headEvents: [MIDIEvent] {
-    return [trackNameEvent]
-  }
+  var headEvents: [MIDIEvent] { return [trackNameEvent] }
 
-  var tailEvents: [MIDIEvent] {
-    return [endOfTrackEvent]
-  }
+  var tailEvents: [MIDIEvent] { return [endOfTrackEvent] }
 
-//  private var _recording = false { didSet { logDebug("recording = \(_recording)") } }
-//  var recording: Bool {
-//    get { objc_sync_enter(self); defer { objc_sync_exit(self) }; return _recording && Sequencer.mode == .Default }
-//    set { objc_sync_enter(self); defer { objc_sync_exit(self) }; _recording = newValue }
-//  }
-
-  /** init */
   init(sequence: Sequence) {
     self.sequence = sequence
     eventQueue = DispatchQueue(label: "Track\(sequence.tracks.count)")
   }
 
-  /**
-  registrationTimesForAddedEvents:
-
-  - parameter events: [MIDIEvent]
-
-  - returns: [BarBeatTime]
-  */
-  func registrationTimesForAddedEvents<S:Swift.Sequence>(_ events: S) -> [BarBeatTime] where S.Iterator.Element == MIDIEvent {
-    guard let eot = events.filter({($0.event as? MetaEvent)?.data == .endOfTrack}).first else { return [] }
+  func registrationTimes<S:Swift.Sequence>(forAdding events: S) -> [BarBeatTime]
+    where S.Iterator.Element == MIDIEvent
+  {
+    guard let eot = events.first(where: {($0.event as? MetaEvent)?.data == .endOfTrack}) else { return [] }
     return [eot.time]
   }
 
-  /**
-  Overridden by subclasses to handle actual event generation
-
-  - parameter event: MIDIEvent
-  */
+  /// Overridden by subclasses to handle actual event generation
   func dispatchEvent(_ event: MIDIEvent) { }
 
   var description: String {
@@ -110,6 +85,7 @@ extension Track: NotificationDispatching {
 
   enum NotificationName: String, LosslessStringConvertible {
     case didUpdate, didChangeName, forceMuteStatusDidChange, muteStatusDidChange, soloStatusDidChange
+
     var description: String { return rawValue }
     init?(_ description: String) { self.init(rawValue: description) }
   }

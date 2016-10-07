@@ -20,13 +20,15 @@ final class Metronome {
   var on = false {
     didSet {
       guard oldValue != on else { return }
-      if on { Sequencer.time.registerCallback({ [weak self] in self?.click($0) }, predicate: isAudibleTick, forKey: callbackKey) }
-      else { Sequencer.time.removeCallbackForKey(callbackKey) }
+      if on {
+        Sequencer.time.register(callback: {[weak self] in self?.click($0)}, predicate: isAudibleTick, key: callbackKey)
+      } else {
+        Sequencer.time.removeCallbackForKey(callbackKey)
+      }
     }
   }
 
 
-  /** initialize */
   init(node: AVAudioUnitSampler) throws {
     sampler = node
     guard let url = Bundle.main.url(forResource: "Woodblock", withExtension: "wav") else {
@@ -37,24 +39,12 @@ final class Metronome {
 
   fileprivate let callbackKey = "click"
 
-  /**
-  click:
-
-  - parameter time: BarBeatTime
-  */
   fileprivate func click(_ time: BarBeatTime) {
     guard Sequencer.playing else { return }
     sampler.startNote(time.beat == 1 ? 0x3C : 0x37, withVelocity: 64, onChannel: 0)
   }
 
 
-  /**
-  isAudibleTick:
-
-  - parameter time: BarBeatTime
-
-  - returns: Bool
-  */
   fileprivate func isAudibleTick(_ time: BarBeatTime) -> Bool { return time.subbeat  == 1 }
 
 }

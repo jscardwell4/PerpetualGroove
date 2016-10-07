@@ -25,30 +25,19 @@ enum TimeSignature: ByteArrayConvertible {
     }
   }
 
-  /**
-  initWithUpper:lower:
-
-  - parameter upper: UInt8
-  - parameter lower: UInt8
-  */
-  init(_ upper: UInt8, _ lower: UInt8) {
+  init(upper: UInt8, lower: UInt8) {
     switch (upper, lower) {
-    case (4, 4): self = .fourFour
-    case (3, 4): self = .threeFour
-    case (2, 4): self = .twoFour
-    default: self = .other(upper, lower)
+      case (4, 4): self = .fourFour
+      case (3, 4): self = .threeFour
+      case (2, 4): self = .twoFour
+      default: self = .other(upper, lower)
     }
   }
 
   var bytes: [Byte] { return [beatUnit, Byte(log2(Double(beatsPerBar)))] }
 
-  /**
-  init:
-
-  - parameter bytes: [Byte]
-  */
   init(_ bytes: [Byte]) {
-    guard bytes.count == 2 else { self.init(4, 4); return }
-    self.init(bytes[0], Byte(pow(Double(bytes[1]), 2)))
+    guard bytes.count == 2 else { self.init(upper: 4, lower: 4); return }
+    self.init(upper: bytes[0], lower: pow(bytes[1], 2))
   }
 }

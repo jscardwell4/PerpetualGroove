@@ -229,7 +229,7 @@ extension BarBeatTime: Hashable {
 }
 
 // MARK: - RawRepresentable
-extension BarBeatTime: RawRepresentable {
+extension BarBeatTime: RawRepresentable, LosslessJSONValueConvertible {
   var rawValue: String {
     return "\(isNegative ? "-" : "")\(bar):\(beatFraction).\(subbeatFraction)@\(beatsPerMinute)"
   }
@@ -291,19 +291,6 @@ extension BarBeatTime: ExpressibleByStringLiteral {
   init(stringLiteral value: String) { self = BarBeatTime(rawValue: value) ?? .null }
   init(unicodeScalarLiteral value: String) { self.init(stringLiteral: value) }
   init(extendedGraphemeClusterLiteral value: String) { self.init(stringLiteral: value) }
-}
-
-// MARK: - JSONValueConvertible
-extension BarBeatTime: JSONValueConvertible {
-  var jsonValue: JSONValue { return rawValue.jsonValue }
-}
-
-// MARK: - JSONValueInitializable
-extension BarBeatTime: JSONValueInitializable {
-  init?(_ jsonValue: JSONValue?) {
-    guard let rawValue = String(jsonValue) else { return nil }
-    self.init(rawValue: rawValue)
-  }
 }
 
 // MARK: - NilLiteralConvertible

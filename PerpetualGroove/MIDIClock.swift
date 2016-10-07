@@ -11,7 +11,7 @@ import MoonKit
 import CoreMIDI
 import AudioToolbox
 
-/** A class capable of keeping time for MIDI events */
+/// A class capable of keeping time for MIDI events
 final class MIDIClock: CustomStringConvertible, Named {
 
   var description: String {
@@ -43,7 +43,6 @@ final class MIDIClock: CustomStringConvertible, Named {
   fileprivate(set) var secondsPerBeat:      Double = 0
   fileprivate(set) var secondsPerTick:      Double = 0
 
-  /** recalculate */
   fileprivate func recalculate() {
     nanosecondsPerBeat = UInt64(60.0e9) / UInt64(beatsPerMinute)
     microsecondsPerBeat = UInt64(60.0e6) / UInt64(beatsPerMinute)
@@ -53,7 +52,6 @@ final class MIDIClock: CustomStringConvertible, Named {
     timer.interval = .nanoseconds(Int(tickInterval))
   }
 
-  /** start */
   func start() { dispatchQueue.async(execute: _start) }
 
   fileprivate func _start() {
@@ -66,7 +64,6 @@ final class MIDIClock: CustomStringConvertible, Named {
 
   var paused: Bool { return !running && ticks > 0 }
 
-  /** resume */
   func resume() { dispatchQueue.async(execute: _resume) }
 
   fileprivate func _resume() {
@@ -76,7 +73,6 @@ final class MIDIClock: CustomStringConvertible, Named {
     timer.start()
   }
 
-  /** reset */
   func reset() { dispatchQueue.async(execute: _reset) }
 
   fileprivate func _reset() {
@@ -85,7 +81,6 @@ final class MIDIClock: CustomStringConvertible, Named {
     ticks = 0
   }
 
-  /** stop */
   func stop() { dispatchQueue.async(execute: _stop) }
 
   fileprivate func _stop() {
@@ -112,7 +107,6 @@ final class MIDIClock: CustomStringConvertible, Named {
   /// The running number of MIDI clocks that have elapsed
   fileprivate(set) var ticks: MIDITimeStamp = 0
 
-  /** init */
   init(name: String) {
     self.name = name
     recalculate()
@@ -132,11 +126,6 @@ final class MIDIClock: CustomStringConvertible, Named {
   fileprivate var client = MIDIClientRef()
   fileprivate(set) var endPoint = MIDIEndpointRef()
 
-  /**
-  sendEvent:
-
-  - parameter event: Byte
-  */
   fileprivate func sendEvent(_ event: Byte) throws {
     var packetList = MIDIPacketList()
     MIDIPacketListAdd(&packetList,
@@ -150,7 +139,6 @@ final class MIDIClock: CustomStringConvertible, Named {
 
   fileprivate func sendClock() { dispatchQueue.async(execute: _sendClock) }
 
-  /** sendClock */
   fileprivate func _sendClock() {
 
     guard timer.running else { return }
@@ -158,13 +146,10 @@ final class MIDIClock: CustomStringConvertible, Named {
     do { try sendEvent(0b1111_1000) } catch { logError(error) }
   }
 
-  /** sendStart */
   fileprivate func sendStart() { do { try sendEvent(0b1111_1010) } catch { logError(error) } }
 
-  /** sendContinue */
   fileprivate func sendContinue() { do { try sendEvent(0b1111_1011) } catch { logError(error) } }
 
-  /** sendStop */
   fileprivate func sendStop() { do { try sendEvent(0b1111_1100) } catch { logError(error) } }
 
 }

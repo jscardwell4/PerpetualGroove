@@ -27,8 +27,6 @@ struct EmaxSoundSet: SoundFont {
 
   let volume: Volume
 
-//  var presets: [SoundFont.Preset] { return (try? SF2File.presets(from: url)) ?? [] }
-
   var displayName: String {
     switch volume {
       case .brassAndWoodwinds:  return "Brass & Woodwinds"

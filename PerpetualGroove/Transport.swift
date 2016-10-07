@@ -11,14 +11,17 @@ import MoonKit
 import typealias AudioToolbox.MIDITimeStamp
 
 final class Transport {
+
   var state: State = [] {
     didSet {
       guard state != oldValue else { return }
       postNotification(name: .didChangeState,
                        object: self,
-                       userInfo: ["transportState": state.rawValue, "previousTransportState": oldValue.rawValue])
+                       userInfo: ["transportState": state.rawValue,
+                                  "previousTransportState": oldValue.rawValue])
     }
   }
+
   let name: String
   let clock: MIDIClock
   let time: Time
@@ -28,11 +31,6 @@ final class Transport {
     set { clock.beatsPerMinute = UInt16(newValue) }
   }
 
-  /**
-   initWithName:
-
-   - parameter name: String
-  */
   init(name: String) {
     self.name = name
     let clock = MIDIClock(name: name)
@@ -40,26 +38,31 @@ final class Transport {
     self.clock = clock
   }
 
-  var playing:          Bool { return state ∋ .Playing   }
-  var paused:           Bool { return state ∋ .Paused    }
-  var jogging:          Bool { return state ∋ .Jogging   }
-  var recording:        Bool { return state ∋ .Recording }
+  var playing:   Bool { return state ∋ .Playing   }
+  var paused:    Bool { return state ∋ .Paused    }
+  var jogging:   Bool { return state ∋ .Jogging   }
+  var recording: Bool { return state ∋ .Recording }
 
-  /** Starts the MIDI clock */
+  /// Starts the MIDI clock
   func play() {
     guard !playing else { logWarning("already playing"); return }
+
     postNotification(name: .didStart, object: self, userInfo: ["time": time.barBeatTime.rawValue])
-    if paused { clock.resume(); state.formSymmetricDifference([.Paused, .Playing]) }
-    else { clock.start(); state.formSymmetricDifference([.Playing]) }
+
+    if paused {
+      clock.resume()
+      state.formSymmetricDifference([.Paused, .Playing])
+    } else {
+      clock.start()
+      state.formSymmetricDifference([.Playing])
+    }
   }
 
-  /** toggleRecord */
   func toggleRecord() {
     state.formSymmetricDifference(.Recording)
     postNotification(name: .didToggleRecording, object: self, userInfo: nil)
   }
 
-  /** pause */
   func pause() {
     guard playing else { return }
     clock.stop()
@@ -67,7 +70,7 @@ final class Transport {
     postNotification(name: .didPause, object: self, userInfo: ["time": time.barBeatTime.rawValue])
   }
 
-  /** Moves the time back to 0 */
+  /// Moves the time back to 0
   func reset() {
     if playing || paused { stop() }
     clock.reset()
@@ -79,7 +82,7 @@ final class Transport {
     }
   }
 
-  /** Stops the MIDI clock */
+  /// Stops the MIDI clock
   func stop() {
     guard playing || paused else { logWarning("not playing or paused"); return }
     clock.stop()
@@ -89,11 +92,6 @@ final class Transport {
 
   fileprivate var jogTime: BarBeatTime = nil
 
-  /**
-   beginJog:
-
-   - parameter wheel: ScrollWheel
-  */
   func beginJog(_ wheel: ScrollWheel) {
     guard !jogging else { return }
     if clock.running { clock.stop() }
@@ -102,11 +100,6 @@ final class Transport {
     postNotification(name: .didBeginJogging, object: self, userInfo: ["time": time.barBeatTime.rawValue])
   }
 
-  /**
-   jog:
-
-   - parameter wheel: ScrollWheel
-  */
   func jog(_ wheel: ScrollWheel) {
     guard jogging && jogTime != nil else { logWarning("not jogging"); return }
     let 𝝙time = BarBeatTime(totalBeats: Double(Sequencer.beatsPerBar) * wheel.𝝙revolutions)
@@ -114,11 +107,6 @@ final class Transport {
     catch { logError(error) }
   }
 
-  /**
-   endJog:
-
-   - parameter wheel: ScrollWheel
-  */
   func endJog(_ wheel: ScrollWheel) {
     guard jogging /*&& clock.paused*/ else { logWarning("not jogging"); return }
     state.formSymmetricDifference([.Jogging])
@@ -129,15 +117,10 @@ final class Transport {
     clock.resume()
   }
 
-  /**
-  jogToTime:
-
-  - parameter time: BarBeatTime
-  */
   func jogToTime(_ t: BarBeatTime, direction: ScrollWheel.Direction) throws {
     guard jogging else { throw Error.notPermitted("state ∌ jogging") }
     guard jogTime != t else { return }
-//    guard t.isNormal else { throw Error.invalidBarBeatTime("\(t)") }
+
     jogTime = t
     postNotification(name: .didJog, object: self, userInfo: [
       "time": time.barBeatTime.rawValue,
@@ -146,15 +129,10 @@ final class Transport {
       ])
   }
 
-  /**
-   automateJogToTime:
-
-   - parameter tʹ: BarBeatTime
-  */
   func automateJogToTime(_ tʹ: BarBeatTime) throws {
     let t = time.barBeatTime
     guard t != tʹ else { return }
-//    guard tʹ.isNormal else { throw Error.invalidBarBeatTime("\(tʹ)") }
+
     let direction: ScrollWheel.Direction = tʹ < time.barBeatTime ? .counterClockwise : .clockwise
     if clock.running { clock.stop() }
     time.barBeatTime = tʹ
@@ -170,26 +148,32 @@ final class Transport {
 }
 
 extension Transport {
-  struct State: OptionSet, CustomStringConvertible {
+
+  struct State: OptionSet {
     let rawValue: Int
 
     static let Playing   = State(rawValue: 0b0001)
     static let Recording = State(rawValue: 0b0010)
     static let Paused    = State(rawValue: 0b0100)
     static let Jogging   = State(rawValue: 0b1000)
-
-    var description: String {
-      var result = "["
-      var flagStrings: [String] = []
-      if contains(.Playing)            { flagStrings.append("Playing")   }
-      if contains(.Recording)          { flagStrings.append("Recording") }
-      if contains(.Paused)             { flagStrings.append("Paused")    }
-      if contains(.Jogging)            { flagStrings.append("Jogging")   }
-      result += ", ".join(flagStrings)
-      result += " ]"
-      return result
-    }
   }
+  
+}
+
+extension Transport.State: CustomStringConvertible {
+
+  var description: String {
+    var result = "["
+    var flagStrings: [String] = []
+    if contains(.Playing)            { flagStrings.append("Playing")   }
+    if contains(.Recording)          { flagStrings.append("Recording") }
+    if contains(.Paused)             { flagStrings.append("Paused")    }
+    if contains(.Jogging)            { flagStrings.append("Jogging")   }
+    result += ", ".join(flagStrings)
+    result += " ]"
+    return result
+  }
+
 }
 
 extension Transport {
@@ -221,6 +205,7 @@ extension Transport: NotificationDispatching {
     case didBeginJogging, didEndJogging
     case didJog
     case didChangeState
+
     var description: String { return rawValue }
     init?(_ description: String) { self.init(rawValue: description) }
   }
@@ -247,16 +232,17 @@ extension Notification {
   }
 
   var transportState: Transport.State? {
-    guard let rawState = userInfo?["transportState"] as? NSNumber else {
+    guard let raw = userInfo?["transportState"] as? Int else {
       return nil
     }
-    return Transport.State(rawValue: rawState.intValue)
+    return Transport.State(rawValue: raw)
   }
 
   var previousTransportState: Transport.State? {
-    guard let rawState = userInfo?["previousTransportState"] as? NSNumber else {
+    guard let raw = userInfo?["previousTransportState"] as? Int else {
       return nil
     }
-    return Transport.State(rawValue: rawState.intValue)
+    return Transport.State(rawValue: raw)
   }
+  
 }

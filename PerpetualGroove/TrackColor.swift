@@ -7,12 +7,11 @@
 //
 
 import Foundation
-import UIKit
-import class SpriteKit.SKTexture
+import class UIKit.UIColor
 import MoonKit
 
 // MARK: - Enumeration for specifying the color attached to a `MIDITrackType`
-enum TrackColor: UInt32, Equatable, Hashable, EnumerableType, CustomStringConvertible {
+enum TrackColor: UInt32 {
   case muddyWaters        = 0xBD7651
   case steelBlue          = 0x4875A8
   case celery             = 0x9FB44D
@@ -39,6 +38,28 @@ enum TrackColor: UInt32, Equatable, Hashable, EnumerableType, CustomStringConver
   case pizza              = 0xC29500
 
   var value: UIColor { return UIColor(rgbHex: rawValue) }
+
+  static var nextColor: TrackColor {
+    let existingColors = Sequencer.sequence?.instrumentTracks.map({$0.color}) ?? []
+    guard existingColors.count > 0 else { return allCases[0] }
+    return allCases.filter({!existingColors.contains($0)}).first ?? allCases[0]
+  }
+
+}
+
+extension TrackColor: EnumerableType {
+
+  /// `White` case is left out so that it is harder to assign the color used by `MasterTrack`
+  static let allCases: [TrackColor] = [
+    .muddyWaters, .steelBlue, .celery, .chestnut, .crayonPurple, .verdigris, .twine, 
+    .tapestry, .vegasGold, .richBlue, .fruitSalad, .husk, .mahogany, .mediumElectricBlue, 
+    .appleGreen, .venetianRed, .indigo, .easternBlue, .indochine, .flirt, .ultramarine, 
+    .laRioja, .forestGreen, .pizza
+  ]
+
+}
+
+extension TrackColor: CustomStringConvertible {
 
   var description: String {
     switch self {
@@ -69,33 +90,22 @@ enum TrackColor: UInt32, Equatable, Hashable, EnumerableType, CustomStringConver
     }
   }
 
-  /// `White` case is left out so that it is harder to assign the color used by `MasterTrack`
-  static let allCases: [TrackColor] = [
-    .muddyWaters, .steelBlue, .celery, .chestnut, .crayonPurple, .verdigris, .twine, 
-    .tapestry, .vegasGold, .richBlue, .fruitSalad, .husk, .mahogany, .mediumElectricBlue, 
-    .appleGreen, .venetianRed, .indigo, .easternBlue, .indochine, .flirt, .ultramarine, 
-    .laRioja, .forestGreen, .pizza
-  ]
-
-//  static var currentColor: TrackColor? {
-//    return Sequencer.sequence?.currentTrack?.color
-//  }
-
-  static var nextColor: TrackColor {
-    let existingColors = Sequencer.sequence?.instrumentTracks.map({$0.color}) ?? []
-    guard existingColors.count > 0 else { return allCases[0] }
-    return allCases.filter({!existingColors.contains($0)}).first ?? allCases[0]
-  }
 }
 
-extension TrackColor: JSONValueConvertible {
+extension TrackColor: LosslessJSONValueConvertible {
+
   var jsonValue: JSONValue { return "#\(String(rawValue, radix: 16, uppercase: true))".jsonValue }
-}
 
-extension TrackColor: JSONValueInitializable {
   init?(_ jsonValue: JSONValue?) {
-    guard let string = String(jsonValue) , string.hasPrefix("#"),
-      let hex = UInt32(string[string.index(after: string.startIndex)|->], radix: 16) else { return nil }
+    guard
+      let string = String(jsonValue),
+      string.hasPrefix("#"),
+      let hex = UInt32(string.substring(from: string.index(after: string.startIndex)), radix: 16)
+      else
+    {
+      return nil
+    }
     self.init(rawValue: hex)
   }
+
 }

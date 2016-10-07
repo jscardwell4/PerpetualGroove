@@ -122,7 +122,7 @@ final class GeneratorViewController: UIViewController, SecondaryControllerConten
   @IBOutlet weak var modifierPicker: InlinePickerView!
   @IBOutlet weak var chordPicker:    InlinePickerView! {
     didSet {
-      chordPicker?.labels = ["–"] + Chord.ChordPattern.StandardChordPattern.allCases.map {$0.name}
+      chordPicker?.labels = ["–"] + Chord.Pattern.Standard.allCases.map {$0.name}
     }
   }
 
@@ -142,7 +142,7 @@ final class GeneratorViewController: UIViewController, SecondaryControllerConten
     switch generator {
       case .note: chordPicker.selection = 0
       case .chord(let generator):
-        if let pattern = Chord.ChordPattern.StandardChordPattern(rawValue: generator.chord.pattern.rawValue) {
+        if let pattern = Chord.Pattern.Standard(rawValue: generator.chord.pattern.rawValue) {
           chordPicker.selection = pattern.index
         } else {
           chordPicker.selection = 0
@@ -181,16 +181,16 @@ final class GeneratorViewController: UIViewController, SecondaryControllerConten
   }
 
   @IBAction func didPickChord() {
-    let newValue: Chord.ChordPattern.StandardChordPattern?
+    let newValue: Chord.Pattern.Standard?
     switch chordPicker.selection {
       case 0: newValue = nil
-      case let idx: newValue = Chord.ChordPattern.StandardChordPattern.allCases[idx - 1]
+      case let idx: newValue = Chord.Pattern.Standard.allCases[idx - 1]
     }
     switch (generator, newValue) {
       case let (.note(generator), newValue?):
-        self.generator = AnyMIDIGenerator(ChordGenerator(pattern: newValue.pattern, generator: generator))
+        self.generator = AnyMIDIGenerator(ChordGenerator(pattern: Chord.Pattern(newValue), generator: generator))
       case (.chord(var generator), let newValue?):
-        generator.chord.pattern = newValue.pattern; self.generator = AnyMIDIGenerator(generator)
+        generator.chord.pattern = Chord.Pattern(newValue); self.generator = AnyMIDIGenerator(generator)
       case (.chord(let generator), nil):
         self.generator = AnyMIDIGenerator(NoteGenerator(generator: generator))
       default:

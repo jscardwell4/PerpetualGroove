@@ -14,30 +14,20 @@ import CoreMIDI
 import SpriteKit
 
 extension Sequence {
-  /**
-   trackSoloStatusDidChange:
 
-   - parameter notification: NSNotification
-  */
   func trackSoloStatusDidChange(_ notification: Foundation.Notification) {
-    guard let track = notification.object as? InstrumentTrack , instrumentTracks.contains(track) else { return }
+    guard let track = notification.object as? InstrumentTrack, instrumentTracks.contains(track) else { return }
+
     let soloTracks = self.soloTracks
+
     if soloTracks.count == 0 {
-      instrumentTracks.forEach {
-        logDebug("clearing force mute for track '\($0.displayName)'")
-        $0.forceMute = false
-      }
+      instrumentTracks.forEach { $0.forceMute = false }
     } else {
-      soloTracks.forEach {
-        logDebug("clearing forced mute for track '\($0.displayName)'")
-        $0.forceMute = false
-      }
-      Set(instrumentTracks).subtracting(soloTracks).forEach {
-        logDebug("force muting track '\($0.displayName)'")
-        $0.forceMute = true
-      }
+      soloTracks.forEach { $0.forceMute = false }
+      Set(instrumentTracks).subtracting(soloTracks).forEach { $0.forceMute = true }
     }
   }
+
 }
 
 final class InstrumentTrack: Track, MIDINodeDispatch {
@@ -52,7 +42,6 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     return receptionist
   }()
 
-  /** initializeNotificationReceptionist */
   fileprivate func initializeNotificationReceptionist() {
     guard receptionist.count == 0 else { return }
 
@@ -82,92 +71,59 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
                          callback: weakMethod(self, InstrumentTrack.didChangePreset))
 }
 
-  /**
-   didChangePreset:
-
-   - parameter notification: NSNotification
-  */
   fileprivate func didChangePreset(_ notification: Foundation.Notification) {
     postNotification(name: .didUpdate, object: self, userInfo: nil)
   }
 
-  /**
-  didReset:
-
-  - parameter notification: NSNotification
-  */
   fileprivate func didReset(_ notification: Foundation.Notification) { resetNodes() }
 
-  /**
-  soloCountDidChange:
-
-  - parameter notification: NSNotification
-  */
   fileprivate func soloCountDidChange(_ notification: Foundation.Notification) {
     guard let newCount = notification.newCount else { return }
     forceMute = newCount > 0 && !solo
   }
 
-  /**
-  didJog:
-
-  - parameter notification: NSNotification
-  */
   fileprivate func didJog(_ notification: Foundation.Notification) {
     // Toggle track ended flag if we jogged back before the end of the track
-    if trackEnded, let jogTime = notification.jogTime , jogTime < endOfTrack {
+    if trackEnded, let jogTime = notification.jogTime, jogTime < endOfTrack {
       trackEnded = false
     }
-
-
   }
 
-  /**
-   didBeginJogging:
+  fileprivate func didBeginJogging(_ notification: Foundation.Notification) {}
 
-   - parameter notification: NSNotification
-  */
-  fileprivate func didBeginJogging(_ notification: Foundation.Notification) {
-
-  }
-
-  /**
-   didEndJogging:
-
-   - parameter notification: NSNotification
-  */
-  fileprivate func didEndJogging(_ notification: Foundation.Notification) {
-
-  }
+  fileprivate func didEndJogging(_ notification: Foundation.Notification) {}
 
   // MARK: - MIDI file related properties and methods
 
-  /** validateEvents */
   override func validateEvents(_ container: inout MIDIEventContainer) {
     instrumentEvent = MetaEvent(.text(text: "instrument:\(instrument.soundFont.url.lastPathComponent)"))
     programEvent = ChannelEvent(.programChange, instrument.channel, instrument.program)
     super.validateEvents(&container)
   }
 
-  /**
-   addEvents:
-
-   - parameter events: [MIDIEvent]
-  */
   func addEvents<S:Swift.Sequence>(_ events: S) where S.Iterator.Element == MIDIEvent {
     var filteredEvents: [MIDIEvent] = []
+
     for event in events {
+
       switch event {
+
         case .meta(let metaEvent):
           switch metaEvent.data {
             case .text(let text) where text.hasPrefix("instrument:"): instrumentEvent = metaEvent
             default: filteredEvents.append(event)
           }
+
         case .channel(let channelEvent) where channelEvent.status.type == .programChange:
           programEvent = channelEvent
-        default: filteredEvents.append(event)
+
+        default:
+          filteredEvents.append(event)
+
       }
+
     }
+
     modified = modified || filteredEvents.count > 0
     super.addEvents(filteredEvents)
   }
@@ -208,11 +164,12 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     didSet {
       guard isMuted != oldValue else { return }
       swap(&volume, &_volume)
-      postNotification(name: .muteStatusDidChange, object: self, userInfo: ["oldValue": oldValue, "newValue": isMuted])
+      postNotification(name: .muteStatusDidChange,
+                       object: self,
+                       userInfo: ["oldValue": oldValue, "newValue": isMuted])
     }
   }
 
-  /** updateIsMuted */
   fileprivate func updateIsMuted() {
     switch (forceMute, mute, solo) {
       case (true,   true,  true): fallthrough
@@ -229,7 +186,9 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
   fileprivate(set) var forceMute = false {
     didSet {
       guard forceMute != oldValue else { return }
-      postNotification(name: .forceMuteStatusDidChange, object: self, userInfo: ["oldValue": oldValue, "newValue": forceMute])
+      postNotification(name: .forceMuteStatusDidChange,
+                       object: self,
+                       userInfo: ["oldValue": oldValue, "newValue": forceMute])
       updateIsMuted()
     }
   }
@@ -257,7 +216,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
   /// The set of `MIDINode` objects that have been added to the track
   var nodes: OrderedSet<HashableTuple<BarBeatTime, MIDINodeRef>> = []
 
-  /** Empties all node-referencing properties */
+  /// Empties all node-referencing properties
   fileprivate func resetNodes() {
     nodes.removeAll()
     logDebug("nodes reset")
@@ -270,22 +229,12 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 
   fileprivate var connectedEndPoints: Set<MIDIEndpointRef> = []
 
-  /**
-   connectNode:
-
-   - parameter node: MIDINode
-  */
   func connectNode(_ node: MIDINode) throws {
     guard connectedEndPoints ∌ node.endPoint else { throw MIDINodeDispatchError.NodeAlreadyConnected }
     try MIDIPortConnectSource(inPort, node.endPoint, nil) ➤ "Failed to connect to node \(node.name!)"
     connectedEndPoints.insert(node.endPoint)
   }
 
-  /**
-   disconnectNode:
-
-   - parameter node: MIDINode
-  */
   func disconnectNode(_ node: MIDINode) throws {
     guard connectedEndPoints ∋ node.endPoint else { throw MIDINodeDispatchError.NodeNotFound }
     try MIDIPortDisconnectSource(inPort, node.endPoint) ➤ "Failed to disconnect to node \(node.name!)"
@@ -294,11 +243,6 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 
   // MARK: - Loops
 
-  /**
-   addLoop:
-
-   - parameter loop: Loop
-  */
   func addLoop(_ loop: Loop) {
     guard loops[loop.identifier] == nil else { return }
     logDebug("adding loop: \(loop)")
@@ -314,12 +258,6 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
   fileprivate var inPort  = MIDIPortRef()
   fileprivate var outPort = MIDIPortRef()
 
-  /**
-  read:context:
-
-  - parameter packetList: UnsafePointer<MIDIPacketList>
-  - parameter context: UnsafeMutablePointer<Void>
-  */
   fileprivate func read(_ packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutableRawPointer?) {
 
     // Forward the packets to the instrument
@@ -349,11 +287,6 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     }
   }
 
-  /**
-  dispatchEvent:
-
-  - parameter event: MIDIEvent
-  */
   override func dispatchEvent(_ event: MIDIEvent) {
       switch event {
         case .node(let nodeEvent):
@@ -373,18 +306,11 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 
   }
 
-  /**
-  registrationTimesForAddedEvents:
-
-  - parameter events: [MIDIEvent]
-
-  - returns: [BarBeatTime]
-  */
-  override func registrationTimesForAddedEvents<S:Swift.Sequence>(_ events: S) -> [BarBeatTime]
+  override func registrationTimes<S:Swift.Sequence>(forAdding events: S) -> [BarBeatTime]
     where S.Iterator.Element == MIDIEvent
   {
     return events.filter({ if case .node(_) = $0 { return true } else { return false } }).map({$0.time})
-      + super.registrationTimesForAddedEvents(events)
+      + super.registrationTimes(forAdding: events)
   }
 
   /// The index for the track in the sequence's array of instrument tracks, or nil
