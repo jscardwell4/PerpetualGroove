@@ -159,20 +159,20 @@ final class Sequence {
     }
 
     for track in trackChunks.flatMap({ try? InstrumentTrack(sequence: self, trackChunk: $0) }) {
-      addTrack(track)
+      add(track: track)
     }
   }
 
   convenience init(file: GrooveFile, document: Document) {
     self.init(document: document)
-    var tempoEvents: [MIDIEvent] = []
+    var tempoEvents: [AnyMIDIEvent] = []
     for (key: rawTime, value: bpmValue) in file.tempoChanges.value {
       guard let time = BarBeatTime(rawValue: rawTime), let bpm = Double(bpmValue) else { continue }
       tempoEvents.append(.meta(MetaEvent(.tempo(bpm: bpm), time)))
     }
-    tempoTrack.addEvents(tempoEvents)
+    tempoTrack.add(events: tempoEvents)
     for track in file.tracks.flatMap({try? InstrumentTrack(sequence: self, grooveTrack: $0)}) {
-      addTrack(track)
+      add(track: track)
     }
   }
 
@@ -186,12 +186,12 @@ final class Sequence {
   // MARK: - Adding tracks
 
   func insertTrack(instrument: Instrument) throws {
-    addTrack(try InstrumentTrack(sequence: self, instrument: instrument))
+    add(track: try InstrumentTrack(sequence: self, instrument: instrument))
     logDebug("posting 'DidUpdate'")
     postNotification(name: .didUpdate, object: self, userInfo: nil)
   }
 
-  fileprivate func addTrack(_ track: InstrumentTrack) {
+  fileprivate func add(track: InstrumentTrack) {
     guard !instrumentTracks.contains(track) else { return }
     instrumentTracks.append(track)
     observeTrack(track)
@@ -204,12 +204,12 @@ final class Sequence {
 
   // MARK: - Removing tracks
 
-  func removeTrack(_ track: InstrumentTrack) {
+  func remove(track: InstrumentTrack) {
     guard let idx = track.index , track.sequence === self else { return }
-    removeTrackAtIndex(idx)
+    removeTrack(at: idx)
   }
 
-  func removeTrackAtIndex(_ index: Int) {
+  func removeTrack(at index: Int) {
     let track = instrumentTracks.remove(at: index)
     track.nodeManager.stopNodes(remove: true)
     receptionist.stopObserving(name: NotificationName.didUpdate.rawValue, from: track)

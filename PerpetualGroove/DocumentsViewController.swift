@@ -40,7 +40,7 @@ final class DocumentsViewController: UICollectionViewController {
           self.items.insert(item, at: indexPath.item)
           return
         }
-        DocumentManager.deleteItem(item)
+        DocumentManager.delete(item: item)
       })
   }
 
@@ -349,7 +349,7 @@ final class DocumentsViewController: UICollectionViewController {
   {
     switch (indexPath as NSIndexPath).section {
       case 0:  DocumentManager.createNewDocument()
-      default: DocumentManager.openItem(items[indexPath.row])
+      default: DocumentManager.open(item: items[indexPath.row])
     }
     dismiss?()
   }

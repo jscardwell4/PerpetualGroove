@@ -102,11 +102,11 @@ final class LogManager: MoonKit.LogManager {
     Document.defaultLogContext                = MIDIFileContext  ∪ .console
     MIDIFile.defaultLogContext                = MIDIFileContext//  ∪ .Console
     GrooveFile.defaultLogContext              = MIDIFileContext//  ∪ .Console
-    MIDIFileHeaderChunk.defaultLogContext     = MIDIFileContext//  ∪ .Console
-    MIDIFileTrackChunk.defaultLogContext      = MIDIFileContext//  ∪ .Console
+//    MIDIFile.HeaderChunk.defaultLogContext     = MIDIFileContext//  ∪ .Console
+//    MIDIFile.TrackChunk.defaultLogContext      = MIDIFileContext//  ∪ .Console
     MetaEvent.defaultLogContext               = MIDIFileContext//  ∪ .Console
     ChannelEvent.defaultLogContext            = MIDIFileContext//  ∪ .Console
-    VariableLengthQuantity.defaultLogContext  = MIDIFileContext//  ∪ .Console
+//    VariableLengthQuantity.defaultLogContext  = MIDIFileContext//  ∪ .Console
     MIDINodeEvent.defaultLogContext           = MIDIFileContext//  ∪ .Console
     MIDIEventContainer.defaultLogContext      = MIDIFileContext//  ∪ .Console
 
@@ -183,11 +183,11 @@ extension Time: Loggable {}
 extension DocumentManager: Loggable {}
 extension Document: Loggable {}
 extension MIDIFile: Loggable {}
-extension MIDIFileHeaderChunk: Loggable {}
-extension MIDIFileTrackChunk: Loggable {}
+//extension MIDIFile.HeaderChunk: Loggable {}
+//extension MIDIFile.TrackChunk: Loggable {}
 extension MetaEvent: Loggable {}
 extension ChannelEvent: Loggable {}
-extension VariableLengthQuantity: Loggable {}
+//extension VariableLengthQuantity: Loggable {}
 extension MIDINodeEvent: Loggable {}
 extension MIDINodeHistory: Loggable {}
 extension MIDIEventContainer: Loggable {}

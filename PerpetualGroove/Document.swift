@@ -11,25 +11,10 @@ import MoonKit
 
 final class Document: UIDocument {
 
-  enum SourceType: String {
-    case MIDI = "midi", Groove = "groove"
-    init?(_ string: String?) {
-      switch string?.lowercased() {
-        case "midi", "mid", "public.midi-audio": self = .MIDI
-        case "groove", "com.moondeerstudios.groove-document": self = .Groove
-        default: return nil
-      }
-    }
-  }
-
   var sourceType: SourceType? { return SourceType(fileType) }
 
   var storageLocation: DocumentManager.StorageLocation {
     return FileManager.withDefaultManager({$0.isUbiquitousItem(at: fileURL)}) ? .iCloud : .local
-//    let fileManager = NSFileManager.defaultManager()
-//    var isUbiquitous: AnyObject?
-//    do { try fileURL.getResourceValue(&isUbiquitous, forKey: NSURLIsUbiquitousItemKey) } catch { logError(error) }
-//    return isUbiquitous != nil && (isUbiquitous as? NSNumber)?.boolValue == true ? .iCloud : .Local
   }
 
   fileprivate(set) var sequence: Sequence? {
@@ -37,62 +22,48 @@ final class Document: UIDocument {
       guard oldValue !== sequence else { return }
 
       if let oldSequence = oldValue {
-        receptionist.stopObserving(name: Sequence.NotificationName.didUpdate.rawValue, from: oldSequence)
+        receptionist.stopObserving(name: Sequence.NotificationName.didUpdate.rawValue,
+                                   from: oldSequence)
       }
 
       if let sequence = sequence {
-        receptionist.observe(name: Sequence.NotificationName.didUpdate.rawValue, from: sequence, callback: weakMethod(self, Document.didUpdate))
+        receptionist.observe(name: Sequence.NotificationName.didUpdate.rawValue,
+                             from: sequence,
+                             callback: weakMethod(self, Document.didUpdate))
       }
+
     }
+
   }
 
   fileprivate var creating = false
 
   override var presentedItemOperationQueue: OperationQueue { return DocumentManager.operationQueue }
 
-  /**
-   didUpdate:
-
-   - parameter notification: NSNotification
-  */
   fileprivate func didUpdate(_ notification: Foundation.Notification) {
     logDebug("")
     updateChangeCount(.done)
   }
 
-  override func disableEditing() {
-    logDebug("")
-    super.disableEditing()
-  }
-
-  override func enableEditing() {
-    logDebug("")
-    super.enableEditing()
-  }
-
-  /**
-  didChangeState:
-
-  - parameter notification: NSNotification
-  */
   fileprivate func didChangeState(_ notification: Foundation.Notification) {
     
-    guard documentState ∋ .inConflict, let versions = NSFileVersion.unresolvedConflictVersionsOfItem(at: fileURL) else { return }
-    logDebug("versions: \(versions)")
+    guard documentState ∋ .inConflict,
+      let versions = NSFileVersion.unresolvedConflictVersionsOfItem(at: fileURL) else {
+        return
+    }
+
     // TODO: resolve conflict
+    logDebug("versions: \(versions)")
+
   }
 
-  /**
-  init:
-
-  - parameter url: NSURL
-  */
   override init(fileURL url: URL) {
     super.init(fileURL: url)
 
     receptionist.observe(name: NSNotification.Name.UIDocumentStateChanged.rawValue,
-                    from: self,
-                callback: weakMethod(self, Document.didChangeState))
+                         from: self,
+                         callback: weakMethod(self, Document.didChangeState))
+
   }
 
   fileprivate let receptionist: NotificationReceptionist = {
@@ -101,62 +72,61 @@ final class Document: UIDocument {
     return receptionist
   }()
 
-  /**
-  loadFromContents:ofType:
-
-  - parameter contents: AnyObject
-  - parameter typeName: String?
-  */
   override func load(fromContents contents: Any, ofType typeName: String?) throws {
-    guard let data = contents as? Data, let type = SourceType(typeName) else { throw Error.InvalidContentType }
+    
+    guard let data = contents as? Data else { throw Error.invalidContent }
+    guard let type = SourceType(typeName) else { throw Error.invalidContentType }
+
     guard data.count > 0 else { sequence = Sequence(document: self); return }
-    let file: SequenceDataProvider
+
+    let dataProvider: SequenceDataProvider
+
     switch type {
-      case .MIDI: file = try MIDIFile(data: data)
-      case .Groove: guard let f = GrooveFile(data: data) else { throw Error.InvalidContent }; file = f
+
+      case .midi:
+        dataProvider = try MIDIFile(data: data)
+
+      case .groove:
+        guard let file = GrooveFile(data: data) else { throw Error.invalidContent }
+        dataProvider = file
+
     }
-    sequence = Sequence(data: file, document: self)
-    logDebug("file: \(file)\nloaded into sequence: \(sequence!)")
+    
+    sequence = Sequence(data: dataProvider, document: self)
+
+    logDebug("file: \(dataProvider)\nloaded into sequence: \(sequence!)")
+
   }
 
-  /**
-  contentsForType:
-
-  - parameter typeName: String
-  */
   override func contents(forType typeName: String) throws -> Any {
+
     if sequence == nil && creating {
       sequence = Sequence(document: self)
       creating = false
     }
-    guard let sequence = sequence, let type = SourceType(typeName) else { throw Error.MissingSequence }
+
+    guard let sequence = sequence else { throw Error.missingSequence }
+    guard let type = SourceType(typeName) else { throw Error.invalidContentType }
 
     let file: DataConvertible
     switch type {
-      case .MIDI:   file = MIDIFile(sequence: sequence)
-      case .Groove: file = GrooveFile(sequence: sequence)
+      case .midi:   file = MIDIFile(sequence: sequence)
+      case .groove: file = GrooveFile(sequence: sequence)
     }
+
     logDebug("file contents:\n\(file)")
+
     return file.data
+
   }
 
-  /**
-  handleError:userInteractionPermitted:
-
-  - parameter error: NSError
-  - parameter userInteractionPermitted: Bool
-  */
   override func handleError(_ error: Swift.Error, userInteractionPermitted: Bool) {
     logError(error)
     super.handleError(error, userInteractionPermitted: userInteractionPermitted)
   }
 
-  /**
-  renameTo:
+  func rename(to newName: String) {
 
-  - parameter name: String
-  */
-  func renameTo(_ newName: String) {
     DocumentManager.queue.async {
       [weak self] in
 
@@ -178,8 +148,8 @@ final class Document: UIDocument {
       fileCoordinator.coordinate(writingItemAt: oldURL,
                                  options: .forMoving,
                                  writingItemAt: newURL,
-                                                 options: .forReplacing,
-                                                 error: &error)
+                                 options: .forReplacing,
+                                 error: &error)
       {
         [weak self] oldURL, newURL in
 
@@ -193,21 +163,16 @@ final class Document: UIDocument {
       }
 
       if let error = error { weakself.logError(error) }
+
     }
+
   }
 
   // MARK: - Saving
 
-  /**
-  saveToURL:forSaveOperation:completionHandler:
-
-  - parameter url: NSURL
-  - parameter saveOperation: UIDocumentSaveOperation
-  - parameter completionHandler: ((Bool) -> Void
-  */
   override func save(to url: URL,
-         for saveOperation: UIDocumentSaveOperation,
-        completionHandler: ((Bool) -> Void)?)
+                     for saveOperation: UIDocumentSaveOperation,
+                     completionHandler: ((Bool) -> Void)?)
   {
     creating = saveOperation == .forCreating
     logDebug("(\(creating ? "saving" : "overwriting"))  '\(url.path)'")
@@ -216,34 +181,70 @@ final class Document: UIDocument {
 
   override func presentedItemDidMove(to newURL: URL) {
     super.presentedItemDidMove(to: newURL)
+
     guard let newName = newURL.pathBaseName else {
       fatalError("Failed to get base name from new url")
     }
+
     postNotification(name: .didRenameDocument, object: self, userInfo: ["newName": newName])
+
   }
+
+}
+
+extension Document {
+
+  enum SourceType: String {
+    case midi = "midi", groove = "groove"
+
+    init?(_ string: String?) {
+
+      switch string?.lowercased() {
+
+        case "midi", "mid", "public.midi-audio":
+          self = .midi
+
+        case "groove", "com.moondeerstudios.groove-document":
+          self = .groove
+
+        default:
+          return nil
+
+      }
+
+    }
+
+  }
+
 }
 
 extension Document: NotificationDispatching {
+
   enum NotificationName: String, LosslessStringConvertible {
     case didRenameDocument
+
     var description: String { return rawValue }
     init?(_ description: String) { self.init(rawValue: description) }
   }
+
 }
 
 extension Notification {
-  var newDocumentName: String? {
-    return userInfo?["newName"] as? String
-  }
+
+  var newDocumentName: String? { return userInfo?["newName"] as? String }
+
 }
 
 extension Document: Named {
+
   var name: String { return localizedName.isEmpty ? "unamed" : localizedName }
+
 }
 
-// MARK: - Error
 extension Document {
 
-  enum Error: String, Swift.Error { case InvalidContentType, InvalidContent, MissingSequence }
+  enum Error: String, Swift.Error {
+    case invalidContentType, invalidContent, missingSequence
+  }
 
 }

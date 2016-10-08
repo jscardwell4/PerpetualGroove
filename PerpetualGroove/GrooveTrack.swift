@@ -17,16 +17,16 @@ struct GrooveTrack {
 
   var nodes: [MIDINodeEvent.Identifier:GrooveNode] = [:]
 
-  var loops: [GrooveLoop.Identifier:GrooveLoop] = [:]
+  var loops: [UUID:GrooveLoop] = [:]
 
   init(track: InstrumentTrack) {
     name = track.name
     instrument = ObjectJSONValue(track.instrument.preset.jsonValue)!
     color = track.color
 
-    var loops: [GrooveLoop.Identifier:GrooveLoop] = [:]
+//    var loops: [UUID:GrooveLoop] = [:]
 
-    for event in track.events {
+/*    for event in track.eventContainer {
       switch event {
 
         case .meta(let event):
@@ -40,7 +40,7 @@ struct GrooveTrack {
                 case ~/"^end.*":
                   guard let match = (~/"^end\\(([^)]+)\\)$").firstMatch(in: text),
                   let identifierString = match.captures[1]?.string,
-                  let identifier = GrooveLoop.Identifier(uuidString: identifierString) else { continue }
+                  let identifier = UUID(uuidString: identifierString) else { continue }
                   loops[identifier]?.end = event.time
 
                 default: break
@@ -69,7 +69,7 @@ struct GrooveTrack {
         default: break
 
       }
-    }
+    }*/
   }
 
 }
@@ -78,11 +78,12 @@ extension GrooveTrack: CustomStringConvertible {
   var description: String { return jsonValue.prettyRawValue }
 }
 
-extension GrooveTrack: JSONValueConvertible {
-  var jsonValue: JSONValue { return [ "name": name, "color": color, "instrument": instrument, "nodes": Array(nodes.values) ] }
-}
+extension GrooveTrack: LosslessJSONValueConvertible {
 
-extension GrooveTrack: JSONValueInitializable {
+  var jsonValue: JSONValue {
+    return [ "name": name, "color": color, "instrument": instrument, "nodes": Array(nodes.values) ]
+  }
+
   init?(_ jsonValue: JSONValue?) {
     guard let dict = ObjectJSONValue(jsonValue),
               let name = String(dict["name"]),
@@ -94,4 +95,5 @@ extension GrooveTrack: JSONValueInitializable {
     self.color = color
     for node in nodes.flatMap({GrooveNode($0)}) { self.nodes[node.identifier] = node }
   }
+
 }

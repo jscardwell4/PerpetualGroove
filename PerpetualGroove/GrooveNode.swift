@@ -30,12 +30,13 @@ struct GrooveNode: JSONValueConvertible, JSONValueInitializable {
   }
 
   var addEvent: MIDINodeEvent {
-    return MIDINodeEvent(.add(identifier: identifier, trajectory: trajectory, generator: generator), addTime)
+    return MIDINodeEvent(data: .add(identifier: identifier, trajectory: trajectory, generator: generator),
+                         time: addTime)
   }
 
   var removeEvent: MIDINodeEvent? {
     guard let removeTime = removeTime else { return nil }
-    return MIDINodeEvent(.remove(identifier: identifier), removeTime)
+    return MIDINodeEvent(data: .remove(identifier: identifier), time: removeTime)
   }
 
   init?(event: MIDINodeEvent) {

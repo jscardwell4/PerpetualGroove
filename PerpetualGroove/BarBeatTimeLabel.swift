@@ -27,9 +27,9 @@ final class BarBeatTimeLabel: UIView {
       guard let transport = transport else { return }
 
       guard transport.time.callbackRegisteredForKey(barBeatTimeCallbackKey) == false else { return }
-      transport.time.registerCallback({ [weak self] in self?.currentTime = $0 },
-                            predicate: {_ in true},
-                               forKey: barBeatTimeCallbackKey)
+      transport.time.register(callback: { [weak self] in self?.currentTime = $0 },
+                              predicate: {_ in true},
+                              key: barBeatTimeCallbackKey)
       receptionist.observe(name: Transport.NotificationName.didBeginJogging.rawValue, from: transport) {
         [weak self] _ in self?.jogging = true
       }
@@ -89,7 +89,6 @@ final class BarBeatTimeLabel: UIView {
 
   override var bounds: CGRect { didSet { calculateFrames() } }
 
-  /** calculateFrames */
   fileprivate func calculateFrames() {
     guard !bounds.isEmpty else {
       barFrame = .zero
@@ -109,11 +108,6 @@ final class BarBeatTimeLabel: UIView {
     setNeedsDisplay()
   }
 
-  /**
-  drawRect:
-
-  - parameter rect: CGRect
-  */
   override func draw(_ rect: CGRect) {
     let attributes: [String:AnyObject] = [
       NSFontAttributeName: _font,
@@ -162,34 +156,22 @@ final class BarBeatTimeLabel: UIView {
     }
   }
 
-  /** updateFont */
   fileprivate func updateFont() {
     _font = font.withSize((characterSize.width / (bounds.width / 9)) * font.pointSize)
   }
 
-  /**
-  intrinsicContentSize
-
-  - returns: CGSize
-  */
   override var intrinsicContentSize: CGSize {
     return CGSize(width: characterSize.width * 9, height: characterSize.height).integralSize
   }
 
-  /**
-   didChangeTransport:
-
-   - parameter notification: NSNotification
-  */
   fileprivate func didChangeTransport(_ notification: Notification) {
     guard Sequencer.time.callbackRegisteredForKey(barBeatTimeCallbackKey) == false else { return }
-    Sequencer.time.registerCallback({ [weak self] in self?.currentTime = $0 },
-                             predicate: {_ in true},
-                                forKey: barBeatTimeCallbackKey)
+    Sequencer.time.register(callback: { [weak self] in self?.currentTime = $0 },
+                            predicate: {_ in true},
+                            key: barBeatTimeCallbackKey)
     currentTime = Sequencer.time.barBeatTime
   }
 
-  /** setup */
   fileprivate func setup() {
 
     calculateFrames()
@@ -203,18 +185,8 @@ final class BarBeatTimeLabel: UIView {
 
   }
 
-  /**
-  initWithFrame:
-
-  - parameter frame: CGRect
-  */
   override init(frame: CGRect) { super.init(frame: frame); setup() }
 
-  /**
-  init:
-
-  - parameter aDecoder: NSCoder
-  */
   required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder); setup() }
 
 }

@@ -15,11 +15,11 @@ final class Loop: Swift.Sequence, MIDINodeDispatch {
 
   var repetitions: Int = 0
   var repeatDelay: UInt64 = 0
-  var events: MIDIEventContainer
+  var eventContainer: MIDIEventContainer
   var start: BarBeatTime = BarBeatTime.zero
   var end: BarBeatTime = BarBeatTime.zero
 
-  let identifier: Identifier
+  let identifier: UUID
   var eventQueue: DispatchQueue { return track.eventQueue }
 
   fileprivate(set) var nodeManager: MIDINodeManager!
@@ -36,28 +36,26 @@ final class Loop: Swift.Sequence, MIDINodeDispatch {
 
   var name: String { return "\(track.displayName) (\(identifier.uuidString))" }
   
-  func connectNode(_ node: MIDINode) throws { try track.connectNode(node) }
+  func connect(node: MIDINode) throws { try track.connect(node: node) }
 
-  func disconnectNode(_ node: MIDINode) throws { try track.disconnectNode(node) }
-
-  typealias Identifier = UUID
+  func disconnect(node: MIDINode) throws { try track.disconnect(node: node) }
 
   /// 'Marker' meta event in the following format:<br>
   ///      `start(`*identifier*`):`*repetitions*`:`*repeatDelay*
-  var beginLoopEvent: MIDIEvent {
+  var beginLoopEvent: AnyMIDIEvent {
     return .meta(MetaEvent(.marker(name: "start(\(identifier.uuidString)):\(repetitions):\(repeatDelay)")))
   }
 
   /// 'Marker' meta event in the following format:<br>
   ///      `end(`*identifier*`)`
-  var endLoopEvent: MIDIEvent {
+  var endLoopEvent: AnyMIDIEvent {
     return .meta(MetaEvent(.marker(name: "end(\(identifier.uuidString))")))
   }
 
   init(track: InstrumentTrack) {
     self.track = track
     identifier = UUID()
-    events = []
+    eventContainer = MIDIEventContainer()
   }
 
   init(grooveLoop: GrooveLoop, track: InstrumentTrack) {
@@ -66,7 +64,7 @@ final class Loop: Swift.Sequence, MIDINodeDispatch {
     repetitions = grooveLoop.repetitions
     repeatDelay = grooveLoop.repeatDelay
     start = grooveLoop.start
-    var events: [MIDIEvent] = []
+    var events: [AnyMIDIEvent] = []
     for node in grooveLoop.nodes.values {
       events.append(.node(node.addEvent))
       if let removeEvent = node.removeEvent {
@@ -74,17 +72,17 @@ final class Loop: Swift.Sequence, MIDINodeDispatch {
       }
     }
 
-    self.events = MIDIEventContainer(events: events)
+    self.eventContainer = MIDIEventContainer(events: events)
     nodeManager = MIDINodeManager(owner: self)
   }
 
   func registrationTimes<S:Swift.Sequence>(forAdding events: S) -> [BarBeatTime]
-    where S.Iterator.Element == MIDIEvent
+    where S.Iterator.Element == AnyMIDIEvent
   {
     return events.filter({ if case .node(_) = $0 { return true } else { return false } }).map({$0.time})
   }
 
-  func dispatchEvent(_ event: MIDIEvent) {
+  func dispatch(event: AnyMIDIEvent) {
     guard case .node(let nodeEvent) = event else { return }
       switch nodeEvent.data {
         case let .add(identifier, trajectory, generator):
@@ -94,12 +92,12 @@ final class Loop: Swift.Sequence, MIDINodeDispatch {
       }
   }
 
-  func makeIterator() -> AnyIterator<MIDIEvent> {
+  func makeIterator() -> AnyIterator<AnyMIDIEvent> {
     var startEventInserted = false
     var endEventInserted = false
     var iteration = 0
     var offset: UInt64 = 0
-    var currentGenerator: AnyIterator<MIDIEvent> = AnyIterator(events.makeIterator())
+    var currentGenerator = eventContainer.makeIterator()
     return AnyIterator {
       [
         startTicks = start.ticks,
@@ -109,7 +107,7 @@ final class Loop: Swift.Sequence, MIDINodeDispatch {
         beginEvent = beginLoopEvent,
         endEvent = endLoopEvent
       ]
-      () -> MIDIEvent? in
+      () -> AnyMIDIEvent? in
 
       if !startEventInserted {
         startEventInserted = true
@@ -121,7 +119,7 @@ final class Loop: Swift.Sequence, MIDINodeDispatch {
         return event
       } else if repeatCount >= {let i = iteration; iteration += 1; return i}() || repeatCount < 0 {
         offset += delay + totalTicks
-        currentGenerator = AnyIterator(self.events.makeIterator())
+        currentGenerator = self.eventContainer.makeIterator()
         if var event = currentGenerator.next() {
           event.time = BarBeatTime(tickValue: startTicks + event.time.ticks + offset)
           return event
@@ -147,6 +145,7 @@ final class Loop: Swift.Sequence, MIDINodeDispatch {
 }
 
 extension Loop: CustomStringConvertible {
+
   var description: String {
     return "\n".join(
       "time: \(time)",
@@ -159,7 +158,8 @@ extension Loop: CustomStringConvertible {
       "recording: \(recording)",
       "name: \(name)",
       "nodes: \(nodes)",
-      "events: \(events)"
+      "events: \(eventContainer)"
     )
   }
+  
 }

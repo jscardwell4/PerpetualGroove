@@ -16,8 +16,8 @@ protocol MIDINodeDispatch: class, MIDIEventDispatch, Loggable, Named {
   var nextNodeName: String { get }
   var color: TrackColor { get }
   var nodeManager: MIDINodeManager! { get }
-  func connectNode(_ node: MIDINode) throws
-  func disconnectNode(_ node: MIDINode) throws
+  func connect(node: MIDINode) throws
+  func disconnect(node: MIDINode) throws
 
   var recording: Bool { get }
 }

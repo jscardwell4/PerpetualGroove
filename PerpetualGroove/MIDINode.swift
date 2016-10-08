@@ -39,9 +39,7 @@ final class MIDINode: SKSpriteNode {
   /// Whether a note is ended via a note on event with velocity of 0 or with a  note off event
   static let useVelocityForOff = true
 
-  typealias Identifier = UUID
-
-  let identifier: Identifier
+  let identifier: UUID
 
   fileprivate lazy var playAction:             Action = self.action(.Play)
   fileprivate lazy var horizontalPlayAction:   Action = self.action(.HorizontalPlay)
@@ -239,7 +237,7 @@ final class MIDINode: SKSpriteNode {
        name: String,
        dispatch: MIDINodeDispatch,
        generator: AnyMIDIGenerator,
-       identifier: Identifier = UUID()) throws
+       identifier: UUID = UUID()) throws
   {
     initTime = Sequencer.time.barBeatTime
     initialTrajectory = trajectory

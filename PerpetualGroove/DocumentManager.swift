@@ -13,7 +13,6 @@ final class DocumentManager {
 
   // MARK: - Initialization
 
-  /** initialize */
   static func initialize() {
 
     queue.async {
@@ -37,7 +36,9 @@ final class DocumentManager {
       storageLocation = SettingsManager.iCloudStorage ? .iCloud : .local
 
       state ∪= [.Initialized]
+
     }
+
   }
   
   // MARK: - Queues
@@ -69,7 +70,9 @@ final class DocumentManager {
 
       guard state.symmetricDifference(oldValue) ∋ .OpeningDocument else { return }
       dispatchToMain {
-        postNotification(name: openingDocument ? .willOpenDocument : .didOpenDocument, object: self, userInfo: nil)
+        postNotification(name: openingDocument ? .willOpenDocument : .didOpenDocument,
+                         object: self,
+                         userInfo: nil)
       }
     }
   }
@@ -102,10 +105,12 @@ final class DocumentManager {
   fileprivate static let observer = KVOReceptionist()
 
   static fileprivate var _currentDocument: Document? {
+
     willSet {
       guard _currentDocument != newValue else { return }
       dispatchToMain { postNotification(name: .willChangeDocument, object: self, userInfo: nil) }
     }
+
     didSet {
       queue.async {
         logDebug("currentDocument: \(_currentDocument == nil ? "nil" : _currentDocument!.localizedName)")
@@ -129,7 +134,9 @@ final class DocumentManager {
         refreshBookmark()
         dispatchToMain { postNotification(name: .didChangeDocument, object: self, userInfo: nil) }
       }
+
     }
+
   }
 
   /// Used as lock for synchronized access to `_currentDocument`
@@ -183,9 +190,8 @@ final class DocumentManager {
         case (let data?, true):
           openData(data)
         case (let data?, false):
-          receptionist.observeOnce(name: Sequencer.NotificationName.didUpdateAvailableSoundSets.rawValue, from: Sequencer.self) {
-            _ in openData(data)
-          }
+          receptionist.observeOnce(name: Sequencer.NotificationName.didUpdateAvailableSoundSets.rawValue,
+                                   from: Sequencer.self) { _ in openData(data) }
       }
     }
   }
@@ -261,12 +267,6 @@ final class DocumentManager {
     }
   }
 
-  /**
-  postItemNotificationWithItems:oldItems:
-
-  - parameter items: [DocumentItem]
-  - parameter oldItems: [DocumentItem]
-  */
   static fileprivate func postItemUpdateNotification(_ items: OrderedSet<DocumentItem>) {
     defer { updateNotificationItems = items }
 
@@ -295,13 +295,12 @@ final class DocumentManager {
 
   }
 
-  /** refreshLocalItems */
   static fileprivate func refreshLocalItems() {
     guard let fileWrappers = directoryMonitor.directoryWrapper.fileWrappers?.values else { return }
     let localDocumentItems: [LocalDocumentItem] = fileWrappers.flatMap {
       [directory = directoryMonitor.directoryURL] in
-      guard let name = $0.preferredFilename else { return nil }
-      return try? LocalDocumentItem(directory + name)
+        guard let name = $0.preferredFilename else { return nil }
+        return try? LocalDocumentItem(directory + name)
       }
     localItems = OrderedSet(localDocumentItems.map(DocumentItem.init))
   }
@@ -314,7 +313,6 @@ final class DocumentManager {
 
   fileprivate static let DefaultDocumentName = "AwesomeSauce"
 
-  /** createNewFile */
   static func createNewDocument(_ name: String? = nil) {
     guard let storageLocation = storageLocation else {
       logWarning("Cannot create a new document without a valid storage location")
@@ -338,7 +336,7 @@ final class DocumentManager {
 
       }
 
-      guard let fileName = noncollidingFileName(name ?? DefaultDocumentName) else { return }
+      guard let fileName = noncollidingFileName(for: name ?? DefaultDocumentName) else { return }
       let fileURL = url + ["\(fileName).groove"]
       logDebug("creating a new document at path '\(fileURL.path)'")
       let document = Document(fileURL: fileURL)
@@ -346,21 +344,14 @@ final class DocumentManager {
         guard $0 else { return }
         dispatchToMain {
           postNotification(name: .didCreateDocument, object: self, userInfo: ["filePath": fileURL.path])
-          DocumentManager.openDocument(document)
+          DocumentManager.open(document: document)
         }
       }
     }
 
   }
 
-  /**
-  noncollidingFileName:
-
-  - parameter fileName: String?
-
-  - returns: String
-  */
-  static func noncollidingFileName(_ fileName: String?) -> String? {
+  static func noncollidingFileName(for fileName: String?) -> String? {
     guard let (baseName, ext) = fileName?.baseNameExt else { return nil }
 
     var extʹ = ext
@@ -395,12 +386,7 @@ final class DocumentManager {
 
   // MARK: - Opening documents
 
-  /**
-  openDocument:
-
-  - parameter document: Document
-  */
-  static func openDocument(_ document: Document) {
+  static func open(document: Document) {
     let openBlock = {
       guard state ∌ .OpeningDocument else { logWarning("already opening a document"); return }
       logDebug("opening document '\(document.fileURL.path)'")
@@ -425,49 +411,28 @@ final class DocumentManager {
                            queue: operationQueue)
       {
         _ in
-        receptionist.stopObserving(name: Sequencer.NotificationName.didUpdateAvailableSoundSets.rawValue, from: Sequencer.self)
+        receptionist.stopObserving(name: Sequencer.NotificationName.didUpdateAvailableSoundSets.rawValue,
+                                   from: Sequencer.self)
         openBlock()
       }
     }
   }
 
-  /**
-  openURL:
+  static func open(url: URL) { open(document: Document(fileURL: url)) }
 
-  - parameter url: NSURL
-  */
-  static func openURL(_ url: URL) { openDocument(Document(fileURL: url)) }
-
-  /**
-  openBookmarkedDocument:
-
-  - parameter data: NSData?
-  */
   static fileprivate func openBookmarkedDocument(_ data: Data) throws {
     let url = try (NSURL(resolvingBookmarkData: data,
                         options: .withoutUI,
                         relativeTo: nil,
                         bookmarkDataIsStale: nil) as URL)
     logDebug("opening bookmarked file at path '\(url.path)'")
-    openURL(url)
+    open(url: url)
 
   }
 
-  /**
-  openItem:
+  static func open(item: DocumentItem) { open(url: item.URL) }
 
-  - parameter item: DocumentItemType
-  */
-  static func openItem(_ item: DocumentItem) {
-    openURL(item.URL as URL)
-  }
-
-  /**
-  deleteItem:
-
-  - parameter item: DocumentItemType
-  */
-  static func deleteItem(_ item: DocumentItem) {
+  static func delete(item: DocumentItem) {
 
     queue.async {
 
@@ -489,8 +454,10 @@ final class DocumentManager {
 }
 
 extension DocumentManager {
+
   fileprivate struct State: OptionSet, CustomStringConvertible {
     let rawValue: Int
+
     static let Initialized            = State(rawValue: 0b0001)
     static let OpeningDocument        = State(rawValue: 0b0010)
     static let GatheringMetadataItems = State(rawValue: 0b0100)
@@ -505,13 +472,19 @@ extension DocumentManager {
       result += "]"
       return result
     }
+
   }
+
 }
 
 // MARK: - StorageLocation
 
 extension DocumentManager {
-  enum StorageLocation { case iCloud, local }
+
+  enum StorageLocation {
+    case iCloud, local
+  }
+
 }
 
 // MARK: - Error
@@ -529,6 +502,7 @@ extension DocumentManager: NotificationDispatching {
   enum NotificationName: String, LosslessStringConvertible {
     case didUpdateItems, willChangeDocument, didChangeDocument, didCreateDocument
     case willOpenDocument, didOpenDocument
+
     var description: String { return rawValue }
     init?(_ description: String) { self.init(rawValue: description) }
   }
@@ -536,12 +510,10 @@ extension DocumentManager: NotificationDispatching {
 }
 
 extension Notification {
-  var addedItemsData: [AnyObject]? {
-    return userInfo?["added"] as? [AnyObject]
-  }
-  var removedItemsData: [AnyObject]? {
-    return userInfo?["removed"] as? [AnyObject]
-  }
+
+  var addedItemsData: [AnyObject]? { return userInfo?["added"] as? [AnyObject] }
+  var removedItemsData: [AnyObject]? { return userInfo?["removed"] as? [AnyObject] }
   var addedItems: [DocumentItem]?   { return addedItemsData?.flatMap(DocumentItem.init)   }
   var removedItems: [DocumentItem]? { return removedItemsData?.flatMap(DocumentItem.init) }
+
 }

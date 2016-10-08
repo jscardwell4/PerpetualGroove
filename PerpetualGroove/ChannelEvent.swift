@@ -10,10 +10,81 @@ import Foundation
 import MoonKit
 import AudioToolbox
 
-/** Struct to hold data for a channel event where event = \<delta time\> \<status\> \<data1\> \<data2\> */
-struct ChannelEvent: MIDIEventType {
+/// Struct to hold data for a channel event where 
+/// event = \<delta time\> \<status\> \<data1\> \<data2\>
+struct ChannelEvent: MIDIEvent {
 
-  enum EventType: Byte, ExpressibleByIntegerLiteral {
+  var time: BarBeatTime
+  var delta: MIDIFile.VariableLengthQuantity?
+  var status: Status
+  var data1: Byte
+  var data2: Byte?
+
+  var bytes: [Byte] { return [status.value, data1] + (data2 != nil ? [data2!] : []) }
+
+  init(delta: MIDIFile.VariableLengthQuantity,
+       data: Foundation.Data.SubSequence,
+       time: BarBeatTime = BarBeatTime.zero) throws
+  {
+
+    self.delta = delta
+
+    guard let type = EventType(rawValue: data[data.startIndex] >> 4) else {
+      throw MIDIFileError(type: .unsupportedEvent,
+                          reason: "\(data[data.startIndex] >> 4) is not a supported channel event")
+    }
+
+    guard data.count == type.byteCount else {
+      throw MIDIFileError(type: .invalidLength,
+                          reason: "\(type) events expect a total byte count of \(type.byteCount)")
+    }
+
+    status = Status(data[data.startIndex])
+
+    data1 = data[data.startIndex + 1]
+    data2 =  type.byteCount == 3 ? data[data.startIndex + 2] : nil
+
+    self.time = time
+
+  }
+
+  init(type: EventType, channel: Byte, data1: Byte, data2: Byte? = nil, time: BarBeatTime = BarBeatTime.zero) {
+
+    status = Status(type: type, channel: channel)
+    self.data1 = data1
+    self.data2 = data2
+    self.time = time
+
+  }
+
+}
+
+extension ChannelEvent: CustomStringConvertible {
+
+  var description: String {
+    var result = "\(time) \(status) "
+    switch status.type {
+      case .noteOn, .noteOff:
+        result += "\(NoteGenerator.Tone(midi: data1)) \(Velocity(midi: data2!))"
+      default:
+        result += "\(data1)"
+    }
+    return result
+  }
+
+}
+
+extension ChannelEvent: Equatable {
+
+  static func ==(lhs: ChannelEvent, rhs: ChannelEvent) -> Bool {
+    return lhs.bytes == rhs.bytes
+  }
+
+}
+
+extension ChannelEvent {
+
+  enum EventType: UInt8, ExpressibleByIntegerLiteral {
     case noteOff               = 0x8
     case noteOn                = 0x9
     case polyphonicKeyPressure = 0xA
@@ -22,18 +93,8 @@ struct ChannelEvent: MIDIEventType {
     case channelPressure       = 0xD
     case pitchBendChange       = 0xE
 
-    /**
-    init:
-
-    - parameter value: Byte
-    */
     init(integerLiteral value: Byte) { self.init(value) }
 
-    /**
-    init:
-
-    - parameter v: Byte
-    */
     init(_ v: Byte) { self = EventType(rawValue: (0x8 ... 0xE).clampValue(v))! }
 
     var byteCount: Int {
@@ -45,88 +106,10 @@ struct ChannelEvent: MIDIEventType {
 
   }
 
-  struct Status: ExpressibleByIntegerLiteral {
-    var type: EventType
-    var channel: Byte
-
-    var value: Byte { return (type.rawValue << 4) | channel }
-
-    /**
-    init:
-
-    - parameter value: Byte
-    */
-    init(integerLiteral value: Byte) { self.init(value) }
-
-    /**
-    init:
-
-    - parameter v: Byte
-    */
-    init(_ v: Byte) { self.init(EventType(v >> 4), v & 0xF) }
-
-    /**
-    init:c:
-
-    - parameter t: EventType
-    - parameter c: Byte
-    */
-    init(_ t: EventType, _ c: Byte) { type = t; channel = (0 ... 15).clampValue(c) }
-  }
-
-  var time: BarBeatTime = BarBeatTime.zero
-  var delta: VariableLengthQuantity?
-  var status: Status
-  var data1: Byte
-  var data2: Byte?
-
-  var bytes: [Byte] { return [status.value, data1] + (data2 != nil ? [data2!] : []) }
-
-  /**
-  initWithDelta:bytes:
-
-  - parameter delta: VariableLengthQuantity
-  - parameter bytes: C
-  */
-  init<C:Collection>(delta: VariableLengthQuantity, bytes: C) throws
-    where C.Iterator.Element == Byte, C.IndexDistance == Int
-  {
-    self.delta = delta
-    guard let t = EventType(rawValue: bytes[bytes.startIndex] >> 4) else {
-      throw MIDIFileError(type: .unsupportedEvent,
-                          reason: "\(bytes[bytes.startIndex] >> 4) is not a supported channel event")
-    }
-    guard bytes.count == t.byteCount else {
-      throw MIDIFileError(type: .invalidLength, reason: "\(t) events expect a total byte count of \(t.byteCount)")
-    }
-    status = Status(bytes[bytes.startIndex])
-
-    data1 = bytes[bytes.index(after: bytes.startIndex)]
-    data2 =  t.byteCount == 3 ? bytes[bytes.index(bytes.startIndex, offsetBy: 2)] : nil
-  }
-
-  /**
-  init:channel:d1:d2:t:
-
-  - parameter type: Type
-  - parameter channel: Byte
-  - parameter d1: Byte
-  - parameter d2: Byte? = nil
-  - parameter t: BarBeatTime? = nil
-  */
-  init(_ type: EventType, _ channel: Byte, _ d1: Byte, _ d2: Byte? = nil, _ t: BarBeatTime? = nil) {
-    status = Status(type, channel); data1 = d1; data2 = d2
-    if let t = t { time = t }
-  }
-
-  /** Computed property for the equivalent `MIDIChannelMessage` struct consumed by the MusicPlayer API */
-  var message: MIDIChannelMessage {
-    return MIDIChannelMessage(status: status.value, data1: data1, data2: data2 ?? 0, reserved: 0)
-  }
-
 }
 
 extension ChannelEvent.EventType: CustomStringConvertible {
+
   var description: String {
     switch self {
       case .noteOff:               return "note off"
@@ -138,25 +121,31 @@ extension ChannelEvent.EventType: CustomStringConvertible {
       case .pitchBendChange:       return "pitch bend change"
     }
   }
+
 }
 
-extension ChannelEvent.Status: CustomStringConvertible { var description: String { return "\(type) (\(channel))" } }
+extension ChannelEvent {
 
-extension ChannelEvent: CustomStringConvertible {
-  var description: String {
-    var result = "\(time) \(status) "
-    switch status.type {
-      case .noteOn, .noteOff:
-        result += "\(NoteGenerator.Tone(midi: data1)) \(Velocity(midi: data2!))"
-      default:
-        result += "\(data1)"
+  struct Status: ExpressibleByIntegerLiteral {
+    var type: EventType
+    var channel: Byte
+
+    var value: Byte { return (type.rawValue << 4) | channel }
+
+    init(integerLiteral value: Byte) { self.init(value) }
+
+    init(_ v: Byte) { self.init(type: EventType(v >> 4), channel: v & 0xF) }
+
+    init(type: EventType, channel: Byte) {
+      self.type = type
+      self.channel = (0 ... 15).clampValue(channel)
     }
-    return result
   }
+
 }
 
-extension ChannelEvent: Equatable {}
+extension ChannelEvent.Status: CustomStringConvertible {
 
-func ==(lhs: ChannelEvent, rhs: ChannelEvent) -> Bool {
-  return lhs.bytes == rhs.bytes
+  var description: String { return "\(type) (\(channel))" }
+
 }

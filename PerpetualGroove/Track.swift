@@ -9,19 +9,19 @@
 import Foundation
 import MoonKit
 
-class Track: CustomStringConvertible, Named, MIDIEventDispatch {
+class Track: Named, MIDIEventDispatch, CustomStringConvertible {
 
   unowned let sequence: Sequence
 
   /// Queue used generating `MIDIFile` track events
   let eventQueue: DispatchQueue
 
-  var events = MIDIEventContainer()
+  var eventContainer = MIDIEventContainer()
 
-  var endOfTrack: BarBeatTime { return events.maxTime }
+  var endOfTrack: BarBeatTime { return eventContainer.maxTime ?? BarBeatTime.zero }
 
-  fileprivate var trackNameEvent: MIDIEvent = .meta(MetaEvent(.sequenceTrackName(name: "")))
-  fileprivate var endOfTrackEvent: MIDIEvent = .meta(MetaEvent(.endOfTrack))
+  fileprivate var trackNameEvent: AnyMIDIEvent = .meta(MetaEvent(.sequenceTrackName(name: "")))
+  fileprivate var endOfTrackEvent: AnyMIDIEvent = .meta(MetaEvent(.endOfTrack))
 
   var name: String {
     get {
@@ -45,17 +45,17 @@ class Track: CustomStringConvertible, Named, MIDIEventDispatch {
 
   var displayName: String { return name }
 
-  func validateEvents(_ container: inout MIDIEventContainer) { endOfTrackEvent.time = endOfTrack }
+  func validate(events container: inout MIDIEventContainer) { endOfTrackEvent.time = endOfTrack }
 
-  var chunk: MIDIFileTrackChunk {
-    validateEvents(&self.events)
-    let events: [MIDIEvent] = headEvents + self.events + tailEvents
-    return MIDIFileTrackChunk(events: events)
+  var chunk: MIDIFile.TrackChunk {
+    validate(events: &eventContainer)
+    let events: [AnyMIDIEvent] = headEvents + Array<AnyMIDIEvent>(eventContainer) + tailEvents
+    return MIDIFile.TrackChunk(events: events)
   }
 
-  var headEvents: [MIDIEvent] { return [trackNameEvent] }
+  var headEvents: [AnyMIDIEvent] { return [trackNameEvent] }
 
-  var tailEvents: [MIDIEvent] { return [endOfTrackEvent] }
+  var tailEvents: [AnyMIDIEvent] { return [endOfTrackEvent] }
 
   init(sequence: Sequence) {
     self.sequence = sequence
@@ -63,21 +63,19 @@ class Track: CustomStringConvertible, Named, MIDIEventDispatch {
   }
 
   func registrationTimes<S:Swift.Sequence>(forAdding events: S) -> [BarBeatTime]
-    where S.Iterator.Element == MIDIEvent
+    where S.Iterator.Element == AnyMIDIEvent
   {
     guard let eot = events.first(where: {($0.event as? MetaEvent)?.data == .endOfTrack}) else { return [] }
     return [eot.time]
   }
 
   /// Overridden by subclasses to handle actual event generation
-  func dispatchEvent(_ event: MIDIEvent) { }
+  func dispatch(event: AnyMIDIEvent) { }
 
   var description: String {
-    return "\n".join(
-      "name: \(name)",
-      "events:\n\(events.description.indentedBy(1, useTabs: true))"
-    )
+    return "\n".join("name: \(name)", "events:\n\(eventContainer)")
   }
+
 }
 
 // MARK: - Notifications

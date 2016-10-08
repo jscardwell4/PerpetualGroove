@@ -19,7 +19,7 @@ struct OldMIDIEventContainer: Collection {
     return events.isEmpty || events.values.flatMap({$0.events.isEmpty ? $0 : nil}).count > 0
   }
 
-  subscript(index: Index) -> MIDIEvent {
+  subscript(index: Index) -> AnyMIDIEvent {
     get {
       guard let event = events[index.time]?[index.position] else { fatalError("invalid index \(index)") }
       return event
@@ -29,12 +29,12 @@ struct OldMIDIEventContainer: Collection {
     }
   }
 
-  subscript(time: BarBeatTime) -> OrderedSet<MIDIEvent>? {
+  subscript(time: BarBeatTime) -> OrderedSet<AnyMIDIEvent>? {
     return events[time]?.events
   }
 
   subscript(bounds: Range<Index>) -> OldMIDIEventContainer {
-    var events: [MIDIEvent] = []
+    var events: [AnyMIDIEvent] = []
     var index = bounds.lowerBound
     while index != bounds.upperBound {
       events.append(self[index])
@@ -44,7 +44,7 @@ struct OldMIDIEventContainer: Collection {
   }
 
   subscript(bounds: Range<BarBeatTime>) -> OldMIDIEventContainer {
-    var result: [MIDIEvent] = []
+    var result: [AnyMIDIEvent] = []
     for (time, bag) in events where bounds.contains(time) {
       result.append(contentsOf: bag.events)
     }
@@ -77,10 +77,10 @@ struct OldMIDIEventContainer: Collection {
 
   init() {}
 
-  init(events: [MIDIEvent]) { self.init(); for event in events { append(event) } }
+  init(events: [AnyMIDIEvent]) { self.init(); for event in events { append(event) } }
 
-  typealias Iterator = AnyIterator<MIDIEvent>
-  func makeIterator() -> AnyIterator<MIDIEvent> {
+  typealias Iterator = AnyIterator<AnyMIDIEvent>
+  func makeIterator() -> AnyIterator<AnyMIDIEvent> {
     var index = startIndex
     let container = self
     return AnyIterator {
@@ -101,7 +101,7 @@ struct OldMIDIEventContainer: Collection {
     didSet { eventTimes = events.keys.sorted(); rebuildIndices() }
   }
 
-  mutating func append(_ event: MIDIEvent) {
+  mutating func append(_ event: AnyMIDIEvent) {
     var bag = events[event.time] ?? EventBag(event.time)
     bag.append(event)
     events[event.time] = bag
@@ -110,9 +110,9 @@ struct OldMIDIEventContainer: Collection {
   /**
    Implemented because default map wasn't working correctly.
 
-   - parameter transform: (MIDIEvent) throws -> T
+   - parameter transform: (AnyMIDIEvent) throws -> T
   */
-  func map<T>(_ transform: @escaping (MIDIEvent) throws -> T) rethrows -> [T] {
+  func map<T>(_ transform: @escaping (AnyMIDIEvent) throws -> T) rethrows -> [T] {
     var result: [T] = []
     for event in self {
       result.append(try transform(event))
@@ -120,7 +120,7 @@ struct OldMIDIEventContainer: Collection {
     return result
   }
 
-  mutating func appendEvents<S: Swift.Sequence>(_ events: S) where S.Iterator.Element == MIDIEvent {
+  mutating func appendEvents<S: Swift.Sequence>(_ events: S) where S.Iterator.Element == AnyMIDIEvent {
     for event in events { append(event) }
   }
 
@@ -153,9 +153,9 @@ struct OldMIDIEventContainer: Collection {
     return result
   }
 
-  func eventsForTime(_ time: BarBeatTime) -> OrderedSet<MIDIEvent>? { return events[time]?.events }
+  func eventsForTime(_ time: BarBeatTime) -> OrderedSet<AnyMIDIEvent>? { return events[time]?.events }
 
-  mutating func removeEventsMatching(_ predicate: (MIDIEvent) -> Bool) {
+  mutating func removeEventsMatching(_ predicate: (AnyMIDIEvent) -> Bool) {
     var result: [BarBeatTime:EventBag] = [:]
     for (time, bag) in events {
       var resultBag = EventBag(time)
@@ -174,12 +174,12 @@ private extension OldMIDIEventContainer {
 
   struct EventBag: Comparable, MutableCollection {
     let time: BarBeatTime
-    var events: OrderedSet<MIDIEvent> = []
+    var events: OrderedSet<AnyMIDIEvent> = []
 
     var startIndex: Int { return events.startIndex }
     var endIndex: Int { return events.endIndex }
 
-    var indices: OrderedSet<MIDIEvent>.Indices { return events.indices }
+    var indices: OrderedSet<AnyMIDIEvent>.Indices { return events.indices }
 
     /**
     Create a new bag for the specified time.
@@ -191,25 +191,25 @@ private extension OldMIDIEventContainer {
     /**
     Create a generator over the bag's events
 
-    - returns: IndexingGenerator<[MIDIEvent]>
+    - returns: IndexingGenerator<[AnyMIDIEvent]>
     */
-    func makeIterator() -> AnyIterator<MIDIEvent> { return AnyIterator(events.makeIterator()) }
+    func makeIterator() -> AnyIterator<AnyMIDIEvent> { return AnyIterator(events.makeIterator()) }
 
     /**
     Append a new event to the bag
 
-    - parameter event: MIDIEvent
+    - parameter event: AnyMIDIEvent
     */
-    mutating func append(_ event: MIDIEvent) { events.append(event) }
+    mutating func append(_ event: AnyMIDIEvent) { events.append(event) }
 
     /**
     Get or set the event at the specified position
 
     - parameter index: Int
 
-    - returns: MIDIEvent
+    - returns: AnyMIDIEvent
     */
-    subscript(index: Int) -> MIDIEvent {
+    subscript(index: Int) -> AnyMIDIEvent {
       get { return events[index] }
       set { events[index] = newValue }
     }
@@ -219,9 +219,9 @@ private extension OldMIDIEventContainer {
 
     - parameter bounds: Range<Int>
 
-    - returns: ArraySlice<MIDIEvent>
+    - returns: ArraySlice<AnyMIDIEvent>
     */
-    subscript(bounds: Range<Int>) -> OrderedSetSlice<MIDIEvent> {
+    subscript(bounds: Range<Int>) -> OrderedSetSlice<AnyMIDIEvent> {
       get { return events[bounds] }
       set { events[bounds] = newValue }
     }
@@ -261,7 +261,7 @@ private extension OldMIDIEventContainer {
 }
 
 extension OldMIDIEventContainer: ExpressibleByArrayLiteral {
-  init(arrayLiteral elements: MIDIEvent...) {
+  init(arrayLiteral elements: AnyMIDIEvent...) {
     self.init(events: elements)
   }
 }

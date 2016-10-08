@@ -116,10 +116,10 @@ final class MIDIPlayer {
     logDebug("inserting loops: \(loops)")
     let startTime = Sequencer.time.barBeatTime + loopStart
     let endTime = Sequencer.time.barBeatTime + loopEnd
-    for loop in loops.values where !loop.events.isEmpty {
+    for loop in loops.values where !loop.eventContainer.isEmpty {
       loop.start = startTime
       loop.end = endTime
-      loop.track.addLoop(loop)
+      loop.track.add(loop: loop)
     }
   }
 
@@ -179,7 +179,7 @@ final class MIDIPlayer {
   static func placeNew(_ trajectory: Trajectory,
                 target: MIDINodeDispatch,
              generator: AnyMIDIGenerator,
-            identifier: MIDINode.Identifier = UUID())
+            identifier: UUID = UUID())
   {
     dispatchToMain {
       guard let playerNode = playerNode else {
@@ -196,7 +196,7 @@ final class MIDIPlayer {
                                     identifier: identifier)
         playerNode.addChild(node)
 
-        try target.nodeManager.addNode(node)
+        try target.nodeManager.add(node: node)
 
 
         if !Sequencer.playing { Sequencer.play() }

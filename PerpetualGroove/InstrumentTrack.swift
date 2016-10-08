@@ -95,14 +95,15 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 
   // MARK: - MIDI file related properties and methods
 
-  override func validateEvents(_ container: inout MIDIEventContainer) {
+  override func validate(events container: inout MIDIEventContainer) {
     instrumentEvent = MetaEvent(.text(text: "instrument:\(instrument.soundFont.url.lastPathComponent)"))
-    programEvent = ChannelEvent(.programChange, instrument.channel, instrument.program)
-    super.validateEvents(&container)
+    programEvent = ChannelEvent(type: .programChange, channel: instrument.channel, data1: instrument.program)
+    super.validate(events: &container)
   }
 
-  func addEvents<S:Swift.Sequence>(_ events: S) where S.Iterator.Element == MIDIEvent {
-    var filteredEvents: [MIDIEvent] = []
+  func add<S:Swift.Sequence>(events: S) where S.Iterator.Element == AnyMIDIEvent {
+
+    var filteredEvents: [AnyMIDIEvent] = []
 
     for event in events {
 
@@ -125,17 +126,18 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     }
 
     modified = modified || filteredEvents.count > 0
-    super.addEvents(filteredEvents)
+    
+    super.add(events: filteredEvents)
   }
 
   fileprivate var instrumentEvent: MetaEvent!
   fileprivate var programEvent: ChannelEvent!
 
   typealias Identifier = MIDINodeEvent.Identifier
-  typealias NodeIdentifier = MIDINode.Identifier
+  typealias NodeIdentifier = UUID
   typealias EventData = MIDINodeEvent.Data
 
-  override var headEvents: [MIDIEvent] {
+  override var headEvents: [AnyMIDIEvent] {
     return super.headEvents + [.meta(instrumentEvent), .channel(programEvent)]
   }
 
@@ -229,13 +231,13 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 
   fileprivate var connectedEndPoints: Set<MIDIEndpointRef> = []
 
-  func connectNode(_ node: MIDINode) throws {
+  func connect(node: MIDINode) throws {
     guard connectedEndPoints ∌ node.endPoint else { throw MIDINodeDispatchError.NodeAlreadyConnected }
     try MIDIPortConnectSource(inPort, node.endPoint, nil) ➤ "Failed to connect to node \(node.name!)"
     connectedEndPoints.insert(node.endPoint)
   }
 
-  func disconnectNode(_ node: MIDINode) throws {
+  func disconnect(node: MIDINode) throws {
     guard connectedEndPoints ∋ node.endPoint else { throw MIDINodeDispatchError.NodeNotFound }
     try MIDIPortDisconnectSource(inPort, node.endPoint) ➤ "Failed to disconnect to node \(node.name!)"
     connectedEndPoints.remove(node.endPoint)
@@ -243,14 +245,14 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 
   // MARK: - Loops
 
-  func addLoop(_ loop: Loop) {
+  func add(loop: Loop) {
     guard loops[loop.identifier] == nil else { return }
     logDebug("adding loop: \(loop)")
     loops[loop.identifier] = loop
-    addEvents(loop)
+    add(events: loop)
   }
 
-  fileprivate var loops: [Loop.Identifier:Loop] = [:]
+  fileprivate var loops: [UUID:Loop] = [:]
 
   // MARK: - MIDI events
 
@@ -274,20 +276,28 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 
       guard let packet = Packet(packetList: packetList) else { return }
 
-      let event: MIDIEvent?
+      let event: AnyMIDIEvent?
       switch packet.status {
         case 9:
-          event = .channel(ChannelEvent(.noteOn, packet.channel, packet.note, packet.velocity, time))
+          event = .channel(ChannelEvent(type: .noteOn,
+                                        channel: packet.channel,
+                                        data1: packet.note,
+                                        data2: packet.velocity,
+                                        time: time))
         case 8:
-          event = .channel(ChannelEvent(.noteOff, packet.channel, packet.note, packet.velocity, time))
+          event = .channel(ChannelEvent(type: .noteOff,
+                                        channel: packet.channel,
+                                        data1: packet.note,
+                                        data2: packet.velocity,
+                                        time: time))
         default:
           event = nil
       }
-      if event != nil { self?.addEvent(event!) }
+      if event != nil { self?.add(event: event!) }
     }
   }
 
-  override func dispatchEvent(_ event: MIDIEvent) {
+  override func dispatch(event: AnyMIDIEvent) {
       switch event {
         case .node(let nodeEvent):
           switch nodeEvent.data {
@@ -307,7 +317,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
   }
 
   override func registrationTimes<S:Swift.Sequence>(forAdding events: S) -> [BarBeatTime]
-    where S.Iterator.Element == MIDIEvent
+    where S.Iterator.Element == AnyMIDIEvent
   {
     return events.filter({ if case .node(_) = $0 { return true } else { return false } }).map({$0.time})
       + super.registrationTimes(forAdding: events)
@@ -318,7 +328,6 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 
   // MARK: - Initialization
 
-  /** initializeMIDIClient */
   fileprivate func initializeMIDIClient() throws {
     try MIDIClientCreateWithBlock("track \(instrument.bus)" as CFString, &client, nil)
       ➤ "Failed to create midi client"
@@ -328,32 +337,19 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
       ➤ "Failed to create in port"
   }
 
-  /**
-  initWithSequence:instrument:
-
-  - parameter sequence: Sequence
-  - parameter instrument: Instrument
-  */
   init(sequence: Sequence, instrument: Instrument) throws {
     super.init(sequence: sequence)
     nodeManager = MIDINodeManager(owner: self)
     self.instrument = instrument
     instrument.track = self
     instrumentEvent = MetaEvent(.text(text: "instrument:\(instrument.soundFont.url.lastPathComponent)"))
-    programEvent = ChannelEvent(.programChange, instrument.channel, instrument.program)
+    programEvent = ChannelEvent(type: .programChange, channel: instrument.channel, data1: instrument.program)
     color = TrackColor.nextColor
 
     initializeNotificationReceptionist()
     try initializeMIDIClient()
   }
 
-
-  /**
-   initWithSequence:grooveTrack:
-
-   - parameter sequence: Sequence
-   - parameter grooveTrack: GrooveTrack
-  */
   init(sequence: Sequence, grooveTrack: GrooveTrack) throws {
     super.init(sequence: sequence)
     nodeManager = MIDINodeManager(owner: self)
@@ -365,34 +361,29 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     color = grooveTrack.color
 
     name = grooveTrack.name
-    var events: [MIDIEvent] = []
+    var events: [AnyMIDIEvent] = []
     for (_, node) in grooveTrack.nodes {
-      events.append(.node(MIDINodeEvent(.add(identifier: node.identifier,
-                                             trajectory: node.trajectory,
-                                             generator: node.generator), node.addTime)))
+      events.append(.node(MIDINodeEvent(data: .add(identifier: node.identifier,
+                                                   trajectory: node.trajectory,
+                                                   generator: node.generator),
+                                        time: node.addTime)))
       if let time = node.removeTime {
-        events.append(.node(MIDINodeEvent(.remove(identifier: node.identifier), time)))
+        events.append(.node(MIDINodeEvent(data: .remove(identifier: node.identifier), time: time)))
       }
     }
-    addEvents(events)
+    add(events: events)
 
-    grooveTrack.loops.values.forEach { addLoop(Loop(grooveLoop: $0, track: self)) }
+    grooveTrack.loops.values.forEach { add(loop: Loop(grooveLoop: $0, track: self)) }
 
     initializeNotificationReceptionist()
     try initializeMIDIClient()
   }
 
-  /**
-  initWithSequence:trackChunk:
-
-  - parameter sequence: Sequence
-  - parameter trackChunk: MIDIFileTrackChunk
-  */
-  init(sequence: Sequence, trackChunk: MIDIFileTrackChunk) throws {
+  init(sequence: Sequence, trackChunk: MIDIFile.TrackChunk) throws {
     super.init(sequence: sequence)
     nodeManager = MIDINodeManager(owner: self)
 
-    addEvents(trackChunk.events)
+    add(events: trackChunk.events)
 
     // Find the instrument event
 
@@ -449,29 +440,29 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 
 // MARK: - Errors
 extension InstrumentTrack {
+
   enum Error: String, Swift.Error, CustomStringConvertible {
     case SoundSetInitializeFailure = "Failed to create sound set"
     case InvalidSoundSetURL = "Failed to resolve sound set url"
     case InvalidProgram = "Specified sound set does not have the specified program"
     case InstrumentInitializeFailure = "Failed to create instrument"
   }
+
 }
 
 // MARK: - Hashable
-extension InstrumentTrack: Hashable { var hashValue: Int { return ObjectIdentifier(self).hashValue } }
+extension InstrumentTrack: Hashable {
+
+  var hashValue: Int { return ObjectIdentifier(self).hashValue }
+
+}
 
 // MARK: - Equatable
-extension InstrumentTrack: Equatable {}
+extension InstrumentTrack: Equatable {
 
-/**
-Equatable conformance
+  static func ==(lhs: InstrumentTrack, rhs: InstrumentTrack) -> Bool {
+    return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
+  }
 
-- parameter lhs: InstrumentTrack
-- parameter rhs: InstrumentTrack
-
-- returns: Bool
-*/
-func ==(lhs: InstrumentTrack, rhs: InstrumentTrack) -> Bool {
-  return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
 }
 

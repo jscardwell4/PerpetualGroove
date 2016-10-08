@@ -155,7 +155,7 @@ final class MixerViewController: UICollectionViewController, SecondaryController
   func delete(track: InstrumentTrack?) {
     guard let index = track?.index else { return }
     if SettingsManager.confirmDeleteTrack { logWarning("delete confirmation not yet implemented for tracks") }
-    sequence?.removeTrackAtIndex(index)
+    sequence?.removeTrack(at: index)
   }
 
   weak var soundFontTarget: TrackCell? {

@@ -161,7 +161,7 @@ final class RemoveTool: ToolType {
   fileprivate func removeMarkedNodes() {
     do {
       guard let manager = track?.nodeManager else { return }
-      let remove = deleteFromTrack ? MIDINodeManager.deleteNode : MIDINodeManager.removeNode
+      let remove = deleteFromTrack ? MIDINodeManager.delete : MIDINodeManager.remove
       for node in nodesToRemove.flatMap({$0.reference}) {
         try remove(manager)(node)
         node.fadeOut(remove: true)

@@ -19,7 +19,7 @@ final class TempoTrack: Track {
     didSet {
       guard tempo != oldValue && recording else { return }
       logDebug("inserting event for tempo \(tempo)")
-      addEvent(.meta(tempoEvent))
+      add(event: .meta(tempoEvent))
       postNotification(name: .didUpdate, object: self, userInfo: nil)
     }
   }
@@ -28,27 +28,21 @@ final class TempoTrack: Track {
     didSet {
       guard timeSignature != oldValue && recording else { return }
       logDebug("inserting event for signature \(timeSignature)")
-      addEvent(.meta(timeSignatureEvent))
+      add(event: .meta(timeSignatureEvent))
       postNotification(name: .didUpdate, object: self, userInfo: nil)
     }
   }
 
   fileprivate var timeSignatureEvent: MetaEvent {
-    return MetaEvent(Sequencer.time.barBeatTime, .timeSignature(signature: timeSignature, clocks: 36, notes: 8))
+    return MetaEvent(time: Sequencer.time.barBeatTime,
+                     data: .timeSignature(signature: timeSignature, clocks: 36, notes: 8))
   }
 
   fileprivate var tempoEvent: MetaEvent {
-    return MetaEvent(Sequencer.time.barBeatTime, .tempo(bpm: tempo))
+    return MetaEvent(time: Sequencer.time.barBeatTime, data: .tempo(bpm: tempo))
   }
 
-  /**
-  isTempoTrackEvent:
-
-  - parameter trackEvent: MIDIEvent
-
-  - returns: Bool
-  */
-  static func isTempoTrackEvent(_ trackEvent: MIDIEvent) -> Bool {
+  static func isTempoTrackEvent(_ trackEvent: AnyMIDIEvent) -> Bool {
     guard case .meta(let metaEvent) = trackEvent else { return false }
     switch metaEvent.data {
       case .tempo, .timeSignature, .endOfTrack: return true
@@ -57,12 +51,7 @@ final class TempoTrack: Track {
     }
   }
 
-  /**
-  dispatchEvent:
-
-  - parameter event: MIDIEvent
-  */
-  override func dispatchEvent(_ event: MIDIEvent) {
+  override func dispatch(event: AnyMIDIEvent) {
     guard case .meta(let metaEvent) = event else { return }
     switch metaEvent.data {
       case let .tempo(bpm): tempo = bpm; Sequencer.setTempo(bpm, automated: true)
@@ -71,39 +60,29 @@ final class TempoTrack: Track {
     }
   }
 
-  /**
-  Initializer for non-playback mode tempo track
-  
-  - parameter s: Sequence
-  */
+  /// Initializer for non-playback mode tempo track
   override init(sequence: Sequence) {
     super.init(sequence: sequence)
-    addEvent(.meta(timeSignatureEvent))
-    addEvent(.meta(tempoEvent))
+    add(event: .meta(timeSignatureEvent))
+    add(event: .meta(tempoEvent))
   }
 
-  /**
-  initWithTrackChunk:
-
-  - parameter trackChunk: MIDIFileTrackChunk
-  - parameter s: Sequence
-  */
-  init(sequence: Sequence, trackChunk: MIDIFileTrackChunk) {
+  init(sequence: Sequence, trackChunk: MIDIFile.TrackChunk) {
     super.init(sequence: sequence)
-    addEvents(trackChunk.events.filter(TempoTrack.isTempoTrackEvent))
+    add(events: trackChunk.events.filter(TempoTrack.isTempoTrackEvent))
 
     if filterEvents({
       if case .meta(let event) = $0, case .timeSignature = event.data { return true } else { return false }
     }).count == 0
     {
-      addEvent(.meta(timeSignatureEvent))
+      add(event: .meta(timeSignatureEvent))
     }
 
     if filterEvents({
       if case .meta(let event) = $0, case .tempo = event.data { return true } else { return false }
     }).count == 0
     {
-      addEvent(.meta(tempoEvent))
+      add(event: .meta(tempoEvent))
     }
   }
 

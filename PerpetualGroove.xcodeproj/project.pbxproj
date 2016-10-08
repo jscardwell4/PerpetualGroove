@@ -87,11 +87,8 @@
 		C28A0F571D99DE810011F706 /* MoonKitTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C28A0F521D99DE650011F706 /* MoonKitTest.framework */; };
 		C28A0F581D99DE860011F706 /* MoonKitTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C28A0F521D99DE650011F706 /* MoonKitTest.framework */; };
 		C28BB6021BBF110E00BF2F70 /* DocumentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28BB6011BBF110E00BF2F70 /* DocumentCell.swift */; };
-		C291C3EB1B91EDA700702AEA /* MIDIFileTrackChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3EA1B91EDA700702AEA /* MIDIFileTrackChunk.swift */; };
-		C291C3ED1B91EDB700702AEA /* MIDIFileHeaderChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3EC1B91EDB700702AEA /* MIDIFileHeaderChunk.swift */; };
 		C291C3EF1B91EDCC00702AEA /* MetaEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3EE1B91EDCC00702AEA /* MetaEvent.swift */; };
 		C291C3F11B91EDD600702AEA /* ChannelEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3F01B91EDD600702AEA /* ChannelEvent.swift */; };
-		C291C3F31B91EDE100702AEA /* VariableLengthQuantity.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3F21B91EDE100702AEA /* VariableLengthQuantity.swift */; };
 		C291C3F51B91F05900702AEA /* MIDIEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3F41B91F05900702AEA /* MIDIEvent.swift */; };
 		C2981BA81C2468FD007FC51F /* Loop.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2981BA71C2468FD007FC51F /* Loop.swift */; };
 		C2981BAA1C2B85F4007FC51F /* Transport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2981BA91C2B85F4007FC51F /* Transport.swift */; };
@@ -308,11 +305,8 @@
 		C28AA0EB1B8BC74800DA2502 /* test.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = test.mid; sourceTree = "<group>"; };
 		C28AA0ED1B8BE1F800DA2502 /* Ping Puh Ping.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = "Ping Puh Ping.mid"; sourceTree = "<group>"; };
 		C28BB6011BBF110E00BF2F70 /* DocumentCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentCell.swift; sourceTree = "<group>"; };
-		C291C3EA1B91EDA700702AEA /* MIDIFileTrackChunk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIFileTrackChunk.swift; sourceTree = "<group>"; };
-		C291C3EC1B91EDB700702AEA /* MIDIFileHeaderChunk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIFileHeaderChunk.swift; sourceTree = "<group>"; };
 		C291C3EE1B91EDCC00702AEA /* MetaEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetaEvent.swift; sourceTree = "<group>"; };
 		C291C3F01B91EDD600702AEA /* ChannelEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelEvent.swift; sourceTree = "<group>"; };
-		C291C3F21B91EDE100702AEA /* VariableLengthQuantity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VariableLengthQuantity.swift; sourceTree = "<group>"; };
 		C291C3F41B91F05900702AEA /* MIDIEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIEvent.swift; sourceTree = "<group>"; };
 		C2981BA71C2468FD007FC51F /* Loop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Loop.swift; sourceTree = "<group>"; };
 		C2981BA91C2B85F4007FC51F /* Transport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Transport.swift; sourceTree = "<group>"; };
@@ -629,11 +623,8 @@
 				C2D406731BB9FDC700681DEF /* DocumentManager.swift */,
 				C291C3F41B91F05900702AEA /* MIDIEvent.swift */,
 				C25EBC821B8BFAFA00E57665 /* MIDIFile.swift */,
-				C291C3EC1B91EDB700702AEA /* MIDIFileHeaderChunk.swift */,
-				C291C3EA1B91EDA700702AEA /* MIDIFileTrackChunk.swift */,
 				C291C3EE1B91EDCC00702AEA /* MetaEvent.swift */,
 				C291C3F01B91EDD600702AEA /* ChannelEvent.swift */,
-				C291C3F21B91EDE100702AEA /* VariableLengthQuantity.swift */,
 				C2ECC5E21B9C7FFA0010E76E /* MIDINodeEvent.swift */,
 				C2EA30521BB9DF3300020958 /* Document.swift */,
 				C2B2B0421BCEA55D007AF9DC /* OldMIDIEventContainer.swift */,
@@ -1187,7 +1178,6 @@
 				C26FC1731B7BAEBD00E271A3 /* AddTool.swift in Sources */,
 				C24DCE3A1C343C0C00AD98BE /* GrooveTrack.swift in Sources */,
 				C26FC16F1B7BA63300E271A3 /* MIDINode.swift in Sources */,
-				C291C3F31B91EDE100702AEA /* VariableLengthQuantity.swift in Sources */,
 				C2F2ADC61B91203700FF4836 /* Metronome.swift in Sources */,
 				C24E83961C3EDFD800B4A16A /* SecondaryControllerContainer.swift in Sources */,
 				C23B058B1C014AC50081AC6E /* ElementalComponents.swift in Sources */,
@@ -1226,7 +1216,6 @@
 				C24DCE381C3438A800AD98BE /* GrooveFile.swift in Sources */,
 				C28BB6021BBF110E00BF2F70 /* DocumentCell.swift in Sources */,
 				C2AA2BC81B84B04200A0B08D /* InstrumentViewController.swift in Sources */,
-				C291C3ED1B91EDB700702AEA /* MIDIFileHeaderChunk.swift in Sources */,
 				C26A09761BC96B97002EFEE1 /* MixerLayout.swift in Sources */,
 				C2729ADD1BEE6B3D004FA34F /* LocalDocumentItem.swift in Sources */,
 				C2DDA2311C38A8B5005F0965 /* GrooveLoop.swift in Sources */,
@@ -1251,7 +1240,6 @@
 				C2807DE01C74C6270061A001 /* RotateTool.swift in Sources */,
 				C2516B2D1C08F1B50060710B /* TransportViewController.swift in Sources */,
 				C2ECC5E31B9C7FFA0010E76E /* MIDINodeEvent.swift in Sources */,
-				C291C3EB1B91EDA700702AEA /* MIDIFileTrackChunk.swift in Sources */,
 				C22D93F11BADA24A00B04A2B /* MIDINodeHistory.swift in Sources */,
 				C2E043351B72F4DC005F0675 /* AppDelegate.swift in Sources */,
 				C2FEB0251C0F6183000BD1B7 /* GeneratorTool.swift in Sources */,
