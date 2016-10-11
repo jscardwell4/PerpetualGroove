@@ -12,15 +12,15 @@ import MoonKit
 import typealias AudioToolbox.MusicDeviceGroupID
 
 @objc protocol TouchReceiver {
-  func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?)
+
+  func touchesBegan    (_ touches: Set<UITouch>,  with event: UIEvent?)
   func touchesCancelled(_ touches: Set<UITouch>?, with event: UIEvent?)
-  func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?)
-  func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?)
+  func touchesEnded    (_ touches: Set<UITouch>,  with event: UIEvent?)
+  func touchesMoved    (_ touches: Set<UITouch>,  with event: UIEvent?)
+
 }
 
 final class MIDIPlayerNode: SKShapeNode {
-
-  // MARK: - Initialization
 
   init(bezierPath: UIBezierPath) {
     size = bezierPath.bounds.size
@@ -33,7 +33,9 @@ final class MIDIPlayerNode: SKShapeNode {
     MIDIPlayer.playerNode = self
   }
 
-  required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+  required init?(coder aDecoder: NSCoder) {
+    fatalError("\(#function) has not been implemented")
+  }
 
   override func addChild(_ node: SKNode) {
     super.addChild(node)
@@ -41,18 +43,17 @@ final class MIDIPlayerNode: SKShapeNode {
     midiNodes.append(midiNode)
   }
 
+  private(set) var midiNodes: WeakArray<MIDINode> = []
 
-  fileprivate(set) var midiNodes: WeakArray<MIDINode> = []
+  var defaultNodes: [MIDINode] { return midiNodes(for: .default) }
 
-  var defaultNodes: [MIDINode] { return midiNodesForMode(.default) }
-
-  var loopNodes: [MIDINode] { return midiNodesForMode(.loop) }
+  var loopNodes: [MIDINode] { return midiNodes(for: .loop) }
 
   weak var touchReceiver: TouchReceiver?
 
   let size: CGSize
 
-  fileprivate func midiNodesForMode(_ mode: Sequencer.Mode) -> [MIDINode] {
+  private func midiNodes(for mode: Sequencer.Mode) -> [MIDINode] {
     return self["<\(mode.rawValue)>*"].flatMap({$0 as? MIDINode})
   }
 

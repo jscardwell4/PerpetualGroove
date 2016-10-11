@@ -42,14 +42,14 @@ final class Loop: Swift.Sequence, MIDINodeDispatch {
 
   /// 'Marker' meta event in the following format:<br>
   ///      `start(`*identifier*`):`*repetitions*`:`*repeatDelay*
-  var beginLoopEvent: AnyMIDIEvent {
-    return .meta(MetaEvent(.marker(name: "start(\(identifier.uuidString)):\(repetitions):\(repeatDelay)")))
+  var beginLoopEvent: MIDIEvent {
+    return .meta(MIDIEvent.MetaEvent(data: .marker(name: "start(\(identifier.uuidString)):\(repetitions):\(repeatDelay)")))
   }
 
   /// 'Marker' meta event in the following format:<br>
   ///      `end(`*identifier*`)`
-  var endLoopEvent: AnyMIDIEvent {
-    return .meta(MetaEvent(.marker(name: "end(\(identifier.uuidString))")))
+  var endLoopEvent: MIDIEvent {
+    return .meta(MIDIEvent.MetaEvent(data: .marker(name: "end(\(identifier.uuidString))")))
   }
 
   init(track: InstrumentTrack) {
@@ -64,7 +64,7 @@ final class Loop: Swift.Sequence, MIDINodeDispatch {
     repetitions = grooveLoop.repetitions
     repeatDelay = grooveLoop.repeatDelay
     start = grooveLoop.start
-    var events: [AnyMIDIEvent] = []
+    var events: [MIDIEvent] = []
     for node in grooveLoop.nodes.values {
       events.append(.node(node.addEvent))
       if let removeEvent = node.removeEvent {
@@ -77,22 +77,22 @@ final class Loop: Swift.Sequence, MIDINodeDispatch {
   }
 
   func registrationTimes<S:Swift.Sequence>(forAdding events: S) -> [BarBeatTime]
-    where S.Iterator.Element == AnyMIDIEvent
+    where S.Iterator.Element == MIDIEvent
   {
     return events.filter({ if case .node(_) = $0 { return true } else { return false } }).map({$0.time})
   }
 
-  func dispatch(event: AnyMIDIEvent) {
+  func dispatch(event: MIDIEvent) {
     guard case .node(let nodeEvent) = event else { return }
       switch nodeEvent.data {
         case let .add(identifier, trajectory, generator):
-          nodeManager.addNodeWithIdentifier(identifier.nodeIdentifier, trajectory: trajectory, generator: generator)
+          nodeManager.addNode(identifier: identifier.nodeIdentifier, trajectory: trajectory, generator: generator)
         case let .remove(identifier):
-          do { try nodeManager.removeNodeWithIdentifier(identifier.nodeIdentifier, delete: false) } catch { logError(error) }
+          do { try nodeManager.removeNode(identifier: identifier.nodeIdentifier, delete: false) } catch { logError(error) }
       }
   }
 
-  func makeIterator() -> AnyIterator<AnyMIDIEvent> {
+  func makeIterator() -> AnyIterator<MIDIEvent> {
     var startEventInserted = false
     var endEventInserted = false
     var iteration = 0
@@ -107,7 +107,7 @@ final class Loop: Swift.Sequence, MIDINodeDispatch {
         beginEvent = beginLoopEvent,
         endEvent = endLoopEvent
       ]
-      () -> AnyMIDIEvent? in
+      () -> MIDIEvent? in
 
       if !startEventInserted {
         startEventInserted = true

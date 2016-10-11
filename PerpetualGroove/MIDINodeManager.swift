@@ -23,10 +23,8 @@ final class MIDINodeManager {
 
   fileprivate var pendingNodes: Set<UUID> = []
 
-  func addNodeWithIdentifier(_ identifier: UUID,
-                  trajectory: Trajectory,
-                   generator: AnyMIDIGenerator)
-  {
+  func addNode(identifier: UUID, trajectory: Trajectory, generator: AnyMIDIGenerator) {
+
     owner.logDebug(", ".join("placing node with identifier \(identifier)",
                              "trajectory \(trajectory)",
                              "generator \(generator)"))
@@ -40,8 +38,9 @@ final class MIDINodeManager {
     MIDIPlayer.placeNew(trajectory, target: owner, generator: generator, identifier: identifier)
   }
 
-  func removeNodeWithIdentifier(_ identifier: UUID, delete: Bool = false) throws {
+  func removeNode(identifier: UUID, delete: Bool = false) throws {
     logDebug("removing node with identifier \(identifier)")
+
     guard let idx = nodes.index(where: {$0.elements.1.reference?.identifier == identifier}),
               let node = nodes[idx].elements.1.reference else
     {
@@ -57,7 +56,10 @@ final class MIDINodeManager {
     owner.logDebug("nodes stopped\(remove ? " and removed" : "")")
   }
 
-  func startNodes() { nodes.forEach {$0.elements.1.reference?.fadeIn()}; owner.logDebug("nodes started") }
+  func startNodes() {
+    nodes.forEach {$0.elements.1.reference?.fadeIn()}
+    owner.logDebug("nodes started")
+  }
 
   func remove(node: MIDINode) throws { try remove(node: node, delete: false) }
 
@@ -71,11 +73,12 @@ final class MIDINodeManager {
 
     owner.eventQueue.async {
       [time = Sequencer.time.barBeatTime, unowned node, weak self] in
-      let identifier = MIDINodeEvent.Identifier(nodeIdentifier: node.identifier)
-      let data = MIDINodeEvent.Data.add(identifier: identifier,
+
+      let identifier = MIDIEvent.MIDINodeEvent.Identifier(nodeIdentifier: node.identifier)
+      let data = MIDIEvent.MIDINodeEvent.Data.add(identifier: identifier,
                                         trajectory: node.path.initialTrajectory,
                                         generator: node.generator)
-      let event = MIDINodeEvent(data: data, time: time)
+      let event = MIDIEvent.MIDINodeEvent(data: data, time: time)
       self?.owner.add(event: .node(event))
     }
 
@@ -89,8 +92,10 @@ final class MIDINodeManager {
   }
 
   func remove(node: MIDINode, delete: Bool) throws {
-    guard let idx = nodes.index(where: {$0.elements.1.reference === node}),
-          let node = nodes.remove(at: idx).elements.1.reference else
+    guard
+      let idx = nodes.index(where: {$0.elements.1.reference === node}),
+      let node = nodes.remove(at: idx).elements.1.reference
+      else
     {
         throw MIDINodeDispatchError.NodeNotFound
     }
@@ -104,15 +109,20 @@ final class MIDINodeManager {
 
     switch delete {
       case true:
-        owner.eventContainer.removeEvents(matching: {
-          if case .node(let event) = $0 , event.identifier.nodeIdentifier == id { return true }
-          else { return false }
-        })
+        owner.eventContainer.removeEvents {
+          if case .node(let event) = $0,
+            event.identifier.nodeIdentifier == id
+          {
+            return true
+          } else {
+            return false
+          }
+        }
       case false:
 //        guard owner.recording else { owner.logDebug("not recording…skipping event creation"); return }
         owner.eventQueue.async {
           [time = Sequencer.time.barBeatTime, weak self] in
-          let event = MIDINodeEvent(data: .remove(identifier: MIDINodeEvent.Identifier(nodeIdentifier: id)),
+          let event = MIDIEvent.MIDINodeEvent(data: .remove(identifier: MIDIEvent.MIDINodeEvent.Identifier(nodeIdentifier: id)),
                                     time: time)
           self?.owner.add(event: .node(event))
         }

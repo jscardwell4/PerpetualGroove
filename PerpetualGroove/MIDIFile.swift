@@ -10,7 +10,11 @@ import Foundation
 import MoonKit
 
 /// Struct that holds the data for a complete MIDI file.
-struct MIDIFile: ByteArrayConvertible {
+struct MIDIFile {
+
+//  typealias MetaEvent = Event.MetaEvent
+//  typealias ChannelEvent = Event.ChannelEvent
+//  typealias MIDINodeEvent = Event.MIDINodeEvent
 
   let tracks: [TrackChunk]
 
@@ -21,7 +25,7 @@ struct MIDIFile: ByteArrayConvertible {
   init(data: Data) throws {
 
     guard data.count > 13 else {
-      throw MIDIFileError(type: .fileStructurallyUnsound, reason: "Not enough bytes in file")
+      throw Error.fileStructurallyUnsound("Not enough bytes in file")
     }
 
     header = try HeaderChunk(data: data.prefix(14))
@@ -33,11 +37,10 @@ struct MIDIFile: ByteArrayConvertible {
 
     while tracksRemaining > 0 {
       guard data.endIndex - currentIndex > 8 else {
-        throw MIDIFileError(type: .fileStructurallyUnsound,
-                            reason: "Not enough bytes for remaining track chunks (\(tracksRemaining))")
+        throw Error.fileStructurallyUnsound("Not enough bytes for remaining track chunks (\(tracksRemaining))")
       }
       guard String(data[currentIndex +--> 4]) == "MTrk" else {
-        throw MIDIFileError(type: .invalidHeader, reason: "Expected chunk header with type 'MTrk'")
+        throw Error.invalidHeader("Expected chunk header with type 'MTrk'")
       }
 
       currentIndex += 4
@@ -46,8 +49,7 @@ struct MIDIFile: ByteArrayConvertible {
       currentIndex += 4
 
       guard currentIndex + chunkLength <= data.endIndex else {
-        throw MIDIFileError(type:.fileStructurallyUnsound,
-                            reason: "Not enough bytes in track chunk \(unprocessedTracks.count)")
+        throw Error.fileStructurallyUnsound("Not enough bytes in track chunk \(unprocessedTracks.count)")
       }
 
       unprocessedTracks.append(try TrackChunk(data: data[currentIndex +--> chunkLength]))
@@ -61,13 +63,12 @@ struct MIDIFile: ByteArrayConvertible {
     var processedTracks: [TrackChunk] = []
     for trackChunk in unprocessedTracks {
       var ticks: UInt64 = 0
-      var processedEvents: [AnyMIDIEvent] = []
+      var processedEvents: [MIDIEvent] = []
       for var trackEvent in trackChunk.events {
         guard let delta = trackEvent.delta else {
-          throw MIDIFileError(type: .fileStructurallyUnsound, reason: "Track event missing delta value")
+          throw Error.fileStructurallyUnsound("Track event missing delta value")
         }
-        let deltaTicks = UInt64(delta.intValue)
-        ticks += deltaTicks
+        ticks += delta
         trackEvent.time = BarBeatTime(tickValue: ticks,
                                       units: BarBeatTime.Units(beatsPerBar: UInt(beatsPerBar),
                                                                beatsPerMinute: Sequencer.beatsPerMinute,
@@ -86,6 +87,10 @@ struct MIDIFile: ByteArrayConvertible {
     tracks = sequence.tracks.map {$0.chunk}
     header = HeaderChunk(numberOfTracks: Byte2(tracks.count))
   }
+
+}
+
+extension MIDIFile: ByteArrayConvertible {
 
   var bytes: [Byte] {
     var bytes = header.bytes
@@ -114,12 +119,48 @@ struct MIDIFile: ByteArrayConvertible {
 
     return bytes
   }
+
 }
 
-extension MIDIFile: SequenceDataProvider { var storedData: Sequence.Data { return .midi(self) } }
+extension MIDIFile: SequenceDataProvider {
+
+  var storedData: Sequence.Data { return .midi(self) }
+
+}
 
 extension MIDIFile: CustomStringConvertible {
+
   var description: String { return "\(header)\n\("\n".join(tracks.map({$0.description})))" }
+
+}
+
+extension MIDIFile {
+
+  enum Error: LocalizedError {
+    case fileStructurallyUnsound (String)
+    case invalidHeader (String)
+    case invalidLength (String)
+    case unsupportedEvent (String)
+
+    var errorDescription: String? {
+      switch self {
+        case .fileStructurallyUnsound: return "File structurally unsound"
+        case .invalidHeader:           return "Invalid header"
+        case .invalidLength:           return "Invalid length"
+        case .unsupportedEvent:        return "Unsupported event"
+      }
+    }
+
+    var failureReason: String? {
+      switch self {
+        case .fileStructurallyUnsound(let reason),
+             .invalidHeader(let reason),
+             .invalidLength(let reason),
+             .unsupportedEvent(let reason): return reason
+      }
+    }
+  }
+
 }
 
 extension MIDIFile {
@@ -144,17 +185,16 @@ extension MIDIFile {
 
     init(data: Data.SubSequence) throws {
       guard data.count == 14 else {
-        throw MIDIFileError(type: .invalidLength, reason: "Header chunk must be 14 bytes")
+        throw Error.invalidLength("Header chunk must be 14 bytes")
       }
       guard String(data[data.startIndex +--> 4]) == "MThd" else {
-        throw MIDIFileError(type: .invalidHeader, reason: "Expected chunk header with type 'MThd'")
+        throw Error.invalidHeader("Expected chunk header with type 'MThd'")
       }
       guard Byte4(6) == Byte4(data[(data.startIndex + 4) +--> 4]) else {
-        throw MIDIFileError(type: .invalidLength, reason: "Header must specify length of 6")
+        throw Error.invalidLength("Header must specify length of 6")
       }
       guard 1 == Byte2(data[(data.startIndex + 8) +--> 2]) else {
-        throw MIDIFileError(type: .fileStructurallyUnsound,
-                            reason: "Format must be 00 00 00 00, 00 00 00 01, 00 00 00 02")
+        throw Error.fileStructurallyUnsound("Format must be 00 00 00 00, 00 00 00 01, 00 00 00 02")
       }
       numberOfTracks = Byte2(data[(data.startIndex + 10) +--> 2])
     }
@@ -172,36 +212,36 @@ extension MIDIFile {
 
   /// Struct to hold a track chunk for a MIDI file where chunk = \<chunk type\> \<length\> \<track event\>+
   struct TrackChunk {
+
     let type = Byte4("MTrk".utf8)
-    var events: [AnyMIDIEvent] = []
+    var events: [MIDIEvent] = []
 
     init() {}
 
-    init(events: [AnyMIDIEvent]) { self.events = events }
+    init(events: [MIDIEvent]) { self.events = events }
 
-    init(eventContainer: MIDIEventContainer) { events = Array<AnyMIDIEvent>(eventContainer) }
+    init(eventContainer: MIDIEventContainer) { events = Array<MIDIEvent>(eventContainer) }
 
     init(data: Data.SubSequence) throws {
-      guard data.count > 8 else { throw MIDIFileError(type: .invalidLength, reason: "Not enough bytes in chunk") }
+      guard data.count > 8 else { throw Error.invalidLength("Not enough bytes in chunk") }
       guard String(data[data.startIndex +--> 4]) == "MTrk" else {
-        throw MIDIFileError(type: .invalidHeader, reason: "Track chunk header must be of type 'MTrk'")
+        throw Error.invalidHeader("Track chunk header must be of type 'MTrk'")
       }
 
       let chunkLength = Byte4(data[(data.startIndex + 4) +--> 4])
       guard data.count == Int(chunkLength) + 8 else {
-        throw MIDIFileError(type: .invalidLength,
-                            reason: "Length specified in bytes and the length of the bytes do not match")
+        throw Error.invalidLength("Length specified in bytes and the length of the bytes do not match")
       }
 
       var currentIndex = data.startIndex + 8
-      var events: [AnyMIDIEvent] = []
+      var events: [MIDIEvent] = []
 
       while currentIndex < data.endIndex {
         var i = currentIndex
 
         while data[i] & 0x80 != 0 { i += 1 }
 
-        let delta = VariableLengthQuantity(bytes: data[currentIndex ... i])
+        let delta = UInt64(VariableLengthQuantity(bytes: data[currentIndex ... i]))
 
         i += 1
         currentIndex = i
@@ -218,24 +258,23 @@ extension MIDIFile {
 
             while data[i] & 0x80 != 0 { i += 1 }
 
-            let dataLength = VariableLengthQuantity(bytes: data[currentIndex ... i])
-            i += dataLength.intValue + 1
+            let dataLength = Int(VariableLengthQuantity(bytes: data[currentIndex ... i]))
+            i += dataLength + 1
 
             if type == 0x07 {
-              events.append(.node(try MIDINodeEvent(delta: delta, data: data[eventStart ..< i])))
+              events.append(.node(try MIDIEvent.MIDINodeEvent(delta: delta, data: data[eventStart ..< i])))
             } else {
-              events.append(.meta(try MetaEvent(delta: delta, data: data[eventStart ..< i])))
+              events.append(.meta(try MIDIEvent.MetaEvent(delta: delta, data: data[eventStart ..< i])))
             }
 
             currentIndex = i
 
           default:
-            guard let type = ChannelEvent.EventType(rawValue: data[currentIndex] >> 4) else {
-              throw MIDIFileError(type: .unsupportedEvent,
-                                  reason: "\(data[currentIndex] >> 4) is not a supported ChannelEvent")
+            guard let type = MIDIEvent.ChannelEvent.Kind(rawValue: data[currentIndex] >> 4) else {
+              throw Error.unsupportedEvent("\(data[currentIndex] >> 4) is not a supported ChannelEvent")
             }
             i = currentIndex + type.byteCount
-            events.append(.channel(try ChannelEvent(delta: delta, data: data[currentIndex ..< i])))
+            events.append(.channel(try MIDIEvent.ChannelEvent(delta: delta, data: data[currentIndex ..< i])))
             currentIndex = i
 
         }
@@ -249,12 +288,15 @@ extension MIDIFile {
 }
 
 extension MIDIFile.TrackChunk: CustomStringConvertible {
+
   var description: String {
     return "MTrk\n\(events.map({$0.description.indentedBy(1, useTabs: true)}).joined(separator: "\n"))"
   }
+
 }
 
 extension MIDIFile {
+  
   /// Struct for converting values to MIDI variable length quanity representation
   ///
   /// These numbers are represented 7 bits per byte, most significant bits first.
@@ -263,6 +305,7 @@ extension MIDIFile {
   struct VariableLengthQuantity {
 
     let bytes: [Byte]
+    
     static let zero = VariableLengthQuantity(0)
 
     var representedValue: [Byte] {
@@ -288,7 +331,7 @@ extension MIDIFile {
       return resolvedBytes
     }
 
-    var intValue: Int { return Int(representedValue) }
+//    var intValue: Int { return Int(representedValue) }
 
     init<S:Swift.Sequence>(bytes b: S) where S.Iterator.Element == Byte { bytes = Array(b) }
 
@@ -315,9 +358,25 @@ extension MIDIFile {
 
 }
 
+extension  UInt64 {
+
+  init(_ quanity: MIDIFile.VariableLengthQuantity) {
+    self.init(quanity.bytes)
+  }
+
+}
+
+extension  Int {
+
+  init(_ quanity: MIDIFile.VariableLengthQuantity) {
+    self.init(quanity.bytes)
+  }
+
+}
+
 extension MIDIFile.VariableLengthQuantity: CustomStringConvertible, CustomDebugStringConvertible {
 
-  var description: String { return "\(UInt64(representedValue))" }
+  var description: String { return "\(UInt64(self))" }
 
   var paddedDescription: String { return description.pad(" ", count: 6) }
 
@@ -325,7 +384,7 @@ extension MIDIFile.VariableLengthQuantity: CustomStringConvertible, CustomDebugS
     let representedValue = self.representedValue
     return "\(type(of: self).self) {" + "; ".join(
       "bytes (hex, decimal): (\(String(hexBytes: bytes)), \(UInt64(bytes)))",
-      "representedValue (hex, decimal): (\(String(hexBytes: representedValue)), \(UInt64(representedValue)))"
+      "representedValue (hex, decimal): (\(String(hexBytes: representedValue)), \(UInt64(self)))"
       ) + "}"
   }
   

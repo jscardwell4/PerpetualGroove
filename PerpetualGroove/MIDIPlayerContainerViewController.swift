@@ -12,7 +12,7 @@ import MoonKit
 
 final class MIDIPlayerContainerViewController: SecondaryControllerContainer {
 
-//  private weak var controllerTool: ToolType?
+//  private weak var controllerTool: Tool?
 
   fileprivate(set) weak var playerViewController: MIDIPlayerViewController! {
     didSet { MIDIPlayer.playerContainer = self }
@@ -36,7 +36,7 @@ final class MIDIPlayerContainerViewController: SecondaryControllerContainer {
 
    - parameter tool: ConfigurableToolType
    */
-//  func presentContentForTool<T:ToolType where T:SecondaryControllerContentProvider>(tool: T) {
+//  func presentContentForTool<T:Tool where T:SecondaryControllerContentProvider>(tool: T) {
 //    presentContentForDelegate(tool) {
 //      [unowned self] in
 //        guard $0 else { return }

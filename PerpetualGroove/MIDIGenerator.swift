@@ -10,24 +10,26 @@ import Foundation
 import MoonKit
 import CoreMIDI
 
-protocol MIDIGenerator: JSONValueConvertible, JSONValueInitializable {
+protocol MIDIGenerator: LosslessJSONValueConvertible {
+
   var duration: Duration { get set }
   var velocity: Velocity { get set }
-  var octave: Octave     { get set }
-  var root: Note { get set }
-  func sendNoteOn(_ outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws
-  func sendNoteOff(_ outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws
-  func receiveNoteOn(_ endPoint: MIDIEndpointRef, _ identifier: UInt64) throws
-  func receiveNoteOff(_ endPoint: MIDIEndpointRef, _ identifier: UInt64) throws
+  var octave:   Octave   { get set }
+  var root:     Note     { get set }
+
+  func sendNoteOn (outPort: MIDIPortRef, endPoint: MIDIEndpointRef) throws
+  func sendNoteOff(outPort: MIDIPortRef, endPoint: MIDIEndpointRef) throws
+
+  func receiveNoteOn (endPoint: MIDIEndpointRef, identifier: UInt64) throws
+  func receiveNoteOff(endPoint: MIDIEndpointRef, identifier: UInt64) throws
+
 }
 
 enum AnyMIDIGenerator {
   case note (NoteGenerator)
   case chord (ChordGenerator)
 
-  init(_ note: NoteGenerator) { self = .note(note) }
-
-  init(_ chord: ChordGenerator) { self = .chord(chord) }
+  init() { self = .note(NoteGenerator()) }
 
   init<M:MIDIGenerator>(_ generator: M) {
     switch generator {
@@ -92,26 +94,33 @@ extension AnyMIDIGenerator: MIDIGenerator {
     }
   }
 
-  func receiveNoteOn(_ endPoint: MIDIEndpointRef, _ identifier: UInt64) throws {
-    try generator.receiveNoteOn(endPoint, identifier)
+  func receiveNoteOn(endPoint: MIDIEndpointRef, identifier: UInt64) throws {
+    try generator.receiveNoteOn(endPoint: endPoint, identifier: identifier)
   }
 
 
-  func receiveNoteOff(_ endPoint: MIDIEndpointRef, _ identifier: UInt64) throws {
-    try generator.receiveNoteOff(endPoint, identifier)
+  func receiveNoteOff(endPoint: MIDIEndpointRef, identifier: UInt64) throws {
+    try generator.receiveNoteOff(endPoint: endPoint, identifier: identifier)
   }
 
-  func sendNoteOn(_ outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws {
-    try generator.sendNoteOn(outPort, endPoint)
+  func sendNoteOn(outPort: MIDIPortRef, endPoint: MIDIEndpointRef) throws {
+    try generator.sendNoteOn(outPort: outPort, endPoint: endPoint)
   }
 
-  func sendNoteOff(_ outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws {
-    try generator.sendNoteOff(outPort, endPoint)
+  func sendNoteOff(outPort: MIDIPortRef, endPoint: MIDIEndpointRef) throws {
+    try generator.sendNoteOff(outPort: outPort, endPoint: endPoint)
   }
 
 }
 
-extension AnyMIDIGenerator: Equatable {
+extension AnyMIDIGenerator: Hashable {
+
+  var hashValue: Int {
+    switch self {
+      case .note(let generator):  return generator.hashValue
+      case .chord(let generator): return generator.hashValue
+    }
+  }
 
   static func ==(lhs: AnyMIDIGenerator, rhs: AnyMIDIGenerator) -> Bool {
     switch (lhs, rhs) {
@@ -123,7 +132,7 @@ extension AnyMIDIGenerator: Equatable {
 
 }
 
-extension AnyMIDIGenerator: JSONValueConvertible, JSONValueInitializable {
+extension AnyMIDIGenerator: LosslessJSONValueConvertible {
 
   var jsonValue: JSONValue { return generator.jsonValue }
 

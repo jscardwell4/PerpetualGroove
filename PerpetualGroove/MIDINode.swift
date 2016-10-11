@@ -11,9 +11,6 @@ import SpriteKit
 import MoonKit
 import CoreMIDI
 
-
-
-// MARK:- MIDINode
 final class MIDINode: SKSpriteNode {
 
   /// Holds the current state of the node
@@ -21,13 +18,13 @@ final class MIDINode: SKSpriteNode {
 
   // MARK: Generating MIDI note events
 
-  fileprivate var client = MIDIClientRef()
-  fileprivate(set) var endPoint = MIDIEndpointRef()
+  private var client = MIDIClientRef()
+  private(set) var endPoint = MIDIEndpointRef()
 
   var initTime: BarBeatTime
   var initialTrajectory: Trajectory
 
-  fileprivate(set) var pendingPosition: CGPoint?
+  private(set) var pendingPosition: CGPoint?
 
   var generator: AnyMIDIGenerator {
     didSet {
@@ -49,61 +46,39 @@ final class MIDINode: SKSpriteNode {
   fileprivate lazy var fadeInAction:           Action = self.action(.FadeIn)
   fileprivate lazy var moveAction:             Action = self.action(.Move)
 
-  /**
-   action:
-
-   - parameter key: Action.Key
-
-    - returns: Action
-  */
   fileprivate func action(_ key: Action.Key) -> Action { return Action(key: key, node: self) }
 
-  /** play */
   func play() { playAction.run()  }
 
-  /** updatePosition */
   func updatePosition() {
     guard let position = pendingPosition else { return }
-//    logDebug("position: \(position)")
     self.position = position
     pendingPosition = nil
   }
 
-  /** fadeOut */
   func fadeOut(remove: Bool = false) { (remove ? fadeOutAndRemoveAction : fadeOutAction).run() }
 
-  /** fadeIn */
   func fadeIn() { fadeInAction.run() }
 
-  /** sendNoteOn */
   func sendNoteOn() {
     do {
-      try generator.receiveNoteOn(endPoint, UInt64(UInt(bitPattern: ObjectIdentifier(self))))
+      try generator.receiveNoteOn(endPoint: endPoint,
+                                  identifier: UInt64(UInt(bitPattern: ObjectIdentifier(self))))
       state.formSymmetricDifference(.Playing)
     } catch { logError(error) }
   }
 
-  /** sendNoteOff */
   func sendNoteOff() {
     guard state ∋ .Playing else { return }
     do {
-      try generator.receiveNoteOff(endPoint, UInt64(UInt(bitPattern: ObjectIdentifier(self))))
+      try generator.receiveNoteOff(endPoint: endPoint,
+                                   identifier: UInt64(UInt(bitPattern: ObjectIdentifier(self))))
       state.formSymmetricDifference(.Playing)
     } catch { logError(error) }
   }
 
-  /**
-  removeAction:
+  private func removeAction(_ action: Action) { removeAction(forKey: action.key.key) }
 
-  - parameter action: Action
-  */
-  fileprivate func removeAction(_ action: Action) { removeAction(forKey: action.key.key) }
-
-  /**
-  removeActionForKey:
-
-  - parameter key: String
-  */
   override func removeAction(forKey key: String) {
     switch key {
       case Action.Key.Play.rawValue where self.action(forKey: key) != nil:
@@ -113,31 +88,25 @@ final class MIDINode: SKSpriteNode {
     super.removeAction(forKey: key)
   }
 
-  /** didMove */
   fileprivate func didMove() {
     play()
     currentSegment = currentSegment.successor
     moveAction.run()
   }
 
-  fileprivate(set) weak var dispatch: MIDINodeDispatch?  {
+  private(set) weak var dispatch: MIDINodeDispatch?  {
     didSet { if dispatch == nil && parent != nil { removeFromParent() } }
   }
 
   // MARK: Listening for Sequencer notifications
 
-  fileprivate let receptionist: NotificationReceptionist = {
+  private let receptionist: NotificationReceptionist = {
     let receptionist = NotificationReceptionist(callbackQueue: OperationQueue.main)
     receptionist.logContext = LogManager.SceneContext
     return receptionist
   }()
 
-  /**
-  didBeginJogging:
-
-  - parameter notification: NSNotification
-  */
-  fileprivate func didBeginJogging(_ notification: Notification) {
+  private func didBeginJogging(_ notification: Notification) {
     guard state ∌ .Jogging else {
       fatalError("internal inconsistency, should not already have `Jogging` flag set")
     }
@@ -146,12 +115,7 @@ final class MIDINode: SKSpriteNode {
     self.removeAction(forKey: Action.Key.Move.rawValue)
   }
 
-  /**
-  didJog:
-
-  - parameter notification: NSNotification
-  */
-  fileprivate func didJog(_ notification: Notification) {
+  private func didJog(_ notification: Notification) {
     guard state ∋ .Jogging else { fatalError("internal inconsistency, should have `Jogging` flag set") }
 
     guard let time = notification.jogTime else { fatalError("notification does not contain ticks") }
@@ -167,12 +131,7 @@ final class MIDINode: SKSpriteNode {
     }
   }
 
-  /**
-  didEndJogging:
-
-  - parameter notification: NSNotification
-  */
-  fileprivate func didEndJogging(_ notification: Notification) {
+  private func didEndJogging(_ notification: Notification) {
     guard state ∋ .Jogging else {
       logError("internal inconsistency, should have `Jogging` flag set"); return
     }
@@ -183,36 +142,21 @@ final class MIDINode: SKSpriteNode {
     moveAction.run()
   }
 
-  /**
-  didStart:
-
-  - parameter notification: NSNotification
-  */
-  fileprivate func didStart(_ notification: Notification) {
+  private func didStart(_ notification: Notification) {
     guard state ∋ .Paused else { return }
     logDebug("unpausing")
     state.formSymmetricDifference(.Paused)
     moveAction.run()
   }
 
-  /**
-  didPause:
-
-  - parameter notification: NSNotification
-  */
-  fileprivate func didPause(_ notification: Notification) {
+  private func didPause(_ notification: Notification) {
     guard state ∌ .Paused else { return }
     logDebug("pausing")
     state.formSymmetricDifference(.Paused)
     self.removeAction(forKey: Action.Key.Move.rawValue)
   }
 
-  /**
-   didReset:
-
-   - parameter notification: NSNotification
-  */
-  fileprivate func didReset(_ notification: Notification) {
+  private func didReset(_ notification: Notification) {
     fadeOut(remove: true)
   }
 
@@ -224,15 +168,6 @@ final class MIDINode: SKSpriteNode {
   static let defaultSize: CGSize = MIDINode.texture.size() * 0.75
   static let playingSize: CGSize = MIDINode.texture.size()
 
-  /**
-   initWithTrajectory:name:dispatch:generator:identifier:
-
-   - parameter trajectory: Trajectory
-   - parameter name: String
-   - parameter dispatch: MIDINodeDispatch
-   - parameter generator: MIDIGenerator
-   - parameter identifier: Identifier = UUID()
-  */
   init(trajectory: Trajectory,
        name: String,
        dispatch: MIDINodeDispatch,
@@ -260,22 +195,22 @@ final class MIDINode: SKSpriteNode {
 
     let transport = Sequencer.transport
 
-    receptionist.observe(name: Transport.NotificationName.didBeginJogging.rawValue,
+    receptionist.observe(name: .didBeginJogging,
                          from: transport,
                          callback: weakMethod(self, MIDINode.didBeginJogging))
-    receptionist.observe(name: Transport.NotificationName.didJog.rawValue,
+    receptionist.observe(name: .didJog,
                          from: transport,
                          callback: weakMethod(self, MIDINode.didJog))
-    receptionist.observe(name: Transport.NotificationName.didEndJogging.rawValue,
+    receptionist.observe(name: .didEndJogging,
                          from: transport,
-                callback: weakMethod(self, MIDINode.didEndJogging))
-    receptionist.observe(name: Transport.NotificationName.didStart.rawValue,
+                         callback: weakMethod(self, MIDINode.didEndJogging))
+    receptionist.observe(name: .didStart,
                          from: transport,
                          callback: weakMethod(self, MIDINode.didStart))
-    receptionist.observe(name: Transport.NotificationName.didPause.rawValue,
+    receptionist.observe(name: .didPause,
                          from: transport,
                          callback: weakMethod(self, MIDINode.didPause))
-    receptionist.observe(name: Transport.NotificationName.didReset.rawValue,
+    receptionist.observe(name: .didReset,
                          from: transport,
                          callback: weakMethod(self, MIDINode.didReset))
 
@@ -293,12 +228,7 @@ final class MIDINode: SKSpriteNode {
   let path: MIDINodePath
   fileprivate var currentSegment: Segment
 
-  /**
-  init:
-
-  - parameter aDecoder: NSCoder
-  */
-  required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+  required init?(coder aDecoder: NSCoder) { fatalError("\(#function) has not been implemented") }
   
   deinit {
     if state ∋ .Playing { sendNoteOff() }
@@ -309,7 +239,7 @@ final class MIDINode: SKSpriteNode {
     } catch { logError(error) }
   }
 
-  fileprivate var minMaxValues: (minX: CGFloat, maxX: CGFloat, minY: CGFloat, maxY: CGFloat)? {
+  private var minMaxValues: (minX: CGFloat, maxX: CGFloat, minY: CGFloat, maxY: CGFloat)? {
     guard let playerSize = MIDIPlayer.playerNode?.frame.size else { return nil }
     let offset = MIDINode.texture.size() * 0.375
     let (maxX, maxY) = (playerSize - offset).unpack
@@ -321,33 +251,43 @@ final class MIDINode: SKSpriteNode {
 
 // MARK: State
 extension MIDINode {
-  struct State: OptionSet, CustomStringConvertible {
+
+  struct State: OptionSet {
     let rawValue: Int
     static let Playing        = State(rawValue: 0b0001)
     static let Jogging        = State(rawValue: 0b0010)
     static let Paused         = State(rawValue: 0b0100)
     static let PendingRemoval = State(rawValue: 0b1000)
 
-    var description: String {
-      var result = "["
-      var flagStrings: [String] = []
-      if self ∋ .Playing         { flagStrings.append("Playing")         }
-      if self ∋ .Jogging         { flagStrings.append("Jogging")         }
-      if self ∋ .Paused          { flagStrings.append("Paused")          }
-      if self ∋ .PendingRemoval  { flagStrings.append("PendingRemoval")  }
-      result += ", ".join(flagStrings)
-      result += "]"
-      return result
-    }
   }
+
+}
+
+extension MIDINode.State: CustomStringConvertible {
+
+  var description: String {
+    var result = "["
+    var flagStrings: [String] = []
+    if self ∋ .Playing         { flagStrings.append("Playing")         }
+    if self ∋ .Jogging         { flagStrings.append("Jogging")         }
+    if self ∋ .Paused          { flagStrings.append("Paused")          }
+    if self ∋ .PendingRemoval  { flagStrings.append("PendingRemoval")  }
+    result += ", ".join(flagStrings)
+    result += "]"
+    return result
+  }
+
 }
 
 // MARK: Action
 extension MIDINode {
+
   /// Type for representing MIDI-related node actions
   struct Action {
 
-    enum Key: String, KeyType { case Move, Play, VerticalPlay, HorizontalPlay, FadeOut, FadeOutAndRemove, FadeIn }
+    enum Key: String, KeyType {
+      case Move, Play, VerticalPlay, HorizontalPlay, FadeOut, FadeOutAndRemove, FadeIn
+    }
 
     unowned let node: MIDINode
     let key: Key
@@ -365,9 +305,13 @@ extension MIDINode {
 
         case .Play:
           let halfDuration = half(node.generator.duration.seconds)
-          let scaleUp = SKAction.resize(toWidth: MIDINode.playingSize.width, height: MIDINode.playingSize.height, duration: halfDuration) //SKAction.scaleTo(2, duration: halfDuration)
+          let scaleUp = SKAction.resize(toWidth: MIDINode.playingSize.width,
+                                        height: MIDINode.playingSize.height,
+                                        duration: halfDuration)
           let noteOn = SKAction.run({ self.node.sendNoteOn() })
-          let scaleDown = SKAction.resize(toWidth: MIDINode.defaultSize.width, height: MIDINode.defaultSize.height, duration: halfDuration) //SKAction.scaleTo(1, duration: halfDuration)
+          let scaleDown = SKAction.resize(toWidth: MIDINode.defaultSize.width,
+                                          height: MIDINode.defaultSize.height,
+                                          duration: halfDuration)
           let noteOff = SKAction.run({ self.node.sendNoteOff() })
           return SKAction.sequence([SKAction.group([scaleUp, noteOn]), scaleDown, noteOff])
 
@@ -404,16 +348,10 @@ extension MIDINode {
       }
     }
 
-    /**
-     initWithKey:node:
-
-     - parameter key: Key
-     - parameter node: MIDINode
-    */
     init(key: Key, node: MIDINode) { self.key = key; self.node = node }
 
-    /** run */
     func run() { node.run(action, withKey: key.key) }
 
   }
+
 }

@@ -74,7 +74,7 @@ extension NoteGenerator: LosslessJSONValueConvertible {
 
 extension NoteGenerator: MIDIGenerator {
 
-  func receiveNoteOn(_ endPoint: MIDIEndpointRef, _ identifier: UInt64) throws {
+  func receiveNoteOn(endPoint: MIDIEndpointRef, identifier: UInt64) throws {
     let packet = Packet(status: 0x90,
                         channel: channel,
                         note: tone.midi,
@@ -84,7 +84,7 @@ extension NoteGenerator: MIDIGenerator {
     try MIDIReceived(endPoint, &packetList) ➤ "Unable to send note on event"
   }
 
-  func receiveNoteOff(_ endPoint: MIDIEndpointRef, _ identifier: UInt64) throws {
+  func receiveNoteOff(endPoint: MIDIEndpointRef, identifier: UInt64) throws {
     let packet = Packet(status: 0x80,
                         channel: channel,
                         note: tone.midi,
@@ -94,7 +94,7 @@ extension NoteGenerator: MIDIGenerator {
     try MIDIReceived(endPoint, &packetList) ➤ "Unable to send note off event"
   }
 
-  func sendNoteOn(_ outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws {
+  func sendNoteOn(outPort: MIDIPortRef, endPoint: MIDIEndpointRef) throws {
     let packet = Packet(status: 0x90,
                         channel: channel,
                         note: tone.midi,
@@ -104,7 +104,7 @@ extension NoteGenerator: MIDIGenerator {
     try MIDISend(outPort, endPoint, &packetList) ➤ "Unable to send note on event"
   }
 
-  func sendNoteOff(_ outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws {
+  func sendNoteOff(outPort: MIDIPortRef, endPoint: MIDIEndpointRef) throws {
     let packet = Packet(status: 0x80,
                         channel: channel,
                         note: tone.midi,
@@ -133,7 +133,11 @@ extension NoteGenerator: CustomStringConvertible {
   var description: String { return "{\(channel), \(tone), \(duration), \(velocity)}" }
 }
 
-extension NoteGenerator: Equatable {
+extension NoteGenerator: Hashable {
+
+  var hashValue: Int {
+    return channel.hashValue ^ duration.hashValue ^ velocity.hashValue ^ tone.hashValue
+  }
 
   static func ==(lhs: NoteGenerator, rhs: NoteGenerator) -> Bool {
     return lhs.channel == rhs.channel
@@ -221,8 +225,10 @@ extension NoteGenerator.Tone: RawRepresentable, LosslessJSONValueConvertible {
 
 }
 
-extension NoteGenerator.Tone: Equatable {
+extension NoteGenerator.Tone: Hashable {
 
+  var hashValue: Int { return midi.hashValue }
+  
   static func ==(lhs: NoteGenerator.Tone, rhs: NoteGenerator.Tone) -> Bool {
     return lhs.midi == rhs.midi
   }

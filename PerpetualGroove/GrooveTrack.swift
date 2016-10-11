@@ -15,7 +15,7 @@ struct GrooveTrack {
   var name: String
   var color: TrackColor
 
-  var nodes: [MIDINodeEvent.Identifier:GrooveNode] = [:]
+  var nodes: [MIDIEvent.MIDINodeEvent.Identifier:GrooveNode] = [:]
 
   var loops: [UUID:GrooveLoop] = [:]
 

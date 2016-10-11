@@ -48,35 +48,6 @@ enum MIDIError: OSStatus, Swift.Error, CustomStringConvertible {
   }
 }
 
-struct MIDIFileError: ExtendedErrorType {
-  var line: UInt = 0
-  var function: String = ""
-  var file: String = ""
-  var _reason: String = ""
-  var reason: String {
-    get { return _reason.isEmpty ? type.rawValue : "\(type.rawValue): \(_reason)" }
-    set { _reason = newValue }
-  }
-  var type: `Type` = .unspecified
-  var name: String { return type.rawValue }
-  init() {}
-
-  init(type: `Type`,  line: UInt = #line, function: String = #function, file: String = #file, reason: String) {
-    self.init(line: line, function: function, file: file, reason: reason)
-    self.type = type
-  }
-
-  enum `Type`: String {
-    case unspecified
-    case readFailure
-    case fileStructurallyUnsound
-    case invalidHeader
-    case invalidLength
-    case unsupportedEvent
-    case missingEvent
-  }
-}
-
 // MARK: - An enumeration for `OSStatus` codes returned by `AudioUnit`
 //enum AudioUnitError: OSStatus, ErrorType, CustomStringConvertible {
 //  case InvalidProperty          = -10879

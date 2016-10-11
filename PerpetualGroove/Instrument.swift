@@ -65,12 +65,12 @@ final class Instrument {
 
   func playNote(_ generator: AnyMIDIGenerator) {
     do {
-      try generator.sendNoteOn(outPort, endPoint)
+      try generator.sendNoteOn(outPort: outPort, endPoint: endPoint)
       let nanoseconds = secondsToNanoseconds(generator.duration.seconds)
       DispatchQueue.main.asyncAfter(deadline: DispatchTime(uptimeNanoseconds: nanoseconds)) {
         [weak self] in
         guard let weakself = self else { return }
-        do { try generator.sendNoteOff(weakself.outPort, weakself.endPoint) }
+        do { try generator.sendNoteOff(outPort: weakself.outPort, endPoint: weakself.endPoint) }
         catch { MoonKit.logError(error) }
       }
     } catch {

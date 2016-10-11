@@ -210,7 +210,7 @@ final class DocumentManager {
   static fileprivate var updateNotificationItems: OrderedSet<DocumentItem> = []
 
   /// Monitor for observing changes to local files
-  fileprivate static let directoryMonitor: DirectoryMonitor = {
+  private static let directoryMonitor: DirectoryMonitor = {
     let monitor = try! DirectoryMonitor(directoryURL: documentsURL) {
       _, _ in DocumentManager.refreshLocalItems()
     }
@@ -219,7 +219,7 @@ final class DocumentManager {
   }()
 
   /// Query for iCloud file discovery
-  fileprivate static let metadataQuery: NSMetadataQuery = {
+  private static let metadataQuery: NSMetadataQuery = {
     let query = NSMetadataQuery()
     query.notificationBatchingInterval = 1
     query.searchScopes = [NSMetadataQueryUbiquitousDocumentsScope,
@@ -229,45 +229,59 @@ final class DocumentManager {
   }()
 
   /// Callback for `NSMetadataQueryDidFinishGatheringNotification`
-  fileprivate static func didGatherMetadataItems(_ notification: Notification) {
+  private static func didGatherMetadataItems(_ notification: Notification) {
     logDebug("observed notification metadata query has finished gathering")
+
     guard state ∋ .GatheringMetadataItems else {
       logWarning("received gathering notification but state does not contain gathering flag")
       return
     }
 
     metadataQuery.disableUpdates()
-    metadataItems = OrderedSet((metadataQuery.results as! [NSMetadataItem]).map(DocumentItem.init))
+    metadataItems = OrderedSet(metadataQuery.results.flatMap(as: NSMetadataItem.self, DocumentItem.metaData))
     metadataQuery.enableUpdates()
-    state.formSymmetricDifference(.GatheringMetadataItems)
+    state ∆= .GatheringMetadataItems
   }
 
   /// Callback for `NSMetadataQueryDidUpdateNotification`
-  fileprivate static func didUpdateMetadataItems(_ notification: Notification) {
+  private static func didUpdateMetadataItems(_ notification: Notification) {
     logDebug("observed metadata query update notification")
-    var items = metadataItems
-    if let removed = notification.removedMetadataItems?.map(DocumentItem.init) { items ∖= removed }
-    if let added   = notification.addedMetadataItems?.map(DocumentItem.init)   { items ∪= added   }
-    metadataItems = items
+
+    var itemsDidChange = false
+
+    if let removed = notification.userInfo?[NSMetadataQueryUpdateRemovedItemsKey] as? [NSMetadataItem] {
+      metadataItems ∖= removed.flatMap(DocumentItem.metaData)
+      itemsDidChange = true
+    }
+
+    if let added = notification.userInfo?[NSMetadataQueryUpdateAddedItemsKey] as? [NSMetadataItem] {
+      metadataItems ∪= added.flatMap(DocumentItem.metaData)
+      itemsDidChange = true
+    }
+
+    guard itemsDidChange else { return }
+
+    postUpdateNotification(for: metadataItems)
   }
 
   /// Collection of `DocumentItem` instances for available iCloud documents
-  static fileprivate(set) var metadataItems: OrderedSet<DocumentItem> = [] {
-    didSet {
-      guard storageLocation == .iCloud else { return }
-      postItemUpdateNotification(metadataItems)
-    }
-  }
+  static fileprivate(set) var metadataItems: OrderedSet<DocumentItem> = []
+//    {
+//    didSet {
+//      guard storageLocation == .iCloud else { return }
+//      postUpdateNotification(for: metadataItems)
+//    }
+//  }
 
   /// Collection of `DocumentItem` instances for available local documents
   static fileprivate(set) var localItems: OrderedSet<DocumentItem> = [] {
     didSet {
       guard storageLocation == .local && localItems.elementsEqual(oldValue) else { return }
-      postItemUpdateNotification(localItems)
+      postUpdateNotification(for: localItems)
     }
   }
 
-  static fileprivate func postItemUpdateNotification(_ items: OrderedSet<DocumentItem>) {
+  static fileprivate func postUpdateNotification(for items: OrderedSet<DocumentItem>) {
     defer { updateNotificationItems = items }
 
     logDebug("items: \(items.map(({$0.displayName})))")
@@ -296,24 +310,25 @@ final class DocumentManager {
   }
 
   static fileprivate func refreshLocalItems() {
-    guard let fileWrappers = directoryMonitor.directoryWrapper.fileWrappers?.values else { return }
+    guard let fileWrappers = directoryMonitor.directoryWrapper.fileWrappers?.values else {
+      return
+    }
     let localDocumentItems: [LocalDocumentItem] = fileWrappers.flatMap {
       [directory = directoryMonitor.directoryURL] in
         guard let name = $0.preferredFilename else { return nil }
-        return try? LocalDocumentItem(directory + name)
+        return try? LocalDocumentItem(url: directory + name)
       }
-    localItems = OrderedSet(localDocumentItems.map(DocumentItem.init))
+    localItems = OrderedSet(localDocumentItems.map(DocumentItem.local))
   }
-
-  // MARK: - Receiving notifications
 
   fileprivate static let receptionist = NotificationReceptionist(callbackQueue: DocumentManager.operationQueue)
 
-  // MARK: - Creating new documents
-
+  /// Document name to use when a name has not been specified.
   fileprivate static let DefaultDocumentName = "AwesomeSauce"
 
-  static func createNewDocument(_ name: String? = nil) {
+  /// Creates a new document, optionally with the specified `name`.
+  static func createNewDocument(name: String? = nil) {
+
     guard let storageLocation = storageLocation else {
       logWarning("Cannot create a new document without a valid storage location")
       return
@@ -336,7 +351,7 @@ final class DocumentManager {
 
       }
 
-      guard let fileName = noncollidingFileName(for: name ?? DefaultDocumentName) else { return }
+      let fileName = noncollidingFileName(for: name ?? DefaultDocumentName)
       let fileURL = url + ["\(fileName).groove"]
       logDebug("creating a new document at path '\(fileURL.path)'")
       let document = Document(fileURL: fileURL)
@@ -351,11 +366,12 @@ final class DocumentManager {
 
   }
 
-  static func noncollidingFileName(for fileName: String?) -> String? {
-    guard let (baseName, ext) = fileName?.baseNameExt else { return nil }
+  /// Returns an available file name based on `fileName`.
+  static func noncollidingFileName(for fileName: String) -> String {
 
-    var extʹ = ext
-    if extʹ.isEmpty { extʹ = "groove" }
+    var (baseName, ext) = fileName.baseNameExt
+
+    if ext.isEmpty { ext = "groove" }
 
 
     let url: URL
@@ -364,8 +380,7 @@ final class DocumentManager {
 
       case true:
         guard let baseURL = FileManager().url(forUbiquityContainerIdentifier: nil) else {
-          logError("Use iCloud setting is true but failed to get ubiquity container")
-          return nil
+          fatalError("Use iCloud setting is true but failed to get ubiquity container")
         }
         url = baseURL + "Documents"
 
@@ -374,18 +389,22 @@ final class DocumentManager {
 
     }
 
-    var baseNameʹ = baseName
+    guard (try? (url + "\(baseName).\(ext)").checkResourceIsReachable()) == true else {
+      return fileName
+    }
+
+
     var i = 2
-    while (try? (url + "\(baseNameʹ).\(extʹ)").checkPromisedItemIsReachable()) == true {
-      baseNameʹ = "\(baseName)\(i)"
+    while (try? (url + "\(baseName)\(i).\(ext)").checkPromisedItemIsReachable()) == true {
       i += 1
     }
 
-    return "\(baseNameʹ)" + (ext.isEmpty ? "" : ".\(ext)")
+    return "\(baseName)\(i).\(ext)"
   }
 
   // MARK: - Opening documents
 
+  /// Opens the specified document.
   static func open(document: Document) {
     let openBlock = {
       guard state ∌ .OpeningDocument else { logWarning("already opening a document"); return }
@@ -418,8 +437,10 @@ final class DocumentManager {
     }
   }
 
+  /// Opens the document pointed to by `url`.
   static func open(url: URL) { open(document: Document(fileURL: url)) }
 
+  /// Opens the document referenced by a bookmark.
   static fileprivate func openBookmarkedDocument(_ data: Data) throws {
     let url = try (NSURL(resolvingBookmarkData: data,
                         options: .withoutUI,
@@ -430,13 +451,16 @@ final class DocumentManager {
 
   }
 
-  static func open(item: DocumentItem) { open(url: item.URL) }
+  /// Opens the document specified by `item`.
+  static func open(item: DocumentItem) { open(url: item.url) }
 
+
+  /// Deletes th document specified by `item`.
   static func delete(item: DocumentItem) {
 
     queue.async {
 
-      let itemURL = item.URL
+      let itemURL = item.url
 
       // Does this create race condition with closing of file?
       if currentDocument?.fileURL.isEqualToFileURL(itemURL as URL) == true { currentDocument = nil }
@@ -455,24 +479,27 @@ final class DocumentManager {
 
 extension DocumentManager {
 
-  fileprivate struct State: OptionSet, CustomStringConvertible {
+  fileprivate struct State: OptionSet {
     let rawValue: Int
 
     static let Initialized            = State(rawValue: 0b0001)
     static let OpeningDocument        = State(rawValue: 0b0010)
     static let GatheringMetadataItems = State(rawValue: 0b0100)
+  }
 
-    var description: String {
-      var result = "["
-      var flagStrings: [String] = []
-      if contains(.Initialized)            { flagStrings.append("Initialized")            }
-      if contains(.OpeningDocument)        { flagStrings.append("OpeningDocument")        }
-      if contains(.GatheringMetadataItems) { flagStrings.append("GatheringMetadataItems") }
-      result += ", ".join(flagStrings)
-      result += "]"
-      return result
-    }
+}
 
+extension DocumentManager.State: CustomStringConvertible {
+
+  var description: String {
+    var result = "["
+    var flagStrings: [String] = []
+    if contains(.Initialized)            { flagStrings.append("Initialized")            }
+    if contains(.OpeningDocument)        { flagStrings.append("OpeningDocument")        }
+    if contains(.GatheringMetadataItems) { flagStrings.append("GatheringMetadataItems") }
+    result += ", ".join(flagStrings)
+    result += "]"
+    return result
   }
 
 }

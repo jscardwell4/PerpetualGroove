@@ -165,10 +165,10 @@ final class Sequence {
 
   convenience init(file: GrooveFile, document: Document) {
     self.init(document: document)
-    var tempoEvents: [AnyMIDIEvent] = []
+    var tempoEvents: [MIDIEvent] = []
     for (key: rawTime, value: bpmValue) in file.tempoChanges.value {
       guard let time = BarBeatTime(rawValue: rawTime), let bpm = Double(bpmValue) else { continue }
-      tempoEvents.append(.meta(MetaEvent(.tempo(bpm: bpm), time)))
+      tempoEvents.append(.meta(MIDIEvent.MetaEvent(data: .tempo(bpm: bpm), time: time)))
     }
     tempoTrack.add(events: tempoEvents)
     for track in file.tracks.flatMap({try? InstrumentTrack(sequence: self, grooveTrack: $0)}) {

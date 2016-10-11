@@ -26,7 +26,7 @@ struct GrooveLoop {
     self.end = end
   }
 
-  init?(event: MetaEvent) {
+  init?(event: MIDIEvent.MetaEvent) {
     guard case .marker(let text) = event.data,
       let match = (~/"^start\\(([^)]+)\\):([0-9]+):([0-9]+)$").firstMatch(in: text),
           let identifierString = match.captures[1]?.string,

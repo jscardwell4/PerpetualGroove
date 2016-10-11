@@ -10,7 +10,7 @@ import Foundation
 import MoonKit
 
 struct GrooveNode: JSONValueConvertible, JSONValueInitializable {
-  typealias Identifier = MIDINodeEvent.Identifier
+  typealias Identifier = MIDIEvent.MIDINodeEvent.Identifier
   let identifier: Identifier
   var trajectory: Trajectory
   var generator: AnyMIDIGenerator
@@ -29,17 +29,17 @@ struct GrooveNode: JSONValueConvertible, JSONValueInitializable {
       ]
   }
 
-  var addEvent: MIDINodeEvent {
-    return MIDINodeEvent(data: .add(identifier: identifier, trajectory: trajectory, generator: generator),
+  var addEvent: MIDIEvent.MIDINodeEvent {
+    return MIDIEvent.MIDINodeEvent(data: .add(identifier: identifier, trajectory: trajectory, generator: generator),
                          time: addTime)
   }
 
-  var removeEvent: MIDINodeEvent? {
+  var removeEvent: MIDIEvent.MIDINodeEvent? {
     guard let removeTime = removeTime else { return nil }
-    return MIDINodeEvent(data: .remove(identifier: identifier), time: removeTime)
+    return MIDIEvent.MIDINodeEvent(data: .remove(identifier: identifier), time: removeTime)
   }
 
-  init?(event: MIDINodeEvent) {
+  init?(event: MIDIEvent.MIDINodeEvent) {
     guard case let .add(identifier, trajectory, generator) = event.data else { return nil }
     addTime = event.time
     self.identifier = identifier
@@ -49,7 +49,7 @@ struct GrooveNode: JSONValueConvertible, JSONValueInitializable {
 
   init?(_ jsonValue: JSONValue?) {
     guard let dict = ObjectJSONValue(jsonValue),
-      let identifier = MIDINodeEvent.Identifier(dict["identifier"]),
+      let identifier = MIDIEvent.MIDINodeEvent.Identifier(dict["identifier"]),
       let trajectory = Trajectory(dict["trajectory"]),
       let generator = AnyMIDIGenerator(dict["generator"]),
       let addTime = BarBeatTime(dict["addTime"])

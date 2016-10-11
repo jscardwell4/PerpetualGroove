@@ -9,8 +9,6 @@
 import Foundation
 import MoonKit
 
-//typealias MIDIEventContainer = OldMIDIEventContainer
-
 fileprivate protocol _MIDIEventContainer: Collection {
   associatedtype Events: RandomAccessCollection
   associatedtype Bag: RandomAccessCollection
@@ -26,8 +24,8 @@ extension _MIDIEventContainer
         Events.Index == OrderedDictionaryIndex,
         Bag.Index == Int,
         Bag.IndexDistance == Int,
-        Bag._Element == AnyMIDIEvent,
-        Bag.Iterator.Element == AnyMIDIEvent,
+        Bag._Element == MIDIEvent,
+        Bag.Iterator.Element == MIDIEvent,
         Index == MIDIEventContainerIndex
 {
 
@@ -241,31 +239,31 @@ extension _MIDIEventContainer
     }
   }
 
-  var _metaEvents: AnyBidirectionalCollection<MetaEvent> {
+  var _metaEvents: AnyBidirectionalCollection<MIDIEvent.MetaEvent> {
     return AnyBidirectionalCollection(
       FlattenBidirectionalCollection(events.values).lazy
         .filter({ if case .meta = $0 { return true } else { return false } })
-        .map({$0.event as! MetaEvent})
+        .map({$0.event as! MIDIEvent.MetaEvent})
     )
   }
 
-  var _channelEvents: AnyBidirectionalCollection<ChannelEvent> {
+  var _channelEvents: AnyBidirectionalCollection<MIDIEvent.ChannelEvent> {
     return AnyBidirectionalCollection(
       FlattenBidirectionalCollection(events.values).lazy
         .filter({ if case .channel = $0 { return true } else { return false } })
-        .map({$0.event as! ChannelEvent})
+        .map({$0.event as! MIDIEvent.ChannelEvent})
     )
   }
 
-  var _nodeEvents: AnyBidirectionalCollection<MIDINodeEvent> {
+  var _nodeEvents: AnyBidirectionalCollection<MIDIEvent.MIDINodeEvent> {
     return AnyBidirectionalCollection(
       FlattenBidirectionalCollection(events.values).lazy
         .filter({ if case .node = $0 { return true } else { return false } })
-        .map({$0.event as! MIDINodeEvent})
+        .map({$0.event as! MIDIEvent.MIDINodeEvent})
     )
   }
 
-  var _timeEvents: AnyBidirectionalCollection<MetaEvent> {
+  var _timeEvents: AnyBidirectionalCollection<MIDIEvent.MetaEvent> {
     return AnyBidirectionalCollection(
       FlattenBidirectionalCollection(events.values).lazy
         .filter({
@@ -276,7 +274,7 @@ extension _MIDIEventContainer
             }
           } else { return false }
         })
-        .map({$0.event as! MetaEvent})
+        .map({$0.event as! MIDIEvent.MetaEvent})
     )
   }
 
@@ -314,14 +312,14 @@ struct MIDIEventContainer: _MIDIEventContainer {
 
   }
 
-  subscript(index: Index) -> AnyMIDIEvent {
+  subscript(index: Index) -> MIDIEvent {
     get { return events[index.timeOffset].value[index.eventOffset] }
     set { events[index.timeOffset].value[index.eventOffset] = newValue }
   }
 
-  subscript(time: BarBeatTime) -> AnyRandomAccessCollection<AnyMIDIEvent>? {
+  subscript(time: BarBeatTime) -> AnyRandomAccessCollection<MIDIEvent>? {
     guard let bag = existingBag(forTime: time) else { return nil }
-    return AnyRandomAccessCollection<AnyMIDIEvent>(bag.events)
+    return AnyRandomAccessCollection<MIDIEvent>(bag.events)
   }
 
   subscript(subRange: Range<Index>) -> MIDIEventContainerSlice {
@@ -329,16 +327,16 @@ struct MIDIEventContainer: _MIDIEventContainer {
                                    subRange: subRange)
   }
 
-  init<Source:Swift.Sequence>(events: Source) where Source.Iterator.Element == AnyMIDIEvent {
+  init<Source:Swift.Sequence>(events: Source) where Source.Iterator.Element == MIDIEvent {
     append(contentsOf: events)
   }
 
-  mutating func append(_ event: AnyMIDIEvent) {
+  mutating func append(_ event: MIDIEvent) {
     bag(forTime: event.time).append(event)
   }
 
   mutating func append<Source:Swift.Sequence>(contentsOf source: Source)
-    where Source.Iterator.Element == AnyMIDIEvent
+    where Source.Iterator.Element == MIDIEvent
   {
     for event in source { append(event) }
   }
@@ -347,17 +345,17 @@ struct MIDIEventContainer: _MIDIEventContainer {
 
   var maxTime: BarBeatTime? { return events.keys.last }
 
-  mutating func removeEvents(matching predicate: (AnyMIDIEvent) -> Bool) {
+  mutating func removeEvents(matching predicate: (MIDIEvent) -> Bool) {
     for (time, bag) in events {
       bag.removeEvents(matching: predicate)
       if bag.isEmpty { events[time] = nil }
     }
   }
 
-  var metaEvents: AnyBidirectionalCollection<MetaEvent> { return _metaEvents }
-  var channelEvents: AnyBidirectionalCollection<ChannelEvent> { return _channelEvents }
-  var nodeEvents: AnyBidirectionalCollection<MIDINodeEvent> { return _nodeEvents }
-  var timeEvents: AnyBidirectionalCollection<MetaEvent> { return _timeEvents }
+  var metaEvents: AnyBidirectionalCollection<MIDIEvent.MetaEvent> { return _metaEvents }
+  var channelEvents: AnyBidirectionalCollection<MIDIEvent.ChannelEvent> { return _channelEvents }
+  var nodeEvents: AnyBidirectionalCollection<MIDIEvent.MIDINodeEvent> { return _nodeEvents }
+  var timeEvents: AnyBidirectionalCollection<MIDIEvent.MetaEvent> { return _timeEvents }
 
   @inline(__always) func distance(from start: Index, to end: Index) -> Int {
     return _distance(from: start, to: end)
@@ -409,7 +407,7 @@ struct MIDIEventContainerIterator: IteratorProtocol {
     currentIndex = slice.startIndex
   }
 
-  mutating func next() -> AnyMIDIEvent? {
+  mutating func next() -> MIDIEvent? {
     guard currentIndex < slice.endIndex else { return nil }
     defer { slice.formIndex(after: &currentIndex) }
     return slice[currentIndex]
@@ -437,7 +435,7 @@ struct MIDIEventContainerSlice: _MIDIEventContainer {
     self.events = events
   }
 
-  subscript(index: Index) -> AnyMIDIEvent {
+  subscript(index: Index) -> MIDIEvent {
     precondition((startIndex..<endIndex).contains(index), "Index out of bounds: '\(index)'")
     return events[index.timeOffset].value[index.eventOffset]
   }
@@ -452,10 +450,10 @@ struct MIDIEventContainerSlice: _MIDIEventContainer {
     return MIDIEventContainerIterator(slice: self)
   }
 
-  var metaEvents: AnyBidirectionalCollection<MetaEvent> { return _metaEvents }
-  var channelEvents: AnyBidirectionalCollection<ChannelEvent> { return _channelEvents }
-  var nodeEvents: AnyBidirectionalCollection<MIDINodeEvent> { return _nodeEvents }
-  var timeEvents: AnyBidirectionalCollection<MetaEvent> { return _timeEvents }
+  var metaEvents: AnyBidirectionalCollection<MIDIEvent.MetaEvent> { return _metaEvents }
+  var channelEvents: AnyBidirectionalCollection<MIDIEvent.ChannelEvent> { return _channelEvents }
+  var nodeEvents: AnyBidirectionalCollection<MIDIEvent.MIDINodeEvent> { return _nodeEvents }
+  var timeEvents: AnyBidirectionalCollection<MIDIEvent.MetaEvent> { return _timeEvents }
 
   @inline(__always) func distance(from start: Index, to end: Index) -> Int {
     return _distance(from: start, to: end)
@@ -480,14 +478,14 @@ extension MIDIEventContainer {
   fileprivate class Bag: RandomAccessCollection {
 
     typealias Index = Int
-    typealias Iterator = AnyIterator<AnyMIDIEvent>
-    typealias SubSequence = OrderedSet<AnyMIDIEvent>.SubSequence
+    typealias Iterator = AnyIterator<MIDIEvent>
+    typealias SubSequence = OrderedSet<MIDIEvent>.SubSequence
 
-    typealias Indices = OrderedSet<AnyMIDIEvent>.Indices
+    typealias Indices = OrderedSet<MIDIEvent>.Indices
 
-    private(set) var events: OrderedSet<AnyMIDIEvent> = []
+    private(set) var events: OrderedSet<MIDIEvent> = []
 
-    subscript(index: Index) -> AnyMIDIEvent {
+    subscript(index: Index) -> MIDIEvent {
       get { return events[index] }
       set { events[index] = newValue }
     }
@@ -499,21 +497,21 @@ extension MIDIEventContainer {
 
     var indices: Indices { return events.indices }
 
-    func makeIterator() -> AnyIterator<AnyMIDIEvent> {
+    func makeIterator() -> AnyIterator<MIDIEvent> {
       return AnyIterator(events.makeIterator())
     }
 
-    func append(_ event: AnyMIDIEvent) {
+    func append(_ event: MIDIEvent) {
       events.append(event)
     }
 
     func append<Source:Swift.Sequence>(contentsOf source: Source)
-      where Source.Iterator.Element == AnyMIDIEvent
+      where Source.Iterator.Element == MIDIEvent
     {
       events.append(contentsOf: source)
     }
 
-    func removeEvents(matching predicate: (AnyMIDIEvent) -> Bool) {
+    func removeEvents(matching predicate: (MIDIEvent) -> Bool) {
       for event in events where predicate(event) { events.remove(event) }
     }
 
@@ -524,8 +522,8 @@ extension MIDIEventContainer {
     @inline(__always) func index(_ i: Int, offsetBy n: Int) -> Int { return i &+ n }
     @inline(__always) func index(_ i: Int, offsetBy n: Int, limitedBy limit: Int) -> Int? {
       switch (i &+ n, n < 0) {
-      case (let iʹ, true) where iʹ >= limit, (let iʹ, false) where iʹ <= limit: return iʹ
-      default: return nil
+        case (let iʹ, true) where iʹ >= limit, (let iʹ, false) where iʹ <= limit: return iʹ
+        default: return nil
       }
     }
     @inline(__always) func formIndex(after i: inout Int) { i = i &+ 1 }
@@ -533,8 +531,8 @@ extension MIDIEventContainer {
     @inline(__always) func formIndex(_ i: inout Int, offsetBy n: Int) { i = i &+ n }
     @inline(__always) func formIndex(_ i: inout Int, offsetBy n: Int, limitedBy limit: Int) -> Bool {
       switch (i &+ n, n < 0) {
-      case (let iʹ, true) where iʹ >= limit, (let iʹ, false) where iʹ <= limit: i = iʹ; return true
-      default: return false
+        case (let iʹ, true) where iʹ >= limit, (let iʹ, false) where iʹ <= limit: i = iʹ; return true
+        default: return false
       }
     }
 

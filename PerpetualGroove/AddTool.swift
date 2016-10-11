@@ -10,54 +10,62 @@ import UIKit
 import SpriteKit
 import MoonKit
 
-final class AddTool: ToolType {
+final class AddTool: Tool {
 
-  unowned let player: MIDIPlayerNode
+  unowned let playerNode: MIDIPlayerNode
 
-  @objc var active = false {
-    didSet {
-      logDebug("oldValue = \(oldValue)  active = \(active)")
-    }
-  }
+  @objc var active = false
 
-  var generator = AnyMIDIGenerator(NoteGenerator())
+  var generator = AnyMIDIGenerator()
 
-  init(playerNode: MIDIPlayerNode) { player = playerNode }
+  init(playerNode: MIDIPlayerNode) { self.playerNode = playerNode }
 
-  // MARK: - Touch handling
-
-  fileprivate var timestamp = 0.0
+  private var timestamp = 0.0
   fileprivate var location = CGPoint.null
   fileprivate var velocities: [CGVector] = []
 
   fileprivate var touch: UITouch? {
+
     didSet {
+
       velocities = []
+
       if let touch = touch {
+
         timestamp = touch.timestamp
-        location = touch.location(in: player)
-        let image = UIImage(named: "ball")!
-        let color = (Sequencer.sequence?.currentTrack?.color ?? TrackColor.nextColor).value
-        let size = image.size * 0.75
-        touchNode = SKSpriteNode(texture: SKTexture(image: image), color: color, size: size)
-        touchNode!.position = location
-        touchNode!.name = "touchNode"
-        touchNode!.colorBlendFactor = 1
-        player.addChild(touchNode!)
+        location = touch.location(in: playerNode)
+
+        touchNode = {
+          let node = SKSpriteNode(texture: SKTexture(image: $0), color: $1, size: $0.size * 0.75)
+
+          node.position = location
+          node.name = "touchNode"
+          node.colorBlendFactor = 1
+
+          playerNode.addChild(node)
+
+          return node
+        }(#imageLiteral(resourceName: "ball"), (Sequencer.sequence?.currentTrack?.color ?? TrackColor.nextColor).value)
+
       } else {
+
         timestamp = 0
         location = .null
         touchNode?.removeFromParent()
         touchNode = nil
+
       }
+
     }
+
   }
 
   fileprivate var touchNode: SKSpriteNode?
 
   fileprivate func updateData() {
+
     guard let timestamp = touch?.timestamp,
-          let location = touch?.location(in: player),
+          let location = touch?.location(in: playerNode),
           timestamp != self.timestamp && location != self.location
       else
     {
@@ -65,9 +73,15 @@ final class AddTool: ToolType {
     }
 
     velocities.append(CGVector((location - self.location) / (timestamp - self.timestamp)))
+
     self.timestamp = timestamp
     self.location = location
+
   }
+
+}
+
+extension AddTool: TouchReceiver {
 
   @objc func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
     if active && touch == nil { touch = touches.first }
@@ -78,13 +92,16 @@ final class AddTool: ToolType {
   @objc func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
     guard touch != nil && touches.contains(touch!) else { return }
     updateData()
-    generate()
+    guard velocities.count > 0 && !location.isNull else { return }
+    guard let track = Sequencer.sequence?.currentTrack else { return }
+    let trajectory = Trajectory(vector: velocities.reduce(CGVector(), +) / CGFloat(velocities.count), point: location )
+    MIDIPlayer.placeNew(trajectory, target: track, generator: generator)
     touch = nil
   }
 
   @objc func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
     guard touch != nil && touches.contains(touch!) else { return }
-    guard let p = touch?.location(in: player) , player.contains(p) else {
+    guard let p = touch?.location(in: playerNode) , playerNode.contains(p) else {
       touch = nil
       return
     }
@@ -92,12 +109,4 @@ final class AddTool: ToolType {
     touchNode?.position = p
   }
 
-  // MARK: - MIDINode generation
-
-  fileprivate func generate() {
-    guard velocities.count > 0 && !location.isNull else { return }
-    guard let track = Sequencer.sequence?.currentTrack else { return }
-    let trajectory = Trajectory(vector: velocities.reduce(CGVector(), +) / CGFloat(velocities.count), point: location )
-    MIDIPlayer.placeNew(trajectory, target: track, generator: generator)
-  }
 }

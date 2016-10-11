@@ -100,25 +100,27 @@ extension ChordGenerator: LosslessJSONValueConvertible {
 
 extension ChordGenerator: MIDIGenerator {
 
-  func receiveNoteOn(_ endPoint: MIDIEndpointRef, _ identifier: UInt64) throws {
-    for note in midiNotes { try note.receiveNoteOn(endPoint, identifier) }
+  func receiveNoteOn(endPoint: MIDIEndpointRef, identifier: UInt64) throws {
+    for note in midiNotes { try note.receiveNoteOn(endPoint: endPoint, identifier: identifier) }
   }
 
-  func receiveNoteOff(_ endPoint: MIDIEndpointRef, _ identifier: UInt64) throws {
-    for note in midiNotes { try note.receiveNoteOff(endPoint, identifier) }
+  func receiveNoteOff(endPoint: MIDIEndpointRef, identifier: UInt64) throws {
+    for note in midiNotes { try note.receiveNoteOff(endPoint: endPoint, identifier: identifier) }
   }
 
-  func sendNoteOn(_ outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws {
-    for note in midiNotes { try note.sendNoteOn(outPort, endPoint) }
+  func sendNoteOn(outPort: MIDIPortRef, endPoint: MIDIEndpointRef) throws {
+    for note in midiNotes { try note.sendNoteOn(outPort: outPort, endPoint: endPoint) }
   }
 
-  func sendNoteOff(_ outPort: MIDIPortRef, _ endPoint: MIDIEndpointRef) throws {
-    for note in midiNotes { try note.sendNoteOff(outPort, endPoint) }
+  func sendNoteOff(outPort: MIDIPortRef, endPoint: MIDIEndpointRef) throws {
+    for note in midiNotes { try note.sendNoteOff(outPort: outPort, endPoint: endPoint) }
   }
 
 }
 
-extension ChordGenerator: Equatable {
+extension ChordGenerator: Hashable {
+
+  var hashValue: Int { return chord.hashValue ^ octave.hashValue ^ duration.hashValue ^ velocity.hashValue }
 
   static func ==(lhs: ChordGenerator, rhs: ChordGenerator) -> Bool {
     return lhs.chord == rhs.chord

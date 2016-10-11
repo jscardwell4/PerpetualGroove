@@ -42,7 +42,7 @@ final class MIDIPlayerViewController: UIViewController {
   @IBOutlet fileprivate weak var loopTools: UIStackView!
 
   @IBAction fileprivate func didSelectTool(_ sender: ImageSegmentedControl) {
-    MIDIPlayer.currentTool = Tool(sender.selectedSegmentIndex)
+    MIDIPlayer.currentTool = AnyTool(sender.selectedSegmentIndex)
   }
 
   @IBOutlet fileprivate weak var loopToggleButton: ImageButtonView!
@@ -178,13 +178,9 @@ extension MIDIPlayerViewController: UITextFieldDelegate {
 
   func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
 
-    guard let text = textField.text,
-              let fileName = DocumentManager.noncollidingFileName(for: text)
-      else
-    {
-      return false
-    }
+    guard let text = textField.text else { return false }
 
+    let fileName = DocumentManager.noncollidingFileName(for: text)
     if let currentDocument = DocumentManager.currentDocument,
       ![fileName, currentDocument.localizedName].contains(text)
     {

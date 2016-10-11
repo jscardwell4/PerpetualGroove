@@ -152,21 +152,21 @@ final class MIDIPlayer {
   static fileprivate(set) var newGeneratorTool: GeneratorTool?
   static fileprivate(set) var rotateTool: RotateTool?
 
-  static var currentTool: Tool = .none {
+  static var currentTool: AnyTool = .none {
     willSet {
       logDebug("willSet: \(currentTool) ➞ \(newValue)")
       guard currentTool != newValue else { return }
       if undoManager.groupingLevel > 0 { undoManager.endUndoGrouping() }
-      guard (currentTool.toolType as? PresentingToolType)?.isShowingContent == true else { return }
+      guard (currentTool.tool as? PresentingTool)?.isShowingContent == true else { return }
       playerContainer?.dismiss(completion: {_ in })
     }
     didSet {
       logDebug("didSet: \(oldValue) ➞ \(currentTool)")
       guard currentTool != oldValue else { return }
       if currentTool != .none { undoManager.beginUndoGrouping() }
-      oldValue.toolType?.active = false
-      currentTool.toolType?.active = true
-      playerNode?.touchReceiver = currentTool.toolType
+      oldValue.tool?.active = false
+      currentTool.tool?.active = true
+      playerNode?.touchReceiver = currentTool.tool
       postNotification(name: .didSelectTool, object: self, userInfo: ["selectedTool": currentTool.rawValue])
     }
   }
@@ -224,6 +224,7 @@ extension MIDIPlayer: NotificationDispatching {
 
   enum NotificationName: String, LosslessStringConvertible {
     case didAddNode, didRemoveNode, didSelectTool
+
     var description: String { return rawValue }
     init?(_ description: String) { self.init(rawValue: description) }
   }
@@ -231,10 +232,14 @@ extension MIDIPlayer: NotificationDispatching {
 }
 
 extension Notification {
+
   var addedNode: MIDINode? { return userInfo?["addedNode"] as? MIDINode }
+
   var addedNodeTrack: InstrumentTrack? { return userInfo?["addedNodeTrack"] as? InstrumentTrack }
-  var selectedTool: Tool? {
+
+  var selectedTool: AnyTool? {
     guard let rawValue = userInfo?["selectedTool"] as? Int else { return nil }
-    return Tool(rawValue)
+    return AnyTool(rawValue)
   }
+
 }

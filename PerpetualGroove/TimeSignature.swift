@@ -9,7 +9,7 @@
 import Foundation
 import MoonKit
 
-enum TimeSignature: ByteArrayConvertible {
+enum TimeSignature {
   case fourFour
   case threeFour
   case twoFour
@@ -34,10 +34,29 @@ enum TimeSignature: ByteArrayConvertible {
     }
   }
 
+}
+
+extension TimeSignature: Hashable {
+
+  var hashValue: Int { return beatsPerBar ^ _mixInt(Int(beatUnit)) }
+
+  static func ==(lhs: TimeSignature, rhs: TimeSignature) -> Bool {
+    switch (lhs, rhs) {
+      case (.fourFour, .fourFour), (.threeFour, .threeFour), (.twoFour, .twoFour): return true
+      case let (.other(x1, y1), .other(x2, y2)) where x1 == x2 && y1 == y2: return true
+      default: return false
+    }
+  }
+
+}
+
+extension TimeSignature: ByteArrayConvertible {
+
   var bytes: [Byte] { return [beatUnit, Byte(log2(Double(beatsPerBar)))] }
 
   init(_ bytes: [Byte]) {
     guard bytes.count == 2 else { self.init(upper: 4, lower: 4); return }
     self.init(upper: bytes[0], lower: pow(bytes[1], 2))
   }
+
 }

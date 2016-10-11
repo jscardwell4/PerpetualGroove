@@ -33,16 +33,16 @@ final class TempoTrack: Track {
     }
   }
 
-  fileprivate var timeSignatureEvent: MetaEvent {
-    return MetaEvent(time: Sequencer.time.barBeatTime,
+  fileprivate var timeSignatureEvent: MIDIEvent.MetaEvent {
+    return MIDIEvent.MetaEvent(time: Sequencer.time.barBeatTime,
                      data: .timeSignature(signature: timeSignature, clocks: 36, notes: 8))
   }
 
-  fileprivate var tempoEvent: MetaEvent {
-    return MetaEvent(time: Sequencer.time.barBeatTime, data: .tempo(bpm: tempo))
+  fileprivate var tempoEvent: MIDIEvent.MetaEvent {
+    return MIDIEvent.MetaEvent(time: Sequencer.time.barBeatTime, data: .tempo(bpm: tempo))
   }
 
-  static func isTempoTrackEvent(_ trackEvent: AnyMIDIEvent) -> Bool {
+  static func isTempoTrackEvent(_ trackEvent: MIDIEvent) -> Bool {
     guard case .meta(let metaEvent) = trackEvent else { return false }
     switch metaEvent.data {
       case .tempo, .timeSignature, .endOfTrack: return true
@@ -51,7 +51,7 @@ final class TempoTrack: Track {
     }
   }
 
-  override func dispatch(event: AnyMIDIEvent) {
+  override func dispatch(event: MIDIEvent) {
     guard case .meta(let metaEvent) = event else { return }
     switch metaEvent.data {
       case let .tempo(bpm): tempo = bpm; Sequencer.setTempo(bpm, automated: true)

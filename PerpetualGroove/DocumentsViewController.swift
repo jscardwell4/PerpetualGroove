@@ -93,17 +93,17 @@ final class DocumentsViewController: UICollectionViewController {
 
     super.awakeFromNib()
 
-    receptionist.observe(name: DocumentManager.NotificationName.didUpdateItems.rawValue, from: DocumentManager.self,
+    receptionist.observe(name: .didUpdateItems, from: DocumentManager.self,
                          callback: weakMethod(self, DocumentsViewController.didUpdateItems))
 
-    receptionist.observe(name: DocumentManager.NotificationName.willChangeDocument.rawValue, from: DocumentManager.self,
+    receptionist.observe(name: .willChangeDocument, from: DocumentManager.self,
                          callback: weakMethod(self, DocumentsViewController.willChangeDocument))
 
-    receptionist.observe(name: DocumentManager.NotificationName.didChangeDocument.rawValue, from: DocumentManager.self,
+    receptionist.observe(name: .didChangeDocument, from: DocumentManager.self,
                          callback: weakMethod(self, DocumentsViewController.didChangeDocument))
 
     guard let currentDocument = DocumentManager.currentDocument else { return }
-    receptionist.observe(name: Document.NotificationName.didRenameDocument.rawValue, from: currentDocument,
+    receptionist.observe(name: .didRenameDocument, from: currentDocument,
                          callback: weakMethod(self, DocumentsViewController.documentDidChangeName))
   }
 
@@ -154,7 +154,7 @@ final class DocumentsViewController: UICollectionViewController {
 
   /// Returns the index path for a document; returns nil if document is not represented in the collection.
   fileprivate func indexPathForDocument(_ document: Document) -> IndexPath? {
-    guard let idx = items.index(where: {$0.URL.isEqualToFileURL(document.fileURL)}) else {
+    guard let idx = items.index(where: {$0.url.isEqualToFileURL(document.fileURL)}) else {
       return nil
     }
     return IndexPath(item: idx, section: 1)
@@ -172,8 +172,7 @@ final class DocumentsViewController: UICollectionViewController {
         selectedItem = indexPath
       default:
         let indexPath = IndexPath(item: items.count, section: 1)
-        let item = DocumentItem(document)
-        items.append(item)
+        items.append(.document(document))
         collectionView?.performBatchUpdates({ 
           [unowned self] in
           self.collectionView?.insertItems(at: [indexPath])
@@ -280,7 +279,7 @@ final class DocumentsViewController: UICollectionViewController {
       fatalError("Unable to retrieve cell for indexPath: \(indexPath)")
     }
 
-    let item = DocumentItem(document)
+    let item = DocumentItem.document(document)
     items[indexPath.item] = item
 
     cell.item = item

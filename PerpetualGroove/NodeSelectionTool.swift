@@ -10,40 +10,51 @@ import UIKit
 import SpriteKit
 import MoonKit
 
-class NodeSelectionTool: ToolType {
+class NodeSelectionTool: Tool {
 
   unowned let player: MIDIPlayerNode
 
   @objc var active = false {
-    didSet { guard active != oldValue && active == false else { return }; node = nil }
+    didSet {
+      guard active != oldValue && active == false else { return }
+
+      node = nil
+    }
   }
 
   weak var node: MIDINode? {
     didSet {
       guard node != oldValue else { return }
-      if let node = node { addLightingToNode(node) }
-      if let oldNode = oldValue { removeLightingFromNode(oldNode) }
+
+      if let node = node { addLighting(to: node) }
+      if let oldNode = oldValue { removeLighting(from: oldNode) }
     }
   }
 
   fileprivate static let nodeLightingName = "nodeSelectionToolLighting"
 
-  fileprivate func addLightingToNode(_ node: MIDINode) {
+  fileprivate func addLighting(to node: MIDINode) {
     guard node.childNode(withName: NodeSelectionTool.nodeLightingName) == nil else { return }
-    let light = SKLightNode()
-    light.name = NodeSelectionTool.nodeLightingName
-    light.categoryBitMask = 1
-    node.addChild(light)
+
+    node.addChild({
+      let light = SKLightNode()
+      light.name = NodeSelectionTool.nodeLightingName
+      light.categoryBitMask = 1
+      return light
+      }())
     node.lightingBitMask = 1
-    node.run(SKAction.colorize(with: UIColor.white, colorBlendFactor: 1, duration: 0.25))
+    node.run(SKAction.colorize(with: .white, colorBlendFactor: 1, duration: 0.25))
 
   }
 
-  fileprivate func removeLightingFromNode(_ node: MIDINode) {
+  fileprivate func removeLighting(from node: MIDINode) {
     guard let light = node.childNode(withName: NodeSelectionTool.nodeLightingName) else { return }
+
     light.removeFromParent()
     node.lightingBitMask = 0
+
     guard let color = node.dispatch?.color.value else { return }
+
     node.run(SKAction.colorize(with: color, colorBlendFactor: 1, duration: 0.25))
   }
 
@@ -55,12 +66,12 @@ class NodeSelectionTool: ToolType {
 
   init(playerNode: MIDIPlayerNode) {
     player = playerNode
-    receptionist.observe(name: MIDIPlayer.NotificationName.didAddNode.rawValue,
-                    from: MIDIPlayer.self,
-                callback: weakMethod(self, NodeSelectionTool.didAddNode))
-    receptionist.observe(name: MIDIPlayer.NotificationName.didRemoveNode.rawValue,
-                    from: MIDIPlayer.self,
-                callback: weakMethod(self, NodeSelectionTool.didRemoveNode))
+    receptionist.observe(name: .didAddNode,
+                         from: MIDIPlayer.self,
+                         callback: weakMethod(self, NodeSelectionTool.didAddNode))
+    receptionist.observe(name: .didRemoveNode,
+                         from: MIDIPlayer.self,
+                         callback: weakMethod(self, NodeSelectionTool.didRemoveNode))
   }
 
   func didSelectNode() {}
@@ -70,20 +81,27 @@ class NodeSelectionTool: ToolType {
   func didRemoveNode(_ notification: Notification) {}
 
   fileprivate func grabNodeForTouch(_ touch: UITouch?) {
-    guard let point = touch?.location(in: player) , player.contains(point) else { return }
-    node = player.nodes(at: point).flatMap({$0 as? MIDINode}).first
+    guard
+      let point = touch?.location(in: player),
+      player.contains(point)
+      else
+    {
+      return
+    }
+
+    node = player.nodes(at: point).first(where: {$0 is MIDINode}) as? MIDINode
   }
 
   func previousNode() {
-    let nodes = player.midiNodes
-    guard let node = node, let idx = nodes.index(where: {$0 === node}) else { return }
-    self.node = idx + 1 < nodes.endIndex ? nodes[idx + 1] : nodes[nodes.startIndex]
+    guard let idx = player.midiNodes.index(where: {$0 === node}) else { return }
+
+    node = player.midiNodes[((idx &- 1) &+ player.midiNodes.count) % player.midiNodes.count]
   }
 
   func nextNode() {
-    let nodes = player.midiNodes
-    guard let node = node, let idx = nodes.index(where: {$0 === node}) else { return }
-    self.node = idx - 1 >= nodes.startIndex ? nodes[idx - 1] : nodes[nodes.endIndex - 1]
+    guard let idx = player.midiNodes.index(where: {$0 === node}) else { return }
+
+    node = player.midiNodes[(idx &+ 1) % player.midiNodes.count]
   }
 
 }
@@ -111,9 +129,9 @@ extension NodeSelectionTool: TouchReceiver {
   
 }
 
-class PresentingNodeSelectionTool: NodeSelectionTool, PresentingToolType {
+class PresentingNodeSelectionTool: NodeSelectionTool, PresentingTool {
 
-  fileprivate(set) weak var _secondaryContent: SecondaryControllerContent?
+  private(set) weak var _secondaryContent: SecondaryControllerContent?
 
   var secondaryContent: SecondaryControllerContent { fatalError("\(#function) must be overridden by subclass") }
 
@@ -121,8 +139,9 @@ class PresentingNodeSelectionTool: NodeSelectionTool, PresentingToolType {
 
   func didShow(content: SecondaryControllerContent) { _secondaryContent = content }
 
-  func didHide(content: SecondaryControllerContent, dismissalAction: SecondaryControllerContainer.DismissalAction) {
-    assert(active && _secondaryContent != nil, "expected active and valid _secondaryContent")
+  func didHide(content: SecondaryControllerContent,
+               dismissalAction: SecondaryControllerContainer.DismissalAction)
+  {
     if dismissalAction == .cancel && MIDIPlayer.undoManager.canUndo {
       if MIDIPlayer.undoManager.groupingLevel > 0 { MIDIPlayer.undoManager.endUndoGrouping() }
       MIDIPlayer.undoManager.undo()
@@ -131,18 +150,21 @@ class PresentingNodeSelectionTool: NodeSelectionTool, PresentingToolType {
   }
   
   override func didAddNode(_ notification: Notification) {
-    guard active && player.midiNodes.count == 2,
-      let secondaryContent = _secondaryContent ,
+    guard
+      active && player.midiNodes.count == 2,
+      let secondaryContent = _secondaryContent,
       !secondaryContent.disabledActions.intersection([.Previous, .Next]).isEmpty
       else
     {
       return
     }
+
     secondaryContent.disabledActions = .None
   }
 
   override func didRemoveNode(_ notification: Notification) {
-    guard active && player.midiNodes.count < 2,
+    guard
+      active && player.midiNodes.count < 2,
       let secondaryContent = _secondaryContent,
       secondaryContent.disabledActions.intersection([.Previous, .Next]).isEmpty
       else

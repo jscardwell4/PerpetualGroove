@@ -45,29 +45,22 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
   fileprivate func initializeNotificationReceptionist() {
     guard receptionist.count == 0 else { return }
 
-    receptionist.observe(name: Sequencer.NotificationName.didReset.rawValue,
-                         from: Sequencer.self,
+    receptionist.observe(name: .didReset, from: Sequencer.self,
                          callback: weakMethod(self, InstrumentTrack.didReset))
 
-    receptionist.observe(name: Sequence.NotificationName.soloCountDidChange.rawValue,
-                         from: sequence,
+    receptionist.observe(name: .soloCountDidChange, from: sequence,
                          callback: weakMethod(self, InstrumentTrack.soloCountDidChange))
 
-    receptionist.observe(name: Sequencer.NotificationName.didBeginJogging.rawValue,
-                         from: Sequencer.self,
+    receptionist.observe(name: .didBeginJogging, from: Sequencer.self,
                          callback: weakMethod(self, InstrumentTrack.didBeginJogging))
-    receptionist.observe(name: Sequencer.NotificationName.didEndJogging.rawValue,
-                         from: Sequencer.self,
+    receptionist.observe(name: .didEndJogging, from: Sequencer.self,
                          callback: weakMethod(self, InstrumentTrack.didEndJogging))
-    receptionist.observe(name: Sequencer.NotificationName.didJog.rawValue,
-                         from: Sequencer.self,
+    receptionist.observe(name: .didJog, from: Sequencer.self,
                          callback: weakMethod(self, InstrumentTrack.didJog))
 
-    receptionist.observe(name: Instrument.NotificationName.programDidChange.rawValue,
-                         from: instrument,
+    receptionist.observe(name: .programDidChange, from: instrument,
                          callback: weakMethod(self, InstrumentTrack.didChangePreset))
-    receptionist.observe(name: Instrument.NotificationName.soundFontDidChange.rawValue,
-                         from: instrument,
+    receptionist.observe(name: .soundFontDidChange, from: instrument,
                          callback: weakMethod(self, InstrumentTrack.didChangePreset))
 }
 
@@ -96,14 +89,14 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
   // MARK: - MIDI file related properties and methods
 
   override func validate(events container: inout MIDIEventContainer) {
-    instrumentEvent = MetaEvent(.text(text: "instrument:\(instrument.soundFont.url.lastPathComponent)"))
-    programEvent = ChannelEvent(type: .programChange, channel: instrument.channel, data1: instrument.program)
+    instrumentEvent = MIDIEvent.MetaEvent(data: .text(text: "instrument:\(instrument.soundFont.url.lastPathComponent)"))
+    programEvent = MIDIEvent.ChannelEvent(type: .programChange, channel: instrument.channel, data1: instrument.program)
     super.validate(events: &container)
   }
 
-  func add<S:Swift.Sequence>(events: S) where S.Iterator.Element == AnyMIDIEvent {
+  func add<S:Swift.Sequence>(events: S) where S.Iterator.Element == MIDIEvent {
 
-    var filteredEvents: [AnyMIDIEvent] = []
+    var filteredEvents: [MIDIEvent] = []
 
     for event in events {
 
@@ -115,7 +108,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
             default: filteredEvents.append(event)
           }
 
-        case .channel(let channelEvent) where channelEvent.status.type == .programChange:
+        case .channel(let channelEvent) where channelEvent.status.kind == .programChange:
           programEvent = channelEvent
 
         default:
@@ -130,14 +123,14 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     super.add(events: filteredEvents)
   }
 
-  fileprivate var instrumentEvent: MetaEvent!
-  fileprivate var programEvent: ChannelEvent!
+  fileprivate var instrumentEvent: MIDIEvent.MetaEvent!
+  fileprivate var programEvent: MIDIEvent.ChannelEvent!
 
-  typealias Identifier = MIDINodeEvent.Identifier
+  typealias Identifier = MIDIEvent.MIDINodeEvent.Identifier
   typealias NodeIdentifier = UUID
-  typealias EventData = MIDINodeEvent.Data
+  typealias EventData = MIDIEvent.MIDINodeEvent.Data
 
-  override var headEvents: [AnyMIDIEvent] {
+  override var headEvents: [MIDIEvent] {
     return super.headEvents + [.meta(instrumentEvent), .channel(programEvent)]
   }
 
@@ -276,16 +269,16 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 
       guard let packet = Packet(packetList: packetList) else { return }
 
-      let event: AnyMIDIEvent?
+      let event: MIDIEvent?
       switch packet.status {
         case 9:
-          event = .channel(ChannelEvent(type: .noteOn,
+          event = .channel(MIDIEvent.ChannelEvent(type: .noteOn,
                                         channel: packet.channel,
                                         data1: packet.note,
                                         data2: packet.velocity,
                                         time: time))
         case 8:
-          event = .channel(ChannelEvent(type: .noteOff,
+          event = .channel(MIDIEvent.ChannelEvent(type: .noteOff,
                                         channel: packet.channel,
                                         data1: packet.note,
                                         data2: packet.velocity,
@@ -297,16 +290,16 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     }
   }
 
-  override func dispatch(event: AnyMIDIEvent) {
+  override func dispatch(event: MIDIEvent) {
       switch event {
         case .node(let nodeEvent):
           switch nodeEvent.data {
             case let .add(identifier, trajectory, generator):
-              nodeManager.addNodeWithIdentifier(identifier.nodeIdentifier,
-                                     trajectory: trajectory,
-                                      generator: generator)
+              nodeManager.addNode(identifier: identifier.nodeIdentifier,
+                                  trajectory: trajectory,
+                                  generator: generator)
             case let .remove(identifier):
-              do { try nodeManager.removeNodeWithIdentifier(identifier.nodeIdentifier) } catch { logError(error) }
+              do { try nodeManager.removeNode(identifier: identifier.nodeIdentifier) } catch { logError(error) }
           }
         case .meta(let metaEvent) where metaEvent.data == .endOfTrack:
           guard !recording && endOfTrack == metaEvent.time else { break }
@@ -317,7 +310,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
   }
 
   override func registrationTimes<S:Swift.Sequence>(forAdding events: S) -> [BarBeatTime]
-    where S.Iterator.Element == AnyMIDIEvent
+    where S.Iterator.Element == MIDIEvent
   {
     return events.filter({ if case .node(_) = $0 { return true } else { return false } }).map({$0.time})
       + super.registrationTimes(forAdding: events)
@@ -342,8 +335,8 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     nodeManager = MIDINodeManager(owner: self)
     self.instrument = instrument
     instrument.track = self
-    instrumentEvent = MetaEvent(.text(text: "instrument:\(instrument.soundFont.url.lastPathComponent)"))
-    programEvent = ChannelEvent(type: .programChange, channel: instrument.channel, data1: instrument.program)
+    instrumentEvent = MIDIEvent.MetaEvent(data: .text(text: "instrument:\(instrument.soundFont.url.lastPathComponent)"))
+    programEvent = MIDIEvent.ChannelEvent(type: .programChange, channel: instrument.channel, data1: instrument.program)
     color = TrackColor.nextColor
 
     initializeNotificationReceptionist()
@@ -361,14 +354,14 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     color = grooveTrack.color
 
     name = grooveTrack.name
-    var events: [AnyMIDIEvent] = []
+    var events: [MIDIEvent] = []
     for (_, node) in grooveTrack.nodes {
-      events.append(.node(MIDINodeEvent(data: .add(identifier: node.identifier,
+      events.append(.node(MIDIEvent.MIDINodeEvent(data: .add(identifier: node.identifier,
                                                    trajectory: node.trajectory,
                                                    generator: node.generator),
                                         time: node.addTime)))
       if let time = node.removeTime {
-        events.append(.node(MIDINodeEvent(data: .remove(identifier: node.identifier), time: time)))
+        events.append(.node(MIDIEvent.MIDINodeEvent(data: .remove(identifier: node.identifier), time: time)))
       }
     }
     add(events: events)
@@ -390,8 +383,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     guard let instrumentEvent = instrumentEvent,
       case .text(var instrumentName) = instrumentEvent.data else
     {
-      throw MIDIFileError(type: .fileStructurallyUnsound,
-                          reason: "Instrument event must be a text event")
+      throw Error.MissingInstrument
     }
 
     instrumentName = instrumentName[instrumentName.index(instrumentName.startIndex, offsetBy:11)|->]
@@ -409,7 +401,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 
     // Find the program change event
     guard let programEvent = programEvent else {
-      throw MIDIFileError(type: .missingEvent, reason: "Missing program change event")
+      throw Error.MissingProgram
     }
 
     let channel = programEvent.status.channel, program = programEvent.data1
@@ -444,7 +436,9 @@ extension InstrumentTrack {
   enum Error: String, Swift.Error, CustomStringConvertible {
     case SoundSetInitializeFailure = "Failed to create sound set"
     case InvalidSoundSetURL = "Failed to resolve sound set url"
+    case MissingProgram = "Missing program change event"
     case InvalidProgram = "Specified sound set does not have the specified program"
+    case MissingInstrument = "Missing instrument event"
     case InstrumentInitializeFailure = "Failed to create instrument"
   }
 

@@ -177,18 +177,18 @@ extension Transport.State: CustomStringConvertible {
 }
 
 extension Transport {
-  enum Error: ErrorMessageType {
+  enum Error: LocalizedError {
     case invalidBarBeatTime (String)
     case notPermitted (String)
 
-    var name: String {
+    var errorDescription: String? {
       switch self {
-        case .invalidBarBeatTime: return "InvalidBarBeatTime"
-        case .notPermitted:       return "NotPermitted"
+        case .invalidBarBeatTime: return "Invalid `BarBeatTime`"
+        case .notPermitted:       return "Not permitted"
       }
     }
 
-    var reason: String {
+    var failureReason: String? {
       switch self {
         case .invalidBarBeatTime(let reason): return reason
         case .notPermitted(let reason):       return reason

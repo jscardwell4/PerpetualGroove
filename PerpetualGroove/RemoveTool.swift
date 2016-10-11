@@ -10,42 +10,46 @@ import UIKit
 import SpriteKit
 import MoonKit
 
-final class RemoveTool: ToolType {
+final class RemoveTool: Tool {
 
   unowned let player: MIDIPlayerNode
 
   @objc var active = false {
     didSet {
-      logDebug("oldValue = \(oldValue)  active = \(active)")
       guard active != oldValue else { return }
+
       switch active {
         case true:
           sequence = Sequencer.sequence
-          refreshAllNodeLighting()
+          refreshLighting()
         case false:
           sequence = nil
-          player.midiNodes.forEach { if $0 != nil { removeLightingFromNode($0!) } }
+          player.midiNodes.forEach(removeLighting)
       }
     }
   }
 
-  fileprivate var touch: UITouch? { didSet { if touch == nil { nodesToRemove.removeAll() } } }
+  fileprivate var touch: UITouch? {
+    didSet {
+      if touch == nil {
+        nodesToRemove.removeAll()
+      }
+    }
+  }
+
   fileprivate var nodesToRemove: Set<MIDINodeRef> = [] {
     didSet {
-      logDebug("old count = \(oldValue.count)  new count = \(nodesToRemove.count)")
-      nodesToRemove.flatMap({$0.reference}).forEach {
-        guard let light = $0.childNode(withName: "removeToolLighting") as? SKLightNode
-                , light.categoryBitMask != 1 else { return }
-        light.lightColor = UIColor.black
+      nodesToRemove.flatMap({$0.reference?.childNode(withName: RemoveTool.lightNodeName) as? SKLightNode}).forEach {
+        $0.lightColor = .black
       }
     }
   }
 
-  fileprivate static var categoryShift: UInt32 = 1 {
+  private static var categoryShift: UInt32 = 1 {
     didSet { categoryShift = (1 ... 31).clampValue(categoryShift) }
   }
 
-  fileprivate static var foregroundLightNode: SKLightNode  {
+  private static var foregroundLightNode: SKLightNode  {
     let node = SKLightNode()
     node.name = lightNodeName
     node.categoryBitMask = 1 << categoryShift
@@ -55,11 +59,11 @@ final class RemoveTool: ToolType {
     return node
   }
 
-  fileprivate static let lightNodeName = "removeToolLighting"
-  fileprivate static let foregroundLightColor = UIColor.white
-  fileprivate static let backgroundLightColor = UIColor.clear
+  private static let lightNodeName = "removeToolLighting"
+  private static let foregroundLightColor = UIColor.white
+  private static let backgroundLightColor = UIColor.clear
 
-  fileprivate static var backgroundLightNode: SKLightNode {
+  private static var backgroundLightNode: SKLightNode {
     let node = SKLightNode()
     node.name = lightNodeName
     node.categoryBitMask = 1
@@ -67,15 +71,14 @@ final class RemoveTool: ToolType {
     return node
   }
 
-  fileprivate weak var sequence: Sequence? {
+  private weak var sequence: Sequence? {
     didSet {
-      logDebug("oldValue: \(oldValue?.document?.localizedName ?? "nil")  sequence: \(sequence?.document?.localizedName ?? "nil")")
       guard oldValue !== sequence else { return }
       if let oldSequence = oldValue {
-        receptionist.stopObserving(name: Sequence.NotificationName.didChangeTrack.rawValue, from: oldSequence)
+        receptionist.stopObserving(name: .didChangeTrack, from: oldSequence)
       }
       if let sequence = sequence {
-        receptionist.observe(name: Sequence.NotificationName.didChangeTrack.rawValue, from: sequence) {
+        receptionist.observe(name: .didChangeTrack, from: sequence) {
           [weak self] _ in self?.track = self?.sequence?.currentTrack
         }
       }
@@ -83,7 +86,7 @@ final class RemoveTool: ToolType {
     }
   }
 
-  fileprivate func lightNodeForBackground(_ node: MIDINode) {
+  private func addBackgroundLight(to node: MIDINode) {
     let lightNode: SKLightNode
     switch node.childNode(withName: "removeToolLighting") as? SKLightNode {
       case let light? where light.categoryBitMask != 1:
@@ -100,7 +103,7 @@ final class RemoveTool: ToolType {
     node.lightingBitMask = lightNode.categoryBitMask
   }
 
-  fileprivate func lightNodeForForeground(_ node: MIDINode) {
+  private func addForegroundLight(to node: MIDINode) {
     let lightNode: SKLightNode
     switch node.childNode(withName: "removeToolLighting") as? SKLightNode {
       case let light? where light.categoryBitMask == 1:
@@ -118,26 +121,26 @@ final class RemoveTool: ToolType {
     node.lightingBitMask = lightNode.categoryBitMask
   }
 
-  fileprivate func refreshAllNodeLighting() {
+  private func refreshLighting() {
     guard let track = track else { return }
     let trackNodes = track.nodes.flatMap({$0.elements.1.reference})
     let (foregroundNodes, backgroundNodes) = player.midiNodes.flatMap({$0}).bisect { trackNodes.contains($0) }
-    foregroundNodes.forEach { lightNodeForForeground($0) }
-    backgroundNodes.forEach { lightNodeForBackground($0) }
+    foregroundNodes.forEach(addForegroundLight)
+    backgroundNodes.forEach(addBackgroundLight)
   }
 
-  fileprivate func removeLightingFromNode(_ node: MIDINode) {
-    node.childNode(withName: "removeToolLighting")?.removeFromParent()
-    node.lightingBitMask = 0
+  private func removeLighting(from node: MIDINode?) {
+    node?.childNode(withName: "removeToolLighting")?.removeFromParent()
+    node?.lightingBitMask = 0
   }
 
   fileprivate weak var track: InstrumentTrack? {
     didSet {
-      logDebug("oldValue: \(oldValue?.name ?? "nil")  track: \(track?.name ?? "nil")")
       if touch != nil { touch = nil }
       guard active && oldValue !== track else { return }
-      oldValue?.nodes.flatMap({$0.elements.1.reference}).forEach { lightNodeForBackground($0) }
-      track?.nodes.flatMap({$0.elements.1.reference}).forEach { lightNodeForForeground($0) }
+
+      oldValue?.nodes.flatMap({$0.elements.1.reference}).forEach(addBackgroundLight)
+      track?.nodes.flatMap({$0.elements.1.reference}).forEach(addForegroundLight)
     }
   }
 
@@ -146,16 +149,27 @@ final class RemoveTool: ToolType {
   init(playerNode: MIDIPlayerNode, delete: Bool = false) {
     deleteFromTrack = delete
     player = playerNode
-    receptionist.observe(name: Sequencer.NotificationName.didChangeSequence.rawValue,
-      from: Sequencer.self,
-      callback: {[weak self] _ in self?.sequence = Sequencer.sequence})
-    receptionist.observe(name: MIDIPlayer.NotificationName.didAddNode.rawValue,
-      from: MIDIPlayer.self,
-      callback: {[weak self] notification in
-        guard self?.active == true, let node = notification.addedNode, let track = notification.addedNodeTrack else { return }
-        if self?.track === track { self?.lightNodeForForeground(node) }
-        else { self?.lightNodeForBackground(node) }
-      })
+
+    receptionist.observe(name: .didChangeSequence, from: Sequencer.self) {
+      [weak self] _ in self?.sequence = Sequencer.sequence
+    }
+
+    receptionist.observe(name: .didAddNode,
+                         from: MIDIPlayer.self,
+                         callback: weakMethod(self, RemoveTool.didAddNode))
+  }
+
+  private func didAddNode(_ notification: Foundation.Notification) {
+    guard active,
+      let node = notification.addedNode,
+      let track = notification.addedNodeTrack
+      else
+    {
+      return
+    }
+
+    if self.track === track { addForegroundLight(to: node) }
+    else { addBackgroundLight(to: node) }
   }
 
   fileprivate func removeMarkedNodes() {
@@ -171,13 +185,13 @@ final class RemoveTool: ToolType {
     }
   }
 
-  fileprivate let receptionist: NotificationReceptionist = {
+  private let receptionist: NotificationReceptionist = {
     let receptionist = NotificationReceptionist(callbackQueue: OperationQueue.main)
     receptionist.logContext = LogManager.MIDIFileContext
     return receptionist
   }()
 
-  fileprivate func trackNodesAtPoint(_ point: CGPoint) -> [MIDINodeRef] {
+  fileprivate func trackNodes(at point: CGPoint) -> [MIDINodeRef] {
     let midiNodes = player.nodes(at: point).flatMap({$0 as? MIDINode}).map({MIDINodeRef($0)})
     return midiNodes.filter({
       guard let identifier = $0.reference?.identifier else { return false }
@@ -186,11 +200,15 @@ final class RemoveTool: ToolType {
     )
   }
 
+}
+
+extension RemoveTool: TouchReceiver {
+
   @objc func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
     guard active && self.touch == nil else { return }
     touch = touches.first
-    guard let point = touch?.location(in: player) , player.contains(point) else { return }
-    nodesToRemove ∪= trackNodesAtPoint(point)
+    guard let point = touch?.location(in: player), player.contains(point) else { return }
+    nodesToRemove ∪= trackNodes(at: point)
   }
 
   @objc func touchesCancelled(_ touches: Set<UITouch>?, with event: UIEvent?) { touch = nil }
@@ -202,12 +220,15 @@ final class RemoveTool: ToolType {
   }
 
   @objc func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-    guard touch != nil && touches.contains(touch!) else { return }
-    guard let point = touch?.location(in: player) , player.contains(point) else {
+    guard
+      let point = touch?.location(in: player),
+      touches.contains(touch!) && player.contains(point)
+      else
+    {
       touch = nil
       return
     }
-    nodesToRemove ∪= trackNodesAtPoint(point)
+    nodesToRemove ∪= trackNodes(at: point)
   }
 
 }

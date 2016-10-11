@@ -33,20 +33,42 @@ struct Trajectory {
     get { return Direction(vector: v) }
     set {
       guard direction != newValue else { return }
+
       switch (direction.vertical, newValue.vertical) {
-        case (.up, .down), (.down, .up): dy *= -1
-        case (_, .none): dy = 0
-        default: break
+
+        case (.up, .down), (.down, .up):
+          dy *= -1
+
+        case (_, .none):
+          dy = 0
+
+        default:
+          break
+
       }
+
       switch (direction.horizontal, newValue.horizontal) {
-        case (.left, .right), (.right, .left): dx *= -1
-        case (_, .none): dx = 0
-        default: break
+
+        case (.left, .right), (.right, .left):
+          dx *= -1
+
+        case (_, .none):
+          dx = 0
+
+        default:
+          break
+
       }
+
     }
+
   }
 
-  func rotatedTo(angle: CGFloat) -> Trajectory { var result = self; result.angle = angle; return result }
+  func rotatedTo(angle: CGFloat) -> Trajectory {
+    var result = self
+    result.angle = angle
+    return result
+  }
 
   mutating func formRotatedTo(angle: CGFloat) { self.angle = angle }
 
@@ -68,7 +90,11 @@ struct Trajectory {
   }
 
   /// Default initializer
-  init(vector: CGVector, point: CGPoint) { dx = vector.dx; dy = vector.dy; x = point.x; y = point.y }
+  init(vector: CGVector, point: CGPoint) {
+    dx = vector.dx
+    dy = vector.dy
+    x = point.x
+    y = point.y }
 
   
    /// The point along the trajectory with the specified x value
@@ -123,13 +149,25 @@ struct Trajectory {
 
   /// Trajectory value for representing a 'null' or 'invalid' trajectory
   static var null: Trajectory { return Trajectory(vector: CGVector.zero, point: CGPoint.null) }
+
+}
+
+extension Trajectory: Hashable {
+
+  var hashValue: Int { return dx.hashValue ^ dy.hashValue ^ x.hashValue ^ y.hashValue }
+
+  static func ==(lhs: Trajectory, rhs: Trajectory) -> Bool {
+    return lhs.dx == rhs.dx && lhs.dy == rhs.dy && lhs.x == rhs.x && lhs.y == rhs.y
+  }
+
 }
 
 extension Trajectory {
 
   /// Type for specifiying the direction of a `Trajectory`.
   enum Direction: Equatable, CustomStringConvertible {
-    enum VerticalMovement: String, Equatable { case none, up, down }
+
+    enum VerticalMovement:   String, Equatable { case none, up,   down  }
     enum HorizontalMovement: String, Equatable { case none, left, right }
 
     case none
@@ -244,33 +282,48 @@ extension Trajectory: ByteArrayConvertible {
     let string = String(bytes)
     let float = "-?[0-9]+(?:\\.[0-9]+)?"
     let value = "\\{\(float), \(float)\\}"
-    guard let match = (~/"\\{(\(value)), (\(value))\\}").firstMatch(in: string, anchored: true),
+
+    guard
+      let match = (~/"\\{(\(value)), (\(value))\\}").firstMatch(in: string, anchored: true),
       let positionCapture = match.captures[1],
-      let vectorCapture = match.captures[2] else { self = .null; return }
-    guard let point = CGPoint(positionCapture.string), let vector = CGVector(vectorCapture.string) else {
+      let vectorCapture = match.captures[2]
+      else
+    {
       self = .null
       return
     }
+
+    guard
+      let point = CGPoint(positionCapture.string),
+      let vector = CGVector(vectorCapture.string)
+      else
+    {
+      self = .null
+      return
+    }
+
     x = point.x; y = point.y
     dx = vector.dx; dy = vector.dy
   }
+
 }
 
-extension Trajectory: JSONValueConvertible {
+extension Trajectory: LosslessJSONValueConvertible {
 
   /// The json object for the trajectory
   var jsonValue: JSONValue { return ["p": p, "v": v] }
 
-}
-
-extension Trajectory: JSONValueInitializable {
-
-  
   /// Initializing with a json value.
   init?(_ jsonValue: JSONValue?) {
-    guard let dict = ObjectJSONValue(jsonValue), let p = CGPoint(dict["p"]), let v = CGVector(dict["v"]) else {
+    guard
+      let dict = ObjectJSONValue(jsonValue),
+      let p = CGPoint(dict["p"]),
+      let v = CGVector(dict["v"])
+      else
+    {
       return nil
     }
+    
     self.init(vector: v, point: p)
   }
 

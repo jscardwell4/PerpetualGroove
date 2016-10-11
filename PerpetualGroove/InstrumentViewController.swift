@@ -97,7 +97,7 @@ final class InstrumentViewController: UIViewController, SecondaryControllerConte
 
   fileprivate func audition() {
     guard let instrument = instrument else { return }
-    instrument.playNote(AnyMIDIGenerator(NoteGenerator()))
+    instrument.playNote(AnyMIDIGenerator())
   }
 
   override func viewDidLoad() {

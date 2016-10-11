@@ -12,26 +12,19 @@ import MoonKit
 
 // TODO: Nudge, Throttle, Rotate tools
 
-protocol ToolType: TouchReceiver {
+protocol Tool: TouchReceiver {
+
   var active: Bool { get set }
 
 }
 
-protocol PresentingToolType: ToolType, SecondaryControllerContentProvider {}
+protocol PresentingTool: Tool, SecondaryControllerContentProvider {}
 
-enum Tool: Int {
-  case none = -1
-  case newNodeGenerator
-  case addNode
-  case removeNode
-  case deleteNode
-  case nodeGenerator
-  case rotate
-  case loopStart
-  case loopEnd
-  case loopToggle
+enum AnyTool: Int {
+  case none = -1, newNodeGenerator, addNode, removeNode, deleteNode,
+       nodeGenerator, rotate, loopStart, loopEnd, loopToggle
 
-  var toolType: ToolType? {
+  var tool: Tool? {
     switch self {
       case .none:              return nil
       case .newNodeGenerator:  return MIDIPlayer.newGeneratorTool
@@ -48,14 +41,17 @@ enum Tool: Int {
 
   var isCurrentTool: Bool { return MIDIPlayer.currentTool == self }
 
-  init(_ int: Int) { self = Tool(rawValue: int) ?? .none }
-  init(_ toolType: ToolType?) {
-    switch toolType {
-      case let t? where MIDIPlayer.newGeneratorTool === t:      self = .newNodeGenerator
-      case let t? where MIDIPlayer.addTool === t:               self = .addNode
-      case let t? where MIDIPlayer.removeTool === t:            self = .removeNode
-      case let t? where MIDIPlayer.deleteTool === t:            self = .deleteNode
-      case let t? where MIDIPlayer.existingGeneratorTool === t: self = .nodeGenerator
+  init(_ int: Int) { self = AnyTool(rawValue: int) ?? .none }
+
+  init(_ tool: Tool?) {
+    guard let tool = tool, MIDIPlayer.playerNode != nil else { self = .none; return }
+
+    switch ObjectIdentifier(tool) {
+      case ObjectIdentifier(MIDIPlayer.newGeneratorTool!):      self = .newNodeGenerator
+      case ObjectIdentifier(MIDIPlayer.addTool!):               self = .addNode
+      case ObjectIdentifier(MIDIPlayer.removeTool!):            self = .removeNode
+      case ObjectIdentifier(MIDIPlayer.deleteTool!):            self = .deleteNode
+      case ObjectIdentifier(MIDIPlayer.existingGeneratorTool!): self = .nodeGenerator
       default:                                                  self = .none
     }
   }

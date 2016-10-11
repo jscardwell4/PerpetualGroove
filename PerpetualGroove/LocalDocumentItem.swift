@@ -10,62 +10,28 @@ import MoonKit
 
 final class LocalDocumentItem: NSObject {
 
-  let URL: Foundation.URL
-  fileprivate let fileWrapper: FileWrapper
+  let url: URL
+  
+  private let wrapper: FileWrapper
 
-  var displayName: String {
-    guard let name = fileWrapper.preferredFilename else { fatalError("file wrapper has no name") }
-    return name
+  var displayName: String { return wrapper.preferredFilename! }
+
+  var size: UInt64 {
+    return wrapper.fileAttributes[FileAttributeKey.size.rawValue] as? UInt64 ?? 0
   }
 
-  var size: UInt64 { return (fileWrapper.fileAttributes as NSDictionary).fileSize() }
-  var modificationDate: Date? { return (fileWrapper.fileAttributes as NSDictionary).fileModificationDate() }
-  var creationDate: Date? { return (fileWrapper.fileAttributes as NSDictionary).fileCreationDate() }
-
-
-  /**
-  init:
-
-  - parameter URL: NSURL
-  */
-  init(_ fileURL: Foundation.URL) throws {
-    self.URL = fileURL
-    var thrownError: Swift.Error?
-    let wrapper: FileWrapper
-    do {
-      wrapper = try FileWrapper(url: fileURL, options: .withoutMapping)
-    } catch {
-      wrapper = FileWrapper()
-      thrownError = error
-    }
-    fileWrapper = wrapper
-    super.init()
-    guard thrownError == nil else { throw thrownError! }
+  var modificationDate: Date? {
+    return wrapper.fileAttributes[FileAttributeKey.modificationDate.rawValue] as? Date
   }
 
-  /**
-   init:base:
+  var creationDate: Date? {
+    return wrapper.fileAttributes[FileAttributeKey.creationDate.rawValue] as? Date
+  }
 
-   - parameter wrapper: NSFileWrapper
-   - parameter base: NSURL
-   */
-  init?(_ wrapper: FileWrapper, _ base: Foundation.URL) {
-    var isDirectory = ObjCBool(false)
-    let fileManager = FileManager.default
-    guard let directoryPath = String(cString: (base as NSURL).fileSystemRepresentation, encoding: String.Encoding.utf8),
-      fileManager.fileExists(atPath: directoryPath, isDirectory: &isDirectory) && isDirectory.boolValue,
-      let fileName = wrapper.preferredFilename else
-    {
-        return nil
-    }
-    let fileURL = base + fileName
-    guard let filePath = String(cString: (fileURL as NSURL).fileSystemRepresentation, encoding: String.Encoding.utf8),
-      fileManager.fileExists(atPath: filePath, isDirectory: &isDirectory) && !isDirectory.boolValue else
-    {
-        return nil
-    }
-    self.URL = fileURL
-    fileWrapper = wrapper
+
+  init(url: URL) throws {
+    self.url = url
+    wrapper = try FileWrapper(url: url, options: .withoutMapping)
     super.init()
   }
 
