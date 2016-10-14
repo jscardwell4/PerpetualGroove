@@ -34,23 +34,19 @@ final class AudioManager {
     instruments.append(instrument)
   }
 
-  static func initialize() {
+  static func initialize() throws {
     guard !initialized else { return }
     let outputFormat = engine.outputNode.outputFormat(forBus: 0)
     guard outputFormat.sampleRate != 0 else { fatalError("output disabled (sample rate = 0)") }
 
-    do {
-      try configureAudioSession()
-      let node = AVAudioUnitSampler()
-      engine.attach(node)
-      engine.connect(node, to: engine.mainMixerNode, format: node.outputFormat(forBus: 0))
-      metronome = try Metronome.init(node: node)
-      initialized = true
-      logDebug("AudioManager initialized")
-      try start()
-    } catch {
-      logError(error)
-    }
+    try configureAudioSession()
+    let node = AVAudioUnitSampler()
+    engine.attach(node)
+    engine.connect(node, to: engine.mainMixerNode, format: node.outputFormat(forBus: 0))
+    metronome = try Metronome.init(sampler: node)
+    initialized = true
+    logDebug("AudioManager initialized")
+    try start()
   }
 
   fileprivate static func configureAudioSession() throws {

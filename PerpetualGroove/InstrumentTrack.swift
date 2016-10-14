@@ -343,12 +343,16 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     try initializeMIDIClient()
   }
 
-  init(sequence: Sequence, grooveTrack: GrooveTrack) throws {
+  init(sequence: Sequence, grooveTrack: GrooveFile.Track) throws {
+
     super.init(sequence: sequence)
+
     nodeManager = MIDINodeManager(owner: self)
+
     guard let preset = Instrument.Preset(grooveTrack.instrument.jsonValue) else {
       throw Error.InstrumentInitializeFailure
     }
+    
     instrument = try Instrument(track: self, preset: preset)
     instrument.track = self
     color = grooveTrack.color
@@ -392,10 +396,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
       throw Error.InvalidSoundSetURL
     }
 
-    guard case .some(.some(let soundSet)) = try? EmaxSoundSet(url: url) as? SoundFont
-                                     ?? (try? SoundSet(url: url)) as? SoundFont
-      else
-    {
+    guard let soundSet: SoundFont = (try? EmaxSoundSet(url: url)) ?? (try? SoundSet(url: url)) else {
       throw Error.SoundSetInitializeFailure
     }
 

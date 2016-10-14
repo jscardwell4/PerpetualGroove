@@ -13,23 +13,23 @@ import UIKit
 @IBDesignable
 final class BarBeatTimeLabel: UIView {
 
-  fileprivate weak var transport: Transport! {
+  private weak var transport: Transport! {
     didSet {
       guard transport !== oldValue else { return }
       currentTime = transport.time.barBeatTime
 
       if let oldTransport = oldValue {
-        oldTransport.time.removeCallbackForKey(barBeatTimeCallbackKey)
+        oldTransport.time.removePredicatedCallback(with: callbackIdentifier)
         receptionist.stopObserving(name: Transport.NotificationName.didJog.rawValue, from: oldValue)
         receptionist.stopObserving(name: Transport.NotificationName.didReset.rawValue, from: oldValue)
       }
 
       guard let transport = transport else { return }
 
-      guard transport.time.callbackRegisteredForKey(barBeatTimeCallbackKey) == false else { return }
+      guard transport.time.callbackRegistered(with: callbackIdentifier) == false else { return }
       transport.time.register(callback: { [weak self] in self?.currentTime = $0 },
                               predicate: {_ in true},
-                              key: barBeatTimeCallbackKey)
+                              identifier: callbackIdentifier)
       receptionist.observe(name: Transport.NotificationName.didBeginJogging.rawValue, from: transport) {
         [weak self] _ in self?.jogging = true
       }
@@ -47,10 +47,10 @@ final class BarBeatTimeLabel: UIView {
     }
   }
 
-  fileprivate var jogging = false
+  private var jogging = false
 
   @IBInspectable var font: UIFont = .largeDisplayFont { didSet { updateFont() } }
-  fileprivate var _font: UIFont = .largeDisplayFont { didSet { setNeedsDisplay() } }
+  private var _font: UIFont = .largeDisplayFont { didSet { setNeedsDisplay() } }
 
   @IBInspectable var fontColor: UIColor = .primaryColor
 
@@ -75,21 +75,21 @@ final class BarBeatTimeLabel: UIView {
     }
   }
 
-  fileprivate var barString: String = "001" { didSet { setNeedsDisplay(barFrame) } }
-  fileprivate var beatString: String = "1" { didSet { setNeedsDisplay(beatFrame) } }
-  fileprivate var subbeatString: String = "001" { didSet { setNeedsDisplay(subbeatFrame) } }
-  fileprivate let barBeatDividerString: String = ":"
-  fileprivate let beatSubbeatDividerString: String = "."
+  private var barString: String = "001" { didSet { setNeedsDisplay(barFrame) } }
+  private var beatString: String = "1" { didSet { setNeedsDisplay(beatFrame) } }
+  private var subbeatString: String = "001" { didSet { setNeedsDisplay(subbeatFrame) } }
+  private let barBeatDividerString: String = ":"
+  private let beatSubbeatDividerString: String = "."
 
-  fileprivate var barFrame: CGRect = .zero
-  fileprivate var barBeatDividerFrame: CGRect = .zero
-  fileprivate var beatFrame: CGRect = .zero
-  fileprivate var beatSubbeatDividerFrame: CGRect = .zero
-  fileprivate var subbeatFrame: CGRect = .zero
+  private var barFrame: CGRect = .zero
+  private var barBeatDividerFrame: CGRect = .zero
+  private var beatFrame: CGRect = .zero
+  private var beatSubbeatDividerFrame: CGRect = .zero
+  private var subbeatFrame: CGRect = .zero
 
   override var bounds: CGRect { didSet { calculateFrames() } }
 
-  fileprivate func calculateFrames() {
+  private func calculateFrames() {
     guard !bounds.isEmpty else {
       barFrame = .zero
       barBeatDividerFrame = .zero
@@ -128,7 +128,7 @@ final class BarBeatTimeLabel: UIView {
     }
   }
 
-  fileprivate var currentTime: BarBeatTime = BarBeatTime.zero {
+  private var currentTime: BarBeatTime = BarBeatTime.zero {
     didSet {
       guard currentTime != oldValue else { return }
 //      logSyncDebug("currentTime = \(currentTime.debugDescription)")
@@ -141,22 +141,22 @@ final class BarBeatTimeLabel: UIView {
       }
     }
   }
-  fileprivate var barBeatTimeCallbackKey: String { return String(UInt(bitPattern: ObjectIdentifier(self))) }
+  private let callbackIdentifier = UUID()
 
-  fileprivate let receptionist: NotificationReceptionist = {
+  private let receptionist: NotificationReceptionist = {
     let receptionist = NotificationReceptionist(callbackQueue: OperationQueue.main)
     receptionist.logContext = LogManager.UIContext
     return receptionist
   }()
 
-  fileprivate var characterSize: CGSize {
+  private var characterSize: CGSize {
     return "0123456789:.".characters.reduce(.zero) {[attributes = [NSFontAttributeName: font]] in
       let s = (String($1) as NSString).size(attributes: attributes)
       return CGSize(width: max($0.width, s.width), height: max($0.height, s.height))
     }
   }
 
-  fileprivate func updateFont() {
+  private func updateFont() {
     _font = font.withSize((characterSize.width / (bounds.width / 9)) * font.pointSize)
   }
 
@@ -164,15 +164,15 @@ final class BarBeatTimeLabel: UIView {
     return CGSize(width: characterSize.width * 9, height: characterSize.height).integralSize
   }
 
-  fileprivate func didChangeTransport(_ notification: Notification) {
-    guard Sequencer.time.callbackRegisteredForKey(barBeatTimeCallbackKey) == false else { return }
+  private func didChangeTransport(_ notification: Notification) {
+    guard Sequencer.time.callbackRegistered(with: callbackIdentifier) == false else { return }
     Sequencer.time.register(callback: { [weak self] in self?.currentTime = $0 },
                             predicate: {_ in true},
-                            key: barBeatTimeCallbackKey)
+                            identifier: callbackIdentifier)
     currentTime = Sequencer.time.barBeatTime
   }
 
-  fileprivate func setup() {
+  private func setup() {
 
     calculateFrames()
 

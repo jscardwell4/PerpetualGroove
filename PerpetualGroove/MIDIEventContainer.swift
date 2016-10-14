@@ -278,6 +278,13 @@ extension _MIDIEventContainer
     )
   }
 
+  var _tempoEvents: AnyBidirectionalCollection<MIDIEvent.MetaEvent> {
+    return AnyBidirectionalCollection(
+      _timeEvents.lazy.filter({if case .tempo = $0.data { return true } else { return false }})
+    )
+  }
+
+
 }
 
 struct MIDIEventContainer: _MIDIEventContainer {
@@ -356,6 +363,7 @@ struct MIDIEventContainer: _MIDIEventContainer {
   var channelEvents: AnyBidirectionalCollection<MIDIEvent.ChannelEvent> { return _channelEvents }
   var nodeEvents: AnyBidirectionalCollection<MIDIEvent.MIDINodeEvent> { return _nodeEvents }
   var timeEvents: AnyBidirectionalCollection<MIDIEvent.MetaEvent> { return _timeEvents }
+  var tempoEvents: AnyBidirectionalCollection<MIDIEvent.MetaEvent> { return _tempoEvents }
 
   @inline(__always) func distance(from start: Index, to end: Index) -> Int {
     return _distance(from: start, to: end)
@@ -391,7 +399,8 @@ struct MIDIEventContainerIndex: Comparable {
   }
 
   static func <(lhs: MIDIEventContainerIndex, rhs: MIDIEventContainerIndex) -> Bool {
-    return lhs.timeOffset < rhs.timeOffset || lhs.timeOffset == rhs.timeOffset && lhs.eventOffset < rhs.eventOffset
+    return lhs.timeOffset < rhs.timeOffset
+        || lhs.timeOffset == rhs.timeOffset && lhs.eventOffset < rhs.eventOffset
   }
 
 }
@@ -454,6 +463,7 @@ struct MIDIEventContainerSlice: _MIDIEventContainer {
   var channelEvents: AnyBidirectionalCollection<MIDIEvent.ChannelEvent> { return _channelEvents }
   var nodeEvents: AnyBidirectionalCollection<MIDIEvent.MIDINodeEvent> { return _nodeEvents }
   var timeEvents: AnyBidirectionalCollection<MIDIEvent.MetaEvent> { return _timeEvents }
+  var tempoEvents: AnyBidirectionalCollection<MIDIEvent.MetaEvent> { return _tempoEvents }
 
   @inline(__always) func distance(from start: Index, to end: Index) -> Int {
     return _distance(from: start, to: end)

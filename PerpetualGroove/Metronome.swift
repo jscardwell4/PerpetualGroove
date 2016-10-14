@@ -7,44 +7,50 @@
 //
 
 import Foundation
-import CoreMIDI
-import AudioToolbox
-import AVFoundation
+import class UIKit.NSDataAsset
+import class AVFoundation.AVAudioUnitSampler
 import MoonKit
 
 final class Metronome {
 
-  fileprivate let sampler: AVAudioUnitSampler
+  private let sampler: AVAudioUnitSampler
 
-  var channel: Byte = 0
+  var channel: UInt8 = 0
+
   var on = false {
     didSet {
       guard oldValue != on else { return }
-      if on {
-        Sequencer.time.register(callback: {[weak self] in self?.click($0)}, predicate: isAudibleTick, key: callbackKey)
-      } else {
-        Sequencer.time.removeCallbackForKey(callbackKey)
+
+      switch on {
+        case true:
+          Sequencer.time.register(callback:weakMethod(self, Metronome.click),
+                                  predicate: Metronome.isAudibleTick,
+                                  identifier: callbackIdentifier)
+        case false:
+          Sequencer.time.removePredicatedCallback(with: callbackIdentifier)
       }
     }
   }
 
 
-  init(node: AVAudioUnitSampler) throws {
-    sampler = node
+  init(sampler: AVAudioUnitSampler) throws {
+    self.sampler = sampler
+
     guard let url = Bundle.main.url(forResource: "Woodblock", withExtension: "wav") else {
       fatalError("Failed to get url for 'Woodblock.wav'")
     }
     try sampler.loadAudioFiles(at: [url])
   }
 
-  fileprivate let callbackKey = "click"
+  private let callbackIdentifier = UUID()
 
-  fileprivate func click(_ time: BarBeatTime) {
+  private func click(_ time: BarBeatTime) {
     guard Sequencer.playing else { return }
     sampler.startNote(time.beat == 1 ? 0x3C : 0x37, withVelocity: 64, onChannel: 0)
   }
 
-
-  fileprivate func isAudibleTick(_ time: BarBeatTime) -> Bool { return time.subbeat  == 1 }
+  private static func isAudibleTick(_ time: BarBeatTime) -> Bool {
+    return time.subbeat == 1
+  }
 
 }

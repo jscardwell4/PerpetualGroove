@@ -58,7 +58,7 @@ final class Loop: Swift.Sequence, MIDINodeDispatch {
     eventContainer = MIDIEventContainer()
   }
 
-  init(grooveLoop: GrooveLoop, track: InstrumentTrack) {
+  init(grooveLoop: GrooveFile.Loop, track: InstrumentTrack) {
     self.track = track
     identifier = grooveLoop.identifier
     repetitions = grooveLoop.repetitions

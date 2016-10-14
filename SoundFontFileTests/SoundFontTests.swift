@@ -127,7 +127,7 @@ final class SoundFontTests: XCTestCase {
   }
 
   func testImages() {
-    expect((try? SoundSet(url: SoundFontTests.spyroURL))?.image) == SoundFontTests.spyroImage
+    expect(SoundSet.spyro.image) == SoundFontTests.spyroImage
     expect(EmaxSoundSet(.brassAndWoodwinds).image) == SoundFontTests.emax1Image
     expect(EmaxSoundSet(.keyboardsAndSynths).image) == SoundFontTests.emax2Image
     expect(EmaxSoundSet(.guitarsAndBasses).image) == SoundFontTests.emax3Image
@@ -137,24 +137,24 @@ final class SoundFontTests: XCTestCase {
   }
 
   func testPresets() {
-    let spyroPresets = SoundFontTests.spyroJSON.value.flatMap(SF2File.Preset.init)
-    expect((try? SoundSet(url: SoundFontTests.spyroURL))?.presets) == spyroPresets
-    let emax1Presets = SoundFontTests.emax1JSON.value.flatMap(SF2File.Preset.init)
-    expect(EmaxSoundSet(.brassAndWoodwinds).presets) == emax1Presets
-    let emax2Presets = SoundFontTests.emax2JSON.value.flatMap(SF2File.Preset.init)
-    expect(EmaxSoundSet(.keyboardsAndSynths).presets) == emax2Presets
-    let emax3Presets = SoundFontTests.emax3JSON.value.flatMap(SF2File.Preset.init)
-    expect(EmaxSoundSet(.guitarsAndBasses).presets) == emax3Presets
-    let emax4Presets = SoundFontTests.emax4JSON.value.flatMap(SF2File.Preset.init)
-    expect(EmaxSoundSet(.worldInstruments).presets) == emax4Presets
-    let emax5Presets = SoundFontTests.emax5JSON.value.flatMap(SF2File.Preset.init)
-    expect(EmaxSoundSet(.drumsAndPercussion).presets) == emax5Presets
-    let emax6Presets = SoundFontTests.emax6JSON.value.flatMap(SF2File.Preset.init)
-    expect(EmaxSoundSet(.orchestral).presets) == emax6Presets
+    let spyroPresets = SoundFontTests.spyroJSON.value.flatMap(SF2File.PresetHeader.init)
+    expect(SoundSet.spyro.presetHeaders) == spyroPresets
+    let emax1Presets = SoundFontTests.emax1JSON.value.flatMap(SF2File.PresetHeader.init)
+    expect(EmaxSoundSet(.brassAndWoodwinds).presetHeaders) == emax1Presets
+    let emax2Presets = SoundFontTests.emax2JSON.value.flatMap(SF2File.PresetHeader.init)
+    expect(EmaxSoundSet(.keyboardsAndSynths).presetHeaders) == emax2Presets
+    let emax3Presets = SoundFontTests.emax3JSON.value.flatMap(SF2File.PresetHeader.init)
+    expect(EmaxSoundSet(.guitarsAndBasses).presetHeaders) == emax3Presets
+    let emax4Presets = SoundFontTests.emax4JSON.value.flatMap(SF2File.PresetHeader.init)
+    expect(EmaxSoundSet(.worldInstruments).presetHeaders) == emax4Presets
+    let emax5Presets = SoundFontTests.emax5JSON.value.flatMap(SF2File.PresetHeader.init)
+    expect(EmaxSoundSet(.drumsAndPercussion).presetHeaders) == emax5Presets
+    let emax6Presets = SoundFontTests.emax6JSON.value.flatMap(SF2File.PresetHeader.init)
+    expect(EmaxSoundSet(.orchestral).presetHeaders) == emax6Presets
   }
 
   func testURLs() {
-    expect((try? SoundSet(url: SoundFontTests.spyroURL))?.url) == SoundFontTests.spyroURL
+    expect(SoundSet.spyro.url) == SoundFontTests.spyroURL
     expect(EmaxSoundSet(.brassAndWoodwinds).url) == SoundFontTests.emax1URL
     expect(EmaxSoundSet(.keyboardsAndSynths).url) == SoundFontTests.emax2URL
     expect(EmaxSoundSet(.guitarsAndBasses).url) == SoundFontTests.emax3URL
@@ -165,7 +165,7 @@ final class SoundFontTests: XCTestCase {
 
   func testSubscript() {
     let soundSet = EmaxSoundSet(.brassAndWoodwinds)
-    let preset = SF2File.Preset(name: "D Trumpet", program: 4, bank: 0)
+    let preset = SF2File.PresetHeader(name: "D Trumpet", program: 4, bank: 0)
     expect(soundSet[4]) == preset
     expect(soundSet[program: 4, bank: 0]) == preset
   }
@@ -173,8 +173,7 @@ final class SoundFontTests: XCTestCase {
   func testEquality() {
     expect(EmaxSoundSet(.brassAndWoodwinds).isEqualTo(EmaxSoundSet(.brassAndWoodwinds))) == true
     expect(EmaxSoundSet(.brassAndWoodwinds).isEqualTo(EmaxSoundSet(.keyboardsAndSynths))) == false
-    expect((try? SoundSet(url: SoundFontTests.spyroURL))?.isEqualTo((try! SoundSet(url: SoundFontTests.spyroURL)))) == true
-
+    expect(SoundSet.spyro.isEqualTo(SoundSet.spyro)) == true
   }
 
 }

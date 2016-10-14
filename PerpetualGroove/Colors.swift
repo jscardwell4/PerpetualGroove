@@ -1,20 +1,17 @@
 //
-//  AssetManager.swift
+//  Colors.swift
 //  PerpetualGroove
 //
-//  Created by Jason Cardwell on 8/17/15.
-//  Copyright © 2015 Moondeer Studios. All rights reserved.
+//  Created by Jason Cardwell on 10/12/16.
+//  Copyright © 2016 Moondeer Studios. All rights reserved.
 //
 
 import Foundation
-import UIKit
-import MoonKit
+import class UIKit.UIColor
 import Chameleon
-import Eveleth
-import FestivoLC
-import Triump
 
 extension UIColor {
+
   static var backgroundColor:        UIColor { return mineShaft    }
   static var popoverBackgroundColor: UIColor { return rangoonGreen }
   static var primaryColor:           UIColor { return silk         }
@@ -44,19 +41,5 @@ extension UIColor {
   static var pearlBush:    UIColor { return UIColor(rgbHex: 0xDFD3C2) }
   static var pearlBush2:   UIColor { return UIColor(rgbHex: 0xE8DFD3) }
   static var mahogany:     UIColor { return UIColor(rgbHex: 0xC24100) }
-}
-
-extension UIFont {
-  static var labelFont: UIFont                    { return Eveleth.lightFontWithSize(14)   }
-  static var largeDisplayFont: UIFont             { return Eveleth.lightFontWithSize(36)   }
-  static var controlFont: UIFont                  { return Eveleth.thinFontWithSize(14)    }
-  static var compressedControlFont: UIFont        { return Eveleth.thinFontWithSize(12)    }
-  static var compressedControlFontEditing: UIFont { return Triump.rock2FontWithSize(17)    }
-  static var controlSelectedFont: UIFont          { return Eveleth.regularFontWithSize(14) }
-}
-
-
-extension CGFloat {
-  static var popoverArrowWidth:  CGFloat { return 20 }
-  static var popoverArrowHeight: CGFloat { return 20 }
+  
 }

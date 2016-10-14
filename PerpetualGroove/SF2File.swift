@@ -26,14 +26,18 @@ fileprivate func _remainingCount(_ data: Data.SubSequence) -> (Int) -> Int {
 /// Parses the data from a SoundFont file, which consists of three chunks: info, sdta, and pdta
 struct SF2File: CustomStringConvertible {
 
-  let url: URL
+//  let url: URL
+
+  private let storage: Storage
+
+  var url: URL? { if case .url(let url) = storage { return url } else { return nil } }
 
   let infoRange: Range<Int>
   let sdtaRange: Range<Int>
   let pdtaRange: Range<Int>
 
 
-  var description: String { return "\(url.path)" }
+  var description: String { return "SF2File { storage: \(storage) }" }
 
   var presets: [PresetHeader] {
     guard let phdr = try? lazyPDTA.phdr.dataChunk(), case let .presets(headers) = phdr.data else { return [] }
@@ -47,21 +51,24 @@ struct SF2File: CustomStringConvertible {
 
 
   func sdta() throws -> SDTAChunk {
-    let data = try Data(contentsOf: url, options: [.uncached, .alwaysMapped])
-    return try SDTAChunk(data: data[sdtaRange])
+    return try SDTAChunk(data: try storage.data()[sdtaRange])
   }
 
   func pdta() throws -> PDTAChunk {
-    let data = try Data(contentsOf: url, options: [.uncached, .alwaysMapped])
-    return try PDTAChunk(data: data[pdtaRange])
+    return try PDTAChunk(data: try storage.data()[pdtaRange])
   }
 
-  /// Initializer that takes a file url
-  init(fileURL url: URL) throws {
+  /// Initializer that takes a data.
+  init(data: Data) throws { try self.init(storage: .memory(data)) }
 
-    // Grab the url and data
-    let data = try Data(contentsOf: url, options: [.uncached, .alwaysMapped])
-    self.url = url
+  /// Initializer that takes a file url.
+  init(fileURL url: URL) throws { try self.init(storage: .url(url)) }
+
+  private init(storage: Storage) throws {
+
+    self.storage = storage
+
+    let data = try storage.data()
 
     let remainingCount = _remainingCount(data[data.startIndex ..< data.endIndex])
 
@@ -120,18 +127,48 @@ struct SF2File: CustomStringConvertible {
 
     info = try INFOChunk(data: data[infoRange])
 
-    lazySDTA = try LazySDTAChunk(data: data[sdtaRange], url: url)
-    lazyPDTA = try LazyPDTAChunk(data: data[pdtaRange], url: url)
+    lazySDTA = try LazySDTAChunk(data: data[sdtaRange], storage: storage)
+    lazyPDTA = try LazyPDTAChunk(data: data[pdtaRange], storage: storage)
   }
 
-  static func presetHeaders(from url: URL) throws -> [PresetHeader] {
-    let data = try Data(contentsOf: url, options: [.uncached, .alwaysMapped])
+  static func presetHeaders(from data: Data) throws -> [PresetHeader] {
     guard let r = data.range(of: Data("pdtaphdr".bytes)) else { return [] }
     let s = _chunkSize(data[r.upperBound +--> 4])
     try _assert(s % 38 == 0)
     let dataʹ = data[(r.upperBound + 4) +--> s]
     return try stride(from: dataʹ.startIndex,
                       to: dataʹ.endIndex, by: 38).flatMap({try PresetHeader(data: dataʹ[$0 +--> 38])}).sorted()
+  }
+
+}
+
+extension SF2File {
+
+  enum Storage: CustomStringConvertible {
+    case url (URL)
+    case memory (Data)
+
+    func data() throws -> Data {
+
+      switch self {
+
+        case .url(let url):
+          return try Data(contentsOf: url, options: [.uncached, .alwaysMapped])
+
+        case .memory(let data):
+          return data
+        
+      }
+
+    }
+
+    var description: String {
+      switch self {
+        case .url(let url):   return ".url(\(url.path))"
+        case .memory(let data): return ".data(\(data.count) bytes)"
+      }
+    }
+
   }
 
 }
@@ -329,23 +366,23 @@ extension SF2File {
 
   struct LazySubChunk: CustomStringConvertible {
     let identifier: ChunkIdentifier
-    let url: URL
+    let storage: SF2File.Storage
     let range: Range<Int>
 
-    init(identifier: ChunkIdentifier, url: URL, range: Range<Int>) throws {
+    init(identifier: ChunkIdentifier, storage: SF2File.Storage, range: Range<Int>) throws {
       switch identifier {
         case .ifil, .iver: try _assert(range.count == 4)
         case .phdr:        try _assert(range.count % 38 == 0)
         default:           break
       }
       self.identifier = identifier
-      self.url = url
+      self.storage = storage
       self.range = range
     }
 
     func dataChunk() throws -> SubChunk { return try SubChunk(chunk: self) }
 
-    var description: String { return "\(identifier): \(range) '\(url)'" }
+    var description: String { return "\(identifier): \(range) \(storage)" }
 
   }
   
@@ -359,12 +396,11 @@ extension SF2File {
     let identifier: ChunkIdentifier
     let data: ChunkData
 
-    fileprivate init(chunk: LazySubChunk) throws {
-      let data = try Data(contentsOf: chunk.url, options: [.uncached, .alwaysMapped])
-      self = try SubChunk(identifier: chunk.identifier, data: data[chunk.range])
+    init(chunk: LazySubChunk) throws {
+      self = try SubChunk(identifier: chunk.identifier, data: try chunk.storage.data()[chunk.range])
     }
 
-    fileprivate init(identifier: ChunkIdentifier, data: Data.SubSequence) throws {
+    init(identifier: ChunkIdentifier, data: Data.SubSequence) throws {
 
       switch identifier {
         case .ifil, .iver:
@@ -447,7 +483,7 @@ extension SF2File {
 
     let smpl: LazySubChunk?
 
-    init(data: Data.SubSequence, url: URL) throws {
+    init(data: Data.SubSequence, storage: SF2File.Storage) throws {
       try _assert(data.count >= 4 && String(data[data.startIndex +--> 4]).lowercased() == "sdta")
 
       guard data.count > 4 else { smpl = nil; return }
@@ -458,7 +494,7 @@ extension SF2File {
 
       try _assert(data.count >= smplSize + 12)
 
-      smpl = try LazySubChunk(identifier: .smpl, url: url, range: (data.startIndex + 12) +--> smplSize)
+      smpl = try LazySubChunk(identifier: .smpl, storage: storage, range: (data.startIndex + 12) +--> smplSize)
     }
 
     var description: String { return "\(smpl?.description ?? "")" }
@@ -510,7 +546,7 @@ extension SF2File {
     let igen: LazySubChunk /// Points to instrument Generators
     let shdr: LazySubChunk /// Contains a sound sample's information and a pointer to the sound sample in "sdta".
 
-    init(data: Data.SubSequence, url: URL) throws {
+    init(data: Data.SubSequence, storage: SF2File.Storage) throws {
 
       let remainingCount = _remainingCount(data)
 
@@ -541,7 +577,7 @@ extension SF2File {
         // Make sure there are enough remaining bytes for the chunk size
         try _assert(remainingCount(i) >= chunkSize)
 
-        let chunk = try LazySubChunk(identifier: chunkIdentifier, url: url, range: i +--> chunkSize)
+        let chunk = try LazySubChunk(identifier: chunkIdentifier, storage: storage, range: i +--> chunkSize)
 
         i += chunkSize // Move i passed chunk data
 

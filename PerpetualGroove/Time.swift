@@ -11,98 +11,103 @@ import AudioToolbox
 import CoreMIDI
 import MoonKit
 
+/// Synchronizes a `BarBeatTime` with received MIDI clock messages.
 final class Time {
 
-  // MARK: - Receiving MIDI clocks
 
-  fileprivate var client = MIDIClientRef()  /// Client for receiving MIDI clock
-  fileprivate var inPort = MIDIPortRef()    /// Port for receiving MIDI clock
+  private var client = MIDIClientRef()  /// Client for receiving MIDI clock messages.
+  private var inPort = MIDIPortRef()    /// Port for receiving MIDI clock messages.
 
-  fileprivate func read(_ packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutableRawPointer?) {
-    // Runs on MIDI Services thread
+  /// Runs on MIDI Services thread.
+  private func read(_ packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutableRawPointer?) {
+
     switch packetList.pointee.packet.data.0 {
-      case 0b1111_1000: queue.async(execute: incrementClock)
-      case 0b1111_1010: queue.async { [unowned self] in self._reset()
-                                                        self.invokeCallbacksForTime(self.barBeatTime) }
-      default: break
+
+      case 0b1111_1000:
+        queue.async(execute: incrementClock)
+
+      case 0b1111_1010:
+        queue.async {
+          [unowned self] in
+          self._reset()
+          self.invokeCallbacks(for: self.barBeatTime)
+        }
+
+      default:
+        break
     }
+
   }
 
-  // MARK: - Keeping the time
 
-  fileprivate let queue: DispatchQueue
+  private let queue: DispatchQueue
 
-  /// The musical representation of the current time
+  /// The musical representation of the current time.
   var barBeatTime: BarBeatTime = BarBeatTime.zero {
-    didSet { if Sequencer.playing { invokeCallbacksForTime(barBeatTime) } }
+    didSet { if Sequencer.playing { invokeCallbacks(for: barBeatTime) } }
   }
 
 
-  fileprivate func incrementClock() {
-    barBeatTime = barBeatTime.advanced(by: barBeatTime.subbeatUnitTime) //successor()
+  private func incrementClock() {
+    barBeatTime = barBeatTime.advanced(by: barBeatTime.subbeatUnitTime)
   }
-
-  // MARK: - Time-triggered callbacks
 
   typealias Callback  = (BarBeatTime) -> Void
   typealias Predicate = (BarBeatTime) -> Bool
+  typealias PredicatedCallback = (predicate: Predicate, callback: Callback)
 
-  fileprivate var callbacks: [BarBeatTime:[(Callback, ObjectIdentifier?)]] = [:] {
+  fileprivate var callbacks: [BarBeatTime:[UUID:Callback]] = [:] {
     didSet { haveCallbacks = callbacks.count > 0 || predicatedCallbacks.count > 0 }
   }
 
-  fileprivate var predicatedCallbacks: [String:(predicate: Predicate, callback: Callback)] = [:] {
+  fileprivate var predicatedCallbacks: [UUID:PredicatedCallback] = [:] {
     didSet { haveCallbacks = callbacks.count > 0 || predicatedCallbacks.count > 0 }
   }
 
-  func callbackRegisteredForKey(_ key: String) -> Bool {
-    return predicatedCallbacks[key] != nil
+  func callbackRegistered(with identifier: UUID) -> Bool {
+    return predicatedCallbacks[identifier] != nil
   }
 
   var suppressCallbacks = false
 
-  fileprivate var haveCallbacks = false
-  fileprivate var checkCallbacks: Bool { return haveCallbacks && !suppressCallbacks }
+  private var haveCallbacks = false
+  private var checkCallbacks: Bool { return haveCallbacks && !suppressCallbacks }
 
   func clearCallbacks() {
-    logDebug("clearing all registered callbacks…")
     callbacks.removeAll(keepingCapacity: true)
     predicatedCallbacks.removeAll(keepingCapacity: true)
   }
 
   /// Invokes the blocks registered in `callbacks` for the specified time and any blocks in
   /// `predicatedCallbacks` whose predicate evaluates to `true`.
-  fileprivate func invokeCallbacksForTime(_ t: BarBeatTime) {
+  private func invokeCallbacks(for time: BarBeatTime) {
     guard checkCallbacks else { return }
-    callbacks[t]?.forEach({$0.0(t)})
-    predicatedCallbacks.values.filter({$0.predicate(t)}).forEach({$0.callback(t)})
+
+    callbacks[time]?.values.forEach({$0(time)})
+    predicatedCallbacks.values.filter({$0.predicate(time)}).forEach({$0.callback(time)})
   }
 
-  func register(callback: @escaping Callback, time: BarBeatTime, object: AnyObject? = nil) {
-    register(callback: callback, times: [time], object: object)
-  }
-
-  func register<S:Swift.Sequence>(callback: @escaping Callback, times: S, object: AnyObject? = nil)
+  ///
+  func register<S:Swift.Sequence>(callback: @escaping Callback, forTimes times: S, identifier: UUID)
     where S.Iterator.Element == BarBeatTime
   {
-    let value: (Callback, ObjectIdentifier?) = (callback, object != nil ? ObjectIdentifier(object!) : nil)
-    times.forEach { var bag = callbacks[$0] ?? []; bag.append(value); callbacks[$0] = bag }
+    times.forEach { var bag = callbacks[$0] ?? [:]; bag[identifier] = callback; callbacks[$0] = bag }
   }
 
-  func removeCallback(time: BarBeatTime, object: AnyObject? = nil) {
-    if let object = object {
-      callbacks[time] = callbacks[time]?.filter {
-        [identifier = ObjectIdentifier(object)] in $1 != identifier
-      }
-    } else { callbacks[time] = nil }
+  func removeCallback(time: BarBeatTime, identifier: UUID? = nil) {
+    if let identifier = identifier {
+      callbacks[time]?[identifier] = nil
+    } else {
+      callbacks[time] = nil
+    }
   }
 
-  func removeCallbackForKey(_ key: String) { predicatedCallbacks[key] = nil }
+  func removePredicatedCallback(with identifier: UUID) { predicatedCallbacks[identifier] = nil }
 
 
   /// Set the `inout Bool` to true to unregister the callback
-  func register(callback: @escaping Callback, predicate: @escaping Predicate, key: String) {
-    predicatedCallbacks[key] = (predicate: predicate, callback: callback)
+  func register(callback: @escaping Callback, predicate: @escaping Predicate, identifier: UUID) {
+    predicatedCallbacks[identifier] = (predicate: predicate, callback: callback)
   }
 
   var bar:     UInt           { return barBeatTime.bar     }  /// Accessor for `time.bar`
@@ -155,15 +160,40 @@ final class Time {
 }
 
 extension Time: Named {
+
   var name: String { return clockName }
+
 }
 
-extension Time: CustomStringConvertible { var description: String { return barBeatTime.description } }
+extension Time: CustomStringConvertible {
+
+  var description: String { return barBeatTime.description }
+
+}
 
 extension Time: Hashable {
 
   static func ==(lhs: Time, rhs: Time) -> Bool { return ObjectIdentifier(lhs) == ObjectIdentifier(rhs) }
 
   var hashValue: Int { return ObjectIdentifier(self).hashValue }
+
+}
+
+extension Time {
+
+  fileprivate enum _Callback {
+
+    case time (BarBeatTime, (BarBeatTime) -> Void)
+    case predicated ((BarBeatTime) -> Bool, (BarBeatTime) -> Void)
+
+//    let time: BarBeatTime
+//    let callback: (BarBeatTime) -> Void
+//    let predicate: ((BarBeatTime) -> Bool)?
+//    let identifier = UUID()
+
+//    func invoke() {
+//      guard predicate
+//    }
+  }
 
 }

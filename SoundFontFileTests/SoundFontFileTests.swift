@@ -126,7 +126,7 @@ final class SoundFontFileTests: XCTestCase {
 
   func testLazyPDTAChunk() {
     guard let chunk = try? SF2File.LazyPDTAChunk(data: SoundFontFileTests.testPDTAData,
-                                                 url: SoundFontFileTests.testURL)
+                                                 storage: SF2File.Storage.memory(Data(SoundFontFileTests.testPDTAData)))
       else
     {
       XCTFail("Failed to initialize chunk using test data")
@@ -207,7 +207,7 @@ final class SoundFontFileTests: XCTestCase {
   }
 
   func testPresets() {
-    guard let presets = try? SF2File.presetHeaders(from: SoundFontFileTests.testURL) else {
+    guard let presets = try? SF2File.presetHeaders(from: SoundFontFileTests.testData) else {
       XCTFail("Failed to get presets from url")
       return
     }

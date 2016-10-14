@@ -321,7 +321,7 @@ final class DocumentManager {
     localItems = OrderedSet(localDocumentItems.map(DocumentItem.local))
   }
 
-  fileprivate static let receptionist = NotificationReceptionist(callbackQueue: DocumentManager.operationQueue)
+  fileprivate static let receptionist = NotificationReceptionist(callbackQueue: operationQueue)
 
   /// Document name to use when a name has not been specified.
   fileprivate static let DefaultDocumentName = "AwesomeSauce"

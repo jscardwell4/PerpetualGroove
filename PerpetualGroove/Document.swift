@@ -111,7 +111,7 @@ final class Document: UIDocument {
     let file: DataConvertible
     switch type {
       case .midi:   file = MIDIFile(sequence: sequence)
-      case .groove: file = GrooveFile(sequence: sequence)
+      case .groove: file = GrooveFile(sequence: sequence, source: fileURL)
     }
 
     logDebug("file contents:\n\(file)")

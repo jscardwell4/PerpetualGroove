@@ -19,26 +19,7 @@ final class MIDIPlayer {
     return undoManager
   }()
 
-  fileprivate static let receptionist: NotificationReceptionist = {
-    let receptionist = NotificationReceptionist()
-    receptionist.logContext = LogManager.SceneContext
-    receptionist.observe(name: Sequencer.NotificationName.didChangeSequence.rawValue,
-                    from: Sequencer.self,
-                callback: MIDIPlayer.didChangeSequence)
-      receptionist.observe(name: Sequencer.NotificationName.didEnterLoopMode.rawValue,
-                      from: Sequencer.self,
-                  callback: MIDIPlayer.didEnterLoopMode)
-      receptionist.observe(name: Sequencer.NotificationName.didExitLoopMode.rawValue,
-                      from: Sequencer.self,
-                  callback: MIDIPlayer.didExitLoopMode)
-      receptionist.observe(name: Sequencer.NotificationName.willEnterLoopMode.rawValue,
-                      from: Sequencer.self,
-                  callback: MIDIPlayer.willEnterLoopMode)
-      receptionist.observe(name: Sequencer.NotificationName.willExitLoopMode.rawValue,
-                      from: Sequencer.self,
-                  callback: MIDIPlayer.willExitLoopMode)
-    return receptionist
-  }()
+  private static let receptionist = NotificationReceptionist()
 
   static weak var currentDispatch: MIDINodeDispatch? {
     didSet {
@@ -77,7 +58,21 @@ final class MIDIPlayer {
 
   static func initialize() {
     guard !initialized else { return }
-    touch(receptionist); initialized = true
+
+    receptionist.logContext = LogManager.SceneContext
+
+    receptionist.observe(name: .didChangeSequence, from: Sequencer.self,
+                         callback: MIDIPlayer.didChangeSequence)
+    receptionist.observe(name: .didEnterLoopMode, from: Sequencer.self,
+                         callback: MIDIPlayer.didEnterLoopMode)
+    receptionist.observe(name: .didExitLoopMode, from: Sequencer.self,
+                         callback: MIDIPlayer.didExitLoopMode)
+    receptionist.observe(name: .willEnterLoopMode, from: Sequencer.self,
+                         callback: MIDIPlayer.willEnterLoopMode)
+    receptionist.observe(name: .willExitLoopMode, from: Sequencer.self,
+                         callback: MIDIPlayer.willExitLoopMode)
+
+    initialized = true
   }
 
   static fileprivate func didChangeSequence(_ notification: Foundation.Notification) { sequence = Sequencer.sequence }

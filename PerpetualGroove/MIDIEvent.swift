@@ -790,6 +790,7 @@ protocol MIDIEventDispatch: class, Loggable {
   var channelEvents: AnyBidirectionalCollection<MIDIEvent.ChannelEvent> { get }
   var nodeEvents: AnyBidirectionalCollection<MIDIEvent.MIDINodeEvent> { get }
   var timeEvents: AnyBidirectionalCollection<MIDIEvent.MetaEvent> { get }
+  var tempoEvents: AnyBidirectionalCollection<MIDIEvent.MetaEvent> { get }
 
   var eventQueue: DispatchQueue { get }
 
@@ -802,8 +803,8 @@ extension MIDIEventDispatch {
   func add<S:Swift.Sequence>(events: S) where S.Iterator.Element == MIDIEvent {
     eventContainer.append(contentsOf: events)
     Sequencer.time.register(callback: weakMethod(self, type(of: self).dispatchEvents),
-                            times: registrationTimes(forAdding: events),
-                            object: self)
+                            forTimes: registrationTimes(forAdding: events),
+                            identifier: UUID())
   }
 
   func events(for time: BarBeatTime) -> AnyRandomAccessCollection<MIDIEvent>?  { return eventContainer[time] }
@@ -812,10 +813,11 @@ extension MIDIEventDispatch {
 
   func dispatchEvents(for time: BarBeatTime) { events(for: time)?.forEach(dispatch) }
 
-  var metaEvents: AnyBidirectionalCollection<MIDIEvent.MetaEvent> { return eventContainer.metaEvents    }
-  var channelEvents: AnyBidirectionalCollection<MIDIEvent.ChannelEvent>    { return eventContainer.channelEvents }
-  var nodeEvents: AnyBidirectionalCollection<MIDIEvent.MIDINodeEvent>      { return eventContainer.nodeEvents    }
-  var timeEvents: AnyBidirectionalCollection<MIDIEvent.MetaEvent> { return eventContainer.timeEvents    }
+  var metaEvents: AnyBidirectionalCollection<MIDIEvent.MetaEvent>       { return eventContainer.metaEvents    }
+  var channelEvents: AnyBidirectionalCollection<MIDIEvent.ChannelEvent> { return eventContainer.channelEvents }
+  var nodeEvents: AnyBidirectionalCollection<MIDIEvent.MIDINodeEvent>   { return eventContainer.nodeEvents    }
+  var timeEvents: AnyBidirectionalCollection<MIDIEvent.MetaEvent>       { return eventContainer.timeEvents    }
+  var tempoEvents: AnyBidirectionalCollection<MIDIEvent.MetaEvent>      { return eventContainer.tempoEvents    }
 
 }
 
