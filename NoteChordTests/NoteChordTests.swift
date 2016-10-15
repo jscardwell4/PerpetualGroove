@@ -10,1134 +10,1127 @@ import XCTest
 import MoonKitTest
 @testable import Groove
 
-func AssertEqualElements<S1:Swift.Sequence, S2:Swift.Sequence>(_ s1: S1, _ s2: S2, file: StaticString = #file, line: UInt = #line)
-  where S1.Iterator.Element:Equatable,
-        S1.Iterator.Element == S2.Iterator.Element
-{
-  XCTAssert(s1.elementsEqual(s2), "the elements in \(s1) are not equal to the elements in \(s2)", file: file, line: line)
-}
-
 final class NoteChordTests: XCTestCase {
 
   func testNoteCreation() {
-    XCTAssert(Note(rawValue: "A") == .default(.a))
-    XCTAssert(Note(rawValue: "A♭") == .modified(.a, .flat))
-    XCTAssert(Note(rawValue: "A♯") == .modified(.a, .sharp))
+    expect(Note(rawValue: "A")) == Note.natural(.a)
+    expect(Note(rawValue: "A♭")) == Note.accidental(.a, .flat)
+    expect(Note(rawValue: "A♯")) == Note.accidental(.a, .sharp)
   }
 
   func testFlattened() {
-    XCTAssert(Note.default(.a).flattened() == .modified(.a, .flat))
+    expect(Note.natural(.a).flattened()) == Note.accidental(.a, .flat)
   }
 
   func testSharpened() {
-    XCTAssert(Note.default(.a).sharpened() == .modified(.a, .sharp))
+    expect(Note.natural(.a).sharpened()) == Note.accidental(.a, .sharp)
   }
 
   func testEquatable() {
-    XCTAssert(Note.default(.a) == .default(.a))
-    XCTAssertFalse(Note.default(.a) == .modified(.a, .flat))
-    XCTAssert(Note.default(.b) == .modified(.c, .flat))
-    XCTAssert(Note.default(.f) == .modified(.e, .sharp))
+    expect(Note.natural(.a)) == Note.natural(.a)
+    expect(Note.natural(.a)) != Note.accidental(.a, .flat)
+    expect(Note.natural(.b)) == Note.accidental(.c, .flat)
+    expect(Note.natural(.f)) == Note.accidental(.e, .sharp)
   }
 
   func testComparable() {
-    XCTAssert(Note.default(.a) < .default(.b))
-    XCTAssert(Note.default(.a) < .modified(.a, .sharp))
-    XCTAssert(Note.modified(.a, .flat) < .default(.a))
-    XCTAssertFalse(Note.default(.b) < .default(.a))
-    XCTAssertFalse(Note.modified(.b, .sharp) < .default(.c))
-    XCTAssertFalse(Note.default(.e) < .modified(.f, .flat))
+    expect(Note.natural(.a)) < Note.natural(.b)
+    expect(Note.natural(.a)) < Note.accidental(.a, .sharp)
+    expect(Note.accidental(.a, .flat)) < Note.natural(.a)
+    expect(Note.natural(.b)).toNot(beLessThan(Note.natural(.a)))
+    expect(Note.accidental(.b, .sharp)).toNot(beLessThan(Note.natural(.c)))
+    expect(Note.natural(.e)).toNot(beLessThan(Note.accidental(.f, .flat)))
 
   }
 
   func testChord() {
-    XCTAssert(Chord.ChordPattern(.major).bass == .default(.one))
-    XCTAssert(Chord.ChordPattern(.major).components.elementsEqual([.default(.three), .default(.five)]))
-    XCTAssert(Chord(.default(.c), Chord.ChordPattern(.major)).notes.elementsEqual([.default(.c), .default(.e), .default(.g)]))
-    XCTAssert(Chord(.default(.c), Chord.ChordPattern(.minor)).notes.elementsEqual([.default(.c), .modified(.e, .flat), .default(.g)]))
-    XCTAssert(Chord(rawValue: "C:(3,5)") == Chord(.default(.c), Chord.ChordPattern(.major)))
-    XCTAssert(Chord(rawValue: "C:(♭3,5)") == Chord(.default(.c), Chord.ChordPattern(.minor)))
-    XCTAssert(Chord() == Chord())
+    expect(Chord.Pattern(.major).bass) == Chord.Pattern.Degree.default(.one)
+    expect(Chord.Pattern(.major).components) == [Chord.Pattern.Degree.default(.three), Chord.Pattern.Degree.default(.five)]
+    expect(Chord(root:.natural(.c), pattern: Chord.Pattern(.major)).notes) == [Note.natural(.c), Note.natural(.e), Note.natural(.g)]
+    expect(Chord(root:.natural(.c), pattern: Chord.Pattern(.minor)).notes) == [Note.natural(.c), Note.accidental(.e, .flat), Note.natural(.g)]
+    expect(Chord(rawValue: "C:(3,5)")) == Chord(root:.natural(.c), pattern: Chord.Pattern(.major))
+    expect(Chord(rawValue: "C:(♭3,5)")) == Chord(root:.natural(.c), pattern: Chord.Pattern(.minor))
+    expect(Chord()) == Chord()
   }
 
   func testChordGenerator() {
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.major)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.minor)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.augmented)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.g, .sharp), .four), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.diminished)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.suspendedFourth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.f), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.flatFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.suspendedSecond)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.d), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.sixth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.a), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.addTwo)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.d), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.majorSeventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.b), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.majorSeventhFlatFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.b), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.majorSeventhSharpFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.g, .sharp), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.b), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.seventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.seventhFlatFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.seventhSharpFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.g, .sharp), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.seventhSuspendedFourth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.f), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.minorAddTwo)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.d), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.minorSixth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.a), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.minorSeventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.minorMajorSeventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.b), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.minorSeventhFlatFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.diminishedSeventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.a), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.diminishedMajorSeventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.b), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.fifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.sixthNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.a), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.majorSixthNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.a), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.majorSeventhSharpEleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.majorNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.majorNinthFlatFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.majorNinthSharpFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.g, .sharp), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.majorNinthSharpEleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.majorThirteenth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.majorThirteenthFlatFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.majorThirteenthSharpEleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.seventhFlatNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.seventhSharpNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.seventhSharpEleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.seventhFlatFifthFlatNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.seventhFlatFifthSharpNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.seventhSharpFifthFlatNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.g, .sharp), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.seventhSharpFifthSharpNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.g, .sharp), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.seventhFlatNinthSharpNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.seventhAddThirteenth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.seventhFlatThirteenth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.a, .flat), .six), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.seventhFlatNinthSharpEleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.seventhSharpNinthSharpEleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.seventhFlatNinthFlatThirteenth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.a, .flat), .six), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.seventhSharpNinthFlatThirteenth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.a, .flat), .six), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.seventhSharpEleventhFlatThirteenth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.a, .flat), .six), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.seventhFlatNinthSharpNinthSharpEleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.ninth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.ninthFlatFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.ninthSharpFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.g, .sharp), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.ninthSharpEleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.ninthFlatThirteenth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.a, .flat), .six), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.ninthSharpEleventhFlatThirteenth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.a, .flat), .six), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.eleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.f), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.thirteenth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.thirteenthFlatFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.thirteenthFlatNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.thirteenthSharpNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.thirteenthSharpEleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.thirteenthSuspendedFourth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.f), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.minorSharpFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.g, .sharp), .four), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.minorSixthNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.a), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.minorSeventhAddFourth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.f), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.minorSeventhAddEleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.f), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.minorSeventhFlatFifthFlatNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.minorNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.minorNinthMajorSeventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.minorNinthFlatFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.minorEleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.f), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.minorThirteenth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.f), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.diminishedSeventhAddNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.a), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.minorEleventhFlatFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.f), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.minorEleventhMajorSeventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.f), .five), duration: .eighth, velocity: .𝑚𝑓)
-                ])
-    AssertEqualElements(ChordGenerator(chord: Chord(.default(.c), Chord.ChordPattern(.seventhAltered)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes, [
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.default(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
-                  NoteGenerator(tone: NoteGenerator.Tone(.modified(.a, .flat), .six), duration: .eighth, velocity: .𝑚𝑓)
-                ])
+    expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.major)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.minor)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.augmented)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .sharp), .four), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.diminished)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.suspendedFourth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.f), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.flatFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.suspendedSecond)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.sixth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.addTwo)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.majorSeventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.majorSeventhFlatFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.majorSeventhSharpFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .sharp), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.seventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.seventhFlatFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.seventhSharpFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .sharp), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.seventhSuspendedFourth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.f), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.minorAddTwo)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.minorSixth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.minorSeventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.minorMajorSeventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.minorSeventhFlatFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.diminishedSeventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.diminishedMajorSeventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.fifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root:.natural(.c), pattern: Chord.Pattern(.sixthNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.majorSixthNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.majorSeventhSharpEleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.majorNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.majorNinthFlatFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.majorNinthSharpFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .sharp), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.majorNinthSharpEleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.majorThirteenth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.majorThirteenthFlatFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.majorThirteenthSharpEleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.seventhFlatNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.seventhSharpNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.seventhSharpEleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.seventhFlatFifthFlatNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.seventhFlatFifthSharpNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.seventhSharpFifthFlatNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .sharp), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.seventhSharpFifthSharpNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .sharp), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.seventhFlatNinthSharpNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.seventhAddThirteenth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.seventhFlatThirteenth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.a, .flat), .six), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.seventhFlatNinthSharpEleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.seventhSharpNinthSharpEleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.seventhFlatNinthFlatThirteenth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.a, .flat), .six), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.seventhSharpNinthFlatThirteenth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.a, .flat), .six), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.seventhSharpEleventhFlatThirteenth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.a, .flat), .six), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.seventhFlatNinthSharpNinthSharpEleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.ninth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.ninthFlatFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.ninthSharpFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .sharp), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.ninthSharpEleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.ninthFlatThirteenth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.a, .flat), .six), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.ninthSharpEleventhFlatThirteenth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.a, .flat), .six), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.eleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.f), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.thirteenth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.thirteenthFlatFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.thirteenthFlatNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.thirteenthSharpNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.thirteenthSharpEleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.thirteenthSuspendedFourth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.f), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.minorSharpFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .sharp), .four), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.minorSixthNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.minorSeventhAddFourth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.f), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.minorSeventhAddEleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.f), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.minorSeventhFlatFifthFlatNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.minorNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.minorNinthMajorSeventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.minorNinthFlatFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.minorEleventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.f), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.minorThirteenth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.f), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .six), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.diminishedSeventhAddNinth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.a), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.minorEleventhFlatFifth)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.g, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.f), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.minorEleventhMajorSeventh)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.e, .flat), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.b), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.d), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.f), .five), duration: .eighth, velocity: .𝑚𝑓)
+                ]
+    expect(ChordGenerator(chord: Chord(root: Note.natural(.c), pattern: Chord.Pattern(.seventhAltered)), octave: .four, duration: .eighth, velocity: .𝑚𝑓).midiNotes) == [
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.c), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.e), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.natural(.g), .four), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.b, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .flat), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.d, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.f, .sharp), .five), duration: .eighth, velocity: .𝑚𝑓),
+                  NoteGenerator(tone: NoteGenerator.Tone(.accidental(.a, .flat), .six), duration: .eighth, velocity: .𝑚𝑓)
+                ]
   }
 
-  func testStandardChordPattern() {
-    XCTAssert(Chord.ChordPattern(.major).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .default(.g)
-      ]))
-    XCTAssert(Chord.ChordPattern(.minor).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .modified(.e, .flat),
-        .default(.g)
-      ]))
-    XCTAssert(Chord.ChordPattern(.augmented).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .modified(.g, .sharp)
-      ]))
-    XCTAssert(Chord.ChordPattern(.diminished).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .modified(.e, .flat),
-        .modified(.g, .flat)
-      ]))
-    XCTAssert(Chord.ChordPattern(.suspendedFourth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.f),
-        .default(.g)
-      ]))
-    XCTAssert(Chord.ChordPattern(.flatFifth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .modified(.g, .flat)
-      ]))
-    XCTAssert(Chord.ChordPattern(.suspendedSecond).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.d),
-        .default(.g)
-      ]))
-    XCTAssert(Chord.ChordPattern(.sixth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .default(.g),
-        .default(.a)
-      ]))
-    XCTAssert(Chord.ChordPattern(.addTwo).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.d),
-        .default(.e),
-        .default(.g)
-      ]))
-    XCTAssert(Chord.ChordPattern(.majorSeventh).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .default(.g),
-        .default(.b)
-      ]))
-    XCTAssert(Chord.ChordPattern(.majorSeventhFlatFifth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .modified(.g, .flat),
-        .default(.b)
-      ]))
-    XCTAssert(Chord.ChordPattern(.majorSeventhSharpFifth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .modified(.g, .sharp),
-        .default(.b)
-      ]))
-    XCTAssert(Chord.ChordPattern(.seventh).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .default(.g),
-        .modified(.b, .flat)
-      ]))
-    XCTAssert(Chord.ChordPattern(.seventhFlatFifth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .modified(.g, .flat),
-        .modified(.b, .flat)
-      ]))
-    XCTAssert(Chord.ChordPattern(.seventhSharpFifth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .modified(.g, .sharp),
-        .modified(.b, .flat)
-      ]))
-    XCTAssert(Chord.ChordPattern(.seventhSuspendedFourth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.f),
-        .default(.g),
-        .modified(.b, .flat)
-      ]))
-    XCTAssert(Chord.ChordPattern(.minorAddTwo).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.d),
-        .modified(.e, .flat),
-        .default(.g)
-      ]))
-    XCTAssert(Chord.ChordPattern(.minorSixth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .modified(.e, .flat),
-        .default(.g),
-        .default(.a)
-      ]))
-    XCTAssert(Chord.ChordPattern(.minorSeventh).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .modified(.e, .flat),
-        .default(.g),
-        .modified(.b, .flat)
-      ]))
-    XCTAssert(Chord.ChordPattern(.minorMajorSeventh).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .modified(.e, .flat),
-        .default(.g),
-        .default(.b)
-      ]))
-    XCTAssert(Chord.ChordPattern(.minorSeventhFlatFifth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .modified(.e, .flat),
-        .modified(.g, .flat),
-        .modified(.b, .flat)
-      ]))
-    XCTAssert(Chord.ChordPattern(.diminishedSeventh).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .modified(.e, .flat),
-        .modified(.g, .flat),
-        .default(.a)
-      ]))
-    XCTAssert(Chord.ChordPattern(.diminishedMajorSeventh).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .modified(.e, .flat),
-        .modified(.g, .flat),
-        .default(.b)
-      ]))
-    XCTAssert(Chord.ChordPattern(.fifth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.g)
-      ]))
-    XCTAssert(Chord.ChordPattern(.sixthNinth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .default(.g),
-        .default(.a),
-        .default(.d)
-      ]))
-    XCTAssert(Chord.ChordPattern(.majorSixthNinth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .default(.g),
-        .default(.a),
-        .default(.b),
-        .default(.d)
-      ]))
-    XCTAssert(Chord.ChordPattern(.majorSeventhSharpEleventh).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .default(.g),
-        .default(.b),
-        .modified(.f, .sharp)
-      ]))
-    XCTAssert(Chord.ChordPattern(.majorNinth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .default(.g),
-        .default(.b),
-        .default(.d)
-      ]))
-    XCTAssert(Chord.ChordPattern(.majorNinthFlatFifth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .modified(.g, .flat),
-        .default(.b),
-        .default(.d)
-      ]))
-    XCTAssert(Chord.ChordPattern(.majorNinthSharpFifth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .modified(.g, .sharp),
-        .default(.b),
-        .default(.d)
-      ]))
-    XCTAssert(Chord.ChordPattern(.majorNinthSharpEleventh).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .default(.g),
-        .default(.b),
-        .default(.d),
-        .modified(.f, .sharp)
-      ]))
-    XCTAssert(Chord.ChordPattern(.majorThirteenth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .default(.g),
-        .default(.b),
-        .default(.d),
-        .default(.a)
-      ]))
-    XCTAssert(Chord.ChordPattern(.majorThirteenthFlatFifth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .modified(.g, .flat),
-        .default(.b),
-        .default(.d),
-        .default(.a)
-      ]))
-    XCTAssert(Chord.ChordPattern(.majorThirteenthSharpEleventh).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .default(.g),
-        .default(.b),
-        .default(.d),
-        .modified(.f, .sharp),
-        .default(.a)
-      ]))
-    XCTAssert(Chord.ChordPattern(.seventhFlatNinth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .default(.g),
-        .modified(.b, .flat),
-        .modified(.d, .flat)
-      ]))
-    XCTAssert(Chord.ChordPattern(.seventhSharpNinth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .default(.g),
-        .modified(.b, .flat),
-        .modified(.d, .sharp)
-      ]))
-    XCTAssert(Chord.ChordPattern(.seventhSharpEleventh).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .default(.g),
-        .modified(.b, .flat),
-        .modified(.f, .sharp)
-      ]))
-    XCTAssert(Chord.ChordPattern(.seventhFlatFifthFlatNinth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .modified(.g, .flat),
-        .modified(.b, .flat),
-        .modified(.d, .flat)
-      ]))
-    XCTAssert(Chord.ChordPattern(.seventhFlatFifthSharpNinth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .modified(.g, .flat),
-        .modified(.b, .flat),
-        .modified(.d, .sharp)
-      ]))
-    XCTAssert(Chord.ChordPattern(.seventhSharpFifthFlatNinth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .modified(.g, .sharp),
-        .modified(.b, .flat),
-        .modified(.d, .flat)
-      ]))
-    XCTAssert(Chord.ChordPattern(.seventhSharpFifthSharpNinth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .modified(.g, .sharp),
-        .modified(.b, .flat),
-        .modified(.d, .sharp)
-      ]))
-    XCTAssert(Chord.ChordPattern(.seventhFlatNinthSharpNinth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .default(.g),
-        .modified(.b, .flat),
-        .modified(.d, .flat),
-        .modified(.d, .sharp)
-      ]))
-    XCTAssert(Chord.ChordPattern(.seventhAddThirteenth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .default(.g),
-        .modified(.b, .flat),
-        .default(.a)
-      ]))
-    XCTAssert(Chord.ChordPattern(.seventhFlatThirteenth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .default(.g),
-        .modified(.b, .flat),
-        .modified(.a, .flat)
-      ]))
-    XCTAssert(Chord.ChordPattern(.seventhFlatNinthSharpEleventh).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .default(.g),
-        .modified(.b, .flat),
-        .modified(.d, .flat),
-        .modified(.f, .sharp)
-      ]))
-    XCTAssert(Chord.ChordPattern(.seventhSharpNinthSharpEleventh).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .default(.g),
-        .modified(.b, .flat),
-        .modified(.d, .sharp),
-        .modified(.f, .sharp)
-      ]))
-    XCTAssert(Chord.ChordPattern(.seventhFlatNinthFlatThirteenth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .default(.g),
-        .modified(.b, .flat),
-        .modified(.d, .flat),
-        .modified(.a, .flat)
-      ]))
-    XCTAssert(Chord.ChordPattern(.seventhSharpNinthFlatThirteenth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .default(.g),
-        .modified(.b, .flat),
-        .modified(.d, .sharp),
-        .modified(.a, .flat)
-      ]))
-    XCTAssert(Chord.ChordPattern(.seventhSharpEleventhFlatThirteenth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .default(.g),
-        .modified(.b, .flat),
-        .modified(.f, .sharp),
-        .modified(.a, .flat)
-      ]))
-    XCTAssert(Chord.ChordPattern(.seventhFlatNinthSharpNinthSharpEleventh).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .default(.g),
-        .modified(.b, .flat),
-        .modified(.d, .flat),
-        .modified(.d, .sharp),
-        .modified(.f, .sharp)
-      ]))
-    XCTAssert(Chord.ChordPattern(.ninth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .default(.g),
-        .modified(.b, .flat),
-        .default(.d)
-      ]))
-    XCTAssert(Chord.ChordPattern(.ninthFlatFifth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .modified(.g, .flat),
-        .modified(.b, .flat),
-        .default(.d)
-      ]))
-    XCTAssert(Chord.ChordPattern(.ninthSharpFifth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .modified(.g, .sharp),
-        .modified(.b, .flat),
-        .default(.d)
-      ]))
-    XCTAssert(Chord.ChordPattern(.ninthSharpEleventh).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .default(.g),
-        .modified(.b, .flat),
-        .default(.d),
-        .modified(.f, .sharp)
-      ]))
-    XCTAssert(Chord.ChordPattern(.ninthFlatThirteenth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .default(.g),
-        .modified(.b, .flat),
-        .default(.d),
-        .modified(.a, .flat)
-      ]))
-    XCTAssert(Chord.ChordPattern(.ninthSharpEleventhFlatThirteenth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .default(.g),
-        .modified(.b, .flat),
-        .default(.d),
-        .modified(.f, .sharp),
-        .modified(.a, .flat)
-      ]))
-    XCTAssert(Chord.ChordPattern(.eleventh).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.g),
-        .modified(.b, .flat),
-        .default(.d),
-        .default(.f)
-      ]))
-    XCTAssert(Chord.ChordPattern(.thirteenth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .default(.g),
-        .modified(.b, .flat),
-        .default(.d),
-        .default(.a)
-      ]))
-    XCTAssert(Chord.ChordPattern(.thirteenthFlatFifth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .modified(.g, .flat),
-        .modified(.b, .flat),
-        .default(.d),
-        .default(.a)
-      ]))
-    XCTAssert(Chord.ChordPattern(.thirteenthFlatNinth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .default(.g),
-        .modified(.b, .flat),
-        .modified(.d, .flat),
-        .default(.a)
-      ]))
-    XCTAssert(Chord.ChordPattern(.thirteenthSharpNinth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .default(.g),
-        .modified(.b, .flat),
-        .modified(.d, .sharp),
-        .default(.a)
-      ]))
-    XCTAssert(Chord.ChordPattern(.thirteenthSharpEleventh).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .default(.g),
-        .modified(.b, .flat),
-        .default(.d),
-        .modified(.f, .sharp),
-        .default(.a)
-      ]))
-    XCTAssert(Chord.ChordPattern(.thirteenthSuspendedFourth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.f),
-        .default(.g),
-        .modified(.b, .flat),
-        .default(.d),
-        .default(.a)
-      ]))
-    XCTAssert(Chord.ChordPattern(.minorSharpFifth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .modified(.e, .flat),
-        .modified(.g, .sharp)
-      ]))
-    XCTAssert(Chord.ChordPattern(.minorSixthNinth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .modified(.e, .flat),
-        .default(.g),
-        .default(.a),
-        .default(.d)
-      ]))
-    XCTAssert(Chord.ChordPattern(.minorSeventhAddFourth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .modified(.e, .flat),
-        .default(.f),
-        .default(.g),
-        .modified(.b, .flat)
-      ]))
-    XCTAssert(Chord.ChordPattern(.minorSeventhAddEleventh).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .modified(.e, .flat),
-        .default(.g),
-        .modified(.b, .flat),
-        .default(.f)
-      ]))
-    XCTAssert(Chord.ChordPattern(.minorSeventhFlatFifthFlatNinth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .modified(.e, .flat),
-        .modified(.g, .flat),
-        .modified(.b, .flat),
-        .modified(.d, .flat)
-      ]))
-    XCTAssert(Chord.ChordPattern(.minorNinth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .modified(.e, .flat),
-        .default(.g),
-        .modified(.b, .flat),
-        .default(.d)
-      ]))
-    XCTAssert(Chord.ChordPattern(.minorNinthMajorSeventh).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .modified(.e, .flat),
-        .default(.g),
-        .default(.b),
-        .default(.d)
-      ]))
-    XCTAssert(Chord.ChordPattern(.minorNinthFlatFifth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .modified(.e, .flat),
-        .modified(.g, .flat),
-        .modified(.b, .flat),
-        .default(.d)
-      ]))
-    XCTAssert(Chord.ChordPattern(.minorEleventh).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .modified(.e, .flat),
-        .default(.g),
-        .modified(.b, .flat),
-        .default(.d),
-        .default(.f)
-      ]))
-    XCTAssert(Chord.ChordPattern(.minorThirteenth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .modified(.e, .flat),
-        .default(.g),
-        .modified(.b, .flat),
-        .default(.d),
-        .default(.f),
-        .default(.a)
-      ]))
-    XCTAssert(Chord.ChordPattern(.diminishedSeventhAddNinth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .modified(.e, .flat),
-        .modified(.g, .flat),
-        .default(.a),
-        .default(.d)
-      ]))
-    XCTAssert(Chord.ChordPattern(.minorEleventhFlatFifth).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .modified(.e, .flat),
-        .modified(.g, .flat),
-        .modified(.b, .flat),
-        .default(.d),
-        .default(.f)
-      ]))
-    XCTAssert(Chord.ChordPattern(.minorEleventhMajorSeventh).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .modified(.e, .flat),
-        .default(.g),
-        .default(.b),
-        .default(.d),
-        .default(.f)
-      ]))
-    XCTAssert(Chord.ChordPattern(.seventhAltered).notesWithRoot(.default(.c)).elementsEqual([
-        .default(.c),
-        .default(.e),
-        .default(.g),
-        .modified(.b, .flat),
-        .modified(.d, .flat),
-        .modified(.d, .sharp),
-        .modified(.f, .sharp),
-        .modified(.a, .flat)
-      ]))
+  func testStandardPattern() {
+    expect(Chord.Pattern(.major).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.natural(.g)
+      ]
+    expect(Chord.Pattern(.minor).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.accidental(.e, .flat),
+        Note.natural(.g)
+      ]
+    expect(Chord.Pattern(.augmented).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.accidental(.g, .sharp)
+      ]
+    expect(Chord.Pattern(.diminished).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.accidental(.e, .flat),
+        Note.accidental(.g, .flat)
+      ]
+    expect(Chord.Pattern(.suspendedFourth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.f),
+        Note.natural(.g)
+      ]
+    expect(Chord.Pattern(.flatFifth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.accidental(.g, .flat)
+      ]
+    expect(Chord.Pattern(.suspendedSecond).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.d),
+        Note.natural(.g)
+      ]
+    expect(Chord.Pattern(.sixth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.natural(.g),
+        Note.natural(.a)
+      ]
+    expect(Chord.Pattern(.addTwo).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.d),
+        Note.natural(.e),
+        Note.natural(.g)
+      ]
+    expect(Chord.Pattern(.majorSeventh).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.natural(.g),
+        Note.natural(.b)
+      ]
+    expect(Chord.Pattern(.majorSeventhFlatFifth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.accidental(.g, .flat),
+        Note.natural(.b)
+      ]
+    expect(Chord.Pattern(.majorSeventhSharpFifth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.accidental(.g, .sharp),
+        Note.natural(.b)
+      ]
+    expect(Chord.Pattern(.seventh).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.natural(.g),
+        Note.accidental(.b, .flat)
+      ]
+    expect(Chord.Pattern(.seventhFlatFifth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.accidental(.g, .flat),
+        Note.accidental(.b, .flat)
+      ]
+    expect(Chord.Pattern(.seventhSharpFifth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.accidental(.g, .sharp),
+        Note.accidental(.b, .flat)
+      ]
+    expect(Chord.Pattern(.seventhSuspendedFourth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.f),
+        Note.natural(.g),
+        Note.accidental(.b, .flat)
+      ]
+    expect(Chord.Pattern(.minorAddTwo).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.d),
+        Note.accidental(.e, .flat),
+        Note.natural(.g)
+      ]
+    expect(Chord.Pattern(.minorSixth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.accidental(.e, .flat),
+        Note.natural(.g),
+        Note.natural(.a)
+      ]
+    expect(Chord.Pattern(.minorSeventh).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.accidental(.e, .flat),
+        Note.natural(.g),
+        Note.accidental(.b, .flat)
+      ]
+    expect(Chord.Pattern(.minorMajorSeventh).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.accidental(.e, .flat),
+        Note.natural(.g),
+        Note.natural(.b)
+      ]
+    expect(Chord.Pattern(.minorSeventhFlatFifth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.accidental(.e, .flat),
+        Note.accidental(.g, .flat),
+        Note.accidental(.b, .flat)
+      ]
+    expect(Chord.Pattern(.diminishedSeventh).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.accidental(.e, .flat),
+        Note.accidental(.g, .flat),
+        Note.natural(.a)
+      ]
+    expect(Chord.Pattern(.diminishedMajorSeventh).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.accidental(.e, .flat),
+        Note.accidental(.g, .flat),
+        Note.natural(.b)
+      ]
+    expect(Chord.Pattern(.fifth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.g)
+      ]
+    expect(Chord.Pattern(.sixthNinth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.natural(.g),
+        Note.natural(.a),
+        Note.natural(.d)
+      ]
+    expect(Chord.Pattern(.majorSixthNinth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.natural(.g),
+        Note.natural(.a),
+        Note.natural(.b),
+        Note.natural(.d)
+      ]
+    expect(Chord.Pattern(.majorSeventhSharpEleventh).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.natural(.g),
+        Note.natural(.b),
+        Note.accidental(.f, .sharp)
+      ]
+    expect(Chord.Pattern(.majorNinth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.natural(.g),
+        Note.natural(.b),
+        Note.natural(.d)
+      ]
+    expect(Chord.Pattern(.majorNinthFlatFifth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.accidental(.g, .flat),
+        Note.natural(.b),
+        Note.natural(.d)
+      ]
+    expect(Chord.Pattern(.majorNinthSharpFifth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.accidental(.g, .sharp),
+        Note.natural(.b),
+        Note.natural(.d)
+      ]
+    expect(Chord.Pattern(.majorNinthSharpEleventh).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.natural(.g),
+        Note.natural(.b),
+        Note.natural(.d),
+        Note.accidental(.f, .sharp)
+      ]
+    expect(Chord.Pattern(.majorThirteenth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.natural(.g),
+        Note.natural(.b),
+        Note.natural(.d),
+        Note.natural(.a)
+      ]
+    expect(Chord.Pattern(.majorThirteenthFlatFifth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.accidental(.g, .flat),
+        Note.natural(.b),
+        Note.natural(.d),
+        Note.natural(.a)
+      ]
+    expect(Chord.Pattern(.majorThirteenthSharpEleventh).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.natural(.g),
+        Note.natural(.b),
+        Note.natural(.d),
+        Note.accidental(.f, .sharp),
+        Note.natural(.a)
+      ]
+    expect(Chord.Pattern(.seventhFlatNinth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.natural(.g),
+        Note.accidental(.b, .flat),
+        Note.accidental(.d, .flat)
+      ]
+    expect(Chord.Pattern(.seventhSharpNinth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.natural(.g),
+        Note.accidental(.b, .flat),
+        Note.accidental(.d, .sharp)
+      ]
+    expect(Chord.Pattern(.seventhSharpEleventh).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.natural(.g),
+        Note.accidental(.b, .flat),
+        Note.accidental(.f, .sharp)
+      ]
+    expect(Chord.Pattern(.seventhFlatFifthFlatNinth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.accidental(.g, .flat),
+        Note.accidental(.b, .flat),
+        Note.accidental(.d, .flat)
+      ]
+    expect(Chord.Pattern(.seventhFlatFifthSharpNinth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.accidental(.g, .flat),
+        Note.accidental(.b, .flat),
+        Note.accidental(.d, .sharp)
+      ]
+    expect(Chord.Pattern(.seventhSharpFifthFlatNinth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.accidental(.g, .sharp),
+        Note.accidental(.b, .flat),
+        Note.accidental(.d, .flat)
+      ]
+    expect(Chord.Pattern(.seventhSharpFifthSharpNinth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.accidental(.g, .sharp),
+        Note.accidental(.b, .flat),
+        Note.accidental(.d, .sharp)
+      ]
+    expect(Chord.Pattern(.seventhFlatNinthSharpNinth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.natural(.g),
+        Note.accidental(.b, .flat),
+        Note.accidental(.d, .flat),
+        Note.accidental(.d, .sharp)
+      ]
+    expect(Chord.Pattern(.seventhAddThirteenth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.natural(.g),
+        Note.accidental(.b, .flat),
+        Note.natural(.a)
+      ]
+    expect(Chord.Pattern(.seventhFlatThirteenth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.natural(.g),
+        Note.accidental(.b, .flat),
+        Note.accidental(.a, .flat)
+      ]
+    expect(Chord.Pattern(.seventhFlatNinthSharpEleventh).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.natural(.g),
+        Note.accidental(.b, .flat),
+        Note.accidental(.d, .flat),
+        Note.accidental(.f, .sharp)
+      ]
+    expect(Chord.Pattern(.seventhSharpNinthSharpEleventh).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.natural(.g),
+        Note.accidental(.b, .flat),
+        Note.accidental(.d, .sharp),
+        Note.accidental(.f, .sharp)
+      ]
+    expect(Chord.Pattern(.seventhFlatNinthFlatThirteenth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.natural(.g),
+        Note.accidental(.b, .flat),
+        Note.accidental(.d, .flat),
+        Note.accidental(.a, .flat)
+      ]
+    expect(Chord.Pattern(.seventhSharpNinthFlatThirteenth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.natural(.g),
+        Note.accidental(.b, .flat),
+        Note.accidental(.d, .sharp),
+        Note.accidental(.a, .flat)
+      ]
+    expect(Chord.Pattern(.seventhSharpEleventhFlatThirteenth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.natural(.g),
+        Note.accidental(.b, .flat),
+        Note.accidental(.f, .sharp),
+        Note.accidental(.a, .flat)
+      ]
+    expect(Chord.Pattern(.seventhFlatNinthSharpNinthSharpEleventh).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.natural(.g),
+        Note.accidental(.b, .flat),
+        Note.accidental(.d, .flat),
+        Note.accidental(.d, .sharp),
+        Note.accidental(.f, .sharp)
+      ]
+    expect(Chord.Pattern(.ninth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.natural(.g),
+        Note.accidental(.b, .flat),
+        Note.natural(.d)
+      ]
+    expect(Chord.Pattern(.ninthFlatFifth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.accidental(.g, .flat),
+        Note.accidental(.b, .flat),
+        Note.natural(.d)
+      ]
+    expect(Chord.Pattern(.ninthSharpFifth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.accidental(.g, .sharp),
+        Note.accidental(.b, .flat),
+        Note.natural(.d)
+      ]
+    expect(Chord.Pattern(.ninthSharpEleventh).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.natural(.g),
+        Note.accidental(.b, .flat),
+        Note.natural(.d),
+        Note.accidental(.f, .sharp)
+      ]
+    expect(Chord.Pattern(.ninthFlatThirteenth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.natural(.g),
+        Note.accidental(.b, .flat),
+        Note.natural(.d),
+        Note.accidental(.a, .flat)
+      ]
+    expect(Chord.Pattern(.ninthSharpEleventhFlatThirteenth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.natural(.g),
+        Note.accidental(.b, .flat),
+        Note.natural(.d),
+        Note.accidental(.f, .sharp),
+        Note.accidental(.a, .flat)
+      ]
+    expect(Chord.Pattern(.eleventh).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.g),
+        Note.accidental(.b, .flat),
+        Note.natural(.d),
+        Note.natural(.f)
+      ]
+    expect(Chord.Pattern(.thirteenth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.natural(.g),
+        Note.accidental(.b, .flat),
+        Note.natural(.d),
+        Note.natural(.a)
+      ]
+    expect(Chord.Pattern(.thirteenthFlatFifth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.accidental(.g, .flat),
+        Note.accidental(.b, .flat),
+        Note.natural(.d),
+        Note.natural(.a)
+      ]
+    expect(Chord.Pattern(.thirteenthFlatNinth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.natural(.g),
+        Note.accidental(.b, .flat),
+        Note.accidental(.d, .flat),
+        Note.natural(.a)
+      ]
+    expect(Chord.Pattern(.thirteenthSharpNinth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.natural(.g),
+        Note.accidental(.b, .flat),
+        Note.accidental(.d, .sharp),
+        Note.natural(.a)
+      ]
+    expect(Chord.Pattern(.thirteenthSharpEleventh).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.natural(.g),
+        Note.accidental(.b, .flat),
+        Note.natural(.d),
+        Note.accidental(.f, .sharp),
+        Note.natural(.a)
+      ]
+    expect(Chord.Pattern(.thirteenthSuspendedFourth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.f),
+        Note.natural(.g),
+        Note.accidental(.b, .flat),
+        Note.natural(.d),
+        Note.natural(.a)
+      ]
+    expect(Chord.Pattern(.minorSharpFifth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.accidental(.e, .flat),
+        Note.accidental(.g, .sharp)
+      ]
+    expect(Chord.Pattern(.minorSixthNinth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.accidental(.e, .flat),
+        Note.natural(.g),
+        Note.natural(.a),
+        Note.natural(.d)
+      ]
+    expect(Chord.Pattern(.minorSeventhAddFourth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.accidental(.e, .flat),
+        Note.natural(.f),
+        Note.natural(.g),
+        Note.accidental(.b, .flat)
+      ]
+    expect(Chord.Pattern(.minorSeventhAddEleventh).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.accidental(.e, .flat),
+        Note.natural(.g),
+        Note.accidental(.b, .flat),
+        Note.natural(.f)
+      ]
+    expect(Chord.Pattern(.minorSeventhFlatFifthFlatNinth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.accidental(.e, .flat),
+        Note.accidental(.g, .flat),
+        Note.accidental(.b, .flat),
+        Note.accidental(.d, .flat)
+      ]
+    expect(Chord.Pattern(.minorNinth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.accidental(.e, .flat),
+        Note.natural(.g),
+        Note.accidental(.b, .flat),
+        Note.natural(.d)
+      ]
+    expect(Chord.Pattern(.minorNinthMajorSeventh).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.accidental(.e, .flat),
+        Note.natural(.g),
+        Note.natural(.b),
+        Note.natural(.d)
+      ]
+    expect(Chord.Pattern(.minorNinthFlatFifth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.accidental(.e, .flat),
+        Note.accidental(.g, .flat),
+        Note.accidental(.b, .flat),
+        Note.natural(.d)
+      ]
+    expect(Chord.Pattern(.minorEleventh).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.accidental(.e, .flat),
+        Note.natural(.g),
+        Note.accidental(.b, .flat),
+        Note.natural(.d),
+        Note.natural(.f)
+      ]
+    expect(Chord.Pattern(.minorThirteenth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.accidental(.e, .flat),
+        Note.natural(.g),
+        Note.accidental(.b, .flat),
+        Note.natural(.d),
+        Note.natural(.f),
+        Note.natural(.a)
+      ]
+    expect(Chord.Pattern(.diminishedSeventhAddNinth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.accidental(.e, .flat),
+        Note.accidental(.g, .flat),
+        Note.natural(.a),
+        Note.natural(.d)
+      ]
+    expect(Chord.Pattern(.minorEleventhFlatFifth).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.accidental(.e, .flat),
+        Note.accidental(.g, .flat),
+        Note.accidental(.b, .flat),
+        Note.natural(.d),
+        Note.natural(.f)
+      ]
+    expect(Chord.Pattern(.minorEleventhMajorSeventh).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.accidental(.e, .flat),
+        Note.natural(.g),
+        Note.natural(.b),
+        Note.natural(.d),
+        Note.natural(.f)
+      ]
+    expect(Chord.Pattern(.seventhAltered).notes(withRoot: Note.natural(.c))) == [
+        Note.natural(.c),
+        Note.natural(.e),
+        Note.natural(.g),
+        Note.accidental(.b, .flat),
+        Note.accidental(.d, .flat),
+        Note.accidental(.d, .sharp),
+        Note.accidental(.f, .sharp),
+        Note.accidental(.a, .flat)
+      ]
   }
 
 }

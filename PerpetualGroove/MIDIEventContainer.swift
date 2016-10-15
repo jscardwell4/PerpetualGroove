@@ -284,6 +284,20 @@ extension _MIDIEventContainer
     )
   }
 
+  var _description: String {
+    var result = "[\n"
+
+    for (time, bag) in events {
+      result += "\t\(time):\n"
+      for event in bag {
+        result += "\t\t\(event)\n"
+      }
+    }
+
+    result += "\n]"
+
+    return result
+  }
 
 }
 
@@ -380,6 +394,12 @@ struct MIDIEventContainer: _MIDIEventContainer {
   @inline(__always) func formIndex(_ i: inout Index, offsetBy n: Int, limitedBy limit: Index) -> Bool {
     return _formIndex(&i, offsetBy: n, limitedBy: limit)
   }
+
+}
+
+extension MIDIEventContainer: CustomStringConvertible {
+
+  var description: String { return _description }
 
 }
 
@@ -482,6 +502,13 @@ struct MIDIEventContainerSlice: _MIDIEventContainer {
   }
   
 }
+
+extension MIDIEventContainerSlice: CustomStringConvertible {
+
+  var description: String { return _description }
+
+}
+
 
 extension MIDIEventContainer {
 

@@ -158,35 +158,35 @@ extension NoteGenerator {
 
     static func index(for note: Note) -> Int {
       switch note {
-        case .`default`(.c), .modified(.b, .sharp), .modified(.d, .doubleFlat):       return 0
-        case .modified(.c, .sharp), .modified(.d, .flat):                             return 1
-        case .`default`(.d), .modified(.e, .doubleFlat):                              return 2
-        case .modified(.d, .sharp), .modified(.e, .flat), .modified(.f, .doubleFlat): return 3
-        case .`default`(.e), .modified(.f, .flat):                                    return 4
-        case .`default`(.f), .modified(.e, .sharp), .modified(.g, .doubleFlat):       return 5
-        case .modified(.f, .sharp), .modified(.g, .flat):                             return 6
-        case .`default`(.g), .modified(.a, .doubleFlat):                              return 7
-        case .modified(.g, .sharp),.modified(.a, .flat):                              return 8
-        case .`default`(.a), .modified(.b, .doubleFlat):                              return 9
-        case .modified(.a, .sharp),.modified(.b, .flat), .modified(.c, .doubleFlat):  return 10
-        case .`default`(.b), .modified(.c, .flat):                                    return 11
+        case .natural(.c), .accidental(.b, .sharp), .accidental(.d, .doubleFlat):       return 0
+        case .accidental(.c, .sharp), .accidental(.d, .flat):                             return 1
+        case .natural(.d), .accidental(.e, .doubleFlat):                              return 2
+        case .accidental(.d, .sharp), .accidental(.e, .flat), .accidental(.f, .doubleFlat): return 3
+        case .natural(.e), .accidental(.f, .flat):                                    return 4
+        case .natural(.f), .accidental(.e, .sharp), .accidental(.g, .doubleFlat):       return 5
+        case .accidental(.f, .sharp), .accidental(.g, .flat):                             return 6
+        case .natural(.g), .accidental(.a, .doubleFlat):                              return 7
+        case .accidental(.g, .sharp),.accidental(.a, .flat):                              return 8
+        case .natural(.a), .accidental(.b, .doubleFlat):                              return 9
+        case .accidental(.a, .sharp),.accidental(.b, .flat), .accidental(.c, .doubleFlat):  return 10
+        case .natural(.b), .accidental(.c, .flat):                                    return 11
       }
     }
 
     static func note(for index: Int) -> Note? {
       switch index {
-        case 0:  return .`default`(.c)
-        case 1:  return .modified(.c, .sharp)
-        case 2:  return .`default`(.d)
-        case 3:  return .modified(.d, .sharp)
-        case 4:  return .`default`(.e)
-        case 5:  return .`default`(.f)
-        case 6:  return .modified(.f, .sharp)
-        case 7:  return .`default`(.g)
-        case 8:  return .modified(.g, .sharp)
-        case 9:  return .`default`(.a)
-        case 10: return .modified(.a, .sharp)
-        case 11: return .`default`(.b)
+        case 0:  return .natural(.c)
+        case 1:  return .accidental(.c, .sharp)
+        case 2:  return .natural(.d)
+        case 3:  return .accidental(.d, .sharp)
+        case 4:  return .natural(.e)
+        case 5:  return .natural(.f)
+        case 6:  return .accidental(.f, .sharp)
+        case 7:  return .natural(.g)
+        case 8:  return .accidental(.g, .sharp)
+        case 9:  return .natural(.a)
+        case 10: return .accidental(.a, .sharp)
+        case 11: return .natural(.b)
        default: return nil
       }
     }

@@ -11,12 +11,12 @@ import MoonKit
 
 struct Chord {
 
-  var root = Note.`default`(.c)
+  var root = Note.natural(.c)
   var pattern = Pattern(.major)
 
   var notes: [Note] { return pattern.notes(withRoot: root) }
 
-  init(root: Note = .`default`(.c), pattern: Pattern = Pattern(.major)) {
+  init(root: Note = .natural(.c), pattern: Pattern = Pattern(.major)) {
     self.root = root
     self.pattern = pattern
   }
@@ -92,13 +92,13 @@ extension Chord {
         let note: Note
         switch degree {
           case let .`default`(i):
-            note = Note.`default`(natural.advanced(by: i.rawValue - 1))
+            note = Note.natural(natural.advanced(by: i.rawValue - 1))
           case let .modified(i, .flat):
-            note = Note.`default`(natural.advanced(by: i.rawValue - 1)).flattened()
+            note = Note.natural(natural.advanced(by: i.rawValue - 1)).flattened()
           case let .modified(i, .sharp):
-            note = Note.`default`(natural.advanced(by: i.rawValue - 1)).sharpened()
+            note = Note.natural(natural.advanced(by: i.rawValue - 1)).sharpened()
           case let .modified(i, .doubleFlat):
-            note = Note.`default`(natural.advanced(by: i.rawValue - 1)).flattened().flattened()
+            note = Note.natural(natural.advanced(by: i.rawValue - 1)).flattened().flattened()
         }
 
         switch modifier {
