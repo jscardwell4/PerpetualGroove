@@ -1,0 +1,658 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BV1-FR-VrT">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="Yellow Design Studio - Eveleth Light.otf">
+            <string>EvelethLight</string>
+        </array>
+    </customFonts>
+    <scenes>
+        <!--RootController-->
+        <scene sceneID="tXr-a1-R10">
+            <objects>
+                <viewController storyboardIdentifier="RootController" id="BV1-FR-VrT" userLabel="RootController" customClass="RootViewController" customModule="Groove" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="8aa-yV-Osq"/>
+                        <viewControllerLayoutGuide type="bottom" id="qHh-Mt-9TT"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="3se-qz-xqx">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" distribution="equalCentering" translatesAutoresizingMaskIntoConstraints="NO" id="KR6-ig-M7J" userLabel="ContentStack">
+                                <frame key="frameInset" minY="-12" width="728" height="1008"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="NZR-ya-29p" userLabel="MiddleStack">
+                                        <subviews>
+                                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Xii-MX-zKn" userLabel="Mixer Container">
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="MixerContainer"/>
+                                                </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <segue destination="kbm-WN-nc0" kind="embed" identifier="Mixer" id="NjD-do-3gM"/>
+                                                </connections>
+                                            </containerView>
+                                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cDh-C7-9la">
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="375" id="OMe-oy-u7R"/>
+                                                    <constraint firstAttribute="height" constant="430" id="xgv-2v-ZG3"/>
+                                                </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="MIDIPlayerContainer"/>
+                                                </userDefinedRuntimeAttributes>
+                                                <variation key="default">
+                                                    <mask key="constraints">
+                                                        <exclude reference="OMe-oy-u7R"/>
+                                                        <exclude reference="xgv-2v-ZG3"/>
+                                                    </mask>
+                                                </variation>
+                                                <variation key="heightClass=regular-widthClass=regular">
+                                                    <mask key="constraints">
+                                                        <exclude reference="OMe-oy-u7R"/>
+                                                        <exclude reference="xgv-2v-ZG3"/>
+                                                    </mask>
+                                                </variation>
+                                                <connections>
+                                                    <segue destination="9eP-6Y-Ip3" kind="embed" id="qMo-AN-sAC"/>
+                                                </connections>
+                                            </containerView>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstAttribute="height" priority="999" constant="600" identifier="MiddleStackHeight" id="zSM-Hw-lw3">
+                                                <variation key="heightClass=regular-widthClass=regular" constant="575"/>
+                                            </constraint>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="MiddleStack"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="MiddleStack"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="n4A-7M-eOV" userLabel="BottomStack">
+                                        <subviews>
+                                            <view opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="gJq-1L-zk3" userLabel="DocumentsButton" customClass="ImageButtonView" customModule="MoonKit">
+                                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <color key="tintColor" red="0.73028218746185303" green="0.70356303453445435" blue="0.6637413501739502" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <accessibility key="accessibilityConfiguration" identifier="DocumentsButton"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" relation="lessThanOrEqual" constant="48" id="Ijy-88-hkP"/>
+                                                    <constraint firstAttribute="width" secondItem="gJq-1L-zk3" secondAttribute="height" multiplier="1:1" id="XMe-jI-IHT"/>
+                                                </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="files"/>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="DocumentsButton"/>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="files-selected"/>
+                                                    <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
+                                                        <color key="value" red="0.72547006607055664" green="0.70085549354553223" blue="0.6621164083480835" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                                <variation key="default">
+                                                    <mask key="constraints">
+                                                        <exclude reference="Ijy-88-hkP"/>
+                                                        <exclude reference="XMe-jI-IHT"/>
+                                                    </mask>
+                                                </variation>
+                                                <variation key="heightClass=regular-widthClass=regular">
+                                                    <mask key="constraints">
+                                                        <include reference="Ijy-88-hkP"/>
+                                                        <include reference="XMe-jI-IHT"/>
+                                                    </mask>
+                                                </variation>
+                                                <connections>
+                                                    <action selector="documents" destination="BV1-FR-VrT" eventType="touchUpInside" id="Kd0-gd-weE"/>
+                                                </connections>
+                                            </view>
+                                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="neB-2q-lJV">
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="150" id="248-Pj-xhM"/>
+                                                    <constraint firstAttribute="width" constant="358" id="Cjv-EF-OUo"/>
+                                                </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TransportContainer"/>
+                                                </userDefinedRuntimeAttributes>
+                                                <variation key="default">
+                                                    <mask key="constraints">
+                                                        <exclude reference="248-Pj-xhM"/>
+                                                        <exclude reference="Cjv-EF-OUo"/>
+                                                    </mask>
+                                                </variation>
+                                                <variation key="heightClass=regular-widthClass=regular">
+                                                    <mask key="constraints">
+                                                        <include reference="248-Pj-xhM"/>
+                                                        <include reference="Cjv-EF-OUo"/>
+                                                    </mask>
+                                                </variation>
+                                                <connections>
+                                                    <segue destination="dy3-8f-fO7" kind="embed" id="DK4-1E-XBN"/>
+                                                </connections>
+                                            </containerView>
+                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="NdS-rf-HyN" userLabel="TimeStackHorizontal">
+                                                <subviews>
+                                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="gSN-Me-39Z" userLabel="TimeStackVertical">
+                                                        <subviews>
+                                                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TLs-oa-qge" userLabel="Tempo" customClass="Slider" customModule="MoonKit">
+                                                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="width" constant="280" id="a7T-hb-UY1"/>
+                                                                    <constraint firstAttribute="height" constant="56" identifier="TempoSliderHeight" id="qhv-GY-tw5"/>
+                                                                </constraints>
+                                                                <userDefinedRuntimeAttributes>
+                                                                    <userDefinedRuntimeAttribute type="image" keyPath="thumbImage" value="horizontal_thumb"/>
+                                                                    <userDefinedRuntimeAttribute type="image" keyPath="trackMinImage" value="horizontal_track"/>
+                                                                    <userDefinedRuntimeAttribute type="image" keyPath="trackMaxImage" value="horizontal_track"/>
+                                                                    <userDefinedRuntimeAttribute type="color" keyPath="thumbColor">
+                                                                        <color key="value" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                    </userDefinedRuntimeAttribute>
+                                                                    <userDefinedRuntimeAttribute type="color" keyPath="trackMinColor">
+                                                                        <color key="value" red="0.57254901960000004" green="0.52941176469999995" blue="0.47058823529999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                    </userDefinedRuntimeAttribute>
+                                                                    <userDefinedRuntimeAttribute type="color" keyPath="trackMaxColor">
+                                                                        <color key="value" red="0.30125221610000003" green="0.29395070670000001" blue="0.28606623409999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                    </userDefinedRuntimeAttribute>
+                                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="preservesTrackMaxImageSize" value="YES"/>
+                                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="preservesTrackMinImageSize" value="YES"/>
+                                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="preservesThumbImageSize" value="YES"/>
+                                                                    <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
+                                                                        <real key="value" value="24"/>
+                                                                    </userDefinedRuntimeAttribute>
+                                                                    <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
+                                                                        <real key="value" value="400"/>
+                                                                    </userDefinedRuntimeAttribute>
+                                                                    <userDefinedRuntimeAttribute type="number" keyPath="value">
+                                                                        <real key="value" value="120"/>
+                                                                    </userDefinedRuntimeAttribute>
+                                                                    <userDefinedRuntimeAttribute type="color" keyPath="valueLabelTextColor">
+                                                                        <color key="value" red="0.96889215709999998" green="0.99298822880000004" blue="0.99992734189999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                    </userDefinedRuntimeAttribute>
+                                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="showsValueLabel" value="YES"/>
+                                                                    <userDefinedRuntimeAttribute type="number" keyPath="valueLabelPrecision">
+                                                                        <integer key="value" value="0"/>
+                                                                    </userDefinedRuntimeAttribute>
+                                                                    <userDefinedRuntimeAttribute type="string" keyPath="valueLabelFontName" value="EvelethRegular"/>
+                                                                    <userDefinedRuntimeAttribute type="number" keyPath="valueLabelFontSize">
+                                                                        <real key="value" value="12"/>
+                                                                    </userDefinedRuntimeAttribute>
+                                                                    <userDefinedRuntimeAttribute type="number" keyPath="valueLabelYOffset">
+                                                                        <real key="value" value="-10"/>
+                                                                    </userDefinedRuntimeAttribute>
+                                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="continuous" value="NO"/>
+                                                                    <userDefinedRuntimeAttribute type="string" keyPath="trackLabelText" value="Tempo"/>
+                                                                    <userDefinedRuntimeAttribute type="string" keyPath="trackLabelFontName" value="EvelethLight"/>
+                                                                    <userDefinedRuntimeAttribute type="number" keyPath="trackLabelFontSize">
+                                                                        <real key="value" value="13"/>
+                                                                    </userDefinedRuntimeAttribute>
+                                                                    <userDefinedRuntimeAttribute type="number" keyPath="trackLabelYOffset">
+                                                                        <real key="value" value="12"/>
+                                                                    </userDefinedRuntimeAttribute>
+                                                                    <userDefinedRuntimeAttribute type="number" keyPath="thumbYOffset">
+                                                                        <real key="value" value="5"/>
+                                                                    </userDefinedRuntimeAttribute>
+                                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="showsTrackLabel" value="YES"/>
+                                                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TempoSlider"/>
+                                                                </userDefinedRuntimeAttributes>
+                                                                <variation key="default">
+                                                                    <mask key="constraints">
+                                                                        <exclude reference="a7T-hb-UY1"/>
+                                                                    </mask>
+                                                                </variation>
+                                                                <variation key="heightClass=regular-widthClass=regular">
+                                                                    <mask key="constraints">
+                                                                        <include reference="a7T-hb-UY1"/>
+                                                                    </mask>
+                                                                </variation>
+                                                                <connections>
+                                                                    <action selector="tempoSliderValueDidChange" destination="BV1-FR-VrT" eventType="valueChanged" id="ZyQ-QR-NaN"/>
+                                                                </connections>
+                                                            </view>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="v6c-VS-mrm" userLabel="MetronomeBarBeatTimeStack">
+                                                                <subviews>
+                                                                    <view contentMode="scaleToFill" horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="gtA-UE-ICh" userLabel="Metronome" customClass="ImageButtonView" customModule="MoonKit">
+                                                                        <color key="tintColor" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                        <constraints>
+                                                                            <constraint firstAttribute="width" secondItem="gtA-UE-ICh" secondAttribute="height" multiplier="1:1" identifier="MetronomeAspectRatio" id="u80-DE-r6s"/>
+                                                                        </constraints>
+                                                                        <userDefinedRuntimeAttributes>
+                                                                            <userDefinedRuntimeAttribute type="image" keyPath="image" value="metronome"/>
+                                                                            <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="metronome-selected"/>
+                                                                            <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
+                                                                            <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
+                                                                                <color key="value" red="0.87450999019999998" green="0.82744997740000004" blue="0.76077997679999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                            </userDefinedRuntimeAttribute>
+                                                                            <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="MetronomeButton"/>
+                                                                            <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
+                                                                                <color key="value" red="0.72547006607055664" green="0.70085549354553223" blue="0.6621164083480835" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                            </userDefinedRuntimeAttribute>
+                                                                        </userDefinedRuntimeAttributes>
+                                                                        <connections>
+                                                                            <action selector="toggleMetronome" destination="BV1-FR-VrT" eventType="touchUpInside" id="P9O-d8-MRc"/>
+                                                                        </connections>
+                                                                    </view>
+                                                                    <view opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" placeholderIntrinsicWidth="150" placeholderIntrinsicHeight="56" translatesAutoresizingMaskIntoConstraints="NO" id="pTr-VL-22H" userLabel="BarBeatTime" customClass="BarBeatTimeLabel" customModule="Groove" customModuleProvider="target">
+                                                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                        <accessibility key="accessibilityConfiguration" identifier="BarBeatTime"/>
+                                                                        <userDefinedRuntimeAttributes>
+                                                                            <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="BarBeatTime"/>
+                                                                        </userDefinedRuntimeAttributes>
+                                                                    </view>
+                                                                </subviews>
+                                                                <userDefinedRuntimeAttributes>
+                                                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="MetronomeBarBeatTimeStack"/>
+                                                                    <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="MetronomeBarBeatTimeStack"/>
+                                                                </userDefinedRuntimeAttributes>
+                                                            </stackView>
+                                                        </subviews>
+                                                        <constraints>
+                                                            <constraint firstItem="v6c-VS-mrm" firstAttribute="leading" secondItem="gSN-Me-39Z" secondAttribute="leading" constant="37" id="Gw2-jc-gZL">
+                                                                <variation key="heightClass=regular-widthClass=regular" constant="0.0"/>
+                                                            </constraint>
+                                                            <constraint firstAttribute="trailing" secondItem="v6c-VS-mrm" secondAttribute="trailing" constant="37" id="JIS-g3-iLp">
+                                                                <variation key="heightClass=regular-widthClass=regular" constant="0.0"/>
+                                                            </constraint>
+                                                        </constraints>
+                                                        <userDefinedRuntimeAttributes>
+                                                            <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="TimeStackVertical"/>
+                                                            <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TimeStackVertical"/>
+                                                        </userDefinedRuntimeAttributes>
+                                                        <variation key="default">
+                                                            <mask key="constraints">
+                                                                <exclude reference="Gw2-jc-gZL"/>
+                                                                <exclude reference="JIS-g3-iLp"/>
+                                                            </mask>
+                                                        </variation>
+                                                        <variation key="heightClass=regular-widthClass=regular">
+                                                            <mask key="constraints">
+                                                                <include reference="Gw2-jc-gZL"/>
+                                                                <include reference="JIS-g3-iLp"/>
+                                                            </mask>
+                                                        </variation>
+                                                    </stackView>
+                                                </subviews>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TimeStackHorizontal"/>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="TimeStackHorizontal"/>
+                                                </userDefinedRuntimeAttributes>
+                                            </stackView>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="150" id="SE4-Jy-u0O"/>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="BottomStack"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="BottomStack"/>
+                                        </userDefinedRuntimeAttributes>
+                                        <variation key="default">
+                                            <mask key="constraints">
+                                                <exclude reference="SE4-Jy-u0O"/>
+                                            </mask>
+                                        </variation>
+                                        <variation key="heightClass=regular-widthClass=regular">
+                                            <mask key="constraints">
+                                                <include reference="SE4-Jy-u0O"/>
+                                            </mask>
+                                        </variation>
+                                    </stackView>
+                                </subviews>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="ContentStack"/>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="ContentStack"/>
+                                </userDefinedRuntimeAttributes>
+                            </stackView>
+                            <view hidden="YES" opaque="NO" contentMode="scaleToFill" misplaced="YES" placeholderIntrinsicWidth="250" placeholderIntrinsicHeight="108" translatesAutoresizingMaskIntoConstraints="NO" id="L5k-qi-Yb6" userLabel="DocumentsPopover" customClass="PopoverView" customModule="MoonKit">
+                                <frame key="frameInset" minX="25" minY="62" width="240" height="108"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="41G-aM-2HB">
+                                        <frame key="frameInset" width="240" height="108"/>
+                                        <subviews>
+                                            <containerView opaque="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fhQ-Pz-pqn">
+                                                <frame key="frameInset" width="240" height="108"/>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="FilesPopoverContainer"/>
+                                                </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <segue destination="Eww-vV-yXw" kind="embed" identifier="Files" id="gf3-z5-9vC"/>
+                                                </connections>
+                                            </containerView>
+                                        </subviews>
+                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstItem="fhQ-Pz-pqn" firstAttribute="leading" secondItem="41G-aM-2HB" secondAttribute="leading" id="5we-F0-7fC"/>
+                                            <constraint firstAttribute="bottom" secondItem="fhQ-Pz-pqn" secondAttribute="bottom" id="NgN-av-Uen"/>
+                                            <constraint firstAttribute="trailing" secondItem="fhQ-Pz-pqn" secondAttribute="trailing" id="nHb-tC-dcj"/>
+                                            <constraint firstItem="fhQ-Pz-pqn" firstAttribute="top" secondItem="41G-aM-2HB" secondAttribute="top" id="u6X-M2-0et"/>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="FilesPopoverContent"/>
+                                        </userDefinedRuntimeAttributes>
+                                        <variation key="default">
+                                            <mask key="subviews">
+                                                <exclude reference="fhQ-Pz-pqn"/>
+                                            </mask>
+                                            <mask key="constraints">
+                                                <exclude reference="5we-F0-7fC"/>
+                                                <exclude reference="NgN-av-Uen"/>
+                                                <exclude reference="nHb-tC-dcj"/>
+                                                <exclude reference="u6X-M2-0et"/>
+                                            </mask>
+                                        </variation>
+                                        <variation key="widthClass=compact">
+                                            <mask key="subviews">
+                                                <include reference="fhQ-Pz-pqn"/>
+                                            </mask>
+                                            <mask key="constraints">
+                                                <include reference="5we-F0-7fC"/>
+                                                <include reference="NgN-av-Uen"/>
+                                                <include reference="nHb-tC-dcj"/>
+                                                <include reference="u6X-M2-0et"/>
+                                            </mask>
+                                        </variation>
+                                        <variation key="widthClass=regular">
+                                            <mask key="subviews">
+                                                <include reference="fhQ-Pz-pqn"/>
+                                            </mask>
+                                            <mask key="constraints">
+                                                <include reference="5we-F0-7fC"/>
+                                                <include reference="NgN-av-Uen"/>
+                                                <include reference="nHb-tC-dcj"/>
+                                                <include reference="u6X-M2-0et"/>
+                                            </mask>
+                                        </variation>
+                                    </view>
+                                </subviews>
+                                <color key="backgroundColor" red="0.1731918603181839" green="0.17318670451641083" blue="0.17318965494632721" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <accessibility key="accessibilityConfiguration" identifier="DocumentsPopover"/>
+                                <constraints>
+                                    <constraint firstItem="41G-aM-2HB" firstAttribute="leading" secondItem="L5k-qi-Yb6" secondAttribute="leading" id="E0C-BE-zXD"/>
+                                    <constraint firstItem="41G-aM-2HB" firstAttribute="top" secondItem="L5k-qi-Yb6" secondAttribute="top" id="Lwg-8r-X6c"/>
+                                    <constraint firstAttribute="trailing" secondItem="41G-aM-2HB" secondAttribute="trailing" id="TFX-at-fPb"/>
+                                    <constraint firstAttribute="bottom" secondItem="41G-aM-2HB" secondAttribute="bottom" id="fdl-vn-1X6"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="locationString" value="Bottom"/>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="arrowWidth">
+                                        <real key="value" value="20"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="arrowHeight">
+                                        <real key="value" value="20"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="DocumentsPopover"/>
+                                </userDefinedRuntimeAttributes>
+                                <variation key="default">
+                                    <mask key="subviews">
+                                        <exclude reference="41G-aM-2HB"/>
+                                    </mask>
+                                    <mask key="constraints">
+                                        <exclude reference="E0C-BE-zXD"/>
+                                        <exclude reference="Lwg-8r-X6c"/>
+                                        <exclude reference="TFX-at-fPb"/>
+                                        <exclude reference="fdl-vn-1X6"/>
+                                    </mask>
+                                </variation>
+                                <variation key="widthClass=compact">
+                                    <mask key="subviews">
+                                        <include reference="41G-aM-2HB"/>
+                                    </mask>
+                                    <mask key="constraints">
+                                        <include reference="E0C-BE-zXD"/>
+                                        <include reference="Lwg-8r-X6c"/>
+                                        <include reference="TFX-at-fPb"/>
+                                        <include reference="fdl-vn-1X6"/>
+                                    </mask>
+                                </variation>
+                                <variation key="widthClass=regular">
+                                    <mask key="subviews">
+                                        <include reference="41G-aM-2HB"/>
+                                    </mask>
+                                    <mask key="constraints">
+                                        <include reference="E0C-BE-zXD"/>
+                                        <include reference="Lwg-8r-X6c"/>
+                                        <include reference="TFX-at-fPb"/>
+                                        <include reference="fdl-vn-1X6"/>
+                                    </mask>
+                                </variation>
+                                <connections>
+                                    <outlet property="contentView" destination="41G-aM-2HB" id="nD9-0T-yny"/>
+                                </connections>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" red="0.20000000000000001" green="0.1960784314" blue="0.19215686269999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <accessibility key="accessibilityConfiguration" identifier="RootView"/>
+                        <constraints>
+                            <constraint firstItem="L5k-qi-Yb6" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leadingMargin" constant="5" id="BtT-VP-Fff"/>
+                            <constraint firstItem="qHh-Mt-9TT" firstAttribute="top" secondItem="KR6-ig-M7J" secondAttribute="bottom" constant="8" symbolic="YES" id="CAu-z8-d5k"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="KR6-ig-M7J" secondAttribute="trailing" constant="-68" id="JF0-3d-TlM">
+                                <variation key="heightClass=regular-widthClass=regular" constant="0.0"/>
+                            </constraint>
+                            <constraint firstItem="L5k-qi-Yb6" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="3se-qz-xqx" secondAttribute="leadingMargin" constant="-104" id="RcU-6e-GRW">
+                                <variation key="heightClass=regular-widthClass=regular" constant="0.0"/>
+                            </constraint>
+                            <constraint firstItem="L5k-qi-Yb6" firstAttribute="centerX" secondItem="gJq-1L-zk3" secondAttribute="centerX" priority="750" id="XoL-bV-ELt"/>
+                            <constraint firstItem="gJq-1L-zk3" firstAttribute="top" secondItem="L5k-qi-Yb6" secondAttribute="bottom" constant="11" id="Y1X-bS-yfl"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="KR6-ig-M7J" secondAttribute="leading" id="byd-8v-duj"/>
+                            <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="L5k-qi-Yb6" secondAttribute="trailing" constant="5" id="qJJ-cs-JQx"/>
+                            <constraint firstItem="KR6-ig-M7J" firstAttribute="top" secondItem="8aa-yV-Osq" secondAttribute="bottom" constant="8" symbolic="YES" id="x9p-rm-dbe"/>
+                        </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="MIDIPlayerView"/>
+                        </userDefinedRuntimeAttributes>
+                        <variation key="default">
+                            <mask key="subviews">
+                                <exclude reference="L5k-qi-Yb6"/>
+                            </mask>
+                            <mask key="constraints">
+                                <exclude reference="CAu-z8-d5k"/>
+                                <exclude reference="Y1X-bS-yfl"/>
+                                <exclude reference="BtT-VP-Fff"/>
+                                <exclude reference="RcU-6e-GRW"/>
+                                <exclude reference="XoL-bV-ELt"/>
+                                <exclude reference="qJJ-cs-JQx"/>
+                                <exclude reference="JF0-3d-TlM"/>
+                                <exclude reference="byd-8v-duj"/>
+                                <exclude reference="x9p-rm-dbe"/>
+                            </mask>
+                        </variation>
+                        <variation key="widthClass=compact">
+                            <mask key="subviews">
+                                <include reference="L5k-qi-Yb6"/>
+                            </mask>
+                            <mask key="constraints">
+                                <include reference="BtT-VP-Fff"/>
+                                <include reference="qJJ-cs-JQx"/>
+                            </mask>
+                        </variation>
+                        <variation key="widthClass=regular">
+                            <mask key="subviews">
+                                <include reference="L5k-qi-Yb6"/>
+                            </mask>
+                            <mask key="constraints">
+                                <exclude reference="BtT-VP-Fff"/>
+                                <exclude reference="qJJ-cs-JQx"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=regular-widthClass=regular">
+                            <mask key="constraints">
+                                <include reference="CAu-z8-d5k"/>
+                                <include reference="Y1X-bS-yfl"/>
+                                <include reference="RcU-6e-GRW"/>
+                                <include reference="XoL-bV-ELt"/>
+                                <include reference="JF0-3d-TlM"/>
+                                <include reference="byd-8v-duj"/>
+                                <include reference="x9p-rm-dbe"/>
+                            </mask>
+                        </variation>
+                    </view>
+                    <toolbarItems/>
+                    <nil key="simulatedStatusBarMetrics"/>
+                    <nil key="simulatedTopBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="barBeatTimeLabel" destination="pTr-VL-22H" id="gZk-3S-Feh"/>
+                        <outlet property="bottomStack" destination="n4A-7M-eOV" id="PzM-e9-r9m"/>
+                        <outlet property="bottomStackHeight" destination="SE4-Jy-u0O" id="GaT-LS-gqo"/>
+                        <outlet property="contentStack" destination="KR6-ig-M7J" id="pxB-lb-19Q"/>
+                        <outlet property="documentsButton" destination="gJq-1L-zk3" id="z0d-NV-cbd"/>
+                        <outlet property="documentsPopoverView" destination="L5k-qi-Yb6" id="ib7-VB-2Y5"/>
+                        <outlet property="metronomeButton" destination="gtA-UE-ICh" id="umv-Dj-4HW"/>
+                        <outlet property="middleStack" destination="NZR-ya-29p" id="hcq-EU-qf7"/>
+                        <outlet property="middleStackHeight" destination="zSM-Hw-lw3" id="aS8-9f-kuD"/>
+                        <outlet property="mixerContainer" destination="Xii-MX-zKn" id="66b-hf-2hE"/>
+                        <outlet property="tempoSlider" destination="TLs-oa-qge" id="c4y-Bv-cwF"/>
+                        <segue destination="kZP-V5-1kq" kind="presentation" identifier="Purgatory" customClass="PurgatorySegue" customModule="Groove" customModuleProvider="target" modalTransitionStyle="crossDissolve" id="Hqa-Ox-hdJ"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="leA-Ua-D5I">
+                    <connections>
+                        <action selector="dismissPopover" destination="BV1-FR-VrT" id="eOB-WR-Bwx"/>
+                    </connections>
+                </tapGestureRecognizer>
+            </objects>
+            <point key="canvasLocation" x="231.5" y="639.5"/>
+        </scene>
+        <!--MixerContainer-->
+        <scene sceneID="A7a-AD-6Of">
+            <objects>
+                <viewControllerPlaceholder storyboardIdentifier="Mixer" storyboardName="MixerContainer" id="kbm-WN-nc0" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="8QL-P7-Hyc" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="112.5" y="1180.5"/>
+        </scene>
+        <!--Transport-->
+        <scene sceneID="beA-cT-Q9Z">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Transport" id="dy3-8f-fO7" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="4Ca-7U-0NM" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="325.125" y="1094.25"/>
+        </scene>
+        <!--Generator-->
+        <scene sceneID="nQF-Uk-kwg">
+            <objects>
+                <viewControllerPlaceholder storyboardIdentifier="NoteAttributes" storyboardName="Generator" referencedIdentifier="Generator" id="kzO-nC-kW2" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="VWp-16-2Pf" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="840" y="405"/>
+        </scene>
+        <!--MIDIPlayerContainer-->
+        <scene sceneID="8Az-Bg-Kgb">
+            <objects>
+                <viewControllerPlaceholder storyboardName="MIDIPlayerContainer" id="9eP-6Y-Ip3" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="8v7-d4-8pw" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="705.375" y="591.75"/>
+        </scene>
+        <!--Instrument-->
+        <scene sceneID="zCl-gD-8Cj">
+            <objects>
+                <viewControllerPlaceholder storyboardIdentifier="Instrument" storyboardName="Instrument" referencedIdentifier="Instrument" id="4eE-ek-zDs" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="AML-F1-GBa" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="862.125" y="765"/>
+        </scene>
+        <!--Purgatory-->
+        <scene sceneID="sKb-zw-p7r">
+            <objects>
+                <viewController storyboardIdentifier="Purgatory" modalTransitionStyle="crossDissolve" id="kZP-V5-1kq" userLabel="Purgatory" customClass="PurgatoryViewController" customModule="Groove" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="vAG-x6-Qtc"/>
+                        <viewControllerLayoutGuide type="bottom" id="9fn-Bb-FvO"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Fyn-HN-Jjf">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="h7J-9k-NnZ" userLabel="Backdrop">
+                                <frame key="frameInset" minX="20" width="560" height="600"/>
+                                <accessibility key="accessibilityConfiguration" identifier="Backdrop"/>
+                            </imageView>
+                            <visualEffectView opaque="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WZT-dO-D51">
+                                <frame key="frameInset" width="600" height="600"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="Fv2-OO-TrL">
+                                    <frame key="frameInset"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <visualEffectView opaque="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="u1J-1V-Ee7">
+                                            <frame key="frameInset" width="600" height="600"/>
+                                            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="h13-pC-meS">
+                                                <frame key="frameInset"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Please enable iCloud Drive in Settings" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="G6r-hu-iAC" userLabel="Message">
+                                                        <frame key="frameInset" minX="91" minY="290" width="417" height="20.5"/>
+                                                        <accessibility key="accessibilityConfiguration" identifier="Message"/>
+                                                        <fontDescription key="fontDescription" name="EvelethLight" family="Eveleth" pointSize="17"/>
+                                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                        <nil key="highlightedColor"/>
+                                                        <userDefinedRuntimeAttributes>
+                                                            <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="Message"/>
+                                                        </userDefinedRuntimeAttributes>
+                                                    </label>
+                                                </subviews>
+                                                <constraints>
+                                                    <constraint firstItem="G6r-hu-iAC" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="h13-pC-meS" secondAttribute="leading" id="NEk-mZ-K49"/>
+                                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="G6r-hu-iAC" secondAttribute="trailing" id="OTQ-BZ-cuM"/>
+                                                    <constraint firstItem="G6r-hu-iAC" firstAttribute="centerX" secondItem="h13-pC-meS" secondAttribute="centerX" id="eZx-Pz-4ap"/>
+                                                    <constraint firstItem="G6r-hu-iAC" firstAttribute="centerY" secondItem="h13-pC-meS" secondAttribute="centerY" id="yGW-dP-Sb2"/>
+                                                </constraints>
+                                            </view>
+                                            <vibrancyEffect>
+                                                <blurEffect style="light"/>
+                                            </vibrancyEffect>
+                                        </visualEffectView>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="trailing" secondItem="u1J-1V-Ee7" secondAttribute="trailing" id="CZX-ar-P5W"/>
+                                        <constraint firstItem="u1J-1V-Ee7" firstAttribute="top" secondItem="Fv2-OO-TrL" secondAttribute="top" id="MEt-0c-XRT"/>
+                                        <constraint firstItem="u1J-1V-Ee7" firstAttribute="leading" secondItem="Fv2-OO-TrL" secondAttribute="leading" id="dez-j2-OtG"/>
+                                        <constraint firstAttribute="bottom" secondItem="u1J-1V-Ee7" secondAttribute="bottom" id="scj-y6-4Fr"/>
+                                    </constraints>
+                                </view>
+                                <blurEffect style="light"/>
+                            </visualEffectView>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="9fn-Bb-FvO" firstAttribute="top" secondItem="h7J-9k-NnZ" secondAttribute="bottom" id="8wq-bw-d8B"/>
+                            <constraint firstItem="9fn-Bb-FvO" firstAttribute="top" secondItem="WZT-dO-D51" secondAttribute="bottom" id="QoW-ma-tYA"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="h7J-9k-NnZ" secondAttribute="trailing" id="R6m-CF-3Q9"/>
+                            <constraint firstAttribute="trailing" secondItem="WZT-dO-D51" secondAttribute="trailing" id="V3N-V6-SRf"/>
+                            <constraint firstItem="WZT-dO-D51" firstAttribute="leading" secondItem="Fyn-HN-Jjf" secondAttribute="leading" id="eVd-6K-qhs"/>
+                            <constraint firstItem="h7J-9k-NnZ" firstAttribute="leading" secondItem="Fyn-HN-Jjf" secondAttribute="leadingMargin" id="qkh-IK-CEr"/>
+                            <constraint firstItem="WZT-dO-D51" firstAttribute="top" secondItem="vAG-x6-Qtc" secondAttribute="bottom" id="r0u-0M-m9W"/>
+                            <constraint firstItem="h7J-9k-NnZ" firstAttribute="top" secondItem="vAG-x6-Qtc" secondAttribute="bottom" id="z1w-L8-9xx"/>
+                        </constraints>
+                    </view>
+                    <nil key="simulatedStatusBarMetrics"/>
+                    <nil key="simulatedTopBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="backdrop" destination="h7J-9k-NnZ" id="SwB-gX-sWg"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="oNM-PK-XfG" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="844.5" y="1380.75"/>
+        </scene>
+        <!--Documents-->
+        <scene sceneID="yJ1-PB-18M">
+            <objects>
+                <viewControllerPlaceholder storyboardIdentifier="Files" storyboardName="Documents" referencedIdentifier="Documents" id="Eww-vV-yXw" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Czz-jX-k9v" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-97.875" y="1036.5"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="files" width="56" height="56"/>
+        <image name="files-selected" width="56" height="56"/>
+        <image name="horizontal_thumb" width="46" height="46"/>
+        <image name="horizontal_track" width="20" height="46"/>
+        <image name="metronome" width="56" height="56"/>
+        <image name="metronome-selected" width="56" height="56"/>
+    </resources>
+</document>

@@ -129,19 +129,16 @@ final class LogManager: MoonKit.LogManager {
     Time.defaultLogContext            = SequencerContext//  ∪ .Console
     Transport.defaultLogContext       = SequencerContext//  ∪ .Console
 
-    MIDIPlayer.defaultLogContext           = SceneContext//  ∪ .Console
-    MIDIPlayerScene.defaultLogContext      = SceneContext//  ∪ .Console
+    MIDINodePlayer.defaultLogContext           = SceneContext//  ∪ .Console
+    MIDINodePlayerScene.defaultLogContext      = SceneContext//  ∪ .Console
     MIDINodeHistory.defaultLogContext      = SceneContext//  ∪ .Console
-    MIDIPlayerNode.defaultLogContext       = SceneContext//  ∪ .Console
+    MIDINodePlayerNode.defaultLogContext       = SceneContext//  ∪ .Console
     AddTool.defaultLogContext              = SceneContext//  ∪ .Console
     RemoveTool.defaultLogContext           = SceneContext//  ∪ .Console
     GeneratorTool.defaultLogContext        = SceneContext//  ∪ .Console
     MIDINode.defaultLogContext             = SceneContext//  ∪ .Console
-    Trajectory.defaultLogContext           = SceneContext//  ∪ .Console
-    MIDINodePath.defaultLogContext         = SceneContext//  ∪ .Console
-    Segment.defaultLogContext              = SceneContext//  ∪ .Console
 
-    MIDIPlayerViewController.defaultLogContext     = UIContext//  ∪ .Console
+    MIDINodePlayerViewController.defaultLogContext     = UIContext//  ∪ .Console
     PurgatoryViewController.defaultLogContext      = UIContext//  ∪ .Console
     DocumentsViewController.defaultLogContext      = UIContext  ∪ .console
     InstrumentViewController.defaultLogContext     = UIContext//  ∪ .Console
@@ -193,22 +190,19 @@ extension MIDINodeHistory: Loggable {}
 extension MIDIEventContainer: Loggable {}
 extension GrooveFile: Loggable {}
 
-extension MIDIPlayer: Loggable {}
-extension MIDIPlayerScene: Loggable {}
-extension MIDIPlayerNode: Loggable {}
+extension MIDINodePlayer: Loggable {}
+extension MIDINodePlayerScene: Loggable {}
+extension MIDINodePlayerNode: Loggable {}
 extension AddTool: Loggable {}
 extension RemoveTool: Loggable {}
 extension GeneratorTool: Loggable {}
 extension MIDINode: Loggable {}
-extension Trajectory: Loggable {}
 extension SKNode: Nameable {}
-extension MIDINodePath: Loggable {}
-extension Segment: Loggable {}
 
 extension RootViewController: Loggable {}
 extension TransportViewController: Loggable {}
 extension Transport: Loggable {}
-extension MIDIPlayerViewController: Loggable {}
+extension MIDINodePlayerViewController: Loggable {}
 extension PurgatoryViewController: Loggable {}
 extension DocumentsViewController: Loggable {}
 extension InstrumentViewController: Loggable {}

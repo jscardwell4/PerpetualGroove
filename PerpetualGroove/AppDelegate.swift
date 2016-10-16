@@ -38,7 +38,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
           SettingsManager.initialize()
           try AudioManager.initialize()
           try Sequencer.initialize()
-          MIDIPlayer.initialize()
+          MIDINodePlayer.initialize()
           DocumentManager.initialize()
         } catch {
           logError(error)
