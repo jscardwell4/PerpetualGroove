@@ -1,7 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="ANH-iZ-FUo">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="ANH-iZ-FUo">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--Mixer-->
@@ -12,26 +14,25 @@
             </objects>
             <point key="canvasLocation" x="808" y="400"/>
         </scene>
-        <!--Mixer Container View Controller-->
+        <!--Mixer Container-->
         <scene sceneID="wQo-RF-yqm">
             <objects>
-                <viewController id="ANH-iZ-FUo" customClass="MixerContainerViewController" customModule="Groove" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="ANH-iZ-FUo" customClass="MixerContainer" customModule="Groove" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="MSX-be-vq5"/>
                         <viewControllerLayoutGuide type="bottom" id="ANJ-Gd-RJH"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="abF-KI-zCY">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vuM-GP-avi">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <connections>
                                     <segue destination="H9k-bd-7Rh" kind="embed" identifier="Mixer" id="P8a-Ri-pXb"/>
                                 </connections>
                             </containerView>
                         </subviews>
-                        <color key="backgroundColor" red="0.30125221610069275" green="0.29395070672035217" blue="0.28606623411178589" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" red="0.30125221610069275" green="0.29395070672035217" blue="0.28606623411178589" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="ANJ-Gd-RJH" firstAttribute="top" secondItem="vuM-GP-avi" secondAttribute="bottom" id="DNO-wh-BdW"/>
                             <constraint firstItem="vuM-GP-avi" firstAttribute="leading" secondItem="abF-KI-zCY" secondAttribute="leading" id="IfY-fx-xfx"/>

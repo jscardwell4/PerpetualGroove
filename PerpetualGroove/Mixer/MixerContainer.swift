@@ -1,5 +1,5 @@
 //
-//  MixerContainerViewController.swift
+//  MixerContainer.swift
 //  PerpetualGroove
 //
 //  Created by Jason Cardwell on 1/7/16.
@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import MoonKit
 
-final class MixerContainerViewController: SecondaryControllerContainer {
+final class MixerContainer: SecondaryControllerContainer {
   
   fileprivate(set) weak var mixerViewController: MixerViewController!
 

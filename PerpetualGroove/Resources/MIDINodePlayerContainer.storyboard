@@ -1,37 +1,38 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="pGy-FY-X8Y">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="pGy-FY-X8Y">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--MIDIPlayer-->
+        <!--MIDINodePlayer-->
         <scene sceneID="nih-nN-Z58">
             <objects>
-                <viewControllerPlaceholder storyboardName="MIDIPlayer" id="DN1-fg-RLZ" sceneMemberID="viewController"/>
+                <viewControllerPlaceholder storyboardName="MIDINodePlayer" id="DN1-fg-RLZ" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1kt-w4-w0q" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="658" y="591"/>
         </scene>
-        <!--Player Container View Controller-->
+        <!--Node Player Container-->
         <scene sceneID="th2-7M-uWS">
             <objects>
-                <viewController id="pGy-FY-X8Y" customClass="MIDIPlayerContainerViewController" customModule="Groove" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="pGy-FY-X8Y" customClass="MIDINodePlayerContainer" customModule="Groove" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="zNj-XQ-VlV"/>
                         <viewControllerLayoutGuide type="bottom" id="Zyg-Zx-L8U"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="dqP-mg-IGU">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Kk4-LH-wbv">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <connections>
-                                    <segue destination="DN1-fg-RLZ" kind="embed" identifier="MIDIPlayer" id="BRW-ZN-JTo"/>
+                                    <segue destination="DN1-fg-RLZ" kind="embed" identifier="MIDINodePlayer" id="BRW-ZN-JTo"/>
                                 </connections>
                             </containerView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="Zyg-Zx-L8U" firstAttribute="top" secondItem="Kk4-LH-wbv" secondAttribute="bottom" id="8Hh-u8-5Kg"/>
                             <constraint firstItem="Kk4-LH-wbv" firstAttribute="leading" secondItem="dqP-mg-IGU" secondAttribute="leading" id="guh-jE-awc"/>

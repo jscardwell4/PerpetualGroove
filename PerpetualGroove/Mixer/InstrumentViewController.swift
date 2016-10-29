@@ -11,8 +11,8 @@ import MoonKit
 
 final class InstrumentViewController: UIViewController, SecondaryControllerContent {
 
-  @IBOutlet weak var soundSetPicker: InlinePickerView!
-  @IBOutlet weak var programPicker:  InlinePickerView!
+  @IBOutlet weak var soundSetPicker: SoundFontSelector!
+  @IBOutlet weak var programPicker:  ProgramSelector!
   @IBOutlet weak var channelStepper: LabeledStepper!
 
   fileprivate let receptionist: NotificationReceptionist = {
@@ -23,9 +23,6 @@ final class InstrumentViewController: UIViewController, SecondaryControllerConte
 
   override func awakeFromNib() {
     super.awakeFromNib()
-//    receptionist.observe(name: Sequencer.NotificationName.soundSetSelectionTargetDidChange.rawValue, from: Sequencer.self) {
-//      [weak self] in self?.instrument = $0.newSoundSetSelectionTarget
-//    }
     receptionist.observe(name: Sequencer.NotificationName.didUpdateAvailableSoundSets.rawValue,
                          from: Sequencer.self,
                          callback: weakMethod(self, InstrumentViewController.updateSoundSets))
@@ -34,20 +31,19 @@ final class InstrumentViewController: UIViewController, SecondaryControllerConte
   fileprivate func updateSoundSets(_ notification: Notification) { updateSoundSets() }
 
   fileprivate func updateSoundSets() {
-    soundSetPicker.labels = Sequencer.soundSets.map { $0.displayName }
-//    instrument = Sequencer.soundSetSelectionTarget
+    soundSetPicker.refreshLabels()
   }
 
 
   @IBAction func didPickSoundSet() {
     guard let instrument = instrument else { return }
-    let soundSet = Sequencer.soundSets[soundSetPicker.selection]
-    let preset = Instrument.Preset(soundFont: soundSet, presetHeader: soundSet[0], channel: 0)
+    let soundFont = Sequencer.soundSets[soundSetPicker.selection]
+    let preset = Instrument.Preset(soundFont: soundFont, presetHeader: soundFont[0], channel: 0)
 
     do {
       try instrument.loadPreset(preset)
       programPicker.selection = 0
-      programPicker.labels = soundSet.presetHeaders.map({$0.name})
+      programPicker.soundFont = soundFont
       audition()
     } catch {
       logError(error)
@@ -83,13 +79,13 @@ final class InstrumentViewController: UIViewController, SecondaryControllerConte
     didSet {
       guard let instrument = instrument,
         let soundSetIndex = instrument.soundFont.index,
-        let presetIndex = instrument.soundFont.presetHeaders.index(of: instrument.preset.presetHeader) ,
+        let presetIndex = instrument.soundFont.presetHeaders.index(of: instrument.preset.presetHeader),
         isViewLoaded
       else { return }
 
       initialPreset = instrument.preset
       soundSetPicker.selectItem(soundSetIndex, animated: true)
-      programPicker.labels = instrument.soundFont.presetHeaders.map({$0.name})
+      programPicker.soundFont = instrument.soundFont
       programPicker.selectItem(presetIndex, animated: true)
       channelStepper.value = Double(instrument.channel)
     }

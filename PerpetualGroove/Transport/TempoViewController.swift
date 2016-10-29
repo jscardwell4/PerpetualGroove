@@ -14,13 +14,10 @@ final class TempoViewController: UIViewController {
   @IBOutlet weak var tempoSlider: Slider!
   @IBOutlet weak var metronomeButton: ImageButtonView!
 
-  /** tempoSliderValueDidChange */
   @IBAction fileprivate func tempoSliderValueDidChange() { Sequencer.tempo = Double(tempoSlider.value) }
 
-  /** toggleMetronome */
   @IBAction fileprivate func toggleMetronome() { AudioManager.metronome.on = !AudioManager.metronome.on }
 
-  /** viewDidLoad */
   override func viewDidLoad() {
     super.viewDidLoad()
     tempoSlider.value = Float(Sequencer.tempo)

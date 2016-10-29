@@ -1,21 +1,23 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="6xH-va-xT7">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="6xH-va-xT7">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
         <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
-        <mutableArray key="Latinotype - Triump-Rg-Rock-02.otf">
+        <array key="Latinotype - Triump-Rg-Rock-02.otf">
             <string>Triump-Rg-Rock-02</string>
-        </mutableArray>
+        </array>
     </customFonts>
     <scenes>
-        <!--Player View Controller-->
+        <!--Node Player View Controller-->
         <scene sceneID="Klf-hv-dkY">
             <objects>
-                <viewController storyboardIdentifier="MIDIPlayer" id="6xH-va-xT7" customClass="MIDIPlayerViewController" customModule="Groove" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MIDIPlayer" id="6xH-va-xT7" customClass="MIDINodePlayerViewController" customModule="Groove" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="3bO-nI-SWz"/>
                         <viewControllerLayoutGuide type="bottom" id="MgW-0J-CjH"/>
@@ -25,9 +27,8 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" verticalHuggingPriority="1000" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Awesome Sauce" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="i4O-SR-ImV">
-                                <rect key="frame" x="20" y="0.0" width="447" height="70"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                <color key="textColor" red="0.72547006609999998" green="0.70085549349999998" blue="0.66211640829999996" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="textColor" red="0.72547006609999998" green="0.70085549349999998" blue="0.66211640829999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <fontDescription key="fontDescription" name="Triump-Rg-Rock-02" family="Triump Rg Rock" pointSize="24"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="words" autocorrectionType="no" spellCheckingType="no" keyboardType="alphabet" keyboardAppearance="alert" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
                                 <userDefinedRuntimeAttributes>
@@ -37,9 +38,8 @@
                                     <outlet property="delegate" destination="6xH-va-xT7" id="7cP-70-k1G"/>
                                 </connections>
                             </textField>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JSz-xf-acH" userLabel="MIDI Player" customClass="MIDIPlayerView" customModule="Groove" customModuleProvider="target">
-                                <rect key="frame" x="20" y="78" width="447" height="447"/>
-                                <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="calibratedRGB"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JSz-xf-acH" userLabel="MIDI Player" customClass="MIDINodePlayerView" customModule="Groove" customModuleProvider="target">
+                                <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <accessibility key="accessibilityConfiguration" identifier="MIDIPlayer"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="JSz-xf-acH" secondAttribute="height" multiplier="1:1" identifier="MIDIPlayerAspectRatio" id="EWs-d5-4VK"/>
@@ -49,24 +49,23 @@
                                 </userDefinedRuntimeAttributes>
                             </view>
                             <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="spinner1" translatesAutoresizingMaskIntoConstraints="NO" id="Qhw-iu-ZQX" userLabel="Spinner" customClass="TemplateImageView" customModule="MoonKit">
-                                <rect key="frame" x="215" y="273" width="56" height="56"/>
-                                <color key="tintColor" red="0.88567054270000001" green="0.84600132699999997" blue="0.78708314899999998" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="tintColor" red="0.88567054270000001" green="0.84600132699999997" blue="0.78708314899999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <accessibility key="accessibilityConfiguration" identifier="Spinner"/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="Spinner"/>
                                 </userDefinedRuntimeAttributes>
                             </imageView>
                             <stackView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="250" distribution="fillEqually" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="h0o-PY-Uep">
-                                <rect key="frame" x="425" y="533" width="42" height="42"/>
                                 <subviews>
                                     <view hidden="YES" opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="u5W-aV-tWA" userLabel="BeginRepeat" customClass="ImageButtonView" customModule="MoonKit">
-                                        <rect key="frame" x="-5" y="0.0" width="0.0" height="42"/>
+                                        <frame key="frameInset" minX="-5" height="42"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <accessibility key="accessibilityConfiguration" identifier="BeginRepeatButton"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/begin_repeat"/>
                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="BeginRepeatButton"/>
                                             <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
-                                                <color key="value" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="value" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                         <connections>
@@ -74,13 +73,14 @@
                                         </connections>
                                     </view>
                                     <view hidden="YES" opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="YHK-Is-Vea" userLabel="EndRepeat" customClass="ImageButtonView" customModule="MoonKit">
-                                        <rect key="frame" x="-5" y="0.0" width="0.0" height="42"/>
+                                        <frame key="frameInset" minX="-5" height="42"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <accessibility key="accessibilityConfiguration" identifier="EndRepeatButton"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/end_repeat"/>
                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="EndRepeatButton"/>
                                             <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
-                                                <color key="value" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="value" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                         <connections>
@@ -88,14 +88,15 @@
                                         </connections>
                                     </view>
                                     <view hidden="YES" opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="aYX-60-jIT" userLabel="LoopCancel" customClass="ImageButtonView" customModule="MoonKit">
-                                        <rect key="frame" x="-5" y="0.0" width="0.0" height="42"/>
+                                        <frame key="frameInset" minX="-5" height="42"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <accessibility key="accessibilityConfiguration" identifier="LoopCancelButton"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/cancel_loop"/>
                                             <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="Editing/cancel_loop-selected"/>
                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="LoopCancelButton"/>
                                             <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
-                                                <color key="value" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="value" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                         <connections>
@@ -103,14 +104,15 @@
                                         </connections>
                                     </view>
                                     <view hidden="YES" opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="WxC-Hj-9Vz" userLabel="LoopConfirm" customClass="ImageButtonView" customModule="MoonKit">
-                                        <rect key="frame" x="-5" y="0.0" width="0.0" height="42"/>
+                                        <frame key="frameInset" minX="-5" height="42"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <accessibility key="accessibilityConfiguration" identifier="LoopConfirmButton"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/confirm_loop"/>
                                             <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="Editing/confirm_loop-selected"/>
                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="LoopConfirmButton"/>
                                             <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
-                                                <color key="value" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="value" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                         <connections>
@@ -118,14 +120,15 @@
                                         </connections>
                                     </view>
                                     <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="RVW-Dd-0QR" userLabel="LoopToggle" customClass="ImageButtonView" customModule="MoonKit">
-                                        <rect key="frame" x="0.0" y="0.0" width="42" height="42"/>
+                                        <frame key="frameInset" width="42" height="42"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <accessibility key="accessibilityConfiguration" identifier="LoopToggleButton"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/tape"/>
                                             <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="Editing/tape-selected"/>
                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="LoopToggleButton"/>
                                             <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
-                                                <color key="value" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="value" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                         <connections>
@@ -150,80 +153,72 @@
                                 </variation>
                             </stackView>
                             <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gkj-sJ-IZN" userLabel="Tools" customClass="ImageSegmentedControl" customModule="MoonKit">
-                                <rect key="frame" x="20" y="533" width="250" height="42"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="bvY-A7-VNE">
-                                        <rect key="frame" x="0.0" y="0.0" width="250" height="42"/>
                                         <subviews>
                                             <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="6PF-rp-kmP" userLabel="AddNote" customClass="ImageButtonView" customModule="MoonKit">
-                                                <rect key="frame" x="0.0" y="0.0" width="34" height="42"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="AddNoteButton"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/node_note_add"/>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="Editing/node_note_add-selected"/>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="AddNoteButton"/>
                                                     <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
-                                                        <color key="value" red="0.64416515827178955" green="0.5787731409072876" blue="0.48529356718063354" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <color key="value" red="0.64416515827178955" green="0.5787731409072876" blue="0.48529356718063354" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
                                             </view>
                                             <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="ajH-64-K10" userLabel="Add" customClass="ImageButtonView" customModule="MoonKit">
-                                                <rect key="frame" x="44" y="0.0" width="33" height="42"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="AddButton"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/node_add"/>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="Editing/node_add-selected"/>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="AddButton"/>
                                                     <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
-                                                        <color key="value" red="0.64416515827178955" green="0.5787731409072876" blue="0.48529356718063354" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <color key="value" red="0.64416515827178955" green="0.5787731409072876" blue="0.48529356718063354" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
                                             </view>
                                             <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="k9y-ve-9u9" userLabel="Remove" customClass="ImageButtonView" customModule="MoonKit">
-                                                <rect key="frame" x="87" y="0.0" width="34" height="42"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="RemoveButton"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/node_remove"/>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="Editing/node_remove-selected"/>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="RemoveButton"/>
                                                     <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
-                                                        <color key="value" red="0.64416515827178955" green="0.5787731409072876" blue="0.48529356718063354" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <color key="value" red="0.64416515827178955" green="0.5787731409072876" blue="0.48529356718063354" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
                                             </view>
                                             <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="Axm-CN-6iz" userLabel="Delete" customClass="ImageButtonView" customModule="MoonKit">
-                                                <rect key="frame" x="130" y="0.0" width="34" height="42"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="DeleteButton"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/node_delete"/>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="Editing/node_delete-selected"/>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="DeleteButton"/>
                                                     <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
-                                                        <color key="value" red="0.64416515827178955" green="0.5787731409072876" blue="0.48529356718063354" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <color key="value" red="0.64416515827178955" green="0.5787731409072876" blue="0.48529356718063354" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
                                             </view>
                                             <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="vcL-FB-on7" userLabel="Generator" customClass="ImageButtonView" customModule="MoonKit">
-                                                <rect key="frame" x="174" y="0.0" width="33" height="42"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="GeneratorButton"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/node_note"/>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="Editing/node_note-selected"/>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="GeneratorButton"/>
                                                     <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
-                                                        <color key="value" red="0.64416515827178955" green="0.5787731409072876" blue="0.48529356718063354" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <color key="value" red="0.64416515827178955" green="0.5787731409072876" blue="0.48529356718063354" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
                                             </view>
                                             <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="1Q9-KO-Oxv" userLabel="Rotate" customClass="ImageButtonView" customModule="MoonKit">
-                                                <rect key="frame" x="217" y="0.0" width="34" height="42"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="RotateButton"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="image" value="Editing/rotate"/>
                                                     <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="Editing/rotate-selected"/>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="GeneratorButton"/>
                                                     <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
-                                                        <color key="value" red="0.64416515827178955" green="0.5787731409072876" blue="0.48529356718063354" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <color key="value" red="0.64416515827178955" green="0.5787731409072876" blue="0.48529356718063354" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
                                             </view>
@@ -241,7 +236,7 @@
                                 </constraints>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
-                                        <color key="value" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="value" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     </userDefinedRuntimeAttribute>
                                     <userDefinedRuntimeAttribute type="number" keyPath="selectedSegmentIndex">
                                         <integer key="value" value="-1"/>
@@ -253,7 +248,7 @@
                                 </connections>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" red="0.20000000298023224" green="0.19607843458652496" blue="0.19215686619281769" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" red="0.20000000298023224" green="0.19607843458652496" blue="0.19215686619281769" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstAttribute="trailingMargin" secondItem="i4O-SR-ImV" secondAttribute="trailing" id="7nS-JX-As3"/>
                             <constraint firstItem="Qhw-iu-ZQX" firstAttribute="centerX" secondItem="JSz-xf-acH" secondAttribute="centerX" id="DHJ-lw-ylz"/>
@@ -332,5 +327,5 @@
         <image name="Editing/tape-selected" width="56" height="56"/>
         <image name="spinner1" width="56" height="56"/>
     </resources>
-    <color key="tintColor" red="0.8434065580368042" green="0.78949379920959473" blue="0.71009701490402222" alpha="1" colorSpace="calibratedRGB"/>
+    <color key="tintColor" red="0.8434065580368042" green="0.78949379920959473" blue="0.71009701490402222" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

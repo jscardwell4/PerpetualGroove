@@ -66,11 +66,9 @@ class NodeSelectionTool: Tool {
 
   init(playerNode: MIDINodePlayerNode) {
     player = playerNode
-    receptionist.observe(name: .didAddNode,
-                         from: MIDINodePlayer.self,
+    receptionist.observe(name: .didAddNode, from: MIDINodePlayer.self,
                          callback: weakMethod(self, NodeSelectionTool.didAddNode))
-    receptionist.observe(name: .didRemoveNode,
-                         from: MIDINodePlayer.self,
+    receptionist.observe(name: .didRemoveNode, from: MIDINodePlayer.self,
                          callback: weakMethod(self, NodeSelectionTool.didRemoveNode))
   }
 
@@ -153,25 +151,25 @@ class PresentingNodeSelectionTool: NodeSelectionTool, PresentingTool {
     guard
       active && player.midiNodes.count == 2,
       let secondaryContent = _secondaryContent,
-      !secondaryContent.disabledActions.intersection([.Previous, .Next]).isEmpty
+      !secondaryContent.disabledActions.intersection([.previous, .next]).isEmpty
       else
     {
       return
     }
 
-    secondaryContent.disabledActions = .None
+    secondaryContent.disabledActions = .none
   }
 
   override func didRemoveNode(_ notification: Notification) {
     guard
       active && player.midiNodes.count < 2,
       let secondaryContent = _secondaryContent,
-      secondaryContent.disabledActions.intersection([.Previous, .Next]).isEmpty
+      secondaryContent.disabledActions.intersection([.previous, .next]).isEmpty
       else
     {
       return
     }
-    secondaryContent.disabledActions ∪= [.Previous, .Next]
+    secondaryContent.disabledActions ∪= [.previous, .next]
   }
 
 }

@@ -117,32 +117,20 @@ final class TrackLabel: UIView {
     addGestureRecognizer(tapGesture)
   }
 
-  /**
-  intrinsicContentSize
+  override func intrinsicContentSize() -> CGSize {
+    return max(marquee.intrinsicContentSize(), textField.intrinsicContentSize())
+  }
 
-  - returns: CGSize
-  */
-  override func intrinsicContentSize() -> CGSize { return max(marquee.intrinsicContentSize(), textField.intrinsicContentSize()) }
+  override init(frame: CGRect) {
+    super.init(frame: frame)
+    setup()
+  }
 
-  /**
-  initWithFrame:
+  required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+    setup()
+  }
 
-  - parameter frame: CGRect
-  */
-  override init(frame: CGRect) { super.init(frame: frame); setup() }
-
-  /**
-  init:
-
-  - parameter aDecoder: NSCoder
-  */
-  required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder); setup() }
-
-  /**
-  handleTap:
-
-  - parameter gesture: UITapGestureRecognizer
-  */
   @objc private func handleTap(gesture: UITapGestureRecognizer) {
     guard gesture == tapGesture && gesture.state == .Recognized else { return }
     UIView.transitionFromView(marquee, toView: textField, duration: 0.25, options: [.ShowHideTransitionViews]) {
@@ -157,11 +145,6 @@ final class TrackLabel: UIView {
 
 extension TrackLabel: UITextFieldDelegate {
 
-  /**
-  textFieldDidEndEditing:
-
-  - parameter textField: UITextField
-  */
   func textFieldDidEndEditing(textField: UITextField) {
     UIView.transitionFromView(textField, toView: marquee, duration: 0.25, options: [.ShowHideTransitionViews]) {
       [unowned self] in
@@ -170,13 +153,6 @@ extension TrackLabel: UITextFieldDelegate {
     }
   }
 
-  /**
-  textFieldShouldReturn:
-
-  - parameter textField: UITextField
-
-  - returns: Bool
-  */
   func textFieldShouldReturn(textField: UITextField) -> Bool {
     if let label = textField.text {
       text = label

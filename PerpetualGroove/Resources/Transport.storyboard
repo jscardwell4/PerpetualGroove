@@ -1,8 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Ca0-NX-Etk">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Ca0-NX-Etk">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--Transport View Controller-->
@@ -18,11 +20,9 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="ywE-fa-J4k" userLabel="TransportStack">
-                                <rect key="frame" x="0.0" y="47" width="188" height="56"/>
                                 <subviews>
                                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UdC-Lc-CsQ" userLabel="Record" customClass="ImageButtonView" customModule="MoonKit">
-                                        <rect key="frame" x="0.0" y="0.0" width="56" height="56"/>
-                                        <color key="tintColor" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="tintColor" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <accessibility key="accessibilityConfiguration" identifier="RecordButton"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="56" id="1Tc-cx-3Wo"/>
@@ -31,16 +31,16 @@
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="image" keyPath="image" value="record"/>
                                             <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
-                                                <color key="value" red="0.8608990312" green="0.29020571709999998" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="deviceRGB"/>
+                                                <color key="value" red="0.81776785850524902" green="0.20547571778297424" blue="0.020901868119835854" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             </userDefinedRuntimeAttribute>
                                             <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="Record"/>
                                             <userDefinedRuntimeAttribute type="color" keyPath="selectedTintColor">
-                                                <color key="value" red="0.70097428559999997" green="0.1799110025" blue="0.01587773114" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="value" red="0.70097428559999997" green="0.1799110025" blue="0.01587773114" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             </userDefinedRuntimeAttribute>
                                             <userDefinedRuntimeAttribute type="image" keyPath="selectedImage" value="record-selected"/>
                                             <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
-                                                <color key="value" red="0.72547006609999998" green="0.70085549349999998" blue="0.66211640829999996" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="value" red="0.72547006609999998" green="0.70085549349999998" blue="0.66211640829999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                         <connections>
@@ -48,8 +48,7 @@
                                         </connections>
                                     </view>
                                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="shB-u6-RyK" userLabel="Play/Pause" customClass="ImageButtonView" customModule="MoonKit">
-                                        <rect key="frame" x="66" y="0.0" width="56" height="56"/>
-                                        <color key="tintColor" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="tintColor" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <accessibility key="accessibilityConfiguration" identifier="PlayPauseButton"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="shB-u6-RyK" secondAttribute="height" multiplier="1:1" identifier="PlayPauseAspectRatio" id="ARo-PH-lqX"/>
@@ -57,12 +56,12 @@
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="image" keyPath="image" value="play"/>
                                             <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
-                                                <color key="value" red="0.90891814230000001" green="0.8747615218" blue="0.82637178899999997" alpha="1" colorSpace="custom" customColorSpace="deviceRGB"/>
+                                                <color key="value" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             </userDefinedRuntimeAttribute>
                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="PlayPause"/>
                                             <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="play-selected"/>
                                             <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
-                                                <color key="value" red="0.72547006609999998" green="0.70085549349999998" blue="0.66211640829999996" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="value" red="0.72547006609999998" green="0.70085549349999998" blue="0.66211640829999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                         <connections>
@@ -70,8 +69,7 @@
                                         </connections>
                                     </view>
                                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SU3-DN-JUZ" userLabel="Stop" customClass="ImageButtonView" customModule="MoonKit">
-                                        <rect key="frame" x="132" y="0.0" width="56" height="56"/>
-                                        <color key="tintColor" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="tintColor" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <accessibility key="accessibilityConfiguration" identifier="StopButton"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="SU3-DN-JUZ" secondAttribute="height" multiplier="1:1" identifier="StopAspectRatio" id="nQm-pd-q8N"/>
@@ -79,17 +77,17 @@
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="image" keyPath="image" value="stop"/>
                                             <userDefinedRuntimeAttribute type="color" keyPath="disabledTintColor">
-                                                <color key="value" red="0.51420629019999997" green="0.50113999840000001" blue="0.48703506590000001" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="value" red="0.51420629019999997" green="0.50113999840000001" blue="0.48703506590000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             </userDefinedRuntimeAttribute>
                                             <userDefinedRuntimeAttribute type="boolean" keyPath="enabled" value="NO"/>
                                             <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
-                                                <color key="value" red="0.90891814230000001" green="0.8747615218" blue="0.82637178899999997" alpha="1" colorSpace="custom" customColorSpace="deviceRGB"/>
+                                                <color key="value" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             </userDefinedRuntimeAttribute>
                                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="Stop"/>
                                             <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="stop-selected"/>
                                             <userDefinedRuntimeAttribute type="image" keyPath="disabledImage" value="stop"/>
                                             <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
-                                                <color key="value" red="0.72547006609999998" green="0.70085549349999998" blue="0.66211640829999996" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="value" red="0.72547006609999998" green="0.70085549349999998" blue="0.66211640829999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                         <connections>
@@ -107,18 +105,17 @@
                                 </userDefinedRuntimeAttributes>
                             </stackView>
                             <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lPl-aB-P3Z" customClass="ScrollWheel" customModule="MoonKit">
-                                <rect key="frame" x="228" y="10" width="130" height="130"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                 <accessibility key="accessibilityConfiguration" identifier="JogWheel"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="lPl-aB-P3Z" secondAttribute="height" multiplier="1:1" identifier="JogWheelAspectRatio" id="jSP-95-v3s"/>
                                 </constraints>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="color" keyPath="wheelColor">
-                                        <color key="value" red="0.57254904510000004" green="0.52941179279999995" blue="0.47058823700000002" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="value" red="0.57254904510000004" green="0.52941179279999995" blue="0.47058823700000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     </userDefinedRuntimeAttribute>
                                     <userDefinedRuntimeAttribute type="color" keyPath="dimpleColor">
-                                        <color key="value" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="value" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     </userDefinedRuntimeAttribute>
                                     <userDefinedRuntimeAttribute type="image" keyPath="wheelImage" value="wheel"/>
                                     <userDefinedRuntimeAttribute type="image" keyPath="dimpleImage" value="dimple"/>

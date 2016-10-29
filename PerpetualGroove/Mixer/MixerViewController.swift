@@ -168,7 +168,7 @@ final class MixerViewController: UICollectionViewController, SecondaryController
           (_secondaryContent as? InstrumentViewController)?.instrument = newValue.track?.instrument
 
         case (nil, .some):
-          (parent as? MixerContainerViewController)?.presentContent(for: self)
+          (parent as? MixerContainer)?.presentContent(for: self)
 
         case let (oldValue?, nil):
           oldValue.soundSetImage.isSelected = false

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="Yellow Design Studio - Eveleth Light.otf">
+            <string>EvelethLight</string>
+        </array>
+    </customFonts>
+    <scenes>
+        <!--Purgatory-->
+        <scene sceneID="sKb-zw-p7r">
+            <objects>
+                <viewController storyboardIdentifier="Purgatory" modalTransitionStyle="crossDissolve" id="kZP-V5-1kq" userLabel="Purgatory" customClass="PurgatoryViewController" customModule="Groove" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="vAG-x6-Qtc"/>
+                        <viewControllerLayoutGuide type="bottom" id="9fn-Bb-FvO"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Fyn-HN-Jjf">
+                        <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="h7J-9k-NnZ" userLabel="Backdrop">
+                                <accessibility key="accessibilityConfiguration" identifier="Backdrop"/>
+                            </imageView>
+                            <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WZT-dO-D51">
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="Fv2-OO-TrL">
+                                    <frame key="frameInset"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="u1J-1V-Ee7">
+                                            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="h13-pC-meS">
+                                                <frame key="frameInset"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please enable iCloud Drive in Settings" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="G6r-hu-iAC" userLabel="Message">
+                                                        <accessibility key="accessibilityConfiguration" identifier="Message"/>
+                                                        <fontDescription key="fontDescription" name="EvelethLight" family="Eveleth" pointSize="17"/>
+                                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                        <nil key="highlightedColor"/>
+                                                        <userDefinedRuntimeAttributes>
+                                                            <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="Message"/>
+                                                        </userDefinedRuntimeAttributes>
+                                                    </label>
+                                                </subviews>
+                                                <constraints>
+                                                    <constraint firstItem="G6r-hu-iAC" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="h13-pC-meS" secondAttribute="leading" id="NEk-mZ-K49"/>
+                                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="G6r-hu-iAC" secondAttribute="trailing" id="OTQ-BZ-cuM"/>
+                                                    <constraint firstItem="G6r-hu-iAC" firstAttribute="centerX" secondItem="h13-pC-meS" secondAttribute="centerX" id="eZx-Pz-4ap"/>
+                                                    <constraint firstItem="G6r-hu-iAC" firstAttribute="centerY" secondItem="h13-pC-meS" secondAttribute="centerY" id="yGW-dP-Sb2"/>
+                                                </constraints>
+                                            </view>
+                                            <vibrancyEffect>
+                                                <blurEffect style="light"/>
+                                            </vibrancyEffect>
+                                        </visualEffectView>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="trailing" secondItem="u1J-1V-Ee7" secondAttribute="trailing" id="CZX-ar-P5W"/>
+                                        <constraint firstItem="u1J-1V-Ee7" firstAttribute="top" secondItem="Fv2-OO-TrL" secondAttribute="top" id="MEt-0c-XRT"/>
+                                        <constraint firstItem="u1J-1V-Ee7" firstAttribute="leading" secondItem="Fv2-OO-TrL" secondAttribute="leading" id="dez-j2-OtG"/>
+                                        <constraint firstAttribute="bottom" secondItem="u1J-1V-Ee7" secondAttribute="bottom" id="scj-y6-4Fr"/>
+                                    </constraints>
+                                </view>
+                                <blurEffect style="light"/>
+                            </visualEffectView>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="9fn-Bb-FvO" firstAttribute="top" secondItem="h7J-9k-NnZ" secondAttribute="bottom" id="8wq-bw-d8B"/>
+                            <constraint firstItem="9fn-Bb-FvO" firstAttribute="top" secondItem="WZT-dO-D51" secondAttribute="bottom" id="QoW-ma-tYA"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="h7J-9k-NnZ" secondAttribute="trailing" id="R6m-CF-3Q9"/>
+                            <constraint firstAttribute="trailing" secondItem="WZT-dO-D51" secondAttribute="trailing" id="V3N-V6-SRf"/>
+                            <constraint firstItem="WZT-dO-D51" firstAttribute="leading" secondItem="Fyn-HN-Jjf" secondAttribute="leading" id="eVd-6K-qhs"/>
+                            <constraint firstItem="h7J-9k-NnZ" firstAttribute="leading" secondItem="Fyn-HN-Jjf" secondAttribute="leadingMargin" id="qkh-IK-CEr"/>
+                            <constraint firstItem="WZT-dO-D51" firstAttribute="top" secondItem="vAG-x6-Qtc" secondAttribute="bottom" id="r0u-0M-m9W"/>
+                            <constraint firstItem="h7J-9k-NnZ" firstAttribute="top" secondItem="vAG-x6-Qtc" secondAttribute="bottom" id="z1w-L8-9xx"/>
+                        </constraints>
+                    </view>
+                    <nil key="simulatedStatusBarMetrics"/>
+                    <nil key="simulatedTopBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="backdrop" destination="h7J-9k-NnZ" id="SwB-gX-sWg"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="oNM-PK-XfG" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="844.5" y="1380.75"/>
+        </scene>
+    </scenes>
+</document>

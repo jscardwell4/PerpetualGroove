@@ -51,7 +51,7 @@ final class RotateViewController: UIViewController, SecondaryControllerContent {
 
   weak var node: MIDINode?
 
-  var supportedActions: SecondaryControllerContainer.SupportedActions = [.Cancel, .Confirm]
+  var supportedActions: SecondaryControllerContainer.SupportedActions = [.cancel, .confirm]
 
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)

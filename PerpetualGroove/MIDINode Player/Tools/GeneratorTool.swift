@@ -58,8 +58,8 @@ final class GeneratorTool: PresentingNodeSelectionTool {
         secondaryContent.didChangeGenerator = weakMethod(self, GeneratorTool.didChangeGenerator)
         secondaryContent.previousAction = weakMethod(self, NodeSelectionTool.previousNode)
         secondaryContent.nextAction = weakMethod(self, NodeSelectionTool.nextNode)
-        secondaryContent.supportedActions ∪= [.Previous, .Next]
-        secondaryContent.disabledActions = player.midiNodes.count > 1 ? [.None] : [.Previous, .Next]
+        secondaryContent.supportedActions ∪= [.previous, .next]
+        secondaryContent.disabledActions = player.midiNodes.count > 1 ? [.none] : [.previous, .next]
         //TODO: Add cancel/confirm actions?
 
       case .new:
@@ -133,8 +133,8 @@ final class GeneratorViewController: UIViewController, SecondaryControllerConten
   var nextAction: (() -> Void)? = nil
   var previousAction: (() -> Void)? = nil
 
-  var supportedActions: SecondaryControllerContainer.SupportedActions = [.Cancel, .Confirm]
-  var disabledActions: SecondaryControllerContainer.SupportedActions = .None
+  var supportedActions: SecondaryControllerContainer.SupportedActions = [.cancel, .confirm]
+  var disabledActions: SecondaryControllerContainer.SupportedActions = .none
 
   @IBOutlet weak var pitchPicker:    InlinePickerView!
   @IBOutlet weak var octavePicker:   InlinePickerView!
