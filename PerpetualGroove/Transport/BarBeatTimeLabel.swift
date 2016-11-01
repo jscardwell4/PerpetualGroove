@@ -13,6 +13,90 @@ import UIKit
 @IBDesignable
 final class BarBeatTimeLabel: UIView {
 
+  private enum Component {
+    case bar
+    case barBeatDivider
+    case beat
+    case beatSubbeatDivider
+    case subbeat
+
+    static let characterWidth: CGFloat = 26
+    static let characterHeight: CGFloat = 43
+
+    static let sumWidths: CGFloat = Component.characterWidth * 9
+
+    static func originTransform(for bounds: CGRect) -> CGAffineTransform {
+      let 𝝙width = bounds.size.width - Component.characterWidth * 9
+      let 𝝙height = bounds.size.height - Component.characterHeight
+      return CGAffineTransform(translationX: 𝝙width, y: 𝝙height)
+    }
+
+    var characterCount: Int { switch self { case .bar, .subbeat: return 3; default: return 1 } }
+
+    var characterIndex: Int {
+      switch self {
+        case .bar:                return 0
+        case .barBeatDivider:     return 3
+        case .beat:               return 4
+        case .beatSubbeatDivider: return 5
+        case .subbeat:            return 6
+      }
+    }
+
+    var frame: CGRect {
+      return CGRect(x: Component.characterWidth * CGFloat(characterIndex),
+                    y: 0,
+                    width: Component.characterWidth * CGFloat(characterCount),
+                    height: Component.characterHeight)
+    }
+
+    static let characterAttributes: [String:Any] = [
+      NSFontAttributeName: UIFont.largeDisplayFont,
+      NSForegroundColorAttributeName: UIColor.primaryColor,
+      NSParagraphStyleAttributeName: NSParagraphStyle.paragraphStyleWithAttributes(alignment: .center)
+    ]
+
+    static func components(for rect: CGRect) -> [Component] {
+      switch rect {
+        case Component.bar.frame: return [.bar]
+        case Component.barBeatDivider.frame: return [.barBeatDivider]
+        case Component.beat.frame: return [.beat]
+        case Component.beatSubbeatDivider.frame: return [.beatSubbeatDivider]
+        case Component.subbeat.frame: return [.subbeat]
+        default: return [.bar, .barBeatDivider, .beat, .beatSubbeatDivider, .subbeat]
+      }
+    }
+
+    func string(for time: BarBeatTime) -> String {
+      switch self {
+        case .bar:                return String(time.bar + 1, radix: 10, pad: 3)
+        case .barBeatDivider:     return ":"
+        case .beat:               return String(time.beat + 1)
+        case .beatSubbeatDivider: return "."
+        case .subbeat:            return String(time.subbeat + 1, radix: 10, pad: 3)
+      }
+    }
+
+    func draw(_ time: BarBeatTime) {
+
+      let string = self.string(for: time)
+
+      switch characterCount {
+        case 3:
+          let (frame1, frame2_3) = frame.divided(atDistance: Component.characterWidth, from: .minXEdge)
+          let (frame2, frame3) = frame2_3.divided(atDistance: Component.characterWidth, from: .minXEdge)
+
+          for (character, frame) in zip(string.characters, [frame1, frame2, frame3]) {
+            String(character).draw(in: frame, withAttributes: Component.characterAttributes)
+          }
+
+        default:
+          string.draw(in: frame, withAttributes: Component.characterAttributes)
+      }
+    }
+
+  }
+
   private weak var transport: Transport! {
     didSet {
       guard transport !== oldValue else { return }
@@ -20,109 +104,88 @@ final class BarBeatTimeLabel: UIView {
 
       if let oldTransport = oldValue {
         oldTransport.time.removePredicatedCallback(with: callbackIdentifier)
-        receptionist.stopObserving(name: Transport.NotificationName.didJog.rawValue, from: oldValue)
-        receptionist.stopObserving(name: Transport.NotificationName.didReset.rawValue, from: oldValue)
+        receptionist.stopObserving(name: .didJog, from: oldValue)
+        receptionist.stopObserving(name: .didReset, from: oldValue)
       }
 
       guard let transport = transport else { return }
 
       guard transport.time.callbackRegistered(with: callbackIdentifier) == false else { return }
+
       transport.time.register(callback: { [weak self] in self?.currentTime = $0 },
                               predicate: {_ in true},
                               identifier: callbackIdentifier)
-      receptionist.observe(name: Transport.NotificationName.didBeginJogging.rawValue, from: transport) {
+
+      receptionist.observe(name: .didBeginJogging, from: transport) {
         [weak self] _ in self?.jogging = true
       }
-      receptionist.observe(name: Transport.NotificationName.didEndJogging.rawValue, from: transport) {
+
+      receptionist.observe(name: .didEndJogging, from: transport) {
         [weak self] _ in self?.jogging = false
       }
-      receptionist.observe(name: Transport.NotificationName.didJog.rawValue, from: transport) {
+
+      receptionist.observe(name: .didJog, from: transport) {
         [weak self] in
         guard self?.jogging == true, let time = $0.jogTime, let _ = $0.jogDirection else { return }
         self?.currentTime = time
       }
-      receptionist.observe(name: Transport.NotificationName.didReset.rawValue, from: transport) {
+
+      receptionist.observe(name: .didReset, from: transport) {
         [weak self] in guard let time = $0.time else { return }; self?.currentTime = time
       }
+
     }
+
   }
 
   private var jogging = false
 
-  @IBInspectable var font: UIFont = .largeDisplayFont { didSet { calculateFrames() } }
-//  private var _font: UIFont = .largeDisplayFont { didSet { setNeedsDisplay() } }
+  override func draw(_ rect: CGRect) {
 
-  @IBInspectable var fontColor: UIColor = .primaryColor
+    guard let context = UIGraphicsGetCurrentContext() else { return }
 
-  private var barString:     String { return String(currentTime.bar + 1, radix: 10, pad: 3) }
-  private var beatString:    String { return String(currentTime.beat + 1) }
-  private var subbeatString: String { return String(currentTime.subbeat + 1, radix: 10, pad: 3) }
+    UIGraphicsPushContext(context)
 
-  private var barFrame:                CGRect = .zero
-  private var barBeatDividerFrame:     CGRect = .zero
-  private var beatFrame:               CGRect = .zero
-  private var beatSubbeatDividerFrame: CGRect = .zero
-  private var subbeatFrame:            CGRect = .zero
+    let transform = Component.originTransform(for: rect)
+    let components = Component.components(for: rect.applying(transform))
 
-  override var bounds: CGRect { didSet { calculateFrames() } }
+    context.concatenate(transform)
 
-  private func calculateFrames() {
-    let (w, h) = *characterSize
-    let intrinsicSize = intrinsicContentSize
+    for component in components {
+      component.draw(currentTime)
+    }
 
-    let (pw, ph) = bounds.size > intrinsicSize ? *((bounds.size - intrinsicSize) * 0.5) : (0, 0)
+    UIGraphicsPopContext()
 
-    barFrame                = CGRect(x: pw + 0,     y: ph, width: w * 3, height: h)
-    barBeatDividerFrame     = CGRect(x: pw + w * 3, y: ph, width: w,     height: h)
-    beatFrame               = CGRect(x: pw + w * 4, y: ph, width: w,     height: h)
-    beatSubbeatDividerFrame = CGRect(x: pw + w * 5, y: ph, width: w,     height: h)
-    subbeatFrame            = CGRect(x: pw + w * 6, y: ph, width: w * 3, height: h)
-
-    setNeedsDisplay()
   }
 
-  override func draw(_ rect: CGRect) {
-    let attributes: [String:AnyObject] = [
-      NSFontAttributeName: font,
-      NSForegroundColorAttributeName: fontColor
-    ]
-    switch rect {
-      case barFrame:
-        barString.draw(in: rect, withAttributes: attributes)
+  private func refresh(component: Component) {
+    let transform = Component.originTransform(for: bounds).inverted()
+    let rect = component.frame.applying(transform)
+    setNeedsDisplay(rect)
+  }
 
-      case barBeatDividerFrame:
-        ":".draw(in: rect, withAttributes: attributes)
+  private func refresh(for time: BarBeatTime, oldTime: BarBeatTime) {
 
-      case beatFrame:
-        beatString.draw(in: rect, withAttributes: attributes)
+    var components: [Component] = []
 
-      case beatSubbeatDividerFrame:
-        ".".draw(in: rect, withAttributes: attributes)
+    if time.bar != oldTime.bar { components.append(.bar) }
+    if time.beat != oldTime.beat { components.append(.beat) }
+    if time.subbeat != oldTime.subbeat { components.append(.subbeat) }
 
-      case subbeatFrame:
-        subbeatString.draw(in: rect, withAttributes: attributes)
+    guard components.count > 0 else { return }
 
-      default: 
-        barString.draw(in: barFrame, withAttributes: attributes)
-        ":".draw(in: barBeatDividerFrame, withAttributes: attributes)
-        beatString.draw(in: beatFrame, withAttributes: attributes)
-        ".".draw(in: beatSubbeatDividerFrame, withAttributes: attributes)
-        subbeatString.draw(in: subbeatFrame, withAttributes: attributes)      
-    }
+    dispatchToMain { [unowned self] in for component in components { self.refresh(component: component) } }
+
   }
 
   private var currentTime: BarBeatTime = BarBeatTime.zero {
     didSet {
       guard currentTime != oldValue else { return }
-      dispatchToMain {
-        [unowned self, newValue = currentTime] in
-
-        if oldValue.bar != newValue.bar { self.setNeedsDisplay(self.barFrame) }
-        if oldValue.beat != newValue.beat { self.setNeedsDisplay(self.beatFrame) }
-        if oldValue.subbeat != newValue.subbeat { self.setNeedsDisplay(self.subbeatFrame) }
-      }
+      refresh(for: currentTime, oldTime: oldValue)
     }
   }
+  
   private let callbackIdentifier = UUID()
 
   private let receptionist: NotificationReceptionist = {
@@ -131,20 +194,8 @@ final class BarBeatTimeLabel: UIView {
     return receptionist
   }()
 
-  private var characterSize: CGSize {
-    return "0123456789:.".characters.reduce(.zero) {[attributes = [NSFontAttributeName: font]] in
-      let s = (String($1) as NSString).size(attributes: attributes)
-      return CGSize(width: max($0.width, s.width), height: max($0.height, s.height))
-    }
-  }
-
-//  private func updateFont() {
-//    _font = font.withSize((characterSize.width / (bounds.width / 9)) * font.pointSize)
-//    calculateFrames()
-//  }
-
   override var intrinsicContentSize: CGSize {
-    return CGSize(width: characterSize.width * 9, height: characterSize.height).integralSize
+    return CGSize(width: Component.sumWidths, height: Component.characterHeight)
   }
 
   private func didChangeTransport(_ notification: Notification) {
@@ -155,27 +206,28 @@ final class BarBeatTimeLabel: UIView {
     currentTime = Sequencer.time.barBeatTime
   }
 
-  override func prepareForInterfaceBuilder() {
-    super.prepareForInterfaceBuilder()
-
-    setup()
-  }
-
   private func setup() {
 
-    calculateFrames()
-
     #if !TARGET_INTERFACE_BUILDER
-      receptionist.observe(name: Sequencer.NotificationName.didChangeTransport.rawValue, from: Sequencer.self) {
+
+      receptionist.observe(name: .didChangeTransport, from: Sequencer.self) {
         [weak self] _ in self?.transport = Sequencer.transport
       }
+
       transport = Sequencer.transport
+
     #endif
 
   }
 
-  override init(frame: CGRect) { super.init(frame: frame); setup() }
+  override init(frame: CGRect) {
+    super.init(frame: frame)
+    setup()
+  }
 
-  required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder); setup() }
+  required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+    setup()
+  }
 
 }

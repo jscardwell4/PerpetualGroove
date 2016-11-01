@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="s2G-da-Id7">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="16B2555" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="s2G-da-Id7">
+    <device id="ipad9_7" orientation="landscape">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -16,165 +19,113 @@
                         <viewControllerLayoutGuide type="bottom" id="atr-jl-S63"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="sMg-xf-cKU">
-                        <rect key="frame" x="0.0" y="0.0" width="280" height="122"/>
+                        <rect key="frame" x="0.0" y="0.0" width="310" height="122"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="GYT-35-Qw3" userLabel="TimeStackHorizontal">
-                                <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Jkb-od-g10" userLabel="TimeStackVertical">
-                                        <subviews>
-                                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eGE-iH-5ex" userLabel="Tempo" customClass="Slider" customModule="MoonKit">
-                                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="56" identifier="TempoSliderHeight" id="GPf-BC-30g"/>
-                                                    <constraint firstAttribute="width" constant="280" id="Seq-sU-9K3"/>
-                                                </constraints>
-                                                <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="image" keyPath="thumbImage" value="horizontal_thumb"/>
-                                                    <userDefinedRuntimeAttribute type="image" keyPath="trackMinImage" value="horizontal_track"/>
-                                                    <userDefinedRuntimeAttribute type="image" keyPath="trackMaxImage" value="horizontal_track"/>
-                                                    <userDefinedRuntimeAttribute type="color" keyPath="thumbColor">
-                                                        <color key="value" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="color" keyPath="trackMinColor">
-                                                        <color key="value" red="0.57254901960000004" green="0.52941176469999995" blue="0.47058823529999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="color" keyPath="trackMaxColor">
-                                                        <color key="value" red="0.30125221610000003" green="0.29395070670000001" blue="0.28606623409999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="preservesTrackMaxImageSize" value="YES"/>
-                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="preservesTrackMinImageSize" value="YES"/>
-                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="preservesThumbImageSize" value="YES"/>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
-                                                        <real key="value" value="24"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
-                                                        <real key="value" value="400"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="value">
-                                                        <real key="value" value="120"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="color" keyPath="valueLabelTextColor">
-                                                        <color key="value" red="0.96889215709999998" green="0.99298822880000004" blue="0.99992734189999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="showsValueLabel" value="YES"/>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="valueLabelPrecision">
-                                                        <integer key="value" value="0"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="string" keyPath="valueLabelFontName" value="EvelethRegular"/>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="valueLabelFontSize">
-                                                        <real key="value" value="12"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="valueLabelYOffset">
-                                                        <real key="value" value="-10"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="continuous" value="NO"/>
-                                                    <userDefinedRuntimeAttribute type="string" keyPath="trackLabelText" value="Tempo"/>
-                                                    <userDefinedRuntimeAttribute type="string" keyPath="trackLabelFontName" value="EvelethLight"/>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="trackLabelFontSize">
-                                                        <real key="value" value="13"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="trackLabelYOffset">
-                                                        <real key="value" value="12"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="thumbYOffset">
-                                                        <real key="value" value="5"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="showsTrackLabel" value="YES"/>
-                                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TempoSlider"/>
-                                                </userDefinedRuntimeAttributes>
-                                                <variation key="default">
-                                                    <mask key="constraints">
-                                                        <exclude reference="Seq-sU-9K3"/>
-                                                    </mask>
-                                                </variation>
-                                                <variation key="heightClass=regular-widthClass=regular">
-                                                    <mask key="constraints">
-                                                        <include reference="Seq-sU-9K3"/>
-                                                    </mask>
-                                                </variation>
-                                                <connections>
-                                                    <action selector="tempoSliderValueDidChange" destination="s2G-da-Id7" eventType="valueChanged" id="yBW-E5-70W"/>
-                                                </connections>
-                                            </view>
-                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="3wW-Qs-Pnf" userLabel="MetronomeBarBeatTimeStack">
-                                                <subviews>
-                                                    <view opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="6fH-3m-ywp" userLabel="Metronome" customClass="ImageButtonView" customModule="MoonKit">
-                                                        <color key="tintColor" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                        <constraints>
-                                                            <constraint firstAttribute="width" secondItem="6fH-3m-ywp" secondAttribute="height" multiplier="1:1" identifier="MetronomeAspectRatio" id="lgj-W9-uFK"/>
-                                                        </constraints>
-                                                        <userDefinedRuntimeAttributes>
-                                                            <userDefinedRuntimeAttribute type="image" keyPath="image" value="metronome"/>
-                                                            <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="metronome-selected"/>
-                                                            <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
-                                                            <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
-                                                                <color key="value" red="0.87450999019999998" green="0.82744997740000004" blue="0.76077997679999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                            </userDefinedRuntimeAttribute>
-                                                            <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="MetronomeButton"/>
-                                                            <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
-                                                                <color key="value" red="0.72547006609999998" green="0.70085549349999998" blue="0.66211640829999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                            </userDefinedRuntimeAttribute>
-                                                        </userDefinedRuntimeAttributes>
-                                                        <connections>
-                                                            <action selector="toggleMetronome" destination="s2G-da-Id7" eventType="touchUpInside" id="Qxd-tL-m4L"/>
-                                                        </connections>
-                                                    </view>
-                                                    <view opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="z5I-bV-SIh" userLabel="BarBeatTime" customClass="BarBeatTimeLabel" customModule="Groove" customModuleProvider="target">
-                                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
-                                                        <accessibility key="accessibilityConfiguration" identifier="BarBeatTime"/>
-                                                        <userDefinedRuntimeAttributes>
-                                                            <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="BarBeatTime"/>
-                                                            <userDefinedRuntimeAttribute type="color" keyPath="fontColor">
-                                                                <color key="value" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                            </userDefinedRuntimeAttribute>
-                                                        </userDefinedRuntimeAttributes>
-                                                    </view>
-                                                </subviews>
-                                                <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="MetronomeBarBeatTimeStack"/>
-                                                    <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="MetronomeBarBeatTimeStack"/>
-                                                </userDefinedRuntimeAttributes>
-                                            </stackView>
-                                        </subviews>
-                                        <constraints>
-                                            <constraint firstItem="3wW-Qs-Pnf" firstAttribute="leading" secondItem="Jkb-od-g10" secondAttribute="leading" constant="37" id="EHM-2Y-8UQ">
-                                                <variation key="heightClass=regular-widthClass=regular" constant="0.0"/>
-                                            </constraint>
-                                            <constraint firstAttribute="trailing" secondItem="3wW-Qs-Pnf" secondAttribute="trailing" constant="37" id="Gyb-aH-IdF">
-                                                <variation key="heightClass=regular-widthClass=regular" constant="0.0"/>
-                                            </constraint>
-                                        </constraints>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="TimeStackVertical"/>
-                                            <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TimeStackVertical"/>
-                                        </userDefinedRuntimeAttributes>
-                                        <variation key="default">
-                                            <mask key="constraints">
-                                                <exclude reference="EHM-2Y-8UQ"/>
-                                                <exclude reference="Gyb-aH-IdF"/>
-                                            </mask>
-                                        </variation>
-                                        <variation key="heightClass=regular-widthClass=regular">
-                                            <mask key="constraints">
-                                                <include reference="EHM-2Y-8UQ"/>
-                                                <include reference="Gyb-aH-IdF"/>
-                                            </mask>
-                                        </variation>
-                                    </stackView>
-                                </subviews>
+                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eGE-iH-5ex" userLabel="Tempo" customClass="Slider" customModule="MoonKit">
+                                <rect key="frame" x="-14.5" y="8" width="339" height="55"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                 <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TimeStackHorizontal"/>
-                                    <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="TimeStackHorizontal"/>
+                                    <userDefinedRuntimeAttribute type="image" keyPath="thumbImage" value="horizontal_thumb"/>
+                                    <userDefinedRuntimeAttribute type="image" keyPath="trackMinImage" value="horizontal_track"/>
+                                    <userDefinedRuntimeAttribute type="image" keyPath="trackMaxImage" value="horizontal_track"/>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="thumbColor">
+                                        <color key="value" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="trackMinColor">
+                                        <color key="value" red="0.57254901960000004" green="0.52941176469999995" blue="0.47058823529999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="trackMaxColor">
+                                        <color key="value" red="0.30125221610000003" green="0.29395070670000001" blue="0.28606623409999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="preservesTrackMaxImageSize" value="YES"/>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="preservesTrackMinImageSize" value="YES"/>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="preservesThumbImageSize" value="YES"/>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
+                                        <real key="value" value="24"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
+                                        <real key="value" value="400"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="value">
+                                        <real key="value" value="120"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="valueLabelTextColor">
+                                        <color key="value" red="0.96889215709999998" green="0.99298822880000004" blue="0.99992734189999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="showsValueLabel" value="YES"/>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="valueLabelPrecision">
+                                        <integer key="value" value="0"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="valueLabelFontName" value="EvelethRegular"/>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="valueLabelFontSize">
+                                        <real key="value" value="12"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="valueLabelYOffset">
+                                        <real key="value" value="-10"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="continuous" value="NO"/>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="trackLabelText" value="Tempo"/>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="trackLabelFontName" value="EvelethLight"/>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="trackLabelFontSize">
+                                        <real key="value" value="13"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="trackLabelYOffset">
+                                        <real key="value" value="12"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="thumbYOffset">
+                                        <real key="value" value="5"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="showsTrackLabel" value="YES"/>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TempoSlider"/>
                                 </userDefinedRuntimeAttributes>
-                            </stackView>
+                                <connections>
+                                    <action selector="tempoSliderValueDidChange" destination="s2G-da-Id7" eventType="valueChanged" id="yBW-E5-70W"/>
+                                </connections>
+                            </view>
+                            <view opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="6fH-3m-ywp" userLabel="Metronome" customClass="ImageButtonView" customModule="MoonKit">
+                                <rect key="frame" x="8" y="71" width="43" height="43"/>
+                                <color key="tintColor" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="6fH-3m-ywp" secondAttribute="height" multiplier="1:1" identifier="MetronomeAspectRatio" id="lgj-W9-uFK"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="metronome"/>
+                                    <userDefinedRuntimeAttribute type="image" keyPath="highlightedImage" value="metronome-selected"/>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="toggle" value="YES"/>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
+                                        <color key="value" red="0.87450999019999998" green="0.82744997740000004" blue="0.76077997679999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="MetronomeButton"/>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
+                                        <color key="value" red="0.72547006609999998" green="0.70085549349999998" blue="0.66211640829999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="toggleMetronome" destination="s2G-da-Id7" eventType="touchUpInside" id="Qxd-tL-m4L"/>
+                                </connections>
+                            </view>
+                            <view opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="z5I-bV-SIh" userLabel="BarBeatTime" customClass="BarBeatTimeLabel" customModule="Groove" customModuleProvider="target">
+                                <rect key="frame" x="68" y="71" width="234" height="43"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                                <accessibility key="accessibilityConfiguration" identifier="BarBeatTime"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="BarBeatTime"/>
+                                </userDefinedRuntimeAttributes>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="atr-jl-S63" firstAttribute="top" secondItem="GYT-35-Qw3" secondAttribute="bottom" id="4Gn-BQ-2n0"/>
-                            <constraint firstItem="GYT-35-Qw3" firstAttribute="top" secondItem="Bp2-VP-D2W" secondAttribute="bottom" id="MbW-fB-oMx"/>
-                            <constraint firstItem="GYT-35-Qw3" firstAttribute="leading" secondItem="sMg-xf-cKU" secondAttribute="leading" id="bCy-7e-Pkf"/>
-                            <constraint firstAttribute="trailing" secondItem="GYT-35-Qw3" secondAttribute="trailing" id="vLr-be-TtQ"/>
+                            <constraint firstItem="atr-jl-S63" firstAttribute="top" secondItem="6fH-3m-ywp" secondAttribute="bottom" constant="8" id="114-41-LQI"/>
+                            <constraint firstItem="6fH-3m-ywp" firstAttribute="centerY" secondItem="z5I-bV-SIh" secondAttribute="centerY" id="6IQ-kM-cyL"/>
+                            <constraint firstItem="eGE-iH-5ex" firstAttribute="top" secondItem="Bp2-VP-D2W" secondAttribute="bottom" constant="8" id="GBp-qY-ztE"/>
+                            <constraint firstItem="atr-jl-S63" firstAttribute="top" secondItem="z5I-bV-SIh" secondAttribute="bottom" constant="8" id="HuN-JG-pbT"/>
+                            <constraint firstAttribute="trailing" secondItem="z5I-bV-SIh" secondAttribute="trailing" constant="8" id="JeV-qC-f65"/>
+                            <constraint firstItem="z5I-bV-SIh" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="6fH-3m-ywp" secondAttribute="trailing" constant="10" id="Mt0-4S-4y6"/>
+                            <constraint firstAttribute="trailing" secondItem="eGE-iH-5ex" secondAttribute="trailing" constant="8" id="V48-X9-hgC"/>
+                            <constraint firstItem="6fH-3m-ywp" firstAttribute="top" secondItem="eGE-iH-5ex" secondAttribute="bottom" constant="8" id="Wpy-h5-7fe"/>
+                            <constraint firstItem="6fH-3m-ywp" firstAttribute="leading" secondItem="sMg-xf-cKU" secondAttribute="leading" constant="8" id="f6O-0Q-2N5"/>
+                            <constraint firstItem="eGE-iH-5ex" firstAttribute="leading" secondItem="sMg-xf-cKU" secondAttribute="leading" constant="8" id="pKu-8f-F7v"/>
                         </constraints>
                         <userDefinedRuntimeAttributes>
                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TempoSceneView"/>
@@ -186,7 +137,7 @@
                     <nil key="simulatedTopBarMetrics"/>
                     <nil key="simulatedBottomBarMetrics"/>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-                    <size key="freeformSize" width="280" height="122"/>
+                    <size key="freeformSize" width="310" height="122"/>
                     <connections>
                         <outlet property="metronomeButton" destination="6fH-3m-ywp" id="MZH-o4-gbg"/>
                         <outlet property="tempoSlider" destination="eGE-iH-5ex" id="vEC-9A-Xca"/>
@@ -194,7 +145,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8Sf-gl-Jhq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="264" y="224"/>
+            <point key="canvasLocation" x="264" y="223.98800599700152"/>
         </scene>
     </scenes>
     <resources>

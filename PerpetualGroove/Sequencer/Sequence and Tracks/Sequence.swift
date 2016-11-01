@@ -53,7 +53,7 @@ final class Sequence {
 
       switch (currentTrackStack.peek?.reference, newValue) {
 
-        case let (oldTrack, newTrack?) where instrumentTracks.contains(newTrack) && oldTrack != newTrack:
+        case let (oldTrack?, newTrack?) where instrumentTracks.contains(newTrack) && oldTrack != newTrack:
           userInfo = ["oldTrack": oldTrack, "newTrack": newTrack]
           currentTrackStack.push(Weak(newTrack))
 //          newTrack.recording = true

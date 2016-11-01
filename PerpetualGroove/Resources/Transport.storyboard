@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Ca0-NX-Etk">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="16B2555" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Ca0-NX-Etk">
+    <device id="ipad9_7" orientation="landscape">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -16,12 +19,14 @@
                         <viewControllerLayoutGuide type="bottom" id="58g-BR-77C"/>
                     </layoutGuides>
                     <view key="view" opaque="NO" contentMode="scaleToFill" id="FHX-h5-CU9">
-                        <rect key="frame" x="0.0" y="0.0" width="358" height="150"/>
+                        <rect key="frame" x="0.0" y="0.0" width="374" height="166"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="ywE-fa-J4k" userLabel="TransportStack">
+                                <rect key="frame" x="8" y="55" width="188" height="56"/>
                                 <subviews>
                                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UdC-Lc-CsQ" userLabel="Record" customClass="ImageButtonView" customModule="MoonKit">
+                                        <rect key="frame" x="0.0" y="0.0" width="56" height="56"/>
                                         <color key="tintColor" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <accessibility key="accessibilityConfiguration" identifier="RecordButton"/>
                                         <constraints>
@@ -48,6 +53,7 @@
                                         </connections>
                                     </view>
                                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="shB-u6-RyK" userLabel="Play/Pause" customClass="ImageButtonView" customModule="MoonKit">
+                                        <rect key="frame" x="66" y="0.0" width="56" height="56"/>
                                         <color key="tintColor" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <accessibility key="accessibilityConfiguration" identifier="PlayPauseButton"/>
                                         <constraints>
@@ -69,6 +75,7 @@
                                         </connections>
                                     </view>
                                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SU3-DN-JUZ" userLabel="Stop" customClass="ImageButtonView" customModule="MoonKit">
+                                        <rect key="frame" x="132" y="0.0" width="56" height="56"/>
                                         <color key="tintColor" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <accessibility key="accessibilityConfiguration" identifier="StopButton"/>
                                         <constraints>
@@ -105,6 +112,7 @@
                                 </userDefinedRuntimeAttributes>
                             </stackView>
                             <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lPl-aB-P3Z" customClass="ScrollWheel" customModule="MoonKit">
+                                <rect key="frame" x="220" y="10" width="146" height="146"/>
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                 <accessibility key="accessibilityConfiguration" identifier="JogWheel"/>
                                 <constraints>
@@ -132,11 +140,12 @@
                                 </connections>
                             </view>
                         </subviews>
+                        <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="58g-BR-77C" firstAttribute="top" secondItem="lPl-aB-P3Z" secondAttribute="bottom" constant="10" id="B4t-Ue-b4y"/>
-                            <constraint firstAttribute="trailing" secondItem="lPl-aB-P3Z" secondAttribute="trailing" id="Gct-oF-zcb"/>
+                            <constraint firstAttribute="trailing" secondItem="lPl-aB-P3Z" secondAttribute="trailing" constant="8" id="Gct-oF-zcb"/>
                             <constraint firstItem="lPl-aB-P3Z" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="ywE-fa-J4k" secondAttribute="trailing" constant="20" id="Ldz-fb-CJe"/>
-                            <constraint firstItem="ywE-fa-J4k" firstAttribute="leading" secondItem="FHX-h5-CU9" secondAttribute="leading" id="g3I-1f-dBt"/>
+                            <constraint firstItem="ywE-fa-J4k" firstAttribute="leading" secondItem="FHX-h5-CU9" secondAttribute="leading" constant="8" id="g3I-1f-dBt"/>
                             <constraint firstItem="lPl-aB-P3Z" firstAttribute="top" secondItem="vcr-EL-Otd" secondAttribute="bottom" constant="10" id="jTs-fw-dVQ"/>
                             <constraint firstItem="ywE-fa-J4k" firstAttribute="centerY" secondItem="FHX-h5-CU9" secondAttribute="centerY" id="pdz-H2-Zip"/>
                         </constraints>
@@ -148,7 +157,7 @@
                     <nil key="simulatedTopBarMetrics"/>
                     <nil key="simulatedBottomBarMetrics"/>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-                    <size key="freeformSize" width="358" height="150"/>
+                    <size key="freeformSize" width="374" height="166"/>
                     <connections>
                         <outlet property="jogWheel" destination="lPl-aB-P3Z" id="v1R-s3-6KT"/>
                         <outlet property="playPauseButton" destination="shB-u6-RyK" id="aoQ-44-AuL"/>

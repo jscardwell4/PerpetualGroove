@@ -299,15 +299,15 @@
                                 <exclude reference="L5k-qi-Yb6"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="BtT-VP-Fff"/>
-                                <exclude reference="RcU-6e-GRW"/>
-                                <exclude reference="XoL-bV-ELt"/>
-                                <exclude reference="qJJ-cs-JQx"/>
                                 <exclude reference="JF0-3d-TlM"/>
                                 <exclude reference="byd-8v-duj"/>
                                 <exclude reference="x9p-rm-dbe"/>
                                 <exclude reference="Y1X-bS-yfl"/>
                                 <exclude reference="CAu-z8-d5k"/>
+                                <exclude reference="BtT-VP-Fff"/>
+                                <exclude reference="RcU-6e-GRW"/>
+                                <exclude reference="XoL-bV-ELt"/>
+                                <exclude reference="qJJ-cs-JQx"/>
                             </mask>
                         </variation>
                         <variation key="widthClass=compact">
@@ -330,13 +330,13 @@
                         </variation>
                         <variation key="heightClass=regular-widthClass=regular">
                             <mask key="constraints">
-                                <include reference="RcU-6e-GRW"/>
-                                <include reference="XoL-bV-ELt"/>
                                 <include reference="JF0-3d-TlM"/>
                                 <include reference="byd-8v-duj"/>
                                 <include reference="x9p-rm-dbe"/>
                                 <include reference="Y1X-bS-yfl"/>
                                 <include reference="CAu-z8-d5k"/>
+                                <include reference="RcU-6e-GRW"/>
+                                <include reference="XoL-bV-ELt"/>
                             </mask>
                         </variation>
                     </view>

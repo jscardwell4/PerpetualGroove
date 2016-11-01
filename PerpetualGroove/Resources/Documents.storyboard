@@ -16,7 +16,7 @@
         <scene sceneID="PRi-3n-XlO">
             <objects>
                 <collectionViewController storyboardIdentifier="Documents" id="O6i-Zp-3qE" userLabel="Documents" customClass="DocumentsViewController" customModule="Groove" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" id="0IQ-bl-889" userLabel="DocumentsCollection">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="0IQ-bl-889" userLabel="DocumentsCollection">
                         <rect key="frame" x="0.0" y="0.0" width="250" height="120"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.1731918603181839" green="0.17318670451641083" blue="0.17318965494632721" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

@@ -143,7 +143,7 @@
 			attributes = {
 				LastSwiftMigration = 0730;
 				LastSwiftUpdateCheck = 0700;
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = "Moondeer Studios";
 				TargetAttributes = {
 					C2B1238C1B8548F6008FED5E = {
@@ -486,7 +486,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.Eveleth;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
