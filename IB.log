@@ -9286,3 +9286,39 @@ delegate = <Groove.SoundFontSelector: 0x7ff25006fe50; baseClass = UIControl; fra
 2016-10-29 00:50:46 +0000 [205173366093140] <SoundFontSelector.swift:56> prepareForInterfaceBuilder()  superview = Optional(<UIStackView: 0x7f9c23dd78e0; frame = (0 0; 288 40); autoresize = RM+BM; layer = <CATransformLayer: 0x7f9c25903e30>>)
 2016-10-29 00:50:46 +0000 [205173401770324] <SoundFontSelector.swift:56> prepareForInterfaceBuilder()  superview = Optional(<UIStackView: 0x7f9c23e67200; frame = (0 0; 288 40); autoresize = RM+BM; layer = <CATransformLayer: 0x7f9c23e66d80>>)
 2016-10-29 00:50:46 +0000 [205173451740654] <SoundFontSelector.swift:56> prepareForInterfaceBuilder()  superview = Optional(<UIStackView: 0x7f9c25882840; frame = (0 0; 288 40); autoresize = RM+BM; layer = <CATransformLayer: 0x7f9c258823c0>>)
+2016-11-03 16:56:25 +0000 [55897049293810] <Slider.swift:1006> draw  size = (21.144, 14.208), origin = (82.428, 20.396), alignment = center
+2016-11-03 16:56:25 +0000 [55897369959218] <Slider.swift:1006> draw  size = (21.144, 14.208), origin = (86.428, 120.896), alignment = center
+2016-11-03 16:56:41 +0000 [55912824282719] <Slider.swift:1006> draw  size = (21.144, 14.208), origin = (82.428, 20.396), alignment = center
+2016-11-03 16:56:54 +0000 [55926070506100] <Slider.swift:1006> draw  size = (21.144, 14.208), origin = (75.0, 20.396), alignment = centerLeft
+2016-11-03 16:57:45 +0000 [55976756798066] <Slider.swift:1006> draw  size = (21.144, 14.208), origin = (75.0, 20.396), alignment = centerLeft
+2016-11-03 16:57:45 +0000 [55977071229493] <Slider.swift:1006> draw  size = (21.144, 14.208), origin = (86.428, 120.896), alignment = center
+2016-11-03 16:57:48 +0000 [55979894184844] <Slider.swift:1006> draw  size = (21.144, 14.208), origin = (82.428, 20.396), alignment = center
+2016-11-03 16:58:07 +0000 [55999054850195] <Slider.swift:1006> draw  size = (21.144, 14.208), origin = (82.428, 20.396), alignment = center
+2016-11-03 16:58:07 +0000 [55999358261652] <Slider.swift:1006> draw  size = (21.144, 14.208), origin = (86.428, 120.896), alignment = center
+2016-11-03 16:58:11 +0000 [56003270668738] <Slider.swift:1006> draw  size = (20.40234375, 14.3203125), origin = (82.798828125, 20.33984375), alignment = center
+2016-11-03 16:59:27 +0000 [56079335267337] <Slider.swift:1006> draw  size = (20.40234375, 14.3203125), origin = (82.798828125, 20.33984375), alignment = center
+2016-11-03 17:00:02 +0000 [56114032006443] <Slider.swift:1006> draw  size = (21.144, 14.208), origin = (82.428, 20.396), alignment = center
+2016-11-03 17:00:02 +0000 [56114339635245] <Slider.swift:1006> draw  size = (21.144, 14.208), origin = (86.428, 120.896), alignment = center
+2016-11-03 17:00:13 +0000 [56124947726734] <Slider.swift:1006> draw  size = (21.144, 14.208), origin = (89.856, 20.396), alignment = right
+2016-11-03 17:01:15 +0000 [56187355364424] <Slider.swift:1006> draw  size = (21.144, 14.208), origin = (82.428, 31.792), alignment = bottom
+2016-11-03 17:01:31 +0000 [56202663356229] <Slider.swift:1006> draw  size = (20.40234375, 14.3203125), origin = (82.798828125, 31.6796875), alignment = bottom
+2016-11-03 17:02:31 +0000 [56263266447310] <Slider.swift:1006> draw  size = (20.40234375, 14.3203125), origin = (82.798828125, 31.6796875), alignment = bottom
+2016-11-03 17:03:04 +0000 [56296269745762] <Slider.swift:1006> draw  size = (21.144, 14.208), origin = (82.428, 31.792), alignment = bottom
+2016-11-03 17:03:05 +0000 [56296602162562] <Slider.swift:1006> draw  size = (21.144, 14.208), origin = (86.428, 120.896), alignment = center
+2016-11-03 17:03:11 +0000 [56303118870457] <Slider.swift:1006> draw  size = (21.144, 14.208), origin = (89.856, 20.396), alignment = right
+2016-11-03 17:03:34 +0000 [56326122774302] <Slider.swift:1006> draw  size = (20.40234375, 14.3203125), origin = (90.59765625, 20.33984375), alignment = right
+2016-11-03 17:06:15 +0000 [56487258818723] <Slider.swift:1006> draw  size = (20.40234375, 14.3203125), origin = (90.59765625, 20.33984375), alignment = right
+2016-11-03 17:06:16 +0000 [56488357783646] <Slider.swift:1006> draw  size = (21.144, 14.208), origin = (86.428, 120.896), alignment = center
+2016-11-03 17:06:17 +0000 [56488861874967] <Slider.swift:1006> draw  size = (21.144, 14.208), origin = (89.856, 20.396), alignment = right
+2016-11-03 17:06:53 +0000 [56524459674662] <Slider.swift:1021> draw  size = (21.144, 14.208), origin = (89.856, 20.396), alignment = right
+2016-11-03 17:06:53 +0000 [56524760370815] <Slider.swift:1021> draw  size = (21.144, 14.208), origin = (86.428, 120.896), alignment = center
+2016-11-03 17:07:00 +0000 [56531824613282] <Slider.swift:1021> draw  size = (21.144, 14.208), origin = (89.856, 31.792), alignment = bottomRight
+2016-11-03 17:07:04 +0000 [56536127765855] <Slider.swift:1021> draw  size = (21.144, 14.208), origin = (82.428, 31.792), alignment = bottom
+2016-11-03 17:07:08 +0000 [56539637743015] <Slider.swift:1021> draw  size = (21.144, 14.208), origin = (75.0, 31.792), alignment = bottomLeft
+2016-11-03 17:07:11 +0000 [56542601793177] <Slider.swift:1021> draw  size = (21.144, 14.208), origin = (75.0, 20.396), alignment = left
+2016-11-03 17:07:14 +0000 [56545697023329] <Slider.swift:1021> draw  size = (21.144, 14.208), origin = (82.428, 20.396), alignment = center
+2016-11-03 17:07:16 +0000 [56547809927808] <Slider.swift:1021> draw  size = (21.144, 14.208), origin = (89.856, 20.396), alignment = right
+2016-11-03 17:07:21 +0000 [56553060407385] <Slider.swift:1021> draw  size = (21.144, 14.208), origin = (89.856, 9.0), alignment = topRight
+2016-11-03 17:07:23 +0000 [56555351558030] <Slider.swift:1021> draw  size = (21.144, 14.208), origin = (82.428, 9.0), alignment = top
+2016-11-03 17:07:26 +0000 [56558194624122] <Slider.swift:1021> draw  size = (21.144, 14.208), origin = (75.0, 9.0), alignment = topLeft
+2016-11-03 17:07:30 +0000 [56562367780208] <Slider.swift:1021> draw  size = (21.144, 14.208), origin = (82.428, 9.0), alignment = top
