@@ -23,8 +23,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eGE-iH-5ex" userLabel="Tempo" customClass="Slider" customModule="MoonKit">
-                                <rect key="frame" x="-9" y="8" width="328" height="55"/>
-                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                                <rect key="frame" x="-10" y="8" width="330" height="55"/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="image" keyPath="thumbImage" value="horizontal_thumb2"/>
                                     <userDefinedRuntimeAttribute type="image" keyPath="trackMinImage" value="horizontal_track2"/>
@@ -38,9 +37,6 @@
                                     <userDefinedRuntimeAttribute type="color" keyPath="trackMaxColor">
                                         <color key="value" red="0.30125221610000003" green="0.29395070670000001" blue="0.28606623409999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     </userDefinedRuntimeAttribute>
-                                    <userDefinedRuntimeAttribute type="boolean" keyPath="preservesTrackMaxImageSize" value="YES"/>
-                                    <userDefinedRuntimeAttribute type="boolean" keyPath="preservesTrackMinImageSize" value="YES"/>
-                                    <userDefinedRuntimeAttribute type="boolean" keyPath="preservesThumbImageSize" value="YES"/>
                                     <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
                                         <real key="value" value="24"/>
                                     </userDefinedRuntimeAttribute>
@@ -72,6 +68,12 @@
                                     <userDefinedRuntimeAttribute type="string" keyPath="trackAlignmentString" value="bottomOrRight"/>
                                     <userDefinedRuntimeAttribute type="string" keyPath="thumbAlignmentString" value="center"/>
                                     <userDefinedRuntimeAttribute type="string" keyPath="valueLabelAlignmentString" value="top"/>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="valueLabelVerticalOffset">
+                                        <real key="value" value="6"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="trackLabelVerticalOffset">
+                                        <real key="value" value="1"/>
+                                    </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                                 <connections>
                                     <action selector="tempoSliderValueDidChange" destination="s2G-da-Id7" eventType="valueChanged" id="yBW-E5-70W"/>

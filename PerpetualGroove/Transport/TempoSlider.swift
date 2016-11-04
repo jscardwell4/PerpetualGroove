@@ -48,9 +48,6 @@ final class TempoSlider: UIControl {
     slider.thumbColor = #colorLiteral(red: 0.7302821875, green: 0.7035630345, blue: 0.6637413502, alpha: 1)
     slider.trackMinColor = #colorLiteral(red: 0.5725490196, green: 0.5294117647, blue: 0.4705882353, alpha: 1)
     slider.trackMaxColor = #colorLiteral(red: 0.3012522161, green: 0.2939507067, blue: 0.2860662341, alpha: 1)
-    slider.preservesTrackMaxImageSize = true
-    slider.preservesTrackMinImageSize = true
-    slider.preservesThumbImageSize = true
     slider.minimumValue = 24
     slider.maximumValue = 400
     slider.value = 120
