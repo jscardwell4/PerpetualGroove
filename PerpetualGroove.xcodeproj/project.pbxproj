@@ -93,7 +93,6 @@
 		C2981BAA1C2B85F4007FC51F /* Transport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2981BA91C2B85F4007FC51F /* Transport.swift */; };
 		C29A337C1DAE7E4800728E4B /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29A337B1DAE7E4800728E4B /* Colors.swift */; };
 		C29A337E1DAE7E8800728E4B /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29A337D1DAE7E8800728E4B /* Fonts.swift */; };
-		C2A3F3071DCA3E77004930AE /* TempoSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A3F3061DCA3E77004930AE /* TempoSlider.swift */; };
 		C2AA2BC81B84B04200A0B08D /* InstrumentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AA2BC71B84B04200A0B08D /* InstrumentViewController.swift */; };
 		C2AA2BCB1B84FB2100A0B08D /* Sequencer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AA2BCA1B84FB2100A0B08D /* Sequencer.swift */; };
 		C2AC3A971BA9D4CD00692EBB /* TempoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AC3A961BA9D4CD00692EBB /* TempoViewController.swift */; };
@@ -299,7 +298,6 @@
 		C2981BA91C2B85F4007FC51F /* Transport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Transport.swift; sourceTree = "<group>"; };
 		C29A337B1DAE7E4800728E4B /* Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		C29A337D1DAE7E8800728E4B /* Fonts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fonts.swift; sourceTree = "<group>"; };
-		C2A3F3061DCA3E77004930AE /* TempoSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TempoSlider.swift; sourceTree = "<group>"; };
 		C2AA2BC71B84B04200A0B08D /* InstrumentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstrumentViewController.swift; sourceTree = "<group>"; };
 		C2AA2BCA1B84FB2100A0B08D /* Sequencer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sequencer.swift; sourceTree = "<group>"; };
 		C2AC3A961BA9D4CD00692EBB /* TempoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TempoViewController.swift; sourceTree = "<group>"; };
@@ -712,7 +710,6 @@
 				C2AC3A961BA9D4CD00692EBB /* TempoViewController.swift */,
 				C2516B2C1C08F1B50060710B /* TransportViewController.swift */,
 				C2F589F81BAC688F009166D5 /* BarBeatTimeLabel.swift */,
-				C2A3F3061DCA3E77004930AE /* TempoSlider.swift */,
 			);
 			path = Transport;
 			sourceTree = "<group>";
@@ -1251,7 +1248,6 @@
 				C2729ADF1BEE6B7C004FA34F /* NSMetadataItem.swift in Sources */,
 				C283B69E1BC0495A007A4A36 /* DocumentItem.swift in Sources */,
 				C21E44C51B76546C00574BD2 /* AudioManager.swift in Sources */,
-				C2A3F3071DCA3E77004930AE /* TempoSlider.swift in Sources */,
 				C25BE0601DC4246100FEA4F3 /* ProgramSelector.swift in Sources */,
 				C282911D1C1DFFD600F9975C /* Tool.swift in Sources */,
 				C2F35DB91BB4507800ECB045 /* MIDINodePlayerView.swift in Sources */,

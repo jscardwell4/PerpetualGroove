@@ -25,9 +25,9 @@
                             <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eGE-iH-5ex" userLabel="Tempo" customClass="Slider" customModule="MoonKit">
                                 <rect key="frame" x="-10" y="8" width="330" height="55"/>
                                 <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="image" keyPath="thumbImage" value="horizontal_thumb2"/>
-                                    <userDefinedRuntimeAttribute type="image" keyPath="trackMinImage" value="horizontal_track2"/>
-                                    <userDefinedRuntimeAttribute type="image" keyPath="trackMaxImage" value="horizontal_track2"/>
+                                    <userDefinedRuntimeAttribute type="image" keyPath="thumbImage" value="horizontal_thumb"/>
+                                    <userDefinedRuntimeAttribute type="image" keyPath="trackMinImage" value="horizontal_track"/>
+                                    <userDefinedRuntimeAttribute type="image" keyPath="trackMaxImage" value="horizontal_track"/>
                                     <userDefinedRuntimeAttribute type="color" keyPath="thumbColor">
                                         <color key="value" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     </userDefinedRuntimeAttribute>
@@ -143,42 +143,10 @@
             </objects>
             <point key="canvasLocation" x="306" y="-13"/>
         </scene>
-        <!--View Controller-->
-        <scene sceneID="EIm-gY-VcE">
-            <objects>
-                <viewController storyboardIdentifier="farts" id="EII-my-cCE" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="eZY-qt-CP3"/>
-                        <viewControllerLayoutGuide type="bottom" id="DOw-7f-r80"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="U6T-DX-TpN">
-                        <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8Fv-Ae-I4D" customClass="TempoSlider" customModule="Groove">
-                                <rect key="frame" x="355.5" y="256" width="313" height="256"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="313" id="Phg-s4-Uii"/>
-                                    <constraint firstAttribute="height" constant="256" id="rZF-1k-dy5"/>
-                                </constraints>
-                            </view>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="8Fv-Ae-I4D" firstAttribute="centerY" secondItem="U6T-DX-TpN" secondAttribute="centerY" id="S2B-it-GGc"/>
-                            <constraint firstItem="8Fv-Ae-I4D" firstAttribute="centerX" secondItem="U6T-DX-TpN" secondAttribute="centerX" id="kei-nl-y9C"/>
-                        </constraints>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="AOe-gu-B9n" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="316" y="402"/>
-        </scene>
     </scenes>
     <resources>
-        <image name="horizontal_thumb2" width="35" height="36"/>
-        <image name="horizontal_track2" width="20" height="14"/>
+        <image name="horizontal_thumb" width="35" height="36"/>
+        <image name="horizontal_track" width="20" height="14"/>
         <image name="metronome" width="56" height="56"/>
         <image name="metronome-selected" width="56" height="56"/>
     </resources>
