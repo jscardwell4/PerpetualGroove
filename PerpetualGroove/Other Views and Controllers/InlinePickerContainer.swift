@@ -24,6 +24,10 @@ class InlinePickerContainer: UIControl {
     setup()
   }
 
+
+  class var font: UIFont { return .controlFont }
+  class var selectedFont: UIFont { return .controlSelectedFont }
+
   private let picker = InlinePickerView(autolayout: true)
 
   @objc private func valueChanged() {
@@ -48,8 +52,8 @@ class InlinePickerContainer: UIControl {
 
   private func setup() {
 
-    picker.font = .controlFont
-    picker.selectedFont = .controlSelectedFont
+    picker.font = type(of: self).font
+    picker.selectedFont = type(of: self).selectedFont
     picker.itemColor = #colorLiteral(red: 0.7302821875, green: 0.7035630345, blue: 0.6637413502, alpha: 1)
     picker.selectedItemColor = #colorLiteral(red: 0.7608990073, green: 0.2564961016, blue: 0, alpha: 1)
     picker.addTarget(self, action: #selector(valueChanged), for: .valueChanged)

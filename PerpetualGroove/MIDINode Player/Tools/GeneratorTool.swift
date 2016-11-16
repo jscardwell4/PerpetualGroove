@@ -234,11 +234,16 @@ final class GeneratorViewController: UIViewController, SecondaryControllerConten
 
 final class PitchSelector: InlinePickerContainer {
 
-  override class var contentForInterfaceBuilder: [Any] { return ["A", "B", "C", "D", "E", "F", "G"] }
+  private static let labels = Natural.allCases.map({"\($0.rawValue)"})
+
+  override class var contentForInterfaceBuilder: [Any] { return labels }
 
   override func refresh(picker: InlinePickerView) {
-    items = ["A", "B", "C", "D", "E", "F", "G"]
+    items = PitchSelector.labels
   }
+
+  override class var font: UIFont { return .largeControlFont }
+  override class var selectedFont: UIFont { return .largeControlSelectedFont }
 
 }
 
@@ -280,6 +285,10 @@ final class ChordSelector: InlinePickerContainer {
     items = ChordSelector.labels
   }
 
+  override class var font: UIFont { return .largeControlFont }
+  override class var selectedFont: UIFont { return .largeControlSelectedFont }
+
+
 }
 
 final class OctaveSelector: InlinePickerContainer {
@@ -287,13 +296,16 @@ final class OctaveSelector: InlinePickerContainer {
   private static let labels = Octave.allCases.map({"\($0.rawValue)"})
 
   override class var contentForInterfaceBuilder: [Any] {
-    return OctaveSelector.labels
+    return labels
   }
 
   override func refresh(picker: InlinePickerView) {
     items = OctaveSelector.labels
   }
   
+  override class var font: UIFont { return .largeControlFont }
+  override class var selectedFont: UIFont { return .largeControlSelectedFont }
+
 }
 
 final class DurationSelector: InlinePickerContainer {

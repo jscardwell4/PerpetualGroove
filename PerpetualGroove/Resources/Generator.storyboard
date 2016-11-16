@@ -30,13 +30,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Note" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="w5U-Eo-KhK">
-                                <rect key="frame" x="16" y="19" width="37.5" height="14.5"/>
+                                <rect key="frame" x="16" y="21.5" width="37.5" height="14.5"/>
                                 <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
                                 <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Chord" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="none" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ljp-n0-GSd">
-                                <rect key="frame" x="16" y="62.5" width="50" height="15"/>
+                                <rect key="frame" x="16" y="65" width="50" height="15"/>
                                 <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
                                 <color key="textColor" red="0.57254904510000004" green="0.52941179279999995" blue="0.47058823700000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
@@ -69,7 +69,7 @@
                                 <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="number" keyPath="selection">
-                                        <integer key="value" value="3"/>
+                                        <integer key="value" value="6"/>
                                     </userDefinedRuntimeAttribute>
                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="OctaveSelector"/>
                                 </userDefinedRuntimeAttributes>
@@ -97,7 +97,7 @@
                                 <accessibility key="accessibilityConfiguration" identifier="Duration Selector"/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="number" keyPath="selection">
-                                        <integer key="value" value="2"/>
+                                        <integer key="value" value="6"/>
                                     </userDefinedRuntimeAttribute>
                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="DurationSelector"/>
                                 </userDefinedRuntimeAttributes>
@@ -205,200 +205,186 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="270"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="DnS-k2-4l0" userLabel="NoteAttributesStack">
-                                <rect key="frame" x="16" y="-5" width="288" height="280"/>
-                                <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="QbC-65-Bsh">
-                                        <rect key="frame" x="0.0" y="0.0" width="288" height="56"/>
-                                        <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Note" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="o8W-Sq-PWR">
-                                                <rect key="frame" x="0.0" y="0.0" width="37.5" height="56"/>
-                                                <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
-                                                <color key="textColor" red="0.57254904510000004" green="0.52941179279999995" blue="0.47058823700000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LAk-vc-QCj" userLabel="Pitch Picker" customClass="PitchSelector" customModule="Groove">
-                                                <rect key="frame" x="47.5" y="0.0" width="66.5" height="56"/>
-                                                <accessibility key="accessibilityConfiguration" identifier="Pitch Picker"/>
-                                                <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="selection">
-                                                        <integer key="value" value="2"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="PitchPicker"/>
-                                                </userDefinedRuntimeAttributes>
-                                                <connections>
-                                                    <action selector="didPickPitch" destination="mkH-rp-flL" eventType="valueChanged" id="L7X-NP-VaH"/>
-                                                </connections>
-                                            </view>
-                                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="to4-1r-evZ" userLabel="Modifier Picker" customClass="PitchModifierSelector" customModule="Groove">
-                                                <rect key="frame" x="124" y="0.0" width="88" height="56"/>
-                                                <accessibility key="accessibilityConfiguration" identifier="Octave Picker"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" constant="88" id="CDL-WO-KCA"/>
-                                                </constraints>
-                                                <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="selection">
-                                                        <integer key="value" value="1"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="ModifierPicker"/>
-                                                </userDefinedRuntimeAttributes>
-                                                <connections>
-                                                    <action selector="didPickModifier" destination="mkH-rp-flL" eventType="valueChanged" id="HHN-cj-shC"/>
-                                                </connections>
-                                            </view>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ssE-JU-CSp" userLabel="Octave Picker" customClass="OctaveSelector" customModule="Groove">
-                                                <rect key="frame" x="222" y="0.0" width="66" height="56"/>
-                                                <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="selection">
-                                                        <integer key="value" value="6"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="OctavePicker"/>
-                                                </userDefinedRuntimeAttributes>
-                                                <connections>
-                                                    <action selector="didPickOctave" destination="mkH-rp-flL" eventType="valueChanged" id="ZV7-E7-v9U"/>
-                                                </connections>
-                                            </view>
-                                        </subviews>
-                                        <constraints>
-                                            <constraint firstItem="ssE-JU-CSp" firstAttribute="width" secondItem="LAk-vc-QCj" secondAttribute="width" id="uC5-G2-xSs"/>
-                                        </constraints>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="NoteStack"/>
-                                        </userDefinedRuntimeAttributes>
-                                    </stackView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="0pj-Ab-57y">
-                                        <rect key="frame" x="0.0" y="56" width="288" height="56"/>
-                                        <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Chord" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="liU-QZ-DFN">
-                                                <rect key="frame" x="0.0" y="0.0" width="49.5" height="56"/>
-                                                <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
-                                                <color key="textColor" red="0.57254904510000004" green="0.52941179279999995" blue="0.47058823700000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WmI-eQ-XEC" userLabel="Chord Picker" customClass="ChordSelector" customModule="Groove">
-                                                <rect key="frame" x="59.5" y="0.0" width="228.5" height="56"/>
-                                                <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="selection">
-                                                        <integer key="value" value="0"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="ChordPicker"/>
-                                                </userDefinedRuntimeAttributes>
-                                                <connections>
-                                                    <action selector="didPickChord" destination="mkH-rp-flL" eventType="valueChanged" id="H3j-GA-vpA"/>
-                                                </connections>
-                                            </view>
-                                        </subviews>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="DurationStack"/>
-                                        </userDefinedRuntimeAttributes>
-                                    </stackView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="YnH-5N-XqO">
-                                        <rect key="frame" x="0.0" y="112" width="288" height="56"/>
-                                        <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Duration" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MTm-2o-z6h">
-                                                <rect key="frame" x="0.0" y="0.0" width="70" height="56"/>
-                                                <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
-                                                <color key="textColor" red="0.57254904510000004" green="0.52941179279999995" blue="0.47058823700000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qXn-H6-nOw" userLabel="Duration Picker" customClass="DurationSelector" customModule="Groove">
-                                                <rect key="frame" x="80" y="0.0" width="208" height="56"/>
-                                                <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="selection">
-                                                        <integer key="value" value="6"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                </userDefinedRuntimeAttributes>
-                                                <connections>
-                                                    <action selector="didPickDuration" destination="mkH-rp-flL" eventType="valueChanged" id="sgR-Ga-CLR"/>
-                                                </connections>
-                                            </view>
-                                        </subviews>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="DurationStack"/>
-                                        </userDefinedRuntimeAttributes>
-                                    </stackView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="EyE-j2-on8">
-                                        <rect key="frame" x="0.0" y="168" width="288" height="56"/>
-                                        <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Velocity" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MUg-hU-5Xc">
-                                                <rect key="frame" x="0.0" y="0.0" width="70" height="56"/>
-                                                <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
-                                                <color key="textColor" red="0.57254904510000004" green="0.52941179279999995" blue="0.47058823700000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HTv-B6-Opz" userLabel="Velocity Picker" customClass="VelocitySelector" customModule="Groove">
-                                                <rect key="frame" x="80" y="0.0" width="208" height="56"/>
-                                                <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="selection">
-                                                        <integer key="value" value="4"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                </userDefinedRuntimeAttributes>
-                                                <connections>
-                                                    <action selector="didPickVelocity" destination="mkH-rp-flL" eventType="valueChanged" id="u9M-Qk-90L"/>
-                                                </connections>
-                                            </view>
-                                        </subviews>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="VelocityStack"/>
-                                        </userDefinedRuntimeAttributes>
-                                    </stackView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" translatesAutoresizingMaskIntoConstraints="NO" id="vGI-r5-Kpn">
-                                        <rect key="frame" x="0.0" y="224" width="288" height="56"/>
-                                        <subviews>
-                                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iBN-I3-vpc" userLabel="Previous" customClass="ImageButtonView" customModule="MoonKit">
-                                                <rect key="frame" x="0.0" y="0.0" width="56" height="56"/>
-                                                <color key="tintColor" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <accessibility key="accessibilityConfiguration" identifier="PreviousButton"/>
-                                                <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="PreviousButton"/>
-                                                    <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
-                                                        <color key="value" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
-                                                        <color key="value" red="0.68166375160217285" green="0.38204258680343628" blue="0.2524854838848114" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="left_arrow"/>
-                                                </userDefinedRuntimeAttributes>
-                                                <connections>
-                                                    <action selector="previous" destination="mkH-rp-flL" eventType="touchUpInside" id="vDJ-dm-95k"/>
-                                                </connections>
-                                            </view>
-                                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fkV-BB-xq4" userLabel="Next" customClass="ImageButtonView" customModule="MoonKit">
-                                                <rect key="frame" x="232" y="0.0" width="56" height="56"/>
-                                                <color key="tintColor" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <accessibility key="accessibilityConfiguration" identifier="NextButton"/>
-                                                <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
-                                                        <color key="value" red="0.68166375160217285" green="0.38204258680343628" blue="0.2524854838848114" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
-                                                        <color key="value" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="NextButton"/>
-                                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="right_arrow"/>
-                                                </userDefinedRuntimeAttributes>
-                                                <connections>
-                                                    <action selector="next" destination="mkH-rp-flL" eventType="touchUpInside" id="SPR-ur-CbG"/>
-                                                </connections>
-                                            </view>
-                                        </subviews>
-                                    </stackView>
-                                </subviews>
-                                <constraints>
-                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="150" id="gST-88-aP2"/>
-                                    <constraint firstItem="MUg-hU-5Xc" firstAttribute="width" secondItem="MTm-2o-z6h" secondAttribute="width" id="p5d-Ds-3NK"/>
-                                </constraints>
+                            <view opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="G2s-yP-iQ2" userLabel="Modifier Selector" customClass="PitchModifierSelector" customModule="Groove">
+                                <rect key="frame" x="172" y="8" width="54" height="36"/>
+                                <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <accessibility key="accessibilityConfiguration" identifier="Modifier Selector"/>
                                 <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="NoteAttributesStack"/>
-                                    <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="NoteAttributesStack"/>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="selection">
+                                        <integer key="value" value="1"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="ModifierSelector"/>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="itemHeight">
+                                        <real key="value" value="30"/>
+                                    </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
-                            </stackView>
+                                <connections>
+                                    <action selector="didPickModifier" destination="mkH-rp-flL" eventType="valueChanged" id="yZ6-bt-8KC"/>
+                                </connections>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Velocity" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V6p-Bx-OJL">
+                                <rect key="frame" x="16" y="155" width="68.5" height="14.5"/>
+                                <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
+                                <color key="textColor" red="0.57254904510000004" green="0.52941179279999995" blue="0.47058823700000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="A8Y-qp-cyi" userLabel="Velocity Selector" customClass="VelocitySelector" customModule="Groove">
+                                <rect key="frame" x="94" y="144" width="210" height="36"/>
+                                <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <accessibility key="accessibilityConfiguration" identifier="Velocity Selector"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="selection">
+                                        <integer key="value" value="4"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="VelocitySelector"/>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="didPickVelocity" destination="mkH-rp-flL" eventType="valueChanged" id="311-VG-4Sn"/>
+                                </connections>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Chord" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="none" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="S1A-gJ-EK3">
+                                <rect key="frame" x="16" y="65" width="50" height="15"/>
+                                <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
+                                <color key="textColor" red="0.57254904510000004" green="0.52941179279999995" blue="0.47058823700000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Note" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RzA-AQ-19C">
+                                <rect key="frame" x="16" y="21.5" width="37.5" height="14.5"/>
+                                <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
+                                <color key="textColor" red="0.57254904510000004" green="0.52941179279999995" blue="0.47058823700000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Duration" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DHc-Yo-DTw">
+                                <rect key="frame" x="16" y="109" width="70" height="14.5"/>
+                                <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
+                                <color key="textColor" red="0.57254904510000004" green="0.52941179279999995" blue="0.47058823700000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view contentMode="scaleToFill" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="I8E-Om-gZI" userLabel="Octave Selector" customClass="OctaveSelector" customModule="Groove">
+                                <rect key="frame" x="234" y="8" width="70" height="36"/>
+                                <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="selection">
+                                        <integer key="value" value="6"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="OctaveSelector"/>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="didPickOctave" destination="mkH-rp-flL" eventType="valueChanged" id="ybW-Q4-BHJ"/>
+                                </connections>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0kd-G6-p4c" userLabel="Chord Selector" customClass="ChordSelector" customModule="Groove">
+                                <rect key="frame" x="94" y="52" width="210" height="36"/>
+                                <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <accessibility key="accessibilityConfiguration" identifier="Chord Selector"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="selection">
+                                        <integer key="value" value="0"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="ChordSelector"/>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="didPickChord" destination="mkH-rp-flL" eventType="valueChanged" id="TVC-pU-79D"/>
+                                </connections>
+                            </view>
+                            <view contentMode="scaleToFill" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="OTW-bG-fkC" userLabel="Pitch Selector" customClass="PitchSelector" customModule="Groove">
+                                <rect key="frame" x="94" y="8" width="70" height="36"/>
+                                <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <accessibility key="accessibilityConfiguration" identifier="Pitch Selector"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="selection">
+                                        <integer key="value" value="2"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="PitchSelector"/>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="didPickPitch" destination="mkH-rp-flL" eventType="valueChanged" id="qvj-Af-6Kd"/>
+                                </connections>
+                            </view>
+                            <view contentMode="scaleToFill" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="God-Nc-6QH" userLabel="Duration Selector" customClass="DurationSelector" customModule="Groove">
+                                <rect key="frame" x="94" y="98" width="210" height="36"/>
+                                <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <accessibility key="accessibilityConfiguration" identifier="Duration Selector"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="selection">
+                                        <integer key="value" value="6"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="DurationSelector"/>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="didPickDuration" destination="mkH-rp-flL" eventType="valueChanged" id="3OY-CX-hDN"/>
+                                </connections>
+                            </view>
+                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iBN-I3-vpc" userLabel="Previous" customClass="ImageButtonView" customModule="MoonKit">
+                                <rect key="frame" x="16" y="206" width="56" height="56"/>
+                                <color key="tintColor" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <accessibility key="accessibilityConfiguration" identifier="PreviousButton"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="PreviousButton"/>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
+                                        <color key="value" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
+                                        <color key="value" red="0.68166375160217285" green="0.38204258680343628" blue="0.2524854838848114" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="left_arrow"/>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="previous" destination="mkH-rp-flL" eventType="touchUpInside" id="vDJ-dm-95k"/>
+                                </connections>
+                            </view>
+                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fkV-BB-xq4" userLabel="Next" customClass="ImageButtonView" customModule="MoonKit">
+                                <rect key="frame" x="248" y="206" width="56" height="56"/>
+                                <color key="tintColor" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <accessibility key="accessibilityConfiguration" identifier="NextButton"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
+                                        <color key="value" red="0.68166375160217285" green="0.38204258680343628" blue="0.2524854838848114" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="normalTintColor">
+                                        <color key="value" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="NextButton"/>
+                                    <userDefinedRuntimeAttribute type="image" keyPath="image" value="right_arrow"/>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="next" destination="mkH-rp-flL" eventType="touchUpInside" id="SPR-ur-CbG"/>
+                                </connections>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="DnS-k2-4l0" firstAttribute="centerY" secondItem="0nt-E7-ucq" secondAttribute="centerY" id="IxS-g2-QnL"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="DnS-k2-4l0" secondAttribute="trailing" identifier="NoteAttributesStackStretchRight" id="qeF-pQ-Xie"/>
-                            <constraint firstItem="DnS-k2-4l0" firstAttribute="leading" secondItem="0nt-E7-ucq" secondAttribute="leadingMargin" identifier="NoteAttributesStackStretchLeft" id="xSI-vZ-Je6"/>
+                            <constraint firstItem="iBN-I3-vpc" firstAttribute="leading" secondItem="RzA-AQ-19C" secondAttribute="leading" id="0uf-zf-llV"/>
+                            <constraint firstItem="A8Y-qp-cyi" firstAttribute="trailing" secondItem="0kd-G6-p4c" secondAttribute="trailing" id="51l-TG-efi"/>
+                            <constraint firstItem="A8Y-qp-cyi" firstAttribute="centerY" secondItem="V6p-Bx-OJL" secondAttribute="centerY" id="5uc-QK-zXw"/>
+                            <constraint firstItem="fkV-BB-xq4" firstAttribute="trailing" secondItem="0kd-G6-p4c" secondAttribute="trailing" id="6mO-7b-FPe"/>
+                            <constraint firstItem="G2s-yP-iQ2" firstAttribute="height" secondItem="OTW-bG-fkC" secondAttribute="height" id="6tY-et-Xe0"/>
+                            <constraint firstItem="A8Y-qp-cyi" firstAttribute="top" secondItem="God-Nc-6QH" secondAttribute="bottom" constant="10" id="AU8-Ia-x69"/>
+                            <constraint firstItem="V6p-Bx-OJL" firstAttribute="leading" secondItem="RzA-AQ-19C" secondAttribute="leading" id="Do7-Xm-4oA"/>
+                            <constraint firstItem="0kd-G6-p4c" firstAttribute="leading" secondItem="OTW-bG-fkC" secondAttribute="leading" id="EOb-t6-Bqi"/>
+                            <constraint firstItem="God-Nc-6QH" firstAttribute="centerY" secondItem="DHc-Yo-DTw" secondAttribute="centerY" id="Ey4-P1-2vn"/>
+                            <constraint firstItem="I8E-Om-gZI" firstAttribute="trailing" secondItem="0kd-G6-p4c" secondAttribute="trailing" id="IlQ-ME-W4r"/>
+                            <constraint firstItem="I8E-Om-gZI" firstAttribute="centerY" secondItem="OTW-bG-fkC" secondAttribute="centerY" id="JON-Zb-7XE"/>
+                            <constraint firstItem="0kd-G6-p4c" firstAttribute="baseline" secondItem="S1A-gJ-EK3" secondAttribute="baseline" id="JWj-Um-OuX"/>
+                            <constraint firstItem="OTW-bG-fkC" firstAttribute="top" secondItem="XfO-5i-TDg" secondAttribute="bottom" constant="8" id="KP8-h2-y5v"/>
+                            <constraint firstItem="S1A-gJ-EK3" firstAttribute="leading" secondItem="RzA-AQ-19C" secondAttribute="leading" id="KeT-1H-thB"/>
+                            <constraint firstItem="God-Nc-6QH" firstAttribute="leading" secondItem="DHc-Yo-DTw" secondAttribute="trailing" constant="8" id="MhQ-ap-49X"/>
+                            <constraint firstItem="iBN-I3-vpc" firstAttribute="centerY" secondItem="fkV-BB-xq4" secondAttribute="centerY" id="OM2-Tm-N5U"/>
+                            <constraint firstItem="I8E-Om-gZI" firstAttribute="leading" secondItem="G2s-yP-iQ2" secondAttribute="trailing" constant="8" id="Qv1-GW-zDq"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="I8E-Om-gZI" secondAttribute="trailing" id="WNp-g7-tb0"/>
+                            <constraint firstItem="God-Nc-6QH" firstAttribute="leading" secondItem="OTW-bG-fkC" secondAttribute="leading" id="YWX-C0-k1o"/>
+                            <constraint firstItem="OTW-bG-fkC" firstAttribute="baseline" secondItem="RzA-AQ-19C" secondAttribute="baseline" id="Z5K-uc-NRl"/>
+                            <constraint firstItem="God-Nc-6QH" firstAttribute="top" secondItem="0kd-G6-p4c" secondAttribute="bottom" constant="10" id="c7b-cF-37H"/>
+                            <constraint firstItem="I8E-Om-gZI" firstAttribute="height" secondItem="OTW-bG-fkC" secondAttribute="height" id="cp2-Tc-1PU"/>
+                            <constraint firstItem="G2s-yP-iQ2" firstAttribute="centerY" secondItem="OTW-bG-fkC" secondAttribute="centerY" id="eXj-90-bD7"/>
+                            <constraint firstItem="A8Y-qp-cyi" firstAttribute="leading" secondItem="OTW-bG-fkC" secondAttribute="leading" id="hXH-7O-WOY"/>
+                            <constraint firstItem="God-Nc-6QH" firstAttribute="trailing" secondItem="0kd-G6-p4c" secondAttribute="trailing" id="iVz-Z7-Sdm"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="RzA-AQ-19C" secondAttribute="leading" id="jeE-qD-gda"/>
+                            <constraint firstItem="0kd-G6-p4c" firstAttribute="top" secondItem="OTW-bG-fkC" secondAttribute="bottom" constant="8" id="koP-75-0MO"/>
+                            <constraint firstItem="DHc-Yo-DTw" firstAttribute="leading" secondItem="RzA-AQ-19C" secondAttribute="leading" id="oI4-nu-Sjg"/>
+                            <constraint firstItem="G2s-yP-iQ2" firstAttribute="leading" secondItem="OTW-bG-fkC" secondAttribute="trailing" constant="8" id="pkN-uA-lfu"/>
+                            <constraint firstItem="I8E-Om-gZI" firstAttribute="width" secondItem="OTW-bG-fkC" secondAttribute="width" id="u8W-TZ-C2N"/>
+                            <constraint firstItem="k1E-1I-vpv" firstAttribute="top" secondItem="iBN-I3-vpc" secondAttribute="bottom" constant="8" id="xvo-2H-XKQ"/>
                         </constraints>
                         <userDefinedRuntimeAttributes>
                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="NoteAttributesSceneView"/>
@@ -411,19 +397,19 @@
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="320" height="270"/>
                     <connections>
-                        <outlet property="chordPicker" destination="WmI-eQ-XEC" id="mQN-Re-dWb"/>
-                        <outlet property="durationPicker" destination="qXn-H6-nOw" id="S2z-wP-b86"/>
+                        <outlet property="chordPicker" destination="0kd-G6-p4c" id="nL7-1K-yoV"/>
+                        <outlet property="durationPicker" destination="God-Nc-6QH" id="q0G-Hm-jBm"/>
                         <outlet property="leftArrow" destination="iBN-I3-vpc" id="nbU-c8-jqu"/>
-                        <outlet property="modifierPicker" destination="to4-1r-evZ" id="11d-6u-GzQ"/>
-                        <outlet property="octavePicker" destination="ssE-JU-CSp" id="Fqm-LY-xbQ"/>
-                        <outlet property="pitchPicker" destination="LAk-vc-QCj" id="JQM-Xz-QIL"/>
+                        <outlet property="modifierPicker" destination="G2s-yP-iQ2" id="O7H-6I-Re2"/>
+                        <outlet property="octavePicker" destination="I8E-Om-gZI" id="QyY-9o-ldl"/>
+                        <outlet property="pitchPicker" destination="OTW-bG-fkC" id="kDe-Tt-gX2"/>
                         <outlet property="rightArrow" destination="fkV-BB-xq4" id="4ic-de-FY3"/>
-                        <outlet property="velocityPicker" destination="HTv-B6-Opz" id="7lk-ya-LB6"/>
+                        <outlet property="velocityPicker" destination="A8Y-qp-cyi" id="zgU-g9-8q9"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6zq-OA-XKn" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="697" y="397"/>
+            <point key="canvasLocation" x="907" y="90"/>
         </scene>
     </scenes>
     <resources>

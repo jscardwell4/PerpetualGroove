@@ -23,7 +23,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eGE-iH-5ex" userLabel="Tempo" customClass="Slider" customModule="MoonKit">
-                                <rect key="frame" x="-10" y="8" width="330" height="55"/>
+                                <rect key="frame" x="8" y="8" width="294" height="55"/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="image" keyPath="thumbImage" value="horizontal_thumb"/>
                                     <userDefinedRuntimeAttribute type="image" keyPath="trackMinImage" value="horizontal_track"/>

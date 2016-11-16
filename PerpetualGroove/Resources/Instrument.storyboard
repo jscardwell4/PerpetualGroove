@@ -24,129 +24,102 @@
                         <viewControllerLayoutGuide type="bottom" id="OC8-AH-rwD"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="mGr-ok-gXJ">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="120"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="133"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView hidden="YES" opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="K2B-qJ-Kmx" userLabel="InstrumentsStack">
-                                <rect key="frame" x="16" y="0.0" width="288" height="120"/>
-                                <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="r1D-9L-561">
-                                        <rect key="frame" x="0.0" y="0.0" width="288" height="40"/>
-                                        <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Sound Set" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e1T-sL-nID">
-                                                <rect key="frame" x="0.0" y="0.0" width="84" height="40"/>
-                                                <fontDescription key="fontDescription" name="EvelethLight" family="Eveleth" pointSize="13"/>
-                                                <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <nil key="highlightedColor"/>
-                                                <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="SoundSetLabel"/>
-                                                </userDefinedRuntimeAttributes>
-                                            </label>
-                                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="En4-Eg-iPG" customClass="SoundFontSelector" customModule="Groove" customModuleProvider="target">
-                                                <rect key="frame" x="94" y="0.0" width="194" height="40"/>
-                                                <connections>
-                                                    <action selector="didPickSoundSet" destination="alc-VG-vzJ" eventType="valueChanged" id="iKX-UD-RHe"/>
-                                                </connections>
-                                            </view>
-                                        </subviews>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="SoundSetStack"/>
-                                        </userDefinedRuntimeAttributes>
-                                    </stackView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Bes-Lg-AnT">
-                                        <rect key="frame" x="0.0" y="40" width="288" height="40"/>
-                                        <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Program" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ydy-Ex-abe">
-                                                <rect key="frame" x="0.0" y="0.0" width="84" height="40"/>
-                                                <fontDescription key="fontDescription" name="EvelethLight" family="Eveleth" pointSize="13"/>
-                                                <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <nil key="highlightedColor"/>
-                                                <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="ProgramLabel"/>
-                                                </userDefinedRuntimeAttributes>
-                                            </label>
-                                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MI8-nb-zBV" customClass="ProgramSelector" customModule="Groove" customModuleProvider="target">
-                                                <rect key="frame" x="94" y="0.0" width="194" height="40"/>
-                                                <connections>
-                                                    <action selector="didPickProgram" destination="alc-VG-vzJ" eventType="valueChanged" id="2YW-5h-hgR"/>
-                                                </connections>
-                                            </view>
-                                        </subviews>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="ProgramStack"/>
-                                        </userDefinedRuntimeAttributes>
-                                    </stackView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="VUO-QA-GS1">
-                                        <rect key="frame" x="0.0" y="80" width="288" height="40"/>
-                                        <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Channel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Cf-bk-X5q">
-                                                <rect key="frame" x="0.0" y="0.0" width="84" height="40"/>
-                                                <fontDescription key="fontDescription" name="EvelethLight" family="Eveleth" pointSize="13"/>
-                                                <color key="textColor" red="0.57254904510000004" green="0.52941179279999995" blue="0.47058823700000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <nil key="highlightedColor"/>
-                                                <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="ChannelLabel"/>
-                                                </userDefinedRuntimeAttributes>
-                                            </label>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NJk-vD-Q1I" customClass="LabeledStepper" customModule="MoonKit">
-                                                <rect key="frame" x="94" y="0.0" width="194" height="40"/>
-                                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <color key="tintColor" red="0.84339773654937744" green="0.78935146331787109" blue="0.71463805437088013" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="dividerHidden" value="YES"/>
-                                                    <userDefinedRuntimeAttribute type="image" keyPath="decrementImage" value="down_arrow"/>
-                                                    <userDefinedRuntimeAttribute type="image" keyPath="incrementImage" value="up_arrow"/>
-                                                    <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="EvelethLight"/>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
-                                                        <real key="value" value="13"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="color" keyPath="textColor">
-                                                        <color key="value" red="0.87450999019999998" green="0.82744997740000004" blue="0.76077997679999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="value">
-                                                        <real key="value" value="0.0"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
-                                                        <real key="value" value="0.0"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
-                                                        <real key="value" value="15"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="stepValue">
-                                                        <real key="value" value="1"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
-                                                        <color key="value" red="0.76089900732040405" green="0.25649610161781311" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="backgroundHidden" value="YES"/>
-                                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="ChannelStepper"/>
-                                                </userDefinedRuntimeAttributes>
-                                                <connections>
-                                                    <action selector="didChangeChannel" destination="alc-VG-vzJ" eventType="valueChanged" id="lrf-0U-nbT"/>
-                                                </connections>
-                                            </view>
-                                        </subviews>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="ChannelStack"/>
-                                        </userDefinedRuntimeAttributes>
-                                    </stackView>
-                                </subviews>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="120" id="GYA-9a-s3g"/>
-                                    <constraint firstItem="4Cf-bk-X5q" firstAttribute="width" secondItem="e1T-sL-nID" secondAttribute="width" id="fDZ-q6-8ZC"/>
-                                    <constraint firstItem="ydy-Ex-abe" firstAttribute="width" secondItem="e1T-sL-nID" secondAttribute="width" id="h2P-Ce-bU5"/>
-                                </constraints>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Sound Set" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e1T-sL-nID">
+                                <rect key="frame" x="16" y="17" width="84" height="16"/>
+                                <fontDescription key="fontDescription" name="EvelethLight" family="Eveleth" pointSize="13"/>
+                                <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
                                 <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="InstrumentsStack"/>
-                                    <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="InstrumentsStack"/>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="SoundSetLabel"/>
                                 </userDefinedRuntimeAttributes>
-                            </stackView>
+                            </label>
+                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="En4-Eg-iPG" customClass="SoundFontSelector" customModule="Groove" customModuleProvider="target">
+                                <rect key="frame" x="108" y="8" width="196" height="36"/>
+                                <connections>
+                                    <action selector="didPickSoundSet" destination="alc-VG-vzJ" eventType="valueChanged" id="iKX-UD-RHe"/>
+                                </connections>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Program" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ydy-Ex-abe">
+                                <rect key="frame" x="16" y="61.5" width="75" height="16"/>
+                                <fontDescription key="fontDescription" name="EvelethLight" family="Eveleth" pointSize="13"/>
+                                <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="ProgramLabel"/>
+                                </userDefinedRuntimeAttributes>
+                            </label>
+                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MI8-nb-zBV" customClass="ProgramSelector" customModule="Groove" customModuleProvider="target">
+                                <rect key="frame" x="108" y="52" width="196" height="36"/>
+                                <connections>
+                                    <action selector="didPickProgram" destination="alc-VG-vzJ" eventType="valueChanged" id="2YW-5h-hgR"/>
+                                </connections>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Channel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Cf-bk-X5q">
+                                <rect key="frame" x="16" y="102.5" width="72" height="16"/>
+                                <fontDescription key="fontDescription" name="EvelethLight" family="Eveleth" pointSize="13"/>
+                                <color key="textColor" red="0.57254904510000004" green="0.52941179279999995" blue="0.47058823700000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="ChannelLabel"/>
+                                </userDefinedRuntimeAttributes>
+                            </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NJk-vD-Q1I" customClass="LabeledStepper" customModule="MoonKit">
+                                <rect key="frame" x="192.5" y="96" width="111.5" height="29"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="tintColor" red="0.84339773654937744" green="0.78935146331787109" blue="0.71463805437088013" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="dividerHidden" value="YES"/>
+                                    <userDefinedRuntimeAttribute type="image" keyPath="decrementImage" value="down_arrow"/>
+                                    <userDefinedRuntimeAttribute type="image" keyPath="incrementImage" value="up_arrow"/>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="fontName" value="EvelethLight"/>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
+                                        <real key="value" value="13"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="textColor">
+                                        <color key="value" red="0.87450999019999998" green="0.82744997740000004" blue="0.76077997679999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="value">
+                                        <real key="value" value="0.0"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
+                                        <real key="value" value="0.0"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
+                                        <real key="value" value="15"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="stepValue">
+                                        <real key="value" value="1"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="highlightedTintColor">
+                                        <color key="value" red="0.76089900732040405" green="0.25649610161781311" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="backgroundHidden" value="YES"/>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="ChannelStepper"/>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="didChangeChannel" destination="alc-VG-vzJ" eventType="valueChanged" id="lrf-0U-nbT"/>
+                                </connections>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="0.20000000298023224" green="0.19607843458652496" blue="0.19215686619281769" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="K2B-qJ-Kmx" firstAttribute="leading" secondItem="mGr-ok-gXJ" secondAttribute="leadingMargin" identifier="InstrumentSceneStretchLeft" id="129-h9-FsC"/>
-                            <constraint firstItem="K2B-qJ-Kmx" firstAttribute="centerY" secondItem="mGr-ok-gXJ" secondAttribute="centerY" id="Pxa-b5-sh7"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="K2B-qJ-Kmx" secondAttribute="trailing" identifier="InstrumentSceneStretchRight" id="maO-oP-5z9"/>
+                            <constraint firstItem="NJk-vD-Q1I" firstAttribute="baseline" secondItem="4Cf-bk-X5q" secondAttribute="baseline" id="ARc-9K-CaZ"/>
+                            <constraint firstItem="NJk-vD-Q1I" firstAttribute="top" secondItem="MI8-nb-zBV" secondAttribute="bottom" constant="8" symbolic="YES" id="IY6-Id-9Zv"/>
+                            <constraint firstItem="En4-Eg-iPG" firstAttribute="leading" secondItem="e1T-sL-nID" secondAttribute="trailing" constant="8" symbolic="YES" id="Iai-8z-e96"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="En4-Eg-iPG" secondAttribute="trailing" id="JXC-hb-8eH"/>
+                            <constraint firstItem="MI8-nb-zBV" firstAttribute="leading" secondItem="En4-Eg-iPG" secondAttribute="leading" id="XNu-qn-fvq"/>
+                            <constraint firstItem="MI8-nb-zBV" firstAttribute="baseline" secondItem="ydy-Ex-abe" secondAttribute="baseline" id="XSx-Lx-2cA"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="e1T-sL-nID" secondAttribute="leading" id="ajU-tM-kSL"/>
+                            <constraint firstItem="NJk-vD-Q1I" firstAttribute="trailing" secondItem="MI8-nb-zBV" secondAttribute="trailing" id="cmr-5R-Y0G"/>
+                            <constraint firstItem="ydy-Ex-abe" firstAttribute="leading" secondItem="e1T-sL-nID" secondAttribute="leading" id="cvb-ru-cEQ"/>
+                            <constraint firstItem="4Cf-bk-X5q" firstAttribute="leading" secondItem="e1T-sL-nID" secondAttribute="leading" id="f30-ZW-8ad"/>
+                            <constraint firstItem="En4-Eg-iPG" firstAttribute="top" secondItem="vsb-xD-YZv" secondAttribute="bottom" constant="8" symbolic="YES" id="kld-up-Wlz"/>
+                            <constraint firstItem="En4-Eg-iPG" firstAttribute="baseline" secondItem="e1T-sL-nID" secondAttribute="baseline" id="pW6-We-yme"/>
+                            <constraint firstItem="MI8-nb-zBV" firstAttribute="top" secondItem="En4-Eg-iPG" secondAttribute="bottom" constant="8" symbolic="YES" id="qEs-Zi-FKf"/>
+                            <constraint firstItem="MI8-nb-zBV" firstAttribute="trailing" secondItem="En4-Eg-iPG" secondAttribute="trailing" id="vgH-aw-Ch0"/>
                         </constraints>
                         <userDefinedRuntimeAttributes>
                             <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="InstrumentSceneView"/>
@@ -157,7 +130,7 @@
                     <nil key="simulatedTopBarMetrics"/>
                     <nil key="simulatedBottomBarMetrics"/>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-                    <size key="freeformSize" width="320" height="120"/>
+                    <size key="freeformSize" width="320" height="133"/>
                     <connections>
                         <outlet property="channelStepper" destination="NJk-vD-Q1I" id="x3S-Pn-YtY"/>
                         <outlet property="programPicker" destination="MI8-nb-zBV" id="wgV-HM-qwq"/>
