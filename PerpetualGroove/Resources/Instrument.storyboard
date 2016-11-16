@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="alc-VG-vzJ">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="16B2555" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="alc-VG-vzJ">
+    <device id="ipad9_7" orientation="landscape">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -25,10 +28,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView hidden="YES" opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="K2B-qJ-Kmx" userLabel="InstrumentsStack">
+                                <rect key="frame" x="16" y="0.0" width="288" height="120"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="r1D-9L-561">
+                                        <rect key="frame" x="0.0" y="0.0" width="288" height="40"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Sound Set" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e1T-sL-nID">
+                                                <rect key="frame" x="0.0" y="0.0" width="84" height="40"/>
                                                 <fontDescription key="fontDescription" name="EvelethLight" family="Eveleth" pointSize="13"/>
                                                 <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
@@ -37,6 +43,7 @@
                                                 </userDefinedRuntimeAttributes>
                                             </label>
                                             <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="En4-Eg-iPG" customClass="SoundFontSelector" customModule="Groove" customModuleProvider="target">
+                                                <rect key="frame" x="94" y="0.0" width="194" height="40"/>
                                                 <connections>
                                                     <action selector="didPickSoundSet" destination="alc-VG-vzJ" eventType="valueChanged" id="iKX-UD-RHe"/>
                                                 </connections>
@@ -47,8 +54,10 @@
                                         </userDefinedRuntimeAttributes>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Bes-Lg-AnT">
+                                        <rect key="frame" x="0.0" y="40" width="288" height="40"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Program" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ydy-Ex-abe">
+                                                <rect key="frame" x="0.0" y="0.0" width="84" height="40"/>
                                                 <fontDescription key="fontDescription" name="EvelethLight" family="Eveleth" pointSize="13"/>
                                                 <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
@@ -57,6 +66,7 @@
                                                 </userDefinedRuntimeAttributes>
                                             </label>
                                             <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MI8-nb-zBV" customClass="ProgramSelector" customModule="Groove" customModuleProvider="target">
+                                                <rect key="frame" x="94" y="0.0" width="194" height="40"/>
                                                 <connections>
                                                     <action selector="didPickProgram" destination="alc-VG-vzJ" eventType="valueChanged" id="2YW-5h-hgR"/>
                                                 </connections>
@@ -67,8 +77,10 @@
                                         </userDefinedRuntimeAttributes>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="VUO-QA-GS1">
+                                        <rect key="frame" x="0.0" y="80" width="288" height="40"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Channel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Cf-bk-X5q">
+                                                <rect key="frame" x="0.0" y="0.0" width="84" height="40"/>
                                                 <fontDescription key="fontDescription" name="EvelethLight" family="Eveleth" pointSize="13"/>
                                                 <color key="textColor" red="0.57254904510000004" green="0.52941179279999995" blue="0.47058823700000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
@@ -77,6 +89,7 @@
                                                 </userDefinedRuntimeAttributes>
                                             </label>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NJk-vD-Q1I" customClass="LabeledStepper" customModule="MoonKit">
+                                                <rect key="frame" x="94" y="0.0" width="194" height="40"/>
                                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <color key="tintColor" red="0.84339773654937744" green="0.78935146331787109" blue="0.71463805437088013" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <userDefinedRuntimeAttributes>

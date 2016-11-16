@@ -9380,3 +9380,322 @@ delegate = <Groove.SoundFontSelector: 0x7ff25006fe50; baseClass = UIControl; fra
 2016-11-07 13:53:23 +0000 [76093823625055] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
 2016-11-07 13:53:27 +0000 [76097617310790] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
 2016-11-07 13:53:48 +0000 [76118717413374] <Label.swift:92> intrinsicContentSize  gutter: {133.5, 0, 17, 0}; intrinsicContentSize: (57.0, 167.0)
+2016-11-07 14:02:53 +0000 [76664126585424] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (23.5, 14.0)
+2016-11-07 14:02:54 +0000 [76665149448833] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 14:02:54 +0000 [76665267748905] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 14:02:55 +0000 [76666238959733] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 14:02:55 +0000 [76666265439536] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 14:02:57 +0000 [76667340014493] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 14:02:57 +0000 [76667363157491] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 14:02:58 +0000 [76668879415314] <Label.swift:92> intrinsicContentSize  gutter: {133.5, 0, 17, 0}; intrinsicContentSize: (50.5, 169.0)
+2016-11-07 14:03:45 +0000 [76715844268066] <Label.swift:92> intrinsicContentSize  gutter: {133.5, 0, 17, 0}; intrinsicContentSize: (50.5, 169.0)
+2016-11-07 14:03:46 +0000 [76716867238670] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 14:03:56 +0000 [76726378486440] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 14:03:57 +0000 [76727398667935] <Label.swift:92> intrinsicContentSize  gutter: {133.5, 0, 17, 0}; intrinsicContentSize: (50.5, 169.0)
+2016-11-07 14:04:11 +0000 [76741855724240] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 14:04:12 +0000 [76742875950433] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 14:04:16 +0000 [76746766341865] <Label.swift:92> intrinsicContentSize  gutter: {133.5, 0, 17, 0}; intrinsicContentSize: (50.5, 169.0)
+2016-11-07 14:04:17 +0000 [76747772715808] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 14:04:28 +0000 [76758915241065] <Label.swift:92> intrinsicContentSize  gutter: {133.5, 0, 17, 0}; intrinsicContentSize: (50.5, 169.0)
+2016-11-07 14:04:29 +0000 [76759913578853] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 14:04:46 +0000 [76776329058275] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (23.5, 14.0)
+2016-11-07 14:06:18 +0000 [76868896891481] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (23.5, 14.0)
+2016-11-07 14:06:20 +0000 [76870412678897] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 14:06:22 +0000 [76872452793873] <Label.swift:92> intrinsicContentSize  gutter: {133.5, 0, 17, 0}; intrinsicContentSize: (50.5, 169.0)
+2016-11-07 14:06:23 +0000 [76873539069857] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 14:06:24 +0000 [76874555451696] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 14:06:24 +0000 [76874618106621] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 14:06:24 +0000 [76875021341637] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 14:06:24 +0000 [76875265161464] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 14:06:25 +0000 [76875510904885] <Label.swift:92> intrinsicContentSize  gutter: {133.5, 0, 17, 0}; intrinsicContentSize: (50.5, 169.0)
+2016-11-07 14:17:53 +0000 [77563435848826] <Label.swift:92> intrinsicContentSize  gutter: {133.5, 0, 17, 0}; intrinsicContentSize: (50.5, 169.0)
+2016-11-07 14:17:54 +0000 [77564453783798] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 14:18:36 +0000 [77606760564247] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 14:18:37 +0000 [77607778388690] <Label.swift:92> intrinsicContentSize  gutter: {133.5, 0, 17, 0}; intrinsicContentSize: (50.5, 169.0)
+2016-11-07 14:19:11 +0000 [77641551172614] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 14:19:11 +0000 [77641562228067] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 14:19:23 +0000 [77654246190558] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 14:19:23 +0000 [77654271787970] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 14:19:25 +0000 [77655369778828] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 14:19:25 +0000 [77655388935509] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 14:19:25 +0000 [77655630145391] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 14:19:26 +0000 [77656426306684] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 14:19:26 +0000 [77656541697824] <Label.swift:92> intrinsicContentSize  gutter: {133.5, 0, 17, 0}; intrinsicContentSize: (50.5, 169.0)
+2016-11-07 14:22:15 +0000 [77825868414067] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 14:22:15 +0000 [77826235145401] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 14:22:16 +0000 [77826340737835] <Label.swift:92> intrinsicContentSize  gutter: {133.5, 0, 17, 0}; intrinsicContentSize: (50.5, 169.0)
+2016-11-07 14:22:16 +0000 [77826592656520] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 14:23:06 +0000 [77876620130080] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (23.5, 14.0)
+2016-11-07 19:39:55 +0000 [82624475471102] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (23.5, 14.0)
+2016-11-07 19:39:57 +0000 [82626138749145] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:39:58 +0000 [82627198024045] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:39:58 +0000 [82627218542411] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:39:58 +0000 [82627466553898] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:39:59 +0000 [82628305775318] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:39:59 +0000 [82628330886164] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:40:01 +0000 [82629808119154] <Label.swift:92> intrinsicContentSize  gutter: {133.5, 0, 17, 0}; intrinsicContentSize: (50.5, 169.0)
+2016-11-07 19:40:41 +0000 [82669994945196] <Label.swift:92> intrinsicContentSize  gutter: {133.5, 0, 17, 0}; intrinsicContentSize: (57.0, 167.0)
+2016-11-07 19:42:59 +0000 [82808221034490] <Label.swift:92> intrinsicContentSize  gutter: {133.5, 0, 17, 0}; intrinsicContentSize: (57.0, 167.0)
+2016-11-07 19:43:01 +0000 [82809561326071] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:43:03 +0000 [82811569325045] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:43:04 +0000 [82812591938100] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:43:05 +0000 [82813615296802] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:43:05 +0000 [82813682022290] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:43:05 +0000 [82814179421891] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:43:05 +0000 [82814432128510] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:43:06 +0000 [82814676628435] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:43:40 +0000 [82849321263288] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:43:41 +0000 [82850321731937] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:44:06 +0000 [82874881897266] <Label.swift:92> intrinsicContentSize  gutter: {133.5, 0, 17, 0}; intrinsicContentSize: (50.5, 169.0)
+2016-11-07 19:44:07 +0000 [82875914388666] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:44:36 +0000 [82905478249528] <Label.swift:92> intrinsicContentSize  gutter: {133.5, 0, 17, 0}; intrinsicContentSize: (50.5, 169.0)
+2016-11-07 19:44:37 +0000 [82906462199672] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:45:04 +0000 [82933354155807] <Label.swift:92> intrinsicContentSize  gutter: {133.5, 0, 17, 0}; intrinsicContentSize: (50.5, 169.0)
+2016-11-07 19:45:05 +0000 [82934337915755] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:45:23 +0000 [82951850196040] <Label.swift:92> intrinsicContentSize  gutter: {133.5, 0, 17, 0}; intrinsicContentSize: (50.5, 169.0)
+2016-11-07 19:45:24 +0000 [82952850453194] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:45:35 +0000 [82964405430213] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:45:36 +0000 [82965390837974] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:45:48 +0000 [82976734987363] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:45:49 +0000 [82977722272550] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:46:14 +0000 [83003460312347] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (23.5, 14.0)
+2016-11-07 19:48:52 +0000 [83160635050593] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:48:52 +0000 [83160661686543] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:48:53 +0000 [83161741087818] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:48:53 +0000 [83161762718707] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:48:53 +0000 [83161770657255] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:48:54 +0000 [83162785078735] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:48:54 +0000 [83162900382112] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:48:55 +0000 [83164213679230] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:50:01 +0000 [83229820684388] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:50:01 +0000 [83229916463316] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:50:01 +0000 [83230027251384] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 19:50:01 +0000 [83230108206538] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:50:01 +0000 [83230121004574] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 19:50:01 +0000 [83230185856449] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:50:01 +0000 [83230197863930] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 19:50:01 +0000 [83230211199019] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:50:01 +0000 [83230233054910] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:50:01 +0000 [83230299881422] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:50:01 +0000 [83230313413416] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 19:50:01 +0000 [83230327068993] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:50:01 +0000 [83230351664667] <InlinePickerView.swift:156> selectItem(_:animated:)  4 is not a valid item index
+2016-11-07 19:50:01 +0000 [83230479005954] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 19:50:02 +0000 [83230550296421] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:50:02 +0000 [83230563174232] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 19:50:02 +0000 [83230642688922] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:50:02 +0000 [83230704691727] <InlinePickerView.swift:156> selectItem(_:animated:)  6 is not a valid item index
+2016-11-07 19:50:02 +0000 [83230780552335] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:50:02 +0000 [83230795965458] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 19:50:02 +0000 [83230809596825] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:50:02 +0000 [83230831316580] <InlinePickerView.swift:156> selectItem(_:animated:)  6 is not a valid item index
+2016-11-07 19:50:02 +0000 [83230894770015] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:50:02 +0000 [83230920413468] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 19:50:02 +0000 [83231071106775] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:50:02 +0000 [83231086125205] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 19:50:02 +0000 [83231137386466] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 19:50:03 +0000 [83232401417254] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:50:03 +0000 [83232429419459] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:50:04 +0000 [83233482323859] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:50:04 +0000 [83233506988328] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:50:05 +0000 [83234518260698] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:50:06 +0000 [83234536169281] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:50:06 +0000 [83234910504387] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:50:06 +0000 [83234964274960] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:50:06 +0000 [83234974157516] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 19:50:06 +0000 [83235038834378] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:50:06 +0000 [83235051524614] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 19:50:06 +0000 [83235064777687] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:50:06 +0000 [83235085350839] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:50:06 +0000 [83235141780776] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:50:06 +0000 [83235155853488] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 19:50:06 +0000 [83235168160222] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:50:06 +0000 [83235190512258] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:50:06 +0000 [83235240696847] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:50:06 +0000 [83235302842784] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 19:50:06 +0000 [83235336089842] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 19:50:06 +0000 [83235386458258] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:50:06 +0000 [83235400076820] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 19:50:06 +0000 [83235456253020] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:50:06 +0000 [83235469331879] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 19:50:06 +0000 [83235482722751] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:50:06 +0000 [83235501848460] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:50:07 +0000 [83235561231082] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:50:07 +0000 [83235571109420] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 19:50:07 +0000 [83235583392467] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:50:07 +0000 [83235602563625] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:50:07 +0000 [83235660978510] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:50:07 +0000 [83235721840806] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 19:50:07 +0000 [83235820537680] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 19:50:07 +0000 [83235832435108] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:50:08 +0000 [83236957899241] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 19:50:08 +0000 [83237334145720] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:50:08 +0000 [83237349983443] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 19:50:08 +0000 [83237400420058] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 19:52:01 +0000 [83349801382027] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:52:01 +0000 [83349861289457] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 19:52:01 +0000 [83349899215736] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 19:52:01 +0000 [83350268028698] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:52:01 +0000 [83350281448146] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 19:52:01 +0000 [83350393162882] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 19:52:01 +0000 [83350424066414] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:52:01 +0000 [83350503288097] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 19:52:01 +0000 [83350516929081] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 19:52:02 +0000 [83350567480582] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 19:52:05 +0000 [83354036285268] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:19 +0000 [85228532690452] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:23:20 +0000 [85228617274302] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:23:20 +0000 [85228944306922] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:20 +0000 [85228998674957] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:20 +0000 [85229006940645] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:23:20 +0000 [85229018381348] <InlinePickerView.swift:156> selectItem(_:animated:)  6 is not a valid item index
+2016-11-07 20:23:20 +0000 [85229076669179] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:20 +0000 [85229085503488] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:23:20 +0000 [85229098135185] <InlinePickerView.swift:156> selectItem(_:animated:)  4 is not a valid item index
+2016-11-07 20:23:20 +0000 [85229446059286] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:23:20 +0000 [85229536077214] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:20 +0000 [85229546894758] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:23:21 +0000 [85229559634393] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:21 +0000 [85229584682232] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:21 +0000 [85229650432056] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:21 +0000 [85229660938530] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:23:21 +0000 [85229672973008] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:21 +0000 [85229700562455] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:21 +0000 [85229709811629] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:21 +0000 [85229838370790] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:21 +0000 [85229942491489] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:21 +0000 [85229956483594] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:23:21 +0000 [85229971057731] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:21 +0000 [85229994267094] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:21 +0000 [85230054725620] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:21 +0000 [85230069009694] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:23:21 +0000 [85230083407304] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:21 +0000 [85230103473104] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:21 +0000 [85230116783062] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:25 +0000 [85233622606726] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 20:23:25 +0000 [85233645822727] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 20:23:26 +0000 [85234708538562] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 20:23:26 +0000 [85234729109060] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 20:23:26 +0000 [85234960862221] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 20:23:27 +0000 [85235730387651] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 20:23:27 +0000 [85235741442933] <Label.swift:92> intrinsicContentSize  gutter: {133.5, 0, 17, 0}; intrinsicContentSize: (50.5, 169.0)
+2016-11-07 20:23:27 +0000 [85235844120421] <Label.swift:92> intrinsicContentSize  gutter: {0, 0, 0, 0}; intrinsicContentSize: (28.0, 14.5)
+2016-11-07 20:23:27 +0000 [85236108873511] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:27 +0000 [85236164979923] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:27 +0000 [85236174086976] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:23:27 +0000 [85236235311447] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:27 +0000 [85236248751822] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:23:27 +0000 [85236262959569] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:27 +0000 [85236283941427] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:27 +0000 [85236348010496] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:27 +0000 [85236361986242] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:23:27 +0000 [85236374570922] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:27 +0000 [85236397082882] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:27 +0000 [85236444912458] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:27 +0000 [85236506257540] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:23:27 +0000 [85236539914187] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:23:28 +0000 [85236590263495] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:28 +0000 [85236604189229] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:23:28 +0000 [85236670972625] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:28 +0000 [85236685415245] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:23:28 +0000 [85236696390163] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:28 +0000 [85236717286051] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:28 +0000 [85236776623716] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:28 +0000 [85236791059776] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:23:28 +0000 [85236808693850] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:28 +0000 [85236833588349] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:28 +0000 [85236893631159] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:28 +0000 [85236952475007] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:23:28 +0000 [85237050412521] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:23:28 +0000 [85237082636910] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:29 +0000 [85238368457934] <Label.swift:92> intrinsicContentSize  gutter: {133.5, 0, 17, 0}; intrinsicContentSize: (50.5, 169.0)
+2016-11-07 20:23:30 +0000 [85238845657932] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:23:30 +0000 [85238861109416] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:23:30 +0000 [85238874964003] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:25:57 +0000 [85385814372319] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:25:57 +0000 [85385875841017] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:25:57 +0000 [85385911504956] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:25:57 +0000 [85386271956359] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:25:57 +0000 [85386290098120] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:25:57 +0000 [85386393127892] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:25:57 +0000 [85386406379879] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:25:57 +0000 [85386531894427] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:25:57 +0000 [85386548048330] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:25:58 +0000 [85386564041706] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:26:34 +0000 [85423292815756] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:26:34 +0000 [85423310377216] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:26:34 +0000 [85423342795794] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:26:34 +0000 [85423354969921] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:26:34 +0000 [85423367863431] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:26:34 +0000 [85423385909473] <InlinePickerView.swift:156> selectItem(_:animated:)  6 is not a valid item index
+2016-11-07 20:26:34 +0000 [85423422832440] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:26:34 +0000 [85423446149049] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:26:34 +0000 [85423465185995] <InlinePickerView.swift:156> selectItem(_:animated:)  6 is not a valid item index
+2016-11-07 20:26:34 +0000 [85423543160353] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:26:35 +0000 [85423804002082] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:26:35 +0000 [85423819194715] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:26:35 +0000 [85423835811947] <InlinePickerView.swift:156> selectItem(_:animated:)  4 is not a valid item index
+2016-11-07 20:26:35 +0000 [85423880951306] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:26:43 +0000 [85431877587378] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:26:44 +0000 [85432999485138] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:26:45 +0000 [85434260745286] <InlinePickerView.swift:156> selectItem(_:animated:)  6 is not a valid item index
+2016-11-07 20:26:48 +0000 [85437037765228] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:26:49 +0000 [85437790077893] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:26:49 +0000 [85438000019739] <InlinePickerView.swift:156> selectItem(_:animated:)  6 is not a valid item index
+2016-11-07 20:28:03 +0000 [85511782442233] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:29:43 +0000 [85611796679633] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:29:43 +0000 [85611808705594] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:29:43 +0000 [85611821591779] <InlinePickerView.swift:156> selectItem(_:animated:)  4 is not a valid item index
+2016-11-07 20:29:43 +0000 [85612023916530] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:29:43 +0000 [85612093763808] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:29:43 +0000 [85612164183854] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:29:43 +0000 [85612180881032] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:29:43 +0000 [85612193103176] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:29:43 +0000 [85612214731438] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:29:43 +0000 [85612293110274] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:29:43 +0000 [85612307798763] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:29:43 +0000 [85612325798390] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:29:43 +0000 [85612347885243] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:29:43 +0000 [85612355899281] <InlinePickerView.swift:156> selectItem(_:animated:)  6 is not a valid item index
+2016-11-07 20:29:43 +0000 [85612419612572] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:29:43 +0000 [85612476136236] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:29:43 +0000 [85612513004598] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:29:44 +0000 [85612568420577] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:29:44 +0000 [85612581463544] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:29:44 +0000 [85612594937569] <InlinePickerView.swift:156> selectItem(_:animated:)  4 is not a valid item index
+2016-11-07 20:29:44 +0000 [85612628693099] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:29:44 +0000 [85612643729965] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:29:44 +0000 [85612658383004] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:29:44 +0000 [85612677723856] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:29:44 +0000 [85612713598939] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:29:44 +0000 [85612727072109] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:29:44 +0000 [85612739730459] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:29:44 +0000 [85612757609042] <InlinePickerView.swift:156> selectItem(_:animated:)  1 is not a valid item index
+2016-11-07 20:29:44 +0000 [85612770645594] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:29:44 +0000 [85612865146692] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:29:44 +0000 [85612899962785] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:29:44 +0000 [85612961145420] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-07 20:29:44 +0000 [85612992727449] <InlinePickerView.swift:156> selectItem(_:animated:)  0 is not a valid item index
+2016-11-09 14:43:37 +0000 [98715794941503] <InlinePickerView.swift:158> selectItem(_:animated:)  4 is not a valid item index
+2016-11-09 14:43:37 +0000 [98715896829692] <InlinePickerView.swift:158> selectItem(_:animated:)  6 is not a valid item index
+2016-11-09 14:43:37 +0000 [98716191372280] <InlinePickerView.swift:158> selectItem(_:animated:)  6 is not a valid item index
+2016-11-09 14:43:37 +0000 [98716287653084] <InlinePickerView.swift:158> selectItem(_:animated:)  6 is not a valid item index
+2016-11-09 14:43:41 +0000 [98719627524169] <InlinePickerView.swift:158> selectItem(_:animated:)  6 is not a valid item index
+2016-11-09 14:44:00 +0000 [98739406737318] <InlinePickerView.swift:158> selectItem(_:animated:)  6 is not a valid item index
+2016-11-09 14:44:01 +0000 [98739515413253] <InlinePickerView.swift:158> selectItem(_:animated:)  6 is not a valid item index
+2016-11-09 14:44:19 +0000 [98758422991804] <InlinePickerView.swift:158> selectItem(_:animated:)  6 is not a valid item index
+2016-11-09 14:44:20 +0000 [98758511460557] <InlinePickerView.swift:158> selectItem(_:animated:)  6 is not a valid item index
+2016-11-09 14:44:20 +0000 [98758556394775] <InlinePickerView.swift:158> selectItem(_:animated:)  6 is not a valid item index
+2016-11-09 14:44:25 +0000 [98763700345599] <InlinePickerView.swift:158> selectItem(_:animated:)  6 is not a valid item index
+2016-11-09 14:44:25 +0000 [98763819522745] <InlinePickerView.swift:158> selectItem(_:animated:)  6 is not a valid item index
+2016-11-09 14:44:27 +0000 [98766273204837] <InlinePickerView.swift:158> selectItem(_:animated:)  6 is not a valid item index
+2016-11-09 14:44:29 +0000 [98767807924922] <InlinePickerView.swift:158> selectItem(_:animated:)  6 is not a valid item index
+2016-11-09 14:44:39 +0000 [98777872891835] <InlinePickerView.swift:158> selectItem(_:animated:)  6 is not a valid item index
+2016-11-09 14:44:50 +0000 [98788677436469] <InlinePickerView.swift:158> selectItem(_:animated:)  6 is not a valid item index
+2016-11-09 14:44:50 +0000 [98788813925549] <InlinePickerView.swift:158> selectItem(_:animated:)  6 is not a valid item index
+2016-11-12 16:40:26 +0000 [1540978946953] <InlinePickerView.swift:113> selectItem(_:animated:)  -1 is not a valid item index
+2016-11-12 16:40:26 +0000 [1541113090244] <InlinePickerView.swift:113> selectItem(_:animated:)  -1 is not a valid item index
+2016-11-12 16:40:27 +0000 [1541380846005] <InlinePickerView.swift:113> selectItem(_:animated:)  -1 is not a valid item index
+2016-11-12 16:40:27 +0000 [1541675483182] <InlinePickerView.swift:113> selectItem(_:animated:)  -1 is not a valid item index
+2016-11-12 16:40:27 +0000 [1541882848779] <InlinePickerView.swift:113> selectItem(_:animated:)  -1 is not a valid item index
+2016-11-12 16:40:27 +0000 [1542079898242] <InlinePickerView.swift:113> selectItem(_:animated:)  -1 is not a valid item index

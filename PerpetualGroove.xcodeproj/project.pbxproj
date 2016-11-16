@@ -17,7 +17,6 @@
 		C217EE5A1DB43CC30076B6E7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C217EE581DB43CC30076B6E7 /* Main.storyboard */; };
 		C217EE5B1DB43CC30076B6E7 /* MIDINodePlayer.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C217EE591DB43CC30076B6E7 /* MIDINodePlayer.storyboard */; };
 		C217EE5D1DB511710076B6E7 /* Purgatory.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C217EE5C1DB511710076B6E7 /* Purgatory.storyboard */; };
-		C217EE5F1DBE44470076B6E7 /* SoundFontSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C217EE5E1DBE44470076B6E7 /* SoundFontSelector.swift */; };
 		C21DBAF51DA06CA000E50C23 /* Emax Volume 1.json in Resources */ = {isa = PBXBuildFile; fileRef = C21DBAEF1DA06CA000E50C23 /* Emax Volume 1.json */; };
 		C21DBAF61DA06CA000E50C23 /* Emax Volume 2.json in Resources */ = {isa = PBXBuildFile; fileRef = C21DBAF01DA06CA000E50C23 /* Emax Volume 2.json */; };
 		C21DBAF71DA06CA000E50C23 /* Emax Volume 3.json in Resources */ = {isa = PBXBuildFile; fileRef = C21DBAF11DA06CA000E50C23 /* Emax Volume 3.json */; };
@@ -49,7 +48,6 @@
 		C2562D0A1C63DBFC0086789D /* MIDINodeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2562D091C63DBFB0086789D /* MIDINodeManager.swift */; };
 		C2569E401B90005400EEB441 /* TempoTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2569E3F1B90005400EEB441 /* TempoTrack.swift */; };
 		C2576E0D1C13343E00F9A192 /* MIDINodePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2576E0C1C13343E00F9A192 /* MIDINodePlayer.swift */; };
-		C25BE0601DC4246100FEA4F3 /* ProgramSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25BE05F1DC4246100FEA4F3 /* ProgramSelector.swift */; };
 		C25EBC831B8BFAFA00E57665 /* MIDIFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25EBC821B8BFAFA00E57665 /* MIDIFile.swift */; };
 		C2670CCE1C46FEF6000F76F9 /* MIDIGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2670CCD1C46FEF6000F76F9 /* MIDIGenerator.swift */; };
 		C2670CD01C4704A2000F76F9 /* MIDINodeDispatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2670CCF1C4704A2000F76F9 /* MIDINodeDispatch.swift */; };
@@ -220,7 +218,6 @@
 		C217EE581DB43CC30076B6E7 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		C217EE591DB43CC30076B6E7 /* MIDINodePlayer.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MIDINodePlayer.storyboard; sourceTree = "<group>"; };
 		C217EE5C1DB511710076B6E7 /* Purgatory.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Purgatory.storyboard; sourceTree = "<group>"; };
-		C217EE5E1DBE44470076B6E7 /* SoundFontSelector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundFontSelector.swift; sourceTree = "<group>"; };
 		C21DBAEF1DA06CA000E50C23 /* Emax Volume 1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "Emax Volume 1.json"; sourceTree = "<group>"; };
 		C21DBAF01DA06CA000E50C23 /* Emax Volume 2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "Emax Volume 2.json"; sourceTree = "<group>"; };
 		C21DBAF11DA06CA000E50C23 /* Emax Volume 3.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "Emax Volume 3.json"; sourceTree = "<group>"; };
@@ -256,7 +253,6 @@
 		C2562D091C63DBFB0086789D /* MIDINodeManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINodeManager.swift; sourceTree = "<group>"; };
 		C2569E3F1B90005400EEB441 /* TempoTrack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TempoTrack.swift; sourceTree = "<group>"; };
 		C2576E0C1C13343E00F9A192 /* MIDINodePlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINodePlayer.swift; sourceTree = "<group>"; };
-		C25BE05F1DC4246100FEA4F3 /* ProgramSelector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgramSelector.swift; sourceTree = "<group>"; };
 		C25EBC821B8BFAFA00E57665 /* MIDIFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIFile.swift; sourceTree = "<group>"; };
 		C2670CCD1C46FEF6000F76F9 /* MIDIGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIGenerator.swift; sourceTree = "<group>"; };
 		C2670CCF1C4704A2000F76F9 /* MIDINodeDispatch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINodeDispatch.swift; sourceTree = "<group>"; };
@@ -497,8 +493,6 @@
 				C24E83971C3EE0A300B4A16A /* MixerContainer.swift */,
 				C26A09751BC96B97002EFEE1 /* MixerLayout.swift */,
 				C26EEB2D1B7FDA8F00EC6979 /* MixerViewController.swift */,
-				C217EE5E1DBE44470076B6E7 /* SoundFontSelector.swift */,
-				C25BE05F1DC4246100FEA4F3 /* ProgramSelector.swift */,
 			);
 			path = Mixer;
 			sourceTree = "<group>";
@@ -1213,7 +1207,6 @@
 				C2576E0D1C13343E00F9A192 /* MIDINodePlayer.swift in Sources */,
 				C2981BAA1C2B85F4007FC51F /* Transport.swift in Sources */,
 				C26A27EF1B948E4F00BD1698 /* DocumentsViewController.swift in Sources */,
-				C217EE5F1DBE44470076B6E7 /* SoundFontSelector.swift in Sources */,
 				C2776C301B9E8E72002FE5A8 /* SF2File.swift in Sources */,
 				C2569E401B90005400EEB441 /* TempoTrack.swift in Sources */,
 				C2CD18E11B7E681A00705922 /* StatusError.swift in Sources */,
@@ -1248,7 +1241,6 @@
 				C2729ADF1BEE6B7C004FA34F /* NSMetadataItem.swift in Sources */,
 				C283B69E1BC0495A007A4A36 /* DocumentItem.swift in Sources */,
 				C21E44C51B76546C00574BD2 /* AudioManager.swift in Sources */,
-				C25BE0601DC4246100FEA4F3 /* ProgramSelector.swift in Sources */,
 				C282911D1C1DFFD600F9975C /* Tool.swift in Sources */,
 				C2F35DB91BB4507800ECB045 /* MIDINodePlayerView.swift in Sources */,
 				C291C3F51B91F05900702AEA /* MIDIEvent.swift in Sources */,

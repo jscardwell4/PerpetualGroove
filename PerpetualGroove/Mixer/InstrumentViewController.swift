@@ -31,7 +31,7 @@ final class InstrumentViewController: UIViewController, SecondaryControllerConte
   fileprivate func updateSoundSets(_ notification: Notification) { updateSoundSets() }
 
   fileprivate func updateSoundSets() {
-    soundSetPicker.refreshLabels()
+    soundSetPicker.refresh()
   }
 
 
@@ -103,3 +103,49 @@ final class InstrumentViewController: UIViewController, SecondaryControllerConte
   }
 
 }
+
+final class SoundFontSelector: InlinePickerContainer {
+
+  override func refresh(picker: InlinePickerView) {
+    items = Sequencer.soundSets.map { $0.displayName }
+  }
+
+  override class var contentForInterfaceBuilder: [Any] {
+    return [
+      "Emax Volume 1",
+      "Emax Volume 2",
+      "Emax Volume 3",
+      "Emax Volume 4",
+      "Emax Volume 5",
+      "Emax Volume 6",
+      "SPYRO's Pure Oscillators"
+    ]
+  }
+  
+}
+
+final class ProgramSelector: InlinePickerContainer {
+
+  override class var contentForInterfaceBuilder: [Any] {
+    return [
+      "Pop Brass",
+      "Trombone",
+      "TromSection",
+      "C Trumpet",
+      "D Trumpet",
+      "Trumpet"
+    ]
+  }
+
+  override func refresh(picker: InlinePickerView) {
+    items = soundFont?.presetHeaders.map { $0.name } ?? []
+  }
+
+  var soundFont: SoundFont? {
+    didSet {
+      refresh()
+    }
+  }
+  
+}
+

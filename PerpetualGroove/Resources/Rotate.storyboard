@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Z6e-cu-tmb">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="16B2555" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Z6e-cu-tmb">
+    <device id="ipad9_7" orientation="landscape">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -15,10 +18,11 @@
                         <viewControllerLayoutGuide type="bottom" id="Q1c-Ld-1IE"/>
                     </layoutGuides>
                     <view key="view" opaque="NO" contentMode="scaleToFill" id="Z2c-IZ-xa0">
-                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView opaque="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Editing/rotate_ball" translatesAutoresizingMaskIntoConstraints="NO" id="gfq-O5-xs9" userLabel="Ball" customClass="TemplateImageView" customModule="MoonKit">
+                                <rect key="frame" x="428" y="300" width="168" height="168"/>
                                 <color key="tintColor" red="0.68166375160217285" green="0.38204258680343628" blue="0.2524854838848114" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <accessibility key="accessibilityConfiguration" identifier="Ball"/>
                                 <constraints>
@@ -33,6 +37,7 @@
                                 </connections>
                             </imageView>
                             <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Editing/rotate_arrow" translatesAutoresizingMaskIntoConstraints="NO" id="uwj-MS-m5R" userLabel="Arrow" customClass="TemplateImageView" customModule="MoonKit">
+                                <rect key="frame" x="412" y="284" width="200" height="200"/>
                                 <color key="tintColor" red="0.88567054271697998" green="0.84600132703781128" blue="0.78708314895629883" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <accessibility key="accessibilityConfiguration" identifier="Arrow"/>
                                 <constraints>

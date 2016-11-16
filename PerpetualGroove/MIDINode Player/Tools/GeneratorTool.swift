@@ -136,16 +136,12 @@ final class GeneratorViewController: UIViewController, SecondaryControllerConten
   var supportedActions: SecondaryControllerContainer.SupportedActions = [.cancel, .confirm]
   var disabledActions: SecondaryControllerContainer.SupportedActions = .none
 
-  @IBOutlet weak var pitchPicker:    InlinePickerView!
-  @IBOutlet weak var octavePicker:   InlinePickerView!
-  @IBOutlet weak var durationPicker: InlinePickerView!
-  @IBOutlet weak var velocityPicker: InlinePickerView!
-  @IBOutlet weak var modifierPicker: InlinePickerView!
-  @IBOutlet weak var chordPicker:    InlinePickerView! {
-    didSet {
-      chordPicker?.labels = ["–"] + Chord.Pattern.Standard.allCases.map {$0.name}
-    }
-  }
+  @IBOutlet weak var pitchPicker:    PitchSelector!
+  @IBOutlet weak var octavePicker:   OctaveSelector!
+  @IBOutlet weak var durationPicker: DurationSelector!
+  @IBOutlet weak var velocityPicker: VelocitySelector!
+  @IBOutlet weak var modifierPicker: PitchModifierSelector!
+  @IBOutlet weak var chordPicker:    ChordSelector!
 
   var didChangeGenerator: ((AnyMIDIGenerator) -> Void)?
 
@@ -236,3 +232,128 @@ final class GeneratorViewController: UIViewController, SecondaryControllerConten
   
  }
 
+final class PitchSelector: InlinePickerContainer {
+
+  override class var contentForInterfaceBuilder: [Any] { return ["A", "B", "C", "D", "E", "F", "G"] }
+
+  override func refresh(picker: InlinePickerView) {
+    items = ["A", "B", "C", "D", "E", "F", "G"]
+  }
+
+}
+
+final class PitchModifierSelector: InlinePickerContainer {
+
+  private static let images: [UIImage] = {
+    #if TARGET_INTERFACE_BUILDER
+      return  ["flat", "natural", "sharp"].flatMap {
+          [bundle = Bundle(for: DurationSelector.self)] in
+
+          UIImage(named: $0, in: bundle, compatibleWith: nil)
+      }
+    #else
+      return [#imageLiteral(resourceName: "flat"), #imageLiteral(resourceName: "natural"), #imageLiteral(resourceName: "sharp")]
+    #endif
+  }()
+
+  override class var contentForInterfaceBuilder: [Any] { return images }
+
+  override func refresh(picker: InlinePickerView) {
+    items = PitchModifierSelector.images
+  }
+
+  override var intrinsicContentSize: CGSize {
+    return CGSize(width: 54, height: super.intrinsicContentSize.height)
+  }
+
+}
+
+final class ChordSelector: InlinePickerContainer {
+
+  private static let labels = ["–"] + Chord.Pattern.Standard.allCases.map {$0.name}
+
+  override class var contentForInterfaceBuilder: [Any] {
+    return ChordSelector.labels
+  }
+
+  override func refresh(picker: InlinePickerView) {
+    items = ChordSelector.labels
+  }
+
+}
+
+final class OctaveSelector: InlinePickerContainer {
+
+  private static let labels = Octave.allCases.map({"\($0.rawValue)"})
+
+  override class var contentForInterfaceBuilder: [Any] {
+    return OctaveSelector.labels
+  }
+
+  override func refresh(picker: InlinePickerView) {
+    items = OctaveSelector.labels
+  }
+  
+}
+
+final class DurationSelector: InlinePickerContainer {
+
+  private static let images: [UIImage] = {
+    #if TARGET_INTERFACE_BUILDER
+     return  [
+        "DoubleWhole", "DottedWhole", "Whole", "DottedHalf", "Half", "DottedQuarter",
+        "Quarter", "DottedEighth", "Eighth", "DottedSixteenth", "Sixteenth",
+        "DottedThirtySecond", "ThirtySecond", "DottedSixtyFourth", "SixtyFourth",
+        "DottedHundredTwentyEighth", "HundredTwentyEighth", "DottedTwoHundredFiftySixth",
+        "TwoHundredFiftySixth"
+        ].flatMap {
+          [bundle = Bundle(for: DurationSelector.self)] in
+
+          UIImage(named: $0, in: bundle, compatibleWith: nil)
+      }
+    #else
+      return [
+        #imageLiteral(resourceName: "DoubleWhole"), #imageLiteral(resourceName: "DottedWhole"), #imageLiteral(resourceName: "Whole"), #imageLiteral(resourceName: "DottedHalf"), #imageLiteral(resourceName: "Half"), #imageLiteral(resourceName: "DottedQuarter"),
+        #imageLiteral(resourceName: "Quarter"), #imageLiteral(resourceName: "DottedEighth"), #imageLiteral(resourceName: "Eighth"), #imageLiteral(resourceName: "DottedSixteenth"), #imageLiteral(resourceName: "Sixteenth"),
+        #imageLiteral(resourceName: "DottedThirtySecond"), #imageLiteral(resourceName: "ThirtySecond"), #imageLiteral(resourceName: "DottedSixtyFourth"), #imageLiteral(resourceName: "SixtyFourth"),
+        #imageLiteral(resourceName: "DottedHundredTwentyEighth"), #imageLiteral(resourceName: "HundredTwentyEighth"), #imageLiteral(resourceName: "DottedTwoHundredFiftySixth"),
+        #imageLiteral(resourceName: "TwoHundredFiftySixth")
+      ]
+    #endif
+  }()
+
+  override class var contentForInterfaceBuilder: [Any] { return images }
+
+  override func refresh(picker: InlinePickerView) {
+    items = DurationSelector.images
+  }
+  
+}
+
+final class VelocitySelector: InlinePickerContainer {
+//𝑝𝑝𝑝, 𝑝𝑝, 𝑝, 𝑚𝑝, 𝑚𝑓, 𝑓, 𝑓𝑓, 𝑓𝑓𝑓
+  private static let images: [UIImage] = {
+    #if TARGET_INTERFACE_BUILDER
+      return  ["𝑝𝑝𝑝", "𝑝𝑝", "𝑝", "𝑚𝑝", "𝑚𝑓", "𝑓", "𝑓𝑓", "𝑓𝑓𝑓"].flatMap {
+        [bundle = Bundle(for: DurationSelector.self)] in
+
+        UIImage(named: $0, in: bundle, compatibleWith: nil)
+      }
+    #else
+      return [#imageLiteral(resourceName:"𝑝𝑝𝑝"), #imageLiteral(resourceName:"𝑝𝑝"), #imageLiteral(resourceName:"𝑝"), #imageLiteral(resourceName:"𝑚𝑝"), #imageLiteral(resourceName:"𝑚𝑓"), #imageLiteral(resourceName:"𝑓"), #imageLiteral(resourceName:"𝑓𝑓"), #imageLiteral(resourceName:"𝑓𝑓𝑓")]
+    #endif
+  }()
+
+  override class var contentForInterfaceBuilder: [Any] { return images }
+
+  override func refresh(picker: InlinePickerView) {
+    items = VelocitySelector.images
+  }
+
+  @objc func inlinePicker(_ picker: InlinePickerView, contentOffsetForItem item: Int) -> UIOffset {
+    switch item {
+      case 0...3: return UIOffset(horizontal: 0, vertical: 4)
+      default: return .zero
+    }
+  }
+}
