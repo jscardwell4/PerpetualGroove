@@ -113,9 +113,6 @@ final class LogManager: MoonKit.LogManager {
     SF2File.defaultLogContext    = SF2FileContext//  ∪ .Console
     Instrument.defaultLogContext = SF2FileContext//  ∪ .Console
     SoundSet.defaultLogContext   = SF2FileContext//  ∪ .Console
-    SF2File.INFOChunk.defaultLogContext  = SF2FileContext//  ∪ .Console
-//    SF2File.SDTAChunk.defaultLogContext  = SF2FileContext//  ∪ .Console
-    SF2File.PDTAChunk.defaultLogContext  = SF2FileContext//  ∪ .Console
 
     Sequencer.defaultLogContext       = SequencerContext//  ∪ .Console
     Track.defaultLogContext           = SequencerContext//  ∪ .Console
@@ -162,9 +159,6 @@ extension SF2File: Loggable {}
 extension Instrument: Loggable {}
 extension SoundSet: Loggable {}
 extension EmaxSoundSet: Loggable {}
-extension SF2File.INFOChunk: Loggable {}
-//extension SF2File.SDTAChunk: Loggable {}
-extension SF2File.PDTAChunk: Loggable {}
 
 extension Sequencer: Loggable {}
 extension Track: Loggable {}

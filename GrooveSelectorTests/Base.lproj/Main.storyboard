@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="16B2555" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="ipad9_7" orientation="landscape">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Root View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="RootViewController" customModule="GrooveSelectorTests" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="3IN-JT-JFi">
+                                <rect key="frame" x="407" y="184" width="210" height="400"/>
+                                <subviews>
+                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bvY-qe-xxY" customClass="PitchSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="210" height="36"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="36" id="sjF-9T-3Tq"/>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="selection">
+                                                <integer key="value" value="2"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ds4-mW-Zhd" customClass="PitchModifierSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="52" width="210" height="36"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="36" id="nql-yg-QeP"/>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="selection">
+                                                <integer key="value" value="1"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wrh-X7-wiG" customClass="ChordSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="104" width="210" height="36"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="36" id="3ak-UF-qMA"/>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="selection">
+                                                <integer key="value" value="0"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rlN-XY-gHf" customClass="OctaveSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="156" width="210" height="36"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="36" id="T0Z-cz-tyL"/>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="selection">
+                                                <integer key="value" value="5"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Nyi-pN-mvQ" customClass="DurationSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="208" width="210" height="36"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="36" id="SiF-oA-27z"/>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="selection">
+                                                <integer key="value" value="6"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qdb-ac-urp" customClass="VelocitySelector" customModule="GrooveSelectorTests" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="260" width="210" height="36"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="36" id="Mfr-Wj-zfz"/>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="selection">
+                                                <integer key="value" value="3"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="r6e-XT-MJl" customClass="SoundFontSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="312" width="210" height="36"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="36" id="Ug5-8j-CD7"/>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="selection">
+                                                <integer key="value" value="0"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ihJ-zv-fSd" customClass="ProgramSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="364" width="210" height="36"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="36" id="GLI-pu-gsO"/>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="selection">
+                                                <integer key="value" value="6"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="210" id="Nvt-Pk-lYa"/>
+                                    <constraint firstAttribute="height" constant="400" id="rMT-2a-6fo"/>
+                                </constraints>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="3IN-JT-JFi" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="3F3-ML-5Bd"/>
+                            <constraint firstItem="3IN-JT-JFi" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="ihW-cl-sOP"/>
+                        </constraints>
+                    </view>
+                    <nil key="simulatedStatusBarMetrics"/>
+                    <nil key="simulatedTopBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="137.6953125" y="193.75"/>
+        </scene>
+    </scenes>
+</document>

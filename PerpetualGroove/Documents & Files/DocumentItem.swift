@@ -13,7 +13,7 @@ enum DocumentItem {
   
   case metaData(NSMetadataItem)
   case local   (LocalDocumentItem)
-  case document(Groove.Document)
+  case document(Document)
 
   var displayName: String {
     switch self {
@@ -90,7 +90,7 @@ enum DocumentItem {
     switch data {
       case let item as NSMetadataItem:      self = .metaData(item)
       case let item as LocalDocumentItem:   self = .local(item)
-      case let document as Groove.Document: self = .document(document)
+      case let document as Document: self = .document(document)
       default:                              return nil
     }
   }

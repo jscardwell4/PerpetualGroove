@@ -151,8 +151,8 @@ final class GeneratorViewController: UIViewController, SecondaryControllerConten
     pitchPicker.selection = generator.root.natural.index
 
     switch generator.root.modifier {
-      case .flat?:  modifierPicker.selection = 0
-      case .sharp?: modifierPicker.selection = 2
+      case (.flat)?:  modifierPicker.selection = 0
+      case (.sharp)?: modifierPicker.selection = 2
       default:      modifierPicker.selection = 1
     }
 
@@ -228,7 +228,10 @@ final class GeneratorViewController: UIViewController, SecondaryControllerConten
     generator.velocity = Velocity.allCases[velocityPicker.selection]
   }
 
-  override func viewDidAppear(_ animated: Bool) { super.viewDidAppear(animated); refresh() }
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    refresh()
+  }
   
  }
 
@@ -288,7 +291,6 @@ final class ChordSelector: InlinePickerContainer {
   override class var font: UIFont { return .largeControlFont }
   override class var selectedFont: UIFont { return .largeControlSelectedFont }
 
-
 }
 
 final class OctaveSelector: InlinePickerContainer {
@@ -339,7 +341,7 @@ final class DurationSelector: InlinePickerContainer {
   override func refresh(picker: InlinePickerView) {
     items = DurationSelector.images
   }
-  
+
 }
 
 final class VelocitySelector: InlinePickerContainer {

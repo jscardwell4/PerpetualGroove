@@ -106,7 +106,7 @@ final class Instrument {
                                      bankMSB: UInt8(kAUSampler_DefaultMelodicBankMSB),
                                      bankLSB: preset.bank)
 
-    let name = "Instrument \(UInt(bitPattern: ObjectIdentifier(self)))"
+    let name = "Instrument \(String(addressOf:  self))"
     try MIDIClientCreateWithBlock(name as CFString, &client, nil) ➤ "Failed to create midi client"
     try MIDIOutputPortCreate(client, "Output" as CFString, &outPort) ➤ "Failed to create out port"
     try MIDIDestinationCreateWithBlock(client, name as CFString, &endPoint, read) ➤ "Failed to create end point for instrument"

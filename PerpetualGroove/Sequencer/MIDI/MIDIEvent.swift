@@ -240,7 +240,7 @@ extension MIDIEvent.MetaEvent {
           guard data.count == 4 else {
             throw MIDIFile.Error.invalidLength("TimeSignature event data should have a 4 byte length")
           }
-          self = .timeSignature(signature: Groove.TimeSignature(data.prefix(2)),
+          self = .timeSignature(signature: TimeSignature(data.prefix(2)),
                                 clocks: data[data.startIndex + 2],
                                 notes: data[data.startIndex + 3])
         default:

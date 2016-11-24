@@ -15,11 +15,13 @@ import Eveleth
 class InlinePickerContainer: UIControl {
 
   override init(frame: CGRect) {
+    picker = InlinePickerView(flat: type(of: self).flat, frame: frame)
     super.init(frame: frame)
     setup()
   }
 
   required init?(coder aDecoder: NSCoder) {
+    picker = InlinePickerView(flat: type(of: self).flat, frame: .zero)
     super.init(coder: aDecoder)
     setup()
   }
@@ -27,8 +29,9 @@ class InlinePickerContainer: UIControl {
 
   class var font: UIFont { return .controlFont }
   class var selectedFont: UIFont { return .controlSelectedFont }
+  class var flat: Bool { return false }
 
-  private let picker = InlinePickerView(autolayout: true)
+  private let picker: InlinePickerView
 
   @objc private func valueChanged() {
     sendActions(for: .valueChanged)

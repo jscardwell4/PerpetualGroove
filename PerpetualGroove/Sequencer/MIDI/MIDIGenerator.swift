@@ -83,7 +83,7 @@ extension AnyMIDIGenerator: MIDIGenerator {
     }
   }
 
-  var root: Groove.Note {
+  var root: Note {
     get { return generator.root }
     set {
       switch generator {
