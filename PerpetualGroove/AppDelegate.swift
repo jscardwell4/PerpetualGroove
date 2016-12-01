@@ -41,7 +41,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
           MIDINodePlayer.initialize()
           DocumentManager.initialize()
         } catch {
-          logError(error)
+          Log.error(error)
         }
       }
     }

@@ -214,9 +214,9 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
   /// Empties all node-referencing properties
   fileprivate func resetNodes() {
     nodes.removeAll()
-    logDebug("nodes reset")
+    Log.debug("nodes reset")
     if modified {
-      logDebug("posting 'DidUpdate'")
+      Log.debug("posting 'DidUpdate'")
       postNotification(name: .didUpdate, object: self, userInfo: nil)
       modified = false
     }
@@ -240,7 +240,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 
   func add(loop: Loop) {
     guard loops[loop.identifier] == nil else { return }
-    logDebug("adding loop: \(loop)")
+    Log.debug("adding loop: \(loop)")
     loops[loop.identifier] = loop
     add(events: loop)
   }
@@ -259,7 +259,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     do {
       try MIDISend(outPort, instrument.endPoint, packetList)
         ➤ "Failed to forward packet list to instrument"
-    } catch { logError(error) }
+    } catch { Log.error(error) }
 
     // Check if we are recording, otherwise skip event processing
     guard recording else { return }
@@ -299,7 +299,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
                                   trajectory: trajectory,
                                   generator: generator)
             case let .remove(identifier):
-              do { try nodeManager.removeNode(identifier: identifier.nodeIdentifier) } catch { logError(error) }
+              do { try nodeManager.removeNode(identifier: identifier.nodeIdentifier) } catch { Log.error(error) }
           }
         case .meta(let metaEvent) where metaEvent.data == .endOfTrack:
           guard !recording && endOfTrack == metaEvent.time else { break }

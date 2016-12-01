@@ -71,10 +71,10 @@ final class Instrument {
         [weak self] in
         guard let weakself = self else { return }
         do { try generator.sendNoteOff(outPort: weakself.outPort, endPoint: weakself.endPoint) }
-        catch { MoonKit.logError(error) }
+        catch { MoonKit.Log.error(error) }
       }
     } catch {
-      logError(error)
+      Log.error(error)
     }
   }
 

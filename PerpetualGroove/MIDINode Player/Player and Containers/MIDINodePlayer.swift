@@ -24,7 +24,7 @@ final class MIDINodePlayer {
   static weak var currentDispatch: MIDINodeDispatch? {
     didSet {
       guard currentDispatch !== oldValue else { return }
-      logDebug("\(oldValue?.name ?? "nil") ➞ \(currentDispatch?.name ?? "nil")")
+      Log.debug("\(oldValue?.name ?? "nil") ➞ \(currentDispatch?.name ?? "nil")")
     }
   }
 
@@ -107,7 +107,7 @@ final class MIDINodePlayer {
   static var shouldInsertLoops = false
 
   static private func insertLoops() {
-    logDebug("inserting loops: \(loops)")
+    Log.debug("inserting loops: \(loops)")
     let startTime = Sequencer.time.barBeatTime + loopStart
     let endTime = Sequencer.time.barBeatTime + loopEnd
     for loop in loops.values where !loop.eventContainer.isEmpty {
@@ -175,7 +175,7 @@ final class MIDINodePlayer {
   {
     dispatchToMain {
       guard let playerNode = playerNode else {
-        logWarning("cannot place a node without a player node")
+        Log.warning("cannot place a node without a player node")
         return
       }
 
@@ -195,10 +195,10 @@ final class MIDINodePlayer {
         postNotification(name: .didAddNode,
                          object: self,
                          userInfo: ["addedNode": node, "addedNodeTrack": target])
-        logDebug("added node \(name)")
+        Log.debug("added node \(name)")
 
       } catch {
-        logError(error)
+        Log.error(error)
       }
     }
   }

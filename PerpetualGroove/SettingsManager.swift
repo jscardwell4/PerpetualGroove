@@ -43,11 +43,11 @@ final class SettingsManager {
     _currentDocumentiCloud] as [SettingProtocol]).filter {$0.needsUpdateCachedValue }
 
     guard changedSettings.count > 0 else {
-      logDebug("no changes detected")
+      Log.debug("no changes detected")
       return
     }
 
-    logDebug("changed settings: \(changedSettings.map({$0.name}))")
+    Log.debug("changed settings: \(changedSettings.map({$0.name}))")
 
     var settingValue: Any?
 
@@ -77,7 +77,7 @@ final class SettingsManager {
         default: unreachable()
       }
 
-      logDebug("posting notification for setting '\(setting.name)'")
+      Log.debug("posting notification for setting '\(setting.name)'")
       postNotification(name: NotificationName(rawValue: setting.name + "Changed")!,
                        object: self,
                        userInfo: ["settingValue": settingValue ?? NSNull()])
@@ -181,7 +181,7 @@ final class SettingsManager {
     {
       _ in
 
-      logDebug("observed notification that user defaults have changed")
+      Log.debug("observed notification that user defaults have changed")
       SettingsManager.updateCache()
     }
 

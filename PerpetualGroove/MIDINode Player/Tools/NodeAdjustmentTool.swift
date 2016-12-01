@@ -24,7 +24,7 @@ private func _adjust(node: MIDINode, body: () -> Void) {
 
   // Try rolling the sequence back to the node's start time, returning on error
   do { try transport.automateJogToTime(preadjustedNodeStart) }
-  catch { logError(error); return }
+  catch { Log.error(error); return }
 
   // Perform node adjustements
   body()
@@ -32,7 +32,7 @@ private func _adjust(node: MIDINode, body: () -> Void) {
   // Adjust playback position if the node's start time has changed
   if node.initTime != preadjustedNodeStart {
     do { try transport.automateJogToTime(node.initTime) }
-    catch { logError(error); return }
+    catch { Log.error(error); return }
   }
 
   // Make sure the transport wasn't paused or return

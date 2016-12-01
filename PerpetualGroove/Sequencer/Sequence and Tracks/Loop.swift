@@ -88,7 +88,7 @@ final class Loop: Swift.Sequence, MIDINodeDispatch {
         case let .add(identifier, trajectory, generator):
           nodeManager.addNode(identifier: identifier.nodeIdentifier, trajectory: trajectory, generator: generator)
         case let .remove(identifier):
-          do { try nodeManager.removeNode(identifier: identifier.nodeIdentifier, delete: false) } catch { logError(error) }
+          do { try nodeManager.removeNode(identifier: identifier.nodeIdentifier, delete: false) } catch { Log.error(error) }
       }
   }
 

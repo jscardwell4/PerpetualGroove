@@ -22,17 +22,17 @@ final class DocumentsViewController: UICollectionViewController {
   @IBAction func deleteItem(_ sender: LabelButton) {
 
     guard let item = (sender.superview?.superview as? DocumentCell)?.item else {
-      logWarning("sender superview is not an item-containing document cell")
+      Log.warning("sender superview is not an item-containing document cell")
       return
     }
 
     guard let indexPath = indexPathForItem(item) else {
-      logWarning("items does not contain item to delete: \(item)")
+      Log.warning("items does not contain item to delete: \(item)")
       return
     }
 
     if SettingsManager.confirmDeleteDocument {
-      logWarning("delete confirmation not yet implemented")
+      Log.warning("delete confirmation not yet implemented")
     }
 
     if selectedItem == indexPath { selectedItem = nil }
@@ -128,7 +128,7 @@ final class DocumentsViewController: UICollectionViewController {
     didSet {
       guard isViewLoaded else { return }
       if oldValue != selectedItem {
-        logDebug("\(oldValue?.description ?? "nil") ➞ \(selectedItem?.description ?? "nil")")
+        Log.debug("\(oldValue?.description ?? "nil") ➞ \(selectedItem?.description ?? "nil")")
       }
       collectionView?.selectItem(at: selectedItem, animated: true, scrollPosition: .centeredVertically)
     }
@@ -248,7 +248,7 @@ final class DocumentsViewController: UICollectionViewController {
     items ∪= newItems
     let newCount = items.count
     let added = (oldCount ..< newCount).map { IndexPath(item: $0, section: 1) }
-    logDebug("adding items at indices \(added)")
+    Log.debug("adding items at indices \(added)")
     if !added.isEmpty { collectionView?.insertItems(at: added) }
   }
 
@@ -258,7 +258,7 @@ final class DocumentsViewController: UICollectionViewController {
       guard let idx = self.items.index(of: $0) else { return nil }
       return IndexPath(item: idx, section: 1)
     }
-    logDebug("removing items at indices \(removed)")
+    Log.debug("removing items at indices \(removed)")
     self.items ∖= items
     if !removed.isEmpty { collectionView?.deleteItems(at: removed) }
   }
@@ -279,12 +279,12 @@ final class DocumentsViewController: UICollectionViewController {
 
   /// Updates the corresponding cell with the document's new name
   private func documentDidChangeName(_ notification: Notification) {
-    logDebug("userInfo: \(notification.userInfo)")
+    Log.debug("userInfo: \(notification.userInfo)")
     guard let newName = notification.newDocumentName else {
-      logWarning("name change notification without new name value in user info")
+      Log.warning("name change notification without new name value in user info")
       return
     }
-    logDebug("current document changed name to '\(newName)'")
+    Log.debug("current document changed name to '\(newName)'")
 
     guard let document = notification.object as? Document else {
       fatalError("Expected notification object to be of `Document` type")

@@ -41,7 +41,7 @@ final class Document: UIDocument {
   override var presentedItemOperationQueue: OperationQueue { return DocumentManager.operationQueue }
 
   fileprivate func didUpdate(_ notification: Foundation.Notification) {
-    logDebug("")
+    Log.debug("")
     updateChangeCount(.done)
   }
 
@@ -53,7 +53,7 @@ final class Document: UIDocument {
     }
 
     // TODO: resolve conflict
-    logDebug("versions: \(versions)")
+    Log.debug("versions: \(versions)")
 
   }
 
@@ -94,7 +94,7 @@ final class Document: UIDocument {
     
     sequence = Sequence(data: dataProvider, document: self)
 
-    logDebug("file: \(dataProvider)\nloaded into sequence: \(sequence!)")
+    Log.debug("file: \(dataProvider)\nloaded into sequence: \(sequence!)")
 
   }
 
@@ -114,14 +114,14 @@ final class Document: UIDocument {
       case .groove: file = GrooveFile(sequence: sequence, source: fileURL)
     }
 
-    logDebug("file contents:\n\(file)")
+    Log.debug("file contents:\n\(file)")
 
     return file.data
 
   }
 
   override func handleError(_ error: Swift.Error, userInteractionPermitted: Bool) {
-    logError(error)
+    Log.error(error)
     super.handleError(error, userInteractionPermitted: userInteractionPermitted)
   }
 
@@ -141,7 +141,7 @@ final class Document: UIDocument {
 
       let newURL = directoryURL + "\(newName).groove"
 
-      weakself.logDebug("renaming document '\(oldName)' ⟹ '\(newName)'")
+      Log.debug("renaming document '\(oldName)' ⟹ '\(newName)'")
 
       let fileCoordinator = NSFileCoordinator(filePresenter: nil)
       var error: NSError?
@@ -151,18 +151,18 @@ final class Document: UIDocument {
                                  options: .forReplacing,
                                  error: &error)
       {
-        [weak self] oldURL, newURL in
+        oldURL, newURL in
 
         fileCoordinator.item(at: oldURL, willMoveTo: newURL)
         do {
           try FileManager.withDefaultManager { try $0.moveItem(at: oldURL, to: newURL) }
           fileCoordinator.item(at: oldURL, didMoveTo: newURL)
         } catch {
-          self?.logError(error)
+          Log.error(error)
         }
       }
 
-      if let error = error { weakself.logError(error) }
+      if let error = error { Log.error(error) }
 
     }
 
@@ -175,7 +175,7 @@ final class Document: UIDocument {
                      completionHandler: ((Bool) -> Void)?)
   {
     creating = saveOperation == .forCreating
-    logDebug("(\(creating ? "saving" : "overwriting"))  '\(url.path)'")
+    Log.debug("(\(creating ? "saving" : "overwriting"))  '\(url.path)'")
     super.save(to: url, for: saveOperation, completionHandler: completionHandler)
   }
 

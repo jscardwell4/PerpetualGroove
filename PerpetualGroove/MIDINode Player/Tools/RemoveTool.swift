@@ -181,7 +181,7 @@ final class RemoveTool: Tool {
         node.fadeOut(remove: true)
       }
     } catch {
-      logError(error)
+      Log.error(error)
     }
   }
 

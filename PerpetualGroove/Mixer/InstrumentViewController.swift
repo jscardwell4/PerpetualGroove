@@ -46,7 +46,7 @@ final class InstrumentViewController: UIViewController, SecondaryControllerConte
       programPicker.soundFont = soundFont
       audition()
     } catch {
-      logError(error)
+      Log.error(error)
     }
   }
 
@@ -59,7 +59,7 @@ final class InstrumentViewController: UIViewController, SecondaryControllerConte
       try instrument.loadPreset(preset)
       audition()
     } catch {
-      logError(error)
+      Log.error(error)
     }
   }
 
@@ -70,7 +70,7 @@ final class InstrumentViewController: UIViewController, SecondaryControllerConte
     guard let instrument = instrument, let initialPreset = initialPreset else {
       return
     }
-    do { try instrument.loadPreset(initialPreset) } catch { logError(error) }
+    do { try instrument.loadPreset(initialPreset) } catch { Log.error(error) }
   }
 
   fileprivate(set) var initialPreset: Instrument.Preset?

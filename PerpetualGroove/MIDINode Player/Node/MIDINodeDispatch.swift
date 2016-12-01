@@ -11,7 +11,7 @@ import MoonKit
 
 typealias MIDINodeRef = Weak<MIDINode>
 
-protocol MIDINodeDispatch: class, MIDIEventDispatch, Loggable, Named {
+protocol MIDINodeDispatch: class, MIDIEventDispatch, Named {
 
   var nextNodeName: String { get }
 

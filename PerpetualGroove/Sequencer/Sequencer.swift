@@ -42,7 +42,7 @@ final class Sequencer {
     postNotification(name: .didUpdateAvailableSoundSets, object: self, userInfo: nil)
 
     initialized = true
-    logDebug("Sequencer initialized")
+    Log.debug("Sequencer initialized")
   }
 
   fileprivate static let receptionist: NotificationReceptionist = {
@@ -179,7 +179,7 @@ final class Sequencer {
   static var mode: Mode = .default {
     willSet {
       guard mode != newValue else { return }
-      logDebug("willSet: \(mode.rawValue) ➞ \(newValue.rawValue)")
+      Log.debug("willSet: \(mode.rawValue) ➞ \(newValue.rawValue)")
       switch newValue {
         case .default: postNotification(name: .willExitLoopMode, object: self, userInfo: nil)
         case .loop:    postNotification(name: .willEnterLoopMode, object: self, userInfo: nil)
@@ -187,7 +187,7 @@ final class Sequencer {
     }
     didSet {
       guard mode != oldValue else { return }
-      logDebug("didSet: \(oldValue.rawValue) ➞ \(mode.rawValue)")
+      Log.debug("didSet: \(oldValue.rawValue) ➞ \(mode.rawValue)")
       switch mode {
         case .default:
           transportAssignment = primaryTransport

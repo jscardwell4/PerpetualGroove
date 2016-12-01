@@ -64,7 +64,7 @@ final class MixerViewController: UICollectionViewController, SecondaryController
       let instrument = try Instrument(track: nil, preset: Sequencer.auditionInstrument.preset)
       try sequence?.insertTrack(instrument: instrument)
     } catch {
-      logError(error, message: "Failed to add new track")
+      Log.error(error, message: "Failed to add new track")
       pendingTrackIndex = nil
     }
   }
@@ -154,7 +154,7 @@ final class MixerViewController: UICollectionViewController, SecondaryController
 
   func delete(track: InstrumentTrack?) {
     guard let index = track?.index else { return }
-    if SettingsManager.confirmDeleteTrack { logWarning("delete confirmation not yet implemented for tracks") }
+    if SettingsManager.confirmDeleteTrack { Log.warning("delete confirmation not yet implemented for tracks") }
     sequence?.removeTrack(at: index)
   }
 
@@ -235,7 +235,7 @@ final class MixerViewController: UICollectionViewController, SecondaryController
       fatalError("internal inconsistency…if sequence is nil what sent this notification?")
     }
 
-    logDebug("\n".join(
+    Log.debug("\n".join(
       "total instrument tracks in sequence: \(sequence!.instrumentTracks.count)",
       "total track cells: \(collectionView!.numberOfItems(inSection: Section.instruments.rawValue))"
       ))
@@ -245,7 +245,7 @@ final class MixerViewController: UICollectionViewController, SecondaryController
     switch (notification.addedIndex, notification.removedIndex) {
 
       case let (added?, removed?):
-        logDebug("added index: \(added); removed index: \(removed)")
+        Log.debug("added index: \(added); removed index: \(removed)")
         if pendingTrackIndex == added { addedTrackIndex = section[added] }
         collectionView?.performBatchUpdates({
           [weak collectionView = collectionView] in
@@ -255,11 +255,11 @@ final class MixerViewController: UICollectionViewController, SecondaryController
 
       case let (added?, nil):
         if pendingTrackIndex == added { addedTrackIndex = section[added] }
-        logDebug("added index: \(added)")
+        Log.debug("added index: \(added)")
         collectionView?.insertItems(at: [section[added]])
 
       case let (nil, removed?):
-        logDebug("removed index: \(removed)")
+        Log.debug("removed index: \(removed)")
         collectionView?.deleteItems(at: [section[removed]])
 
       case (nil, nil): break

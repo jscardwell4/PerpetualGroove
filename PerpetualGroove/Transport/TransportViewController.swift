@@ -94,7 +94,7 @@ final class TransportViewController: UIViewController {
         fatalError("State invalid: cannot be both playing and paused")
       }
 
-      logDebug("\(oldValue) ➞ \(state)")
+      Log.debug("\(oldValue) ➞ \(state)")
 
       let modifiedState = state.symmetricDifference(oldValue)
 
@@ -120,7 +120,7 @@ final class TransportViewController: UIViewController {
 
   private func didChangeState(_ notification: Notification) {
     guard let oldState = notification.previousTransportState, let newState = notification.transportState else { return }
-    logDebug("\(oldState) ➞ \(newState)")
+    Log.debug("\(oldState) ➞ \(newState)")
     state = newState
   }
 

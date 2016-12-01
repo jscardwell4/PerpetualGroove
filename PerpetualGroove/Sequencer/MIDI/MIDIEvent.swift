@@ -770,7 +770,7 @@ extension MIDIEvent.MIDINodeEvent.Data: Hashable {
 }
 
 
-protocol MIDIEventDispatch: class, Loggable {
+protocol MIDIEventDispatch: class {
 
   func add(event: MIDIEvent)
   func add<S:Swift.Sequence>(events: S) where S.Iterator.Element == MIDIEvent

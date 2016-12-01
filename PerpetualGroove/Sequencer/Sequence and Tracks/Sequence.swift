@@ -29,7 +29,7 @@ final class Sequence {
   func exchangeInstrumentTrackAtIndex(_ idx1: Int, withTrackAtIndex idx2: Int) {
     guard instrumentTracks.indices.contains([idx1, idx2]) else { return }
     swap(&instrumentTracks[idx1], &instrumentTracks[idx2])
-    logDebug("posting 'DidUpdate'")
+    Log.debug("posting 'DidUpdate'")
     postNotification(name: .didUpdate, object: self, userInfo: nil)
   }
 
@@ -104,7 +104,7 @@ final class Sequence {
     if Sequencer.playing { hasChanges = true }
     else {
       hasChanges = false
-      logDebug("posting 'DidUpdate'")
+      Log.debug("posting 'DidUpdate'")
       postNotification(name: .didUpdate, object: self, userInfo: nil)
     }
   }
@@ -116,7 +116,7 @@ final class Sequence {
   fileprivate func sequencerDidReset(_ notification: Foundation.Notification) {
     guard hasChanges else { return }
     hasChanges = false
-    logDebug("posting 'DidUpdate'")
+    Log.debug("posting 'DidUpdate'")
     postNotification(name: .didUpdate, object: self, userInfo: nil)
   }
 
@@ -187,7 +187,7 @@ final class Sequence {
 
   func insertTrack(instrument: Instrument) throws {
     add(track: try InstrumentTrack(sequence: self, instrument: instrument))
-    logDebug("posting 'DidUpdate'")
+    Log.debug("posting 'DidUpdate'")
     postNotification(name: .didUpdate, object: self, userInfo: nil)
   }
 
@@ -195,7 +195,7 @@ final class Sequence {
     guard !instrumentTracks.contains(track) else { return }
     instrumentTracks.append(track)
     observeTrack(track)
-    logDebug("track added: \(track.name)")
+    Log.debug("track added: \(track.name)")
     postNotification(name: .didAddTrack,
                      object: self,
                      userInfo: ["addedIndex": instrumentTracks.count - 1, "addedTrack": track])
@@ -213,12 +213,12 @@ final class Sequence {
     let track = instrumentTracks.remove(at: index)
     track.nodeManager.stopNodes(remove: true)
     receptionist.stopObserving(name: NotificationName.didUpdate.rawValue, from: track)
-    logDebug("track removed: \(track.name)")
+    Log.debug("track removed: \(track.name)")
     postNotification(name: .didRemoveTrack,
                      object: self,
                      userInfo: ["removedIndex": index, "removedTrack": track])
     if currentTrack == track { currentTrackStack.pop() }
-    logDebug("posting 'DidUpdate'")
+    Log.debug("posting 'DidUpdate'")
     postNotification(name: .didUpdate, object: self, userInfo: nil)
   }
 

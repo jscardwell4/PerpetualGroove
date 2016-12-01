@@ -134,7 +134,7 @@ final class Time {
         ➤ "Failed to create in port for bar beat time"
       try MIDIPortConnectSource(inPort, clockSource, nil) ➤ "Failed to connect bar beat time to clock"
     } catch {
-      logError(error)
+      Log.error(error)
     }
   }
 
@@ -154,7 +154,7 @@ final class Time {
     do {
       try MIDIPortDispose(inPort) ➤ "Failed to dispose of in port"
       try MIDIClientDispose(client) ➤ "Failed to dispose of midi client"
-    } catch { logError(error) }
+    } catch { Log.error(error) }
 
   }
 }

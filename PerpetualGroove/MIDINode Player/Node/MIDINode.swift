@@ -65,7 +65,7 @@ final class MIDINode: SKSpriteNode {
       try generator.receiveNoteOn(endPoint: endPoint,
                                   identifier: UInt64(UInt(bitPattern: ObjectIdentifier(self))))
       state.formSymmetricDifference(.Playing)
-    } catch { logError(error) }
+    } catch { Log.error(error) }
   }
 
   func sendNoteOff() {
@@ -74,7 +74,7 @@ final class MIDINode: SKSpriteNode {
       try generator.receiveNoteOff(endPoint: endPoint,
                                    identifier: UInt64(UInt(bitPattern: ObjectIdentifier(self))))
       state.formSymmetricDifference(.Playing)
-    } catch { logError(error) }
+    } catch { Log.error(error) }
   }
 
   private func removeAction(_ action: Action) { removeAction(forKey: action.key.key) }
@@ -110,7 +110,7 @@ final class MIDINode: SKSpriteNode {
     guard state ∌ .Jogging else {
       fatalError("internal inconsistency, should not already have `Jogging` flag set")
     }
-    logDebug("position: \(position); path: \(path)")
+    Log.debug("position: \(position); path: \(path)")
     state.formSymmetricDifference(.Jogging)
     self.removeAction(forKey: Action.Key.Move.rawValue)
   }
@@ -120,7 +120,7 @@ final class MIDINode: SKSpriteNode {
 
     guard let time = notification.jogTime else { fatalError("notification does not contain ticks") }
 
-    logDebug("time: \(time)")
+    Log.debug("time: \(time)")
 
     if time < initTime && state ∌ .PendingRemoval {
       state.formUnion(.PendingRemoval)
@@ -133,7 +133,7 @@ final class MIDINode: SKSpriteNode {
 
   private func didEndJogging(_ notification: Notification) {
     guard state ∋ .Jogging else {
-      logError("internal inconsistency, should have `Jogging` flag set"); return
+      Log.error("internal inconsistency, should have `Jogging` flag set"); return
     }
     state.formSymmetricDifference(.Jogging)
     guard state ∌ .PendingRemoval else { removeFromParent(); return }
@@ -144,14 +144,14 @@ final class MIDINode: SKSpriteNode {
 
   private func didStart(_ notification: Notification) {
     guard state ∋ .Paused else { return }
-    logDebug("unpausing")
+    Log.debug("unpausing")
     state.formSymmetricDifference(.Paused)
     moveAction.run()
   }
 
   private func didPause(_ notification: Notification) {
     guard state ∌ .Paused else { return }
-    logDebug("pausing")
+    Log.debug("pausing")
     state.formSymmetricDifference(.Paused)
     self.removeAction(forKey: Action.Key.Move.rawValue)
   }
@@ -225,10 +225,10 @@ final class MIDINode: SKSpriteNode {
   deinit {
     if state ∋ .Playing { sendNoteOff() }
     do {
-      logDebug("disposing of MIDI client and end point")
+      Log.debug("disposing of MIDI client and end point")
       try MIDIEndpointDispose(endPoint) ➤ "Failed to dispose of end point"
       try MIDIClientDispose(client) ➤ "Failed to dispose of midi client"
-    } catch { logError(error) }
+    } catch { Log.error(error) }
   }
 
   private var minMaxValues: (minX: CGFloat, maxX: CGFloat, minY: CGFloat, maxY: CGFloat)? {
@@ -743,7 +743,7 @@ extension MIDINode {
      ///    y = m (x - x<sub>1</sub>) + y<sub>1</sub>
     func point(atX x: CGFloat) -> CGPoint {
       let result = CGPoint(x: x, y: m * (x - p.x) + p.y)
-      logVerbose("self = \(self)\nx = \(x)\nresult = \(result)")
+      Log.verbose("self = \(self)\nx = \(x)\nresult = \(result)")
       return result
     }
 
@@ -753,7 +753,7 @@ extension MIDINode {
     ///    x = (y - y<sub>1</sub> + mx<sub>1</sub>) / m
     func point(atY y: CGFloat) -> CGPoint {
       let result = CGPoint(x: (y - p.y + m * p.x) / m, y: y)
-      logVerbose("self = \(self)\ny = \(y)\nresult = \(result)")
+      Log.verbose("self = \(self)\ny = \(y)\nresult = \(result)")
       return result
     }
 
@@ -773,7 +773,7 @@ extension MIDINode {
     func time(fromPoint p1: CGPoint, toPoint p2: CGPoint) -> TimeInterval {
       let result = abs(TimeInterval(p1.distanceTo(p2) / m)) * TimeInterval(Trajectory.modifier.fraction)
       guard result.isFinite else { fatalError("wtf") }
-      logVerbose("self = \(self)\np1 = \(p1)\np2 = \(p2)\nresult = \(result)")
+      Log.verbose("self = \(self)\np1 = \(p1)\np2 = \(p2)\nresult = \(result)")
       return result
     }
 
@@ -782,7 +782,7 @@ extension MIDINode {
       let lhs = abs((point.y - p.y).rounded(3))
       let rhs = abs((m * (point.x - p.x)).rounded(3))
       let result = lhs == rhs
-      logVerbose("self = \(self)\npoint = \(point)\nresult = \(result)")
+      Log.verbose("self = \(self)\npoint = \(point)\nresult = \(result)")
       return result
     }
 

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MoonKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -14,8 +15,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   var window: UIWindow?
 
 
+//  override class func initialize() {
+//    LogManager.initialize()
+//    MoonKit.LogManager.logLevel = .verbose
+//    LogManager.logLevel = .verbose
+//  }
+
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
     // Override point for customization after application launch.
+    LogManager.initialize()
+
     return true
   }
 

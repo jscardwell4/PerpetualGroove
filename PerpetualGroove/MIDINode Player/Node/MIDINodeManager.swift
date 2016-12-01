@@ -25,7 +25,7 @@ final class MIDINodeManager {
 
   func addNode(identifier: UUID, trajectory: MIDINode.Trajectory, generator: AnyMIDIGenerator) {
 
-    owner.logDebug(", ".join("placing node with identifier \(identifier)",
+    Log.debug(", ".join("placing node with identifier \(identifier)",
                              "trajectory \(trajectory)",
                              "generator \(generator)"))
 
@@ -39,7 +39,7 @@ final class MIDINodeManager {
   }
 
   func removeNode(identifier: UUID, delete: Bool = false) throws {
-    logDebug("removing node with identifier \(identifier)")
+    Log.debug("removing node with identifier \(identifier)")
 
     guard let idx = nodes.index(where: {$0.elements.1.reference?.identifier == identifier}),
               let node = nodes[idx].elements.1.reference else
@@ -53,12 +53,12 @@ final class MIDINodeManager {
 
   func stopNodes(remove: Bool = false) {
     nodes.forEach {$0.elements.1.reference?.fadeOut(remove: remove)}
-    owner.logDebug("nodes stopped\(remove ? " and removed" : "")")
+    Log.debug("nodes stopped\(remove ? " and removed" : "")")
   }
 
   func startNodes() {
     nodes.forEach {$0.elements.1.reference?.fadeIn()}
-    owner.logDebug("nodes started")
+    Log.debug("nodes started")
   }
 
   func remove(node: MIDINode) throws { try remove(node: node, delete: false) }
@@ -69,7 +69,7 @@ final class MIDINodeManager {
   func add(node: MIDINode) throws {
     try owner.connect(node: node)
 
-//    guard owner.recording else { owner.logDebug("not recording…skipping event creation"); return }
+//    guard owner.recording else { owner.Log.debug("not recording…skipping event creation"); return }
 
     owner.eventQueue.async {
       [time = Sequencer.time.barBeatTime, unowned node, weak self] in
@@ -85,7 +85,7 @@ final class MIDINodeManager {
     // Insert the node into our set
     nodes.append(HashableTuple((Sequencer.time.barBeatTime, Weak(node))))
     pendingNodes.remove(node.identifier)
-    owner.logDebug("adding node \(node.name!) (\(node.identifier))")
+    Log.debug("adding node \(node.name!) (\(node.identifier))")
 
 //    Notification.DidAddNode.post(object: owner)
 
@@ -101,7 +101,7 @@ final class MIDINodeManager {
     }
     
     let id = node.identifier
-    owner.logDebug("removing node \(node.name!) \(id)")
+    Log.debug("removing node \(node.name!) \(id)")
 
     node.sendNoteOff()
     try owner.disconnect(node: node)
@@ -119,7 +119,7 @@ final class MIDINodeManager {
           }
         }
       case false:
-//        guard owner.recording else { owner.logDebug("not recording…skipping event creation"); return }
+//        guard owner.recording else { owner.Log.debug("not recording…skipping event creation"); return }
         owner.eventQueue.async {
           [time = Sequencer.time.barBeatTime, weak self] in
           let event = MIDIEvent.MIDINodeEvent(data: .remove(identifier: MIDIEvent.MIDINodeEvent.Identifier(nodeIdentifier: id)),

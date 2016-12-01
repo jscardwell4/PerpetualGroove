@@ -18,7 +18,7 @@ final class TempoTrack: Track {
   var tempo: Double = Sequencer.tempo {
     didSet {
       guard tempo != oldValue && recording else { return }
-      logDebug("inserting event for tempo \(tempo)")
+      Log.debug("inserting event for tempo \(tempo)")
       add(event: .meta(tempoEvent))
       postNotification(name: .didUpdate, object: self, userInfo: nil)
     }
@@ -27,7 +27,7 @@ final class TempoTrack: Track {
   var timeSignature: TimeSignature = Sequencer.timeSignature {
     didSet {
       guard timeSignature != oldValue && recording else { return }
-      logDebug("inserting event for signature \(timeSignature)")
+      Log.debug("inserting event for signature \(timeSignature)")
       add(event: .meta(timeSignatureEvent))
       postNotification(name: .didUpdate, object: self, userInfo: nil)
     }

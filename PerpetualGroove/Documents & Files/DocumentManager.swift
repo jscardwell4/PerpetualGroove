@@ -66,7 +66,7 @@ final class DocumentManager {
   // MARK: - Tracking state
   fileprivate static var state: State = [] {
     didSet {
-      logDebug("\(oldValue) ➞ \(state)")
+      Log.debug("\(oldValue) ➞ \(state)")
 
       guard state.symmetricDifference(oldValue) ∋ .OpeningDocument else { return }
       dispatchToMain {
@@ -94,9 +94,9 @@ final class DocumentManager {
             case .iCloud: SettingsManager.currentDocumentiCloud = bookmark
             case .local: SettingsManager.currentDocumentLocal = bookmark
           }
-          logDebug("bookmark refreshed for '\(currentDocument.localizedName)'")
+          Log.debug("bookmark refreshed for '\(currentDocument.localizedName)'")
         } catch {
-          logError(error, message: "Failed to generate bookmark data for storage")
+          Log.error(error, message: "Failed to generate bookmark data for storage")
         }
     }
   }
@@ -113,12 +113,12 @@ final class DocumentManager {
 
     didSet {
       queue.async {
-        logDebug("currentDocument: \(_currentDocument == nil ? "nil" : _currentDocument!.localizedName)")
+        Log.debug("currentDocument: \(_currentDocument == nil ? "nil" : _currentDocument!.localizedName)")
 
         guard oldValue != _currentDocument else { return }
 
         if let oldValue = oldValue {
-          logDebug("closing document '\(oldValue.localizedName)'")
+          Log.debug("closing document '\(oldValue.localizedName)'")
           observer.stopObserving(oldValue, forChangesTo: "fileURL")
           oldValue.close(completionHandler: nil)
         }
@@ -126,7 +126,7 @@ final class DocumentManager {
         if let currentDocument = _currentDocument {
           observer.observe(currentDocument, forChangesTo: "fileURL", queue: operationQueue) {
             _, _, _ in
-            logDebug("observed change to file URL of current document")
+            Log.debug("observed change to file URL of current document")
             DocumentManager.refreshBookmark()
           }
         }
@@ -176,7 +176,7 @@ final class DocumentManager {
             do {
               try openBookmarkedDocument(data)
             } catch {
-              logError(error, message: "Failed to resolve bookmark data into a valid file url")
+              Log.error(error, message: "Failed to resolve bookmark data into a valid file url")
               switch storageLocation {
                 case .iCloud: SettingsManager.currentDocumentiCloud = nil
                 case .local: SettingsManager.currentDocumentLocal = nil
@@ -197,7 +197,7 @@ final class DocumentManager {
   }
 
   fileprivate static func didChangeStorage(_ notification: Foundation.Notification) {
-    logDebug("observed notification of iCloud storage setting change")
+    Log.debug("observed notification of iCloud storage setting change")
     storageLocation = SettingsManager.iCloudStorage ? .iCloud : .local
   }
 
@@ -230,10 +230,10 @@ final class DocumentManager {
 
   /// Callback for `NSMetadataQueryDidFinishGatheringNotification`
   private static func didGatherMetadataItems(_ notification: Notification) {
-    logDebug("observed notification metadata query has finished gathering")
+    Log.debug("observed notification metadata query has finished gathering")
 
     guard state ∋ .GatheringMetadataItems else {
-      logWarning("received gathering notification but state does not contain gathering flag")
+      Log.warning("received gathering notification but state does not contain gathering flag")
       return
     }
 
@@ -245,7 +245,7 @@ final class DocumentManager {
 
   /// Callback for `NSMetadataQueryDidUpdateNotification`
   private static func didUpdateMetadataItems(_ notification: Notification) {
-    logDebug("observed metadata query update notification")
+    Log.debug("observed metadata query update notification")
 
     var itemsDidChange = false
 
@@ -284,13 +284,13 @@ final class DocumentManager {
   static fileprivate func postUpdateNotification(for items: OrderedSet<DocumentItem>) {
     defer { updateNotificationItems = items }
 
-    logDebug("items: \(items.map(({$0.displayName})))")
-    guard updateNotificationItems != items else { logDebug("no change…"); return }
+    Log.debug("items: \(items.map(({$0.displayName})))")
+    guard updateNotificationItems != items else { Log.debug("no change…"); return }
 
     let removed = updateNotificationItems ∖ items
     let added = items ∖ updateNotificationItems
 
-    logDebug({
+    Log.debug({
       guard removed.count + added.count > 0 else { return "" }
       var string = ""
       if removed.count > 0 { string += "removed: \(removed)" }
@@ -304,7 +304,7 @@ final class DocumentManager {
 
     guard userInfo.count > 0 else { return }
 
-    logDebug("posting 'DidUpdateItems'")
+    Log.debug("posting 'DidUpdateItems'")
     dispatchToMain { postNotification(name: .didUpdateItems, object: self, userInfo: userInfo) }
 
   }
@@ -330,7 +330,7 @@ final class DocumentManager {
   static func createNewDocument(name: String? = nil) {
 
     guard let storageLocation = storageLocation else {
-      logWarning("Cannot create a new document without a valid storage location")
+      Log.warning("Cannot create a new document without a valid storage location")
       return
     }
 
@@ -353,7 +353,7 @@ final class DocumentManager {
 
       let fileName = noncollidingFileName(for: name ?? DefaultDocumentName)
       let fileURL = url + ["\(fileName).groove"]
-      logDebug("creating a new document at path '\(fileURL.path)'")
+      Log.debug("creating a new document at path '\(fileURL.path)'")
       let document = Document(fileURL: fileURL)
       document.save(to: fileURL, for: .forCreating) {
         guard $0 else { return }
@@ -407,16 +407,16 @@ final class DocumentManager {
   /// Opens the specified document.
   static func open(document: Document) {
     let openBlock = {
-      guard state ∌ .OpeningDocument else { logWarning("already opening a document"); return }
-      logDebug("opening document '\(document.fileURL.path)'")
+      guard state ∌ .OpeningDocument else { Log.warning("already opening a document"); return }
+      Log.debug("opening document '\(document.fileURL.path)'")
       state.formSymmetricDifference(.OpeningDocument)
       document.open {
         guard $0  else {
-          logError("failed to open document: \(document)")
+          Log.error("failed to open document: \(document)")
           return
         }
         guard state ∋ .OpeningDocument else {
-          logError("internal inconsistency, expected state to contain `OpeningDocument`")
+          Log.error("internal inconsistency, expected state to contain `OpeningDocument`")
           return
         }
         currentDocument = document
@@ -446,7 +446,7 @@ final class DocumentManager {
                         options: .withoutUI,
                         relativeTo: nil,
                         bookmarkDataIsStale: nil) as URL)
-    logDebug("opening bookmarked file at path '\(url.path)'")
+    Log.debug("opening bookmarked file at path '\(url.path)'")
     open(url: url)
 
   }
@@ -465,12 +465,12 @@ final class DocumentManager {
       // Does this create race condition with closing of file?
       if currentDocument?.fileURL.isEqualToFileURL(itemURL as URL) == true { currentDocument = nil }
 
-      logDebug("removing item '\(item.displayName)'")
+      Log.debug("removing item '\(item.displayName)'")
       let coordinator = NSFileCoordinator(filePresenter: nil)
       coordinator.coordinate(writingItemAt: itemURL as URL, options: .forDeleting, error: nil) {
         url in
         do { try FileManager.withDefaultManager { try $0.removeItem(at: url) } }
-        catch { logError(error) }
+        catch { Log.error(error) }
       }
     }
   }

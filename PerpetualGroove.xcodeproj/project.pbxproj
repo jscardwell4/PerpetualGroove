@@ -51,9 +51,10 @@
 		C25EBC831B8BFAFA00E57665 /* MIDIFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25EBC821B8BFAFA00E57665 /* MIDIFile.swift */; };
 		C2670CCE1C46FEF6000F76F9 /* MIDIGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2670CCD1C46FEF6000F76F9 /* MIDIGenerator.swift */; };
 		C2670CD01C4704A2000F76F9 /* MIDINodeDispatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2670CCF1C4704A2000F76F9 /* MIDINodeDispatch.swift */; };
-		C269D1D71BD7FA190084A7EE /* LogManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C269D1D61BD7FA190084A7EE /* LogManager.swift */; };
 		C26A09761BC96B97002EFEE1 /* MixerLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A09751BC96B97002EFEE1 /* MixerLayout.swift */; };
 		C26A27EF1B948E4F00BD1698 /* DocumentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A27EE1B948E4E00BD1698 /* DocumentsViewController.swift */; };
+		C26ABEC51DECEA1C005480B1 /* LogManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C269D1D61BD7FA190084A7EE /* LogManager.swift */; };
+		C26ABEC61DECEA2B005480B1 /* LogManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C269D1D61BD7FA190084A7EE /* LogManager.swift */; };
 		C26EEB2E1B7FDA8F00EC6979 /* MixerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26EEB2D1B7FDA8F00EC6979 /* MixerViewController.swift */; };
 		C26EEB301B7FDAF300EC6979 /* MixerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26EEB2F1B7FDAF300EC6979 /* MixerCell.swift */; };
 		C26FC16F1B7BA63300E271A3 /* MIDINode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26FC16E1B7BA63300E271A3 /* MIDINode.swift */; };
@@ -115,7 +116,6 @@
 		C2D7BB231DE3455700EC7A53 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29A337B1DAE7E4800728E4B /* Colors.swift */; };
 		C2D7BB241DE3456F00EC7A53 /* InstrumentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AA2BC71B84B04200A0B08D /* InstrumentViewController.swift */; };
 		C2D7BB261DE345C300EC7A53 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22FA58C1BC830D600162DB4 /* SettingsManager.swift */; };
-		C2D7BB271DE345C300EC7A53 /* LogManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C269D1D61BD7FA190084A7EE /* LogManager.swift */; };
 		C2D7BB281DE345C300EC7A53 /* DocumentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A27EE1B948E4E00BD1698 /* DocumentsViewController.swift */; };
 		C2D7BB291DE345C300EC7A53 /* DocumentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28BB6011BBF110E00BF2F70 /* DocumentCell.swift */; };
 		C2D7BB2A1DE345C300EC7A53 /* DocumentsViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CFB7FE1BBF486300983664 /* DocumentsViewLayout.swift */; };
@@ -1360,7 +1360,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C2D7BB271DE345C300EC7A53 /* LogManager.swift in Sources */,
 				C2D7BB431DE345C300EC7A53 /* TrackColor.swift in Sources */,
 				C2D7BB641DE3460300EC7A53 /* Time.swift in Sources */,
 				C2D7BB451DE345C300EC7A53 /* MixerLayout.swift in Sources */,
@@ -1414,6 +1413,7 @@
 				C2D7BB381DE345C300EC7A53 /* NodeSelectionTool.swift in Sources */,
 				C2D7BB481DE345C300EC7A53 /* TransportViewController.swift in Sources */,
 				C2D7BB511DE345C300EC7A53 /* BarBeatTime.swift in Sources */,
+				C26ABEC61DECEA2B005480B1 /* LogManager.swift in Sources */,
 				C2D7BB351DE345C300EC7A53 /* Tool.swift in Sources */,
 				C2D7BB691DE3460300EC7A53 /* TempoTrack.swift in Sources */,
 				C2D7BB3D1DE345C300EC7A53 /* MIDINodePlayerScene.swift in Sources */,
@@ -1509,12 +1509,12 @@
 				C21E44C51B76546C00574BD2 /* AudioManager.swift in Sources */,
 				C282911D1C1DFFD600F9975C /* Tool.swift in Sources */,
 				C2F35DB91BB4507800ECB045 /* MIDINodePlayerView.swift in Sources */,
+				C26ABEC51DECEA1C005480B1 /* LogManager.swift in Sources */,
 				C291C3F51B91F05900702AEA /* MIDIEvent.swift in Sources */,
 				C2E542391BD56E00005B452F /* SoundFont.swift in Sources */,
 				C2807DDE1C74C61D0061A001 /* ThrottleTool.swift in Sources */,
 				C2F589F91BAC688F009166D5 /* BarBeatTimeLabel.swift in Sources */,
 				C2AA2BCB1B84FB2100A0B08D /* Sequencer.swift in Sources */,
-				C269D1D71BD7FA190084A7EE /* LogManager.swift in Sources */,
 				C2807DE01C74C6270061A001 /* RotateTool.swift in Sources */,
 				C2516B2D1C08F1B50060710B /* TransportViewController.swift in Sources */,
 				C22D93F11BADA24A00B04A2B /* MIDINodeHistory.swift in Sources */,

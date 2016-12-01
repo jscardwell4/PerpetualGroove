@@ -55,18 +55,18 @@ final class AudioManager {
 
     initialized = true
 
-    logDebug("AudioManager initialized…")
+    Log.debug("AudioManager initialized…")
 
     try start()
   }
 
-  static func start() throws { logDebug("starting audio…"); try engine.start() }
+  static func start() throws { Log.debug("starting audio…"); try engine.start() }
 
-  static func stop() throws { logDebug("stopping audio…"); engine.stop() }
+  static func stop() throws { Log.debug("stopping audio…"); engine.stop() }
 
   static var running: Bool { return engine.isRunning }
 
-  static func reset() { logDebug("resetting audio…"); engine.reset() }
+  static func reset() { Log.debug("resetting audio…"); engine.reset() }
 
-  static func pause() { logDebug("pausing audio…"); engine.pause() }
+  static func pause() { Log.debug("pausing audio…"); engine.pause() }
 }

@@ -78,9 +78,17 @@ class InlinePickerContainer: UIControl {
       return picker.selection
     }
     set {
-      picker.selectItem(newValue, animated: false)
-//      picker.selection = newValue
+      if (0..<items.count).contains(newValue) {
+        picker.selectItem(newValue, animated: false)
+      } else {
+        picker.selection = newValue
+      }
     }
+  }
+
+  @IBInspectable var flat: Bool {
+    get { return picker.flat }
+    set { picker.flat = newValue }
   }
 
   func selectItem(_ item: Int, animated: Bool) {

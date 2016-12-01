@@ -51,7 +51,8 @@ struct MIDINodeHistory: Swift.Sequence {
 
   func snapshot(for ticks: MIDITimeStamp) -> Snapshot? {
     guard let breadcrumb = breadcrumbs.find({$0.tickInterval.upperBound < ticks}, {$0.tickInterval.contains(ticks)}) else {
-      logSyncWarning("failed to locate breadcrumb for ticks '\(ticks)' in breadcrumbs \(breadcrumbs)")
+      Log.warning("failed to locate breadcrumb for ticks '\(ticks)' in breadcrumbs \(breadcrumbs)",
+        asynchronous: false)
       return nil
     }
     let trajectory = MIDINode.Trajectory(vector: breadcrumb.velocity, point: breadcrumb.position(for: ticks))

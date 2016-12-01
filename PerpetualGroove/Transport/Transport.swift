@@ -45,7 +45,7 @@ final class Transport {
 
   /// Starts the MIDI clock
   func play() {
-    guard !playing else { logWarning("already playing"); return }
+    guard !playing else { Log.warning("already playing"); return }
 
     postNotification(name: .didStart, object: self, userInfo: ["time": time.barBeatTime.rawValue])
 
@@ -84,7 +84,7 @@ final class Transport {
 
   /// Stops the MIDI clock
   func stop() {
-    guard playing || paused else { logWarning("not playing or paused"); return }
+    guard playing || paused else { Log.warning("not playing or paused"); return }
     clock.stop()
     state ∖= [.Playing, .Paused]
     postNotification(name: .didStop, object: self, userInfo: ["time": time.barBeatTime.rawValue])
@@ -101,14 +101,14 @@ final class Transport {
   }
 
   func jog(_ wheel: ScrollWheel) {
-    guard jogging && jogTime != nil else { logWarning("not jogging"); return }
+    guard jogging && jogTime != nil else { Log.warning("not jogging"); return }
     let 𝝙time = BarBeatTime(totalBeats: Double(Sequencer.beatsPerBar) * wheel.𝝙revolutions)
     do { try jogToTime(max(jogTime + 𝝙time, BarBeatTime.zero), direction: wheel.direction) }
-    catch { logError(error) }
+    catch { Log.error(error) }
   }
 
   func endJog(_ wheel: ScrollWheel) {
-    guard jogging /*&& clock.paused*/ else { logWarning("not jogging"); return }
+    guard jogging /*&& clock.paused*/ else { Log.warning("not jogging"); return }
     state.formSymmetricDifference([.Jogging])
     time.barBeatTime = jogTime
     jogTime = nil

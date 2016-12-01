@@ -56,7 +56,7 @@ final class MIDIClock: CustomStringConvertible, Named {
 
   fileprivate func _start() {
     guard !timer.running else { return }
-    logDebug("setting ticks to 0, sending start message and starting timer…")
+    Log.debug("setting ticks to 0, sending start message and starting timer…")
     ticks = 0
     sendStart()
     timer.start()
@@ -68,7 +68,7 @@ final class MIDIClock: CustomStringConvertible, Named {
 
   fileprivate func _resume() {
     guard !timer.running else { return }
-    logDebug("sending continue message and starting timer…")
+    Log.debug("sending continue message and starting timer…")
     sendContinue()
     timer.start()
   }
@@ -77,7 +77,7 @@ final class MIDIClock: CustomStringConvertible, Named {
 
   fileprivate func _reset() {
     guard !timer.running else { return }
-    logDebug("setting ticks to 0…")
+    Log.debug("setting ticks to 0…")
     ticks = 0
   }
 
@@ -85,7 +85,7 @@ final class MIDIClock: CustomStringConvertible, Named {
 
   fileprivate func _stop() {
     guard timer.running else { return }
-    logDebug("stopping timer and sending stop message…")
+    Log.debug("stopping timer and sending stop message…")
     timer.stop()
     sendStop()
   }
@@ -116,7 +116,7 @@ final class MIDIClock: CustomStringConvertible, Named {
       try MIDISourceCreate(client, "Clock" as CFString, &endPoint) ➤ "Failed to create end point for clock"
       MIDIObjectSetStringProperty(endPoint, kMIDIPropertyName, "\(name) clock" as CFString)
     } catch {
-      logError(error)
+      Log.error(error)
       #if !TARGET_INTERFACE_BUILDER
         fatalError("could not create clock as a midi source")
       #endif
@@ -143,13 +143,13 @@ final class MIDIClock: CustomStringConvertible, Named {
 
     guard timer.running else { return }
     ticks += 1
-    do { try sendEvent(0b1111_1000) } catch { logError(error) }
+    do { try sendEvent(0b1111_1000) } catch { Log.error(error) }
   }
 
-  fileprivate func sendStart() { do { try sendEvent(0b1111_1010) } catch { logError(error) } }
+  fileprivate func sendStart() { do { try sendEvent(0b1111_1010) } catch { Log.error(error) } }
 
-  fileprivate func sendContinue() { do { try sendEvent(0b1111_1011) } catch { logError(error) } }
+  fileprivate func sendContinue() { do { try sendEvent(0b1111_1011) } catch { Log.error(error) } }
 
-  fileprivate func sendStop() { do { try sendEvent(0b1111_1100) } catch { logError(error) } }
+  fileprivate func sendStop() { do { try sendEvent(0b1111_1100) } catch { Log.error(error) } }
 
 }
