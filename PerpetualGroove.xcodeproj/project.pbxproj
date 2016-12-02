@@ -1802,7 +1802,7 @@
 				INFOPLIST_FILE = GrooveSelectorTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.Groove;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.GrooveSelectorTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_VERSION = 3.0;
@@ -1821,7 +1821,7 @@
 				INFOPLIST_FILE = GrooveSelectorTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.Groove;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.GrooveSelectorTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_VERSION = 3.0;
@@ -1840,7 +1840,7 @@
 				INFOPLIST_FILE = GrooveSelectorTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.Groove;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.GrooveSelectorTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 2;
@@ -1858,7 +1858,7 @@
 				INFOPLIST_FILE = GrooveSelectorTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.Groove;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.GrooveSelectorTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 2;

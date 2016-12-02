@@ -63,11 +63,6 @@
       </BuildableProductRunnable>
       <EnvironmentVariables>
          <EnvironmentVariable
-            key = "XCODE_COLORS"
-            value = "YES"
-            isEnabled = "YES">
-         </EnvironmentVariable>
-         <EnvironmentVariable
             key = "MOONKIT_LOG_DIR"
             value = "/Users/Moondeer/Projects/PerpetualGroove/Logs"
             isEnabled = "YES">

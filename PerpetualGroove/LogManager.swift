@@ -61,9 +61,9 @@ final class LogManager {
       ] as [(Context, String)]
     {
       let manager = Log.FileLogger.LogManager(subdirectory: subdirectory)
-      let logger = Log.FileLogger(context: context, manager: manager)
+      let logger = Log.FileLogger(manager: manager)
       logger.prohibitFileReuse = true
-      Log.add(logger: logger)
+      Log.add(logger: logger, context: context)
     }
     print([
       "main bundle: '\(Bundle.main.bundlePath)'",
