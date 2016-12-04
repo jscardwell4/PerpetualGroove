@@ -290,7 +290,7 @@ extension MIDIFile {
 extension MIDIFile.TrackChunk: CustomStringConvertible {
 
   var description: String {
-    return "MTrk\n\(events.map({$0.description.indentedBy(1, useTabs: true)}).joined(separator: "\n"))"
+    return "MTrk\n\(events.map({$0.description.indented(by: 1, useTabs: true)}).joined(separator: "\n"))"
   }
 
 }

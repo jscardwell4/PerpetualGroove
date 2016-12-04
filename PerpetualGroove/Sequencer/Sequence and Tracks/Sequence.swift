@@ -230,7 +230,7 @@ extension Sequence: Nameable { var name: String? { return document?.localizedNam
 // MARK: - CustomStringConvertible
 extension Sequence: CustomStringConvertible {
   var description: String {
-    return "\ntracks:\n" + "\n\n".join(tracks.map({$0.description.indentedBy(1, useTabs: true)}))
+    return "\ntracks:\n" + "\n\n".join(tracks.map({$0.description.indented(by: 1, useTabs: true)}))
   }
 }
 

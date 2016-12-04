@@ -119,7 +119,7 @@ extension DocumentItem: CustomDebugStringConvertible {
     ]
     if let date = modificationDate { dict["modificationDate"] = date }
     if let date = creationDate { dict["creationDate"] = date }
-    return "DocumentItem {\n\(dict.formattedDescription().indentedBy(4))\n}"
+    return "DocumentItem {\n\(dict.formattedDescription().indented(by: 4))\n}"
   }
 
 }

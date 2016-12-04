@@ -613,7 +613,7 @@ extension SF2File {
 
     var description: String {
       return "\n".join(
-        "phdr:\n\(phdr.description.indentedBy(1, useTabs: true))",
+        "phdr:\n\(phdr.description.indented(by: 1, useTabs: true))",
         "pbag: \(pbag)",
         "pmod: \(pmod)",
         "pgen: \(pgen)",
@@ -722,7 +722,7 @@ extension SF2File {
 
     var description: String {
       return "\n".join(
-        "phdr:\n\(phdr.description.indentedBy(1, useTabs: true))",
+        "phdr:\n\(phdr.description.indented(by: 1, useTabs: true))",
         "pbag: \(pbag)",
         "pmod: \(pmod)",
         "pgen: \(pgen)",

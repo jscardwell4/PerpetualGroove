@@ -146,7 +146,7 @@ extension MIDINodeHistory: CustomStringConvertible {
     var result = "MIDINodeHistory {\n"
     result += "  initialSnapshot: \(initialSnapshot)\n"
     result += "  breadcrumbs: {\n"
-    result += ",\n".join(breadcrumbs.map({$0.description.indentedBy(4)}))
+    result += ",\n".join(breadcrumbs.map({$0.description.indented(by: 4)}))
     result += "\n  }"
     result += "\n}"
     return result

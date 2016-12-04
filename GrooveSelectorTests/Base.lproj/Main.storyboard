@@ -22,10 +22,11 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="3IN-JT-JFi">
-                                <rect key="frame" x="407" y="184" width="210" height="400"/>
+                                <rect key="frame" x="407" y="366" width="210" height="36"/>
                                 <subviews>
                                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bvY-qe-xxY" customClass="PitchSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="210" height="36"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="Pitch"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="36" id="sjF-9T-3Tq"/>
                                         </constraints>
@@ -38,6 +39,7 @@
                                     </view>
                                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ds4-mW-Zhd" customClass="PitchModifierSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="52" width="210" height="36"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="Pitch Modifier"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="36" id="nql-yg-QeP"/>
                                         </constraints>
@@ -49,6 +51,7 @@
                                     </view>
                                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wrh-X7-wiG" customClass="ChordSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="104" width="210" height="36"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="Chord"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="36" id="3ak-UF-qMA"/>
                                         </constraints>
@@ -60,6 +63,7 @@
                                     </view>
                                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rlN-XY-gHf" customClass="OctaveSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="156" width="210" height="36"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="Octave"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="36" id="T0Z-cz-tyL"/>
                                         </constraints>
@@ -70,7 +74,8 @@
                                         </userDefinedRuntimeAttributes>
                                     </view>
                                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Nyi-pN-mvQ" customClass="DurationSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="208" width="210" height="36"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="210" height="36"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="Duration"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="36" id="SiF-oA-27z"/>
                                         </constraints>
@@ -82,6 +87,7 @@
                                     </view>
                                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qdb-ac-urp" customClass="VelocitySelector" customModule="GrooveSelectorTests" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="260" width="210" height="36"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="Velocity"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="36" id="Mfr-Wj-zfz"/>
                                         </constraints>
@@ -93,6 +99,7 @@
                                     </view>
                                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="r6e-XT-MJl" customClass="SoundFontSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="312" width="210" height="36"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="Sound Font"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="36" id="Ug5-8j-CD7"/>
                                         </constraints>
@@ -104,6 +111,7 @@
                                     </view>
                                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ihJ-zv-fSd" customClass="ProgramSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="364" width="210" height="36"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="Program"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="36" id="GLI-pu-gsO"/>
                                         </constraints>
@@ -116,8 +124,22 @@
                                 </subviews>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="210" id="Nvt-Pk-lYa"/>
-                                    <constraint firstAttribute="height" constant="400" id="rMT-2a-6fo"/>
+                                    <constraint firstAttribute="height" constant="36" id="rMT-2a-6fo"/>
                                 </constraints>
+                                <variation key="default">
+                                    <mask key="subviews">
+                                        <exclude reference="bvY-qe-xxY"/>
+                                        <exclude reference="ds4-mW-Zhd"/>
+                                        <exclude reference="Wrh-X7-wiG"/>
+                                        <exclude reference="rlN-XY-gHf"/>
+                                        <exclude reference="qdb-ac-urp"/>
+                                        <exclude reference="r6e-XT-MJl"/>
+                                        <exclude reference="ihJ-zv-fSd"/>
+                                    </mask>
+                                    <mask key="constraints">
+                                        <exclude reference="rMT-2a-6fo"/>
+                                    </mask>
+                                </variation>
                             </stackView>
                         </subviews>
                         <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

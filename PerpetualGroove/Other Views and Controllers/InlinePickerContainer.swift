@@ -15,23 +15,20 @@ import Eveleth
 class InlinePickerContainer: UIControl {
 
   override init(frame: CGRect) {
-    picker = InlinePickerView(flat: type(of: self).flat, frame: frame)
     super.init(frame: frame)
     setup()
   }
 
   required init?(coder aDecoder: NSCoder) {
-    picker = InlinePickerView(flat: type(of: self).flat, frame: .zero)
     super.init(coder: aDecoder)
     setup()
   }
-
 
   class var font: UIFont { return .controlFont }
   class var selectedFont: UIFont { return .controlSelectedFont }
   class var flat: Bool { return false }
 
-  private let picker: InlinePickerView
+  private var picker: InlinePickerView!
 
   @objc private func valueChanged() {
     sendActions(for: .valueChanged)
@@ -54,13 +51,16 @@ class InlinePickerContainer: UIControl {
   }
 
   private func setup() {
-
+    flat = type(of: self).flat
+    picker = InlinePickerView(flat: flat, frame: .zero, delegate: self)
+    picker.accessibilityIdentifier = accessibilityIdentifier
     picker.font = type(of: self).font
     picker.selectedFont = type(of: self).selectedFont
     picker.itemColor = #colorLiteral(red: 0.7302821875, green: 0.7035630345, blue: 0.6637413502, alpha: 1)
+    picker.itemHeight = itemHeight
     picker.selectedItemColor = #colorLiteral(red: 0.7608990073, green: 0.2564961016, blue: 0, alpha: 1)
     picker.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
-    picker.delegate = self
+    picker.selection = selection
 
     addSubview(picker)
     constrain(𝗛|picker|𝗛, 𝗩|picker|𝗩)
@@ -73,31 +73,28 @@ class InlinePickerContainer: UIControl {
 
   }
 
-  @IBInspectable var selection: Int {
-    get {
-      return picker.selection
+  override var accessibilityIdentifier: String? {
+    didSet {
+      picker?.accessibilityIdentifier = accessibilityIdentifier
     }
-    set {
-      if (0..<items.count).contains(newValue) {
-        picker.selectItem(newValue, animated: false)
-      } else {
-        picker.selection = newValue
-      }
+  }
+  
+  @IBInspectable var selection: Int = -1 {
+    didSet {
+      picker?.selection = selection
     }
   }
 
-  @IBInspectable var flat: Bool {
-    get { return picker.flat }
-    set { picker.flat = newValue }
+  @IBInspectable var flat: Bool = false {
+    didSet { picker?.flat = flat }
   }
 
   func selectItem(_ item: Int, animated: Bool) {
-    picker.selectItem(item, animated: animated)
+    picker?.selectItem(item, animated: animated)
   }
 
-  @IBInspectable var itemHeight: CGFloat {
-    get { return picker.itemHeight }
-    set { picker.itemHeight = newValue }
+  @IBInspectable var itemHeight: CGFloat = 36 {
+    didSet { picker?.itemHeight = itemHeight }
   }
 
   override var intrinsicContentSize: CGSize { return picker.intrinsicContentSize }

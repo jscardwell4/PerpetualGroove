@@ -446,7 +446,7 @@ extension MIDINode.Path: CustomStringConvertible, CustomDebugStringConvertible {
         "max: \(max)",
         "startTime: \(startTime)",
         "initialTrajectory: \(initialTrajectory)",
-        "segments: [\n\t\t\(",\n\t\t".join(segments.map({$0.description.indentedBy(2, preserveFirst: true, useTabs: true)})))\n\t]"
+        "segments: [\n\t\t\(",\n\t\t".join(segments.map({$0.description.indented(by: 2, preserveFirst: true, useTabs: true)})))\n\t]"
         ) + "\n"
     } else {
       result += "startTime: \(startTime); segments: \(segments.count)"
