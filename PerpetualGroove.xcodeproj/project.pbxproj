@@ -369,7 +369,6 @@
 		C26FC16E1B7BA63300E271A3 /* MIDINode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINode.swift; sourceTree = "<group>"; };
 		C26FC1701B7BAC7F00E271A3 /* MIDINodePlayerNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINodePlayerNode.swift; sourceTree = "<group>"; };
 		C26FC1721B7BAEBD00E271A3 /* AddTool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddTool.swift; sourceTree = "<group>"; };
-		C2724B6E1DE34201001D5C3D /* PerpetualGroove copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "PerpetualGroove copy-Info.plist"; path = "/Users/Moondeer/Projects/PerpetualGroove/PerpetualGroove copy-Info.plist"; sourceTree = "<absolute>"; };
 		C2724B731DE3427E001D5C3D /* GrooveSelectorTests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GrooveSelectorTests.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2724B751DE3427E001D5C3D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C2724B771DE3427E001D5C3D /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
@@ -895,7 +894,6 @@
 				C2724B741DE3427E001D5C3D /* GrooveSelectorTests */,
 				C2E043321B72F4DC005F0675 /* Products */,
 				C28A0F511D99DE650011F706 /* Frameworks */,
-				C2724B6E1DE34201001D5C3D /* PerpetualGroove copy-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
