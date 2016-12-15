@@ -7,9 +7,6 @@
 //
 
 import UIKit
-import Eveleth
-import Triump
-import FestivoLC
 import MoonKit
 
 @UIApplicationMain
@@ -23,9 +20,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
   override class func initialize() {
     backgroundDispatch {
       if ProcessInfo.processInfo.environment["XCInjectBundle"] == nil { LogManager.initialize() }
-      Eveleth.registerFonts()
-      Triump.registerFonts()
-      FestivoLC.registerFonts()
     }
   }
 

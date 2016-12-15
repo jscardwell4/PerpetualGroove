@@ -9,7 +9,6 @@
 import Foundation
 import UIKit
 import MoonKit
-import Eveleth
 
 @IBDesignable
 class InlinePickerContainer: UIControl {
@@ -24,9 +23,17 @@ class InlinePickerContainer: UIControl {
     setup()
   }
 
-  class var font: UIFont { return .controlFont }
-  class var selectedFont: UIFont { return .controlSelectedFont }
-  class var flat: Bool { return false }
+  class var font: UIFont {
+    return .controlFont
+  }
+
+  class var selectedFont: UIFont {
+    return .controlSelectedFont
+  }
+
+  class var flat: Bool {
+    return false
+  }
 
   private var picker: InlinePickerView!
 
@@ -34,15 +41,15 @@ class InlinePickerContainer: UIControl {
     sendActions(for: .valueChanged)
   }
 
-  final func refresh() {
-    refresh(picker: picker)
-  }
-
-  func refresh(picker: InlinePickerView) {
+  func refreshItems() {
     fatalError("Subclasses must override \(#function)")
   }
 
-  class var contentForInterfaceBuilder: [Any] { return [] }
+  class var contentForInterfaceBuilder: [Any] {
+    return []
+  }
+
+  class var initialSelection: Int { return 0 }
 
   var items: [Any] = [] {
     didSet {
@@ -60,64 +67,73 @@ class InlinePickerContainer: UIControl {
     picker.itemHeight = itemHeight
     picker.selectedItemColor = #colorLiteral(red: 0.7608990073, green: 0.2564961016, blue: 0, alpha: 1)
     picker.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
-    picker.selection = selection
 
     addSubview(picker)
     constrain(𝗛|picker|𝗛, 𝗩|picker|𝗩)
-    
+
     #if TARGET_INTERFACE_BUILDER
       items = type(of: self).contentForInterfaceBuilder
     #else
-      refresh(picker: picker)
+      refreshItems()
     #endif
 
+    selection = type(of: self).initialSelection
   }
 
+  /// Forward identifier to wrapped `InlinePickerView`.
   override var accessibilityIdentifier: String? {
     didSet {
       picker?.accessibilityIdentifier = accessibilityIdentifier
     }
   }
-  
-  @IBInspectable var selection: Int = -1 {
+
+//  override func prepareForInterfaceBuilder() {
+//    
+//    super.prepareForInterfaceBuilder()
+//    picker.reloadData()
+//  }
+
+  var selection: Int = -1 {
     didSet {
       picker?.selection = selection
     }
   }
 
-  @IBInspectable var flat: Bool = false {
-    didSet { picker?.flat = flat }
+  var flat: Bool = false {
+    didSet {
+      picker?.flat = flat
+    }
   }
 
   func selectItem(_ item: Int, animated: Bool) {
+    
     picker?.selectItem(item, animated: animated)
   }
 
-  @IBInspectable var itemHeight: CGFloat = 36 {
-    didSet { picker?.itemHeight = itemHeight }
+  var itemHeight: CGFloat = 36 {
+    didSet {
+      picker?.itemHeight = itemHeight
+    }
   }
 
-  override var intrinsicContentSize: CGSize { return picker.intrinsicContentSize }
+  override var intrinsicContentSize: CGSize {
+    return picker.intrinsicContentSize
+  }
 
-  override var forLastBaselineLayout: UIView { return picker.forLastBaselineLayout }
+  override var forLastBaselineLayout: UIView {
+    return picker.forLastBaselineLayout
+  }
+
 }
 
 extension InlinePickerContainer: InlinePickerDelegate {
 
   func numberOfItems(in picker: InlinePickerView) -> Int {
-    #if TARGET_INTERFACE_BUILDER
-      return type(of: self).contentForInterfaceBuilder.count
-    #else
-      return items.count
-    #endif
+    return items.count
   }
 
   func inlinePicker(_ picker: InlinePickerView, contentForItem item: Int) -> Any {
-    #if TARGET_INTERFACE_BUILDER
-      return type(of: self).contentForInterfaceBuilder[item]
-    #else
-      return items[item]
-    #endif
+    return items[item]
   }
 
 }

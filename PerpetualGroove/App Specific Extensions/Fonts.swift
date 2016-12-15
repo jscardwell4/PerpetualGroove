@@ -7,19 +7,36 @@
 //
 
 import Foundation
-import class UIKit.UIFont
-import Eveleth
-import Triump
+import UIKit
+
+
+private let _labelFont = UIFont(name: "EvelethLight", size: 14)
+                      ?? UIFont.systemFont(ofSize: 14, weight: UIFontWeightLight)
+private let _largeDisplayFont = UIFont(name: "EvelethLight", size: 36)
+                             ?? UIFont.systemFont(ofSize: 36, weight: UIFontWeightLight)
+private let _controlFont = UIFont(name: "EvelethThin", size: 14)
+                        ?? UIFont.systemFont(ofSize: 14, weight: UIFontWeightThin)
+private let _largeControlFont = UIFont(name: "EvelethThin", size: 20)
+                             ?? UIFont.systemFont(ofSize: 20, weight: UIFontWeightThin)
+private let _compressedControlFont = UIFont(name: "EvelethThin", size: 12)
+                                  ?? UIFont.systemFont(ofSize: 12, weight: UIFontWeightThin)
+private let _compressedControlFontEditing = UIFont(name: "Triump-Rg-Rock-02", size: 17)
+                                         ?? UIFont.systemFont(ofSize: 17, weight: UIFontWeightMedium)
+private let _controlSelectedFont = UIFont(name: "EvelethRegular", size: 14)
+                                ?? UIFont.systemFont(ofSize: 14, weight: UIFontWeightRegular)
+private let _largeControlSelectedFont = UIFont(name: "EvelethRegular", size: 22)
+                                     ?? UIFont.systemFont(ofSize: 22, weight: UIFontWeightRegular)
+
 
 extension UIFont {
-  static var labelFont: UIFont                    { return Eveleth.lightFontWithSize(14)   }
-  static var largeDisplayFont: UIFont             { return Eveleth.lightFontWithSize(36)   }
-  static var controlFont: UIFont                  { return Eveleth.thinFontWithSize(14)    }
-  static var largeControlFont: UIFont                  { return Eveleth.thinFontWithSize(20)    }
-  static var compressedControlFont: UIFont        { return Eveleth.thinFontWithSize(12)    }
-  static var compressedControlFontEditing: UIFont { return Triump.rock2FontWithSize(17)    }
-  static var controlSelectedFont: UIFont          { return Eveleth.regularFontWithSize(14) }
-  static var largeControlSelectedFont: UIFont          { return Eveleth.regularFontWithSize(22) }
+  static var labelFont:                    UIFont { return _labelFont                    }
+  static var largeDisplayFont:             UIFont { return _largeDisplayFont             }
+  static var controlFont:                  UIFont { return _controlFont                  }
+  static var largeControlFont:             UIFont { return _largeControlFont             }
+  static var compressedControlFont:        UIFont { return _compressedControlFont        }
+  static var compressedControlFontEditing: UIFont { return _compressedControlFontEditing }
+  static var controlSelectedFont:          UIFont { return _controlSelectedFont          }
+  static var largeControlSelectedFont:     UIFont { return _largeControlSelectedFont     }
 }
 
 

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="16B2555" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="ipad9_7" orientation="landscape">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -22,120 +22,70 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="3IN-JT-JFi">
-                                <rect key="frame" x="407" y="366" width="210" height="36"/>
+                                <rect key="frame" x="302" y="240" width="420" height="288"/>
                                 <subviews>
-                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bvY-qe-xxY" customClass="PitchSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="210" height="36"/>
-                                        <accessibility key="accessibilityConfiguration" identifier="Pitch"/>
+                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bei-hQ-dEu" customClass="SoundFontSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="420" height="36"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="Octave"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="36" id="sjF-9T-3Tq"/>
+                                            <constraint firstAttribute="height" constant="36" id="tnd-3H-1we"/>
                                         </constraints>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="selection">
-                                                <integer key="value" value="2"/>
-                                            </userDefinedRuntimeAttribute>
-                                            <userDefinedRuntimeAttribute type="boolean" keyPath="flat" value="YES"/>
-                                        </userDefinedRuntimeAttributes>
                                     </view>
-                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ds4-mW-Zhd" customClass="PitchModifierSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="210" height="36"/>
-                                        <accessibility key="accessibilityConfiguration" identifier="Pitch Modifier"/>
+                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="04H-Co-QTU" customClass="ProgramSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="36" width="420" height="36"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="Octave"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="36" id="nql-yg-QeP"/>
+                                            <constraint firstAttribute="height" constant="36" id="e8I-QE-lU5"/>
                                         </constraints>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="selection">
-                                                <integer key="value" value="1"/>
-                                            </userDefinedRuntimeAttribute>
-                                        </userDefinedRuntimeAttributes>
-                                    </view>
-                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wrh-X7-wiG" customClass="ChordSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="36" width="210" height="36"/>
-                                        <accessibility key="accessibilityConfiguration" identifier="Chord"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="36" id="3ak-UF-qMA"/>
-                                        </constraints>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="selection">
-                                                <integer key="value" value="0"/>
-                                            </userDefinedRuntimeAttribute>
-                                        </userDefinedRuntimeAttributes>
                                     </view>
                                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rlN-XY-gHf" customClass="OctaveSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="72" width="210" height="36"/>
+                                        <rect key="frame" x="0.0" y="72" width="420" height="36"/>
                                         <accessibility key="accessibilityConfiguration" identifier="Octave"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="36" id="T0Z-cz-tyL"/>
                                         </constraints>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="selection">
-                                                <integer key="value" value="5"/>
-                                            </userDefinedRuntimeAttribute>
-                                        </userDefinedRuntimeAttributes>
                                     </view>
-                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Nyi-pN-mvQ" customClass="DurationSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="210" height="36"/>
-                                        <accessibility key="accessibilityConfiguration" identifier="Duration"/>
+                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bTo-jw-I8O" customClass="PitchSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="108" width="420" height="36"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="Octave"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="36" id="SiF-oA-27z"/>
+                                            <constraint firstAttribute="height" constant="36" id="tMQ-Zn-JOo"/>
                                         </constraints>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="selection">
-                                                <integer key="value" value="6"/>
-                                            </userDefinedRuntimeAttribute>
-                                        </userDefinedRuntimeAttributes>
                                     </view>
-                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qdb-ac-urp" customClass="VelocitySelector" customModule="GrooveSelectorTests" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="144" width="210" height="36"/>
-                                        <accessibility key="accessibilityConfiguration" identifier="Velocity"/>
+                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RPb-XL-Mr3" customClass="PitchModifierSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="144" width="420" height="36"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="Octave"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="36" id="Mfr-Wj-zfz"/>
+                                            <constraint firstAttribute="height" constant="36" id="gZ2-DZ-aUE"/>
                                         </constraints>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="selection">
-                                                <integer key="value" value="3"/>
-                                            </userDefinedRuntimeAttribute>
-                                        </userDefinedRuntimeAttributes>
                                     </view>
-                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="r6e-XT-MJl" customClass="SoundFontSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="180" width="210" height="36"/>
-                                        <accessibility key="accessibilityConfiguration" identifier="Sound Font"/>
+                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="P9U-dZ-md0" customClass="ChordSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="180" width="420" height="36"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="Octave"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="36" id="Ug5-8j-CD7"/>
+                                            <constraint firstAttribute="height" constant="36" id="AMi-X7-ms2"/>
                                         </constraints>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="selection">
-                                                <integer key="value" value="0"/>
-                                            </userDefinedRuntimeAttribute>
-                                        </userDefinedRuntimeAttributes>
                                     </view>
-                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ihJ-zv-fSd" customClass="ProgramSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="216" width="210" height="36"/>
-                                        <accessibility key="accessibilityConfiguration" identifier="Program"/>
+                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wMi-VB-0He" customClass="DurationSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="216" width="420" height="36"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="Octave"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="36" id="GLI-pu-gsO"/>
+                                            <constraint firstAttribute="height" constant="36" id="c9I-uE-Mx8"/>
                                         </constraints>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="selection">
-                                                <integer key="value" value="6"/>
-                                            </userDefinedRuntimeAttribute>
-                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fJe-79-OEY" customClass="VelocitySelector" customModule="GrooveSelectorTests" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="252" width="420" height="36"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="Octave"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="36" id="71Q-0r-oQX"/>
+                                        </constraints>
                                     </view>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="210" id="Nvt-Pk-lYa"/>
+                                    <constraint firstAttribute="width" constant="420" id="Nvt-Pk-lYa"/>
                                     <constraint firstAttribute="height" constant="36" id="rMT-2a-6fo"/>
                                 </constraints>
                                 <variation key="default">
-                                    <mask key="subviews">
-                                        <exclude reference="bvY-qe-xxY"/>
-                                        <exclude reference="ds4-mW-Zhd"/>
-                                        <exclude reference="Wrh-X7-wiG"/>
-                                        <exclude reference="rlN-XY-gHf"/>
-                                        <exclude reference="qdb-ac-urp"/>
-                                        <exclude reference="r6e-XT-MJl"/>
-                                        <exclude reference="ihJ-zv-fSd"/>
-                                    </mask>
                                     <mask key="constraints">
                                         <exclude reference="rMT-2a-6fo"/>
                                     </mask>

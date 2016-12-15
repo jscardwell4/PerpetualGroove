@@ -9,8 +9,6 @@
 import UIKit
 import SpriteKit
 import MoonKit
-import Triump
-import Eveleth
 
 // TODO: Export button beside file name
 

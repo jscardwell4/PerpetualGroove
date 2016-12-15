@@ -241,9 +241,11 @@ final class PitchSelector: InlinePickerContainer {
 
   override class var contentForInterfaceBuilder: [Any] { return labels }
 
-  override func refresh(picker: InlinePickerView) {
+  override func refreshItems() {
     items = PitchSelector.labels
   }
+
+  override class var initialSelection: Int { return 2 }
 
   override class var font: UIFont { return .largeControlFont }
   override class var selectedFont: UIFont { return .largeControlSelectedFont }
@@ -264,9 +266,11 @@ final class PitchModifierSelector: InlinePickerContainer {
     #endif
   }()
 
+  override class var initialSelection: Int { return 1 }
+
   override class var contentForInterfaceBuilder: [Any] { return images }
 
-  override func refresh(picker: InlinePickerView) {
+  override func refreshItems() {
     items = PitchModifierSelector.images
   }
 
@@ -284,7 +288,7 @@ final class ChordSelector: InlinePickerContainer {
     return ChordSelector.labels
   }
 
-  override func refresh(picker: InlinePickerView) {
+  override func refreshItems() {
     items = ChordSelector.labels
   }
 
@@ -297,16 +301,23 @@ final class OctaveSelector: InlinePickerContainer {
 
   private static let labels = Octave.allCases.map({"\($0.rawValue)"})
 
+  override class var initialSelection: Int { return 5 }
+
   override class var contentForInterfaceBuilder: [Any] {
     return labels
   }
 
-  override func refresh(picker: InlinePickerView) {
+  override func refreshItems() {
     items = OctaveSelector.labels
   }
   
-  override class var font: UIFont { return .largeControlFont }
-  override class var selectedFont: UIFont { return .largeControlSelectedFont }
+  override class var font: UIFont {
+    return .largeControlFont
+  }
+
+  override class var selectedFont: UIFont {
+    return .largeControlSelectedFont
+  }
 
 }
 
@@ -337,15 +348,16 @@ final class DurationSelector: InlinePickerContainer {
   }()
 
   override class var contentForInterfaceBuilder: [Any] { return images }
+  override class var initialSelection: Int { return 6 }
 
-  override func refresh(picker: InlinePickerView) {
+  override func refreshItems() {
     items = DurationSelector.images
   }
 
 }
 
 final class VelocitySelector: InlinePickerContainer {
-//𝑝𝑝𝑝, 𝑝𝑝, 𝑝, 𝑚𝑝, 𝑚𝑓, 𝑓, 𝑓𝑓, 𝑓𝑓𝑓
+
   private static let images: [UIImage] = {
     #if TARGET_INTERFACE_BUILDER
       return  ["𝑝𝑝𝑝", "𝑝𝑝", "𝑝", "𝑚𝑝", "𝑚𝑓", "𝑓", "𝑓𝑓", "𝑓𝑓𝑓"].flatMap {
@@ -359,8 +371,9 @@ final class VelocitySelector: InlinePickerContainer {
   }()
 
   override class var contentForInterfaceBuilder: [Any] { return images }
+  override class var initialSelection: Int { return 4 }
 
-  override func refresh(picker: InlinePickerView) {
+  override func refreshItems() {
     items = VelocitySelector.images
   }
 

@@ -133,129 +133,129 @@ public final class Eveleth: NSObject {
 
   public class func cleanRegularFontWithSize(_ size: CGFloat) -> UIFont {
     if !fontsRegistered { registerFonts() }
-    assert(fontsRegistered)
+    //assert(fontsRegistered)
     let font = UIFont(name: "EvelethCleanRegular", size: size)
-    assert(font != nil)
+    //assert(font != nil)
     return font!
   }
 
   public class func cleanShadowFontWithSize(_ size: CGFloat) -> UIFont {
     if !fontsRegistered { registerFonts() }
-    assert(fontsRegistered)
+    //assert(fontsRegistered)
     let font = UIFont(name: "EvelethCleanShadow", size: size)
-    assert(font != nil)
+    //assert(font != nil)
     return font!
   }
 
   public class func cleanThinFontWithSize(_ size: CGFloat) -> UIFont {
     if !fontsRegistered { registerFonts() }
-    assert(fontsRegistered)
+    //assert(fontsRegistered)
     let font = UIFont(name: "EvelethCleanThin", size: size)
-    assert(font != nil)
+    //assert(font != nil)
     return font!
   }
 
   public class func dotLightFontWithSize(_ size: CGFloat) -> UIFont {
     if !fontsRegistered { registerFonts() }
-    assert(fontsRegistered)
+    //assert(fontsRegistered)
     let font = UIFont(name: "EvelethDotLight", size: size)
-    assert(font != nil)
+    //assert(font != nil)
     return font!
   }
 
   public class func dotRegularBoldFontWithSize(_ size: CGFloat) -> UIFont {
     if !fontsRegistered { registerFonts() }
-    assert(fontsRegistered)
+    //assert(fontsRegistered)
     let font = UIFont(name: "EvelethDotRegular-Bold", size: size)
-    assert(font != nil)
+    //assert(font != nil)
     return font!
   }
 
   public class func dotRegularFontWithSize(_ size: CGFloat) -> UIFont {
     if !fontsRegistered { registerFonts() }
-    assert(fontsRegistered)
+    //assert(fontsRegistered)
     let font = UIFont(name: "EvelethDotRegular", size: size)
-    assert(font != nil)
+    //assert(font != nil)
     return font!
   }
 
   public class func iconsFontWithSize(_ size: CGFloat) -> UIFont {
     if !fontsRegistered { registerFonts() }
-    assert(fontsRegistered)
+    //assert(fontsRegistered)
     let font = UIFont(name: "EvelethIcons", size: size)
-    assert(font != nil)
+    //assert(font != nil)
     return font!
   }
 
   public class func lightFontWithSize(_ size: CGFloat) -> UIFont {
     if !fontsRegistered { registerFonts() }
-    assert(fontsRegistered)
+    //assert(fontsRegistered)
     let font = UIFont(name: "EvelethLight", size: size)
-    assert(font != nil)
+    //assert(font != nil)
     return font!
   }
 
   public class func regularBoldFontWithSize(_ size: CGFloat) -> UIFont {
     if !fontsRegistered { registerFonts() }
-    assert(fontsRegistered)
+    //assert(fontsRegistered)
     let font = UIFont(name: "EvelethRegular-Bold", size: size)
-    assert(font != nil)
+    //assert(font != nil)
     return font!
   }
 
   public class func regularFontWithSize(_ size: CGFloat) -> UIFont {
     if !fontsRegistered { registerFonts() }
-    assert(fontsRegistered)
+    //assert(fontsRegistered)
     let font = UIFont(name: "EvelethRegular", size: size)
-    assert(font != nil)
+    //assert(font != nil)
     return font!
   }
 
   public class func shadowFontWithSize(_ size: CGFloat) -> UIFont {
     if !fontsRegistered { registerFonts() }
-    assert(fontsRegistered)
+    //assert(fontsRegistered)
     let font = UIFont(name: "EvelethShadow", size: size)
-    assert(font != nil)
+    //assert(font != nil)
     return font!
   }
 
   public class func shapesFontWithSize(_ size: CGFloat) -> UIFont {
     if !fontsRegistered { registerFonts() }
-    assert(fontsRegistered)
+    //assert(fontsRegistered)
     let font = UIFont(name: "EvelethShapes", size: size)
-    assert(font != nil)
+    //assert(font != nil)
     return font!
   }
 
   public class func slantLightFontWithSize(_ size: CGFloat) -> UIFont {
     if !fontsRegistered { registerFonts() }
-    assert(fontsRegistered)
+    //assert(fontsRegistered)
     let font = UIFont(name: "EvelethSlantLight", size: size)
-    assert(font != nil)
+    //assert(font != nil)
     return font!
   }
 
   public class func slantRegularBoldFontWithSize(_ size: CGFloat) -> UIFont {
     if !fontsRegistered { registerFonts() }
-    assert(fontsRegistered)
+    //assert(fontsRegistered)
     let font = UIFont(name: "EvelethSlantRegular-Bold", size: size)
-    assert(font != nil)
+    //assert(font != nil)
     return font!
   }
 
   public class func slantRegularFontWithSize(_ size: CGFloat) -> UIFont {
     if !fontsRegistered { registerFonts() }
-    assert(fontsRegistered)
+    //assert(fontsRegistered)
     let font = UIFont(name: "EvelethSlantRegular", size: size)
-    assert(font != nil)
+    //assert(font != nil)
     return font!
   }
 
   public class func thinFontWithSize(_ size: CGFloat) -> UIFont {
     if !fontsRegistered { registerFonts() }
-    assert(fontsRegistered)
+    //assert(fontsRegistered)
     let font = UIFont(name: "EvelethThin", size: size)
-    assert(font != nil)
+    //assert(font != nil)
     return font!
   }
 

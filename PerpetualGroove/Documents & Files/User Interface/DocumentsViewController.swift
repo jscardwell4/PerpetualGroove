@@ -9,7 +9,6 @@
 import Foundation
 import UIKit
 import MoonKit
-import Eveleth
 
 // FIXME: Deleting the current document halts application
 final class DocumentsViewController: UICollectionViewController {
