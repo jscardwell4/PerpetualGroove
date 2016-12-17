@@ -36,6 +36,8 @@
 		C23B058D1C014EBD0081AC6E /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23B058C1C014EBD0081AC6E /* Note.swift */; };
 		C23B05951C0219560081AC6E /* NoteChordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23B05941C0219560081AC6E /* NoteChordTests.swift */; };
 		C23B059D1C026F4C0081AC6E /* ChordGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23B059C1C026F4C0081AC6E /* ChordGenerator.swift */; };
+		C24CF49B1E05038B00E5CDCC /* Chameleon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C24CF49A1E05038B00E5CDCC /* Chameleon.framework */; };
+		C24CF49C1E05038B00E5CDCC /* Chameleon.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C24CF49A1E05038B00E5CDCC /* Chameleon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C24DCE381C3438A800AD98BE /* GrooveFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24DCE371C3438A800AD98BE /* GrooveFile.swift */; };
 		C24E83961C3EDFD800B4A16A /* SecondaryControllerContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24E83951C3EDFD800B4A16A /* SecondaryControllerContainer.swift */; };
 		C24E83981C3EE0A300B4A16A /* MixerContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24E83971C3EE0A300B4A16A /* MixerContainer.swift */; };
@@ -366,6 +368,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				C2FAAC5F1D99AA630089D1B0 /* MoonKit.framework in Embed Frameworks */,
+				C24CF49C1E05038B00E5CDCC /* Chameleon.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -416,6 +419,7 @@
 		C23B05941C0219560081AC6E /* NoteChordTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteChordTests.swift; sourceTree = "<group>"; };
 		C23B05961C0219560081AC6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C23B059C1C026F4C0081AC6E /* ChordGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChordGenerator.swift; sourceTree = "<group>"; };
+		C24CF49A1E05038B00E5CDCC /* Chameleon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Chameleon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C24DCE371C3438A800AD98BE /* GrooveFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GrooveFile.swift; sourceTree = "<group>"; };
 		C24E83951C3EDFD800B4A16A /* SecondaryControllerContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecondaryControllerContainer.swift; sourceTree = "<group>"; };
 		C24E83971C3EE0A300B4A16A /* MixerContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MixerContainer.swift; sourceTree = "<group>"; };
@@ -616,6 +620,7 @@
 			files = (
 				C217EE391DB435E40076B6E7 /* AudioToolbox.framework in Frameworks */,
 				C2FAAC5E1D99AA630089D1B0 /* MoonKit.framework in Frameworks */,
+				C24CF49B1E05038B00E5CDCC /* Chameleon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1059,6 +1064,7 @@
 		C2E043281B72F4DC005F0675 = {
 			isa = PBXGroup;
 			children = (
+				C24CF49A1E05038B00E5CDCC /* Chameleon.framework */,
 				C2DE50451D89A52000244DB1 /* Tests */,
 				C2E043331B72F4DC005F0675 /* PerpetualGroove */,
 				C2724B741DE3427E001D5C3D /* GrooveSelectorTests */,
@@ -1993,6 +1999,7 @@
 				PROVISIONING_PROFILE = "c13d6395-3b43-4ff4-978c-eb2a3961c4e5";
 				PROVISIONING_PROFILE_SPECIFIER = "Groove Development";
 				SKIP_INSTALL = YES;
+				STRIP_INSTALLED_PRODUCT = NO;
 				STRIP_STYLE = debugging;
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 2;
@@ -2189,6 +2196,7 @@
 				PROVISIONING_PROFILE = "c13d6395-3b43-4ff4-978c-eb2a3961c4e5";
 				PROVISIONING_PROFILE_SPECIFIER = "Groove Development";
 				SKIP_INSTALL = YES;
+				STRIP_INSTALLED_PRODUCT = NO;
 				STRIP_STYLE = debugging;
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 2;
@@ -2436,6 +2444,7 @@
 				PROVISIONING_PROFILE = "c13d6395-3b43-4ff4-978c-eb2a3961c4e5";
 				PROVISIONING_PROFILE_SPECIFIER = "Groove Development";
 				SKIP_INSTALL = YES;
+				STRIP_INSTALLED_PRODUCT = NO;
 				STRIP_STYLE = debugging;
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 2;
@@ -2464,6 +2473,7 @@
 				PROVISIONING_PROFILE = "c13d6395-3b43-4ff4-978c-eb2a3961c4e5";
 				PROVISIONING_PROFILE_SPECIFIER = "Groove Development";
 				SKIP_INSTALL = YES;
+				STRIP_INSTALLED_PRODUCT = NO;
 				STRIP_STYLE = debugging;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 3.0;
