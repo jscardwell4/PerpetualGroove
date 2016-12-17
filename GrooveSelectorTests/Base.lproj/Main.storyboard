@@ -22,59 +22,50 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="3IN-JT-JFi">
-                                <rect key="frame" x="302" y="240" width="420" height="288"/>
+                                <rect key="frame" x="407" y="312" width="210" height="144"/>
                                 <subviews>
-                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bei-hQ-dEu" customClass="SoundFontSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="420" height="36"/>
-                                        <accessibility key="accessibilityConfiguration" identifier="Octave"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="36" id="tnd-3H-1we"/>
-                                        </constraints>
-                                    </view>
-                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="04H-Co-QTU" customClass="ProgramSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="36" width="420" height="36"/>
-                                        <accessibility key="accessibilityConfiguration" identifier="Octave"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="36" id="e8I-QE-lU5"/>
-                                        </constraints>
-                                    </view>
-                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rlN-XY-gHf" customClass="OctaveSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="72" width="420" height="36"/>
-                                        <accessibility key="accessibilityConfiguration" identifier="Octave"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="36" id="T0Z-cz-tyL"/>
-                                        </constraints>
-                                    </view>
-                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bTo-jw-I8O" customClass="PitchSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="108" width="420" height="36"/>
-                                        <accessibility key="accessibilityConfiguration" identifier="Octave"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="36" id="tMQ-Zn-JOo"/>
-                                        </constraints>
-                                    </view>
-                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RPb-XL-Mr3" customClass="PitchModifierSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="144" width="420" height="36"/>
-                                        <accessibility key="accessibilityConfiguration" identifier="Octave"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="36" id="gZ2-DZ-aUE"/>
-                                        </constraints>
-                                    </view>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="8" baselineRelativeArrangement="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ehe-ep-iHA">
+                                        <rect key="frame" x="0.0" y="0.0" width="210" height="36"/>
+                                        <subviews>
+                                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bTo-jw-I8O" customClass="PitchSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="0.0" width="64.5" height="36"/>
+                                                <accessibility key="accessibilityConfiguration" identifier="Octave"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="36" id="tMQ-Zn-JOo"/>
+                                                </constraints>
+                                            </view>
+                                            <view opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="RPb-XL-Mr3" customClass="PitchModifierSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
+                                                <rect key="frame" x="72.5" y="0.0" width="65" height="36"/>
+                                                <accessibility key="accessibilityConfiguration" identifier="Octave"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="36" id="gZ2-DZ-aUE"/>
+                                                </constraints>
+                                            </view>
+                                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rlN-XY-gHf" customClass="OctaveSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
+                                                <rect key="frame" x="145.5" y="0.0" width="64.5" height="36"/>
+                                                <accessibility key="accessibilityConfiguration" identifier="Octave"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="36" id="T0Z-cz-tyL"/>
+                                                </constraints>
+                                            </view>
+                                        </subviews>
+                                    </stackView>
                                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="P9U-dZ-md0" customClass="ChordSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="180" width="420" height="36"/>
+                                        <rect key="frame" x="0.0" y="36" width="210" height="36"/>
                                         <accessibility key="accessibilityConfiguration" identifier="Octave"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="36" id="AMi-X7-ms2"/>
                                         </constraints>
                                     </view>
                                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wMi-VB-0He" customClass="DurationSelector" customModule="GrooveSelectorTests" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="216" width="420" height="36"/>
+                                        <rect key="frame" x="0.0" y="72" width="210" height="36"/>
                                         <accessibility key="accessibilityConfiguration" identifier="Octave"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="36" id="c9I-uE-Mx8"/>
                                         </constraints>
                                     </view>
                                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fJe-79-OEY" customClass="VelocitySelector" customModule="GrooveSelectorTests" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="252" width="420" height="36"/>
+                                        <rect key="frame" x="0.0" y="108" width="210" height="36"/>
                                         <accessibility key="accessibilityConfiguration" identifier="Octave"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="36" id="71Q-0r-oQX"/>
@@ -82,7 +73,7 @@
                                     </view>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="420" id="Nvt-Pk-lYa"/>
+                                    <constraint firstAttribute="width" constant="210" id="Nvt-Pk-lYa"/>
                                     <constraint firstAttribute="height" constant="36" id="rMT-2a-6fo"/>
                                 </constraints>
                                 <variation key="default">

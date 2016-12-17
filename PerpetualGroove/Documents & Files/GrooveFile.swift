@@ -26,8 +26,6 @@ struct GrooveFile {
 
     tracks = sequence.instrumentTracks.map(Track.init)
 
-    
-
     for event in sequence.tempoTrack.tempoEvents {
       switch event.data {
         case .tempo(let bpm): tempoChanges[event.time.rawValue] = bpm.jsonValue

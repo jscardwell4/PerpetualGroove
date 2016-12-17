@@ -12,14 +12,14 @@ import MoonKit
 
 final class SettingsManager {
 
-  fileprivate static let _iCloudStorage         = Setting<Bool>(name: "iCloudStorage",         defaultValue: true)
-  fileprivate static let _confirmDeleteDocument = Setting<Bool>(name: "confirmDeleteDocument", defaultValue: true)
-  fileprivate static let _confirmDeleteTrack    = Setting<Bool>(name: "confirmDeleteTrack",    defaultValue: true)
-  fileprivate static let _scrollTrackLabels     = Setting<Bool>(name: "scrollTrackLabels",     defaultValue: true)
-  fileprivate static let _makeNewTrackCurrent   = Setting<Bool>(name: "makeNewTrackCurrent",   defaultValue: true)
+  fileprivate static let _iCloudStorage         = Setting<Bool>("iCloudStorage",         true)
+  fileprivate static let _confirmDeleteDocument = Setting<Bool>("confirmDeleteDocument", true)
+  fileprivate static let _confirmDeleteTrack    = Setting<Bool>("confirmDeleteTrack",    true)
+  fileprivate static let _scrollTrackLabels     = Setting<Bool>("scrollTrackLabels",     true)
+  fileprivate static let _makeNewTrackCurrent   = Setting<Bool>("makeNewTrackCurrent",   true)
 
-  fileprivate static let _currentDocumentLocal  = Setting<Data>(name: "currentDocumentLocal",  defaultValue: nil)
-  fileprivate static let _currentDocumentiCloud = Setting<Data>(name: "currentDocumentiCloud", defaultValue: nil)
+  fileprivate static let _currentDocumentLocal  = Setting<Data>("currentDocumentLocal",  nil)
+  fileprivate static let _currentDocumentiCloud = Setting<Data>("currentDocumentiCloud", nil)
 
 
 
@@ -28,11 +28,22 @@ final class SettingsManager {
   fileprivate(set) static var initialized = false {
     didSet {
       guard initialized else { return }
+      Log.debug("Settings initialized with values:\n\t" + [
+        "iCloudStorage: \(iCloudStorage)",
+        "confirmDeleteDocument: \(confirmDeleteDocument)",
+        "confirmDeleteTrack: \(confirmDeleteTrack)",
+        "scrollTrackLabels: \(scrollTrackLabels)",
+        "makeNewTrackCurrent: \(makeNewTrackCurrent)",
+        "currentDocumentLocal: \("\(currentDocumentLocal?.count ?? 0) bytes")",
+        "currentDocumentiCloud: \("\(currentDocumentiCloud?.count ?? 0) bytes")"
+        ].joined(separator: "\n\t"))
       postNotification(name: .didInitializeSettings, object: self, userInfo: nil)
     }
   }
 
+  /// Updates cached setting values that are out of sync and posts change notification.
   static fileprivate func updateCache() {
+
     let changedSettings: [SettingProtocol] = ([
     _iCloudStorage,
     _confirmDeleteDocument,
@@ -240,6 +251,8 @@ fileprivate struct Setting<Value>: SettingProtocol {
 
   let name: String
   let defaultValue: Value?
+
+  init(_ name: String, _ defaultValue: Value?) { self.name = name; self.defaultValue = defaultValue }
 
   var cachedValue: Value? {
     get { return SettingsManager.settingsCache[name] as? Value }

@@ -26,18 +26,14 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
   func                application(_ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool
   {
-    DispatchQueue.main.asyncAfter(deadline: DispatchTime(uptimeNanoseconds: NSEC_PER_SEC)) {
-      backgroundDispatch {
-        do {
-          SettingsManager.initialize()
-          try AudioManager.initialize()
-          try Sequencer.initialize()
-          MIDINodePlayer.initialize()
-          DocumentManager.initialize()
-        } catch {
-          Log.error(error)
-        }
-      }
+    do {
+      SettingsManager.initialize()
+      try AudioManager.initialize()
+      try Sequencer.initialize()
+      MIDINodePlayer.initialize()
+      DocumentManager.initialize()
+    } catch {
+      Log.error(error)
     }
 
     viewController = window?.rootViewController as? RootViewController

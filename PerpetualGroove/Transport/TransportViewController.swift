@@ -16,19 +16,19 @@ final class TransportViewController: UIViewController {
       guard transport !== oldValue else { return }
 
       if let oldTransport = oldValue {
-        receptionist.stopObserving(name: Transport.NotificationName.didPause.rawValue,       from: oldTransport)
-        receptionist.stopObserving(name: Transport.NotificationName.didStart.rawValue,       from: oldTransport)
-        receptionist.stopObserving(name: Transport.NotificationName.didStop.rawValue,        from: oldTransport)
-        receptionist.stopObserving(name: Transport.NotificationName.didChangeState.rawValue, from: oldTransport)
+        receptionist.stopObserving(name: .didPause,       from: oldTransport)
+        receptionist.stopObserving(name: .didStart,       from: oldTransport)
+        receptionist.stopObserving(name: .didStop,        from: oldTransport)
+        receptionist.stopObserving(name: .didChangeState, from: oldTransport)
       }
 
       guard let transport = transport else { return }
 
       state = transport.state
 
-      receptionist.observe(name: Transport.NotificationName.didChangeState.rawValue,
-                      from: transport,
-                  callback: weakMethod(self, TransportViewController.didChangeState))
+      receptionist.observe(name: .didChangeState,
+                           from: transport,
+                           callback: weakMethod(self, TransportViewController.didChangeState))
     }
   }
 
@@ -62,6 +62,7 @@ final class TransportViewController: UIViewController {
 
   private enum ControlImage {
     case pause, play
+
     func decorateButton(_ item: ImageButtonView) {
       item.image = image
       item.highlightedImage = selectedImage
@@ -82,10 +83,10 @@ final class TransportViewController: UIViewController {
 
   // MARK: - Managing state
 
-  var paused:         Bool { return state ∋ .Paused         }
-  var playing:        Bool { return state ∋ .Playing        }
-  var recording:      Bool { return state ∋ .Recording      }
-  var jogging:        Bool { return state ∋ .Jogging        }
+  var paused:    Bool { return state ∋ .Paused    }
+  var playing:   Bool { return state ∋ .Playing   }
+  var recording: Bool { return state ∋ .Recording }
+  var jogging:   Bool { return state ∋ .Jogging   }
 
   private var state: Transport.State = [] {
     didSet {
@@ -112,14 +113,15 @@ final class TransportViewController: UIViewController {
     }
   }
 
-  private let receptionist: NotificationReceptionist = {
-    let receptionist = NotificationReceptionist(callbackQueue: OperationQueue.main)
-    receptionist.logContext = LogManager.UIContext
-    return receptionist
-  }()
+  private let receptionist = NotificationReceptionist(callbackQueue: OperationQueue.main)
 
   private func didChangeState(_ notification: Notification) {
-    guard let oldState = notification.previousTransportState, let newState = notification.transportState else { return }
+    guard let oldState = notification.previousTransportState,
+          let newState = notification.transportState
+      else
+    {
+      return
+    }
     Log.debug("\(oldState) ➞ \(newState)")
     state = newState
   }

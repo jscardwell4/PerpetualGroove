@@ -78,7 +78,7 @@ enum DocumentItem {
     }
   }
 
-  var data: AnyObject {
+  var data: Any {
     switch self {
       case .metaData(let item):     return item
       case .local(let item):        return item
@@ -86,11 +86,11 @@ enum DocumentItem {
     }
   }
 
-  init?(_ data: AnyObject) {
+  init?(_ data: Any) {
     switch data {
       case let item as NSMetadataItem:      self = .metaData(item)
       case let item as LocalDocumentItem:   self = .local(item)
-      case let document as Document: self = .document(document)
+      case let document as Document:        self = .document(document)
       default:                              return nil
     }
   }

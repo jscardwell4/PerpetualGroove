@@ -1335,8 +1335,8 @@
 					};
 					C2E043301B72F4DC005F0675 = {
 						CreatedOnToolsVersion = 7.0;
-						DevelopmentTeam = JT6STF4SHA;
 						LastSwiftMigration = 0800;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -1980,6 +1980,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = JT6STF4SHA;
 				ENABLE_BITCODE = YES;
 				GENERATE_PROFILING_CODE = YES;
 				INFOPLIST_FILE = "PerpetualGroove/Supporting Files/Info.plist";
@@ -1989,7 +1990,8 @@
 				OTHER_SWIFT_FLAGS = "-DDebug -DLogLevelVerbose";
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.PerpetualGroove;
 				PRODUCT_NAME = Groove;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "c13d6395-3b43-4ff4-978c-eb2a3961c4e5";
+				PROVISIONING_PROFILE_SPECIFIER = "Groove Development";
 				SKIP_INSTALL = YES;
 				STRIP_STYLE = debugging;
 				SWIFT_VERSION = 3.0;
@@ -2174,6 +2176,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = JT6STF4SHA;
 				ENABLE_BITCODE = YES;
 				GENERATE_PROFILING_CODE = YES;
 				INFOPLIST_FILE = "PerpetualGroove/Supporting Files/Info.plist";
@@ -2183,7 +2186,8 @@
 				OTHER_SWIFT_FLAGS = "-DDebug -DLogLevelOff";
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.PerpetualGroove;
 				PRODUCT_NAME = Groove;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "c13d6395-3b43-4ff4-978c-eb2a3961c4e5";
+				PROVISIONING_PROFILE_SPECIFIER = "Groove Development";
 				SKIP_INSTALL = YES;
 				STRIP_STYLE = debugging;
 				SWIFT_VERSION = 3.0;
@@ -2419,6 +2423,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = JT6STF4SHA;
 				ENABLE_BITCODE = YES;
 				GENERATE_PROFILING_CODE = YES;
 				INFOPLIST_FILE = "PerpetualGroove/Supporting Files/Info.plist";
@@ -2428,7 +2433,8 @@
 				OTHER_SWIFT_FLAGS = "-DDebug -DLogLevelDebug";
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.PerpetualGroove;
 				PRODUCT_NAME = Groove;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "c13d6395-3b43-4ff4-978c-eb2a3961c4e5";
+				PROVISIONING_PROFILE_SPECIFIER = "Groove Development";
 				SKIP_INSTALL = YES;
 				STRIP_STYLE = debugging;
 				SWIFT_VERSION = 3.0;
@@ -2445,6 +2451,7 @@
 				CODE_SIGN_ENTITLEMENTS = "PerpetualGroove/Supporting Files/Groove.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = JT6STF4SHA;
 				ENABLE_BITCODE = YES;
 				GENERATE_PROFILING_CODE = YES;
 				INFOPLIST_FILE = "PerpetualGroove/Supporting Files/Info.plist";
@@ -2454,7 +2461,8 @@
 				OTHER_SWIFT_FLAGS = "-DRelease -DLogLevelWarning";
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.PerpetualGroove;
 				PRODUCT_NAME = Groove;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "c13d6395-3b43-4ff4-978c-eb2a3961c4e5";
+				PROVISIONING_PROFILE_SPECIFIER = "Groove Development";
 				SKIP_INSTALL = YES;
 				STRIP_STYLE = debugging;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";

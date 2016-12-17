@@ -112,7 +112,7 @@
                                                 </connections>
                                             </view>
                                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="neB-2q-lJV">
-                                                <rect key="frame" x="255" y="0.0" width="358" height="150"/>
+                                                <rect key="frame" x="247.5" y="0.0" width="358" height="150"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="150" id="248-Pj-xhM"/>
                                                     <constraint firstAttribute="width" constant="358" id="Cjv-EF-OUo"/>
@@ -137,10 +137,10 @@
                                                 </connections>
                                             </containerView>
                                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="O9D-bO-M36">
-                                                <rect key="frame" x="704" y="14" width="280" height="122"/>
+                                                <rect key="frame" x="674" y="14" width="310" height="122"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="122" id="V6T-LN-9w6"/>
-                                                    <constraint firstAttribute="width" constant="280" id="fNb-PE-qOd"/>
+                                                    <constraint firstAttribute="width" constant="310" id="fNb-PE-qOd"/>
                                                 </constraints>
                                                 <connections>
                                                     <segue destination="6r8-nl-XpT" kind="embed" id="Rto-sZ-p0g"/>

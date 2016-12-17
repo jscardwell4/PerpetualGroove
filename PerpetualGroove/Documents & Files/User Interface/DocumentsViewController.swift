@@ -217,7 +217,7 @@ final class DocumentsViewController: UICollectionViewController {
     (collectionViewLayout as? DocumentsViewLayout)?.controller = self
     guard !DocumentManager.gatheringMetadataItems else { return }
     items = OrderedSet(DocumentManager.items)
-//    reloadData()
+    reloadData()
   }
 
   /// Adds constraints for `collectionView` when needed and updates content width and height constraints
