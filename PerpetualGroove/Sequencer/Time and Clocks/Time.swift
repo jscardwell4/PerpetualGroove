@@ -11,9 +11,12 @@ import AudioToolbox
 import CoreMIDI
 import MoonKit
 
+// TODO: Review file
+
 /// Synchronizes a `BarBeatTime` with received MIDI clock messages.
 final class Time {
 
+  static var current: Time { return Transport.current.time }
 
   private var client = MIDIClientRef()  /// Client for receiving MIDI clock messages.
   private var inPort = MIDIPortRef()    /// Port for receiving MIDI clock messages.
@@ -44,7 +47,10 @@ final class Time {
 
   /// The musical representation of the current time.
   var barBeatTime: BarBeatTime = BarBeatTime.zero {
-    didSet { if Sequencer.playing { invokeCallbacks(for: barBeatTime) } }
+    didSet {
+      guard Transport.current.isPlaying else { return }
+      invokeCallbacks(for: barBeatTime)
+    }
   }
 
 

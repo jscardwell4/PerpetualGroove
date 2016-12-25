@@ -28,48 +28,6 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "C2B1238C1B8548F6008FED5E"
-               BuildableName = "Eveleth.framework"
-               BlueprintName = "Eveleth"
-               ReferencedContainer = "container:Frameworks/Eveleth/Eveleth.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "C2B1238C1B8548F6008FED5E"
-               BuildableName = "FestivoLC.framework"
-               BlueprintName = "FestivoLC"
-               ReferencedContainer = "container:Frameworks/FestivoLC/FestivoLC.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "C2B1238C1B8548F6008FED5E"
-               BuildableName = "Triump.framework"
-               BlueprintName = "Triump"
-               ReferencedContainer = "container:Frameworks/Triump/Triump.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "C2E043301B72F4DC005F0675"
                BuildableName = "Groove.app"
                BlueprintName = "PerpetualGroove"
@@ -222,12 +180,12 @@
          <EnvironmentVariable
             key = "OS_ACTIVITY_MODE"
             value = "disable"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </EnvironmentVariable>
          <EnvironmentVariable
             key = "MOONKIT_LOG_DIR"
             value = "/Users/Moondeer/Projects/PerpetualGroove/Logs"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>
       <AdditionalOptions>

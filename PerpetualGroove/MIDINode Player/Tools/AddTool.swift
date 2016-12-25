@@ -10,6 +10,8 @@ import UIKit
 import SpriteKit
 import MoonKit
 
+// TODO: Review file
+
 final class AddTool: Tool {
 
   unowned let playerNode: MIDINodePlayerNode
@@ -45,7 +47,7 @@ final class AddTool: Tool {
           playerNode.addChild(node)
 
           return node
-        }(#imageLiteral(resourceName: "ball"), (Sequencer.sequence?.currentTrack?.color ?? TrackColor.nextColor).value)
+        }(#imageLiteral(resourceName: "ball"), (Sequence.current?.currentTrack?.color ?? TrackColor.nextColor).value)
 
       } else {
 
@@ -93,7 +95,7 @@ extension AddTool: TouchReceiver {
     guard touch != nil && touches.contains(touch!) else { return }
     updateData()
     guard velocities.count > 0 && !location.isNull else { return }
-    guard let track = Sequencer.sequence?.currentTrack else { return }
+    guard let track = Sequence.current?.currentTrack else { return }
     let trajectory = MIDINode.Trajectory(vector: velocities.reduce(CGVector(), +) / CGFloat(velocities.count), point: location )
     MIDINodePlayer.placeNew(trajectory, target: track, generator: generator)
     touch = nil

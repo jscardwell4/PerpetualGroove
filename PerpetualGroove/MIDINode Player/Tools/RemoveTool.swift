@@ -10,6 +10,8 @@ import UIKit
 import SpriteKit
 import MoonKit
 
+// TODO: Review file
+
 final class RemoveTool: Tool {
 
   unowned let player: MIDINodePlayerNode
@@ -20,7 +22,7 @@ final class RemoveTool: Tool {
 
       switch active {
         case true:
-          sequence = Sequencer.sequence
+          sequence = Sequence.current
           refreshLighting()
         case false:
           sequence = nil
@@ -151,7 +153,7 @@ final class RemoveTool: Tool {
     player = playerNode
 
     receptionist.observe(name: .didChangeSequence, from: Sequencer.self) {
-      [weak self] _ in self?.sequence = Sequencer.sequence
+      [weak self] _ in self?.sequence = Sequence.current
     }
 
     receptionist.observe(name: .didAddNode,

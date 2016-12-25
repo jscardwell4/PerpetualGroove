@@ -138,7 +138,7 @@ final class MIDINode: SKSpriteNode {
     state.formSymmetricDifference(.Jogging)
     guard state ∌ .PendingRemoval else { removeFromParent(); return }
     guard state ∌ .Paused else { return }
-    currentSegment = path.segment(for: Sequencer.time.barBeatTime) ?? path.initialSegment
+    currentSegment = path.segment(for: Time.current.barBeatTime) ?? path.initialSegment
     moveAction.run()
   }
 
@@ -174,9 +174,9 @@ final class MIDINode: SKSpriteNode {
        generator: AnyMIDIGenerator,
        identifier: UUID = UUID()) throws
   {
-    initTime = Sequencer.time.barBeatTime
+    initTime = Time.current.barBeatTime
     initialTrajectory = trajectory
-    state = Sequencer.jogging ? [.Jogging] : []
+    state = Transport.current.isJogging ? [.Jogging] : []
     self.dispatch = dispatch
     self.generator = generator
     self.identifier = identifier

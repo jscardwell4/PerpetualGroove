@@ -9,6 +9,8 @@
 import UIKit
 import MoonKit
 
+// TODO: Review file
+
 @UIApplicationMain
 final class AppDelegate: UIResponder, UIApplicationDelegate {
 

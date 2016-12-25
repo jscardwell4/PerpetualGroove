@@ -9,6 +9,8 @@
 import Foundation
 import MoonKit
 
+// TODO: Review file
+
 /// Specifies an absolute pitch class value
 enum Note {
   case natural (Natural)
@@ -45,7 +47,7 @@ enum Note {
     }
   }
 
-  func flattened() -> Note {
+  var flattened: Note {
     switch self {
       case let .natural(natural):
         switch natural {
@@ -59,7 +61,7 @@ enum Note {
     }
   }
 
-  func sharpened() -> Note {
+  var sharpened: Note {
     switch self {
       case let .natural(natural):
         switch natural {
@@ -84,7 +86,7 @@ extension Note: RawRepresentable, LosslessJSONValueConvertible {
   }
 
   init?(rawValue: String) {
-    guard let captures = (rawValue ~=> ~/"^([A-G])([♭♯])?$"),
+    guard let captures = (rawValue ~=> ~/"^([A-G])([♭♯𝄫])?$"),
           let rawNatural = captures.1,
           let natural = Natural(rawValue: rawNatural) else { return nil }
 
@@ -209,6 +211,12 @@ extension Note: Hashable {
           return false
 
       }
+
+    case let (.natural(n1), .accidental(n2, .doubleFlat)) where n1.advanced(by: 1) == n2:
+      return true
+
+    case let (.accidental(n1, .doubleFlat), .natural(n2)) where n2.advanced(by: 1) == n1:
+      return true
 
     default:
       return false

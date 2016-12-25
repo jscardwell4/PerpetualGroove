@@ -10,6 +10,8 @@ import Foundation
 import CoreMIDI
 import MoonKit
 
+// TODO: Review file
+
 extension MIDIPacketList: Swift.Sequence {
 
   public func makeIterator() -> AnyIterator<MIDIPacket> {
@@ -39,7 +41,7 @@ struct Packet {
     let packet = MIDIPacketListInit(&packetList)
     let size = MemoryLayout<UInt32>.size + MemoryLayout<MIDIPacket>.size
     let data: [Byte] = [status | channel, note, velocity] + identifier.bytes
-    let timeStamp = Sequencer.time.ticks
+    let timeStamp = Time.current.ticks
     MIDIPacketListAdd(&packetList, size, packet, timeStamp, data.count, data)
     return packetList
   }

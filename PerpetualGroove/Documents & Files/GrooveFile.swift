@@ -9,6 +9,8 @@
 import Foundation
 import MoonKit
 
+// TODO: Review file
+
 /// Struct that holds data for a 'Groove' sequence.
 struct GrooveFile {
 

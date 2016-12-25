@@ -9,235 +9,186 @@
 import Foundation
 import MoonKit
 
-fileprivate protocol _MIDIEventContainer: Collection {
+/// Protocol for sharing implementation details between MIDIEventContainer and MIDIEventContainerSlice.
+fileprivate protocol _MIDIEventContainer: Collection, CustomStringConvertible {
   associatedtype Events: RandomAccessCollection
-  associatedtype Bag: RandomAccessCollection
   var events: Events { get }
 }
 
 extension _MIDIEventContainer
-  where Events._Element == (key: BarBeatTime, value: Bag),
-        Events.Iterator.Element == (key: BarBeatTime, value: Bag),
+  where Events._Element == (key: BarBeatTime, value: MIDIEventContainer.Bag),
+        Events.Iterator.Element == (key: BarBeatTime, value: MIDIEventContainer.Bag),
         Events:KeyValueBase,
-        Events.Value == Bag,
+        Events.Value == MIDIEventContainer.Bag,
         Events.LazyValues == LazyMapRandomAccessCollection<Events, Events.Value>,
         Events.Index == OrderedDictionaryIndex,
-        Bag.Index == Int,
-        Bag.IndexDistance == Int,
-        Bag._Element == MIDIEvent,
-        Bag.Iterator.Element == MIDIEvent,
-        Index == MIDIEventContainerIndex
+        Index == Any2DIndex<OrderedDictionaryIndex, Int>
 {
 
+  // MARK: Implementations of Indexable methods.
 
-  @inline(__always) func _distance(from start: Index, to end: Index) -> Int {
+  /// Returns the distance between two indexes.
+  @inline(__always)
+  func _distance(from start: Index, to end: Index) -> Int {
+
     switch (start, end) {
-    case let (start, end) where start == end:
-      return 0
-    case (var start, let end) where start < end:
-      var result = 0
-      while start.timeOffset < end.timeOffset {
-        result += events[start.timeOffset].value.count &- start.eventOffset
-        start.timeOffset += 1
-        start.eventOffset = 0
-      }
-      result += end.eventOffset &- start.eventOffset
-      return result
-    case (let start, var end) /*where start > end*/:
-      var result = 0
-      while end.timeOffset < start.timeOffset {
-        result += events[end.timeOffset].value.count &- end.eventOffset
-        end.timeOffset += 1
-        end.eventOffset = 0
-      }
-      result += start.eventOffset &- end.eventOffset
-      return -result
-    }
-  }
 
-  @inline(__always) func _index(after i: Index) -> Index {
-    if events[i.timeOffset].value.endIndex > i.eventOffset &+ 1 {
-      return Index(timeOffset: i.timeOffset, eventOffset: i.eventOffset &+ 1)
-    } else if events.endIndex > i.timeOffset.advanced(by: 1) {
-      return Index(timeOffset: i.timeOffset.advanced(by: 1), eventOffset: 0)
-    } else {
-      return endIndex
-    }
-  }
+      case let (start, end) where start == end:
+        return 0
 
-  @inline(__always) func _index(before i: Index) -> Index {
-    if i.eventOffset > 0 {
-      return Index(timeOffset: i.timeOffset, eventOffset: i.eventOffset &- 1)
-    } else if i.timeOffset > 0 {
-      return Index(timeOffset: i.timeOffset.advanced(by: -1),
-                   eventOffset: events[i.timeOffset.advanced(by: -1)].value.endIndex &- 1)
-    } else {
-      fatalError("i is the startIndex, there is no before")
-    }
-  }
-
-  @inline(__always) func _index(_ i: Index, offsetBy n: Int) -> Index {
-    switch (i, n) {
-    case (_, 0):
-      return i
-    case var (i, n) where n < 0:
-      while n < 0 {
-        switch i.eventOffset {
-        case 0:
-          i.timeOffset -= 1
-          i.eventOffset = events[i.timeOffset].value.endIndex &- 1
-          n += 1
-        case let remainingInBag:
-          i.eventOffset += Swift.max(n, -remainingInBag)
-          n += remainingInBag
+      case (var start, let end) where start < end:
+        var result = 0
+        while start.index1 < end.index1 {
+          result += events[start.index1].value.count &- start.index2
+          start = Any2DIndex(start.index1 + 1, 0)
         }
-      }
-      return i
-    case var (i, n) /*where n > 0*/:
-      while n > 0 {
-        switch i.eventOffset {
-        case events[i.timeOffset].value.endIndex &- 1:
-          i.timeOffset += 1
-          i.eventOffset = 0
-          n -= 1
-        case let remainingInBag:
-          i.eventOffset += Swift.min(n, remainingInBag)
-          n -= remainingInBag
+        result += end.index2 &- start.index2
+        return result
+
+      case (let start, var end) /*where start > end*/:
+        var result = 0
+        while end.index1 < start.index1 {
+          result += events[end.index1].value.count &- end.index2
+          end = Any2DIndex(end.index1 + 1, 0)
         }
-      }
-      return i
+        result += start.index2 &- end.index2
+        return -result
     }
+
   }
 
-  @inline(__always) func _index(_ i: Index, offsetBy n: Int, limitedBy limit: Index) -> Index? {
-
-    func limitCheck(_ index: Index) -> Bool { return n < 0 ? index >= limit : index <= limit }
-
-    switch (i, n) {
-    case (_, 0):
-      return i
-    case var (i, n) where n < 0:
-      while n < 0 {
-        switch i.eventOffset {
-        case 0:
-          i.timeOffset -= 1
-          i.eventOffset = events[i.timeOffset].value.endIndex &- 1
-          guard limitCheck(i) else { return nil }
-          n += 1
-        case let remainingInBag:
-          i.eventOffset += Swift.max(n, -remainingInBag)
-          guard limitCheck(i) else { return nil }
-          n += remainingInBag
-        }
-      }
-      return i
-    case var (i, n) /*where n > 0*/:
-      while n > 0 {
-        switch i.eventOffset {
-        case events[i.timeOffset].value.endIndex &- 1:
-          i.timeOffset += 1
-          i.eventOffset = 0
-          guard limitCheck(i) else { return nil }
-          n -= 1
-        case let remainingInBag:
-          i.eventOffset += Swift.min(n, remainingInBag)
-          guard limitCheck(i) else { return nil }
-          n -= remainingInBag
-        }
-      }
-      return i
-    }
+  @inline(__always)
+  func _index(after i: Index) -> Index {
+    var result = i
+    _formIndex(after: &result)
+    return result
   }
 
-  @inline(__always) func _formIndex(after i: inout Index) {
-    if events[i.timeOffset].value.endIndex > i.eventOffset &+ 1 {
-      i.eventOffset += 1
-    } else if events.endIndex.value > i.timeOffset.value &+ 1 {
-      i.timeOffset += 1; i.eventOffset = 0
-    } else {
+  @inline(__always)
+  func _index(before i: Index) -> Index {
+    var result = i
+    _formIndex(before: &result)
+    return result
+  }
+
+  @inline(__always)
+  func _index(_ i: Index, offsetBy n: Int) -> Index {
+    var result = i
+    _formIndex(&result, offsetBy: n)
+    return result
+  }
+
+  @inline(__always)
+  func _index(_ i: Index, offsetBy n: Int, limitedBy limit: Index) -> Index? {
+    var result = i
+    guard _formIndex(&result, offsetBy: n, limitedBy: limit) else { return nil }
+    return result
+  }
+
+  @inline(__always)
+  func _formIndex(after i: inout Index) {
+
+    // Check whether there are more events in the bag at `i.index1`.
+    if events[i.index1].value.endIndex > i.index2 &+ 1 {
+      i = Index(i.index1, i.index2 &+ 1)
+    }
+
+      // Check whether there are more bags.
+    else if events.endIndex > i.index1 + 1 {
+      i = Index(i.index1 + 1, 0)
+    }
+
+      // Otherwise we've reached the end
+    else {
       i = endIndex
     }
+    
   }
 
-  @inline(__always) func _formIndex(before i: inout Index) {
-    if i.eventOffset > 0 {
-      i.eventOffset -= 1
-    } else if i.timeOffset > 0 {
-      i.timeOffset -= 1; i.eventOffset = events[i.timeOffset.advanced(by: -1)].value.endIndex &- 1
-    } else {
+  @inline(__always)
+  func _formIndex(before i: inout Index) {
+
+    // Check whether there are more events in the bag at `i.index1`.
+    if i.index2 > 0 {
+      i = Index(i.index1, i.index2 &- 1)
+    }
+
+    // Check whether there are more bags.
+    else if i.index1 > 0 {
+      i = Index(i.index1 - 1, events[i.index1 - 1].value.endIndex &- 1)
+    }
+
+    // Otherwise we are already at the start.
+    else {
       fatalError("i is the startIndex, there is no before")
     }
+    
   }
 
-  @inline(__always) func _formIndex(_ i: inout Index, offsetBy n: Int) {
-    switch n {
-    case 0:
-      break
-    case var n where n < 0:
-      while n < 0 {
-        switch i.eventOffset {
-        case 0:
-          i.timeOffset -= 1
-          i.eventOffset = events[i.timeOffset].value.endIndex &- 1
-          n += 1
-        case let remainingInBag:
-          i.eventOffset += Swift.max(n, -remainingInBag)
-          n += remainingInBag
+  @inline(__always) func _formIndex(_ index: inout Index, offsetBy n: Int) {
+
+    // Switch by the requested offset.
+    switch (index, n) {
+
+      case (_, 0):
+        // No offset, return the original index
+        return
+
+      case var (i, n) where n < 0:
+        // Move backwards by `n`.
+        while n < 0 {
+          _formIndex(before: &i)
+          n = n &+ 1
         }
-      }
-    case var n /*where n > 0*/:
-      while n > 0 {
-        switch i.eventOffset {
-        case events[i.timeOffset].value.endIndex &- 1:
-          i.timeOffset += 1
-          i.eventOffset = 0
-          n -= 1
-        case let remainingInBag:
-          i.eventOffset += Swift.min(n, remainingInBag)
-          n -= remainingInBag
+        index = i
+
+      case var (i, n) /*where n > 0*/:
+        // Move forward by `n`.
+        while n > 0 {
+          _formIndex(after: &i)
+          n = n &- 1
         }
-      }
+        index = i
+
     }
+
   }
 
-  @inline(__always) func _formIndex(_ i: inout Index, offsetBy n: Int, limitedBy limit: Index) -> Bool {
-    func limitCheck(_ index: Index) -> Bool { return n < 0 ? index >= limit : index <= limit }
+  @inline(__always)
+  func _formIndex(_ index: inout Index, offsetBy n: Int, limitedBy limit: Index) -> Bool {
 
-    switch n {
-    case 0:
-      return true
-    case var n where n < 0:
-      while n < 0 {
-        switch i.eventOffset {
-        case 0:
-          i.timeOffset -= 1
-          i.eventOffset = events[i.timeOffset].value.endIndex &- 1
-          guard limitCheck(i) else { return false }
-          n += 1
-        case let remainingInBag:
-          i.eventOffset += Swift.max(n, -remainingInBag)
-          guard limitCheck(i) else { return false }
-          n += remainingInBag
+    // Switch by the requested offset.
+    switch (index, n) {
+
+      case (_, 0):
+        // No offset, return the original index
+        return true
+
+      case var (i, n) where n < 0:
+        // Move backwards by `n`.
+        while n < 0 {
+          _formIndex(before: &i)
+          guard i >= limit else { return false }
+          n = n &+ 1
         }
-      }
-      return true
-    case var n /*where n > 0*/:
-      while n > 0 {
-        switch i.eventOffset {
-        case events[i.timeOffset].value.endIndex &- 1:
-          i.timeOffset += 1
-          i.eventOffset = 0
-          guard limitCheck(i) else { return false }
-          n -= 1
-        case let remainingInBag:
-          i.eventOffset += Swift.min(n, remainingInBag)
-          guard limitCheck(i) else { return false }
-          n -= remainingInBag
+        index = i
+        return true
+
+      case var (i, n) /*where n > 0*/:
+        // Move forward by `n`.
+        while n > 0 {
+          _formIndex(after: &i)
+          guard i <= limit else { return false }
+          n = n &- 1
         }
-      }
-      return true
+        index = i
+        return true
+
     }
+
   }
+
+  // MARK: Implementations of filtered event collection derived properties.
 
   var _metaEvents: AnyBidirectionalCollection<MIDIEvent.MetaEvent> {
     return AnyBidirectionalCollection(
@@ -301,9 +252,10 @@ extension _MIDIEventContainer
 
 }
 
+// MARK: - Implementation for the event container
 struct MIDIEventContainer: _MIDIEventContainer {
 
-  typealias Index = MIDIEventContainerIndex
+  typealias Index = Any2DIndex<OrderedDictionaryIndex, Int>
   typealias Iterator = MIDIEventContainerIterator
   typealias SubSequence = MIDIEventContainerSlice
 
@@ -311,6 +263,7 @@ struct MIDIEventContainer: _MIDIEventContainer {
 
   init() {}
 
+  /// Returns the existing bag for `time` if it exists; otherwise, creates and returns a new bag for `time`.
   private mutating func bag(forTime time: BarBeatTime) -> Bag {
     guard let bag = existingBag(forTime: time) else {
       let bag = Bag(); events[time] = bag; return bag
@@ -318,54 +271,66 @@ struct MIDIEventContainer: _MIDIEventContainer {
     return bag
   }
 
+  /// Returns the existing bag for `time` or `nil` if such a bag does not exist.
   private func existingBag(forTime time: BarBeatTime) -> Bag? { return events[time] }
 
-  func makeIterator() -> Iterator {
-    return Iterator(slice: self[startIndex ..< endIndex])
-  }
+  /// Returns an iterator over `startIndex ..< endIndex`.
+  func makeIterator() -> Iterator { return Iterator(slice: self[startIndex ..< endIndex]) }
 
-  var startIndex: Index { return Index(timeOffset: 0, eventOffset: 0) }
+  var startIndex: Index { return Index(0, 0) }
+
   var endIndex: Index {
     switch events.count - 1 {
       case -1: return startIndex
-      case let n: return Index(timeOffset: OrderedDictionaryIndex(n), eventOffset: events[n].value.endIndex)
+      case let n: return Index(OrderedDictionaryIndex(n), events[n].value.endIndex)
     }
 
   }
 
+  /// Accessors for the event stored at `index`.
   subscript(index: Index) -> MIDIEvent {
-    get { return events[index.timeOffset].value[index.eventOffset] }
-    set { events[index.timeOffset].value[index.eventOffset] = newValue }
+    get { return events[index.index1].value[index.index2] }
+    set { events[index.index1].value[index.index2] = newValue }
   }
 
+  /// Returns the collection of events contained by the bag for `time` or `nil` if the bag does not exist.
   subscript(time: BarBeatTime) -> AnyRandomAccessCollection<MIDIEvent>? {
     guard let bag = existingBag(forTime: time) else { return nil }
     return AnyRandomAccessCollection<MIDIEvent>(bag.events)
   }
 
-  subscript(subRange: Range<Index>) -> MIDIEventContainerSlice {
-    return MIDIEventContainerSlice(events: events[subRange.lowerBound.timeOffset ... subRange.upperBound.timeOffset],
-                                   subRange: subRange)
+  /// Returns a slice over `subRange`.
+  subscript(subRange: Range<Index>) -> SubSequence {
+    return SubSequence(events: events[subRange.lowerBound.index1 ... subRange.upperBound.index1],
+                       subRange: subRange)
   }
 
-  init<Source:Swift.Sequence>(events: Source) where Source.Iterator.Element == MIDIEvent {
+  /// Initializes the container from a sequence of events.
+  init<Source>(events: Source)
+    where Source:Swift.Sequence, Source.Iterator.Element == MIDIEvent
+  {
     append(contentsOf: events)
   }
 
+  /// Appends `event` to the container.
   mutating func append(_ event: MIDIEvent) {
     bag(forTime: event.time).append(event)
   }
 
-  mutating func append<Source:Swift.Sequence>(contentsOf source: Source)
-    where Source.Iterator.Element == MIDIEvent
+  /// Appends a sequence of events to the container.
+  mutating func append<Source>(contentsOf source: Source)
+    where Source:Swift.Sequence, Source.Iterator.Element == MIDIEvent
   {
     for event in source { append(event) }
   }
 
+  /// The minimum time for which a bag exists in the collection.
   var minTime: BarBeatTime? { return events.keys.first }
 
+  /// The maximum time for which a bag exists in the collection.
   var maxTime: BarBeatTime? { return events.keys.last }
 
+  /// Removes all events in the container that satisfy `predicate`. Any empty bags are also removed.
   mutating func removeEvents(matching predicate: (MIDIEvent) -> Bool) {
     for (time, bag) in events {
       bag.removeEvents(matching: predicate)
@@ -373,12 +338,14 @@ struct MIDIEventContainer: _MIDIEventContainer {
     }
   }
 
+  // MARK: Derived properties corresponding to _MIDIEventContainer implementations.
   var metaEvents: AnyBidirectionalCollection<MIDIEvent.MetaEvent> { return _metaEvents }
   var channelEvents: AnyBidirectionalCollection<MIDIEvent.ChannelEvent> { return _channelEvents }
   var nodeEvents: AnyBidirectionalCollection<MIDIEvent.MIDINodeEvent> { return _nodeEvents }
   var timeEvents: AnyBidirectionalCollection<MIDIEvent.MetaEvent> { return _timeEvents }
   var tempoEvents: AnyBidirectionalCollection<MIDIEvent.MetaEvent> { return _tempoEvents }
 
+  // MARK: Index-related functions corresponding to _MIDIEventContainer implementations.
   @inline(__always) func distance(from start: Index, to end: Index) -> Int {
     return _distance(from: start, to: end)
   }
@@ -395,33 +362,7 @@ struct MIDIEventContainer: _MIDIEventContainer {
     return _formIndex(&i, offsetBy: n, limitedBy: limit)
   }
 
-}
-
-extension MIDIEventContainer: CustomStringConvertible {
-
   var description: String { return _description }
-
-}
-
-
-struct MIDIEventContainerIndex: Comparable {
-
-  fileprivate(set) var timeOffset: OrderedDictionaryIndex
-  fileprivate(set) var eventOffset: Int
-
-  fileprivate init(timeOffset: OrderedDictionaryIndex, eventOffset: Int) {
-    self.timeOffset = timeOffset
-    self.eventOffset = eventOffset
-  }
-
-  static func ==(lhs: MIDIEventContainerIndex, rhs: MIDIEventContainerIndex) -> Bool {
-    return lhs.timeOffset == rhs.timeOffset && lhs.eventOffset == rhs.eventOffset
-  }
-
-  static func <(lhs: MIDIEventContainerIndex, rhs: MIDIEventContainerIndex) -> Bool {
-    return lhs.timeOffset < rhs.timeOffset
-        || lhs.timeOffset == rhs.timeOffset && lhs.eventOffset < rhs.eventOffset
-  }
 
 }
 
@@ -444,10 +385,9 @@ struct MIDIEventContainerIterator: IteratorProtocol {
 
 }
 
-
 struct MIDIEventContainerSlice: _MIDIEventContainer {
 
-  typealias Index = MIDIEventContainerIndex
+  typealias Index = Any2DIndex<OrderedDictionaryIndex, Int>
   typealias Iterator = MIDIEventContainerIterator
   typealias SubSequence = MIDIEventContainerSlice
 
@@ -466,18 +406,15 @@ struct MIDIEventContainerSlice: _MIDIEventContainer {
 
   subscript(index: Index) -> MIDIEvent {
     precondition((startIndex..<endIndex).contains(index), "Index out of bounds: '\(index)'")
-    return events[index.timeOffset].value[index.eventOffset]
+    return events[index.index1].value[index.index2]
   }
 
 
-  subscript(subRange: Range<Index>) -> MIDIEventContainerSlice {
-    return MIDIEventContainerSlice(events: events[startIndex.timeOffset...endIndex.timeOffset],
-                                   subRange: subRange)
+  subscript(subRange: Range<Index>) -> SubSequence {
+    return SubSequence(events: events[startIndex.index1...endIndex.index1], subRange: subRange)
   }
 
-  func makeIterator() -> MIDIEventContainerIterator {
-    return MIDIEventContainerIterator(slice: self)
-  }
+  func makeIterator() -> Iterator { return Iterator(slice: self) }
 
   var metaEvents: AnyBidirectionalCollection<MIDIEvent.MetaEvent> { return _metaEvents }
   var channelEvents: AnyBidirectionalCollection<MIDIEvent.ChannelEvent> { return _channelEvents }
@@ -501,56 +438,61 @@ struct MIDIEventContainerSlice: _MIDIEventContainer {
     return _formIndex(&i, offsetBy: n, limitedBy: limit)
   }
   
-}
-
-extension MIDIEventContainerSlice: CustomStringConvertible {
-
   var description: String { return _description }
 
 }
 
-
+// MARK: - MIDIEventContainer.Bag
 extension MIDIEventContainer {
 
+  /// A class that wraps an `OrderedSet<MIDIEvent>` structure for maintaining 
+  /// a uniqued and ordered collection of events.
   fileprivate class Bag: RandomAccessCollection {
 
     typealias Index = Int
     typealias Iterator = AnyIterator<MIDIEvent>
-    typealias SubSequence = OrderedSet<MIDIEvent>.SubSequence
+    typealias SubSequence = AnyRandomAccessCollection<MIDIEvent>
 
     typealias Indices = OrderedSet<MIDIEvent>.Indices
 
+    /// The events contained by the bag.
     private(set) var events: OrderedSet<MIDIEvent> = []
 
+    /// Accessors for the event at `index`.
     subscript(index: Index) -> MIDIEvent {
       get { return events[index] }
       set { events[index] = newValue }
     }
 
-    subscript(subRange: Range<Index>) -> SubSequence { return events[subRange] }
+    /// Returns a collection of the events within `subRange`.
+    subscript(subRange: Range<Index>) -> SubSequence { return AnyRandomAccessCollection(events[subRange]) }
 
     var startIndex: Int { return events.startIndex }
     var endIndex: Int { return events.endIndex }
 
     var indices: Indices { return events.indices }
 
+    /// Returns an iterator over `events`.
     func makeIterator() -> AnyIterator<MIDIEvent> {
       return AnyIterator(events.makeIterator())
     }
 
-    func append(_ event: MIDIEvent) {
-      events.append(event)
-    }
+    /// Appends `event` to the bag.
+    func append(_ event: MIDIEvent) { events.append(event) }
 
-    func append<Source:Swift.Sequence>(contentsOf source: Source)
-      where Source.Iterator.Element == MIDIEvent
+    /// Appends a sequence of events to the bag.
+    func append<Source>(contentsOf source: Source)
+      where Source:Swift.Sequence, Source.Iterator.Element == MIDIEvent
     {
       events.append(contentsOf: source)
     }
 
+    /// Removes any events from the bag that satisfy `predicate`.
     func removeEvents(matching predicate: (MIDIEvent) -> Bool) {
       for event in events where predicate(event) { events.remove(event) }
     }
+
+    // MARK: Index-related method implementations.
 
     @inline(__always) func distance(from start: Int, to end: Int) -> Int { return end &- start }
 

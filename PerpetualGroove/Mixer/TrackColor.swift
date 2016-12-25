@@ -10,6 +10,8 @@ import Foundation
 import class UIKit.UIColor
 import MoonKit
 
+// TODO: Review file
+
 // MARK: - Enumeration for specifying the color attached to a `MIDITrackType`
 enum TrackColor: UInt32 {
   case muddyWaters        = 0xBD7651
@@ -40,7 +42,7 @@ enum TrackColor: UInt32 {
   var value: UIColor { return UIColor(rgbHex: rawValue) }
 
   static var nextColor: TrackColor {
-    let existingColors = Sequencer.sequence?.instrumentTracks.map({$0.color}) ?? []
+    let existingColors = Sequence.current?.instrumentTracks.map({$0.color}) ?? []
     guard existingColors.count > 0 else { return allCases[0] }
     return allCases.filter({!existingColors.contains($0)}).first ?? allCases[0]
   }

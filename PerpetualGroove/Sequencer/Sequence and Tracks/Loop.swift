@@ -9,6 +9,8 @@
 import Foundation
 import MoonKit
 
+// TODO: Review file
+
 final class Loop: Swift.Sequence, MIDINodeDispatch {
 
   var time: BarBeatTime { return Swift.min(end - start, BarBeatTime.zero) }

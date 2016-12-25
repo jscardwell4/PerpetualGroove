@@ -9,6 +9,8 @@
 import Foundation
 import MoonKit
 
+// TODO: Review file
+
 /// Modifiers that lower or raise a note or chord by a number of half steps.
 enum PitchModifier: String { case flat = "♭", sharp = "♯", doubleFlat = "𝄫" }
 

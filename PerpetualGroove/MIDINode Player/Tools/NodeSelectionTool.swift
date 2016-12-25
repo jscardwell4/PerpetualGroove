@@ -10,6 +10,8 @@ import UIKit
 import SpriteKit
 import MoonKit
 
+// TODO: Review file
+
 class NodeSelectionTool: Tool {
 
   unowned let player: MIDINodePlayerNode

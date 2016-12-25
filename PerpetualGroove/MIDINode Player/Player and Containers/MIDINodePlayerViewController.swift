@@ -14,12 +14,12 @@ import MoonKit
 
 final class MIDINodePlayerViewController: UIViewController {
 
+  private let buttonWidth: CGFloat = 42
+  private let buttonPadding: CGFloat = 10
+
   @IBAction private func startLoopAction() {
     MIDINodePlayer.loopStart = Sequencer.transport.time.barBeatTime
   }
-
-  private let buttonWidth: CGFloat = 42
-  private let buttonPadding: CGFloat = 10
 
   @IBAction private func stopLoopAction() {
     MIDINodePlayer.loopEnd = Sequencer.transport.time.barBeatTime

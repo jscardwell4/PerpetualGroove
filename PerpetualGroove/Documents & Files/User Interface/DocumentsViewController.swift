@@ -10,6 +10,8 @@ import Foundation
 import UIKit
 import MoonKit
 
+// TODO: Review file
+
 // FIXME: Deleting the current document halts application
 final class DocumentsViewController: UICollectionViewController {
 
@@ -231,9 +233,9 @@ final class DocumentsViewController: UICollectionViewController {
     guard case (.none, .none) = (widthConstraint, heightConstraint) else { super.updateViewConstraints(); return }
 
     let (w, h) = collectionViewSize.unpack
-    widthConstraint = (collectionView.width => w --> Identifier(self, "Content", "Width")).constraint
+    widthConstraint = (collectionView.width ≡ w --> Identifier(self, "Content", "Width")).constraint
     widthConstraint?.isActive = true
-    heightConstraint = (collectionView.height => h --> Identifier(self, "Content", "Height")).constraint
+    heightConstraint = (collectionView.height ≡ h --> Identifier(self, "Content", "Height")).constraint
     heightConstraint?.isActive = true
 
     super.updateViewConstraints()

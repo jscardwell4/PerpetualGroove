@@ -8,12 +8,13 @@
 
 import Foundation
 import MoonKit
+
 import struct CoreGraphics.CGPoint
 import struct CoreGraphics.CGVector
 import struct CoreGraphics.CGFloat
 import typealias AudioToolbox.MIDITimeStamp
 
-struct MIDINodeHistory: Swift.Sequence {
+struct MIDINodeHistory: Swift.Sequence, CustomStringConvertible {
 
   let initialSnapshot: Snapshot
 
@@ -39,7 +40,8 @@ struct MIDINodeHistory: Swift.Sequence {
     }
 
     guard let predecessor = breadcrumbs.find({$0.tickInterval.upperBound < breadcrumb.tickInterval.lowerBound},
-                                             {$0.tickInterval.upperBound == breadcrumb.tickInterval.lowerBound}) else
+                                             {$0.tickInterval.upperBound == breadcrumb.tickInterval.lowerBound})
+      else
     {
       breadcrumbs = [breadcrumb]
       return
@@ -50,7 +52,10 @@ struct MIDINodeHistory: Swift.Sequence {
   }
 
   func snapshot(for ticks: MIDITimeStamp) -> Snapshot? {
-    guard let breadcrumb = breadcrumbs.find({$0.tickInterval.upperBound < ticks}, {$0.tickInterval.contains(ticks)}) else {
+    guard let breadcrumb = breadcrumbs.find({$0.tickInterval.upperBound < ticks},
+                                            {$0.tickInterval.contains(ticks)})
+      else
+    {
       Log.warning("failed to locate breadcrumb for ticks '\(ticks)' in breadcrumbs \(breadcrumbs)",
         asynchronous: false)
       return nil
@@ -60,11 +65,23 @@ struct MIDINodeHistory: Swift.Sequence {
   }
 
   init(initialSnapshot snapshot: Snapshot) { initialSnapshot = snapshot }
+
+
+  var description: String {
+    var result = "MIDINodeHistory {\n"
+    result += "  initialSnapshot: \(initialSnapshot)\n"
+    result += "  breadcrumbs: {\n"
+    result += ",\n".join(breadcrumbs.map({$0.description.indented(by: 4)}))
+    result += "\n  }"
+    result += "\n}"
+    return result
+  }
+
 }
 
 extension MIDINodeHistory {
 
-  struct Breadcrumb {
+  struct Breadcrumb: Comparable, CustomStringConvertible {
 
     let from: Snapshot
     let to: Snapshot
@@ -76,7 +93,7 @@ extension MIDINodeHistory {
       tickInterval = from.ticks ... to.ticks
       velocity = from.trajectory.v
       𝝙ticks = to.ticks - from.ticks
-      𝝙seconds = CGFloat(Sequencer.secondsPerTick) * CGFloat(𝝙ticks)
+      𝝙seconds = CGFloat(MIDIClock.current.secondsPerTick) * CGFloat(𝝙ticks)
       𝝙meters = velocity * 𝝙seconds
       𝝙position = to.trajectory.p - from.trajectory.p
     }
@@ -97,13 +114,24 @@ extension MIDINodeHistory {
       if position.y.isNaN { position.y = from.trajectory.p.y }
       return position
     }
+
+    var description: String { return tickInterval.description }
+
+    static func ==(lhs: Breadcrumb, rhs: Breadcrumb) -> Bool {
+      return lhs.from.ticks == rhs.from.ticks
+    }
+
+    static func <(lhs: Breadcrumb, rhs: Breadcrumb) -> Bool {
+      return lhs.from.ticks < rhs.from.ticks
+    }
+
   }
 
 }
 
 extension MIDINodeHistory {
 
-  struct Snapshot {
+  struct Snapshot: Comparable, CustomStringConvertible {
 
     let ticks: MIDITimeStamp
     let trajectory: MIDINode.Trajectory
@@ -117,66 +145,25 @@ extension MIDINodeHistory {
       self.trajectory = trajectory
     }
 
-  }
+    static func ==(lhs: Snapshot, rhs: Snapshot) -> Bool {
+      return lhs.ticks == rhs.ticks
+    }
 
-}
+    static func <(lhs: Snapshot, rhs: Snapshot) -> Bool {
+      return lhs.ticks < rhs.ticks
+    }
 
-extension MIDINodeHistory.Breadcrumb: CustomStringConvertible {
+    var description: String {
+      var result = "Snapshot { "
+      result += "; ".join(
+        "ticks: \(ticks)",
+        "position: \(trajectory.p.description(3))",
+        "velocity: \(trajectory.v.description(3))"
+      )
+      result += " }"
+      return result
+    }
 
-  var description: String { return tickInterval.description }
-
-}
-
-extension MIDINodeHistory.Breadcrumb: Comparable {
-
-  static func ==(lhs: MIDINodeHistory.Breadcrumb, rhs: MIDINodeHistory.Breadcrumb) -> Bool {
-    return lhs.from.ticks == rhs.from.ticks
-  }
-
-  static func <(lhs: MIDINodeHistory.Breadcrumb, rhs: MIDINodeHistory.Breadcrumb) -> Bool {
-    return lhs.from.ticks < rhs.from.ticks
-  }
-
-
-}
-
-extension MIDINodeHistory: CustomStringConvertible {
-
-  var description: String {
-    var result = "MIDINodeHistory {\n"
-    result += "  initialSnapshot: \(initialSnapshot)\n"
-    result += "  breadcrumbs: {\n"
-    result += ",\n".join(breadcrumbs.map({$0.description.indented(by: 4)}))
-    result += "\n  }"
-    result += "\n}"
-    return result
-  }
-
-}
-
-extension MIDINodeHistory.Snapshot: Comparable {
-
-  static func ==(lhs: MIDINodeHistory.Snapshot, rhs: MIDINodeHistory.Snapshot) -> Bool {
-    return lhs.ticks == rhs.ticks
-  }
-
-  static func <(lhs: MIDINodeHistory.Snapshot, rhs: MIDINodeHistory.Snapshot) -> Bool {
-    return lhs.ticks < rhs.ticks
-  }
-
-}
-
-extension MIDINodeHistory.Snapshot: CustomStringConvertible {
-
-  var description: String {
-    var result = "Snapshot { "
-    result += "; ".join(
-      "ticks: \(ticks)",
-      "position: \(trajectory.p.description(3))",
-      "velocity: \(trajectory.v.description(3))"
-    )
-    result += " }"
-    return result
   }
 
 }

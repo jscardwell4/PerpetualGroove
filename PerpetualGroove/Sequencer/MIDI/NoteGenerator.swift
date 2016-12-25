@@ -8,6 +8,8 @@
 
 import Foundation
 import MoonKit
+
+// TODO: Review file
 import CoreMIDI
 
 /// Structure that encapsulates MIDI information necessary for playing a note
@@ -15,6 +17,8 @@ struct NoteGenerator {
 
   var channel: UInt8 = 0
 
+  typealias Tone = MIDINote
+  
   /// The pitch and octave
   var tone: Tone
 
@@ -147,91 +151,3 @@ extension NoteGenerator: Hashable {
   }
   
 }
-
-extension NoteGenerator {
-
-  /// An enumeration for specifying a note's pitch and octave
-  struct Tone {
-
-    var note: Note
-    var octave: Octave
-
-    static func index(for note: Note) -> Int {
-      switch note {
-        case .natural(.c), .accidental(.b, .sharp), .accidental(.d, .doubleFlat):       return 0
-        case .accidental(.c, .sharp), .accidental(.d, .flat):                             return 1
-        case .natural(.d), .accidental(.e, .doubleFlat):                              return 2
-        case .accidental(.d, .sharp), .accidental(.e, .flat), .accidental(.f, .doubleFlat): return 3
-        case .natural(.e), .accidental(.f, .flat):                                    return 4
-        case .natural(.f), .accidental(.e, .sharp), .accidental(.g, .doubleFlat):       return 5
-        case .accidental(.f, .sharp), .accidental(.g, .flat):                             return 6
-        case .natural(.g), .accidental(.a, .doubleFlat):                              return 7
-        case .accidental(.g, .sharp),.accidental(.a, .flat):                              return 8
-        case .natural(.a), .accidental(.b, .doubleFlat):                              return 9
-        case .accidental(.a, .sharp),.accidental(.b, .flat), .accidental(.c, .doubleFlat):  return 10
-        case .natural(.b), .accidental(.c, .flat):                                    return 11
-      }
-    }
-
-    static func note(for index: Int) -> Note? {
-      switch index {
-        case 0:  return .natural(.c)
-        case 1:  return .accidental(.c, .sharp)
-        case 2:  return .natural(.d)
-        case 3:  return .accidental(.d, .sharp)
-        case 4:  return .natural(.e)
-        case 5:  return .natural(.f)
-        case 6:  return .accidental(.f, .sharp)
-        case 7:  return .natural(.g)
-        case 8:  return .accidental(.g, .sharp)
-        case 9:  return .natural(.a)
-        case 10: return .accidental(.a, .sharp)
-        case 11: return .natural(.b)
-       default: return nil
-      }
-    }
-
-    init(_ note: Note, _ octave: Octave) {
-      self.note = note
-      self.octave = octave
-    }
-
-    /// Initialize from MIDI value from 0 ... 127
-    init(midi value: Byte) {
-      note = Tone.note(for: Int(value) % 12)!
-      octave = Octave(rawValue: Int(value / 12 - 1)) ?? .four
-    }
-
-    var midi: Byte { return UInt8((octave.rawValue + 1) * 12 + Tone.index(for: note)) }
-
-  }
-
-}
-
-extension NoteGenerator.Tone: RawRepresentable, LosslessJSONValueConvertible {
-
-  /// Initialize with string representation
-  init?(rawValue: String) {
-    guard let captures = (rawValue ~=> ~/"^([A-G]♯?) ?((?:-1)|[0-9])$"),
-      let pitch = Note(rawValue: captures.1 ?? ""),
-      let rawOctave = Int(captures.2 ?? ""),
-      let octave = Octave(rawValue: rawOctave) else { return nil }
-
-    self.note = pitch
-    self.octave = octave
-  }
-
-  var rawValue: String { return "\(note.rawValue)\(octave.rawValue)" }
-
-}
-
-extension NoteGenerator.Tone: Hashable {
-
-  var hashValue: Int { return midi.hashValue }
-  
-  static func ==(lhs: NoteGenerator.Tone, rhs: NoteGenerator.Tone) -> Bool {
-    return lhs.midi == rhs.midi
-  }
-
-}
-

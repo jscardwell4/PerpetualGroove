@@ -10,6 +10,8 @@ import Foundation
 import UIKit
 import MoonKit
 
+// TODO: Review file
+
 final class DocumentsViewLayout: UICollectionViewLayout {
 
   private var storedAttributes: OrderedDictionary<IndexPath, UICollectionViewLayoutAttributes> = [:]

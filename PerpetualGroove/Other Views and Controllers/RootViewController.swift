@@ -10,6 +10,8 @@ import Foundation
 import UIKit
 import MoonKit
 
+// TODO: Review file
+
 final class RootViewController: UIViewController {
 
   static var currentInstance: RootViewController { return AppDelegate.currentInstance.viewController }

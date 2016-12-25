@@ -8,6 +8,8 @@
 
 import Foundation
 import MoonKit
+
+// TODO: Review file
 import class SpriteKit.SKNode
 
 final class LogManager {

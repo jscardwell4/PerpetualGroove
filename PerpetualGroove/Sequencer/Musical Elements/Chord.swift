@@ -9,6 +9,8 @@
 import Foundation
 import MoonKit
 
+// TODO: Review file
+
 struct Chord {
 
   var root = Note.natural(.c)
@@ -94,17 +96,18 @@ extension Chord {
           case let .`default`(i):
             note = Note.natural(natural.advanced(by: i.rawValue - 1))
           case let .modified(i, .flat):
-            note = Note.natural(natural.advanced(by: i.rawValue - 1)).flattened()
+            note = Note.natural(natural.advanced(by: i.rawValue - 1)).flattened
+
           case let .modified(i, .sharp):
-            note = Note.natural(natural.advanced(by: i.rawValue - 1)).sharpened()
+            note = Note.natural(natural.advanced(by: i.rawValue - 1)).sharpened
           case let .modified(i, .doubleFlat):
-            note = Note.natural(natural.advanced(by: i.rawValue - 1)).flattened().flattened()
+            note = Note.natural(natural.advanced(by: i.rawValue - 1)).flattened.flattened
         }
 
         switch modifier {
-          case .flat?:       result.append(note.flattened())
-          case .sharp?:      result.append(note.sharpened())
-          case .doubleFlat?: result.append(note.flattened().flattened())
+          case .flat?:       result.append(note.flattened)
+          case .sharp?:      result.append(note.sharpened)
+          case .doubleFlat?: result.append(note.flattened.flattened)
           case nil:          result.append(note)
         }
       }

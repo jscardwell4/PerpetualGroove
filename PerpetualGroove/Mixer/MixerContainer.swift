@@ -10,10 +10,14 @@ import Foundation
 import UIKit
 import MoonKit
 
+// TODO: Review file
+
 final class MixerContainer: SecondaryControllerContainer {
-  
+
+  /// The primary content's view controller.
   fileprivate(set) weak var mixerViewController: MixerViewController!
 
+  /// Overridden to assign the segue's destination to `mixerViewController`.
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     super.prepare(for: segue, sender: sender)
     switch segue.destination {
@@ -22,6 +26,7 @@ final class MixerContainer: SecondaryControllerContainer {
     }
   }
 
+  /// Overridden to nullify `mixerViewController.soundFontTarget`. Also invokes `super`.
   override func completion(forAction dismissalAction: DismissalAction) -> (Bool) -> Void {
     let completion = super.completion(forAction: dismissalAction)
     return {

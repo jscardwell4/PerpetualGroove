@@ -11,6 +11,8 @@ import class UIKit.NSDataAsset
 import class AVFoundation.AVAudioUnitSampler
 import MoonKit
 
+// TODO: Review file
+
 final class Metronome {
 
   private let sampler: AVAudioUnitSampler
@@ -23,11 +25,11 @@ final class Metronome {
 
       switch on {
         case true:
-          Sequencer.time.register(callback:weakMethod(self, Metronome.click),
+          Time.current.register(callback:weakMethod(self, Metronome.click),
                                   predicate: Metronome.isAudibleTick,
                                   identifier: callbackIdentifier)
         case false:
-          Sequencer.time.removePredicatedCallback(with: callbackIdentifier)
+          Time.current.removePredicatedCallback(with: callbackIdentifier)
       }
     }
   }
@@ -45,7 +47,7 @@ final class Metronome {
   private let callbackIdentifier = UUID()
 
   private func click(_ time: BarBeatTime) {
-    guard Sequencer.playing else { return }
+    guard Transport.current.isPlaying else { return }
     sampler.startNote(time.beat == 1 ? 0x3C : 0x37, withVelocity: 64, onChannel: 0)
   }
 

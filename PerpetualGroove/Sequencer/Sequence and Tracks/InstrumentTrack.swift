@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 import MoonKit
+
+// TODO: Review file
 import AudioToolbox
 import CoreMIDI
 import SpriteKit
@@ -32,6 +34,8 @@ extension Sequence {
 
 final class InstrumentTrack: Track, MIDINodeDispatch {
 
+  static var current: InstrumentTrack? { return Sequence.current?.currentTrack }
+
   fileprivate(set) var nodeManager: MIDINodeManager!
 
   // MARK: - Listening for Sequencer and sequence notifications
@@ -45,17 +49,19 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
   fileprivate func initializeNotificationReceptionist() {
     guard receptionist.count == 0 else { return }
 
-    receptionist.observe(name: .didReset, from: Sequencer.self,
+    let transport = Transport.current
+
+    receptionist.observe(name: .didReset, from: transport,
                          callback: weakMethod(self, InstrumentTrack.didReset))
 
     receptionist.observe(name: .soloCountDidChange, from: sequence,
                          callback: weakMethod(self, InstrumentTrack.soloCountDidChange))
 
-    receptionist.observe(name: .didBeginJogging, from: Sequencer.self,
+    receptionist.observe(name: .didBeginJogging, from: transport,
                          callback: weakMethod(self, InstrumentTrack.didBeginJogging))
-    receptionist.observe(name: .didEndJogging, from: Sequencer.self,
+    receptionist.observe(name: .didEndJogging, from: transport,
                          callback: weakMethod(self, InstrumentTrack.didEndJogging))
-    receptionist.observe(name: .didJog, from: Sequencer.self,
+    receptionist.observe(name: .didJog, from: transport,
                          callback: weakMethod(self, InstrumentTrack.didJog))
 
     receptionist.observe(name: .programDidChange, from: instrument,
@@ -265,7 +271,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     guard recording else { return }
 
     eventQueue.async {
-      [weak self, time = Sequencer.time.barBeatTime] in
+      [weak self, time = Time.current.barBeatTime] in
 
       guard let packet = Packet(packetList: packetList) else { return }
 

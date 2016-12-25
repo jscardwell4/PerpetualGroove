@@ -8,6 +8,8 @@
 
 import Foundation
 import MoonKit
+
+// TODO: Review file
 import UIKit
 
 @IBDesignable
@@ -199,11 +201,11 @@ final class BarBeatTimeLabel: UIView {
   }
 
   private func didChangeTransport(_ notification: Notification) {
-    guard Sequencer.time.callbackRegistered(with: callbackIdentifier) == false else { return }
-    Sequencer.time.register(callback: { [weak self] in self?.currentTime = $0 },
-                            predicate: {_ in true},
-                            identifier: callbackIdentifier)
-    currentTime = Sequencer.time.barBeatTime
+    guard Time.current.callbackRegistered(with: callbackIdentifier) == false else { return }
+    Time.current.register(callback: { [weak self] in self?.currentTime = $0 },
+                          predicate: {_ in true},
+                          identifier: callbackIdentifier)
+    currentTime = Time.current.barBeatTime
   }
 
   private func setup() {

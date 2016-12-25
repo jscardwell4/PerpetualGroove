@@ -9,6 +9,8 @@
 import UIKit
 import MoonKit
 
+// TODO: Review file
+
 final class TransportViewController: UIViewController {
 
   private weak var transport: Transport! {
@@ -44,7 +46,7 @@ final class TransportViewController: UIViewController {
     transport = Sequencer.transport
   }
 
-  @IBAction func record() { Sequencer.toggleRecord() }
+  @IBAction func record() { Transport.current.toggleRecord() }
 
   @IBAction func playPause() { if state ∋ .Playing { pause() } else { play() } }
 

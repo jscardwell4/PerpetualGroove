@@ -10,6 +10,8 @@ import UIKit
 import SpriteKit
 import MoonKit
 
+// TODO: Review file
+
 final class GeneratorTool: PresentingNodeSelectionTool {
 
   override var active: Bool  {
@@ -65,7 +67,7 @@ final class GeneratorTool: PresentingNodeSelectionTool {
       case .new:
         secondaryContent.didChangeGenerator = {
           MIDINodePlayer.addTool?.generator = $0
-          Sequencer.sequence?.currentTrack?.instrument.playNote($0)
+          Sequence.current?.currentTrack?.instrument.playNote($0)
         }
 
     }

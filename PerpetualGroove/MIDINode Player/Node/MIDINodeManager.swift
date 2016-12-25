@@ -20,7 +20,6 @@ final class MIDINodeManager {
 
   var nodeIdentifiers: Set<UUID> { return Set(nodes.flatMap({$0.elements.1.reference?.identifier})) }
 
-
   private var pendingNodes: Set<UUID> = []
 
   func addNode(identifier: UUID, trajectory: MIDINode.Trajectory, generator: AnyMIDIGenerator) {
@@ -72,7 +71,7 @@ final class MIDINodeManager {
 //    guard owner.recording else { owner.Log.debug("not recording…skipping event creation"); return }
 
     owner.eventQueue.async {
-      [time = Sequencer.time.barBeatTime, unowned node, weak self] in
+      [time = Time.current.barBeatTime, unowned node, weak self] in
 
       let identifier = MIDIEvent.MIDINodeEvent.Identifier(nodeIdentifier: node.identifier)
       let data = MIDIEvent.MIDINodeEvent.Data.add(identifier: identifier,
@@ -83,7 +82,7 @@ final class MIDINodeManager {
     }
 
     // Insert the node into our set
-    nodes.append(HashableTuple((Sequencer.time.barBeatTime, Weak(node))))
+    nodes.append(HashableTuple((Time.current.barBeatTime, Weak(node))))
     pendingNodes.remove(node.identifier)
     Log.debug("adding node \(node.name!) (\(node.identifier))")
 
@@ -121,7 +120,7 @@ final class MIDINodeManager {
       case false:
 //        guard owner.recording else { owner.Log.debug("not recording…skipping event creation"); return }
         owner.eventQueue.async {
-          [time = Sequencer.time.barBeatTime, weak self] in
+          [time = Time.current.barBeatTime, weak self] in
           let event = MIDIEvent.MIDINodeEvent(data: .remove(identifier: MIDIEvent.MIDINodeEvent.Identifier(nodeIdentifier: id)),
                                     time: time)
           self?.owner.add(event: .node(event))

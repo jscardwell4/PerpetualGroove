@@ -10,6 +10,8 @@ import Foundation
 import CoreMIDI
 import MoonKit
 
+// TODO: Review file
+
 final class TempoTrack: Track {
 
   override var name: String { get { return "Tempo" } set {} }
@@ -34,12 +36,12 @@ final class TempoTrack: Track {
   }
 
   fileprivate var timeSignatureEvent: MIDIEvent.MetaEvent {
-    return MIDIEvent.MetaEvent(time: Sequencer.time.barBeatTime,
+    return MIDIEvent.MetaEvent(time: Time.current.barBeatTime,
                      data: .timeSignature(signature: timeSignature, clocks: 36, notes: 8))
   }
 
   fileprivate var tempoEvent: MIDIEvent.MetaEvent {
-    return MIDIEvent.MetaEvent(time: Sequencer.time.barBeatTime, data: .tempo(bpm: tempo))
+    return MIDIEvent.MetaEvent(time: Time.current.barBeatTime, data: .tempo(bpm: tempo))
   }
 
   static func isTempoTrackEvent(_ trackEvent: MIDIEvent) -> Bool {

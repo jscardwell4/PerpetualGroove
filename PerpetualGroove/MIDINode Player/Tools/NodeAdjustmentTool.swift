@@ -9,6 +9,8 @@
 import Foundation
 import MoonKit
 
+// TODO: Review file
+
 private func _adjust(node: MIDINode, body: () -> Void) {
   // Get the node's start time before any adjustments
   let preadjustedNodeStart = node.initTime
@@ -17,7 +19,7 @@ private func _adjust(node: MIDINode, body: () -> Void) {
   let transport = Sequencer.transport
 
   // Cache the pause state of the transport
-  let isPaused = transport.paused
+  let isPaused = transport.isPaused
 
   // Make sure the transport is paused before adjusting
   if !isPaused { transport.pause() }

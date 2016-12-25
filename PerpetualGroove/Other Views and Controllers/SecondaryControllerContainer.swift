@@ -10,16 +10,24 @@ import Foundation
 import UIKit
 import MoonKit
 
+/// Protocol for classes to produce content for an instance of `SecondaryControllerContainer`.
 protocol SecondaryControllerContent: class {
 
   typealias SupportedActions = SecondaryControllerContainer.SupportedActions
 
+  /// Action invoked by touching the right arrow, when visible. Default is `nil`.
   var nextAction: (() -> Void)? { get }
+
+  /// Action invoked by touching the left arrow, when visible. Default is `nil`.
   var previousAction: (() -> Void)? { get }
 
+  /// The view controller displaying the content to present. Defaults to `self` if `self is UIViewController`.
   var viewController: UIViewController { get }
 
+  /// Which of the available actions should be displayed. Default is `none`.
   var supportedActions: SupportedActions { get set }
+
+  /// Which of the displayed actions should be disabled. Default is `none`.
   var disabledActions: SupportedActions { get set }
 
 }
@@ -35,36 +43,61 @@ extension SecondaryControllerContent {
 }
 
 extension SecondaryControllerContent where Self:UIViewController {
+
   var viewController: UIViewController { return self }
+
 }
 
+/// Protocol for types that want to provide content for an instance `SecondaryControllerContainer`.
 protocol SecondaryControllerContentProvider {
 
+  /// The content from which the view controller to present shall be obtained.
   var secondaryContent: SecondaryControllerContent { get }
+
+  /// Whether the controller returned by `secondaryContent.viewController` is currently visible.
   var isShowingContent: Bool { get }
 
+  /// Callback invoked by an instance of `SecondaryControllerContainer` when the controller returned by
+  /// `secondaryContent.viewController` is presented.
   func didShow(content: SecondaryControllerContent)
+
+  /// Callback invoked by an instance of `SecondaryControllerContainer` when the controller returned by
+  /// `secondaryContent.viewController` is dismissed.
   func didHide(content: SecondaryControllerContent,
                dismissalAction: SecondaryControllerContainer.DismissalAction)
 
 }
 
+/// Abstract base class that subclasses `UIViewController` to provide an infrastructure for managing the
+/// display of secondary content via child view controllers.
 class SecondaryControllerContainer: UIViewController {
 
+  /// The view controller responsible for managing the primary content for the container's view.
   var primaryController: UIViewController? { return childViewControllers.first }
+
+  /// The view controller responsible for managing the secondary content for the container's view.
   var secondaryController: UIViewController? { return content?.viewController }
 
+  /// The object providing `content`.
   private(set) var contentProvider: SecondaryControllerContentProvider?
+
+  /// The object producing `secondaryController`.
   private(set) var content: SecondaryControllerContent?
 
+  /// View within which child view controller content shall appear.
   @IBOutlet private weak var containerView: UIView!
 
+  /// The frame used to position `blurView`.
   var blurFrame: CGRect { guard isViewLoaded else { return .zero }; return view.bounds }
 
+  /// The visual effect view containing any the secondary content.
   private lazy var blurView: UIVisualEffectView = {
     let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
+    blurView.constrain(𝗛|blurView.contentView|𝗛, 𝗩|blurView.contentView|𝗩)
     blurView.isUserInteractionEnabled = true
+    blurView.frame = self.blurFrame
 
+    // Helper for configuring a new button.
     func button(image: UIImage, identifier: String, action: Selector) -> ImageButtonView {
       let button = ImageButtonView(autolayout: true)
       button.image = image
@@ -107,37 +140,69 @@ class SecondaryControllerContainer: UIViewController {
     return blurView
   }()
 
+  /// Button displayed by `blurView` that invokes `confirm()`.
   fileprivate weak var confirmButton: ImageButtonView?
+
+  /// Button displayed by `blurView` that invokes `cancel()`.
   fileprivate weak var cancelButton: ImageButtonView?
 
+  /// Button displayed by `blurView` that invokes `previous()`.
   weak var leftArrow: ImageButtonView?
+
+  /// Button displayed by `blurView` that invokes `next()`.
   weak var rightArrow: ImageButtonView?
 
+  /// Dismisses secondary content and invokes completion with `.confirm`.
   @objc private func confirm() { dismiss(completion: completion(forAction: .confirm)) }
+
+  /// Dismisses secondary content and invokes completion with `.cancel`.
   @objc private func cancel() { dismiss(completion: completion(forAction: .cancel)) }
 
+  /// Invokes `content.nextAction()`.
   @objc private func next() { content?.nextAction?() }
+
+  /// Invokes `content.previousAction()`
   @objc private func previous() { content?.previousAction?() }
 
+  /// Enumeration of the possible actions associated with secondary content dismissal.
   @objc enum DismissalAction: Int { case none, cancel, confirm }
 
+  /// Presents the secondary content provided by `provider` by embedding in `blurView`.
   func presentContent(for provider: SecondaryControllerContentProvider,
                       completion: ((Bool) -> Void)? = nil)
   {
     contentProvider = provider
     content = provider.secondaryContent
 
-    addChildViewController(content!.viewController)
+    let viewController = content!.viewController
+    addChildViewController(viewController)
 
+    guard let childView = viewController.view,
+          let confirmButton = confirmButton,
+          let cancelButton = cancelButton,
+          let leftArrow = leftArrow,
+          let rightArrow = rightArrow
+      else
+    {
+      fatalError("Failed to get view from secondary content controller.")
+    }
+
+    childView.translatesAutoresizingMaskIntoConstraints = false
+    blurView.contentView.addSubview(childView)
+
+    blurView.contentView.constrain(
+      𝗩|childView|𝗩, 𝗛|childView|𝗛
+    )
 
     let options: UIViewAnimationOptions = [.allowAnimatedContent]
 
     let animations = {
       [view = view, blurView = blurView] in
-      view?.addSubview(blurView)
-      view?.constrain(
-        𝗩|--blurView.frame.y--blurView--((view?.bounds.maxY)! - blurView.frame.maxY)--|𝗩,
-        𝗛|--blurView.frame.x--blurView--((view?.bounds.maxX)! - blurView.frame.maxX)--|𝗛
+      guard let view = view else { return }
+      view.addSubview(blurView)
+      view.constrain(
+        𝗩|--blurView.frame.y--blurView--(view.bounds.maxY - blurView.frame.maxY)--|𝗩,
+        𝗛|--blurView.frame.x--blurView--(view.bounds.maxX - blurView.frame.maxX)--|𝗛
       )
     }
 
@@ -150,6 +215,7 @@ class SecondaryControllerContainer: UIViewController {
 
   }
 
+  /// Returns a completion block appropriate for `action`.
   func completion(forAction action: DismissalAction) -> (Bool) -> Void {
     return {
       [weak self] completed in
@@ -159,6 +225,7 @@ class SecondaryControllerContainer: UIViewController {
     }
   }
 
+  /// Removes `blurView` and the secondary content it displays.
   func dismiss(completion: @escaping (Bool) -> Void) {
     guard let controller = secondaryController else { return }
 
@@ -180,10 +247,7 @@ class SecondaryControllerContainer: UIViewController {
                       completion: completion)
   }
 
-}
-
-extension SecondaryControllerContainer {
-
+  /// Structure for specifying a set of actions with corrsponding buttons displayable by `blurView`.
   struct SupportedActions: OptionSet {
     let rawValue: Int
 
@@ -194,13 +258,4 @@ extension SecondaryControllerContainer {
     static let next     = SupportedActions(rawValue: 0b1000)
   }
 
-}
-
-class SecondaryContent: UIViewController, SecondaryControllerContent {
-
-  var nextAction: (() -> Void)? = nil
-  var previousAction: (() -> Void)? = nil
-
-  var supportedActions: SecondaryControllerContainer.SupportedActions = [.cancel, .confirm]
-  var disabledActions: SecondaryControllerContainer.SupportedActions = .none
 }

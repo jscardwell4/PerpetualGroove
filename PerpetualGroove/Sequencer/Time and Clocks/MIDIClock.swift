@@ -8,11 +8,15 @@
 
 import Foundation
 import MoonKit
+
+// TODO: Review file
 import CoreMIDI
 import AudioToolbox
 
 /// A class capable of keeping time for MIDI events
 final class MIDIClock: CustomStringConvertible, Named {
+
+  static var current: MIDIClock { return Transport.current.clock }
 
   var description: String {
     return "\(type(of: self).self) {\n\t" + "\n\t".join(

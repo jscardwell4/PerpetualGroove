@@ -8,6 +8,8 @@
 
 import UIKit
 import MoonKit
+
+// TODO: Review file
 import typealias AudioUnit.AudioUnitElement
 
 final class MixerViewController: UICollectionViewController, SecondaryControllerContentProvider {
@@ -25,7 +27,7 @@ final class MixerViewController: UICollectionViewController, SecondaryController
 
   override var collectionViewLayout: MixerLayout { return super.collectionViewLayout as! MixerLayout }
 
-  private weak var sequence: Sequence? {
+  fileprivate weak var sequence: Sequence? {
     didSet {
       guard oldValue !== sequence else { return }
       if let oldSequence = oldValue { stopObservingSequence(oldSequence) }
@@ -36,27 +38,25 @@ final class MixerViewController: UICollectionViewController, SecondaryController
   }
 
   private func observeSequence(_ sequence: Sequence) {
-    receptionist.observe(name: Sequence.NotificationName.didChangeTrack.rawValue, from: sequence) {
+    receptionist.observe(name: .didChangeTrack, from: sequence) {
       [weak self] _ in
         guard let idx = self?.sequence?.currentTrack?.index else { return }
         self?.selectTrack(at: idx)
     }
-    receptionist.observe(name: Sequence.NotificationName.didAddTrack.rawValue,
-                    from: sequence,
-                callback: weakMethod(self, MixerViewController.updateTracks))
-    receptionist.observe(name: Sequence.NotificationName.didRemoveTrack.rawValue,
-                    from: sequence,
+    receptionist.observe(name: .didAddTrack, from: sequence,
+                         callback: weakMethod(self, MixerViewController.updateTracks))
+    receptionist.observe(name: .didRemoveTrack, from: sequence,
                 callback: weakMethod(self, MixerViewController.updateTracks))
   }
 
   private func stopObservingSequence(_ sequence: Sequence) {
-    receptionist.stopObserving(name: Sequence.NotificationName.didChangeTrack.rawValue, from: sequence)
-    receptionist.stopObserving(name: Sequence.NotificationName.didAddTrack.rawValue,    from: sequence)
-    receptionist.stopObserving(name: Sequence.NotificationName.didRemoveTrack.rawValue, from: sequence)
+    receptionist.stopObserving(name: .didChangeTrack, from: sequence)
+    receptionist.stopObserving(name: .didAddTrack,    from: sequence)
+    receptionist.stopObserving(name: .didRemoveTrack, from: sequence)
   }
 
-  private var pendingTrackIndex: Int?
-  private var addedTrackIndex: IndexPath?
+  fileprivate var pendingTrackIndex: Int?
+  fileprivate var addedTrackIndex: IndexPath?
 
   @IBAction func addTrack() {
     do {
@@ -101,7 +101,7 @@ final class MixerViewController: UICollectionViewController, SecondaryController
 
     switch sender.state {
       case .began:
-        guard let indexPath = indexPath(for: sender) , Section.instruments.contains(indexPath) else { return }
+        guard let indexPath = indexPath(for: sender), Section.instruments.contains(indexPath) else { return }
         collectionViewLayout.magnifiedItem = indexPath
         magnifiedCellLocation = sender.location(in: collectionView)
 
@@ -154,7 +154,9 @@ final class MixerViewController: UICollectionViewController, SecondaryController
 
   func delete(track: InstrumentTrack?) {
     guard let index = track?.index else { return }
-    if SettingsManager.confirmDeleteTrack { Log.warning("delete confirmation not yet implemented for tracks") }
+    if SettingsManager.confirmDeleteTrack {
+      Log.warning("delete confirmation not yet implemented for tracks")
+    }
     sequence?.removeTrack(at: index)
   }
 
@@ -165,10 +167,18 @@ final class MixerViewController: UICollectionViewController, SecondaryController
 
         case let (oldValue?, newValue?):
           oldValue.soundSetImage.isSelected = false
-          (_secondaryContent as? InstrumentViewController)?.instrument = newValue.track?.instrument
+          guard let controller =  _secondaryContent as? InstrumentViewController else {
+            fatalError("Unable to obtain `_secondaryContent` as `InstrumentViewController`.")
+          }
+          Log.debug("Updating instrument of secondary content for new target…")
+          controller.instrument = newValue.track?.instrument
 
         case (nil, .some):
-          (parent as? MixerContainer)?.presentContent(for: self)
+          guard let container = parent as? MixerContainer else {
+            fatalError("Failed to obtain `parent` as `MixerContainer`.")
+          }
+          Log.debug("Presenting content for mixer view controller…")
+          container.presentContent(for: self)
 
         case let (oldValue?, nil):
           oldValue.soundSetImage.isSelected = false
@@ -218,14 +228,14 @@ final class MixerViewController: UICollectionViewController, SecondaryController
     super.awakeFromNib()
     guard !initialized else { return }
     receptionist.observe(name: Sequencer.NotificationName.didChangeSequence.rawValue, from: Sequencer.self) {
-      [weak self] _ in self?.sequence = Sequencer.sequence
+      [weak self] _ in self?.sequence = Sequence.current
     }
     initialized = true
   }
 
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-    sequence = Sequencer.sequence
+    sequence = Sequence.current
   }
 
   func updateTracks(_ notification: Notification) {
@@ -236,7 +246,7 @@ final class MixerViewController: UICollectionViewController, SecondaryController
     }
 
     Log.debug("\n".join(
-      "total instrument tracks in sequence: \(sequence!.instrumentTracks.count)",
+      "\ntotal instrument tracks in sequence: \(sequence!.instrumentTracks.count)",
       "total track cells: \(collectionView!.numberOfItems(inSection: Section.instruments.rawValue))"
       ))
 
@@ -286,10 +296,10 @@ final class MixerViewController: UICollectionViewController, SecondaryController
     view.constrain([𝗩|collectionView!|𝗩, 𝗛|collectionView!|𝗛] --> id)
 
     let (w, h) = viewSize.unpack
-    widthConstraint = (view.width => w -!> 750).constraint
+    widthConstraint = (view.width ≡ w -!> 750).constraint
     widthConstraint?.identifier = Identifier(self, "View", "Width").string
     widthConstraint?.isActive = true
-    heightConstraint = (view.height => h -!> 750).constraint
+    heightConstraint = (view.height ≡ h -!> 750).constraint
     heightConstraint?.identifier = Identifier(self, "View", "Height").string
     heightConstraint?.isActive = true
 
@@ -302,7 +312,10 @@ final class MixerViewController: UICollectionViewController, SecondaryController
                   height: size.height) - 20
   }
 
+}
+
   // MARK: UICollectionViewDataSource
+extension MixerViewController {
 
   override func numberOfSections(in collectionView: UICollectionView) -> Int {
     return Section.allCases.count
@@ -325,7 +338,11 @@ final class MixerViewController: UICollectionViewController, SecondaryController
     return cell
   }
 
-  // MARK: - UICollectionViewDelegate
+}
+
+// MARK: - UICollectionViewDelegate
+
+extension MixerViewController {
 
   override func  collectionView(_ collectionView: UICollectionView,
     shouldSelectItemAt indexPath: IndexPath) -> Bool
@@ -348,7 +365,11 @@ final class MixerViewController: UICollectionViewController, SecondaryController
     cell.instrument()
   }
 
-  private enum Section: Int, EnumerableType {
+}
+
+extension MixerViewController {
+
+  fileprivate enum Section: Int, EnumerableType {
     case master, instruments, add
 
     init(_ value: Int) {
@@ -371,7 +392,7 @@ final class MixerViewController: UICollectionViewController, SecondaryController
     var itemCount: Int {
       switch self {
         case .master, .add: return 1
-        case .instruments: return Sequencer.sequence?.instrumentTracks.count ?? 0
+        case .instruments: return Sequence.current?.instrumentTracks.count ?? 0
       }
     }
 

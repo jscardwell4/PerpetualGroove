@@ -10,6 +10,8 @@ import Foundation
 import CoreMIDI
 import MoonKit
 
+// TODO: Review file
+
 struct ChordGenerator {
 
   var chord: Chord

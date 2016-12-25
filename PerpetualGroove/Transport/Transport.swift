@@ -8,9 +8,13 @@
 
 import Foundation
 import MoonKit
+
+// TODO: Review file
 import typealias AudioToolbox.MIDITimeStamp
 
 final class Transport {
+
+  static var current: Transport { return Sequencer.transport }
 
   var state: State = [] {
     didSet {
@@ -38,18 +42,18 @@ final class Transport {
     self.clock = clock
   }
 
-  var playing:   Bool { return state ∋ .Playing   }
-  var paused:    Bool { return state ∋ .Paused    }
-  var jogging:   Bool { return state ∋ .Jogging   }
-  var recording: Bool { return state ∋ .Recording }
+  var isPlaying:   Bool { return state ∋ .Playing   }
+  var isPaused:    Bool { return state ∋ .Paused    }
+  var isJogging:   Bool { return state ∋ .Jogging   }
+  var isRecording: Bool { return state ∋ .Recording }
 
   /// Starts the MIDI clock
   func play() {
-    guard !playing else { Log.warning("already playing"); return }
+    guard !isPlaying else { Log.warning("already playing"); return }
 
     postNotification(name: .didStart, object: self, userInfo: ["time": time.barBeatTime.rawValue])
 
-    if paused {
+    if isPaused {
       clock.resume()
       state.formSymmetricDifference([.Paused, .Playing])
     } else {
@@ -64,7 +68,7 @@ final class Transport {
   }
 
   func pause() {
-    guard playing else { return }
+    guard isPlaying else { return }
     clock.stop()
     state.formSymmetricDifference([.Paused, .Playing])
     postNotification(name: .didPause, object: self, userInfo: ["time": time.barBeatTime.rawValue])
@@ -72,7 +76,7 @@ final class Transport {
 
   /// Moves the time back to 0
   func reset() {
-    if playing || paused { stop() }
+    if isPlaying || isPaused { stop() }
     clock.reset()
     time.reset {[weak self] in
       guard let weakself = self else { return }
@@ -84,7 +88,7 @@ final class Transport {
 
   /// Stops the MIDI clock
   func stop() {
-    guard playing || paused else { Log.warning("not playing or paused"); return }
+    guard isPlaying || isPaused else { Log.warning("not playing or paused"); return }
     clock.stop()
     state ∖= [.Playing, .Paused]
     postNotification(name: .didStop, object: self, userInfo: ["time": time.barBeatTime.rawValue])
@@ -93,7 +97,7 @@ final class Transport {
   fileprivate var jogTime: BarBeatTime = nil
 
   func beginJog(_ wheel: ScrollWheel) {
-    guard !jogging else { return }
+    guard !isJogging else { return }
     if clock.running { clock.stop() }
     jogTime = time.barBeatTime
     state.formSymmetricDifference([.Jogging])
@@ -101,24 +105,24 @@ final class Transport {
   }
 
   func jog(_ wheel: ScrollWheel) {
-    guard jogging && jogTime != nil else { Log.warning("not jogging"); return }
+    guard isJogging && jogTime != nil else { Log.warning("not jogging"); return }
     let 𝝙time = BarBeatTime(totalBeats: Double(Sequencer.beatsPerBar) * wheel.𝝙revolutions)
     do { try jogToTime(max(jogTime + 𝝙time, BarBeatTime.zero), direction: wheel.direction) }
     catch { Log.error(error) }
   }
 
   func endJog(_ wheel: ScrollWheel) {
-    guard jogging /*&& clock.paused*/ else { Log.warning("not jogging"); return }
+    guard isJogging /*&& clock.paused*/ else { Log.warning("not jogging"); return }
     state.formSymmetricDifference([.Jogging])
     time.barBeatTime = jogTime
     jogTime = nil
     postNotification(name: .didEndJogging, object: self, userInfo: ["time": time.barBeatTime.rawValue])
-    guard !paused && clock.paused else { return }
+    guard !isPaused && clock.paused else { return }
     clock.resume()
   }
 
   func jogToTime(_ t: BarBeatTime, direction: ScrollWheel.Direction) throws {
-    guard jogging else { throw Error.notPermitted("state ∌ jogging") }
+    guard isJogging else { throw Error.notPermitted("state ∌ jogging") }
     guard jogTime != t else { return }
 
     jogTime = t
@@ -141,7 +145,7 @@ final class Transport {
       "jogTime": tʹ.rawValue,
       "jogDirection": direction.rawValue
       ])
-    guard !paused && clock.paused else { return }
+    guard !isPaused && clock.paused else { return }
     clock.resume()
   }
 

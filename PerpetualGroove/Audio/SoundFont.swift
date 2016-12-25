@@ -8,6 +8,8 @@
 
 import Foundation
 import MoonKit
+
+// TODO: Review file
 import class UIKit.UIImage
 import class UIKit.NSDataAsset
 
@@ -21,6 +23,9 @@ protocol SoundFont: CustomStringConvertible, JSONValueConvertible, JSONValueInit
 
   /// The presets present in the sound font file.
   var presetHeaders: [SF2File.PresetHeader] { get }
+
+  /// Whether the sound font contains general midi percussion presets.
+  var isPercussion: Bool { get }
 
   /// The name to display in the user interface for the sound font.
   var displayName: String { get }
@@ -96,6 +101,8 @@ extension SoundFont {
 
   var image: UIImage { return #imageLiteral(resourceName: "oscillator") }
 
+  var isPercussion: Bool { return false }
+
   var fileName: String { return url.path.baseNameExt.baseName }
 
   var displayName: String { return fileName }
@@ -139,6 +146,8 @@ struct EmaxSoundSet: SoundFont {
   }
 
   let volume: Volume
+
+  var isPercussion: Bool { return volume == .drumsAndPercussion }
 
   var displayName: String {
     switch volume {

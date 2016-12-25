@@ -11,6 +11,10 @@ import MoonKit
 import MoonKitTest
 @testable import Groove
 
+typealias MetaEvent = MIDIEvent.MetaEvent
+typealias ChannelEvent = MIDIEvent.ChannelEvent
+typealias MIDINodeEvent = MIDIEvent.MIDINodeEvent
+
 final class MIDIEventContainerTests: XCTestCase {
 
   static func eventsAdvancedBy(_ amount: Double) -> [MIDIEvent] {
@@ -32,62 +36,94 @@ final class MIDIEventContainerTests: XCTestCase {
     return result
   }
 
-  /*
-   event types:
-   Meta
-   Meta (Time)
-   Meta (Time)
-   Channel
-   Channel
-   Node
-   Node
-   Meta
-   */
-  static let events: [MIDIEvent] = {
-    var events: [MIDIEvent] = []
-    events.append(.meta(MIDIEvent.MetaEvent(time: .zero, data: .sequenceTrackName(name: "Track1"))))
-    events.append(.meta(MIDIEvent.MetaEvent(time: .zero, data: .timeSignature(signature: .fourFour, clocks: 36, notes: 8))))
-    events.append(.meta(MIDIEvent.MetaEvent(time: .zero, data: .tempo(bpm: 120))))
-    events.append(.channel(MIDIEvent.ChannelEvent(type: .noteOn, channel: 0, data1: 60, data2: 126, time: .zero)))
-    events.append(.channel(MIDIEvent.ChannelEvent(type: .noteOff, channel: 0, data1: 60, data2: 126, time: 2∶3.385)))
-    let identifier = MIDIEvent.MIDINodeEvent.Identifier(nodeIdentifier: UUID())
-    events.append(
-      .node(
-        MIDIEvent.MIDINodeEvent(
-          data: .add(
-            identifier: identifier,
-            trajectory: Trajectory(vector: CGVector(dx: 240, dy: 111), point: CGPoint(x: 24, y: 300)),
-            generator: AnyMIDIGenerator.note(NoteGenerator())
-          ),
-          time: 3∶3.193
+  static let event0: MIDIEvent = .meta(MetaEvent(time: .zero, data: .sequenceTrackName(name: "Track1")))
+  static let event1: MIDIEvent = .meta(MetaEvent(time: .zero, data: .timeSignature(signature: .fourFour, clocks: 36, notes: 8)))
+  static let event2: MIDIEvent = .meta(MetaEvent(time: .zero, data: .tempo(bpm: 120)))
+  static let event3: MIDIEvent = .channel(ChannelEvent(type: .noteOn, channel: 0, data1: 60, data2: 126, time: .zero))
+  static let event4: MIDIEvent = .channel(ChannelEvent(type: .noteOff, channel: 0, data1: 60, data2: 126, time: 2∶3.385))
 
-        )
-      )
-    )
-    events.append(
-      MIDIEvent.node(
-        MIDIEvent.MIDINodeEvent(
-          data: .remove(identifier: identifier),
-          time: 12∶1.387
-        )
-      )
-    )
-    events.append(.meta(MIDIEvent.MetaEvent(data: .endOfTrack, time: 12∶3.289)))
-    return events
-  }()
+  static let identifier = MIDINodeEvent.Identifier(nodeIdentifier: UUID())
 
+  static let event5: MIDIEvent = .node(
+    MIDINodeEvent(
+      data: .add(
+        identifier: identifier,
+        trajectory: MIDINode.Trajectory(vector: CGVector(dx: 240, dy: 111), point: CGPoint(x: 24, y: 300)),
+        generator: AnyMIDIGenerator.note(NoteGenerator())
+      ),
+      time: 3∶3.193
+    )
+  )
+
+  static let event6: MIDIEvent = .node(
+    MIDINodeEvent(
+      data: .remove(identifier: identifier),
+      time: 12∶1.387
+    )
+  )
+
+  static let event7: MIDIEvent = .meta(MetaEvent(data: .endOfTrack, time: 12∶3.289))
+
+  static let events = [event0, event1, event2, event3, event4, event5, event6, event7]
+  
   func testCreation() {
-    let events = MIDIEventContainerTests.events
-    let container = MIDIEventContainer(events: events)
-    guard expect(container).to(haveCount(events.count)) else { return }
-    expect(container) == events
+
+    let container1 = MIDIEventContainer()
+    expect(container1).to(haveCount(0))
+
+    let container2 = MIDIEventContainer(events: MIDIEventContainerTests.events)
+    guard expect(container2).to(haveCount(MIDIEventContainerTests.events.count)) else { return }
+    expect(container2) == MIDIEventContainerTests.events
+
+  }
+
+  func testSubscriptByIndex() {
+
+    var container = MIDIEventContainer(events: MIDIEventContainerTests.events)
+    guard expect(container).to(haveCount(MIDIEventContainerTests.events.count)) else { return }
+
+    let startIndex = container.startIndex
+    var result = container[startIndex]
+    expect(result) == MIDIEventContainerTests.events[0]
+
+    var index = container.index(after: startIndex)
+    result = container[index]
+    expect(result) == MIDIEventContainerTests.events[1]
+
+    index = container.index(startIndex, offsetBy: 2)
+    result = container[index]
+    expect(result) == MIDIEventContainerTests.events[2]
+
+    index = startIndex
+    container.formIndex(&index, offsetBy: 3)
+    result = container[index]
+    expect(result) ==  MIDIEventContainerTests.events[3]
+
+    container.formIndex(after: &index)
+    result = container[index]
+    expect(result) ==  MIDIEventContainerTests.events[4]
+
+    index = container.index(before: container.endIndex)
+    result = container[index]
+    expect(result) ==  MIDIEventContainerTests.events[7]
+
+    container.formIndex(&index, offsetBy: -2)
+    result = container[index]
+    expect(result) ==  MIDIEventContainerTests.events[5]
+
+    container.formIndex(after: &index)
+    result = container[index]
+    expect(result) ==  MIDIEventContainerTests.events[6]
+
   }
 
   func testLazyMetaEvents() {
     let events = MIDIEventContainerTests.generateEvents(10)
     let container = MIDIEventContainer(events: events)
     let metaEvents = container.metaEvents
-    let expectedMetaEvents: [MIDIEvent.MetaEvent] = events.filter({if case .meta = $0 { return true } else { return false }}).map({$0.event as! MIDIEvent.MetaEvent})
+    let expectedMetaEvents: [MetaEvent] = events.filter({
+      if case .meta = $0 { return true } else { return false }
+    }).map({$0.event as! MetaEvent})
     guard expect(metaEvents).to(haveCount(IntMax(expectedMetaEvents.count))) else { return }
     expect(metaEvents) == expectedMetaEvents
 
@@ -97,7 +133,9 @@ final class MIDIEventContainerTests: XCTestCase {
     let events = MIDIEventContainerTests.generateEvents(10)
     let container = MIDIEventContainer(events: events)
     let channelEvents = container.channelEvents
-    let expectedChannelEvents: [MIDIEvent.ChannelEvent] = events.filter({if case .channel = $0 { return true } else { return false }}).map({$0.event as! MIDIEvent.ChannelEvent})
+    let expectedChannelEvents: [ChannelEvent] = events.filter({
+      if case .channel = $0 { return true } else { return false }
+    }).map({$0.event as! ChannelEvent})
     guard expect(channelEvents).to(haveCount(IntMax(expectedChannelEvents.count))) else { return }
     expect(channelEvents) == expectedChannelEvents
   }
@@ -106,7 +144,9 @@ final class MIDIEventContainerTests: XCTestCase {
     let events = MIDIEventContainerTests.generateEvents(10)
     let container = MIDIEventContainer(events: events)
     let nodeEvents = container.nodeEvents
-    let expectedNodeEvents: [MIDIEvent.MIDINodeEvent] = events.filter({if case .node = $0 { return true } else { return false }}).map({$0.event as! MIDIEvent.MIDINodeEvent})
+    let expectedNodeEvents: [MIDINodeEvent] = events.filter({
+      if case .node = $0 { return true } else { return false }
+    }).map({$0.event as! MIDINodeEvent})
     guard expect(nodeEvents).to(haveCount(IntMax(expectedNodeEvents.count))) else { return }
     expect(nodeEvents) == expectedNodeEvents
   }
@@ -115,8 +155,12 @@ final class MIDIEventContainerTests: XCTestCase {
     let events = MIDIEventContainerTests.generateEvents(10)
     let container = MIDIEventContainer(events: events)
     let timeEvents = container.timeEvents
-    let expectedMetaEvents: [MIDIEvent.MetaEvent] = events.filter({if case .meta = $0 { return true } else { return false }}).map({$0.event as! MIDIEvent.MetaEvent})
-    let expectedTimeEvents: [MIDIEvent.MetaEvent] = expectedMetaEvents.filter({switch $0.data { case .timeSignature, .tempo: return true; default: return false }})
+    let expectedMetaEvents: [MetaEvent] = events.filter({
+      if case .meta = $0 { return true } else { return false }
+    }).map({$0.event as! MetaEvent})
+    let expectedTimeEvents: [MetaEvent] = expectedMetaEvents.filter({
+      switch $0.data { case .timeSignature, .tempo: return true; default: return false }
+    })
     guard expect(timeEvents).to(haveCount(IntMax(expectedTimeEvents.count))) else { return }
     expect(timeEvents) == expectedTimeEvents
   }

@@ -29,7 +29,7 @@ final class MIDINodePlayer {
   }
 
   static private func updateCurrentDispatch() {
-    guard let track = Sequencer.sequence?.currentTrack else {
+    guard let track = InstrumentTrack.current else {
       currentDispatch = nil
       return
     }
@@ -77,7 +77,7 @@ final class MIDINodePlayer {
     receptionist.logContext = LogManager.SceneContext
 
     receptionist.observe(name: .didChangeSequence, from: Sequencer.self) {
-      _ in MIDINodePlayer.sequence = Sequencer.sequence
+      _ in MIDINodePlayer.sequence = Sequence.current
     }
 
     receptionist.observe(name: .didEnterLoopMode, from: Sequencer.self) {
@@ -108,8 +108,8 @@ final class MIDINodePlayer {
 
   static private func insertLoops() {
     Log.debug("inserting loops: \(loops)")
-    let startTime = Sequencer.time.barBeatTime + loopStart
-    let endTime = Sequencer.time.barBeatTime + loopEnd
+    let startTime = Time.current.barBeatTime + loopStart
+    let endTime = Time.current.barBeatTime + loopEnd
     for loop in loops.values where !loop.eventContainer.isEmpty {
       loop.start = startTime
       loop.end = endTime
@@ -191,7 +191,7 @@ final class MIDINodePlayer {
         try target.nodeManager.add(node: node)
 
 
-        if !Sequencer.playing { Sequencer.play() }
+        if !Transport.current.isPlaying { Transport.current.play() }
         postNotification(name: .didAddNode,
                          object: self,
                          userInfo: ["addedNode": node, "addedNodeTrack": target])
