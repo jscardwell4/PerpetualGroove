@@ -296,10 +296,10 @@ final class MixerViewController: UICollectionViewController, SecondaryController
     view.constrain([𝗩|collectionView!|𝗩, 𝗛|collectionView!|𝗛] --> id)
 
     let (w, h) = viewSize.unpack
-    widthConstraint = (view.width == w -!> 750).constraint
+    widthConstraint = (view.width == w ! 750).constraint
     widthConstraint?.identifier = Identifier(self, "View", "Width").string
     widthConstraint?.isActive = true
-    heightConstraint = (view.height == h -!> 750).constraint
+    heightConstraint = (view.height == h ! 750).constraint
     heightConstraint?.identifier = Identifier(self, "View", "Height").string
     heightConstraint?.isActive = true
 
