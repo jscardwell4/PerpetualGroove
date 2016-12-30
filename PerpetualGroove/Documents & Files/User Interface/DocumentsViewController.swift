@@ -226,16 +226,16 @@ final class DocumentsViewController: UICollectionViewController {
   override func updateViewConstraints() {
     guard let collectionView = collectionView else { super.updateViewConstraints(); return }
 
-    if view.constraintsWithIdentifier(constraintID).count == 0 {
-      view.constrain([𝗩|--collectionView--|𝗩, 𝗛|--collectionView--|𝗛] --> constraintID)
+    if view.constraints(withIdentifier: constraintID).count == 0 {
+      view.constrain(identifier: constraintID, 𝗩∶|-[collectionView]-|, 𝗛∶|-[collectionView]-|)
     }
 
     guard case (.none, .none) = (widthConstraint, heightConstraint) else { super.updateViewConstraints(); return }
 
     let (w, h) = collectionViewSize.unpack
-    widthConstraint = (collectionView.width == w --> Identifier(self, "Content", "Width")).constraint
+    widthConstraint = (collectionView.width == w --> Identifier(for: self, tags: "Content", "Width")).constraint
     widthConstraint?.isActive = true
-    heightConstraint = (collectionView.height == h --> Identifier(self, "Content", "Height")).constraint
+    heightConstraint = (collectionView.height == h --> Identifier(for: self, tags: "Content", "Height")).constraint
     heightConstraint?.isActive = true
 
     super.updateViewConstraints()

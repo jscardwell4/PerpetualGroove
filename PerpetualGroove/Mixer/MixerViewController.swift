@@ -222,6 +222,16 @@ final class MixerViewController: UICollectionViewController, SecondaryController
     let maskView = UIView(frame: CGRect(size: CGSize(width: view.bounds.width, height: maskHeight)))
     maskView.backgroundColor = UIColor.white
     view.mask = maskView
+
+    view.constrain(𝗩∶|[collectionView!]|, 𝗛∶|[collectionView!]|)
+
+    let id = Identifier(for: self, tags: "View")
+
+    widthConstraint = (view.width == 0 ! 750 --> (id + "Width")).constraint
+    widthConstraint?.isActive = true
+    heightConstraint = (view.height == (MixerLayout.itemSize.height - 20) ! 750 --> (id + "Height")).constraint
+    heightConstraint?.isActive = true
+
   }
 
   override func awakeFromNib() {
@@ -275,35 +285,11 @@ final class MixerViewController: UICollectionViewController, SecondaryController
       case (nil, nil): break
     }
 
-    let (w, h) = viewSize.unpack
-    widthConstraint?.constant = w
-    heightConstraint?.constant = h
-    collectionView?.contentSize = CGSize(width: w, height: h)
-  }
+    let size = viewSize
+    widthConstraint?.constant = size.width
+    heightConstraint?.constant = size.height
+    collectionView?.contentSize = size
 
-  override func updateViewConstraints() {
-    let id = Identifier(self, "Internal")
-
-    guard    widthConstraint == nil
-          && heightConstraint == nil
-          && view.constraintsWithIdentifier(id).count == 0
-      else
-    {
-      super.updateViewConstraints()
-      return
-    }
-
-    view.constrain([𝗩|collectionView!|𝗩, 𝗛|collectionView!|𝗛] --> id)
-
-    let (w, h) = viewSize.unpack
-    widthConstraint = (view.width == w ! 750).constraint
-    widthConstraint?.identifier = Identifier(self, "View", "Width").string
-    widthConstraint?.isActive = true
-    heightConstraint = (view.height == h ! 750).constraint
-    heightConstraint?.identifier = Identifier(self, "View", "Height").string
-    heightConstraint?.isActive = true
-
-    super.updateViewConstraints()
   }
 
   private var viewSize: CGSize {

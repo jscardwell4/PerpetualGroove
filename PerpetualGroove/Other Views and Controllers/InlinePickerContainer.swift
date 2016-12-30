@@ -58,7 +58,7 @@ class InlinePickerContainer: UIControl {
     picker.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
     decorate(picker: picker)
     addSubview(picker)
-    constrain(𝗛|picker|𝗛, 𝗩|picker|𝗩)
+    constrain(𝗛∶|[picker]|, 𝗩∶|[picker]|)
 
     #if TARGET_INTERFACE_BUILDER
       items = type(of: self).contentForInterfaceBuilder

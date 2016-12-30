@@ -93,7 +93,7 @@ class SecondaryControllerContainer: UIViewController {
   /// The visual effect view containing any the secondary content.
   private lazy var blurView: UIVisualEffectView = {
     let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
-    blurView.constrain(𝗛|blurView.contentView|𝗛, 𝗩|blurView.contentView|𝗩)
+    blurView.constrain(𝗛∶|[blurView.contentView]|, 𝗩∶|[blurView.contentView]|)
     blurView.isUserInteractionEnabled = true
     blurView.frame = self.blurFrame
 
@@ -113,28 +113,28 @@ class SecondaryControllerContainer: UIViewController {
                               identifier: "ConfirmButton",
                               action: #selector(SecondaryControllerContainer.cancel))
     blurView.contentView.addSubview(cancelButton)
-    blurView.contentView.constrain(𝗩|--cancelButton, 𝗛|--cancelButton)
+    blurView.contentView.constrain(𝗩∶|-[cancelButton], 𝗛∶|-[cancelButton])
     self.cancelButton = cancelButton
 
     let confirmButton = button(image: #imageLiteral(resourceName: "confirm"),
                                identifier: "ConfirmButton",
                                action: #selector(SecondaryControllerContainer.confirm))
     blurView.contentView.addSubview(confirmButton)
-    blurView.contentView.constrain(𝗩|--confirmButton, confirmButton--|𝗛)
+    blurView.contentView.constrain(𝗩∶|-[confirmButton], 𝗛∶[confirmButton]-|)
     self.confirmButton = confirmButton
 
     let leftArrow = button(image: #imageLiteral(resourceName: "left_arrow"),
                            identifier: "PreviousButton",
                            action: #selector(SecondaryControllerContainer.previous))
     blurView.contentView.addSubview(leftArrow)
-    blurView.contentView.constrain(leftArrow--|𝗩, 𝗛|--leftArrow)
+    blurView.contentView.constrain(𝗩∶[leftArrow]-|, 𝗛∶|-[leftArrow])
     self.leftArrow = leftArrow
 
     let rightArrow = button(image: #imageLiteral(resourceName: "right_arrow"),
                             identifier: "NextButton",
                             action: #selector(getter: SecondaryControllerContainer.next))
     blurView.contentView.addSubview(rightArrow)
-    blurView.contentView.constrain(rightArrow--|𝗩, rightArrow--|𝗛)
+    blurView.contentView.constrain(𝗩∶[rightArrow]-|, 𝗛∶[rightArrow]-|)
     self.rightArrow = rightArrow
 
     return blurView
@@ -177,22 +177,14 @@ class SecondaryControllerContainer: UIViewController {
     let viewController = content!.viewController
     addChildViewController(viewController)
 
-    guard let childView = viewController.view,
-          let confirmButton = confirmButton,
-          let cancelButton = cancelButton,
-          let leftArrow = leftArrow,
-          let rightArrow = rightArrow
-      else
-    {
+    guard let childView = viewController.view else {
       fatalError("Failed to get view from secondary content controller.")
     }
 
     childView.translatesAutoresizingMaskIntoConstraints = false
     blurView.contentView.addSubview(childView)
 
-    blurView.contentView.constrain(
-      𝗩|childView|𝗩, 𝗛|childView|𝗛
-    )
+    blurView.contentView.constrain(𝗩∶|[childView]|, 𝗛∶|[childView]|)
 
     let options: UIViewAnimationOptions = [.allowAnimatedContent]
 
@@ -201,8 +193,8 @@ class SecondaryControllerContainer: UIViewController {
       guard let view = view else { return }
       view.addSubview(blurView)
       view.constrain(
-        𝗩|--blurView.frame.y--blurView--(view.bounds.maxY - blurView.frame.maxY)--|𝗩,
-        𝗛|--blurView.frame.x--blurView--(view.bounds.maxX - blurView.frame.maxX)--|𝗛
+        𝗩∶|-blurView.frame.y-[blurView]-(view.bounds.maxY - blurView.frame.maxY)-|,
+        𝗛∶|-blurView.frame.x-[blurView]-(view.bounds.maxX - blurView.frame.maxX)-|
       )
     }
 
