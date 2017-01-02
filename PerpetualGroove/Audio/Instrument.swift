@@ -96,7 +96,7 @@ final class Instrument {
     self.preset = preset
   }
 
-  init(track: InstrumentTrack?, preset: Preset) throws {
+  init(track: InstrumentTrack? = nil, preset: Preset) throws {
     self.track = track
     self.preset = preset
 
@@ -111,7 +111,8 @@ final class Instrument {
     let name = "Instrument \(String(addressOf:  self))"
     try MIDIClientCreateWithBlock(name as CFString, &client, nil) ➤ "Failed to create midi client"
     try MIDIOutputPortCreate(client, "Output" as CFString, &outPort) ➤ "Failed to create out port"
-    try MIDIDestinationCreateWithBlock(client, name as CFString, &endPoint, read) ➤ "Failed to create end point for instrument"
+    try MIDIDestinationCreateWithBlock(client, name as CFString, &endPoint, read)
+      ➤ "Failed to create end point for instrument"
   }
 
 }

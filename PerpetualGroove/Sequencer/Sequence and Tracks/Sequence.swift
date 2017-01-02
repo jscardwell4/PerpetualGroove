@@ -29,7 +29,7 @@ final class Sequence {
     return instrumentTracks.lazy.filter { $0.solo }
   }
 
-  func exchangeInstrumentTrackAtIndex(_ idx1: Int, withTrackAtIndex idx2: Int) {
+  func exchangeInstrumentTrack(at idx1: Int, with idx2: Int) {
     guard instrumentTracks.indices.contains([idx1, idx2]) else { return }
     swap(&instrumentTracks[idx1], &instrumentTracks[idx2])
     Log.debug("posting 'DidUpdate'")
@@ -57,12 +57,30 @@ final class Sequence {
       switch (currentTrackStack.peek?.reference, newValue) {
 
         case let (oldTrack?, newTrack?) where instrumentTracks.contains(newTrack) && oldTrack != newTrack:
-          userInfo = ["oldTrack": oldTrack, "newTrack": newTrack]
+          guard let oldTrackIndex = instrumentTracks.index(of: oldTrack),
+                let newTrackIndex = instrumentTracks.index(of: newTrack)
+            else
+          {
+              fatalError("Failed to obtain indexes of old and new tracks.")
+          }
+          userInfo = [
+            "oldTrack": oldTrack,
+            "oldTrackIndex": oldTrackIndex,
+            "newTrack": newTrack,
+            "newTrackIndex": newTrackIndex
+          ]
           currentTrackStack.push(Weak(newTrack))
 //          newTrack.recording = true
 
         case let (oldTrack?, nil):
-          userInfo = ["oldTrack": oldTrack, "newTrack": NSNull()]
+          guard let oldTrackIndex = instrumentTracks.index(of: oldTrack) else {
+            fatalError("Failed to obtain indexes of old track.")
+          }
+          userInfo = [
+            "oldTrack": oldTrack,
+            "oldTrackIndex": oldTrackIndex,
+            "newTrack": NSNull()
+          ]
           currentTrackStack.pop()
 
         case (nil, nil):
@@ -124,12 +142,10 @@ final class Sequence {
   }
 
   fileprivate func observeTrack(_ track: Track) {
-    receptionist.observe(name: Track.NotificationName.didUpdate.rawValue,
-                         from: track,
+    receptionist.observe(name: .didUpdate, from: track,
                          callback: weakMethod(self, Sequence.trackDidUpdate))
 
-    receptionist.observe(name: Track.NotificationName.soloStatusDidChange.rawValue,
-                         from: track,
+    receptionist.observe(name: .soloStatusDidChange, from: track,
                          callback: weakMethod(self, Sequence.trackSoloStatusDidChange))
   }
 
@@ -140,11 +156,9 @@ final class Sequence {
   init(document: Document) {
     self.document = document
     let transport = Transport.current
-    receptionist.observe(name: .didToggleRecording,
-                    from: transport,
+    receptionist.observe(name: .didToggleRecording, from: transport,
                 callback: weakMethod(self, Sequence.toggleRecording))
-    receptionist.observe(name: .didReset,
-                    from: transport,
+    receptionist.observe(name: .didReset, from: transport,
                 callback: weakMethod(self, Sequence.sequencerDidReset))
     tempoTrack = TempoTrack(sequence: self)
   }
@@ -200,8 +214,7 @@ final class Sequence {
     instrumentTracks.append(track)
     observeTrack(track)
     Log.debug("track added: \(track.name)")
-    postNotification(name: .didAddTrack,
-                     object: self,
+    postNotification(name: .didAddTrack, object: self,
                      userInfo: ["addedIndex": instrumentTracks.count - 1, "addedTrack": track])
     if currentTrack == nil { currentTrack = track }
   }
@@ -218,8 +231,7 @@ final class Sequence {
     track.nodeManager.stopNodes(remove: true)
     receptionist.stopObserving(name: NotificationName.didUpdate.rawValue, from: track)
     Log.debug("track removed: \(track.name)")
-    postNotification(name: .didRemoveTrack,
-                     object: self,
+    postNotification(name: .didRemoveTrack, object: self,
                      userInfo: ["removedIndex": index, "removedTrack": track])
     if currentTrack == track { currentTrackStack.pop() }
     Log.debug("posting 'DidUpdate'")
@@ -253,14 +265,17 @@ extension Sequence: NotificationDispatching {
 
 extension Notification {
 
-  var track: InstrumentTrack?    { return userInfo?["track"] as? InstrumentTrack }
+  var newTrack: InstrumentTrack? { return userInfo?["newTrack"] as? InstrumentTrack }
   var oldTrack: InstrumentTrack? { return userInfo?["oldTrack"] as? InstrumentTrack }
 
-  var oldCount: Int? { return (userInfo?["oldCount"] as? NSNumber)?.intValue }
-  var newCount: Int? { return (userInfo?["newCount"] as? NSNumber)?.intValue }
+  var newTrackIndex: Int? { return userInfo?["newTrackIndex"] as? Int }
+  var oldTrackIndex: Int? { return userInfo?["oldTrackIndex"] as? Int }
 
-  var removedIndex: Int? { return (userInfo?["removedIndex"] as? NSNumber)?.intValue }
-  var addedIndex: Int? { return (userInfo?["addedIndex"] as? NSNumber)?.intValue }
+  var oldCount: Int? { return userInfo?["oldCount"] as? Int }
+  var newCount: Int? { return userInfo?["newCount"] as? Int }
+
+  var removedIndex: Int? { return userInfo?["removedIndex"] as? Int }
+  var addedIndex: Int? { return userInfo?["addedIndex"] as? Int }
 
   var addedTrack: InstrumentTrack? { return userInfo?["addedTrack"] as? InstrumentTrack }
   var removedTrack: InstrumentTrack? { return userInfo?["removedTrack"] as? InstrumentTrack }

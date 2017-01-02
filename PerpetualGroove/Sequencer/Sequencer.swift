@@ -43,7 +43,7 @@ final class Sequencer {
     let soundSet = soundSets[0]
     let presetHeader = soundSet.presetHeaders[0]
     let preset = Instrument.Preset(soundFont: soundSet, presetHeader: presetHeader, channel: UInt8(0))
-    auditionInstrument = try Instrument(track: nil, preset: preset)
+    auditionInstrument = try Instrument(preset: preset)
     postNotification(name: .didUpdateAvailableSoundSets, object: self, userInfo: nil)
 
     initialized = true

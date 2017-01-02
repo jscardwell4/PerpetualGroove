@@ -30,9 +30,10 @@ final class InstrumentViewController: UIViewController, SecondaryControllerConte
 
   fileprivate func updateSoundSets() {
     soundSetPicker.refreshItems()
+
   }
 
-
+  /// Callback for `soundSetPicker` selections.
   @IBAction func didPickSoundSet() {
     guard let instrument = instrument else { return }
     let soundFont = Sequencer.soundSets[soundSetPicker.selection]
@@ -48,6 +49,7 @@ final class InstrumentViewController: UIViewController, SecondaryControllerConte
     }
   }
 
+  /// Callback for `programPicker` selections.
   @IBAction func didPickProgram() {
     guard let instrument = instrument else { return }
     let soundSet = instrument.soundFont
@@ -61,9 +63,10 @@ final class InstrumentViewController: UIViewController, SecondaryControllerConte
     }
   }
 
+  /// Callback for `channelStepper` value changes.
   @IBAction func didChangeChannel() { instrument?.channel = UInt8(channelStepper.value) }
 
-
+  /// Loads `initialPreset` back into `instrument`.
   func rollBackInstrument() {
     guard let instrument = instrument, let initialPreset = initialPreset else {
       return
@@ -71,8 +74,10 @@ final class InstrumentViewController: UIViewController, SecondaryControllerConte
     do { try instrument.loadPreset(initialPreset) } catch { Log.error(error) }
   }
 
+  /// The preset property value of `instrument` upon initialization.
   fileprivate(set) var initialPreset: Instrument.Preset?
 
+  /// Instrument used by the controller to provide feedback for soundfont and program changes.
   weak var instrument: Instrument? {
     didSet {
       guard let instrument = instrument,

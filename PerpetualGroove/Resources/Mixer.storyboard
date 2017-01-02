@@ -23,7 +23,7 @@
         <scene sceneID="6FS-5d-R84">
             <objects>
                 <collectionViewController storyboardIdentifier="Mixer" title="Mixer" id="iF7-fT-LPT" userLabel="Mixer" customClass="MixerViewController" customModule="Groove" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" contentMode="scaleToFill" directionalLockEnabled="YES" bounces="NO" alwaysBounceHorizontal="YES" showsVerticalScrollIndicator="NO" dataMode="prototypes" id="QhA-gV-EZG">
+                    <collectionView key="view" contentMode="scaleToFill" misplaced="YES" directionalLockEnabled="YES" bounces="NO" alwaysBounceHorizontal="YES" showsVerticalScrollIndicator="NO" dataMode="prototypes" id="QhA-gV-EZG">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="575"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.20000000298023224" green="0.19607843458652496" blue="0.19215686619281769" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -77,7 +77,7 @@
                                                 <userDefinedRuntimeAttribute type="boolean" keyPath="isVertical" value="YES"/>
                                             </userDefinedRuntimeAttributes>
                                             <connections>
-                                                <action selector="volumeDidChange" destination="Ywg-X3-Y1Q" eventType="valueChanged" id="Wgq-MX-8Yq"/>
+                                                <action selector="volumeDidChange" destination="Ywg-X3-Y1Q" eventType="valueChanged" id="YmF-NJ-cEt"/>
                                             </connections>
                                         </view>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="PAN" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Q27-Qm-1HH" customClass="Label" customModule="MoonKit">
@@ -90,7 +90,7 @@
                                             </userDefinedRuntimeAttributes>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" text="MASTER" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zFx-2Q-V0k" customClass="Label" customModule="MoonKit">
-                                            <rect key="frame" x="25.5" y="398" width="50.5" height="169"/>
+                                            <rect key="frame" x="25" y="398" width="50.5" height="169"/>
                                             <fontDescription key="fontDescription" name="Triump-Rg-Rock-02" family="Triump Rg Rock" pointSize="14"/>
                                             <color key="textColor" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
@@ -131,7 +131,7 @@
                                                 <userDefinedRuntimeAttribute type="string" keyPath="indicatorFillStyleString" value="XOR"/>
                                             </userDefinedRuntimeAttributes>
                                             <connections>
-                                                <action selector="panDidChange" destination="Ywg-X3-Y1Q" eventType="valueChanged" id="gQ1-Cd-Fes"/>
+                                                <action selector="panDidChange" destination="Ywg-X3-Y1Q" eventType="valueChanged" id="j0D-pf-vfe"/>
                                             </connections>
                                         </view>
                                     </subviews>
@@ -156,11 +156,11 @@
                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="MixerSceneMasterCell"/>
                                 </userDefinedRuntimeAttributes>
                                 <connections>
-                                    <outlet property="panKnob" destination="RJ4-aR-o07" id="ThE-Ky-lgV"/>
-                                    <outlet property="volumeSlider" destination="Evx-CT-UhF" id="vDN-Mv-AOX"/>
+                                    <outlet property="panKnob" destination="RJ4-aR-o07" id="oy6-0i-34Q"/>
+                                    <outlet property="volumeSlider" destination="Evx-CT-UhF" id="JBl-MO-sV1"/>
                                 </connections>
                             </collectionViewCell>
-                            <collectionViewCell opaque="NO" clipsSubviews="YES" contentMode="center" reuseIdentifier="TrackCell" id="2AY-7g-m2Q" userLabel="Track Cell" customClass="TrackCell" customModule="Groove" customModuleProvider="target">
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" contentMode="center" reuseIdentifier="TrackCell" id="2AY-7g-m2Q" userLabel="Track Cell" customClass="TrackCell" customModule="Groove">
                                 <rect key="frame" x="110" y="0.0" width="100" height="575"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -204,7 +204,7 @@
                                                 <userDefinedRuntimeAttribute type="boolean" keyPath="isVertical" value="YES"/>
                                             </userDefinedRuntimeAttributes>
                                             <connections>
-                                                <action selector="volumeDidChange" destination="2AY-7g-m2Q" eventType="valueChanged" id="0PE-6k-RsM"/>
+                                                <action selector="volumeDidChange" destination="2AY-7g-m2Q" eventType="valueChanged" id="PYg-cS-25p"/>
                                             </connections>
                                         </view>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="PAN" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UVo-0O-vty" customClass="Label" customModule="MoonKit">
@@ -246,7 +246,7 @@
                                                 <userDefinedRuntimeAttribute type="string" keyPath="indicatorFillStyleString" value="XOR"/>
                                             </userDefinedRuntimeAttributes>
                                             <connections>
-                                                <action selector="panDidChange" destination="2AY-7g-m2Q" eventType="valueChanged" id="ZQM-8a-6Y0"/>
+                                                <action selector="panDidChange" destination="2AY-7g-m2Q" eventType="valueChanged" id="QeY-RT-yOL"/>
                                             </connections>
                                         </view>
                                         <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ldg-6q-t2e" userLabel="Solo" customClass="LabelButton" customModule="MoonKit">
@@ -272,7 +272,7 @@
                                                 </userDefinedRuntimeAttribute>
                                             </userDefinedRuntimeAttributes>
                                             <connections>
-                                                <action selector="solo" destination="2AY-7g-m2Q" eventType="touchUpInside" id="g3q-b6-WW4"/>
+                                                <action selector="solo" destination="2AY-7g-m2Q" eventType="touchUpInside" id="Rhv-tS-cUt"/>
                                             </connections>
                                         </view>
                                         <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2QL-te-Ivd" userLabel="FX" customClass="LabelButton" customModule="MoonKit">
@@ -321,7 +321,7 @@
                                                 </userDefinedRuntimeAttribute>
                                             </userDefinedRuntimeAttributes>
                                             <connections>
-                                                <action selector="mute" destination="2AY-7g-m2Q" eventType="touchUpInside" id="DQT-1Z-Rzc"/>
+                                                <action selector="mute" destination="2AY-7g-m2Q" eventType="touchUpInside" id="mIR-uh-6mt"/>
                                             </connections>
                                         </view>
                                         <view opaque="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="6he-9a-y4c" customClass="ImageButtonView" customModule="MoonKit">
@@ -351,7 +351,7 @@
                                                 </mask>
                                             </variation>
                                             <connections>
-                                                <action selector="instrument" destination="2AY-7g-m2Q" eventType="touchUpInside" id="L9b-R1-yDB"/>
+                                                <action selector="toggleInstrumentControllerFor:" destination="iF7-fT-LPT" eventType="touchUpInside" id="zFz-Kp-TQg"/>
                                             </connections>
                                         </view>
                                         <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3Fc-u3-GOg" userLabel="TrackLabel" customClass="MarqueeField" customModule="MoonKit">
@@ -408,7 +408,7 @@
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" image="trash-selected" translatesAutoresizingMaskIntoConstraints="NO" id="gNv-ZK-rjJ">
-                                                                    <rect key="frame" x="22" y="259.5" width="56" height="56"/>
+                                                                    <rect key="frame" x="22" y="260" width="56" height="56"/>
                                                                 </imageView>
                                                             </subviews>
                                                             <constraints>
@@ -482,20 +482,17 @@
                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="MixerSceneTrackCell"/>
                                 </userDefinedRuntimeAttributes>
                                 <connections>
-                                    <outlet property="controller" destination="iF7-fT-LPT" id="hf5-mu-tfY"/>
-                                    <outlet property="muteButton" destination="BZl-Ps-fwB" id="fPP-2n-qDK"/>
-                                    <outlet property="panKnob" destination="y4E-jp-B4L" id="yVA-ME-YEO"/>
-                                    <outlet property="panLabel" destination="UVo-0O-vty" id="l3g-yf-knH"/>
-                                    <outlet property="removalDisplay" destination="PLx-z8-sAo" id="xFR-eS-lai"/>
-                                    <outlet property="soloButton" destination="Ldg-6q-t2e" id="RUa-4A-QDo"/>
-                                    <outlet property="soundSetImage" destination="6he-9a-y4c" id="mWf-It-fxU"/>
-                                    <outlet property="trackColor" destination="i87-3C-3ae" id="6y8-3i-4fB"/>
-                                    <outlet property="trackLabel" destination="3Fc-u3-GOg" id="b6h-6I-jBY"/>
-                                    <outlet property="volumeLabel" destination="1nN-5d-7mi" id="TL0-tR-AXy"/>
-                                    <outlet property="volumeSlider" destination="fQV-Nj-rrF" id="c6d-O8-cXX"/>
+                                    <outlet property="muteButton" destination="BZl-Ps-fwB" id="zef-Of-wPB"/>
+                                    <outlet property="panKnob" destination="y4E-jp-B4L" id="Q8e-lg-bqo"/>
+                                    <outlet property="removalDisplay" destination="PLx-z8-sAo" id="7YF-fa-uFn"/>
+                                    <outlet property="soloButton" destination="Ldg-6q-t2e" id="e3P-dP-m9K"/>
+                                    <outlet property="soundSetImage" destination="6he-9a-y4c" id="0hr-CW-632"/>
+                                    <outlet property="trackColor" destination="i87-3C-3ae" id="93y-1C-85R"/>
+                                    <outlet property="trackLabel" destination="3Fc-u3-GOg" id="HnZ-Pl-g4W"/>
+                                    <outlet property="volumeSlider" destination="fQV-Nj-rrF" id="XMG-4x-gK9"/>
                                 </connections>
                             </collectionViewCell>
-                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="AddTrackCell" id="h8g-3b-xY3" userLabel="Add Track Cell" customClass="AddTrackCell" customModule="Groove" customModuleProvider="target">
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="AddTrackCell" id="h8g-3b-xY3" userLabel="Add Track Cell" customClass="MixerAddTrackCell" customModule="Groove" customModuleProvider="target">
                                 <rect key="frame" x="220" y="0.0" width="100" height="575"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -702,7 +699,7 @@
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6pi-bq-mPh" customClass="ImageButtonView" customModule="MoonKit">
-                                                                    <rect key="frame" x="32" y="269.5" width="36" height="36"/>
+                                                                    <rect key="frame" x="32" y="270" width="36" height="36"/>
                                                                     <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                                                     <color key="tintColor" red="0.4992736279964447" green="0.45593017339706421" blue="0.39522531628608704" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                     <constraints>
@@ -794,7 +791,7 @@
                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="AddTrackCell"/>
                                 </userDefinedRuntimeAttributes>
                                 <connections>
-                                    <outlet property="addTrackButton" destination="6pi-bq-mPh" id="jqp-x1-Gan"/>
+                                    <outlet property="addTrackButton" destination="6pi-bq-mPh" id="Zb9-Kw-gcy"/>
                                 </connections>
                             </collectionViewCell>
                         </cells>
@@ -813,6 +810,7 @@
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="320" height="575"/>
                     <connections>
+                        <outlet property="collectionView" destination="QhA-gV-EZG" id="re4-GF-hUS"/>
                         <outlet property="magnifyingGesture" destination="krI-eI-hYy" id="FmA-JX-bzY"/>
                     </connections>
                 </collectionViewController>

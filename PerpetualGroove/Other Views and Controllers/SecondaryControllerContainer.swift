@@ -113,28 +113,28 @@ class SecondaryControllerContainer: UIViewController {
                               identifier: "ConfirmButton",
                               action: #selector(SecondaryControllerContainer.cancel))
     blurView.contentView.addSubview(cancelButton)
-    blurView.contentView.constrain(𝗩∶|-[cancelButton], 𝗛∶|-[cancelButton])
+    blurView.contentView.constrain(𝗩∶|-[cancelButton, ==44], 𝗛∶|-[cancelButton, ==44])
     self.cancelButton = cancelButton
 
     let confirmButton = button(image: #imageLiteral(resourceName: "confirm"),
                                identifier: "ConfirmButton",
                                action: #selector(SecondaryControllerContainer.confirm))
     blurView.contentView.addSubview(confirmButton)
-    blurView.contentView.constrain(𝗩∶|-[confirmButton], 𝗛∶[confirmButton]-|)
+    blurView.contentView.constrain(𝗩∶|-[confirmButton, ==cancelButton], 𝗛∶[confirmButton, ==cancelButton]-|)
     self.confirmButton = confirmButton
 
     let leftArrow = button(image: #imageLiteral(resourceName: "left_arrow"),
                            identifier: "PreviousButton",
                            action: #selector(SecondaryControllerContainer.previous))
     blurView.contentView.addSubview(leftArrow)
-    blurView.contentView.constrain(𝗩∶[leftArrow]-|, 𝗛∶|-[leftArrow])
+    blurView.contentView.constrain(𝗩∶[leftArrow, ==cancelButton]-|, 𝗛∶|-[leftArrow, ==cancelButton])
     self.leftArrow = leftArrow
 
     let rightArrow = button(image: #imageLiteral(resourceName: "right_arrow"),
                             identifier: "NextButton",
                             action: #selector(getter: SecondaryControllerContainer.next))
     blurView.contentView.addSubview(rightArrow)
-    blurView.contentView.constrain(𝗩∶[rightArrow]-|, 𝗛∶[rightArrow]-|)
+    blurView.contentView.constrain(𝗩∶[rightArrow, ==cancelButton]-|, 𝗛∶[rightArrow, ==cancelButton]-|)
     self.rightArrow = rightArrow
 
     return blurView
@@ -184,7 +184,8 @@ class SecondaryControllerContainer: UIViewController {
     childView.translatesAutoresizingMaskIntoConstraints = false
     blurView.contentView.addSubview(childView)
 
-    blurView.contentView.constrain(𝗩∶|[childView]|, 𝗛∶|[childView]|)
+    blurView.contentView.constrain(𝗩∶[cancelButton!]-[childView]-[leftArrow!],
+                                   𝗛∶|-[childView]-|)
 
     let options: UIViewAnimationOptions = [.allowAnimatedContent]
 
