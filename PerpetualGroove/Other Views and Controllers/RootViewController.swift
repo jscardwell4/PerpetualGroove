@@ -41,7 +41,12 @@ final class RootViewController: UIViewController {
 
     assert(SettingsManager.initialized)
 
-    guard SettingsManager.iCloudStorage && FileManager.default.ubiquityIdentityToken == nil else { return }
+    guard Setting.iCloudStorage.value as? Bool == true
+       && FileManager.default.ubiquityIdentityToken == nil
+      else
+    {
+      return
+    }
 
     performSegue(withIdentifier: "Purgatory", sender: self)
   }

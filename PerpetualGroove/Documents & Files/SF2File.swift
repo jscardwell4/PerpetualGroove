@@ -28,8 +28,6 @@ fileprivate func _remainingCount(_ data: Data.SubSequence) -> (Int) -> Int {
 /// Parses the data from a SoundFont file, which consists of three chunks: info, sdta, and pdta
 struct SF2File: CustomStringConvertible {
 
-//  let url: URL
-
   private let storage: Storage
 
   var url: URL? { if case .url(let url) = storage { return url } else { return nil } }

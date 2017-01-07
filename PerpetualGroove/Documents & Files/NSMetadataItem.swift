@@ -9,54 +9,54 @@
 import Foundation
 import MoonKit
 
-// TODO: Review file
-
 extension NSMetadataItem {
 
+  /// Enumeration wrapping various file attribute keys.
   enum ItemKey: String, EnumerableType {
-    case FSName                 = "kMDItemFSName"                                     // NSString
-    case DisplayName            = "kMDItemDisplayName"                                // NSString
-    case URL                    = "kMDItemURL"                                        // NSURL
-    case Path                   = "kMDItemPath"                                       // NSString
-    case FSSize                 = "kMDItemFSSize"                                     // NSNumber
-    case FSCreationDate         = "kMDItemFSCreationDate"                             // NSDate
-    case FSContentChangeDate    = "kMDItemFSContentChangeDate"                        // NSDate
-    case IsUbiquitous           = "NSMetadataItemIsUbiquitousKey"                     // NSNumber: Bool
-    case HasUnresolvedConflicts = "NSMetadataUbiquitousItemHasUnresolvedConflictsKey" // NSNumber: Bool
-    case IsDownloading          = "NSMetadataUbiquitousItemIsDownloadingKey"          // NSNumber: Bool
-    case IsUploaded             = "NSMetadataUbiquitousItemIsUploadedKey"             // NSNumber: Bool
-    case IsUploading            = "NSMetadataUbiquitousItemIsUploadingKey"            // NSNumber: Bool
-    case PercentDownloaded      = "NSMetadataUbiquitousItemPercentDownloadedKey"      // NSNumber: Double
-    case PercentUploaded        = "NSMetadataUbiquitousItemPercentUploadedKey"        // NSNumber: Double
-    case DownloadingStatus      = "NSMetadataUbiquitousItemDownloadingStatusKey"      // NSString
-    case DownloadingError       = "NSMetadataUbiquitousItemDownloadingErrorKey"       // NSError
-    case UploadingError         = "NSMetadataUbiquitousItemUploadingErrorKey"         // NSError
+    case fsName                 = "kMDItemFSName"                                     // NSString
+    case displayName            = "kMDItemDisplayName"                                // NSString
+    case url                    = "kMDItemURL"                                        // NSURL
+    case path                   = "kMDItemPath"                                       // NSString
+    case fsSize                 = "kMDItemFSSize"                                     // NSNumber
+    case fsCreationDate         = "kMDItemFSCreationDate"                             // NSDate
+    case fsContentChangeDate    = "kMDItemFSContentChangeDate"                        // NSDate
+    case isUbiquitous           = "NSMetadataItemIsUbiquitousKey"                     // NSNumber: Bool
+    case hasUnresolvedConflicts = "NSMetadataUbiquitousItemHasUnresolvedConflictsKey" // NSNumber: Bool
+    case isDownloading          = "NSMetadataUbiquitousItemIsDownloadingKey"          // NSNumber: Bool
+    case isUploaded             = "NSMetadataUbiquitousItemIsUploadedKey"             // NSNumber: Bool
+    case isUploading            = "NSMetadataUbiquitousItemIsUploadingKey"            // NSNumber: Bool
+    case percentDownloaded      = "NSMetadataUbiquitousItemPercentDownloadedKey"      // NSNumber: Double
+    case percentUploaded        = "NSMetadataUbiquitousItemPercentUploadedKey"        // NSNumber: Double
+    case downloadingStatus      = "NSMetadataUbiquitousItemDownloadingStatusKey"      // NSString
+    case downloadingError       = "NSMetadataUbiquitousItemDownloadingErrorKey"       // NSError
+    case uploadingError         = "NSMetadataUbiquitousItemUploadingErrorKey"         // NSError
     static var allCases: [ItemKey] { 
-      return [FSName, DisplayName, URL, Path, FSSize, FSCreationDate, FSContentChangeDate, IsUbiquitous,
-              HasUnresolvedConflicts, IsDownloading, IsUploaded, IsUploading, PercentDownloaded,
-              PercentUploaded, DownloadingStatus, DownloadingError, UploadingError]
+      return [fsName, displayName, url, path, fsSize, fsCreationDate, fsContentChangeDate, isUbiquitous,
+              hasUnresolvedConflicts, isDownloading, isUploaded, isUploading, percentDownloaded,
+              percentUploaded, downloadingStatus, downloadingError, uploadingError]
     }
   }
 
-  subscript(itemKey: ItemKey) -> AnyObject? { return value(forAttribute: itemKey.rawValue) as AnyObject? }
+  /// Returns the value returned by invoking `value(forAttribute:)`.
+  subscript(itemKey: ItemKey) -> Any? { return value(forAttribute: itemKey.rawValue) as Any? }
 
-  var fileSystemName: String? { return self[.FSName] as? String }
-  var displayName: String { return self[.DisplayName] as? String ?? "Unnamed Item" }
-  var URL: Foundation.URL { return self[.URL] as! Foundation.URL }
-  var path: String? { return self[.Path] as? String }
-  var size: UInt64 { return (self[.FSSize] as! NSNumber).uint64Value }
-  var creationDate: Date? { return self[.FSCreationDate] as? Date }
-  var modificationDate: Date? { return self[.FSContentChangeDate] as? Date }
-  var isUbiquitous: Bool? { return (self[.IsUbiquitous] as? NSNumber)?.boolValue }
-  var hasUnresolvedConflicts: Bool? { return (self[.HasUnresolvedConflicts] as? NSNumber)?.boolValue }
-  var downloading: Bool? { return (self[.IsDownloading] as? NSNumber)?.boolValue }
-  var uploaded: Bool? { return (self[.IsUploaded] as? NSNumber)?.boolValue }
-  var uploading: Bool? { return (self[.IsUploading] as? NSNumber)?.boolValue }
-  var percentDownloaded: Double? { return (self[.PercentDownloaded] as? NSNumber)?.doubleValue }
-  var percentUploaded: Double? { return (self[.PercentUploaded] as? NSNumber)?.doubleValue }
-  var downloadingStatus: String? { return self[.DownloadingStatus] as? String }
-  var downloadingError: NSError? { return self[.DownloadingError] as? NSError }
-  var uploadingError: NSError? { return self[.UploadingError] as? NSError }
+  var fileSystemName: String? { return self[.fsName] as? String }
+  var displayName: String { return self[.displayName] as? String ?? "Unnamed Item" }
+  var URL: Foundation.URL { return self[.url] as! Foundation.URL }
+  var path: String? { return self[.path] as? String }
+  var size: UInt64 { return (self[.fsSize] as! NSNumber).uint64Value }
+  var creationDate: Date? { return self[.fsCreationDate] as? Date }
+  var modificationDate: Date? { return self[.fsContentChangeDate] as? Date }
+  var isUbiquitous: Bool? { return (self[.isUbiquitous] as? NSNumber)?.boolValue }
+  var hasUnresolvedConflicts: Bool? { return (self[.hasUnresolvedConflicts] as? NSNumber)?.boolValue }
+  var downloading: Bool? { return (self[.isDownloading] as? NSNumber)?.boolValue }
+  var uploaded: Bool? { return (self[.isUploaded] as? NSNumber)?.boolValue }
+  var uploading: Bool? { return (self[.isUploading] as? NSNumber)?.boolValue }
+  var percentDownloaded: Double? { return (self[.percentDownloaded] as? NSNumber)?.doubleValue }
+  var percentUploaded: Double? { return (self[.percentUploaded] as? NSNumber)?.doubleValue }
+  var downloadingStatus: String? { return self[.downloadingStatus] as? String }
+  var downloadingError: NSError? { return self[.downloadingError] as? NSError }
+  var uploadingError: NSError? { return self[.uploadingError] as? NSError }
 
   var attributesDescription: String {
     var result = "NSMetadataItem {\n\t"
@@ -68,9 +68,13 @@ extension NSMetadataItem {
         case ~/"^kMDItem[a-zA-Z]+$":
           name = $0.rawValue[key.index(key.startIndex, offsetBy: 7)|->]
         case ~/"^NSMetadataItem[a-zA-Z]+Key$":
-          name = $0.rawValue[key.characters.index(key.startIndex, offsetBy: 14) ..< key.characters.index(key.endIndex, offsetBy: -3)]
+          name = $0.rawValue[key.characters.index(key.startIndex,
+                                                  offsetBy: 14) ..< key.characters.index(key.endIndex,
+                                                                                         offsetBy: -3)]
         case ~/"^NSMetadataUbiquitousItem[a-zA-Z]+Key$":
-          name = $0.rawValue[key.characters.index(key.startIndex, offsetBy: 24) ..< key.characters.index(key.endIndex, offsetBy: -3)]
+          name = $0.rawValue[key.characters.index(key.startIndex,
+                                                  offsetBy: 24) ..< key.characters.index(key.endIndex,
+                                                                                         offsetBy: -3)]
         default:
           name = nil
       }
@@ -85,14 +89,17 @@ extension NSMetadataItem {
 
 extension Notification {
 
+  /// The removed items for a notification posted by an instance of `NSMetaDataQuery` or `nil`.
   var removedMetadataItems: [NSMetadataItem]? {
     return userInfo?[NSMetadataQueryUpdateRemovedItemsKey] as? [NSMetadataItem]
   }
 
+  /// The changed items for a notification posted by an instance of `NSMetaDataQuery` or `nil`.
   var changedMetadataItems: [NSMetadataItem]? {
     return userInfo?[NSMetadataQueryUpdateChangedItemsKey] as? [NSMetadataItem]
   }
 
+  /// The added items for a notification posted by an instance of `NSMetaDataQuery` or `nil`.
   var addedMetadataItems: [NSMetadataItem]? {
     return userInfo?[NSMetadataQueryUpdateAddedItemsKey] as? [NSMetadataItem]
   }

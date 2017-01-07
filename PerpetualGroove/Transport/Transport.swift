@@ -64,7 +64,7 @@ final class Transport {
 
   func toggleRecord() {
     state.formSymmetricDifference(.Recording)
-    postNotification(name: .didToggleRecording, object: self, userInfo: nil)
+    postNotification(name: .didToggleRecording, object: self)
   }
 
   func pause() {

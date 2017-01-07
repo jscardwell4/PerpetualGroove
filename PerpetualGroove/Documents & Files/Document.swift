@@ -9,28 +9,49 @@
 import UIKit
 import MoonKit
 
-// TODO: Review file
+final class Document: UIDocument, Named, NotificationDispatching {
 
-final class Document: UIDocument {
-
-  var sourceType: SourceType? { return SourceType(fileType) }
-
-  var storageLocation: DocumentManager.StorageLocation {
-    return FileManager.withDefaultManager({$0.isUbiquitousItem(at: fileURL)}) ? .iCloud : .local
+  /// Whether the document is backed by an iCloud file.
+  var isUbiquitous: Bool {
+    return FileManager.default.isUbiquitousItem(at: fileURL)
   }
 
-  fileprivate(set) var sequence: Sequence? {
+  /// The size of the document's file on disk or `0` if no file exists on disk.
+  var fileSize: UInt64 {
+    return (try? FileManager.default .attributesOfItem(atPath: fileURL.path)[FileAttributeKey.size])
+      as? UInt64 ?? 0
+  }
+
+  /// The date the document's file was created or `nil`.
+  var fileCreationDate: Date? {
+    return (try? FileManager.default .attributesOfItem(atPath: fileURL.path)[FileAttributeKey.creationDate])
+      as? Date
+  }
+
+  /// Whether the source for the document is a midi file or a groove file.
+  var sourceType: SourceType? { return SourceType(fileType) }
+
+  /// Identical to `localizedName` unless `localizedName.isEmpty`, in which case 'unnamed` is used.
+  var name: String { return localizedName.isEmpty ? "unnamed" : localizedName }
+
+  /// The location as determined by the ubiquity of the item at `fileURL`.
+  var storageLocation: DocumentManager.StorageLocation {
+    return DocumentManager.StorageLocation(url: fileURL)
+  }
+
+  /// The sequence constituting the actual content for the document.
+  private(set) var sequence: Sequence? {
+
     didSet {
+
       guard oldValue !== sequence else { return }
 
       if let oldSequence = oldValue {
-        receptionist.stopObserving(name: Sequence.NotificationName.didUpdate.rawValue,
-                                   from: oldSequence)
+        receptionist.stopObserving(name: .didUpdate, from: oldSequence)
       }
 
       if let sequence = sequence {
-        receptionist.observe(name: Sequence.NotificationName.didUpdate.rawValue,
-                             from: sequence,
+        receptionist.observe(name: .didUpdate, from: sequence,
                              callback: weakMethod(self, Document.didUpdate))
       }
 
@@ -38,42 +59,60 @@ final class Document: UIDocument {
 
   }
 
-  fileprivate var creating = false
+  /// Flag indicating whether current save operation is creating or overwriting the document file.
+  private var isCreating = false
 
+  /// Derived property for obtaining current bookmark data for the document.
+  var bookmarkData: Data {
+
+    guard let data = try? fileURL.bookmarkData(options: .suitableForBookmarkFile) else {
+      fatalError("Failed to generate bookmark for `fileURL`.")
+    }
+
+    return data
+
+  }
+
+  /// Overridden to utilize `DocumentManager.operationQueue`.
   override var presentedItemOperationQueue: OperationQueue { return DocumentManager.operationQueue }
 
-  fileprivate func didUpdate(_ notification: Foundation.Notification) {
-    Log.debug("")
+  /// Handler for notifications posted by `sequence`.
+  private func didUpdate(_ notification: Foundation.Notification) {
+    Log.verbose("")
     updateChangeCount(.done)
   }
 
-  fileprivate func didChangeState(_ notification: Foundation.Notification) {
+  /// Handles the document's state change notifications
+  /// - todo: Implement conflict resolution.
+  private func didChangeState(_ notification: Foundation.Notification) {
     
     guard documentState ∋ .inConflict,
-      let versions = NSFileVersion.unresolvedConflictVersionsOfItem(at: fileURL) else {
-        return
+          let versions = NSFileVersion.unresolvedConflictVersionsOfItem(at: fileURL)
+      else
+    {
+      return
     }
 
-    // TODO: resolve conflict
-    Log.debug("versions: \(versions)")
+    Log.warning("Conflicting versions detected: \(versions)")
 
   }
 
+  /// Overridden to register `receptionist` for the document's state change notifications.
   override init(fileURL url: URL) {
     super.init(fileURL: url)
 
-    receptionist.observe(name: NSNotification.Name.UIDocumentStateChanged.rawValue,
-                         from: self,
+    receptionist.observe(name: .didChangeState, from: self,
                          callback: weakMethod(self, Document.didChangeState))
 
   }
 
-  fileprivate let receptionist: NotificationReceptionist = {
-    let receptionist = NotificationReceptionist(callbackQueue: DocumentManager.operationQueue)
-    receptionist.logContext = LogManager.MIDIFileContext
-    return receptionist
-  }()
+  /// Observes sequence notifications and the document's own state change notifications.
+  private let receptionist = NotificationReceptionist(callbackQueue: DocumentManager.operationQueue)
 
+  /// Initializes `sequence` using `contents`.
+  ///
+  /// - throws: Error.invalidContent when `!contents is Data`.
+  /// - throws: Error.invalidContentType when `SourceType(typeName) == nil`.
   override func load(fromContents contents: Any, ofType typeName: String?) throws {
     
     guard let data = contents as? Data else { throw Error.invalidContent }
@@ -100,11 +139,16 @@ final class Document: UIDocument {
 
   }
 
+  /// Returns the data generated by `sequence` as encoded by the determined source type.
+  /// If `isCreating == true`, then a new empty sequence is assigned to `sequence` before encoding.
+  /// 
+  /// - throws: Error.missingSequence when `isCreating == false && sequence == nil`.
+  /// - throws: Error.invalidContentType when `SourceType(typeName) == nil`.
   override func contents(forType typeName: String) throws -> Any {
 
-    if sequence == nil && creating {
+    if sequence == nil && isCreating {
       sequence = Sequence(document: self)
-      creating = false
+      isCreating = false
     }
 
     guard let sequence = sequence else { throw Error.missingSequence }
@@ -122,11 +166,15 @@ final class Document: UIDocument {
 
   }
 
+  /// Overridden to log the error before `super` handles it.
   override func handleError(_ error: Swift.Error, userInteractionPermitted: Bool) {
+
     Log.error(error)
     super.handleError(error, userInteractionPermitted: userInteractionPermitted)
+
   }
 
+  /// Attempts to coordinate the renaming of the document to `newName`.
   func rename(to newName: String) {
 
     DocumentManager.queue.async {
@@ -137,10 +185,8 @@ final class Document: UIDocument {
       guard newName != weakself.localizedName else { return }
 
       let directoryURL = weakself.fileURL.deletingLastPathComponent()
-
       let oldName = weakself.localizedName
       let oldURL = weakself.fileURL
-
       let newURL = directoryURL + "\(newName).groove"
 
       Log.debug("renaming document '\(oldName)' ⟹ '\(newName)'")
@@ -157,7 +203,7 @@ final class Document: UIDocument {
 
         fileCoordinator.item(at: oldURL, willMoveTo: newURL)
         do {
-          try FileManager.withDefaultManager { try $0.moveItem(at: oldURL, to: newURL) }
+          try FileManager.default.moveItem(at: oldURL, to: newURL)
           fileCoordinator.item(at: oldURL, didMoveTo: newURL)
         } catch {
           Log.error(error)
@@ -170,32 +216,27 @@ final class Document: UIDocument {
 
   }
 
-  // MARK: - Saving
-
+  /// Overridden to capture whether the document is being created or overwritten.
   override func save(to url: URL,
                      for saveOperation: UIDocumentSaveOperation,
                      completionHandler: ((Bool) -> Void)?)
   {
-    creating = saveOperation == .forCreating
-    Log.debug("(\(creating ? "saving" : "overwriting"))  '\(url.path)'")
+    isCreating = saveOperation == .forCreating
+    Log.debug("(\(isCreating ? "saving" : "overwriting"))  '\(url.path)'")
     super.save(to: url, for: saveOperation, completionHandler: completionHandler)
   }
 
+  /// Overridden to post notification of the document's new name.
   override func presentedItemDidMove(to newURL: URL) {
+
     super.presentedItemDidMove(to: newURL)
 
-    guard let newName = newURL.pathBaseName else {
-      fatalError("Failed to get base name from new url")
-    }
-
+    guard let newName = newURL.pathBaseName else { fatalError("Failed to get base name from new url") }
     postNotification(name: .didRenameDocument, object: self, userInfo: ["newName": newName])
 
   }
 
-}
-
-extension Document {
-
+  /// Enumeration for specifying one of the supported document file types.
   enum SourceType: String {
     case midi = "midi", groove = "groove"
 
@@ -218,35 +259,41 @@ extension Document {
 
   }
 
-}
+  /// Enumeration of possible errors thrown by an instance of `Document`.
+  enum Error: String, Swift.Error {
+    case invalidContentType, invalidContent, missingSequence
+  }
 
-extension Document: NotificationDispatching {
-
+  /// Enumeration of the names of the notifications dispatched by an instance of `Document`.
   enum NotificationName: String, LosslessStringConvertible {
-    case didRenameDocument
 
-    var description: String { return rawValue }
-    init?(_ description: String) { self.init(rawValue: description) }
+    case didRenameDocument  /// Posted when an existing document has been renamed.
+    case didChangeState     /// Shadow for NSNotification.Name.UIDocumentStateChanged
+
+    var description: String {
+      switch self {
+        case .didRenameDocument: return rawValue
+        case .didChangeState:    return NSNotification.Name.UIDocumentStateChanged.rawValue
+      }
+    }
+
+    init?(_ description: String) {
+      switch description {
+        case NSNotification.Name.UIDocumentStateChanged.rawValue:
+          self = .didChangeState
+        default:
+          guard let name = NotificationName(rawValue: description) else { return nil }
+          self = name
+      }
+    }
+
   }
 
 }
 
 extension Notification {
 
+  /// The new file name of a renamed `Document` instance or `nil`.
   var newDocumentName: String? { return userInfo?["newName"] as? String }
-
-}
-
-extension Document: Named {
-
-  var name: String { return localizedName.isEmpty ? "unamed" : localizedName }
-
-}
-
-extension Document {
-
-  enum Error: String, Swift.Error {
-    case invalidContentType, invalidContent, missingSequence
-  }
 
 }

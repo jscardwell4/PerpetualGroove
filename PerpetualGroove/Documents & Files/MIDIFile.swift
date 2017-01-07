@@ -14,10 +14,6 @@ import MoonKit
 /// Struct that holds the data for a complete MIDI file.
 struct MIDIFile {
 
-//  typealias MetaEvent = Event.MetaEvent
-//  typealias ChannelEvent = Event.ChannelEvent
-//  typealias MIDINodeEvent = Event.MIDINodeEvent
-
   let tracks: [TrackChunk]
 
   let header: HeaderChunk

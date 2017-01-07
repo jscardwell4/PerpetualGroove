@@ -46,13 +46,13 @@ final class PurgatoryViewController: UIViewController {
     receptionist.observe(name: .iCloudStorageChanged, from: SettingsManager.self) {
       [weak self] _ in
 
-      if !SettingsManager.iCloudStorage { self?.dismiss(animated: true, completion: nil) }
+      if !(Setting.iCloudStorage.value as? Bool == true) { self?.dismiss(animated: true, completion: nil) }
     }
 
     receptionist.observe(name: NSNotification.Name.UIApplicationDidBecomeActive.rawValue) {
       [weak self] _ in
 
-      if !(SettingsManager.iCloudStorage && FileManager.default.ubiquityIdentityToken == nil) {
+      if !(Setting.iCloudStorage.value as? Bool == true && FileManager.default.ubiquityIdentityToken == nil) {
         self?.dismiss(animated: true, completion: nil)
       }
     }
@@ -65,7 +65,7 @@ final class PurgatoryViewController: UIViewController {
       fatalError("This controller is meant only to be presented")
     }
 
-    guard SettingsManager.iCloudStorage else {
+    guard Setting.iCloudStorage.value as? Bool == true else {
       fatalError("This controller should only appear when 'Use iCloud' is true")
     }
 

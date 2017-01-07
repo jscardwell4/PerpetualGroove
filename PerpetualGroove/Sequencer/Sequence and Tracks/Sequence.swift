@@ -32,8 +32,8 @@ final class Sequence {
   func exchangeInstrumentTrack(at idx1: Int, with idx2: Int) {
     guard instrumentTracks.indices.contains([idx1, idx2]) else { return }
     swap(&instrumentTracks[idx1], &instrumentTracks[idx2])
-    Log.debug("posting 'DidUpdate'")
-    postNotification(name: .didUpdate, object: self, userInfo: nil)
+    Log.verbose("posting 'DidUpdate'")
+    postNotification(name: .didUpdate, object: self)
   }
 
   var currentTrackIndex: Int? {
@@ -126,7 +126,7 @@ final class Sequence {
     else {
       hasChanges = false
       Log.debug("posting 'DidUpdate'")
-      postNotification(name: .didUpdate, object: self, userInfo: nil)
+      postNotification(name: .didUpdate, object: self)
     }
   }
 
@@ -137,8 +137,8 @@ final class Sequence {
   fileprivate func sequencerDidReset(_ notification: Foundation.Notification) {
     guard hasChanges else { return }
     hasChanges = false
-    Log.debug("posting 'DidUpdate'")
-    postNotification(name: .didUpdate, object: self, userInfo: nil)
+    Log.verbose("posting 'DidUpdate'")
+    postNotification(name: .didUpdate, object: self)
   }
 
   fileprivate func observeTrack(_ track: Track) {
@@ -205,8 +205,8 @@ final class Sequence {
 
   func insertTrack(instrument: Instrument) throws {
     add(track: try InstrumentTrack(sequence: self, instrument: instrument))
-    Log.debug("posting 'DidUpdate'")
-    postNotification(name: .didUpdate, object: self, userInfo: nil)
+    Log.verbose("posting 'DidUpdate'")
+    postNotification(name: .didUpdate, object: self)
   }
 
   fileprivate func add(track: InstrumentTrack) {
@@ -235,7 +235,7 @@ final class Sequence {
                      userInfo: ["removedIndex": index, "removedTrack": track])
     if currentTrack == track { currentTrackStack.pop() }
     Log.debug("posting 'DidUpdate'")
-    postNotification(name: .didUpdate, object: self, userInfo: nil)
+    postNotification(name: .didUpdate, object: self)
   }
 
 }

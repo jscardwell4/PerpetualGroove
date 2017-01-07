@@ -227,7 +227,7 @@ final class MixerViewController: UICollectionViewController, SecondaryController
           return
         }
 
-        if SettingsManager.confirmDeleteTrack {
+        if Setting.confirmDeleteTrack.value as? Bool == true {
           Log.warning("delete confirmation not yet implemented for tracks")
         }
 

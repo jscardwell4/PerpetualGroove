@@ -71,7 +71,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
 }
 
   fileprivate func didChangePreset(_ notification: Foundation.Notification) {
-    postNotification(name: .didUpdate, object: self, userInfo: nil)
+    postNotification(name: .didUpdate, object: self)
   }
 
   fileprivate func didReset(_ notification: Foundation.Notification) { resetNodes() }
@@ -223,7 +223,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch {
     Log.debug("nodes reset")
     if modified {
       Log.debug("posting 'DidUpdate'")
-      postNotification(name: .didUpdate, object: self, userInfo: nil)
+      postNotification(name: .didUpdate, object: self)
       modified = false
     }
   }

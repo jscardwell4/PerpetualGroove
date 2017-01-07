@@ -207,7 +207,7 @@ final class MIDINodePlayer {
     dispatchToMain {
       guard node.parent === playerNode else { return }
       node.fadeOut(remove: true)
-      postNotification(name: .didRemoveNode, object: self, userInfo: nil)
+      postNotification(name: .didRemoveNode, object: self)
     }
   }
 

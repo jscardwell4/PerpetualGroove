@@ -101,7 +101,7 @@ final class InstrumentViewController: UIViewController, SecondaryControllerConte
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    guard Sequencer.initialized else { return }
+    guard Sequencer.isInitialized else { return }
     updateSoundSets()
   }
 

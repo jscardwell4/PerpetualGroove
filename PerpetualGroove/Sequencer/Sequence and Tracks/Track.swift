@@ -40,8 +40,8 @@ class Track: Named, MIDIEventDispatch, CustomStringConvertible {
       guard name != newValue else { return }
       Log.debug("'\(name)' ➞ '\(newValue)'")
       trackNameEvent = .meta(MIDIEvent.MetaEvent(data: .sequenceTrackName(name: newValue)))
-      postNotification(name: .didUpdate, object: self, userInfo: nil)
-      postNotification(name: .didChangeName, object: self, userInfo: nil)
+      postNotification(name: .didUpdate, object: self)
+      postNotification(name: .didChangeName, object: self)
     }
   }
 

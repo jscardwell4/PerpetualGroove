@@ -93,7 +93,6 @@
 		C28A0F561D99DE7B0011F706 /* MoonKitTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C28A0F521D99DE650011F706 /* MoonKitTest.framework */; };
 		C28A0F571D99DE810011F706 /* MoonKitTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C28A0F521D99DE650011F706 /* MoonKitTest.framework */; };
 		C28A0F581D99DE860011F706 /* MoonKitTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C28A0F521D99DE650011F706 /* MoonKitTest.framework */; };
-		C28BB6021BBF110E00BF2F70 /* DocumentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28BB6011BBF110E00BF2F70 /* DocumentCell.swift */; };
 		C28BD2D01E01860C0099F474 /* Yellow Design Studio - Eveleth Clean Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C28BD2C01E01860C0099F474 /* Yellow Design Studio - Eveleth Clean Regular.otf */; };
 		C28BD2D11E01860C0099F474 /* Yellow Design Studio - Eveleth Clean Shadow.otf in Resources */ = {isa = PBXBuildFile; fileRef = C28BD2C11E01860C0099F474 /* Yellow Design Studio - Eveleth Clean Shadow.otf */; };
 		C28BD2D21E01860C0099F474 /* Yellow Design Studio - Eveleth Clean Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = C28BD2C21E01860C0099F474 /* Yellow Design Studio - Eveleth Clean Thin.otf */; };
@@ -194,7 +193,6 @@
 		C2CBE87D1BFA3BAC00EDA3A3 /* Chord.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CBE87C1BFA3BAC00EDA3A3 /* Chord.swift */; };
 		C2CD18E11B7E681A00705922 /* StatusError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CD18E01B7E681A00705922 /* StatusError.swift */; };
 		C2CF38CD1B7EBED30085B3D5 /* InstrumentTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CF38CC1B7EBED30085B3D5 /* InstrumentTrack.swift */; };
-		C2CFB7FF1BBF486300983664 /* DocumentsViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CFB7FE1BBF486300983664 /* DocumentsViewLayout.swift */; };
 		C2D2EAB31DC10FD400DAC5EC /* InlinePickerContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D2EAB21DC10FD400DAC5EC /* InlinePickerContainer.swift */; };
 		C2D406741BB9FDC700681DEF /* DocumentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D406731BB9FDC700681DEF /* DocumentManager.swift */; };
 		C2D7BB201DE3443000EC7A53 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C2E0433F1B72F4DC005F0675 /* Assets.xcassets */; };
@@ -204,8 +202,6 @@
 		C2D7BB241DE3456F00EC7A53 /* InstrumentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AA2BC71B84B04200A0B08D /* InstrumentViewController.swift */; };
 		C2D7BB261DE345C300EC7A53 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22FA58C1BC830D600162DB4 /* SettingsManager.swift */; };
 		C2D7BB281DE345C300EC7A53 /* DocumentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A27EE1B948E4E00BD1698 /* DocumentsViewController.swift */; };
-		C2D7BB291DE345C300EC7A53 /* DocumentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28BB6011BBF110E00BF2F70 /* DocumentCell.swift */; };
-		C2D7BB2A1DE345C300EC7A53 /* DocumentsViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CFB7FE1BBF486300983664 /* DocumentsViewLayout.swift */; };
 		C2D7BB2B1DE345C300EC7A53 /* DocumentItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C283B69D1BC0495A007A4A36 /* DocumentItem.swift */; };
 		C2D7BB2C1DE345C300EC7A53 /* LocalDocumentItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2729ADC1BEE6B3D004FA34F /* LocalDocumentItem.swift */; };
 		C2D7BB2D1DE345C300EC7A53 /* NSMetadataItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2729ADE1BEE6B7C004FA34F /* NSMetadataItem.swift */; };
@@ -437,7 +433,7 @@
 		C2670CCD1C46FEF6000F76F9 /* MIDIGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIGenerator.swift; sourceTree = "<group>"; };
 		C2670CCF1C4704A2000F76F9 /* MIDINodeDispatch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINodeDispatch.swift; sourceTree = "<group>"; };
 		C269D1D61BD7FA190084A7EE /* LogManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogManager.swift; sourceTree = "<group>"; };
-		C26A27EE1B948E4E00BD1698 /* DocumentsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentsViewController.swift; sourceTree = "<group>"; };
+		C26A27EE1B948E4E00BD1698 /* DocumentsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DocumentsViewController.swift; path = "User Interface/DocumentsViewController.swift"; sourceTree = "<group>"; };
 		C26EEB2D1B7FDA8F00EC6979 /* MixerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MixerViewController.swift; sourceTree = "<group>"; };
 		C26FC16E1B7BA63300E271A3 /* MIDINode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINode.swift; sourceTree = "<group>"; };
 		C26FC1701B7BAC7F00E271A3 /* MIDINodePlayerNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINodePlayerNode.swift; sourceTree = "<group>"; };
@@ -472,7 +468,6 @@
 		C28831941C78E8AD00F6865D /* MIDIEventContainerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MIDIEventContainerTests.swift; sourceTree = "<group>"; };
 		C28831961C78E8AD00F6865D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C28A0F521D99DE650011F706 /* MoonKitTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MoonKitTest.framework; path = "../../Library/Developer/Xcode/DerivedData/Build/Products/Debug-iphonesimulator/MoonKitTest.framework"; sourceTree = "<group>"; };
-		C28BB6011BBF110E00BF2F70 /* DocumentCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentCell.swift; sourceTree = "<group>"; };
 		C28BD2C01E01860C0099F474 /* Yellow Design Studio - Eveleth Clean Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Yellow Design Studio - Eveleth Clean Regular.otf"; path = "Frameworks/Eveleth/Eveleth/Yellow Design Studio - Eveleth Clean Regular.otf"; sourceTree = "<group>"; };
 		C28BD2C11E01860C0099F474 /* Yellow Design Studio - Eveleth Clean Shadow.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Yellow Design Studio - Eveleth Clean Shadow.otf"; path = "Frameworks/Eveleth/Eveleth/Yellow Design Studio - Eveleth Clean Shadow.otf"; sourceTree = "<group>"; };
 		C28BD2C21E01860C0099F474 /* Yellow Design Studio - Eveleth Clean Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Yellow Design Studio - Eveleth Clean Thin.otf"; path = "Frameworks/Eveleth/Eveleth/Yellow Design Studio - Eveleth Clean Thin.otf"; sourceTree = "<group>"; };
@@ -533,7 +528,6 @@
 		C2CBE87C1BFA3BAC00EDA3A3 /* Chord.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chord.swift; sourceTree = "<group>"; };
 		C2CD18E01B7E681A00705922 /* StatusError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatusError.swift; sourceTree = "<group>"; };
 		C2CF38CC1B7EBED30085B3D5 /* InstrumentTrack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstrumentTrack.swift; sourceTree = "<group>"; };
-		C2CFB7FE1BBF486300983664 /* DocumentsViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentsViewLayout.swift; sourceTree = "<group>"; };
 		C2D0EFA21BDD793F00AE49FD /* Logs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Logs; sourceTree = SOURCE_ROOT; };
 		C2D2EAB21DC10FD400DAC5EC /* InlinePickerContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InlinePickerContainer.swift; sourceTree = "<group>"; };
 		C2D406731BB9FDC700681DEF /* DocumentManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentManager.swift; sourceTree = "<group>"; };
@@ -797,16 +791,6 @@
 			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		C254C2331DB1B31900C802F4 /* User Interface */ = {
-			isa = PBXGroup;
-			children = (
-				C26A27EE1B948E4E00BD1698 /* DocumentsViewController.swift */,
-				C28BB6011BBF110E00BF2F70 /* DocumentCell.swift */,
-				C2CFB7FE1BBF486300983664 /* DocumentsViewLayout.swift */,
-			);
-			path = "User Interface";
-			sourceTree = "<group>";
-		};
 		C26A27EA1B93C04400BD1698 /* Other Views and Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -1019,7 +1003,7 @@
 		C2AD26101DAC47A400B9BA75 /* Documents & Files */ = {
 			isa = PBXGroup;
 			children = (
-				C254C2331DB1B31900C802F4 /* User Interface */,
+				C26A27EE1B948E4E00BD1698 /* DocumentsViewController.swift */,
 				C283B69D1BC0495A007A4A36 /* DocumentItem.swift */,
 				C2729ADC1BEE6B3D004FA34F /* LocalDocumentItem.swift */,
 				C2729ADE1BEE6B7C004FA34F /* NSMetadataItem.swift */,
@@ -1667,7 +1651,6 @@
 				C2D7BB351DE345C300EC7A53 /* Tool.swift in Sources */,
 				C2D7BB691DE3460300EC7A53 /* TempoTrack.swift in Sources */,
 				C2D7BB3D1DE345C300EC7A53 /* MIDINodePlayerScene.swift in Sources */,
-				C2D7BB291DE345C300EC7A53 /* DocumentCell.swift in Sources */,
 				C2D7BB661DE3460300EC7A53 /* ElementalComponents.swift in Sources */,
 				C2D7BB581DE345C300EC7A53 /* MIDIGenerator.swift in Sources */,
 				C2D7BB4F1DE345C300EC7A53 /* Instrument.swift in Sources */,
@@ -1677,7 +1660,6 @@
 				C2D7BB5C1DE3460300EC7A53 /* Document.swift in Sources */,
 				C2D7BB3B1DE345C300EC7A53 /* RotateTool.swift in Sources */,
 				C2DB5BA51E0AD84300C2789C /* MIDINote.swift in Sources */,
-				C2D7BB2A1DE345C300EC7A53 /* DocumentsViewLayout.swift in Sources */,
 				C2D7BB2C1DE345C300EC7A53 /* LocalDocumentItem.swift in Sources */,
 				C2D7BB331DE345C300EC7A53 /* MIDINodeDispatch.swift in Sources */,
 				C2D7BB541DE345C300EC7A53 /* Loop.swift in Sources */,
@@ -1743,7 +1725,6 @@
 				C29A337E1DAE7E8800728E4B /* Fonts.swift in Sources */,
 				C2516B2B1C08ECE10060710B /* RootViewController.swift in Sources */,
 				C24DCE381C3438A800AD98BE /* GrooveFile.swift in Sources */,
-				C28BB6021BBF110E00BF2F70 /* DocumentCell.swift in Sources */,
 				C2AA2BC81B84B04200A0B08D /* InstrumentViewController.swift in Sources */,
 				C2729ADD1BEE6B3D004FA34F /* LocalDocumentItem.swift in Sources */,
 				C2E0433B1B72F4DC005F0675 /* MIDINodePlayerViewController.swift in Sources */,
@@ -1751,7 +1732,6 @@
 				C2D2EAB31DC10FD400DAC5EC /* InlinePickerContainer.swift in Sources */,
 				C2BC7AD51B76C85E001729BA /* Instrument.swift in Sources */,
 				C22FA58D1BC830D600162DB4 /* SettingsManager.swift in Sources */,
-				C2CFB7FF1BBF486300983664 /* DocumentsViewLayout.swift in Sources */,
 				C223B1A21C8364ED006CF6B5 /* MIDIEventContainer.swift in Sources */,
 				C2729ADF1BEE6B7C004FA34F /* NSMetadataItem.swift in Sources */,
 				C283B69E1BC0495A007A4A36 /* DocumentItem.swift in Sources */,

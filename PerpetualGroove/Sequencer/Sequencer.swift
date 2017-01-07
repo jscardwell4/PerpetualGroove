@@ -17,13 +17,13 @@ final class Sequencer {
 
   // MARK: - Initialization
 
-  private(set) static var initialized = false
+  private(set) static var isInitialized = false
 
   /// Initializes `soundSets` using the bundled sound font files and creates `auditionInstrument` with the
   /// first found
   static func initialize() throws {
 
-    guard !initialized else { return }
+    guard !isInitialized else { return }
 
     receptionist.observe(name: .didChangeDocument,
                          from: DocumentManager.self,
@@ -44,9 +44,9 @@ final class Sequencer {
     let presetHeader = soundSet.presetHeaders[0]
     let preset = Instrument.Preset(soundFont: soundSet, presetHeader: presetHeader, channel: UInt8(0))
     auditionInstrument = try Instrument(preset: preset)
-    postNotification(name: .didUpdateAvailableSoundSets, object: self, userInfo: nil)
+    postNotification(name: .didUpdateAvailableSoundSets, object: self)
 
-    initialized = true
+    isInitialized = true
     Log.debug("Sequencer initialized")
   }
 
@@ -57,11 +57,11 @@ final class Sequencer {
   static private(set) weak var sequence: Sequence? {
     willSet {
       guard sequence !== newValue else { return }
-      postNotification(name: .willChangeSequence, object: self, userInfo: nil)
+      postNotification(name: .willChangeSequence, object: self)
     }
     didSet {
       guard sequence !== oldValue else { return }
-      postNotification(name: .didChangeSequence, object: self, userInfo: nil)
+      postNotification(name: .didChangeSequence, object: self)
       transport.reset()
     }
   }
@@ -112,7 +112,7 @@ final class Sequencer {
         transport.clock.resume()
         clockRunning = false
       }
-      postNotification(name: .didChangeTransport, object: self, userInfo: nil)
+      postNotification(name: .didChangeTransport, object: self)
     }
   }
 
@@ -133,7 +133,7 @@ final class Sequencer {
     didSet {
       guard timeSignature != oldValue else { return }
       sequence?.timeSignature = timeSignature
-      postNotification(name: .timeSignatureDidChange, object: self, userInfo: nil)
+      postNotification(name: .timeSignatureDidChange, object: self)
     }
   }
 
@@ -146,8 +146,8 @@ final class Sequencer {
       guard mode != newValue else { return }
       Log.debug("willSet: \(mode.rawValue) ➞ \(newValue.rawValue)")
       switch newValue {
-        case .default: postNotification(name: .willExitLoopMode, object: self, userInfo: nil)
-        case .loop:    postNotification(name: .willEnterLoopMode, object: self, userInfo: nil)
+        case .default: postNotification(name: .willExitLoopMode, object: self)
+        case .loop:    postNotification(name: .willEnterLoopMode, object: self)
       }
     }
     didSet {
@@ -156,12 +156,12 @@ final class Sequencer {
       switch mode {
         case .default:
           transportAssignment = primaryTransport
-          postNotification(name: .didExitLoopMode, object: self, userInfo: nil)
+          postNotification(name: .didExitLoopMode, object: self)
         case .loop:
           transportAssignment = auxiliaryTransport
-          postNotification(name: .didEnterLoopMode, object: self, userInfo: nil)
+          postNotification(name: .didEnterLoopMode, object: self)
       }
-      postNotification(name: .didChangeTransport, object: self, userInfo: nil)
+      postNotification(name: .didChangeTransport, object: self)
     }
   }
 
