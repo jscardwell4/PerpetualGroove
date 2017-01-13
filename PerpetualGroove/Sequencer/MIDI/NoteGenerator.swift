@@ -78,22 +78,22 @@ extension NoteGenerator: LosslessJSONValueConvertible {
 
 extension NoteGenerator: MIDIGenerator {
 
-  func receiveNoteOn(endPoint: MIDIEndpointRef, identifier: UInt64) throws {
+  func receiveNoteOn(endPoint: MIDIEndpointRef, identifier: UInt) throws {
     let packet = Packet(status: 0x90,
                         channel: channel,
                         note: tone.midi,
                         velocity: velocity.midi,
-                        identifier: identifier)
+                        identifier: UInt64(identifier))
     var packetList = packet.packetList
     try MIDIReceived(endPoint, &packetList) ➤ "Unable to send note on event"
   }
 
-  func receiveNoteOff(endPoint: MIDIEndpointRef, identifier: UInt64) throws {
+  func receiveNoteOff(endPoint: MIDIEndpointRef, identifier: UInt) throws {
     let packet = Packet(status: 0x80,
                         channel: channel,
                         note: tone.midi,
                         velocity: velocity.midi,
-                        identifier: identifier)
+                        identifier: UInt64(identifier))
     var packetList = packet.packetList
     try MIDIReceived(endPoint, &packetList) ➤ "Unable to send note off event"
   }

@@ -176,6 +176,9 @@ final class DocumentsViewController: UICollectionViewController {
       fatalError("The view is loaded but `collectionView` is nil.")
     }
 
+    collectionView.register(UINib(nibName: "DocumentCell.xib", bundle: nil),
+                            forCellWithReuseIdentifier: "DocumentCellNib")
+
     view.constrain(𝗩∶|-[collectionView]-|, 𝗛∶|-[collectionView]-|)
 
     let id = Identifier(for: self, tags: "Content")
@@ -203,7 +206,7 @@ final class DocumentsViewController: UICollectionViewController {
 
   }
 
-  // MARK: UICollectionViewDataSource
+  // MARK: - DataSource
 
   /// Returns two: one for the create item and one for the existing document items
   override func numberOfSections(in collectionView: UICollectionView) -> Int { return 2 }
@@ -228,7 +231,7 @@ final class DocumentsViewController: UICollectionViewController {
       case 0:
         cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CreateDocumentCell", for: indexPath)
       case 1:
-        cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DocumentCell", for: indexPath)
+        cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DocumentCellNib", for: indexPath)
         (cell as! DocumentCell).item = itemManager[indexPath.item]
 
       default:
@@ -237,37 +240,6 @@ final class DocumentsViewController: UICollectionViewController {
     }
     
     return cell
-
-  }
-
-  // MARK: - UICollectionViewDelegate
-
-  /// Returns `true` unless the cell is showing its delete button
-  override func collectionView(_ collectionView: UICollectionView,
-                               shouldHighlightItemAt indexPath: IndexPath) -> Bool
-  {
-
-    guard let cell = collectionView.cellForItem(at: indexPath) as? DocumentCell, cell.isShowingDelete else {
-      return true
-    }
-
-    cell.hideDelete()
-
-    return false
-
-  }
-
-  /// Creates a new document when section == 0; opens the document otherwise
-  override func collectionView(_ collectionView: UICollectionView,
-                               didSelectItemAt indexPath: IndexPath)
-  {
-
-    switch indexPath.section {
-      case 0:  DocumentManager.createNewDocument()
-      default: DocumentManager.open(document: Document(fileURL: itemManager[indexPath.row].url))
-    }
-
-    dismiss?()
 
   }
 
@@ -495,7 +467,40 @@ final class DocumentsViewController: UICollectionViewController {
     
   }
 
+  // MARK: - Delegate
+
+  /// Returns `true` unless the cell is showing its delete button
+  override func collectionView(_ collectionView: UICollectionView,
+                               shouldHighlightItemAt indexPath: IndexPath) -> Bool
+  {
+
+    guard let cell = collectionView.cellForItem(at: indexPath) as? DocumentCell, cell.isShowingDelete else {
+      return true
+    }
+
+    cell.hideDelete()
+
+    return false
+
+  }
+
+  /// Creates a new document when section == 0; opens the document otherwise
+  override func collectionView(_ collectionView: UICollectionView,
+                               didSelectItemAt indexPath: IndexPath)
+  {
+
+    switch indexPath.section {
+      case 0:  DocumentManager.createNewDocument()
+      default: DocumentManager.open(document: Document(fileURL: itemManager[indexPath.row].url))
+    }
+
+    dismiss?()
+
+  }
+
 }
+
+// MARK: - Layout
 
 /// Custom layout for `DocumentsViewController`.
 final class DocumentsViewLayout: UICollectionViewLayout {
@@ -536,6 +541,7 @@ final class DocumentsViewLayout: UICollectionViewLayout {
 
   }
 
+  /// The max x and y values from the cached attributes of the bottom-most cell.
   override var collectionViewContentSize: CGSize {
 
     guard let lastItemFrame = attributesCache.last?.value.frame else { return .zero }
@@ -544,6 +550,7 @@ final class DocumentsViewLayout: UICollectionViewLayout {
 
   }
 
+  /// Returns any cached attributes with frames intersecting `rect`.
   override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
 
     let attributes = Array(attributesCache.values.filter({ $0.frame.intersects(rect) }))
@@ -552,6 +559,7 @@ final class DocumentsViewLayout: UICollectionViewLayout {
 
   }
 
+  /// Returns attributes with a frame vertically offset based on `indexPath.item`.
   override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
 
     let attributes = UICollectionViewLayoutAttributes(forCellWith: indexPath)
@@ -572,18 +580,25 @@ final class DocumentsViewLayout: UICollectionViewLayout {
 
 }
 
+// MARK: - Cells
+
 /// A cell for displaying the name of an existing document with a control for deleting the document.
 final class DocumentCell: UICollectionViewCell {
 
+  /// Button for deleting the document represented by the cell.
   @IBOutlet var deleteButton: LabelButton!
+
+  /// Displays the name of the cell's document.
   @IBOutlet var label: UILabel!
+
+  /// Used to reveal/hide the delete button.
   @IBOutlet var leadingConstraint: NSLayoutConstraint!
 
-  private(set) var isShowingDelete: Bool = false
+  /// Whether the cell is currently offset to reveal the delete button.
+  var isShowingDelete: Bool { return leadingConstraint?.constant ?? 0 < 0 }
 
-  var item: DocumentItem? { didSet { refresh() } }
-
-  func refresh() { label.text = item?.name }
+  /// The item specifying the document to associate with the cell.
+  var item: DocumentItem? { didSet { label.text = item?.name } }
 
   /// Returns the duration for an animation traveling `distance` or `0.25` when `distance == nil`.
   private func animationDurationForDistance(_ distance: CGFloat?) -> TimeInterval {
@@ -592,44 +607,45 @@ final class DocumentCell: UICollectionViewCell {
 
   /// Animates the cell to reveal the cell's delete button. Sets `isShowingDelete` to `true`.
   func revealDelete(_ distance: CGFloat? = nil) {
-    UIView.animate(withDuration: animationDurationForDistance(distance),
-                    animations: { self.leadingConstraint.constant = -self.deleteButton.bounds.width },
-                    completion: {self.isShowingDelete = $0})
+    UIView.animate(withDuration: animationDurationForDistance(distance)) {
+      self.leadingConstraint.constant = -self.deleteButton.bounds.width
+    }
   }
 
   /// Animates the cell to hide the cell's delete button. Sets `isShowingDelete` to `false`.
   func hideDelete(_ distance: CGFloat? = nil) {
-    UIView.animate(withDuration: animationDurationForDistance(distance),
-                    animations: { self.leadingConstraint.constant = 0 },
-                    completion: {self.isShowingDelete = !$0})
+    UIView.animate(withDuration: animationDurationForDistance(distance)) {
+      self.leadingConstraint.constant = 0
+    }
   }
 
   /// Handles the pan gesture attached to the cell for showing and hiding the delete button.
-  private func handlePan(_ gesture: BlockActionGesture) {
+  @IBAction
+  private func handlePan(_ gesture: PanGesture) {
 
-    guard let pan = gesture as? PanGesture else { return }
+    let x = gesture.translation(in: self).x
 
-    let x = pan.translationInView(self).x
+    switch (gesture.state, x) {
 
-    switch (pan.state, isShowingDelete) {
+      case (.began, <--0), (.changed, <--0):
+        // Moving content left.
 
-      case (.began, false) where x < 0,
-           (.changed, false) where x < 0:
         leadingConstraint.constant = x
 
-      case (.began, true) where x > 0,
-           (.changed, true) where x > 0:
+      case (.began, 0-->), (.changed, 0-->):
+        // Moving content right.
+
         leadingConstraint.constant = -deleteButton.bounds.width + x
 
-      case (.ended, false) where x <= -deleteButton.bounds.width:
+      case (.ended, <-|deleteButton.bounds.width.negated()):
+        // Ended with the delete button showing.
+
         revealDelete(abs(x))
 
-      case (.ended, _),
-           (.cancelled, _),
-           (.failed, _):
-        hideDelete(abs(x))
+      default:
+        // Canceled or ended with delete button hidden.
 
-      default: break
+        hideDelete(abs(x))
 
     }
 
@@ -637,19 +653,22 @@ final class DocumentCell: UICollectionViewCell {
 
   /// Creates and attaches the pan gesture for showing and hiding the delete button.
   private func setup() {
-
-    let gesture = PanGesture(handler: unownedMethod(self, DocumentCell.handlePan))
-    gesture.confineToView = true
-    gesture.delaysTouchesBegan = true
-    gesture.axis = .Horizontal
-
-    addGestureRecognizer(gesture)
+    //TODO: remove if the nib works
+//    let gesture = PanGesture(handler: unownedMethod(self, DocumentCell.handlePan))
+//    gesture.confineToView = true
+//    gesture.delaysTouchesBegan = true
+//    gesture.axis = .horizontal
+//
+//    addGestureRecognizer(gesture)
   }
 
   /// Overridden to ensure the delete button is not left showing upon reuse.
   override func prepareForReuse() {
+
     super.prepareForReuse()
-    if isShowingDelete { hideDelete() }
+
+    leadingConstraint?.constant = 0
+
   }
 
   /// Overridden to perform custom setup.

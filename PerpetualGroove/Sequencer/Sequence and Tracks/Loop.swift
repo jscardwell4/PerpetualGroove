@@ -32,7 +32,7 @@ final class Loop: Swift.Sequence, MIDINodeDispatch {
 
   var color: TrackColor { return track.color }
 
-  var recording: Bool { return Sequencer.mode == .loop && MIDINodePlayer.currentDispatch === self }
+  var isRecording: Bool { return Sequencer.mode == .loop && MIDINodePlayer.currentDispatch === self }
 
   var nextNodeName: String { return "\(name) \(nodes.count + 1)" }
 
@@ -86,12 +86,7 @@ final class Loop: Swift.Sequence, MIDINodeDispatch {
 
   func dispatch(event: MIDIEvent) {
     guard case .node(let nodeEvent) = event else { return }
-      switch nodeEvent.data {
-        case let .add(identifier, trajectory, generator):
-          nodeManager.addNode(identifier: identifier.nodeIdentifier, trajectory: trajectory, generator: generator)
-        case let .remove(identifier):
-          do { try nodeManager.removeNode(identifier: identifier.nodeIdentifier, delete: false) } catch { Log.error(error) }
-      }
+    nodeManager.handle(event: nodeEvent)
   }
 
   func makeIterator() -> AnyIterator<MIDIEvent> {
@@ -157,7 +152,7 @@ extension Loop: CustomStringConvertible {
       "end: \(end)",
       "identifier: \(identifier)",
       "color: \(color)",
-      "recording: \(recording)",
+      "isRecording: \(isRecording)",
       "name: \(name)",
       "nodes: \(nodes)",
       "events: \(eventContainer)"

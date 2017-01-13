@@ -55,6 +55,7 @@ struct Packet {
   }
 
   init?(packetList: UnsafePointer<MIDIPacketList>) {
+    //TODO: Check that this is correcty `Identifier`.
     let packet = packetList.pointee.packet
     guard packet.length == UInt16(MemoryLayout<Identifier>.size + 3) else { return nil }
     var data = packet.data

@@ -94,7 +94,7 @@ final class Transport {
     postNotification(name: .didStop, object: self, userInfo: ["time": time.barBeatTime.rawValue])
   }
 
-  fileprivate var jogTime: BarBeatTime = nil
+  fileprivate var jogTime: BarBeatTime = .null
 
   func beginJog(_ wheel: ScrollWheel) {
     guard !isJogging else { return }
@@ -105,7 +105,7 @@ final class Transport {
   }
 
   func jog(_ wheel: ScrollWheel) {
-    guard isJogging && jogTime != nil else { Log.warning("not jogging"); return }
+    guard isJogging && jogTime != .null else { Log.warning("not jogging"); return }
     let 𝝙time = BarBeatTime(totalBeats: Double(Sequencer.beatsPerBar) * wheel.𝝙revolutions)
     do { try jogToTime(max(jogTime + 𝝙time, BarBeatTime.zero), direction: wheel.direction) }
     catch { Log.error(error) }
@@ -115,7 +115,7 @@ final class Transport {
     guard isJogging /*&& clock.paused*/ else { Log.warning("not jogging"); return }
     state.formSymmetricDifference([.Jogging])
     time.barBeatTime = jogTime
-    jogTime = nil
+    jogTime = .null
     postNotification(name: .didEndJogging, object: self, userInfo: ["time": time.barBeatTime.rawValue])
     guard !isPaused && clock.paused else { return }
     clock.resume()

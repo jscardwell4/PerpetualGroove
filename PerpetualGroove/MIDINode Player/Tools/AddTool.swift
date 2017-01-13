@@ -96,7 +96,8 @@ extension AddTool: TouchReceiver {
     updateData()
     guard velocities.count > 0 && !location.isNull else { return }
     guard let track = Sequence.current?.currentTrack else { return }
-    let trajectory = MIDINode.Trajectory(vector: velocities.reduce(CGVector(), +) / CGFloat(velocities.count), point: location )
+    let trajectory = MIDINode.Trajectory(velocity: CGVector.mean(velocities),
+                                         position: location )
     MIDINodePlayer.placeNew(trajectory, target: track, generator: generator)
     touch = nil
   }

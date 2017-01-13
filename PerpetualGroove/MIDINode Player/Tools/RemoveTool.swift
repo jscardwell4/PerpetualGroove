@@ -81,10 +81,10 @@ final class RemoveTool: Tool {
       }
       if let sequence = sequence {
         receptionist.observe(name: .didChangeTrack, from: sequence) {
-          [weak self] _ in self?.track = self?.sequence?.currentTrack
+          [weak self] _ in self?.dispatch = self?.sequence?.currentTrack
         }
       }
-      track = sequence?.currentTrack
+      dispatch = sequence?.currentTrack
     }
   }
 
@@ -124,9 +124,9 @@ final class RemoveTool: Tool {
   }
 
   private func refreshLighting() {
-    guard let track = track else { return }
-    let trackNodes = track.nodes.flatMap({$0.elements.1.reference})
-    let (foregroundNodes, backgroundNodes) = player.midiNodes.flatMap({$0}).bisect { trackNodes.contains($0) }
+    guard let dispatch = dispatch else { return }
+    let dispatchNodes = dispatch.nodeManager.nodes.flatMap({$0.reference})
+    let (foregroundNodes, backgroundNodes) = player.midiNodes.flatMap({$0}).bisect { dispatchNodes.contains($0) }
     foregroundNodes.forEach(addForegroundLight)
     backgroundNodes.forEach(addBackgroundLight)
   }
@@ -136,13 +136,13 @@ final class RemoveTool: Tool {
     node?.lightingBitMask = 0
   }
 
-  fileprivate weak var track: InstrumentTrack? {
+  fileprivate weak var dispatch: MIDINodeDispatch? {
     didSet {
       if touch != nil { touch = nil }
-      guard active && oldValue !== track else { return }
+      guard active && oldValue !== dispatch else { return }
 
-      oldValue?.nodes.flatMap({$0.elements.1.reference}).forEach(addBackgroundLight)
-      track?.nodes.flatMap({$0.elements.1.reference}).forEach(addForegroundLight)
+      oldValue?.nodeManager.nodes.flatMap({$0.reference}).forEach(addBackgroundLight)
+      dispatch?.nodeManager.nodes.flatMap({$0.reference}).forEach(addForegroundLight)
     }
   }
 
@@ -164,19 +164,19 @@ final class RemoveTool: Tool {
   private func didAddNode(_ notification: Foundation.Notification) {
     guard active,
       let node = notification.addedNode,
-      let track = notification.addedNodeTrack
+      let dispatch = notification.addedNodeDispatch
       else
     {
       return
     }
 
-    if self.track === track { addForegroundLight(to: node) }
+    if self.dispatch === dispatch { addForegroundLight(to: node) }
     else { addBackgroundLight(to: node) }
   }
 
   fileprivate func removeMarkedNodes() {
     do {
-      guard let manager = track?.nodeManager else { return }
+      guard let manager = dispatch?.nodeManager else { return }
       let remove = deleteFromTrack ? MIDINodeManager.delete : MIDINodeManager.remove
       for node in nodesToRemove.flatMap({$0.reference}) {
         try remove(manager)(node)
@@ -193,11 +193,11 @@ final class RemoveTool: Tool {
     return receptionist
   }()
 
-  fileprivate func trackNodes(at point: CGPoint) -> [MIDINodeRef] {
+  fileprivate func dispatchNodes(at point: CGPoint) -> [MIDINodeRef] {
     let midiNodes = player.nodes(at: point).flatMap({$0 as? MIDINode}).map({MIDINodeRef($0)})
     return midiNodes.filter({
       guard let identifier = $0.reference?.identifier else { return false }
-      return track?.nodeManager.nodeIdentifiers.contains(identifier) == true
+      return dispatch?.nodeManager.nodes.first(where: {$0.reference?.identifier == identifier}) != nil
       }
     )
   }
@@ -210,7 +210,7 @@ extension RemoveTool: TouchReceiver {
     guard active && self.touch == nil else { return }
     touch = touches.first
     guard let point = touch?.location(in: player), player.contains(point) else { return }
-    nodesToRemove ∪= trackNodes(at: point)
+    nodesToRemove ∪= dispatchNodes(at: point)
   }
 
   @objc func touchesCancelled(_ touches: Set<UITouch>?, with event: UIEvent?) { touch = nil }
@@ -230,7 +230,7 @@ extension RemoveTool: TouchReceiver {
       touch = nil
       return
     }
-    nodesToRemove ∪= trackNodes(at: point)
+    nodesToRemove ∪= dispatchNodes(at: point)
   }
 
 }

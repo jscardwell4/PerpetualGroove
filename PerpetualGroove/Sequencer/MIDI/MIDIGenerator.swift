@@ -22,8 +22,8 @@ protocol MIDIGenerator: LosslessJSONValueConvertible {
   func sendNoteOn (outPort: MIDIPortRef, endPoint: MIDIEndpointRef) throws
   func sendNoteOff(outPort: MIDIPortRef, endPoint: MIDIEndpointRef) throws
 
-  func receiveNoteOn (endPoint: MIDIEndpointRef, identifier: UInt64) throws
-  func receiveNoteOff(endPoint: MIDIEndpointRef, identifier: UInt64) throws
+  func receiveNoteOn (endPoint: MIDIEndpointRef, identifier: UInt) throws
+  func receiveNoteOff(endPoint: MIDIEndpointRef, identifier: UInt) throws
 
 }
 
@@ -96,12 +96,12 @@ extension AnyMIDIGenerator: MIDIGenerator {
     }
   }
 
-  func receiveNoteOn(endPoint: MIDIEndpointRef, identifier: UInt64) throws {
+  func receiveNoteOn(endPoint: MIDIEndpointRef, identifier: UInt) throws {
     try generator.receiveNoteOn(endPoint: endPoint, identifier: identifier)
   }
 
 
-  func receiveNoteOff(endPoint: MIDIEndpointRef, identifier: UInt64) throws {
+  func receiveNoteOff(endPoint: MIDIEndpointRef, identifier: UInt) throws {
     try generator.receiveNoteOff(endPoint: endPoint, identifier: identifier)
   }
 

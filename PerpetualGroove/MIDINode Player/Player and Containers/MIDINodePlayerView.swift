@@ -10,11 +10,14 @@ import UIKit
 import SpriteKit
 import MoonKit
 
+/// `SKView` subclass that presents a `MIDINodePlayerScene`.
 final class MIDINodePlayerView: SKView {
 
+  /// The player scene being presented.
   var playerScene: MIDINodePlayerScene? { return scene as? MIDINodePlayerScene }
 
-  fileprivate func setup() {
+  /// Configures various properties and presents a new `MIDINodePlayerScene` instance.
+  private func setup() {
     ignoresSiblingOrder = true
     shouldCullNonVisibleNodes = false
     showsFPS = true
@@ -22,11 +25,13 @@ final class MIDINodePlayerView: SKView {
     presentScene(MIDINodePlayerScene(size: bounds.size))
   }
 
+  /// Overridden to run `setup()`.
   override init(frame: CGRect) {
     super.init(frame: frame)
     setup()
   }
 
+  /// Overridden to run `setup()`.
   required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
     setup()

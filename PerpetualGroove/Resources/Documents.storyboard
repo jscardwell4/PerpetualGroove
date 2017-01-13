@@ -19,7 +19,7 @@
         <scene sceneID="PRi-3n-XlO">
             <objects>
                 <collectionViewController storyboardIdentifier="Documents" id="O6i-Zp-3qE" userLabel="Documents" customClass="DocumentsViewController" customModule="Groove" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" id="0IQ-bl-889" userLabel="DocumentsCollection">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="0IQ-bl-889" userLabel="DocumentsCollection">
                         <rect key="frame" x="0.0" y="0.0" width="250" height="120"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.1731918603181839" green="0.17318670451641083" blue="0.17318965494632721" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -48,7 +48,7 @@
                                             </userDefinedRuntimeAttributes>
                                         </label>
                                         <view opaque="NO" contentMode="scaleToFill" placeholderIntrinsicWidth="92" placeholderIntrinsicHeight="20.5" translatesAutoresizingMaskIntoConstraints="NO" id="GUG-cL-cTd" userLabel="Delete" customClass="LabelButton" customModule="MoonKit">
-                                            <rect key="frame" x="250" y="10" width="92" height="20.5"/>
+                                            <rect key="frame" x="250" y="10.5" width="92" height="20.5"/>
                                             <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                             <color key="tintColor" red="0.70097428560256958" green="0.17991100251674652" blue="0.015877731144428253" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <accessibility key="accessibilityConfiguration" identifier="Delete"/>
@@ -72,6 +72,7 @@
                                         </view>
                                     </subviews>
                                 </view>
+                                <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstItem="GUG-cL-cTd" firstAttribute="leading" secondItem="EwA-wV-vSP" secondAttribute="trailing" id="EaZ-pH-vFF"/>
                                     <constraint firstItem="EwA-wV-vSP" firstAttribute="centerY" secondItem="AUk-3s-KxI" secondAttribute="centerY" id="O2A-wv-gs4"/>
@@ -84,6 +85,7 @@
                                     <outlet property="deleteButton" destination="GUG-cL-cTd" id="t4s-55-3Eq"/>
                                     <outlet property="label" destination="EwA-wV-vSP" id="kDG-XG-V7m"/>
                                     <outlet property="leadingConstraint" destination="Tc5-JE-Lg5" id="EiQ-t4-wnD"/>
+                                    <outletCollection property="gestureRecognizers" destination="QhQ-sn-ZFb" appends="YES" id="jWv-be-77N"/>
                                 </connections>
                             </collectionViewCell>
                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="CreateDocumentCell" id="6In-xp-QZD" customClass="CreateDocumentCell" customModule="Groove" customModuleProvider="target">
@@ -94,7 +96,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="Create Document" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r0p-MA-Lux" userLabel="Label">
-                                            <rect key="frame" x="28" y="11" width="191" height="20"/>
+                                            <rect key="frame" x="28" y="11" width="134" height="20"/>
                                             <color key="tintColor" red="0.76089900732040405" green="0.25649610161781311" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <accessibility key="accessibilityConfiguration" identifier="Label"/>
                                             <fontDescription key="fontDescription" name="EvelethLight" family="Eveleth" pointSize="17"/>
@@ -182,6 +184,17 @@
                     </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9SJ-ym-gDI" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <gestureRecognizer delaysTouchesBegan="YES" id="QhQ-sn-ZFb" customClass="PanGesture" customModule="MoonKit">
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="rawAxis">
+                            <integer key="value" value="1"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="boolean" keyPath="confineToView" value="YES"/>
+                    </userDefinedRuntimeAttributes>
+                    <connections>
+                        <action selector="handlePan:" destination="9SJ-ym-gDI" id="WIH-Bk-Bs9"/>
+                    </connections>
+                </gestureRecognizer>
             </objects>
             <point key="canvasLocation" x="289" y="278"/>
         </scene>

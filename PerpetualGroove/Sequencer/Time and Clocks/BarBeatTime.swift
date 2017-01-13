@@ -296,11 +296,11 @@ extension BarBeatTime: ExpressibleByStringLiteral {
 }
 
 // MARK: - NilLiteralConvertible
-extension BarBeatTime: ExpressibleByNilLiteral {
-  init(nilLiteral: ()) {
-    self = BarBeatTime.null
-  }
-}
+//extension BarBeatTime: ExpressibleByNilLiteral {
+//  init(nilLiteral: ()) {
+//    self = BarBeatTime.null
+//  }
+//}
 
 // MARK: - FloatLiteralConvertible
 extension BarBeatTime: ExpressibleByFloatLiteral {

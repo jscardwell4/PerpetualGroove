@@ -102,11 +102,11 @@ extension ChordGenerator: LosslessJSONValueConvertible {
 
 extension ChordGenerator: MIDIGenerator {
 
-  func receiveNoteOn(endPoint: MIDIEndpointRef, identifier: UInt64) throws {
+  func receiveNoteOn(endPoint: MIDIEndpointRef, identifier: UInt) throws {
     for note in midiNotes { try note.receiveNoteOn(endPoint: endPoint, identifier: identifier) }
   }
 
-  func receiveNoteOff(endPoint: MIDIEndpointRef, identifier: UInt64) throws {
+  func receiveNoteOff(endPoint: MIDIEndpointRef, identifier: UInt) throws {
     for note in midiNotes { try note.receiveNoteOff(endPoint: endPoint, identifier: identifier) }
   }
 

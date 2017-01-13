@@ -99,7 +99,7 @@ final class LogManager {
 
     Context.set(context: SceneContext, forType: MIDINodePlayer.self)
     Context.set(context: SceneContext, forType: MIDINodePlayerScene.self)
-    Context.set(context: SceneContext, forType: MIDINodeHistory.self)
+//    Context.set(context: SceneContext, forType: MIDINodeHistory.self)
     Context.set(context: SceneContext, forType: MIDINodePlayerNode.self)
     Context.set(context: SceneContext, forType: AddTool.self)
     Context.set(context: SceneContext, forType: RemoveTool.self)

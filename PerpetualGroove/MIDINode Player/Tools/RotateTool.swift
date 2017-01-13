@@ -23,13 +23,13 @@ final class RotateTool: PresentingNodeAdjustmentTool {
   fileprivate func didRotate(_ rotation: CGFloat) {
     guard let node = node , node.initialTrajectory.angle != rotation else { return }
     let oldTrajectory = node.initialTrajectory
-    let newTrajectory = node.initialTrajectory.rotatedTo(angle: rotation)
+    let newTrajectory = node.initialTrajectory.withAngle(rotation)
     MIDINodePlayer.undoManager.registerUndo(withTarget: node) {
       node in
       node.initialTrajectory = oldTrajectory
       MIDINodePlayer.undoManager.registerUndo(withTarget: node) { $0.initialTrajectory = newTrajectory }
     }
-    adjustNode{ node.initialTrajectory.formRotatedTo(angle: rotation) }
+    adjustNode{ node.initialTrajectory.angle = rotation }
   }
 
   override func didSelectNode() {
@@ -63,7 +63,7 @@ final class RotateViewController: UIViewController, SecondaryControllerContent {
     ball.tintColor = node.dispatch?.color.value
     arrow.tintColor = .quaternaryColor
 
-    let angle = node.initialTrajectory.v.angle
+    let angle = node.initialTrajectory.velocity.angle
     arrow.transform = CGAffineTransform(rotationAngle: angle)
     rotationGesture.rotation = angle
   }

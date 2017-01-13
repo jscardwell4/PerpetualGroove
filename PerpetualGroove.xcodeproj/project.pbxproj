@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C2012FC91E22C84D0067DDC5 /* DocumentCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C2012FC81E22C84D0067DDC5 /* DocumentCell.xib */; };
 		C207458F1B8DF6D5000A06D4 /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = C207458E1B8DF6D5000A06D4 /* Time.swift */; };
 		C20A10A11C51552B00522FD7 /* BarBeatTimeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20A10A01C51552B00522FD7 /* BarBeatTimeTests.swift */; };
 		C217EE391DB435E40076B6E7 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C217EE381DB435E40076B6E7 /* AudioToolbox.framework */; };
@@ -29,7 +30,6 @@
 		C223B1A21C8364ED006CF6B5 /* MIDIEventContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C223B1A11C8364ED006CF6B5 /* MIDIEventContainer.swift */; };
 		C22BA0891E008E6E00F1BF79 /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2FAAC5D1D99AA630089D1B0 /* MoonKit.framework */; };
 		C22BA08A1E008E6E00F1BF79 /* MoonKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2FAAC5D1D99AA630089D1B0 /* MoonKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		C22D93F11BADA24A00B04A2B /* MIDINodeHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22D93F01BADA24A00B04A2B /* MIDINodeHistory.swift */; };
 		C22FA58D1BC830D600162DB4 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22FA58C1BC830D600162DB4 /* SettingsManager.swift */; };
 		C23516621E06E123009AC033 /* MIDINote.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23516611E06E123009AC033 /* MIDINote.swift */; };
 		C23B05871C01258D0081AC6E /* Packet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23B05861C01258D0081AC6E /* Packet.swift */; };
@@ -209,7 +209,6 @@
 		C2D7BB2F1DE345C300EC7A53 /* GrooveFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24DCE371C3438A800AD98BE /* GrooveFile.swift */; };
 		C2D7BB301DE345C300EC7A53 /* MIDIFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25EBC821B8BFAFA00E57665 /* MIDIFile.swift */; };
 		C2D7BB311DE345C300EC7A53 /* DocumentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D406731BB9FDC700681DEF /* DocumentManager.swift */; };
-		C2D7BB321DE345C300EC7A53 /* MIDINodeHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22D93F01BADA24A00B04A2B /* MIDINodeHistory.swift */; };
 		C2D7BB331DE345C300EC7A53 /* MIDINodeDispatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2670CCF1C4704A2000F76F9 /* MIDINodeDispatch.swift */; };
 		C2D7BB341DE345C300EC7A53 /* MIDINodeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2562D091C63DBFB0086789D /* MIDINodeManager.swift */; };
 		C2D7BB351DE345C300EC7A53 /* Tool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C282911C1C1DFFD600F9975C /* Tool.swift */; };
@@ -381,6 +380,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		C2012FC81E22C84D0067DDC5 /* DocumentCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DocumentCell.xib; sourceTree = "<group>"; };
 		C207458E1B8DF6D5000A06D4 /* Time.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
 		C20A109E1C51552B00522FD7 /* BarBeatTimeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BarBeatTimeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C20A10A01C51552B00522FD7 /* BarBeatTimeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarBeatTimeTests.swift; sourceTree = "<group>"; };
@@ -404,7 +404,6 @@
 		C21E44C41B76546C00574BD2 /* AudioManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioManager.swift; sourceTree = "<group>"; };
 		C2207B901B9DC63300E4D65D /* SF2File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SF2File.swift; sourceTree = "<group>"; };
 		C223B1A11C8364ED006CF6B5 /* MIDIEventContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIEventContainer.swift; sourceTree = "<group>"; };
-		C22D93F01BADA24A00B04A2B /* MIDINodeHistory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINodeHistory.swift; sourceTree = "<group>"; };
 		C22FA58C1BC830D600162DB4 /* SettingsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
 		C23516611E06E123009AC033 /* MIDINote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINote.swift; sourceTree = "<group>"; };
 		C23B05861C01258D0081AC6E /* Packet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Packet.swift; sourceTree = "<group>"; };
@@ -685,7 +684,6 @@
 		C239EC4D1DB27514004A580A /* Node */ = {
 			isa = PBXGroup;
 			children = (
-				C22D93F01BADA24A00B04A2B /* MIDINodeHistory.swift */,
 				C26FC16E1B7BA63300E271A3 /* MIDINode.swift */,
 				C2670CCF1C4704A2000F76F9 /* MIDINodeDispatch.swift */,
 				C2562D091C63DBFB0086789D /* MIDINodeManager.swift */,
@@ -760,6 +758,7 @@
 		C2404BDB1B78F03E00A68A64 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				C2012FC81E22C84D0067DDC5 /* DocumentCell.xib */,
 				C2FAAC761D99C7160089D1B0 /* Embedded Frameworks */,
 				C28BD3401E018C380099F474 /* Fonts */,
 				C2404BD81B78EFA800A68A64 /* Sound Sets */,
@@ -1491,6 +1490,7 @@
 				C28BD2DB1E01860C0099F474 /* Yellow Design Studio - Eveleth Shapes.otf in Resources */,
 				C28BD2DC1E01860C0099F474 /* Yellow Design Studio - Eveleth Slant Light.otf in Resources */,
 				C28BD2DD1E01860C0099F474 /* Yellow Design Studio - Eveleth Slant Regular Bold.otf in Resources */,
+				C2012FC91E22C84D0067DDC5 /* DocumentCell.xib in Resources */,
 				C28BD2DE1E01860C0099F474 /* Yellow Design Studio - Eveleth Slant Regular.otf in Resources */,
 				C28BD2DF1E01860C0099F474 /* Yellow Design Studio - Eveleth Thin.otf in Resources */,
 				C28BD2FB1E0187520099F474 /* Latinotype - Triump-Rg-Blur-01.otf in Resources */,
@@ -1638,7 +1638,6 @@
 				C2D7BB5F1DE3460300EC7A53 /* NodeAdjustmentTool.swift in Sources */,
 				C2D7BB3E1DE345C300EC7A53 /* MIDINodePlayerNode.swift in Sources */,
 				C2D7BB501DE345C300EC7A53 /* Sequencer.swift in Sources */,
-				C2D7BB321DE345C300EC7A53 /* MIDINodeHistory.swift in Sources */,
 				C2D7BB3C1DE345C300EC7A53 /* MIDINodePlayerViewController.swift in Sources */,
 				C2D7BB2B1DE345C300EC7A53 /* DocumentItem.swift in Sources */,
 				C2D7BB401DE345C300EC7A53 /* MIDINodePlayerView.swift in Sources */,
@@ -1746,7 +1745,6 @@
 				C2AA2BCB1B84FB2100A0B08D /* Sequencer.swift in Sources */,
 				C2807DE01C74C6270061A001 /* RotateTool.swift in Sources */,
 				C2516B2D1C08F1B50060710B /* TransportViewController.swift in Sources */,
-				C22D93F11BADA24A00B04A2B /* MIDINodeHistory.swift in Sources */,
 				C2E043351B72F4DC005F0675 /* AppDelegate.swift in Sources */,
 				C2FEB0251C0F6183000BD1B7 /* GeneratorTool.swift in Sources */,
 				C24E83981C3EE0A300B4A16A /* MixerContainer.swift in Sources */,
