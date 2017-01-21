@@ -9,6 +9,7 @@
 import Foundation
 import MoonKit
 
+/// A Singleton whose job is to coordinate all file/document operations within the application.
 final class DocumentManager: NotificationDispatching {
 
   /// Asynchronously registers for notifications and updates `storageLocation`.

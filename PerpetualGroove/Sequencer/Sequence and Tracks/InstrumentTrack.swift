@@ -40,11 +40,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch, Hashable {
 
   // MARK: - Listening for Sequencer and sequence notifications
 
-  private let receptionist: NotificationReceptionist = {
-    let receptionist = NotificationReceptionist(callbackQueue: OperationQueue.main)
-    receptionist.logContext = LogManager.SequencerContext
-    return receptionist
-  }()
+  private let receptionist = NotificationReceptionist(callbackQueue: OperationQueue.main)
 
   private func initializeNotificationReceptionist() {
     guard receptionist.count == 0 else { return }

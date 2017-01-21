@@ -10,6 +10,7 @@ import Foundation
 import class UIKit.UIColor
 import Chameleon
 
+/// Extend `UIColor` with derived class properties for colors used within the application.
 extension UIColor {
 
   static var backgroundColor:        UIColor { return mineShaft    }

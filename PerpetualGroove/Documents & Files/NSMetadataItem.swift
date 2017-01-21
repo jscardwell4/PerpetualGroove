@@ -9,6 +9,7 @@
 import Foundation
 import MoonKit
 
+/// Extends `NSMetadataItem` to provide more convenient access to the various file attributes of the item.
 extension NSMetadataItem {
 
   /// Enumeration wrapping various file attribute keys.

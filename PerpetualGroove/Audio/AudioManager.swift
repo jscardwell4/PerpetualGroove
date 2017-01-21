@@ -19,7 +19,7 @@ final class AudioManager {
 
   static let queue = DispatchQueue(label: "midi", attributes: [])
 
-  private(set) static var initialized = false
+  private(set) static var isInitialized = false
 
   static private let engine = AVAudioEngine()
 
@@ -30,7 +30,7 @@ final class AudioManager {
   static private(set) var metronome: Metronome!
 
   static func attach(node: AVAudioNode, for instrument: Instrument) {
-    guard initialized else { fatalError("attempt to attach node before engine initialized") }
+    guard isInitialized else { fatalError("attempt to attach node before engine isInitialized") }
 
     guard !instruments.contains(instrument) && node.engine == nil else { return }
 
@@ -40,7 +40,7 @@ final class AudioManager {
   }
 
   static func initialize() throws {
-    guard !initialized else { return }
+    guard !isInitialized else { return }
 
     let outputFormat = engine.outputNode.outputFormat(forBus: 0)
     guard outputFormat.sampleRate != 0 else { fatalError("output disabled (sample rate = 0)") }
@@ -55,7 +55,7 @@ final class AudioManager {
 
     metronome = try Metronome(sampler: node)
 
-    initialized = true
+    isInitialized = true
 
     Log.debug("AudioManager initialized…")
 

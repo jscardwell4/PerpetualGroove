@@ -22,11 +22,7 @@ final class PurgatorySegue: UIStoryboardSegue {
 
 final class PurgatoryViewController: UIViewController {
 
-  private let receptionist: NotificationReceptionist = {
-    let receptionist = NotificationReceptionist(callbackQueue: OperationQueue.main)
-    receptionist.logContext = LogManager.UIContext
-    return receptionist
-  }()
+  private let receptionist = NotificationReceptionist(callbackQueue: OperationQueue.main)
 
   @IBOutlet var backdrop: UIImageView!
 

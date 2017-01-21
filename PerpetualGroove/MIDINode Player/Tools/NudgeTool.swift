@@ -9,8 +9,9 @@
 import Foundation
 import MoonKit
 
-// TODO: Review file
+// TODO: Implement the tool.
 
-final class NudgeTool: NodeAdjustmentTool {
+/// A tool for adjusting the initial position of a midi node.
+final class NudgeTool: NodeSelectionTool {
   
 }

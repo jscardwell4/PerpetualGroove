@@ -39,7 +39,7 @@ final class RootViewController: UIViewController {
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
 
-    assert(SettingsManager.initialized)
+    assert(SettingsManager.isInitialized)
 
     guard Setting.iCloudStorage.value as? Bool == true
        && FileManager.default.ubiquityIdentityToken == nil

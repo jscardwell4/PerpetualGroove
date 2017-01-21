@@ -37,6 +37,12 @@ protocol MIDINodeDispatch: class, MIDIEventDispatch, Named {
 
 }
 
+extension MIDINodeDispatch {
+
+  var nodes: [MIDINode] { return nodeManager.nodes.flatMap({$0.reference}) }
+
+}
+
 /// Enumeration of errors thrown by `MIDINodeDispatch` methods.
 enum MIDINodeDispatchError: String, Swift.Error, CustomStringConvertible {
   case NodeNotFound = "The specified node was not found among the nodes of the dispatch source."

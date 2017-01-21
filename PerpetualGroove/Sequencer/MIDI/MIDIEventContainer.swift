@@ -9,6 +9,8 @@
 import Foundation
 import MoonKit
 
+// TODO: Review file
+
 /// Protocol for sharing implementation details between MIDIEventContainer and MIDIEventContainerSlice.
 fileprivate protocol _MIDIEventContainer: Collection, CustomStringConvertible {
   associatedtype Events: RandomAccessCollection

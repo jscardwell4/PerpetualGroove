@@ -13,10 +13,10 @@ import MoonKit
 /// Protocol for objects that can be set to handle touches received by a `MIDINodePlayerNode` instance.
 @objc protocol TouchReceiver {
 
-  func touchesBegan    (_ touches: Set<UITouch>,  with event: UIEvent?)
-  func touchesCancelled(_ touches: Set<UITouch>?, with event: UIEvent?)
-  func touchesEnded    (_ touches: Set<UITouch>,  with event: UIEvent?)
-  func touchesMoved    (_ touches: Set<UITouch>,  with event: UIEvent?)
+  func touchesBegan    (_ touches: Set<UITouch>)
+  func touchesCancelled(_ touches: Set<UITouch>)
+  func touchesEnded    (_ touches: Set<UITouch>)
+  func touchesMoved    (_ touches: Set<UITouch>)
 
 }
 
@@ -73,22 +73,22 @@ final class MIDINodePlayerNode: SKShapeNode {
 
   /// Overridden to bounce invocation to `touchReceiver`.
   override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-    touchReceiver?.touchesBegan(touches, with: event)
+    touchReceiver?.touchesBegan(touches)
   }
 
   /// Overridden to bounce invocation to `touchReceiver`.
   override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-    touchReceiver?.touchesCancelled(touches, with: event)
+    touchReceiver?.touchesCancelled(touches)
   }
 
   /// Overridden to bounce invocation to `touchReceiver`.
   override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-    touchReceiver?.touchesEnded(touches, with: event)
+    touchReceiver?.touchesEnded(touches)
   }
 
   /// Overridden to bounce invocation to `touchReceiver`.
   override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-    touchReceiver?.touchesMoved(touches, with: event)
+    touchReceiver?.touchesMoved(touches)
   }
 
 }

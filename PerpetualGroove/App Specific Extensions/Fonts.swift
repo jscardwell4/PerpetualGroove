@@ -9,7 +9,6 @@
 import Foundation
 import UIKit
 
-
 private let _labelFont = UIFont(name: "EvelethLight", size: 14)
                       ?? UIFont.systemFont(ofSize: 14, weight: UIFontWeightLight)
 private let _largeDisplayFont = UIFont(name: "EvelethLight", size: 36)
@@ -27,8 +26,9 @@ private let _controlSelectedFont = UIFont(name: "EvelethRegular", size: 14)
 private let _largeControlSelectedFont = UIFont(name: "EvelethRegular", size: 22)
                                      ?? UIFont.systemFont(ofSize: 22, weight: UIFontWeightRegular)
 
-
+/// Extend `UIFont` with class derived properties for fonts used within the application.
 extension UIFont {
+
   static var labelFont:                    UIFont { return _labelFont                    }
   static var largeDisplayFont:             UIFont { return _largeDisplayFont             }
   static var controlFont:                  UIFont { return _controlFont                  }
@@ -37,6 +37,7 @@ extension UIFont {
   static var compressedControlFontEditing: UIFont { return _compressedControlFontEditing }
   static var controlSelectedFont:          UIFont { return _controlSelectedFont          }
   static var largeControlSelectedFont:     UIFont { return _largeControlSelectedFont     }
+
 }
 
 

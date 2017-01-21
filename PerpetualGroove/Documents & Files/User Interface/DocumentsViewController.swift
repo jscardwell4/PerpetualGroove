@@ -10,10 +10,11 @@ import Foundation
 import UIKit
 import MoonKit
 
-// FIXME: Deleting the current document halts application. still true???
+/// A view controller for presenting a list of existing documents and a control for creating a new document.
+/// Selecting an existing document in the list will load its sequence and update the bookmark data stored
+/// in settings.
+/// - Bug: Deleting the current document was halting the application, is this still true?
 final class DocumentsViewController: UICollectionViewController {
-
-  // MARK: - Properties
 
   /// Action invoked when the controller's view is dismissed.
   var dismiss: (() -> Void)?
@@ -60,8 +61,6 @@ final class DocumentsViewController: UICollectionViewController {
   /// Overridden to return `true`.
   override var prefersStatusBarHidden: Bool { return true }
 
-  // MARK: - Document items
-
   /// The object from which the collection's items are retrieved.
   private let itemManager = ItemManager()
 
@@ -75,12 +74,12 @@ final class DocumentsViewController: UICollectionViewController {
 
     didSet {
 
+      // Check that the controller's view has loaded.
       guard isViewLoaded else { return }
 
-      if oldValue != selectedItem {
-        Log.debug("\(oldValue?.description ?? "nil") ➞ \(selectedItem?.description ?? "nil")")
-      }
+      Log.debug("\(oldValue?.description ?? "nil") ➞ \(selectedItem?.description ?? "nil")")
 
+      // Make the selection in the collection view, animated and centered vertically.
       collectionView?.selectItem(at: selectedItem, animated: true, scrollPosition: .centeredVertically)
 
     }
@@ -90,6 +89,7 @@ final class DocumentsViewController: UICollectionViewController {
   /// Reloads `collectionView` and refreshes selection
   private func reloadData() {
 
+    // Ensure the reloading occurs on the main thread.
     DispatchQueue.main.async {
       [weak self] in
 
@@ -133,30 +133,28 @@ final class DocumentsViewController: UICollectionViewController {
   /// it is created, a new cell is added to the collection view, and then `selectedItem` updated.
   private func refreshSelection() {
 
+    // Check that the controller's view is loaded.
     guard isViewLoaded else { return }
 
+    // Get the current document or clear the selection and return.
     guard let document = DocumentManager.currentDocument else { selectedItem = nil; return }
 
+    // Switch on the item manager's index for `document`.
     switch itemManager.index(of: DocumentItem.document(document)) {
 
       case let index?:
-        // Select the index path for the current document
+        // Update `selectedItem` with an index path consisting of `index` and the document item section.
+
         selectedItem = IndexPath(item: index, section: 1)
 
       default:
-        fatalError("Seems like this need revision.")
-//        let indexPath = IndexPath(item: itemManager.count, section: 1)
-//        itemManager.append(.document(document))
-//        collectionView?.performBatchUpdates({ self.collectionView?.insertItems(at: [indexPath]) },
-//                                            completion: { completed in
-//                                              guard completed else { return }
-//                                              self.selectedItem = indexPath })
+        // The item manager should have an index for all existing documents.
+
+        unreachable("Seems like this need revision.")
 
     }
 
   }
-
-  // MARK: - View lifecycle
 
   /// Overridden to set `itemManager.controler` to `self`.
   override func awakeFromNib() {
@@ -172,24 +170,29 @@ final class DocumentsViewController: UICollectionViewController {
 
     super.viewDidLoad()
 
+    // Get the collection view.
     guard let collectionView = collectionView else {
       fatalError("The view is loaded but `collectionView` is nil.")
     }
 
+    // Register the document cell
     collectionView.register(UINib(nibName: "DocumentCell.xib", bundle: nil),
                             forCellWithReuseIdentifier: "DocumentCellNib")
 
+    // Constrain the collection view to the controller's view.
     view.constrain(𝗩∶|-[collectionView]-|, 𝗛∶|-[collectionView]-|)
 
+    // Create the width and height constaints for the collection view.
     let id = Identifier(for: self, tags: "Content")
     widthConstraint = (collectionView.width == itemWidth --> (id + "Width")).activeConstraint
     heightConstraint = (collectionView.height == collectionHeight --> (id + "Height")).activeConstraint
 
+    // Set the delegate for the collection view's layout.
     (collectionViewLayout as? DocumentsViewLayout)?.controller = self
 
   }
 
-  /// Updates the contents of `items` and refreshes the current selection
+  /// Overridden to reload the item data when appropriate.
   override func viewWillAppear(_ animated: Bool) {
 
     super.viewWillAppear(animated)
@@ -202,11 +205,10 @@ final class DocumentsViewController: UICollectionViewController {
       return
     }
 
+    // Reload the collection.
     reloadData()
 
   }
-
-  // MARK: - DataSource
 
   /// Returns two: one for the create item and one for the existing document items
   override func numberOfSections(in collectionView: UICollectionView) -> Int { return 2 }
@@ -218,7 +220,7 @@ final class DocumentsViewController: UICollectionViewController {
     return section == 1 ? itemManager.count : 1
   }
 
-  /// Returns an instance of `CreateDocumentCell` when section == 0 and an instance of 
+  /// Returns an instance of `UICollectionViewCell` when section == 0 and an instance of
   /// `DocumentCell` otherwise.
   override func collectionView(_ collectionView: UICollectionView,
                                cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
@@ -226,15 +228,23 @@ final class DocumentsViewController: UICollectionViewController {
 
     let cell: UICollectionViewCell
 
+    // Switch on the section of the index path.
     switch indexPath.section {
 
       case 0:
+        // The index path points to the section containing the document creation control.
+
         cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CreateDocumentCell", for: indexPath)
+
       case 1:
+        // The index path points to the section for document cells.
+
         cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DocumentCellNib", for: indexPath)
         (cell as! DocumentCell).item = itemManager[indexPath.item]
 
       default:
+        // The index path points to a non-existent section.
+
         fatalError("Invalid section")
 
     }
@@ -243,10 +253,9 @@ final class DocumentsViewController: UICollectionViewController {
 
   }
 
-  /// A type for managing the items in the collection.
+  /// A type for managing the items in the collection. `ItemManager` conforms to the `Collection`
+  /// protocol via indirection by wrapping calls to its collection of items.
   private final class ItemManager: Collection {
-
-    // MARK: Presenting a collection interface by wrapping `items`.
 
     typealias Index = OrderedSet<DocumentItem>.Index
     typealias SubSequence = OrderedSet<DocumentItem>.SubSequence
@@ -293,8 +302,6 @@ final class DocumentsViewController: UICollectionViewController {
 
     func append(_ newElement: DocumentItem) { items.append(newElement) }
 
-    // MARK: Stored properties
-
     /// The controller for which items are being managed.
     weak var controller: DocumentsViewController?
 
@@ -335,8 +342,6 @@ final class DocumentsViewController: UICollectionViewController {
 
     }
 
-    // MARK: Receiving notifications
-
     /// Default initializer, registers for item-related notifications.
     init() {
 
@@ -356,48 +361,66 @@ final class DocumentsViewController: UICollectionViewController {
     /// Adds and/or removes items according to the contents of `notification`.
     private func didUpdateItems(_ notification: Notification) {
 
+      // Store the current item count.
       let currentItemCount = items.count
 
+      // Retrieve the added and removed items.
       let addedItems = notification.addedItems ?? []
       let removedItems = (notification.removedItems ?? []).filter({items.contains($0)})
 
+      // Calculate the change in the number of items.
       let 𝝙itemCount = addedItems.count &- removedItems.count
 
+      // Update the collection of items.
       items ∪= addedItems
       items ∖= removedItems
 
+      // Check that the controller is non-nil and its view is loaded.
       guard let controller = controller, controller.isViewLoaded else { return }
 
+      // Store the lower and upper bounds for the action to perform.
       let from: Int, to: Int
+
+      // Store the action to perform
       let performAction: (UICollectionView) -> ([IndexPath]) -> Void
 
-
+      // Handle according to the change in the number of items.
       switch 𝝙itemCount {
 
         case 0-->:
+          // More items have been added than removed. Configure variables for cell insertion.
+
           from = currentItemCount
           to = currentItemCount &+ 𝝙itemCount
           performAction = UICollectionView.insertItems
 
         case <--0:
+          // More items have been remove than added. Configure variables for cell deletion.
+
           from = currentItemCount &+ 𝝙itemCount
           to = currentItemCount
           performAction = UICollectionView.deleteItems
 
         default:
+          // The item count has not changed. Nothing to do.
+
           return
 
       }
 
+      // Create a closure that updates the collection.
       let updates = {
         [weak self, bounds = from ..< to] in
 
+        // Retrieve the collection view to modify.
         guard let collectionView = self?.controller?.collectionView else { return }
 
+        // Perform the stored action using index paths derived from the stored upper and lower bounds.
         performAction(collectionView)(bounds.map({IndexPath(item: $0, section: 1)}))
 
       }
 
+      // Perform the batched updates, refreshing the controller's selection upon successful completion.
       controller.collectionView?.performBatchUpdates(updates) {
         [weak self] completed in
         
@@ -408,23 +431,28 @@ final class DocumentsViewController: UICollectionViewController {
       
     }
 
-    /// Unregisters for name-change observations from the current document
+    /// Unregisters for name-change observations from the outgoing document.
     private func willChangeDocument(_ notification: Notification) {
 
+      // Check that there is a document to stop observing.
       guard let document = DocumentManager.currentDocument else { return }
 
+      // Stop observing the outgoing document.
       receptionist.stopObserving(name: .didRenameDocument, from: document)
       
     }
 
-    /// Updates name-change observations.
+    /// Registers for name-change observations from the incoming document and refreshes the selection.
     private func didChangeDocument(_ notification: Notification) {
 
+      // Check that there is a document to start observing.
       guard let document = DocumentManager.currentDocument else { return }
 
+      // Start observing the incoming document.
       receptionist.observe(name: .didRenameDocument, from: document,
                            callback: weakMethod(self, ItemManager.documentDidChangeName))
 
+      // Refresh the controller's selection.
       controller?.refreshSelection()
 
     }
@@ -434,6 +462,7 @@ final class DocumentsViewController: UICollectionViewController {
 
       Log.debug("userInfo: \(notification.userInfo)")
 
+      // Retrieve the document's new name.
       guard let newName = notification.newDocumentName else {
         Log.warning("name change notification without new name value in user info")
         return
@@ -441,45 +470,54 @@ final class DocumentsViewController: UICollectionViewController {
 
       Log.debug("current document changed name to '\(newName)'")
 
+      // Retrieve the document.
       guard let document = notification.object as? Document else {
         fatalError("Expected notification object to be of `Document` type")
       }
 
+      // Generate a new item for the document.
       let newItem = DocumentItem.document(document)
 
+      // Retrieve the index for the document in the collection of items.
       guard let index = items.index(of: newItem) else {
         fatalError("Unable to resolve index in `items` for document: \(document)")
       }
 
+      // Update the item in the collection of items.
       items[index] = newItem
 
       assert(items[index].name == newName, "Item was not actually replaced in ordered set.")
 
+      // Create an index path for the document's cell.
       let indexPath = IndexPath(item: index, section: 1)
 
+      // Retrieve the existing cell for the document.
       guard let cell = controller?.collectionView?.cellForItem(at: indexPath) as? DocumentCell else {
         return
       }
 
+      // Update the cell's item to trigger an update to the cell's label text.
       cell.item = newItem
 
     }
     
   }
 
-  // MARK: - Delegate
-
   /// Returns `true` unless the cell is showing its delete button
   override func collectionView(_ collectionView: UICollectionView,
                                shouldHighlightItemAt indexPath: IndexPath) -> Bool
   {
 
+    // Get the cell for `indexPath` and make sure it has revealed its delete control. If the delete
+    // control is not showing, return `true` to allow highlighting the cell.
     guard let cell = collectionView.cellForItem(at: indexPath) as? DocumentCell, cell.isShowingDelete else {
       return true
     }
 
+    // Hide the cell's delete control.
     cell.hideDelete()
 
+    // Return `false` to prevent highlighting the cell.
     return false
 
   }
@@ -489,11 +527,27 @@ final class DocumentsViewController: UICollectionViewController {
                                didSelectItemAt indexPath: IndexPath)
   {
 
+    // Handle according to the item's section.
     switch indexPath.section {
-      case 0:  DocumentManager.createNewDocument()
-      default: DocumentManager.open(document: Document(fileURL: itemManager[indexPath.row].url))
+
+      case 0:
+        // The index path points to the document creation section. Create a new document.
+
+        DocumentManager.createNewDocument()
+
+      case 1:
+        // The index path points to the document section. Open the document specified by the item.
+
+        DocumentManager.open(document: Document(fileURL: itemManager[indexPath.row].url))
+
+      default:
+        // The index path points to a non-existent section.
+
+        fatalError("Invalid section.")
+
     }
 
+    // Dismiss the controller.
     dismiss?()
 
   }
@@ -512,10 +566,10 @@ final class DocumentsViewLayout: UICollectionViewLayout {
   fileprivate weak var controller: DocumentsViewController?
 
   /// The width of each cell in the collection.
-  fileprivate var itemWidth: CGFloat = 250
+//  fileprivate var itemWidth: CGFloat = 250
 
   /// The height of each cell in the collection.
-  fileprivate let itemHeight: CGFloat = UIFont.controlFont.pointSize * 2
+//  fileprivate let itemHeight: CGFloat = UIFont.controlFont.pointSize * 2
 
   /// Cache of attributes calculated for each cell in the collection.
   private var attributesCache: OrderedDictionary<IndexPath, Attributes> = [:]
@@ -523,13 +577,19 @@ final class DocumentsViewLayout: UICollectionViewLayout {
   /// Overridden to calculate and cache attributes for each cell in the collection.
   override func prepare() {
 
+    // Calculate the item count as the number of items specified by the controller plus one for the 
+    // document creation cell.
     let itemCount = (controller?.itemCount ?? 0) &+ 1
 
+    // Create a collection to store the tuples that will be used to create `attributesCache`.
     var tuples = ContiguousArray<(key: IndexPath, value: Attributes)>(minimumCapacity: itemCount)
 
+    // Generate an array of all valid index paths for the collection.
     let indexPaths = [IndexPath(item: 0, section: 0)] + (0..<itemCount).map({IndexPath(item: $0, section: 1)})
 
+    // Iterate through the index paths.
     for indexPath in indexPaths {
+      // Generate attributes for `indexPath` and append the `(indexPath, attributes)` tuple to `tuples`.
 
       guard let attributes = layoutAttributesForItem(at: indexPath) else { continue }
 
@@ -537,6 +597,7 @@ final class DocumentsViewLayout: UICollectionViewLayout {
 
     }
 
+    // Assign a new dictionary composed of `tuples` to `attributesCache`.
     attributesCache = OrderedDictionary<IndexPath, Attributes>(tuples)
 
   }
@@ -544,8 +605,10 @@ final class DocumentsViewLayout: UICollectionViewLayout {
   /// The max x and y values from the cached attributes of the bottom-most cell.
   override var collectionViewContentSize: CGSize {
 
+    // Get the frame from the last attributes as it will have the max y value furthest from zero.
     guard let lastItemFrame = attributesCache.last?.value.frame else { return .zero }
 
+    // Return a size derived from the frame's max x and y values.
     return CGSize(width: lastItemFrame.maxX, height: lastItemFrame.maxY)
 
   }
@@ -553,8 +616,10 @@ final class DocumentsViewLayout: UICollectionViewLayout {
   /// Returns any cached attributes with frames intersecting `rect`.
   override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
 
+    // Generate an array of cached attributes with frames that intersect `rect`.
     let attributes = Array(attributesCache.values.filter({ $0.frame.intersects(rect) }))
 
+    // Return `nil` if there are no attributes; otherwise, return the attributes.
     return attributes.isEmpty ? nil : attributes
 
   }
@@ -562,25 +627,47 @@ final class DocumentsViewLayout: UICollectionViewLayout {
   /// Returns attributes with a frame vertically offset based on `indexPath.item`.
   override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
 
+    // Create a new attributes instance.
     let attributes = UICollectionViewLayoutAttributes(forCellWith: indexPath)
 
+    // Calculate frame's size.
     let size = CGSize(width: controller?.itemWidth ?? DocumentsViewController.minimumItemWidth,
                       height: DocumentsViewController.itemHeight)
 
+    // Store the origin for the frame
+    let origin: CGPoint
+
+    // Handle according to the section of the index path.
     switch indexPath.section {
+
       case 0:
-        attributes.frame = CGRect(origin: .zero, size: size)
+        // The index path points to the document creation section. This section has one cell that is
+        // always located at the collection's origin.
+
+        origin = .zero
+
+      case 1:
+        // The index path points to the section of document items. The y offset for the frame is the
+        // item specified by the index path multiplied by the cell height plus the height of the 
+        // document creation cell.
+
+        origin = CGPoint(x: 0, y: CGFloat(indexPath.item + 1) * size.height)
+
       default:
-        attributes.frame = CGRect(origin: CGPoint(x: 0, y: CGFloat(indexPath.item + 1) * size.height),
-                                  size: size)
+        // The index path points to a non-existent section.
+
+        fatalError("Invalid section.")
+
     }
+
+    // Set the frame using the calculated values.
+    attributes.frame = CGRect(origin: origin, size: size)
 
     return attributes
   }
 
 }
 
-// MARK: - Cells
 
 /// A cell for displaying the name of an existing document with a control for deleting the document.
 final class DocumentCell: UICollectionViewCell {
@@ -623,27 +710,32 @@ final class DocumentCell: UICollectionViewCell {
   @IBAction
   private func handlePan(_ gesture: PanGesture) {
 
+    // Get the corresponding x value.
     let x = gesture.translation(in: self).x
 
+    // Handle according to the state of the gesture and the x value.
     switch (gesture.state, x) {
 
       case (.began, <--0), (.changed, <--0):
-        // Moving content left.
+        // Moving content left. Update the leading constraint using the x value.
 
         leadingConstraint.constant = x
 
       case (.began, 0-->), (.changed, 0-->):
-        // Moving content right.
+        // Moving content right. Update the leading constraint using the x value minus the width of
+        // the delete button.
 
         leadingConstraint.constant = -deleteButton.bounds.width + x
 
       case (.ended, <-|deleteButton.bounds.width.negated()):
-        // Ended with the delete button showing.
+        // Ended with the delete button showing. Fully reveal the delete button animating with a
+        // distance derived from the x value.
 
         revealDelete(abs(x))
 
       default:
-        // Canceled or ended with delete button hidden.
+        // Canceled or ended with delete button hidden. Fully hide the delete button animating with
+        // a distance derived from the x value.
 
         hideDelete(abs(x))
 
@@ -651,39 +743,37 @@ final class DocumentCell: UICollectionViewCell {
 
   }
 
-  /// Creates and attaches the pan gesture for showing and hiding the delete button.
-  private func setup() {
-    //TODO: remove if the nib works
+//  /// Creates and attaches the pan gesture for showing and hiding the delete button.
+//  private func setup() {
+//    //TODO: remove if the nib works
 //    let gesture = PanGesture(handler: unownedMethod(self, DocumentCell.handlePan))
 //    gesture.confineToView = true
 //    gesture.delaysTouchesBegan = true
 //    gesture.axis = .horizontal
 //
 //    addGestureRecognizer(gesture)
-  }
+//  }
 
   /// Overridden to ensure the delete button is not left showing upon reuse.
   override func prepareForReuse() {
 
     super.prepareForReuse()
 
+    // Reset the leading constraint's constant to its default value for hiding the delete button.
     leadingConstraint?.constant = 0
 
   }
 
-  /// Overridden to perform custom setup.
-  override init(frame: CGRect) {
-    super.init(frame: frame)
-    setup()
-  }
+//  /// Overridden to perform custom setup.
+//  override init(frame: CGRect) {
+//    super.init(frame: frame)
+//    setup()
+//  }
 
-  /// Overridden to perform custom setup.
-  required init?(coder aDecoder: NSCoder) {
-    super.init(coder: aDecoder)
-    setup()
-  }
+//  /// Overridden to perform custom setup.
+//  required init?(coder aDecoder: NSCoder) {
+//    super.init(coder: aDecoder)
+//    setup()
+//  }
 
 }
-
-/// A cell for displaying a button for triggering new document creation.
-final class CreateDocumentCell: UICollectionViewCell { }

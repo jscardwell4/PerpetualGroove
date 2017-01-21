@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>MIDINode Class Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Class/MIDINode" class="dashAnchor"></a>
+    <a title="MIDINode Class Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../index.html"> Docs</a> (41% documented)</p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html"> Reference</a>
+        <img id="carat" src="../img/carat.png" />
+        MIDINode Class Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Classes/AddTool.html">AddTool</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/AppDelegate.html">AppDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/AudioManager.html">AudioManager</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BarBeatTimeLabel.html">BarBeatTimeLabel</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/ChordSelector.html">ChordSelector</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes.html#/s:C6Groove18CreateDocumentCell">CreateDocumentCell</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Document.html">Document</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Document/SourceType.html">– SourceType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Document/Error.html">– Error</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Document/NotificationName.html">– NotificationName</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/DocumentCell.html">DocumentCell</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/DocumentManager.html">DocumentManager</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/DocumentManager/StorageLocation.html">– StorageLocation</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/DocumentManager/Error.html">– Error</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/DocumentManager/NotificationName.html">– NotificationName</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/DocumentsViewController.html">DocumentsViewController</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/DocumentsViewLayout.html">DocumentsViewLayout</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/DurationSelector.html">DurationSelector</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/GeneratorTool.html">GeneratorTool</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/GeneratorTool/Mode.html">– Mode</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/GeneratorViewController.html">GeneratorViewController</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/InlinePickerContainer.html">InlinePickerContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Instrument.html">Instrument</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Instrument/Preset.html">– Preset</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Instrument/Error.html">– Error</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Instrument/NotificationName.html">– NotificationName</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/InstrumentTrack.html">InstrumentTrack</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/InstrumentTrack/Error.html">– Error</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/InstrumentViewController.html">InstrumentViewController</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/LocalDocumentItem.html">LocalDocumentItem</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/LocalDocumentItem/Error.html">– Error</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/LogManager.html">LogManager</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Loop.html">Loop</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/MIDIClock.html">MIDIClock</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/MIDINode.html">MIDINode</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/MIDINode/Path.html">– Path</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/MIDINode/Trajectory.html">– Trajectory</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/MIDINodeManager.html">MIDINodeManager</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/MIDINodePlayer.html">MIDINodePlayer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/MIDINodePlayer/NotificationName.html">– NotificationName</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/MIDINodePlayerContainer.html">MIDINodePlayerContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/MIDINodePlayerNode.html">MIDINodePlayerNode</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/MIDINodePlayerScene.html">MIDINodePlayerScene</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/MIDINodePlayerView.html">MIDINodePlayerView</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/MIDINodePlayerViewController.html">MIDINodePlayerViewController</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/MasterCell.html">MasterCell</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Metronome.html">Metronome</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/MixerAddTrackCell.html">MixerAddTrackCell</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/MixerCell.html">MixerCell</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/MixerContainer.html">MixerContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/MixerLayout.html">MixerLayout</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/MixerViewController.html">MixerViewController</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/NodeSelectionTool.html">NodeSelectionTool</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes.html#/s:C6Groove9NudgeTool">NudgeTool</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/OctaveSelector.html">OctaveSelector</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/PitchModifierSelector.html">PitchModifierSelector</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/PitchSelector.html">PitchSelector</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/PresentingNodeSelectionTool.html">PresentingNodeSelectionTool</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/ProgramSelector.html">ProgramSelector</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/PurgatorySegue.html">PurgatorySegue</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/PurgatoryViewController.html">PurgatoryViewController</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RemoveTool.html">RemoveTool</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RootViewController.html">RootViewController</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RotateTool.html">RotateTool</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RotateViewController.html">RotateViewController</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/SecondaryControllerContainer.html">SecondaryControllerContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/SecondaryControllerContainer/DismissalAction.html">– DismissalAction</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/SecondaryControllerContainer/SupportedActions.html">– SupportedActions</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Sequence.html">Sequence</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Sequence/Data.html">– Data</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Sequence/NotificationName.html">– NotificationName</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Sequencer.html">Sequencer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Sequencer/TransportAssignment.html">– TransportAssignment</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Sequencer/NotificationName.html">– NotificationName</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Sequencer/Mode.html">– Mode</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/SettingsManager.html">SettingsManager</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/SettingsManager/NotificationName.html">– NotificationName</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/SoundFontSelector.html">SoundFontSelector</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/TempoTrack.html">TempoTrack</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/TempoViewController.html">TempoViewController</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes.html#/s:C6Groove12ThrottleTool">ThrottleTool</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Time.html">Time</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Track.html">Track</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Track/NotificationName.html">– NotificationName</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/TrackCell.html">TrackCell</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Transport.html">Transport</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Transport/State.html">– State</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Transport/Error.html">– Error</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Transport/NotificationName.html">– NotificationName</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/TransportViewController.html">TransportViewController</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/VelocitySelector.html">VelocitySelector</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Enums.html">Enums</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Enums/AnyMIDIGenerator.html">AnyMIDIGenerator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/AnyTool.html">AnyTool</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/DocumentItem.html">DocumentItem</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/Duration.html">Duration</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/MIDIError.html">MIDIError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/MIDIEvent.html">MIDIEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/MIDIEvent/MetaEvent.html">– MetaEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/MIDIEvent/ChannelEvent.html">– ChannelEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/MIDIEvent/MIDINodeEvent.html">– MIDINodeEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/MIDINodeDispatchError.html">MIDINodeDispatchError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/Natural.html">Natural</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/Note.html">Note</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/OSStatusError.html">OSStatusError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/Octave.html">Octave</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/PitchModifier.html">PitchModifier</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/Setting.html">Setting</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/StatusError.html">StatusError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/TimeSignature.html">TimeSignature</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/TrackColor.html">TrackColor</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/Velocity.html">Velocity</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Extensions/Int.html">Int</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/MIDIPacketList.html">MIDIPacketList</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/NSMetadataItem.html">NSMetadataItem</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/NSMetadataItem/ItemKey.html">– ItemKey</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/NSMetadataQuery.html">NSMetadataQuery</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/NSMetadataQuery/NotificationName.html">– NotificationName</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/Notification.html">Notification</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/UIColor.html">UIColor</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/UIFont.html">UIFont</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/UInt64.html">UInt64</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/_MIDIEventContainer.html">_MIDIEventContainer</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Functions.html">Functions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F6GrooveXoi3ubhFTSuSd_VS_11BarBeatTime">∶(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Functions.html#/s:F6GrooveXoi3kgiFzTKT_Vs5Int32KT_SS_T_">➤(_:_:)</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Protocols/MIDIEventDispatch.html">MIDIEventDispatch</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/MIDIGenerator.html">MIDIGenerator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/MIDINodeDispatch.html">MIDINodeDispatch</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols.html#/s:P6Groove14PresentingTool">PresentingTool</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/SecondaryContent.html">SecondaryContent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/SecondaryContentProvider.html">SecondaryContentProvider</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/SequenceDataProvider.html">SequenceDataProvider</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/SoundFont.html">SoundFont</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/Tool.html">Tool</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/TouchReceiver.html">TouchReceiver</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Structs.html">Structs</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Structs/BarBeatTime.html">BarBeatTime</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/BarBeatTime/Units.html">– Units</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Chord.html">Chord</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Chord/Pattern.html">– Pattern</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Chord/Interval.html">– Interval</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Chord/Degree.html">– Degree</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Chord/Standard.html">– Standard</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/ChordGenerator.html">ChordGenerator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/EmaxSoundSet.html">EmaxSoundSet</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/EmaxSoundSet/Volume.html">– Volume</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/GrooveFile.html">GrooveFile</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/GrooveFile/Track.html">– Track</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/GrooveFile/Loop.html">– Loop</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/GrooveFile/Node.html">– Node</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/MIDIEventContainer.html">MIDIEventContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/MIDIEventContainerIterator.html">MIDIEventContainerIterator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/MIDIEventContainerSlice.html">MIDIEventContainerSlice</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/MIDIFile.html">MIDIFile</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/MIDIFile/Error.html">– Error</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/MIDIFile/HeaderChunk.html">– HeaderChunk</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/MIDIFile/TrackChunk.html">– TrackChunk</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/MIDIFile/VariableLengthQuantity.html">– VariableLengthQuantity</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/MIDINote.html">MIDINote</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/MIDINote/PercussionMapping.html">– PercussionMapping</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/NoteGenerator.html">NoteGenerator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Packet.html">Packet</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SF2File.html">SF2File</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SF2File/Storage.html">– Storage</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SF2File/Error.html">– Error</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SF2File/PresetHeader.html">– PresetHeader</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SF2File/INFOChunk.html">– INFOChunk</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SF2File/LazySubChunk.html">– LazySubChunk</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SF2File/SubChunk.html">– SubChunk</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SF2File/ChunkIdentifier.html">– ChunkIdentifier</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SF2File/ChunkData.html">– ChunkData</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SF2File/LazySDTAChunk.html">– LazySDTAChunk</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SF2File/SDTAChunk.html">– SDTAChunk</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SF2File/LazyPDTAChunk.html">– LazyPDTAChunk</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SF2File/PDTAChunk.html">– PDTAChunk</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SoundSet.html">SoundSet</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Subscripts.html">Subscripts</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Subscripts.html#/s:iE6GrooveCSo14NSMetadataItem9subscriptFOES_S0_7ItemKeyGSqP__">subscript(_:)</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Typealiases.html">Typealiases</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:6Groove11MIDINodeRef">MIDINodeRef</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>MIDINode</h1>
+            <p>Undocumented</p>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC6Groove8MIDINode12isStationarySb"></a>
+                    <a name="//apple_ref/swift/Property/isStationary" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC6Groove8MIDINode12isStationarySb">isStationary</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Whether the node is moving along <code><a href="../Classes/MIDINode.html#/s:vC6Groove8MIDINode4pathCS0_4Path">path</a></code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">isStationary</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC6Groove8MIDINode9isJoggingSb"></a>
+                    <a name="//apple_ref/swift/Property/isJogging" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC6Groove8MIDINode9isJoggingSb">isJogging</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Whether the node is being jogged by the transport.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">isJogging</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC6Groove8MIDINode16isPendingRemovalSb"></a>
+                    <a name="//apple_ref/swift/Property/isPendingRemoval" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC6Groove8MIDINode16isPendingRemovalSb">isPendingRemoval</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Whether the node is slated to be removed.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">isPendingRemoval</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC6Groove8MIDINode9isPlayingSb"></a>
+                    <a name="//apple_ref/swift/Property/isPlaying" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC6Groove8MIDINode9isPlayingSb">isPlaying</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Whether the node has sent a &lsquo;note on&rsquo; event not yet stopped with a &lsquo;note off&rsquo; event.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">isPlaying</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC6Groove8MIDINode8endPointVs6UInt32"></a>
+                    <a name="//apple_ref/swift/Property/endPoint" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC6Groove8MIDINode8endPointVs6UInt32">endPoint</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The node&rsquo;s midi endpoint.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">endPoint</span> <span class="o">=</span> <span class="kt">MIDIEndpointRef</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC6Groove8MIDINode8initTimeVS_11BarBeatTime"></a>
+                    <a name="//apple_ref/swift/Property/initTime" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC6Groove8MIDINode8initTimeVS_11BarBeatTime">initTime</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The bar beat time at which the node begins playing.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">var</span> <span class="nv">initTime</span><span class="p">:</span> <span class="kt"><a href="../Structs/BarBeatTime.html">BarBeatTime</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC6Groove8MIDINode17initialTrajectoryVS0_10Trajectory"></a>
+                    <a name="//apple_ref/swift/Property/initialTrajectory" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC6Groove8MIDINode17initialTrajectoryVS0_10Trajectory">initialTrajectory</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The speed and direction the node begins with at <code><a href="../Classes/MIDINode.html#/s:vC6Groove8MIDINode8initTimeVS_11BarBeatTime">initTime</a></code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">var</span> <span class="nv">initialTrajectory</span><span class="p">:</span> <span class="kt"><a href="../Classes/MIDINode/Trajectory.html">Trajectory</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC6Groove8MIDINode15pendingPositionGSqVSC7CGPoint_"></a>
+                    <a name="//apple_ref/swift/Property/pendingPosition" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC6Groove8MIDINode15pendingPositionGSqVSC7CGPoint_">pendingPosition</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Location pending for the node.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">pendingPosition</span><span class="p">:</span> <span class="kt">CGPoint</span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC6Groove8MIDINode9generatorOS_16AnyMIDIGenerator"></a>
+                    <a name="//apple_ref/swift/Property/generator" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC6Groove8MIDINode9generatorOS_16AnyMIDIGenerator">generator</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The generator used to produce the midi data played each time the node touches a boundary.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">var</span> <span class="nv">generator</span><span class="p">:</span> <span class="kt"><a href="../Enums/AnyMIDIGenerator.html">AnyMIDIGenerator</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:ZvC6Groove8MIDINode17useVelocityForOffSb"></a>
+                    <a name="//apple_ref/swift/Variable/useVelocityForOff" class="dashAnchor"></a>
+                    <a class="token" href="#/s:ZvC6Groove8MIDINode17useVelocityForOffSb">useVelocityForOff</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Whether a note is ended via a note on event with velocity of 0 or with a note off event</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">static</span> <span class="k">let</span> <span class="nv">useVelocityForOff</span> <span class="o">=</span> <span class="kc">true</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC6Groove8MIDINode10identifierV10Foundation4UUID"></a>
+                    <a name="//apple_ref/swift/Property/identifier" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC6Groove8MIDINode10identifierV10Foundation4UUID">identifier</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The unique identifier for the node that is preserved across file operations.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">let</span> <span class="nv">identifier</span><span class="p">:</span> <span class="kt">UUID</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Groove8MIDINode14updatePositionFT_T_"></a>
+                    <a name="//apple_ref/swift/Method/updatePosition()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Groove8MIDINode14updatePositionFT_T_">updatePosition()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Updates the node&rsquo;s position from <code><a href="../Classes/MIDINode.html#/s:vC6Groove8MIDINode15pendingPositionGSqVSC7CGPoint_">pendingPosition</a></code> when <code>pendingPosition != nil</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">func</span> <span class="nf">updatePosition</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Groove8MIDINode7fadeOutFT6removeSb_T_"></a>
+                    <a name="//apple_ref/swift/Method/fadeOut(remove:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Groove8MIDINode7fadeOutFT6removeSb_T_">fadeOut(remove:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Causes node to fade out of the scene. If <code>remove == true</code> then the node is also removed.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">func</span> <span class="nf">fadeOut</span><span class="p">(</span><span class="nv">remove</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Groove8MIDINode6fadeInFT_T_"></a>
+                    <a name="//apple_ref/swift/Method/fadeIn()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Groove8MIDINode6fadeInFT_T_">fadeIn()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Causes the node to fade into the scene.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">func</span> <span class="nf">fadeIn</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Groove8MIDINode12removeActionFT6forKeySS_T_"></a>
+                    <a name="//apple_ref/swift/Method/removeAction(forKey:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Groove8MIDINode12removeActionFT6forKeySS_T_">removeAction(forKey:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Overridden to ensure <code>sendNoteOff</code> is invoked when the play action is removed.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">override</span> <span class="kd">func</span> <span class="nf">removeAction</span><span class="p">(</span><span class="n">forKey</span> <span class="nv">key</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC6Groove8MIDINode8dispatchXwGSqPS_16MIDINodeDispatch__"></a>
+                    <a name="//apple_ref/swift/Property/dispatch" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC6Groove8MIDINode8dispatchXwGSqPS_16MIDINodeDispatch__">dispatch</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The object responsible for handling the node&rsquo;s midi connections and management.
+Setting this property to <code>nil</code> will remove it from it&rsquo;s parent node when such a node exists.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">private(set)</span> <span class="k">weak</span> <span class="k">var</span> <span class="nv">dispatch</span><span class="p">:</span> <span class="kt"><a href="../Protocols/MIDINodeDispatch.html">MIDINodeDispatch</a></span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:ZvC6Groove8MIDINode7textureCSo9SKTexture"></a>
+                    <a name="//apple_ref/swift/Variable/texture" class="dashAnchor"></a>
+                    <a class="token" href="#/s:ZvC6Groove8MIDINode7textureCSo9SKTexture">texture</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The texture used by all <code>MIDINode</code> instances.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">static</span> <span class="k">let</span> <span class="nv">texture</span> <span class="o">=</span> <span class="kt">SKTexture</span><span class="p">(</span><span class="nv">image</span><span class="p">:</span> <span class="kt">UIImage</span><span class="p">(</span><span class="nv">named</span><span class="p">:</span> <span class="s">"ball"</span><span class="p">)</span><span class="o">!</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:ZvC6Groove8MIDINode11defaultSizeVSC6CGSize"></a>
+                    <a name="//apple_ref/swift/Variable/defaultSize" class="dashAnchor"></a>
+                    <a class="token" href="#/s:ZvC6Groove8MIDINode11defaultSizeVSC6CGSize">defaultSize</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The size of a node when it has no active notes.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">static</span> <span class="k">let</span> <span class="nv">defaultSize</span><span class="p">:</span> <span class="kt">CGSize</span> <span class="o">=</span> <span class="kt">MIDINode</span><span class="o">.</span><span class="n"><a href="../Classes/MIDINode.html#/s:ZvC6Groove8MIDINode7textureCSo9SKTexture">texture</a></span><span class="o">.</span><span class="nf">size</span><span class="p">()</span> <span class="o">*</span> <span class="mf">0.75</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:ZvC6Groove8MIDINode11playingSizeVSC6CGSize"></a>
+                    <a name="//apple_ref/swift/Variable/playingSize" class="dashAnchor"></a>
+                    <a class="token" href="#/s:ZvC6Groove8MIDINode11playingSizeVSC6CGSize">playingSize</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The size of a node when it has at least one active note.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">static</span> <span class="k">let</span> <span class="nv">playingSize</span><span class="p">:</span> <span class="kt">CGSize</span> <span class="o">=</span> <span class="kt">MIDINode</span><span class="o">.</span><span class="n"><a href="../Classes/MIDINode.html#/s:ZvC6Groove8MIDINode7textureCSo9SKTexture">texture</a></span><span class="o">.</span><span class="nf">size</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Groove8MIDINodecFzT10trajectoryVS0_10Trajectory4nameSS8dispatchPS_16MIDINodeDispatch_9generatorOS_16AnyMIDIGenerator10identifierV10Foundation4UUID_S0_"></a>
+                    <a name="//apple_ref/swift/Method/init(trajectory:name:dispatch:generator:identifier:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Groove8MIDINodecFzT10trajectoryVS0_10Trajectory4nameSS8dispatchPS_16MIDINodeDispatch_9generatorOS_16AnyMIDIGenerator10identifierV10Foundation4UUID_S0_">init(trajectory:name:dispatch:generator:identifier:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Default initializer for creating an instance of <code>MIDINode</code>.
+- Parameter trajectory: The initial trajectory for the node.
+- Parameter name: The unique name for the node.
+- Parameter dispatch: The object responsible for the node.
+- Parameter identifier: A <code>UUID</code> used to uniquely identify this node across application invocations.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="nf">init</span><span class="p">(</span><span class="nv">trajectory</span><span class="p">:</span> <span class="kt"><a href="../Classes/MIDINode/Trajectory.html">Trajectory</a></span><span class="p">,</span>
+       <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span>
+       <span class="nv">dispatch</span><span class="p">:</span> <span class="kt"><a href="../Protocols/MIDINodeDispatch.html">MIDINodeDispatch</a></span><span class="p">,</span>
+       <span class="nv">generator</span><span class="p">:</span> <span class="kt"><a href="../Enums/AnyMIDIGenerator.html">AnyMIDIGenerator</a></span><span class="p">,</span>
+       <span class="nv">identifier</span><span class="p">:</span> <span class="kt">UUID</span> <span class="o">=</span> <span class="kt">UUID</span><span class="p">())</span> <span class="k">throws</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>trajectory</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The initial trajectory for the node.</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>name</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The unique name for the node.</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>dispatch</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The object responsible for the node.</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>identifier</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A <code>UUID</code> used to uniquely identify this node across application invocations.</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vC6Groove8MIDINode4pathCS0_4Path"></a>
+                    <a name="//apple_ref/swift/Property/path" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vC6Groove8MIDINode4pathCS0_4Path">path</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The path controlling the movement of the node.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">let</span> <span class="nv">path</span><span class="p">:</span> <span class="kt"><a href="../Classes/MIDINode/Path.html">Path</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Groove8MIDINodecFT5coderCSo7NSCoder_GSqS0__"></a>
+                    <a name="//apple_ref/swift/Method/init(coder:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Groove8MIDINodecFT5coderCSo7NSCoder_GSqS0__">init(coder:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Initializing from a coder is not supported.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">required</span> <span class="nf">init</span><span class="p">?(</span><span class="n">coder</span> <span class="nv">aDecoder</span><span class="p">:</span> <span class="kt">NSCoder</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FC6Groove8MIDINoded"></a>
+                    <a name="//apple_ref/swift/Method/deinit" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC6Groove8MIDINoded">deinit</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Sends &lsquo;note off&rsquo; event if needed and disposed of midi resources.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">deinit</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:CC6Groove8MIDINode4Path"></a>
+                    <a name="//apple_ref/swift/Class/Path" class="dashAnchor"></a>
+                    <a class="token" href="#/s:CC6Groove8MIDINode4Path">Path</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Type for generating consecutive line segments.</p>
+
+                        <a href="../Classes/MIDINode/Path.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">final</span> <span class="kd">class</span> <span class="kt">Path</span><span class="p">:</span> <span class="kt">CustomStringConvertible</span><span class="p">,</span> <span class="kt">CustomDebugStringConvertible</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:VC6Groove8MIDINode10Trajectory"></a>
+                    <a name="//apple_ref/swift/Struct/Trajectory" class="dashAnchor"></a>
+                    <a class="token" href="#/s:VC6Groove8MIDINode10Trajectory">Trajectory</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Type for expressing velocity and angle from a point.</p>
+
+                        <a href="../Classes/MIDINode/Trajectory.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">struct</span> <span class="kt">Trajectory</span><span class="p">:</span> <span class="kt">Hashable</span><span class="p">,</span> <span class="kt">ByteArrayConvertible</span><span class="p">,</span> <span class="kt">LosslessJSONValueConvertible</span><span class="p">,</span> <span class="kt">CustomStringConvertible</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2017-01-17)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.3</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

@@ -21,14 +21,33 @@ final class MIDINodePlayer: NotificationDispatching {
     return undoManager
   }()
 
+  /// Invokes `undoManager.undo()` when `undoManager.canUndo`. Returns `true` iff `undo()` was invoked.
+  @discardableResult
+  static func rollBack() -> Bool {
+
+    guard undoManager.canUndo else { return false }
+
+
+    if undoManager.groupingLevel > 0 { undoManager.endUndoGrouping() }
+
+    undoManager.undo()
+      
+    return true
+
+  }
+
   /// Handles the receiving of various sequencer notifications.
   private static let receptionist = NotificationReceptionist()
 
   /// The object through which new node events are dispatched.
   static weak var currentDispatch: MIDINodeDispatch? {
+    willSet {
+      guard currentDispatch !== newValue else { return }
+      postNotification(name: .willChangeDispatch, object: self)
+    }
     didSet {
       guard currentDispatch !== oldValue else { return }
-      Log.debug("\(oldValue?.name ?? "nil") ➞ \(currentDispatch?.name ?? "nil")")
+      postNotification(name: .didChangeDispatch, object: self)
     }
   }
 
@@ -325,7 +344,7 @@ final class MIDINodePlayer: NotificationDispatching {
   /// Enumeration of the notification names used in notifications posted by `MIDINodePlayer`.
   enum NotificationName: String, LosslessStringConvertible {
 
-    case didAddNode, didRemoveNode, didSelectTool
+    case didAddNode, didRemoveNode, didSelectTool, willChangeDispatch, didChangeDispatch
 
     var description: String { return rawValue }
 

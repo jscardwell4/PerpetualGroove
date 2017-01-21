@@ -9,6 +9,9 @@
 import Foundation
 import MoonKit
 
+// TODO: Review file
+
+
 /// Common properties of the base MIDI event types.
 private protocol _MIDIEvent: CustomStringConvertible {
   var time: BarBeatTime { get set }

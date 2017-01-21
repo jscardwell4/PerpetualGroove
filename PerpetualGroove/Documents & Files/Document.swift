@@ -9,6 +9,7 @@
 import UIKit
 import MoonKit
 
+/// A `UIDocument` subclass for presenting a document interface usable by the application.
 final class Document: UIDocument, Named, NotificationDispatching {
 
   /// Whether the document is backed by an iCloud file.

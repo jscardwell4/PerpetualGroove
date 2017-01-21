@@ -113,11 +113,7 @@ final class Sequence {
 
   // MARK: - Receiving track and sequencer notifications
 
-  fileprivate let receptionist: NotificationReceptionist = {
-    let receptionist = NotificationReceptionist(callbackQueue: OperationQueue.main)
-    receptionist.logContext = LogManager.MIDIFileContext
-    return receptionist
-  }()
+  fileprivate let receptionist = NotificationReceptionist(callbackQueue: OperationQueue.main)
 
   fileprivate var hasChanges = false
 

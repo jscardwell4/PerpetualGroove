@@ -12,7 +12,7 @@ import typealias AudioUnit.AudioUnitElement
 import typealias AudioToolbox.AudioUnitParameterValue
 
 /// Controller for displaying the mixer interface.
-final class MixerViewController: UICollectionViewController, SecondaryControllerContentProvider {
+final class MixerViewController: UICollectionViewController, SecondaryContentProvider {
 
   /// Gesture for enabling track reordering and removal.
   @IBOutlet private var magnifyingGesture: UILongPressGestureRecognizer!
@@ -306,7 +306,7 @@ final class MixerViewController: UICollectionViewController, SecondaryController
   }
 
   /// The instrument controller provided to the mixer container for presentation.
-  private weak var _secondaryContent: SecondaryControllerContent? {
+  private weak var _secondaryContent: SecondaryContent? {
     didSet {
       // Update the controller's instrument with that of the sound font target's track.
       (_secondaryContent as? InstrumentViewController)?.instrument = soundFontTarget?.track?.instrument
@@ -314,7 +314,7 @@ final class MixerViewController: UICollectionViewController, SecondaryController
   }
 
   /// The instrument controller to be given to the mixer container.
-  var secondaryContent: SecondaryControllerContent {
+  var secondaryContent: SecondaryContent {
 
     // Check that a controller has not already been created.
     guard _secondaryContent == nil else { return _secondaryContent! }
@@ -329,10 +329,10 @@ final class MixerViewController: UICollectionViewController, SecondaryController
   var isShowingContent: Bool { return _secondaryContent != nil }
 
   /// Stores a weak reference to `content`.
-  func didShow(content: SecondaryControllerContent) { _secondaryContent = content }
+  func didShow(content: SecondaryContent) { _secondaryContent = content }
 
   /// Rolls back the instrument controller's instrument when `dismissalAction == .cancel`.
-  func didHide(content: SecondaryControllerContent,
+  func didHide(content: SecondaryContent,
                dismissalAction: SecondaryControllerContainer.DismissalAction)
   {
     guard case .cancel = dismissalAction else { return }
@@ -673,7 +673,6 @@ final class TrackCell: MixerCell, UITextFieldDelegate {
     guard let track = track else { return nil }
 
     let receptionist = NotificationReceptionist(callbackQueue: OperationQueue.main)
-    receptionist.logContext = LogManager.SequencerContext
 
     receptionist.observe(name: .muteStatusDidChange, from: track) {
       [weak self] _ in

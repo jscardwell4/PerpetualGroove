@@ -9,17 +9,15 @@
 import UIKit
 import MoonKit
 
-final class InstrumentViewController: UIViewController, SecondaryControllerContent {
+// TODO: Review file
+
+final class InstrumentViewController: UIViewController, SecondaryContent {
 
   @IBOutlet weak var soundSetPicker: SoundFontSelector!
   @IBOutlet weak var programPicker:  ProgramSelector!
   @IBOutlet weak var channelStepper: LabeledStepper!
 
-  fileprivate let receptionist: NotificationReceptionist = {
-    let receptionist = NotificationReceptionist(callbackQueue: OperationQueue.main)
-    receptionist.logContext = LogManager.UIContext
-    return receptionist
-  }()
+  private let receptionist = NotificationReceptionist(callbackQueue: OperationQueue.main)
 
   override func awakeFromNib() {
     super.awakeFromNib()
@@ -28,13 +26,14 @@ final class InstrumentViewController: UIViewController, SecondaryControllerConte
     }
   }
 
-  fileprivate func updateSoundSets() {
+  private func updateSoundSets() {
     soundSetPicker.refreshItems()
 
   }
 
   /// Callback for `soundSetPicker` selections.
-  @IBAction func didPickSoundSet() {
+  @IBAction
+  func didPickSoundSet() {
     guard let instrument = instrument else { return }
     let soundFont = Sequencer.soundSets[soundSetPicker.selection]
     let preset = Instrument.Preset(soundFont: soundFont, presetHeader: soundFont[0], channel: 0)
@@ -50,7 +49,8 @@ final class InstrumentViewController: UIViewController, SecondaryControllerConte
   }
 
   /// Callback for `programPicker` selections.
-  @IBAction func didPickProgram() {
+  @IBAction
+  func didPickProgram() {
     guard let instrument = instrument else { return }
     let soundSet = instrument.soundFont
     let presetHeader = soundSet.presetHeaders[programPicker.selection]
@@ -64,7 +64,8 @@ final class InstrumentViewController: UIViewController, SecondaryControllerConte
   }
 
   /// Callback for `channelStepper` value changes.
-  @IBAction func didChangeChannel() { instrument?.channel = UInt8(channelStepper.value) }
+  @IBAction
+  func didChangeChannel() { instrument?.channel = UInt8(channelStepper.value) }
 
   /// Loads `initialPreset` back into `instrument`.
   func rollBackInstrument() {
@@ -75,7 +76,7 @@ final class InstrumentViewController: UIViewController, SecondaryControllerConte
   }
 
   /// The preset property value of `instrument` upon initialization.
-  fileprivate(set) var initialPreset: Instrument.Preset?
+  private(set) var initialPreset: Instrument.Preset?
 
   /// Instrument used by the controller to provide feedback for soundfont and program changes.
   weak var instrument: Instrument? {
@@ -94,7 +95,7 @@ final class InstrumentViewController: UIViewController, SecondaryControllerConte
     }
   }
 
-  fileprivate func audition() {
+  private func audition() {
     guard let instrument = instrument else { return }
     instrument.playNote(AnyMIDIGenerator())
   }

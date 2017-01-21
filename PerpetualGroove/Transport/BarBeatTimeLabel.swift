@@ -190,11 +190,7 @@ final class BarBeatTimeLabel: UIView {
   
   private let callbackIdentifier = UUID()
 
-  private let receptionist: NotificationReceptionist = {
-    let receptionist = NotificationReceptionist(callbackQueue: OperationQueue.main)
-    receptionist.logContext = LogManager.UIContext
-    return receptionist
-  }()
+  private let receptionist = NotificationReceptionist(callbackQueue: OperationQueue.main)
 
   override var intrinsicContentSize: CGSize {
     return CGSize(width: Component.sumWidths, height: Component.characterHeight)

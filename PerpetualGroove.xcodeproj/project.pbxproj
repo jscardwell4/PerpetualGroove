@@ -77,7 +77,6 @@
 		C2776C2A1B9DF50D002FE5A8 /* Emax Volume 6.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2776C1F1B9DF50D002FE5A8 /* Emax Volume 6.sf2 */; };
 		C2776C301B9E8E72002FE5A8 /* SF2File.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2207B901B9DC63300E4D65D /* SF2File.swift */; };
 		C27AC89B1C0E8ACC00762AAF /* RemoveTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27AC89A1C0E8ACC00762AAF /* RemoveTool.swift */; };
-		C2807DDA1C74C5FF0061A001 /* NodeAdjustmentTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2807DD91C74C5FF0061A001 /* NodeAdjustmentTool.swift */; };
 		C2807DDC1C74C60F0061A001 /* NudgeTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2807DDB1C74C60F0061A001 /* NudgeTool.swift */; };
 		C2807DDE1C74C61D0061A001 /* ThrottleTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2807DDD1C74C61D0061A001 /* ThrottleTool.swift */; };
 		C2807DE01C74C6270061A001 /* RotateTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2807DDF1C74C6270061A001 /* RotateTool.swift */; };
@@ -250,7 +249,6 @@
 		C2D7BB5C1DE3460300EC7A53 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EA30521BB9DF3300020958 /* Document.swift */; };
 		C2D7BB5D1DE3460300EC7A53 /* MIDINode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26FC16E1B7BA63300E271A3 /* MIDINode.swift */; };
 		C2D7BB5E1DE3460300EC7A53 /* AddTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26FC1721B7BAEBD00E271A3 /* AddTool.swift */; };
-		C2D7BB5F1DE3460300EC7A53 /* NodeAdjustmentTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2807DD91C74C5FF0061A001 /* NodeAdjustmentTool.swift */; };
 		C2D7BB611DE3460300EC7A53 /* Metronome.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F2ADC51B91203700FF4836 /* Metronome.swift */; };
 		C2D7BB621DE3460300EC7A53 /* TempoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AC3A961BA9D4CD00692EBB /* TempoViewController.swift */; };
 		C2D7BB631DE3460300EC7A53 /* SecondaryControllerContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24E83951C3EDFD800B4A16A /* SecondaryControllerContainer.swift */; };
@@ -452,7 +450,6 @@
 		C2776C1E1B9DF50D002FE5A8 /* Emax Volume 5.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Emax Volume 5.sf2"; sourceTree = "<group>"; };
 		C2776C1F1B9DF50D002FE5A8 /* Emax Volume 6.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Emax Volume 6.sf2"; sourceTree = "<group>"; };
 		C27AC89A1C0E8ACC00762AAF /* RemoveTool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoveTool.swift; sourceTree = "<group>"; };
-		C2807DD91C74C5FF0061A001 /* NodeAdjustmentTool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NodeAdjustmentTool.swift; sourceTree = "<group>"; };
 		C2807DDB1C74C60F0061A001 /* NudgeTool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NudgeTool.swift; sourceTree = "<group>"; };
 		C2807DDD1C74C61D0061A001 /* ThrottleTool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThrottleTool.swift; sourceTree = "<group>"; };
 		C2807DDF1C74C6270061A001 /* RotateTool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RotateTool.swift; sourceTree = "<group>"; };
@@ -956,7 +953,6 @@
 				C27AC89A1C0E8ACC00762AAF /* RemoveTool.swift */,
 				C2FEB0241C0F6183000BD1B7 /* GeneratorTool.swift */,
 				C2B3B2EA1C55A9110001152F /* NodeSelectionTool.swift */,
-				C2807DD91C74C5FF0061A001 /* NodeAdjustmentTool.swift */,
 				C2807DDB1C74C60F0061A001 /* NudgeTool.swift */,
 				C2807DDD1C74C61D0061A001 /* ThrottleTool.swift */,
 				C2807DDF1C74C6270061A001 /* RotateTool.swift */,
@@ -1635,7 +1631,6 @@
 				C2D7BB5A1DE345C300EC7A53 /* MIDIEventContainer.swift in Sources */,
 				C2D7BB491DE345C300EC7A53 /* BarBeatTimeLabel.swift in Sources */,
 				C2D7BB631DE3460300EC7A53 /* SecondaryControllerContainer.swift in Sources */,
-				C2D7BB5F1DE3460300EC7A53 /* NodeAdjustmentTool.swift in Sources */,
 				C2D7BB3E1DE345C300EC7A53 /* MIDINodePlayerNode.swift in Sources */,
 				C2D7BB501DE345C300EC7A53 /* Sequencer.swift in Sources */,
 				C2D7BB3C1DE345C300EC7A53 /* MIDINodePlayerViewController.swift in Sources */,
@@ -1699,7 +1694,6 @@
 				C207458F1B8DF6D5000A06D4 /* Time.swift in Sources */,
 				C2EA30531BB9DF3300020958 /* Document.swift in Sources */,
 				C2F2ADC41B91098A00FF4836 /* NoteGenerator.swift in Sources */,
-				C2807DDA1C74C5FF0061A001 /* NodeAdjustmentTool.swift in Sources */,
 				C26EEB2E1B7FDA8F00EC6979 /* MixerViewController.swift in Sources */,
 				C2AC3A971BA9D4CD00692EBB /* TempoViewController.swift in Sources */,
 				C2576E0D1C13343E00F9A192 /* MIDINodePlayer.swift in Sources */,

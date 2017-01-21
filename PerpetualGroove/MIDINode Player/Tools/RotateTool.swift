@@ -8,85 +8,141 @@
 
 import Foundation
 import MoonKit
-
-// TODO: Review file
 import UIKit
 
-final class RotateTool: PresentingNodeAdjustmentTool {
+/// A tool for adjusting the intial angle of a midi node.
+final class RotateTool: PresentingNodeSelectionTool {
 
-  override var secondaryContent: SecondaryControllerContent {
+  /// Overridden to return an instance of `RotateViewController` for manipulating the selected node.
+  override var secondaryContent: SecondaryContent {
+
     guard _secondaryContent == nil else { return _secondaryContent! }
 
-    return RotateViewController.viewController(withNode: node, didRotate: weakMethod(self, RotateTool.didRotate))
+    let ballColor = node?.dispatch?.color.value ?? .lightGray
+    let initialAngle = node?.initialTrajectory.angle ?? 0
+
+    return RotateViewController.viewController(withBallColor: ballColor,
+                                               initialAngle: initialAngle,
+                                               didRotate: weakMethod(self, RotateTool.didRotate))
+
   }
 
-  fileprivate func didRotate(_ rotation: CGFloat) {
-    guard let node = node , node.initialTrajectory.angle != rotation else { return }
+  /// Handler for rotation values reported by the tool's user interface.
+  private func didRotate(_ rotation: CGFloat) {
+
+    // Check that there is a node selected and that the angle of its intial trajectory 
+    // does not equal `rotation`.
+    guard let node = node,
+          node.initialTrajectory.angle != rotation else { return }
+
+    // Store the original initial trajectory.
     let oldTrajectory = node.initialTrajectory
-    let newTrajectory = node.initialTrajectory.withAngle(rotation)
+
+
+    // Calculate the modified trajectory whose angle is `rotation`.
+    let newTrajectory = oldTrajectory.withAngle(rotation)
+
+    // Register an action for undoing the changes to the node's intial trajectory.
     MIDINodePlayer.undoManager.registerUndo(withTarget: node) {
       node in
-      node.initialTrajectory = oldTrajectory
-      MIDINodePlayer.undoManager.registerUndo(withTarget: node) { $0.initialTrajectory = newTrajectory }
-    }
-    adjustNode{ node.initialTrajectory.angle = rotation }
-  }
 
-  override func didSelectNode() {
-    guard active else { return }
-    MIDINodePlayer.playerContainer?.presentContent(for: self)
+      node.initialTrajectory = oldTrajectory
+
+      // Register an action for redoing the changes to the node's intial trajectory.
+      MIDINodePlayer.undoManager.registerUndo(withTarget: node) {
+        $0.initialTrajectory = newTrajectory
+      }
+
+    }
+
+    // Actually change node's initial trajectory.
+    adjustNode { node.initialTrajectory = newTrajectory }
+
   }
 
 }
 
-final class RotateViewController: UIViewController, SecondaryControllerContent {
+/// `UIViewController` subclass providing an interface for specifying an angle of rotation.
+final class RotateViewController: UIViewController, SecondaryContent {
 
-  fileprivate static func viewController(withNode node: MIDINode?,
+  /// Returns a new instance of `RotateViewController` instantiated from `Rotate.storyboard`
+  /// configured with the specified ball color, initial angle, and rotation callback.
+  fileprivate static func viewController(withBallColor color: UIColor,
+                                         initialAngle: CGFloat,
                                          didRotate: ((CGFloat) -> Void)?) -> RotateViewController
   {
+
     let storyboard = UIStoryboard(name: "Rotate", bundle: nil)
     let viewController = storyboard.instantiateInitialViewController() as! RotateViewController
-    viewController.node = node
+
+    viewController.ballColor = color
+    viewController.initialAngle = initialAngle
     viewController.didRotate = didRotate
+
     return viewController
+
   }
 
-  weak var node: MIDINode?
+  /// The color to tint the ball representing the midi node being adjusted.
+  var ballColor: UIColor = .lightGray
 
+  /// The initial angle used to setup the arrow's transform and the rotation gesture.
+  var initialAngle: CGFloat = 0
+
+  /// Actions supported by the controller. The default is to support the `cancel` and `confirm` actions.
   var supportedActions: SecondaryControllerContainer.SupportedActions = [.cancel, .confirm]
 
+
+  /// Overridden to configure colors and angles of rotation.
   override func viewWillAppear(_ animated: Bool) {
+
     super.viewWillAppear(animated)
 
-    guard let node = node else { return }
-
-    ball.tintColor = node.dispatch?.color.value
+    ball.tintColor = ballColor
     arrow.tintColor = .quaternaryColor
 
-    let angle = node.initialTrajectory.velocity.angle
-    arrow.transform = CGAffineTransform(rotationAngle: angle)
-    rotationGesture.rotation = angle
+    arrow.transform = CGAffineTransform(rotationAngle: initialAngle)
+    rotationGesture.rotation = initialAngle
+
   }
 
+  /// The image representing the midi node being adjusted.
   @IBOutlet private weak var ball:  TemplateImageView!
+
+  /// The arrow indicating the angle of rotation.
   @IBOutlet private weak var arrow: TemplateImageView!
+
+  /// The gesture used to change the angle of rotation.
   @IBOutlet private weak var rotationGesture: UIRotationGestureRecognizer!
 
-  var didRotate: ((CGFloat) -> Void)?
+  /// The callback invoked when `rotationGesture` indicates a change to the angle of rotation.
+  /// - Parameter rotation: The new angle of rotation.
+  var didRotate: ((_ rotation: CGFloat) -> Void)?
 
-  @IBAction private func handleRotation(_ sender: UIRotationGestureRecognizer) {
+  /// Handler for `rotationGesture`.
+  @IBAction
+  private func handleRotation(_ sender: UIRotationGestureRecognizer) {
 
     switch sender.state {
 
       case .began:
+        // The gesture has just begun. Synchronize the arrow's transform with the gesture's rotation.
+
         arrow.transform.rotation = sender.rotation
 
       case .changed:
+        // The gesture's rotation has been updated. Synchronize the arrow's transform with the 
+        // gesture's rotation and invoke the callback using the updated value.
+
         arrow.transform.rotation = sender.rotation
         didRotate?(sender.rotation)
 
       case .cancelled, .failed, .possible, .ended:
+        // Nothing to do since there is either nothing to report or the callback has already been
+        // invoked when the gesture reported the changed rotation.
+
         break
+
     }
     
   }

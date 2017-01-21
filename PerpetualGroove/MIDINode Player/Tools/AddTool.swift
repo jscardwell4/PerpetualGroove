@@ -10,51 +10,72 @@ import UIKit
 import SpriteKit
 import MoonKit
 
-// TODO: Review file
-
+/// A tool for generating new `MIDINode` instances.
 final class AddTool: Tool {
 
+  /// The player node to which midi nodes are to be added.
   unowned let playerNode: MIDINodePlayerNode
 
+  /// Whether the tool is currently receiving touch events.
   @objc var active = false
 
+  /// The generator given to generated nodes.
   var generator = AnyMIDIGenerator()
 
+  /// Default initializer.
   init(playerNode: MIDINodePlayerNode) { self.playerNode = playerNode }
 
+  /// The most recent timestamp retrieved from `touch`.
   private var timestamp = 0.0
-  fileprivate var location = CGPoint.null
-  fileprivate var velocities: [CGVector] = []
 
-  fileprivate var touch: UITouch? {
+  /// The most recent location retrieved from `touch`.
+  private var location = CGPoint.null
+
+  /// Collection of velocity values calculated from timestamp and location values retrieved from `touch`.
+  private var velocities: [CGVector] = []
+
+  /// The currently tracked touch.
+  private var touch: UITouch? {
 
     didSet {
 
+      // Clear cache of velocities.
       velocities = []
 
-      if let touch = touch {
+      switch touch {
 
-        timestamp = touch.timestamp
-        location = touch.location(in: playerNode)
+        case let touch?:
 
-        touchNode = {
-          let node = SKSpriteNode(texture: SKTexture(image: $0), color: $1, size: $0.size * 0.75)
+          // Check that there is a dispatch object from which to grab a track color.
+          guard let dispatchColor = MIDINodePlayer.currentDispatch?.color else { return }
 
-          node.position = location
-          node.name = "touchNode"
-          node.colorBlendFactor = 1
+          // Update the timestamp and location.
+          timestamp = touch.timestamp
+          location = touch.location(in: playerNode)
 
-          playerNode.addChild(node)
+          // Update `touchNode` with a new sprite
+          touchNode = {
 
-          return node
-        }(#imageLiteral(resourceName: "ball"), (Sequence.current?.currentTrack?.color ?? TrackColor.nextColor).value)
+            let node = SKSpriteNode(texture: SKTexture(image: #imageLiteral(resourceName: "ball")),
+                                    color: dispatchColor.value,
+                                    size: MIDINode.defaultSize)
 
-      } else {
+            node.position = location
+            node.name = "touchNode"
+            node.colorBlendFactor = 1
 
-        timestamp = 0
-        location = .null
-        touchNode?.removeFromParent()
-        touchNode = nil
+            playerNode.addChild(node)
+
+            return node
+
+          }()
+
+        case nil:
+
+          timestamp = 0
+          location = .null
+          touchNode?.removeFromParent()
+          touchNode = nil
 
       }
 
@@ -62,54 +83,101 @@ final class AddTool: Tool {
 
   }
 
-  fileprivate var touchNode: SKSpriteNode?
+  /// Sprite used to provide visual feedback of the tracked touch.
+  private var touchNode: SKSpriteNode?
 
-  fileprivate func updateData() {
+  /// Appends a new velocity to `velocities` using the timestamp and location retrieved from `touch`.
+  private func updateData() {
 
-    guard let timestamp = touch?.timestamp,
-          let location = touch?.location(in: playerNode),
-          timestamp != self.timestamp && location != self.location
+    // Check that the timestamp and location can be retrieved and that they are both new values.
+    guard let timestampʹ = touch?.timestamp,
+          let locationʹ = touch?.location(in: playerNode),
+          timestampʹ != timestamp && locationʹ != location
       else
     {
       return
     }
 
-    velocities.append(CGVector((location - self.location) / (timestamp - self.timestamp)))
+    // Calculate the new velocity as the change in location over the change in time.
+    let 𝝙location = locationʹ - location
+    let 𝝙timestamp = timestampʹ - timestamp
+    let velocity = CGVector(𝝙location / 𝝙timestamp)
 
-    self.timestamp = timestamp
-    self.location = location
+    // Append the new velocity.
+    velocities.append(velocity)
+
+    // Update timestamp and location.
+    timestamp = timestampʹ
+    location = locationʹ
 
   }
 
-}
+  /// Updates `touch` when `active && touch == nil`.
+  @objc func touchesBegan(_ touches: Set<UITouch>) {
 
-extension AddTool: TouchReceiver {
+    guard active && touch == nil else { return }
 
-  @objc func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-    if active && touch == nil { touch = touches.first }
+    touch = touches.first
+
   }
 
-  @objc func touchesCancelled(_ touches: Set<UITouch>?, with event: UIEvent?) { touch = nil }
+  /// Sets `touch` to `nil`.
+  @objc func touchesCancelled(_ touches: Set<UITouch>) {
 
-  @objc func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+    // Check that there is a touch being tracked and that it is present in `touches`.
     guard touch != nil && touches.contains(touch!) else { return }
-    updateData()
-    guard velocities.count > 0 && !location.isNull else { return }
-    guard let track = Sequence.current?.currentTrack else { return }
-    let trajectory = MIDINode.Trajectory(velocity: CGVector.mean(velocities),
-                                         position: location )
-    MIDINodePlayer.placeNew(trajectory, target: track, generator: generator)
+
     touch = nil
+
   }
 
-  @objc func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+  /// Adds a new node to the player.
+  @objc func touchesEnded(_ touches: Set<UITouch>) {
+
+    // Check that there is a touch being tracked and that it is present in `touches`.
     guard touch != nil && touches.contains(touch!) else { return }
-    guard let p = touch?.location(in: playerNode) , playerNode.contains(p) else {
+
+    // Append a new velocity.
+    updateData()
+
+    // Check that `velocities` is not empty and `location` is valid.
+    guard velocities.count > 0 && !location.isNull else { return }
+
+    // Check that there is a valid dispatch target.
+    guard let dispatch = MIDINodePlayer.currentDispatch else { return }
+
+    // Calculate the velocity as the average of the elements in `velocities`.
+    let velocity = CGVector.mean(velocities)
+
+    // Create the initial trajectory.
+    let trajectory = MIDINode.Trajectory(velocity: velocity, position: location )
+
+    // Add a new node to the player.
+    MIDINodePlayer.placeNew(trajectory, target: dispatch, generator: generator)
+
+    // Update `touch`.
+    touch = nil
+
+  }
+
+  /// Appends a new velocity to `velocities` and updates the position of `touchNode`.
+  @objc func touchesMoved(_ touches: Set<UITouch>) {
+
+    // Check that there is a touch being tracked and that it is present in `touches`.
+    guard touch != nil && touches.contains(touch!) else { return }
+
+    // Check that tracked touch is within the player's bounding box.
+    guard let position = touch?.location(in: playerNode) , playerNode.contains(position) else {
       touch = nil
       return
     }
+
+    // Append a new velocity to `velocities`.
     updateData()
-    touchNode?.position = p
+
+    // Update the position of `touchNode`.
+    touchNode?.position = position
+
   }
 
 }

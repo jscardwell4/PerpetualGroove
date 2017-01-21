@@ -11,7 +11,7 @@ import UIKit
 import MoonKit
 
 /// Protocol for classes to produce content for an instance of `SecondaryControllerContainer`.
-protocol SecondaryControllerContent: class {
+protocol SecondaryContent: class {
 
   typealias SupportedActions = SecondaryControllerContainer.SupportedActions
 
@@ -32,7 +32,7 @@ protocol SecondaryControllerContent: class {
 
 }
 
-extension SecondaryControllerContent {
+extension SecondaryContent {
 
   var supportedActions: SupportedActions { get { return .none } set {} }
   var disabledActions: SupportedActions { get { return .none } set {} }
@@ -42,29 +42,30 @@ extension SecondaryControllerContent {
 
 }
 
-extension SecondaryControllerContent where Self:UIViewController {
+extension SecondaryContent where Self:UIViewController {
 
   var viewController: UIViewController { return self }
 
 }
 
 /// Protocol for types that want to provide content for an instance `SecondaryControllerContainer`.
-protocol SecondaryControllerContentProvider {
+protocol SecondaryContentProvider {
+
+  typealias DismissalAction = SecondaryControllerContainer.DismissalAction
 
   /// The content from which the view controller to present shall be obtained.
-  var secondaryContent: SecondaryControllerContent { get }
+  var secondaryContent: SecondaryContent { get }
 
   /// Whether the controller returned by `secondaryContent.viewController` is currently visible.
   var isShowingContent: Bool { get }
 
   /// Callback invoked by an instance of `SecondaryControllerContainer` when the controller returned by
   /// `secondaryContent.viewController` is presented.
-  func didShow(content: SecondaryControllerContent)
+  func didShow(content: SecondaryContent)
 
   /// Callback invoked by an instance of `SecondaryControllerContainer` when the controller returned by
   /// `secondaryContent.viewController` is dismissed.
-  func didHide(content: SecondaryControllerContent,
-               dismissalAction: SecondaryControllerContainer.DismissalAction)
+  func didHide(content: SecondaryContent, dismissalAction: DismissalAction)
 
 }
 
@@ -79,10 +80,10 @@ class SecondaryControllerContainer: UIViewController {
   var secondaryController: UIViewController? { return content?.viewController }
 
   /// The object providing `content`.
-  private(set) var contentProvider: SecondaryControllerContentProvider?
+  private(set) var contentProvider: SecondaryContentProvider?
 
   /// The object producing `secondaryController`.
-  private(set) var content: SecondaryControllerContent?
+  private(set) var content: SecondaryContent?
 
   /// View within which child view controller content shall appear.
   @IBOutlet private weak var containerView: UIView!
@@ -168,7 +169,7 @@ class SecondaryControllerContainer: UIViewController {
   @objc enum DismissalAction: Int { case none, cancel, confirm }
 
   /// Presents the secondary content provided by `provider` by embedding in `blurView`.
-  func presentContent(for provider: SecondaryControllerContentProvider,
+  func presentContent(for provider: SecondaryContentProvider,
                       completion: ((Bool) -> Void)? = nil)
   {
     contentProvider = provider

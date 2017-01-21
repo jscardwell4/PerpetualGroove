@@ -9,49 +9,71 @@
 import Foundation
 import MoonKit
 
-// TODO: Review file
-import class SpriteKit.SKNode
-
+/// Singleton class responsible for configuring the logging environment used by the application.
 final class LogManager {
 
-  private static var initialized = false
+  /// Flag indicating whether `initialize()` has been invoked.
+  private static var isInitialized = false
 
-  typealias Context = Log.Context
+  /// Context for log messages relating to MIDI files.
+  static let MIDIFileContext = Log.Context(rawValue: 0b0000_0010_0000) ∪ .file
 
-  static let MIDIFileContext  = Context(rawValue: 0b0000_0010_0000) ∪ .file
-  static let SF2FileContext   = Context(rawValue: 0b0000_0100_0000) ∪ .file
-  static let SequencerContext = Context(rawValue: 0b0000_1000_0000) ∪ .file
-  static let SceneContext     = Context(rawValue: 0b0001_0000_0000) ∪ .file
-  static let UIContext        = Context(rawValue: 0b0010_0000_0000) ∪ .file
+  /// Context for log messages relating to sound font files.
+  static let SF2FileContext = Log.Context(rawValue: 0b0000_0100_0000) ∪ .file
 
+  /// Context for log messages relating to the sequencer.
+  static let SequencerContext = Log.Context(rawValue: 0b0000_1000_0000) ∪ .file
+
+  /// Context for log messages relating to objects using `SpriteKit`.
+  static let SceneContext = Log.Context(rawValue: 0b0001_0000_0000) ∪ .file
+
+  /// Context for log messages relating to `UIKit`-based objects.
+  static let UIContext = Log.Context(rawValue: 0b0010_0000_0000) ∪ .file
+
+  /// Initializes the logging environment for use within the application.
+  /// - requires: `isInitialized == false`.
   static func initialize() {
-    guard !initialized else { return }
 
+    // Check that this is the first invocation.
+    guard !isInitialized else { return }
+
+    // Initialize MoonKit.Log.
     Log.initialize()
+
+
+    // Set the default global log level.
     Log.Level.globalLevel = .verbose
 
+    // Configure log contexts.
     registerLogContextNames()
-
     setDefaultLogContexts()
 
+    // Add the file loggers.
     addFileLoggers()
 
-    initialized = true
+    // Update the flag.
+    isInitialized = true
+
   }
 
+  /// Attaches names to the primary logging contexts used by the application.
   static private func registerLogContextNames() {
+
     MIDIFileContext.name  = "MIDI"
     SF2FileContext.name   = "SoundFont"
     SequencerContext.name = "Sequencer"
     SceneContext.name     = "Scene"
     UIContext.name        = "UI"
+
     (MIDIFileContext ∪ .console).name  = "MIDI"
     (SF2FileContext ∪ .console).name   = "SoundFont"
     (SequencerContext ∪ .console).name = "Sequencer"
     (SceneContext ∪ .console).name     = "Scene"
     (UIContext ∪ .console).name        = "UI"
+
   }
 
+  /// Adds file loggers for various logging contexts.
   static private func addFileLoggers() {
     for (context, subdirectory) in [
       (.any, "Default"),
@@ -60,68 +82,73 @@ final class LogManager {
       (SequencerContext, "Sequencer"),
       (SceneContext, "Scene"),
       (UIContext, "UI")
-      ] as [(Context, String)]
+      ] as [(Log.Context, String)]
     {
       let manager = Log.FileLogger.LogManager(subdirectory: subdirectory)
       let logger = Log.FileLogger(manager: manager)
       logger.prohibitFileReuse = true
       Log.add(logger: logger, context: context)
     }
+
+    // Print some basic information to aid with debugging.
     print([
       "main bundle: '\(Bundle.main.bundlePath)'",
       "default log directory: '\(Log.FileLogger.LogManager.LogsDirectory.defaultLogsDirectoryURL.path)'",
       "log level: \(Log.Level.globalLevel)"
       ].joined(separator: "\n"))
+
   }
 
+  /// Sets the default log context for a multitude of types.
   static private func setDefaultLogContexts() {
-    Context.set(context: MIDIFileContext, forType: DocumentManager.self)
-    Context.set(context: MIDIFileContext ∪ .console, forType: Document.self)
-    Context.set(context: MIDIFileContext, forType: MIDIFile.self)
-    Context.set(context: MIDIFileContext, forType: GrooveFile.self)
-    Context.set(context: MIDIFileContext, forType: MIDIEventContainer.self)
 
-    Context.set(context: SF2FileContext, forType: SF2File.self)
-    Context.set(context: SF2FileContext, forType: Instrument.self)
-    Context.set(context: SF2FileContext, forType: SoundSet.self)
+    Log.Context.set(context: MIDIFileContext, forType: DocumentManager.self)
+    Log.Context.set(context: MIDIFileContext ∪ .console, forType: Document.self)
+    Log.Context.set(context: MIDIFileContext, forType: MIDIFile.self)
+    Log.Context.set(context: MIDIFileContext, forType: GrooveFile.self)
+    Log.Context.set(context: MIDIFileContext, forType: MIDIEventContainer.self)
 
-    Context.set(context: SequencerContext, forType: Sequencer.self)
-    Context.set(context: SequencerContext, forType: Track.self)
-    Context.set(context: SequencerContext, forType: Sequence.self)
-    Context.set(context: SequencerContext, forType: AudioManager.self)
-    Context.set(context: SequencerContext, forType: BarBeatTime.self)
-    Context.set(context: SequencerContext, forType: TimeSignature.self)
-    Context.set(context: SequencerContext, forType: TrackColor.self)
-    Context.set(context: SequencerContext, forType: Metronome.self)
-    Context.set(context: SequencerContext, forType: MIDIClock.self)
-    Context.set(context: SequencerContext, forType: Time.self)
-    Context.set(context: SequencerContext, forType: Transport.self)
+    Log.Context.set(context: SF2FileContext, forType: SF2File.self)
+    Log.Context.set(context: SF2FileContext, forType: Instrument.self)
+    Log.Context.set(context: SF2FileContext, forType: SoundSet.self)
 
-    Context.set(context: SceneContext, forType: MIDINodePlayer.self)
-    Context.set(context: SceneContext, forType: MIDINodePlayerScene.self)
-//    Context.set(context: SceneContext, forType: MIDINodeHistory.self)
-    Context.set(context: SceneContext, forType: MIDINodePlayerNode.self)
-    Context.set(context: SceneContext, forType: AddTool.self)
-    Context.set(context: SceneContext, forType: RemoveTool.self)
-    Context.set(context: SceneContext, forType: GeneratorTool.self)
-    Context.set(context: SceneContext, forType: MIDINode.self)
+    Log.Context.set(context: SequencerContext, forType: Sequencer.self)
+    Log.Context.set(context: SequencerContext, forType: Track.self)
+    Log.Context.set(context: SequencerContext, forType: Sequence.self)
+    Log.Context.set(context: SequencerContext, forType: AudioManager.self)
+    Log.Context.set(context: SequencerContext, forType: BarBeatTime.self)
+    Log.Context.set(context: SequencerContext, forType: TimeSignature.self)
+    Log.Context.set(context: SequencerContext, forType: TrackColor.self)
+    Log.Context.set(context: SequencerContext, forType: Metronome.self)
+    Log.Context.set(context: SequencerContext, forType: MIDIClock.self)
+    Log.Context.set(context: SequencerContext, forType: Time.self)
+    Log.Context.set(context: SequencerContext, forType: Transport.self)
 
-    Context.set(context: UIContext, forType: MIDINodePlayerViewController.self)
-    Context.set(context: UIContext, forType: PurgatoryViewController.self)
-    Context.set(context: UIContext  ∪ .console, forType: DocumentsViewController.self)
-    Context.set(context: UIContext, forType: InstrumentViewController.self)
-    Context.set(context: UIContext, forType: GeneratorViewController.self)
-    Context.set(context: UIContext, forType: DocumentsViewLayout.self)
-    Context.set(context: UIContext, forType: MixerLayout.self)
-    Context.set(context: UIContext, forType: BarBeatTimeLabel.self)
-    Context.set(context: UIContext ∪ .console, forType: DocumentCell.self)
-    Context.set(context: UIContext ∪ .console, forType: DocumentItem.self)
-    Context.set(context: UIContext, forType: MixerCell.self)
-    Context.set(context: UIContext, forType: MixerViewController.self)
-    Context.set(context: UIContext, forType: RootViewController.self)
-    Context.set(context: UIContext, forType: TransportViewController.self)
+    Log.Context.set(context: SceneContext, forType: MIDINodePlayer.self)
+    Log.Context.set(context: SceneContext, forType: MIDINodePlayerScene.self)
+    Log.Context.set(context: SceneContext, forType: MIDINodePlayerNode.self)
+    Log.Context.set(context: SceneContext, forType: AddTool.self)
+    Log.Context.set(context: SceneContext, forType: RemoveTool.self)
+    Log.Context.set(context: SceneContext, forType: GeneratorTool.self)
+    Log.Context.set(context: SceneContext, forType: MIDINode.self)
 
-    Context.set(context: .file, forType: SettingsManager.self)
+    Log.Context.set(context: UIContext, forType: MIDINodePlayerViewController.self)
+    Log.Context.set(context: UIContext, forType: PurgatoryViewController.self)
+    Log.Context.set(context: UIContext  ∪ .console, forType: DocumentsViewController.self)
+    Log.Context.set(context: UIContext, forType: InstrumentViewController.self)
+    Log.Context.set(context: UIContext, forType: GeneratorViewController.self)
+    Log.Context.set(context: UIContext, forType: DocumentsViewLayout.self)
+    Log.Context.set(context: UIContext, forType: MixerLayout.self)
+    Log.Context.set(context: UIContext, forType: BarBeatTimeLabel.self)
+    Log.Context.set(context: UIContext ∪ .console, forType: DocumentCell.self)
+    Log.Context.set(context: UIContext ∪ .console, forType: DocumentItem.self)
+    Log.Context.set(context: UIContext, forType: MixerCell.self)
+    Log.Context.set(context: UIContext, forType: MixerViewController.self)
+    Log.Context.set(context: UIContext, forType: RootViewController.self)
+    Log.Context.set(context: UIContext, forType: TransportViewController.self)
+
+    Log.Context.set(context: .file, forType: SettingsManager.self)
+
   }
 
 }

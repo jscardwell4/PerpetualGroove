@@ -8,6 +8,7 @@
 import Foundation
 import MoonKit
 
+/// A class for wrapping a document whose file is located on the local disk.
 final class LocalDocumentItem: NSObject {
 
   /// The document's file url.

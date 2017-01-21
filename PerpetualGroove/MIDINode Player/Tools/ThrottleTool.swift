@@ -9,8 +9,9 @@
 import Foundation
 import MoonKit
 
-// TODO: Review file
+// TODO: Implement the tool.
 
-final class ThrottleTool: NodeAdjustmentTool {
+/// A tool for adjusting the initial velocity of a midi node.
+final class ThrottleTool: NodeSelectionTool {
 
 }

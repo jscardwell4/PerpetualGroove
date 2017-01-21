@@ -10,20 +10,43 @@ import Foundation
 import UIKit
 import MoonKit
 
-// TODO: Nudge, Throttle, Rotate tools
-
+/// Protocol for types that provide an interface for generating or modifying `MIDINode` instances.
 protocol Tool: TouchReceiver {
 
+  /// Whether the tool is currently receiving touch events.
   var active: Bool { get set }
 
 }
 
-protocol PresentingTool: Tool, SecondaryControllerContentProvider {}
+/// Protocol for a `Tool` that provides secondary content.
+protocol PresentingTool: Tool, SecondaryContentProvider {}
 
+/// Enumeration of the possible tools.
 enum AnyTool: Int {
-  case none = -1, newNodeGenerator, addNode, removeNode, deleteNode,
-       nodeGenerator, rotate, loopStart, loopEnd, loopToggle
 
+  /// The empty tool.
+  case none = -1
+
+  /// Tool for configuring the generator used when adding new nodes.
+  case newNodeGenerator
+
+  /// Tool for adding new nodes.
+  case addNode
+
+  /// Tool for generating node removal events.
+  case removeNode
+
+  /// Tool for erasing nodes.
+  case deleteNode
+
+  /// Tool for editing the generator for existing nodes.
+  case nodeGenerator
+
+  /// Tool for modifiying the initial trajectory of a node.
+  case rotate
+
+  /// The current corresponding instance of the tool. This is `nil` for `none` and one of the
+  /// `MIDINodePlayer` tools otherwise.
   var tool: Tool? {
     switch self {
       case .none:              return nil
@@ -33,18 +56,26 @@ enum AnyTool: Int {
       case .deleteNode:        return MIDINodePlayer.deleteTool
       case .nodeGenerator:     return MIDINodePlayer.existingGeneratorTool
       case .rotate:            return MIDINodePlayer.rotateTool
-      case .loopStart:         return nil
-      case .loopEnd:           return nil
-      case .loopToggle:        return nil
     }
   }
 
+  /// Whether the tool is player's current tool.
   var isCurrentTool: Bool { return MIDINodePlayer.currentTool == self }
 
+  /// Non-optional initalizer from `rawValue`. Invalid values return `none`.
   init(_ int: Int) { self = AnyTool(rawValue: int) ?? .none }
 
+  /// Initialize from the instance of a tool. Initialize to `none` if `tool` is `nil`.
+  /// `tool` must be an instance owned by `MIDINodePlayer` otherwise it is as if `tool == nil`.
   init(_ tool: Tool?) {
-    guard let tool = tool, MIDINodePlayer.playerNode != nil else { self = .none; return }
+
+    guard let tool = tool,
+          MIDINodePlayer.playerNode != nil
+      else
+    {
+      self = .none
+      return
+    }
 
     switch ObjectIdentifier(tool) {
       case ObjectIdentifier(MIDINodePlayer.newGeneratorTool!):      self = .newNodeGenerator
@@ -52,8 +83,9 @@ enum AnyTool: Int {
       case ObjectIdentifier(MIDINodePlayer.removeTool!):            self = .removeNode
       case ObjectIdentifier(MIDINodePlayer.deleteTool!):            self = .deleteNode
       case ObjectIdentifier(MIDINodePlayer.existingGeneratorTool!): self = .nodeGenerator
-      default:                                                  self = .none
+      default:                                                      self = .none
     }
+
   }
 
 }
