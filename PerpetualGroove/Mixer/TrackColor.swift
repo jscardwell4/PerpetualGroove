@@ -10,10 +10,10 @@ import Foundation
 import class UIKit.UIColor
 import MoonKit
 
-// TODO: Review file
+/// Enumeration for specifying the color of a MIDI node dispatching instance whose raw value is an 
+/// unsigned 32-bit integer representing a hexadecimal RGB value.
+enum TrackColor: UInt32, EnumerableType, CustomStringConvertible, LosslessJSONValueConvertible {
 
-// MARK: - Enumeration for specifying the color attached to a `MIDITrackType`
-enum TrackColor: UInt32 {
   case muddyWaters        = 0xBD7651
   case steelBlue          = 0x4875A8
   case celery             = 0x9FB44D
@@ -39,6 +39,7 @@ enum TrackColor: UInt32 {
   case forestGreen        = 0x119E00
   case pizza              = 0xC29500
 
+  /// The `UIColor` derived from `rawValue`.
   var value: UIColor { return UIColor(rgbHex: rawValue) }
 
   static var nextColor: TrackColor {
@@ -46,10 +47,6 @@ enum TrackColor: UInt32 {
     guard existingColors.count > 0 else { return allCases[0] }
     return allCases.filter({!existingColors.contains($0)}).first ?? allCases[0]
   }
-
-}
-
-extension TrackColor: EnumerableType {
 
   /// `White` case is left out so that it is harder to assign the color used by `MasterTrack`
   static let allCases: [TrackColor] = [
@@ -59,56 +56,56 @@ extension TrackColor: EnumerableType {
     .laRioja, .forestGreen, .pizza
   ]
 
-}
-
-extension TrackColor: CustomStringConvertible {
-
+  /// The enumeration's name.
   var description: String {
     switch self {
-      case .muddyWaters:        return "MuddyWaters"
-      case .steelBlue:          return "SteelBlue"
-      case .celery:             return "Celery"
-      case .chestnut:           return "Chestnut"
-      case .crayonPurple:       return "CrayonPurple"
-      case .verdigris:          return "Verdigris"
-      case .twine:              return "Twine"
-      case .tapestry:           return "Tapestry"
-      case .vegasGold:          return "VegasGold"
-      case .richBlue:           return "RichBlue"
-      case .fruitSalad:         return "FruitSalad"
-      case .husk:               return "Husk"
-      case .mahogany:           return "Mahogany"
-      case .mediumElectricBlue: return "MediumElectricBlue"
-      case .appleGreen:         return "AppleGreen"
-      case .venetianRed:        return "VenetianRed"
-      case .indigo:             return "Indigo"
-      case .easternBlue:        return "EasternBlue"
-      case .indochine:          return "Indochine"
-      case .flirt:              return "Flirt"
-      case .ultramarine:        return "Ultramarine"
-      case .laRioja:            return "Larioja"
-      case .forestGreen:        return "ForestGreen"
-      case .pizza:              return "Pizza"
+      case .muddyWaters:        return "muddyWaters"
+      case .steelBlue:          return "steelBlue"
+      case .celery:             return "celery"
+      case .chestnut:           return "chestnut"
+      case .crayonPurple:       return "crayonPurple"
+      case .verdigris:          return "verdigris"
+      case .twine:              return "twine"
+      case .tapestry:           return "tapestry"
+      case .vegasGold:          return "vegasGold"
+      case .richBlue:           return "richBlue"
+      case .fruitSalad:         return "fruitSalad"
+      case .husk:               return "husk"
+      case .mahogany:           return "mahogany"
+      case .mediumElectricBlue: return "mediumElectricBlue"
+      case .appleGreen:         return "appleGreen"
+      case .venetianRed:        return "venetianRed"
+      case .indigo:             return "indigo"
+      case .easternBlue:        return "easternBlue"
+      case .indochine:          return "indochine"
+      case .flirt:              return "flirt"
+      case .ultramarine:        return "ultramarine"
+      case .laRioja:            return "larioja"
+      case .forestGreen:        return "forestGreen"
+      case .pizza:              return "pizza"
     }
   }
 
-}
-
-extension TrackColor: LosslessJSONValueConvertible {
-
+  /// A string with the pound-prefixed hexadecimal representation of `rawValue`.
   var jsonValue: JSONValue { return "#\(String(rawValue, radix: 16, uppercase: true))".jsonValue }
 
+  /// Initializing with a JSON value.
+  /// - Parameter jsonValue: To be successful, `jsonValue` must be a string that begins with '#' and
+  ///                        whose remaining characters form a string convertible to `UInt32`.
   init?(_ jsonValue: JSONValue?) {
-    guard
-      let string = String(jsonValue),
-      string.hasPrefix("#"),
-      let hex = UInt32(string.substring(from: string.index(after: string.startIndex)), radix: 16)
+
+    // Check that the JSON value is a string and get convert it to a hexadecimal value.
+    guard let string = String(jsonValue),
+          string.hasPrefix("#"),
+          let hex = UInt32(string.substring(from: string.index(after: string.startIndex)), radix: 16)
       else
     {
       return nil
     }
-    
+
+    // Initialize with the hexadecimal value.
     self.init(rawValue: hex)
+
   }
 
 }

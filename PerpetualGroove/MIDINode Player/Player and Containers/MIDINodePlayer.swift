@@ -304,7 +304,7 @@ final class MIDINodePlayer: NotificationDispatching {
         try target.nodeManager.add(node: node)
 
         // Initiate playback if the transport is not currently playing.
-        if !Transport.current.isPlaying { Transport.current.play() }
+        if !Transport.current.isPlaying { Transport.current.isPlaying = true }
 
         // Post notification that the node has been added.
         postNotification(name: .didAddNode,

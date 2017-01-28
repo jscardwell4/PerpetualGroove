@@ -121,22 +121,16 @@ final class Document: UIDocument, Named, NotificationDispatching {
 
     guard data.count > 0 else { sequence = Sequence(document: self); return }
 
-    let dataProvider: SequenceDataProvider
-
     switch type {
 
       case .midi:
-        dataProvider = try MIDIFile(data: data)
+        sequence = Sequence(file: try MIDIFile(data: data), document: self)
 
       case .groove:
         guard let file = GrooveFile(data: data) else { throw Error.invalidContent }
-        dataProvider = file
+        sequence = Sequence(file: file, document: self)
 
     }
-    
-    sequence = Sequence(data: dataProvider, document: self)
-
-    Log.debug("file: \(dataProvider)\nloaded into sequence: \(sequence!)")
 
   }
 

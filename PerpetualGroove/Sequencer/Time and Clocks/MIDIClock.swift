@@ -66,7 +66,7 @@ final class MIDIClock: CustomStringConvertible, Named {
     timer.start()
   }
 
-  var paused: Bool { return !running && ticks > 0 }
+  var paused: Bool { return !isRunning && ticks > 0 }
 
   func resume() { dispatchQueue.async(execute: _resume) }
 
@@ -106,7 +106,7 @@ final class MIDIClock: CustomStringConvertible, Named {
 
   fileprivate let timer = Timer(queue: DispatchQueue(label: "MIDI Clock (Timer)", qos: .userInteractive))
 
-  var running: Bool { return timer.running }
+  var isRunning: Bool { return timer.running }
 
   /// The running number of MIDI clocks that have elapsed
   fileprivate(set) var ticks: MIDITimeStamp = 0

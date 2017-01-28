@@ -98,7 +98,7 @@ final class Sequencer {
       receptionist.stopObserving(object: transportAssignment.transport)
       let transport = transportAssignment.transport
       if case .primary(_) = transportAssignment {
-        clockRunning = transport.clock.running
+        clockRunning = transport.clock.isRunning
         transport.clock.stop()
       } else {
         transport.clock.stop()

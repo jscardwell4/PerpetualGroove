@@ -11,7 +11,7 @@ import MoonKit
 
 // TODO: Review file
 
-protocol SequenceDataProvider { var storedData: Sequence.Data { get } }
+//protocol SequenceDataProvider { var storedData: Sequence.Data { get } }
 
 final class Sequence {
 
@@ -190,12 +190,12 @@ final class Sequence {
     }
   }
 
-  convenience init(data: SequenceDataProvider, document: Document) {
-    switch data.storedData {
-      case .midi  (let file): self.init(file: file, document: document)
-      case .groove(let file): self.init(file: file, document: document)
-    }
-  }
+//  convenience init(data: SequenceDataProvider, document: Document) {
+//    switch data.storedData {
+//      case .midi  (let file): self.init(file: file, document: document)
+//      case .groove(let file): self.init(file: file, document: document)
+//    }
+//  }
 
   // MARK: - Adding tracks
 

@@ -249,19 +249,10 @@ class NodeSelectionTool: Tool {
     let isPaused = transport.isPaused
 
     // Make sure the transport is paused before adjusting.
-    if !isPaused { transport.pause() }
+    if !isPaused { transport.isPaused = true }
 
-    // Try jogging to the node's start time, returning on error.
-    do {
-
-      try transport.automateJogToTime(preadjustedNodeStart)
-
-    } catch {
-
-      Log.error(error)
-      return
-
-    }
+    // Jog to the node's start time.
+    transport.jog(to: preadjustedNodeStart)
 
     // Perform node adjustements.
     makeAdjustments()
@@ -269,17 +260,8 @@ class NodeSelectionTool: Tool {
     // Check whether the node's start time has changed.
     if node.initTime != preadjustedNodeStart {
 
-      do {
-
-        // Try jogging to the node's new start time.
-        try transport.automateJogToTime(node.initTime)
-
-      } catch {
-
-        Log.error(error)
-        return
-
-      }
+      // Jog to the node's new start time.
+      transport.jog(to: node.initTime)
 
     }
 
@@ -287,7 +269,7 @@ class NodeSelectionTool: Tool {
     guard !isPaused else { return }
     
     // Resume playback.
-    transport.play()
+    transport.isPlaying = true
 
   }
 
