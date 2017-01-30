@@ -10,37 +10,59 @@ import Foundation
 import UIKit
 import MoonKit
 
-// TODO: Review file
-
+/// The root view controller for the application's window.
 final class RootViewController: UIViewController {
 
+  /// The current instance of `RootViewController` displayed by the application's window.
   static var currentInstance: RootViewController { return AppDelegate.currentInstance.viewController }
 
-  // MARK: - View loading and layout
-
+  /// The stack containing the top and bottom stacks of content.
   @IBOutlet var contentStack: UIStackView!
-  @IBOutlet var middleStack: UIStackView!
+
+  /// The stack containing the mixer and midi node player.
+  @IBOutlet var topStack: UIStackView!
+
+  /// The stack containing the transport, tempo slider, and documents button.
   @IBOutlet var bottomStack: UIStackView!
 
-  @IBOutlet var middleStackHeight: NSLayoutConstraint!
+  /// The constraint controlling the height of the top stack.
+  @IBOutlet var topStackHeight: NSLayoutConstraint!
+
+  /// The constraint controlling the height of the bottom stack.
   @IBOutlet var bottomStackHeight: NSLayoutConstraint!
 
+  /// The view within which the mixer is embedded.
   @IBOutlet var mixerContainer: UIView!
+
+  /// The view within which the midi node player is embedded.
   @IBOutlet var midiNodePlayerContainer: UIView!
+
+  /// The view within which the transport is embedded.
   @IBOutlet var transportContainer: UIView!
+
+  /// The view within which the tempo interface is embedded.
   @IBOutlet var tempoContainer: UIView!
 
+  /// Overridden to ensure the top stack is at the front.
   override func viewDidLoad() {
+
     super.viewDidLoad()
 
-    contentStack.bringSubview(toFront: middleStack)
+    // Bring the top stack to the front.
+    contentStack.bringSubview(toFront: topStack)
+
   }
 
+  /// Overridden to present the purgatory view controller if settings indicate iCloud should be used
+  /// but the ubiquity identity token is `nil`.
   override func viewDidAppear(_ animated: Bool) {
+
     super.viewDidAppear(animated)
 
+    // Check that settings have been initialized.
     assert(SettingsManager.isInitialized)
 
+    // Check that iCloud storage should be used and the ubiquity identity token is `nil`.
     guard Setting.iCloudStorage.value as? Bool == true
        && FileManager.default.ubiquityIdentityToken == nil
       else
@@ -48,94 +70,121 @@ final class RootViewController: UIViewController {
       return
     }
 
+    // Push the purgatory view controller to disable all functionality until an identity token is 
+    // established or the iCloud storage setting is updated.
     performSegue(withIdentifier: "Purgatory", sender: self)
+
   }
 
-
+  /// Overridden to manually align the documents popover with the documents button.
   override func viewDidLayoutSubviews() {
+
     super.viewDidLayoutSubviews()
 
-    guard let popoverView = documentsPopoverView, let presentingView = documentsButton else { return }
+    // Get the popover and the button.
+    guard let popoverView = documentsPopoverView,
+          let presentingView = documentsButton
+      else
+    {
+      return
+    }
+
+    // Convert the centers of each view to a common coordinate space.
     let popoverCenter = view.convert(popoverView.center, from: popoverView.superview)
     let presentingCenter = view.convert(presentingView.center, from: presentingView.superview)
+
+    // Set the popover view's x offset to the difference in x values of the two centers.
     popoverView.xOffset = presentingCenter.x - popoverCenter.x
 
+    assert(presentingView.center.x - popoverView.center.x == popoverView.xOffset,
+           "Coordinate space is not being calculated as I thought it was.")
+
   }
 
-  // MARK: Status bar
-
+  /// Overridden to return `true`.
   override var prefersStatusBarHidden : Bool { return true }
 
-  // MARK: - Popovers
-
+  /// Overridden to assign the destination controller to one of the root view controller's properties.
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+
     super.prepare(for: segue, sender: sender)
 
+    // Assign the destination controller to a property determined by the destination controller's type.
     switch segue.destination {
 
-      case let controller as MixerViewController:          mixerViewController      = controller
-      case let controller as DocumentsViewController:      documentsViewController  = controller
-      case let controller as TempoViewController:          tempoViewController      = controller
-      case let controller as MIDINodePlayerViewController: playerViewController     = controller
-      case let controller as TransportViewController:      transportViewController  = controller
-      default:                                             break
+      case let controller as MixerViewController:
+        mixerViewController = controller
+
+      case let controller as DocumentsViewController:
+        documentsViewController  = controller
+
+      case let controller as TempoViewController:
+        tempoViewController = controller
+
+      case let controller as MIDINodePlayerViewController:
+        playerViewController = controller
+
+      case let controller as TransportViewController:
+        transportViewController = controller
+
+      default:
+        break
 
     }
 
   }
 
-  @IBAction private func dismissPopover() { popover = .none }
+  /// Hides the documents popover and deselects the documents button.
+  @IBAction
+  private func dismissPopover() {
 
-  private func updatePopover(_ newValue: Popover) { popover = popover == newValue ? .none : newValue }
+    documentsPopoverView.isHidden = true
+    documentsButton.isSelected = false
 
-  private var popover = Popover.none {
-    didSet {
-      guard oldValue != popover else { return }
-      oldValue.view?.isHidden = true
-      oldValue.button?.isSelected = false
-      popover.view?.isHidden = false
-    }
   }
 
-  // MARK: - Files
+  /// The button acting as an anchor for the documents popover and serving as a toggle for its display.
+  @IBOutlet weak var documentsButton: ImageButtonView!
 
-  @IBOutlet weak var documentsButton: ImageButtonView?
+  /// Toggles the display of the documents popover and the selection of the documents button.
+  @IBAction
+  private func documents() {
 
-  @IBAction private func documents() {
-    if case .files = popover { popover = .none } else { popover = .files }
+    documentsPopoverView.isHidden.toggle()
+    documentsButton.isSelected = documentsPopoverView.isHidden == false
+
   }
 
+  /// The view controller responsible for presenting the list of available documents as well as the 
+  /// ability to create a new document. Displayed by the documents popover.
   private(set) weak var documentsViewController: DocumentsViewController! {
+
     didSet {
-      documentsViewController?.dismiss = {[unowned self] in self.popover = .none}
+
+      documentsViewController?.dismiss = weakMethod(self, RootViewController.dismissPopover)
+
     }
+
   }
 
-  @IBOutlet fileprivate weak var documentsPopoverView: PopoverView!
+  /// The popover view within which the documents view controller is embedded.
+  @IBOutlet private weak var documentsPopoverView: PopoverView!
 
+  /// The view controller responsible for presenting an interface to the mixer with controls for the
+  /// tracks in the currently loaded sequence as well as for adding and removing tracks to/from the currently
+  /// loaded sequence.
   private(set) var mixerViewController: MixerViewController!
+
+  /// The view controller responsible for presenting a control for adjusting the sequencer's tempo and 
+  /// for toggling the metronome on and off.
   private(set) weak var tempoViewController: TempoViewController!
+
+  /// The view controller responsible for presenting the midi player within which new midi nodes can be
+  /// added and existing midi nodes can be modified or removed.
   private(set) weak var playerViewController: MIDINodePlayerViewController!
+
+  /// The view controller responsible for presenting an interface for the current transport allowing 
+  /// playback to be started, paused, stopped, scrubbed, recorded, and reset.
   private(set) weak var transportViewController: TransportViewController!
-
-}
-
-extension RootViewController {
-
-  fileprivate enum Popover {
-    case none, files
-    var view: PopoverView? {
-      switch self {
-      case .files:      return RootViewController.currentInstance.documentsPopoverView
-      case .none:       return nil
-      }
-    }
-    var button: ImageButtonView? {
-      switch self {
-      case .files:      return RootViewController.currentInstance.documentsButton
-      case .none:       return nil
-      }
-    }
-  }
 
 }

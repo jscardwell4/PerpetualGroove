@@ -9,52 +9,102 @@
 import UIKit
 import MoonKit
 
-// TODO: Review file
-
+/// A custom segue for transitioning to an instance of `PurgatoryViewController`.
 final class PurgatorySegue: UIStoryboardSegue {
 
+  /// Overridden to set the backdrop image for the destination controller.
   override func perform() {
+
+    // To the backdrop image to a snapshot of the current view.
     (destination as? PurgatoryViewController)?.backdropImage = source.view.snapshot
+
+    // Perform the segue.
     super.perform()
+
   }
 
 }
 
+/// A view controller that prevents interacting with the application until iCloud storage is available
+/// or the setting to use iCloud is updated.
 final class PurgatoryViewController: UIViewController {
 
+  /// Handles registration/reception of application and settings manager notifications.
   private let receptionist = NotificationReceptionist(callbackQueue: OperationQueue.main)
 
+  /// The view displaying the backdrop image.
   @IBOutlet var backdrop: UIImageView!
 
+  /// The image to display beneath the informative text.
   var backdropImage: UIImage?
 
-  override func viewDidLoad() {
-    super.viewDidLoad()
+  /// Overridden to register for various notifications.
+  override func awakeFromNib() {
 
-     backdrop.image = backdropImage
+    super.awakeFromNib()
 
-    receptionist.observe(name: NSNotification.Name.NSUbiquityIdentityDidChange.rawValue) {
-      [weak self] _ in
-      guard FileManager.default.ubiquityIdentityToken != nil else { return }
-      self?.dismiss(animated: true, completion: nil)
-    }
+    receptionist.observe(name: .NSUbiquityIdentityDidChange,
+                         callback: weakMethod(self, PurgatoryViewController.identityDidChange))
 
-    receptionist.observe(name: .iCloudStorageChanged, from: SettingsManager.self) {
-      [weak self] _ in
+    receptionist.observe(name: .iCloudStorageChanged, from: SettingsManager.self,
+                         callback: weakMethod(self, PurgatoryViewController.iCloudStorageChanged))
 
-      if !(Setting.iCloudStorage.value as? Bool == true) { self?.dismiss(animated: true, completion: nil) }
-    }
-
-    receptionist.observe(name: NSNotification.Name.UIApplicationDidBecomeActive.rawValue) {
-      [weak self] _ in
-
-      if !(Setting.iCloudStorage.value as? Bool == true && FileManager.default.ubiquityIdentityToken == nil) {
-        self?.dismiss(animated: true, completion: nil)
-      }
-    }
+    receptionist.observe(name: .UIApplicationDidBecomeActive,
+                         callback: weakMethod(self, PurgatoryViewController.applicationDidBecomeActive))
 
   }
 
+  /// Overridden to update the backdrop image.
+  override func viewDidLoad() {
+
+    super.viewDidLoad()
+
+    backdrop.image = backdropImage
+
+  }
+
+  /// Handler for ubiquity identity change notifications.
+  private func identityDidChange(_ notification: Notification) {
+
+    // Check that the view controller is being presented and a ubiquity identity token has been assigned.
+    guard isBeingPresented && FileManager.default.ubiquityIdentityToken != nil else { return }
+
+    // Dismiss the view controller.
+    dismiss(animated: true, completion: nil)
+
+  }
+
+  /// Handler for iCloud storage setting change notifications.
+  private func iCloudStorageChanged(_ notification: Notification) {
+    
+    // Check that the view controller is being presented and the iCloud storage setting is false.
+    guard isBeingPresented && (Setting.iCloudStorage.value as? Bool) == false else { return }
+
+    // Dismiss the view controller.
+    dismiss(animated: true, completion: nil)
+
+  }
+
+  /// Handler for notifications that the application has become active.
+  private func applicationDidBecomeActive(_ notification: Notification) {
+
+    // Check that the view controller is being presented and the iCloud storage setting is false or a 
+    // ubiquity identity token has been assigned.
+    guard isBeingPresented
+      && ( (Setting.iCloudStorage.value as? Bool) == false
+        || FileManager.default.ubiquityIdentityToken != nil)
+      else
+    {
+      return
+    }
+
+    // Dismiss the view controller.
+    dismiss(animated: true, completion: nil)
+
+  }
+
+  /// Overridden to ensure the view only appears when the controller is being presented,
+  /// the iCloud storage setting is `true`, and the ubiquity identity token is `nil`.
   override func viewWillAppear(_ animated: Bool) {
 
     guard isBeingPresented else {

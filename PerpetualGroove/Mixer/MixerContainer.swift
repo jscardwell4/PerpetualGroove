@@ -11,7 +11,8 @@ import UIKit
 import MoonKit
 
 /// A view controller that contains an instance of `MixerViewController` as its primary content
-/// and within which secondary content, such as an instance of `InstrumentViewController`, may be presented.
+/// and within which secondary content, such as an instance of `InstrumentViewController`, may 
+/// be presented.
 final class MixerContainer: SecondaryControllerContainer {
 
   /// The view controller responsible for the primary content.

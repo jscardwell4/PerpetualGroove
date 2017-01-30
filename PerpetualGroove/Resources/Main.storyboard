@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BV1-FR-VrT">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BV1-FR-VrT">
     <device id="ipad9_7" orientation="landscape">
         <adaptation id="fullscreen"/>
     </device>
@@ -27,7 +27,7 @@
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" translatesAutoresizingMaskIntoConstraints="NO" id="KR6-ig-M7J" userLabel="ContentStack">
                                 <rect key="frame" x="20" y="8" width="984" height="752"/>
                                 <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="NZR-ya-29p" userLabel="MiddleStack">
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="NZR-ya-29p" userLabel="TopStack">
                                         <rect key="frame" x="0.0" y="0.0" width="984" height="575"/>
                                         <subviews>
                                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Xii-MX-zKn" userLabel="Mixer Container">
@@ -66,13 +66,13 @@
                                             </containerView>
                                         </subviews>
                                         <constraints>
-                                            <constraint firstAttribute="height" priority="999" constant="600" identifier="MiddleStackHeight" id="zSM-Hw-lw3">
+                                            <constraint firstAttribute="height" priority="999" constant="600" identifier="TopStackHeight" id="zSM-Hw-lw3">
                                                 <variation key="heightClass=regular-widthClass=regular" constant="575"/>
                                             </constraint>
                                         </constraints>
                                         <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="MiddleStack"/>
-                                            <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="MiddleStack"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="TopStack"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="TopStack"/>
                                         </userDefinedRuntimeAttributes>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="n4A-7M-eOV" userLabel="BottomStack">
@@ -364,11 +364,11 @@
                         <outlet property="contentStack" destination="KR6-ig-M7J" id="pxB-lb-19Q"/>
                         <outlet property="documentsButton" destination="gJq-1L-zk3" id="z0d-NV-cbd"/>
                         <outlet property="documentsPopoverView" destination="L5k-qi-Yb6" id="ib7-VB-2Y5"/>
-                        <outlet property="middleStack" destination="NZR-ya-29p" id="hcq-EU-qf7"/>
-                        <outlet property="middleStackHeight" destination="zSM-Hw-lw3" id="aS8-9f-kuD"/>
                         <outlet property="midiNodePlayerContainer" destination="cDh-C7-9la" id="52L-qm-joj"/>
                         <outlet property="mixerContainer" destination="Xii-MX-zKn" id="66b-hf-2hE"/>
                         <outlet property="tempoContainer" destination="O9D-bO-M36" id="g8E-Gk-9Iw"/>
+                        <outlet property="topStack" destination="NZR-ya-29p" id="TEF-H3-XKm"/>
+                        <outlet property="topStackHeight" destination="zSM-Hw-lw3" id="SgD-sH-xZn"/>
                         <outlet property="transportContainer" destination="neB-2q-lJV" id="G3D-rW-I4K"/>
                         <segue destination="m5P-Ta-9o8" kind="presentation" identifier="Purgatory" customClass="PurgatorySegue" customModule="Groove" customModuleProvider="target" modalTransitionStyle="crossDissolve" id="Hqa-Ox-hdJ"/>
                     </connections>
