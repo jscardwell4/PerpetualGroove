@@ -56,7 +56,7 @@ final class TempoTrack: Track {
   override func dispatch(event: MIDIEvent) {
     guard case .meta(let metaEvent) = event else { return }
     switch metaEvent.data {
-      case let .tempo(bpm): tempo = bpm; Sequencer.setTempo(bpm, automated: true)
+      case let .tempo(bpm): tempo = bpm; Sequencer.set(tempo: bpm, automated: true)
       case let .timeSignature(signature, _, _): timeSignature = signature
       default: break
     }

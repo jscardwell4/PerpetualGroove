@@ -44,7 +44,7 @@ final class Metronome {
   }
 
   /// Initializing with an audio unit.
-  /// - Throws: Any error encountered while attempting to load the metronome's audio file into `sampler`.
+  /// - Throws: Any error encountered while attempting to load the metronome's audio file.
   init(sampler: AVAudioUnitSampler) throws {
 
     /// Initialize the metronome's sampler.

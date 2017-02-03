@@ -7,199 +7,336 @@
 //
 
 import Foundation
-import AudioToolbox
 import CoreMIDI
 import MoonKit
 
-// TODO: Review file
+/// A high level bar beat time representation that builds around the basic `BarBeatTime`
+/// structure. An instance of this class represents a bar beat time value synchronized with
+/// a MIDI clock source. Additionally, callbacks may be registered with an instance of 
+/// `Time` that are invoked when the bar beat time represented by the instance changes.
+final class Time: Named, CustomStringConvertible, Hashable {
 
-/// Synchronizes a `BarBeatTime` with received MIDI clock messages.
-final class Time {
-
+  /// The instance of `Time` owned by the transport currently in use by the sequencer.
   static var current: Time { return Transport.current.time }
 
-  private var client = MIDIClientRef()  /// Client for receiving MIDI clock messages.
-  private var inPort = MIDIPortRef()    /// Port for receiving MIDI clock messages.
+  /// Client for receiving MIDI clock messages.
+  private var client = MIDIClientRef()
 
-  /// Runs on MIDI Services thread.
-  private func read(_ packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutableRawPointer?) {
+  /// Port for receiving MIDI clock messages.
+  private var inPort = MIDIPortRef()
 
+  /// Callback invoked from MIDI Services thread when the time's MIDI clock source sends out
+  /// MIDI packets.
+  private func read(_ packetList: UnsafePointer<MIDIPacketList>,
+                    context: UnsafeMutableRawPointer?)
+  {
+
+    // Check the first byte of data from the first packet in the packet list.
     switch packetList.pointee.packet.data.0 {
 
       case 0b1111_1000:
-        queue.async(execute: incrementClock)
+        // The packet contains a timing clock message, increment the bar beat time.
 
-      case 0b1111_1010:
         queue.async {
           [unowned self] in
-          self._reset()
-          self.invokeCallbacks(for: self.barBeatTime)
+          self.barBeatTime = self.barBeatTime.advanced(by: self.barBeatTime.subbeatUnitTime)
+        }
+
+      case 0b1111_1010:
+        // The packet contains a start message. Reset the bar beat time.
+
+        queue.async {
+          [unowned self] in
+          self.barBeatTime = .zero
         }
 
       default:
+        // The packet does not contain one of the messages handled by `Time`, just ignore it.
+
         break
+
     }
 
   }
 
-
+  /// The dispatch queue for working manipulating the time's bar beat time value.
   private let queue: DispatchQueue
 
-  /// The musical representation of the current time.
+  /// The musical representation of the current time kept by the MIDI clock source. The 
+  /// value of this property updates as MIDI packets are read that originate with the MIDI 
+  /// clock source. Each update causes the invocation of registered callbacks.
+  /// - Note: The current assumption is that, aside from initialization (which doesn't 
+  ///         cause the 'didSet' code to execute), the value of this property only changes
+  ///         in response to receiving a 'clock' or 'start' message from the MIDI clock
+  ///         source. Either message would indicate a running clock, which means a running
+  ///         transport; therefore, there need to be a check for a running transport in
+  ///         'didSet' before callbacks are invoked.
   var barBeatTime: BarBeatTime = BarBeatTime.zero {
+
     didSet {
-      guard Transport.current.isPlaying else { return }
+
+      // Invoke callbacks for the new bar beat time value.
       invokeCallbacks(for: barBeatTime)
+
     }
+
   }
 
+  /// The type serving as a registerable callback.
+  /// - Parameter time: The bar beat time value at the point of invocation.
+  typealias Callback  = (_ time: BarBeatTime) -> Void
 
-  private func incrementClock() {
-    barBeatTime = barBeatTime.advanced(by: barBeatTime.subbeatUnitTime)
-  }
+  /// The type serving as a predicate for filtering callback invocations.
+  /// - Parameter time: The bar beat time to be evaluated.
+  /// - Returns: Whether the callback paired with the predicate should be invoked for 
+  ///            `time`.
+  typealias Predicate = (_ time: BarBeatTime) -> Bool
 
-  typealias Callback  = (BarBeatTime) -> Void
-  typealias Predicate = (BarBeatTime) -> Bool
+  /// The type registerable as a predicated callback. The tuple consists of a `predicate` to 
+  /// evaluate and a `callback` to execute when `predicate` returns `true`.
   typealias PredicatedCallback = (predicate: Predicate, callback: Callback)
 
-  fileprivate var callbacks: [BarBeatTime:[UUID:Callback]] = [:] {
-    didSet { haveCallbacks = callbacks.count > 0 || predicatedCallbacks.count > 0 }
-  }
+  /// The index of callbacks registered with the time. Each key is a bar beat time that 
+  /// triggers invocation of the callbacks contained by the value. The value itself is
+  /// another index for storing each callback under a unique identifier.
+  private var callbacks: [BarBeatTime:[UUID:Callback]] = [:]
 
-  fileprivate var predicatedCallbacks: [UUID:PredicatedCallback] = [:] {
-    didSet { haveCallbacks = callbacks.count > 0 || predicatedCallbacks.count > 0 }
-  }
+  /// The index of predicated callbacks registered with the time. Predicated callbacks are
+  /// stored under a unique identifier to support lookup and removal operations.
+  private var predicatedCallbacks: [UUID:PredicatedCallback] = [:]
 
+  /// Returns whether any kind of callback has been registered with `identifier`.
   func callbackRegistered(with identifier: UUID) -> Bool {
+
     return predicatedCallbacks[identifier] != nil
+        || Set(callbacks.values.flatMap({$0.keys})).contains(identifier)
+
   }
 
+  /// Flag for overriding callback invocation. Setting the value of this property to `true` 
+  /// prevents the time from invoking callbacks that otherwise would have been executed.
   var suppressCallbacks = false
 
-  private var haveCallbacks = false
-  private var checkCallbacks: Bool { return haveCallbacks && !suppressCallbacks }
-
-  func clearCallbacks() {
-    callbacks.removeAll(keepingCapacity: true)
-    predicatedCallbacks.removeAll(keepingCapacity: true)
-  }
-
-  /// Invokes the blocks registered in `callbacks` for the specified time and any blocks in
-  /// `predicatedCallbacks` whose predicate evaluates to `true`.
+  /// Invokes any callback registered for `time` and any predicated callback with a 
+  /// predicate that evaluates `true` for `time`.
   private func invokeCallbacks(for time: BarBeatTime) {
-    guard checkCallbacks else { return }
 
+    // Check that there are callbacks and that they should be invoked/evaluated.
+    guard !(suppressCallbacks || callbacks.isEmpty && predicatedCallbacks.isEmpty) else {
+      return
+    }
+
+    // Invoke the callbacks registered for `time`.
     callbacks[time]?.values.forEach({$0(time)})
+
+    // Invoke the callbacks registered with a predicate returning `true` for `time`.
     predicatedCallbacks.values.filter({$0.predicate(time)}).forEach({$0.callback(time)})
+
   }
 
-  ///
-  func register<S:Swift.Sequence>(callback: @escaping Callback, forTimes times: S, identifier: UUID)
-    where S.Iterator.Element == BarBeatTime
+  /// Registers `callback` with `identifier` for each time in `times`.
+  func register<Source>(callback: @escaping Callback,
+                forTimes times: Source,
+                identifier: UUID)
+    where Source:Swift.Sequence, Source.Iterator.Element == BarBeatTime
   {
-    times.forEach { var bag = callbacks[$0] ?? [:]; bag[identifier] = callback; callbacks[$0] = bag }
+
+    // Iterate the times.
+    for time in times {
+
+      // Get the bag for `time` or initialize an empty bag.
+      var bag = callbacks[time] ?? [:]
+
+      // Set `callback` for `identifier`.
+      bag[identifier] = callback
+
+      // Set the modified bag for `time`.
+      callbacks[time] = bag
+
+    }
+
   }
 
+  /// Removes the callback registered for `time` with `identifier`. If `identifier` is 
+  /// `nil`, removes all callbacks registered for `time`.
   func removeCallback(time: BarBeatTime, identifier: UUID? = nil) {
+
+    // Check if an identifier was provided.
     if let identifier = identifier {
+
+      // Remove the entry for `identifier` in the bag for `time`.
       callbacks[time]?[identifier] = nil
-    } else {
+
+    }
+
+    // Otherwise, remove all entries for `time`.
+    else {
+
       callbacks[time] = nil
+
     }
+
   }
 
-  func removePredicatedCallback(with identifier: UUID) { predicatedCallbacks[identifier] = nil }
+  /// Removes the predicated callback registered with `identifier`.
+  func removePredicatedCallback(with identifier: UUID) {
 
+    predicatedCallbacks[identifier] = nil
 
-  /// Set the `inout Bool` to true to unregister the callback
-  func register(callback: @escaping Callback, predicate: @escaping Predicate, identifier: UUID) {
+  }
+
+  /// Registers a predicated callback with `identifier`.
+  /// - Parameters:
+  ///   - callback: The callback to invoke when `predicate` evaluates to `true`.
+  ///   - predicate: The closure determining whether `callback` should be invoked.
+  ///   - identifier: The unique identifier for this registration.
+  func register(callback: @escaping Callback,
+                predicate: @escaping Predicate,
+                identifier: UUID)
+  {
+
     predicatedCallbacks[identifier] = (predicate: predicate, callback: callback)
+
   }
 
-  var bar:     UInt           { return barBeatTime.bar     }  /// Accessor for `time.bar`
-  var beat:    UInt           { return barBeatTime.beat    }  /// Accessor for `time.beat`
-  var subbeat: UInt           { return barBeatTime.subbeat }  /// Accessor for `time.subbeat`
-  var ticks:   MIDITimeStamp  { return barBeatTime.ticks   }  /// Accessor for `time.ticks`
-  var seconds: TimeInterval   { return barBeatTime.seconds }  /// Accessor for `time.doubleValue`
+  /// The current bar. This is a convenience for accessing `barBeatTime.bar`.
+  var bar: UInt { return barBeatTime.bar }
 
-  let clockName: String
+  /// The current beat. This is a convenience for accessing `barBeatTime.beat`.
+  var beat: UInt { return barBeatTime.beat }
 
-  // MARK: - Initializing and resetting
+  /// The current subbeat. This is a convenience for accessing `barBeatTime.subbeat`.
+  var subbeat: UInt { return barBeatTime.subbeat }
 
+  /// The bar beat time converted to ticks. This is a convenience for accessing 
+  /// `barBeatTime.ticks`.
+  var ticks: MIDITimeStamp  { return barBeatTime.ticks }
+
+  /// The bar beat time converted to seconds. This is a convenience for accessing 
+  /// `barBeatTime.seconds`.
+  var seconds: TimeInterval { return barBeatTime.seconds }
+
+  /// The name assigned to the time's MIDI clock source.
+  let name: String
+
+  /// Initializing with the MIDI clock source.
   init(clockSource: MIDIEndpointRef) {
+
+    // Create an unmanaged variable to hold the name assigned to the clock source.
     var unmanagedName: Unmanaged<CFString>?
+
+    // Get the value of the clock source's name property.
     MIDIObjectGetStringProperty(clockSource, kMIDIPropertyName, &unmanagedName)
-    guard unmanagedName != nil else { fatalError("Endpoint should have been given a name") }
-    let name = unmanagedName!.takeUnretainedValue() as String
-    clockName = name
-    queue = DispatchQueue(label: name, qos: .userInteractive)
-    do {
-      try MIDIClientCreateWithBlock(name as CFString, &client, nil)
-        ➤ "Failed to create midi client for bar beat time"
-      try MIDIInputPortCreateWithBlock(client, "Input" as CFString, &inPort, weakMethod(self, Time.read))
-        ➤ "Failed to create in port for bar beat time"
-      try MIDIPortConnectSource(inPort, clockSource, nil) ➤ "Failed to connect bar beat time to clock"
-    } catch {
-      Log.error(error)
+
+    // Get the name as a String.
+    guard let name = unmanagedName?.takeUnretainedValue() as? String else {
+
+      fatalError("Endpoint should have been given a name")
+
     }
+
+    // Initialize `clockName` using the name retrieved from the clock source.
+    self.name = name
+
+    // Initialize the dispatch queue.
+    queue = DispatchQueue(label: name, qos: .userInteractive)
+
+    do {
+
+      // Initialize the time's MIDI client.
+      try MIDIClientCreateWithBlock(name as CFString, &client, nil)
+        ➤ "Failed to create MIDI client."
+
+      // Initialize the time's input port setting the callback to `read(_:context:)`.
+      try MIDIInputPortCreateWithBlock(client, "Input" as CFString, &inPort,
+                                       weakMethod(self, Time.read))
+        ➤ "Failed to create input port."
+
+      // Connect the clock source to the time's input port.
+      try MIDIPortConnectSource(inPort, clockSource, nil)
+        ➤ "Failed to connect clock source."
+
+    } catch {
+
+      // Just log the error.
+      Log.error(error)
+
+    }
+
   }
 
-  func reset(_ completion: (() -> Void)? = nil) { queue.async { [unowned self] in self._reset(completion) } }
+  /// Sets `barBeatTime` to `zero` asynchronously before invoking `completion`.
+  func reset(_ completion: (() -> Void)? = nil) {
 
-  fileprivate func _reset(_ completion: (() -> Void)? = nil) {
-    barBeatTime = BarBeatTime.zero
-    completion?()
+    // Invoke code that updates `barBeatTime` on the time's dispatch queue for thread 
+    // safety.
+    queue.async {
+      [unowned self] in
+
+      // Reset the bar beat time.
+      self.barBeatTime = .zero
+
+      // Invoke the completion closure.
+      completion?()
+
+    }
+
   }
 
+  /// Asynchronously removes any registered callabcks and sets `barBeatTime` to `zero` 
+  /// before invoking `completion`.
+  /// - Note: While the callbacks are removed the storage allocated is retained.
   func hardReset(_ completion: (() -> Void)? = nil) {
-    clearCallbacks()
-    reset(completion)
+
+    // Invoke code that updates `barBeatTime` on the time's dispatch queue for thread
+    // safety.
+    queue.async {
+      [unowned self] in
+
+      // Clear any registered callbacks first to prevent invocation when setting the
+      // bar beat time to zero.
+      self.callbacks.removeAll(keepingCapacity: true)
+      self.predicatedCallbacks.removeAll(keepingCapacity: true)
+
+      // Reset the bar beat time.
+      self.barBeatTime = .zero
+
+      // Invoke the completion closure.
+      completion?()
+      
+    }
+
   }
 
   deinit {
+
     do {
-      try MIDIPortDispose(inPort) ➤ "Failed to dispose of in port"
-      try MIDIClientDispose(client) ➤ "Failed to dispose of midi client"
-    } catch { Log.error(error) }
 
+      // Dispose of the input port.
+      try MIDIPortDispose(inPort) ➤ "Failed to dispose of the input port."
+
+      // Dispose of the MIDI client.
+      try MIDIClientDispose(client) ➤ "Failed to dispose of the MIDI client."
+
+    } catch {
+
+      // Just log the error.
+      Log.error(error)
+      
+    }
+    
   }
-}
-
-extension Time: Named {
-
-  var name: String { return clockName }
-
-}
-
-extension Time: CustomStringConvertible {
 
   var description: String { return barBeatTime.description }
 
-}
+  /// Returns `true` iff `ObjectIdentifier` instance intialized with `lhs` and `rhs` are 
+  /// equal.
+  static func ==(lhs: Time, rhs: Time) -> Bool {
 
-extension Time: Hashable {
+    return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
 
-  static func ==(lhs: Time, rhs: Time) -> Bool { return ObjectIdentifier(lhs) == ObjectIdentifier(rhs) }
+  }
 
   var hashValue: Int { return ObjectIdentifier(self).hashValue }
-
-}
-
-extension Time {
-
-  fileprivate enum _Callback {
-
-    case time (BarBeatTime, (BarBeatTime) -> Void)
-    case predicated ((BarBeatTime) -> Bool, (BarBeatTime) -> Void)
-
-//    let time: BarBeatTime
-//    let callback: (BarBeatTime) -> Void
-//    let predicate: ((BarBeatTime) -> Bool)?
-//    let identifier = UUID()
-
-//    func invoke() {
-//      guard predicate
-//    }
-  }
 
 }

@@ -178,7 +178,7 @@ final class SoundFontSelector: InlinePickerContainer {
 
   /// Overridden to update `items` with the names of the sequencer's sound fonts.
   override func refreshItems() {
-    items = Sequencer.soundSets.map { .text($0.displayName) }
+    items = Sequencer.soundFonts.map { .text($0.displayName) }
   }
 
   /// The names to use items when built for interface builder.

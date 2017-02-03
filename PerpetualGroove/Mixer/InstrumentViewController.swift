@@ -22,7 +22,7 @@ final class InstrumentViewController: UIViewController, SecondaryContent {
   /// The control for selecting a MIDI channel.
   @IBOutlet weak var channelStepper: LabeledStepper!
 
-  /// Handles registration and reception of the `didUpdateAvailableSoundSets` posted by `Sequencer`.
+  /// Handles registration and reception of the `didUpdateAvailableSoundFonts` posted by `Sequencer`.
   private let receptionist = NotificationReceptionist(callbackQueue: OperationQueue.main)
 
   /// Overridden to register `receptionist` for the `Sequencer` notification.
@@ -31,7 +31,7 @@ final class InstrumentViewController: UIViewController, SecondaryContent {
     super.awakeFromNib()
 
     // Register for available sound font updates.
-    receptionist.observe(name: .didUpdateAvailableSoundSets, from: Sequencer.self) {
+    receptionist.observe(name: .didUpdateAvailableSoundFonts, from: Sequencer.self) {
       [weak self] _ in self?.updateSoundFonts()
     }
 
@@ -55,7 +55,7 @@ final class InstrumentViewController: UIViewController, SecondaryContent {
     guard let instrument = instrument else { return }
 
     // Get the selected sound font.
-    let soundFont = Sequencer.soundSets[soundFontSelector.selection]
+    let soundFont = Sequencer.soundFonts[soundFontSelector.selection]
 
     // Create a preset specifying the selected sound font's first program.
     let preset = Instrument.Preset(soundFont: soundFont, presetHeader: soundFont[0], channel: 0)
@@ -63,7 +63,7 @@ final class InstrumentViewController: UIViewController, SecondaryContent {
     do {
 
       // Load the preset into the instrument.
-      try instrument.loadPreset(preset)
+      try instrument.load(preset: preset)
 
       // Set the program selector's selection to the index of `preset`.
       programSelector.selection = 0
@@ -99,7 +99,7 @@ final class InstrumentViewController: UIViewController, SecondaryContent {
     do {
 
       // Load `preset` into the instrument.
-      try instrument.loadPreset(preset)
+      try instrument.load(preset: preset)
 
       // Play a note through the instrument to allow the user a chance to hear the current configuration.
       instrument.playNote(AnyMIDIGenerator())
@@ -131,7 +131,7 @@ final class InstrumentViewController: UIViewController, SecondaryContent {
     }
 
     // Load the initial preset into the to instrument.
-    do { try instrument.loadPreset(initialPreset) } catch { Log.error(error) }
+    do { try instrument.load(preset: initialPreset) } catch { Log.error(error) }
 
   }
 

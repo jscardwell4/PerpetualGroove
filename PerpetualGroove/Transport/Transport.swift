@@ -44,12 +44,12 @@ final class Transport: NotificationDispatching {
 
   }
 
-  /// Whether the transport's clock is currently running. Changing the value of this property from
-  /// `false` to `true` results in the transport posting a `didStart` notification and performing
-  /// one of the following actions:
+  /// Whether the transport's clock is currently running. Changing the value of this
+  /// property from `false` to `true` results in the transport posting a `didStart`
+  /// notification and performing one of the following actions:
   /// * Resume the clock and set `isPaused` to `false` if the transport is currently paused.
   /// * Start the clock if the transport is not currently paused.
-  /// - ToDo: Update to incorporate stopping behavior.
+  /// - TODO: Update to incorporate stopping behavior.
   var isPlaying = false {
 
     didSet {

@@ -73,7 +73,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
   /// Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games
   /// should use this method to pause the game.
   ///
-  /// - todo: Implement or remove.
+  /// - TODO: Implement or remove.
   func applicationWillResignActive(_ application: UIApplication) { }
 
   /// Use this method to release shared resources, save user data, invalidate timers, and store enough 
@@ -83,25 +83,25 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
   /// If your application supports background execution, this method is called instead of 
   /// `applicationWillTerminate(:)` when the user quits.
   ///
-  /// - todo: Implement or remove.
+  /// - TODO: Implement or remove.
   func applicationDidEnterBackground(_ application: UIApplication) { }
 
   /// Called as part of the transition from the background to the inactive state; here you can undo many of 
   /// the changes made on entering the background.
   ///
-  /// - todo: Implement or remove.
+  /// - TODO: Implement or remove.
   func applicationWillEnterForeground(_ application: UIApplication) { }
 
   /// Restart any tasks that were paused (or not yet started) while the application was inactive. If the 
   /// application was previously in the background, optionally refresh the user interface.
   ///
-  /// - todo: Implement or remove.
+  /// - TODO: Implement or remove.
   func applicationDidBecomeActive(_ application: UIApplication) { }
 
   /// Called when the application is about to terminate. Save data if appropriate. 
   ///
   /// - seealso: `applicationDidEnterBackground(:)`
-  /// - todo: Implement or remove.
+  /// - TODO: Implement or remove.
   func applicationWillTerminate(_ application: UIApplication) { }
   
 }

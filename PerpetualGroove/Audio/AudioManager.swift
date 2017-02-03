@@ -10,65 +10,141 @@ import Foundation
 import AVFoundation
 import MoonKit
 
-// TODO: Review file
-import CoreMIDI
-import CoreAudio
-import AudioToolbox
-
+/// Singleton class for managing the application's audio environment and resources.
 final class AudioManager {
 
-  static let queue = DispatchQueue(label: "midi", attributes: [])
-
+  /// Flag indicating whether `initialize()` has been invoked.
   private(set) static var isInitialized = false
 
+  /// The application's audio engine.
   static private let engine = AVAudioEngine()
 
+  /// The mixer node provided by the audio engine.
   static var mixer: AVAudioMixerNode { return engine.mainMixerNode }
 
+  /// The collection of instruments for which a node has been connected to the mixer.
   static private(set) var instruments: [Instrument] = []
 
+  /// The `Metronome` instance attached to the mixer.
   static private(set) var metronome: Metronome!
 
+  /// Attachs `node` to the audio engine and connects it to the mixer with output bus `0`.
+  /// - Requires: `AudioManager` has been initialized.
   static func attach(node: AVAudioNode, for instrument: Instrument) {
+
+    // Check that the audio engine has been intialized.
     guard isInitialized else { fatalError("attempt to attach node before engine isInitialized") }
 
+    // Check that the node has no engine and the instrument is not connected.
     guard !instruments.contains(instrument) && node.engine == nil else { return }
 
+    // Attach the node to the engine.
     engine.attach(node)
+
+    // Connect the node to the engine's mixer.
     engine.connect(node, to: engine.mainMixerNode, format: node.outputFormat(forBus: 0))
+
+    // Append the instrument to the collection of connected instruments.
     instruments.append(instrument)
+
   }
 
+  /// Configures the audio session. Configures and starts the audio engine. Creates and connects 
+  /// the metronome. If the audio manager has already been initialized then this method does nothing.
+  /// - Requires: Audio output has not been disabled, which is detected by check the audio engine's output
+  ///             node for a sample rate of `0`.
+  /// - Throws: `Error.audioOutputDisabled`, any error encountered while configuring the audio engine,
+  ///            audio session, or metronome.
   static func initialize() throws {
+
+    // Check that the audio manager has not already been initialized.
     guard !isInitialized else { return }
 
-    let outputFormat = engine.outputNode.outputFormat(forBus: 0)
-    guard outputFormat.sampleRate != 0 else { fatalError("output disabled (sample rate = 0)") }
+    // Check whether audio output has been disabled.
+    guard engine.outputNode.outputFormat(forBus: 0).sampleRate != 0 else {
+      throw Error.audioOutputDisabled
+    }
 
+    // Get the shared audio session.
     let audioSession = AVAudioSession.sharedInstance()
+
+    // Set the category to allow playback.
     try audioSession.setCategory(AVAudioSessionCategoryPlayback)
+
+    // Active the session.
     try audioSession.setActive(true)
 
+    // Create a sampler for the metronome.
     let node = AVAudioUnitSampler()
+
+    // Attach the sampler to the audio engine.
     engine.attach(node)
+
+    // Connect the sampler to the mixer.
     engine.connect(node, to: engine.mainMixerNode, format: node.outputFormat(forBus: 0))
 
+    // Create the metronome using the attached and connected sampler.
     metronome = try Metronome(sampler: node)
 
+    // Set the initialization flag.
     isInitialized = true
+
+    // Start the audio engine.
+    try start()
 
     Log.debug("AudioManager initialized…")
 
-    try start()
   }
 
-  static func start() throws { Log.debug("starting audio…"); try engine.start() }
+  /// Starts the audio engine.
+  /// - Throws: Any error encountered starting the engine.
+  static func start() throws {
 
-  static func stop() throws { Log.debug("stopping audio…"); engine.stop() }
+    Log.debug("starting audio…")
 
+    // Start the engine.
+    try engine.start()
+
+  }
+
+  /// Stops the audio engine.
+  static func stop() {
+
+    Log.debug("stopping audio…")
+
+    // Stop the engine.
+    engine.stop()
+
+  }
+
+  /// Whether the audio engine is currently running.
   static var running: Bool { return engine.isRunning }
 
-  static func reset() { Log.debug("resetting audio…"); engine.reset() }
+  /// Resets the audio engine.
+  static func reset() {
 
-  static func pause() { Log.debug("pausing audio…"); engine.pause() }
+    Log.debug("resetting audio…")
+
+    // Reset the audio engine.
+    engine.reset()
+
+  }
+
+  /// Pauses the audio engine.
+  static func pause() {
+
+    Log.debug("pausing audio…")
+
+    // Pause the audio engine.
+    engine.pause()
+
+  }
+
+  /// An enumeration of the possible errors thrown by `AudioManager`.
+  enum Error: String, Swift.Error, CustomStringConvertible {
+
+    case audioOutputDisabled = "Output disabled (sample rate = 0)"
+
+  }
+
 }

@@ -110,7 +110,7 @@ final class LogManager {
 
     Log.Context.set(context: SF2FileContext, forType: SF2File.self)
     Log.Context.set(context: SF2FileContext, forType: Instrument.self)
-    Log.Context.set(context: SF2FileContext, forType: SoundSet.self)
+    Log.Context.set(context: SF2FileContext, forType: AnySoundFont.self)
 
     Log.Context.set(context: SequencerContext, forType: Sequencer.self)
     Log.Context.set(context: SequencerContext, forType: Track.self)

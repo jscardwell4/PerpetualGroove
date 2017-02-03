@@ -84,7 +84,7 @@ final class Document: UIDocument, Named, NotificationDispatching {
   }
 
   /// Handles the document's state change notifications
-  /// - todo: Implement conflict resolution.
+  /// - TODO: Implement conflict resolution.
   private func didChangeState(_ notification: Foundation.Notification) {
     
     guard documentState ∋ .inConflict,

@@ -388,7 +388,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch, Hashable {
       throw Error.InvalidSoundSetURL
     }
 
-    guard let soundSet: SoundFont = (try? EmaxSoundSet(url: url)) ?? (try? SoundSet(url: url)) else {
+    guard let soundSet: SoundFont = (try? EmaxSoundFont(url: url)) ?? (try? AnySoundFont(url: url)) else {
       throw Error.SoundSetInitializeFailure
     }
 

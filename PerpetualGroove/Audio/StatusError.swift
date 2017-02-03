@@ -11,6 +11,7 @@ import MoonKit
 
 /// An enumeration for `OSStatus` codes returned by `CoreMIDI`.
 enum MIDIError: OSStatus, Swift.Error, CustomStringConvertible {
+
   case invalidClient      = -10830
   case invalidPort        = -10831
   case wrongEndpointType  = -10832
@@ -50,12 +51,16 @@ enum MIDIError: OSStatus, Swift.Error, CustomStringConvertible {
 
 /// A catchall enumeration for `OSStatus` codes not handled `MIDIError`.
 enum OSStatusError: Swift.Error, CustomStringConvertible {
+
   case osStatusCode (OSStatus)
+
   var description: String { switch self { case .osStatusCode(let code): return "error code: \(code)" } }
+
 }
 
 /// Wrapper for `MIDIError` and `OSStatusError`.
 enum StatusError: Swift.Error, CustomStringConvertible {
+
   case midi (MIDIError, String)
   case osStatusCode (OSStatusError, String)
 
@@ -67,18 +72,28 @@ enum StatusError: Swift.Error, CustomStringConvertible {
         return "\(message) - \(error)"
     }
   }
+
 }
 
-///  Compares the specified `OSStatus` code against `noErr` and throws an error when they are not equal.
 infix operator ➤
+
+///  Compares the specified `OSStatus` code against `noErr` and throws an error when they are not equal.
 func ➤(lhs: @autoclosure () -> OSStatus, rhs: @autoclosure () -> String) throws {
+
   let status = lhs()
+
   guard status == noErr else {
 
     if let error = MIDIError(rawValue: status) {
+
       throw StatusError.midi(error, rhs())
+
     } else {
+
       throw StatusError.osStatusCode(OSStatusError.osStatusCode(status), rhs())
+
     }
+    
   }
+
 }

@@ -148,7 +148,7 @@ final class DocumentManager: NotificationDispatching {
     guard Sequencer.isInitialized else {
       // Proceed once `Sequencer` has initialized.
 
-      receptionist.observeOnce(name: .didUpdateAvailableSoundSets, from: Sequencer.self) {
+      receptionist.observeOnce(name: .didUpdateAvailableSoundFonts, from: Sequencer.self) {
         _ in openCurrentDocument(for: location)
       }
 
@@ -507,7 +507,7 @@ final class DocumentManager: NotificationDispatching {
     // Make sure sequencer has been initialized before opening the document.
     guard Sequencer.isInitialized else {
 
-      receptionist.observeOnce(name: .didUpdateAvailableSoundSets, from: Sequencer.self) {
+      receptionist.observeOnce(name: .didUpdateAvailableSoundFonts, from: Sequencer.self) {
         _ in queue.async(execute: {_open(document: document)})
       }
 

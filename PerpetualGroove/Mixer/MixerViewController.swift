@@ -279,7 +279,7 @@ final class MixerViewController: UICollectionViewController, SecondaryContentPro
 
           Log.debug("Presenting content for mixer view controller…")
 
-          (parent as? MixerContainer)?.presentContent(for: self)
+          (parent as? MixerContainer)?.presentContent(for: self, completion: {_ in})
 
         case let (oldValue?, nil):
           // Deselect the old value

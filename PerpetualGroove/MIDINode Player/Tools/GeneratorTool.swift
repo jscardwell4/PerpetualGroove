@@ -18,7 +18,7 @@ final class GeneratorTool: PresentingNodeSelectionTool {
   override var active: Bool  {
     didSet {
       guard active != oldValue && active && mode == .new else { return }
-      MIDINodePlayer.playerContainer?.presentContent(for: self)
+      MIDINodePlayer.playerContainer?.presentContent(for: self, completion: {_ in})
     }
   }
 

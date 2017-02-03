@@ -310,7 +310,7 @@ class PresentingNodeSelectionTool: NodeSelectionTool, PresentingTool {
 
     guard active else { return }
 
-    MIDINodePlayer.playerContainer?.presentContent(for: self)
+    MIDINodePlayer.playerContainer?.presentContent(for: self, completion: {_ in})
 
   }
 

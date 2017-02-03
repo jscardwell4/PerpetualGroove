@@ -235,7 +235,9 @@ struct SF2File: CustomStringConvertible {
 
   /// Enumeration of the possible errors thrown by `SF2File`.
   enum Error: String, Swift.Error, CustomStringConvertible {
+
     case StructurallyUnsound = "Invalid chunk detected"
+
   }
 
   /// A structure for representing a preset header parsed while decoding a sound font file.
