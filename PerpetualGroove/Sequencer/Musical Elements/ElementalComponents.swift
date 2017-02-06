@@ -9,60 +9,86 @@
 import Foundation
 import MoonKit
 
-// TODO: Review file
+/// An enumeration of the modifiers that lower or raise a note/chord by a number of half 
+/// steps.
+enum PitchModifier: String {
 
-/// Modifiers that lower or raise a note or chord by a number of half steps.
-enum PitchModifier: String { case flat = "♭", sharp = "♯", doubleFlat = "𝄫" }
+  case flat = "♭", sharp = "♯", doubleFlat = "𝄫"
 
-/// The seven 'natural' note names in western tonal music
-enum Natural: String, EnumerableType {
+}
+
+/// An enumeration of the seven 'natural' note names in western tonal music.
+enum Natural: String, EnumerableType, Strideable {
 
 
   case a = "A", b = "B", c = "C", d = "D", e = "E", f = "F", g = "G"
 
+  /// The scalar representation of `rawValue`.
   var scalar: UnicodeScalar { return rawValue.unicodeScalars.first! }
 
+  /// An array of all enumeration cases.
   static let allCases: [Natural] = [.a, .b, .c, .d, .e, .f, .g]
 
-}
+  /// Returns the natural note obtained by advancing the natural by `amount`. Traversal
+  /// wraps in either direction.
+  func advanced(by amount: Int) -> Natural {
 
-extension Natural: Strideable {
-
-  func advanced(by: Int) -> Natural {
+    // Get the scalar's numeric value.
     let value = scalar.value
-    let offset = by < 0 ? 7 + by % 7 : by % 7
+
+    // Determine the offset based on whether traversal moves forward or backward.
+    let offset = amount < 0 ? 7 + amount % 7 : amount % 7
+
+    // Calculate the value of the scalar at `offset`.
     let advancedValue = (value.advanced(by: offset) - 65) % 7 + 65
+
+    // Create a scalar with the calculated value.
     let advancedScalar = UnicodeScalar(advancedValue)!
+
+    // Return a natural intialized with the scalar converted to a string.
     return Natural(rawValue: String(advancedScalar))!
+
   }
 
-  func distance(to: Natural) -> Int {
-    return Int(to.scalar.value) - Int(scalar.value)
+  /// Returns the distance to `other` in an array of all natural cases.
+  func distance(to other: Natural) -> Int {
+
+    // Calculate and return the distance by utilizing their scalar values.
+    return Int(other.scalar.value) - Int(scalar.value)
+
   }
   
 }
 
-/// The range of available octaves expressed as an integer.
+/// An enumeration of the octaves representable with MIDI values.
 enum Octave: Int, LosslessJSONValueConvertible, EnumerableType {
 
   case negativeOne = -1, zero, one, two, three, four, five, six, seven, eight, nine
 
+  /// All octaves in ascending order.
   static let allCases: [Octave] = [
     .negativeOne, .zero, .one, .two, .three, .four, .five, .six, .seven, .eight, .nine
   ]
 
+  /// The lowest octave.
   static var minOctave: Octave { return .negativeOne }
+
+  /// The hightest octave.
   static var maxOctave: Octave { return .nine }
 
 }
 
-/// Enumeration for musical dynamics.
-enum Velocity: String, EnumerableType, LosslessJSONValueConvertible, ImageAssetLiteralType {
+/// An enumeration for musical dynamics.
+enum Velocity: String, EnumerableType, CustomStringConvertible {
+
   case 𝑝𝑝𝑝, 𝑝𝑝, 𝑝, 𝑚𝑝, 𝑚𝑓, 𝑓, 𝑓𝑓, 𝑓𝑓𝑓
 
+  /// All velocities ordered from softest to loudest.
   static let allCases: [Velocity] = [.𝑝𝑝𝑝, .𝑝𝑝, .𝑝, .𝑚𝑝, .𝑚𝑓, .𝑓, .𝑓𝑓, .𝑓𝑓𝑓]
 
-  var midi: Byte {
+  /// The velocity expressed as a MIDI value.
+  var midi: UInt8 {
+
     switch self {
       case .𝑝𝑝𝑝:	return 16
       case .𝑝𝑝:		return 33
@@ -73,9 +99,13 @@ enum Velocity: String, EnumerableType, LosslessJSONValueConvertible, ImageAssetL
       case .𝑓𝑓:		return 112
       case .𝑓𝑓𝑓:		return 126
     }
+
   }
 
-  init(midi value: Byte) {
+  /// Initializing with a MIDI value. The velocity is intialized with the case whose raw
+  /// value is nearest to `value`.
+  init(midi value: UInt8) {
+
     switch value {
       case 0 ... 22:    self = .𝑝𝑝𝑝
       case 23 ... 40:   self = .𝑝𝑝
@@ -86,20 +116,22 @@ enum Velocity: String, EnumerableType, LosslessJSONValueConvertible, ImageAssetL
       case 103 ... 119: self = .𝑓𝑓
       default:          self = .𝑓𝑓𝑓
     }
+
   }
 
-}
-
-extension Velocity: CustomStringConvertible {
   var description: String { return rawValue }
+
 }
 
-/// Enumeration for a musical note duration
-enum Duration: String, EnumerableType, ImageAssetLiteralType, LosslessJSONValueConvertible {
-  case doubleWhole, dottedWhole, whole, dottedHalf, half, dottedQuarter, quarter, dottedEighth,
-       eighth, dottedSixteenth, sixteenth, dottedThirtySecond, thirtySecond, dottedSixtyFourth,
-       sixtyFourth, dottedHundredTwentyEighth, hundredTwentyEighth, dottedTwoHundredFiftySixth,
-       twoHundredFiftySixth
+extension Velocity: LosslessJSONValueConvertible, ImageAssetLiteralType {}
+
+/// An enumeration for expressing the duration of musical note.
+enum Duration: String, EnumerableType {
+
+  case doubleWhole, dottedWhole, whole, dottedHalf, half, dottedQuarter, quarter,
+       dottedEighth, eighth, dottedSixteenth, sixteenth, dottedThirtySecond, thirtySecond,
+       dottedSixtyFourth, sixtyFourth, dottedHundredTwentyEighth, hundredTwentyEighth,
+       dottedTwoHundredFiftySixth, twoHundredFiftySixth
 
   var seconds: Double {
     let secondsPerBeat = 60 / Sequencer.tempo
@@ -126,6 +158,7 @@ enum Duration: String, EnumerableType, ImageAssetLiteralType, LosslessJSONValueC
     }
   }
 
+  /// All durations ordered from longest to shortest.
   static let allCases: [Duration] = [
     .doubleWhole, .dottedWhole, .whole, .dottedHalf, .half, .dottedQuarter, .quarter,
     .dottedEighth, .eighth, .dottedSixteenth, .sixteenth, .dottedThirtySecond,
@@ -135,30 +168,4 @@ enum Duration: String, EnumerableType, ImageAssetLiteralType, LosslessJSONValueC
 
 }
 
-extension Duration: CustomStringConvertible {
-
-  var description: String {
-    switch self {
-      case .doubleWhole:                return "double-whole note"
-      case .dottedWhole:                return "dotted whole note"
-      case .whole:                      return "whole note"
-      case .dottedHalf:                 return "dotted half note"
-      case .half:                       return "half note"
-      case .dottedQuarter:              return "dotted quarter note"
-      case .quarter:                    return "quarter note"
-      case .dottedEighth:               return "dotted eighth note"
-      case .eighth:                     return "eighth note"
-      case .dottedSixteenth:            return "dotted sixteenth note"
-      case .sixteenth:                  return "sixteenth note"
-      case .dottedThirtySecond:         return "dotted thirty-second note"
-      case .thirtySecond:               return "thirty-second note"
-      case .dottedSixtyFourth:          return "dotted sixty-fourth note"
-      case .sixtyFourth:                return "sixty-fourth note"
-      case .dottedHundredTwentyEighth:  return "dotted hundred twenty-eighth note"
-      case .hundredTwentyEighth:        return "hundred twenty-eighth note"
-      case .dottedTwoHundredFiftySixth: return "dotted two hundred-fifty-sixth note"
-      case .twoHundredFiftySixth:       return "two hundred fifty-sixth note"
-    }
-  }  
-
-}
+extension Duration: LosslessJSONValueConvertible, ImageAssetLiteralType {}

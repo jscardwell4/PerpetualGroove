@@ -148,7 +148,7 @@ final class Transport: NotificationDispatching {
           postNotification(name: .didEndJogging, object: self, userInfo: ["time": time.barBeatTime.rawValue])
 
           // Check that transport is not paused and that the clock has been paused.
-          guard !isPaused && clock.paused else { return }
+          guard !isPaused && clock.isPaused else { return }
 
           // Resume the clock.
           clock.resume()
@@ -264,7 +264,7 @@ final class Transport: NotificationDispatching {
     postNotification(name: .didJog, object: self, userInfo: ["time": currentTime, "jogTime": newTime])
 
     // Check that the transport is not paused and that the transport's clock is paused.
-    guard !isPaused && clock.paused else { return }
+    guard !isPaused && clock.isPaused else { return }
 
     // Resume the clock.
     clock.resume()
