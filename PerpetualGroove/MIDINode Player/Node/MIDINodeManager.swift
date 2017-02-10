@@ -9,7 +9,8 @@
 import Foundation
 import MoonKit
 
-/// Class for managing a collection of `MIDINode` instances for an owning `MIDINodeDispatch` object.
+/// Class for managing a collection of `MIDINode` instances for an owning `MIDINodeDispatch`
+/// object.
 final class MIDINodeManager {
 
   /// The type for an event adding or removing a `MIDINode`.
@@ -45,7 +46,8 @@ final class MIDINodeManager {
 
   }
 
-  /// appends a reference for `node` to `nodes` and generates a `MIDINodeEvent` for the addition.
+  /// appends a reference for `node` to `nodes` and generates a `MIDINodeEvent` for the
+  /// addition.
   /// - Throws: Any error encountered connecting `node`.
   func add(node: MIDINode) throws {
 
@@ -98,7 +100,10 @@ final class MIDINodeManager {
         pendingNodes.insert(identifier)
 
         // Place a node
-        MIDINodePlayer.placeNew(trajectory, target: owner, generator: generator, identifier: identifier)
+        MIDINodePlayer.placeNew(trajectory,
+                                target: owner,
+                                generator: generator,
+                                identifier: identifier)
 
       case let .remove(eventIdentifier):
         // Remove the node matching `eventIdentifier`.
@@ -140,7 +145,7 @@ final class MIDINodeManager {
           let node = nodes.remove(at: idx).reference
       else
     {
-        throw MIDINodeDispatchError.NodeNotFound
+        throw MIDINodeDispatchError.nodeNotFound
     }
 
     Log.debug("removing node \(node.name!) \(node.identifier)")
@@ -177,7 +182,8 @@ final class MIDINodeManager {
           [time = Time.current.barBeatTime, identifier = node.identifier, weak self] in
 
           let eventIdentifier = Event.Identifier(nodeIdentifier: identifier)
-          self?.owner.add(event: .node(Event(data: .remove(identifier: eventIdentifier), time: time)))
+          self?.owner.add(event: .node(Event(data: .remove(identifier: eventIdentifier),
+                                             time: time)))
 
         }
 

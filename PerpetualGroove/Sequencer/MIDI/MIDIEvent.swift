@@ -438,6 +438,20 @@ enum MIDIEvent: Hashable, CustomStringConvertible {
       self.time = time ?? BarBeatTime.zero
     }
 
+    init(forAdding node: GrooveFile.Node) {
+
+      self.init(data: Data(forAdding: node), time: node.addTime)
+
+    }
+
+    init?(forRemoving node: GrooveFile.Node) {
+
+      guard node.removeTime != nil else { return nil }
+
+      self.init(data: Data(forRemoving: node), time: node.removeTime)
+
+    }
+
     init(delta: UInt64, data: Foundation.Data.SubSequence) throws {
 
       self.delta = delta
@@ -589,6 +603,20 @@ enum MIDIEvent: Hashable, CustomStringConvertible {
       case add(identifier: Identifier, trajectory: MIDINode.Trajectory, generator: AnyMIDIGenerator)
       case remove(identifier: Identifier)
 
+      init(forAdding node: GrooveFile.Node) {
+
+        self = .add(identifier: node.identifier,
+                    trajectory: node.trajectory,
+                    generator: node.generator)
+
+      }
+
+      init(forRemoving node: GrooveFile.Node) {
+
+        self = .remove(identifier: node.identifier)
+
+      }
+
       init(data: Foundation.Data.SubSequence) throws {
         var currentIndex = data.startIndex
 
@@ -726,17 +754,35 @@ extension MIDIEventDispatch {
                           identifier: UUID())
   }
 
-  func events(for time: BarBeatTime) -> AnyRandomAccessCollection<MIDIEvent>?  { return eventContainer[time] }
+  func events(for time: BarBeatTime) -> AnyRandomAccessCollection<MIDIEvent>?  {
+    return eventContainer[time]
+  }
 
-  func filterEvents(_ isIncluded: (MIDIEvent) -> Bool) -> [MIDIEvent] { return eventContainer.filter(isIncluded) }
+  func filterEvents(_ isIncluded: (MIDIEvent) -> Bool) -> [MIDIEvent] {
+    return eventContainer.filter(isIncluded)
+  }
 
   func dispatchEvents(for time: BarBeatTime) { events(for: time)?.forEach(dispatch) }
 
-  var metaEvents: AnyBidirectionalCollection<MIDIEvent.MetaEvent>       { return eventContainer.metaEvents    }
-  var channelEvents: AnyBidirectionalCollection<MIDIEvent.ChannelEvent> { return eventContainer.channelEvents }
-  var nodeEvents: AnyBidirectionalCollection<MIDIEvent.MIDINodeEvent>   { return eventContainer.nodeEvents    }
-  var timeEvents: AnyBidirectionalCollection<MIDIEvent.MetaEvent>       { return eventContainer.timeEvents    }
-  var tempoEvents: AnyBidirectionalCollection<MIDIEvent.MetaEvent>      { return eventContainer.tempoEvents    }
+  var metaEvents: AnyBidirectionalCollection<MIDIEvent.MetaEvent> {
+    return eventContainer.metaEvents
+  }
+
+  var channelEvents: AnyBidirectionalCollection<MIDIEvent.ChannelEvent> {
+    return eventContainer.channelEvents
+  }
+
+  var nodeEvents: AnyBidirectionalCollection<MIDIEvent.MIDINodeEvent> {
+    return eventContainer.nodeEvents
+  }
+
+  var timeEvents: AnyBidirectionalCollection<MIDIEvent.MetaEvent> {
+    return eventContainer.timeEvents
+  }
+  
+  var tempoEvents: AnyBidirectionalCollection<MIDIEvent.MetaEvent> {
+    return eventContainer.tempoEvents
+  }
 
 }
 

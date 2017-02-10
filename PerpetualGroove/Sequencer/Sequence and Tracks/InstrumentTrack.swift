@@ -9,430 +9,791 @@
 import Foundation
 import UIKit
 import MoonKit
-
-// TODO: Review file
-import AudioToolbox
 import CoreMIDI
 import SpriteKit
 
-extension Sequence {
-
-  func trackSoloStatusDidChange(_ notification: Foundation.Notification) {
-    guard let track = notification.object as? InstrumentTrack, instrumentTracks.contains(track) else { return }
-
-    let soloTracks = self.soloTracks
-
-    if soloTracks.count == 0 {
-      instrumentTracks.forEach { $0.forceMute = false }
-    } else {
-      soloTracks.forEach { $0.forceMute = false }
-      Set(instrumentTracks).subtracting(soloTracks).forEach { $0.forceMute = true }
-    }
-  }
-
-}
-
+/// A `Track` subclass able to handle MIDI node events.
+///
+/// - TODO: Replace the class description in this comment.
 final class InstrumentTrack: Track, MIDINodeDispatch, Hashable {
 
+  /// The currently selected track in the current sequence or `nil`.
   static var current: InstrumentTrack? { return Sequence.current?.currentTrack }
 
+  /// A manager for the MIDI nodes dispatched by the track.
   private(set) var nodeManager: MIDINodeManager!
 
-  // MARK: - Listening for Sequencer and sequence notifications
-
+  /// Handles registration/reception for various notifications from the track's instrument
+  /// and the current transport.
+  ///
+  /// - TODO: Shouldn't we be more specific on which transport is observed?
   private let receptionist = NotificationReceptionist(callbackQueue: OperationQueue.main)
 
-  private func initializeNotificationReceptionist() {
-    guard receptionist.count == 0 else { return }
-
-    let transport = Transport.current
-
-    receptionist.observe(name: .didReset, from: transport,
-                         callback: weakMethod(self, InstrumentTrack.didReset))
-
-    receptionist.observe(name: .soloCountDidChange, from: sequence,
-                         callback: weakMethod(self, InstrumentTrack.soloCountDidChange))
-
-    receptionist.observe(name: .didBeginJogging, from: transport,
-                         callback: weakMethod(self, InstrumentTrack.didBeginJogging))
-    receptionist.observe(name: .didEndJogging, from: transport,
-                         callback: weakMethod(self, InstrumentTrack.didEndJogging))
-    receptionist.observe(name: .didJog, from: transport,
-                         callback: weakMethod(self, InstrumentTrack.didJog))
-
-    receptionist.observe(name: .programDidChange, from: instrument,
-                         callback: weakMethod(self, InstrumentTrack.didChangePreset))
-    receptionist.observe(name: .soundFontDidChange, from: instrument,
-                         callback: weakMethod(self, InstrumentTrack.didChangePreset))
-}
-
+  /// Handler for `didChangePreset` notifications received from `instrument`. This method
+  /// posts a `didUpdate` notification for the track.
   private func didChangePreset(_ notification: Foundation.Notification) {
+
+    // Post notification that the track has been updated.
     postNotification(name: .didUpdate, object: self)
+
   }
 
+  /// Handler for `didReset` notifications received from the transport. When the 
+  /// `isModified` flag has been set, this methods posts a `didUpdate` notification for
+  /// the track and clears the flag.
   private func didReset(_ notification: Foundation.Notification) {
-    if modified {
-      Log.debug("posting 'DidUpdate'")
-      postNotification(name: .didUpdate, object: self)
-      modified = false
-    }
+
+    // Check that the track has been modified.
+    guard isModified else { return }
+
+    Log.debug("posting 'DidUpdate'")
+
+    // Post notification that the track has been updated.
+    postNotification(name: .didUpdate, object: self)
+
+    // Clear the flag.
+    isModified = false
+
   }
 
-  private func soloCountDidChange(_ notification: Foundation.Notification) {
-    guard let newCount = notification.newCount else { return }
-    forceMute = newCount > 0 && !solo
-  }
-
-  private func didJog(_ notification: Foundation.Notification) {
-    // Toggle track ended flag if we jogged back before the end of the track
-    if trackEnded, let jogTime = notification.jogTime, jogTime < endOfTrack {
-      trackEnded = false
-    }
-  }
-
-  private func didBeginJogging(_ notification: Foundation.Notification) {}
-
-  private func didEndJogging(_ notification: Foundation.Notification) {}
-
-  // MARK: - MIDI file related properties and methods
-
+  /// Overridden to refresh the values of `instrumentEvent` and `programEvent` before
+  /// invoking `super`'s implementation.
   override func validate(events container: inout MIDIEventContainer) {
-    instrumentEvent = MIDIEvent.MetaEvent(data: .text(text: "instrument:\(instrument.soundFont.url.lastPathComponent)"))
-    programEvent = MIDIEvent.ChannelEvent(type: .programChange, channel: instrument.channel, data1: instrument.program)
+
+    // Create the text for the instrument event.
+    let instrumentText = "instrument:\(instrument.soundFont.url.lastPathComponent)"
+
+    // Update `instrumentEvent` with a new meta event containging `instrumentText`.
+    instrumentEvent = MIDIEvent.MetaEvent(data: .text(text: instrumentText))
+
+    // Update `programEvent` with a new program change channel event that uses 
+    // the instrument's channel and program values.
+    programEvent = MIDIEvent.ChannelEvent(type: .programChange,
+                                          channel: instrument.channel,
+                                          data1: instrument.program)
+
+    // Invoke `super`.
     super.validate(events: &container)
+
   }
 
-  func add<S:Swift.Sequence>(events: S) where S.Iterator.Element == MIDIEvent {
+  /// Adds the MIDI events in `events` to the track. Instrument events and program change
+  /// events are used to update the `instrumentEvent` and `programEvent` properties before
+  /// passing the remaining events to `super` for the default implementation provided by
+  /// the `MIDIEventDispatch` protocol.
+  ///
+  /// - Parameter events: The sequence containing the MIDI events to add to the track.
+  func add<Source>(events: Source)
+    where Source:Swift.Sequence, Source.Iterator.Element == MIDIEvent
+  {
 
+    // Create an array for accumulating events to provide the default implementation.
     var filteredEvents: [MIDIEvent] = []
 
+    // Iterate through the events.
     for event in events {
 
+      // Consider the kind of event.
       switch event {
 
         case .meta(let metaEvent):
+          // Check the kind of data attached to the meta event
+
           switch metaEvent.data {
-            case .text(let text) where text.hasPrefix("instrument:"): instrumentEvent = metaEvent
-            default: filteredEvents.append(event)
+
+            case .text(let text)
+              where text.hasPrefix("instrument:"):
+              // The event specifies the track's instrument.
+
+              // Update `instrumentEvent` with `event`.
+              instrumentEvent = metaEvent
+
+            default:
+              // The event should be passed through to `super`.
+
+              // Append the event to `filteredEvents`.
+              filteredEvents.append(event)
+
           }
 
-        case .channel(let channelEvent) where channelEvent.status.kind == .programChange:
+        case .channel(let channelEvent)
+          where channelEvent.status.kind == .programChange:
+          // The event specifies the program for the instrument.
+
+          // Update `programEvent` with `event`.
           programEvent = channelEvent
 
         default:
+          // The event should be passed through to `super`.
+
+          // Append the event to `filteredEvents`.
           filteredEvents.append(event)
 
       }
 
     }
 
-    modified = modified || filteredEvents.count > 0
-    
+    // Update `isModified` to be `true` if it was already `true` or `filteredEvents` is
+    // not empty.
+    isModified = isModified || !filteredEvents.isEmpty
+
+    // Invoke `super` with the unhandled events for default implementation provided by the
+    // `MIDIEventDispatch` protocol.
     super.add(events: filteredEvents)
+
   }
 
+  /// The MIDI event that specifies the instrument used by the track.
   private var instrumentEvent: MIDIEvent.MetaEvent!
+
+  /// The MIDI event that specifies the program used by the track.
   private var programEvent: MIDIEvent.ChannelEvent!
 
-  typealias Identifier = MIDIEvent.MIDINodeEvent.Identifier
-  typealias NodeIdentifier = UUID
-  typealias EventData = MIDIEvent.MIDINodeEvent.Data
-
+  /// The track's initial MIDI events. Overridden to append `instrumentEvent` and 
+  /// `programEvent` to the array returned by the inherited implementation.
   override var headEvents: [MIDIEvent] {
     return super.headEvents + [.meta(instrumentEvent), .channel(programEvent)]
   }
 
-  private(set) var trackEnded = false {
-    didSet {
-      guard trackEnded != oldValue else { return }
-      if trackEnded { nodeManager.stopNodes() } else { nodeManager.startNodes() }
-    }
-  }
-
-  // MARK: - Track properties
-
+  /// The instrument used by the track.
   private(set) var instrument: Instrument!
+
   var color: TrackColor = .muddyWaters
 
-  var isRecording: Bool { return Sequencer.mode == .default && MIDINodePlayer.currentDispatch === self }
+  /// Flag indicating whether new events should be persisted. This is `true` iff the 
+  /// sequencer is in it's default mode and the track is the current dispatch for the
+  /// MIDI node player.
+  var isRecording: Bool {
+    return Sequencer.mode == .default && MIDINodePlayer.currentDispatch === self
+  }
 
+  /// The name to give the next node dispatched. The derived value of this property
+  /// consists of the track's display name followed by a space and the node count
+  /// incremented for the node being dispatched.
   var nextNodeName: String { return "\(displayName) \(nodeManager.nodes.count + 1)" }
 
+  /// A name for the track suitable for display in the user interface. The value of this
+  /// property is derived via the following checks:
+  /// 1. If the track's name is not empty, return the track's name.
+  /// 2. If the track has initialized such that the instrument is available, return program
+  ///    name for the instrument's current preset.
+  /// 3. Return the empty string.
   override var displayName: String {
+
+    // Check that track's name is empty.
     guard name.isEmpty else { return name }
+
+    // Return the program name for the preset or the empty string if `instrument` is `nil`.
     return instrument?.preset.programName ?? ""
+
   }
 
+  /// Flag indicating whether the track is in a muted state, whether from a user request or
+  /// as the result of another track being soloed. Changing the value of this property 
+  /// triggers a `muteStatusDidChange` notification to be posted for the track. When set to
+  /// `true`, the current value of `volume` is cached and `volume` is set to `0`. When set 
+  /// to `false`, the cached value is restored. The default value of this property is 
+  /// `false`.
   private(set) var isMuted = false {
+
     didSet {
+
+      // Check that the value has actually changed.
       guard isMuted != oldValue else { return }
-      swap(&volume, &_volume)
-      postNotification(name: .muteStatusDidChange,
-                       object: self,
-                       userInfo: ["oldValue": oldValue, "newValue": isMuted])
+
+      // Swap the values of `volume` and `cachedVolume`.
+      swap(&volume, &cachedVolume)
+
+      // Post notification that the track's mute status has changed.
+      postNotification(name: .muteStatusDidChange, object: self)
+
     }
+
   }
 
+  /// Updates the value of `isMuted` using the current values for `forceMute`, `mute`, and
+  /// `solo`. If either `forceMute` or `mute` is equal to `true` and `solo` is equal to
+  /// `false` then `isMuted` will be set to `true`; otherwise, `isMuted` will be set to
+  /// `false`.
   private func updateIsMuted() {
-    switch (forceMute, mute, solo) {
-      case (true,   true,  true): fallthrough
-      case (true,  false,  true): fallthrough
-      case (false,  true,  true): fallthrough
-      case (false, false,  true): fallthrough
-      case (false, false, false): isMuted = false
-      case (true,   true, false): fallthrough
-      case (true,  false, false): fallthrough
-      case (false,  true, false): isMuted = true
+
+    // Check that the track is not soloing.
+    guard !solo else {
+
+      // Soloing tracks are never muted.
+      isMuted = false
+
+      return
+
     }
+
+    // `isMuted` is `true` iff `forceMute` or `mute` is `true`.
+    isMuted = forceMute || mute
+
   }
 
-  fileprivate(set) var forceMute = false {
+  /// Flag indicating whether the track should be silenced because one or more of the other
+  /// tracks in the sequence are soloing. Changing the value of this property triggers the
+  /// track to post a `forceMuteStatusDidChange` notification and to update the value of 
+  /// it's `isMuted` flag. The default value of this property is `false`.
+  var forceMute = false {
+
     didSet {
+
+      // Check that the value has actually changed.
       guard forceMute != oldValue else { return }
-      postNotification(name: .forceMuteStatusDidChange,
-                       object: self,
-                       userInfo: ["oldValue": oldValue, "newValue": forceMute])
+
+      // Post notification that the value of the track's `forceMute` flag has changed.
+      postNotification(name: .forceMuteStatusDidChange, object: self)
+
+      // Update the `isMuted` flag given the new value for `forceMute`.
       updateIsMuted()
+
     }
+
   }
 
-  var mute = false { didSet { guard mute != oldValue else { return }; updateIsMuted() } }
+  /// Flag indicating whether the track has been muted through user request. Changing the
+  /// value of this property causes the track to update it's `isMuted` flag. The default
+  /// value of this property is `false`.
+  var mute = false {
 
-  var solo = false {
     didSet {
-      guard solo != oldValue else { return }
-      postNotification(name: .soloStatusDidChange, object: self, userInfo: ["oldValue": !solo, "newValue": solo])
+
+      // Check that the value has actually changed.
+      guard mute != oldValue else { return }
+
+      // Update the value of `isMuted` given the new value for `mute`.
       updateIsMuted()
+
     }
+
   }
 
-  private var _volume: Float = 0
-  var volume: Float { get { return instrument.volume } set { instrument.volume = newValue } }
+  /// Flag indicating whether the track has been added to the group of tracks selected to
+  /// generate audio output. Whether the track generates output is determined by the 
+  /// following rules:
+  /// 1. A track with a `solo` value of `true` always generates output.
+  /// 2. As long as there is at least one track with a `solo` value of `true`, any track
+  ///    with a `solo` value of `false` does not generate output.
+  /// 3. When there are not any tracks with a `solo` value of `true`, whether or not a
+  ///    track generates output is determined by the value of their `mute` property.
+  /// Changes to the value of this property trigger the track to post a 
+  /// `soloStatusDidChange` notification and to update it's `isMuted` flag. The default 
+  /// value of this property is `false`.
+  var solo = false {
 
-  var pan: Float { get { return instrument.pan } set { instrument.pan = newValue } }
+    didSet {
 
-  // MARK: - Managing MIDI nodes
+      // Check that the value has actually changed.
+      guard solo != oldValue else { return }
 
-  /// Whether new events have been created and addd to the track
-  private var modified = false
+      // Post notification that the value of the track's `solo` flag has changed.
+      postNotification(name: .soloStatusDidChange, object: self)
 
+      // Update the value of the track's `isMuted` flag given the new value for `solo`.
+      updateIsMuted()
+
+    }
+
+  }
+
+  /// This property stores the value of `volume` before being set to `0` when setting
+  /// `isMuted` to `true` so that the volume level may be restored when setting `isMuted`
+  /// to `false`.
+  private var cachedVolume: Float = 0
+
+  /// Derived property wrapping `instrument.volume`.
+  var volume: Float {
+    get { return instrument.volume }
+    set { instrument.volume = newValue }
+  }
+
+  /// Derived property wrapping `instrument.pan`.
+  var pan: Float {
+    get { return instrument.pan }
+    set { instrument.pan = newValue }
+  }
+
+  /// Indicates whether new events have been added to the track without posting a 
+  /// `didUpdate` notification.
+  private var isModified = false
+
+  /// The MIDI endpoints connected to the track's `inputPort`.
   private var connectedEndPoints: Set<MIDIEndpointRef> = []
 
+  /// Connects the node's `endPoint` with the track's MIDI input so that MIDI events
+  /// dispatched by the node may be sent to the track's instrument.
+  ///
+  /// - Parameter node: The MIDI node whose output should be connected to the track's input.
+  /// - Precondition: The node's `endPoint` has not already been connected by the track.
+  /// - Throws: `MIDINodeDispatchError.nodeAlreadyConnected` when the track has already
+  ///           connected the node's `endPoint`. Any error encountered connecting the
+  ///           node's `endPoint` with the track's `inputPort`.
   func connect(node: MIDINode) throws {
-    guard connectedEndPoints ∌ node.endPoint else { throw MIDINodeDispatchError.NodeAlreadyConnected }
-    try MIDIPortConnectSource(inPort, node.endPoint, nil) ➤ "Failed to connect to node \(node.name!)"
+
+    // Check that the node's `endPoint` has not already been connected by the track.
+    guard connectedEndPoints ∌ node.endPoint else {
+      throw MIDINodeDispatchError.nodeAlreadyConnected
+    }
+
+    // Connect the node's `endPoint` to the track's `inputPort`.
+    try MIDIPortConnectSource(inputPort, node.endPoint, nil)
+      ➤ "Failed to connect to node \(node.name!)"
+
+    // Insert the node's `endPoint` into the collection of endpoints connected to the track.
     connectedEndPoints.insert(node.endPoint)
+
   }
 
+  /// Disconnects the node's `endPoint` from the track's MIDI input.
+  ///
+  /// - Parameter node: The MIDI node to disconnect as an input source for the track.
+  /// - Precondition: The node's `endPoint` has been connected by the track to the track's
+  ///                 `inputPort`.
+  /// - Throws: `MIDINodeDispatchError.nodeNotFound` when the node has not been connected 
+  ///            to the track. Any error encountered disconnecting the node's `endPoint`
+  ///            from the track's `inputPort`.
   func disconnect(node: MIDINode) throws {
-    guard connectedEndPoints ∋ node.endPoint else { throw MIDINodeDispatchError.NodeNotFound }
-    try MIDIPortDisconnectSource(inPort, node.endPoint) ➤ "Failed to disconnect to node \(node.name!)"
+
+    // Check that the node's endpoint was previously connected by the track.
+    guard connectedEndPoints ∋ node.endPoint else {
+      throw MIDINodeDispatchError.nodeNotFound
+    }
+
+    // Disconnect the node's endpoint from the track's input.
+    try MIDIPortDisconnectSource(inputPort, node.endPoint)
+      ➤ "Failed to disconnect to node \(node.name!)"
+
+    // Remove the node's endpoint from the set of connected endpoints.
     connectedEndPoints.remove(node.endPoint)
+
   }
 
-  // MARK: - Loops
-
+  /// Adds the specified loop to the track by storing it in `loops` and adding the loop's
+  /// MIDI events.
+  ///
+  /// - Parameter loop: The loop to add to the track.
+  /// - Precondition: The loop has not already been added to the track.
   func add(loop: Loop) {
+
+    // Check that the loop has not already been added to the track.
     guard loops[loop.identifier] == nil else { return }
+
     Log.debug("adding loop: \(loop)")
+
+    // Store the loop by it's identifier.
     loops[loop.identifier] = loop
+
+    // Add the loop's MIDI events.
     add(events: loop)
+
   }
 
+  /// An index of the loops that have been added to the track keyed by their identifiers.
   private var loops: [UUID:Loop] = [:]
 
-  // MARK: - MIDI events
-
+  /// The track's MIDI client.
   private var client  = MIDIClientRef()
-  private var inPort  = MIDIPortRef()
+
+  /// The track's MIDI input port.
+  private var inputPort  = MIDIPortRef()
+
+  /// The track's MIDI output port.
   private var outPort = MIDIPortRef()
 
-  private func read(_ packetList: UnsafePointer<MIDIPacketList>, context: UnsafeMutableRawPointer?) {
 
-    // Forward the packets to the instrument
+  /// Callback for receiving MIDI packets over the track's `inputPort`.
+  ///
+  /// - Parameters:
+  ///   - packetList: The list of packets to receive
+  ///   - context: This parameter is ignored.
+  private func read(_ packetList: UnsafePointer<MIDIPacketList>,
+                    context: UnsafeMutableRawPointer?)
+  {
+
     do {
+
+      // Forward the packets to the instrument
       try MIDISend(outPort, instrument.endPoint, packetList)
         ➤ "Failed to forward packet list to instrument"
-    } catch { Log.error(error) }
 
-    // Check if we are recording, otherwise skip event processing
+    } catch {
+
+      // Just log the error.
+      Log.error(error)
+
+    }
+
+    // Check whether events need to be processed for MIDI file creation purposes.
     guard isRecording else { return }
 
+    // Process the packet asynchronously on the queue designated for MIDI event operations.
+    // Note that the capture list includes the current bar beat time so it is accurate for 
+    // the time when the closure is created and not the time when the closure is executed.
     eventQueue.async {
       [weak self, time = Time.current.barBeatTime] in
 
+      // Grab the packet from the list.
       guard let packet = Packet(packetList: packetList) else { return }
 
+      // Create a variable to hold the MIDI event generated from the packet.
       let event: MIDIEvent?
-      switch packet.status {
-        case 9:
+
+      // Consider the packet's `status` value.
+      switch MIDIEvent.ChannelEvent.Status.Kind(rawValue: packet.status) {
+
+        case .noteOn?:
+          // The packet contains a 'note on' event.
+
+          // Initialize `event` with the corresponding channel event.
           event = .channel(MIDIEvent.ChannelEvent(type: .noteOn,
-                                        channel: packet.channel,
-                                        data1: packet.note,
-                                        data2: packet.velocity,
-                                        time: time))
-        case 8:
+                                                  channel: packet.channel,
+                                                  data1: packet.note,
+                                                  data2: packet.velocity,
+                                                  time: time))
+        case .noteOff?:
+          // The packet contains a 'note off' event.
+
+          // Initialize `event` with the corresponding channel event.
           event = .channel(MIDIEvent.ChannelEvent(type: .noteOff,
                                         channel: packet.channel,
                                         data1: packet.note,
                                         data2: packet.velocity,
                                         time: time))
         default:
+          // The packet contains an unhandled event.
+
+          // Initialize to `nil`.
           event = nil
+
       }
-      if event != nil { self?.add(event: event!) }
+
+      // Check that there is an event to add.
+      guard event != nil else { return }
+
+      // Add the event.
+      self?.add(event: event!)
+
     }
+
   }
 
+  /// Dispatches the specified event. Overridden to pass MIDI node events to `nodeManager` 
+  /// for handling.
+  /// - Parameter event: The MIDI event to dispatch.
   override func dispatch(event: MIDIEvent) {
 
-      switch event {
-        
-        case .node(let nodeEvent):
-          nodeManager.handle(event: nodeEvent)
+    // Get the MIDI node event.
+    guard case .node(let nodeEvent) = event else { return }
 
-        case .meta(let metaEvent) where metaEvent.data == .endOfTrack:
-          guard !isRecording && endOfTrack == metaEvent.time else { break }
-          trackEnded = true
-
-        default: break
-
-      }
+    // Handle the node event using the node manager.
+    nodeManager.handle(event: nodeEvent)
 
   }
 
-  override func registrationTimes<S:Swift.Sequence>(forAdding events: S) -> [BarBeatTime]
-    where S.Iterator.Element == MIDIEvent
+  /// Overridden to return times for MIDI node events contained by `events` in addition
+  /// to the times returned by the default implementation.
+  /// - Parameter events: The sequence of MIDI events for which time callbacks will be
+  ///                     registered.
+  /// - Returns: An array of bar-beat times to register for callbacks.
+  override func registrationTimes<Source>(forAdding events: Source) -> [BarBeatTime]
+    where Source:Swift.Sequence, Source.Iterator.Element == MIDIEvent
   {
-    return events.filter({ if case .node(_) = $0 { return true } else { return false } }).map({$0.time})
-      + super.registrationTimes(forAdding: events)
+
+    // Get the times for the MIDI node events in `events`.
+    let nodeTimes = events.filter({
+      if case .node(_) = $0 { return true }
+      else { return false }
+    }).map({$0.time})
+
+    // Return the node times along with the times returned by `super`.
+    return nodeTimes + super.registrationTimes(forAdding: events)
+
   }
 
-  /// The index for the track in the sequence's array of instrument tracks, or nil
-  var index: Int? { return sequence.instrumentTracks.index(of: self) }
+  /// The track's position in the ordered list of instrument tracks belonging to `sequence`.
+  var index: Int {
 
-  // MARK: - Initialization
+    // Get the track's index.
+    guard let index = sequence.instrumentTracks.index(of: self) else {
+      fatalError("Failed to locate track among the sequence's instrument tracks")
+    }
 
-  private func initializeMIDIClient() throws {
+    return index
+
+  }
+
+  /// Registers for transport and instrument notifications. Creates MIDI client and
+  /// input/output ports.
+  ///
+  /// - Throws: Any error encountered creating the MIDI client or MIDI ports.
+  private func setup() throws {
+
+    // Observe `didReset` notifications posted by the primary transport.
+    receptionist.observe(name: .didReset, from: Sequencer.primaryTransport.transport,
+                         callback: weakMethod(self, InstrumentTrack.didReset))
+
+    // Observe program and sound font changes posted by the track's instrument
+    receptionist.observe(name: .programDidChange, from: instrument,
+                         callback: weakMethod(self, InstrumentTrack.didChangePreset))
+    receptionist.observe(name: .soundFontDidChange, from: instrument,
+                         callback: weakMethod(self, InstrumentTrack.didChangePreset))
+
+    // Create the MIDI client for the track.
     try MIDIClientCreateWithBlock("track \(instrument.bus)" as CFString, &client, nil)
-      ➤ "Failed to create midi client"
+      ➤ "Failed to create MIDI client."
+
+    // Create the track's MIDI output port.
     try MIDIOutputPortCreate(client, "Output" as CFString, &outPort)
-      ➤ "Failed to create out port"
-    try MIDIInputPortCreateWithBlock(client, name as CFString, &inPort, weakMethod(self, InstrumentTrack.read))
-      ➤ "Failed to create in port"
+      ➤ "Failed to create MIDI output port."
+
+    // Create the track's MIDI input port.
+    try MIDIInputPortCreateWithBlock(client, name as CFString, &inputPort,
+                                     weakMethod(self, InstrumentTrack.read))
+      ➤ "Failed to create MIDI input port."
+
   }
 
+
+  /// Initializing with a sequence and an instrument. Initializes an empty track owned
+  /// by the specified sequence that uses the specified instrument, assigning itself as
+  /// the instrument's track.
+  ///
+  /// - Parameters:
+  ///   - sequence: The `Sequence` that owns the created track.
+  ///   - instrument: The `Instrument` to couple with the created track.
+  /// - Throws: Any error encountered creating the MIDI client or MIDI ports for the track.
   init(sequence: Sequence, instrument: Instrument) throws {
+
+    // Initialize using the specified sequence.
     super.init(sequence: sequence)
+
+    // Create a new node manager for the track.
     nodeManager = MIDINodeManager(owner: self)
+
+    // Initialize `instrument` using the specified instrument.
     self.instrument = instrument
+
+    // Assign the track to the instrument.
     instrument.track = self
-    instrumentEvent = MIDIEvent.MetaEvent(data: .text(text: "instrument:\(instrument.soundFont.url.lastPathComponent)"))
-    programEvent = MIDIEvent.ChannelEvent(type: .programChange, channel: instrument.channel, data1: instrument.program)
+
+    // Initialize `instrumentEvent` using file name of the instrument's sound font.
+    let instrumentText = "instrument:\(instrument.soundFont.url.lastPathComponent)"
+    instrumentEvent = MIDIEvent.MetaEvent(data: .text(text: instrumentText))
+
+    // Initialize `programEvent` with the instrument's channel and program values.
+    programEvent = MIDIEvent.ChannelEvent(type: .programChange,
+                                          channel: instrument.channel,
+                                          data1: instrument.program)
+
+    // Initialize `color` with the next available track color.
     color = TrackColor.nextColor
 
-    initializeNotificationReceptionist()
-    try initializeMIDIClient()
+    // Register for notifications and create MIDI client/ports. Must be called after
+    // instrument initialization because notification registration requires the track's
+    // instrument.
+    try setup()
+
   }
 
+  /// Initializing with a sequence and track data from a Groove file. An instrument is 
+  /// created for the track using the preset data specified by `grooveTrack`, any loop
+  /// data provided by `grooveTrack` is used to add loops to the track, and any node data
+  /// provided by `grooveTrack` is used to generate MIDI node events for the track.
+  ///
+  /// - Parameters:
+  ///   - sequence: The `Sequence` that owns the created track.
+  ///   - grooveTrack: The instrument and event data used to initialize the track.
+  /// - Throws: Any error encountered creating the track's instrument, any error 
+  ///           encountered creating the MIDI client/ports.
   init(sequence: Sequence, grooveTrack: GrooveFile.Track) throws {
 
+    // Initialize with the specified sequence.
     super.init(sequence: sequence)
 
+    // Create a node manager for the track.
     nodeManager = MIDINodeManager(owner: self)
 
-    guard let preset = Instrument.Preset(grooveTrack.instrument.jsonValue) else {
-      throw Error.InstrumentInitializeFailure
-    }
-    
+    // Create the instrument preset from the track data provided, using the preset for
+    // the sequencer's audition instrument if necessary.
+    let preset = Instrument.Preset(grooveTrack.instrument.jsonValue)
+                   ?? Sequencer.auditionInstrument.preset
+
+    // Create a new instrument that uses `preset` and that is assigned to the track.
     instrument = try Instrument(track: self, preset: preset)
-    instrument.track = self
+
+    // Initialize `color` using the color provided by `grooveTrack`.
     color = grooveTrack.color
 
+    // Initialize `name` using the name provided by `grooveTrack`.
     name = grooveTrack.name
+
+    // Create an array for accumulating MIDI events.
     var events: [MIDIEvent] = []
-    for (_, node) in grooveTrack.nodes {
-      events.append(.node(MIDIEvent.MIDINodeEvent(data: .add(identifier: node.identifier,
-                                                   trajectory: node.trajectory,
-                                                   generator: node.generator),
-                                        time: node.addTime)))
-      if let time = node.removeTime {
-        events.append(.node(MIDIEvent.MIDINodeEvent(data: .remove(identifier: node.identifier), time: time)))
+
+    // Iterate the node data provided by `grooveTrack`.
+    for nodeData in grooveTrack.nodes.values {
+
+      // Append an event adding a MIDI node using `nodeData` to the array of events.
+      events.append(.node(MIDIEvent.MIDINodeEvent(forAdding: nodeData)))
+
+      // Check whether a remove time is specified by attempting to create an event that
+      // removes the MIDI node created using `nodeData`.
+      if let event = MIDIEvent.MIDINodeEvent(forRemoving: nodeData) {
+
+        // Append the successfully created event to the array of events.
+        events.append(.node(event))
+
       }
+
     }
+
+    // Add the MIDI events generated from the node data to the track.
     add(events: events)
 
-    grooveTrack.loops.values.forEach { add(loop: Loop(grooveLoop: $0, track: self)) }
 
-    initializeNotificationReceptionist()
-    try initializeMIDIClient()
+    // Iterate the loop data provided by `grooveTrack`.
+    for loopData in grooveTrack.loops.values {
+
+      // Create a loop using `loopData`.
+      let loop = Loop(grooveLoop: loopData, track: self)
+
+      // Add the loop to the track.
+      add(loop: loop)
+
+    }
+
+    // Register for notifications and create MIDI client/ports. Must be called after
+    // instrument initialization because notification registration requires the track's
+    // instrument.
+    try setup()
+
   }
 
+  /// Initializing with a sequence and a MIDI file chunk. 
+  ///
+  /// - Parameters:
+  ///   - sequence: The `Sequence` that owns the created track.
+  ///   - trackChunk: The `MIDIFile.TrackChunk` containing the MIDI events for initializing
+  ///                 the track.
+  /// - Throws: Any error encountered creating a new instrument for the track, any error
+  ///           encountered creating the track's MIDI client/ports.
+  /// - TODO: When using the MIDI events contained by `trackChunk` to generate the track's
+  ///         instrument, a bank change event should be queried rather than assuming a 
+  ///         bank value of `0`.
   init(sequence: Sequence, trackChunk: MIDIFile.TrackChunk) throws {
+
+    // Initialize with the specified sequence.
     super.init(sequence: sequence)
+
+    // Create a node manager for the track.
     nodeManager = MIDINodeManager(owner: self)
 
+    // Add the MIDI events provided by the chunk to the track.
     add(events: trackChunk.events)
 
-    // Find the instrument event
+    // Helper function that attempts to create a new `Instrument` using the MIDI events
+    // provided by the chunk.
+    func createInstrumentUsingMIDIEvents() -> Instrument? {
 
-    guard let instrumentEvent = instrumentEvent,
-      case .text(var instrumentName) = instrumentEvent.data else
-    {
-      throw Error.MissingInstrument
+      // Check that a suitable instrument event was provided by the track chunk and extract
+      // the name of the instrument from the event's data.
+      guard let instrumentEvent = instrumentEvent,
+            case .text(var instrumentName) = instrumentEvent.data else
+      {
+        return nil
+      }
+
+      // Get an index for the first character in the actual instrument name.
+      let index = instrumentName.index(instrumentName.startIndex, offsetBy:11)
+
+      // Trim the leading 'instrument:' from the extracted text.
+      instrumentName = instrumentName.substring(from: index)
+
+      // Locate the matching sound font file within the application's main bundle.
+      guard let url = Bundle.main.url(forResource: instrumentName,
+                                      withExtension: nil)
+        else
+      {
+        return nil
+      }
+
+      // Create a sound font using the bundle resource url.
+      guard let soundFont: SoundFont = (   try? EmaxSoundFont(url: url))
+                                        ?? (try? AnySoundFont(url: url))
+        else
+      {
+        return nil
+      }
+
+      // Check that a program change event was provided by the track chunk.
+      guard let programEvent = programEvent else {
+        return nil
+      }
+
+      // Get the channel and program values from the program event.
+      let channel = programEvent.status.channel, program = programEvent.data1
+
+      // Incorrectly, just assume a bank value of `0`.
+      let bank: UInt8 = 0
+
+      Log.warning("\(#function) not yet fully implemented. The bank value needs handling")
+
+      // Retrieve the preset header from the sound font for (`program`, `bank`).
+      guard let presetHeader = soundFont[program: program, bank: bank] else {
+        return nil
+      }
+
+      // Create a preset using the derived values.
+      let preset = Instrument.Preset(soundFont: soundFont,
+                                     presetHeader: presetHeader,
+                                     channel: channel)
+
+      // Return an instrument initialized with the track and the preset.
+      return try? Instrument(track: self, preset: preset)
+
     }
 
-    instrumentName = instrumentName[instrumentName.index(instrumentName.startIndex, offsetBy:11)|->]
+    // Try generating an instrument from the MIDI events provided by the track chunk.
+    if let instrument = createInstrumentUsingMIDIEvents() {
 
-    guard let url = Bundle.main.url(forResource: instrumentName, withExtension: nil) else {
-      throw Error.InvalidSoundSetURL
+      // Initialize `instrument` with the generated instrument.
+      self.instrument = instrument
+
     }
 
-    guard let soundSet: SoundFont = (try? EmaxSoundFont(url: url)) ?? (try? AnySoundFont(url: url)) else {
-      throw Error.SoundSetInitializeFailure
+    // Otherwise, try initializing `instrument` with a new instrument copied from the
+    // sequencer's audition instrument.
+    else {
+
+      instrument = try Instrument(track: self, preset: Sequencer.auditionInstrument.preset)
+
     }
 
-    // Find the program change event
-    guard let programEvent = programEvent else {
-      throw Error.MissingProgram
-    }
-
-    let channel = programEvent.status.channel, program = programEvent.data1
-
-    guard let presetHeader = soundSet[program: program, bank: 0] else {
-      throw Error.InvalidProgram
-    }
-
-    let preset = Instrument.Preset(soundFont: soundSet, presetHeader: presetHeader, channel: channel)
-
-    guard let instrument = try? Instrument(track: self, preset: preset) else {
-      throw Error.InstrumentInitializeFailure
-    }
-
-    self.instrument = instrument
+    // Initialize `color` with the next available track color.
     color = TrackColor.nextColor
 
-    initializeNotificationReceptionist()
-    try initializeMIDIClient()
+    // Register for notifications and create MIDI client/ports. Must be called after 
+    // instrument initialization because notification registration requires the track's 
+    // instrument.
+    try setup()
 
-    fatalError("need to also extract bank")
   }
 
   override var description: String {
-    return "\n".join( "instrument: \(instrument)", "color: \(color)", super.description )
-  }
 
-  enum Error: String, Swift.Error, CustomStringConvertible {
-    case SoundSetInitializeFailure = "Failed to create sound set"
-    case InvalidSoundSetURL = "Failed to resolve sound set url"
-    case MissingProgram = "Missing program change event"
-    case InvalidProgram = "Specified sound set does not have the specified program"
-    case MissingInstrument = "Missing instrument event"
-    case InstrumentInitializeFailure = "Failed to create instrument"
+    return [
+      "instrument: \(instrument)",
+      "color: \(color)",
+      super.description
+      ].joined(separator: "\n")
+
   }
 
   var hashValue: Int { return ObjectIdentifier(self).hashValue }
 
+  /// Returns `true` iff `lhs` and `rhs` are the same instance.
   static func ==(lhs: InstrumentTrack, rhs: InstrumentTrack) -> Bool {
     return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
   }

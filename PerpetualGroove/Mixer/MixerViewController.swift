@@ -398,7 +398,7 @@ final class MixerViewController: UICollectionViewController, SecondaryContentPro
         // Updated `addedTrackIndex` if the track at `added` is pending.
         // Insert a cell for the added track and update the size of the collection.
 
-        guard let added = notification.addedIndex else { break }
+        guard let added = notification.addedTrackIndex else { break }
         let addedIndexPath = Section.tracks[added]
         if pendingTrackIndex == added { addedTrackIndex = addedIndexPath }
         collectionView.insertItems(at: [addedIndexPath])
@@ -407,14 +407,14 @@ final class MixerViewController: UICollectionViewController, SecondaryContentPro
       case Notification.Name(Sequence.NotificationName.didRemoveTrack.rawValue):
         // Delete the cell for the removed track and update the size of the collection.
 
-        guard let removed = notification.removedIndex else { break }
+        guard let removed = notification.removedTrackIndex else { break }
         collectionView.deleteItems(at: [Section.tracks[removed]])
         updateSize()
 
       case Notification.Name(Sequence.NotificationName.didChangeTrack.rawValue):
         // Select the new track.
 
-        selectTrack(at: notification.newTrackIndex, animated: true)
+        selectTrack(at: sequence?.currentTrackIndex, animated: true)
 
       default:
         unreachable("Unexpected notification received.")

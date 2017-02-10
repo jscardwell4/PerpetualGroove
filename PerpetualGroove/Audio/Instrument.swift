@@ -71,7 +71,7 @@ final class Instrument: Equatable, CustomStringConvertible, NotificationDispatch
     return sampler.destination(forMixer: AudioManager.mixer, bus: 0)?.connectionPoint.bus ?? -1
   }
 
-  /// The output level for mixer input bus to which the instrument is connected.
+  /// The output level for the mixer input bus to which the instrument is connected.
   /// The value of this property is ≥ `0` and ≤ `1`.
   var volume: Float {
     get { return sampler.volume }
