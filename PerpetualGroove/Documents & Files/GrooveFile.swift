@@ -166,7 +166,9 @@ struct GrooveFile: DataConvertible, LosslessJSONValueConvertible, CustomStringCo
                     // The marker ends a loop, update the `Loop` instance in `loops`.
 
                     // Extract the identifier from `text`.
-                    guard let identifer = UUID(uuidString: (text ~=> ~/"^end\\(([^)]+)\\)$")?.1 ?? "") else {
+                    guard let match = (~/"^end\\(([^)]+)\\)$").firstMatch(in: text),
+                          let text = match.captures[1]?.substring,
+                          let identifer = UUID(uuidString: String(text)) else {
                       continue
                     }
 
@@ -326,10 +328,20 @@ struct GrooveFile: DataConvertible, LosslessJSONValueConvertible, CustomStringCo
 
       // Extract the identifier, repetitions, and repeat delay from the text contained in the event's data.
       guard case .marker(let text) = event.data,
-            let captures = (text ~=> ~/"^start\\(([^)]+)\\):([0-9]+):([0-9]+)$"),
-            let identifier = UUID(uuidString: captures.1 ?? ""),
-            let repetitions = Int(captures.2 ?? ""),
-            let repeatDelay = UInt64(captures.3 ?? "")
+            let captures = (~/"^start\\(([^)]+)\\):([0-9]+):([0-9]+)$").firstMatch(in: text)?.captures
+
+      else
+      {
+        return nil
+      }
+
+      let capturedID = String(captures[1]?.substring ?? "")
+      let capturedReps = String(captures[2]?.substring ?? "")
+      let capturedDelay = String(captures[3]?.substring ?? "")
+
+      guard let identifier = UUID(uuidString: capturedID),
+            let repetitions = Int(capturedReps),
+            let repeatDelay = UInt64(capturedDelay)
         else
       {
         return nil

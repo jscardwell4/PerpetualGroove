@@ -25,25 +25,25 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
   private(set) weak var viewController: RootViewController!
 
   /// Overridden to initialize the log manager unless the testing bundle has been injected.
-  override class func initialize() {
-
-    // Check that this is actually the `AppDelegate` class and that the testing bundle has not been injected.
-    guard self === AppDelegate.self
-      && ProcessInfo.processInfo.environment["XCInjectBundle"] == nil
-      else
-    {
-      return
-    }
-
-    // Initialize the log manager in the background.
-    backgroundDispatch { LogManager.initialize() }
-
-  }
+//  @objc override class func initialize() {
+//
+//    // Check that this is actually the `AppDelegate` class and that the testing bundle has not been injected.
+//    guard self === AppDelegate.self
+//      && ProcessInfo.processInfo.environment["XCInjectBundle"] == nil
+//      else
+//    {
+//      return
+//    }
+//
+//    // Initialize the log manager in the background.
+//    backgroundDispatch { LogManager.initialize() }
+//
+//  }
 
   /// Sets the `viewController` property and initializes `SettingsManager`, `AudioManager`, `Sequencer`,
   /// `MIDINodePlayer`, and `DocumentManager`.
   func application(_ application: UIApplication,
-                   didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool
+                   didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
   {
 
     do {
@@ -56,7 +56,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 
     } catch {
 
-      Log.error(error)
+      loge("\(error)")
 
     }
 

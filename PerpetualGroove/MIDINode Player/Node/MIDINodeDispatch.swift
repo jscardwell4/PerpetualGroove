@@ -14,7 +14,7 @@ typealias MIDINodeRef = Weak<MIDINode>
 
 /// Protocol for the common properties and methods of objects that generate `MIDINode` 
 /// instances.
-protocol MIDINodeDispatch: class, MIDIEventDispatch, Named {
+protocol MIDINodeDispatch: MIDIEventDispatch, Named {
 
   /// Name to assign to the next node dispatched.
   var nextNodeName: String { get }
@@ -41,7 +41,7 @@ protocol MIDINodeDispatch: class, MIDIEventDispatch, Named {
 
 extension MIDINodeDispatch {
 
-  var nodes: [MIDINode] { return nodeManager.nodes.flatMap({$0.reference}) }
+  var nodes: [MIDINode] { return nodeManager.nodes.compactMap({$0.reference}) }
 
 }
 
@@ -49,4 +49,6 @@ extension MIDINodeDispatch {
 enum MIDINodeDispatchError: String, Swift.Error, CustomStringConvertible {
   case nodeNotFound = "The specified node was not found."
   case nodeAlreadyConnected = "The specified node has already been connected."
+
+  var description: String { rawValue }
 }

@@ -49,7 +49,7 @@ final class RootViewController: UIViewController {
     super.viewDidLoad()
 
     // Bring the top stack to the front.
-    contentStack.bringSubview(toFront: topStack)
+    contentStack.bringSubviewToFront(topStack)
 
   }
 
@@ -161,7 +161,7 @@ final class RootViewController: UIViewController {
 
     didSet {
 
-      documentsViewController?.dismiss = weakMethod(self, RootViewController.dismissPopover)
+      documentsViewController?.dismiss = weakCapture(of: self, block:RootViewController.dismissPopover)
 
     }
 

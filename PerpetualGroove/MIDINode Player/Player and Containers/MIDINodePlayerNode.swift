@@ -68,7 +68,7 @@ final class MIDINodePlayerNode: SKShapeNode {
 
   /// Returns the collection of midi nodes for `mode` via a search on the names of the player node's children.
   private func midiNodes(for mode: Sequencer.Mode) -> [MIDINode] {
-    return self["<\(mode.rawValue)>*"].flatMap({$0 as? MIDINode})
+    return self["<\(mode.rawValue)>*"].compactMap({$0 as? MIDINode})
   }
 
   /// Overridden to bounce invocation to `touchReceiver`.

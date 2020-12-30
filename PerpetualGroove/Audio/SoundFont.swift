@@ -76,7 +76,7 @@ extension SoundFont {
 
   /// Property of convenience for looking up a sound font's index in the `Sequencer`'s `soundFonts` 
   /// collection.
-  var index: Int? { return Sequencer.soundFonts.index(where: {isEqualTo($0)}) }
+  var index: Int? { return Sequencer.soundFonts.firstIndex(where: {isEqualTo($0)}) }
 
   /// Returns the element in `presetHeaders` located at `position`.
   subscript(position: Int) -> SF2File.PresetHeader { return presetHeaders[position] }

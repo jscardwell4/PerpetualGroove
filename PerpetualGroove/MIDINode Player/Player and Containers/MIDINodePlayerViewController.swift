@@ -117,15 +117,15 @@ final class MIDINodePlayerViewController: UIViewController, UITextFieldDelegate 
   /// Registers `receptionist` for various notifications.
   private func setup() {
     receptionist.observe(name: .didChangeDocument, from: DocumentManager.self,
-                         callback: weakMethod(self, MIDINodePlayerViewController.didChangeDocument))
+                         callback: weakCapture(of: self, block:MIDINodePlayerViewController.didChangeDocument))
     receptionist.observe(name: .willOpenDocument, from: DocumentManager.self,
-                         callback: weakMethod(self, MIDINodePlayerViewController.willOpenDocument))
+                         callback: weakCapture(of: self, block:MIDINodePlayerViewController.willOpenDocument))
     receptionist.observe(name: .didSelectTool, from: MIDINodePlayer.self,
-                         callback: weakMethod(self, MIDINodePlayerViewController.didSelectTool))
+                         callback: weakCapture(of: self, block:MIDINodePlayerViewController.didSelectTool))
     receptionist.observe(name: .didEnterLoopMode, from: Sequencer.self,
-                         callback: weakMethod(self, MIDINodePlayerViewController.didEnterLoopMode))
+                         callback: weakCapture(of: self, block:MIDINodePlayerViewController.didEnterLoopMode))
     receptionist.observe(name: .didExitLoopMode, from: Sequencer.self,
-                         callback: weakMethod(self, MIDINodePlayerViewController.didExitLoopMode))
+                         callback: weakCapture(of: self, block:MIDINodePlayerViewController.didExitLoopMode))
   }
 
   /// Overridden to run `setup()`.

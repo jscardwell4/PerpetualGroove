@@ -77,7 +77,7 @@ final class InstrumentViewController: UIViewController, SecondaryContent {
     } catch {
 
       // Just log the error.
-      Log.error(error)
+      loge("\(error)")
 
     }
 
@@ -107,7 +107,7 @@ final class InstrumentViewController: UIViewController, SecondaryContent {
     } catch {
 
       // Just log the error.
-      Log.error(error)
+      loge("\(error)")
 
     }
 
@@ -131,7 +131,7 @@ final class InstrumentViewController: UIViewController, SecondaryContent {
     }
 
     // Load the initial preset into the to instrument.
-    do { try instrument.load(preset: initialPreset) } catch { Log.error(error) }
+    do { try instrument.load(preset: initialPreset) } catch { loge("\(error)") }
 
   }
 

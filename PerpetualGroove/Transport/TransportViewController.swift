@@ -32,19 +32,19 @@ final class TransportViewController: UIViewController {
 
       // Register to receive notifications from the new transport.
       receptionist.observe(name: .didStart, from: transport,
-                           callback: weakMethod(self, TransportViewController.didStart))
+                           callback: weakCapture(of: self, block:TransportViewController.didStart))
       receptionist.observe(name: .didStop, from: transport,
-                           callback: weakMethod(self, TransportViewController.didStop))
+                           callback: weakCapture(of: self, block:TransportViewController.didStop))
       receptionist.observe(name: .didPause, from: transport,
-                           callback: weakMethod(self, TransportViewController.didPause))
+                           callback: weakCapture(of: self, block:TransportViewController.didPause))
       receptionist.observe(name: .didReset, from: transport,
-                           callback: weakMethod(self, TransportViewController.didReset))
+                           callback: weakCapture(of: self, block:TransportViewController.didReset))
       receptionist.observe(name: .didBeginJogging, from: transport,
-                           callback: weakMethod(self, TransportViewController.didBeginJogging))
+                           callback: weakCapture(of: self, block:TransportViewController.didBeginJogging))
       receptionist.observe(name: .didEndJogging, from: transport,
-                           callback: weakMethod(self, TransportViewController.didEndJogging))
+                           callback: weakCapture(of: self, block:TransportViewController.didEndJogging))
       receptionist.observe(name: .didToggleRecording, from: transport,
-                           callback: weakMethod(self, TransportViewController.didToggleRecording))
+                           callback: weakCapture(of: self, block:TransportViewController.didToggleRecording))
 
     }
 
@@ -131,7 +131,7 @@ final class TransportViewController: UIViewController {
     } catch {
 
       // Just log the error.
-      Log.error(error)
+      loge("\(error)")
 
     }
 

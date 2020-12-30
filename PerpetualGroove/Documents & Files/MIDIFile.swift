@@ -10,6 +10,8 @@ import Foundation
 import MoonKit
 import typealias CoreMIDI.MIDITimeStamp
 
+//TODO: Format to eliminate overly long lines.
+
 /// Struct that holds the data for a complete MIDI file.
 struct MIDIFile: ByteArrayConvertible, CustomStringConvertible {
 
@@ -63,7 +65,7 @@ struct MIDIFile: ByteArrayConvertible, CustomStringConvertible {
       currentIndex += 4  // Move past 'MTrk'
 
       // Get the byte count for the chunk's data.
-      let chunkLength = Int(Byte4(data[currentIndex +--> 4]))
+      let chunkLength = Int(UInt32(data[currentIndex +--> 4]))
 
       currentIndex += 4 // Move past the chunk size.
 
@@ -342,7 +344,7 @@ struct MIDIFile: ByteArrayConvertible, CustomStringConvertible {
   struct TrackChunk: CustomStringConvertible {
 
     /// The four character ascii string identifying the chunk as a track chunk.
-    let type = Byte4("MTrk".utf8)
+    let type = UInt32("MTrk".utf8)
 
     /// The collection of MIDI events for the track.
     var events: [MIDIEvent] = []
@@ -369,7 +371,7 @@ struct MIDIFile: ByteArrayConvertible, CustomStringConvertible {
       }
 
       // Get the size of the chunk's data.
-      let chunkLength = Byte4(data[(data.startIndex + 4) +--> 4])
+      let chunkLength = UInt32(data[(data.startIndex + 4) +--> 4])
 
       // Check that the size specified in the preamble and the size of the data provided are a match.
       guard data.count == Int(chunkLength) + 8 else {
@@ -441,7 +443,7 @@ struct MIDIFile: ByteArrayConvertible, CustomStringConvertible {
             // Decode a channel event or throw an error.
 
             // Get the kind of channel event
-            guard let type = MIDIEvent.ChannelEvent.Kind(rawValue: data[currentIndex] >> 4) else {
+            guard let type = MIDIEvent.ChannelEvent.Status.Kind(rawValue: data[currentIndex] >> 4) else {
               throw Error.unsupportedEvent("\(data[currentIndex] >> 4) is not a supported ChannelEvent")
             }
 
@@ -474,7 +476,7 @@ struct MIDIFile: ByteArrayConvertible, CustomStringConvertible {
   /// These numbers are represented 7 bits per byte, most significant bits first.
   /// All bytes except the last have bit 7 set, and the last byte has bit 7 clear.
   /// If the number is between 0 and 127, it is thus represented exactly as one byte.
-  struct VariableLengthQuantity: CustomStringConvertible, CustomDebugStringConvertible {
+  struct VariableLengthQuantity: CustomStringConvertible/*, CustomDebugStringConvertible*/ {
 
     /// The variable length quantity as a stream of raw bytes.
     let bytes: [UInt8]
@@ -567,7 +569,7 @@ struct MIDIFile: ByteArrayConvertible, CustomStringConvertible {
       }
 
       // Create an array for accumulating the variable length quantity's bytes.
-      var result: [Byte] = []
+      var result: [UInt8] = []
 
       repeat {
 
@@ -589,24 +591,24 @@ struct MIDIFile: ByteArrayConvertible, CustomStringConvertible {
 
     var description: String { return "\(UInt64(self))" }
 
-    var paddedDescription: String { return description.pad(" ", count: 6) }
+    var paddedDescription: String { return description.padded(to: 6) }
 
-    var debugDescription: String {
-
-      let representedValue = self.representedValue
-
-      var result = "\(type(of: self).self) {"
-
-      result += [
-        "bytes (hex, decimal): (\(String(hexBytes: bytes)), \(UInt64(bytes)))",
-        "representedValue (hex, decimal): (\(String(hexBytes: representedValue)), \(UInt64(self)))"
-      ].joined(separator: "; ")
-
-      result += "}"
-
-      return result
-
-    }
+//    var debugDescription: String {
+//
+//      let representedValue = self.representedValue
+//
+//      var result = "\(type(of: self).self) {"
+//
+//      result += [
+//        "bytes (hex, decimal): (\(String(hexBytes: bytes)), \(UInt64(bytes)))",
+//        "representedValue (hex, decimal): (\(String(hexBytes: representedValue)), \(UInt64(self)))"
+//      ].joined(separator: "; ")
+//
+//      result += "}"
+//
+//      return result
+//
+//    }
 
   }
 

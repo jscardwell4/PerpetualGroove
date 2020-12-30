@@ -137,7 +137,7 @@ final class Instrument: Equatable, CustomStringConvertible, NotificationDispatch
         } catch {
 
           // Just log the error.
-          Log.error(error)
+          loge("\(error)")
 
         }
 
@@ -149,7 +149,7 @@ final class Instrument: Equatable, CustomStringConvertible, NotificationDispatch
     } catch {
 
       // Just log the error.
-      Log.error(error)
+      loge("\(error)")
 
     }
 

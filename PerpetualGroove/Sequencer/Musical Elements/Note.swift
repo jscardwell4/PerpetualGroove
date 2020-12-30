@@ -228,13 +228,13 @@ enum Note: RawRepresentable, Comparable, Hashable {
 
     // Extract raw values for the note's natural and, possibly, the note's modifier.
     // Create the note's natural using the captured raw value.
-    guard let captures = (rawValue ~=> ~/"^([A-G])([♭♯𝄫])?$"),
-          let rawNatural = captures.1,
-          let natural = Natural(rawValue: rawNatural) else { return nil }
+    guard let captures = (~/"^([A-G])([♭♯𝄫])?$").firstMatch(in: rawValue),
+          let rawNatural = captures[1]?.substring,
+          let natural = Natural(rawValue: String(rawNatural)) else { return nil }
 
     // Create the note's modifier if a raw modifier has been captured.
-    if let rawModifier = captures.2,
-       let modifier = PitchModifier(rawValue: rawModifier)
+    if let rawModifier = captures[2]?.substring,
+       let modifier = PitchModifier(rawValue: String(rawModifier))
     {
 
       // Intialize as an accidental with the natural and modifier values.

@@ -87,7 +87,10 @@ enum TimeSignature: Hashable, ByteArrayConvertible {
 
   }
 
-  var hashValue: Int { return beatsPerBar ^ _mixInt(Int(beatUnit)) }
+  func hash(into hasher: inout Hasher) {
+    beatsPerBar.hash(into: &hasher)
+    beatUnit.hash(into: &hasher)
+  }
 
   /// Returns `true` iff `lhs` and `rhs` are of the same case excluding `other`, or if
   /// `lhs` and `rhs` are both of case `other` with equal `upper` and `lower` values.
@@ -113,7 +116,7 @@ enum TimeSignature: Hashable, ByteArrayConvertible {
   }
 
   /// The time signature converted to its raw byte MIDI event representation.
-  var bytes: [UInt8] { return [beatUnit, Byte(log2(Double(beatsPerBar)))] }
+  var bytes: [UInt8] { return [beatUnit, UInt8(log2(Double(beatsPerBar)))] }
 
   /// Initialzing with a raw byte MIDI event representation.
   init(_ bytes: [UInt8]) {
@@ -130,7 +133,7 @@ enum TimeSignature: Hashable, ByteArrayConvertible {
 
     // Initialize with the first byte and the converted second byte as the upper and lower
     // values.
-    self.init(upper: bytes[0], lower: pow(bytes[1], 2))
+    self.init(upper: bytes[0], lower: bytes[1] * bytes[1])
 
   }
 

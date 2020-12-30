@@ -101,7 +101,7 @@ final class AddTool: Tool {
     // Calculate the new velocity as the change in location over the change in time.
     let 𝝙location = locationʹ - location
     let 𝝙timestamp = timestampʹ - timestamp
-    let velocity = CGVector(𝝙location / 𝝙timestamp)
+    let velocity = CGVector(𝝙location / CGFloat(𝝙timestamp))
 
     // Append the new velocity.
     velocities.append(velocity)

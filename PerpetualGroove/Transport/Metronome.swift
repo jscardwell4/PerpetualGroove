@@ -31,7 +31,7 @@ final class Metronome {
       switch isOn {
 
         case true:
-          Time.current.register(callback:weakMethod(self, Metronome.click),
+          Time.current.register(callback:weakCapture(of: self, block:Metronome.click),
                                 predicate: Metronome.isAudibleTick,
                                 identifier: callbackIdentifier)
         case false:

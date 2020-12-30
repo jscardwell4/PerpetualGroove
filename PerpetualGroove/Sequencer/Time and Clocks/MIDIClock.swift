@@ -10,6 +10,24 @@ import Foundation
 import MoonKit
 import CoreMIDI
 
+/** Ticks since last device reboot */
+private var hostTicks: UInt64 { mach_absolute_time() }
+
+/** Nanoseconds since last reboot */
+private var hostTime: UInt64 {
+  let ratio = nanosecondsPerHostTick
+  return hostTicks * ratio.numerator.low / ratio.denominator.low
+}
+
+/** Ratio that represents the number of nanoseconds per host tick */
+private let nanosecondsPerHostTick: Fraction = {
+  var info = mach_timebase_info()
+  mach_timebase_info(&info)
+  return info.numer÷info.denom
+}()
+
+
+
 /// A class capable of keeping time for MIDI events
 final class MIDIClock: CustomStringConvertible, Named {
 
@@ -20,11 +38,12 @@ final class MIDIClock: CustomStringConvertible, Named {
 
     let currentHostTicks = hostTicks
     let nsPerTick = nanosecondsPerHostTick
-    let currentHostTime = currentHostTicks * UInt64(nsPerTick.fraction)
-    let hostInfo = "{ ; }".wrap([ "hostTicks: \(currentHostTicks)",
-                                  "nanosecondsPerTick: \(nsPerTick)",
-                                  "hostTime: \(currentHostTime)" ].joined(separator: "; "),
-                                separator: ";")
+    let currentHostTime = currentHostTicks * UInt64(Double(nsPerTick))
+    let hostInfo = """
+      { hostTicks: \(currentHostTicks); \
+      nanosecondsPerTick: \(nsPerTick); \
+      hostTime: \(currentHostTime) }
+      """
 
     return "\(type(of: self).self) {\n\t" + [
       "name: \(name)",
@@ -116,7 +135,7 @@ final class MIDIClock: CustomStringConvertible, Named {
       // Check that the timer is not already running.
       guard !weakself.timer.running else { return }
 
-      Log.debug("setting ticks to 0, sending start message and starting timer…")
+      logi("setting ticks to 0, sending start message and starting timer…")
 
       // Reset the tick count.
       weakself.ticks = 0
@@ -132,7 +151,7 @@ final class MIDIClock: CustomStringConvertible, Named {
       } catch {
 
         // Just log the error.
-        Log.error(error)
+        loge("\(error)")
 
       }
 
@@ -156,7 +175,7 @@ final class MIDIClock: CustomStringConvertible, Named {
       // Check that the clock is paused.
       guard weakself.isPaused else { return }
 
-      Log.debug("sending continue message and starting timer…")
+      logi("sending continue message and starting timer…")
 
       do {
 
@@ -169,7 +188,7 @@ final class MIDIClock: CustomStringConvertible, Named {
       } catch {
 
         // Just log the error.
-        Log.error(error)
+        loge("\(error)")
 
       }
 
@@ -190,7 +209,7 @@ final class MIDIClock: CustomStringConvertible, Named {
       // Check that the timer is not running.
       guard !weakself.timer.running else { return }
 
-      Log.debug("setting ticks to 0…")
+      logi("setting ticks to 0…")
 
       // Reset the count for the number of elapsed ticks.
       weakself.ticks = 0
@@ -212,7 +231,7 @@ final class MIDIClock: CustomStringConvertible, Named {
       // Check that the timer is running.
       guard weakself.timer.running else { return }
 
-      Log.debug("stopping timer and sending stop message…")
+      logi("stopping timer and sending stop message…")
 
       // Stop the timer.
       weakself.timer.stop()
@@ -225,7 +244,7 @@ final class MIDIClock: CustomStringConvertible, Named {
       } catch {
 
         // Just log the error.
-        Log.error(error)
+        loge("\(error)")
 
       }
 
@@ -277,7 +296,7 @@ final class MIDIClock: CustomStringConvertible, Named {
         } catch {
 
           // Just log the error.
-          Log.error(error)
+          loge("\(error)")
 
         }
 
@@ -302,7 +321,7 @@ final class MIDIClock: CustomStringConvertible, Named {
     } catch {
 
       // Log the error.
-      Log.error(error)
+      loge("\(error)")
 
       #if !TARGET_INTERFACE_BUILDER
 

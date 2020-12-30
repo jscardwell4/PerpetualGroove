@@ -44,7 +44,7 @@ final class Sequencer: NotificationDispatching {
     // Set the initialization flag.
     isInitialized = true
 
-    Log.debug("Sequencer initialized")
+    logi("Sequencer initialized")
 
   }
 
@@ -234,7 +234,7 @@ final class Sequencer: NotificationDispatching {
       // Check that the value will actually change.
       guard mode != newValue else { return }
 
-      Log.debug("willSet: \(mode.rawValue) ➞ \(newValue.rawValue)")
+      logi("willSet: \(mode.rawValue) ➞ \(newValue.rawValue)")
 
       // Post notification according to the new mode.
       switch newValue {
@@ -249,7 +249,7 @@ final class Sequencer: NotificationDispatching {
       // Check that the value has actually changed.
       guard mode != oldValue else { return }
 
-      Log.debug("didSet: \(oldValue.rawValue) ➞ \(mode.rawValue)")
+      logi("didSet: \(oldValue.rawValue) ➞ \(mode.rawValue)")
 
       // Update the transport assignment and post notification according to the new value.
       switch mode {

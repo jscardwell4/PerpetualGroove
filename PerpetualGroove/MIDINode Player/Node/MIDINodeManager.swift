@@ -33,7 +33,7 @@ final class MIDINodeManager {
 
     for nodeRef in nodes { nodeRef.reference?.fadeOut(remove: remove) }
 
-    Log.debug("nodes stopped\(remove ? " and removed" : "")")
+    logi("nodes stopped\(remove ? " and removed" : "")")
 
   }
 
@@ -42,7 +42,7 @@ final class MIDINodeManager {
 
     for nodeRef in nodes { nodeRef.reference?.fadeIn() }
 
-    Log.debug("nodes started")
+    logi("nodes started")
 
   }
 
@@ -71,7 +71,7 @@ final class MIDINodeManager {
     // Remove the identifier from `pendingNodes`.
     pendingNodes.remove(node.identifier)
 
-    Log.debug("adding node \(node.name!) (\(node.identifier))")
+    logi("adding node \(node.name!) (\(node.identifier))")
 
   }
 
@@ -85,7 +85,7 @@ final class MIDINodeManager {
 
         let identifier = eventIdentifier.nodeIdentifier
 
-        Log.debug(", ".join("placing node with identifier \(identifier)",
+        logi(", ".join("placing node with identifier \(identifier)",
           "trajectory \(trajectory)",
           "generator \(generator)"))
 
@@ -110,7 +110,7 @@ final class MIDINodeManager {
 
         let identifier = eventIdentifier.nodeIdentifier
 
-        Log.debug("removing node with identifier \(identifier)")
+        logi("removing node with identifier \(identifier)")
 
         guard let idx = nodes.index(where: {$0.reference?.identifier == identifier}),
               let node = nodes[idx].reference else
@@ -121,7 +121,7 @@ final class MIDINodeManager {
         do {
           try remove(node: node)
         } catch {
-          Log.error(error)
+          loge("\(error)")
         }
 
         MIDINodePlayer.remove(node: node)
@@ -148,7 +148,7 @@ final class MIDINodeManager {
         throw MIDINodeDispatchError.nodeNotFound
     }
 
-    Log.debug("removing node \(node.name!) \(node.identifier)")
+    logi("removing node \(node.name!) \(node.identifier)")
 
     //TODO: make sure disabling the line below doesn't lead to hanging notes.
 //    node.sendNoteOff()

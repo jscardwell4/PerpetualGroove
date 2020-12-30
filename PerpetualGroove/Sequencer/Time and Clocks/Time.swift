@@ -249,7 +249,7 @@ final class Time: Named, CustomStringConvertible, Hashable {
 
       // Initialize the time's input port setting the callback to `read(_:context:)`.
       try MIDIInputPortCreateWithBlock(client, "Input" as CFString, &inPort,
-                                       weakMethod(self, Time.read))
+                                       weakCapture(of: self, block:Time.read))
         ➤ "Failed to create input port."
 
       // Connect the clock source to the time's input port.
@@ -259,7 +259,7 @@ final class Time: Named, CustomStringConvertible, Hashable {
     } catch {
 
       // Just log the error.
-      Log.error(error)
+      loge("\(error)")
 
     }
 
@@ -321,7 +321,7 @@ final class Time: Named, CustomStringConvertible, Hashable {
     } catch {
 
       // Just log the error.
-      Log.error(error)
+      loge("\(error)")
       
     }
     

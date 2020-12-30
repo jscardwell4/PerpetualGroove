@@ -95,7 +95,7 @@ final class MIDINode: SKSpriteNode {
 
     } catch {
 
-      Log.error(error)
+      loge("\(error)")
 
     }
 
@@ -111,7 +111,7 @@ final class MIDINode: SKSpriteNode {
 
     } catch {
 
-      Log.error(error)
+      loge("\(error)")
       fatalError("Failed to send the 'note off' event through `generator`.")
 
     }
@@ -140,7 +140,7 @@ final class MIDINode: SKSpriteNode {
       fatalError("Internal inconsistency, should not already have jogging flag set.")
     }
 
-    Log.debug("position: \(position); path: \(path)")
+    logi("position: \(position); path: \(path)")
 
     isJogging = true
     removeAllActions()
@@ -154,7 +154,7 @@ final class MIDINode: SKSpriteNode {
 
     guard let time = notification.jogTime else { fatalError("notification does not contain ticks") }
 
-    Log.debug("time: \(time)")
+    logi("time: \(time)")
 
     switch time {
 
@@ -189,7 +189,7 @@ final class MIDINode: SKSpriteNode {
   private func didEndJogging(_ notification: Notification) {
 
     guard isJogging else {
-      Log.error("Internal inconsistency, should have jogging flag set."); return
+      loge("Internal inconsistency, should have jogging flag set."); return
     }
 
     isJogging = false
@@ -220,7 +220,7 @@ final class MIDINode: SKSpriteNode {
     // Check that the node is paused; otherwise, it should already be moving.
     guard isStationary else { return }
 
-    Log.debug("unpausing")
+    logi("unpausing")
 
     // Update state and begin moving.
     isStationary = false
@@ -234,7 +234,7 @@ final class MIDINode: SKSpriteNode {
     // Check that the node is not already paused.
     guard !isStationary else { return }
 
-    Log.debug("pausing")
+    logi("pausing")
 
     // Update state and stop moving.
     isStationary = true
@@ -294,17 +294,17 @@ final class MIDINode: SKSpriteNode {
 
     // Register receptionist for transport notifications.
     receptionist.observe(name: .didBeginJogging, from: Transport.current,
-                         callback: weakMethod(self, MIDINode.didBeginJogging))
+                         callback: weakCapture(of: self, block:MIDINode.didBeginJogging))
     receptionist.observe(name: .didJog, from: Transport.current,
-                         callback: weakMethod(self, MIDINode.didJog))
+                         callback: weakCapture(of: self, block:MIDINode.didJog))
     receptionist.observe(name: .didEndJogging, from: Transport.current,
-                         callback: weakMethod(self, MIDINode.didEndJogging))
+                         callback: weakCapture(of: self, block:MIDINode.didEndJogging))
     receptionist.observe(name: .didStart, from: Transport.current,
-                         callback: weakMethod(self, MIDINode.didStart))
+                         callback: weakCapture(of: self, block:MIDINode.didStart))
     receptionist.observe(name: .didPause, from: Transport.current,
-                         callback: weakMethod(self, MIDINode.didPause))
+                         callback: weakCapture(of: self, block:MIDINode.didPause))
     receptionist.observe(name: .didReset, from: Transport.current,
-                         callback: weakMethod(self, MIDINode.didReset))
+                         callback: weakCapture(of: self, block:MIDINode.didReset))
 
     // Create midi client and source.
     try MIDIClientCreateWithBlock(name as CFString, &client, nil) ➤ "Failed to create midi client."
@@ -337,13 +337,13 @@ final class MIDINode: SKSpriteNode {
 
     do {
 
-      Log.debug("disposing of MIDI client and end point")
+      logi("disposing of MIDI client and end point")
       try MIDIEndpointDispose(endPoint) ➤ "Failed to dispose of end point"
       try MIDIClientDispose(client) ➤ "Failed to dispose of midi client"
 
     } catch {
 
-      Log.error(error)
+      loge("\(error)")
 
     }
 
@@ -527,7 +527,7 @@ final class MIDINode: SKSpriteNode {
       // Check that the time does not predate the path's start time.
       guard time >= startTime else { return nil }
 
-      if let index = segments.index(where: { $0.timeInterval.contains(time) }) {
+      if let index = segments.firstIndex(where: { $0.timeInterval.contains(time) }) {
         return index
       }
 
@@ -563,13 +563,13 @@ final class MIDINode: SKSpriteNode {
              (bounds.maxX, _):
           // Touched a horizontal boundary.
 
-          velocity.dx = velocity.dx.negated()
+          velocity.dx = -velocity.dx
 
         case (_, bounds.minY),
              (_, bounds.maxY):
           // Touched a vertical boundary.
 
-          velocity.dy = velocity.dy.negated()
+          velocity.dy = -velocity.dy
 
         default:
           fatalError("next location should contact an edge of the player")
@@ -805,7 +805,7 @@ final class MIDINode: SKSpriteNode {
   struct Trajectory: Hashable, ByteArrayConvertible, LosslessJSONValueConvertible, CustomStringConvertible {
 
     /// The constant used to adjust the velocity units when calculating times
-    static let modifier: Ratio = 1∶1000
+    static let modifier: Fraction = 1÷1000
 
     /// The slope of the trajectory (`dy` / `dx`)
     var slope: CGFloat { return velocity.dy / velocity.dx }
@@ -890,7 +890,7 @@ final class MIDINode: SKSpriteNode {
     /// Elapsed time in seconds between the specified points
     func time(from p1: CGPoint, to p2: CGPoint) -> TimeInterval {
 
-      let result = abs(TimeInterval(p1.distanceTo(p2) / slope)) * TimeInterval(Trajectory.modifier.fraction)
+      let result = abs(TimeInterval(p1.distanceTo(p2) / slope)) * TimeInterval(Trajectory.modifier)
 
       guard result.isFinite else { fatalError("Invalid time: \(result)") }
 
@@ -904,9 +904,11 @@ final class MIDINode: SKSpriteNode {
     /// Trajectory value for representing a 'null' or 'invalid' trajectory
     static var null: Trajectory { return Trajectory(velocity: CGVector.zero, position: CGPoint.null) }
 
-    /// Exclusive-or of the four float values in `velocity` and `position`.
-    var hashValue: Int {
-      return velocity.dx.hashValue ^ velocity.dy.hashValue ^ position.x.hashValue ^ position.y.hashValue
+    func hash(into hasher: inout Hasher) {
+      velocity.dx.hash(into: &hasher)
+      velocity.dy.hash(into: &hasher)
+      position.x.hash(into: &hasher)
+      position.y.hash(into: &hasher)
     }
 
     /// Returns `true` iff the two trajectories have equal `velocity` and `position` values.
@@ -915,15 +917,15 @@ final class MIDINode: SKSpriteNode {
     }
 
     /// The array of ascii character bytes as described in `init(_ bytes:)`.
-    var bytes: [Byte] {
-      return Array("{\(NSStringFromCGPoint(position)), \(NSStringFromCGVector(velocity))}".utf8)
+    var bytes: [UInt8] {
+      return Array("{\(NSCoder.string(for: position)), \(NSCoder.string(for: velocity))}".utf8)
     }
 
     /// Initializing with an array of bytes. The bytes should decode into ascii character '{', followed by
     /// ascii characters for the string representation of `position`, followed by ascii characters ', ',
     /// followed by the string representation of `velocity`, and ending with ascii character '}'. The string
     /// representations are as returned by `NSStringFromCGPoint` and `NSStringFromCGVector` respectively.
-    init(_ bytes: [Byte]) {
+    init(_ bytes: [UInt8]) {
 
       let string = String(bytes)
 
@@ -939,8 +941,8 @@ final class MIDINode: SKSpriteNode {
         return
       }
 
-      guard let position = CGPoint(positionCapture.string),
-            let velocity = CGVector(velocityCapture.string)
+      guard let position = CGPoint(String(positionCapture.substring)),
+            let velocity = CGVector(String(velocityCapture.substring))
         else
       {
         self = .null

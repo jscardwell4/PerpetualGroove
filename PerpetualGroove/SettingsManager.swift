@@ -94,7 +94,7 @@ final class SettingsManager: NotificationDispatching {
   private(set) static var isInitialized = false {
     didSet {
       guard isInitialized else { return }
-      Log.debug("Settings initialized with cached values:\n\(settingsCache.prettyDescription)")
+      logi("Settings initialized with cached values:\n\(settingsCache.prettyDescription)")
       postNotification(name: .didInitializeSettings, object: self)
     }
   }
@@ -117,18 +117,18 @@ final class SettingsManager: NotificationDispatching {
 
     // Check that at least one setting value has changed.
     guard changedSettings.count > 0 else {
-      Log.debug("no changes detected")
+      logi("no changes detected")
       return
     }
 
-    Log.debug("changed settings: \(changedSettings.map({$0.rawValue}))")
+    logi("changed settings: \(changedSettings.map({$0.rawValue}))")
 
     // Update the cached value and post a notification for each setting that has changed.
     for setting in changedSettings {
 
       settingsCache[setting] = setting.value
 
-      Log.debug("posting notification for setting '\(setting.rawValue)'")
+      logi("posting notification for setting '\(setting.rawValue)'")
 
       postNotification(name: setting.notificationName, object: self)
 
@@ -171,7 +171,7 @@ final class SettingsManager: NotificationDispatching {
     {
       _ in
 
-      Log.debug("observed notification that user defaults have changed")
+      logi("observed notification that user defaults have changed")
       SettingsManager.updateCache()
     }
 

@@ -52,7 +52,7 @@ final class DocumentManager: NotificationDispatching {
   /// or metadata items are being gathered.
   private static var state: State = [] {
     didSet {
-      Log.debug("\(oldValue) ➞ \(state)")
+      logi("\(oldValue) ➞ \(state)")
 
       // Check that the `openingDocument` flag has changed.
       guard state ∆ oldValue ∋ .openingDocument else { return }
@@ -88,7 +88,7 @@ final class DocumentManager: NotificationDispatching {
 
       queue.async {
 
-        Log.debug("currentDocument: \(_currentDocument == nil ? "nil" : _currentDocument!.localizedName)")
+        logi("currentDocument: \(_currentDocument == nil ? "nil" : _currentDocument!.localizedName)")
 
         guard oldValue != _currentDocument else { return }
 
@@ -97,7 +97,7 @@ final class DocumentManager: NotificationDispatching {
         if let oldValue = oldValue {
           // Stop observing and close the old document
 
-          Log.debug("closing document '\(oldValue.localizedName)'")
+          logi("closing document '\(oldValue.localizedName)'")
 
           observer.stopObserving(object: oldValue, forChangesTo: keyPath)
 
@@ -115,7 +115,7 @@ final class DocumentManager: NotificationDispatching {
               fatalError("Expected object to be of type `Document`.")
             }
 
-            Log.debug("observed change to file URL of current document")
+            logi("observed change to file URL of current document")
 
             document.storageLocation.currentDocument = document
 
@@ -188,7 +188,7 @@ final class DocumentManager: NotificationDispatching {
           do {
             try directoryMonitor.startMonitoring()
           } catch {
-            Log.error(error)
+            loge("\(error)")
             fatalError("Failed to begin monitoring local directory")
           }
 
@@ -208,7 +208,7 @@ final class DocumentManager: NotificationDispatching {
   /// Handler for changes to the preferred storage location.
   private static func didChangeStorage(_ notification: Notification) {
 
-    Log.debug("observed notification of iCloud storage setting change")
+    logi("observed notification of iCloud storage setting change")
 
     guard preferredStorageLocation != activeStorageLocation else { return }
 
@@ -243,7 +243,7 @@ final class DocumentManager: NotificationDispatching {
 
     } catch {
 
-      Log.error(error)
+      loge("\(error)")
       fatalError("Failed to initialize monitor for local directory.")
 
     }
@@ -274,10 +274,10 @@ final class DocumentManager: NotificationDispatching {
   /// Handler for metadata query notifications. Runs on `metadataQuery.operationQueue`.
   private static func didGatherMetadataItems(_ notification: Notification) {
 
-    Log.debug("observed notification metadata query has finished gathering")
+    logi("observed notification metadata query has finished gathering")
 
     guard state ∋ .gatheringMetadataItems else {
-      Log.warning("received gathering notification but state does not contain gathering flag")
+      logw("received gathering notification but state does not contain gathering flag")
       return
     }
 
@@ -292,7 +292,7 @@ final class DocumentManager: NotificationDispatching {
   /// Callback for `NSMetadataQueryDidUpdateNotification`
   private static func didUpdateMetadataItems(_ notification: Notification) {
 
-    Log.debug("observed metadata query update notification")
+    logi("observed metadata query update notification")
 
     var itemsDidChange = false
 
@@ -330,7 +330,7 @@ final class DocumentManager: NotificationDispatching {
   /// Handler for callbacks invoked by `directoryMonitor`.
   static private func didUpdateLocalItems(added: [FileWrapper], removed: [FileWrapper]) {
 
-    Log.debug("updating local items from directory '\(directoryMonitor.directoryWrapper.filename ?? "nil")")
+    logi("updating local items from directory '\(directoryMonitor.directoryWrapper.filename ?? "nil")")
 
     // Check we actually have some kind of change.
     guard !(added.isEmpty && removed.isEmpty) else { return }
@@ -369,17 +369,17 @@ final class DocumentManager: NotificationDispatching {
 
     defer { updateNotificationItems = items }
 
-    Log.debug("items: \(items.map(({$0.name})))")
+    logi("items: \(items.map(({$0.name})))")
 
     guard updateNotificationItems != items else {
-      Log.debug("no change…")
+      logi("no change…")
       return
     }
 
     let removed = updateNotificationItems ∖ items
     let added = items ∖ updateNotificationItems
 
-    Log.debug({
+    logi({
       guard removed.count + added.count > 0 else { return "" }
       var string = ""
       if removed.count > 0 { string += "removed: \(removed)" }
@@ -395,7 +395,7 @@ final class DocumentManager: NotificationDispatching {
 
     guard userInfo.count > 0 else { return }
 
-    Log.debug("posting 'didUpdateItems'")
+    logi("posting 'didUpdateItems'")
 
     dispatchToMain {
 
@@ -421,7 +421,7 @@ final class DocumentManager: NotificationDispatching {
 
       guard let fileURL = activeStorageLocation.root + "\(name).groove" else { return }
 
-      Log.debug("creating a new document at path '\(fileURL.path)'")
+      logi("creating a new document at path '\(fileURL.path)'")
 
       let document = Document(fileURL: fileURL)
 
@@ -474,9 +474,9 @@ final class DocumentManager: NotificationDispatching {
   private static func _open(document: Document) {
 
     // Check that a document is not already in the process of being opened.
-    guard state ∌ .openingDocument else { Log.warning("already opening a document"); return }
+    guard state ∌ .openingDocument else { logw("already opening a document"); return }
 
-    Log.debug("opening document '\(document.fileURL.path)'")
+    logi("opening document '\(document.fileURL.path)'")
 
     // Update flag.
     state ∆= .openingDocument
@@ -485,10 +485,10 @@ final class DocumentManager: NotificationDispatching {
     document.open {
       success in
 
-      guard success else { Log.error("failed to open document: \(document)"); return }
+      guard success else { loge("failed to open document: \(document)"); return }
 
       guard state ∋ .openingDocument else {
-        Log.error("internal inconsistency, expected state to contain `openingDocument`")
+        loge("internal inconsistency, expected state to contain `openingDocument`")
         return
       }
 
@@ -525,7 +525,7 @@ final class DocumentManager: NotificationDispatching {
                                         fromBookmarkData: data)?.localizedName
       else
     {
-      Log.warning("Unable to retrieve localized name from bookmark data, ignoring open request…")
+      logw("Unable to retrieve localized name from bookmark data, ignoring open request…")
       throw Error.invalidBookmarkData
     }
 
@@ -536,11 +536,11 @@ final class DocumentManager: NotificationDispatching {
                             bookmarkDataIsStale: &isStale)
       else
     {
-      Log.warning("Unable to resolve bookmark data")
+      logw("Unable to resolve bookmark data")
       throw Error.invalidBookmarkData
     }
 
-    Log.debug("resolved bookmark data for '\(name)'")
+    logi("resolved bookmark data for '\(name)'")
 
     return (document: Document(fileURL: url), isStale: isStale)
 
@@ -556,7 +556,7 @@ final class DocumentManager: NotificationDispatching {
       // Does this create race condition with closing of file?
       if currentDocument?.fileURL.isEqualToFileURL(itemURL) == true { currentDocument = nil }
 
-      Log.debug("removing item '\(item.name)'")
+      logi("removing item '\(item.name)'")
 
       let coordinator = NSFileCoordinator(filePresenter: nil)
 
@@ -570,7 +570,7 @@ final class DocumentManager: NotificationDispatching {
         } catch {
 
           // Simply log the error since we cannot throw.
-          Log.error(error)
+          loge("\(error)")
 
         }
 
@@ -661,7 +661,7 @@ final class DocumentManager: NotificationDispatching {
 
         } catch {
 
-          Log.error(error)
+          loge("\(error)")
           setting.value = nil
 
           return nil

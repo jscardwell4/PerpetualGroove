@@ -250,17 +250,17 @@ struct BarBeatTime {
 
     // Intialize the beat fraction with the specified value converted to the base specified
     // in `units`.
-    self.beatFraction = beatFraction.fractionWithBase(UInt128(units.beatsPerBar))
+    self.beatFraction = beatFraction.rebased(UInt128(units.beatsPerBar))
 
     // Initialize the unit beat.
-    beatUnit = 1╱UInt128(units.beatsPerBar)
+    beatUnit = 1÷UInt128(units.beatsPerBar)
 
     // Initialize the subbeat fraction with the specified value converted to the base 
     // specified in `units`.
-    self.subbeatFraction = subbeatFraction.fractionWithBase(UInt128(units.subbeatDivisor))
+    self.subbeatFraction = subbeatFraction.rebased(UInt128(units.subbeatDivisor))
 
     // Initialize the unit subbeat.
-    subbeatUnit = 1╱UInt128(units.subbeatDivisor)
+    subbeatUnit = 1÷UInt128(units.subbeatDivisor)
 
     // Initialize the negativity flag.
     self.isNegative = isNegative
@@ -312,28 +312,22 @@ struct BarBeatTime {
     // Carry over subbeats to beat if the subbeat fraction is improper.
     if !subbeatFraction.isProper {
 
-      // Get the integer and fractional parts of the subbeat fraction.
-      let (integer, fractional) = subbeatFraction.parts
-
       // Add the integer part to the beat fraction.
-      beatFraction.add(integer╱1 * beatUnit)
+      beatFraction += subbeatFraction.integerPart * beatUnit
 
       // Update the subbeat fraction.
-      subbeatFraction = fractional
+      subbeatFraction = subbeatFraction.fractionalPart
 
     }
 
     // Carry over the beats to bar if the beat fraction is improper.
     if beatFraction.isImproper {
 
-      // Get the integer and fractional parts of the beat fraction.
-      let (integer, fractional) = beatFraction.parts
-
       // Add the integer part to the bar.
-      bar += UInt(integer)
+      bar += UInt(beatFraction.integerPart.numerator.low)
 
       // Update the beat fraction.
-      beatFraction = fractional
+      beatFraction = beatFraction.fractionalPart
 
     }
 
@@ -466,7 +460,7 @@ struct BarBeatTime {
   var display: String {
 
     // Get the zero-padded string value of `bar + 1`.
-    let barString = String(bar + 1, radix: 10, pad: 3)
+    let barString = String(bar + 1, radix: 10, minCount: 3)
 
     // Get the string value of `beat + 1`.
     let beatString = String(beat + 1)
@@ -475,7 +469,7 @@ struct BarBeatTime {
     let pad = String(subbeatDivisor).utf8.count
 
     // Get the zero-padded string value of `subbeat + 1`.
-    let subbeatString = String(subbeat + 1, radix: 10, pad: pad)
+    let subbeatString = String(subbeat + 1, radix: 10, minCount: pad)
 
     // Put it all together
     let result = "\(barString):\(beatString).\(subbeatString)"
@@ -514,12 +508,6 @@ extension BarBeatTime: LosslessStringConvertible {
 
   /// Initializes via `init?(rawValue:)`.
   init?(_ description: String) { self.init(rawValue: description) }
-
-}
-
-extension BarBeatTime: CustomPlaygroundQuickLookable {
-
-  var customPlaygroundQuickLook: PlaygroundQuickLook { return .text(display) }
 
 }
 
@@ -575,9 +563,9 @@ extension BarBeatTime: RawRepresentable, LosslessJSONValueConvertible {
     // Match the specified string, retrieving the non-optional groups matched text
     // converted to unsigned integers.
     guard let match = re.firstMatch(in: rawValue),
-              let barString = match["bar"]?.string,
-              let beatString = match["beat"]?.string,
-              let subbeatString = match["subbeat"]?.string,
+              let barString = match["bar"]?.substring,
+              let beatString = match["beat"]?.substring,
+              let subbeatString = match["subbeat"]?.substring,
               let bar = UInt(barString),
               let beat = UInt(beatString),
               let subbeat = UInt(subbeatString) else { return nil }
@@ -586,21 +574,21 @@ extension BarBeatTime: RawRepresentable, LosslessJSONValueConvertible {
     var units = Units()
 
     // Update units if the beats per bar is specifed in the raw value.
-    if let beatsPerBarString = match["beatsPerBar"]?.string,
+    if let beatsPerBarString = match["beatsPerBar"]?.substring,
        let beatsPerBarUInt = UInt(beatsPerBarString)
     {
       units.beatsPerBar = beatsPerBarUInt
     }
 
     // Update units if the subbeat divisor is specified in the raw value.
-    if let subbeatDivisorString = match["subbeatDivisor"]?.string,
+    if let subbeatDivisorString = match["subbeatDivisor"]?.substring,
       let subbeatDivisorUInt = UInt(subbeatDivisorString)
     {
       units.subbeatDivisor = subbeatDivisorUInt
     }
 
     // Update units if the beats per minute is specified in the raw value.
-    if let beatsPerMinuteString = match["beatsPerMinute"]?.string,
+    if let beatsPerMinuteString = match["beatsPerMinute"]?.substring,
        let beatsPerMinuteUInt = UInt(beatsPerMinuteString)
     {
       units.beatsPerMinute = beatsPerMinuteUInt
@@ -647,9 +635,9 @@ extension BarBeatTime: SignedInteger {
 
   /// Initializing with builtin max integer value. Initializes via `init(_:)` with `value`
   /// converted to `IntMax`.
-  init(_builtinIntegerLiteral value: _MaxBuiltinIntegerType) {
-    self.init(IntMax(_builtinIntegerLiteral: value))
-  }
+//  init(_builtinIntegerLiteral value: Int) {
+//    self.init(Int(_builtinIntegerLiteral: value))
+//  }
 
   /// Returns `value` negated.
   static prefix func -(value: BarBeatTime) -> BarBeatTime { return value.negated }
@@ -668,16 +656,16 @@ extension BarBeatTime: SignedInteger {
   /// number of ticks, initialzing the time via `init(tickValue:units:isNegative:)` using
   /// the absolute value of `value`, the default units, and a boolean value that properly
   /// propagates the sign of `value`.
-  init(_ value: IntMax) {
+  init(_ value: Int) {
     self = BarBeatTime(tickValue: MIDITimeStamp(abs(value)), isNegative: value < 0)
   }
 
   /// Returns the time represented as a total number of MIDI clock ticks. The result 
   /// is signed according to whether the time represents a negative value.
-  func toIntMax() -> IntMax {
+  func toInt() -> Int {
 
     // Convert the time's ticks to `IntMax`.
-    let ticks = IntMax(self.ticks)
+    let ticks = Int(self.ticks)
 
     // Return `ticks` negating when the time represents a negative value.
     return isNegative ? -ticks : ticks

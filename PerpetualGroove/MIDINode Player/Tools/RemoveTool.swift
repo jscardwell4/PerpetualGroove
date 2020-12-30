@@ -162,9 +162,9 @@ final class RemoveTool: Tool {
 
     guard let dispatch = MIDINodePlayer.currentDispatch else { return }
 
-    let dispatchNodes = dispatch.nodeManager.nodes.flatMap({$0.reference})
+    let dispatchNodes = dispatch.nodeManager.nodes.compactMap({$0.reference})
 
-    let (foregroundNodes, backgroundNodes) = player.midiNodes.flatMap({$0}).bisect {
+    let (foregroundNodes, backgroundNodes) = player.midiNodes.compactMap({$0}).bisect {
       dispatchNodes.contains($0)
     }
 
@@ -186,11 +186,11 @@ final class RemoveTool: Tool {
 
     // Register for notifications from `MIDINodePlayer`.
     receptionist.observe(name: .willChangeDispatch, from: MIDINodePlayer.self,
-                         callback: weakMethod(self, RemoveTool.willChangeDispatch))
+                         callback: weakCapture(of: self, block: RemoveTool.willChangeDispatch))
     receptionist.observe(name: .didChangeDispatch, from: MIDINodePlayer.self,
-                         callback: weakMethod(self, RemoveTool.didChangeDispatch))
+                         callback: weakCapture(of: self, block: RemoveTool.didChangeDispatch))
     receptionist.observe(name: .didAddNode, from: MIDINodePlayer.self,
-                         callback: weakMethod(self, RemoveTool.didAddNode))
+                         callback: weakCapture(of: self, block: RemoveTool.didAddNode))
 
   }
 
@@ -225,7 +225,7 @@ final class RemoveTool: Tool {
       let remove = deleteFromTrack ? MIDINodeManager.delete : MIDINodeManager.remove
 
       // Iterate the nodes to remove performing the determined action, fading out and removing the node.
-      for node in nodesToRemove.flatMap({$0.reference}) {
+      for node in nodesToRemove.compactMap({$0.reference}) {
 
         try remove(manager)(node)
         node.fadeOut(remove: true)
@@ -234,7 +234,7 @@ final class RemoveTool: Tool {
 
     } catch {
 
-      Log.error(error)
+      loge("\(error)")
 
     }
 
@@ -250,7 +250,7 @@ final class RemoveTool: Tool {
     guard let dispatchNodes = MIDINodePlayer.currentDispatch?.nodes else { return [] }
 
     // Get the identifiers for all the midi nodes located at `point`.
-    let identifiers = Set(player.nodes(at: point).flatMap({($0 as? MIDINode)?.identifier}))
+    let identifiers = Set(player.nodes(at: point).compactMap({($0 as? MIDINode)?.identifier}))
 
     // Return all the midi nodes whose identifier is an element of `identifiers`.
     return dispatchNodes.filter { return $0.identifier ∈ identifiers }

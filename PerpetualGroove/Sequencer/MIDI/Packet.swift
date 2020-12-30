@@ -148,12 +148,16 @@ struct Packet: CustomStringConvertible {
   }
 
   var description: String { 
-    return "; ".join(
-      "{status: \(status)", 
-      "channel: \(channel)", 
+
+    // Return a list of property values separated with '; ' and wrapped by curly brackets.
+    return [
+      "{status: \(status)",
+      "channel: \(channel)",
       "note: \(note)",
-      "velocity: \(velocity)", 
+      "velocity: \(velocity)",
       "identifier: \(identifier)}"
-      )
+      ].joined(separator: "; ")
+
   }
+
 }

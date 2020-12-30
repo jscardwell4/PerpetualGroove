@@ -67,7 +67,7 @@
 		C201B2B51B02EE8600983F73 /* ChameleonDemo.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ChameleonDemo.xcodeproj; path = ../ChameleonDemo/ChameleonDemo.xcodeproj; sourceTree = "<group>"; };
 		C202DA161B03919C007ADD80 /* Chameleon.FlatColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chameleon.FlatColor.swift; sourceTree = "<group>"; };
 		C202DA1A1B03922E007ADD80 /* Chameleon.CSSColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chameleon.CSSColor.swift; sourceTree = "<group>"; };
-		C22FE8DC1B0428EC0052749C /* Conversions.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Conversions.playground; sourceTree = "<group>"; };
+		C22FE8DC1B0428EC0052749C /* Conversions.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Conversions.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		C27814001B05BCBE0075E848 /* Chameleon.KelleyColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chameleon.KelleyColor.swift; sourceTree = "<group>"; };
 		C2878DEE1B0252EB004ECFF2 /* SchemeEditor.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SchemeEditor.xib; sourceTree = "<group>"; };
 		C2878DF01B02533A004ECFF2 /* SchemeEditor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemeEditor.swift; sourceTree = "<group>"; };
@@ -78,7 +78,7 @@
 		C29649DA1B01111E000C2D4A /* Chameleon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chameleon.swift; sourceTree = "<group>"; };
 		C29649DC1B018A53000C2D4A /* UIViewController+Chameleon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+Chameleon.swift"; sourceTree = "<group>"; };
 		C29649DE1B018A8F000C2D4A /* UIColor+Chameleon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Chameleon.swift"; sourceTree = "<group>"; };
-		C29649E01B019728000C2D4A /* FlatColors.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = FlatColors.playground; sourceTree = "<group>"; };
+		C29649E01B019728000C2D4A /* FlatColors.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = FlatColors.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		C297BA401B0534E10087E8BD /* Chameleon.DarculaColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chameleon.DarculaColor.swift; sourceTree = "<group>"; };
 		C297BA411B0534E10087E8BD /* Chameleon.QuietLightColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chameleon.QuietLightColor.swift; sourceTree = "<group>"; };
 		C2BCE5811B03AC4400DDD41E /* CSSColors.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = CSSColors.playground; sourceTree = "<group>"; };
@@ -260,6 +260,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);

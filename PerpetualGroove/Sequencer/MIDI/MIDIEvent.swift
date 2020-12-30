@@ -9,154 +9,428 @@
 import Foundation
 import MoonKit
 
-// TODO: Review file
+// TODO: Review the use of `time` and `delta` properties within the file.
 
 
-/// Common properties of the base MIDI event types.
+/// A protocol with properties common to all types representing a MIDI event.
 private protocol _MIDIEvent: CustomStringConvertible {
+
+  /// The event's tick offset expressed in bar-beat time.
   var time: BarBeatTime { get set }
+
+  /// The event's tick offset.
   var delta: UInt64? { get set }
+
+  /// The MIDI event expressed in raw bytes.
   var bytes: [UInt8] { get }
+
 }
 
-/// A type-erased midi event.
+/// An enumeration of MIDI event types.
 enum MIDIEvent: Hashable, CustomStringConvertible {
 
-  /// Holds one of the meta events
+  /// The `MIDIEvent` wraps a `MetaEvent` instance.
   case meta (MetaEvent)
 
-  /// Holds one of th channel events.
+  /// The `MIDIEvent` wraps a `ChannelEvent` instance.
   case channel (ChannelEvent)
 
-  /// Holds one of the MIDI node events.
+  /// The `MIDIEvent` wraps a `MIDINodeEvent` instance.
   case node (MIDINodeEvent)
 
-  /// The base midi event.
+  /// The wrapped MIDI event upcast to `_MIDIEvent`.
   private var baseEvent: _MIDIEvent {
+
+    // Consider the MIDI event.
     switch self {
-      case .meta(let event):    return event
-      case .channel(let event): return event
-      case .node(let event):    return event
+      case .meta(let event):
+        // Return the wrapped `MetaEvent`.
+
+        return event
+
+      case .channel(let event):
+        // Return the wrapped `ChannelEvent`.
+
+        return event
+
+      case .node(let event):
+        // Return the wrapped `MIDINodeEvent`.
+
+        return event
+
     }
+
   }
 
-  /// Initialize with base event.
+  /// Initialize with an event.
+  /// 
+  /// - Parameter baseEvent: The MIDI event to wrap.
   private init(_ baseEvent: _MIDIEvent) {
+
+    // Consider the event to wrap.
     switch baseEvent {
-      case let event as MetaEvent:     self = .meta(event)
-      case let event as ChannelEvent:  self = .channel(event)
-      case let event as MIDINodeEvent: self = .node(event)
-      default:                         unreachable("Failed to downcast event")
+
+      case let event as MetaEvent:
+        // Wrap the `MetaEvent`.
+
+        self = .meta(event)
+
+      case let event as ChannelEvent:
+        // Wrap the `ChannelEvent`.
+
+        self = .channel(event)
+
+      case let event as MIDINodeEvent:
+        // Wrap the `MIDINodeEvent`.
+
+        self = .node(event)
+
+      default:
+        // This case is unreachable because one of the previous cases must match. This
+        // can be known because `_MIDIEvent` is a private protocol, meaning declarations
+        // of conformance appear within this file.
+
+        unreachable("Failed to downcast event")
+
     }
+
   }
 
   /// The base midi event exposed as `Any`.
   var event: Any { return baseEvent }
 
-  /// Accessors for the time associated with the base event.
+  /// The wrapped MIDI event's tick offset expressed in bar-beat time.
   var time: BarBeatTime {
-    get { return baseEvent.time }
-    set { var event = baseEvent; event.time = newValue; self = MIDIEvent(event) }
+
+    get {
+
+      // Return the bar-beat time of the wrapped MIDI event.
+      return baseEvent.time
+
+    }
+
+    set {
+
+      // Create a mutable copy of the wrapped MIDI event.
+      var event = baseEvent
+
+      // Update the MIDI event's bar-beat time.
+      event.time = newValue
+
+      // Replace `self` with a `MIDIEvent` wrapping the updated MIDI event.
+      self = MIDIEvent(event)
+
+    }
+
   }
 
-  /// Accessors for the delta associated with the base event.
+  /// The wrapped MIDI event's tick offset.
   var delta: UInt64? {
-    get { return baseEvent.delta }
-    set { var event = baseEvent; event.delta = newValue; self = MIDIEvent(event) }
+
+    get {
+
+      // Return the wrapped MIDI event's delta value.
+      return baseEvent.delta
+
+    }
+
+    set {
+
+      // Create a mutable copy of the wrapped MIDI event.
+      var event = baseEvent
+
+      // Update the MIDI event's delta value.
+      event.delta = newValue
+
+      // Replace `self` with a `MIDIEvent` wrapping the updated MIDI event.
+      self = MIDIEvent(event)
+
+    }
+
   }
 
   /// The base event encoded as an array of `UInt8` values.
   var bytes: [UInt8] { return baseEvent.bytes }
 
+  /// Returns `true` iff the two values are of the same enumeration case and the two MIDI
+  /// event values they wrap are equal.
+  ///
+  /// - Parameters:
+  ///   - lhs: One of the two `MIDIEvent` values to compare for equality.
+  ///   - rhs: The other of the two `MIDIEvent` values to compare for equality.
+  /// - Returns: `true` if the two values are equal and `false` otherwise.
   static func ==(lhs: MIDIEvent, rhs: MIDIEvent) -> Bool {
+
+    // Consider the two values.
     switch (lhs, rhs) {
-      case let (.meta(event1),    .meta(event2))    where event1 == event2: return true
-      case let (.channel(event1), .channel(event2)) where event1 == event2: return true
-      case let (.node(event1),    .node(event2))    where event1 == event2: return true
-      default:                                                              return false
+
+      case let (.meta(event1), .meta(event2))
+        where event1 == event2:
+        // `lhs` and `rhs` wrap equal `MetaEvent` values. Return `true`.
+
+        return true
+
+      case let (.channel(event1), .channel(event2))
+        where event1 == event2:
+        // `lhs` and `rhs` wrap equal `ChannelEvent` values. Return `true`.
+
+        return true
+
+      case let (.node(event1), .node(event2))
+        where event1 == event2:
+        // `lhs` and `rhs` wrap equal `MIDINodeEvent` values. Return `true`.
+
+        return true
+
+      default:
+        // `lhs` and `rhs` wrap unequal MIDI event values. Return `false`.
+
+        return false
+
     }
+
   }
 
   var hashValue: Int {
-    // Group bytes by 64 bits and xor
-    let bytesHash = bytes.segment(8).map({UInt64($0)}).reduce(UInt64(0), { $0 ^ $1 }).hashValue
+
+    // Group the MIDI event's raw bytes into `UInt64` values.
+    let byteGroups = bytes.segment(8).map(UInt64.init)
+
+    // Reduce the groups using a bitwise XOR and get the hash value.
+    let bytesHash = byteGroups.reduce(0, ^).hashValue
+
+    // Get the hash value for `delta`.
     let deltaHash = delta?.hashValue ?? 0
-    let timeHash = time.totalBeats.hashValue
+
+    // Get the hash value for `time`.
+    let timeHash = time.hashValue
+
+    // Return the result of combining the three hash values using a bitwise XOR.
     return bytesHash ^ deltaHash ^ timeHash
+
   }
 
-  var description: String { return baseEvent.description }
+  var description: String {
 
-  /// Struct to hold data for a meta event where
-  /// event = \<delta time\> **FF** \<meta type\> \<length of meta\> \<meta\>
+    // Return the description for the wrapped MIDI event.
+    return baseEvent.description
+
+  }
+
+  /// A structure for representing a meta MIDI event. The signature of a meta MIDI event is
+  /// as follows: 
+  ///        
+  /// \<delta *(4 bytes)*\> **FF** \<type *(1 byte)*\> \<data length *(variable length
+  /// quantity)*\> \<data *(data length bytes)*\>
+  ///
+  /// - TODO: Why do we show the delta value in the description when we do not include the
+  ///         corresponding raw bytes in the derived `bytes` value?
   struct MetaEvent: _MIDIEvent, Hashable {
 
     var time: BarBeatTime
-    var data: Data
+
     var delta: UInt64?
 
+    /// The data contained by the meta MIDI event.
+    var data: Data
+
     var bytes: [UInt8] {
+
+      // Get the raw bytes for the event's data.
       let dataBytes = data.bytes
+
+      // Get the size of `dataBytes` represented as a variable length quantity.
       let dataLength = MIDIFile.VariableLengthQuantity(dataBytes.count)
-      return [0xFF, data.type] + dataLength.bytes + dataBytes
+
+      // Create an array for accumulating the event's raw bytes initialized with the byte
+      // marking the MIDI event as meta.
+      var bytes: [UInt8] = [0xFF]
+
+      // Append the byte specifying the meta event's type.
+      bytes.append(data.type)
+
+      // Append the bytes specifying the length of the event's data.
+      bytes.append(contentsOf: dataLength.bytes)
+
+      // Append the event's data bytes.
+      bytes.append(contentsOf: dataBytes)
+
+      // Return the collected bytes.
+      return bytes
+
     }
 
-    ///Initializer that takes the event's data and, optionally, the event's time
-    init(data: Data, time: BarBeatTime = .zero) { self.data = data; self.time = time }
+    /// Initializing with data and a bar-beat time.
+    ///
+    /// - Parameters:
+    ///   - data: The meta MIDI event data that will be held by the new `MetaEvent`.
+    ///   - time: The tick offset for the new `MetaEvent` expressed as a bar-beat time.
+    ///           The default value for this parameter is `zero`.
+    init(data: Data, time: BarBeatTime = .zero) {
 
+      // Initialize `data` with the specified data.
+      self.data = data
+
+      // Initialize `time` with the specified bar-beat time.
+      self.time = time
+
+    }
+
+    /// Initializing with a tick offset and a slice of data.
+    ///
+    /// - Parameters:
+    ///   - delta: The tick offset for the new `MetaEvent`.
+    ///   - data: The slice of raw bytes used to initialize `data` for the new `MetaEvent`.
+    ///
+    /// - Throws: `MIDIFile.Error.invalidLength` when `data.count < 3` or the byte count
+    ///           specified within `data` does not correspond with the actual bytes, 
+    ///           `MIDIFile.Error.invalidHeader` when the first byte does not equal `0xFF`,
+    ///           Any error encountered initializing the `data` property with the specified
+    ///           data bytes.
     init(delta: UInt64, data: Foundation.Data.SubSequence) throws {
 
+      // Initialize `delta` with the specified tick offset.
       self.delta = delta
-      guard data.count >= 3 else { throw MIDIFile.Error.invalidLength("Not enough bytes in event") }
-      guard data[data.startIndex] == 0xFF else {
-        throw MIDIFile.Error.invalidHeader("First byte must be 0xFF")
+
+      // Check that there are at least 3 raw bytes in `data`.
+      guard data.count >= 3 else {
+
+        // Throw an invalid length error.
+        throw MIDIFile.Error.invalidLength("Not enough bytes in the data provided.")
+
       }
+
+      // Check the first byte of data.
+      guard data[data.startIndex] == 0xFF else {
+
+        // Throw an invalid header error.
+        throw MIDIFile.Error.invalidHeader("The first byte of data must equal 0xFF")
+
+      }
+
+      // Create a variable to hold the current index, beginning with the second byte.
       var currentIndex = data.startIndex + 1
 
+      // Get the byte specifying the meta MIDI event's type.
       let typeByte = data[currentIndex]
+
+      // Increment the index past the type byte.
       currentIndex += 1
 
-      var i = currentIndex
-      while data[i] & 0x80 != 0 { i += 1 }
+      // Create a variable to hold the index of the final byte of the variable length 
+      // quantity representing the expected number of bytes in the meta MIDI event's data.
+      var last7BitByte = currentIndex
 
-      let dataLength = Int(MIDIFile.VariableLengthQuantity(bytes: data[currentIndex ... i]))
-      currentIndex = i + 1
-      i += dataLength + 1
+      // Iterate through the raw bytes while the iterated byte when interpretted as a 7-bit 
+      // value followed by a flag bit has the flag bit set.
+      while data[last7BitByte] & 0x80 != 0 {
 
-      guard data.endIndex == i else {
-        throw MIDIFile.Error.invalidLength("Specified length does not match actual")
+        // Increment `last7BitByte` to check the next byte for the end of the variable
+        // length quantity.
+        last7BitByte += 1
+
       }
 
-      self.data = try Data(type: typeByte, data: data[currentIndex ..< i])
+      // Get the variable length quantity bytes that contain the expected data size.
+      let dataLengthBytes = data[currentIndex ... last7BitByte]
+
+      // Get the expected length of the meta MIDI event's data by converting a variable
+      // length quantity initialized with the determined subrange of bytes.
+      let dataLength = Int(MIDIFile.VariableLengthQuantity(bytes: dataLengthBytes))
+
+      // Set the current index to the location of the next unproccessed byte.
+      currentIndex = last7BitByte + 1
+
+      // Check that the number of bytes remaining matches the expected data length.
+      guard data.endIndex == currentIndex &+ dataLength else {
+
+        // Throw an invalid length error.
+        throw MIDIFile.Error.invalidLength("Specified length does not match actual")
+
+      }
+
+      // Initialize `data` using `typeByte` and the remaining bytes.
+      self.data = try Data(type: typeByte, data: data[currentIndex|->])
+
+      // Initialize `time` with `zero`.
       time = .zero
+
     }
     
-    /// Initializer that takes a `VariableLengthQuantity` as well as the event's data.
-    init(time: BarBeatTime, data: Data) { self.time = time; self.data = data }
+    /// Initializing with a bar-beat time and the meta MIDI event's data.
+    ///
+    /// - Parameters:
+    ///   - time: The tick offset represented as a bar-beat time for the new `MetaEvent`.
+    ///   - data: The data for the new `MetaEvent`.
+    init(time: BarBeatTime, data: Data) {
 
-    var hashValue: Int { return time.hashValue ^ data.hashValue ^ (delta?.hashValue ?? 0) }
+      // Initialize `time` with the specified bar-beat time.
+      self.time = time
 
+      // Initialize `data` with the specified data.
+      self.data = data
+
+    }
+
+    var hashValue: Int {
+
+      // Return the result of combining the hash values for `time`, `data`, and `delta`
+      // using a bitwise XOR.
+      return time.hashValue ^ data.hashValue ^ (delta?.hashValue ?? 0)
+
+    }
+
+    /// Returns `true` iff the two events have equal `time`, `delta`, and `data` values.
     static func ==(lhs: MetaEvent, rhs: MetaEvent) -> Bool {
       return lhs.time == rhs.time && lhs.delta == rhs.delta && lhs.data == rhs.data
     }
 
     var description: String { return "\(time) \(data)" }
 
-    /// Enumeration for encapsulating a type of meta event.
+    /// An enumeration encapsulating the data for a meta MIDI event representable by an
+    /// instance of `MetaEvent`.
     enum Data: Hashable, CustomStringConvertible {
-      case text (text: String)
-      case copyrightNotice (notice: String)
-      case sequenceTrackName (name: String)
-      case instrumentName (name: String)
-      case marker (name: String)
-      case deviceName (name: String)
-      case programName (name: String)
-      case endOfTrack
-      case tempo (bpm: Double)
-      case timeSignature (signature: TimeSignature, clocks: Byte, notes: Byte)
 
+      /// A string in the general sense.
+      case text (text: String)
+
+      /// A string intended to serve as a copyright notice.
+      case copyrightNotice (notice: String)
+
+      /// A string specifying the name of a sequence or track.
+      case sequenceTrackName (name: String)
+
+      /// A string specifying the name of an instrument.
+      case instrumentName (name: String)
+
+      /// A string for labeling a particular tick offset.
+      case marker (name: String)
+
+      /// A string specifying the name of a device.
+      case deviceName (name: String)
+
+      /// A string specifying the name of a program.
+      case programName (name: String)
+
+      /// Used to mark the end of a track.
+      case endOfTrack
+
+      /// A double value containing the number of beats per minute.
+      case tempo (bpm: Double)
+
+      /// The components needed for expressing the time signature: a `TimeSignature` value
+      /// which holds the numerator and denominator of the time signature as it would be 
+      /// notated, a `UInt8` specifying the number of MIDI clocks per metronome click, and
+      /// a `UInt8` specifying the number of thirty-second notes per 24 MIDI clocks.
+      case timeSignature (signature: TimeSignature, clocks: UInt8, notes: UInt8)
+
+      /// The byte that follows `FF`, when transmitting a meta MIDI event, to specify the 
+      /// type of event.
       var type: UInt8 {
+
+        // Return the byte that corresponds with the data.
         switch self {
+
           case .text:              return 0x01
           case .copyrightNotice:   return 0x02
           case .sequenceTrackName: return 0x03
@@ -167,73 +441,220 @@ enum MIDIEvent: Hashable, CustomStringConvertible {
           case .endOfTrack:        return 0x2F
           case .tempo:             return 0x51
           case .timeSignature:     return 0x58
+
         }
+
       }
 
+      /// The raw bytes of data for use in MIDI packet transmissions.
       var bytes: [UInt8] {
+
+        // Consider the data.
         switch self {
-          case let .text(text):               return text.bytes
-          case let .copyrightNotice(text):    return text.bytes
-          case let .sequenceTrackName(text):  return text.bytes
-          case let .instrumentName(text):     return text.bytes
-          case let .marker(text):             return text.bytes
-          case let .programName(text):        return text.bytes
-          case let .deviceName(text):         return text.bytes
-          case .endOfTrack:                   return []
-          case let .tempo(tempo):             return Array(UInt32(60_000_000 / tempo).bytes.dropFirst())
-          case let .timeSignature(s, n, m):   return s.bytes + [n, m]
+
+          case .text(let text),
+               .copyrightNotice(let text),
+               .sequenceTrackName(let text),
+               .instrumentName(let text),
+               .marker(let text),
+               .programName(let text),
+               .deviceName(let text):
+            // The data is composed of a single string of text. Return the string's bytes.
+
+            return text.bytes
+
+          case .endOfTrack:
+            // The data is empty. Return an empty array.
+
+            return []
+
+          case let .tempo(tempo):
+            // The data contains the number of beats per minute. Convert to the number of
+            // microseconds per MIDI quarter-note and return the three least significant
+            // bytes.
+
+            return Array(UInt32(60_000_000 / tempo).bytes.dropFirst())
+
+          case let .timeSignature(signature, clocks, notes):
+            // The data contains a structure and two bytes. Return the bytes of the 
+            // structure followed by the other two bytes.
+
+            return signature.bytes + [clocks, notes]
+
         }
+
       }
 
+      /// Initializing with the data's event type and the data's raw bytes.
+      ///
+      /// - Parameters:
+      ///   - type: The byte specifying the type of event for the new `Data` instance.
+      ///   - data: The raw byte representation for the new `Data` instance.
+      /// - Throws: `MIDIFile.Error.invalidLength` when the number of bytes in `data` is
+      ///           inconsistent with the number expected for `type`, 
+      ///           `MIDIFile.Error.unsupportedEvent` when `type` does not match the type
+      ///           value for one of the `Data` enumeration cases.
       init(type: UInt8, data: Foundation.Data.SubSequence) throws {
+
+        // Consider the type-specifying byte.
         switch type {
-          case 0x01: self = .text(text: String(data))
-          case 0x02: self = .copyrightNotice(notice: String(data))
-          case 0x03: self = .sequenceTrackName(name: String(data))
-          case 0x04: self = .instrumentName(name: String(data))
-          case 0x06: self = .marker(name: String(data))
-          case 0x08: self = .programName(name: String(data))
-          case 0x09: self = .deviceName(name: String(data))
+
+          case 0x01:
+            // The type is `text`.
+
+            self = .text(text: String(data))
+
+          case 0x02:
+            // The type is `copyrightNotice`.
+
+            self = .copyrightNotice(notice: String(data))
+
+          case 0x03:
+            // The type is `sequenceTrackName`.
+
+            self = .sequenceTrackName(name: String(data))
+
+          case 0x04:
+            // The type is `instrumentName`.
+
+            self = .instrumentName(name: String(data))
+
+          case 0x06:
+            // The type is `marker`.
+
+            self = .marker(name: String(data))
+
+          case 0x08:
+            // The type is `programName`.
+
+            self = .programName(name: String(data))
+
+          case 0x09:
+            // The type is `deviceName`.
+
+            self = .deviceName(name: String(data))
+
           case 0x2F:
-            guard data.count == 0 else {
-              throw MIDIFile.Error.invalidLength("EndOfTrack event has no data")
+            // The type is `endOfTrack`.
+
+            // Check that the specified collection of raw bytes is empty.
+            guard data.isEmpty else {
+
+              // Throw an `invalidLength` error.
+              throw MIDIFile.Error.invalidLength("An end-of-track event has no data.")
+
             }
+
             self = .endOfTrack
+
           case 0x51:
+            // The type is `tempo`.
+
+            // Check that there are 3 bytes of data.
             guard data.count == 3 else {
-              throw MIDIFile.Error.invalidLength("Tempo event data should have a 4 byte length")
+
+              // Create an error message.
+              let message = "Expected 3 bytes of data for tempo event."
+
+              // Throw an `invalidLength` error.
+              throw MIDIFile.Error.invalidLength(message)
+
             }
-            self = .tempo(bpm: Double(60_000_000 / UInt32(data)))
+
+            // Convert the three bytes specifying microseconds per quarter-note into a
+            // double specifying the beats per minute.
+            let bpm = Double(60_000_000 / UInt32(data))
+
+            self = .tempo(bpm: bpm)
+
           case 0x58:
+            // The type is `timeSignature`.
+
+            // Check that there are 4 bytes of data.
             guard data.count == 4 else {
-              throw MIDIFile.Error.invalidLength("TimeSignature event data should have a 4 byte length")
+
+              // Create an error message.
+              let message = "TimeSignature event data should have a 4 byte length"
+
+              // Throw an `invalidLength` error.
+              throw MIDIFile.Error.invalidLength(message)
+
             }
-            self = .timeSignature(signature: TimeSignature(data.prefix(2)),
-                                  clocks: data[data.startIndex + 2],
-                                  notes: data[data.startIndex + 3])
+
+            // Create a time signature with the first two bytes.
+            let signature = TimeSignature(data.prefix(2))
+
+            // The third byte holds the number of MIDI clocks per metronome click.
+            let clocks = data[data.startIndex &+ 2]
+
+            // The fourth byte holds the number of thirty-second notes per 24 MIDI clocks.
+            let notes = data[data.startIndex &+ 3]
+
+            self = .timeSignature(signature: signature, clocks: clocks, notes: notes)
+
           default:
-            throw MIDIFile.Error.unsupportedEvent("\(String(hexBytes: [type])) is not a supported meta event type")
+            // The specified type is not one of the supported meta event types.
+
+            // Create an error message.
+            let message = "\(String(hexBytes: [type])) is not a supported meta event type."
+
+            // Throw an `unsupportedEvent` error.
+            throw MIDIFile.Error.unsupportedEvent(message)
+
         }
+
       }
 
       var description: String {
+
+        // Consider the data.
         switch self {
-          case .text(let text):              return "text '\(text)'"
-          case .copyrightNotice(let text):   return "copyright '\(text)'"
-          case .sequenceTrackName(let text): return "sequence/track name '\(text)'"
-          case .instrumentName(let text):    return "instrument name '\(text)'"
-          case .marker(let text):            return "marker '\(text)'"
-          case .programName(let text):       return "program name '\(text)'"
-          case .deviceName(let text):        return "device name '\(text)'"
-          case .endOfTrack:                  return "end of track"
-          case .tempo(let bpm):              return "tempo \(bpm)"
-          case .timeSignature(let s, _ , _): return "time signature \(s.beatsPerBar)╱\(s.beatUnit)"
+
+          case .text(let text):
+            return "text '\(text)'"
+
+          case .copyrightNotice(let text):
+            return "copyright '\(text)'"
+
+          case .sequenceTrackName(let text):
+            return "sequence/track name '\(text)'"
+
+          case .instrumentName(let text):
+            return "instrument name '\(text)'"
+
+          case .marker(let text):
+            return "marker '\(text)'"
+
+          case .programName(let text):
+            return "program name '\(text)'"
+
+          case .deviceName(let text):
+            return "device name '\(text)'"
+
+          case .endOfTrack:
+            return "end of track"
+
+          case .tempo(let bpm):
+            return "tempo \(bpm)"
+
+          case .timeSignature(let signature, _ , _):
+            return "time signature \(signature.beatsPerBar)╱\(signature.beatUnit)"
+
         }
+
       }
 
       var hashValue: Int {
 
+        // Get the hash value for the data's type value.
+        let typeHash = type.hashValue
+
+        // Create a variable for the hash value of the data's actual 'data'.
+        let dataHash: Int
+
+        // Consider the data.
         switch self {
+
           case .text (let text),
                .copyrightNotice (let text),
                .sequenceTrackName (let text),
@@ -241,45 +662,78 @@ enum MIDIEvent: Hashable, CustomStringConvertible {
                .marker (let text),
                .deviceName (let text),
                .programName (let text):
-            return type.hashValue ^ text.hashValue
+            // The hash value for the data's actual 'data' is the string's hash value.
+
+            dataHash = text.hashValue
+
           case .endOfTrack:
-            return type.hashValue
+            // The data has no actual 'data' so the hash value is `0`.
+
+            dataHash = 0
+
           case .tempo (let bpm):
-            return type.hashValue ^ bpm.hashValue
+            // The hash value for the data's actual 'data' is the double's hash value.
+
+            dataHash = bpm.hashValue
+
           case .timeSignature (let signature, let clocks, let notes):
-            return type.hashValue ^ signature.hashValue ^ clocks.hashValue ^ notes.hashValue
+            // The hash value of the data's actual 'data' is the bitwise XOR of the 
+            // hash values for the `signature`, `clocks`, and `notes`.
+
+            dataHash = signature.hashValue ^ clocks.hashValue ^ notes.hashValue
+
         }
+
+        // Return the bitwise XOR of two hash values.
+        return typeHash ^ dataHash
 
       }
 
-      static func ==(lhs: MIDIEvent.MetaEvent.Data, rhs: MIDIEvent.MetaEvent.Data) -> Bool {
+      /// Returns `true` iff the two values are the same enumeration case with equal
+      /// associated values.
+      static func ==(lhs: Data, rhs: Data) -> Bool {
+
+        // Consider the two values.
         switch (lhs, rhs) {
-          case let (.text(text1), .text(text2))
-            where text1 == text2:
-            return true
-          case let (.copyrightNotice(notice1), .copyrightNotice(notice2))
-            where notice1 == notice2:
-            return true
-          case let (.sequenceTrackName(name1), .sequenceTrackName(name2))
-            where name1 == name2:
-            return true
-          case let (.instrumentName(name1), .instrumentName(name2))
-            where name1 == name2:
-            return true
+
+          case let (.text(text1), .text(text2)),
+               let (.copyrightNotice(text1), .copyrightNotice(text2)),
+               let (.sequenceTrackName(text1), .sequenceTrackName(text2)),
+               let (.instrumentName(text1), .instrumentName(text2)),
+               let (.marker(text1), .marker(text2)),
+               let (.deviceName(text1), .deviceName(text2)),
+               let (.programName(text1), .programName(text2)):
+            // The two values are of the same case with an associated string value. Return
+            // the result of evaluating the two strings for equality.
+
+          return text1 == text2
+
           case (.endOfTrack, .endOfTrack):
+            // The two values are both `endOfTrack`. Since there are no associated values
+            // to consider, return `true`.
+
             return true
-          case let (.tempo(microseconds1), .tempo(microseconds2))
-            where microseconds1 == microseconds2:
-            return true
-          case let (.timeSignature(signature1, clocks1, notes1), .timeSignature(signature2, clocks2, notes2))
-            where signature1.beatsPerBar == signature2.beatsPerBar
-               && signature1.beatUnit == signature2.beatUnit
-               && clocks1 == clocks2
-               && notes1 == notes2:
-            return true
+
+          case let (.tempo(bpm1), .tempo(bpm2)):
+            // The two values are both `tempo`. Return the result of evaluating the two
+            // double values for equality.
+
+            return bpm1 == bpm2
+
+
+          case let (.timeSignature(s1, c1, n1), .timeSignature(s2, c2, n2)):
+            // The two values are both `timeSignature`. Return the result of evaluating
+            // their associated values for equality.
+
+            return s1 == s2 && c1 == c2 && n1 == n2
+
           default:
+            // The values are not of the same enumeration case, return `false`.
+
             return false
+
         }
+
       }
 
     } // MIDIEvent.MetaEvent.Data
@@ -290,152 +744,433 @@ enum MIDIEvent: Hashable, CustomStringConvertible {
   /// event = \<delta time\> \<status\> \<data1\> \<data2\>
   struct ChannelEvent: _MIDIEvent, Hashable {
 
-    typealias Kind = Status.Kind
-
     var time: BarBeatTime
+
     var delta: UInt64?
+
+    /// Structure representing the channel event's status byte.
     var status: Status
+
+    /// The first byte of data attached to the channel event. All channel events contain at
+    /// least one byte of data.
     var data1: UInt8
+
+    /// The second byte of data attached to the channel event. Some channel events, such
+    /// as a channel event specifying a program change, have only one byte of data.
     var data2: UInt8?
 
-    var bytes: [UInt8] { return [status.value, data1] + (data2 != nil ? [data2!] : []) }
+    var bytes: [UInt8] {
 
+      // Create an array for accumulating bytes intialized with the status byte and the
+      // first byte of data.
+      var result = [status.value, data1]
+
+      // Check whether there is an additional byte of data.
+      if let data2 = data2 {
+
+        // Append the second byte of data.
+        result.append(data2)
+
+      }
+
+      // Return the array of bytes.
+      return result
+
+    }
+
+    /// Initializing with a tick offset, a bar-beat time, and the raw bytes for a channel
+    /// event.
+    ///
+    /// - Parameters:
+    ///   - delta: The tick offset for the new channel event.
+    ///   - data: The collection of `UInt8` values for a MIDI transmission of the new
+    ///           channel event.
+    ///   - time: The event offset expressed as a bar-beat time. The default is `zero`.
+    /// - Throws: `MIDIFile.Error.invalidLength` when `data` is empty or there is a mismatch
+    ///           between the number of bytes provided in `data` and the number of bytes
+    ///           expected for the kind of channel event specified by the status byte 
+    ///           obtained from `data`, any error encountered intializing a `Status` value
+    ///           with the status byte obtained from `data`.
     init(delta: UInt64,
          data: Foundation.Data.SubSequence,
          time: BarBeatTime = .zero) throws
     {
 
+      // Initialize `delta` with the specified delta value.
       self.delta = delta
 
-      guard let kind = Kind(rawValue: data[data.startIndex] >> 4) else {
-        throw MIDIFile.Error.unsupportedEvent("\(data[data.startIndex] >> 4) is not a supported channel event")
+      // Get the status byte from `data`.
+      guard let statusByte = data.first else {
+
+        // Create an error message.
+        let message = "\(#function) requires a non-empty collection of `UInt8` values."
+
+        // Throw an `invalidLength` error.
+        throw MIDIFile.Error.invalidLength(message)
+
       }
 
-      guard data.count == kind.byteCount else {
-        throw MIDIFile.Error.invalidLength("\(kind) events expect a total byte count of \(kind.byteCount)")
+      // Initialize `status` using the first byte of data.
+      status = try Status(statusByte: statusByte)
+
+      // Check the number of raw bytes against the count expected per the kind of event.
+      guard data.count == status.kind.byteCount else {
+
+        // Create an error message.
+        let message = "The number of bytes provided does not match the number expected."
+
+        // Throw an `invalidLength` error.
+        throw MIDIFile.Error.invalidLength(message)
+
       }
 
-      status = Status(kind: kind, channel: data[data.startIndex] & 0xF)
-
+      // Initialize `data1` with the second byte of the data provided.
       data1 = data[data.startIndex + 1]
-      data2 =  kind.byteCount == 3 ? data[data.startIndex + 2] : nil
 
+      // Consider the expected number of bytes.
+      switch status.kind.byteCount {
+
+        case 3:
+          // `data` is expected to contain the status byte and two data bytes.
+
+          // Initialize `data2` with the third byte of the data provided.
+          data2 = data[data.startIndex &+ 2]
+
+        default:
+          // `data` is only expected to contain the status byte and a data byte.
+
+          // Initialize `data2` with a `nil` value.
+          data2 = nil
+
+      }
+
+      // Initialize `time` with the specified bar-beat time.
       self.time = time
 
     }
 
-    init(type: Kind, channel: Byte, data1: Byte, data2: Byte? = nil, time: BarBeatTime = BarBeatTime.zero) {
+    /// Initializing with kind and channel values for a `Status` value, the data bytes, and
+    /// a bar-beat time.
+    ///
+    /// - Parameters:
+    ///   - type: The `Status.Kind` value to use when initializing the new channel event's
+    ///            `status` property.
+    ///   - channel: The channel value to use when initializing the new channel event's
+    ///              `status` property.
+    ///   - data1: The first byte of data for the new channel event.
+    ///   - data2: The optional second byte of data for the new channel event. The default
+    ///            is `nil`.
+    ///   - time: The tick offset represented as a bar-beat time. The default is `zero`.
+    /// - Throws: `MIDIFile.Error.unsupportedEvent` when the `nil` status of `data2` does
+    ///           not match the expected `nil` status as determined by the value of `type`.
+    init(type: Status.Kind,
+         channel: UInt8,
+         data1: UInt8,
+         data2: UInt8? = nil,
+         time: BarBeatTime = BarBeatTime.zero) throws
+    {
 
+      // Consider the expected bytes for specified type.
+      switch type.byteCount {
+
+        case 3 where data2 == nil:
+          // A second data byte is expected but not provided.
+
+          // Create an error message.
+          let message = "\(type) expects a second data byte but `data2` is `nil`."
+
+          // Throw an `unsupportedEvent` error.
+          throw MIDIFile.Error.unsupportedEvent(message)
+
+        case 2 where data2 != nil:
+          // A second data byte is provided but not expected.
+
+          // Create an error message.
+          let message = "\(type) expects a single data byte but `data2` is not `nil`."
+
+          // Throw an `unsupportedEvent` error.
+          throw MIDIFile.Error.unsupportedEvent(message)
+
+        default:
+          // The expected and provided bytes match.
+
+          break
+
+      }
+
+      // Initialize `status` using the specified kind and channel.
       status = Status(kind: type, channel: channel)
+
+      // Initialize `data1` with the specified byte.
       self.data1 = data1
+
+      // Initialize `data2` with the specified byte.
       self.data2 = data2
+
+      // Initialize `time` with the specified bar-beat time value.
       self.time = time
 
     }
 
     var description: String {
+
+      // Create a string with the event's time and status values.
       var result = "\(time) \(status) "
+
+      // Consider the kind of channel event.
       switch status.kind {
-        case .noteOn, .noteOff: result += "\(MIDINote(midi: data1)) \(Velocity(midi: data2!))"
-        default:                result += "\(data1)"
+
+        case .noteOn, .noteOff:
+          // The channel event is a 'note-on' or 'note-off' event.
+
+          // Append the `MIDINote` and `Velocity` values created with the event's data.
+          result += "\(MIDINote(midi: data1)) \(Velocity(midi: data2!))"
+
+        default:
+          // The channel event is not a 'note-on' or 'note-off' event.
+
+          // Append the first byte of data.
+          result += "\(data1)"
+
+          // Check if there is a second byte of data.
+          if let data2 = data2 {
+
+            // Append the second byte of data.
+            result += " \(data2)"
+          }
+
       }
+
       return result
+
     }
 
     var hashValue: Int {
+
+      // Return the bitwise XOR of hash values of the channel event's properties,
+      // substituting `0` for any `nil` property values.
       return time.hashValue
            ^ (delta?.hashValue ?? 0)
            ^ status.hashValue
            ^ data1.hashValue
            ^ (data2?.hashValue ?? 0)
+
     }
 
+    /// Returns `true` iff all property values of the two channel events are equal.
     static func ==(lhs: ChannelEvent, rhs: ChannelEvent) -> Bool {
+
+      // Return the result of evaluating the properties of the two values for equality.
       return lhs.status == rhs.status
           && lhs.data1 == rhs.data1
           && lhs.time == rhs.time
           && lhs.data2 == rhs.data2
           && lhs.delta == rhs.delta
+
     }
 
-
+    /// A structure representing a channel event's status byte.
     struct Status: Hashable, CustomStringConvertible {
 
+      /// The kind of channel event specified by the status.
       var kind: Kind
-      var channel: Byte
 
-      var value: Byte { return (kind.rawValue << 4) | channel }
+      /// The MIDI channel specified by the status.
+      var channel: UInt8
 
-      var description: String { return "\(kind) (\(channel))" }
-      var hashValue: Int { return kind.rawValue.hashValue ^ channel.hashValue }
+      /// The status byte for a MIDI transmission of a channel event with the status.
+      var value: UInt8 {
 
-      static func ==(lhs: Status, rhs: Status) -> Bool {
-        return lhs.kind == rhs.kind && lhs.channel == rhs.channel
+        // Return a `UInt8` value whose four most significant bits are obtained from the
+        // raw value for `kind` and whose four least significant bits are obtained from 
+        // the value of `channel`.
+        return (kind.rawValue << 4) | channel
+
       }
 
-      enum Kind: UInt8, CustomStringConvertible {
-        case noteOff               = 0x8
-        case noteOn                = 0x9
+      var description: String { return "\(kind) (\(channel))" }
+
+      var hashValue: Int {
+
+        // Return the bitwise XOR of the hash values for `kind` and `channel`.
+        return kind.hashValue ^ channel.hashValue
+
+      }
+
+      /// Initializing with the status byte of a channel event.
+      ///
+      /// - Parameter statusByte: The `UInt8` value containing the status byte of a 
+      ///                         channel event MIDI transmission.
+      /// - Throws: `MIDIFile.Error.unsupportedEvent` when the kind specified by
+      ///           `statusByte` does not match the raw value for one of the cases in the
+      ///           `Kind` enumeration.
+      init(statusByte: UInt8) throws {
+
+        // Initialize a `Kind` value using the four most significant bits shifted into the
+        // four least significant bits.
+        guard let kind = Status.Kind(rawValue: statusByte >> 4) else {
+
+          // Create an error message.
+          let message = "\(statusByte >> 4) is not a supported channel event."
+
+          // Throw an `unsupportedEvent` error.
+          throw MIDIFile.Error.unsupportedEvent(message)
+
+        }
+
+        // Initialize `kind` with the value initialized using `statusByte`.
+        self.kind = kind
+
+        // Initialize `channel` by masking `statusByte` to be within the range `0...15`.
+        channel = statusByte & 0xF
+
+      }
+
+      /// Initializing with kind and channel values.
+      /// 
+      /// - Parameters:
+      ///   - kind: The kind of channel event indicated by the new status value.
+      ///   - channel: The channel value for the new status value.
+      init(kind: Kind, channel: UInt8) {
+
+        // Initialize `kind` with the specified value.
+        self.kind = kind
+
+        // Initialize `channel` with the specified value.
+        self.channel = channel
+
+      }
+
+      /// Returns `true` iff the `value` values of the two status values are equal.
+      static func ==(lhs: Status, rhs: Status) -> Bool {
+        return lhs.value == rhs.value
+      }
+
+      /// An enumeration of the seven MIDI channel voice messages where the raw value of a
+      /// case is equal to the four bit number stored in the four most significant bits of
+      /// a channel event's status byte.
+      enum Kind: UInt8 {
+
+        /// Specifies a channel event containing a MIDI note to stop playing and a release
+        /// velocity.
+        case noteOff = 0x8
+
+        /// Specifies a channel event containing a MIDI note to start playing and a 
+        /// velocity.
+        case noteOn = 0x9
+
+        /// Specifies a channel event containing a MIDI note for polyphonic aftertouch and
+        /// a pressure value.
         case polyphonicKeyPressure = 0xA
-        case controlChange         = 0xB
-        case programChange         = 0xC
-        case channelPressure       = 0xD
-        case pitchBendChange       = 0xE
 
+        /// Specifies a channel event containing a MIDI control and a value to apply.
+        case controlChange = 0xB
+
+        /// Specifies a channel event containing a MIDI program value.
+        case programChange = 0xC
+
+        /// Specifies a channel event containing a pressure value for channel aftertouch.
+        case channelPressure = 0xD
+
+        /// Specifies a channel event containing 'LSB' and 'MSB' pitch wheel values.
+        case pitchBendChange = 0xE
+
+        /// The total number of bytes in a channel event whose status byte's four most
+        /// significant bits are equal to the kind's raw value. The value of this property
+        /// will be `3` when a second data byte is expected and `2` otherwise.
         var byteCount: Int {
+
+          // Consider the kind.
           switch self {
-          case .controlChange, .programChange, .channelPressure: return 2
-          default:                                               return 3
+
+          case .controlChange, .programChange, .channelPressure:
+            // The kind specifies a channel event expecting only one byte of data.
+
+            return 2
+
+          default:
+            // The kind specifies a channel event expecting two bytes of data.
+
+            return 3
+
           }
+
         }
 
-        var description: String {
-          switch self {
-            case .noteOff:               return "note off"
-            case .noteOn:                return "note on"
-            case .polyphonicKeyPressure: return "polyphonic key pressure"
-            case .controlChange:         return "control change"
-            case .programChange:         return "program change"
-            case .channelPressure:       return "channel pressure"
-            case .pitchBendChange:       return "pitch bend change"
-          }
-        }
-        
       } // MIDIEvent.ChannelEvent.Status.Kind
 
     } // MIDIEvent.ChannelEvent.Status
 
   } // MIDIEvent.ChannelEvent
 
-  /// A MIDI meta event that uses the 'Cue Point' message to embed `MIDINode` trajectory
-  /// and removal events for a track.
+  /// A MIDI meta event that uses the 'Cue Point' message to embed data for adding and
+  /// removing `MIDINode` instances to and from the MIDI node player.
   struct MIDINodeEvent: _MIDIEvent, Hashable {
 
     var time: BarBeatTime = BarBeatTime.zero
-    let data: Data
+
     var delta: UInt64?
 
+    /// The event's data for adding or removing a MIDI node.
+    let data: Data
+
     var bytes: [Byte] {
+
+      // Get the bytes for the event's data.
       let dataBytes = data.bytes
+
+      // Create a variable length quantity for the data's length.
       let length = MIDIFile.VariableLengthQuantity(dataBytes.count)
-      return [0xFF, 0x07] + length.bytes + dataBytes
+
+      // Create an array of bytes initialized with the 'FF' specifying a meta event and
+      // '7' indicating a 'Cue Point' message.
+      var bytes: [UInt8] = [0xFF, 0x07]
+
+      // Append the bytes for the variable length quantity.
+      bytes.append(contentsOf: length.bytes)
+
+      // Append the bytes of data.
+      bytes.append(contentsOf: dataBytes)
+
+      // Return the array of bytes.
+      return bytes
     }
 
+    /// The unique node identifier specified in the event's `data`.
     var identifier: Identifier {
+
+      // Consider the data.
       switch data {
-        case let .add(id, _, _): return id
-        case let .remove(id):    return id
+
+        case .add(let id, _, _), .remove(let id):
+          // Return the data's identifier
+
+          return id
+
       }
+
     }
 
+    /// Wrapper for the `nodeIdentifier` property of `identifier`.
     var nodeIdentifier: UUID { return identifier.nodeIdentifier }
 
+    /// Wrapper for the `loopIdentifier` property of `identifier`.
     var loopIdentifier: UUID?  { return identifier.loopIdentifier }
 
-    /// Initializer that takes the event's data and, optionally, the event's bar beat time
-    init(data: Data, time: BarBeatTime? = nil) {
+    /// Initializing with data and a bar-beat time.
+    ///
+    /// - Parameters:
+    ///   - data: The data for the new MIDI node event.
+    ///   - time: The bar-beat time to use when initializing the MIDI node event's `time`
+    ///           property. The default is `zero`.
+    init(data: Data, time: BarBeatTime = .zero) {
+
+      // Initialize `data` with the specified data.
       self.data = data
-      self.time = time ?? BarBeatTime.zero
+
+      // Initialize `time` with the specified bar-beat time.
+      self.time = time
+
     }
 
     init(forAdding node: GrooveFile.Node) {
@@ -444,11 +1179,12 @@ enum MIDIEvent: Hashable, CustomStringConvertible {
 
     }
 
+    
     init?(forRemoving node: GrooveFile.Node) {
 
-      guard node.removeTime != nil else { return nil }
+      guard let removeTime = node.removeTime else { return nil }
 
-      self.init(data: Data(forRemoving: node), time: node.removeTime)
+      self.init(data: Data(forRemoving: node), time: removeTime)
 
     }
 
@@ -729,8 +1465,8 @@ protocol MIDIEventDispatch: class {
   func dispatchEvents(for time: BarBeatTime)
   func dispatch(event: MIDIEvent)
 
-  func registrationTimes<S:Swift.Sequence>(forAdding events: S) -> [BarBeatTime]
-    where S.Iterator.Element == MIDIEvent
+  func registrationTimes<Source>(forAdding events: Source) -> [BarBeatTime]
+    where Source:Swift.Sequence, Source.Iterator.Element == MIDIEvent
 
   var eventContainer: MIDIEventContainer { get set }
   var metaEvents: AnyBidirectionalCollection<MIDIEvent.MetaEvent> { get }
@@ -749,7 +1485,7 @@ extension MIDIEventDispatch {
 
   func add<S:Swift.Sequence>(events: S) where S.Iterator.Element == MIDIEvent {
     eventContainer.append(contentsOf: events)
-    Time.current.register(callback: weakMethod(self, type(of: self).dispatchEvents),
+    Time.current.register(callback: weakCapture(of: self, block:type(of: self).dispatchEvents),
                           forTimes: registrationTimes(forAdding: events),
                           identifier: UUID())
   }

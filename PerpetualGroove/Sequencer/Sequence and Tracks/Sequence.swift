@@ -47,7 +47,7 @@ final class Sequence: Nameable, NotificationDispatching, CustomStringConvertible
     // Perform the swap.
     swap(&instrumentTracks[idx1], &instrumentTracks[idx2])
 
-    Log.verbose("posting 'DidUpdate'")
+    logv("posting 'DidUpdate'")
 
     // Post notification that the sequence has updated.
     postNotification(name: .didUpdate, object: self)
@@ -159,7 +159,7 @@ final class Sequence: Nameable, NotificationDispatching, CustomStringConvertible
     set { tempoTrack.timeSignature = newValue }
   }
 
-  /// The ollection of all tracks in the sequence. This amounts to `instrumentTracks` with
+  /// The collection of all tracks in the sequence. This amounts to `instrumentTracks` with
   /// `tempoTrack` inserted as the first element in the collection.
   var tracks: [Track] {
 
@@ -196,7 +196,7 @@ final class Sequence: Nameable, NotificationDispatching, CustomStringConvertible
       // Clear the `hasChanges` flag since a notification is being posted.
       hasChanges = false
 
-      Log.debug("posting 'DidUpdate'")
+      logi("posting 'DidUpdate'")
 
       // Post the `didUpdate` notification.
       postNotification(name: .didUpdate, object: self)
@@ -209,7 +209,7 @@ final class Sequence: Nameable, NotificationDispatching, CustomStringConvertible
   private func toggleRecording(_ notification: Foundation.Notification) {
 
     // Update the tempo track's recording flag.
-    tempoTrack.recording = Transport.current.isRecording
+    tempoTrack.isRecording = Transport.current.isRecording
 
   }
 
@@ -251,7 +251,7 @@ final class Sequence: Nameable, NotificationDispatching, CustomStringConvertible
     // Clear the flag since notification is being posted.
     hasChanges = false
 
-    Log.verbose("posting 'DidUpdate'")
+    logv("posting 'DidUpdate'")
 
     // Post notification that the sequence has been updated.
     postNotification(name: .didUpdate, object: self)
@@ -275,11 +275,11 @@ final class Sequence: Nameable, NotificationDispatching, CustomStringConvertible
 
     // Register to receive the transport's `didToggleRecording` notifications.
     receptionist.observe(name: .didToggleRecording, from: transport,
-                callback: weakMethod(self, Sequence.toggleRecording))
+                callback: weakCapture(of: self, block:Sequence.toggleRecording))
 
     // Register to receive the transport's `didReset` notifications.
     receptionist.observe(name: .didReset, from: transport,
-                callback: weakMethod(self, Sequence.sequencerDidReset))
+                callback: weakCapture(of: self, block:Sequence.sequencerDidReset))
 
     // Initialize `tempoTrack` by creating a new track for the sequence.
     tempoTrack = TempoTrack(sequence: self)
@@ -390,7 +390,7 @@ final class Sequence: Nameable, NotificationDispatching, CustomStringConvertible
     // Add the track to the sequence.
     add(track: track)
 
-    Log.verbose("posting 'DidUpdate'")
+    logv("posting 'DidUpdate'")
 
     // Post notification that the sequence has been updated.
     postNotification(name: .didUpdate, object: self)
@@ -410,13 +410,13 @@ final class Sequence: Nameable, NotificationDispatching, CustomStringConvertible
 
     // Register to receive `didUpdate` notifications from the track.
     receptionist.observe(name: .didUpdate, from: track,
-                         callback: weakMethod(self, Sequence.trackDidUpdate))
+                         callback: weakCapture(of: self, block:Sequence.trackDidUpdate))
 
     // Register to receive `soloStatusDidChange` notifications from the track.
     receptionist.observe(name: .soloStatusDidChange, from: track,
-                         callback: weakMethod(self, Sequence.trackSoloStatusDidChange))
+                         callback: weakCapture(of: self, block:Sequence.trackSoloStatusDidChange))
 
-    Log.debug("track added: \(track.name)")
+    logi("track added: \(track.name)")
 
     // Post notification that the track was added to the sequence.
     postNotification(name: .didAddTrack, object: self,
@@ -441,13 +441,13 @@ final class Sequence: Nameable, NotificationDispatching, CustomStringConvertible
     // Stop receiving notifications from the track.
     receptionist.stopObserving(object: track)
 
-    Log.debug("track removed: \(track.name)")
+    logi("track removed: \(track.name)")
 
     // Post notification that the track has been removed from the sequence.
     postNotification(name: .didRemoveTrack, object: self,
                      userInfo: ["removedTrackIndex": index, "removedTrack": track])
 
-    Log.debug("posting 'DidUpdate'")
+    logi("posting 'DidUpdate'")
 
     // Post notification that the sequence has been updated.
     postNotification(name: .didUpdate, object: self)

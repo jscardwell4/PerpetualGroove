@@ -106,9 +106,9 @@ class NodeSelectionTool: Tool {
     player = playerNode
 
     receptionist.observe(name: .didAddNode, from: MIDINodePlayer.self,
-                         callback: weakMethod(self, NodeSelectionTool.didAddNode))
+                         callback: weakCapture(of: self, block:NodeSelectionTool.didAddNode))
     receptionist.observe(name: .didRemoveNode, from: MIDINodePlayer.self,
-                         callback: weakMethod(self, NodeSelectionTool.didRemoveNode))
+                         callback: weakCapture(of: self, block:NodeSelectionTool.didRemoveNode))
 
   }
 
@@ -150,7 +150,7 @@ class NodeSelectionTool: Tool {
   func previousNode() {
 
     // Get the index for the selected node in th player's nodes.
-    guard let index = player.midiNodes.index(where: {$0 === node}) else { return }
+    guard let index = player.midiNodes.firstIndex(where: {$0 === node}) else { return }
 
     // Calculate the previous index.
     let nodeCount = player.midiNodes.count
@@ -165,7 +165,7 @@ class NodeSelectionTool: Tool {
   func nextNode() {
 
     // Get the index for the selected node in th player's nodes.
-    guard let index = player.midiNodes.index(where: {$0 === node}) else { return }
+    guard let index = player.midiNodes.firstIndex(where: {$0 === node}) else { return }
 
     // Calculate the next index.
     let nextIndex = ((index &- 1) &+ 1) % player.midiNodes.count
@@ -332,7 +332,7 @@ class PresentingNodeSelectionTool: NodeSelectionTool, PresentingTool {
     guard active && player.midiNodes.count < 2 else { return }
 
     // Disable previous and next actions.
-    _secondaryContent?.disabledActions ∪= [.previous, .next]
+    _secondaryContent?.disabledActions.insert([.previous, .next])
 
   }
 

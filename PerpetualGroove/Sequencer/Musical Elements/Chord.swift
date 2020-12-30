@@ -246,15 +246,17 @@ struct Chord: RawRepresentable, Hashable, CustomStringConvertible {
     init?(rawValue: String) {
 
       // Use regular expression matching to extract the list of components.
-      guard let captures = (rawValue ~=> ~/"^\\(([^)]+)\\)(?:/(.+))?"),
-            let componentsList = captures.1 else { return nil }
+      guard let captures = (~/"^\\(([^)]+)\\)(?:/(.+))?").firstMatch(in: rawValue),
+            let componentsList = captures[1]?.substring else { return nil }
 
       // Initialize `components` by mapping the list separated by a comma.
-      components = ",".split(componentsList).flatMap({Degree(rawValue: $0)})
+      components = String(componentsList).split(separator: ",").compactMap({Degree(rawValue: String($0))})
 
       // Initialize `bass` with captured raw degree, falling back to assumed degree of 
       // `one`.
-      bass = Degree(rawValue: captures.2 ?? "") ?? .`default`(.one)
+      bass = Degree(rawValue: captures[2]?.substring != nil
+                      ? String(captures[2]!.substring)
+                      : "") ?? .`default`(.one)
 
     }
 
@@ -348,15 +350,15 @@ struct Chord: RawRepresentable, Hashable, CustomStringConvertible {
 
         // Evaluate `rawValue` against a regular expression capturing the raw modifier
         // and interval values. Convert the captured raw interval into an `Interval`.
-        guard let captures = (rawValue ~=> ~/"^([♭♯𝄫])?(1?[0-9])"),
-              let rawInterval = Int(captures.2 ?? ""),
+        guard let captures = (~/"^([♭♯𝄫])?(1?[0-9])").firstMatch(in: rawValue),
+              let rawInterval = Int(String(captures[2]?.substring ?? "")),
               let interval = Interval(rawValue: rawInterval) else { return nil }
 
         // Check whether `rawValue` specifies a pitch modifier.
-        if let rawModifier = captures.1, !rawModifier.isEmpty {
+        if let rawModifier = captures[1]?.substring, !rawModifier.isEmpty {
 
           // Create the pitch modifier using the raw value captured.
-          guard let modifier = PitchModifier(rawValue: rawModifier) else { return nil }
+          guard let modifier = PitchModifier(rawValue: String(rawModifier)) else { return nil }
 
           // Intialize using the interval and modifier.
           self = .modified(interval, modifier)

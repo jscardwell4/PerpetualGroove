@@ -89,12 +89,12 @@ final class GeneratorTool: PresentingNodeSelectionTool {
         secondaryContent.loadGenerator(node.generator)
 
         // Set the change callback to use the tool's method.
-        secondaryContent.didChangeGenerator = weakMethod(self, GeneratorTool.didChangeGenerator)
+        secondaryContent.didChangeGenerator = weakCapture(of: self, block:GeneratorTool.didChangeGenerator)
 
         // Connect the previous and next actions.
-        secondaryContent.previousAction = weakMethod(self, NodeSelectionTool.previousNode)
-        secondaryContent.nextAction = weakMethod(self, NodeSelectionTool.nextNode)
-        secondaryContent.supportedActions ∪= [.previous, .next]
+        secondaryContent.previousAction = weakCapture(of: self, block:NodeSelectionTool.previousNode)
+        secondaryContent.nextAction = weakCapture(of: self, block:NodeSelectionTool.nextNode)
+        secondaryContent.supportedActions.insert([.previous, .next])
 
         // Set the disabled actions depending on the number of nodes in the player.
         secondaryContent.disabledActions = player.midiNodes.count > 1 ? [.none] : [.previous, .next]

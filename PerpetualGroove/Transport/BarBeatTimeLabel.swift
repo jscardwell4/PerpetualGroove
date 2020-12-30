@@ -186,22 +186,22 @@ final class BarBeatTimeLabel: UIView {
       assert(transport.time.callbackRegistered(with: callbackIdentifier) == false)
 
       // Register the predicated callback with the new transport.
-      transport.time.register(callback: weakMethod(self, BarBeatTimeLabel.didUpdateTime),
+      transport.time.register(callback: weakCapture(of: self, block:BarBeatTimeLabel.didUpdateTime),
                               predicate: {_ in true},
                               identifier: callbackIdentifier)
 
       // Register for reset and jogging-related notifications from the new transport.
       receptionist.observe(name: .didBeginJogging, from: transport,
-                           callback: weakMethod(self, BarBeatTimeLabel.didBeginJogging))
+                           callback: weakCapture(of: self, block:BarBeatTimeLabel.didBeginJogging))
 
       receptionist.observe(name: .didEndJogging, from: transport,
-                           callback: weakMethod(self, BarBeatTimeLabel.didEndJogging))
+                           callback: weakCapture(of: self, block:BarBeatTimeLabel.didEndJogging))
 
       receptionist.observe(name: .didJog, from: transport,
-                           callback: weakMethod(self, BarBeatTimeLabel.didJog))
+                           callback: weakCapture(of: self, block:BarBeatTimeLabel.didJog))
 
       receptionist.observe(name: .didReset, from: transport,
-                           callback: weakMethod(self, BarBeatTimeLabel.didReset))
+                           callback: weakCapture(of: self, block:BarBeatTimeLabel.didReset))
 
     }
 
@@ -387,7 +387,7 @@ final class BarBeatTimeLabel: UIView {
 
       // Register to receive notifications from the sequencer when it changes transports.
       receptionist.observe(name: .didChangeTransport, from: Sequencer.self,
-                           callback: weakMethod(self, BarBeatTimeLabel.didChangeTransport))
+                           callback: weakCapture(of: self, block:BarBeatTimeLabel.didChangeTransport))
 
       // Set `transport` to the sequencer's current transport.
       transport = Sequencer.transport

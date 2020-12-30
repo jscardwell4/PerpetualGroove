@@ -161,7 +161,7 @@ final class MIDINodePlayer: NotificationDispatching {
   /// Adds any non-empty loops to their respective tracks.
   static private func insertLoops() {
 
-    Log.debug("inserting loops: \(loops)")
+    logi("inserting loops: \(loops)")
 
 
     // Calculate the start and end times
@@ -282,7 +282,7 @@ final class MIDINodePlayer: NotificationDispatching {
 
       // Check that there is a player node to which a node may be added.
       guard let playerNode = playerNode else {
-        Log.warning("cannot place a node without a player node")
+        logw("cannot place a node without a player node")
         return
       }
 
@@ -311,11 +311,11 @@ final class MIDINodePlayer: NotificationDispatching {
                          object: self,
                          userInfo: ["addedNode": node, "addedNodeDispatch": target])
 
-        Log.debug("added node \(name)")
+        logi("added node \(name)")
 
       } catch {
 
-        Log.error(error)
+        loge("\(error)")
 
       }
 

@@ -23,7 +23,7 @@ final class RotateTool: PresentingNodeSelectionTool {
 
     return RotateViewController.viewController(withBallColor: ballColor,
                                                initialAngle: initialAngle,
-                                               didRotate: weakMethod(self, RotateTool.didRotate))
+                                               didRotate: weakCapture(of: self, block:RotateTool.didRotate))
 
   }
 
@@ -143,6 +143,8 @@ final class RotateViewController: UIViewController, SecondaryContent {
 
         break
 
+      @unknown default:
+        break
     }
     
   }

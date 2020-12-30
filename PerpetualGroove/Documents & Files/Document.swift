@@ -53,7 +53,7 @@ final class Document: UIDocument, Named, NotificationDispatching {
 
       if let sequence = sequence {
         receptionist.observe(name: .didUpdate, from: sequence,
-                             callback: weakMethod(self, Document.didUpdate))
+                             callback: weakCapture(of: self, block:Document.didUpdate))
       }
 
     }
@@ -79,7 +79,7 @@ final class Document: UIDocument, Named, NotificationDispatching {
 
   /// Handler for notifications posted by `sequence`.
   private func didUpdate(_ notification: Foundation.Notification) {
-    Log.verbose("")
+    logv("")
     updateChangeCount(.done)
   }
 
@@ -94,7 +94,7 @@ final class Document: UIDocument, Named, NotificationDispatching {
       return
     }
 
-    Log.warning("Conflicting versions detected: \(versions)")
+    logw("Conflicting versions detected: \(versions)")
 
   }
 
@@ -103,7 +103,7 @@ final class Document: UIDocument, Named, NotificationDispatching {
     super.init(fileURL: url)
 
     receptionist.observe(name: .didChangeState, from: self,
-                         callback: weakMethod(self, Document.didChangeState))
+                         callback: weakCapture(of: self, block:Document.didChangeState))
 
   }
 
@@ -155,7 +155,7 @@ final class Document: UIDocument, Named, NotificationDispatching {
       case .groove: file = GrooveFile(sequence: sequence, source: fileURL)
     }
 
-    Log.debug("file contents:\n\(file)")
+    logi("file contents:\n\(file)")
 
     return file.data
 
@@ -164,7 +164,7 @@ final class Document: UIDocument, Named, NotificationDispatching {
   /// Overridden to log the error before `super` handles it.
   override func handleError(_ error: Swift.Error, userInteractionPermitted: Bool) {
 
-    Log.error(error)
+    loge("\(error)")
     super.handleError(error, userInteractionPermitted: userInteractionPermitted)
 
   }
@@ -184,7 +184,7 @@ final class Document: UIDocument, Named, NotificationDispatching {
       let oldURL = weakself.fileURL
       let newURL = directoryURL + "\(newName).groove"
 
-      Log.debug("renaming document '\(oldName)' ⟹ '\(newName)'")
+      logi("renaming document '\(oldName)' ⟹ '\(newName)'")
 
       let fileCoordinator = NSFileCoordinator(filePresenter: nil)
       var error: NSError?
@@ -201,11 +201,11 @@ final class Document: UIDocument, Named, NotificationDispatching {
           try FileManager.default.moveItem(at: oldURL, to: newURL)
           fileCoordinator.item(at: oldURL, didMoveTo: newURL)
         } catch {
-          Log.error(error)
+          loge("\(error)")
         }
       }
 
-      if let error = error { Log.error(error) }
+      if let error = error { loge("\(error)") }
 
     }
 
@@ -217,7 +217,7 @@ final class Document: UIDocument, Named, NotificationDispatching {
                      completionHandler: ((Bool) -> Void)?)
   {
     isCreating = saveOperation == .forCreating
-    Log.debug("(\(isCreating ? "saving" : "overwriting"))  '\(url.path)'")
+    logi("(\(isCreating ? "saving" : "overwriting"))  '\(url.path)'")
     super.save(to: url, for: saveOperation, completionHandler: completionHandler)
   }
 

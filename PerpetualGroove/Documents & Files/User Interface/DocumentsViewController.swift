@@ -25,20 +25,20 @@ final class DocumentsViewController: UICollectionViewController {
 
     // Get the item from the cell containing `sender`.
     guard let item = (sender.superview?.superview as? DocumentCell)?.item else {
-      Log.warning("sender superview is not an item-containing document cell")
+      logw("sender superview is not an item-containing document cell")
       return
     }
 
     // Ensure the item manager can remove `item`, returning the index from which `item` has been removed.
     guard let index = itemManager.remove(item) else {
-      Log.warning("items does not contain item to delete: \(item)")
+      logw("items does not contain item to delete: \(item)")
       return
     }
 
     let indexPath = IndexPath(item: index, section: 1)
 
     if Setting.confirmDeleteDocument.value as? Bool == true {
-      Log.warning("delete confirmation not yet implemented")
+      logw("delete confirmation not yet implemented")
     }
 
     // Clear selection if this was the selected item.
@@ -77,7 +77,7 @@ final class DocumentsViewController: UICollectionViewController {
       // Check that the controller's view has loaded.
       guard isViewLoaded else { return }
 
-      Log.debug("\(oldValue?.description ?? "nil") ➞ \(selectedItem?.description ?? "nil")")
+      logi("\(oldValue?.description ?? "nil") ➞ \(selectedItem?.description ?? "nil")")
 
       // Make the selection in the collection view, animated and centered vertically.
       collectionView?.selectItem(at: selectedItem, animated: true, scrollPosition: .centeredVertically)
@@ -348,13 +348,13 @@ final class DocumentsViewController: UICollectionViewController {
       receptionist = NotificationReceptionist(callbackQueue: OperationQueue.main)
 
       receptionist.observe(name: .didUpdateItems, from: DocumentManager.self,
-                           callback: weakMethod(self, ItemManager.didUpdateItems))
+                           callback: weakCapture(of: self, block:ItemManager.didUpdateItems))
 
       receptionist.observe(name: .willChangeDocument, from: DocumentManager.self,
-                           callback: weakMethod(self, ItemManager.willChangeDocument))
+                           callback: weakCapture(of: self, block:ItemManager.willChangeDocument))
 
       receptionist.observe(name: .didChangeDocument, from: DocumentManager.self,
-                           callback: weakMethod(self, ItemManager.didChangeDocument))
+                           callback: weakCapture(of: self, block:ItemManager.didChangeDocument))
 
     }
 
@@ -450,7 +450,7 @@ final class DocumentsViewController: UICollectionViewController {
 
       // Start observing the incoming document.
       receptionist.observe(name: .didRenameDocument, from: document,
-                           callback: weakMethod(self, ItemManager.documentDidChangeName))
+                           callback: weakCapture(of: self, block:ItemManager.documentDidChangeName))
 
       // Refresh the controller's selection.
       controller?.refreshSelection()
@@ -460,15 +460,15 @@ final class DocumentsViewController: UICollectionViewController {
     /// Updates the corresponding cell with the document's new name
     private func documentDidChangeName(_ notification: Notification) {
 
-      Log.debug("userInfo: \(notification.userInfo)")
+      logi("userInfo: \(notification.userInfo)")
 
       // Retrieve the document's new name.
       guard let newName = notification.newDocumentName else {
-        Log.warning("name change notification without new name value in user info")
+        logw("name change notification without new name value in user info")
         return
       }
 
-      Log.debug("current document changed name to '\(newName)'")
+      logi("current document changed name to '\(newName)'")
 
       // Retrieve the document.
       guard let document = notification.object as? Document else {

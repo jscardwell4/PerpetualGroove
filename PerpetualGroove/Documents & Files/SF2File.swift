@@ -13,7 +13,7 @@ import MoonKit
 
 /// Returns `data` decoded into an integer.
 fileprivate func _chunkSize(_ data: Data.SubSequence) -> Int {
-  return Int(Byte4(data).bigEndian)
+  return Int(UInt64(data).bigEndian)
 }
 
 /// Evaluates `condition`.
@@ -293,10 +293,10 @@ struct SF2File: CustomStringConvertible {
       name = String(data[data.startIndex ..< (data.index(of: UInt8(0)) ?? data.startIndex + 20)])
 
       // Decode the program
-      program = UInt8(Byte2(data[data.startIndex + 20 ... data.startIndex + 21]).bigEndian)
+      program = UInt8(UInt16(data[data.startIndex + 20 ... data.startIndex + 21]).bigEndian)
 
       // Decode the bank.
-      bank = UInt8(Byte2(data[data.startIndex + 22 ... data.startIndex + 23]).bigEndian)
+      bank = UInt8(UInt16(data[data.startIndex + 22 ... data.startIndex + 23]).bigEndian)
 
       // Check that the name is valid and that it is not the end marker for a list of presets.
       guard name != "EOP" && !name.isEmpty else { return nil }
@@ -523,7 +523,7 @@ struct SF2File: CustomStringConvertible {
           try _assert(data.count == 4)
 
           // Initialize data using the first two bytes for 'major' and the last two bytes for 'minor'.
-          self.data = .version(major: Byte2(data.prefix(2)), minor: Byte2(data.suffix(2)))
+          self.data = .version(major: UInt16(data.prefix(2)), minor: UInt16(data.suffix(2)))
 
         case .isng, .inam, .irom, .icrd, .ieng, .iprd, .icop, .icmt, .isft:
           // The data should be null terminated ascii text.

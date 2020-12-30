@@ -44,13 +44,13 @@ final class PurgatoryViewController: UIViewController {
     super.awakeFromNib()
 
     receptionist.observe(name: .NSUbiquityIdentityDidChange,
-                         callback: weakMethod(self, PurgatoryViewController.identityDidChange))
+                         callback: weakCapture(of: self, block:PurgatoryViewController.identityDidChange))
 
     receptionist.observe(name: .iCloudStorageChanged, from: SettingsManager.self,
-                         callback: weakMethod(self, PurgatoryViewController.iCloudStorageChanged))
+                         callback: weakCapture(of: self, block:PurgatoryViewController.iCloudStorageChanged))
 
-    receptionist.observe(name: .UIApplicationDidBecomeActive,
-                         callback: weakMethod(self, PurgatoryViewController.applicationDidBecomeActive))
+    receptionist.observe(name: UIApplication.didBecomeActiveNotification,
+                         callback: weakCapture(of: self, block:PurgatoryViewController.applicationDidBecomeActive))
 
   }
 

@@ -77,7 +77,7 @@ protocol SecondaryContentProvider {
 class SecondaryControllerContainer: UIViewController {
 
   /// The view controller responsible for managing the primary content for the container's view.
-  var primaryController: UIViewController? { return childViewControllers.first }
+  var primaryController: UIViewController? { return children.first }
 
   /// The view controller responsible for managing the secondary content for the container's view.
   var secondaryController: UIViewController? { return content?.viewController }
@@ -267,7 +267,7 @@ class SecondaryControllerContainer: UIViewController {
     let viewController = content!.viewController
 
     // Add the view controller as a child.
-    addChildViewController(viewController)
+    addChild(viewController)
 
     // Get the view controller's view.
     guard let childView = viewController.view else {
@@ -312,7 +312,7 @@ class SecondaryControllerContainer: UIViewController {
       [unowned self] finished in
 
       // Inform the view controller it has moved to a parent view controller.
-      viewController.didMove(toParentViewController: self)
+      viewController.didMove(toParent: self)
 
       // Invoke the completion closure passing through the boolean value indicating whether
       // the animations finished before invocation.
@@ -357,10 +357,10 @@ class SecondaryControllerContainer: UIViewController {
            "Retrieved `secondaryController` but it is not a child")
 
     // Inform the controller that it will be removed.
-    secondaryController.willMove(toParentViewController: nil)
+    secondaryController.willMove(toParent: nil)
 
     // Remove the controller as a child.
-    secondaryController.removeFromParentViewController()
+    secondaryController.removeFromParent()
 
     // Create a closure removing the controller's view from the blur view and the blur view
     // from the secondary controller container's view.

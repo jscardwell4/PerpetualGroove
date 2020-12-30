@@ -49,7 +49,7 @@ final class MixerViewController: UICollectionViewController, SecondaryContentPro
       if let sequence = sequence {
         // Observe the new sequence.
 
-        let callback = weakMethod(self, MixerViewController.updateTracks)
+        let callback = weakCapture(of: self, block:MixerViewController.updateTracks)
 
         receptionist.observe(name: .didChangeTrack, from: sequence, callback: callback)
         receptionist.observe(name: .didAddTrack,    from: sequence, callback: callback)
@@ -83,7 +83,7 @@ final class MixerViewController: UICollectionViewController, SecondaryContentPro
 
     } catch {
 
-      Log.error(error, message: "Failed to add new track")
+      loge(error, message: "Failed to add new track")
 
       pendingTrackIndex = nil
 
@@ -228,7 +228,7 @@ final class MixerViewController: UICollectionViewController, SecondaryContentPro
         }
 
         if Setting.confirmDeleteTrack.value as? Bool == true {
-          Log.warning("delete confirmation not yet implemented for tracks")
+          logw("delete confirmation not yet implemented for tracks")
         }
 
         // Remove the track from the sequence.
@@ -270,14 +270,14 @@ final class MixerViewController: UICollectionViewController, SecondaryContentPro
 
           oldValue.soundSetImage.isSelected = false
 
-          Log.debug("Updating instrument of secondary content for new target…")
+          logi("Updating instrument of secondary content for new target…")
 
           (_secondaryContent as? InstrumentViewController)?.instrument = newValue.track?.instrument
 
         case (nil, .some):
           // Present the instrument controller.
 
-          Log.debug("Presenting content for mixer view controller…")
+          logi("Presenting content for mixer view controller…")
 
           (parent as? MixerContainer)?.presentContent(for: self, completion: {_ in})
 
@@ -506,7 +506,7 @@ final class MixerViewController: UICollectionViewController, SecondaryContentPro
     /// Initialize with section information in an index path.
     init?(_ indexPath: IndexPath) {
       guard let section = Section(rawValue: indexPath.section) else {
-        Log.warning("Invalid index path: \(indexPath)")
+        logw("Invalid index path: \(indexPath)")
         return nil
       }
       self = section

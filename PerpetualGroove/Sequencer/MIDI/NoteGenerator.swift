@@ -122,9 +122,9 @@ extension NoteGenerator: MIDIGenerator {
 
 extension NoteGenerator: ByteArrayConvertible {
 
-  var bytes: [Byte] { return [channel, tone.midi, velocity.midi] + duration.rawValue.bytes }
+  var bytes: [UInt8] { return [channel, tone.midi, velocity.midi] + duration.rawValue.bytes }
 
-  init(_ bytes: [Byte]) {
+  init(_ bytes: [UInt8]) {
     guard bytes.count >= 7 else { self = NoteGenerator(); return }
     channel  = bytes[0]
     tone     = Tone(midi: bytes[1])
@@ -139,8 +139,11 @@ extension NoteGenerator: CustomStringConvertible {
 
 extension NoteGenerator: Hashable {
 
-  var hashValue: Int {
-    return channel.hashValue ^ duration.hashValue ^ velocity.hashValue ^ tone.hashValue
+  func hash(into hasher: inout Hasher) {
+    channel.hash(into: &hasher)
+    duration.hash(into: &hasher)
+    velocity.hash(into: &hasher)
+    tone.hash(into: &hasher)
   }
 
   static func ==(lhs: NoteGenerator, rhs: NoteGenerator) -> Bool {

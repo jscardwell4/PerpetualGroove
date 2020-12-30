@@ -18,13 +18,13 @@ fileprivate protocol _MIDIEventContainer: Collection, CustomStringConvertible {
 }
 
 extension _MIDIEventContainer
-  where Events._Element == (key: BarBeatTime, value: MIDIEventContainer.Bag),
+  where Events.Element == (key: BarBeatTime, value: MIDIEventContainer.Bag),
         Events.Iterator.Element == (key: BarBeatTime, value: MIDIEventContainer.Bag),
         Events:KeyValueBase,
         Events.Value == MIDIEventContainer.Bag,
-        Events.LazyValues == LazyMapRandomAccessCollection<Events, Events.Value>,
-        Events.Index == OrderedDictionaryIndex,
-        Index == Any2DIndex<OrderedDictionaryIndex, Int>
+        Events.LazyValues == LazyMapCollection<Events, Events.Value>,
+        Events.Index == OrderedDictionary.Index,
+        Index == Any2DIndex<OrderedDictionary.Index, Int>
 {
 
   // MARK: Implementations of Indexable methods.
@@ -194,7 +194,7 @@ extension _MIDIEventContainer
 
   var _metaEvents: AnyBidirectionalCollection<MIDIEvent.MetaEvent> {
     return AnyBidirectionalCollection(
-      FlattenBidirectionalCollection(events.values).lazy
+      FlattenCollection(_base: events.values).lazy
         .filter({ if case .meta = $0 { return true } else { return false } })
         .map({$0.event as! MIDIEvent.MetaEvent})
     )
@@ -202,7 +202,7 @@ extension _MIDIEventContainer
 
   var _channelEvents: AnyBidirectionalCollection<MIDIEvent.ChannelEvent> {
     return AnyBidirectionalCollection(
-      FlattenBidirectionalCollection(events.values).lazy
+      FlattenCollection(events.values).lazy
         .filter({ if case .channel = $0 { return true } else { return false } })
         .map({$0.event as! MIDIEvent.ChannelEvent})
     )

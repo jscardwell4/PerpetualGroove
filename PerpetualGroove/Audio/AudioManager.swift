@@ -92,7 +92,7 @@ final class AudioManager {
     // Start the audio engine.
     try start()
 
-    Log.debug("AudioManager initialized…")
+    logi("AudioManager initialized…")
 
   }
 
@@ -100,7 +100,7 @@ final class AudioManager {
   /// - Throws: Any error encountered starting the engine.
   static func start() throws {
 
-    Log.debug("starting audio…")
+    logi("starting audio…")
 
     // Start the engine.
     try engine.start()
@@ -110,7 +110,7 @@ final class AudioManager {
   /// Stops the audio engine.
   static func stop() {
 
-    Log.debug("stopping audio…")
+    logi("stopping audio…")
 
     // Stop the engine.
     engine.stop()
@@ -123,7 +123,7 @@ final class AudioManager {
   /// Resets the audio engine.
   static func reset() {
 
-    Log.debug("resetting audio…")
+    logi("resetting audio…")
 
     // Reset the audio engine.
     engine.reset()
@@ -133,7 +133,7 @@ final class AudioManager {
   /// Pauses the audio engine.
   static func pause() {
 
-    Log.debug("pausing audio…")
+    logi("pausing audio…")
 
     // Pause the audio engine.
     engine.pause()

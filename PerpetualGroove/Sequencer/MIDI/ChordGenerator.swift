@@ -24,7 +24,7 @@ struct ChordGenerator {
   var midiNotes: [NoteGenerator] {
     var result: [NoteGenerator] = []
     let notes = chord.notes
-    guard let rootIndex = notes.index(of: chord.root) else { return result }
+    guard let rootIndex = notes.firstIndex(of: chord.root) else { return result }
 
     if rootIndex > 0 {
       for note in notes[0 ..< rootIndex] {
@@ -42,7 +42,7 @@ struct ChordGenerator {
 
     var currentOctave = octave
     var previousNote = chord.root
-    for note in notes[rootIndex|->] {
+    for note in notes[rootIndex...] {
       if note < previousNote {
         guard let nextOctave = Octave(rawValue: currentOctave.rawValue + 1) else { return result }
         currentOctave = nextOctave
@@ -75,8 +75,8 @@ struct ChordGenerator {
   
 }
 
-extension ChordGenerator: LosslessJSONValueConvertible {
-  
+/*extension ChordGenerator: LosslessJSONValueConvertible {
+
   var jsonValue: JSONValue {
     return ObjectJSONValue([
       "chord": chord.jsonValue,
@@ -99,6 +99,7 @@ extension ChordGenerator: LosslessJSONValueConvertible {
   }
 
 }
+ */
 
 extension ChordGenerator: MIDIGenerator {
 
@@ -123,6 +124,13 @@ extension ChordGenerator: MIDIGenerator {
 extension ChordGenerator: Hashable {
 
   var hashValue: Int { return chord.hashValue ^ octave.hashValue ^ duration.hashValue ^ velocity.hashValue }
+
+  func hash(into hasher: inout Hasher) {
+    chord.hash(into: &hasher)
+    octave.hash(into: &hasher)
+    duration.hash(into: &hasher)
+    velocity.hash(into: &hasher)
+  }
 
   static func ==(lhs: ChordGenerator, rhs: ChordGenerator) -> Bool {
     return lhs.chord == rhs.chord

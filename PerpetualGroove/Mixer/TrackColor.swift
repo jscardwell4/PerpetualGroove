@@ -97,7 +97,7 @@ enum TrackColor: UInt32, EnumerableType, CustomStringConvertible, LosslessJSONVa
     // Check that the JSON value is a string and get convert it to a hexadecimal value.
     guard let string = String(jsonValue),
           string.hasPrefix("#"),
-          let hex = UInt32(string.substring(from: string.index(after: string.startIndex)), radix: 16)
+          let hex = UInt32(String(string[string.index(after: string.startIndex)...]), radix: 16)
       else
     {
       return nil
