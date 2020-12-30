@@ -30,59 +30,59 @@ fileprivate func _remainingCount(_ data: Data.SubSequence) -> (Int) -> Int {
 }
 
 /// Parses the data from a SoundFont file, which consists of three chunks: info, sdta, and pdta
-struct SF2File: CustomStringConvertible {
+public struct SF2File: CustomStringConvertible {
 
   /// Stores the data or the data's location for the file.
   private let storage: Storage
 
   /// The file url or `nil` if the file is stored in memory.
-  var url: URL? { if case .url(let url) = storage { return url } else { return nil } }
+  public var url: URL? { if case .url(let url) = storage { return url } else { return nil } }
 
   /// The range within the file's data corresponding to the info subchunk.
-  let infoRange: Range<Int>
+  public let infoRange: Range<Int>
 
   /// The range within the file's data corresponding to the sdta subchunk.
-  let sdtaRange: Range<Int>
+  public let sdtaRange: Range<Int>
 
   /// The range within the file's data corresponding to the pdta subchunk.
-  let pdtaRange: Range<Int>
+  public let pdtaRange: Range<Int>
 
-  var description: String { return "SF2File { storage: \(storage) }" }
+  public var description: String { return "SF2File { storage: \(storage) }" }
 
   /// An array of presets obtained by decoding the phdr subchunk from the pdta subchunk.
-  var presets: [PresetHeader] {
+  public var presets: [PresetHeader] {
     guard let phdr = try? lazyPDTA.phdr.dataChunk(), case let .presets(headers) = phdr.data else { return [] }
     return headers
   }
 
   /// The decoded info subchunk for the file.
-  let info: INFOChunk
+  public let info: INFOChunk
 
   /// The lazy sdta chunk for the file.
-  private let lazySDTA: LazySDTAChunk
+  public let lazySDTA: LazySDTAChunk
 
   /// The lazy pdta chunk for the file.
-  private let lazyPDTA: LazyPDTAChunk
+  public let lazyPDTA: LazyPDTAChunk
 
   /// Returns the decoded sdta chunk for the file.
   /// - Throws: `Error.StructurallyUnsound` if invalid data is encountered while decoding the subchunk.
-  func sdta() throws -> SDTAChunk {
+  public func sdta() throws -> SDTAChunk {
     return try SDTAChunk(data: try storage.data()[sdtaRange])
   }
 
   /// Returns the decoded pdta chunk for the file.
   /// - Throws: `Error.StructurallyUnsound` if invalid data is encountered while decoding the subchunk.
-  func pdta() throws -> PDTAChunk {
+  public func pdta() throws -> PDTAChunk {
     return try PDTAChunk(data: try storage.data()[pdtaRange])
   }
 
   /// Initializing with raw data.
   /// - Throws: `Error.StructurallyUnsound` if invalid data is encountered while decoding.
-  init(data: Data) throws { try self.init(storage: .memory(data)) }
+  public init(data: Data) throws { try self.init(storage: .memory(data)) }
 
   /// Initializing with a file url.
   /// - Throws: `Error.StructurallyUnsound` if invalid data is encountered while decoding.
-  init(fileURL url: URL) throws { try self.init(storage: .url(url)) }
+  public init(fileURL url: URL) throws { try self.init(storage: .url(url)) }
 
   /// Initializing with raw data or a file url.
   /// - Throws: `Error.StructurallyUnsound` if invalid data is encountered while decoding.
@@ -164,7 +164,7 @@ struct SF2File: CustomStringConvertible {
   /// This method should only be used when one's only interest in a sound font file is the presets contained
   /// within.
   /// - Throws: `Error.StructurallyUnsound` if invalid data is encountered while decoding.
-  static func presetHeaders(from data: Data) throws -> [PresetHeader] {
+  public static func presetHeaders(from data: Data) throws -> [PresetHeader] {
 
     // Get the range of the characters within `data` denoting the start of the phdr subchunk.
     guard let range = data.range(of: Data("pdtaphdr".bytes)) else { return [] }
@@ -175,8 +175,13 @@ struct SF2File: CustomStringConvertible {
     // Check that the size consists of zero or more 38 byte chunks.
     try _assert(size % 38 == 0)
 
+    let lower = range.upperBound + 4
+    let upper = lower + size
+
+    assert(data.endIndex >= upper)
+
     // Get the stream of 38 byte chunks to decode into preset headers.
-    let dataʹ = data[(range.upperBound + 4) +--> size]
+    let dataʹ = data[lower ..< upper]
 
     // Create a collection to hold the decoded preset headers.
     var presetHeaders: [PresetHeader] = []
@@ -234,31 +239,31 @@ struct SF2File: CustomStringConvertible {
   }
 
   /// Enumeration of the possible errors thrown by `SF2File`.
-  enum Error: String, Swift.Error, CustomStringConvertible {
+  public enum Error: String, Swift.Error, CustomStringConvertible {
 
     case StructurallyUnsound = "Invalid chunk detected"
 
   }
 
   /// A structure for representing a preset header parsed while decoding a sound font file.
-  struct PresetHeader: Comparable, CustomStringConvertible, JSONValueConvertible, JSONValueInitializable {
+  public struct PresetHeader: Comparable, CustomStringConvertible, JSONValueConvertible, JSONValueInitializable {
 
     /// The name of the preset.
-    let name: String
+    public let name: String
 
     /// The program assigned to the preset.
-    let program: UInt8
+    public let program: UInt8
 
     /// The bank assigned to the preset.
-    let bank: UInt8
+    public let bank: UInt8
 
-    var description: String { return "PresetHeader {name: \(name); program: \(program); bank: \(bank)}" }
+    public var description: String { return "PresetHeader {name: \(name); program: \(program); bank: \(bank)}" }
 
     /// The preset header converted to a JSON object.
-    var jsonValue: JSONValue { return ["name": name, "program": program, "bank": bank] }
+    public var jsonValue: JSONValue { return ["name": name, "program": program, "bank": bank] }
 
     /// Initializing with known property values.
-    init(name: String, program: UInt8, bank: UInt8) {
+    public  init(name: String, program: UInt8, bank: UInt8) {
       self.name = name
       self.program = program
       self.bank = bank
@@ -266,7 +271,7 @@ struct SF2File: CustomStringConvertible {
 
     /// Initializing from a JSON value. To be successful, `jsonValue` needs to be a JSON object
     /// with keys 'name', 'program', and 'bank' with values convertible to `String`, `UInt8`, and `UInt8`.
-    init?(_ jsonValue: JSONValue?) {
+    public init?(_ jsonValue: JSONValue?) {
 
       // Retrieve the property values.
       guard let dict = ObjectJSONValue(jsonValue),
@@ -290,7 +295,7 @@ struct SF2File: CustomStringConvertible {
       try _assert(data.count == 38)
 
       // Decode the preset's name.
-      name = String(data[data.startIndex ..< (data.index(of: UInt8(0)) ?? data.startIndex + 20)])
+      name = String(data[data.startIndex ..< (data.firstIndex(of: UInt8(0)) ?? data.startIndex + 20)])
 
       // Decode the program
       program = UInt8(UInt16(data[data.startIndex + 20 ... data.startIndex + 21]).bigEndian)
@@ -304,20 +309,20 @@ struct SF2File: CustomStringConvertible {
     }
 
     /// Returns `true` iff the two preset headers have equal bank and program values.
-    static func ==(lhs: PresetHeader, rhs: PresetHeader) -> Bool {
+    public static func ==(lhs: PresetHeader, rhs: PresetHeader) -> Bool {
       return lhs.bank == rhs.bank && lhs.program == rhs.program
     }
 
     /// Returns `true` iff the bank value of `lhs` is less than that of `rhs` or the bank values are
     /// equal and the program value of `lhs` is less than that of `rhs`.
-    static func <(lhs: PresetHeader, rhs: PresetHeader) -> Bool {
+    public static func <(lhs: PresetHeader, rhs: PresetHeader) -> Bool {
       return lhs.bank < rhs.bank || (lhs.bank == rhs.bank && lhs.program < rhs.program)
     }
 
   }
 
   /// Parses the info chunk of the file
-  struct INFOChunk: CustomStringConvertible {
+  public struct INFOChunk: CustomStringConvertible {
 
     /// File version.
     let ifil: SubChunk
@@ -437,7 +442,7 @@ struct SF2File: CustomStringConvertible {
 
     }
 
-    var description: String {
+    public var description: String {
 
       var result = "\n".join( "ifil: \(ifil)", "isng: \(isng)", "inam: \(inam)" )
 
@@ -457,7 +462,7 @@ struct SF2File: CustomStringConvertible {
   }
 
   /// A type for storing a subchunk's location and type without processing the entire chunk of data.
-  struct LazySubChunk: CustomStringConvertible {
+  public struct LazySubChunk: CustomStringConvertible {
 
     /// The unique identifier for the subchunk within a sound font file.
     let identifier: ChunkIdentifier
@@ -490,12 +495,12 @@ struct SF2File: CustomStringConvertible {
     /// - Throws: Any error encountered while initializing the subchunk.
     func dataChunk() throws -> SubChunk { return try SubChunk(chunk: self) }
 
-    var description: String { return "\(identifier): \(range) \(storage)" }
+    public var description: String { return "\(identifier): \(range) \(storage)" }
 
   }
 
   /// A subchunk in a sound font file.
-  struct SubChunk: CustomStringConvertible {
+  public struct SubChunk: CustomStringConvertible {
 
     /// The unique identifier for the subchunk within a sound font file.
     let identifier: ChunkIdentifier
@@ -566,12 +571,12 @@ struct SF2File: CustomStringConvertible {
 
     }
 
-    var description: String { return "\(identifier): \(data)" }
+    public var description: String { return "\(identifier): \(data)" }
 
   }
 
   /// An enumeration of unique identifiers for subchunks within a sound font file.
-  enum ChunkIdentifier: String {
+  public enum ChunkIdentifier: String {
 
     // Info chunk identifiers
 
@@ -647,7 +652,7 @@ struct SF2File: CustomStringConvertible {
   }
 
   /// Enumeration wrapping the data belonging to a subchunk in a sound font file.
-  enum ChunkData: CustomStringConvertible {
+  public enum ChunkData: CustomStringConvertible {
 
     /// Values that represent a major and minor version.
     case version (major: UInt16, minor: UInt16)
@@ -661,7 +666,7 @@ struct SF2File: CustomStringConvertible {
     /// A collection of preset headers.
     case presets ([PresetHeader])
 
-    var description: String {
+    public var description: String {
 
       switch self {
         case let .version(major, minor): return "\(major).\(minor)"
@@ -675,7 +680,7 @@ struct SF2File: CustomStringConvertible {
   }
 
   /// A struct for holding lazy data corresponding to the sdta chunk of a sound font file.
-  struct LazySDTAChunk: CustomStringConvertible {
+  public struct LazySDTAChunk: CustomStringConvertible {
 
     /// Stores a lazy version of the optional smpl subchunk of a sound font file.
     let smpl: LazySubChunk?
@@ -712,12 +717,12 @@ struct SF2File: CustomStringConvertible {
 
     }
 
-    var description: String { return "\(smpl?.description ?? "")" }
+    public var description: String { return "\(smpl?.description ?? "")" }
     
   }
 
   /// A struct for holding data corresponding to the sdta chunk of a sound font file.
-  struct SDTAChunk: CustomStringConvertible {
+  public struct SDTAChunk: CustomStringConvertible {
 
     /// Stores the optional smpl subchunk of a sound font file.
     let smpl: SubChunk?
@@ -758,12 +763,12 @@ struct SF2File: CustomStringConvertible {
 
     }
 
-    var description: String { return "\(smpl?.description ?? "")" }
+    public var description: String { return "\(smpl?.description ?? "")" }
 
   }
 
   /// A struct for holding lazy data corresponding to the pdta chunk of a sound font file.
-  struct LazyPDTAChunk: CustomStringConvertible {
+  public struct LazyPDTAChunk: CustomStringConvertible {
 
     /// Names the presets and points to each of its zones in the `pbag` subchunk.
     let phdr: LazySubChunk
@@ -874,7 +879,7 @@ struct SF2File: CustomStringConvertible {
 
     }
 
-    var description: String {
+    public var description: String {
       return [
         "phdr:\n\(phdr.description.indented(by: 1, useTabs: true))",
         "pbag: \(pbag)",
@@ -891,7 +896,7 @@ struct SF2File: CustomStringConvertible {
   }
 
   /// A struct for holding data corresponding to the pdta chunk of a sound font file.
-  struct PDTAChunk: CustomStringConvertible {
+  public struct PDTAChunk: CustomStringConvertible {
 
     /// Names the presets and points to each of its zones in the `pbag` subchunk.
     let phdr: SubChunk
@@ -1018,7 +1023,7 @@ struct SF2File: CustomStringConvertible {
       
     }
 
-    var description: String {
+    public var description: String {
 
       return [
         "phdr:\n\(phdr.description.indented(by: 1, useTabs: true))",

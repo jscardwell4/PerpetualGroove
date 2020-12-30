@@ -112,7 +112,7 @@ final class MIDINodeManager {
 
         logi("removing node with identifier \(identifier)")
 
-        guard let idx = nodes.index(where: {$0.reference?.identifier == identifier}),
+        guard let idx = nodes.firstIndex(where: {$0.reference?.identifier == identifier}),
               let node = nodes[idx].reference else
         {
           fatalError("failed to find node with mapped identifier \(identifier)")
@@ -141,7 +141,7 @@ final class MIDINodeManager {
   private func remove(node: MIDINode, delete: Bool) throws {
 
     // Check that `node` is actually an element of `nodes`.
-    guard let idx = nodes.index(where: {$0.reference === node}),
+    guard let idx = nodes.firstIndex(where: {$0.reference === node}),
           let node = nodes.remove(at: idx).reference
       else
     {

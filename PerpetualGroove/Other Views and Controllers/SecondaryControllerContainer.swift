@@ -390,7 +390,7 @@ class SecondaryControllerContainer: UIViewController {
     let rawValue: Int
 
     /// The `nil` action. This value suggests that there are no actions supported by the secondary content.
-    static let none = SupportedActions(rawValue: 0b0000)
+    static let none = SupportedActions([])
 
     /// Inclusion of this action suggests that the secondary content provides some means of modification
     /// which can be rolled back or ignored upon the content's dismissal.

@@ -19,12 +19,11 @@ fileprivate protocol _MIDIEventContainer: Collection, CustomStringConvertible {
 
 extension _MIDIEventContainer
   where Events.Element == (key: BarBeatTime, value: MIDIEventContainer.Bag),
-        Events.Iterator.Element == (key: BarBeatTime, value: MIDIEventContainer.Bag),
         Events:KeyValueBase,
         Events.Value == MIDIEventContainer.Bag,
         Events.LazyValues == LazyMapCollection<Events, Events.Value>,
-        Events.Index == OrderedDictionary.Index,
-        Index == Any2DIndex<OrderedDictionary.Index, Int>
+        Events.Index == Int,
+        Index == Any2DIndex<Int, Int>
 {
 
   // MARK: Implementations of Indexable methods.
@@ -194,41 +193,37 @@ extension _MIDIEventContainer
 
   var _metaEvents: AnyBidirectionalCollection<MIDIEvent.MetaEvent> {
     return AnyBidirectionalCollection(
-      FlattenCollection(_base: events.values).lazy
-        .filter({ if case .meta = $0 { return true } else { return false } })
-        .map({$0.event as! MIDIEvent.MetaEvent})
+      events.values.lazy.joined().filter {
+        if case .meta = $0 { return true } else { return false } }
+        .map {$0.event as! MIDIEvent.MetaEvent}
     )
   }
 
   var _channelEvents: AnyBidirectionalCollection<MIDIEvent.ChannelEvent> {
     return AnyBidirectionalCollection(
-      FlattenCollection(events.values).lazy
-        .filter({ if case .channel = $0 { return true } else { return false } })
-        .map({$0.event as! MIDIEvent.ChannelEvent})
+      events.values.lazy.joined().filter {
+        if case .channel = $0 { return true } else { return false } }
+        .map {$0.event as! MIDIEvent.ChannelEvent}
     )
   }
 
   var _nodeEvents: AnyBidirectionalCollection<MIDIEvent.MIDINodeEvent> {
     return AnyBidirectionalCollection(
-      FlattenBidirectionalCollection(events.values).lazy
-        .filter({ if case .node = $0 { return true } else { return false } })
-        .map({$0.event as! MIDIEvent.MIDINodeEvent})
+      events.values.lazy.joined().filter {
+        if case .node = $0 { return true } else { return false } }
+        .map {$0.event as! MIDIEvent.MIDINodeEvent}
     )
   }
 
   var _timeEvents: AnyBidirectionalCollection<MIDIEvent.MetaEvent> {
-    return AnyBidirectionalCollection(
-      FlattenBidirectionalCollection(events.values).lazy
-        .filter({
-          if case .meta(let event) = $0 {
-            switch event.data {
-            case .timeSignature, .tempo: return true
-            default: return false
-            }
-          } else { return false }
-        })
-        .map({$0.event as! MIDIEvent.MetaEvent})
-    )
+    return AnyBidirectionalCollection(events.values.lazy.joined().filter {
+      if case .meta(let event) = $0 {
+        switch event.data {
+        case .timeSignature, .tempo: return true
+        default: return false
+        }
+      } else { return false }
+    }.map {$0.event as! MIDIEvent.MetaEvent})
   }
 
   var _tempoEvents: AnyBidirectionalCollection<MIDIEvent.MetaEvent> {
@@ -257,7 +252,7 @@ extension _MIDIEventContainer
 // MARK: - Implementation for the event container
 struct MIDIEventContainer: _MIDIEventContainer {
 
-  typealias Index = Any2DIndex<OrderedDictionaryIndex, Int>
+  typealias Index = Any2DIndex<Int, Int>
   typealias Iterator = MIDIEventContainerIterator
   typealias SubSequence = MIDIEventContainerSlice
 
@@ -284,7 +279,7 @@ struct MIDIEventContainer: _MIDIEventContainer {
   var endIndex: Index {
     switch events.count - 1 {
       case -1: return startIndex
-      case let n: return Index(OrderedDictionaryIndex(n), events[n].value.endIndex)
+      case let n: return Index(Int(n), events[n].value.endIndex)
     }
 
   }
@@ -389,7 +384,7 @@ struct MIDIEventContainerIterator: IteratorProtocol {
 
 struct MIDIEventContainerSlice: _MIDIEventContainer {
 
-  typealias Index = Any2DIndex<OrderedDictionaryIndex, Int>
+  typealias Index = Any2DIndex<Int, Int>
   typealias Iterator = MIDIEventContainerIterator
   typealias SubSequence = MIDIEventContainerSlice
 
@@ -453,7 +448,7 @@ extension MIDIEventContainer {
 
     typealias Index = Int
     typealias Iterator = AnyIterator<MIDIEvent>
-    typealias SubSequence = AnyRandomAccessCollection<MIDIEvent>
+    typealias SubSequence = OrderedSet<MIDIEvent>.SubSequence
 
     typealias Indices = OrderedSet<MIDIEvent>.Indices
 
@@ -467,7 +462,7 @@ extension MIDIEventContainer {
     }
 
     /// Returns a collection of the events within `subRange`.
-    subscript(subRange: Range<Index>) -> SubSequence { return AnyRandomAccessCollection(events[subRange]) }
+    subscript(subRange: Range<Index>) -> SubSequence { return events[subRange] }
 
     var startIndex: Int { return events.startIndex }
     var endIndex: Int { return events.endIndex }

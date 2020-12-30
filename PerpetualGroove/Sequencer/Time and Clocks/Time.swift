@@ -27,7 +27,7 @@ final class Time: Named, CustomStringConvertible, Hashable {
 
   /// Callback invoked from MIDI Services thread when the time's MIDI clock source sends out
   /// MIDI packets.
-  private func read(_ packetList: UnsafePointer<MIDIPacketList>,
+  private func read(packetList: UnsafePointer<MIDIPacketList>,
                     context: UnsafeMutableRawPointer?)
   {
 
@@ -229,7 +229,7 @@ final class Time: Named, CustomStringConvertible, Hashable {
     MIDIObjectGetStringProperty(clockSource, kMIDIPropertyName, &unmanagedName)
 
     // Get the name as a String.
-    guard let name = unmanagedName?.takeUnretainedValue() as? String else {
+    guard let name = unmanagedName?.takeUnretainedValue() as String? else {
 
       fatalError("Endpoint should have been given a name")
 
@@ -249,7 +249,7 @@ final class Time: Named, CustomStringConvertible, Hashable {
 
       // Initialize the time's input port setting the callback to `read(_:context:)`.
       try MIDIInputPortCreateWithBlock(client, "Input" as CFString, &inPort,
-                                       weakCapture(of: self, block:Time.read))
+                                       self.read)
         ➤ "Failed to create input port."
 
       // Connect the clock source to the time's input port.
@@ -337,6 +337,8 @@ final class Time: Named, CustomStringConvertible, Hashable {
 
   }
 
-  var hashValue: Int { return ObjectIdentifier(self).hashValue }
+  func hash(into hasher: inout Hasher) {
+    ObjectIdentifier(self).hash(into: &hasher)
+  }
 
 }

@@ -83,7 +83,7 @@ final class MixerViewController: UICollectionViewController, SecondaryContentPro
 
     } catch {
 
-      loge(error, message: "Failed to add new track")
+      loge("Failed to add new track: \(error)")
 
       pendingTrackIndex = nil
 
@@ -417,7 +417,7 @@ final class MixerViewController: UICollectionViewController, SecondaryContentPro
         selectTrack(at: sequence?.currentTrackIndex, animated: true)
 
       default:
-        unreachable("Unexpected notification received.")
+        fatalError("Unexpected notification received.")
 
     }
 

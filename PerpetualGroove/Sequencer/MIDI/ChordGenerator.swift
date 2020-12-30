@@ -75,7 +75,7 @@ struct ChordGenerator {
   
 }
 
-/*extension ChordGenerator: LosslessJSONValueConvertible {
+extension ChordGenerator: LosslessJSONValueConvertible {
 
   var jsonValue: JSONValue {
     return ObjectJSONValue([
@@ -99,7 +99,7 @@ struct ChordGenerator {
   }
 
 }
- */
+ 
 
 extension ChordGenerator: MIDIGenerator {
 

@@ -79,7 +79,9 @@ enum DocumentItem: Named, CustomStringConvertible, CustomDebugStringConvertible,
     return "DocumentItem {\n\(dict.formattedDescription().indented(by: 4))\n}"
   }
 
-  var hashValue: Int { return url.hashValue }
+  func hash(into hasher: inout Hasher) {
+    url.hash(into: &hasher)
+  }
 
   static func ==(lhs: DocumentItem, rhs: DocumentItem) -> Bool {
     return lhs.url.isEqualToFileURL(rhs.url)

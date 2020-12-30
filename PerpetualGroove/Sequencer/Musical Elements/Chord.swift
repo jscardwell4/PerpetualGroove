@@ -49,13 +49,13 @@ struct Chord: RawRepresentable, Hashable, CustomStringConvertible {
   init?(rawValue: String) {
 
     // Get the elements from `rawValue` as a colon-separated list.
-    let components = ":".split(rawValue)
+    let components = rawValue.split(separator: ":")
 
     // Check that there was exactly one colon and create `Note` and `Pattern` values 
     // from the two substrings.
     guard components.count == 2,
-        let root = Note(rawValue: components[0]),
-        let pattern = Pattern(rawValue: components[1])
+        let root = Note(rawValue: String(components[0])),
+        let pattern = Pattern(rawValue: String(components[1]))
       else
     {
       return nil

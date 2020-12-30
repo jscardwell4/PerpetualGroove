@@ -45,7 +45,7 @@ final class Sequence: Nameable, NotificationDispatching, CustomStringConvertible
     guard instrumentTracks.indices.contains([idx1, idx2]) else { return }
 
     // Perform the swap.
-    swap(&instrumentTracks[idx1], &instrumentTracks[idx2])
+    instrumentTracks.swapAt(idx1, idx2)
 
     logv("posting 'DidUpdate'")
 

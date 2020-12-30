@@ -8,6 +8,7 @@
 
 import Foundation
 import MoonKit
+import SoundFont
 import AVFoundation
 
 /// A class for generating audio output via a sampler loaded with a preset from a sound font file.
@@ -120,7 +121,7 @@ final class Instrument: Equatable, CustomStringConvertible, NotificationDispatch
       try generator.sendNoteOn(outPort: outPort, endPoint: endPoint)
 
       // Translate the generator's duration into nanoseconds.
-      let nanoseconds = secondsToNanoseconds(generator.duration.seconds)
+      let nanoseconds = UInt64(generator.duration.seconds * Double(NSEC_PER_SEC))
 
       // Convert the nanosecond value into a dispatch time.
       let deadline = DispatchTime(uptimeNanoseconds: nanoseconds)
@@ -223,7 +224,7 @@ final class Instrument: Equatable, CustomStringConvertible, NotificationDispatch
                                      bankLSB: preset.bank)
 
     // Create a name for the instrument's MIDI client.
-    let name = "Instrument \(String(addressOf: self))" as CFString
+    let name = withUnsafePointer(to: self) { "Instrument \(UInt(bitPattern: $0))" as CFString }
 
     // Create the instrument's MIDI client.
     try MIDIClientCreateWithBlock(name, &client, nil) ➤ "Failed to create MIDI client"

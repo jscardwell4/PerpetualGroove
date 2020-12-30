@@ -619,10 +619,10 @@ final class MIDINode: SKSpriteNode {
       let trajectory: Trajectory
 
       /// The start and stop time of the segment expressed as a bar-beat time interval.
-      let timeInterval: CountableRange<BarBeatTime>
+      let timeInterval: Range<BarBeatTime>
 
       /// The start and stop time of the segment expressed as a tick interval.
-      let tickInterval: CountableRange<MIDITimeStamp>
+      let tickInterval: Range<MIDITimeStamp>
 
       /// The total elapsed time at the start of the segment.
       var startTime: BarBeatTime { return timeInterval.lowerBound }

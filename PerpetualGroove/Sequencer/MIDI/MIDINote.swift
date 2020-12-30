@@ -70,7 +70,7 @@ struct MIDINote {
   ]
 
   /// Returns the index of a note within the 12-note octave
-  static func index(for note: Note) -> Int { return normalizedNotes.index(of: normalizedNote(for: note))! }
+  static func index(for note: Note) -> Int { return normalizedNotes.firstIndex(of: normalizedNote(for: note))! }
 
   init(_ note: Note, _ octave: Octave) {
     self.note = note
@@ -93,10 +93,10 @@ extension MIDINote: RawRepresentable, LosslessJSONValueConvertible {
 
   /// Initialize with string representation
   init?(rawValue: String) {
-    guard let captures = (rawValue ~=> ~/"^([A-G][♭♯𝄫]?) ?((?:-1)|[0-9])$"),
-      let pitch = Note(rawValue: captures.1 ?? ""),
-      let rawOctave = Int(captures.2 ?? ""),
-      let octave = Octave(rawValue: rawOctave) else { return nil }
+    guard let captures = (~/"^([A-G][♭♯𝄫]?) ?((?:-1)|[0-9])$").firstMatch(in: rawValue),
+          let pitch = Note(rawValue: String(captures[1]?.substring ?? "")),
+          let rawOctave = Int(String(captures[2]?.substring ?? "")),
+          let octave = Octave(rawValue: rawOctave) else { return nil }
 
     self.note = pitch
     self.octave = octave

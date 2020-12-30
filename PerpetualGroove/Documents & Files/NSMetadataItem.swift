@@ -61,21 +61,17 @@ extension NSMetadataItem {
 
   var attributesDescription: String {
     var result = "NSMetadataItem {\n\t"
-    result += "\n\t".join(ItemKey.allCases.flatMap({
+    result += "\n\t".join(ItemKey.allCases.compactMap({
       guard let value = self[$0] else { return nil }
       let key = $0.rawValue
       let name: String?
       switch key {
         case ~/"^kMDItem[a-zA-Z]+$":
-          name = $0.rawValue[key.index(key.startIndex, offsetBy: 7)|->]
+          name = String($0.rawValue[key.index(key.startIndex, offsetBy: 7)...])
         case ~/"^NSMetadataItem[a-zA-Z]+Key$":
-          name = $0.rawValue[key.characters.index(key.startIndex,
-                                                  offsetBy: 14) ..< key.characters.index(key.endIndex,
-                                                                                         offsetBy: -3)]
+          name = String($0.rawValue[key.index(key.startIndex, offsetBy: 14) ..< key.index(key.endIndex, offsetBy: -3)])
         case ~/"^NSMetadataUbiquitousItem[a-zA-Z]+Key$":
-          name = $0.rawValue[key.characters.index(key.startIndex,
-                                                  offsetBy: 24) ..< key.characters.index(key.endIndex,
-                                                                                         offsetBy: -3)]
+          name = String($0.rawValue[key.index(key.startIndex, offsetBy: 24) ..< key.index(key.endIndex, offsetBy: -3)])
         default:
           name = nil
       }

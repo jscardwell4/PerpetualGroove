@@ -140,7 +140,7 @@ final class DocumentsViewController: UICollectionViewController {
     guard let document = DocumentManager.currentDocument else { selectedItem = nil; return }
 
     // Switch on the item manager's index for `document`.
-    switch itemManager.index(of: DocumentItem.document(document)) {
+    switch itemManager.firstIndex(of: DocumentItem.document(document)) {
 
       case let index?:
         // Update `selectedItem` with an index path consisting of `index` and the document item section.
@@ -150,7 +150,7 @@ final class DocumentsViewController: UICollectionViewController {
       default:
         // The item manager should have an index for all existing documents.
 
-        unreachable("Seems like this need revision.")
+        fatalError("Seems like this need revision.")
 
     }
 
@@ -314,7 +314,7 @@ final class DocumentsViewController: UICollectionViewController {
       didSet {
 
         // Update the character count.
-        characterCount = items.map({$0.name.characters.count}).max() ?? 0
+        characterCount = items.map({$0.name.count}).max() ?? 0
 
         let newItemCount = items.count, oldItemCount = oldValue.count
 
@@ -460,7 +460,7 @@ final class DocumentsViewController: UICollectionViewController {
     /// Updates the corresponding cell with the document's new name
     private func documentDidChangeName(_ notification: Notification) {
 
-      logi("userInfo: \(notification.userInfo)")
+      logi("userInfo: \(String(describing: notification.userInfo))")
 
       // Retrieve the document's new name.
       guard let newName = notification.newDocumentName else {
@@ -716,7 +716,7 @@ final class DocumentCell: UICollectionViewCell {
     // Handle according to the state of the gesture and the x value.
     switch (gesture.state, x) {
 
-      case (.began, <--0), (.changed, <--0):
+      case (.began, ..<0), (.changed, ..<0):
         // Moving content left. Update the leading constraint using the x value.
 
         leadingConstraint.constant = x
@@ -727,7 +727,7 @@ final class DocumentCell: UICollectionViewCell {
 
         leadingConstraint.constant = -deleteButton.bounds.width + x
 
-      case (.ended, <-|deleteButton.bounds.width.negated()):
+      case (.ended, ...(-deleteButton.bounds.width)):
         // Ended with the delete button showing. Fully reveal the delete button animating with a
         // distance derived from the x value.
 

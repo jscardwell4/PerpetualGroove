@@ -33,7 +33,7 @@ class Track: Named, MIDIEventDispatch, CustomStringConvertible, NotificationDisp
   var chunkIndex: Int {
 
     // Get the index of the track within all the sequence's tracks.
-    guard let index = sequence.tracks.index(where: {$0 === self}) else {
+    guard let index = sequence.tracks.firstIndex(where: {$0 === self}) else {
       fatalError("Failed to get the track position.")
     }
 

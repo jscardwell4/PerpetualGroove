@@ -116,11 +116,10 @@ extension AnyMIDIGenerator: MIDIGenerator {
 }
 
 extension AnyMIDIGenerator: Hashable {
-
-  var hashValue: Int {
+  func hash(into hasher: inout Hasher) {
     switch self {
-      case .note(let generator):  return generator.hashValue
-      case .chord(let generator): return generator.hashValue
+      case .note(let generator):  generator.hash(into: &hasher)
+      case .chord(let generator): generator.hash(into: &hasher)
     }
   }
 

@@ -90,7 +90,7 @@ enum MIDIEvent: Hashable, CustomStringConvertible {
         // can be known because `_MIDIEvent` is a private protocol, meaning declarations
         // of conformance appear within this file.
 
-        unreachable("Failed to downcast event")
+        fatalError("\(#fileID) \(#function) Failed to downcast event.")
 
     }
 
@@ -191,23 +191,10 @@ enum MIDIEvent: Hashable, CustomStringConvertible {
 
   }
 
-  var hashValue: Int {
-
-    // Group the MIDI event's raw bytes into `UInt64` values.
-    let byteGroups = bytes.segment(8).map(UInt64.init)
-
-    // Reduce the groups using a bitwise XOR and get the hash value.
-    let bytesHash = byteGroups.reduce(0, ^).hashValue
-
-    // Get the hash value for `delta`.
-    let deltaHash = delta?.hashValue ?? 0
-
-    // Get the hash value for `time`.
-    let timeHash = time.hashValue
-
-    // Return the result of combining the three hash values using a bitwise XOR.
-    return bytesHash ^ deltaHash ^ timeHash
-
+  func hash(into hasher: inout Hasher) {
+    bytes.hash(into: &hasher)
+    delta?.hash(into: &hasher)
+    time.hash(into: &hasher)
   }
 
   var description: String {
@@ -372,12 +359,10 @@ enum MIDIEvent: Hashable, CustomStringConvertible {
 
     }
 
-    var hashValue: Int {
-
-      // Return the result of combining the hash values for `time`, `data`, and `delta`
-      // using a bitwise XOR.
-      return time.hashValue ^ data.hashValue ^ (delta?.hashValue ?? 0)
-
+    func hash(into hasher: inout Hasher) {
+      time.hash(into: &hasher)
+      data.hash(into: &hasher)
+      delta?.hash(into: &hasher)
     }
 
     /// Returns `true` iff the two events have equal `time`, `delta`, and `data` values.
@@ -596,7 +581,7 @@ enum MIDIEvent: Hashable, CustomStringConvertible {
             // The specified type is not one of the supported meta event types.
 
             // Create an error message.
-            let message = "\(String(hexBytes: [type])) is not a supported meta event type."
+            let message = "\(String(type, radix: 16)) is not a supported meta event type."
 
             // Throw an `unsupportedEvent` error.
             throw MIDIFile.Error.unsupportedEvent(message)
@@ -644,15 +629,8 @@ enum MIDIEvent: Hashable, CustomStringConvertible {
 
       }
 
-      var hashValue: Int {
-
-        // Get the hash value for the data's type value.
-        let typeHash = type.hashValue
-
-        // Create a variable for the hash value of the data's actual 'data'.
-        let dataHash: Int
-
-        // Consider the data.
+      func hash(into hasher: inout Hasher) {
+        type.hash(into: &hasher)
         switch self {
 
           case .text (let text),
@@ -664,29 +642,27 @@ enum MIDIEvent: Hashable, CustomStringConvertible {
                .programName (let text):
             // The hash value for the data's actual 'data' is the string's hash value.
 
-            dataHash = text.hashValue
+            text.hash(into: &hasher)
 
           case .endOfTrack:
             // The data has no actual 'data' so the hash value is `0`.
 
-            dataHash = 0
+            break
 
           case .tempo (let bpm):
             // The hash value for the data's actual 'data' is the double's hash value.
 
-            dataHash = bpm.hashValue
+            bpm.hash(into: &hasher)
 
           case .timeSignature (let signature, let clocks, let notes):
-            // The hash value of the data's actual 'data' is the bitwise XOR of the 
+            // The hash value of the data's actual 'data' is the bitwise XOR of the
             // hash values for the `signature`, `clocks`, and `notes`.
 
-            dataHash = signature.hashValue ^ clocks.hashValue ^ notes.hashValue
+            signature.hash(into: &hasher)
+            clocks.hash(into: &hasher)
+            notes.hash(into: &hasher)
 
         }
-
-        // Return the bitwise XOR of two hash values.
-        return typeHash ^ dataHash
-
       }
 
       /// Returns `true` iff the two values are the same enumeration case with equal
@@ -945,16 +921,12 @@ enum MIDIEvent: Hashable, CustomStringConvertible {
 
     }
 
-    var hashValue: Int {
-
-      // Return the bitwise XOR of hash values of the channel event's properties,
-      // substituting `0` for any `nil` property values.
-      return time.hashValue
-           ^ (delta?.hashValue ?? 0)
-           ^ status.hashValue
-           ^ data1.hashValue
-           ^ (data2?.hashValue ?? 0)
-
+    func hash(into hasher: inout Hasher) {
+      time.hash(into: &hasher)
+      delta?.hash(into: &hasher)
+      status.hash(into: &hasher)
+      data1.hash(into: &hasher)
+      data2?.hash(into: &hasher)
     }
 
     /// Returns `true` iff all property values of the two channel events are equal.
@@ -990,11 +962,9 @@ enum MIDIEvent: Hashable, CustomStringConvertible {
 
       var description: String { return "\(kind) (\(channel))" }
 
-      var hashValue: Int {
-
-        // Return the bitwise XOR of the hash values for `kind` and `channel`.
-        return kind.hashValue ^ channel.hashValue
-
+      func hash(into hasher: inout Hasher) {
+        kind.hash(into: &hasher)
+        channel.hash(into: &hasher)
       }
 
       /// Initializing with the status byte of a channel event.
@@ -1114,7 +1084,7 @@ enum MIDIEvent: Hashable, CustomStringConvertible {
     /// The event's data for adding or removing a MIDI node.
     let data: Data
 
-    var bytes: [Byte] {
+    var bytes: [UInt8] {
 
       // Get the bytes for the event's data.
       let dataBytes = data.bytes
@@ -1213,7 +1183,11 @@ enum MIDIEvent: Hashable, CustomStringConvertible {
       self.data = try Data(data: data[currentIndex ..< i])
     }
 
-    var hashValue: Int { return time.hashValue ^ (delta?.hashValue ?? 0) ^ data.hashValue }
+    func hash(into hasher: inout Hasher) {
+      time.hash(into: &hasher)
+      delta?.hash(into: &hasher)
+      data.hash(into: &hasher)
+    }
 
     static func ==(lhs: MIDINodeEvent, rhs: MIDINodeEvent) -> Bool {
       return lhs.time == rhs.time && lhs.delta == rhs.delta && lhs.data == rhs.data
@@ -1232,7 +1206,7 @@ enum MIDIEvent: Hashable, CustomStringConvertible {
         self.nodeIdentifier = nodeIdentifier
       }
 
-      var bytes: [Byte] {
+      var bytes: [UInt8] {
 
         let nodeIdentifierBytes = {
           [$0.0, $0.1, $0.2, $0.3, $0.4, $0.5, $0.6, $0.7,
@@ -1270,9 +1244,8 @@ enum MIDIEvent: Hashable, CustomStringConvertible {
 
         if loopIDByteCount == 16 {
           loopIdentifier = UUID(
-            uuid: data.base.withUnsafeBytes({
-              (($0 as UnsafePointer<UInt8>) + currentIndex)
-                .withMemoryRebound(to: uuid_t.self, capacity: 1, {$0}).pointee
+            uuid: data.withUnsafeBytes({ (pointer: UnsafeRawBufferPointer) -> uuid_t in
+              (pointer.baseAddress! + currentIndex).assumingMemoryBound(to: uuid_t.self).pointee
             })
           )
         } else {
@@ -1292,9 +1265,8 @@ enum MIDIEvent: Hashable, CustomStringConvertible {
         }
 
         nodeIdentifier = UUID(
-            uuid: data.base.withUnsafeBytes({
-              (($0 as UnsafePointer<UInt8>) + currentIndex)
-                .withMemoryRebound(to: uuid_t.self, capacity: 1, {$0}).pointee
+            uuid: data.withUnsafeBytes({(pointer: UnsafeRawBufferPointer) -> uuid_t in
+              (pointer.baseAddress! + currentIndex).assumingMemoryBound(to: uuid_t.self).pointee
             })
           )
       }
@@ -1326,7 +1298,10 @@ enum MIDIEvent: Hashable, CustomStringConvertible {
 
       }
 
-      var hashValue: Int { return nodeIdentifier.hashValue ^ (loopIdentifier?.hashValue ?? 0) }
+      func hash(into hasher: inout Hasher) {
+        nodeIdentifier.hash(into: &hasher)
+        loopIdentifier?.hash(into: &hasher)
+      }
 
       static func ==(lhs: Identifier, rhs: Identifier) -> Bool {
         return lhs.nodeIdentifier == rhs.nodeIdentifier && lhs.loopIdentifier == rhs.loopIdentifier
@@ -1398,16 +1373,16 @@ enum MIDIEvent: Hashable, CustomStringConvertible {
                     generator: .note(NoteGenerator(data[currentIndex ..< i])))
       }
 
-      var bytes: [Byte] {
+      var bytes: [UInt8] {
         switch self {
         case let .add(identifier, trajectory, generator):
           var bytes = identifier.length.bytes + identifier.bytes
           let trajectoryBytes = trajectory.bytes
-          bytes.append(Byte(trajectoryBytes.count))
+          bytes.append(UInt8(trajectoryBytes.count))
           bytes += trajectoryBytes
           if case .note(let noteGenerator) = generator {
             let generatorBytes = noteGenerator.bytes
-            bytes.append(Byte(generatorBytes.count))
+            bytes.append(UInt8(generatorBytes.count))
             bytes += generatorBytes
           }
           return bytes
@@ -1425,12 +1400,15 @@ enum MIDIEvent: Hashable, CustomStringConvertible {
         }
       }
 
-      var hashValue: Int {
+      func hash(into hasher: inout Hasher) {
         switch self {
           case let .add(identifier, trajectory, generator):
-            return identifier.hashValue ^ trajectory.hashValue ^ generator.hashValue
+            identifier.hash(into: &hasher)
+            trajectory.hash(into: &hasher)
+            generator.hash(into: &hasher)
+
           case let .remove(identifier):
-            return identifier.hashValue
+            identifier.hash(into: &hasher)
         }
       }
 

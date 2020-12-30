@@ -138,8 +138,16 @@ final class DocumentManager: NotificationDispatching {
 
   /// Exposed accessors for `_currentDocument`.
   static private(set) var currentDocument: Document? {
-    get { return synchronized(currentDocumentLock) { _currentDocument } }
-    set { synchronized(currentDocumentLock) { _currentDocument = newValue } }
+    get {
+      objc_sync_enter(currentDocumentLock)
+      defer { objc_sync_exit(currentDocumentLock) }
+      return _currentDocument
+    }
+    set {
+      objc_sync_enter(currentDocumentLock)
+      _currentDocument = newValue
+      objc_sync_exit(currentDocumentLock)
+    }
   }
 
   /// Opens the document bookmarked as current for `location` when non-nil.
@@ -296,14 +304,14 @@ final class DocumentManager: NotificationDispatching {
 
     var itemsDidChange = false
 
-    if let removed = notification.removedMetadataItems?.flatMap(DocumentItem.metaData) {
+    if let removed = notification.removedMetadataItems?.compactMap(DocumentItem.metaData) {
 
       metadataItems ∖= removed
       itemsDidChange = true
 
     }
 
-    if let added = notification.addedMetadataItems?.flatMap(DocumentItem.metaData) {
+    if let added = notification.addedMetadataItems?.compactMap(DocumentItem.metaData) {
 
       metadataItems ∪= added
       itemsDidChange = true
@@ -319,7 +327,7 @@ final class DocumentManager: NotificationDispatching {
   /// Overwrites `localItems` content with items derived from the local directory's current contents.
   static private func refreshLocalItems() {
 
-    localItems = OrderedSet((directoryMonitor.directoryWrapper.fileWrappers ?? [:] ).values.flatMap({
+    localItems = OrderedSet((directoryMonitor.directoryWrapper.fileWrappers ?? [:] ).values.compactMap({
       [directory = directoryMonitor.directoryURL] in
       guard let name = $0.preferredFilename else { return nil }
       return try? LocalDocumentItem(url: directory + name)
@@ -350,7 +358,7 @@ final class DocumentManager: NotificationDispatching {
 
     }
 
-    for item in added.flatMap({try? LocalDocumentItem($0)}).map(DocumentItem.local) {
+    for item in added.compactMap({try? LocalDocumentItem($0)}).map(DocumentItem.local) {
       localItems.insert(item)
     }
 
@@ -530,15 +538,10 @@ final class DocumentManager: NotificationDispatching {
     }
 
     var isStale = false
-    guard let url = try URL(resolvingBookmarkData: data,
-                            options: .withoutUI,
-                            relativeTo: nil,
-                            bookmarkDataIsStale: &isStale)
-      else
-    {
-      logw("Unable to resolve bookmark data")
-      throw Error.invalidBookmarkData
-    }
+    let url = try URL(resolvingBookmarkData: data,
+                      options: .withoutUI,
+                      relativeTo: nil,
+                      bookmarkDataIsStale: &isStale)
 
     logi("resolved bookmark data for '\(name)'")
 
@@ -635,7 +638,7 @@ final class DocumentManager: NotificationDispatching {
           return FileManager.default.url(forUbiquityContainerIdentifier: nil) + "Documents"
 
         case .local:
-          return documentsURL
+          return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
           
       }
 

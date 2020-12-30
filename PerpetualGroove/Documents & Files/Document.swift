@@ -213,7 +213,7 @@ final class Document: UIDocument, Named, NotificationDispatching {
 
   /// Overridden to capture whether the document is being created or overwritten.
   override func save(to url: URL,
-                     for saveOperation: UIDocumentSaveOperation,
+                     for saveOperation: UIDocument.SaveOperation,
                      completionHandler: ((Bool) -> Void)?)
   {
     isCreating = saveOperation == .forCreating
@@ -268,13 +268,13 @@ final class Document: UIDocument, Named, NotificationDispatching {
     var description: String {
       switch self {
         case .didRenameDocument: return rawValue
-        case .didChangeState:    return NSNotification.Name.UIDocumentStateChanged.rawValue
+        case .didChangeState:    return UIDocument.stateChangedNotification.rawValue
       }
     }
 
     init?(_ description: String) {
       switch description {
-        case NSNotification.Name.UIDocumentStateChanged.rawValue:
+        case UIDocument.stateChangedNotification.rawValue:
           self = .didChangeState
         default:
           guard let name = NotificationName(rawValue: description) else { return nil }

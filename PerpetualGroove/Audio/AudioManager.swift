@@ -69,7 +69,7 @@ final class AudioManager {
     let audioSession = AVAudioSession.sharedInstance()
 
     // Set the category to allow playback.
-    try audioSession.setCategory(AVAudioSessionCategoryPlayback)
+    try audioSession.setCategory(AVAudioSession.Category.playback)
 
     // Active the session.
     try audioSession.setActive(true)

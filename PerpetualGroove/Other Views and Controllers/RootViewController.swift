@@ -96,8 +96,8 @@ final class RootViewController: UIViewController {
     // Set the popover view's x offset to the difference in x values of the two centers.
     popoverView.xOffset = presentingCenter.x - popoverCenter.x
 
-    assert(presentingView.center.x - popoverView.center.x == popoverView.xOffset,
-           "Coordinate space is not being calculated as I thought it was.")
+//    assert(presentingView.center.x - popoverView.center.x == popoverView.xOffset,
+//           "Coordinate space is not being calculated as I thought it was.")
 
   }
 

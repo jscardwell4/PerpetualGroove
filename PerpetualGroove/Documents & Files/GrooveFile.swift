@@ -69,12 +69,12 @@ struct GrooveFile: DataConvertible, LosslessJSONValueConvertible, CustomStringCo
   /// A JSON object with values for keys 'source', 'tracks', 'tempoChanges', and 'endOfFile' that 
   /// correspond with property values of the same name.
   var jsonValue: JSONValue {
-    return [
-      "source": source?.absoluteString,
-      "tracks": tracks,
-      "tempoChanges": tempoChanges,
-      "endOfFile": endOfFile
-    ]
+    return .object([
+      "source": source?.absoluteString.jsonValue ?? .null,
+      "tracks": tracks.jsonValue,
+      "tempoChanges": tempoChanges.jsonValue,
+      "endOfFile": .string(endOfFile.rawValue)
+    ])
   }
 
   /// Initializing with a JSON value.
@@ -88,7 +88,7 @@ struct GrooveFile: DataConvertible, LosslessJSONValueConvertible, CustomStringCo
     guard let dict = ObjectJSONValue(jsonValue),
           let tracks = ArrayJSONValue(dict["tracks"]),
           let tempoChanges = ObjectJSONValue(dict["tempoChanges"]),
-          let endOfFile = BarBeatTime(dict["endOfFile"])
+          let endOfFile = BarBeatTime(rawValue: (dict["endOfFile"]?.value as? String ?? ""))
       else
     {
       return nil
@@ -362,14 +362,14 @@ struct GrooveFile: DataConvertible, LosslessJSONValueConvertible, CustomStringCo
     /// values keyed by property name. The object also contains a value array for the `nodes` property.
     var jsonValue: JSONValue {
 
-      return [
-        "identifier": identifier.uuidString,
-        "repetitions": repetitions,
-        "repeatDelay": repeatDelay,
-        "start": start,
-        "end": end,
-        "nodes": Array(nodes.values)
-      ]
+      return .object( [
+        "identifier": .string(identifier.uuidString),
+        "repetitions": .number(repetitions as NSNumber),
+        "repeatDelay": .number(repeatDelay as NSNumber),
+        "start": .string(start.rawValue),
+        "end": .string(end.rawValue),
+        "nodes": .array(Array(nodes.values.map(\Node.jsonValue)))
+      ])
 
     }
 
@@ -385,8 +385,8 @@ struct GrooveFile: DataConvertible, LosslessJSONValueConvertible, CustomStringCo
             let identifier = UUID(uuidString: identifierString),
             let repetitions = Int(dict["repetitions"]),
             let repeatDelay = UInt64(dict["repeatDelay"]),
-            let start = BarBeatTime(dict["start"]),
-            let end = BarBeatTime(dict["end"]),
+            let start = BarBeatTime(rawValue: (dict["start"]?.value as? String ?? "")),
+            let end = BarBeatTime(rawValue: (dict["end"]?.value as? String ?? "")),
             let nodes = ArrayJSONValue(dict["nodes"])
         else
       {
@@ -488,13 +488,13 @@ struct GrooveFile: DataConvertible, LosslessJSONValueConvertible, CustomStringCo
     /// and 'removeTime'.
     var jsonValue: JSONValue {
 
-      return [
-        "identifier": identifier,
-        "generator": generator,
-        "trajectory": trajectory,
-        "addTime": addTime,
-        "removeTime": removeTime
-      ]
+      return .object ([
+        "identifier": identifier.jsonValue,
+        "generator": generator.jsonValue,
+        "trajectory": trajectory.jsonValue,
+        "addTime": .string(addTime.rawValue),
+        "removeTime": removeTime != nil ? .string(removeTime!.rawValue) : .null
+      ])
 
     }
 
@@ -509,7 +509,7 @@ struct GrooveFile: DataConvertible, LosslessJSONValueConvertible, CustomStringCo
             let identifier = Identifier(dict["identifier"]),
             let trajectory = MIDINode.Trajectory(dict["trajectory"]),
             let generator = AnyMIDIGenerator(dict["generator"]),
-            let addTime = BarBeatTime(dict["addTime"])
+            let addTime = BarBeatTime(rawValue: (dict["addTime"]?.value as? String ?? ""))
         else
       {
         return nil

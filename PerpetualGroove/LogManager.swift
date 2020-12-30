@@ -16,7 +16,7 @@ final class LogManager {
   private static var isInitialized = false
 
   /// Context for log messages relating to MIDI files.
-  static let MIDIFileContext = Log.Context(rawValue: 0b0000_0010_0000) ∪ .file
+  static let MIDIFileContext = Logger.Context(rawValue: 0b0000_0010_0000) + .file
 
   /// Context for log messages relating to sound font files.
   static let SF2FileContext = Log.Context(rawValue: 0b0000_0100_0000) ∪ .file

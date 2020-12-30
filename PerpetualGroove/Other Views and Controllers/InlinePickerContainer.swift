@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import SoundFont
 import MoonKit
 
 /// An abstract subclass of `UIControl` that wraps an instance of `InlinePickerView` to provide
@@ -138,7 +139,7 @@ class InlinePickerContainer: UIControl, InlinePickerDelegate {
   /// accessors of `picker.selection`.
   var selection: Int {
     get { return picker.selection }
-    set { picker.selection = selection }
+    set { picker.selection = newValue }
   }
 
   /// Selects the item at the specified index.

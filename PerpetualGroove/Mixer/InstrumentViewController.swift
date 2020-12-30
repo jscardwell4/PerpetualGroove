@@ -8,6 +8,7 @@
 
 import UIKit
 import MoonKit
+import SoundFont
 
 /// A `UIViewController` subclass for presenting an interface with controls for selecting a sound font,
 /// a program within the selected sound font, and a MIDI channel.
@@ -150,8 +151,8 @@ final class InstrumentViewController: UIViewController, SecondaryContent {
       // Check that there is an instrument, that the view is loaded, and that indexes may be retrieved
       // for the sound font and the program.
       guard let instrument = instrument,
-            let soundFontIndex = instrument.soundFont.index,
-            let programIndex = instrument.soundFont.presetHeaders.index(of: instrument.preset.presetHeader),
+            let soundFontIndex = Sequencer.soundFonts.firstIndex(where: {instrument.soundFont.isEqualTo($0)}),
+            let programIndex = instrument.soundFont.presetHeaders.firstIndex(of: instrument.preset.presetHeader),
             isViewLoaded
         else
       {

@@ -94,11 +94,6 @@ struct MIDIFile: ByteArrayConvertible, CustomStringConvertible {
 
     // TODO: We need to track signature changes to do this properly
 
-    // Create the bar beat time units used in for event time assignments.
-    let units = BarBeatTime.Units(beatsPerBar: 4,
-                                  beatsPerMinute: Sequencer.beatsPerMinute,
-                                  subbeatDivisor: UInt(header.division))
-
     // Create an array for accumulating track chunks as they are processed.
     var processedTracks: [TrackChunk] = []
 
@@ -123,7 +118,10 @@ struct MIDIFile: ByteArrayConvertible, CustomStringConvertible {
         ticks += delta
 
         // Modify the event's time using the current tick offset.
-        trackEvent.time = BarBeatTime(tickValue: ticks, units: units)
+        trackEvent.time = BarBeatTime(tickValue: ticks,
+                                      beatsPerBar: 4,
+                                      beatsPerMinute: Sequencer.beatsPerMinute,
+                                      subbeatDivisor: UInt(header.division))
 
         // Append the modified event.
         processedEvents.append(trackEvent)
