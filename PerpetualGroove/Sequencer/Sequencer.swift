@@ -271,7 +271,7 @@ final class Sequencer: NotificationDispatching {
 
   /// The sound fonts made available by the sequencer. Changes to the value of this property cause
   /// the sequencer to post a `didUpdateAvailableSoundFonts` notification.
-  static private(set) var soundFonts: [SoundFont] = [
+  static private(set) var soundFonts: [SoundFont2] = [
       EmaxSoundFont(.brassAndWoodwinds),
       EmaxSoundFont(.keyboardsAndSynths),
       EmaxSoundFont(.guitarsAndBasses),

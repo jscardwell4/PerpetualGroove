@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 48;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -24,7 +24,6 @@
 		C21DBAF91DA06CA000E50C23 /* Emax Volume 5.json in Resources */ = {isa = PBXBuildFile; fileRef = C21DBAF31DA06CA000E50C23 /* Emax Volume 5.json */; };
 		C21DBAFA1DA06CA000E50C23 /* Emax Volume 6.json in Resources */ = {isa = PBXBuildFile; fileRef = C21DBAF41DA06CA000E50C23 /* Emax Volume 6.json */; };
 		C21DBAFC1DA06CB900E50C23 /* SPYRO's Pure Oscillators.json in Resources */ = {isa = PBXBuildFile; fileRef = C21DBAFB1DA06CB900E50C23 /* SPYRO's Pure Oscillators.json */; };
-		C21E44C11B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C21E44C01B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 */; };
 		C21E44C51B76546C00574BD2 /* AudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21E44C41B76546C00574BD2 /* AudioManager.swift */; };
 		C223B1A21C8364ED006CF6B5 /* MIDIEventContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C223B1A11C8364ED006CF6B5 /* MIDIEventContainer.swift */; };
 		C22FA58D1BC830D600162DB4 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22FA58C1BC830D600162DB4 /* SettingsManager.swift */; };
@@ -42,16 +41,14 @@
 		C2516B2B1C08ECE10060710B /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2516B2A1C08ECE10060710B /* RootViewController.swift */; };
 		C2516B2D1C08F1B50060710B /* TransportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2516B2C1C08F1B50060710B /* TransportViewController.swift */; };
 		C252C834259D21E5000A0BA2 /* GrooveTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C252C833259D21E5000A0BA2 /* GrooveTests.swift */; };
-		C252C83E259D2219000A0BA2 /* SoundFontTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E96D281DA00F2F0030A8BB /* SoundFontTests.swift */; };
-		C252C840259D221D000A0BA2 /* SoundFontFileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FAAC7D1D99C7620089D1B0 /* SoundFontFileTests.swift */; };
 		C252C843259D23DE000A0BA2 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C252C842259D23DE000A0BA2 /* Nimble.framework */; };
-		C252C869259D2E73000A0BA2 /* SoundFont.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C252C860259D2E73000A0BA2 /* SoundFont.framework */; };
+		C252C869259D2E73000A0BA2 /* SoundFont.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C252C860259D2E73000A0BA2 /* SoundFont.framework */; platformFilter = ios; };
 		C252C870259D2E73000A0BA2 /* SoundFontTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C252C86F259D2E73000A0BA2 /* SoundFontTests.swift */; };
 		C252C872259D2E73000A0BA2 /* SoundFont.h in Headers */ = {isa = PBXBuildFile; fileRef = C252C862259D2E73000A0BA2 /* SoundFont.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C252C875259D2E73000A0BA2 /* SoundFont.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C252C860259D2E73000A0BA2 /* SoundFont.framework */; };
 		C252C876259D2E73000A0BA2 /* SoundFont.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C252C860259D2E73000A0BA2 /* SoundFont.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		C252C884259D2EAD000A0BA2 /* SF2File.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2207B901B9DC63300E4D65D /* SF2File.swift */; };
-		C252C888259D2EBC000A0BA2 /* SoundFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E542381BD56E00005B452F /* SoundFont.swift */; };
+		C252C884259D2EAD000A0BA2 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2207B901B9DC63300E4D65D /* File.swift */; };
+		C252C888259D2EBC000A0BA2 /* SoundFont2.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E542381BD56E00005B452F /* SoundFont2.swift */; };
 		C255C4321BD664B000CAEE9C /* Mixer.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C255C4311BD664B000CAEE9C /* Mixer.storyboard */; };
 		C255C4371BD664E400CAEE9C /* Generator.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C255C4361BD664E400CAEE9C /* Generator.storyboard */; };
 		C255C43C1BD6651100CAEE9C /* Tempo.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C255C43B1BD6651100CAEE9C /* Tempo.storyboard */; };
@@ -59,6 +56,18 @@
 		C2569E401B90005400EEB441 /* TempoTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2569E3F1B90005400EEB441 /* TempoTrack.swift */; };
 		C2576E0D1C13343E00F9A192 /* MIDINodePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2576E0C1C13343E00F9A192 /* MIDINodePlayer.swift */; };
 		C25EBC831B8BFAFA00E57665 /* MIDIFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25EBC821B8BFAFA00E57665 /* MIDIFile.swift */; };
+		C263FCE5259D3F1D002B3377 /* SoundFontFileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FAAC7D1D99C7620089D1B0 /* SoundFontFileTests.swift */; };
+		C263FD01259D4250002B3377 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C263FD00259D4250002B3377 /* Nimble.framework */; platformFilter = ios; };
+		C263FD15259E429B002B3377 /* Chunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C263FD13259E429B002B3377 /* Chunk.swift */; };
+		C263FD16259E429B002B3377 /* PresetHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C263FD14259E429B002B3377 /* PresetHeader.swift */; };
+		C263FD1B259E43AA002B3377 /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C263FD1A259E43AA002B3377 /* Functions.swift */; };
+		C263FD25259E44C1002B3377 /* PDTAChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C263FD22259E44C1002B3377 /* PDTAChunk.swift */; };
+		C263FD26259E44C1002B3377 /* SDTAChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C263FD23259E44C1002B3377 /* SDTAChunk.swift */; };
+		C263FD27259E44C1002B3377 /* INFOChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C263FD24259E44C1002B3377 /* INFOChunk.swift */; };
+		C263FD2C259E4525002B3377 /* SubChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C263FD2B259E4525002B3377 /* SubChunk.swift */; };
+		C263FD3B259E464B002B3377 /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C263FD3A259E464B002B3377 /* Storage.swift */; };
+		C263FD40259E4721002B3377 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = C263FD3F259E4721002B3377 /* Error.swift */; };
+		C263FD61259E616B002B3377 /* SPYRO's Pure Oscillators.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C263FD60259E6143002B3377 /* SPYRO's Pure Oscillators.sf2 */; };
 		C2670CCE1C46FEF6000F76F9 /* MIDIGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2670CCD1C46FEF6000F76F9 /* MIDIGenerator.swift */; };
 		C2670CD01C4704A2000F76F9 /* MIDINodeDispatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2670CCF1C4704A2000F76F9 /* MIDINodeDispatch.swift */; };
 		C26A27EF1B948E4F00BD1698 /* DocumentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A27EE1B948E4E00BD1698 /* DocumentsViewController.swift */; };
@@ -124,6 +133,8 @@
 		C28BD3121E0187520099F474 /* Latinotype - Triump-Rg-Rock-10.otf in Resources */ = {isa = PBXBuildFile; fileRef = C28BD2F81E0187520099F474 /* Latinotype - Triump-Rg-Rock-10.otf */; };
 		C28BD3131E0187520099F474 /* Latinotype - Triump-Rg-Rock-11.otf in Resources */ = {isa = PBXBuildFile; fileRef = C28BD2F91E0187520099F474 /* Latinotype - Triump-Rg-Rock-11.otf */; };
 		C28BD3141E0187520099F474 /* Latinotype - Triump-Rg-Rock-12.otf in Resources */ = {isa = PBXBuildFile; fileRef = C28BD2FA1E0187520099F474 /* Latinotype - Triump-Rg-Rock-12.otf */; };
+		C28D9690259E8DAD005F80B4 /* CharacterCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28D968F259E8DAD005F80B4 /* CharacterCode.swift */; };
+		C28D9695259E9163005F80B4 /* Size.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28D9694259E9163005F80B4 /* Size.swift */; };
 		C291C3F51B91F05900702AEA /* MIDIEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C291C3F41B91F05900702AEA /* MIDIEvent.swift */; };
 		C2981BA81C2468FD007FC51F /* Loop.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2981BA71C2468FD007FC51F /* Loop.swift */; };
 		C2981BAA1C2B85F4007FC51F /* Transport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2981BA91C2B85F4007FC51F /* Transport.swift */; };
@@ -225,9 +236,8 @@
 		C21DBAF31DA06CA000E50C23 /* Emax Volume 5.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "Emax Volume 5.json"; sourceTree = "<group>"; };
 		C21DBAF41DA06CA000E50C23 /* Emax Volume 6.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "Emax Volume 6.json"; sourceTree = "<group>"; };
 		C21DBAFB1DA06CB900E50C23 /* SPYRO's Pure Oscillators.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "SPYRO's Pure Oscillators.json"; sourceTree = "<group>"; };
-		C21E44C01B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SPYRO's Pure Oscillators.sf2"; sourceTree = "<group>"; };
 		C21E44C41B76546C00574BD2 /* AudioManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioManager.swift; sourceTree = "<group>"; };
-		C2207B901B9DC63300E4D65D /* SF2File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SF2File.swift; sourceTree = "<group>"; };
+		C2207B901B9DC63300E4D65D /* File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		C223B1A11C8364ED006CF6B5 /* MIDIEventContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIEventContainer.swift; sourceTree = "<group>"; };
 		C22FA58C1BC830D600162DB4 /* SettingsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
 		C23516611E06E123009AC033 /* MIDINote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINote.swift; sourceTree = "<group>"; };
@@ -261,6 +271,19 @@
 		C2569E3F1B90005400EEB441 /* TempoTrack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TempoTrack.swift; sourceTree = "<group>"; };
 		C2576E0C1C13343E00F9A192 /* MIDINodePlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINodePlayer.swift; sourceTree = "<group>"; };
 		C25EBC821B8BFAFA00E57665 /* MIDIFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIFile.swift; sourceTree = "<group>"; };
+		C263FCFC259D41A5002B3377 /* SoundFont.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = SoundFont.xctestplan; sourceTree = "<group>"; };
+		C263FD00259D4250002B3377 /* Nimble.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Nimble.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C263FD13259E429B002B3377 /* Chunk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chunk.swift; sourceTree = "<group>"; };
+		C263FD14259E429B002B3377 /* PresetHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PresetHeader.swift; sourceTree = "<group>"; };
+		C263FD1A259E43AA002B3377 /* Functions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Functions.swift; sourceTree = "<group>"; };
+		C263FD22259E44C1002B3377 /* PDTAChunk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PDTAChunk.swift; sourceTree = "<group>"; };
+		C263FD23259E44C1002B3377 /* SDTAChunk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SDTAChunk.swift; sourceTree = "<group>"; };
+		C263FD24259E44C1002B3377 /* INFOChunk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = INFOChunk.swift; sourceTree = "<group>"; };
+		C263FD2B259E4525002B3377 /* SubChunk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubChunk.swift; sourceTree = "<group>"; };
+		C263FD3A259E464B002B3377 /* Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
+		C263FD3F259E4721002B3377 /* Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
+		C263FD44259E5C51002B3377 /* SoundFont.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = SoundFont.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		C263FD60259E6143002B3377 /* SPYRO's Pure Oscillators.sf2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SPYRO's Pure Oscillators.sf2"; sourceTree = "<group>"; };
 		C2670CCD1C46FEF6000F76F9 /* MIDIGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIGenerator.swift; sourceTree = "<group>"; };
 		C2670CCF1C4704A2000F76F9 /* MIDINodeDispatch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINodeDispatch.swift; sourceTree = "<group>"; };
 		C269D1D61BD7FA190084A7EE /* LogManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogManager.swift; sourceTree = "<group>"; };
@@ -329,6 +352,8 @@
 		C28BD2F81E0187520099F474 /* Latinotype - Triump-Rg-Rock-10.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Latinotype - Triump-Rg-Rock-10.otf"; path = "Frameworks/Triump/Triump/Latinotype - Triump-Rg-Rock-10.otf"; sourceTree = "<group>"; };
 		C28BD2F91E0187520099F474 /* Latinotype - Triump-Rg-Rock-11.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Latinotype - Triump-Rg-Rock-11.otf"; path = "Frameworks/Triump/Triump/Latinotype - Triump-Rg-Rock-11.otf"; sourceTree = "<group>"; };
 		C28BD2FA1E0187520099F474 /* Latinotype - Triump-Rg-Rock-12.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Latinotype - Triump-Rg-Rock-12.otf"; path = "Frameworks/Triump/Triump/Latinotype - Triump-Rg-Rock-12.otf"; sourceTree = "<group>"; };
+		C28D968F259E8DAD005F80B4 /* CharacterCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterCode.swift; sourceTree = "<group>"; };
+		C28D9694259E9163005F80B4 /* Size.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Size.swift; sourceTree = "<group>"; };
 		C291C3F41B91F05900702AEA /* MIDIEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIEvent.swift; sourceTree = "<group>"; };
 		C2981BA71C2468FD007FC51F /* Loop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Loop.swift; sourceTree = "<group>"; };
 		C2981BA91C2B85F4007FC51F /* Transport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Transport.swift; sourceTree = "<group>"; };
@@ -358,10 +383,9 @@
 		C2E0433A1B72F4DC005F0675 /* MIDINodePlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MIDINodePlayerViewController.swift; sourceTree = "<group>"; };
 		C2E0433F1B72F4DC005F0675 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C2E043441B72F4DC005F0675 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C2E542381BD56E00005B452F /* SoundFont.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundFont.swift; sourceTree = "<group>"; };
+		C2E542381BD56E00005B452F /* SoundFont2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundFont2.swift; sourceTree = "<group>"; };
 		C2E5423A1BD5721C005B452F /* sf2Info.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sf2Info.txt; sourceTree = "<group>"; };
 		C2E705C41BBB17AE00636EF3 /* PurgatoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PurgatoryViewController.swift; sourceTree = "<group>"; };
-		C2E96D281DA00F2F0030A8BB /* SoundFontTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundFontTests.swift; sourceTree = "<group>"; };
 		C2EA30521BB9DF3300020958 /* Document.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
 		C2F2ADC11B90EBD300FF4836 /* Woodblock.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Woodblock.wav; sourceTree = "<group>"; };
 		C2F2ADC31B91098A00FF4836 /* NoteGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteGenerator.swift; sourceTree = "<group>"; };
@@ -397,6 +421,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C263FD01259D4250002B3377 /* Nimble.framework in Frameworks */,
 				C252C869259D2E73000A0BA2 /* SoundFont.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -503,10 +528,9 @@
 				C2776C191B9DF50D002FE5A8 /* Emax Collection */,
 				C2F2ADC11B90EBD300FF4836 /* Woodblock.wav */,
 				C21DBAFB1DA06CB900E50C23 /* SPYRO's Pure Oscillators.json */,
-				C21E44C01B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 */,
+				C263FD60259E6143002B3377 /* SPYRO's Pure Oscillators.sf2 */,
 			);
-			name = "Sound Sets";
-			path = "../Sound Sets";
+			path = "Sound Sets";
 			sourceTree = "<group>";
 		};
 		C2404BDA1B78F02C00A68A64 /* Source */ = {
@@ -531,8 +555,8 @@
 			isa = PBXGroup;
 			children = (
 				C2012FC81E22C84D0067DDC5 /* DocumentCell.xib */,
-				C28BD3401E018C380099F474 /* Fonts */,
 				C2404BD81B78EFA800A68A64 /* Sound Sets */,
+				C28BD3401E018C380099F474 /* Fonts */,
 				C255C43B1BD6651100CAEE9C /* Tempo.storyboard */,
 				C217EE521DB43CA10076B6E7 /* Documents.storyboard */,
 				C217EE581DB43CC30076B6E7 /* Main.storyboard */,
@@ -564,10 +588,22 @@
 		C252C861259D2E73000A0BA2 /* SoundFont */ = {
 			isa = PBXGroup;
 			children = (
-				C2E542381BD56E00005B452F /* SoundFont.swift */,
-				C2207B901B9DC63300E4D65D /* SF2File.swift */,
+				C263FD2B259E4525002B3377 /* SubChunk.swift */,
+				C263FD24259E44C1002B3377 /* INFOChunk.swift */,
+				C263FD22259E44C1002B3377 /* PDTAChunk.swift */,
+				C263FD23259E44C1002B3377 /* SDTAChunk.swift */,
+				C2207B901B9DC63300E4D65D /* File.swift */,
+				C263FD13259E429B002B3377 /* Chunk.swift */,
+				C263FD14259E429B002B3377 /* PresetHeader.swift */,
+				C2E542381BD56E00005B452F /* SoundFont2.swift */,
 				C252C862259D2E73000A0BA2 /* SoundFont.h */,
 				C252C863259D2E73000A0BA2 /* Info.plist */,
+				C263FD1A259E43AA002B3377 /* Functions.swift */,
+				C263FD3A259E464B002B3377 /* Storage.swift */,
+				C263FD3F259E4721002B3377 /* Error.swift */,
+				C263FD44259E5C51002B3377 /* SoundFont.playground */,
+				C28D968F259E8DAD005F80B4 /* CharacterCode.swift */,
+				C28D9694259E9163005F80B4 /* Size.swift */,
 			);
 			path = SoundFont;
 			sourceTree = "<group>";
@@ -575,6 +611,8 @@
 		C252C86E259D2E73000A0BA2 /* SoundFontTests */ = {
 			isa = PBXGroup;
 			children = (
+				C2FAAC7D1D99C7620089D1B0 /* SoundFontFileTests.swift */,
+				C263FCFC259D41A5002B3377 /* SoundFont.xctestplan */,
 				C252C86F259D2E73000A0BA2 /* SoundFontTests.swift */,
 				C252C871259D2E73000A0BA2 /* Info.plist */,
 			);
@@ -652,6 +690,7 @@
 		C28A0F511D99DE650011F706 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C263FD00259D4250002B3377 /* Nimble.framework */,
 				C252C842259D23DE000A0BA2 /* Nimble.framework */,
 				C2AF20A5259B9FE200EC084A /* MoonKit.framework */,
 				C217EE381DB435E40076B6E7 /* AudioToolbox.framework */,
@@ -864,8 +903,6 @@
 		C2FAAC7C1D99C7620089D1B0 /* SoundFontFileTests */ = {
 			isa = PBXGroup;
 			children = (
-				C2FAAC7D1D99C7620089D1B0 /* SoundFontFileTests.swift */,
-				C2E96D281DA00F2F0030A8BB /* SoundFontTests.swift */,
 			);
 			path = SoundFontFileTests;
 			sourceTree = "<group>";
@@ -1065,6 +1102,7 @@
 				C28BD2D61E01860C0099F474 /* Yellow Design Studio - Eveleth Icons.otf in Resources */,
 				C28BD2D71E01860C0099F474 /* Yellow Design Studio - Eveleth Light.otf in Resources */,
 				C28BD2D81E01860C0099F474 /* Yellow Design Studio - Eveleth Regular Bold.otf in Resources */,
+				C263FD61259E616B002B3377 /* SPYRO's Pure Oscillators.sf2 in Resources */,
 				C28BD2D91E01860C0099F474 /* Yellow Design Studio - Eveleth Regular.otf in Resources */,
 				C28BD2DA1E01860C0099F474 /* Yellow Design Studio - Eveleth Shadow.otf in Resources */,
 				C28BD2DB1E01860C0099F474 /* Yellow Design Studio - Eveleth Shapes.otf in Resources */,
@@ -1120,7 +1158,6 @@
 				C217EE511DB43C690076B6E7 /* LaunchScreen.storyboard in Resources */,
 				C217EE561DB43CA10076B6E7 /* Instrument.storyboard in Resources */,
 				C2776C261B9DF50D002FE5A8 /* Emax Volume 4.sf2 in Resources */,
-				C21E44C11B7653BF00574BD2 /* SPYRO's Pure Oscillators.sf2 in Resources */,
 				C2807DE21C74F34B0061A001 /* Rotate.storyboard in Resources */,
 				C21DBAF91DA06CA000E50C23 /* Emax Volume 5.json in Resources */,
 				C2776C241B9DF50D002FE5A8 /* Emax Volume 3.sf2 in Resources */,
@@ -1139,8 +1176,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C252C83E259D2219000A0BA2 /* SoundFontTests.swift in Sources */,
-				C252C840259D221D000A0BA2 /* SoundFontFileTests.swift in Sources */,
 				C252C834259D21E5000A0BA2 /* GrooveTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1149,8 +1184,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C252C888259D2EBC000A0BA2 /* SoundFont.swift in Sources */,
-				C252C884259D2EAD000A0BA2 /* SF2File.swift in Sources */,
+				C263FD26259E44C1002B3377 /* SDTAChunk.swift in Sources */,
+				C252C888259D2EBC000A0BA2 /* SoundFont2.swift in Sources */,
+				C263FD16259E429B002B3377 /* PresetHeader.swift in Sources */,
+				C263FD40259E4721002B3377 /* Error.swift in Sources */,
+				C252C884259D2EAD000A0BA2 /* File.swift in Sources */,
+				C263FD1B259E43AA002B3377 /* Functions.swift in Sources */,
+				C28D9690259E8DAD005F80B4 /* CharacterCode.swift in Sources */,
+				C263FD3B259E464B002B3377 /* Storage.swift in Sources */,
+				C263FD25259E44C1002B3377 /* PDTAChunk.swift in Sources */,
+				C263FD2C259E4525002B3377 /* SubChunk.swift in Sources */,
+				C263FD15259E429B002B3377 /* Chunk.swift in Sources */,
+				C263FD27259E44C1002B3377 /* INFOChunk.swift in Sources */,
+				C28D9695259E9163005F80B4 /* Size.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1158,6 +1204,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C263FCE5259D3F1D002B3377 /* SoundFontFileTests.swift in Sources */,
 				C252C870259D2E73000A0BA2 /* SoundFontTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1243,11 +1290,13 @@
 		};
 		C252C86B259D2E73000A0BA2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
+			platformFilter = ios;
 			target = C252C85F259D2E73000A0BA2 /* SoundFont */;
 			targetProxy = C252C86A259D2E73000A0BA2 /* PBXContainerItemProxy */;
 		};
 		C252C86D259D2E73000A0BA2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
+			platformFilter = ios;
 			target = C2E043301B72F4DC005F0675 /* PerpetualGroove */;
 			targetProxy = C252C86C259D2E73000A0BA2 /* PBXContainerItemProxy */;
 		};
@@ -1273,7 +1322,11 @@
 				DEVELOPMENT_TEAM = JT6STF4SHA;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = GrooveTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.GrooveTests;
@@ -1299,7 +1352,11 @@
 				DEVELOPMENT_TEAM = JT6STF4SHA;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = GrooveTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.GrooveTests;
@@ -1325,7 +1382,11 @@
 				DEVELOPMENT_TEAM = JT6STF4SHA;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = GrooveTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.GrooveTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1349,7 +1410,11 @@
 				DEVELOPMENT_TEAM = JT6STF4SHA;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = GrooveTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.GrooveTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1373,6 +1438,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = JT6STF4SHA;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -1380,7 +1446,11 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = SoundFont/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = NO;
@@ -1410,6 +1480,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = JT6STF4SHA;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -1417,7 +1488,11 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = SoundFont/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = NO;
@@ -1447,6 +1522,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = JT6STF4SHA;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -1454,7 +1530,11 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = SoundFont/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.SoundFont;
@@ -1482,6 +1562,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = JT6STF4SHA;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -1489,7 +1570,11 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = SoundFont/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.SoundFont;
@@ -1507,6 +1592,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -1517,7 +1603,11 @@
 				DEVELOPMENT_TEAM = JT6STF4SHA;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = SoundFontTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.SoundFontTests;
@@ -1533,6 +1623,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -1543,7 +1634,11 @@
 				DEVELOPMENT_TEAM = JT6STF4SHA;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = SoundFontTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.SoundFontTests;
@@ -1559,6 +1654,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -1569,7 +1665,11 @@
 				DEVELOPMENT_TEAM = JT6STF4SHA;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = SoundFontTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.SoundFontTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1583,6 +1683,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -1593,7 +1694,11 @@
 				DEVELOPMENT_TEAM = JT6STF4SHA;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = SoundFontTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.SoundFontTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1875,7 +1980,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1935,7 +2041,8 @@
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = NO;
 				STRIP_STYLE = debugging;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 2;
 			};

@@ -47,7 +47,7 @@ final class Instrument: Equatable, CustomStringConvertible, NotificationDispatch
   }
 
   /// The sound font utitlized by `preset`.
-  var soundFont: SoundFont { return preset.soundFont }
+  var soundFont: SoundFont2 { return preset.soundFont }
 
   /// The MIDI channel used by the instrument. Wrapper for the `channel` property of `preset`.
   var channel: UInt8 {
@@ -248,10 +248,10 @@ final class Instrument: Equatable, CustomStringConvertible, NotificationDispatch
   struct Preset: Equatable, LosslessJSONValueConvertible {
 
     /// The sound font providing the source data for the preset.
-    let soundFont: SoundFont
+    let soundFont: SoundFont2
 
     /// The preset header within the sound font's file specified by this preset.
-    let presetHeader: SF2File.PresetHeader
+    let presetHeader: PresetHeader
 
     /// The MIDI channel assigned to the preset.
     var channel: UInt8
@@ -273,7 +273,7 @@ final class Instrument: Equatable, CustomStringConvertible, NotificationDispatch
     ///   - soundFont: The sound font to assign to the preset.
     ///   - presetHeader: The preset header to assign to the preset.
     ///   - channel: The MIDI channel to assign to the preset. The default value is `0`.
-    init(soundFont: SoundFont, presetHeader: SF2File.PresetHeader, channel: UInt8 = 0) {
+    init(soundFont: SoundFont2, presetHeader: PresetHeader, channel: UInt8 = 0) {
       self.soundFont = soundFont
       self.presetHeader = presetHeader
       self.channel = channel
@@ -301,9 +301,9 @@ final class Instrument: Equatable, CustomStringConvertible, NotificationDispatch
 
       // Extract the property values from the JSON value.
       guard let dict = ObjectJSONValue(jsonValue),
-            let soundFont: SoundFont = EmaxSoundFont(dict["soundFont"])
+            let soundFont: SoundFont2 = EmaxSoundFont(dict["soundFont"])
                                        ?? AnySoundFont(dict["soundFont"]),
-            let presetHeader = SF2File.PresetHeader(dict["presetHeader"]),
+            let presetHeader = PresetHeader(dict["presetHeader"]),
             let channel = UInt8(dict["channel"])
         else
       {

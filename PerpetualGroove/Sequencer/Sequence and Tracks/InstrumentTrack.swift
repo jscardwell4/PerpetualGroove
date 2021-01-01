@@ -718,7 +718,7 @@ final class InstrumentTrack: Track, MIDINodeDispatch, Hashable {
       }
 
       // Create a sound font using the bundle resource url.
-      guard let soundFont: SoundFont = (   try? EmaxSoundFont(url: url))
+      guard let soundFont: SoundFont2 = (   try? EmaxSoundFont(url: url))
                                         ?? (try? AnySoundFont(url: url))
         else
       {

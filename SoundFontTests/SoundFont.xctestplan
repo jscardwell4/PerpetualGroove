@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "80BE9143-CEE5-46D5-8182-A6036A051BFD",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:PerpetualGroove.xcodeproj",
+        "identifier" : "C252C867259D2E73000A0BA2",
+        "name" : "SoundFontTests"
+      }
+    }
+  ],
+  "version" : 1
+}

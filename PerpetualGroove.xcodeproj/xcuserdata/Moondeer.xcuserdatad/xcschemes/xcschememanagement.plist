@@ -47,7 +47,7 @@
 		<key>SoundFont.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>15</integer>
+			<integer>10</integer>
 		</dict>
 		<key>SoundFontFile.xcscheme_^#shared#^_</key>
 		<dict>
@@ -78,6 +78,11 @@
 			<true/>
 		</dict>
 		<key>C23B05911C0219560081AC6E</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C252C85F259D2E73000A0BA2</key>
 		<dict>
 			<key>primary</key>
 			<true/>

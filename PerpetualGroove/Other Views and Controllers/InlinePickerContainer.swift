@@ -220,7 +220,7 @@ final class ProgramSelector: InlinePickerContainer {
 
   /// The sound font from which preset header names are queried for `items`. Setting the value of
   /// this property causes `items` to refresh.
-  var soundFont: SoundFont? { didSet { refreshItems() } }
+  var soundFont: SoundFont2? { didSet { refreshItems() } }
 
 }
 
