@@ -9,6 +9,7 @@ import XCTest
 import MoonKit
 import Nimble
 @testable import Groove
+@testable import MIDI
 
 final class BarBeatTimeTests: XCTestCase {
 
@@ -132,8 +133,8 @@ final class BarBeatTimeTests: XCTestCase {
     expect(time.subbeat) == 19
 
     time.beat = 10
-    expect(time.bar) == 5
-    expect(time.beat) == 10
+    expect(time.bar) == 7
+    expect(time.beat) == 2
     expect(time.subbeat) == 19
   }
 

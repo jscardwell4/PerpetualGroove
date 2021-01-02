@@ -8,6 +8,7 @@
 
 import Foundation
 import MoonKit
+import MIDI
 
 /// A class for managing playback state for the sequencer.
 final class Transport: NotificationDispatching {
@@ -142,7 +143,7 @@ final class Transport: NotificationDispatching {
           time.barBeatTime = jogTime
 
           // Nullify the jog time.
-          jogTime = .null
+          jogTime = .zero
 
           // Post notification that the transport is no longer jogging.
           postNotification(name: .didEndJogging, object: self, userInfo: ["time": time.barBeatTime.rawValue])
@@ -214,7 +215,7 @@ final class Transport: NotificationDispatching {
   }
 
   /// The bar beat time to which the transport has jogged or null if the transport is not jogging.
-  private var jogTime: BarBeatTime = .null
+  private var jogTime: BarBeatTime = .zero
 
   /// Jogs the transport in the specified direction by the specified amount.
   /// - Parameter 𝝙revolutions: The amount by which the transport is to be jogged specified in wheel

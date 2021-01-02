@@ -9,6 +9,7 @@
 import UIKit
 import MoonKit
 import SoundFont
+import MIDI
 
 /// A `UIViewController` subclass for presenting an interface with controls for selecting a sound font,
 /// a program within the selected sound font, and a MIDI channel.

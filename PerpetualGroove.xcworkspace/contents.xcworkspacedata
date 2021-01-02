@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:../SignalProcessing/SignalProcessing.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:../../Documents/GitHub/Nimble/Nimble.xcodeproj">
    </FileRef>
    <FileRef

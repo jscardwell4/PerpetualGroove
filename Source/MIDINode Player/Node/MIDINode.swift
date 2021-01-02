@@ -10,6 +10,7 @@ import UIKit
 import SpriteKit
 import MoonKit
 import CoreMIDI
+import MIDI
 
 final class MIDINode: SKSpriteNode {
 
@@ -204,7 +205,7 @@ final class MIDINode: SKSpriteNode {
     guard !isStationary else { return }
 
     // Update the current segment and resume movement of the node.
-    guard let nextSegment = path.segmentIndex(for: Time.current.barBeatTime) else {
+    guard let nextSegment = path.segmentIndex(for: Time.current?.barBeatTime ?? .zero) else {
       fatalError("Failed to get the index for the next segment")
     }
 
@@ -274,7 +275,7 @@ final class MIDINode: SKSpriteNode {
        identifier: UUID = UUID()) throws
   {
 
-    initTime = Time.current.barBeatTime
+    initTime = Time.current?.barBeatTime ?? .zero
     initialTrajectory = trajectory
     isJogging = Transport.current.isJogging
     self.dispatch = dispatch
@@ -417,7 +418,7 @@ final class MIDINode: SKSpriteNode {
         case .play:
 
           // Calculate half of the action's duration.
-          let halfDuration = node.generator.duration.seconds * 0.5
+          let halfDuration = node.generator.duration.seconds(withBPM: Sequencer.tempo) * 0.5
 
           // Scale up to playing size for half the action.
           let scaleUp = SKAction.resize(toWidth: MIDINode.playingSize.width,

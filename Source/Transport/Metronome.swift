@@ -9,6 +9,7 @@
 import Foundation
 import class AVFoundation.AVAudioUnitSampler
 import MoonKit
+import MIDI
 
 /// A class that plays a note at the start of each beat.
 final class Metronome {
@@ -31,11 +32,11 @@ final class Metronome {
       switch isOn {
 
         case true:
-          Time.current.register(callback:weakCapture(of: self, block:Metronome.click),
+          Time.current?.register(callback:weakCapture(of: self, block:Metronome.click),
                                 predicate: Metronome.isAudibleTick,
                                 identifier: callbackIdentifier)
         case false:
-          Time.current.removePredicatedCallback(with: callbackIdentifier)
+          Time.current?.removePredicatedCallback(with: callbackIdentifier)
 
       }
 

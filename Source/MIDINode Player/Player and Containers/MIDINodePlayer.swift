@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import SpriteKit
 import MoonKit
+import MIDI
 
 /// Singleton for coordinating `MIDINode` and `MIDINodePlayerNode` operations.
 final class MIDINodePlayer: NotificationDispatching {
@@ -165,7 +166,7 @@ final class MIDINodePlayer: NotificationDispatching {
 
 
     // Calculate the start and end times
-    let currentTime = Time.current.barBeatTime
+    let currentTime = Time.current?.barBeatTime ?? .zero
     let startTime = currentTime + loopStart
     let endTime = currentTime + loopEnd
 

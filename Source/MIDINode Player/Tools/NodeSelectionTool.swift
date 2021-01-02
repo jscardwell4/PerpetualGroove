@@ -9,6 +9,7 @@
 import UIKit
 import SpriteKit
 import MoonKit
+import MIDI
 
 /// An abstract tool for encapsulating node selection behavior.
 class NodeSelectionTool: Tool {

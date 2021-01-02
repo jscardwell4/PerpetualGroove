@@ -8,6 +8,7 @@
 
 import Foundation
 import MoonKit
+import MIDI
 
 /// A subclass of `Track` for containing only tempo-related MIDI events.
 final class TempoTrack: Track {
@@ -75,33 +76,33 @@ final class TempoTrack: Track {
   /// notes.
   ///
   /// - TODO: Add what the 'clocks' and 'notes' values are to the property's description.
-  private var timeSignatureEvent: MIDIEvent.MetaEvent {
+  private var timeSignatureEvent: MetaEvent {
 
     // Get the current bar-beat time.
-    let time = Time.current.barBeatTime
+    let time = Time.current?.barBeatTime ?? .zero
 
     // Create time signature data with the current `timeSignature` value.
-    let data: MIDIEvent.MetaEvent.Data = .timeSignature(signature: timeSignature,
+    let data: MetaEvent.Data = .timeSignature(signature: timeSignature,
                                                         clocks: 36,
                                                         notes: 8)
 
     // Return a Meta MIDI event initialized with `time` and `data`.
-    return MIDIEvent.MetaEvent(time: time, data: data)
+    return MetaEvent(time: time, data: data)
 
   }
 
   /// A new MIDI meta event initialized with the current bar-beat time and tempo data 
   /// initialized with the track's current `tempo` value.
-  private var tempoEvent: MIDIEvent.MetaEvent {
+  private var tempoEvent: MetaEvent {
 
     // Get the current bar-beat time.
-    let time = Time.current.barBeatTime
+    let time = Time.current?.barBeatTime ?? .zero
 
     // Create tempo data with the current `tempo` value.
-    let data: MIDIEvent.MetaEvent.Data = .tempo(bpm: tempo)
+    let data: MetaEvent.Data = .tempo(bpm: tempo)
 
     // Return a Meta MIDI event initialized with `time` and `data`.
-    return MIDIEvent.MetaEvent(time: time, data: data)
+    return MetaEvent(time: time, data: data)
 
   }
 
@@ -208,8 +209,8 @@ final class TempoTrack: Track {
   ///
   /// - Parameters:
   ///   - sequence: The `Sequence` owning the tempo track.
-  ///   - trackChunk: The `MIDIFile.TrackChunk` containing the tempo track's MIDI events.
-  init(sequence: Sequence, trackChunk: MIDIFile.TrackChunk) {
+  ///   - trackChunk: The `TrackChunk` containing the tempo track's MIDI events.
+  init(sequence: Sequence, trackChunk: TrackChunk) {
 
     // Initialize with the specified sequence.
     super.init(sequence: sequence)

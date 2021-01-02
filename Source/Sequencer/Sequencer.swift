@@ -9,6 +9,7 @@
 import Foundation
 import MoonKit
 import SoundFont
+import MIDI
 
 /// A class for overseeing the creation and playback of a sequence in the MIDI node player.
 final class Sequencer: NotificationDispatching {

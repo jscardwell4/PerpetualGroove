@@ -9,6 +9,7 @@
 import UIKit
 import SpriteKit
 import MoonKit
+import MIDI
 
 /// A tool for generating new `MIDINode` instances.
 final class AddTool: Tool {

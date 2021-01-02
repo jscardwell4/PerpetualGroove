@@ -70,7 +70,7 @@
       </EnvironmentVariables>
       <TestPlans>
          <TestPlanReference
-            reference = "container:GrooveTests/PerpetualGroove.xctestplan"
+            reference = "container:Tests/GrooveTests/PerpetualGroove.xctestplan"
             default = "YES">
          </TestPlanReference>
       </TestPlans>
@@ -94,6 +94,16 @@
                BlueprintIdentifier = "C252C867259D2E73000A0BA2"
                BuildableName = "SoundFontTests.xctest"
                BlueprintName = "SoundFontTests"
+               ReferencedContainer = "container:PerpetualGroove.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "C2E98C2325A1087300FE1560"
+               BuildableName = "MIDITests.xctest"
+               BlueprintName = "MIDITests"
                ReferencedContainer = "container:PerpetualGroove.xcodeproj">
             </BuildableReference>
          </TestableReference>

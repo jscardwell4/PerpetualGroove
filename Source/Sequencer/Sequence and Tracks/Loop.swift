@@ -8,6 +8,7 @@
 
 import Foundation
 import MoonKit
+import MIDI
 
 // TODO: Review file
 
@@ -77,7 +78,7 @@ final class Loop: Swift.Sequence, MIDINodeDispatch, CustomStringConvertible {
     let text = "start(\(identifier.uuidString)):\(repetitions):\(repeatDelay)"
 
     // Return a marker meta event containing `text`.
-    return .meta(MIDIEvent.MetaEvent(data: .marker(name: text)))
+    return .meta(MetaEvent(data: .marker(name: text)))
 
   }
 
@@ -89,7 +90,7 @@ final class Loop: Swift.Sequence, MIDINodeDispatch, CustomStringConvertible {
     let text = "end(\(identifier.uuidString))"
 
     // Return a marker meta event containing `text`.
-    return .meta(MIDIEvent.MetaEvent(data: .marker(name: text)))
+    return .meta(MetaEvent(data: .marker(name: text)))
 
   }
 
@@ -132,23 +133,25 @@ final class Loop: Swift.Sequence, MIDINodeDispatch, CustomStringConvertible {
     start = grooveLoop.start
 
     // Create an array for accumulating the loop's MIDI events.
+    fatalError("\(#fileID) \(#function) Not yet implemented")
     var events: [MIDIEvent] = []
 
+
     // Iterate the nodes in `grooveLoop`.
-    for node in grooveLoop.nodes.values {
-
-      // Append a `MIDINodeEvent` that adds the node.
-      events.append(.node(node.addEvent))
-
-      // Get the node's remove event.
-      if let removeEvent = node.removeEvent {
-
-        // Append a `MIDINodeEvent` that removes the node.
-        events.append(.node(removeEvent))
-
-      }
-
-    }
+//    for node in grooveLoop.nodes.values {
+//
+//      // Append a `MIDINodeEvent` that adds the node.
+//      events.append(.node(node.addEvent))
+//
+//      // Get the node's remove event.
+//      if let removeEvent = node.removeEvent {
+//
+//        // Append a `MIDINodeEvent` that removes the node.
+//        events.append(.node(removeEvent))
+//
+//      }
+//
+//    }
 
     // Initialize `eventContainer` with the array of node events.
     self.eventContainer = MIDIEventContainer(events: events)
@@ -163,23 +166,25 @@ final class Loop: Swift.Sequence, MIDINodeDispatch, CustomStringConvertible {
   func registrationTimes<Source>(forAdding events: Source) -> [BarBeatTime]
     where Source:Swift.Sequence, Source.Iterator.Element == MIDIEvent
   {
-
+    fatalError("\(#fileID) \(#function) Not yet implemented")
     // Return the times for the MIDI node events found in `events`.
-    return events.filter({
-      if case .node(_) = $0 { return true }
-      else { return false }
-    }).map({$0.time})
+//    return events.filter({
+//      if case .node(_) = $0 { return true }
+//      else { return false }
+//    }).map({$0.time})
 
   }
 
   /// Dispatches `event` via the loop's node manager.
   func dispatch(event: MIDIEvent) {
 
+    fatalError("\(#fileID) \(#function) Not yet implemented")
+
     // Get the node event wrapped by `event`.
-    guard case .node(let nodeEvent) = event else { return }
+//    guard case .node(let nodeEvent) = event else { return }
 
     // Delegate to the node manager to perform actual event handling.
-    nodeManager.handle(event: nodeEvent)
+//    nodeManager.handle(event: nodeEvent)
 
   }
 

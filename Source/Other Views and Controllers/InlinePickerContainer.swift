@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import SoundFont
 import MoonKit
+import MIDI
 
 /// An abstract subclass of `UIControl` that wraps an instance of `InlinePickerView` to provide
 /// application-specific customization.

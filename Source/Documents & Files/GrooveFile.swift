@@ -8,6 +8,7 @@
 
 import Foundation
 import MoonKit
+import MIDI
 
 /// Struct that holds data for a 'Groove' sequence.
 struct GrooveFile: DataConvertible, LosslessJSONValueConvertible, CustomStringConvertible {
@@ -189,48 +190,48 @@ struct GrooveFile: DataConvertible, LosslessJSONValueConvertible, CustomStringCo
 
             }
 
-          case .node(let event):
-            // Check the event's data to determine whether it adds or removes a node.
-
-            switch event.data {
-
-              case .add:
-                // The event adds a node, create a new `Node` instance and append to the track.
-
-                // Generate the new node.
-                guard let node = Node(event: event) else { continue }
-
-                // Check the event for a loop identifier.
-                if let loopIdentifier = event.loopIdentifier {
-
-                  // A loop matching the identifier should have already been created, append the node
-                  // to the loop's nodes.
-                  loops[loopIdentifier]?.nodes[event.identifier] = node
-
-                } else {
-
-                  // Append the node to the track's nodes.
-                  nodes[event.identifier] = node
-
-                }
-
-              case .remove:
-                // The event removes a node, update the node specified by `event`.
-
-                // Check the event for a loop identifier.
-                if let loopIdentifier = event.loopIdentifier {
-
-                  // Update the node contained by the loop matching the identifier.
-                  loops[loopIdentifier]?.nodes[event.identifier]?.removeTime = event.time
-
-                } else {
-
-                  // Update the track's node.
-                  nodes[event.identifier]?.removeTime = event.time
-
-                }
-
-            }
+//          case .node(let event):
+//            // Check the event's data to determine whether it adds or removes a node.
+//
+//            switch event.data {
+//
+//              case .add:
+//                // The event adds a node, create a new `Node` instance and append to the track.
+//
+//                // Generate the new node.
+//                guard let node = Node(event: event) else { continue }
+//
+//                // Check the event for a loop identifier.
+//                if let loopIdentifier = event.loopIdentifier {
+//
+//                  // A loop matching the identifier should have already been created, append the node
+//                  // to the loop's nodes.
+//                  loops[loopIdentifier]?.nodes[event.identifier] = node
+//
+//                } else {
+//
+//                  // Append the node to the track's nodes.
+//                  nodes[event.identifier] = node
+//
+//                }
+//
+//              case .remove:
+//                // The event removes a node, update the node specified by `event`.
+//
+//                // Check the event for a loop identifier.
+//                if let loopIdentifier = event.loopIdentifier {
+//
+//                  // Update the node contained by the loop matching the identifier.
+//                  loops[loopIdentifier]?.nodes[event.identifier]?.removeTime = event.time
+//
+//                } else {
+//
+//                  // Update the track's node.
+//                  nodes[event.identifier]?.removeTime = event.time
+//
+//                }
+//
+//            }
 
           default:
             // The event is not handled by `Track`, ignore it.
@@ -297,7 +298,7 @@ struct GrooveFile: DataConvertible, LosslessJSONValueConvertible, CustomStringCo
   struct Loop: CustomStringConvertible, LosslessJSONValueConvertible {
 
     /// Typealias for the midi event kind utilized by `Loop`.
-    typealias Event = MIDIEvent.MetaEvent
+    typealias Event = MetaEvent
 
     /// The unique identifier for the loop within its track.
     var identifier: UUID
@@ -413,13 +414,13 @@ struct GrooveFile: DataConvertible, LosslessJSONValueConvertible, CustomStringCo
   struct Node: LosslessJSONValueConvertible {
 
     /// Use the identifier type utilized by midi node events.
-    typealias Identifier = MIDIEvent.MIDINodeEvent.Identifier
+    typealias Identifier = MIDINodeEvent.Identifier
 
     /// The type for encapsulating initial angle and velocity data.
     typealias Trajectory = MIDINode.Trajectory
 
     /// Typealias for the midi event kind utilized by `Node`.
-    typealias Event = MIDIEvent.MIDINodeEvent
+    typealias Event = MIDINodeEvent
 
     /// The unique identifier for the node within its track.
     let identifier: Identifier

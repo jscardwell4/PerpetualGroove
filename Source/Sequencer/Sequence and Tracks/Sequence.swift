@@ -8,6 +8,7 @@
 
 import Foundation
 import MoonKit
+import MIDI
 
 /// The `Sequence` class manaages a collection of tracks and serves as the top level 
 /// object persisted by the `GrooveDocument` class.
@@ -351,7 +352,7 @@ final class Sequence: Nameable, NotificationDispatching, CustomStringConvertible
       }
 
       // Create a meta event using the converted values.
-      let tempoEvent = MIDIEvent.MetaEvent(data: .tempo(bpm: bpm), time: time)
+      let tempoEvent = MetaEvent(data: .tempo(bpm: bpm), time: time)
 
       // Append a MIDI event wrapping `tempoEvent` to the array of tempo events.
       tempoEvents.append(.meta(tempoEvent))
@@ -507,5 +508,23 @@ extension Notification {
   /// The instrument track removed by a sequence or `nil` when the notification is not a
   /// `didRemoveTrack` notification posted by a sequence.
   var removedTrack: InstrumentTrack? { return userInfo?["removedTrack"] as? InstrumentTrack }
+
+}
+
+extension MIDIFile {
+
+  /// Intializing with the tracks in a sequence.
+  init(sequence: Sequence) {
+
+    // Initialize `tracks` by mapping the tracks in the sequence to their generated chunks.
+    let tracks = sequence.tracks.map {$0.chunk}
+
+    // Initialize `header` to a chunk using default values and the number of tracks.
+    let header = HeaderChunk(numberOfTracks: UInt16(tracks.count))
+
+    self.init(tracks: tracks, header: header)
+
+  }
+
 
 }

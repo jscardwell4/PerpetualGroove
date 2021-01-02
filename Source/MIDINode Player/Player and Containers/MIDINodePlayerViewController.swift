@@ -9,6 +9,7 @@
 import UIKit
 import SpriteKit
 import MoonKit
+import MIDI
 
 // TODO: Export button beside file name
 
@@ -24,13 +25,13 @@ final class MIDINodePlayerViewController: UIViewController, UITextFieldDelegate 
   /// Sets the start of the loop to the current time.
   @IBAction
   private func startLoopAction() {
-    MIDINodePlayer.loopStart = Time.current.barBeatTime
+    MIDINodePlayer.loopStart = Time.current?.barBeatTime ?? .zero
   }
 
   /// Sets the end of the loop to the current time.
   @IBAction
   private func stopLoopAction() {
-    MIDINodePlayer.loopEnd = Time.current.barBeatTime
+    MIDINodePlayer.loopEnd = Time.current?.barBeatTime ?? .zero
   }
 
   /// Sets the mode of the sequencer to `loop`.

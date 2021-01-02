@@ -8,6 +8,7 @@
 
 import Foundation
 import MoonKit
+import MIDI
 
 // TODO: Review file after updating documentation for files in directory '../MIDI'.
 
@@ -78,7 +79,7 @@ class Track: Named, MIDIEventDispatch, CustomStringConvertible, NotificationDisp
   /// A track chunk composed of the track's MIDI events. The track's MIDI events are
   /// assembled from `headEvents`, the events from `eventContainer` post validation, and
   /// `tailEvents`.
-  var chunk: MIDIFile.TrackChunk {
+  var chunk: TrackChunk {
 
     // Validate the events held by `eventContainer` to allow subclasses to perform type-
     // specific checks and/or additions.
@@ -88,7 +89,7 @@ class Track: Named, MIDIEventDispatch, CustomStringConvertible, NotificationDisp
     let events: [MIDIEvent] = headEvents + Array<MIDIEvent>(eventContainer) + tailEvents
 
     // Return a track chunk initialized with the array of MIDI events.
-    return MIDIFile.TrackChunk(events: events)
+    return TrackChunk(events: events)
 
   }
 
@@ -103,10 +104,10 @@ class Track: Named, MIDIEventDispatch, CustomStringConvertible, NotificationDisp
     let trackName = name.isEmpty ? "Track\(chunkIndex)" : name
 
     // Create the data for the track name MIDI event.
-    let trackNameEventData: MIDIEvent.MetaEvent.Data = .sequenceTrackName(name: trackName)
+    let trackNameEventData: MetaEvent.Data = .sequenceTrackName(name: trackName)
 
     // Create the track name MIDI event.
-    let trackNameEvent: MIDIEvent = .meta(MIDIEvent.MetaEvent(data: trackNameEventData))
+    let trackNameEvent: MIDIEvent = .meta(MetaEvent(data: trackNameEventData))
 
     // Return an array containing the track name event.
     return [trackNameEvent]
@@ -119,7 +120,7 @@ class Track: Named, MIDIEventDispatch, CustomStringConvertible, NotificationDisp
   var tailEvents: [MIDIEvent] {
 
     // Create the end of track meta event using `endOfTrack`.
-    let endOfTrackMetaEvent = MIDIEvent.MetaEvent(data: .endOfTrack, time: endOfTrack)
+    let endOfTrackMetaEvent = MetaEvent(data: .endOfTrack, time: endOfTrack)
 
     // Create the MIDI event specifying the end of the track.
     let endOfTrackEvent: MIDIEvent = .meta(endOfTrackMetaEvent)

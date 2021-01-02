@@ -10,6 +10,7 @@ import Foundation
 import MoonKit
 import SoundFont
 import AVFoundation
+import MIDI
 
 /// A class for generating audio output via a sampler loaded with a preset from a sound font file.
 final class Instrument: Equatable, CustomStringConvertible, NotificationDispatching {
@@ -121,7 +122,7 @@ final class Instrument: Equatable, CustomStringConvertible, NotificationDispatch
       try generator.sendNoteOn(outPort: outPort, endPoint: endPoint)
 
       // Translate the generator's duration into nanoseconds.
-      let nanoseconds = UInt64(generator.duration.seconds * Double(NSEC_PER_SEC))
+      let nanoseconds = UInt64(generator.duration.seconds(withBPM: Sequencer.tempo) * Double(NSEC_PER_SEC))
 
       // Convert the nanosecond value into a dispatch time.
       let deadline = DispatchTime(uptimeNanoseconds: nanoseconds)

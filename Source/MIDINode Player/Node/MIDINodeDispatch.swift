@@ -8,6 +8,7 @@
 
 import Foundation
 import MoonKit
+import MIDI
 
 /// Typealias for a weak `MIDINode` instance.
 typealias MIDINodeRef = Weak<MIDINode>

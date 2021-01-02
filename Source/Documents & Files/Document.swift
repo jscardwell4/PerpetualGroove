@@ -8,6 +8,7 @@
 
 import UIKit
 import MoonKit
+import MIDI
 
 /// A `UIDocument` subclass for presenting a document interface usable by the application.
 final class Document: UIDocument, Named, NotificationDispatching {

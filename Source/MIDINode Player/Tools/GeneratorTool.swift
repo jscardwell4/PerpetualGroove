@@ -9,6 +9,7 @@
 import UIKit
 import SpriteKit
 import MoonKit
+import MIDI
 
 /// A tool for modifying the generator assigned to new or existing midi nodes.
 final class GeneratorTool: PresentingNodeSelectionTool {
