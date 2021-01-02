@@ -100,7 +100,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "C2E043301B72F4DC005F0675"
                BuildableName = "Groove.app"
-               BlueprintName = "PerpetualGroove"
+               BlueprintName = "Groove"
                ReferencedContainer = "container:PerpetualGroove.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -116,7 +116,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C2E043301B72F4DC005F0675"
             BuildableName = "Groove.app"
-            BlueprintName = "PerpetualGroove"
+            BlueprintName = "Groove"
             ReferencedContainer = "container:PerpetualGroove.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -239,7 +239,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C2E043301B72F4DC005F0675"
             BuildableName = "Groove.app"
-            BlueprintName = "PerpetualGroove"
+            BlueprintName = "Groove"
             ReferencedContainer = "container:PerpetualGroove.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -268,7 +268,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C2E043301B72F4DC005F0675"
             BuildableName = "Groove.app"
-            BlueprintName = "PerpetualGroove"
+            BlueprintName = "Groove"
             ReferencedContainer = "container:PerpetualGroove.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

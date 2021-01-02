@@ -1,0 +1,47 @@
+{
+  "configurations" : [
+    {
+      "id" : "0053170E-F881-410B-A2C7-25183AD1F039",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "environmentVariableEntries" : [
+      {
+        "key" : "OS_ACTIVITY_MODE",
+        "value" : "disable"
+      },
+      {
+        "key" : "MOONKIT_LOG_DIR",
+        "value" : "\/Users\/Moondeer\/Projects\/PerpetualGroove\/Logs"
+      }
+    ],
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:PerpetualGroove.xcodeproj",
+      "identifier" : "C2E043301B72F4DC005F0675",
+      "name" : "PerpetualGroove"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:PerpetualGroove.xcodeproj",
+        "identifier" : "C252C830259D21E5000A0BA2",
+        "name" : "GrooveTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:PerpetualGroove.xcodeproj",
+        "identifier" : "C252C867259D2E73000A0BA2",
+        "name" : "SoundFontTests"
+      }
+    }
+  ],
+  "version" : 1
+}
