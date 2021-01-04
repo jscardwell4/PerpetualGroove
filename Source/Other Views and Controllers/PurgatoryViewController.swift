@@ -5,9 +5,9 @@
 //  Created by Jason Cardwell on 9/29/15.
 //  Copyright © 2015 Moondeer Studios. All rights reserved.
 //
-
 import UIKit
 import MoonKit
+import Common
 
 /// A custom segue for transitioning to an instance of `PurgatoryViewController`.
 final class PurgatorySegue: UIStoryboardSegue {
@@ -43,14 +43,15 @@ final class PurgatoryViewController: UIViewController {
 
     super.awakeFromNib()
 
-    receptionist.observe(name: .NSUbiquityIdentityDidChange,
-                         callback: weakCapture(of: self, block:PurgatoryViewController.identityDidChange))
-
-    receptionist.observe(name: .iCloudStorageChanged, from: SettingsManager.self,
-                         callback: weakCapture(of: self, block:PurgatoryViewController.iCloudStorageChanged))
-
-    receptionist.observe(name: UIApplication.didBecomeActiveNotification,
-                         callback: weakCapture(of: self, block:PurgatoryViewController.applicationDidBecomeActive))
+    fatalError("\(#function) not yet implemented.")
+//    receptionist.observe(name: .NSUbiquityIdentityDidChange,
+//                         callback: weakCapture(of: self, block:PurgatoryViewController.identityDidChange))
+//
+//    receptionist.observe(name: .iCloudStorageChanged, from: SettingsManager.self,
+//                         callback: weakCapture(of: self, block:PurgatoryViewController.iCloudStorageChanged))
+//
+//    receptionist.observe(name: UIApplication.didBecomeActiveNotification,
+//                         callback: weakCapture(of: self, block:PurgatoryViewController.applicationDidBecomeActive))
 
   }
 
@@ -78,7 +79,7 @@ final class PurgatoryViewController: UIViewController {
   private func iCloudStorageChanged(_ notification: Notification) {
     
     // Check that the view controller is being presented and the iCloud storage setting is false.
-    guard isBeingPresented && (Setting.iCloudStorage.value as? Bool) == false else { return }
+    guard isBeingPresented && SettingsManager.shared.iCloudStorage == false else { return }
 
     // Dismiss the view controller.
     dismiss(animated: true, completion: nil)
@@ -91,8 +92,8 @@ final class PurgatoryViewController: UIViewController {
     // Check that the view controller is being presented and the iCloud storage setting is false or a 
     // ubiquity identity token has been assigned.
     guard isBeingPresented
-      && ( (Setting.iCloudStorage.value as? Bool) == false
-        || FileManager.default.ubiquityIdentityToken != nil)
+            && ( !SettingsManager.shared.iCloudStorage
+                  || FileManager.default.ubiquityIdentityToken != nil)
       else
     {
       return
@@ -111,7 +112,7 @@ final class PurgatoryViewController: UIViewController {
       fatalError("This controller is meant only to be presented")
     }
 
-    guard Setting.iCloudStorage.value as? Bool == true else {
+    guard SettingsManager.shared.iCloudStorage else {
       fatalError("This controller should only appear when 'Use iCloud' is true")
     }
 

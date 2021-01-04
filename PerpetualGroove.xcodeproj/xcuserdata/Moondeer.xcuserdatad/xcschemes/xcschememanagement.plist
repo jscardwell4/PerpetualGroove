@@ -4,55 +4,40 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>Groove-Profile.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-			<key>orderHint</key>
-			<integer>6</integer>
-		</dict>
-		<key>Groove-Verbose.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-			<key>orderHint</key>
-			<integer>2</integer>
-		</dict>
-		<key>Groove.xcscheme</key>
+		<key>AudioEngine.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>0</integer>
+			<integer>26</integer>
 		</dict>
-		<key>GrooveSelectorTests.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<true/>
-			<key>orderHint</key>
-			<integer>12</integer>
-		</dict>
-		<key>Instruments.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-			<key>orderHint</key>
-			<integer>9</integer>
-		</dict>
-		<key>MIDI.xcscheme_^#shared#^_</key>
+		<key>Common.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>21</integer>
 		</dict>
-		<key>PerpetualGroove copy.xcscheme</key>
+		<key>Documents.xcscheme_^#shared#^_</key>
 		<dict>
-			<key>isShown</key>
-			<false/>
 			<key>orderHint</key>
-			<integer>11</integer>
+			<integer>22</integer>
+		</dict>
+		<key>Groove.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
+		<key>MIDI.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>3</integer>
+		</dict>
+		<key>NodePlayer.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>25</integer>
 		</dict>
 		<key>SoundFont.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>13</integer>
+			<integer>2</integer>
 		</dict>
 		<key>SoundFontFile.xcscheme_^#shared#^_</key>
 		<dict>
@@ -87,7 +72,17 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>C252C830259D21E5000A0BA2</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>C252C85F259D2E73000A0BA2</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C252C867259D2E73000A0BA2</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -128,6 +123,46 @@
 			<true/>
 		</dict>
 		<key>C2E043301B72F4DC005F0675</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C2E98C1B25A1087300FE1560</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C2E98C2325A1087300FE1560</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C2F43AEF25A2ACE0002DA417</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C2F43AF725A2ACE1002DA417</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C2F43B8825A37658002DA417</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C2F43BD425A376F1002DA417</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C2F43BDC25A376F1002DA417</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C2F43C3A25A377EF002DA417</key>
 		<dict>
 			<key>primary</key>
 			<true/>

@@ -3,7 +3,7 @@
    LastUpgradeVersion = "1230"
    version = "1.7">
    <BuildAction
-      parallelizeBuildables = "NO"
+      parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES">
       <BuildActionEntries>
          <BuildActionEntry
@@ -104,6 +104,46 @@
                BlueprintIdentifier = "C2E98C2325A1087300FE1560"
                BuildableName = "MIDITests.xctest"
                BlueprintName = "MIDITests"
+               ReferencedContainer = "container:PerpetualGroove.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "C2F43AF725A2ACE1002DA417"
+               BuildableName = "CommonTests.xctest"
+               BlueprintName = "CommonTests"
+               ReferencedContainer = "container:PerpetualGroove.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "C2F43B8825A37658002DA417"
+               BuildableName = "NodePlayerTests.xctest"
+               BlueprintName = "NodePlayerTests"
+               ReferencedContainer = "container:PerpetualGroove.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "C2F43BDC25A376F1002DA417"
+               BuildableName = "DocumentsTests.xctest"
+               BlueprintName = "DocumentsTests"
+               ReferencedContainer = "container:PerpetualGroove.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "C2F43C3A25A377EF002DA417"
+               BuildableName = "AudioEngineTests.xctest"
+               BlueprintName = "AudioEngineTests"
                ReferencedContainer = "container:PerpetualGroove.xcodeproj">
             </BuildableReference>
          </TestableReference>

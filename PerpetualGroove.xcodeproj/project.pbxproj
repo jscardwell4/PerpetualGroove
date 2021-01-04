@@ -23,17 +23,10 @@
 		C21DBAF91DA06CA000E50C23 /* Emax Volume 5.json in Resources */ = {isa = PBXBuildFile; fileRef = C21DBAF31DA06CA000E50C23 /* Emax Volume 5.json */; };
 		C21DBAFA1DA06CA000E50C23 /* Emax Volume 6.json in Resources */ = {isa = PBXBuildFile; fileRef = C21DBAF41DA06CA000E50C23 /* Emax Volume 6.json */; };
 		C21DBAFC1DA06CB900E50C23 /* SPYRO's Pure Oscillators.json in Resources */ = {isa = PBXBuildFile; fileRef = C21DBAFB1DA06CB900E50C23 /* SPYRO's Pure Oscillators.json */; };
-		C21E44C51B76546C00574BD2 /* AudioManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21E44C41B76546C00574BD2 /* AudioManager.swift */; };
-		C22FA58D1BC830D600162DB4 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22FA58C1BC830D600162DB4 /* SettingsManager.swift */; };
 		C23ECB8F259FBC2B00F17D85 /* SFBKChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23ECB8E259FBC2B00F17D85 /* SFBKChunk.swift */; };
-		C24DCE381C3438A800AD98BE /* GrooveFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24DCE371C3438A800AD98BE /* GrooveFile.swift */; };
-		C24E83961C3EDFD800B4A16A /* SecondaryControllerContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24E83951C3EDFD800B4A16A /* SecondaryControllerContainer.swift */; };
-		C24E83981C3EE0A300B4A16A /* MixerContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24E83971C3EE0A300B4A16A /* MixerContainer.swift */; };
-		C24E839A1C3EE0D100B4A16A /* MIDINodePlayerContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24E83991C3EE0D100B4A16A /* MIDINodePlayerContainer.swift */; };
 		C24E839C1C3EE17900B4A16A /* MixerContainer.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C24E839B1C3EE17900B4A16A /* MixerContainer.storyboard */; };
 		C24E839E1C3EEE1300B4A16A /* MIDINodePlayerContainer.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C24E839D1C3EEE1300B4A16A /* MIDINodePlayerContainer.storyboard */; };
 		C2516B2B1C08ECE10060710B /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2516B2A1C08ECE10060710B /* RootViewController.swift */; };
-		C2516B2D1C08F1B50060710B /* TransportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2516B2C1C08F1B50060710B /* TransportViewController.swift */; };
 		C252C843259D23DE000A0BA2 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C252C842259D23DE000A0BA2 /* Nimble.framework */; };
 		C252C869259D2E73000A0BA2 /* SoundFont.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C252C860259D2E73000A0BA2 /* SoundFont.framework */; platformFilter = ios; };
 		C252C870259D2E73000A0BA2 /* SoundFontTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C252C86F259D2E73000A0BA2 /* SoundFontTests.swift */; };
@@ -42,12 +35,10 @@
 		C252C876259D2E73000A0BA2 /* SoundFont.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C252C860259D2E73000A0BA2 /* SoundFont.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C252C884259D2EAD000A0BA2 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2207B901B9DC63300E4D65D /* File.swift */; };
 		C252C888259D2EBC000A0BA2 /* SoundFont2.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E542381BD56E00005B452F /* SoundFont2.swift */; };
+		C255A6E425A22C300012AD69 /* MIDINodeEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E98CA325A112BD00FE1560 /* MIDINodeEvent.swift */; };
 		C255C4321BD664B000CAEE9C /* Mixer.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C255C4311BD664B000CAEE9C /* Mixer.storyboard */; };
 		C255C4371BD664E400CAEE9C /* Generator.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C255C4361BD664E400CAEE9C /* Generator.storyboard */; };
 		C255C43C1BD6651100CAEE9C /* Tempo.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C255C43B1BD6651100CAEE9C /* Tempo.storyboard */; };
-		C2562D0A1C63DBFC0086789D /* MIDINodeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2562D091C63DBFB0086789D /* MIDINodeManager.swift */; };
-		C2569E401B90005400EEB441 /* TempoTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2569E3F1B90005400EEB441 /* TempoTrack.swift */; };
-		C2576E0D1C13343E00F9A192 /* MIDINodePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2576E0C1C13343E00F9A192 /* MIDINodePlayer.swift */; };
 		C263FCE5259D3F1D002B3377 /* SoundFontFileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FAAC7D1D99C7620089D1B0 /* SoundFontFileTests.swift */; };
 		C263FD01259D4250002B3377 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C263FD00259D4250002B3377 /* Nimble.framework */; platformFilter = ios; };
 		C263FD1B259E43AA002B3377 /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C263FD1A259E43AA002B3377 /* Functions.swift */; };
@@ -56,53 +47,25 @@
 		C263FD27259E44C1002B3377 /* INFOChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C263FD24259E44C1002B3377 /* INFOChunk.swift */; };
 		C263FD40259E4721002B3377 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = C263FD3F259E4721002B3377 /* Error.swift */; };
 		C263FD61259E616B002B3377 /* SPYRO's Pure Oscillators.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C263FD60259E6143002B3377 /* SPYRO's Pure Oscillators.sf2 */; };
-		C2670CD01C4704A2000F76F9 /* MIDINodeDispatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2670CCF1C4704A2000F76F9 /* MIDINodeDispatch.swift */; };
-		C26A27EF1B948E4F00BD1698 /* DocumentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A27EE1B948E4E00BD1698 /* DocumentsViewController.swift */; };
-		C26EEB2E1B7FDA8F00EC6979 /* MixerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26EEB2D1B7FDA8F00EC6979 /* MixerViewController.swift */; };
-		C26FC16F1B7BA63300E271A3 /* MIDINode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26FC16E1B7BA63300E271A3 /* MIDINode.swift */; };
-		C26FC1711B7BAC7F00E271A3 /* MIDINodePlayerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26FC1701B7BAC7F00E271A3 /* MIDINodePlayerNode.swift */; };
-		C26FC1731B7BAEBD00E271A3 /* AddTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26FC1721B7BAEBD00E271A3 /* AddTool.swift */; };
-		C2729ADD1BEE6B3D004FA34F /* LocalDocumentItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2729ADC1BEE6B3D004FA34F /* LocalDocumentItem.swift */; };
-		C2729ADF1BEE6B7C004FA34F /* NSMetadataItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2729ADE1BEE6B7C004FA34F /* NSMetadataItem.swift */; };
 		C2776C201B9DF50D002FE5A8 /* Emax Volume 1.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2776C1A1B9DF50D002FE5A8 /* Emax Volume 1.sf2 */; };
 		C2776C221B9DF50D002FE5A8 /* Emax Volume 2.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2776C1B1B9DF50D002FE5A8 /* Emax Volume 2.sf2 */; };
 		C2776C241B9DF50D002FE5A8 /* Emax Volume 3.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2776C1C1B9DF50D002FE5A8 /* Emax Volume 3.sf2 */; };
 		C2776C261B9DF50D002FE5A8 /* Emax Volume 4.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2776C1D1B9DF50D002FE5A8 /* Emax Volume 4.sf2 */; };
 		C2776C281B9DF50D002FE5A8 /* Emax Volume 5.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2776C1E1B9DF50D002FE5A8 /* Emax Volume 5.sf2 */; };
 		C2776C2A1B9DF50D002FE5A8 /* Emax Volume 6.sf2 in Resources */ = {isa = PBXBuildFile; fileRef = C2776C1F1B9DF50D002FE5A8 /* Emax Volume 6.sf2 */; };
-		C27AC89B1C0E8ACC00762AAF /* RemoveTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27AC89A1C0E8ACC00762AAF /* RemoveTool.swift */; };
-		C2807DDC1C74C60F0061A001 /* NudgeTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2807DDB1C74C60F0061A001 /* NudgeTool.swift */; };
-		C2807DDE1C74C61D0061A001 /* ThrottleTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2807DDD1C74C61D0061A001 /* ThrottleTool.swift */; };
-		C2807DE01C74C6270061A001 /* RotateTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2807DDF1C74C6270061A001 /* RotateTool.swift */; };
 		C2807DE21C74F34B0061A001 /* Rotate.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C2807DE11C74F34B0061A001 /* Rotate.storyboard */; };
-		C282911D1C1DFFD600F9975C /* Tool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C282911C1C1DFFD600F9975C /* Tool.swift */; };
 		C283B69C1BC02E3B007A4A36 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C283B69B1BC02E3B007A4A36 /* Settings.bundle */; };
-		C283B69E1BC0495A007A4A36 /* DocumentItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C283B69D1BC0495A007A4A36 /* DocumentItem.swift */; };
+		C287395B25A39F1400870EE0 /* MIDIEventDispatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E98CAA25A113A500FE1560 /* MIDIEventDispatch.swift */; };
+		C287399125A39FDF00870EE0 /* TrackColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B2B03E1BCDCE5F007AF9DC /* TrackColor.swift */; };
+		C287399F25A3A9B600870EE0 /* InlinePickerContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D2EAB21DC10FD400DAC5EC /* InlinePickerContainer.swift */; };
 		C28D9690259E8DAD005F80B4 /* DataTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28D968F259E8DAD005F80B4 /* DataTypes.swift */; };
-		C2981BA81C2468FD007FC51F /* Loop.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2981BA71C2468FD007FC51F /* Loop.swift */; };
-		C2981BAA1C2B85F4007FC51F /* Transport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2981BA91C2B85F4007FC51F /* Transport.swift */; };
-		C29A337C1DAE7E4800728E4B /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29A337B1DAE7E4800728E4B /* Colors.swift */; };
-		C29A337E1DAE7E8800728E4B /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29A337D1DAE7E8800728E4B /* Fonts.swift */; };
-		C2AA2BC81B84B04200A0B08D /* InstrumentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AA2BC71B84B04200A0B08D /* InstrumentViewController.swift */; };
-		C2AA2BCB1B84FB2100A0B08D /* Sequencer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AA2BCA1B84FB2100A0B08D /* Sequencer.swift */; };
-		C2AC3A971BA9D4CD00692EBB /* TempoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AC3A961BA9D4CD00692EBB /* TempoViewController.swift */; };
 		C2AF20A6259B9FE200EC084A /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2AF20A5259B9FE200EC084A /* MoonKit.framework */; };
 		C2AF20A7259B9FE200EC084A /* MoonKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2AF20A5259B9FE200EC084A /* MoonKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		C2B12D971BDC531500A6C719 /* Track.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B12D961BDC531500A6C719 /* Track.swift */; };
-		C2B2B03F1BCDCE5F007AF9DC /* TrackColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B2B03E1BCDCE5F007AF9DC /* TrackColor.swift */; };
-		C2B3B2EB1C55A9110001152F /* NodeSelectionTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B3B2EA1C55A9110001152F /* NodeSelectionTool.swift */; };
 		C2BA054825A0CBAD009EAA19 /* MIDINodePathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C284F7CA1C49C8A8009C72A0 /* MIDINodePathTests.swift */; };
 		C2BA054C25A0CBAF009EAA19 /* MIDIEventContainerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28831941C78E8AD00F6865D /* MIDIEventContainerTests.swift */; };
 		C2BA055025A0CBB1009EAA19 /* BarBeatTimeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20A10A01C51552B00522FD7 /* BarBeatTimeTests.swift */; };
 		C2BA055425A0CBB2009EAA19 /* NoteChordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C23B05941C0219560081AC6E /* NoteChordTests.swift */; };
-		C2BC7AD51B76C85E001729BA /* Instrument.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BC7AD41B76C85E001729BA /* Instrument.swift */; };
-		C2CF38CD1B7EBED30085B3D5 /* InstrumentTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CF38CC1B7EBED30085B3D5 /* InstrumentTrack.swift */; };
-		C2D2EAB31DC10FD400DAC5EC /* InlinePickerContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D2EAB21DC10FD400DAC5EC /* InlinePickerContainer.swift */; };
-		C2D406741BB9FDC700681DEF /* DocumentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D406731BB9FDC700681DEF /* DocumentManager.swift */; };
-		C2DFBE7A1B8AA5AB00898C2A /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DFBE791B8AA5AB00898C2A /* Sequence.swift */; };
 		C2E043351B72F4DC005F0675 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E043341B72F4DC005F0675 /* AppDelegate.swift */; };
-		C2E043391B72F4DC005F0675 /* MIDINodePlayerScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E043381B72F4DC005F0675 /* MIDINodePlayerScene.swift */; };
-		C2E0433B1B72F4DC005F0675 /* MIDINodePlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E0433A1B72F4DC005F0675 /* MIDINodePlayerViewController.swift */; };
 		C2E043401B72F4DC005F0675 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C2E0433F1B72F4DC005F0675 /* Assets.xcassets */; };
 		C2E705C51BBB17AE00636EF3 /* PurgatoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E705C41BBB17AE00636EF3 /* PurgatoryViewController.swift */; };
 		C2E98C2525A1087300FE1560 /* MIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2E98C1C25A1087300FE1560 /* MIDI.framework */; };
@@ -125,20 +88,84 @@
 		C2E98C7C25A109AB00FE1560 /* BarBeatTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FF79841BD05F1E002CBA79 /* BarBeatTime.swift */; };
 		C2E98C8225A109D400FE1560 /* MIDIFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25EBC821B8BFAFA00E57665 /* MIDIFile.swift */; };
 		C2E98C9725A10A9F00FE1560 /* StatusError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CD18E01B7E681A00705922 /* StatusError.swift */; };
-		C2E98C9D25A10E1300FE1560 /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = C207458E1B8DF6D5000A06D4 /* Time.swift */; };
-		C2E98CA425A112BD00FE1560 /* MIDINodeEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E98CA325A112BD00FE1560 /* MIDINodeEvent.swift */; };
-		C2E98CAB25A113A500FE1560 /* MIDIEventDispatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E98CAA25A113A500FE1560 /* MIDIEventDispatch.swift */; };
 		C2E98CC125A1224E00FE1560 /* VariableLengthQuantity.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E98CB125A121EB00FE1560 /* VariableLengthQuantity.swift */; };
 		C2E98CCC25A1225200FE1560 /* TrackChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E98CB325A121EB00FE1560 /* TrackChunk.swift */; };
 		C2E98CD725A1225600FE1560 /* HeaderChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E98CB225A121EB00FE1560 /* HeaderChunk.swift */; };
 		C2E98CDE25A1231100FE1560 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E98CDD25A1231100FE1560 /* Error.swift */; };
 		C2E98CE525A124FB00FE1560 /* MetaEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E98CE425A124FB00FE1560 /* MetaEvent.swift */; };
 		C2E98CEC25A1250E00FE1560 /* ChannelEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E98CEB25A1250E00FE1560 /* ChannelEvent.swift */; };
-		C2EA30531BB9DF3300020958 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EA30521BB9DF3300020958 /* Document.swift */; };
 		C2F2ADC21B90EBD300FF4836 /* Woodblock.wav in Resources */ = {isa = PBXBuildFile; fileRef = C2F2ADC11B90EBD300FF4836 /* Woodblock.wav */; };
-		C2F2ADC61B91203700FF4836 /* Metronome.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F2ADC51B91203700FF4836 /* Metronome.swift */; };
-		C2F35DB91BB4507800ECB045 /* MIDINodePlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F35DB81BB4507800ECB045 /* MIDINodePlayerView.swift */; };
-		C2FEB0251C0F6183000BD1B7 /* GeneratorTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FEB0241C0F6183000BD1B7 /* GeneratorTool.swift */; };
+		C2F43AF925A2ACE1002DA417 /* Common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2F43AF025A2ACE0002DA417 /* Common.framework */; };
+		C2F43B0025A2ACE1002DA417 /* CommonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F43AFF25A2ACE1002DA417 /* CommonTests.swift */; };
+		C2F43B0525A2ACE1002DA417 /* Common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2F43AF025A2ACE0002DA417 /* Common.framework */; };
+		C2F43B0625A2ACE1002DA417 /* Common.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2F43AF025A2ACE0002DA417 /* Common.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C2F43B2625A2AD42002DA417 /* Common.h in Headers */ = {isa = PBXBuildFile; fileRef = C2F43AF225A2ACE0002DA417 /* Common.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C2F43B3525A2AD4F002DA417 /* SecondaryControllerContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24E83951C3EDFD800B4A16A /* SecondaryControllerContainer.swift */; };
+		C2F43B3625A2AD4F002DA417 /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29A337D1DAE7E8800728E4B /* Fonts.swift */; };
+		C2F43B3825A2AD4F002DA417 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = C29A337B1DAE7E4800728E4B /* Colors.swift */; };
+		C2F43B6525A2ADFE002DA417 /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2F43B6425A2ADFE002DA417 /* MoonKit.framework */; };
+		C2F43B8A25A37658002DA417 /* NodePlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2F43B8125A37658002DA417 /* NodePlayer.framework */; };
+		C2F43B9125A37658002DA417 /* NodePlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F43B9025A37658002DA417 /* NodePlayerTests.swift */; };
+		C2F43B9625A37658002DA417 /* NodePlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2F43B8125A37658002DA417 /* NodePlayer.framework */; };
+		C2F43B9725A37658002DA417 /* NodePlayer.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2F43B8125A37658002DA417 /* NodePlayer.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C2F43BC625A376B7002DA417 /* NodePlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = C2F43B8325A37658002DA417 /* NodePlayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C2F43BDE25A376F1002DA417 /* Documents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2F43BD525A376F1002DA417 /* Documents.framework */; };
+		C2F43BE525A376F1002DA417 /* DocumentsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F43BE425A376F1002DA417 /* DocumentsTests.swift */; };
+		C2F43BEA25A376F1002DA417 /* Documents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2F43BD525A376F1002DA417 /* Documents.framework */; };
+		C2F43BEB25A376F1002DA417 /* Documents.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2F43BD525A376F1002DA417 /* Documents.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C2F43C1725A37746002DA417 /* Documents.h in Headers */ = {isa = PBXBuildFile; fileRef = C2F43BD725A376F1002DA417 /* Documents.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C2F43C3C25A377EF002DA417 /* AudioEngine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2F43C3325A377EF002DA417 /* AudioEngine.framework */; };
+		C2F43C4325A377EF002DA417 /* AudioEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F43C4225A377EF002DA417 /* AudioEngineTests.swift */; };
+		C2F43C4825A377EF002DA417 /* AudioEngine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2F43C3325A377EF002DA417 /* AudioEngine.framework */; };
+		C2F43C4925A377EF002DA417 /* AudioEngine.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2F43C3325A377EF002DA417 /* AudioEngine.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C2F43C7B25A37837002DA417 /* AudioEngine.h in Headers */ = {isa = PBXBuildFile; fileRef = C2F43C3525A377EF002DA417 /* AudioEngine.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C2F43CA325A378A3002DA417 /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2F43B6425A2ADFE002DA417 /* MoonKit.framework */; };
+		C2F43CA625A378B4002DA417 /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2F43B6425A2ADFE002DA417 /* MoonKit.framework */; };
+		C2F43CA925A378BD002DA417 /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2F43B6425A2ADFE002DA417 /* MoonKit.framework */; };
+		C2F43CAC25A378C5002DA417 /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2F43B6425A2ADFE002DA417 /* MoonKit.framework */; };
+		C2F43CAF25A378CB002DA417 /* MoonKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2F43B6425A2ADFE002DA417 /* MoonKit.framework */; };
+		C2F43D6A25A37A80002DA417 /* NodeSelectionTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B3B2EA1C55A9110001152F /* NodeSelectionTool.swift */; };
+		C2F43D6B25A37A81002DA417 /* MIDINodePlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F35DB81BB4507800ECB045 /* MIDINodePlayerView.swift */; };
+		C2F43D6C25A37A81002DA417 /* RotateTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2807DDF1C74C6270061A001 /* RotateTool.swift */; };
+		C2F43D6D25A37A81002DA417 /* MIDINodePlayerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26FC1701B7BAC7F00E271A3 /* MIDINodePlayerNode.swift */; };
+		C2F43D6E25A37A81002DA417 /* MIDINodePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2576E0C1C13343E00F9A192 /* MIDINodePlayer.swift */; };
+		C2F43D6F25A37A81002DA417 /* AddTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26FC1721B7BAEBD00E271A3 /* AddTool.swift */; };
+		C2F43D7025A37A81002DA417 /* MIDINode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26FC16E1B7BA63300E271A3 /* MIDINode.swift */; };
+		C2F43D7125A37A81002DA417 /* NudgeTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2807DDB1C74C60F0061A001 /* NudgeTool.swift */; };
+		C2F43D7225A37A81002DA417 /* GeneratorTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FEB0241C0F6183000BD1B7 /* GeneratorTool.swift */; };
+		C2F43D7325A37A81002DA417 /* MIDINodePlayerScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E043381B72F4DC005F0675 /* MIDINodePlayerScene.swift */; };
+		C2F43D7425A37A81002DA417 /* RemoveTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C27AC89A1C0E8ACC00762AAF /* RemoveTool.swift */; };
+		C2F43D7525A37A81002DA417 /* MIDINodePlayerContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24E83991C3EE0D100B4A16A /* MIDINodePlayerContainer.swift */; };
+		C2F43D7625A37A81002DA417 /* MIDINodeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2562D091C63DBFB0086789D /* MIDINodeManager.swift */; };
+		C2F43D7725A37A81002DA417 /* ThrottleTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2807DDD1C74C61D0061A001 /* ThrottleTool.swift */; };
+		C2F43D7825A37A81002DA417 /* MIDINodeDispatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2670CCF1C4704A2000F76F9 /* MIDINodeDispatch.swift */; };
+		C2F43D7925A37A81002DA417 /* Tool.swift in Sources */ = {isa = PBXBuildFile; fileRef = C282911C1C1DFFD600F9975C /* Tool.swift */; };
+		C2F43D7A25A37A81002DA417 /* MIDINodePlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E0433A1B72F4DC005F0675 /* MIDINodePlayerViewController.swift */; };
+		C2F43D9525A37B6C002DA417 /* TransportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2516B2C1C08F1B50060710B /* TransportViewController.swift */; };
+		C2F43D9625A37B6C002DA417 /* Instrument.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BC7AD41B76C85E001729BA /* Instrument.swift */; };
+		C2F43D9725A37B6C002DA417 /* MixerContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24E83971C3EE0A300B4A16A /* MixerContainer.swift */; };
+		C2F43D9925A37B6C002DA417 /* Metronome.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F2ADC51B91203700FF4836 /* Metronome.swift */; };
+		C2F43D9A25A37B6C002DA417 /* Transport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2981BA91C2B85F4007FC51F /* Transport.swift */; };
+		C2F43D9B25A37B6C002DA417 /* BarBeatTimeLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F589F81BAC688F009166D5 /* BarBeatTimeLabel.swift */; };
+		C2F43D9C25A37B6C002DA417 /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DFBE791B8AA5AB00898C2A /* Sequence.swift */; };
+		C2F43D9D25A37B6C002DA417 /* TempoTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2569E3F1B90005400EEB441 /* TempoTrack.swift */; };
+		C2F43D9E25A37B6C002DA417 /* TempoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AC3A961BA9D4CD00692EBB /* TempoViewController.swift */; };
+		C2F43D9F25A37B6C002DA417 /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = C207458E1B8DF6D5000A06D4 /* Time.swift */; };
+		C2F43DA125A37B6C002DA417 /* Loop.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2981BA71C2468FD007FC51F /* Loop.swift */; };
+		C2F43DA325A37B6C002DA417 /* MixerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26EEB2D1B7FDA8F00EC6979 /* MixerViewController.swift */; };
+		C2F43DA425A37B6C002DA417 /* InstrumentTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CF38CC1B7EBED30085B3D5 /* InstrumentTrack.swift */; };
+		C2F43DA525A37B6C002DA417 /* AudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = C21E44C41B76546C00574BD2 /* AudioEngine.swift */; };
+		C2F43DA625A37B6C002DA417 /* InstrumentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AA2BC71B84B04200A0B08D /* InstrumentViewController.swift */; };
+		C2F43DA725A37B6C002DA417 /* Sequencer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2AA2BCA1B84FB2100A0B08D /* Sequencer.swift */; };
+		C2F43DA825A37B6C002DA417 /* Track.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B12D961BDC531500A6C719 /* Track.swift */; };
+		C2F43DC325A37B7E002DA417 /* GrooveFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C24DCE371C3438A800AD98BE /* GrooveFile.swift */; };
+		C2F43DC425A37B7E002DA417 /* DocumentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D406731BB9FDC700681DEF /* DocumentManager.swift */; };
+		C2F43DC525A37B7E002DA417 /* NSMetadataItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2729ADE1BEE6B7C004FA34F /* NSMetadataItem.swift */; };
+		C2F43DC625A37B7E002DA417 /* DocumentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26A27EE1B948E4E00BD1698 /* DocumentsViewController.swift */; };
+		C2F43DC725A37B7E002DA417 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2EA30521BB9DF3300020958 /* Document.swift */; };
+		C2F43DC825A37B7E002DA417 /* DocumentItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C283B69D1BC0495A007A4A36 /* DocumentItem.swift */; };
+		C2F43DC925A37B7E002DA417 /* LocalDocumentItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2729ADC1BEE6B3D004FA34F /* LocalDocumentItem.swift */; };
+		C2F43DE425A37B97002DA417 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22FA58C1BC830D600162DB4 /* SettingsManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -191,6 +218,90 @@
 			remoteGlobalIDString = C2E98C1B25A1087300FE1560;
 			remoteInfo = MIDI;
 		};
+		C2F43AFA25A2ACE1002DA417 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C2E043291B72F4DC005F0675 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C2F43AEF25A2ACE0002DA417;
+			remoteInfo = Common;
+		};
+		C2F43AFC25A2ACE1002DA417 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C2E043291B72F4DC005F0675 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C2E043301B72F4DC005F0675;
+			remoteInfo = Groove;
+		};
+		C2F43B0325A2ACE1002DA417 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C2E043291B72F4DC005F0675 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C2F43AEF25A2ACE0002DA417;
+			remoteInfo = Common;
+		};
+		C2F43B8B25A37658002DA417 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C2E043291B72F4DC005F0675 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C2F43B8025A37658002DA417;
+			remoteInfo = NodePlayer;
+		};
+		C2F43B8D25A37658002DA417 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C2E043291B72F4DC005F0675 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C2E043301B72F4DC005F0675;
+			remoteInfo = Groove;
+		};
+		C2F43B9425A37658002DA417 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C2E043291B72F4DC005F0675 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C2F43B8025A37658002DA417;
+			remoteInfo = NodePlayer;
+		};
+		C2F43BDF25A376F1002DA417 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C2E043291B72F4DC005F0675 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C2F43BD425A376F1002DA417;
+			remoteInfo = Documents;
+		};
+		C2F43BE125A376F1002DA417 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C2E043291B72F4DC005F0675 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C2E043301B72F4DC005F0675;
+			remoteInfo = Groove;
+		};
+		C2F43BE825A376F1002DA417 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C2E043291B72F4DC005F0675 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C2F43BD425A376F1002DA417;
+			remoteInfo = Documents;
+		};
+		C2F43C3D25A377EF002DA417 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C2E043291B72F4DC005F0675 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C2F43C3225A377EF002DA417;
+			remoteInfo = AudioEngine;
+		};
+		C2F43C3F25A377EF002DA417 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C2E043291B72F4DC005F0675 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C2E043301B72F4DC005F0675;
+			remoteInfo = Groove;
+		};
+		C2F43C4625A377EF002DA417 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C2E043291B72F4DC005F0675 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C2F43C3225A377EF002DA417;
+			remoteInfo = AudioEngine;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -201,8 +312,12 @@
 			dstSubfolderSpec = 10;
 			files = (
 				C2E98C3225A1087300FE1560 /* MIDI.framework in Embed Frameworks */,
+				C2F43B9725A37658002DA417 /* NodePlayer.framework in Embed Frameworks */,
+				C2F43B0625A2ACE1002DA417 /* Common.framework in Embed Frameworks */,
 				C2AF20A7259B9FE200EC084A /* MoonKit.framework in Embed Frameworks */,
+				C2F43C4925A377EF002DA417 /* AudioEngine.framework in Embed Frameworks */,
 				C252C876259D2E73000A0BA2 /* SoundFont.framework in Embed Frameworks */,
+				C2F43BEB25A376F1002DA417 /* Documents.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -228,10 +343,10 @@
 		C21DBAF31DA06CA000E50C23 /* Emax Volume 5.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "Emax Volume 5.json"; sourceTree = "<group>"; };
 		C21DBAF41DA06CA000E50C23 /* Emax Volume 6.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "Emax Volume 6.json"; sourceTree = "<group>"; };
 		C21DBAFB1DA06CB900E50C23 /* SPYRO's Pure Oscillators.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "SPYRO's Pure Oscillators.json"; sourceTree = "<group>"; };
-		C21E44C41B76546C00574BD2 /* AudioManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioManager.swift; sourceTree = "<group>"; };
+		C21E44C41B76546C00574BD2 /* AudioEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEngine.swift; sourceTree = "<group>"; };
 		C2207B901B9DC63300E4D65D /* File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		C223B1A11C8364ED006CF6B5 /* MIDIEventContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDIEventContainer.swift; sourceTree = "<group>"; };
-		C22FA58C1BC830D600162DB4 /* SettingsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
+		C22FA58C1BC830D600162DB4 /* SettingsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SettingsManager.swift; path = ../../SettingsManager.swift; sourceTree = "<group>"; };
 		C23516611E06E123009AC033 /* MIDINote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINote.swift; sourceTree = "<group>"; };
 		C23B05861C01258D0081AC6E /* Packet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Packet.swift; sourceTree = "<group>"; };
 		C23B058A1C014AC50081AC6E /* ElementalComponents.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementalComponents.swift; sourceTree = "<group>"; };
@@ -245,7 +360,7 @@
 		C24E83991C3EE0D100B4A16A /* MIDINodePlayerContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINodePlayerContainer.swift; sourceTree = "<group>"; };
 		C24E839B1C3EE17900B4A16A /* MixerContainer.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MixerContainer.storyboard; sourceTree = "<group>"; };
 		C24E839D1C3EEE1300B4A16A /* MIDINodePlayerContainer.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MIDINodePlayerContainer.storyboard; sourceTree = "<group>"; };
-		C2516B2A1C08ECE10060710B /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
+		C2516B2A1C08ECE10060710B /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RootViewController.swift; path = "Other Views and Controllers/RootViewController.swift"; sourceTree = "<group>"; };
 		C2516B2C1C08F1B50060710B /* TransportViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransportViewController.swift; sourceTree = "<group>"; };
 		C252C831259D21E5000A0BA2 /* GrooveTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GrooveTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C252C835259D21E5000A0BA2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -370,7 +485,7 @@
 		C2E043441B72F4DC005F0675 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C2E542381BD56E00005B452F /* SoundFont2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundFont2.swift; sourceTree = "<group>"; };
 		C2E5423A1BD5721C005B452F /* sf2Info.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sf2Info.txt; sourceTree = "<group>"; };
-		C2E705C41BBB17AE00636EF3 /* PurgatoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PurgatoryViewController.swift; sourceTree = "<group>"; };
+		C2E705C41BBB17AE00636EF3 /* PurgatoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PurgatoryViewController.swift; path = "Other Views and Controllers/PurgatoryViewController.swift"; sourceTree = "<group>"; };
 		C2E98BEF25A105C300FE1560 /* SignalProcessing.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SignalProcessing.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2E98C1C25A1087300FE1560 /* MIDI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MIDI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2E98C1E25A1087300FE1560 /* MIDI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MIDI.h; sourceTree = "<group>"; };
@@ -391,6 +506,31 @@
 		C2F2ADC31B91098A00FF4836 /* NoteGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteGenerator.swift; sourceTree = "<group>"; };
 		C2F2ADC51B91203700FF4836 /* Metronome.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Metronome.swift; sourceTree = "<group>"; };
 		C2F35DB81BB4507800ECB045 /* MIDINodePlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIDINodePlayerView.swift; sourceTree = "<group>"; };
+		C2F43AF025A2ACE0002DA417 /* Common.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Common.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C2F43AF225A2ACE0002DA417 /* Common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Common.h; sourceTree = "<group>"; };
+		C2F43AF325A2ACE0002DA417 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C2F43AF825A2ACE1002DA417 /* CommonTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CommonTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C2F43AFF25A2ACE1002DA417 /* CommonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonTests.swift; sourceTree = "<group>"; };
+		C2F43B0125A2ACE1002DA417 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C2F43B6425A2ADFE002DA417 /* MoonKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MoonKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C2F43B8125A37658002DA417 /* NodePlayer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NodePlayer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C2F43B8325A37658002DA417 /* NodePlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NodePlayer.h; sourceTree = "<group>"; };
+		C2F43B8425A37658002DA417 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C2F43B8925A37658002DA417 /* NodePlayerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NodePlayerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C2F43B9025A37658002DA417 /* NodePlayerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodePlayerTests.swift; sourceTree = "<group>"; };
+		C2F43B9225A37658002DA417 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C2F43BD525A376F1002DA417 /* Documents.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Documents.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C2F43BD725A376F1002DA417 /* Documents.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Documents.h; sourceTree = "<group>"; };
+		C2F43BD825A376F1002DA417 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C2F43BDD25A376F1002DA417 /* DocumentsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DocumentsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C2F43BE425A376F1002DA417 /* DocumentsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentsTests.swift; sourceTree = "<group>"; };
+		C2F43BE625A376F1002DA417 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C2F43C3325A377EF002DA417 /* AudioEngine.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AudioEngine.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C2F43C3525A377EF002DA417 /* AudioEngine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioEngine.h; sourceTree = "<group>"; };
+		C2F43C3625A377EF002DA417 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C2F43C3B25A377EF002DA417 /* AudioEngineTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AudioEngineTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C2F43C4225A377EF002DA417 /* AudioEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngineTests.swift; sourceTree = "<group>"; };
+		C2F43C4425A377EF002DA417 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C2F589F81BAC688F009166D5 /* BarBeatTimeLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BarBeatTimeLabel.swift; sourceTree = "<group>"; };
 		C2FAAC7D1D99C7620089D1B0 /* SoundFontFileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundFontFileTests.swift; sourceTree = "<group>"; };
 		C2FEB0241C0F6183000BD1B7 /* GeneratorTool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneratorTool.swift; sourceTree = "<group>"; };
@@ -411,6 +551,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C2F43CA625A378B4002DA417 /* MoonKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -428,7 +569,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				C2AF20A6259B9FE200EC084A /* MoonKit.framework in Frameworks */,
+				C2F43C4825A377EF002DA417 /* AudioEngine.framework in Frameworks */,
 				C2E98C3125A1087300FE1560 /* MIDI.framework in Frameworks */,
+				C2F43B0525A2ACE1002DA417 /* Common.framework in Frameworks */,
+				C2F43BEA25A376F1002DA417 /* Documents.framework in Frameworks */,
+				C2F43B9625A37658002DA417 /* NodePlayer.framework in Frameworks */,
 				C217EE391DB435E40076B6E7 /* AudioToolbox.framework in Frameworks */,
 				C252C875259D2E73000A0BA2 /* SoundFont.framework in Frameworks */,
 			);
@@ -438,6 +583,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C2F43CA325A378A3002DA417 /* MoonKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -449,45 +595,90 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C2F43AED25A2ACE0002DA417 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C2F43B6525A2ADFE002DA417 /* MoonKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C2F43AF525A2ACE1002DA417 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C2F43AF925A2ACE1002DA417 /* Common.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C2F43B7E25A37658002DA417 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C2F43CA925A378BD002DA417 /* MoonKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C2F43B8625A37658002DA417 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C2F43B8A25A37658002DA417 /* NodePlayer.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C2F43BD225A376F1002DA417 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C2F43CAC25A378C5002DA417 /* MoonKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C2F43BDA25A376F1002DA417 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C2F43BDE25A376F1002DA417 /* Documents.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C2F43C3025A377EF002DA417 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C2F43CAF25A378CB002DA417 /* MoonKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C2F43C3825A377EF002DA417 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C2F43C3C25A377EF002DA417 /* AudioEngine.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		C208B8C71DA71A0500F598DD /* Sequence and Tracks */ = {
+		C239EC481DB269AC004A580A /* NodePlayer */ = {
 			isa = PBXGroup;
 			children = (
-				C2981BA71C2468FD007FC51F /* Loop.swift */,
-				C2DFBE791B8AA5AB00898C2A /* Sequence.swift */,
-				C2CF38CC1B7EBED30085B3D5 /* InstrumentTrack.swift */,
-				C2569E3F1B90005400EEB441 /* TempoTrack.swift */,
-				C2B12D961BDC531500A6C719 /* Track.swift */,
-			);
-			path = "Sequence and Tracks";
-			sourceTree = "<group>";
-		};
-		C239EC481DB269AC004A580A /* MIDINode Player */ = {
-			isa = PBXGroup;
-			children = (
-				C239EC4D1DB27514004A580A /* Node */,
-				C297BF501DA997FD00079EFA /* Tools */,
-				C239EC4E1DB27536004A580A /* Player and Containers */,
-			);
-			path = "MIDINode Player";
-			sourceTree = "<group>";
-		};
-		C239EC4D1DB27514004A580A /* Node */ = {
-			isa = PBXGroup;
-			children = (
+				C2F43B8425A37658002DA417 /* Info.plist */,
+				C2F43B8325A37658002DA417 /* NodePlayer.h */,
 				C26FC16E1B7BA63300E271A3 /* MIDINode.swift */,
 				C2670CCF1C4704A2000F76F9 /* MIDINodeDispatch.swift */,
 				C2562D091C63DBFB0086789D /* MIDINodeManager.swift */,
-				C2E98CA325A112BD00FE1560 /* MIDINodeEvent.swift */,
-			);
-			path = Node;
-			sourceTree = "<group>";
-		};
-		C239EC4E1DB27536004A580A /* Player and Containers */ = {
-			isa = PBXGroup;
-			children = (
+				C282911C1C1DFFD600F9975C /* Tool.swift */,
+				C2D2EAB21DC10FD400DAC5EC /* InlinePickerContainer.swift */,
+				C26FC1721B7BAEBD00E271A3 /* AddTool.swift */,
+				C27AC89A1C0E8ACC00762AAF /* RemoveTool.swift */,
+				C2FEB0241C0F6183000BD1B7 /* GeneratorTool.swift */,
+				C2B3B2EA1C55A9110001152F /* NodeSelectionTool.swift */,
+				C2807DDB1C74C60F0061A001 /* NudgeTool.swift */,
+				C2807DDD1C74C61D0061A001 /* ThrottleTool.swift */,
+				C2807DDF1C74C6270061A001 /* RotateTool.swift */,
 				C2E0433A1B72F4DC005F0675 /* MIDINodePlayerViewController.swift */,
 				C2E043381B72F4DC005F0675 /* MIDINodePlayerScene.swift */,
 				C26FC1701B7BAC7F00E271A3 /* MIDINodePlayerNode.swift */,
@@ -495,18 +686,7 @@
 				C2F35DB81BB4507800ECB045 /* MIDINodePlayerView.swift */,
 				C2576E0C1C13343E00F9A192 /* MIDINodePlayer.swift */,
 			);
-			path = "Player and Containers";
-			sourceTree = "<group>";
-		};
-		C239EC4F1DB2E56A004A580A /* Mixer */ = {
-			isa = PBXGroup;
-			children = (
-				C2B2B03E1BCDCE5F007AF9DC /* TrackColor.swift */,
-				C2AA2BC71B84B04200A0B08D /* InstrumentViewController.swift */,
-				C24E83971C3EE0A300B4A16A /* MixerContainer.swift */,
-				C26EEB2D1B7FDA8F00EC6979 /* MixerViewController.swift */,
-			);
-			path = Mixer;
+			path = NodePlayer;
 			sourceTree = "<group>";
 		};
 		C2404BD81B78EFA800A68A64 /* Sound Sets */ = {
@@ -525,18 +705,11 @@
 		C2404BDA1B78F02C00A68A64 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				C2BA05AD25A0D4C1009EAA19 /* Frameworks */,
+				C2BA05AD25A0D4C1009EAA19 /* Subcomponents */,
 				C2E043341B72F4DC005F0675 /* AppDelegate.swift */,
-				C22FA58C1BC830D600162DB4 /* SettingsManager.swift */,
+				C2E705C41BBB17AE00636EF3 /* PurgatoryViewController.swift */,
+				C2516B2A1C08ECE10060710B /* RootViewController.swift */,
 				C269D1D61BD7FA190084A7EE /* LogManager.swift */,
-				C29A337A1DAE7E1A00728E4B /* App Specific Extensions */,
-				C2AD26101DAC47A400B9BA75 /* Documents & Files */,
-				C239EC481DB269AC004A580A /* MIDINode Player */,
-				C239EC4F1DB2E56A004A580A /* Mixer */,
-				C2AB5EFF1DB3D324009FCC03 /* Transport */,
-				C26A27EA1B93C04400BD1698 /* Other Views and Controllers */,
-				C26A27ED1B93C0AE00BD1698 /* Audio */,
-				C26A27EC1B93C09200BD1698 /* Sequencer */,
 			);
 			name = Source;
 			path = /Users/Moondeer/Projects/PerpetualGroove/Source;
@@ -591,35 +764,44 @@
 			path = SoundFontTests;
 			sourceTree = "<group>";
 		};
-		C26A27EA1B93C04400BD1698 /* Other Views and Controllers */ = {
+		C255A72B25A2ABB70012AD69 /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				C2E705C41BBB17AE00636EF3 /* PurgatoryViewController.swift */,
-				C2516B2A1C08ECE10060710B /* RootViewController.swift */,
+				C2F43AF225A2ACE0002DA417 /* Common.h */,
+				C22FA58C1BC830D600162DB4 /* SettingsManager.swift */,
+				C2B2B03E1BCDCE5F007AF9DC /* TrackColor.swift */,
+				C2F43AF325A2ACE0002DA417 /* Info.plist */,
 				C24E83951C3EDFD800B4A16A /* SecondaryControllerContainer.swift */,
-				C2D2EAB21DC10FD400DAC5EC /* InlinePickerContainer.swift */,
+				C29A337B1DAE7E4800728E4B /* Colors.swift */,
+				C29A337D1DAE7E8800728E4B /* Fonts.swift */,
 			);
-			path = "Other Views and Controllers";
+			path = Common;
 			sourceTree = "<group>";
 		};
-		C26A27EC1B93C09200BD1698 /* Sequencer */ = {
+		C26A27ED1B93C0AE00BD1698 /* AudioEngine */ = {
 			isa = PBXGroup;
 			children = (
+				C2F43C3525A377EF002DA417 /* AudioEngine.h */,
+				C2F43C3625A377EF002DA417 /* Info.plist */,
+				C2F2ADC51B91203700FF4836 /* Metronome.swift */,
+				C26EEB2D1B7FDA8F00EC6979 /* MixerViewController.swift */,
+				C24E83971C3EE0A300B4A16A /* MixerContainer.swift */,
+				C2AA2BC71B84B04200A0B08D /* InstrumentViewController.swift */,
+				C2981BA91C2B85F4007FC51F /* Transport.swift */,
+				C207458E1B8DF6D5000A06D4 /* Time.swift */,
+				C2AC3A961BA9D4CD00692EBB /* TempoViewController.swift */,
+				C2516B2C1C08F1B50060710B /* TransportViewController.swift */,
+				C2F589F81BAC688F009166D5 /* BarBeatTimeLabel.swift */,
+				C2981BA71C2468FD007FC51F /* Loop.swift */,
+				C2CF38CC1B7EBED30085B3D5 /* InstrumentTrack.swift */,
 				C2AA2BCA1B84FB2100A0B08D /* Sequencer.swift */,
-				C2C6D8E51DAFF34800DFC3D5 /* Time and Clocks */,
-				C208B8C71DA71A0500F598DD /* Sequence and Tracks */,
-				C2E98CAA25A113A500FE1560 /* MIDIEventDispatch.swift */,
-			);
-			path = Sequencer;
-			sourceTree = "<group>";
-		};
-		C26A27ED1B93C0AE00BD1698 /* Audio */ = {
-			isa = PBXGroup;
-			children = (
-				C21E44C41B76546C00574BD2 /* AudioManager.swift */,
+				C2569E3F1B90005400EEB441 /* TempoTrack.swift */,
+				C2DFBE791B8AA5AB00898C2A /* Sequence.swift */,
+				C2B12D961BDC531500A6C719 /* Track.swift */,
+				C21E44C41B76546C00574BD2 /* AudioEngine.swift */,
 				C2BC7AD41B76C85E001729BA /* Instrument.swift */,
 			);
-			path = Audio;
+			path = AudioEngine;
 			sourceTree = "<group>";
 		};
 		C2776C191B9DF50D002FE5A8 /* Emax Collection */ = {
@@ -644,6 +826,7 @@
 		C28A0F511D99DE650011F706 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C2F43B6425A2ADFE002DA417 /* MoonKit.framework */,
 				C2E98BEF25A105C300FE1560 /* SignalProcessing.framework */,
 				C263FD00259D4250002B3377 /* Nimble.framework */,
 				C252C842259D23DE000A0BA2 /* Nimble.framework */,
@@ -664,45 +847,11 @@
 			path = "Chunk Types";
 			sourceTree = "<group>";
 		};
-		C297BF501DA997FD00079EFA /* Tools */ = {
+		C2AD26101DAC47A400B9BA75 /* Documents */ = {
 			isa = PBXGroup;
 			children = (
-				C282911C1C1DFFD600F9975C /* Tool.swift */,
-				C26FC1721B7BAEBD00E271A3 /* AddTool.swift */,
-				C27AC89A1C0E8ACC00762AAF /* RemoveTool.swift */,
-				C2FEB0241C0F6183000BD1B7 /* GeneratorTool.swift */,
-				C2B3B2EA1C55A9110001152F /* NodeSelectionTool.swift */,
-				C2807DDB1C74C60F0061A001 /* NudgeTool.swift */,
-				C2807DDD1C74C61D0061A001 /* ThrottleTool.swift */,
-				C2807DDF1C74C6270061A001 /* RotateTool.swift */,
-			);
-			path = Tools;
-			sourceTree = "<group>";
-		};
-		C29A337A1DAE7E1A00728E4B /* App Specific Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				C29A337B1DAE7E4800728E4B /* Colors.swift */,
-				C29A337D1DAE7E8800728E4B /* Fonts.swift */,
-			);
-			path = "App Specific Extensions";
-			sourceTree = "<group>";
-		};
-		C2AB5EFF1DB3D324009FCC03 /* Transport */ = {
-			isa = PBXGroup;
-			children = (
-				C2F2ADC51B91203700FF4836 /* Metronome.swift */,
-				C2981BA91C2B85F4007FC51F /* Transport.swift */,
-				C2AC3A961BA9D4CD00692EBB /* TempoViewController.swift */,
-				C2516B2C1C08F1B50060710B /* TransportViewController.swift */,
-				C2F589F81BAC688F009166D5 /* BarBeatTimeLabel.swift */,
-			);
-			path = Transport;
-			sourceTree = "<group>";
-		};
-		C2AD26101DAC47A400B9BA75 /* Documents & Files */ = {
-			isa = PBXGroup;
-			children = (
+				C2F43BD825A376F1002DA417 /* Info.plist */,
+				C2F43BD725A376F1002DA417 /* Documents.h */,
 				C26A27EE1B948E4E00BD1698 /* DocumentsViewController.swift */,
 				C283B69D1BC0495A007A4A36 /* DocumentItem.swift */,
 				C2729ADC1BEE6B3D004FA34F /* LocalDocumentItem.swift */,
@@ -711,7 +860,7 @@
 				C2EA30521BB9DF3300020958 /* Document.swift */,
 				C2D406731BB9FDC700681DEF /* DocumentManager.swift */,
 			);
-			path = "Documents & Files";
+			path = Documents;
 			sourceTree = "<group>";
 		};
 		C2BA057825A0CFED009EAA19 /* Interface Builder */ = {
@@ -804,6 +953,10 @@
 		C2BA05AC25A0D415009EAA19 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				C2F43C4125A377EF002DA417 /* AudioEngineTests */,
+				C2F43BE325A376F1002DA417 /* DocumentsTests */,
+				C2F43B8F25A37658002DA417 /* NodePlayerTests */,
+				C2F43AFE25A2ACE1002DA417 /* CommonTests */,
 				C2E98C2A25A1087300FE1560 /* MIDITests */,
 				C252C86E259D2E73000A0BA2 /* SoundFontTests */,
 				C2DE50451D89A52000244DB1 /* GrooveTests */,
@@ -811,20 +964,17 @@
 			path = Tests;
 			sourceTree = SOURCE_ROOT;
 		};
-		C2BA05AD25A0D4C1009EAA19 /* Frameworks */ = {
+		C2BA05AD25A0D4C1009EAA19 /* Subcomponents */ = {
 			isa = PBXGroup;
 			children = (
+				C255A72B25A2ABB70012AD69 /* Common */,
+				C26A27ED1B93C0AE00BD1698 /* AudioEngine */,
+				C239EC481DB269AC004A580A /* NodePlayer */,
+				C2AD26101DAC47A400B9BA75 /* Documents */,
 				C2E98C1D25A1087300FE1560 /* MIDI */,
 				C252C861259D2E73000A0BA2 /* SoundFont */,
 			);
-			path = Frameworks;
-			sourceTree = "<group>";
-		};
-		C2C6D8E51DAFF34800DFC3D5 /* Time and Clocks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "Time and Clocks";
+			path = Subcomponents;
 			sourceTree = "<group>";
 		};
 		C2DE50451D89A52000244DB1 /* GrooveTests */ = {
@@ -858,6 +1008,14 @@
 				C252C868259D2E73000A0BA2 /* SoundFontTests.xctest */,
 				C2E98C1C25A1087300FE1560 /* MIDI.framework */,
 				C2E98C2425A1087300FE1560 /* MIDITests.xctest */,
+				C2F43AF025A2ACE0002DA417 /* Common.framework */,
+				C2F43AF825A2ACE1002DA417 /* CommonTests.xctest */,
+				C2F43B8125A37658002DA417 /* NodePlayer.framework */,
+				C2F43B8925A37658002DA417 /* NodePlayerTests.xctest */,
+				C2F43BD525A376F1002DA417 /* Documents.framework */,
+				C2F43BDD25A376F1002DA417 /* DocumentsTests.xctest */,
+				C2F43C3325A377EF002DA417 /* AudioEngine.framework */,
+				C2F43C3B25A377EF002DA417 /* AudioEngineTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -877,6 +1035,7 @@
 		C2E98C1D25A1087300FE1560 /* MIDI */ = {
 			isa = PBXGroup;
 			children = (
+				C2E98CAA25A113A500FE1560 /* MIDIEventDispatch.swift */,
 				C2E98CE425A124FB00FE1560 /* MetaEvent.swift */,
 				C2E98CEB25A1250E00FE1560 /* ChannelEvent.swift */,
 				C2E98CB225A121EB00FE1560 /* HeaderChunk.swift */,
@@ -890,17 +1049,17 @@
 				C2FF79861BD06115002CBA79 /* TimeSignature.swift */,
 				C23516611E06E123009AC033 /* MIDINote.swift */,
 				C23B05861C01258D0081AC6E /* Packet.swift */,
-				C207458E1B8DF6D5000A06D4 /* Time.swift */,
 				C2F2ADC31B91098A00FF4836 /* NoteGenerator.swift */,
 				C2CD18E01B7E681A00705922 /* StatusError.swift */,
 				C23B059C1C026F4C0081AC6E /* ChordGenerator.swift */,
+				C2E98CA325A112BD00FE1560 /* MIDINodeEvent.swift */,
 				C2B123BE1B864DCC008FED5E /* MIDIClock.swift */,
 				C23B058A1C014AC50081AC6E /* ElementalComponents.swift */,
 				C2CBE87C1BFA3BAC00EDA3A3 /* Chord.swift */,
+				C2E98CDD25A1231100FE1560 /* Error.swift */,
 				C23B058C1C014EBD0081AC6E /* Note.swift */,
 				C2E98C1E25A1087300FE1560 /* MIDI.h */,
 				C2E98C1F25A1087300FE1560 /* Info.plist */,
-				C2E98CDD25A1231100FE1560 /* Error.swift */,
 			);
 			path = MIDI;
 			sourceTree = "<group>";
@@ -912,6 +1071,43 @@
 				C2E98C2D25A1087300FE1560 /* Info.plist */,
 			);
 			path = MIDITests;
+			sourceTree = "<group>";
+		};
+		C2F43AFE25A2ACE1002DA417 /* CommonTests */ = {
+			isa = PBXGroup;
+			children = (
+				C2F43AFF25A2ACE1002DA417 /* CommonTests.swift */,
+				C2F43B0125A2ACE1002DA417 /* Info.plist */,
+			);
+			path = CommonTests;
+			sourceTree = "<group>";
+		};
+		C2F43B8F25A37658002DA417 /* NodePlayerTests */ = {
+			isa = PBXGroup;
+			children = (
+				C2F43B9025A37658002DA417 /* NodePlayerTests.swift */,
+				C2F43B9225A37658002DA417 /* Info.plist */,
+			);
+			name = NodePlayerTests;
+			path = ../NodePlayerTests;
+			sourceTree = "<group>";
+		};
+		C2F43BE325A376F1002DA417 /* DocumentsTests */ = {
+			isa = PBXGroup;
+			children = (
+				C2F43BE425A376F1002DA417 /* DocumentsTests.swift */,
+				C2F43BE625A376F1002DA417 /* Info.plist */,
+			);
+			path = DocumentsTests;
+			sourceTree = "<group>";
+		};
+		C2F43C4125A377EF002DA417 /* AudioEngineTests */ = {
+			isa = PBXGroup;
+			children = (
+				C2F43C4225A377EF002DA417 /* AudioEngineTests.swift */,
+				C2F43C4425A377EF002DA417 /* Info.plist */,
+			);
+			path = AudioEngineTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -930,6 +1126,38 @@
 			buildActionMask = 2147483647;
 			files = (
 				C2E98C2E25A1087300FE1560 /* MIDI.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C2F43AEB25A2ACE0002DA417 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C2F43B2625A2AD42002DA417 /* Common.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C2F43B7C25A37658002DA417 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C2F43BC625A376B7002DA417 /* NodePlayer.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C2F43BD025A376F1002DA417 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C2F43C1725A37746002DA417 /* Documents.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C2F43C2E25A377EF002DA417 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C2F43C7B25A37837002DA417 /* AudioEngine.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1005,6 +1233,10 @@
 			dependencies = (
 				C252C874259D2E73000A0BA2 /* PBXTargetDependency */,
 				C2E98C3025A1087300FE1560 /* PBXTargetDependency */,
+				C2F43B0425A2ACE1002DA417 /* PBXTargetDependency */,
+				C2F43B9525A37658002DA417 /* PBXTargetDependency */,
+				C2F43BE925A376F1002DA417 /* PBXTargetDependency */,
+				C2F43C4725A377EF002DA417 /* PBXTargetDependency */,
 			);
 			name = Groove;
 			productName = PerpetualGroove;
@@ -1046,6 +1278,154 @@
 			name = MIDITests;
 			productName = MIDITests;
 			productReference = C2E98C2425A1087300FE1560 /* MIDITests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		C2F43AEF25A2ACE0002DA417 /* Common */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C2F43B0F25A2ACE1002DA417 /* Build configuration list for PBXNativeTarget "Common" */;
+			buildPhases = (
+				C2F43AEB25A2ACE0002DA417 /* Headers */,
+				C2F43AEC25A2ACE0002DA417 /* Sources */,
+				C2F43AED25A2ACE0002DA417 /* Frameworks */,
+				C2F43AEE25A2ACE0002DA417 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Common;
+			productName = Common;
+			productReference = C2F43AF025A2ACE0002DA417 /* Common.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		C2F43AF725A2ACE1002DA417 /* CommonTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C2F43B1025A2ACE1002DA417 /* Build configuration list for PBXNativeTarget "CommonTests" */;
+			buildPhases = (
+				C2F43AF425A2ACE1002DA417 /* Sources */,
+				C2F43AF525A2ACE1002DA417 /* Frameworks */,
+				C2F43AF625A2ACE1002DA417 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C2F43AFB25A2ACE1002DA417 /* PBXTargetDependency */,
+				C2F43AFD25A2ACE1002DA417 /* PBXTargetDependency */,
+			);
+			name = CommonTests;
+			productName = CommonTests;
+			productReference = C2F43AF825A2ACE1002DA417 /* CommonTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		C2F43B8025A37658002DA417 /* NodePlayer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C2F43B9825A37658002DA417 /* Build configuration list for PBXNativeTarget "NodePlayer" */;
+			buildPhases = (
+				C2F43B7C25A37658002DA417 /* Headers */,
+				C2F43B7D25A37658002DA417 /* Sources */,
+				C2F43B7E25A37658002DA417 /* Frameworks */,
+				C2F43B7F25A37658002DA417 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NodePlayer;
+			productName = NodePlayer;
+			productReference = C2F43B8125A37658002DA417 /* NodePlayer.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		C2F43B8825A37658002DA417 /* NodePlayerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C2F43B9D25A37658002DA417 /* Build configuration list for PBXNativeTarget "NodePlayerTests" */;
+			buildPhases = (
+				C2F43B8525A37658002DA417 /* Sources */,
+				C2F43B8625A37658002DA417 /* Frameworks */,
+				C2F43B8725A37658002DA417 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C2F43B8C25A37658002DA417 /* PBXTargetDependency */,
+				C2F43B8E25A37658002DA417 /* PBXTargetDependency */,
+			);
+			name = NodePlayerTests;
+			productName = NodePlayerTests;
+			productReference = C2F43B8925A37658002DA417 /* NodePlayerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		C2F43BD425A376F1002DA417 /* Documents */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C2F43BEC25A376F1002DA417 /* Build configuration list for PBXNativeTarget "Documents" */;
+			buildPhases = (
+				C2F43BD025A376F1002DA417 /* Headers */,
+				C2F43BD125A376F1002DA417 /* Sources */,
+				C2F43BD225A376F1002DA417 /* Frameworks */,
+				C2F43BD325A376F1002DA417 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Documents;
+			productName = Documents;
+			productReference = C2F43BD525A376F1002DA417 /* Documents.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		C2F43BDC25A376F1002DA417 /* DocumentsTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C2F43BF125A376F1002DA417 /* Build configuration list for PBXNativeTarget "DocumentsTests" */;
+			buildPhases = (
+				C2F43BD925A376F1002DA417 /* Sources */,
+				C2F43BDA25A376F1002DA417 /* Frameworks */,
+				C2F43BDB25A376F1002DA417 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C2F43BE025A376F1002DA417 /* PBXTargetDependency */,
+				C2F43BE225A376F1002DA417 /* PBXTargetDependency */,
+			);
+			name = DocumentsTests;
+			productName = DocumentsTests;
+			productReference = C2F43BDD25A376F1002DA417 /* DocumentsTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		C2F43C3225A377EF002DA417 /* AudioEngine */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C2F43C4A25A377EF002DA417 /* Build configuration list for PBXNativeTarget "AudioEngine" */;
+			buildPhases = (
+				C2F43C2E25A377EF002DA417 /* Headers */,
+				C2F43C2F25A377EF002DA417 /* Sources */,
+				C2F43C3025A377EF002DA417 /* Frameworks */,
+				C2F43C3125A377EF002DA417 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AudioEngine;
+			productName = AudioEngine;
+			productReference = C2F43C3325A377EF002DA417 /* AudioEngine.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		C2F43C3A25A377EF002DA417 /* AudioEngineTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C2F43C4F25A377EF002DA417 /* Build configuration list for PBXNativeTarget "AudioEngineTests" */;
+			buildPhases = (
+				C2F43C3725A377EF002DA417 /* Sources */,
+				C2F43C3825A377EF002DA417 /* Frameworks */,
+				C2F43C3925A377EF002DA417 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C2F43C3E25A377EF002DA417 /* PBXTargetDependency */,
+				C2F43C4025A377EF002DA417 /* PBXTargetDependency */,
+			);
+			name = AudioEngineTests;
+			productName = AudioEngineTests;
+			productReference = C2F43C3B25A377EF002DA417 /* AudioEngineTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -1096,6 +1476,34 @@
 						CreatedOnToolsVersion = 12.3;
 						TestTargetID = C2E043301B72F4DC005F0675;
 					};
+					C2F43AEF25A2ACE0002DA417 = {
+						CreatedOnToolsVersion = 12.3;
+					};
+					C2F43AF725A2ACE1002DA417 = {
+						CreatedOnToolsVersion = 12.3;
+						TestTargetID = C2E043301B72F4DC005F0675;
+					};
+					C2F43B8025A37658002DA417 = {
+						CreatedOnToolsVersion = 12.3;
+					};
+					C2F43B8825A37658002DA417 = {
+						CreatedOnToolsVersion = 12.3;
+						TestTargetID = C2E043301B72F4DC005F0675;
+					};
+					C2F43BD425A376F1002DA417 = {
+						CreatedOnToolsVersion = 12.3;
+					};
+					C2F43BDC25A376F1002DA417 = {
+						CreatedOnToolsVersion = 12.3;
+						TestTargetID = C2E043301B72F4DC005F0675;
+					};
+					C2F43C3225A377EF002DA417 = {
+						CreatedOnToolsVersion = 12.3;
+					};
+					C2F43C3A25A377EF002DA417 = {
+						CreatedOnToolsVersion = 12.3;
+						TestTargetID = C2E043301B72F4DC005F0675;
+					};
 				};
 			};
 			buildConfigurationList = C2E0432C1B72F4DC005F0675 /* Build configuration list for PBXProject "PerpetualGroove" */;
@@ -1117,6 +1525,14 @@
 				C252C867259D2E73000A0BA2 /* SoundFontTests */,
 				C2E98C1B25A1087300FE1560 /* MIDI */,
 				C2E98C2325A1087300FE1560 /* MIDITests */,
+				C2F43AEF25A2ACE0002DA417 /* Common */,
+				C2F43AF725A2ACE1002DA417 /* CommonTests */,
+				C2F43B8025A37658002DA417 /* NodePlayer */,
+				C2F43B8825A37658002DA417 /* NodePlayerTests */,
+				C2F43BD425A376F1002DA417 /* Documents */,
+				C2F43BDC25A376F1002DA417 /* DocumentsTests */,
+				C2F43C3225A377EF002DA417 /* AudioEngine */,
+				C2F43C3A25A377EF002DA417 /* AudioEngineTests */,
 			);
 		};
 /* End PBXProject section */
@@ -1195,6 +1611,62 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C2F43AEE25A2ACE0002DA417 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C2F43AF625A2ACE1002DA417 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C2F43B7F25A37658002DA417 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C2F43B8725A37658002DA417 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C2F43BD325A376F1002DA417 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C2F43BDB25A376F1002DA417 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C2F43C3125A377EF002DA417 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C2F43C3925A377EF002DA417 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -1238,56 +1710,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C2DFBE7A1B8AA5AB00898C2A /* Sequence.swift in Sources */,
-				C26FC1731B7BAEBD00E271A3 /* AddTool.swift in Sources */,
-				C26FC16F1B7BA63300E271A3 /* MIDINode.swift in Sources */,
-				C2F2ADC61B91203700FF4836 /* Metronome.swift in Sources */,
-				C24E83961C3EDFD800B4A16A /* SecondaryControllerContainer.swift in Sources */,
-				C2EA30531BB9DF3300020958 /* Document.swift in Sources */,
-				C26EEB2E1B7FDA8F00EC6979 /* MixerViewController.swift in Sources */,
-				C2AC3A971BA9D4CD00692EBB /* TempoViewController.swift in Sources */,
-				C2576E0D1C13343E00F9A192 /* MIDINodePlayer.swift in Sources */,
-				C2981BAA1C2B85F4007FC51F /* Transport.swift in Sources */,
-				C26A27EF1B948E4F00BD1698 /* DocumentsViewController.swift in Sources */,
-				C2569E401B90005400EEB441 /* TempoTrack.swift in Sources */,
-				C2B2B03F1BCDCE5F007AF9DC /* TrackColor.swift in Sources */,
-				C2E043391B72F4DC005F0675 /* MIDINodePlayerScene.swift in Sources */,
-				C2B3B2EB1C55A9110001152F /* NodeSelectionTool.swift in Sources */,
-				C2B12D971BDC531500A6C719 /* Track.swift in Sources */,
-				C2562D0A1C63DBFC0086789D /* MIDINodeManager.swift in Sources */,
-				C2670CD01C4704A2000F76F9 /* MIDINodeDispatch.swift in Sources */,
-				C29A337C1DAE7E4800728E4B /* Colors.swift in Sources */,
-				C26FC1711B7BAC7F00E271A3 /* MIDINodePlayerNode.swift in Sources */,
-				C27AC89B1C0E8ACC00762AAF /* RemoveTool.swift in Sources */,
 				C2E705C51BBB17AE00636EF3 /* PurgatoryViewController.swift in Sources */,
-				C29A337E1DAE7E8800728E4B /* Fonts.swift in Sources */,
 				C2516B2B1C08ECE10060710B /* RootViewController.swift in Sources */,
-				C24DCE381C3438A800AD98BE /* GrooveFile.swift in Sources */,
-				C2AA2BC81B84B04200A0B08D /* InstrumentViewController.swift in Sources */,
-				C2729ADD1BEE6B3D004FA34F /* LocalDocumentItem.swift in Sources */,
-				C2E0433B1B72F4DC005F0675 /* MIDINodePlayerViewController.swift in Sources */,
-				C2981BA81C2468FD007FC51F /* Loop.swift in Sources */,
-				C2E98CAB25A113A500FE1560 /* MIDIEventDispatch.swift in Sources */,
-				C2E98CA425A112BD00FE1560 /* MIDINodeEvent.swift in Sources */,
-				C2D2EAB31DC10FD400DAC5EC /* InlinePickerContainer.swift in Sources */,
-				C2BC7AD51B76C85E001729BA /* Instrument.swift in Sources */,
-				C22FA58D1BC830D600162DB4 /* SettingsManager.swift in Sources */,
-				C2729ADF1BEE6B7C004FA34F /* NSMetadataItem.swift in Sources */,
-				C283B69E1BC0495A007A4A36 /* DocumentItem.swift in Sources */,
-				C21E44C51B76546C00574BD2 /* AudioManager.swift in Sources */,
-				C282911D1C1DFFD600F9975C /* Tool.swift in Sources */,
-				C2F35DB91BB4507800ECB045 /* MIDINodePlayerView.swift in Sources */,
-				C2807DDE1C74C61D0061A001 /* ThrottleTool.swift in Sources */,
-				C2AA2BCB1B84FB2100A0B08D /* Sequencer.swift in Sources */,
-				C2807DE01C74C6270061A001 /* RotateTool.swift in Sources */,
-				C2516B2D1C08F1B50060710B /* TransportViewController.swift in Sources */,
 				C2E043351B72F4DC005F0675 /* AppDelegate.swift in Sources */,
-				C2FEB0251C0F6183000BD1B7 /* GeneratorTool.swift in Sources */,
-				C24E83981C3EE0A300B4A16A /* MixerContainer.swift in Sources */,
-				C2CF38CD1B7EBED30085B3D5 /* InstrumentTrack.swift in Sources */,
-				C24E839A1C3EE0D100B4A16A /* MIDINodePlayerContainer.swift in Sources */,
-				C2D406741BB9FDC700681DEF /* DocumentManager.swift in Sources */,
-				C2807DDC1C74C60F0061A001 /* NudgeTool.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1299,9 +1724,10 @@
 				C2E98C7C25A109AB00FE1560 /* BarBeatTime.swift in Sources */,
 				C2E98C4825A1093B00FE1560 /* MIDIClock.swift in Sources */,
 				C2E98C6A25A1096600FE1560 /* MIDIEventContainer.swift in Sources */,
-				C2E98C9D25A10E1300FE1560 /* Time.swift in Sources */,
 				C2E98CCC25A1225200FE1560 /* TrackChunk.swift in Sources */,
 				C2E98C6B25A1096600FE1560 /* MIDINote.swift in Sources */,
+				C287395B25A39F1400870EE0 /* MIDIEventDispatch.swift in Sources */,
+				C255A6E425A22C300012AD69 /* MIDINodeEvent.swift in Sources */,
 				C2E98C6C25A1096600FE1560 /* MIDIGenerator.swift in Sources */,
 				C2E98CDE25A1231100FE1560 /* Error.swift in Sources */,
 				C2E98C5325A1094400FE1560 /* ElementalComponents.swift in Sources */,
@@ -1325,6 +1751,113 @@
 			buildActionMask = 2147483647;
 			files = (
 				C2E98C2C25A1087300FE1560 /* MIDITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C2F43AEC25A2ACE0002DA417 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C287399125A39FDF00870EE0 /* TrackColor.swift in Sources */,
+				C2F43DE425A37B97002DA417 /* SettingsManager.swift in Sources */,
+				C2F43B3625A2AD4F002DA417 /* Fonts.swift in Sources */,
+				C2F43B3825A2AD4F002DA417 /* Colors.swift in Sources */,
+				C2F43B3525A2AD4F002DA417 /* SecondaryControllerContainer.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C2F43AF425A2ACE1002DA417 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C2F43B0025A2ACE1002DA417 /* CommonTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C2F43B7D25A37658002DA417 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C2F43D7325A37A81002DA417 /* MIDINodePlayerScene.swift in Sources */,
+				C2F43D6C25A37A81002DA417 /* RotateTool.swift in Sources */,
+				C287399F25A3A9B600870EE0 /* InlinePickerContainer.swift in Sources */,
+				C2F43D6B25A37A81002DA417 /* MIDINodePlayerView.swift in Sources */,
+				C2F43D7925A37A81002DA417 /* Tool.swift in Sources */,
+				C2F43D7A25A37A81002DA417 /* MIDINodePlayerViewController.swift in Sources */,
+				C2F43D7425A37A81002DA417 /* RemoveTool.swift in Sources */,
+				C2F43D6A25A37A80002DA417 /* NodeSelectionTool.swift in Sources */,
+				C2F43D7725A37A81002DA417 /* ThrottleTool.swift in Sources */,
+				C2F43D7625A37A81002DA417 /* MIDINodeManager.swift in Sources */,
+				C2F43D7125A37A81002DA417 /* NudgeTool.swift in Sources */,
+				C2F43D6F25A37A81002DA417 /* AddTool.swift in Sources */,
+				C2F43D7025A37A81002DA417 /* MIDINode.swift in Sources */,
+				C2F43D7225A37A81002DA417 /* GeneratorTool.swift in Sources */,
+				C2F43D7825A37A81002DA417 /* MIDINodeDispatch.swift in Sources */,
+				C2F43D7525A37A81002DA417 /* MIDINodePlayerContainer.swift in Sources */,
+				C2F43D6D25A37A81002DA417 /* MIDINodePlayerNode.swift in Sources */,
+				C2F43D6E25A37A81002DA417 /* MIDINodePlayer.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C2F43B8525A37658002DA417 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C2F43B9125A37658002DA417 /* NodePlayerTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C2F43BD125A376F1002DA417 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C2F43DC425A37B7E002DA417 /* DocumentManager.swift in Sources */,
+				C2F43DC625A37B7E002DA417 /* DocumentsViewController.swift in Sources */,
+				C2F43DC325A37B7E002DA417 /* GrooveFile.swift in Sources */,
+				C2F43DC525A37B7E002DA417 /* NSMetadataItem.swift in Sources */,
+				C2F43DC725A37B7E002DA417 /* Document.swift in Sources */,
+				C2F43DC825A37B7E002DA417 /* DocumentItem.swift in Sources */,
+				C2F43DC925A37B7E002DA417 /* LocalDocumentItem.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C2F43BD925A376F1002DA417 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C2F43BE525A376F1002DA417 /* DocumentsTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C2F43C2F25A377EF002DA417 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C2F43D9925A37B6C002DA417 /* Metronome.swift in Sources */,
+				C2F43D9A25A37B6C002DA417 /* Transport.swift in Sources */,
+				C2F43D9F25A37B6C002DA417 /* Time.swift in Sources */,
+				C2F43DA325A37B6C002DA417 /* MixerViewController.swift in Sources */,
+				C2F43D9C25A37B6C002DA417 /* Sequence.swift in Sources */,
+				C2F43D9625A37B6C002DA417 /* Instrument.swift in Sources */,
+				C2F43DA525A37B6C002DA417 /* AudioEngine.swift in Sources */,
+				C2F43D9E25A37B6C002DA417 /* TempoViewController.swift in Sources */,
+				C2F43D9725A37B6C002DA417 /* MixerContainer.swift in Sources */,
+				C2F43DA825A37B6C002DA417 /* Track.swift in Sources */,
+				C2F43DA725A37B6C002DA417 /* Sequencer.swift in Sources */,
+				C2F43DA625A37B6C002DA417 /* InstrumentViewController.swift in Sources */,
+				C2F43D9D25A37B6C002DA417 /* TempoTrack.swift in Sources */,
+				C2F43DA125A37B6C002DA417 /* Loop.swift in Sources */,
+				C2F43D9525A37B6C002DA417 /* TransportViewController.swift in Sources */,
+				C2F43DA425A37B6C002DA417 /* InstrumentTrack.swift in Sources */,
+				C2F43D9B25A37B6C002DA417 /* BarBeatTimeLabel.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C2F43C3725A377EF002DA417 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C2F43C4325A377EF002DA417 /* AudioEngineTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1367,6 +1900,66 @@
 			isa = PBXTargetDependency;
 			target = C2E98C1B25A1087300FE1560 /* MIDI */;
 			targetProxy = C2E98C2F25A1087300FE1560 /* PBXContainerItemProxy */;
+		};
+		C2F43AFB25A2ACE1002DA417 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C2F43AEF25A2ACE0002DA417 /* Common */;
+			targetProxy = C2F43AFA25A2ACE1002DA417 /* PBXContainerItemProxy */;
+		};
+		C2F43AFD25A2ACE1002DA417 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C2E043301B72F4DC005F0675 /* Groove */;
+			targetProxy = C2F43AFC25A2ACE1002DA417 /* PBXContainerItemProxy */;
+		};
+		C2F43B0425A2ACE1002DA417 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C2F43AEF25A2ACE0002DA417 /* Common */;
+			targetProxy = C2F43B0325A2ACE1002DA417 /* PBXContainerItemProxy */;
+		};
+		C2F43B8C25A37658002DA417 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C2F43B8025A37658002DA417 /* NodePlayer */;
+			targetProxy = C2F43B8B25A37658002DA417 /* PBXContainerItemProxy */;
+		};
+		C2F43B8E25A37658002DA417 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C2E043301B72F4DC005F0675 /* Groove */;
+			targetProxy = C2F43B8D25A37658002DA417 /* PBXContainerItemProxy */;
+		};
+		C2F43B9525A37658002DA417 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C2F43B8025A37658002DA417 /* NodePlayer */;
+			targetProxy = C2F43B9425A37658002DA417 /* PBXContainerItemProxy */;
+		};
+		C2F43BE025A376F1002DA417 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C2F43BD425A376F1002DA417 /* Documents */;
+			targetProxy = C2F43BDF25A376F1002DA417 /* PBXContainerItemProxy */;
+		};
+		C2F43BE225A376F1002DA417 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C2E043301B72F4DC005F0675 /* Groove */;
+			targetProxy = C2F43BE125A376F1002DA417 /* PBXContainerItemProxy */;
+		};
+		C2F43BE925A376F1002DA417 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C2F43BD425A376F1002DA417 /* Documents */;
+			targetProxy = C2F43BE825A376F1002DA417 /* PBXContainerItemProxy */;
+		};
+		C2F43C3E25A377EF002DA417 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C2F43C3225A377EF002DA417 /* AudioEngine */;
+			targetProxy = C2F43C3D25A377EF002DA417 /* PBXContainerItemProxy */;
+		};
+		C2F43C4025A377EF002DA417 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C2E043301B72F4DC005F0675 /* Groove */;
+			targetProxy = C2F43C3F25A377EF002DA417 /* PBXContainerItemProxy */;
+		};
+		C2F43C4725A377EF002DA417 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C2F43C3225A377EF002DA417 /* AudioEngine */;
+			targetProxy = C2F43C4625A377EF002DA417 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1507,7 +2100,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Source/Frameworks/SoundFont/Info.plist;
+				INFOPLIST_FILE = Source/Subcomponents/SoundFont/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1549,7 +2142,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Source/Frameworks/SoundFont/Info.plist;
+				INFOPLIST_FILE = Source/Subcomponents/SoundFont/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1591,7 +2184,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Source/Frameworks/SoundFont/Info.plist;
+				INFOPLIST_FILE = Source/Subcomponents/SoundFont/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1631,7 +2224,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Source/Frameworks/SoundFont/Info.plist;
+				INFOPLIST_FILE = Source/Subcomponents/SoundFont/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2126,7 +2719,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Source/Frameworks/MIDI/Info.plist;
+				INFOPLIST_FILE = Source/Subcomponents/MIDI/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2166,7 +2759,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Source/Frameworks/MIDI/Info.plist;
+				INFOPLIST_FILE = Source/Subcomponents/MIDI/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2206,7 +2799,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Source/Frameworks/MIDI/Info.plist;
+				INFOPLIST_FILE = Source/Subcomponents/MIDI/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2244,7 +2837,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				INFOPLIST_FILE = Source/Frameworks/MIDI/Info.plist;
+				INFOPLIST_FILE = Source/Subcomponents/MIDI/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2379,6 +2972,1094 @@
 			};
 			name = Release;
 		};
+		C2F43B0725A2ACE1002DA417 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Source/Subcomponents/Common/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.Common;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		C2F43B0825A2ACE1002DA417 /* Debug-Verbose */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Source/Subcomponents/Common/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.Common;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = "Debug-Verbose";
+		};
+		C2F43B0925A2ACE1002DA417 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Source/Subcomponents/Common/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.Common;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Profile;
+		};
+		C2F43B0A25A2ACE1002DA417 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Source/Subcomponents/Common/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.Common;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		C2F43B0B25A2ACE1002DA417 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Tests/CommonTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.CommonTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
+			};
+			name = Debug;
+		};
+		C2F43B0C25A2ACE1002DA417 /* Debug-Verbose */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Tests/CommonTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.CommonTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
+			};
+			name = "Debug-Verbose";
+		};
+		C2F43B0D25A2ACE1002DA417 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Tests/CommonTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.CommonTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
+			};
+			name = Profile;
+		};
+		C2F43B0E25A2ACE1002DA417 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Tests/CommonTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.CommonTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
+			};
+			name = Release;
+		};
+		C2F43B9925A37658002DA417 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Source/Subcomponents/NodePlayer/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.NodePlayer;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		C2F43B9A25A37658002DA417 /* Debug-Verbose */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Source/Subcomponents/NodePlayer/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.NodePlayer;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = "Debug-Verbose";
+		};
+		C2F43B9B25A37658002DA417 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Source/Subcomponents/NodePlayer/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.NodePlayer;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Profile;
+		};
+		C2F43B9C25A37658002DA417 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Source/Subcomponents/NodePlayer/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.NodePlayer;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		C2F43B9E25A37658002DA417 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Tests/NodePlayerTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.NodePlayerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
+			};
+			name = Debug;
+		};
+		C2F43B9F25A37658002DA417 /* Debug-Verbose */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Tests/NodePlayerTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.NodePlayerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
+			};
+			name = "Debug-Verbose";
+		};
+		C2F43BA025A37658002DA417 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Tests/NodePlayerTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.NodePlayerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
+			};
+			name = Profile;
+		};
+		C2F43BA125A37658002DA417 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Tests/NodePlayerTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.NodePlayerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
+			};
+			name = Release;
+		};
+		C2F43BED25A376F1002DA417 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Source/Subcomponents/Documents/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.Documents;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		C2F43BEE25A376F1002DA417 /* Debug-Verbose */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Source/Subcomponents/Documents/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.Documents;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = "Debug-Verbose";
+		};
+		C2F43BEF25A376F1002DA417 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Source/Subcomponents/Documents/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.Documents;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Profile;
+		};
+		C2F43BF025A376F1002DA417 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Source/Subcomponents/Documents/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.Documents;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		C2F43BF225A376F1002DA417 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Tests/DocumentsTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.DocumentsTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
+			};
+			name = Debug;
+		};
+		C2F43BF325A376F1002DA417 /* Debug-Verbose */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Tests/DocumentsTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.DocumentsTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
+			};
+			name = "Debug-Verbose";
+		};
+		C2F43BF425A376F1002DA417 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Tests/DocumentsTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.DocumentsTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
+			};
+			name = Profile;
+		};
+		C2F43BF525A376F1002DA417 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Tests/DocumentsTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.DocumentsTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
+			};
+			name = Release;
+		};
+		C2F43C4B25A377EF002DA417 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Source/Subcomponents/AudioEngine/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.AudioEngine;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		C2F43C4C25A377EF002DA417 /* Debug-Verbose */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Source/Subcomponents/AudioEngine/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.AudioEngine;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = "Debug-Verbose";
+		};
+		C2F43C4D25A377EF002DA417 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Source/Subcomponents/AudioEngine/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.AudioEngine;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Profile;
+		};
+		C2F43C4E25A377EF002DA417 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Source/Subcomponents/AudioEngine/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.AudioEngine;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		C2F43C5025A377EF002DA417 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Tests/AudioEngineTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.AudioEngineTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
+			};
+			name = Debug;
+		};
+		C2F43C5125A377EF002DA417 /* Debug-Verbose */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Tests/AudioEngineTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.AudioEngineTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
+			};
+			name = "Debug-Verbose";
+		};
+		C2F43C5225A377EF002DA417 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Tests/AudioEngineTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.AudioEngineTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
+			};
+			name = Profile;
+		};
+		C2F43C5325A377EF002DA417 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = JT6STF4SHA;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = Tests/AudioEngineTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moondeerstudios.AudioEngineTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Groove.app/Groove";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -2455,6 +4136,94 @@
 				C2E98C3A25A1087300FE1560 /* Debug-Verbose */,
 				C2E98C3B25A1087300FE1560 /* Profile */,
 				C2E98C3C25A1087300FE1560 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C2F43B0F25A2ACE1002DA417 /* Build configuration list for PBXNativeTarget "Common" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C2F43B0725A2ACE1002DA417 /* Debug */,
+				C2F43B0825A2ACE1002DA417 /* Debug-Verbose */,
+				C2F43B0925A2ACE1002DA417 /* Profile */,
+				C2F43B0A25A2ACE1002DA417 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C2F43B1025A2ACE1002DA417 /* Build configuration list for PBXNativeTarget "CommonTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C2F43B0B25A2ACE1002DA417 /* Debug */,
+				C2F43B0C25A2ACE1002DA417 /* Debug-Verbose */,
+				C2F43B0D25A2ACE1002DA417 /* Profile */,
+				C2F43B0E25A2ACE1002DA417 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C2F43B9825A37658002DA417 /* Build configuration list for PBXNativeTarget "NodePlayer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C2F43B9925A37658002DA417 /* Debug */,
+				C2F43B9A25A37658002DA417 /* Debug-Verbose */,
+				C2F43B9B25A37658002DA417 /* Profile */,
+				C2F43B9C25A37658002DA417 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C2F43B9D25A37658002DA417 /* Build configuration list for PBXNativeTarget "NodePlayerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C2F43B9E25A37658002DA417 /* Debug */,
+				C2F43B9F25A37658002DA417 /* Debug-Verbose */,
+				C2F43BA025A37658002DA417 /* Profile */,
+				C2F43BA125A37658002DA417 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C2F43BEC25A376F1002DA417 /* Build configuration list for PBXNativeTarget "Documents" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C2F43BED25A376F1002DA417 /* Debug */,
+				C2F43BEE25A376F1002DA417 /* Debug-Verbose */,
+				C2F43BEF25A376F1002DA417 /* Profile */,
+				C2F43BF025A376F1002DA417 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C2F43BF125A376F1002DA417 /* Build configuration list for PBXNativeTarget "DocumentsTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C2F43BF225A376F1002DA417 /* Debug */,
+				C2F43BF325A376F1002DA417 /* Debug-Verbose */,
+				C2F43BF425A376F1002DA417 /* Profile */,
+				C2F43BF525A376F1002DA417 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C2F43C4A25A377EF002DA417 /* Build configuration list for PBXNativeTarget "AudioEngine" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C2F43C4B25A377EF002DA417 /* Debug */,
+				C2F43C4C25A377EF002DA417 /* Debug-Verbose */,
+				C2F43C4D25A377EF002DA417 /* Profile */,
+				C2F43C4E25A377EF002DA417 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C2F43C4F25A377EF002DA417 /* Build configuration list for PBXNativeTarget "AudioEngineTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C2F43C5025A377EF002DA417 /* Debug */,
+				C2F43C5125A377EF002DA417 /* Debug-Verbose */,
+				C2F43C5225A377EF002DA417 /* Profile */,
+				C2F43C5325A377EF002DA417 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

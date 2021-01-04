@@ -5,10 +5,13 @@
 //  Created by Jason Cardwell on 11/27/15.
 //  Copyright © 2015 Moondeer Studios. All rights reserved.
 //
-
 import Foundation
 import UIKit
 import MoonKit
+import Common
+import AudioEngine
+import Documents
+import NodePlayer
 
 /// The root view controller for the application's window.
 final class RootViewController: UIViewController {
@@ -60,10 +63,10 @@ final class RootViewController: UIViewController {
     super.viewDidAppear(animated)
 
     // Check that settings have been initialized.
-    assert(SettingsManager.isInitialized)
+//    assert(SettingsManager.isInitialized)
 
     // Check that iCloud storage should be used and the ubiquity identity token is `nil`.
-    guard Setting.iCloudStorage.value as? Bool == true
+    guard SettingsManager.shared.iCloudStorage
        && FileManager.default.ubiquityIdentityToken == nil
       else
     {

@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:../ChordFinder/ChordFinder.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:../SignalProcessing/SignalProcessing.xcodeproj">
    </FileRef>
    <FileRef

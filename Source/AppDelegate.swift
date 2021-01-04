@@ -5,9 +5,12 @@
 //  Created by Jason Cardwell on 8/5/15.
 //  Copyright © 2015 Moondeer Studios. All rights reserved.
 //
-
 import UIKit
 import MoonKit
+import Common
+import AudioEngine
+import NodePlayer
+import Documents
 
 // TODO: Implement or remove the empty delegate methods.
 
@@ -39,9 +42,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     
     do {
 
-      SettingsManager.initialize()
-      try AudioManager.initialize()
-//      try Sequencer.initialize()
+      _ = SettingsManager.shared
+      try AudioEngine.initialize()
+      try Sequencer.initialize()
       MIDINodePlayer.initialize()
       DocumentManager.initialize()
 
