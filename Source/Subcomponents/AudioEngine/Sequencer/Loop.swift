@@ -5,20 +5,19 @@
 //  Created by Jason Cardwell on 12/18/15.
 //  Copyright © 2015 Moondeer Studios. All rights reserved.
 //
+import Common
 import Foundation
 import MIDI
 import MoonKit
 import NodePlayer
-import Common
 
-// TODO: Review file
+// MARK: - Loop
 
 /// A class that stores a sequence of MIDI events along with start and stop times for
 /// beginning playback of the sequence and the total number of times the sequence should
 /// be played.
-public final class Loop: Swift.Sequence, MIDINodeDispatch, CustomStringConvertible {
-  /// The amount of time from `start` to `end` or `zero` if the loop has no end.
-  public var time: BarBeatTime { Swift.min(end - start, BarBeatTime.zero) }
+public final class Loop: MIDINodeDispatch {
+  // MARK: Stored Properties
 
   /// The number of times to dispatch the loop's events. Setting the value of this
   /// property to `0` causes the loop to repeat itself indefinitely.
@@ -31,25 +30,14 @@ public final class Loop: Swift.Sequence, MIDINodeDispatch, CustomStringConvertib
   /// The collection containing the loop's events.
   public var eventContainer: MIDIEventContainer
 
-  public func add<S>(events: S) where S:Swift.Sequence, S.Element == MIDIEvent {
-    eventContainer.append(contentsOf: events)
-    Time.current?.register(callback: weakCapture(of: self,
-                                                 block:type(of: self).dispatchEvents),
-                          forTimes: registrationTimes(forAdding: events),
-                          identifier: UUID())
-  }
-
   /// The dispatch time for the first event in the loop.
-  public var start = BarBeatTime.zero
+  public var start: BarBeatTime = .zero
 
   /// The dispatch time for the last event in the loop.
-  public var end = BarBeatTime.zero
+  public var end: BarBeatTime = .zero
 
   /// Uniquely identifies the loop across application launches.
   public let identifier: UUID
-
-  /// The queue used for dispatching the loop's MIDI events.
-  public var eventQueue: DispatchQueue { return track.eventQueue }
 
   /// Manages MIDI nodes dispatched by the loop.
   public private(set) var nodeManager: MIDINodeManager!
@@ -60,23 +48,25 @@ public final class Loop: Swift.Sequence, MIDINodeDispatch, CustomStringConvertib
   /// The instrument track that owns the loop.
   public unowned let track: InstrumentTrack
 
+  // MARK: Computed Properties
+
+  /// The amount of time from `start` to `end` or `zero` if the loop has no end.
+  public var time: BarBeatTime { Swift.min(end - start, BarBeatTime.zero) }
+
+  /// The queue used for dispatching the loop's MIDI events.
+  public var eventQueue: DispatchQueue { track.eventQueue }
+
   /// The color associated with the loop. This property returns the track's color.
-  public var color: TrackColor { return track.color }
+  public var color: TrackColor { track.color }
 
   public var isRecording: Bool {
-    return Sequencer.mode == .loop && MIDINodePlayer.currentDispatch === self
+    Sequencer.shared.mode == .loop && MIDINodePlayer.currentDispatch === self
   }
 
-  public var nextNodeName: String { return "\(name) \(nodes.count + 1)" }
+  public var nextNodeName: String { "\(name) \(nodes.count + 1)" }
 
   /// The name of the loop, composed of the track's display name and the identifier.
-  public var name: String { return "\(track.displayName) (\(identifier.uuidString))" }
-
-  /// Uses `track` to connect `node`.
-  public func connect(node: MIDINode) throws { try track.connect(node: node) }
-
-  /// Uses `track` to disconnect `node`.
-  public func disconnect(node: MIDINode) throws { try track.disconnect(node: node) }
+  public var name: String { "\(track.displayName) (\(identifier.uuidString))" }
 
   /// 'Marker' meta event in the following format:<br>
   ///      `start(`*identifier*`):`*repetitions*`:`*repeatDelay*
@@ -98,6 +88,45 @@ public final class Loop: Swift.Sequence, MIDINodeDispatch, CustomStringConvertib
     return .meta(MetaEvent(data: .marker(name: text)))
   }
 
+  // MARK: MIDIEvent Dispatch
+
+  public func add<S>(events: S) where S: Swift.Sequence, S.Element == MIDIEvent {
+    eventContainer.append(contentsOf: events)
+    Sequencer.shared.time.register(callback: weakCapture(of: self,
+                                                         block: type(of: self).dispatchEvents),
+                                   forTimes: registrationTimes(forAdding: events),
+                                   identifier: UUID())
+  }
+
+  /// Returns the bar beat times to register with the transport's time for dispatching
+  /// `events`.
+  public func registrationTimes<Source>(forAdding events: Source) -> [BarBeatTime]
+    where Source: Swift.Sequence, Source.Iterator.Element == MIDIEvent
+  {
+    // Return the times for the MIDI node events found in `events`.
+    return events.filter {
+      if case .node = $0 { return true }
+      else { return false }
+    }.map { $0.time }
+  }
+
+  /// Dispatches `event` via the loop's node manager.
+  public func dispatch(event: MIDIEvent) {
+    // Get the node event wrapped by `event`.
+    guard case .node(let nodeEvent) = event else { return }
+
+    // Delegate to the node manager to perform actual event handling.
+    nodeManager.handle(event: nodeEvent)
+  }
+
+  // MARK: MIDINode Dispatch
+
+  /// Uses `track` to connect `node`.
+  public func connect(node: MIDINode) throws { try track.connect(node: node) }
+
+  /// Uses `track` to disconnect `node`.
+  public func disconnect(node: MIDINode) throws { try track.disconnect(node: node) }
+
   /// Initializing with a track. The loop is assigned to the specified track. The loop is
   /// provided a new identifier and an empty event container.
   public init(track: InstrumentTrack) {
@@ -113,6 +142,8 @@ public final class Loop: Swift.Sequence, MIDINodeDispatch, CustomStringConvertib
     // Initialize `nodeManager` with a new instance owned by the loop.
     nodeManager = MIDINodeManager(owner: self)
   }
+
+  // MARK: Initializing
 
   /// Initializing with existing values.
   ///
@@ -138,29 +169,11 @@ public final class Loop: Swift.Sequence, MIDINodeDispatch, CustomStringConvertib
     eventContainer = MIDIEventContainer(events: events)
     nodeManager = MIDINodeManager(owner: self)
   }
+}
 
+// MARK: Swift.Sequence
 
-  /// Returns the bar beat times to register with the transport's time for dispatching
-  /// `events`.
-  public func registrationTimes<Source>(forAdding events: Source) -> [BarBeatTime]
-    where Source: Swift.Sequence, Source.Iterator.Element == MIDIEvent
-  {
-    // Return the times for the MIDI node events found in `events`.
-    return events.filter({
-      if case .node(_) = $0 { return true }
-      else { return false }
-    }).map({$0.time})
-  }
-
-  /// Dispatches `event` via the loop's node manager.
-  public func dispatch(event: MIDIEvent) {
-    // Get the node event wrapped by `event`.
-    guard case .node(let nodeEvent) = event else { return }
-
-    // Delegate to the node manager to perform actual event handling.
-    nodeManager.handle(event: nodeEvent)
-  }
-
+extension Loop: Swift.Sequence {
   /// Returns an iterator over the loop's MIDI events.
   public func makeIterator() -> AnyIterator<MIDIEvent> {
     var startEventInserted = false
@@ -229,20 +242,24 @@ public final class Loop: Swift.Sequence, MIDINodeDispatch, CustomStringConvertib
       }
     }
   }
+}
 
+// MARK: CustomStringConvertible
+
+extension Loop: CustomStringConvertible {
   public var description: String {
-    return [
-      "time: \(time)",
-      "repetitions: \(repetitions)",
-      "repeatDelay: \(repeatDelay)",
-      "start: \(start)",
-      "end: \(end)",
-      "identifier: \(identifier)",
-      "color: \(color)",
-      "isRecording: \(isRecording)",
-      "name: \(name)",
-      "nodes: \(nodes)",
-      "events: \(eventContainer)"
-    ].joined(separator: "\n")
+    """
+    time: \(time)
+    repetitions: \(repetitions)
+    repeatDelay: \(repeatDelay)
+    start: \(start)
+    end: \(end)
+    identifier: \(identifier)
+    color: \(color)
+    isRecording: \(isRecording)
+    name: \(name)
+    nodes: \(nodes)
+    events: \(eventContainer)
+    """
   }
 }

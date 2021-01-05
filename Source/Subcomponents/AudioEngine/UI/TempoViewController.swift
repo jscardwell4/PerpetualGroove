@@ -21,7 +21,7 @@ public final class TempoViewController: UIViewController {
   @IBAction
   private func tempoSliderValueDidChange() {
 
-    Sequencer.tempo = Double(tempoSlider.value)
+    Sequencer.shared.tempo = Double(tempoSlider.value)
 
   }
 
@@ -35,7 +35,7 @@ public final class TempoViewController: UIViewController {
     super.viewDidLoad()
 
     // Set the slider's value to the current tempo.
-    tempoSlider.value = Float(Sequencer.tempo)
+    tempoSlider.value = Float(Sequencer.shared.tempo)
 
     // Set the selected state of the button to match whether the metronome is on.
     metronomeButton.isSelected = AudioEngine.metronome?.isOn ?? false

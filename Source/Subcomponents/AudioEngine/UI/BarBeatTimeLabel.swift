@@ -5,11 +5,11 @@
 //  Created by Jason Cardwell on 9/18/15.
 //  Copyright © 2015 Moondeer Studios. All rights reserved.
 //
-
 import Foundation
 import MoonKit
 import UIKit
 import MIDI
+import Combine
 
 /// A view for displaying a transport's bar beat time.
 @IBDesignable
@@ -375,9 +375,11 @@ final class BarBeatTimeLabel: UIView {
   private func didChangeTransport(_ notification: Notification) {
 
     // Replace `transport` with the sequencer's current transport.
-    transport = Sequencer.transport
+    transport = Sequencer.shared.transport
 
   }
+
+  private var subscription: Cancellable?
 
   /// Registers to receive `didChangeTransport` notifications from the sequencer and sets `transport` to
   /// the sequencer's current transport. When building for interface builder this method does nothing.
@@ -386,12 +388,11 @@ final class BarBeatTimeLabel: UIView {
     // Check that the build target is not interface builder.
     #if !TARGET_INTERFACE_BUILDER
 
-      // Register to receive notifications from the sequencer when it changes transports.
-      receptionist.observe(name: .didChangeTransport, from: Sequencer.self,
-                           callback: weakCapture(of: self, block:BarBeatTimeLabel.didChangeTransport))
+    // Register to receive notifications from the sequencer when it changes transports.
+    subscription = Sequencer.shared.$transport.sink(receiveValue: { self.transport = $0 })
 
-      // Set `transport` to the sequencer's current transport.
-      transport = Sequencer.transport
+    // Set `transport` to the sequencer's current transport.
+    transport = Sequencer.shared.transport
 
     #endif
 

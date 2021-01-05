@@ -42,9 +42,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     
     do {
 
-      _ = SettingsManager.shared
+//      _ = SettingsManager.shared
       try AudioEngine.initialize()
-      try Sequencer.initialize()
+      _ = Sequencer.shared
       MIDINodePlayer.initialize()
       DocumentManager.initialize()
 

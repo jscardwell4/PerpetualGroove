@@ -10,6 +10,7 @@ import MoonKit
 import Nimble
 @testable import Groove
 @testable import MIDI
+@testable import NodePlayer
 
 final class MIDINodePathTests: XCTestCase {
 

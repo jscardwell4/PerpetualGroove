@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="s2G-da-Id7">
-    <device id="ipad9_7" orientation="landscape">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="s2G-da-Id7">
+    <device id="ipad9_7" orientation="landscape" layout="fullscreen" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
-        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--Tempo-->
         <scene sceneID="6dR-FB-x8d">
             <objects>
-                <viewController storyboardIdentifier="Time" id="s2G-da-Id7" userLabel="Tempo" customClass="TempoViewController" customModule="Groove" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Time" id="s2G-da-Id7" userLabel="Tempo" customClass="TempoViewController" customModule="AudioEngine" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Bp2-VP-D2W"/>
                         <viewControllerLayoutGuide type="bottom" id="atr-jl-S63"/>
@@ -22,7 +18,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="310" height="122"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eGE-iH-5ex" userLabel="Tempo" customClass="Slider" customModule="MoonKit">
+                            <view opaque="NO" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eGE-iH-5ex" userLabel="Tempo" customClass="Slider" customModule="MoonKit">
                                 <rect key="frame" x="8" y="8" width="294" height="55"/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="image" keyPath="thumbImage" value="horizontal_thumb"/>
@@ -79,7 +75,7 @@
                                     <action selector="tempoSliderValueDidChange" destination="s2G-da-Id7" eventType="valueChanged" id="yBW-E5-70W"/>
                                 </connections>
                             </view>
-                            <view opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="6fH-3m-ywp" userLabel="Metronome" customClass="ImageButtonView" customModule="MoonKit">
+                            <view opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="250" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6fH-3m-ywp" userLabel="Metronome" customClass="ImageButtonView" customModule="MoonKit">
                                 <rect key="frame" x="8" y="71" width="43" height="43"/>
                                 <color key="tintColor" red="0.73028218749999996" green="0.70356303450000002" blue="0.66374135020000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
@@ -101,7 +97,7 @@
                                     <action selector="toggleMetronome" destination="s2G-da-Id7" eventType="touchUpInside" id="Qxd-tL-m4L"/>
                                 </connections>
                             </view>
-                            <view opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="z5I-bV-SIh" userLabel="BarBeatTime" customClass="BarBeatTimeLabel" customModule="Groove" customModuleProvider="target">
+                            <view opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="z5I-bV-SIh" userLabel="BarBeatTime" customClass="BarBeatTimeLabel" customModule="Groove" customModuleProvider="target">
                                 <rect key="frame" x="68" y="71" width="234" height="43"/>
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                 <accessibility key="accessibilityConfiguration" identifier="BarBeatTime"/>

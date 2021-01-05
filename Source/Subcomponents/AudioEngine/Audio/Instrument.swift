@@ -118,10 +118,10 @@ public final class Instrument: Equatable, CustomStringConvertible, NotificationD
     do {
 
       // Use the generator to send a 'note on' event.
-      try generator.sendNoteOn(outPort: outPort, endPoint: endPoint, ticks: Time.current?.ticks ?? 0)
+      try generator.sendNoteOn(outPort: outPort, endPoint: endPoint, ticks: Sequencer.shared.time.ticks)
 
       // Translate the generator's duration into nanoseconds.
-      let nanoseconds = UInt64(generator.duration.seconds(withBPM: Sequencer.tempo) * Double(NSEC_PER_SEC))
+      let nanoseconds = UInt64(generator.duration.seconds(withBPM: Sequencer.shared.tempo) * Double(NSEC_PER_SEC))
 
       // Convert the nanosecond value into a dispatch time.
       let deadline = DispatchTime(uptimeNanoseconds: nanoseconds)
@@ -133,7 +133,7 @@ public final class Instrument: Equatable, CustomStringConvertible, NotificationD
         do {
 
           // Use the generator to send a 'note off' event.
-          try generator.sendNoteOff(outPort: outPort, endPoint: endPoint, ticks: Time.current?.ticks ?? 0)
+          try generator.sendNoteOff(outPort: outPort, endPoint: endPoint, ticks: Sequencer.shared.time.ticks)
 
         } catch {
 

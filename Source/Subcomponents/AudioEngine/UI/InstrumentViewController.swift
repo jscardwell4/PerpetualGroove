@@ -28,18 +28,6 @@ public final class InstrumentViewController: UIViewController, SecondaryContent 
   /// Handles registration and reception of the `didUpdateAvailableSoundFonts` posted by `Sequencer`.
   private let receptionist = NotificationReceptionist(callbackQueue: OperationQueue.main)
 
-  /// Overridden to register `receptionist` for the `Sequencer` notification.
-  public override func awakeFromNib() {
-
-    super.awakeFromNib()
-
-    // Register for available sound font updates.
-    receptionist.observe(name: .didUpdateAvailableSoundFonts, from: Sequencer.self) {
-      [weak self] _ in self?.updateSoundFonts()
-    }
-
-  }
-
   /// Refreshes the list of selectable items displayed by the sound font selector.
   private func updateSoundFonts() {
 
@@ -58,7 +46,7 @@ public final class InstrumentViewController: UIViewController, SecondaryContent 
     guard let instrument = instrument else { return }
 
     // Get the selected sound font.
-    let soundFont = Sequencer.soundFonts[soundFontSelector.selection]
+    let soundFont = Sequencer.shared.soundFonts[soundFontSelector.selection]
 
     // Create a preset specifying the selected sound font's first program.
     let preset = Instrument.Preset(soundFont: soundFont, presetHeader: soundFont[0], channel: 0)
@@ -153,7 +141,7 @@ public final class InstrumentViewController: UIViewController, SecondaryContent 
       // Check that there is an instrument, that the view is loaded, and that indexes may be retrieved
       // for the sound font and the program.
       guard let instrument = instrument,
-            let soundFontIndex = Sequencer.soundFonts.firstIndex(where: {instrument.soundFont.isEqualTo($0)}),
+            let soundFontIndex = Sequencer.shared.soundFonts.firstIndex(where: {instrument.soundFont.isEqualTo($0)}),
             let programIndex = instrument.soundFont.presetHeaders.firstIndex(of: instrument.preset.presetHeader),
             isViewLoaded
         else
@@ -184,9 +172,6 @@ public final class InstrumentViewController: UIViewController, SecondaryContent 
   public override func viewDidLoad() {
 
     super.viewDidLoad()
-
-    // Check that the sequencer has intialized.
-    guard Sequencer.isInitialized else { return }
 
     // Update the interface.
     updateSoundFonts()

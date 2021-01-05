@@ -43,7 +43,6 @@ final class PurgatoryViewController: UIViewController {
 
     super.awakeFromNib()
 
-    fatalError("\(#function) not yet implemented.")
 //    receptionist.observe(name: .NSUbiquityIdentityDidChange,
 //                         callback: weakCapture(of: self, block:PurgatoryViewController.identityDidChange))
 //

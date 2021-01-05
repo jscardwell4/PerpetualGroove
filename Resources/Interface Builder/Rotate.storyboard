@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Z6e-cu-tmb">
-    <device id="ipad9_7" orientation="landscape">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Z6e-cu-tmb">
+    <device id="ipad9_7" orientation="landscape" layout="fullscreen" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--Rotate View Controller-->
         <scene sceneID="Ova-t5-fQj">
             <objects>
-                <viewController storyboardIdentifier="Rotate" id="Z6e-cu-tmb" customClass="RotateViewController" customModule="Groove" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Rotate" id="Z6e-cu-tmb" customClass="RotateViewController" customModule="NodePlayer" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="8ay-G4-vKi"/>
                         <viewControllerLayoutGuide type="bottom" id="Q1c-Ld-1IE"/>
@@ -76,6 +73,14 @@
             <point key="canvasLocation" x="466" y="530"/>
         </scene>
     </scenes>
+    <designables>
+        <designable name="gfq-O5-xs9">
+            <size key="intrinsicContentSize" width="168" height="168"/>
+        </designable>
+        <designable name="uwj-MS-m5R">
+            <size key="intrinsicContentSize" width="200" height="200"/>
+        </designable>
+    </designables>
     <resources>
         <image name="Editing/rotate_arrow" width="200" height="200"/>
         <image name="Editing/rotate_ball" width="168" height="168"/>

@@ -121,7 +121,7 @@ public final class MIDINodePlayerViewController: UIViewController, UITextFieldDe
 
   /// Registers `receptionist` for various notifications.
   private func setup() {
-    fatalError("\(#function) not yet implemented.")
+//    fatalError("\(#function) not yet implemented.")
 //    receptionist.observe(name: .didChangeDocument, from: DocumentManager.self,
 //                         callback: weakCapture(of: self, block:MIDINodePlayerViewController.didChangeDocument))
 //    receptionist.observe(name: .willOpenDocument, from: DocumentManager.self,

@@ -550,6 +550,56 @@ public struct GrooveFile: DataConvertible, LosslessJSONValueConvertible, CustomS
 
 }
 
+extension Sequence {
+  /// Initializing with JSON fiie data belonging to a document. After the default
+  /// initializer has been invoked passing `document`, the sequence's tempo and instrument
+  /// tracks are generated using data obtained from `file`.
+  public convenience init(file: GrooveFile) {
+
+    // Invoke the default initializer with the specified document.
+    self.init()
+
+    // Create an array for accumulating tempo events.
+    var tempoEvents: [MIDIEvent] = []
+
+    // Iterate through the tempo changes contained by `file`.
+    for (key: rawTime, value: bpmValue) in file.tempoChanges.value {
+
+      // Convert the key-value pair into `BarBeatTime` and `Double` values.
+      guard let time = BarBeatTime(rawValue: rawTime),
+            let bpm = Double(bpmValue)
+        else
+      {
+        continue
+      }
+
+      // Create a meta event using the converted values.
+      let tempoEvent = MetaEvent(data: .tempo(bpm: bpm), time: time)
+
+      // Append a MIDI event wrapping `tempoEvent` to the array of tempo events.
+      tempoEvents.append(.meta(tempoEvent))
+
+    }
+
+    // Append the tempo events extracted from `file` to the tempo track created in
+    // the default initializer.
+    tempoTrack.add(events: tempoEvents)
+
+    // Iterate through the file's instrument track data.
+    for trackData in file.tracks {
+
+      // Initialize a new track using `trackData`.
+      guard let track = try? InstrumentTrack(sequence: self,
+                                             grooveTrack: trackData) else { continue }
+
+      // Add the track to the sequence.
+      add(track: track)
+
+    }
+
+  }
+}
+
 extension Loop {
   /// Iniitializing with a loop from a Groove file and a track. The loop is assigned to the
   /// specified track. The values for `identifier`, `repetitions`, `repeatDelay`, and

@@ -116,8 +116,6 @@ public final class MIDINodePlayer: NotificationDispatching {
   /// Initializes the player by registering for various notifications.
   public static func initialize() {
 
-    fatalError("\(#function) not yet implemented.")
-
 //    guard !isInitialized else { return }
 //
 //    receptionist.observe(name: .didChangeSequence, from: Sequencer.self, callback: didChangeSequence)

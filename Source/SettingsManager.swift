@@ -40,6 +40,7 @@ public final class SettingsManager {
   /// Bookmark data for the most recently opened document from iCloud storage.
   @Setting<Data?>(.currentDocumentiCloud, nil) public var currentDocumentiCloud: Data?
 
+  /// Empty initializer made private to prevent the creation of unwanted instances.
   private init() {}
 
 }
@@ -58,13 +59,20 @@ public struct Setting<Value> {
   ///   - defaultValue: The default value to register with `UserDefaults`.
   init(_ key: Key, _ defaultValue: Value) {
     self.key = key
-    UserDefaults.standard.register(defaults: [key.rawValue: defaultValue])
+    switch defaultValue {
+      case let value as Bool:
+        UserDefaults.standard.register(defaults: [key.rawValue: value])
+      case let value as Data:
+        UserDefaults.standard.register(defaults: [key.rawValue: value])
+      default:
+        break
+    }
   }
 
   /// Accessor for the setting value stored in the standard `UserDefaults`.
   public var wrappedValue: Value {
     get {
-      if  type(of: Value.self) == Bool.self {
+      if  type(of: Value.self) == Bool.Type.self {
         return UserDefaults.standard.bool(forKey: key.rawValue) as! Value
       } else if type(of: Value.self) == Optional<Data>.self {
         return UserDefaults.standard.data(forKey: key.rawValue) as! Value
@@ -73,7 +81,13 @@ public struct Setting<Value> {
       }
     }
     set {
-      UserDefaults.standard.set(newValue, forKey: key.rawValue)
+      if type(of: Value.self) == Bool.self {
+        UserDefaults.standard.set(newValue, forKey: key.rawValue)
+      } else if type(of: Value.self) == Optional<Data>.self,
+                let newValue = newValue as? Data
+      {
+        UserDefaults.standard.set(newValue, forKey: key.rawValue)
+      }
     }
   }
 

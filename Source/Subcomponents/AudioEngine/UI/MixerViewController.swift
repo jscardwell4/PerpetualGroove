@@ -10,6 +10,7 @@ import MoonKit
 import typealias AudioUnit.AudioUnitElement
 import typealias AudioToolbox.AudioUnitParameterValue
 import Common
+import Combine
 
 /// Controller for displaying the mixer interface.
 public final class MixerViewController: UICollectionViewController, SecondaryContentProvider {
@@ -79,7 +80,7 @@ public final class MixerViewController: UICollectionViewController, SecondaryCon
 
       pendingTrackIndex = Section.tracks.itemCount
 
-      try sequence?.insertTrack(instrument: try Instrument(preset: Sequencer.auditionInstrument.preset))
+      try sequence?.insertTrack(instrument: try Instrument(preset: Sequencer.shared.auditionInstrument.preset))
 
     } catch {
 
@@ -339,8 +340,7 @@ public final class MixerViewController: UICollectionViewController, SecondaryCon
     (content as? InstrumentViewController)?.rollBackInstrument()
   }
 
-  /// Flag indicating whether this instance has already initialized it's `receptionist` property.
-  private var isReceptionistInitialized = false
+  private var subscription: Cancellable?
 
   /// Overridden to create view's mask and constraints.
   public override func viewDidLoad() {
@@ -369,20 +369,14 @@ public final class MixerViewController: UICollectionViewController, SecondaryCon
 
     super.awakeFromNib()
 
-    guard !isReceptionistInitialized else { return }
-
-    receptionist.observe(name: .didChangeSequence, from: Sequencer.self) {
-      [weak self] _ in self?.sequence = Sequence.current
-    }
-
-    isReceptionistInitialized = true
+    subscription = Sequencer.shared.$sequence.sink(receiveValue: { self.sequence = $0 })
 
   }
 
   /// Overridden to keep `sequence` current as well as the volume and pan values for the master cell.
   public override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-    sequence = Sequence.current
+    sequence = Sequencer.shared.sequence
     (collectionView?.cellForItem(at: Section.master[0]) as? MasterCell)?.refresh()
   }
 
@@ -526,16 +520,16 @@ public final class MixerViewController: UICollectionViewController, SecondaryCon
     }
 
     /// Returns the number of items for the section.
-    var itemCount: Int { return self == .tracks ? Sequence.current?.instrumentTracks.count ?? 0 : 1 }
+    var itemCount: Int { self == .tracks ? Sequencer.shared.sequence?.instrumentTracks.count ?? 0 : 1 }
 
     /// An array of all the index paths that are valid for the section.
-    var indexPaths: [IndexPath] { return (0..<itemCount).map({IndexPath(item: $0, section: rawValue)}) }
+    var indexPaths: [IndexPath] { (0..<itemCount).map({IndexPath(item: $0, section: rawValue)}) }
 
     /// An array of all possible `Section` values.
-    static var sections: [Section] { return [.master, .tracks, .add] }
+    static var sections: [Section] { [.master, .tracks, .add] }
 
     /// Total number of items across all three sections.
-    static var totalItemCount: Int { return Section.tracks.itemCount &+ 2 }
+    static var totalItemCount: Int { Section.tracks.itemCount &+ 2 }
 
     /// The cell identifier for cells in the section.
     var reuseIdentifier: String {

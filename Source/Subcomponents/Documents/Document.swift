@@ -120,16 +120,16 @@ public final class Document: UIDocument, Named, NotificationDispatching {
     guard let data = contents as? Data else { throw Error.invalidContent }
     guard let type = SourceType(typeName) else { throw Error.invalidContentType }
 
-    guard data.count > 0 else { sequence = Sequence(document: self); return }
+    guard data.count > 0 else { sequence = Sequence(); return }
 
     switch type {
 
       case .midi:
-        sequence = Sequence(file: try MIDIFile(data: data), document: self)
+        sequence = Sequence(file: try MIDIFile(data: data))
 
       case .groove:
         guard let file = GrooveFile(data: data) else { throw Error.invalidContent }
-        sequence = Sequence(file: file, document: self)
+        sequence = Sequence(file: file)
 
     }
 
@@ -143,7 +143,7 @@ public final class Document: UIDocument, Named, NotificationDispatching {
   public override func contents(forType typeName: String) throws -> Any {
 
     if sequence == nil && isCreating {
-      sequence = Sequence(document: self)
+      sequence = Sequence()
       isCreating = false
     }
 
@@ -291,129 +291,5 @@ extension Notification {
 
   /// The new file name of a renamed `Document` instance or `nil`.
   public var newDocumentName: String? { return userInfo?["newName"] as? String }
-
-}
-
-extension Sequence {
-
-  /// Initializing with a document. This is thet default intializer for `Sequence`.
-  /// - TODO: Review transport notification observations. Should both of the sequencer's
-  ///         transports be observed or just the primary?
-  public convenience init(document: Document) {
-
-    fatalError("\(#function) not yet implemented.")
-//    // Initialize `document` with the specified document.
-//    self.document = document
-//
-//    // Get the current transport.
-//    let transport = Transport.current
-//
-//    // Register to receive the transport's `didToggleRecording` notifications.
-//    receptionist.observe(name: .didToggleRecording, from: transport,
-//                callback: weakCapture(of: self, block:Sequence.toggleRecording))
-//
-//    // Register to receive the transport's `didReset` notifications.
-//    receptionist.observe(name: .didReset, from: transport,
-//                callback: weakCapture(of: self, block:Sequence.sequencerDidReset))
-//
-//    // Initialize `tempoTrack` by creating a new track for the sequence.
-//    tempoTrack = TempoTrack(sequence: self)
-
-  }
-
-  /// Initializing with JSON fiie data belonging to a document. After the default
-  /// initializer has been invoked passing `document`, the sequence's tempo and instrument
-  /// tracks are generated using data obtained from `file`.
-  public convenience init(file: GrooveFile, document: Document) {
-
-    fatalError("\(#function) not yet implemented.")
-
-//    // Invoke the default initializer with the specified document.
-//    self.init(document: document)
-//
-//    // Create an array for accumulating tempo events.
-//    var tempoEvents: [MIDIEvent] = []
-//
-//    // Iterate through the tempo changes contained by `file`.
-//    for (key: rawTime, value: bpmValue) in file.tempoChanges.value {
-//
-//      // Convert the key-value pair into `BarBeatTime` and `Double` values.
-//      guard let time = BarBeatTime(rawValue: rawTime),
-//            let bpm = Double(bpmValue)
-//        else
-//      {
-//        continue
-//      }
-//
-//      // Create a meta event using the converted values.
-//      let tempoEvent = MetaEvent(data: .tempo(bpm: bpm), time: time)
-//
-//      // Append a MIDI event wrapping `tempoEvent` to the array of tempo events.
-//      tempoEvents.append(.meta(tempoEvent))
-//
-//    }
-//
-//    // Append the tempo events extracted from `file` to the tempo track created in
-//    // the default initializer.
-//    tempoTrack.add(events: tempoEvents)
-//
-//    // Iterate through the file's instrument track data.
-//    for trackData in file.tracks {
-//
-//      // Initialize a new track using `trackData`.
-//      guard let track = try? InstrumentTrack(sequence: self, grooveTrack: trackData) else {
-//        continue
-//      }
-//
-//      // Add the track to the sequence.
-//      add(track: track)
-//
-//    }
-
-  }
-
-  /// Initializing with MIDI file data belonging to a document. After the default
-  /// initializer has been invoked passing `document`, the MIDI event data in `file` is
-  /// used to generate the sequence's tempo and instrument tracks.
-  public convenience init(file: MIDIFile, document: Document) {
-
-    fatalError("\(#function) not yet implemented.")
-
-    // Invoke the default initializer with the specified document.
-//    self.init(document: document)
-//
-//    // Get the file's track chunks. The array is converted into a slice so the variable
-//    // can be updated should the first track be consumed before the collection is iterated.
-//    var trackChunks = ArraySlice(file.tracks)
-//
-//    // If the first track chunk contains only tempo-related events replace the empty
-//    // tempo track created in the default initializer with a tempo track intialized
-//    // using the first track chunk.
-//    if let trackChunk = trackChunks.first,
-//      trackChunk.events.first(where: { !TempoTrack.isTempoTrackEvent($0) }) == nil
-//    {
-//
-//      // Initialize the tempo track using the first track chunk.
-//      tempoTrack = TempoTrack(sequence: self, trackChunk: trackChunk)
-//
-//      // Remove the first track chunk from the array of unprocessed track chunks.
-//      trackChunks = trackChunks.dropFirst()
-//
-//    }
-//
-//    // Iterate the unprocessed track chunks.
-//    for trackChunk in trackChunks {
-//
-//      // Initialize a new track using the track chunk.
-//      guard let track = try? InstrumentTrack(sequence: self, trackChunk: trackChunk) else {
-//        continue
-//      }
-//
-//      // Add the track to the sequence.
-//      add(track: track)
-//
-//    }
-
-  }
 
 }

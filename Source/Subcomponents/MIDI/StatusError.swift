@@ -5,7 +5,6 @@
 //  Created by Jason Cardwell on 8/14/15.
 //  Copyright © 2015 Moondeer Studios. All rights reserved.
 //
-
 import Foundation
 import MoonKit
 
@@ -54,7 +53,9 @@ public enum OSStatusError: Swift.Error, CustomStringConvertible {
 
   case osStatusCode (OSStatus)
 
-  public var description: String { switch self { case .osStatusCode(let code): return "error code: \(code)" } }
+  public var description: String {
+    switch self { case .osStatusCode(let code): return "error code: \(code)" }
+  }
 
 }
 
@@ -66,34 +67,43 @@ public enum StatusError: Swift.Error, CustomStringConvertible {
 
   public var description: String {
     switch self {
-      case let .midi(error, message):
-        return "<MIDI>\(message) - \(error)"
-      case let .osStatusCode(error, message):
-        return "\(message) - \(error)"
+      case let .midi(error, message):         return "<MIDI>\(message) - \(error)"
+      case let .osStatusCode(error, message): return "\(message) - \(error)"
+    }
+  }
+
+  public init(status: OSStatus, message: String) {
+    if let error = MIDIError(rawValue: status) {
+      self = StatusError.midi(error, message)
+    } else {
+      self = StatusError.osStatusCode(OSStatusError.osStatusCode(status), message)
     }
   }
 
 }
 
+
+/// When you absolutely, positively must succeed.
+///
+/// - Warning: This function is designed to throw an error should `block`
+///            not return `noErr`.
+///
+/// - Parameters:
+///   - block: The closure to execute.
+///   - message: The message to pass along if `block` does not return `noErr`.
+/// - Returns: The result of invoking `block`.
+public func require(_ block: @autoclosure () -> OSStatus, _ message: String ) throws
+{
+  let status = block()
+  guard status == noErr else { throw StatusError(status: status, message: message) }
+}
+
 infix operator ➤
 
-///  Compares the specified `OSStatus` code against `noErr` and throws an error when they are not equal.
+///  Compares the specified `OSStatus` code against `noErr` and throws an error when they
+///  are not equal.
 public func ➤(lhs: @autoclosure () -> OSStatus, rhs: @autoclosure () -> String) throws {
 
-  let status = lhs()
-
-  guard status == noErr else {
-
-    if let error = MIDIError(rawValue: status) {
-
-      throw StatusError.midi(error, rhs())
-
-    } else {
-
-      throw StatusError.osStatusCode(OSStatusError.osStatusCode(status), rhs())
-
-    }
-    
-  }
+  try require(lhs(), rhs())
 
 }

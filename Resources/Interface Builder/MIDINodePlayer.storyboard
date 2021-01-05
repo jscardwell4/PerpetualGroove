@@ -1,14 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="6xH-va-xT7">
-    <device id="ipad9_7" orientation="landscape">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="6xH-va-xT7">
+    <device id="ipad9_7" orientation="landscape" layout="fullscreen" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
-        <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
-        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -20,7 +14,7 @@
         <!--Node Player View Controller-->
         <scene sceneID="Klf-hv-dkY">
             <objects>
-                <viewController storyboardIdentifier="MIDIPlayer" id="6xH-va-xT7" customClass="MIDINodePlayerViewController" customModule="Groove" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MIDIPlayer" id="6xH-va-xT7" customClass="MIDINodePlayerViewController" customModule="NodePlayer" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="3bO-nI-SWz"/>
                         <viewControllerLayoutGuide type="bottom" id="MgW-0J-CjH"/>
@@ -319,6 +313,12 @@
             <point key="canvasLocation" x="294.5" y="412.5"/>
         </scene>
     </scenes>
+    <designables>
+        <designable name="Qhw-iu-ZQX">
+            <size key="intrinsicContentSize" width="56" height="56"/>
+        </designable>
+    </designables>
+    <color key="tintColor" red="0.8434065580368042" green="0.78949379920959473" blue="0.71009701490402222" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
     <resources>
         <image name="Editing/begin_repeat" width="40" height="56"/>
         <image name="Editing/cancel_loop" width="56" height="56"/>
@@ -342,5 +342,4 @@
         <image name="Editing/tape-selected" width="56" height="56"/>
         <image name="spinner1" width="56" height="56"/>
     </resources>
-    <color key="tintColor" red="0.8434065580368042" green="0.78949379920959473" blue="0.71009701490402222" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

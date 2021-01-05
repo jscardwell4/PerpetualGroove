@@ -34,8 +34,6 @@ public final class DocumentManager: NotificationDispatching {
 
       state ∪= [.initialized]
 
-      fatalError("\(#function) not yet implemented.")
-
     }
 
   }
@@ -156,16 +154,16 @@ public final class DocumentManager: NotificationDispatching {
   /// Opens the document bookmarked as current for `location` when non-nil.
   static private func openCurrentDocument(for location: StorageLocation) {
 
-    guard Sequencer.isInitialized else {
-      // Proceed once `Sequencer` has initialized.
-
-      receptionist.observeOnce(name: .didUpdateAvailableSoundFonts, from: Sequencer.self) {
-        _ in openCurrentDocument(for: location)
-      }
-
-      return
-
-    }
+//    guard Sequencer.isInitialized else {
+//      // Proceed once `Sequencer` has initialized.
+//
+//      receptionist.observeOnce(name: .didUpdateAvailableSoundFonts, from: Sequencer.self) {
+//        _ in openCurrentDocument(for: location)
+//      }
+//
+//      return
+//
+//    }
 
     // Ensure there is a document to open.
     guard let document = location.currentDocument else { return }
@@ -516,14 +514,14 @@ public final class DocumentManager: NotificationDispatching {
   public static func open(document: Document) {
 
     // Make sure sequencer has been initialized before opening the document.
-    guard Sequencer.isInitialized else {
-
-      receptionist.observeOnce(name: .didUpdateAvailableSoundFonts, from: Sequencer.self) {
-        _ in queue.async(execute: {_open(document: document)})
-      }
-
-      return
-    }
+//    guard Sequencer.isInitialized else {
+//
+//      receptionist.observeOnce(name: .didUpdateAvailableSoundFonts, from: Sequencer.self) {
+//        _ in queue.async(execute: {_open(document: document)})
+//      }
+//
+//      return
+//    }
 
     queue.async(execute: {_open(document: document)})
 

@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="aQn-av-Bpr">
-    <device id="ipad9_7" orientation="landscape">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="aQn-av-Bpr">
+    <device id="ipad9_7" orientation="landscape" layout="fullscreen" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -18,7 +14,7 @@
         <!--Generator-->
         <scene sceneID="FM4-1V-7vL">
             <objects>
-                <viewController storyboardIdentifier="Generator" id="aQn-av-Bpr" userLabel="Generator" customClass="GeneratorViewController" customModule="Groove" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Generator" id="aQn-av-Bpr" userLabel="Generator" customClass="GeneratorViewController" customModule="NodePlayer" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Ve5-Qg-KPC"/>
                         <viewControllerLayoutGuide type="bottom" id="gVV-4u-SGf"/>
@@ -28,7 +24,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="w5U-Eo-KhK">
-                                <rect key="frame" x="16" y="34" width="26" height="14"/>
+                                <rect key="frame" x="16" y="35" width="37.5" height="14.5"/>
                                 <attributedString key="attributedText">
                                     <fragment content="Note">
                                         <attributes>
@@ -40,25 +36,25 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Chord" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="none" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ljp-n0-GSd">
-                                <rect key="frame" x="16" y="79.5" width="33.5" height="14"/>
+                                <rect key="frame" x="16" y="80.5" width="49.5" height="14.5"/>
                                 <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
                                 <color key="textColor" red="0.57254904510000004" green="0.52941179279999995" blue="0.47058823700000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Velocity" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0XJ-KP-C5j">
-                                <rect key="frame" x="16" y="156.5" width="42" height="14"/>
+                                <rect key="frame" x="16" y="156" width="68.5" height="14.5"/>
                                 <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
                                 <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="P7w-3G-SIY">
-                                <rect key="frame" x="70" y="8" width="242" height="174"/>
+                                <rect key="frame" x="94" y="8" width="218" height="174"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="gtC-A7-Lfa">
-                                        <rect key="frame" x="0.0" y="0.0" width="242" height="37.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="218" height="37.5"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="KML-VN-wa1" userLabel="Pitch Selector" customClass="PitchSelector" customModule="Groove">
-                                                <rect key="frame" x="0.0" y="0.0" width="76" height="37.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="68.5" height="37.5"/>
                                                 <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="Pitch Selector"/>
                                                 <userDefinedRuntimeAttributes>
@@ -69,7 +65,7 @@
                                                 </connections>
                                             </view>
                                             <view opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="eOh-NG-HgE" userLabel="Modifier Selector" customClass="PitchModifierSelector" customModule="Groove">
-                                                <rect key="frame" x="92" y="0.0" width="67.5" height="37.5"/>
+                                                <rect key="frame" x="84.5" y="0.0" width="61" height="37.5"/>
                                                 <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="Modifier Selector"/>
                                                 <userDefinedRuntimeAttributes>
@@ -80,7 +76,7 @@
                                                 </connections>
                                             </view>
                                             <view contentMode="scaleToFill" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="G8I-bj-ouc" userLabel="Octave Selector" customClass="OctaveSelector" customModule="Groove">
-                                                <rect key="frame" x="175.5" y="0.0" width="66.5" height="37.5"/>
+                                                <rect key="frame" x="161.5" y="0.0" width="56.5" height="37.5"/>
                                                 <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="OctaveSelector"/>
@@ -92,7 +88,7 @@
                                         </subviews>
                                     </stackView>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lo0-nl-cDp" userLabel="Chord Selector" customClass="ChordSelector" customModule="Groove">
-                                        <rect key="frame" x="0.0" y="45.5" width="242" height="37.5"/>
+                                        <rect key="frame" x="0.0" y="45.5" width="218" height="37.5"/>
                                         <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <accessibility key="accessibilityConfiguration" identifier="Chord Selector"/>
                                         <userDefinedRuntimeAttributes>
@@ -103,7 +99,7 @@
                                         </connections>
                                     </view>
                                     <view contentMode="scaleToFill" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="KLS-oH-mjI" userLabel="Duration Selector" customClass="DurationSelector" customModule="Groove">
-                                        <rect key="frame" x="0.0" y="91" width="242" height="37.5"/>
+                                        <rect key="frame" x="0.0" y="91" width="218" height="37.5"/>
                                         <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <accessibility key="accessibilityConfiguration" identifier="Duration Selector"/>
                                         <userDefinedRuntimeAttributes>
@@ -114,7 +110,7 @@
                                         </connections>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gSZ-JK-0W9" userLabel="Velocity Selector" customClass="VelocitySelector" customModule="Groove">
-                                        <rect key="frame" x="0.0" y="136.5" width="242" height="37.5"/>
+                                        <rect key="frame" x="0.0" y="136.5" width="218" height="37.5"/>
                                         <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <accessibility key="accessibilityConfiguration" identifier="Velocity Selector"/>
                                         <userDefinedRuntimeAttributes>
@@ -130,7 +126,7 @@
                                 </constraints>
                             </stackView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Duration" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ziA-fb-WAR">
-                                <rect key="frame" x="16" y="111" width="46" height="14"/>
+                                <rect key="frame" x="16" y="110.5" width="70" height="14.5"/>
                                 <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
                                 <color key="textColor" red="0.57254904508590698" green="0.52941179275512695" blue="0.47058823704719543" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
@@ -222,7 +218,7 @@
         <!--Generator-->
         <scene sceneID="R5u-gx-wRB">
             <objects>
-                <viewController storyboardIdentifier="GeneratorWithArrows" id="JEK-82-mdb" userLabel="Generator" customClass="GeneratorViewController" customModule="Groove" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="GeneratorWithArrows" id="JEK-82-mdb" userLabel="Generator" customClass="GeneratorViewController" customModule="NodePlayer" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="qXD-d1-ERY"/>
                         <viewControllerLayoutGuide type="bottom" id="4Wb-4S-OjS"/>
@@ -232,7 +228,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ULZ-aY-5oL">
-                                <rect key="frame" x="16" y="34" width="26" height="14"/>
+                                <rect key="frame" x="16" y="35" width="37.5" height="14.5"/>
                                 <attributedString key="attributedText">
                                     <fragment content="Note">
                                         <attributes>
@@ -244,25 +240,25 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Chord" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="none" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yrV-Ny-4Dm">
-                                <rect key="frame" x="16" y="79.5" width="33.5" height="14"/>
+                                <rect key="frame" x="16" y="80.5" width="49.5" height="14.5"/>
                                 <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
                                 <color key="textColor" red="0.57254904510000004" green="0.52941179279999995" blue="0.47058823700000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Velocity" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7ji-qZ-CaJ">
-                                <rect key="frame" x="16" y="156.5" width="42" height="14"/>
+                                <rect key="frame" x="16" y="156" width="68.5" height="14.5"/>
                                 <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
                                 <color key="textColor" red="0.57254904510000004" green="0.52941179279999995" blue="0.47058823700000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="idW-fd-jCO">
-                                <rect key="frame" x="70" y="8" width="242" height="174"/>
+                                <rect key="frame" x="94" y="8" width="218" height="174"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="JqW-NH-29Y">
-                                        <rect key="frame" x="0.0" y="0.0" width="242" height="37.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="218" height="37.5"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="uk7-ix-bE4" userLabel="Pitch Selector" customClass="PitchSelector" customModule="Groove">
-                                                <rect key="frame" x="0.0" y="0.0" width="76" height="37.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="68.5" height="37.5"/>
                                                 <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="Pitch Selector"/>
                                                 <userDefinedRuntimeAttributes>
@@ -273,7 +269,7 @@
                                                 </connections>
                                             </view>
                                             <view opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="5IQ-kQ-3wB" userLabel="Modifier Selector" customClass="PitchModifierSelector" customModule="Groove">
-                                                <rect key="frame" x="92" y="0.0" width="67.5" height="37.5"/>
+                                                <rect key="frame" x="84.5" y="0.0" width="61" height="37.5"/>
                                                 <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="Modifier Selector"/>
                                                 <userDefinedRuntimeAttributes>
@@ -284,7 +280,7 @@
                                                 </connections>
                                             </view>
                                             <view contentMode="scaleToFill" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="owL-iP-vRA" userLabel="Octave Selector" customClass="OctaveSelector" customModule="Groove">
-                                                <rect key="frame" x="175.5" y="0.0" width="66.5" height="37.5"/>
+                                                <rect key="frame" x="161.5" y="0.0" width="56.5" height="37.5"/>
                                                 <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <userDefinedRuntimeAttributes>
                                                     <userDefinedRuntimeAttribute type="string" keyPath="identifier" value="OctaveSelector"/>
@@ -296,7 +292,7 @@
                                         </subviews>
                                     </stackView>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OvO-mh-f1E" userLabel="Chord Selector" customClass="ChordSelector" customModule="Groove">
-                                        <rect key="frame" x="0.0" y="45.5" width="242" height="37.5"/>
+                                        <rect key="frame" x="0.0" y="45.5" width="218" height="37.5"/>
                                         <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <accessibility key="accessibilityConfiguration" identifier="Chord Selector"/>
                                         <userDefinedRuntimeAttributes>
@@ -307,7 +303,7 @@
                                         </connections>
                                     </view>
                                     <view contentMode="scaleToFill" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="om3-XL-dXa" userLabel="Duration Selector" customClass="DurationSelector" customModule="Groove">
-                                        <rect key="frame" x="0.0" y="91" width="242" height="37.5"/>
+                                        <rect key="frame" x="0.0" y="91" width="218" height="37.5"/>
                                         <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <accessibility key="accessibilityConfiguration" identifier="Duration Selector"/>
                                         <userDefinedRuntimeAttributes>
@@ -318,7 +314,7 @@
                                         </connections>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="n8K-8o-Ga8" userLabel="Velocity Selector" customClass="VelocitySelector" customModule="Groove">
-                                        <rect key="frame" x="0.0" y="136.5" width="242" height="37.5"/>
+                                        <rect key="frame" x="0.0" y="136.5" width="218" height="37.5"/>
                                         <color key="backgroundColor" red="0.20000000300000001" green="0.19607843459999999" blue="0.1921568662" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <accessibility key="accessibilityConfiguration" identifier="Velocity Selector"/>
                                         <userDefinedRuntimeAttributes>
@@ -334,12 +330,12 @@
                                 </constraints>
                             </stackView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Duration" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GRs-Th-j97">
-                                <rect key="frame" x="16" y="111" width="46" height="14"/>
+                                <rect key="frame" x="16" y="110.5" width="70" height="14.5"/>
                                 <fontDescription key="fontDescription" name="EvelethRegular" family="Eveleth" pointSize="12"/>
                                 <color key="textColor" red="0.57254904510000004" green="0.52941179279999995" blue="0.47058823700000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Sua-P9-rMO" userLabel="Previous" customClass="ImageButtonView" customModule="MoonKit">
+                            <view opaque="NO" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Sua-P9-rMO" userLabel="Previous" customClass="ImageButtonView" customModule="MoonKit">
                                 <rect key="frame" x="16" y="206" width="56" height="56"/>
                                 <color key="tintColor" red="0.88567054270000001" green="0.84600132699999997" blue="0.78708314899999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <accessibility key="accessibilityConfiguration" identifier="PreviousButton"/>
@@ -354,7 +350,7 @@
                                     <userDefinedRuntimeAttribute type="image" keyPath="image" value="left_arrow"/>
                                 </userDefinedRuntimeAttributes>
                             </view>
-                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Na4-ZX-ttX" userLabel="Next" customClass="ImageButtonView" customModule="MoonKit">
+                            <view opaque="NO" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Na4-ZX-ttX" userLabel="Next" customClass="ImageButtonView" customModule="MoonKit">
                                 <rect key="frame" x="256" y="206" width="56" height="56"/>
                                 <color key="tintColor" red="0.88567054270000001" green="0.84600132699999997" blue="0.78708314899999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <accessibility key="accessibilityConfiguration" identifier="NextButton"/>
